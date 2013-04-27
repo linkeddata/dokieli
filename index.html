@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns:rsa="http://www.w3.org/ns/auth/rsa#"
+    xmlns:cert="http://www.w3.org/ns/auth/cert#"
+    xmlns:dcterms="http://purl.org/dc/terms/"
+    xmlns:foaf="http://xmlns.com/foaf/0.1/"
+    xmlns:v="http://www.w3.org/2006/vcard/ns#"
+    xmlns:cc="http://creativecommons.org/ns#"
+    xmlns:dbr="http://dbpedia.org/resource/"
+    xmlns:dbp="http://dbpedia.org/property/"
+    xmlns:wgs="http://www.w3.org/2003/01/geo/wgs84_pos#"
+    xmlns:cal="http://www.w3.org/2002/12/cal/ical#"
+    xmlns:org="http://www.w3.org/ns/org#"
+    xmlns:biblio="http://purl.org/net/biblio#"
+    xmlns:book="http://purl.org/NET/book/vocab#"
+    xmlns:schema="http://schema.org/"
+    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
+    xmlns:this="http://csarven.ca/linked-sdmx-data"
+
+    xml:lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+        <title>Linked SDMX Data</title>
+        <link rel="stylesheet" type="text/css" media="all" href="lncs.css"/>
+    </head>
+
+    <body about="[this:]" typeof="foaf:Document sioc:Post biblio:Paper" id="article" class="hfeed journal">
+        <div id="wrapper">
+            <div class="main hentry">
+                <h1 property="dcterms:title" class="entry-title">Linked SDMX Data</h1>
+                <p class="entry-subtitle">Path to high fidelity Statistical Linked Data for OECD, BFS, FAO, and ECB</p>
+
+                <div id="authors">
+                    <ul>
+                        <li class="entry-author">
+                            <p><a rel="dcterms:creator dcterms:publisher dcterms:contributor" href="http://csarven.ca/#i" class="author_name">Sarven Capadisli</a></p>
+                            <p about="http://csarven.ca/#i" rel="org:memberOf" resource="http://aksw.org/" class="author_org">Universität Leipzig, Institut für Informatik, AKSW</p>
+                            <p class="author_org">Postfach 100920, D-04009 Leipzig, Germany</p>
+                            <p about="http://csarven.ca/#i" rel="foaf:mbox" resource="mailto:info@csarven.ca" class="author_email">info@csarven.ca</p>
+                        </li>
+
+                        <li class="entry-author">
+                            <p><a rel="dcterms:contributor" href="http://aksw.org/SoerenAuer" class="author_name">Sören Auer</a></p>
+                            <p about="http://csarven.ca/#i" rel="org:memberOf" resource="http://aksw.org/" class="author_org">Universität Leipzig, Institut für Informatik, AKSW</p>
+                            <p class="author_org">Postfach 100920, D-04009 Leipzig, Germany</p>
+                            <p about="http://csarven.ca/#i" rel="foaf:mbox" resource="mailto:auer@informatik.uni-leipzig.de" class="author_email">auer@informatik.uni-leipzig.de</p>
+                        </li>
+
+                        <li class="entry-author">
+                            <p><a rel="dcterms:contributor" href="http://aksw.org/AxelNgonga" class="author_name">Axel-Cyrille Ngonga Ngomo</a></p>
+                            <p about="http://aksw.org/AxelNgonga" rel="org:memberOf" resource="http://aksw.org/" class="author_org">Universität Leipzig, Institut für Informatik, AKSW</p>
+                            <p class="author_org">Postfach 100920, D-04009 Leipzig, Germany</p>
+                            <p about="http://aksw.org/AxelNgonga" rel="foaf:mbox" resource="mailto:ngonga@informatik.uni-leipzig.de" class="author_email">ngonga@informatik.uni-leipzig.de</p>
+                        </li>
+                    </ul>
+                </div>
+
+
+                <dl id="document-submitted">
+                    <dt>Date</dt>
+                    <dd property="dcterms:published" content="2013-02-10T09:00:00Z">2013-02-10</dd>
+                </dl>
+                <span property="dcterms:modified" content="2013-03-07T09:00:00Z"></span>
+
+
+                <div id="document-identifier">
+                    <h2>Document Identifier</h2>
+                    <p><code>http://csarven.ca/linked-sdmx-data</code></p>
+                </div>
+
+                <div id="document-license">
+                    <h2>License</h2>
+                    <p><a about="[this:]" rel="license cc:license" href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)</a></p>
+                </div>
+
+
+                <div property="dcterms:description" id="content" class="entry-content">
+                    <div property="dcterms:abstract" id="abstract" class="entry-summary">
+                        <h2>Abstract</h2>
+                        <p>As statistical data is inherently highly structured and comes with rich metadata (in form of code lists, data cubes etc.), it would be a missed opportunity to not tap into it from the Linked Data angle. At the time of this writing, there exists no simple way to transform statistical data into Linked Data since the raw data comes in different shapes and forms. Given that SDMX (Statistical Data and Metadata eXchange) is arguably the most widely used standard for statistical data exchange, a great amount of statistical data about our societies is yet to be discoverable and identifiable in a uniform way. In this article, we present the design and implementation of SDMX-ML to RDF/XML XSL transformations, as well as the publication of OECD, BFS, FAO, and ECB datasets with that tooling.</p>
+                    </div>
+
+                    <div id="categories-and-subject-descriptors">
+                        <h2>Categories and Subject Descriptors</h2>
+                        <ul>
+                            <li><span rel="dcterms:subject" resource="http://www.acm.org/about/class/ccs98-html#H.4">H.4</span> [<strong>Information Systems Applications</strong>]: Linked Data</li>
+                            <li><span rel="dcterms:subject" resource="http://www.acm.org/about/class/ccs98-html#D.2">D.2</span> [<strong>Software Engineering</strong>]: Semantic Web</li>
+                        </ul>
+                    </div>
+
+                    <div id="keywords">
+                        <h2>Keywords</h2>
+                        <ul rel="dcterms:subject">
+                            <li><a resource="http://dbpedia.org/resource/Linked_Data" href="http://en.wikipedia.org/wiki/Linked_Data">Linked Data</a></li>
+                            <li><a resource="http://dbpedia.org/resource/SDMX" href="http://en.wikipedia.org/wiki/SDMX">SDMX</a></li>
+                            <li><a resource="http://dbpedia.org/resource/Statistics" href="http://en.wikipedia.org/wiki/Statistics">Statistics</a></li>
+                            <li><a resource="http://dbpedia.org/resource/Data_modeling" href="http://en.wikipedia.org/wiki/Data_modeling">Data modeling</a></li>
+                            <li><a resource="http://dbpedia.org/resource/Data_transformation" href="http://en.wikipedia.org/wiki/Data_transformation">Data transformation</a></li>
+                            <li><a resource="http://dbpedia.org/resource/Dataspaces" href="http://en.wikipedia.org/wiki/Dataspaces">Dataspaces</a></li>
+                            <li><a resource="http://dbpedia.org/resource/Knowledge_management" href="http://en.wikipedia.org/wiki/Knowledge_management">Knowledge management</a></li>
+                        </ul>
+                    </div>
+
+
+                    <h2 id="introduction">Introduction</h2>
+                    <p>This document provides instructions for style and layout of a double column journal article.
+While access to statistical data in the public sector has increased in recent years, a range of technical challenges makes it difficult for data consumers to tap into this data at ease. These are particularly related to the following two areas:</p>
+                    <ul>
+	                    <li>Automation of data transformation of data from high profile statistical organizations.</li>
+                        <li>Minimization of third-party interpretation of the source data and metadata and lossless transformations.</li>
+                    </ul>
+
+                    <p>Development teams often face low-level repetitive data management tasks to deal with someone else's data. Within the context of Linked Data, one aspect is to transform this raw statistical data (e.g., SDMX-ML) into an RDF representation in order to be able to start tapping into what's out there in a uniform way.</p>
+
+                    <p>The contributions of this article are two-fold. We present an approach for transforming SDMX-ML based on XSLT 2.0 templates and showcase our implementation which transforms SDMX-ML data to RDF/XML. Following this, SDMX-ML data from <a href="http://www.oecd.org/">OECD</a> (Organisation for Economic Co-operation and Development), <a href="http://www.bfs.admin.ch/">BFS</a> (<span xml:lang="de">Bundesamt für Statistik</span>@de, Swiss Federal Statistical Office@en), <a href="http://www.fao.org/">FAO</a> (Food and Agriculture Organization of the United Nations), and <a href="http://www.ecb.int/">ECB</a> are retrieved, transformed and published as Linked Data.</p>
+
+
+                    <h2 id="background">Background</h2>
+                    <p>As pointed out in <a href="http://csarven.ca/statistical-linked-dataspaces"><cite>Statistical Linked Dataspaces</cite></a> (Capadisli, S., 2012), what linked statistics provide, and in fact enable, are queries across datasets: Given that the dimension concepts are interlinked, one can learn from a certain observation's dimension value, and enable the automation of cross-dataset queries.</p>
+
+                    <p>Moreover, a number of approaches have been undertaken in the past to go from raw statistical data from the publisher to linked statistical data, as discussed in great detail in <a href="http://www.springerlink.com/content/t2244913r2583jw1/"><cite>Official statistics and the Practice of Data Fidelity</cite></a> (Cyganiak, R., 2011). These approaches go from retrieval of the data by majority; in tabular formats: Microsoft Excel or CSV, tree formats: XML with a custom schema, SDMX-ML, PC-Axis, to transformation into different RDF serialization formats. As far as graph formats go, majority of datasets in those formats not published by the owners. However, there are number of statistical linked dataspaces in the <a href="http://lod-cloud.net/">LOD Cloud</a> already.</p>
+
+                    <p>A number of transformation efforts are performed by the Linked Data community based on various formats. For example, the <a href="http://worldbank.270a.info/">World Bank Linked Dataspace</a> is based on custom XML that the <a href="http://worldbank.org/">World Bank</a> provides through their APIs with the application of XSL Templates. The <a href="http://worldbank.270a.info/">Transparency International</a> Linked Dataspace's data is based on CSV files with the transformation step through <a href="http://code.google.com/p/google-refine/">Google Refine</a> and the <a href="http://refine.deri.ie/">RDF Extension</a>. That is, data sources provide different data formats for the public, with or without accompanying metadata e.g., vocabularies, provenance. Hence, this repetitive work is no exception to Linked Data teams as they have to constantly be involved either by way of hand-held transformation efforts, or in best-case scenarios, it is done semi-automatically. Currently, there is no automation of the transformation step to the best of our knowledge. This is generally due to the difficulty of the task when dealing with the quality and consistency of the statistical data that is published on the Web, as well as the data formats that are typically focused on consumption. Although SDMX-ML is the primary format of the high profile statistical data organizations, it is yet to be taken advantage of.</p>
+
+
+
+                    <h2 id="sdmx-ml-to-linked-data">SDMX-ML to Linked Data</h2>
+                    <p>Recently, SDMX is approved by ISO as <a href="http://www.iso.org/iso/catalogue_detail.htm?csnumber=52500">International Standard</a>. It is a standard which provides the possibility to consistently carry out data flows between publishers and consumers. SDMX-ML (using XML syntax) is considered to be the gold standard for expressing statistical data. It has a highly structured mechanism to represent statistical observations, classifications, and data structures. Organizations behind SDMX are <a href="http://www.bis.org/">BIS</a> (Bank for International Settlements), <a href="http://www.oecd.org/">OECD</a> (Organisation for Economic Co-operation and Development), <a href="http://www.un.org/">UN</a> (United Nations), <a href="http://www.ecb.int/">ECB</a> (European Central Bank), <a href="http://worldbank.org/">World Bank</a>, <a href="http://imf.org/">IMF</a> (International Monetary Fund), <a href="http://fao.org/">FAO</a> (Food and Agriculture Organization of the United Nations), and <a href="http://epp.eurostat.ec.europa.eu/">Eurostat</a>.</p>
+
+                    <p>We argue that high-fidelity statistical data representation in Linked Data should take advantage of SDMX-ML as it is widely adopted by data producers with rich data about our societies, making the need for transforming SDMX-ML to RDF and publishing accompanying Linked Dataspaces of paramount importance</p>
+
+
+                    <h3 id="data-sources">Data Sources</h3>
+                    <p>As a demonstration of the SDMX-ML to RDF transformations, the selection of datasets here are from the following organizations. Instead of regurgitating publisher's profile about themselves, and to keep this part brief, I'll quote the first sentences from their about pages:</p>
+
+                    <dl>
+                        <dt>OECD</dt>
+                        <dd><q>The mission of the Organisation for Economic Co-operation and Development (OECD) is to promote policies that will improve the economic and social well-being of people around the world</q> from <a href="http://www.oecd.org/about/">OECD Our mission</a>.</dd>
+
+                        <dt>BFS</dt>
+                        <dd><q>Swiss Statistics, the Federal Statistical Office’s web portal. Offering a modern and appealing interface, our website proposes a wide range of statistical information on the most important areas of life: population, health, economy, employment, education and much more</q> from <a href="http://www.bfs.admin.ch/bfs/portal/en/index/dienstleistungen/premiere_visite/01.html">BFS Welcome</a>.</dd>
+
+                        <dt>FAO</dt>
+                        <dd><q>Achieving food security for all is at the heart of FAO's efforts - to make sure people have regular access to enough high-quality food to lead active, healthy lives</q> from <a href="http://www.fao.org/about/en/">FAO's mandate</a>.</dd>
+
+                        <dt>ECB</dt>
+                        <dd><q>Whose main task is to maintain the euro's purchasing power and thus price stability in the euro area</q> from <a href="http://www.ecb.int/">ECB home</a></dd>
+                    </dl>
+
+                    <p>The OECD, FAO, and ECB datasets consisted of observational and structural data. The OECD and ECB data provided complete coverage (to the best of our knowledge), whereas FAO had partial fishery related data. BFS had all of their classifications available, with no observational data in SDMX-ML.</p>
+
+
+                    <h3 id="data-retrieval">Data Retrieval</h3>
+                    <p>As SDMX-ML publishers have their own publishing processes, availability and accessibility of the data varied. After obtaining the dataset codes, names, and URLs with common Linux command-line work, a Bash script was created to retrieve the data.</p>
+
+                    <h4 id="data-retrieval-oecd">OECD</h4>
+                    <p>On how to retrieve all of the datasets from the OECD website was not entirely clear. In order to automatically get a hold of list of datasets, I copied the innerHTML of the DOM tree that contained all the dataset codes from <a href="http://stats.oecd.org/">OECD.StatExtracts</a> to a temporary file. This was done due to the fact that a simple scrape of an HTTP GET wasn't possible as the data on the page was populated via JavaScript on <code>document</code> ready. After constructing a list of datasets and structures to get, two REST API endpoints were called.</p>
+
+                    <h4 id="data-retrieval-bfs">BFS</h4>
+                    <p>BFS offered a Microsoft Excel <a href="http://www.bfs.admin.ch/bfs/portal/en/index/infothek/nomenklaturen/sdmx.Document.139474.xls">document</a> which contained a catalog of their classifications and URLs for retrieval.</p>
+
+                    <h4 id="data-retrieval-fao">FAO</h4>
+                    <p>After searching for keywords along the lines of <code>SDMX site:fao.org</code> at a search-engine nearby, <a href="http://www.fao.org/figis/sdmx/">FAO Fisheries</a> and <a href="http://data.fao.org/sdmx/index.html">data.fao.org</a> SDMX Registry and Repository, and its children pages were marked for SDMX-ML retrieval.</p>
+
+                    <h4 id="data-retrieval-ecb">ECB</h4>
+                    <p>ECB had a similar REST API to OECD. Additionally, SDMX Dataflows was retrieved to get a primary list of datasets to retrieve. Some of the large datasets was retrieved by making multiple smaller calls to the API using a call per refereance area.</p>
+
+
+                    <h3 id="provenance">Provenance</h3>
+                    <h4 id="provenance-at-retrieval">Provenance at Retrieval</h4>
+                    <p>At the time of data retrieval, information pertaining to provenance was captured using the <a href="http://www.w3.org/TR/prov-o/">PROV Ontology</a> in order to further enrich the data.
+This RDF/XML document contains <code>prov:Activity</code> information which indicates the location of the XML document on the local filesystem. It contains other provenance data like when it was retrieved, with what tools, etc.
+This provenance data from retrieval may be provided to the XSL Transformer during the transformation phase and VoID enrichment.</p>
+
+
+                    <h4 id="provenance-at-transformation">Provenance at Transformation</h4>
+                    <p>Resources of type <code>qb:DataStructureDefinition</code>, <code>qb:DataSet</code>, <code>skos:ConceptScheme</code> are also typed with the <code>prov:Entity</code> class. Also properties <code>prov:wasAttributedTo</code> were added to these resources with the <code>creator</code> value which is of type <code>prov:Agent</code> obtained from XSLT configuration. There is a unique <code>prov:Activity</code> for each transformation, and it has a <code>dcterms:title</code>, and contains values for <code>prov:startedAtTime</code>, <code>prov:wasAssociatedWith</code> (the creator), <code>prov:used</code> (i.e., source XML, XSL to transform) to what was <code>prov:generated</code> (and source data URI that it <code>prov:wasDerivedFrom</code>). It also declares <code>dcterms:license</code> where value taken from XSLT configuration. The provenance document from the retrieval phase may be provided to the transformer. In this case, it establishes a link between the current provenance activity (i.e., the transformation), with the earlier provenance activity (i.e., the retrieval) using the <code>prov:wasInformedBy</code> property.</p>
+
+
+                    <h4 id="provenance-at-post-processing">Provenance at Post-processing</h4>
+                    <p>The post-processing step for provenance is intended to retain provenance data for future use.
+                    As datasets get updated, it is important to preserve information about past activities by way of exporting all instances of the <code>prov:Activity</code> class from the RDF store. Activities are unique artifacts, on a conceptual level as well as with regard to referencing them. Since one of the main concerns of provenance is to keep track of activities, this post-processing step also allows us to retain a historical account of all activities during the data lifecycle, and to preserve all previously published URIs (cf. <a href="http://www.w3.org/Provider/Style/URI.html">Cool URIs don't change</a>).</p>
+
+
+                    <h3 id="data-preprocessing">Data Preprocessing</h3>
+                    <p>By in large, there was no need to pre-process the data as the transformation dealt with the data as it was. However, some non-vital SDMX components were omitted from the output. For instance, one type of attribute in OECD and ECB observations contained free-text as opposed to its corresponding code from a codelist. Since the RDF Data Cube required codes as opposed to free-text for dimension values, some attributes were excluded. The decision here was to trade-off some precision in favour of retaining the dataset.</p>
+
+
+                    <h3 id="data-modeling">Data Modeling</h3>
+                    <p>This section goves over several areas which are at the heart of representing statistical data in SDMX-ML as Linked Data. The approach taken was to provide a level of consistency for data consumers and tool builders for all statistical Linked Data with its origins from data in SDMX-ML.</p>
+
+                    <h4 id="vocabularies">Vocabularies</h4>
+                    <p>Besides the common vocabularies: RDF RDFS, XSD, OWL, XSD, the RDF Data Cube vocabulary is used to describe multi-dimensional statistical data, and SDMX-RDF for the statistical information model. PROV-O is used for provenance coverage. SKOS and XKOS to cover concepts, concept schemes and their relationships to one another.</p>
+
+
+                    <h4 id="version-in-uri">Versioning</h4>
+                    <p>SDMX data publishers version their classifications and the generated cubes refer to particular versions of those classifications. Consequently, versions need to be explicitly part of classification URIs in order to uniquely identify them. Although including version information in the URI is disputed by some authors, it is a good exception for identifying different concepts and data structures. Jeni Tennison et al discussed <a href="http://www.jenitennison.com/blog/node/112">Versioning URIs</a>, and concluded that there was no one-size-fits all solution. An alternative approach using named graphs for a series of changes was proposed in <a href="http://www.springerlink.com/index/10.1007/978-1-4614-1767-5">Linking UK Government Data</a>.</p>
+
+                    <h4 id="uri-patterns">URI Patterns</h4>
+                    <p>An outline for the URI patterns is given in table below: <code>authority</code> is replaced with the domain (see also: <a href="#agency-identifiers-and-uris">Agency identifiers and URIs</a>) followed with <code>class</code>, <code>code</code>, <code>concept</code>, <code>dataset</code>, <code>property</code>, <code>provenance</code>, or <code>slice</code> as example. These tokens as well as <code>/</code> which is used to separate the dimension concepts in URIs can be configured in the toolkit.</p>
+
+                    <p>In order to construct the URIs for the above patterns, some of the data values are normalized to make them URI safe but not altered in other ways (e.g., lower-casing). The rationale for this was to keep the consistency of terms in SDMX and RDF.</p>
+
+                    <table id="uri-patterns-outline">
+                        <caption>URI Patterns</caption>
+                        <thead><tr><th>Entity type</th><th>URI Pattern</th></tr></thead>
+                        <tbody>
+                            <tr><td><code>qb:DataStructureDefinition</code></td><td><code>http://{authority}/structure/{KeyFamilyID}</code></td></tr>
+                            <tr><td><code>qb:DataSet</code></td><td><code>http://{authority}/dataset/{datasetID}</code></td></tr>
+                            <tr><td><code>qb:Observation</code></td><td><code>http://{authority}/dataset/{datasetID}/{dimension-1}/../{dimension-n}</code></td></tr>
+                            <tr><td><code>qb:Slice</code></td><td><code>http://{authority}/slice/{KeyFamilyID}/{dimension-1}/../{dimension-n-no-FREQ}</code></td></tr>
+                            <tr><td><code>skos:Collection</code></td><td><code>http://{authority}/code/{version}/{hierarchicalCodeListID}</code>,<br/>
+                                                            <code>http://{authority}/code/{version}/{hierarchyID}</code></td></tr>
+                            <tr><td><code>sdmx:CodeList</code></td><td><code>http://{authority}/code/{version}/{codeListID}</code></td></tr>
+                            <tr><td><code>skos:ConceptScheme</code></td><td><code>http://{authority}/concept/{version}/{conceptSchemeID}</code></td></tr>
+                            <tr><td><code>skos:Concept</code>,<br/>
+                                    <code>sdmx:Concept</code></td><td><code>http://{authority}/code/{version}/{codeListID}/{codeID}</code><br/>
+                                                         <code>http://{authority}/concept/{version}/{conceptSchemeID}/{conceptID}</code></td></tr>
+                            <tr><td><code>owl:Class</code>,<br/>
+                                    <code>rdfs:Class</code></td><td><code>http://{authority}/class/{version}/{codeListID}</code></td></tr>
+                            <tr><td><code>rdf:Property</code>,<br/>
+                                    <code>qb:DimensionProperty</code>,<br/>
+                                    <code>qb:MeasureProperty</code>,<br/>
+                                    <code>qb:AttributeProperty</code></td><td><code>http://{authority}/property/{conceptID}</code></td></tr>
+                        </tbody>
+                    </table>
+
+
+                    <h4 id="datatypes">Datatypes</h4>
+                    <p>XSD datatypes are assigned to literals are based on the value of the measure component (e.g., decimal, year). In the absence of this datatype, observation values are checked whether they can be casted to <code>xsd:decimal</code>. Otherwise, they are left as plain literals.</p>
+
+                    <h2 id="linked-sdmx-data-transformation">Linked SDMX Data Transformation</h2>
+                    <p>The <a href="https://github.com/csarven/linked-sdmx">Linked SDMX</a> XSLT 2.0 templates and scripts are developed to transform SDMX-ML data and metadata to RDF/XML. Its goals are:</p>
+                    <ul>
+                        <li>To improve access and discovery of cross-domain statistical data.</li>
+                        <li>To perform the transformation in a lossless and semantics preserving way.</li>
+                        <li>To support and encourage statistical agencies to publish their data using RDF and integrating the transformation into their workflow.</li>
+                    </ul>
+
+
+                    <p>The key advantage of this transformation approach is that additional interpretations are not required by the data modeler especially in comparison to alternative transformation (e.g., CSV or XML to RDF serialization). Since the SDMX-RDF vocabulary is based on SDMX-ML standard, and the RDF Data Cube vocabulary is closely aligned with the SDMX information model, the transformation is to a large extent a matter of mapping the source SDMX-ML data to its counter parts in RDF.</p>
+
+                    <h3 id="features-of-the-transformation">Features of the transformation</h3>
+                    <ul>
+                        <li>Transforms SDMX KeyFamilies, ConceptSchemes and Concepts, CodeLists and Codes, Hierarchical CodeLists, DataSets.</li>
+                        <li>Configurability for SDMX publisher's needs.</li>
+                        <li>Detection and referencing CodeLists and Codes of external agencies.</li>
+                        <li>Support of interlinking publisher-specific annotation types.</li>
+                        <li>Support for omission of components.</li>
+                        <li>Inclusion of provenance data.</li>
+                    </ul>
+
+                    <div class="figure" id="linked-sdmx-transformation-process">
+                        <p><strong>Figure </strong>: Transformation Process</p>
+                        <img type="image/svg+xml" src="linked-sdmx-transformation.svg" width="100%" height="auto"/>
+                    </div>
+
+                    <h3 id="what-is-inside">What is inside?</h3>
+
+                    <p>It comes with scripts and sample data:</p>
+
+                    <ul>
+                        <li>XSLT 2.0 templates to transform Generic SDMX-ML data and metadata. It includes the main XSL template for generic SDMX-ML, an XSL for common templates and functions, and an RDF/XML configuration file to set preferences like base URIs, delimiters in URIs, how to map annotation types.</li>
+                        <li>Bash script that transforms sample data using saxonb-xslt.</li>
+                        <li>Sample SDMX Message and Structure retrieved from those organizations that are initially involved in the SDMX standard, as well as from BFS.</li>
+                    </ul>
+
+
+                    <h3 id="requirements">Requirements</h3>
+                    <p>The requirements for the Linked SDMX toolkit are an XSLT 2.0 processor to transform, and optionally to configure some of the settings in the transformation with provided <code>config.ttl</code> (in RDF Turtle) and transforming that to an abbreviated version of RDF/XML. In sequel some of they key features are described in more detail.</p>
+
+                    <p>The transformation follows some common Linked Data practices as well as other ones out of thin air.</p>
+
+
+                    <h3 id="configuration">Configuration</h3>
+                    <p>The config file is used to pre-configure some of the decisions that are made in XSL templates. Here is an outline for some of the noteworthy things.</p>
+
+                    <h4 id="agency-identifiers-and-uris">Agency identifiers and URIs</h4>
+                    <p><code>agencies.ttl</code> is used to track some of the mappings for maintenance agencies. It includes the maintenance agency's i.e., the SDMX publisher's, identifier that's in the SDMX Registry, as well as the base URI for that agency. This file allows references to external agency identifiers to be looked up for their base URI and used in the transformations. Currently this agency recognition is treated as either "SDMX" or some agency that's publishing the actual statistics.</p>
+
+                    <p>In the case of SDMX, when there is a reference to SDMX CodeLists and Codes, it is typically indicated by the component agency being set to <code>SDMX</code> e.g., <code>codelistAgency="SDMX"</code> of a <code>structure:Component</code> and/or <code>agencyID="SDMX"</code> of a CodeList with <code>id="CL_FREQ"</code>. When this is detected, corresponding URIs from the SDMX-RDF vocabulary is used e.g., for metadata; <code>http://purl.org/linked-data/sdmx/2009/code#freq</code>, and data; <code>http://purl.org/linked-data/sdmx/2009/code#freq-A</code>.</p>
+
+                    <p>Similarly, an agency might use some other agency's codes. By following the same URI pattern conventions, the agency file is used to find the corresponding base URI in order to make a reference. For example, here is a coded property that's used by European Central Bank (<code>ECB</code>) to associate a code list that's defined by Eurostat (<code>eurostat</code>):</p>
+
+                    <pre>
+&lt;http://ecb.270a.info/property/OBS_STATUS&gt;
+ &lt;http://purl.org/linked-data/cube#codeList&gt;
+  &lt;http://eurostat.270a.info/code/1.0/CL_OBS_STATUS&gt;
+                    </pre>
+
+                    <p>Naturally, the transformation does not re-define metadata that's from an external agency as the owners of the data would define them under their authority.</p>
+
+                    <h4 id="uri-configurations">URI configurations</h4>
+                    <p>Base URIs can be set for classes, codelists, concept schemes, datasets, slices, properties, provenance, as well as for the source SDMX data.</p>
+
+                    <p>The value for <code>uriThingSeparator</code> e.g., <code>/</code>, lets one set the delimiter to separate the "thing" from the rest of the URI. This is typically either a <code>/</code> or <code>#</code>. For example, if slash is used, an URI would end up like <code>http://{authority}/code/{version}/CL_GEO</code> (note the last slash before CL_GEO). If hash is used, an URI would end up like <code>http://{authority}/code/{version}#CL_GEO</code>.</p>
+
+                    <p>Similarly, <code>uriDimensionSeparator</code> can be set to separate dimension values that's used in RDF Data Cube observation URIs. As observation should have its own unique URI, the method to construct URIs is done by taking dimension values as safe terms to be used in URIs separated by the value in <code>uriDimensionSeparator</code>. For example, here is a crazy looking observation URI where <code>uriDimensionSeparator</code> is set to <code>/</code>: <code>http://{authority}/dataset/HEALTH_STAT/EVIEFE00/EVIDUREV/AUS/1960</code>. But with <code>uriThingSeparator</code> set to <code>#</code> and <code>uriDimensionSeparator</code> set to <code>-</code>, it could end up like <code>http://{authority}/dataset/HEALTH_STAT#EVIEFE00-EVIDUREV-AUS-1960</code>. <code>HEALTH_STAT</code> is the dataset id.</p>
+
+                    <p>Creator's URI can also be set which is also used for provenance data.</p>
+
+                    <h4 id="default-language">Default language</h4>
+                    <p>From the configuration, it is possible to force a default <code>xml:lang</code> on <code>skos:prefLabel</code> and <code>skos:definition</code> when lang is not originally in the data. If <code>config.rdf</code>contains a non-empty lang value it will use it. Default language may also be applied in the case of Annotations. See Interlinking SDMX Annotations for example.</p>
+
+                    <h4 id="interlinking-sdmx-annotations">Interlinking SDMX Annotations</h4>
+                    <p>SDMX Annotations contain important information that can be put to use by the publisher. Data in AnnotationTypes are typically used as publisher's internal conventions. Hence, there is no standardization on how they are used across all SDMX publishers. In order not to leave this information behind in the final transformation, the configuration allows publishers to define the way they should be transformed. This is done by setting <code>interlinkAnnotationTypes</code>: the AnnotationType to detect (in <code>rdfs:type</code>), the predicate (as an XML QName) to use (in <code>rdf:predicate</code>), whether to apply instances of Concepts or Codes to apply to, or as Literals (in <code>rdf:range</code>), and whether to target AnnotationText or AnnotationTitle (in <code>rdfs:label</code>). Currently this feature is only applied to Annotations in Concepts and Codes. Only the AnnotationTypes with a corresponding configuration will be applied, and unspecific ones will be skipped.</p>
+
+                    <h4 id="omitting-components">Omitting components</h4>
+                    <p>There are cases in which certain data parts contain errors. To get around this until the data is fixed at source, and without giving up on rest of the data at hand, as well as without making any significant assumptions or changes to the remaining data, <code>omitComponents</code> is a configuration option to explicitly skip over those parts. For example, if the Attribute values in a DataSet don't correspond to coded values - where they may contain whitespace - they can be skipped without damaging the rest of the data. This obviously gives up on precision in favour of still making use of the data.</p>
+
+
+                    <h2 id="linked-datasets">Linked Datasets</h2>
+                    <p>This section provides information on the publication of OECD, BFS, FAO, and ECB datasets.</p>
+
+                    <p>The original SDMX-ML files were transformed to RDF/XML using XSLT 2.0. Saxon’s command-line XSLT and XQuery Processor tool was used for the transformations, and employed as part of Bash scripts to iterate through all the files in the datasets.</p>
+
+                    <h3 id="rdf-datasets">RDF Datasets</h3>
+                    <p>Here are some statistics for the transformations.</p>
+
+                    <p>The command-line tool <code>saxonb-xslt</code> was used to conduct the XSL transformations. 12000M of memory was allocated on a machine with Intel(R) Xeon(R) CPU E5620 @ 2.40GHz. Linux kernel 3.2.0-33-generic was used. Table [<a href="#transformation-time">Transformation time</a>] provides information on datasets; input SDMX-ML size, output RDF/XML size, their size difference in ratio, and the total amount transformation time.</p>
+
+                    <table id="transformation-time">
+                        <caption>Transformation time</caption>
+                        <thead>
+                            <tr><th>Dataset</th><th>Input size</th><th>Output size</th><th>Ratio</th><th>Time</th></tr>
+                        </thead>
+                        <tfoot><tr><td colspan="5">Input size (rounded) refers to the original data in XML, and the output (rounded) is the RDF/XML size. Time is the real process time.</td></tr></tfoot>
+                        <tbody>
+                            <tr><td>OECD</td><td>3430 MB</td><td>23000 MB</td><td>1:6.7</td><td>131m25.795s</td></tr>
+                            <tr><td>BFS</td><td>87 MB</td><td>139 MB</td><td>1:1.6</td><td>2m38.225s</td></tr>
+                            <tr><td>FAO</td><td>902 MB</td><td>5000 MB</td><td>1:5.5</td><td>31m48.207s</td></tr>
+                            <tr><td>ECB</td><td>5670 MB</td><td>24000 MB</td><td>1:4.2</td><td>181m3.313s</td></tr>
+                        </tbody>
+                    </table>
+
+                    <p>Table [<a href="#transformed-data">Transformed data</a>] provides data on the transformed data; number of triples it contains, as well as the number of <code>qb:Observation</code>s, and the ratio.</p>
+
+                    <table id="transformed-data">
+                        <caption>Transformed data</caption>
+                        <thead><tr><th>Data</th><th>Number of triples</th><th>Number of observations</th><th>Ratio</th></tr></thead>
+                        <tfoot><tr><td colspan="4">Metadata (from <code>graph/meta</code>) includes dataset structures and classifications. Ratio refers to rounded ratio of total number of triples (rounded) to number of observations (rounded) in the dataset.</td></tr></tfoot>
+                        <tbody>
+                            <tr><th>OECD Dataset</th><td>225 million</td><td>24 million</td><td>9.4:1</td></tr>
+                            <tr><th>OECD Metadata</th><td>0.77 million</td><td>N/A</td><td>N/A</td></tr>
+                            <tr><th>BFS Metadata</th><td>1 million</td><td>N/A</td><td>N/A</td></tr>
+                            <tr><th>FAO Dataset</th><td>53 million</td><td>7.2 million</td><td>7.4:1</td></tr>
+                            <tr><th>FAO Metadata</th><td>0.36 million</td><td>N/A</td><td>N/A</td></tr>
+                            <tr><th>ECB Dataset</th><td>241 million</td><td>12.5 million</td><td>19.3:1</td></tr>
+                            <tr><th>ECB Metadata</th><td>0.45 million</td><td>N/A</td><td>N/A</td></tr>
+                        </tbody>
+                    </table>
+
+                    <p>Table [<a href="#resource-counts">Resource counts</a>] provides further statistics on prominent resources. It gives a contrast between the classifications and the dataset.</p>
+
+                    <table id="resource-counts">
+                        <caption>Resource counts</caption>
+                        <thead><tr><th>Resource</th><th>OECD</th><th>BFS</th><th>FAO</th><th>ECB</th></tr></thead>
+                        <tfoot><tr><td colspan="5">Count of resources in datasets</td></tr></tfoot>
+                        <tbody>
+                            <tr><td>skos:ConceptScheme</td><td>1212</td><td>185</td><td>32</td><td>149</td></tr>
+                            <tr><td>skos:Concept</td><td>43368</td><td>106233</td><td>28115</td><td>54389</td></tr>
+                            <tr><td>rdf:Property</td><td>126</td><td>0</td><td>12</td><td>209</td></tr>
+                            <tr><td>qb:Observation</td><td>24381106</td><td>0</td><td>7186764</td><td>12513494</td></tr>
+                        </tbody>
+                    </table>
+
+                    <h3 id="interlinking">Interlinking</h3>
+                    <p>Initial interlinking is done among the classifications themselves in the datasets. The OECD classifications in particular contained highly similar codes (in some cases the same) throughout its codelists. Hence, majority of the codes within the codelist <code>CL_*_LOCATION</code> was interlinked with one another using <code>skos:exactMatch</code>.</p>
+
+                    <p>The consequent interlinking was done with <a href="http://dbpedia.org/">DBpedia</a>, <a href="http://worldbank.270a.info/">World Bank Linked Data</a>, <a href="http://transparency.270a.info/">Transparency International Linked Data</a>, and <a href="http://eunis.eea.europa.eu/">EUNIS</a> using <a href="http://aksw.org/Projects/limes">LInk discovery framework for MEtric Spaces</a> (LIMES): <a href="http://www.dit.unitn.it/~p2p/OM-2011/om2011_Tpaper1.pdf"><cite>A Time-Efficient Hybrid Approach to Link Discovery</cite></a> (Ngonga Ngomo, A.-C., 2011)</p>
+
+                    <table>
+                        <caption>Interlinks between datasets</caption>
+                        <thead><tr><th>Source dataset</th><th>Target dataset</th><th>Entity type</th><th>Link relation</th><th>Link count</th></tr></thead>
+                        <tbody>
+                            <tr><td>OECD</td><td>World Bank</td><td><code>dbo:Country</code>, <code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>3487</td></tr>
+                            <tr><td>OECD</td><td>Transparency International</td><td><code>dbo:Country</code>, <code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>3335</td></tr>
+                            <tr><td>OECD</td><td>DBpedia</td><td><code>dbo:Country</code>, <code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>3391</td></tr>
+                            <tr><td>OECD</td><td>BFS</td><td><code>skos:Concept</code>, <code>code:CL_STATES_AND_TERRITORIES</code>, <code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>3383</td></tr>
+                            <tr><td>BFS</td><td>World Bank</td><td><code>dbo:Country</code>, <code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>185</td></tr>
+                            <tr><td>BFS</td><td>DBpedia</td><td><code>dbo:Country</code>, <code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>261</td></tr>
+                            <tr><td>FAO</td><td>DBpedia</td><td><code>dbo:Species</code>, <code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>673</td></tr>
+                            <tr><td>FAO</td><td>EUNIS</td><td><code>e:sameSynonymFIFAO</code>, <code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>359</td></tr>
+                            <tr><td>ECB</td><td>World Bank</td><td><code>dbo:Country</code>, <code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>188</td></tr>
+                            <tr><td>ECB</td><td>Transparency International</td><td><code>dbo:Country</code>, <code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>167</td></tr>
+                            <tr><td>ECB</td><td>DBpedia</td><td><code>dbo:Country</code>, <code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>239</td></tr>
+                            <tr><td>ECB</td><td>BFS</td><td><code>skos:Concept</code>, <code>code:CL_STATES_AND_TERRITORIES</code></td><td><code>skos:exactMatch</code></td><td>221</td></tr>
+                        </tbody>
+                    </table>
+
+
+                    <p>Figure [<a href="#linked-sdmx-concept-links">SDMX concept links</a>] gives an overview of the complete connectivity of a concept that's linked internally, externally, and with sdmx-codes where applicable, as well as the interlinking that was done to an external concept.</p>
+
+                    <div class="figure" id="linked-sdmx-concept-links">
+                        <p><strong>Figure </strong>: SDMX Concept links</p>
+                        <img type="image/svg+xml" src="linked-sdmx-concept-links.svg" width="100%" height="auto"/>
+                    </div>
+
+                    <h3 id="rdf-data-storage">RDF Data Storage</h3>
+                    <p><a href="http://jena.apache.org/">Apache Jena</a>&#8217;s <a href="http://incubator.apache.org/jena/documentation/tdb/">TDB</a> storage system is used to load the RDFized data using TDB&#8217;s incremental <code>tdbloader</code> utility. <code>tdbstats</code>, the tool for <a href="http://jena.apache.org/documentation/tdb/optimizer.html">TDB Optimizer</a> is executed after a complete load to internally update the count of resources in order for TDB to make the best decision to come up with future query results.</p>
+
+                    <p>Individual datasets from each organization were transformed to N-Triples format before loading into the store. Each RDF Data Cube dataset was imported into its own <code>NAMED GRAPH</code> in the store. Given the significant load speed on an empty database, N-Triples were ordered from largest to smallest, and then loaded.</p>
+
+
+                    <h2 id="publication">Publication</h2>
+                    <p>The publication steps are described in this section.</p>
+
+                    <h3>Dataset Discovery and Statistics</h3>
+                    <p>As VoID file is generally intended to give an overview of the dataset metadata i.e., what it contains, ways to access it or query it, each dataspace contains <a href="http://www.w3.org/TR/void/">Vocabulary of Interlinked Datasets</a> (<dfn><abbr title="Vocabulary of Interlinked Datasets">VoID</abbr></dfn>) files accessible through their <code>.well-known/void</code>. Each <a href="http://oecd.270a.info/.well-known/void">OECD</a>, <a href="http://bfs.270a.info/.well-known/void">BFS</a>, <a href="http://fao.270a.info/.well-known/void">FAO</a>, and <a href="http://ecb.270a.info/.well-known/void">ECB</a> VoID contains locations to RDF datadumps, named graphs that are used in the SPARQL endpoint, used vocabularies, size of the datasets, interlinks to external datasets, as well as the provenance data which was gathered through the retrieval and transformation process. The VoID files were generated automatically by first importing the LODStats information into respective <code>graph/void</code> into the store, and then a SPARQL <code>CONSTRUCT</code> query to include all triples as well as additional ones which could be actively created based on the available information in all graphs.</p>
+
+                    <p>Dataset statistics are generated and are included in the VoID file using LODStats, <a href="http://svn.aksw.org/papers/2011/RDFStats/public.pdf"><cite>LODStats &#8211; An Extensible Framework for High-performance Dataset Analytics</cite></a> (Demter, J., 2012).</p>
+
+
+                    <h3 id="user-interface">User-interface</h3>
+                    <p>The HTML pages are generated by the <a href="https://github.com/csarven/linked-data-pages">Linked Data Pages</a> framework, where <a href="http://code.google.com/p/moriarty/">Moriarty</a>, <a href="http://code.google.com/p/paget/">Paget</a>, and <a href="https://github.com/semsol/arc2">ARC2</a> does the heavy lifting for it. Given the lessons learned over the years about Linked Data publishing, there is a consideration to either take Linked Data Pages further (originally written in 2010), or to adapt one of the existing frameworks after careful analysis.</p>
+
+                    <h3 id="sparql-endpoint">SPARQL Endpoint</h3>
+                    <p>Apache Jena <a href="http://incubator.apache.org/jena/documentation/serving_data/index.html">Fuseki</a> is used to run the SPARQL server for the three datasets. SPARQL Endpoints are publicly accessible and read only at their respective <code>/sparql</code> and <code>/query</code> locations for <a href="http://oecd.270a.info/sparql">OECD</a>, <a href="http://bfs.270a.info/sparql">BFS</a>, <a href="http://fao.270a.info/sparql">FAO</a> and <a href="http://ecb.270a.info/sparql">ECB</a>. Currently, 12000MB of memory is allocated for the single Fuseki server running all datasets.</p>
+
+                    <h3 id="data-dumps">Data Dumps</h3>
+                    <p>The data dumps for the datasets are available from their respective <code>/data/</code> directories: <a href="http://oecd.270a.info/data/">OECD</a>, <a href="http://bfs.270a.info/data/">BFS</a>, <a href="http://fao.270a.info/data/">FAO</a>, and <a href="http://ecb.270a.info/data/">ECB</a>. Additionally, they are mentioned in the VoID files. The <a href="http://datahub.io/">the Data Hub</a> entries (<a href="#dataset-announcement">see below</a>) also contains links to the dumps.</p>
+
+                    <h3 id="source-code">Source Code</h3>
+                    <p>The code for transformations is at <a href="https://github.com/csarven/linked-sdmx">csarven/linked-sdmx</a>, and for retrieval and data loading to RDF store for OECD is at <a href="https://github.com/csarven/oecd-linked-data">csarven/oecd-linked-data</a>, for BFS is at <a href="https://github.com/csarven/bfs-linked-data">csarven/bfs-linked-data</a>, for FAO is at <a href="https://github.com/csarven/fao-linked-data">csarven/fao-linked-data</a>, and for ECB is at <a href="https://github.com/csarven/ecb-linked-data">csarven/ecb-linked-data</a>. All using the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a>.</p>
+
+                    <h3 id="data-license">Data License</h3>
+                    <p>All published Linked Data adheres to original data publisher’s data license and terms of use. Additionally attributions are given on the websites. The <em>Linked Data</em> version of the data is licensed under <a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0 Universal (CC0 1.0) Public Domain Dedication</a>.</p>
+
+                    <h3 id="dataset-announcement">Announcing the Datasets</h3>
+                    <p>For other ways for these datasets to be discovered, they are announced at mailing lists, status update services, and at the Data Hub: OECD is at <a href="http://datahub.io/dataset/oecd-linked-data">data/oecd-linked-data</a>, BFS is at <a href="http://datahub.io/dataset/bfs-linked-data">dataset/bfs-linked-data</a>, FAO is at <a href="http://datahub.io/dataset/fao-linked-data">dataset/fao-linked-data</a>, ECB is at <a href="http://datahub.io/dataset/ecb-linked-data">dataset/ecb-linked-data</a>.</p>
+
+
+
+                    <h2 id="conclusions">Conclusions</h2>
+                    <p>With this work we provided an automated approach for transforming statistical SDMX-ML data to Linked Data in a single step. As a result, this effort helps to publish and consume large amounts of quality statistical Linked Data. Its goal is to shift focus from mundane development efforts to automating the generation of quality statistical data. Moreover, it facilitates to provide RDF serializations alongside the existing formats used by high profile statistical data owners. Our approach to employ XSLT transformations does not require changes to well established workflows at the statistical agencies.</p>
+
+                    <p>One aspect of future work is to improve the SDMX-ML to RDF transformation quality and quantity. Regarding quality, we aim to test our transformation with further datasets to identify shortcomings and special cases being currently not yet covered by the implementation. Also, we plan the development of a coherent approach for (semi-)automatically interlinking different statistical dataspaces, which establishes links on all possible levels (e.g. classifications, observations). With regard to quantity, we plan to publish statistical dataspaces for Bank for International Settlements (BIS), International Monetary Fund (IMF), World Bank and Eurostat based on SDMX-ML data.</p>
+
+                    <p>The current transformation is mostly based on the generic SDMX format. Since some of the publishers make their data available in compact SDMX format, the transformation toolkit has to be extended. Alternatively, the compact format can be transformed to the generic format first (for which tools exist) and then Linked SDMX transformations can be applied. Ultimately, we hope that Linked Data publishing will become a direct part of the original data owners workflows and data publishing efforts. Therefore, further collaboration on this will expedite the provision of uniform access to statistical Linked Data.</p>
+
+
+
+                    <h2 id="acknowledgements">Acknowledgements</h2>
+                    <p>We thank <a href="http://richard.cyganiak.de/">Richard Cyganiak</a> for his ongoing support, as well as graciously offering to host the dataspaces on a server at <a href="http://deri.ie/">Digital Enterprise Research Institute</a>. We also acknowledge the support of <a href="http://bfh.ch/">Bern University of Applied Sciences</a> for partially funding the transformation effort for the pilot Swiss Statistics Linked Data project and thank <a href="http://www.bfs.admin.ch/">Swiss Federal Statistical Office</a> for the excellent collaboration from the very beginning.</p>
+                </div>
+	        </div>
+        </div>
+    </body>
+</html>

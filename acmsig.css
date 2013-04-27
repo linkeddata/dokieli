@@ -1,0 +1,339 @@
+/** ACM SIG
+ *
+ * @author    Sarven Capadisli <info@csarven.ca>
+ * @license   http://www.apache.org/licenses/LICENSE-2.0.html Apache License, Version 2.0
+ * @link      http://csarven.ca/
+ */
+
+/*
+ACM SIG template styles http://www.acm.org/sigs/publications/sigguide-v2.2sp
+
+XXX: Helvetica has highest priority for ACM SIG template's titles, however, if a system doesn't have Helvetica, printing to a PDF breaks rendering. Even though printing to paper is okay. I've removed it for 'accessibility'.
+*/
+
+@page {
+margin:1.9cm 1.9cm 2.54cm 1.9cm;
+size:18cm 23.5cm;
+}
+
+
+* {
+margin:0;
+padding:0;
+}
+
+.entry-author,
+.datetimestamp,
+.entry-replies,
+#footer,
+#comments {
+display:none;
+}
+
+h2, h3, h4, h5, h6, p, ul, ol, li, pre {
+orphans: 2;
+widows: 1;
+}
+
+body {
+font-size:9pt;
+font-family: "Times New Roman", serif;
+counter-reset: section;
+counter-reset: sub-section;
+margin:0 auto;
+width:18cm;
+}
+
+
+
+/*
+XXX: column-width doesn't seem to get applied in Firefox
+https://bugzilla.mozilla.org/show_bug.cgi?id=684062
+
+*/
+.entry-content {
+-webkit-columns:8.45cm 2;
+-webkit-column-count:2;
+-webkit-column-width:8.45cm;
+-webkit-column-gap:0.83cm;
+-moz-columns:8.45cm 2;
+-moz-column-count:2;
+-moz-column-width:8.45cm;
+-moz-column-gap:0.83cm;
+columns:8.45cm 2;
+column-count:2;
+column-width:8.45cm;
+column-gap:0.83cm;
+}
+
+p, ol, ul, table, figure {
+margin-bottom:1em;
+}
+
+h1 {
+margin-bottom:1em;
+font-family:Arial, sans-serif;
+font-size:18pt;
+font-weight:bold;
+text-align:center;
+}
+.entry-subtitle {
+font-size:16pt;
+text-align:center;
+}
+h2 {
+margin-top:1.5em;
+}
+h2:first-child {
+margin-top:0;
+}
+
+h3, h4, h5, h6 {
+margin-top:1em;
+}
+
+h2:nth-of-type(n+2) {
+counter-increment: section;
+counter-reset: sub-section;
+}
+h2:nth-of-type(n+2):before {
+content: counter(section) ". ";
+}
+h3 {
+counter-increment: sub-section;
+counter-reset: sub-sub-section;
+}
+h3:before {
+content: counter(section)"." counter(sub-section) " ";
+}
+h4 {
+counter-increment: sub-sub-section;
+}
+h4:before {
+content: counter(section)"." counter(sub-section) "." counter(sub-sub-section) " ";
+}
+h2 {
+font-family:"Times New Roman", serif;
+font-size:12pt;
+text-transform:uppercase;
+}
+h3 {
+font-family:"Times New Roman", serif;
+font-size:12pt;
+text-transform:capitalize;
+}
+h4 {
+font-family:"Times New Roman", serif;
+font-size:11pt;
+font-style:italic;
+text-transform:capitalize;
+}
+
+li {
+list-style-position:inside;
+margin-bottom:0.25em;
+}
+
+a {
+text-decoration:none;
+color:#000;
+}
+
+code {
+font-size:90%;
+font-family:"Courier New", monospace;
+word-wrap: break-word;
+}
+
+dd {
+margin:0.5em 0 1em 1em;
+}
+
+#authors {
+font-family:Arial, sans-serif;
+text-align:center;
+margin-bottom:3em;
+}
+
+.column-count-2 {
+-webkit-column-count:2;
+-webkit-column-width:40%;
+-webkit-column-gap:5%;
+-moz-column-count:2;
+-moz-column-width:40%;
+-moz-column-gap:5%;
+column-count:2;
+column-column-width:40%;
+column-gap:5%;
+}
+
+#authors {
+-webkit-column-count:3;
+-webkit-column-width:30%;
+-webkit-column-gap:3%;
+-moz-column-count:3;
+-moz-column-width:30%;
+-moz-column-gap:3%;
+column-count:3;
+column-column-width:30%;
+column-gap:3%;
+}
+
+
+#authors li,
+#categories-and-subject-descriptors li,
+#keywords li {
+list-style-type:none;
+}
+
+#authors li {
+margin-bottom:1em;
+}
+
+#authors .entry-author {
+display:block;
+}
+
+#authors p {
+margin-bottom:0.1em;
+}
+
+#authors .author_name,
+#authors .author_email {
+font-size:12pt;
+}
+
+#authors .author_org {
+font-size:10pt;
+}
+/*
+#authors .author_email {
+font-family:Helvetica, Arial, sans-serif;
+}
+*/
+#categories-and-subject-descriptors li,
+#keywords li {
+display:inline;
+}
+#categories-and-subject-descriptors li:after {
+content:"; ";
+}
+#keywords li:after {
+content:", ";
+}
+#categories-and-subject-descriptors li:last-child:after,
+#keywords li:last-child:after {
+content:"";
+}
+
+#categories-and-subject-descriptors h2,
+#keywords h2,
+#document-identifier h2 {
+text-transform:capitalize;
+}
+
+
+.entry-content p,
+.entry-content li {
+text-align:justify;
+}
+
+
+/*Bring these back to life*/
+.journal #document-submitted,
+.journal #document-identifier,
+.journal #document-license {
+display:none;
+}
+
+.journal table {
+border-collapse:collapse;
+
+/*-webkit-column-break-inside:avoid;*/
+/*-moz-column-break-inside:avoid;*/
+/*-o-column-break-inside:avoid;*/
+/*-ms-column-break-inside:avoid;*/
+/*column-break-inside:avoid;*/
+
+/*-webkit-column-break-before:avoid;*/
+/*-moz-column-break-before:avoid;*/
+/*-o-column-break-before:avoid;*/
+/*-ms-column-break-before:avoid;*/
+/*column-break-before:avoid;*/
+
+/*-webkit-column-break-after:avoid;*/
+/*-moz-column-break-after:avoid;*/
+/*-o-column-break-after:avoid;*/
+/*-ms-column-break-after:avoid;*/
+/*column-break-after:avoid;*/
+
+/*-webkit-break-inside:avoid-column;*/
+/*-moz-break-inside:avoid-column;*/
+/*-o-break-inside:avoid-column;*/
+/*-ms-break-inside:avoid-column;*/
+/*break-inside:avoid-column;*/
+
+/*-webkit-break-inside:avoid;*/
+/*-moz-break-inside:avoid;*/
+/*-o-break-inside:avoid;*/
+/*-ms-break-inside:avoid;*/
+/*break-inside:avoid;*/
+
+/*-webkit-column-break-before: always;*/
+/*-moz-column-break-before: always;*/
+/*-o-column-break-before: always;*/
+/*column-break-before: always;*/
+
+/*-webkit-column-break-before: column;*/
+/*-moz-column-break-before: column;*/
+/*-o-column-break-before: column;*/
+/*column-break-before: column;*/
+/*break-after: column;*/
+
+/*column-span: all;*/
+
+/*display: table;*/
+/*float: left;*/
+/*overflow: auto;*/
+/*display: inline-block;*/
+/*width:100%;*/
+}
+.journal table,
+.journal th,
+.journal td {
+border: 1px solid;
+}
+.journal table thead td:first-child,
+.journal table tfoot td:first-child {
+border:0;
+}
+.journal th,
+.journal td {
+padding:0.5em;
+}
+.journal caption {
+padding:0.25em 0;
+}
+
+.journal tbody th {
+text-align:left;
+}
+.main figcaption {
+margin-bottom:1em;
+}
+
+
+#references + ol {
+font-family:"Times New Roman", serif;
+font-size:9pt;
+}
+#references + ol {
+counter-reset: list-order;
+}
+#references + ol li { 
+counter-increment: list-order;
+list-style-type: none;
+}
+#references + ol li:before {
+content: "[" counter(list-order) "] ";
+}
