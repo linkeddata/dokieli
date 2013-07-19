@@ -22,7 +22,7 @@ img { max-width: 100% !important; }
 
 @page {
 margin:47mm 0;
-margin:40mm 0;
+/*margin:40mm 0;*/
 }
 
 a {
@@ -55,8 +55,8 @@ line-height:1.2;
 position:relative;
 margin:0 auto;
 width:122mm;
-width:149mm;
 height:193mm;
+
 }
 
 p {
@@ -70,7 +70,7 @@ page-break-after: avoid;
 }
 h1 {
 font-size:19px;
-margin-bottom:0.5em;
+margin-bottom:1.5em;
 text-align:center;
 }
 h2 { font-size:16px; }
@@ -155,7 +155,10 @@ font-style:italic;
 display:inline;
 }
 
-
+pre {
+margin:1em 0;
+font-size:0.9em;
+}
 
 code {
 font-size:12px;
@@ -164,15 +167,15 @@ font-family:monospace;
 
 
 #authors {
--webkit-column-count:3;
--webkit-column-width:30%;
--webkit-column-gap:3%;
--moz-column-count:3;
--moz-column-width:30%;
--moz-column-gap:3%;
-column-count:3;
-column-column-width:30%;
-column-gap:3%;
+/*-webkit-column-count:3;*/
+/*-webkit-column-width:30%;*/
+/*-webkit-column-gap:3%;*/
+/*-moz-column-count:3;*/
+/*-moz-column-width:30%;*/
+/*-moz-column-gap:3%;*/
+/*column-count:3;*/
+/*column-column-width:30%;*/
+/*column-gap:3%;*/
 }
 
 
@@ -191,12 +194,20 @@ line-height:1;
 font-size:12px;
 }
 
+#author_emails {
+font-family:monospace;
+font-size:11px;
+}
 
 
 #authors dl,
 #authors ul {
-margin-bottom:1em;
+margin:0;
 text-align:center;
+}
+
+#authors dl {
+margin-bottom:1em;
 }
 
 #authors dd,
@@ -249,6 +260,10 @@ display:inline;
 }
 
 
+#document-purpose {
+display:none;
+}
+
 table {
 width:100%;
 }
@@ -263,7 +278,16 @@ ol, ul, dd, table, figure {
 margin-bottom:1em;
 }
 
-ol, ul, p, dd {
+.figure {
+margin-top:1em;
+margin-bottom:1em;
+}
+
+.figure p {
+text-indent:0;
+}
+
+#abstract, ol, ul, p, dd {
 text-align:justify;
 }
 
@@ -384,7 +408,7 @@ display:none;
 
 /*Bring these back to life*/
 .journal #document-submitted,
-.journal #document-identifier,
+/*.journal #document-identifier,*/
 .journal #document-license {
 display:none;
 }
