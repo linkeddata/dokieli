@@ -81,7 +81,7 @@ h6 { font-size:13px; }
 
 h2 {
 margin-top:1.25em;
-margin-bottom:0.5em;
+margin-bottom:0.75em;
 counter-increment: section;
 counter-reset: sub-section;
 }
@@ -157,11 +157,11 @@ display:inline;
 
 pre {
 margin:1em 0;
-font-size:0.9em;
+font-size:0.875em;
 }
 
 code {
-font-size:12px;
+font-size:11px;
 font-family:monospace;
 }
 
@@ -383,6 +383,10 @@ content:"";
 #keywords h2,
 #document-identifier h2 {
 text-transform:capitalize;
+}
+
+#keywords {
+margin-bottom:2.5em;
 }
 
 
