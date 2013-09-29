@@ -234,7 +234,10 @@ content:"";
 #categories-and-subject-descriptors h2:before,
 #keywords h2:before,
 #acknowledgements h2:before,
-#references h2:before {
+#references h2:before,
+#appendix h2:before,
+#appendix h3:before,
+#appendix h4:before {
 content: "";
 }
 

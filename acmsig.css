@@ -337,3 +337,12 @@ list-style-type: none;
 #references + ol li:before {
 content: "[" counter(list-order) "] ";
 }
+
+#comments,
+.entry-author,
+.datetimestamp,
+.entry-replies,
+#footer,
+.article_labels * {
+display:none;
+}
