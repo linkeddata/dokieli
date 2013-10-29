@@ -17,8 +17,8 @@ widows: 3;
 }
 
 thead { display: table-header-group; }
-tr, img { page-break-inside: avoid; }
-img { max-width: 100% !important; }
+tr, img, object { page-break-inside: avoid; }
+img, object { max-width:100% !important; height:auto !important;}
 
 @page {
 margin:47mm 0;
