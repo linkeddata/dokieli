@@ -217,7 +217,7 @@ margin-bottom:1em;
 
 #authors dd,
 #authors li {
-display:inline;
+display:inline !important;
 margin-bottom:0;
 }
 
