@@ -293,6 +293,22 @@ margin-bottom:1em;
 
 .figure p {
 text-indent:0;
+text-align:left;
+}
+
+.figure-column-2 {
+-webkit-column-count:2;
+-webkit-column-width:47.5%;
+-webkit-column-gap:5%;
+-moz-column-count:2;
+-moz-column-width:47.5%;
+-moz-column-gap:5%;
+column-count:2;
+column-column-width:47.5%;
+column-gap:5%;
+}
+.figure-column-2 .figure {
+margin-top:0;
 }
 
 #abstract, ol, ul, p, dd {
