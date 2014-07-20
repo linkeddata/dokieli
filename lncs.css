@@ -56,7 +56,7 @@ background-color:#FFFFFF;
 color:#000000;
 font-family:"Latin Modern Roman", "Computer Modern", cmr10, "Times New Roman", serif;
 font-size:13px;
-line-height:1.231;
+line-height:1.22;
 position:relative;
 margin:0 auto;
 width:122mm;
@@ -72,7 +72,7 @@ font-size:13px;
 h1,h2,h3,h4,h5,h6 {
 overflow:hidden;
 page-break-after: avoid;
-line-height:1.25;
+line-height:1.231;
 }
 h1 {
 font-size:19px;
@@ -186,9 +186,9 @@ font-family:monospace;
 
 
 #authors {
-margin-bottom:2.5em;
+margin:0 auto 2.5em -1.75%;
 text-align:center;
-width:103%;
+width:103.5%;
 }
 
 #authors dl {
@@ -401,6 +401,8 @@ content:"; ";
 }
 #keywords li:after {
 content:" \2022";
+margin-left:-1px;
+margin-right:-1px;
 }
 #categories-and-subject-descriptors li:last-child:after,
 #keywords li:last-child:after {
