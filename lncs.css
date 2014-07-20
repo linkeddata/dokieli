@@ -314,6 +314,10 @@ text-indent:0;
 text-align:left;
 }
 
+.figure pre {
+margin-top:0;
+}
+
 .figure-column-2 {
 -webkit-column-count:2;
 -webkit-column-width:47.5%;
