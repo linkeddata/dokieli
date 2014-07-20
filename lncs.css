@@ -150,7 +150,7 @@ white-space:pre;
 
 * + h4:before,
 caption:before,
-figure:before,
+.figure:before,
 * + h5:before,
 h4 + h5:before {
 content:"\A";
@@ -241,7 +241,10 @@ margin-left:1px;
 
 
 #abstract h2:before,
-#document-identifier h2:before,
+#document-identifier dt:before,
+#document-purpose dt:before,
+#document-submitted dt:before,
+#document-license dt:before,
 #categories-and-subject-descriptors h2:before,
 #keywords h2:before,
 #acknowledgements h2:before,
@@ -253,7 +256,10 @@ content: "";
 }
 
 #abstract h2:after,
-#document-identifier h2:after,
+#document-identifier dt:after,
+#document-purpose dt:after,
+#document-submitted dt:after,
+#document-license dt:after,
 #categories-and-subject-descriptors h2:after,
 #keywords h2:after {
 content: ":";
@@ -266,8 +272,14 @@ content: ".";
 
 #abstract h2,
 #abstract h2 + p,
-#document-identifier h2,
-#document-identifier h2 + p,
+#document-identifier dt,
+#document-identifier dt + dd,
+#document-purpose dt,
+#document-purpose dt + dd,
+#document-submitted dt,
+#document-submitted dt + dd,
+#document-license dt,
+#document-license dt + dd,
 #keywords h2,
 #keywords h2 + ul {
 display:inline;
@@ -275,7 +287,7 @@ display:inline;
 
 
 #document-purpose {
-display:none;
+/*display:none;*/
 }
 
 table {
@@ -369,6 +381,9 @@ text-align:center;
 
 #abstract,
 #document-identifier,
+#document-purpose,
+#document-submitted,
+#document-license,
 #categories-and-subject-descriptors,
 #keywords {
 margin:0 1cm 1em;
@@ -443,8 +458,9 @@ display:none;
 
 
 /*Bring these back to life*/
-.journal #document-submitted,
 /*.journal #document-identifier,*/
+.journal #document-purpose,
+.journal #document-submitted,
 .journal #document-license {
 display:none;
 }
