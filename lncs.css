@@ -91,7 +91,7 @@ counter-increment: section;
 counter-reset: sub-section;
 }
 h2:before {
-content: counter(section) "\00a0\00a0\00a0\00a0";
+content: counter(section) "\00a0\00a0\00a0\00a0\00a0";
 }
 
 h3 {
@@ -101,7 +101,7 @@ counter-increment: sub-section;
 counter-reset: sub-sub-section;
 }
 h3:before {
-content: counter(section) "." counter(sub-section) "\00a0\00a0\00a0\00a0";
+content: counter(section) "." counter(sub-section) "\00a0\00a0\00a0\00a0\00a0";
 }
 
 h1 + p,
