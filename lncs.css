@@ -315,7 +315,7 @@ text-align:left;
 }
 
 .figure pre {
-margin-top:0;
+margin-top:-1em;
 }
 
 .figure-column-2 {
