@@ -107,7 +107,10 @@ content: counter(section) "." counter(sub-section) "\00a0\00a0\00a0\00a0";
 
 h1 + p,
 h2 + p,
-h3 + p {
+h3 + p,
+h4 + p,
+h5 + p,
+div > p:first-child {
 text-indent:0;
 }
 h1 + p {
@@ -125,7 +128,6 @@ content: ".";
 h4 + p,
 h5 + p {
 display:inline;
-text-indent:0;
 /*text-align:justify;*/
 
 /*This is a bit hacky.. it appears to work in webkit and maybe it shouldn't */
