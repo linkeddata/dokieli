@@ -459,7 +459,7 @@ display:none;
 
 /*Bring these back to life*/
 /*.journal #document-identifier,*/
-.journal #document-purpose,
+/*.journal #document-purpose,*/
 .journal #document-submitted,
 .journal #document-license {
 display:none;
