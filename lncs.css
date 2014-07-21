@@ -11,13 +11,13 @@ a abbr { cursor: pointer; border-bottom:0; }
 table { border-collapse:collapse; }
 tr { vertical-align:top; }
 ol { list-style-position:inside; }
-h2, h3, h4, h5, h6, p, ul, ol, li, pre, code, table {
+h2, h3, h4, h5, h6, p, ul, ol, li, pre, code {
 orphans: 3;
 widows: 3;
 }
 
 thead { display: table-header-group; }
-tr, img, object, .figure { page-break-inside: avoid; }
+table, img, object, .figure { page-break-inside: avoid; }
 img, object { max-width:100% !important; height:auto !important }
 
 object[width="640"] { max-width:480px !important; }
@@ -150,7 +150,6 @@ white-space:pre;
 
 * + h4:before,
 caption:before,
-.figure:before,
 * + h5:before,
 h4 + h5:before {
 content:"\A";
@@ -300,7 +299,7 @@ padding-right:0;
 }
 
 
-ol, ul, dd, table, figure {
+ol, ul, dd, table {
 margin-bottom:1em;
 }
 
@@ -319,18 +318,29 @@ margin-top:-1em;
 }
 
 .figure-column-2 {
--webkit-column-count:2;
--webkit-column-width:47.5%;
--webkit-column-gap:5%;
--moz-column-count:2;
--moz-column-width:47.5%;
--moz-column-gap:5%;
-column-count:2;
-column-column-width:47.5%;
-column-gap:5%;
+/*-webkit-column-count:2;*/
+/*-webkit-column-width:47.5%;*/
+/*-webkit-column-gap:5%;*/
+/*-moz-column-count:2;*/
+/*-moz-column-width:47.5%;*/
+/*-moz-column-gap:5%;*/
+/*column-count:2;*/
+/*column-column-width:47.5%;*/
+/*column-gap:5%;*/
+float:left;
+width:100%;
+}
+.figure-column-2 + *{
+clear:both;
 }
 .figure-column-2 .figure {
 margin-top:0;
+width:47.5%;
+margin-left:5%;
+float:left;
+}
+.figure-column-2 .figure:first-child {
+margin-left:0;
 }
 
 #abstract, ol, ul, p, dd {
