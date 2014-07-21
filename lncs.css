@@ -478,9 +478,8 @@ display:none;
 
 
 /*Bring these back to life*/
-/*.journal #document-identifier,*/
 #document-purpose,
-.journal #document-submitted,
-.journal #document-license {
+#document-submitted,
+#document-license {
 display:none;
 }
