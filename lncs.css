@@ -187,9 +187,9 @@ font-family:monospace;
 
 
 #authors {
-margin:0 auto 2.5em -1.75%;
+margin:0 auto 2.5em -3.05%;
 text-align:center;
-width:103.5%;
+width:106.1%;
 }
 
 #authors dl {
@@ -237,7 +237,13 @@ content:"";
 #authors sup {
 margin-left:1px;
 }
-
+#authors sup:after {
+content:",";
+}
+#authors sup:last-child:after,
+#authors sup:first-child:after {
+content:"" !important;
+}
 
 #abstract h2:before,
 #document-identifier dt:before,
