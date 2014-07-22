@@ -11,7 +11,7 @@ Collaborators are always welcome. This is for us. Lets build it together.
 * http://csarven.ca/sense-of-lsd-analysis
 * http://csarven.ca/linked-statistical-data-analysis
 * http://csarven.ca/linked-sdmx-data
-* http://csarven.ca/statistical-linke-dataspaces
+* http://csarven.ca/statistical-linked-dataspaces
 
 
 ## License
