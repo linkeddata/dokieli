@@ -13,6 +13,11 @@ Collaborators are always welcome. This is for us. Lets build it together.
 * http://csarven.ca/linked-sdmx-data
 * http://csarven.ca/statistical-linked-dataspaces
 
+## Presentation
+
+* Mostly "pretty" in Firefox because its CSS print support seems to be a bit more reliable. Improvements for other browsers are most welcome.
+
+
 
 ## License
 Apache License, Version 2.0
