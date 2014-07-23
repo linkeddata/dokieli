@@ -8,7 +8,7 @@ Collaborators are always welcome. This is for us. Lets build it together.
 
 ## Examples
 
-See the .html files in your browser or the .pdf files provided here. These files are also posted at [http://linked-research.info/](http://linked-research.info/)
+See the .html files in your browser or the .pdf files provided here. These files are also posted at [http://linked-research.270a.info/](http://linked-research.270a.info/)
 
 The examples here are were only posted here:
 
