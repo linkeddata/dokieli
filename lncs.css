@@ -410,7 +410,7 @@ margin:0 1cm 1em;
 }
 
 #abstract h2,
-#document-identifier  h2,
+#document-identifier dt,
 #categories-and-subject-descriptors  h2,
 #keywords h2 {
 font-size:13px;
@@ -448,7 +448,7 @@ content:"";
 
 #categories-and-subject-descriptors h2,
 #keywords h2,
-#document-identifier h2 {
+#document-identifier dt {
 text-transform:capitalize;
 }
 

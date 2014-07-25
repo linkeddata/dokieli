@@ -112,7 +112,8 @@ counter-increment: sub-sub-section;
 h4:before {
 content: counter(section)"." counter(sub-section) "." counter(sub-sub-section) " ";
 }
-h2 {
+h2, #document-identifier dt {
+font-weight:bold;
 font-family:"Times New Roman", serif;
 font-size:12pt;
 text-transform:uppercase;
@@ -227,8 +228,7 @@ content:"";
 }
 
 #categories-and-subject-descriptors h2,
-#keywords h2,
-#document-identifier h2 {
+#keywords h2 {
 text-transform:capitalize;
 }
 
@@ -240,10 +240,15 @@ text-align:justify;
 
 
 /*Bring these back to life*/
-.journal #document-submitted,
-.journal #document-identifier,
-.journal #document-license {
+#document-purpose,
+#document-submitted,
+#document-license {
 display:none;
+}
+
+#document-identifier dd {
+text-align:left;
+margin-left:0;
 }
 
 .journal table {
