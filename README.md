@@ -2,7 +2,7 @@
 
 The purpose of this effort is to make Web friendly formats the first-class approach when it comes to publishing research material.
 
-Contains XHTML+RDFa template and initial stylesheets for LNCS, ACM, and thesis templates. PDFs can be produced by going into the print settings of your Web browser and print the output to file.
+Contains XHTML+RDFa template and initial stylesheets for LNCS, ACM, and thesis. PDFs can be produced by going into the print settings of your Web browser and print the output to file.
 
 Collaborators are always welcome. This is for us. Lets build it together.
 
