@@ -1,0 +1,518 @@
+/** theme:    base
+ *
+ * @author    Sarven Capadisli <info@csarven.ca>
+ * @license   http://creativecommons.org/licenses/by/3.0/ Creative Commons Attribution 3.0 Unported
+ * @link      http://csarven.ca/
+ */
+
+/*
+XXX:The following @page doesn't work in Gecko because of https://bugzilla.mozilla.org/show_bug.cgi?id=115199 and https://bugs.webkit.org/show_bug.cgi?id=35329 . Leaving it here and hoping that it will work one day. See also: http://en.wikipedia.org/wiki/Comparison_of_layout_engines_%28Cascading_Style_Sheets%29#CSS_version_support
+*/
+@page {
+    size:210mm 297mm;
+    margin:4cm;
+
+    @bottom-center {
+        content: counter(page);
+    }
+}
+
+.test {background:red}
+
+* { margin:0; padding:0; background: transparent; filter:none !important; -ms-filter: none !important; }
+img { display:block; border:0; }
+a abbr { cursor: pointer; border-bottom:0; }
+table { border-collapse:collapse; }
+tr { vertical-align:top; }
+ol { list-style-position:inside; }
+h2, h3, h4, h5, h6, p, ul, ol, li, pre, code, table, dt, h3+p, h4+p {
+widows: 5;
+orphans: 3;
+}
+
+thead { display: table-header-group; }
+tr, img { page-break-inside: avoid; }
+img { max-width: 100% !important; }
+
+#abstract,
+#document-identifier,
+h2,
+#acknowledgements + pre,
+#graphpusher-sequence_figure,
+#named-graph-flowchart_figure,
+#data-source,
+#linked-data-pages,
+#linked-data-frontend-architecture_figure,
+#linked-data-pages-architecture_figure,
+#geodatagovie-city-galway_screenshot,
+#architecture_eurostat_figure,
+#data-interlinking_cso-ireland_table,
+#data-enrichment,
+#linked-dataset_eurostat_table,
+#future-work
+/*#data-retrieval_eurostat*/
+/*#architecture_world-bank_figure,*/ {
+page-break-before: always;
+}
+
+#keywords h2,
+#document-license h2,
+h2 + p + h3 {
+page-break-before: avoid;
+}
+
+#references a,
+table code {
+word-wrap:break-word;
+word-break:break-all;
+}
+
+#acknowledgements {
+display:none;
+}
+#acknowledgements + pre {
+margin-top:2em;
+padding:0;
+border:0;
+overflow:hidden;
+font-size:0.9em;
+line-height:1.3;
+}
+
+#comments,
+.entry-author,
+.datetimestamp,
+.entry-replies {
+display:none;
+}
+
+body {
+background-color:#FFFFFF;
+color:#000000;
+font-family:/*"Canella", */serif;
+font-size:16px;
+line-height:1.6;
+counter-reset: section;
+counter-reset: sub-section;
+width:18cm;
+margin:0 auto;
+}
+
+h1,h2,h3,h4,h5,h6 {
+overflow:hidden;
+page-break-after: avoid;
+}
+
+
+a { text-decoration:none; color:#000; }
+
+
+.journal {
+
+}
+
+/*
+#table-of-contents + ol {
+position:fixed;
+top:1em;
+right:1em;
+}
+*/
+
+.toc a:after {
+content: attr(title);
+float:right;
+}
+
+.toc > li:first-child > a:after {
+content: "Page " attr(title);
+float:right;
+}
+
+.todo {
+border:1px solid red;
+}
+.todo:after {
+content:"\ATODO: " attr(title);
+font-weight:normal;
+color:green;
+white-space:pre;
+word-wrap:break-word;
+word-break:break-all;
+}
+
+
+/*
+XXX: column-width doesn't seem to get applied in Firefox
+https://bugzilla.mozilla.org/show_bug.cgi?id=684062
+
+*/
+/*
+#content .entry-content {
+-webkit-columns:8.45cm 2;
+-webkit-column-count:2;
+-webkit-column-width:8.45cm;
+-webkit-column-gap:0.83cm;
+-moz-columns:8.45cm 2;
+-moz-column-count:2;
+-moz-column-width:8.45cm;
+-moz-column-gap:0.83cm;
+columns:8.45cm 2;
+column-count:2;
+column-width:8.45cm;
+column-gap:0.83cm;
+}
+*/
+
+p, ol, ul {
+margin-bottom:1em;
+}
+table, .figure {
+margin-bottom:2em;
+}
+
+
+/*h1, h2, h3, h4, h5, h6, strong, th, dt {*/
+/*font-family:CanellaBold, serif;*/
+/*}*/
+/*i, cite, em, var, address, dfn {*/
+/*font-family:CanellaItalic, serif;*/
+/*}*/
+
+
+h1 {
+margin-bottom:1em;
+font-size:2.6em;
+text-align:center;
+}
+h2 { font-size:2em; }
+h3 { font-size:1.6em; }
+h4 { font-size:1.4em; }
+h5 { font-size:1.3em; }
+h6 { font-size:1.2em; }
+
+h2, h3, h4, h5 {
+margin-top:1.7em;
+margin-bottom:1.25em;
+}
+
+
+h2:nth-of-type(n+5) {
+counter-increment: section;
+counter-reset: sub-section;
+}
+h2:nth-of-type(n+5):before {
+content: "Chapter " counter(section) ":\A\00a0";
+font-size:1.3em;
+}
+
+h3 {
+counter-increment: sub-section;
+counter-reset: sub-sub-section;
+}
+h3:before {
+content: counter(section)"." counter(sub-section) " ";
+}
+h4 {
+counter-increment: sub-sub-section;
+}
+h4:before {
+content: counter(section)"." counter(sub-section) "." counter(sub-sub-section) " ";
+}
+
+
+#table-of-contents + ol ol {
+margin-left:1em;
+}
+#table-of-contents + ol,
+#table-of-contents + ol ol { counter-reset: item; }
+#table-of-contents + ol li { display: block; }
+#table-of-contents + ol li:before,
+#table-of-contents + ol ol li:before {
+content: counters(item, ".");
+counter-increment: item;
+margin-right:0.5em;
+}
+
+
+
+li {
+list-style-position:inside;
+margin-bottom:0.25em;
+}
+
+a {
+/*
+text-decoration:none;
+color:#000;
+*/
+}
+
+pre {
+font-family:monospace;
+margin:0 0 1.5em 0;
+padding:1em;
+border:1px solid #CCCCCC;
+overflow:auto;
+}
+
+code {
+font-family:monospace;
+word-wrap: break-word;
+}
+#data-provenance_table code {
+word-break:normal;
+}
+
+/*
+[id]:hover:after {
+margin-left:1em;
+content: "#" attr(id) ;
+color:#00f;
+text-align:right;
+}
+*/
+
+dt { font-weight:bold; }
+dd {
+margin:0.5em 0 1em 1em;
+}
+
+ol, ul, p, dd {
+text-align:justify;
+}
+
+.rfc2119 {
+text-transform: lowercase;
+font-variant: small-caps;
+font-style: normal;
+}
+
+#authors {
+margin-bottom:16em;
+text-align:center;
+}
+
+
+#authors dd,
+#document-purpose dd,
+#author_supervisor dd,
+#author_reviewers dd,
+#author_orgs dd {
+margin-left:0;
+}
+
+#authors *,
+#document-purpose *,
+#author_supervisor *,
+#author_reviewers *,
+#author_orgs dt,
+#document-submitted * {
+text-align:center;
+}
+
+#author_orgs {
+margin:0 auto;
+float:left;
+width:100%;
+}
+
+#author_orgs dd {
+list-style-type:none;
+margin-bottom:0.5em;
+float:left;
+text-align:left;
+}
+
+#author_orgs dd img,
+#author_orgs dd span {
+float:left;
+}
+
+#author_orgs img {
+margin-right:5px;
+}
+
+#deri {
+margin-right:15px;
+}
+
+#deri span {
+margin-top:15px;
+width:150px;
+}
+#nuigalway {
+margin-top:20px;
+}
+#nuigalway span {
+margin-top:5px;
+width:180px;
+}
+
+
+#document-submitted {
+clear:both;
+}
+
+
+#document-purpose {
+margin-bottom:4em;
+}
+
+#author_supervisor {
+margin-bottom:4em;
+}
+
+
+#document-identifier {
+margin-top:5em;
+}
+
+
+
+#categories-and-subject-descriptors li,
+#keywords li {
+list-style-type:none;
+}
+
+#authors dt {
+display:none;
+}
+
+#authors p {
+text-align:center;
+}
+
+#categories-and-subject-descriptors li,
+#keywords li {
+list-style-type:none;
+}
+#categories-and-subject-descriptors li,
+#keywords li {
+display:inline;
+}
+#categories-and-subject-descriptors li:after {
+content:"; ";
+}
+#keywords li:after {
+content:", ";
+}
+#categories-and-subject-descriptors li:last-child:after,
+#keywords li:last-child:after {
+content:"";
+}
+
+#categories-and-subject-descriptors h2,
+#keywords h2,
+#document-identifier h2,
+#document-license h2 {
+text-transform:capitalize;
+}
+
+
+.entry-content p,
+.entry-content li {
+text-align:justify;
+}
+
+.entry-content ul {
+margin-left:0.2em;
+}
+
+
+.article_labels {
+display:none;
+}
+.article_labels * {
+display:inline;
+}
+
+.article_labels dt {
+display:none;
+}
+.article_labels ul:before {
+content: "Keywords: ";
+font-weight:bold;
+}
+.article_labels li {
+list-style-type:none;
+}
+.article_labels li:after {
+content:", ";
+}
+.article_labels li:last-child:after {
+content:"";
+}
+
+table {
+border-collapse:collapse;
+width:100%;
+}
+table, th, td {
+
+}
+caption {
+text-align:left;
+border-bottom:1px solid #aaa;
+}
+tbody {
+border-top:2px solid #aaa;
+border-bottom:2px solid #aaa;
+}
+th, td {
+padding:0.25em 1em 0.25em 0.25em;
+}
+th:last-child,
+td:last-child {
+padding-right:0;
+}
+
+th:last-child,
+td:last-child {
+padding-right:0;
+}
+th, td {
+padding-top:0.25em;
+padding-bottom:0.25em;
+padding-right:1em;
+}
+th {
+text-align:left;
+}
+tr {
+border-bottom:1px solid #aaa;
+}
+tr:last-child {
+border-bottom:0;
+}
+
+
+
+.figure {
+margin-bottom:1.5em;
+}
+
+
+#references + ol {
+font-size:9pt;
+}
+#references + ol {
+counter-reset: list-order;
+}
+#references + ol li { 
+counter-increment: list-order;
+list-style-type: none;
+}
+#references + ol li:before {
+content: "[" counter(list-order) "] ";
+}
+
+.references  li {
+margin-top:1.25em;
+line-height:1.5;
+}
+
+#bibliography li {
+list-style-type:none;
+text-align:left;
+}
