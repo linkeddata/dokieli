@@ -2,7 +2,7 @@
 
 The purpose of this effort is to make Web friendly formats the first-class approach when it comes to publishing research material.
 
-Contains XHTML+RDFa template and initial stylesheets for LNCS and ACM SIG templates. PDFs can be produced by going into the print settings of your Web browser and print the output to file.
+Contains XHTML+RDFa template and initial stylesheets for LNCS, ACM, thesis templates. PDFs can be produced by going into the print settings of your Web browser and print the output to file.
 
 Collaborators are always welcome. This is for us. Lets build it together.
 
@@ -10,7 +10,7 @@ Collaborators are always welcome. This is for us. Lets build it together.
 
 See the .html files in your browser or the .pdf files provided here. These files are also posted at [http://linked-research.270a.info/](http://linked-research.270a.info/)
 
-The examples here are were only posted here:
+The examples here were originally posted here:
 
 * http://csarven.ca/sense-of-lsd-analysis
 * http://csarven.ca/linked-statistical-data-analysis
