@@ -38,7 +38,7 @@
     <body about="[this:]" typeof="foaf:Document sioc:Post biblio:Paper prov:Entity" id="article" class="hfeed journal">
         <div id="wrapper">
             <div class="main hentry">
-                <h1 class="entry-title">Semantic Similarity and Correlation of Linked Statistical Data Analysis</h1>
+                <h1 class="entry-title" property="dcterms:title">Semantic Similarity and Correlation of Linked Statistical Data Analysis</h1>
 
                 <div id="authors">
                     <dl>
@@ -105,9 +105,9 @@
 
                     <h2 id="introduction" about="[this:]" rel="dcterms:hasPart" resource="[this:#introduction]">Introduction</h2>
                     <div about="[this:#introduction]" typeof="deo:Introduction" property="dcterms:description">
-                        <p><span id="prolog" about="[this:]" rel="dcterms:hasPart"><q about="[this:#prolog]" typeof="deo:Prolog" property="dcterms:description" cite="http://www.open.edu/openlearn/science-maths-technology/mathematics-and-statistics/statistics/the-joy-stats-meaningless-and-meaningful-correlations">There was this American who was afraid of a heart attack and he found out that the Japanese ate very little fat and almost did not drink wine but they had much less heart attacks than the Americans. But on the other hand he also found out that the French eat as much fat as the Americans and they drink much more wine but they also have less heart attacks. So he concluded that what kills you is speaking English</q></span> [<a href="#r_1">1</a>]. While computers can assist us to discover strong correlations in large amounts of statistical datasets, whether by chance or through sophisticated methods, humans (or sometimes also known as <em>domain experts</em>) still need to be critical about the results and interpret them appropriately. This implies that we are still very much involved in the process to discover meaningful correlations by filtering through everything that is presented to us.</p>
+                        <p><span about="[this:]" rel="dcterms:hasPart"><q about="[this:#prolog]" typeof="deo:Prolog" property="dcterms:description" cite="http://www.open.edu/openlearn/science-maths-technology/mathematics-and-statistics/statistics/the-joy-stats-meaningless-and-meaningful-correlations">There was this American who was afraid of a heart attack and he found out that the Japanese ate very little fat and almost did not drink wine but they had much less heart attacks than the Americans. But on the other hand he also found out that the French eat as much fat as the Americans and they drink much more wine but they also have less heart attacks. So he concluded that what kills you is speaking English</q></span> [<a href="#r_1">1</a>]. While computers can assist us to discover strong correlations in large amounts of statistical datasets, whether by chance or through sophisticated methods, humans (or sometimes also known as <em>domain experts</em>) still need to be critical about the results and interpret them appropriately. This implies that we are still very much involved in the process to discover meaningful correlations by filtering through everything that is presented to us.</p>
 
-                        <p id="motivation" about="[#this:motivation]" typeof="sro:Motivation" property="dcterms:description">If we could however improve the situation slightly by having machines present us with only <em>useful</em> correlations from a random mass of correlations, then we can give more of our attention to what is interesting. Hence, our goal is to set a path towards identifying why some variables have a semantic link between them. Before we establish that, our ongoing approach (as outlined in this research and afterwards) will be to refute or cancel out things which may be in disguise for semantic similarity.</p>
+                        <p about="[#this:motivation]" typeof="sro:Motivation" property="dcterms:description">If we could however improve the situation slightly by having machines present us with only <em>useful</em> correlations from a random mass of correlations, then we can give more of our attention to what is interesting. Hence, our goal is to set a path towards identifying why some variables have a semantic link between them. Before we establish that, our ongoing approach (as outlined in this research and afterwards) will be to refute or cancel out things which may be in disguise for semantic similarity.</p>
 
                         <p>Therefore, we set our investigation with a workflow to experiment with Linked Statistical Datasets in the <a href="http://270a.info/">270a Cloud</a> [<a href="#r_2">2</a>]. We have first set our hypothesis to uncover the possibility that <em>semantically similar</em> variables or datasets need to incorporate semantically rich information in order to find thought-provoking correlations. Then, the question is, what do exceptional or intriguing linkages for semantic similarity look like? We start with our null hypothesis by checking to see whether the dataset titles in World Bank indicators can help indicate strong correlations. Our results show that dataset titles by themselves or within a particular topic area is not a good indicator to predict correlations.</p>
                     </div>
@@ -235,7 +235,7 @@
 
                         <p><a href="http://www.ke.tu-darmstadt.de/bibtex/attachments/single/310">Generating Possible Interpretations for Statistics from Linked Open Data</a> [<a href="#r_13">13</a>] talks about the Explain-a-LOD tool which focuses on generating hypotheses that explain statistics. It has a configuration to compare two variables, and then provides possible interpretations of the correlation analysis for users to review.</p>
 
-                        <p><a href="http://dx.doi.org/10.1007/978-3-642-41338-4_16">Using Linked Data to Evaluate the Impact of Research and Development in Europe</a>: A Structural Equation Model [<a href="#r_14">14</a>], presents the feasibility of combining different LOD sources to assess the impact of one variable over others.</p>
+                        <p><a href="http://svn.aksw.org/papers/2013/LODSEM/ISWC2013_AZ_LODSEM_public.pdf">Using Linked Data to Evaluate the Impact of Research and Development in Europe</a>: A Structural Equation Model [<a href="#r_14">14</a>], presents the feasibility of combining different LOD sources to assess the impact of one variable over others.</p>
 
                         <p><a href="http://tylervigen.com/">Spurious Correlations</a> [<a href="#r_15">15</a>] reveals correlations that are not genuine for practical use. In other words, the correlations are type I errors. It emphasizes on the importance for humans to be critical of random correlations, and to investigate whether there is a direct relation between the variables.</p>
 
@@ -276,7 +276,7 @@
 <li id="r_11">McCusker, J. P., McGuinness, D. L., Lee, J., Thomas, C., Courtney, P., Tatalovich, Z., Contractor, N., Morgan, G., Shaikh, A.: Towards Next Generation Health Data Exploration: A Data Cube-based Investigation into Population Statistics for Tobacco, Hawaii International Conference on System Sciences (2012), <a rel="dcterms:references" href="http://www.hicss.hawaii.edu/hicss_46/bp46/hc6.pdf">http://www.hicss.hawaii.edu/hicss_46/bp46/hc6.pdf</a></li>
 <li id="r_12">qb.js, <a rel="dcterms:references" href="http://orion.tw.rpi.edu/~jimmccusker/qb.js/">http://orion.tw.rpi.edu/~jimmccusker/qb.js/</a></li>
 <li id="r_13">Paulheim, H.: Generating Possible Interpretations for Statistics from Linked Open Data, ESWC (2012), <a rel="dcterms:references" href="http://www.ke.tu-darmstadt.de/bibtex/attachments/single/310">http://www.ke.tu-darmstadt.de/bibtex/attachments/single/310</a></li>
-<li id="r_14">Zaveri, A., Vissoci, J. R. N., Daraio, C., Pietrobon, R.: Using Linked Data to Evaluate the Impact of Research and Development in Europe: A Structural Equation Model, pp.244–259, ISWC (2013), <a rel="dcterms:references" href="http://dx.doi.org/10.1007/978-3-642-41338-4_16">http://dx.doi.org/10.1007/978-3-642-41338-4_16</a></li>
+<li id="r_14">Zaveri, A., Vissoci, J. R. N., Daraio, C., Pietrobon, R.: Using Linked Data to Evaluate the Impact of Research and Development in Europe: A Structural Equation Model, pp.244–259, ISWC (2013), <a rel="dcterms:references" href="http://svn.aksw.org/papers/2013/LODSEM/ISWC2013_AZ_LODSEM_public.pdf">http://svn.aksw.org/papers/2013/LODSEM/ISWC2013_AZ_LODSEM_public.pdf</a></li>
 <li id="r_15">Vigen, T.: Spurious Correlations, <a rel="dcterms:references" href="http://tylervigen.com/">http://tylervigen.com/</a></li>
 <li id="r_16">Shvaiko, P., Euzenat, J.: Ontology matching: state of the art and future challenges. IEEE Transactions on Knowledge and Data Engineering (2013), <a href="http://disi.unitn.it/~p2p/RelatedWork/Matching/SurveyOMtkde_SE.pdf">http://disi.unitn.it/~p2p/RelatedWork/Matching/SurveyOMtkde_SE.pdf</a></li>
                         </ol>
@@ -285,6 +285,5 @@
 
             </div>
         </div>
-
     </body>
 </html>
