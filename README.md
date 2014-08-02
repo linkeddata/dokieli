@@ -15,6 +15,7 @@ The examples here were originally posted here:
 * http://csarven.ca/sense-of-lsd-analysis
 * http://csarven.ca/linked-statistical-data-analysis
 * http://csarven.ca/linked-sdmx-data
+* http://csarven.ca/call-for-linked-research
 * http://csarven.ca/statistical-linked-dataspaces
 
 ## Presentation
