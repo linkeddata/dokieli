@@ -202,7 +202,7 @@
 
                     <div class="figure" id="federated-sparql-query">
 <pre>
-SELECT ?refAreaY ?x ?y ?identityX ?identityY
+SELECT DISTINCT ?refAreaY ?x ?y ?identityX ?identityY
 WHERE {
   SERVICE <strong>&lt;http://example.org/sparql&gt;</strong> {
     SELECT DISTINCT ?identityX ?refAreaX ?refAreaXExactMatch ?measureX
@@ -218,7 +218,7 @@ WHERE {
       ?observationX ?propertyIdentityX ?identityX .
       OPTIONAL {
         ?refAreaX skos:exactMatch ?refAreaXExactMatch .
-        FILTER (REGEX(STR(?refAreaXExactMatch), "^<strong>http://example.net/</strong>"))
+        FILTER (STRSTARTS(STR(?refAreaXExactMatch), "<strong>http://example.net/</strong>"))
       }
     }
   }
@@ -236,12 +236,12 @@ WHERE {
       ?observationY ?propertyIdentityY ?identityY .
       OPTIONAL {
         ?refAreaY skos:exactMatch ?refAreaYExactMatch .
-        FILTER (REGEX(STR(?refAreaYExactMatch), "^<strong>http://example.org/</strong>"))
+        FILTER (STRSTARTS(STR(?refAreaYExactMatch), "<strong>http://example.org/</strong>"))
       }
     }
   }
-  FILTER (?refAreaYExactMatch = ?refAreaX || ?refAreaXExactMatch = ?refAreaY
-          || ?refAreaY = ?refAreaX)
+  FILTER (SAMETERM(?refAreaYExactMatch, ?refAreaX) || SAMETERM(?refAreaXExactMatch, ?refAreaY)
+          || SAMETERM(?refAreaY, ?refAreaX))
 }
 </pre>
                         <p><strong>Figure 3</strong>: Federated SPARQL query integrating statistical linked data.</p>
