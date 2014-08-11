@@ -69,7 +69,7 @@
                     <dt>Published</dt>
                     <dd property="dcterms:published" content="2013-02-10T09:00:00Z">2013-02-10</dd>
                     <dt>Modified</dt>
-                    <dd property="dcterms:modified" content="2014-08-04T09:00:00Z">2014-08-04</dd>
+                    <dd property="dcterms:modified" content="2014-08-04T09:00:00Z">2014-08-11</dd>
                 </dl>
 
 
@@ -120,7 +120,7 @@
 
                     <p>Development teams often face low-level repetitive data management tasks to deal with someone else's data. Within the context of Linked Data, one aspect is to transform this raw statistical data (e.g., SDMX-ML) into an RDF representation in order to be able to start tapping into what's out there in a uniform way.</p>
 
-                    <p>The contributions of this article are two-fold. We present an approach for transforming SDMX-ML based on XSLT 2.0 templates and showcase our implementation which transforms SDMX-ML data to RDF/XML. Following this, SDMX-ML data from <a href="http://www.oecd.org/">OECD</a> (Organisation for Economic Co-operation and Development), <a href="http://www.bfs.admin.ch/">BFS</a> (<span xml:lang="de">Bundesamt für Statistik</span>@de, Swiss Federal Statistical Office@en), <a href="http://www.fao.org/">FAO</a> (Food and Agriculture Organization of the United Nations), <a href="http://www.ecb.int/">ECB</a> (European Central Bank), and <a href="http://www.imf.org/">IMF</a> (International Monetary Fund), <a href="http://www.uis.unesco.org/">UIS</a> (UNESCO Institute for Statistics), <a href="http://www.federalreserve.org/">FRB</a> (Federal Reserve Board), <a href="http://www.bis.org/">BIS</a> (Bank for International Settlements) are retrieved, transformed and published as Linked Data.</p>
+                    <p>The contributions of this article are two-fold. We present an approach for transforming SDMX-ML based on XSLT 2.0 templates and showcase our implementation which transforms SDMX-ML data to RDF/XML. Following this, SDMX-ML data from <a href="http://www.oecd.org/">OECD</a> (Organisation for Economic Co-operation and Development), <a href="http://www.bfs.admin.ch/">BFS</a> (<span xml:lang="de">Bundesamt für Statistik</span>@de, Swiss Federal Statistical Office@en), <a href="http://www.fao.org/">FAO</a> (Food and Agriculture Organization of the United Nations), <a href="http://www.ecb.int/">ECB</a> (European Central Bank), and <a href="http://www.imf.org/">IMF</a> (International Monetary Fund), <a href="http://www.uis.unesco.org/">UIS</a> (UNESCO Institute for Statistics), <a href="http://www.federalreserve.org/">FRB</a> (Federal Reserve Board), <a href="http://www.bis.org/">BIS</a> (Bank for International Settlements), <a href="http://abs.270a.info/">ABS</a> (Australian Bureau of Statistics) are retrieved, transformed and published as Linked Data.</p>
 
 
                     <h2 id="background">Background</h2>
@@ -164,10 +164,15 @@
                         <dd><q>The Federal Reserve, the central bank of the United States, provides the nation with a safe, flexible, and stable monetary and financial system</q> from <a href="http://www.federalreserve.gov/">FRB home</a>.</dd>
 
                         <dt>BIS</dt>
-                        <dd><q>The Bank for International Settlements (BIS) is an international organisation which fosters international monetary and financial cooperation and serves as a bank for central banks.</q> from <a href="http://www.bis.org/">BIS home</a>.</dd>
+                        <dd><q>The Bank for International Settlements (BIS) is an international organisation which fosters international monetary and financial cooperation and serves as a bank for central banks</q> from <a href="http://www.bis.org/">BIS home</a>.</dd>
+
+                        <dt>ABS</dt>
+                        <dd><q>We assist and encourage informed decision making, research
+and discussion within governments and the community, by leading a
+high quality, objective and responsive national statistical service</q> from <a href="http://www.abs.gov.au/">ABS mission statement</a>.</dd>
                     </dl>
 
-                    <p>The OECD, FAO, ECB, IMF, UIS, BIS datasets consisted of observational and structural data. The OECD, ECB, UIS, and BIS provided complete coverage (to the best of our knowledge), whereas FAO had partial fishery related data, and IMF partial data over their REST service. BFS had all of their classifications available, with no observational data in SDMX-ML.</p>
+                    <p>The OECD, FAO, ECB, IMF, UIS, BIS, ABS datasets consisted of observational and structural data. The OECD, ECB, UIS, BIS, ABS provided complete coverage (to the best of our knowledge), whereas FAO had partial fishery related data, and IMF partial data over their REST service. BFS had all of their classifications available, with no observational data in SDMX-ML.</p>
 
 
                     <h3 id="data-retrieval">Data Retrieval</h3>
@@ -188,12 +193,17 @@
                     <h4 id="data-retrieval-imf">IMF</h4>
                     <p>Same procedure as ECB and OECD.</p>
 
+                    <h4 id="data-retrieval-frb">FRB</h4>
+                    <p>Same procedure as above.</p>
+
                     <h4 id="data-retrieval-uis">UIS</h4>
-                    <p>Same procedure as ECB, OECD, and IMF.</p>
+                    <p>Same procedure as above.</p>
 
                     <h4 id="data-retrieval-bis">BIS</h4>
-                    <p>Same procedure as ECB, OECD, IMF, and UIS.</p>
+                    <p>Same procedure as above.</p>
 
+                    <h4 id="data-retrieval-abs">ABS</h4>
+                    <p>Same procedure as above.</p>
 
                     <h3 id="provenance">Provenance</h3>
                     <h4 id="provenance-at-retrieval">Provenance at Retrieval</h4>
@@ -366,6 +376,7 @@ This provenance data from retrieval may be provided to the XSL Transformer durin
                             <tr><td>UIS</td><td>115 MB</td><td>896 MB</td><td>1:7.8</td><td>2m33.214s</td></tr>
                             <tr><td>FRB</td><td>783 MB</td><td>11000 MB</td><td>1:14.1</td><td>96m20.676s</td></tr>
                             <tr><td>BIS</td><td>845 MB</td><td>4000 MB</td><td>1:4.7</td><td>21m7.203s</td></tr>
+                            <tr><td>BIS</td><td>34000 MB</td><td>160000 MB</td><td>1:4.7</td><td>831m52.558s</td></tr>
                         </tbody>
                     </table>
 
@@ -391,6 +402,8 @@ This provenance data from retrieval may be provided to the XSL Transformer durin
                             <tr><th>FRB Metadata</th><td>0.04 million</td><td>N/A</td><td>N/A</td></tr>
                             <tr><th>BIS Dataset</th><td>54 million</td><td>3.6 million</td><td>15:1</td></tr>
                             <tr><th>BIS Metadata</th><td>0.04 million</td><td>N/A</td><td>N/A</td></tr>
+                            <tr><th>ABS Dataset</th><td>2360 million</td><td>160 million</td><td>14.8:1</td></tr>
+                            <tr><th>ABS Metadata</th><td>6.06 million</td><td>N/A</td><td>N/A</td></tr>
                         </tbody>
                     </table>
 
@@ -401,10 +414,10 @@ This provenance data from retrieval may be provided to the XSL Transformer durin
                         <thead><tr><th>Resource</th><th>OECD</th><th>BFS</th><th>FAO</th><th>ECB</th><th>IMF</th><th>UIS</th><th>FRB</th><th>BIS</th></tr></thead>
                         <tfoot><tr><td colspan="5">Count of resources in datasets</td></tr></tfoot>
                         <tbody>
-                            <tr><td>skos:ConceptScheme</td><td>1209</td><td>216</td><td>32</td><td>147</td><td>25</td><td>35</td><td>76</td><td>27</td></tr>
-                            <tr><td>skos:Concept</td><td>80918</td><td>120202</td><td>28115</td><td>55609</td><td>3397</td><td>4515</td><td>2935</td><td>1560</td></tr>
-                            <tr><td>rdf:Property</td><td>129</td><td>0</td><td>12</td><td>231</td><td>42</td><td>12</td><td>64</td><td>31</td></tr>
-                            <tr><td>qb:Observation</td><td>30183484</td><td>0</td><td>7186764</td><td>25791005</td><td>3603719</td><td>1437651</td><td>9768292</td><td>3606466</td></tr>
+                            <tr><td>skos:ConceptScheme</td><td>1209</td><td>216</td><td>32</td><td>147</td><td>25</td><td>35</td><td>76</td><td>27</td><td>2830</td></tr>
+                            <tr><td>skos:Concept</td><td>80918</td><td>120202</td><td>28115</td><td>55609</td><td>3397</td><td>4515</td><td>2935</td><td>1560</td><td>548953</td></tr>
+                            <tr><td>rdf:Property</td><td>129</td><td>0</td><td>12</td><td>231</td><td>42</td><td>12</td><td>64</td><td>31</td><td>111</td></tr>
+                            <tr><td>qb:Observation</td><td>30183484</td><td>0</td><td>7186764</td><td>25791005</td><td>3603719</td><td>1437651</td><td>9768292</td><td>3606466</td><td>160065287</td></tr>
                         </tbody>
                     </table>
 
@@ -479,6 +492,20 @@ This provenance data from retrieval may be provided to the XSL Transformer durin
                             <tr><td>BIS</td><td>Geonames</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>515</td></tr>
                             <tr><td>BIS</td><td>Eurostat</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>489</td></tr>
                             <tr><td>BIS</td><td>NASA</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>46</td></tr>
+
+
+
+                            <tr><td>ABS</td><td>DBpedia</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>99</td></tr>
+                            <tr><td>ABS</td><td>World Bank</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>99</td></tr>
+                            <tr><td>ABS</td><td>ECB</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>99</td></tr>
+                            <tr><td>ABS</td><td>Transparency International</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>99</td></tr>
+                            <tr><td>ABS</td><td>UIS</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>495</td></tr>
+                            <tr><td>ABS</td><td>IMF</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>99</td></tr>
+                            <tr><td>ABS</td><td>FAO</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>99</td></tr>
+                            <tr><td>ABS</td><td>BFS</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>99</td></tr>
+                            <tr><td>ABS</td><td>BIS</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>198</td></tr>
+                            <tr><td>ABS</td><td>Geonames</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>99</td></tr>
+                            <tr><td>ABS</td><td>Eurostat</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>99</td></tr>
                         </tbody>
                     </table>
 
@@ -500,7 +527,7 @@ This provenance data from retrieval may be provided to the XSL Transformer durin
                     <p>The publication steps are described in this section.</p>
 
                     <h3>Dataset Discovery and Statistics</h3>
-                    <p>As VoID file is generally intended to give an overview of the dataset metadata i.e., what it contains, ways to access it or query it, each dataspace contains <a href="http://www.w3.org/TR/void/">Vocabulary of Interlinked Datasets</a> (<dfn><abbr title="Vocabulary of Interlinked Datasets">VoID</abbr></dfn>) files accessible through their <code>.well-known/void</code>. Each <a href="http://oecd.270a.info/.well-known/void">OECD</a>, <a href="http://bfs.270a.info/.well-known/void">BFS</a>, <a href="http://fao.270a.info/.well-known/void">FAO</a>, <a href="http://ecb.270a.info/.well-known/void">ECB</a>, <a href="http://imf.270a.info/.well-known/void">IMF</a>, <a href="http://uis.270a.info/.well-known/void">UIS</a>, <a href="http://frb.270a.info/.well-known/void">FRB</a>, <a href="http://bis.270a.info/.well-known/void">BIS</a> VoID contains locations to RDF datadumps, named graphs that are used in the SPARQL endpoint, used vocabularies, size of the datasets, interlinks to external datasets, as well as the provenance data which was gathered through the retrieval and transformation process. The VoID files were generated automatically by first importing the LODStats information into respective <code>graph/void</code> into the store, and then a SPARQL <code>CONSTRUCT</code> query to include all triples as well as additional ones which could be actively created based on the available information in all graphs.</p>
+                    <p>As VoID file is generally intended to give an overview of the dataset metadata i.e., what it contains, ways to access it or query it, each dataspace contains <a href="http://www.w3.org/TR/void/">Vocabulary of Interlinked Datasets</a> (<dfn><abbr title="Vocabulary of Interlinked Datasets">VoID</abbr></dfn>) files accessible through their <code>.well-known/void</code>. Each <a href="http://oecd.270a.info/.well-known/void">OECD</a>, <a href="http://bfs.270a.info/.well-known/void">BFS</a>, <a href="http://fao.270a.info/.well-known/void">FAO</a>, <a href="http://ecb.270a.info/.well-known/void">ECB</a>, <a href="http://imf.270a.info/.well-known/void">IMF</a>, <a href="http://uis.270a.info/.well-known/void">UIS</a>, <a href="http://frb.270a.info/.well-known/void">FRB</a>, <a href="http://bis.270a.info/.well-known/void">BIS</a>, <a href="http://abs.270a.info/.well-known/void">ABS</a> VoID contains locations to RDF datadumps, named graphs that are used in the SPARQL endpoint, used vocabularies, size of the datasets, interlinks to external datasets, as well as the provenance data which was gathered through the retrieval and transformation process. The VoID files were generated automatically by first importing the LODStats information into respective <code>graph/void</code> into the store, and then a SPARQL <code>CONSTRUCT</code> query to include all triples as well as additional ones which could be actively created based on the available information in all graphs.</p>
 
                     <p>Dataset statistics are generated and are included in the VoID file using LODStats, <a href="http://svn.aksw.org/papers/2011/RDFStats/public.pdf"><cite>LODStats &#8211; An Extensible Framework for High-performance Dataset Analytics</cite></a> (Demter, J., 2012).</p>
 
@@ -509,19 +536,19 @@ This provenance data from retrieval may be provided to the XSL Transformer durin
                     <p>The HTML pages are generated by the <a href="https://github.com/csarven/linked-data-pages">Linked Data Pages</a> framework, where <a href="http://code.google.com/p/moriarty/">Moriarty</a>, <a href="http://code.google.com/p/paget/">Paget</a>, and <a href="https://github.com/semsol/arc2">ARC2</a> does the heavy lifting for it. Given the lessons learned over the years about Linked Data publishing, there is a consideration to either take Linked Data Pages further (originally written in 2010), or to adapt one of the existing frameworks after careful analysis.</p>
 
                     <h3 id="sparql-endpoint">SPARQL Endpoint</h3>
-                    <p>Apache Jena <a href="http://incubator.apache.org/jena/documentation/serving_data/index.html">Fuseki</a> is used to run the SPARQL server for the three datasets. SPARQL Endpoints are publicly accessible and read only at their respective <code>/sparql</code> and <code>/query</code> locations for <a href="http://oecd.270a.info/sparql">OECD</a>, <a href="http://bfs.270a.info/sparql">BFS</a>, <a href="http://fao.270a.info/sparql">FAO</a>, <a href="http://ecb.270a.info/sparql">ECB</a>, <a href="http://imf.270a.info/sparql">IMF</a>, <a href="http://uis.270a.info/sparql">UIS</a>, <a href="http://frb.270a.info/sparql">FRB</a>, <a href="http://bis.270a.info/sparql">BIS</a>. Currently, 12000MB of memory is allocated for the single Fuseki server running all datasets.</p>
+                    <p>Apache Jena <a href="http://incubator.apache.org/jena/documentation/serving_data/index.html">Fuseki</a> is used to run the SPARQL server for the three datasets. SPARQL Endpoints are publicly accessible and read only at their respective <code>/sparql</code> and <code>/query</code> locations for <a href="http://oecd.270a.info/sparql">OECD</a>, <a href="http://bfs.270a.info/sparql">BFS</a>, <a href="http://fao.270a.info/sparql">FAO</a>, <a href="http://ecb.270a.info/sparql">ECB</a>, <a href="http://imf.270a.info/sparql">IMF</a>, <a href="http://uis.270a.info/sparql">UIS</a>, <a href="http://frb.270a.info/sparql">FRB</a>, <a href="http://bis.270a.info/sparql">BIS</a>, <a href="http://abs.270a.info/sparql">ABS</a>. Currently, 12000MB of memory is allocated for the single Fuseki server running all datasets.</p>
 
                     <h3 id="data-dumps">Data Dumps</h3>
-                    <p>The data dumps for the datasets are available from their respective <code>/data/</code> directories: <a href="http://oecd.270a.info/data/">OECD</a>, <a href="http://bfs.270a.info/data/">BFS</a>, <a href="http://fao.270a.uisinfo/data/">FAO</a>, <a href="http://ecb.270a.info/data/">ECB</a>, <a href="http://imf.270a.info/data/">IMF</a>, <a href="http://uis.270a.info/data/">UIS</a>, <a href="http://bis.270a.info/data/">BIS</a>. Additionally, they are mentioned in the VoID files. The <a href="http://datahub.io/">the Data Hub</a> entries (<a href="#dataset-announcement">see below</a>) also contains links to the dumps.</p>
+                    <p>The data dumps for the datasets are available from their respective <code>/data/</code> directories: <a href="http://oecd.270a.info/data/">OECD</a>, <a href="http://bfs.270a.info/data/">BFS</a>, <a href="http://fao.270a.uisinfo/data/">FAO</a>, <a href="http://ecb.270a.info/data/">ECB</a>, <a href="http://imf.270a.info/data/">IMF</a>, <a href="http://frb.270a.info/data/">FRB</a>, <a href="http://uis.270a.info/data/">UIS</a>, <a href="http://bis.270a.info/data/">BIS</a>, <a href="http://abs.270a.info/data/">ABS</a>. Additionally, they are mentioned in the VoID files. The <a href="http://datahub.io/">the Data Hub</a> entries (<a href="#dataset-announcement">see below</a>) also contains links to the dumps.</p>
 
                     <h3 id="source-code">Source Code</h3>
-                    <p>The code for transformations is at <a href="https://github.com/csarven/linked-sdmx">csarven/linked-sdmx</a>, and for retrieval and data loading to RDF store for OECD is at <a href="https://github.com/csarven/oecd-linked-data">csarven/oecd-linked-data</a>, for BFS is at <a href="https://github.com/csarven/bfs-linked-data">csarven/bfs-linked-data</a>, for FAO is at <a href="https://github.com/csarven/fao-linked-data">csarven/fao-linked-data</a>, for ECB is at <a href="https://github.com/csarven/ecb-linked-data">csarven/ecb-linked-data</a>, for IMF is at <a href="https://github.com/csarven/imf-linked-data">csarven/imf-linked-data</a>, for UIS is at <a href="https://github.com/csarven/uis-linked-data">csarven/uis-linked-data</a>, for FRB is at <a href="https://github.com/csarven/frb-linked-data">csarven/frb-linked-data</a>. All using the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a>.</p>
+                    <p>The code for transformations is at <a href="https://github.com/csarven/linked-sdmx">csarven/linked-sdmx</a>, and for retrieval and data loading to RDF store for OECD is at <a href="https://github.com/csarven/oecd-linked-data">csarven/oecd-linked-data</a>, for BFS is at <a href="https://github.com/csarven/bfs-linked-data">csarven/bfs-linked-data</a>, for FAO is at <a href="https://github.com/csarven/fao-linked-data">csarven/fao-linked-data</a>, for ECB is at <a href="https://github.com/csarven/ecb-linked-data">csarven/ecb-linked-data</a>, for IMF is at <a href="https://github.com/csarven/imf-linked-data">csarven/imf-linked-data</a>, for UIS is at <a href="https://github.com/csarven/uis-linked-data">csarven/uis-linked-data</a>, for FRB is at <a href="https://github.com/csarven/frb-linked-data">csarven/frb-linked-data</a>, for ABS is at <a href="https://github.com/csarven/abs-linked-data">csarven/abs-linked-data</a>. All using the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a>.</p>
 
                     <h3 id="data-license">Data License</h3>
                     <p>All published Linked Data adheres to original data publisher’s data license and terms of use. Additionally attributions are given on the websites. The <em>Linked Data</em> version of the data is licensed under <a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0 Universal (CC0 1.0) Public Domain Dedication</a>.</p>
 
                     <h3 id="dataset-announcement">Announcing the Datasets</h3>
-                    <p>For other ways for these datasets to be discovered, they are announced at mailing lists, status update services, and at the Data Hub: OECD is at <a href="http://datahub.io/dataset/oecd-linked-data">data/oecd-linked-data</a>, BFS is at <a href="http://datahub.io/dataset/bfs-linked-data">dataset/bfs-linked-data</a>, FAO is at <a href="http://datahub.io/dataset/fao-linked-data">dataset/fao-linked-data</a>, ECB is at <a href="http://datahub.io/dataset/ecb-linked-data">dataset/ecb-linked-data</a>, IMF is at <a href="http://datahub.io/dataset/imf-linked-data">dataset/imf-linked-data</a>, UIS is at <a href="http://datahub.io/dataset/uis-linked-data">dataset/uis-linked-data</a>, FRB is at <a href="http://datahub.io/dataset/frb-linked-data">dataset/frb-linked-data</a>, BIS is at <a href="http://datahub.io/dataset/bis-linked-data">dataset/bis-linked-data</a>.</p>
+                    <p>For other ways for these datasets to be discovered, they are announced at mailing lists, status update services, and at the Data Hub: OECD is at <a href="http://datahub.io/dataset/oecd-linked-data">data/oecd-linked-data</a>, BFS is at <a href="http://datahub.io/dataset/bfs-linked-data">dataset/bfs-linked-data</a>, FAO is at <a href="http://datahub.io/dataset/fao-linked-data">dataset/fao-linked-data</a>, ECB is at <a href="http://datahub.io/dataset/ecb-linked-data">dataset/ecb-linked-data</a>, IMF is at <a href="http://datahub.io/dataset/imf-linked-data">dataset/imf-linked-data</a>, UIS is at <a href="http://datahub.io/dataset/uis-linked-data">dataset/uis-linked-data</a>, FRB is at <a href="http://datahub.io/dataset/frb-linked-data">dataset/frb-linked-data</a>, BIS is at <a href="http://datahub.io/dataset/bis-linked-data">dataset/bis-linked-data</a>, ABS is at <a href="http://datahub.io/dataset/abs-linked-data">dataset/abs-linked-data</a>.</p>
 
 
 
