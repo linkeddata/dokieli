@@ -55,6 +55,7 @@ object[width="640"] { max-width:480px !important; }
 object[height="480"] { height:360px !important; }
 object[height="415"] { height:311px !important; }
 
+object.slides { display:none; }
 
 @page {
 margin:47mm 0;
