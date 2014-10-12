@@ -58,6 +58,12 @@ object[height="415"] { height:311px !important; }
 object.slides { display:none; }
 
 @page {
+/*Standard ISO A4 paper dimensions are:*/
+/*210mm x 297mm*/
+/*8.27" x 11.69"*/
+/*Equivalent A4 paper dimensions in pixels at 300 DPI and 72 DPI respectively are:*/
+/*2480 pixels x 3508 pixels (print resolution)*/
+/*595 pixels x 842 pixels (screen resolution)*/
 margin:47mm 0;
 /*margin:40mm 0;*/
 }
@@ -86,7 +92,7 @@ word-break:normal;
 body {
 background-color:#FFFFFF;
 color:#000000;
-font-family: "CMU Serif", "Latin Modern Roman", "Computer Modern", cmr10, "Times New Roman", serif;
+font-family: "CMU Serif", serif;
 font-size:13px;
 line-height:1.22;
 position:relative;
