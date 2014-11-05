@@ -245,9 +245,15 @@ width:107%;
 line-height:1;
 }
 
-#author_orgs,
-#author_uris,
-#abstract p {
+#author_orgs *,
+#author_uris *,
+#abstract *,
+#document-identifier *,
+#document-submitted *,
+#document-license *,
+#document-purpose *,
+#keywords *,
+#categories-and-subject-descriptors * {
 font-size:12px;
 }
 
@@ -463,13 +469,6 @@ text-align:center;
 #categories-and-subject-descriptors,
 #keywords {
 margin:0 1cm 1em;
-}
-
-#abstract h2,
-#document-identifier dt,
-#categories-and-subject-descriptors  h2,
-#keywords h2 {
-font-size:13px;
 }
 
 #authors dt {
