@@ -88,6 +88,7 @@ padding-left:10px;
 /*background:rgba(128,128,128,0.2) !important;*/
 /*height:100% !important;*/
 /*display:block;*/
+font-size:1em;
 }
 
 .fragment a {
@@ -106,4 +107,8 @@ border-left: 2px solid rgba(64,64,64,0.9);
 }
 
 
-
+.sparklines {
+height: 1em;
+width: 100%;
+max-width: 6em; /*125px*/
+}
