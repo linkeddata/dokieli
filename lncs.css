@@ -36,7 +36,9 @@ font-family: "CMU Serif Monospace";
 src: local("CMU Serif Monospace"), url("cmuntt.otf");
 }
 
-* { margin:0; padding:0; background: transparent !important; color: #000 !important; text-shadow: none !important; filter:none !important; -ms-filter: none !important; }
+* { margin:0; padding:0; text-shadow: none !important; filter:none !important; -ms-filter: none !important; }
+*:not(button):not(mark) { background: transparent !important; color: #000 !important; }
+.note { background:#ddd !important; }
 img { display:block; border:0; }
 a abbr { cursor: pointer; border-bottom:0; }
 table { border-collapse:collapse; }
@@ -90,7 +92,6 @@ word-break:normal;
 
 /*html { font-size: 13px; }*/
 body {
-background-color:#FFFFFF;
 color:#000000;
 font-family: "CMU Serif", serif;
 font-size:13px;
@@ -109,7 +110,7 @@ em, address {
 font-family: "CMU Serif Italic", sans-serif !important;
 font-style:normal !important;
 }
-code, pre, kbd {
+code, pre, kbd, button {
 font-family: "CMU Serif Monospace", monospace !important;
 }
 
@@ -137,22 +138,36 @@ h6 { font-size:13px; }
 h2 {
 margin-top:1.25em;
 margin-bottom:0.75em;
+}
+
+section:not([id=abstract]):not([id=keywords]):not([id=references]),
+.toc li {
 counter-increment: section;
 counter-reset: sub-section;
 }
-h2:before {
-content: counter(section) "\00a0\00a0\00a0\00a0\00a0";
-}
-
-h3 {
-margin-top:1.5em;
-margin-bottom:0.5em;
+section:not([id=abstract]):not([id=keywords]):not([id=references]) section,
+.toc li li {
 counter-increment: sub-section;
 counter-reset: sub-sub-section;
 }
+section:not([id=abstract]):not([id=keywords]):not([id=references]) section section,
+.toc li li li {
+counter-increment: sub-sub-section;
+counter-reset: sub-sub-sub-section;
+}
+
+*:not([id=abstract]):not([id=keywords]):not([id=references]) h2:before {
+content: counter(section) "\00a0\00a0\00a0\00a0\00a0";
+}
+
 h3:before {
 content: counter(section) "." counter(sub-section) "\00a0\00a0\00a0\00a0";
 }
+h3 {
+margin-top:1.5em;
+margin-bottom:0.5em;
+}
+
 
 h1 + p,
 h2 + p,
@@ -175,14 +190,19 @@ h5:after {
 content: ".";
 }
 h4 + p,
-h5 + p {
+h5 + p,
+h4 + div,
+h5 + div,
+h4 + div p,
+h5 + div p {
 display:inline;
-/*text-align:justify;*/
+text-align:justify;
 
-/*This is a bit hacky.. it appears to work in webkit and maybe it shouldn't */
+/*This is a bit hacky.. it appears to work in Webkit and maybe it shouldn't -- breaking words inappropriately*/
 /*word-break:break-all;*/
 
 /*
+Testing?
 text-justify:distribute;
 word-break:break-all;
 hyphens:auto;
@@ -190,11 +210,31 @@ text-wrap:normal;
 line-break:normal;
 */
 }
+h4 + p + p,
+h5 + p + p,
+h4 + div p + p,
+h5 + div p + p {
+display:block;
+}
 
-h4 + p:after,
-h5 + p:after {
+
+
+h3 + div section:before {
 content:"\A";
 white-space:pre;
+}
+
+h4 + p:after,
+h5 + p:after,
+h4 + div p:after,
+h5 + div p:after,
+section + p:before {
+content:"\A";
+white-space:pre;
+}
+
+section + p:before {
+text-indent:0;
 }
 
 * + h4:before,
@@ -470,6 +510,7 @@ text-align:center;
 #keywords {
 margin:0 1cm 1em;
 }
+
 
 #authors dt {
 display:none;

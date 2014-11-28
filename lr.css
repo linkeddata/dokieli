@@ -1,0 +1,109 @@
+@media print {
+.toc,
+.fragment {
+display:none !important;
+}
+}
+
+.toc {
+position:fixed;
+left:1em;
+top:1em;
+z-index:9;
+padding:1em;
+max-height:80%;
+max-width:20%;
+border:1px solid #ccc;
+border-radius:7px;
+box-shadow:0.25em 0.25em 0.25em rgba(0,0,0,0.1);
+background:#fff !important;
+overflow:auto;
+}
+.toc, .toc ol {
+list-style:none;
+}
+.toc ol,
+.toc li {
+margin:0;
+text-align:left !important;
+}
+.toc ol {
+margin-left: 1em;
+}
+
+.toc li {
+counter-increment: section;
+counter-reset: sub-section;
+}
+.toc li li {
+counter-increment: sub-section;
+counter-reset: sub-sub-section;
+}
+.toc li li li {
+counter-increment: sub-sub-section;
+counter-reset: sub-sub-sub-section;
+}
+.toc li:before {
+content: counter(section) "\00a0";
+}
+.toc li li:before {
+content: counter(section) "." counter(sub-section) "\00a0";
+}
+.toc li li li:before {
+content: counter(section) "." counter(sub-section) "." counter(sub-sub-section) "\00a0";
+}
+
+.toc li > span {
+cursor: move;
+}
+.toc li > span:hover {
+background:#eee !important;
+}
+.toc .placeholder {
+outline: 1px dashed #777;
+}
+
+
+
+button.close {
+position:absolute;
+top:0.5em;
+right:0.5em;
+z-index:9;
+}
+
+p, h2,h3,h4,h5,h6,ul,ol,li,dl,dt,table,section {
+position:relative;
+z-index:1;
+/*background:#eee !important;*/
+}
+
+.fragment {
+position:absolute;
+top:0;
+right:0;
+z-index:0;
+text-indent: 0px;
+padding-left:10px;
+/*background:rgba(128,128,128,0.2) !important;*/
+/*height:100% !important;*/
+/*display:block;*/
+}
+
+.fragment a {
+color: #0000e4 !important;
+padding-left:10px;
+height:100%;
+display:block;
+font-family: "CMU Serif Monospace", monospace !important;
+outline:none;
+}
+.fragment a:first-child {
+border-left: 2px solid rgba(128,128,128,0.2);
+}
+.fragment a:nth-child(n+2) {
+border-left: 2px solid rgba(64,64,64,0.9);
+}
+
+
+
