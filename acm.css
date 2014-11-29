@@ -1,8 +1,8 @@
 /** ACM SIG
  *
- * @author    Sarven Capadisli <info@csarven.ca>
- * @license   http://www.apache.org/licenses/LICENSE-2.0.html Apache License, Version 2.0
- * @link      http://csarven.ca/
+ * Sarven Capadisli <info@csarven.ca> http://csarven.ca/#i
+ * http://www.apache.org/licenses/LICENSE-2.0.html Apache License, Version 2.0
+ * https://github.com/csarven/linked-research
  */
 
 /*
@@ -92,26 +92,29 @@ h3, h4, h5, h6 {
 margin-top:1em;
 }
 
-h2:nth-of-type(n+2) {
+section:not([id=abstract]):not([id=keywords]):not([id=references]) {
 counter-increment: section;
 counter-reset: sub-section;
 }
-h2:nth-of-type(n+2):before {
-content: counter(section) ". ";
-}
-h3 {
+section:not([id=abstract]):not([id=keywords]):not([id=references]) section {
 counter-increment: sub-section;
 counter-reset: sub-sub-section;
 }
-h3:before {
-content: counter(section)"." counter(sub-section) " ";
-}
-h4 {
+section:not([id=abstract]):not([id=keywords]):not([id=references]) section section {
 counter-increment: sub-sub-section;
+}
+section:not([id=abstract]):not([id=keywords]):not([id=references]) h2:before {
+content: counter(section) ". ";
+}
+h3:before {
+content: counter(section) "." counter(sub-section) " ";
 }
 h4:before {
 content: counter(section)"." counter(sub-section) "." counter(sub-sub-section) " ";
 }
+
+
+
 h2, #document-identifier dt {
 font-weight:bold;
 font-family:"Times New Roman", serif;
