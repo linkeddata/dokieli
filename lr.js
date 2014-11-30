@@ -130,7 +130,8 @@ var LR = {
                         referenceText = v.title.replace(/ & /g, " &amp; ");
                     }
                     if (v.href) {
-                        referenceLink = ', <a href="' + v.href + '">' + v.href.replace(/&/g, "&amp;") + '</a>';
+                        referenceLink = v.href.replace(/&/g, "&amp;");
+                        referenceLink = ', <a href="' + referenceLink + '">' + referenceLink + '</a>';
                     }
 
                     v.outerHTML = '<a class="ref" href="#' + refId + '">' + refId + '</a>';
