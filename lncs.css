@@ -258,11 +258,6 @@ margin:1em 0;
 font-size:0.875em;
 }
 
-code {
-font-size:11px;
-font-family:monospace;
-}
-
 
 #authors {
 /*-webkit-column-count:3;*/
@@ -417,10 +412,6 @@ margin-bottom:1em;
 .figure p {
 text-indent:0;
 text-align:left;
-}
-
-.figure pre {
-margin-top:-1em;
 }
 
 .figure-column-2 {
