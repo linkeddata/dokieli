@@ -127,17 +127,15 @@ var LR = {
                     var refId = (i+1);
 
                     if (v.title) {
-                        referenceText = v.title;
-//                        refId = 'ref_' + referenceText.replace(/\W+/g, '');
+                        referenceText = v.title.replace(/ & /g, " &amp; ");
                     }
                     if (v.href) {
-                        referenceLink = ', <a href="' + v.href + '">' + v.href + '</a>';
+                        referenceLink = ', <a href="' + v.href + '">' + v.href.replace(/&/g, "&amp;") + '</a>';
                     }
 
                     v.outerHTML = '<a class="ref" href="#' + refId + '">' + refId + '</a>';
 
                     r+= '<li id="' + refId + '">' + referenceText + referenceLink + '</li>\n';
-    //                console.log(r);
                 });
                 r += '</ol>';
                 $('#references').append(r);
