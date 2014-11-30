@@ -145,7 +145,7 @@ var LR = {
                     }
                     if (v.href) {
                         referenceLink = v.href.replace(/&/g, "&amp;");
-                        referenceLink = '<code><a href="' + referenceLink + '">' + referenceLink + '</a></code>';
+                        referenceLink = '<a href="' + referenceLink + '">' + referenceLink + '</a>';
                         if (v.title) {
                             referenceLink = ', ' + referenceLink;
                         }

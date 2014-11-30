@@ -110,7 +110,8 @@ em, address {
 font-family: "CMU Serif Italic", sans-serif !important;
 font-style:normal !important;
 }
-code, pre, kbd, button {
+code, pre, kbd, button,
+#references a {
 font-family: "CMU Serif Monospace", monospace !important;
 }
 
