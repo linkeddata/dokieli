@@ -1,3 +1,10 @@
+/** Linked Research
+ *
+ * Sarven Capadisli <info@csarven.ca> http://csarven.ca/#i
+ * http://www.apache.org/licenses/LICENSE-2.0.html Apache License, Version 2.0
+ * https://github.com/csarven/linked-research
+ */
+
 var LR = {
     U: {
         showToC: function() {
@@ -110,6 +117,31 @@ var LR = {
 
         autoSave: function() {
         //TODO
+        },
+
+        buildReferences: function() {
+            if ($('#references ol').length == 0) {
+                var r = '<ol about="[this:]">';
+                $('#content a.ref').each(function(i,v) {
+                    var referenceText = '';
+                    var refId = (i+1);
+
+                    if (v.title) {
+                        referenceText = v.title;
+//                        refId = 'ref_' + referenceText.replace(/\W+/g, '');
+                    }
+                    if (v.href) {
+                        referenceLink = ', <a href="' + v.href + '">' + v.href + '</a>';
+                    }
+
+                    v.outerHTML = '<a class="ref" href="#' + refId + '">' + refId + '</a>';
+
+                    r+= '<li id="' + refId + '">' + referenceText + referenceLink + '</li>\n';
+    //                console.log(r);
+                });
+                r += '</ol>';
+                $('#references').append(r);
+            }
         }
     }
 };
@@ -118,6 +150,7 @@ $(document).ready(function() {
 //    LR.U.showToC();
 //    LR.U.sortToC();
 //    LR.U.escape();
+    LR.U.buildReferences();
 
     LR.U.showFragment();
 });
