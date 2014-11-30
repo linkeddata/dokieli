@@ -109,7 +109,7 @@ var LR = {
 
                 data = doctype + '\n' + data;
             }
-
+            //XXX: Encodes strings as UTF-8. Consider storing bytes instead?
             var blob = new Blob([data], {type:'text/html;charset=utf-8'});
             var fileName = 'index.bak.html';
 
@@ -145,7 +145,7 @@ var LR = {
                     }
                     if (v.href) {
                         referenceLink = v.href.replace(/&/g, "&amp;");
-                        referenceLink = '<a href="' + referenceLink + '">' + referenceLink + '</a>';
+                        referenceLink = '<code><a href="' + referenceLink + '">' + referenceLink + '</a></code>';
                         if (v.title) {
                             referenceLink = ', ' + referenceLink;
                         }
