@@ -96,7 +96,21 @@ var LR = {
         },
 
         saveToFile: function(data) {
-            var blob = new Blob([data], {type:'text/html'});
+            /* Get DOCTYPE from http://stackoverflow.com/a/10162353 */
+            var node = document.doctype;
+            var doctype = '';
+            if (node !== null) {
+                doctype = "<!DOCTYPE "
+                    + node.name
+                    + (node.publicId ? ' PUBLIC "' + node.publicId + '"' : '')
+                    + (!node.publicId && node.systemId ? ' SYSTEM' : '')
+                    + (node.systemId ? ' "' + node.systemId + '"' : '')
+                    + '>';
+
+                data = doctype + '\n' + data;
+            }
+
+            var blob = new Blob([data], {type:'text/html;charset=utf-8'});
             var fileName = 'index.bak.html';
 
             var a = document.createElement("a");
