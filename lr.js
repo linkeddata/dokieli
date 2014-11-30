@@ -121,7 +121,7 @@ var LR = {
 
         buildReferences: function() {
             if ($('#references ol').length == 0) {
-                var r = '<ol about="[this:]">';
+                var r = '\n<ol about="[this:]">';
                 $('#content a.ref').each(function(i,v) {
                     var referenceText = '';
                     var refId = (i+1);
@@ -131,14 +131,17 @@ var LR = {
                     }
                     if (v.href) {
                         referenceLink = v.href.replace(/&/g, "&amp;");
-                        referenceLink = ', <a href="' + referenceLink + '">' + referenceLink + '</a>';
+                        referenceLink = '<a href="' + referenceLink + '">' + referenceLink + '</a>';
+                        if (v.title) {
+                            referenceLink = ', ' + referenceLink;
+                        }
                     }
 
                     v.outerHTML = '<a class="ref" href="#' + refId + '">' + refId + '</a>';
 
-                    r+= '<li id="' + refId + '">' + referenceText + referenceLink + '</li>\n';
+                    r+= '\n    <li id="' + refId + '">' + referenceText + referenceLink + '</li>';
                 });
-                r += '</ol>';
+                r += '\n</ol>\n';
                 $('#references').append(r);
             }
         }
@@ -149,6 +152,7 @@ $(document).ready(function() {
 //    LR.U.showToC();
 //    LR.U.sortToC();
 //    LR.U.escape();
+//    LR.U.saveToFile(document.documentElement.outerHTML);
     LR.U.buildReferences();
 
     LR.U.showFragment();
