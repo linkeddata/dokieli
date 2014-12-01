@@ -59,7 +59,6 @@ object[height="480"] { height:360px !important; }
 object[height="415"] { height:311px !important; }
 
 object.slides { display:none; }
-object { pointer-events: none; }
 a.block { display:block; }
 
 @page {
