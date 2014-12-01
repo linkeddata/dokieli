@@ -158,6 +158,10 @@ var LR = {
                 r += '\n</ol>\n';
                 $('#references').append(r);
             }
+        },
+
+        openTarget: function() {
+            $(document).find("a.external").attr("target", "_blank");
         }
     }
 };
@@ -167,6 +171,7 @@ $(document).ready(function() {
 //    LR.U.sortToC();
 //    LR.U.escape();
 //    LR.U.saveToFile(document.documentElement.outerHTML);
+    LR.U.openTarget();
     LR.U.buildReferences();
 
     LR.U.showFragment();

@@ -58,6 +58,8 @@ object[height="480"] { height:360px !important; }
 object[height="415"] { height:311px !important; }
 
 object.slides { display:none; }
+object { pointer-events: none; }
+a.block { display:block; }
 
 @page {
 /*Standard ISO A4 paper dimensions are:*/
@@ -408,6 +410,7 @@ margin-bottom:1em;
 .figure {
 margin-top:1em;
 margin-bottom:1em;
+position:relative;
 }
 
 .figure p {
