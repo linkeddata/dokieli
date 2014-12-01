@@ -53,6 +53,7 @@ thead { display: table-header-group; }
 table, img, object, .figure { page-break-inside: avoid; }
 img, object { max-width:100% !important; height:auto !important }
 
+object[width="100%"] { max-width:480px !important; }
 object[width="640"] { max-width:480px !important; }
 object[height="480"] { height:360px !important; }
 object[height="415"] { height:311px !important; }
