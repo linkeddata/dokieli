@@ -6,7 +6,34 @@
  */
 
 var LR = {
+    C: {
+        Lang: document.documentElement.lang,
+        DocRefType: '',
+        RefType: {
+            LNCS: {
+                InlineOpen: '[',
+                InlineClose: ']'
+            },
+            ACM: {
+                InlineOpen: '[',
+                InlineClose: ']'
+            },
+            APA: {
+                InlineOpen: '(',
+                InlineClose: ')'
+            }
+        }
+    },
+
     U: {
+        getDocRefType: function() {
+            LR.C.DocRefType = $('link[rel="stylesheet"]').attr('href').slice(0, -4).toUpperCase();
+
+            if(LR.C.DocRefType != 'LNCS' || LR.C.DocRefType != 'ACM' || LR.C.DocRefType != 'APA') {
+                LR.C.DocRefType = 'LNCS';
+            }
+        },
+
         showToC: function() {
             var s = '';
             var section = $('h1 ~ div section[rel="dcterms:hasPart"]:not([id="acknowledgements"]');
@@ -75,6 +102,14 @@ var LR = {
             });
         },
 
+        utf8Tob64: function(s) {
+            return window.btoa(encodeURIComponent(escape(s)));
+        },
+
+        b64Toutf8: function(s) {
+            return unescape(decodeURIComponent(window.atob(s)));
+        },
+
         showFragment: function() {
             $(document).on({
                 mouseenter: function () {
@@ -133,46 +168,91 @@ var LR = {
         //TODO
         },
 
+        openTarget: function() {
+            $(document).find("a.external").attr("target", "_blank");
+        },
+
         buildReferences: function() {
             if ($('#references ol').length == 0) {
-                var r = '\n<ol about="[this:]">';
-                $('#content a.ref').each(function(i,v) {
+                //XXX: Not the best way of doing this, but it allows LR references to be added to the right place.
+                $('#references').append('\n<ol about="[this:]">\n</ol>\n');
+
+                $('#content span.ref').each(function(i,v) {
                     var referenceText = '';
                     var refId = (i+1);
+                    var href = $(v).attr('href');
+                    var title = $(v).attr('title');
 
-                    if (v.title) {
-                        referenceText = v.title.replace(/ & /g, " &amp; ");
+                    if (title) {
+                        referenceText = title.replace(/ & /g, " &amp; ");
                     }
-                    if (v.href) {
-                        referenceLink = v.href.replace(/&/g, "&amp;");
+                    if (href) {
+                        referenceLink = href.replace(/&/g, "&amp;");
                         referenceLink = '<a href="' + referenceLink + '">' + referenceLink + '</a>';
-                        if (v.title) {
+                        if (title) {
                             referenceLink = ', ' + referenceLink;
                         }
                     }
 
-                    v.outerHTML = '<a class="ref" href="#' + refId + '">' + refId + '</a>';
+                    v.outerHTML = ' ' + LR.C.RefType[LR.C.DocRefType].InlineOpen + '<a class="ref" href="#' + refId + '">' + refId + '</a>' + LR.C.RefType[LR.C.DocRefType].InlineClose;
 
-                    r+= '\n    <li id="' + refId + '">' + referenceText + referenceLink + '</li>';
+                    $('#references ol').append('\n    <li id="' + refId + '"></li>');
+
+                    if($(v).hasClass('lr')) {
+                        LR.U.getLinkedResearch(href, $('#references #' + refId));
+                    }
+                    else {
+                        $('#references #' + refId).html(referenceText + referenceLink);
+                    }
                 });
-                r += '\n</ol>\n';
-                $('#references').append(r);
             }
         },
 
-        openTarget: function() {
-            $(document).find("a.external").attr("target", "_blank");
+        getLinkedResearch: function(iri, resultsNode) {
+            //TODO: rdfstore may not be parsing or loading RDFa properly.
+            var queryA = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n\
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n\
+PREFIX dcterms: <http://purl.org/dc/terms/>\n\
+SELECT ?prefLabel\n\
+WHERE {\n\
+    OPTIONAL { <" + iri + "> skos:prefLabel ?prefLabel . }\n\
+    OPTIONAL { <" + iri + "> rdfs:label ?prefLabel . }\n\
+    OPTIONAL { <" + iri + "> dcterms:title ?prefLabel . }\n\
+    OPTIONAL { <" + iri + "> skos:notation ?prefLabel . }\n\
+    OPTIONAL { <" + iri + "> dcterms:identifier ?prefLabel . }\n\
+    FILTER (LANG(?prefLabel) = '' || LANGMATCHES(LANG(?prefLabel), '" + LR.C.Lang + "'))\n\
+}\n\
+LIMIT 1";
+
+            var store = rdfstore.create();
+            store.load('remote', iri, function(success, results){
+                if (success) {
+                    store.execute(queryA, function(success, results) {
+                        if (results.length > 0) {
+                            console.log(results);
+                            resultsNode.html(results[0].prefLabel.value + ', <a class="href" href="' + iri + '">' + iri + '</a>');
+                        }
+                        else {
+                            console.log("NOPE 2");
+                        }
+                    });
+                }
+                else {
+                    console.log("NOPE 1");
+                }
+            });
         }
     }
 };
 
 $(document).ready(function() {
+    LR.U.getDocRefType();
 //    LR.U.showToC();
 //    LR.U.sortToC();
 //    LR.U.escape();
 //    LR.U.saveToFile(document.documentElement.outerHTML);
     LR.U.openTarget();
     LR.U.buildReferences();
-
+//    LR.U.getLinkedResearch();
     LR.U.showFragment();
 });

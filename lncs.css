@@ -181,7 +181,8 @@ h2 + p,
 h3 + p,
 h4 + p,
 h5 + p,
-div > p:first-child {
+div > p:first-child,
+dl + p {
 text-indent:0;
 }
 h1 + p {
@@ -235,7 +236,8 @@ h4 + p:after,
 h5 + p:after,
 h4 + div p:after,
 h5 + div p:after,
-section + p:before {
+section + p:before,
+section + dl:before {
 content:"\A";
 white-space:pre;
 }
