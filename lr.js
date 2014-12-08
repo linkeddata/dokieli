@@ -194,9 +194,9 @@ var LR = {
                         }
                     }
 
-                    v.outerHTML = ' ' + LR.C.RefType[LR.C.DocRefType].InlineOpen + '<a class="ref" href="#' + refId + '">' + refId + '</a>' + LR.C.RefType[LR.C.DocRefType].InlineClose;
+                    v.outerHTML = ' ' + LR.C.RefType[LR.C.DocRefType].InlineOpen + '<a class="ref" href="#ref-' + refId + '">' + refId + '</a>' + LR.C.RefType[LR.C.DocRefType].InlineClose;
 
-                    $('#references ol').append('\n    <li id="' + refId + '"></li>');
+                    $('#references ol').append('\n    <li id="#ref-' + refId + '"></li>');
 
                     if($(v).hasClass('lr')) {
                         LR.U.getLinkedResearch(href, $('#references #' + refId));
