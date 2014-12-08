@@ -179,6 +179,7 @@ var LR = {
 
                 $('#content span.ref').each(function(i,v) {
                     var referenceText = '';
+                    var referenceLink = '';
                     var refId = (i+1);
                     var href = $(v).attr('href');
                     var title = $(v).attr('title');
@@ -196,13 +197,13 @@ var LR = {
 
                     v.outerHTML = ' ' + LR.C.RefType[LR.C.DocRefType].InlineOpen + '<a class="ref" href="#ref-' + refId + '">' + refId + '</a>' + LR.C.RefType[LR.C.DocRefType].InlineClose;
 
-                    $('#references ol').append('\n    <li id="#ref-' + refId + '"></li>');
+                    $('#references ol').append('\n    <li id="ref-' + refId + '"></li>');
 
                     if($(v).hasClass('lr')) {
-                        LR.U.getLinkedResearch(href, $('#references #' + refId));
+                        LR.U.getLinkedResearch(href, $('#references #ref-' + refId));
                     }
                     else {
-                        $('#references #' + refId).html(referenceText + referenceLink);
+                        $('#references #ref-' + refId).html(referenceText + referenceLink);
                     }
                 });
             }
