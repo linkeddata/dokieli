@@ -113,8 +113,8 @@ border-left: 2px solid rgba(64,64,64,0.9);
 }
 
 
-.sparklines {
+.sparkline {
 height: 1em;
 width: 100%;
-max-width: 6em; /*125px*/
+max-width: 100px;
 }
