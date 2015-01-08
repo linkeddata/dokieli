@@ -1,47 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
-    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
-    xmlns:owl="http://www.w3.org/2002/07/owl#"
-    xmlns:rsa="http://www.w3.org/ns/auth/rsa#"
-    xmlns:cert="http://www.w3.org/ns/auth/cert#"
-    xmlns:dcterms="http://purl.org/dc/terms/"
-    xmlns:foaf="http://xmlns.com/foaf/0.1/"
-    xmlns:v="http://www.w3.org/2006/vcard/ns#"
-    xmlns:cc="http://creativecommons.org/ns#"
-    xmlns:dbr="http://dbpedia.org/resource/"
-    xmlns:dbp="http://dbpedia.org/property/"
-    xmlns:sioc="http://rdfs.org/sioc/ns#"
-    xmlns:wgs="http://www.w3.org/2003/01/geo/wgs84_pos#"
-    xmlns:cal="http://www.w3.org/2002/12/cal/ical#"
-    xmlns:org="http://www.w3.org/ns/org#"
-    xmlns:biblio="http://purl.org/net/biblio#"
-    xmlns:bibo="http://purl.org/ontology/bibo/"
-    xmlns:book="http://purl.org/NET/book/vocab#"
-    xmlns:ov="http://open.vocab.org/terms/"
-    xmlns:schema="http://schema.org/"
-    xmlns:skos="http://www.w3.org/2004/02/skos/core#"
-    xmlns:pimspace="http://www.w3.org/ns/pim/space#"
-    xmlns:sio="http://semanticscience.org/resource/"
-    xmlns:opmw="http://www.opmw.org/ontology/"
-    xmlns:prov="http://www.w3.org/ns/prov#"
-    xmlns:deo="http://purl.org/spar/deo/"
-    xmlns:sro="http://salt.semanticauthoring.org/ontologies/sro#"
-
-    xmlns:this="http://csarven.ca/call-for-linked-research"
-
-    xml:lang="en">
+    lang="en">
     <head>
-        <title property="dcterms:title">Call for Linked Research</title>
-        <meta name="description" property="dcterms:abstract" content="To encourage the do it yourself behaviour for sharing and reusing research knowledge."/>
-       <link rel="stylesheet" type="text/css" media="all" href="http://linked-research.270a.info/lncs.css"/>
+        <meta charset="utf-8"/>
+        <title>Call for Linked Research</title>
+        <meta name="description" content="To encourage the do it yourself behaviour for sharing and reusing research knowledge."/>
+        <link rel="stylesheet" type="text/css" media="all" href="lncs.css"/>
     </head>
-
-    <body about="http://csarven.ca/call-for-linked-research" typeof="foaf:Document sioc:Post biblio:Paper bibo:Document prov:Entity" id="article" class="hfeed">
+    <body about="[this:]" typeof="foaf:Document sioc:Post biblio:Paper prov:Entity" id="article" class="hfeed" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns pimspace: http://www.w3.org/ns/pim/space# cc: http://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# schema: http://schema.org/ rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# org: http://www.w3.org/ns/org# biblio: http://purl.org/net/biblio# bibo: http://purl.org/ontology/bibo/ dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ sro: http://salt.semanticauthoring.org/ontologies/sro# this: http://csarven.ca/call-for-linked-research">
         <div id="wrapper">
-            <div class="hentry">
+            <article class="hentry">
+
+
                 <h1 class="entry-title">Call for Linked Research</h1>
 
                 <div id="authors">
@@ -63,14 +33,12 @@
                 <dl id="document-submitted" class="on">
                     <dt>Published</dt>
                     <dd property="dcterms:published" content="2014-07-28T09:00:00Z">2014-07-28</dd>
-<!--                    <dt>Modified</dt>-->
-<!--                    <dd property="dcterms:modified" content="2014-07-28T09:00:00Z">2014-07-28</dd>-->
                 </dl>
 
-<!--                <dl id="document-license">-->
-<!--                    <dt>License</dt>-->
-<!--                    <dd><a about="[this:]" rel="license cc:license" href="http://creativecommons.org/licenses/by-sa/4.0/" title="Creative Commons Attribution-ShareAlike 4.0 Unported">CC BY-SA 4.0</a></dd>-->
-<!--                </dl>-->
+                <dl id="document-license" class="on">
+                    <dt>License</dt>
+                    <dd><a about="[this:]" rel="license cc:license" href="http://creativecommons.org/licenses/by-sa/4.0/" title="Creative Commons Attribution-ShareAlike 4.0 Unported">CC BY-SA 4.0</a></dd>
+                </dl>
 
                 <dl id="document-purpose">
                     <dt>Purpose</dt>
@@ -105,10 +73,10 @@
                         </dd>
                     </dl>
 
-                    <p id="no-central-authority" about="[#this:no-central-authority]" typeof="sro:Motivation" property="dcterms:description">There is no central authority to make a judgement on the value of your contributions. You do not need anyone&#8217;s permission to share your work, you can do it yourself, meanwhile others can learn and give feedback.</p>
+                    <p id="no-central-authority" about="[#this:no-central-authority]" typeof="sro:Motivation" property="dcterms:description">There is no central authority to judge the value of your contributions. You do not need permission to publish! Control your own research and communication.</p>
                 </div>
 
-            </div>
+            </article>
     	</div>
     </body>
 </html>
