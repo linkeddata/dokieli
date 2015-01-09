@@ -92,18 +92,18 @@ h3, h4, h5, h6 {
 margin-top:1em;
 }
 
-section:not([id=abstract]):not([id=keywords]):not([id=references]) {
+section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]) {
 counter-increment: section;
 counter-reset: sub-section;
 }
-section:not([id=abstract]):not([id=keywords]):not([id=references]) section {
+section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]) section {
 counter-increment: sub-section;
 counter-reset: sub-sub-section;
 }
-section:not([id=abstract]):not([id=keywords]):not([id=references]) section section {
+section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]) section section {
 counter-increment: sub-sub-section;
 }
-section:not([id=abstract]):not([id=keywords]):not([id=references]) h2:before {
+section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]) h2:before {
 content: counter(section) ". ";
 }
 h3:before {
