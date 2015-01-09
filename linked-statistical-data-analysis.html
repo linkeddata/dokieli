@@ -12,7 +12,6 @@
         <div id="wrapper">
             <article class="hentry">
 
-
                 <h1 class="entry-title" property="dcterms:title">Linked Statistical Data Analysis</h1>
 
                 <div id="authors">
@@ -84,7 +83,7 @@
 
                     <section id="introduction" about="[this:]" rel="dcterms:hasPart">
                         <h2 about="[this:#introduction]" property="dcterms:title">Introduction</h2>
-                        <div about="[this:#introduction]" property="dcterms:description">
+                        <div about="[this:#introduction]" property="dcterms:description" typeof="deo:Introduction">
                             <p>Statistical data artefacts and the analyses conducted on the data are fundamental for testing scientific theories about our society and the universe we live in. As statistics are often used to add credibility to an argument or advice, they influence the decisions we make. The decisions are, however, complex beings on their own with multiple variables based on facts, cognitive processes, social demands, and maybe even factors that are unknown to us. In order for the society to track and learn from its own vast knowledge about events and things, it needs to be able to gather statistical information from heterogeneous and distributed sources. This is to uncover insights, make predictions, or build smarter systems that society needs to progress.</p>
 
                             <p>Due to a range of technical challenges, development teams often face low-level repetitive statistical data management tasks with partial tooling at their disposal. These challenges on the surface include: data integration, synchronization, and access in a uniform way. In addition, designing user-centric interfaces for data analysis that is functionally consistent (i.e., improving usability and learning), reasonably responsive, provenance friendly (e.g., fact checkable) still requires much attention.</p>
@@ -331,7 +330,7 @@ WHERE {
 
                     <section id="conclusions" about="[this:]" rel="dcterms:hasPart">
                         <h2 about="[this:#conclusions]" property="dcterms:title">Conclusions and Future Work</h2>
-                        <div about="[this:#conclusions]" property="dcterms:description">
+                        <div about="[this:#conclusions]" property="dcterms:description" typeof="sro:Conclusion">
                             <p>We believe that the presented work here and the prior <a href="http://csarven.ca/linked-sdmx-data">Linked SDMX Data</a> effort contributed towards strengthening the relationship between Semantic Web / Linked Data and statistical communities. The stats.270a.info service is intended to allow humans and machines explore statistical analyses.</p>
                             <p>In the following we discuss some research and application areas that are planned in future work:</p>
                             <p>Making the query optimization file from Jena TDB available in RDF and at SPARQL endpoints (or placed in VoID along with <a href="https://github.com/AKSW/LODStats">LODStats</a> [<a href="#r_43">43</a>]) can help to devise better performing federated queries.</p>
@@ -401,12 +400,9 @@ COLD, ISWC (2011), <a rel="dcterms:references" href="http://iswc2011.semanticweb
 <li id="r_44">European Statistics Code of Practice, <a rel="dcterms:references" href="http://epp.eurostat.ec.europa.eu/portal/page/portal/quality/code_of_practice">http://epp.eurostat.ec.europa.eu/portal/page/portal/quality/code_of_practice</a></li>
                         </ol>
                     </section>
-
-
-                </div>  <!-- #content -->
-
+                </div>
 
             </article>
-        </div>  <!-- #wrapper -->
+        </div>
     </body>
 </html>
