@@ -254,7 +254,7 @@ text-align:left;
 margin-left:0;
 }
 
-.journal table {
+table {
 border-collapse:collapse;
 
 /*-webkit-column-break-inside:avoid;*/
@@ -306,27 +306,27 @@ border-collapse:collapse;
 /*display: inline-block;*/
 /*width:100%;*/
 }
-.journal table,
-.journal th,
-.journal td {
+table,
+th,
+td {
 border: 1px solid;
 }
-.journal table thead td:first-child,
-.journal table tfoot td:first-child {
+table thead td:first-child,
+table tfoot td:first-child {
 border:0;
 }
-.journal th,
-.journal td {
+th,
+td {
 padding:0.5em;
 }
-.journal caption {
+caption {
 padding:0.25em 0;
 }
 
-.journal tbody th {
+tbody th {
 text-align:left;
 }
-.main figcaption {
+figcaption {
 margin-bottom:1em;
 }
 
