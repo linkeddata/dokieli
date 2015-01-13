@@ -12,7 +12,6 @@
         <div id="wrapper">
             <article class="hentry">
 
-
                 <h1 class="entry-title" property="dcterms:title">Semantic Similarity and Correlation of Linked Statistical Data Analysis</h1>
 
                 <div id="authors">
@@ -82,7 +81,7 @@
 
                     <section id="introduction" about="[this:]" rel="dcterms:hasPart">
                         <h2 about="[this:#introduction]" property="dcterms:title">Introduction</h2>
-                        <div about="[this:#introduction]" typeof="deo:Introduction" property="dcterms:description">
+                        <div about="[this:#introduction]" property="dcterms:description" typeof="deo:Introduction">
                             <p><span about="[this:]" rel="dcterms:hasPart"><q about="[this:#prologue]" typeof="deo:Prologue" property="dcterms:description" cite="http://www.open.edu/openlearn/science-maths-technology/mathematics-and-statistics/statistics/the-joy-stats-meaningless-and-meaningful-correlations">There was this American who was afraid of a heart attack and he found out that the Japanese ate very little fat and almost did not drink wine but they had much less heart attacks than the Americans. But on the other hand he also found out that the French eat as much fat as the Americans and they drink much more wine but they also have less heart attacks. So he concluded that what kills you is speaking English</q></span> [<a href="#r_1">1</a>]. While computers can assist us in discovering strong correlations in large amounts of statistical datasets, whether by chance or through sophisticated methods, humans (or sometimes also known as <em>domain experts</em>) still need to be critical about the results and interpret them appropriately. This implies that we are still very much involved in the process in discovering meaningful correlations by filtering through everything that is presented to us.</p>
 
                             <p about="[this:#motivation]" typeof="sro:Motivation" property="dcterms:description">If we could however improve the situation slightly by having machines present us with only <em>useful</em> correlations from a random mass of correlations, then we can give more of our attention to what is interesting. Hence, our goal is to set a path towards identifying why some variables have a semantic link between them. Before we establish that, our ongoing approach (as outlined in this research and afterwards) will be to refute or cancel out things which may be in disguise for semantic similarity.</p>
@@ -235,11 +234,11 @@
                             <div class="figure-column-2">
                                 <div class="figure" id="figure_lsd-sense-worldbank-2012">
                                     <img src="lsd-sense-worldbank-2012.png" width="300" height="300" alt="Figure of scatter plot showing 2012 World Bank indicators with all topics"/>
-                                    <p><strong>Figure 1</strong>: 2012 World Bank indicators with all topics</p>
+                                    <figcaption><strong>Figure 1</strong>: 2012 World Bank indicators with all topics</figcaption>
                                 </div>
                                 <div class="figure" id="figure_lsd-sense-worldbank-2012-topic-4">
                                     <img src="lsd-sense-worldbank-2012-4.png" width="300" height="300" alt="Figure of scatter plot showing 2012 World Bank indicators with topic education"/>
-                                    <p><strong>Figure 2</strong>: 2012 World Bank indicators with topic education.</p>
+                                    <figcaption><strong>Figure 2</strong>: 2012 World Bank indicators with topic education.</figcaption>
                                 </div>
                             </div>
 
@@ -267,9 +266,9 @@
                         </div>
                     </section>
 
-                    <section id="conclusion" about="[this:]" rel="dcterms:hasPart">
-                        <h2 about="[this:#conclusion]" rel="dcterms:title">Conclusions and Future Work</h2>
-                        <div about="[this:#conclusion]" typeof="sro:Conclusion" property="dcterms:description">
+                    <section id="conclusions" about="[this:]" rel="dcterms:hasPart">
+                        <h2 about="[this:#conclusions]" rel="dcterms:title">Conclusions and Future Work</h2>
+                        <div about="[this:#conclusions]" property="dcterms:description" typeof="sro:Conclusion">
                             <p>We believe that the presented work here and the prior Linked Statistical Data Analysis effort contributes towards strengthening the relationship between Semantic Web and statistical research. What we have set out to investigate was to minimize human involvement for discovering useful correlations in statistical data. We have implemented a workflow in which we can automate the analysis process, from data retrieval to outputting analysis results for candidate semantic linkages in Linked Statistical Data.</p>
 
                             <p>We have evaluated our results by testing and verifying the null hypothesis which we have put forward. While it turned out that the semantic similarity between datasets titles were not useful to determine strong and meaningful correlations &#8212; which is a useful finding, in any case &#8212; it left us with the remaining alternative hypothesis that can be used in future research.</p>
@@ -307,13 +306,10 @@
 <li id="r_15">Vigen, T.: Spurious Correlations, <a rel="dcterms:references" href="http://tylervigen.com/">http://tylervigen.com/</a></li>
 <li id="r_16">Shvaiko, P., Euzenat, J.: Ontology matching: state of the art and future challenges. IEEE Transactions on Knowledge and Data Engineering (2013), <a href="http://disi.unitn.it/~p2p/RelatedWork/Matching/SurveyOMtkde_SE.pdf">http://disi.unitn.it/~p2p/RelatedWork/Matching/SurveyOMtkde_SE.pdf</a></li>
                         </ol>
-                    </section> <!-- #references -->
-
-
-                </div>  <!-- #content -->
-
+                    </section>
+                </div>
 
             </article>
-        </div> <!-- #wrapper -->
+        </div>
     </body>
 </html>
