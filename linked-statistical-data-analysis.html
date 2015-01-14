@@ -130,10 +130,10 @@
                         <div about="[this:#lsd-analysis]" property="dcterms:description">
                             <p>Our analysis platform focuses on two goals: 1) a Web user interface for researchers to compare macrodata observations and to view plots and analysis results, 2) caching and storage of analyses for future research and reuse. Here, we describe the platform at <a href="http://stats.270a.info/">stats.270a.info</a>. Figure [<a href="#figure_linked-stats-analysis-architecture">1</a>] shows the architecture for Linked Stats Analysis.</p>
 
-                            <div class="figure" id="figure_linked-stats-analysis-architecture">
+                            <figure class="figure" id="figure_linked-stats-analysis-architecture">
                                 <object type="image/svg+xml" width="640" height="415" data="linked-stats-analysis-architecture.svg"></object>
-                                <p><strong>Figure 1</strong>: Linked Stats Analysis Architecture.</p>
-                            </div>
+                                <figcaption><strong>Figure 1</strong>: Linked Stats Analysis Architecture.</figcaption>
+                            </figure>
 
                             <section id="requirements" about="[this:#lsd-analysis]" rel="dcterms:hasPart">
                                 <h3 about="[this:#requirements]" property="dcterms:title">Functional Requirements</h3>
@@ -147,10 +147,10 @@
                                 <div about="[this:#user-interface]" property="dcterms:description">
                                     <p>A web application was created to provide users with a simple interface to conduct regression analysis and display of scatter plots. In the case of regression analysis, the interface presents three drop-down selection areas for the user: an independent variable, a dependent variable, and a time series. Both, the independent and dependent variables are composed of a list of datasets with observations, and time series are composed of reference periods of those observations. Upon selecting and submitting datasets to compare, the interface then presents a scatter plot with a line of best fit from a list of tested linear models. Figure [<a href="#figure_stats.270a.info.ui">2</a>] shows a screenshot of the user interface. The points in the scatter plot represent locations, in this case countries, which happen to have a measure value for both variables as well as the reference period that was selected by the user. Below the scatter-plot, a table of analysis results is presented.</p>
 
-                                    <div class="figure" id="figure_stats.270a.info.ui">
+                                    <figure class="figure" id="figure_stats.270a.info.ui">
                                         <img src="stats.270a.info.ui.png" width="480" height="440" alt="stats.270a.info user interface"/>
-                                        <p><strong>Figure 2</strong>: stats.270a.info analysis user interface.</p>
-                                    </div>
+                                        <figcaption><strong>Figure 2</strong>: stats.270a.info analysis user interface.</figcaption>
+                                    </figure>
 
                                     <p>The datasets are compiled by gathering <code>qb:DataSet</code>s (an RDF Data Cube class for datasets) from each statistical dataspace at 270a.info. Similarly, the reference periods are derived from calendar intervals e.g., <code>YYYY</code>, <code>YYYY-MM-DD</code> or <code>YYYY-QQ</code>.</p>
                                 </div>
@@ -177,10 +177,10 @@
 
                                     <p>In addition to well-formedness, to compare variables from two datasets, there needs to be an agreement on the concepts that are being matched for in respective observations. In the case of regression analysis, the primary concern is about reference areas (i.e. locations), and making sure that the comparison made for the observations from dataset<sub>x</sub> (independent variable) and dataset<sub>y</sub> (dependent variable) are using concepts that are interlinked (using the property <code>skos:exactMatch</code>). Practically, a concept, for example Switzerland, from at least one of the dataset's code lists should have an arc to the other dataset's concept. It ensures that there is a reliable degree of confidence that the particular concept is interchangeable. Hence, the measure corresponding to the phenomenon being observed, is about the same location in both datasets. Concepts in the datasets were interlinked using the <a href="http://aksw.org/Projects/limes">LInk discovery framework for MEtric Spaces</a> (LIMES) [<a href="#r_23">23</a>]. Figure [<a href="#figure_270a.info.interlinks">3</a>] shows outbound interlinks for the datasets at <a href="http://270a.info/">http://270a.info/</a>.</p>
 
-                                    <div class="figure" id="figure_270a.info.interlinks">
+                                    <figure class="figure" id="figure_270a.info.interlinks">
                                         <object type="image/svg+xml" width="640" height="480" data="270a.cloud.svg"></object>
-                                        <p><strong>Figure 3</strong>: Outbound interlinks for 270a.info datasets.</p>
-                                    </div>
+                                        <figure><strong>Figure 3</strong>: Outbound interlinks for 270a.info datasets.</figure>
+                                    </figure>
 
                                     <p>One additional requirement from the datasets is that the RDF Data Cube component properties (e.g., dimensions, measures) either use <code>sdmx-dimension:refArea</code>, <code>sdmx-dimension:refPeriod</code>, <code>sdmx-measure:obsValue</code> directly or respective sub-properties (<code>rdfs:subPropertyOf</code>). Given decentralized mappings of the statistical datasets (published as SDMX-ML), their commonality is expected to be the use, or a reference to SDMX-RDF properties in order to achieve generalized federated queries without having complete knowledge of the structures of the datasets, but rather only the essential bits.</p>
 
@@ -207,7 +207,7 @@
 
                                     <p>The anatomy of the query is shown in Figure [<a href="#federated-sparql-query">3</a>]. The SPARQL Endpoint and the dataset URIs are the only requirements. The structure of the statements and operations tries to get the most out of <a href="http://jena.apache.org/">Apache Jena</a>'s [<a href="#r_32">32</a>] <a href="http://incubator.apache.org/jena/documentation/tdb/">TDB</a> storage system [<a href="#r_33">33</a>], <a href="http://jena.apache.org/documentation/tdb/optimizer.html">TDB Optimizer</a> [<a href="#r_34">34</a>] and <a href="http://incubator.apache.org/jena/documentation/serving_data/index.html">Fuseki</a> [<a href="#r_35">35</a>] SPARQL endpoints. Better performing queries can be achieved by knowing the predicate frequency upfront, and ordering them in for a dataset to avoid processing of false negatives.</p>
 
-                                    <div class="figure" id="federated-sparql-query">
+                                    <figure class="figure" id="federated-sparql-query">
 <pre>
 SELECT DISTINCT ?refAreaY ?x ?y ?identityX ?identityY
 WHERE {
@@ -247,12 +247,13 @@ WHERE {
       }
     }
   }
-  FILTER (SAMETERM(?refAreaYExactMatch, ?refAreaX) || SAMETERM(?refAreaXExactMatch, ?refAreaY)
+  FILTER (SAMETERM(?refAreaYExactMatch, ?refAreaX)
+          || SAMETERM(?refAreaXExactMatch, ?refAreaY)
           || SAMETERM(?refAreaY, ?refAreaX))
 }
 </pre>
-                                        <p><strong>Figure 3</strong>: Federated SPARQL query integrating statistical linked data.</p>
-                                    </div>
+                                        <figcaption><strong>Figure 3</strong>: Federated SPARQL query integrating statistical linked data.</figcaption>
+                                    </figure>
 
                                     <p>For the time being, the use of named graphs in the SPARQL queries were excluded for a good reason. For federated queries to work with the goal of minimal knowledge about store organization, the queries had to work without including graph names. However, by employing the <a href="http://www.w3.org/TR/void/">Vocabulary of Interlinked Datasets</a> (VoID) [<a href="#r_36">36</a>], it is possible to extract both, the location of the SPARQL endpoint, as well as the graph names within. This is left as a future enhancement.</p>
 
