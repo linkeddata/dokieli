@@ -50,7 +50,7 @@ widows: 3;
 }
 
 thead { display: table-header-group; }
-table, img, object, .figure { page-break-inside: avoid; }
+table, img, object, figure { page-break-inside: avoid; }
 img, object { max-width:100% !important; height:auto !important }
 
 object[width="100%"] { max-width:480px !important; }
@@ -59,7 +59,7 @@ object[height="480"] { height:360px !important; }
 object[height="415"] { height:311px !important; }
 
 object.slides { display:none; }
-a.block { display:block; }
+.block { display:block; }
 
 @page {
 /*Standard ISO A4 paper dimensions are:*/
@@ -411,14 +411,13 @@ ol, ul, dd, table {
 margin-bottom:1em;
 }
 
-.figure {
+figure {
 margin-top:1em;
 margin-bottom:1em;
 position:relative;
+text-align:center;
 }
-
-.figure p {
-text-indent:0;
+figure pre {
 text-align:left;
 }
 
@@ -438,13 +437,13 @@ width:100%;
 .figure-column-2 + *{
 clear:both;
 }
-.figure-column-2 .figure {
+.figure-column-2 figure {
 margin-top:0;
 width:47.5%;
 margin-left:5%;
 float:left;
 }
-.figure-column-2 .figure:first-child {
+.figure-column-2 figure:first-child {
 margin-left:0;
 }
 
