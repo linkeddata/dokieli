@@ -171,7 +171,7 @@ column-column-width:40%;
 column-gap:5%;
 }
 
-#authors {
+.column-count-3 {
 -webkit-column-count:3;
 -webkit-column-width:30%;
 -webkit-column-gap:3%;
