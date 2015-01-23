@@ -7,9 +7,23 @@
 
 @media print {
 .toc,
-.fragment {
+.fragment,
+#document-statistics {
 display:none !important;
 }
+}
+
+#document-statistics {
+position:fixed;
+bottom:1em;
+left:0;
+z-index:9;
+padding:1em;
+border:1px solid #ccc;
+border-radius:7px;
+box-shadow:0.25em 0.25em 0.25em rgba(0,0,0,0.1);
+background:#fff !important;
+overflow:auto;
 }
 
 .toc {

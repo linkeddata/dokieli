@@ -242,12 +242,40 @@ LIMIT 1";
                     console.log("NOPE 1");
                 }
             });
+        },
+
+        showDocumentStatistics: function() {
+            var s = '';
+            var count = LR.U.contentCount($('#content').text());
+
+            s += '<div id="document-statistics"><button class="close">x</button><table>\n\
+                <caption>Document Statistics</caption>\n\
+                <thead>\n\
+                    <tr><th>Characters</th><th>Words</th><th>Lines</th></tr>\n\
+                </thead>\n\
+                <tbody>\n\
+                    <tr><td>' + count.characters + '</td><td>' + count.words + '</td><td>' + count.lines + '</td></tr>\n\
+                </tbody>\n\
+            </table></div>';
+
+            $('body').append(s);
+            LR.U.buttonClose();
+        },
+
+        contentCount: function(content) {
+            return {
+                charactersNoSpaces : content.replace(/\s+/g, '').length,
+                characters         : content.length,
+                words              : content.match(/\S+/g).length,
+                lines              : content.split(/\r*\n/).length
+            };
         }
     }
 };
 
 $(document).ready(function() {
     LR.U.getDocRefType();
+//    LR.U.showDocumentStatistics();
 //    LR.U.showToC();
 //    LR.U.sortToC();
 //    LR.U.escape();
