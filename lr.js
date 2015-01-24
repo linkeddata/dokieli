@@ -38,7 +38,7 @@ var LR = {
             var s = '';
             var section = $('h1 ~ div section[rel="dcterms:hasPart"]:not([id="acknowledgements"]');
             if (section.length > 0) {
-                s += '<ol class="toc sortable"><button class="close">x</button>';
+                s += '<aside id="table-of-contents" class="lr"><button class="close">x</button><ol class="toc sortable">';
                 section.each(function(i,section) {
                     var h = $(section).find('h2');
                     if (h.length > 0) {
@@ -69,7 +69,7 @@ var LR = {
                         s += '</li>';
                     }
                 });
-                s += '</ol>';
+                s += '</ol></aside>';
             }
 
             $('body').append(s);
@@ -113,9 +113,9 @@ var LR = {
         showFragment: function() {
             $(document).on({
                 mouseenter: function () {
-                    if($('#'+this.id+' > .fragment').length == 0){
-                        $('#'+this.id).append('<span class="fragment" style="height:' + this.clientHeight + 'px; "><a href="#' + this.id + '">' + '#' + this.id + '</a></span>');
-                        var fragment = $('#'+this.id+' > .fragment');
+                    if($('#'+this.id+' > .lr.fragment').length == 0){
+                        $('#'+this.id).append('<span class="lr fragment" style="height:' + this.clientHeight + 'px; "><a href="#' + this.id + '">' + '#' + this.id + '</a></span>');
+                        var fragment = $('#'+this.id+' > .lr.fragment');
                         var fragmentClientWidth = fragment.get(0).clientWidth;
                         fragment.css({'right': '-' + (fragmentClientWidth - 2) + 'px'});
                     }
@@ -123,7 +123,7 @@ var LR = {
 //                    $(this).attr('contenteditable', 'true');
                 },
                 mouseleave: function () {
-                    $('#'+this.id+' > .fragment').remove();
+                    $('#'+this.id+' > .lr.fragment').remove();
 
 //                    $(this).attr('contenteditable', 'false');
                 }
@@ -246,28 +246,28 @@ LIMIT 1";
 
         showDocumentStatistics: function() {
             var s = '';
-            var count = LR.U.contentCount($('#content').text());
+            var count = LR.U.contentCount($('#content'));
 
-            s += '<div id="document-statistics"><button class="close">x</button><table>\n\
+            s += '<aside id="document-statistics" class="lr"><button class="close">x</button><table>\n\
                 <caption>Document Statistics</caption>\n\
                 <thead>\n\
                     <tr><th>Characters</th><th>Words</th><th>Lines</th></tr>\n\
                 </thead>\n\
                 <tbody>\n\
-                    <tr><td>' + count.characters + '</td><td>' + count.words + '</td><td>' + count.lines + '</td></tr>\n\
+                    <tr><td>' + count.chars + '</td><td>' + count.words + '</td><td>' + count.lines + '</td></tr>\n\
                 </tbody>\n\
-            </table></div>';
+            </table></aside>';
 
             $('body').append(s);
             LR.U.buttonClose();
         },
 
-        contentCount: function(content) {
+        contentCount: function(c) {
+            var content = c.text();
             return {
-                charactersNoSpaces : content.replace(/\s+/g, '').length,
-                characters         : content.length,
-                words              : content.match(/\S+/g).length,
-                lines              : content.split(/\r*\n/).length
+                words: content.match(/\S+/g).length,
+                chars: content.length,
+                lines: Math.ceil(c.height() / parseInt(c.css('line-height')))
             };
         }
     }

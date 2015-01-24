@@ -6,81 +6,81 @@
  */
 
 @media print {
-.toc,
-.fragment,
-#document-statistics {
+aside.lr,
+.lr.fragment {
 display:none !important;
 }
 }
 
-#document-statistics {
+aside.lr {
 position:fixed;
-bottom:1em;
-left:1em;
-z-index:9;
+right:1em;
+z-index:8;
+opacity:0.1;
 padding:1em;
+max-width:20%;
+max-height:60%;
 border:1px solid #ccc;
 border-radius:7px;
 box-shadow:0.25em 0.25em 0.25em rgba(0,0,0,0.1);
 background:#fff !important;
 overflow:auto;
+}
+aside.lr:hover {
+z-index:9;
+opacity:1;
 }
 
-.toc {
-position:fixed;
-left:1em;
+#table-of-contents {
 top:1em;
-z-index:9;
-padding:1em;
-max-height:80%;
-max-width:20%;
-border:1px solid #ccc;
-border-radius:7px;
-box-shadow:0.25em 0.25em 0.25em rgba(0,0,0,0.1);
-background:#fff !important;
-overflow:auto;
 }
-.toc, .toc ol {
+
+#document-statistics {
+bottom:1em;
+}
+
+
+.lr .toc, .lr .toc ol {
 list-style:none;
 }
-.toc ol,
-.toc li {
+.lr .toc ol,
+.lr .toc li {
 margin:0;
 text-align:left !important;
 }
-.toc ol {
+.lr .toc ol {
 margin-left: 1em;
 }
 
-.toc li {
+.lr .toc li {
 counter-increment: section;
 counter-reset: sub-section;
 }
-.toc li li {
+.lr .toc li li {
 counter-increment: sub-section;
 counter-reset: sub-sub-section;
 }
-.toc li li li {
+.lr .toc li li li {
 counter-increment: sub-sub-section;
 counter-reset: sub-sub-sub-section;
 }
-.toc li:before {
+.lr .toc li:before {
 content: counter(section) "\00a0";
 }
-.toc li li:before {
+.lr .toc li li:before {
 content: counter(section) "." counter(sub-section) "\00a0";
 }
-.toc li li li:before {
+.lr .toc li li li:before {
 content: counter(section) "." counter(sub-section) "." counter(sub-sub-section) "\00a0";
 }
 
-.toc li > span {
+.lr .toc li > span {
 cursor: move;
 }
-.toc li > span:hover {
+.lr .toc li > span:hover {
 background:#eee !important;
 }
-.toc .placeholder {
+.lr .toc .placeholder {
 outline: 1px dashed #777;
 }
 
@@ -99,7 +99,7 @@ z-index:1;
 /*background:#eee !important;*/
 }
 
-.fragment {
+.lr.fragment {
 position:absolute;
 top:0;
 right:0;
@@ -112,17 +112,17 @@ padding-left:10px;
 font-size:1em;
 }
 
-.fragment a {
+.lr.fragment a {
 padding-left:10px;
 height:100%;
 display:block;
 font-family: "CMU Serif Monospace", monospace !important;
 outline:none;
 }
-.fragment a:first-child {
+.lr.fragment a:first-child {
 border-left: 2px solid rgba(128,128,128,0.2);
 }
-.fragment a:nth-child(n+2) {
+.lr.fragment a:nth-child(n+2) {
 border-left: 2px solid rgba(64,64,64,0.9);
 }
 
