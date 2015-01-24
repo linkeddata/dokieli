@@ -36,7 +36,7 @@ var LR = {
 
         showToC: function() {
             var s = '';
-            var section = $('h1 ~ div section[rel="dcterms:hasPart"]:not([id="acknowledgements"]');
+            var section = $('h1 ~ div section[rel="dcterms:hasPart"]:not([id="acknowledgements"])');
             if (section.length > 0) {
                 s += '<aside id="table-of-contents" class="lr"><button class="close">x</button><ol class="toc sortable">';
                 section.each(function(i,section) {
