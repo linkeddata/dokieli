@@ -99,7 +99,7 @@ body {
 color:#000000;
 font-family: "CMU Serif", serif;
 font-size:13px;
-line-height:1.22;
+line-height:1.231;
 position:relative;
 margin:0 auto;
 width:122mm;
@@ -114,8 +114,7 @@ em, address {
 font-family: "CMU Serif Italic", sans-serif !important;
 font-style:normal !important;
 }
-code, pre, kbd, button,
-#references a {
+code, pre, kbd, button {
 font-family: "CMU Serif Monospace", monospace !important;
 }
 
