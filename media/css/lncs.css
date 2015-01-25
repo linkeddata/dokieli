@@ -13,27 +13,27 @@ Computer Modern Unicode fonts are from http://canopus.iacp.dvo.ru/~panov/cm-unic
 
 @font-face {
 font-family: "CMU Serif";
-src: local("CMU Serif"), url("cmunrm.otf");
+src: local("CMU Serif"), url("../fonts/cmunrm.otf");
 }
 @font-face {
 font-family: "CMU Serif Bold";
-src: local("CMU Serif Bold"), url("cmunbx.otf");
+src: local("CMU Serif Bold"), url("../fonts/cmunbx.otf");
 font-weight: bold !important;
 }
 @font-face {
 font-family: "CMU Serif Italic";
-src: local("CMU Serif Italic"), url("cmunti.otf");
+src: local("CMU Serif Italic"), url("../fonts/cmunti.otf");
 font-style: italic, oblique !important;
 }
 @font-face {
 font-family: "CMU Serif Bold Italic";
-src: local("CMU Serif Bold Italic"), url("cmunbi.otf");
+src: local("CMU Serif Bold Italic"), url("../fonts/cmunbi.otf");
 font-weight: bold;
 font-style: italic, oblique;
 }
 @font-face {
 font-family: "CMU Serif Monospace";
-src: local("CMU Serif Monospace"), url("cmuntt.otf");
+src: local("CMU Serif Monospace"), url("../fonts/cmuntt.otf");
 }
 
 * { margin:0; padding:0; text-shadow: none !important; filter:none !important; -ms-filter: none !important; }
