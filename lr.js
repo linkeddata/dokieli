@@ -38,7 +38,7 @@ var LR = {
             var s = '';
             var section = $('h1 ~ div section[rel="dcterms:hasPart"]:not([id="acknowledgements"])');
             if (section.length > 0) {
-                s += '<aside id="table-of-contents" class="lr"><button class="close">x</button><ol class="toc sortable">';
+                s += '<section id="table-of-contents" class="lr"><button class="close">❌</button><h2>Table of Contents</h2><ol class="toc sortable">';
                 section.each(function(i,section) {
                     var h = $(section).find('h2');
                     if (h.length > 0) {
@@ -69,7 +69,7 @@ var LR = {
                         s += '</li>';
                     }
                 });
-                s += '</ol></aside>';
+                s += '</ol></section>';
             }
 
             $('body').append(s);
@@ -244,19 +244,37 @@ LIMIT 1";
             });
         },
 
-        showDocumentStatistics: function() {
-            var s = '';
-            var count = LR.U.contentCount($('#content'));
+        showDocumentMetadata: function() {
+            var content = $('#content');
+            var count = LR.U.contentCount(content);
 
-            s += '<aside id="document-statistics" class="lr"><button class="close">x</button><table>\n\
-                <caption>Document Statistics</caption>\n\
-                <thead>\n\
-                    <tr><th>Characters</th><th>Words</th><th>Lines</th></tr>\n\
-                </thead>\n\
+            var contributors = '<ul class="contributors">';
+            $('#authors .entry-author').each(function(i,contributor) {
+                contributors += '<li>' + $(this).find('*[rel~="dcterms:contributor"]').html() + '</li>';
+            });
+            contributors += '</ul>';
+
+            var documentID = $('#document-identifier a');
+            if (documentID.length > 0) {
+                documentID = '<tr><th>Document ID</th><td>' + documentID.text() + '</td></tr>';
+            }
+            else {
+                documentID = '';
+            }
+
+            var s = '<section id="document-metadata" class="lr"><button class="close">❌</button><table>\n\
+                <caption>Document Metadata</caption>\n\
+                <thead><tr><th></th><th></th></tr></thead>\n\
                 <tbody>\n\
-                    <tr><td>' + count.chars + '</td><td>' + count.words + '</td><td>' + count.lines + '</td></tr>\n\
+                    ' + documentID + '\n\
+                    <tr><th>Authors</th><td>' + contributors + '</td></tr>\n\
+                    <tr><th>Characters</th><td>' + count.chars + '</td></tr>\n\
+                    <tr><th>Words</th><td>' + count.words + '</td></tr>\n\
+                    <tr><th>Lines</th><td>' + count.lines + '</td></tr>\n\
+                    <tr><th>A4 Pages</th><td>' + count.pages.A4 + '</td></tr>\n\
+                    <tr><th>Bytes</th><td>' + count.bytes + '</td></tr>\n\
                 </tbody>\n\
-            </table></aside>';
+            </table></section>';
 
             $('body').append(s);
             LR.U.buttonClose();
@@ -264,10 +282,13 @@ LIMIT 1";
 
         contentCount: function(c) {
             var content = c.text();
+            var linesCount = Math.ceil(c.height() / parseInt(c.css('line-height')));
             return {
                 words: content.match(/\S+/g).length,
                 chars: content.length,
-                lines: Math.ceil(c.height() / parseInt(c.css('line-height')))
+                lines: linesCount,
+                pages: { A4: Math.ceil(linesCount / 47) },
+                bytes: encodeURI(document.documentElement.outerHTML).split(/%..|./).length - 1
             };
         }
     }
@@ -275,7 +296,7 @@ LIMIT 1";
 
 $(document).ready(function() {
     LR.U.getDocRefType();
-//    LR.U.showDocumentStatistics();
+//    LR.U.showDocumentMetadata();
 //    LR.U.showToC();
 //    LR.U.sortToC();
 //    LR.U.escape();

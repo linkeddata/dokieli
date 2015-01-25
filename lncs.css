@@ -146,18 +146,15 @@ margin-top:1.25em;
 margin-bottom:0.75em;
 }
 
-section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]),
-.toc li {
+section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]) {
 counter-increment: section;
 counter-reset: sub-section;
 }
-section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]) section,
-.toc li li {
+section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]) section {
 counter-increment: sub-section;
 counter-reset: sub-sub-section;
 }
-section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]) section section,
-.toc li li li {
+section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]) section section {
 counter-increment: sub-sub-section;
 counter-reset: sub-sub-sub-section;
 }
