@@ -179,6 +179,7 @@ var LR = {
             }
 
             $('body').append(s);
+            LR.U.sortToC();
             LR.U.buttonClose();
         },
 
@@ -193,7 +194,6 @@ var LR = {
         },
 
         updateDocFromToC: function() {
-            console.log($('.toc > li:first-child > span').text());
         },
 
         buttonClose: function() {
@@ -355,10 +355,6 @@ LIMIT 1";
 $(document).ready(function() {
     LR.U.getDocRefType();
     LR.U.showDocumentInfo();
-//    LR.U.showDocumentMetadata();
-//    LR.U.showToC();
-//    LR.U.showViews()
-//    LR.U.sortToC();
 //    LR.U.escape();
 //    LR.U.saveToFile(document.documentElement.outerHTML);
     LR.U.openTarget();
