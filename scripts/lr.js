@@ -22,15 +22,57 @@ var LR = {
                 InlineOpen: '(',
                 InlineClose: ')'
             }
-        }
+        },
+        Stylesheets: []
     },
 
     U: {
         getDocRefType: function() {
-            LR.C.DocRefType = $('link[rel="stylesheet"]').attr('href').slice(0, -4).toUpperCase();
+            LR.C.DocRefType = $('head link[rel="stylesheet"]').attr('title').toUpperCase();
 
-            if(LR.C.DocRefType != 'LNCS' || LR.C.DocRefType != 'ACM' || LR.C.DocRefType != 'APA') {
+            if(LR.C.DocRefType != 'LNCS' || LR.C.DocRefType != 'ACM' || LR.C.DocRefType != 'APA' || LR.C.DocRefType != 'REC') {
                 LR.C.DocRefType = 'LNCS';
+            }
+        },
+
+        showViews: function() {
+            var stylesheets = $('head link[rel~="stylesheet"]:not([href$="lr.css"])');
+
+            if (stylesheets.length > 1) {
+                var s = '<section id="views" class="lr"><h2>Views</h2><ul>';
+                LR.C.Stylesheets = stylesheets;
+                stylesheets.each(function(i, stylesheet) {
+                    var currentStylesheet = '';
+                    if($(this).is('[rel~="alternate"]')) {
+                        s += '<li><button>' + $(this).attr('title').toUpperCase() + '</button></li>';
+                    }
+                    else {
+                        s += '<li><button disabled="disabled">' + $(this).attr('title').toUpperCase() + '</button></li>';
+                    }
+                });
+                s += '</ul></section>';
+
+                $('body').append(s);
+
+                $('#views.lr button').on('click', function(event) {
+                    var selected = $(this);
+                    $('head link[rel~="stylesheet"]:not([href$="lr.css"])').remove();
+
+                    LR.C.Stylesheets.each(function(i, stylesheet) {
+                        if ($(this).attr('href').split("/").pop().slice(0,-4).toUpperCase() == selected.text()) {
+                            $(this).attr('rel', 'stylesheet');
+                        }
+                        else {
+                            $(this).attr('rel', 'stylesheet alternate');
+                        }
+
+                        $(this).removeAttr('title');
+                        $('head').append($(this));
+                    });
+
+                    $('#views.lr button:disabled').removeAttr('disabled');
+                    $(this).attr('disabled', 'disabled');
+                });
             }
         },
 
@@ -264,7 +306,6 @@ LIMIT 1";
 
             var s = '<section id="document-metadata" class="lr"><button class="close">❌</button><table>\n\
                 <caption>Document Metadata</caption>\n\
-                <thead><tr><th></th><th></th></tr></thead>\n\
                 <tbody>\n\
                     ' + documentID + '\n\
                     <tr><th>Authors</th><td>' + contributors + '</td></tr>\n\
@@ -298,6 +339,7 @@ $(document).ready(function() {
     LR.U.getDocRefType();
 //    LR.U.showDocumentMetadata();
 //    LR.U.showToC();
+//    LR.U.showViews()
 //    LR.U.sortToC();
 //    LR.U.escape();
 //    LR.U.saveToFile(document.documentElement.outerHTML);
