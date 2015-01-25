@@ -83,6 +83,7 @@ var LR = {
                             $(this).attr('rel', 'stylesheet alternate');
                         }
 
+                        $(this).attr('media', 'all');
                         $(this).removeAttr('title');
                         $('head').append($(this));
                     });
