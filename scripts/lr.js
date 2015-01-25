@@ -45,7 +45,7 @@ var LR = {
         },
 
         getDocRefType: function() {
-            LR.C.DocRefType = $('head link[rel="stylesheet"]').attr('title').toUpperCase();
+            LR.C.DocRefType = $('head link[rel="stylesheet"][title]').attr('title').toUpperCase();
 
             if(LR.C.DocRefType != 'LNCS' || LR.C.DocRefType != 'ACM' || LR.C.DocRefType != 'APA' || LR.C.DocRefType != 'REC') {
                 LR.C.DocRefType = 'LNCS';
