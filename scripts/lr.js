@@ -27,6 +27,23 @@ var LR = {
     },
 
     U: {
+        showDocumentInfo: function() {
+            $('body').append('<aside id="document-info" class="lr"><button class="show">☰</button></aside>');
+
+            $('#document-info.lr').on('click', 'button.show', function() {
+                $(this).parent().addClass('on');
+                $(this).removeClass('show').addClass('hide');
+                LR.U.showViews();
+                LR.U.showDocumentMetadata();
+                LR.U.showToC();
+            });
+            $('#document-info.lr').on('click', 'button.hide', function() {
+                $(this).parent().removeClass('on').find('section').remove();
+                $(this).removeClass('hide').addClass('show');
+                $('#table-of-contents').remove();
+            });
+        },
+
         getDocRefType: function() {
             LR.C.DocRefType = $('head link[rel="stylesheet"]').attr('title').toUpperCase();
 
@@ -42,17 +59,17 @@ var LR = {
                 var s = '<section id="views" class="lr"><h2>Views</h2><ul>';
                 LR.C.Stylesheets = stylesheets;
                 stylesheets.each(function(i, stylesheet) {
-                    var currentStylesheet = '';
+                    var view = $(this).attr('href').split("/").pop().slice(0,-4).toUpperCase();
                     if($(this).is('[rel~="alternate"]')) {
-                        s += '<li><button>' + $(this).attr('title').toUpperCase() + '</button></li>';
+                        s += '<li><button>' + view + '</button></li>';
                     }
                     else {
-                        s += '<li><button disabled="disabled">' + $(this).attr('title').toUpperCase() + '</button></li>';
+                        s += '<li><button disabled="disabled">' + view + '</button></li>';
                     }
                 });
                 s += '</ul></section>';
 
-                $('body').append(s);
+                $('#document-info.lr').append(s);
 
                 $('#views.lr button').on('click', function(event) {
                     var selected = $(this);
@@ -76,11 +93,57 @@ var LR = {
             }
         },
 
+        showDocumentMetadata: function() {
+            var content = $('#content');
+            var count = LR.U.contentCount(content);
+
+            var contributors = '<ul class="contributors">';
+            $('#authors .entry-author').each(function(i,contributor) {
+                contributors += '<li>' + $(this).find('*[rel~="dcterms:contributor"]').html() + '</li>';
+            });
+            contributors += '</ul>';
+
+            var documentID = $('#document-identifier a');
+            if (documentID.length > 0) {
+                documentID = '<tr><th>Document ID</th><td>' + documentID.text() + '</td></tr>';
+            }
+            else {
+                documentID = '';
+            }
+
+            var s = '<section id="document-metadata" class="lr"><table>\n\
+                <caption>Document Metadata</caption>\n\
+                <tbody>\n\
+                    ' + documentID + '\n\
+                    <tr><th>Authors</th><td>' + contributors + '</td></tr>\n\
+                    <tr><th>Characters</th><td>' + count.chars + '</td></tr>\n\
+                    <tr><th>Words</th><td>' + count.words + '</td></tr>\n\
+                    <tr><th>Lines</th><td>' + count.lines + '</td></tr>\n\
+                    <tr><th>A4 Pages</th><td>' + count.pages.A4 + '</td></tr>\n\
+                    <tr><th>Bytes</th><td>' + count.bytes + '</td></tr>\n\
+                </tbody>\n\
+            </table></section>';
+
+            $('#document-info.lr').append(s);
+        },
+
+        contentCount: function(c) {
+            var content = c.text();
+            var linesCount = Math.ceil(c.height() / parseInt(c.css('line-height')));
+            return {
+                words: content.match(/\S+/g).length,
+                chars: content.length,
+                lines: linesCount,
+                pages: { A4: Math.ceil(linesCount / 47) },
+                bytes: encodeURI(document.documentElement.outerHTML).split(/%..|./).length - 1
+            };
+        },
+
         showToC: function() {
             var s = '';
             var section = $('h1 ~ div section[rel="dcterms:hasPart"]:not([id="acknowledgements"])');
             if (section.length > 0) {
-                s += '<section id="table-of-contents" class="lr"><button class="close">❌</button><h2>Table of Contents</h2><ol class="toc sortable">';
+                s += '<aside id="table-of-contents" class="lr"><button class="close">❌</button><h2>Table of Contents</h2><ol class="toc sortable">';
                 section.each(function(i,section) {
                     var h = $(section).find('h2');
                     if (h.length > 0) {
@@ -111,7 +174,7 @@ var LR = {
                         s += '</li>';
                     }
                 });
-                s += '</ol></section>';
+                s += '</ol></aside>';
             }
 
             $('body').append(s);
@@ -284,59 +347,13 @@ LIMIT 1";
                     console.log("NOPE 1");
                 }
             });
-        },
-
-        showDocumentMetadata: function() {
-            var content = $('#content');
-            var count = LR.U.contentCount(content);
-
-            var contributors = '<ul class="contributors">';
-            $('#authors .entry-author').each(function(i,contributor) {
-                contributors += '<li>' + $(this).find('*[rel~="dcterms:contributor"]').html() + '</li>';
-            });
-            contributors += '</ul>';
-
-            var documentID = $('#document-identifier a');
-            if (documentID.length > 0) {
-                documentID = '<tr><th>Document ID</th><td>' + documentID.text() + '</td></tr>';
-            }
-            else {
-                documentID = '';
-            }
-
-            var s = '<section id="document-metadata" class="lr"><button class="close">❌</button><table>\n\
-                <caption>Document Metadata</caption>\n\
-                <tbody>\n\
-                    ' + documentID + '\n\
-                    <tr><th>Authors</th><td>' + contributors + '</td></tr>\n\
-                    <tr><th>Characters</th><td>' + count.chars + '</td></tr>\n\
-                    <tr><th>Words</th><td>' + count.words + '</td></tr>\n\
-                    <tr><th>Lines</th><td>' + count.lines + '</td></tr>\n\
-                    <tr><th>A4 Pages</th><td>' + count.pages.A4 + '</td></tr>\n\
-                    <tr><th>Bytes</th><td>' + count.bytes + '</td></tr>\n\
-                </tbody>\n\
-            </table></section>';
-
-            $('body').append(s);
-            LR.U.buttonClose();
-        },
-
-        contentCount: function(c) {
-            var content = c.text();
-            var linesCount = Math.ceil(c.height() / parseInt(c.css('line-height')));
-            return {
-                words: content.match(/\S+/g).length,
-                chars: content.length,
-                lines: linesCount,
-                pages: { A4: Math.ceil(linesCount / 47) },
-                bytes: encodeURI(document.documentElement.outerHTML).split(/%..|./).length - 1
-            };
         }
     }
 };
 
 $(document).ready(function() {
     LR.U.getDocRefType();
+    LR.U.showDocumentInfo();
 //    LR.U.showDocumentMetadata();
 //    LR.U.showToC();
 //    LR.U.showViews()

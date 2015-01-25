@@ -6,48 +6,63 @@
  */
 
 @media print {
-aside.lr,
-.lr.fragment {
+.lr {
 display:none !important;
 }
 }
 
-section.lr {
+aside.lr {
 position:fixed;
-z-index:8;
-opacity:0.1;
+top:1em;
+z-index:9;
+background:#fff !important;
+}
+#document-info {
+right:1em;
+}
+#table-of-contents {
 padding:1em;
-max-width:20%;
-max-height:60%;
+left:1em;
 border:1px solid #ccc;
 border-radius:7px;
 box-shadow:0.25em 0.25em 0.25em rgba(0,0,0,0.1);
-background:#fff !important;
 overflow:auto;
 }
-section.lr:hover {
-z-index:9;
-opacity:1;
+#document-info.on {
+padding:1em;
+max-width:20%;
+max-height:80%;
+border:1px solid #ccc;
+border-radius:7px;
+box-shadow:0.25em 0.25em 0.25em rgba(0,0,0,0.1);
+overflow:auto;
 }
 
-section.lr ul {
+#document-info > button {
+position:absolute;
+top:1em;
+right:1em;
+font-size:26px;
+}
+
+
+section.lr {
+margin-top:2em;
+}
+
+.lr ul,
+.lr h2 {
 margin:0;
 }
-section.lr h2 {
-margin:0 0 1em 0;
-}
 
-#table-of-contents {
-top:1em;
-left:1em;
-}
+
 #views {
-top:1em;
-right:1em;
+/*top:1em;
+right:1em;*/
 }
 #document-metadata {
-bottom:1em;
-right:1em;
+/*bottom:1em;
+right:1em;*/
 }
 
 #views ul,
@@ -67,7 +82,7 @@ font-size:16px;
 font-family:"CMU Serif Bold", sans-serif !important;
 }
 .lr caption:before,
-section.lr h2:before {
+.lr h2:before {
 content: '' !important;
 }
 
@@ -128,6 +143,7 @@ line-height:1;
 font-family:"CMU Serif Monospace", monospace !important;
 font-weight:bold;
 padding:0.05em;
+z-index:9;
 }
 
 button.close {
