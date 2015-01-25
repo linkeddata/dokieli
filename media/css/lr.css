@@ -15,6 +15,8 @@ aside.lr {
 position:fixed;
 top:1em;
 z-index:9;
+max-width:20%;
+max-height:80%;
 background:#fff !important;
 }
 #document-info {
@@ -30,8 +32,6 @@ overflow:auto;
 }
 #document-info.on {
 padding:1em;
-max-width:20%;
-max-height:80%;
 border:1px solid #ccc;
 border-radius:7px;
 box-shadow:0.25em 0.25em 0.25em rgba(0,0,0,0.1);
