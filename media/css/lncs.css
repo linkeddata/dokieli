@@ -36,8 +36,41 @@ font-family: "CMU Serif Monospace";
 src: local("CMU Serif Monospace"), url("../fonts/cmuntt.otf");
 }
 
+@media print {
+body {
+font-size:10pt !important;
+margin:0 auto !important;
+padding:0 !important;
+width:122mm !important;
+height:193mm !important;
+}
+
+h1 { font-size:14pt; !important; }
+h2 { font-size:12pt; !important; }
+h3 { font-size:10pt; !important; }
+h4 { font-size:10pt; !important; }
+h5 { font-size:10pt; !important; }
+h6 { font-size:10pt; !important; }
+
+caption,
+#author_orgs *,
+#author_uris *,
+#abstract *,
+#document-identifier *,
+#document-submitted *,
+#document-license *,
+#document-purpose *,
+#keywords *,
+#categories-and-subject-descriptors * {
+font-size:9pt !important;
+}
+
+
+
+}
+
+
 * { margin:0; padding:0; text-shadow: none !important; filter:none !important; -ms-filter: none !important; }
-*:not(button):not(mark) { background: transparent !important; color: #000 !important; }
 .note { background:#ddd !important; }
 img { display:block; border:0; }
 a abbr { cursor: pointer; border-bottom:0; }
@@ -68,7 +101,7 @@ object.slides { display:none; }
 /*Equivalent A4 paper dimensions in pixels at 300 DPI and 72 DPI respectively are:*/
 /*2480 pixels x 3508 pixels (print resolution)*/
 /*595 pixels x 842 pixels (screen resolution)*/
-margin:47mm 0;
+margin:52mm 0; /* A4 - LNCS height*/
 /*margin:40mm 0;*/
 }
 
@@ -98,21 +131,22 @@ word-break:normal;
 body {
 color:#000000;
 font-family: "CMU Serif", serif;
-font-size:13px;
+font-size:162.448%;
 line-height:1.231;
 position:relative;
 margin:0 auto;
-width:122mm;
-height:193mm;
+/*padding:13.664em 0;*/
+width:35.45em;
 }
 
 
-h1,h2,h3,h4,h5,h6, strong, dt {
+h1,h2,h3,h4, strong, dt {
 font-family: "CMU Serif Bold", sans-serif !important;
 }
-em, address {
+h5,h6, em, address {
 font-family: "CMU Serif Italic", sans-serif !important;
 font-style:normal !important;
+font-weight:normal;
 }
 code, pre, kbd, button {
 font-family: "CMU Serif Monospace", monospace !important;
@@ -122,7 +156,6 @@ cite { font-style:normal; }
 
 p {
 text-indent:1em;
-font-size:13px;
 }
 
 h1,h2,h3,h4,h5,h6 {
@@ -131,20 +164,32 @@ page-break-after: avoid;
 line-height:1.231;
 }
 h1 {
-font-size:19px;
+font-size:1.4615em;
 margin-bottom:1.5em;
 text-align:center;
 }
-h2 { font-size:16px; }
-h3 { font-size:13px; }
-h4 { font-size:13px; }
-h5 { font-size:13px; }
-h6 { font-size:13px; }
+h2 { font-size:1.231em; }
+h3 { font-size:1em; }
+h4 { font-size:1em; }
+h5 { font-size:1em; }
+h6 { font-size:1em; }
 
 h2 {
 margin-top:1.25em;
+margin-bottom:1em;
+}
+h3 {
+margin-top:1.75em;
 margin-bottom:0.75em;
 }
+h4 {
+margin-top:1em;
+display:inline;
+}
+h5 {
+display:inline;
+}
+
 
 section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]) {
 counter-increment: section;
@@ -160,16 +205,13 @@ counter-reset: sub-sub-sub-section;
 }
 
 *:not([id=abstract]):not([id=keywords]):not([id=references]) h2:before {
-content: counter(section) "\00a0\00a0\00a0\00a0\00a0";
+content: counter(section) "\00a0\00a0\00a0\00a0";
 }
 
 h3:before {
-content: counter(section) "." counter(sub-section) "\00a0\00a0\00a0\00a0";
+content: counter(section) "." counter(sub-section) "\00a0\00a0\00a0";
 }
-h3 {
-margin-top:1.5em;
-margin-bottom:0.5em;
-}
+
 
 
 h1 + p,
@@ -185,10 +227,7 @@ h1 + p {
 margin-bottom:1em;
 }
 
-h4 {
-margin-top:1em;
-display:inline;
-}
+
 h4:after,
 h5:after {
 content: ".";
@@ -250,11 +289,6 @@ content:"\A";
 white-space:pre;
 }
 
-h5 {
-font-weight:normal;
-font-style:italic;
-display:inline;
-}
 
 pre {
 margin:1em 0;
@@ -276,9 +310,9 @@ font-size:0.875em;
 
 
 #authors {
-margin:0 auto 2.5em -4%;
+margin:0 auto 2.5em -2%;
 text-align:center;
-width:107%;
+width:104%;
 }
 
 #authors dl {
@@ -287,20 +321,20 @@ line-height:1;
 
 #author_orgs *,
 #author_uris *,
-#abstract *,
-#document-identifier *,
-#document-submitted *,
-#document-license *,
-#document-purpose *,
-#keywords *,
-#categories-and-subject-descriptors * {
-font-size:12px;
+#abstract h2, #abstract p,
+#document-identifier dd,
+#document-submitted dd,
+#document-license dd,
+#document-purpose dd,
+#keywords h2, #keywords li,
+#categories-and-subject-descriptors h2, #categories-and-subject-descriptors li {
+font-size:0.93em;
 }
 
 #author_emails,
 #author_uris {
-font-family:monospace;
-font-size:11px;
+font-family: "CMU Serif Monospace", monospace !important;
+font-size:0.9em;
 }
 
 
@@ -452,7 +486,6 @@ margin-top:1.25em;
 }
 
 dt {
-font-weight:bold;
 margin-bottom:0.5em;
 }
 
@@ -462,7 +495,7 @@ margin-top:1em;
 
 caption {
 text-align:left;
-font-size:12px;
+font-size:0.93em;
 border-bottom:1px solid #000;
 }
 tbody {
@@ -504,7 +537,7 @@ text-align:center;
 #document-license,
 #categories-and-subject-descriptors,
 #keywords {
-margin:0 1cm 1em;
+margin:0 2.5em 1em;
 }
 
 
@@ -545,7 +578,7 @@ text-transform:capitalize;
 }
 
 #keywords {
-margin-bottom:2.5em;
+margin-bottom:2.75em;
 }
 
 
