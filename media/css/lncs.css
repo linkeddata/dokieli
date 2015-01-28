@@ -600,6 +600,7 @@ margin-bottom:3em;
 .entry-author,
 .datetimestamp,
 .entry-replies,
+#header,
 #footer,
 .article_labels * {
 display:none;
