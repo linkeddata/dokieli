@@ -37,6 +37,22 @@ src: local("CMU Serif Monospace"), url("../fonts/cmuntt.otf");
 }
 
 @media print {
+/*
+@media print and (width: 210mm) and (height: 297mm) {
+@media print and (width: 8.5in) and (height: 11in) {
+*/
+@page {
+/*Standard ISO A4 paper dimensions are:*/
+/*210mm x 297mm*/
+/*8.27" x 11.69"*/
+/*Equivalent A4 paper dimensions in pixels at 300 DPI and 72 DPI respectively are:*/
+/*2480 pixels x 3508 pixels (print resolution)*/
+/*595 pixels x 842 pixels (screen resolution)*/
+/*size: A4;*/
+margin:52mm 0; /* A4 - LNCS height*/
+}
+
+
 body {
 font-size:10pt !important;
 margin:0 auto !important;
@@ -45,12 +61,12 @@ width:122mm !important;
 height:193mm !important;
 }
 
-h1 { font-size:14pt; !important; }
-h2 { font-size:12pt; !important; }
-h3 { font-size:10pt; !important; }
-h4 { font-size:10pt; !important; }
-h5 { font-size:10pt; !important; }
-h6 { font-size:10pt; !important; }
+h1 { font-size:14pt !important; }
+h2 { font-size:12pt !important; }
+h3 { font-size:10pt !important; }
+h4 { font-size:10pt !important; }
+h5 { font-size:10pt !important; }
+h6 { font-size:10pt !important; }
 
 caption,
 #author_orgs *,
@@ -65,12 +81,10 @@ caption,
 font-size:9pt !important;
 }
 
+} /* media print */
 
 
-}
-
-
-* { margin:0; padding:0; text-shadow: none !important; filter:none !important; -ms-filter: none !important; }
+* { margin:0; padding:0; filter:none !important; }
 .note { background:#ddd !important; }
 img { display:block; border:0; }
 a abbr { cursor: pointer; border-bottom:0; }
@@ -94,16 +108,6 @@ object[height="415"] { height:311px !important; }
 object.slides { display:none; }
 .block { display:block; }
 
-@page {
-/*Standard ISO A4 paper dimensions are:*/
-/*210mm x 297mm*/
-/*8.27" x 11.69"*/
-/*Equivalent A4 paper dimensions in pixels at 300 DPI and 72 DPI respectively are:*/
-/*2480 pixels x 3508 pixels (print resolution)*/
-/*595 pixels x 842 pixels (screen resolution)*/
-margin:52mm 0; /* A4 - LNCS height*/
-/*margin:40mm 0;*/
-}
 
 a {
 text-decoration:none;
@@ -127,16 +131,16 @@ word-break:break-all;
 word-break:normal;
 }
 
-/*html { font-size: 13px; }*/
 body {
 color:#000000;
 font-family: "CMU Serif", serif;
+/*font-size:1.689vw;*/
 font-size:162.448%;
 line-height:1.231;
 position:relative;
 margin:0 auto;
-/*padding:13.664em 0;*/
-width:35.45em;
+padding:2em 0;
+width:35em;
 }
 
 
@@ -176,7 +180,7 @@ h6 { font-size:1em; }
 
 h2 {
 margin-top:1.25em;
-margin-bottom:1em;
+margin-bottom:0.75em;
 }
 h3 {
 margin-top:1.75em;
@@ -322,7 +326,7 @@ line-height:1;
 #author_orgs *,
 #author_uris *,
 #abstract h2, #abstract p,
-#document-identifier dd,
+#document-identifier dt, #document-identifier dd,
 #document-submitted dd,
 #document-license dd,
 #document-purpose dd,
