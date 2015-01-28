@@ -195,27 +195,30 @@ display:inline;
 }
 
 
-section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]) {
+article section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]) {
 counter-increment: section;
 counter-reset: sub-section;
 }
-section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]) section {
+article section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]) section {
 counter-increment: sub-section;
 counter-reset: sub-sub-section;
 }
-section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]) section section {
+article section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]) section section {
 counter-increment: sub-sub-section;
 counter-reset: sub-sub-sub-section;
 }
 
-*:not([id=abstract]):not([id=keywords]):not([id=references]) h2:before {
+article *:not([id=abstract]):not([id=keywords]):not([id=references]) h2:before {
 content: counter(section) "\00a0\00a0\00a0\00a0";
 }
 
-h3:before {
+article h3:before {
 content: counter(section) "." counter(sub-section) "\00a0\00a0\00a0";
 }
-
+article h4:after,
+article h5:after {
+content: ".";
+}
 
 
 h1 + p,
@@ -232,10 +235,7 @@ margin-bottom:1em;
 }
 
 
-h4:after,
-h5:after {
-content: ".";
-}
+
 h4 + p,
 h5 + p,
 h4 + div,
