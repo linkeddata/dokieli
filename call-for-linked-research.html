@@ -12,74 +12,72 @@
     </head>
 
     <body about="[this:]" typeof="foaf:Document sioc:Post biblio:Paper prov:Entity" class="hfeed" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# cc: http://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# schema: http://schema.org/ rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# org: http://www.w3.org/ns/org# biblio: http://purl.org/net/biblio# bibo: http://purl.org/ontology/bibo/ book: http://purl.org/NET/book/vocab# ov: http://open.vocab.org/terms/ doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ sro: http://salt.semanticauthoring.org/ontologies/sro# this: http://csarven.ca/call-for-linked-research">
-        <div id="wrapper">
-            <article class="hentry">
+        <article class="hentry">
 
-                <h1 class="entry-title">Call for Linked Research</h1>
+            <h1 class="entry-title">Call for Linked Research</h1>
 
-                <div id="authors">
-                    <dl>
-                        <dt>Authors</dt>
-                        <dd id="author_1" class="entry-author author_corresponding"><a about="[this:]" rel="dcterms:creator dcterms:publisher dcterms:contributor" href="http://csarven.ca/#i">Sarven Capadisli</a></dd>
-                    </dl>
-
-                    <ul id="author_uris">
-                        <li id="author_uri_1"><a href="http://csarven.ca/#i" class="author_uri">http://csarven.ca/#i</a></li>
-                    </ul>
-                </div>
-
-                <dl id="document-identifier">
-                    <dt>Document ID</dt>
-                    <dd><a href="http://csarven.ca/call-for-linked-research">http://csarven.ca/call-for-linked-research</a></dd>
+            <div id="authors">
+                <dl>
+                    <dt>Authors</dt>
+                    <dd id="author_1" class="entry-author author_corresponding"><a about="[this:]" rel="dcterms:creator dcterms:publisher dcterms:contributor" href="http://csarven.ca/#i">Sarven Capadisli</a></dd>
                 </dl>
 
-                <dl id="document-submitted" class="on">
-                    <dt>Published</dt>
-                    <dd property="dcterms:published" content="2014-07-28T09:00:00Z">2014-07-28</dd>
+                <ul id="author_uris">
+                    <li id="author_uri_1"><a href="http://csarven.ca/#i" class="author_uri">http://csarven.ca/#i</a></li>
+                </ul>
+            </div>
+
+            <dl id="document-identifier">
+                <dt>Document ID</dt>
+                <dd><a href="http://csarven.ca/call-for-linked-research">http://csarven.ca/call-for-linked-research</a></dd>
+            </dl>
+
+            <dl id="document-submitted" class="on">
+                <dt>Published</dt>
+                <dd property="dcterms:published" content="2014-07-28T09:00:00Z">2014-07-28</dd>
+            </dl>
+
+            <dl id="document-license" class="on">
+                <dt>License</dt>
+                <dd><a about="[this:]" rel="license cc:license" href="http://creativecommons.org/licenses/by-sa/4.0/" title="Creative Commons Attribution-ShareAlike 4.0 Unported">CC BY-SA 4.0</a></dd>
+            </dl>
+
+            <dl id="document-purpose">
+                <dt>Purpose</dt>
+                <dd property="schema:purpose">To encourage the &#8220;do it yourself&#8221; behaviour for sharing and reusing research knowledge.</dd>
+            </dl>
+
+            <div property="dcterms:description" id="content" class="entry-content">
+                <p>Scientists and researchers who work in Web Science have to follow the rules that are set by the publisher; researchers need to have read and reuse access to other researchers work, and adopt archaic desktop-native publishing workflows. Publishers try to remain as the middleman for society&#8217;s knowledge acquisition.</p>
+
+                <p>Nowadays, there is more machine-friendly data and documentation made available by the public sector than the Linked Data research community. The general public asks for open and machine-friendly data, and they are following up. Web research publishing on the other hand, is stuck on one &#9733; (star) <a rel="rdfs:seeAlso" href="http://www.w3.org/DesignIssues/LinkedData">Linked Data deployment scheme</a>. The community has difficulty eating its own dogfood for research publication, and fails to deliver its share of the promise.</p>
+
+                <p>There is a social problem. Not a technical one. If you think that there is something fundamentally wrong with this picture, want to voice yourself, and willing to continue to contribute to the vision of the <strong>Web</strong>, then please consider the following before you write your research:</p>
+
+                <dl id="workflow" about="[this:]" rel="dcterms:hasPart" resource="[this:#workflow]">
+                    <dt property="rdfs:label">Linked Research: Do It Yourself</dt>
+                    <dd>
+                        <ol about="[this:#workflow]" typeof="opmw:WorkflowTemplate deo:Model">
+                            <li id="workflow-uri-ownership" about="[this:#workflow-uri-ownership]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]" property="rdfs:label">Publish your research and findings at a Web space that you control.</li>
+
+                            <li id="workflow-web-standards" about="[this:#workflow-web-standards]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]">Publish your progress and work following the Linked Data design principles. Create a URI for everything that is of some value to you and may be to others e.g., hypothesis, workflow steps, variables, provenance, results etc.</li>
+
+                            <li id="workflow-knowledge-acquisition" about="[this:#workflow-knowledge-acquisition]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]">Reuse and link to other researchers URIs of value, so nothing goes to waste or reinvented without good reason.</li>
+
+                            <li id="workflow-user-experience" about="[this:#workflow-user-experience]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]">Create a strong user experience in the spirit of science: Use screen and <a href="https://github.com/csarven/linked-research">print stylesheets</a>. Create a copy of a view for the research community to fulfil organisational requirements. Design interactive user-interfaces for improved communication and education.</li>
+
+                            <li id="workflow-announce" about="[this:#workflow-announce]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]">Announce your work publicly so that people and machines can discover it.</li>
+
+                            <li id="workflow-open-feedback" about="[this:#workflow-open-feedback]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]">Have an open comment system policy for your document so that any person or machine can give feedback.</li>
+
+                            <li id="workflow-help-others" about="[this:#workflow-help-others]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]">Help, encourage, and motivate others to do the same.</li>
+                        </ol>
+                    </dd>
                 </dl>
 
-                <dl id="document-license" class="on">
-                    <dt>License</dt>
-                    <dd><a about="[this:]" rel="license cc:license" href="http://creativecommons.org/licenses/by-sa/4.0/" title="Creative Commons Attribution-ShareAlike 4.0 Unported">CC BY-SA 4.0</a></dd>
-                </dl>
+                <p id="no-central-authority" about="[#this:no-central-authority]" typeof="sro:Motivation" property="dcterms:description">There is no central authority to judge the value of your contributions. You do not need permission to publish! Control your own research and communication.</p>
+            </div>
 
-                <dl id="document-purpose">
-                    <dt>Purpose</dt>
-                    <dd property="schema:purpose">To encourage the &#8220;do it yourself&#8221; behaviour for sharing and reusing research knowledge.</dd>
-                </dl>
-
-                <div property="dcterms:description" id="content" class="entry-content">
-                    <p>Scientists and researchers who work in Web Science have to follow the rules that are set by the publisher; researchers need to have read and reuse access to other researchers work, and adopt archaic desktop-native publishing workflows. Publishers try to remain as the middleman for society&#8217;s knowledge acquisition.</p>
-
-                    <p>Nowadays, there is more machine-friendly data and documentation made available by the public sector than the Linked Data research community. The general public asks for open and machine-friendly data, and they are following up. Web research publishing on the other hand, is stuck on one &#9733; (star) <a rel="rdfs:seeAlso" href="http://www.w3.org/DesignIssues/LinkedData">Linked Data deployment scheme</a>. The community has difficulty eating its own dogfood for research publication, and fails to deliver its share of the promise.</p>
-
-                    <p>There is a social problem. Not a technical one. If you think that there is something fundamentally wrong with this picture, want to voice yourself, and willing to continue to contribute to the vision of the <strong>Web</strong>, then please consider the following before you write your research:</p>
-
-                    <dl id="workflow" about="[this:]" rel="dcterms:hasPart" resource="[this:#workflow]">
-                        <dt property="rdfs:label">Linked Research: Do It Yourself</dt>
-                        <dd>
-                            <ol about="[this:#workflow]" typeof="opmw:WorkflowTemplate deo:Model">
-                                <li id="workflow-uri-ownership" about="[this:#workflow-uri-ownership]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]" property="rdfs:label">Publish your research and findings at a Web space that you control.</li>
-
-                                <li id="workflow-web-standards" about="[this:#workflow-web-standards]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]">Publish your progress and work following the Linked Data design principles. Create a URI for everything that is of some value to you and may be to others e.g., hypothesis, workflow steps, variables, provenance, results etc.</li>
-
-                                <li id="workflow-knowledge-acquisition" about="[this:#workflow-knowledge-acquisition]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]">Reuse and link to other researchers URIs of value, so nothing goes to waste or reinvented without good reason.</li>
-
-                                <li id="workflow-user-experience" about="[this:#workflow-user-experience]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]">Create a strong user experience in the spirit of science: Use screen and <a href="https://github.com/csarven/linked-research">print stylesheets</a>. Create a copy of a view for the research community to fulfil organisational requirements. Design interactive user-interfaces for improved communication and education.</li>
-
-                                <li id="workflow-announce" about="[this:#workflow-announce]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]">Announce your work publicly so that people and machines can discover it.</li>
-
-                                <li id="workflow-open-feedback" about="[this:#workflow-open-feedback]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]">Have an open comment system policy for your document so that any person or machine can give feedback.</li>
-
-                                <li id="workflow-help-others" about="[this:#workflow-help-others]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]">Help, encourage, and motivate others to do the same.</li>
-                            </ol>
-                        </dd>
-                    </dl>
-
-                    <p id="no-central-authority" about="[#this:no-central-authority]" typeof="sro:Motivation" property="dcterms:description">There is no central authority to judge the value of your contributions. You do not need permission to publish! Control your own research and communication.</p>
-                </div>
-
-            </article>
-    	</div>
+        </article>
     </body>
 </html>
