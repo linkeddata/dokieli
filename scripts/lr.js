@@ -442,7 +442,7 @@ LIMIT 1";
 };
 
 $(document).ready(function() {
-    LR.U.initStorage('html');
+//    LR.U.initStorage('html');
 //    LR.U.getDocRefType();
     LR.U.showDocumentInfo();
 //    LR.U.escape();
