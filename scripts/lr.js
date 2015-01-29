@@ -39,6 +39,7 @@ var LR = {
                 $(this).parent().addClass('on');
                 $(this).removeClass('show').addClass('hide');
                 LR.U.showStorage();
+                LR.U.showExports();
                 LR.U.showViews();
                 LR.U.showDocumentMetadata();
                 LR.U.showToC();
@@ -48,6 +49,7 @@ var LR = {
                 $(this).removeClass('hide').addClass('show');
                 $('#table-of-contents').remove();
                 LR.U.hideStorage();
+                LR.U.hideExports();
             });
         },
 
@@ -264,11 +266,15 @@ var LR = {
             return LR.U.getDoctype() + '\n' + html.html();
         },
 
-        saveToFile: function() {
+        saveAsHTML: function() {
             var data = LR.U.getDocument();
             //XXX: Encodes strings as UTF-8. Consider storing bytes instead?
             var blob = new Blob([data], {type:'text/html;charset=utf-8'});
-            var fileName = 'index.bak.html';
+            var pattern = /[^\w]+/ig;
+            var title = $('h1[property="dcterms:title"]').text().toLowerCase().replace(pattern, '-') || "index";
+            var timestamp = LR.U.now().replace(pattern, '') || "now";
+
+            var fileName = title + '.' + timestamp + '.html';
 
             var a = document.createElement("a");
             a.download = fileName;
@@ -284,6 +290,14 @@ var LR = {
 
             a.click();
             document.body.removeChild(a);
+        },
+
+        showExports: function() {
+            $('#document-info').append('<section id="export-files" class="lr"><h2>Export</h2><ul><li><button class="export-file-html">HTML</button></li></ul></section>');
+            $('#export-files').on('click', '.export-file-html', LR.U.saveAsHTML);
+        },
+        hideExports: function() {
+            $('#export-files').remove();
         },
 
         initStorage: function(item) {
@@ -451,7 +465,6 @@ $(document).ready(function() {
 //    LR.U.getDocRefType();
     LR.U.showDocumentInfo();
 //    LR.U.escape();
-//    LR.U.saveToFile();
 //    LR.U.openTarget();
 //    LR.U.buildReferences();
 //    LR.U.getLinkedResearch();

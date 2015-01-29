@@ -18,7 +18,12 @@ z-index:9;
 max-width:20%;
 max-height:80%;
 background:#fff !important;
+font-size:0.8em;
 }
+#document-editor {
+position:static;
+}
+
 #document-info {
 right:1em;
 }
@@ -65,6 +70,7 @@ right:1em;*/
 right:1em;*/
 }
 
+#export-files ul,
 #views ul,
 #document-metadata ul {
 list-style-type:none;
@@ -78,8 +84,8 @@ margin:0;
 border:0;
 }
 #document-metadata caption {
-font-size:16px;
 font-family:"CMU Serif Bold", sans-serif !important;
+font-size:1.231em;
 }
 .lr caption:before,
 .lr h2:before {
@@ -142,7 +148,7 @@ outline: 1px dashed #777;
 line-height:1;
 font-family:"CMU Serif Monospace", monospace !important;
 font-weight:bold;
-padding:0.05em;
+padding:0.25em;
 z-index:9;
 }
 
