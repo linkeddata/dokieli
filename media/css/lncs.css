@@ -18,18 +18,18 @@ src: local("CMU Serif"), url("../fonts/cmunrm.otf");
 @font-face {
 font-family: "CMU Serif Bold";
 src: local("CMU Serif Bold"), url("../fonts/cmunbx.otf");
-font-weight: bold !important;
+font-weight: bold;
 }
 @font-face {
 font-family: "CMU Serif Italic";
 src: local("CMU Serif Italic"), url("../fonts/cmunti.otf");
-font-style: italic, oblique !important;
+font-style: italic;
 }
 @font-face {
 font-family: "CMU Serif Bold Italic";
 src: local("CMU Serif Bold Italic"), url("../fonts/cmunbi.otf");
 font-weight: bold;
-font-style: italic, oblique;
+font-style: italic;
 }
 @font-face {
 font-family: "CMU Serif Monospace";
