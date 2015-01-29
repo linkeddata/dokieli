@@ -25,6 +25,7 @@ var LR = {
         },
         Stylesheets: [],
         UseStorage: false,
+        AutoSaveId: '',
         AutoSaveTimer: 60000,
         DisableStorageButtons: '<button class="local-storage-disable-html">Disable</button> | <input id="local-storage-html-autosave" class="autosave" type="checkbox" checked="checked"/> <label for="local-storage-html-autosave">Autosave (1m)</label>',
         EnableStorageButtons: '<button class="local-storage-enable-html">Enable</button>'
@@ -296,11 +297,12 @@ var LR = {
                 document.documentElement.innerHTML = localStorage.getItem(item);
             }
             console.log(LR.U.now() + ': Storage enabled.');
-            LR.U.autoSave(item);
+            LR.U.enableAutoSave(item);
         },
         disableStorage: function(item) {
             LR.C.UseStorage = false;
             localStorage.removeItem(item);
+            LR.U.disableAutoSave(item);
             console.log(LR.U.now() + ': Storage disabled.');
         },
         saveStorage: function(item) {
@@ -310,11 +312,15 @@ var LR = {
                     break;
             }
             localStorage.setItem(item, object);
+            console.log(LR.U.now() + ': Document saved.');
         },
-        autoSave: function(item) {
-            LR.U.saveStorage(item);
-            console.log(LR.U.now() + ': Autosaved.');
-            setTimeout(function() { LR.U.autoSave(item) }, LR.C.AutoSaveTimer);
+        enableAutoSave: function(item) {
+            LR.C.AutoSaveId = setInterval(function() { LR.U.saveStorage(item) }, LR.C.AutoSaveTimer);
+            console.log(LR.U.now() + ': Autosave enabled.');
+        },
+        disableAutoSave: function(item) {
+            clearInterval(LR.C.AutoSaveId);
+            console.log(LR.U.now() + ': Autosave disabled.');
         },
         showStorage: function() {
             if (typeof window.localStorage != 'undefined') {
@@ -342,12 +348,11 @@ var LR = {
                 $('#local-storage').on('click', 'input.autosave', function(event) {
                     if ($(this).attr('checked') == 'checked') {
                         $(this).removeAttr('checked');
-                        console.log(LR.U.now() + ': Autosave disabled.');
+                        LR.U.disableAutoSave('html');
                     }
                     else {
                         $(this).attr('checked', 'checked');
-                        LR.U.autoSave('html');
-                        console.log(LR.U.now() + ': Autosave enabled.');
+                        LR.U.enableAutoSave('html');
                     }
                 });
             }
