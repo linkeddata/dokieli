@@ -23,7 +23,11 @@ var LR = {
                 InlineClose: ')'
             }
         },
-        Stylesheets: []
+        Stylesheets: [],
+        UseStorage: false,
+        AutoSaveTimer: 60000,
+        DisableStorageButtons: '<button class="local-storage-disable-html">Disable</button> | <input id="local-storage-html-autosave" class="autosave" type="checkbox" checked="checked"/> <label for="local-storage-html-autosave">Autosave (1m)</label>',
+        EnableStorageButtons: '<button class="local-storage-enable-html">Enable</button>'
     },
 
     U: {
@@ -33,6 +37,7 @@ var LR = {
             $('#document-info.lr').on('click', 'button.show', function() {
                 $(this).parent().addClass('on');
                 $(this).removeClass('show').addClass('hide');
+                LR.U.showStorage();
                 LR.U.showViews();
                 LR.U.showDocumentMetadata();
                 LR.U.showToC();
@@ -41,6 +46,7 @@ var LR = {
                 $(this).parent().removeClass('on').find('section').remove();
                 $(this).removeClass('hide').addClass('show');
                 $('#table-of-contents').remove();
+                LR.U.hideStorage();
             });
         },
 
@@ -236,7 +242,7 @@ var LR = {
             }, '#content *[id]');
         },
 
-        saveToFile: function(data) {
+        getDoctype: function() {
             /* Get DOCTYPE from http://stackoverflow.com/a/10162353 */
             var node = document.doctype;
             var doctype = '';
@@ -247,9 +253,18 @@ var LR = {
                     + (!node.publicId && node.systemId ? ' SYSTEM' : '')
                     + (node.systemId ? ' "' + node.systemId + '"' : '')
                     + '>';
-
-                data = doctype + '\n' + data;
             }
+            return doctype;
+        },
+
+        getDocument: function() {
+            var html = $('html').clone().wrap('<div></div>').parent();
+            html.find('.lr').remove();
+            return LR.U.getDoctype() + '\n' + html.html();
+        },
+
+        saveToFile: function() {
+            var data = LR.U.getDocument();
             //XXX: Encodes strings as UTF-8. Consider storing bytes instead?
             var blob = new Blob([data], {type:'text/html;charset=utf-8'});
             var fileName = 'index.bak.html';
@@ -270,8 +285,82 @@ var LR = {
             document.body.removeChild(a);
         },
 
-        autoSave: function() {
-        //TODO
+        initStorage: function(item) {
+            if (typeof window.localStorage != 'undefined') {
+                LR.U.enableStorage(item);
+            }
+        },
+        enableStorage: function(item) {
+            LR.C.UseStorage = true;
+            if(localStorage.getItem(item)) {
+                document.documentElement.innerHTML = localStorage.getItem(item);
+            }
+            console.log(LR.U.now() + ': Storage enabled.');
+            LR.U.autoSave(item);
+        },
+        disableStorage: function(item) {
+            LR.C.UseStorage = false;
+            localStorage.removeItem(item);
+            console.log(LR.U.now() + ': Storage disabled.');
+        },
+        saveStorage: function(item) {
+            switch(item) {
+                case 'html': default:
+                    var object = LR.U.getDocument();
+                    break;
+            }
+            localStorage.setItem(item, object);
+        },
+        autoSave: function(item) {
+            LR.U.saveStorage(item);
+            console.log(LR.U.now() + ': Autosaved.');
+            setTimeout(function() { LR.U.autoSave(item) }, LR.C.AutoSaveTimer);
+        },
+        showStorage: function() {
+            if (typeof window.localStorage != 'undefined') {
+                var useStorage = '';
+
+                if (LR.C.UseStorage) {
+                    useStorage = LR.C.DisableStorageButtons;
+                }
+                else {
+                    useStorage = LR.C.EnableStorageButtons;
+                }
+
+                $('#document-info').append('<section id="local-storage" class="lr"><h2>Local Storage</h2>\n\
+                <p>' + useStorage + '</p>\n\
+                </section>');
+
+                $('#local-storage').on('click', 'button.local-storage-enable-html', function(event) {
+                    $(this).parent().html(LR.C.DisableStorageButtons);
+                    LR.U.enableStorage('html');
+                });
+                $('#local-storage').on('click', 'button.local-storage-disable-html', function(event) {
+                    $(this).parent().html(LR.C.EnableStorageButtons);
+                    LR.U.disableStorage('html');
+                });
+                $('#local-storage').on('click', 'input.autosave', function(event) {
+                    if ($(this).attr('checked') == 'checked') {
+                        $(this).removeAttr('checked');
+                        console.log(LR.U.now() + ': Autosave disabled.');
+                    }
+                    else {
+                        $(this).attr('checked', 'checked');
+                        LR.U.autoSave('html');
+                        console.log(LR.U.now() + ': Autosave enabled.');
+                    }
+                });
+            }
+        },
+        hideStorage: function() {
+            if (LR.C.UseStorage) {
+                $('#local-storage.lr').remove();
+            }
+        },
+
+        now: function() {
+            var date = new Date();
+            return date.toISOString();
         },
 
         openTarget: function() {
@@ -353,12 +442,13 @@ LIMIT 1";
 };
 
 $(document).ready(function() {
-    LR.U.getDocRefType();
+    LR.U.initStorage('html');
+//    LR.U.getDocRefType();
     LR.U.showDocumentInfo();
 //    LR.U.escape();
-//    LR.U.saveToFile(document.documentElement.outerHTML);
-    LR.U.openTarget();
-    LR.U.buildReferences();
+//    LR.U.saveToFile();
+//    LR.U.openTarget();
+//    LR.U.buildReferences();
 //    LR.U.getLinkedResearch();
     LR.U.showFragment();
 });
