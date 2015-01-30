@@ -471,13 +471,18 @@
 
                                 <table id="resource-counts">
                                     <caption>Resource counts</caption>
-                                    <thead><tr><th>Resource</th><th>OECD</th><th>BFS</th><th>FAO</th><th>ECB</th><th>IMF</th><th>UIS</th><th>FRB</th><th>BIS</th><th>ABS</th></tr></thead>
+                                    <thead><tr><td>Source dataset</td><th><code>skos:ConceptScheme</code></th><th><code>skos:Concept</code></th><th><code>rdf:Property</code></th><th><code>qb:Observation</code></th></tr></thead>
                                     <tfoot><tr><td colspan="4">Count of resources in datasets</td></tr></tfoot>
                                     <tbody>
-                                        <tr><td>skos:ConceptScheme</td><td>1209</td><td>216</td><td>32</td><td>147</td><td>25</td><td>35</td><td>76</td><td>27</td><td>2830</td></tr>
-                                        <tr><td>skos:Concept</td><td>80918</td><td>120202</td><td>28115</td><td>55609</td><td>3397</td><td>4515</td><td>2935</td><td>1560</td><td>548953</td></tr>
-                                        <tr><td>rdf:Property</td><td>129</td><td>0</td><td>12</td><td>231</td><td>42</td><td>12</td><td>64</td><td>31</td><td>111</td></tr>
-                                        <tr><td>qb:Observation</td><td>30183484</td><td>0</td><td>7186764</td><td>25791005</td><td>3603719</td><td>1437651</td><td>9768292</td><td>3606466</td><td>160065287</td></tr>
+                                        <tr><td>OECD</td><td>1209</td><td>80918</td><td>129</td><td>30183484</td></tr>
+                                        <tr><td>BFS</td><td>216</td><td>120202</td><td>0</td><td>0</td></tr>
+                                        <tr><td>FAO</td><td>32</td><td>28115</td><td>12</td><td>7186764</td></tr>
+                                        <tr><td>ECB</td><td>147</td><td>55609</td><td>231</td><td>25791005</td></tr>
+                                        <tr><td>IMF</td><td>25</td><td>3397</td><td>42</td><td>3603719</td></tr>
+                                        <tr><td>UIS</td><td>35</td><td>4515</td><td>12</td><td>1437651</td></tr>
+                                        <tr><td>FRB</td><td>76</td><td>2935</td><td>64</td><td>9768292</td></tr>
+                                        <tr><td>BIS</td><td>27</td><td>1560</td><td>31</td><td>3606466</td></tr>
+                                        <tr><td>ABS</td><td>2830</td><td>548953</td><td>111</td><td>160065287</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -486,87 +491,88 @@
                         <section id="interlinking" about="[this:]" rel="dcterms:hasPart">
                             <h3 about="[this:#interlinking]" property="dcterms:title">Interlinking</h3>
                             <div about="[this:#interlinking]" property="dcterms:description">
-                                <p>Initial interlinking is done among the classifications themselves in the datasets. The OECD classifications in particular contained highly similar codes (in some cases the same) throughout its codelists. Hence, majority of the codes within the codelist <code>CL_*_LOCATION</code> was interlinked with one another using <code>skos:exactMatch</code>.</p>
+                                <p>Initial interlinking is done among the classifications themselves in the datasets. The OECD and UIS classifications in particular contained highly similar codes (in some cases the same) throughout its codelists. Majority of the interlinks are between <code>skos:Concept</code>s with link relation <code>skos:exactMatch</code>.</p>
 
                                 <p>The consequent interlinking was done with <a href="http://dbpedia.org/">DBpedia</a>, <a href="http://worldbank.270a.info/">World Bank Linked Data</a>, <a href="http://transparency.270a.info/">Transparency International Linked Data</a>, and <a href="http://eunis.eea.europa.eu/">EUNIS</a> using <a href="http://aksw.org/Projects/limes">LInk discovery framework for MEtric Spaces</a> (LIMES): <a href="http://www.dit.unitn.it/~p2p/OM-2011/om2011_Tpaper1.pdf"><cite>A Time-Efficient Hybrid Approach to Link Discovery</cite></a> (Ngonga Ngomo, A.-C., 2011)</p>
 
                                 <table>
                                     <caption>Interlinks between datasets</caption>
-                                    <thead><tr><th>Source dataset</th><th>Target dataset</th><th>Entity type</th><th>Link relation</th><th>Link count</th></tr></thead>
+                                    <thead><tr><th>Source dataset</th><th>Target dataset</th><th>Link count</th></tr></thead>
                                     <tbody>
-                                        <tr><td>OECD</td><td>World Bank</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>3487</td></tr>
-                                        <tr><td>OECD</td><td>Transparency International</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>3335</td></tr>
-                                        <tr><td>OECD</td><td>DBpedia</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>3613</td></tr>
-                                        <tr><td>OECD</td><td>BFS</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>3383</td></tr>
-                                        <tr><td>OECD</td><td>FAO</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>3360</td></tr>
-                                        <tr><td>OECD</td><td>ECB</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>3495</td></tr>
+                                        <tr><td>OECD</td><td>World Bank</td><td>3487</td></tr>
+                                        <tr><td>OECD</td><td>Transparency International</td><td>3335</td></tr>
+                                        <tr><td>OECD</td><td>DBpedia</td><td>3613</td></tr>
+                                        <tr><td>OECD</td><td>BFS</td><td>3383</td></tr>
+                                        <tr><td>OECD</td><td>FAO</td><td>3360</td></tr>
+                                        <tr><td>OECD</td><td>ECB</td><td>3495</td></tr>
 
-                                        <tr><td>BFS</td><td>World Bank</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>185</td></tr>
-                                        <tr><td>BFS</td><td>DBpedia</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>261</td></tr>
+                                        <tr><td>BFS</td><td>World Bank</td><td>185</td></tr>
+                                        <tr><td>BFS</td><td>DBpedia</td><td>261</td></tr>
 
-                                        <tr><td>FAO</td><td>World Bank</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>178</td></tr>
-                                        <tr><td>FAO</td><td>Transparency International</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>167</td></tr>
-                                        <tr><td>FAO</td><td>DBpedia</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>875</td></tr>
-                                        <tr><td>FAO</td><td>EUNIS</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>359</td></tr>
-                                        <tr><td>FAO</td><td>ECB</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>210</td></tr>
+                                        <tr><td>FAO</td><td>World Bank</td><td>178</td></tr>
+                                        <tr><td>FAO</td><td>Transparency International</td><td>167</td></tr>
+                                        <tr><td>FAO</td><td>DBpedia</td><td>875</td></tr>
+                                        <tr><td>FAO</td><td>EUNIS</td><td>359</td></tr>
+                                        <tr><td>FAO</td><td>ECB</td><td>210</td></tr>
               
-                                        <tr><td>ECB</td><td>World Bank</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>188</td></tr>
-                                        <tr><td>ECB</td><td>Transparency International</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>167</td></tr>
-                                        <tr><td>ECB</td><td>DBpedia</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>239</td></tr>
-                                        <tr><td>ECB</td><td>BFS</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>221</td></tr>
-                                        <tr><td>ECB</td><td>FAO</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>210</td></tr>
+                                        <tr><td>ECB</td><td>World Bank</td><td>188</td></tr>
+                                        <tr><td>ECB</td><td>Transparency International</td><td>167</td></tr>
+                                        <tr><td>ECB</td><td>DBpedia</td><td>239</td></tr>
+                                        <tr><td>ECB</td><td>BFS</td><td>221</td></tr>
+                                        <tr><td>ECB</td><td>FAO</td><td>210</td></tr>
 
-                                        <tr><td>IMF</td><td>World Bank</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>26</td></tr>
-                                        <tr><td>IMF</td><td>Transparency International</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>23</td></tr>
-                                        <tr><td>IMF</td><td>DBpedia</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>25</td></tr>
-                                        <tr><td>IMF</td><td>BFS</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>24</td></tr>
-                                        <tr><td>IMF</td><td>FAO</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>23</td></tr>
-                                        <tr><td>IMF</td><td>ECB</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>26</td></tr>
+                                        <tr><td>IMF</td><td>World Bank</td><td>26</td></tr>
+                                        <tr><td>IMF</td><td>Transparency International</td><td>23</td></tr>
+                                        <tr><td>IMF</td><td>DBpedia</td><td>25</td></tr>
+                                        <tr><td>IMF</td><td>BFS</td><td>24</td></tr>
+                                        <tr><td>IMF</td><td>FAO</td><td>23</td></tr>
+                                        <tr><td>IMF</td><td>ECB</td><td>26</td></tr>
 
-                                        <tr><td>UIS</td><td>World Bank</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>964</td></tr>
-                                        <tr><td>UIS</td><td>Transparency International</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>854</td></tr>
-                                        <tr><td>UIS</td><td>DBpedia</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>964</td></tr>
-                                        <tr><td>UIS</td><td>BFS</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>849</td></tr>
-                                        <tr><td>UIS</td><td>FAO</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>825</td></tr>
-                                        <tr><td>UIS</td><td>ECB</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>855</td></tr>
-                                        <tr><td>UIS</td><td>IMF</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>119</td></tr>
-                                        <tr><td>UIS</td><td>OECD</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>17337</td></tr>
-                                        <tr><td>UIS</td><td>FRB</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>800</td></tr>
-                                        <tr><td>UIS</td><td>Geonames</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>959</td></tr>
-                                        <tr><td>UIS</td><td>IATI</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>964</td></tr>
-                                        <tr><td>UIS</td><td>Humanitarian Response</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>835</td></tr>
-                                        <tr><td>UIS</td><td>Eurostat</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>964</td></tr>
+                                        <tr><td>UIS</td><td>World Bank</td><td>964</td></tr>
+                                        <tr><td>UIS</td><td>Transparency International</td><td>854</td></tr>
+                                        <tr><td>UIS</td><td>DBpedia</td><td>964</td></tr>
+                                        <tr><td>UIS</td><td>BFS</td><td>849</td></tr>
+                                        <tr><td>UIS</td><td>FAO</td><td>825</td></tr>
+                                        <tr><td>UIS</td><td>ECB</td><td>855</td></tr>
+                                        <tr><td>UIS</td><td>IMF</td><td>119</td></tr>
+                                        <tr><td>UIS</td><td>OECD</td><td>17337</td></tr>
+                                        <tr><td>UIS</td><td>FRB</td><td>800</td></tr>
+                                        <tr><td>UIS</td><td>Geonames</td><td>959</td></tr>
+                                        <tr><td>UIS</td><td>IATI</td><td>964</td></tr>
+                                        <tr><td>UIS</td><td>Humanitarian Response</td><td>835</td></tr>
+                                        <tr><td>UIS</td><td>Eurostat</td><td>964</td></tr>
 
-                                        <tr><td>FRB</td><td>DBpedia</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>280</td></tr>
-                                        <tr><td>FRB</td><td>World Bank</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>280</td></tr>
-                                        <tr><td>FRB</td><td>ECB</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>276</td></tr>
-                                        <tr><td>FRB</td><td>OECD</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>34</td></tr>
-                                        <tr><td>FRB</td><td>UIS</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>280</td></tr>
+                                        <tr><td>FRB</td><td>DBpedia</td><td>280</td></tr>
+                                        <tr><td>FRB</td><td>World Bank</td><td>280</td></tr>
+                                        <tr><td>FRB</td><td>ECB</td><td>276</td></tr>
+                                        <tr><td>FRB</td><td>OECD</td><td>34</td></tr>
+                                        <tr><td>FRB</td><td>UIS</td><td>280</td></tr>
 
-                                        <tr><td>BIS</td><td>DBpedia</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>534</td></tr>
-                                        <tr><td>BIS</td><td>World Bank</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>487</td></tr>
-                                        <tr><td>BIS</td><td>ECB</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>574</td></tr>
-                                        <tr><td>BIS</td><td>Transparency International</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>406</td></tr>
-                                        <tr><td>BIS</td><td>UIS</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>2310</td></tr>
-                                        <tr><td>BIS</td><td>IMF</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>72</td></tr>
-                                        <tr><td>BIS</td><td>FRB</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>54</td></tr>
-                                        <tr><td>BIS</td><td>OECD</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>17</td></tr>
-                                        <tr><td>BIS</td><td>FAO</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>472</td></tr>
-                                        <tr><td>BIS</td><td>BFS</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>466</td></tr>
-                                        <tr><td>BIS</td><td>Geonames</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>515</td></tr>
-                                        <tr><td>BIS</td><td>Eurostat</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>489</td></tr>
-                                        <tr><td>BIS</td><td>NASA</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>46</td></tr>
-                                        <tr><td>ABS</td><td>DBpedia</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>99</td></tr>
-                                        <tr><td>ABS</td><td>World Bank</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>99</td></tr>
-                                        <tr><td>ABS</td><td>ECB</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>99</td></tr>
-                                        <tr><td>ABS</td><td>Transparency International</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>99</td></tr>
-                                        <tr><td>ABS</td><td>UIS</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>495</td></tr>
-                                        <tr><td>ABS</td><td>IMF</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>99</td></tr>
-                                        <tr><td>ABS</td><td>FAO</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>99</td></tr>
-                                        <tr><td>ABS</td><td>BFS</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>99</td></tr>
-                                        <tr><td>ABS</td><td>BIS</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>198</td></tr>
-                                        <tr><td>ABS</td><td>Geonames</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>99</td></tr>
-                                        <tr><td>ABS</td><td>Eurostat</td><td><code>skos:Concept</code></td><td><code>skos:exactMatch</code></td><td>99</td></tr>
+                                        <tr><td>BIS</td><td>DBpedia</td><td>534</td></tr>
+                                        <tr><td>BIS</td><td>World Bank</td><td>487</td></tr>
+                                        <tr><td>BIS</td><td>ECB</td><td>574</td></tr>
+                                        <tr><td>BIS</td><td>Transparency International</td><td>406</td></tr>
+                                        <tr><td>BIS</td><td>UIS</td><td>2310</td></tr>
+                                        <tr><td>BIS</td><td>IMF</td><td>72</td></tr>
+                                        <tr><td>BIS</td><td>FRB</td><td>54</td></tr>
+                                        <tr><td>BIS</td><td>OECD</td><td>17</td></tr>
+                                        <tr><td>BIS</td><td>FAO</td><td>472</td></tr>
+                                        <tr><td>BIS</td><td>BFS</td><td>466</td></tr>
+                                        <tr><td>BIS</td><td>Geonames</td><td>515</td></tr>
+                                        <tr><td>BIS</td><td>Eurostat</td><td>489</td></tr>
+                                        <tr><td>BIS</td><td>NASA</td><td>46</td></tr>
+
+                                        <tr><td>ABS</td><td>DBpedia</td><td>99</td></tr>
+                                        <tr><td>ABS</td><td>World Bank</td><td>99</td></tr>
+                                        <tr><td>ABS</td><td>ECB</td><td>99</td></tr>
+                                        <tr><td>ABS</td><td>Transparency International</td><td>99</td></tr>
+                                        <tr><td>ABS</td><td>UIS</td><td>495</td></tr>
+                                        <tr><td>ABS</td><td>IMF</td><td>99</td></tr>
+                                        <tr><td>ABS</td><td>FAO</td><td>99</td></tr>
+                                        <tr><td>ABS</td><td>BFS</td><td>99</td></tr>
+                                        <tr><td>ABS</td><td>BIS</td><td>198</td></tr>
+                                        <tr><td>ABS</td><td>Geonames</td><td>99</td></tr>
+                                        <tr><td>ABS</td><td>Eurostat</td><td>99</td></tr>
                                     </tbody>
                                 </table>
 
