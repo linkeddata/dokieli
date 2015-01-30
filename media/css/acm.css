@@ -11,9 +11,33 @@ ACM SIG template styles http://www.acm.org/sigs/publications/sigguide-v2.2sp
 XXX: Helvetica has highest priority for ACM SIG template's titles, however, if a system doesn't have Helvetica, printing to a PDF breaks rendering. Even though printing to paper is okay. I've removed it for 'accessibility'.
 */
 
+
+@media print {
 @page {
 margin:1.9cm 1.9cm 2.54cm 1.9cm;
 size:18cm 23.5cm;
+}
+
+body {
+font-size:9pt !important;
+margin:0 auto !important;
+padding:0 !important;
+width:122mm !important;
+height:193mm !important;
+}
+
+h1 { font-size:18pt !important; }
+h2 { font-size:12pt !important; }
+h3 { font-size:12pt !important; }
+h4 { font-size:11pt !important; }
+/*h5 { font-size:10pt !important; }
+h6 { font-size:9pt !important; }*/
+
+#references + ol {
+font-family:"Times New Roman", serif;
+font-size:9pt;
+}
+
 }
 
 
@@ -36,12 +60,12 @@ widows: 2;
 }
 
 body {
-font-size:9pt;
+font-size:150%;
 font-family: "Times New Roman", serif;
 counter-reset: section;
 counter-reset: sub-section;
 margin:0 auto;
-width:18cm;
+width:54.693em;
 }
 
 
@@ -78,7 +102,7 @@ margin-bottom:1em;
 h1 {
 margin-bottom:1em;
 font-family:Arial, sans-serif;
-font-size:18pt;
+font-size:1.75em;
 font-weight:bold;
 text-align:center;
 }
@@ -120,20 +144,20 @@ content: counter(section)"." counter(sub-section) "." counter(sub-sub-section) "
 
 
 
-h2, #document-identifier dt {
+h2, dt {
 font-weight:bold;
 font-family:"Times New Roman", serif;
-font-size:12pt;
+font-size:1.333em;
 text-transform:uppercase;
 }
 h3 {
 font-family:"Times New Roman", serif;
-font-size:12pt;
+font-size:1.333em;
 text-transform:capitalize;
 }
 h4 {
 font-family:"Times New Roman", serif;
-font-size:11pt;
+font-size:1.2226em;
 font-style:italic;
 text-transform:capitalize;
 }
@@ -336,18 +360,18 @@ margin-bottom:1em;
 }
 
 
-#references + ol {
+#references ol {
 font-family:"Times New Roman", serif;
-font-size:9pt;
+font-size:1em;
 }
-#references + ol {
+#references ol {
 counter-reset: list-order;
 }
-#references + ol li { 
+#references ol li {
 counter-increment: list-order;
 list-style-type: none;
 }
-#references + ol li:before {
+#references ol li:before {
 content: "[" counter(list-order) "] ";
 }
 
@@ -355,6 +379,7 @@ content: "[" counter(list-order) "] ";
 .entry-author,
 .datetimestamp,
 .entry-replies,
+#header,
 #footer,
 .article_labels * {
 display:none;
