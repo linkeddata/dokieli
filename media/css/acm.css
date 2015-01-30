@@ -106,6 +106,24 @@ font-size:1.75em;
 font-weight:bold;
 text-align:center;
 }
+h2, h3, #document-identifier dt {
+font-size:1.333em;
+}
+h4 {
+font-size:1.2226em;
+}
+h2, dt {
+font-weight:bold;
+text-transform:uppercase;
+}
+h3 {
+text-transform:capitalize;
+}
+h4 {
+font-style:italic;
+text-transform:capitalize;
+}
+
 .entry-subtitle {
 font-size:16pt;
 text-align:center;
@@ -144,24 +162,6 @@ content: counter(section)"." counter(sub-section) "." counter(sub-sub-section) "
 
 
 
-h2, dt {
-font-weight:bold;
-font-family:"Times New Roman", serif;
-font-size:1.333em;
-text-transform:uppercase;
-}
-h3 {
-font-family:"Times New Roman", serif;
-font-size:1.333em;
-text-transform:capitalize;
-}
-h4 {
-font-family:"Times New Roman", serif;
-font-size:1.2226em;
-font-style:italic;
-text-transform:capitalize;
-}
-
 li {
 list-style-position:inside;
 margin-bottom:0.25em;
@@ -179,7 +179,7 @@ word-wrap: break-word;
 }
 
 dd {
-margin:0.5em 0 1em 1em;
+margin:0.5em 0 1em 0;
 }
 
 #authors {
@@ -360,10 +360,6 @@ margin-bottom:1em;
 }
 
 
-#references ol {
-font-family:"Times New Roman", serif;
-font-size:1em;
-}
 #references ol {
 counter-reset: list-order;
 }
