@@ -38,6 +38,15 @@ font-family:"Times New Roman", serif;
 font-size:9pt;
 }
 
+#authors .author_name,
+#authors .author_email {
+font-size:12pt;
+}
+
+#authors .author_org {
+font-size:10pt;
+}
+
 }
 
 
@@ -233,11 +242,11 @@ margin-bottom:0.1em;
 
 #authors .author_name,
 #authors .author_email {
-font-size:12pt;
+font-size:1.333em;
 }
 
 #authors .author_org {
-font-size:10pt;
+font-size:1.0835em;
 }
 /*
 #authors .author_email {
