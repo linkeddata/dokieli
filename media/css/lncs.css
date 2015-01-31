@@ -145,10 +145,10 @@ width:35em;
 
 
 h1,h2,h3,h4, strong, dt {
-font-family: "CMU Serif Bold", sans-serif !important;
+font-family: "CMU Serif Bold", serif !important;
 }
 h5,h6, em, address {
-font-family: "CMU Serif Italic", sans-serif !important;
+font-family: "CMU Serif Italic", serif !important;
 font-style:normal !important;
 font-weight:normal;
 }
