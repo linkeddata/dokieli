@@ -29,6 +29,10 @@ h3 { font-size:12pt !important; }
 h4 { font-size:11pt !important; }
 /*h5 { font-size:10pt !important; }
 h6 { font-size:9pt !important; }*/
+h1 sup { font-size:9pt !important; }
+
+.entry-subtitle sup,
+#authors sup { top:-8px !important; }
 
 #references + ol {
 font-family:"Times New Roman", serif;
@@ -42,6 +46,21 @@ font-size:12pt;
 
 #authors .author_org {
 font-size:10pt;
+}
+
+#content {
+-webkit-columns:8.45cm 2;
+-webkit-column-count:2;
+-webkit-column-width:8.45cm;
+-webkit-column-gap:0.83cm;
+-moz-columns:8.45cm 2;
+-moz-column-count:2;
+-moz-column-width:8.45cm;
+-moz-column-gap:0.83cm;
+columns:8.45cm 2;
+column-count:2;
+column-width:8.45cm;
+column-gap:0.83cm;
 }
 
 }
@@ -72,7 +91,7 @@ counter-reset: section;
 counter-reset: sub-section;
 margin:0 auto;
 padding:2em 0;
-width:56.693em;
+width:56.06em;
 -moz-hyphens:auto;
 -webkit-hyphens:auto;
 -ms-hyphens:auto;
@@ -97,18 +116,14 @@ https://bugzilla.mozilla.org/show_bug.cgi?id=684062
 
 */
 #content {
--webkit-columns:8.45cm 2;
+clear:both;
 -webkit-column-count:2;
--webkit-column-width:8.45cm;
--webkit-column-gap:0.83cm;
--moz-columns:8.45cm 2;
+-webkit-column-gap:1.9em;
 -moz-column-count:2;
--moz-column-width:8.45cm;
--moz-column-gap:0.83cm;
-columns:8.45cm 2;
+-moz-column-gap:1.9em;
+/*columns:2 8.45cm;*/
 column-count:2;
-column-width:8.45cm;
-column-gap:0.83cm;
+column-gap:1.9em;
 }
 
 p, ol, ul, table, figure {
@@ -116,12 +131,21 @@ margin-bottom:1em;
 }
 
 h1 {
-margin-bottom:1em;
+margin-top:0.75em;
+margin-bottom:1.25em;
 font-family:Arial, sans-serif;
 font-size:1.75em;
-font-weight:bold;
 text-align:center;
 }
+h1 sup,
+.entry-subtitle sup,
+#authors sup {
+font-weight:300;
+font-size:0.5715em;
+position:relative; top:-3px;
+}
+.entry-subtitle sup,
+#authors sup { top:-16px; }
 h2, h3, #document-identifier dt {
 font-size:1.333em;
 }
@@ -141,7 +165,8 @@ text-transform:capitalize;
 }
 
 .entry-subtitle {
-font-size:16pt;
+font-family:Arial, sans-serif;
+font-size:1.5em;
 text-align:center;
 }
 h2 {
@@ -201,9 +226,11 @@ margin:0.5em 0 1em 0;
 #authors {
 font-family:Arial, sans-serif;
 text-align:center;
-margin-bottom:3em;
+margin-bottom:1em;
+line-height:1;
 }
 
+/*
 .column-count-2 {
 -webkit-column-count:2;
 -webkit-column-width:40%;
@@ -227,7 +254,7 @@ column-count:3;
 column-width:30%;
 column-gap:3%;
 }
-
+*/
 
 #authors li,
 #categories-and-subject-descriptors li,
@@ -236,12 +263,17 @@ list-style-type:none;
 }
 
 #authors li {
-margin-bottom:1em;
+display:inline-block;
+vertical-align:top;
+width:30%;
+margin-bottom:1.5em;
+margin-left:1%;
+}
+#authors li:nth-child(3n+1) {
+clear:both;
+margin-left:0;
 }
 
-#authors .entry-author {
-display:block;
-}
 
 #authors p {
 margin-bottom:0.1em;
