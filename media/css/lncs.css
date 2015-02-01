@@ -141,6 +141,10 @@ position:relative;
 margin:0 auto;
 padding:2em 0;
 width:35em;
+-moz-hyphens:auto;
+-webkit-hyphens:auto;
+-ms-hyphens:auto;
+hyphens:auto;
 }
 
 
