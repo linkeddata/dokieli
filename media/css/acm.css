@@ -72,7 +72,7 @@ counter-reset: section;
 counter-reset: sub-section;
 margin:0 auto;
 padding:2em 0;
-width:54.693em;
+width:56.693em;
 }
 
 
@@ -386,4 +386,24 @@ content: "[" counter(list-order) "] ";
 #footer,
 .article_labels * {
 display:none;
+}
+
+
+@media only screen 
+and (min-device-width : 320px)
+and (max-device-width : 568px) {
+body { font-size: 100%; }
+#content {
+-webkit-column-count:1;
+-moz-column-count:1;
+column-count:1;
+}
+}
+
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px) {
+body {
+font-size:100%;
+}
 }
