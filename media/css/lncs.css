@@ -215,7 +215,7 @@ counter-increment: sub-sub-section;
 counter-reset: sub-sub-sub-section;
 }
 
-article *:not([id=abstract]):not([id=keywords]):not([id=references]) h2:before {
+article *:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=general-terms]) h2:before {
 content: counter(section) "\00a0\00a0\00a0\00a0";
 }
 
@@ -337,6 +337,7 @@ line-height:1;
 #document-submitted dd,
 #document-license dd,
 #document-purpose dd,
+#general-terms h2, #general-terms li,
 #keywords h2, #keywords li,
 #categories-and-subject-descriptors h2, #categories-and-subject-descriptors li {
 font-size:0.93em;
@@ -395,6 +396,7 @@ content:"" !important;
 #document-license dt:before,
 #categories-and-subject-descriptors h2:before,
 #keywords h2:before,
+#general-terms h2:before,
 #acknowledgements h2:before,
 #references h2:before,
 #appendix h2:before,
@@ -408,6 +410,7 @@ content: "";
 #document-purpose dt:after,
 #document-submitted dt:after,
 #document-license dt:after,
+#general-terms h2:after,
 #categories-and-subject-descriptors h2:after,
 #keywords h2:after {
 content: ":";
@@ -428,6 +431,10 @@ content: ".";
 #document-submitted dt + dd,
 #document-license dt,
 #document-license dt + dd,
+#categories-and-subject-descriptors h2,
+#categories-and-subject-descriptors h2 + ul,
+#general-terms h2,
+#general-terms h2 + ul,
 #keywords h2,
 #keywords h2 + ul {
 display:inline;
@@ -546,6 +553,7 @@ text-align:center;
 #document-purpose,
 #document-submitted,
 #document-license,
+#general-terms,
 #categories-and-subject-descriptors,
 #keywords {
 margin:0 2.5em 1em;
@@ -561,10 +569,12 @@ text-align:center;
 }
 
 #authors li,
+#general-terms,
 #categories-and-subject-descriptors li,
 #keywords li {
 list-style-type:none;
 }
+#general-terms li,
 #categories-and-subject-descriptors li,
 #keywords li {
 display:inline;
@@ -572,16 +582,17 @@ display:inline;
 #categories-and-subject-descriptors li:after {
 content:"; ";
 }
-#keywords li:after {
-content:" \2022";
-margin-left:-1px;
-margin-right:-1px;
+#general-terms li:before,
+#keywords li:before {
+content:"\2022\0020";
 }
+#general-terms li:first-child:before,
 #categories-and-subject-descriptors li:last-child:after,
-#keywords li:last-child:after {
+#keywords li:first-child:before {
 content:"";
 }
 
+#general-terms h2,
 #categories-and-subject-descriptors h2,
 #keywords h2,
 #document-identifier dt {
