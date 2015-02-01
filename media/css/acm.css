@@ -73,8 +73,17 @@ counter-reset: sub-section;
 margin:0 auto;
 padding:2em 0;
 width:56.693em;
+-moz-hyphens:auto;
+-webkit-hyphens:auto;
+-ms-hyphens:auto;
+hyphens:auto;
 }
-
+#authors, #keywords, #categories-and-subject-descriptors, #general-terms, #references, pre, code {
+-moz-hyphens:none;
+-webkit-hyphens:none;
+-ms-hyphens:none;
+hyphens:none;
+}
 
 img, object { max-width:100% !important; height:auto !important }
 *[data-print-acm-width="300"] { width:300px !important; }
@@ -146,18 +155,18 @@ h3, h4, h5, h6 {
 margin-top:1em;
 }
 
-section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]) {
+section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]) {
 counter-increment: section;
 counter-reset: sub-section;
 }
-section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]) section {
+section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]) section {
 counter-increment: sub-section;
 counter-reset: sub-sub-section;
 }
-section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]) section section {
+section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]) section section {
 counter-increment: sub-sub-section;
 }
-section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]) h2:before {
+section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]) h2:before {
 content: counter(section) ". ";
 }
 h3:before {
@@ -251,21 +260,26 @@ font-size:1.0835em;
 font-family:Helvetica, Arial, sans-serif;
 }
 */
+#general-terms li,
 #categories-and-subject-descriptors li,
 #keywords li {
 display:inline;
 }
+#general-terms li:after,
 #categories-and-subject-descriptors li:after {
 content:"; ";
 }
+#general-terms li:after,
 #keywords li:after {
 content:", ";
 }
+#general-terms li:last-child:after,
 #categories-and-subject-descriptors li:last-child:after,
 #keywords li:last-child:after {
 content:"";
 }
 
+#general-terms h2,
 #categories-and-subject-descriptors h2,
 #keywords h2 {
 text-transform:capitalize;
