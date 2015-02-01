@@ -146,7 +146,12 @@ width:35em;
 -ms-hyphens:auto;
 hyphens:auto;
 }
-
+#authors, #keywords, #categories-and-subject-descriptors, #general-terms, #references, pre, code {
+-moz-hyphens:none;
+-webkit-hyphens:none;
+-ms-hyphens:none;
+hyphens:none;
+}
 
 h1,h2,h3,h4, strong, dt {
 font-family: "CMU Serif Bold", serif !important;
