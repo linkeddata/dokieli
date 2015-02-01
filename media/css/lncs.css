@@ -149,8 +149,6 @@ font-family: "CMU Serif Bold", serif !important;
 }
 h5,h6, em, address {
 font-family: "CMU Serif Italic", serif !important;
-font-style:normal !important;
-font-weight:normal;
 }
 code, pre, kbd, button {
 font-family: "CMU Serif Monospace", monospace !important;
