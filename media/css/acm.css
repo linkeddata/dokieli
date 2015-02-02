@@ -146,7 +146,7 @@ position:relative; top:-3px;
 }
 .entry-subtitle sup,
 #authors sup { top:-16px; }
-h2, h3, #document-identifier dt {
+h2, h3, #document-identifier dt, #appendix dt {
 font-size:1.333em;
 }
 h4 {
@@ -160,6 +160,7 @@ h3 {
 text-transform:capitalize;
 }
 h4 {
+font-weight:normal;
 font-style:italic;
 text-transform:capitalize;
 }
@@ -170,35 +171,33 @@ font-size:1.5em;
 text-align:center;
 }
 h2 {
-margin-top:1.5em;
+margin-top:1em;
 }
-h2:first-child {
-margin-top:0;
-}
+
 
 h3, h4, h5, h6 {
 margin-top:1em;
 }
 
-section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]) {
+section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]) {
 counter-increment: section;
 counter-reset: sub-section;
 }
-section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]) section {
+section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]) section {
 counter-increment: sub-section;
 counter-reset: sub-sub-section;
 }
-section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]) section section {
+section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]) section section {
 counter-increment: sub-sub-section;
 }
-section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]) h2:before {
-content: counter(section) ". ";
+section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]) h2:before {
+content: counter(section) ".\00a0\00a0\00a0\00a0";
 }
-h3:before {
-content: counter(section) "." counter(sub-section) " ";
+section:not([id=appendix]) h3:before {
+content: counter(section) "." counter(sub-section) "\00a0\00a0\00a0";
 }
-h4:before {
-content: counter(section)"." counter(sub-section) "." counter(sub-sub-section) " ";
+section:not([id=appendix]) h4:before {
+content: counter(section)"." counter(sub-section) "." counter(sub-sub-section) "\00a0\00a0\00a0";
 }
 
 
@@ -219,32 +218,131 @@ font-family:"Courier New", monospace;
 word-wrap: break-word;
 }
 
-p + math,
-ul + math,
-ol + math,
-dl + math,
-div + math,
-section + math,
+p + math, ul + math, ol + math, dl + math, dd > math, div + math, section + math {
+text-align:center;
+margin-top:1em;
+margin-bottom:1em;
+}
+p + math, ul + math, ol + math, dl + math, dd > math, div + math, section + math,
 figure math {
 display:block;
-counter-increment:equation;
 font-size:0.95em;
-margin-bottom:1em;
-text-align:center;
 }
-
-figure math:after {
+figure {
+counter-increment:figure;
+}
+figure.equation {
+counter-increment:equation;
+}
+figure.equation:after {
 content: "(" counter(equation) ")";
 line-height:0;
 position: absolute;
+top:45%;
 right:0;
-top:50%;
-margin-bottom:0;
-text-align:right;
+}
+figure object {
+margin-bottom:1em;
+}
+figcaption,
+caption {
+font-weight:bold;
+text-align:justify;
+}
+figcaption:before {
+content: "Figure " counter(figure) ": ";
+}
+table {
+counter-increment:table;
+}
+caption:before {
+content: "Table " counter(table) ": ";
+}
+
+
+.tex,
+.latex {
+text-transform: uppercase;
+}
+
+.tex > span,
+.latex > span {
+line-height: 0;
+text-transform: uppercase;
+}
+
+.latex > :first-child {
+margin-left: -0.36em;
+margin-right: -0.15em;
+vertical-align: 0.3em;
+font-size: 70%;
+}
+
+.tex > :last-child,
+.latex > :last-child {
+margin-left: -0.1667em;
+margin-right: -0.125em;
+vertical-align: -0.5ex;
+}
+
+
+dl.theorem,
+dl.definition {
+text-indent:1em;
+}
+dl.theorem dt {
+display:inline;
+font-variant:small-caps;
+font-weight:normal;
+text-transform:none;
+}
+dl.theorem dt:after {
+content:". ";
+}
+dl.theorem dd {
+display:inline;
+}
+dl.theorem dd span {
+display:inline;
+font-style:italic;
+}
+dl.definition dt {
+display:inline;
+font-weight:normal;
+text-transform:none;
+font-style:italic;
+}
+dl.definition dt:after {
+content:". ";
+}
+dl.definition dd {
+display:inline;
+}
+dl.definition dd span {
+display:inline;
+}
+dl.proof dt {
+display:inline;
+font-variant:small-caps;
+font-weight:normal;
+text-transform:none;
+}
+dl.proof dt:after {
+content:". ";
+}
+dl.proof dd {
+display:inline;
+}
+dl.proof dd span {
+display:inline;
+}
+dl.proof dd > *:last-child:after {
+content:"\00A0\00A0\25A1";
+font-size:1.5em;
 }
 
 dd {
-margin:0.5em 0 1em 0;
+margin:0 0 0.5em 0;
 }
 
 #authors {
@@ -422,7 +520,7 @@ border-collapse:collapse;
 /*float: left;*/
 /*overflow: auto;*/
 /*display: inline-block;*/
-width:100%;
+width:calc(100% - 2px);
 }
 table,
 th,
@@ -435,7 +533,8 @@ border:0;
 }
 th,
 td {
-padding:0.5em;
+padding:0.25em;
+text-align:left;
 }
 caption {
 padding:0.25em 0;
@@ -454,11 +553,42 @@ counter-reset: list-order;
 }
 #references ol li {
 counter-increment: list-order;
+list-style-position:outside;
 list-style-type: none;
+margin-left: 1.85em;
+text-align:left;
 }
 #references ol li:before {
-content: "[" counter(list-order) "] ";
+content: "[" counter(list-order) "]\00A0\00A0\00A0";
+margin-left: -1.85em;
 }
+
+#appendix section:first-child h2 {
+margin-top:0;
+}
+
+#appendix section {
+counter-increment:appendix;
+counter-reset: sub-appendix;
+}
+#appendix section section {
+counter-increment:sub-appendix;
+counter-reset: sub-sub-appendix;
+}
+#appendix section section section {
+counter-increment:sub-sub-appendix;
+}
+#appendix section h2:before {
+content:counter(appendix, upper-latin) ".\00A0\00A0\00A0\00A0";
+}
+#appendix section section h3:before {
+content: counter(appendix, upper-latin) "." counter(sub-appendix) "\00a0\00a0\00a0";
+}
+#appendix section section section h4:before {
+content: counter(appendix, upper-latin) "." counter(sub-appendix)"." counter(sub-sub-appendix) "\00a0\00a0\00a0";
+}
+
+
 
 #comments,
 .entry-author,
