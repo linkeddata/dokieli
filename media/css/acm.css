@@ -214,9 +214,33 @@ color:#000;
 }
 
 code {
-font-size:90%;
+font-size:0.95em;
 font-family:"Courier New", monospace;
 word-wrap: break-word;
+}
+
+p + math,
+ul + math,
+ol + math,
+dl + math,
+div + math,
+section + math,
+figure math {
+display:block;
+counter-increment:equation;
+font-size:0.95em;
+margin-bottom:1em;
+text-align:center;
+}
+
+figure math:after {
+content: "(" counter(equation) ")";
+line-height:0;
+position: absolute;
+right:0;
+top:50%;
+margin-bottom:0;
+text-align:right;
 }
 
 dd {
@@ -335,6 +359,18 @@ display:none;
 text-align:left;
 margin-left:0;
 }
+
+
+figure {
+margin-top:1em;
+margin-bottom:1em;
+position:relative;
+text-align:center;
+}
+figure pre {
+text-align:left;
+}
+
 
 table {
 border-collapse:collapse;
