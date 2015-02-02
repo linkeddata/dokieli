@@ -159,6 +159,10 @@ font-family: "CMU Serif Bold", serif !important;
 h5,h6, em, address {
 font-family: "CMU Serif Italic", serif !important;
 }
+h1 em, h2 em,h3 em,h4 em {
+font-family: "CMU Serif Bold Italic", serif !important;
+}
+
 code, pre, kbd, button {
 font-family: "CMU Serif Monospace", monospace !important;
 }
@@ -202,20 +206,20 @@ display:inline;
 }
 
 
-article section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]) {
+article section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]) {
 counter-increment: section;
 counter-reset: sub-section;
 }
-article section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]) section {
+article section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]) section {
 counter-increment: sub-section;
 counter-reset: sub-sub-section;
 }
-article section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]) section section {
+article section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]) section section {
 counter-increment: sub-sub-section;
 counter-reset: sub-sub-sub-section;
 }
 
-article *:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=general-terms]) h2:before {
+article *:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=general-terms]):not([id=appendix]) h2:before {
 content: counter(section) "\00a0\00a0\00a0\00a0";
 }
 
@@ -494,6 +498,29 @@ float:left;
 .figure-column-2 figure:first-child {
 margin-left:0;
 }
+
+p + math, ul + math, ol + math, dl + math, dd > math, div + math, section + math {
+text-align:center;
+margin-top:1em;
+margin-bottom:1em;
+}
+p + math, ul + math, ol + math, dl + math, dd > math, div + math, section + math,
+figure math {
+display:block;
+font-size:0.95em;
+}
+figure.equation {
+counter-increment:equation;
+}
+figure.equation:after {
+content: "(" counter(equation) ")";
+line-height:0;
+position: absolute;
+top:45%;
+right:0;
+}
+
+
 
 #abstract, ol, ul, p, dd {
 text-align:justify;
