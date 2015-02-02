@@ -241,7 +241,8 @@ position: absolute;
 top:45%;
 right:0;
 }
-figure object {
+figure object,
+figure img {
 margin-bottom:1em;
 }
 figcaption,
