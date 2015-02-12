@@ -20,49 +20,33 @@
             <p class="entry-subtitle">[Extended Abstract] <sup>†</sup></p>
 
             <div id="authors">
-                <ul>
-                    <li class="entry-author author_corresponding">
-                        <p><a rel="dcterms:creator dcterms:publisher dcterms:contributor" href="" class="author_name">Ben Trovato</a><sup>‡</sup></p>
-                        <p about="http://csarven.ca/#i" rel="org:memberOf" resource="" class="author_org">Institute for Clarity in Documentation</p>
-                        <p class="author_org">1932 Wallamaloo Lane</p>
-                        <p class="author_org">Wallamaloo, New Zealand</p>
-                        <p about="" rel="foaf:mbox" resource="mailto:trovato@corporation.com" class="author_email">trovato@corporation.com</p>
-                    </li>
-                    <li class="entry-author">
-                        <p><a rel="dcterms:contributor" href="" class="author_name">G.K.M. Tobin</a><sup>§</sup></p>
-                        <p about="http://csarven.ca/#i" rel="org:memberOf" resource="" class="author_org">Institute for Clarity in Documentation</p>
-                        <p class="author_org">P.O. Box 1212</p>
-                        <p class="author_org">Dublin, Ohio 43017-6221</p>
-                        <p about="" rel="foaf:mbox" resource="mailto:webmaster@marysville-ohio.com" class="author_email">webmaster@marysville-ohio.com</p>
-                    </li>
-                    <li class="entry-author">
-                        <p><a rel="dcterms:contributor" href="" class="author_name">Lars Thørväld</a><sup>¶</sup></p>
-                        <p about="http://csarven.ca/#i" rel="org:memberOf" resource="" class="author_org">The Thørväld Group</p>
-                        <p class="author_org">1 Thørväld Circle</p>
-                        <p class="author_org">Hekla, Iceland</p>
-                        <p about="" rel="foaf:mbox" resource="mailto:larst@affiliation.org" class="author_email">larst@affiliation.org</p>
-                    </li>
-                    <li class="entry-author">
-                        <p><a rel="dcterms:contributor" href="" class="author_name">Lawrence P. Leipuner</a></p>
-                        <p about="http://csarven.ca/#i" rel="org:memberOf" resource="" class="author_org">Brookhaven Laboratories</p>
-                        <p class="author_org">Brookhaven National Lab</p>
-                        <p class="author_org">P.O. Box 5000</p>
-                        <p about="" rel="foaf:mbox" resource="mailto:lleipuner@researchlabs.org" class="author_email">lleipuner@researchlabs.org</p>
-                    </li>
-                    <li class="entry-author">
-                        <p><a rel="dcterms:contributor" href="" class="author_name">Sean Fogarty</a></p>
-                        <p about="http://csarven.ca/#i" rel="org:memberOf" resource="" class="author_org">NASA Ames Research Center</p>
-                        <p class="author_org">Moffett Field</p>
-                        <p class="author_org">California 94035</p>
-                        <p about="" rel="foaf:mbox" resource="mailto:fogartys@amesres.org" class="author_email">fogartys@amesres.org</p>
-                    </li>
-                    <li class="entry-author">
-                        <p><a rel="dcterms:contributor" href="" class="author_name">Charles Palmer</a></p>
-                        <p about="http://csarven.ca/#i" rel="org:memberOf" resource="" class="author_org">Palmer Research Laboratories</p>
-                        <p class="author_org">8600 Datapoint Drive</p>
-                        <p class="author_org">San Antonio, Texas 78229</p>
-                        <p about="" rel="foaf:mbox" resource="mailto:cpalmer@prl.com" class="author_email">cpalmer@prl.com</p>
-                    </li>
+                <dl id="author_names" about="[this:]">
+                    <dt>Authors</dt>
+                    <dd id="author_1" class="entry-author author_name author_corresponding"><span rel="dcterms:creator dcterms:publisher dcterms:contributor"><a about="[_:]" typeof="foaf:Person" rel="foaf:homepage" property="foaf:name" href="">Ben Trovato</a></span><sup><a href="#author_org_1">1</a></sup><sup><a href="#author_email_1">‡</a></sup></dd>
+                    <dd id="author_2" class="entry-author author_name"><span rel="dcterms:contributor"><a about="[_:]" typeof="foaf:Person" rel="foaf:homepage" property="foaf:name" href="">G.K.M. Tobin</a></span><sup><a href="#author_org_2">2</a></sup><sup><a href="#author_email_2">§</a></sup></dd>
+                    <dd id="author_3" class="entry-author author_name"><span rel="dcterms:contributor"><a about="[_:]" typeof="foaf:Person" rel="foaf:homepage" property="foaf:name" href="">Lars Thørväld</a></span><sup><a href="#author_org_3">3</a></sup><sup><a href="#author_email_3">¶</a></sup></dd>
+                    <dd id="author_4" class="entry-author author_name"><span rel="dcterms:contributor"><a about="[_:]" typeof="foaf:Person" rel="foaf:homepage" property="foaf:name" href="">Lawrence P. Leipuner</a></span><sup><a href="#author_org_4">4</a></sup><sup><a href="#author_email_4">x</a></sup></dd>
+                    <dd id="author_5" class="entry-author author_name"><span rel="dcterms:contributor"><a about="[_:]" typeof="foaf:Person" rel="foaf:homepage" property="foaf:name" href="">Sean Fogarty</a></span><sup><a href="#author_org_5">5</a></sup><sup><a href="#author_email_5">y</a></sup></dd>
+                    <dd id="author_6" class="entry-author author_name"><span rel="dcterms:contributor"><a about="[_:]" typeof="foaf:Person" rel="foaf:homepage" property="foaf:name" href="">Charles Palmer</a></span><sup><a href="#author_org_6">6</a></sup><sup><a href="#author_email_6">z</a></sup></dd>
+                </dl>
+
+                <ul id="author_orgs">
+                    <li id="author_org_1"><sup>1</sup><a about="[_:]" typeof="foaf:Organization" property="foaf:name" rel="foaf:homepage" href="">Institute for Clarity in Documentation</a>, <span class="adr"><span class="street-address">1932 Wallamaloo Lane</span>, <span class="region">Wallamaloo</span>, <span class="country-name">New Zealand</span></span></li>
+                    <li id="author_org_2"><sup>2</sup><a about="[_:]" typeof="foaf:Organization" property="foaf:name" rel="foaf:homepage" href="">Institute for Clarity in Documentation</a>, <span class="adr"><span class="post-office-box">P.O. Box 1212</span>, <span class="locality">Dublin</span>, <span class="region">Ohio</span> <span clss="postal-code">43017-6221</span></span></li>
+                    <li id="author_org_3"><sup>3</sup><a about="[_:]" typeof="foaf:Organization" property="foaf:name" rel="foaf:homepage" href="">The Thørväld Group</a>, <span class="adr"><span class="locality">Hekla</span>, <span class="country-name">Iceland</span></span></li>
+                    <li id="author_org_4"><sup>4</sup><a about="[_:]" typeof="foaf:Organization" property="foaf:name" rel="foaf:homepage" href="">Brookhaven Laboratories</a>, <span class="adr"><span class="street-address">Brookhaven National Lab</span>, <span class="post-office-box">P.O. Box 5000</span></span></li>
+                    <li id="author_org_5"><sup>5</sup><a about="[_:]" typeof="foaf:Organization" property="foaf:name" rel="foaf:homepage" href="">NASA Ames Research Center</a>, <span class="adr"><span class="locality">Moffett Field</span>, <span class="region">California</span> <span class="postal-code">94035</span></span></li>
+                    <li id="author_org_6"><sup>6</sup><a about="[_:]" typeof="foaf:Organization" property="foaf:name" rel="foaf:homepage" href="">Palmer Research Laboratories</a>, <span class="adr"><span class="street-address">8600 Datapoint Drive</span>, <span class="locality">San Antonio</span>, <span class="region">Texas</span> <span class="postal-code">78229</span></span></li>
+                </ul>
+
+                <ul class="author_email" id="author_emails">
+                    <li id="author_email_1"><sup>‡</sup><a about="[_:]" rel="foaf:mbox" href="mailto:trovato@corporation.com">trovato@corporation.com</a></li>
+                    <li id="author_email_2"><sup>§</sup><a about="[_:]" rel="foaf:mbox" href="mailto:webmaster@marysville-ohio.com">webmaster@marysville-ohio.com</a></li>
+                    <li id="author_email_3"><sup>¶</sup><a about="[_:]" rel="foaf:mbox" href="mailto:larst@affiliation.org">larst@affiliation.org</a></li>
+                    <li id="author_email_4"><sup>x</sup><a about="[_:]" rel="foaf:mbox" href="mailto:lleipuner@researchlabs.org">lleipuner@researchlabs.org</a></li>
+                    <li id="author_email_5"><sup>y</sup><a about="[_:]" rel="foaf:mbox" href="mailto:fogartys@amesres.org">fogartys@amesres.org</a></li>
+                    <li id="author_email_6"><sup>z</sup><a about="[_:]" rel="foaf:mbox" href="mailto:cpalmer@prl.com">cpalmer@prl.com</a></li>
+
                 </ul>
             </div>
 

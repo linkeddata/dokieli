@@ -142,7 +142,7 @@ top:-3px;
 }
 .entry-subtitle sup,
 #authors sup {
-top:-16px;
+/*top:-16px;*/
 }
 h2, h3, #document-identifier dt, #appendix dt {
 font-size:1.333em;
@@ -344,6 +344,11 @@ dd {
 margin:0 0 0.5em 0;
 }
 
+math * {
+padding:0;
+}
+
+
 #authors {
 font-family:Arial, sans-serif;
 text-align:center;
@@ -414,6 +419,132 @@ font-size:1.0835em;
 font-family:Helvetica, Arial, sans-serif;
 }
 */
+
+
+
+#authors {
+text-align:left;
+position:relative;
+height:7.5em;
+height:15em;
+}
+
+#author_names,
+#author_orgs,
+#author_emails {
+position:static;
+}
+
+
+#authors dd:nth-of-type(1) {
+position:absolute;
+top:0;
+left:2%;
+}
+#authors dd:nth-of-type(2) {
+position:absolute;
+top:0;
+left:35%;
+}
+#authors dd:nth-of-type(3) {
+position:absolute;
+top:0;
+left:68%;
+}
+#authors dd:nth-of-type(4) {
+position:absolute;
+top:6em;
+left:2%;
+}
+#authors dd:nth-of-type(5) {
+position:absolute;
+top:6em;
+left:35%;
+}
+#authors dd:nth-of-type(6) {
+position:absolute;
+top:6em;
+left:68%;
+}
+
+#author_orgs li:nth-of-type(1) {
+position:absolute;
+top:1.275em;
+left:2%;
+}
+#author_orgs li:nth-of-type(2) {
+position:absolute;
+top:1.275em;
+left:35%;
+}
+#author_orgs li:nth-of-type(3) {
+position:absolute;
+top:1.275em;
+left:68%;
+}
+#author_orgs li:nth-of-type(4) {
+position:absolute;
+top:8.65em;
+left:2%;
+}
+#author_orgs li:nth-of-type(5) {
+position:absolute;
+top:8.65em;
+left:35%;
+}
+#author_orgs li:nth-of-type(6) {
+position:absolute;
+top:8.65em;
+left:68%;
+}
+
+
+
+#author_emails li:nth-of-type(1) {
+position:absolute;
+top:3.5em;
+left:2%;
+}
+#author_emails li:nth-of-type(2) {
+position:absolute;
+top:3.5em;
+left:35%;
+}
+#author_emails li:nth-of-type(3) {
+position:absolute;
+top:3.5em;
+left:68%;
+}
+#author_emails li:nth-of-type(4) {
+position:absolute;
+top:9.5em;
+left:2%;
+}
+#author_emails li:nth-of-type(5) {
+position:absolute;
+top:9.5em;
+left:35%;
+}
+#author_emails li:nth-of-type(6) {
+position:absolute;
+top:9.5em;
+left:68%;
+}
+
+
+#authors dt {
+display:none;
+}
+
+#authors dd,
+#authors li {
+width:30%;
+margin:0 auto;
+display:inline-block;
+text-align:center;
+}
+
+
 #general-terms li,
 #categories-and-subject-descriptors li,
 #keywords li {
