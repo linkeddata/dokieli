@@ -31,11 +31,6 @@ h4 { font-size:11pt !important; }
 h6 { font-size:9pt !important; }*/
 h1 sup { font-size:9pt !important; }
 
-.entry-subtitle sup,
-#authors sup {
-top:-8px !important;
-}
-
 #references + ol {
 font-family:"Times New Roman", serif;
 font-size:9pt;
@@ -139,10 +134,6 @@ font-weight:300;
 font-size:0.5715em;
 position:relative;
 top:-3px;
-}
-.entry-subtitle sup,
-#authors sup {
-/*top:-16px;*/
 }
 h2, h3, #document-identifier dt, #appendix dt {
 font-size:1.333em;
