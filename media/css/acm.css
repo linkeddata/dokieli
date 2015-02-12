@@ -32,7 +32,9 @@ h6 { font-size:9pt !important; }*/
 h1 sup { font-size:9pt !important; }
 
 .entry-subtitle sup,
-#authors sup { top:-8px !important; }
+#authors sup {
+top:-8px !important;
+}
 
 #references + ol {
 font-family:"Times New Roman", serif;
@@ -71,14 +73,6 @@ margin:0;
 padding:0;
 }
 
-.entry-author,
-.datetimestamp,
-.entry-replies,
-#footer,
-#comments {
-display:none;
-}
-
 h2, h3, h4, h5, h6, p, ul, ol, li, pre, figure {
 orphans: 2;
 widows: 2;
@@ -87,6 +81,7 @@ widows: 2;
 body {
 font-size:150%;
 font-family: "Times New Roman", serif;
+/*position:relative;*/
 counter-reset: section;
 counter-reset: sub-section;
 margin:0 auto;
@@ -142,10 +137,13 @@ h1 sup,
 #authors sup {
 font-weight:300;
 font-size:0.5715em;
-position:relative; top:-3px;
+position:relative;
+top:-3px;
 }
 .entry-subtitle sup,
-#authors sup { top:-16px; }
+#authors sup {
+top:-16px;
+}
 h2, h3, #document-identifier dt, #appendix dt {
 font-size:1.333em;
 }
@@ -353,6 +351,7 @@ margin-bottom:1em;
 line-height:1;
 }
 
+
 /*
 .column-count-2 {
 -webkit-column-count:2;
@@ -389,7 +388,7 @@ list-style-type:none;
 display:inline-block;
 vertical-align:top;
 width:30%;
-margin-bottom:1.5em;
+/*margin-bottom:1.5em;*/
 margin-left:1%;
 }
 #authors li:nth-child(3n+1) {
@@ -426,7 +425,7 @@ content:"; ";
 }
 #general-terms li:after,
 #keywords li:after {
-content:", ";
+content:",\00A0";
 }
 #general-terms li:last-child:after,
 #categories-and-subject-descriptors li:last-child:after,
@@ -591,13 +590,13 @@ content: counter(appendix, upper-latin) "." counter(sub-appendix)"." counter(sub
 
 
 
-#comments,
-.entry-author,
-.datetimestamp,
-.entry-replies,
 #header,
 #footer,
-.article_labels * {
+#comments,
+dl.entry-author,
+dl.datetimestamp,
+dl.entry-replies,
+dl.article_labels * {
 display:none;
 }
 
