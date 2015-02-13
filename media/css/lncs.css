@@ -69,8 +69,8 @@ h5 { font-size:10pt !important; }
 h6 { font-size:10pt !important; }
 
 caption,
-#author_orgs *,
-#author_uris *,
+#author-org *,
+#author-uri *,
 #abstract *,
 #document-identifier *,
 #document-submitted *,
@@ -311,19 +311,6 @@ font-size:0.875em;
 
 
 #authors {
-/*-webkit-column-count:3;*/
-/*-webkit-column-width:30%;*/
-/*-webkit-column-gap:3%;*/
-/*-moz-column-count:3;*/
-/*-moz-column-width:30%;*/
-/*-moz-column-gap:3%;*/
-/*column-count:3;*/
-/*column-column-width:30%;*/
-/*column-gap:3%;*/
-}
-
-
-#authors {
 margin:0 auto 2.5em -3%;
 text-align:center;
 width:106%;
@@ -333,8 +320,8 @@ width:106%;
 line-height:1;
 }
 
-#author_orgs *,
-#author_uris *,
+#author-org *,
+#author-uri *,
 #abstract h2, #abstract p,
 #document-identifier dt, #document-identifier dd,
 #document-submitted dd,
@@ -346,8 +333,8 @@ line-height:1;
 font-size:0.93em;
 }
 
-#author_emails,
-#author_uris {
+#author-email,
+#author-uri {
 font-family: "CMU Serif Monospace", monospace !important;
 font-size:0.9em;
 }
@@ -370,15 +357,15 @@ margin-bottom:0;
 }
 
 #authors dd:after,
-#author_emails li:after,
-#author_orgs li:after,
-#author_uris li:after {
+#author-email li:after,
+#author-org li:after,
+#author-uri li:after {
 content:", ";
 }
 #authors dd:last-child:after,
-#author_emails li:last-child:after,
-#author_orgs li:last-child:after,
-#author_uris li:last-child:after {
+#author-email li:last-child:after,
+#author-org li:last-child:after,
+#author-uri li:last-child:after {
 content:"";
 }
 #authors sup {

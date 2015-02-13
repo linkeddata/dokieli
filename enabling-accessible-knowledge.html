@@ -7,6 +7,8 @@
         <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
         <script type="text/javascript" src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
         <script type="text/javascript" src="scripts/jquery.mjs.nestedSortable.js"></script>
+        <script type="text/javascript" src="scripts/medium-editor.min.js"></script>
+        <script type="text/javascript" src="scripts/MediumButton.min.js"></script>
         <script type="text/javascript" src="scripts/lr.js"></script>
         <link rel="stylesheet" type="text/css" media="all" title="LNCS" href="media/css/lncs.css"/>
         <link rel="stylesheet alternate" type="text/css" media="all" title="ACM" href="media/css/acm.css"/>
@@ -14,27 +16,28 @@
     </head>
 
     <body about="[this:]" typeof="foaf:Document sioc:Post biblio:Paper prov:Entity" class="hfeed" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# cc: http://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# schema: http://schema.org/ rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# org: http://www.w3.org/ns/org# biblio: http://purl.org/net/biblio# bibo: http://purl.org/ontology/bibo/ book: http://purl.org/NET/book/vocab# ov: http://open.vocab.org/terms/ doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ sro: http://salt.semanticauthoring.org/ontologies/sro# this: http://csarven.ca/enabling-accessible-knowledge">
-        <article class="hentry">
+        <article class="hentry editable">
 
             <h1 class="entry-title" property="dcterms:title">Enabling Accessible Knowledge</h1>
 
             <div id="authors">
-                <dl about="[this:]">
+                <dl id="author-name">
                     <dt>Authors</dt>
-                    <dd id="author_1" class="entry-author author_corresponding"><span rel="dcterms:creator dcterms:publisher dcterms:contributor"><a about="http://csarven.ca/#i" typeof="foaf:Person" rel="foaf:homepage" property="foaf:name" href="http://csarven.ca/">Sarven Capadisli</a></span><sup><a href="#author_org_1">1</a></sup><sup><a href="#author_org_2">2</a></sup><sup><a href="#author_email_1">✊</a></sup></dd>
-                    <dd id="author_2" class="entry-author"><span rel="dcterms:contributor"><a about="[_:ReinhardRiedl]" typeof="foaf:Person" rel="foaf:homepage" property="foaf:name" href="http://www.wirtschaft.bfh.ch/de/ueber_uns/kontakt/detailseite.html?tx_bfhpersonalpages_p=rer2&#38;tx_bfhpersonalpages_screen=data">Reinhard Riedl</a></span><sup><a href="#author_org_1">1</a></sup><sup><a href="#author_email_2">𝄞</a></sup></dd>
-                    <dd id="author_3" class="entry-author"><span rel="dcterms:contributor"><a about="[_:SorenAuer]" typeof="foaf:Person" rel="foaf:homepage" property="foaf:name" href="http://www.iai.uni-bonn.de/~auer/">Sören Auer</a></span><sup><a href="#author_org_2">2</a></sup><sup><a href="#author_email_3">⚛</a></sup></dd>
+                    <dd id="author-1"><span about="[this:]" rel="dcterms:creator dcterms:publisher dcterms:contributor"><a about="http://csarven.ca/#i" typeof="foaf:Person" rel="foaf:homepage" property="foaf:name" href="http://csarven.ca/">Sarven Capadisli</a></span><sup><a href="#author-org-1">1</a></sup><sup><a href="#author-org-2">2</a></sup><sup><a href="#author-email-1">✊</a></sup></dd>
+                    <dd id="author-2"><span about="[this:]" rel="dcterms:contributor"><a about="[_:ReinhardRiedl]" typeof="foaf:Person" rel="foaf:homepage" property="foaf:name" href="http://www.wirtschaft.bfh.ch/de/ueber_uns/kontakt/detailseite.html?tx_bfhpersonalpages_p=rer2&#38;tx_bfhpersonalpages_screen=data">Reinhard Riedl</a></span><sup><a href="#author-org-1">1</a></sup><sup><a href="#author-email-2">𝄞</a></sup></dd>
+                    <dd id="author-3"><span about="[this:]" rel="dcterms:contributor"><a about="[_:SorenAuer]" typeof="foaf:Person" rel="foaf:homepage" property="foaf:name" href="http://www.iai.uni-bonn.de/~auer/">Sören Auer</a></span><sup><a href="#author-org-2">2</a></sup><sup><a href="#author-email-3">⚛</a></sup></dd>
                 </dl>
 
-                <ul id="author_orgs">
-                    <li id="author_org_1"><sup>1</sup><a about="[_:BernUniversityofAppliedSciences]" typeof="foaf:Organization" property="foaf:name" rel="foaf:homepage" href="http://bfh.ch/">Bern University of Applied Sciences</a>, E-Government-Institute, Bern, Switzerland</li>
-                    <li id="author_org_2"><sup>2</sup><a about="[_:UniversityofBonn]" typeof="foaf:Organization" property="foaf:name" rel="foaf:homepage" href="http://uni-bonn.de/">University of Bonn</a>, Enterprise Information Systems Department, Bonn, Germany</li>
+                <ul id="author-org">
+                    <li id="author-org-1"><sup>1</sup><a about="[_:BernUniversityofAppliedSciences]" typeof="foaf:Organization" property="foaf:name" rel="foaf:homepage" href="http://bfh.ch/">Bern University of Applied Sciences</a>, E-Government-Institute, Bern, Switzerland</li>
+                    <li></li>
+                    <li id="author-org-2"><sup>2</sup><a about="[_:UniversityofBonn]" typeof="foaf:Organization" property="foaf:name" rel="foaf:homepage" href="http://uni-bonn.de/">University of Bonn</a>, Enterprise Information Systems Department, Bonn, Germany</li>
                 </ul>
 
-                <ul id="author_emails">
-                    <li id="author_email_1"><sup>✊</sup><a about="http://csarven.ca/#i" rel="foaf:mbox" href="mailto:info@csarven.ca">info@csarven.ca</a></li>
-                    <li id="author_email_2"><sup>𝄞</sup><a about="[_:ReinhardRiedl]" rel="foaf:mbox" href="mailto:reinhard.riedl@bfh.ch">reinhard.riedl@bfh.ch</a></li>
-                    <li id="author_email_3"><sup>⚛</sup><a about="[_:SorenAuer]" rel="foaf:mbox" href="mailto:auer@cs.uni-bonn.de">auer@cs.uni-bonn.de</a></li>
+                <ul id="author-email">
+                    <li id="author-email-1"><sup>✊</sup><a about="http://csarven.ca/#i" rel="foaf:mbox" href="mailto:info@csarven.ca">info@csarven.ca</a></li>
+                    <li id="author-email-2"><sup>𝄞</sup><a about="[_:ReinhardRiedl]" rel="foaf:mbox" href="mailto:reinhard.riedl@bfh.ch">reinhard.riedl@bfh.ch</a></li>
+                    <li id="author-email-3"><sup>⚛</sup><a about="[_:SorenAuer]" rel="foaf:mbox" href="mailto:auer@cs.uni-bonn.de">auer@cs.uni-bonn.de</a></li>
                 </ul>
                 <span about="http://csarven.ca/#i" rel="org:memberOf" resource="[_:BernUniversityofAppliedSciences]"></span>
                 <span about="http://csarven.ca/#i" rel="org:memberOf" resource="[_:UniversityofBonn]"></span>
