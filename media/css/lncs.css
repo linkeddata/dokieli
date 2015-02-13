@@ -356,10 +356,10 @@ display:inline !important;
 margin-bottom:0;
 }
 
-#authors dd:after,
-#author-email li:after,
-#author-org li:after,
-#author-uri li:after {
+#authors dd:not(:empty):after,
+#author-email li:not(:empty):after,
+#author-org li:not(:empty):after,
+#author-uri li:not(:empty):after {
 content:", ";
 }
 #authors dd:last-child:after,
