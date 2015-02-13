@@ -108,8 +108,8 @@ var LR = {
             var count = LR.U.contentCount(content);
 
             var contributors = '<ul class="contributors">';
-            $('#authors .entry-author').each(function(i,contributor) {
-                contributors += '<li>' + $(this).find('*[rel~="dcterms:contributor"]').html() + '</li>';
+            $('#authors *[rel~="dcterms:contributor"]').each(function(i,contributor) {
+                contributors += '<li>' + $(this).html() + '</li>';
             });
             contributors += '</ul>';
 
