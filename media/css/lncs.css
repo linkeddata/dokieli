@@ -85,7 +85,7 @@ font-size:9pt !important;
 
 
 * { margin:0; padding:0; filter:none !important; }
-img { display:block; border:0; }
+img { border:0; }
 a abbr { cursor: pointer; border-bottom:0; }
 table { border-collapse:collapse; }
 tr { vertical-align:top; }
@@ -97,12 +97,13 @@ widows: 3;
 
 thead { display: table-header-group; }
 table, img, object, figure { page-break-inside: avoid; }
-img, object { max-width:100% !important; height:auto !important }
+object {
+width:100% !important;
+height:auto !important;
+min-height:240px !important;
+}
+img { max-width:100% !important; height:auto !important; }
 
-object[width="100%"] { max-width:480px !important; }
-object[width="640"] { max-width:480px !important; }
-object[height="480"] { height:360px !important; }
-object[height="415"] { height:311px !important; }
 
 object.slides { display:none; }
 .block { display:block; }

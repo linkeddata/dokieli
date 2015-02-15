@@ -21,6 +21,7 @@ body {
 font-size:9pt !important;
 padding:0 !important;
 width:18cm !important;
+height:23.5cm !important;
 }
 
 h1 { font-size:18pt !important; }
@@ -63,10 +64,8 @@ column-gap:0.83cm;
 }
 
 
-* {
-margin:0;
-padding:0;
-}
+* { margin:0; padding:0; filter:none !important; }
+img { border:0; }
 
 h2, h3, h4, h5, h6, p, ul, ol, li, pre, figure {
 orphans: 2;
@@ -94,11 +93,15 @@ hyphens:auto;
 hyphens:none;
 }
 
-img, object { max-width:100% !important; height:auto !important }
-*[data-print-acm-width="300"] { width:300px !important; }
-*[data-print-acm-width="360"] { width:360px !important; }
-*[data-print-acm-height="220"] { height:220px !important; }
-*[data-print-acm-height="340"] { height:340px !important; }
+thead { display: table-header-group; }
+table, img, object, figure { page-break-inside: avoid; }
+object {
+width:100% !important;
+height:auto !important;
+min-height:240px !important;
+}
+img { max-width:100% !important; height:auto !important; }
+
 
 /*
 XXX: column-width doesn't seem to get applied in Firefox
