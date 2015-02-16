@@ -7,8 +7,6 @@
 
 /*
 ACM SIG template styles http://www.acm.org/sigs/publications/sigguide-v2.2sp
-
-XXX: Helvetica has highest priority for ACM SIG template's titles, however, if a system doesn't have Helvetica, printing to a PDF breaks rendering. Even though printing to paper is okay. I've removed it for 'accessibility'.
 */
 
 @media print {
@@ -371,11 +369,11 @@ font-size:1.333em;
 #author-org {
 font-size:1.0835em;
 }
-/*
-#authors .author_email {
+
+#author-email {
 font-family:Helvetica, Arial, sans-serif;
 }
-*/
+
 
 
 
