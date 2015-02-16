@@ -76,6 +76,7 @@ var LR = {
                         s += '<li><button disabled="disabled">' + view + '</button></li>';
                     }
                 });
+                s += '<li><button>Native</button></li>';
                 s += '</ul></section>';
 
                 $('#document-info.lr').append(s);
