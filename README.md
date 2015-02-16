@@ -1,36 +1,83 @@
 # Linked Research
 
-The purpose of this effort is to make Web friendly formats the first-class 
-approach when it comes to publishing research material.
+Objective: to enable researchers (in Web Science for example), to share and
+reuse research knowledge by employing the native Web technology stack. Hello,
+the Web called like 25 years ago.
 
-This repository contains an HTML+RDFa template and stylesheets which follwos the
-LNCS, ACM style guidelines. PDF views of the documents can be produced by for 
-example going into the print settings of your Web browser and then printing the 
-output to file.
+Linked Research is set out to socially and technically enable researchers to
+take full control, ownership, and responsibility of their own knowledge, and
+have their contributions accessible to the society at maximum capacity, by
+dismantling the use of archaic and artificial barriers.
 
-Collaborators are always welcome. This is for us. Lets build it together!
+This is to work towards a solution where researchers can publish and consume
+research documents that are both human and machine-friendly.
 
-## Examples
+This is for us. Lets build it together!
 
-See the .html files in your browser or the .pdf files provided here. 
-These files are also posted at [http://linked-research.270a.info/](http://linked-research.270a.info/)
+See also the proposed [Acid Test](http://csarven.ca/enabling-accessible-knowledge#acid-test)
+aimed at this mission:
 
-The examples here were originally posted here:
+## Dive into Linked Research
 
-* http://csarven.ca/enabling-accessible-knowledge
-* http://csarven.ca/sense-of-lsd-analysis
-* http://csarven.ca/linked-statistical-data-analysis
-* http://csarven.ca/linked-sdmx-data
-* http://csarven.ca/call-for-linked-research
-* http://csarven.ca/statistical-linked-dataspaces
+Linked Research's technical approach for MVP:
 
-## Presentation
+* One HTML to rule all HTMLs. Used by different CSS - academic layouts e.g.,
+ACM, LNCS. This is not a yet-another-format or standard! It is POSH (plain ol'
+semantic HTML) and RDF, right off W3C.
+* No external server required. Works on your local machine.
+* No installation. Open up index.html in your browser and edit. Or jump start by
+copying an example document.
+* No account creation. This is not a for-profit third-party service or software.
+* No out of band tooling required. Your Web browser is the only requirement.
+* Documents are intended to be human and machine-friendly (RDF, microformats)
+i.e., they can be used on screen devices as well as be printed.
+* Currently using and will try to stick to Apache License and CC0 \o/
 
-* Views are mostly test under Firefox (Gecko engine) and so it is preferable to 
-create print views using that. However, views are also in good condition in 
-Chrome/Chromium, Opera, and Internet Explorer - your mileage may vary.
-Improvements from you are are most welcome.
+The example documents in this repository were originally published at:
 
+* [http://csarven.ca/enabling-accessible-knowledge](http://csarven.ca/enabling-accessible-knowledge)
+* [http://csarven.ca/sense-of-lsd-analysis](http://csarven.ca/sense-of-lsd-analysis)
+* [http://csarven.ca/linked-statistical-data-analysis](http://csarven.ca/linked-statistical-data-analysis)
+* [http://csarven.ca/linked-sdmx-data](http://csarven.ca/linked-sdmx-data)
+* [http://csarven.ca/call-for-linked-research](http://csarven.ca/call-for-linked-research)
+* [http://csarven.ca/statistical-linked-dataspaces](http://csarven.ca/statistical-linked-dataspaces)
+
+This repository is published and accessible from [http://linked-research.270a.info/](http://linked-research.270a.info/)
+, e.g:
+
+* [Enabling Accessible Knowledge](http://linked-research.270a.info/enabling-accessible-knowledge.html)
+(i.e., `http://linked-research.270a.info/{filename}`)
+* [ACM SIG Proceedings Paper](http://linked-research.270a.info/acm-sigproc-sp.html)
+* LNCS Author Guidelines (In progress!)
+
+You are invited to send your Linked Research documents or their URL to be
+included here as an example!
+
+
+### Structure and Semantics
+
+This repository contains an HTML+RDFa template, and stylesheets which follows
+the LNCS, ACM style guidelines. See the examples. The markup structure is simple
+and flexible.
+
+### Presentation
+
+Views are mostly tested using the Gecko browser engine (e.g., Firefox). However,
+the views are also in good condition in other engines e.g., WebKit (Chrome,
+Chromium, Opera), and Trident (Internet Explorer) - your mileage may vary.
+
+### Interaction
+
+* In browser editing (very soon!) No, you don't have to code HTML or in RDF
+syntaxes.
+* Visiblity and identifiers for sections and other important enough declared
+concepts.
+* Document Metadata
+* Export to HTML
+* Local Storage (in the browser)
+* Switch between ACM and LNCS views (without touching the HTML template)
+* Other stuff.. stay tuned! `git clone https://github.com/csarven/linked-research.git`
+:)
 
 ## License
 [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
