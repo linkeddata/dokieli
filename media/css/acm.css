@@ -84,7 +84,7 @@ width:56.06em;
 -ms-hyphens:auto;
 hyphens:auto;
 }
-#authors, #keywords, #categories-and-subject-descriptors, #general-terms, #references, pre, code {
+h1, #authors, #keywords, #categories-and-subject-descriptors, #general-terms, #references, pre, code {
 -moz-hyphens:none;
 -webkit-hyphens:none;
 -ms-hyphens:none;
