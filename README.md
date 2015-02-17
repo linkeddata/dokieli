@@ -1,8 +1,8 @@
 # Linked Research
 
-Objective: to enable researchers (in Web Science for example), to share and
-reuse research knowledge by employing the native Web technology stack. Hello,
-the Web called like 25 years ago.
+**Objective**: to enable researchers (in Web Science for example), to share and
+reuse research knowledge by employing the native Web technology stack. This was
+practically a solved problem 25 years ago, but here we are.
 
 Linked Research is set out to socially and technically enable researchers to
 take full control, ownership, and responsibility of their own knowledge, and
@@ -12,18 +12,16 @@ dismantling the use of archaic and artificial barriers.
 This is to work towards a solution where researchers can publish and consume
 research documents that are both human and machine-friendly.
 
-This is for us. Lets build it together!
-
-See also the proposed [Acid Test](http://csarven.ca/enabling-accessible-knowledge#acid-test)
+See also a proposed [Acid Test](http://csarven.ca/enabling-accessible-knowledge#acid-test)
 aimed at this mission:
 
 ## Dive into Linked Research
 
 Linked Research's technical approach for MVP:
 
-* One HTML to rule all HTMLs. Used by different CSS - academic layouts e.g.,
-ACM, LNCS. This is not a yet-another-format or standard! It is POSH (plain ol'
-semantic HTML) and RDF, right off W3C.
+* One HTML to rule all HTMLs. Used by different CSS - academic paper layouts 
+e.g., ACM, LNCS. This is not a yet-another-standard or format! It is POSH (plain
+ol' semantic HTML) and RDF, right off W3C specs.
 * No external server required. Works on your local machine.
 * No installation. Open up index.html in your browser and edit. Or jump start by
 copying an example document.
@@ -31,7 +29,7 @@ copying an example document.
 * No out of band tooling required. Your Web browser is the only requirement.
 * Documents are intended to be human and machine-friendly (RDF, microformats)
 i.e., they can be used on screen devices as well as be printed.
-* Currently using and will try to stick to Apache License and CC0 \o/
+* Currently using and will try to stick to Apache License and CC0
 
 The example documents in this repository were originally published at:
 
@@ -48,7 +46,7 @@ This repository is published and accessible from [http://linked-research.270a.in
 * [Enabling Accessible Knowledge](http://linked-research.270a.info/enabling-accessible-knowledge.html)
 (i.e., `http://linked-research.270a.info/{filename}`)
 * [ACM SIG Proceedings Paper](http://linked-research.270a.info/acm-sigproc-sp.html)
-* LNCS Author Guidelines (In progress!)
+* LNCS Author Guidelines (in progress!)
 
 You are invited to send your Linked Research documents or their URL to be
 included here as an example!
@@ -56,20 +54,22 @@ included here as an example!
 
 ### Structure and Semantics
 
-This repository contains an HTML+RDFa template, and stylesheets which follows
-the LNCS, ACM style guidelines. See the examples. The markup structure is simple
-and flexible.
+This repository contains a **single** HTML+RDFa template, and stylesheets which 
+follows the LNCS, ACM style guidelines. See the examples. The markup structure 
+is simple and flexible.
 
 ### Presentation
 
-Views are mostly tested using the Gecko browser engine (e.g., Firefox). However,
-the views are also in good condition in other engines e.g., WebKit (Chrome,
-Chromium, Opera), and Trident (Internet Explorer) - your mileage may vary.
+The stylesheets are mostly tested using the Gecko browser engine e.g., Firefox. 
+However, the views are also in good condition in other engines e.g., WebKit 
+(Chrome, Chromium, Opera), and Trident (Internet Explorer) - your mileage may 
+vary. As browser engines improve their CSS implementations, so do these 
+stylesheets.
 
 ### Interaction
 
-* In browser editing (very soon!) No, you don't have to code HTML or in RDF
-syntaxes.
+* In browser editing (very soon!) No, you don't have to code HTML or trip over 
+RDF syntaxes.
 * Visiblity and identifiers for sections and other important enough declared
 concepts.
 * Document Metadata
