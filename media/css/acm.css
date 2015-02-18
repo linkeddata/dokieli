@@ -91,7 +91,6 @@ h1, #authors, #keywords, #categories-and-subject-descriptors, #general-terms, #r
 hyphens:none;
 }
 
-thead { display: table-header-group; }
 table, img, object, figure { page-break-inside: avoid; }
 object {
 width:100% !important;
