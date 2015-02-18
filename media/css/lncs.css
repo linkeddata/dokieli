@@ -66,9 +66,9 @@ h2 { font-size:12pt !important; }
 h3 { font-size:10pt !important; }
 h4 { font-size:10pt !important; }
 h5 { font-size:10pt !important; }
-h6 { font-size:10pt !important; }
+h6 { font-size:9pt !important; }
 
-caption,
+caption, td, th,
 #author-org *,
 #author-uri *,
 #abstract *,
@@ -79,6 +79,33 @@ caption,
 #keywords *,
 #categories-and-subject-descriptors * {
 font-size:9pt !important;
+}
+
+.h1 {
+font-family: "CMU Serif Bold", serif !important;
+font-size:14pt;
+}
+.h2 {
+font-family: "CMU Serif Bold", serif !important;
+font-size:12pt;
+}
+.h3 {
+font-family: "CMU Serif Bold", serif !important;
+font-size:10pt;
+}
+.h4 {
+font-family: "CMU Serif Bold", serif !important;
+font-size:10pt;
+}
+.h5 {
+font-family: "CMU Serif Italic", serif !important;
+font-size:10pt;
+font-weight:normal;
+}
+.h6 {
+font-family: "CMU Serif Italic", serif !important;
+font-size:9pt;
+font-weight:normal;
 }
 
 } /* media print */
@@ -95,7 +122,6 @@ orphans: 3;
 widows: 3;
 }
 
-thead { display: table-header-group; }
 table, img, object, figure { page-break-inside: avoid; }
 object {
 width:100% !important;
@@ -146,7 +172,7 @@ width:35em;
 -ms-hyphens:auto;
 hyphens:auto;
 }
-h1, #authors, #keywords, #categories-and-subject-descriptors, #general-terms, #references, pre, code {
+#authors, #keywords, #categories-and-subject-descriptors, #general-terms, #references, pre, code, h1, table * {
 -moz-hyphens:none;
 -webkit-hyphens:none;
 -ms-hyphens:none;
@@ -159,14 +185,15 @@ font-family: "CMU Serif Bold", serif !important;
 h5,h6, em, address {
 font-family: "CMU Serif Italic", serif !important;
 }
-h1 em, h2 em,h3 em,h4 em {
+h1 em, h2 em, h3 em, h4 em {
 font-family: "CMU Serif Bold Italic", serif !important;
 }
-
 code, pre, kbd, button {
 font-family: "CMU Serif Monospace", monospace !important;
 }
-
+h5, h5 {
+font-weight:normal;
+}
 cite { font-style:normal; }
 
 p {
@@ -187,7 +214,7 @@ h2 { font-size:1.231em; }
 h3 { font-size:1em; }
 h4 { font-size:1em; }
 h5 { font-size:1em; }
-h6 { font-size:1em; }
+h6 { font-size:0.923em; }
 
 h2 {
 margin-top:1.25em;
@@ -204,6 +231,34 @@ display:inline;
 h5 {
 display:inline;
 }
+
+.h1 {
+font-family: "CMU Serif Bold", serif !important;
+font-size:1.4615em;
+}
+.h2 {
+font-family: "CMU Serif Bold", serif !important;
+font-size:1.231em;
+}
+.h3 {
+font-family: "CMU Serif Bold", serif !important;
+font-size:1em;
+}
+.h4 {
+font-family: "CMU Serif Bold", serif !important;
+font-size:1em;
+}
+.h5 {
+font-family: "CMU Serif Italic", serif !important;
+font-size:1em;
+font-weight:normal;
+}
+.h6 {
+font-family: "CMU Serif Italic", serif !important;
+font-size:0.923em;
+font-weight:normal;
+}
+
 
 
 article section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]) {
@@ -436,9 +491,6 @@ display:inline;
 /*display:none;*/
 }
 
-table {
-width:100%;
-}
 
 th:last-child,
 td:last-child {
@@ -525,31 +577,31 @@ ul, ol {
 margin-top:1em;
 }
 
+
+table {
+width:100%;
+text-align:left;
+}
 caption {
 text-align:left;
-font-size:0.93em;
-border-bottom:1px solid #000;
+font-size:0.923em;
+border-bottom:2pt solid #000;
+padding:0 0.25em 0.25em;
+}
+thead {
+border-bottom:1pt solid #000;
 }
 tbody {
-border-top:2px solid #000;
-border-bottom:2px solid #000;
+border-bottom:2pt solid #000;
 }
-
 th, td {
-padding-top:0.25em;
-padding-bottom:0.25em;
-padding-right:1em;
+padding:0.25em;
+vertical-align:baseline;
+font-size:0.923em;
 }
 th {
-text-align:left;
+font-weight:normal;
 }
-tr {
-border-bottom:1px solid #000;
-}
-tr:last-child {
-border-bottom:0;
-}
-
 
 #wrap {
 overflow:hidden;
