@@ -198,12 +198,15 @@ var LR = {
                 handle: '',
                 items: 'li',
                 toleranceElement: '',
-                placeholder: 'placeholder',
-                change: LR.U.updateDocFromToC
+                placeholder: 'placeholder'
             });
+
+//            $('.sortable').on("sortupdate", function(event, ui) { console.log(event); console.log(ui); } );
         },
 
-        updateDocFromToC: function() {
+        updateDocFromToC: function(e, ui) {
+            console.log(e);
+            console.log(ui);
         },
 
         buttonClose: function() {
@@ -458,6 +461,7 @@ LIMIT 1";
                 }
             });
         }
+
     }
 };
 
