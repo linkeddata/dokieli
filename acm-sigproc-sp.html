@@ -5,7 +5,7 @@
         <meta charset="utf-8"/>
         <title>A Sample ACM SIG Proceedings Paper in LaTeX Format</title>
         <script type="text/javascript" src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
-        <script type="text/javascript" src="http://code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
+        <script type="text/javascript" src="http://code.jquery.com/ui/1.11.3/jquery-ui.min.js"></script>
         <script type="text/javascript" src="scripts/jquery.mjs.nestedSortable.js"></script>
         <script type="text/javascript" src="scripts/lr.js"></script>
         <link rel="stylesheet alternate" type="text/css" media="all" title="LNCS" href="media/css/lncs.css"/>
@@ -50,8 +50,6 @@
                 </ul>
             </div>
 
-            <div id="copyright"></div>
-
             <div id="content" class="entry-content">
                 <section id="abstract">
                     <h2>Abstract</h2>
@@ -94,8 +92,8 @@
 
                       <p>The good news is, with only a handful of manual settings<sup class="note"><a href="#note-1">1</a></sup>, the <span class="latex">L<span>a</span>T<span>e</span>X</span> document class file handles all of this for you.</p>
 
-                      <aside class="note" id="note-1">
-                        <p>Two of these, the <code>\numberofauthors</code> and <code>\alignauthor</code> commands, you have already used; another, <code>\balancecolumns</code>, will be used in your very last run of <span class="latex">L<span>a</span>T<span>e</span>X</span> to ensure balanced column heights on the last page.</p>
+                      <aside class="note">
+                        <p id="note-1"><sup>1</sup> Two of these, the <code>\numberofauthors</code> and <code>\alignauthor</code> commands, you have already used; another, <code>\balancecolumns</code>, will be used in your very last run of <span class="latex">L<span>a</span>T<span>e</span>X</span> to ensure balanced column heights on the last page.</p>
                       </aside>
 
                       <p>The remainder of this document is concerned with showing, in the context of an <q>actual</q> document, the <span class="latex">L<span>a</span>T<span>e</span>X</span> commands specifically available for denoting the structure of a proceedings paper, rather than with giving rigorous descriptions or explanations of such commands.</p>
@@ -107,8 +105,8 @@
                     <div about="[this:#the-body-of-the-paper]" property="dcterms:description">
                         <p>Typically, the body of a paper is organized into a hierarchical structure, with numbered or unnumbered headings for sections, subsections, sub-subsections, and even smaller sections. The command \section that precedes this paragraph is part of such a hierarchy.<sup class="note"><a href="#note-2">2</a></sup> <span class="latex">L<span>a</span>T<span>e</span>X</span> handles the numbering and placement of these headings for you, when you use the appropriate heading commands around the titles of the headings. If you want a sub-subsection or smaller part to be unnumbered in your output, simply append an asterisk to the command name. Examples of both numbered and unnumbered headings will appear throughout the balance of this sample document.</p>
 
-                        <aside class="note" id="note-2">
-                            <p>This is the second footnote. It starts a series of three footnotes that add nothing informational, but just give an idea of how footnotes work and look. It is a wordy one, just so you see how a longish one plays out.</p>
+                        <aside class="note">
+                            <p id="note-2"><sup>2</sup> This is the second footnote. It starts a series of three footnotes that add nothing informational, but just give an idea of how footnotes work and look. It is a wordy one, just so you see how a longish one plays out.</p>
                         </aside>
 
                         <p>Because the entire article is contained in the <strong>document</strong> environment, you can indicate the start of a new paragraph with a blank line in your input file; that is why this sentence forms a separate paragraph.</p>
@@ -118,12 +116,9 @@
                             <div about="[this:#type-changes-and-special-characters]" property="dcterms:description">
                                 <p>We have already seen several typeface changes in this sample. You can indicate italicized words or phrases in your text with the command <code>\textit</code>; emboldening with the command <code>\textbf</code> and typewriter-style (for instance, for computer code) with <code>\texttt</code>. But remember, you do not have to indicate typestyle changes when such changes are part of the <em>structural</em> elements of your article; for instance, the heading of this subsection will be in a sans serif<sup class="note"><a href="#note-3">3</a></sup> typeface, but that is handled by the document class file. Take care with the use of<sup class="note"><a href="#note-4">4</a></sup> the curly braces in typeface changes; they mark the beginning and end of the text that is to be in the different typeface.</p>
 
-                                <aside class="note" id="note-3">
-                                    <p>A third footnote, here. Let’s make this a rather short one to see how it looks.</p>
-                                </aside>
-
-                                <aside class="note" id="note-4">
-                                    <p>A fourth, and last, footnote.</p>
+                                <aside class="note">
+                                    <p id="note-3"><sup>3</sup> A third footnote, here. Let’s make this a rather short one to see how it looks.</p>
+                                    <p id="note-4"><sup>4</sup> A fourth, and last, footnote.</p>
                                 </aside>
 
                                 <p>You can use whatever symbols, accented characters, or non-English characters you need anywhere in your document; you can find a complete list of what is available in the <em><span class="latex">L<span>a</span>T<span>e</span>X</span> User’s Guide</em>[<a class="ref" href="#5">5</a>].</p>
@@ -318,7 +313,7 @@
                                 <p>Note that either <strong>.ps</strong> or <strong>.eps</strong> formats are used; use the <code>\epsfig</code> or <code>\psfig</code> commands as appropriate for the different file types.</p>
 
                                 <figure>
-                                    <object width="240" height="240" data="rosette.svg"></object>
+                                    <object type="image/svg+xml" data="rosette.svg" width="240" height="240"></object>
                                     <figcaption>A sample black and white graphic (.ps format) that has been resized with the <code>psfig</code> command.</figcaption>
                                 </figure>
                             </div>
