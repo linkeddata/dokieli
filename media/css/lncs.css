@@ -77,7 +77,9 @@ caption, td, th,
 #document-license *,
 #document-purpose *,
 #keywords *,
-#categories-and-subject-descriptors * {
+#categories-and-subject-descriptors *,
+#references li,
+aside.note {
 font-size:9pt !important;
 }
 
@@ -142,8 +144,21 @@ color:#000;
 abbr { border-bottom: none; }
 
 
-#references {
-/*page-break-before: always;*/
+
+#references ol {
+counter-reset: list-order;
+}
+#references ol li {
+counter-increment: list-order;
+list-style-position:outside;
+list-style-type: none;
+margin-left: 1.1em;
+text-align:justify;
+font-size:0.923em;
+}
+#references ol li:before {
+content: counter(list-order) ". ";
+margin-left: -1.1em;
 }
 
 
@@ -166,13 +181,13 @@ line-height:1.231;
 position:relative;
 margin:0 auto;
 padding:2em 0;
-width:35em;
+width:35.475em;
 -moz-hyphens:auto;
 -webkit-hyphens:auto;
 -ms-hyphens:auto;
 hyphens:auto;
 }
-#authors, #keywords, #categories-and-subject-descriptors, #general-terms, #references, pre, code, h1, table * {
+#authors, #keywords, #categories-and-subject-descriptors, #general-terms, #references, pre, code, h1, table *, figcaption {
 -moz-hyphens:none;
 -webkit-hyphens:none;
 -ms-hyphens:none;
@@ -221,8 +236,8 @@ margin-top:1.25em;
 margin-bottom:0.75em;
 }
 h3 {
-margin-top:1.75em;
-margin-bottom:0.75em;
+margin-top:1.5em;
+margin-bottom:0.5em;
 }
 h4 {
 margin-top:1em;
@@ -259,22 +274,42 @@ font-size:0.923em;
 font-weight:normal;
 }
 
+aside.note {
+position:relative;
+margin:1em 0;
+border-top:1px solid #000;
+padding-top:0.25em;
+font-size:0.923em;
+}
 
+aside.note:after {
+content:"";
+width:50%;
+background-color:#fff;
+position:absolute;
+top:-1px;
+right:0;
+height:1px;
+}
 
-article section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]) {
+aside.note p {
+text-indent:0;
+}
+
+article section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]) {
 counter-increment: section;
 counter-reset: sub-section;
 }
-article section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]) section {
+article section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]) section {
 counter-increment: sub-section;
 counter-reset: sub-sub-section;
 }
-article section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]) section section {
+article section:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]) section section {
 counter-increment: sub-sub-section;
 counter-reset: sub-sub-sub-section;
 }
 
-article *:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=general-terms]):not([id=appendix]) h2:before {
+article *:not([id=abstract]):not([id=keywords]):not([id=references]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]) h2:before {
 content: counter(section) "\00a0\00a0\00a0\00a0";
 }
 
@@ -293,7 +328,9 @@ h3 + p,
 h4 + p,
 h5 + p,
 div > p:first-child,
-dl + p {
+dl + p ,
+ul + p,
+figure + p {
 text-indent:0;
 }
 h1 + p {
@@ -332,11 +369,7 @@ display:block;
 
 
 
-h3 + div section:before {
-content:"\A";
-white-space:pre;
-}
-
+h3 + div section:before,
 h4 + p:after,
 h5 + p:after,
 h4 + div p:after,
@@ -386,7 +419,7 @@ line-height:1;
 #general-terms h2, #general-terms li,
 #keywords h2, #keywords li,
 #categories-and-subject-descriptors h2, #categories-and-subject-descriptors li {
-font-size:0.93em;
+font-size:0.923em;
 }
 
 #author-email,
@@ -447,7 +480,10 @@ content:"" !important;
 #references h2:before,
 #appendix h2:before,
 #appendix h3:before,
-#appendix h4:before {
+#appendix h4:before,
+#contact-us h2:before,
+#contact-us h3:before,
+#contact-us h4:before {
 content: "";
 }
 
@@ -508,8 +544,12 @@ margin-bottom:1em;
 position:relative;
 text-align:center;
 }
-figure pre {
+figure pre,
+figcaption {
 text-align:left;
+}
+figcaption {
+margin-top:1em;
 }
 
 .figure-column-2 {
@@ -602,11 +642,6 @@ font-size:0.923em;
 th {
 font-weight:normal;
 }
-
-#wrap {
-overflow:hidden;
-}
-
 
 .entry-subtitle {
 margin-bottom:1em;
