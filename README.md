@@ -46,7 +46,7 @@ This repository is published and accessible from [http://linked-research.270a.in
 * [Enabling Accessible Knowledge](http://linked-research.270a.info/enabling-accessible-knowledge.html)
 (i.e., `http://linked-research.270a.info/{filename}`)
 * [ACM SIG Proceedings Paper](http://linked-research.270a.info/acm-sigproc-sp.html)
-* LNCS Author Guidelines (in progress!)
+* [LNCS Author Guidelines](http://linked-research.270a.info/lncs-splnproc.html)
 
 You are invited to send your Linked Research documents or their URL to be
 included here as an example!
