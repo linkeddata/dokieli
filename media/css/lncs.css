@@ -504,7 +504,7 @@ content: ".";
 }
 
 #abstract h2,
-#abstract h2 + p,
+#abstract div, #abstract div *:first-child,
 #document-identifier dt,
 #document-identifier dt + dd,
 #document-purpose dt,
