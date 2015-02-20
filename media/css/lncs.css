@@ -147,13 +147,13 @@ abbr { border-bottom: none; }
 
 #references ol {
 counter-reset: list-order;
+text-align:left;
 }
 #references ol li {
 counter-increment: list-order;
 list-style-position:outside;
 list-style-type: none;
 margin-left: 1.1em;
-text-align:justify;
 font-size:0.923em;
 }
 #references ol li:before {
