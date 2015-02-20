@@ -49,16 +49,15 @@ src: local("CMU Serif Monospace"), url("../fonts/cmuntt.otf");
 /*2480 pixels x 3508 pixels (print resolution)*/
 /*595 pixels x 842 pixels (screen resolution)*/
 /*size: A4;*/
-margin:52mm 0; /* A4 - LNCS height*/
+margin:52mm 0;
 }
-
 
 body {
 font-size:10pt !important;
 margin:0 auto !important;
 padding:0 !important;
 width:122mm !important;
-height:193mm !important;
+height:193mm !important; /* A4 - LNCS height*/
 }
 
 h1 { font-size:14pt !important; }
