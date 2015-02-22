@@ -15,8 +15,7 @@ aside.lr {
 position:fixed;
 top:1em;
 z-index:9;
-max-width:20%;
-max-height:80%;
+max-height:calc(100% - 4em);
 background:#fff !important;
 font-size:0.8em;
 }
@@ -109,6 +108,10 @@ margin-right:1em;
 
 .lr .toc, .lr .toc ol {
 list-style:none;
+-moz-hyphens:none;
+-webkit-hyphens:none;
+-ms-hyphens:none;
+hyphens:none;
 }
 .lr .toc ol,
 .lr .toc li {
