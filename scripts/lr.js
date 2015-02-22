@@ -153,28 +153,41 @@ var LR = {
         },
 
         showToC: function() {
+            //XXX: This looks like this for readability.
             var s = '';
-            var section = $('h1 ~ div section[rel="dcterms:hasPart"]:not([id="acknowledgements"])');
+            var section = $('h1 ~ div section');
             if (section.length > 0) {
                 s += '<aside id="table-of-contents" class="lr"><button class="close">❌</button><h2>Table of Contents</h2><ol class="toc sortable">';
                 section.each(function(i,section) {
                     var h = $(section).find('h2');
                     if (h.length > 0) {
-                        s += '<li id="toc.' + section.id +'"><a href="#' + section.id + '">' + h.text() + '</a>';
+                        s += '<li data-id="' + section.id +'" data-h="2"><a href="#' + section.id + '">' + h.text() + '</a>';
                         section = $(section).find('section[rel="dcterms:hasPart"]');
                         if (section.length > 0) {
                             s += '<ol class="sortable">';
                             section.each(function(j, section) {
                                 var h = $(section).find('h3');
                                 if (h.length > 0) {
-                                    s += '<li id="toc.' + section.id +'"><a href="#' + section.id + '">' + h.text() + '</a>';
+                                    s += '<li data-id="' + section.id +'" data-h="3"><a href="#' + section.id + '">' + h.text() + '</a>';
                                     section = $(section).find('section[rel="dcterms:hasPart"]');
                                     if (section.length > 0) {
                                         s += '<ol class="sortable">';
                                         section.each(function(k, section) {
                                             var h = $(section).find('h4');
                                             if (h.length > 0) {
-                                                s += '<li id="toc.' + section.id +'"><a href="#' + section.id + '">' + h.text() + '</a></li>';
+                                                s += '<li data-id="' + section.id +'" data-h="4"><a href="#' + section.id + '">' + h.text() + '</a>';
+                                                section = $(section).find('section[rel="dcterms:hasPart"]');
+                                                if (section.length > 0) {
+                                                    s += '<ol class="sortable">';
+                                                    section.each(function(k, section) {
+                                                        var h = $(section).find('h5');
+                                                        if (h.length > 0) {
+                                                            s += '<li data-id="' + section.id +'" data-h="5"><a href="#' + section.id + '">' + h.text() + '</a></li>';
+                                                        }
+                                                    });
+                                                    s += '</ol>';
+                                                }
+                                                s += '</li>';
                                             }
                                         });
                                         s += '</ol>';
@@ -196,7 +209,57 @@ var LR = {
         },
 
         sortToC: function() {
-            $('.sortable').sortable();
+            $('.sortable').sortable({
+				connectWith: '.connected'
+			});
+
+            $('.sortable').sortable().bind('sortupdate', function(e, ui) {
+//ui.item contains the current dragged element.
+//ui.item.index() contains the new index of the dragged element
+//ui.oldindex contains the old index of the dragged element
+//ui.startparent contains the element that the dragged item comes from
+//ui.endparent contains the element that the dragged item was added to
+
+//console.log(ui);
+//console.log(ui.item);
+//console.log(ui.startparent);
+//console.log(ui.oldindex);
+//console.log(ui.endparent);
+//console.log(ui.item.index());
+
+                var id  = $(ui.item).attr('data-id');
+                var node = $('#' + id);
+
+                var endParentId = $(ui.endparent).parent().attr('data-id') || 'content';
+                var endParent = $('#' + endParentId);
+                var endParentHeading = endParent.find('> *[property="dcterms:title"]');
+                endParentHeading = (endParentHeading.length > 0) ? parseInt(endParentHeading.prop("tagName").substring(1)) : 1;
+                var afterNode = (endParentHeading == 1) ? endParent.find('> section:nth-of-type(' + ui.item.index() +')')  : endParent.find('*:nth-of-type(1) > section:nth-of-type(' + ui.item.index() +')');
+
+                var aboutContext = (endParentId == 'content') ? '' : '#' + endParentId;
+                node.attr('about', '[this:' + aboutContext +']');
+
+                var nodeDetached = node.detach();
+
+                var nodeDetachedHeading = nodeDetached.find('> *[property="dcterms:title"]');
+                nodeDetachedHeading = (nodeDetachedHeading.length > 0) ? parseInt(nodeDetachedHeading.prop("tagName").substring(1)) : 1;
+
+                var nH = (endParentHeading + 1) - nodeDetachedHeading;
+                nodeDetached.find('*[property="dcterms:title"]:nth-of-type(1)').each(function(i, heading) {
+                console.log(heading);
+                    var oldHeadingIndex = parseInt($(heading).prop("tagName").substring(1));
+                    var newHeadingIndex = oldHeadingIndex + nH;
+
+                    var newHeading = $('<h' + newHeadingIndex + '></h' + newHeadingIndex + '>');
+                    $.each(heading.attributes, function(index) {
+                        $(newHeading).attr(heading.attributes[index].name, heading.attributes[index].value);
+                    });
+                    $(newHeading).html($(heading).html());
+                    $(heading).after(newHeading).remove();
+                });
+
+                afterNode.after(nodeDetached);
+            });
         },
 
 
@@ -207,7 +270,7 @@ var LR = {
         escape: function() {
             $(document).on('keyup', function(event) {
                 if(event.keyCode == 27) { // Escape Key
-                    $('.toc').remove();
+                    $('#table-of-contents').remove();
                 }
             });
         },

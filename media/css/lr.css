@@ -118,13 +118,8 @@ hyphens:none;
 margin:0;
 text-align:left !important;
 }
-.lr .toc ol {
-margin-left: 1em;
-}
 
 .lr .toc li {
-counter-increment: s;
-counter-reset: sub-s;
 list-style-position:outside;
 list-style-type: none;
 margin-left: 1.25em;
@@ -133,24 +128,38 @@ margin-bottom:0.25em;
 .lr .toc li:before {
 margin-left: -1.25em;
 }
+.lr .toc li:not([data-id=abstract]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
+counter-increment: s;
+counter-reset: sub-s;
+}
 
-
-.lr .toc li li {
+.lr .toc li li:not([data-id=abstract]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
 counter-increment: sub-s;
 counter-reset: sub-sub-s;
 }
-.lr .toc li li li {
+.lr .toc li li li:not([data-id=abstract]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
 counter-increment: sub-sub-s;
 counter-reset: sub-sub-sub-s;
 }
-.lr .toc li:before {
+.lr .toc li li li li:not([data-id=abstract]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
+counter-increment: sub-sub-sub-s;
+counter-reset: sub-sub-sub-sub-s;
+}
+.lr .toc li:not([data-id=abstract]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
 content: "\00a0" counter(s) "\00a0";
 }
-.lr .toc li li:before {
+.lr .toc li li:not([data-id=abstract]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
 content: "\00a0" counter(s) "." counter(sub-s) "\00a0";
 }
-.lr .toc li li li:before {
+.lr .toc li li li:not([data-id=abstract]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
 content: "\00a0" counter(s) "." counter(sub-s) "." counter(sub-sub-s) "\00a0";
+}
+.lr .toc li li li li:not([data-id=abstract]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
+content: "\00a0" counter(s) "." counter(sub-s) "." counter(sub-sub-s) "." counter(sub-sub-sub-s) "\00a0";
+}
+
+.lr .toc li[data-id=abstract]:before, .lr .toc li[data-id=keywords]:before, .lr .toc li[data-id=references]:before, .lr .toc li[data-id=categories-and-subject-descriptors]:before, .lr .toc li[data-id=general-terms]:before, .lr .toc li[data-id=appendix]:before, .lr .toc li[data-id=contact-us]:before {
+content: "\00a0\00a0\00a0\00a0";
 }
 
 .lr .toc li > span {
