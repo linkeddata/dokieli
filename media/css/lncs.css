@@ -109,6 +109,12 @@ font-size:9pt;
 font-weight:normal;
 }
 
+a {
+text-decoration:none;
+color:#000;
+}
+abbr { border-bottom: none; }
+
 } /* media print */
 
 
@@ -134,13 +140,6 @@ img { max-width:100% !important; height:auto !important; }
 
 object.slides { display:none; }
 .block { display:block; }
-
-
-a {
-text-decoration:none;
-color:#000;
-}
-abbr { border-bottom: none; }
 
 
 

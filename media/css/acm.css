@@ -31,6 +31,12 @@ h4 { font-size:11pt !important; }
 h6 { font-size:9pt !important; }*/
 h1 sup { font-size:9pt !important; }
 
+a {
+text-decoration:none;
+color:#000;
+}
+abbr { border-bottom: none; }
+
 #references ol {
 font-family:"Times New Roman", serif;
 font-size:9pt;
@@ -195,11 +201,6 @@ content: counter(section)"." counter(sub-section) "." counter(sub-sub-section) "
 li {
 list-style-position:inside;
 margin-bottom:0.25em;
-}
-
-a {
-text-decoration:none;
-color:#000;
 }
 
 code {
