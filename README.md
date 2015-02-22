@@ -79,5 +79,12 @@ concepts.
 * Other stuff.. stay tuned! `git clone https://github.com/csarven/linked-research.git`
 :)
 
+## Dependencies
+
+Linked Research is built with the progressive enhancement strategy. Therefore, the dependencies are only used for JavaScript enhancements. If you do not want them, they can be removed or turned-off without effecting core HTML or CSS.
+
+* [jQuery Core 2.1.3](http://code.jquery.com/jquery-2.1.3.min.js) (MIT License)
+* [html5sortable](https://github.com/voidberg/html5sortable) (MIT License)
+
 ## License
 [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
