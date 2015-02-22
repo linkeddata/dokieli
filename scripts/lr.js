@@ -164,14 +164,14 @@ var LR = {
                         s += '<li id="toc.' + section.id +'"><a href="#' + section.id + '">' + h.text() + '</a>';
                         section = $(section).find('section[rel="dcterms:hasPart"]');
                         if (section.length > 0) {
-                            s += '<ol>';
+                            s += '<ol class="sortable">';
                             section.each(function(j, section) {
                                 var h = $(section).find('h3');
                                 if (h.length > 0) {
                                     s += '<li id="toc.' + section.id +'"><a href="#' + section.id + '">' + h.text() + '</a>';
                                     section = $(section).find('section[rel="dcterms:hasPart"]');
                                     if (section.length > 0) {
-                                        s += '<ol>';
+                                        s += '<ol class="sortable">';
                                         section.each(function(k, section) {
                                             var h = $(section).find('h4');
                                             if (h.length > 0) {
@@ -197,20 +197,9 @@ var LR = {
         },
 
         sortToC: function() {
-            $('.sortable').nestedSortable({
-                handle: '',
-                items: 'li',
-                toleranceElement: '',
-                placeholder: 'placeholder'
-            });
-
-//            $('.sortable').on("sortupdate", function(event, ui) { console.log(event); console.log(ui); } );
+            $('.sortable').sortable();
         },
 
-        updateDocFromToC: function(e, ui) {
-            console.log(e);
-            console.log(ui);
-        },
 
         buttonClose: function() {
             $('button.close').on('click', function(event) { $(this).parent().remove(); });

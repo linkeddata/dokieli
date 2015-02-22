@@ -122,7 +122,16 @@ margin-left: 1em;
 .lr .toc li {
 counter-increment: s;
 counter-reset: sub-s;
+list-style-position:outside;
+list-style-type: none;
+margin-left: 1.25em;
+margin-bottom:0.25em;
 }
+.lr .toc li:before {
+margin-left: -1.25em;
+}
+
+
 .lr .toc li li {
 counter-increment: sub-s;
 counter-reset: sub-sub-s;
@@ -132,13 +141,13 @@ counter-increment: sub-sub-s;
 counter-reset: sub-sub-sub-s;
 }
 .lr .toc li:before {
-content: counter(s) "\00a0";
+content: "\00a0" counter(s) "\00a0";
 }
 .lr .toc li li:before {
-content: counter(s) "." counter(sub-s) "\00a0";
+content: "\00a0" counter(s) "." counter(sub-s) "\00a0";
 }
 .lr .toc li li li:before {
-content: counter(s) "." counter(sub-s) "." counter(sub-sub-s) "\00a0";
+content: "\00a0" counter(s) "." counter(sub-s) "." counter(sub-sub-s) "\00a0";
 }
 
 .lr .toc li > span {
@@ -147,8 +156,33 @@ cursor: move;
 .lr .toc li > span:hover {
 background:#eee !important;
 }
-.lr .toc .placeholder {
+.lr .toc .sortable-placeholder {
 outline: 1px dashed #777;
+}
+
+.lr .sortable li {
+cursor:grab;
+cursor:-moz-grab;
+cursor:-webkit-grab;
+position:relative;
+}
+
+.lr .sortable li:active {
+cursor:move;
+}
+
+.lr .sortable li:before,
+.lr .sortable li a:before {
+border-left: 2px dotted #ccc;
+}
+.lr .sortable li a:before {
+position:absolute;
+top:0;
+left:-1.4em;
+content:"\00a0";
+cursor:grab;
+cursor:-moz-grab;
+cursor:-webkit-grab;
 }
 
 
