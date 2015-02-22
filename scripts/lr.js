@@ -117,18 +117,17 @@ var LR = {
             });
             contributors += '</ul>';
 
-            var documentID = $('#document-identifier a');
-            if (documentID.length > 0) {
-                documentID = '<tr><th>Document ID</th><td>' + documentID.text() + '</td></tr>';
-            }
-            else {
-                documentID = '';
-            }
+//            var documentID = $('#document-identifier a');
+//            if (documentID.length > 0) {
+//                documentID = '<tr><th>Document ID</th><td>' + documentID.text() + '</td></tr>';
+//            }
+//            else {
+//                documentID = '';
+//            }
 
             var s = '<section id="document-metadata" class="lr"><table>\n\
                 <caption>Document Metadata</caption>\n\
                 <tbody>\n\
-                    ' + documentID + '\n\
                     <tr><th>Authors</th><td>' + contributors + '</td></tr>\n\
                     <tr><th>Characters</th><td>' + count.chars + '</td></tr>\n\
                     <tr><th>Words</th><td>' + count.words + '</td></tr>\n\
