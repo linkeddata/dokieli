@@ -43,13 +43,19 @@ box-shadow:0.25em 0.25em 0.25em rgba(0,0,0,0.1);
 overflow:auto;
 }
 
-#document-info > button {
+#document-info header button {
 position:absolute;
 top:1em;
 right:1em;
 font-size:26px;
 }
-
+#document-info > footer {
+display:none;
+margin-top:2em;
+}
+#document-info.on > footer {
+display:block;
+}
 
 section.lr {
 margin-top:2em;
@@ -83,6 +89,7 @@ margin:0;
 #document-metadata table,
 #document-metadata table * {
 border:0;
+padding-left:0;
 }
 #document-metadata caption {
 font-family:"CMU Serif Bold", sans-serif !important;
@@ -163,6 +170,7 @@ z-index:9;
 p, h2,h3,h4,h5,h6,ul,ol,li,dl,dt,table,section,figure {
 position:relative;
 z-index:1;
+text-indent:0;
 /*background:#eee !important;*/
 }
 
@@ -171,7 +179,7 @@ position:absolute;
 top:0;
 right:0;
 z-index:0;
-text-indent: 0px;
+text-indent:0;
 padding-left:10px;
 /*background:rgba(128,128,128,0.2) !important;*/
 /*height:100% !important;*/

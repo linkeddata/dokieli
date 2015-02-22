@@ -33,23 +33,26 @@ var LR = {
 
     U: {
         showDocumentInfo: function() {
-            $('body').append('<aside id="document-info" class="lr"><button class="show">☰</button></aside>');
+            $('body').append('<aside id="document-info" class="lr" title="Open Menu"><header><button class="show">☰</button></header><div></div><footer><p>About <a target="LinkedResearchSource" href="https://github.com/csarven/linked-research">Linked Research</a></p></footer></aside>');
 
-            $('#document-info.lr').on('click', 'button.show', function() {
-                $(this).parent().addClass('on');
+            var di = $('#document-info.lr > div');
+
+            $('#document-info.lr').on('click', 'header button.show', function() {
+                $('#document-info').addClass('on');
                 $(this).removeClass('show').addClass('hide');
-                LR.U.showStorage();
-                LR.U.showExports();
-                LR.U.showViews();
-                LR.U.showDocumentMetadata();
+                $(this).attr('title', 'Hide Menu');
+                LR.U.showStorage(di);
+                LR.U.showExports(di);
+                LR.U.showViews(di);
+                LR.U.showDocumentMetadata(di);
                 LR.U.showToC();
             });
-            $('#document-info.lr').on('click', 'button.hide', function() {
-                $(this).parent().removeClass('on').find('section').remove();
+            $('#document-info.lr').on('click', 'header button.hide', function() {
+                $('#document-info').removeClass('on').find('section').remove();
                 $(this).removeClass('hide').addClass('show');
+                $(this).attr('title', 'Open Menu');
                 $('#table-of-contents').remove();
                 LR.U.hideStorage();
-                LR.U.hideExports();
             });
         },
 
@@ -61,7 +64,7 @@ var LR = {
             }
         },
 
-        showViews: function() {
+        showViews: function(node) {
             var stylesheets = $('head link[rel~="stylesheet"]:not([href$="lr.css"])');
 
             if (stylesheets.length > 1) {
@@ -79,7 +82,7 @@ var LR = {
                 s += '<li><button>Native</button></li>';
                 s += '</ul></section>';
 
-                $('#document-info.lr').append(s);
+                $(node).append(s);
 
                 $('#views.lr button').on('click', function(event) {
                     var selected = $(this);
@@ -104,7 +107,7 @@ var LR = {
             }
         },
 
-        showDocumentMetadata: function() {
+        showDocumentMetadata: function(node) {
             var content = $('#content');
             var count = LR.U.contentCount(content);
 
@@ -135,7 +138,7 @@ var LR = {
                 </tbody>\n\
             </table></section>';
 
-            $('#document-info.lr').append(s);
+            $(node).append(s);
         },
 
         contentCount: function(c) {
@@ -296,12 +299,9 @@ var LR = {
             document.body.removeChild(a);
         },
 
-        showExports: function() {
-            $('#document-info').append('<section id="export-files" class="lr"><h2>Export</h2><ul><li><button class="export-file-html">HTML</button></li></ul></section>');
+        showExports: function(node) {
+            $(node).append('<section id="export-files" class="lr"><h2>Export</h2><ul><li><button class="export-file-html">HTML</button></li></ul></section>');
             $('#export-files').on('click', '.export-file-html', LR.U.saveAsHTML);
-        },
-        hideExports: function() {
-            $('#export-files').remove();
         },
 
         initStorage: function(item) {
@@ -340,7 +340,7 @@ var LR = {
             clearInterval(LR.C.AutoSaveId);
             console.log(LR.U.now() + ': Autosave disabled.');
         },
-        showStorage: function() {
+        showStorage: function(node) {
             if (typeof window.localStorage != 'undefined') {
                 var useStorage = '';
 
@@ -351,7 +351,7 @@ var LR = {
                     useStorage = LR.C.EnableStorageButtons;
                 }
 
-                $('#document-info').append('<section id="local-storage" class="lr"><h2>Local Storage</h2>\n\
+                $(node).append('<section id="local-storage" class="lr"><h2>Local Storage</h2>\n\
                 <p>' + useStorage + '</p>\n\
                 </section>');
 
