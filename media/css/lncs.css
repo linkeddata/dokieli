@@ -567,6 +567,15 @@ figure pre {
 margin-bottom:1em;
 }
 
+html {
+counter-reset: figure 0;
+}
+body {
+counter-reset: listing 0;
+}
+article {
+counter-reset: table 0;
+}
 figure {
 counter-increment:figure;
 }
