@@ -553,7 +553,15 @@ text-align:left;
 margin-left:0;
 }
 
-
+html {
+counter-reset: figure 0;
+}
+body {
+counter-reset: listing 0;
+}
+article {
+counter-reset: table 0;
+}
 figure {
 margin-top:1em;
 margin-bottom:1em;
