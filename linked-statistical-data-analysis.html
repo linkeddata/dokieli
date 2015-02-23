@@ -12,7 +12,7 @@
         <script type="text/javascript" src="scripts/lr.js"></script>
     </head>
 
-    <body about="[this:]" typeof="foaf:Document sioc:Post biblio:Paper prov:Entity" class="hfeed" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# cc: http://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# schema: http://schema.org/ rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# org: http://www.w3.org/ns/org# biblio: http://purl.org/net/biblio# bibo: http://purl.org/ontology/bibo/ book: http://purl.org/NET/book/vocab# ov: http://open.vocab.org/terms/ doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ sro: http://salt.semanticauthoring.org/ontologies/sro# this: http://csarven.ca/linked-statistical-data-analysis">
+    <body about="[this:]" typeof="foaf:Document sioc:Post biblio:Paper prov:Entity" class="hfeed" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# cc: http://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# schema: http://schema.org/ rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# org: http://www.w3.org/ns/org# biblio: http://purl.org/net/biblio# bibo: http://purl.org/ontology/bibo/ book: http://purl.org/NET/book/vocab# ov: http://open.vocab.org/terms/ doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ sro: http://salt.semanticauthoring.org/ontologies/sro# this: http://csarven.ca/linked-statistical-data-analysis">
         <article class="hentry">
 
             <h1 class="entry-title" property="dcterms:title">Linked Statistical Data Analysis</h1>
@@ -136,7 +136,7 @@
 
                         <figure id="figure_linked-stats-analysis-architecture">
                             <object type="image/svg+xml" width="640" height="415" data="linked-stats-analysis-architecture.svg"></object>
-                            <figcaption><strong>Figure 1</strong>: Linked Stats Analysis Architecture.</figcaption>
+                            <figcaption>Linked Stats Analysis Architecture.</figcaption>
                         </figure>
 
                         <section id="requirements" about="[this:#lsd-analysis]" rel="dcterms:hasPart">
@@ -153,7 +153,7 @@
 
                                 <figure id="figure_stats.270a.info.ui">
                                     <img src="stats.270a.info.ui.png" width="480" height="440" alt="stats.270a.info user interface"/>
-                                    <figcaption><strong>Figure 2</strong>: stats.270a.info analysis user interface.</figcaption>
+                                    <figcaption>stats.270a.info analysis user interface.</figcaption>
                                 </figure>
 
                                 <p>The datasets are compiled by gathering <code>qb:DataSet</code>s (an RDF Data Cube class for datasets) from each statistical dataspace at 270a.info. Similarly, the reference periods are derived from calendar intervals e.g., <code>YYYY</code>, <code>YYYY-MM-DD</code> or <code>YYYY-QQ</code>.</p>
@@ -183,7 +183,7 @@
 
                                 <figure id="figure_270a.info.interlinks">
                                     <object type="image/svg+xml" width="640" height="480" data="270a.cloud.svg"></object>
-                                    <figcaption><strong>Figure 3</strong>: Outbound interlinks for 270a.info datasets.</figcaption>
+                                    <figcaption>Outbound interlinks for 270a.info datasets.</figcaption>
                                 </figure>
 
                                 <p>One additional requirement from the datasets is that the RDF Data Cube component properties (e.g., dimensions, measures) either use <code>sdmx-dimension:refArea</code>, <code>sdmx-dimension:refPeriod</code>, <code>sdmx-measure:obsValue</code> directly or respective sub-properties (<code>rdfs:subPropertyOf</code>). Given decentralized mappings of the statistical datasets (published as SDMX-ML), their commonality is expected to be the use, or a reference to SDMX-RDF properties in order to achieve generalized federated queries without having complete knowledge of the structures of the datasets, but rather only the essential bits.</p>
@@ -211,52 +211,52 @@
 
                                 <p>The anatomy of the query is shown in Figure [<a href="#federated-sparql-query">3</a>]. The SPARQL Endpoint and the dataset URIs are the only requirements. The structure of the statements and operations tries to get the most out of <a href="http://jena.apache.org/">Apache Jena</a>'s [<a href="#ref-32">32</a>] <a href="http://incubator.apache.org/jena/documentation/tdb/">TDB</a> storage system [<a href="#ref-33">33</a>], <a href="http://jena.apache.org/documentation/tdb/optimizer.html">TDB Optimizer</a> [<a href="#ref-34">34</a>] and <a href="http://incubator.apache.org/jena/documentation/serving_data/index.html">Fuseki</a> [<a href="#ref-35">35</a>] SPARQL endpoints. Better performing queries can be achieved by knowing the predicate frequency upfront, and ordering them in for a dataset to avoid processing of false negatives.</p>
 
-                                <figure id="federated-sparql-query">
-<pre>
-SELECT DISTINCT ?refAreaY ?x ?y ?identityX ?identityY
-WHERE {
-SERVICE <strong>&lt;http://example.org/sparql&gt;</strong> {
-SELECT DISTINCT ?identityX ?refAreaX ?refAreaXExactMatch ?measureX
-WHERE {
-  ?observationX qb:dataSet <strong>&lt;http://example.org/dataset/X&gt;</strong> .
-  ?observationX ?propertyRefPeriodX <strong>exampleRefPeriod:1234</strong> .
-  ?propertyRefAreaX rdfs:subPropertyOf* sdmx-dimension:refArea .
-  ?observationX ?propertyRefAreaX ?refAreaX .
-  ?propertyMeasureX rdfs:subPropertyOf* sdmx-measure:obsValue .
-  ?observationX ?propertyMeasureX ?x .
-  <strong>&lt;http://example.org/dataset/X&gt;</strong>
-    qb:structure/stats:identityDimension ?propertyIdentityX .
-  ?observationX ?propertyIdentityX ?identityX .
-  OPTIONAL {
-    ?refAreaX skos:exactMatch ?refAreaXExactMatch .
-    FILTER (STRSTARTS(STR(?refAreaXExactMatch), "<strong>http://example.net/</strong>"))
-  }
-}
-}
-SERVICE <strong>&lt;http://example.net/sparql&gt;</strong> {
-SELECT DISTINCT ?identityY ?refAreaY ?refAreaYExactMatch ?measureY
-WHERE {
-  ?observationY qb:dataSet <strong>&lt;http://example.net/dataset/Y&gt;</strong> .
-  ?observationY ?propertyRefPeriodY <strong>exampleRefPeriod:1234</strong> .
-  ?propertyRefAreaY rdfs:subPropertyOf* sdmx-dimension:refArea .
-  ?observationY ?propertyRefAreaY ?refAreaY .
-  ?propertyMeasureY rdfs:subPropertyOf* sdmx-measure:obsValue .
-  ?observationY ?propertyMeasureY ?y .
-  <strong>&lt;http://example.net/dataset/Y&gt;</strong>
-    qb:structure/stats:identityDimension ?propertyIdentityY .
-  ?observationY ?propertyIdentityY ?identityY .
-  OPTIONAL {
-    ?refAreaY skos:exactMatch ?refAreaYExactMatch .
-    FILTER (STRSTARTS(STR(?refAreaYExactMatch), "<strong>http://example.org/</strong>"))
-  }
-}
-}
-FILTER (SAMETERM(?refAreaYExactMatch, ?refAreaX)
-      || SAMETERM(?refAreaXExactMatch, ?refAreaY)
-      || SAMETERM(?refAreaY, ?refAreaX))
-}
+                                <figure id="federated-sparql-query" about="[this:#federated-queries]" rel="dcterms:hasPart" resource="[this:#federated-sparql-query]" class="listing">
+<pre about="[this:#federated-sparql-query]" typeof="fabio:Script" property="dcterms:description">
+<code>SELECT DISTINCT ?refAreaY ?x ?y ?identityX ?identityY</code>
+<code>WHERE {</code>
+<code>SERVICE <strong>&lt;http://example.org/sparql&gt;</strong> {</code>
+<code>SELECT DISTINCT ?identityX ?refAreaX ?refAreaXExactMatch ?measureX</code>
+<code>WHERE {</code>
+<code>  ?observationX qb:dataSet <strong>&lt;http://example.org/dataset/X&gt;</strong> .</code>
+<code>  ?observationX ?propertyRefPeriodX <strong>exampleRefPeriod:1234</strong> .</code>
+<code>  ?propertyRefAreaX rdfs:subPropertyOf* sdmx-dimension:refArea .</code>
+<code>  ?observationX ?propertyRefAreaX ?refAreaX .</code>
+<code>  ?propertyMeasureX rdfs:subPropertyOf* sdmx-measure:obsValue .</code>
+<code>  ?observationX ?propertyMeasureX ?x .</code>
+<code>  <strong>&lt;http://example.org/dataset/X&gt;</strong></code>
+<code>    qb:structure/stats:identityDimension ?propertyIdentityX .</code>
+<code>  ?observationX ?propertyIdentityX ?identityX .</code>
+<code>  OPTIONAL {</code>
+<code>    ?refAreaX skos:exactMatch ?refAreaXExactMatch .</code>
+<code>    FILTER (STRSTARTS(STR(?refAreaXExactMatch), "<strong>http://example.net/</strong>"))</code>
+<code>  }</code>
+<code>}</code>
+<code>}</code>
+<code>SERVICE <strong>&lt;http://example.net/sparql&gt;</strong> {</code>
+<code>SELECT DISTINCT ?identityY ?refAreaY ?refAreaYExactMatch ?measureY</code>
+<code>WHERE {</code>
+<code>  ?observationY qb:dataSet <strong>&lt;http://example.net/dataset/Y&gt;</strong> .</code>
+<code>  ?observationY ?propertyRefPeriodY <strong>exampleRefPeriod:1234</strong> .</code>
+<code>  ?propertyRefAreaY rdfs:subPropertyOf* sdmx-dimension:refArea .</code>
+<code>  ?observationY ?propertyRefAreaY ?refAreaY .</code>
+<code>  ?propertyMeasureY rdfs:subPropertyOf* sdmx-measure:obsValue .</code>
+<code>  ?observationY ?propertyMeasureY ?y .</code>
+<code>  <strong>&lt;http://example.net/dataset/Y&gt;</strong></code>
+<code>    qb:structure/stats:identityDimension ?propertyIdentityY .</code>
+<code>  ?observationY ?propertyIdentityY ?identityY .</code>
+<code>  OPTIONAL {</code>
+<code>    ?refAreaY skos:exactMatch ?refAreaYExactMatch .</code>
+<code>    FILTER (STRSTARTS(STR(?refAreaYExactMatch), "<strong>http://example.org/</strong>"))</code>
+<code>  }</code>
+<code>}</code>
+<code>}</code>
+<code>FILTER (SAMETERM(?refAreaYExactMatch, ?refAreaX)</code>
+<code>      || SAMETERM(?refAreaXExactMatch, ?refAreaY)</code>
+<code>      || SAMETERM(?refAreaY, ?refAreaX))</code>
+<code>}</code>
 </pre>
-                                    <figcaption><strong>Figure 3</strong>: Federated SPARQL query integrating statistical linked data.</figcaption>
+                                    <figcaption><span about="[this:#federated-sparql-query]" property="dcterms:title">Federated SPARQL query integrating statistical linked data.</span></figcaption>
                                 </figure>
 
                                 <p>For the time being, the use of named graphs in the SPARQL queries were excluded for a good reason. For federated queries to work with the goal of minimal knowledge about store organization, the queries had to work without including graph names. However, by employing the <a href="http://www.w3.org/TR/void/">Vocabulary of Interlinked Datasets</a> (VoID) [<a href="#ref-36">36</a>], it is possible to extract both, the location of the SPARQL endpoint, as well as the graph names within. This is left as a future enhancement.</p>

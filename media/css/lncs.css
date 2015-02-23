@@ -192,7 +192,7 @@ hyphens:auto;
 hyphens:none;
 }
 
-h1,h2,h3,h4, strong, dt {
+h1,h2,h3,h4, strong, dt, figcaption:before, caption:before {
 font-family: "CMU Serif Bold", serif !important;
 }
 h5,h6, em, address {
@@ -201,8 +201,11 @@ font-family: "CMU Serif Italic", serif !important;
 h1 em, h2 em, h3 em, h4 em {
 font-family: "CMU Serif Bold Italic", serif !important;
 }
-code, pre, kbd, button {
+code, code strong, pre, kbd, button {
 font-family: "CMU Serif Monospace", monospace !important;
+}
+code strong {
+font-weight:bold;
 }
 h5, h5 {
 font-weight:normal;
@@ -396,6 +399,18 @@ margin:1em 0;
 font-size:0.875em;
 }
 
+figure.listing pre {
+border:1px solid #000;
+padding:0.5em;
+counter-reset: precode;
+}
+figure.listing pre code:before {
+position:absolute;
+left:-1.75em;
+text-align:right;
+content: counter(precode);
+counter-increment: precode;
+}
 
 #authors {
 margin:0 auto 2.5em -3%;
@@ -546,9 +561,41 @@ figure pre,
 figcaption {
 text-align:left;
 }
-figcaption {
-margin-top:1em;
+figure object,
+figure img,
+figure pre {
+margin-bottom:1em;
 }
+
+figure {
+counter-increment:figure;
+}
+figure.listing {
+counter-increment:listing;
+}
+figure.equation {
+counter-increment:equation;
+}
+table {
+counter-increment:table;
+}
+figure.equation:after {
+content: "(" counter(equation) ")";
+line-height:0;
+position: absolute;
+top:45%;
+right:0;
+}
+figcaption:before {
+content: "Fig. " counter(figure) ". ";
+}
+figure.listing figcaption:before {
+content: "Listing " counter(listing) ". ";
+}
+caption:before {
+content: "Table " counter(table) ". ";
+}
+
 
 .figure-column-2 {
 /*-webkit-column-count:2;*/
@@ -618,6 +665,7 @@ margin-top:1em;
 
 table {
 width:100%;
+margin-top:1em;
 text-align:left;
 }
 caption {

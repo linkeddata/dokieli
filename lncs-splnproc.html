@@ -12,7 +12,7 @@
         <script type="text/javascript" src="scripts/lr.js"></script>
     </head>
 
-    <body about="[this:]" typeof="foaf:Document sioc:Post biblio:Paper prov:Entity" class="hfeed" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# cc: http://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# schema: http://schema.org/ rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# org: http://www.w3.org/ns/org# biblio: http://purl.org/net/biblio# bibo: http://purl.org/ontology/bibo/ book: http://purl.org/NET/book/vocab# ov: http://open.vocab.org/terms/ doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ sro: http://salt.semanticauthoring.org/ontologies/sro# this: http://linked-research.270a.info/lncs-splnproc.html">
+    <body about="[this:]" typeof="foaf:Document sioc:Post biblio:Paper prov:Entity" class="hfeed" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# cc: http://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# schema: http://schema.org/ rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# org: http://www.w3.org/ns/org# biblio: http://purl.org/net/biblio# bibo: http://purl.org/ontology/bibo/ book: http://purl.org/NET/book/vocab# ov: http://open.vocab.org/terms/ doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ sro: http://salt.semanticauthoring.org/ontologies/sro# this: http://linked-research.270a.info/lncs-splnproc.html">
         <article class="hentry">
 
             <h1 class="entry-title" property="dcterms:title">Author Guidelines for the Preparation of Contributions to Springer Computer Science Proceedings</h1>
@@ -102,7 +102,7 @@
                                         <p>Headings should be capitalized (i.e., nouns, verbs, and all other words except articles, prepositions, and conjunctions should be set with an initial capital) and should, with the exception of the title, be aligned to the left. Only the first two levels of section headings should be numbered, as shown in Table 1. The respective font sizes are also given in Table 1. Kindly refrain from using “0” when numbering your section headings.</p>
 
                                         <table>
-                                            <caption><strong>Table 1.</strong> Font sizes of headings. Table captions should always be positioned <em>above</em> the tables.</caption>
+                                            <caption>Font sizes of headings. Table captions should always be positioned <em>above</em> the tables.</caption>
                                             <thead>
                                                 <tr><th>Heading level</th><th>Example</th><th>Font size and style</th></tr>
                                             </thead>
@@ -152,12 +152,12 @@
 
                                 <figure>
                                     <object type="image/svg+xml" data="power-distribution.svg" width="360" height="252"></object>
-                                    <figcaption><strong>Fig. 1.</strong> Power distribution of channel at 1555 nm along the link of 383 km (Source: LNCS 5412, p. 323)</figcaption>
+                                    <figcaption>Power distribution of channel at 1555 nm along the link of 383 km (Source: LNCS 5412, p. 323)</figcaption>
                                 </figure>
 
                                 <figure>
                                     <img src="artifacts-artificial-intelligence.png" width="360" height="274"/>
-                                    <figcaption><strong>Fig. 2.</strong> Artifacts empowered by Artificial Intelligence (Source: LNCS 5640, p. 115)</figcaption>
+                                    <figcaption>Artifacts empowered by Artificial Intelligence (Source: LNCS 5640, p. 115)</figcaption>
                                 </figure>
 
                                 <p>smaller than 6 pt (~ 2 mm character height). Figures are to be numbered and to have a caption which should always be positioned <em>under</em> the figures, in contrast to the caption belonging to a table, which should always appear <em>above</em> the table.</p>
@@ -207,27 +207,27 @@
                             <h3 about="[this:#program-code]" property="dcterms:title">Program Code</h3>
                             <div about="[this:#program-code]" property="dcterms:description">
                                 <p>Program listings or program commands in the text are normally set in typewriter font:</p>
-                                <figure>
+                                <figure class="listing">
                                     <pre>
-program Inflation (Output)
-  {Assuming annual inflation rates of 7%, 8%, and
-  10%,... years};
-  const MaxYears = 10;
-  var Year: 0..MaxYears;
-      Factor1, Factor2, Factor3: Real;
-  begin
-    Year := 0;
-    Factor1 := 1.0; Factor2 := 1.0; Factor3 := 1.0;
-    WriteLn('Year 7% 8% 10%'); WriteLn;
-    repeat
-      Year := Year + 1;
-      Factor1 := Factor1 * 1.07;
-      Factor2 := Factor2 * 1.08;
-      Factor3 := Factor3 * 1.10;
-      WriteLn(Year:5,Factor1:7:3,Factor2:7:3,
-        Factor3:7:3)
-    until Year = MaxYears
-end.
+<code>program Inflation (Output)</code>
+<code>  {Assuming annual inflation rates of 7%, 8%, and</code>
+<code>  10%,... years};</code>
+<code>  const MaxYears = 10;</code>
+<code>  var Year: 0..MaxYears;</code>
+<code>      Factor1, Factor2, Factor3: Real;</code>
+<code>  begin</code>
+<code>    Year := 0;</code>
+<code>    Factor1 := 1.0; Factor2 := 1.0; Factor3 := 1.0;</code>
+<code>    WriteLn('Year 7% 8% 10%'); WriteLn;</code>
+<code>    repeat</code>
+<code>      Year := Year + 1;</code>
+<code>      Factor1 := Factor1 * 1.07;</code>
+<code>      Factor2 := Factor2 * 1.08;</code>
+<code>      Factor3 := Factor3 * 1.10;</code>
+<code>      WriteLn(Year:5,Factor1:7:3,Factor2:7:3,</code>
+<code>        Factor3:7:3)</code>
+<code>    until Year = MaxYears</code>
+<code>end.</code>
                                     </pre>
 
                                     <figcaption>[Example of a computer program from Jensen K., Wirth N.: Pascal User Manual and Report. Springer, New York (1991)]</figcaption>
