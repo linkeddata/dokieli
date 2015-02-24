@@ -142,7 +142,12 @@ font-size:0.5715em;
 position:relative;
 top:-3px;
 }
-h2, h3, #document-identifier dt, #appendix dt {
+h2, h3,
+#document-identifier dt,
+#document-published dt,
+#document-modified dt,
+#document-appeared dt,
+#appendix dt {
 font-size:1.333em;
 }
 h4 {
@@ -549,7 +554,10 @@ text-align:justify;
 display:none;
 }
 
-#document-identifier dd {
+#document-identifier dd,
+#document-published dd,
+#document-modified dd,
+#document-appeared dd {
 text-align:left;
 margin-left:0;
 }
@@ -706,7 +714,6 @@ content: counter(appendix, upper-latin) "." counter(sub-appendix)"." counter(sub
 }
 
 
-
 #header,
 #footer,
 #comments,
@@ -715,6 +722,16 @@ dl.datetimestamp,
 dl.entry-replies,
 dl.article_labels * {
 display:none;
+}
+
+#document-purpose,
+#document-published,
+#document-modified,
+#document-license {
+display:none;
+}
+.on {
+display:block;
 }
 
 

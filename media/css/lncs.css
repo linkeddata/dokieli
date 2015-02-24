@@ -709,6 +709,7 @@ text-align:center;
 #document-purpose,
 #document-published,
 #document-modified,
+#document-appeared,
 #document-license,
 #general-terms,
 #categories-and-subject-descriptors,
@@ -783,12 +784,11 @@ display:none;
 
 
 #document-purpose,
-#document-submitted,
+#document-published,
+#document-modified,
 #document-license {
 display:none;
 }
-#document-purpose.on,
-#document-submitted.on,
-#document-license.on {
+.on {
 display:block;
 }
