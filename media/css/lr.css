@@ -65,7 +65,9 @@ margin-top:2em;
 margin:0;
 padding:0;
 }
-
+.lr p {
+text-indent:0;
+}
 
 #views {
 /*top:1em;
@@ -216,7 +218,6 @@ z-index:9;
 p, h2,h3,h4,h5,h6,ul,ol,li,dl,dt,table,section,figure {
 position:relative;
 z-index:1;
-text-indent:0;
 /*background:#eee !important;*/
 }
 
