@@ -543,7 +543,8 @@ text-align:justify;
 
 /*Bring these back to life*/
 #document-purpose,
-#document-submitted,
+#document-published,
+#document-modified,
 #document-license {
 display:none;
 }
