@@ -68,8 +68,8 @@ h5 { font-size:10pt !important; }
 h6 { font-size:9pt !important; }
 
 caption, td, th,
-#author-org *,
-#author-uri *,
+#author-org,
+#author-uri,
 #abstract *,
 #document-identifier *,
 #document-published *,
@@ -424,8 +424,8 @@ width:106%;
 line-height:1;
 }
 
-#author-org *,
-#author-uri *,
+#author-org,
+#author-uri,
 #abstract h2, #abstract p,
 #document-identifier dt, #document-identifier dd,
 #document-published dd,
