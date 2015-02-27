@@ -525,6 +525,12 @@ content: ".";
 
 #abstract h2,
 #abstract div, #abstract div *:first-child,
+#categories-and-subject-descriptors h2,
+#categories-and-subject-descriptors div, #categories-and-subject-descriptors div *:first-child,
+#general-terms h2,
+#general-terms div, #general-terms div *:first-child,
+#keywords h2,
+#keywords div, #keywords div *:first-child,
 #document-identifier dt,
 #document-identifier dt + dd,
 #document-purpose dt,
@@ -536,13 +542,7 @@ content: ".";
 #document-appeared dt,
 #document-appeared dt + dd,
 #document-license dt,
-#document-license dt + dd,
-#categories-and-subject-descriptors h2,
-#categories-and-subject-descriptors h2 + ul,
-#general-terms h2,
-#general-terms h2 + ul,
-#keywords h2,
-#keywords h2 + ul {
+#document-license dt + dd {
 display:inline;
 }
 
