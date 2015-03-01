@@ -33,7 +33,7 @@ var LR = {
 
     U: {
         showDocumentInfo: function() {
-            $('body').append('<aside id="document-info" class="lr" title="Open Menu"><header><button class="show">☰</button></header><div></div><footer><p>About <a target="LinkedResearchSource" href="https://github.com/csarven/linked-research">Linked Research</a></p></footer></aside>');
+            $('body').append('<aside id="document-info" class="lr"><header><button class="show" title="Open Menu">☰</button></header><div></div><footer><p>About <a target="LinkedResearchSource" href="https://github.com/csarven/linked-research">Linked Research</a></p></footer></aside>');
 
             var di = $('#document-info.lr > div');
 
@@ -44,6 +44,7 @@ var LR = {
                 LR.U.showStorage(di);
                 LR.U.showExports(di);
                 LR.U.showViews(di);
+                LR.U.showPrint(di);
                 LR.U.showDocumentMetadata(di);
                 LR.U.showToC();
             });
@@ -511,6 +512,22 @@ LIMIT 1";
                     console.log("NOPE 1");
                 }
             });
+        },
+
+        showPrint: function(node) {
+            $(node).append('<section id="document-print" class="lr"><h2>Digital</h2></section>');
+
+            var actionPrint = $('<p></p>');
+            $('#document-print').append(actionPrint);
+            LR.U.showPrintButton(actionPrint);
+            actionPrint.append(' (current view)');
+        },
+
+        showPrintButton: function(node) {
+            $('<button>⎙ Print</button>').on('click', function(e) {
+                window.print();
+                return false;
+            }).appendTo(node);
         }
 
     }
