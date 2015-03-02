@@ -36,6 +36,7 @@ text-decoration:none;
 color:#000;
 }
 abbr { border-bottom: none; }
+audio { display:none; }
 
 #references ol {
 font-family:"Times New Roman", serif;
@@ -66,6 +67,10 @@ column-width:8.45cm;
 column-gap:0.83cm;
 }
 
+.blink {
+animation: none;
+-webkit-animation: none;
+}
 }
 
 
@@ -736,6 +741,21 @@ display:none;
 display:block;
 }
 
+
+.blink {
+  animation: blink 1s steps(5, start) infinite;
+  -webkit-animation: blink 1s steps(5, start) infinite;
+}
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+@-webkit-keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
 
 @media only screen 
 and (min-device-width : 320px)

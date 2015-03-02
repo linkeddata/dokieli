@@ -116,6 +116,12 @@ text-decoration:none;
 color:#000;
 }
 abbr { border-bottom: none; }
+audio { display:none; }
+
+.blink {
+animation: none;
+-webkit-animation: none;
+}
 
 } /* media print */
 
@@ -811,4 +817,19 @@ display:none;
 }
 .on {
 display:block;
+}
+
+.blink {
+  animation: blink 1s steps(5, start) infinite;
+  -webkit-animation: blink 1s steps(5, start) infinite;
+}
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+@-webkit-keyframes blink {
+  to {
+    visibility: hidden;
+  }
 }
