@@ -126,18 +126,18 @@ a abbr { cursor: pointer; border-bottom:0; }
 table { border-collapse:collapse; }
 tr { vertical-align:top; }
 ol { list-style-position:inside; }
-h2, h3, h4, h5, h6, p, ul, ol, li, pre, code {
+h2, h3, h4, h5, h6, p, ul, ol, li, pre, code, audio, video {
 orphans: 3;
 widows: 3;
 }
 
-table, img, object, figure { page-break-inside: avoid; }
+table, img, object, figure, audio, video, canvas { page-break-inside: avoid; }
 object {
 width:100% !important;
 height:auto !important;
 min-height:240px !important;
 }
-img { max-width:100% !important; height:auto !important; }
+img, video { max-width:100% !important; height:auto !important; }
 
 
 object.slides { display:none; }
@@ -332,7 +332,9 @@ h5 + p,
 div > p:first-child,
 dl + p ,
 ul + p,
-figure + p {
+figure + p,
+audio + p,
+video + p {
 text-indent:0;
 }
 h1 + p {
@@ -562,7 +564,10 @@ ol, ul, dd, table {
 margin-bottom:1em;
 }
 
-figure {
+figure,
+audio,
+video,
+canvas {
 margin-top:1em;
 margin-bottom:1em;
 position:relative;

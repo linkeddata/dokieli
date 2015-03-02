@@ -98,13 +98,13 @@ h1, #authors, #keywords, #categories-and-subject-descriptors, #general-terms, #r
 hyphens:none;
 }
 
-table, img, object, figure { page-break-inside: avoid; }
+table, img, object, figure, audio, video, canvas { page-break-inside: avoid; }
 object {
 width:100% !important;
 height:auto !important;
 min-height:240px !important;
 }
-img { max-width:100% !important; height:auto !important; }
+img, video { max-width:100% !important; height:auto !important; }
 
 
 /*
@@ -571,7 +571,9 @@ counter-reset: listing 0;
 article {
 counter-reset: table 0;
 }
-figure {
+figure,
+audio,
+video {
 margin-top:1em;
 margin-bottom:1em;
 position:relative;
