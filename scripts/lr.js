@@ -39,7 +39,7 @@ var LR = {
 
             $('#document-menu.lr').on('click', 'header button.show', function() {
                 $('#document-menu').addClass('on');
-                $(this).removeClass('show').addClass('hide');
+                $(this).removeClass('show');
                 $(this).attr('title', 'Hide Menu');
                 LR.U.showStorage(di);
                 LR.U.showExports(di);
@@ -48,9 +48,9 @@ var LR = {
                 LR.U.showDocumentMetadata(di);
                 LR.U.showToC();
             });
-            $('#document-menu.lr').on('click', 'header button.hide', function() {
+            $('#document-menu.lr').on('click', 'header button:not([class="show"])', function() {
                 $('#document-menu').removeClass('on').find('section').remove();
-                $(this).removeClass('hide').addClass('show');
+                $(this).addClass('show');
                 $(this).attr('title', 'Open Menu');
                 $('#table-of-contents').remove();
                 LR.U.hideStorage();
