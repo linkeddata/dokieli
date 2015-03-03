@@ -71,6 +71,12 @@ column-gap:0.83cm;
 animation: none;
 -webkit-animation: none;
 }
+
+button {
+margin:0 !important;
+padding:0 !important;
+font-size:9pt;
+}
 }
 
 
