@@ -132,7 +132,7 @@ a abbr { cursor: pointer; border-bottom:0; }
 table { border-collapse:collapse; }
 tr { vertical-align:top; }
 ol { list-style-position:inside; }
-h2, h3, h4, h5, h6, p, ul, ol, li, pre, code, audio, video {
+h2, h3, h4, h5, h6, p, ul, ol, li, pre, code, samp, audio, video {
 orphans: 3;
 widows: 3;
 }
@@ -169,14 +169,11 @@ margin-left: -1.1em;
 
 
 #references a,
-table code {
+table code, table samp {
 word-wrap:break-word;
 word-break:break-all;
 }
 
-#data-provenance_table code {
-word-break:normal;
-}
 
 body {
 color:#000000;
@@ -193,7 +190,7 @@ width:35.475em;
 -ms-hyphens:auto;
 hyphens:auto;
 }
-#authors, #keywords, #categories-and-subject-descriptors, #general-terms, #references, pre, code, h1, table *, figcaption {
+#authors, #keywords, #categories-and-subject-descriptors, #general-terms, #references, pre, code, samp, h1, table *, figcaption {
 -moz-hyphens:none;
 -webkit-hyphens:none;
 -ms-hyphens:none;
@@ -209,10 +206,10 @@ font-family: "CMU Serif Italic", serif !important;
 h1 em, h2 em, h3 em, h4 em {
 font-family: "CMU Serif Bold Italic", serif !important;
 }
-code, code strong, pre, kbd, button {
+code, code strong, samp, samp strong pre, kbd, button {
 font-family: "CMU Serif Monospace", monospace !important;
 }
-code strong {
+code strong, samp strong {
 font-weight:bold;
 }
 h5, h5 {
@@ -413,7 +410,8 @@ border:1px solid #000;
 padding:0.5em;
 counter-reset: precode;
 }
-figure.listing pre code:before {
+figure.listing pre code:before,
+figure.listing pre samp:before {
 position:absolute;
 left:-1.75em;
 text-align:right;

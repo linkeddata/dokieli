@@ -96,7 +96,7 @@ width:56.06em;
 -ms-hyphens:auto;
 hyphens:auto;
 }
-h1, #authors, #keywords, #categories-and-subject-descriptors, #general-terms, #references, pre, code {
+h1, #authors, #keywords, #categories-and-subject-descriptors, #general-terms, #references, pre, code, samp {
 -moz-hyphens:none;
 -webkit-hyphens:none;
 -ms-hyphens:none;
@@ -213,7 +213,7 @@ list-style-position:inside;
 margin-bottom:0.25em;
 }
 
-code {
+code, samp {
 font-size:0.95em;
 font-family:"Courier New", monospace;
 word-wrap: break-word;
