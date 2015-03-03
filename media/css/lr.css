@@ -23,7 +23,7 @@ font-size:0.8em;
 position:static;
 }
 
-#document-info {
+#document-menu {
 right:1em;
 }
 #table-of-contents {
@@ -34,7 +34,7 @@ border-radius:7px;
 box-shadow:0.25em 0.25em 0.25em rgba(0,0,0,0.1);
 overflow:auto;
 }
-#document-info.on {
+#document-menu.on {
 padding:1em;
 border:1px solid #ccc;
 border-radius:7px;
@@ -42,17 +42,17 @@ box-shadow:0.25em 0.25em 0.25em rgba(0,0,0,0.1);
 overflow:auto;
 }
 
-#document-info header button {
+#document-menu header button {
 position:absolute;
 top:1em;
 right:1em;
 font-size:26px;
 }
-#document-info > footer {
+#document-menu > footer {
 display:none;
 margin-top:2em;
 }
-#document-info.on > footer {
+#document-menu.on > footer {
 display:block;
 }
 

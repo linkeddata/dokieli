@@ -33,12 +33,12 @@ var LR = {
 
     U: {
         showDocumentInfo: function() {
-            $('body').append('<aside id="document-info" class="lr"><header><button class="show" title="Open Menu">☰</button></header><div></div><footer><p>About <a target="LinkedResearchSource" href="https://github.com/csarven/linked-research">Linked Research</a></p></footer></aside>');
+            $('body').append('<aside id="document-menu" class="lr"><header><button class="show" title="Open Menu">☰</button></header><div></div><footer><p>About <a target="LinkedResearchSource" href="https://github.com/csarven/linked-research">Linked Research</a></p></footer></aside>');
 
-            var di = $('#document-info.lr > div');
+            var di = $('#document-menu.lr > div');
 
-            $('#document-info.lr').on('click', 'header button.show', function() {
-                $('#document-info').addClass('on');
+            $('#document-menu.lr').on('click', 'header button.show', function() {
+                $('#document-menu').addClass('on');
                 $(this).removeClass('show').addClass('hide');
                 $(this).attr('title', 'Hide Menu');
                 LR.U.showStorage(di);
@@ -48,8 +48,8 @@ var LR = {
                 LR.U.showDocumentMetadata(di);
                 LR.U.showToC();
             });
-            $('#document-info.lr').on('click', 'header button.hide', function() {
-                $('#document-info').removeClass('on').find('section').remove();
+            $('#document-menu.lr').on('click', 'header button.hide', function() {
+                $('#document-menu').removeClass('on').find('section').remove();
                 $(this).removeClass('hide').addClass('show');
                 $(this).attr('title', 'Open Menu');
                 $('#table-of-contents').remove();
