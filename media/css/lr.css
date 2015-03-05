@@ -11,6 +11,13 @@ display:none !important;
 }
 }
 
+body.on-document-menu article {
+opacity:0.25;
+transition: opacity 1s ease-in-out;
+-moz-transition: opacity 1s ease-in-out;
+-webkit-transition: opacity 1s ease-in-out;
+}
+
 aside.lr {
 position:fixed;
 top:1em;
