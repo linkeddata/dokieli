@@ -75,7 +75,7 @@ var LR = {
                 var s = '<section id="views" class="lr"><h2>Views</h2><ul>';
                 LR.C.Stylesheets = stylesheets;
                 stylesheets.each(function(i, stylesheet) {
-                    var view = $(this).prop('href').split("/").pop().slice(0,-4).toUpperCase();
+                    var view = $(this).prop('href').split("/").pop().slice(0,-4).toLowerCase();
                     if($(this).is('[rel~="alternate"]')) {
                         s += '<li><button>' + view + '</button></li>';
                     }
