@@ -42,7 +42,7 @@ var LR = {
                 $('#document-menu').addClass('on');
                 body.addClass('on-document-menu');
                 $(this).removeClass('show');
-                $(this).attr('title', 'Hide Menu');
+                $(this).prop('title', 'Hide Menu');
                 LR.U.showStorage(di);
                 LR.U.showExports(di);
                 LR.U.showViews(di);
@@ -54,14 +54,14 @@ var LR = {
                 $('#document-menu').removeClass('on').find('section').remove();
                 body.removeClass('on-document-menu');
                 $(this).addClass('show');
-                $(this).attr('title', 'Open Menu');
+                $(this).prop('title', 'Open Menu');
                 $('#table-of-contents').remove();
                 LR.U.hideStorage();
             });
         },
 
         getDocRefType: function() {
-            LR.C.DocRefType = $('head link[rel="stylesheet"][title]').attr('title').toUpperCase();
+            LR.C.DocRefType = $('head link[rel="stylesheet"][title]').prop('title').toUpperCase();
 
             if(LR.C.DocRefType != 'LNCS' || LR.C.DocRefType != 'ACM' || LR.C.DocRefType != 'APA' || LR.C.DocRefType != 'REC') {
                 LR.C.DocRefType = 'LNCS';
@@ -75,7 +75,7 @@ var LR = {
                 var s = '<section id="views" class="lr"><h2>Views</h2><ul>';
                 LR.C.Stylesheets = stylesheets;
                 stylesheets.each(function(i, stylesheet) {
-                    var view = $(this).attr('href').split("/").pop().slice(0,-4).toUpperCase();
+                    var view = $(this).prop('href').split("/").pop().slice(0,-4).toLowerCase();
                     if($(this).is('[rel~="alternate"]')) {
                         s += '<li><button>' + view + '</button></li>';
                     }
@@ -93,20 +93,20 @@ var LR = {
                     $('head link[rel~="stylesheet"]:not([href$="lr.css"])').remove();
 
                     LR.C.Stylesheets.each(function(i, stylesheet) {
-                        if ($(this).attr('href').split("/").pop().slice(0,-4).toUpperCase() == selected.text()) {
-                            $(this).attr('rel', 'stylesheet');
+                        if ($(this).prop('href').split("/").pop().slice(0,-4).toUpperCase() == selected.text()) {
+                            $(this).prop('rel', 'stylesheet');
                         }
                         else {
-                            $(this).attr('rel', 'stylesheet alternate');
+                            $(this).prop('rel', 'stylesheet alternate');
                         }
 
-                        $(this).attr('media', 'all');
+                        $(this).prop('media', 'all');
                         $(this).removeAttr('title');
                         $('head').append($(this));
                     });
 
                     $('#views.lr button:disabled').removeAttr('disabled');
-                    $(this).attr('disabled', 'disabled');
+                    $(this).prop('disabled', 'disabled');
                 });
             }
         },
@@ -231,17 +231,17 @@ var LR = {
 //console.log(ui.endparent);
 //console.log(ui.item.index());
 
-                var id  = $(ui.item).attr('data-id');
+                var id  = $(ui.item).prop('data-id');
                 var node = $('#' + id);
 
-                var endParentId = $(ui.endparent).parent().attr('data-id') || 'content';
+                var endParentId = $(ui.endparent).parent().prop('data-id') || 'content';
                 var endParent = $('#' + endParentId);
                 var endParentHeading = endParent.find('> *[property="dcterms:title"]');
                 endParentHeading = (endParentHeading.length > 0) ? parseInt(endParentHeading.prop("tagName").substring(1)) : 1;
                 var afterNode = (endParentHeading == 1) ? endParent.find('> section:nth-of-type(' + ui.item.index() +')')  : endParent.find('*:nth-of-type(1) > section:nth-of-type(' + ui.item.index() +')');
 
                 var aboutContext = (endParentId == 'content') ? '' : '#' + endParentId;
-                node.attr('about', '[this:' + aboutContext +']');
+                node.prop('about', '[this:' + aboutContext +']');
 
                 var nodeDetached = node.detach();
 
@@ -256,7 +256,7 @@ var LR = {
 
                     var newHeading = $('<h' + newHeadingIndex + '></h' + newHeadingIndex + '>');
                     $.each(heading.attributes, function(index) {
-                        $(newHeading).attr(heading.attributes[index].name, heading.attributes[index].value);
+                        $(newHeading).prop(heading.attributes[index].name, heading.attributes[index].value);
                     });
                     $(newHeading).html($(heading).html());
                     $(heading).after(newHeading).remove();
@@ -296,13 +296,9 @@ var LR = {
                         var fragmentClientWidth = fragment.get(0).clientWidth;
                         fragment.css({'right': '-' + (fragmentClientWidth - 2) + 'px'});
                     }
-
-//                    $(this).attr('contenteditable', 'true');
                 },
                 mouseleave: function () {
                     $('#'+this.id+' > .lr.fragment').remove();
-
-//                    $(this).attr('contenteditable', 'false');
                 }
             }, '#content *[id]');
         },
@@ -419,12 +415,12 @@ var LR = {
                     LR.U.disableStorage('html');
                 });
                 $('#local-storage').on('click', 'input.autosave', function(event) {
-                    if ($(this).attr('checked') == 'checked') {
+                    if ($(this).prop('checked') == 'checked') {
                         $(this).removeAttr('checked');
                         LR.U.disableAutoSave('html');
                     }
                     else {
-                        $(this).attr('checked', 'checked');
+                        $(this).prop('checked', 'checked');
                         LR.U.enableAutoSave('html');
                     }
                 });
@@ -442,7 +438,7 @@ var LR = {
         },
 
         openTarget: function() {
-            $(document).find("a.external").attr("target", "_blank");
+            $(document).find("a.external").prop("target", "_blank");
         },
 
         buildReferences: function() {
@@ -454,8 +450,8 @@ var LR = {
                     var referenceText = '';
                     var referenceLink = '';
                     var refId = (i+1);
-                    var href = $(v).attr('href');
-                    var title = $(v).attr('title');
+                    var href = $(v).prop('href');
+                    var title = $(v).prop('title');
 
                     if (title) {
                         referenceText = title.replace(/ & /g, " &amp; ");
