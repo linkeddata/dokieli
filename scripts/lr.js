@@ -531,14 +531,28 @@ LIMIT 1";
                 window.print();
                 return false;
             }).appendTo(node);
-        }
+        },
 
+        highlightItems: function() {
+            var d = $(document);
+            d.on({
+                mouseenter: function () {
+                    var c = $(this).prop('class');
+                    d.find('*[class="'+ c +'"]').addClass('lr highlight');
+                },
+                mouseleave: function () {
+                    var c = $(this).prop('class');
+                    d.find('*[class="'+ c +'"]').removeClass('lr highlight');
+                }
+            }, '*[class*="highlight-"]');
+        }
     }
 };
 
 $(document).ready(function() {
 //    LR.U.initStorage('html');
 //    LR.U.getDocRefType();
+    LR.U.highlightItems();
     LR.U.showDocumentInfo();
 //    LR.U.escape();
 //    LR.U.openTarget();

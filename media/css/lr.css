@@ -228,6 +228,10 @@ z-index:1;
 /*background:#eee !important;*/
 }
 
+.lr.highlight {
+background-color:#0ff;
+}
+
 .lr.fragment {
 position:absolute;
 top:0;
