@@ -87,7 +87,7 @@ var LR = {
 
                 $(node).append(s);
 
-                $('#views.lr button').on('click', function(event) {
+                $('#views.lr button').on('click', function(e) {
                     var selected = $(this);
                     var prevStylesheet = $('#views.lr button:disabled').html();
 
@@ -294,12 +294,12 @@ var LR = {
 
 
         buttonClose: function() {
-            $('button.close').on('click', function(event) { $(this).parent().remove(); });
+            $('button.close').on('click', function(e) { $(this).parent().remove(); });
         },
 
         escape: function() {
-            $(document).on('keyup', function(event) {
-                if(event.keyCode == 27) { // Escape Key
+            $(document).on('keyup', function(e) {
+                if(e.keyCode == 27) { // Escape Key
                     $('#table-of-contents').remove();
                 }
             });
@@ -436,15 +436,15 @@ var LR = {
                 <p>' + useStorage + '</p>\n\
                 </section>');
 
-                $('#local-storage').on('click', 'button.local-storage-enable-html', function(event) {
+                $('#local-storage').on('click', 'button.local-storage-enable-html', function(e) {
                     $(this).parent().html(LR.C.DisableStorageButtons);
                     LR.U.enableStorage('html');
                 });
-                $('#local-storage').on('click', 'button.local-storage-disable-html', function(event) {
+                $('#local-storage').on('click', 'button.local-storage-disable-html', function(e) {
                     $(this).parent().html(LR.C.EnableStorageButtons);
                     LR.U.disableStorage('html');
                 });
-                $('#local-storage').on('click', 'input.autosave', function(event) {
+                $('#local-storage').on('click', 'input.autosave', function(e) {
                     if ($(this).attr('checked') == 'checked') {
                         $(this).removeAttr('checked');
                         LR.U.disableAutoSave('html');
@@ -578,6 +578,7 @@ LIMIT 1";
 $(document).ready(function() {
 //    LR.U.initStorage('html');
 //    LR.U.getDocRefType();
+
     LR.U.highlightItems();
     LR.U.showDocumentInfo();
 //    LR.U.escape();
