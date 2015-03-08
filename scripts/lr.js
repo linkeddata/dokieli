@@ -89,6 +89,7 @@ var LR = {
 
                 $('#views.lr button').on('click', function(event) {
                     var selected = $(this);
+                    var prevStylesheet = $('#views.lr button:disabled').html();
 
                     $('head link[rel~="stylesheet"][title]:not([href$="lr.css"])').each(function(i, stylesheet) {
                         $(this).prop('disabled', true); //XXX: Leave this. WebKit wants to trigger this before for some reason.
@@ -103,6 +104,35 @@ var LR = {
 
                     $('#views.lr button:disabled').removeAttr('disabled');
                     $(this).prop('disabled', 'disabled');
+
+                    if (selected.text().toLowerCase() == 'shower') {
+                        $('.slide').addClass('lr');
+                        $('body').addClass('on-slideshow list');
+                        $('head').append('<meta name="viewport" content="width=792, user-scalable=no"/>');
+
+                        var dM = $('#document-menu');
+                        var dMButton = dM.find('header button');
+
+                        dM.removeClass('on').find('section').remove();
+                        $('body').removeClass('on-document-menu');
+                        dMButton.addClass('show');
+                        dMButton.attr('title', 'Open Menu');
+                        $('#table-of-contents').remove();
+                        LR.U.hideStorage();
+
+//                        $('head').append('<script src="scripts/shower.js"></script>');
+                    }
+                    if (prevStylesheet.toLowerCase() == 'shower') {
+                        $('.slide').removeClass('lr');
+                        $('body').removeClass('on-slideshow list full');
+                        $('body').removeAttr('style');
+                        $('head meta[name="viewport"][content="width=792, user-scalable=no"]').remove();
+//                        $('head script[src="scripts/shower.js"]').remove();
+
+                        history.pushState(null, null, window.location.pathname);
+//                        var lH = window.location.href;
+//                        window.location.href = lH.substr(0, lH.lastIndexOf('?'));
+                    }
                 });
             }
         },

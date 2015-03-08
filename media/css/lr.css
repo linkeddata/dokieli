@@ -232,6 +232,22 @@ z-index:1;
 background-color:#0ff;
 }
 
+.slide {
+display:none;
+}
+.lr.slide {
+display:block;
+}
+.on-slideshow article > h1,
+.on-slideshow article > #authors,
+.on-slideshow article > dl,
+.on-slideshow article section:not([class~="lr"]),
+.on-slideshow aside:not([class~="lr"]) {
+display:none;
+}
+
+
+
 .lr.fragment {
 position:absolute;
 top:0;
