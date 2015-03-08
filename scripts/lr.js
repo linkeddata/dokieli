@@ -69,13 +69,12 @@ var LR = {
         },
 
         showViews: function(node) {
-            var stylesheets = $('head link[rel~="stylesheet"]:not([href$="lr.css"])');
+            var stylesheets = $('head link[rel~="stylesheet"][title]:not([href$="lr.css"])');
 
             if (stylesheets.length > 1) {
                 var s = '<section id="views" class="lr"><h2>Views</h2><ul>';
-                LR.C.Stylesheets = stylesheets;
                 stylesheets.each(function(i, stylesheet) {
-                    var view = $(this).attr('href').split("/").pop().slice(0,-4).toUpperCase();
+                    var view = $(this).prop('title');
                     if($(this).is('[rel~="alternate"]')) {
                         s += '<li><button>' + view + '</button></li>';
                     }
@@ -90,23 +89,20 @@ var LR = {
 
                 $('#views.lr button').on('click', function(event) {
                     var selected = $(this);
-                    $('head link[rel~="stylesheet"]:not([href$="lr.css"])').remove();
 
-                    LR.C.Stylesheets.each(function(i, stylesheet) {
-                        if ($(this).attr('href').split("/").pop().slice(0,-4).toUpperCase() == selected.text()) {
-                            $(this).attr('rel', 'stylesheet');
+                    $('head link[rel~="stylesheet"][title]:not([href$="lr.css"])').each(function(i, stylesheet) {
+                        $(this).prop('disabled', true); //XXX: Leave this. WebKit wants to trigger this before for some reason.
+
+                        if ($(this).prop('title').toLowerCase() == selected.text().toLowerCase()) {
+                            $(this).prop({'rel': 'stylesheet', 'disabled': false});
                         }
                         else {
-                            $(this).attr('rel', 'stylesheet alternate');
+                            $(this).prop({'rel': 'stylesheet alternate'});
                         }
-
-                        $(this).attr('media', 'all');
-                        $(this).removeAttr('title');
-                        $('head').append($(this));
                     });
 
                     $('#views.lr button:disabled').removeAttr('disabled');
-                    $(this).attr('disabled', 'disabled');
+                    $(this).prop('disabled', 'disabled');
                 });
             }
         },
