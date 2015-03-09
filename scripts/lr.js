@@ -297,9 +297,9 @@ var LR = {
             $('button.close').on('click', function(e) { $(this).parent().remove(); });
         },
 
-        escape: function() {
+        keyEvents: function() {
             $(document).on('keyup', function(e) {
-                if(e.keyCode == 27) { // Escape Key
+                if (e.keyCode == 27) { // Escape
                     $('#table-of-contents').remove();
                 }
             });
@@ -581,7 +581,7 @@ $(document).ready(function() {
 
     LR.U.highlightItems();
     LR.U.showDocumentInfo();
-//    LR.U.escape();
+    LR.U.keyEvents();
 //    LR.U.openTarget();
 //    LR.U.buildReferences();
 //    LR.U.getLinkedResearch();
