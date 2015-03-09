@@ -33,31 +33,43 @@ var LR = {
 
     U: {
         showDocumentInfo: function() {
+            $('body').append('<aside id="document-menu" class="lr"><header><button class="show" title="Open Menu">☰</button></header><div></div><footer><p>About <a target="LinkedResearchSource" href="https://github.com/csarven/linked-research">Linked Research</a></p></footer></aside>');
+
+            $('#document-menu.lr').on('click', 'header button.show', LR.U.showDocumentMenu);
+            $('#document-menu.lr').on('click', 'header button:not([class="show"])', LR.U.hideDocumentMenu);
+        },
+
+        showDocumentMenu: function() {
             var body = $('body');
-            body.append('<aside id="document-menu" class="lr"><header><button class="show" title="Open Menu">☰</button></header><div></div><footer><p>About <a target="LinkedResearchSource" href="https://github.com/csarven/linked-research">Linked Research</a></p></footer></aside>');
+            var dMenu = $('#document-menu.lr');
+            var dMenuButton = dMenu.find('header button');
+            var dInfo = dMenu.find('> div');
 
-            var di = $('#document-menu.lr > div');
+            dMenuButton.removeClass('show');
+            dMenuButton.attr('title', 'Hide Menu');
+            dMenu.addClass('on');
+            body.addClass('on-document-menu');
 
-            $('#document-menu.lr').on('click', 'header button.show', function() {
-                $('#document-menu').addClass('on');
-                body.addClass('on-document-menu');
-                $(this).removeClass('show');
-                $(this).attr('title', 'Hide Menu');
-                LR.U.showStorage(di);
-                LR.U.showExports(di);
-                LR.U.showViews(di);
-                LR.U.showPrint(di);
-                LR.U.showDocumentMetadata(di);
-                LR.U.showToC();
-            });
-            $('#document-menu.lr').on('click', 'header button:not([class="show"])', function() {
-                $('#document-menu').removeClass('on').find('section').remove();
-                body.removeClass('on-document-menu');
-                $(this).addClass('show');
-                $(this).attr('title', 'Open Menu');
-                $('#table-of-contents').remove();
-                LR.U.hideStorage();
-            });
+            LR.U.showStorage(dInfo);
+            LR.U.showExports(dInfo);
+            LR.U.showViews(dInfo);
+            LR.U.showPrint(dInfo);
+            LR.U.showDocumentMetadata(dInfo);
+            LR.U.showToC();
+        },
+
+        hideDocumentMenu: function() {
+            var body = $('body');
+            var dMenu = $('#document-menu.lr');
+            var dMenuButton = dMenu.find('header button');
+
+            dMenu.removeClass('on').find('section').remove();
+            body.removeClass('on-document-menu');
+            dMenuButton.addClass('show');
+            dMenuButton.attr('title', 'Open Menu');
+
+            $('#table-of-contents').remove();
+            LR.U.hideStorage();
         },
 
         getDocRefType: function() {
