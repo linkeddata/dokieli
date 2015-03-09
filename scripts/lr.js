@@ -315,6 +315,12 @@ var LR = {
                     LR.U.hideDocumentMenu();
                 }
             });
+
+            $(document).on('click', function(e) {
+                if (!$(e.target).closest('#document-menu, #table-of-contents').length) {
+                    LR.U.hideDocumentMenu();
+                }
+            });
         },
 
         utf8Tob64: function(s) {
