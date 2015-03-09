@@ -155,7 +155,9 @@ img, video { max-width:100% !important; height:auto !important; }
 object.slides { display:none; }
 .block { display:block; }
 
-
+#references {
+clear:both;
+}
 
 #references ol {
 counter-reset: list-order;
@@ -343,7 +345,8 @@ dl + p ,
 ul + p,
 figure + p,
 audio + p,
-video + p {
+video + p,
+blockquote p {
 text-indent:0;
 }
 h1 + p {
@@ -822,6 +825,7 @@ display:none;
 .on {
 display:block;
 }
+
 
 .blink {
   animation: blink 1s steps(5, start) infinite;
