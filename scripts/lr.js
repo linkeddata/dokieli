@@ -312,7 +312,7 @@ var LR = {
         keyEvents: function() {
             $(document).on('keyup', function(e) {
                 if (e.keyCode == 27) { // Escape
-                    $('#table-of-contents').remove();
+                    LR.U.hideDocumentMenu();
                 }
             });
         },
