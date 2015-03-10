@@ -54,6 +54,7 @@ var LR = {
             LR.U.showExports(dInfo);
             LR.U.showViews(dInfo);
             LR.U.showPrint(dInfo);
+            LR.U.showEmbedData(dInfo);
             LR.U.showDocumentMetadata(dInfo);
             LR.U.showToC();
         },
@@ -69,6 +70,7 @@ var LR = {
             dMenuButton.attr('title', 'Open Menu');
 
             $('#table-of-contents').remove();
+            $('#embed-data-entry').remove();
             LR.U.hideStorage();
         },
 
@@ -149,6 +151,51 @@ var LR = {
             }
         },
 
+        showEmbedData: function(node) {
+            $(node).append('<section id="embed-data-in-html" class="lr"><h2>Embed Data</h2><ul><li><button class="embed-data-text-turtle" data-type="text/turtle">Turtle</button></li><li><button class="embed-data-ld-json" data-type="application/ld+json">JSON-LD</button></li></ul></section>');
+
+            $('#embed-data-in-html').on('click', 'button', function(e){
+                var scriptType = $(this).data('type');
+                var scriptHead = '';
+
+                switch(scriptType) {
+                    case 'text/turtle': default:
+                        scriptHead += '<script type="text/turtle" class="lr">';
+                        break;
+                    case 'application/ld+json':
+                        scriptHead += '<script type="application/ld+json" class="lr">';
+                        break;
+                }
+
+                var scriptCurrent = $('head script[type="' + scriptType +'"][class="lr"]');
+                scriptCurrentData = (scriptCurrent.length > 0) ? scriptCurrent.html() : '';
+
+                $('body').append('<aside id="embed-data-entry" class="lr on"><button class="close">❌</button><h2>Embed Data</h2><p><code>' + LR.U.htmlEntities(scriptHead) + '</code></p><textarea cols="80" rows="24">' + scriptCurrentData + '</textarea><p><code>&lt;/script&gt;</code></p><button class="save">Save</button></aside>');
+
+                $('#embed-data-entry').on('click', 'button.save', function(e) {
+                    var scriptEntry = $(this).parent().find('textarea').val();
+
+                    if (scriptEntry.length > 0) {
+                        if (scriptCurrent.length > 0) {
+                            scriptCurrent.html(scriptEntry);
+                        }
+                        else {
+                            $('head').append(scriptHead + scriptEntry + '</script>');
+                        }
+                    }
+                    else {
+                        scriptCurrent.remove();
+                    }
+
+                    $('#embed-data-entry').remove();
+                });
+            });
+        },
+
+        htmlEntities: function(s) {
+            return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g,'&apos');
+        },
+
         showDocumentMetadata: function(node) {
             var content = $('#content');
             var count = LR.U.contentCount(content);
@@ -199,7 +246,7 @@ var LR = {
             var s = '';
             var section = $('h1 ~ div section');
             if (section.length > 0) {
-                s += '<aside id="table-of-contents" class="lr"><button class="close">❌</button><h2>Table of Contents</h2><ol class="toc sortable">';
+                s += '<aside id="table-of-contents" class="lr on"><button class="close">❌</button><h2>Table of Contents</h2><ol class="toc sortable">';
                 section.each(function(i,section) {
                     var h = $(section).find('h2');
                     if (h.length > 0) {
@@ -247,7 +294,6 @@ var LR = {
 
             $('body').append(s);
             LR.U.sortToC();
-            LR.U.buttonClose();
         },
 
         sortToC: function() {
@@ -306,7 +352,7 @@ var LR = {
 
 
         buttonClose: function() {
-            $('button.close').on('click', function(e) { $(this).parent().remove(); });
+            $(document).on('click', 'button.close', function(e) { $(this).parent().remove(); });
         },
 
         keyEvents: function() {
@@ -317,7 +363,7 @@ var LR = {
             });
 
             $(document).on('click', function(e) {
-                if (!$(e.target).closest('#document-menu, #table-of-contents').length) {
+                if (!$(e.target).closest('aside.lr.on').length) {
                     LR.U.hideDocumentMenu();
                 }
             });
@@ -596,7 +642,7 @@ LIMIT 1";
 $(document).ready(function() {
 //    LR.U.initStorage('html');
 //    LR.U.getDocRefType();
-
+    LR.U.buttonClose();
     LR.U.highlightItems();
     LR.U.showDocumentInfo();
     LR.U.keyEvents();
