@@ -163,12 +163,12 @@ var LR = {
 
                 switch(scriptType) {
                     case 'text/turtle': default:
-                        scriptHead += '<script type="text/turtle" class="lr">';
+                        scriptHead += '<script type="text/turtle"';
                         cdataStart = '# ' + LR.C.CDATAStart + '\n';
                         cdataEnd = '\n# ' + LR.C.CDATAEnd;
                         break;
                     case 'application/ld+json':
-                        scriptHead += '<script type="application/ld+json" class="lr">';
+                        scriptHead += '<script type="application/ld+json"';
                         break;
                 }
 
@@ -182,7 +182,7 @@ var LR = {
                     scriptCurrentData = scriptCurrentData.join('\n');
                 }
 
-                $('body').append('<aside id="embed-data-entry" class="lr on"><button class="close">❌</button><h2>Embed Data</h2><p><code>' + LR.U.htmlEntities(scriptHead) + '</code></p><textarea cols="80" rows="24">' + scriptCurrentData + '</textarea><p><code>&lt;/script&gt;</code></p><button class="save">Save</button></aside>');
+                $('body').append('<aside id="embed-data-entry" class="lr on"><button class="close">❌</button><h2>Embed Data</h2><p><code>' + LR.U.htmlEntities(scriptHead) + '></code></p><textarea cols="80" rows="24">' + scriptCurrentData + '</textarea><p><code>&lt;/script&gt;</code></p><button class="save">Save</button></aside>');
 
                 $('#embed-data-entry').on('click', 'button.save', function(e) {
                     var scriptEntry = $(this).parent().find('textarea').val();
@@ -192,7 +192,7 @@ var LR = {
                             scriptCurrent.html(cdataStart + scriptEntry +  cdataEnd);
                         }
                         else {
-                            $('head').append(scriptHead + cdataStart + scriptEntry + cdataEnd + '</script>');
+                            $('head').append(scriptHead + ' class="lr">' + cdataStart + scriptEntry + cdataEnd + '</script>');
                         }
                     }
                     else {
