@@ -247,6 +247,68 @@ display:none;
 }
 
 
+.rfc-2119 {
+text-transform: lowercase;
+font-variant: small-caps;
+font-style: normal;
+}
+
+.highlight {
+background-color:#0ff;
+}
+.todo {
+background-color:#f0f;
+}
+.note {
+background-color:#ff0;
+}
+
+.typographic-sine-wave span {
+position:relative;
+margin-right:0.25em;
+}
+.typographic-sine-wave span:nth-of-type(1) {
+bottom:0;
+}
+.typographic-sine-wave span:nth-of-type(2) {
+bottom:-0.25em;
+}
+.typographic-sine-wave span:nth-of-type(3) {
+bottom:-0.5em;
+}
+.typographic-sine-wave span:nth-of-type(4) {
+bottom:-0.25em;
+}
+.typographic-sine-wave span:nth-of-type(5) {
+bottom:0em;
+}
+.typographic-sine-wave span:nth-of-type(6) {
+bottom:0.25em;
+}
+.typographic-sine-wave span:nth-of-type(7) {
+bottom:0.5em;
+}
+.typographic-sine-wave span:nth-of-type(7) {
+bottom:0.5em;
+}
+
+
+.align-left { float:left; margin-right:2em; margin-bottom:2em; }
+.align-right { float:right; margin-left:2em; margin-bottom:2em; }
+
+blockquote {
+margin-left:2em;
+}
+blockquote:before {
+content: "“";
+color: #999;
+display: block;
+height: 0;
+font-size:4em;
+line-height:0.85em;
+margin-left: -0.5em;
+}
+
 
 .lr.fragment {
 position:absolute;
