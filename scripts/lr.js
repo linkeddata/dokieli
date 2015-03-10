@@ -28,7 +28,9 @@ var LR = {
         AutoSaveId: '',
         AutoSaveTimer: 60000,
         DisableStorageButtons: '<button class="local-storage-disable-html">Disable</button> | <input id="local-storage-html-autosave" class="autosave" type="checkbox" checked="checked"/> <label for="local-storage-html-autosave">Autosave (1m)</label>',
-        EnableStorageButtons: '<button class="local-storage-enable-html">Enable</button>'
+        EnableStorageButtons: '<button class="local-storage-enable-html">Enable</button>',
+        CDATAStart: '<!--//--><![CDATA[//><!--',
+        CDATAEnd: '//--><!]]>'
     },
 
     U: {
@@ -157,10 +159,13 @@ var LR = {
             $('#embed-data-in-html').on('click', 'button', function(e){
                 var scriptType = $(this).data('type');
                 var scriptHead = '';
+                var cdataStart = cdataEnd = '';
 
                 switch(scriptType) {
                     case 'text/turtle': default:
                         scriptHead += '<script type="text/turtle" class="lr">';
+                        cdataStart = '# ' + LR.C.CDATAStart + '\n';
+                        cdataEnd = '\n# ' + LR.C.CDATAEnd;
                         break;
                     case 'application/ld+json':
                         scriptHead += '<script type="application/ld+json" class="lr">';
@@ -168,7 +173,14 @@ var LR = {
                 }
 
                 var scriptCurrent = $('head script[type="' + scriptType +'"][class="lr"]');
-                scriptCurrentData = (scriptCurrent.length > 0) ? scriptCurrent.html() : '';
+                var scriptCurrentData = '';
+
+                if (scriptCurrent.length > 0) {
+                    scriptCurrentData = scriptCurrent.html().split(/\r\n|\r|\n/);
+                    scriptCurrentData.shift();
+                    scriptCurrentData.pop();
+                    scriptCurrentData = scriptCurrentData.join('\n');
+                }
 
                 $('body').append('<aside id="embed-data-entry" class="lr on"><button class="close">❌</button><h2>Embed Data</h2><p><code>' + LR.U.htmlEntities(scriptHead) + '</code></p><textarea cols="80" rows="24">' + scriptCurrentData + '</textarea><p><code>&lt;/script&gt;</code></p><button class="save">Save</button></aside>');
 
@@ -177,10 +189,10 @@ var LR = {
 
                     if (scriptEntry.length > 0) {
                         if (scriptCurrent.length > 0) {
-                            scriptCurrent.html(scriptEntry);
+                            scriptCurrent.html(cdataStart + scriptEntry +  cdataEnd);
                         }
                         else {
-                            $('head').append(scriptHead + scriptEntry + '</script>');
+                            $('head').append(scriptHead + cdataStart + scriptEntry + cdataEnd + '</script>');
                         }
                     }
                     else {
