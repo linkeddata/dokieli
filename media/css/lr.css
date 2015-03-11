@@ -259,6 +259,9 @@ background-color:#0ff;
 .todo {
 background-color:#f0f;
 }
+.todo:before {
+content:"TODO: ";
+}
 .note {
 background-color:#ff0;
 }
