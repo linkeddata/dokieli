@@ -266,6 +266,11 @@ content:"TODO: ";
 background-color:#ff0;
 }
 
+.rtl {
+unicode-bidi:bidi-override;
+direction:rtl;
+}
+
 .typographic-sine-wave {
 position:relative;
 width:7em;
