@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xml:lang="en" lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Cooling Down Web Science</title>
+        <link rel="stylesheet" href="media/css/lncs.css" media="all" title="LNCS"/>
+        <link rel="stylesheet alternate" href="media/css/acm.css" media="all" title="ACM"/>
+        <link rel="stylesheet alternate" href="http://www.w3.org/StyleSheets/TR/W3C-REC.css" media="all" title="W3C-REC"/>
+        <link rel="stylesheet alternate" href="media/css/shower.css" media="all" title="Shower"/>
+        <link rel="stylesheet" href="media/css/lr.css" media="all"/>
+<!--        <link rel="stylesheet" href="media/css/animate.min.css" media="all"/>-->
+<!--        <meta name="viewport" content="width=792, user-scalable=no"/>-->
+        <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+        <script src="scripts/html.sortable.min.js"></script>
+<!--        <script src="scripts/shower.js"></script>-->
+
+<!--        <script type="text/javascript" src="scripts/rdf_store.js"></script>-->
+<!--        <script type="text/javascript" src="scripts/rdfquery.js"></script>-->
+<!--        <script type="text/javascript" src="scripts/knockout-1.2.1.js"></script>-->
+<!--        <script type="text/javascript" src="scripts/rdfstore_frontend.js"></script>-->
+
+        <style>
+body {
+background: -moz-linear-gradient(top, rgba(255,255,255,0.5) 0%, rgba(171,212,229,0.5) 99%, rgba(170,212,229,0.5) 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0.5)), color-stop(99%,rgba(171,212,229,0.5)), color-stop(100%,rgba(170,212,229,0.5))); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top, rgba(255,255,255,0.5) 0%,rgba(171,212,229,0.5) 99%,rgba(170,212,229,0.5) 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top, rgba(255,255,255,0.5) 0%,rgba(171,212,229,0.5) 99%,rgba(170,212,229,0.5) 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top, rgba(255,255,255,0.5) 0%,rgba(171,212,229,0.5) 99%,rgba(170,212,229,0.5) 100%); /* IE10+ */
+background: linear-gradient(to bottom, rgba(255,255,255,0.5) 0%,rgba(171,212,229,0.5) 99%,rgba(170,212,229,0.5) 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#80ffffff', endColorstr='#80aad4e5',GradientType=0 ); /* IE6-9 */
+}
+
+.cool-media {
+background: -moz-linear-gradient(left, rgba(198,255,255,0.5) 0%, rgba(0,178,255,0.5) 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(198,255,255,0.5)), color-stop(100%,rgba(0,178,255,0.5))); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(left, rgba(198,255,255,0.5) 0%,rgba(0,178,255,0.5) 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(left, rgba(198,255,255,0.5) 0%,rgba(0,178,255,0.5) 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(left, rgba(198,255,255,0.5) 0%,rgba(0,178,255,0.5) 100%); /* IE10+ */
+background: linear-gradient(to right, rgba(198,255,255,0.5) 0%,rgba(0,178,255,0.5) 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#80c6ffff', endColorstr='#8000b2ff',GradientType=1 ); /* IE6-9 */
+}
+.hot-media {
+background: -moz-linear-gradient(left, rgba(255,255,0,0.5) 0%, rgba(255,0,0,0.5) 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,0,0.5)), color-stop(100%,rgba(255,0,0,0.5))); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(left, rgba(255,255,0,0.5) 0%,rgba(255,0,0,0.5) 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(left, rgba(255,255,0,0.5) 0%,rgba(255,0,0,0.5) 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(left, rgba(255,255,0,0.5) 0%,rgba(255,0,0,0.5) 100%); /* IE10+ */
+background: linear-gradient(to right, rgba(255,255,0,0.5) 0%,rgba(255,0,0,0.5) 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#80ffff00', endColorstr='#80ff0000',GradientType=1 ); /* IE6-9 */
+}
+
+.unicode-document:before {
+background-image:url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiIHN0YW5kYWxvbmU9Im5vIj8%2BPHN2ZyB4bWxuczpzdmc9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgdmlld0JveD0iMCAwIDE1Mi43MTg3IDIxNS43MTg4IiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBzdHlsZT0iZmlsbC1vcGFjaXR5OjE7c3Ryb2tlOiMwMDAwMDA7c3Ryb2tlLXdpZHRoOjE7c3Ryb2tlLWxpbmVjYXA6c3F1YXJlO3N0cm9rZS1saW5lam9pbjptaXRlcjtzdHJva2UtbWl0ZXJsaW1pdDoxMDtzdHJva2Utb3BhY2l0eToxO3N0cm9rZS1kYXNoYXJyYXk6bm9uZTtzdHJva2UtZGFzaG9mZnNldDowIj48ZyBpZD0iZzUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKC0yNC4xODc1LC03Mi4yODEyKSI%2BPHBhdGggZD0ibSAxNzYuOTA2MiwyODggLTE1Mi43MTg3LDAgMCwtMjE1LjcxODggOTcuMTcxOSwwIDU1LjU0NjgsNTYuOTUzMiAwLDE1OC43NjU2IHogbSAtOS43MDMxLC0xNTguNjI1IC00NS44NDM3LC00Ni45Njg4IDAsNDYuOTY4OCA0NS44NDM3LDAgeiBtIDIuNjcxOSwxNTEuNTkzOCAwLC0xNDQuNTYyNiAtNTUuNTQ2OSwwIDAsLTU3LjA5MzcgLTgzLjEwOTMsMCAwLDIwMS42NTYzIDEzOC42NTYyLDAgeiBtIC03Ni4yMTg4LC0xNzYuMDYyNiAtNDEuNzY1NiwwIDAsLTcuMDMxMiA0MS43NjU2LDAgMCw3LjAzMTIgeiBtIDAsMzEuNSAtNDEuNzY1NiwwIDAsLTcuMDMxMiA0MS43NjU2LDAgMCw3LjAzMTIgeiBtIDU1LjU0NjksMzEuNSAtOTcuMzEyNSwwIDAsLTcuMDMxMiA5Ny4zMTI1LDAgMCw3LjAzMTIgeiBtIDAsMzEuNSAtOTcuMzEyNSwwIDAsLTcuMDMxMiA5Ny4zMTI1LDAgMCw3LjAzMTIgeiBtIDAsMzEuNSAtOTcuMzEyNSwwIDAsLTcuMDMxMiA5Ny4zMTI1LDAgMCw3LjAzMTIgeiBtIDAsMzEuNSAtOTcuMzEyNSwwIDAsLTcuMDMxMiA5Ny4zMTI1LDAgMCw3LjAzMTIgeiIvPjwvZz48L3N2Zz4%3D");
+background-position:0 0;
+background-repeat:no-repeat;
+background-size:contain;
+display:inline-block;
+height:1em;
+content:"";
+}
+
+.unicode-red-pill:before {
+background-image:url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgNTEyLjAwNSA1MTIuMDA1IiB4bWw6c3BhY2U9InByZXNlcnZlIiBmaWxsPSIjZjAwIj48cGF0aCBkPSJNMzQuNjg3LDMwOS44MzhMMzA5LjgzOCwzNC42ODdjNDYuMjQ4LTQ2LjI0OSwxMjEuMjI5LTQ2LjI0OSwxNjcuNDksMGM0Ni4yMzYsNDYuMjQ5LDQ2LjIzNiwxMjEuMjM1LDAsMTY3LjQ4MyAgTDIwMi4xNyw0NzcuMzI4Yy00Ni4yNDgsNDYuMjM2LTEyMS4yMzQsNDYuMjM2LTE2Ny40ODMsMEMtMTEuNTYyLDQzMS4wNjYtMTEuNTYyLDM1Ni4wODYsMzQuNjg3LDMwOS44Mzh6IE0yMTQuMzIsMTk2LjQ0MyAgbDEwMC4zOTgsMTAwLjM5M2wxMTUuMzczLTExNS4zNjFjMjcuNzA5LTI3LjcyNywzMi4wNzgtNzcuMDQzLDQuMzU5LTEwNC43NjRjLTI3LjczMi0yNy43MjUtNzIuNjgtMjcuNzI1LTEwMC40LDBMMjE0LjMyLDE5Ni40NDN6Ii8%2BPC9zdmc%2B");
+}
+.unicode-blue-pill:before {
+background-image:url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgNTEyLjAwNSA1MTIuMDA1IiB4bWw6c3BhY2U9InByZXNlcnZlIiBmaWxsPSIjMDBmIj48cGF0aCBkPSJNMzQuNjg3LDMwOS44MzhMMzA5LjgzOCwzNC42ODdjNDYuMjQ4LTQ2LjI0OSwxMjEuMjI5LTQ2LjI0OSwxNjcuNDksMGM0Ni4yMzYsNDYuMjQ5LDQ2LjIzNiwxMjEuMjM1LDAsMTY3LjQ4MyAgTDIwMi4xNyw0NzcuMzI4Yy00Ni4yNDgsNDYuMjM2LTEyMS4yMzQsNDYuMjM2LTE2Ny40ODMsMEMtMTEuNTYyLDQzMS4wNjYtMTEuNTYyLDM1Ni4wODYsMzQuNjg3LDMwOS44Mzh6IE0yMTQuMzIsMTk2LjQ0MyAgbDEwMC4zOTgsMTAwLjM5M2wxMTUuMzczLTExNS4zNjFjMjcuNzA5LTI3LjcyNywzMi4wNzgtNzcuMDQzLDQuMzU5LTEwNC43NjRjLTI3LjczMi0yNy43MjUtNzIuNjgtMjcuNzI1LTEwMC40LDBMMjE0LjMyLDE5Ni40NDN6Ii8%2BPC9zdmc%2B");
+}
+.unicode-red-pill:before, .unicode-blue-pill:before {
+background-position:0 0;
+background-repeat:no-repeat;
+background-size:contain;
+display:inline-block;
+height:1em;
+width:1.25em;
+content:"";
+}
+        </style>
+
+        <script src="scripts/lr.js"></script>
+    </head>
+
+    <body about="[this:]" typeof="foaf:Document sioc:Post biblio:Paper prov:Entity bibo:Slideshow" class="hfeed" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# cc: http://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# schema: http://schema.org/ rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# org: http://www.w3.org/ns/org# biblio: http://purl.org/net/biblio# bibo: http://purl.org/ontology/bibo/ book: http://purl.org/NET/book/vocab# ov: http://open.vocab.org/terms/ doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ sro: http://salt.semanticauthoring.org/ontologies/sro# this: http://csarven.ca/cooling-down-web-science">
+        <article class="hentry editable">
+
+            <h1 class="entry-title" property="dcterms:title">Cooling Down Web Science</h1>
+
+            <div id="authors">
+                <dl id="author-name">
+                    <dt>Authors</dt>
+                    <dd id="author-1"><span about="[this:]" rel="dcterms:creator dcterms:publisher dcterms:contributor"><a about="http://csarven.ca/#i" typeof="foaf:Person" rel="foaf:homepage" property="foaf:name" href="http://csarven.ca/">Sarven Capadisli</a></span><sup><a href="#author-org-1">1</a></sup><sup><a href="#author-org-2">2</a></sup><sup><a href="#author-email-1">✊</a></sup></dd>
+                </dl>
+
+                <ul id="author-org">
+                    <li id="author-org-1"><sup>1</sup><a about="[_:BernUniversityofAppliedSciences]" typeof="foaf:Organization" property="foaf:name" rel="foaf:homepage" href="http://bfh.ch/">Bern University of Applied Sciences</a>, E-Government-Institute, Bern, Switzerland</li>
+                    <li id="author-org-2"><sup>2</sup><a about="[_:UniversityofBonn]" typeof="foaf:Organization" property="foaf:name" rel="foaf:homepage" href="http://uni-bonn.de/">University of Bonn</a>, Enterprise Information Systems Department, Bonn, Germany</li>
+                </ul>
+
+                <ul id="author-email">
+                    <li id="author-email-1"><sup>✊</sup><a about="http://csarven.ca/#i" rel="foaf:mbox" href="mailto:info@csarven.ca">info@csarven.ca</a></li>
+                </ul>
+                <span about="http://csarven.ca/#i" rel="org:memberOf" resource="[_:BernUniversityofAppliedSciences]"></span>
+                <span about="http://csarven.ca/#i" rel="org:memberOf" resource="[_:UniversityofBonn]"></span>
+            </div>
+
+            <dl id="document-identifier">
+                <dt>Document ID</dt>
+                <dd><a href="http://csarven.ca/cooling-down-web-science">http://csarven.ca/cooling-down-web-science</a></dd>
+            </dl>
+
+            <dl id="document-published">
+                <dt>Published</dt>
+                <dd property="dcterms:published" content="2015-03-09T00:00:00Z">2015-03-09</dd>
+            </dl>
+
+            <dl id="document-modified">
+                <dt>Modified</dt>
+                <dd property="dcterms:modified" content="2015-03-09T00:00:00Z">2015-03-09</dd>
+            </dl>
+
+            <dl id="document-license">
+                <dt>License</dt>
+                <dd><a about="[this:]" rel="license cc:license" href="http://creativecommons.org/licenses/by-sa/4.0/" title="Creative Commons Attribution-ShareAlike 4.0 Unported">CC BY-SA 4.0</a></dd>
+            </dl>
+
+            <div id="content" class="entry-content">
+                <section id="abstract" about="[this:]">
+                    <h2>Abstract</h2>
+                    <div property="dcterms:abstract" class="entry-summary">
+                        <p></p>
+                    </div>
+                </section>
+
+                <section id="keywords" about="[this:]">
+                    <h2>Keywords</h2>
+                    <div>
+                        <ul rel="dcterms:subject">
+                            <li><a resource="http://dbpedia.org/resource/Knowledge_acquisition" href="http://en.wikipedia.org/wiki/Knowledge_acquisition">Knowledge acquisition</a></li>
+                            <li><a resource="http://dbpedia.org/resource/Linked_Data" href="http://en.wikipedia.org/wiki/Linked_Data">Linked Data</a></li>
+                            <li><a resource="http://dbpedia.org/resource/Position_paper" href="http://en.wikipedia.org/wiki/Position_paper">Position paper</a></li>
+                            <li><a resource="http://dbpedia.org/resource/Semantic_publishing" href="http://en.wikipedia.org/wiki/Semantic_publishing">Semantic publishing</a></li>
+                            <li><a resource="http://dbpedia.org/resource/The_medium_is_the_message" href="http://en.wikipedia.org/wiki/The_medium_is_the_message">The medium is the message</a></li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="introduction" about="[this:]" rel="dcterms:hasPart" resource="[this:#introduction]">
+                    <h2 about="[this:#introduction]" property="dcterms:title">Introduction</h2>
+                    <div about="[this:#introduction]" property="dcterms:description" typeof="deo:Introduction">
+                        <p>Some context: In the 1967 book, <span about="urn:isbn:9781584230700" typeof="schema:Book"><span rel="owl:sameAs" resource="http://www.worldcat.org/oclc/47679653"></span><a rel="foaf:page" href="http://www.worldcat.org/title/medium-is-the-massage-an-inventory-of-effects/oclc/47679653">The Medium is the Massage</a></span>, <cite><a href="https://en.wikipedia.org/wiki/Marshall_McLuhan">Marshall McLuhan</a></cite> wrote that <q about="[this:]" rel="cito:agreesWith" resource="urn:isbn:9781584230700" cite="http://www.worldcat.org/oclc/47679653">at the high speeds of electric communication, purely visual means of apprehending the world are no longer possible; they are just too slow to be relevant or effective</q> [<a href="#ref-1">1</a>]. While McLuhan’s critique was on the overall position of the print medium given the electric age, it stands especially valid today in the age of interactive new media. For instance, the <em class="cool-media">World Wide Web</em> is a <q>cool media</q> because its access and interactive possibilities offers multi-sensory and emotional states for individuals. This is in contrast to the <em class="hot-media">print</em>, where it is considered to be a <q>hot media</q> demanding primarily the full attention of our vision. As the printed word’s requirement for the other senses is minimal, it <em>spoon-feeds</em> the content to the reader in a l-i-n-e-a-r <span class="typographic-sine-wave"><span>f</span><span>a</span><span>s</span><span>h</span><span>i</span><span>o</span><span>n</span></span>. The literate culture is passive and is detached from immediate involvement because the medium has no such requirements. The cooler media on the other hand, requires a greater degree of engagement from the audience in order to fill in the <span>gaps</span>. Needless to say, the latter behaviour is what humans do best i.e., pattern recognition, where the <a href="http://en.wikipedia.org/wiki/Gestalt_psychology#Gestalt_laws_of_grouping">Gestalt’s laws of grouping</a> for instance, describes principle perceived stimulus based on certain rules. Moreover, cooler the media, our intellectual relations can be better cross-linked.</p>
+
+                        <p>The new media, like the Web, offers extensible interactions, creative participations, and social engagements. There is a natural human desire to <strong>connect</strong> and <strong>exchange</strong> <a href="https://en.wikipedia.org/wiki/Meme"><em>memes</em></a> with others, as well as to co-create. Given these opportunities, the fundamental question to ask here is, why should research communication in Web Science be limited to, evaluated by, and rewarded on the archaic methods and artificial practices? The methods in question which are still used date back to the invention of the <a href="http://en.wikipedia.org/wiki/Printing_press">mechanical movable type printing press</a> (circa 1450), even in the advent of the globally accessible mediums and <em>villages</em> that are at our fingertips, vocals, and presence, at much faster turnaround time for publication to consumption than ever before. The artificial practices correspond to the publication workflows that are in place for majority of the Web conferences and journals. Naturally one wonders, what does it mean to have an academic achievement through a "publication"? If the greatest application on the Internet i.e., the Web, can be purposed for greater possibilities than that of print alone, then we urgently need to address the question, <em>what constitutes a scholarly article?</em></p>
+
+                        <p>Today, it is evident that the typical publishing scenario for scholarly knowledge in Web Science  predominantly requires strict adherence to the <em>printability</em> aspects of the information e.g., <span class="unicode-document">page length, typographical guidelines</span>. That is, all of the encompassing data for any given research and development, i.e., noteworthy items which the researcher knows, wants to communicate and demonstrate, <strong class="rfc-2119">must</strong> be channeled through the characteristics of the print media. In practice, this leads the research community to use tools that are tailored solely for printing or viewing (on screen). This leads to unnecessary information loss or arbitrary filtering of the content, where it can be otherwise preserved via appropriate mediums, if and only if it can be demonstrated that such initiatives are of benefit to the academic community. Since print is one possible way to represent and communicate the information, it is worthwhile to investigate and employ alternative or complimentary representations that are more appropriate given the qualities of the Web. As document formats like PDF and Word - which are primarily designed and destined for printing and physical distribution - circulate in scientific circles and on the Web, we can make one observation: such formats, on the hot end of the media spectrum, are trying to exist inside a cool medium. An old <em>form</em> trying to remain relevant in the new form. The potentiality of their user experiences will indefinitely remain hampered.</p>
+
+                        <p><cite><a href="http://faculty.education.illinois.edu/burbules/papers/paper.1.html">This is Not a Paper</a></cite> [] - an essay with a title as such, we wish we had written 20 years ago, which is <strong>still</strong> accessible with a single click! - raises a legitimate question <q>whether any journals will exist in paper form within a decade or two</q>. While we can safely answer that question today, our contention is that we are arguably in a better position to look ahead for the upcoming years. There are various emergent social and technical initiatives under that are taking place under the umbrella term, <em>Open Science</em>.</p>
+
+                        <p>At least within the context of scholastic Web Science, it is not only compelling, but crucial for the research community to <em>eat its own dogfood</em> in order to unchain itself from antiquated traditions. To start in such endeavor, the primary requirement should be placed on the shoulders of the researchers themselves i.e., to use the mediums and processes that it has created towards technical and social progress. By retaining our focus on enabling researchers we postulate better <strong>access</strong> to knowledge. This is akin to why and how the Web came to me.</p>
+                    </div>
+                </section>
+
+                <section id="effects-and-implications" about="[this:]" rel="dcterms:hasPart" resource="[this:#effects-and-implications]">
+                    <h2 about="[this:#effects-and-implications]" property="dcterms:title">Effects and Implications</h2>
+                    <div about="[this:#effects-and-implications]" property="dcterms:description">
+                        <p>The <strong>effects</strong> of the <em>mediums</em> - in which the audience has chosen - for this ‘paper’ come first. The effects from these environments determine how the information will be experienced by our senses. For instance, if we are exposed to a screen device, which may be electronic or print, we will be using our vision nearly continuously. We may have the opportunity to interact with this medium by getting in contact with it and influencing its information output towards us. In cases where either the device or information is designed particularly for interaction, the effects of that medium differs to the individual which only uses their sight. A cool medium like the Web offers a higher form of awareness than what would be possible only through visual communication.</p>
+
+                        <p>The <strong>implications</strong> of the content of this ‘paper’ on the other hand, come after the effects. The consequences of what the content offers is dependent on the characteristics of the medium. To take a trivial example, our bodily experience of a natural phenomenon like gravity, is completely different than studying its physical descriptions. Similarly, watching television for 6 hours a day has a stronger effect on us than whatever the content of the programs may be. The mediums to read, listen, or watch Martin Luther King, Jr. give his speech, <cite><a href="http://en.wikipedia.org/wiki/I_Have_a_Dream">I Have A Dream</a></cite>, effects us differently due to their resolution or definition in how we participate to perceive. The ramifications of the speech simply comes later. Furthermore, mediums which require our engagement and participation effects us far greater than the mediums that tend to occupy less number of our senses, but with more completeness.</p>
+
+                        <p>Instinctively, we may ask: 1) which mediums are most appropriate to consume and produce knowledge output from scholarly work? and 2) how may the overall effects and implications be optimized?</p>
+                    </div>
+                </section>
+
+
+                <section id="significance" about="[this:]" rel="dcterms:hasPart" resource="[this:#significance]">
+                    <h2 about="[this:#significance]" property="dcterms:title">Significance</h2>
+                    <div about="[this:#significance]" property="dcterms:description">
+                        <p>To emphasize, the significance and the objective of our work is to <strong>enable researchers</strong>. The intention is to move from an <em>individualistic</em> research communication to one with higher degree of <em>participation</em> and <em>cooperation</em>. Only by collectively <em>linking</em> our knowledge we can witness and reap the benefits. This is an imperative undertaking with favourable use of publicly funded scholalistic activities.</p>
+                    </div>
+                </section>
+
+
+                <section id="issues-and-strategy" about="[this:]" rel="dcterms:hasPart" resource="[this:#issues-and-strategy]">
+                    <h2 about="[this:#issues-and-strategy]" property="dcterms:title">Issues and Strategy</h2>
+                    <div about="[this:#issues-and-strategy]" property="dcterms:description">
+                        <p>With the premise that academic efforts in Web Science focus first and foremost on print, there is a missed opportunity with what the Web medium can offer. The pressing issue for the research community to resolve is ways in which it can get back to its <em>roots</em>. That is by returning to the original objectives of the Web: a decentralized information system for scientists. In the same manner, the Semantic Web vision is an extension of the Web principles with more focus on data available from interdisciplinary fields. In the <cite><a href="http://eprints.soton.ac.uk/263347/1/1800000001%5B1%5D.pdf">A Framework for Web Science</a></cite> [<a href=""></a>], Tim Berners-Lee et alii, stated that <q cite="http://dx.doi.org/10.1561/1800000001">the Web perhaps more than any other recent human construct carries with it any number of issues including privacy and protection, access and diversity, control and freedom. Structures that we design, engineer and research, and findings that emerge through analysis, will often have strong societal implications</q>. For these reasons, it is sensible for Web researchers to alter their course away from constrained and inadequate mediums, and embrace what the native Web technologies have to offer.</p>
+
+                        <section id="issues" about="[this:#issues-and-strategy]" rel="dcterms:hasPart" resource="[this:#issues]">
+                            <h3 about="[this:#issues]" property="dcterms:title">Issues</h3>
+
+                            <div about="[this:#issues]" property="dcterms:description">
+                                <p>Here are some important issues:</p>
+
+                                <p>Continuous creation of research documents end up in data-silos e.g., PDF and Word, resulting in inadequate and complex <strong>data-mining</strong> operations with minimal gain. <strong>Knowledge acquisition</strong> is crippled.</p>
+
+                                <p>Slow evolution of the research knowledge in Web Science is hindered as conferences and journals are requesting non <strong>machine-friendly</strong> documents.</p>
+
+                                <p>An increasing <strong>costs</strong> for universities, libraries, and archives, to subscribe to the publications and journals. Taxpayers fund significant portion of the science that is held the public domain, yet there are paywalls which hinder citizens and academics to access these publications. In the same vein, conference organizers, and reviewers work for free. Publishers try to remain as the middleman for society’s knowledge acquisition.</p>
+                            </div>
+                        </script>
+
+
+
+                        <section id="strategy" about="[this:#issues-and-strategy]" rel="dcterms:hasPart" resource="[this:#strategy]">
+                            <h3 about="[this:#strategy]" property="dcterms:title">Strategy</h3>
+
+                            <div about="[this:#strategy]" property="dcterms:description">
+                                <p>Our strategy is as follows (adopted from <cite><a href="http://xml.fido.gov/stratml/references/WhyStratML.pdf">StratML</a></cite>):</p>
+
+                                <section id="strategy-intentions" about="[this:#strategy]" rel="dcterms:hasPart" resource="[this:#strategy-intentions]">
+                                    <h4 about="[this:#strategy-intentions]" property="dcterms:title">Intentions</h4>
+                                    <div about="[this:#strategy-intentions]" property="dcterms:description">
+                                        <p><em>What do we aim to accomplish?</em> </p>
+                                    </div>
+                                </section>
+
+                                <section id="strategy-stakeholders" about="[this:#strategy]" rel="dcterms:hasPart" resource="[this:#strategy-stakeholders]">
+                                    <h4 about="[this:#strategy-stakeholders]" property="dcterms:title">Stakeholders</h4>
+                                    <div about="[this:#strategy-stakeholders]" property="dcterms:description">
+                                        <p><em>Who is trying to do it and for the benefit of whom?</em> </p>
+                                    </div>
+                                </section>
+
+                                <section id="strategy-results" about="[this:#strategy]" rel="dcterms:hasPart" resource="[this:#strategy-results]">
+                                    <h4 about="[this:#strategy-results]" property="dcterms:title">Results</h4>
+                                    <div about="[this:#strategy-results]" property="dcterms:description">
+                                        <p><em>How do we know whether we are making progress and when we have succeeded?</em> </p>
+                                    </div>
+                                </section>
+                            </div>
+                        </section>
+
+                        <p>One possible solution path is by insuring that researchers, conference organizers, and academic institutions work together from their respective areas:</p>
+
+                        <dl>
+                            <dt>Researchers</dt>
+                            <dd>Dogfooding 101. Researchers can contribute to the vision of the Web
+                            <dt>Conferences and Journals</dt>
+                            <dd>Discuss from the review process, creating proceedings, to archival.</dd>
+                            <dt>Institutions</dt>
+                            <dd>Discuss how the institution can encourage and acknowledge digitally published documents towards academic credit. Take for instance popular/important online SW Journals.</dd>
+                        </dl>
+
+                        <p>Irrespective of conferences, journals, and academic institutions getting on board the bigger goal, researchers can take initiative by taking full control, ownership, and responsibility of their own knowledge, and have their contributions accessible to the society at maximum capacity. By starting with the Web-first approach, researchers and developers retain the opportunity to communicate their work through different mediums. On the other hand, if print-first approach is undertaken, it creates technical barriers to not only move the content into others mediums, but also blockade the use of enriched communication methods. For instance, the user experience of the printed word is fixed and does not allow the reader to explore further than what it is presented by the authors. Only a single opportunity is given to comprehend the work. This, in and of itself is artificial and archaic today.</p>
+
+                    </div>
+                </section>
+
+
+                <section id="proposal" about="[this:]" rel="dcterms:hasPart" resource="[this:#proposal]">
+                    <h2 about="[this:#proposal]" property="dcterms:title">Proposal</h2>
+
+                    <div about="[this:#proposal]" property="dcterms:description">
+                        <p>We propose the <cite><a href="http://csarven.ca/enabling-accessible-knowledge#acid-test">Acid Test</a></cite> as mentioned in Enabling Accessible Knowledge [<a href=""></a>] to improve the state of scholarly articles and communication. This acid test does not mandate a specific technology, therefore the challenge can be met by different solutions.</p>
+
+                       <p><cite><a href="http://csarven.ca/linked-research">Linked Research</a></cite> [<a class="ref" href="#ref-15">15</a>] is an endeavour to pass this test, as well as to identify new areas in which academic publication and communication can be improved. The idea is for Web researchers to use the technologies in the native Web stack to access, share and discover knowledge. The <cite><a href="http://csarven.ca/call-for-linked-research">Call for Linked Research</a></cite> [<a class="ref" href="#ref-16">16</a>] aims to encourage the “do it yourself” behaviour for sharing and reusing research knowledge using a workflow template. <a href="https://github.com/csarven/linked-research">An implementation</a> of the Linked Research is publicly available [<a href=""></a>] [<a href=""></a>].</p>
+                       
+                       <p>In a nutshell, Linked Research approaches the implementation of semantic publication and communication based on the most used and open international standard: HTML. For the most part, HTML is how people interact with the Web. It has a strong track record since 1989, and has yet to fail. Revolutionized in how we can leave the constraints of the print world, and widened the possibilities for communication. It provides all the hooks to work with the rest of the Web. That is, we are able to provide different <em>views</em> for the underlying content with CSS, enhanced <em>interactions</em> with JavaScript, and lastly semantic annotation of the content itself through RDF representations, e.g., RDFa, and microformats. Linked Research is intended to meet the authoring requirements for researchers to write their academic articles, as well as to cross-link their knowledge with that of the others. In essence, contributing back to the Web at highest-fidelity. The return for the researchers in Web Science is that, they can not only <em>access</em> - the term in its fullest sense - the knowledge of the community, but also be subject to using a medium that is far more involving than the literate world alone..</p>
+                    </div>
+                </section>
+
+
+<p class="todo"><cite><a href="http://biolinksig.org/proceedings/2013/biolinksig2013_Garcia_etal_02.pdf">In the Pursuit of Open Science</a></cite> [<a href=""></a>] or some other reference... - Alex to find an appropriate spot and discuss e.g., justice?</p>
+
+
+                <section id="epilogue" about="[this:]" rel="dcterms:hasPart" resource="[this:#epilogue]">
+                    <h2 about="[this:#epilogue]" rel="dcterms:title">Epilogue</h2>
+                    <div about="[this:#epilogue]" rel="dcterms:description">
+                        <p><img src="media/images/alice.png" width="128" height="128" alt="Illustration of Alice by Lewis Carroll - Alice’s Adventures Under Ground, the facsimile edition published by Macmillan in 1886" title="Illustration of Alice by Lewis Carroll - Alice’s Adventures Under Ground, the facsimile edition published by Macmillan in 1886" class="align-left lr"/> <q cite="http://www.imdb.com/title/tt0133093/quotes?item=qt0324307">This is your last chance. After this, there is no turning back. You take the <span class="unicode-blue-pill">blue pill</span> - the story ends, you wake up in your bed and believe whatever you want to believe. You take the <span class="unicode-red-pill">red pill</span> - you stay in Wonderland and I show you how deep the rabbit-hole goes</q> - <cite>Morpheus</cite>.</p>
+                    </div>
+                </section>
+
+
+                <section id="references">
+                    <h2>References</h2>
+                    <div>
+                        <ol>
+                            <li id="ref-16">Capadisli, S.: Call for Linked Research, Developers Workshop, ISWC (2014), <a about="[this:]" rel="dcterms:references cito:citesAsSourceDocument" href="http://csarven.ca/call-for-linked-research">http://csarven.ca/call-for-linked-research</a></li>
+                            <li id="ref-16">Capadisli, S.: Enabling Accessible Knowledge, <a href="http://www.donau-uni.ac.at/cedem">International Conference for E-Democracy and Open Government</a> (2015), <a about="[this:]" rel="dcterms:references cito:citesAsSourceDocument" href="http://csarven.ca/enabling-accessible-knowledge">http://csarven.ca/enabling-accessible-knowledge</a></li>
+                        </ol>
+                    </div>
+                </section>
+
+            </div>
+
+        </article>
+    </body>
+</html>
