@@ -53,10 +53,10 @@ var LR = {
             body.addClass('on-document-menu');
 
             LR.U.showViews(dInfo);
+            LR.U.showPrint(dInfo);
             LR.U.showEmbedData(dInfo);
             LR.U.showStorage(dInfo);
             LR.U.showExports(dInfo);
-            LR.U.showPrint(dInfo);
             LR.U.showDocumentMetadata(dInfo);
             LR.U.showToC();
         },
