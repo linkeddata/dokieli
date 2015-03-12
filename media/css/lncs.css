@@ -147,11 +147,11 @@ widows: 3;
 
 table, img, object, figure, audio, video, canvas { page-break-inside: avoid; }
 object {
-width:100% !important;
-min-height:240px !important;
+width:100%;
+min-height:240px;
 }
 object[type="text/html"] { min-height:480px; }
-img, video { max-width:100% !important; height:auto !important; }
+img, video { max-width:100%; height:auto; }
 
 
 object.slides { display:none; }
