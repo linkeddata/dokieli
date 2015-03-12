@@ -130,7 +130,7 @@ animation: none;
 }
 
 object { height:auto !important; }
-
+object[type="text/html"] { min-height:240px !important; }
 } /* media print */
 
 
@@ -150,7 +150,7 @@ object {
 width:100% !important;
 min-height:240px !important;
 }
-object[type="text/html"] { min-height:480px !important; }
+object[type="text/html"] { min-height:480px; }
 img, video { max-width:100% !important; height:auto !important; }
 
 
