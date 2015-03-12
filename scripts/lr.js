@@ -630,6 +630,7 @@ LIMIT 1";
 
         showPrintButton: function(node) {
             $('<button>⎙ Print</button>').on('click', function(e) {
+                LR.U.hideDocumentMenu();
                 window.print();
                 return false;
             }).appendTo(node);
