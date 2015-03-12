@@ -599,7 +599,8 @@ border:1px solid #000;
 padding:0.5em;
 counter-reset: precode;
 }
-figure.listing pre code:before {
+figure.listing pre code:before,
+figure.listing pre samp:before {
 position:absolute;
 left:-1.75em;
 text-align:right;
