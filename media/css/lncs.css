@@ -129,8 +129,13 @@ animation: none;
 -webkit-animation: none;
 }
 
-object { height:auto !important; }
-object[type="text/html"] { min-height:240px !important; }
+object:not([type="text/html"]) { height:auto !important; }
+object[type="text/html"] {
+width:auto !important;
+height:100px !important;
+min-height:auto !important;
+max-height:100px !important;
+}
 } /* media print */
 
 
@@ -151,8 +156,8 @@ width:100%;
 min-height:240px;
 }
 object[type="text/html"] { min-height:480px; }
-img, video { max-width:100%; height:auto; }
-
+img { max-width:100%; height:auto; }
+video, audio { display:block; max-width:60%; height:auto; margin:0 auto; }
 
 object.slides { display:none; }
 .block { display:block; }
