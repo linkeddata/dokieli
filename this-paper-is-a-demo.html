@@ -8,19 +8,11 @@
         <link rel="stylesheet alternate" href="media/css/acm.css" media="all" title="ACM"/>
         <link rel="stylesheet alternate" href="http://www.w3.org/StyleSheets/TR/W3C-REC.css" media="all" title="W3C-REC"/>
         <link rel="stylesheet alternate" href="media/css/shower.css" media="all" title="Shower"/>
-<!--        <link rel="stylesheet alternate" href="media/css/star-wars.css" media="all" title="Star Wars"/>-->
 
         <link rel="stylesheet" href="media/css/lr.css" media="all"/>
-<!--        <link rel="stylesheet" href="media/css/animate.min.css" media="all"/>-->
-<!--        <meta name="viewport" content="width=792, user-scalable=no"/>-->
         <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
         <script src="scripts/html.sortable.min.js"></script>
-<!--        <script src="scripts/shower.js"></script>-->
-
-<!--        <script type="text/javascript" src="scripts/rdf_store.js"></script>-->
-<!--        <script type="text/javascript" src="scripts/rdfquery.js"></script>-->
-<!--        <script type="text/javascript" src="scripts/knockout-1.2.1.js"></script>-->
-<!--        <script type="text/javascript" src="scripts/rdfstore_frontend.js"></script>-->
+        <script src="scripts/shower.js"></script>
 
         <script src="scripts/lr.js"></script>
     </head>
@@ -79,7 +71,7 @@
                 <section id="abstract" about="[this:]">
                     <h2>Abstract</h2>
                     <div property="dcterms:abstract" class="entry-summary">
-                        <p>The content of this ‘paper’ plays a secondary role, whereas the medium in which it is consumed through comes first. The characteristics of the medium in our demonstration has the most social and technical implications for the Web Science community, whether the audience is reading this on a screen or printed paper, listening to a screen reader, watching a movie, taking part in presentation, or even interacting with the document. Such varying experiences echo our quest to have the research community to re-examine the current practices for scholarly publishing and communication. Hence the question is, which mediums and behaviours for consumption, production, and dissemination of knowledge will benefit its ecosystem? The purpose of this ‘paper’ is to serve as a modest demonstration of <em>Linked Research</em> in order to work towards dismantling and evolving from the ‘state of the art’. The URI for this information resource is <code>http://csarven.ca/this-paper-is-a-demo.</code></p>
+                        <p>The content of this ‘paper’ plays a secondary role, whereas the medium in which it is consumed through comes first. The characteristics of the medium in our demonstration has the most social and technical implications for the Web Science community, whether the audience is reading this on a screen or printed paper, listening to a screen reader, watching a movie, taking part in presentation, or even interacting with the document. Our quest is for the research community to re-examine the current practices for scholarly publishing and communication: which mediums and behaviours for consumption, production, and dissemination of knowledge will benefit its ecosystem? The purpose of this ‘paper’ is to serve as a modest demonstration of <em>Linked Research</em> in order to work towards dismantling and evolving from the ‘state of the art’. The URI for this information resource is <code>http://csarven.ca/this-paper-is-a-demo.</code></p>
                     </div>
                 </section>
 
@@ -113,20 +105,12 @@
                             <li>Documents are human and machine-<em>friendly</em>.</li>
                             <li>Using the <em>plain old semantic HTML</em> marking process, with further semantic annotations using microformats and RDF.</li>
                             <li>No server required. Works on local machine.</li>
-                            <li>No installation.</li>
-                            <li>No account creation.</li>
-                            <li>No out-of-band tooling required. A Web browser is the only requirement, whether it is a <a href="http://info.cern.ch/hypertext/WWW/LineMode/Browser.html">Line Mode Browser</a>, or <a href="https://nightly.mozilla.org/">Firefox Nightly</a>. Content is foremost <strong>accessible</strong> and interactive.</li>
-                            <li>Licenses and rights: <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License</a> and <a href="https://creativecommons.org/publicdomain/zero/1.0/" title="Creative Commons Public Domain Dedication">CC0</a>, and compatibles for any dependencies.</li>
+                            <li>No installation. No account creation.</li>
+                            <li>No out-of-band tooling. A Web browser is the only requirement, whether it is a <a href="http://info.cern.ch/hypertext/WWW/LineMode/Browser.html">Line Mode Browser</a>, or <a href="https://nightly.mozilla.org/">Firefox Nightly</a>.</li>
+                            <li>Licenses and rights: <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License</a> and <a href="https://creativecommons.org/publicdomain/zero/1.0/" title="Creative Commons Public Domain Dedication">CC0</a>.</li>
                         </ul>
 
-                        <p>The code for <a href="https://github.com/csarven/linked-research">Linked Research</a> is publicly available [<a href=""></a>], and sample 'papers' (i.e., peer-reviewed and published papers) are available in the repository, including this document. The guidelines for authors for the well-known LNCS and ACM themselves are also available as examples:</p>
-
-                        <ul>
-                            <li><a href="http://linked-research.270a.info/lncs-splnproc.html">LNCS Author Guidelines</a> [<a href=""></a>]</li>
-                            <li><a href="http://linked-research.270a.info/acm-sigproc-sp.html">ACM SIG Proceedings Paper</a> [<a href=""></a>]</li>
-                        </ul>
-
-                        <p>The ACM guidelines can be viewed or printed using LNCS, and vice-versa.</p>
+                        <p>The code for <a href="https://github.com/csarven/linked-research">Linked Research</a> is publicly available [<a class="ref" href="#ref-1">1</a>], and a <a href="http://linked-research.270a.info/">demo site</a> [<a class="ref" href="#ref-1">1</a>], with sample peer-reviewed and published 'papers'. Well-known <a href="http://linked-research.270a.info/lncs-splnproc.html">LNCS</a> and <a href="http://linked-research.270a.info/acm-sigproc-sp.html">ACM</a> authoring guidelines themselves are also available as examples. The ACM guidelines can be viewed or printed using LNCS, and vice-versa.</p>
 
                         <section id="structure-and-semantics" about="[this:]" rel="dcterms:hasPart" resource="[this:#structure-and-semantics]">
                             <h3 about="[this:#structure-and-semantics]" property="dcterms:title">Structure and Semantics</h3>
@@ -142,19 +126,17 @@
                                     <figcaption><samp class="highlight-h2">h2</samp> is an example heading used here for <code class="highlight-section">section</code> titles, <code class="highlight-div">div</code> as a typical wrapper for descriptions, as well as to contain further sub-sectioned content.</figcaption>
                                 </figure>
 
-                                <p>The available RDF and microformats of this ‘paper’ can be consumed using e.g., <cite><a href="https://linkeddata.uriburner.com/about/html/http/csarven.ca/this-paper-is-a-demo">Linked Data URI Burner</a></cite> or <cite><a href="http://www.w3.org/2012/pyRdfa/extract?uri=http%3A%2F%2Fcsarven.ca%2Fthis-paper-is-a-demo&amp;rdfa_lite=false&amp;vocab_expansion=false&amp;embedded_rdf=true&amp;validate=yes&amp;space_preserve=true&amp;vocab_cache_report=false&amp;vocab_cache_bypass=false">RDFa 1.1 Distiller and Parser</a></cite>.</p>
-
-                                <p>Linked Research documents would typically include (but not exclusively) the following vocabularies: <a href="http://www.w3.org/2004/02/skos/">SKOS</a>, <a href="http://xmlns.com/foaf/spec/">FOAF</a>, <a href="http://purl.org/dc/terms">DC Terms</a>, <a href="http://semanticscience.org/">SIO</a>, <a href="http://purl.org/spar">SPAR</a>, <a href="http://www.w3.org/TR/prov-o">PROV-O</a>, <a href="http://www.opmw.org/model/OPMW/">OPMW</a>, <a href="https://w3id.org/ro/">RO</a>, <a href="http://htmlpreview.github.io/?https://raw.github.com/linked-statistics/disco-spec/master/discovery.html">Disco</a>, <a href="http://www.w3.org/TR/vocab-data-cube/">QB</a>, <a href="http://sioc-project.org/">SIOC</a>, and <a href="http://www.openannotation.org/spec/core/">OA</a>.</p>
+                                <p>The available RDF and microformats of this ‘paper’ can be consumed using e.g., <cite><a href="https://linkeddata.uriburner.com/about/html/http/csarven.ca/this-paper-is-a-demo">Linked Data URI Burner</a></cite> or <cite><a href="http://www.w3.org/2012/pyRdfa/extract?uri=http%3A%2F%2Fcsarven.ca%2Fthis-paper-is-a-demo&amp;rdfa_lite=false&amp;vocab_expansion=false&amp;embedded_rdf=true&amp;validate=yes&amp;space_preserve=true&amp;vocab_cache_report=false&amp;vocab_cache_bypass=false">RDFa 1.1 Distiller and Parser</a></cite>. Linked Research documents may typically include the following vocabularies: <a href="http://www.w3.org/2004/02/skos/">SKOS</a>, <a href="http://xmlns.com/foaf/spec/">FOAF</a>, <a href="http://purl.org/dc/terms">DC Terms</a>, <a href="http://semanticscience.org/">SIO</a>, <a href="http://purl.org/spar">SPAR</a>, <a href="http://www.w3.org/TR/prov-o">PROV-O</a>, <a href="http://www.opmw.org/model/OPMW/">OPMW</a>, <a href="https://w3id.org/ro/">RO</a>, <a href="http://htmlpreview.github.io/?https://raw.github.com/linked-statistics/disco-spec/master/discovery.html">Disco</a>, <a href="http://www.w3.org/TR/vocab-data-cube/">QB</a>, <a href="http://sioc-project.org/">SIOC</a>.</p>
                             </div>
                         </section>
 
                         <section id="presentation" about="[this:]" rel="dcterms:hasPart" resource="[this:#presentation]">
                             <h3 about="[this:#presentation]" property="dcterms:title">Presentation</h3>
                             <div about="[this:#presentation]" property="dcterms:description">
-                                <p>The CSS are primarily tested using the Gecko browser engine e.g., Firefox, as it provides a more comprehensive and consistent CSS screen and print media support. The views are also tested for in other engines e.g., WebKit, and Trident. The flexibility of the single HTML can presented in different ways (i.e., a small <cite><a href="http://csszengarden.com/">CSS Zen Garden</a></cite>), can be tested from the <a href="#document-menu">document menu</a> options. Users with supporting devices to trigger buttons can experiment with different views.</p>
+                                <p>The CSS are primarily tested using the Gecko browser engine e.g., Firefox, as it provides a more comprehensive and consistent CSS screen and print media support. The views are also tested for in other engines e.g., WebKit, and Trident. The single HTML is flexible such that it can presented in different ways (a <cite><a href="http://csszengarden.com/">CSS Zen Garden</a></cite>), using the browser or document options.</p>
 
                                 <script><!--//--><![CDATA[//><!--
-                                    var actionViews = $('<div id="action-views" class="lr">For example with: </div>');
+                                    var actionViews = $('<span id="action-views" class="lr">These buttons can also trigger the views: </span>');
                                     var context = $('#presentation p:nth-child(1)');
                                     context.after(actionViews);
                                     LR.U.showViews(actionViews);
@@ -197,7 +179,7 @@
                 <section id="multimedia-interactions" about="[this:]" rel="dcterms:hasPart" resource="[this:#multimedia-interactions]">
                     <h2 about="[this:#multimedia-interactions]" property="dcterms:title">Multimedia Interactions</h2>
                     <div about="[this:#multimedia-interactions]" property="dcterms:description" typeof="deo:Results">
-                        <p>In this section, we demonstrate different representations of this 'paper' and some interactions due to native Web technologies.</p>
+                        <p>Different representations of this 'paper' and interactions are demonstrated:</p>
 
                         <section id="print" about="[this:#multimedia-interactions]" rel="dcterms:hasPart" resource="[this:#print]">
                             <h3 about="[this:#print]" property="dcterms:title">Print</h3>
@@ -214,6 +196,42 @@
                                 #action-print.lr:before { content:"\00a0"; }
                                 #action-print.lr:after { content:" button."; }
                             /*]]>*/--></style>
+                        </section>
+
+                        <section id="slideshow" about="[this:#multimedia-interactions]" rel="dcterms:hasPart" resource="[this:#slideshow]">
+                            <h3 about="[this:#slideshow]" property="dcterms:title">Slideshow</h3>
+                            <div about="[this:#slideshow]" property="dcterms:description">
+                                <p>This ‘paper’ can also be viewed as a slideshow.</p>
+
+                                <script><!--//--><![CDATA[//><!--
+                                    var actionSlideshow = $('<span id="action-slideshow" class="lr">Here is the trigger: <button>Shower</button></span>');
+                                    var context = $('#slideshow p:nth-child(1)');
+                                    context.append(actionSlideshow);
+                                    $('#action-slideshow').on('click', 'button', function(e){
+                                        var selected = $(this);
+
+                                        $('head link[rel~="stylesheet"][title]:not([href$="lr.css"])').each(function(i, stylesheet) {
+                                            $(this).prop('disabled', true);
+
+                                            if ($(this).prop('title').toLowerCase() == selected.text().toLowerCase()) {
+                                                $(this).prop({'rel': 'stylesheet', 'disabled': false});
+                                            }
+                                            else {
+                                                $(this).prop({'rel': 'stylesheet alternate'});
+                                            }
+                                        });
+
+                                        $('.slide').addClass('lr');
+                                        $('body').addClass('on-slideshow list');
+                                        $('head').append('<meta name="viewport" content="width=792, user-scalable=no"/>');
+                                    });
+                                //--><!]]></script>
+                                <style><!--/*--><![CDATA[/*><!--*/
+                                    #action-slideshow.lr { margin-left:1em; }
+                                    #action-slideshow.lr:after { content:'.'; }
+                                /*]]>*/--></style>
+
+                            </div>
                         </section>
 
                         <section id="audio" about="[this:#multimedia-interactions]" rel="dcterms:hasPart" resource="[this:#audio]">
@@ -245,6 +263,11 @@
                                     <track kind="subtitles" src="http://csarven.ca/media/track/this-paper-is-a-demo.en.vtt" srclang="en" label="English" default="default"></track>
                                     <p>Unable to play video, but a <a href="http://csarven.ca/media/video/videotest.ogv">download</a> is available.</p>
                                 </video>
+                                <style>
+                                    @media print {
+                                        video { display:none; }
+                                    }
+                                </style>
                             </div>
                         </section>
 
@@ -252,7 +275,7 @@
                         <section id="statistical-displays" about="[this:#multimedia-interactions]" rel="dcterms:hasPart" resource="[this:#statistical-displays]">
                             <h3 about="[this:#statistical-displays]" property="dcterms:title">Statistical Displays</h3>
                             <div about="[this:#statistical-displays]" property="dcterms:description">
-                                <p>Inline-charts or <a href="https://en.wikipedia.org/wiki/Sparkline"><em>sparkline</em></a> are intended to be concise and located where they are discussed in the text. They are treated as <em>datawords</em> carrying dense information. <a href="http://www.edwardtufte.com/">Edward Tufte</a> describes sparkline as <q cite="http://www.edwardtufte.com/bboard/q-and-a-fetch-msg?msg_id=0001OR">small intense, simple, word-sized graphic with typographic resolution</q> [<a class="ref" href="#ref-21">21</a>]. For example, the <abbr title="Gross Domestic Product">GDP</abbr> of Canada <embed class="sparkline" src="http://stats.270a.info/sparkline.svg?void:sparqlEndpoint=http%3A%2F%2Fworldbank.270a.info%2Fsparql&amp;qb:DataSet=http%3A%2F%2Fworldbank.270a.info%2Fdataset%2FNY.GDP.MKTP.CD&amp;refArea=CA" type="image/svg+xml"/> claimed by the <a href="http://worldbank.270a.info/">World Bank Linked Dataspace</a> is on the rise despite the market crash in 2008. This brief demonstration of <a about="[this:#statistical-displays]" rel="cito:citesAsPotentialSolution" href="http://stats.270a.info/sparkline">Linked Statistical Data Sparkline</a>, 1) compliments the supporting text without breaking the reader’s flow, and 2) provides an opportunity for the reader to investigate further by clicking on the data-line to access the source. It is an SVG file which uses JavaScript to request data from a SPARQL Endpoint to build the datapoints and behaviour.</p>
+                                <p>Inline-charts or <a href="https://en.wikipedia.org/wiki/Sparkline"><em>sparkline</em></a> are word-sized graphic with typographic resolution. For example, the <abbr title="Gross Domestic Product">GDP</abbr> of Canada <embed class="sparkline" src="http://stats.270a.info/sparkline.svg?void:sparqlEndpoint=http%3A%2F%2Fworldbank.270a.info%2Fsparql&amp;qb:DataSet=http%3A%2F%2Fworldbank.270a.info%2Fdataset%2FNY.GDP.MKTP.CD&amp;refArea=CA" type="image/svg+xml"/>. This brief demonstration of <a about="[this:#statistical-displays]" rel="cito:citesAsPotentialSolution" href="http://stats.270a.info/sparkline">Linked Statistical Data Sparkline</a>, 1) compliments the supporting text without breaking the reader’s flow, and 2) provides an opportunity for the reader to investigate further by clicking on the data-line to access the source. It is an SVG file which uses JavaScript to request data from a SPARQL Endpoint to build the datapoints and behaviour.</p>
                             </div>
                         </section>
 
@@ -260,7 +283,7 @@
                         <section id="lsd-cube-designer" about="[this:#multimedia-interactions]" rel="dcterms:hasPart" resource="[this:#lsd-cube-designer]">
                             <h3 about="[this:#lsd-cube-designer]" property="dcterms:title">Linked Statistical Data Cube Designer</h3>
                             <div about="[this:#lsd-cube-designer]" property="dcterms:description">
-                                <p><cite><a about="[this:#lsd-cube-designer]" rel="cito:citesAsPotentialSolution" href="http://stats.270a.info/cube-designer">LSD (Linked Statistical Data) Cube Designer</a></cite> is a Web service with an user-interface for researchers to design their own statistical data cubes. It offers a way for researchers to search for existing cube component concepts from existing <a href="http://csarven.ca/statistical-linked-dataspaces">statistical linked dataspaces</a>, select suitable dimensions (e.g., "<samp>reference</samp>"), measures (e.g., "<samp>value</samp>"), and attributes (e.g., "<samp>status</samp>") for their data structure and components, and then export the cube’s structural information (in RDF Turtle). We can interact with this remote application in Figure [<a href="#figure-linked-statistical-data-cube-designer">2</a>].</p>
+                                <p><cite><a about="[this:#lsd-cube-designer]" rel="cito:citesAsPotentialSolution" href="http://stats.270a.info/cube-designer">LSD (Linked Statistical Data) Cube Designer</a></cite> is a Web service with an user-interface for researchers to design their own statistical data cubes. It offers a way to search for dimensions (e.g., "<samp>reference</samp>"), measures (e.g., "<samp>value</samp>"), and attributes (e.g., "<samp>status</samp>") for their data structure and components, and then export the cube’s structural information (in RDF Turtle). Figure [<a href="#figure-linked-statistical-data-cube-designer">2</a>] is this interactive remote application.</p>
 
                                 <figure id="figure-linked-statistical-data-cube-designer">
                                     <object type="text/html" data="http://stats.270a.info/cube-designer#lsd-cube-designer"><a rel="dcterms:source" href="http://stats.270a.info/cube-designer#lsd-cube-designer">Source</a></object>
@@ -271,11 +294,10 @@
                         </section>
 
 
-
                         <section id="executable-code" about="[this:#multimedia-interactions]" rel="dcterms:hasPart" resource="[this:#executable-code]">
                             <h3 about="[this:#executable-code]" property="dcterms:title">Executable Code</h3>
                             <div about="[this:#executable-code]" property="dcterms:description">
-                                <p>Web Science 'papers' can be far more engaging and useful to the community if we merely embrace what the Web offers. Figure [] demonstrates the <cite><a href="http://yasgui.org/">Yet Another SPARQL GUI</a></cite> application embedded to this document. For instance, the research paper itself creates an executable paper environment where some code can be rerun or observe the effects of changing parameters.</p>
+                                <p>Web Science 'papers' can be far more engaging and useful to the community if we merely embrace what the Web offers. Figure [<a href="#figure-sparql-editor">3</a>] demonstrates the <cite><a href="http://yasgui.org/">Yet Another SPARQL GUI</a></cite> application embedded to this document. For instance, the research paper itself creates an executable paper environment where some code can be rerun or observe the effects of changing parameters.</p>
 
                                 <figure id="figure-sparql-editor">
                                     <object type="text/html" data="http://yasgui.org/" width="640" height="480"></object>
@@ -290,29 +312,71 @@
                 <section id="conclusions" about="[this:]" rel="dcterms:hasPart" resource="[this:#conclusions]">
                     <h2 about="[this:#conclusions]" rel="dcterms:title">Conclusions</h2>
                     <div about="[this:#conclusions]" rel="dcterms:description">
-                        <p>Our intentions with this ‘paper’ is primarily to emphasize the flexibility of native Web technologies for scientific publishing and communication. A comprehensive demonstration for what lies ahead naturally can not fit within an arbitrary (5) page limit. To get the most out of research communication in Web Science, it is only sensible to break-free from the archaic limitations of the print world. After all, as we have demonstrated, a PDF or print representation of this ‘paper’ can always be achieved. In the spirit of <em>open</em> <strong>science</strong> and to embrace the Web’s values, all feedback/reviews are most welcome <a href="http://csarven.ca/this-paper-is-a-demo#comments">online</a>.</p>
+                        <p>Our intentions with this ‘paper’ is primarily to emphasize the flexibility of native Web technologies for scientific publishing and communication. A comprehensive demonstration for what lies ahead naturally can not fit within an arbitrary (5) page limit. To get the most out of research communication in Web Science, it is only sensible to break-free from the archaic limitations of the print world. After all, as we have demonstrated, a PDF or print representation of this ‘paper’ can always be achieved. In the spirit of <em>open</em> <strong>science</strong> and to embrace the Web’s values, all feedback are welcome at the canonical URL.</p>
                     </div>
                 </section>
 
-                <section id="acknowledgements" about="[this:]" rel="dcterms:hasPart" resource="[this:#acknowledgements]">
-                    <h2 about="[this:#acknowledgements]" property="dcterms:title">Acknowledgements</h2>
-                    <div about="[this:#acknowledgements]" property="dcterms:description" typeof="deo:Acknowledgements">
-                        <p>Thank <strong class="blink">you</strong> for experiencing this ‘paper’ !</p>
-                    </div>
-                </section>
+<!--                <section id="acknowledgements" about="[this:]" rel="dcterms:hasPart" resource="[this:#acknowledgements]">-->
+<!--                    <h2 about="[this:#acknowledgements]" property="dcterms:title">Acknowledgements</h2>-->
+<!--                    <div about="[this:#acknowledgements]" property="dcterms:description" typeof="deo:Acknowledgements">-->
+<!--                        <p>Thank <strong class="blink">you</strong> for experiencing this ‘paper’ !</p>-->
+<!--                    </div>-->
+<!--                </section>-->
 
                 <section id="references">
                     <h2>References</h2>
                     <div>
                         <ol>
-                            <li id="ref-16">Capadisli, S.: Call for Linked Research, Developers Workshop, eswc (2014), <a about="[this:]" rel="dcterms:references cito:citesAsSourceDocument" href="http://csarven.ca/call-for-linked-research">http://csarven.ca/call-for-linked-research</a></li>
-                            <li id="ref-16">Capadisli, S.: Enabling Accessible Knowledge, <a href="http://www.donau-uni.ac.at/cedem">International Conference for E-Democracy and Open Government</a> (2015), <a about="[this:]" rel="dcterms:references cito:citesAsSourceDocument" href="http://csarven.ca/enabling-accessible-knowledge">http://csarven.ca/enabling-accessible-knowledge</a></li>
+                            <li id="ref-1">Capadisli, S.: Linked Research, <a about="[this:]" rel="dcterms:references cito:citesAsSourceDocument" href="https://github.com/csarven/linked-research">https://github.com/csarven/linked-research</a>, <a about="[this:]" rel="dcterms:references cito:citesAsSourceDocument" href="http://linked-research.270a.info/">http://linked-research.270a.info/</a></li>
                         </ol>
                     </div>
                 </section>
 
             </div>
-
         </article>
+
+        <section class="slide cover" id="slideshow-cover"><div>
+            <h2 about="[this:]" property="dcterms:title">This 'Paper' is a Demo</h2>
+
+            <p about="[this:#eswc-2015-call-for-demos]" typeof="cal:Vevent bibo:Event bibo:Workshop">
+                <span about="[this:]" rel="bibo:presentedAt" rev="bibo:presents" resource="[this:#eswc-2015]"><a target="_blank" about="[this:#eswc-2015]" typeof="bibo:Conference" rel="foaf:homepage" href="http://2015.eswc-conferences.org/" property="rdfs:label">ESWC 2015</a></span><span rel="dcterms:hasPart" resource="[this:#eswc-2015]"></span>, 
+                <span about="[this:]" rel="bibo:presentedAt" rev="bibo:presents" resource="[this:#eswc-2015-call-for-demos]"><a target="_blank" about="[this:#eswc-2015-call-for-demos]" rel="dcterms:isPartOf" resource="[this:#eswc-2015]" href="http://2015.eswc-conferences.org/important-dates/call-demos" property="rdfs:label">Call for Demos</a></span>, 
+                <a target="_blank" rel="cal:location" resource="[dbr:Portoroz]" href="http://en.wikipedia.org/wiki/Portoroz">Portoroz</a>, 
+                <span property="cal:dtstart" content="2015-06-02T14:30:00+01:00" datatype="xsd:dateTime" title="2015-06-02T14:30:00+01:00">2015-06-02</span>
+                <span property="cal:dtend" content="2015-06-02T14:40:00+01:00" datatype="xsd:dateTime" title="2015-06-02T14:40:00+01:00"></span> 
+                #<a target="_blank" href="https://twitter.com/search?f=realtime&amp;q=%23LinkedData">LinkedData</a><span rel="dcterms:subject" resource="http://dbpedia.org/resource/Linked_Data"></span> 
+                #<a target="_blank" href="https://twitter.com/search?f=realtime&amp;q=%23ESWC2015">ESWC2015</a>
+                #<a target="_blank" href="https://twitter.com/search?f=realtime&amp;q=%23LinkedResearch">LinkedResearch</a><span rel="dcterms:subject" resource="http://dbpedia.org/resource/Semantic_publishing"></span> 
+            </p>
+
+            <address>
+                <img src="http://csarven.ca/media/images/csarven-avatar.jpg" alt="Sarven's avatar" width="96" height="96"/>
+                <a target="_blank" href="http://csarven.ca/#i">Sarven Capadisli</a>
+                <a target="_blank" rel="dcterms:creator foaf:maker bibo:performer" class="url" href="http://csarven.ca/#i">http://csarven.ca/#i</a>
+                <span>@csarven</span>
+            </address>
+
+            <footer>
+                <p><a target="_blank" rel="rdfs:seeAlso" href="http://csarven.ca/this-paper-is-a-demo">http://csarven.ca/this-paper-is-a-demo</a></p>
+
+                <div class="license"><a target="_blank" about="[this:]" rel="cc:license" href="http://creativecommons.org/licenses/by-sa/4.0/" title="Creative Commons Attribution-ShareAlike 4.0 Unported"><span property="rdfs:label">CC BY-SA 4.0</span></a></div>
+            </footer>
+        </div></section>
+
+        <section class="slide shout" id="do-it-yourself" rel="dcterms:hasPart"><div about="[this:#do-it-yourself]" typeof="bibo:Slide">
+            <h2 property="dcterms:title">Do It Yourself !</h2>
+        </div></section>
+
+        <section class="slide" id="problem-user-experience" rel="dcterms:hasPart"><div about="[this:#problem-user-experience]" typeof="bibo:Slide">
+            <h2 property="dcterms:title">User Experience Problem</h2>
+            <div property="dcterms:description">
+                <p>PDF/Word are best for desktop and print.</p>
+
+                <p>.. but they do not play well with the Web.</p>
+
+                <p>User Experience is inadequate for <mark><a target="_blank" about="[this:#problem-user-experience]" rel="rdfs:seeAlso" href="http://www.w3.org/Consortium/Points/#universal"><span property="rdfs:label">Universal Access</span></a></mark> to research knowledge.</p> 
+            </div>
+        </div></section>
+
     </body>
 </html>
