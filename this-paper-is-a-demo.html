@@ -67,7 +67,7 @@
 
             <dl id="document-modified">
                 <dt>Modified</dt>
-                <dd property="dcterms:modified" content="2015-03-02T00:00:00Z">2015-03-12</dd>
+                <dd property="dcterms:modified" content="2015-03-13T00:00:00Z">2015-03-13</dd>
             </dl>
 
             <dl id="document-license">
@@ -89,7 +89,6 @@
                         <ul rel="dcterms:subject">
                             <li><a resource="http://dbpedia.org/resource/Knowledge_acquisition" href="http://en.wikipedia.org/wiki/Knowledge_acquisition">Knowledge acquisition</a></li>
                             <li><a resource="http://dbpedia.org/resource/Linked_Data" href="http://en.wikipedia.org/wiki/Linked_Data">Linked Data</a></li>
-                            <li><a resource="http://dbpedia.org/resource/The_medium_is_the_message" href="http://en.wikipedia.org/wiki/The_medium_is_the_message">The medium is the message</a></li>
                             <li><a resource="http://dbpedia.org/resource/Semantic_publishing" href="http://en.wikipedia.org/wiki/Semantic_publishing">Semantic publishing</a></li>
                             <li><a resource="http://dbpedia.org/resource/Technology_demonstration" href="http://en.wikipedia.org/wiki/Technology_demonstration">Technology demonstration</a></li>
                         </ul>
@@ -101,7 +100,7 @@
                     <div about="[this:#introduction]" property="dcterms:description" typeof="deo:Introduction">
                         <p>One of the most widely debated questions in the scientific community is the impact of digitization on the scholarly communication and knowledge exchange. In this demo, we present a way how scholarly communication can truly digitize by means of living, interactive publications. Despite advances such as open and digital access to publications few has been changed yet with regard to the digitization of scientific publishing. Scientists still write static documents, which do not use the possibilities of digitization, such as interactivity, multimodality or semantic content annotation and representation.</p>
 
-                        <p>In this demo, we present our linked scientific publication approach for truly digitizing the concept of a scientific publication. The approach is simply based on native Web technologies: starting from HTML and accompanying CSS, JavaScript, SVG, MathML, RDFa for authoring and representing scholarly content. We demonstrate how multimodal content such as video and audio can be embedded. Especially for computer science, code examples are an important type of content, which can be integrated with these publications. We showcase, how different views of the content can be rendered for different devices (e.g. screen, print) or audiences (e.g. sideshows). A particular strength of our approach is the integration and linking of data, which can automatically update tables and diagrams when the underlying data changes. Also, all content can be annotated and represented using semantic knowledge representation formalisms to facilitate better search, exploration and retrieval of scholarly content. In the following subsections we explain and demonstrate each of these features.</p>
+                        <p>In this demo, we present our linked scientific publication approach based on native Web technologies i.e., HTML, CSS, JavaScript, and RDFa for authoring and representing scholarly content. We demonstrate how multimodal content such as video and audio can be embedded. Especially for computer science, code examples are an important type of content, which can be integrated with these publications. We showcase, how different views of the content can be rendered for different devices (e.g. screen, print, mobile) or audiences (e.g. sideshows). A particular strength of our approach is the integration and linking of data, which can automatically update tables and diagrams when the underlying data changes. Also, all content can be annotated and represented using semantic knowledge representation formalisms to facilitate better search, exploration and retrieval of scholarly content. In the following subsections we explain and demonstrate each of these features.</p>
                    </div>
                 </section>
 
@@ -143,16 +142,16 @@
                                     <figcaption><samp class="highlight-h2">h2</samp> is an example heading used here for <code class="highlight-section">section</code> titles, <code class="highlight-div">div</code> as a typical wrapper for descriptions, as well as to contain further sub-sectioned content.</figcaption>
                                 </figure>
 
-                                <p>The available RDF and microformats of this ‘paper’ can be observed for example using the <cite><a href="https://linkeddata.uriburner.com/about/html/http/csarven.ca/this-paper-is-a-demo">Linked Data URI Burner</a></cite> or <cite><a href="http://www.w3.org/2012/pyRdfa/extract?uri=http%3A%2F%2Fcsarven.ca%2Fthis-paper-is-a-demo&amp;rdfa_lite=false&amp;vocab_expansion=false&amp;embedded_rdf=true&amp;validate=yes&amp;space_preserve=true&amp;vocab_cache_report=false&amp;vocab_cache_bypass=false">RDFa 1.1 Distiller and Parser</a></cite>.</p>
+                                <p>The available RDF and microformats of this ‘paper’ can be consumed using e.g., <cite><a href="https://linkeddata.uriburner.com/about/html/http/csarven.ca/this-paper-is-a-demo">Linked Data URI Burner</a></cite> or <cite><a href="http://www.w3.org/2012/pyRdfa/extract?uri=http%3A%2F%2Fcsarven.ca%2Fthis-paper-is-a-demo&amp;rdfa_lite=false&amp;vocab_expansion=false&amp;embedded_rdf=true&amp;validate=yes&amp;space_preserve=true&amp;vocab_cache_report=false&amp;vocab_cache_bypass=false">RDFa 1.1 Distiller and Parser</a></cite>.</p>
 
-                                <p>Linked Research documents would typically include (but not exclusively) the following vocabularies: <a href="http://www.w3.org/2004/02/skos/">SKOS</a> (Simple Knowledge Organization System), <a href="http://xmlns.com/foaf/spec/">FOAF</a> (Friend of a Friend), <a href="http://purl.org/dc/terms">DC Terms</a> (Dublin Core Terms), <a href="http://semanticscience.org/">SIO</a> (Semanticscience Integrated Ontology), <a href="http://purl.org/spar">SPAR</a> (Semantic Publishing and Referencing), <a href="http://www.w3.org/TR/prov-o">PROV-O</a> (Provenance Ontology), <a href="http://www.opmw.org/model/OPMW/">OPMW</a> (Open Provenance Model for Workflows), <a href="https://w3id.org/ro/">RO</a> (Wf4Ever Research Object), <a href="http://rdf-vocabulary.ddialliance.org/discovery.html">Disco</a> (DDI-RDF Discovery), <a href="http://www.w3.org/TR/vocab-data-cube/">QB</a> (RDF Data Cube), <a href="http://sioc-project.org/">SIOC</a> (Semantically-Interlinked Online Communities), and <a href="http://www.openannotation.org/spec/core/">OA</a> (Open Annotation).</p>
+                                <p>Linked Research documents would typically include (but not exclusively) the following vocabularies: <a href="http://www.w3.org/2004/02/skos/">SKOS</a>, <a href="http://xmlns.com/foaf/spec/">FOAF</a>, <a href="http://purl.org/dc/terms">DC Terms</a>, <a href="http://semanticscience.org/">SIO</a>, <a href="http://purl.org/spar">SPAR</a>, <a href="http://www.w3.org/TR/prov-o">PROV-O</a>, <a href="http://www.opmw.org/model/OPMW/">OPMW</a>, <a href="https://w3id.org/ro/">RO</a>, <a href="http://htmlpreview.github.io/?https://raw.github.com/linked-statistics/disco-spec/master/discovery.html">Disco</a>, <a href="http://www.w3.org/TR/vocab-data-cube/">QB</a>, <a href="http://sioc-project.org/">SIOC</a>, and <a href="http://www.openannotation.org/spec/core/">OA</a>.</p>
                             </div>
                         </section>
 
                         <section id="presentation" about="[this:]" rel="dcterms:hasPart" resource="[this:#presentation]">
                             <h3 about="[this:#presentation]" property="dcterms:title">Presentation</h3>
                             <div about="[this:#presentation]" property="dcterms:description">
-                                <p>The CSS are primarily tested using the Gecko browser engine e.g., Firefox, as it provides a more comprehensive and consistent CSS screen and print media support. The views are also tested for in other engines e.g., WebKit, and Trident. The flexibility of the single HTML can presented in different ways (i.e., potentially a <cite><a href="http://csszengarden.com/">CSS Zen Garden</a></cite>), can be tested from the <a href="#document-menu">document menu</a> options. Users with supporting devices to trigger buttons can experiment with different views.</p>
+                                <p>The CSS are primarily tested using the Gecko browser engine e.g., Firefox, as it provides a more comprehensive and consistent CSS screen and print media support. The views are also tested for in other engines e.g., WebKit, and Trident. The flexibility of the single HTML can presented in different ways (i.e., a small <cite><a href="http://csszengarden.com/">CSS Zen Garden</a></cite>), can be tested from the <a href="#document-menu">document menu</a> options. Users with supporting devices to trigger buttons can experiment with different views.</p>
 
                                 <script><!--//--><![CDATA[//><!--
                                     var actionViews = $('<div id="action-views" class="lr">For example with: </div>');
@@ -179,16 +178,16 @@
                         <section id="interaction" about="[this:]" rel="dcterms:hasPart" resource="[this:#interaction]">
                             <h3 about="[this:#interaction]" property="dcterms:title">Interaction</h3>
                             <div about="[this:#interaction]" property="dcterms:description">
-                                <p>Linked Research for screen devices where interaction is possible are enhanced as follows:</p>
+                                <p>Screen devices with interactive abilities can use the following:</p>
 
                                 <ul>
                                     <li>In browser editing without having to hand-code HTML or RDF syntaxes - partial support at the moment - and, sorting sections through table of contents.</li>
-                                    <li>Visibility of identifiers for sections and other important enough declared concepts. Fosters sharing and cross-linking of concepts, arguments, workflows etc.</li>
-                                    <li>Embed data in HTML: Turtle and JSON-LD</li>
-                                    <li>Document Metadata</li>
+                                    <li>Embed data in HTML: Turtle and JSON-LD.</li>
+                                    <li>Visible identifiers for sections and other important enough declared concepts. Fosters sharing and cross-linking of concepts, arguments, workflows etc.</li>
+                                    <li>Document metadata for authors.</li>
                                     <li>Exporting to HTML. A (La)TeX export is planned.</li>
                                     <li>Local Storage (in the browser) for offline editing. Auto-save is available.</li>
-                                    <li>Switching between different views e.g., ACM, LNCS, W3C-REC, Slideshow, Native.</li>
+                                    <li>View switching e.g., ACM, LNCS, W3C-REC, Slideshow, Native.</li>
                                 </ul>
                             </div>
                         </section>
@@ -217,18 +216,10 @@
                             /*]]>*/--></style>
                         </section>
 
-                        <section id="slideshow" about="[this:#multimedia-interactions]" rel="dcterms:hasPart" resource="[this:#slideshow]">
-                            <h3 about="[this:#slideshow]" property="dcterms:title">Slideshow</h3>
-                            <div about="[this:#slideshow]" property="dcterms:description">
-                                <p>This ‘paper’ can also be viewed as a slideshow.</p>
-<!--                                <object data="?full" width="100%" height="640"></object>-->
-                            </div>
-                        </section>
-
                         <section id="audio" about="[this:#multimedia-interactions]" rel="dcterms:hasPart" resource="[this:#audio]">
                             <h3 about="[this:#audio]" property="dcterms:title">Audio</h3>
                             <div about="[this:#audio]" property="dcterms:description">
-                                <p>An audio recording and its spectrogram of this 'paper' is available for supporting media. Otherwise, a complimentary spectogram of the recording is visible in Figure [<a href="#audio-spectrogram">1</a>]:</p>
+                                <p>An audio recording and its spectrogram of this 'paper' is available for supporting media. Otherwise, a complimentary spectrogram of the recording is visible in Figure [<a href="#audio-spectrogram">1</a>]:</p>
 
                                 <audio id="audio-this-paper-is-a-demo" preload="none" controls="controls" width="300">
                                     <source src="http://csarven.ca/media/audio/this-paper-is-a-demo.ogg" type="audio/ogg"></source>
@@ -269,7 +260,7 @@
                         <section id="lsd-cube-designer" about="[this:#multimedia-interactions]" rel="dcterms:hasPart" resource="[this:#lsd-cube-designer]">
                             <h3 about="[this:#lsd-cube-designer]" property="dcterms:title">Linked Statistical Data Cube Designer</h3>
                             <div about="[this:#lsd-cube-designer]" property="dcterms:description">
-                                <p><cite><a about="[this:#lsd-cube-designer]" rel="cito:citesAsPotentialSolution" href="http://stats.270a.info/cube-designer">LSD (Linked Statistical Data) Cube Designer</a></cite> is a Web service with an user-interface for researchers to design their own statistical data cubes. The statistical objects that are part of the cube model are derived from and refer to Linked Statistical Dataspaces. It aims to lower the barrier for searching and reusing existing linked statistical components. LSD Cube Designer offers a way for researchers to search for existing cube component concepts from existing <a href="http://csarven.ca/statistical-linked-dataspaces">statistical linked dataspaces</a>, select most suitable dimensions, measures, and attributes for their data structure and components, and then export the cube’s structural information (in RDF Turtle format). We can interact with this remote application in Figure [<a href="#figure-linked-statistical-data-cube-designer">2</a>]. For example, search for each component, e.g., dimension(s): "<samp>reference</samp>", measure(s): "<samp>value</samp>", and optionally attribute(s): "<samp>status</samp>", then see the <button>i</button> button for more information, and select. Finally click on the Export Cube Structure button.</p>
+                                <p><cite><a about="[this:#lsd-cube-designer]" rel="cito:citesAsPotentialSolution" href="http://stats.270a.info/cube-designer">LSD (Linked Statistical Data) Cube Designer</a></cite> is a Web service with an user-interface for researchers to design their own statistical data cubes. It offers a way for researchers to search for existing cube component concepts from existing <a href="http://csarven.ca/statistical-linked-dataspaces">statistical linked dataspaces</a>, select suitable dimensions (e.g., "<samp>reference</samp>"), measures (e.g., "<samp>value</samp>"), and attributes (e.g., "<samp>status</samp>") for their data structure and components, and then export the cube’s structural information (in RDF Turtle). We can interact with this remote application in Figure [<a href="#figure-linked-statistical-data-cube-designer">2</a>].</p>
 
                                 <figure id="figure-linked-statistical-data-cube-designer">
                                     <object type="text/html" data="http://stats.270a.info/cube-designer#lsd-cube-designer"><a rel="dcterms:source" href="http://stats.270a.info/cube-designer#lsd-cube-designer">Source</a></object>
@@ -284,10 +275,10 @@
                         <section id="executable-code" about="[this:#multimedia-interactions]" rel="dcterms:hasPart" resource="[this:#executable-code]">
                             <h3 about="[this:#executable-code]" property="dcterms:title">Executable Code</h3>
                             <div about="[this:#executable-code]" property="dcterms:description">
-                                <p>It should be evident at this point to our dear readers that, Web Science 'papers' can be far more engaging and useful to the community if we merely embrace what the Web offers. Figure [] demonstrates the <cite><a href="http://yasgui.org/">Yet Another SPARQL GUI</a></cite>  application embedded to this document. For instance, the research paper itself creates an executable paper environment where some code can be rerun or observe the effects of changing parameters.</p>
+                                <p>Web Science 'papers' can be far more engaging and useful to the community if we merely embrace what the Web offers. Figure [] demonstrates the <cite><a href="http://yasgui.org/">Yet Another SPARQL GUI</a></cite> application embedded to this document. For instance, the research paper itself creates an executable paper environment where some code can be rerun or observe the effects of changing parameters.</p>
 
                                 <figure id="figure-sparql-editor">
-                                    <object data="http://yasgui.org/" width="640" height="480"></object>
+                                    <object type="text/html" data="http://yasgui.org/" width="640" height="480"></object>
 
                                     <figcaption>Yet another SPARQL GUI</figcaption>
                                 </figure>
@@ -299,7 +290,7 @@
                 <section id="conclusions" about="[this:]" rel="dcterms:hasPart" resource="[this:#conclusions]">
                     <h2 about="[this:#conclusions]" rel="dcterms:title">Conclusions</h2>
                     <div about="[this:#conclusions]" rel="dcterms:description">
-                        <p>Our intentions with this ‘paper’ is primarily to emphasize the flexibility of native Web technologies for scientific publishing and communication. A comprehensive demonstration for what lies ahead naturally can not fit within an arbitrary (5) page limit. To get the most out of research communication in Web Science, it is only sensible to break-free from the archaic limitations of the print world. After all, as we have demonstrated, a PDF or print representation of this ‘paper’ can always be achieved. In the spirit of <em>open</em> <strong>science</strong> and embracing the Web’s values, all feedback/reviews are most welcome online.</p>
+                        <p>Our intentions with this ‘paper’ is primarily to emphasize the flexibility of native Web technologies for scientific publishing and communication. A comprehensive demonstration for what lies ahead naturally can not fit within an arbitrary (5) page limit. To get the most out of research communication in Web Science, it is only sensible to break-free from the archaic limitations of the print world. After all, as we have demonstrated, a PDF or print representation of this ‘paper’ can always be achieved. In the spirit of <em>open</em> <strong>science</strong> and to embrace the Web’s values, all feedback/reviews are most welcome <a href="http://csarven.ca/this-paper-is-a-demo#comments">online</a>.</p>
                     </div>
                 </section>
 
