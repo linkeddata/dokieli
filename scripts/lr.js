@@ -256,32 +256,33 @@ var LR = {
         showToC: function() {
             //XXX: This looks like this for readability.
             var s = '';
-            var section = $('h1 ~ div section');
+            var section = $('h1 ~ div section:not([class~="slide"])');
+            console.log(section);
             if (section.length > 0) {
                 s += '<aside id="table-of-contents" class="lr on"><button class="close">❌</button><h2>Table of Contents</h2><ol class="toc sortable">';
                 section.each(function(i,section) {
-                    var h = $(section).find('h2');
+                    var h = $(section).find('> h2');
                     if (h.length > 0) {
                         s += '<li data-id="' + section.id +'" data-h="2"><a href="#' + section.id + '">' + h.text() + '</a>';
-                        section = $(section).find('section[rel="dcterms:hasPart"]');
+                        section = $(section).find('section[rel="dcterms:hasPart"]:not([class~="slide"])');
                         if (section.length > 0) {
                             s += '<ol class="sortable">';
                             section.each(function(j, section) {
-                                var h = $(section).find('h3');
+                                var h = $(section).find('> h3');
                                 if (h.length > 0) {
                                     s += '<li data-id="' + section.id +'" data-h="3"><a href="#' + section.id + '">' + h.text() + '</a>';
-                                    section = $(section).find('section[rel="dcterms:hasPart"]');
+                                    section = $(section).find('section[rel="dcterms:hasPart"]:not([class~="slide"])');
                                     if (section.length > 0) {
                                         s += '<ol class="sortable">';
                                         section.each(function(k, section) {
-                                            var h = $(section).find('h4');
+                                            var h = $(section).find('> h4');
                                             if (h.length > 0) {
                                                 s += '<li data-id="' + section.id +'" data-h="4"><a href="#' + section.id + '">' + h.text() + '</a>';
-                                                section = $(section).find('section[rel="dcterms:hasPart"]');
+                                                section = $(section).find('section[rel="dcterms:hasPart"]:not([class~="slide"])');
                                                 if (section.length > 0) {
                                                     s += '<ol class="sortable">';
                                                     section.each(function(k, section) {
-                                                        var h = $(section).find('h5');
+                                                        var h = $(section).find('> h5');
                                                         if (h.length > 0) {
                                                             s += '<li data-id="' + section.id +'" data-h="5"><a href="#' + section.id + '">' + h.text() + '</a></li>';
                                                         }
