@@ -105,7 +105,7 @@ var LR = {
 
                 $('#views.lr button').on('click', function(e) {
                     var selected = $(this);
-                    var prevStylesheet = $('#views.lr button:disabled').html();
+                    var prevStylesheet = $('#views.lr button:disabled').html() || '';
 
                     $('head link[rel~="stylesheet"][title]:not([href$="lr.css"])').each(function(i, stylesheet) {
                         $(this).prop('disabled', true); //XXX: Leave this. WebKit wants to trigger this before for some reason.
