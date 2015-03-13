@@ -58,7 +58,9 @@ var LR = {
             LR.U.showStorage(dInfo);
             LR.U.showExports(dInfo);
             LR.U.showDocumentMetadata(dInfo);
-            LR.U.showToC();
+            if(!body.hasClass("on-slideshow")) {
+                LR.U.showToC();
+            }
         },
 
         hideDocumentMenu: function() {
