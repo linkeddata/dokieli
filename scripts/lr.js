@@ -257,7 +257,7 @@ var LR = {
             //XXX: This looks like this for readability.
             var s = '';
             var section = $('h1 ~ div section:not([class~="slide"])');
-            console.log(section);
+
             if (section.length > 0) {
                 s += '<aside id="table-of-contents" class="lr on"><button class="close">❌</button><h2>Table of Contents</h2><ol class="toc sortable">';
                 section.each(function(i,section) {
