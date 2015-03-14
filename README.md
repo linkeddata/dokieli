@@ -65,7 +65,7 @@ The CSS are primarily tested using the Gecko browser engine e.g., Firefox, as it
 provides a more comprehensive and consistent CSS screen and print media support.
 The views are also tested for in other engines e.g., WebKit, and Trident. The
 single HTML is flexible such that it can presented in different ways - like a
-[CSS Zen Garden](http://csszengarde.com/ - using the browser or document options
+[CSS Zen Garden](http://csszengarde.com/) - using the browser or document options
 .As browser engines improve their CSS implementations, so do these stylesheets.
 
 ### Interaction
