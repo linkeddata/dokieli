@@ -364,6 +364,12 @@ margin:0 0 0.5em 0;
 math * {
 padding:0;
 }
+fieldset {
+padding:1em;
+}
+fieldset ul {
+list-style-type:none;
+}
 
 
 #authors {
