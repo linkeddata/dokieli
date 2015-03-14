@@ -24,8 +24,7 @@ e.g., ACM, LNCS, or as a W3C-REC :) or even as a slideshow! This is not a
 yet-another-standard or format! It is POSH (plain ol' semantic HTML) and RDF,
 right off W3C specs.
 * No server required. Works on local machine.
-* No installation. Open up index.html in your browser and edit. Or jump start by
-copying an example document.
+* No installation.
 * No account creation. This is not a for-profit third-party service or software.
 * No out of band tooling required. Your Web browser is the only requirement.
 * Documents are human and machine-friendly (RDF, microformats)
