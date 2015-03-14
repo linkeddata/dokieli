@@ -35,7 +35,7 @@ var LR = {
 
     U: {
         showDocumentInfo: function() {
-            $('body').append('<aside id="document-menu" class="lr"><header><button class="show" title="Open Menu">☰</button></header><div></div><footer><p>About <a target="LinkedResearchSource" href="https://github.com/csarven/linked-research">Linked Research</a></p></footer></aside>');
+            $('body').append('<aside id="document-menu" class="lr"><header><p id="about-linked-research">About <a target="LinkedResearchSource" href="https://github.com/csarven/linked-research">Linked Research</a></p><button class="show" title="Open Menu">☰</button></header><div></div></aside>');
 
             $('#document-menu.lr').on('click', 'header button.show', LR.U.showDocumentMenu);
             $('#document-menu.lr').on('click', 'header button:not([class="show"])', LR.U.hideDocumentMenu);

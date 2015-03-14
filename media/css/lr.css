@@ -54,11 +54,11 @@ top:1em;
 right:1em;
 font-size:26px;
 }
-#document-menu > footer {
+#document-menu #about-linked-research {
 display:none;
-margin-top:2em;
+margin-top:1em;
 }
-#document-menu.on > footer {
+#document-menu.on #about-linked-research {
 display:block;
 }
 
