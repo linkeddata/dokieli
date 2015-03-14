@@ -241,7 +241,7 @@ display:block;
 }
 .on-slideshow > #header,
 .on-slideshow > #footer,
-.on-slideshow > #comments,
+.on-slideshow #comments,
 .on-slideshow article h1,
 .on-slideshow article #authors,
 .on-slideshow article > dl,
