@@ -17,7 +17,7 @@
         <script src="scripts/lr.js"></script>
     </head>
 
-    <body about="[this:]" typeof="foaf:Document sioc:Post biblio:Paper prov:Entity bibo:Slideshow" class="hfeed" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# cc: http://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# schema: http://schema.org/ rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# org: http://www.w3.org/ns/org# biblio: http://purl.org/net/biblio# bibo: http://purl.org/ontology/bibo/ book: http://purl.org/NET/book/vocab# ov: http://open.vocab.org/terms/ doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ sro: http://salt.semanticauthoring.org/ontologies/sro# this: http://csarven.ca/this-paper-is-a-demo">
+    <body about="[this:]" typeof="foaf:Document sioc:Post biblio:Paper prov:Entity" class="hfeed" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# cc: http://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# schema: http://schema.org/ rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# org: http://www.w3.org/ns/org# biblio: http://purl.org/net/biblio# bibo: http://purl.org/ontology/bibo/ book: http://purl.org/NET/book/vocab# ov: http://open.vocab.org/terms/ doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ sro: http://salt.semanticauthoring.org/ontologies/sro# this: http://csarven.ca/this-paper-is-a-demo">
         <article class="hentry">
 
             <h1 class="entry-title" property="dcterms:title">This ‘Paper’ is a Demo</h1>
@@ -331,52 +331,51 @@
                         </ol>
                     </div>
                 </section>
-
             </div>
+
+            <section class="slide cover" id="slideshow-cover"><div>
+                <h2 about="[this:slideshow]" typeof="bibo:Slideshow">This ‘Paper’ is a Demo</h2>
+
+                <p about="[this:#eswc-2015-call-for-demos]" typeof="cal:Vevent bibo:Event">
+                    <span about="[this:#slideshow]" rel="bibo:presentedAt" rev="bibo:presents" resource="[this:#eswc-2015]"><a target="_blank" about="[this:#eswc-2015]" typeof="bibo:Conference" rel="foaf:homepage" href="http://2015.eswc-conferences.org/" property="rdfs:label">ESWC 2015</a></span><span rel="dcterms:hasPart" resource="[this:#eswc-2015]"></span>, 
+                    <span about="[this:#slideshow]" rel="bibo:presentedAt" rev="bibo:presents" resource="[this:#eswc-2015-call-for-demos]"><a target="_blank" about="[this:#eswc-2015-call-for-demos]" rel="dcterms:isPartOf" resource="[this:#eswc-2015]" href="http://2015.eswc-conferences.org/important-dates/call-demos" property="rdfs:label">Call for Demos</a></span>, 
+                    <a target="_blank" rel="cal:location" resource="[dbr:Portoroz]" href="http://en.wikipedia.org/wiki/Portoroz">Portoroz</a>, 
+                    <span property="cal:dtstart" content="2015-06-02T14:30:00+01:00" datatype="xsd:dateTime" title="2015-06-02T14:30:00+01:00">2015-06-02</span>
+                    <span property="cal:dtend" content="2015-06-02T14:40:00+01:00" datatype="xsd:dateTime" title="2015-06-02T14:40:00+01:00"></span> 
+                    #<a target="_blank" href="https://twitter.com/search?f=realtime&amp;q=%23LinkedData">LinkedData</a><span rel="dcterms:subject" resource="http://dbpedia.org/resource/Linked_Data"></span> 
+                    #<a target="_blank" href="https://twitter.com/search?f=realtime&amp;q=%23ESWC2015">ESWC2015</a>
+                    #<a target="_blank" href="https://twitter.com/search?f=realtime&amp;q=%23LinkedResearch">LinkedResearch</a><span rel="dcterms:subject" resource="http://dbpedia.org/resource/Semantic_publishing"></span> 
+                </p>
+
+                <address>
+                    <img src="http://csarven.ca/media/images/csarven-avatar.jpg" alt="Sarven's avatar" width="96" height="96"/>
+                    <a target="_blank" href="http://csarven.ca/#i">Sarven Capadisli</a>
+                    <a target="_blank" rel="dcterms:creator foaf:maker bibo:performer" class="url" href="http://csarven.ca/#i">http://csarven.ca/#i</a>
+                    <span>@csarven</span>
+                </address>
+
+                <footer>
+                    <p><a target="_blank" rel="rdfs:seeAlso" href="http://csarven.ca/this-paper-is-a-demo">http://csarven.ca/this-paper-is-a-demo</a></p>
+
+                    <div class="license"><a target="_blank" about="[this:#slideshow]" rel="cc:license" href="http://creativecommons.org/licenses/by-sa/4.0/" title="Creative Commons Attribution-ShareAlike 4.0 Unported"><span property="rdfs:label">CC BY-SA 4.0</span></a></div>
+                </footer>
+            </div></section>
+
+            <section class="slide shout" id="do-it-yourself" rel="dcterms:hasPart"><div about="[this:#do-it-yourself]" typeof="bibo:Slide">
+                <h2 property="dcterms:title">Do It Yourself !</h2>
+            </div></section>
+
+            <section class="slide" id="problem-user-experience" rel="dcterms:hasPart"><div about="[this:#problem-user-experience]" typeof="bibo:Slide">
+                <h2 property="dcterms:title">User Experience Problem</h2>
+                <div property="dcterms:description">
+                    <p>PDF/Word are best for desktop and print.</p>
+
+                    <p>.. but they do not play well with the Web.</p>
+
+                    <p>User Experience is inadequate for <mark><a target="_blank" about="[this:#problem-user-experience]" rel="rdfs:seeAlso" href="http://www.w3.org/Consortium/Points/#universal"><span property="rdfs:label">Universal Access</span></a></mark> to research knowledge.</p> 
+                </div>
+            </div></section>
+
         </article>
-
-        <section class="slide cover" id="slideshow-cover"><div>
-            <h2 about="[this:]" property="dcterms:title">This ‘Paper’ is a Demo</h2>
-
-            <p about="[this:#eswc-2015-call-for-demos]" typeof="cal:Vevent bibo:Event bibo:Workshop">
-                <span about="[this:]" rel="bibo:presentedAt" rev="bibo:presents" resource="[this:#eswc-2015]"><a target="_blank" about="[this:#eswc-2015]" typeof="bibo:Conference" rel="foaf:homepage" href="http://2015.eswc-conferences.org/" property="rdfs:label">ESWC 2015</a></span><span rel="dcterms:hasPart" resource="[this:#eswc-2015]"></span>, 
-                <span about="[this:]" rel="bibo:presentedAt" rev="bibo:presents" resource="[this:#eswc-2015-call-for-demos]"><a target="_blank" about="[this:#eswc-2015-call-for-demos]" rel="dcterms:isPartOf" resource="[this:#eswc-2015]" href="http://2015.eswc-conferences.org/important-dates/call-demos" property="rdfs:label">Call for Demos</a></span>, 
-                <a target="_blank" rel="cal:location" resource="[dbr:Portoroz]" href="http://en.wikipedia.org/wiki/Portoroz">Portoroz</a>, 
-                <span property="cal:dtstart" content="2015-06-02T14:30:00+01:00" datatype="xsd:dateTime" title="2015-06-02T14:30:00+01:00">2015-06-02</span>
-                <span property="cal:dtend" content="2015-06-02T14:40:00+01:00" datatype="xsd:dateTime" title="2015-06-02T14:40:00+01:00"></span> 
-                #<a target="_blank" href="https://twitter.com/search?f=realtime&amp;q=%23LinkedData">LinkedData</a><span rel="dcterms:subject" resource="http://dbpedia.org/resource/Linked_Data"></span> 
-                #<a target="_blank" href="https://twitter.com/search?f=realtime&amp;q=%23ESWC2015">ESWC2015</a>
-                #<a target="_blank" href="https://twitter.com/search?f=realtime&amp;q=%23LinkedResearch">LinkedResearch</a><span rel="dcterms:subject" resource="http://dbpedia.org/resource/Semantic_publishing"></span> 
-            </p>
-
-            <address>
-                <img src="http://csarven.ca/media/images/csarven-avatar.jpg" alt="Sarven's avatar" width="96" height="96"/>
-                <a target="_blank" href="http://csarven.ca/#i">Sarven Capadisli</a>
-                <a target="_blank" rel="dcterms:creator foaf:maker bibo:performer" class="url" href="http://csarven.ca/#i">http://csarven.ca/#i</a>
-                <span>@csarven</span>
-            </address>
-
-            <footer>
-                <p><a target="_blank" rel="rdfs:seeAlso" href="http://csarven.ca/this-paper-is-a-demo">http://csarven.ca/this-paper-is-a-demo</a></p>
-
-                <div class="license"><a target="_blank" about="[this:]" rel="cc:license" href="http://creativecommons.org/licenses/by-sa/4.0/" title="Creative Commons Attribution-ShareAlike 4.0 Unported"><span property="rdfs:label">CC BY-SA 4.0</span></a></div>
-            </footer>
-        </div></section>
-
-        <section class="slide shout" id="do-it-yourself" rel="dcterms:hasPart"><div about="[this:#do-it-yourself]" typeof="bibo:Slide">
-            <h2 property="dcterms:title">Do It Yourself !</h2>
-        </div></section>
-
-        <section class="slide" id="problem-user-experience" rel="dcterms:hasPart"><div about="[this:#problem-user-experience]" typeof="bibo:Slide">
-            <h2 property="dcterms:title">User Experience Problem</h2>
-            <div property="dcterms:description">
-                <p>PDF/Word are best for desktop and print.</p>
-
-                <p>.. but they do not play well with the Web.</p>
-
-                <p>User Experience is inadequate for <mark><a target="_blank" about="[this:#problem-user-experience]" rel="rdfs:seeAlso" href="http://www.w3.org/Consortium/Points/#universal"><span property="rdfs:label">Universal Access</span></a></mark> to research knowledge.</p> 
-            </div>
-        </div></section>
-
     </body>
 </html>
