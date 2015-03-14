@@ -20,16 +20,17 @@ aimed at this mission:
 Linked Research's technical approach for MVP:
 
 * One HTML to rule all HTMLs. Used by different CSS - academic paper layouts 
-e.g., ACM, LNCS. This is not a yet-another-standard or format! It is POSH (plain
-ol' semantic HTML) and RDF, right off W3C specs.
-* No external server required. Works on your local machine.
+e.g., ACM, LNCS, or as a W3C-REC :) or even as a slideshow! This is not a
+yet-another-standard or format! It is POSH (plain ol' semantic HTML) and RDF,
+right off W3C specs.
+* No server required. Works on local machine.
 * No installation. Open up index.html in your browser and edit. Or jump start by
 copying an example document.
 * No account creation. This is not a for-profit third-party service or software.
 * No out of band tooling required. Your Web browser is the only requirement.
-* Documents are intended to be human and machine-friendly (RDF, microformats)
+* Documents are human and machine-friendly (RDF, microformats)
 i.e., they can be used on screen devices as well as be printed.
-* Currently using and will try to stick to Apache License and CC0
+* Using Apache License and CC0, and compatibilies where necessary.
 
 The example documents in this repository were originally published at:
 
@@ -60,22 +61,24 @@ is simple and flexible.
 
 ### Presentation
 
-The stylesheets are mostly tested using the Gecko browser engine e.g., Firefox. 
-However, the views are also in good condition in other engines e.g., WebKit 
-(Chrome, Chromium, Opera), and Trident (Internet Explorer) - your mileage may 
-vary. As browser engines improve their CSS implementations, so do these 
-stylesheets.
+The CSS are primarily tested using the Gecko browser engine e.g., Firefox, as it
+provides a more comprehensive and consistent CSS screen and print media support.
+The views are also tested for in other engines e.g., WebKit, and Trident. The
+single HTML is flexible such that it can presented in different ways - like a
+[CSS Zen Garden](http://csszengarde.com/ - using the browser or document options
+.As browser engines improve their CSS implementations, so do these stylesheets.
 
 ### Interaction
 
-* In browser editing (very soon!) No, you don't have to code HTML or trip over 
-RDF syntaxes.
-* Visiblity and identifiers for sections and other important enough declared
-concepts.
-* Document Metadata
-* Export to HTML
-* Local Storage (in the browser)
-* Switch between ACM and LNCS views (without touching the HTML template)
+* In browser editing without having to hand-code HTML or RDF syntaxes - partial
+support at the moment - and, sorting sections through table of contents.
+* Embed data in HTML: Turtle and JSON-LD.
+* Visible identifiers for sections and other important enough declared concepts.
+Fosters sharing and cross-linking of concepts, arguments, workflows etc.
+* Document metadata for authors.
+* Exporting to HTML. A (La)TeX export is planned.
+* Local Storage (in the browser) for offline editing. Auto-save is available.
+* View switching e.g., ACM, LNCS, W3C-REC, Slideshow, Native.
 * Other stuff.. stay tuned! `git clone https://github.com/csarven/linked-research.git`
 :)
 
@@ -83,8 +86,9 @@ concepts.
 
 Linked Research is built with the progressive enhancement strategy. Therefore, the dependencies are only used for JavaScript enhancements. If you do not want them, they can be removed or turned-off without effecting core HTML or CSS.
 
-* [jQuery Core 2.1.3](http://code.jquery.com/jquery-2.1.3.min.js) (MIT License)
+* [jQuery Core](http://jquery.com/) (MIT License)
 * [html5sortable](https://github.com/voidberg/html5sortable) (MIT License)
+* [Shower](https://github.com/shower/shower) (MIT License)
 
 ## License
 [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
