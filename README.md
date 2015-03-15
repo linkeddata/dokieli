@@ -19,8 +19,8 @@ aimed at this mission:
 
 Linked Research's technical approach for MVP:
 
-* One HTML to rule all HTMLs. Used by different CSS - academic paper layouts 
-e.g., ACM, LNCS, or as a W3C-REC :) or even as a slideshow! This is not a
+* A single HTML5 Polyglot document. It is used by different CSS - academic paper
+layouts e.g., ACM, LNCS, W3C-REC (fun), or even as a slideshow! This is not a
 yet-another-standard or format! It is POSH (plain ol' semantic HTML) and RDF,
 right off W3C specs.
 * No server required. Works on local machine.
