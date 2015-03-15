@@ -61,9 +61,15 @@ var LR = {
             if(!body.hasClass("on-slideshow")) {
                 LR.U.showToC();
             }
+
+            $(document).on('keyup', LR.U.eventEscapeDocumentMenu);
+            $(document).on('click', LR.U.eventLeaveDocumentMenu);
         },
 
         hideDocumentMenu: function() {
+            $(document).off('keyup', LR.U.eventEscapeDocumentMenu);
+            $(document).off('click', LR.U.eventLeaveDocumentMenu);
+
             var body = $('body');
             var dMenu = $('#document-menu.lr');
             var dMenuButton = dMenu.find('header button');
@@ -370,18 +376,16 @@ var LR = {
             $(document).on('click', 'button.close', function(e) { $(this).parent().remove(); });
         },
 
-        keyEvents: function() {
-            $(document).on('keyup', function(e) {
-                if (e.keyCode == 27) { // Escape
-                    LR.U.hideDocumentMenu();
-                }
-            });
+        eventEscapeDocumentMenu: function(e) {
+            if (e.keyCode == 27) { // Escape
+                LR.U.hideDocumentMenu();
+            }
+        },
 
-            $(document).on('click', function(e) {
-                if (!$(e.target).closest('aside.lr.on').length) {
-                    LR.U.hideDocumentMenu();
-                }
-            });
+        eventLeaveDocumentMenu: function(e) {
+            if (!$(e.target).closest('aside.lr.on').length) {
+                LR.U.hideDocumentMenu();
+            }
         },
 
         utf8Tob64: function(s) {
@@ -661,7 +665,6 @@ $(document).ready(function() {
     LR.U.buttonClose();
     LR.U.highlightItems();
     LR.U.showDocumentInfo();
-    LR.U.keyEvents();
 //    LR.U.openTarget();
 //    LR.U.buildReferences();
 //    LR.U.getLinkedResearch();
