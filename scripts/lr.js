@@ -405,13 +405,9 @@ var LR = {
                         var fragmentClientWidth = fragment.get(0).clientWidth;
                         fragment.css({'right': '-' + (fragmentClientWidth - 2) + 'px'});
                     }
-
-//                    $(this).attr('contenteditable', 'true');
                 },
                 mouseleave: function () {
                     $('#'+this.id+' > .lr.fragment').remove();
-
-//                    $(this).attr('contenteditable', 'false');
                 }
             }, '#content *[id]');
         },
