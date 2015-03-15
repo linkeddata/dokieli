@@ -106,6 +106,10 @@ var LR = {
                         s += '<li><button disabled="disabled">' + view + '</button></li>';
                     }
                 });
+                if($('[typeof="bibo:Slideshow"]').length > 0) {
+                    s += '<li><button>Shower</button></li>'
+                }
+
                 s += '<li><button>Native</button></li>';
                 s += '</ul></section>';
 
@@ -114,6 +118,10 @@ var LR = {
                 $('#views.lr button').on('click', function(e) {
                     var selected = $(this);
                     var prevStylesheet = $('head link[rel="stylesheet"][title]:not([href$="lr.css"]):not(disabled)').prop('title') || '';
+
+                    if (selected.text().toLowerCase() == 'shower' && $('head link[rel~=stylesheet][title=Shower]').length == 0) {
+                        $('head').append('<link rel="stylesheet alternate" href="media/css/shower.css" media="all" title="Shower"/>');
+                    }
 
                     $('head link[rel~="stylesheet"][title]:not([href$="lr.css"])').each(function(i, stylesheet) {
                         $(this).prop('disabled', true); //XXX: Leave this. WebKit wants to trigger this before for some reason.
@@ -144,21 +152,23 @@ var LR = {
                         $('#table-of-contents').remove();
                         LR.U.hideStorage();
 
-                        shower.initRun();
+//                        XXX: CORS issue in WebKit. Gecko ok.
 //                        $('head').append('<script src="scripts/shower.js"></script>');
+                        shower.initRun();
                     }
                     if (prevStylesheet.toLowerCase() == 'shower') {
                         $('.slide').removeClass('lr');
                         $('body').removeClass('on-slideshow list full');
                         $('body').removeAttr('style');
                         $('head meta[name="viewport"][content="width=792, user-scalable=no"]').remove();
-//                        $('head script[src="scripts/shower.js"]').remove();
 
                         history.pushState(null, null, window.location.pathname);
 //                        var lH = window.location.href;
 //                        window.location.href = lH.substr(0, lH.lastIndexOf('?'));
 
                         shower.removeEvents();
+                        $('head link[rel~=stylesheet][title=Shower]').remove();
+                        $('head title').html($('h1').html());
                     }
                 });
             }
