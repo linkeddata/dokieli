@@ -239,11 +239,14 @@
                             <div about="[this:#audio]" property="dcterms:description">
                                 <p>An audio recording and its spectrogram of this ‘paper’ is available for supporting media. Otherwise, a complimentary spectrogram of the recording is visible in Figure [<a href="#audio-spectrogram">1</a>]:</p>
 
-                                <audio id="audio-this-paper-is-a-demo" preload="none" controls="controls" width="300">
-                                    <source src="http://csarven.ca/media/audio/this-paper-is-a-demo.ogg" type="audio/ogg"></source>
-                                    <track kind="captions" src="http://csarven.ca/media/track/this-paper-is-a-demo.en.vtt" srclang="en" label="English" default="default"></track>
-
-                                    <p>Unable to play audio, but a <a href="this-paper-is-a-demo.ogg">download</a> is available.</p>
+                                <audio id="audio-this-paper-is-a-demo" about="[this:#audio]" rel="dcterms:hasPart" preload="none" controls="controls" width="300">
+                                    <source about="[this:#audio-this-paper-is-a-demo]" rel="dcterms:hasPart" resource="http://csarven.ca/media/audio/this-paper-is-a-demo.ogg" src="http://csarven.ca/media/audio/this-paper-is-a-demo.ogg" type="audio/ogg">
+                                        <span about="http://csarven.ca/media/audio/this-paper-is-a-demo.ogg" property="dcterms:title" content="Audio of This ‘Paper’ is a Demo"></span>
+                                    </source>
+                                    <track about="[this:#audio-this-paper-is-a-demo]" rel="dcterms:hasPart" resource="http://csarven.ca/media/track/this-paper-is-a-demo.en.vtt" kind="captions" src="http://csarven.ca/media/track/this-paper-is-a-demo.en.vtt" srclang="en" label="English" default="default">
+                                        <span about="http://csarven.ca/media/track/this-paper-is-a-demo.en.vtt" typeof="deo:Caption"></span>
+                                    </track>
+<!--                                    <p>Unable to play audio, but a <a href="this-paper-is-a-demo.ogg">download</a> is available.</p>-->
                                 </audio>
 
                                 <figure id="audio-spectrogram">
