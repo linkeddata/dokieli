@@ -144,6 +144,7 @@ var LR = {
                         $('#table-of-contents').remove();
                         LR.U.hideStorage();
 
+                        shower.initRun();
 //                        $('head').append('<script src="scripts/shower.js"></script>');
                     }
                     if (prevStylesheet.toLowerCase() == 'shower') {
@@ -156,6 +157,8 @@ var LR = {
                         history.pushState(null, null, window.location.pathname);
 //                        var lH = window.location.href;
 //                        window.location.href = lH.substr(0, lH.lastIndexOf('?'));
+
+                        shower.removeEvents();
                     }
                 });
             }
