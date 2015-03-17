@@ -178,26 +178,26 @@ cursor: move;
 .lr .toc li > span:hover {
 background:#eee !important;
 }
-.lr .toc .sortable-placeholder {
+.lr.sortable .sortable-placeholder {
 outline: 1px dashed #777;
 }
 
-.lr .sortable li {
+.lr.sortable .sortable li {
 cursor:grab;
 cursor:-moz-grab;
 cursor:-webkit-grab;
 position:relative;
 }
 
-.lr .sortable li:active {
+.lr.sortable .sortable li:active {
 cursor:move;
 }
 
-.lr .sortable li:before,
-.lr .sortable li a:before {
+.lr.sortable .sortable li:before,
+.lr.sortable .sortable li a:before {
 border-left: 2px dotted #ccc;
 }
-.lr .sortable li a:before {
+.lr.sortable .sortable li a:before {
 position:absolute;
 top:0;
 left:-1.4em;

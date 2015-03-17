@@ -266,11 +266,17 @@ var LR = {
 
         showToC: function() {
             //XXX: This looks like this for readability.
-            var s = '';
             var section = $('h1 ~ div section:not([class~="slide"])');
 
             if (section.length > 0) {
-                s += '<aside id="table-of-contents" class="lr on"><button class="close">❌</button><h2>Table of Contents</h2><ol class="toc sortable">';
+                var s = '';
+                var sortable = '';
+
+                if($('head script[src$="html.sortable.min.js"]').length > 0) {
+                    sortable = ' sortable';
+                }
+
+                s += '<aside id="table-of-contents" class="lr on' + sortable + '"><button class="close">❌</button><h2>Table of Contents</h2><ol class="toc sortable">';
                 section.each(function(i,section) {
                     var h = $(section).find('> h2');
                     if (h.length > 0) {
@@ -314,10 +320,12 @@ var LR = {
                     }
                 });
                 s += '</ol></aside>';
-            }
 
-            $('body').append(s);
-            LR.U.sortToC();
+                $('body').append(s);
+                if($('head script[src$="html.sortable.min.js"]').length > 0) {
+                    LR.U.sortToC();
+                }
+            }
         },
 
         sortToC: function() {
