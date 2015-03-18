@@ -293,42 +293,42 @@ left:0;
 }
 .typographic-sine-wave span:nth-of-type(2) {
 bottom:-0.25em;
-left:1em;
+left:0.75em;
 font-size:1.5em;
 color:#666;
 transform:rotate(-10deg);
 }
 .typographic-sine-wave span:nth-of-type(3) {
 bottom:-0.5em;
-left:1.5em;
+left:1.25em;
 font-size:2em;
 color:#777;
 transform:rotate(-20deg);
 }
 .typographic-sine-wave span:nth-of-type(4) {
 bottom:-0.25em;
-left:2em;
+left:1.5em;
 font-size:2.5em;
 color:#888;
 transform:rotate(-30deg);
 }
 .typographic-sine-wave span:nth-of-type(5) {
 bottom:0em;
-left:2.5em;
+left:2em;
 font-size:3em;
 color:#999;
 transform:rotate(-40deg);
 }
 .typographic-sine-wave span:nth-of-type(6) {
 bottom:0.25em;
-left:1.75em;
+left:1.25em;
 font-size:5.5em;
 color:#AAA;
 transform:rotate(-50deg);
 }
 .typographic-sine-wave span:nth-of-type(7) {
 bottom:0.5em;
-left:1.75em;
+left:1.25em;
 font-size:7.5em;
 color:#BBB;
 transform:rotate(-60deg);
