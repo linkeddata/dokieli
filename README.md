@@ -91,3 +91,10 @@ Linked Research is built with the progressive enhancement strategy. Therefore, t
 
 ## License
 [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+
+## How to contribute
+* Use it! Provide the URLs to your work.
+* Enable your colleagues to the same.
+* Report issues and document.
+* Resolve issues.
+* Work on features.
