@@ -85,9 +85,9 @@ var LR = {
         },
 
         getDocRefType: function() {
-            LR.C.DocRefType = $('head link[rel="stylesheet"][title]').attr('title').toUpperCase();
+            LR.C.DocRefType = $('head link[rel="stylesheet"][title]').prop('title');
 
-            if(LR.C.DocRefType != 'LNCS' || LR.C.DocRefType != 'ACM' || LR.C.DocRefType != 'APA' || LR.C.DocRefType != 'REC') {
+            if (Object.keys(LR.C.RefType).indexOf(LR.C.DocRefType) == -1) {
                 LR.C.DocRefType = 'LNCS';
             }
         },
@@ -366,7 +366,6 @@ var LR = {
 
                 var nH = (endParentHeading + 1) - nodeDetachedHeading;
                 nodeDetached.find('*[property="dcterms:title"]:nth-of-type(1)').each(function(i, heading) {
-                console.log(heading);
                     var oldHeadingIndex = parseInt($(heading).prop("tagName").substring(1));
                     var newHeadingIndex = oldHeadingIndex + nH;
 
@@ -564,7 +563,7 @@ var LR = {
         buildReferences: function() {
             if ($('#references ol').length == 0) {
                 //XXX: Not the best way of doing this, but it allows LR references to be added to the right place.
-                $('#references').append('\n<ol about="[this:]">\n</ol>\n');
+                $('#references').append('\n<ol>\n</ol>\n');
 
                 $('#content span.ref').each(function(i,v) {
                     var referenceText = '';
@@ -578,7 +577,7 @@ var LR = {
                     }
                     if (href) {
                         referenceLink = href.replace(/&/g, "&amp;");
-                        referenceLink = '<a href="' + referenceLink + '">' + referenceLink + '</a>';
+                        referenceLink = '<a about="[this:]" rel="dcterms:references" href="' + referenceLink + '">' + referenceLink + '</a>';
                         if (title) {
                             referenceLink = ', ' + referenceLink;
                         }
