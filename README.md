@@ -15,6 +15,11 @@ research documents that are both human and machine-friendly.
 See also a proposed [Acid Test](http://csarven.ca/enabling-accessible-knowledge#acid-test)
 aimed at this mission:
 
+## Linked Research Nightly
+The [Linked Research Nightly](http://linked-research.270a.info/linked-research-nightly.html)
+document is a living documentation (“nightly”, but not necessarily) and is not
+versioned.
+
 ## Dive into Linked Research
 
 Linked Research's technical approach for MVP:
