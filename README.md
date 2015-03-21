@@ -22,7 +22,8 @@ Linked Research's technical approach for MVP:
 * A single HTML5 Polyglot document. It is used by different CSS - academic paper
 layouts e.g., ACM, LNCS, W3C-REC (fun), or even as a slideshow! This is not a
 yet-another-standard or format! It is POSH (plain ol' semantic HTML) and RDF,
-right off W3C specs.
+right off W3C specs. Linked Research encourages progressive enhancement
+strategy. 
 * No server required. Works on local machine.
 * No installation.
 * No account creation. This is not a for-profit third-party service or software.
