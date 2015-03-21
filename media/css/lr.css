@@ -385,6 +385,7 @@ padding-left:10px;
 height:100%;
 display:block;
 font-family: "CMU Serif Monospace", monospace !important;
+font-weight:normal;
 outline:none;
 }
 .lr.fragment a:first-child {
