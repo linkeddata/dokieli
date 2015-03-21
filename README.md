@@ -35,6 +35,8 @@ i.e., they can be used on screen devices as well as be printed.
 The example documents in this repository were originally published at:
 
 * [http://csarven.ca/enabling-accessible-knowledge](http://csarven.ca/enabling-accessible-knowledge)
+* [http://csarven.ca/cooling-down-web-science](http://csarven.ca/cooling-down-web-science)
+* [http://csarven.ca/this-paper-is-a-demo](http://csarven.ca/this-paper-is-a-demo)
 * [http://csarven.ca/sense-of-lsd-analysis](http://csarven.ca/sense-of-lsd-analysis)
 * [http://csarven.ca/linked-statistical-data-analysis](http://csarven.ca/linked-statistical-data-analysis)
 * [http://csarven.ca/linked-sdmx-data](http://csarven.ca/linked-sdmx-data)
