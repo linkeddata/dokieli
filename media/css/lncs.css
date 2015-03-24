@@ -117,6 +117,7 @@ color:#000;
 }
 abbr { border-bottom: none; }
 audio { display:none; }
+iframe { display:none !important; }
 
 button {
 margin:0 !important;
@@ -158,6 +159,8 @@ min-height:240px;
 object[type="text/html"] { min-height:480px; }
 img { max-width:100%; height:auto; }
 video, audio { display:block; max-width:60%; height:auto; margin:0 auto; }
+iframe { display:block; margin:0 auto; width:calc(); }
+
 
 object.slides { display:none; }
 .block { display:block; }
@@ -354,6 +357,7 @@ ul + p,
 figure + p,
 audio + p,
 video + p,
+iframe + p,
 blockquote p {
 text-indent:0;
 }
@@ -594,6 +598,7 @@ margin-bottom:1em;
 figure,
 audio,
 video,
+iframe,
 canvas {
 margin-top:1em;
 margin-bottom:1em;
