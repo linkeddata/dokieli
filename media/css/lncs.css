@@ -78,6 +78,7 @@ caption, td, th,
 #document-license *,
 #document-purpose *,
 #keywords *,
+#general-terms *,
 #categories-and-subject-descriptors *,
 #references li,
 aside.note {
@@ -765,7 +766,6 @@ text-align:center;
 margin:0 2.5em 1em;
 }
 
-
 #authors dt {
 display:none;
 }
@@ -811,6 +811,9 @@ text-transform:capitalize;
 
 #keywords {
 margin-bottom:2.75em;
+}
+#keywords + #categories-and-subject-descriptors {
+margin-top:-1.75em;
 }
 
 
