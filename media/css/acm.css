@@ -737,6 +737,7 @@ content: counter(appendix, upper-latin) "." counter(sub-appendix)"." counter(sub
 
 #header,
 #footer,
+#comment-write,
 dl.entry-author,
 dl.datetimestamp,
 dl.entry-replies,

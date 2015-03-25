@@ -829,6 +829,7 @@ margin-bottom:3em;
 .entry-replies,
 #header,
 #footer,
+#comment-write,
 .article_labels * {
 display:none;
 }
