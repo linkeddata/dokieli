@@ -221,7 +221,7 @@ hyphens:none;
 h1,h2,h3,h4, strong, dt, figcaption:before, caption:before {
 font-family: "CMU Serif Bold", serif !important;
 }
-h5,h6, em, address {
+h5,h6, em, cite, dfn, address {
 font-family: "CMU Serif Italic", serif !important;
 }
 h1 em, h2 em, h3 em, h4 em {
