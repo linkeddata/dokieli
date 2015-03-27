@@ -143,32 +143,32 @@ counter-increment: s;
 counter-reset: sub-s;
 }
 
-.lr .toc li li:not([data-id=abstract]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
+.lr .toc li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
 counter-increment: sub-s;
 counter-reset: sub-sub-s;
 }
-.lr .toc li li li:not([data-id=abstract]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
+.lr .toc li li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
 counter-increment: sub-sub-s;
 counter-reset: sub-sub-sub-s;
 }
-.lr .toc li li li li:not([data-id=abstract]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
+.lr .toc li li li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
 counter-increment: sub-sub-sub-s;
 counter-reset: sub-sub-sub-sub-s;
 }
-.lr .toc li:not([data-id=abstract]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
+.lr .toc li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
 content: "\00a0" counter(s) "\00a0";
 }
-.lr .toc li li:not([data-id=abstract]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
+.lr .toc li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
 content: "\00a0" counter(s) "." counter(sub-s) "\00a0";
 }
-.lr .toc li li li:not([data-id=abstract]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
+.lr .toc li li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
 content: "\00a0" counter(s) "." counter(sub-s) "." counter(sub-sub-s) "\00a0";
 }
-.lr .toc li li li li:not([data-id=abstract]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
+.lr .toc li li li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
 content: "\00a0" counter(s) "." counter(sub-s) "." counter(sub-sub-s) "." counter(sub-sub-sub-s) "\00a0";
 }
 
-.lr .toc li[data-id=abstract]:before, .lr .toc li[data-id=keywords]:before, .lr .toc li[data-id=references]:before, .lr .toc li[data-id=categories-and-subject-descriptors]:before, .lr .toc li[data-id=general-terms]:before, .lr .toc li[data-id=appendix]:before, .lr .toc li[data-id=contact-us]:before {
+.lr .toc li[data-id=abstract]:before, .lr .toc li[data-id=document-status]:before, .lr .toc li[data-id=keywords]:before, .lr .toc li[data-id=references]:before, .lr .toc li[data-id=categories-and-subject-descriptors]:before, .lr .toc li[data-id=general-terms]:before, .lr .toc li[data-id=appendix]:before, .lr .toc li[data-id=contact-us]:before {
 content: "\00a0\00a0\00a0\00a0";
 }
 
