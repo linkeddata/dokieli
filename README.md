@@ -16,7 +16,7 @@ See also a proposed [Acid Test](http://csarven.ca/enabling-accessible-knowledge#
 aimed at this mission:
 
 ## Linked Research Nightly
-The [Linked Research Nightly](http://linked-research.270a.info/linked-research-nightly.html)
+The [Linked Research Nightly](http://linked-research.270a.info/linked-research.html)
 document is a living documentation (“nightly”, but not necessarily) and is not
 versioned.
 
