@@ -3,7 +3,7 @@
     xml:lang="en" lang="en">
     <head>
         <meta charset="utf-8"/>
-        <title>Linked Research Nightly</title>
+        <title>Linked Research</title>
         <link rel="stylesheet alternate" href="media/css/lncs.css" media="all" title="LNCS"/>
         <link rel="stylesheet alternate" href="media/css/acm.css" media="all" title="ACM"/>
         <link rel="stylesheet" href="http://www.w3.org/StyleSheets/TR/base.css" media="all" title="W3C-BASE"/>
@@ -15,7 +15,7 @@
 
     <body about="[this:]" typeof="foaf:Document sioc:Post biblio:Paper prov:Entity" class="hfeed" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# cc: http://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# schema: http://schema.org/ rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# org: http://www.w3.org/ns/org# biblio: http://purl.org/net/biblio# bibo: http://purl.org/ontology/bibo/ book: http://purl.org/NET/book/vocab# ov: http://open.vocab.org/terms/ doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ sro: http://salt.semanticauthoring.org/ontologies/sro# this: http://linked-research.270a.info/linked-research-nightly.html">
         <article class="hentry editable">
-            <h1 class="entry-title" property="dcterms:title">Linked Research Nightly</h1>
+            <h1 class="entry-title" property="dcterms:title">Linked Research</h1>
 
             <div id="authors">
                 <dl id="author-name">
@@ -47,7 +47,7 @@
 
             <dl id="document-modified">
                 <dt>Modified</dt>
-                <dd property="dcterms:modified" content="2015-03-21T00:00:00Z" datatype="xsd:dateTime">2015-03-21</dd>
+                <dd property="dcterms:modified" content="2015-03-28T00:00:00Z" datatype="xsd:dateTime">2015-03-28</dd>
             </dl>
 
             <dl id="document-license">
@@ -59,26 +59,26 @@
                 <section id="abstract" about="[this:]">
                     <h2>Abstract</h2>
                     <div property="dcterms:abstract" class="entry-summary">
-                        <p>This living document defines the Linked Research initiative and project. In this version, new features continue to be introduced to help Web Science authors based on prevailing authoring practices, and special attention continues to be given to progressive enhancement. This document is intended to <strong>enable researchers</strong>.</p>
+                        <p>This document defines the Linked Research initiative and project. It is intended to <strong>enable researchers</strong>.</p>
                     </div>
                 </section>
 
                 <section id="document-status" about="[this:]" rel="dcterms:hasPart" resource="[this:#document-status]">
                     <h2 about="[this:#document-status]" property="dcterms:title">Document Status</h2>
-                    <div about="[this:#document-status]" property="dcterms:description">
-                        <p>This document is published as part of the <a href="https://github.com/csarven/linked-research">Linked Research</a> repository. This is a living documentation (“nightly”, but not necessarily) and is not versioned.</p>
+                    <div about="[this:#document-status]" property="dcterms:description" typeof="bibo:DocumentStatus">
+                        <p>This living documentation (“nightly”) is published as part of the <cite><a href="https://github.com/csarven/linked-research">Linked Research</a></cite> (<dfn><abbr title="Linked Research">LR</abbr></dfn>) repository. It is not versioned.</p>
                     </div>
                 </section>
 
                 <section id="introduction" about="[this:]" rel="dcterms:hasPart" resource="[this:#introduction]">
                     <h2 about="[this:#introduction]" property="dcterms:title">Introduction</h2>
                     <div about="[this:#introduction]" property="dcterms:description" typeof="deo:Introduction">
-                        <p>We borrow design principles and best practices from many great works.</p>
+                        <p></p>
                    </div>
                 </section>
 
                 <section id="strategy" about="[this:]" rel="dcterms:hasPart" resource="[this:#strategy]">
-                    <h2 about="[this:#strategy]" property="dcterms:title">Strategy</h2>
+                    <h2 property="dcterms:title">Strategy</h2>
 
                     <div about="[this:#strategy]" property="dcterms:description">
                         <p>Our strategy is as follows (adopted from <cite><a href="http://xml.fido.gov/stratml/references/WhyStratML.pdf">StratML</a></cite>):</p>
@@ -106,87 +106,19 @@
                     </div>
                 </section>
 
-
-                <section id="technology-and-design" about="[this:]" rel="dcterms:hasPart" resource="[this:#technology-and-design]">
-                    <h2 about="[this:#technology-and-design]" property="dcterms:title">Technology and Design</h2>
-                    <div about="[this:#technology-and-design]" property="dcterms:description">
-                        <p>There is a single template using the <a href="http://dev.w3.org/html5/html-polyglot/">HTML 5 Polyglot</a> markup (such as this document itself). Different CSS are used to present the information for different media e.g., academic paper layouts following the ACM and LNCS authoring style guidelines, slideshow styles, or even as a W3C “Recommendation” (to only demonstrate the flexibility of semantic markup, not necessarily to pretend that it is a recommendation ;)). JavaScript is applied to the document to <em>progressively enhance</em> the information's interactive components. In a nutshell, the minimum viable product encloses the following:</p>
-
-                        <ul id="minimum-viable-product">
-                            <li>Documents are human and machine-<em>friendly</em>. Preferably humans first, machines second (details).</li>
-                            <li>Using the <em>plain old semantic HTML</em> marking process, with further semantic annotations using microformats and RDF.</li>
-                            <li>No server required. Works on local machine.</li>
-                            <li>No installation. No account creation.</li>
-                            <li>No out-of-band tooling. A Web browser is the only requirement, whether it is a <a href="http://info.cern.ch/hypertext/WWW/LineMode/Browser.html">Line Mode Browser</a>, or <a href="https://nightly.mozilla.org/">Firefox Nightly</a>.</li>
-                            <li>Licenses and rights: <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License</a> and <a href="https://creativecommons.org/publicdomain/zero/1.0/" title="Creative Commons Public Domain Dedication">CC0</a>.</li>
+                <section id="design-principles" about="[this:]" rel="dcterms:hasPart" resource="[this:#design-principles]">
+                    <h2 about="[this:#design-principles]" property="dcterms:title">Design Principles</h2>
+                    <div about="[this:#design-principles]" property="dcterms:description">
+                        <p>LR’s set of guiding principles are as follows:</p>
+                        <ul>
+                            <li>Universal access</li>
+                            <li><code>█ + █ > = █ █</code></li>
+                            <li>Human-centered</li>
+                            <li>Progressive enhancement</li>
+                            <li>Evolvability</li>
                         </ul>
-
-                        <p>The code for <a href="https://github.com/csarven/linked-research">Linked Research</a> is publicly available, and a <a href="http://linked-research.270a.info/">demo site</a>, with sample peer-reviewed and published ‘papers’. Well-known <a href="http://linked-research.270a.info/lncs-splnproc.html">LNCS</a> and <a href="http://linked-research.270a.info/acm-sigproc-sp.html">ACM</a> authoring guidelines themselves are also available as examples. The ACM guidelines can be viewed or printed using LNCS, and vice-versa.</p>
-
-                        <section id="structure-and-semantics" about="[this:]" rel="dcterms:hasPart" resource="[this:#structure-and-semantics]">
-                            <h3 about="[this:#structure-and-semantics]" property="dcterms:title">Structure and Semantics</h3>
-                            <div about="[this:#structure-and-semantics]" property="dcterms:description">
-                                <p>Underneath the user interface, simple and flexible HTML patterns are used to encapsulate <a href="http://www.w3.org/html/wg/drafts/html/master/#sectioning-content">sectioning content</a>. Listing [<a href="#listing-1">1</a>] shows a common design pattern.</p>
-
-                                <figure id="listing-1" class="listing">
-<pre>
-<code class="highlight-section">&lt;section&gt;</code>
-    <samp class="highlight-h2">&lt;h2&gt;</samp>
-    <code class="highlight-div">&lt;div&gt;</code>
-</pre>
-                                    <figcaption><samp class="highlight-h2">h2</samp> is an example heading used here for <code class="highlight-section">section</code> titles, <code class="highlight-div">div</code> as a typical wrapper for descriptions, as well as to contain further sub-sectioned content.</figcaption>
-                                </figure>
-
-                                <p>Linked Research documents may typically include the following vocabularies: <a href="http://www.w3.org/2004/02/skos/">SKOS</a> (Simple Knowledge Organization System), <a href="http://xmlns.com/foaf/spec/">FOAF</a> (Friend of a Friend), <a href="http://purl.org/dc/terms">DC Terms</a> (Dublin Core Terms), <a href="http://semanticscience.org/">SIO</a> (Semanticscience Integrated Ontology), <a href="http://purl.org/spar">SPAR</a> (Semantic Publishing and Referencing), <a href="http://www.w3.org/TR/prov-o">PROV-O</a> (Provenance Ontology), <a href="http://www.opmw.org/model/OPMW/">OPMW</a> (Open Provenance Model for Workflows), <a href="https://w3id.org/ro/">RO</a> (Wf4Ever Research Object), <a href="http://rdf-vocabulary.ddialliance.org/discovery.html">Disco</a> (DDI-RDF Discovery), <a href="http://www.w3.org/TR/vocab-data-cube/">QB</a> (RDF Data Cube), <a href="http://sioc-project.org/">SIOC</a> (Semantically-Interlinked Online Communities), and <a href="http://www.openannotation.org/spec/core/">OA</a> (Open Annotation). The assumption here is that the researcher knows their work best, therefore, Linked Research doesn't mandate any particular vocabulary or ontology.</p>
-                            </div>
-                        </section>
-
-                        <section id="presentation" about="[this:]" rel="dcterms:hasPart" resource="[this:#presentation]">
-                            <h3 about="[this:#presentation]" property="dcterms:title">Presentation</h3>
-                            <div about="[this:#presentation]" property="dcterms:description">
-                                <p>The CSS are primarily tested using the Gecko browser engine e.g., Firefox, as it provides a more comprehensive and consistent CSS screen and print media support. The views are also tested for in other engines e.g., WebKit, and Trident. The single HTML is flexible such that it can presented in different ways (a <cite><a href="http://csszengarden.com/">CSS Zen Garden</a></cite>), using the browser or document options.</p>
-
-                                <script><!--//--><![CDATA[//><!--
-                                    var actionViews = $('<span id="action-views" class="lr">These buttons can also trigger the views: </span>');
-                                    var context = $('#presentation p:nth-child(1)');
-                                    context.after(actionViews);
-                                    LR.U.showViews(actionViews);
-                                    actionViews.find('h2').remove();
-                                    var nodeDetached = actionViews.detach();
-                                    context.append(nodeDetached);
-                                //--><!]]></script>
-                                <style><!--/*--><![CDATA[/*><!--*/
-                                    #action-views.lr { margin-left:1em; }
-                                    #action-views.lr:after { content:'.'; }
-                                    #action-views.lr, #action-views.lr * { display:inline !important; }
-                                    #action-views.lr #views { margin-top:0; }
-                                    #action-views.lr #views:before { content:''; }
-                                    #action-views.lr li { margin-right:0; }
-                                    #action-views.lr li:before { content:', '; }
-                                    #action-views.lr li:first-child:before { content:''; }
-                                /*]]>*/--></style>
-                            </div>
-                        </section>
-
-                        <section id="interaction" about="[this:]" rel="dcterms:hasPart" resource="[this:#interaction]">
-                            <h3 about="[this:#interaction]" property="dcterms:title">Interaction</h3>
-                            <div about="[this:#interaction]" property="dcterms:description">
-                                <p>Screen devices with interactive abilities can use the following:</p>
-
-                                <ul>
-                                    <li>In browser editing without having to hand-code HTML or RDF syntaxes - partial support at the moment - and, sorting sections through table of contents.</li>
-                                    <li>Embed data in HTML: Turtle and JSON-LD.</li>
-                                    <li>Visible identifiers for sections and other important enough declared concepts. Fosters sharing and cross-linking of concepts, arguments, workflows etc.</li>
-                                    <li>Document metadata for authors.</li>
-                                    <li>Exporting to HTML. A (La)TeX export is planned.</li>
-                                    <li>Local Storage (in the browser) for offline editing. Auto-save is available.</li>
-                                    <li>View switching e.g., ACM, LNCS, W3C-REC, Slideshow, Native.</li>
-                                </ul>
-                            </div>
-                        </section>
-                    </div>
+                   </div>
                 </section>
-
 
                 <section id="acid-test" about="[this:#conceptual-design]" rel="dcterms:hasPart" resource="[this:#acid-test]">
                     <h2 about="[this:#acid-test]" property="dcterms:title">Acid Test</h2>
@@ -223,15 +155,92 @@
                     </div>
                 </section>
 
+                <section id="design-patterns" about="[this:]" rel="dcterms:hasPart" resource="[this:#design-patterns]">
+                    <h2 about="[this:#design-patterns]" property="dcterms:title">Design Patterns</h2>
+                    <div about="[this:#design-patterns]" property="dcterms:description">
+                        <p>LR is a single <a href="http://dev.w3.org/html5/html-polyglot/">HTML 5 Polyglot</a> document. Different CSS are used to present the information for different media e.g., screen, print. JavaScript is used to <em>progressively enhance</em> the document and bring in interactivity. In a nutshell, the minimum viable product encloses the following:</p>
+
+                        <ul id="minimum-viable-product">
+                            <li>Documents are human and machine-<em>friendly</em>. Preferably humans first, machines second (details).</li>
+                            <li>Using the <em>plain old semantic HTML</em> marking process, with further semantic annotations using microformats and RDF.</li>
+                            <li>No server required. Works on local machine.</li>
+                            <li>No installation. No account creation.</li>
+                            <li>No out-of-band tooling. A Web browser is the only requirement, whether it is a <a href="http://info.cern.ch/hypertext/WWW/LineMode/Browser.html">Line Mode Browser</a>, or <a href="https://nightly.mozilla.org/">Firefox Nightly</a>.</li>
+                            <li>Licenses and rights: <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License</a> and <a href="https://creativecommons.org/publicdomain/zero/1.0/" title="Creative Commons Public Domain Dedication">CC0</a>.</li>
+                        </ul>
+
+                        <p>The code for <a href="https://github.com/csarven/linked-research">Linked Research</a> is publicly available, and a <a href="http://linked-research.270a.info/">demo site</a>, with sample peer-reviewed and published ‘papers’. Well-known <a href="http://linked-research.270a.info/lncs-splnproc.html">LNCS</a> and <a href="http://linked-research.270a.info/acm-sigproc-sp.html">ACM</a> authoring guidelines themselves are also available as examples. The ACM guidelines can be viewed or printed using LNCS, and vice-versa.</p>
+
+                        <section id="structure-and-semantics" about="[this:]" rel="dcterms:hasPart" resource="[this:#structure-and-semantics]">
+                            <h3 about="[this:#structure-and-semantics]" property="dcterms:title">Structure and Semantics</h3>
+                            <div about="[this:#structure-and-semantics]" property="dcterms:description">
+                                <p>Underneath the user interface, simple and flexible HTML patterns are used to encapsulate <a href="http://www.w3.org/html/wg/drafts/html/master/#sectioning-content">sectioning content</a>. Listing [<a href="#listing-1">1</a>] shows a common design pattern.</p>
+
+                                <figure id="listing-1" class="listing">
+<pre>
+<code class="highlight-section">&lt;section&gt;</code>
+    <samp class="highlight-h2">&lt;h2&gt;</samp>
+    <code class="highlight-div">&lt;div&gt;</code>
+</pre>
+                                    <figcaption><samp class="highlight-h2">h2</samp> is an example heading used here for <code class="highlight-section">section</code> titles, <code class="highlight-div">div</code> as a typical wrapper for descriptions, as well as to contain further sub-sectioned content.</figcaption>
+                                </figure>
+
+                                <p>Linked Research documents may typically include the following vocabularies: <a href="http://www.w3.org/2004/02/skos/">SKOS</a> (Simple Knowledge Organization System), <a href="http://xmlns.com/foaf/spec/">FOAF</a> (Friend of a Friend), <a href="http://purl.org/dc/terms">DC Terms</a> (Dublin Core Terms), <a href="http://semanticscience.org/">SIO</a> (Semanticscience Integrated Ontology), <a href="http://purl.org/spar">SPAR</a> (Semantic Publishing and Referencing), <a href="http://www.w3.org/TR/prov-o">PROV-O</a> (Provenance Ontology), <a href="http://www.opmw.org/model/OPMW/">OPMW</a> (Open Provenance Model for Workflows), <a href="https://w3id.org/ro/">RO</a> (Wf4Ever Research Object), <a href="http://rdf-vocabulary.ddialliance.org/discovery.html">Disco</a> (DDI-RDF Discovery), <a href="http://www.w3.org/TR/vocab-data-cube/">QB</a> (RDF Data Cube), <a href="http://sioc-project.org/">SIOC</a> (Semantically-Interlinked Online Communities), and <a href="http://www.openannotation.org/spec/core/">OA</a> (Open Annotation). The assumption here is that the researcher knows their work best, therefore, Linked Research doesn't mandate any particular vocabulary or ontology.</p>
+                            </div>
+                        </section>
+
+                        <section id="presentation" about="[this:]" rel="dcterms:hasPart" resource="[this:#presentation]">
+                            <h3 about="[this:#presentation]" property="dcterms:title">Presentation</h3>
+                            <div about="[this:#presentation]" property="dcterms:description">
+                                <p>The CSS are primarily tested using the Gecko browser engine e.g., Firefox, as it provides a comprehensive and consistent CSS screen and print media support. The views are also tested under other engines e.g., WebKit, and Trident. The single HTML pattern is able to handle different ways (like a <cite><a href="http://csszengarden.com/">CSS Zen Garden</a></cite>), using the browser or document options. For example, academic paper layouts following the ACM and LNCS authoring style guidelines, slideshow styles, or even as a W3C document. </p>
+
+                                <script><!--//--><![CDATA[//><!--
+                                    var actionViews = $('<span id="action-views" class="lr">These buttons can also trigger the views: </span>');
+                                    var context = $('#presentation p:nth-child(1)');
+                                    context.after(actionViews);
+                                    LR.U.showViews(actionViews);
+                                    actionViews.find('h2').remove();
+                                    var nodeDetached = actionViews.detach();
+                                    context.append(nodeDetached);
+                                //--><!]]></script>
+                                <style><!--/*--><![CDATA[/*><!--*/
+                                    #action-views.lr { margin-left:1em; }
+                                    #action-views.lr:after { content:'.'; }
+                                    #action-views.lr, #action-views.lr * { display:inline !important; }
+                                    #action-views.lr #views { margin-top:0; }
+                                    #action-views.lr #views:before { content:''; }
+                                    #action-views.lr li { margin-right:0; }
+                                    #action-views.lr li:before { content:', '; }
+                                    #action-views.lr li:first-child:before { content:''; }
+                                /*]]>*/--></style>
+                            </div>
+                        </section>
+
+                        <section id="interaction" about="[this:]" rel="dcterms:hasPart" resource="[this:#interaction]">
+                            <h3 about="[this:#interaction]" property="dcterms:title">Interaction</h3>
+                            <div about="[this:#interaction]" property="dcterms:description">
+                                <p>Screen devices with interactive abilities can use the following:</p>
+
+                                <ul>
+                                    <li>In browser editing without having to hand-code HTML or RDF syntaxes - partial support at the moment - and, sorting sections through table of contents.</li>
+                                    <li>Embed data in HTML: Turtle and JSON-LD.</li>
+                                    <li>Visible identifiers for sections and other important enough declared concepts. Fosters sharing and cross-linking of concepts, arguments, workflows etc.</li>
+                                    <li>Document metadata for authors.</li>
+                                    <li>Exporting to HTML.</li>
+                                    <li>Local Storage (in the browser) for offline editing. Auto-save is available.</li>
+                                    <li>View switching e.g., ACM, LNCS, W3C-REC, Slideshow, Native.</li>
+                                </ul>
+                            </div>
+                        </section>
+                    </div>
+                </section>
+
+
 
                 <section id="acknowledgements" about="[this:]" rel="dcterms:hasPart">
                     <h2 about="[this:#acknowledgements]" property="dcterms:title">Acknowledgements</h2>
                     <div about="[this:#acknowledgements]" typeof="deo:Acknowledgements" property="dcterms:description">
-                        <p>Thanks to Marshall McLuhan, Ted Nelson, James Burke. Thanks to Tim Berners-Lee for inventing HTML, and perhaps more importantly, the URL, without which none of this would exist.</p>
-
-                        <p>Thanks also to everyone who has ever embraced or complained about the goals of this project in public, mailing lists, IRC, or forums, including all the contributors on and offline.</p>
-
-                        <p>Thanks to the many sources that provided inspiration to create the Linked Research initiative and tooling.</p>
+                        <p>Inspired by Marshall McLuhan, Ted Nelson, James Burke, and Tim Berners-Lee.</p>
                    </div>
                 </section>
 
