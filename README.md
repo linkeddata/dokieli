@@ -20,35 +20,30 @@ There is a [living documentation](http://linked-research.270a.info/linked-resear
 (“nightly”) published as part of this repository. It is not versioned.
 
 ## Dive into Linked Research
+Linked Research is a single HTML 5 Polyglot document. Different CSS are used to
+present the information for different media e.g., screen, print. JavaScript is
+used to <em>progressively enhance</em> the document and bring in interactivity.
+In a nutshell:
 
-Linked Research's technical approach:
-
-Linked Research is a single <a href="http://dev.w3.org/html5/html-polyglot/">HTML 5 Polyglot</a>
-document. Different CSS are used to present the information for different media
-e.g., screen, print. JavaScript is used to <em>progressively enhance</em> the
-document and bring in interactivity. In a nutshell, the minimum viable product
-encloses the following:
-
-* Documents are human and machine-<em>friendly</em>. Preferably humans first,
+* Documents are human and machine-<em>readable</em>. Preferably humans first,
 machines second (details).
 * Using the <em>plain old semantic HTML</em> marking process, with further
 semantic annotations using microformats and RDF.
-* No server required. Works on local machine.
-* No installation. No account creation.
-* No out of band tooling required. Your Web browser is the only requirement.
+* No server required. Works on local machine. No installation. No account
+creation. No out of band tooling required. Your Web browser is the only
+requirement.
 * Using Apache License and CC0, and compatibilities where necessary.
 
 See the [examples in the wild](https://github.com/csarven/linked-research/wiki#examples-in-the-wild)
 in the wiki. Add the URLs to your articles!
 
-This repository is published and accessible from [http://linked-research.270a.info/](http://linked-research.270a.info/) , e.g:
+This repository is published and accessible from [http://linked-research.270a.info/](http://linked-research.270a.info/), e.g:
 
-* `http://linked-research.270a.info/{filename}` (without .html)
+* `http://linked-research.270a.info/{filename}`
 * [ACM SIG Proceedings Paper](http://linked-research.270a.info/acm-sigproc-sp)
 * [LNCS Author Guidelines](http://linked-research.270a.info/lncs-splnproc)
 
 ## Dependencies
-
 The dependencies listed below are only enhancements, and so they are optional.
 Everything is still functional from ground up (whether you are using a Line Mode
 Browser or Firefox Nightly). If you do not want them, they can be removed or
