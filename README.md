@@ -16,7 +16,7 @@ See also a proposed [acid test](http://csarven.ca/enabling-accessible-knowledge#
 aimed at this.
 
 ## Documentation
-There is a [living documentation](http://linked-research.270a.info/linked-research.html)
+There is a [living documentation](http://linked-research.270a.info/linked-research)
 (“nightly”) published as part of this repository. It is not versioned.
 
 ## Dive into Linked Research
