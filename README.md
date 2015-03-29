@@ -1,7 +1,7 @@
 # Linked Research
 
 **Objective**: to enable researchers (in Web Science for example), to share and
-reuse research knowledge by employing the native Web technology stack. This was
+reuse research knowledge by employing the native Web stack. This was
 practically a solved problem 25 years ago, but here we are.
 
 Linked Research is set out to socially and technically enable researchers to
@@ -12,85 +12,47 @@ dismantling the use of archaic and artificial barriers.
 This is to work towards a solution where researchers can publish and consume
 research documents that are both human and machine-friendly.
 
-See also a proposed [Acid Test](http://csarven.ca/enabling-accessible-knowledge#acid-test)
-aimed at this mission:
+See also a proposed [acid test](http://csarven.ca/enabling-accessible-knowledge#acid-test)
+aimed at this.
 
 ## Documentation
-The [Linked Research Nightly](http://linked-research.270a.info/linked-research)
-document is a living documentation (“nightly”, but not necessarily) and is not
-versioned.
+There is a living documentation (“nightly”) published as part of this repository
+. It is not versioned.
 
 ## Dive into Linked Research
 
-Linked Research's technical approach for MVP:
+Linked Research's technical approach:
 
-* A single HTML5 Polyglot document. It is used by different CSS - academic paper
-layouts e.g., ACM, LNCS, W3C-REC (fun), or even as a slideshow! This is not a
-yet-another-standard or format! It is POSH (plain ol' semantic HTML) and RDF,
-right off W3C specs. Linked Research encourages progressive enhancement
-strategy. 
+Linked Research is a single <a href="http://dev.w3.org/html5/html-polyglot/">HTML 5 Polyglot</a>
+document. Different CSS are used to present the information for different media
+e.g., screen, print. JavaScript is used to <em>progressively enhance</em> the
+document and bring in interactivity. In a nutshell, the minimum viable product
+encloses the following:
+
+* Documents are human and machine-<em>friendly</em>. Preferably humans first,
+machines second (details).
+* Using the <em>plain old semantic HTML</em> marking process, with further
+semantic annotations using microformats and RDF.
 * No server required. Works on local machine.
-* No installation.
-* No account creation. This is not a for-profit third-party service or software.
+* No installation. No account creation.
 * No out of band tooling required. Your Web browser is the only requirement.
-* Documents are human and machine-friendly (RDF, microformats)
-i.e., they can be used on screen devices as well as be printed.
-* Using Apache License and CC0, and compatibilies where necessary.
+* Using Apache License and CC0, and compatibilities where necessary.
 
-The example documents in this repository were originally published at:
+See the [examples in the wild](https://github.com/csarven/linked-research/wiki#examples-in-the-wild)
+in the wiki. Add the URLs to your articles!
 
-* [http://csarven.ca/enabling-accessible-knowledge](http://csarven.ca/enabling-accessible-knowledge)
-* [http://csarven.ca/cooling-down-web-science](http://csarven.ca/cooling-down-web-science)
-* [http://csarven.ca/this-paper-is-a-demo](http://csarven.ca/this-paper-is-a-demo)
-* [http://csarven.ca/sense-of-lsd-analysis](http://csarven.ca/sense-of-lsd-analysis)
-* [http://csarven.ca/linked-statistical-data-analysis](http://csarven.ca/linked-statistical-data-analysis)
-* [http://csarven.ca/linked-sdmx-data](http://csarven.ca/linked-sdmx-data)
-* [http://csarven.ca/call-for-linked-research](http://csarven.ca/call-for-linked-research)
-* [http://csarven.ca/statistical-linked-dataspaces](http://csarven.ca/statistical-linked-dataspaces)
-
-This repository is published and accessible from [http://linked-research.270a.info/](http://linked-research.270a.info/)
-, e.g:
+This repository is published and accessible from [http://linked-research.270a.info/](http://linked-research.270a.info/) , e.g:
 
 * `http://linked-research.270a.info/{filename}` (without .html)
 * [ACM SIG Proceedings Paper](http://linked-research.270a.info/acm-sigproc-sp)
 * [LNCS Author Guidelines](http://linked-research.270a.info/lncs-splnproc)
 
-You are invited to send your Linked Research documents or their URL to be
-included here as an example!
-
-
-### Structure and Semantics
-
-This repository contains a **single** HTML+RDFa template, and stylesheets which 
-follows the LNCS, ACM style guidelines. See the examples. The markup structure 
-is simple and flexible.
-
-### Presentation
-
-The CSS are primarily tested using the Gecko browser engine e.g., Firefox, as it
-provides a more comprehensive and consistent CSS screen and print media support.
-The views are also tested for in other engines e.g., WebKit, and Trident. The
-single HTML is flexible such that it can presented in different ways - like a
-[CSS Zen Garden](http://csszengarden.com/) - using the browser or document options
-.As browser engines improve their CSS implementations, so do these stylesheets.
-
-### Interaction
-
-* In browser editing without having to hand-code HTML or RDF syntaxes - partial
-support at the moment - and, sorting sections through table of contents.
-* Embed data in HTML: Turtle and JSON-LD.
-* Visible identifiers for sections and other important enough declared concepts.
-Fosters sharing and cross-linking of concepts, arguments, workflows etc.
-* Document metadata for authors.
-* Exporting to HTML. A (La)TeX export is planned.
-* Local Storage (in the browser) for offline editing. Auto-save is available.
-* View switching e.g., ACM, LNCS, W3C-REC, Slideshow, Native.
-* Other stuff.. stay tuned! `git clone https://github.com/csarven/linked-research.git`
-:)
-
 ## Dependencies
 
-Linked Research is built with the progressive enhancement strategy. Therefore, the dependencies are only used for JavaScript enhancements. If you do not want them, they can be removed or turned-off without effecting core HTML or CSS.
+The dependencies listed below are only enhancements, and so they are optional.
+Everything is still functional from ground up (whether you are using a Line Mode
+Browser or Firefox Nightly). If you do not want them, they can be removed or
+turned-off without effecting core HTML or CSS.
 
 * [jQuery Core](http://jquery.com/) (MIT License)
 * [html5sortable](https://github.com/voidberg/html5sortable) (MIT License)
@@ -100,7 +62,7 @@ Linked Research is built with the progressive enhancement strategy. Therefore, t
 [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
 ## How to contribute
-* Use it! Provide URLs to your work.
+* Use it! Provide URLs to your work (see examples)
 * Enable your colleagues to the same.
 * Break things.
 * Report issues and document.
