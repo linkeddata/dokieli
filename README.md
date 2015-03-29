@@ -15,8 +15,8 @@ research documents that are both human and machine-friendly.
 See also a proposed [Acid Test](http://csarven.ca/enabling-accessible-knowledge#acid-test)
 aimed at this mission:
 
-## Linked Research Nightly
-The [Linked Research Nightly](http://linked-research.270a.info/linked-research.html)
+## Documentation
+The [Linked Research Nightly](http://linked-research.270a.info/linked-research)
 document is a living documentation (“nightly”, but not necessarily) and is not
 versioned.
 
@@ -51,10 +51,9 @@ The example documents in this repository were originally published at:
 This repository is published and accessible from [http://linked-research.270a.info/](http://linked-research.270a.info/)
 , e.g:
 
-* [Enabling Accessible Knowledge](http://linked-research.270a.info/enabling-accessible-knowledge.html)
-(i.e., `http://linked-research.270a.info/{filename}`)
-* [ACM SIG Proceedings Paper](http://linked-research.270a.info/acm-sigproc-sp.html)
-* [LNCS Author Guidelines](http://linked-research.270a.info/lncs-splnproc.html)
+* `http://linked-research.270a.info/{filename}` (without .html)
+* [ACM SIG Proceedings Paper](http://linked-research.270a.info/acm-sigproc-sp)
+* [LNCS Author Guidelines](http://linked-research.270a.info/lncs-splnproc)
 
 You are invited to send your Linked Research documents or their URL to be
 included here as an example!
