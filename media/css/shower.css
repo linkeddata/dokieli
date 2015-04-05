@@ -395,6 +395,8 @@ vertical-align:middle;
 float:left;
 margin-right:1em;
 margin-top:0.3em;
+position:static;
+transform:none;
 }
 .slide.cover address a {
 display:block;
@@ -420,36 +422,36 @@ font-size:0.9em;
 line-height:1.6;
 }
 
-/*.slide.cover img,.slide.cover svg,.slide.cover video,.slide.cover object,.slide.cover canvas,.slide.cover iframe {*/
-/*    position: absolute;*/
-/*    top: 0;*/
-/*    left: 0;*/
-/*    z-index: -1;*/
-/*}*/
+.slide.cover img,.slide.cover svg,.slide.cover video,.slide.cover object,.slide.cover canvas,.slide.cover iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
 
-/*.slide.cover.w img,.slide.cover.w svg,.slide.cover.w video,.slide.cover.w object,.slide.cover.w canvas,.slide.cover.w iframe {*/
-/*    top: 50%;*/
-/*    width: 100%;*/
-/*    -webkit-transform: translateY(-50%);*/
-/*    -ms-transform: translateY(-50%);*/
-/*    transform: translateY(-50%);*/
-/*}*/
+.slide.cover.w img,.slide.cover.w svg,.slide.cover.w video,.slide.cover.w object,.slide.cover.w canvas,.slide.cover.w iframe {
+    top: 50%;
+    width: 100%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+}
 
-/*.slide.cover.h img,.slide.cover.h svg,.slide.cover.h video,.slide.cover.h object,.slide.cover.h canvas,.slide.cover.h iframe {*/
-/*    left: 50%;*/
-/*    height: 100%;*/
-/*    -webkit-transform: translateX(-50%);*/
-/*    -ms-transform: translateX(-50%);*/
-/*    transform: translateX(-50%);*/
-/*}*/
+.slide.cover.h img,.slide.cover.h svg,.slide.cover.h video,.slide.cover.h object,.slide.cover.h canvas,.slide.cover.h iframe {
+    left: 50%;
+    height: 100%;
+    -webkit-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    transform: translateX(-50%);
+}
 
-/*.slide.cover.w.h img,.slide.cover.w.h svg,.slide.cover.w.h video,.slide.cover.w.h object,.slide.cover.w.h canvas,.slide.cover.w.h iframe {*/
-/*    top: 0;*/
-/*    left: 0;*/
-/*    -webkit-transform: none;*/
-/*    -ms-transform: none;*/
-/*    transform: none;*/
-/*}*/
+.slide.cover.w.h img,.slide.cover.w.h svg,.slide.cover.w.h video,.slide.cover.w.h object,.slide.cover.w.h canvas,.slide.cover.w.h iframe {
+    top: 0;
+    left: 0;
+    -webkit-transform: none;
+    -ms-transform: none;
+    transform: none;
+}
 
 .slide.shout {
     background: #647819;
