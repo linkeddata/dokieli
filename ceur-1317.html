@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xml:lang="en" lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <title>CEUR-WS.org/Vol-1317 - Ontology Matching 2014</title>
+        <link rel="stylesheet alternate" media="all" title="LNCS" href="http://linked-research.270a.info/media/css/lncs.css"/>
+        <link rel="stylesheet alternate" media="all" title="ACM" href="http://linked-research.270a.info/media/css/acm.css"/>
+        <link rel="stylesheet" media="all" title="CEUR" href="http://ceur-ws.org/ceur-ws.css"/>
+        <link rel="stylesheet alternate" href="http://www.w3.org/StyleSheets/TR/W3C-REC.css" media="all" title="W3C-REC"/>
+        <link rel="stylesheet" media="all" href="http://linked-research.270a.info/media/css/lr.css"/>
+        <script src="http://code.jquery.com/jquery-2.1.3.min.js"></script>
+        <script src="http://linked-research.270a.info/scripts/html.sortable.min.js"></script>
+        <script src="http://linked-research.270a.info/scripts/lr.js"></script>
+    </head>
+
+    <body about="[this:]" typeof="foaf:Document sioc:Post swrc:Proceedings prov:Entity" class="hfeed" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# cc: http://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# schema: http://schema.org/ rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# org: http://www.w3.org/ns/org# biblio: http://purl.org/net/biblio# bibo: http://purl.org/ontology/bibo/ book: http://purl.org/NET/book/vocab# ov: http://open.vocab.org/terms/ doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ sro: http://salt.semanticauthoring.org/ontologies/sro# swrc: http://swrc.ontoware.org/ontology# this: http://ceur-ws.org/Vol-1059/">
+        <article class="hentry">
+
+            <h1 class="entry-title" property="dcterms:title">OM-2014</h1>
+
+            <div id="authors">
+                <dl id="author-name">
+                    <dt>Edited by</dt>
+                    <dd id="author-1"><span about="[this:]" rel="dcterms:contributor foaf:maker"><a about="[_:PavelShvaiko]" typeof="foaf:Person" rel="foaf:homepage" property="foaf:name" href="http://www.dit.unitn.it/~pavel">Pavel Shvaiko</a></span><sup><a href="#author-org-1">1</a></sup></dd>
+                    <dd id="author-2"><span about="[this:]" rel="dcterms:contributor foaf:maker"><a about="[_:JérômeEuzena]" typeof="foaf:Person" rel="foaf:homepage" property="foaf:name" href="http://exmo.inrialpes.fr/~euzenat">Jérôme Euzena</a></span><sup><a href="#author-org-2">2</a></sup></dd>
+                    <dd id="author-3"><span about="[this:]" rel="dcterms:contributor foaf:maker"><a about="[_:MingMao]" typeof="foaf:Person" rel="foaf:homepage" property="foaf:name" href="https://www.linkedin.com/in/mingmao">Ming Mao</a></span><sup><a href="#author-org-3">3</a></sup></dd>
+                    <dd id="author-4"><span about="[this:]" rel="dcterms:contributor foaf:maker"><a about="[_:ErnestoJiménezRuiz]" typeof="foaf:Person" rel="foaf:homepage" property="foaf:name" href="http://www.cs.ox.ac.uk/isg/people/ernesto.jimenez/">Ernesto Jiménez-Ruiz</a></span><sup><a href="#author-org-4">4</a></sup><sup><a href="#author-email-3">d</a></sup></dd>
+                    <dd id="author-5"><span about="[this:]" rel="dcterms:contributor foaf:maker"><a about="[_:JuanziLi]" typeof="foaf:Person" rel="foaf:homepage" property="foaf:name" href="http://www.cs.tsinghua.edu.cn/publish/csen/4623/2010/20101224174815852865998/20101224174815852865998_.html">Juanzi Li</a></span><sup><a href="#author-org-5">5</a></sup></dd>
+                    <dd id="author-6"><span about="[this:]" rel="dcterms:contributor foaf:maker"><a about="[_:AxelCyrilleNgongaNgomo]" typeof="foaf:Person" rel="foaf:homepage" property="foaf:name" href="http://aksw.org/AxelNgonga">Axel-Cyrille Ngonga Ngomo</a></span><sup><a href="#author-org-6">6</a></sup></dd>
+                </dl>
+
+                <ul id="author-org">
+                    <li id="author-org-1"><sup>1</sup><a about="[_:TasLab]" typeof="foaf:Organization" property="foaf:name" rel="foaf:homepage" href="">TasLab</a>, Informatica Trentina, Italy</li>
+                    <li id="author-org-2"><sup>2</sup><a about="[_:INRIA]" typeof="foaf:Organization" property="foaf:name" rel="foaf:homepage" href="http://www.inria.fr/">INRIA &amp; LIG</a>, France</li>
+                    <li id="author-org-3"><sup>3</sup><a about="[_:ElectronicArts]" typeof="foaf:Organization" property="foaf:name" rel="foaf:homepage" href="http://www.ea.com/">Electronic Arts</a>, USA</li>
+                    <li id="author-org-4"><sup>4</sup><a about="[_:UniversityofOxford]" typeof="foaf:Organization" property="foaf:name" rel="foaf:homepage" href="http://www.ox.ac.uk/">University of Oxford</a>, UK</li>
+                    <li id="author-org-5"><sup>5</sup><a about="[_:TsinghuaUniversity]" typeof="foaf:Organization" property="foaf:name" rel="foaf:homepage" href="http://www.tsinghua.edu.cn/">Tsinghua University</a>, China</li>
+                    <li id="author-org-6"><sup>6</sup><a about="[_:LeipzigUniversity]" typeof="foaf:Organization" property="foaf:name" rel="foaf:homepage" href="http://www.zv.uni-leipzig.de/">University of Leipzig</a>, Germany</li>
+                </ul>
+                <span about="[_:PavelShvaiko]" rel="org:memberOf" resource="[_:LeipzigUniversity]"></span>
+                <span about="[_:JérômeEuzena]" rel="org:memberOf" resource="[_:INRIA]"></span>
+                <span about="[_:MingMao]" rel="org:memberOf" resource="[_:ElectronicArts]"></span>
+                <span about="[_:ErnestoJiménez-Ruiz]" rel="org:memberOf" resource="[_:UniversityofOxford]"></span>
+                <span about="[_:Juanzi Li]" rel="org:memberOf" resource="[_:TsinghuaUniversity]"></span>
+                <span about="[_:AxelCyrilleNgongaNgomo]" rel="org:memberOf" resource="[_:LeipzigUniversity]"></span>
+            </div>
+
+            <dl id="document-identifier">
+                <dt>Document ID</dt>
+                <dd><a href="http://ceur-ws.org/Vol-1317/">http://ceur-ws.org/Vol-1317/</a></dd>
+                <dt>URN</dt>
+                <dd property="bibo:uri" xml:lang="">urn:nbn:de:0074-1317-8</dd>
+                <dt>Volume</dt>
+                <dd property="bibo:volume" xml:lang="">1317</dd>
+            </dl>
+
+
+            <dl id="document-appeared">
+                <dt>Proceedings</dt>
+                <dd><a about="[this:]" rel="bibo:presentedAt" href="http://ceur-ws.org/resource/workshop/1317">Proceedings of the 9th International Workshop on Ontology Matching</a></dd>
+                <dd>Collocated with the 13th International Semantic Web Conference (<a about="http://ceur-ws.org/resource/workshop/1317" rel="swrc:isSubEventOf" resource="http://ceur-ws.org/resource/conference/ISWC-2014" href="http://ceur-ws.org/resource/conference/ISWC-2014">ISWC 2014</a>)</dd>
+                <dd about="http://ceur-ws.org/resource/workshop/1317"><a rel="cal:location" resource="[dbr:Riva_del_Garda]" href="http://en.wikipedia.org/wiki/Riva_del_Garda">Riva del Garda</a>, Trentino, Italy, <span property="cal:dtstart cal:dtend" content="2014-10-20" datatype="xsd:date">October 20, 2014</span></dd>
+            </dl>
+
+            <dl id="document-published">
+                <dt>Published</dt>
+                <dd property="dcterms:published" content="2014-12-16T00:00:00Z" datatype="xsd:dateTime">2014-12-16</dd>
+            </dl>
+
+            <dl id="document-modified">
+                <dt>Modified</dt>
+                <dd property="dcterms:modified" content="2014-12-16T00:00:00Z" datatype="xsd:dateTime">2014-12-16</dd>
+            </dl>
+
+            <dl id="document-license">
+                <dt>License</dt>
+                <dd><a about="[this:]" rel="license cc:license" href="http://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0 Universal</a></dd>
+            </dl>
+
+
+            <div id="content" class="entry-content">
+                <section id="keywords" about="[this:]">
+                    <h2>Keywords</h2>
+                    <div>
+                        <ul rel="dcterms:subject">
+                            <li><a resource="[dbr:Knowledge_acquisition]" href="http://en.wikipedia.org/wiki/Ontology_alignment">Ontology alignment</a></li>
+                            <li><a resource="[dbr:Linked_Data]" href="http://en.wikipedia.org/wiki/Data_integration">Data integration</a></li>
+                            <li><a resource="[dbr:Semantic_publishing]" href="http://en.wikipedia.org/wiki/Semantic_web">Semantic web</a></li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="overview" about="[this:]" rel="dcterms:hasPart" resource="[this:#overview]">
+                    <h2 about="[this:#overview]" property="dcterms:title">Overview</h2>
+                    <div about="[this:#overview]" property="dcterms:description">
+                        <p><a href="http://ceur-ws.org/Vol-1317/om2014_preface.pdf">Preface</a></p>
+                    </div>
+                </section>
+
+
+                <section id="technical-papers" about="[this:]" rel="dcterms:hasPart" resource="[this:#technical-papers]">
+                    <h2 about="[this:#technical-papers]" property="dcterms:title">Technical papers</h2>
+                    <div about="[this:#technical-papers]" property="dcterms:description">
+
+                    </div>
+                </section>
+
+
+                <section id="oaei-papers" about="[this:]" rel="dcterms:hasPart" resource="[this:#oaei-papers]">
+                    <h2 about="[this:#oaei-papers]" property="dcterms:title">OAEI papers</h2>
+                    <div about="[this:#oaei-papers]" property="dcterms:description">
+
+                    </div>
+                </section>
+
+                <section id="posters" about="[this:]" rel="dcterms:hasPart" resource="[this:#posters]">
+                    <h2 about="[this:#posters]" property="dcterms:title">Posters</h2>
+                    <div about="[this:#posters]" property="dcterms:description">
+                        <ul>
+                            <li id="om2014_poster1" about="[this:]" rel="dcterms:hasPart" resource="[this:#om2014_poster1]">
+                                <span class="CEURTITLE"><a about="[this:#om2014_poster1]" rel="dcterms:hasFormat" property="dcterms:title" href="om2014_poster1.pdf">Evaluation of string normalisation modules for string-based biomedical vocabularies alignment with AnAGram</a></span>
+                                <dl class="CEURPAGES">
+                                    <dt>Pages</dt>
+                                    <dd><span about="[this:#om2014_poster1]" property="bibo:pageStart" xml:lang="">170</span>-<span about="[this:#om2014_poster1]" property="bibo:pageEnd" xml:lang="">171</span><span about="[this:#om2014_poster1]" property="bibo:numPages" content="2" xml:lang=""></span></dd>
+                                </dl>
+                                <dl class="CEURAUTHORS">
+                                    <dt>Authors</dt>
+                                    <dd><span about="[this:#om2014_poster1]" rel="foaf:maker"><a about="http://ceur-ws.org/resource/person/Anique%20van%20Berne" typeof="foaf:Person" rel="foaf:homepage" property="foaf:name" href="http://ceur-ws.org/resource/person/Anique%20van%20Berne">Anique van Berne</a></span></dd>
+                                    <dd><span about="[this:#om2014_poster1]" rel="foaf:maker"><a about="http://ceur-ws.org/resource/person/Veronique%20Malais%C3%A9" typeof="foaf:Person" rel="foaf:homepage" property="foaf:name"  href="http://ceur-ws.org/resource/person/Veronique%20Malais%C3%A9">Veronique Malaisé</a></span></dd>
+                                </dl>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section id="proceedings-data" about="[this:]" rel="dcterms:hasPart" resource="[this:#proceedings-data]">
+                    <h2 about="[this:#proceedings-data]" property="dcterms:title">Proceedings Data</h2>
+                    <div about="[this:#proceedings-data]" property="dcterms:description">
+                        <p><a href="http://ceur-ws.org/Vol-1317/om2014_proceedings.pdf">Complete proceedings in one PDF file</a></p>
+                    </div>
+                </section>
+            </div>
+        </article>
+    </body>
+</html>
