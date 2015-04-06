@@ -406,6 +406,14 @@ var LR = {
             return unescape(decodeURIComponent(window.atob(s)));
         },
 
+        encodeString: function(string) {
+	        return encodeURIComponent(string).replace(/'/g,"%27").replace(/"/g,"%22");
+        },
+
+        decodeString: function(string) {
+	        return decodeURIComponent(string.replace(/\+/g,  " "));
+        },
+
         showFragment: function() {
             $(document).on({
                 mouseenter: function () {
