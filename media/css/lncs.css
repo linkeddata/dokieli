@@ -520,9 +520,13 @@ content:",";
 content:"" !important;
 }
 
+#document-identifier dt:nth-child(n+2):before {
+content:"\A";
+white-space:pre;
+}
+
 #abstract h2:before,
 #document-status h2:before,
-#document-identifier dt:before,
 #document-purpose dt:before,
 #document-published dt:before,
 #document-modified dt:before,
