@@ -856,8 +856,8 @@ display:none;
 display:none;
 }
 .on {
-display:block;
+display:block !important;
 }
 .off {
-display:none;
+display:none !important;
 }
