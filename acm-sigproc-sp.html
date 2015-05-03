@@ -249,7 +249,7 @@
                         <section id="citations" about="[this:]" rel="dcterms:hasPart" resource="[this:#citations]">
                             <h3 about="[this:#citations]" property="dcterms:title">Citations</h3>
                             <div about="[this:#citations]" property="dcterms:description">
-                                <p>Citations to articles [<a class="ref" href="#1">1</a>, [<a class="ref" href="#2">2</a>, <a class="ref" href="#3">3</a>, <a class="ref" href="#4">4</a>], conference proceedings [<a class="ref" href="#3">3</a>] or books <cites>[<a class="ref" href="#5">5</a>, <a class="ref" href="#6">6</a>]</cites> listed in the Bibliography section of your article will occur throughout the text of your article. You should use BibTeX to automatically produce this bibliography; you simply need to insert one of several citation commands with a key of the item cited in the proper location in the <code>.tex</code> file [<a class="ref" href="#5">5</a>]. The key is a short reference you invent to uniquely identify each work; in this sample document, the key is the first author’s surname and a word from the title. This identifying key is included with each item in the <code>.bib</code> file for your article.</p>
+                                <p>Citations to articles [<a class="ref" href="#1">1</a>, [<a class="ref" href="#2">2</a>, <a class="ref" href="#3">3</a>, <a class="ref" href="#4">4</a>], conference proceedings [<a class="ref" href="#3">3</a>] or books <cite>[<a class="ref" href="#5">5</a>, <a class="ref" href="#6">6</a>]</cite> listed in the Bibliography section of your article will occur throughout the text of your article. You should use BibTeX to automatically produce this bibliography; you simply need to insert one of several citation commands with a key of the item cited in the proper location in the <code>.tex</code> file [<a class="ref" href="#5">5</a>]. The key is a short reference you invent to uniquely identify each work; in this sample document, the key is the first author’s surname and a word from the title. This identifying key is included with each item in the <code>.bib</code> file for your article.</p>
 
                                 <p>The details of the construction of the <code>.bib</code> file are beyond the scope of this sample document, but more information can be found in the <em>Author’s Guide</em>, and exhaustive details in the <em><span class="latex">L<span>a</span>T<span>e</span>X</span> User’s Guide</em>[<a class="ref" href="#5">5</a>].</p>
 
@@ -262,9 +262,9 @@
                             <div about="[this:#tables]" property="dcterms:description">
                                 <p>Because tables cannot be split across pages, the best placement for them is typically the top of the page nearest their initial cite. To ensure this proper <q>floating</q> placement of tables, use the environment <strong>table</strong> to enclose the table’s contents and the table caption. The contents of the table itself must go in the <strong>tabular</strong> environment, to be aligned properly in rows and columns, with the desired horizontal and vertical rules. Again, detailed instructions on <strong>tabular</strong> material is found in the <em><span class="latex">L<span>a</span>T<span>e</span>X</span> User’s Guide</em>.</p>
 
-                                <p>Immediately following this sentence is the point at which <cite href="#tablefreq" class="table"></cite> is included in the input file; compare the placement of the table here with the table in the printed dvi output of this document.</p>
+                                <p>Immediately following this sentence is the point at which Table [<a href="#frequency-of-special-characters">Frequency of Special Characters</a>] is included in the input file; compare the placement of the table here with the table in the printed dvi output of this document.</p>
 
-                                <table>
+                                <table id="frequency-of-special-characters">
                                     <caption>Frequency of Special Characters</caption>
                                     <thead>
                                         <tr>
@@ -573,7 +573,7 @@
 
                                 <p>Complete rules about using these environments and using the two different creation commands are in the <em>Author’s Guide</em>; please consult it for more detailed instructions. If you need to use another construct, not listed therein, which you want to have the same formatting as the Theorem or the Definition[<a class="ref" href="#6">6</a>] shown above, use the <code>\newtheorem</code> or the <code>\newdef</code> command, respectively, to create it.</p>
 
-                                <table>
+                                <table id="some-typical-commands">
                                     <caption>Some Typical Commands</caption>
                                     <thead>
                                         <tr>
