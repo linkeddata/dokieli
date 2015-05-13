@@ -402,16 +402,27 @@ transform:none;
 display:block;
 text-decoration:none;
 }
-.slide.cover dl.performer {
+.slide.cover dl.performer,
+.slide.cover dl.organisations {
 float:right;
 width:33%;
-line-height:1.6;
 margin-bottom:1em;
-font-size:0.9em;
 }
-.slide.cover dl.performer dt {
+.slide.cover dl.performer dt,
+.slide.cover dl.organisations dt {
 font-weight:normal;
 font-family:"CMU Sans Serif",sans-serif !important;
+}
+.slide.cover dl.organisations dt {
+display:none;
+}
+
+.slide.cover dl.performer {
+line-height:1.6;
+}
+.slide.cover dl.organisations dd {
+line-height:1;
+margin-bottom:0.5em;
 }
 
 .slide.cover footer {
