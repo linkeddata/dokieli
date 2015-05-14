@@ -54,12 +54,12 @@ ol,ul {
 }
 
 blockquote,q {
-    quotes: none;
+/*    quotes: none;*/
 }
 
 blockquote:before,blockquote:after,q:before,q:after {
-    content: '';
-    content: none;
+/*    content: '';
+    content: none;*/
 }
 
 table {
@@ -426,7 +426,7 @@ margin-bottom:0.5em;
 }
 
 .slide.cover footer {
-padding:0 0 0 260px;
+padding:0 0 0 128px;
 }
 .slide.cover footer p {
 font-size:0.9em;
@@ -584,8 +584,8 @@ z-index:1;
 .slide footer .license {
 font-size:0.6em;
 position:absolute;
-top:25px;
-left:128px;
+top:30px;
+left:5px;
 }
 
 @media screen {
