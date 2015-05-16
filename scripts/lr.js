@@ -397,37 +397,40 @@ var LR = {
             else { tableList = ['content', 'figure', 'table']; }
 
             tableList.forEach(function(element) {
-                switch(element) {
-                    case 'figure':
-                        titleType = 'figcaption';
-                        tableHeading = 'Table of Figures';
-                        break;
-                    case 'table':
-                        titleType = 'caption';
-                        tableHeading = 'Table of Tables';
-                        break;
-                    case 'content': default:
-                        titleType = '';
-                        tableHeading = 'Table of Contents';
-                        break;
-                }
+                var e = $(element);
+                if (element == 'content' || e.length > 0) {
+                    switch(element) {
+                        case 'figure':
+                            titleType = 'figcaption';
+                            tableHeading = 'Table of Figures';
+                            break;
+                        case 'table':
+                            titleType = 'caption';
+                            tableHeading = 'Table of Tables';
+                            break;
+                        case 'content': default:
+                            titleType = '';
+                            tableHeading = 'Table of Contents';
+                            break;
+                    }
 
-                s += '<nav id="table-of-'+ element +'s">';
-                s += '<h2>' + tableHeading + '</h2>';
-                s += '<div><ol class="toc">';
-                if (element == 'content') {
-                    s += LR.U.getListOfSections($('h1 ~ div section:not([class~="slide"])'), false);
-                }
-                else {
-                    $(element).each(function(i,v) {
-                        elementId = $(this).attr('id');
-                        elementTitle = $(this).find(titleType).text();
+                    s += '<nav id="table-of-'+ element +'s">';
+                    s += '<h2>' + tableHeading + '</h2>';
+                    s += '<div><ol class="toc">';
+                    if (element == 'content') {
+                        s += LR.U.getListOfSections($('h1 ~ div section:not([class~="slide"])'), false);
+                    }
+                    else {
+                        e.each(function(i,v) {
+                            elementId = $(this).attr('id');
+                            elementTitle = $(this).find(titleType).text();
 
-                        s += '<li><a href="#' + elementId +'">' + elementTitle  +'</a></li>';
-                    });
+                            s += '<li><a href="#' + elementId +'">' + elementTitle  +'</a></li>';
+                        });
+                    }
+                    s += '</ol></div>';
+                    s += '</nav>';
                 }
-                s += '</ol></div>';
-                s += '</nav>';
             });
 
             //XXX: Tries to find a suitable place to insert.
