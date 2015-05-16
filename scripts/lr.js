@@ -389,11 +389,14 @@ var LR = {
             return s;
         },
 
-        buildTableOfStuff: function(element) {
+        buildTableOfStuff: function(listType) {
             var s = elementId = elementTitle = titleType = tableHeading = '';
-            var e = $(element);
+            var tableList = [];
 
-            if (element == 'content' || element == 'figure' || element == 'table') {
+            if (listType) { tableList = [listType]; }
+            else { tableList = ['content', 'figure', 'table']; }
+
+            tableList.forEach(function(element) {
                 switch(element) {
                     case 'figure':
                         titleType = 'figcaption';
@@ -416,7 +419,7 @@ var LR = {
                     s += LR.U.getListOfSections($('h1 ~ div section:not([class~="slide"])'), false);
                 }
                 else {
-                    e.each(function(i,v) {
+                    $(element).each(function(i,v) {
                         elementId = $(this).attr('id');
                         elementTitle = $(this).find(titleType).text();
 
@@ -425,7 +428,7 @@ var LR = {
                 }
                 s += '</ol></div>';
                 s += '</nav>';
-            }
+            });
 
             //XXX: Tries to find a suitable place to insert.
             var i = $('#document-status');
