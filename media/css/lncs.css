@@ -197,7 +197,7 @@ word-break:break-all;
 
 body {
 color:#000000;
-font-family: "CMU Serif", serif;
+font-family: "CMU Serif", "GNU Unifont", "FreeSerif", "Segoe UI Symbol", serif;
 /*font-size:1.689vw;*/
 font-size:162.448%;
 line-height:1.231;
