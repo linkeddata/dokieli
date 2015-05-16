@@ -79,7 +79,7 @@ var LR = {
             dMenuButton.addClass('show');
             dMenuButton.attr('title', 'Open Menu');
 
-            $('#table-of-contents').remove();
+            $('#toc').remove();
             $('#embed-data-entry').remove();
             LR.U.hideStorage();
         },
@@ -265,7 +265,6 @@ var LR = {
         },
 
         showToC: function() {
-            //XXX: This looks like this for readability.
             var section = $('h1 ~ div section:not([class~="slide"])');
 
             if (section.length > 0) {
@@ -276,49 +275,8 @@ var LR = {
                     sortable = ' sortable';
                 }
 
-                s += '<aside id="table-of-contents" class="lr on' + sortable + '"><button class="close">❌</button><h2>Table of Contents</h2><ol class="toc sortable">';
-                section.each(function(i,section) {
-                    var h = $(section).find('> h2');
-                    if (h.length > 0) {
-                        s += '<li data-id="' + section.id +'"><a href="#' + section.id + '">' + h.text() + '</a>';
-                        section = $(section).find('section[rel="dcterms:hasPart"]:not([class~="slide"])');
-                        if (section.length > 0) {
-                            s += '<ol class="sortable">';
-                            section.each(function(j, section) {
-                                var h = $(section).find('> h3');
-                                if (h.length > 0) {
-                                    s += '<li data-id="' + section.id +'"><a href="#' + section.id + '">' + h.text() + '</a>';
-                                    section = $(section).find('section[rel="dcterms:hasPart"]:not([class~="slide"])');
-                                    if (section.length > 0) {
-                                        s += '<ol class="sortable">';
-                                        section.each(function(k, section) {
-                                            var h = $(section).find('> h4');
-                                            if (h.length > 0) {
-                                                s += '<li data-id="' + section.id +'"><a href="#' + section.id + '">' + h.text() + '</a>';
-                                                section = $(section).find('section[rel="dcterms:hasPart"]:not([class~="slide"])');
-                                                if (section.length > 0) {
-                                                    s += '<ol class="sortable">';
-                                                    section.each(function(k, section) {
-                                                        var h = $(section).find('> h5');
-                                                        if (h.length > 0) {
-                                                            s += '<li data-id="' + section.id +'"><a href="#' + section.id + '">' + h.text() + '</a></li>';
-                                                        }
-                                                    });
-                                                    s += '</ol>';
-                                                }
-                                                s += '</li>';
-                                            }
-                                        });
-                                        s += '</ol>';
-                                    }
-                                    s += '</li>';
-                                }
-                            });
-                            s += '</ol>';
-                        }
-                        s += '</li>';
-                    }
-                });
+                s += '<aside id="toc" class="lr on' + sortable + '"><button class="close">❌</button><h2>Table of Contents</h2><ol class="toc' + sortable + '">';
+                s += LR.U.getListOfSections(section, true);
                 s += '</ol></aside>';
 
                 $('body').append(s);
@@ -381,12 +339,61 @@ var LR = {
             });
         },
 
+        getListOfSections: function(section, sortable) {
+            var s = attributeClass = '';
+            if (sortable == true) { attributeClass = ' class="sortable"'; }
+
+            section.each(function(i,section) {
+                var h = $(section).find('> h2');
+                if (h.length > 0) {
+                    s += '<li data-id="' + section.id +'"><a href="#' + section.id + '">' + h.text() + '</a>';
+                    section = $(section).find('section[rel="dcterms:hasPart"]:not([class~="slide"])');
+                    if (section.length > 0) {
+                        s += '<ol'+ attributeClass +'>';
+                        section.each(function(j, section) {
+                            var h = $(section).find('> h3');
+                            if (h.length > 0) {
+                                s += '<li data-id="' + section.id +'"><a href="#' + section.id + '">' + h.text() + '</a>';
+                                section = $(section).find('section[rel="dcterms:hasPart"]:not([class~="slide"])');
+                                if (section.length > 0) {
+                                    s += '<ol'+ attributeClass +'>';
+                                    section.each(function(k, section) {
+                                        var h = $(section).find('> h4');
+                                        if (h.length > 0) {
+                                            s += '<li data-id="' + section.id +'"><a href="#' + section.id + '">' + h.text() + '</a>';
+                                            section = $(section).find('section[rel="dcterms:hasPart"]:not([class~="slide"])');
+                                            if (section.length > 0) {
+                                                s += '<ol'+ attributeClass +'>';
+                                                section.each(function(k, section) {
+                                                    var h = $(section).find('> h5');
+                                                    if (h.length > 0) {
+                                                        s += '<li data-id="' + section.id +'"><a href="#' + section.id + '">' + h.text() + '</a></li>';
+                                                    }
+                                                });
+                                                s += '</ol>';
+                                            }
+                                            s += '</li>';
+                                        }
+                                    });
+                                    s += '</ol>';
+                                }
+                                s += '</li>';
+                            }
+                        });
+                        s += '</ol>';
+                    }
+                    s += '</li>';
+                }
+            });
+
+            return s;
+        },
 
         buildTableOfStuff: function(element) {
             var s = elementId = elementTitle = titleType = tableHeading = '';
             var e = $(element);
 
-            if (e.length > 0 && (element == 'figure' || element == 'table')) {
+            if (element == 'content' || element == 'figure' || element == 'table') {
                 switch(element) {
                     case 'figure':
                         titleType = 'figcaption';
@@ -396,18 +403,26 @@ var LR = {
                         titleType = 'caption';
                         tableHeading = 'Table of Tables';
                         break;
+                    case 'content': default:
+                        titleType = '';
+                        tableHeading = 'Table of Contents';
+                        break;
                 }
 
                 s += '<nav id="table-of-'+ element +'s">';
                 s += '<h2>' + tableHeading + '</h2>';
-                s += '<div><ol>';
-                e.each(function(i,v) {
-                    console.log($(this));
-                    elementId = $(this).attr('id');
-                    elementTitle = $(this).find(titleType).text();
+                s += '<div><ol class="toc">';
+                if (element == 'content') {
+                    s += LR.U.getListOfSections($('h1 ~ div section:not([class~="slide"])'), false);
+                }
+                else {
+                    e.each(function(i,v) {
+                        elementId = $(this).attr('id');
+                        elementTitle = $(this).find(titleType).text();
 
-                    s += '<li><a href="#' + elementId +'">' + elementTitle  +'</a></li>';
-                });
+                        s += '<li><a href="#' + elementId +'">' + elementTitle  +'</a></li>';
+                    });
+                }
                 s += '</ol></div>';
                 s += '</nav>';
             }
