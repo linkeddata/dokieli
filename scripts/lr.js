@@ -382,6 +382,58 @@ var LR = {
         },
 
 
+        buildTableOfStuff: function(element) {
+            var s = elementId = elementTitle = titleType = tableHeading = '';
+            var e = $(element);
+
+            if (e.length > 0 && (element == 'figure' || element == 'table')) {
+                switch(element) {
+                    case 'figure':
+                        titleType = 'figcaption';
+                        tableHeading = 'Table of Figures';
+                        break;
+                    case 'table':
+                        titleType = 'caption';
+                        tableHeading = 'Table of Tables';
+                        break;
+                }
+
+                s += '<nav id="table-of-'+ element +'s">';
+                s += '<h2>' + tableHeading + '</h2>';
+                s += '<div><ol>';
+                e.each(function(i,v) {
+                    console.log($(this));
+                    elementId = $(this).attr('id');
+                    elementTitle = $(this).find(titleType).text();
+
+                    s += '<li><a href="#' + elementId +'">' + elementTitle  +'</a></li>';
+                });
+                s += '</ol></div>';
+                s += '</nav>';
+            }
+
+            //XXX: Tries to find a suitable place to insert.
+            var i = $('#document-status');
+            if (i.length > 0) { i.after(s); }
+            else {
+                i = $('#introduction');
+                if (i.length > 0) { i.before(s); }
+                else {
+                    i = $('#prologue');
+                    if (i.length > 0) { i.before(s); }
+                    else {
+                        i = $('#keywords');
+                        if (i.length > 0) { i.after(s); }
+                        else {
+                            i = $('#categories-and-subject-descriptors');
+                            if (i.length > 0) { i.after(s); }
+                            else { $('#content').prepend(s); }
+                        }
+                    }
+                }
+            }
+        },
+
         buttonClose: function() {
             $(document).on('click', 'button.close', function(e) { $(this).parent().remove(); });
         },
