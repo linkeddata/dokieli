@@ -504,6 +504,13 @@ background-repeat:no-repeat;
 background-size:auto 80%;
 }
 */
+
+.sparkline {
+    height: 1em;
+    max-width: 100px;
+    width: 100%;
+}
+
 .slide .place {
     position: absolute;
     top: 50%;
