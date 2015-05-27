@@ -735,6 +735,9 @@ width:100%;
 margin-top:1em;
 text-align:left;
 }
+table + table {
+margin-top:2em;
+}
 caption {
 text-align:left;
 font-size:0.923em;
