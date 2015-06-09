@@ -224,7 +224,7 @@ var LR = {
             var count = LR.U.contentCount(content);
 
             var contributors = '<ul class="contributors">';
-            $('#authors *[rel~="schema:contributor"]').each(function(i,contributor) {
+            $('#authors *[rel*="contributor"]').each(function(i,contributor) {
                 contributors += '<li>' + $(this).html() + '</li>';
             });
             contributors += '</ul>';
@@ -310,7 +310,7 @@ var LR = {
 
                 var endParentId = $(ui.endparent).parent().attr('data-id') || 'content';
                 var endParent = $('#' + endParentId);
-                var endParentHeading = endParent.find('> *[property="schema:name"]');
+                var endParentHeading = endParent.find('> :header');
                 endParentHeading = (endParentHeading.length > 0) ? parseInt(endParentHeading.prop("tagName").substring(1)) : 1;
                 var afterNode = (endParentHeading == 1) ? endParent.find('> section:nth-of-type(' + ui.item.index() +')')  : endParent.find('*:nth-of-type(1) > section:nth-of-type(' + ui.item.index() +')');
 
@@ -319,11 +319,11 @@ var LR = {
 
                 var nodeDetached = node.detach();
 
-                var nodeDetachedHeading = nodeDetached.find('> *[property="schema:name"]');
+                var nodeDetachedHeading = nodeDetached.find('> :header');
                 nodeDetachedHeading = (nodeDetachedHeading.length > 0) ? parseInt(nodeDetachedHeading.prop("tagName").substring(1)) : 1;
 
                 var nH = (endParentHeading + 1) - nodeDetachedHeading;
-                nodeDetached.find('*[property="schema:name"]:nth-of-type(1)').each(function(i, heading) {
+                nodeDetached.find(':header:nth-of-type(1)').each(function(i, heading) {
                     var oldHeadingIndex = parseInt($(heading).prop("tagName").substring(1));
                     var newHeadingIndex = oldHeadingIndex + nH;
 
@@ -347,21 +347,21 @@ var LR = {
                 var h = $(section).find('> h2');
                 if (h.length > 0) {
                     s += '<li data-id="' + section.id +'"><a href="#' + section.id + '">' + h.text() + '</a>';
-                    section = $(section).find('section[rel="schema:hasPart"]:not([class~="slide"])');
+                    section = $(section).find('section[rel*="hasPart"]:not([class~="slide"])');
                     if (section.length > 0) {
                         s += '<ol'+ attributeClass +'>';
                         section.each(function(j, section) {
                             var h = $(section).find('> h3');
                             if (h.length > 0) {
                                 s += '<li data-id="' + section.id +'"><a href="#' + section.id + '">' + h.text() + '</a>';
-                                section = $(section).find('section[rel="schema:hasPart"]:not([class~="slide"])');
+                                section = $(section).find('section[rel*="hasPart"]:not([class~="slide"])');
                                 if (section.length > 0) {
                                     s += '<ol'+ attributeClass +'>';
                                     section.each(function(k, section) {
                                         var h = $(section).find('> h4');
                                         if (h.length > 0) {
                                             s += '<li data-id="' + section.id +'"><a href="#' + section.id + '">' + h.text() + '</a>';
-                                            section = $(section).find('section[rel="schema:hasPart"]:not([class~="slide"])');
+                                            section = $(section).find('section[rel*="hasPart"]:not([class~="slide"])');
                                             if (section.length > 0) {
                                                 s += '<ol'+ attributeClass +'>';
                                                 section.each(function(k, section) {
@@ -529,7 +529,7 @@ var LR = {
             //XXX: Encodes strings as UTF-8. Consider storing bytes instead?
             var blob = new Blob([data], {type:'text/html;charset=utf-8'});
             var pattern = /[^\w]+/ig;
-            var title = $('h1[property="schema:name"]').text().toLowerCase().replace(pattern, '-') || "index";
+            var title = $('h1').text().toLowerCase().replace(pattern, '-') || "index";
             var timestamp = LR.U.now().replace(pattern, '') || "now";
 
             var fileName = title + '.' + timestamp + '.html';
