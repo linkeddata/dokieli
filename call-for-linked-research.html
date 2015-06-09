@@ -12,7 +12,7 @@
         <script src="scripts/lr.js"></script>
     </head>
 
-    <body about="[this:]" typeof="foaf:Document sioc:Post biblio:Paper prov:Entity" class="h-feed" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# cc: http://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# schema: http://schema.org/ rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# org: http://www.w3.org/ns/org# biblio: http://purl.org/net/biblio# bibo: http://purl.org/ontology/bibo/ book: http://purl.org/NET/book/vocab# ov: http://open.vocab.org/terms/ doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ sro: http://salt.semanticauthoring.org/ontologies/sro# this: http://csarven.ca/call-for-linked-research">
+    <body about="[this:]" typeof="schema:CreativeWork sioc:Post schema:ScholarlyArticle prov:Entity" class="h-feed" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# cc: http://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# schema: http://schema.org/ rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# org: http://www.w3.org/ns/org# biblio: http://purl.org/net/biblio# bibo: http://purl.org/ontology/bibo/ book: http://purl.org/NET/book/vocab# ov: http://open.vocab.org/terms/ doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ sro: http://salt.semanticauthoring.org/ontologies/sro# this: http://csarven.ca/call-for-linked-research">
         <article class="h-entry">
 
             <h1 class="p-name">Call for Linked Research</h1>
@@ -20,7 +20,7 @@
             <div id="authors">
                 <dl id="author-name">
                     <dt>Authors</dt>
-                    <dd id="author-1"><span about="[this:]" rel="dcterms:creator dcterms:publisher dcterms:contributor"><a about="http://csarven.ca/#i" typeof="foaf:Person" rel="foaf:homepage" property="foaf:name" href="http://csarven.ca/">Sarven Capadisli</a></span></dd>
+                    <dd id="author-1"><span about="[this:]" rel="schema:creator schema:publisher schema:contributor"><a about="http://csarven.ca/#i" typeof="schema:Person" rel="schema:url" property="schema:name" href="http://csarven.ca/">Sarven Capadisli</a></span></dd>
                 </dl>
             </div>
 
@@ -31,12 +31,12 @@
 
             <dl id="document-published" class="on">
                 <dt>Published</dt>
-                <dd><time datetime="2014-07-28" property="dcterms:issued" content="2014-07-28T09:00:00Z" datatype="xsd:dateTime">2014-07-28</time></dd>
+                <dd><time datetime="2014-07-28" property="schema:datePublished" content="2014-07-28T09:00:00Z" datatype="xsd:dateTime">2014-07-28</time></dd>
             </dl>
 
             <dl id="document-license" class="on">
                 <dt>License</dt>
-                <dd><a about="[this:]" rel="license cc:license" href="http://creativecommons.org/licenses/by-sa/4.0/" title="Creative Commons Attribution-ShareAlike 4.0 Unported">CC BY-SA 4.0</a></dd>
+                <dd><a about="[this:]" rel="license schema:license" href="http://creativecommons.org/licenses/by-sa/4.0/" title="Creative Commons Attribution-ShareAlike 4.0 Unported">CC BY-SA 4.0</a></dd>
             </dl>
 
             <dl id="document-purpose">
@@ -44,14 +44,14 @@
                 <dd property="schema:purpose">To encourage the &#8220;do it yourself&#8221; behaviour for sharing and reusing research knowledge.</dd>
             </dl>
 
-            <div property="dcterms:description" id="content" class="e-content">
+            <div property="schema:description" id="content" class="e-content">
                 <p>Scientists and researchers who work in Web Science have to follow the rules that are set by the publisher; researchers need to have read and reuse access to other researchers work, and adopt archaic desktop-native publishing workflows. Publishers try to remain as the middleman for society&#8217;s knowledge acquisition.</p>
 
                 <p>Nowadays, there is more machine-friendly data and documentation made available by the public sector than the Linked Data research community. The general public asks for open and machine-friendly data, and they are following up. Web research publishing on the other hand, is stuck on one &#9733; (star) <a rel="rdfs:seeAlso" href="http://www.w3.org/DesignIssues/LinkedData">Linked Data deployment scheme</a>. The community has difficulty eating its own dogfood for research publication, and fails to deliver its share of the promise.</p>
 
                 <p>There is a social problem. Not a technical one. If you think that there is something fundamentally wrong with this picture, want to voice yourself, and willing to continue to contribute to the vision of the <strong>Web</strong>, then please consider the following before you write your research:</p>
 
-                <dl id="workflow" about="[this:]" rel="dcterms:hasPart" resource="[this:#workflow]">
+                <dl id="workflow" about="[this:]" rel="schema:hasPart" resource="[this:#workflow]">
                     <dt property="rdfs:label">Linked Research: Do It Yourself</dt>
                     <dd>
                         <ol about="[this:#workflow]" typeof="opmw:WorkflowTemplate deo:Model">
@@ -72,7 +72,7 @@
                     </dd>
                 </dl>
 
-                <p id="no-central-authority" about="[#this:no-central-authority]" typeof="sro:Motivation" property="dcterms:description">There is no central authority to judge the value of your contributions. You do not need permission to publish! Control your own research and communication.</p>
+                <p id="no-central-authority" about="[#this:no-central-authority]" typeof="sro:Motivation" property="schema:description">There is no central authority to judge the value of your contributions. You do not need permission to publish! Control your own research and communication.</p>
             </div>
 
         </article>
