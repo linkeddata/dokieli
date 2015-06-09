@@ -160,6 +160,7 @@ h2, h3,
 #document-published dt,
 #document-modified dt,
 #document-appeared dt,
+#document-format dt,
 #appendix dt {
 font-size:1.333em;
 }
@@ -534,20 +535,23 @@ text-align:center;
 
 
 #general-terms li,
-#keywords li {
+#keywords li,
+#document-format dd {
 display:inline;
 }
 #general-terms li:after,
 #categories-and-subject-descriptors li:after {
-content:"; ";
+content:";\00A0";
 }
 #general-terms li:after,
-#keywords li:after {
+#keywords li:after,
+#document-format dd:after {
 content:",\00A0";
 }
 #general-terms li:last-child:after,
 #categories-and-subject-descriptors li:last-child:after,
-#keywords li:last-child:after {
+#keywords li:last-child:after,
+#document-format dd:last-child:after {
 content:"";
 }
 
@@ -575,7 +579,8 @@ display:none;
 #document-identifier dd,
 #document-published dd,
 #document-modified dd,
-#document-appeared dd {
+#document-appeared dd,
+#document-format dd {
 text-align:left;
 margin-left:0;
 }
