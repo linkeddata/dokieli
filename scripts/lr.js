@@ -224,7 +224,7 @@ var LR = {
             var count = LR.U.contentCount(content);
 
             var contributors = '<ul class="contributors">';
-            $('#authors *[rel~="dcterms:contributor"]').each(function(i,contributor) {
+            $('#authors *[rel~="schema:contributor"]').each(function(i,contributor) {
                 contributors += '<li>' + $(this).html() + '</li>';
             });
             contributors += '</ul>';
@@ -310,7 +310,7 @@ var LR = {
 
                 var endParentId = $(ui.endparent).parent().attr('data-id') || 'content';
                 var endParent = $('#' + endParentId);
-                var endParentHeading = endParent.find('> *[property="dcterms:title"]');
+                var endParentHeading = endParent.find('> *[property="schema:name"]');
                 endParentHeading = (endParentHeading.length > 0) ? parseInt(endParentHeading.prop("tagName").substring(1)) : 1;
                 var afterNode = (endParentHeading == 1) ? endParent.find('> section:nth-of-type(' + ui.item.index() +')')  : endParent.find('*:nth-of-type(1) > section:nth-of-type(' + ui.item.index() +')');
 
@@ -319,11 +319,11 @@ var LR = {
 
                 var nodeDetached = node.detach();
 
-                var nodeDetachedHeading = nodeDetached.find('> *[property="dcterms:title"]');
+                var nodeDetachedHeading = nodeDetached.find('> *[property="schema:name"]');
                 nodeDetachedHeading = (nodeDetachedHeading.length > 0) ? parseInt(nodeDetachedHeading.prop("tagName").substring(1)) : 1;
 
                 var nH = (endParentHeading + 1) - nodeDetachedHeading;
-                nodeDetached.find('*[property="dcterms:title"]:nth-of-type(1)').each(function(i, heading) {
+                nodeDetached.find('*[property="schema:name"]:nth-of-type(1)').each(function(i, heading) {
                     var oldHeadingIndex = parseInt($(heading).prop("tagName").substring(1));
                     var newHeadingIndex = oldHeadingIndex + nH;
 
@@ -347,21 +347,21 @@ var LR = {
                 var h = $(section).find('> h2');
                 if (h.length > 0) {
                     s += '<li data-id="' + section.id +'"><a href="#' + section.id + '">' + h.text() + '</a>';
-                    section = $(section).find('section[rel="dcterms:hasPart"]:not([class~="slide"])');
+                    section = $(section).find('section[rel="schema:hasPart"]:not([class~="slide"])');
                     if (section.length > 0) {
                         s += '<ol'+ attributeClass +'>';
                         section.each(function(j, section) {
                             var h = $(section).find('> h3');
                             if (h.length > 0) {
                                 s += '<li data-id="' + section.id +'"><a href="#' + section.id + '">' + h.text() + '</a>';
-                                section = $(section).find('section[rel="dcterms:hasPart"]:not([class~="slide"])');
+                                section = $(section).find('section[rel="schema:hasPart"]:not([class~="slide"])');
                                 if (section.length > 0) {
                                     s += '<ol'+ attributeClass +'>';
                                     section.each(function(k, section) {
                                         var h = $(section).find('> h4');
                                         if (h.length > 0) {
                                             s += '<li data-id="' + section.id +'"><a href="#' + section.id + '">' + h.text() + '</a>';
-                                            section = $(section).find('section[rel="dcterms:hasPart"]:not([class~="slide"])');
+                                            section = $(section).find('section[rel="schema:hasPart"]:not([class~="slide"])');
                                             if (section.length > 0) {
                                                 s += '<ol'+ attributeClass +'>';
                                                 section.each(function(k, section) {
@@ -529,7 +529,7 @@ var LR = {
             //XXX: Encodes strings as UTF-8. Consider storing bytes instead?
             var blob = new Blob([data], {type:'text/html;charset=utf-8'});
             var pattern = /[^\w]+/ig;
-            var title = $('h1[property="dcterms:title"]').text().toLowerCase().replace(pattern, '-') || "index";
+            var title = $('h1[property="schema:name"]').text().toLowerCase().replace(pattern, '-') || "index";
             var timestamp = LR.U.now().replace(pattern, '') || "now";
 
             var fileName = title + '.' + timestamp + '.html';
@@ -658,7 +658,7 @@ var LR = {
                     }
                     if (href) {
                         referenceLink = href.replace(/&/g, "&amp;");
-                        referenceLink = '<a about="[this:]" rel="dcterms:references" href="' + referenceLink + '">' + referenceLink + '</a>';
+                        referenceLink = '<a about="[this:]" rel="schema:citation" href="' + referenceLink + '">' + referenceLink + '</a>';
                         if (title) {
                             referenceLink = ', ' + referenceLink;
                         }
@@ -687,7 +687,7 @@ SELECT ?prefLabel\n\
 WHERE {\n\
     OPTIONAL { <" + iri + "> skos:prefLabel ?prefLabel . }\n\
     OPTIONAL { <" + iri + "> rdfs:label ?prefLabel . }\n\
-    OPTIONAL { <" + iri + "> dcterms:title ?prefLabel . }\n\
+    OPTIONAL { <" + iri + "> schema:name ?prefLabel . }\n\
     OPTIONAL { <" + iri + "> skos:notation ?prefLabel . }\n\
     OPTIONAL { <" + iri + "> dcterms:identifier ?prefLabel . }\n\
     FILTER (LANG(?prefLabel) = '' || LANGMATCHES(LANG(?prefLabel), '" + LR.C.Lang + "'))\n\
