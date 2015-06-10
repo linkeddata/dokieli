@@ -160,6 +160,7 @@ h2, h3,
 #document-published dt,
 #document-modified dt,
 #document-appeared dt,
+#document-in-reply-to dt,
 #document-format dt,
 #appendix dt {
 font-size:1.333em;
@@ -580,6 +581,7 @@ display:none;
 #document-published dd,
 #document-modified dd,
 #document-appeared dd,
+#document-in-reply-to dd,
 #document-format dd {
 text-align:left;
 margin-left:0;
