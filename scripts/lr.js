@@ -288,8 +288,8 @@ var LR = {
 
         sortToC: function() {
             $('.sortable').sortable({
-				connectWith: '.connected'
-			});
+                connectWith: '.connected'
+            });
 
             $('.sortable').sortable().bind('sortupdate', function(e, ui) {
 //ui.item contains the current dragged element.
@@ -480,11 +480,11 @@ var LR = {
         },
 
         encodeString: function(string) {
-	        return encodeURIComponent(string).replace(/'/g,"%27").replace(/"/g,"%22");
+            return encodeURIComponent(string).replace(/'/g,"%27").replace(/"/g,"%22");
         },
 
         decodeString: function(string) {
-	        return decodeURIComponent(string.replace(/\+/g,  " "));
+            return decodeURIComponent(string.replace(/\+/g,  " "));
         },
 
         showFragment: function() {
