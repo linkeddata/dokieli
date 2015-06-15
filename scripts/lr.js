@@ -265,7 +265,7 @@ var LR = {
         },
 
         showToC: function() {
-            var section = $('h1 ~ div section:not([class~="slide"])');
+            var section = $('h1 ~ div section:not([class~="slide"]):not([id^=table-of])');
 
             if (section.length > 0) {
                 var s = '';
