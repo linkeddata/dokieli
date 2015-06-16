@@ -75,9 +75,11 @@ caption, td, th,
 #document-published *,
 #document-modified *,
 #document-appeared *,
+#document-in-reply-to *,
 #document-license *,
 #document-purpose *,
 #document-status *,
+#document-format *,
 #keywords *,
 #general-terms *,
 #categories-and-subject-descriptors *,
@@ -335,7 +337,7 @@ counter-increment: sub-sub-section;
 counter-reset: sub-sub-sub-section;
 }
 
-article section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]) h2:before {
+article section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id^=table-of-]) h2:before {
 content: counter(section) "\00a0\00a0\00a0\00a0";
 }
 
@@ -466,8 +468,10 @@ line-height:1;
 #document-published dt, #document-published dd,
 #document-modified dt, #document-modified dd,
 #document-appeared dt, #document-appeared dd,
+#document-in-reply-to dt, #document-in-reply-to dd,
 #document-license dt, #document-license dd,
 #document-purpose dt, #document-purpose dd,
+#document-format dt, #document-format dd,
 #general-terms h2, #general-terms li,
 #keywords h2, #keywords li,
 #categories-and-subject-descriptors h2, #categories-and-subject-descriptors li {
@@ -531,7 +535,9 @@ white-space:pre;
 #document-published dt:before,
 #document-modified dt:before,
 #document-appeared dt:before,
+#document-in-reply-to dt:before,
 #document-license dt:before,
+#document-format dt:before,
 #categories-and-subject-descriptors h2:before,
 #keywords h2:before,
 #general-terms h2:before,
@@ -551,7 +557,9 @@ content: "";
 #document-published dt:after,
 #document-modified dt:after,
 #document-appeared dt:after,
+#document-in-reply-to dt:after,
 #document-license dt:after,
+#document-format dt:after,
 #general-terms h2:after,
 #categories-and-subject-descriptors h2:after,
 #keywords h2:after {
@@ -584,8 +592,12 @@ content: ".";
 #document-modified dt + dd,
 #document-appeared dt,
 #document-appeared dt + dd,
+#document-in-reply-to dt,
+#document-in-reply-to dt + dd,
 #document-license dt,
-#document-license dt + dd {
+#document-license dt + dd,
+#document-format dt,
+#document-format dd {
 display:inline;
 }
 
@@ -735,6 +747,9 @@ width:100%;
 margin-top:1em;
 text-align:left;
 }
+table + table {
+margin-top:2em;
+}
 caption {
 text-align:left;
 font-size:0.923em;
@@ -769,7 +784,9 @@ text-align:center;
 #document-published,
 #document-modified,
 #document-appeared,
+#document-in-reply-to,
 #document-license,
+#document-format,
 #general-terms,
 #categories-and-subject-descriptors,
 #keywords {
@@ -802,9 +819,13 @@ content:"; ";
 #keywords li:before {
 content:"\2022\0020";
 }
+#document-format dd:after {
+content:",\0020";
+}
 #general-terms li:first-child:before,
 #categories-and-subject-descriptors li:last-child:after,
-#keywords li:first-child:before {
+#keywords li:first-child:before,
+#document-format dd:last-child:after {
 content:"";
 }
 
@@ -815,8 +836,10 @@ content:"";
 #document-published dt,
 #document-modified dt,
 #document-appeared dt,
+#document-in-reply-to dt,
 #document-license dt,
-#document-status dt {
+#document-status dt,
+#document-format dt {
 text-transform:capitalize;
 }
 

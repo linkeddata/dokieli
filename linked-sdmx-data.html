@@ -12,33 +12,30 @@
         <script src="scripts/lr.js"></script>
     </head>
 
-    <body about="[this:]" typeof="foaf:Document sioc:Post biblio:Paper prov:Entity" class="h-feed" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# cc: http://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# schema: http://schema.org/ rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# org: http://www.w3.org/ns/org# biblio: http://purl.org/net/biblio# bibo: http://purl.org/ontology/bibo/ book: http://purl.org/NET/book/vocab# ov: http://open.vocab.org/terms/ doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ sro: http://salt.semanticauthoring.org/ontologies/sro# this: http://csarven.ca/linked-sdmx-data">
+    <body about="[this:]" typeof="schema:CreativeWork sioc:Post schema:ScholarlyArticle prov:Entity" class="h-feed" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# cc: http://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# schema: http://schema.org/ rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# org: http://www.w3.org/ns/org# biblio: http://purl.org/net/biblio# bibo: http://purl.org/ontology/bibo/ book: http://purl.org/NET/book/vocab# ov: http://open.vocab.org/terms/ doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ sro: http://salt.semanticauthoring.org/ontologies/sro# this: http://csarven.ca/linked-sdmx-data">
         <article class="h-entry">
 
-            <h1 class="p-name" property="dcterms:title">Linked SDMX Data</h1>
+            <h1 class="p-name" property="schema:name">Linked SDMX Data</h1>
 
             <div id="authors">
                 <dl id="author-name">
                     <dt>Authors</dt>
-                    <dd id="author-1"><span about="[this:]" rel="dcterms:creator dcterms:publisher dcterms:contributor"><a about="http://csarven.ca/#i" typeof="foaf:Person" rel="foaf:homepage" property="foaf:name" href="http://csarven.ca/">Sarven Capadisli</a></span><sup><a href="#author-org-1">1</a></sup><sup><a href="#author-email-1"></a>✊</sup></dd>
-                    <dd id="author-2"><span about="[this:]" rel="dcterms:contributor"><a about="[_:SörenAuer]" typeof="foaf:Person" rel="foaf:homepage" property="foaf:name" href="http://aksw.org/SoerenAuer">Sören Auer</a></span><sup><a href="#author-org-2">2</a></sup><sup><a href="#author-email-2">⚛</a></sup></dd>
-                    <dd id="author-3"><span about="[this:]" rel="dcterms:contributor"><a about="[_:AxelCyrilleNgongaNgomo]" typeof="foaf:Person" rel="foaf:homepage" property="foaf:name" href="http://aksw.org/AxelNgonga">Axel-Cyrille Ngonga Ngomo</a></span><sup><a href="#author-org-3">3</a></sup><sup><a href="#author-email-3">♔</a></sup></dd>
+                    <dd id="author-1"><span about="[this:]" rel="schema:creator schema:publisher schema:contributor schema:author"><a about="http://csarven.ca/#i" typeof="schema:Person" rel="schema:url" property="schema:name" href="http://csarven.ca/">Sarven Capadisli</a></span><span about="http://csarven.ca/#i" rel="schema:memberOf" resource="[dbr:Leipzig_University]"></span><sup><a href="#author-org-1">1</a></sup><sup><a href="#author-email-1"></a>✊</sup></dd>
+                    <dd id="author-2"><span about="[this:]" rel="schema:contributor"><a about="[this:#SörenAuer]" typeof="schema:Person" rel="schema:url" property="schema:name" href="http://aksw.org/SoerenAuer">Sören Auer</a></span><span about="[this:#SörenAuer]" rel="schema:memberOf" resource="[dbr:Leipzig_University]"></span><sup><a href="#author-org-2">2</a></sup><sup><a href="#author-email-2">⚛</a></sup></dd>
+                    <dd id="author-3"><span about="[this:]" rel="schema:contributor"><a about="[this:#AxelCyrilleNgongaNgomo]" typeof="schema:Person" rel="schema:url" property="schema:name" href="http://aksw.org/AxelNgonga">Axel-Cyrille Ngonga Ngomo</a></span><span about="[this:#AxelCyrilleNgongaNgomo]" rel="schema:memberOf" resource="[dbr:Leipzig_University]"></span><sup><a href="#author-org-3">3</a></sup><sup><a href="#author-email-3">♔</a></sup></dd>
                 </dl>
 
                 <ul id="author-org">
-                    <li id="author-org-1"><sup>1</sup><a about="[_:LeipzigUniversity]" typeof="foaf:Organization" property="foaf:name" rel="foaf:homepage" href="http://www.zv.uni-leipzig.de/">Universität Leipzig</a>, Institut für Informatik, AKSW, <span class="adr"><span class="post-office-box">Postfach 100920</span>, <span class="postal-code">D-04009</span> <span class="region">Leipzig</span>, <span class="country-name">Germany</span></span></li>
-                    <li id="author-org-2"><sup>2</sup><a about="[_:LeipzigUniversity]" typeof="foaf:Organization" property="foaf:name" rel="foaf:homepage" href="http://www.zv.uni-leipzig.de/">Universität Leipzig</a>, Institut für Informatik, AKSW, <span class="adr"><span class="post-office-box">Postfach 100920</span>, <span class="postal-code">D-04009</span> <span class="region">Leipzig</span>, <span class="country-name">Germany</span></span></li>
-                    <li id="author-org-3"><sup>3</sup><a about="[_:LeipzigUniversity]" typeof="foaf:Organization" property="foaf:name" rel="foaf:homepage" href="http://www.zv.uni-leipzig.de/">Universität Leipzig</a>, Institut für Informatik, AKSW, <span class="adr"><span class="post-office-box">Postfach 100920</span>, <span class="postal-code">D-04009</span> <span class="region">Leipzig</span>, <span class="country-name">Germany</span></span></li>
+                    <li id="author-org-1"><sup>1</sup><a about="[dbr:Leipzig_University]" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.zv.uni-leipzig.de/">Leipzig_University</a>, Institut für Informatik, AKSW, <span class="adr"><span class="post-office-box">Postfach 100920</span>, <span class="postal-code">D-04009</span> <span class="region">Leipzig</span>, <span class="country-name">Germany</span></span></li>
+                    <li id="author-org-2"><sup>2</sup><a about="[dbr:Leipzig_University]" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.zv.uni-leipzig.de/">Leipzig_University</a>, Institut für Informatik, AKSW, <span class="adr"><span class="post-office-box">Postfach 100920</span>, <span class="postal-code">D-04009</span> <span class="region">Leipzig</span>, <span class="country-name">Germany</span></span></li>
+                    <li id="author-org-3"><sup>3</sup><a about="[dbr:Leipzig_University]" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.zv.uni-leipzig.de/">Leipzig_University</a>, Institut für Informatik, AKSW, <span class="adr"><span class="post-office-box">Postfach 100920</span>, <span class="postal-code">D-04009</span> <span class="region">Leipzig</span>, <span class="country-name">Germany</span></span></li>
                 </ul>
 
                 <ul id="author-email">
-                    <li id="author-email-1"><sup>✊</sup><a about="http://csarven.ca/#i" rel="foaf:mbox" href="mailto:info@csarven.ca">info@csarven.ca</a></li>
-                    <li id="author-email-2"><sup>⚛</sup><a about="[_:SörenAuer]" rel="foaf:mbox" href="mailto:auer@informatik.uni-leipzig.de">auer@informatik.uni-leipzig.de</a></li>
-                    <li id="author-email-3"><sup>♔</sup><a about="[_:AxelCyrilleNgongaNgomo]" rel="foaf:mbox" href="mailto:ngonga@informatik.uni-leipzig.de">ngonga@informatik.uni-leipzig.de</a></li>
+                    <li id="author-email-1"><sup>✊</sup><a about="http://csarven.ca/#i" rel="schema:email" href="mailto:info@csarven.ca">info@csarven.ca</a></li>
+                    <li id="author-email-2"><sup>⚛</sup><a about="[this:#SörenAuer]" rel="schema:email" href="mailto:auer@informatik.uni-leipzig.de">auer@informatik.uni-leipzig.de</a></li>
+                    <li id="author-email-3"><sup>♔</sup><a about="[this:#AxelCyrilleNgongaNgomo]" rel="schema:email" href="mailto:ngonga@informatik.uni-leipzig.de">ngonga@informatik.uni-leipzig.de</a></li>
                 </ul>
-                <span about="http://csarven.ca/#i" rel="org:memberOf" resource="[_:LeipzigUniversity]"></span>
-                <span about="[_:SörenAuer]" rel="org:memberOf" resource="[_:LeipzigUniversity]"></span>
-                <span about="[_:AxelCyrilleNgongaNgomo]" rel="org:memberOf" resource="[_:LeipzigUniversity]"></span>
             </div>
 
             <dl id="document-identifier">
@@ -48,31 +45,35 @@
 
             <dl id="document-published">
                 <dt>Published</dt>
-                <dd><time datetime="2013-02-10" property="dcterms:issued" content="2013-02-10T09:00:00Z" datatype="xsd:dateTime">2013-02-10</time></dd>
+                <dd><time datetime="2013-02-10" property="schema:datePublished" content="2013-02-10T09:00:00Z" datatype="xsd:dateTime">2013-02-10</time></dd>
             </dl>
 
             <dl id="document-modified">
                 <dt>Modified</dt>
-                <dd><time datetime="2014-08-11" property="dcterms:modified" content="2014-08-04T09:00:00Z" datatype="xsd:dateTime">2014-08-11</time></dd>
+                <dd><time datetime="2014-08-11" property="schema:dateModified" content="2014-08-04T09:00:00Z" datatype="xsd:dateTime">2014-08-11</time></dd>
             </dl>
 
             <dl id="document-license">
                 <dt>License</dt>
-                <dd><a about="[this:]" rel="license cc:license" href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a></dd>
+                <dd><a about="[this:]" rel="license schema:license" href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a></dd>
+            </dl>
+
+            <dl id="document-in-reply-to">
+                <dt>In Reply To</dt>
+                <dd><a class="u-in-reply-to" about="[this:]" rel="sioc:reply_of" href="http://www.semantic-web-journal.net/blog/semantic-web-journal-call-2nd-special-issue-linked-dataset-descriptions">Semantic Web Journal Call: 2nd Special Issue on Linked Dataset Descriptions</a></dd>
             </dl>
 
             <dl id="document-appeared">
                 <dt>Appeared In</dt>
-                <dd about="[this:]" rel="bibo:citedBy" resource="[_:SWJ-2015]">
-                    <span about="[_:SWJ-2015]" typeof="bibo:Document">
-                        <span property="dcterms:title">Semantic Web</span>, <a rel="foaf:page" href="http://www.semantic-web-journal.net/issues">Linked Dataset Descriptions</a>, 
-                        <span property="bibo:issue" xml:lang="">
-                            Volume <span property="bibo:volume" xml:lang="">6</span>, 
-                            Number <span property="bibo:number" xml:lang="">2</span> /
-                            <span property="dcterms:issued" xml:lang="">2015</span>
-                        </span>, 
-                        Pages <span property="bibo:pageStart" xml:lang="">105</span>-<span property="bibo:pageEnd" xml:lang="">112</span>, 
-                        DOI <span property="bibo:doi" xml:lang="">10.3233/SW-130123</span>
+                <dd about="[this:]" rel="bibo:citedBy" resource="[this:#SWJ-LDD-2015]">
+                    <span about="[this:#SWJ-LDD-2015]" typeof="bibo:Document">
+                        <span property="schema:alternateName">SWJ-LDD-2015</span> (<a rel="schema:url" href="http://www.semantic-web-journal.net/issues" property="schema:name">Semantic Web, Linked Dataset Descriptions</a> <span property="schema:datePublished" xml:lang="">2015</span>)
+                        , Tracking <span rel="rdfs:seeAlso" resource="http://www.semantic-web-journal.net/content/linked-sdmx-data">454-1631</span>
+                        , DOI <span property="bibo:doi" xml:lang="">10.3233/SW-130123</span>
+                        , ISSN <span property="bibo:issn" xml:lang="">2210-4968</span>
+                        , Volume <span property="bibo:volume" xml:lang="">6</span>
+                        , Issue <span property="bibo:issue" xml:lang="">2</span>
+                        , Pages <span property="bibo:pageStart" xml:lang="">105</span> – <span property="bibo:pageEnd" xml:lang="">112</span>
                     </span>
                 </dd>
             </dl>
@@ -85,7 +86,7 @@
             <div id="content" class="e-content">
                 <section id="abstract" about="[this:]">
                     <h2>Abstract</h2>
-                    <div property="dcterms:abstract" class="p-summary">
+                    <div property="schema:abstract" class="p-summary">
                         <p>As statistical data is inherently highly structured and comes with rich metadata (in form of code lists, data cubes etc.), it would be a missed opportunity to not tap into it from the Linked Data angle. At the time of this writing, there exists no simple way to transform statistical data into Linked Data since the raw data comes in different shapes and forms. Given that SDMX (Statistical Data and Metadata eXchange) is arguably the most widely used standard for statistical data exchange, a great amount of statistical data about our societies is yet to be discoverable and identifiable in a uniform way. In this article, we present the design and implementation of SDMX-ML to RDF/XML XSL transformations, as well as the publication of <a href="http://oecd.270a.info/">OECD</a>, <a href="http://bfs.270a.info/">BFS</a>, <a href="http://fao.270a.info/">FAO</a>, <a href="http://ecb.270a.info/">ECB</a>, <a href="http://imf.270a.info/">IMF</a>, <a href="http://uis.270a.info/">UIS</a>, <a href="http://frb.270a.info/">FRB</a>, <a href="http://bis.270a.info/">BIS</a>, and <a href="http://abs.270a.info/">ABS</a> dataspaces with that tooling.</p>
                     </div>
                 </section>
@@ -94,8 +95,8 @@
                     <h2>Categories and Subject Descriptors</h2>
                     <div>
                         <ul>
-                            <li><a rel="dcterms:subject" resource="http://acm.rkbexplorer.com/ontologies/acm#H.4" href="http://www.acm.org/about/class/ccs98-html#H.4">H.4</a> [<strong>Information Systems Applications</strong>]: Linked Data</li>
-                            <li><a rel="dcterms:subject" resource="http://acm.rkbexplorer.com/ontologies/acm#D.2" href="http://www.acm.org/about/class/ccs98-html#D.2">D.2</a> [<strong>Software Engineering</strong>]: Semantic Web</li>
+                            <li><a rel="schema:about" resource="http://acm.rkbexplorer.com/ontologies/acm#H.4" href="http://www.acm.org/about/class/ccs98-html#H.4">H.4</a> [<strong>Information Systems Applications</strong>]: Linked Data</li>
+                            <li><a rel="schema:about" resource="http://acm.rkbexplorer.com/ontologies/acm#D.2" href="http://www.acm.org/about/class/ccs98-html#D.2">D.2</a> [<strong>Software Engineering</strong>]: Semantic Web</li>
                         </ul>
                     </div>
                 </section>
@@ -103,7 +104,7 @@
                 <section id="keywords" about="[this:]">
                     <h2>Keywords</h2>
                     <div>
-                        <ul rel="dcterms:subject">
+                        <ul rel="schema:about">
                             <li><a resource="http://dbpedia.org/resource/Linked_Data" href="http://en.wikipedia.org/wiki/Linked_Data">Linked Data</a></li>
                             <li><a resource="http://dbpedia.org/resource/SDMX" href="http://en.wikipedia.org/wiki/SDMX">SDMX</a></li>
                             <li><a resource="http://dbpedia.org/resource/Statistics" href="http://en.wikipedia.org/wiki/Statistics">Statistics</a></li>
@@ -115,9 +116,9 @@
                     </div>
                 </section>
 
-                <section id="introduction" about="[this:]" rel="dcterms:hasPart">
-                    <h2 about="[this:#introduction]" property="dcterms:title">Introduction</h2>
-                    <div about="[this:#introduction]" property="dcterms:description" typeof="deo:Introduction">
+                <section id="introduction" about="[this:]" rel="schema:hasPart">
+                    <h2 about="[this:#introduction]" property="schema:name">Introduction</h2>
+                    <div about="[this:#introduction]" property="schema:description" typeof="deo:Introduction">
                         <p>While access to statistical data in the public sector has increased in recent years, a range of technical challenges makes it difficult for data consumers to tap into this data at ease. These are particularly related to the following two areas:</p>
                         <ul>
                             <li>Automation of data transformation of data from high profile statistical organizations.</li>
@@ -130,9 +131,9 @@
                     </div>
                 </section>
 
-                <section id="background" about="[this:]" rel="dcterms:hasPart">
-                    <h2 about="[this:#background]" property="dcterms:title">Background</h2>
-                    <div about="[this:#background]" property="dcterms:description">
+                <section id="background" about="[this:]" rel="schema:hasPart">
+                    <h2 about="[this:#background]" property="schema:name">Background</h2>
+                    <div about="[this:#background]" property="schema:description">
                         <p>As pointed out in <a href="http://csarven.ca/statistical-linked-dataspaces"><cite>Statistical Linked Dataspaces</cite></a> (Capadisli, S., 2012), what linked statistics provide, and in fact enable, are queries across datasets: Given that the dimension concepts are interlinked, one can learn from a certain observation's dimension value, and enable the automation of cross-dataset queries.</p>
 
                         <p>Moreover, a number of approaches have been undertaken in the past to go from raw statistical data from the publisher to linked statistical data, as discussed in great detail in <a href="http://www.springerlink.com/content/t2244913r2583jw1/"><cite>Official statistics and the Practice of Data Fidelity</cite></a> (Cyganiak, R., 2011). These approaches go from retrieval of the data by majority; in tabular formats: Microsoft Excel or CSV, tree formats: XML with a custom schema, SDMX-ML, PC-Axis, to transformation into different RDF serialization formats. As far as graph formats go, majority of datasets in those formats not published by the owners. However, there are number of statistical linked dataspaces in the <a href="http://lod-cloud.net/">LOD Cloud</a> already.</p>
@@ -141,16 +142,16 @@
                     </div>
                 </section>
 
-                <section id="sdmx-ml-to-linked-data" about="[this:]" rel="dcterms:hasPart">
-                    <h2 about="[this:#sdmx-ml-to-linked-data]" property="dcterms:title">SDMX-ML to Linked Data</h2>
-                    <div about="[this:#sdmx-ml-to-linked-data]" property="dcterms:description">
+                <section id="sdmx-ml-to-linked-data" about="[this:]" rel="schema:hasPart">
+                    <h2 about="[this:#sdmx-ml-to-linked-data]" property="schema:name">SDMX-ML to Linked Data</h2>
+                    <div about="[this:#sdmx-ml-to-linked-data]" property="schema:description">
                         <p>Recently, SDMX is approved by ISO as <a href="http://www.iso.org/iso/catalogue_detail.htm?csnumber=52500">International Standard</a>. It is a standard which provides the possibility to consistently carry out data flows between publishers and consumers. SDMX-ML (using XML syntax) is considered to be the gold standard for expressing statistical data. It has a highly structured mechanism to represent statistical observations, classifications, and data structures. Organizations behind SDMX are <a href="http://www.bis.org/">BIS</a> (Bank for International Settlements), <a href="http://www.oecd.org/">OECD</a>, <a href="http://www.un.org/">UN</a> (United Nations), <a href="http://www.ecb.int/">ECB</a>, <a href="http://worldbank.org/">World Bank</a>, <a href="http://www.imf.org/">IMF</a>, <a href="http://www.fao.org/">FAO</a>, and <a href="http://epp.eurostat.ec.europa.eu/">Eurostat</a>.</p>
 
                         <p>We argue that high-fidelity statistical data representation in Linked Data should take advantage of SDMX-ML as it is widely adopted by data producers with rich data about our societies, making the need for transforming SDMX-ML to RDF and publishing accompanying Linked Dataspaces of paramount importance</p>
 
-                        <section id="data-sources" about="[this:]" rel="dcterms:hasPart">
-                            <h3 about="[this:#data-sources]" property="dcterms:title">Data Sources</h3>
-                            <div about="[this:#data-sources]" property="dcterms:description">
+                        <section id="data-sources" about="[this:]" rel="schema:hasPart">
+                            <h3 about="[this:#data-sources]" property="schema:name">Data Sources</h3>
+                            <div about="[this:#data-sources]" property="schema:description">
                                 <p>As a demonstration of the SDMX-ML to RDF transformations, the selection of datasets here are from the following organizations. Instead of regurgitating publisher's profile about themselves, and to keep this part brief, I'll quote the first sentences from their about pages:</p>
 
                                 <dl>
@@ -186,9 +187,9 @@
                             </div>
                         </section>
 
-                        <section id="data-retrieval" about="[this:]" rel="dcterms:hasPart">
-                            <h3 about="[this:#data-retrieval]" property="dcterms:title">Data Retrieval</h3>
-                            <div about="[this:#data-retrieval]" property="dcterms:description">
+                        <section id="data-retrieval" about="[this:]" rel="schema:hasPart">
+                            <h3 about="[this:#data-retrieval]" property="schema:name">Data Retrieval</h3>
+                            <div about="[this:#data-retrieval]" property="schema:description">
                                 <p>As SDMX-ML publishers have their own publishing processes, availability and accessibility of the data varied. After obtaining the dataset codes, names, and URLs with common Linux command-line work, a Bash script was created to retrieve the data.</p>
 
                                 <p id="data-retrieval-oecd">On how to retrieve all of the datasets from the OECD website was not entirely clear. In order to automatically get a hold of list of datasets, I copied the innerHTML of the DOM tree that contained all the dataset codes from <a href="http://stats.oecd.org/">OECD.StatExtracts</a> to a temporary file. This was done due to the fact that a simple scrape of an HTTP GET wasn't possible as the data on the page was populated via JavaScript on <code>document</code> ready. After constructing a list of datasets and structures to get, two REST API endpoints were called.</p>
@@ -211,63 +212,63 @@
                             </div>
                         </section>
 
-                        <section id="provenance" about="[this:]" rel="dcterms:hasPart">
-                            <h3 about="[this:#provenance]" property="dcterms:title">Provenance</h3>
-                            <div about="[this:#provenance]" property="dcterms:description">
+                        <section id="provenance" about="[this:]" rel="schema:hasPart">
+                            <h3 about="[this:#provenance]" property="schema:name">Provenance</h3>
+                            <div about="[this:#provenance]" property="schema:description">
                                 <p>We now discuss provenance at: retrieval, transformation, and post-processing.</p>
 
-                                <section id="provenance-at-retrieval" about="[this:]" rel="dcterms:hasPart">
-                                    <h4 about="[this:#provenance-at-retrieval]" property="dcterms:title">Provenance at Retrieval</h4>
-                                    <div about="[this:#provenance-at-retrieval]" property="dcterms:description">
+                                <section id="provenance-at-retrieval" about="[this:]" rel="schema:hasPart">
+                                    <h4 about="[this:#provenance-at-retrieval]" property="schema:name">Provenance at Retrieval</h4>
+                                    <div about="[this:#provenance-at-retrieval]" property="schema:description">
                                         <p>At the time of data retrieval, information pertaining to provenance was captured using the <a href="http://www.w3.org/TR/prov-o/">PROV Ontology</a> in order to further enrich the data. This RDF/XML document contains <code>prov:Activity</code> information which indicates the location of the XML document on the local filesystem. It contains other provenance data like when it was retrieved, with what tools, etc. This provenance data from retrieval may be provided to the XSL Transformer during the transformation phase and VoID enrichment.</p>
                                     </div>
                                 </section>
 
-                                <section id="provenance-at-transformation" about="[this:]" rel="dcterms:hasPart">
-                                    <h4 about="[this:#provenance-at-transformation]" property="dcterms:title">Provenance at Transformation</h4>
-                                    <div about="[this:#provenance-at-transformation]" property="dcterms:description">
-                                        <p>Resources of type <code>qb:DataStructureDefinition</code>, <code>qb:DataSet</code>, <code>skos:ConceptScheme</code> are also typed with the <code>prov:Entity</code> class. Also properties <code>prov:wasAttributedTo</code> were added to these resources with the <code>creator</code> value which is of type <code>prov:Agent</code> obtained from XSLT configuration. There is a unique <code>prov:Activity</code> for each transformation, and it has a <code>dcterms:title</code>, and contains values for <code>prov:startedAtTime</code>, <code>prov:wasAssociatedWith</code> (the creator), <code>prov:used</code> (i.e., source XML, XSL to transform) to what was <code>prov:generated</code> (and source data URI that it <code>prov:wasDerivedFrom</code>). It also declares <code>dcterms:license</code> where value taken from XSLT configuration. The provenance document from the retrieval phase may be provided to the transformer. In this case, it establishes a link between the current provenance activity (i.e., the transformation), with the earlier provenance activity (i.e., the retrieval) using the <code>prov:wasInformedBy</code> property.</p>
+                                <section id="provenance-at-transformation" about="[this:]" rel="schema:hasPart">
+                                    <h4 about="[this:#provenance-at-transformation]" property="schema:name">Provenance at Transformation</h4>
+                                    <div about="[this:#provenance-at-transformation]" property="schema:description">
+                                        <p>Resources of type <code>qb:DataStructureDefinition</code>, <code>qb:DataSet</code>, <code>skos:ConceptScheme</code> are also typed with the <code>prov:Entity</code> class. Also properties <code>prov:wasAttributedTo</code> were added to these resources with the <code>creator</code> value which is of type <code>prov:Agent</code> obtained from XSLT configuration. There is a unique <code>prov:Activity</code> for each transformation, and it has a <code>schema:name</code>, and contains values for <code>prov:startedAtTime</code>, <code>prov:wasAssociatedWith</code> (the creator), <code>prov:used</code> (i.e., source XML, XSL to transform) to what was <code>prov:generated</code> (and source data URI that it <code>prov:wasDerivedFrom</code>). It also declares <code>dcterms:license</code> where value taken from XSLT configuration. The provenance document from the retrieval phase may be provided to the transformer. In this case, it establishes a link between the current provenance activity (i.e., the transformation), with the earlier provenance activity (i.e., the retrieval) using the <code>prov:wasInformedBy</code> property.</p>
                                     </div>
                                 </section>
 
-                                <section id="provenance-at-post-processing" about="[this:]" rel="dcterms:hasPart">
-                                    <h4 about="[this:#provenance-at-post-processing]" property="dcterms:title">Provenance at Post-processing</h4>
-                                    <div about="[this:#provenance-at-post-processing]" property="dcterms:description">
+                                <section id="provenance-at-post-processing" about="[this:]" rel="schema:hasPart">
+                                    <h4 about="[this:#provenance-at-post-processing]" property="schema:name">Provenance at Post-processing</h4>
+                                    <div about="[this:#provenance-at-post-processing]" property="schema:description">
                                         <p>The post-processing step for provenance is intended to retain provenance data for future use. As datasets get updated, it is important to preserve information about past activities by way of exporting all instances of the <code>prov:Activity</code> class from the RDF store. Activities are unique artifacts, on a conceptual level as well as with regard to referencing them. Since one of the main concerns of provenance is to keep track of activities, this post-processing step also allows us to retain a historical account of all activities during the data lifecycle, and to preserve all previously published URIs (cf. <a href="http://www.w3.org/Provider/Style/URI.html">Cool URIs don't change</a>).</p>
                                     </div>
                                 </section>
                             </div>
                         </section>
 
-                        <section id="data-preprocessing" about="[this:]" rel="dcterms:hasPart">
-                            <h3 about="[this:#data-preprocessing]" property="dcterms:title">Data Preprocessing</h3>
-                            <div about="[this:#data-preprocessing]" property="dcterms:description">
+                        <section id="data-preprocessing" about="[this:]" rel="schema:hasPart">
+                            <h3 about="[this:#data-preprocessing]" property="schema:name">Data Preprocessing</h3>
+                            <div about="[this:#data-preprocessing]" property="schema:description">
                                 <p>By in large, there was no need to pre-process the data as the transformation dealt with the data as it was. However, some non-vital SDMX components were omitted from the output. For instance, one type of attribute in OECD and ECB observations contained free-text as opposed to its corresponding code from a codelist. Since the RDF Data Cube required codes as opposed to free-text for dimension values, some attributes were excluded. The decision here was to trade-off some precision in favour of retaining the dataset.</p>
                             </div>
                         </section>
 
-                        <section id="data-modeling" about="[this:]" rel="dcterms:hasPart">
-                            <h3 about="[this:#data-modeling]" property="dcterms:title">Data Modeling</h3>
-                            <div about="[this:#data-modeling]" property="dcterms:description">
+                        <section id="data-modeling" about="[this:]" rel="schema:hasPart">
+                            <h3 about="[this:#data-modeling]" property="schema:name">Data Modeling</h3>
+                            <div about="[this:#data-modeling]" property="schema:description">
                                 <p>This section goves over several areas which are at the heart of representing statistical data in SDMX-ML as Linked Data. The approach taken was to provide a level of consistency for data consumers and tool builders for all statistical Linked Data with its origins from data in SDMX-ML.</p>
 
-                                <section id="vocabularies" about="[this:]" rel="dcterms:hasPart">
-                                    <h4 about="[this:#vocabularies]" property="dcterms:title">Vocabularies</h4>
-                                    <div about="[this:#vocabularies]" property="dcterms:description">
+                                <section id="vocabularies" about="[this:]" rel="schema:hasPart">
+                                    <h4 about="[this:#vocabularies]" property="schema:name">Vocabularies</h4>
+                                    <div about="[this:#vocabularies]" property="schema:description">
                                         <p>Besides the common vocabularies: RDF RDFS, XSD, OWL, XSD, the RDF Data Cube vocabulary is used to describe multi-dimensional statistical data, and SDMX-RDF for the statistical information model. PROV-O is used for provenance coverage. SKOS and XKOS to cover concepts, concept schemes and their relationships to one another.</p>
                                     </div>
                                 </section>
 
-                                <section id="version-in-uri" about="[this:]" rel="dcterms:hasPart">
-                                    <h4 about="[this:#version-in-uri]" property="dcterms:title">Versioning</h4>
-                                    <div about="[this:#version-in-uri]" property="dcterms:description">
+                                <section id="version-in-uri" about="[this:]" rel="schema:hasPart">
+                                    <h4 about="[this:#version-in-uri]" property="schema:name">Versioning</h4>
+                                    <div about="[this:#version-in-uri]" property="schema:description">
                                         <p>SDMX data publishers version their classifications and the generated cubes refer to particular versions of those classifications. Consequently, versions need to be explicitly part of classification URIs in order to uniquely identify them. Although including version information in the URI is disputed by some authors, it is a good exception for identifying different concepts and data structures. Jeni Tennison et al discussed <a href="http://www.jenitennison.com/blog/node/112">Versioning URIs</a>, and concluded that there was no one-size-fits all solution. An alternative approach using named graphs for a series of changes was proposed in <a href="http://www.springerlink.com/index/10.1007/978-1-4614-1767-5">Linking UK Government Data</a>.</p>
                                     </div>
                                 </section>
 
-                                <section id="uri-patterns" about="[this:]" rel="dcterms:hasPart">
-                                    <h4 about="[this:#uri-patterns]" property="dcterms:title">URI Patterns</h4>
-                                    <div about="[this:#uri-patterns]" property="dcterms:description">
+                                <section id="uri-patterns" about="[this:]" rel="schema:hasPart">
+                                    <h4 about="[this:#uri-patterns]" property="schema:name">URI Patterns</h4>
+                                    <div about="[this:#uri-patterns]" property="schema:description">
                                         <p>An outline for the URI patterns is given in table below: <code>authority</code> is replaced with the domain (see also: <a href="#agency-identifiers-and-uris">Agency identifiers and URIs</a>) followed with <code>class</code>, <code>code</code>, <code>concept</code>, <code>dataset</code>, <code>property</code>, <code>provenance</code>, or <code>slice</code> as example. These tokens as well as <code>/</code> which is used to separate the dimension concepts in URIs can be configured in the toolkit.</p>
 
                                         <p>In order to construct the URIs for the above patterns, some of the data values are normalized to make them URI safe but not altered in other ways (e.g., lower-casing). The rationale for this was to keep the consistency of terms in SDMX and RDF.</p>
@@ -301,9 +302,9 @@
                                     </div>
                                 </section>
 
-                                <section id="datatypes" about="[this:]" rel="dcterms:hasPart">
-                                    <h4 about="[this:#datatypes]" property="dcterms:title">Datatypes</h4>
-                                    <div about="[this:#datatypes]" property="dcterms:description">
+                                <section id="datatypes" about="[this:]" rel="schema:hasPart">
+                                    <h4 about="[this:#datatypes]" property="schema:name">Datatypes</h4>
+                                    <div about="[this:#datatypes]" property="schema:description">
                                         <p>XSD datatypes are assigned to literals are based on the value of the measure component (e.g., decimal, year). In the absence of this datatype, observation values are checked whether they can be casted to <code>xsd:decimal</code>. Otherwise, they are left as plain literals.</p>
                                     </div>
                                 </section>
@@ -313,9 +314,9 @@
                 </section>
 
 
-                <section id="linked-sdmx-data-transformation" about="[this:]" rel="dcterms:hasPart">
-                    <h2 about="[this:#linked-sdmx-data-transformation]" property="dcterms:title">Linked SDMX Data Transformation</h2>
-                    <div about="[this:#linked-sdmx-data-transformation]" property="dcterms:description">
+                <section id="linked-sdmx-data-transformation" about="[this:]" rel="schema:hasPart">
+                    <h2 about="[this:#linked-sdmx-data-transformation]" property="schema:name">Linked SDMX Data Transformation</h2>
+                    <div about="[this:#linked-sdmx-data-transformation]" property="schema:description">
                         <p>The <a href="https://github.com/csarven/linked-sdmx">Linked SDMX</a> XSLT 2.0 templates and scripts are developed to transform SDMX-ML data and metadata to RDF/XML. Its goals are:</p>
                         <ul>
                             <li>To improve access and discovery of cross-domain statistical data.</li>
@@ -327,9 +328,9 @@
                         <p>The key advantage of this transformation approach is that additional interpretations are not required by the data modeler especially in comparison to alternative transformation (e.g., CSV or XML to RDF serialization). Since the SDMX-RDF vocabulary is based on SDMX-ML standard, and the RDF Data Cube vocabulary is closely aligned with the SDMX information model, the transformation is to a large extent a matter of mapping the source SDMX-ML data to its counter parts in RDF.</p>
 
 
-                        <section id="features-of-the-transformation" about="[this:]" rel="dcterms:hasPart">
-                            <h3 about="[this:#features-of-the-transformation]" property="dcterms:title">Features of the transformation</h3>
-                            <div about="[this:#features-of-the-transformation]" property="dcterms:description">
+                        <section id="features-of-the-transformation" about="[this:]" rel="schema:hasPart">
+                            <h3 about="[this:#features-of-the-transformation]" property="schema:name">Features of the transformation</h3>
+                            <div about="[this:#features-of-the-transformation]" property="schema:description">
                                 <ul>
                                     <li>Transforms SDMX KeyFamilies, ConceptSchemes and Concepts, CodeLists and Codes, Hierarchical CodeLists, DataSets.</li>
                                     <li>Configurability for SDMX publisher's needs.</li>
@@ -346,9 +347,9 @@
                             </div>
                         </section>
 
-                        <section id="what-is-inside" about="[this:]" rel="dcterms:hasPart">
-                            <h3 about="[this:#what-is-inside]" property="dcterms:title">What is inside?</h3>
-                            <div about="[this:#what-is-inside]" property="dcterms:description">
+                        <section id="what-is-inside" about="[this:]" rel="schema:hasPart">
+                            <h3 about="[this:#what-is-inside]" property="schema:name">What is inside?</h3>
+                            <div about="[this:#what-is-inside]" property="schema:description">
                                 <p>It comes with scripts and sample data:</p>
 
                                 <ul>
@@ -359,23 +360,23 @@
                             </div>
                         </section>
 
-                        <section id="requirements" about="[this:]" rel="dcterms:hasPart">
-                            <h3 about="[this:#requirements]" property="dcterms:title">Requirements</h3>
-                            <div about="[this:#requirements]" property="dcterms:description">
+                        <section id="requirements" about="[this:]" rel="schema:hasPart">
+                            <h3 about="[this:#requirements]" property="schema:name">Requirements</h3>
+                            <div about="[this:#requirements]" property="schema:description">
                                 <p>The requirements for the Linked SDMX toolkit are an XSLT 2.0 processor to transform, and optionally to configure some of the settings in the transformation with provided <code>config.ttl</code> (in RDF Turtle) and transforming that to an abbreviated version of RDF/XML. In sequel some of they key features are described in more detail.</p>
 
                                 <p>The transformation follows some common Linked Data practices as well as other ones out of thin air.</p>
                             </div>
                         </section>
 
-                        <section id="configuration" about="[this:]" rel="dcterms:hasPart">
-                            <h3 about="[this:#configuration]" property="dcterms:title">Configuration</h3>
-                            <div about="[this:#configuration]" property="dcterms:description">
+                        <section id="configuration" about="[this:]" rel="schema:hasPart">
+                            <h3 about="[this:#configuration]" property="schema:name">Configuration</h3>
+                            <div about="[this:#configuration]" property="schema:description">
                                 <p>The config file is used to pre-configure some of the decisions that are made in XSL templates. Here is an outline for some of the noteworthy things.</p>
 
-                                <section id="agency-identifiers-and-uris" about="[this:]" rel="dcterms:hasPart">
-                                    <h4 about="[this:#agency-identifiers-and-uris]" property="dcterms:title">Agency identifiers and URIs</h4>
-                                    <div about="[this:#agency-identifiers-and-uris]" property="dcterms:description">
+                                <section id="agency-identifiers-and-uris" about="[this:]" rel="schema:hasPart">
+                                    <h4 about="[this:#agency-identifiers-and-uris]" property="schema:name">Agency identifiers and URIs</h4>
+                                    <div about="[this:#agency-identifiers-and-uris]" property="schema:description">
                                         <p><code>agencies.ttl</code> is used to track some of the mappings for maintenance agencies. It includes the maintenance agency's i.e., the SDMX publisher's, identifier that's in the SDMX Registry, as well as the base URI for that agency. This file allows references to external agency identifiers to be looked up for their base URI and used in the transformations. Currently this agency recognition is treated as either "SDMX" or some agency that's publishing the actual statistics.</p>
 
                                         <p>In the case of SDMX, when there is a reference to SDMX CodeLists and Codes, it is typically indicated by the component agency being set to <code>SDMX</code> e.g., <code>codelistAgency="SDMX"</code> of a <code>structure:Component</code> and/or <code>agencyID="SDMX"</code> of a CodeList with <code>id="CL_FREQ"</code>. When this is detected, corresponding URIs from the SDMX-RDF vocabulary is used e.g., for metadata; <code>http://purl.org/linked-data/sdmx/2009/code#freq</code>, and data; <code>http://purl.org/linked-data/sdmx/2009/code#freq-A</code>.</p>
@@ -392,9 +393,9 @@
                                     </div>
                                 </section>
 
-                                <section id="uri-configurations" about="[this:]" rel="dcterms:hasPart">
-                                    <h4 about="[this:#uri-configurations]" property="dcterms:title">URI configurations</h4>
-                                    <div about="[this:#uri-configurations]" property="dcterms:description">
+                                <section id="uri-configurations" about="[this:]" rel="schema:hasPart">
+                                    <h4 about="[this:#uri-configurations]" property="schema:name">URI configurations</h4>
+                                    <div about="[this:#uri-configurations]" property="schema:description">
                                         <p>Base URIs can be set for classes, codelists, concept schemes, datasets, slices, properties, provenance, as well as for the source SDMX data.</p>
 
                                         <p>The value for <code>uriThingSeparator</code> e.g., <code>/</code>, lets one set the delimiter to separate the "thing" from the rest of the URI. This is typically either a <code>/</code> or <code>#</code>. For example, if slash is used, an URI would end up like <code>http://{authority}/code/{version}/CL_GEO</code> (note the last slash before CL_GEO). If hash is used, an URI would end up like <code>http://{authority}/code/{version}#CL_GEO</code>.</p>
@@ -405,25 +406,25 @@
                                     </div>
                                 </section>
 
-                                <section id="default-language" about="[this:]" rel="dcterms:hasPart">
-                                    <h4 about="[this:#default-language]" property="dcterms:title">Default language</h4>
-                                    <div about="[this:#default-language]" property="dcterms:description">
+                                <section id="default-language" about="[this:]" rel="schema:hasPart">
+                                    <h4 about="[this:#default-language]" property="schema:name">Default language</h4>
+                                    <div about="[this:#default-language]" property="schema:description">
                                         <p>From the configuration, it is possible to force a default <code>xml:lang</code> on <code>skos:prefLabel</code> and <code>skos:definition</code> when lang is not originally in the data. If <code>config.rdf</code>contains a non-empty lang value it will use it. Default language may also be applied in the case of Annotations. See Interlinking SDMX Annotations for example.</p>
                                     </div>
                                 </section>
 
 
-                                <section id="interlinking-sdmx-annotations" about="[this:]" rel="dcterms:hasPart">
-                                    <h4 about="[this:#interlinking-sdmx-annotations]" property="dcterms:title">Interlinking SDMX Annotations</h4>
-                                    <div about="[this:#interlinking-sdmx-annotations]" property="dcterms:description">
+                                <section id="interlinking-sdmx-annotations" about="[this:]" rel="schema:hasPart">
+                                    <h4 about="[this:#interlinking-sdmx-annotations]" property="schema:name">Interlinking SDMX Annotations</h4>
+                                    <div about="[this:#interlinking-sdmx-annotations]" property="schema:description">
                                         <p>SDMX Annotations contain important information that can be put to use by the publisher. Data in AnnotationTypes are typically used as publisher's internal conventions. Hence, there is no standardization on how they are used across all SDMX publishers. In order not to leave this information behind in the final transformation, the configuration allows publishers to define the way they should be transformed. This is done by setting <code>interlinkAnnotationTypes</code>: the AnnotationType to detect (in <code>rdfs:type</code>), the predicate (as an XML QName) to use (in <code>rdf:predicate</code>), whether to apply instances of Concepts or Codes to apply to, or as Literals (in <code>rdf:range</code>), and whether to target AnnotationText or AnnotationTitle (in <code>rdfs:label</code>). Currently this feature is only applied to Annotations in Concepts and Codes. Only the AnnotationTypes with a corresponding configuration will be applied, and unspecific ones will be skipped.</p>
                                     </div>
                                 </section>
 
 
-                                <section id="omitting-components" about="[this:]" rel="dcterms:hasPart">
-                                    <h4 about="[this:#omitting-components]" property="dcterms:title">Omitting components</h4>
-                                    <div about="[this:#omitting-components]" property="dcterms:description">
+                                <section id="omitting-components" about="[this:]" rel="schema:hasPart">
+                                    <h4 about="[this:#omitting-components]" property="schema:name">Omitting components</h4>
+                                    <div about="[this:#omitting-components]" property="schema:description">
                                         <p>There are cases in which certain data parts contain errors. To get around this until the data is fixed at source, and without giving up on rest of the data at hand, as well as without making any significant assumptions or changes to the remaining data, <code>omitComponents</code> is a configuration option to explicitly skip over those parts. For example, if the Attribute values in a DataSet don't correspond to coded values - where they may contain whitespace - they can be skipped without damaging the rest of the data. This obviously gives up on precision in favour of still making use of the data.</p>
                                     </div>
                                 </section>
@@ -432,16 +433,16 @@
                     </div>
                 </section>
 
-                <section id="linked-datasets" about="[this:]" rel="dcterms:hasPart">
-                    <h2 about="[this:#linked-datasets]" property="dcterms:title">Linked Datasets</h2>
-                    <div about="[this:#linked-datasets]" property="dcterms:description">
+                <section id="linked-datasets" about="[this:]" rel="schema:hasPart">
+                    <h2 about="[this:#linked-datasets]" property="schema:name">Linked Datasets</h2>
+                    <div about="[this:#linked-datasets]" property="schema:description">
                         <p>This section provides information on the publication of OECD, BFS, FAO, ECB, UIS, FRB, and BIS datasets.</p>
 
                         <p>The original SDMX-ML files were transformed to RDF/XML using XSLT 2.0. Saxon’s command-line XSLT and XQuery Processor tool was used for the transformations, and employed as part of Bash scripts to iterate through all the files in the datasets.</p>
 
-                        <section id="rdf-datasets" about="[this:]" rel="dcterms:hasPart">
-                            <h3 about="[this:#rdf-datasets]" property="dcterms:title">RDF Datasets</h3>
-                            <div about="[this:#rdf-datasets]" property="dcterms:description">
+                        <section id="rdf-datasets" about="[this:]" rel="schema:hasPart">
+                            <h3 about="[this:#rdf-datasets]" property="schema:name">RDF Datasets</h3>
+                            <div about="[this:#rdf-datasets]" property="schema:description">
                                 <p>Here are some statistics for the transformations.</p>
 
                                 <p>The command-line tool <code>saxonb-xslt</code> was used to conduct the XSL transformations. 12000M of memory was allocated on a machine with Intel(R) Xeon(R) CPU E5620 @ 2.40GHz. Linux kernel 3.2.0-33-generic was used. Table [<a href="#transformation-time">Transformation time</a>] provides information on datasets; input SDMX-ML size, output RDF/XML size, their size difference in ratio, and the total amount transformation time.</p>
@@ -513,14 +514,14 @@
                             </div>
                         </section>
 
-                        <section id="interlinking" about="[this:]" rel="dcterms:hasPart">
-                            <h3 about="[this:#interlinking]" property="dcterms:title">Interlinking</h3>
-                            <div about="[this:#interlinking]" property="dcterms:description">
+                        <section id="interlinking" about="[this:]" rel="schema:hasPart">
+                            <h3 about="[this:#interlinking]" property="schema:name">Interlinking</h3>
+                            <div about="[this:#interlinking]" property="schema:description">
                                 <p>Initial interlinking is done among the classifications themselves in the datasets. The OECD and UIS classifications in particular contained highly similar codes (in some cases the same) throughout its codelists. Majority of the interlinks are between <code>skos:Concept</code>s with link relation <code>skos:exactMatch</code>.</p>
 
                                 <p>The consequent interlinking was done with <a href="http://dbpedia.org/">DBpedia</a>, <a href="http://worldbank.270a.info/">World Bank Linked Data</a>, <a href="http://transparency.270a.info/">Transparency International Linked Data</a>, and <a href="http://eunis.eea.europa.eu/">EUNIS</a> using <a href="http://aksw.org/Projects/limes">LInk discovery framework for MEtric Spaces</a> (LIMES): <a href="http://www.dit.unitn.it/~p2p/OM-2011/om2011_Tpaper1.pdf"><cite>A Time-Efficient Hybrid Approach to Link Discovery</cite></a> (Ngonga Ngomo, A.-C., 2011)</p>
 
-                                <table>
+                                <table id="interlinks-between-datasets">
                                     <caption>Interlinks between datasets</caption>
                                     <thead><tr><th>Source dataset</th><th>Target dataset</th><th>Link count</th></tr></thead>
                                     <tbody>
@@ -610,9 +611,9 @@
                             </div>
                         </section>
 
-                        <section id="rdf-data-storage" about="[this:]" rel="dcterms:hasPart">
-                            <h3 about="[this:#rdf-data-storage]" property="dcterms:title">RDF Data Storage</h3>
-                            <div about="[this:#rdf-data-storage]" property="dcterms:description">
+                        <section id="rdf-data-storage" about="[this:]" rel="schema:hasPart">
+                            <h3 about="[this:#rdf-data-storage]" property="schema:name">RDF Data Storage</h3>
+                            <div about="[this:#rdf-data-storage]" property="schema:description">
                                 <p><a href="http://jena.apache.org/">Apache Jena</a>&#8217;s <a href="http://incubator.apache.org/jena/documentation/tdb/">TDB</a> storage system is used to load the RDFized data using TDB&#8217;s incremental <code>tdbloader</code> utility. <code>tdbstats</code>, the tool for <a href="http://jena.apache.org/documentation/tdb/optimizer.html">TDB Optimizer</a> is executed after a complete load to internally update the count of resources in order for TDB to make the best decision to come up with future query results.</p>
 
                                 <p>Individual datasets from each organization were transformed to N-Triples format before loading into the store. Each RDF Data Cube dataset was imported into its own <code>NAMED GRAPH</code> in the store. Given the significant load speed on an empty database, N-Triples were ordered from largest to smallest, and then loaded.</p>
@@ -621,67 +622,67 @@
                     </div>
                 </section>
 
-                <section id="publication" about="[this:]" rel="dcterms:hasPart">
-                    <h2 about="[this:#publication]" property="dcterms:title">Publication</h2>
-                    <div about="[this:#publication]" property="dcterms:description">
+                <section id="publication" about="[this:]" rel="schema:hasPart">
+                    <h2 about="[this:#publication]" property="schema:name">Publication</h2>
+                    <div about="[this:#publication]" property="schema:description">
                         <p>The publication steps are described in this section.</p>
 
-                        <section id="dataset-discovery-and-statistics" about="[this:]" rel="dcterms:hasPart">
-                            <h3 about="[this:#dataset-discovery-and-statistics]" property="dcterms:title">Dataset Discovery and Statistics</h3>
-                            <div about="[this:#dataset-discovery-and-statistics]" property="dcterms:description">
+                        <section id="dataset-discovery-and-statistics" about="[this:]" rel="schema:hasPart">
+                            <h3 about="[this:#dataset-discovery-and-statistics]" property="schema:name">Dataset Discovery and Statistics</h3>
+                            <div about="[this:#dataset-discovery-and-statistics]" property="schema:description">
                                 <p>As VoID file is generally intended to give an overview of the dataset metadata i.e., what it contains, ways to access it or query it, each dataspace contains <a href="http://www.w3.org/TR/void/">Vocabulary of Interlinked Datasets</a> (<dfn><abbr title="Vocabulary of Interlinked Datasets">VoID</abbr></dfn>) files accessible through their <code>.well-known/void</code>. Each <a href="http://oecd.270a.info/.well-known/void">OECD</a>, <a href="http://bfs.270a.info/.well-known/void">BFS</a>, <a href="http://fao.270a.info/.well-known/void">FAO</a>, <a href="http://ecb.270a.info/.well-known/void">ECB</a>, <a href="http://imf.270a.info/.well-known/void">IMF</a>, <a href="http://uis.270a.info/.well-known/void">UIS</a>, <a href="http://frb.270a.info/.well-known/void">FRB</a>, <a href="http://bis.270a.info/.well-known/void">BIS</a>, <a href="http://abs.270a.info/.well-known/void">ABS</a> VoID contains locations to RDF datadumps, named graphs that are used in the SPARQL endpoint, used vocabularies, size of the datasets, interlinks to external datasets, as well as the provenance data which was gathered through the retrieval and transformation process. The VoID files were generated automatically by first importing the LODStats information into respective <code>graph/void</code> into the store, and then a SPARQL <code>CONSTRUCT</code> query to include all triples as well as additional ones which could be actively created based on the available information in all graphs.</p>
 
                                 <p>Dataset statistics are generated and are included in the VoID file using LODStats, <a href="http://svn.aksw.org/papers/2011/RDFStats/public.pdf"><cite>LODStats &#8211; An Extensible Framework for High-performance Dataset Analytics</cite></a> (Demter, J., 2012).</p>
                             </div>
                         </section>
 
-                        <section id="user-interface" about="[this:]" rel="dcterms:hasPart">
-                            <h3 about="[this:#user-interface]" property="dcterms:title">User-interface</h3>
-                            <div about="[this:#user-interface]" property="dcterms:description">
+                        <section id="user-interface" about="[this:]" rel="schema:hasPart">
+                            <h3 about="[this:#user-interface]" property="schema:name">User-interface</h3>
+                            <div about="[this:#user-interface]" property="schema:description">
                                 <p>The HTML pages are generated by the <a href="https://github.com/csarven/linked-data-pages">Linked Data Pages</a> framework, where <a href="http://code.google.com/p/moriarty/">Moriarty</a>, <a href="http://code.google.com/p/paget/">Paget</a>, and <a href="https://github.com/semsol/arc2">ARC2</a> does the heavy lifting for it. Given the lessons learned over the years about Linked Data publishing, there is a consideration to either take Linked Data Pages further (originally written in 2010), or to adapt one of the existing frameworks after careful analysis.</p>
                             </div>
                         </section>
 
-                        <section id="sparql-endpoint" about="[this:]" rel="dcterms:hasPart">
-                            <h3 about="[this:#sparql-endpoint]" property="dcterms:title">SPARQL Endpoint</h3>
-                            <div about="[this:#sparql-endpoint]" property="dcterms:description">
+                        <section id="sparql-endpoint" about="[this:]" rel="schema:hasPart">
+                            <h3 about="[this:#sparql-endpoint]" property="schema:name">SPARQL Endpoint</h3>
+                            <div about="[this:#sparql-endpoint]" property="schema:description">
                                 <p>Apache Jena <a href="http://incubator.apache.org/jena/documentation/serving_data/index.html">Fuseki</a> is used to run the SPARQL server for the three datasets. SPARQL Endpoints are publicly accessible and read only at their respective <code>/sparql</code> and <code>/query</code> locations for <a href="http://oecd.270a.info/sparql">OECD</a>, <a href="http://bfs.270a.info/sparql">BFS</a>, <a href="http://fao.270a.info/sparql">FAO</a>, <a href="http://ecb.270a.info/sparql">ECB</a>, <a href="http://imf.270a.info/sparql">IMF</a>, <a href="http://uis.270a.info/sparql">UIS</a>, <a href="http://frb.270a.info/sparql">FRB</a>, <a href="http://bis.270a.info/sparql">BIS</a>, <a href="http://abs.270a.info/sparql">ABS</a>. Currently, 12000MB of memory is allocated for the single Fuseki server running all datasets.</p>
                             </div>
                         </section>
 
-                        <section id="data-dumps" about="[this:]" rel="dcterms:hasPart">
-                            <h3 about="[this:#data-dumps]" property="dcterms:title">Data Dumps</h3>
-                            <div about="[this:#data-dumps]" property="dcterms:description">
+                        <section id="data-dumps" about="[this:]" rel="schema:hasPart">
+                            <h3 about="[this:#data-dumps]" property="schema:name">Data Dumps</h3>
+                            <div about="[this:#data-dumps]" property="schema:description">
                                 <p>The data dumps for the datasets are available from their respective <code>/data/</code> directories: <a href="http://oecd.270a.info/data/">OECD</a>, <a href="http://bfs.270a.info/data/">BFS</a>, <a href="http://fao.270a.uisinfo/data/">FAO</a>, <a href="http://ecb.270a.info/data/">ECB</a>, <a href="http://imf.270a.info/data/">IMF</a>, <a href="http://frb.270a.info/data/">FRB</a>, <a href="http://uis.270a.info/data/">UIS</a>, <a href="http://bis.270a.info/data/">BIS</a>, <a href="http://abs.270a.info/data/">ABS</a>. Additionally, they are mentioned in the VoID files. The <a href="http://datahub.io/">the Data Hub</a> entries (<a href="#dataset-announcement">see below</a>) also contains links to the dumps.</p>
                             </div>
                         </section>
 
-                        <section id="source-code" about="[this:]" rel="dcterms:hasPart">
-                            <h3 about="[this:#source-code]" property="dcterms:title">Source Code</h3>
-                            <div about="[this:#source-code]" property="dcterms:description">
+                        <section id="source-code" about="[this:]" rel="schema:hasPart">
+                            <h3 about="[this:#source-code]" property="schema:name">Source Code</h3>
+                            <div about="[this:#source-code]" property="schema:description">
                                 <p>The code for transformations is at <a href="https://github.com/csarven/linked-sdmx">csarven/linked-sdmx</a>, and for retrieval and data loading to RDF store for OECD is at <a href="https://github.com/csarven/oecd-linked-data">csarven/oecd-linked-data</a>, for BFS is at <a href="https://github.com/csarven/bfs-linked-data">csarven/bfs-linked-data</a>, for FAO is at <a href="https://github.com/csarven/fao-linked-data">csarven/fao-linked-data</a>, for ECB is at <a href="https://github.com/csarven/ecb-linked-data">csarven/ecb-linked-data</a>, for IMF is at <a href="https://github.com/csarven/imf-linked-data">csarven/imf-linked-data</a>, for UIS is at <a href="https://github.com/csarven/uis-linked-data">csarven/uis-linked-data</a>, for FRB is at <a href="https://github.com/csarven/frb-linked-data">csarven/frb-linked-data</a>, for ABS is at <a href="https://github.com/csarven/abs-linked-data">csarven/abs-linked-data</a>. All using the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a>.</p>
                             </div>
                         </section>
 
-                        <section id="data-license" about="[this:]" rel="dcterms:hasPart">
-                            <h3 about="[this:#data-license]" property="dcterms:title">Data License</h3>
-                            <div about="[this:#data-license]" property="dcterms:description">
+                        <section id="data-license" about="[this:]" rel="schema:hasPart">
+                            <h3 about="[this:#data-license]" property="schema:name">Data License</h3>
+                            <div about="[this:#data-license]" property="schema:description">
                               <p>All published Linked Data adheres to original data publisher’s data license and terms of use. Additionally attributions are given on the websites. The <em>Linked Data</em> version of the data is licensed under <a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0 Universal (CC0 1.0) Public Domain Dedication</a>.</p>
                             </div>
                         </section>
 
-                        <section id="dataset-announcement" about="[this:]" rel="dcterms:hasPart">
-                            <h3 about="[this:#dataset-announcement]" property="dcterms:title">Announcing the Datasets</h3>
-                            <div about="[this:#dataset-announcement]" property="dcterms:description">
+                        <section id="dataset-announcement" about="[this:]" rel="schema:hasPart">
+                            <h3 about="[this:#dataset-announcement]" property="schema:name">Announcing the Datasets</h3>
+                            <div about="[this:#dataset-announcement]" property="schema:description">
                                 <p>For other ways for these datasets to be discovered, they are announced at mailing lists, status update services, and at the Data Hub: OECD is at <a href="http://datahub.io/dataset/oecd-linked-data">oecd-linked-data</a>, BFS is at <a href="http://datahub.io/dataset/bfs-linked-data">bfs-linked-data</a>, FAO is at <a href="http://datahub.io/dataset/fao-linked-data">fao-linked-data</a>, ECB is at <a href="http://datahub.io/dataset/ecb-linked-data">ecb-linked-data</a>, IMF is at <a href="http://datahub.io/dataset/imf-linked-data">imf-linked-data</a>, UIS is at <a href="http://datahub.io/dataset/uis-linked-data">uis-linked-data</a>, FRB is at <a href="http://datahub.io/dataset/frb-linked-data">frb-linked-data</a>, BIS is at <a href="http://datahub.io/dataset/bis-linked-data">bis-linked-data</a>, ABS is at <a href="http://datahub.io/dataset/abs-linked-data">abs-linked-data</a>.</p>
                             </div>
                         </section>
                     </div>
                 </section>
 
-                <section id="conclusions" about="[this:]" rel="dcterms:hasPart">
-                    <h2 about="[this:#conclusions]" property="dcterms:title">Conclusions</h2>
-                    <div about="[this:#conclusions]" property="dcterms:description" typeof="sro:Conclusion">
+                <section id="conclusions" about="[this:]" rel="schema:hasPart">
+                    <h2 about="[this:#conclusions]" property="schema:name">Conclusions</h2>
+                    <div about="[this:#conclusions]" property="schema:description" typeof="sro:Conclusion">
                         <p>With this work we provided an automated approach for transforming statistical SDMX-ML data to Linked Data in a single step. As a result, this effort helps to publish and consume large amounts of quality statistical Linked Data. Its goal is to shift focus from mundane development efforts to automating the generation of quality statistical data. Moreover, it facilitates to provide RDF serializations alongside the existing formats used by high profile statistical data owners. Our approach to employ XSLT transformations does not require changes to well established workflows at the statistical agencies.</p>
 
                         <p>One aspect of future work is to improve the SDMX-ML to RDF transformation quality and quantity. Regarding quality, we aim to test our transformation with further datasets to identify shortcomings and special cases being currently not yet covered by the implementation. Also, we plan the development of a coherent approach for (semi-)automatically interlinking different statistical dataspaces, which establishes links on all possible levels (e.g. classifications, observations). With regard to quantity, we plan to publish statistical dataspaces for Bank for International Settlements (BIS), World Bank and Eurostat based on SDMX-ML data.</p>
@@ -690,9 +691,9 @@
                     </div>
                 </section>
 
-                <section id="acknowledgements" about="[this:]" rel="dcterms:hasPart">
-                    <h2 about="[this:#acknowledgements]" property="dcterms:title">Acknowledgements</h2>
-                    <div about="[this:#acknowledgements]" property="dcterms:description">
+                <section id="acknowledgements" about="[this:]" rel="schema:hasPart">
+                    <h2 about="[this:#acknowledgements]" property="schema:name">Acknowledgements</h2>
+                    <div about="[this:#acknowledgements]" property="schema:description">
                         <p>We thank <a href="http://richard.cyganiak.de/">Richard Cyganiak</a> for his ongoing support, as well as graciously offering to host the dataspaces on a server at <a href="http://deri.ie/">Digital Enterprise Research Institute</a>. We also acknowledge the support of <a href="http://bfh.ch/">Bern University of Applied Sciences</a> for partially funding the transformation effort for the pilot Swiss Statistics Linked Data project and thank <a href="http://www.bfs.admin.ch/">Swiss Federal Statistical Office</a> for the excellent collaboration from the very beginning.</p>
                     </div>
                 </section>
