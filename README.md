@@ -1,8 +1,7 @@
 # Linked Research
 
 **Objective**: to enable researchers (in Web Science for example), to share and
-reuse research knowledge by employing the native Web stack. This was
-practically a solved problem 25 years ago, but here we are.
+reuse research knowledge by employing the native Web stack.
 
 Linked Research is set out to socially and technically enable researchers to
 take full control, ownership, and responsibility of their own knowledge, and
@@ -25,17 +24,15 @@ present the information for different media e.g., screen, print. JavaScript is
 used to <em>progressively enhance</em> the document and bring in interactivity.
 In a nutshell:
 
-* Documents are human and machine-<em>readable</em>. Preferably humans first,
-machines second (details).
+* Documents are human and machine-<em>readable</em>.
 * Using the <em>plain old semantic HTML</em> marking process, with further
-semantic annotations using microformats and RDF.
-* No server required. Works on local machine. No installation. No account
-creation. No out of band tooling required. Your Web browser is the only
-requirement.
-* Using Apache License and CC0, and compatibilities where necessary.
+semantic annotations using RDF and microformats.
+* Intended to minimize friction in publishing and consuming; no installations,
+server, or account requirements. No out of band tooling. Works on local machine
+/ Web browser.
 
 See the [examples in the wild](https://github.com/csarven/linked-research/wiki#examples-in-the-wild)
-in the wiki. Add the URLs to your articles!
+in the wiki. Add your article's URL.
 
 This repository is published and accessible from [http://linked-research.270a.info/](http://linked-research.270a.info/), e.g:
 
@@ -57,7 +54,7 @@ turned-off without effecting core HTML or CSS.
 [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
 ## How to contribute
-* Use it! Provide URLs to your work (see examples)
+* Use it! Provide URLs to your work (see examples).
 * Enable your colleagues to the same.
 * Break things.
 * Report issues and document.
