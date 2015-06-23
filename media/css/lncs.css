@@ -205,7 +205,7 @@ font-size:162.448%;
 line-height:1.231;
 position:relative;
 margin:0 auto;
-padding:2em 0;
+padding:2.5em 0;
 width:35.475em;
 -moz-hyphens:auto;
 -webkit-hyphens:auto;
@@ -220,7 +220,7 @@ text-rendering:optimizeLegibility;
 hyphens:none;
 }
 
-h1,h2,h3,h4, strong, dt, figcaption:before, caption:before {
+h1,h2,h3,h4, strong, dt, figcaption:before, caption:before, .entry-subtitle {
 font-family: "CMU Serif Bold", serif !important;
 }
 h5,h6, em, cite, dfn, address {
@@ -740,6 +740,10 @@ margin-bottom:0.5em;
 ul, ol {
 margin-top:1em;
 }
+ul ul,
+ol ol {
+    margin-left:1em;
+}
 
 
 table {
@@ -773,7 +777,6 @@ font-weight:normal;
 
 .entry-subtitle {
 margin-bottom:1em;
-font-weight:bold;
 text-align:center;
 }
 
