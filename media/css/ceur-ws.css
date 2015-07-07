@@ -1,0 +1,173 @@
+/* ceur-ws.css defines how links are displayed and        */
+/* possibly some other details of page rendering within   */
+/* CEUR-WS.org.                                           */
+/* Copyright 2002-2015 by Manfred Jeusfeld                */
+/* Use permitted within CEUR-WS.org.                      */
+/* Modification permitted for members of the CEUR-WS TEAM.*/
+/*                                                        */
+/* THIS STYLE FILE IS FOR EXCLUSIVE USE WITHIN            */
+/* CEUR-WS.ORG! DO NOT COPY IT AS A WHOLE OR AS PARTS.    */
+/* IN PARTICULAR, THE TAGS CEUR* DEFINED BELOW MAY NOT BE */
+/* REUSED OR OVERRIDDEN.                                  */
+/* All references to ceur-ws.css in HTML files must be    */
+/* relative to ceur-ws.org, e.g. "../ceur-ws.ccs".        */
+/* Absolute references like "ceur-ws.org/ceur-ws.css" are */
+/* not permitted.                                         */
+/*                                                        */
+/* Created: 5-Nov-2002/M.Jeusfeld                         */
+/* Modified: 5-Sep-2005/M.Jeusfeld                        */
+/* Modified: 22-Nov-2006/M.Jeusfeld  (hover darker)       */
+/* Modified: 17-Dec-2008/M.Jeusfeld  (specific font fam.) */
+/* Modified: 15-Jan-2010/M.Jeusfeld  (CEUR class tags)    */
+/* Modified: 14-Apr-2010/M.Jeusfeld  (adapt link colors)  */
+/* Modified:  7-Jul-2010/M.Jeusfeld  (AUX tags)           */
+/* Modified: 13-Oct-2011/M.Jeusfeld  (ceur-ws.org)        */
+/* Modified: 20-Jun-2012/M.Jeusfeld  (color of VOLNR,URN) */
+/* Modified: 02-Jul-2012/M.Jeusfeld  (square bullet LI)   */
+/* Modified: 08-Jul-2013/C.Lange     (.unobtrusive and .copyright, to get rid of <font>) */
+/* Modified: 16-Oct-2013/M.Jeusfeld  (use grey for blue)  */
+/* Modified: 11-Dec-2013/M.Jeusfeld  (CEURWSLOGO div)     */
+/* Modified: 24-Mar-2015/M.Jeusfeld  (paper directories)  */
+
+body {
+font-family: arial, sans-serif;
+font-size: medium;
+background-image: url(http://ceur-ws.org/ceurws-bg.png);
+margin-left: +32px;
+margin-right: +8px;
+}
+
+/* 2015-04-21/MJ: for mobile-friendly layout */
+@-ms-viewport{
+  width: device-width;
+  initial-scale: 1.0;
+}
+
+A:link {color: #404040; text-decoration: none;}  /* display of links */
+A:visited {color: #404040; text-decoration: none;} /* visited links */
+A:hover {color: #000080; text-decoration: none;} /* links under the cursor */
+
+H1 {color:#000000; font-family:arial, cursive, sans-serif;}
+
+P,TABLE,TR,TD {font-family:arial,sans-serif;}
+
+UL {list-style-type: square; list-style-image: url(/ceurws-bullet-6x12.png);}
+
+LI {margin-bottom:7px;}   /* separates paper elements */
+
+PRE {color:#228120}
+
+.CEURPAGES {float:right; padding: 2px; font-size:smaller;}
+.AUXPAGES {float:right; padding: 2px; font-size:smaller;}
+
+.CEURTOC {width:90%; page-break-before:always;}    /* table of contents a bit narrower than the total page width */
+
+.CEURAUTHORS {font-style:italic;}
+.AUXAUTHORS {font-style:italic;}
+
+.CEURVOLNR {font-weight:bold; color:#404040; font-size:large;}
+/* write "CEUR-WS.org/" with background color before the VOLNR */
+/* will show up when printing the page */
+.CEURVOLNR:before{content:"CEUR-WS.org/"; color:#F5F4EF; font-size:large;} 
+
+.CEURURN {font-weight:bold; color:#404040;}
+
+/* for paper directories */
+.CEURVOLURL {font-weight:bold; color:#000080;}
+.CEURPAPERID {font-weight:bold; color:#404040;}
+
+.CEURABSTRACT {/* border-style: solid; border-width: 1px; padding: 5px 10px 5px 10px; */
+     word-wrap: break-word; margin-left: +42px; margin-right: +68px; }
+
+.unobtrusive {color: #777777; font-size: smaller;} /* unobtrusive text; for copyright notes */
+
+.copyright {font-size: x-small;} /* even smaller text in copyright notes; x-small replaces &lt;font size="-1"&gt; when base size is medium */
+
+
+#CEURWSLOGO {
+   background-image: url('./CEUR-WS-logo.png');
+   height: 100px;
+   width: 390px;
+}
+#CEURWSLOGO:hover {
+   background-image: url('./CEUR-WS-logo-blue.png');
+}
+
+
+.pages {float:right; padding: 2px; font-size:smaller;}
+.pages dt, .authors dt {display:none;}
+.authors {font-style:italic;}
+.authors dd {display:inline; margin-left:0;}
+.authors dd:not(:empty):after {content:", ";}
+.authors dd:last-child:after {content:"";}
+
+body > header {
+	padding-bottom:0.5em;
+	margin-bottom:1em;
+	border-bottom:1px inset gray;
+	float:left;
+	width:100%;
+	position:relative;
+}
+
+body > header address {
+	float:left;
+}
+body > header #document-identifier {
+	float:right;
+	margin:1em 7em 0 0.5em;
+}
+body > header #document-identifier dt {
+	display:none;
+}
+body > header #document-identifier dd {
+	font-weight:bold;
+	color:#404040;
+	margin-left:0;
+}
+
+body > header #document-license {
+	color: #777777; font-size: x-small;
+	margin-top:7.5em;
+}
+body > header #document-license dt {
+	display:none;
+}
+body > header #document-license dd {
+	margin-left:0;
+}
+article {
+	clear:both;
+}
+
+#authors {
+	padding-bottom:0.5em;
+	margin-bottom:1em;
+	border-bottom:1px inset gray;
+}
+#authors dt {
+	font-weight:bold;
+}
+#document-event dt {
+	display:none;
+}
+#author-org  {
+	list-style-type:none;
+}
+#author-name dd,
+#author-org,
+#document-event dd {
+	font-weight:bold;
+	margin-left:0;
+	padding-left:0;
+}
+#content {
+	width:80%;
+}
+footer {
+	padding-top:0.5em;
+	margin-top:1em;
+	border-top:1px inset gray;
+	font-size:smaller;
+	color:#777777;
+}
