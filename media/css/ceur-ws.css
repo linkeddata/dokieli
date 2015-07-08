@@ -93,7 +93,7 @@ PRE {color:#228120}
    background-image: url('./CEUR-WS-logo-blue.png');
 }
 
-
+h1 span {display:block;}
 .pages {float:right; padding: 2px; font-size:smaller;}
 .pages dt, .authors dt {display:none;}
 .authors {font-style:italic;}
