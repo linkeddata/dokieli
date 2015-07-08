@@ -55,7 +55,7 @@ var LR = {
             LR.U.showViews(dInfo);
             LR.U.showPrint(dInfo);
             LR.U.showEmbedData(dInfo);
-            LR.U.showStorage(dInfo);
+//            LR.U.showStorage(dInfo);
             LR.U.showExports(dInfo);
             LR.U.showDocumentMetadata(dInfo);
             if(!body.hasClass("on-slideshow")) {
@@ -81,7 +81,7 @@ var LR = {
 
             $('#toc').remove();
             $('#embed-data-entry').remove();
-            LR.U.hideStorage();
+//            LR.U.hideStorage();
         },
 
         getDocRefType: function() {
