@@ -569,7 +569,7 @@ text-transform:capitalize;
 }
 
 .authors dd:not(:empty):after {
-content:", ";
+content:",\0020";
 }
 .authors dd:last-child:after {
 content:"";
@@ -791,7 +791,7 @@ display:none;
 display:block;
 }
 
-@media only screen 
+@media only screen
 and (min-device-width : 320px)
 and (max-device-width : 568px) {
 body { font-size: 100%; }
@@ -802,8 +802,8 @@ column-count:1;
 }
 }
 
-@media only screen 
-and (min-device-width : 768px) 
+@media only screen
+and (min-device-width : 768px)
 and (max-device-width : 1024px) {
 body {
 font-size:100%;

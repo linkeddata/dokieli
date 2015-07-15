@@ -516,7 +516,7 @@ margin-bottom:0;
 #author-org li:not(:empty):after,
 #author-uri li:not(:empty):after,
 .authors dd:not(:empty):after {
-content:", ";
+content:",\0020";
 }
 #authors dd:last-child:after,
 #author-email li:last-child:after,
@@ -632,7 +632,7 @@ display:inline;
 display:inline;
 }
 .pages:before {
-content: ", ";
+content: ",\0020";
 }
 .pages dt {
 font-family: "CMU Serif" !important;
@@ -853,7 +853,7 @@ list-style-type:none;
 display:inline;
 }
 #categories-and-subject-descriptors li:after {
-content:"; ";
+content:";\0020";
 }
 #general-terms li:before,
 #keywords li:before {

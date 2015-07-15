@@ -100,7 +100,7 @@ h1 span {display:block;}
 .pages dt, .authors dt {display:none;}
 .authors {font-style:italic;}
 .authors dd {display:inline; margin-left:0;}
-.authors dd:not(:empty):after {content:", ";}
+.authors dd:not(:empty):after {content:",\0020";}
 .authors dd:last-child:after {content:"";}
 
 body > header {
