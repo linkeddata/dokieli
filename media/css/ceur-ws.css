@@ -28,6 +28,7 @@
 /* Modified: 16-Oct-2013/M.Jeusfeld  (use grey for blue)  */
 /* Modified: 11-Dec-2013/M.Jeusfeld  (CEURWSLOGO div)     */
 /* Modified: 24-Mar-2015/M.Jeusfeld  (paper directories)  */
+/* Modified: 16-Jul-2015/S.Capadisli (LinkedResearch)     */
 
 body {
 font-family: arial, sans-serif;
@@ -93,6 +94,7 @@ PRE {color:#228120}
    background-image: url('./CEUR-WS-logo-blue.png');
 }
 
+/*Linked Research compatible*/
 #document-language {display:none;}
 
 h1 span {display:block;}
@@ -118,6 +120,7 @@ body > header address {
 body > header #document-identifier {
     float:right;
     margin:1em 7em 0 0.5em;
+    text-align:right;
 }
 body > header #document-identifier dt {
     display:none;
