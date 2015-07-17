@@ -924,6 +924,21 @@ body > footer {
 margin-top:2em;
 }
 
+header nav ul {
+text-align:center;
+}
+header nav li {
+list-style-type:none;
+display:inline;
+}
+header nav li:before {
+content:"\2022\0020";
+}
+header nav li:first-child:before {
+content:"";
+}
+
+
 #document-purpose,
 #document-published,
 #document-modified,
