@@ -53,7 +53,7 @@
 
             <dl id="document-modified">
                 <dt>Modified</dt>
-                <dd><time datetime="2015-03-21" property="schema:dateModified" content="2014-07-21T09:00:00Z" datatype="xsd:dateTime">2015-03-21</time></dd>
+                <dd><time datetime="2015-03-21" property="schema:dateModified" content="2015-03-21T09:00:00Z" datatype="xsd:dateTime">2015-03-21</time></dd>
             </dl>
 
             <dl id="document-license">
@@ -143,16 +143,16 @@
                                 <p>Based on preliminary experimentation from data acquisition to analysis, we have created the <span property="rdfs:label">LSD Sense workflow</span>:</p>
 
                                 <ol>
-                                    <li about="[this:#workflow-create-hypothesis]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]" property="rdfs:label">Create hypothesis</li>
-                                    <li about="[this:#workflow-configure]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]" property="rdfs:label">Determine datasets and configurations</li>
-                                    <li about="[this:#workflow-get-metadata-lsd]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]" property="rdfs:label">Get metadata of datasets.</li>
-                                    <li about="[this:#workflow-get-observations-lsd]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]" property="rdfs:label">Get each dataset's observations.</li>
-                                    <li about="[this:#workflow-create-analysis-lsd]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]" property="rdfs:label">Create correlations and other analysis for each dataset pair combination.</li>
-                                    <li about="[this:#workflow-create-preprocess-semantic-similarity]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]" property="rdfs:label">Create dataset metadata subset for semantic similarity.</li>
-                                    <li about="[this:#workflow-create-analysis-semantic-similarity]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]" property="rdfs:label">Create semantic similarity for each dataset pair combination.</li>
-                                    <li about="[this:#workflow-create-analysis-semantic-similarity-correlation]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]" property="rdfs:label">Create correlation and other analysis using variables semantic similarity and correlation of LSD.</li>
-                                    <li about="[this:#workflow-test-verify-hypothesis]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]" property="rdfs:label">Test and verify hypothesis.</li>
-                                    <li about="[this:#workflow-analysis]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]" property="rdfs:label">Analysis.</li>
+                                    <li id="workflow-create-hypothesis" about="[this:#workflow-create-hypothesis]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]" property="rdfs:label">Create hypothesis</li>
+                                    <li id="workflow-configure" about="[this:#workflow-configure]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]" property="rdfs:label">Determine datasets and configurations</li>
+                                    <li id="workflow-get-metadata-lsd" about="[this:#workflow-get-metadata-lsd]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]" property="rdfs:label">Get metadata of datasets.</li>
+                                    <li id="workflow-get-observations-lsd" about="[this:#workflow-get-observations-lsd]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]" property="rdfs:label">Get each dataset's observations.</li>
+                                    <li id="workflow-create-analysis-lsd" about="[this:#workflow-create-analysis-lsd]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]" property="rdfs:label">Create correlations and other analysis for each dataset pair combination.</li>
+                                    <li id="workflow-create-preprocess-semantic-similarity" about="[this:#workflow-create-preprocess-semantic-similarity]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]" property="rdfs:label">Create dataset metadata subset for semantic similarity.</li>
+                                    <li id="workflow-create-analysis-semantic-similarity" about="[this:#workflow-create-analysis-semantic-similarity]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]" property="rdfs:label">Create semantic similarity for each dataset pair combination.</li>
+                                    <li id="workflow-create-analysis-semantic-similarity-correlation" about="[this:#workflow-create-analysis-semantic-similarity-correlation]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]" property="rdfs:label">Create correlation and other analysis using variables semantic similarity and correlation of LSD.</li>
+                                    <li id="workflow-test-verify-hypothesis" about="[this:#workflow-test-verify-hypothesis]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]" property="rdfs:label">Test and verify hypothesis.</li>
+                                    <li id="workflow-analysis" about="[this:#workflow-analysis]" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="[this:#workflow]" property="rdfs:label">Analysis.</li>
                                 </ol>
                             </div>
                         </section>
