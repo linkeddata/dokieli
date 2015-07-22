@@ -353,20 +353,6 @@ animation: blink 1s steps(5, start) infinite;
 .align-left { float:left; margin-right:2em; margin-bottom:2em; }
 .align-right { float:right; margin-left:2em; margin-bottom:2em; }
 
-blockquote {
-margin-left:2em;
-}
-blockquote:before {
-content: "“";
-color: #999;
-display: block;
-height: 0;
-font-size:4em;
-line-height:0.85em;
-margin-left: -0.5em;
-}
-
-
 .lr.fragment {
 position:absolute;
 top:0;
