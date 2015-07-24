@@ -20,15 +20,15 @@
             <div id="authors">
                 <dl id="author-name">
                     <dt>Authors</dt>
-                    <dd id="author-1"><span about="[this:]" rel="schema:creator schema:publisher schema:contributor schema:author"><a about="http://csarven.ca/#i" typeof="schema:Person" rel="schema:url" property="schema:name" href="http://csarven.ca/">Sarven Capadisli</a></span><span about="http://csarven.ca/#i" rel="schema:memberOf" resource="[this:#Leipzig_University]"></span><sup><a href="#author-org-1">1</a></sup><sup><a href="#author-email-1">✊</a></sup></dd>
-                    <dd id="author_2"><span about="[this:]" rel="schema:contributor"><a about="[this:#SörenAuer]" typeof="schema:Person" rel="schema:url" property="schema:name" href="http://www.iai.uni-bonn.de/~auer/">Sören Auer</a></span><span about="[this:#SörenAuer]" rel="schema:memberOf" resource="[dbr:University_of_Bonn]"></span><sup><a href="#author-org-2">2</a></sup><sup><a href="#author-email-2">⚛</a></sup></dd>
-                    <dd id="author-3"><span about="[this:]" rel="schema:contributor"><a about="[this:#ReinhardRiedl]" typeof="schema:Person" rel="schema:url" property="schema:name" href="http://www.wirtschaft.bfh.ch/de/ueber_uns/kontakt/detailseite.html?tx_bfhpersonalpages_p=rer2&#38;tx_bfhpersonalpages_screen=data">Reinhard Riedl</a></span><span about="[this:#ReinhardRiedl]" rel="schema:memberOf" resource="[dbr:Bern_University_of_Applied_Sciences]"></span><sup><a href="#author-org-3">3</a></sup><sup><a href="#author-email-3">𝄞</a></sup></dd>
+                    <dd id="author-1" rel="bibo:authorList" inlist="" resource="http://csarven.ca/#i"><span about="[this:]" rel="schema:contributor schema:creator schema:publisher schema:author"><a about="http://csarven.ca/#i" typeof="schema:Person" rel="schema:url" property="schema:name" href="http://csarven.ca/">Sarven Capadisli</a></span><sup><a about="http://csarven.ca/#i" rel="schema:memberOf" resource="http://dbpedia.org/resource/Leipzig_University" href="#author-org-1">1</a></sup><sup><a href="#author-email-1">✊</a></sup></dd>
+                    <dd id="author-2" rel="bibo:authorList" inlist="" resource="[this:#SörenAuer]"><span about="[this:]" rel="schema:contributor"><a about="[this:#SörenAuer]" typeof="schema:Person" rel="schema:url" property="schema:name" href="http://www.iai.uni-bonn.de/~auer/">Sören Auer</a></span><sup><a about="[this:#SörenAuer]" rel="schema:memberOf" resource="http://dbpedia.org/resource/University_of_Bonn" href="#author-org-2">2</a></sup><sup><a href="#author-email-2">⚛</a></sup></dd>
+                    <dd id="author-3" rel="bibo:authorList" inlist="" resource="[this:#ReinhardRiedl]"><span about="[this:]" rel="schema:contributor"><a about="[this:#ReinhardRiedl]" typeof="schema:Person" rel="schema:url" property="schema:name" href="http://www.wirtschaft.bfh.ch/de/ueber_uns/kontakt/detailseite.html?tx_bfhpersonalpages_p=rer2&#38;tx_bfhpersonalpages_screen=data">Reinhard Riedl</a></span><sup><a about="[this:#ReinhardRiedl]" rel="schema:memberOf" resource="http://dbpedia.org/resource/Bern_University_of_Applied_Sciences" href="#author-org-3">3</a></sup><sup><a href="#author-email-3">𝄞</a></sup></dd>
                 </dl>
 
                 <ul id="author-org">
-                    <li id="author-org-1"><sup>1</sup><a about="[this:#Leipzig_University]" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.zv.uni-leipzig.de/">Leipzig University</a>, Institute of Computer Science, <a href="http://aksw.org/">AKSW</a>, Leipzig, Germany</li>
-                    <li id="author-org-2"><sup>2</sup><a about="[dbr:University_of_Bonn]" typeof="schema:Organization" property="rdfs:label" rel="schema:url" href="http://uni-bonn.de/">University of Bonn</a>, Enterprise Information Systems Department, Bonn, Germany</li>
-                    <li id="author-org-3"><sup>3</sup><a about="[dbr:Bern_University_of_Applied_Sciences]" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://bfh.ch/">Bern University of Applied Sciences</a>, E-Government-Institute, Bern, Switzerland</li>
+                    <li id="author-org-1"><sup>1</sup><a about="[dbr:Leipzig_University]" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.zv.uni-leipzig.de/">Leipzig University</a>, Institute of Computer Science, <a href="http://aksw.org/">AKSW</a>, Leipzig, Germany</li>
+                    <li id="author-org-2"><sup>2</sup><a about="http://dbpedia.org/resource/University_of_Bonn" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://uni-bonn.de/">University of Bonn</a>, Enterprise Information Systems Department, Bonn, Germany</li>
+                    <li id="author-org-3"><sup>3</sup><a about="http://dbpedia.org/resource/Bern_University_of_Applied_Sciences" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://bfh.ch/">Bern University of Applied Sciences</a>, E-Government-Institute, Bern, Switzerland</li>
                 </ul>
 
                 <ul id="author-email">
@@ -61,6 +61,17 @@
             <dl id="document-in-reply-to">
                 <dt>In Reply To</dt>
                 <dd><a about="[this:]" rel="sioc:reply_of" href="http://semstats.org/2013/call-for-papers" class="u-in-reply-to">SemStats 2013 Call for Papers</a></dd>
+            </dl>
+
+            <dl id="document-appeared">
+                <dt>Appeared In</dt>
+                <dd about="[this:]" rel="bibo:citedBy" resource="http://ceur-ws.org/Vol-XXX/">
+                    <span about="http://ceur-ws.org/Vol-XXX/" typeof="bibo:Document">
+                        <span property="bibo:shortTitle">CEUR</span> (<span property="schema:name">Central Europe workshop proceedings</span>): <a rel="schema:url" href="http://ceur-ws.org/Vol-XXX/">Proceedings of the 1st International Workshop on Semantic Statistics</a>,
+                        Volume <span property="bibo:volume" xml:lang="">XXX</span>,
+                        <span property="bibo:uri" xml:lang="">urn:nbn:de:0074-XXX-X</span>
+                    </span>
+                </dd>
             </dl>
 
             <dl id="document-purpose">
@@ -104,7 +115,7 @@
                         <p>This article presents an approach, <em>Statistical Linked Data Analyses</em>, addressing this challenge. In a nutshell, it takes advantage of Linked Data design principles that are widely accepted as a way to publish and consume data without central coordination on the Web. The work herein offers a Web based user-interface for researchers, journalists, or interested people to compare statistical data from different sources against each other without having any knowledge of the technology underneath or the expertise to develop themselves. Our approach is based on performing decentralized (i.e. federated) structured queries to retrieve data from various SPARQL endpoints, conducting various data analyses, and providing analysis results back to the user. For future research, analyses are stored so that they can be discovered and reused.</p>
 
                         <p>We have an implementation of a statistical analyses service at <a href="http://stats.270a.info/">stats.270a.info</a> [<a href="#ref-1">1</a>] which addresses the challenge and realizes the approach. The service is intended to allow humans and machines explore statistical analyses. There are two additional products of this service: first, the analysis results are stored for future discovery, and second, it creates valuable statistical artefacts which can be reused in a uniform way.</p>
-				
+
 				        <p>As a result, we demonstrate with this work, how linked data principles can be applied to statistical data. We show in particular, that federated SPARQL queries facilitate novel statistical analyses, which previously required cumbersome manual statistical data integration efforts. The automatized integration and analysis workflow also enables provenance tracing from visualizations combining statistical data from various sources back to the original raw data.</p>
                     </div>
                 </section>
@@ -281,7 +292,7 @@
                                 <p>In order to optimize application reactivity for all users, previously user selected options for analysis are cached in the Shiny server session. That is, the service is able to provide cached results which were triggered by different users.</p>
                                 <p>In addition to a cache that is closest to the user, results from the federated queries as well as the R analysis, which was previously conducted, is stored back into the RDF store with a SPARQL Update. This serves multiple purposes. In the event that the Shiny server is restarted and the cache is no longer available, previously calculated results in the store can be reused, which is still more cost efficient than making new federated queries.</p>
                                 <p>Another reason for storing the results back in the RDF store is to offer them over the stats.270a.info SPARQL endpoint for additional discovery and reuse of analysis for researchers. Interesting use cases from this approach emerge immediately. For instance, a researcher or journalist can investigate analysis that meets their criteria. Some examples are as follows:</p>
-                                
+
                                 <ul>
                                     <li>analysis which is statistically significant, and has to do with Gross Domestic Product (GDP) and health subjects,</li>
                                     <li>a list of indicator pairs with strong correlations,</li>
