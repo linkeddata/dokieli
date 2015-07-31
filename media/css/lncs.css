@@ -228,7 +228,7 @@ font-family: "CMU Serif Bold", serif !important;
 h5,h6, em, cite, dfn, address {
 font-family: "CMU Serif Italic", serif !important;
 }
-h1 em, h2 em, h3 em, h4 em {
+h1 em, h2 em, h3 em, h4 em, dt dfn {
 font-family: "CMU Serif Bold Italic", serif !important;
 }
 code, code strong, samp, samp strong pre, kbd, button {
