@@ -731,10 +731,48 @@ text-align:left;
 caption {
 padding:0.25em 0;
 }
-
 tbody th {
 text-align:left;
 }
+
+form {
+margin:1em 0;
+}
+form li {
+margin-bottom:0.5em;
+}
+form p {
+text-indent:0;
+}
+fieldset {
+padding:1em;
+}
+legend { font-weight:bold; }
+label {
+display:inline-block;
+font-weight:bold;
+width:17%;
+vertical-align:top;
+}
+label[for=nobot] {
+width:auto;
+}
+input,
+textarea,
+label {
+padding:0.25em;
+}
+input,
+textarea,
+select,
+button {
+font-family: inherit;
+font-size: inherit;
+}
+input[type=submit] {
+font-weight:bold;
+}
+
 figcaption {
 margin-bottom:1em;
 }
