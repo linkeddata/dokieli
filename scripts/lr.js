@@ -492,7 +492,7 @@ var LR = {
                 mouseenter: function () {
                     if($('#'+this.id+' > .lr.fragment').length == 0){
                         $('#'+this.id).css({'position':'relative'});
-                        $('#'+this.id).append('<span class="lr fragment" style="height:' + this.clientHeight + 'px; "><a href="#' + this.id + '">' + '#' + this.id + '</a></span>');
+                        $('#'+this.id).prepend('<span class="lr fragment" style="height:' + this.clientHeight + 'px; "><a href="#' + this.id + '">' + '#' + this.id + '</a></span>');
                         var fragment = $('#'+this.id+' > .lr.fragment');
                         var fragmentClientWidth = fragment.get(0).clientWidth;
                         fragment.css({'right': '-' + (fragmentClientWidth - 2) + 'px'});

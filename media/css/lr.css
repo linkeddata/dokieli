@@ -357,12 +357,8 @@ animation: blink 1s steps(5, start) infinite;
 position:absolute;
 top:0;
 right:0;
-z-index:0;
 text-indent:0;
 padding-left:10px;
-/*background:rgba(128,128,128,0.2) !important;*/
-/*height:100% !important;*/
-/*display:block;*/
 font-size:1em;
 }
 
