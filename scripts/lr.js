@@ -394,7 +394,7 @@ var LR = {
             var tableList = [];
 
             if (listType) { tableList = [listType]; }
-            else { tableList = ['content', 'figure', 'table']; }
+            else { tableList = ['content', 'figure', 'table', 'abbr']; }
 
             tableList.forEach(function(element) {
                 var e = $(element);
@@ -408,17 +408,46 @@ var LR = {
                             titleType = 'caption';
                             tableHeading = 'Table of Tables';
                             break;
+                        case 'abbr':
+                            titleType = 'title';
+                            tableHeading = 'Table of Abbreviations';
+                            break;
                         case 'content': default:
                             titleType = '';
                             tableHeading = 'Table of Contents';
                             break;
                     }
 
-                    s += '<nav id="table-of-'+ element +'s">';
-                    s += '<h2>' + tableHeading + '</h2>';
-                    s += '<div><ol class="toc">';
+                    if (element == 'abbr') {
+                        s += '<section id="table-of-abbreviations">';
+                        s += '<h2>' + tableHeading + '</h2>';
+                        s += '<div><dl class="toc">';
+                    }
+                    else {
+                        s += '<nav id="table-of-'+ element +'s">';
+                        s += '<h2>' + tableHeading + '</h2>';
+                        s += '<div><ol class="toc">';
+                    }
+
                     if (element == 'content') {
                         s += LR.U.getListOfSections($('h1 ~ div section:not([class~="slide"])'), false);
+                    } 
+                    else if (element == 'abbr') {
+                        
+                        if (e.length > 0) {
+                            e.sort(function(a, b) {
+                                var textA = $(a).text(),
+                                textB = $(b).text();
+                                return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+                            });
+                        }
+
+                        e.each(function() {
+                            var title = $(this).attr(titleType),
+                            text = $(this).text();
+                            s += '<dt>' + text + '</dt>';
+                            s += '<dd>' + title + '</dd>';
+                        });
                     }
                     else {
                         e.each(function(i,v) {
@@ -428,8 +457,14 @@ var LR = {
                             s += '<li><a href="#' + elementId +'">' + elementTitle  +'</a></li>';
                         });
                     }
-                    s += '</ol></div>';
-                    s += '</nav>';
+
+                    if (element == 'abbr'){
+                        s += '</dl>';
+                        s += '</section>';
+                    } else {
+                        s += '</ol></div>';
+                        s += '</nav>';
+                    }
                 }
             });
 
@@ -454,6 +489,7 @@ var LR = {
                 }
             }
         },
+
 
         buttonClose: function() {
             $(document).on('click', 'button.close', function(e) { $(this).parent().remove(); });
