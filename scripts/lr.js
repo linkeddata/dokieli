@@ -538,7 +538,7 @@ var LR = {
                     $('#'+this.id+' > .lr.fragment').remove();
                     $('#'+this.id).removeClass('position-relative');
                 }
-            }, '#content *[id]');
+            }, '#content *[id], #interactions *[id]');
         },
 
         getDoctype: function() {
