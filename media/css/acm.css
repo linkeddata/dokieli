@@ -762,7 +762,7 @@ content: counter(appendix, upper-latin) "." counter(sub-appendix)"." counter(sub
 
 #header,
 #footer,
-#comment-write,
+#interaction-write,
 dl.entry-author,
 dl.datetimestamp,
 dl.entry-replies,
