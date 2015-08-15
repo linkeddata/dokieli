@@ -200,14 +200,12 @@ right:0.5em;
 z-index:9;
 }
 
-p, h2,h3,h4,h5,h6,ul,ol,li,dl,dt,table,section,figure {
-position:relative;
-z-index:1;
-/*background:#eee !important;*/
-}
-
 .lr.highlight {
 background-color:#0ff;
+}
+.position-relative {
+position:relative;
+z-index:1;
 }
 
 .slide {
