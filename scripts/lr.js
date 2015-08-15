@@ -431,35 +431,36 @@ var LR = {
 
                     if (element == 'content') {
                         s += LR.U.getListOfSections($('h1 ~ div section:not([class~="slide"])'), false);
-                    } 
-                    else if (element == 'abbr') {
-                        
-                        if (e.length > 0) {
-                            e.sort(function(a, b) {
-                                var textA = $(a).text(),
-                                textB = $(b).text();
-                                return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-                            });
-                        }
-
-                        e.each(function() {
-                            var title = $(this).attr(titleType),
-                            text = $(this).text();
-                            s += '<dt>' + text + '</dt>';
-                            s += '<dd>' + title + '</dd>';
-                        });
                     }
                     else {
-                        e.each(function(i,v) {
-                            elementId = $(this).attr('id');
-                            elementTitle = $(this).find(titleType).text();
+                        if (element == 'abbr') {
+                            if (e.length > 0) {
+                                e.sort(function(a, b) {
+                                    var textA = $(a).text();
+                                    var textB = $(b).text();
+                                    return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+                                });
+                            }
 
-                            s += '<li><a href="#' + elementId +'">' + elementTitle  +'</a></li>';
-                        });
+                            e.each(function() {
+                                var title = $(this).attr(titleType);
+                                var text = $(this).text();
+                                s += '<dt>' + text + '</dt>';
+                                s += '<dd>' + title + '</dd>';
+                            });
+                        }
+                        else {
+                            e.each(function(i,v) {
+                                elementId = $(this).attr('id');
+                                elementTitle = $(this).find(titleType).text();
+
+                                s += '<li><a href="#' + elementId +'">' + elementTitle  +'</a></li>';
+                            });
+                        }
                     }
 
                     if (element == 'abbr'){
-                        s += '</dl>';
+                        s += '</dl></div>';
                         s += '</section>';
                     } else {
                         s += '</ol></div>';
