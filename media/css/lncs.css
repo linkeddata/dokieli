@@ -627,6 +627,11 @@ display:inline;
 /*display:none;*/
 }
 
+blockquote {
+padding-left:1em;
+border-left:0.25em solid #ccc;
+}
+
 
 .pages, .pages dt, .pages dd {
 display:inline;
@@ -898,10 +903,6 @@ list-style-position:inside;
 margin-bottom:1em;
 }
 
-
-.e-content {
-margin-bottom:3em;
-}
 
 .entry-author,
 .datetimestamp,
