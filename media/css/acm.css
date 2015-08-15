@@ -281,7 +281,28 @@ caption:before {
 content: "Table " counter(table) ": ";
 }
 
+.toc, .toc ol {
+list-style:none;
+-moz-hyphens:none;
+-webkit-hyphens:none;
+-ms-hyphens:none;
+hyphens:none;
+}
+.toc ol,
+.toc li {
+margin:0;
+text-align:left !important;
+}
 
+.toc li {
+list-style-position:outside;
+list-style-type: none;
+margin-left: 1.25em;
+margin-bottom:0.25em;
+}
+.toc li:before {
+margin-left: -1.25em;
+}
 
 .tex,
 .latex {

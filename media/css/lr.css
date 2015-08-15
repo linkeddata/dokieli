@@ -115,29 +115,6 @@ margin-right:1em;
 }
 
 
-
-.toc, .toc ol {
-list-style:none;
--moz-hyphens:none;
--webkit-hyphens:none;
--ms-hyphens:none;
-hyphens:none;
-}
-.toc ol,
-.toc li {
-margin:0;
-text-align:left !important;
-}
-
-.toc li {
-list-style-position:outside;
-list-style-type: none;
-margin-left: 1.25em;
-margin-bottom:0.25em;
-}
-.toc li:before {
-margin-left: -1.25em;
-}
 .toc li:not([data-id=abstract]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
 counter-increment: s;
 counter-reset: sub-s;
