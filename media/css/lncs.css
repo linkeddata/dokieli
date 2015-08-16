@@ -422,13 +422,6 @@ section + p:before {
 text-indent:0;
 }
 
-* + h4:before,
-caption:before,
-* + h5:before,
-h4 + h5:before {
-content:"\A";
-white-space:pre;
-}
 
 fieldset {
 padding:1em;

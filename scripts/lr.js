@@ -527,7 +527,7 @@ var LR = {
             $(document).on({
                 mouseenter: function () {
                     if($('#'+this.id+' > .lr.fragment').length == 0){
-                        $('#'+this.id).addClass('position-relative');
+                        $('#'+this.id).addClass('lr position-relative');
                         $('#'+this.id).prepend('<span class="lr fragment" style="height:' + this.clientHeight + 'px; "><a href="#' + this.id + '">' + '#' + this.id + '</a></span>');
                         var fragment = $('#'+this.id+' > .lr.fragment');
                         var fragmentClientWidth = fragment.get(0).clientWidth;
@@ -536,7 +536,7 @@ var LR = {
                 },
                 mouseleave: function () {
                     $('#'+this.id+' > .lr.fragment').remove();
-                    $('#'+this.id).removeClass('position-relative');
+                    $('#'+this.id).removeClass('lr position-relative').filter('[class=""]').removeAttr('class');
                 }
             }, '#content *[id], #interactions *[id]');
         },

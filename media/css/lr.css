@@ -62,18 +62,22 @@ margin-top:1em;
 display:block;
 }
 
-section.lr {
+#document-menu section {
 margin-top:2em;
 }
-
-.lr ul,
-.lr h2 {
+#document-menu ul,
+#document-menu h2,
+#toc h2 {
 margin:0;
 padding:0;
 }
-.lr p {
+#document-menu p {
 text-indent:0;
 }
+#document-menu.lr caption:before {
+content: '' !important;
+}
+
 
 #views {
 /*top:1em;
@@ -103,10 +107,7 @@ padding-left:0;
 font-family:"CMU Serif Bold", sans-serif !important;
 font-size:1.231em;
 }
-.lr caption:before,
-.lr h2:before {
-content: '' !important;
-}
+
 
 #views li,
 #embed-data-in-html li {
@@ -203,7 +204,7 @@ z-index:9;
 .lr.highlight {
 background-color:#0ff;
 }
-.position-relative {
+.lr.position-relative {
 position:relative;
 z-index:1;
 }
