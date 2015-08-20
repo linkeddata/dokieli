@@ -234,9 +234,6 @@ font-style: normal;
 }
 
 @media screen {
-.highlight {
-background-color:#0ff;
-}
 .todo {
 background-color:#f0f;
 }
