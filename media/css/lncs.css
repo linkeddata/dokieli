@@ -648,6 +648,43 @@ margin-bottom:0.25em;
 margin-left: -1.25em;
 }
 
+.toc li:not([data-id=abstract]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
+counter-increment: s;
+counter-reset: sub-s;
+}
+
+.toc li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
+counter-increment: sub-s;
+counter-reset: sub-sub-s;
+}
+.toc li li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
+counter-increment: sub-sub-s;
+counter-reset: sub-sub-sub-s;
+}
+.toc li li li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
+counter-increment: sub-sub-sub-s;
+counter-reset: sub-sub-sub-sub-s;
+}
+.toc li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
+content: "\00a0" counter(s) "\00a0";
+}
+.toc li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
+content: "\00a0" counter(s) "." counter(sub-s) "\00a0";
+}
+.toc li li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
+content: "\00a0" counter(s) "." counter(sub-s) "." counter(sub-sub-s) "\00a0";
+}
+.toc li li li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
+content: "\00a0" counter(s) "." counter(sub-s) "." counter(sub-sub-s) "." counter(sub-sub-sub-s) "\00a0";
+}
+
+.toc li[data-id=abstract]:before, .toc li[data-id=document-status]:before, .toc li[data-id=keywords]:before, .toc li[data-id=references]:before, .toc li[data-id=categories-and-subject-descriptors]:before, .toc li[data-id=general-terms]:before, .toc li[data-id=appendix]:before, .toc li[data-id=contact-us]:before {
+content: "\00a0\00a0\00a0\00a0";
+}
+
+
+
+
 .pages, .pages dt, .pages dd {
 display:inline;
 }
