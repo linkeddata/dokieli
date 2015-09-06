@@ -140,7 +140,7 @@ p, ol, ul, table, figure {
 margin-bottom:1em;
 }
 
-h1 {
+body > article > h1 {
 margin-top:0.75em;
 margin-bottom:1.25em;
 font-family:Arial, sans-serif;

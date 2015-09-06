@@ -250,7 +250,7 @@ overflow:hidden;
 page-break-after: avoid;
 line-height:1.231;
 }
-h1 {
+body > article > h1 {
 font-size:1.4615em;
 margin-bottom:1.5em;
 text-align:center;
@@ -302,10 +302,6 @@ font-weight:normal;
 font-family: "CMU Serif Italic", serif !important;
 font-size:0.923em;
 font-weight:normal;
-}
-
-h1 span {
-display:block;
 }
 
 aside.note {
