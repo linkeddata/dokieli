@@ -277,33 +277,6 @@ h5 {
 display:inline;
 }
 
-.h1 {
-font-family: "CMU Serif Bold", serif !important;
-font-size:1.4615em;
-}
-.h2 {
-font-family: "CMU Serif Bold", serif !important;
-font-size:1.231em;
-}
-.h3 {
-font-family: "CMU Serif Bold", serif !important;
-font-size:1em;
-}
-.h4 {
-font-family: "CMU Serif Bold", serif !important;
-font-size:1em;
-}
-.h5 {
-font-family: "CMU Serif Italic", serif !important;
-font-size:1em;
-font-weight:normal;
-}
-.h6 {
-font-family: "CMU Serif Italic", serif !important;
-font-size:0.923em;
-font-weight:normal;
-}
-
 aside.note {
 position:relative;
 margin:1em 0;
