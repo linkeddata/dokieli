@@ -155,9 +155,6 @@ font-size:0.5715em;
 position:relative;
 top:-3px;
 }
-h1 span {
-display:block;
-}
 h2, h3,
 #document-identifier dt,
 #document-published dt,
@@ -810,6 +807,36 @@ font-weight:bold;
 
 figcaption {
 margin-bottom:1em;
+}
+
+
+.count {
+margin-bottom:0;
+font-weight:normal;
+font-size:1em;
+}
+.count:after {
+content:':';
+}
+section article {
+margin:0 0 2em 0;
+}
+section article article {
+padding-left:2.25em;
+padding-top:1em;
+margin-bottom:0;
+border-left:2px solid #ccc;
+}
+section article h1 {
+margin-bottom:0;
+font-size:1em;
+}
+section article img {
+vertical-align:middle;
+margin-right:0.25em;
+}
+section article p:last-child {
+margin-bottom:0;
 }
 
 
