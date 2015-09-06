@@ -90,33 +90,6 @@ aside.note {
 font-size:9pt !important;
 }
 
-.h1 {
-font-family: "CMU Serif Bold", serif !important;
-font-size:14pt;
-}
-.h2 {
-font-family: "CMU Serif Bold", serif !important;
-font-size:12pt;
-}
-.h3 {
-font-family: "CMU Serif Bold", serif !important;
-font-size:10pt;
-}
-.h4 {
-font-family: "CMU Serif Bold", serif !important;
-font-size:10pt;
-}
-.h5 {
-font-family: "CMU Serif Italic", serif !important;
-font-size:10pt;
-font-weight:normal;
-}
-.h6 {
-font-family: "CMU Serif Italic", serif !important;
-font-size:9pt;
-font-weight:normal;
-}
-
 a {
 text-decoration:none;
 color:#000;
@@ -163,7 +136,7 @@ width:100%;
 min-height:240px;
 }
 object[type="text/html"] { min-height:480px; }
-img { max-width:100%; height:auto; }
+img { max-width:100%; height:auto; vertical-align:middle; }
 video, audio { display:block; max-width:60%; height:auto; margin:0 auto; }
 iframe { display:block; margin:0 auto; width:calc(); }
 
@@ -276,6 +249,38 @@ display:inline;
 h5 {
 display:inline;
 }
+
+
+#interactions .count {
+margin-bottom:0;
+font-weight:normal;
+font-size:1em;
+}
+#interactions .count:after {
+content:':';
+}
+#interactions article {
+margin:0 0 2em 0;
+}
+#interactions article article {
+padding-left:2.25em;
+padding-top:1em;
+margin-bottom:0;
+border-left:2px solid #ccc;
+}
+#interactions article h1 {
+margin-bottom:0;
+font-size:1em;
+}
+#interactions article img {
+vertical-align:middle;
+margin-right:0.25em;
+}
+#interactions article p:last-child {
+margin-bottom:0;
+}
+
+
 
 aside.note {
 position:relative;
