@@ -206,13 +206,13 @@ counter-reset: sub-sub-section;
 section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]) section section {
 counter-increment: sub-sub-section;
 }
-section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id^=table-of-]) h2:before {
+section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id^=table-of-]) > h2:before {
 content: counter(section) ".\00a0\00a0\00a0\00a0";
 }
-section h3:before {
+section > h3:before {
 content: counter(section) "." counter(sub-section) "\00a0\00a0\00a0";
 }
-section h4:before {
+section > h4:before {
 content: counter(section)"." counter(sub-section) "." counter(sub-sub-section) "\00a0\00a0\00a0";
 }
 
@@ -823,13 +823,19 @@ margin:0 0 2em 0;
 }
 section article article {
 padding-left:2.25em;
-padding-top:1em;
 margin-bottom:0;
 border-left:2px solid #ccc;
 }
-section article h1 {
+section article h1,
+section article h2,
+section article h3 {
 margin-bottom:0;
 font-size:1em;
+}
+section article h1,
+section article h2,
+section article h3 {
+margin-top:0;
 }
 section article img {
 vertical-align:middle;
