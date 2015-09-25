@@ -130,6 +130,9 @@ body > header #document-identifier dd {
     color:#404040;
     margin-left:0;
 }
+body > header #document-identifier dd:nth-of-type(1) {
+    display:none;
+}
 
 body > header #document-license {
     color: #777777; font-size: x-small;
