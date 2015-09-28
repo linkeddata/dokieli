@@ -90,6 +90,17 @@ aside.note {
 font-size:9pt !important;
 }
 
+aside.note {
+position:relative;
+}
+
+aside.note article {
+position:static !important;
+width:100% !important;
+font-size:1em !important;
+margin-bottom:1em;
+}
+
 a {
 text-decoration:none;
 color:#000;
@@ -287,9 +298,7 @@ margin-bottom:0;
 }
 
 
-
 aside.note {
-position:relative;
 margin:1em 0;
 border-top:1px solid #000;
 padding-top:0.25em;
@@ -309,6 +318,7 @@ height:1px;
 aside.note p {
 text-indent:0;
 }
+
 
 article section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]) {
 counter-increment: section;

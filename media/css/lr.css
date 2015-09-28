@@ -20,8 +20,11 @@ transition: opacity 1s ease-in-out;
 }
 }
 
+#content {
+position:relative;
+}
 
-aside.lr {
+aside.lr:not([class~=note]) {
 position:fixed;
 top:1em;
 z-index:9;
@@ -36,6 +39,12 @@ border-radius:7px;
 box-shadow:0.25em 0.25em 0.25em rgba(0,0,0,0.1);
 overflow:auto;
 }
+
+aside.note:not([class~=lr]) {
+position:relative;
+}
+
+
 #document-editor {
 position:static;
 }
@@ -200,9 +209,6 @@ background-color:#f0f;
 }
 .todo:before {
 content:"TODO: ";
-}
-.note {
-/*background-color:#ff0;*/
 }
 
 .rtl {

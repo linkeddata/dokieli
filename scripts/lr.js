@@ -526,12 +526,14 @@ var LR = {
         showFragment: function() {
             $(document).on({
                 mouseenter: function () {
-                    if($('#'+this.id+' > .lr.fragment').length == 0){
-                        $('#'+this.id).addClass('lr position-relative');
+                    if($('#'+this.id+' > .lr.fragment').length == 0 && this.parentNode.nodeName.toLowerCase() != 'aside'){
                         $('#'+this.id).prepend('<span class="lr fragment" style="height:' + this.clientHeight + 'px; "><a href="#' + this.id + '">' + '#' + this.id + '</a></span>');
                         var fragment = $('#'+this.id+' > .lr.fragment');
                         var fragmentClientWidth = fragment.get(0).clientWidth;
-                        fragment.css({'right': '-' + (fragmentClientWidth - 2) + 'px'});
+                        fragment.css({
+                            'top': 'calc(' + Math.ceil($(this).position().top) + 'px)',
+                            'right': '-' + (fragmentClientWidth - 2) + 'px'
+                        });
                     }
                 },
                 mouseleave: function () {
