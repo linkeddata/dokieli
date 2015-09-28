@@ -234,7 +234,7 @@ overflow:hidden;
 page-break-after: avoid;
 line-height:1.231;
 }
-body > article > h1 {
+h1 {
 font-size:1.4615em;
 margin-bottom:1.5em;
 text-align:center;
