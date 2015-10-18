@@ -24,6 +24,7 @@ var LR = {
             }
         },
         Stylesheets: [],
+        User: null,
         UseStorage: false,
         AutoSaveId: '',
         AutoSaveTimer: 60000,
@@ -34,6 +35,22 @@ var LR = {
     },
 
     U: {
+        setUser: function() {
+            var request = $.ajax({
+                url: document.URL,
+                method: "HEAD"
+            });
+
+            request.done(function(data, textStatus, xhr) {
+                LR.C.User = xhr.getResponseHeader('User');
+            });
+
+            request.fail(function(xhr, textStatus) {
+                console.log("Request failed: " + textStatus);
+                //TODO
+            });
+        },
+
         showDocumentInfo: function() {
             $('body').append('<aside id="document-menu" class="lr"><header><p id="about-linked-research">About <a target="LinkedResearchSource" href="https://github.com/csarven/linked-research">Linked Research</a></p><button class="show" title="Open Menu">☰</button></header><div></div></aside>');
 
@@ -789,6 +806,7 @@ LIMIT 1";
 $(document).ready(function() {
 //    LR.U.initStorage('html');
 //    LR.U.getDocRefType();
+    LR.U.setUser();
     LR.U.buttonClose();
     LR.U.highlightItems();
     LR.U.showDocumentInfo();
