@@ -25,6 +25,7 @@ var LR = {
         },
         Stylesheets: [],
         User: null,
+        LocalDocument: false,
         UseStorage: false,
         AutoSaveId: '',
         AutoSaveTimer: 60000,
@@ -49,6 +50,12 @@ var LR = {
                 console.log("Request failed: " + textStatus);
                 //TODO
             });
+        },
+
+        setLocalDocument: function() {
+            if (document.location.protocol == 'file:') {
+                LR.C.LocalDocument = true;
+            }
         },
 
         showDocumentInfo: function() {
@@ -807,6 +814,7 @@ $(document).ready(function() {
 //    LR.U.initStorage('html');
 //    LR.U.getDocRefType();
     LR.U.setUser();
+    LR.U.setLocalDocument();
     LR.U.buttonClose();
     LR.U.highlightItems();
     LR.U.showDocumentInfo();
