@@ -448,15 +448,13 @@ var LR = {
                     }
 
                     if (element == 'abbr') {
-                        s += '<section id="table-of-abbreviations">';
-                        s += '<h2>' + tableHeading + '</h2>';
-                        s += '<div><dl class="toc">';
+                        s += '<section id="table-of-'+ element +'s">';
                     }
                     else {
                         s += '<nav id="table-of-'+ element +'s">';
-                        s += '<h2>' + tableHeading + '</h2>';
-                        s += '<div><ol class="toc">';
                     }
+                    s += '<h2>' + tableHeading + '</h2>';
+                    s += '<div><ol class="toc">';
 
                     if (element == 'content') {
                         s += LR.U.getListOfSections($('h1 ~ div section:not([class~="slide"])'), false);
