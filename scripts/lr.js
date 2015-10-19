@@ -80,6 +80,7 @@ var LR = {
             LR.U.showPrint(dInfo);
             if (LR.C.User) {
                 LR.U.showEmbedData(dInfo);
+                LR.U.showTableOfStuff(dInfo);
             }
             if (LR.C.LocalDocument) {
                 LR.U.showStorage(dInfo);
@@ -240,6 +241,22 @@ var LR = {
 
                     $('#embed-data-entry').remove();
                 });
+            });
+        },
+
+        showTableOfStuff: function(node) {
+            $(node).append('<section id="table-of-stuff" class="lr"><h2>Table of Stuff</h2><ul><li><input id="t-o-content" type="checkbox"/><label for="t-o-content">Contents</label></li><li><input id="t-o-figure" type="checkbox"/><label for="t-o-figure">Figures</label></li><li><input id="t-o-table" type="checkbox"/><label for="t-o-table">Tables</label></li><li><input id="t-o-abbr" type="checkbox"/><label for="t-o-abbr">Abbreviations</label></li></ul></section>');
+
+            $('#table-of-stuff').on('click', 'input', function(e){
+                var id = $(this).prop('id');
+                var listType = id.slice(4, id.length);
+
+                if($(this).prop('checked')) {
+                    LR.U.buildTableOfStuff(listType);
+                }
+                else {
+                    $('#table-of-'+listType+'s').remove();
+                }
             });
         },
 

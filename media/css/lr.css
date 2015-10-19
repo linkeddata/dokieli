@@ -111,7 +111,8 @@ right:1em;*/
 #export-files ul,
 #views ul,
 #document-metadata ul,
-#embed-data-in-html ul {
+#embed-data-in-html ul,
+#table-of-stuff ul {
 list-style-type:none;
 }
 #document-metadata * {
@@ -130,11 +131,15 @@ font-size:1.231em;
 
 
 #views li,
-#embed-data-in-html li {
+#embed-data-in-html li,
+#table-of-stuff li {
 display:inline;
 margin-right:1em;
 }
 
+#table-of-stuff label {
+font-weight:normal;
+}
 
 .lr.sortable .sortable-placeholder {
 outline: 1px dashed #777;
