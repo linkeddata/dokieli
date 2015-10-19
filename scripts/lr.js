@@ -78,8 +78,12 @@ var LR = {
 
             LR.U.showViews(dInfo);
             LR.U.showPrint(dInfo);
-            LR.U.showEmbedData(dInfo);
-//            LR.U.showStorage(dInfo);
+            if (LR.C.User) {
+                LR.U.showEmbedData(dInfo);
+            }
+            if (LR.C.LocalDocument) {
+                LR.U.showStorage(dInfo);
+            }
             LR.U.showExports(dInfo);
             LR.U.showDocumentMetadata(dInfo);
             if(!body.hasClass("on-slideshow")) {
@@ -294,17 +298,18 @@ var LR = {
             if (section.length > 0) {
                 var s = '';
                 var sortable = '';
+                var isSortable = ($('head script[src$="html.sortable.min.js"]').length > 0) ? true : false;
 
-                if($('head script[src$="html.sortable.min.js"]').length > 0) {
+                if(isSortable && LR.C.User) {
                     sortable = ' sortable';
                 }
 
                 s += '<aside id="toc" class="lr on' + sortable + '"><button class="close">❌</button><h2>Table of Contents</h2><ol class="toc' + sortable + '">';
-                s += LR.U.getListOfSections(section, true);
+                s += LR.U.getListOfSections(section, isSortable);
                 s += '</ol></aside>';
 
                 $('body').append(s);
-                if($('head script[src$="html.sortable.min.js"]').length > 0) {
+                if(isSortable && LR.C.User) {
                     LR.U.sortToC();
                 }
             }
