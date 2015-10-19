@@ -872,6 +872,8 @@ legend { font-weight:bold; }
 label {
 display:inline-block;
 font-weight:bold;
+}
+form label {
 width:17%;
 vertical-align:top;
 }
