@@ -58,6 +58,24 @@ var LR = {
             }
         },
 
+        putDocument: function() {
+            var request = $.ajax({
+                url: document.URL,
+                method: "PUT",
+                data: LR.U.getDocument(),
+                contentType: 'text/html; charset=UTF-8'
+            });
+
+            request.done(function(data, textStatus, xhr) {
+                //TODO
+            });
+
+            request.fail(function(xhr, textStatus) {
+                console.log("Request failed: " + textStatus);
+                //TODO
+            });
+        },
+
         showDocumentInfo: function() {
             $('body').append('<aside id="document-menu" class="lr"><header><p id="about-linked-research">About <a target="LinkedResearchSource" href="https://github.com/csarven/linked-research">Linked Research</a></p><button class="show" title="Open Menu">☰</button></header><div></div></aside>');
 
