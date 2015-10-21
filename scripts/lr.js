@@ -63,7 +63,7 @@ var LR = {
                 url: document.URL,
                 method: "PUT",
                 data: LR.U.getDocument(),
-                contentType: 'text/html; charset=UTF-8',
+                contentType: 'text/html; charset=utf-8',
                 xhrFields: {
                     withCredentials: true
                 }
@@ -624,7 +624,7 @@ var LR = {
         },
 
         getDocument: function() {
-            var html = $('html').clone().wrap('<div></div>').parent();
+            var html = $('html').clone().wrap('<div/>').parent();
             html.find('.lr').remove();
             html.find('body').removeClass('on-document-menu');
             html.find('article').removeAttr('contenteditable spellcheck medium-editor-index data-medium-editor-element data-placeholder role aria-multiline');
