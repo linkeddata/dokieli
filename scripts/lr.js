@@ -63,7 +63,10 @@ var LR = {
                 url: document.URL,
                 method: "PUT",
                 data: LR.U.getDocument(),
-                contentType: 'text/html; charset=UTF-8'
+                contentType: 'text/html; charset=UTF-8',
+                xhrFields: {
+                    withCredentials: true
+                }
             });
 
             request.done(function(data, textStatus, xhr) {
