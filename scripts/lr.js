@@ -96,6 +96,7 @@ var LR = {
 
             LR.U.showViews(dInfo);
             LR.U.showPrint(dInfo);
+            LR.U.showExportUpdateDocument(dInfo);
             if (LR.C.User) {
                 LR.U.showEmbedData(dInfo);
                 LR.U.showTableOfStuff(dInfo);
@@ -103,7 +104,6 @@ var LR = {
             if (LR.C.LocalDocument) {
                 LR.U.showStorage(dInfo);
             }
-            LR.U.showExports(dInfo);
             LR.U.showDocumentMetadata(dInfo);
             if(!body.hasClass("on-slideshow")) {
                 LR.U.showToC();
@@ -652,9 +652,17 @@ var LR = {
             document.body.removeChild(a);
         },
 
-        showExports: function(node) {
-            $(node).append('<section id="export-files" class="lr"><h2>Export</h2><ul><li><button class="export-file-html">HTML</button></li></ul></section>');
-            $('#export-files').on('click', '.export-file-html', LR.U.saveAsHTML);
+        showExportUpdateDocument: function(node) {
+            var s = '<section id="document-export-update" class="lr"><h2>Document</h2><ul><li><button class="export-file-html">HTML</button></li>';
+
+            if (LR.C.User) {
+                s += '<li><button class="update-file-html">Update</button></li>';
+            }
+            s += '</ul></section>';
+
+            $(node).append(s);
+            $('#document-export-update').on('click', '.export-file-html', LR.U.saveAsHTML);
+            $('#document-export-update').on('click', '.update-file-html', LR.U.putDocument);
         },
 
         initStorage: function(item) {
