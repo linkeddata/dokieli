@@ -623,6 +623,8 @@ var LR = {
         getDocument: function() {
             var html = $('html').clone().wrap('<div></div>').parent();
             html.find('.lr').remove();
+            html.find('body').removeClass('on-document-menu');
+            html.find('article').removeAttr('contenteditable spellcheck medium-editor-index data-medium-editor-element data-placeholder role aria-multiline');
             return LR.U.getDoctype() + '\n' + html.html();
         },
 
@@ -653,16 +655,20 @@ var LR = {
         },
 
         showExportUpdateDocument: function(node) {
-            var s = '<section id="document-export-update" class="lr"><h2>Document</h2><ul><li><button class="export-file-html">HTML</button></li>';
+            var s = '<section id="document-export-update" class="lr"><h2>Document</h2><ul>';
 
             if (LR.C.User) {
                 s += '<li><button class="update-file-html">Update</button></li>';
             }
-            s += '</ul></section>';
+
+            s += '<li><button class="export-file-html">Export HTML</button></li></ul></section>';
 
             $(node).append(s);
+            $('#document-export-update').on('click', '.update-file-html', function() {
+                LR.U.putDocument();
+                LR.U.hideDocumentMenu();
+            });
             $('#document-export-update').on('click', '.export-file-html', LR.U.saveAsHTML);
-            $('#document-export-update').on('click', '.update-file-html', LR.U.putDocument);
         },
 
         initStorage: function(item) {
