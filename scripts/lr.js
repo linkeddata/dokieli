@@ -637,7 +637,7 @@ var LR = {
             var blob = new Blob([data], {type:'text/html;charset=utf-8'});
             var pattern = /[^\w]+/ig;
             var title = $('h1').text().toLowerCase().replace(pattern, '-') || "index";
-            var timestamp = LR.U.now().replace(pattern, '') || "now";
+            var timestamp = LR.U.getDateTimeISO().replace(pattern, '') || "now";
 
             var fileName = title + '.' + timestamp + '.html';
 
@@ -684,14 +684,14 @@ var LR = {
             if(localStorage.getItem(item)) {
                 document.documentElement.innerHTML = localStorage.getItem(item);
             }
-            console.log(LR.U.now() + ': Storage enabled.');
+            console.log(LR.U.getDateTimeISO() + ': Storage enabled.');
             LR.U.enableAutoSave(item);
         },
         disableStorage: function(item) {
             LR.C.UseStorage = false;
             localStorage.removeItem(item);
             LR.U.disableAutoSave(item);
-            console.log(LR.U.now() + ': Storage disabled.');
+            console.log(LR.U.getDateTimeISO() + ': Storage disabled.');
         },
         saveStorage: function(item) {
             switch(item) {
@@ -700,15 +700,15 @@ var LR = {
                     break;
             }
             localStorage.setItem(item, object);
-            console.log(LR.U.now() + ': Document saved.');
+            console.log(LR.U.getDateTimeISO() + ': Document saved.');
         },
         enableAutoSave: function(item) {
             LR.C.AutoSaveId = setInterval(function() { LR.U.saveStorage(item) }, LR.C.AutoSaveTimer);
-            console.log(LR.U.now() + ': Autosave enabled.');
+            console.log(LR.U.getDateTimeISO() + ': Autosave enabled.');
         },
         disableAutoSave: function(item) {
             clearInterval(LR.C.AutoSaveId);
-            console.log(LR.U.now() + ': Autosave disabled.');
+            console.log(LR.U.getDateTimeISO() + ': Autosave disabled.');
         },
         showStorage: function(node) {
             if (typeof window.localStorage != 'undefined') {
@@ -751,7 +751,7 @@ var LR = {
             }
         },
 
-        now: function() {
+        getDateTimeISO: function() {
             var date = new Date();
             return date.toISOString();
         },
