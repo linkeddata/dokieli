@@ -624,11 +624,69 @@ var LR = {
         },
 
         getDocument: function() {
-            var html = $('html').clone().wrap('<div/>').parent();
-            html.find('.lr').remove();
-            html.find('body').removeClass('on-document-menu');
-            html.find('article').removeAttr('contenteditable spellcheck medium-editor-index data-medium-editor-element data-placeholder role aria-multiline');
-            return LR.U.getDoctype() + '\n' + html.html();
+            var html = document.documentElement.cloneNode(true);
+            var s = "<!DOCTYPE html>\n";
+            s += '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n    ';
+
+            var selfClosing = {};
+            "br img input area base basefont col colgroup source wbr isindex link meta param hr".split(' ').forEach(function (n) {
+                selfClosing[n] = true;
+            });
+            var skipAttributes = {};
+            "firebugResetStyles contenteditable spellcheck medium-editor-index data-medium-editor-element data-medium-focused data-placeholder role aria-multiline".split(' ').forEach(function (n) {
+                skipAttributes[n] = true;
+            });
+            var noEsc = [false];
+            //Adapted from https://github.com/w3c/respec/blob/develop/js/ui/save-html.js#L194
+            var dumpNode = function (node) {
+                console.log(node);
+                var out = '';
+                // if the node is the document node.. process the children
+                if (node.nodeType === 9 || (node.nodeType === 1 && node.nodeName.toLowerCase() == "html")) {
+                    for (var i = 0; i < node.childNodes.length; i++) out += dumpNode(node.childNodes[i]);
+                }
+                else if (1 === node.nodeType) {
+                    if (!(node.hasAttribute('class') && node.getAttribute('class').split(' ').indexOf('lr') > -1)) {
+                        var ename = node.nodeName.toLowerCase() ;
+                        out += "<" + ename ;
+                        //XXX: Regardless of the location of @lang, ends up at the end
+                        for (var i = node.attributes.length - 1; i >= 0; i--) {
+                            var atn = node.attributes[i];
+                            if (skipAttributes[atn.name]) continue;
+                            if (/^\d+$/.test(atn.name)) continue;
+                            if (atn.name == 'class' && (atn.value.split(' ').indexOf('on-document-menu') > -1 || atn.value.split(' ').indexOf('editable') > -1)) {
+                                atn.value = atn.value.replace(/(on-document-menu|editable)/, '').trim();
+                            }
+                            if (!(atn.name == 'class' && atn.value == '')) {
+                                out += ' ' + atn.name + "=\"" + LR.U.htmlEntities(atn.value) + "\"";
+                            }
+                        }
+                        if (selfClosing[ename]) { out += " />"; }
+                        else {
+                            out += '>';
+                            noEsc.push(ename === "style" || ename === "script");
+                            for (var i = 0; i < node.childNodes.length; i++) out += dumpNode(node.childNodes[i]);
+                            noEsc.pop();
+                            out += '</' + ename + '>';
+                        }
+                    }
+                }
+                else if (8 === node.nodeType) {
+                    //XXX: If comments are not tabbed in source, a new line is not prepended
+                    out += "<!--" + node.nodeValue + "-->";
+                }
+                else if (3 === node.nodeType || 4 === node.nodeType) {
+                    //XXX: Remove new lines which were added after DOM ready
+                    var nl = node.nodeValue.replace(/\n+$/, '');
+                    out += noEsc[noEsc.length - 1] ? nl : LR.U.htmlEntities(nl);
+                }
+                else {
+                    console.log("Warning; Cannot handle serialising nodes of type: " + node.nodeType);
+                }
+                return out;
+            };
+            s += dumpNode(html) + "\n</html>\n";
+            return s;
         },
 
         saveAsHTML: function() {
