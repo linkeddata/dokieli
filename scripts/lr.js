@@ -633,20 +633,19 @@ var LR = {
                 selfClosing[n] = true;
             });
             var skipAttributes = {};
-            "firebugResetStyles contenteditable spellcheck medium-editor-index data-medium-editor-element data-medium-focused data-placeholder role aria-multiline".split(' ').forEach(function (n) {
+            "contenteditable spellcheck medium-editor-index data-medium-editor-element data-medium-focused data-placeholder role aria-multiline style".split(' ').forEach(function (n) {
                 skipAttributes[n] = true;
             });
             var noEsc = [false];
             //Adapted from https://github.com/w3c/respec/blob/develop/js/ui/save-html.js#L194
             var dumpNode = function (node) {
-                console.log(node);
                 var out = '';
                 // if the node is the document node.. process the children
                 if (node.nodeType === 9 || (node.nodeType === 1 && node.nodeName.toLowerCase() == "html")) {
                     for (var i = 0; i < node.childNodes.length; i++) out += dumpNode(node.childNodes[i]);
                 }
                 else if (1 === node.nodeType) {
-                    if (!(node.hasAttribute('class') && node.getAttribute('class').split(' ').indexOf('lr') > -1)) {
+                    if (!(node.hasAttribute('class') && (node.getAttribute('class').split(' ').indexOf('lr') > -1 || node.getAttribute('class').split(' ').indexOf('firebugResetStyles') > -1))) {
                         var ename = node.nodeName.toLowerCase() ;
                         out += "<" + ename ;
                         //XXX: Regardless of the location of @lang, ends up at the end
