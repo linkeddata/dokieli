@@ -299,6 +299,7 @@ margin-bottom:0;
 
 
 aside.note {
+position:relative;
 margin:1em 0;
 border-top:1px solid #000;
 padding-top:0.25em;
@@ -313,6 +314,17 @@ position:absolute;
 top:-1px;
 right:0;
 height:1px;
+}
+
+aside.note article {
+position:relative;
+left:1.5em;
+width:calc(100% - 1.5em);
+}
+
+aside.note article > sup {
+position:absolute;
+left:-2em;
 }
 
 aside.note p {
