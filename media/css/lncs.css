@@ -215,6 +215,11 @@ font-family: "CMU Serif Italic", serif !important;
 h1 em, h2 em, h3 em, h4 em, dt dfn {
 font-family: "CMU Serif Bold Italic", serif !important;
 }
+section article h1,
+section article h2,
+section article h3 {
+font-family:"CMU Serif", serif !important;
+}
 code, code strong, samp, samp strong pre, kbd, button {
 font-family: "CMU Serif Monospace", monospace !important;
 }
@@ -283,6 +288,7 @@ section article h2,
 section article h3 {
 margin-bottom:0;
 font-size:1em;
+font-weight:normal;
 }
 section article h1,
 section article h2,
@@ -324,7 +330,7 @@ width:calc(100% - 1.5em);
 
 aside.note article > sup {
 position:absolute;
-left:-2em;
+left:-1.75em;
 }
 
 aside.note p {

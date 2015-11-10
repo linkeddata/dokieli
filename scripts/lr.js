@@ -597,13 +597,14 @@ var LR = {
                         var fragmentClientWidth = fragment.get(0).clientWidth;
                         fragment.css({
                             'top': 'calc(' + Math.ceil($(this).position().top) + 'px)',
-                            'right': '-' + (fragmentClientWidth - 2) + 'px'
+                            'left': '-' + (fragmentClientWidth - 2) + 'px',
+                            'width': (fragmentClientWidth - 10) + 'px'
                         });
                     }
                 },
                 mouseleave: function () {
                     $('#'+this.id+' > .lr.fragment').remove();
-                    $('#'+this.id).removeClass('lr position-relative').filter('[class=""]').removeAttr('class');
+                    $('#'+this.id).filter('[class=""]').removeAttr('class');
                 }
             }, '#content *[id], #interactions *[id]');
         },
