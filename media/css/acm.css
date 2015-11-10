@@ -90,7 +90,7 @@ widows: 2;
 }
 
 body {
-font-size:150%;
+font-size:100%;
 font-family: "Times New Roman", serif;
 /*position:relative;*/
 counter-reset: section;
