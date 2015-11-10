@@ -592,7 +592,7 @@ var LR = {
             $(document).on({
                 mouseenter: function () {
                     if($('#'+this.id+' > .lr.fragment').length == 0 && this.parentNode.nodeName.toLowerCase() != 'aside'){
-                        $('#'+this.id).prepend('<span class="lr fragment" style="height:' + this.clientHeight + 'px; "><a href="#' + this.id + '">' + '#' + this.id + '</a></span>');
+                        $('#'+this.id).prepend('<span class="lr fragment" style="height:' + this.clientHeight + 'px; "><a href="#' + this.id + '">' + '🔗' + '</a></span>');
                         var fragment = $('#'+this.id+' > .lr.fragment');
                         var fragmentClientWidth = fragment.get(0).clientWidth;
                         fragment.css({
