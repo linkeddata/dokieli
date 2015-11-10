@@ -20,6 +20,10 @@ transition: opacity 1s ease-in-out;
 }
 }
 
+[contenteditable=true]:focus {
+outline:none;
+}
+
 #content,
 #interactions {
 position:relative;
