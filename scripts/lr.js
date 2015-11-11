@@ -33,7 +33,7 @@ var LR = {
         EnableStorageButtons: '<button class="local-storage-enable-html">Enable</button>',
         CDATAStart: '<!--//--><![CDATA[//><!--',
         CDATAEnd: '//--><!]]>',
-        EditorAvailable: ($('head script[src$="medium-editor.js"]').length > 0),
+        EditorAvailable: ($('head script[src$="medium-editor.min.js"]').length > 0),
         EditorEnabled: false,
         Editor: {
             headings: ["h1", "h2", "h3", "h4", "h5", "h6"],
