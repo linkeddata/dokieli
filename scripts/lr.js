@@ -1304,7 +1304,7 @@ console.log(viewportWidthSplit);
                                 return this.base.execAction('removeFormat');
                             }
                             else {
-                                var datetime = ' ' + LR.U.Editor.createAttributeDateTime(this.action);
+                                var datetime = ' ' + LR.U.createAttributeDateTime(this.action);
 
                                 this.base.selectedDocument = this.document;
                                 this.base.selection = MediumEditor.selection.getSelectionHtml(this.base.selectedDocument);
