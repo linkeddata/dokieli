@@ -675,6 +675,9 @@ margin-bottom:1em;
 position:relative;
 text-align:center;
 }
+pre {
+overflow:auto;
+}
 figure pre {
 text-align:left;
 }

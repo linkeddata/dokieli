@@ -441,6 +441,7 @@ list-style-type:none;
 pre {
 margin:1em 0;
 font-size:0.875em;
+overflow:auto;
 }
 
 figure.listing pre {
