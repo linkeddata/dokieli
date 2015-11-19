@@ -108,17 +108,13 @@ var LR = {
 
             LR.U.showViews(dInfo);
             LR.U.showPrint(dInfo);
-            if (LR.C.User && LR.C.EditorAvailable) {
+            if (LR.C.EditorAvailable) {
                 LR.U.showEditor(dInfo);
             }
             LR.U.showExportUpdateDocument(dInfo);
-            if (LR.C.User) {
-                LR.U.showEmbedData(dInfo);
-                LR.U.showTableOfStuff(dInfo);
-            }
-            if (LR.C.LocalDocument) {
-                LR.U.showStorage(dInfo);
-            }
+            LR.U.showEmbedData(dInfo);
+            LR.U.showTableOfStuff(dInfo);
+            LR.U.showStorage(dInfo);
             LR.U.showDocumentMetadata(dInfo);
             if(!body.hasClass("on-slideshow")) {
                 LR.U.showToC();
