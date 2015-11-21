@@ -1,4 +1,4 @@
-# Linked Research
+# dokieli
 
 **Objective**: to enable researchers (in Web Science for example), to share and
 reuse research knowledge by employing the native Web stack.
@@ -14,12 +14,8 @@ research documents that are both human and machine-friendly.
 See also a proposed [acid test](http://csarven.ca/enabling-accessible-knowledge#acid-test)
 aimed at this.
 
-## Documentation
-There is a [living documentation](http://linked-research.270a.info/linked-research)
-(“nightly”) published as part of this repository. It is not versioned.
-
-## Dive into Linked Research
-Linked Research is a single HTML 5 Polyglot document. Different CSS are used to
+## Dive into dokieli
+dokieli is a single HTML 5 Polyglot document. Different CSS are used to
 present the information for different media e.g., screen, print. JavaScript is
 used to <em>progressively enhance</em> the document and bring in interactivity.
 In a nutshell:
@@ -31,12 +27,12 @@ semantic annotations using RDF and microformats.
 server, or account requirements. No out of band tooling. Works on local machine
 / Web browser.
 
-See the [examples in the wild](https://github.com/csarven/linked-research/wiki#examples-in-the-wild)
+See the [examples in the wild](https://github.com/linkeddata/dokieli/wiki#examples-in-the-wild)
 in the wiki. Add your article's URL.
 
-This repository is published and accessible from [http://linked-research.270a.info/](http://linked-research.270a.info/), e.g:
+This repository is published and accessible from [http://dokie.li/](http://dokie.li/).
 
-* `http://linked-research.270a.info/{filename}`
+See also:
 * [ACM SIG Proceedings Paper](http://linked-research.270a.info/acm-sigproc-sp)
 * [LNCS Author Guidelines](http://linked-research.270a.info/lncs-splnproc)
 
@@ -61,3 +57,6 @@ turned-off without effecting core HTML or CSS.
 * Resolve issues.
 * Optimize.
 * Work on features.
+
+## What does dokieli mean?
+Nothing. It is derived from "okie dokie" and "linked". It has not smeantic
