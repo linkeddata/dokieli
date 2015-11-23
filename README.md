@@ -61,4 +61,5 @@ turned-off without effecting core HTML or CSS.
 * Work on features.
 
 ## What does dokieli mean?
-Nothing. It is derived from "okie dokie" and "linked". It has not smeantic
+It has no real semantics. It is derived from "okie dokie" and "linked". You can
+pronounce the way Ned Flanders does.
