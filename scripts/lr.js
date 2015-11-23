@@ -140,6 +140,42 @@ var LR = {
             });
         },
 
+        createResource: function(noteURL, note) {
+            //Prepare data
+            var data = '<!DOCTYPE html>\n\
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
+     <head>\n\
+         <title>' + noteURL + '</title>\n\
+     </head>\n\
+     <body about="[this:]" prefix="schema: http://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# this: ' + noteURL + '">\n\
+         <main>\n\
+' + note + '\n\
+         </main>\n\
+     </body>\n\
+</html>\n\
+';
+
+            console.log('PUTing interaction content');
+            request = $.ajax({
+                method: 'PUT',
+                url: noteURL,
+                headers: {
+                    'Content-Type': 'text/html; charset=utf-8',
+                    'Link': '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
+                },
+                xhrFields: { withCredentials: true },
+                data: data
+            });
+            request.done(function(data, textStatus, xhr) {
+                console.log(data);
+                console.log(textStatus);
+                console.log(xhr);
+            });
+            request.fail(function(xhr, textStatus) {
+                console.log( "Request failed: " + textStatus);
+            });
+        },
+
         showDocumentInfo: function() {
             $('body').append('<aside id="document-menu" class="lr"><header><p id="about-linked-research">About <a target="LinkedResearchSource" href="https://github.com/csarven/linked-research">Linked Research</a></p><button class="show" title="Open Menu">☰</button></header><div></div></aside>');
 
