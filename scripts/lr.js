@@ -177,8 +177,6 @@ var LR = {
         },
 
         createResourceACL: function(accessToURL, aclSuffix, agentIRI) {
-            console.log(accessToURL);
-            console.log(agentIRI);
             var request = $.ajax({
                 method: "PUT",
                 url: accessToURL + aclSuffix,
@@ -192,11 +190,12 @@ var LR = {
 [ acl:accessTo <' + accessToURL + '> ; acl:mode acl:Read , acl:Write ; acl:agent <' + agentIRI + '> ] .'
             });
             request.done(function(data, textStatus, xhr) {
-                //TODO
+                console.log(data);
+                console.log(textStatus);
+                console.log(xhr);
             });
             request.fail(function(xhr, textStatus) {
                 console.log("Request failed: " + textStatus);
-                //TODO
             });
         },
 
@@ -213,7 +212,6 @@ var LR = {
             });
             request.fail(function(xhr, textStatus) {
                 console.log( "Request failed: " + textStatus);
-                //TODO
             });
         },
 
