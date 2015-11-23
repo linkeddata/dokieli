@@ -112,6 +112,34 @@ var LR = {
             });
         },
 
+        //POST an interaction into Container
+        createContainerReference: function(containerIRI, slug, noteURL) {
+            //Store reference to the interaction at a pod
+            // && LR.C.User.podURL
+            console.log('POSTing interaction reference');
+            var request = $.ajax({
+                method: 'POST',
+                url: containerIRI,
+                headers: {
+                    'Content-Type': 'text/turtle; charset=utf-8',
+                    'Link': '<http://www.w3.org/ns/ldp#Resource>; rel="type"',
+                    'Slug': slug
+                },
+                xhrFields: { withCredentials: true },
+                data: '<> <http://schema.org/url> <' + noteURL + '> .'
+            });
+            request.done(function(data, textStatus, xhr) {
+                console.log(data);
+                console.log(textStatus);
+                console.log(xhr);
+
+                //GET Location value from header
+            });
+            request.fail(function(xhr, textStatus) {
+                console.log( "Request failed: " + textStatus);
+            });
+        },
+
         showDocumentInfo: function() {
             $('body').append('<aside id="document-menu" class="lr"><header><p id="about-linked-research">About <a target="LinkedResearchSource" href="https://github.com/csarven/linked-research">Linked Research</a></p><button class="show" title="Open Menu">☰</button></header><div></div></aside>');
 
