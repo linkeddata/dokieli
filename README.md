@@ -1,5 +1,7 @@
 # dokieli
 
+[![Join the chat at https://gitter.im/linkeddata/dokieli](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/linkeddata/dokieli?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 **Objective**: to enable researchers (in Web Science for example), to share and
 reuse research knowledge by employing the native Web stack.
 
