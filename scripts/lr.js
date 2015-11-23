@@ -200,6 +200,23 @@ var LR = {
             });
         },
 
+        deleteResource: function(url) {
+            var request = $.ajax({
+                method: 'DELETE',
+                url: url,
+                xhrFields: { withCredentials: true }
+            });
+            request.done(function(data, textStatus, xhr) {
+                console.log(data);
+                console.log(textStatus);
+                console.log(xhr);
+            });
+            request.fail(function(xhr, textStatus) {
+                console.log( "Request failed: " + textStatus);
+                //TODO
+            });
+        },
+
         showDocumentInfo: function() {
             $('body').append('<aside id="document-menu" class="lr"><header><p id="about-linked-research">About <a target="LinkedResearchSource" href="https://github.com/csarven/linked-research">Linked Research</a></p><button class="show" title="Open Menu">☰</button></header><div></div></aside>');
 
