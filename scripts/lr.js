@@ -176,6 +176,30 @@ var LR = {
             });
         },
 
+        createResourceACL: function(accessToURL, aclSuffix, agentIRI) {
+            console.log(accessToURL);
+            console.log(agentIRI);
+            var request = $.ajax({
+                method: "PUT",
+                url: accessToURL + aclSuffix,
+                headers: {
+                    'Content-Type': 'text/turtle; charset=utf-8'
+                },
+                xhrFields: { withCredentials: true },
+                data: '@prefix acl: <http://www.w3.org/ns/auth/acl#> .\n\
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .\n\
+[ acl:accessTo <' + accessToURL + '> ; acl:mode acl:Read ; acl:agentClass foaf:Agent ] .\n\
+[ acl:accessTo <' + accessToURL + '> ; acl:mode acl:Read , acl:Write ; acl:agent <' + agentIRI + '> ] .'
+            });
+            request.done(function(data, textStatus, xhr) {
+                //TODO
+            });
+            request.fail(function(xhr, textStatus) {
+                console.log("Request failed: " + textStatus);
+                //TODO
+            });
+        },
+
         showDocumentInfo: function() {
             $('body').append('<aside id="document-menu" class="lr"><header><p id="about-linked-research">About <a target="LinkedResearchSource" href="https://github.com/csarven/linked-research">Linked Research</a></p><button class="show" title="Open Menu">☰</button></header><div></div></aside>');
 
