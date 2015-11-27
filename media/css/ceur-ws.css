@@ -28,6 +28,7 @@
 /* Modified: 16-Oct-2013/M.Jeusfeld  (use grey for blue)  */
 /* Modified: 11-Dec-2013/M.Jeusfeld  (CEURWSLOGO div)     */
 /* Modified: 24-Mar-2015/M.Jeusfeld  (paper directories)  */
+/* Modified: 16-Jul-2015/C.Lange     (more accessible link colors) */
 /* Modified: 16-Jul-2015/S.Capadisli (LinkedResearch)     */
 
 body {
@@ -44,8 +45,8 @@ margin-right: +8px;
   initial-scale: 1.0;
 }
 
-A:link {color: #404040; text-decoration: none;}  /* display of links */
-A:visited {color: #404040; text-decoration: none;} /* visited links */
+A:link {color: #404080; text-decoration: none;}  /* display of links */
+A:visited {color: #404080; text-decoration: none;} /* visited links */
 A:hover {color: #000080; text-decoration: none;} /* links under the cursor */
 
 H1 {color:#000000; font-family:arial, cursive, sans-serif;}

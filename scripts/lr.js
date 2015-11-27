@@ -40,13 +40,14 @@ var LR = {
             regexEmptyHTMLTags: /<[^\/>][^>]*><\/[^>]+>/gim,
             DisableEditorButton: '<button class="editor-disable">Disable</button>',
             EnableEditorButton: '<button class="editor-enable">Enable</button>'
-        }
+        },
+        InteractionPath: '/i/'
     },
 
     U: {
         setUser: function() {
             var request = $.ajax({
-                url: document.URL,
+                url: window.location.origin + window.location.pathname,
                 method: "HEAD"
             });
 
@@ -67,8 +68,10 @@ var LR = {
         },
 
         putDocument: function() {
+            //FIXME: index.html shouldn't be hardcoded.
+            //It should know where to write.
             var request = $.ajax({
-                url: document.URL,
+                url: window.location.origin + window.location.pathname + '/index.html',
                 method: "PUT",
                 data: LR.U.getDocument(),
                 contentType: 'text/html; charset=utf-8',
@@ -76,14 +79,161 @@ var LR = {
                     withCredentials: true
                 }
             });
-
             request.done(function(data, textStatus, xhr) {
-                //TODO
+                console.log(data);
+                console.log(textStatus);
+                console.log(xhr);
             });
-
             request.fail(function(xhr, textStatus) {
                 console.log("Request failed: " + textStatus);
-                //TODO
+            });
+
+            //XXX: We might not need this. It is not used at the moment. For Solid
+            var request = $.ajax({
+                url: window.location.origin + window.location.pathname + '/,meta',
+                method: "PUT",
+                data: '<index.html> a <http://schema.org/Article> .',
+                contentType: 'text/turtle; charset=utf-8',
+                xhrFields: {
+                    withCredentials: true
+                }
+            });
+            request.done(function(data, textStatus, xhr) {
+                console.log(data);
+                console.log(textStatus);
+                console.log(xhr);
+            });
+            request.fail(function(xhr, textStatus) {
+                console.log("Request failed: " + textStatus);
+            });
+        },
+
+        //TODO: Make sure that the Container is relative to the Container of the document e.g:
+        //http://example.org/i/article (points to http://example.org/i/article/index.html)
+        //http://example.org/i/article/ is an ldp:Container
+        //http://example.org/i/article/i/ is an ldp:Container
+        //TODO: get e.g., as:replies <object>, and post there (object is as:Collection)
+        createContainer: function(url, slug) {
+            var request = $.ajax({
+                method: 'POST',
+                url: url,
+                headers: {
+                    'Content-Type': 'text/turtle; charset=utf-8',
+                    'Link': '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"'
+                },
+                xhrFields: { withCredentials: true },
+                data: '<> <http://schema.org/name> "BasicContainer for interactions"@en .',
+            });
+            request.done(function(data, textStatus, xhr) {
+                console.log(data);
+                console.log(textStatus);
+                console.log(xhr);
+            });
+            request.fail(function(xhr, textStatus) {
+                console.log("Request failed: " + textStatus);
+            });
+        },
+
+        //POST an interaction into Container
+        createContainerReference: function(containerIRI, slug, noteURL) {
+            //Store reference to the interaction at a pod
+            // && LR.C.User.podURL
+            console.log('POSTing interaction reference');
+            var request = $.ajax({
+                method: 'POST',
+                url: containerIRI,
+                headers: {
+                    'Content-Type': 'text/turtle; charset=utf-8',
+                    'Link': '<http://www.w3.org/ns/ldp#Resource>; rel="type"',
+                    'Slug': slug
+                },
+                xhrFields: { withCredentials: true },
+                data: '<> <http://schema.org/url> <' + noteURL + '> .'
+            });
+            request.done(function(data, textStatus, xhr) {
+                console.log(data);
+                console.log(textStatus);
+                console.log(xhr);
+
+                //GET Location value from header
+            });
+            request.fail(function(xhr, textStatus) {
+                console.log( "Request failed: " + textStatus);
+            });
+        },
+
+        createResource: function(noteURL, note) {
+            //Prepare data
+            var data = '<!DOCTYPE html>\n\
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
+     <head>\n\
+         <title>' + noteURL + '</title>\n\
+     </head>\n\
+     <body>\n\
+         <main>\n\
+' + note + '\n\
+         </main>\n\
+     </body>\n\
+</html>\n\
+';
+
+            console.log('PUTing interaction content');
+            request = $.ajax({
+                method: 'PUT',
+                url: noteURL,
+                headers: {
+                    'Content-Type': 'text/html; charset=utf-8',
+                    'Link': '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
+                },
+                xhrFields: { withCredentials: true },
+                data: data
+            });
+            request.done(function(data, textStatus, xhr) {
+                console.log(data);
+                console.log(textStatus);
+                console.log(xhr);
+            });
+            request.fail(function(xhr, textStatus) {
+                console.log( "Request failed: " + textStatus);
+            });
+        },
+
+        createResourceACL: function(accessToURL, aclSuffix, agentIRI) {
+            var request = $.ajax({
+                method: "PUT",
+                url: accessToURL + aclSuffix,
+                headers: {
+                    'Content-Type': 'text/turtle; charset=utf-8'
+                },
+                xhrFields: { withCredentials: true },
+                data: '@prefix acl: <http://www.w3.org/ns/auth/acl#> .\n\
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .\n\
+[ acl:accessTo <' + accessToURL + '> ; acl:mode acl:Read ; acl:agentClass foaf:Agent ] .\n\
+[ acl:accessTo <' + accessToURL + '> ; acl:mode acl:Read , acl:Write ; acl:agent <' + agentIRI + '> ] .'
+            });
+            request.done(function(data, textStatus, xhr) {
+                console.log(data);
+                console.log(textStatus);
+                console.log(xhr);
+            });
+            request.fail(function(xhr, textStatus) {
+                console.log("Request failed: " + textStatus);
+            });
+        },
+
+        deleteResource: function(url) {
+            var request = $.ajax({
+                method: 'DELETE',
+                url: url,
+                xhrFields: { withCredentials: true }
+            });
+            request.done(function(data, textStatus, xhr) {
+                console.log(data);
+                console.log(textStatus);
+                console.log(xhr);
+            });
+            request.fail(function(xhr, textStatus) {
+                console.log( "Request failed: " + textStatus);
             });
         },
 
@@ -1018,13 +1168,15 @@ LIMIT 1";
                 var refA = $(this).find('[class*=ref-] a');
                 console.log(refA);
                 refA.each(function() {
-                    var noteId = $(this).prop('href');
-                    noteId = noteId.substr(noteId.indexOf("#") + 1);
-                    console.log(noteId);
+                    var noteIRI = $(this).prop('href');
+//                    noteId = noteId.substr(noteId.indexOf("#") + 1);
+                    console.log(noteIRI);
                     var refLabel = $(this).text();
                     console.log(refLabel);
 
-                    LR.U.positionNote(refId, refLabel, noteId);
+                    //FIXME: the noteId parameter for positionNote shouldn't
+                    //rely on refLabel. Grab it from somewhere else.
+                    LR.U.positionNote(refId, refLabel, refLabel);
                 });
             });
         },
@@ -1037,6 +1189,7 @@ LIMIT 1";
 
             var ref = $('#' + refId);
     console.log(ref);
+    console.log(noteId);
             var note = $('#' + noteId);
     console.log(note);
             var refPP = ref.parent().parent();
@@ -1775,17 +1928,21 @@ console.log(viewportWidthSplit);
                             var range = MediumEditor.selection.getSelectionRange(this.document);
                 //            this.execAction(this.action, opts);
                             var datetime = LR.U.getDateTimeISO();
-                            var id = LR.U.generateAttributeId();
+                            var id = LR.U.generateAttributeId().slice(0, 6);
                             var refId = 'r-' + id;
 
                             //TODO: noteId can be external to this document e.g., User stores the note at their own space
-                            var noteId = 'i-' + id;
+                            // var noteId = 'i-' + id;
+
+                            var containerIRI = window.location.origin + window.location.pathname + LR.C.InteractionPath;
+
+                            var noteIRI = containerIRI + id;
                             //TODO: However this label is created
-                            var refLabel = 1;
+                            var refLabel = id;
 
                             //Role/Capability for Authors/Editors
                             var ref = '', refType = ''; //TODO: reference types. UI needs input
-                            //TODO: replace refId and noteId IRIs
+                            //TODO: replace refId and noteIRI IRIs
 
                             //Mark the text which the note was left for (with reference to the note?)
                             this.base.selectedDocument = this.document;
@@ -1795,13 +1952,13 @@ console.log(viewportWidthSplit);
 
                             switch(refType) {
                                 case 'annotation': case 'interaction': default:
-                                    ref = '<span class="ref" about="[this:#' + refId + ']" typeof="http://purl.org/dc/dcmitype/Text"><mark id="'+ refId +'" property="schema:description">' + this.base.selection + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#' + noteId + '">' + refLabel + '</a></sup></span>';
+                                    ref = '<span class="ref" about="[this:#' + refId + ']" typeof="http://purl.org/dc/dcmitype/Text"><mark id="'+ refId +'" property="schema:description">' + this.base.selection + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#' + id + '">' + refLabel + '</a></sup></span>';
                                     break;
                                 case 'footnote':
-                                    ref = '<span class="ref" about="[this:#' + refId + ']" typeof="http://purl.org/dc/dcmitype/Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span><sup class="ref-footnote"><a rel="cito:isCitedBy" href="#' + noteId + '">' + refLabel + '</a></sup></span>';
+                                    ref = '<span class="ref" about="[this:#' + refId + ']" typeof="http://purl.org/dc/dcmitype/Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span><sup class="ref-footnote"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup></span>';
                                     break;
                                 case 'reference':
-                                    ref = '<span class="ref" about="[this:#' + refId + ']" typeof="http://purl.org/dc/dcmitype/Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span> <span class="ref-reference">' + LR.C.RefType[LR.C.DocRefType].InlineOpen + '<a rel="cito:isCitedBy" href="#' + noteId + '">' + refLabel + '</a>' + LR.C.RefType[LR.C.DocRefType].InlineClose + '</span></span>';
+                                    ref = '<span class="ref" about="[this:#' + refId + ']" typeof="http://purl.org/dc/dcmitype/Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span> <span class="ref-reference">' + LR.C.RefType[LR.C.DocRefType].InlineOpen + '<a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a>' + LR.C.RefType[LR.C.DocRefType].InlineClose + '</span></span>';
                                     break;
                             }
 
@@ -1820,27 +1977,27 @@ console.log(viewportWidthSplit);
                             //TODO: oa:TimeState's datetime should equal to hasSource value. Same for oa:HttpRequestState's rdfs:value
                             // <span about="[this:#' + refId + ']" rel="oa:hasState">(timeState: <time typeof="oa:TimeState" datetime="' + datetime +'" datatype="xsd:dateTime"property="oa:sourceDate">' + datetime + '</time>)</span>\n\
                             var note = '\n\
-                                <' + this.tagNames[0] + ' id="' + noteId + '" about="[this:#' + noteId + ']" typeof="oa:Annotation as:Activity">\n\
+                                <' + this.tagNames[0] + ' id="' + id + '" about="[i:' + id + ']" typeof="oa:Annotation as:Activity" prefix="schema: http://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + containerIRI +'">\n\
                                     <sup><a href="#' + refId + '">' + refLabel + '</a></sup>\n\
                                     <h3 property="schema:name">\n\
                                         <span rel="schema:creator oa:annotatedBy as:actor">\n\
-                                            <span about="http://csarven.ca/#i" typeof="schema:Person">\n\
+                                            <span about="' + LR.C.User + '" typeof="schema:Person">\n\
                                                 <img rel="schema:image" src="https://www.gravatar.com/avatar/0ca0a18603cbd049900ebea3a3bb29d4?size=32" width="32" height="32" alt="Sarven Capadisli’s photo"/>\n\
-                                                <a rel="schema:url" href="http://csarven.ca/#i">\n\
-                                                    <span about="http://csarven.ca/#i" property="schema:name">Sarven Capadisli</span>\n\
+                                                <a rel="schema:url" href="' + LR.C.User + '">\n\
+                                                    <span about="' + LR.C.User + '" property="schema:name">Sarven Capadisli</span>\n\
                                                 </a>\n\
                                             </span>\n\
                                         </span>\n\
                                         <a rel="oa:hasTarget sioc:reply_of as:inReplyTo" href="#' + refId + '">\n\
-                                            <span about="[this:#' + noteId + ']" rel="oa:motivatedBy" resource="oa:replying">replied</span>\n\
+                                            <span about="[i:' + id + ']" rel="oa:motivatedBy" resource="oa:replying">replied</span>\n\
                                         </a>\n\
                                         on\n\
-                                        <a href="#' + noteId + '">\n\
+                                        <a href="' + noteIRI + '">\n\
                                             <time datetime="' + datetime +'" datatype="xsd:dateTime" property="oa:annotatedAt schema:datePublished">' + datetime + '</time>\n\
                                         </a>\n\
                                     </h3>\n\
                                     <div property="schema:description" rel="oa:hasBody as:content">\n\
-                                        <div about="[this:#' + noteId +']" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">\n\
+                                        <div about="[i:' + noteIRI +']" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">\n\
                                             <p>' + opts.url + '</p>\n\
                                         </div>\n\
                                     </div>\n\
@@ -1865,7 +2022,9 @@ console.log(viewportWidthSplit);
                                 selectedParentElement.parentNode.insertBefore(asideNode, selectedParentElement.nextSibling);
                             }
 
-                            LR.U.positionNote(refId, refLabel, noteId);
+                            LR.U.positionNote(refId, refLabel, id);
+
+                            LR.U.createResource(noteIRI, note);
 
                             this.base.checkSelection();
                         },
