@@ -69,17 +69,17 @@ var LR = {
             }
         },
 
-        putDocument: function(url, html) {
-            url = url || window.location.origin + window.location.pathname + '/index.html';
-            html = html || LR.U.getDocument();
-
+        putDocument: function(url, data, contentType) {
             //FIXME: index.html shouldn't be hardcoded.
-            //It should know where to write.
+            url = url || window.location.origin + window.location.pathname + '/index.html';
+            data = data || LR.U.getDocument();
+            contentType = contentType || 'text/html';
+
             var request = $.ajax({
                 url: url,
                 method: "PUT",
-                data: html,
-                contentType: 'text/html; charset=utf-8',
+                data: data,
+                contentType: contentType +'; charset=utf-8',
                 xhrFields: {
                     withCredentials: true
                 }
