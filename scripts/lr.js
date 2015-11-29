@@ -69,15 +69,20 @@ var LR = {
             }
         },
 
-        putDocument: function(url, data, contentType) {
+        putResource: function(url, data, contentType) {
             //FIXME: index.html shouldn't be hardcoded.
             url = url || window.location.origin + window.location.pathname + '/index.html';
-            data = data || LR.U.getDocument();
             contentType = contentType || 'text/html';
+            var headers = {
+                'Content-Type': 'text/turtle; charset=utf-8',
+                'Link': '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
+            };
+            data = data || LR.U.getDocument();
 
             var request = $.ajax({
-                url: url,
                 method: "PUT",
+                url: url,
+                headers: headers,
                 data: data,
                 contentType: contentType +'; charset=utf-8',
                 xhrFields: {
@@ -119,13 +124,18 @@ var LR = {
         //http://example.org/i/article/i/ is an ldp:Container
         //TODO: get e.g., as:replies <object>, and post there (object is as:Collection)
         createContainer: function(url, slug) {
+            var headers = {
+                'Content-Type': 'text/turtle; charset=utf-8',
+                'Link': '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"'
+            };
+            if (slug != '') {
+                headers.Slug = slug;
+            }
+
             var request = $.ajax({
                 method: 'POST',
                 url: url,
-                headers: {
-                    'Content-Type': 'text/turtle; charset=utf-8',
-                    'Link': '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"'
-                },
+                headers: headers,
                 xhrFields: { withCredentials: true },
                 data: '<> <http://schema.org/name> "BasicContainer for interactions"@en .',
             });
@@ -161,42 +171,6 @@ var LR = {
                 console.log(xhr);
 
                 //GET Location value from header
-            });
-            request.fail(function(xhr, textStatus) {
-                console.log( "Request failed: " + textStatus);
-            });
-        },
-
-        createResource: function(noteURL, note) {
-            //Prepare data
-            var data = '<!DOCTYPE html>\n\
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
-     <head>\n\
-         <title>' + noteURL + '</title>\n\
-     </head>\n\
-     <body>\n\
-         <main>\n\
-' + note + '\n\
-         </main>\n\
-     </body>\n\
-</html>\n\
-';
-
-            console.log('PUTing interaction content');
-            request = $.ajax({
-                method: 'PUT',
-                url: noteURL,
-                headers: {
-                    'Content-Type': 'text/html; charset=utf-8',
-                    'Link': '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
-                },
-                xhrFields: { withCredentials: true },
-                data: data
-            });
-            request.done(function(data, textStatus, xhr) {
-                console.log(data);
-                console.log(textStatus);
-                console.log(xhr);
             });
             request.fail(function(xhr, textStatus) {
                 console.log( "Request failed: " + textStatus);
@@ -894,7 +868,7 @@ var LR = {
             if (LR.C.User.IRI) {
                 $('#document-do').on('click', '.new-file-html', LR.U.createNewDocument);
                 $('#document-do').on('click', '.update-file-html', function() {
-                    LR.U.putDocument();
+                    LR.U.putResource();
                     LR.U.hideDocumentMenu();
                 });
             }
@@ -911,7 +885,7 @@ var LR = {
                 $(html).find('main > article').empty();
                 html = LR.U.getDocument(html);
 
-                LR.U.putDocument(storageIRI, html);
+                LR.U.putResource(storageIRI, html);
                 LR.U.hideDocumentMenu();
             });
         },
@@ -2050,7 +2024,21 @@ console.log(viewportWidthSplit);
 
                             LR.U.positionNote(refId, refLabel, id);
 
-                            LR.U.createResource(noteIRI, note);
+
+                            var data = '<!DOCTYPE html>\n\
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
+     <head>\n\
+         <title>' + noteIRI + '</title>\n\
+     </head>\n\
+     <body>\n\
+         <main>\n\
+            ' + note + '\n\
+         </main>\n\
+     </body>\n\
+</html>\n\
+';
+
+                            LR.U.putResource(noteIRI, data);
 
                             this.base.checkSelection();
                         },
