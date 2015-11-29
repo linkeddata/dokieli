@@ -74,7 +74,7 @@ var LR = {
             url = url || window.location.origin + window.location.pathname + '/index.html';
             contentType = contentType || 'text/html';
             var headers = {
-                'Content-Type': 'text/turtle; charset=utf-8',
+                'Content-Type': contentType + '; charset=utf-8',
                 'Link': '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
             };
             data = data || LR.U.getDocument();
@@ -2032,7 +2032,7 @@ console.log(viewportWidthSplit);
      </head>\n\
      <body>\n\
          <main>\n\
-            ' + note + '\n\
+' + note + '\n\
          </main>\n\
      </body>\n\
 </html>\n\
