@@ -711,7 +711,7 @@ var LR = {
         },
 
         utf8Tob64: function(s) {
-            return window.btoa(encodeURIComponent(escape(s)));
+            return window.btoa(encodeURIComponent(s));
         },
 
         b64Toutf8: function(s) {
