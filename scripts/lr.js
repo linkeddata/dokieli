@@ -24,7 +24,9 @@ var LR = {
             }
         },
         Stylesheets: [],
-        User: null,
+        User: {
+            IRI: null
+        },
         LocalDocument: false,
         UseStorage: false,
         AutoSaveId: '',
@@ -52,7 +54,7 @@ var LR = {
             });
 
             request.done(function(data, textStatus, xhr) {
-                LR.C.User = xhr.getResponseHeader('User');
+                LR.C.User.IRI = xhr.getResponseHeader('User');
             });
 
             request.fail(function(xhr, textStatus) {
@@ -67,14 +69,22 @@ var LR = {
             }
         },
 
-        putDocument: function() {
+        putResource: function(url, data, contentType) {
             //FIXME: index.html shouldn't be hardcoded.
-            //It should know where to write.
+            url = url || window.location.origin + window.location.pathname + '/index.html';
+            contentType = contentType || 'text/html';
+            var headers = {
+                'Content-Type': contentType + '; charset=utf-8',
+                'Link': '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
+            };
+            data = data || LR.U.getDocument();
+
             var request = $.ajax({
-                url: window.location.origin + window.location.pathname + '/index.html',
                 method: "PUT",
-                data: LR.U.getDocument(),
-                contentType: 'text/html; charset=utf-8',
+                url: url,
+                headers: headers,
+                data: data,
+                contentType: contentType +'; charset=utf-8',
                 xhrFields: {
                     withCredentials: true
                 }
@@ -89,23 +99,23 @@ var LR = {
             });
 
             //XXX: We might not need this. It is not used at the moment. For Solid
-            var request = $.ajax({
-                url: window.location.origin + window.location.pathname + '/,meta',
-                method: "PUT",
-                data: '<index.html> a <http://schema.org/Article> .',
-                contentType: 'text/turtle; charset=utf-8',
-                xhrFields: {
-                    withCredentials: true
-                }
-            });
-            request.done(function(data, textStatus, xhr) {
-                console.log(data);
-                console.log(textStatus);
-                console.log(xhr);
-            });
-            request.fail(function(xhr, textStatus) {
-                console.log("Request failed: " + textStatus);
-            });
+            // var request = $.ajax({
+            //     url: url + '/,meta',
+            //     method: "PUT",
+            //     data: '<index.html> a <http://schema.org/Article> .',
+            //     contentType: 'text/turtle; charset=utf-8',
+            //     xhrFields: {
+            //         withCredentials: true
+            //     }
+            // });
+            // request.done(function(data, textStatus, xhr) {
+            //     console.log(data);
+            //     console.log(textStatus);
+            //     console.log(xhr);
+            // });
+            // request.fail(function(xhr, textStatus) {
+            //     console.log("Request failed: " + textStatus);
+            // });
         },
 
         //TODO: Make sure that the Container is relative to the Container of the document e.g:
@@ -114,13 +124,18 @@ var LR = {
         //http://example.org/i/article/i/ is an ldp:Container
         //TODO: get e.g., as:replies <object>, and post there (object is as:Collection)
         createContainer: function(url, slug) {
+            var headers = {
+                'Content-Type': 'text/turtle; charset=utf-8',
+                'Link': '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"'
+            };
+            if (slug != '') {
+                headers.Slug = slug;
+            }
+
             var request = $.ajax({
                 method: 'POST',
                 url: url,
-                headers: {
-                    'Content-Type': 'text/turtle; charset=utf-8',
-                    'Link': '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"'
-                },
+                headers: headers,
                 xhrFields: { withCredentials: true },
                 data: '<> <http://schema.org/name> "BasicContainer for interactions"@en .',
             });
@@ -137,7 +152,7 @@ var LR = {
         //POST an interaction into Container
         createContainerReference: function(containerIRI, slug, noteURL) {
             //Store reference to the interaction at a pod
-            // && LR.C.User.podURL
+            // && LR.C.User.IRI.podURL
             console.log('POSTing interaction reference');
             var request = $.ajax({
                 method: 'POST',
@@ -156,42 +171,6 @@ var LR = {
                 console.log(xhr);
 
                 //GET Location value from header
-            });
-            request.fail(function(xhr, textStatus) {
-                console.log( "Request failed: " + textStatus);
-            });
-        },
-
-        createResource: function(noteURL, note) {
-            //Prepare data
-            var data = '<!DOCTYPE html>\n\
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
-     <head>\n\
-         <title>' + noteURL + '</title>\n\
-     </head>\n\
-     <body>\n\
-         <main>\n\
-' + note + '\n\
-         </main>\n\
-     </body>\n\
-</html>\n\
-';
-
-            console.log('PUTing interaction content');
-            request = $.ajax({
-                method: 'PUT',
-                url: noteURL,
-                headers: {
-                    'Content-Type': 'text/html; charset=utf-8',
-                    'Link': '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
-                },
-                xhrFields: { withCredentials: true },
-                data: data
-            });
-            request.done(function(data, textStatus, xhr) {
-                console.log(data);
-                console.log(textStatus);
-                console.log(xhr);
             });
             request.fail(function(xhr, textStatus) {
                 console.log( "Request failed: " + textStatus);
@@ -261,7 +240,7 @@ var LR = {
             if (LR.C.EditorAvailable) {
                 LR.U.showEditor(dInfo);
             }
-            LR.U.showExportUpdateDocument(dInfo);
+            LR.U.showDocumentDo(dInfo);
             LR.U.showEmbedData(dInfo);
             LR.U.showTableOfStuff(dInfo);
             LR.U.showStorage(dInfo);
@@ -289,6 +268,7 @@ var LR = {
 
             $('#toc').remove();
             $('#embed-data-entry').remove();
+            $('#create-new-document').remove();
 //            LR.U.hideStorage();
         },
 
@@ -496,7 +476,7 @@ var LR = {
                 var sortable = '';
                 var isSortable = ($('head script[src$="html.sortable.min.js"]').length > 0) ? true : false;
 
-                if(isSortable && LR.C.User) {
+                if(isSortable && LR.C.User.IRI) {
                     sortable = ' sortable';
                 }
 
@@ -505,7 +485,7 @@ var LR = {
                 s += '</ol></aside>';
 
                 $('body').append(s);
-                if(isSortable && LR.C.User) {
+                if(isSortable && LR.C.User.IRI) {
                     LR.U.sortToC();
                 }
             }
@@ -731,7 +711,7 @@ var LR = {
         },
 
         utf8Tob64: function(s) {
-            return window.btoa(encodeURIComponent(escape(s)));
+            return window.btoa(encodeURIComponent(s));
         },
 
         b64Toutf8: function(s) {
@@ -782,8 +762,8 @@ var LR = {
             return doctype;
         },
 
-        getDocument: function() {
-            var html = document.documentElement.cloneNode(true);
+        getDocument: function(cn) {
+            var html = cn || document.documentElement.cloneNode(true);
             var s = "<!DOCTYPE html>\n";
             s += '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n    ';
 
@@ -873,21 +853,41 @@ var LR = {
             document.body.removeChild(a);
         },
 
-        showExportUpdateDocument: function(node) {
-            var s = '<section id="document-export-update" class="lr"><h2>Document</h2><ul>';
+        showDocumentDo: function(node) {
+            var s = '<section id="document-do" class="lr"><h2>Do</h2><ul>';
 
-            if (LR.C.User) {
+            if (LR.C.User.IRI) {
+                s += '<li><button class="new-file-html">New</button></li>';
                 s += '<li><button class="update-file-html">Save</button></li>';
             }
 
             s += '<li><button class="export-file-html">Export HTML</button></li></ul></section>';
 
             $(node).append(s);
-            $('#document-export-update').on('click', '.update-file-html', function() {
-                LR.U.putDocument();
+
+            if (LR.C.User.IRI) {
+                $('#document-do').on('click', '.new-file-html', LR.U.createNewDocument);
+                $('#document-do').on('click', '.update-file-html', function() {
+                    LR.U.putResource();
+                    LR.U.hideDocumentMenu();
+                });
+            }
+            $('#document-do').on('click', '.export-file-html', LR.U.saveAsHTML);
+        },
+
+        createNewDocument: function() {
+            $('body').append('<aside id="create-new-document" class="lr on"><button class="close">❌</button><h2>Create New Document</h2><label>URL to save to</label><input id="storage" type="text" placeholder="http://example.org/article" value="" name="storage"/> <button class="create">Create</button></aside>');
+
+            $('#create-new-document').on('click', 'button.create', function(e) {
+                var storageIRI = $(this).parent().find('input#storage').val().trim();
+
+                var html = document.documentElement.cloneNode(true);
+                $(html).find('main > article').empty();
+                html = LR.U.getDocument(html);
+
+                LR.U.putResource(storageIRI, html);
                 LR.U.hideDocumentMenu();
             });
-            $('#document-export-update').on('click', '.export-file-html', LR.U.saveAsHTML);
         },
 
         initStorage: function(item) {
@@ -1981,10 +1981,10 @@ console.log(viewportWidthSplit);
                                     <sup><a href="#' + refId + '">' + refLabel + '</a></sup>\n\
                                     <h3 property="schema:name">\n\
                                         <span rel="schema:creator oa:annotatedBy as:actor">\n\
-                                            <span about="' + LR.C.User + '" typeof="schema:Person">\n\
+                                            <span about="' + LR.C.User.IRI + '" typeof="schema:Person">\n\
                                                 <img rel="schema:image" src="https://www.gravatar.com/avatar/0ca0a18603cbd049900ebea3a3bb29d4?size=32" width="32" height="32" alt="Sarven Capadisli’s photo"/>\n\
-                                                <a rel="schema:url" href="' + LR.C.User + '">\n\
-                                                    <span about="' + LR.C.User + '" property="schema:name">Sarven Capadisli</span>\n\
+                                                <a rel="schema:url" href="' + LR.C.User.IRI + '">\n\
+                                                    <span about="' + LR.C.User.IRI + '" property="schema:name">Sarven Capadisli</span>\n\
                                                 </a>\n\
                                             </span>\n\
                                         </span>\n\
@@ -2024,7 +2024,21 @@ console.log(viewportWidthSplit);
 
                             LR.U.positionNote(refId, refLabel, id);
 
-                            LR.U.createResource(noteIRI, note);
+
+                            var data = '<!DOCTYPE html>\n\
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
+     <head>\n\
+         <title>' + noteIRI + '</title>\n\
+     </head>\n\
+     <body>\n\
+         <main>\n\
+' + note + '\n\
+         </main>\n\
+     </body>\n\
+</html>\n\
+';
+
+                            LR.U.putResource(noteIRI, data);
 
                             this.base.checkSelection();
                         },

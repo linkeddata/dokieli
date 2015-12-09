@@ -892,8 +892,6 @@ content: counter(appendix, upper-latin) "." counter(sub-appendix)"." counter(sub
 }
 
 
-body > header,
-body > footer,
 #interaction-write,
 dl.entry-author,
 dl.datetimestamp,

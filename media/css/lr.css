@@ -110,7 +110,7 @@ right:1em;*/
 right:1em;*/
 }
 
-#document-export-update ul,
+#document-do ul,
 #views ul,
 #document-metadata ul,
 #embed-data-in-html ul,
@@ -135,7 +135,7 @@ font-size:1.231em;
 #views li,
 #embed-data-in-html li,
 #table-of-stuff li,
-#document-export-update li {
+#document-do li {
 display:inline;
 margin-right:1em;
 }
