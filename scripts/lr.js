@@ -109,7 +109,7 @@ var LR = {
             });
 
             request.done(function(data, textStatus, xhr) {
-                LR.C.User.IRI = xhr.getResponseHeader('User').trim();
+                LR.C.User.IRI = xhr.getResponseHeader('User');
 
                 //XXX: Decide whether to leave setUserInfo or call only when really needed
                 LR.U.setUserInfo(LR.C.User.IRI);
