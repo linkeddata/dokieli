@@ -343,3 +343,23 @@ height: 1em;
 width: 100%;
 max-width: 100px;
 }
+
+[rel="pingback:to"]:before {
+content: "\f192";
+}
+[rel="pingback:to"] {
+display: inline-block;
+font-family: FontAwesome;
+font-feature-settings: normal;
+font-kerning: auto;
+font-language-override: normal;
+font-size: inherit;
+font-size-adjust: none;
+font-stretch: normal;
+font-style: normal;
+font-synthesis: weight style;
+font-variant: normal;
+font-weight: normal;
+line-height: 1;
+text-rendering: auto;
+}
