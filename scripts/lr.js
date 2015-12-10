@@ -43,7 +43,62 @@ var LR = {
             DisableEditorButton: '<button class="editor-disable">Disable</button>',
             EnableEditorButton: '<button class="editor-enable">Enable</button>'
         },
-        InteractionPath: '/i/'
+        InteractionPath: 'i/',
+
+        Vocab: {
+            "foafname": "http://xmlns.com/foaf/0.1/name",
+            "foafhomepage": {
+                "@id": "http://xmlns.com/foaf/0.1/homepage",
+                "@type": "@id"
+            },
+            "foafimg": {
+                "@id": "http://xmlns.com/foaf/0.1/img",
+                "@type": "@id"
+            },
+            "foafnick": "http://xmlns.com/foaf/0.1/nick",
+            "foafmaker": {
+                "@id": "http://xmlns.com/foaf/0.1/maker",
+                "@type": "@id"
+            },
+
+            "schemaname": "http://schema.org/name",
+            "schemaurl": {
+                "@id": "http://schema.org/url",
+                "@type": "@id"
+            },
+            "schemaimage": {
+                "@id": "http://schema.org/image",
+                "@type": "@id"
+            },
+            "schemacreator": {
+                "@id": "http://schema.org/creator",
+                "@type": "@id"
+            },
+
+            "dctermstitle": "http://purl.org/dc/terms/title",
+
+            "storage": {
+                "@id": "http://www.w3.org/ns/pim/space#storage",
+                "@type": "@id"
+            },
+            "preferencesFile": {
+                "@id": "http://www.w3.org/ns/pim/space#preferencesFile",
+                "@type": "@id"
+            },
+            "workspace": {
+                "@id": "http://www.w3.org/ns/pim/space#workspace",
+                "@type": "@id"
+            },
+            "masterWorkspace": {
+                "@id": "http://www.w3.org/ns/pim/space#masterWorkspace",
+                "@type": "@id"
+            },
+
+            "pingbackto": {
+                "@id": "http://purl.org/net/pingback/to",
+                "@type": "@id"
+            }
+        }
     },
 
     U: {
@@ -54,13 +109,82 @@ var LR = {
             });
 
             request.done(function(data, textStatus, xhr) {
-                LR.C.User.IRI = xhr.getResponseHeader('User');
+                LR.C.User.IRI = xhr.getResponseHeader('User').trim();
+
+                //XXX: Decide whether to leave setUserInfo or call only when really needed
+                LR.U.setUserInfo(LR.C.User.IRI);
             });
 
             request.fail(function(xhr, textStatus) {
                 console.log("Request failed: " + textStatus);
                 //TODO
             });
+        },
+
+        setUserInfo: function(userIRI) {
+            if (LR.C.User.IRI) {
+                var pIRI = userIRI;
+                if (pIRI.slice(0, 5).toLowerCase() != 'https') {
+                    pIRI = document.location.origin + '/,proxy?uri=' + LR.U.encodeString(pIRI);
+                }
+                console.log(pIRI);
+
+                var g = SimpleRDF(LR.C.Vocab);
+                g.iri(pIRI).get().then(
+                    function(i) {
+                        var s = i.iri(userIRI);
+                        console.log(s);
+                        if (s.foafname) {
+                            LR.C.User.Name = s.foafname;
+                            console.log(LR.C.User.Name);
+                        }
+                        else {
+                            if (s.schemaname) {
+                                LR.C.User.Name = s.schemaname;
+                                console.log(LR.C.User.Name);
+                            }
+                        }
+
+                        if (s.foafimg) {
+                            LR.C.User.Image = s.foafimg;
+                            console.log(LR.C.User.Image);
+                        }
+                        else {
+                            if (s.schemaimage) {
+                                LR.C.User.Image = s.schemaimage;
+                                console.log(LR.C.User.Image);
+                            }
+                        }
+
+                        if (s.storage) {
+                            LR.C.User.Storage = s.storage;
+                            console.log(LR.C.User.Storage);
+                        }
+                        if (s.preferencesFile) {
+                            LR.C.User.PreferencesFile = s.preferencesFile;
+                            console.log(LR.C.User.PreferencesFile);
+
+                            //XXX: Probably https so don't bother with proxy?
+                            g.iri(LR.C.User.PreferencesFile).get().then(
+                                function(pf) {
+                                    var s = pf.iri(LR.C.User.IRI);
+                                    console.log(s);
+                                    if (s.workspace) {
+                                        console.log(s.workspace);
+                                        LR.C.User.Workspaces = s.workspace;
+                                    }
+                                    if (s.masterWorkspace) {
+                                        console.log(s.masterWorkspace);
+                                        LR.C.User.masterWorkspace = s.masterWorkspace;
+                                    }
+                                },
+                                function(reason) { console.log(reason);}
+                            );
+                        }
+                    },
+                    function(reason) { console.log(reason); }
+                );
+            }
         },
 
         setLocalDocument: function() {
@@ -1934,7 +2058,17 @@ console.log(viewportWidthSplit);
                             //TODO: noteId can be external to this document e.g., User stores the note at their own space
                             // var noteId = 'i-' + id;
 
+                            var resourceIRI = document.location.href;
                             var containerIRI = window.location.origin + window.location.pathname + LR.C.InteractionPath;
+
+                            //TODO: using masterWorkspace for now. Need more granular workspace selection, e.g., PublicAnnotations?
+                            if (typeof LR.C.User.masterWorkspace != 'undefined') {
+                                containerIRI = LR.C.User.masterWorkspace + LR.C.InteractionPath;
+                            }
+                            else {
+                                //FIXME: This needs to pick one from an array.
+                                containerIRI = LR.C.User.workspace + LR.C.InteractionPath;
+                            }
 
                             var noteIRI = containerIRI + id;
                             //TODO: However this label is created
@@ -1976,32 +2110,39 @@ console.log(viewportWidthSplit);
                             //TODO: If img available
                             //TODO: oa:TimeState's datetime should equal to hasSource value. Same for oa:HttpRequestState's rdfs:value
                             // <span about="[this:#' + refId + ']" rel="oa:hasState">(timeState: <time typeof="oa:TimeState" datetime="' + datetime +'" datatype="xsd:dateTime"property="oa:sourceDate">' + datetime + '</time>)</span>\n\
+
+                            userImage = '';
+                            if (LR.C.User.Image) {
+                                userImage = '<img rel="schema:image" src="' + LR.C.User.Image + '" width="32" height="32"/>';
+                            }
+
+//                                    <sup><a href="#' + refId + '">' + refLabel + '</a></sup>\n\
+
                             var note = '\n\
-                                <' + this.tagNames[0] + ' id="' + id + '" about="[i:' + id + ']" typeof="oa:Annotation as:Activity" prefix="schema: http://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + containerIRI +'">\n\
-                                    <sup><a href="#' + refId + '">' + refLabel + '</a></sup>\n\
-                                    <h3 property="schema:name">\n\
-                                        <span rel="schema:creator oa:annotatedBy as:actor">\n\
-                                            <span about="' + LR.C.User.IRI + '" typeof="schema:Person">\n\
-                                                <img rel="schema:image" src="https://www.gravatar.com/avatar/0ca0a18603cbd049900ebea3a3bb29d4?size=32" width="32" height="32" alt="Sarven Capadisli’s photo"/>\n\
-                                                <a rel="schema:url" href="' + LR.C.User.IRI + '">\n\
-                                                    <span about="' + LR.C.User.IRI + '" property="schema:name">Sarven Capadisli</span>\n\
-                                                </a>\n\
-                                            </span>\n\
-                                        </span>\n\
-                                        <a rel="oa:hasTarget sioc:reply_of as:inReplyTo" href="#' + refId + '">\n\
-                                            <span about="[i:' + id + ']" rel="oa:motivatedBy" resource="oa:replying">replied</span>\n\
-                                        </a>\n\
-                                        on\n\
-                                        <a href="' + noteIRI + '">\n\
-                                            <time datetime="' + datetime +'" datatype="xsd:dateTime" property="oa:annotatedAt schema:datePublished">' + datetime + '</time>\n\
-                                        </a>\n\
-                                    </h3>\n\
-                                    <div property="schema:description" rel="oa:hasBody as:content">\n\
-                                        <div about="[i:' + noteIRI +']" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">\n\
-                                            <p>' + opts.url + '</p>\n\
-                                        </div>\n\
-                                    </div>\n\
-                                </' + this.tagNames[0] + '>';
+            <article id="' + id + '" about="[i:]" typeof="oa:Annotation as:Activity" prefix="schema: http://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + noteIRI +'">\n\
+                <h3 property="schema:name">\n\
+                    <span rel="schema:creator oa:annotatedBy as:actor">\n\
+                        <span about="' + LR.C.User.IRI + '" typeof="schema:Person">\n\
+                            ' + userImage + '\n\
+                            <a rel="schema:url" href="' + LR.C.User.IRI + '">\n\
+                                <span about="' + LR.C.User.IRI + '" property="schema:name">' + LR.C.User.Name + '</span>\n\
+                            </a>\n\
+                        </span>\n\
+                    </span>\n\
+                    <a rel="oa:hasTarget sioc:reply_of as:inReplyTo" href="' + resourceIRI + '">\n\
+                        <span about="[i:]" rel="oa:motivatedBy" resource="oa:replying">replied</span>\n\
+                    </a>\n\
+                    on\n\
+                    <a href="' + noteIRI + '">\n\
+                        <time datetime="' + datetime +'" datatype="xsd:dateTime" property="oa:annotatedAt schema:datePublished">' + datetime + '</time>\n\
+                    </a>\n\
+                </h3>\n\
+                <div property="schema:description" rel="oa:hasBody as:content">\n\
+                    <div about="[i:]" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">\n\
+                        <p>' + opts.url + '</p>\n\
+                    </div>\n\
+                </div>\n\
+            </article>';
                 //            console.log(note);
 
                             // var selectedParentElement = this.base.getSelectedParentElement();
@@ -2017,7 +2158,10 @@ console.log(viewportWidthSplit);
                                 nES.appendChild(noteNode);
                             }
                             else {// id="n-' + LR.U.generateAttributeId() + '"
-                                var asideNote = '<aside class="note">' + note + '</aside>';
+                                var asideNote = '\n\
+                            <aside class="note">\n\
+                            '+ note + '\n\
+                            </aside>';
                                 var asideNode = LR.U.fragmentFromString(asideNote);
                                 selectedParentElement.parentNode.insertBefore(asideNode, selectedParentElement.nextSibling);
                             }
@@ -2031,8 +2175,7 @@ console.log(viewportWidthSplit);
          <title>' + noteIRI + '</title>\n\
      </head>\n\
      <body>\n\
-         <main>\n\
-' + note + '\n\
+         <main>' + note + '\n\
          </main>\n\
      </body>\n\
 </html>\n\
