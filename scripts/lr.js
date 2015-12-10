@@ -193,13 +193,178 @@ var LR = {
             }
         },
 
-        putResource: function(url, data, contentType) {
+        putPingbackTriple: function(url, pingbackOf, pingbackTo) {
+            var data = '<'+ pingbackOf + '> <http://purl.org/net/pingback/to> <' + pingbackTo + '> .';
+
+            LR.U.putResource(url, data, 'text/turtle');
+        },
+
+        //Copied from https://github.com/deiu/solid-plume/blob/gh-pages/app/solid.js
+        parseLinkHeader: function(link) {
+            var linkexp = /<[^>]*>\s*(\s*;\s*[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*")))*(,|$)/g;
+            var paramexp = /[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*"))/g;
+
+            var matches = link.match(linkexp);
+            var rels = {};
+            for (var i = 0; i < matches.length; i++) {
+                var split = matches[i].split('>');
+                var href = split[0].substring(1);
+                var ps = split[1];
+                var s = ps.match(paramexp);
+                for (var j = 0; j < s.length; j++) {
+                    var p = s[j];
+                    var paramsplit = p.split('=');
+                    var name = paramsplit[0];
+                    var rel = paramsplit[1].replace(/["']/g, '');
+                    rels[rel] = href;
+                }
+            }
+            return rels;
+        },
+
+        getPingback: function(url) {
+            return new Promise(function(resolve, reject) {
+                if (url.indexOf('#') != -1) {
+                    return resolve(LR.U.getPingbackFromRDF(url));
+                }
+                else {
+                    var response = LR.U.getResourceHeader(url);
+                    response.done(function(data, textStatus, xhr) {
+                        console.log(data);
+                        console.log(textStatus);
+                        console.log(xhr);
+                        var link = LR.U.parseLinkHeader(xhr.getResponseHeader('Link'));
+                        if(link['pingback:to'] && link['pingback:to'].length > 0) {
+                            return resolve(link['pingback:to']);
+                        }
+                        else {
+                            if(link['meta'] && link['meta'].length > 0) {
+                                var response = LR.U.getResourceHeader(link['meta']);
+                                response.done(function(data, textStatus, xhr) {
+                                    console.log(data);
+                                    console.log(textStatus);
+                                    console.log(xhr);
+                                    return resolve(LR.U.getPingbackFromRDF(link['meta'], url));
+                                });
+                            }
+
+                            console.log('XXX: Our last chance');
+                            return resolve(LR.U.getPingbackFromRDF(url));
+                        }
+                    });
+                    response.fail(function(xhr, textStatus) {
+                        console.log(xhr);
+                        console.log("Request failed: " + textStatus);
+                        return reject(xhr);
+                    });
+                }
+            });
+        },
+
+        getPingbackFromRDF: function(url, subjectIRI) {
+            subjectIRI = subjectIRI || url;
+            var pIRI = url;
+            if (pIRI.slice(0, 5).toLowerCase() != 'https') {
+                pIRI = document.location.origin + '/,proxy?uri=' + LR.U.encodeString(pIRI);
+            }
+            console.log(pIRI);
+            console.log(subjectIRI);
+
+            return new Promise(function(resolve, reject) {
+                var g = SimpleRDF(LR.C.Vocab);
+                g.iri(pIRI).get().then(
+                    function(i) {
+                        var s = i.iri(subjectIRI);
+                        console.log(s);
+                        if (s.pingbackto) {
+                            console.log(s.pingbackto);
+                            return resolve(s.pingbackto);
+                        }
+                    },
+                    function(reason) {
+                        console.log(reason);
+                        return reject(reason);
+                    }
+                );
+            });
+        },
+
+        getResourceHeader: function(url) {
+            return $.ajax({
+                url: url,
+                method: "HEAD"
+            });
+        },
+
+        getResource: function(url, headers) {
+            headers = headers || {};
+            console.log(headers['Accept']);
+            if(typeof headers['Accept'] == 'undefined') {
+                headers['Accept'] = 'text/turtle; charset=utf-8';
+            }
+
+            return $.ajax({
+                method: "GET",
+                headers: headers,
+                url: url,
+            });
+        },
+
+        xhrResponse: function(response) {
+            response.done(function(data, textStatus, xhr) {
+                console.log(data);
+                console.log(textStatus);
+                console.log(xhr);
+            });
+            response.fail(function(xhr, textStatus) {
+                console.log(xhr);
+                console.log("Request failed: " + textStatus);
+            });
+        },
+
+        patchResource: function(url, headers, deleteBGP, insertBGP) {
+            headers = headers || {};
+            headers['Content-Type'] = 'application/sparql-update; charset=utf-8';
+
+            //insertBGP and deleteBGP are basic graph patterns.
+            if (deleteBGP) {
+                deleteBGP = 'DELETE DATA { ' + deleteBGP + ' };';
+            }
+
+            if (insertBGP) {
+                insertBGP = 'INSERT DATA { ' + insertBGP + ' };';
+            }
+
+            var request = $.ajax({
+                method: "PATCH",
+                url: url,
+                headers: headers,
+                data: deleteBGP + insertBGP,
+                xhrFields: {
+                    withCredentials: true
+                }
+            });
+            request.done(function(data, textStatus, xhr) {
+                console.log(data);
+                console.log(textStatus);
+                console.log(xhr);
+            });
+            request.fail(function(xhr, textStatus) {
+                console.log(xhr);
+                console.log("Request failed: " + textStatus);
+            });
+        },
+
+        putResource: function(url, data, contentType, links) {
             //FIXME: index.html shouldn't be hardcoded.
-            url = url || window.location.origin + window.location.pathname + '/index.html';
+            url = url || window.location.origin + window.location.pathname + '/index';
             contentType = contentType || 'text/html';
+            var ldpResource = '<http://www.w3.org/ns/ldp#Resource>; rel="type"';
+            links = (links) ? ldpResource + ', ' + links : ldpResource;
+
             var headers = {
                 'Content-Type': contentType + '; charset=utf-8',
-                'Link': '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
+                'Link': links
             };
             data = data || LR.U.getDocument();
 
@@ -208,7 +373,6 @@ var LR = {
                 url: url,
                 headers: headers,
                 data: data,
-                contentType: contentType +'; charset=utf-8',
                 xhrFields: {
                     withCredentials: true
                 }
@@ -221,25 +385,6 @@ var LR = {
             request.fail(function(xhr, textStatus) {
                 console.log("Request failed: " + textStatus);
             });
-
-            //XXX: We might not need this. It is not used at the moment. For Solid
-            // var request = $.ajax({
-            //     url: url + '/,meta',
-            //     method: "PUT",
-            //     data: '<index.html> a <http://schema.org/Article> .',
-            //     contentType: 'text/turtle; charset=utf-8',
-            //     xhrFields: {
-            //         withCredentials: true
-            //     }
-            // });
-            // request.done(function(data, textStatus, xhr) {
-            //     console.log(data);
-            //     console.log(textStatus);
-            //     console.log(xhr);
-            // });
-            // request.fail(function(xhr, textStatus) {
-            //     console.log("Request failed: " + textStatus);
-            // });
         },
 
         //TODO: Make sure that the Container is relative to the Container of the document e.g:
@@ -269,6 +414,7 @@ var LR = {
                 console.log(xhr);
             });
             request.fail(function(xhr, textStatus) {
+                console.log(xhr);
                 console.log("Request failed: " + textStatus);
             });
         },
@@ -299,6 +445,46 @@ var LR = {
             request.fail(function(xhr, textStatus) {
                 console.log( "Request failed: " + textStatus);
             });
+        },
+
+        createPingback: function(pingbackTo, slug, source, property, target) {
+            var headers = {
+                'Content-Type': 'text/turtle; charset=utf-8',
+                'Link': '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
+            };
+            if (slug != '') {
+                headers.Slug = slug;
+            }
+
+            var data = '@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\
+@prefix ping: <http://purl.org/net/pingback/> .\n\
+@prefix schema: <http://schema.org/> .\n\
+<> a ping:Request ;\n\
+    ping:source <' + source + '> ;\n\
+    ping:property <' + property + '> ;\n\
+    ping:target <' + target + '> ;\n\
+    schema:dateModified "' + LR.U.getDateTimeISO() + '"^^xsd:dateTime ;\n\
+    schema:creator <' + LR.C.User.IRI + '> ;\n\
+    schema:license <http://creativecommons.org/licenses/by-sa/4.0/> .\n\
+';
+
+            var request = $.ajax({
+                method: "POST",
+                url: pingbackTo,
+                headers: headers,
+                xhrFields: { withCredentials: true },
+                data: data
+            });
+            request.done(function(data, textStatus, xhr) {
+                console.log(data);
+                console.log(textStatus);
+                console.log(xhr);
+            });
+            request.fail(function(xhr, textStatus) {
+                console.log(xhr);
+                console.log("Request failed: " + textStatus);
+            });
+
         },
 
         createResourceACL: function(accessToURL, aclSuffix, agentIRI) {
@@ -2182,6 +2368,20 @@ console.log(viewportWidthSplit);
 ';
 
                             LR.U.putResource(noteIRI, data);
+
+                            console.log('resourceIRI: ' + resourceIRI);
+
+                            //TODO: resourceIRI should be the closest IRI (not necessarily the document)
+                            LR.U.getPingback(resourceIRI).then(
+                                function(pingbackTo) {
+                                    console.log('2390 pingbackTo: ' + pingbackTo);
+                                    LR.U.createPingback(pingbackTo, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', resourceIRI);
+                                },
+                                function(reason) {
+                                    console.log('TODO: How can the interaction inform the target?');
+                                    console.log(reason);
+                                }
+                            );
 
                             this.base.checkSelection();
                         },
