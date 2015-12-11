@@ -1,65 +1,110 @@
 # dokieli
 
-[![Join the chat at https://gitter.im/linkeddata/dokieli](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/linkeddata/dokieli?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![Join the chat at https://gitter.im/linkeddata/dokieli](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/linkeddata/dokieli)
 
-**Objective**: to enable researchers (in Web Science for example), to share and
-reuse research knowledge by employing the native Web stack.
+dokieli is a decentralized authoring, annotation, and social interaction tool
+which can work online or offline using anything from a Line Mode Browser to
+Firefox Nightly). dokieli is 100% in the spirit of the Web and tries to
+adhere to the state of the art best practices and recommendations. No shortcuts!
 
-Linked Research is set out to socially and technically enable researchers to
-take full control, ownership, and responsibility of their own knowledge, and
-have their contributions accessible to the society at maximum capacity, by
-dismantling the use of archaic and artificial barriers.
+dokieli is compliant with the [Linked Research](https://github.com/csarven/linked-research)
+initiative and principles, and provides features and interactions for scholarly
+communication.
 
-This is to work towards a solution where researchers can publish and consume
-research documents that are both human and machine-friendly.
 
-See also a proposed [acid test](http://csarven.ca/enabling-accessible-knowledge#acid-test)
-aimed at this.
+## Features
+* In-browser document authoring and formatting, as well as semantic enrichments
+* Information is represented and retrieved following the Linked Data design principles
+* Employs WebID + ACL and personal online datastore where applicable (compliant with [Linked Data Platform](http://www.w3.org/TR/ldp/) and [Solid](https://github.com/solid/solid-spec) servers)
+* Using author's information from their online profile
+* Creation of new documents from any dokieli document (anywhere on the Web given write access)
+* Annotations and pingbacks (e.g., replies, peer-reviews, liking, resharing). Uses W3C Web Annotation and Social Web data models
+* Assignment of URI fragments (to whatever is of interest) for other resources to reference
+* Embedding data blocks (e.g., nanopublications)
+* Embedding of media objects, tables, and interactions
+* Automated references and citations
+* Insertion of table of contents, figures, tables, abbreviations
+* Drag and drop to reorgnize the document's sections and table of contents
+* In-browser local storage, and document exporting
+* Document metadata
+* Views for screen and print (e.g., ACM, LNCS) - yes, you can output to a paper user interface: PDF
 
-## Dive into dokieli
-dokieli is a single HTML 5 Polyglot document. Different CSS are used to
-present the information for different media e.g., screen, print. JavaScript is
-used to <em>progressively enhance</em> the document and bring in interactivity.
-In a nutshell:
 
-* Documents are human and machine-<em>readable</em>.
-* Using the <em>plain old semantic HTML</em> marking process, with further
-semantic annotations using RDF and microformats.
-* Intended to minimize friction in publishing and consuming; no installations,
-server, or account requirements. No out of band tooling. Works on local machine
-/ Web browser.
+## Examples
+See the growing list of [examples in the wild](https://github.com/linkeddata/dokieli/wiki#examples-in-the-wild) in the wiki. Add the URLs of your article or interactions to the list.
 
-See the [examples in the wild](https://github.com/linkeddata/dokieli/wiki#examples-in-the-wild)
-in the wiki. Add your article's URL.
+This repository is published and accessible from [https://dokie.li/](https://dokie.li/).
+dokie.li is intended to demo and exemplify what we can do with this technology.
+You are welcome to use and experiment with dokieli there. You might also come
+across it in the wild. There is no root, authority, or centralisation. If you
+spot it, lets fix and improve together.
 
-This repository is published and accessible from [http://dokie.li/](http://dokie.li/).
-
-See also:
+For the scholars among us, see the authoring guidelines below. View the ACM
+guidelines using the LNCS typographical rules, and vice versa (see the menu) ;)
 * [ACM SIG Proceedings Paper](http://linked-research.270a.info/acm-sigproc-sp)
 * [LNCS Author Guidelines](http://linked-research.270a.info/lncs-splnproc)
 
+
+## Design
+There is nothing to install or setup, out of band tooling or account creations
+for its core functionality. The Web browser is the only requirement. Reasonable?
+It is entirely progressively enhanced: intended to minimize friction in
+publishing and consuming. Works on local machine, and is functional from ground
+up. Additional features can be used with the "pay-as-you-go" design approach
+e.g., if authors or reviewers have a WebID and a personal storage space, their
+feedback can be under their full control, meanwhile allowing who it can be
+visible to. If they don't, or the authors don't wish to enable open dialogue,
+that's okay too.
+
+It works towards a solution e.g., proposed [acid test](http://csarven.ca/enabling-accessible-knowledge#acid-test) where authors and Webizens can both publish and consume,
+and participate in discussions meanwhile having human and machine-friendly
+information all within their control. Keep #dokieli #LinkedResearch
+#ControlYourself in mind.
+
+dokieli is not perfect, but it is intended to evolve based on our collective
+experience.
+
 ## Dependencies
-The dependencies listed below are only enhancements, and so they are optional.
-Everything is still functional from ground up (whether you are using a Line Mode
-Browser or Firefox Nightly). If you do not want them, they can be removed or
-turned-off without effecting core HTML or CSS.
+Again, dokieli is progressively enhanced ("pay-as-you-go"). You can always use
+curl or links/lynx from command-line and get all the content which includes
+triple statements in RDFa.
+
+* For the purpose of reading, the only requirement is to serve the HTML+RDFa
+and referenced files from a directory on your Web server. "Drag and drop"!
+* If you want to write the document from within your Web browser, well, .. you
+need a Web browser ;)
+* If you have a WebID and a personal online storage, you can author your
+documents wherever you like on the Web, and you can decide who gets to read and
+write, e.g., your co-authors, or reviewers.
+* If you want to work offline or on your local machine, open a dokieli file in
+your Web browser and edit. You have the option to export the document or use
+the Web browser's native local storage.
+
+The "dependencies" listed below only enhance the interaction for authoring.
+They are entirely optional. We intended to further cut down on the dependent
+libraries as we work out the optimizations.
 
 * [jQuery Core](http://jquery.com/) (MIT License)
 * [html5sortable](https://github.com/voidberg/html5sortable) (MIT License)
-* [Shower](https://github.com/shower/shower) (MIT License)
+* [Shower](https://github.com/shower/shower) (MIT License) used for slideshows
+* [Simplerdf](https://github.com/nicola/simplerdf) (MIT License) used for RDF
+* [Green Turtle](https://github.com/alexmilowski/green-turtle) (MIT License) for RDFa
+* [Font Awesome](https://github.com/FortAwesome/Font-Awesome) (SIL OFL 1.1 / MIT License)
+* [MediumEditor](https://gitter.im/yabwe/medium-editor) (MIT License)
+
 
 ## License
 [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
+
 ## How to contribute
-* Use it! Provide URLs to your work (see examples).
+* Use it! Share your work with the others.
 * Enable your colleagues to the same.
-* Break things.
-* Report issues and document.
-* Resolve issues.
-* Optimize.
-* Work on features.
+* Join the [dokieli chat](https://gitter.im/linkeddata/dokieli) for help and discussion.
+* Break things. Report issues and document. Resolve issues.
+* Optimize. Work on features.
+
 
 ## What does dokieli mean?
-It has no real semantics. It is derived from "okie dokie" and "linked". You can
-pronounce the way Ned Flanders does.
+It is derived from "okie dokie" and "linked". You can pronounce just like Ned Flanders
+from The Simpsons.
