@@ -1197,6 +1197,7 @@ var LR = {
 
                 LR.U.putResource(storageIRI, html);
                 LR.U.hideDocumentMenu();
+                window.open(storageIRI, '_blank');
             });
         },
 
