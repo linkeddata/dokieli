@@ -58,8 +58,7 @@ that's okay too.
 
 It works towards a solution e.g., proposed [acid test](http://csarven.ca/enabling-accessible-knowledge#acid-test) where authors and Webizens can both publish and consume,
 and participate in discussions meanwhile having human and machine-friendly
-information all within their control. Keep #dokieli #LinkedResearch
-#ControlYourself in mind.
+information all within their control. Keep #dokieli #LinkedResearch #ControlYourself in mind.
 
 dokieli is not perfect, but it is intended to evolve based on our collective
 experience.
