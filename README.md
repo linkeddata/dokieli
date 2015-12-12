@@ -2,18 +2,13 @@
 
 [![Join the chat at https://gitter.im/linkeddata/dokieli](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/linkeddata/dokieli)
 
-dokieli is a decentralized authoring, annotation, and social interaction tool
-which can work online or offline using anything from a Line Mode Browser to
-Firefox Nightly). dokieli is 100% in the spirit of the Web and tries to
-adhere to the state of the art best practices and recommendations. No shortcuts!
+dokieli is a decentralized article authoring, annotation, and social pingback tool which works from a Web browser. While it is a general purpose tooling to write articles, it is fully compliant with the [Linked Research](https://github.com/csarven/linked-research) initiative and principles, and provides features and interactions for scholarly communication. Its architecture is progressively enhanced such that dokieli based articles are accessible anywhere from a Line Mode Browser to Firefox Nightly. Article or annotations can be `curl`ed and deferenced to get the complete content in HTML and RDF.
 
-dokieli is compliant with the [Linked Research](https://github.com/csarven/linked-research)
-initiative and principles, and provides features and interactions for scholarly
-communication.
+dokieli can employ WebID and personal online datastores where applicable for authors to store and give different access controls to the others e.g., co-authors, reviewers, or for general social interactions and feedback. Similarly, anyone that wants to annotate can store their notes at a webspace in which they control.
 
 
 ## Features
-* In-browser document authoring and formatting, as well as semantic enrichments
+* In-browser document authoring and formatting, and semantic enrichments
 * Information is represented and retrieved following the Linked Data design principles
 * Employs WebID + ACL and personal online datastore where applicable (compliant with [Linked Data Platform](http://www.w3.org/TR/ldp/) and [Solid](https://github.com/solid/solid-spec) servers)
 * Using author's information from their online profile
@@ -24,7 +19,7 @@ communication.
 * Embedding of media objects, tables, and interactions
 * Automated references and citations
 * Insertion of table of contents, figures, tables, abbreviations
-* Drag and drop to reorgnize the document's sections and table of contents
+* Drag and drop to reorganize the document's sections and table of contents
 * In-browser local storage, and document exporting
 * Document metadata
 * Views for screen and print (e.g., ACM, LNCS) - yes, you can output to a paper user interface: PDF
@@ -105,5 +100,5 @@ libraries as we work out the optimizations.
 
 
 ## What does dokieli mean?
-It is derived from "okie dokie" and "linked". You can pronounce just like Ned Flanders
-from The Simpsons.
+It is derived from "okie dokie" and "linked". You can pronounce just like Ned
+Flanders from The Simpsons.
