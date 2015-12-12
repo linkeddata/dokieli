@@ -368,22 +368,26 @@ var LR = {
             };
             data = data || LR.U.getDocument();
 
-            var request = $.ajax({
-                method: "PUT",
-                url: url,
-                headers: headers,
-                data: data,
-                xhrFields: {
-                    withCredentials: true
-                }
-            });
-            request.done(function(data, textStatus, xhr) {
-                console.log(data);
-                console.log(textStatus);
-                console.log(xhr);
-            });
-            request.fail(function(xhr, textStatus) {
-                console.log("Request failed: " + textStatus);
+            return new Promise(function(resolve, reject) {
+                var request = $.ajax({
+                    method: "PUT",
+                    url: url,
+                    headers: headers,
+                    data: data,
+                    xhrFields: {
+                        withCredentials: true
+                    }
+                });
+                request.done(function(data, textStatus, xhr) {
+                    console.log(data);
+                    console.log(textStatus);
+                    console.log(xhr)
+                    return resolve(xhr);
+                });
+                request.fail(function(xhr, textStatus) {
+                    console.log("Request failed: " + textStatus);
+                    return reject(xhr);
+                });
             });
         },
 
@@ -1178,8 +1182,14 @@ var LR = {
             if (LR.C.User.IRI) {
                 $('#document-do').on('click', '.new-file-html', LR.U.createNewDocument);
                 $('#document-do').on('click', '.update-file-html', function() {
-                    LR.U.putResource();
-                    LR.U.hideDocumentMenu();
+                    LR.U.putResource().then(
+                        function(i) {
+                            LR.U.hideDocumentMenu();
+                        },
+                        function(reason) {
+                            console.log(reason);
+                        }
+                    );
                 });
             }
             $('#document-do').on('click', '.export-file-html', LR.U.saveAsHTML);
@@ -1195,9 +1205,18 @@ var LR = {
                 $(html).find('main > article').empty();
                 html = LR.U.getDocument(html);
 
-                LR.U.putResource(storageIRI, html);
-                LR.U.hideDocumentMenu();
-                window.open(storageIRI, '_blank');
+                var w = window.open('', '_blank');
+
+                LR.U.putResource(storageIRI, html).then(
+                    function(i) {
+                        console.log(i);
+                        w.location.href = storageIRI;
+                        LR.U.hideDocumentMenu();
+                    },
+                    function(reason) {
+                        console.log(reason);
+                    }
+                );
             });
         },
 
@@ -2375,7 +2394,7 @@ console.log(viewportWidthSplit);
                             //TODO: resourceIRI should be the closest IRI (not necessarily the document)
                             LR.U.getPingback(resourceIRI).then(
                                 function(pingbackTo) {
-                                    console.log('2390 pingbackTo: ' + pingbackTo);
+                                    console.log('pingbackTo: ' + pingbackTo);
                                     LR.U.createPingback(pingbackTo, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', resourceIRI);
                                 },
                                 function(reason) {
