@@ -461,12 +461,12 @@ var LR = {
             }
 
             var data = '@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\
-@prefix ping: <http://purl.org/net/pingback/> .\n\
+@prefix pingback: <http://purl.org/net/pingback/> .\n\
 @prefix schema: <http://schema.org/> .\n\
-<> a ping:Request ;\n\
-    ping:source <' + source + '> ;\n\
-    ping:property <' + property + '> ;\n\
-    ping:target <' + target + '> ;\n\
+<> a pingback:Request ;\n\
+    pingback:source <' + source + '> ;\n\
+    pingback:property <' + property + '> ;\n\
+    pingback:target <' + target + '> ;\n\
     schema:dateModified "' + LR.U.getDateTimeISO() + '"^^xsd:dateTime ;\n\
     schema:creator <' + LR.C.User.IRI + '> ;\n\
     schema:license <http://creativecommons.org/licenses/by-sa/4.0/> .\n\
