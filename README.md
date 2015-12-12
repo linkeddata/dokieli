@@ -8,7 +8,7 @@ write articles, it is fully compliant with the [Linked
 Research](https://github.com/csarven/linked-research) initiative and principles,
 and provides features and interactions for scholarly communication. Its
 architecture is progressively enhanced such that dokieli based articles are
-accessible anywhere from a Line Mode Browser to Firefox Nightly. Article or
+accessible anywhere from a Line Mode Browser to Firefox Nightly. Articles and
 annotations can be `curl`ed and dereferenced to get the complete content in HTML
 and RDF.
 
