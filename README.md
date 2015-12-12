@@ -2,9 +2,20 @@
 
 [![Join the chat at https://gitter.im/linkeddata/dokieli](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/linkeddata/dokieli)
 
-dokieli is a decentralized article authoring, annotation, and social pingback tool which works from a Web browser. While it is a general purpose tooling to write articles, it is fully compliant with the [Linked Research](https://github.com/csarven/linked-research) initiative and principles, and provides features and interactions for scholarly communication. Its architecture is progressively enhanced such that dokieli based articles are accessible anywhere from a Line Mode Browser to Firefox Nightly. Article or annotations can be `curl`ed and deferenced to get the complete content in HTML and RDF.
+dokieli is a decentralized article authoring, annotation, and social pingback
+tool which works from a Web browser. While it is a general purpose tooling to
+write articles, it is fully compliant with the [Linked
+Research](https://github.com/csarven/linked-research) initiative and principles,
+and provides features and interactions for scholarly communication. Its
+architecture is progressively enhanced such that dokieli based articles are
+accessible anywhere from a Line Mode Browser to Firefox Nightly. Article or
+annotations can be `curl`ed and dereferenced to get the complete content in HTML
+and RDF.
 
-dokieli can employ WebID and personal online datastores where applicable for authors to store and give different access controls to the others e.g., co-authors, reviewers, or for general social interactions and feedback. Similarly, anyone that wants to annotate can store their notes at a webspace in which they control.
+Where applicable, dokieli can employ participant's e.g., authors, reviewers,
+commenters, WebID and personal online datastores to store and give different
+access controls to the information. Similarly, anyone that wants to annotate can
+store their notes at a Webspace in which they control.
 
 
 ## Features
@@ -26,13 +37,16 @@ dokieli can employ WebID and personal online datastores where applicable for aut
 
 
 ## Examples
-See the growing list of [examples in the wild](https://github.com/linkeddata/dokieli/wiki#examples-in-the-wild) in the wiki. Add the URLs of your article or interactions to the list.
+See the growing list of [examples in the
+wild](https://github.com/linkeddata/dokieli/wiki#examples-in-the-wild) in the
+wiki. Add the URLs of your articles or interactions to the list.
 
-This repository is published and accessible from [https://dokie.li/](https://dokie.li/).
-dokie.li is intended to demo and exemplify what we can do with this technology.
-You are welcome to use and experiment with dokieli there. You might also come
-across it in the wild. There is no root, authority, or centralisation. If you
-spot it, lets fix and improve together.
+This repository is published and accessible from
+[https://dokie.li/](https://dokie.li/). dokie.li is intended to demo and
+exemplify what we can do with this technology. You are welcome to use and
+experiment with dokieli there. You might also come across it in the wild. There
+is no root, authority, or centralisation. If you spot it, lets fix and improve
+together.
 
 For the scholars among us, see the authoring guidelines below. View the ACM
 guidelines using the LNCS typographical rules, and vice versa (see the menu) ;)
@@ -48,12 +62,14 @@ publishing and consuming. Works on local machine, and is functional from ground
 up. Additional features can be used with the "pay-as-you-go" design approach
 e.g., if authors or reviewers have a WebID and a personal storage space, their
 feedback can be under their full control, meanwhile allowing who it can be
-visible to. If they don't, or the authors don't wish to enable open dialogue,
-that's okay too.
+visible to or writeable for. If they don't, or the authors don't wish to enable
+open dialogue, that's okay too.
 
-It works towards a solution e.g., proposed [acid test](http://csarven.ca/enabling-accessible-knowledge#acid-test) where authors and Webizens can both publish and consume,
-and participate in discussions meanwhile having human and machine-friendly
-information all within their control. Keep #dokieli #LinkedResearch #ControlYourself in mind.
+It works towards a solution e.g., proposed [acid test](http://csarven.ca
+/enabling-accessible-knowledge#acid-test) where authors and Webizens can both
+publish and consume, and participate in discussions meanwhile having human and
+machine-friendly information all within their control. Keep #dokieli
+#LinkedResearch #ControlYourself in mind.
 
 dokieli is not perfect, but it is intended to evolve based on our collective
 experience.
