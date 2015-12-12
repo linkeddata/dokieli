@@ -40,8 +40,8 @@ var LR = {
         Editor: {
             headings: ["h1", "h2", "h3", "h4", "h5", "h6"],
             regexEmptyHTMLTags: /<[^\/>][^>]*><\/[^>]+>/gim,
-            DisableEditorButton: '<button class="editor-disable">Disable</button>',
-            EnableEditorButton: '<button class="editor-enable">Enable</button>'
+            DisableEditorButton: '<button class="editor-disable">Read</button>',
+            EnableEditorButton: '<button class="editor-enable">Edit</button>'
         },
         InteractionPath: 'i/',
 
@@ -551,9 +551,6 @@ var LR = {
 
             LR.U.showViews(dInfo);
             LR.U.showPrint(dInfo);
-            if (LR.C.EditorAvailable) {
-                LR.U.showEditor(dInfo);
-            }
             LR.U.showDocumentDo(dInfo);
             LR.U.showEmbedData(dInfo);
             LR.U.showTableOfStuff(dInfo);
@@ -1170,14 +1167,37 @@ var LR = {
         showDocumentDo: function(node) {
             var s = '<section id="document-do" class="lr"><h2>Do</h2><ul>';
 
+            if (LR.C.EditorAvailable) {
+                var editFile = '';
+                if (LR.C.EditorEnabled) {
+                    editFile = LR.C.Editor.DisableEditorButton;
+                }
+                else {
+                    editFile = LR.C.Editor.EnableEditorButton;
+                }
+
+                s += '<li>' + editFile + '</li>';
+            }
+
             if (LR.C.User.IRI) {
                 s += '<li><button class="new-file-html">New</button></li>';
                 s += '<li><button class="update-file-html">Save</button></li>';
             }
 
-            s += '<li><button class="export-file-html">Export HTML</button></li></ul></section>';
+            s += '<li><button class="export-file-html">Export</button></li></ul></section>';
 
             $(node).append(s);
+
+            if (LR.C.EditorAvailable) {
+                $('#document-do').on('click', 'button.editor-enable', function(e) {
+                    $(this).parent().html(LR.C.Editor.DisableEditorButton);
+                    LR.U.Editor.enableEditor();
+                });
+                $('#document-do').on('click', 'button.editor-disable', function(e) {
+                    $(this).parent().html(LR.C.Editor.EnableEditorButton);
+                    LR.U.Editor.disableEditor();
+                });
+            }
 
             if (LR.C.User.IRI) {
                 $('#document-do').on('click', '.new-file-html', LR.U.createNewDocument);
@@ -1465,27 +1485,6 @@ LIMIT 1";
         //http://stackoverflow.com/a/25214113
         fragmentFromString: function(strHTML) {
             return document.createRange().createContextualFragment(strHTML);
-        },
-
-        showEditor: function(node) {
-            var editorSetup = '';
-            if (LR.C.EditorEnabled) {
-                editorSetup = LR.C.Editor.DisableEditorButton;
-            }
-            else {
-                editorSetup = LR.C.Editor.EnableEditorButton;
-            }
-
-            $(node).append('<section id="editor-setup" class="lr"><h2>Edit</h2><p>' + editorSetup + '</p></section>');
-
-            $('#editor-setup').on('click', 'button.editor-enable', function(e) {
-                $(this).parent().html(LR.C.Editor.DisableEditorButton);
-                LR.U.Editor.enableEditor();
-            });
-            $('#editor-setup').on('click', 'button.editor-disable', function(e) {
-                $(this).parent().html(LR.C.Editor.EnableEditorButton);
-                LR.U.Editor.disableEditor();
-            });
         },
 
         showRefs: function() {
