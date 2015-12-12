@@ -550,7 +550,6 @@ var LR = {
             body.addClass('on-document-menu');
 
             LR.U.showViews(dInfo);
-            LR.U.showPrint(dInfo);
             LR.U.showDocumentDo(dInfo);
             LR.U.showEmbedData(dInfo);
             LR.U.showTableOfStuff(dInfo);
@@ -1184,7 +1183,11 @@ var LR = {
                 s += '<li><button class="update-file-html">Save</button></li>';
             }
 
-            s += '<li><button class="export-file-html">Export</button></li></ul></section>';
+            s += '<li><button class="export-file-html">Export</button></li>';
+            s += '<li><button class="print-file-html">⎙ Print</button></li>';
+
+            s += '</ul></section>';
+
 
             $(node).append(s);
 
@@ -1212,7 +1215,14 @@ var LR = {
                     );
                 });
             }
+
             $('#document-do').on('click', '.export-file-html', LR.U.saveAsHTML);
+
+            $('#document-do').on('click', '.print-file-html', function(e) {
+                LR.U.hideDocumentMenu();
+                window.print();
+                return false;
+            });
         },
 
         createNewDocument: function() {
@@ -1416,23 +1426,6 @@ LIMIT 1";
                     console.log("NOPE 1");
                 }
             });
-        },
-
-        showPrint: function(node) {
-            $(node).append('<section id="document-print" class="lr"><h2>Digital</h2></section>');
-
-            var actionPrint = $('<p></p>');
-            $('#document-print').append(actionPrint);
-            LR.U.showPrintButton(actionPrint);
-            actionPrint.append(' (current view)');
-        },
-
-        showPrintButton: function(node) {
-            $('<button>⎙ Print</button>').on('click', function(e) {
-                LR.U.hideDocumentMenu();
-                window.print();
-                return false;
-            }).appendTo(node);
         },
 
         highlightItems: function() {
