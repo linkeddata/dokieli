@@ -579,6 +579,7 @@ var LR = {
             $('#toc').remove();
             $('#embed-data-entry').remove();
             $('#create-new-document').remove();
+            $('#save-as-document').remove();
 //            LR.U.hideStorage();
         },
 
@@ -1137,7 +1138,7 @@ var LR = {
             return s;
         },
 
-        saveAsHTML: function() {
+        exportAsHTML: function() {
             var data = LR.U.getDocument();
             //XXX: Encodes strings as UTF-8. Consider storing bytes instead?
             var blob = new Blob([data], {type:'text/html;charset=utf-8'});
@@ -1181,6 +1182,7 @@ var LR = {
             if (LR.C.User.IRI) {
                 s += '<li><button class="new-file-html">New</button></li>';
                 s += '<li><button class="update-file-html">Save</button></li>';
+                s += '<li><button class="save-as-file-html">Save As</button></li>';
             }
 
             s += '<li><button class="export-file-html">Export</button></li>';
@@ -1214,9 +1216,10 @@ var LR = {
                         }
                     );
                 });
+                $('#document-do').on('click', '.save-as-file-html', LR.U.saveAsDocument);
             }
 
-            $('#document-do').on('click', '.export-file-html', LR.U.saveAsHTML);
+            $('#document-do').on('click', '.export-file-html', LR.U.exportAsHTML);
 
             $('#document-do').on('click', '.print-file-html', function(e) {
                 LR.U.hideDocumentMenu();
@@ -1240,8 +1243,31 @@ var LR = {
                 LR.U.putResource(storageIRI, html).then(
                     function(i) {
                         console.log(i);
-                        w.location.href = storageIRI;
                         LR.U.hideDocumentMenu();
+                        w.location.href = storageIRI;
+                    },
+                    function(reason) {
+                        console.log(reason);
+                    }
+                );
+            });
+        },
+
+        saveAsDocument: function() {
+            $('body').append('<aside id="save-as-document" class="lr on"><button class="close">❌</button><h2>Save As Document</h2><label>URL to save to</label><input id="storage" type="text" placeholder="http://example.org/article" value="" name="storage"/> <button class="create">Save</button></aside>');
+
+            $('#save-as-document').on('click', 'button.create', function(e) {
+                var storageIRI = $(this).parent().find('input#storage').val().trim();
+
+                html = LR.U.getDocument();
+
+                var w = window.open('', '_blank');
+
+                LR.U.putResource(storageIRI, html).then(
+                    function(i) {
+                        console.log(i);
+                        LR.U.hideDocumentMenu();
+                        w.location.href = storageIRI;
                     },
                     function(reason) {
                         console.log(reason);
