@@ -681,6 +681,12 @@ var LR = {
                         cdataStart: LR.C.CDATAStart,
                         cdataEnd: LR.C.CDATAEnd,
                         scriptEnd: '</script>'
+                    },
+                    'meta-nanopublication': {
+                        scriptStart: '<script id="meta-nanopublication" class="lr" type="application/trig" title="Nanopublication">',
+                        cdataStart: '# ' + LR.C.CDATAStart + '\n',
+                        cdataEnd: '\n# ' + LR.C.CDATAEnd,
+                        scriptEnd: '</script>'
                     }
                 }
 
@@ -700,9 +706,10 @@ var LR = {
 
                 var embedMenu = '<aside id="embed-data-entry" class="lr on"><button class="close">❌</button>\n\
                 <h2>Embed Data</h2>\n\
-                <nav><ul><li class="selected"><a href="#embed-data-turtle">Turtle</a></li><li><a href="#embed-data-json-ld">JSON-LD</a></li></ul></nav>\n\
+                <nav><ul><li class="selected"><a href="#embed-data-turtle">Turtle</a></li><li><a href="#embed-data-json-ld">JSON-LD</a></li><li><a href="#embed-data-nanopublication">Nanopublication</a></li></ul></nav>\n\
                 <div id="embed-data-turtle" class="selected"><textarea placeholder="Enter data in text/turtle" name="meta-turtle" cols="80" rows="24">' + ((scriptCurrentData['meta-turtle']) ? scriptCurrentData['meta-turtle'].content : '') + '</textarea><button class="save">Save</button></div>\n\
                 <div id="embed-data-json-ld"><textarea placeholder="Enter data in application/json+ld" name="meta-json-ld" cols="80" rows="24">' + ((scriptCurrentData['meta-json-ld']) ? scriptCurrentData['meta-json-ld'].content : '') + '</textarea><button class="save">Save</button></div>\n\
+                <div id="embed-data-nanopublication"><textarea placeholder="Enter data in application/trig" name="meta-nanopublication" cols="80" rows="24">' + ((scriptCurrentData['meta-nanopublication']) ? scriptCurrentData['meta-nanopublication'].content : '') + '</textarea><button class="save">Save</button></div>\n\
                 </aside>';
 
                 $('body').append(embedMenu);
