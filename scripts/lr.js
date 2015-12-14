@@ -549,8 +549,8 @@ var LR = {
             dMenu.addClass('on');
             body.addClass('on-document-menu');
 
-            LR.U.showViews(dInfo);
             LR.U.showDocumentDo(dInfo);
+            LR.U.showViews(dInfo);
             LR.U.showEmbedData(dInfo);
             LR.U.showTableOfStuff(dInfo);
             LR.U.showStorage(dInfo);
@@ -664,49 +664,81 @@ var LR = {
         },
 
         showEmbedData: function(node) {
-            $(node).append('<section id="embed-data-in-html" class="lr"><h2>Embed Data</h2><ul><li><button class="embed-data-text-turtle" data-type="text/turtle">Turtle</button></li><li><button class="embed-data-ld-json" data-type="application/ld+json">JSON-LD</button></li></ul></section>');
+            $(node).append('<section id="embed-data-in-html" class="lr"><h2>Data</h2><ul><li><button class="embed-data-meta">Embed</button></li></ul></section>');
 
             $('#embed-data-in-html').on('click', 'button', function(e){
-                var scriptType = $(this).data('type');
-                var scriptHead = '';
-                var cdataStart = cdataEnd = '';
+                var scriptCurrent = $('head script[id^="meta-"][class="lr"]');
 
-                switch(scriptType) {
-                    case 'text/turtle': default:
-                        scriptHead += '<script type="text/turtle"';
-                        cdataStart = '# ' + LR.C.CDATAStart + '\n';
-                        cdataEnd = '\n# ' + LR.C.CDATAEnd;
-                        break;
-                    case 'application/ld+json':
-                        scriptHead += '<script type="application/ld+json"';
-                        break;
+                var scriptType = {
+                    'meta-turtle': {
+                        scriptStart: '<script id="meta-turtle" class="lr" type="text/turtle" title="Turtle">',
+                        cdataStart: '# ' + LR.C.CDATAStart + '\n',
+                        cdataEnd: '\n# ' + LR.C.CDATAEnd,
+                        scriptEnd: '</script>'
+                    },
+                    'meta-json-ld': {
+                        scriptStart: '<script id="meta-json-ld" class="lr" type="application/json+ld" title="JSON-LD">',
+                        cdataStart: LR.C.CDATAStart,
+                        cdataEnd: LR.C.CDATAEnd,
+                        scriptEnd: '</script>'
+                    }
                 }
 
-                var scriptCurrent = $('head script[type="' + scriptType +'"][class="lr"]');
-                var scriptCurrentData = '';
+                var scriptCurrentData = {};
+                scriptCurrent.each(function(i, v) {
+                    var id = $(v).prop('id');
+                    scriptCurrentData[id] = $(v).html().split(/\r\n|\r|\n/);
+                    console.log(scriptCurrentData[id]);
+                    scriptCurrentData[id].shift();
+                    scriptCurrentData[id].pop();
+                    scriptCurrentData[id] = {
+                        'type': $(v).prop('type') || '',
+                        'title': $(v).prop('title') || '',
+                        'content' : scriptCurrentData[id].join('\n')
+                    };
+                });
 
-                if (scriptCurrent.length > 0) {
-                    scriptCurrentData = scriptCurrent.html().split(/\r\n|\r|\n/);
-                    scriptCurrentData.shift();
-                    scriptCurrentData.pop();
-                    scriptCurrentData = scriptCurrentData.join('\n');
-                }
+                var embedMenu = '<aside id="embed-data-entry" class="lr on"><button class="close">❌</button>\n\
+                <h2>Embed Data</h2>\n\
+                <nav><ul><li class="selected"><a href="#embed-data-turtle">Turtle</a></li><li><a href="#embed-data-json-ld">JSON-LD</a></li></ul></nav>\n\
+                <div id="embed-data-turtle" class="selected"><textarea placeholder="Enter data in text/turtle" name="meta-turtle" cols="80" rows="24">' + ((scriptCurrentData['meta-turtle']) ? scriptCurrentData['meta-turtle'].content : '') + '</textarea><button class="save">Save</button></div>\n\
+                <div id="embed-data-json-ld"><textarea placeholder="Enter data in application/json+ld" name="meta-json-ld" cols="80" rows="24">' + ((scriptCurrentData['meta-json-ld']) ? scriptCurrentData['meta-json-ld'].content : '') + '</textarea><button class="save">Save</button></div>\n\
+                </aside>';
 
-                $('body').append('<aside id="embed-data-entry" class="lr on"><button class="close">❌</button><h2>Embed Data</h2><p><code>' + LR.U.htmlEntities(scriptHead) + '></code></p><textarea cols="80" rows="24">' + scriptCurrentData + '</textarea><p><code>&lt;/script&gt;</code></p><button class="save">Save</button></aside>');
+                $('body').append(embedMenu);
+                $('#embed-data-entry nav').on('click', 'a', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    var li = $(this).parent();
+                    if(!li.hasClass('class')) {
+                        $('#embed-data-entry nav li').removeClass('selected');
+                        li.addClass('selected');
+                        $('#embed-data-entry > div').removeClass('selected');
+                        $('#embed-data-entry > div' + $(this).prop('hash')).addClass('selected');
+                    }
+                });
 
                 $('#embed-data-entry').on('click', 'button.save', function(e) {
-                    var scriptEntry = $(this).parent().find('textarea').val();
+                    var textarea = $(this).parent().find('textarea');
+                    var name = textarea.prop('name');
+                    var scriptEntry = textarea.val();
+                    var script = $('#' + name);
 
                     if (scriptEntry.length > 0) {
-                        if (scriptCurrent.length > 0) {
-                            scriptCurrent.html(cdataStart + scriptEntry +  cdataEnd);
+                        var scriptContent = scriptType[name].scriptStart + scriptType[name].cdataStart + scriptEntry + scriptType[name].cdataEnd + scriptType[name].scriptEnd
+
+                        //If there was a script already
+                        if (script.length > 0) {
+                            script.html(scriptContent);
                         }
                         else {
-                            $('head').append(scriptHead + ' class="lr">' + cdataStart + scriptEntry + cdataEnd + '</script>');
+                            $('head').append(scriptContent);
                         }
                     }
                     else {
-                        scriptCurrent.remove();
+                        //Remove if no longer used
+                        script.remove();
                     }
 
                     $('#embed-data-entry').remove();
