@@ -531,17 +531,17 @@ var LR = {
         },
 
         showDocumentInfo: function() {
-            $('body').append('<aside id="document-menu" class="lr"><header><p id="about-linked-research">About <a target="LinkedResearchSource" href="https://github.com/csarven/linked-research">Linked Research</a></p><button class="show" title="Open Menu">☰</button></header><div></div></aside>');
+            $('body').append('<aside id="document-menu" class="lr"><button class="show" title="Open Menu">☰</button><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><a target="source-dokieli" href="https://github.com/linkeddata/dokieli">dokieli</a></dd><dd id="about-linked-research"><a target="source-linked-research" href="https://github.com/csarven/linked-research">Linked Research</a></dd></footer></aside>');
 
-            $('#document-menu.lr').on('click', 'header button.show', LR.U.showDocumentMenu);
-            $('#document-menu.lr').on('click', 'header button:not([class="show"])', LR.U.hideDocumentMenu);
+            $('#document-menu.lr').on('click', '> button.show', LR.U.showDocumentMenu);
+            $('#document-menu.lr').on('click', '> button:not([class="show"])', LR.U.hideDocumentMenu);
         },
 
         //TODO: Redo menu
         showDocumentMenu: function() {
             var body = $('body');
             var dMenu = $('#document-menu.lr');
-            var dMenuButton = dMenu.find('header button');
+            var dMenuButton = dMenu.find('> button');
             var dInfo = dMenu.find('> div');
 
             dMenuButton.removeClass('show');
@@ -569,7 +569,7 @@ var LR = {
 
             var body = $('body');
             var dMenu = $('#document-menu.lr');
-            var dMenuButton = dMenu.find('header button');
+            var dMenuButton = dMenu.find('> button');
 
             dMenu.removeClass('on').find('section').remove();
             body.removeClass('on-document-menu');

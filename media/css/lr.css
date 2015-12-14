@@ -70,17 +70,17 @@ left:1em;
 #document-menu.on {
 }
 
-#document-menu header button {
+#document-menu > button {
 position:absolute;
 top:1em;
 right:1em;
 font-size:26px;
 }
-#document-menu #about-linked-research {
+#document-menu > footer {
 display:none;
 margin-top:1em;
 }
-#document-menu.on #about-linked-research {
+#document-menu.on > footer {
 display:block;
 }
 
