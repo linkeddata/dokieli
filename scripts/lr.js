@@ -530,6 +530,25 @@ var LR = {
             });
         },
 
+        urlParam: function(name) {
+            var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+            if (results===null){
+               return null;
+            }
+            else{
+               return results[1] || 0;
+            }
+        },
+
+        setDocumentMode: function() {
+            if (LR.C.EditorAvailable && LR.U.urlParam('edit') == 'true') {
+                LR.U.Editor.enableEditor();
+                var url = document.location.href;
+                url = url.substr(0, url.lastIndexOf('?'));
+                window.history.replaceState({}, null, url);
+            }
+        },
+
         showDocumentInfo: function() {
             $('body').append('<aside id="document-menu" class="lr"><button class="show" title="Open Menu">☰</button><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><a target="source-dokieli" href="https://github.com/linkeddata/dokieli">dokieli</a></dd><dd id="about-linked-research"><a target="source-linked-research" href="https://github.com/csarven/linked-research">Linked Research</a></dd></footer></aside>');
 
@@ -1283,7 +1302,7 @@ var LR = {
                     function(i) {
                         console.log(i);
                         LR.U.hideDocumentMenu();
-                        w.location.href = storageIRI;
+                        w.location.href = storageIRI + '?edit=true';
                     },
                     function(reason) {
                         console.log(reason);
@@ -2570,4 +2589,5 @@ $(document).ready(function() {
 //    LR.U.buildReferences();
 //    LR.U.getLinkedResearch();
     LR.U.showFragment();
+    LR.U.setDocumentMode();
 });
