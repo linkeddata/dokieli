@@ -46,6 +46,11 @@ var LR = {
         InteractionPath: 'i/',
 
         Vocab: {
+            "rdftype": {
+                "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                "@type": "@id",
+                "@array": true
+            },
             "foafname": "http://xmlns.com/foaf/0.1/name",
             "foafhomepage": {
                 "@id": "http://xmlns.com/foaf/0.1/homepage",
@@ -79,7 +84,8 @@ var LR = {
 
             "storage": {
                 "@id": "http://www.w3.org/ns/pim/space#storage",
-                "@type": "@id"
+                "@type": "@id",
+                "@array": true
             },
             "preferencesFile": {
                 "@id": "http://www.w3.org/ns/pim/space#preferencesFile",
@@ -87,7 +93,8 @@ var LR = {
             },
             "workspace": {
                 "@id": "http://www.w3.org/ns/pim/space#workspace",
-                "@type": "@id"
+                "@type": "@id",
+                "@array": true
             },
             "masterWorkspace": {
                 "@id": "http://www.w3.org/ns/pim/space#masterWorkspace",
@@ -96,7 +103,8 @@ var LR = {
 
             "pingbackto": {
                 "@id": "http://purl.org/net/pingback/to",
-                "@type": "@id"
+                "@type": "@id",
+                "@array": true
             }
         }
     },
@@ -167,16 +175,42 @@ var LR = {
                             //XXX: Probably https so don't bother with proxy?
                             g.iri(LR.C.User.PreferencesFile).get().then(
                                 function(pf) {
+                                    LR.C.User.PreferencesFileGraph = pf;
                                     var s = pf.iri(LR.C.User.IRI);
-                                    console.log(s);
-                                    if (s.workspace) {
-                                        console.log(s.workspace);
-                                        LR.C.User.Workspaces = s.workspace;
-                                    }
+
                                     if (s.masterWorkspace) {
-                                        console.log(s.masterWorkspace);
                                         LR.C.User.masterWorkspace = s.masterWorkspace;
                                     }
+
+                                    if (s.workspace) {
+                                        LR.C.User.Workspace = { List: s.workspace };
+                                        //XXX: Too early to tell if this is a good/bad idea. Will revise any way. A bit hacky right now.
+                                        s.workspace.forEach(function(workspace) {
+                                            var wstype = pf.iri(workspace).rdftype || [];
+                                            wstype.forEach(function(w) {
+                                                switch(w) {
+                                                    case 'http://www.w3.org/ns/pim/space#PreferencesWorkspace':
+                                                        LR.C.User.Workspace.Preferences = workspace;
+                                                        ;
+                                                        break;
+                                                    case 'http://www.w3.org/ns/pim/space#MasterWorkspace':
+                                                        LR.C.User.Workspace.Master = workspace;
+                                                        break;
+                                                    case 'http://www.w3.org/ns/pim/space#PublicWorkspace':
+                                                        LR.C.User.Workspace.Public = workspace;
+                                                        break;
+                                                    case 'http://www.w3.org/ns/pim/space#PrivateWorkspace':
+                                                        LR.C.User.Workspace.Private = workspace;
+                                                        break;
+                                                    case 'http://www.w3.org/ns/pim/space#SharedWorkspace':
+                                                        LR.C.User.Workspace.Shared = workspace;
+                                                        break;
+                                                }
+                                            });
+                                        });
+                                    }
+
+                                    console.log(LR.C.User.Workspace);
                                 },
                                 function(reason) { console.log(reason);}
                             );
@@ -357,7 +391,7 @@ var LR = {
 
         putResource: function(url, data, contentType, links) {
             //FIXME: index.html shouldn't be hardcoded.
-            url = url || window.location.origin + window.location.pathname + '/index';
+            url = url || window.location.origin + window.location.pathname;
             contentType = contentType || 'text/html';
             var ldpResource = '<http://www.w3.org/ns/ldp#Resource>; rel="type"';
             links = (links) ? ldpResource + ', ' + links : ldpResource;
@@ -2341,15 +2375,19 @@ console.log(viewportWidthSplit);
                             // var noteId = 'i-' + id;
 
                             var resourceIRI = document.location.href;
-                            var containerIRI = window.location.origin + window.location.pathname + LR.C.InteractionPath;
+                            //XXX: Temporarily setting this.
+                            var containerIRI = window.location.href;
+                            containerIRI = containerIRI.substr(0, containerIRI.lastIndexOf('/') + 1);
 
-                            //TODO: using masterWorkspace for now. Need more granular workspace selection, e.g., PublicAnnotations?
-                            if (typeof LR.C.User.masterWorkspace != 'undefined') {
+                            //XXX: Preferring masterWorkspace over the others. Good/bad idea?
+                            //Need more granular workspace selection, e.g., PublicAnnotations. Defaulting to PublicWorkspace if no masterWorkspace
+                            if (typeof LR.C.User.masterWorkspace != 'undefined' || typeof LR.C.User.Workspace.Master != 'undefined') {
                                 containerIRI = LR.C.User.masterWorkspace + LR.C.InteractionPath;
                             }
                             else {
-                                //FIXME: This needs to pick one from an array.
-                                containerIRI = LR.C.User.workspace + LR.C.InteractionPath;
+                                    if (typeof LR.C.User.Workspace.Public != 'undefined') {
+                                        containerIRI = LR.C.User.Workspace.Public + LR.C.InteractionPath;
+                                    }
                             }
 
                             var noteIRI = containerIRI + id;
@@ -2467,11 +2505,13 @@ console.log(viewportWidthSplit);
 
                             console.log('resourceIRI: ' + resourceIRI);
 
-                            //TODO: resourceIRI should be the closest IRI (not necessarily the document)
+                            //TODO: resourceIRI should be the closest IRI (not necessarily the document). Test resolve/reject better.
                             LR.U.getPingback(resourceIRI).then(
                                 function(pingbackTo) {
-                                    console.log('pingbackTo: ' + pingbackTo);
-                                    LR.U.createPingback(pingbackTo, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', resourceIRI);
+                                    if (pingbackTo && pingbackTo.length > 0) {
+                                        console.log('pingbackTo: ' + pingbackTo);
+                                        LR.U.createPingback(pingbackTo, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', resourceIRI);
+                                    }
                                 },
                                 function(reason) {
                                     console.log('TODO: How can the interaction inform the target?');
