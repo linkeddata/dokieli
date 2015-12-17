@@ -40,10 +40,73 @@ var LR = {
         Editor: {
             headings: ["h1", "h2", "h3", "h4", "h5", "h6"],
             regexEmptyHTMLTags: /<[^\/>][^>]*><\/[^>]+>/gim,
-            DisableEditorButton: '<button class="editor-disable">Disable</button>',
-            EnableEditorButton: '<button class="editor-enable">Enable</button>'
+            DisableEditorButton: '<button class="editor-disable">Read</button>',
+            EnableEditorButton: '<button class="editor-enable">Edit</button>'
         },
-        InteractionPath: '/i/'
+        InteractionPath: 'i/',
+
+        Vocab: {
+            "rdftype": {
+                "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
+                "@type": "@id",
+                "@array": true
+            },
+            "foafname": "http://xmlns.com/foaf/0.1/name",
+            "foafhomepage": {
+                "@id": "http://xmlns.com/foaf/0.1/homepage",
+                "@type": "@id"
+            },
+            "foafimg": {
+                "@id": "http://xmlns.com/foaf/0.1/img",
+                "@type": "@id"
+            },
+            "foafnick": "http://xmlns.com/foaf/0.1/nick",
+            "foafmaker": {
+                "@id": "http://xmlns.com/foaf/0.1/maker",
+                "@type": "@id"
+            },
+
+            "schemaname": "http://schema.org/name",
+            "schemaurl": {
+                "@id": "http://schema.org/url",
+                "@type": "@id"
+            },
+            "schemaimage": {
+                "@id": "http://schema.org/image",
+                "@type": "@id"
+            },
+            "schemacreator": {
+                "@id": "http://schema.org/creator",
+                "@type": "@id"
+            },
+
+            "dctermstitle": "http://purl.org/dc/terms/title",
+
+            "storage": {
+                "@id": "http://www.w3.org/ns/pim/space#storage",
+                "@type": "@id",
+                "@array": true
+            },
+            "preferencesFile": {
+                "@id": "http://www.w3.org/ns/pim/space#preferencesFile",
+                "@type": "@id"
+            },
+            "workspace": {
+                "@id": "http://www.w3.org/ns/pim/space#workspace",
+                "@type": "@id",
+                "@array": true
+            },
+            "masterWorkspace": {
+                "@id": "http://www.w3.org/ns/pim/space#masterWorkspace",
+                "@type": "@id"
+            },
+
+            "pingbackto": {
+                "@id": "http://purl.org/net/pingback/to",
+                "@type": "@id",
+                "@array": true
+            }
+        }
     },
 
     U: {
@@ -55,6 +118,9 @@ var LR = {
 
             request.done(function(data, textStatus, xhr) {
                 LR.C.User.IRI = xhr.getResponseHeader('User');
+
+                //XXX: Decide whether to leave setUserInfo or call only when really needed
+                LR.U.setUserInfo(LR.C.User.IRI);
             });
 
             request.fail(function(xhr, textStatus) {
@@ -63,28 +129,251 @@ var LR = {
             });
         },
 
+        setUserInfo: function(userIRI) {
+            if (LR.C.User.IRI) {
+                var pIRI = userIRI;
+                if (pIRI.slice(0, 5).toLowerCase() != 'https') {
+                    pIRI = document.location.origin + '/,proxy?uri=' + LR.U.encodeString(pIRI);
+                }
+                console.log(pIRI);
+
+                var g = SimpleRDF(LR.C.Vocab);
+                g.iri(pIRI).get().then(
+                    function(i) {
+                        var s = i.iri(userIRI);
+                        console.log(s);
+                        if (s.foafname) {
+                            LR.C.User.Name = s.foafname;
+                            console.log(LR.C.User.Name);
+                        }
+                        else {
+                            if (s.schemaname) {
+                                LR.C.User.Name = s.schemaname;
+                                console.log(LR.C.User.Name);
+                            }
+                        }
+
+                        if (s.foafimg) {
+                            LR.C.User.Image = s.foafimg;
+                            console.log(LR.C.User.Image);
+                        }
+                        else {
+                            if (s.schemaimage) {
+                                LR.C.User.Image = s.schemaimage;
+                                console.log(LR.C.User.Image);
+                            }
+                        }
+
+                        if (s.storage) {
+                            LR.C.User.Storage = s.storage;
+                            console.log(LR.C.User.Storage);
+                        }
+                        if (s.preferencesFile) {
+                            LR.C.User.PreferencesFile = s.preferencesFile;
+                            console.log(LR.C.User.PreferencesFile);
+
+                            //XXX: Probably https so don't bother with proxy?
+                            g.iri(LR.C.User.PreferencesFile).get().then(
+                                function(pf) {
+                                    LR.C.User.PreferencesFileGraph = pf;
+                                    var s = pf.iri(LR.C.User.IRI);
+
+                                    if (s.masterWorkspace) {
+                                        LR.C.User.masterWorkspace = s.masterWorkspace;
+                                    }
+
+                                    if (s.workspace) {
+                                        LR.C.User.Workspace = { List: s.workspace };
+                                        //XXX: Too early to tell if this is a good/bad idea. Will revise any way. A bit hacky right now.
+                                        s.workspace.forEach(function(workspace) {
+                                            var wstype = pf.iri(workspace).rdftype || [];
+                                            wstype.forEach(function(w) {
+                                                switch(w) {
+                                                    case 'http://www.w3.org/ns/pim/space#PreferencesWorkspace':
+                                                        LR.C.User.Workspace.Preferences = workspace;
+                                                        ;
+                                                        break;
+                                                    case 'http://www.w3.org/ns/pim/space#MasterWorkspace':
+                                                        LR.C.User.Workspace.Master = workspace;
+                                                        break;
+                                                    case 'http://www.w3.org/ns/pim/space#PublicWorkspace':
+                                                        LR.C.User.Workspace.Public = workspace;
+                                                        break;
+                                                    case 'http://www.w3.org/ns/pim/space#PrivateWorkspace':
+                                                        LR.C.User.Workspace.Private = workspace;
+                                                        break;
+                                                    case 'http://www.w3.org/ns/pim/space#SharedWorkspace':
+                                                        LR.C.User.Workspace.Shared = workspace;
+                                                        break;
+                                                }
+                                            });
+                                        });
+                                    }
+
+                                    console.log(LR.C.User.Workspace);
+                                },
+                                function(reason) { console.log(reason);}
+                            );
+                        }
+                    },
+                    function(reason) { console.log(reason); }
+                );
+            }
+        },
+
         setLocalDocument: function() {
             if (document.location.protocol == 'file:') {
                 LR.C.LocalDocument = true;
             }
         },
 
-        putResource: function(url, data, contentType) {
-            //FIXME: index.html shouldn't be hardcoded.
-            url = url || window.location.origin + window.location.pathname + '/index.html';
-            contentType = contentType || 'text/html';
-            var headers = {
-                'Content-Type': contentType + '; charset=utf-8',
-                'Link': '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
-            };
-            data = data || LR.U.getDocument();
+        putPingbackTriple: function(url, pingbackOf, pingbackTo) {
+            var data = '<'+ pingbackOf + '> <http://purl.org/net/pingback/to> <' + pingbackTo + '> .';
+
+            LR.U.putResource(url, data, 'text/turtle');
+        },
+
+        //Copied from https://github.com/deiu/solid-plume/blob/gh-pages/app/solid.js
+        parseLinkHeader: function(link) {
+            var linkexp = /<[^>]*>\s*(\s*;\s*[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*")))*(,|$)/g;
+            var paramexp = /[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*"))/g;
+
+            var matches = link.match(linkexp);
+            var rels = {};
+            for (var i = 0; i < matches.length; i++) {
+                var split = matches[i].split('>');
+                var href = split[0].substring(1);
+                var ps = split[1];
+                var s = ps.match(paramexp);
+                for (var j = 0; j < s.length; j++) {
+                    var p = s[j];
+                    var paramsplit = p.split('=');
+                    var name = paramsplit[0];
+                    var rel = paramsplit[1].replace(/["']/g, '');
+                    rels[rel] = href;
+                }
+            }
+            return rels;
+        },
+
+        getPingback: function(url) {
+            return new Promise(function(resolve, reject) {
+                if (url.indexOf('#') != -1) {
+                    return resolve(LR.U.getPingbackFromRDF(url));
+                }
+                else {
+                    var response = LR.U.getResourceHeader(url);
+                    response.done(function(data, textStatus, xhr) {
+                        console.log(data);
+                        console.log(textStatus);
+                        console.log(xhr);
+                        var link = LR.U.parseLinkHeader(xhr.getResponseHeader('Link'));
+                        if(link['pingback:to'] && link['pingback:to'].length > 0) {
+                            return resolve(link['pingback:to']);
+                        }
+                        else {
+                            if(link['meta'] && link['meta'].length > 0) {
+                                var response = LR.U.getResourceHeader(link['meta']);
+                                response.done(function(data, textStatus, xhr) {
+                                    console.log(data);
+                                    console.log(textStatus);
+                                    console.log(xhr);
+                                    return resolve(LR.U.getPingbackFromRDF(link['meta'], url));
+                                });
+                            }
+
+                            console.log('XXX: Our last chance');
+                            return resolve(LR.U.getPingbackFromRDF(url));
+                        }
+                    });
+                    response.fail(function(xhr, textStatus) {
+                        console.log(xhr);
+                        console.log("Request failed: " + textStatus);
+                        return reject(xhr);
+                    });
+                }
+            });
+        },
+
+        getPingbackFromRDF: function(url, subjectIRI) {
+            subjectIRI = subjectIRI || url;
+            var pIRI = url;
+            if (pIRI.slice(0, 5).toLowerCase() != 'https') {
+                pIRI = document.location.origin + '/,proxy?uri=' + LR.U.encodeString(pIRI);
+            }
+            console.log(pIRI);
+            console.log(subjectIRI);
+
+            return new Promise(function(resolve, reject) {
+                var g = SimpleRDF(LR.C.Vocab);
+                g.iri(pIRI).get().then(
+                    function(i) {
+                        var s = i.iri(subjectIRI);
+                        console.log(s);
+                        if (s.pingbackto) {
+                            console.log(s.pingbackto);
+                            return resolve(s.pingbackto);
+                        }
+                    },
+                    function(reason) {
+                        console.log(reason);
+                        return reject(reason);
+                    }
+                );
+            });
+        },
+
+        getResourceHeader: function(url) {
+            return $.ajax({
+                url: url,
+                method: "HEAD"
+            });
+        },
+
+        getResource: function(url, headers) {
+            headers = headers || {};
+            console.log(headers['Accept']);
+            if(typeof headers['Accept'] == 'undefined') {
+                headers['Accept'] = 'text/turtle; charset=utf-8';
+            }
+
+            return $.ajax({
+                method: "GET",
+                headers: headers,
+                url: url,
+            });
+        },
+
+        xhrResponse: function(response) {
+            response.done(function(data, textStatus, xhr) {
+                console.log(data);
+                console.log(textStatus);
+                console.log(xhr);
+            });
+            response.fail(function(xhr, textStatus) {
+                console.log(xhr);
+                console.log("Request failed: " + textStatus);
+            });
+        },
+
+        patchResource: function(url, headers, deleteBGP, insertBGP) {
+            headers = headers || {};
+            headers['Content-Type'] = 'application/sparql-update; charset=utf-8';
+
+            //insertBGP and deleteBGP are basic graph patterns.
+            if (deleteBGP) {
+                deleteBGP = 'DELETE DATA { ' + deleteBGP + ' };';
+            }
+
+            if (insertBGP) {
+                insertBGP = 'INSERT DATA { ' + insertBGP + ' };';
+            }
 
             var request = $.ajax({
-                method: "PUT",
+                method: "PATCH",
                 url: url,
                 headers: headers,
-                data: data,
-                contentType: contentType +'; charset=utf-8',
+                data: deleteBGP + insertBGP,
                 xhrFields: {
                     withCredentials: true
                 }
@@ -95,27 +384,45 @@ var LR = {
                 console.log(xhr);
             });
             request.fail(function(xhr, textStatus) {
+                console.log(xhr);
                 console.log("Request failed: " + textStatus);
             });
+        },
 
-            //XXX: We might not need this. It is not used at the moment. For Solid
-            // var request = $.ajax({
-            //     url: url + '/,meta',
-            //     method: "PUT",
-            //     data: '<index.html> a <http://schema.org/Article> .',
-            //     contentType: 'text/turtle; charset=utf-8',
-            //     xhrFields: {
-            //         withCredentials: true
-            //     }
-            // });
-            // request.done(function(data, textStatus, xhr) {
-            //     console.log(data);
-            //     console.log(textStatus);
-            //     console.log(xhr);
-            // });
-            // request.fail(function(xhr, textStatus) {
-            //     console.log("Request failed: " + textStatus);
-            // });
+        putResource: function(url, data, contentType, links) {
+            //FIXME: index.html shouldn't be hardcoded.
+            url = url || window.location.origin + window.location.pathname;
+            contentType = contentType || 'text/html';
+            var ldpResource = '<http://www.w3.org/ns/ldp#Resource>; rel="type"';
+            links = (links) ? ldpResource + ', ' + links : ldpResource;
+
+            var headers = {
+                'Content-Type': contentType + '; charset=utf-8',
+                'Link': links
+            };
+            data = data || LR.U.getDocument();
+
+            return new Promise(function(resolve, reject) {
+                var request = $.ajax({
+                    method: "PUT",
+                    url: url,
+                    headers: headers,
+                    data: data,
+                    xhrFields: {
+                        withCredentials: true
+                    }
+                });
+                request.done(function(data, textStatus, xhr) {
+                    console.log(data);
+                    console.log(textStatus);
+                    console.log(xhr)
+                    return resolve(xhr);
+                });
+                request.fail(function(xhr, textStatus) {
+                    console.log("Request failed: " + textStatus);
+                    return reject(xhr);
+                });
+            });
         },
 
         //TODO: Make sure that the Container is relative to the Container of the document e.g:
@@ -145,6 +452,7 @@ var LR = {
                 console.log(xhr);
             });
             request.fail(function(xhr, textStatus) {
+                console.log(xhr);
                 console.log("Request failed: " + textStatus);
             });
         },
@@ -175,6 +483,46 @@ var LR = {
             request.fail(function(xhr, textStatus) {
                 console.log( "Request failed: " + textStatus);
             });
+        },
+
+        createPingback: function(pingbackTo, slug, source, property, target) {
+            var headers = {
+                'Content-Type': 'text/turtle; charset=utf-8',
+                'Link': '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
+            };
+            if (slug != '') {
+                headers.Slug = slug;
+            }
+
+            var data = '@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\
+@prefix pingback: <http://purl.org/net/pingback/> .\n\
+@prefix schema: <http://schema.org/> .\n\
+<> a pingback:Request ;\n\
+    pingback:source <' + source + '> ;\n\
+    pingback:property <' + property + '> ;\n\
+    pingback:target <' + target + '> ;\n\
+    schema:dateModified "' + LR.U.getDateTimeISO() + '"^^xsd:dateTime ;\n\
+    schema:creator <' + LR.C.User.IRI + '> ;\n\
+    schema:license <http://creativecommons.org/licenses/by-sa/4.0/> .\n\
+';
+
+            var request = $.ajax({
+                method: "POST",
+                url: pingbackTo,
+                headers: headers,
+                xhrFields: { withCredentials: true },
+                data: data
+            });
+            request.done(function(data, textStatus, xhr) {
+                console.log(data);
+                console.log(textStatus);
+                console.log(xhr);
+            });
+            request.fail(function(xhr, textStatus) {
+                console.log(xhr);
+                console.log("Request failed: " + textStatus);
+            });
+
         },
 
         createResourceACL: function(accessToURL, aclSuffix, agentIRI) {
@@ -216,18 +564,37 @@ var LR = {
             });
         },
 
-        showDocumentInfo: function() {
-            $('body').append('<aside id="document-menu" class="lr"><header><p id="about-linked-research">About <a target="LinkedResearchSource" href="https://github.com/csarven/linked-research">Linked Research</a></p><button class="show" title="Open Menu">☰</button></header><div></div></aside>');
+        urlParam: function(name) {
+            var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+            if (results===null){
+               return null;
+            }
+            else{
+               return results[1] || 0;
+            }
+        },
 
-            $('#document-menu.lr').on('click', 'header button.show', LR.U.showDocumentMenu);
-            $('#document-menu.lr').on('click', 'header button:not([class="show"])', LR.U.hideDocumentMenu);
+        setDocumentMode: function() {
+            if (LR.C.EditorAvailable && LR.U.urlParam('edit') == 'true') {
+                LR.U.Editor.enableEditor();
+                var url = document.location.href;
+                url = url.substr(0, url.lastIndexOf('?'));
+                window.history.replaceState({}, null, url);
+            }
+        },
+
+        showDocumentInfo: function() {
+            $('body').append('<aside id="document-menu" class="lr"><button class="show" title="Open Menu">☰</button><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><a target="source-dokieli" href="https://github.com/linkeddata/dokieli">dokieli</a></dd><dd id="about-linked-research"><a target="source-linked-research" href="https://github.com/csarven/linked-research">Linked Research</a></dd></footer></aside>');
+
+            $('#document-menu.lr').on('click', '> button.show', LR.U.showDocumentMenu);
+            $('#document-menu.lr').on('click', '> button:not([class="show"])', LR.U.hideDocumentMenu);
         },
 
         //TODO: Redo menu
         showDocumentMenu: function() {
             var body = $('body');
             var dMenu = $('#document-menu.lr');
-            var dMenuButton = dMenu.find('header button');
+            var dMenuButton = dMenu.find('> button');
             var dInfo = dMenu.find('> div');
 
             dMenuButton.removeClass('show');
@@ -235,12 +602,8 @@ var LR = {
             dMenu.addClass('on');
             body.addClass('on-document-menu');
 
-            LR.U.showViews(dInfo);
-            LR.U.showPrint(dInfo);
-            if (LR.C.EditorAvailable) {
-                LR.U.showEditor(dInfo);
-            }
             LR.U.showDocumentDo(dInfo);
+            LR.U.showViews(dInfo);
             LR.U.showEmbedData(dInfo);
             LR.U.showTableOfStuff(dInfo);
             LR.U.showStorage(dInfo);
@@ -259,7 +622,7 @@ var LR = {
 
             var body = $('body');
             var dMenu = $('#document-menu.lr');
-            var dMenuButton = dMenu.find('header button');
+            var dMenuButton = dMenu.find('> button');
 
             dMenu.removeClass('on').find('section').remove();
             body.removeClass('on-document-menu');
@@ -269,6 +632,7 @@ var LR = {
             $('#toc').remove();
             $('#embed-data-entry').remove();
             $('#create-new-document').remove();
+            $('#save-as-document').remove();
 //            LR.U.hideStorage();
         },
 
@@ -353,49 +717,88 @@ var LR = {
         },
 
         showEmbedData: function(node) {
-            $(node).append('<section id="embed-data-in-html" class="lr"><h2>Embed Data</h2><ul><li><button class="embed-data-text-turtle" data-type="text/turtle">Turtle</button></li><li><button class="embed-data-ld-json" data-type="application/ld+json">JSON-LD</button></li></ul></section>');
+            $(node).append('<section id="embed-data-in-html" class="lr"><h2>Data</h2><ul><li><button class="embed-data-meta">Embed</button></li></ul></section>');
 
             $('#embed-data-in-html').on('click', 'button', function(e){
-                var scriptType = $(this).data('type');
-                var scriptHead = '';
-                var cdataStart = cdataEnd = '';
+                var scriptCurrent = $('head script[id^="meta-"][class="lr"]');
 
-                switch(scriptType) {
-                    case 'text/turtle': default:
-                        scriptHead += '<script type="text/turtle"';
-                        cdataStart = '# ' + LR.C.CDATAStart + '\n';
-                        cdataEnd = '\n# ' + LR.C.CDATAEnd;
-                        break;
-                    case 'application/ld+json':
-                        scriptHead += '<script type="application/ld+json"';
-                        break;
+                var scriptType = {
+                    'meta-turtle': {
+                        scriptStart: '<script id="meta-turtle" class="lr" type="text/turtle" title="Turtle">',
+                        cdataStart: '# ' + LR.C.CDATAStart + '\n',
+                        cdataEnd: '\n# ' + LR.C.CDATAEnd,
+                        scriptEnd: '</script>'
+                    },
+                    'meta-json-ld': {
+                        scriptStart: '<script id="meta-json-ld" class="lr" type="application/json+ld" title="JSON-LD">',
+                        cdataStart: LR.C.CDATAStart,
+                        cdataEnd: LR.C.CDATAEnd,
+                        scriptEnd: '</script>'
+                    },
+                    'meta-nanopublication': {
+                        scriptStart: '<script id="meta-nanopublication" class="lr" type="application/trig" title="Nanopublication">',
+                        cdataStart: '# ' + LR.C.CDATAStart + '\n',
+                        cdataEnd: '\n# ' + LR.C.CDATAEnd,
+                        scriptEnd: '</script>'
+                    }
                 }
 
-                var scriptCurrent = $('head script[type="' + scriptType +'"][class="lr"]');
-                var scriptCurrentData = '';
+                var scriptCurrentData = {};
+                scriptCurrent.each(function(i, v) {
+                    var id = $(v).prop('id');
+                    scriptCurrentData[id] = $(v).html().split(/\r\n|\r|\n/);
+                    console.log(scriptCurrentData[id]);
+                    scriptCurrentData[id].shift();
+                    scriptCurrentData[id].pop();
+                    scriptCurrentData[id] = {
+                        'type': $(v).prop('type') || '',
+                        'title': $(v).prop('title') || '',
+                        'content' : scriptCurrentData[id].join('\n')
+                    };
+                });
 
-                if (scriptCurrent.length > 0) {
-                    scriptCurrentData = scriptCurrent.html().split(/\r\n|\r|\n/);
-                    scriptCurrentData.shift();
-                    scriptCurrentData.pop();
-                    scriptCurrentData = scriptCurrentData.join('\n');
-                }
+                var embedMenu = '<aside id="embed-data-entry" class="lr on"><button class="close">❌</button>\n\
+                <h2>Embed Data</h2>\n\
+                <nav><ul><li class="selected"><a href="#embed-data-turtle">Turtle</a></li><li><a href="#embed-data-json-ld">JSON-LD</a></li><li><a href="#embed-data-nanopublication">Nanopublication</a></li></ul></nav>\n\
+                <div id="embed-data-turtle" class="selected"><textarea placeholder="Enter data in text/turtle" name="meta-turtle" cols="80" rows="24">' + ((scriptCurrentData['meta-turtle']) ? scriptCurrentData['meta-turtle'].content : '') + '</textarea><button class="save">Save</button></div>\n\
+                <div id="embed-data-json-ld"><textarea placeholder="Enter data in application/json+ld" name="meta-json-ld" cols="80" rows="24">' + ((scriptCurrentData['meta-json-ld']) ? scriptCurrentData['meta-json-ld'].content : '') + '</textarea><button class="save">Save</button></div>\n\
+                <div id="embed-data-nanopublication"><textarea placeholder="Enter data in application/trig" name="meta-nanopublication" cols="80" rows="24">' + ((scriptCurrentData['meta-nanopublication']) ? scriptCurrentData['meta-nanopublication'].content : '') + '</textarea><button class="save">Save</button></div>\n\
+                </aside>';
 
-                $('body').append('<aside id="embed-data-entry" class="lr on"><button class="close">❌</button><h2>Embed Data</h2><p><code>' + LR.U.htmlEntities(scriptHead) + '></code></p><textarea cols="80" rows="24">' + scriptCurrentData + '</textarea><p><code>&lt;/script&gt;</code></p><button class="save">Save</button></aside>');
+                $('body').append(embedMenu);
+                $('#embed-data-entry nav').on('click', 'a', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    var li = $(this).parent();
+                    if(!li.hasClass('class')) {
+                        $('#embed-data-entry nav li').removeClass('selected');
+                        li.addClass('selected');
+                        $('#embed-data-entry > div').removeClass('selected');
+                        $('#embed-data-entry > div' + $(this).prop('hash')).addClass('selected');
+                    }
+                });
 
                 $('#embed-data-entry').on('click', 'button.save', function(e) {
-                    var scriptEntry = $(this).parent().find('textarea').val();
+                    var textarea = $(this).parent().find('textarea');
+                    var name = textarea.prop('name');
+                    var scriptEntry = textarea.val();
+                    var script = $('#' + name);
 
                     if (scriptEntry.length > 0) {
-                        if (scriptCurrent.length > 0) {
-                            scriptCurrent.html(cdataStart + scriptEntry +  cdataEnd);
+                        var scriptContent = scriptType[name].scriptStart + scriptType[name].cdataStart + scriptEntry + scriptType[name].cdataEnd + scriptType[name].scriptEnd
+
+                        //If there was a script already
+                        if (script.length > 0) {
+                            script.html(scriptContent);
                         }
                         else {
-                            $('head').append(scriptHead + ' class="lr">' + cdataStart + scriptEntry + cdataEnd + '</script>');
+                            $('head').append(scriptContent);
                         }
                     }
                     else {
-                        scriptCurrent.remove();
+                        //Remove if no longer used
+                        script.remove();
                     }
 
                     $('#embed-data-entry').remove();
@@ -827,7 +1230,7 @@ var LR = {
             return s;
         },
 
-        saveAsHTML: function() {
+        exportAsHTML: function() {
             var data = LR.U.getDocument();
             //XXX: Encodes strings as UTF-8. Consider storing bytes instead?
             var blob = new Blob([data], {type:'text/html;charset=utf-8'});
@@ -856,23 +1259,65 @@ var LR = {
         showDocumentDo: function(node) {
             var s = '<section id="document-do" class="lr"><h2>Do</h2><ul>';
 
+            if (LR.C.EditorAvailable) {
+                var editFile = '';
+                if (LR.C.EditorEnabled) {
+                    editFile = LR.C.Editor.DisableEditorButton;
+                }
+                else {
+                    editFile = LR.C.Editor.EnableEditorButton;
+                }
+
+                s += '<li>' + editFile + '</li>';
+            }
+
             if (LR.C.User.IRI) {
                 s += '<li><button class="new-file-html">New</button></li>';
                 s += '<li><button class="update-file-html">Save</button></li>';
+                s += '<li><button class="save-as-file-html">Save As</button></li>';
             }
 
-            s += '<li><button class="export-file-html">Export HTML</button></li></ul></section>';
+            s += '<li><button class="export-file-html">Export</button></li>';
+            s += '<li><button class="print-file-html">⎙ Print</button></li>';
+
+            s += '</ul></section>';
+
 
             $(node).append(s);
+
+            if (LR.C.EditorAvailable) {
+                $('#document-do').on('click', 'button.editor-enable', function(e) {
+                    $(this).parent().html(LR.C.Editor.DisableEditorButton);
+                    LR.U.Editor.enableEditor();
+                });
+                $('#document-do').on('click', 'button.editor-disable', function(e) {
+                    $(this).parent().html(LR.C.Editor.EnableEditorButton);
+                    LR.U.Editor.disableEditor();
+                });
+            }
 
             if (LR.C.User.IRI) {
                 $('#document-do').on('click', '.new-file-html', LR.U.createNewDocument);
                 $('#document-do').on('click', '.update-file-html', function() {
-                    LR.U.putResource();
-                    LR.U.hideDocumentMenu();
+                    LR.U.putResource().then(
+                        function(i) {
+                            LR.U.hideDocumentMenu();
+                        },
+                        function(reason) {
+                            console.log(reason);
+                        }
+                    );
                 });
+                $('#document-do').on('click', '.save-as-file-html', LR.U.saveAsDocument);
             }
-            $('#document-do').on('click', '.export-file-html', LR.U.saveAsHTML);
+
+            $('#document-do').on('click', '.export-file-html', LR.U.exportAsHTML);
+
+            $('#document-do').on('click', '.print-file-html', function(e) {
+                LR.U.hideDocumentMenu();
+                window.print();
+                return false;
+            });
         },
 
         createNewDocument: function() {
@@ -885,8 +1330,41 @@ var LR = {
                 $(html).find('main > article').empty();
                 html = LR.U.getDocument(html);
 
-                LR.U.putResource(storageIRI, html);
-                LR.U.hideDocumentMenu();
+                var w = window.open('', '_blank');
+
+                LR.U.putResource(storageIRI, html).then(
+                    function(i) {
+                        console.log(i);
+                        LR.U.hideDocumentMenu();
+                        w.location.href = storageIRI + '?edit=true';
+                    },
+                    function(reason) {
+                        console.log(reason);
+                    }
+                );
+            });
+        },
+
+        saveAsDocument: function() {
+            $('body').append('<aside id="save-as-document" class="lr on"><button class="close">❌</button><h2>Save As Document</h2><label>URL to save to</label><input id="storage" type="text" placeholder="http://example.org/article" value="" name="storage"/> <button class="create">Save</button></aside>');
+
+            $('#save-as-document').on('click', 'button.create', function(e) {
+                var storageIRI = $(this).parent().find('input#storage').val().trim();
+
+                html = LR.U.getDocument();
+
+                var w = window.open('', '_blank');
+
+                LR.U.putResource(storageIRI, html).then(
+                    function(i) {
+                        console.log(i);
+                        LR.U.hideDocumentMenu();
+                        w.location.href = storageIRI;
+                    },
+                    function(reason) {
+                        console.log(reason);
+                    }
+                );
             });
         },
 
@@ -1068,23 +1546,6 @@ LIMIT 1";
             });
         },
 
-        showPrint: function(node) {
-            $(node).append('<section id="document-print" class="lr"><h2>Digital</h2></section>');
-
-            var actionPrint = $('<p></p>');
-            $('#document-print').append(actionPrint);
-            LR.U.showPrintButton(actionPrint);
-            actionPrint.append(' (current view)');
-        },
-
-        showPrintButton: function(node) {
-            $('<button>⎙ Print</button>').on('click', function(e) {
-                LR.U.hideDocumentMenu();
-                window.print();
-                return false;
-            }).appendTo(node);
-        },
-
         highlightItems: function() {
             var d = $(document);
             d.on({
@@ -1135,27 +1596,6 @@ LIMIT 1";
         //http://stackoverflow.com/a/25214113
         fragmentFromString: function(strHTML) {
             return document.createRange().createContextualFragment(strHTML);
-        },
-
-        showEditor: function(node) {
-            var editorSetup = '';
-            if (LR.C.EditorEnabled) {
-                editorSetup = LR.C.Editor.DisableEditorButton;
-            }
-            else {
-                editorSetup = LR.C.Editor.EnableEditorButton;
-            }
-
-            $(node).append('<section id="editor-setup" class="lr"><h2>Edit</h2><p>' + editorSetup + '</p></section>');
-
-            $('#editor-setup').on('click', 'button.editor-enable', function(e) {
-                $(this).parent().html(LR.C.Editor.DisableEditorButton);
-                LR.U.Editor.enableEditor();
-            });
-            $('#editor-setup').on('click', 'button.editor-disable', function(e) {
-                $(this).parent().html(LR.C.Editor.EnableEditorButton);
-                LR.U.Editor.disableEditor();
-            });
         },
 
         showRefs: function() {
@@ -1934,7 +2374,21 @@ console.log(viewportWidthSplit);
                             //TODO: noteId can be external to this document e.g., User stores the note at their own space
                             // var noteId = 'i-' + id;
 
-                            var containerIRI = window.location.origin + window.location.pathname + LR.C.InteractionPath;
+                            var resourceIRI = document.location.href;
+                            //XXX: Temporarily setting this.
+                            var containerIRI = window.location.href;
+                            containerIRI = containerIRI.substr(0, containerIRI.lastIndexOf('/') + 1);
+
+                            //XXX: Preferring masterWorkspace over the others. Good/bad idea?
+                            //Need more granular workspace selection, e.g., PublicAnnotations. Defaulting to PublicWorkspace if no masterWorkspace
+                            if (typeof LR.C.User.masterWorkspace != 'undefined' || typeof LR.C.User.Workspace.Master != 'undefined') {
+                                containerIRI = LR.C.User.masterWorkspace + LR.C.InteractionPath;
+                            }
+                            else {
+                                    if (typeof LR.C.User.Workspace.Public != 'undefined') {
+                                        containerIRI = LR.C.User.Workspace.Public + LR.C.InteractionPath;
+                                    }
+                            }
 
                             var noteIRI = containerIRI + id;
                             //TODO: However this label is created
@@ -1976,32 +2430,39 @@ console.log(viewportWidthSplit);
                             //TODO: If img available
                             //TODO: oa:TimeState's datetime should equal to hasSource value. Same for oa:HttpRequestState's rdfs:value
                             // <span about="[this:#' + refId + ']" rel="oa:hasState">(timeState: <time typeof="oa:TimeState" datetime="' + datetime +'" datatype="xsd:dateTime"property="oa:sourceDate">' + datetime + '</time>)</span>\n\
+
+                            userImage = '';
+                            if (LR.C.User.Image) {
+                                userImage = '<img rel="schema:image" src="' + LR.C.User.Image + '" width="32" height="32"/>';
+                            }
+
+//                                    <sup><a href="#' + refId + '">' + refLabel + '</a></sup>\n\
+
                             var note = '\n\
-                                <' + this.tagNames[0] + ' id="' + id + '" about="[i:' + id + ']" typeof="oa:Annotation as:Activity" prefix="schema: http://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + containerIRI +'">\n\
-                                    <sup><a href="#' + refId + '">' + refLabel + '</a></sup>\n\
-                                    <h3 property="schema:name">\n\
-                                        <span rel="schema:creator oa:annotatedBy as:actor">\n\
-                                            <span about="' + LR.C.User.IRI + '" typeof="schema:Person">\n\
-                                                <img rel="schema:image" src="https://www.gravatar.com/avatar/0ca0a18603cbd049900ebea3a3bb29d4?size=32" width="32" height="32" alt="Sarven Capadisli’s photo"/>\n\
-                                                <a rel="schema:url" href="' + LR.C.User.IRI + '">\n\
-                                                    <span about="' + LR.C.User.IRI + '" property="schema:name">Sarven Capadisli</span>\n\
-                                                </a>\n\
-                                            </span>\n\
-                                        </span>\n\
-                                        <a rel="oa:hasTarget sioc:reply_of as:inReplyTo" href="#' + refId + '">\n\
-                                            <span about="[i:' + id + ']" rel="oa:motivatedBy" resource="oa:replying">replied</span>\n\
-                                        </a>\n\
-                                        on\n\
-                                        <a href="' + noteIRI + '">\n\
-                                            <time datetime="' + datetime +'" datatype="xsd:dateTime" property="oa:annotatedAt schema:datePublished">' + datetime + '</time>\n\
-                                        </a>\n\
-                                    </h3>\n\
-                                    <div property="schema:description" rel="oa:hasBody as:content">\n\
-                                        <div about="[i:' + noteIRI +']" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">\n\
-                                            <p>' + opts.url + '</p>\n\
-                                        </div>\n\
-                                    </div>\n\
-                                </' + this.tagNames[0] + '>';
+            <article id="' + id + '" about="[i:]" typeof="oa:Annotation as:Activity" prefix="schema: http://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + noteIRI +'">\n\
+                <h3 property="schema:name">\n\
+                    <span rel="schema:creator oa:annotatedBy as:actor">\n\
+                        <span about="' + LR.C.User.IRI + '" typeof="schema:Person">\n\
+                            ' + userImage + '\n\
+                            <a rel="schema:url" href="' + LR.C.User.IRI + '">\n\
+                                <span about="' + LR.C.User.IRI + '" property="schema:name">' + LR.C.User.Name + '</span>\n\
+                            </a>\n\
+                        </span>\n\
+                    </span>\n\
+                    <a rel="oa:hasTarget sioc:reply_of as:inReplyTo" href="' + resourceIRI + '">\n\
+                        <span about="[i:]" rel="oa:motivatedBy" resource="oa:replying">replied</span>\n\
+                    </a>\n\
+                    on\n\
+                    <a href="' + noteIRI + '">\n\
+                        <time datetime="' + datetime +'" datatype="xsd:dateTime" property="oa:annotatedAt schema:datePublished">' + datetime + '</time>\n\
+                    </a>\n\
+                </h3>\n\
+                <div property="schema:description" rel="oa:hasBody as:content">\n\
+                    <div about="[i:]" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">\n\
+                        <p>' + opts.url + '</p>\n\
+                    </div>\n\
+                </div>\n\
+            </article>';
                 //            console.log(note);
 
                             // var selectedParentElement = this.base.getSelectedParentElement();
@@ -2017,7 +2478,10 @@ console.log(viewportWidthSplit);
                                 nES.appendChild(noteNode);
                             }
                             else {// id="n-' + LR.U.generateAttributeId() + '"
-                                var asideNote = '<aside class="note">' + note + '</aside>';
+                                var asideNote = '\n\
+                            <aside class="note">\n\
+                            '+ note + '\n\
+                            </aside>';
                                 var asideNode = LR.U.fragmentFromString(asideNote);
                                 selectedParentElement.parentNode.insertBefore(asideNode, selectedParentElement.nextSibling);
                             }
@@ -2031,14 +2495,29 @@ console.log(viewportWidthSplit);
          <title>' + noteIRI + '</title>\n\
      </head>\n\
      <body>\n\
-         <main>\n\
-' + note + '\n\
+         <main>' + note + '\n\
          </main>\n\
      </body>\n\
 </html>\n\
 ';
 
                             LR.U.putResource(noteIRI, data);
+
+                            console.log('resourceIRI: ' + resourceIRI);
+
+                            //TODO: resourceIRI should be the closest IRI (not necessarily the document). Test resolve/reject better.
+                            LR.U.getPingback(resourceIRI).then(
+                                function(pingbackTo) {
+                                    if (pingbackTo && pingbackTo.length > 0) {
+                                        console.log('pingbackTo: ' + pingbackTo);
+                                        LR.U.createPingback(pingbackTo, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', resourceIRI);
+                                    }
+                                },
+                                function(reason) {
+                                    console.log('TODO: How can the interaction inform the target?');
+                                    console.log(reason);
+                                }
+                            );
 
                             this.base.checkSelection();
                         },
@@ -2150,4 +2629,5 @@ $(document).ready(function() {
 //    LR.U.buildReferences();
 //    LR.U.getLinkedResearch();
     LR.U.showFragment();
+    LR.U.setDocumentMode();
 });
