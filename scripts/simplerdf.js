@@ -23711,7 +23711,11 @@ function addValues (self, predicate, options, values) {
 
   values.forEach(function (value) {
     if (typeof value === 'string') {
-      self._graph.add(rdf.createTriple(self._iri, predicate, rdf.createLiteral(value)))
+      if (options.namedNode) {
+        self._graph.add(rdf.createTriple(self._iri, predicate, rdf.createNamedNode(value)))
+      } else {
+        self._graph.add(rdf.createTriple(self._iri, predicate, rdf.createLiteral(value)))
+      }
     } else if (typeof value === 'object') {
       self._graph.add(rdf.createTriple(self._iri, predicate, value._iri))
     } else {
@@ -23799,6 +23803,7 @@ SimpleRDF.prototype.context = function (context) {
       addProperty.call(self, key, value, options)
     } else {
       options.array = '@array' in value && value['@array']
+      options.namedNode = '@type' in value && value['@type'] === '@id'
 
       addProperty.call(self, value['@id'], value['@id'], options)
       addProperty.call(self, key, value['@id'], options)
