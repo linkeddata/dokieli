@@ -65,10 +65,11 @@ feedback can be under their full control, meanwhile allowing who it can be
 visible to or writeable for. If they don't, or the authors don't wish to enable
 open dialogue, that's okay too.
 
-It works towards a solution e.g., proposed [acid test](http://csarven.ca
-/enabling-accessible-knowledge#acid-test) where authors and Webizens can both
-publish and consume, and participate in discussions meanwhile having human and
-machine-friendly information all within their control.
+It works towards a solution e.g., proposed
+[acid test](http://csarven.ca/enabling-accessible-knowledge#acid-test) where
+authors and Webizens can both publish and consume, and participate in
+discussions meanwhile having human and machine-friendly information all
+within their control.
 
 dokieli is not perfect, but it is intended to evolve based on our collective
 experience.
