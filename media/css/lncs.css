@@ -82,6 +82,7 @@ caption, td, th,
 #document-status *,
 #document-format *,
 #document-event *,
+#document-inbox *,
 #keywords *,
 #general-terms *,
 #categories-and-subject-descriptors *,
@@ -482,6 +483,7 @@ line-height:1;
 #document-purpose dt, #document-purpose dd,
 #document-format dt, #document-format dd,
 #document-event dt, #document-event dd,
+#document-inbox dt, #document-inbox dd,
 #general-terms h2, #general-terms li,
 #keywords h2, #keywords li,
 #categories-and-subject-descriptors h2, #categories-and-subject-descriptors li {
@@ -555,6 +557,7 @@ white-space:pre;
 #document-language dt:before,
 #document-format dt:before,
 #document-event dt:before,
+#document-inbox dt:before,
 #categories-and-subject-descriptors h2:before,
 #keywords h2:before,
 #general-terms h2:before,
@@ -579,6 +582,7 @@ content: "";
 #document-language dt:after,
 #document-format dt:after,
 #document-event dt:after,
+#document-inbox dt:after,
 #general-terms h2:after,
 #categories-and-subject-descriptors h2:after,
 #keywords h2:after {
@@ -620,13 +624,10 @@ content: ".";
 #document-format dt,
 #document-format dd,
 #document-event dt,
-#document-event dt + dd {
+#document-event dt + dd,
+#document-inbox dt,
+#document-inbox dt + dd {
 display:inline;
-}
-
-
-#document-purpose {
-/*display:none;*/
 }
 
 blockquote {
@@ -934,6 +935,7 @@ text-align:center;
 #document-language,
 #document-format,
 #document-event,
+#document-inbox,
 #general-terms,
 #categories-and-subject-descriptors,
 #keywords {
@@ -1040,13 +1042,6 @@ header nav li:first-child:before {
 content:"";
 }
 
-
-#document-purpose,
-#document-published,
-#document-modified,
-#document-license {
-display:none;
-}
 .on {
 display:block !important;
 }
