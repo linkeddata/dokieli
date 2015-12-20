@@ -391,10 +391,10 @@ width: 100%;
 max-width: 100px;
 }
 
-[rel=$"inbox"]:before {
+[rel$="inbox"]:before {
 content: "\f01c";
 }
-[rel=$"inbox"] {
+[rel$="inbox"] {
 display: inline-block;
 font-family: FontAwesome;
 font-feature-settings: normal;
