@@ -191,7 +191,7 @@ var LR = {
                                         LR.C.User.Workspace = { List: s.workspace };
                                         //XXX: Too early to tell if this is a good/bad idea. Will revise any way. A bit hacky right now.
                                         s.workspace.forEach(function(workspace) {
-                                            var wstype = workspace.rdftype || [];
+                                            var wstype = pf.iri(workspace).rdftype || [];
                                             wstype.forEach(function(w) {
                                                 switch(w) {
                                                     case 'http://www.w3.org/ns/pim/space#PreferencesWorkspace':
@@ -209,6 +209,15 @@ var LR = {
                                                         break;
                                                     case 'http://www.w3.org/ns/pim/space#SharedWorkspace':
                                                         LR.C.User.Workspace.Shared = workspace;
+                                                        break;
+                                                    case 'http://www.w3.org/ns/pim/space#ApplicationWorkspace':
+                                                        LR.C.User.Workspace.Application = workspace;
+                                                        break;
+                                                    case 'http://www.w3.org/ns/pim/space#Workspace':
+                                                        LR.C.User.Workspace.Work = workspace;
+                                                        break;
+                                                    case 'http://www.w3.org/ns/pim/space#FamilyWorkspace':
+                                                        LR.C.User.Workspace.Family = workspace;
                                                         break;
                                                 }
                                             });
