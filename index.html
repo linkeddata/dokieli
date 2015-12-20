@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
         <meta charset="utf-8" />
-        <title>Dive into Linked Research</title>
+        <title>dokieli</title>
         <link rel="stylesheet" href="media/css/rhiaro.css" media="all" title="rhiaro" />
         <link rel="stylesheet" href="media/css/do.css" media="all" />
         <link rel="stylesheet alternate" href="media/css/lncs.css" media="all" title="LNCS" />
@@ -28,21 +28,37 @@
 
                 <div id="content">
                   
-                    <section id="new" rel="schema:hasPart" resource="#new" class="wrapper do" inlist="">
-                      <h2 class="btn-big color2-bg lighter do"><a href="/new" class="color3bg-hov">make it so</a></h2>
-                      <div>
+                    <section id="introduction" rel="schema:hasPart" resource="#introduction"inlist="">
+                      <h2 class="btn-big color2-bg lighter wrapper do">
+                        <a href="#" class="color3bg-hov">make it so</a>
+                      </h2>
+                      <div property="schema:description" resource="#introduction">
+                        <p><strong>do</strong>kieli is a decentralised document editor that gives you control of where your content and data is stored.</p>
+                        <p>You can use it locally, offline, and to create and display static pages. Or you can hook it up to a <a href="https://github.com/solid/solid-spec">solid-compliant</a> personal data store, edit your files directly from the browser, and even grant editing access to your collaborators. </p>
+                        <p>If you're feeling social, you can enable annotations, so other people can comment on your content. When they do, dokieli will offer to save their comment in <em>their</em> personal data store, if they have one (if not, you can store it for them).</p>
+                        <noscript>dokieli uses fancy-pants JS for the editor, so unfortunately you can't use it with JS off, however articles written with it are progressively enhanced, and read-only mode works just fine without JS.</noscript>
                       </div>
                     </section>
 
-                    <section id="introduction" rel="schema:hasPart" resource="#introduction" inlist="">
+                    <section id="divein" rel="schema:hasPart" resource="#divein" inlist="">
                         <h2 property="schema:name">Dive in</h2>
-                        <div property="schema:description" resource="#introduction" typeof="deo:Introduction" datatype="rdf:HTML">
-                            <p><strong>do</strong>kieli is a decentralised document editor that gives you control of where your content and data is stored.</p>
-                            <p>You can use it locally, offline, and to create and display static pages. Or you can hook it up to a <a href="https://github.com/solid/solid-spec">solid-compliant</a> personal data store, edit your files directly from the browser, and even grant editing access to your collaborators. </p>
-                            <p>If you're feeling social, you can enable annotations, so other people can comment on your content. When they do, dokieli will offer to save their comment in <em>their</em> personal data store, if they have one (if not, you can store it for them).</p>
+                        <div property="schema:description" resource="#divein" typeof="deo:Introduction" datatype="rdf:HTML">
+                            <p>This page itself is a dokieli document, so to get started, open the menu in the top right and click <em>edit</em>. You can change this page to your heart's content, try out different <em>views</em>, then <em>export</em> the HTML and upload it somewhere you control.</p>
+                            <p>If you have a solid pod, you can click <em>new</em> (for a blank document) or <em>save as</em> (for a copy of this one) and choose where you'd like to save it. You'll be redirected to your new document, where you can edit away and have changes automatically saved to your pod. Of course, you'll also be able to interact with your new document using other solid applications!</p>
                         </div>
                     </section>
-                   
+                   <section id="developers" rel="schema:hasPart" resource="#developers" inlist="">
+                      <h2 property="schema:name">Developers</h2>
+                      <div property="schema:description" resource="#developers" datatype="rdf:HTML">
+                        <p><strong>do</strong>kieli is open source; you can find the code at <a href="https://github.com/linkeddata/dokieli">github.com/linkeddata/dokieli</a>. This is very much a work in progress, so contributions, issues, bug reports and feature requests are welcome. You can also join the chat on <a href="http://gitter.im/linkeddata/dokieli">gitter</a>.</p>
+                      </div>
+                    </section>
+                    <section id="researchers" rel="schema:hasPart" resource="#researchers" inlist="">
+                      <h2 property="schema:name">Researchers</h2>
+                      <div property="schema:description" resource="#researchers" datatype="rdf:HTML">
+                        <p><strong>do</strong>kieli is being developed as part of the <a href="http://csarven.ca/this-paper-is-a-demo">Linked Research initiative</a>. As well as being a general-purpose document editor, dokieli has specialised features for writing academic papers, including referencing, ..other stuff.., and print styles for common publishers. As an increasing number of conferences are accepting HTML submissions, you can write your paper in dokieli and export to HTML or PDF for submission.</p>
+                      </div>
+                    </section>
                 </div>
             </article>
 

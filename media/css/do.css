@@ -24,6 +24,8 @@ font-family: "CMU Serif Monospace";
 src: local("CMU Serif Monospace"), url("../fonts/cmuntt.otf");
 }
 
+main { margin-bottom: 3em; }
+
 h1.do {
   font-family: "CM Serif"; font-weight: normal; font-size: 4em;
   color: black;
