@@ -105,6 +105,11 @@ var LR = {
                 "@id": "http://purl.org/net/pingback/to",
                 "@type": "@id",
                 "@array": true
+            },
+            "solidinbox": {
+                "@id": "http://www.w3.org/ns/solid/terms#inbox",
+                "@type": "@id",
+                "@array": true
             }
         }
     },
@@ -186,7 +191,7 @@ var LR = {
                                         LR.C.User.Workspace = { List: s.workspace };
                                         //XXX: Too early to tell if this is a good/bad idea. Will revise any way. A bit hacky right now.
                                         s.workspace.forEach(function(workspace) {
-                                            var wstype = pf.iri(workspace).rdftype || [];
+                                            var wstype = workspace.rdftype || [];
                                             wstype.forEach(function(w) {
                                                 switch(w) {
                                                     case 'http://www.w3.org/ns/pim/space#PreferencesWorkspace':
@@ -256,10 +261,10 @@ var LR = {
             return rels;
         },
 
-        getPingback: function(url) {
+        getInbox: function(url) {
             return new Promise(function(resolve, reject) {
                 if (url.indexOf('#') != -1) {
-                    return resolve(LR.U.getPingbackFromRDF(url));
+                    return resolve(LR.U.getInboxFromRDF(url));
                 }
                 else {
                     var response = LR.U.getResourceHeader(url);
@@ -267,24 +272,24 @@ var LR = {
                         console.log(data);
                         console.log(textStatus);
                         console.log(xhr);
-                        var link = LR.U.parseLinkHeader(xhr.getResponseHeader('Link'));
-                        if(link['pingback:to'] && link['pingback:to'].length > 0) {
-                            return resolve(link['pingback:to']);
-                        }
-                        else {
-                            if(link['meta'] && link['meta'].length > 0) {
-                                var response = LR.U.getResourceHeader(link['meta']);
-                                response.done(function(data, textStatus, xhr) {
-                                    console.log(data);
-                                    console.log(textStatus);
-                                    console.log(xhr);
-                                    return resolve(LR.U.getPingbackFromRDF(link['meta'], url));
-                                });
-                            }
+                        // var link = LR.U.parseLinkHeader(xhr.getResponseHeader('Link'));
+                        // if(link['pingback:to'] && link['pingback:to'].length > 0) {
+                        //     return resolve(link['pingback:to']);
+                        // }
+                        // else {
+                        //     if(link['meta'] && link['meta'].length > 0) {
+                        //         var response = LR.U.getResourceHeader(link['meta']);
+                        //         response.done(function(data, textStatus, xhr) {
+                        //             console.log(data);
+                        //             console.log(textStatus);
+                        //             console.log(xhr);
+                        //             return resolve(LR.U.getInboxFromRDF(link['meta'], url));
+                        //         });
+                        //     }
 
                             console.log('XXX: Our last chance');
-                            return resolve(LR.U.getPingbackFromRDF(url));
-                        }
+                            return resolve(LR.U.getInboxFromRDF(url));
+                        // }
                     });
                     response.fail(function(xhr, textStatus) {
                         console.log(xhr);
@@ -295,7 +300,7 @@ var LR = {
             });
         },
 
-        getPingbackFromRDF: function(url, subjectIRI) {
+        getInboxFromRDF: function(url, subjectIRI) {
             subjectIRI = subjectIRI || url;
             var pIRI = url;
             if (pIRI.slice(0, 5).toLowerCase() != 'https') {
@@ -310,9 +315,9 @@ var LR = {
                     function(i) {
                         var s = i.iri(subjectIRI);
                         console.log(s);
-                        if (s.pingbackto) {
-                            console.log(s.pingbackto);
-                            return resolve(s.pingbackto);
+                        if (s.solidinbox) {
+                            console.log(s.solidinbox);
+                            return resolve(s.solidinbox);
                         }
                     },
                     function(reason) {
@@ -485,7 +490,7 @@ var LR = {
             });
         },
 
-        createPingback: function(pingbackTo, slug, source, property, target) {
+        notifyInbox: function(inbox, slug, source, property, target) {
             var headers = {
                 'Content-Type': 'text/turtle; charset=utf-8',
                 'Link': '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
@@ -495,9 +500,10 @@ var LR = {
             }
 
             var data = '@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\
+@prefix sterms: <http://www.w3.org/ns/solid/terms#> .\n\
 @prefix pingback: <http://purl.org/net/pingback/> .\n\
 @prefix schema: <http://schema.org/> .\n\
-<> a pingback:Request ;\n\
+<> a sterms:Notification , pingback:Request ;\n\
     pingback:source <' + source + '> ;\n\
     pingback:property <' + property + '> ;\n\
     pingback:target <' + target + '> ;\n\
@@ -508,7 +514,7 @@ var LR = {
 
             var request = $.ajax({
                 method: "POST",
-                url: pingbackTo,
+                url: inbox,
                 headers: headers,
                 xhrFields: { withCredentials: true },
                 data: data
@@ -2506,11 +2512,11 @@ console.log(viewportWidthSplit);
                             console.log('resourceIRI: ' + resourceIRI);
 
                             //TODO: resourceIRI should be the closest IRI (not necessarily the document). Test resolve/reject better.
-                            LR.U.getPingback(resourceIRI).then(
-                                function(pingbackTo) {
-                                    if (pingbackTo && pingbackTo.length > 0) {
-                                        console.log('pingbackTo: ' + pingbackTo);
-                                        LR.U.createPingback(pingbackTo, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', resourceIRI);
+                            LR.U.getInbox(resourceIRI).then(
+                                function(inbox) {
+                                    if (inbox && inbox.length > 0) {
+                                        console.log('inbox: ' + inbox);
+                                        LR.U.notifyInbox(inbox, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', resourceIRI);
                                     }
                                 },
                                 function(reason) {
