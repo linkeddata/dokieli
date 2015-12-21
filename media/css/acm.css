@@ -127,6 +127,8 @@ https://bugzilla.mozilla.org/show_bug.cgi?id=684062
 */
 #content {
 clear:both;
+float:left;
+margin-top:1em;
 -webkit-column-count:2;
 -webkit-column-gap:1.9em;
 -moz-column-count:2;
