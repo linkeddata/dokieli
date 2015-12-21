@@ -267,6 +267,9 @@ h5 {
 display:inline;
 }
 
+#subtitle {
+text-align:center;
+}
 
 .count {
 margin-bottom:0;
