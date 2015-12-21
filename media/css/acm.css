@@ -183,7 +183,7 @@ font-style:italic;
 text-transform:capitalize;
 }
 
-.entry-subtitle {
+#subtitle {
 font-family:Arial, sans-serif;
 font-size:1.5em;
 text-align:center;
