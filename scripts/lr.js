@@ -2399,13 +2399,20 @@ console.log(viewportWidthSplit);
 
                             //XXX: Preferring masterWorkspace over the others. Good/bad idea?
                             //Need more granular workspace selection, e.g., PublicAnnotations. Defaulting to PublicWorkspace if no masterWorkspace
-                            if (typeof LR.C.User.masterWorkspace != 'undefined' || typeof LR.C.User.Workspace.Master != 'undefined') {
+                            if (typeof LR.C.User.masterWorkspace != 'undefined' && LR.C.User.masterWorkspace.length > 0) {
                                 containerIRI = LR.C.User.masterWorkspace + LR.C.InteractionPath;
                             }
                             else {
-                                    if (typeof LR.C.User.Workspace.Public != 'undefined') {
-                                        containerIRI = LR.C.User.Workspace.Public + LR.C.InteractionPath;
+                                if (typeof LR.C.User.Workspace != 'undefined') {
+                                    if (typeof LR.C.User.Workspace.Master != 'undefined' && LR.C.User.Workspace.Master.length > 0) {
+                                        containerIRI = LR.C.User.Workspace.Master + LR.C.InteractionPath;
                                     }
+                                    else {
+                                        if (typeof LR.C.User.Workspace.Public != 'undefined' && LR.C.User.Workspace.Public.length > 0) {
+                                            containerIRI = LR.C.User.Workspace.Public + LR.C.InteractionPath;
+                                        }
+                                    }
+                                }
                             }
 
                             var noteIRI = containerIRI + id;
