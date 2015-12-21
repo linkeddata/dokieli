@@ -128,6 +128,7 @@ https://bugzilla.mozilla.org/show_bug.cgi?id=684062
 #content {
 clear:both;
 float:left;
+width:100%;
 margin-top:1em;
 -webkit-column-count:2;
 -webkit-column-gap:1.9em;
