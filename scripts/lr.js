@@ -355,6 +355,9 @@ var LR = {
                 method: "GET",
                 headers: headers,
                 url: url,
+                xhrFields: {
+                    withCredentials: true
+                }
             });
         },
 
