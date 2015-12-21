@@ -543,8 +543,8 @@ content:",";
 content:"" !important;
 }
 
-#document-event dt:nth-child(n+2):before,
-#document-identifier dt:nth-child(n+2):before {
+#document-event dd:after,
+#document-identifier dd:after {
 content:"\A";
 white-space:pre;
 }
