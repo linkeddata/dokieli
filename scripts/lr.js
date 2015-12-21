@@ -312,7 +312,7 @@ var LR = {
         getInboxFromRDF: function(url, subjectIRI) {
             subjectIRI = subjectIRI || url;
             var pIRI = url;
-            if (pIRI.slice(0, 5).toLowerCase() != 'https') {
+            if (pIRI.slice(0, 5).toLowerCase() != 'https' && document.location.origin != 'null') {
                 pIRI = document.location.origin + '/,proxy?uri=' + LR.U.encodeString(pIRI);
             }
             console.log(pIRI);
