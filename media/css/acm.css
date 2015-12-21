@@ -635,20 +635,8 @@ content:"";
 
 article > dl[id^="document-"] {
 float:left;
-width:48%;
-
-}
-article > dl[id^="document-"]:nth-child(2n) {
-margin-left:3.7%;
-}
-
-article > dl[id^="document-"]:nth-of-type(1),
-article > dl[id^="document-"]:nth-of-type(2) {
-margin-top:1em;
-}
-article > dl[id^="document-"]:nth-last-of-type(1),
-article > dl[id^="document-"]:nth-last-of-type(2) {
-margin-bottom:1em;
+width:46%;
+margin:0 2%;
 }
 
 #document-identifier dd,
