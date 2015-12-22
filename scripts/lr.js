@@ -2450,38 +2450,33 @@ console.log(viewportWidthSplit);
                             MediumEditor.util.insertHTMLCommand(this.base.selectedDocument, selectionUpdated);
 
 
-                            //Add the note to the document.
-                            //TODO: if signed-in
-                            //TODO: If img available
                             //TODO: oa:TimeState's datetime should equal to hasSource value. Same for oa:HttpRequestState's rdfs:value
                             // <span about="[this:#' + refId + ']" rel="oa:hasState">(timeState: <time typeof="oa:TimeState" datetime="' + datetime +'" datatype="xsd:dateTime"property="oa:sourceDate">' + datetime + '</time>)</span>\n\
 
-                            userImage = '';
+                            var userName = 'Anonymous';
+                            if (LR.C.User.Name) {
+                                //XXX: We have the IRI already
+                                userName = '<span about="' + LR.C.User.IRI + '" property="schema:name">' + LR.C.User.Name + '</span>';
+                            }
+
+                            var userImage = '';
                             if (LR.C.User.Image) {
                                 userImage = '<img rel="schema:image" src="' + LR.C.User.Image + '" width="32" height="32"/>';
+                            }
+
+                            var user = ''
+                            if (LR.C.User.IRI) {
+                                user = '<span about="' + LR.C.User.IRI + '" typeof="schema:Person">' + userImage + ' <a rel="schema:url" href="' + LR.C.User.IRI + '"> ' + userName + '</a></span>';
+                            }
+                            else {
+                                user = '<span typeof="schema:Person">' + userName + '</span>';
                             }
 
 //                                    <sup><a href="#' + refId + '">' + refLabel + '</a></sup>\n\
 
                             var note = '\n\
             <article id="' + id + '" about="[i:]" typeof="oa:Annotation as:Activity" prefix="schema: http://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + noteIRI +'">\n\
-                <h3 property="schema:name">\n\
-                    <span rel="schema:creator oa:annotatedBy as:actor">\n\
-                        <span about="' + LR.C.User.IRI + '" typeof="schema:Person">\n\
-                            ' + userImage + '\n\
-                            <a rel="schema:url" href="' + LR.C.User.IRI + '">\n\
-                                <span about="' + LR.C.User.IRI + '" property="schema:name">' + LR.C.User.Name + '</span>\n\
-                            </a>\n\
-                        </span>\n\
-                    </span>\n\
-                    <a rel="oa:hasTarget sioc:reply_of as:inReplyTo" href="' + resourceIRI + '">\n\
-                        <span about="[i:]" rel="oa:motivatedBy" resource="oa:replying">replied</span>\n\
-                    </a>\n\
-                    on\n\
-                    <a href="' + noteIRI + '">\n\
-                        <time datetime="' + datetime +'" datatype="xsd:dateTime" property="oa:annotatedAt schema:datePublished">' + datetime + '</time>\n\
-                    </a>\n\
-                </h3>\n\
+                <h3 property="schema:name"><span rel="schema:creator oa:annotatedBy as:actor">' + user + '</span> <a href="' + noteIRI + '"><time datetime="' + datetime +'" datatype="xsd:dateTime" property="oa:annotatedAt schema:datePublished">' + datetime.substr(0,19).replace('T', ' ') + '</time></a> <a rel="oa:hasTarget sioc:reply_of as:inReplyTo" href="' + resourceIRI + '"><span about="[i:]" rel="oa:motivatedBy" resource="oa:replying">in reply to</span></a></h3>\n\
                 <div property="schema:description" rel="oa:hasBody as:content">\n\
                     <div about="[i:]" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">\n\
                         <p>' + opts.url + '</p>\n\
