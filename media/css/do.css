@@ -2,11 +2,11 @@
  *
  * Sarven Capadisli <info@csarven.ca> http://csarven.ca/#i
  * http://www.apache.org/licenses/LICENSE-2.0.html Apache License, Version 2.0
- * https://github.com/csarven/linked-research
+ * https://github.com/linkeddata/dokieli
  */
 
 @media print {
-.lr {
+.do {
 display:none !important;
 }
 }
@@ -29,7 +29,7 @@ outline:none;
 position:relative;
 }
 
-aside.lr {
+aside.do {
 position:fixed;
 top:1em;
 z-index:9;
@@ -37,7 +37,7 @@ max-height:calc(100% - 4em);
 background:#fff !important;
 font-size:0.8em;
 }
-aside.lr.on {
+aside.do.on {
 padding:1em;
 border:1px solid #ccc;
 border-radius:7px;
@@ -96,7 +96,7 @@ padding:0;
 #document-menu p {
 text-indent:0;
 }
-#document-menu.lr caption:before {
+#document-menu.do caption:before {
 content: '' !important;
 }
 
@@ -191,26 +191,26 @@ border:2px solid #cccccc;
 font-weight:normal;
 }
 
-.lr.sortable .sortable-placeholder {
+.do.sortable .sortable-placeholder {
 outline: 1px dashed #777;
 }
 
-.lr.sortable .sortable li {
+.do.sortable .sortable li {
 cursor:grab;
 cursor:-moz-grab;
 cursor:-webkit-grab;
 position:relative;
 }
 
-.lr.sortable .sortable li:active {
+.do.sortable .sortable li:active {
 cursor:move;
 }
 
-.lr.sortable .sortable li:before,
-.lr.sortable .sortable li a:before {
+.do.sortable .sortable li:before,
+.do.sortable .sortable li a:before {
 border-left: 2px dotted #ccc;
 }
-.lr.sortable .sortable li a:before {
+.do.sortable .sortable li a:before {
 position:absolute;
 top:0;
 left:-1.4em;
@@ -221,7 +221,7 @@ cursor:-webkit-grab;
 }
 
 
-.lr button {
+.do button {
 line-height:1;
 font-family:"CMU Serif Monospace", monospace !important;
 font-weight:bold;
@@ -236,10 +236,10 @@ right:0.5em;
 z-index:9;
 }
 
-.lr.highlight {
+.do.highlight {
 background-color:#0ff;
 }
-.lr.position-relative {
+.do.position-relative {
 position:relative;
 z-index:1;
 }
@@ -247,7 +247,7 @@ z-index:1;
 .slide {
 display:none;
 }
-.lr.slide {
+.do.slide {
 display:block;
 }
 .on-slideshow > header,
@@ -257,8 +257,8 @@ display:block;
 .on-slideshow article #authors,
 .on-slideshow article > dl,
 .on-slideshow article > div > dl,
-.on-slideshow article section:not([class~="lr"]),
-.on-slideshow aside:not([class~="lr"]) {
+.on-slideshow article section:not([class~="do"]),
+.on-slideshow aside:not([class~="do"]) {
 display:none;
 }
 
@@ -358,7 +358,7 @@ animation: blink 1s steps(5, start) infinite;
 .align-left { float:left; margin-right:2em; margin-bottom:2em; }
 .align-right { float:right; margin-left:2em; margin-bottom:2em; }
 
-.lr.fragment {
+.do.fragment {
 position:absolute;
 top:0;
 right:0;
@@ -367,7 +367,7 @@ padding-right:10px;
 font-size:1em;
 }
 
-.lr.fragment a {
+.do.fragment a {
 padding-right:10px;
 height:100%;
 display:block;
@@ -377,10 +377,10 @@ outline:none;
 text-align:right;
 text-decoration:none;
 }
-.lr.fragment a:first-child {
+.do.fragment a:first-child {
 border-right: 2px solid rgba(128,128,128,0.2);
 }
-.lr.fragment a:nth-child(n+2) {
+.do.fragment a:nth-child(n+2) {
 border-right: 2px solid rgba(64,64,64,0.9);
 }
 

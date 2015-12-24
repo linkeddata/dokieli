@@ -2,10 +2,10 @@
  *
  * Sarven Capadisli <info@csarven.ca> http://csarven.ca/#i
  * http://www.apache.org/licenses/LICENSE-2.0.html Apache License, Version 2.0
- * https://github.com/csarven/linked-research
+ * https://github.com/linkeddata/dokieli
  */
 
-var LR = {
+var DO = {
     C: {
         Lang: document.documentElement.lang,
         DocRefType: '',
@@ -122,10 +122,10 @@ var LR = {
             });
 
             request.done(function(data, textStatus, xhr) {
-                LR.C.User.IRI = xhr.getResponseHeader('User');
+                DO.C.User.IRI = xhr.getResponseHeader('User');
 
                 //XXX: Decide whether to leave setUserInfo or call only when really needed
-                LR.U.setUserInfo(LR.C.User.IRI);
+                DO.U.setUserInfo(DO.C.User.IRI);
             });
 
             request.fail(function(xhr, textStatus) {
@@ -135,96 +135,96 @@ var LR = {
         },
 
         setUserInfo: function(userIRI) {
-            if (LR.C.User.IRI) {
+            if (DO.C.User.IRI) {
                 var pIRI = userIRI;
                 if (pIRI.slice(0, 5).toLowerCase() != 'https') {
-                    pIRI = document.location.origin + '/,proxy?uri=' + LR.U.encodeString(pIRI);
+                    pIRI = document.location.origin + '/,proxy?uri=' + DO.U.encodeString(pIRI);
                 }
                 console.log(pIRI);
 
-                var g = SimpleRDF(LR.C.Vocab);
+                var g = SimpleRDF(DO.C.Vocab);
                 g.iri(pIRI).get().then(
                     function(i) {
                         var s = i.iri(userIRI);
                         console.log(s);
                         if (s.foafname) {
-                            LR.C.User.Name = s.foafname;
-                            console.log(LR.C.User.Name);
+                            DO.C.User.Name = s.foafname;
+                            console.log(DO.C.User.Name);
                         }
                         else {
                             if (s.schemaname) {
-                                LR.C.User.Name = s.schemaname;
-                                console.log(LR.C.User.Name);
+                                DO.C.User.Name = s.schemaname;
+                                console.log(DO.C.User.Name);
                             }
                         }
 
                         if (s.foafimg) {
-                            LR.C.User.Image = s.foafimg;
-                            console.log(LR.C.User.Image);
+                            DO.C.User.Image = s.foafimg;
+                            console.log(DO.C.User.Image);
                         }
                         else {
                             if (s.schemaimage) {
-                                LR.C.User.Image = s.schemaimage;
-                                console.log(LR.C.User.Image);
+                                DO.C.User.Image = s.schemaimage;
+                                console.log(DO.C.User.Image);
                             }
                         }
 
                         if (s.storage) {
-                            LR.C.User.Storage = s.storage;
-                            console.log(LR.C.User.Storage);
+                            DO.C.User.Storage = s.storage;
+                            console.log(DO.C.User.Storage);
                         }
                         if (s.preferencesFile) {
-                            LR.C.User.PreferencesFile = s.preferencesFile;
-                            console.log(LR.C.User.PreferencesFile);
+                            DO.C.User.PreferencesFile = s.preferencesFile;
+                            console.log(DO.C.User.PreferencesFile);
 
                             //XXX: Probably https so don't bother with proxy?
-                            g.iri(LR.C.User.PreferencesFile).get().then(
+                            g.iri(DO.C.User.PreferencesFile).get().then(
                                 function(pf) {
-                                    LR.C.User.PreferencesFileGraph = pf;
-                                    var s = pf.iri(LR.C.User.IRI);
+                                    DO.C.User.PreferencesFileGraph = pf;
+                                    var s = pf.iri(DO.C.User.IRI);
 
                                     if (s.masterWorkspace) {
-                                        LR.C.User.masterWorkspace = s.masterWorkspace;
+                                        DO.C.User.masterWorkspace = s.masterWorkspace;
                                     }
 
                                     if (s.workspace) {
-                                        LR.C.User.Workspace = { List: s.workspace };
+                                        DO.C.User.Workspace = { List: s.workspace };
                                         //XXX: Too early to tell if this is a good/bad idea. Will revise any way. A bit hacky right now.
                                         s.workspace.forEach(function(workspace) {
                                             var wstype = pf.iri(workspace).rdftype || [];
                                             wstype.forEach(function(w) {
                                                 switch(w) {
                                                     case 'http://www.w3.org/ns/pim/space#PreferencesWorkspace':
-                                                        LR.C.User.Workspace.Preferences = workspace;
+                                                        DO.C.User.Workspace.Preferences = workspace;
                                                         ;
                                                         break;
                                                     case 'http://www.w3.org/ns/pim/space#MasterWorkspace':
-                                                        LR.C.User.Workspace.Master = workspace;
+                                                        DO.C.User.Workspace.Master = workspace;
                                                         break;
                                                     case 'http://www.w3.org/ns/pim/space#PublicWorkspace':
-                                                        LR.C.User.Workspace.Public = workspace;
+                                                        DO.C.User.Workspace.Public = workspace;
                                                         break;
                                                     case 'http://www.w3.org/ns/pim/space#PrivateWorkspace':
-                                                        LR.C.User.Workspace.Private = workspace;
+                                                        DO.C.User.Workspace.Private = workspace;
                                                         break;
                                                     case 'http://www.w3.org/ns/pim/space#SharedWorkspace':
-                                                        LR.C.User.Workspace.Shared = workspace;
+                                                        DO.C.User.Workspace.Shared = workspace;
                                                         break;
                                                     case 'http://www.w3.org/ns/pim/space#ApplicationWorkspace':
-                                                        LR.C.User.Workspace.Application = workspace;
+                                                        DO.C.User.Workspace.Application = workspace;
                                                         break;
                                                     case 'http://www.w3.org/ns/pim/space#Workspace':
-                                                        LR.C.User.Workspace.Work = workspace;
+                                                        DO.C.User.Workspace.Work = workspace;
                                                         break;
                                                     case 'http://www.w3.org/ns/pim/space#FamilyWorkspace':
-                                                        LR.C.User.Workspace.Family = workspace;
+                                                        DO.C.User.Workspace.Family = workspace;
                                                         break;
                                                 }
                                             });
                                         });
                                     }
 
-                                    console.log(LR.C.User.Workspace);
+                                    console.log(DO.C.User.Workspace);
                                 },
                                 function(reason) { console.log(reason);}
                             );
@@ -237,14 +237,14 @@ var LR = {
 
         setLocalDocument: function() {
             if (document.location.protocol == 'file:') {
-                LR.C.LocalDocument = true;
+                DO.C.LocalDocument = true;
             }
         },
 
         putPingbackTriple: function(url, pingbackOf, pingbackTo) {
             var data = '<'+ pingbackOf + '> <http://purl.org/net/pingback/to> <' + pingbackTo + '> .';
 
-            LR.U.putResource(url, data, 'text/turtle');
+            DO.U.putResource(url, data, 'text/turtle');
         },
 
         //Copied from https://github.com/deiu/solid-plume/blob/gh-pages/app/solid.js
@@ -273,31 +273,31 @@ var LR = {
         getInbox: function(url) {
             return new Promise(function(resolve, reject) {
                 if (url.indexOf('#') != -1) {
-                    return resolve(LR.U.getInboxFromRDF(url));
+                    return resolve(DO.U.getInboxFromRDF(url));
                 }
                 else {
-                    var response = LR.U.getResourceHeader(url);
+                    var response = DO.U.getResourceHeader(url);
                     response.done(function(data, textStatus, xhr) {
                         console.log(data);
                         console.log(textStatus);
                         console.log(xhr);
-                        // var link = LR.U.parseLinkHeader(xhr.getResponseHeader('Link'));
+                        // var link = DO.U.parseLinkHeader(xhr.getResponseHeader('Link'));
                         // if(link['pingback:to'] && link['pingback:to'].length > 0) {
                         //     return resolve(link['pingback:to']);
                         // }
                         // else {
                         //     if(link['meta'] && link['meta'].length > 0) {
-                        //         var response = LR.U.getResourceHeader(link['meta']);
+                        //         var response = DO.U.getResourceHeader(link['meta']);
                         //         response.done(function(data, textStatus, xhr) {
                         //             console.log(data);
                         //             console.log(textStatus);
                         //             console.log(xhr);
-                        //             return resolve(LR.U.getInboxFromRDF(link['meta'], url));
+                        //             return resolve(DO.U.getInboxFromRDF(link['meta'], url));
                         //         });
                         //     }
 
                             console.log('XXX: Our last chance');
-                            return resolve(LR.U.getInboxFromRDF(url));
+                            return resolve(DO.U.getInboxFromRDF(url));
                         // }
                     });
                     response.fail(function(xhr, textStatus) {
@@ -313,13 +313,13 @@ var LR = {
             subjectIRI = subjectIRI || url;
             var pIRI = url;
             if (pIRI.slice(0, 5).toLowerCase() != 'https' && document.location.origin != 'null') {
-                pIRI = document.location.origin + '/,proxy?uri=' + LR.U.encodeString(pIRI);
+                pIRI = document.location.origin + '/,proxy?uri=' + DO.U.encodeString(pIRI);
             }
             console.log(pIRI);
             console.log(subjectIRI);
 
             return new Promise(function(resolve, reject) {
-                var g = SimpleRDF(LR.C.Vocab);
+                var g = SimpleRDF(DO.C.Vocab);
                 g.iri(pIRI).get().then(
                     function(i) {
                         var s = i.iri(subjectIRI);
@@ -417,7 +417,7 @@ var LR = {
                 'Content-Type': contentType + '; charset=utf-8',
                 'Link': links
             };
-            data = data || LR.U.getDocument();
+            data = data || DO.U.getDocument();
 
             return new Promise(function(resolve, reject) {
                 var request = $.ajax({
@@ -477,7 +477,7 @@ var LR = {
         //POST an interaction into Container
         createContainerReference: function(containerIRI, slug, noteURL) {
             //Store reference to the interaction at a pod
-            // && LR.C.User.IRI.podURL
+            // && DO.C.User.IRI.podURL
             console.log('POSTing interaction reference');
             var request = $.ajax({
                 method: 'POST',
@@ -519,8 +519,8 @@ var LR = {
     pingback:source <' + source + '> ;\n\
     pingback:property <' + property + '> ;\n\
     pingback:target <' + target + '> ;\n\
-    schema:dateModified "' + LR.U.getDateTimeISO() + '"^^xsd:dateTime ;\n\
-    schema:creator <' + LR.C.User.IRI + '> ;\n\
+    schema:dateModified "' + DO.U.getDateTimeISO() + '"^^xsd:dateTime ;\n\
+    schema:creator <' + DO.C.User.IRI + '> ;\n\
     schema:license <http://creativecommons.org/licenses/by-sa/4.0/> .\n\
 ';
 
@@ -593,8 +593,8 @@ var LR = {
         },
 
         setDocumentMode: function() {
-            if (LR.C.EditorAvailable && LR.U.urlParam('edit') == 'true') {
-                LR.U.Editor.enableEditor();
+            if (DO.C.EditorAvailable && DO.U.urlParam('edit') == 'true') {
+                DO.U.Editor.enableEditor();
                 var url = document.location.href;
                 url = url.substr(0, url.lastIndexOf('?'));
                 window.history.replaceState({}, null, url);
@@ -602,16 +602,16 @@ var LR = {
         },
 
         showDocumentInfo: function() {
-            $('body').append('<aside id="document-menu" class="lr"><button class="show" title="Open Menu">☰</button><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><a target="source-dokieli" href="https://github.com/linkeddata/dokieli">dokieli</a></dd><dd id="about-linked-research"><a target="source-linked-research" href="https://github.com/csarven/linked-research">Linked Research</a></dd></footer></aside>');
+            $('body').append('<aside id="document-menu" class="do"><button class="show" title="Open Menu">☰</button><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><a target="source-dokieli" href="https://github.com/linkeddata/dokieli">dokieli</a></dd><dd id="about-linked-research"><a target="source-linked-research" href="https://github.com/csarven/linked-research">Linked Research</a></dd></footer></aside>');
 
-            $('#document-menu.lr').on('click', '> button.show', LR.U.showDocumentMenu);
-            $('#document-menu.lr').on('click', '> button:not([class="show"])', LR.U.hideDocumentMenu);
+            $('#document-menu.do').on('click', '> button.show', DO.U.showDocumentMenu);
+            $('#document-menu.do').on('click', '> button:not([class="show"])', DO.U.hideDocumentMenu);
         },
 
         //TODO: Redo menu
         showDocumentMenu: function() {
             var body = $('body');
-            var dMenu = $('#document-menu.lr');
+            var dMenu = $('#document-menu.do');
             var dMenuButton = dMenu.find('> button');
             var dInfo = dMenu.find('> div');
 
@@ -620,26 +620,26 @@ var LR = {
             dMenu.addClass('on');
             body.addClass('on-document-menu');
 
-            LR.U.showDocumentDo(dInfo);
-            LR.U.showViews(dInfo);
-            LR.U.showEmbedData(dInfo);
-            LR.U.showTableOfStuff(dInfo);
-            LR.U.showStorage(dInfo);
-            LR.U.showDocumentMetadata(dInfo);
+            DO.U.showDocumentDo(dInfo);
+            DO.U.showViews(dInfo);
+            DO.U.showEmbedData(dInfo);
+            DO.U.showTableOfStuff(dInfo);
+            DO.U.showStorage(dInfo);
+            DO.U.showDocumentMetadata(dInfo);
             if(!body.hasClass("on-slideshow")) {
-                LR.U.showToC();
+                DO.U.showToC();
             }
 
-            $(document).on('keyup', LR.U.eventEscapeDocumentMenu);
-            $(document).on('click', LR.U.eventLeaveDocumentMenu);
+            $(document).on('keyup', DO.U.eventEscapeDocumentMenu);
+            $(document).on('click', DO.U.eventLeaveDocumentMenu);
         },
 
         hideDocumentMenu: function() {
-            $(document).off('keyup', LR.U.eventEscapeDocumentMenu);
-            $(document).off('click', LR.U.eventLeaveDocumentMenu);
+            $(document).off('keyup', DO.U.eventEscapeDocumentMenu);
+            $(document).off('click', DO.U.eventLeaveDocumentMenu);
 
             var body = $('body');
-            var dMenu = $('#document-menu.lr');
+            var dMenu = $('#document-menu.do');
             var dMenuButton = dMenu.find('> button');
 
             dMenu.removeClass('on').find('section').remove();
@@ -651,22 +651,22 @@ var LR = {
             $('#embed-data-entry').remove();
             $('#create-new-document').remove();
             $('#save-as-document').remove();
-//            LR.U.hideStorage();
+//            DO.U.hideStorage();
         },
 
         getDocRefType: function() {
-            LR.C.DocRefType = $('head link[rel="stylesheet"][title]').prop('title');
+            DO.C.DocRefType = $('head link[rel="stylesheet"][title]').prop('title');
 
-            if (Object.keys(LR.C.RefType).indexOf(LR.C.DocRefType) == -1) {
-                LR.C.DocRefType = 'LNCS';
+            if (Object.keys(DO.C.RefType).indexOf(DO.C.DocRefType) == -1) {
+                DO.C.DocRefType = 'LNCS';
             }
         },
 
         showViews: function(node) {
-            var stylesheets = $('head link[rel~="stylesheet"][title]:not([href$="lr.css"])');
+            var stylesheets = $('head link[rel~="stylesheet"][title]:not([href$="do.css"])');
 
             if (stylesheets.length > 1) {
-                var s = '<section id="views" class="lr"><h2>Views</h2><ul>';
+                var s = '<section id="views" class="do"><h2>Views</h2><ul>';
                 stylesheets.each(function(i, stylesheet) {
                     var view = $(this).prop('title');
                     if($(this).is('[rel~="alternate"]')) {
@@ -681,11 +681,11 @@ var LR = {
 
                 $(node).append(s);
 
-                $('#views.lr button').on('click', function(e) {
+                $('#views.do button').on('click', function(e) {
                     var selected = $(this);
-                    var prevStylesheet = $('head link[rel="stylesheet"][title]:not([href$="lr.css"]):not(disabled)').prop('title') || '';
+                    var prevStylesheet = $('head link[rel="stylesheet"][title]:not([href$="do.css"]):not(disabled)').prop('title') || '';
 
-                    $('head link[rel~="stylesheet"][title]:not([href$="lr.css"])').each(function(i, stylesheet) {
+                    $('head link[rel~="stylesheet"][title]:not([href$="do.css"])').each(function(i, stylesheet) {
                         $(this).prop('disabled', true); //XXX: Leave this. WebKit wants to trigger this before for some reason.
 
                         if ($(this).prop('title').toLowerCase() == selected.text().toLowerCase()) {
@@ -696,11 +696,11 @@ var LR = {
                         }
                     });
 
-                    $('#views.lr button:disabled').removeAttr('disabled');
+                    $('#views.do button:disabled').removeAttr('disabled');
                     $(this).prop('disabled', 'disabled');
 
                     if (selected.text().toLowerCase() == 'shower') {
-                        $('.slide').addClass('lr');
+                        $('.slide').addClass('do');
                         $('body').addClass('on-slideshow list');
                         $('head').append('<meta name="viewport" content="width=792, user-scalable=no"/>');
 
@@ -712,13 +712,13 @@ var LR = {
                         dMButton.addClass('show');
                         dMButton.attr('title', 'Open Menu');
                         $('#table-of-contents').remove();
-                        LR.U.hideStorage();
+                        DO.U.hideStorage();
 
                         shower.initRun();
 //                        $('head').append('<script src="scripts/shower.js"></script>');
                     }
                     if (prevStylesheet.toLowerCase() == 'shower') {
-                        $('.slide').removeClass('lr');
+                        $('.slide').removeClass('do');
                         $('body').removeClass('on-slideshow list full');
                         $('body').removeAttr('style');
                         $('head meta[name="viewport"][content="width=792, user-scalable=no"]').remove();
@@ -735,28 +735,28 @@ var LR = {
         },
 
         showEmbedData: function(node) {
-            $(node).append('<section id="embed-data-in-html" class="lr"><h2>Data</h2><ul><li><button class="embed-data-meta">Embed</button></li></ul></section>');
+            $(node).append('<section id="embed-data-in-html" class="do"><h2>Data</h2><ul><li><button class="embed-data-meta">Embed</button></li></ul></section>');
 
             $('#embed-data-in-html').on('click', 'button', function(e){
-                var scriptCurrent = $('head script[id^="meta-"][class="lr"]');
+                var scriptCurrent = $('head script[id^="meta-"][class="do"]');
 
                 var scriptType = {
                     'meta-turtle': {
-                        scriptStart: '<script id="meta-turtle" class="lr" type="text/turtle" title="Turtle">',
-                        cdataStart: '# ' + LR.C.CDATAStart + '\n',
-                        cdataEnd: '\n# ' + LR.C.CDATAEnd,
+                        scriptStart: '<script id="meta-turtle" class="do" type="text/turtle" title="Turtle">',
+                        cdataStart: '# ' + DO.C.CDATAStart + '\n',
+                        cdataEnd: '\n# ' + DO.C.CDATAEnd,
                         scriptEnd: '</script>'
                     },
                     'meta-json-ld': {
-                        scriptStart: '<script id="meta-json-ld" class="lr" type="application/json+ld" title="JSON-LD">',
-                        cdataStart: LR.C.CDATAStart,
-                        cdataEnd: LR.C.CDATAEnd,
+                        scriptStart: '<script id="meta-json-ld" class="do" type="application/json+ld" title="JSON-LD">',
+                        cdataStart: DO.C.CDATAStart,
+                        cdataEnd: DO.C.CDATAEnd,
                         scriptEnd: '</script>'
                     },
                     'meta-nanopublication': {
-                        scriptStart: '<script id="meta-nanopublication" class="lr" type="application/trig" title="Nanopublication">',
-                        cdataStart: '# ' + LR.C.CDATAStart + '\n',
-                        cdataEnd: '\n# ' + LR.C.CDATAEnd,
+                        scriptStart: '<script id="meta-nanopublication" class="do" type="application/trig" title="Nanopublication">',
+                        cdataStart: '# ' + DO.C.CDATAStart + '\n',
+                        cdataEnd: '\n# ' + DO.C.CDATAEnd,
                         scriptEnd: '</script>'
                     }
                 }
@@ -775,7 +775,7 @@ var LR = {
                     };
                 });
 
-                var embedMenu = '<aside id="embed-data-entry" class="lr on"><button class="close">❌</button>\n\
+                var embedMenu = '<aside id="embed-data-entry" class="do on"><button class="close">❌</button>\n\
                 <h2>Embed Data</h2>\n\
                 <nav><ul><li class="selected"><a href="#embed-data-turtle">Turtle</a></li><li><a href="#embed-data-json-ld">JSON-LD</a></li><li><a href="#embed-data-nanopublication">Nanopublication</a></li></ul></nav>\n\
                 <div id="embed-data-turtle" class="selected"><textarea placeholder="Enter data in text/turtle" name="meta-turtle" cols="80" rows="24">' + ((scriptCurrentData['meta-turtle']) ? scriptCurrentData['meta-turtle'].content : '') + '</textarea><button class="save">Save</button></div>\n\
@@ -825,14 +825,14 @@ var LR = {
         },
 
         showTableOfStuff: function(node) {
-            $(node).append('<section id="table-of-stuff" class="lr"><h2>Table of Stuff</h2><ul><li><input id="t-o-content" type="checkbox"/><label for="t-o-content">Contents</label></li><li><input id="t-o-figure" type="checkbox"/><label for="t-o-figure">Figures</label></li><li><input id="t-o-table" type="checkbox"/><label for="t-o-table">Tables</label></li><li><input id="t-o-abbr" type="checkbox"/><label for="t-o-abbr">Abbreviations</label></li></ul></section>');
+            $(node).append('<section id="table-of-stuff" class="do"><h2>Table of Stuff</h2><ul><li><input id="t-o-content" type="checkbox"/><label for="t-o-content">Contents</label></li><li><input id="t-o-figure" type="checkbox"/><label for="t-o-figure">Figures</label></li><li><input id="t-o-table" type="checkbox"/><label for="t-o-table">Tables</label></li><li><input id="t-o-abbr" type="checkbox"/><label for="t-o-abbr">Abbreviations</label></li></ul></section>');
 
             $('#table-of-stuff').on('click', 'input', function(e){
                 var id = $(this).prop('id');
                 var listType = id.slice(4, id.length);
 
                 if($(this).prop('checked')) {
-                    LR.U.buildTableOfStuff(listType);
+                    DO.U.buildTableOfStuff(listType);
                 }
                 else {
                     $('#table-of-'+listType+'s').remove();
@@ -846,7 +846,7 @@ var LR = {
 
         showDocumentMetadata: function(node) {
             var content = $('#content');
-            var count = LR.U.contentCount(content);
+            var count = DO.U.contentCount(content);
 
             var contributors = '<ul class="contributors">';
             $('#authors *[rel*="contributor"]').each(function(i,contributor) {
@@ -862,7 +862,7 @@ var LR = {
 //                documentID = '';
 //            }
 
-            var s = '<section id="document-metadata" class="lr"><table>\n\
+            var s = '<section id="document-metadata" class="do"><table>\n\
                 <caption>Document Metadata</caption>\n\
                 <tbody>\n\
                     <tr><th>Authors</th><td>' + contributors + '</td></tr>\n\
@@ -897,17 +897,17 @@ var LR = {
                 var sortable = '';
                 var isSortable = ($('head script[src$="html.sortable.min.js"]').length > 0) ? true : false;
 
-                if(isSortable && LR.C.User.IRI) {
+                if(isSortable && DO.C.User.IRI) {
                     sortable = ' sortable';
                 }
 
-                s += '<aside id="toc" class="lr on' + sortable + '"><button class="close">❌</button><h2>Table of Contents</h2><ol class="toc' + sortable + '">';
-                s += LR.U.getListOfSections(section, isSortable);
+                s += '<aside id="toc" class="do on' + sortable + '"><button class="close">❌</button><h2>Table of Contents</h2><ol class="toc' + sortable + '">';
+                s += DO.U.getListOfSections(section, isSortable);
                 s += '</ol></aside>';
 
                 $('body').append(s);
-                if(isSortable && LR.C.User.IRI) {
-                    LR.U.sortToC();
+                if(isSortable && DO.C.User.IRI) {
+                    DO.U.sortToC();
                 }
             }
         },
@@ -1054,7 +1054,7 @@ var LR = {
                     s += '<div><ol class="toc">';
 
                     if (element == 'content') {
-                        s += LR.U.getListOfSections($('h1 ~ div section:not([class~="slide"])'), false);
+                        s += DO.U.getListOfSections($('h1 ~ div section:not([class~="slide"])'), false);
                     }
                     else {
                         if (element == 'abbr') {
@@ -1121,13 +1121,13 @@ var LR = {
 
         eventEscapeDocumentMenu: function(e) {
             if (e.keyCode == 27) { // Escape
-                LR.U.hideDocumentMenu();
+                DO.U.hideDocumentMenu();
             }
         },
 
         eventLeaveDocumentMenu: function(e) {
-            if (!$(e.target).closest('aside.lr.on').length) {
-                LR.U.hideDocumentMenu();
+            if (!$(e.target).closest('aside.do.on').length) {
+                DO.U.hideDocumentMenu();
             }
         },
 
@@ -1150,9 +1150,9 @@ var LR = {
         showFragment: function() {
             $(document).on({
                 mouseenter: function () {
-                    if($('#'+this.id+' > .lr.fragment').length == 0 && this.parentNode.nodeName.toLowerCase() != 'aside'){
-                        $('#'+this.id).prepend('<span class="lr fragment" style="height:' + this.clientHeight + 'px; "><a href="#' + this.id + '">' + '🔗' + '</a></span>');
-                        var fragment = $('#'+this.id+' > .lr.fragment');
+                    if($('#'+this.id+' > .do.fragment').length == 0 && this.parentNode.nodeName.toLowerCase() != 'aside'){
+                        $('#'+this.id).prepend('<span class="do fragment" style="height:' + this.clientHeight + 'px; "><a href="#' + this.id + '">' + '🔗' + '</a></span>');
+                        var fragment = $('#'+this.id+' > .do.fragment');
                         var fragmentClientWidth = fragment.get(0).clientWidth;
                         fragment.css({
                             'top': 'calc(' + Math.ceil($(this).position().top) + 'px)',
@@ -1162,7 +1162,7 @@ var LR = {
                     }
                 },
                 mouseleave: function () {
-                    $('#'+this.id+' > .lr.fragment').remove();
+                    $('#'+this.id+' > .do.fragment').remove();
                     $('#'+this.id).filter('[class=""]').removeAttr('class');
                 }
             }, '#content *[id], #interactions *[id]');
@@ -1205,7 +1205,7 @@ var LR = {
                     for (var i = 0; i < node.childNodes.length; i++) out += dumpNode(node.childNodes[i]);
                 }
                 else if (1 === node.nodeType) {
-                    if (!(node.hasAttribute('class') && (node.getAttribute('class').split(' ').indexOf('lr') > -1 || node.getAttribute('class').split(' ').indexOf('firebugResetStyles') > -1))) {
+                    if (!(node.hasAttribute('class') && (node.getAttribute('class').split(' ').indexOf('do') > -1 || node.getAttribute('class').split(' ').indexOf('firebugResetStyles') > -1))) {
                         var ename = node.nodeName.toLowerCase() ;
                         out += "<" + ename ;
                         //XXX: Regardless of the location of @lang, ends up at the end
@@ -1217,7 +1217,7 @@ var LR = {
                                 atn.value = atn.value.replace(/(on-document-menu)/, '').trim();
                             }
                             if (!(atn.name == 'class' && atn.value == '')) {
-                                out += ' ' + atn.name + "=\"" + LR.U.htmlEntities(atn.value) + "\"";
+                                out += ' ' + atn.name + "=\"" + DO.U.htmlEntities(atn.value) + "\"";
                             }
                         }
                         if (selfClosing[ename]) { out += " />"; }
@@ -1237,7 +1237,7 @@ var LR = {
                 else if (3 === node.nodeType || 4 === node.nodeType) {
                     //XXX: Remove new lines which were added after DOM ready
                     var nl = node.nodeValue.replace(/\n+$/, '');
-                    out += noEsc[noEsc.length - 1] ? nl : LR.U.htmlEntities(nl);
+                    out += noEsc[noEsc.length - 1] ? nl : DO.U.htmlEntities(nl);
                 }
                 else {
                     console.log("Warning; Cannot handle serialising nodes of type: " + node.nodeType);
@@ -1249,12 +1249,12 @@ var LR = {
         },
 
         exportAsHTML: function() {
-            var data = LR.U.getDocument();
+            var data = DO.U.getDocument();
             //XXX: Encodes strings as UTF-8. Consider storing bytes instead?
             var blob = new Blob([data], {type:'text/html;charset=utf-8'});
             var pattern = /[^\w]+/ig;
             var title = $('h1').text().toLowerCase().replace(pattern, '-') || "index";
-            var timestamp = LR.U.getDateTimeISO().replace(pattern, '') || "now";
+            var timestamp = DO.U.getDateTimeISO().replace(pattern, '') || "now";
 
             var fileName = title + '.' + timestamp + '.html';
 
@@ -1275,22 +1275,22 @@ var LR = {
         },
 
         showDocumentDo: function(node) {
-            var s = '<section id="document-do" class="lr"><h2>Do</h2><ul>';
+            var s = '<section id="document-do" class="do"><h2>Do</h2><ul>';
 
-            if (LR.C.EditorAvailable) {
+            if (DO.C.EditorAvailable) {
                 var editFile = '';
-                if (LR.C.EditorEnabled) {
-                    editFile = LR.C.Editor.DisableEditorButton;
+                if (DO.C.EditorEnabled) {
+                    editFile = DO.C.Editor.DisableEditorButton;
                 }
                 else {
-                    editFile = LR.C.Editor.EnableEditorButton;
+                    editFile = DO.C.Editor.EnableEditorButton;
                 }
 
                 s += '<li>' + editFile + '</li>';
             }
 
             var buttonDisabled = '';
-            if (LR.C.User.IRI == null) {
+            if (DO.C.User.IRI == null) {
                 buttonDisabled = ' disabled="disabled"';
             }
             s += '<li><button class="new-file-html"'+buttonDisabled+'>New</button></li>';
@@ -1304,55 +1304,55 @@ var LR = {
 
             $(node).append(s);
 
-            if (LR.C.EditorAvailable) {
+            if (DO.C.EditorAvailable) {
                 $('#document-do').on('click', 'button.editor-enable', function(e) {
-                    $(this).parent().html(LR.C.Editor.DisableEditorButton);
-                    LR.U.Editor.enableEditor();
+                    $(this).parent().html(DO.C.Editor.DisableEditorButton);
+                    DO.U.Editor.enableEditor();
                 });
                 $('#document-do').on('click', 'button.editor-disable', function(e) {
-                    $(this).parent().html(LR.C.Editor.EnableEditorButton);
-                    LR.U.Editor.disableEditor();
+                    $(this).parent().html(DO.C.Editor.EnableEditorButton);
+                    DO.U.Editor.disableEditor();
                 });
             }
 
-            $('#document-do').on('click', '.new-file-html', LR.U.createNewDocument);
+            $('#document-do').on('click', '.new-file-html', DO.U.createNewDocument);
             $('#document-do').on('click', '.update-file-html', function() {
-                LR.U.putResource().then(
+                DO.U.putResource().then(
                     function(i) {
-                        LR.U.hideDocumentMenu();
+                        DO.U.hideDocumentMenu();
                     },
                     function(reason) {
                         console.log(reason);
                     }
                 );
             });
-            $('#document-do').on('click', '.save-as-file-html', LR.U.saveAsDocument);
+            $('#document-do').on('click', '.save-as-file-html', DO.U.saveAsDocument);
 
-            $('#document-do').on('click', '.export-file-html', LR.U.exportAsHTML);
+            $('#document-do').on('click', '.export-file-html', DO.U.exportAsHTML);
 
             $('#document-do').on('click', '.print-file-html', function(e) {
-                LR.U.hideDocumentMenu();
+                DO.U.hideDocumentMenu();
                 window.print();
                 return false;
             });
         },
 
         createNewDocument: function() {
-            $('body').append('<aside id="create-new-document" class="lr on"><button class="close">❌</button><h2>Create New Document</h2><label>URL to save to</label><input id="storage" type="text" placeholder="http://example.org/article" value="" name="storage"/> <button class="create">Create</button></aside>');
+            $('body').append('<aside id="create-new-document" class="do on"><button class="close">❌</button><h2>Create New Document</h2><label>URL to save to</label><input id="storage" type="text" placeholder="http://example.org/article" value="" name="storage"/> <button class="create">Create</button></aside>');
 
             $('#create-new-document').on('click', 'button.create', function(e) {
                 var storageIRI = $(this).parent().find('input#storage').val().trim();
 
                 var html = document.documentElement.cloneNode(true);
                 $(html).find('main > article').empty();
-                html = LR.U.getDocument(html);
+                html = DO.U.getDocument(html);
 
                 var w = window.open('', '_blank');
 
-                LR.U.putResource(storageIRI, html).then(
+                DO.U.putResource(storageIRI, html).then(
                     function(i) {
                         console.log(i);
-                        LR.U.hideDocumentMenu();
+                        DO.U.hideDocumentMenu();
                         w.location.href = storageIRI + '?edit=true';
                     },
                     function(reason) {
@@ -1363,19 +1363,19 @@ var LR = {
         },
 
         saveAsDocument: function() {
-            $('body').append('<aside id="save-as-document" class="lr on"><button class="close">❌</button><h2>Save As Document</h2><label>URL to save to</label><input id="storage" type="text" placeholder="http://example.org/article" value="" name="storage"/> <button class="create">Save</button></aside>');
+            $('body').append('<aside id="save-as-document" class="do on"><button class="close">❌</button><h2>Save As Document</h2><label>URL to save to</label><input id="storage" type="text" placeholder="http://example.org/article" value="" name="storage"/> <button class="create">Save</button></aside>');
 
             $('#save-as-document').on('click', 'button.create', function(e) {
                 var storageIRI = $(this).parent().find('input#storage').val().trim();
 
-                html = LR.U.getDocument();
+                html = DO.U.getDocument();
 
                 var w = window.open('', '_blank');
 
-                LR.U.putResource(storageIRI, html).then(
+                DO.U.putResource(storageIRI, html).then(
                     function(i) {
                         console.log(i);
-                        LR.U.hideDocumentMenu();
+                        DO.U.hideDocumentMenu();
                         w.location.href = storageIRI;
                     },
                     function(reason) {
@@ -1387,78 +1387,78 @@ var LR = {
 
         initStorage: function(item) {
             if (typeof window.localStorage != 'undefined') {
-                LR.U.enableStorage(item);
+                DO.U.enableStorage(item);
             }
         },
         enableStorage: function(item) {
-            LR.C.UseStorage = true;
+            DO.C.UseStorage = true;
             if(localStorage.getItem(item)) {
                 document.documentElement.innerHTML = localStorage.getItem(item);
             }
-            console.log(LR.U.getDateTimeISO() + ': Storage enabled.');
-            LR.U.enableAutoSave(item);
+            console.log(DO.U.getDateTimeISO() + ': Storage enabled.');
+            DO.U.enableAutoSave(item);
         },
         disableStorage: function(item) {
-            LR.C.UseStorage = false;
+            DO.C.UseStorage = false;
             localStorage.removeItem(item);
-            LR.U.disableAutoSave(item);
-            console.log(LR.U.getDateTimeISO() + ': Storage disabled.');
+            DO.U.disableAutoSave(item);
+            console.log(DO.U.getDateTimeISO() + ': Storage disabled.');
         },
         saveStorage: function(item) {
             switch(item) {
                 case 'html': default:
-                    var object = LR.U.getDocument();
+                    var object = DO.U.getDocument();
                     break;
             }
             localStorage.setItem(item, object);
-            console.log(LR.U.getDateTimeISO() + ': Document saved.');
+            console.log(DO.U.getDateTimeISO() + ': Document saved.');
         },
         enableAutoSave: function(item) {
-            LR.C.AutoSaveId = setInterval(function() { LR.U.saveStorage(item) }, LR.C.AutoSaveTimer);
-            console.log(LR.U.getDateTimeISO() + ': Autosave enabled.');
+            DO.C.AutoSaveId = setInterval(function() { DO.U.saveStorage(item) }, DO.C.AutoSaveTimer);
+            console.log(DO.U.getDateTimeISO() + ': Autosave enabled.');
         },
         disableAutoSave: function(item) {
-            clearInterval(LR.C.AutoSaveId);
-            console.log(LR.U.getDateTimeISO() + ': Autosave disabled.');
+            clearInterval(DO.C.AutoSaveId);
+            console.log(DO.U.getDateTimeISO() + ': Autosave disabled.');
         },
         showStorage: function(node) {
             if (typeof window.localStorage != 'undefined') {
                 var useStorage = '';
 
-                if (LR.C.UseStorage) {
-                    useStorage = LR.C.DisableStorageButtons;
+                if (DO.C.UseStorage) {
+                    useStorage = DO.C.DisableStorageButtons;
                 }
                 else {
-                    useStorage = LR.C.EnableStorageButtons;
+                    useStorage = DO.C.EnableStorageButtons;
                 }
 
-                $(node).append('<section id="local-storage" class="lr"><h2>Local Storage</h2>\n\
+                $(node).append('<section id="local-storage" class="do"><h2>Local Storage</h2>\n\
                 <p>' + useStorage + '</p>\n\
                 </section>');
 
                 $('#local-storage').on('click', 'button.local-storage-enable-html', function(e) {
-                    $(this).parent().html(LR.C.DisableStorageButtons);
-                    LR.U.enableStorage('html');
+                    $(this).parent().html(DO.C.DisableStorageButtons);
+                    DO.U.enableStorage('html');
                 });
                 $('#local-storage').on('click', 'button.local-storage-disable-html', function(e) {
-                    $(this).parent().html(LR.C.EnableStorageButtons);
-                    LR.U.disableStorage('html');
+                    $(this).parent().html(DO.C.EnableStorageButtons);
+                    DO.U.disableStorage('html');
                 });
                 $('#local-storage').on('click', 'input.autosave', function(e) {
                     if ($(this).attr('checked') == 'checked') {
                         $(this).removeAttr('checked');
-                        LR.U.disableAutoSave('html');
+                        DO.U.disableAutoSave('html');
                     }
                     else {
                         $(this).attr('checked', 'checked');
-                        LR.U.enableAutoSave('html');
+                        DO.U.enableAutoSave('html');
                     }
                 });
             }
         },
         hideStorage: function() {
-            if (LR.C.UseStorage) {
-                $('#local-storage.lr').remove();
+            if (DO.C.UseStorage) {
+                $('#local-storage.do').remove();
             }
         },
 
@@ -1470,7 +1470,7 @@ var LR = {
         createAttributeDateTime: function(element) {
             //Creates datetime attribute.
             //TODO: Include @data-author for the signed in user e.g., WebID or URL.
-            var a = LR.U.getDateTimeISO();
+            var a = DO.U.getDateTimeISO();
 
             switch(element) {
                 case 'mark': case 'article':
@@ -1493,7 +1493,7 @@ var LR = {
 
         buildReferences: function() {
             if ($('#references ol').length == 0) {
-                //XXX: Not the best way of doing this, but it allows LR references to be added to the right place.
+                //XXX: Not the best way of doing this, but it allows DO references to be added to the right place.
                 $('#references').append('\n<ol>\n</ol>\n');
 
                 $('#content span.ref').each(function(i,v) {
@@ -1514,12 +1514,12 @@ var LR = {
                         }
                     }
 
-                    v.outerHTML = ' ' + LR.C.RefType[LR.C.DocRefType].InlineOpen + '<a class="ref" href="#ref-' + refId + '">' + refId + '</a>' + LR.C.RefType[LR.C.DocRefType].InlineClose;
+                    v.outerHTML = ' ' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a class="ref" href="#ref-' + refId + '">' + refId + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose;
 
                     $('#references ol').append('\n    <li id="ref-' + refId + '"></li>');
 
-                    if($(v).hasClass('lr')) {
-                        LR.U.getLinkedResearch(href, $('#references #ref-' + refId));
+                    if($(v).hasClass('do')) {
+                        DO.U.getLinkedResearch(href, $('#references #ref-' + refId));
                     }
                     else {
                         $('#references #ref-' + refId).html(referenceText + referenceLink);
@@ -1540,7 +1540,7 @@ WHERE {\n\
     OPTIONAL { <" + iri + "> schema:name ?prefLabel . }\n\
     OPTIONAL { <" + iri + "> skos:notation ?prefLabel . }\n\
     OPTIONAL { <" + iri + "> dcterms:identifier ?prefLabel . }\n\
-    FILTER (LANG(?prefLabel) = '' || LANGMATCHES(LANG(?prefLabel), '" + LR.C.Lang + "'))\n\
+    FILTER (LANG(?prefLabel) = '' || LANGMATCHES(LANG(?prefLabel), '" + DO.C.Lang + "'))\n\
 }\n\
 LIMIT 1";
 
@@ -1568,11 +1568,11 @@ LIMIT 1";
             d.on({
                 mouseenter: function () {
                     var c = $(this).prop('class');
-                    d.find('*[class="'+ c +'"]').addClass('lr highlight');
+                    d.find('*[class="'+ c +'"]').addClass('do highlight');
                 },
                 mouseleave: function () {
                     var c = $(this).prop('class');
-                    d.find('*[class="'+ c +'"]').removeClass('lr highlight');
+                    d.find('*[class="'+ c +'"]').removeClass('do highlight');
                 }
             }, '*[class*="highlight-"]');
         },
@@ -1589,7 +1589,7 @@ LIMIT 1";
                 return (document.getElementById(string)) ? string + '-x' : string;
             }
             else {
-                return LR.U.generateUUID();
+                return DO.U.generateUUID();
             }
         },
 
@@ -1633,7 +1633,7 @@ LIMIT 1";
 
                     //FIXME: the noteId parameter for positionNote shouldn't
                     //rely on refLabel. Grab it from somewhere else.
-                    LR.U.positionNote(refId, refLabel, refLabel);
+                    DO.U.positionNote(refId, refLabel, refLabel);
                 });
             });
         },
@@ -1698,14 +1698,14 @@ console.log(viewportWidthSplit);
         Editor: {
             disableEditor: function() {
         //        _mediumEditors[1].destroy();
-                LR.C.EditorEnabled = false;
-                return LR.U.Editor.MediumEditor.destroy();
+                DO.C.EditorEnabled = false;
+                return DO.U.Editor.MediumEditor.destroy();
             },
 
             enableEditor: function() {
                 //XXX: Consider this as the main wrapper for the editor tool.
                 if (!document.getElementById('document-editor')) {
-                    $('body').append('<aside id="document-editor" class="lr"/>');
+                    $('body').append('<aside id="document-editor" class="do"/>');
                 }
         //        $('article:nth(0)').addClass('editable');
 
@@ -1715,7 +1715,7 @@ console.log(viewportWidthSplit);
                 pText = pText[Math.floor(Math.random() * pText.length)];
 
                 if (typeof MediumEditor !== 'undefined') {
-                    LR.U.Editor.MediumEditor = new MediumEditor(editableNodes, {
+                    DO.U.Editor.MediumEditor = new MediumEditor(editableNodes, {
                         elementsContainer: document.getElementById('document-editor'),
                         placeholder: {
                             text: pText
@@ -1792,7 +1792,7 @@ console.log(viewportWidthSplit);
 
 
                         // anchor: {
-                            // customClassOption: 'lr ref',
+                            // customClassOption: 'do ref',
                             // customClassOptionText: 'Citation'
                             // linkValidation: false,
                             // placeholderText: 'Paste or type a link',
@@ -1804,31 +1804,31 @@ console.log(viewportWidthSplit);
                         anchorPreview: false,
 
                         extensions: {
-                            'h2': new LR.U.Editor.Button({action:'h2', label:'h2'}),
-                            'h3': new LR.U.Editor.Button({action:'h3', label:'h3'}),
-                            'h4': new LR.U.Editor.Button({action:'h4', label:'h4'}),
+                            'h2': new DO.U.Editor.Button({action:'h2', label:'h2'}),
+                            'h3': new DO.U.Editor.Button({action:'h3', label:'h3'}),
+                            'h4': new DO.U.Editor.Button({action:'h4', label:'h4'}),
 
-                            'em': new LR.U.Editor.Button({action:'em', label:'em'}),
-                            'strong': new LR.U.Editor.Button({action:'strong', label:'strong'}),
-                            'code': new LR.U.Editor.Button({action:'code', label:'code'}),
+                            'em': new DO.U.Editor.Button({action:'em', label:'em'}),
+                            'strong': new DO.U.Editor.Button({action:'strong', label:'strong'}),
+                            'code': new DO.U.Editor.Button({action:'code', label:'code'}),
 
-                            'cite': new LR.U.Editor.Button({action:'cite', label:'cite'}),
-                            'q': new LR.U.Editor.Button({action:'q', label:'q'}),
+                            'cite': new DO.U.Editor.Button({action:'cite', label:'cite'}),
+                            'q': new DO.U.Editor.Button({action:'q', label:'q'}),
 
-                            'mark': new LR.U.Editor.Button({action:'mark', label:'mark'}),
-                            'note': new LR.U.Editor.Note({action:'article', label:'note'}),
+                            'mark': new DO.U.Editor.Button({action:'mark', label:'mark'}),
+                            'note': new DO.U.Editor.Note({action:'article', label:'note'}),
 
                             //XXX: Interesting for editor
-                            // 'del': new LR.U.Editor.Button({action:'del', label:'del'}),
-                            // 'ins': new LR.U.Editor.Button({action:'ins', label:'ins'})
+                            // 'del': new DO.U.Editor.Button({action:'del', label:'del'}),
+                            // 'ins': new DO.U.Editor.Button({action:'ins', label:'ins'})
 
                             'table': new MediumEditorTable()
             //                'spreadsheet': new MediumEditorSpreadsheet()
                         }
                     });
 
-                    LR.C.EditorEnabled = true;
-                    return LR.U.Editor.MediumEditor;
+                    DO.C.EditorEnabled = true;
+                    return DO.U.Editor.MediumEditor;
             //            $('.editable').mediumInsert({
             //                editor: editor
             //            });
@@ -1870,16 +1870,16 @@ console.log(viewportWidthSplit);
                             this.button = this.createButton();
                             this.on(this.button, 'click', this.handleClick.bind(this));
 
-                            //TODO: Listen to section hX changes and update section @id and span @class lr.fragment
+                            //TODO: Listen to section hX changes and update section @id and span @class do.fragment
                         },
 
                         // getButton: function() {
-                        //     console.log('LR.U.Editor.Button.Note.getButton()');
+                        //     console.log('DO.U.Editor.Button.Note.getButton()');
                         //     return this.button;
                         // },
 
                         handleClick: function(event) { //, editable
-                //console.log('LR.U.Editor.Button.handleClick()');
+                //console.log('DO.U.Editor.Button.handleClick()');
                 console.log(this);
                             event.preventDefault();
                             event.stopPropagation();
@@ -1910,11 +1910,11 @@ console.log(viewportWidthSplit);
                                 return this.base.execAction('removeFormat');
                             }
                             else {
-                                var datetime = ' ' + LR.U.createAttributeDateTime(this.action);
+                                var datetime = ' ' + DO.U.createAttributeDateTime(this.action);
 
                                 this.base.selectedDocument = this.document;
                                 this.base.selection = MediumEditor.selection.getSelectionHtml(this.base.selectedDocument);
-                                //.replace(LR.C.Editor.regexEmptyHTMLTags, '');
+                                //.replace(DO.C.Editor.regexEmptyHTMLTags, '');
                                 console.log('this.base.selection:');
                                 console.log(this.base.selection);
 
@@ -1936,7 +1936,7 @@ console.log(viewportWidthSplit);
                                         var parentSectionHeading = '';
                                         for (var i = 0; i < parentSection.childNodes.length; i++) {
                                             parentSectionHeading = parentSection.childNodes[i].nodeName.toLowerCase();
-                                            if(LR.C.Editor.headings.indexOf(parentSectionHeading) > 0) {
+                                            if(DO.C.Editor.headings.indexOf(parentSectionHeading) > 0) {
                     //                            console.log(parentSectionHeading);
                                                 break;
                                             }
@@ -1970,7 +1970,7 @@ console.log(viewportWidthSplit);
 
                     console.log(range);
                                             //Section
-                                            var sectionId = LR.U.generateAttributeId(null, this.base.selection);
+                                            var sectionId = DO.U.generateAttributeId(null, this.base.selection);
                                             var section = document.createElement('section');
                                             section.id = sectionId;
                                             section.setAttribute('rel', 'schema:hasPart');
@@ -2033,7 +2033,7 @@ console.log(viewportWidthSplit);
                                                         //TODO: There should be a simpler way to do wrap <p> (w/o jQuery)
                                                         var xSPE = document.createElement(sPE);
                                                         xSPE.appendChild(fragment.cloneNode(true));
-                                                        fragment = LR.U.fragmentFromString(xSPE.outerHTML);
+                                                        fragment = DO.U.fragmentFromString(xSPE.outerHTML);
                                                         break;
                                                     //TODO: Other cases?
                                                 }
@@ -2125,7 +2125,7 @@ console.log(viewportWidthSplit);
                                     //     MediumEditor.util.insertHTMLCommand(this.base.selectedDocument, selectionUpdated);
 
                                     //     //Show Form for text entry;
-                                    //     LR.U.Editor.Note();
+                                    //     DO.U.Editor.Note();
                                     //     break;
 
                                     default:
@@ -2384,8 +2384,8 @@ console.log(viewportWidthSplit);
                             this.base.restoreSelection();
                             var range = MediumEditor.selection.getSelectionRange(this.document);
                 //            this.execAction(this.action, opts);
-                            var datetime = LR.U.getDateTimeISO();
-                            var id = LR.U.generateAttributeId().slice(0, 6);
+                            var datetime = DO.U.getDateTimeISO();
+                            var id = DO.U.generateAttributeId().slice(0, 6);
                             var refId = 'r-' + id;
 
                             //TODO: noteId can be external to this document e.g., User stores the note at their own space
@@ -2398,17 +2398,17 @@ console.log(viewportWidthSplit);
 
                             //XXX: Preferring masterWorkspace over the others. Good/bad idea?
                             //Need more granular workspace selection, e.g., PublicAnnotations. Defaulting to PublicWorkspace if no masterWorkspace
-                            if (typeof LR.C.User.masterWorkspace != 'undefined' && LR.C.User.masterWorkspace.length > 0) {
-                                containerIRI = LR.C.User.masterWorkspace + LR.C.InteractionPath;
+                            if (typeof DO.C.User.masterWorkspace != 'undefined' && DO.C.User.masterWorkspace.length > 0) {
+                                containerIRI = DO.C.User.masterWorkspace + DO.C.InteractionPath;
                             }
                             else {
-                                if (typeof LR.C.User.Workspace != 'undefined') {
-                                    if (typeof LR.C.User.Workspace.Master != 'undefined' && LR.C.User.Workspace.Master.length > 0) {
-                                        containerIRI = LR.C.User.Workspace.Master + LR.C.InteractionPath;
+                                if (typeof DO.C.User.Workspace != 'undefined') {
+                                    if (typeof DO.C.User.Workspace.Master != 'undefined' && DO.C.User.Workspace.Master.length > 0) {
+                                        containerIRI = DO.C.User.Workspace.Master + DO.C.InteractionPath;
                                     }
                                     else {
-                                        if (typeof LR.C.User.Workspace.Public != 'undefined' && LR.C.User.Workspace.Public.length > 0) {
-                                            containerIRI = LR.C.User.Workspace.Public + LR.C.InteractionPath;
+                                        if (typeof DO.C.User.Workspace.Public != 'undefined' && DO.C.User.Workspace.Public.length > 0) {
+                                            containerIRI = DO.C.User.Workspace.Public + DO.C.InteractionPath;
                                         }
                                     }
                                 }
@@ -2424,7 +2424,7 @@ console.log(viewportWidthSplit);
 
                             //Mark the text which the note was left for (with reference to the note?)
                             this.base.selectedDocument = this.document;
-                            this.base.selection = MediumEditor.selection.getSelectionHtml(this.base.selectedDocument); //.replace(LR.C.Editor.regexEmptyHTMLTags, '');
+                            this.base.selection = MediumEditor.selection.getSelectionHtml(this.base.selectedDocument); //.replace(DO.C.Editor.regexEmptyHTMLTags, '');
                             console.log('this.base.selection:');
                             console.log(this.base.selection);
 
@@ -2436,7 +2436,7 @@ console.log(viewportWidthSplit);
                                     ref = '<span class="ref" about="[this:#' + refId + ']" typeof="http://purl.org/dc/dcmitype/Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span><sup class="ref-footnote"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup></span>';
                                     break;
                                 case 'reference':
-                                    ref = '<span class="ref" about="[this:#' + refId + ']" typeof="http://purl.org/dc/dcmitype/Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span> <span class="ref-reference">' + LR.C.RefType[LR.C.DocRefType].InlineOpen + '<a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a>' + LR.C.RefType[LR.C.DocRefType].InlineClose + '</span></span>';
+                                    ref = '<span class="ref" about="[this:#' + refId + ']" typeof="http://purl.org/dc/dcmitype/Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span> <span class="ref-reference">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span></span>';
                                     break;
                             }
 
@@ -2453,19 +2453,19 @@ console.log(viewportWidthSplit);
                             // <span about="[this:#' + refId + ']" rel="oa:hasState">(timeState: <time typeof="oa:TimeState" datetime="' + datetime +'" datatype="xsd:dateTime"property="oa:sourceDate">' + datetime + '</time>)</span>\n\
 
                             var userName = 'Anonymous';
-                            if (LR.C.User.Name) {
+                            if (DO.C.User.Name) {
                                 //XXX: We have the IRI already
-                                userName = '<span about="' + LR.C.User.IRI + '" property="schema:name">' + LR.C.User.Name + '</span>';
+                                userName = '<span about="' + DO.C.User.IRI + '" property="schema:name">' + DO.C.User.Name + '</span>';
                             }
 
                             var userImage = '';
-                            if (LR.C.User.Image) {
-                                userImage = '<img rel="schema:image" src="' + LR.C.User.Image + '" width="32" height="32"/>';
+                            if (DO.C.User.Image) {
+                                userImage = '<img rel="schema:image" src="' + DO.C.User.Image + '" width="32" height="32"/>';
                             }
 
                             var user = ''
-                            if (LR.C.User.IRI) {
-                                user = '<span about="' + LR.C.User.IRI + '" typeof="schema:Person">' + userImage + ' <a rel="schema:url" href="' + LR.C.User.IRI + '"> ' + userName + '</a></span>';
+                            if (DO.C.User.IRI) {
+                                user = '<span about="' + DO.C.User.IRI + '" typeof="schema:Person">' + userImage + ' <a rel="schema:url" href="' + DO.C.User.IRI + '"> ' + userName + '</a></span>';
                             }
                             else {
                                 user = '<span typeof="schema:Person">' + userName + '</span>';
@@ -2493,19 +2493,19 @@ console.log(viewportWidthSplit);
                             var nES = selectedParentElement.nextElementSibling;
                             //Check if <aside class="note"> exists
                             if(nES && nES.nodeName.toLowerCase() == 'aside' && nES.classList.contains('note')) {
-                                var noteNode = LR.U.fragmentFromString(note);
+                                var noteNode = DO.U.fragmentFromString(note);
                                 nES.appendChild(noteNode);
                             }
-                            else {// id="n-' + LR.U.generateAttributeId() + '"
+                            else {// id="n-' + DO.U.generateAttributeId() + '"
                                 var asideNote = '\n\
                             <aside class="note">\n\
                             '+ note + '\n\
                             </aside>';
-                                var asideNode = LR.U.fragmentFromString(asideNote);
+                                var asideNode = DO.U.fragmentFromString(asideNote);
                                 selectedParentElement.parentNode.insertBefore(asideNode, selectedParentElement.nextSibling);
                             }
 
-                            LR.U.positionNote(refId, refLabel, id);
+                            DO.U.positionNote(refId, refLabel, id);
 
 
                             var data = '<!DOCTYPE html>\n\
@@ -2520,16 +2520,16 @@ console.log(viewportWidthSplit);
 </html>\n\
 ';
 
-                            LR.U.putResource(noteIRI, data);
+                            DO.U.putResource(noteIRI, data);
 
                             console.log('resourceIRI: ' + resourceIRI);
 
                             //TODO: resourceIRI should be the closest IRI (not necessarily the document). Test resolve/reject better.
-                            LR.U.getInbox(resourceIRI).then(
+                            DO.U.getInbox(resourceIRI).then(
                                 function(inbox) {
                                     if (inbox && inbox.length > 0) {
                                         console.log('inbox: ' + inbox);
-                                        LR.U.notifyInbox(inbox, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', resourceIRI);
+                                        DO.U.notifyInbox(inbox, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', resourceIRI);
                                     }
                                 },
                                 function(reason) {
@@ -2631,22 +2631,22 @@ console.log(viewportWidthSplit);
                 }
             })()
 
-        } //LR.U.Editor
-    } //LR.U
-}; //LR
+        } //DO.U.Editor
+    } //DO.U
+}; //DO
 
 $(document).ready(function() {
-//    LR.U.initStorage('html');
-//    LR.U.getDocRefType();
-    LR.U.showRefs();
-    LR.U.setUser();
-    LR.U.setLocalDocument();
-    LR.U.buttonClose();
-    LR.U.highlightItems();
-    LR.U.showDocumentInfo();
-//    LR.U.openTarget();
-//    LR.U.buildReferences();
-//    LR.U.getLinkedResearch();
-    LR.U.showFragment();
-    LR.U.setDocumentMode();
+//    DO.U.initStorage('html');
+//    DO.U.getDocRefType();
+    DO.U.showRefs();
+    DO.U.setUser();
+    DO.U.setLocalDocument();
+    DO.U.buttonClose();
+    DO.U.highlightItems();
+    DO.U.showDocumentInfo();
+//    DO.U.openTarget();
+//    DO.U.buildReferences();
+//    DO.U.getLinkedResearch();
+    DO.U.showFragment();
+    DO.U.setDocumentMode();
 });
