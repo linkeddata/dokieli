@@ -1289,17 +1289,18 @@ var LR = {
                 s += '<li>' + editFile + '</li>';
             }
 
-            if (LR.C.User.IRI) {
-                s += '<li><button class="new-file-html">New</button></li>';
-                s += '<li><button class="update-file-html">Save</button></li>';
-                s += '<li><button class="save-as-file-html">Save As</button></li>';
+            var buttonDisabled = '';
+            if (LR.C.User.IRI == null) {
+                buttonDisabled = ' disabled="disabled"';
             }
+            s += '<li><button class="new-file-html"'+buttonDisabled+'>New</button></li>';
+            s += '<li><button class="update-file-html"'+buttonDisabled+'>Save</button></li>';
+            s += '<li><button class="save-as-file-html"'+buttonDisabled+'>Save As</button></li>';
 
             s += '<li><button class="export-file-html">Export</button></li>';
             s += '<li><button class="print-file-html">⎙ Print</button></li>';
 
             s += '</ul></section>';
-
 
             $(node).append(s);
 
@@ -1314,20 +1315,18 @@ var LR = {
                 });
             }
 
-            if (LR.C.User.IRI) {
-                $('#document-do').on('click', '.new-file-html', LR.U.createNewDocument);
-                $('#document-do').on('click', '.update-file-html', function() {
-                    LR.U.putResource().then(
-                        function(i) {
-                            LR.U.hideDocumentMenu();
-                        },
-                        function(reason) {
-                            console.log(reason);
-                        }
-                    );
-                });
-                $('#document-do').on('click', '.save-as-file-html', LR.U.saveAsDocument);
-            }
+            $('#document-do').on('click', '.new-file-html', LR.U.createNewDocument);
+            $('#document-do').on('click', '.update-file-html', function() {
+                LR.U.putResource().then(
+                    function(i) {
+                        LR.U.hideDocumentMenu();
+                    },
+                    function(reason) {
+                        console.log(reason);
+                    }
+                );
+            });
+            $('#document-do').on('click', '.save-as-file-html', LR.U.saveAsDocument);
 
             $('#document-do').on('click', '.export-file-html', LR.U.exportAsHTML);
 
