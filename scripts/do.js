@@ -879,14 +879,18 @@ var DO = {
 
         contentCount: function(c) {
             var content = c.text();
-            var linesCount = Math.ceil(c.height() / parseInt(c.css('line-height')));
-            return {
-                words: content.match(/\S+/g).length,
-                chars: content.length,
-                lines: linesCount,
-                pages: { A4: Math.ceil(linesCount / 47) },
-                bytes: encodeURI(document.documentElement.outerHTML).split(/%..|./).length - 1
-            };
+            var contentCount = { words:0, chars:0, lines:0, pages:{A4:1}, bytes:0 };
+            if (content.length > 0) {
+                var linesCount = Math.ceil(c.height() / parseInt(c.css('line-height')));
+                contentCount = {
+                    words: content.match(/\S+/g).length,
+                    chars: content.length,
+                    lines: linesCount,
+                    pages: { A4: Math.ceil(linesCount / 47) },
+                    bytes: encodeURI(document.documentElement.outerHTML).split(/%..|./).length - 1
+                };
+            }
+            return contentCount;
         },
 
         showToC: function() {
