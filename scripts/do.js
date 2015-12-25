@@ -1299,12 +1299,12 @@ var DO = {
             if (DO.C.User.IRI == null) {
                 buttonDisabled = ' disabled="disabled"';
             }
-            s += '<li><button class="new-file-html"'+buttonDisabled+'>New</button></li>';
-            s += '<li><button class="update-file-html"'+buttonDisabled+'>Save</button></li>';
-            s += '<li><button class="save-as-file-html"'+buttonDisabled+'>Save As</button></li>';
+            s += '<li><button class="resource-new"'+buttonDisabled+'>New</button></li>';
+            s += '<li><button class="resource-save"'+buttonDisabled+'>Save</button></li>';
+            s += '<li><button class="resource-save-as"'+buttonDisabled+'>Save As</button></li>';
 
-            s += '<li><button class="export-file-html">Export</button></li>';
-            s += '<li><button class="print-file-html">⎙ Print</button></li>';
+            s += '<li><button class="resource-export">Export</button></li>';
+            s += '<li><button class="resource-print">⎙ Print</button></li>';
 
             s += '</ul></section>';
 
@@ -1321,8 +1321,8 @@ var DO = {
                 });
             }
 
-            $('#document-do').on('click', '.new-file-html', DO.U.createNewDocument);
-            $('#document-do').on('click', '.update-file-html', function() {
+            $('#document-do').on('click', '.resource-new', DO.U.createNewDocument);
+            $('#document-do').on('click', '.resource-save', function(e) {
                 DO.U.putResource().then(
                     function(i) {
                         DO.U.hideDocumentMenu();
@@ -1332,11 +1332,11 @@ var DO = {
                     }
                 );
             });
-            $('#document-do').on('click', '.save-as-file-html', DO.U.saveAsDocument);
+            $('#document-do').on('click', '.resource-save-as', DO.U.saveAsDocument);
 
-            $('#document-do').on('click', '.export-file-html', DO.U.exportAsHTML);
+            $('#document-do').on('click', '.resource-export', DO.U.exportAsHTML);
 
-            $('#document-do').on('click', '.print-file-html', function(e) {
+            $('#document-do').on('click', '.resource-print', function(e) {
                 DO.U.hideDocumentMenu();
                 window.print();
                 return false;
