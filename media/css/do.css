@@ -76,10 +76,14 @@ top:1em;
 right:1em;
 font-size:26px;
 }
+#document-menu > header {
+display:none;
+}
 #document-menu > footer {
 display:none;
 margin-top:1em;
 }
+#document-menu.on > header,
 #document-menu.on > footer {
 display:block;
 }
