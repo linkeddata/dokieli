@@ -143,7 +143,7 @@ var DO = {
         },
 
         setUser: function(url) {
-            url = window.location.origin + window.location.pathname;
+            url = url || window.location.origin + window.location.pathname;
             DO.U.userLogin(url).then(
                 function(user) {
                     DO.C.User.IRI = user;
