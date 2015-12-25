@@ -597,7 +597,9 @@ var DO = {
                 DO.U.Editor.enableEditor();
                 var url = document.location.href;
                 url = url.substr(0, url.lastIndexOf('?'));
-                window.history.replaceState({}, null, url);
+                if (!url.endsWith('/new')) {
+                    window.history.replaceState({}, null, url);
+                }
             }
         },
 
