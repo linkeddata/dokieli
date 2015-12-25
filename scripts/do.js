@@ -115,23 +115,51 @@ var DO = {
     },
 
     U: {
-        setUser: function() {
-            var request = $.ajax({
-                url: window.location.origin + window.location.pathname,
-                method: "HEAD"
-            });
+        userLogin: function(url) {
+            url = url || window.location.origin + window.location.pathname;
 
-            request.done(function(data, textStatus, xhr) {
-                DO.C.User.IRI = xhr.getResponseHeader('User');
+            //TODO: I have to think about this
+            if (url.slice(0, 5).toLowerCase() != 'https') {
+                url = document.location.origin + '/,proxy?uri=' + DO.U.encodeString(url);
+            }
 
-                //XXX: Decide whether to leave setUserInfo or call only when really needed
-                DO.U.setUserInfo(DO.C.User.IRI);
+            return new Promise(function(resolve, reject) {
+                DO.U.getResourceHeader(url).then(
+                    function(data, textStatus, xhr) {
+//                        console.log(xhr.getAllResponseHeaders());
+                        var user = xhr.getResponseHeader('User');
+                        if (user && user.length > 0 && user.slice(0, 4) == 'http') {
+                            return resolve(user);
+                        }
+                        console.log('No User header');
+                        return reject(xhr);
+                    },
+                    function(reason) {
+                        console.log('"HEAD not successful');
+                        return reject(reason);
+                    }
+                );
             });
+        },
 
-            request.fail(function(xhr, textStatus) {
-                console.log("Request failed: " + textStatus);
-                //TODO
-            });
+        setUser: function(url) {
+            url = window.location.origin + window.location.pathname;
+            DO.U.userLogin(url).then(
+                function(user) {
+                    DO.C.User.IRI = user;
+                    DO.U.setUserInfo(DO.C.User.IRI).then(
+                        function(i) {
+                            console.log(i);
+                        },
+                        function(reason) {
+                            console.log(reason);
+                        }
+                    );
+                },
+                function(reason) {
+                    console.log(reason);
+                }
+            );
         },
 
         setUserInfo: function(userIRI) {
@@ -140,98 +168,98 @@ var DO = {
                 if (pIRI.slice(0, 5).toLowerCase() != 'https') {
                     pIRI = document.location.origin + '/,proxy?uri=' + DO.U.encodeString(pIRI);
                 }
-                console.log(pIRI);
 
-                var g = SimpleRDF(DO.C.Vocab);
-                g.iri(pIRI).get().then(
-                    function(i) {
-                        var s = i.iri(userIRI);
-                        console.log(s);
-                        if (s.foafname) {
-                            DO.C.User.Name = s.foafname;
-                            console.log(DO.C.User.Name);
-                        }
-                        else {
-                            if (s.schemaname) {
-                                DO.C.User.Name = s.schemaname;
+                return new Promise(function(resolve, reject) {
+                    var g = SimpleRDF(DO.C.Vocab);
+                    g.iri(pIRI).get().then(
+                        function(i) {
+                            var s = i.iri(userIRI);
+                            console.log(s);
+                            if (s.foafname) {
+                                DO.C.User.Name = s.foafname;
                                 console.log(DO.C.User.Name);
                             }
-                        }
+                            else {
+                                if (s.schemaname) {
+                                    DO.C.User.Name = s.schemaname;
+                                    console.log(DO.C.User.Name);
+                                }
+                            }
 
-                        if (s.foafimg) {
-                            DO.C.User.Image = s.foafimg;
-                            console.log(DO.C.User.Image);
-                        }
-                        else {
-                            if (s.schemaimage) {
-                                DO.C.User.Image = s.schemaimage;
+                            if (s.foafimg) {
+                                DO.C.User.Image = s.foafimg;
                                 console.log(DO.C.User.Image);
                             }
-                        }
+                            else {
+                                if (s.schemaimage) {
+                                    DO.C.User.Image = s.schemaimage;
+                                    console.log(DO.C.User.Image);
+                                }
+                            }
 
-                        if (s.storage) {
-                            DO.C.User.Storage = s.storage;
-                            console.log(DO.C.User.Storage);
-                        }
-                        if (s.preferencesFile) {
-                            DO.C.User.PreferencesFile = s.preferencesFile;
-                            console.log(DO.C.User.PreferencesFile);
+                            if (s.storage) {
+                                DO.C.User.Storage = s.storage;
+                                console.log(DO.C.User.Storage);
+                            }
+                            if (s.preferencesFile) {
+                                DO.C.User.PreferencesFile = s.preferencesFile;
+                                console.log(DO.C.User.PreferencesFile);
 
-                            //XXX: Probably https so don't bother with proxy?
-                            g.iri(DO.C.User.PreferencesFile).get().then(
-                                function(pf) {
-                                    DO.C.User.PreferencesFileGraph = pf;
-                                    var s = pf.iri(DO.C.User.IRI);
+                                //XXX: Probably https so don't bother with proxy?
+                                g.iri(DO.C.User.PreferencesFile).get().then(
+                                    function(pf) {
+                                        DO.C.User.PreferencesFileGraph = pf;
+                                        var s = pf.iri(DO.C.User.IRI);
 
-                                    if (s.masterWorkspace) {
-                                        DO.C.User.masterWorkspace = s.masterWorkspace;
-                                    }
+                                        if (s.masterWorkspace) {
+                                            DO.C.User.masterWorkspace = s.masterWorkspace;
+                                        }
 
-                                    if (s.workspace) {
-                                        DO.C.User.Workspace = { List: s.workspace };
-                                        //XXX: Too early to tell if this is a good/bad idea. Will revise any way. A bit hacky right now.
-                                        s.workspace.forEach(function(workspace) {
-                                            var wstype = pf.iri(workspace).rdftype || [];
-                                            wstype.forEach(function(w) {
-                                                switch(w) {
-                                                    case 'http://www.w3.org/ns/pim/space#PreferencesWorkspace':
-                                                        DO.C.User.Workspace.Preferences = workspace;
-                                                        ;
-                                                        break;
-                                                    case 'http://www.w3.org/ns/pim/space#MasterWorkspace':
-                                                        DO.C.User.Workspace.Master = workspace;
-                                                        break;
-                                                    case 'http://www.w3.org/ns/pim/space#PublicWorkspace':
-                                                        DO.C.User.Workspace.Public = workspace;
-                                                        break;
-                                                    case 'http://www.w3.org/ns/pim/space#PrivateWorkspace':
-                                                        DO.C.User.Workspace.Private = workspace;
-                                                        break;
-                                                    case 'http://www.w3.org/ns/pim/space#SharedWorkspace':
-                                                        DO.C.User.Workspace.Shared = workspace;
-                                                        break;
-                                                    case 'http://www.w3.org/ns/pim/space#ApplicationWorkspace':
-                                                        DO.C.User.Workspace.Application = workspace;
-                                                        break;
-                                                    case 'http://www.w3.org/ns/pim/space#Workspace':
-                                                        DO.C.User.Workspace.Work = workspace;
-                                                        break;
-                                                    case 'http://www.w3.org/ns/pim/space#FamilyWorkspace':
-                                                        DO.C.User.Workspace.Family = workspace;
-                                                        break;
-                                                }
+                                        if (s.workspace) {
+                                            DO.C.User.Workspace = { List: s.workspace };
+                                            //XXX: Too early to tell if this is a good/bad idea. Will revise any way. A bit hacky right now.
+                                            s.workspace.forEach(function(workspace) {
+                                                var wstype = pf.iri(workspace).rdftype || [];
+                                                wstype.forEach(function(w) {
+                                                    switch(w) {
+                                                        case 'http://www.w3.org/ns/pim/space#PreferencesWorkspace':
+                                                            DO.C.User.Workspace.Preferences = workspace;
+                                                            ;
+                                                            break;
+                                                        case 'http://www.w3.org/ns/pim/space#MasterWorkspace':
+                                                            DO.C.User.Workspace.Master = workspace;
+                                                            break;
+                                                        case 'http://www.w3.org/ns/pim/space#PublicWorkspace':
+                                                            DO.C.User.Workspace.Public = workspace;
+                                                            break;
+                                                        case 'http://www.w3.org/ns/pim/space#PrivateWorkspace':
+                                                            DO.C.User.Workspace.Private = workspace;
+                                                            break;
+                                                        case 'http://www.w3.org/ns/pim/space#SharedWorkspace':
+                                                            DO.C.User.Workspace.Shared = workspace;
+                                                            break;
+                                                        case 'http://www.w3.org/ns/pim/space#ApplicationWorkspace':
+                                                            DO.C.User.Workspace.Application = workspace;
+                                                            break;
+                                                        case 'http://www.w3.org/ns/pim/space#Workspace':
+                                                            DO.C.User.Workspace.Work = workspace;
+                                                            break;
+                                                        case 'http://www.w3.org/ns/pim/space#FamilyWorkspace':
+                                                            DO.C.User.Workspace.Family = workspace;
+                                                            break;
+                                                    }
+                                                });
                                             });
-                                        });
-                                    }
-
-                                    console.log(DO.C.User.Workspace);
-                                },
-                                function(reason) { console.log(reason);}
-                            );
-                        }
-                    },
-                    function(reason) { console.log(reason); }
-                );
+                                        }
+                                    },
+                                    function(reason) { console.log(reason);}
+                                );
+                            }
+                            return resolve(DO.C.User);
+                        },
+                        function(reason) { return reject(reason); }
+                    );
+                });
             }
         },
 
@@ -338,6 +366,7 @@ var DO = {
         },
 
         getResourceHeader: function(url) {
+            url = url || window.location.origin + window.location.pathname;
             return $.ajax({
                 method: "HEAD",
                 url: url,
