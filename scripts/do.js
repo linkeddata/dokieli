@@ -1,4 +1,4 @@
-/** Linked Research
+/** dokieli
  *
  * Sarven Capadisli <info@csarven.ca> http://csarven.ca/#i
  * http://www.apache.org/licenses/LICENSE-2.0.html Apache License, Version 2.0
