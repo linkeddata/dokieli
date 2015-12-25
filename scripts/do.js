@@ -1346,6 +1346,7 @@ var DO = {
                 var html = document.documentElement.cloneNode(true);
                 $(html).find('main > article').empty();
                 html = DO.U.getDocument(html);
+                html = html.replace(/<title>[^<]*<\/title>/g, '<title></title>');
 
                 var w = window.open('', '_blank');
 
