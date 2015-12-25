@@ -339,8 +339,11 @@ var DO = {
 
         getResourceHeader: function(url) {
             return $.ajax({
+                method: "HEAD",
                 url: url,
-                method: "HEAD"
+                xhrFields: {
+                    withCredentials: true
+                }
             });
         },
 
