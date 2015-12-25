@@ -1344,7 +1344,12 @@ var DO = {
         },
 
         createNewDocument: function() {
+            $(this).prop('disabled', 'disabled');
             $('body').append('<aside id="create-new-document" class="do on"><button class="close">❌</button><h2>Create New Document</h2><label>URL to save to</label><input id="storage" type="text" placeholder="http://example.org/article" value="" name="storage"/> <button class="create">Create</button></aside>');
+
+            $('#create-new-document').on('click', 'button.close', function(e) {
+                $('#document-do .resource-new').removeAttr('disabled');
+            });
 
             $('#create-new-document').on('click', 'button.create', function(e) {
                 var storageIRI = $(this).parent().find('input#storage').val().trim();
@@ -1370,7 +1375,12 @@ var DO = {
         },
 
         saveAsDocument: function() {
+            $(this).prop('disabled', 'disabled');
             $('body').append('<aside id="save-as-document" class="do on"><button class="close">❌</button><h2>Save As Document</h2><label>URL to save to</label><input id="storage" type="text" placeholder="http://example.org/article" value="" name="storage"/> <button class="create">Save</button></aside>');
+
+            $('#save-as-document').on('click', 'button.close', function(e) {
+                $('#document-do .resource-save-as').removeAttr('disabled');
+            });
 
             $('#save-as-document').on('click', 'button.create', function(e) {
                 var storageIRI = $(this).parent().find('input#storage').val().trim();
