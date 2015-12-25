@@ -1296,7 +1296,7 @@ var DO = {
             }
 
             var buttonDisabled = '';
-            if (DO.C.User.IRI == null) {
+            if (document.location.protocol == 'file:') {
                 buttonDisabled = ' disabled="disabled"';
             }
             s += '<li><button class="resource-new"'+buttonDisabled+'>New</button></li>';
