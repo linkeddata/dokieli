@@ -1,1 +1,81 @@
-enabling-accessible-knowledge.html
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" id="do-index">
+    <head>
+        <meta charset="utf-8"/>
+        <title>dokieli</title>
+        <link rel="stylesheet" media="all" title="LNCS" href="media/css/lncs.css"/>
+        <link rel="stylesheet alternate" media="all" title="ACM" href="media/css/acm.css"/>
+        <link rel="stylesheet alternate" href="https://www.w3.org/StyleSheets/TR/W3C-REC.css" media="all" title="W3C-REC"/>
+        <link rel="stylesheet" media="all" href="media/css/do.css"/>
+        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script src="scripts/html.sortable.min.js"></script>
+        <script src="scripts/do.js"></script>
+    </head>
+
+    <body about="" typeof="sioc:Post prov:Entity" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# schema: http://schema.org/ sioc: http://rdfs.org/sioc/ns# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# bibo: http://purl.org/ontology/bibo/ dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# this: https://dokieli/index">
+        <header>
+            <nav>
+                <ul>
+                    <li id="do-new">
+                        <span>New</span>
+                        <a href="new?edit=true">+</a>
+                    </li>
+                    <li id="do-examples">
+                        <span>Examples</span>
+                        <ul>
+                            <li><a href="acm-sigproc-sp">ACM</a></li>
+                            <li><a href="lncs-splnproc">LNCS</a></li>
+                            <li><a href="http://csarven.ca/enabling-accessible-knowledge">Blog post</a></li>
+                            <li>.. <a href="https://github.com/linkeddata/dokieli/wiki#examples-in-the-wild">in the wild</a> (<em>add yours!</em>)</li>
+                        </ul>
+                    </li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <article about="" typeof="schema:Article">
+                <h1 property="schema:name">dokieli</h1>
+
+                <div id="content">
+                    <section id="introduction" rel="schema:hasPart" resource="#introduction" inlist="">
+                        <h2 property="schema:name">Make it so!</h2>
+                        <div property="schema:description" datatype="rdf:HTML">
+                            <p><strong>dokieli</strong> is a decentralised document editor that gives you control of where your content and data is stored.</p>
+
+                            <p>You can use it locally, offline, and to create and display static pages. Or you can hook it up to a <a href="https://github.com/solid/solid-spec">Solid</a> compliant <strong>personal online datastore</strong> (pod), edit your files directly from the browser, and even grant editing access to your collaborators.</p>
+
+                            <p>If you're feeling social, you can enable <strong>annotations</strong>, so other people can comment on your content. When they do, dokieli will offer to save their note in <em>their</em> personal data store, if they have one (if not, you can store it for them).</p>
+                        </div>
+                    </section>
+
+                    <section id="dive-in" rel="schema:hasPart" resource="#dive-in" inlist="">
+                        <h2 property="schema:name">Dive in</h2>
+                        <div property="schema:description" datatype="rdf:HTML">
+                            <p>This page itself is a dokieli document, so to get started, open the menu in the top right and click <em>edit</em>. You can change this page to your heart's content, try out different <em>views</em>, then <em>export</em> the HTML and upload it somewhere you control.</p>
+
+                            <p>If you have a solid pod, you can click <em>new</em> (for a blank document) or <em>save as</em> (for a copy of this one) and choose where you'd like to save it. You'll be redirected to your new document, where you can edit away and have changes automatically saved to your pod. Of course, you'll also be able to interact with your new document using other solid applications!</p>
+                        </div>
+                    </section>
+
+                    <section id="developers" rel="schema:hasPart" resource="#developers" inlist="">
+                        <h2 property="schema:name">Developers</h2>
+                        <div property="schema:description" datatype="rdf:HTML">
+                            <p>dokieli is open source; you can find the code at <a href="https://github.com/linkeddata/dokieli">github.com/linkeddata/dokieli</a>. This is very much a work in progress, so contributions, issues, bug reports and feature requests are welcome. You can also <strong>join the chat</strong> on <a href="http://gitter.im/linkeddata/dokieli">gitter</a>.</p>
+                        </div>
+                    </section>
+
+                    <section id="researchers" rel="schema:hasPart" resource="#researchers" inlist="">
+                        <h2 property="schema:name">Researchers</h2>
+                        <div property="schema:description" datatype="rdf:HTML">
+                            <p>dokieli is being developed as part of the <a href="https://github.com/csarven/linked-research">Linked Research</a>  initiative. As well as being a general-purpose document editor, dokieli has specialised features for writing academic papers, including referencing, ..other stuff.., and print styles for common publishers. As an increasing number of conferences are accepting HTML submissions, you can write your paper in dokieli and export to HTML or PDF for submission.</p>
+                        </div>
+                    </section>
+                </div>
+            </article>
+
+            <footer>
+                <p>Help and shape: <a href="https://github.com/linkeddata/dokieli">dokieli</a>, <a href="https://github.com/csarven/linked-research">Linked Research</a>, <a href="https://github.com/solid/solid-spec">Solid</a>.</p>
+            </footer>
+        </main>
+    </body>
+</html>
