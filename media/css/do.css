@@ -67,8 +67,9 @@ right:1em;
 #toc {
 left:1em;
 }
-#document-menu.on {
-}
+.success { background-color:#647819; color:#FFFFFF; font-weight:bold; }
+.warning { background-color:#FFFF00; color:#000000; font-weight:bold; }
+.error { background-color:#FF0000; color:#FFFFFF; font-weight:bold; }
 
 #document-menu > button {
 position:absolute;
