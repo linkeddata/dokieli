@@ -2,7 +2,7 @@
  *
  * Sarven Capadisli <info@csarven.ca> http://csarven.ca/#i
  * http://www.apache.org/licenses/LICENSE-2.0.html Apache License, Version 2.0
- * https://github.com/csarven/linked-research
+ * https://github.com/linkeddata/dokieli
  */
 
 /*
@@ -267,6 +267,9 @@ h5 {
 display:inline;
 }
 
+#subtitle {
+text-align:center;
+}
 
 .count {
 margin-bottom:0;
@@ -540,8 +543,8 @@ content:",";
 content:"" !important;
 }
 
-#document-event dt:nth-child(n+2):before,
-#document-identifier dt:nth-child(n+2):before {
+#document-event dd:after,
+#document-identifier dd:after {
 content:"\A";
 white-space:pre;
 }

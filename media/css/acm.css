@@ -2,7 +2,7 @@
  *
  * Sarven Capadisli <info@csarven.ca> http://csarven.ca/#i
  * http://www.apache.org/licenses/LICENSE-2.0.html Apache License, Version 2.0
- * https://github.com/csarven/linked-research
+ * https://github.com/linkeddata/dokieli
  */
 
 /*
@@ -127,6 +127,9 @@ https://bugzilla.mozilla.org/show_bug.cgi?id=684062
 */
 #content {
 clear:both;
+float:left;
+width:100%;
+margin-top:1em;
 -webkit-column-count:2;
 -webkit-column-gap:1.9em;
 -moz-column-count:2;
@@ -183,7 +186,7 @@ font-style:italic;
 text-transform:capitalize;
 }
 
-.entry-subtitle {
+#subtitle {
 font-family:Arial, sans-serif;
 font-size:1.5em;
 text-align:center;
@@ -635,20 +638,8 @@ content:"";
 
 article > dl[id^="document-"] {
 float:left;
-width:48%;
-
-}
-article > dl[id^="document-"]:nth-child(2n) {
-margin-left:3.7%;
-}
-
-article > dl[id^="document-"]:nth-of-type(1),
-article > dl[id^="document-"]:nth-of-type(2) {
-margin-top:1em;
-}
-article > dl[id^="document-"]:nth-last-of-type(1),
-article > dl[id^="document-"]:nth-last-of-type(2) {
-margin-bottom:1em;
+width:46%;
+margin:0 2%;
 }
 
 #document-identifier dd,

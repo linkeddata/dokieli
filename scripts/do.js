@@ -1,11 +1,11 @@
-/** Linked Research
+/** dokieli
  *
  * Sarven Capadisli <info@csarven.ca> http://csarven.ca/#i
  * http://www.apache.org/licenses/LICENSE-2.0.html Apache License, Version 2.0
- * https://github.com/csarven/linked-research
+ * https://github.com/linkeddata/dokieli
  */
 
-var LR = {
+var DO = {
     C: {
         Lang: document.documentElement.lang,
         DocRefType: '',
@@ -44,7 +44,7 @@ var LR = {
             EnableEditorButton: '<button class="editor-enable">Edit</button>'
         },
         InteractionPath: 'i/',
-
+        ProxyURL: 'https://databox.me/,proxy?uri=',
         Vocab: {
             "rdftype": {
                 "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
@@ -105,132 +105,199 @@ var LR = {
                 "@id": "http://purl.org/net/pingback/to",
                 "@type": "@id",
                 "@array": true
+            },
+            "solidinbox": {
+                "@id": "http://www.w3.org/ns/solid/terms#inbox",
+                "@type": "@id",
+                "@array": true
             }
         }
     },
 
     U: {
-        setUser: function() {
-            var request = $.ajax({
-                url: window.location.origin + window.location.pathname,
-                method: "HEAD"
+        authenticateUser: function(url, proxyURL) {
+            url = url || window.location.origin + window.location.pathname;
+            proxyURL = proxyURL || document.location.origin + '/,proxy?uri=';
+
+            var pIRI = url;
+            if (url.slice(0, 5).toLowerCase() == 'http:') {
+                pIRI = proxyURL + DO.U.encodeString(pIRI);
+            }
+
+            return new Promise(function(resolve, reject) {
+                DO.U.getResourceHeader(pIRI).then(
+                    function(data, textStatus, xhr) {
+//                        console.log(xhr.getAllResponseHeaders());
+                        var user = xhr.getResponseHeader('User');
+                        if (user && user.length > 0 && user.slice(0, 4) == 'http') {
+                            return resolve(user);
+                        }
+                        console.log('No User header');
+                        return reject(xhr);
+                    },
+                    function(reason) {
+                        //FIXME: Hardcoding this for now.. hmm.
+                        console.log(proxyURL);
+                        if (proxyURL != DO.C.ProxyURL) {
+                            console.log('HEAD ' + pIRI + ' not successful. Trying url: ' + url + ' with proxyURL: ' + DO.C.ProxyURL);
+                            return DO.U.authenticateUser(url, DO.C.ProxyURL);
+                        }
+                        console.log('HEAD ' + pIRI + ' not successful.');
+                        return reject(reason);
+                    }
+                );
             });
+        },
 
-            request.done(function(data, textStatus, xhr) {
-                LR.C.User.IRI = xhr.getResponseHeader('User');
-
-                //XXX: Decide whether to leave setUserInfo or call only when really needed
-                LR.U.setUserInfo(LR.C.User.IRI);
-            });
-
-            request.fail(function(xhr, textStatus) {
-                console.log("Request failed: " + textStatus);
-                //TODO
+        setUser: function(url) {
+            url = url || window.location.origin + window.location.pathname;
+            return new Promise(function(resolve, reject) {
+                DO.U.authenticateUser(url).then(
+                    function(userIRI) {
+                        DO.C.User.IRI = userIRI;
+                        return resolve(userIRI);
+                    },
+                    function(reason) {
+                        return reject(reason);
+                    }
+                );
             });
         },
 
         setUserInfo: function(userIRI) {
-            if (LR.C.User.IRI) {
+            console.log("setUserInfo: " + userIRI);
+            if (userIRI) {
                 var pIRI = userIRI;
                 if (pIRI.slice(0, 5).toLowerCase() != 'https') {
-                    pIRI = document.location.origin + '/,proxy?uri=' + LR.U.encodeString(pIRI);
+                    pIRI = document.location.origin + '/,proxy?uri=' + DO.U.encodeString(pIRI);
                 }
-                console.log(pIRI);
-
-                var g = SimpleRDF(LR.C.Vocab);
-                g.iri(pIRI).get().then(
-                    function(i) {
-                        var s = i.iri(userIRI);
-                        console.log(s);
-                        if (s.foafname) {
-                            LR.C.User.Name = s.foafname;
-                            console.log(LR.C.User.Name);
-                        }
-                        else {
-                            if (s.schemaname) {
-                                LR.C.User.Name = s.schemaname;
-                                console.log(LR.C.User.Name);
+                console.log("pIRI: " + pIRI);
+                var g = SimpleRDF(DO.C.Vocab);
+                return new Promise(function(resolve, reject) {
+                    g.iri(pIRI).get().then(
+                        function(i) {
+                            var s = i.iri(userIRI);
+                            console.log(s);
+                            if (s.foafname) {
+                                DO.C.User.Name = s.foafname;
+                                console.log(DO.C.User.Name);
                             }
-                        }
-
-                        if (s.foafimg) {
-                            LR.C.User.Image = s.foafimg;
-                            console.log(LR.C.User.Image);
-                        }
-                        else {
-                            if (s.schemaimage) {
-                                LR.C.User.Image = s.schemaimage;
-                                console.log(LR.C.User.Image);
+                            else {
+                                if (s.schemaname) {
+                                    DO.C.User.Name = s.schemaname;
+                                    console.log(DO.C.User.Name);
+                                }
                             }
-                        }
 
-                        if (s.storage) {
-                            LR.C.User.Storage = s.storage;
-                            console.log(LR.C.User.Storage);
-                        }
-                        if (s.preferencesFile) {
-                            LR.C.User.PreferencesFile = s.preferencesFile;
-                            console.log(LR.C.User.PreferencesFile);
+                            if (s.foafimg) {
+                                DO.C.User.Image = s.foafimg;
+                                console.log(DO.C.User.Image);
+                            }
+                            else {
+                                if (s.schemaimage) {
+                                    DO.C.User.Image = s.schemaimage;
+                                    console.log(DO.C.User.Image);
+                                }
+                            }
 
-                            //XXX: Probably https so don't bother with proxy?
-                            g.iri(LR.C.User.PreferencesFile).get().then(
-                                function(pf) {
-                                    LR.C.User.PreferencesFileGraph = pf;
-                                    var s = pf.iri(LR.C.User.IRI);
+                            if (s.storage) {
+                                DO.C.User.Storage = s.storage;
+                                console.log(DO.C.User.Storage);
+                            }
+                            if (s.preferencesFile) {
+                                DO.C.User.PreferencesFile = s.preferencesFile;
+                                console.log(DO.C.User.PreferencesFile);
 
-                                    if (s.masterWorkspace) {
-                                        LR.C.User.masterWorkspace = s.masterWorkspace;
-                                    }
+                                //XXX: Probably https so don't bother with proxy?
+                                g.iri(DO.C.User.PreferencesFile).get().then(
+                                    function(pf) {
+                                        DO.C.User.PreferencesFileGraph = pf;
+                                        var s = pf.iri(userIRI);
 
-                                    if (s.workspace) {
-                                        LR.C.User.Workspace = { List: s.workspace };
-                                        //XXX: Too early to tell if this is a good/bad idea. Will revise any way. A bit hacky right now.
-                                        s.workspace.forEach(function(workspace) {
-                                            var wstype = pf.iri(workspace).rdftype || [];
-                                            wstype.forEach(function(w) {
-                                                switch(w) {
-                                                    case 'http://www.w3.org/ns/pim/space#PreferencesWorkspace':
-                                                        LR.C.User.Workspace.Preferences = workspace;
-                                                        ;
-                                                        break;
-                                                    case 'http://www.w3.org/ns/pim/space#MasterWorkspace':
-                                                        LR.C.User.Workspace.Master = workspace;
-                                                        break;
-                                                    case 'http://www.w3.org/ns/pim/space#PublicWorkspace':
-                                                        LR.C.User.Workspace.Public = workspace;
-                                                        break;
-                                                    case 'http://www.w3.org/ns/pim/space#PrivateWorkspace':
-                                                        LR.C.User.Workspace.Private = workspace;
-                                                        break;
-                                                    case 'http://www.w3.org/ns/pim/space#SharedWorkspace':
-                                                        LR.C.User.Workspace.Shared = workspace;
-                                                        break;
-                                                }
+                                        if (s.masterWorkspace) {
+                                            DO.C.User.masterWorkspace = s.masterWorkspace;
+                                        }
+
+                                        if (s.workspace) {
+                                            DO.C.User.Workspace = { List: s.workspace };
+                                            //XXX: Too early to tell if this is a good/bad idea. Will revise any way. A bit hacky right now.
+                                            s.workspace.forEach(function(workspace) {
+                                                var wstype = pf.iri(workspace).rdftype || [];
+                                                wstype.forEach(function(w) {
+                                                    switch(w) {
+                                                        case 'http://www.w3.org/ns/pim/space#PreferencesWorkspace':
+                                                            DO.C.User.Workspace.Preferences = workspace;
+                                                            ;
+                                                            break;
+                                                        case 'http://www.w3.org/ns/pim/space#MasterWorkspace':
+                                                            DO.C.User.Workspace.Master = workspace;
+                                                            break;
+                                                        case 'http://www.w3.org/ns/pim/space#PublicWorkspace':
+                                                            DO.C.User.Workspace.Public = workspace;
+                                                            break;
+                                                        case 'http://www.w3.org/ns/pim/space#PrivateWorkspace':
+                                                            DO.C.User.Workspace.Private = workspace;
+                                                            break;
+                                                        case 'http://www.w3.org/ns/pim/space#SharedWorkspace':
+                                                            DO.C.User.Workspace.Shared = workspace;
+                                                            break;
+                                                        case 'http://www.w3.org/ns/pim/space#ApplicationWorkspace':
+                                                            DO.C.User.Workspace.Application = workspace;
+                                                            break;
+                                                        case 'http://www.w3.org/ns/pim/space#Workspace':
+                                                            DO.C.User.Workspace.Work = workspace;
+                                                            break;
+                                                        case 'http://www.w3.org/ns/pim/space#FamilyWorkspace':
+                                                            DO.C.User.Workspace.Family = workspace;
+                                                            break;
+                                                    }
+                                                });
                                             });
-                                        });
+                                        }
                                     }
-
-                                    console.log(LR.C.User.Workspace);
-                                },
-                                function(reason) { console.log(reason);}
-                            );
-                        }
-                    },
-                    function(reason) { console.log(reason); }
-                );
+                                );
+                            }
+                            return resolve(userIRI);
+                        },
+                        function(reason) { return reject(reason); }
+                    );
+                });
             }
+        },
+
+        getUserHTML: function() {
+            var userName = 'Anonymous';
+            if (DO.C.User.Name) {
+                //XXX: We have the IRI already
+                userName = '<span about="' + DO.C.User.IRI + '" property="schema:name">' + DO.C.User.Name + '</span>';
+            }
+
+            var userImage = '';
+            if (DO.C.User.Image) {
+                userImage = '<img rel="schema:image" src="' + DO.C.User.Image + '" width="32" height="32"/>';
+            }
+
+            var user = ''
+            if (DO.C.User.IRI) {
+                user = '<span about="' + DO.C.User.IRI + '" typeof="schema:Person">' + userImage + ' <a rel="schema:url" href="' + DO.C.User.IRI + '"> ' + userName + '</a></span>';
+            }
+            else {
+                user = '<span typeof="schema:Person">' + userName + '</span>';
+            }
+
+            return user;
         },
 
         setLocalDocument: function() {
             if (document.location.protocol == 'file:') {
-                LR.C.LocalDocument = true;
+                DO.C.LocalDocument = true;
             }
         },
 
         putPingbackTriple: function(url, pingbackOf, pingbackTo) {
             var data = '<'+ pingbackOf + '> <http://purl.org/net/pingback/to> <' + pingbackTo + '> .';
 
-            LR.U.putResource(url, data, 'text/turtle');
+            DO.U.putResource(url, data, 'text/turtle');
         },
 
         //Copied from https://github.com/deiu/solid-plume/blob/gh-pages/app/solid.js
@@ -256,35 +323,35 @@ var LR = {
             return rels;
         },
 
-        getPingback: function(url) {
+        getInbox: function(url) {
             return new Promise(function(resolve, reject) {
                 if (url.indexOf('#') != -1) {
-                    return resolve(LR.U.getPingbackFromRDF(url));
+                    return resolve(DO.U.getInboxFromRDF(url));
                 }
                 else {
-                    var response = LR.U.getResourceHeader(url);
+                    var response = DO.U.getResourceHeader(url);
                     response.done(function(data, textStatus, xhr) {
                         console.log(data);
                         console.log(textStatus);
                         console.log(xhr);
-                        var link = LR.U.parseLinkHeader(xhr.getResponseHeader('Link'));
-                        if(link['pingback:to'] && link['pingback:to'].length > 0) {
-                            return resolve(link['pingback:to']);
-                        }
-                        else {
-                            if(link['meta'] && link['meta'].length > 0) {
-                                var response = LR.U.getResourceHeader(link['meta']);
-                                response.done(function(data, textStatus, xhr) {
-                                    console.log(data);
-                                    console.log(textStatus);
-                                    console.log(xhr);
-                                    return resolve(LR.U.getPingbackFromRDF(link['meta'], url));
-                                });
-                            }
+                        // var link = DO.U.parseLinkHeader(xhr.getResponseHeader('Link'));
+                        // if(link['pingback:to'] && link['pingback:to'].length > 0) {
+                        //     return resolve(link['pingback:to']);
+                        // }
+                        // else {
+                        //     if(link['meta'] && link['meta'].length > 0) {
+                        //         var response = DO.U.getResourceHeader(link['meta']);
+                        //         response.done(function(data, textStatus, xhr) {
+                        //             console.log(data);
+                        //             console.log(textStatus);
+                        //             console.log(xhr);
+                        //             return resolve(DO.U.getInboxFromRDF(link['meta'], url));
+                        //         });
+                        //     }
 
                             console.log('XXX: Our last chance');
-                            return resolve(LR.U.getPingbackFromRDF(url));
-                        }
+                            return resolve(DO.U.getInboxFromRDF(url));
+                        // }
                     });
                     response.fail(function(xhr, textStatus) {
                         console.log(xhr);
@@ -295,25 +362,26 @@ var LR = {
             });
         },
 
-        getPingbackFromRDF: function(url, subjectIRI) {
+        getInboxFromRDF: function(url, subjectIRI) {
             subjectIRI = subjectIRI || url;
             var pIRI = url;
-            if (pIRI.slice(0, 5).toLowerCase() != 'https') {
-                pIRI = document.location.origin + '/,proxy?uri=' + LR.U.encodeString(pIRI);
+            if (pIRI.slice(0, 5).toLowerCase() != 'https' && document.location.origin != 'null') {
+                pIRI = document.location.origin + '/,proxy?uri=' + DO.U.encodeString(pIRI);
             }
             console.log(pIRI);
             console.log(subjectIRI);
 
             return new Promise(function(resolve, reject) {
-                var g = SimpleRDF(LR.C.Vocab);
+                var g = SimpleRDF(DO.C.Vocab);
                 g.iri(pIRI).get().then(
                     function(i) {
                         var s = i.iri(subjectIRI);
                         console.log(s);
-                        if (s.pingbackto) {
-                            console.log(s.pingbackto);
-                            return resolve(s.pingbackto);
+                        if (s.solidinbox.length > 0) {
+                            console.log(s.solidinbox);
+                            return resolve(s.solidinbox);
                         }
+                        return reject(reason);
                     },
                     function(reason) {
                         console.log(reason);
@@ -324,9 +392,13 @@ var LR = {
         },
 
         getResourceHeader: function(url) {
+            url = url || window.location.origin + window.location.pathname;
             return $.ajax({
+                method: "HEAD",
                 url: url,
-                method: "HEAD"
+                xhrFields: {
+                    withCredentials: true
+                }
             });
         },
 
@@ -341,6 +413,9 @@ var LR = {
                 method: "GET",
                 headers: headers,
                 url: url,
+                xhrFields: {
+                    withCredentials: true
+                }
             });
         },
 
@@ -400,7 +475,7 @@ var LR = {
                 'Content-Type': contentType + '; charset=utf-8',
                 'Link': links
             };
-            data = data || LR.U.getDocument();
+            data = data || DO.U.getDocument();
 
             return new Promise(function(resolve, reject) {
                 var request = $.ajax({
@@ -460,7 +535,7 @@ var LR = {
         //POST an interaction into Container
         createContainerReference: function(containerIRI, slug, noteURL) {
             //Store reference to the interaction at a pod
-            // && LR.C.User.IRI.podURL
+            // && DO.C.User.IRI.podURL
             console.log('POSTing interaction reference');
             var request = $.ajax({
                 method: 'POST',
@@ -485,7 +560,7 @@ var LR = {
             });
         },
 
-        createPingback: function(pingbackTo, slug, source, property, target) {
+        notifyInbox: function(inbox, slug, source, property, target) {
             var headers = {
                 'Content-Type': 'text/turtle; charset=utf-8',
                 'Link': '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
@@ -495,20 +570,21 @@ var LR = {
             }
 
             var data = '@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\
+@prefix sterms: <http://www.w3.org/ns/solid/terms#> .\n\
 @prefix pingback: <http://purl.org/net/pingback/> .\n\
 @prefix schema: <http://schema.org/> .\n\
-<> a pingback:Request ;\n\
+<> a sterms:Notification , pingback:Request ;\n\
     pingback:source <' + source + '> ;\n\
     pingback:property <' + property + '> ;\n\
     pingback:target <' + target + '> ;\n\
-    schema:dateModified "' + LR.U.getDateTimeISO() + '"^^xsd:dateTime ;\n\
-    schema:creator <' + LR.C.User.IRI + '> ;\n\
+    schema:dateModified "' + DO.U.getDateTimeISO() + '"^^xsd:dateTime ;\n\
+    schema:creator <' + DO.C.User.IRI + '> ;\n\
     schema:license <http://creativecommons.org/licenses/by-sa/4.0/> .\n\
 ';
 
             var request = $.ajax({
                 method: "POST",
-                url: pingbackTo,
+                url: inbox,
                 headers: headers,
                 xhrFields: { withCredentials: true },
                 data: data
@@ -575,26 +651,71 @@ var LR = {
         },
 
         setDocumentMode: function() {
-            if (LR.C.EditorAvailable && LR.U.urlParam('edit') == 'true') {
-                LR.U.Editor.enableEditor();
+            if (DO.C.EditorAvailable && DO.U.urlParam('edit') == 'true') {
+                DO.U.Editor.enableEditor();
                 var url = document.location.href;
                 url = url.substr(0, url.lastIndexOf('?'));
-                window.history.replaceState({}, null, url);
+                if (!url.endsWith('/new')) {
+                    window.history.replaceState({}, null, url);
+                }
             }
         },
 
-        showDocumentInfo: function() {
-            $('body').append('<aside id="document-menu" class="lr"><button class="show" title="Open Menu">☰</button><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><a target="source-dokieli" href="https://github.com/linkeddata/dokieli">dokieli</a></dd><dd id="about-linked-research"><a target="source-linked-research" href="https://github.com/csarven/linked-research">Linked Research</a></dd></footer></aside>');
+        //TODO: Refactor
+        showUserLoginSignup: function(node) {
+            var s = '';
+            if(DO.C.User.IRI) {
+                s+= DO.U.getUserHTML();
+            }
+            else {
+                s+= '<button class="login-user">Login</button>';
+            }
+            $(node).append('<p id="user-login-signup">' + s + '</p>');
 
-            $('#document-menu.lr').on('click', '> button.show', LR.U.showDocumentMenu);
-            $('#document-menu.lr').on('click', '> button:not([class="show"])', LR.U.hideDocumentMenu);
+            $('#document-menu.do').off('click', 'button.login-user').on('click', 'button.login-user', DO.U.showUserIdentityInput);
+        },
+
+        //TODO: Refactor
+        showUserIdentityInput: function() {
+            $(this).prop('disabled', 'disabled');
+            $('body').append('<aside id="user-identity-input" class="do on"><button class="close">❌</button><h2>Enter WebID to login</h2><label>HTTP IRI</label><input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="login">Login</button></aside>');
+
+            $('#user-identity-input').on('click', 'button.close', function(e) {
+                $('#document-menu > header .login-user').removeAttr('disabled');
+            });
+
+            $('#user-identity-input').on('click', 'button.login', function(e) {
+                var userIdentityInput = $(this).parent();
+                var url = userIdentityInput.find('input#webid').val().trim();
+                if (url.length > 0) {
+                    DO.U.setUser(url).then(DO.U.setUserInfo).then(
+                        function(i) {
+                            $('#user-login-signup').html(DO.U.getUserHTML());
+                            userIdentityInput.remove();
+                        },
+                        function(reason) {
+                            userIdentityInput.find('.error').remove();
+                            userIdentityInput.append('<p class="error">Unable to login with this WebID.</p>');
+                            console.log(reason);
+                        }
+                    );
+                }
+            });
+        },
+
+        showDocumentInfo: function() {
+            $('body').append('<aside id="document-menu" class="do"><button class="show" title="Open Menu">☰</button><header></header><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><a target="source-dokieli" href="https://github.com/linkeddata/dokieli">dokieli</a></dd><dd id="about-linked-research"><a target="source-linked-research" href="https://github.com/csarven/linked-research">Linked Research</a></dd></footer></aside>');
+
+            $('#document-menu.do').on('click', '> button.show', DO.U.showDocumentMenu);
+            $('#document-menu.do').on('click', '> button:not([class="show"])', DO.U.hideDocumentMenu);
         },
 
         //TODO: Redo menu
         showDocumentMenu: function() {
             var body = $('body');
-            var dMenu = $('#document-menu.lr');
+            var dMenu = $('#document-menu.do');
             var dMenuButton = dMenu.find('> button');
+            var dHead = dMenu.find('> header');
             var dInfo = dMenu.find('> div');
 
             dMenuButton.removeClass('show');
@@ -602,28 +723,30 @@ var LR = {
             dMenu.addClass('on');
             body.addClass('on-document-menu');
 
-            LR.U.showDocumentDo(dInfo);
-            LR.U.showViews(dInfo);
-            LR.U.showEmbedData(dInfo);
-            LR.U.showTableOfStuff(dInfo);
-            LR.U.showStorage(dInfo);
-            LR.U.showDocumentMetadata(dInfo);
+            DO.U.showUserLoginSignup(dHead);
+            DO.U.showDocumentDo(dInfo);
+            DO.U.showViews(dInfo);
+            DO.U.showEmbedData(dInfo);
+            DO.U.showTableOfStuff(dInfo);
+            DO.U.showStorage(dInfo);
+            DO.U.showDocumentMetadata(dInfo);
             if(!body.hasClass("on-slideshow")) {
-                LR.U.showToC();
+                DO.U.showToC();
             }
 
-            $(document).on('keyup', LR.U.eventEscapeDocumentMenu);
-            $(document).on('click', LR.U.eventLeaveDocumentMenu);
+            $(document).on('keyup', DO.U.eventEscapeDocumentMenu);
+            $(document).on('click', DO.U.eventLeaveDocumentMenu);
         },
 
         hideDocumentMenu: function() {
-            $(document).off('keyup', LR.U.eventEscapeDocumentMenu);
-            $(document).off('click', LR.U.eventLeaveDocumentMenu);
+            $(document).off('keyup', DO.U.eventEscapeDocumentMenu);
+            $(document).off('click', DO.U.eventLeaveDocumentMenu);
 
             var body = $('body');
-            var dMenu = $('#document-menu.lr');
+            var dMenu = $('#document-menu.do');
             var dMenuButton = dMenu.find('> button');
 
+            dMenu.find('#user-login-signup').remove();
             dMenu.removeClass('on').find('section').remove();
             body.removeClass('on-document-menu');
             dMenuButton.addClass('show');
@@ -633,22 +756,23 @@ var LR = {
             $('#embed-data-entry').remove();
             $('#create-new-document').remove();
             $('#save-as-document').remove();
-//            LR.U.hideStorage();
+            $('#user-identity-input').remove();
+//            DO.U.hideStorage();
         },
 
         getDocRefType: function() {
-            LR.C.DocRefType = $('head link[rel="stylesheet"][title]').prop('title');
+            DO.C.DocRefType = $('head link[rel="stylesheet"][title]').prop('title');
 
-            if (Object.keys(LR.C.RefType).indexOf(LR.C.DocRefType) == -1) {
-                LR.C.DocRefType = 'LNCS';
+            if (Object.keys(DO.C.RefType).indexOf(DO.C.DocRefType) == -1) {
+                DO.C.DocRefType = 'LNCS';
             }
         },
 
         showViews: function(node) {
-            var stylesheets = $('head link[rel~="stylesheet"][title]:not([href$="lr.css"])');
+            var stylesheets = $('head link[rel~="stylesheet"][title]:not([href$="do.css"])');
 
             if (stylesheets.length > 1) {
-                var s = '<section id="views" class="lr"><h2>Views</h2><ul>';
+                var s = '<section id="views" class="do"><h2>Views</h2><ul>';
                 stylesheets.each(function(i, stylesheet) {
                     var view = $(this).prop('title');
                     if($(this).is('[rel~="alternate"]')) {
@@ -663,11 +787,11 @@ var LR = {
 
                 $(node).append(s);
 
-                $('#views.lr button').on('click', function(e) {
+                $('#views.do button').on('click', function(e) {
                     var selected = $(this);
-                    var prevStylesheet = $('head link[rel="stylesheet"][title]:not([href$="lr.css"]):not(disabled)').prop('title') || '';
+                    var prevStylesheet = $('head link[rel="stylesheet"][title]:not([href$="do.css"]):not(disabled)').prop('title') || '';
 
-                    $('head link[rel~="stylesheet"][title]:not([href$="lr.css"])').each(function(i, stylesheet) {
+                    $('head link[rel~="stylesheet"][title]:not([href$="do.css"])').each(function(i, stylesheet) {
                         $(this).prop('disabled', true); //XXX: Leave this. WebKit wants to trigger this before for some reason.
 
                         if ($(this).prop('title').toLowerCase() == selected.text().toLowerCase()) {
@@ -678,11 +802,11 @@ var LR = {
                         }
                     });
 
-                    $('#views.lr button:disabled').removeAttr('disabled');
+                    $('#views.do button:disabled').removeAttr('disabled');
                     $(this).prop('disabled', 'disabled');
 
                     if (selected.text().toLowerCase() == 'shower') {
-                        $('.slide').addClass('lr');
+                        $('.slide').addClass('do');
                         $('body').addClass('on-slideshow list');
                         $('head').append('<meta name="viewport" content="width=792, user-scalable=no"/>');
 
@@ -694,13 +818,13 @@ var LR = {
                         dMButton.addClass('show');
                         dMButton.attr('title', 'Open Menu');
                         $('#table-of-contents').remove();
-                        LR.U.hideStorage();
+                        DO.U.hideStorage();
 
                         shower.initRun();
 //                        $('head').append('<script src="scripts/shower.js"></script>');
                     }
                     if (prevStylesheet.toLowerCase() == 'shower') {
-                        $('.slide').removeClass('lr');
+                        $('.slide').removeClass('do');
                         $('body').removeClass('on-slideshow list full');
                         $('body').removeAttr('style');
                         $('head meta[name="viewport"][content="width=792, user-scalable=no"]').remove();
@@ -717,28 +841,29 @@ var LR = {
         },
 
         showEmbedData: function(node) {
-            $(node).append('<section id="embed-data-in-html" class="lr"><h2>Data</h2><ul><li><button class="embed-data-meta">Embed</button></li></ul></section>');
+            $(node).append('<section id="embed-data-in-html" class="do"><h2>Data</h2><ul><li><button class="embed-data-meta">Embed</button></li></ul></section>');
 
-            $('#embed-data-in-html').on('click', 'button', function(e){
-                var scriptCurrent = $('head script[id^="meta-"][class="lr"]');
+            $('#embed-data-in-html').off('click', 'button').on('click', 'button', function(e){
+                $(this).prop('disabled', 'disabled');
+                var scriptCurrent = $('head script[id^="meta-"][class="do"]');
 
                 var scriptType = {
                     'meta-turtle': {
-                        scriptStart: '<script id="meta-turtle" class="lr" type="text/turtle" title="Turtle">',
-                        cdataStart: '# ' + LR.C.CDATAStart + '\n',
-                        cdataEnd: '\n# ' + LR.C.CDATAEnd,
+                        scriptStart: '<script id="meta-turtle" class="do" type="text/turtle" title="Turtle">',
+                        cdataStart: '# ' + DO.C.CDATAStart + '\n',
+                        cdataEnd: '\n# ' + DO.C.CDATAEnd,
                         scriptEnd: '</script>'
                     },
                     'meta-json-ld': {
-                        scriptStart: '<script id="meta-json-ld" class="lr" type="application/json+ld" title="JSON-LD">',
-                        cdataStart: LR.C.CDATAStart,
-                        cdataEnd: LR.C.CDATAEnd,
+                        scriptStart: '<script id="meta-json-ld" class="do" type="application/json+ld" title="JSON-LD">',
+                        cdataStart: DO.C.CDATAStart,
+                        cdataEnd: DO.C.CDATAEnd,
                         scriptEnd: '</script>'
                     },
                     'meta-nanopublication': {
-                        scriptStart: '<script id="meta-nanopublication" class="lr" type="application/trig" title="Nanopublication">',
-                        cdataStart: '# ' + LR.C.CDATAStart + '\n',
-                        cdataEnd: '\n# ' + LR.C.CDATAEnd,
+                        scriptStart: '<script id="meta-nanopublication" class="do" type="application/trig" title="Nanopublication">',
+                        cdataStart: '# ' + DO.C.CDATAStart + '\n',
+                        cdataEnd: '\n# ' + DO.C.CDATAEnd,
                         scriptEnd: '</script>'
                     }
                 }
@@ -757,7 +882,7 @@ var LR = {
                     };
                 });
 
-                var embedMenu = '<aside id="embed-data-entry" class="lr on"><button class="close">❌</button>\n\
+                var embedMenu = '<aside id="embed-data-entry" class="do on"><button class="close">❌</button>\n\
                 <h2>Embed Data</h2>\n\
                 <nav><ul><li class="selected"><a href="#embed-data-turtle">Turtle</a></li><li><a href="#embed-data-json-ld">JSON-LD</a></li><li><a href="#embed-data-nanopublication">Nanopublication</a></li></ul></nav>\n\
                 <div id="embed-data-turtle" class="selected"><textarea placeholder="Enter data in text/turtle" name="meta-turtle" cols="80" rows="24">' + ((scriptCurrentData['meta-turtle']) ? scriptCurrentData['meta-turtle'].content : '') + '</textarea><button class="save">Save</button></div>\n\
@@ -766,6 +891,7 @@ var LR = {
                 </aside>';
 
                 $('body').append(embedMenu);
+                $('#embed-data-turtle textarea').focus();
                 $('#embed-data-entry nav').on('click', 'a', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
@@ -775,8 +901,12 @@ var LR = {
                         $('#embed-data-entry nav li').removeClass('selected');
                         li.addClass('selected');
                         $('#embed-data-entry > div').removeClass('selected');
-                        $('#embed-data-entry > div' + $(this).prop('hash')).addClass('selected');
+                        $('#embed-data-entry > div' + $(this).prop('hash')).addClass('selected').find('textarea').focus();
                     }
+                });
+
+                $('#embed-data-entry').on('click', 'button.close', function(e) {
+                    $('#embed-data-in-html .embed-data-meta').removeAttr('disabled');
                 });
 
                 $('#embed-data-entry').on('click', 'button.save', function(e) {
@@ -807,14 +937,14 @@ var LR = {
         },
 
         showTableOfStuff: function(node) {
-            $(node).append('<section id="table-of-stuff" class="lr"><h2>Table of Stuff</h2><ul><li><input id="t-o-content" type="checkbox"/><label for="t-o-content">Contents</label></li><li><input id="t-o-figure" type="checkbox"/><label for="t-o-figure">Figures</label></li><li><input id="t-o-table" type="checkbox"/><label for="t-o-table">Tables</label></li><li><input id="t-o-abbr" type="checkbox"/><label for="t-o-abbr">Abbreviations</label></li></ul></section>');
+            $(node).append('<section id="table-of-stuff" class="do"><h2>Table of Stuff</h2><ul><li><input id="t-o-content" type="checkbox"/><label for="t-o-content">Contents</label></li><li><input id="t-o-figure" type="checkbox"/><label for="t-o-figure">Figures</label></li><li><input id="t-o-table" type="checkbox"/><label for="t-o-table">Tables</label></li><li><input id="t-o-abbr" type="checkbox"/><label for="t-o-abbr">Abbreviations</label></li></ul></section>');
 
             $('#table-of-stuff').on('click', 'input', function(e){
                 var id = $(this).prop('id');
                 var listType = id.slice(4, id.length);
 
                 if($(this).prop('checked')) {
-                    LR.U.buildTableOfStuff(listType);
+                    DO.U.buildTableOfStuff(listType);
                 }
                 else {
                     $('#table-of-'+listType+'s').remove();
@@ -828,7 +958,7 @@ var LR = {
 
         showDocumentMetadata: function(node) {
             var content = $('#content');
-            var count = LR.U.contentCount(content);
+            var count = DO.U.contentCount(content);
 
             var contributors = '<ul class="contributors">';
             $('#authors *[rel*="contributor"]').each(function(i,contributor) {
@@ -844,7 +974,7 @@ var LR = {
 //                documentID = '';
 //            }
 
-            var s = '<section id="document-metadata" class="lr"><table>\n\
+            var s = '<section id="document-metadata" class="do"><table>\n\
                 <caption>Document Metadata</caption>\n\
                 <tbody>\n\
                     <tr><th>Authors</th><td>' + contributors + '</td></tr>\n\
@@ -861,14 +991,18 @@ var LR = {
 
         contentCount: function(c) {
             var content = c.text();
-            var linesCount = Math.ceil(c.height() / parseInt(c.css('line-height')));
-            return {
-                words: content.match(/\S+/g).length,
-                chars: content.length,
-                lines: linesCount,
-                pages: { A4: Math.ceil(linesCount / 47) },
-                bytes: encodeURI(document.documentElement.outerHTML).split(/%..|./).length - 1
-            };
+            var contentCount = { words:0, chars:0, lines:0, pages:{A4:1}, bytes:0 };
+            if (content.length > 0) {
+                var linesCount = Math.ceil(c.height() / parseInt(c.css('line-height')));
+                contentCount = {
+                    words: content.match(/\S+/g).length,
+                    chars: content.length,
+                    lines: linesCount,
+                    pages: { A4: Math.ceil(linesCount / 47) },
+                    bytes: encodeURI(document.documentElement.outerHTML).split(/%..|./).length - 1
+                };
+            }
+            return contentCount;
         },
 
         showToC: function() {
@@ -879,17 +1013,17 @@ var LR = {
                 var sortable = '';
                 var isSortable = ($('head script[src$="html.sortable.min.js"]').length > 0) ? true : false;
 
-                if(isSortable && LR.C.User.IRI) {
+                if(isSortable && DO.C.User.IRI) {
                     sortable = ' sortable';
                 }
 
-                s += '<aside id="toc" class="lr on' + sortable + '"><button class="close">❌</button><h2>Table of Contents</h2><ol class="toc' + sortable + '">';
-                s += LR.U.getListOfSections(section, isSortable);
+                s += '<aside id="toc" class="do on' + sortable + '"><button class="close">❌</button><h2>Table of Contents</h2><ol class="toc' + sortable + '">';
+                s += DO.U.getListOfSections(section, isSortable);
                 s += '</ol></aside>';
 
                 $('body').append(s);
-                if(isSortable && LR.C.User.IRI) {
-                    LR.U.sortToC();
+                if(isSortable && DO.C.User.IRI) {
+                    DO.U.sortToC();
                 }
             }
         },
@@ -1036,7 +1170,7 @@ var LR = {
                     s += '<div><ol class="toc">';
 
                     if (element == 'content') {
-                        s += LR.U.getListOfSections($('h1 ~ div section:not([class~="slide"])'), false);
+                        s += DO.U.getListOfSections($('h1 ~ div section:not([class~="slide"])'), false);
                     }
                     else {
                         if (element == 'abbr') {
@@ -1103,13 +1237,13 @@ var LR = {
 
         eventEscapeDocumentMenu: function(e) {
             if (e.keyCode == 27) { // Escape
-                LR.U.hideDocumentMenu();
+                DO.U.hideDocumentMenu();
             }
         },
 
         eventLeaveDocumentMenu: function(e) {
-            if (!$(e.target).closest('aside.lr.on').length) {
-                LR.U.hideDocumentMenu();
+            if (!$(e.target).closest('aside.do.on').length) {
+                DO.U.hideDocumentMenu();
             }
         },
 
@@ -1132,9 +1266,9 @@ var LR = {
         showFragment: function() {
             $(document).on({
                 mouseenter: function () {
-                    if($('#'+this.id+' > .lr.fragment').length == 0 && this.parentNode.nodeName.toLowerCase() != 'aside'){
-                        $('#'+this.id).prepend('<span class="lr fragment" style="height:' + this.clientHeight + 'px; "><a href="#' + this.id + '">' + '🔗' + '</a></span>');
-                        var fragment = $('#'+this.id+' > .lr.fragment');
+                    if($('#'+this.id+' > .do.fragment').length == 0 && this.parentNode.nodeName.toLowerCase() != 'aside'){
+                        $('#'+this.id).prepend('<span class="do fragment" style="height:' + this.clientHeight + 'px; "><a href="#' + this.id + '">' + '🔗' + '</a></span>');
+                        var fragment = $('#'+this.id+' > .do.fragment');
                         var fragmentClientWidth = fragment.get(0).clientWidth;
                         fragment.css({
                             'top': 'calc(' + Math.ceil($(this).position().top) + 'px)',
@@ -1144,7 +1278,7 @@ var LR = {
                     }
                 },
                 mouseleave: function () {
-                    $('#'+this.id+' > .lr.fragment').remove();
+                    $('#'+this.id+' > .do.fragment').remove();
                     $('#'+this.id).filter('[class=""]').removeAttr('class');
                 }
             }, '#content *[id], #interactions *[id]');
@@ -1187,7 +1321,7 @@ var LR = {
                     for (var i = 0; i < node.childNodes.length; i++) out += dumpNode(node.childNodes[i]);
                 }
                 else if (1 === node.nodeType) {
-                    if (!(node.hasAttribute('class') && (node.getAttribute('class').split(' ').indexOf('lr') > -1 || node.getAttribute('class').split(' ').indexOf('firebugResetStyles') > -1))) {
+                    if (!(node.hasAttribute('class') && (node.getAttribute('class').split(' ').indexOf('do') > -1 || node.getAttribute('class').split(' ').indexOf('firebugResetStyles') > -1))) {
                         var ename = node.nodeName.toLowerCase() ;
                         out += "<" + ename ;
                         //XXX: Regardless of the location of @lang, ends up at the end
@@ -1199,7 +1333,7 @@ var LR = {
                                 atn.value = atn.value.replace(/(on-document-menu)/, '').trim();
                             }
                             if (!(atn.name == 'class' && atn.value == '')) {
-                                out += ' ' + atn.name + "=\"" + LR.U.htmlEntities(atn.value) + "\"";
+                                out += ' ' + atn.name + "=\"" + DO.U.htmlEntities(atn.value) + "\"";
                             }
                         }
                         if (selfClosing[ename]) { out += " />"; }
@@ -1219,7 +1353,7 @@ var LR = {
                 else if (3 === node.nodeType || 4 === node.nodeType) {
                     //XXX: Remove new lines which were added after DOM ready
                     var nl = node.nodeValue.replace(/\n+$/, '');
-                    out += noEsc[noEsc.length - 1] ? nl : LR.U.htmlEntities(nl);
+                    out += noEsc[noEsc.length - 1] ? nl : DO.U.htmlEntities(nl);
                 }
                 else {
                     console.log("Warning; Cannot handle serialising nodes of type: " + node.nodeType);
@@ -1231,12 +1365,12 @@ var LR = {
         },
 
         exportAsHTML: function() {
-            var data = LR.U.getDocument();
+            var data = DO.U.getDocument();
             //XXX: Encodes strings as UTF-8. Consider storing bytes instead?
             var blob = new Blob([data], {type:'text/html;charset=utf-8'});
             var pattern = /[^\w]+/ig;
             var title = $('h1').text().toLowerCase().replace(pattern, '-') || "index";
-            var timestamp = LR.U.getDateTimeISO().replace(pattern, '') || "now";
+            var timestamp = DO.U.getDateTimeISO().replace(pattern, '') || "now";
 
             var fileName = title + '.' + timestamp + '.html';
 
@@ -1257,85 +1391,92 @@ var LR = {
         },
 
         showDocumentDo: function(node) {
-            var s = '<section id="document-do" class="lr"><h2>Do</h2><ul>';
+            var s = '<section id="document-do" class="do"><h2>Do</h2><ul>';
 
-            if (LR.C.EditorAvailable) {
+            if (DO.C.EditorAvailable) {
                 var editFile = '';
-                if (LR.C.EditorEnabled) {
-                    editFile = LR.C.Editor.DisableEditorButton;
+                if (DO.C.EditorEnabled) {
+                    editFile = DO.C.Editor.DisableEditorButton;
                 }
                 else {
-                    editFile = LR.C.Editor.EnableEditorButton;
+                    editFile = DO.C.Editor.EnableEditorButton;
                 }
 
                 s += '<li>' + editFile + '</li>';
             }
 
-            if (LR.C.User.IRI) {
-                s += '<li><button class="new-file-html">New</button></li>';
-                s += '<li><button class="update-file-html">Save</button></li>';
-                s += '<li><button class="save-as-file-html">Save As</button></li>';
+            var buttonDisabled = '';
+            if (document.location.protocol == 'file:') {
+                buttonDisabled = ' disabled="disabled"';
             }
+            s += '<li><button class="resource-new"'+buttonDisabled+'>New</button></li>';
+            s += '<li><button class="resource-save"'+buttonDisabled+'>Save</button></li>';
+            s += '<li><button class="resource-save-as"'+buttonDisabled+'>Save As</button></li>';
 
-            s += '<li><button class="export-file-html">Export</button></li>';
-            s += '<li><button class="print-file-html">⎙ Print</button></li>';
+            s += '<li><button class="resource-export">Export</button></li>';
+            s += '<li><button class="resource-print">⎙ Print</button></li>';
 
             s += '</ul></section>';
 
-
             $(node).append(s);
 
-            if (LR.C.EditorAvailable) {
+            if (DO.C.EditorAvailable) {
                 $('#document-do').on('click', 'button.editor-enable', function(e) {
-                    $(this).parent().html(LR.C.Editor.DisableEditorButton);
-                    LR.U.Editor.enableEditor();
+                    $(this).parent().html(DO.C.Editor.DisableEditorButton);
+                    DO.U.Editor.enableEditor();
                 });
                 $('#document-do').on('click', 'button.editor-disable', function(e) {
-                    $(this).parent().html(LR.C.Editor.EnableEditorButton);
-                    LR.U.Editor.disableEditor();
+                    $(this).parent().html(DO.C.Editor.EnableEditorButton);
+                    DO.U.Editor.disableEditor();
                 });
             }
 
-            if (LR.C.User.IRI) {
-                $('#document-do').on('click', '.new-file-html', LR.U.createNewDocument);
-                $('#document-do').on('click', '.update-file-html', function() {
-                    LR.U.putResource().then(
-                        function(i) {
-                            LR.U.hideDocumentMenu();
-                        },
-                        function(reason) {
-                            console.log(reason);
-                        }
-                    );
-                });
-                $('#document-do').on('click', '.save-as-file-html', LR.U.saveAsDocument);
-            }
+            $('#document-do').on('click', '.resource-new', DO.U.createNewDocument);
+            $('#document-do').on('click', '.resource-save', function(e) {
+                DO.U.putResource().then(
+                    function(i) {
+                        DO.U.hideDocumentMenu();
+                    },
+                    function(reason) {
+                        console.log(reason);
+                    }
+                );
+            });
+            $('#document-do').on('click', '.resource-save-as', DO.U.saveAsDocument);
 
-            $('#document-do').on('click', '.export-file-html', LR.U.exportAsHTML);
+            $('#document-do').on('click', '.resource-export', DO.U.exportAsHTML);
 
-            $('#document-do').on('click', '.print-file-html', function(e) {
-                LR.U.hideDocumentMenu();
+            $('#document-do').on('click', '.resource-print', function(e) {
+                DO.U.hideDocumentMenu();
                 window.print();
                 return false;
             });
         },
 
         createNewDocument: function() {
-            $('body').append('<aside id="create-new-document" class="lr on"><button class="close">❌</button><h2>Create New Document</h2><label>URL to save to</label><input id="storage" type="text" placeholder="http://example.org/article" value="" name="storage"/> <button class="create">Create</button></aside>');
+            $(this).prop('disabled', 'disabled');
+            $('body').append('<aside id="create-new-document" class="do on"><button class="close">❌</button><h2>Create New Document</h2><label>URL to save to</label><input id="storage" type="text" placeholder="http://example.org/article" value="" name="storage"/> <button class="create">Create</button></aside>');
+
+            $('#create-new-document #storage').focus();
+
+            $('#create-new-document').on('click', 'button.close', function(e) {
+                $('#document-do .resource-new').removeAttr('disabled');
+            });
 
             $('#create-new-document').on('click', 'button.create', function(e) {
                 var storageIRI = $(this).parent().find('input#storage').val().trim();
 
                 var html = document.documentElement.cloneNode(true);
                 $(html).find('main > article').empty();
-                html = LR.U.getDocument(html);
+                html = DO.U.getDocument(html);
+                html = html.replace(/<title>[^<]*<\/title>/g, '<title></title>');
 
                 var w = window.open('', '_blank');
 
-                LR.U.putResource(storageIRI, html).then(
+                DO.U.putResource(storageIRI, html).then(
                     function(i) {
                         console.log(i);
-                        LR.U.hideDocumentMenu();
+                        DO.U.hideDocumentMenu();
                         w.location.href = storageIRI + '?edit=true';
                     },
                     function(reason) {
@@ -1346,22 +1487,36 @@ var LR = {
         },
 
         saveAsDocument: function() {
-            $('body').append('<aside id="save-as-document" class="lr on"><button class="close">❌</button><h2>Save As Document</h2><label>URL to save to</label><input id="storage" type="text" placeholder="http://example.org/article" value="" name="storage"/> <button class="create">Save</button></aside>');
+            $(this).prop('disabled', 'disabled');
+            $('body').append('<aside id="save-as-document" class="do on"><button class="close">❌</button><h2>Save As Document</h2><label>URL to save to</label><input id="storage" type="text" placeholder="http://example.org/article" value="" name="storage"/> <button class="create">Save</button></aside>');
+
+            $('#save-as-document #storage').focus();
+
+            $('#save-as-document').on('click', 'button.close', function(e) {
+                $('#document-do .resource-save-as').removeAttr('disabled');
+            });
 
             $('#save-as-document').on('click', 'button.create', function(e) {
-                var storageIRI = $(this).parent().find('input#storage').val().trim();
+                var saveAsDocument = $(this).parent();
+                var storageIRI = saveAsDocument.find('input#storage').val().trim();
 
-                html = LR.U.getDocument();
+                html = DO.U.getDocument();
 
+                //FIXME: Open if only resource was PUT successfully. Promise issue?
                 var w = window.open('', '_blank');
 
-                LR.U.putResource(storageIRI, html).then(
+                DO.U.putResource(storageIRI, html).then(
                     function(i) {
-                        console.log(i);
-                        LR.U.hideDocumentMenu();
+                        DO.U.hideDocumentMenu();
                         w.location.href = storageIRI;
                     },
                     function(reason) {
+                        if (reason.status == 405) {
+                            //FIXME: Shouldn't have to open then close.
+                            w.close();
+                            saveAsDocument.find('.error').remove();
+                            saveAsDocument.append('<p class="error">Unable to save to that location.</p>');
+                        }
                         console.log(reason);
                     }
                 );
@@ -1370,78 +1525,78 @@ var LR = {
 
         initStorage: function(item) {
             if (typeof window.localStorage != 'undefined') {
-                LR.U.enableStorage(item);
+                DO.U.enableStorage(item);
             }
         },
         enableStorage: function(item) {
-            LR.C.UseStorage = true;
+            DO.C.UseStorage = true;
             if(localStorage.getItem(item)) {
                 document.documentElement.innerHTML = localStorage.getItem(item);
             }
-            console.log(LR.U.getDateTimeISO() + ': Storage enabled.');
-            LR.U.enableAutoSave(item);
+            console.log(DO.U.getDateTimeISO() + ': Storage enabled.');
+            DO.U.enableAutoSave(item);
         },
         disableStorage: function(item) {
-            LR.C.UseStorage = false;
+            DO.C.UseStorage = false;
             localStorage.removeItem(item);
-            LR.U.disableAutoSave(item);
-            console.log(LR.U.getDateTimeISO() + ': Storage disabled.');
+            DO.U.disableAutoSave(item);
+            console.log(DO.U.getDateTimeISO() + ': Storage disabled.');
         },
         saveStorage: function(item) {
             switch(item) {
                 case 'html': default:
-                    var object = LR.U.getDocument();
+                    var object = DO.U.getDocument();
                     break;
             }
             localStorage.setItem(item, object);
-            console.log(LR.U.getDateTimeISO() + ': Document saved.');
+            console.log(DO.U.getDateTimeISO() + ': Document saved.');
         },
         enableAutoSave: function(item) {
-            LR.C.AutoSaveId = setInterval(function() { LR.U.saveStorage(item) }, LR.C.AutoSaveTimer);
-            console.log(LR.U.getDateTimeISO() + ': Autosave enabled.');
+            DO.C.AutoSaveId = setInterval(function() { DO.U.saveStorage(item) }, DO.C.AutoSaveTimer);
+            console.log(DO.U.getDateTimeISO() + ': Autosave enabled.');
         },
         disableAutoSave: function(item) {
-            clearInterval(LR.C.AutoSaveId);
-            console.log(LR.U.getDateTimeISO() + ': Autosave disabled.');
+            clearInterval(DO.C.AutoSaveId);
+            console.log(DO.U.getDateTimeISO() + ': Autosave disabled.');
         },
         showStorage: function(node) {
             if (typeof window.localStorage != 'undefined') {
                 var useStorage = '';
 
-                if (LR.C.UseStorage) {
-                    useStorage = LR.C.DisableStorageButtons;
+                if (DO.C.UseStorage) {
+                    useStorage = DO.C.DisableStorageButtons;
                 }
                 else {
-                    useStorage = LR.C.EnableStorageButtons;
+                    useStorage = DO.C.EnableStorageButtons;
                 }
 
-                $(node).append('<section id="local-storage" class="lr"><h2>Local Storage</h2>\n\
+                $(node).append('<section id="local-storage" class="do"><h2>Local Storage</h2>\n\
                 <p>' + useStorage + '</p>\n\
                 </section>');
 
                 $('#local-storage').on('click', 'button.local-storage-enable-html', function(e) {
-                    $(this).parent().html(LR.C.DisableStorageButtons);
-                    LR.U.enableStorage('html');
+                    $(this).parent().html(DO.C.DisableStorageButtons);
+                    DO.U.enableStorage('html');
                 });
                 $('#local-storage').on('click', 'button.local-storage-disable-html', function(e) {
-                    $(this).parent().html(LR.C.EnableStorageButtons);
-                    LR.U.disableStorage('html');
+                    $(this).parent().html(DO.C.EnableStorageButtons);
+                    DO.U.disableStorage('html');
                 });
                 $('#local-storage').on('click', 'input.autosave', function(e) {
                     if ($(this).attr('checked') == 'checked') {
                         $(this).removeAttr('checked');
-                        LR.U.disableAutoSave('html');
+                        DO.U.disableAutoSave('html');
                     }
                     else {
                         $(this).attr('checked', 'checked');
-                        LR.U.enableAutoSave('html');
+                        DO.U.enableAutoSave('html');
                     }
                 });
             }
         },
         hideStorage: function() {
-            if (LR.C.UseStorage) {
-                $('#local-storage.lr').remove();
+            if (DO.C.UseStorage) {
+                $('#local-storage.do').remove();
             }
         },
 
@@ -1453,7 +1608,7 @@ var LR = {
         createAttributeDateTime: function(element) {
             //Creates datetime attribute.
             //TODO: Include @data-author for the signed in user e.g., WebID or URL.
-            var a = LR.U.getDateTimeISO();
+            var a = DO.U.getDateTimeISO();
 
             switch(element) {
                 case 'mark': case 'article':
@@ -1476,7 +1631,7 @@ var LR = {
 
         buildReferences: function() {
             if ($('#references ol').length == 0) {
-                //XXX: Not the best way of doing this, but it allows LR references to be added to the right place.
+                //XXX: Not the best way of doing this, but it allows DO references to be added to the right place.
                 $('#references').append('\n<ol>\n</ol>\n');
 
                 $('#content span.ref').each(function(i,v) {
@@ -1497,12 +1652,12 @@ var LR = {
                         }
                     }
 
-                    v.outerHTML = ' ' + LR.C.RefType[LR.C.DocRefType].InlineOpen + '<a class="ref" href="#ref-' + refId + '">' + refId + '</a>' + LR.C.RefType[LR.C.DocRefType].InlineClose;
+                    v.outerHTML = ' ' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a class="ref" href="#ref-' + refId + '">' + refId + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose;
 
                     $('#references ol').append('\n    <li id="ref-' + refId + '"></li>');
 
-                    if($(v).hasClass('lr')) {
-                        LR.U.getLinkedResearch(href, $('#references #ref-' + refId));
+                    if($(v).hasClass('do')) {
+                        DO.U.getLinkedResearch(href, $('#references #ref-' + refId));
                     }
                     else {
                         $('#references #ref-' + refId).html(referenceText + referenceLink);
@@ -1523,7 +1678,7 @@ WHERE {\n\
     OPTIONAL { <" + iri + "> schema:name ?prefLabel . }\n\
     OPTIONAL { <" + iri + "> skos:notation ?prefLabel . }\n\
     OPTIONAL { <" + iri + "> dcterms:identifier ?prefLabel . }\n\
-    FILTER (LANG(?prefLabel) = '' || LANGMATCHES(LANG(?prefLabel), '" + LR.C.Lang + "'))\n\
+    FILTER (LANG(?prefLabel) = '' || LANGMATCHES(LANG(?prefLabel), '" + DO.C.Lang + "'))\n\
 }\n\
 LIMIT 1";
 
@@ -1551,11 +1706,11 @@ LIMIT 1";
             d.on({
                 mouseenter: function () {
                     var c = $(this).prop('class');
-                    d.find('*[class="'+ c +'"]').addClass('lr highlight');
+                    d.find('*[class="'+ c +'"]').addClass('do highlight');
                 },
                 mouseleave: function () {
                     var c = $(this).prop('class');
-                    d.find('*[class="'+ c +'"]').removeClass('lr highlight');
+                    d.find('*[class="'+ c +'"]').removeClass('do highlight');
                 }
             }, '*[class*="highlight-"]');
         },
@@ -1572,7 +1727,7 @@ LIMIT 1";
                 return (document.getElementById(string)) ? string + '-x' : string;
             }
             else {
-                return LR.U.generateUUID();
+                return DO.U.generateUUID();
             }
         },
 
@@ -1616,7 +1771,7 @@ LIMIT 1";
 
                     //FIXME: the noteId parameter for positionNote shouldn't
                     //rely on refLabel. Grab it from somewhere else.
-                    LR.U.positionNote(refId, refLabel, refLabel);
+                    DO.U.positionNote(refId, refLabel, refLabel);
                 });
             });
         },
@@ -1681,14 +1836,14 @@ console.log(viewportWidthSplit);
         Editor: {
             disableEditor: function() {
         //        _mediumEditors[1].destroy();
-                LR.C.EditorEnabled = false;
-                return LR.U.Editor.MediumEditor.destroy();
+                DO.C.EditorEnabled = false;
+                return DO.U.Editor.MediumEditor.destroy();
             },
 
             enableEditor: function() {
                 //XXX: Consider this as the main wrapper for the editor tool.
                 if (!document.getElementById('document-editor')) {
-                    $('body').append('<aside id="document-editor" class="lr"/>');
+                    $('body').append('<aside id="document-editor" class="do"/>');
                 }
         //        $('article:nth(0)').addClass('editable');
 
@@ -1698,7 +1853,7 @@ console.log(viewportWidthSplit);
                 pText = pText[Math.floor(Math.random() * pText.length)];
 
                 if (typeof MediumEditor !== 'undefined') {
-                    LR.U.Editor.MediumEditor = new MediumEditor(editableNodes, {
+                    DO.U.Editor.MediumEditor = new MediumEditor(editableNodes, {
                         elementsContainer: document.getElementById('document-editor'),
                         placeholder: {
                             text: pText
@@ -1775,7 +1930,7 @@ console.log(viewportWidthSplit);
 
 
                         // anchor: {
-                            // customClassOption: 'lr ref',
+                            // customClassOption: 'do ref',
                             // customClassOptionText: 'Citation'
                             // linkValidation: false,
                             // placeholderText: 'Paste or type a link',
@@ -1787,31 +1942,31 @@ console.log(viewportWidthSplit);
                         anchorPreview: false,
 
                         extensions: {
-                            'h2': new LR.U.Editor.Button({action:'h2', label:'h2'}),
-                            'h3': new LR.U.Editor.Button({action:'h3', label:'h3'}),
-                            'h4': new LR.U.Editor.Button({action:'h4', label:'h4'}),
+                            'h2': new DO.U.Editor.Button({action:'h2', label:'h2'}),
+                            'h3': new DO.U.Editor.Button({action:'h3', label:'h3'}),
+                            'h4': new DO.U.Editor.Button({action:'h4', label:'h4'}),
 
-                            'em': new LR.U.Editor.Button({action:'em', label:'em'}),
-                            'strong': new LR.U.Editor.Button({action:'strong', label:'strong'}),
-                            'code': new LR.U.Editor.Button({action:'code', label:'code'}),
+                            'em': new DO.U.Editor.Button({action:'em', label:'em'}),
+                            'strong': new DO.U.Editor.Button({action:'strong', label:'strong'}),
+                            'code': new DO.U.Editor.Button({action:'code', label:'code'}),
 
-                            'cite': new LR.U.Editor.Button({action:'cite', label:'cite'}),
-                            'q': new LR.U.Editor.Button({action:'q', label:'q'}),
+                            'cite': new DO.U.Editor.Button({action:'cite', label:'cite'}),
+                            'q': new DO.U.Editor.Button({action:'q', label:'q'}),
 
-                            'mark': new LR.U.Editor.Button({action:'mark', label:'mark'}),
-                            'note': new LR.U.Editor.Note({action:'article', label:'note'}),
+                            'mark': new DO.U.Editor.Button({action:'mark', label:'mark'}),
+                            'note': new DO.U.Editor.Note({action:'article', label:'note'}),
 
                             //XXX: Interesting for editor
-                            // 'del': new LR.U.Editor.Button({action:'del', label:'del'}),
-                            // 'ins': new LR.U.Editor.Button({action:'ins', label:'ins'})
+                            // 'del': new DO.U.Editor.Button({action:'del', label:'del'}),
+                            // 'ins': new DO.U.Editor.Button({action:'ins', label:'ins'})
 
                             'table': new MediumEditorTable()
             //                'spreadsheet': new MediumEditorSpreadsheet()
                         }
                     });
 
-                    LR.C.EditorEnabled = true;
-                    return LR.U.Editor.MediumEditor;
+                    DO.C.EditorEnabled = true;
+                    return DO.U.Editor.MediumEditor;
             //            $('.editable').mediumInsert({
             //                editor: editor
             //            });
@@ -1853,16 +2008,16 @@ console.log(viewportWidthSplit);
                             this.button = this.createButton();
                             this.on(this.button, 'click', this.handleClick.bind(this));
 
-                            //TODO: Listen to section hX changes and update section @id and span @class lr.fragment
+                            //TODO: Listen to section hX changes and update section @id and span @class do.fragment
                         },
 
                         // getButton: function() {
-                        //     console.log('LR.U.Editor.Button.Note.getButton()');
+                        //     console.log('DO.U.Editor.Button.Note.getButton()');
                         //     return this.button;
                         // },
 
                         handleClick: function(event) { //, editable
-                //console.log('LR.U.Editor.Button.handleClick()');
+                //console.log('DO.U.Editor.Button.handleClick()');
                 console.log(this);
                             event.preventDefault();
                             event.stopPropagation();
@@ -1893,11 +2048,11 @@ console.log(viewportWidthSplit);
                                 return this.base.execAction('removeFormat');
                             }
                             else {
-                                var datetime = ' ' + LR.U.createAttributeDateTime(this.action);
+                                var datetime = ' ' + DO.U.createAttributeDateTime(this.action);
 
                                 this.base.selectedDocument = this.document;
                                 this.base.selection = MediumEditor.selection.getSelectionHtml(this.base.selectedDocument);
-                                //.replace(LR.C.Editor.regexEmptyHTMLTags, '');
+                                //.replace(DO.C.Editor.regexEmptyHTMLTags, '');
                                 console.log('this.base.selection:');
                                 console.log(this.base.selection);
 
@@ -1919,7 +2074,7 @@ console.log(viewportWidthSplit);
                                         var parentSectionHeading = '';
                                         for (var i = 0; i < parentSection.childNodes.length; i++) {
                                             parentSectionHeading = parentSection.childNodes[i].nodeName.toLowerCase();
-                                            if(LR.C.Editor.headings.indexOf(parentSectionHeading) > 0) {
+                                            if(DO.C.Editor.headings.indexOf(parentSectionHeading) > 0) {
                     //                            console.log(parentSectionHeading);
                                                 break;
                                             }
@@ -1953,7 +2108,7 @@ console.log(viewportWidthSplit);
 
                     console.log(range);
                                             //Section
-                                            var sectionId = LR.U.generateAttributeId(null, this.base.selection);
+                                            var sectionId = DO.U.generateAttributeId(null, this.base.selection);
                                             var section = document.createElement('section');
                                             section.id = sectionId;
                                             section.setAttribute('rel', 'schema:hasPart');
@@ -2016,7 +2171,7 @@ console.log(viewportWidthSplit);
                                                         //TODO: There should be a simpler way to do wrap <p> (w/o jQuery)
                                                         var xSPE = document.createElement(sPE);
                                                         xSPE.appendChild(fragment.cloneNode(true));
-                                                        fragment = LR.U.fragmentFromString(xSPE.outerHTML);
+                                                        fragment = DO.U.fragmentFromString(xSPE.outerHTML);
                                                         break;
                                                     //TODO: Other cases?
                                                 }
@@ -2108,7 +2263,7 @@ console.log(viewportWidthSplit);
                                     //     MediumEditor.util.insertHTMLCommand(this.base.selectedDocument, selectionUpdated);
 
                                     //     //Show Form for text entry;
-                                    //     LR.U.Editor.Note();
+                                    //     DO.U.Editor.Note();
                                     //     break;
 
                                     default:
@@ -2367,8 +2522,8 @@ console.log(viewportWidthSplit);
                             this.base.restoreSelection();
                             var range = MediumEditor.selection.getSelectionRange(this.document);
                 //            this.execAction(this.action, opts);
-                            var datetime = LR.U.getDateTimeISO();
-                            var id = LR.U.generateAttributeId().slice(0, 6);
+                            var datetime = DO.U.getDateTimeISO();
+                            var id = DO.U.generateAttributeId().slice(0, 6);
                             var refId = 'r-' + id;
 
                             //TODO: noteId can be external to this document e.g., User stores the note at their own space
@@ -2381,13 +2536,20 @@ console.log(viewportWidthSplit);
 
                             //XXX: Preferring masterWorkspace over the others. Good/bad idea?
                             //Need more granular workspace selection, e.g., PublicAnnotations. Defaulting to PublicWorkspace if no masterWorkspace
-                            if (typeof LR.C.User.masterWorkspace != 'undefined' || typeof LR.C.User.Workspace.Master != 'undefined') {
-                                containerIRI = LR.C.User.masterWorkspace + LR.C.InteractionPath;
+                            if (typeof DO.C.User.masterWorkspace != 'undefined' && DO.C.User.masterWorkspace.length > 0) {
+                                containerIRI = DO.C.User.masterWorkspace + DO.C.InteractionPath;
                             }
                             else {
-                                    if (typeof LR.C.User.Workspace.Public != 'undefined') {
-                                        containerIRI = LR.C.User.Workspace.Public + LR.C.InteractionPath;
+                                if (typeof DO.C.User.Workspace != 'undefined') {
+                                    if (typeof DO.C.User.Workspace.Master != 'undefined' && DO.C.User.Workspace.Master.length > 0) {
+                                        containerIRI = DO.C.User.Workspace.Master + DO.C.InteractionPath;
                                     }
+                                    else {
+                                        if (typeof DO.C.User.Workspace.Public != 'undefined' && DO.C.User.Workspace.Public.length > 0) {
+                                            containerIRI = DO.C.User.Workspace.Public + DO.C.InteractionPath;
+                                        }
+                                    }
+                                }
                             }
 
                             var noteIRI = containerIRI + id;
@@ -2400,7 +2562,7 @@ console.log(viewportWidthSplit);
 
                             //Mark the text which the note was left for (with reference to the note?)
                             this.base.selectedDocument = this.document;
-                            this.base.selection = MediumEditor.selection.getSelectionHtml(this.base.selectedDocument); //.replace(LR.C.Editor.regexEmptyHTMLTags, '');
+                            this.base.selection = MediumEditor.selection.getSelectionHtml(this.base.selectedDocument); //.replace(DO.C.Editor.regexEmptyHTMLTags, '');
                             console.log('this.base.selection:');
                             console.log(this.base.selection);
 
@@ -2412,7 +2574,7 @@ console.log(viewportWidthSplit);
                                     ref = '<span class="ref" about="[this:#' + refId + ']" typeof="http://purl.org/dc/dcmitype/Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span><sup class="ref-footnote"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup></span>';
                                     break;
                                 case 'reference':
-                                    ref = '<span class="ref" about="[this:#' + refId + ']" typeof="http://purl.org/dc/dcmitype/Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span> <span class="ref-reference">' + LR.C.RefType[LR.C.DocRefType].InlineOpen + '<a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a>' + LR.C.RefType[LR.C.DocRefType].InlineClose + '</span></span>';
+                                    ref = '<span class="ref" about="[this:#' + refId + ']" typeof="http://purl.org/dc/dcmitype/Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span> <span class="ref-reference">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span></span>';
                                     break;
                             }
 
@@ -2425,38 +2587,16 @@ console.log(viewportWidthSplit);
                             MediumEditor.util.insertHTMLCommand(this.base.selectedDocument, selectionUpdated);
 
 
-                            //Add the note to the document.
-                            //TODO: if signed-in
-                            //TODO: If img available
                             //TODO: oa:TimeState's datetime should equal to hasSource value. Same for oa:HttpRequestState's rdfs:value
                             // <span about="[this:#' + refId + ']" rel="oa:hasState">(timeState: <time typeof="oa:TimeState" datetime="' + datetime +'" datatype="xsd:dateTime"property="oa:sourceDate">' + datetime + '</time>)</span>\n\
 
-                            userImage = '';
-                            if (LR.C.User.Image) {
-                                userImage = '<img rel="schema:image" src="' + LR.C.User.Image + '" width="32" height="32"/>';
-                            }
+                            var user = DO.U.getUserHTML();
 
 //                                    <sup><a href="#' + refId + '">' + refLabel + '</a></sup>\n\
 
                             var note = '\n\
             <article id="' + id + '" about="[i:]" typeof="oa:Annotation as:Activity" prefix="schema: http://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + noteIRI +'">\n\
-                <h3 property="schema:name">\n\
-                    <span rel="schema:creator oa:annotatedBy as:actor">\n\
-                        <span about="' + LR.C.User.IRI + '" typeof="schema:Person">\n\
-                            ' + userImage + '\n\
-                            <a rel="schema:url" href="' + LR.C.User.IRI + '">\n\
-                                <span about="' + LR.C.User.IRI + '" property="schema:name">' + LR.C.User.Name + '</span>\n\
-                            </a>\n\
-                        </span>\n\
-                    </span>\n\
-                    <a rel="oa:hasTarget sioc:reply_of as:inReplyTo" href="' + resourceIRI + '">\n\
-                        <span about="[i:]" rel="oa:motivatedBy" resource="oa:replying">replied</span>\n\
-                    </a>\n\
-                    on\n\
-                    <a href="' + noteIRI + '">\n\
-                        <time datetime="' + datetime +'" datatype="xsd:dateTime" property="oa:annotatedAt schema:datePublished">' + datetime + '</time>\n\
-                    </a>\n\
-                </h3>\n\
+                <h3 property="schema:name"><span rel="schema:creator oa:annotatedBy as:actor">' + user + '</span> <a href="' + noteIRI + '"><time datetime="' + datetime +'" datatype="xsd:dateTime" property="oa:annotatedAt schema:datePublished">' + datetime.substr(0,19).replace('T', ' ') + '</time></a> <a rel="oa:hasTarget sioc:reply_of as:inReplyTo" href="' + resourceIRI + '"><span about="[i:]" rel="oa:motivatedBy" resource="oa:replying">in reply to</span></a></h3>\n\
                 <div property="schema:description" rel="oa:hasBody as:content">\n\
                     <div about="[i:]" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">\n\
                         <p>' + opts.url + '</p>\n\
@@ -2474,19 +2614,19 @@ console.log(viewportWidthSplit);
                             var nES = selectedParentElement.nextElementSibling;
                             //Check if <aside class="note"> exists
                             if(nES && nES.nodeName.toLowerCase() == 'aside' && nES.classList.contains('note')) {
-                                var noteNode = LR.U.fragmentFromString(note);
+                                var noteNode = DO.U.fragmentFromString(note);
                                 nES.appendChild(noteNode);
                             }
-                            else {// id="n-' + LR.U.generateAttributeId() + '"
+                            else {// id="n-' + DO.U.generateAttributeId() + '"
                                 var asideNote = '\n\
                             <aside class="note">\n\
                             '+ note + '\n\
                             </aside>';
-                                var asideNode = LR.U.fragmentFromString(asideNote);
+                                var asideNode = DO.U.fragmentFromString(asideNote);
                                 selectedParentElement.parentNode.insertBefore(asideNode, selectedParentElement.nextSibling);
                             }
 
-                            LR.U.positionNote(refId, refLabel, id);
+                            DO.U.positionNote(refId, refLabel, id);
 
 
                             var data = '<!DOCTYPE html>\n\
@@ -2501,16 +2641,16 @@ console.log(viewportWidthSplit);
 </html>\n\
 ';
 
-                            LR.U.putResource(noteIRI, data);
+                            DO.U.putResource(noteIRI, data);
 
                             console.log('resourceIRI: ' + resourceIRI);
 
                             //TODO: resourceIRI should be the closest IRI (not necessarily the document). Test resolve/reject better.
-                            LR.U.getPingback(resourceIRI).then(
-                                function(pingbackTo) {
-                                    if (pingbackTo && pingbackTo.length > 0) {
-                                        console.log('pingbackTo: ' + pingbackTo);
-                                        LR.U.createPingback(pingbackTo, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', resourceIRI);
+                            DO.U.getInbox(resourceIRI).then(
+                                function(inbox) {
+                                    if (inbox && inbox.length > 0) {
+                                        console.log('inbox: ' + inbox);
+                                        DO.U.notifyInbox(inbox, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', resourceIRI);
                                     }
                                 },
                                 function(reason) {
@@ -2612,22 +2752,22 @@ console.log(viewportWidthSplit);
                 }
             })()
 
-        } //LR.U.Editor
-    } //LR.U
-}; //LR
+        } //DO.U.Editor
+    } //DO.U
+}; //DO
 
 $(document).ready(function() {
-//    LR.U.initStorage('html');
-//    LR.U.getDocRefType();
-    LR.U.showRefs();
-    LR.U.setUser();
-    LR.U.setLocalDocument();
-    LR.U.buttonClose();
-    LR.U.highlightItems();
-    LR.U.showDocumentInfo();
-//    LR.U.openTarget();
-//    LR.U.buildReferences();
-//    LR.U.getLinkedResearch();
-    LR.U.showFragment();
-    LR.U.setDocumentMode();
+//    DO.U.initStorage('html');
+//    DO.U.getDocRefType();
+    DO.U.showRefs();
+    DO.U.setUser().then(DO.U.setUserInfo);
+    DO.U.setLocalDocument();
+    DO.U.buttonClose();
+    DO.U.highlightItems();
+    DO.U.showDocumentInfo();
+//    DO.U.openTarget();
+//    DO.U.buildReferences();
+//    DO.U.getLinkedResearch();
+    DO.U.showFragment();
+    DO.U.setDocumentMode();
 });
