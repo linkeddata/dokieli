@@ -136,8 +136,6 @@ var DO = {
                         return reject(xhr);
                     },
                     function(reason) {
-                        //FIXME: Hardcoding this for now.. hmm.
-                        console.log(proxyURL);
                         if (proxyURL != DO.C.ProxyURL) {
                             console.log('HEAD ' + pIRI + ' not successful. Trying url: ' + url + ' with proxyURL: ' + DO.C.ProxyURL);
                             return DO.U.authenticateUser(url, DO.C.ProxyURL);
