@@ -108,7 +108,8 @@ footer a { text-decoration: underline;}
 a { text-decoration: inherit; color: #729871; }
 a:hover { text-decoration: underline; color: #92C492; }
 
-nav {  }
+nav {
+}
 nav a:hover { text-decoration: none; }
 nav ul { list-style: none; padding: none; margin: none; }
 
@@ -134,10 +135,45 @@ h1 {
   border: 0; margin-top: 2em;
 }
 
-#do-index header nav #do-new {
-  
+#do-index header nav ul {
+  display: block!important; /* fuuuuuuuck you flexbox */
+  margin: none!important; padding: none!important;
+  height: 1px; /* floating li hack */
+  padding: 1em;
 }
-#do-index header nav #do-new a {
-  color: inherit!important;
-  border: none!important;
+#do-index header nav > ul > li:before, #do-index header nav ul ul > li:first-child::before { content: none!important; }
+#do-index #new {
+  border: 1px solid black;
+  border-radius: 8px;
+  float: left; width: 25%;
+  font-weight: bold;
+  display: inline-block;
+}
+#do-index #new:hover {
+  border-color: silver;
+}
+#do-index #new a {
+  color: black;
+  font-size: 2em;
+  width: 100%;
+  display: inline-block;
+  padding: 0.6em;
+}
+#do-index #new a:before {
+  content: "+ ";
+}
+
+#do-index #examples {
+  width: 70%;
+  float: left;
+}
+#do-index #examples p {
+  padding: 0; margin: 0 0 0.6em 0;
+}
+#do-index #examples li {
+  float: left;
+  margin-right: 0.4em;
+}
+#do-index #examples li a {
+  text-decoration: underline;
 }
