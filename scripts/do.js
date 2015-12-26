@@ -44,7 +44,7 @@ var DO = {
             EnableEditorButton: '<button class="editor-enable">Edit</button>'
         },
         InteractionPath: 'i/',
-
+        ProxyURL: 'https://databox.me/,proxy?uri=',
         Vocab: {
             "rdftype": {
                 "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
@@ -115,16 +115,17 @@ var DO = {
     },
 
     U: {
-        authenticateUser: function(url) {
+        authenticateUser: function(url, proxyURL) {
             url = url || window.location.origin + window.location.pathname;
+            proxyURL = proxyURL || document.location.origin + '/,proxy?uri=';
 
-            //TODO: I have to think about this
-            if (url.slice(0, 5).toLowerCase() != 'https') {
-                url = document.location.origin + '/,proxy?uri=' + DO.U.encodeString(url);
+            var pIRI = url;
+            if (url.slice(0, 5).toLowerCase() == 'http:') {
+                pIRI = proxyURL + DO.U.encodeString(pIRI);
             }
 
             return new Promise(function(resolve, reject) {
-                DO.U.getResourceHeader(url).then(
+                DO.U.getResourceHeader(pIRI).then(
                     function(data, textStatus, xhr) {
 //                        console.log(xhr.getAllResponseHeaders());
                         var user = xhr.getResponseHeader('User');
@@ -135,7 +136,13 @@ var DO = {
                         return reject(xhr);
                     },
                     function(reason) {
-                        console.log('HEAD not successful');
+                        //FIXME: Hardcoding this for now.. hmm.
+                        console.log(proxyURL);
+                        if (proxyURL != DO.C.ProxyURL) {
+                            console.log('HEAD ' + pIRI + ' not successful. Trying url: ' + url + ' with proxyURL: ' + DO.C.ProxyURL);
+                            return DO.U.authenticateUser(url, DO.C.ProxyURL);
+                        }
+                        console.log('HEAD ' + pIRI + ' not successful.');
                         return reject(reason);
                     }
                 );
