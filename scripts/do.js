@@ -677,20 +677,20 @@ var DO = {
             });
 
             $('#user-identity-input').on('click', 'button.login', function(e) {
-                var url = $(this).parent().find('input#webid').val().trim();
+                var userIdentityInput = $(this).parent();
+                var url = userIdentityInput.find('input#webid').val().trim();
                 if (url.length > 0) {
                     DO.U.setUser(url).then(DO.U.setUserInfo).then(
                         function(i) {
-                            console.log('XXXX');
                             $('#user-login-signup').html(DO.U.getUserHTML());
+                            userIdentityInput.remove();
                         },
                         function(reason) {
-                            console.log('YYYY');
-                            $('#user-login-signup').html('<button class="login-user">Login</button>');
+                            userIdentityInput.find('.error').remove();
+                            userIdentityInput.append('<p class="error">Unable to login with this WebID.</p>');
                             console.log(reason);
                         }
                     );
-                    $('#user-identity-input').remove();
                 }
             });
         },
