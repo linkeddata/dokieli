@@ -19,7 +19,7 @@ header a:hover {text-decoration: none; }
 li a, li p a { text-decoration: none; }
 p a {text-decoration: underline;}
 footer a { text-decoration: underline;}
-a { text-decoration: inherit; color: #729871; }
+a { text-decoration: inherit; }
 a:hover { text-decoration: underline; color: #92C492; }
 
 nav a:hover { text-decoration: none; }
@@ -31,7 +31,7 @@ main {
 
 @media screen and (min-width: 768px){
 
-  main, header {
+  #do-index main, #do-index header nav {
     width: 60%; max-width: 1200px;
     margin-left: auto; margin-right: auto;
   }
