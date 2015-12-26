@@ -135,7 +135,7 @@ var DO = {
                         return reject(xhr);
                     },
                     function(reason) {
-                        console.log('"HEAD not successful');
+                        console.log('HEAD not successful');
                         return reject(reason);
                     }
                 );
@@ -144,25 +144,28 @@ var DO = {
 
         setUser: function(url) {
             url = url || window.location.origin + window.location.pathname;
-            DO.U.authenticateUser(url).then(
-                function(user) {
-                    DO.C.User.IRI = user;
-                    return user;
-                },
-                function(reason) {
-                    console.log(reason);
-                    return reason;
-                }
-            ).then(DO.U.setUserInfo);
+            return new Promise(function(resolve, reject) {
+                DO.U.authenticateUser(url).then(
+                    function(userIRI) {
+                        DO.C.User.IRI = userIRI;
+                        return resolve(user);
+                    },
+                    function(reason) {
+                        console.log(reason);
+                        return reject(reason);
+                    }
+                );
+            });
         },
 
         setUserInfo: function(userIRI) {
+            console.log("setUserInfo: " + userIRI);
             if (userIRI) {
                 var pIRI = userIRI;
                 if (pIRI.slice(0, 5).toLowerCase() != 'https') {
                     pIRI = document.location.origin + '/,proxy?uri=' + DO.U.encodeString(pIRI);
                 }
-                console.log(pIRI);
+                console.log("pIRI: " + pIRI);
                 return new Promise(function(resolve, reject) {
                     var g = SimpleRDF(DO.C.Vocab);
                     g.iri(pIRI).get().then(
@@ -246,18 +249,41 @@ var DO = {
                                                     });
                                                 });
                                             }
-                                            return resolve(DO.C.User);
+                                            return resolve(userIRI);
                                         },
                                         function(reason) { return reject(reason); }
                                     );
                                 });
                             }
-                            return resolve(DO.C.User);
+                            return resolve(userIRI);
                         },
                         function(reason) { return reject(reason); }
                     );
                 });
             }
+        },
+
+        getUserHTML: function() {
+            var userName = 'Anonymous';
+            if (DO.C.User.Name) {
+                //XXX: We have the IRI already
+                userName = '<span about="' + DO.C.User.IRI + '" property="schema:name">' + DO.C.User.Name + '</span>';
+            }
+
+            var userImage = '';
+            if (DO.C.User.Image) {
+                userImage = '<img rel="schema:image" src="' + DO.C.User.Image + '" width="32" height="32"/>';
+            }
+
+            var user = ''
+            if (DO.C.User.IRI) {
+                user = '<span about="' + DO.C.User.IRI + '" typeof="schema:Person">' + userImage + ' <a rel="schema:url" href="' + DO.C.User.IRI + '"> ' + userName + '</a></span>';
+            }
+            else {
+                user = '<span typeof="schema:Person">' + userName + '</span>';
+            }
+
+            return user;
         },
 
         setLocalDocument: function() {
@@ -632,8 +658,50 @@ var DO = {
             }
         },
 
+        //TODO: Refactor
+        showUserLoginSignup: function(node) {
+            var s = '';
+            if(DO.C.User.IRI) {
+                s+= DO.U.getUserHTML();
+            }
+            else {
+                s+= '<button class="login-user">Login</button>';
+            }
+            $(node).append('<p id="user-login-signup">' + s + '</p>');
+
+            $('#document-menu.do').off('click', 'button.login-user').on('click', 'button.login-user', DO.U.showUserIdentityInput);
+        },
+
+        //TODO: Refactor
+        showUserIdentityInput: function() {
+            $(this).prop('disabled', 'disabled');
+            $('body').append('<aside id="user-identity-input" class="do on"><button class="close">❌</button><h2>Enter WebID to login</h2><label>HTTP IRI</label><input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="login">Login</button></aside>');
+
+            $('#user-identity-input').on('click', 'button.close', function(e) {
+                $('#document-menu > header .login-user').removeAttr('disabled');
+            });
+
+            $('#user-identity-input').on('click', 'button.login', function(e) {
+                var url = $(this).parent().find('input#webid').val().trim();
+                if (url.length > 0) {
+                    DO.U.setUser(url).then(DO.U.setUserInfo).then(
+                        function(i) {
+                            console.log('XXXX');
+                            $('#user-login-signup').html(DO.U.getUserHTML());
+                        },
+                        function(reason) {
+                            console.log('YYYY');
+                            $('#user-login-signup').html('<button class="login-user">Login</button>');
+                            console.log(reason);
+                        }
+                    );
+                    $('#user-identity-input').remove();
+                }
+            });
+        },
+
         showDocumentInfo: function() {
-            $('body').append('<aside id="document-menu" class="do"><button class="show" title="Open Menu">☰</button><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><a target="source-dokieli" href="https://github.com/linkeddata/dokieli">dokieli</a></dd><dd id="about-linked-research"><a target="source-linked-research" href="https://github.com/csarven/linked-research">Linked Research</a></dd></footer></aside>');
+            $('body').append('<aside id="document-menu" class="do"><button class="show" title="Open Menu">☰</button><header></header><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><a target="source-dokieli" href="https://github.com/linkeddata/dokieli">dokieli</a></dd><dd id="about-linked-research"><a target="source-linked-research" href="https://github.com/csarven/linked-research">Linked Research</a></dd></footer></aside>');
 
             $('#document-menu.do').on('click', '> button.show', DO.U.showDocumentMenu);
             $('#document-menu.do').on('click', '> button:not([class="show"])', DO.U.hideDocumentMenu);
@@ -644,6 +712,7 @@ var DO = {
             var body = $('body');
             var dMenu = $('#document-menu.do');
             var dMenuButton = dMenu.find('> button');
+            var dHead = dMenu.find('> header');
             var dInfo = dMenu.find('> div');
 
             dMenuButton.removeClass('show');
@@ -651,6 +720,7 @@ var DO = {
             dMenu.addClass('on');
             body.addClass('on-document-menu');
 
+            DO.U.showUserLoginSignup(dHead);
             DO.U.showDocumentDo(dInfo);
             DO.U.showViews(dInfo);
             DO.U.showEmbedData(dInfo);
@@ -673,6 +743,7 @@ var DO = {
             var dMenu = $('#document-menu.do');
             var dMenuButton = dMenu.find('> button');
 
+            dMenu.find('#user-login-signup').remove();
             dMenu.removeClass('on').find('section').remove();
             body.removeClass('on-document-menu');
             dMenuButton.addClass('show');
@@ -682,6 +753,7 @@ var DO = {
             $('#embed-data-entry').remove();
             $('#create-new-document').remove();
             $('#save-as-document').remove();
+            $('#user-identity-input').remove();
 //            DO.U.hideStorage();
         },
 
@@ -2498,24 +2570,7 @@ console.log(viewportWidthSplit);
                             //TODO: oa:TimeState's datetime should equal to hasSource value. Same for oa:HttpRequestState's rdfs:value
                             // <span about="[this:#' + refId + ']" rel="oa:hasState">(timeState: <time typeof="oa:TimeState" datetime="' + datetime +'" datatype="xsd:dateTime"property="oa:sourceDate">' + datetime + '</time>)</span>\n\
 
-                            var userName = 'Anonymous';
-                            if (DO.C.User.Name) {
-                                //XXX: We have the IRI already
-                                userName = '<span about="' + DO.C.User.IRI + '" property="schema:name">' + DO.C.User.Name + '</span>';
-                            }
-
-                            var userImage = '';
-                            if (DO.C.User.Image) {
-                                userImage = '<img rel="schema:image" src="' + DO.C.User.Image + '" width="32" height="32"/>';
-                            }
-
-                            var user = ''
-                            if (DO.C.User.IRI) {
-                                user = '<span about="' + DO.C.User.IRI + '" typeof="schema:Person">' + userImage + ' <a rel="schema:url" href="' + DO.C.User.IRI + '"> ' + userName + '</a></span>';
-                            }
-                            else {
-                                user = '<span typeof="schema:Person">' + userName + '</span>';
-                            }
+                            var user = DO.U.getUserHTML();
 
 //                                    <sup><a href="#' + refId + '">' + refLabel + '</a></sup>\n\
 
@@ -2685,7 +2740,7 @@ $(document).ready(function() {
 //    DO.U.initStorage('html');
 //    DO.U.getDocRefType();
     DO.U.showRefs();
-    DO.U.setUser();
+    DO.U.setUser().then(DO.U.setUserInfo);
     DO.U.setLocalDocument();
     DO.U.buttonClose();
     DO.U.highlightItems();
