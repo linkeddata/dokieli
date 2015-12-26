@@ -370,10 +370,11 @@ var DO = {
                     function(i) {
                         var s = i.iri(subjectIRI);
                         console.log(s);
-                        if (s.solidinbox) {
+                        if (s.solidinbox.length > 0) {
                             console.log(s.solidinbox);
                             return resolve(s.solidinbox);
                         }
+                        return reject(reason);
                     },
                     function(reason) {
                         console.log(reason);
