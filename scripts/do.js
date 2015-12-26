@@ -835,7 +835,8 @@ var DO = {
         showEmbedData: function(node) {
             $(node).append('<section id="embed-data-in-html" class="do"><h2>Data</h2><ul><li><button class="embed-data-meta">Embed</button></li></ul></section>');
 
-            $('#embed-data-in-html').on('click', 'button', function(e){
+            $('#embed-data-in-html').off('click', 'button').on('click', 'button', function(e){
+                $(this).prop('disabled', 'disabled');
                 var scriptCurrent = $('head script[id^="meta-"][class="do"]');
 
                 var scriptType = {
