@@ -148,10 +148,9 @@ var DO = {
                 DO.U.authenticateUser(url).then(
                     function(userIRI) {
                         DO.C.User.IRI = userIRI;
-                        return resolve(user);
+                        return resolve(userIRI);
                     },
                     function(reason) {
-                        console.log(reason);
                         return reject(reason);
                     }
                 );
@@ -166,8 +165,8 @@ var DO = {
                     pIRI = document.location.origin + '/,proxy?uri=' + DO.U.encodeString(pIRI);
                 }
                 console.log("pIRI: " + pIRI);
+                var g = SimpleRDF(DO.C.Vocab);
                 return new Promise(function(resolve, reject) {
-                    var g = SimpleRDF(DO.C.Vocab);
                     g.iri(pIRI).get().then(
                         function(i) {
                             var s = i.iri(userIRI);
@@ -202,58 +201,54 @@ var DO = {
                                 DO.C.User.PreferencesFile = s.preferencesFile;
                                 console.log(DO.C.User.PreferencesFile);
 
-                                return new Promise(function(resolve, reject) {
-                                    //XXX: Probably https so don't bother with proxy?
-                                    g.iri(DO.C.User.PreferencesFile).get().then(
-                                        function(pf) {
-                                            DO.C.User.PreferencesFileGraph = pf;
-                                            var s = pf.iri(userIRI);
+                                //XXX: Probably https so don't bother with proxy?
+                                g.iri(DO.C.User.PreferencesFile).get().then(
+                                    function(pf) {
+                                        DO.C.User.PreferencesFileGraph = pf;
+                                        var s = pf.iri(userIRI);
 
-                                            if (s.masterWorkspace) {
-                                                DO.C.User.masterWorkspace = s.masterWorkspace;
-                                            }
+                                        if (s.masterWorkspace) {
+                                            DO.C.User.masterWorkspace = s.masterWorkspace;
+                                        }
 
-                                            if (s.workspace) {
-                                                DO.C.User.Workspace = { List: s.workspace };
-                                                //XXX: Too early to tell if this is a good/bad idea. Will revise any way. A bit hacky right now.
-                                                s.workspace.forEach(function(workspace) {
-                                                    var wstype = pf.iri(workspace).rdftype || [];
-                                                    wstype.forEach(function(w) {
-                                                        switch(w) {
-                                                            case 'http://www.w3.org/ns/pim/space#PreferencesWorkspace':
-                                                                DO.C.User.Workspace.Preferences = workspace;
-                                                                ;
-                                                                break;
-                                                            case 'http://www.w3.org/ns/pim/space#MasterWorkspace':
-                                                                DO.C.User.Workspace.Master = workspace;
-                                                                break;
-                                                            case 'http://www.w3.org/ns/pim/space#PublicWorkspace':
-                                                                DO.C.User.Workspace.Public = workspace;
-                                                                break;
-                                                            case 'http://www.w3.org/ns/pim/space#PrivateWorkspace':
-                                                                DO.C.User.Workspace.Private = workspace;
-                                                                break;
-                                                            case 'http://www.w3.org/ns/pim/space#SharedWorkspace':
-                                                                DO.C.User.Workspace.Shared = workspace;
-                                                                break;
-                                                            case 'http://www.w3.org/ns/pim/space#ApplicationWorkspace':
-                                                                DO.C.User.Workspace.Application = workspace;
-                                                                break;
-                                                            case 'http://www.w3.org/ns/pim/space#Workspace':
-                                                                DO.C.User.Workspace.Work = workspace;
-                                                                break;
-                                                            case 'http://www.w3.org/ns/pim/space#FamilyWorkspace':
-                                                                DO.C.User.Workspace.Family = workspace;
-                                                                break;
-                                                        }
-                                                    });
+                                        if (s.workspace) {
+                                            DO.C.User.Workspace = { List: s.workspace };
+                                            //XXX: Too early to tell if this is a good/bad idea. Will revise any way. A bit hacky right now.
+                                            s.workspace.forEach(function(workspace) {
+                                                var wstype = pf.iri(workspace).rdftype || [];
+                                                wstype.forEach(function(w) {
+                                                    switch(w) {
+                                                        case 'http://www.w3.org/ns/pim/space#PreferencesWorkspace':
+                                                            DO.C.User.Workspace.Preferences = workspace;
+                                                            ;
+                                                            break;
+                                                        case 'http://www.w3.org/ns/pim/space#MasterWorkspace':
+                                                            DO.C.User.Workspace.Master = workspace;
+                                                            break;
+                                                        case 'http://www.w3.org/ns/pim/space#PublicWorkspace':
+                                                            DO.C.User.Workspace.Public = workspace;
+                                                            break;
+                                                        case 'http://www.w3.org/ns/pim/space#PrivateWorkspace':
+                                                            DO.C.User.Workspace.Private = workspace;
+                                                            break;
+                                                        case 'http://www.w3.org/ns/pim/space#SharedWorkspace':
+                                                            DO.C.User.Workspace.Shared = workspace;
+                                                            break;
+                                                        case 'http://www.w3.org/ns/pim/space#ApplicationWorkspace':
+                                                            DO.C.User.Workspace.Application = workspace;
+                                                            break;
+                                                        case 'http://www.w3.org/ns/pim/space#Workspace':
+                                                            DO.C.User.Workspace.Work = workspace;
+                                                            break;
+                                                        case 'http://www.w3.org/ns/pim/space#FamilyWorkspace':
+                                                            DO.C.User.Workspace.Family = workspace;
+                                                            break;
+                                                    }
                                                 });
-                                            }
-                                            return resolve(userIRI);
-                                        },
-                                        function(reason) { return reject(reason); }
-                                    );
-                                });
+                                            });
+                                        }
+                                    }
+                                );
                             }
                             return resolve(userIRI);
                         },
