@@ -1479,19 +1479,26 @@ var DO = {
             });
 
             $('#save-as-document').on('click', 'button.create', function(e) {
-                var storageIRI = $(this).parent().find('input#storage').val().trim();
+                var saveAsDocument = $(this).parent();
+                var storageIRI = saveAsDocument.find('input#storage').val().trim();
 
                 html = DO.U.getDocument();
 
+                //FIXME: Open if only resource was PUT successfully. Promise issue?
                 var w = window.open('', '_blank');
 
                 DO.U.putResource(storageIRI, html).then(
                     function(i) {
-                        console.log(i);
                         DO.U.hideDocumentMenu();
                         w.location.href = storageIRI;
                     },
                     function(reason) {
+                        if (reason.status == 405) {
+                            //FIXME: Shouldn't have to open then close.
+                            w.close();
+                            saveAsDocument.find('.error').remove();
+                            saveAsDocument.append('<p class="error">Unable to save to that location.</p>');
+                        }
                         console.log(reason);
                     }
                 );
