@@ -121,7 +121,7 @@ main {
 
 @media screen and (min-width: 768px){
 
-  main {
+  main, header {
     width: 60%; max-width: 1200px;
     margin-left: auto; margin-right: auto;
   }
@@ -169,6 +169,7 @@ h1 {
 }
 #do-index #examples p {
   padding: 0; margin: 0 0 0.6em 0;
+  font-weight: bold;
 }
 #do-index #examples li {
   float: left;
