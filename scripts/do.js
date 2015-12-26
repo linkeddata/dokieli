@@ -662,40 +662,40 @@ var DO = {
         },
 
         //TODO: Refactor
-        showUserLoginSignup: function(node) {
+        showUserSigninSignup: function(node) {
             var s = '';
             if(DO.C.User.IRI) {
                 s+= DO.U.getUserHTML();
             }
             else {
-                s+= '<button class="login-user">Login</button>';
+                s+= '<button class="signin-user">Sign in</button>';
             }
-            $(node).append('<p id="user-login-signup">' + s + '</p>');
+            $(node).append('<p id="user-signin-signup">' + s + '</p>');
 
-            $('#document-menu.do').off('click', 'button.login-user').on('click', 'button.login-user', DO.U.showUserIdentityInput);
+            $('#document-menu.do').off('click', 'button.signin-user').on('click', 'button.signin-user', DO.U.showUserIdentityInput);
         },
 
         //TODO: Refactor
         showUserIdentityInput: function() {
             $(this).prop('disabled', 'disabled');
-            $('body').append('<aside id="user-identity-input" class="do on"><button class="close">❌</button><h2>Enter WebID to login</h2><label>HTTP IRI</label><input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="login">Login</button></aside>');
+            $('body').append('<aside id="user-identity-input" class="do on"><button class="close">❌</button><h2>Enter WebID to sign in</h2><label>HTTP IRI</label><input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="signin">Sign in</button></aside>');
 
             $('#user-identity-input').on('click', 'button.close', function(e) {
-                $('#document-menu > header .login-user').removeAttr('disabled');
+                $('#document-menu > header .signin-user').removeAttr('disabled');
             });
 
-            $('#user-identity-input').on('click', 'button.login', function(e) {
+            $('#user-identity-input').on('click', 'button.signin', function(e) {
                 var userIdentityInput = $(this).parent();
                 var url = userIdentityInput.find('input#webid').val().trim();
                 if (url.length > 0) {
                     DO.U.setUser(url).then(DO.U.setUserInfo).then(
                         function(i) {
-                            $('#user-login-signup').html(DO.U.getUserHTML());
+                            $('#user-signin-signup').html(DO.U.getUserHTML());
                             userIdentityInput.remove();
                         },
                         function(reason) {
                             userIdentityInput.find('.error').remove();
-                            userIdentityInput.append('<p class="error">Unable to login with this WebID.</p>');
+                            userIdentityInput.append('<p class="error">Unable to sign in with this WebID.</p>');
                             console.log(reason);
                         }
                     );
@@ -723,7 +723,7 @@ var DO = {
             dMenu.addClass('on');
             body.addClass('on-document-menu');
 
-            DO.U.showUserLoginSignup(dHead);
+            DO.U.showUserSigninSignup(dHead);
             DO.U.showDocumentDo(dInfo);
             DO.U.showViews(dInfo);
             DO.U.showEmbedData(dInfo);
@@ -746,7 +746,7 @@ var DO = {
             var dMenu = $('#document-menu.do');
             var dMenuButton = dMenu.find('> button');
 
-            dMenu.find('#user-login-signup').remove();
+            dMenu.find('#user-signin-signup').remove();
             dMenu.removeClass('on').find('section').remove();
             body.removeClass('on-document-menu');
             dMenuButton.addClass('show');
