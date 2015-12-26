@@ -896,6 +896,10 @@ var DO = {
                     }
                 });
 
+                $('#embed-data-entry').on('click', 'button.close', function(e) {
+                    $('#embed-data-in-html .embed-data-meta').removeAttr('disabled');
+                });
+
                 $('#embed-data-entry').on('click', 'button.save', function(e) {
                     var textarea = $(this).parent().find('textarea');
                     var name = textarea.prop('name');
