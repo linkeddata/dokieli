@@ -883,6 +883,7 @@ var DO = {
                 </aside>';
 
                 $('body').append(embedMenu);
+                $('#embed-data-turtle textarea').focus();
                 $('#embed-data-entry nav').on('click', 'a', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
@@ -892,7 +893,7 @@ var DO = {
                         $('#embed-data-entry nav li').removeClass('selected');
                         li.addClass('selected');
                         $('#embed-data-entry > div').removeClass('selected');
-                        $('#embed-data-entry > div' + $(this).prop('hash')).addClass('selected');
+                        $('#embed-data-entry > div' + $(this).prop('hash')).addClass('selected').find('textarea').focus();
                     }
                 });
 
@@ -1448,6 +1449,8 @@ var DO = {
             $(this).prop('disabled', 'disabled');
             $('body').append('<aside id="create-new-document" class="do on"><button class="close">❌</button><h2>Create New Document</h2><label>URL to save to</label><input id="storage" type="text" placeholder="http://example.org/article" value="" name="storage"/> <button class="create">Create</button></aside>');
 
+            $('#create-new-document #storage').focus();
+
             $('#create-new-document').on('click', 'button.close', function(e) {
                 $('#document-do .resource-new').removeAttr('disabled');
             });
@@ -1478,6 +1481,8 @@ var DO = {
         saveAsDocument: function() {
             $(this).prop('disabled', 'disabled');
             $('body').append('<aside id="save-as-document" class="do on"><button class="close">❌</button><h2>Save As Document</h2><label>URL to save to</label><input id="storage" type="text" placeholder="http://example.org/article" value="" name="storage"/> <button class="create">Save</button></aside>');
+
+            $('#save-as-document #storage').focus();
 
             $('#save-as-document').on('click', 'button.close', function(e) {
                 $('#document-do .resource-save-as').removeAttr('disabled');
