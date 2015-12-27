@@ -118,14 +118,16 @@ var DO = {
         authenticateUser: function(url, proxyURL) {
             url = url || window.location.origin + window.location.pathname;
             proxyURL = proxyURL || document.location.origin + '/,proxy?uri=';
+            var withCredentials = true;
 
             var pIRI = url;
             if (url.slice(0, 5).toLowerCase() == 'http:') {
                 pIRI = proxyURL + DO.U.encodeString(pIRI);
+                withCredentials = false;
             }
 
             return new Promise(function(resolve, reject) {
-                DO.U.getResourceHeader(pIRI).then(
+                DO.U.getResourceHeader(pIRI, withCredentials).then(
                     function(data, textStatus, xhr) {
 //                        console.log(xhr.getAllResponseHeaders());
                         var user = xhr.getResponseHeader('User');
