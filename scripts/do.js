@@ -389,15 +389,18 @@ var DO = {
             });
         },
 
-        getResourceHeader: function(url) {
+        getResourceHeader: function(url, withCredentials) {
             url = url || window.location.origin + window.location.pathname;
-            return $.ajax({
+            var request = {
                 method: "HEAD",
-                url: url,
-                xhrFields: {
+                url: url
+            };
+            if (withCredentials != 'undefined' && withCredentials != false) {
+                request["xhrFields"] = {
                     withCredentials: true
                 }
-            });
+            }
+            return $.ajax(request);
         },
 
         getResource: function(url, headers) {
