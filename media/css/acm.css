@@ -442,8 +442,9 @@ list-style-type:none;
 #authors {
 font-family:Arial, sans-serif;
 text-align:center;
-margin-bottom:1em;
+margin:0 0 1em -5%;
 line-height:1;
+width:110%;
 }
 
 #authors li,
@@ -505,48 +506,48 @@ left:67%;
 }
 #authors dd:nth-of-type(4) {
 position:absolute;
-top:6.6em;
+top:6em;
 left:1%;
 }
 #authors dd:nth-of-type(5) {
 position:absolute;
-top:6.6em;
+top:6em;
 left:34%;
 }
 #authors dd:nth-of-type(6) {
 position:absolute;
-top:6.6em;
+top:6em;
 left:67%;
 }
 
 #author-org li:nth-of-type(1) {
 position:absolute;
-top:2.55em;
+top:1.275em;
 left:1%;
 }
 #author-org li:nth-of-type(2) {
 position:absolute;
-top:2.55em;
+top:1.275em;
 left:34%;
 }
 #author-org li:nth-of-type(3) {
 position:absolute;
-top:2.55em;
+top:1.275em;
 left:67%;
 }
 #author-org li:nth-of-type(4) {
 position:absolute;
-top:9.15em;
+top:8.65em;
 left:1%;
 }
 #author-org li:nth-of-type(5) {
 position:absolute;
-top:9.15em;
+top:8.65em;
 left:34%;
 }
 #author-org li:nth-of-type(6) {
 position:absolute;
-top:9.15em;
+top:8.65em;
 left:67%;
 }
 
@@ -554,32 +555,32 @@ left:67%;
 
 #author-email li:nth-of-type(1) {
 position:absolute;
-top:4.75em;
+top:3.5em;
 left:1%;
 }
 #author-email li:nth-of-type(2) {
 position:absolute;
-top:4.75em;
+top:3.5em;
 left:34%;
 }
 #author-email li:nth-of-type(3) {
 position:absolute;
-top:4.75em;
+top:3.5em;
 left:67%;
 }
 #author-email li:nth-of-type(4) {
 position:absolute;
-top:10.5em;
+top:9.5em;
 left:1%;
 }
 #author-email li:nth-of-type(5) {
 position:absolute;
-top:10.5em;
+top:9.5em;
 left:34%;
 }
 #author-email li:nth-of-type(6) {
 position:absolute;
-top:10.5em;
+top:9.5em;
 left:67%;
 }
 
