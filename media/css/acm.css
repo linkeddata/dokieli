@@ -151,7 +151,7 @@ font-size:1.75em;
 text-align:center;
 }
 h1 sup,
-.entry-subtitle sup,
+#subtitle sup,
 #authors sup {
 font-weight:300;
 font-size:0.5715em;
