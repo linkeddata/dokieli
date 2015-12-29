@@ -1096,7 +1096,7 @@ var DO = {
                 var afterNode = (endParentHeading == 1) ? endParent.find('> section:nth-of-type(' + ui.item.index() +')')  : endParent.find('*:nth-of-type(1) > section:nth-of-type(' + ui.item.index() +')');
 
                 var aboutContext = (endParentId == 'content') ? '' : '#' + endParentId;
-                node.attr('about', '[this:' + aboutContext +']');
+//                node.attr('about', '[this:' + aboutContext +']');
 
                 var nodeDetached = node.detach();
 
