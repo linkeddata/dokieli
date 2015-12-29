@@ -1045,7 +1045,7 @@ var DO = {
                 var sortable = '';
                 var isSortable = ($('head script[src$="html.sortable.min.js"]').length > 0) ? true : false;
 
-                if(isSortable && DO.C.User.IRI) {
+                if(isSortable && DO.C.EditorEnabled) {
                     sortable = ' sortable';
                 }
 
@@ -1054,7 +1054,7 @@ var DO = {
                 s += '</ol></aside>';
 
                 $('body').append(s);
-                if(isSortable && DO.C.User.IRI) {
+                if(isSortable && DO.C.EditorEnabled) {
                     DO.U.sortToC();
                 }
             }
