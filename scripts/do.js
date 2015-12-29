@@ -711,29 +711,37 @@ var DO = {
         //TODO: Refactor
         showUserIdentityInput: function() {
             $(this).prop('disabled', 'disabled');
-            $('body').append('<aside id="user-identity-input" class="do on"><button class="close">❌</button><h2>Enter WebID to sign in</h2><label>HTTP IRI</label><input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="signin">Sign in</button></aside>');
+            $('body').append('<aside id="user-identity-input" class="do on"><button class="close">❌</button><h2>Enter WebID to sign in with</h2><label>HTTP IRI</label><input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="signin">Sign in</button></aside>');
 
             $('#user-identity-input').on('click', 'button.close', function(e) {
                 $('#document-menu > header .signin-user').removeAttr('disabled');
             });
 
-            $('#user-identity-input').on('click', 'button.signin', function(e) {
-                var userIdentityInput = $(this).parent();
-                var url = userIdentityInput.find('input#webid').val().trim();
-                if (url.length > 0) {
-                    DO.U.setUser(url).then(DO.U.setUserInfo).then(
-                        function(i) {
-                            $('#user-signin-signup').html(DO.U.getUserHTML());
-                            userIdentityInput.remove();
-                        },
-                        function(reason) {
-                            userIdentityInput.find('.error').remove();
-                            userIdentityInput.append('<p class="error">Unable to sign in with this WebID.</p>');
-                            console.log(reason);
-                        }
-                    );
+            $('#user-identity-input').on('click', 'button.signin', DO.U.SignInSubmit);
+            $('#user-identity-input').on('keyup', 'input#webid', function(e){
+                if(e.which == 13) {
+                    e.preventDefault();
+                    DO.U.SignInSubmit();
                 }
             });
+        },
+
+        SignInSubmit: function() {
+            var userIdentityInput = $('#user-identity-input');
+            var url = userIdentityInput.find('input#webid').val().trim();
+            if (url.length > 0) {
+                DO.U.setUser(url).then(DO.U.setUserInfo).then(
+                    function(i) {
+                        $('#user-signin-signup').html(DO.U.getUserHTML());
+                        userIdentityInput.remove();
+                    },
+                    function(reason) {
+                        userIdentityInput.find('.error').remove();
+                        userIdentityInput.append('<p class="error">Unable to sign in with this WebID.</p>');
+                        console.log(reason);
+                    }
+                );
+            }
         },
 
         showDocumentInfo: function() {
