@@ -759,7 +759,6 @@ var DO = {
             DO.U.showDocumentDo(dInfo);
             DO.U.showViews(dInfo);
             DO.U.showEmbedData(dInfo);
-            DO.U.showTableOfStuff(dInfo);
             DO.U.showStorage(dInfo);
             DO.U.showDocumentMetadata(dInfo);
             if(!body.hasClass("on-slideshow")) {
@@ -1061,6 +1060,7 @@ var DO = {
                 s += '</ol></aside>';
 
                 $('body').append(s);
+                DO.U.showTableOfStuff($('#toc'));
                 if(isSortable && DO.C.EditorEnabled) {
                     DO.U.sortToC();
                 }
