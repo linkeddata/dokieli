@@ -968,12 +968,24 @@ var DO = {
         },
 
         showTableOfStuff: function(node) {
-            var disabledInput = '';
+            var disabledInput = s = '';
             if (!DO.C.EditorEnabled) {
                 disabledInput = ' disabled="disabled"';
             }
 
-            $(node).append('<section id="table-of-stuff" class="do"><h2>Table of Stuff</h2><ul><li><input id="t-o-content" type="checkbox"'+disabledInput +'/><label for="t-o-content">Contents</label></li><li><input id="t-o-figure" type="checkbox"'+disabledInput +'/><label for="t-o-figure">Figures</label></li><li><input id="t-o-table" type="checkbox"'+disabledInput +'/><label for="t-o-table">Tables</label></li><li><input id="t-o-abbr" type="checkbox"'+disabledInput +'/><label for="t-o-abbr">Abbreviations</label></li></ul></section>');
+            tableList = [{'content': 'Contents'}, {'figure': 'Figures'}, {'table': 'Tables'}, {'abbr': 'Abbreviations'}];
+            tableList.forEach(function(i) {
+                var key = Object.keys(i)[0];
+                var value = i[key];
+                var checkedInput = '';
+                if($('#table-of-'+ key +'s').length > 0) {
+                    checkedInput = ' checked="checked"';
+                }
+
+                s+= '<li><input id="t-o-' + key +'" type="checkbox"' + disabledInput + checkedInput + '/><label for="t-o-' + key + '">' + value + '</label></li>';
+            });
+
+            $(node).append('<section id="table-of-stuff" class="do"><h2>Table of Stuff</h2><ul>' + s + '</ul></section>');
 
             if(DO.C.EditorEnabled) {
                 $('#table-of-stuff').on('click', 'input', function(e){
