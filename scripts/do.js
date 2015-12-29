@@ -117,31 +117,48 @@ var DO = {
 
     U: {
         //Tries to authenticate with given URI. If authenticated, returns the 'User' header value.
-        //  If document's protocol is https: and the input URL uses http:, it goes through a proxy to avoid mixed content. To find the User header, first it tries using the document's origin for the proxy, then it tries a known proxy.
-        //  If the input URI is a WebID, and has a pimspace:storage, it uses the storage URL to authenticate through.
-        //  Lastly, it tries a known authentication endpoint.
+        //  If input URL's protocol is https, it does a HEAD for the User header
+        //  If input URL's protocol is http, it tries to find the WebID's storage through a known proxy, if found, it then does a HEAD for the User header. If the storage is not found, it does a HEAD on a known authentication endpoint for the User header.
         //  TODO: Refactor.
-        //  TOOD: pimspace:storage should probably be called from other places e.g., if HEADing the https is a 200 but there is no User header.
-        authenticateUser: function(url, proxyURL) {
+        //  TODO: storage lookup should probably be done from other places e.g., if HEADing the https is a 200 but there is no User header.
+        authenticateUser: function(url) {
             url = url || window.location.origin + window.location.pathname;
-            proxyURL = proxyURL || document.location.origin + '/,proxy?uri=';
-
-            var withCredentials = true;
-
-            var pIRI = url;
-            if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
-                pIRI = proxyURL + DO.U.encodeString(pIRI);
-                withCredentials = false;
-            }
 
             return new Promise(function(resolve, reject) {
-                var http = new XMLHttpRequest();
-                http.open('HEAD', pIRI);
-
-                if (withCredentials != 'undefined' && withCredentials != false) {
-                    http.withCredentials = true;
+                if (url.slice(0, 5).toLowerCase() == 'https') {
+                    return resolve(DO.U.getResourceHeadUser(url));
+                }
+                else {
+                    if(url.slice(0, 5).toLowerCase() == 'http:') {
+                        console.log("Try to find the WebID's storage through a known proxy");
+                        //TODO: Use document's proxy
+                        var g = SimpleRDF(DO.C.Vocab);
+                        g.iri(DO.C.ProxyURL + DO.U.encodeString(url)).get().then(
+                            function(i) {
+                                console.log(i);
+                                var s = i.iri(url);
+                                if (s.storage && s.storage.length > 0) {
+                                    console.log("Try the WebID's storage");
+                                    console.log(s.storage);
+                                    return resolve(DO.U.getResourceHeadUser(s.storage[0]));
+                                }
+                            },
+                            function(reason) {
+                                console.log('Try a known authentication endpoint');
+                                return resolve(DO.U.getResourceHeadUser(DO.C.AuthEndpoint));
+                            }
+                        );
+                    }
                 }
 
+            });
+        },
+
+        getResourceHeadUser: function(url) {
+            return new Promise(function(resolve, reject) {
+                var http = new XMLHttpRequest();
+                http.open('HEAD', url);
+                http.withCredentials = true;
                 http.onreadystatechange = function() {
                     if (this.readyState == this.DONE) {
                         if (this.status === 200) {
@@ -150,78 +167,8 @@ var DO = {
                                 console.log(user);
                                 return resolve(user);
                             }
-                            console.log('No User header');
-                            //XXX: //Try the WebID's storage
                         }
-
-                        console.log('Try a known proxy');
-                        //We don't use withCredentials for this request
-                        var http = new XMLHttpRequest();
-                        http.open('HEAD', DO.C.ProxyURL + DO.U.encodeString(url));
-                        http.onreadystatechange = function() {
-                            if (this.readyState == this.DONE) {
-                                if (this.status === 200) {
-                                    var user = this.getResponseHeader('User');
-                                    if (user && user.length > 0 && user.slice(0, 4) == 'http') {
-                                        console.log(user);
-                                        return resolve(user);
-                                    }
-
-                                    console.log("Try to find the WebID's storage");
-                                    var g = SimpleRDF(DO.C.Vocab);
-                                    g.iri(DO.C.ProxyURL + DO.U.encodeString(url)).get().then(
-                                        function(i) {
-                                            console.log(i);
-                                            var s = i.iri(url);
-                                            if (s.storage && s.storage.length > 0) {
-                                                console.log(s.storage);
-
-                                                console.log("Try the WebID's storage");
-                                                var http = new XMLHttpRequest();
-                                                http.open('HEAD', s.storage[0]);
-                                                http.withCredentials = true;
-                                                http.onreadystatechange = function() {
-                                                    if (this.readyState == this.DONE) {
-                                                        if (this.status === 200) {
-                                                            var user = this.getResponseHeader('User');
-                                                            if (user && user.length > 0 && user.slice(0, 4) == 'http') {
-                                                                console.log(user);
-                                                                return resolve(user);
-                                                            }
-                                                        }
-                                                        return reject({status: this.status, xhr: this});
-                                                    }
-                                                };
-                                                http.send();
-                                            }
-
-                                            //XXX: //Use a known authentication endpoint
-                                        },
-                                        function(reason) {
-                                            console.log('Try a known authentication endpoint');
-                                            //DO.U.authenticateUser(DO.C.AuthEndpoint);
-                                            var http = new XMLHttpRequest();
-                                            http.open('HEAD', DO.C.AuthEndpoint);
-                                            http.withCredentials = true;
-                                            http.onreadystatechange = function() {
-                                                if (this.readyState == this.DONE) {
-                                                    if (this.status === 200) {
-                                                        var user = this.getResponseHeader('User');
-                                                        if (user && user.length > 0 && user.slice(0, 4) == 'http') {
-                                                            console.log(user);
-                                                            return resolve(user);
-                                                        }
-                                                    }
-                                                    return reject({status: this.status, xhr: this});
-                                                }
-                                            };
-                                            http.send();
-                                        }
-                                    );
-                                }
-                            }
-                        };
-                        http.send();
+//                        return reject({status: this.status, xhr: this});
                     }
                 };
                 http.send();
