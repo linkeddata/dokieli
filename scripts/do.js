@@ -717,16 +717,16 @@ var DO = {
                 $('#document-menu > header .signin-user').removeAttr('disabled');
             });
 
-            $('#user-identity-input').on('click', 'button.signin', DO.U.SignInSubmit);
+            $('#user-identity-input').on('click', 'button.signin', DO.U.submitSignIn);
             $('#user-identity-input').on('keyup', 'input#webid', function(e){
                 if(e.which == 13) {
                     e.preventDefault();
-                    DO.U.SignInSubmit();
+                    DO.U.submitSignIn();
                 }
             });
         },
 
-        SignInSubmit: function() {
+        submitSignIn: function() {
             var userIdentityInput = $('#user-identity-input');
             var url = userIdentityInput.find('input#webid').val().trim();
             if (url.length > 0) {
