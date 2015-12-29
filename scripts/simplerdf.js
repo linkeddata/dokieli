@@ -24134,7 +24134,7 @@ utils.defaultRequest = function (method, requestUrl, headers, content, callback)
     callback = callback || function () {}
 
     var xhr = new XMLHttpRequest()
-    xhr.withCredentials = true
+
     xhr.onreadystatechange = function () {
       if (xhr.readyState === xhr.DONE) {
         var headerLines = xhr.getAllResponseHeaders().split('\r\n')

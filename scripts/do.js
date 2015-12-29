@@ -35,6 +35,7 @@ var DO = {
         EnableStorageButtons: '<button class="local-storage-enable-html">Enable</button>',
         CDATAStart: '<!--//--><![CDATA[//><!--',
         CDATAEnd: '//--><!]]>',
+        SortableList: (($('head script[src$="html.sortable.min.js"]').length > 0) ? true : false),
         EditorAvailable: ($('head script[src$="medium-editor.min.js"]').length > 0),
         EditorEnabled: false,
         Editor: {
@@ -45,6 +46,7 @@ var DO = {
         },
         InteractionPath: 'i/',
         ProxyURL: 'https://databox.me/,proxy?uri=',
+        AuthEndpoint: 'https://databox.me/',
         Vocab: {
             "rdftype": {
                 "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
@@ -115,35 +117,62 @@ var DO = {
     },
 
     U: {
-        authenticateUser: function(url, proxyURL) {
+        //Tries to authenticate with given URI. If authenticated, returns the 'User' header value.
+        //  If input URL's protocol is https, it does a HEAD for the User header
+        //  If input URL's protocol is http, it tries to find the WebID's storage through a known proxy, if found, it then does a HEAD for the User header. If the storage is not found, it does a HEAD on a known authentication endpoint for the User header.
+        //  TODO: Refactor.
+        //  TODO: storage lookup should probably be done from other places e.g., if HEADing the https is a 200 but there is no User header.
+        authenticateUser: function(url) {
             url = url || window.location.origin + window.location.pathname;
-            proxyURL = proxyURL || document.location.origin + '/,proxy?uri=';
-
-            var pIRI = url;
-            if (url.slice(0, 5).toLowerCase() == 'http:') {
-                pIRI = proxyURL + DO.U.encodeString(pIRI);
-            }
 
             return new Promise(function(resolve, reject) {
-                DO.U.getResourceHeader(pIRI).then(
-                    function(data, textStatus, xhr) {
-//                        console.log(xhr.getAllResponseHeaders());
-                        var user = xhr.getResponseHeader('User');
-                        if (user && user.length > 0 && user.slice(0, 4) == 'http') {
-                            return resolve(user);
-                        }
-                        console.log('No User header');
-                        return reject(xhr);
-                    },
-                    function(reason) {
-                        if (proxyURL != DO.C.ProxyURL) {
-                            console.log('HEAD ' + pIRI + ' not successful. Trying url: ' + url + ' with proxyURL: ' + DO.C.ProxyURL);
-                            return DO.U.authenticateUser(url, DO.C.ProxyURL);
-                        }
-                        console.log('HEAD ' + pIRI + ' not successful.');
-                        return reject(reason);
+                if (url.slice(0, 5).toLowerCase() == 'https') {
+                    return resolve(DO.U.getResourceHeadUser(url));
+                }
+                else {
+                    if(url.slice(0, 5).toLowerCase() == 'http:') {
+                        console.log("Try to find the WebID's storage through a known proxy");
+                        //TODO: Use document's proxy
+                        var g = SimpleRDF(DO.C.Vocab);
+                        g.iri(DO.C.ProxyURL + DO.U.encodeString(url)).get().then(
+                            function(i) {
+                                console.log(i);
+                                var s = i.iri(url);
+                                if (s.storage && s.storage.length > 0) {
+                                    console.log("Try the WebID's storage");
+                                    console.log(s.storage);
+                                    return resolve(DO.U.getResourceHeadUser(s.storage[0]));
+                                }
+                            },
+                            function(reason) {
+                                console.log('Try a known authentication endpoint');
+                                return resolve(DO.U.getResourceHeadUser(DO.C.AuthEndpoint));
+                            }
+                        );
                     }
-                );
+                }
+
+            });
+        },
+
+        getResourceHeadUser: function(url) {
+            return new Promise(function(resolve, reject) {
+                var http = new XMLHttpRequest();
+                http.open('HEAD', url);
+                http.withCredentials = true;
+                http.onreadystatechange = function() {
+                    if (this.readyState == this.DONE) {
+                        if (this.status === 200) {
+                            var user = this.getResponseHeader('User');
+                            if (user && user.length > 0 && user.slice(0, 4) == 'http') {
+                                console.log(user);
+                                return resolve(user);
+                            }
+                        }
+//                        return reject({status: this.status, xhr: this});
+                    }
+                };
+                http.send();
             });
         },
 
@@ -152,11 +181,13 @@ var DO = {
             return new Promise(function(resolve, reject) {
                 DO.U.authenticateUser(url).then(
                     function(userIRI) {
+                        console.log('setUser resolve');
                         DO.C.User.IRI = userIRI;
                         return resolve(userIRI);
                     },
-                    function(reason) {
-                        return reject(reason);
+                    function(xhr) {
+                        console.log('setUser reject');
+                        return reject(xhr);
                     }
                 );
             });
@@ -166,8 +197,9 @@ var DO = {
             console.log("setUserInfo: " + userIRI);
             if (userIRI) {
                 var pIRI = userIRI;
-                if (pIRI.slice(0, 5).toLowerCase() != 'https') {
-                    pIRI = document.location.origin + '/,proxy?uri=' + DO.U.encodeString(pIRI);
+                //TODO: Should use both document.location.origin + '/,proxy?uri= and then DO.C.ProxyURL .. like in setUser
+                if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
+                    pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
                 }
                 console.log("pIRI: " + pIRI);
                 var g = SimpleRDF(DO.C.Vocab);
@@ -202,12 +234,12 @@ var DO = {
                                 DO.C.User.Storage = s.storage;
                                 console.log(DO.C.User.Storage);
                             }
-                            if (s.preferencesFile) {
+                            if (s.preferencesFile && s.preferencesFile.length > 0) {
                                 DO.C.User.PreferencesFile = s.preferencesFile;
                                 console.log(DO.C.User.PreferencesFile);
 
                                 //XXX: Probably https so don't bother with proxy?
-                                g.iri(DO.C.User.PreferencesFile).get().then(
+                                g.iri(s.preferencesFile).get().then(
                                     function(pf) {
                                         DO.C.User.PreferencesFileGraph = pf;
                                         var s = pf.iri(userIRI);
@@ -389,15 +421,18 @@ var DO = {
             });
         },
 
-        getResourceHeader: function(url) {
+        getResourceHeader: function(url, withCredentials) {
             url = url || window.location.origin + window.location.pathname;
-            return $.ajax({
+            var request = {
                 method: "HEAD",
-                url: url,
-                xhrFields: {
+                url: url
+            };
+            if (withCredentials != 'undefined' && withCredentials != false) {
+                request["xhrFields"] = {
                     withCredentials: true
                 }
-            });
+            }
+            return $.ajax(request);
         },
 
         getResource: function(url, headers) {
@@ -725,7 +760,6 @@ var DO = {
             DO.U.showDocumentDo(dInfo);
             DO.U.showViews(dInfo);
             DO.U.showEmbedData(dInfo);
-            DO.U.showTableOfStuff(dInfo);
             DO.U.showStorage(dInfo);
             DO.U.showDocumentMetadata(dInfo);
             if(!body.hasClass("on-slideshow")) {
@@ -935,19 +969,38 @@ var DO = {
         },
 
         showTableOfStuff: function(node) {
-            $(node).append('<section id="table-of-stuff" class="do"><h2>Table of Stuff</h2><ul><li><input id="t-o-content" type="checkbox"/><label for="t-o-content">Contents</label></li><li><input id="t-o-figure" type="checkbox"/><label for="t-o-figure">Figures</label></li><li><input id="t-o-table" type="checkbox"/><label for="t-o-table">Tables</label></li><li><input id="t-o-abbr" type="checkbox"/><label for="t-o-abbr">Abbreviations</label></li></ul></section>');
+            var disabledInput = s = '';
+            if (!DO.C.EditorEnabled) {
+                disabledInput = ' disabled="disabled"';
+            }
 
-            $('#table-of-stuff').on('click', 'input', function(e){
-                var id = $(this).prop('id');
-                var listType = id.slice(4, id.length);
+            tableList = [{'content': 'Contents'}, {'figure': 'Figures'}, {'table': 'Tables'}, {'abbr': 'Abbreviations'}];
+            tableList.forEach(function(i) {
+                var key = Object.keys(i)[0];
+                var value = i[key];
+                var checkedInput = '';
+                if($('#table-of-'+ key +'s').length > 0) {
+                    checkedInput = ' checked="checked"';
+                }
 
-                if($(this).prop('checked')) {
-                    DO.U.buildTableOfStuff(listType);
-                }
-                else {
-                    $('#table-of-'+listType+'s').remove();
-                }
+                s+= '<li><input id="t-o-' + key +'" type="checkbox"' + disabledInput + checkedInput + '/><label for="t-o-' + key + '">' + value + '</label></li>';
             });
+
+            $(node).append('<section id="table-of-stuff" class="do"><h2>Table of Stuff</h2><ul>' + s + '</ul></section>');
+
+            if(DO.C.EditorEnabled) {
+                $('#table-of-stuff').on('click', 'input', function(e){
+                    var id = $(this).prop('id');
+                    var listType = id.slice(4, id.length);
+
+                    if($(this).prop('checked')) {
+                        DO.U.buildTableOfStuff(listType);
+                    }
+                    else {
+                        $('#table-of-'+listType+'s').remove();
+                    }
+                });
+            }
         },
 
         htmlEntities: function(s) {
@@ -1009,18 +1062,18 @@ var DO = {
             if (section.length > 0) {
                 var s = '';
                 var sortable = '';
-                var isSortable = ($('head script[src$="html.sortable.min.js"]').length > 0) ? true : false;
 
-                if(isSortable && DO.C.User.IRI) {
+                if(DO.C.SortableList && DO.C.EditorEnabled) {
                     sortable = ' sortable';
                 }
 
                 s += '<aside id="toc" class="do on' + sortable + '"><button class="close">❌</button><h2>Table of Contents</h2><ol class="toc' + sortable + '">';
-                s += DO.U.getListOfSections(section, isSortable);
+                s += DO.U.getListOfSections(section, DO.C.SortableList);
                 s += '</ol></aside>';
 
                 $('body').append(s);
-                if(isSortable && DO.C.User.IRI) {
+                DO.U.showTableOfStuff($('#toc'));
+                if(DO.C.SortableList && DO.C.EditorEnabled) {
                     DO.U.sortToC();
                 }
             }
@@ -1055,7 +1108,7 @@ var DO = {
                 var afterNode = (endParentHeading == 1) ? endParent.find('> section:nth-of-type(' + ui.item.index() +')')  : endParent.find('*:nth-of-type(1) > section:nth-of-type(' + ui.item.index() +')');
 
                 var aboutContext = (endParentId == 'content') ? '' : '#' + endParentId;
-                node.attr('about', '[this:' + aboutContext +']');
+//                node.attr('about', '[this:' + aboutContext +']');
 
                 var nodeDetached = node.detach();
 
@@ -2758,7 +2811,7 @@ $(document).ready(function() {
 //    DO.U.initStorage('html');
 //    DO.U.getDocRefType();
     DO.U.showRefs();
-    DO.U.setUser().then(DO.U.setUserInfo);
+//    DO.U.setUser().then(DO.U.setUserInfo);
     DO.U.setLocalDocument();
     DO.U.buttonClose();
     DO.U.highlightItems();
