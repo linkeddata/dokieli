@@ -35,6 +35,7 @@ var DO = {
         EnableStorageButtons: '<button class="local-storage-enable-html">Enable</button>',
         CDATAStart: '<!--//--><![CDATA[//><!--',
         CDATAEnd: '//--><!]]>',
+        SortableList: (($('head script[src$="html.sortable.min.js"]').length > 0) ? true : false),
         EditorAvailable: ($('head script[src$="medium-editor.min.js"]').length > 0),
         EditorEnabled: false,
         Editor: {
@@ -1061,19 +1062,18 @@ var DO = {
             if (section.length > 0) {
                 var s = '';
                 var sortable = '';
-                var isSortable = ($('head script[src$="html.sortable.min.js"]').length > 0) ? true : false;
 
-                if(isSortable && DO.C.EditorEnabled) {
+                if(DO.C.SortableList && DO.C.EditorEnabled) {
                     sortable = ' sortable';
                 }
 
                 s += '<aside id="toc" class="do on' + sortable + '"><button class="close">❌</button><h2>Table of Contents</h2><ol class="toc' + sortable + '">';
-                s += DO.U.getListOfSections(section, isSortable);
+                s += DO.U.getListOfSections(section, DO.C.SortableList);
                 s += '</ol></aside>';
 
                 $('body').append(s);
                 DO.U.showTableOfStuff($('#toc'));
-                if(isSortable && DO.C.EditorEnabled) {
+                if(DO.C.SortableList && DO.C.EditorEnabled) {
                     DO.U.sortToC();
                 }
             }
