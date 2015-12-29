@@ -12,39 +12,39 @@
         <script src="scripts/do.js"></script>
     </head>
 
-    <body about="[this:]" typeof="schema:CreativeWork sioc:Post prov:Entity" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# schema: http://schema.org/ sioc: http://rdfs.org/sioc/ns# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# bibo: http://purl.org/ontology/bibo/ dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# this: http://linked-research.270a.info/acm-sigproc-sp">
+    <body about="" typeof="schema:CreativeWork sioc:Post prov:Entity" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# schema: http://schema.org/ sioc: http://rdfs.org/sioc/ns# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# bibo: http://purl.org/ontology/bibo/ dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa#">
         <main>
-            <article about="[this:]" typeof="schema:ScholarlyArticle">
+            <article about="" typeof="schema:ScholarlyArticle">
                 <h1 property="schema:name">A Sample <em>ACM</em> SIG Proceedings Paper in LaTeX Format<sup>∗</sup></h1>
-                <p class="entry-subtitle">[Extended Abstract] <sup>†</sup></p>
+                <p id="subtitle">[Extended Abstract] <sup>†</sup></p>
 
                 <div id="authors">
                     <dl id="author-name">
                         <dt>Authors</dt>
-                        <dd id="author-1"><span about="[this:]" rel="schema:creator schema:publisher schema:contributor schema:author"><a about="[this:#BenTrovato]" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Ben Trovato</a></span><span about="[this:#BenTrovato]" rel="schema:memberOf" resource="[this:#InstituteforClarityinDocumentation]"></span><sup><a href="#author-org-1">1</a></sup><sup><a href="#author-email-1">‡</a></sup></dd>
-                        <dd id="author-2"><span about="[this:]" rel="schema:contributor"><a about="[this:#GKMTobin]" typeof="schema:Person" rel="schema:url" property="schema:name" href="">G.K.M. Tobin</a></span><span about="[this:#GKMTobin]" rel="schema:memberOf" resource="[this:#InstituteforClarityinDocumentation]"></span><sup><a href="#author-org-2">2</a></sup><sup><a href="#author-email-2">§</a></sup></dd>
-                        <dd id="author-3"><span about="[this:]" rel="schema:contributor"><a about="[this:#LarsThørväld]" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Lars Thørväld</a></span><span about="[this:#LarsThørväld]" rel="schema:memberOf" resource="[this:#TheThørväldGroup]"></span><sup><a href="#author-org-3">3</a></sup><sup><a href="#author-email-3">¶</a></sup></dd>
-                        <dd id="author-4"><span about="[this:]" rel="schema:contributor"><a about="[this:#LawrencePLeipuner]" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Lawrence P. Leipuner</a></span><span about="[this:#LawrencePLeipuner]" rel="schema:memberOf" resource="[this:#BrookhavenLaboratories]"></span><sup><a href="#author-org-4">4</a></sup><sup><a href="#author-email-4">x</a></sup></dd>
-                        <dd id="author-5"><span about="[this:]" rel="schema:contributor"><a about="[this:#SeanFogarty]" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Sean Fogarty</a></span><span about="[this:#SeanFogarty]" rel="schema:memberOf" resource="[this:#NASAAmesResearchCenter]"></span><sup><a href="#author-org-5">5</a></sup><sup><a href="#author-email-5">y</a></sup></dd>
-                        <dd id="author-6"><span about="[this:]" rel="schema:contributor"><a about="[this:#CharlesPalmer]" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Charles Palmer</a></span><span about="[this:#CharlesPalmer]" rel="schema:memberOf" resource="[this:#PalmerResearchLaboratories]"></span><sup><a href="#author-org-6">6</a></sup><sup><a href="#author-email-6">z</a></sup></dd>
+                        <dd id="author-1"><span about="" rel="schema:creator schema:publisher schema:contributor schema:author"><a about="#Ben-Trovato" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Ben Trovato</a></span><span about="#Ben-Trovato" rel="schema:memberOf" resource="#Institute-for-Clarity-in-Documentation"></span><sup><a href="#author-org-1">1</a></sup><sup><a href="#author-email-1">‡</a></sup></dd>
+                        <dd id="author-2"><span about="" rel="schema:contributor"><a about="#G-K-M-Tobin" typeof="schema:Person" rel="schema:url" property="schema:name" href="">G.K.M. Tobin</a></span><span about="#G-K-M-Tobin" rel="schema:memberOf" resource="#Institute-for-Clarity-in-Documentation"></span><sup><a href="#author-org-2">2</a></sup><sup><a href="#author-email-2">§</a></sup></dd>
+                        <dd id="author-3"><span about="" rel="schema:contributor"><a about="#Lars-Thørväld" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Lars Thørväld</a></span><span about="#Lars-Thørväld" rel="schema:memberOf" resource="#The-Thørväld-Group"></span><sup><a href="#author-org-3">3</a></sup><sup><a href="#author-email-3">¶</a></sup></dd>
+                        <dd id="author-4"><span about="" rel="schema:contributor"><a about="#Lawrence-P-Leipuner" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Lawrence P. Leipuner</a></span><span about="#Lawrence-P-Leipuner" rel="schema:memberOf" resource="#Brookhaven-Laboratories"></span><sup><a href="#author-org-4">4</a></sup><sup><a href="#author-email-4">x</a></sup></dd>
+                        <dd id="author-5"><span about="" rel="schema:contributor"><a about="#Sean-Fogarty" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Sean Fogarty</a></span><span about="#Sean-Fogarty" rel="schema:memberOf" resource="#NASA-Ames-Research-Center"></span><sup><a href="#author-org-5">5</a></sup><sup><a href="#author-email-5">y</a></sup></dd>
+                        <dd id="author-6"><span about="" rel="schema:contributor"><a about="#Charles-Palmer" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Charles Palmer</a></span><span about="#Charles-Palmer" rel="schema:memberOf" resource="#Palmer-Research-Laboratories"></span><sup><a href="#author-org-6">6</a></sup><sup><a href="#author-email-6">z</a></sup></dd>
                     </dl>
 
                     <ul id="author-org">
-                        <li id="author-org-1"><sup>1</sup><a about="[this:#InstituteforClarityinDocumentation]" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.acm.org/">Institute for Clarity in Documentation</a>, <span class="adr"><span class="street-address">1932 Wallamaloo Lane</span>, <span class="region">Wallamaloo</span>, <span class="country-name">New Zealand</span></span></li>
-                        <li id="author-org-2"><sup>2</sup><a about="[this:#InstituteforClarityinDocumentation]" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.acm.org/">Institute for Clarity in Documentation</a>, <span class="adr"><span class="post-office-box">P.O. Box 1212</span>, <span class="locality">Dublin</span>, <span class="region">Ohio</span> <span clss="postal-code">43017-6221</span></span></li>
-                        <li id="author-org-3"><sup>3</sup><a about="[this:#TheThørväldGroup]" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.acm.org/">The Thørväld Group</a>, <span class="adr"><span class="locality">Hekla</span>, <span class="country-name">Iceland</span></span></li>
-                        <li id="author-org-4"><sup>4</sup><a about="[this:#BrookhavenLaboratories]" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.bnl.gov/">Brookhaven Laboratories</a>, <span class="adr"><span class="street-address">Brookhaven National Lab</span>, <span class="post-office-box">P.O. Box 5000</span></span></li>
-                        <li id="author-org-5"><sup>5</sup><a about="[this:#NASAAmesResearchCenter]" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.nasa.gov/centers/ames">NASA Ames Research Center</a>, <span class="adr"><span class="locality">Moffett Field</span>, <span class="region">California</span> <span class="postal-code">94035</span></span></li>
-                        <li id="author-org-6"><sup>6</sup><a about="[this:#PalmerResearchLaboratories]" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.palmerlab.umd.edu/">Palmer Research Laboratories</a>, <span class="adr"><span class="street-address">8600 Datapoint Drive</span>, <span class="locality">San Antonio</span>, <span class="region">Texas</span> <span class="postal-code">78229</span></span></li>
+                        <li id="author-org-1"><sup>1</sup><a about="#Institute-for-Clarity-in-Documentation" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.acm.org/">Institute for Clarity in Documentation</a>, <span class="adr"><span class="street-address">1932 Wallamaloo Lane</span>, <span class="region">Wallamaloo</span>, <span class="country-name">New Zealand</span></span></li>
+                        <li id="author-org-2"><sup>2</sup><a about="#Institute-for-Clarity-in-Documentation" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.acm.org/">Institute for Clarity in Documentation</a>, <span class="adr"><span class="post-office-box">P.O. Box 1212</span>, <span class="locality">Dublin</span>, <span class="region">Ohio</span> <span clss="postal-code">43017-6221</span></span></li>
+                        <li id="author-org-3"><sup>3</sup><a about="#The-Thørväld-Group" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.acm.org/">The Thørväld Group</a>, <span class="adr"><span class="locality">Hekla</span>, <span class="country-name">Iceland</span></span></li>
+                        <li id="author-org-4"><sup>4</sup><a about="#Brookhaven-Laboratories" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.bnl.gov/">Brookhaven Laboratories</a>, <span class="adr"><span class="street-address">Brookhaven National Lab</span>, <span class="post-office-box">P.O. Box 5000</span></span></li>
+                        <li id="author-org-5"><sup>5</sup><a about="#NASA-Ames-Research-Center" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.nasa.gov/centers/ames">NASA Ames Research Center</a>, <span class="adr"><span class="locality">Moffett Field</span>, <span class="region">California</span> <span class="postal-code">94035</span></span></li>
+                        <li id="author-org-6"><sup>6</sup><a about="#Palmer-Research-Laboratories" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.palmerlab.umd.edu/">Palmer Research Laboratories</a>, <span class="adr"><span class="street-address">8600 Datapoint Drive</span>, <span class="locality">San Antonio</span>, <span class="region">Texas</span> <span class="postal-code">78229</span></span></li>
                     </ul>
 
                     <ul id="author-email">
-                        <li id="author-email-1"><sup>‡</sup><a about="[this:#BenTrovato]" rel="schema:email" href="mailto:trovato@corporation.com">trovato@corporation.com</a></li>
-                        <li id="author-email-2"><sup>§</sup><a about="[this:#GKMTobin]" rel="schema:email" href="mailto:webmaster@marysville-ohio.com">webmaster@marysville-ohio.com</a></li>
-                        <li id="author-email-3"><sup>¶</sup><a about="[this:#LarsThørväld]" rel="schema:email" href="mailto:larst@affiliation.org">larst@affiliation.org</a></li>
-                        <li id="author-email-4"><sup>x</sup><a about="[this:#LawrencePLeipuner]" rel="schema:email" href="mailto:lleipuner@researchlabs.org">lleipuner@researchlabs.org</a></li>
-                        <li id="author-email-5"><sup>y</sup><a about="[this:#SeanFogarty]" rel="schema:email" href="mailto:fogartys@amesres.org">fogartys@amesres.org</a></li>
-                        <li id="author-email-6"><sup>z</sup><a about="[this:#CharlesPalmer]" rel="schema:email" href="mailto:cpalmer@prl.com">cpalmer@prl.com</a></li>
+                        <li id="author-email-1"><sup>‡</sup><a about="#Ben-Trovato" rel="schema:email" href="mailto:trovato@corporation.com">trovato@corporation.com</a></li>
+                        <li id="author-email-2"><sup>§</sup><a about="#G-K-M-Tobin" rel="schema:email" href="mailto:webmaster@marysville-ohio.com">webmaster@marysville-ohio.com</a></li>
+                        <li id="author-email-3"><sup>¶</sup><a about="#Lars-Thørväld" rel="schema:email" href="mailto:larst@affiliation.org">larst@affiliation.org</a></li>
+                        <li id="author-email-4"><sup>x</sup><a about="#Lawrence-P-Leipuner" rel="schema:email" href="mailto:lleipuner@researchlabs.org">lleipuner@researchlabs.org</a></li>
+                        <li id="author-email-5"><sup>y</sup><a about="#Sean-Fogarty" rel="schema:email" href="mailto:fogartys@amesres.org">fogartys@amesres.org</a></li>
+                        <li id="author-email-6"><sup>z</sup><a about="#Charles-Palmer" rel="schema:email" href="mailto:cpalmer@prl.com">cpalmer@prl.com</a></li>
                     </ul>
                 </div>
 
@@ -58,7 +58,7 @@
                         </div>
                     </section>
 
-                    <section id="categories-and-subject-descriptors" about="[this:]">
+                    <section id="categories-and-subject-descriptors">
                         <h2>Categories and Subject Descriptors</h2>
                         <div>
                             <ul>
@@ -77,7 +77,7 @@
                         </div>
                     </section>
 
-                    <section id="keywords" about="[this:]">
+                    <section id="keywords">
                         <h2>Keywords</h2>
                         <div>
                             <ul rel="schema:about">
@@ -88,9 +88,9 @@
                         </div>
                     </section>
 
-                    <section id="introduction" rel="schema:hasPart" resource="[this:#introduction]">
+                    <section id="introduction" rel="schema:hasPart" resource="#introduction">
                         <h2 property="schema:name">Introduction</h2>
-                        <div property="schema:description" resource="[this:#introduction]" typeof="deo:Introduction" datatype="rdf:HTML">
+                        <div property="schema:description" resource="#introduction" typeof="deo:Introduction" datatype="rdf:HTML">
                             <p>The <em>proceedings</em> are the records of a conference. ACM seeks to give these conference by-products a uniform, high-quality appearance. To do this, ACM has some rigid requirements for the format of the proceedings documents: there is a specified format (balanced  double columns), a specified set of fonts (Arial or Helvetica and Times Roman) in certain specified sizes (for instance, 9 point for body copy), a specified live area (18 × 23.5 cm [7" × 9.25"]) centered on the page, specified size of margins (1.9 cm [0.75"]) top, (2.54 cm [1"]) bottom and (1.9 cm [.75"]) left and right; specified column width (8.45 cm [3.33"]) and gutter size (.83 cm [.33"]).</p>
 
                             <p>The good news is, with only a handful of manual settings<sup class="note"><a href="#note-1">1</a></sup>, the <span class="latex">L<span>a</span>T<span>e</span>X</span> document class file handles all of this for you.</p>
@@ -103,7 +103,7 @@
                         </div>
                     </section>
 
-                    <section id="the-body-of-the-paper" rel="schema:hasPart" resource="[this:#the-body-of-the-paper]">
+                    <section id="the-body-of-the-paper" rel="schema:hasPart" resource="#the-body-of-the-paper">
                         <h2 property="schema:name">The <em>Body</em> of the Paper</h2>
                         <div property="schema:description">
                             <p>Typically, the body of a paper is organized into a hierarchical structure, with numbered or unnumbered headings for sections, subsections, sub-subsections, and even smaller sections. The command \section that precedes this paragraph is part of such a hierarchy.<sup class="note"><a href="#note-2">2</a></sup> <span class="latex">L<span>a</span>T<span>e</span>X</span> handles the numbering and placement of these headings for you, when you use the appropriate heading commands around the titles of the headings. If you want a sub-subsection or smaller part to be unnumbered in your output, simply append an asterisk to the command name. Examples of both numbered and unnumbered headings will appear throughout the balance of this sample document.</p>
@@ -114,9 +114,9 @@
 
                             <p>Because the entire article is contained in the <strong>document</strong> environment, you can indicate the start of a new paragraph with a blank line in your input file; that is why this sentence forms a separate paragraph.</p>
 
-                            <section id="type-changes-and-special-characters" about="[this:]" rel="schema:hasPart" resource="[this:#type-changes-and-special-characters]">
-                                <h3 about="[this:#type-changes-and-special-characters]" property="schema:name">Type Changes and <em>Special</em> Characters</h3>
-                                <div about="[this:#type-changes-and-special-characters]" property="schema:description">
+                            <section id="type-changes-and-special-characters" rel="schema:hasPart" resource="#type-changes-and-special-characters">
+                                <h3 property="schema:name">Type Changes and <em>Special</em> Characters</h3>
+                                <div property="schema:description">
                                     <p>We have already seen several typeface changes in this sample. You can indicate italicized words or phrases in your text with the command <code>\textit</code>; emboldening with the command <code>\textbf</code> and typewriter-style (for instance, for computer code) with <code>\texttt</code>. But remember, you do not have to indicate typestyle changes when such changes are part of the <em>structural</em> elements of your article; for instance, the heading of this subsection will be in a sans serif<sup class="note"><a href="#note-3">3</a></sup> typeface, but that is handled by the document class file. Take care with the use of<sup class="note"><a href="#note-4">4</a></sup> the curly braces in typeface changes; they mark the beginning and end of the text that is to be in the different typeface.</p>
 
                                     <aside class="note">
@@ -128,19 +128,19 @@
                                 </div>
                             </section>
 
-                            <section id="math-equations" rel="schema:hasPart" resource="[this:#math-equations]">
+                            <section id="math-equations" rel="schema:hasPart" resource="#math-equations">
                                 <h3 property="schema:name">Math Equations</h3>
                                 <div property="schema:description">
                                     <p>You may want to display math equations in three distinct styles: inline, numbered or non-numbered display. Each of the three are discussed in the next sections.</p>
 
-                                    <section id="inline-in-text-equations" rel="schema:hasPart" resource="[this:#inline-in-text-equations]">
+                                    <section id="inline-in-text-equations" rel="schema:hasPart" resource="#inline-in-text-equations">
                                         <h4 property="schema:name">Inline (In-text) Equations</h4>
                                         <div property="schema:description">
                                             <p>A formula that appears in the running text is called an inline or in-text formula. It is produced by the <strong>math</strong> environment, which can be invoked with the usual <code>\begin. . .\end</code> construction or with the short form <code>$. . .$</code>. You can use any of the symbols and structures, from α to ω, available in <span class="latex">L<span>a</span>T<span>e</span>X</span>[<a class="ref" href="#5">5</a>]; this section will simply show a few examples of in-text equations in context. Notice how this equation: lim<sub><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math>→∞</sub> <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>x</mi><mo>=</mo><mn>0</mn></mrow></math>, set here in in-line math style, looks slightly different when set in display style. (See next section).</p>
                                         </div>
                                     </section>
 
-                                    <section id="display-equations" rel="schema:hasPart" resource="[this:#display-equations]">
+                                    <section id="display-equations" rel="schema:hasPart" resource="#display-equations">
                                         <h4 property="schema:name">Display Equations</h4>
                                         <div property="schema:description">
                                             <p>A numbered display equation – one set off by vertical space from the text and centered horizontally – is produced by the <strong>equation</strong> environment. An unnumbered display equation is produced by the <strong>displaymath</strong> environment.</p>
@@ -238,7 +238,7 @@
                                 </div>
                             </section>
 
-                            <section id="citations" rel="schema:hasPart" resource="[this:#citations]">
+                            <section id="citations" rel="schema:hasPart" resource="#citations">
                                 <h3 property="schema:name">Citations</h3>
                                 <div property="schema:description">
                                     <p>Citations to articles [<a class="ref" href="#1">1</a>, <a class="ref" href="#3">3</a>, <a class="ref" href="#3">3</a>, <a class="ref" href="#4">4</a>], conference proceedings [<a class="ref" href="#2">2</a>] or books <cite>[<a class="ref" href="#5">5</a>, <a class="ref" href="#6">6</a>]</cite> listed in the Bibliography section of your article will occur throughout the text of your article. You should use BibTeX to automatically produce this bibliography; you simply need to insert one of several citation commands with a key of the item cited in the proper location in the <code>.tex</code> file [<a class="ref" href="#5">5</a>]. The key is a short reference you invent to uniquely identify each work; in this sample document, the key is the first author’s surname and a word from the title. This identifying key is included with each item in the <code>.bib</code> file for your article.</p>
@@ -249,7 +249,7 @@
                                 </div>
                             </section>
 
-                            <section id="tables" rel="schema:hasPart" resource="[this:#tables]">
+                            <section id="tables" rel="schema:hasPart" resource="#tables">
                                 <h3 property="schema:name">Tables</h3>
                                 <div property="schema:description">
                                     <p>Because tables cannot be split across pages, the best placement for them is typically the top of the page nearest their initial cite. To ensure this proper <q>floating</q> placement of tables, use the environment <strong>table</strong> to enclose the table’s contents and the table caption. The contents of the table itself must go in the <strong>tabular</strong> environment, to be aligned properly in rows and columns, with the desired horizontal and vertical rules. Again, detailed instructions on <strong>tabular</strong> material is found in the <em><span class="latex">L<span>a</span>T<span>e</span>X</span> User’s Guide</em>.</p>
@@ -294,7 +294,7 @@
                             </section>
 
 
-                            <section id="figures" rel="schema:hasPart" resource="[this:#figures]">
+                            <section id="figures" rel="schema:hasPart" resource="#figures">
                                 <h3 property="schema:name">Figures</h3>
                                 <div property="schema:description">
                                     <p>Like tables, figures cannot be split across pages; the best placement for them is typically the top or the bottom of the page nearest their initial cite. To ensure this proper <q>floating</q> placement of figures, use the environment <strong>figure</strong> to enclose the figure and its caption.</p>
@@ -323,7 +323,7 @@
                             </section>
 
 
-                            <section id="theorem-like-constructs" rel="schema:hasPart" resource="[this:#theorem-like-constructs]">
+                            <section id="theorem-like-constructs" rel="schema:hasPart" resource="#theorem-like-constructs">
                                 <h3 property="schema:name">Theorem-like Constructs</h3>
                                 <div property="schema:description">
                                     <p>Other common constructs that may occur in your article are the forms for logical constructs like theorems, axioms, corollaries and proofs. There are two forms, one produced by the command <code>\newtheorem</code> and the other by the command <code>\newdef</code>; perhaps the clearest and easiest way to distinguish them is to compare the two in the output of this sample document:</p>
@@ -612,21 +612,21 @@
                         </div>
                     </section>
 
-                    <section id="conclusions" rel="schema:hasPart" resource="[this:#conclusions]">
+                    <section id="conclusions" rel="schema:hasPart" resource="#conclusions">
                         <h2 property="schema:name">Conclusions</h2>
                         <div property="schema:description" typeof="deo:Conclusion">
                             <p>This paragraph will end the body of this sample document. Remember that you might still have Acknowledgments or Appendices; brief samples of these follow. There is still the Bibliography to deal with; and we will make a disclaimer about that here: with the exception of the reference to the <span class="latex">L<span>a</span>T<span>e</span>X</span> book, the citations in this paper are to articles which have nothing to do with the present subject and are used as examples only.</p>
                         </div>
                     </section>
 
-                    <section id="acknowledgements" rel="schema:hasPart" resource="[this:#acknowledgements]">
+                    <section id="acknowledgements" rel="schema:hasPart" resource="#acknowledgements">
                         <h2 property="schema:name">Acknowledgements</h2>
                         <div property="schema:description">
                             <p>This section is optional; it is a location for you to acknowledge grants, funding, editing assistance and what have you. In the present case, for example, the authors would like to thank Gerald Murray of ACM for his help in codifying this <em>Author’s Guide</em> and the <strong>.cls</strong> and <strong>.tex</strong> files that it describes.</p>
                         </div>
                     </section>
 
-                    <section id="additional-authors" rel="schema:hasPart" resource="[this:#additional-authors]">
+                    <section id="additional-authors" rel="schema:hasPart" resource="#additional-authors">
                         <h2 property="schema:name">Additional Authors</h2>
                         <div property="schema:description">
                             <p>Additional authors: John Smith (The Thørväld Group, email: <code><a href="mailto:jsmith@affiliation.org">jsmith@affiliation.org</a></code>) and Julius P. Kumquat (The Kumquat Consortium, email: <code><a href="mailto:jpkumquat@consortium.net">jpkumquat@consortium.net</a></code>).</p>
