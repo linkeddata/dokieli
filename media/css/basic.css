@@ -2,55 +2,51 @@ body {
     font-size: 1em;
     line-height: 1.2;
     font-family: Arial, Helvetica, sans-serif;
-    overflow-x: hidden;    }
+    overflow-x: hidden;
+}
 
 h1 {
   font-family: Serif; font-weight: normal; font-size: 4em;
-  color: black;
   text-align: center;
-  border: 0; margin-top: 2em;
+  margin-top: 2em;
 }
-h2 { font-size: 1.4em; letter-spacing: -1px; font-family: Helvetica, Arial, sans-serif; font-weight:bold; line-height:1;}
-h3 { font-size: 1.2em; letter-spacing: -1px; font-family: Helvetica, Arial, sans-serif; font-weight:bold; line-height:0.8;}
-h4 { font-size: 1.2em; letter-spacing: -1px; font-family: Helvetica, Arial, sans-serif; font-weight:bold; font-style: italic;}
+h2, h3, h4 { font-family: Arial, Helvetica, sans-serif; font-weight: bold; }
+h2 { font-size: 1.4em; line-height:1; }
+h3 { font-size: 1.2em; line-height:0.8; }
+h4 { font-size: 1.2em; font-style: italic; }
 
 header a { text-decoration: none; color: inherit; }
 header a:hover {text-decoration: none; }
-li a, li p a { text-decoration: none; }
 p a {text-decoration: underline;}
-footer a { text-decoration: underline;}
-a { text-decoration: inherit; }
-a:hover { text-decoration: underline; color: #92C492; }
+a, a:visited { text-decoration: inherit; color: inherit; }
+a:hover { text-decoration: underline; color: gray; }
 
 nav a:hover { text-decoration: none; }
-nav ul { list-style: none; padding: none; margin: none; }
+nav ul, aside ul { list-style: none; padding: 0; }
 
 main {
   margin-bottom: 3em;
 }
 
 #do-index header nav ul {
-  display: block!important; /* fuuuuuuuck you flexbox */
-  margin: none!important; padding: none!important;
-  height: 1px; /* floating li hack */
   padding: 1em;
 }
-#do-index header nav > ul > li:before, #do-index header nav ul ul > li:first-child::before { content: none!important; }
 #do-index #do-new {
+  font-size: 2em;
   border: 1px solid black;
   border-radius: 8px;
   font-weight: bold;
   display: inline-block;
 }
-#do-index #do-new:hover {
-  border-color: silver;
-}
 #do-index #do-new a {
   color: black;
-  font-size: 2em;
   width: 100%;
   display: inline-block;
   padding: 0.6em;
+}
+#do-index #do-new:hover, #do-index #do-new a:hover {
+  border-color: silver;
+  color: gray;
 }
 #do-index #do-new a:before {
   content: "+ ";
@@ -71,7 +67,7 @@ main {
 
 @media screen and (min-width: 768px){
 
-  #do-index main, #do-index header nav {
+  body {
     width: 60%; max-width: 1200px;
     margin-left: auto; margin-right: auto;
   }
@@ -84,5 +80,4 @@ main {
     float: left;
   }
   
-
 }
