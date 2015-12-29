@@ -969,19 +969,26 @@ var DO = {
         },
 
         showTableOfStuff: function(node) {
-            $(node).append('<section id="table-of-stuff" class="do"><h2>Table of Stuff</h2><ul><li><input id="t-o-content" type="checkbox"/><label for="t-o-content">Contents</label></li><li><input id="t-o-figure" type="checkbox"/><label for="t-o-figure">Figures</label></li><li><input id="t-o-table" type="checkbox"/><label for="t-o-table">Tables</label></li><li><input id="t-o-abbr" type="checkbox"/><label for="t-o-abbr">Abbreviations</label></li></ul></section>');
+            var disabledInput = '';
+            if (!DO.C.EditorEnabled) {
+                disabledInput = ' disabled="disabled"';
+            }
 
-            $('#table-of-stuff').on('click', 'input', function(e){
-                var id = $(this).prop('id');
-                var listType = id.slice(4, id.length);
+            $(node).append('<section id="table-of-stuff" class="do"><h2>Table of Stuff</h2><ul><li><input id="t-o-content" type="checkbox"'+disabledInput +'/><label for="t-o-content">Contents</label></li><li><input id="t-o-figure" type="checkbox"'+disabledInput +'/><label for="t-o-figure">Figures</label></li><li><input id="t-o-table" type="checkbox"'+disabledInput +'/><label for="t-o-table">Tables</label></li><li><input id="t-o-abbr" type="checkbox"'+disabledInput +'/><label for="t-o-abbr">Abbreviations</label></li></ul></section>');
 
-                if($(this).prop('checked')) {
-                    DO.U.buildTableOfStuff(listType);
-                }
-                else {
-                    $('#table-of-'+listType+'s').remove();
-                }
-            });
+            if(DO.C.EditorEnabled) {
+                $('#table-of-stuff').on('click', 'input', function(e){
+                    var id = $(this).prop('id');
+                    var listType = id.slice(4, id.length);
+
+                    if($(this).prop('checked')) {
+                        DO.U.buildTableOfStuff(listType);
+                    }
+                    else {
+                        $('#table-of-'+listType+'s').remove();
+                    }
+                });
+            }
         },
 
         htmlEntities: function(s) {
