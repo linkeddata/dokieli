@@ -776,15 +776,17 @@ var DO = {
                             DO.U.submitSignIn();
                         }
                     }
-                    button.removeAttr('disabled');
+                    else {
+                        button.removeAttr('disabled');
+                    }
                 }
                 else {
                     if (!button.prop('disabled')) {
                         button.prop('disabled', 'disabled');
                     }
                 }
-
             });
+
         },
 
         submitSignIn: function() {
