@@ -787,6 +787,7 @@ var DO = {
                 }
             });
 
+            $('#user-identity-input input#webid').focus();
         },
 
         submitSignIn: function() {
