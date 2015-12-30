@@ -118,40 +118,83 @@ var DO = {
 
     U: {
         //Tries to authenticate with given URI. If authenticated, returns the 'User' header value.
-        //  If input URL's protocol is https, it does a HEAD for the User header
-        //  If input URL's protocol is http, it tries to find the WebID's storage through a known proxy, if found, it then does a HEAD for the User header. If the storage is not found, it does a HEAD on a known authentication endpoint for the User header.
-        //  TODO: Refactor.
-        //  TODO: storage lookup should probably be done from other places e.g., if HEADing the https is a 200 but there is no User header.
         authenticateUser: function(url) {
             url = url || window.location.origin + window.location.pathname;
 
             return new Promise(function(resolve, reject) {
                 if (url.slice(0, 5).toLowerCase() == 'https') {
-                    return resolve(DO.U.getResourceHeadUser(url));
+                    DO.U.getResourceHeadUser(url).then(
+                        function(i) {
+                            return resolve(i);
+                        },
+                        function(reject) {
+                            DO.U.authenticateUserFallback(url).then(
+                                function(i) {
+                                    return resolve(i);
+                                },
+                                function(resolve) {
+                                    return reject(reason);
+                                }
+                            );
+                        }
+                    );
                 }
                 else {
                     if(url.slice(0, 5).toLowerCase() == 'http:') {
-                        console.log("Try to find the WebID's storage through a known proxy");
-                        //TODO: Use document's proxy
-                        var g = SimpleRDF(DO.C.Vocab);
-                        g.iri(DO.C.ProxyURL + DO.U.encodeString(url)).get().then(
+                        //TODO: First try document's proxy?
+                        DO.U.authenticateUserFallback(url, DO.C.ProxyURL).then(
                             function(i) {
-                                console.log(i);
-                                var s = i.iri(url);
-                                if (s.storage && s.storage.length > 0) {
-                                    console.log("Try the WebID's storage");
-                                    console.log(s.storage);
-                                    return resolve(DO.U.getResourceHeadUser(s.storage[0]));
-                                }
+                                return resolve(i);
                             },
-                            function(reason) {
-                                console.log('Try a known authentication endpoint');
-                                return resolve(DO.U.getResourceHeadUser(DO.C.AuthEndpoint));
+                            function(resolve) {
+                                return reject(reason);
                             }
                         );
                     }
                 }
 
+            });
+        },
+
+        authenticateUserFallback: function(url, proxyURL) {
+            console.log("Try to find the WebID's storage, if not found, try a known authentication endpoint");
+            url = url || window.location.origin + window.location.pathname;
+
+            var pIRI = url;
+            if (proxyURL) {
+                pIRI = proxyURL + DO.U.encodeString(url);
+            }
+
+            return new Promise(function(resolve, reject) {
+                var g = SimpleRDF(DO.C.Vocab);
+                g.iri(pIRI).get().then(
+                    function(i) {
+                        console.log(i);
+                        var s = i.iri(url);
+                        console.log(s.storage);
+                        if (s.storage && s.storage.length > 0) {
+                            console.log("Try the WebID's storage");
+                            DO.U.getResourceHeadUser(s.storage[0]).then(
+                                function(i) {
+                                    return resolve(i);
+                                },
+                                function(reason) {
+                                    return reject(reason);
+                                }
+                            );
+                        }
+                    }
+                );
+
+                console.log('Try a known authentication endpoint');
+                DO.U.getResourceHeadUser(DO.C.AuthEndpoint).then(
+                    function(i) {
+                        return resolve(i);
+                    },
+                    function(resolve) {
+                        return reject(reason);
+                    }
+                );
             });
         },
 
@@ -169,7 +212,7 @@ var DO = {
                                 return resolve(user);
                             }
                         }
-//                        return reject({status: this.status, xhr: this});
+                        return reject({status: this.status, xhr: this});
                     }
                 };
                 http.send();
