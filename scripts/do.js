@@ -754,7 +754,9 @@ var DO = {
         //TODO: Refactor
         showUserIdentityInput: function() {
             $(this).prop('disabled', 'disabled');
-            $('body').append('<aside id="user-identity-input" class="do on"><button class="close">❌</button><h2>Enter WebID to sign in with</h2><label>HTTP IRI</label><input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="signin">Sign in</button></aside>');
+            $('body').append('<aside id="user-identity-input" class="do on"><button class="close">❌</button><h2>Enter WebID to sign in with</h2><label>HTTP(S) IRI</label><input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="signin">Sign in</button></aside>');
+
+            $('#user-identity-input button.signin').prop('disabled', 'disabled');
 
             $('#user-identity-input').on('click', 'button.close', function(e) {
                 $('#document-menu > header .signin-user').removeAttr('disabled');
@@ -762,10 +764,26 @@ var DO = {
 
             $('#user-identity-input').on('click', 'button.signin', DO.U.submitSignIn);
             $('#user-identity-input').on('keyup', 'input#webid', function(e){
-                if(e.which == 13) {
-                    e.preventDefault();
-                    DO.U.submitSignIn();
+                var input = $(this).val();
+                var button = $('#user-identity-input button.signin');
+
+                if (input.length > 10 && input.match(/^https?:\/\//g)) {
+                    if (e.which == 13) {
+                        if(!button.prop('disabled')) {
+                            button.prop('disabled', 'disabled');
+                            e.preventDefault();
+                            e.stopPropagation();
+                            DO.U.submitSignIn();
+                        }
+                    }
+                    button.removeAttr('disabled');
                 }
+                else {
+                    if (!button.prop('disabled')) {
+                        button.prop('disabled', 'disabled');
+                    }
+                }
+
             });
         },
 
@@ -781,6 +799,7 @@ var DO = {
                     function(reason) {
                         userIdentityInput.find('.error').remove();
                         userIdentityInput.append('<p class="error">Unable to sign in with this WebID.</p>');
+                        $('#user-identity-input button.signin').removeAttr('disabled');
                         console.log(reason);
                     }
                 );
