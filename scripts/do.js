@@ -132,7 +132,7 @@ var DO = {
                                 function(i) {
                                     return resolve(i);
                                 },
-                                function(resolve) {
+                                function(reason) {
                                     return reject(reason);
                                 }
                             );
@@ -146,7 +146,7 @@ var DO = {
                             function(i) {
                                 return resolve(i);
                             },
-                            function(resolve) {
+                            function(reason) {
                                 return reject(reason);
                             }
                         );
@@ -184,17 +184,23 @@ var DO = {
                             );
                         }
                     }
-                );
-
-                console.log('Try a known authentication endpoint');
-                DO.U.getResourceHeadUser(DO.C.AuthEndpoint).then(
+                ).then(
                     function(i) {
-                        return resolve(i);
+                        console.log('Try a known authentication endpoint');
+                        DO.U.getResourceHeadUser(DO.C.AuthEndpoint).then(
+                            function(i) {
+                                return resolve(i);
+                            },
+                            function(reason) {
+                                return reject(reason);
+                            }
+                        );
                     },
-                    function(resolve) {
+                    function(reason) {
                         return reject(reason);
                     }
                 );
+
             });
         },
 
