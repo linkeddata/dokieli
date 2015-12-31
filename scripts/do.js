@@ -121,39 +121,58 @@ var DO = {
         authenticateUser: function(url) {
             url = url || window.location.origin + window.location.pathname;
             var reasons = [];
+            var response = '';
 
             return new Promise(function(resolve, reject) {
-                if (url.slice(0, 5).toLowerCase() == 'https') {
-                    DO.U.getResourceHeadUser(url).then(
-                        function(i) {
-                            return resolve(i);
-                        },
-                        function(reject) {
-                            DO.U.authenticateUserFallback(url, '', reasons).then(
-                                function(i) {
-                                    return resolve(i);
-                                },
-                                function(reason) {
-                                    return reject(reasons);
-                                }
-                            );
-                        }
-                    );
-                }
-                else {
-                    if(url.slice(0, 5).toLowerCase() == 'http:') {
-                        //TODO: First try document's proxy?
-                        DO.U.authenticateUserFallback(url, DO.C.ProxyURL, reasons).then(
+                var response = new Promise(function(resolve, reject) {
+                    if (url.slice(0, 5).toLowerCase() == 'https') {
+                        DO.U.getResourceHeadUser(url).then(
                             function(i) {
-                                return resolve(i);
+                                resolve(i);
                             },
-                            function(reason) {
-                                return reject(reasons);
+                            function(reject) {
+                                DO.U.authenticateUserFallback(url, '', reasons).then(
+                                    function(i) {
+                                        resolve(i);
+                                    },
+                                    function(reason) {
+                                        reject(reasons);
+                                    }
+                                );
                             }
                         );
                     }
-                }
+                    else {
+                        if(url.slice(0, 5).toLowerCase() == 'http:') {
+                            //TODO: First try document's proxy?
+                            DO.U.authenticateUserFallback(url, DO.C.ProxyURL, reasons).then(
+                                function(i) {
+                                    resolve(i);
+                                },
+                                function(reason) {
+                                    reject(reasons);
+                                }
+                            );
+                        }
+                    }
+                });
 
+                response.then(
+                    function(userIRI) {
+                        if (userIRI == url) {
+                            return resolve(userIRI);
+                        }
+                        else {
+                            console.log("--- WebID input (" + url +") did not match the one in the certificate (" + userIRI +").");
+                            var reason = {"message": "WebID input did not match the one in the certificate."};
+                            reasons.push(reason);
+                            return reject(reasons);
+                        }
+                    },
+                    function(reason) {
+                        return reject(reasons);
+                    }
+                );
             });
         },
 
@@ -170,42 +189,30 @@ var DO = {
                 var g = SimpleRDF(DO.C.Vocab);
                 g.iri(pIRI).get().then(
                     function(i) {
-                        console.log(i);
                         var s = i.iri(url);
-                        console.log(url);
                         console.log(s.storage);
                         if (s.storage && s.storage.length > 0) {
-                            console.log("Try through WebID's storage");
-                            DO.U.getResourceHeadUser(s.storage[0]).then(
-                                function(i) {
-                                    console.log(url);
-                                    return resolve(url);
-                                },
-                                function(reason) {
-                                    console.log("-----XXX: WebID storage didn't work");
-                                    reason["message"] = "-----XXX: WebID storage didn't work";
-                                    reasons.push(reason);
-                                    return reject(reasons);
-                                }
-                            );
+                            console.log("Try through WebID's storage: " + s.storage[0]);
+                            return DO.U.getResourceHeadUser(s.storage[0]);
                         }
                         else {
-                            console.log('WebID storage not found');
-                            reason["message"] = "-----XXX1: WebID storage not found";
+                            console.log("---1 WebID's storage NOT FOUND");
+                            var reason = {"message": "WebID's storage was not found"};
                             reasons.push(reason);
-                            return reject(reasons);
+                            return Promise.reject(reason);
                         }
                     },
                     function(reason) {
-                        console.log('SimpleRDF should fail to this part');
-                        console.log('WebID storage not found');
-                        reason["message"] = "-----XXX2: WebID storage not found";
+                        //XXX: Is SimpleRDF even ever hitting this?
+                        console.log("---2 WebID's storage NOT FOUND");
+                        reason["message"] = "WebID's storage was not found";
                         reasons.push(reason);
-                        return reject(reasons);
+                        return Promise.reject(reason);
                     }
-                ).then(
+                )
+                .then(
                     function(i) {
-                        return resolve(i);
+                        resolve(i);
                     },
                     function(reason) {
                         console.log('Try through known authentication endpoint');
@@ -214,8 +221,8 @@ var DO = {
                                 return resolve(i);
                             },
                             function(reason) {
-                                console.log("-----XXX: Known authentication endpoint didn't work");
-                                reason["message"] = "-----XXX: Known authentication endpoint didn't work";
+                                console.log("--- Known authentication endpoint didn't work");
+                                reason["message"] = "Known authentication endpoint didn't work";
                                 reasons.push(reason);
                                 return reject(reasons);
                             }
@@ -236,7 +243,7 @@ var DO = {
                         if (this.status === 200) {
                             var user = this.getResponseHeader('User');
                             if (user && user.length > 0 && user.slice(0, 4) == 'http') {
-                                console.log(user);
+                                console.log('User: ' + user);
                                 return resolve(user);
                             }
                         }
@@ -254,6 +261,7 @@ var DO = {
                     function(userIRI) {
                         console.log('setUser resolve: ' + userIRI);
                         DO.C.User.IRI = userIRI;
+                        console.log(DO.C.User.IRI);
                         return resolve(userIRI);
                     },
                     function(xhr) {
@@ -364,8 +372,10 @@ var DO = {
                     );
                 });
             }
-
-            return Promise.reject();
+            else {
+                console.log('NO USER IRI');
+                return Promise.reject();
+            }
         },
 
         getUserHTML: function() {
@@ -825,19 +835,23 @@ var DO = {
             var url = userIdentityInput.find('input#webid').val().trim();
             if (url.length > 0) {
                 var setUser = function() {
-                    console.log('------ var setUser');
                     return new Promise(function(resolve, reject) {
-                        console.log(url);
                         DO.U.setUser(url).then(
                             function(i) {
-                                $('#user-signin-signup').html(DO.U.getUserHTML());
                                 userIdentityInput.remove();
-                                console.log(i);
                                 return resolve(i);
                             },
                             function(reason) {
-                                userIdentityInput.find('.error').remove();
-                                userIdentityInput.append('<p class="error">Unable to sign in with this WebID. Reasons:</p>');
+                                userIdentityInput.find('.response-message').remove();
+                                if (reason.length > 0) {
+                                    var reasonsList = '<p>Reasons:</p><ul>';
+                                    reason.forEach(function(r) {
+                                        reasonsList += '<li>' + r.message + '</li>';
+                                    });
+                                    reasonsList += '</ul>';
+                                }
+
+                                userIdentityInput.append('<div class="response-message"><p class="error">Unable to sign in with this WebID.</p>' + reasonsList + '</div>');
                                 $('#user-identity-input button.signin').removeAttr('disabled');
                                 console.log(reason);
                                 return reject(reason);
@@ -850,17 +864,18 @@ var DO = {
                     function(i) {
                         DO.U.setUserInfo(i).then(
                             function(i) {
-                                console.log("--- USER INFO SET ---");
+                                console.log("--- USER INFO SET");
                                 console.log(i);
+                                $('#user-signin-signup').html(DO.U.getUserHTML());
                             },
                             function(reason) {
-                                console.log("--- USER INFO NOT SET ---");
+                                console.log("--- USER INFO NOT SET");
                                 console.log(reason);
                             }
                         );
                     },
                     function(reason) {
-                        console.log("--- NO USER ---");
+                        console.log("--- NO USER");
                         console.log(reason);
                     }
                 );
