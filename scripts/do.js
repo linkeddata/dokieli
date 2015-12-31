@@ -120,6 +120,7 @@ var DO = {
         //Tries to authenticate with given URI. If authenticated, returns the 'User' header value.
         authenticateUser: function(url) {
             url = url || window.location.origin + window.location.pathname;
+            var reasons = [];
 
             return new Promise(function(resolve, reject) {
                 if (url.slice(0, 5).toLowerCase() == 'https') {
@@ -128,12 +129,12 @@ var DO = {
                             return resolve(i);
                         },
                         function(reject) {
-                            DO.U.authenticateUserFallback(url).then(
+                            DO.U.authenticateUserFallback(url, '', reasons).then(
                                 function(i) {
                                     return resolve(i);
                                 },
                                 function(reason) {
-                                    return reject(reason);
+                                    return reject(reasons);
                                 }
                             );
                         }
@@ -142,12 +143,12 @@ var DO = {
                 else {
                     if(url.slice(0, 5).toLowerCase() == 'http:') {
                         //TODO: First try document's proxy?
-                        DO.U.authenticateUserFallback(url, DO.C.ProxyURL).then(
+                        DO.U.authenticateUserFallback(url, DO.C.ProxyURL, reasons).then(
                             function(i) {
                                 return resolve(i);
                             },
                             function(reason) {
-                                return reject(reason);
+                                return reject(reasons);
                             }
                         );
                     }
@@ -156,8 +157,8 @@ var DO = {
             });
         },
 
-        authenticateUserFallback: function(url, proxyURL) {
-            console.log("Try to find the WebID's storage, if not found, try a known authentication endpoint");
+        authenticateUserFallback: function(url, proxyURL, reasons) {
+            console.log("Try to authenticating through WebID's storage, if not found, try through a known authentication endpoint");
             url = url || window.location.origin + window.location.pathname;
 
             var pIRI = url;
@@ -171,33 +172,54 @@ var DO = {
                     function(i) {
                         console.log(i);
                         var s = i.iri(url);
+                        console.log(url);
                         console.log(s.storage);
                         if (s.storage && s.storage.length > 0) {
-                            console.log("Try the WebID's storage");
+                            console.log("Try through WebID's storage");
                             DO.U.getResourceHeadUser(s.storage[0]).then(
                                 function(i) {
-                                    return resolve(i);
+                                    console.log(url);
+                                    return resolve(url);
                                 },
                                 function(reason) {
-                                    return reject(reason);
+                                    console.log("-----XXX: WebID storage didn't work");
+                                    reason["message"] = "-----XXX: WebID storage didn't work";
+                                    reasons.push(reason);
+                                    return reject(reasons);
                                 }
                             );
                         }
+                        else {
+                            console.log('WebID storage not found');
+                            reason["message"] = "-----XXX1: WebID storage not found";
+                            reasons.push(reason);
+                            return reject(reasons);
+                        }
+                    },
+                    function(reason) {
+                        console.log('SimpleRDF should fail to this part');
+                        console.log('WebID storage not found');
+                        reason["message"] = "-----XXX2: WebID storage not found";
+                        reasons.push(reason);
+                        return reject(reasons);
                     }
                 ).then(
                     function(i) {
-                        console.log('Try a known authentication endpoint');
+                        return resolve(i);
+                    },
+                    function(reason) {
+                        console.log('Try through known authentication endpoint');
                         DO.U.getResourceHeadUser(DO.C.AuthEndpoint).then(
                             function(i) {
                                 return resolve(i);
                             },
                             function(reason) {
-                                return reject(reason);
+                                console.log("-----XXX: Known authentication endpoint didn't work");
+                                reason["message"] = "-----XXX: Known authentication endpoint didn't work";
+                                reasons.push(reason);
+                                return reject(reasons);
                             }
                         );
-                    },
-                    function(reason) {
-                        return reject(reason);
                     }
                 );
 
@@ -230,7 +252,7 @@ var DO = {
             return new Promise(function(resolve, reject) {
                 DO.U.authenticateUser(url).then(
                     function(userIRI) {
-                        console.log('setUser resolve');
+                        console.log('setUser resolve: ' + userIRI);
                         DO.C.User.IRI = userIRI;
                         return resolve(userIRI);
                     },
@@ -342,6 +364,8 @@ var DO = {
                     );
                 });
             }
+
+            return Promise.reject();
         },
 
         getUserHTML: function() {
@@ -800,15 +824,43 @@ var DO = {
             var userIdentityInput = $('#user-identity-input');
             var url = userIdentityInput.find('input#webid').val().trim();
             if (url.length > 0) {
-                DO.U.setUser(url).then(DO.U.setUserInfo).then(
+                var setUser = function() {
+                    console.log('------ var setUser');
+                    return new Promise(function(resolve, reject) {
+                        console.log(url);
+                        DO.U.setUser(url).then(
+                            function(i) {
+                                $('#user-signin-signup').html(DO.U.getUserHTML());
+                                userIdentityInput.remove();
+                                console.log(i);
+                                return resolve(i);
+                            },
+                            function(reason) {
+                                userIdentityInput.find('.error').remove();
+                                userIdentityInput.append('<p class="error">Unable to sign in with this WebID. Reasons:</p>');
+                                $('#user-identity-input button.signin').removeAttr('disabled');
+                                console.log(reason);
+                                return reject(reason);
+                            }
+                        );
+                    });
+                };
+
+                setUser().then(
                     function(i) {
-                        $('#user-signin-signup').html(DO.U.getUserHTML());
-                        userIdentityInput.remove();
+                        DO.U.setUserInfo(i).then(
+                            function(i) {
+                                console.log("--- USER INFO SET ---");
+                                console.log(i);
+                            },
+                            function(reason) {
+                                console.log("--- USER INFO NOT SET ---");
+                                console.log(reason);
+                            }
+                        );
                     },
                     function(reason) {
-                        userIdentityInput.find('.error').remove();
-                        userIdentityInput.append('<p class="error">Unable to sign in with this WebID.</p>');
-                        $('#user-identity-input button.signin').removeAttr('disabled');
+                        console.log("--- NO USER ---");
                         console.log(reason);
                     }
                 );
@@ -2890,7 +2942,6 @@ $(document).ready(function() {
 //    DO.U.initStorage('html');
 //    DO.U.getDocRefType();
     DO.U.showRefs();
-//    DO.U.setUser().then(DO.U.setUserInfo);
     DO.U.setLocalDocument();
     DO.U.buttonClose();
     DO.U.highlightItems();
