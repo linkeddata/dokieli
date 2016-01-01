@@ -1632,7 +1632,7 @@ var DO = {
             }
             s += '<li><button class="resource-new"'+buttonDisabled+'>New</button></li>';
             s += '<li><button class="resource-save"'+buttonDisabled+'>Save</button></li>';
-            s += '<li><button class="resource-save-as"'+buttonDisabled+'>Save As</button></li>';
+            s += '<li><button class="resource-save-as">Save As</button></li>';
 
             s += '<li><button class="resource-export">Export</button></li>';
             s += '<li><button class="resource-print">⎙ Print</button></li>';
