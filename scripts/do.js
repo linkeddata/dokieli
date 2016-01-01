@@ -335,6 +335,9 @@ var DO = {
 
                                         if (s.workspace) {
                                             DO.C.User.Workspace = { List: s.workspace };
+
+                                            $('#document-do .resource-save-as').removeAttr('disabled');
+
                                             //XXX: Too early to tell if this is a good/bad idea. Will revise any way. A bit hacky right now.
                                             s.workspace.forEach(function(workspace) {
                                                 var wstype = pf.iri(workspace).rdftype || [];
@@ -1626,13 +1629,17 @@ var DO = {
                 s += '<li>' + editFile + '</li>';
             }
 
-            var buttonDisabled = '';
+            var buttonDisabled = '', saveButtonDisabled = '';
             if (document.location.protocol == 'file:') {
                 buttonDisabled = ' disabled="disabled"';
             }
+            var saveAsButtonDisabled = '';
+            if (document.location.protocol == 'file:' && (typeof DO.C.User.Workspace === 'undefined' || DO.C.User.Workspace.length < 1)) {
+                saveAsButtonDisabled = ' disabled="disabled"';
+            }
             s += '<li><button class="resource-new"'+buttonDisabled+'>New</button></li>';
             s += '<li><button class="resource-save"'+buttonDisabled+'>Save</button></li>';
-            s += '<li><button class="resource-save-as"'+buttonDisabled+'>Save As</button></li>';
+            s += '<li><button class="resource-save-as"'+saveAsButtonDisabled+'>Save As</button></li>';
 
             s += '<li><button class="resource-export">Export</button></li>';
             s += '<li><button class="resource-print">⎙ Print</button></li>';
