@@ -181,6 +181,7 @@ var DO = {
             url = url || window.location.origin + window.location.pathname;
 
             var pIRI = url;
+
             if (proxyURL) {
                 pIRI = proxyURL + DO.U.encodeString(url);
             }
@@ -1462,6 +1463,17 @@ var DO = {
 
         decodeString: function(string) {
             return decodeURIComponent(string.replace(/\+/g,  " "));
+        },
+
+        stripFragmentFromString: function(string) {
+            if (typeof string === "string") {
+                stringIndexFragment = string.indexOf('#');
+
+                if (stringIndexFragment >= 0) {
+                    string = string.substring(0, stringIndexFragment);
+                }
+            }
+            return string;
         },
 
         showFragment: function() {
