@@ -186,6 +186,8 @@ var DO = {
                 pIRI = proxyURL + DO.U.encodeString(url);
             }
 
+            pIRI = DO.U.stripFragmentFromString(pIRI);
+
             return new Promise(function(resolve, reject) {
                 var g = SimpleRDF(DO.C.Vocab);
                 g.iri(pIRI).get().then(
@@ -277,6 +279,9 @@ var DO = {
             console.log("setUserInfo: " + userIRI);
             if (userIRI) {
                 var pIRI = userIRI;
+
+                pIRI = DO.U.stripFragmentFromString(pIRI);
+
                 //TODO: Should use both document.location.origin + '/,proxy?uri= and then DO.C.ProxyURL .. like in setUser
                 if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
                     pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
@@ -479,6 +484,9 @@ var DO = {
         getInboxFromRDF: function(url, subjectIRI) {
             subjectIRI = subjectIRI || url;
             var pIRI = url;
+
+            pIRI = DO.U.stripFragmentFromString(pIRI);
+
             if (pIRI.slice(0, 5).toLowerCase() != 'https' && document.location.origin != 'null') {
                 pIRI = document.location.origin + '/,proxy?uri=' + DO.U.encodeString(pIRI);
             }
