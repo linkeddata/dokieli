@@ -1213,12 +1213,16 @@ var DO = {
                     sortable = ' sortable';
                 }
 
-                s += '<aside id="toc" class="do on' + sortable + '"><button class="close">❌</button><h2>Table of Contents</h2><ol class="toc' + sortable + '">';
-                s += DO.U.getListOfSections(section, DO.C.SortableList);
-                s += '</ol></aside>';
-
+                s = '<aside id="toc" class="do on' + sortable + '"><button class="close">❌</button></aside>';
                 $('body').append(s);
+
                 DO.U.showTableOfStuff($('#toc'));
+
+                s = '<section id="table-of-contents-i" class="do"><h2>Table of Contents</h2><ol class="toc' + sortable + '">';
+                s += DO.U.getListOfSections(section, DO.C.SortableList);
+                s += '</ol></section>';
+                $('#toc').append(s);
+
                 if(DO.C.SortableList && DO.C.EditorEnabled) {
                     DO.U.sortToC();
                 }
