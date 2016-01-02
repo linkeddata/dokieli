@@ -135,7 +135,7 @@ border:0;
 padding-left:0;
 }
 #document-metadata caption {
-font-family:"CMU Serif Bold", sans-serif !important;
+font-family:"CMUSerif-Bold", serif !important;
 font-size:1.231em;
 }
 
@@ -231,7 +231,7 @@ cursor:-webkit-grab;
 
 .do button {
 line-height:1;
-font-family:"CMU Serif Monospace", monospace !important;
+font-family:"CMUTypewriter-Regular", monospace !important;
 font-weight:bold;
 padding:0.25em;
 z-index:9;
@@ -379,7 +379,7 @@ font-size:1em;
 padding-right:10px;
 height:100%;
 display:block;
-font-family: "CMU Serif Monospace", monospace !important;
+font-family: "CMUTypewriter-Regular", monospace !important;
 font-weight:normal;
 outline:none;
 text-align:right;

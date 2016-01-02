@@ -12,28 +12,28 @@ Computer Modern Unicode fonts are from http://canopus.iacp.dvo.ru/~panov/cm-unic
 */
 
 @font-face {
-font-family: "CMU Serif";
-src: local("CMU Serif"), url("../fonts/cmunrm.otf");
+font-family: "CMUSerif-Roman";
+src: local("CMUSerif-Roman"), url("../fonts/cmunrm.otf");
 }
 @font-face {
-font-family: "CMU Serif Bold";
-src: local("CMU Serif Bold"), url("../fonts/cmunbx.otf");
+font-family: "CMUSerif-Bold";
+src: local("CMUSerif-Bold"), url("../fonts/cmunbx.otf");
 font-weight: bold;
 }
 @font-face {
-font-family: "CMU Serif Italic";
-src: local("CMU Serif Italic"), url("../fonts/cmunti.otf");
+font-family: "CMUSerif-Italic";
+src: local("CMUSerif-Italic"), url("../fonts/cmunti.otf");
 font-style: italic;
 }
 @font-face {
-font-family: "CMU Serif Bold Italic";
-src: local("CMU Serif Bold Italic"), url("../fonts/cmunbi.otf");
+font-family: "CMUSerif-BoldItalic";
+src: local("CMUSerif-BoldItalic"), url("../fonts/cmunbi.otf");
 font-weight: bold;
 font-style: italic;
 }
 @font-face {
-font-family: "CMU Serif Monospace";
-src: local("CMU Serif Monospace"), url("../fonts/cmuntt.otf");
+font-family: "CMUTypewriter-Regular";
+src: local("CMUTypewriter-Regular"), url("../fonts/cmuntt.otf");
 }
 
 @media print {
@@ -186,7 +186,7 @@ word-break:break-all;
 
 body {
 color:#000000;
-font-family: "CMU Serif", "GNU Unifont", "FreeSerif", "Segoe UI Symbol", serif;
+font-family: "CMUSerif-Roman", "GNU Unifont", "FreeSerif", "Segoe UI Symbol", serif;
 /*font-size:1.689vw;*/
 font-size:125%;
 line-height:1.231;
@@ -208,21 +208,21 @@ hyphens:none;
 }
 
 h1,h2,h3,h4, strong, dt, figcaption:before, caption:before, .entry-subtitle {
-font-family: "CMU Serif Bold", serif !important;
+font-family: "CMUSerif-Bold", serif !important;
 }
 h5,h6, em, cite, dfn, address {
-font-family: "CMU Serif Italic", serif !important;
+font-family: "CMUSerif-Italic", serif !important;
 }
 h1 em, h2 em, h3 em, h4 em, dt dfn {
-font-family: "CMU Serif Bold Italic", serif !important;
+font-family: "CMUSerif-BoldItalic", serif !important;
 }
 section article h1,
 section article h2,
 section article h3 {
-font-family:"CMU Serif", serif !important;
+font-family:"CMUSerif-Roman", serif !important;
 }
 code, code strong, samp, samp strong pre, kbd, button {
-font-family: "CMU Serif Monospace", monospace !important;
+font-family: "CMUTypewriter-Regular", monospace !important;
 }
 code strong, samp strong {
 font-weight:bold;
@@ -495,7 +495,7 @@ font-size:0.923em;
 
 #author-email,
 #author-uri {
-font-family: "CMU Serif Monospace", monospace !important;
+font-family: "CMUTypewriter-Regular", monospace !important;
 font-size:0.923em;
 }
 
@@ -705,7 +705,7 @@ display:inline;
 content: ",\0020";
 }
 .pages dt {
-font-family: "CMU Serif" !important;
+font-family: "CMUSerif-Roman" !important;
 margin-right: 0.5em;
 text-transform: lowercase;
 }

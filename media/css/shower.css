@@ -1,26 +1,26 @@
 @font-face {
-font-family: "CMU Sans Serif Medium";
-src: local("CMU Sans Serif Medium"), url("../fonts/cmunss.otf");
+font-family: "CMUSansSerif";
+src: local("CMUSansSerif"), url("../fonts/cmunss.otf");
 }
 @font-face {
-font-family: "CMU Sans Serif Bold";
-src: local("CMU Sans Serif Bold"), url("../fonts/cmunsx.otf");
+font-family: "CMUSansSerif-Bold";
+src: local("CMUSansSerif-Bold"), url("../fonts/cmunsx.otf");
 font-weight: bold;
 }
 @font-face {
-font-family: "CMU Sans Serif Italic";
-src: local("CMU Sans Serif Italic"), url("../fonts/cmunsi.otf");
+font-family: "CMUSansSerif-Oblique";
+src: local("CMUSansSerif-Oblique"), url("../fonts/cmunsi.otf");
 font-style: italic;
 }
 @font-face {
-font-family: "CMU Sans Serif Bold Italic";
-src: local("CMU Sans Serif Bold Italic"), url("../fonts/cmunbxo.otf");
+font-family: "CMUBright-BoldOblique";
+src: local("CMUBright-BoldOblique"), url("../fonts/cmunbxo.otf");
 font-weight: bold;
 font-style: italic;
 }
 @font-face {
-font-family: "CMU Sans Serif Monospace";
-src: local("CMU Sans Serif Monospace"), url("../fonts/cmuntt.otf");
+font-family: "CMUTypewriter-Regular";
+src: local("CMUTypewriter-Regular"), url("../fonts/cmuntt.otf");
 }
 
 
@@ -44,7 +44,7 @@ article,aside,details,figcaption,figure,footer,header,hgroup,menu,nav,section {
 
 body {
     line-height: 1.8;
-    font-family: "CMU Sans Serif Medium", sans-serif !important;
+    font-family: "CMUSansSerif", sans-serif !important;
     counter-reset: slide;
     font-size:32px;
 }
@@ -82,15 +82,15 @@ a {
 }
 
 h1,h2,h3,h4,h5,h6,b,strong,dt {
-font-family: "CMU Sans Serif Bold", sans-serif !important;
+font-family: "CMUSansSerif-Bold", sans-serif !important;
 }
 i, em, address {
-font-family: "CMU Sans Serif Italic", sans-serif !important;
+font-family: "CMUSansSerif-Oblique", sans-serif !important;
 font-style:normal !important;
 }
 
 code, pre, kbd {
-font-family: "CMU Sans Serif Monospace", monospace !important;
+font-family: "CMUTypewriter-Regular", monospace !important;
 }
 h1, h2, h3, button {
 text-shadow:1px 1px 1px #ccc;
