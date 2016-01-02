@@ -1744,6 +1744,18 @@ var DO = {
             });
         },
 
+        getBaseURLSelection: function() {
+            var s = '<fieldset id="base-url-selection"><legend>Select the base URL for stylesheets and scripts:</legend>\n\
+            <ul>\n\
+            <li><input id="base-url-dokieli" type="radio" name="base-url" value="base-url-dokieli" /><label for="base-url-dokieli"><code>https://dokie.li/</code></label></li>\n\
+            <li><input id="base-url-absolute" type="radio" name="base-url" value="base-url-absolute " checked="checked" /><label for="base-url-absolute"><code>' + DO.U.getBaseURL(document.location.href) + '</code></label></li>\n\
+            <li><input id="base-url-relative" type="radio" name="base-url" value="base-url-relative" /><label for="base-url-relative">Relative to saved URL</label></li>\n\
+            </ul>\n\
+            <p><input id="base-url-remember" type="checkbox" checked="checked" /> <label for="base-url-remember">Remember</label></p></fieldset>';
+
+            return s;
+        },
+
         rewriteBaseURL: function(nodes, urlType) {
             urlType = urlType || 'base-url-dokieli';
             if (typeof nodes === 'object' && nodes.length > 0) {
