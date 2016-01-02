@@ -411,7 +411,7 @@ margin-bottom:1em;
 .slide.cover dl.performer dt,
 .slide.cover dl.organisations dt {
 font-weight:normal;
-font-family:"CMU Sans Serif",sans-serif !important;
+font-family:"CMUSansSerif",sans-serif !important;
 }
 .slide.cover dl.organisations dt {
 display:none;
