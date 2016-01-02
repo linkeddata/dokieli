@@ -583,38 +583,28 @@ var DO = {
         },
 
         putResource: function(url, data, contentType, links) {
-            //FIXME: index.html shouldn't be hardcoded.
             url = url || window.location.origin + window.location.pathname;
             contentType = contentType || 'text/html';
             var ldpResource = '<http://www.w3.org/ns/ldp#Resource>; rel="type"';
             links = (links) ? ldpResource + ', ' + links : ldpResource;
 
-            var headers = {
-                'Content-Type': contentType + '; charset=utf-8',
-                'Link': links
-            };
             data = data || DO.U.getDocument();
 
             return new Promise(function(resolve, reject) {
-                var request = $.ajax({
-                    method: "PUT",
-                    url: url,
-                    headers: headers,
-                    data: data,
-                    xhrFields: {
-                        withCredentials: true
+                var http = new XMLHttpRequest();
+                http.open('PUT', url);
+                http.setRequestHeader('Content-Type', contentType + '; charset=utf-8');
+                http.setRequestHeader('Link', links);
+                http.withCredentials = true;
+                http.onreadystatechange = function() {
+                    if (this.readyState == this.DONE) {
+                        if (this.status === 200 || this.status === 201 || this.status === 204) {
+                            return resolve({xhr: this});
+                        }
+                        return reject({status: this.status, xhr: this});
                     }
-                });
-                request.done(function(data, textStatus, xhr) {
-                    console.log(data);
-                    console.log(textStatus);
-                    console.log(xhr)
-                    return resolve(xhr);
-                });
-                request.fail(function(xhr, textStatus) {
-                    console.log("Request failed: " + textStatus);
-                    return reject(xhr);
-                });
+                };
+                http.send(data);
             });
         },
 
