@@ -668,14 +668,8 @@ var DO = {
             });
         },
 
-        notifyInbox: function(inbox, slug, source, property, target) {
-            var headers = {
-                'Content-Type': 'text/turtle; charset=utf-8',
-                'Link': '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
-            };
-            if (slug != '') {
-                headers.Slug = slug;
-            }
+        notifyInbox: function(url, slug, source, property, target) {
+            url = url || window.location.origin + window.location.pathname;
 
             var data = '@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\
 @prefix sterms: <http://www.w3.org/ns/solid/terms#> .\n\
@@ -690,23 +684,27 @@ var DO = {
     schema:license <http://creativecommons.org/licenses/by-sa/4.0/> .\n\
 ';
 
-            var request = $.ajax({
-                method: "POST",
-                url: inbox,
-                headers: headers,
-                xhrFields: { withCredentials: true },
-                data: data
-            });
-            request.done(function(data, textStatus, xhr) {
-                console.log(data);
-                console.log(textStatus);
-                console.log(xhr);
-            });
-            request.fail(function(xhr, textStatus) {
-                console.log(xhr);
-                console.log("Request failed: " + textStatus);
-            });
+            data = data || DO.U.getDocument();
 
+            return new Promise(function(resolve, reject) {
+                var http = new XMLHttpRequest();
+                http.open('POST', url);
+                http.setRequestHeader('Content-Type', 'text/turtle; charset=utf-8');
+                http.setRequestHeader('Link', '<http://www.w3.org/ns/ldp#Resource>; rel="type"');
+                if (slug != '') {
+                    http.setRequestHeader('Slug', slug);
+                }
+                http.withCredentials = true;
+                http.onreadystatechange = function() {
+                    if (this.readyState == this.DONE) {
+                        if (this.status === 200 || this.status === 201 || this.status === 204) {
+                            return resolve({xhr: this});
+                        }
+                        return reject({status: this.status, xhr: this});
+                    }
+                };
+                http.send(data);
+            });
         },
 
         createResourceACL: function(accessToURL, aclSuffix, agentIRI) {
@@ -2935,7 +2933,14 @@ console.log(viewportWidthSplit);
                                 function(inbox) {
                                     if (inbox && inbox.length > 0) {
                                         console.log('inbox: ' + inbox);
-                                        DO.U.notifyInbox(inbox, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', resourceIRI);
+                                        DO.U.notifyInbox(inbox, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', resourceIRI).then(
+                                                function(response) {
+                                                    console.log("Notification: " + response.xhr.getResponseHeader('Location'));
+                                                },
+                                                function(reason) {
+                                                    console.log(reason);
+                                                }
+                                            );
                                     }
                                 },
                                 function(reason) {
