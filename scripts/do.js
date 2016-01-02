@@ -1676,7 +1676,7 @@ var DO = {
 
         createNewDocument: function() {
             $(this).prop('disabled', 'disabled');
-            $('body').append('<aside id="create-new-document" class="do on"><button class="close">❌</button><h2>Create New Document</h2><label>URL to save to</label><input id="storage" type="text" placeholder="http://example.org/article" value="" name="storage"/> <button class="create">Create</button></aside>');
+            $('body').append('<aside id="create-new-document" class="do on"><button class="close">❌</button><h2>Create New Document</h2><div>' + DO.U.getBaseURLSelection() + '<p><label>URL to save to</label><input id="storage" type="text" placeholder="http://example.org/article" value="" name="storage"/> <button class="create">Create</button></p></div></aside>');
 
             $('#create-new-document #storage').focus();
 
@@ -1688,6 +1688,11 @@ var DO = {
                 var storageIRI = $(this).parent().find('input#storage').val().trim();
 
                 var html = document.documentElement.cloneNode(true);
+                var baseURLSelectionChecked = $('#base-url-selection input[name="base-url"]:checked');
+                if (baseURLSelectionChecked.length > 0) {
+                    var linksScripts = $(html).find('head link, head script');
+                    DO.U.rewriteBaseURL(linksScripts, baseURLSelectionChecked.val());
+                }
                 $(html).find('main > article').empty();
                 html = DO.U.getDocument(html);
                 html = html.replace(/<title>[^<]*<\/title>/g, '<title></title>');
@@ -1745,10 +1750,10 @@ var DO = {
         },
 
         getBaseURLSelection: function() {
-            var s = '<fieldset id="base-url-selection"><legend>Select the base URL for stylesheets and scripts:</legend>\n\
+            var s = '<fieldset id="base-url-selection"><legend>Select the base URL for stylesheets and scripts</legend>\n\
             <ul>\n\
             <li><input id="base-url-dokieli" type="radio" name="base-url" value="base-url-dokieli" /><label for="base-url-dokieli"><code>https://dokie.li/</code></label></li>\n\
-            <li><input id="base-url-absolute" type="radio" name="base-url" value="base-url-absolute " checked="checked" /><label for="base-url-absolute"><code>' + DO.U.getBaseURL(document.location.href) + '</code></label></li>\n\
+            <li><input id="base-url-absolute" type="radio" name="base-url" value="base-url-absolute" checked="checked" /><label for="base-url-absolute"><code>' + DO.U.getBaseURL(document.location.href) + '</code></label></li>\n\
             <li><input id="base-url-relative" type="radio" name="base-url" value="base-url-relative" /><label for="base-url-relative">Relative to saved URL</label></li>\n\
             </ul>\n\
             <p><input id="base-url-remember" type="checkbox" checked="checked" /> <label for="base-url-remember">Remember</label></p></fieldset>';
