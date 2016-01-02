@@ -2,31 +2,35 @@
 
 [![Join the chat at https://gitter.im/linkeddata/dokieli](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/linkeddata/dokieli)
 
-dokieli is a decentralized article authoring, annotation, and social pingback
-tool which works from a Web browser. While it is a general purpose tooling to
-write articles, it is fully compliant with the [Linked
+There is no root, authority, or centralisation here. Control yourself!
+
+dokieli is a decentralized article authoring, annotation, and social
+notification tool which works from a Web browser. While it is a general purpose
+tooling to write articles, it is fully compliant with the [Linked
 Research](https://github.com/csarven/linked-research) initiative and principles,
-and provides features and interactions for scholarly communication. Its
-architecture is progressively enhanced such that dokieli based articles are
+and provides features and interactions for scholarly communication.
+
+dokieli's architecture is progressively enhanced such that articles are
 accessible anywhere from a Line Mode Browser to Firefox Nightly. Articles and
 annotations can be `curl`ed and dereferenced to get the complete content in HTML
-and RDF.
+and RDF. Articles can be authored both online and offline.
 
 Where applicable, dokieli can employ participant's e.g., authors, reviewers,
 commenters, WebID and personal online datastores to store and give different
-access controls to the information. Similarly, anyone that wants to annotate can
-store their notes at a Webspace in which they control.
+access controls to the information to different participants. Similarly, anyone
+that wants to annotate can store their notes at a Webspace in which they control.
 
 
 ## Features
 * In-browser document authoring and formatting, and semantic enrichments
 * Information is represented and retrieved following the Linked Data design principles
 * Employs WebID + ACL and personal online datastore where applicable (compliant with [Linked Data Platform](http://www.w3.org/TR/ldp/) and [Solid](https://github.com/solid/solid-spec) servers)
-* Using author's information from their online profile
-* Creation of new documents from any dokieli document (anywhere on the Web given write access)
-* Annotations and pingbacks (e.g., replies, peer-reviews, liking, resharing). Uses W3C Web Annotation and Social Web data models
-* Assignment of URI fragments (to whatever is of interest) for other resources to reference
-* Embedding data blocks (e.g., nanopublications)
+* Uses author's information from their online profile
+* Creation of new documents from any existing dokieli document
+* Annotations (e.g., replies, peer-reviews, liking, resharing). Uses W3C Web Annotation and Social Web data models
+* Inbox notifications for annotations
+* Assignment of URI fragments (to whatever is of interest) so that other resources on the Web can reference
+* Embedding data blocks, e.g., Turtle, N-Triples, Nanopublications
 * Embedding of media objects, tables, and interactions
 * Automated references and citations
 * Insertion of table of contents, figures, tables, abbreviations
@@ -34,6 +38,7 @@ store their notes at a Webspace in which they control.
 * In-browser local storage, and document exporting
 * Document metadata
 * Views for screen and print (e.g., ACM, LNCS) - yes, you can output to a paper user interface: PDF
+* .. and [many more on the way](https://github.com/linkeddata/dokieli/issues/)
 
 
 ## Examples
@@ -44,14 +49,13 @@ wiki. Add the URLs of your articles or interactions to the list.
 This repository is published and accessible from
 [https://dokie.li/](https://dokie.li/). dokie.li is intended to demo and
 exemplify what we can do with this technology. You are welcome to use and
-experiment with dokieli there. You might also come across it in the wild. There
-is no root, authority, or centralisation. If you spot it, lets fix and improve
-together.
+experiment with dokieli there, or anywhere else you come across a dokieli
+document.
 
 For the scholars among us, see the authoring guidelines below. View the ACM
 guidelines using the LNCS typographical rules, and vice versa (see the menu) ;)
-* [ACM SIG Proceedings Paper](http://linked-research.270a.info/acm-sigproc-sp)
-* [LNCS Author Guidelines](http://linked-research.270a.info/lncs-splnproc)
+* [ACM SIG Proceedings Paper](https://dokie.li/acm-sigproc-sp)
+* [LNCS Author Guidelines](https://dokie.li/lncs-splnproc)
 
 
 ## Design
@@ -74,10 +78,12 @@ within their control.
 dokieli is not perfect, but it is intended to evolve based on our collective
 experience.
 
+
 ## Dependencies
 Again, dokieli is progressively enhanced ("pay-as-you-go"). You can always use
 curl or links/lynx from command-line and get all the content which includes
-triple statements in RDFa.
+triple statements in RDFa, and optionally in Turtle, N-Triples, TriG
+(Nanopublications).
 
 * For the purpose of reading, the only requirement is to serve the HTML+RDFa
 and referenced files from a directory on your Web server. "Drag and drop"!
@@ -111,7 +117,7 @@ libraries as we work out the optimizations.
 * Use it! Share your work with the others.
 * Enable your colleagues to the same.
 * Join the [dokieli chat](https://gitter.im/linkeddata/dokieli) for help and discussion.
-* Break things. Report issues and document. Resolve issues.
+* Break things. Report [issues](https://github.com/linkeddata/dokieli/issues/) and document. Resolve issues.
 * Optimize. Work on features.
 
 
