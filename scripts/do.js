@@ -1744,6 +1744,63 @@ var DO = {
             });
         },
 
+        rewriteBaseURL: function(nodes, urlType) {
+            urlType = urlType || 'base-url-dokieli';
+            if (typeof nodes === 'object' && nodes.length > 0) {
+                nodes.each(function(i, v) {
+                    var url = '', ref = '';
+                    var tagName = $(this).prop('tagName').toLowerCase();
+                    switch(tagName) {
+                        case 'link':
+                            url = $(this).prop('href');
+                            ref = 'href';
+                            break;
+                        case 'script':
+                            url = $(this).prop('src');
+                            ref = 'src';
+                            break;
+                    }
+
+                    url = DO.U.setBaseURL(url, urlType);
+
+                    $(this).prop(ref, url);
+                });
+            }
+
+            return nodes;
+        },
+
+        setBaseURL: function(url, urlType) {
+            urlType = urlType || 'base-url-dokieli';
+            var matches = [];
+            var regexp = /(.*)((media|scripts)(\/.*))$/;
+
+            matches = url.match(regexp);
+            if (matches) {
+                switch(urlType) {
+                    case 'base-url-dokieli':  default:
+                        url = 'https://dokie.li/' + matches[2];
+                        break;
+                    case 'base-url-absolute':
+                        url = DO.U.getBaseURL(document.location.href) + matches[2];
+                        break;
+                    case 'base-url-relative':
+                        url = matches[2];
+                        break;
+                }
+            }
+
+            return url;
+        },
+
+        getBaseURL: function(url) {
+            if(typeof url === 'string') {
+                url = url.substr(0, url.lastIndexOf('/') + 1);
+            }
+
+            return url;
+        },
+
         initStorage: function(item) {
             if (typeof window.localStorage != 'undefined') {
                 DO.U.enableStorage(item);
