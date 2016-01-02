@@ -1676,7 +1676,7 @@ var DO = {
 
         createNewDocument: function() {
             $(this).prop('disabled', 'disabled');
-            $('body').append('<aside id="create-new-document" class="do on"><button class="close">❌</button><h2>Create New Document</h2><div>' + DO.U.getBaseURLSelection() + '<p><label>URL to save to</label><input id="storage" type="text" placeholder="http://example.org/article" value="" name="storage"/> <button class="create">Create</button></p></div></aside>');
+            $('body').append('<aside id="create-new-document" class="do on"><button class="close">❌</button><h2>Create New Document</h2><div>' + DO.U.getBaseURLSelection() + '<p><label>URL</label><input id="storage" type="text" placeholder="http://example.org/article" value="" name="storage"/> <button class="create">Create</button></p></div></aside>');
 
             $('#create-new-document #storage').focus();
 
@@ -1688,14 +1688,14 @@ var DO = {
                 var storageIRI = $(this).parent().find('input#storage').val().trim();
 
                 var html = document.documentElement.cloneNode(true);
-                var baseURLSelectionChecked = $('#base-url-selection input[name="base-url"]:checked');
+                var baseURLSelectionChecked = $('#create-new-document input[name="base-url"]:checked');
                 if (baseURLSelectionChecked.length > 0) {
                     var linksScripts = $(html).find('head link, head script');
                     DO.U.rewriteBaseURL(linksScripts, baseURLSelectionChecked.val());
                 }
                 $(html).find('main > article').empty();
+                $(html).find('head title').empty();
                 html = DO.U.getDocument(html);
-                html = html.replace(/<title>[^<]*<\/title>/g, '<title></title>');
 
                 var w = window.open('', '_blank');
 
@@ -1714,7 +1714,7 @@ var DO = {
 
         saveAsDocument: function() {
             $(this).prop('disabled', 'disabled');
-            $('body').append('<aside id="save-as-document" class="do on"><button class="close">❌</button><h2>Save As Document</h2><label>URL to save to</label><input id="storage" type="text" placeholder="http://example.org/article" value="" name="storage"/> <button class="create">Save</button></aside>');
+            $('body').append('<aside id="save-as-document" class="do on"><button class="close">❌</button><h2>Save As Document</h2><div>' + DO.U.getBaseURLSelection() + '<p><label>URL</label><input id="storage" type="text" placeholder="http://example.org/path/to/article" value="" name="storage"/> <button class="create">Save</button></p></div></aside>');
 
             $('#save-as-document #storage').focus();
 
@@ -1726,7 +1726,13 @@ var DO = {
                 var saveAsDocument = $(this).parent();
                 var storageIRI = saveAsDocument.find('input#storage').val().trim();
 
-                html = DO.U.getDocument();
+                var html = document.documentElement.cloneNode(true);
+                var baseURLSelectionChecked = $('#save-as-document input[name="base-url"]:checked');
+                if (baseURLSelectionChecked.length > 0) {
+                    var linksScripts = $(html).find('head link, head script');
+                    DO.U.rewriteBaseURL(linksScripts, baseURLSelectionChecked.val());
+                }
+                html = DO.U.getDocument(html);
 
                 //FIXME: Open if only resource was PUT successfully. Promise issue?
                 var w = window.open('', '_blank');
