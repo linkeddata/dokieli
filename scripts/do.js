@@ -443,45 +443,33 @@ var DO = {
         },
 
         getInbox: function(url) {
-            return new Promise(function(resolve, reject) {
-                if (url.indexOf('#') != -1) {
-                    return resolve(DO.U.getInboxFromRDF(url));
-                }
-                else {
-                    var response = DO.U.getResourceHeader(url);
-                    response.done(function(data, textStatus, xhr) {
-                        console.log(data);
-                        console.log(textStatus);
-                        console.log(xhr);
-                        // var link = DO.U.parseLinkHeader(xhr.getResponseHeader('Link'));
-                        // if(link['pingback:to'] && link['pingback:to'].length > 0) {
-                        //     return resolve(link['pingback:to']);
-                        // }
-                        // else {
-                        //     if(link['meta'] && link['meta'].length > 0) {
-                        //         var response = DO.U.getResourceHeader(link['meta']);
-                        //         response.done(function(data, textStatus, xhr) {
-                        //             console.log(data);
-                        //             console.log(textStatus);
-                        //             console.log(xhr);
-                        //             return resolve(DO.U.getInboxFromRDF(link['meta'], url));
-                        //         });
-                        //     }
+            url = url || window.location.origin + window.location.pathname;
 
-                            console.log('XXX: Our last chance');
-                            return resolve(DO.U.getInboxFromRDF(url));
-                        // }
-                    });
-                    response.fail(function(xhr, textStatus) {
-                        console.log(xhr);
-                        console.log("Request failed: " + textStatus);
-                        return reject(xhr);
-                    });
+            var promise = function() {
+                return new Promise(function(resolve, reject) {
+                    DO.U.getResourceHead(url).then(
+                        function(i) {
+                            resolve(i);
+                        },
+                        function(reason) {
+                            reject(reason);
+                        }
+                    )
+                });
+            };
+
+            return promise().then(
+                function(i) {
+                    return DO.U.getInboxFromRDF(url);
+                },
+                function(reason) {
+                    return Promise.reject(reason);
                 }
-            });
+            );
         },
 
         getInboxFromRDF: function(url, subjectIRI) {
+            url = url || window.location.origin + window.location.pathname;
             subjectIRI = subjectIRI || url;
             var pIRI = url;
 
@@ -494,15 +482,16 @@ var DO = {
             console.log(subjectIRI);
 
             return new Promise(function(resolve, reject) {
+                //FIXME: This doesn't work so well if the document's URL is different than input url
                 var g = SimpleRDF(DO.C.Vocab);
                 g.iri(pIRI).get().then(
                     function(i) {
                         var s = i.iri(subjectIRI);
-                        console.log(s);
                         if (s.solidinbox.length > 0) {
                             console.log(s.solidinbox);
                             return resolve(s.solidinbox);
                         }
+                        var reason = {"message": "Inbox was not found"};
                         return reject(reason);
                     },
                     function(reason) {
@@ -513,18 +502,22 @@ var DO = {
             });
         },
 
-        getResourceHeader: function(url, withCredentials) {
+        getResourceHead: function(url) {
             url = url || window.location.origin + window.location.pathname;
-            var request = {
-                method: "HEAD",
-                url: url
-            };
-            if (withCredentials != 'undefined' && withCredentials != false) {
-                request["xhrFields"] = {
-                    withCredentials: true
-                }
-            }
-            return $.ajax(request);
+            return new Promise(function(resolve, reject) {
+                var http = new XMLHttpRequest();
+                http.open('HEAD', url);
+                http.withCredentials = true;
+                http.onreadystatechange = function() {
+                    if (this.readyState == this.DONE) {
+                        if (this.status === 200) {
+                            return resolve({'headers': this.getAllResponseHeaders()});
+                        }
+                        return reject({status: this.status, xhr: this});
+                    }
+                };
+                http.send();
+            });
         },
 
         getResource: function(url, headers) {
