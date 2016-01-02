@@ -750,18 +750,19 @@ var DO = {
         },
 
         deleteResource: function(url) {
-            var request = $.ajax({
-                method: 'DELETE',
-                url: url,
-                xhrFields: { withCredentials: true }
-            });
-            request.done(function(data, textStatus, xhr) {
-                console.log(data);
-                console.log(textStatus);
-                console.log(xhr);
-            });
-            request.fail(function(xhr, textStatus) {
-                console.log( "Request failed: " + textStatus);
+            return new Promise(function(resolve, reject) {
+                var http = new XMLHttpRequest();
+                http.open('DELETE', url);
+                http.withCredentials = true;
+                http.onreadystatechange = function() {
+                    if (this.readyState == this.DONE) {
+                        if (this.status === 200 || this.status === 202 || this.status === 204) {
+                            return resolve(true);
+                        }
+                        return reject({status: this.status, xhr: this});
+                    }
+                };
+                http.send();
             });
         },
 
