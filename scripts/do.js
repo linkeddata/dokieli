@@ -33,8 +33,8 @@ var DO = {
         AutoSaveTimer: 60000,
         DisableStorageButtons: '<button class="local-storage-disable-html">Disable</button> | <input id="local-storage-html-autosave" class="autosave" type="checkbox" checked="checked"/> <label for="local-storage-html-autosave">Autosave (1m)</label>',
         EnableStorageButtons: '<button class="local-storage-enable-html">Enable</button>',
-        CDATAStart: '<!--//--><![CDATA[//><!--',
-        CDATAEnd: '//--><!]]>',
+        CDATAStart: '//<![CDATA[',
+        CDATAEnd: '//]]>',
         SortableList: (($('head script[src$="html.sortable.min.js"]').length > 0) ? true : false),
         EditorAvailable: ($('head script[src$="medium-editor.min.js"]').length > 0),
         EditorEnabled: false,
@@ -1025,8 +1025,8 @@ var DO = {
                     },
                     'meta-json-ld': {
                         scriptStart: '<script id="meta-json-ld" type="application/ld+json" title="JSON-LD">',
-                        cdataStart: DO.C.CDATAStart,
-                        cdataEnd: DO.C.CDATAEnd,
+                        cdataStart: DO.C.CDATAStart + '\n',
+                        cdataEnd: '\n' + DO.C.CDATAEnd,
                         scriptEnd: '</script>'
                     },
                     'meta-nanopublication': {
