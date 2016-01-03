@@ -1101,6 +1101,7 @@ var DO = {
                     }
 
                     $('#embed-data-entry').remove();
+                    $('#embed-data-in-html .embed-data-meta').removeAttr('disabled');
                 });
             });
         },
