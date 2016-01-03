@@ -416,7 +416,7 @@ var DO = {
         putPingbackTriple: function(url, pingbackOf, pingbackTo) {
             var data = '<'+ pingbackOf + '> <http://purl.org/net/pingback/to> <' + pingbackTo + '> .';
 
-            DO.U.putResource(url, data, 'text/turtle');
+            DO.U.putResource(url, data, 'text/turtle; charset=utf-8');
         },
 
         //Copied from https://github.com/deiu/solid-plume/blob/gh-pages/app/solid.js
@@ -584,7 +584,7 @@ var DO = {
 
         putResource: function(url, data, contentType, links) {
             url = url || window.location.origin + window.location.pathname;
-            contentType = contentType || 'text/html';
+            contentType = contentType || 'text/html; charset=utf-8';
             var ldpResource = '<http://www.w3.org/ns/ldp#Resource>; rel="type"';
             links = (links) ? ldpResource + ', ' + links : ldpResource;
 
@@ -593,7 +593,7 @@ var DO = {
             return new Promise(function(resolve, reject) {
                 var http = new XMLHttpRequest();
                 http.open('PUT', url);
-                http.setRequestHeader('Content-Type', contentType + '; charset=utf-8');
+                http.setRequestHeader('Content-Type', contentType);
                 http.setRequestHeader('Link', links);
                 http.withCredentials = true;
                 http.onreadystatechange = function() {
