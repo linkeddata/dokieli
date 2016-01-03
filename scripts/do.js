@@ -1014,23 +1014,23 @@ var DO = {
 
             $('#embed-data-in-html').off('click', 'button').on('click', 'button', function(e){
                 $(this).prop('disabled', 'disabled');
-                var scriptCurrent = $('head script[id^="meta-"][class="do"]');
+                var scriptCurrent = $('head script[id^="meta-"]');
 
                 var scriptType = {
                     'meta-turtle': {
-                        scriptStart: '<script id="meta-turtle" class="do" type="text/turtle" title="Turtle">',
+                        scriptStart: '<script id="meta-turtle" type="text/turtle" title="Turtle">',
                         cdataStart: '# ' + DO.C.CDATAStart + '\n',
                         cdataEnd: '\n# ' + DO.C.CDATAEnd,
                         scriptEnd: '</script>'
                     },
                     'meta-json-ld': {
-                        scriptStart: '<script id="meta-json-ld" class="do" type="application/json+ld" title="JSON-LD">',
+                        scriptStart: '<script id="meta-json-ld" type="application/json+ld" title="JSON-LD">',
                         cdataStart: DO.C.CDATAStart,
                         cdataEnd: DO.C.CDATAEnd,
                         scriptEnd: '</script>'
                     },
                     'meta-nanopublication': {
-                        scriptStart: '<script id="meta-nanopublication" class="do" type="application/trig" title="Nanopublication">',
+                        scriptStart: '<script id="meta-nanopublication" type="application/trig" title="Nanopublication">',
                         cdataStart: '# ' + DO.C.CDATAStart + '\n',
                         cdataEnd: '\n# ' + DO.C.CDATAEnd,
                         scriptEnd: '</script>'
