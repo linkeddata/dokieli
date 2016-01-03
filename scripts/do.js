@@ -1672,9 +1672,15 @@ var DO = {
                 var html = document.documentElement.cloneNode(true);
                 var baseURLSelectionChecked = $('#create-new-document input[name="base-url"]:checked');
                 if (baseURLSelectionChecked.length > 0) {
+                    var baseURLType = baseURLSelectionChecked.val();
                     var linksScripts = $(html).find('head link, head script');
-                    DO.U.rewriteBaseURL(linksScripts, baseURLSelectionChecked.val());
+                    var nodes = DO.U.rewriteBaseURL(linksScripts, baseURLType);
+
+                    if (baseURLType == 'base-url-relative') {
+                        DO.U.copyRelativeResources(storageIRI, linksScripts);
+                    }
                 }
+
                 $(html).find('main > article').empty();
                 $(html).find('head title').empty();
                 html = DO.U.getDocument(html);
@@ -1711,8 +1717,13 @@ var DO = {
                 var html = document.documentElement.cloneNode(true);
                 var baseURLSelectionChecked = $('#save-as-document input[name="base-url"]:checked');
                 if (baseURLSelectionChecked.length > 0) {
+                    var baseURLType = baseURLSelectionChecked.val();
                     var linksScripts = $(html).find('head link, head script');
-                    DO.U.rewriteBaseURL(linksScripts, baseURLSelectionChecked.val());
+                    var nodes = DO.U.rewriteBaseURL(linksScripts, baseURLSelectionChecked.val());
+
+                    if (baseURLType == 'base-url-relative') {
+                        DO.U.copyRelativeResources(storageIRI, linksScripts);
+                    }
                 }
                 html = DO.U.getDocument(html);
 
@@ -1819,7 +1830,7 @@ var DO = {
                             var contentType = this.getResponseHeader('Content-Type');
                             DO.U.putResource(toURL, responseText, contentType).then(
                                 function(i) {
-                                    console.log(i);
+                                    // console.log(i);
                                 },
                                 function(reason) {
                                     console.log(reason);
@@ -1830,6 +1841,39 @@ var DO = {
                 };
                 http.send();
             }
+        },
+
+        copyRelativeResources: function(storageIRI, relativeNodes) {
+            var matches = [];
+            var regexp = /(.*)((media|scripts)(\/.*))$/;
+            var baseURL = DO.U.getBaseURL(storageIRI);
+
+            var nodes = DO.U.rewriteBaseURL(relativeNodes, 'base-url-relative');
+
+            nodes.each(function(i, v) {
+                var tagName = $(this).prop('tagName').toLowerCase();
+                switch(tagName) {
+                    case 'link':
+                        var ref = 'href';
+                        break;
+                    case 'script':
+                        var ref = 'src';
+                        break;
+                }
+
+                var fromURL = $(this).prop(ref);
+                matches = fromURL.match(regexp);
+                if (matches) {
+                    var pathToFile = matches[2];
+                    var p = pathToFile.slice(0, 4);
+                    if (p != 'http' || p != 'file') {
+                        var toURL = baseURL + pathToFile;
+                        // console.log('"From: "' + fromURL + ' ');
+                        // console.log("To: " + toURL);
+                        DO.U.copyResource(fromURL, toURL);
+                    }
+                }
+            });
         },
 
         initStorage: function(item) {
