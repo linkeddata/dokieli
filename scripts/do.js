@@ -1085,7 +1085,7 @@ var DO = {
                     var script = $('#' + name);
 
                     if (scriptEntry.length > 0) {
-                        var scriptContent = scriptType[name].scriptStart + scriptType[name].cdataStart + scriptEntry + scriptType[name].cdataEnd + scriptType[name].scriptEnd
+                        var scriptContent = '    ' + scriptType[name].scriptStart + scriptType[name].cdataStart + scriptEntry + scriptType[name].cdataEnd + scriptType[name].scriptEnd + '\n    ';
 
                         //If there was a script already
                         if (script.length > 0) {
