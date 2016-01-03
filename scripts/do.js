@@ -1024,7 +1024,7 @@ var DO = {
                         scriptEnd: '</script>'
                     },
                     'meta-json-ld': {
-                        scriptStart: '<script id="meta-json-ld" type="application/json+ld" title="JSON-LD">',
+                        scriptStart: '<script id="meta-json-ld" type="application/ld+json" title="JSON-LD">',
                         cdataStart: DO.C.CDATAStart,
                         cdataEnd: DO.C.CDATAEnd,
                         scriptEnd: '</script>'
@@ -1055,7 +1055,7 @@ var DO = {
                 <h2>Embed Data</h2>\n\
                 <nav><ul><li class="selected"><a href="#embed-data-turtle">Turtle</a></li><li><a href="#embed-data-json-ld">JSON-LD</a></li><li><a href="#embed-data-nanopublication">Nanopublication</a></li></ul></nav>\n\
                 <div id="embed-data-turtle" class="selected"><textarea placeholder="Enter data in text/turtle" name="meta-turtle" cols="80" rows="24">' + ((scriptCurrentData['meta-turtle']) ? scriptCurrentData['meta-turtle'].content : '') + '</textarea><button class="save">Save</button></div>\n\
-                <div id="embed-data-json-ld"><textarea placeholder="Enter data in application/json+ld" name="meta-json-ld" cols="80" rows="24">' + ((scriptCurrentData['meta-json-ld']) ? scriptCurrentData['meta-json-ld'].content : '') + '</textarea><button class="save">Save</button></div>\n\
+                <div id="embed-data-json-ld"><textarea placeholder="Enter data in application/ld+json" name="meta-json-ld" cols="80" rows="24">' + ((scriptCurrentData['meta-json-ld']) ? scriptCurrentData['meta-json-ld'].content : '') + '</textarea><button class="save">Save</button></div>\n\
                 <div id="embed-data-nanopublication"><textarea placeholder="Enter data in application/trig" name="meta-nanopublication" cols="80" rows="24">' + ((scriptCurrentData['meta-nanopublication']) ? scriptCurrentData['meta-nanopublication'].content : '') + '</textarea><button class="save">Save</button></div>\n\
                 </aside>';
 
