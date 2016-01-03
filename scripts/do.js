@@ -1806,6 +1806,32 @@ var DO = {
             return url;
         },
 
+        //I want HTTP COPY and I want it now!
+        copyResource: function(fromURL, toURL) {
+            if (fromURL != '' && toURL != '') {
+                var http = new XMLHttpRequest();
+                http.open('GET', fromURL);
+                http.withCredentials = true;
+                http.onreadystatechange = function() {
+                    if (this.readyState == this.DONE) {
+                        if (this.status === 200 || this.status === 201 || this.status === 204) {
+                            var responseText = this.responseText;
+                            var contentType = this.getResponseHeader('Content-Type');
+                            DO.U.putResource(toURL, responseText, contentType).then(
+                                function(i) {
+                                    console.log(i);
+                                },
+                                function(reason) {
+                                    console.log(reason);
+                                }
+                            );
+                        }
+                    }
+                };
+                http.send();
+            }
+        },
+
         initStorage: function(item) {
             if (typeof window.localStorage != 'undefined') {
                 DO.U.enableStorage(item);
