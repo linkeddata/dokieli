@@ -27,6 +27,7 @@ that wants to annotate can store their notes at a Webspace in which they control
 * Employs WebID + ACL and personal online datastore where applicable (compliant with [Linked Data Platform](http://www.w3.org/TR/ldp/) and [Solid](https://github.com/solid/solid-spec) servers)
 * Uses author's information from their online profile
 * Creation of new documents from any existing dokieli document
+* Save document and its dependencies to a new location (anywhere on the Web with LDP support)
 * Annotations (e.g., replies, peer-reviews, liking, resharing). Uses W3C Web Annotation and Social Web data models
 * Inbox notifications for annotations
 * Assignment of URI fragments (to whatever is of interest) so that other resources on the Web can reference
@@ -103,7 +104,7 @@ libraries as we work out the optimizations.
 * [jQuery Core](http://jquery.com/) (MIT License)
 * [html5sortable](https://github.com/voidberg/html5sortable) (MIT License)
 * [Shower](https://github.com/shower/shower) (MIT License) used for slideshows
-* [Simplerdf](https://github.com/nicola/simplerdf) (MIT License) used for RDF
+* [SimpleRDF](https://github.com/nicola/simplerdf) (MIT License) used for RDF
 * [Green Turtle](https://github.com/alexmilowski/green-turtle) (MIT License) for RDFa
 * [Font Awesome](https://github.com/FortAwesome/Font-Awesome) (SIL OFL 1.1 / MIT License)
 * [MediumEditor](https://gitter.im/yabwe/medium-editor) (MIT License)
@@ -119,8 +120,3 @@ libraries as we work out the optimizations.
 * Join the [dokieli chat](https://gitter.im/linkeddata/dokieli) for help and discussion.
 * Break things. Report [issues](https://github.com/linkeddata/dokieli/issues/) and document. Resolve issues.
 * Optimize. Work on features.
-
-
-## What does dokieli mean?
-It is derived from "okie dokie" and "linked". You can pronounce just like Ned
-Flanders from The Simpsons.
