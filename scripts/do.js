@@ -608,6 +608,33 @@ var DO = {
             });
         },
 
+        postResource: function(url, slug, data, contentType, links) {
+            url = url || window.location.origin + window.location.pathname;
+            contentType = contentType || 'text/html; charset=utf-8';
+            var ldpResource = '<http://www.w3.org/ns/ldp#Resource>; rel="type"';
+            links = (links) ? ldpResource + ', ' + links : ldpResource;
+
+            return new Promise(function(resolve, reject) {
+                var http = new XMLHttpRequest();
+                http.open('POST', url);
+                http.setRequestHeader('Content-Type', contentType);
+                http.setRequestHeader('Link', links);
+                if (slug != '') {
+                    http.setRequestHeader('Slug', slug);
+                }
+                http.withCredentials = true;
+                http.onreadystatechange = function() {
+                    if (this.readyState == this.DONE) {
+                        if (this.status === 200 || this.status === 201 || this.status === 204) {
+                            return resolve({xhr: this});
+                        }
+                        return reject({status: this.status, xhr: this});
+                    }
+                };
+                http.send(data);
+            });
+        },
+
         //TODO: Make sure that the Container is relative to the Container of the document e.g:
         //http://example.org/i/article (points to http://example.org/i/article/index.html)
         //http://example.org/i/article/ is an ldp:Container
