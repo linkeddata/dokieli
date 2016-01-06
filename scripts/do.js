@@ -549,10 +549,7 @@ var DO = {
             });
         },
 
-        patchResource: function(url, headers, deleteBGP, insertBGP) {
-            headers = headers || {};
-            headers['Content-Type'] = 'application/sparql-update; charset=utf-8';
-
+        patchResource: function(url, deleteBGP, insertBGP) {
             //insertBGP and deleteBGP are basic graph patterns.
             if (deleteBGP) {
                 deleteBGP = 'DELETE DATA { ' + deleteBGP + ' };';
@@ -562,23 +559,22 @@ var DO = {
                 insertBGP = 'INSERT DATA { ' + insertBGP + ' };';
             }
 
-            var request = $.ajax({
-                method: "PATCH",
-                url: url,
-                headers: headers,
-                data: deleteBGP + insertBGP,
-                xhrFields: {
-                    withCredentials: true
-                }
-            });
-            request.done(function(data, textStatus, xhr) {
-                console.log(data);
-                console.log(textStatus);
-                console.log(xhr);
-            });
-            request.fail(function(xhr, textStatus) {
-                console.log(xhr);
-                console.log("Request failed: " + textStatus);
+            data = deleteBGP + insertBGP;
+
+            return new Promise(function(resolve, reject) {
+                var http = new XMLHttpRequest();
+                http.open('PATCH', url);
+                http.setRequestHeader('Content-Type', 'application/sparql-update; charset=utf-8');
+                http.withCredentials = true;
+                http.onreadystatechange = function() {
+                    if (this.readyState == this.DONE) {
+                        if (this.status === 200 || this.status === 201 || this.status === 204) {
+                            return resolve({xhr: this});
+                        }
+                        return reject({status: this.status, xhr: this});
+                    }
+                };
+                http.send(data);
             });
         },
 
