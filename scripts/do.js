@@ -696,8 +696,6 @@ var DO = {
         },
 
         notifyInbox: function(url, slug, source, property, target) {
-            url = url || window.location.origin + window.location.pathname;
-
             var data = '@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\
 @prefix sterms: <http://www.w3.org/ns/solid/terms#> .\n\
 @prefix pingback: <http://purl.org/net/pingback/> .\n\
@@ -711,27 +709,7 @@ var DO = {
     schema:license <http://creativecommons.org/licenses/by-sa/4.0/> .\n\
 ';
 
-            data = data || DO.U.getDocument();
-
-            return new Promise(function(resolve, reject) {
-                var http = new XMLHttpRequest();
-                http.open('POST', url);
-                http.setRequestHeader('Content-Type', 'text/turtle; charset=utf-8');
-                http.setRequestHeader('Link', '<http://www.w3.org/ns/ldp#Resource>; rel="type"');
-                if (slug != '') {
-                    http.setRequestHeader('Slug', slug);
-                }
-                http.withCredentials = true;
-                http.onreadystatechange = function() {
-                    if (this.readyState == this.DONE) {
-                        if (this.status === 200 || this.status === 201 || this.status === 204) {
-                            return resolve({xhr: this});
-                        }
-                        return reject({status: this.status, xhr: this});
-                    }
-                };
-                http.send(data);
-            });
+            return DO.U.postResource(url, slug, data, 'text/turtle; charset=utf-8');
         },
 
         createResourceACL: function(accessToURL, aclSuffix, agentIRI) {
