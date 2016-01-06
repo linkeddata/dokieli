@@ -545,56 +545,62 @@ var DO = {
         },
 
         putResource: function(url, data, contentType, links) {
-            url = url || window.location.origin + window.location.pathname;
-            contentType = contentType || 'text/html; charset=utf-8';
-            var ldpResource = '<http://www.w3.org/ns/ldp#Resource>; rel="type"';
-            links = (links) ? ldpResource + ', ' + links : ldpResource;
+            if (url && url.length > 0) {
+                contentType = contentType || 'text/html; charset=utf-8';
+                var ldpResource = '<http://www.w3.org/ns/ldp#Resource>; rel="type"';
+                links = (links) ? ldpResource + ', ' + links : ldpResource;
 
-            data = data || DO.U.getDocument();
-
-            return new Promise(function(resolve, reject) {
-                var http = new XMLHttpRequest();
-                http.open('PUT', url);
-                http.setRequestHeader('Content-Type', contentType);
-                http.setRequestHeader('Link', links);
-                http.withCredentials = true;
-                http.onreadystatechange = function() {
-                    if (this.readyState == this.DONE) {
-                        if (this.status === 200 || this.status === 201 || this.status === 204) {
-                            return resolve({xhr: this});
+                return new Promise(function(resolve, reject) {
+                    var http = new XMLHttpRequest();
+                    http.open('PUT', url);
+                    http.setRequestHeader('Content-Type', contentType);
+                    http.setRequestHeader('Link', links);
+                    http.withCredentials = true;
+                    http.onreadystatechange = function() {
+                        if (this.readyState == this.DONE) {
+                            if (this.status === 200 || this.status === 201 || this.status === 204) {
+                                return resolve({xhr: this});
+                            }
+                            return reject({status: this.status, xhr: this});
                         }
-                        return reject({status: this.status, xhr: this});
-                    }
-                };
-                http.send(data);
-            });
+                    };
+                    http.send(data);
+                });
+            }
+            else {
+                return Promise.reject({'message': 'url parameter not valid'});
+            }
         },
 
         postResource: function(url, slug, data, contentType, links) {
-            url = url || window.location.origin + window.location.pathname;
-            contentType = contentType || 'text/html; charset=utf-8';
-            var ldpResource = '<http://www.w3.org/ns/ldp#Resource>; rel="type"';
-            links = (links) ? ldpResource + ', ' + links : ldpResource;
+            if (url && url.length > 0) {
+                contentType = contentType || 'text/html; charset=utf-8';
+                var ldpResource = '<http://www.w3.org/ns/ldp#Resource>; rel="type"';
+                links = (links) ? ldpResource + ', ' + links : ldpResource;
 
-            return new Promise(function(resolve, reject) {
-                var http = new XMLHttpRequest();
-                http.open('POST', url);
-                http.setRequestHeader('Content-Type', contentType);
-                http.setRequestHeader('Link', links);
-                if (slug != '') {
-                    http.setRequestHeader('Slug', slug);
-                }
-                http.withCredentials = true;
-                http.onreadystatechange = function() {
-                    if (this.readyState == this.DONE) {
-                        if (this.status === 200 || this.status === 201 || this.status === 204) {
-                            return resolve({xhr: this});
-                        }
-                        return reject({status: this.status, xhr: this});
+                return new Promise(function(resolve, reject) {
+                    var http = new XMLHttpRequest();
+                    http.open('POST', url);
+                    http.setRequestHeader('Content-Type', contentType);
+                    http.setRequestHeader('Link', links);
+                    if (slug && slug.length > 0) {
+                        http.setRequestHeader('Slug', slug);
                     }
-                };
-                http.send(data);
-            });
+                    http.withCredentials = true;
+                    http.onreadystatechange = function() {
+                        if (this.readyState == this.DONE) {
+                            if (this.status === 200 || this.status === 201 || this.status === 204) {
+                                return resolve({xhr: this});
+                            }
+                            return reject({status: this.status, xhr: this});
+                        }
+                    };
+                    http.send(data);
+                });
+            }
+            else {
+                return Promise.reject({'message': 'url parameter not valid'});
+            }
         },
 
         patchResource: function(url, deleteBGP, insertBGP) {
@@ -1573,7 +1579,9 @@ var DO = {
 
             $('#document-do').on('click', '.resource-new', DO.U.createNewDocument);
             $('#document-do').on('click', '.resource-save', function(e) {
-                DO.U.putResource().then(
+                var url = window.location.origin + window.location.pathname;
+                var data = DO.U.getDocument();
+                DO.U.putResource(url, data).then(
                     function(i) {
                         DO.U.hideDocumentMenu();
                     },
