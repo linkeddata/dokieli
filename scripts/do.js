@@ -699,13 +699,17 @@ var DO = {
             }
         },
 
-        setDocumentMode: function() {
-            if (DO.C.EditorAvailable && DO.U.urlParam('edit') == 'true') {
-                DO.U.Editor.enableEditor();
-                var url = document.location.href;
-                url = url.substr(0, url.lastIndexOf('?'));
-                if (!url.endsWith('/new')) {
-                    window.history.replaceState({}, null, url);
+        setDocumentMode: function(mode) {
+            if (DO.C.EditorAvailable) {
+                if (DO.U.urlParam('edit') == 'true' || mode == 'edit') {
+                    DO.U.Editor.enableEditor();
+                }
+                if (DO.U.urlParam('edit') == 'true') {
+                    var url = document.location.href;
+                    url = url.substr(0, url.lastIndexOf('?'));
+                    if (!url.endsWith('/new')) {
+                        window.history.replaceState({}, null, url);
+                    }
                 }
             }
         },
