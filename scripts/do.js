@@ -631,66 +631,6 @@ var DO = {
             });
         },
 
-        //TODO: Make sure that the Container is relative to the Container of the document e.g:
-        //http://example.org/i/article (points to http://example.org/i/article/index.html)
-        //http://example.org/i/article/ is an ldp:Container
-        //http://example.org/i/article/i/ is an ldp:Container
-        //TODO: get e.g., as:replies <object>, and post there (object is as:Collection)
-        createContainer: function(url, slug) {
-            var headers = {
-                'Content-Type': 'text/turtle; charset=utf-8',
-                'Link': '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"'
-            };
-            if (slug != '') {
-                headers.Slug = slug;
-            }
-
-            var request = $.ajax({
-                method: 'POST',
-                url: url,
-                headers: headers,
-                xhrFields: { withCredentials: true },
-                data: '<> <http://schema.org/name> "BasicContainer for interactions"@en .',
-            });
-            request.done(function(data, textStatus, xhr) {
-                console.log(data);
-                console.log(textStatus);
-                console.log(xhr);
-            });
-            request.fail(function(xhr, textStatus) {
-                console.log(xhr);
-                console.log("Request failed: " + textStatus);
-            });
-        },
-
-        //POST an interaction into Container
-        createContainerReference: function(containerIRI, slug, noteURL) {
-            //Store reference to the interaction at a pod
-            // && DO.C.User.IRI.podURL
-            console.log('POSTing interaction reference');
-            var request = $.ajax({
-                method: 'POST',
-                url: containerIRI,
-                headers: {
-                    'Content-Type': 'text/turtle; charset=utf-8',
-                    'Link': '<http://www.w3.org/ns/ldp#Resource>; rel="type"',
-                    'Slug': slug
-                },
-                xhrFields: { withCredentials: true },
-                data: '<> <http://schema.org/url> <' + noteURL + '> .'
-            });
-            request.done(function(data, textStatus, xhr) {
-                console.log(data);
-                console.log(textStatus);
-                console.log(xhr);
-
-                //GET Location value from header
-            });
-            request.fail(function(xhr, textStatus) {
-                console.log( "Request failed: " + textStatus);
-            });
-        },
-
         notifyInbox: function(url, slug, source, property, target) {
             var data = '@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\
 @prefix sterms: <http://www.w3.org/ns/solid/terms#> .\n\
