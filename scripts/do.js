@@ -521,31 +521,26 @@ var DO = {
         },
 
         getResource: function(url, headers) {
+            url = url || window.location.origin + window.location.pathname;
             headers = headers || {};
-            console.log(headers['Accept']);
             if(typeof headers['Accept'] == 'undefined') {
                 headers['Accept'] = 'text/turtle; charset=utf-8';
             }
 
-            return $.ajax({
-                method: "GET",
-                headers: headers,
-                url: url,
-                xhrFields: {
-                    withCredentials: true
-                }
-            });
-        },
-
-        xhrResponse: function(response) {
-            response.done(function(data, textStatus, xhr) {
-                console.log(data);
-                console.log(textStatus);
-                console.log(xhr);
-            });
-            response.fail(function(xhr, textStatus) {
-                console.log(xhr);
-                console.log("Request failed: " + textStatus);
+            return new Promise(function(resolve, reject) {
+                var http = new XMLHttpRequest();
+                http.open('GET', url);
+                Object.keys(headers).forEach(function(key) {
+                    http.setRequestHeader(key, headers[key]);
+                });
+                http.withCredentials = true;
+                http.onreadystatechange = function() {
+                    if (this.readyState == this.DONE) {
+                        return resolve({xhr: this});
+                    }
+                    return reject({status: this.status, xhr: this});
+                };
+                http.send();
             });
         },
 
