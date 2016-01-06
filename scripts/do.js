@@ -549,35 +549,6 @@ var DO = {
             });
         },
 
-        patchResource: function(url, deleteBGP, insertBGP) {
-            //insertBGP and deleteBGP are basic graph patterns.
-            if (deleteBGP) {
-                deleteBGP = 'DELETE DATA { ' + deleteBGP + ' };';
-            }
-
-            if (insertBGP) {
-                insertBGP = 'INSERT DATA { ' + insertBGP + ' };';
-            }
-
-            data = deleteBGP + insertBGP;
-
-            return new Promise(function(resolve, reject) {
-                var http = new XMLHttpRequest();
-                http.open('PATCH', url);
-                http.setRequestHeader('Content-Type', 'application/sparql-update; charset=utf-8');
-                http.withCredentials = true;
-                http.onreadystatechange = function() {
-                    if (this.readyState == this.DONE) {
-                        if (this.status === 200 || this.status === 201 || this.status === 204) {
-                            return resolve({xhr: this});
-                        }
-                        return reject({status: this.status, xhr: this});
-                    }
-                };
-                http.send(data);
-            });
-        },
-
         putResource: function(url, data, contentType, links) {
             url = url || window.location.origin + window.location.pathname;
             contentType = contentType || 'text/html; charset=utf-8';
@@ -631,21 +602,50 @@ var DO = {
             });
         },
 
-        notifyInbox: function(url, slug, source, property, target) {
-            var data = '@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\
-@prefix sterms: <http://www.w3.org/ns/solid/terms#> .\n\
-@prefix pingback: <http://purl.org/net/pingback/> .\n\
-@prefix schema: <http://schema.org/> .\n\
-<> a sterms:Notification , pingback:Request ;\n\
-    pingback:source <' + source + '> ;\n\
-    pingback:property <' + property + '> ;\n\
-    pingback:target <' + target + '> ;\n\
-    schema:dateModified "' + DO.U.getDateTimeISO() + '"^^xsd:dateTime ;\n\
-    schema:creator <' + DO.C.User.IRI + '> ;\n\
-    schema:license <http://creativecommons.org/licenses/by-sa/4.0/> .\n\
-';
+        patchResource: function(url, deleteBGP, insertBGP) {
+            //insertBGP and deleteBGP are basic graph patterns.
+            if (deleteBGP) {
+                deleteBGP = 'DELETE DATA { ' + deleteBGP + ' };';
+            }
 
-            return DO.U.postResource(url, slug, data, 'text/turtle; charset=utf-8');
+            if (insertBGP) {
+                insertBGP = 'INSERT DATA { ' + insertBGP + ' };';
+            }
+
+            data = deleteBGP + insertBGP;
+
+            return new Promise(function(resolve, reject) {
+                var http = new XMLHttpRequest();
+                http.open('PATCH', url);
+                http.setRequestHeader('Content-Type', 'application/sparql-update; charset=utf-8');
+                http.withCredentials = true;
+                http.onreadystatechange = function() {
+                    if (this.readyState == this.DONE) {
+                        if (this.status === 200 || this.status === 201 || this.status === 204) {
+                            return resolve({xhr: this});
+                        }
+                        return reject({status: this.status, xhr: this});
+                    }
+                };
+                http.send(data);
+            });
+        },
+
+        deleteResource: function(url) {
+            return new Promise(function(resolve, reject) {
+                var http = new XMLHttpRequest();
+                http.open('DELETE', url);
+                http.withCredentials = true;
+                http.onreadystatechange = function() {
+                    if (this.readyState == this.DONE) {
+                        if (this.status === 200 || this.status === 202 || this.status === 204) {
+                            return resolve(true);
+                        }
+                        return reject({status: this.status, xhr: this});
+                    }
+                };
+                http.send();
+            });
         },
 
         createResourceACL: function(accessToURL, aclSuffix, agentIRI) {
@@ -671,21 +671,21 @@ var DO = {
             });
         },
 
-        deleteResource: function(url) {
-            return new Promise(function(resolve, reject) {
-                var http = new XMLHttpRequest();
-                http.open('DELETE', url);
-                http.withCredentials = true;
-                http.onreadystatechange = function() {
-                    if (this.readyState == this.DONE) {
-                        if (this.status === 200 || this.status === 202 || this.status === 204) {
-                            return resolve(true);
-                        }
-                        return reject({status: this.status, xhr: this});
-                    }
-                };
-                http.send();
-            });
+        notifyInbox: function(url, slug, source, property, target) {
+            var data = '@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\
+@prefix sterms: <http://www.w3.org/ns/solid/terms#> .\n\
+@prefix pingback: <http://purl.org/net/pingback/> .\n\
+@prefix schema: <http://schema.org/> .\n\
+<> a sterms:Notification , pingback:Request ;\n\
+    pingback:source <' + source + '> ;\n\
+    pingback:property <' + property + '> ;\n\
+    pingback:target <' + target + '> ;\n\
+    schema:dateModified "' + DO.U.getDateTimeISO() + '"^^xsd:dateTime ;\n\
+    schema:creator <' + DO.C.User.IRI + '> ;\n\
+    schema:license <http://creativecommons.org/licenses/by-sa/4.0/> .\n\
+';
+
+            return DO.U.postResource(url, slug, data, 'text/turtle; charset=utf-8');
         },
 
         urlParam: function(name) {
