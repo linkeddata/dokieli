@@ -1607,7 +1607,7 @@ var DO = {
 
         createNewDocument: function() {
             $(this).prop('disabled', 'disabled');
-            $('body').append('<aside id="create-new-document" class="do on"><button class="close">❌</button><h2>Create New Document</h2><div>' + DO.U.getBaseURLSelection() + '<p><label>URL</label><input id="storage" type="text" placeholder="http://example.org/article" value="" name="storage"/> <button class="create">Create</button></p></div></aside>');
+            $('body').append('<aside id="create-new-document" class="do on"><button class="close">❌</button><h2>Create New Document</h2><div>' + DO.U.getBaseURLSelection() + '<p><label>URL</label><input id="storage" type="text" placeholder="https://example.org/path/to/article" value="" name="storage"/> <button class="create">Create</button></p></div></aside>');
 
             $('#create-new-document #storage').focus();
 
@@ -1651,7 +1651,7 @@ var DO = {
 
         saveAsDocument: function() {
             $(this).prop('disabled', 'disabled');
-            $('body').append('<aside id="save-as-document" class="do on"><button class="close">❌</button><h2>Save As Document</h2><div>' + DO.U.getBaseURLSelection() + '<p><label>URL</label><input id="storage" type="text" placeholder="http://example.org/path/to/article" value="" name="storage"/> <button class="create">Save</button></p></div></aside>');
+            $('body').append('<aside id="save-as-document" class="do on"><button class="close">❌</button><h2>Save As Document</h2><div>' + DO.U.getBaseURLSelection() + '<p><label>URL</label><input id="storage" type="text" placeholder="https://example.org/path/to/article" value="" name="storage"/> <button class="create">Save</button></p></div></aside>');
 
             $('#save-as-document #storage').focus();
 
