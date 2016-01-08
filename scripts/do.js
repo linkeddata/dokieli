@@ -1622,12 +1622,11 @@ var DO = {
                 var baseURLSelectionChecked = $('#create-new-document input[name="base-url"]:checked');
                 if (baseURLSelectionChecked.length > 0) {
                     var baseURLType = baseURLSelectionChecked.val();
-                    var linksScripts = $(html).find('head link, head script');
-                    var nodes = DO.U.rewriteBaseURL(linksScripts, baseURLType);
-
+                    var nodes = $(html).find('head link, [src], object[data]');
                     if (baseURLType == 'base-url-relative') {
-                        DO.U.copyRelativeResources(storageIRI, linksScripts);
+                        DO.U.copyRelativeResources(storageIRI, nodes);
                     }
+                    nodes = DO.U.rewriteBaseURL(linksScripts, baseURLType);
                 }
 
                 $(html).find('main > article').empty();
@@ -1667,12 +1666,11 @@ var DO = {
                 var baseURLSelectionChecked = $('#save-as-document input[name="base-url"]:checked');
                 if (baseURLSelectionChecked.length > 0) {
                     var baseURLType = baseURLSelectionChecked.val();
-                    var linksScripts = $(html).find('head link, head script');
-                    var nodes = DO.U.rewriteBaseURL(linksScripts, baseURLSelectionChecked.val());
-
+                    var nodes = $(html).find('head link, [src], object[data]');
                     if (baseURLType == 'base-url-relative') {
-                        DO.U.copyRelativeResources(storageIRI, linksScripts);
+                        DO.U.copyRelativeResources(storageIRI, nodes);
                     }
+                    nodes = DO.U.rewriteBaseURL(nodes, baseURLType);
                 }
                 html = DO.U.getDocument(html);
 
@@ -1716,18 +1714,24 @@ var DO = {
                     var url = '', ref = '';
                     var tagName = $(this).prop('tagName').toLowerCase();
                     switch(tagName) {
+                        default:
+                            url = $(this).attr('src');
+                            ref = 'src';
+                            break;
                         case 'link':
-                            url = $(this).prop('href');
+                            url = $(this).attr('href');
                             ref = 'href';
                             break;
-                        case 'script':
-                            url = $(this).prop('src');
-                            ref = 'src';
+                        case 'object':
+                            url = $(this).attr('data');
+                            ref = 'data';
                             break;
                     }
 
-                    url = DO.U.setBaseURL(url, urlType);
-
+                    var p = url.slice(0, 4);
+                    if (p != 'http' && p != 'file') {
+                        url = DO.U.setBaseURL(url, urlType);
+                    }
                     $(this).prop(ref, url);
                 });
             }
@@ -1738,19 +1742,19 @@ var DO = {
         setBaseURL: function(url, urlType) {
             urlType = urlType || 'base-url-dokieli';
             var matches = [];
-            var regexp = /(.*)((media|scripts)(\/.*))$/;
+            var regexp = /(https?:\/\/([^\/]*)\/|file:\/\/\/)?(.*)/;
 
             matches = url.match(regexp);
             if (matches) {
                 switch(urlType) {
                     case 'base-url-dokieli':  default:
-                        url = 'https://dokie.li/' + matches[2];
+                        url = 'https://dokie.li/' + matches[3];
                         break;
                     case 'base-url-absolute':
-                        url = DO.U.getBaseURL(document.location.href) + matches[2];
+                        url = DO.U.getBaseURL(document.location.href) + matches[3];
                         break;
                     case 'base-url-relative':
-                        url = matches[2];
+                        url = matches[3];
                         break;
                 }
             }
@@ -1793,35 +1797,30 @@ var DO = {
         },
 
         copyRelativeResources: function(storageIRI, relativeNodes) {
-            var matches = [];
-            var regexp = /(.*)((media|scripts)(\/.*))$/;
+            var ref = '';
             var baseURL = DO.U.getBaseURL(storageIRI);
 
-            var nodes = DO.U.rewriteBaseURL(relativeNodes, 'base-url-relative');
-
-            nodes.each(function(i, v) {
+            relativeNodes.each(function(i, v) {
                 var tagName = $(this).prop('tagName').toLowerCase();
                 switch(tagName) {
-                    case 'link':
-                        var ref = 'href';
+                    default:
+                        ref = 'src';
                         break;
-                    case 'script':
-                        var ref = 'src';
+                    case 'link':
+                        ref = 'href';
+                        break;
+                    case 'object':
+                        ref = 'data';
                         break;
                 }
 
-                var fromURL = $(this).prop(ref);
-                matches = fromURL.match(regexp);
-                if (matches) {
-                    var pathToFile = matches[2];
-                    var p = pathToFile.slice(0, 4);
-                    if (p != 'http' || p != 'file') {
-                        var toURL = baseURL + pathToFile;
-                        // console.log('"From: "' + fromURL + ' ');
-                        // console.log("To: " + toURL);
-                        DO.U.copyResource(fromURL, toURL);
-                    }
-                }
+                var fromURL = $(this).attr(ref);
+                var p = fromURL.slice(0, 4);
+                if (p != 'http' && p != 'file') {
+                    var pathToFile = DO.U.setBaseURL(fromURL, 'base-url-relative');
+                    var toURL = baseURL + pathToFile;
+                    DO.U.copyResource(fromURL, toURL);
+               }
             });
         },
 
