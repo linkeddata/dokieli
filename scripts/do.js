@@ -1617,7 +1617,7 @@ var DO = {
 
             $('#create-new-document').on('click', 'button.create', function(e) {
                 var newDocument = $(this).parent();
-                var storageIRI = $(this).parent().find('input#storage').val().trim();
+                var storageIRI = newDocument.find('input#storage').val().trim();
 
                 var html = document.documentElement.cloneNode(true);
                 var baseURLSelectionChecked = $('#create-new-document input[name="base-url"]:checked');
@@ -1634,20 +1634,24 @@ var DO = {
                 $(html).find('head title').empty();
                 html = DO.U.getDocument(html);
 
+                newDocument.find('.success, .warning, .error').remove();
                 DO.U.putResource(storageIRI, html).then(
                     function(i) {
                         console.log(i);
-                        newDocument.append('<p>New document created at <a href="' + storageIRI + '?edit=true">' + storageIRI + '</a></p>');
+                        newDocument.append('<p class="success">New document created at <a href="' + storageIRI + '?edit=true">' + storageIRI + '</a></p>');
                         window.open(storageIRI + '?edit=true', '_blank');
                     },
                     function(reason) {
-                        if (reason.status == 405 || reason.status == 0) {
-                            newDocument.find('.error').remove();
-                            newDocument.append('<p class="error">Unable to save: this location is not writeable.</p>');
-                        }
-                        if (reason.status == 403 || reason.status == 401) {
-                            newDocument.find('.error').remove();
-                            newDocument.append('<p class="error">Unable to save: you don\'t have permission to write here.</p>');
+                        switch(reason.status) {
+                            default:
+                                newDocument.append('<p class="error">Unable to create new.</p>');
+                                break;
+                            case 0: case 405:
+                                newDocument.append('<p class="error">Unable to create new: this location is not writeable.</p>');
+                                break;
+                            case 401: case 403:
+                                newDocument.append('<p class="error">Unable to create new: you don\'t have permission to write here.</p>');
+                                break;
                         }
                         console.log(reason);
                     }
@@ -1681,20 +1685,24 @@ var DO = {
                 }
                 html = DO.U.getDocument(html);
 
+                saveAsDocument.find('.success, .warning, .error').remove();
                 DO.U.putResource(storageIRI, html).then(
                     function(i) {
-                        saveAsDocument.append('<p>New document created at <a href="' + storageIRI + '">' + storageIRI + '</a></p>');
+                        saveAsDocument.append('<p class="success">Document saved at <a href="' + storageIRI + '">' + storageIRI + '</a></p>');
                         window.open(storageIRI, '_blank');
                     },
                     function(reason) {
-                        if (reason.status == 405 || reason.status == 0) {
-                            saveAsDocument.find('.error').remove();
-                            saveAsDocument.append('<p class="error">Unable to save: this location is not writeable.</p>');
-                          }
-                          if (reason.status == 403 || reason.status == 401) {
-                              saveAsDocument.find('.error').remove();
-                              saveAsDocument.append('<p class="error">Unable to save: you don\'t have permission to write here.</p>');
-                          }
+                        switch(reason.status) {
+                            default:
+                                saveAsDocument.append('<p class="error">Unable to save.</p>');
+                                break;
+                            case 0: case 405:
+                                saveAsDocument.append('<p class="error">Unable to save: this location is not writeable.</p>');
+                                break;
+                            case 401: case 403:
+                                saveAsDocument.append('<p class="error">Unable to save: you don\'t have permission to write here.</p>');
+                                break;
+                        }
                         console.log(reason);
                     }
                 );
