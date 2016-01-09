@@ -1634,13 +1634,11 @@ var DO = {
                 $(html).find('head title').empty();
                 html = DO.U.getDocument(html);
 
-                var w = window.open('', '_blank');
-
                 DO.U.putResource(storageIRI, html).then(
                     function(i) {
                         console.log(i);
                         DO.U.hideDocumentMenu();
-                        w.location.href = storageIRI + '?edit=true';
+                        window.open(storageIRI + '?edit=true', '_blank');
                     },
                     function(reason) {
                         if (reason.status == 405 || reason.status == 0) {
@@ -1683,13 +1681,10 @@ var DO = {
                 }
                 html = DO.U.getDocument(html);
 
-                //FIXME: Open if only resource was PUT successfully. Promise issue?
-                var w = window.open('', '_blank');
-
                 DO.U.putResource(storageIRI, html).then(
                     function(i) {
                         DO.U.hideDocumentMenu();
-                        w.location.href = storageIRI;
+                        window.open(storageIRI, '_blank');
                     },
                     function(reason) {
                         if (reason.status == 405 || reason.status == 0) {
