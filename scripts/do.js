@@ -1626,7 +1626,7 @@ var DO = {
                     if (baseURLType == 'base-url-relative') {
                         DO.U.copyRelativeResources(storageIRI, nodes);
                     }
-                    nodes = DO.U.rewriteBaseURL(linksScripts, baseURLType);
+                    nodes = DO.U.rewriteBaseURL(nodes, baseURLType);
                 }
 
                 $(html).find('main > article').empty();
