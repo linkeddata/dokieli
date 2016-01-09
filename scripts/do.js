@@ -1616,6 +1616,7 @@ var DO = {
             });
 
             $('#create-new-document').on('click', 'button.create', function(e) {
+                var newDocument = $(this).parent();
                 var storageIRI = $(this).parent().find('input#storage').val().trim();
 
                 var html = document.documentElement.cloneNode(true);
@@ -1626,22 +1627,28 @@ var DO = {
                     if (baseURLType == 'base-url-relative') {
                         DO.U.copyRelativeResources(storageIRI, nodes);
                     }
-                    nodes = DO.U.rewriteBaseURL(linksScripts, baseURLType);
+                    nodes = DO.U.rewriteBaseURL(nodes, baseURLType);
                 }
 
                 $(html).find('main > article').empty();
                 $(html).find('head title').empty();
                 html = DO.U.getDocument(html);
 
-                var w = window.open('', '_blank');
-
                 DO.U.putResource(storageIRI, html).then(
                     function(i) {
                         console.log(i);
-                        DO.U.hideDocumentMenu();
-                        w.location.href = storageIRI + '?edit=true';
+                        newDocument.append('<p>New document created at <a href="' + storageIRI + '?edit=true">' + storageIRI + '</a></p>');
+                        window.open(storageIRI + '?edit=true', '_blank');
                     },
                     function(reason) {
+                        if (reason.status == 405 || reason.status == 0) {
+                            newDocument.find('.error').remove();
+                            newDocument.append('<p class="error">Unable to save: this location is not writeable.</p>');
+                        }
+                        if (reason.status == 403 || reason.status == 401) {
+                            newDocument.find('.error').remove();
+                            newDocument.append('<p class="error">Unable to save: you don\'t have permission to write here.</p>');
+                        }
                         console.log(reason);
                     }
                 );
@@ -1674,21 +1681,20 @@ var DO = {
                 }
                 html = DO.U.getDocument(html);
 
-                //FIXME: Open if only resource was PUT successfully. Promise issue?
-                var w = window.open('', '_blank');
-
                 DO.U.putResource(storageIRI, html).then(
                     function(i) {
-                        DO.U.hideDocumentMenu();
-                        w.location.href = storageIRI;
+                        saveAsDocument.append('<p>New document created at <a href="' + storageIRI + '">' + storageIRI + '</a></p>');
+                        window.open(storageIRI, '_blank');
                     },
                     function(reason) {
-                        if (reason.status == 405) {
-                            //FIXME: Shouldn't have to open then close.
-                            w.close();
+                        if (reason.status == 405 || reason.status == 0) {
                             saveAsDocument.find('.error').remove();
-                            saveAsDocument.append('<p class="error">Unable to save to that location.</p>');
-                        }
+                            saveAsDocument.append('<p class="error">Unable to save: this location is not writeable.</p>');
+                          }
+                          if (reason.status == 403 || reason.status == 401) {
+                              saveAsDocument.find('.error').remove();
+                              saveAsDocument.append('<p class="error">Unable to save: you don\'t have permission to write here.</p>');
+                          }
                         console.log(reason);
                     }
                 );
