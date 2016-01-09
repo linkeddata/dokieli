@@ -1637,7 +1637,7 @@ var DO = {
                 DO.U.putResource(storageIRI, html).then(
                     function(i) {
                         console.log(i);
-                        DO.U.hideDocumentMenu();
+                        newDocument.append('<p>New document created at <a href="' + storageIRI + '?edit=true">' + storageIRI + '</a></p>');
                         window.open(storageIRI + '?edit=true', '_blank');
                     },
                     function(reason) {
@@ -1683,7 +1683,7 @@ var DO = {
 
                 DO.U.putResource(storageIRI, html).then(
                     function(i) {
-                        DO.U.hideDocumentMenu();
+                        saveAsDocument.append('<p>New document created at <a href="' + storageIRI + '">' + storageIRI + '</a></p>');
                         window.open(storageIRI, '_blank');
                     },
                     function(reason) {
