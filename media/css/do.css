@@ -70,7 +70,7 @@ right:1em;
 #toc {
 left:1em;
 }
-.success { background-color:#647819; color:#FFFFFF; font-weight:bold; }
+.success { background-color:#FFFFFF; color:#647819; font-weight:bold; }
 .warning { background-color:#FFFF00; color:#000000; font-weight:bold; }
 .error { background-color:#FF0000; color:#FFFFFF; font-weight:bold; }
 .highlight { background-color:#00FFFF; color:#000000; }
