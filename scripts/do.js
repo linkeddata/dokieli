@@ -1616,6 +1616,7 @@ var DO = {
             });
 
             $('#create-new-document').on('click', 'button.create', function(e) {
+                var newDocument = $(this).parent();
                 var storageIRI = $(this).parent().find('input#storage').val().trim();
 
                 var html = document.documentElement.cloneNode(true);
@@ -1642,6 +1643,14 @@ var DO = {
                         w.location.href = storageIRI + '?edit=true';
                     },
                     function(reason) {
+                        if (reason.status == 405 || reason.status == 0) {
+                            newDocument.find('.error').remove();
+                            newDocument.append('<p class="error">Unable to save: this location is not writeable.</p>');
+                        }
+                        if (reason.status == 403 || reason.status == 401) {
+                            newDocument.find('.error').remove();
+                            newDocument.append('<p class="error">Unable to save: you don\'t have permission to write here.</p>');
+                        }
                         console.log(reason);
                     }
                 );
@@ -1683,12 +1692,14 @@ var DO = {
                         w.location.href = storageIRI;
                     },
                     function(reason) {
-                        if (reason.status == 405) {
-                            //FIXME: Shouldn't have to open then close.
-                            w.close();
+                        if (reason.status == 405 || reason.status == 0) {
                             saveAsDocument.find('.error').remove();
-                            saveAsDocument.append('<p class="error">Unable to save to that location.</p>');
-                        }
+                            saveAsDocument.append('<p class="error">Unable to save: this location is not writeable.</p>');
+                          }
+                          if (reason.status == 403 || reason.status == 401) {
+                              saveAsDocument.find('.error').remove();
+                              saveAsDocument.append('<p class="error">Unable to save: you don\'t have permission to write here.</p>');
+                          }
                         console.log(reason);
                     }
                 );
