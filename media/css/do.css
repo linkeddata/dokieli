@@ -12,7 +12,7 @@ display:none !important;
 }
 
 @media screen {
-body.on-document-menu article {
+body.on-document-menu > *:not([class~="on"]) {
 opacity:0.5;
 transition: opacity 1s ease-in-out;
 -moz-transition: opacity 1s ease-in-out;
