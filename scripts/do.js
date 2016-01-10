@@ -1619,7 +1619,7 @@ var DO = {
             newDocument.on('click', 'button.create', function(e) {
                 var newDocument = $('#create-new-document')
                 var storageIRI = newDocument.find('input#storage').val().trim();
-                newDocument.find('.success, .warning, .error').remove();
+                newDocument.find('.response-message').remove();
 
                 var html = document.documentElement.cloneNode(true);
                 var baseURLSelectionChecked = newDocument.find('input[name="base-url"]:checked');
@@ -1639,19 +1639,19 @@ var DO = {
                 DO.U.putResource(storageIRI, html).then(
                     function(i) {
                         console.log(i);
-                        newDocument.append('<p class="success">New document created at <a href="' + storageIRI + '?edit=true">' + storageIRI + '</a></p>');
+                        newDocument.append('<div class="response-message"><p class="success">New document created at <a href="' + storageIRI + '?edit=true">' + storageIRI + '</a></p></div>');
                         window.open(storageIRI + '?edit=true', '_blank');
                     },
                     function(reason) {
                         switch(reason.status) {
                             default:
-                                newDocument.append('<p class="error">Unable to create new.</p>');
+                                newDocument.append('<div class="response-message"><p class="error">Unable to create new.</p>');
                                 break;
                             case 0: case 405:
-                                newDocument.append('<p class="error">Unable to create new: this location is not writeable.</p>');
+                                newDocument.append('<div class="response-message"><p class="error">Unable to create new: this location is not writeable.</p></div>');
                                 break;
                             case 401: case 403:
-                                newDocument.append('<p class="error">Unable to create new: you don\'t have permission to write here.</p>');
+                                newDocument.append('<div class="response-message"><p class="error">Unable to create new: you don\'t have permission to write here.</p></div>');
                                 break;
                         }
                         console.log(reason);
@@ -1675,7 +1675,7 @@ var DO = {
             saveAsDocument.on('click', 'button.create', function(e) {
                 var saveAsDocument = $('#save-as-document');
                 var storageIRI = saveAsDocument.find('input#storage').val().trim();
-                saveAsDocument.find('.success, .warning, .error').remove();
+                saveAsDocument.find('.response-message').remove();
 
                 var html = document.documentElement.cloneNode(true);
                 var baseURLSelectionChecked = saveAsDocument.find('input[name="base-url"]:checked');
@@ -1691,19 +1691,19 @@ var DO = {
 
                 DO.U.putResource(storageIRI, html).then(
                     function(i) {
-                        saveAsDocument.append('<p class="success">Document saved at <a href="' + storageIRI + '">' + storageIRI + '</a></p>');
+                        saveAsDocument.append('<div class="response-message"><p class="success">Document saved at <a href="' + storageIRI + '">' + storageIRI + '</a></p></div>');
                         window.open(storageIRI, '_blank');
                     },
                     function(reason) {
                         switch(reason.status) {
                             default:
-                                saveAsDocument.append('<p class="error">Unable to save.</p>');
+                                saveAsDocument.append('<div class="response-message"><p class="error">Unable to save.</p></div>');
                                 break;
                             case 0: case 405:
-                                saveAsDocument.append('<p class="error">Unable to save: this location is not writeable.</p>');
+                                saveAsDocument.append('<div class="response-message"><p class="error">Unable to save: this location is not writeable.</p></div>');
                                 break;
                             case 401: case 403:
-                                saveAsDocument.append('<p class="error">Unable to save: you don\'t have permission to write here.</p>');
+                                saveAsDocument.append('<div class="response-message"><p class="error">Unable to save: you don\'t have permission to write here.</p></div>');
                                 break;
                         }
                         console.log(reason);
