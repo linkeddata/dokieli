@@ -1609,18 +1609,20 @@ var DO = {
             $(this).prop('disabled', 'disabled');
             $('body').append('<aside id="create-new-document" class="do on"><button class="close">❌</button><h2>Create New Document</h2><div>' + DO.U.getBaseURLSelection() + '<p><label>URL</label><input id="storage" type="text" placeholder="https://example.org/path/to/article" value="" name="storage"/> <button class="create">Create</button></p></div></aside>');
 
-            $('#create-new-document #storage').focus();
+            var newDocument = $('#create-new-document');
+            newDocument.find('#storage').focus();
 
-            $('#create-new-document').on('click', 'button.close', function(e) {
+            newDocument.on('click', 'button.close', function(e) {
                 $('#document-do .resource-new').removeAttr('disabled');
             });
 
-            $('#create-new-document').on('click', 'button.create', function(e) {
-                var newDocument = $(this).parent();
+            newDocument.on('click', 'button.create', function(e) {
+                var newDocument = $('#create-new-document')
                 var storageIRI = newDocument.find('input#storage').val().trim();
+                newDocument.find('.success, .warning, .error').remove();
 
                 var html = document.documentElement.cloneNode(true);
-                var baseURLSelectionChecked = $('#create-new-document input[name="base-url"]:checked');
+                var baseURLSelectionChecked = newDocument.find('input[name="base-url"]:checked');
                 if (baseURLSelectionChecked.length > 0) {
                     var baseURLType = baseURLSelectionChecked.val();
                     var nodes = $(html).find('head link, [src], object[data]');
@@ -1634,7 +1636,6 @@ var DO = {
                 $(html).find('head title').empty();
                 html = DO.U.getDocument(html);
 
-                newDocument.find('.success, .warning, .error').remove();
                 DO.U.putResource(storageIRI, html).then(
                     function(i) {
                         console.log(i);
@@ -1663,18 +1664,21 @@ var DO = {
             $(this).prop('disabled', 'disabled');
             $('body').append('<aside id="save-as-document" class="do on"><button class="close">❌</button><h2>Save As Document</h2><div>' + DO.U.getBaseURLSelection() + '<p><label>URL</label><input id="storage" type="text" placeholder="https://example.org/path/to/article" value="" name="storage"/> <button class="create">Save</button></p></div></aside>');
 
-            $('#save-as-document #storage').focus();
+            var saveAsDocument = $('#save-as-document');
 
-            $('#save-as-document').on('click', 'button.close', function(e) {
+            saveAsDocument.find('#storage').focus();
+
+            saveAsDocument.on('click', 'button.close', function(e) {
                 $('#document-do .resource-save-as').removeAttr('disabled');
             });
 
-            $('#save-as-document').on('click', 'button.create', function(e) {
-                var saveAsDocument = $(this).parent();
+            saveAsDocument.on('click', 'button.create', function(e) {
+                var saveAsDocument = $('#save-as-document');
                 var storageIRI = saveAsDocument.find('input#storage').val().trim();
+                saveAsDocument.find('.success, .warning, .error').remove();
 
                 var html = document.documentElement.cloneNode(true);
-                var baseURLSelectionChecked = $('#save-as-document input[name="base-url"]:checked');
+                var baseURLSelectionChecked = saveAsDocument.find('input[name="base-url"]:checked');
                 if (baseURLSelectionChecked.length > 0) {
                     var baseURLType = baseURLSelectionChecked.val();
                     var nodes = $(html).find('head link, [src], object[data]');
@@ -1685,7 +1689,6 @@ var DO = {
                 }
                 html = DO.U.getDocument(html);
 
-                saveAsDocument.find('.success, .warning, .error').remove();
                 DO.U.putResource(storageIRI, html).then(
                     function(i) {
                         saveAsDocument.append('<p class="success">Document saved at <a href="' + storageIRI + '">' + storageIRI + '</a></p>');
