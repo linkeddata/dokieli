@@ -12,14 +12,11 @@ display:none !important;
 }
 
 @media screen {
-.on-document-menu body > *:not([class~="on"]) {
+body.on-document-menu > *:not([class~="on"]) {
 opacity:0.5;
 transition: opacity 1s ease-in-out;
 -moz-transition: opacity 1s ease-in-out;
 -webkit-transition: opacity 1s ease-in-out;
-}
-.on-document-menu {
-background-color:#eee;
 }
 }
 
