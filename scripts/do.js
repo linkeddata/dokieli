@@ -828,7 +828,7 @@ var DO = {
 
         //TODO: Redo menu
         showDocumentMenu: function() {
-            var body = $('body');
+            var html = $('html');
             var dMenu = $('#document-menu.do');
             var dMenuButton = dMenu.find('> button');
             var dHead = dMenu.find('> header');
@@ -837,7 +837,7 @@ var DO = {
             dMenuButton.removeClass('show');
             dMenuButton.prop('title', 'Hide Menu');
             dMenu.addClass('on');
-            body.addClass('on-document-menu');
+            html.addClass('on-document-menu');
 
             DO.U.showUserSigninSignup(dHead);
             DO.U.showDocumentDo(dInfo);
@@ -845,7 +845,7 @@ var DO = {
             DO.U.showEmbedData(dInfo);
             DO.U.showStorage(dInfo);
             DO.U.showDocumentMetadata(dInfo);
-            if(!body.hasClass("on-slideshow")) {
+            if(!html.hasClass("on-slideshow")) {
                 DO.U.showToC();
             }
 
@@ -857,13 +857,13 @@ var DO = {
             $(document).off('keyup', DO.U.eventEscapeDocumentMenu);
             $(document).off('click', DO.U.eventLeaveDocumentMenu);
 
-            var body = $('body');
+            var html = $('html');
             var dMenu = $('#document-menu.do');
             var dMenuButton = dMenu.find('> button');
 
             dMenu.find('#user-signin-signup').remove();
             dMenu.removeClass('on').find('section').remove();
-            body.removeClass('on-document-menu');
+            html.removeClass('on-document-menu');
             dMenuButton.addClass('show');
             dMenuButton.attr('title', 'Open Menu');
 
