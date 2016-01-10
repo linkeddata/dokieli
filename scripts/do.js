@@ -820,7 +820,7 @@ var DO = {
         },
 
         showDocumentInfo: function() {
-            $('body').append('<aside id="document-menu" class="do"><button class="show" title="Open Menu">☰</button><header></header><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><a target="source-dokieli" href="https://github.com/linkeddata/dokieli">dokieli</a></dd><dd id="about-linked-research"><a target="source-linked-research" href="https://github.com/csarven/linked-research">Linked Research</a></dd></footer></aside>');
+            $('body').append('<menu id="document-menu" class="do"><button class="show" title="Open Menu">☰</button><header></header><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><a target="source-dokieli" href="https://github.com/linkeddata/dokieli">dokieli</a></dd><dd id="about-linked-research"><a target="source-linked-research" href="https://github.com/csarven/linked-research">Linked Research</a></dd></footer></menu>');
 
             $('#document-menu.do').on('click', '> button.show', DO.U.showDocumentMenu);
             $('#document-menu.do').on('click', '> button:not([class="show"])', DO.U.hideDocumentMenu);
@@ -835,7 +835,7 @@ var DO = {
             var dInfo = dMenu.find('> div');
 
             dMenuButton.removeClass('show');
-            dMenuButton.attr('title', 'Hide Menu');
+            dMenuButton.prop('title', 'Hide Menu');
             dMenu.addClass('on');
             body.addClass('on-document-menu');
 
@@ -1381,7 +1381,7 @@ var DO = {
         },
 
         eventLeaveDocumentMenu: function(e) {
-            if (!$(e.target).closest('aside.do.on').length) {
+            if (!$(e.target).closest('menu.do.on').length) {
                 DO.U.hideDocumentMenu();
             }
         },

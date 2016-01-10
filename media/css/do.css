@@ -29,24 +29,47 @@ outline:none;
 position:relative;
 }
 
+menu.do,
 aside.do {
 position:fixed;
-top:1em;
 z-index:9;
 max-height:calc(100% - 4em);
 background:#fff !important;
 font-size:0.8em;
+margin:0;
 }
-aside.do.on {
+menu.do {
+top:0;
+right:0;
+}
+aside.do {
+top:1em;
+}
+.do.on {
 padding:1em;
-border:1px solid #ccc;
-border-radius:7px;
-box-shadow:0.25em 0.25em 0.25em rgba(0,0,0,0.1);
 overflow:auto;
 }
-aside.do.on p {
+.do.on p {
 text-indent:0;
 }
+
+aside.do.on {
+border:1px solid #ccc;
+border-radius:0.5em;
+box-shadow:0.25em 0.25em 0.25em rgba(0,0,0,0.1);
+}
+menu.do.on {
+border-left:1px solid #ccc;
+border-bottom:1px solid #ccc;
+border-bottom-left-radius:0.5em;
+box-shadow:0.25em 0.25em 0.25em rgba(0,0,0,0.1);
+}
+aside.do.on:not([id="toc"]) {
+left: 50%;
+transform: translate(-50%, 1.01em);
+}
+
+
 
 aside.note {
 position:static;
@@ -64,9 +87,6 @@ position:static;
 position:static;
 }
 
-#document-menu {
-right:1em;
-}
 #toc {
 left:1em;
 }
