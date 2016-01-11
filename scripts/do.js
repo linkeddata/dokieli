@@ -649,27 +649,30 @@ var DO = {
             });
         },
 
-        createResourceACL: function(accessToURL, aclSuffix, agentIRI) {
-            var request = $.ajax({
-                method: "PUT",
-                url: accessToURL + aclSuffix,
-                headers: {
-                    'Content-Type': 'text/turtle; charset=utf-8'
-                },
-                xhrFields: { withCredentials: true },
-                data: '@prefix acl: <http://www.w3.org/ns/auth/acl#> .\n\
+        putResourceACL: function(accessToURL, aclSuffix, agentIRI) {
+            if (accessToURL && accessToURL.length > 10 && aclSuffix && aclSuffix.length > 0 && agentIRI && agentIRI.length > 10) {
+                return new Promise(function(resolve, reject) {
+                    var url = accessToURL + aclSuffix;
+                    var data = '@prefix acl: <http://www.w3.org/ns/auth/acl#> .\n\
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .\n\
-[ acl:accessTo <' + accessToURL + '> ; acl:mode acl:Read ; acl:agentClass foaf:Agent ] .\n\
-[ acl:accessTo <' + accessToURL + '> ; acl:mode acl:Read , acl:Write ; acl:agent <' + agentIRI + '> ] .'
-            });
-            request.done(function(data, textStatus, xhr) {
-                console.log(data);
-                console.log(textStatus);
-                console.log(xhr);
-            });
-            request.fail(function(xhr, textStatus) {
-                console.log("Request failed: " + textStatus);
-            });
+[ a acl:Authorization ; acl:accessTo <' + accessToURL + '> ; acl:mode acl:Read ; acl:agentClass foaf:Agent ] .\n\
+[ a acl:Authorization ; acl:accessTo <' + accessToURL + '> ; acl:accessTo <' + accessToURL + aclSuffix + '> ; acl:mode acl:Control , acl:Read , acl:Write ; acl:agent <' + agentIRI + '> ] .';
+
+                    DO.U.putResource(url, data, 'text/turtle; charset=utf-8').then(
+                        function(i) {
+//                            console.log(i);
+                            return resolve(i);
+                        },
+                        function(reason) {
+                            console.log(reason);
+                            return reject(reason);
+                        }
+                    );
+                });
+            }
+            else {
+                return Promise.reject({'message': 'accessToURL: ' + accessToURL + ' or aclSuffix: ' + aclSuffix + ' or agentIRI: ' + agentIRI + ' not good.'});
+            }
         },
 
         notifyInbox: function(url, slug, source, property, target) {
