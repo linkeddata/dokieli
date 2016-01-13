@@ -1717,13 +1717,13 @@ var DO = {
         },
 
         getBaseURLSelection: function() {
-            var s = '<fieldset id="base-url-selection"><legend>Location of stylesheets and scripts</legend>\n\
+            var s = '<fieldset id="base-url-selection"><legend>Location of media resources</legend>\n\
             <select name="base-url">\n\
-            <option id="base-url-dokieli" value="base-url-dokieli" selected>Use from https://dokie.li</option>\n\
-            <option id="base-url-absolute" value="base-url-absolute">Use from here (' + DO.U.getBaseURL(document.location.href) + ')</option>\n\
+            <option id="base-url-dokieli" value="base-url-dokieli">Use https://dokie.li/</option>\n\
+            <option id="base-url-absolute" value="base-url-absolute" selected="selected">Use current; ' + DO.U.getBaseURL(document.location.href) + '</option>\n\
             <option id="base-url-relative" value="base-url-relative">Copy to your storage</option>\n\
             </select>\n\
-            <p><input id="base-url-remember" type="checkbox" checked="checked" /> <label for="base-url-remember">Remember</label></p></fieldset>';
+            </fieldset>';
 
             return s;
         },
