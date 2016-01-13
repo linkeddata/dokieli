@@ -1625,7 +1625,8 @@ var DO = {
                 newDocument.find('.response-message').remove();
 
                 var html = document.documentElement.cloneNode(true);
-                var baseURLSelectionChecked = newDocument.find('input[name="base-url"]:checked');
+                var baseURLSelectionChecked = newDocument.find('select[name="base-url"]');
+                console.log(baseURLSelectionChecked);
                 if (baseURLSelectionChecked.length > 0) {
                     var baseURLType = baseURLSelectionChecked.val();
                     var nodes = $(html).find('head link, [src], object[data]');
@@ -1681,7 +1682,7 @@ var DO = {
                 saveAsDocument.find('.response-message').remove();
 
                 var html = document.documentElement.cloneNode(true);
-                var baseURLSelectionChecked = saveAsDocument.find('input[name="base-url"]:checked');
+                var baseURLSelectionChecked = saveAsDocument.find('select[name="base-url"]');
                 if (baseURLSelectionChecked.length > 0) {
                     var baseURLType = baseURLSelectionChecked.val();
                     var nodes = $(html).find('head link, [src], object[data]');
@@ -1716,12 +1717,12 @@ var DO = {
         },
 
         getBaseURLSelection: function() {
-            var s = '<fieldset id="base-url-selection"><legend>Select the base URL for stylesheets and scripts</legend>\n\
-            <ul>\n\
-            <li><input id="base-url-dokieli" type="radio" name="base-url" value="base-url-dokieli" /><label for="base-url-dokieli"><code>https://dokie.li/</code></label></li>\n\
-            <li><input id="base-url-absolute" type="radio" name="base-url" value="base-url-absolute" checked="checked" /><label for="base-url-absolute"><code>' + DO.U.getBaseURL(document.location.href) + '</code></label></li>\n\
-            <li><input id="base-url-relative" type="radio" name="base-url" value="base-url-relative" /><label for="base-url-relative">Relative to saved URL</label></li>\n\
-            </ul>\n\
+            var s = '<fieldset id="base-url-selection"><legend>Location of stylesheets and scripts</legend>\n\
+            <select name="base-url">\n\
+            <option id="base-url-dokieli" value="base-url-dokieli" selected>Use from https://dokie.li</option>\n\
+            <option id="base-url-absolute" value="base-url-absolute">Use from here (' + DO.U.getBaseURL(document.location.href) + ')</option>\n\
+            <option id="base-url-relative" value="base-url-relative">Copy to your storage</option>\n\
+            </select>\n\
             <p><input id="base-url-remember" type="checkbox" checked="checked" /> <label for="base-url-remember">Remember</label></p></fieldset>';
 
             return s;
