@@ -47,6 +47,12 @@ var DO = {
         InteractionPath: 'i/',
         ProxyURL: 'https://databox.me/,proxy?uri=',
         AuthEndpoint: 'https://databox.me/',
+        License: {
+            "CCBYSA": {
+                iri: "http://creativecommons.org/licenses/by-sa/4.0/",
+                name: "CC BY-SA 4.0"
+            }
+        },
         Vocab: {
             "rdftype": {
                 "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
