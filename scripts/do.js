@@ -44,6 +44,7 @@ var DO = {
             DisableEditorButton: '<button class="editor-disable">Read</button>',
             EnableEditorButton: '<button class="editor-enable">Edit</button>'
         },
+        ContextLength: 32,
         InteractionPath: 'i/',
         ProxyURL: 'https://databox.me/,proxy?uri=',
         AuthEndpoint: 'https://databox.me/',
@@ -2148,18 +2149,18 @@ LIMIT 1";
         },
 
         positionNote: function(refId, refLabel, noteId) {
-            console.log('--------');
+            console.log('--- positionNote(): ' + refId + ', ' + refLabel + ', ' + noteId);
             var viewportWidthSplit = Math.ceil(parseInt($(window).width()) / 2);
 
             var parentPositionLeft, positionLeftCalc, noteWidth = '';
 
             var ref = $('#' + refId);
-    console.log(ref);
-    console.log(noteId);
+// console.log(ref);
+// console.log(noteId);
             var note = $('#' + noteId);
-    console.log(note);
+// console.log(note);
             var refPP = ref.parent().parent();
-    console.log(refPP);
+// console.log(refPP);
 
     //        $('span.note').each(function(i,v) {
     //            a = $(this).find('a');
@@ -2170,8 +2171,8 @@ LIMIT 1";
 //                    id = a.attr('href');
                 parentPositionLeft = Math.ceil(refPP.position().left);
 
-console.log(parentPositionLeft);
-console.log(viewportWidthSplit);
+// console.log(parentPositionLeft);
+// console.log(viewportWidthSplit);
                 if (parentPositionLeft <= viewportWidthSplit) {
                     positionRightCalc = parentPositionLeft + 'px + ' + noteWidth + 'px - 20px';
                 }
@@ -2514,7 +2515,7 @@ console.log(viewportWidthSplit);
                             'cite': new DO.U.Editor.Button({action:'cite', label:'cite'}),
                             'q': new DO.U.Editor.Button({action:'q', label:'q'}),
 
-                            'mark': new DO.U.Editor.Button({action:'mark', label:'mark'}),
+                            'mark': new DO.U.Editor.Note({action:'mark', label:'mark'}),
                             'note': new DO.U.Editor.Note({action:'article', label:'note'}),
 
                             //XXX: Interesting for editor
@@ -2622,12 +2623,9 @@ console.log(viewportWidthSplit);
                                 console.log(selectedParentElement);
                                 var parentSection = MediumEditor.util.getClosestTag(selectedParentElement, 'section');
                                 console.log(parentSection);
-                //                selectedParentElement.setAttribute('style', 'background:#ddd');
-                //                parentSection.setAttribute('style', 'background:#eee');
 
-                                //XXX: Saving the selection should be before inserting/updating HTML.
+                                //XXX: DO NOT REMOVE. Saving the selection should be before inserting/updating HTML.
                                 this.base.saveSelection();
-
 
                                 switch(this.action) {
                                     case 'h2': case 'h3': case 'h4': case 'h5': case 'h6':
@@ -2644,9 +2642,9 @@ console.log(viewportWidthSplit);
 
                                         //XXX: Which heading level is the action?
                                         var cSH = parseInt(this.action.slice(-1));
-                    console.log("parentH: " + pSH);
-                    console.log("currentH: " + cSH);
-                    console.log(cSH-pSH);
+// console.log("parentH: " + pSH);
+// console.log("currentH: " + cSH);
+// console.log(cSH-pSH);
 
                                         var closePreviousSections = '';
                                         // if (cSH > pSH) {}
@@ -2654,78 +2652,76 @@ console.log(viewportWidthSplit);
                                             console.log("i: " + i);
                                             closePreviousSections += '</div></section>';
                                         }
-                    console.log(closePreviousSections);
-                    console.log(this.base.selection);
-                    //                    var doc = this.document;
+// console.log(closePreviousSections);
+// console.log(this.base.selection);
+// var doc = this.document;
                                         var selection = window.getSelection();
-                    console.log(this.base.selection);
-                    console.log(selection);
-
-
+// console.log(this.base.selection);
+// console.log(selection);
 
                                         if (selection.rangeCount) {
                                             range = selection.getRangeAt(0);
                                             parent = selectedParentElement;
 
-                    console.log(range);
+// console.log(range);
                                             //Section
                                             var sectionId = DO.U.generateAttributeId(null, this.base.selection);
                                             var section = document.createElement('section');
                                             section.id = sectionId;
                                             section.setAttribute('rel', 'schema:hasPart');
                                             section.setAttribute('resource', '[this:#' + sectionId + ']');
-                    console.log(section);
+// console.log(section);
 
 
                                             //Heading
                                             var heading = document.createElement(tagNames[0]);
                                             heading.setAttribute('property', 'schema:name');
                                             heading.innerHTML = this.base.selection;
-                    console.log(heading);
-                    console.log(selection);
-                    r = selection.getRangeAt(0);
-                    console.log(r);
-                    console.log(r.startContainer);
-                    console.log(r.startOffset);
-                    console.log(r.endOffset);
+// console.log(heading);
+// console.log(selection);
 
 
                                             var divDescription = parentSection.getElementsByTagName('div')[0];
-                console.log(divDescription);
-                console.log(divDescription.innerHTML);
-                console.log(divDescription.childNodes);
-                console.log(divDescription.length);
-                console.log(selectedParentElement);
-                console.log(selectedParentElement.childNodes);
-                console.log(selectedParentElement.lastChild);
-                console.log(selectedParentElement.lastChild.length);
+// console.log(divDescription);
+// console.log(divDescription.innerHTML);
+// console.log(divDescription.childNodes);
+// console.log(divDescription.length);
+// console.log(selectedParentElement);
+// console.log(selectedParentElement.childNodes);
+// console.log(selectedParentElement.lastChild);
+// console.log(selectedParentElement.lastChild.length);
 
+                                            r = selection.getRangeAt(0);
+// console.log(r);
+// console.log(r.startContainer);
+// console.log(r.startOffset);
+// console.log(r.endOffset);
                                             //Remaining nodes
                                             var r = document.createRange();
                                             r.setStart(selection.focusNode, selection.focusOffset);
                                             r.setEnd(selectedParentElement.lastChild, selectedParentElement.lastChild.length);
-                //    console.log(r.commonAncestorContainer.nodeType);
+// console.log(r.commonAncestorContainer.nodeType);
 
-                    // console.log(r.startContainer);
-                    // console.log(r.endContainer);
-                    //console.log(selection.anchorNode);
-                    //                        selection.removeAllRanges(); //XXX: is this doing anything?
-                    //                        selection.addRange(r);
+// console.log(r.startContainer);
+// console.log(r.endContainer);
+// console.log(selection.anchorNode);
+// selection.removeAllRanges(); //XXX: is this doing anything?
+// selection.addRange(r);
 
-                    //console.log(selection.anchorNode);
+// console.log(selection.anchorNode);
                                             var fragment = r.extractContents();
-                console.log(fragment);
-                    // console.log(selection);
-                    // r = selection.getRangeAt(0);
-                    // console.log(r);
-                    // console.log(r.startContainer);
-                    // console.log(r.startOffset);
-                    // console.log(r.endOffset);
+// console.log(fragment);
+// console.log(selection);
+// r = selection.getRangeAt(0);
+// console.log(r);
+// console.log(r.startContainer);
+// console.log(r.startOffset);
+// console.log(r.endOffset);
                                             if (fragment.firstChild.nodeType === 3) {
                                                 //TODO: trim only if there is one child which is a textnode
-                    //                            fragment.firstChild.nodeValue = fragment.firstChild.nodeValue.trim();
+                                                // fragment.firstChild.nodeValue = fragment.firstChild.nodeValue.trim();
 
-                    //console.log(fragment);
+// console.log(fragment);
                                                 var sPE = selectedParentElement.nodeName.toLowerCase();
                                                 switch(sPE) {
                                                     case "p": default:
@@ -2737,17 +2733,17 @@ console.log(viewportWidthSplit);
                                                     //TODO: Other cases?
                                                 }
                                             }
-                console.log(fragment);
+// console.log(fragment);
+// console.log(selection);
 
-                    console.log(selection);
-                    r = selection.getRangeAt(0);
-                    console.log(r);
-                    console.log(r.startContainer);
-                    console.log(r.startOffset);
-                    console.log(r.endOffset);
-                    //                         var remainingNodes = document.createElement('div');
-                    //                         remainingNodes.appendChild(fragment.cloneNode(true));
-                    // console.log(remainingNodes);
+                                            r = selection.getRangeAt(0);
+// console.log(r);
+// console.log(r.startContainer);
+// console.log(r.startOffset);
+// console.log(r.endOffset);
+// var remainingNodes = document.createElement('div');
+// remainingNodes.appendChild(fragment.cloneNode(true));
+// console.log(remainingNodes);
 
 
                                             //Description
@@ -2755,66 +2751,62 @@ console.log(viewportWidthSplit);
                                             div.setAttribute('property', 'schema:description');
                                             div.appendChild(fragment.cloneNode(true));
 
-
                                             //Put it together
                                             section.appendChild(heading);
                                             section.appendChild(div);
-                    console.log(range.startContainer);
+// console.log(range.startContainer);
 
                                             var selectionUpdated = document.createElement('div');
                                             selectionUpdated.appendChild(section);
                                             selectionUpdated = selectionUpdated.innerHTML;
-                    console.log(selectionUpdated);
-                    //                        range.deleteContents();
-
-                    //                        MediumEditor.util.insertHTMLCommand(this.document, closePreviousSections);
-                                            //MediumEditor.extensions.paste(closePreviousSections);
+// console.log(selectionUpdated);
+// range.deleteContents();
+// MediumEditor.util.insertHTMLCommand(this.document, closePreviousSections);
+// MediumEditor.extensions.paste(closePreviousSections);
 
                                             //Sub-section
                                             if (cSH-pSH > 0) {
                                                 MediumEditor.util.insertHTMLCommand(this.base.selectedDocument, selectionUpdated);
 
-                                                //This doesn't seem to be needed anymore?
-                //                                MediumEditor.selection.select(this.base.selectedDocument, heading, 0);
+                                                // This doesn't seem to be needed anymore?
+                                                // MediumEditor.selection.select(this.base.selectedDocument, heading, 0);
                                             }
                                             else {
-                    console.log(selection);
-                    console.log(parentSection);
+// console.log(selection);
+// console.log(parentSection);
                                                 MediumEditor.selection.selectNode(parentSection, document);
-                    console.log(selection);
-                    r = selection.getRangeAt(0);
-                    console.log(r);
-                    console.log(r.startOffset);
-                    console.log(r.endOffset);
+                                                r = selection.getRangeAt(0);
+// console.log(r);
+// console.log(r.startOffset);
+// console.log(r.endOffset);
 
 
-                //This selection is based off previous operations; handling remaining Nodes after the selection. So, this is not accurate per se.. the range might be accurate.
+                                                //This selection is based off previous operations; handling remaining Nodes after the selection. So, this is not accurate per se.. the range might be accurate.
                                                 selection = window.getSelection();
-                    console.log(selection);
-                    r = selection.getRangeAt(0);
-                    console.log(r);
-                    console.log(r.startOffset);
-                    console.log(r.endOffset);
+// console.log(selection);
+                                                r = selection.getRangeAt(0);
+// console.log(r);
+// console.log(r.startOffset);
+// console.log(r.endOffset);
 
 
-                    //                            r = document.createRange();
-                    //                             r.setStartAfter(parentSection);
-                    // console.log(r);
-                    //                             r.setEndAfter(parentSection);
-                    // console.log(r);
-                    //r.collapse(true);
+                                                r = document.createRange();
+                                                r.setStartAfter(parentSection);
+// console.log(r);
+                                                r.setEndAfter(parentSection);
+// console.log(r);
+                                                r.collapse(true);
                                                 selection.removeAllRanges();
                                                 selection.addRange(r);
-                    console.log(selection);
-                    var foo = document.createElement('div');
-                    foo.appendChild(parentSection);
-                    parentSection = foo.innerHTML;
-                    console.log(parentSection + selectionUpdated);
+// console.log(selection);
+                                                var foo = document.createElement('div');
+                                                foo.appendChild(parentSection);
+                                                parentSection = foo.innerHTML;
+// console.log(parentSection + selectionUpdated);
                                                 MediumEditor.util.insertHTMLCommand(this.base.selectedDocument, parentSection + selectionUpdated);
 
-                //                                MediumEditor.selection.select(this.base.selectedDocument, heading, 0);
-
-                    //                            parentSection.parentNode.insertBefore(section, parentSection.nextSibling);
+                                                // MediumEditor.selection.select(this.base.selectedDocument, heading, 0);
+                                                // parentSection.parentNode.insertBefore(section, parentSection.nextSibling);
                                             }
                                         }
                                         break;
@@ -2896,7 +2888,14 @@ console.log(viewportWidthSplit);
                             this.tagNames = [this.action];
                             this.useQueryState = true;
                             this.contentDefault = '<b>' + this.label + '</b>';
-                            this.contentFA = '<i class="fa fa-sticky-note"></i>';
+                            switch(this.action) {
+                                case 'mark':
+                                    this.contentFA = '<i class="fa fa-paint-brush"></i>';
+                                    break;
+                                case 'note': default:
+                                    this.contentFA = '<i class="fa fa-sticky-note"></i>';
+                                    break;
+                            }
                             MediumEditor.extensions.form.prototype.init.apply(this, arguments);
 
                 //TODO: Change this bind key
@@ -3079,9 +3078,35 @@ console.log(viewportWidthSplit);
                         },
 
                         completeFormSave: function (opts) {
-                            console.log('completeFormSave()');
+                            console.log('completeFormSave() with this.action: ' + this.action);
                             this.base.restoreSelection();
                             var range = MediumEditor.selection.getSelectionRange(this.document);
+                            var selectedParentElement = this.base.getSelectedParentElement();
+                            console.log('getSelectedParentElement:');
+                            console.log(selectedParentElement);
+
+                            //Mark the text which the note was left for (with reference to the note?)
+                            this.base.selectedDocument = this.document;
+                            this.base.selection = MediumEditor.selection.getSelectionHtml(this.base.selectedDocument); //.replace(DO.C.Editor.regexEmptyHTMLTags, '');
+                            console.log('this.base.selection:');
+                            console.log(this.base.selection);
+
+                            var exact = this.base.selection;
+                            var selectionState = MediumEditor.selection.exportSelection(selectedParentElement, this.document);
+                            var start = selectionState.start;
+                            var end = selectionState.end;
+                            var prefixStart = Math.max(0, start - DO.C.ContextLength);
+                            console.log('pS ' + prefixStart);
+                            var prefix = selectedParentElement.textContent.substr(prefixStart, start - prefixStart);
+                            console.log('-' + prefix + '-');
+                            prefix = DO.U.htmlEntities(prefix);
+
+                            var suffixEnd = Math.min(selectedParentElement.textContent.length, end + DO.C.ContextLength);
+                            console.log('sE ' + suffixEnd);
+                            var suffix = selectedParentElement.textContent.substr(end, suffixEnd - end);
+                            console.log('-' + suffix + '-');
+                            suffix = DO.U.htmlEntities(suffix);
+
                 //            this.execAction(this.action, opts);
                             var datetime = DO.U.getDateTimeISO();
                             var id = DO.U.generateAttributeId().slice(0, 6);
@@ -3121,74 +3146,75 @@ console.log(viewportWidthSplit);
                             var ref = '', refType = ''; //TODO: reference types. UI needs input
                             //TODO: replace refId and noteIRI IRIs
 
-                            //Mark the text which the note was left for (with reference to the note?)
-                            this.base.selectedDocument = this.document;
-                            this.base.selection = MediumEditor.selection.getSelectionHtml(this.base.selectedDocument); //.replace(DO.C.Editor.regexEmptyHTMLTags, '');
-                            console.log('this.base.selection:');
-                            console.log(this.base.selection);
-
-                            switch(refType) {
-                                case 'annotation': case 'interaction': default:
-                                    ref = '<span class="ref" about="[this:#' + refId + ']" typeof="http://purl.org/dc/dcmitype/Text"><mark id="'+ refId +'" property="schema:description">' + this.base.selection + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#' + id + '">' + refLabel + '</a></sup></span>';
-                                    break;
-                                case 'footnote':
-                                    ref = '<span class="ref" about="[this:#' + refId + ']" typeof="http://purl.org/dc/dcmitype/Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span><sup class="ref-footnote"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup></span>';
-                                    break;
-                                case 'reference':
-                                    ref = '<span class="ref" about="[this:#' + refId + ']" typeof="http://purl.org/dc/dcmitype/Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span> <span class="ref-reference">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span></span>';
-                                    break;
-                            }
-
-                            var selectedParentElement = this.base.getSelectedParentElement();
-                            console.log('getSelectedParentElement:');
-                            console.log(selectedParentElement);
-
-
-                            var selectionUpdated = ref;
-                            MediumEditor.util.insertHTMLCommand(this.base.selectedDocument, selectionUpdated);
-
+                            //This class is added if it is only for display purposes e.g., loading an external annotation for view, but do not want to save it later on (as it will be stripped when 'do' is found)
+                            var doClass = '';
 
                             //TODO: oa:TimeState's datetime should equal to hasSource value. Same for oa:HttpRequestState's rdfs:value
                             // <span about="[this:#' + refId + ']" rel="oa:hasState">(timeState: <time typeof="oa:TimeState" datetime="' + datetime +'" datatype="xsd:dateTime"property="oa:sourceDate">' + datetime + '</time>)</span>\n\
 
-                            var user = DO.U.getUserHTML();
+                            var noteType = '';
+                            var noteData = {};
 
-//                                    <sup><a href="#' + refId + '">' + refLabel + '</a></sup>\n\
+                            switch(this.action) {
+                                //External Note
+                                default: //'note'
+                                    //XXX: Experimental: We don't change the source, only refer to it because that's cool.
+                                    // ref = '<span class="ref" about="[this:#' + refId + ']" typeof="http://purl.org/dc/dcmitype/Text"><mark id="'+ refId +'" property="schema:description">' + this.base.selection + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#' + id + '">' + refLabel + '</a></sup></span>';
 
-                            var note = '\n\
-            <article id="' + id + '" about="[i:]" typeof="oa:Annotation as:Activity" prefix="schema: http://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + noteIRI +'">\n\
-                <h3 property="schema:name"><span rel="schema:creator oa:annotatedBy as:actor">' + user + '</span> <a href="' + noteIRI + '"><time datetime="' + datetime +'" datatype="xsd:dateTime" property="oa:annotatedAt schema:datePublished">' + datetime.substr(0,19).replace('T', ' ') + '</time></a> <a rel="oa:hasTarget sioc:reply_of as:inReplyTo" href="' + resourceIRI + '"><span about="[i:]" rel="oa:motivatedBy" resource="oa:replying">in reply to</span></a></h3>\n\
-                <div property="schema:description" rel="oa:hasBody as:content">\n\
-                    <div about="[i:]" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">\n\
-                        <p>' + opts.url + '</p>\n\
-                    </div>\n\
-                </div>\n\
-            </article>';
+                                    noteType = 'position-quote-selector';
+                                    ref = this.base.selection;
+
+                                    noteData = {
+                                        "type": noteType, //e.g., 'article'
+                                        "id": id,
+                                        "iri": noteIRI, //e.g., https://example.org/path/to/article
+                                        "creator": {},
+                                        "datetime": datetime,
+                                        "target": {
+                                            "source": resourceIRI,
+                                            "selector": {
+                                                "exact": exact,
+                                                "prefix": prefix,
+                                                "suffix": suffix
+                                            }
+                                            //TODO: state
+                                        },
+                                        "body": opts.url, //FIXME: This object name is not fun
+                                        "license": {
+                                            "iri": DO.C.License.CCBYSA.iri,
+                                            "name": DO.C.License.CCBYSA.name
+                                        }
+                                    }
+                                    if (DO.C.User.IRI) {
+                                        noteData.creator["iri"] = DO.C.User.IRI;
+                                    }
+                                    if (DO.C.User.Name) {
+                                        noteData.creator["name"] = DO.C.User.Name;
+                                    }
+                                    if (DO.C.User.Image) {
+                                        noteData.creator["image"] = DO.C.User.Image;
+                                    }
+
+                                    break;
+
+                                //Internal Note
+                                case 'mark': //'footnote':
+                                    noteType = 'footnote';
+
+                                    ref = '<span class="ref" about="#' + refId + '" typeof="http://purl.org/dc/dcmitype/Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span><sup class="ref-footnote"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup></span>';
+                                    break;
+                                // case 'reference':
+                                //     ref = '<span class="ref" about="[this:#' + refId + ']" typeof="http://purl.org/dc/dcmitype/Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span> <span class="ref-reference">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span></span>';
+                                    break;
+                            }
                 //            console.log(note);
 
-                            // var selectedParentElement = this.base.getSelectedParentElement();
-                            // console.log('getSelectedParentElement:');
-                            // console.log(selectedParentElement);
-                            console.log('selectedParentElement.nextElementSibling:');
-                            console.log(selectedParentElement.nextElementSibling);
+                            console.log('createNoteHTML to save');
+                            console.log(noteData);
+                            var note = DO.U.createNoteHTML(noteData);
 
-                            var nES = selectedParentElement.nextElementSibling;
-                            //Check if <aside class="note"> exists
-                            if(nES && nES.nodeName.toLowerCase() == 'aside' && nES.classList.contains('note')) {
-                                var noteNode = DO.U.fragmentFromString(note);
-                                nES.appendChild(noteNode);
-                            }
-                            else {// id="n-' + DO.U.generateAttributeId() + '"
-                                var asideNote = '\n\
-                            <aside class="note">\n\
-                            '+ note + '\n\
-                            </aside>';
-                                var asideNode = DO.U.fragmentFromString(asideNote);
-                                selectedParentElement.parentNode.insertBefore(asideNode, selectedParentElement.nextSibling);
-                            }
-
-                            DO.U.positionNote(refId, refLabel, id);
-
+                            var selectionUpdated = ref;
+                            MediumEditor.util.insertHTMLCommand(this.base.selectedDocument, selectionUpdated);
 
                             var data = '<!DOCTYPE html>\n\
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
@@ -3202,7 +3228,16 @@ console.log(viewportWidthSplit);
 </html>\n\
 ';
 
-                            DO.U.putResource(noteIRI, data);
+                            DO.U.putResource(noteIRI, data).then(
+                                function(i) {
+                                    console.log(i);
+                                    DO.U.positionQuoteSelector(noteIRI, document.body);
+                                },
+                                function(reason) {
+                                    console.log('PUT failed');
+                                    console.log(reason);
+                                }
+                            );
 
                             console.log('resourceIRI: ' + resourceIRI);
 
