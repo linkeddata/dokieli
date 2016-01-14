@@ -2204,6 +2204,70 @@ console.log(viewportWidthSplit);
     //        });
         },
 
+        createNoteHTML: function(n) {
+            //TODO Change to switch()
+            var hasTarget = '';
+            var annotationTextSelector ='';
+            var creator = '';
+            var license = '';
+
+            switch(n.type) {
+                case 'position-quote-selector':
+                    var creatorName = 'Anonymous';
+                    if (typeof n.creator.name !== 'undefined') {
+                        creatorName = '<span about="' + n.creator.iri + '" property="schema:name">' + n.creator.name + '</span>';
+                    }
+                    if (typeof n.creator.image !== 'undefined') {
+                        creatorImage = '<img rel="schema:image" src="' + n.creator.image + '" width="32" height="32"/>';
+                    }
+                    if (typeof n.creator.iri !== 'undefined') {
+                        creator = '<span about="' + n.creator.iri + '" typeof="schema:Person">' + creatorImage + ' <a rel="schema:url" href="' + n.creator.iri + '"> ' + creatorName + '</a></span>';
+                    }
+                    else {
+                        creator = '<span typeof="schema:Person">' + creatorName + '</span>';
+                    }
+                    break;
+                default:
+                    creator = DO.U.getUserHTML();
+                    break;
+            }
+
+
+            //TODO: Include `a oa:SpecificResource`?
+            if (typeof n.target != 'undefined' && typeof n.target.selector != 'undefined') { //note, annotation
+                annotationTextSelector = '<span rel="oa:hasSource" resource="' + n.target.source +'"></span><span rel="oa:hasSelector" typeof="oa:TextQuoteSelector"><span property="oa:prefix" xml:lang="en" lang="">' + n.target.selector.prefix + '</span><strong property="oa:exact" xml:lang="en" lang=""><mark>' + n.target.selector.exact + '</mark></strong><span property="oa:suffix" xml:lang="en" lang="">' + n.target.selector.suffix + '</span></span>';
+
+                //FIXME: Could resourceIRI be a fragment URI or *make sure* it is the document URL without the fragment?
+                //TODO: Use n.target.iri?
+                hasTarget = '<a rel="oa:hasTarget sioc:reply_of as:inReplyTo" href="' + n.iri + '#TODO-PerhapsClosestParentID" resource="' + n.iri + '#TODO-PerhapsClosestParentID"><span about="[i:]" rel="oa:motivatedBy" resource="oa:replying">In reply to</span></a>';
+            }
+            else {
+                hasTarget = '<a rel="oa:hasTarget sioc:reply_of as:inReplyTo" href="' + n.iri + '"><span about="[i:]" rel="oa:motivatedBy" resource="oa:replying">In reply to</span></a>';
+            }
+
+            if (typeof n.license != 'undefined' && typeof n.license.iri != 'undefined' && typeof n.license.name != 'undefined') {
+                license = '<dl class="license"><dt>License</dt><dd><a rel="schema:license" href="' + n.license.iri + '">' + n.license.name + '</a></dd></dl>';
+            }
+
+            var note = '\n\
+            <article id="' + n.id + '" about="[i:]" typeof="oa:Annotation as:Activity" prefix="schema: http://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'">\n\
+                <dl class="published"><dt>Published</dt><dd><a href="' + n.iri + '"><time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="oa:annotatedAt schema:datePublished" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time></a></dd></dl>\n\
+                ' + license + '\n\
+                <h3 property="schema:name"><span rel="schema:creator oa:annotatedBy as:actor">' + creator + '</span></h3>\n\
+                <div property="schema:description" rel="oa:hasBody as:content">\n\
+                    <div about="[i:#i]" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">' + n.body + '</div>\n\
+                </div>\n\
+                <dl>\n\
+                    <dt>' + hasTarget + '</dt>\n\
+                    <dd><blockquote about="' + n.iri + '#TODO-PerhapsClosestParentID" cite="' + n.iri + '#TODO-PerhapsClosestParentID">' + annotationTextSelector + '</blockquote></dd>\n\
+                </dl>\n\
+            </article>';
+
+            note = (n.type == 'position-quote-selector') ? '<blockquote id="i-' + n.id + '" cite="' + n.iri + '">' + note + '</blockquote>' : note;
+
+            return note;
+        },
+
         Editor: {
             disableEditor: function() {
         //        _mediumEditors[1].destroy();
