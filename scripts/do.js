@@ -2204,6 +2204,132 @@ console.log(viewportWidthSplit);
     //        });
         },
 
+        positionQuoteSelector: function(noteIRI, containerNode) {
+            containerNode = containerNode || document.body;
+//            return new Promise(function(resolve, reject) {
+                var g = SimpleRDF(DO.C.Vocab);
+                g.iri(noteIRI).get().then(
+                    function(i) {
+                        console.log(i);
+                        var note = i.iri(noteIRI);
+                        var datetime = note.oaAnnotatedAt;
+                        var annotatedByIRI = note.oaAnnotatedBy;
+                        annotatedBy = i.iri(annotatedByIRI);
+                        var annotatedByName = annotatedBy.schemaname;
+                        var annotatedByImage = annotatedBy.schemaimage;
+                        note = i.iri(noteIRI);
+                        var body = i.iri(note.oahasBody);
+                        var bodyText = body.oatext;
+
+                        note = i.iri(noteIRI);
+                        var target = i.iri(note.oahasTarget);
+
+                        var selector = target.oahasSelector;
+                        var exact = selector.oaexact;
+                        var prefix = selector.oaprefix;
+                        var suffix = selector.oasuffix;
+
+                        var source = target.oahasSource;
+
+                        var containerNodeTextContent = containerNode.textContent;
+                        var selectorIndex = containerNodeTextContent.indexOf(prefix + exact + suffix);
+                        if (selectorIndex >= 0) {
+                            var exactStart = selectorIndex + prefix.length
+                            var exactEnd = selectorIndex + prefix.length + exact.length;
+                            var selection = { start: exactStart, end: exactEnd };
+
+
+                            var id = String(Math.abs(DO.U.hashCode(noteIRI))).substr(0, 6);
+                            var refId = 'r-' + id;
+                            var ref = '<span class="ref" about="#' + refId + '" typeof="http://purl.org/dc/dcmitype/Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#i-' + id + '" resource="' + noteIRI + '">' + id + '</a></sup></span>';
+
+                            MediumEditor.selection.importSelection(selection, containerNode, document);
+
+                            //XXX: Review
+                            var selection = window.getSelection();
+                            r = selection.getRangeAt(0);
+                            selection.removeAllRanges();
+                            selection.addRange(r);
+                            r.collapse(true);
+                            var selectedParentNode = r.commonAncestorContainer.parentNode;
+                            var selectedParentNodeValue = r.commonAncestorContainer.nodeValue;
+
+                            var selectionUpdated = DO.U.fragmentFromString(selectedParentNodeValue.substr(0, r.startOffset) + ref + selectedParentNodeValue.substr(r.startOffset + exact.length));
+
+                            //XXX: Review. This feels a bit dirty
+                            for(var i = 0; i < selectedParentNode.childNodes.length; i++) {
+                                var n = selectedParentNode.childNodes[i];
+                                if (n.nodeType === 3 && n.nodeValue == selectedParentNodeValue) {
+                                    selectedParentNode.replaceChild(selectionUpdated, n);
+                                }
+                            }
+
+                            var noteData = {
+                                "type": 'position-quote-selector', //e.g., 'article'
+                                "id": id,
+                                "iri": noteIRI, //e.g., https://example.org/path/to/article
+                                "creator": {},
+                                "datetime": datetime,
+                                "target": {
+                                    "source": source,
+                                    "selector": {
+                                        "exact": exact,
+                                        "prefix": prefix,
+                                        "suffix": suffix
+                                    }
+                                    //TODO: state
+                                },
+                                "body": bodyText,
+                                "license": {
+                                    "iri": DO.C.License.CCBYSA.iri,
+                                    "name": DO.C.License.CCBYSA.name
+                                }
+                            }
+                            if (annotatedByIRI != 'undefined') {
+                                noteData.creator["iri"] = annotatedByIRI;
+                            }
+                            if (annotatedByName) {
+                                noteData.creator["name"] = annotatedByName;
+                            }
+                            if (annotatedByImage) {
+                                noteData.creator["image"] = annotatedByImage;
+                            }
+
+                            var note = DO.U.createNoteHTML(noteData);
+                            var nES = selectedParentNode.nextElementSibling;
+                            //Check if <aside class="note"> exists
+                            if(nES && nES.nodeName.toLowerCase() == 'aside' && nES.classList.contains('note')) {
+                                var noteNode = DO.U.fragmentFromString(note);
+                                nES.appendChild(noteNode);
+                            }
+                            else {
+                            //XXX: TODO: FIXME: This needs to be revised. Okay, Sarven, but why?
+                                var asideNote = '\n\
+                            <aside class="note">\n\
+                            '+ note + '\n\
+                            </aside>';
+                                var asideNode = DO.U.fragmentFromString(asideNote);
+                                var parentSection = MediumEditor.util.getClosestTag(selectedParentNode, 'section');
+                                parentSection.appendChild(asideNode);
+                                //XXX: Keeping this comment around for emergency
+//                                selectedParentNode.parentNode.insertBefore(asideNode, selectedParentNode.nextSibling);
+                            }
+
+                            var refId = 'r-' + id;
+                            var refLabel = id;
+                            DO.U.positionNote(refId, refLabel, id);
+                        }
+                        else {
+                            //return Promose.reject({'message': "Can't match the text"});
+                        }
+                    },
+                    function(reason) {
+                        console.log(reason);
+                    }
+                );
+//            };
+        },
+
         createNoteHTML: function(n) {
             //TODO Change to switch()
             var hasTarget = '';
