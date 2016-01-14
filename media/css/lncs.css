@@ -279,8 +279,12 @@ font-size:1em;
 .count:after {
 content:':';
 }
+
 section article {
 margin:0 0 2em 0;
+}
+section blockquote article {
+margin-bottom:0;
 }
 section article article {
 padding-left:2.25em;
@@ -300,11 +304,10 @@ section article h3 {
 margin-top:0;
 }
 section article img {
-vertical-align:middle;
 margin-right:0.25em;
 }
 section article p:last-child {
-margin-bottom:0;
+margin-bottom:0;`
 }
 
 
@@ -331,14 +334,25 @@ position:relative;
 left:1.5em;
 width:calc(100% - 1.5em);
 }
-
+aside.note blockquote article {
+left: 0;
+width:100%;
+}
+aside.note blockquote blockquote {
+padding-left: 0.5em;
+}
+aside.note > blockquote {
+border-left:0;
+}
+aside.note blockquote > div {
+margin-bottom:0.25em;
+}
+aside.note blockquote dt {
+margin-bottom:0;
+}
 aside.note article > sup {
 position:absolute;
 left:-1.75em;
-}
-
-aside.note p {
-text-indent:0;
 }
 
 
@@ -551,16 +565,6 @@ white-space:pre;
 
 #abstract h2:before,
 #document-status h2:before,
-#document-purpose dt:before,
-#document-published dt:before,
-#document-modified dt:before,
-#document-appeared dt:before,
-#document-in-reply-to dt:before,
-#document-license dt:before,
-#document-language dt:before,
-#document-format dt:before,
-#document-event dt:before,
-#document-inbox dt:before,
 #categories-and-subject-descriptors h2:before,
 #keywords h2:before,
 #general-terms h2:before,
@@ -578,18 +582,21 @@ content: "";
 #document-identifier dt:after,
 #document-purpose dt:after,
 #document-published dt:after,
+.published dt:after,
 #document-modified dt:after,
 #document-appeared dt:after,
 #document-in-reply-to dt:after,
 #document-license dt:after,
+.license dt:after,
 #document-language dt:after,
 #document-format dt:after,
 #document-event dt:after,
 #document-inbox dt:after,
 #general-terms h2:after,
 #categories-and-subject-descriptors h2:after,
-#keywords h2:after {
-content: ":";
+#keywords h2:after,
+.target dt:after {
+content: ": ";
 }
 
 
@@ -614,6 +621,8 @@ content: ".";
 #document-purpose dt + dd,
 #document-published dt,
 #document-published dt + dd,
+.published dt,
+.published dt + dd,
 #document-modified dt,
 #document-modified dt + dd,
 #document-appeared dt,
@@ -622,6 +631,8 @@ content: ".";
 #document-in-reply-to dt + dd,
 #document-license dt,
 #document-license dt + dd,
+.license dt,
+.license dt + dd,
 #document-language dt,
 #document-language dt + dd,
 #document-format dt,
@@ -831,6 +842,12 @@ right:0;
 
 #abstract, ol, ul, p, dd {
 text-align:justify;
+}
+aside.note ol,
+aside.note ul,
+aside.note p,
+aside.note dd {
+text-align:left;
 }
 
 p + dl {
