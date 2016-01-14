@@ -81,6 +81,10 @@ var DO = {
                 "@id": "http://schema.org/creator",
                 "@type": "@id"
             },
+            "schemalicense": {
+                "@id": "http://schema.org/license",
+                "@type": "@id"
+            },
 
             "dctermstitle": "http://purl.org/dc/terms/title",
 
@@ -112,6 +116,34 @@ var DO = {
                 "@id": "http://www.w3.org/ns/solid/terms#inbox",
                 "@type": "@id",
                 "@array": true
+            },
+            "oahasBody": {
+                "@id": "http://www.w3.org/ns/oa#hasBody",
+                "@type": "@id"
+            },
+            "oahasTarget": {
+                "@id": "http://www.w3.org/ns/oa#hasTarget",
+                "@type": "@id"
+            },
+            "oahasSource": {
+                "@id": "http://www.w3.org/ns/oa#hasSource",
+                "@type": "@id"
+            },
+            "oahasSelector": {
+                "@id": "http://www.w3.org/ns/oa#hasSelector",
+                "@type": "@id"
+            },
+            "oaexact": "http://www.w3.org/ns/oa#exact",
+            "oaprefix": "http://www.w3.org/ns/oa#prefix",
+            "oasuffix": "http://www.w3.org/ns/oa#suffix",
+            "oatext": "http://www.w3.org/ns/oa#text",
+            "oaAnnotatedAt": {
+                "@id": "http://www.w3.org/ns/oa#annotatedAt",
+                "@type": "@id"
+            },
+            "oaAnnotatedBy": {
+                "@id": "http://www.w3.org/ns/oa#annotatedBy",
+                "@type": "@id"
             }
         }
     },
