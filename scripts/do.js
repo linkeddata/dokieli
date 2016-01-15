@@ -2287,7 +2287,7 @@ LIMIT 1";
                                     "name": DO.C.License.CCBYSA.name
                                 }
                             }
-                            if (annotatedByIRI != 'undefined') {
+                            if (annotatedByIRI) {
                                 noteData.creator["iri"] = annotatedByIRI;
                             }
                             if (annotatedByName) {
@@ -2336,19 +2336,22 @@ LIMIT 1";
 
         createNoteHTML: function(n) {
             //TODO Change to switch()
-            var hasTarget = '';
-            var annotationTextSelector ='';
-            var creator = '';
+            var published = '';
             var license = '';
+            var creator = '', name = '';
+            var hasTarget = '', annotationTextSelector = '', target = '';
 
             switch(n.type) {
                 case 'position-quote-selector':
+                    published = '<dl class="published"><dt>Published</dt><dd><a href="' + n.iri + '"><time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="oa:annotatedAt schema:datePublished" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time></a></dd></dl>';
+
                     var creatorName = 'Anonymous';
-                    if (typeof n.creator.name !== 'undefined') {
+                    if (typeof n.creator.iri !== 'undefined' && typeof n.creator.name !== 'undefined') {
                         creatorName = '<span about="' + n.creator.iri + '" property="schema:name">' + n.creator.name + '</span>';
                     }
+                    var creatorImage = '';
                     if (typeof n.creator.image !== 'undefined') {
-                        creatorImage = '<img rel="schema:image" src="' + n.creator.image + '" width="32" height="32"/>';
+                        creatorImage = '<img rel="schema:image" src="' + n.creator.image + '" width="32" height="32" />';
                     }
                     if (typeof n.creator.iri !== 'undefined') {
                         creator = '<span about="' + n.creator.iri + '" typeof="schema:Person">' + creatorImage + ' <a rel="schema:url" href="' + n.creator.iri + '"> ' + creatorName + '</a></span>';
@@ -2356,23 +2359,30 @@ LIMIT 1";
                     else {
                         creator = '<span typeof="schema:Person">' + creatorName + '</span>';
                     }
+
+                    name = '<h3 property="schema:name"><span rel="schema:creator oa:annotatedBy as:actor">' + creator + '</span></h3>';
+
+                    description = '<div property="schema:description" rel="oa:hasBody as:content"><div about="[i:#i]" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">' + n.body + '</div></div>';
+
+                    //TODO: Include `a oa:SpecificResource`?
+                    if (typeof n.target != 'undefined' && typeof n.target.selector != 'undefined') { //note, annotation
+                        //FIXME: Could resourceIRI be a fragment URI or *make sure* it is the document URL without the fragment?
+                        //TODO: Use n.target.iri?
+                        hasTarget = '<a rel="oa:hasTarget sioc:reply_of as:inReplyTo" href="' + n.target.source + '#TODO-PerhapsClosestParentID" resource="' + n.target.source + '#TODO-PerhapsClosestParentID"><span about="[i:]" rel="oa:motivatedBy" resource="oa:replying">In reply to</span></a>';
+
+                        annotationTextSelector = '<span rel="oa:hasSource" resource="' + n.target.source +'"></span><span rel="oa:hasSelector" typeof="oa:TextQuoteSelector"><span property="oa:prefix" xml:lang="en" lang="">' + n.target.selector.prefix + '</span><strong property="oa:exact" xml:lang="en" lang=""><mark>' + n.target.selector.exact + '</mark></strong><span property="oa:suffix" xml:lang="en" lang="">' + n.target.selector.suffix + '</span></span>';
+
+                        target ='<dl class="target"><dt>' + hasTarget + '</dt><dd><blockquote about="' + n.target.source + '#TODO-PerhapsClosestParentID" cite="' + n.target.source + '#TODO-PerhapsClosestParentID">' + annotationTextSelector + '</blockquote></dd></dl>';
+                    }
                     break;
+
+                case 'footnote':
+                    description = '<dl><dt property="schema:name">' + n.id + '</dt><dd property="schema:description" datatype="rdf:HTML">' + n.body + '</dd></dl>';
+                    break;
+
                 default:
-                    creator = DO.U.getUserHTML();
+//                    creator = DO.U.getUserHTML();
                     break;
-            }
-
-
-            //TODO: Include `a oa:SpecificResource`?
-            if (typeof n.target != 'undefined' && typeof n.target.selector != 'undefined') { //note, annotation
-                annotationTextSelector = '<span rel="oa:hasSource" resource="' + n.target.source +'"></span><span rel="oa:hasSelector" typeof="oa:TextQuoteSelector"><span property="oa:prefix" xml:lang="en" lang="">' + n.target.selector.prefix + '</span><strong property="oa:exact" xml:lang="en" lang=""><mark>' + n.target.selector.exact + '</mark></strong><span property="oa:suffix" xml:lang="en" lang="">' + n.target.selector.suffix + '</span></span>';
-
-                //FIXME: Could resourceIRI be a fragment URI or *make sure* it is the document URL without the fragment?
-                //TODO: Use n.target.iri?
-                hasTarget = '<a rel="oa:hasTarget sioc:reply_of as:inReplyTo" href="' + n.target.source + '#TODO-PerhapsClosestParentID" resource="' + n.target.source + '#TODO-PerhapsClosestParentID"><span about="[i:]" rel="oa:motivatedBy" resource="oa:replying">In reply to</span></a>';
-            }
-            else {
-                hasTarget = '<a rel="oa:hasTarget sioc:reply_of as:inReplyTo" href="' + n.target.source + '"><span about="[i:]" rel="oa:motivatedBy" resource="oa:replying">In reply to</span></a>';
             }
 
             if (typeof n.license != 'undefined' && typeof n.license.iri != 'undefined' && typeof n.license.name != 'undefined') {
@@ -2381,16 +2391,11 @@ LIMIT 1";
 
             var note = '\n\
             <article id="' + n.id + '" about="[i:]" typeof="oa:Annotation as:Activity" prefix="schema: http://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'">\n\
-                <dl class="published"><dt>Published</dt><dd><a href="' + n.iri + '"><time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="oa:annotatedAt schema:datePublished" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time></a></dd></dl>\n\
+                ' + published + '\n\
                 ' + license + '\n\
-                <h3 property="schema:name"><span rel="schema:creator oa:annotatedBy as:actor">' + creator + '</span></h3>\n\
-                <div property="schema:description" rel="oa:hasBody as:content">\n\
-                    <div about="[i:#i]" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">' + n.body + '</div>\n\
-                </div>\n\
-                <dl>\n\
-                    <dt>' + hasTarget + '</dt>\n\
-                    <dd><blockquote about="' + n.target.source + '#TODO-PerhapsClosestParentID" cite="' + n.target.source + '#TODO-PerhapsClosestParentID">' + annotationTextSelector + '</blockquote></dd>\n\
-                </dl>\n\
+                ' + name + '\n\
+                ' + description + '\n\
+                ' + target + '\n\
             </article>';
 
             return note;
@@ -3112,8 +3117,6 @@ LIMIT 1";
                             var datetime = DO.U.getDateTimeISO();
                             var id = DO.U.generateAttributeId().slice(0, 6);
                             var refId = 'r-' + id;
-
-                            //TODO: noteId can be external to this document e.g., User stores the note at their own space
                             // var noteId = 'i-' + id;
 
                             var resourceIRI = document.location.href;
@@ -3164,10 +3167,12 @@ LIMIT 1";
 
                                     noteType = 'position-quote-selector';
                                     ref = this.base.selection;
+                                    refLabel = id;
 
                                     noteData = {
                                         "type": noteType, //e.g., 'article'
                                         "id": id,
+                                        "refLabel": refLabel,
                                         "iri": noteIRI, //e.g., https://example.org/path/to/article
                                         "creator": {},
                                         "datetime": datetime,
@@ -3202,7 +3207,17 @@ LIMIT 1";
                                 case 'mark': //'footnote':
                                     noteType = 'footnote';
 
-                                    ref = '<span class="ref" about="#' + refId + '" typeof="http://purl.org/dc/dcmitype/Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span><sup class="ref-footnote"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup></span>';
+                                    ref = '<span class="ref" about="#' + refId + '" typeof="http://purl.org/dc/dcmitype/Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-footnote"><a rel="cito:isCitedBy" href="#i-' + id + '">' + refLabel + '</a></sup></span>';
+
+                                    noteData = {
+                                        "type": noteType, //e.g., 'article'
+                                        "id": id,
+                                        "refLabel": refLabel,
+                                        "iri": noteIRI, //e.g., https://example.org/path/to/article
+                                        "datetime": datetime,
+                                        "body": opts.url //FIXME: This object name is not fun
+                                    }
+
                                     break;
                                 // case 'reference':
                                 //     ref = '<span class="ref" about="[this:#' + refId + ']" typeof="http://purl.org/dc/dcmitype/Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span> <span class="ref-reference">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span></span>';
@@ -3214,10 +3229,13 @@ LIMIT 1";
                             console.log(noteData);
                             var note = DO.U.createNoteHTML(noteData);
 
+                            //XXX: What's my purpose?
                             var selectionUpdated = ref;
                             MediumEditor.util.insertHTMLCommand(this.base.selectedDocument, selectionUpdated);
 
-                            var data = '<!DOCTYPE html>\n\
+                            switch(this.action) {
+                                default:
+                                    var data = '<!DOCTYPE html>\n\
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
      <head>\n\
          <title>' + noteIRI + '</title>\n\
@@ -3229,39 +3247,64 @@ LIMIT 1";
 </html>\n\
 ';
 
-                            DO.U.putResource(noteIRI, data).then(
-                                function(i) {
-                                    console.log(i);
-                                    DO.U.positionQuoteSelector(noteIRI, document.body);
-                                },
-                                function(reason) {
-                                    console.log('PUT failed');
-                                    console.log(reason);
-                                }
-                            );
+                                    DO.U.putResource(noteIRI, data).then(
+                                        function(i) {
+                                            console.log(i);
+                                            DO.U.positionQuoteSelector(noteIRI, document.body);
+                                        },
+                                        function(reason) {
+                                            console.log('PUT failed');
+                                            console.log(reason);
+                                        }
+                                    );
 
-                            console.log('resourceIRI: ' + resourceIRI);
+                                    console.log('resourceIRI: ' + resourceIRI);
 
-                            //TODO: resourceIRI should be the closest IRI (not necessarily the document). Test resolve/reject better.
-                            DO.U.getInbox(resourceIRI).then(
-                                function(inbox) {
-                                    if (inbox && inbox.length > 0) {
-                                        console.log('inbox: ' + inbox);
-                                        DO.U.notifyInbox(inbox, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', resourceIRI).then(
-                                                function(response) {
-                                                    console.log("Notification: " + response.xhr.getResponseHeader('Location'));
-                                                },
-                                                function(reason) {
-                                                    console.log(reason);
-                                                }
-                                            );
+                                    //TODO: resourceIRI should be the closest IRI (not necessarily the document). Test resolve/reject better.
+                                    DO.U.getInbox(resourceIRI).then(
+                                        function(inbox) {
+                                            if (inbox && inbox.length > 0) {
+                                                console.log('inbox: ' + inbox);
+                                                DO.U.notifyInbox(inbox, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', resourceIRI).then(
+                                                        function(response) {
+                                                            console.log("Notification: " + response.xhr.getResponseHeader('Location'));
+                                                        },
+                                                        function(reason) {
+                                                            console.log(reason);
+                                                        }
+                                                    );
+                                            }
+                                        },
+                                        function(reason) {
+                                            console.log('TODO: How can the interaction inform the target?');
+                                            console.log(reason);
+                                        }
+                                    );
+                                break;
+
+                                case 'mark': //footnote
+                                    //TODO: Refactor this what's in positionQuoteSelector
+
+                                    var nES = selectedParentElement.nextElementSibling;
+                                    //Check if <aside class="note"> exists
+                                    if(nES && nES.nodeName.toLowerCase() == 'aside' && nES.classList.contains('note')) {
+                                        var noteNode = DO.U.fragmentFromString(note);
+                                        nES.appendChild(noteNode);
                                     }
-                                },
-                                function(reason) {
-                                    console.log('TODO: How can the interaction inform the target?');
-                                    console.log(reason);
-                                }
-                            );
+                                    else {
+                                    //XXX: TODO: FIXME: This needs to be revised. Okay, Sarven, but why?
+                                        var asideNote = '\n\
+                                    <aside class="note">\n\
+                                    '+ note + '\n\
+                                    </aside>';
+                                        var asideNode = DO.U.fragmentFromString(asideNote);
+                                        var parentSection = MediumEditor.util.getClosestTag(selectedParentElement, 'section');
+                                        parentSection.appendChild(asideNode);
+                                    }
+
+                                    DO.U.positionNote(refId, refLabel, id);
+                                    break;
+                            }
 
                             this.base.checkSelection();
                         },
