@@ -2297,6 +2297,8 @@ LIMIT 1";
                             }
 
                             var note = DO.U.createNoteHTML(noteData);
+                            note = '<blockquote id="i-' + id + '" cite="' + noteIRI + '">' + note + '</blockquote>';
+
                             var nES = selectedParentNode.nextElementSibling;
                             //Check if <aside class="note"> exists
                             if(nES && nES.nodeName.toLowerCase() == 'aside' && nES.classList.contains('note')) {
@@ -2389,8 +2391,6 @@ LIMIT 1";
                     <dd><blockquote about="' + n.iri + '#TODO-PerhapsClosestParentID" cite="' + n.iri + '#TODO-PerhapsClosestParentID">' + annotationTextSelector + '</blockquote></dd>\n\
                 </dl>\n\
             </article>';
-
-            note = (n.type == 'position-quote-selector') ? '<blockquote id="i-' + n.id + '" cite="' + n.iri + '">' + note + '</blockquote>' : note;
 
             return note;
         },
