@@ -1476,6 +1476,30 @@ var DO = {
                 }
             }, '#content *[id], #interactions *[id]');
         },
+        
+        forceTrailingSlash: function(aString) {
+            if(aString.slice(-1) == "/") return aString;
+            else return aString + "/";
+        },
+        
+        getUrlPath: function(aString) {
+            return aString.split("/");
+        },
+        
+        getGraph: function(url) {
+            return new Promise(function(resolve, reject) {
+                var g = SimpleRDF(DO.C.Vocab);
+                g.iri(url).get().then(
+                    function(i){
+                       return resolve(i);
+                    },
+                    function(reason) {
+                      console.log(reason);
+                      return reject(reason);
+                    }
+                );
+            });
+        },
 
         getDoctype: function() {
             /* Get DOCTYPE from http://stackoverflow.com/a/10162353 */
