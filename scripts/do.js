@@ -1159,6 +1159,7 @@ var DO = {
                     <tr><th>Words</th><td>' + count.words + '</td></tr>\n\
                     <tr><th>Lines</th><td>' + count.lines + '</td></tr>\n\
                     <tr><th>A4 Pages</th><td>' + count.pages.A4 + '</td></tr>\n\
+                    <tr><th>US Letter</th><td>' + count.pages.USLetter + '</td></tr>\n\
                     <tr><th>Bytes</th><td>' + count.bytes + '</td></tr>\n\
                 </tbody>\n\
             </table></section>';
@@ -1168,14 +1169,14 @@ var DO = {
 
         contentCount: function(c) {
             var content = c.text();
-            var contentCount = { words:0, chars:0, lines:0, pages:{A4:1}, bytes:0 };
+            var contentCount = { words:0, chars:0, lines:0, pages:{A4:1, USLetter:1}, bytes:0 };
             if (content.length > 0) {
                 var linesCount = Math.ceil(c.height() / parseInt(c.css('line-height')));
                 contentCount = {
                     words: content.match(/\S+/g).length,
                     chars: content.length,
                     lines: linesCount,
-                    pages: { A4: Math.ceil(linesCount / 47) },
+                    pages: { A4: Math.ceil(linesCount / 47), USLetter: Math.ceil(linesCount / 63) },
                     bytes: encodeURI(document.documentElement.outerHTML).split(/%..|./).length - 1
                 };
             }
