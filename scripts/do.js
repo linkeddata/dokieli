@@ -725,7 +725,7 @@ var DO = {
     pingback:target <' + target + '> ;\n\
     schema:dateModified "' + DO.U.getDateTimeISO() + '"^^xsd:dateTime ;\n\
     schema:creator <' + DO.C.User.IRI + '> ;\n\
-    schema:license <http://creativecommons.org/licenses/by-sa/4.0/> .\n\
+    schema:license <' + DO.C.License.CCBYSA.iri + '> .\n\
 ';
 
             return DO.U.postResource(url, slug, data, 'text/turtle; charset=utf-8');
