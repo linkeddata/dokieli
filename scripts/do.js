@@ -1547,7 +1547,7 @@ var DO = {
                     //XXX: Remove new lines which were added after DOM ready
                     var nl = node.nodeValue.replace(/\n+$/, '');
                     out += noEsc[noEsc.length - 1] ? nl : nl.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                }F
+                }
                 else {
                     console.log("Warning; Cannot handle serialising nodes of type: " + node.nodeType);
                 }
