@@ -2368,10 +2368,10 @@ LIMIT 1";
 
                 //FIXME: Could resourceIRI be a fragment URI or *make sure* it is the document URL without the fragment?
                 //TODO: Use n.target.iri?
-                hasTarget = '<a rel="oa:hasTarget sioc:reply_of as:inReplyTo" href="' + n.iri + '#TODO-PerhapsClosestParentID" resource="' + n.iri + '#TODO-PerhapsClosestParentID"><span about="[i:]" rel="oa:motivatedBy" resource="oa:replying">In reply to</span></a>';
+                hasTarget = '<a rel="oa:hasTarget sioc:reply_of as:inReplyTo" href="' + n.target.source + '#TODO-PerhapsClosestParentID" resource="' + n.target.source + '#TODO-PerhapsClosestParentID"><span about="[i:]" rel="oa:motivatedBy" resource="oa:replying">In reply to</span></a>';
             }
             else {
-                hasTarget = '<a rel="oa:hasTarget sioc:reply_of as:inReplyTo" href="' + n.iri + '"><span about="[i:]" rel="oa:motivatedBy" resource="oa:replying">In reply to</span></a>';
+                hasTarget = '<a rel="oa:hasTarget sioc:reply_of as:inReplyTo" href="' + n.target.source + '"><span about="[i:]" rel="oa:motivatedBy" resource="oa:replying">In reply to</span></a>';
             }
 
             if (typeof n.license != 'undefined' && typeof n.license.iri != 'undefined' && typeof n.license.name != 'undefined') {
@@ -2388,7 +2388,7 @@ LIMIT 1";
                 </div>\n\
                 <dl>\n\
                     <dt>' + hasTarget + '</dt>\n\
-                    <dd><blockquote about="' + n.iri + '#TODO-PerhapsClosestParentID" cite="' + n.iri + '#TODO-PerhapsClosestParentID">' + annotationTextSelector + '</blockquote></dd>\n\
+                    <dd><blockquote about="' + n.target.source + '#TODO-PerhapsClosestParentID" cite="' + n.target.source + '#TODO-PerhapsClosestParentID">' + annotationTextSelector + '</blockquote></dd>\n\
                 </dl>\n\
             </article>';
 
