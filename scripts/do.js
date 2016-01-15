@@ -2346,18 +2346,16 @@ LIMIT 1";
                     published = '<dl class="published"><dt>Published</dt><dd><a href="' + n.iri + '"><time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="oa:annotatedAt schema:datePublished" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time></a></dd></dl>';
 
                     var creatorName = 'Anonymous';
-                    if (typeof n.creator.iri !== 'undefined' && typeof n.creator.name !== 'undefined') {
-                        creatorName = '<span about="' + n.creator.iri + '" property="schema:name">' + n.creator.name + '</span>';
-                    }
-                    var creatorImage = '';
                     if (typeof n.creator.image !== 'undefined') {
                         creatorImage = '<img rel="schema:image" src="' + n.creator.image + '" width="32" height="32" />';
                     }
-                    if (typeof n.creator.iri !== 'undefined') {
+                    if (typeof n.creator.iri !== 'undefined' && typeof n.creator.name !== 'undefined') {
+                        creatorName = '<span about="' + n.creator.iri + '" property="schema:name">' + n.creator.name + '</span>';
+
                         creator = '<span about="' + n.creator.iri + '" typeof="schema:Person">' + creatorImage + ' <a rel="schema:url" href="' + n.creator.iri + '"> ' + creatorName + '</a></span>';
                     }
                     else {
-                        creator = '<span typeof="schema:Person">' + creatorName + '</span>';
+                        creator = '<span about="[i:#agent]" typeof="schema:Person">' + creatorName + '</span>';
                     }
 
                     name = '<h3 property="schema:name"><span rel="schema:creator oa:annotatedBy as:actor">' + creator + '</span></h3>';
