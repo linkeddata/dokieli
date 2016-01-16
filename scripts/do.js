@@ -432,7 +432,7 @@ var DO = {
 
             var userImage = '';
             if (DO.C.User.Image) {
-                userImage = '<img rel="schema:image" src="' + DO.C.User.Image + '" width="32" height="32"/>';
+                userImage = '<img rel="schema:image" src="' + DO.C.User.Image + '" width="48" height="48"/>';
             }
 
             var user = ''
@@ -2347,7 +2347,7 @@ LIMIT 1";
 
                     var creatorName = 'Anonymous';
                     if (typeof n.creator.image !== 'undefined') {
-                        creatorImage = '<img rel="schema:image" src="' + n.creator.image + '" width="32" height="32" />';
+                        creatorImage = '<img rel="schema:image" src="' + n.creator.image + '" width="48" height="48" />';
                     }
                     if (typeof n.creator.iri !== 'undefined' && typeof n.creator.name !== 'undefined') {
                         creatorName = '<span about="' + n.creator.iri + '" property="schema:name">' + n.creator.name + '</span>';
