@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
-        <meta charset="utf-8"/>
+        <meta charset="utf-8" />
         <title>A Sample ACM SIG Proceedings Paper in LaTeX Format</title>
         <link rel="stylesheet alternate" href="media/css/lncs.css" media="all" title="LNCS" />
         <link rel="stylesheet" href="media/css/acm.css" media="all" title="ACM" />
         <link rel="stylesheet alternate" href="https://www.w3.org/StyleSheets/TR/W3C-REC.css" media="all" title="W3C-REC"/>
         <link rel="stylesheet" href="media/css/do.css" media="all" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" media="all" />
-        <link rel="stylesheet" href="media/css/medium-editor.css" media="all" />
-        <link rel="stylesheet" href="media/css/medium-editor-default.css" media="all" />
-        <link rel="stylesheet" href="media/css/medium-editor-tables.css" media="all" />
+        <link rel="stylesheet" href="media/css/editor.css" media="all" />
         <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
         <script src="scripts/RDFaProcessor.min.1.4.0.js"></script>
         <script src="scripts/simplerdf.js"></script>
