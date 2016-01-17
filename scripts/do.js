@@ -2208,7 +2208,7 @@ LIMIT 1";
 
         positionQuoteSelector: function(noteIRI, containerNode) {
             containerNode = containerNode || document.body;
-//            return new Promise(function(resolve, reject) {
+            return new Promise(function(resolve, reject) {
                 var g = SimpleRDF(DO.C.Vocab);
                 g.iri(noteIRI).get().then(
                     function(i) {
@@ -2322,16 +2322,20 @@ LIMIT 1";
                             var refId = 'r-' + id;
                             var refLabel = id;
                             DO.U.positionNote(refId, refLabel, id);
+
+                            //Perhaps return something more useful?
+                            return resolve(noteIRI);
                         }
                         else {
-                            //return Promose.reject({'message': "Can't match the text"});
+                            return Promose.reject({'message': "Can't match the text"});
                         }
                     },
                     function(reason) {
                         console.log(reason);
+                        return reject(reason);
                     }
                 );
-//            };
+            });
         },
 
         createNoteHTML: function(n) {
@@ -3248,7 +3252,14 @@ LIMIT 1";
                                     DO.U.putResource(noteIRI, data).then(
                                         function(i) {
                                             console.log(i);
-                                            DO.U.positionQuoteSelector(noteIRI, document.body);
+                                            DO.U.positionQuoteSelector(noteIRI, document.body).then(
+                                                function(i) {
+                                                    console.log(i);
+                                                },
+                                                function(reason) {
+                                                    console.log(reason);
+                                                }
+                                            );
                                         },
                                         function(reason) {
                                             console.log('PUT failed');
