@@ -1735,8 +1735,8 @@ var DO = {
 
                 DO.U.putResource(storageIRI, html).then(
                     function(i) {
-                        saveAsDocument.append('<div class="response-message"><p class="success">Document saved at <a href="' + storageIRI + '">' + storageIRI + '</a></p></div>');
-                        window.open(storageIRI, '_blank');
+                        saveAsDocument.append('<div class="response-message"><p class="success">Document saved at <a href="' + storageIRI + '?edit=true">' + storageIRI + '</a></p></div>');
+                        window.open(storageIRI + '?edit=true', '_blank');
                     },
                     function(reason) {
                         switch(reason.status) {
