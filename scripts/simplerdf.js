@@ -24129,11 +24129,31 @@ module.exports = mixin
 /* global XMLHttpRequest */
 var utils = {}
 
-utils.defaultRequest = function (method, requestUrl, headers, content, callback) {
+utils.defaultRequest = function (method, requestUrl, headers, content, callback, options) {
+  options = options || {}
+
+  var withCredentials = true
+
+  if ('withCredentials' in options) {
+    withCredentials = options.withCredentials
+  }
+
+  // support require module compatible function call
+  if (typeof method === 'object') {
+    callback = requestUrl
+    requestUrl = method.url
+    headers = method.headers
+    content = method.body
+    method = method.method
+    withCredentials = 'withCredentials' in method ? method.withCredentials : true
+  }
+
   return new Promise(function (resolve, reject) {
     callback = callback || function () {}
 
     var xhr = new XMLHttpRequest()
+
+    xhr.withCredentials = withCredentials
 
     xhr.onreadystatechange = function () {
       if (xhr.readyState === xhr.DONE) {
@@ -26015,8 +26035,60 @@ module.exports = RdfaParser
 },{"rdf-ext":258,"rdf-parser-dom":260,"util":231}],248:[function(require,module,exports){
 arguments[4][236][0].apply(exports,arguments)
 },{"dup":236}],249:[function(require,module,exports){
-arguments[4][237][0].apply(exports,arguments)
-},{"dup":237}],250:[function(require,module,exports){
+/* global XMLHttpRequest */
+var utils = {}
+
+utils.defaultRequest = function (method, requestUrl, headers, content, callback) {
+  return new Promise(function (resolve, reject) {
+    callback = callback || function () {}
+
+    var xhr = new XMLHttpRequest()
+
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === xhr.DONE) {
+        var headerLines = xhr.getAllResponseHeaders().split('\r\n')
+        var resHeaders = {}
+
+        for (var i = 0; i < headerLines.length; i++) {
+          var headerLine = headerLines[i].split(': ', 2)
+
+          resHeaders[headerLine[0].toLowerCase()] = headerLine[1]
+        }
+
+        callback(xhr.status, resHeaders, xhr.responseText)
+
+        resolve({
+          statusCode: xhr.status,
+          headers: resHeaders,
+          content: xhr.responseText
+        })
+      }
+    }
+
+    xhr.open(method, requestUrl, true)
+
+    for (var header in headers) {
+      xhr.setRequestHeader(header, headers[header])
+    }
+
+    xhr.send(content)
+  })
+}
+
+utils.corsProxyRequest = function (proxyUrl, method, requestUrl, headers, content, callback) {
+  var url = proxyUrl + '?url=' + encodeURIComponent(requestUrl)
+
+  return utils.defaultRequest(method, url, headers, content, callback)
+}
+
+utils.mixin = function (rdf) {
+  rdf.defaultRequest = utils.defaultRequest
+  rdf.corsProxyRequest = utils.corsProxyRequest
+}
+
+module.exports = utils.mixin
+
+},{}],250:[function(require,module,exports){
 arguments[4][238][0].apply(exports,arguments)
 },{"dup":238,"http":222,"https":199,"url":228}],251:[function(require,module,exports){
 arguments[4][239][0].apply(exports,arguments)
