@@ -69,7 +69,9 @@ left: 50%;
 transform: translate(-50%, 0);
 }
 
-
+aside.do input {
+  padding: 0.2em;
+}
 
 aside.note {
 position:static;
@@ -218,6 +220,32 @@ border:2px solid #cccccc;
 
 #table-of-stuff label {
 font-weight:normal;
+}
+
+#resource-browser {
+  overflow-x: hidden;
+  min-width: 25%;
+}
+#resource-browser ul {
+  width: 100%;
+}
+#resource-browser ul input[type="radio"] {
+  display: none;
+}
+#resource-browser ul label {
+  display: block;
+  width: 100%;
+  padding: 0.4em;
+  cursor: pointer;
+}
+#resource-browser .container {
+  background-color: #f2f2f2;
+}
+#resource-browser .container:hover {
+  background-color: #ccc;
+}
+#resource-browser input[checked="true"] + label {
+  font-weight: bold;
 }
 
 .do.sortable .sortable-placeholder {
@@ -409,7 +437,6 @@ border-right: 2px solid rgba(128,128,128,0.2);
 .do.fragment a:nth-child(n+2) {
 border-right: 2px solid rgba(64,64,64,0.9);
 }
-
 
 .sparkline {
 height: 1em;

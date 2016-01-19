@@ -151,6 +151,11 @@ var DO = {
             "oaAnnotatedBy": {
                 "@id": "http://www.w3.org/ns/oa#annotatedBy",
                 "@type": "@id"
+            },
+            "ldpcontains": {
+                "@id": "http://www.w3.org/ns/ldp#contains",
+                "@type": "@id",
+                "@array": true
             }
         }
     },
@@ -914,6 +919,7 @@ var DO = {
             $('#create-new-document').remove();
             $('#save-as-document').remove();
             $('#user-identity-input').remove();
+            $('#resource-browser').remove();
 //            DO.U.hideStorage();
         },
 
@@ -1478,8 +1484,8 @@ var DO = {
         },
         
         forceTrailingSlash: function(aString) {
-            if(aString.slice(-1) == "/") return aString;
-            else return aString + "/";
+            if (aString.slice(-1) == "/") return aString;
+            return aString + "/";
         },
         
         getUrlPath: function(aString) {
@@ -1494,7 +1500,6 @@ var DO = {
                        return resolve(i);
                     },
                     function(reason) {
-                      console.log(reason);
                       return reject(reason);
                     }
                 );
@@ -1629,6 +1634,7 @@ var DO = {
             s += '<li><button class="resource-new"'+buttonDisabled+'>New</button></li>';
             s += '<li><button class="resource-save"'+buttonDisabled+'>Save</button></li>';
             s += '<li><button class="resource-save-as">Save As</button></li>';
+            s += '<li><button class="resource-browser">Browser</button></li>';
 
             s += '<li><button class="resource-export">Export</button></li>';
             s += '<li><button class="resource-print">⎙ Print</button></li>';
@@ -1662,6 +1668,7 @@ var DO = {
                 );
             });
             $('#document-do').on('click', '.resource-save-as', DO.U.saveAsDocument);
+            $('#document-do').on('click', '.resource-browser', DO.U.showResourceBrowser);
 
             $('#document-do').on('click', '.resource-export', DO.U.exportAsHTML);
 
@@ -1670,6 +1677,186 @@ var DO = {
                 window.print();
                 return false;
             });
+        },
+        
+        nextLevelButton: function(button, url) {
+            button.addEventListener('click', function(){
+                if(button.parentNode.classList.contains('container')){
+                    DO.U.getGraph(url).then(
+                        function(g){
+                            return DO.U.generateBrowserList(g, url);
+                        },
+                        function(reason){
+                            var inputBox = document.getElementById('browser-location');
+                            switch(reason.slice(-3)) { // TODO: simplerdf needs to pass status codes better than in a string.
+                                default:
+                                    inputBox.insertAdjacentHTML('beforeEnd', '<div class="response-message"><p class="error">Unable to access ('+ reason +').</p>');
+                                    break;
+                                case '404':
+                                    inputBox.insertAdjacentHTML('beforeEnd', '<div class="response-message"><p class="error">Not found.</p></div>');
+                                    break;
+                                case '401': case '403':
+                                    var msg = 'You don\'t have permission to access this location.';
+                                    if(!DO.C.User.IRI){
+                                        msg += '</p><p>Try signing in to access your datastore.';
+                                    }
+                                    inputBox.insertAdjacentHTML('beforeEnd', '<div class="response-message"><p class="error">' + msg + '</p></div>');
+                                    break;
+                            }
+                        }
+                    );
+                }else{
+                    document.getElementById('browser-location-input').value = url;
+                    var alreadyChecked = button.parentNode.querySelector('input[type="radio"]').checked;
+                    var radios = button.parentNode.parentNode.querySelectorAll('input[checked="true"]');
+                    for(var i = 0; i < radios.length; i++){
+                        radios[i].removeAttribute('checked');
+                    }
+                    if(alreadyChecked){
+                        button.parentNode.querySelector('input[type="radio"]').removeAttribute('checked');
+                    }else{
+                        button.parentNode.querySelector('input[type="radio"]').setAttribute('checked', 'true');
+                    }
+                }
+            }, false);
+        },
+        
+        generateBrowserList: function(g, url) {
+            
+            return new Promise(function(resolve, reject){
+              
+              document.getElementById('browser-location-input').value = url;
+              
+                var msgs = document.getElementById('browser-location').querySelectorAll('.response-message');
+                for(var i = 0; i < msgs.length; i++){
+                    msgs[i].parentNode.removeChild(msgs[i]);
+                }
+                
+                var list = document.getElementById('browser-ul');
+                list.innerHTML = '';
+                
+                var urlPath = DO.U.getUrlPath(url);
+                if(urlPath.length > 4){ // This means it's not the base URL
+                    urlPath.splice(-2,2);
+                    var prevUrl = DO.U.forceTrailingSlash(urlPath.join("/"));
+                    var upBtn = '<li class="container"><input type="radio" name="containers" value="' + prevUrl + '" id="' + prevUrl + '" /><label for="' + prevUrl + '" id="browser-up">..</label></li>';
+                    list.insertAdjacentHTML('afterBegin', upBtn);
+                }
+
+                var current = g.iri(url);
+                var contains = current.ldpcontains;
+                contains.forEach(function(c){
+                    var cg = g.iri(c);
+                    var types = cg.rdftype;
+                    
+                    var path = DO.U.getUrlPath(c);
+                    if(types.indexOf('http://www.w3.org/ns/ldp#Container') > -1){
+                        var containerClass = ' class="container" ';
+                        var slug = path[path.length-2];
+                    }else{
+                      var containerClass = '';
+                      var slug = path[path.length-1];
+                    }
+
+                    var liHTML = '<li' + containerClass + '><input type="radio" name="resources" value="' + c + '" id="' + slug + '"/><label for="' + slug + '">' + slug + '</label></li>';
+                    list.insertAdjacentHTML('beforeEnd', liHTML);
+                    
+                });
+                
+                var buttons = list.querySelectorAll('label');
+                if(buttons.length <= 1){
+                    list.insertAdjacentHTML('beforeEnd', '<p><em>(empty)</em></p>');
+                }
+                
+                for(var i = 0; i < buttons.length; i++) {
+                    var nextUrl = buttons[i].parentNode.querySelector('input').value;
+                    DO.U.nextLevelButton(buttons[i], nextUrl);
+                }
+            
+                return resolve(list);
+            });
+        },
+        
+        showResourceBrowser: function() {
+          
+            this.disabled = "disabled";
+            var browserHTML = '<aside id="resource-browser" class="do on"><button class="close">❌</button><h2>Resource Browser</h2>\n\
+            <div id="browser-location"><label for="browser-location-input">URL</label> <input type="text" id="browser-location-input" name="browser-location-input" placeholder="https://example.org/path/to/" /><button id="browser-location-update" disabled="disabled">Browse</button></div>\n\
+            <div id="browser-contents"></div></aside>';
+            document.querySelector('body').insertAdjacentHTML('beforeEnd', browserHTML);
+            
+            document.getElementById('resource-browser').querySelector('button.close').addEventListener('click', function(e) {
+                document.querySelector('#document-do .resource-browse').removeAttribute('disabled');
+            }, false);
+            
+            var inputBox = document.getElementById('browser-location');
+            var storageBox = document.getElementById('browser-contents');
+            var input = document.getElementById('browser-location-input');
+            var browseButton = document.getElementById('browser-location-update');
+            
+            input.addEventListener('keyup', function(){
+                if (input.value.length > 10 && input.value.match(/^https?:\/\//g) && input.value.slice(-1) == "/") {
+                    browseButton.removeAttribute('disabled');
+                }else{
+                    browseButton.disabled = 'disabled';
+                }
+            }, false);
+            
+            var browserul = document.getElementById('browser-ul');
+            if(!browserul){
+                browserul = document.createElement('ul');
+                browserul.id = "browser-ul";
+            
+                storageBox.appendChild(browserul);
+            }
+            
+            if(DO.C.User.Storage) {
+                var storageUrl = DO.U.forceTrailingSlash(DO.C.User.Storage[0]); // TODO: options for multiple storage
+                input.value = storageUrl;
+                DO.U.getGraph(storageUrl).then(function(g){
+                    DO.U.generateBrowserList(g, storageUrl);
+                });
+            }
+            
+            browseButton.addEventListener('click', function(){
+                var url = input.value;
+                if (input.value.length > 10 && input.value.match(/^https?:\/\//g) && input.value.slice(-1) == "/"){
+                    DO.U.getGraph(url).then(function(g){
+                        DO.U.generateBrowserList(g, url).then(function(l){
+                            return l;
+                        },
+                        function(reason){
+                            console.log('???? ' + reason); // Probably no reason for it to get to here
+                        });
+                    },
+                    function(reason){
+                        var list = document.getElementById('browser-ul');
+                        switch(reason.slice(-3)) { // TODO: simplerdf needs to pass status codes better than in a string.
+                            default:
+                                inputBox.insertAdjacentHTML('beforeEnd', '<div class="response-message"><p class="error">Unable to access ('+ reason +').</p>');
+                                break;
+                            case '404':
+                                inputBox.insertAdjacentHTML('beforeEnd', '<div class="response-message"><p class="error">Not found.</p></div>');
+                                break;
+                            case '401': case '403':
+                                var msg = 'You don\'t have permission to access this location.';
+                                if(!DO.C.User.IRI){
+                                    msg += '</p><p>Try signing in to access your datastore.';
+                                }
+                                inputBox.insertAdjacentHTML('beforeEnd', '<div class="response-message"><p class="error">' + msg + '</p></div>');
+                                break;
+                        }
+                    });
+                }
+            }, false);
+            /* TODO: Replace/augment button with live updates from typing; this needs a delay on the keyup.
+            document.getElementById('browser-location-input').addEventListener('keyup', function(){
+                var url = this.value;
+                DO.U.getGraph(url).then(function(g){
+                    DO.U.generateBrowserList(g, url);
+                });
+            }, false);
+            */
         },
 
         createNewDocument: function() {
