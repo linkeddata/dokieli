@@ -1744,7 +1744,7 @@ var DO = {
             s += '<li><button class="resource-new"'+buttonDisabled+'>New</button></li>';
             s += '<li><button class="resource-save"'+buttonDisabled+'>Save</button></li>';
             s += '<li><button class="resource-save-as">Save As</button></li>';
-            s += '<li><button class="resource-browser">Browser</button></li>';
+            //s += '<li><button class="resource-browser">Browser</button></li>';
 
             s += '<li><button class="resource-export">Export</button></li>';
             s += '<li><button class="resource-print">⎙ Print</button></li>';
@@ -1778,7 +1778,7 @@ var DO = {
                 );
             });
             $('#document-do').on('click', '.resource-save-as', DO.U.saveAsDocument);
-            $('#document-do').on('click', '.resource-browser', DO.U.showResourceBrowser);
+            //$('#document-do').on('click', '.resource-browser', DO.U.showResourceBrowser);
 
             $('#document-do').on('click', '.resource-export', DO.U.exportAsHTML);
 
@@ -1894,7 +1894,10 @@ var DO = {
             });
         },
         
-        showResourceBrowser: function() {
+        setupResourceBrowser: function(parent){
+          
+            parent.insertAdjacentHTML('beforeEnd', '<div id="browser-location"><label for="browser-location-input">URL</label> <input type="text" id="browser-location-input" name="browser-location-input" placeholder="https://example.org/path/to/" /><button id="browser-location-update" disabled="disabled">Browse</button></div>\n\
+            <div id="browser-contents"></div>');
           
             var triggerBrowse = function(url){
                 var inputBox = document.getElementById('browser-location');
@@ -1929,16 +1932,6 @@ var DO = {
                     inputBox.insertAdjacentHTML('beforeEnd', '<div class="response-message"><p class="error">This is not a valid location.</p></div>');
                 }
             }
-          
-            this.disabled = "disabled";
-            var browserHTML = '<aside id="resource-browser" class="do on"><button class="close">❌</button><h2>Resource Browser</h2>\n\
-            <div id="browser-location"><label for="browser-location-input">URL</label> <input type="text" id="browser-location-input" name="browser-location-input" placeholder="https://example.org/path/to/" /><button id="browser-location-update" disabled="disabled">Browse</button></div>\n\
-            <div id="browser-contents"></div></aside>';
-            document.querySelector('body').insertAdjacentHTML('beforeEnd', browserHTML);
-            
-            document.getElementById('resource-browser').querySelector('button.close').addEventListener('click', function(e) {
-                document.querySelector('#document-do .resource-browser').removeAttribute('disabled');
-            }, false);
             
             var inputBox = document.getElementById('browser-location');
             var storageBox = document.getElementById('browser-contents');
@@ -1984,21 +1977,37 @@ var DO = {
             }, false);
             */
         },
+        
+        showResourceBrowser: function() {
+            this.disabled = "disabled";
+            var browserHTML = '<aside id="resource-browser" class="do on"><button class="close">❌</button><h2>Resource Browser</h2></aside>';
+            document.querySelector('body').insertAdjacentHTML('beforeEnd', browserHTML);
+            
+            document.getElementById('resource-browser').querySelector('button.close').addEventListener('click', function(e) {
+                document.querySelector('#document-do .resource-browser').removeAttribute('disabled');
+            }, false);
+            
+            DO.U.setupResourceBrowser(document.getElementById('resource-browser'));
+            
+        },
 
         createNewDocument: function() {
             $(this).prop('disabled', 'disabled');
-            $('body').append('<aside id="create-new-document" class="do on"><button class="close">❌</button><h2>Create New Document</h2><div>' + DO.U.getBaseURLSelection() + '<p><label>URL</label><input id="storage" type="text" placeholder="https://example.org/path/to/article" value="" name="storage"/> <button class="create">Create</button></p></div></aside>');
+            $('body').append('<aside id="create-new-document" class="do on"><button class="close">❌</button><h2>Create New Document</h2><p>Choose a location to save your new article.</p></aside>');
 
             var newDocument = $('#create-new-document');
-            newDocument.find('#storage').focus();
-
             newDocument.on('click', 'button.close', function(e) {
                 $('#document-do .resource-new').removeAttr('disabled');
             });
+            
+            DO.U.setupResourceBrowser(document.getElementById('create-new-document'));
+            newDocument.append(DO.U.getBaseURLSelection() + '<button class="create">Create</button>');
+            document.getElementById('browser-location-input').focus();
+            document.getElementById('browser-location-input').placeholder = 'https://example.org/path/to/article';
 
             newDocument.on('click', 'button.create', function(e) {
                 var newDocument = $('#create-new-document')
-                var storageIRI = newDocument.find('input#storage').val().trim();
+                var storageIRI = newDocument.find('input#browser-location-input').val().trim();
                 newDocument.find('.response-message').remove();
 
                 var html = document.documentElement.cloneNode(true);
@@ -2034,6 +2043,9 @@ var DO = {
                             case 401: case 403:
                                 newDocument.append('<div class="response-message"><p class="error">Unable to create new: you don\'t have permission to write here.</p></div>');
                                 break;
+                            case 406:
+                                newDocument.append('<div class="response-message"><p class="error">Unable to create new: enter a name for your resource.</p></div>');
+                                break;
                         }
                         console.log(reason);
                     }
@@ -2043,19 +2055,20 @@ var DO = {
 
         saveAsDocument: function() {
             $(this).prop('disabled', 'disabled');
-            $('body').append('<aside id="save-as-document" class="do on"><button class="close">❌</button><h2>Save As Document</h2><div>' + DO.U.getBaseURLSelection() + '<p><label>URL</label><input id="storage" type="text" placeholder="https://example.org/path/to/article" value="" name="storage"/> <button class="create">Save</button></p></div></aside>');
+            $('body').append('<aside id="save-as-document" class="do on"><button class="close">❌</button><h2>Save As Document</h2><p>Choose a location to save your new article.</p></aside>');
 
             var saveAsDocument = $('#save-as-document');
-
-            saveAsDocument.find('#storage').focus();
-
             saveAsDocument.on('click', 'button.close', function(e) {
                 $('#document-do .resource-save-as').removeAttr('disabled');
             });
+            DO.U.setupResourceBrowser(document.getElementById('save-as-document'));
+            saveAsDocument.append(DO.U.getBaseURLSelection() + '<button class="create">Save</button>');
+            document.getElementById('browser-location-input').focus();
+            document.getElementById('browser-location-input').placeholder = 'https://example.org/path/to/article';
 
             saveAsDocument.on('click', 'button.create', function(e) {
                 var saveAsDocument = $('#save-as-document');
-                var storageIRI = saveAsDocument.find('input#storage').val().trim();
+                var storageIRI = saveAsDocument.find('input#browser-location-input').val().trim();
                 saveAsDocument.find('.response-message').remove();
 
                 var html = document.documentElement.cloneNode(true);
@@ -2085,6 +2098,9 @@ var DO = {
                                 break;
                             case 401: case 403:
                                 saveAsDocument.append('<div class="response-message"><p class="error">Unable to save: you don\'t have permission to write here.</p></div>');
+                                break;
+                            case 406:
+                                saveAsDocument.append('<div class="response-message"><p class="error">Unable to save: enter a name for your resource.</p></div>');
                                 break;
                         }
                         console.log(reason);

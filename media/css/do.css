@@ -222,29 +222,31 @@ border:2px solid #cccccc;
 font-weight:normal;
 }
 
-#resource-browser {
+#browser-contents {
   overflow-x: hidden;
+  overflow-y: auto;
   min-width: 25%;
+  max-height: 16em;
 }
-#resource-browser ul {
+#browser-contents ul {
   width: 100%;
 }
-#resource-browser ul input[type="radio"] {
+#browser-contents ul input[type="radio"] {
   display: none;
 }
-#resource-browser ul label {
+#browser-contents ul label {
   display: block;
   width: 100%;
   padding: 0.4em;
   cursor: pointer;
 }
-#resource-browser .container {
+#browser-contents .container {
   background-color: #f2f2f2;
 }
-#resource-browser .container:hover {
+#browser-contents .container:hover {
   background-color: #ccc;
 }
-#resource-browser input[checked="true"] + label {
+#browser-contents input[checked="true"] + label {
   font-weight: bold;
 }
 
