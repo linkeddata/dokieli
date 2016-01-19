@@ -69,7 +69,9 @@ left: 50%;
 transform: translate(-50%, 0);
 }
 
-
+aside.do input {
+  padding: 0.2em;
+}
 
 aside.note {
 position:static;
@@ -218,6 +220,34 @@ border:2px solid #cccccc;
 
 #table-of-stuff label {
 font-weight:normal;
+}
+
+#browser-contents {
+  overflow-x: hidden;
+  overflow-y: auto;
+  min-width: 25%;
+  max-height: 16em;
+}
+#browser-contents ul {
+  width: 100%;
+}
+#browser-contents ul input[type="radio"] {
+  display: none;
+}
+#browser-contents ul label {
+  display: block;
+  width: 100%;
+  padding: 0.4em;
+  cursor: pointer;
+}
+#browser-contents .container {
+  background-color: #f2f2f2;
+}
+#browser-contents .container:hover {
+  background-color: #ccc;
+}
+#browser-contents input[checked="true"] + label {
+  font-weight: bold;
 }
 
 .do.sortable .sortable-placeholder {
