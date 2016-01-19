@@ -619,6 +619,33 @@ var DO = {
             });
         },
 
+        showNotificationSources: function(url) {
+            DO.U.getNotifications(url).then(
+                function(i) {
+                    i.forEach(function(notification) {
+                        DO.U.getNotificationSource(notification).then(
+                            function(source) {
+                                DO.U.getResourceHead(source).then(
+                                    function(head) {
+                                        DO.U.positionQuoteSelector(source);
+                                    },
+                                    function(reason) {
+                                        console.log('Notification source is unreachable');
+                                    }
+                                );
+                            },
+                            function(reason) {
+                                console.log('Notification source does not exist');
+                            }
+                        );
+                    });
+                },
+                function(reason) {
+                    console.log(reason);
+                }
+            );
+        },
+
         getResourceHead: function(url) {
             url = url || window.location.origin + window.location.pathname;
             return new Promise(function(resolve, reject) {
