@@ -1789,7 +1789,7 @@ var DO = {
             document.querySelector('body').insertAdjacentHTML('beforeEnd', browserHTML);
             
             document.getElementById('resource-browser').querySelector('button.close').addEventListener('click', function(e) {
-                document.querySelector('#document-do .resource-browse').removeAttribute('disabled');
+                document.querySelector('#document-do .resource-browser').removeAttribute('disabled');
             }, false);
             
             var inputBox = document.getElementById('browser-location');
