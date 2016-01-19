@@ -2361,7 +2361,7 @@ LIMIT 1";
 
                             var id = String(Math.abs(DO.U.hashCode(noteIRI))).substr(0, 6);
                             var refId = 'r-' + id;
-                            var ref = '<span class="ref" about="#' + refId + '" typeof="http://purl.org/dc/dcmitype/Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#i-' + id + '" resource="' + noteIRI + '">' + id + '</a></sup></span>';
+                            var ref = '<span class="ref do" about="#' + refId + '" typeof="http://purl.org/dc/dcmitype/Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#i-' + id + '" resource="' + noteIRI + '">' + id + '</a></sup></span>';
 
                             MediumEditor.selection.importSelection(selection, containerNode, document);
 
