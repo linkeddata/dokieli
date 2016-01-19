@@ -119,10 +119,26 @@ var DO = {
                 "@type": "@id",
                 "@array": true
             },
+            "pingbacksource": {
+                "@id": "http://purl.org/net/pingback/source",
+                "@type": "@id"
+            },
+            "pingbackproperty": {
+                "@id": "http://purl.org/net/pingback/property",
+                "@type": "@id"
+            },
+            "pingbacktarget": {
+                "@id": "http://purl.org/net/pingback/target",
+                "@type": "@id"
+            },
             "solidinbox": {
                 "@id": "http://www.w3.org/ns/solid/terms#inbox",
                 "@type": "@id",
                 "@array": true
+            },
+            "solidnotification": {
+                "@id": "http://www.w3.org/ns/solid/terms#Notification",
+                "@type": "@id"
             },
             "oahasBody": {
                 "@id": "http://www.w3.org/ns/oa#hasBody",
@@ -437,7 +453,7 @@ var DO = {
 
             var userImage = '';
             if (DO.C.User.Image) {
-                userImage = '<img rel="schema:image" src="' + DO.C.User.Image + '" width="32" height="32"/>';
+                userImage = '<img rel="schema:image" src="' + DO.C.User.Image + '" width="48" height="48"/>';
             }
 
             var user = ''
@@ -522,8 +538,8 @@ var DO = {
             if (pIRI.slice(0, 5).toLowerCase() != 'https' && document.location.origin != 'null') {
                 pIRI = document.location.origin + '/,proxy?uri=' + DO.U.encodeString(pIRI);
             }
-            console.log(pIRI);
-            console.log(subjectIRI);
+//            console.log(pIRI);
+//            console.log(subjectIRI);
 
             return new Promise(function(resolve, reject) {
                 //FIXME: This doesn't work so well if the document's URL is different than input url
@@ -532,7 +548,7 @@ var DO = {
                     function(i) {
                         var s = i.iri(subjectIRI);
                         if (s.solidinbox.length > 0) {
-                            console.log(s.solidinbox);
+//                            console.log(s.solidinbox);
                             return resolve(s.solidinbox);
                         }
                         var reason = {"message": "Inbox was not found"};
@@ -544,6 +560,102 @@ var DO = {
                     }
                 );
             });
+        },
+
+        getNotifications: function(url) {
+            url = url || window.location.origin + window.location.pathname;
+            var notifications = [];
+
+            return new Promise(function(resolve, reject) {
+                var g = SimpleRDF(DO.C.Vocab);
+                g.iri(url).get().then(
+                    function(i) {
+                        var s = i.iri(url);
+                        s.ldpcontains.forEach(function(resource) {
+                            var types = s.iri(resource).rdftype;
+                            var n = types.indexOf(DO.C.Vocab.solidnotification["@id"]);
+                            if(n >= 0) {
+                                notifications.push(resource);
+                            }
+                        });
+
+                        if (notifications.length > 0) {
+                            return resolve(notifications);
+                        }
+                        else {
+                            var reason = {"message": "There are no notifications."};
+                            return Promise.reject(reason);
+                        }
+                    },
+                    function(reason) {
+                        console.log(reason);
+                        return reject(reason);
+                    }
+                );
+            });
+        },
+
+        getNotificationSource: function(url) {
+            url = url || window.location.origin + window.location.pathname;
+
+            return new Promise(function(resolve, reject) {
+                var g = SimpleRDF(DO.C.Vocab);
+                g.iri(url).get().then(
+                    function(i) {
+                        var s = i.iri(url);
+                        if (s.pingbackproperty == DO.C.Vocab.oahasTarget["@id"] && s.pingbacktarget == window.location.origin + window.location.pathname) {
+                            return resolve(s.pingbacksource);
+                        }
+                        else {
+                            return Promise.reject({'message': 'Notification source not found'});
+                        }
+                    },
+                    function(reason) {
+                        console.log(reason);
+                        return reject(reason);
+                    }
+                );
+            });
+        },
+
+        showInboxNotifications: function() {
+            DO.U.getInbox().then(
+                function(i) {
+                    i.forEach(function(inbox) {
+                        DO.U.showNotificationSources(inbox);
+                    });
+                },
+                function(reason) {
+                    console.log(reason);
+                }
+            );
+        },
+
+        showNotificationSources: function(url) {
+            DO.U.getNotifications(url).then(
+                function(i) {
+                    i.forEach(function(notification) {
+                        DO.U.getNotificationSource(notification).then(
+                            function(source) {
+                                DO.U.getResourceHead(source).then(
+                                    function(head) {
+                                        DO.U.positionQuoteSelector(source);
+                                    },
+                                    function(reason) {
+                                        console.log('Notification source is unreachable');
+                                    }
+                                );
+                            },
+                            function(reason) {
+                                console.log('Notification source does not exist');
+                            }
+                        );
+                    });
+                },
+                function(reason) {
+                    console.log(reason);
+                }
+            );
         },
 
         getResourceHead: function(url) {
@@ -730,7 +842,7 @@ var DO = {
     pingback:target <' + target + '> ;\n\
     schema:dateModified "' + DO.U.getDateTimeISO() + '"^^xsd:dateTime ;\n\
     schema:creator <' + DO.C.User.IRI + '> ;\n\
-    schema:license <http://creativecommons.org/licenses/by-sa/4.0/> .\n\
+    schema:license <' + DO.C.License.CCBYSA.iri + '> .\n\
 ';
 
             return DO.U.postResource(url, slug, data, 'text/turtle; charset=utf-8');
@@ -896,12 +1008,10 @@ var DO = {
                 DO.U.showToC();
             }
 
-            $(document).on('keyup', DO.U.eventEscapeDocumentMenu);
             $(document).on('click', DO.U.eventLeaveDocumentMenu);
         },
 
         hideDocumentMenu: function() {
-            $(document).off('keyup', DO.U.eventEscapeDocumentMenu);
             $(document).off('click', DO.U.eventLeaveDocumentMenu);
 
             var body = $('body');
@@ -1949,8 +2059,8 @@ var DO = {
 
                 DO.U.putResource(storageIRI, html).then(
                     function(i) {
-                        saveAsDocument.append('<div class="response-message"><p class="success">Document saved at <a href="' + storageIRI + '">' + storageIRI + '</a></p></div>');
-                        window.open(storageIRI, '_blank');
+                        saveAsDocument.append('<div class="response-message"><p class="success">Document saved at <a href="' + storageIRI + '?edit=true">' + storageIRI + '</a></p></div>');
+                        window.open(storageIRI + '?edit=true', '_blank');
                     },
                     function(reason) {
                         switch(reason.status) {
@@ -2364,7 +2474,7 @@ LIMIT 1";
         },
 
         positionNote: function(refId, refLabel, noteId) {
-            console.log('--- positionNote(): ' + refId + ', ' + refLabel + ', ' + noteId);
+//            console.log('--- positionNote(): ' + refId + ', ' + refLabel + ', ' + noteId);
             var viewportWidthSplit = Math.ceil(parseInt($(window).width()) / 2);
 
             var parentPositionLeft, positionLeftCalc, noteWidth = '';
@@ -2422,11 +2532,11 @@ LIMIT 1";
 
         positionQuoteSelector: function(noteIRI, containerNode) {
             containerNode = containerNode || document.body;
-//            return new Promise(function(resolve, reject) {
+            return new Promise(function(resolve, reject) {
                 var g = SimpleRDF(DO.C.Vocab);
                 g.iri(noteIRI).get().then(
                     function(i) {
-                        console.log(i);
+//                        console.log(i);
                         var note = i.iri(noteIRI);
                         var datetime = note.oaAnnotatedAt;
                         var annotatedByIRI = note.oaAnnotatedBy;
@@ -2457,7 +2567,7 @@ LIMIT 1";
 
                             var id = String(Math.abs(DO.U.hashCode(noteIRI))).substr(0, 6);
                             var refId = 'r-' + id;
-                            var ref = '<span class="ref" about="#' + refId + '" typeof="http://purl.org/dc/dcmitype/Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#i-' + id + '" resource="' + noteIRI + '">' + id + '</a></sup></span>';
+                            var ref = '<span class="ref do" about="#' + refId + '" typeof="http://purl.org/dc/dcmitype/Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#i-' + id + '" resource="' + noteIRI + '">' + id + '</a></sup></span>';
 
                             MediumEditor.selection.importSelection(selection, containerNode, document);
 
@@ -2501,7 +2611,7 @@ LIMIT 1";
                                     "name": DO.C.License.CCBYSA.name
                                 }
                             }
-                            if (annotatedByIRI != 'undefined') {
+                            if (annotatedByIRI) {
                                 noteData.creator["iri"] = annotatedByIRI;
                             }
                             if (annotatedByName) {
@@ -2536,57 +2646,69 @@ LIMIT 1";
                             var refId = 'r-' + id;
                             var refLabel = id;
                             DO.U.positionNote(refId, refLabel, id);
+
+                            //Perhaps return something more useful?
+                            return resolve(noteIRI);
                         }
                         else {
-                            //return Promose.reject({'message': "Can't match the text"});
+                            return Promise.reject({'message': "Can't match the text"});
                         }
                     },
                     function(reason) {
                         console.log(reason);
+                        return reject(reason);
                     }
                 );
-//            };
+            });
         },
 
         createNoteHTML: function(n) {
             //TODO Change to switch()
-            var hasTarget = '';
-            var annotationTextSelector ='';
-            var creator = '';
+            var published = '';
             var license = '';
+            var creator = '', name = '';
+            var hasTarget = '', annotationTextSelector = '', target = '';
 
             switch(n.type) {
                 case 'position-quote-selector':
+                    published = '<dl class="published"><dt>Published</dt><dd><a href="' + n.iri + '"><time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="oa:annotatedAt schema:datePublished" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time></a></dd></dl>';
+
                     var creatorName = 'Anonymous';
-                    if (typeof n.creator.name !== 'undefined') {
-                        creatorName = '<span about="' + n.creator.iri + '" property="schema:name">' + n.creator.name + '</span>';
-                    }
                     if (typeof n.creator.image !== 'undefined') {
-                        creatorImage = '<img rel="schema:image" src="' + n.creator.image + '" width="32" height="32"/>';
+                        creatorImage = '<img rel="schema:image" src="' + n.creator.image + '" width="48" height="48" />';
                     }
-                    if (typeof n.creator.iri !== 'undefined') {
+                    if (typeof n.creator.iri !== 'undefined' && typeof n.creator.name !== 'undefined') {
+                        creatorName = '<span about="' + n.creator.iri + '" property="schema:name">' + n.creator.name + '</span>';
+
                         creator = '<span about="' + n.creator.iri + '" typeof="schema:Person">' + creatorImage + ' <a rel="schema:url" href="' + n.creator.iri + '"> ' + creatorName + '</a></span>';
                     }
                     else {
-                        creator = '<span typeof="schema:Person">' + creatorName + '</span>';
+                        creator = '<span about="[i:#agent]" typeof="schema:Person">' + creatorName + '</span>';
+                    }
+
+                    name = '<h3 property="schema:name"><span rel="schema:creator oa:annotatedBy as:actor">' + creator + '</span></h3>';
+
+                    description = '<div property="schema:description" rel="oa:hasBody as:content"><div about="[i:#i]" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">' + n.body + '</div></div>';
+
+                    //TODO: Include `a oa:SpecificResource`?
+                    if (typeof n.target != 'undefined' && typeof n.target.selector != 'undefined') { //note, annotation
+                        //FIXME: Could resourceIRI be a fragment URI or *make sure* it is the document URL without the fragment?
+                        //TODO: Use n.target.iri?
+                        hasTarget = '<a rel="oa:hasTarget sioc:reply_of as:inReplyTo" href="' + n.target.source + '#TODO-PerhapsClosestParentID" resource="' + n.target.source + '#TODO-PerhapsClosestParentID"><span about="[i:]" rel="oa:motivatedBy" resource="oa:replying">In reply to</span></a>';
+
+                        annotationTextSelector = '<span rel="oa:hasSource" resource="' + n.target.source +'"></span><span rel="oa:hasSelector" typeof="oa:TextQuoteSelector"><span property="oa:prefix" xml:lang="en" lang="">' + n.target.selector.prefix + '</span><strong property="oa:exact" xml:lang="en" lang=""><mark>' + n.target.selector.exact + '</mark></strong><span property="oa:suffix" xml:lang="en" lang="">' + n.target.selector.suffix + '</span></span>';
+
+                        target ='<dl class="target"><dt>' + hasTarget + '</dt><dd><blockquote about="' + n.target.source + '#TODO-PerhapsClosestParentID" cite="' + n.target.source + '#TODO-PerhapsClosestParentID">' + annotationTextSelector + '</blockquote></dd></dl>';
                     }
                     break;
-                default:
-                    creator = DO.U.getUserHTML();
+
+                case 'footnote':
+                    description = '<dl><dt property="schema:name">' + n.id + '</dt><dd property="schema:description" datatype="rdf:HTML">' + n.body + '</dd></dl>';
                     break;
-            }
 
-
-            //TODO: Include `a oa:SpecificResource`?
-            if (typeof n.target != 'undefined' && typeof n.target.selector != 'undefined') { //note, annotation
-                annotationTextSelector = '<span rel="oa:hasSource" resource="' + n.target.source +'"></span><span rel="oa:hasSelector" typeof="oa:TextQuoteSelector"><span property="oa:prefix" xml:lang="en" lang="">' + n.target.selector.prefix + '</span><strong property="oa:exact" xml:lang="en" lang=""><mark>' + n.target.selector.exact + '</mark></strong><span property="oa:suffix" xml:lang="en" lang="">' + n.target.selector.suffix + '</span></span>';
-
-                //FIXME: Could resourceIRI be a fragment URI or *make sure* it is the document URL without the fragment?
-                //TODO: Use n.target.iri?
-                hasTarget = '<a rel="oa:hasTarget sioc:reply_of as:inReplyTo" href="' + n.target.source + '#TODO-PerhapsClosestParentID" resource="' + n.target.source + '#TODO-PerhapsClosestParentID"><span about="[i:]" rel="oa:motivatedBy" resource="oa:replying">In reply to</span></a>';
-            }
-            else {
-                hasTarget = '<a rel="oa:hasTarget sioc:reply_of as:inReplyTo" href="' + n.target.source + '"><span about="[i:]" rel="oa:motivatedBy" resource="oa:replying">In reply to</span></a>';
+                default:
+//                    creator = DO.U.getUserHTML();
+                    break;
             }
 
             if (typeof n.license != 'undefined' && typeof n.license.iri != 'undefined' && typeof n.license.name != 'undefined') {
@@ -2595,16 +2717,11 @@ LIMIT 1";
 
             var note = '\n\
             <article id="' + n.id + '" about="[i:]" typeof="oa:Annotation as:Activity" prefix="schema: http://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'">\n\
-                <dl class="published"><dt>Published</dt><dd><a href="' + n.iri + '"><time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="oa:annotatedAt schema:datePublished" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time></a></dd></dl>\n\
+                ' + published + '\n\
                 ' + license + '\n\
-                <h3 property="schema:name"><span rel="schema:creator oa:annotatedBy as:actor">' + creator + '</span></h3>\n\
-                <div property="schema:description" rel="oa:hasBody as:content">\n\
-                    <div about="[i:#i]" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">' + n.body + '</div>\n\
-                </div>\n\
-                <dl>\n\
-                    <dt>' + hasTarget + '</dt>\n\
-                    <dd><blockquote about="' + n.target.source + '#TODO-PerhapsClosestParentID" cite="' + n.target.source + '#TODO-PerhapsClosestParentID">' + annotationTextSelector + '</blockquote></dd>\n\
-                </dl>\n\
+                ' + name + '\n\
+                ' + description + '\n\
+                ' + target + '\n\
             </article>';
 
             return note;
@@ -3326,8 +3443,6 @@ LIMIT 1";
                             var datetime = DO.U.getDateTimeISO();
                             var id = DO.U.generateAttributeId().slice(0, 6);
                             var refId = 'r-' + id;
-
-                            //TODO: noteId can be external to this document e.g., User stores the note at their own space
                             // var noteId = 'i-' + id;
 
                             var resourceIRI = document.location.href;
@@ -3378,10 +3493,12 @@ LIMIT 1";
 
                                     noteType = 'position-quote-selector';
                                     ref = this.base.selection;
+                                    refLabel = id;
 
                                     noteData = {
                                         "type": noteType, //e.g., 'article'
                                         "id": id,
+                                        "refLabel": refLabel,
                                         "iri": noteIRI, //e.g., https://example.org/path/to/article
                                         "creator": {},
                                         "datetime": datetime,
@@ -3416,7 +3533,17 @@ LIMIT 1";
                                 case 'mark': //'footnote':
                                     noteType = 'footnote';
 
-                                    ref = '<span class="ref" about="#' + refId + '" typeof="http://purl.org/dc/dcmitype/Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span><sup class="ref-footnote"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup></span>';
+                                    ref = '<span class="ref" about="#' + refId + '" typeof="http://purl.org/dc/dcmitype/Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-footnote"><a rel="cito:isCitedBy" href="#i-' + id + '">' + refLabel + '</a></sup></span>';
+
+                                    noteData = {
+                                        "type": noteType, //e.g., 'article'
+                                        "id": id,
+                                        "refLabel": refLabel,
+                                        "iri": noteIRI, //e.g., https://example.org/path/to/article
+                                        "datetime": datetime,
+                                        "body": opts.url //FIXME: This object name is not fun
+                                    }
+
                                     break;
                                 // case 'reference':
                                 //     ref = '<span class="ref" about="[this:#' + refId + ']" typeof="http://purl.org/dc/dcmitype/Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span> <span class="ref-reference">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span></span>';
@@ -3428,10 +3555,13 @@ LIMIT 1";
                             console.log(noteData);
                             var note = DO.U.createNoteHTML(noteData);
 
+                            //XXX: What's my purpose?
                             var selectionUpdated = ref;
                             MediumEditor.util.insertHTMLCommand(this.base.selectedDocument, selectionUpdated);
 
-                            var data = '<!DOCTYPE html>\n\
+                            switch(this.action) {
+                                default:
+                                    var data = '<!DOCTYPE html>\n\
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
      <head>\n\
          <title>' + noteIRI + '</title>\n\
@@ -3443,39 +3573,71 @@ LIMIT 1";
 </html>\n\
 ';
 
-                            DO.U.putResource(noteIRI, data).then(
-                                function(i) {
-                                    console.log(i);
-                                    DO.U.positionQuoteSelector(noteIRI, document.body);
-                                },
-                                function(reason) {
-                                    console.log('PUT failed');
-                                    console.log(reason);
-                                }
-                            );
-
-                            console.log('resourceIRI: ' + resourceIRI);
-
-                            //TODO: resourceIRI should be the closest IRI (not necessarily the document). Test resolve/reject better.
-                            DO.U.getInbox(resourceIRI).then(
-                                function(inbox) {
-                                    if (inbox && inbox.length > 0) {
-                                        console.log('inbox: ' + inbox);
-                                        DO.U.notifyInbox(inbox, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', resourceIRI).then(
-                                                function(response) {
-                                                    console.log("Notification: " + response.xhr.getResponseHeader('Location'));
+                                    DO.U.putResource(noteIRI, data).then(
+                                        function(i) {
+                                            console.log(i);
+                                            DO.U.positionQuoteSelector(noteIRI, document.body).then(
+                                                function(i) {
+                                                    console.log(i);
                                                 },
                                                 function(reason) {
                                                     console.log(reason);
                                                 }
                                             );
+                                        },
+                                        function(reason) {
+                                            console.log('PUT failed');
+                                            console.log(reason);
+                                        }
+                                    );
+
+                                    console.log('resourceIRI: ' + resourceIRI);
+
+                                    //TODO: resourceIRI should be the closest IRI (not necessarily the document). Test resolve/reject better.
+                                    DO.U.getInbox(resourceIRI).then(
+                                        function(inbox) {
+                                            if (inbox && inbox.length > 0) {
+                                                console.log('inbox: ' + inbox);
+                                                DO.U.notifyInbox(inbox, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', resourceIRI).then(
+                                                        function(response) {
+                                                            console.log("Notification: " + response.xhr.getResponseHeader('Location'));
+                                                        },
+                                                        function(reason) {
+                                                            console.log(reason);
+                                                        }
+                                                    );
+                                            }
+                                        },
+                                        function(reason) {
+                                            console.log('TODO: How can the interaction inform the target?');
+                                            console.log(reason);
+                                        }
+                                    );
+                                break;
+
+                                case 'mark': //footnote
+                                    //TODO: Refactor this what's in positionQuoteSelector
+
+                                    var nES = selectedParentElement.nextElementSibling;
+                                    //Check if <aside class="note"> exists
+                                    if(nES && nES.nodeName.toLowerCase() == 'aside' && nES.classList.contains('note')) {
+                                        var noteNode = DO.U.fragmentFromString(note);
+                                        nES.appendChild(noteNode);
                                     }
-                                },
-                                function(reason) {
-                                    console.log('TODO: How can the interaction inform the target?');
-                                    console.log(reason);
-                                }
-                            );
+                                    else {
+                                    //XXX: TODO: FIXME: This needs to be revised. Okay, Sarven, but why?
+                                        var asideNote = '\n\
+                                    <aside class="note">\n\
+                                    '+ note + '\n\
+                                    </aside>';
+                                        var asideNode = DO.U.fragmentFromString(asideNote);
+                                        var parentSection = MediumEditor.util.getClosestTag(selectedParentElement, 'section');
+                                        parentSection.appendChild(asideNode);
+                                    }
+
+                                    DO.U.positionNote(refId, refLabel, id);
+                                    break;
+                            }
 
                             this.base.checkSelection();
                         },
@@ -3587,4 +3749,5 @@ $(document).ready(function() {
 //    DO.U.getLinkedResearch();
     DO.U.showFragment();
     DO.U.setDocumentMode();
+    DO.U.showInboxNotifications();
 });
