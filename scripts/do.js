@@ -1009,12 +1009,10 @@ var DO = {
                 DO.U.showToC();
             }
 
-            $(document).on('keyup', DO.U.eventEscapeDocumentMenu);
             $(document).on('click', DO.U.eventLeaveDocumentMenu);
         },
 
         hideDocumentMenu: function() {
-            $(document).off('keyup', DO.U.eventEscapeDocumentMenu);
             $(document).off('click', DO.U.eventLeaveDocumentMenu);
 
             var body = $('body');
