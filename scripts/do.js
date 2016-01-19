@@ -539,8 +539,8 @@ var DO = {
             if (pIRI.slice(0, 5).toLowerCase() != 'https' && document.location.origin != 'null') {
                 pIRI = document.location.origin + '/,proxy?uri=' + DO.U.encodeString(pIRI);
             }
-            console.log(pIRI);
-            console.log(subjectIRI);
+//            console.log(pIRI);
+//            console.log(subjectIRI);
 
             return new Promise(function(resolve, reject) {
                 //FIXME: This doesn't work so well if the document's URL is different than input url
@@ -549,7 +549,7 @@ var DO = {
                     function(i) {
                         var s = i.iri(subjectIRI);
                         if (s.solidinbox.length > 0) {
-                            console.log(s.solidinbox);
+//                            console.log(s.solidinbox);
                             return resolve(s.solidinbox);
                         }
                         var reason = {"message": "Inbox was not found"};
@@ -2172,7 +2172,7 @@ LIMIT 1";
         },
 
         positionNote: function(refId, refLabel, noteId) {
-            console.log('--- positionNote(): ' + refId + ', ' + refLabel + ', ' + noteId);
+//            console.log('--- positionNote(): ' + refId + ', ' + refLabel + ', ' + noteId);
             var viewportWidthSplit = Math.ceil(parseInt($(window).width()) / 2);
 
             var parentPositionLeft, positionLeftCalc, noteWidth = '';
@@ -2234,7 +2234,7 @@ LIMIT 1";
                 var g = SimpleRDF(DO.C.Vocab);
                 g.iri(noteIRI).get().then(
                     function(i) {
-                        console.log(i);
+//                        console.log(i);
                         var note = i.iri(noteIRI);
                         var datetime = note.oaAnnotatedAt;
                         var annotatedByIRI = note.oaAnnotatedBy;
@@ -2349,7 +2349,7 @@ LIMIT 1";
                             return resolve(noteIRI);
                         }
                         else {
-                            return Promose.reject({'message': "Can't match the text"});
+                            return Promise.reject({'message': "Can't match the text"});
                         }
                     },
                     function(reason) {
