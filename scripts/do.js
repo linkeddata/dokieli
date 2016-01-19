@@ -596,6 +596,29 @@ var DO = {
             });
         },
 
+        getNotificationSource: function(url) {
+            url = url || window.location.origin + window.location.pathname;
+
+            return new Promise(function(resolve, reject) {
+                var g = SimpleRDF(DO.C.Vocab);
+                g.iri(url).get().then(
+                    function(i) {
+                        var s = i.iri(url);
+                        if (s.pingbackproperty == DO.C.Vocab.oahasTarget["@id"] && s.pingbacktarget == window.location.origin + window.location.pathname) {
+                            return resolve(s.pingbacksource);
+                        }
+                        else {
+                            return Promise.reject({'message': 'Notification source not found'});
+                        }
+                    },
+                    function(reason) {
+                        console.log(reason);
+                        return reject(reason);
+                    }
+                );
+            });
+        },
+
         getResourceHead: function(url) {
             url = url || window.location.origin + window.location.pathname;
             return new Promise(function(resolve, reject) {
