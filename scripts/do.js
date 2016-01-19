@@ -563,6 +563,39 @@ var DO = {
             });
         },
 
+        getNotifications: function(url) {
+            url = url || window.location.origin + window.location.pathname;
+            var notifications = [];
+
+            return new Promise(function(resolve, reject) {
+                var g = SimpleRDF(DO.C.Vocab);
+                g.iri(url).get().then(
+                    function(i) {
+                        var s = i.iri(url);
+                        s.ldpcontains.forEach(function(resource) {
+                            var types = s.iri(resource).rdftype;
+                            var n = types.indexOf(DO.C.Vocab.solidnotification["@id"]);
+                            if(n >= 0) {
+                                notifications.push(resource);
+                            }
+                        });
+
+                        if (notifications.length > 0) {
+                            return resolve(notifications);
+                        }
+                        else {
+                            var reason = {"message": "There are no notifications."};
+                            return Promise.reject(reason);
+                        }
+                    },
+                    function(reason) {
+                        console.log(reason);
+                        return reject(reason);
+                    }
+                );
+            });
+        },
+
         getResourceHead: function(url) {
             url = url || window.location.origin + window.location.pathname;
             return new Promise(function(resolve, reject) {
