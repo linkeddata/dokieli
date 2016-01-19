@@ -1745,23 +1745,26 @@ var DO = {
 
                 var current = g.iri(url);
                 var contains = current.ldpcontains;
+                var containersLi = Array();
+                var resourcesLi = Array();
                 contains.forEach(function(c){
                     var cg = g.iri(c);
                     var types = cg.rdftype;
                     
                     var path = DO.U.getUrlPath(c);
                     if(types.indexOf('http://www.w3.org/ns/ldp#Container') > -1){
-                        var containerClass = ' class="container" ';
                         var slug = path[path.length-2];
+                        containersLi.push('<li class="container"><input type="radio" name="resources" value="' + c + '" id="' + slug + '"/><label for="' + slug + '">' + slug + '</label></li>');
                     }else{
-                      var containerClass = '';
                       var slug = path[path.length-1];
+                      resourcesLi.push('<li><input type="radio" name="resources" value="' + c + '" id="' + slug + '"/><label for="' + slug + '">' + slug + '</label></li>');
                     }
-
-                    var liHTML = '<li' + containerClass + '><input type="radio" name="resources" value="' + c + '" id="' + slug + '"/><label for="' + slug + '">' + slug + '</label></li>';
-                    list.insertAdjacentHTML('beforeEnd', liHTML);
                     
                 });
+                containersLi.sort();
+                resourcesLi.sort();
+                var liHTML = containersLi.join('\n') + resourcesLi.join('\n');
+                list.insertAdjacentHTML('beforeEnd', liHTML);
                 
                 var buttons = list.querySelectorAll('label');
                 if(buttons.length <= 1){
