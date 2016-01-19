@@ -3543,4 +3543,5 @@ $(document).ready(function() {
 //    DO.U.getLinkedResearch();
     DO.U.showFragment();
     DO.U.setDocumentMode();
+    DO.U.showInboxNotifications();
 });
