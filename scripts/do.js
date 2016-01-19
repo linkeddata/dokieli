@@ -119,10 +119,26 @@ var DO = {
                 "@type": "@id",
                 "@array": true
             },
+            "pingbacksource": {
+                "@id": "http://purl.org/net/pingback/source",
+                "@type": "@id"
+            },
+            "pingbackproperty": {
+                "@id": "http://purl.org/net/pingback/property",
+                "@type": "@id"
+            },
+            "pingbacktarget": {
+                "@id": "http://purl.org/net/pingback/target",
+                "@type": "@id"
+            },
             "solidinbox": {
                 "@id": "http://www.w3.org/ns/solid/terms#inbox",
                 "@type": "@id",
                 "@array": true
+            },
+            "solidnotification": {
+                "@id": "http://www.w3.org/ns/solid/terms#Notification",
+                "@type": "@id"
             },
             "oahasBody": {
                 "@id": "http://www.w3.org/ns/oa#hasBody",
@@ -151,6 +167,12 @@ var DO = {
             "oaAnnotatedBy": {
                 "@id": "http://www.w3.org/ns/oa#annotatedBy",
                 "@type": "@id"
+            },
+
+            "ldpcontains": {
+                "@id": "http://www.w3.org/ns/ldp#contains",
+                "@type": "@id",
+                "@array": true
             }
         }
     },
