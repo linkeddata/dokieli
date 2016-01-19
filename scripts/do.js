@@ -1871,8 +1871,12 @@ var DO = {
                     }
                     
                 });
-                containersLi.sort();
-                resourcesLi.sort();
+                containersLi.sort(function (a, b) {
+                    return a.toLowerCase().localeCompare(b.toLowerCase());
+                });
+                resourcesLi.sort(function (a, b) {
+                    return a.toLowerCase().localeCompare(b.toLowerCase());
+                });
                 var liHTML = containersLi.join('\n') + resourcesLi.join('\n');
                 list.insertAdjacentHTML('beforeEnd', liHTML);
                 
@@ -1892,48 +1896,9 @@ var DO = {
         
         showResourceBrowser: function() {
           
-            this.disabled = "disabled";
-            var browserHTML = '<aside id="resource-browser" class="do on"><button class="close">❌</button><h2>Resource Browser</h2>\n\
-            <div id="browser-location"><label for="browser-location-input">URL</label> <input type="text" id="browser-location-input" name="browser-location-input" placeholder="https://example.org/path/to/" /><button id="browser-location-update" disabled="disabled">Browse</button></div>\n\
-            <div id="browser-contents"></div></aside>';
-            document.querySelector('body').insertAdjacentHTML('beforeEnd', browserHTML);
-            
-            document.getElementById('resource-browser').querySelector('button.close').addEventListener('click', function(e) {
-                document.querySelector('#document-do .resource-browser').removeAttribute('disabled');
-            }, false);
-            
-            var inputBox = document.getElementById('browser-location');
-            var storageBox = document.getElementById('browser-contents');
-            var input = document.getElementById('browser-location-input');
-            var browseButton = document.getElementById('browser-location-update');
-            
-            input.addEventListener('keyup', function(){
-                if (input.value.length > 10 && input.value.match(/^https?:\/\//g) && input.value.slice(-1) == "/") {
-                    browseButton.removeAttribute('disabled');
-                }else{
-                    browseButton.disabled = 'disabled';
-                }
-            }, false);
-            
-            var browserul = document.getElementById('browser-ul');
-            if(!browserul){
-                browserul = document.createElement('ul');
-                browserul.id = "browser-ul";
-            
-                storageBox.appendChild(browserul);
-            }
-            
-            if(DO.C.User.Storage) {
-                var storageUrl = DO.U.forceTrailingSlash(DO.C.User.Storage[0]); // TODO: options for multiple storage
-                input.value = storageUrl;
-                DO.U.getGraph(storageUrl).then(function(g){
-                    DO.U.generateBrowserList(g, storageUrl);
-                });
-            }
-            
-            browseButton.addEventListener('click', function(){
-                var url = input.value;
-                if (input.value.length > 10 && input.value.match(/^https?:\/\//g) && input.value.slice(-1) == "/"){
+            var triggerBrowse = function(url){
+                var inputBox = document.getElementById('browser-location');
+                if (url.length > 10 && url.match(/^https?:\/\//g) && url.slice(-1) == "/"){
                     DO.U.getGraph(url).then(function(g){
                         DO.U.generateBrowserList(g, url).then(function(l){
                             return l;
@@ -1960,7 +1925,55 @@ var DO = {
                                 break;
                         }
                     });
+                }else{
+                    inputBox.insertAdjacentHTML('beforeEnd', '<div class="response-message"><p class="error">This is not a valid location.</p></div>');
                 }
+            }
+          
+            this.disabled = "disabled";
+            var browserHTML = '<aside id="resource-browser" class="do on"><button class="close">❌</button><h2>Resource Browser</h2>\n\
+            <div id="browser-location"><label for="browser-location-input">URL</label> <input type="text" id="browser-location-input" name="browser-location-input" placeholder="https://example.org/path/to/" /><button id="browser-location-update" disabled="disabled">Browse</button></div>\n\
+            <div id="browser-contents"></div></aside>';
+            document.querySelector('body').insertAdjacentHTML('beforeEnd', browserHTML);
+            
+            document.getElementById('resource-browser').querySelector('button.close').addEventListener('click', function(e) {
+                document.querySelector('#document-do .resource-browser').removeAttribute('disabled');
+            }, false);
+            
+            var inputBox = document.getElementById('browser-location');
+            var storageBox = document.getElementById('browser-contents');
+            var input = document.getElementById('browser-location-input');
+            var browseButton = document.getElementById('browser-location-update');
+            
+            input.addEventListener('keyup', function(e){
+                if (input.value.length > 10 && input.value.match(/^https?:\/\//g) && input.value.slice(-1) == "/") {
+                    browseButton.removeAttribute('disabled');
+                    if(e.which == 13){
+                        triggerBrowse(input.value);
+                    }
+                }else{
+                    browseButton.disabled = 'disabled';
+                }
+            }, false);
+            
+            var browserul = document.getElementById('browser-ul');
+            if(!browserul){
+                browserul = document.createElement('ul');
+                browserul.id = "browser-ul";
+            
+                storageBox.appendChild(browserul);
+            }
+            
+            if(DO.C.User.Storage) {
+                var storageUrl = DO.U.forceTrailingSlash(DO.C.User.Storage[0]); // TODO: options for multiple storage
+                input.value = storageUrl;
+                DO.U.getGraph(storageUrl).then(function(g){
+                    DO.U.generateBrowserList(g, storageUrl);
+                });
+            }
+            
+            browseButton.addEventListener('click', function(){
+                triggerBrowse(input.value);
             }, false);
             /* TODO: Replace/augment button with live updates from typing; this needs a delay on the keyup.
             document.getElementById('browser-location-input').addEventListener('keyup', function(){
