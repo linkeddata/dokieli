@@ -619,6 +619,19 @@ var DO = {
             });
         },
 
+        showInboxNotifications: function() {
+            DO.U.getInbox().then(
+                function(i) {
+                    i.forEach(function(inbox) {
+                        DO.U.showNotificationSources(inbox);
+                    });
+                },
+                function(reason) {
+                    console.log(reason);
+                }
+            );
+        },
+
         showNotificationSources: function(url) {
             DO.U.getNotifications(url).then(
                 function(i) {
