@@ -3620,13 +3620,14 @@ LIMIT 1";
                                 default:
                                     var data = '<!DOCTYPE html>\n\
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
-     <head>\n\
-         <title>' + noteIRI + '</title>\n\
-     </head>\n\
-     <body>\n\
-         <main>' + note + '\n\
-         </main>\n\
-     </body>\n\
+    <head>\n\
+        <meta charset="utf-8" />
+        <title>' + noteIRI + '</title>\n\
+    </head>\n\
+    <body>\n\
+        <main>' + note + '\n\
+        </main>\n\
+    </body>\n\
 </html>\n\
 ';
 
