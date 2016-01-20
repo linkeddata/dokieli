@@ -1592,16 +1592,16 @@ var DO = {
                 }
             }, '#content *[id], #interactions *[id]');
         },
-        
+
         forceTrailingSlash: function(aString) {
             if (aString.slice(-1) == "/") return aString;
             return aString + "/";
         },
-        
+
         getUrlPath: function(aString) {
             return aString.split("/");
         },
-        
+
         getGraph: function(url) {
             return new Promise(function(resolve, reject) {
                 var g = SimpleRDF(DO.C.Vocab);
@@ -1788,7 +1788,7 @@ var DO = {
                 return false;
             });
         },
-        
+
         nextLevelButton: function(button, url) {
             var final = document.getElementById('location-final');
             button.addEventListener('click', function(){
@@ -1837,21 +1837,21 @@ var DO = {
                 }
             }, false);
         },
-        
+
         generateBrowserList: function(g, url) {
-            
+
             return new Promise(function(resolve, reject){
-              
+
               document.getElementById('browser-location-input').value = url;
-              
+
                 var msgs = document.getElementById('browser-location').querySelectorAll('.response-message');
                 for(var i = 0; i < msgs.length; i++){
                     msgs[i].parentNode.removeChild(msgs[i]);
                 }
-                
+
                 var list = document.getElementById('browser-ul');
                 list.innerHTML = '';
-                
+
                 var urlPath = DO.U.getUrlPath(url);
                 if(urlPath.length > 4){ // This means it's not the base URL
                     urlPath.splice(-2,2);
@@ -1867,7 +1867,7 @@ var DO = {
                 contains.forEach(function(c){
                     var cg = g.iri(c);
                     var types = cg.rdftype;
-                    
+
                     var path = DO.U.getUrlPath(c);
                     if(types.indexOf('http://www.w3.org/ns/ldp#Container') > -1){
                         var slug = path[path.length-2];
@@ -1876,7 +1876,7 @@ var DO = {
                       var slug = path[path.length-1];
                       resourcesLi.push('<li><input type="radio" name="resources" value="' + c + '" id="' + slug + '"/><label for="' + slug + '">' + slug + '</label></li>');
                     }
-                    
+
                 });
                 containersLi.sort(function (a, b) {
                     return a.toLowerCase().localeCompare(b.toLowerCase());
@@ -1886,26 +1886,26 @@ var DO = {
                 });
                 var liHTML = containersLi.join('\n') + resourcesLi.join('\n');
                 list.insertAdjacentHTML('beforeEnd', liHTML);
-                
+
                 var buttons = list.querySelectorAll('label');
                 if(buttons.length <= 1){
                     list.insertAdjacentHTML('beforeEnd', '<p><em>(empty)</em></p>');
                 }
-                
+
                 for(var i = 0; i < buttons.length; i++) {
                     var nextUrl = buttons[i].parentNode.querySelector('input').value;
                     DO.U.nextLevelButton(buttons[i], nextUrl);
                 }
-            
+
                 return resolve(list);
             });
         },
-        
+
         setupResourceBrowser: function(parent){
-          
+
             parent.insertAdjacentHTML('beforeEnd', '<div id="browser-location"><label for="browser-location-input">URL</label> <input type="text" id="browser-location-input" name="browser-location-input" placeholder="https://example.org/path/to/" /><button id="browser-location-update" disabled="disabled">Browse</button></div>\n\
             <div id="browser-contents"></div>');
-          
+
             var triggerBrowse = function(url){
                 var inputBox = document.getElementById('browser-location');
                 if (url.length > 10 && url.match(/^https?:\/\//g) && url.slice(-1) == "/"){
@@ -1939,12 +1939,12 @@ var DO = {
                     inputBox.insertAdjacentHTML('beforeEnd', '<div class="response-message"><p class="error">This is not a valid location.</p></div>');
                 }
             }
-            
+
             var inputBox = document.getElementById('browser-location');
             var storageBox = document.getElementById('browser-contents');
             var input = document.getElementById('browser-location-input');
             var browseButton = document.getElementById('browser-location-update');
-            
+
             input.addEventListener('keyup', function(e){
                 var final = document.getElementById('location-final');
                 if (input.value.length > 10 && input.value.match(/^https?:\/\//g) && input.value.slice(-1) == "/") {
@@ -1962,15 +1962,15 @@ var DO = {
                     }
                 }
             }, false);
-            
+
             var browserul = document.getElementById('browser-ul');
             if(!browserul){
                 browserul = document.createElement('ul');
                 browserul.id = "browser-ul";
-            
+
                 storageBox.appendChild(browserul);
             }
-            
+
             if(DO.C.User.Storage) {
                 var storageUrl = DO.U.forceTrailingSlash(DO.C.User.Storage[0]); // TODO: options for multiple storage
                 input.value = storageUrl;
@@ -1978,7 +1978,7 @@ var DO = {
                     DO.U.generateBrowserList(g, storageUrl);
                 });
             }
-            
+
             browseButton.addEventListener('click', function(){
                 triggerBrowse(input.value);
             }, false);
@@ -1991,18 +1991,18 @@ var DO = {
             }, false);
             */
         },
-        
+
         showResourceBrowser: function() {
             this.disabled = "disabled";
             var browserHTML = '<aside id="resource-browser" class="do on"><button class="close">❌</button><h2>Resource Browser</h2></aside>';
             document.querySelector('body').insertAdjacentHTML('beforeEnd', browserHTML);
-            
+
             document.getElementById('resource-browser').querySelector('button.close').addEventListener('click', function(e) {
                 document.querySelector('#document-do .resource-browser').removeAttribute('disabled');
             }, false);
-            
+
             DO.U.setupResourceBrowser(document.getElementById('resource-browser'));
-            
+
         },
 
         createNewDocument: function() {
@@ -2013,10 +2013,10 @@ var DO = {
             newDocument.on('click', 'button.close', function(e) {
                 $('#document-do .resource-new').removeAttr('disabled');
             });
-            
+
             DO.U.setupResourceBrowser(document.getElementById('create-new-document'));
             document.getElementById('browser-location').insertAdjacentHTML('afterBegin', '<p>Choose a location to save your new article.</p>');
-            newDocument.append(DO.U.getBaseURLSelection() + '<p>Your new document will be saved at <span id="location-final">https://example.org/path/to/article</span></p><button class="create">Create</button>');
+            newDocument.append(DO.U.getBaseURLSelection() + '<p>Your new document will be saved at <samp id="location-final">https://example.org/path/to/article</samp></p><button class="create">Create</button>');
             document.getElementById('browser-location-input').focus();
             document.getElementById('browser-location-input').placeholder = 'https://example.org/path/to/article';
 
@@ -2078,7 +2078,7 @@ var DO = {
             });
             DO.U.setupResourceBrowser(document.getElementById('save-as-document'));
             document.getElementById('browser-location').insertAdjacentHTML('afterBegin', '<p>Choose a location to save your new article.</p>');
-            saveAsDocument.append(DO.U.getBaseURLSelection() + '<p>Your new document will be saved at <span id="location-final">https://example.org/path/to/article</span></p><button class="create">Save</button>');
+            saveAsDocument.append(DO.U.getBaseURLSelection() + '<p>Your new document will be saved at <samp id="location-final">https://example.org/path/to/article</samp></p><button class="create">Save</button>');
             document.getElementById('browser-location-input').focus();
             document.getElementById('browser-location-input').placeholder = 'https://example.org/path/to/article';
 

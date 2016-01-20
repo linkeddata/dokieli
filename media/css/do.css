@@ -227,16 +227,16 @@ font-weight:normal;
   overflow-y: auto;
   min-width: 25%;
   max-height: 16em;
+  margin:1em 0;
 }
 #browser-contents ul {
-  width: 100%;
+  margin:0;
 }
 #browser-contents ul input[type="radio"] {
   display: none;
 }
 #browser-contents ul label {
   display: block;
-  width: 100%;
   padding: 0.4em;
   cursor: pointer;
 }
@@ -250,7 +250,6 @@ font-weight:normal;
   font-weight: bold;
 }
 #location-final {
-  font-family: Monospace;
   display: block;
   max-width:24em;
   word-wrap: break-word;
