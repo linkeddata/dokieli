@@ -2128,8 +2128,8 @@ var DO = {
         getBaseURLSelection: function() {
             var s = '<div id="base-url-selection"><label>Location of media resources:</label>\n\
             <select name="base-url">\n\
-            <option id="base-url-dokieli" value="base-url-dokieli">Use https://dokie.li/</option>\n\
-            <option id="base-url-absolute" value="base-url-absolute" selected="selected">Use current; ' + DO.U.getBaseURL(document.location.href) + '</option>\n\
+            <option id="base-url-dokieli" value="base-url-dokieli" selected="selected">Use https://dokie.li/</option>\n\
+            <option id="base-url-absolute" value="base-url-absolute">Use current; ' + DO.U.getBaseURL(document.location.href) + '</option>\n\
             <option id="base-url-relative" value="base-url-relative">Copy to your storage</option>\n\
             </select>\n\
             </div>';
