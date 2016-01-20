@@ -552,7 +552,7 @@ var DO = {
                             return resolve(s.solidinbox);
                         }
                         var reason = {"message": "Inbox was not found"};
-                        return reject(reason);
+                        return Promise.reject(reason);
                     },
                     function(reason) {
                         console.log(reason);
