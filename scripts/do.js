@@ -1790,10 +1790,14 @@ var DO = {
         },
         
         nextLevelButton: function(button, url) {
+            var final = document.getElementById('location-final');
             button.addEventListener('click', function(){
                 if(button.parentNode.classList.contains('container')){
                     DO.U.getGraph(url).then(
                         function(g){
+                            if(final){
+                                final.textContent = url + "{name}";
+                            }
                             return DO.U.generateBrowserList(g, url);
                         },
                         function(reason){
@@ -1819,6 +1823,9 @@ var DO = {
                     document.getElementById('browser-location-input').value = url;
                     var alreadyChecked = button.parentNode.querySelector('input[type="radio"]').checked;
                     var radios = button.parentNode.parentNode.querySelectorAll('input[checked="true"]');
+                    if(final){
+                        final.textContent = url;
+                    }
                     for(var i = 0; i < radios.length; i++){
                         radios[i].removeAttribute('checked');
                     }
@@ -1939,13 +1946,20 @@ var DO = {
             var browseButton = document.getElementById('browser-location-update');
             
             input.addEventListener('keyup', function(e){
+                var final = document.getElementById('location-final');
                 if (input.value.length > 10 && input.value.match(/^https?:\/\//g) && input.value.slice(-1) == "/") {
                     browseButton.removeAttribute('disabled');
                     if(e.which == 13){
                         triggerBrowse(input.value);
                     }
+                    if(final){
+                        final.textContent = input.value + "{name}";
+                    }
                 }else{
                     browseButton.disabled = 'disabled';
+                    if(final){
+                        final.textContent = input.value;
+                    }
                 }
             }, false);
             
@@ -1993,7 +2007,7 @@ var DO = {
 
         createNewDocument: function() {
             $(this).prop('disabled', 'disabled');
-            $('body').append('<aside id="create-new-document" class="do on"><button class="close">❌</button><h2>Create New Document</h2><p>Choose a location to save your new article.</p></aside>');
+            $('body').append('<aside id="create-new-document" class="do on"><button class="close">❌</button><h2>Create New Document</h2></aside>');
 
             var newDocument = $('#create-new-document');
             newDocument.on('click', 'button.close', function(e) {
@@ -2001,7 +2015,8 @@ var DO = {
             });
             
             DO.U.setupResourceBrowser(document.getElementById('create-new-document'));
-            newDocument.append(DO.U.getBaseURLSelection() + '<button class="create">Create</button>');
+            document.getElementById('browser-location').insertAdjacentHTML('afterBegin', '<p>Choose a location to save your new article.</p>');
+            newDocument.append(DO.U.getBaseURLSelection() + '<p>Your new document will be saved at <span id="location-final">https://example.org/path/to/article</span></p><button class="create">Create</button>');
             document.getElementById('browser-location-input').focus();
             document.getElementById('browser-location-input').placeholder = 'https://example.org/path/to/article';
 
@@ -2055,14 +2070,15 @@ var DO = {
 
         saveAsDocument: function() {
             $(this).prop('disabled', 'disabled');
-            $('body').append('<aside id="save-as-document" class="do on"><button class="close">❌</button><h2>Save As Document</h2><p>Choose a location to save your new article.</p></aside>');
+            $('body').append('<aside id="save-as-document" class="do on"><button class="close">❌</button><h2>Save As Document</h2></aside>');
 
             var saveAsDocument = $('#save-as-document');
             saveAsDocument.on('click', 'button.close', function(e) {
                 $('#document-do .resource-save-as').removeAttr('disabled');
             });
             DO.U.setupResourceBrowser(document.getElementById('save-as-document'));
-            saveAsDocument.append(DO.U.getBaseURLSelection() + '<button class="create">Save</button>');
+            document.getElementById('browser-location').insertAdjacentHTML('afterBegin', '<p>Choose a location to save your new article.</p>');
+            saveAsDocument.append(DO.U.getBaseURLSelection() + '<p>Your new document will be saved at <span id="location-final">https://example.org/path/to/article</span></p><button class="create">Save</button>');
             document.getElementById('browser-location-input').focus();
             document.getElementById('browser-location-input').placeholder = 'https://example.org/path/to/article';
 
@@ -2110,13 +2126,13 @@ var DO = {
         },
 
         getBaseURLSelection: function() {
-            var s = '<fieldset id="base-url-selection"><legend>Location of media resources</legend>\n\
+            var s = '<div id="base-url-selection"><label>Location of media resources:</label>\n\
             <select name="base-url">\n\
-            <option id="base-url-dokieli" value="base-url-dokieli">Use https://dokie.li/</option>\n\
-            <option id="base-url-absolute" value="base-url-absolute" selected="selected">Use current; ' + DO.U.getBaseURL(document.location.href) + '</option>\n\
+            <option id="base-url-dokieli" value="base-url-dokieli" selected="selected">Use https://dokie.li/</option>\n\
+            <option id="base-url-absolute" value="base-url-absolute">Use current; ' + DO.U.getBaseURL(document.location.href) + '</option>\n\
             <option id="base-url-relative" value="base-url-relative">Copy to your storage</option>\n\
             </select>\n\
-            </fieldset>';
+            </div>';
 
             return s;
         },

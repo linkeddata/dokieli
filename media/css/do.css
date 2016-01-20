@@ -249,6 +249,15 @@ font-weight:normal;
 #browser-contents input[checked="true"] + label {
   font-weight: bold;
 }
+#location-final {
+  font-family: Monospace;
+  display: block;
+  max-width:24em;
+  word-wrap: break-word;
+}
+#base-url-selection label {
+  display: block;
+}
 
 .do.sortable .sortable-placeholder {
 outline: 1px dashed #777;
