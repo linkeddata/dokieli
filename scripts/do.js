@@ -2637,6 +2637,7 @@ LIMIT 1";
 
                             var noteData = {
                                 "type": 'position-quote-selector', //e.g., 'article'
+                                "purpose": "read",
                                 "id": id,
                                 "iri": noteIRI, //e.g., https://example.org/path/to/article
                                 "creator": {},
@@ -2713,6 +2714,16 @@ LIMIT 1";
             var license = '';
             var creator = '', name = '';
             var hasTarget = '', annotationTextSelector = '', target = '';
+            var hX = '';
+
+            switch(n.purpose) {
+                default:
+                    hX = 'h3';
+                    break;
+                case "write":
+                    hX = 'h1';
+                    break;
+            }
 
             switch(n.type) {
                 case 'position-quote-selector':
@@ -2731,7 +2742,7 @@ LIMIT 1";
                         creator = '<span about="[i:#agent]" typeof="schema:Person">' + creatorName + '</span>';
                     }
 
-                    name = '<h3 property="schema:name"><span rel="schema:creator oa:annotatedBy as:actor">' + creator + '</span></h3>';
+                    name = '<' + hX + ' property="schema:name"><span rel="schema:creator oa:annotatedBy as:actor">' + creator + '</span></' + hX + '>';
 
                     description = '<div property="schema:description" rel="oa:hasBody as:content"><div about="[i:#i]" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">' + n.body + '</div></div>';
 
@@ -3541,6 +3552,7 @@ LIMIT 1";
 
                                     noteData = {
                                         "type": noteType, //e.g., 'article'
+                                        "purpose": "write",
                                         "id": id,
                                         "refLabel": refLabel,
                                         "iri": noteIRI, //e.g., https://example.org/path/to/article
@@ -3581,6 +3593,7 @@ LIMIT 1";
 
                                     noteData = {
                                         "type": noteType, //e.g., 'article'
+                                        "purpose": "write",
                                         "id": id,
                                         "refLabel": refLabel,
                                         "iri": noteIRI, //e.g., https://example.org/path/to/article
