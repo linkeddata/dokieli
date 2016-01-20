@@ -3459,32 +3459,31 @@ LIMIT 1";
                             this.base.restoreSelection();
                             var range = MediumEditor.selection.getSelectionRange(this.document);
                             var selectedParentElement = this.base.getSelectedParentElement();
-                            console.log('getSelectedParentElement:');
-                            console.log(selectedParentElement);
+// console.log('getSelectedParentElement:');
+// console.log(selectedParentElement);
 
                             //Mark the text which the note was left for (with reference to the note?)
                             this.base.selectedDocument = this.document;
                             this.base.selection = MediumEditor.selection.getSelectionHtml(this.base.selectedDocument); //.replace(DO.C.Editor.regexEmptyHTMLTags, '');
-                            console.log('this.base.selection:');
-                            console.log(this.base.selection);
+// console.log('this.base.selection:');
+// console.log(this.base.selection);
 
                             var exact = this.base.selection;
                             var selectionState = MediumEditor.selection.exportSelection(selectedParentElement, this.document);
                             var start = selectionState.start;
                             var end = selectionState.end;
                             var prefixStart = Math.max(0, start - DO.C.ContextLength);
-                            console.log('pS ' + prefixStart);
+// console.log('pS ' + prefixStart);
                             var prefix = selectedParentElement.textContent.substr(prefixStart, start - prefixStart);
-                            console.log('-' + prefix + '-');
+// console.log('-' + prefix + '-');
                             prefix = DO.U.htmlEntities(prefix);
 
                             var suffixEnd = Math.min(selectedParentElement.textContent.length, end + DO.C.ContextLength);
-                            console.log('sE ' + suffixEnd);
+// console.log('sE ' + suffixEnd);
                             var suffix = selectedParentElement.textContent.substr(end, suffixEnd - end);
-                            console.log('-' + suffix + '-');
+// console.log('-' + suffix + '-');
                             suffix = DO.U.htmlEntities(suffix);
 
-                //            this.execAction(this.action, opts);
                             var datetime = DO.U.getDateTimeISO();
                             var id = DO.U.generateAttributeId().slice(0, 6);
                             var refId = 'r-' + id;
@@ -3596,7 +3595,7 @@ LIMIT 1";
                             }
                 //            console.log(note);
 
-                            console.log('createNoteHTML to save');
+// console.log('createNoteHTML to save');
                             console.log(noteData);
                             var note = DO.U.createNoteHTML(noteData);
 
@@ -3636,7 +3635,7 @@ LIMIT 1";
                                         }
                                     );
 
-                                    console.log('resourceIRI: ' + resourceIRI);
+// console.log('resourceIRI: ' + resourceIRI);
 
                                     //TODO: resourceIRI should be the closest IRI (not necessarily the document). Test resolve/reject better.
                                     DO.U.getInbox(resourceIRI).then(
