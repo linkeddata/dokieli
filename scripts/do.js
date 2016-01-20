@@ -2752,7 +2752,7 @@ LIMIT 1";
                         //TODO: Use n.target.iri?
                         hasTarget = '<a rel="oa:hasTarget sioc:reply_of as:inReplyTo" href="' + n.target.source + '#TODO-PerhapsClosestParentID" resource="' + n.target.source + '#TODO-PerhapsClosestParentID"><span about="[i:]" rel="oa:motivatedBy" resource="oa:replying">In reply to</span></a>';
 
-                        annotationTextSelector = '<span rel="oa:hasSource" resource="' + n.target.source +'"></span><span rel="oa:hasSelector" typeof="oa:TextQuoteSelector"><span property="oa:prefix" xml:lang="en" lang="">' + n.target.selector.prefix + '</span><strong property="oa:exact" xml:lang="en" lang=""><mark>' + n.target.selector.exact + '</mark></strong><span property="oa:suffix" xml:lang="en" lang="">' + n.target.selector.suffix + '</span></span>';
+                        annotationTextSelector = '<span rel="oa:hasSource" resource="' + n.target.source +'"></span><span rel="oa:hasSelector" typeof="oa:TextQuoteSelector"><span property="oa:prefix" xml:lang="en" lang="">' + n.target.selector.prefix + '</span><mark property="oa:exact" xml:lang="en" lang="">' + n.target.selector.exact + '</mark><span property="oa:suffix" xml:lang="en" lang="">' + n.target.selector.suffix + '</span></span>';
 
                         target ='<dl class="target"><dt>' + hasTarget + '</dt><dd><blockquote about="' + n.target.source + '#TODO-PerhapsClosestParentID" cite="' + n.target.source + '#TODO-PerhapsClosestParentID">' + annotationTextSelector + '</blockquote></dd></dl>';
                     }
