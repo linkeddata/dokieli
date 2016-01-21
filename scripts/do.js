@@ -249,10 +249,9 @@ var DO = {
             pIRI = DO.U.stripFragmentFromString(pIRI);
 
             return new Promise(function(resolve, reject) {
-                var g = SimpleRDF(DO.C.Vocab);
-                g.iri(pIRI).get().then(
+                SimpleRDF(DO.C.Vocab, pIRI).get().then(
                     function(i) {
-                        var s = i.iri(url);
+                        var s = i.child(url);
                         console.log(s.storage);
                         if (s.storage && s.storage.length > 0) {
                             console.log("Try through WebID's storage: " + s.storage[0]);
@@ -347,11 +346,11 @@ var DO = {
                     pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
                 }
                 console.log("pIRI: " + pIRI);
-                var g = SimpleRDF(DO.C.Vocab);
+
                 return new Promise(function(resolve, reject) {
-                    g.iri(pIRI).get().then(
+                    SimpleRDF(DO.C.Vocab, pIRI).get().then(
                         function(i) {
-                            var s = i.iri(userIRI);
+                            var s = i.child(userIRI);
                             console.log(s);
                             if (s.foafname) {
                                 DO.C.User.Name = s.foafname;
@@ -384,10 +383,10 @@ var DO = {
                                 console.log(DO.C.User.PreferencesFile);
 
                                 //XXX: Probably https so don't bother with proxy?
-                                g.iri(s.preferencesFile).get().then(
+                                SimpleRDF(DO.C.Vocab, s.preferencesFile).get().then(
                                     function(pf) {
                                         DO.C.User.PreferencesFileGraph = pf;
-                                        var s = pf.iri(userIRI);
+                                        var s = pf.child(userIRI);
 
                                         if (s.masterWorkspace) {
                                             DO.C.User.masterWorkspace = s.masterWorkspace;
@@ -397,7 +396,7 @@ var DO = {
                                             DO.C.User.Workspace = { List: s.workspace };
                                             //XXX: Too early to tell if this is a good/bad idea. Will revise any way. A bit hacky right now.
                                             s.workspace.forEach(function(workspace) {
-                                                var wstype = pf.iri(workspace).rdftype || [];
+                                                var wstype = pf.child(workspace).rdftype || [];
                                                 wstype.forEach(function(w) {
                                                     switch(w) {
                                                         case 'http://www.w3.org/ns/pim/space#PreferencesWorkspace':
@@ -543,10 +542,9 @@ var DO = {
 
             return new Promise(function(resolve, reject) {
                 //FIXME: This doesn't work so well if the document's URL is different than input url
-                var g = SimpleRDF(DO.C.Vocab);
-                g.iri(pIRI).get().then(
+                SimpleRDF(DO.C.Vocab, pIRI).get().then(
                     function(i) {
-                        var s = i.iri(subjectIRI);
+                        var s = i.child(subjectIRI);
                         if (s.solidinbox.length > 0) {
 //                            console.log(s.solidinbox);
                             return resolve(s.solidinbox);
@@ -567,12 +565,11 @@ var DO = {
             var notifications = [];
 
             return new Promise(function(resolve, reject) {
-                var g = SimpleRDF(DO.C.Vocab);
-                g.iri(url).get().then(
+                SimpleRDF(DO.C.Vocab, url).get().then(
                     function(i) {
-                        var s = i.iri(url);
+                        var s = i.child(url);
                         s.ldpcontains.forEach(function(resource) {
-                            var types = s.iri(resource).rdftype;
+                            var types = s.child(resource).rdftype;
                             var n = types.indexOf(DO.C.Vocab.solidnotification["@id"]);
                             if(n >= 0) {
                                 notifications.push(resource);
@@ -599,10 +596,9 @@ var DO = {
             url = url || window.location.origin + window.location.pathname;
 
             return new Promise(function(resolve, reject) {
-                var g = SimpleRDF(DO.C.Vocab);
-                g.iri(url).get().then(
+                var g = SimpleRDF(DO.C.Vocab, url).get().then(
                     function(i) {
-                        var s = i.iri(url);
+                        var s = i.child(url);
                         if (s.pingbackproperty == DO.C.Vocab.oahasTarget["@id"] && s.pingbacktarget == window.location.origin + window.location.pathname) {
                             return resolve(s.pingbacksource);
                         }
@@ -1604,8 +1600,7 @@ var DO = {
 
         getGraph: function(url) {
             return new Promise(function(resolve, reject) {
-                var g = SimpleRDF(DO.C.Vocab);
-                g.iri(url).get().then(
+                SimpleRDF(DO.C.Vocab, url).get().then(
                     function(i){
                        return resolve(i);
                     },
@@ -1860,12 +1855,12 @@ var DO = {
                     list.insertAdjacentHTML('afterBegin', upBtn);
                 }
 
-                var current = g.iri(url);
+                var current = g.child(url);
                 var contains = current.ldpcontains;
                 var containersLi = Array();
                 var resourcesLi = Array();
                 contains.forEach(function(c){
-                    var cg = g.iri(c);
+                    var cg = g.child(c);
                     var types = cg.rdftype;
 
                     var path = DO.U.getUrlPath(c);
@@ -2578,22 +2573,17 @@ LIMIT 1";
         positionQuoteSelector: function(noteIRI, containerNode) {
             containerNode = containerNode || document.body;
             return new Promise(function(resolve, reject) {
-                var g = SimpleRDF(DO.C.Vocab);
-                g.iri(noteIRI).get().then(
+                SimpleRDF(DO.C.Vocab, noteIRI).get().then(
                     function(i) {
-//                        console.log(i);
-                        var note = i.iri(noteIRI);
+                        var note = i.child(noteIRI);
                         var datetime = note.oaAnnotatedAt;
                         var annotatedByIRI = note.oaAnnotatedBy;
-                        annotatedBy = i.iri(annotatedByIRI);
+                        var annotatedBy = i.child(annotatedByIRI);
                         var annotatedByName = annotatedBy.schemaname;
                         var annotatedByImage = annotatedBy.schemaimage;
-                        note = i.iri(noteIRI);
-                        var body = i.iri(note.oahasBody);
+                        var body = i.child(note.oahasBody);
                         var bodyText = body.oatext;
-
-                        note = i.iri(noteIRI);
-                        var target = i.iri(note.oahasTarget);
+                        var target = i.child(note.oahasTarget);
 
                         var selector = target.oahasSelector;
                         var exact = selector.oaexact;

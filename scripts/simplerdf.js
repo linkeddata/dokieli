@@ -23816,8 +23816,8 @@ SimpleRDF.prototype.context = function (context) {
 SimpleRDF.prototype.iri = function (iri) {
   iri = buildIri(iri)
 
-//  updateSubject(this._graph, this._iri, iri)
-//  updateObject(this._graph, this._iri, iri)
+  updateSubject(this._graph, this._iri, iri)
+  updateObject(this._graph, this._iri, iri)
 
   this._iri = iri
 
