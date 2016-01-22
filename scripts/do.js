@@ -2863,11 +2863,14 @@ LIMIT 1";
                                 'anchor',
                                 'cite',
                                 'q',
-                                {
-                                    name: 'quote',
-                                    contentFA: '<i class="fa fa-indent"></i>'
-                                },
+                                // {
+                                //     name: 'quote',
+                                //     contentFA: '<i class="fa fa-indent"></i>'
+                                // },
                                 /*object, script*/
+
+                                //Semantic Marking
+                                'rdfa',
 
                                 //Annotation
                                 'mark',
@@ -2928,6 +2931,8 @@ LIMIT 1";
                             'cite': new DO.U.Editor.Button({action:'cite', label:'cite'}),
                             'q': new DO.U.Editor.Button({action:'q', label:'q'}),
 
+                            'rdfa': new DO.U.Editor.Note({action:'rdfa', label:'rdfa'}),
+
                             'mark': new DO.U.Editor.Note({action:'mark', label:'mark'}),
                             'note': new DO.U.Editor.Note({action:'article', label:'note'}),
 
@@ -2974,8 +2979,6 @@ LIMIT 1";
                                 case 'h1': case 'h2': case 'h3': case 'h4': case 'h5': case 'h6': this.contentFA = '<i class="fa fa-header">' + parseInt(this.action.slice(-1)) + '</i>'; break;
                                 case 'em': this.contentFA = '<i class="fa fa-italic"></i>'; break;
                                 case 'strong': this.contentFA = '<i class="fa fa-bold"></i>'; break;
-                                case 'mark': this.contentFA = '<i class="fa fa-paint-brush"></i>'; break;
-                                case 'note': this.contentFA = '<i class="fa fa-sticky-note"></i>'; break;
                                 case 'q': this.contentFA = '<i class="fa fa-quote-right"></i>'; break;
                                 default: break;
                             }
@@ -3302,11 +3305,14 @@ LIMIT 1";
                             this.useQueryState = true;
                             this.contentDefault = '<b>' + this.label + '</b>';
                             switch(this.action) {
-                                case 'mark':
+                                case 'mark': default:
                                     this.contentFA = '<i class="fa fa-paint-brush"></i>';
                                     break;
-                                case 'note': default:
+                                case 'note':
                                     this.contentFA = '<i class="fa fa-sticky-note"></i>';
+                                    break;
+                                case 'rdfa':
+                                    this.contentFA = '<i class="fa fa-rocket"></i>';
                                     break;
                             }
                             MediumEditor.extensions.form.prototype.init.apply(this, arguments);
@@ -3353,9 +3359,19 @@ LIMIT 1";
                         },
 
                         getTemplate: function () {
-                            var template = [
+                            var template = [];
+                            if (this.action == 'rdfa') {
+                                template = [
+                                'about: <input id="rdfa-about" class="medium-editor-toolbar-input" placeholder="http://example.org/foo#bar" /><br/>',
+                                'rel: <input id="rdfa-rel" class="medium-editor-toolbar-input" placeholder="http://schema.org/name"><br/>',
+                                'href <input id="rdfa-href" class="medium-editor-toolbar-input" placeholder="http://example.org/foo#bar" />'
+                                ];
+                            }
+                            else {
+                                template = [
                                 '<textarea cols="20" rows="1" class="medium-editor-toolbar-textarea" placeholder="', this.placeholderText, '"></textarea>'
-                            ];
+                                ];
+                            }
 
                             template.push(
                                 '<a href="#" class="medium-editor-toolbar-save">',
@@ -3430,7 +3446,8 @@ LIMIT 1";
                             this.setToolbarPosition();
 
                             input.value = opts.url;
-                            input.focus();
+                            //FIXME: for multi-value input/textarea.
+//                            input.focus();
 
                             // If we have a target checkbox, we want it to be checked/unchecked
                             // based on whether the existing link has target=_blank
@@ -3464,10 +3481,17 @@ LIMIT 1";
                         getFormOpts: function () {
                             // no notion of private functions? wanted `_getFormOpts`
                             var targetCheckbox = this.getAnchorTargetCheckbox(),
-                                buttonCheckbox = this.getAnchorButtonCheckbox(),
-                                opts = {
-                                    url: this.getInput().value
-                                };
+                                buttonCheckbox = this.getAnchorButtonCheckbox();
+                            var opts = {};
+
+                            if(this.action == 'rdfa') {
+                                opts.about = this.getInput().about.value;
+                                opts.rel = this.getInput().rel.value;
+                                opts.href = this.getInput().href.value;
+                            }
+                            else {
+                                opts.url = this.getInput().value;
+                            }
 
                             if (this.linkValidation) {
                                 opts.url = this.checkLinkFormat(opts.url);
@@ -3564,6 +3588,7 @@ LIMIT 1";
 
                             var noteType = '';
                             var noteData = {};
+                            var note = '';
 
                             switch(this.action) {
                                 //External Note
@@ -3608,6 +3633,7 @@ LIMIT 1";
                                         noteData.creator["image"] = DO.C.User.Image;
                                     }
 
+                                    note = DO.U.createNoteHTML(noteData);
                                     break;
 
                                 //Internal Note
@@ -3626,23 +3652,40 @@ LIMIT 1";
                                         "body": opts.url //FIXME: This object name is not fun
                                     }
 
+                                    note = DO.U.createNoteHTML(noteData);
                                     break;
                                 // case 'reference':
                                 //     ref = '<span class="ref" about="[this:#' + refId + ']" typeof="http://purl.org/dc/dcmitype/Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span> <span class="ref-reference">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span></span>';
+//                                    break;
+
+                                case 'rdfa':
+                                    //TODO: inlist, prefix, monkeys..
+                                    //TODO: lang, datatype, content
+                                    noteData = {
+                                        about: opts.about,
+                                        rel: opts.rel,
+                                        // property: opts.property
+                                        href: opts.href,
+                                        // resource:
+                                        // content:
+                                        textContent: this.base.selection
+                                        // lang: ''
+                                        // datatype: ''
+                                    };
+                                    ref = DO.U.createRDFaHTML(noteData);
+
                                     break;
                             }
-                //            console.log(note);
+// console.log(note);
 
-// console.log('createNoteHTML to save');
-                            console.log(noteData);
-                            var note = DO.U.createNoteHTML(noteData);
+console.log(noteData);
 
-                            //XXX: What's my purpose?
+
                             var selectionUpdated = ref;
                             MediumEditor.util.insertHTMLCommand(this.base.selectedDocument, selectionUpdated);
 
                             switch(this.action) {
-                                default:
+                                case 'note':
                                     var data = '<!DOCTYPE html>\n\
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
     <head>\n\
@@ -3738,8 +3781,14 @@ LIMIT 1";
                         // form creation and event handling
                         attachFormEvents: function (form) {
                             var close = form.querySelector('.medium-editor-toolbar-close'),
-                                save = form.querySelector('.medium-editor-toolbar-save'),
-                                input = form.querySelector('.medium-editor-toolbar-textarea');
+                                save = form.querySelector('.medium-editor-toolbar-save');
+
+                            if (this.action == 'rdfa') {
+                                var input = form.querySelector('.medium-editor-toolbar-input');
+                            }
+                            else {
+                                var input = form.querySelector('.medium-editor-toolbar-textarea');
+                            }
 
                             // Handle clicks on the form itself
                             this.on(form, 'click', this.handleFormClick.bind(this));
@@ -3761,6 +3810,7 @@ LIMIT 1";
 
                             // Anchor Form (div)
                             form.className = 'medium-editor-toolbar-form';
+                            //FIXME
                             form.id = 'medium-editor-toolbar-form-textarea-' + this.getEditorId();
                             form.innerHTML = this.getTemplate();
                             this.attachFormEvents(form);
@@ -3769,7 +3819,16 @@ LIMIT 1";
                         },
 
                         getInput: function () {
-                            return this.getForm().querySelector('textarea.medium-editor-toolbar-textarea');
+                            var r = {};
+                            if (this.action == 'rdfa') {
+                                r.about = this.getForm().querySelector('#rdfa-about.medium-editor-toolbar-input');
+                                r.rel = this.getForm().querySelector('#rdfa-rel.medium-editor-toolbar-input');
+                                r.href = this.getForm().querySelector('#rdfa-href.medium-editor-toolbar-input');
+                                return r;
+                            }
+                            else {
+                                return this.getForm().querySelector('textarea.medium-editor-toolbar-textarea');
+                            }
                         },
 
                         getAnchorTargetCheckbox: function () {
