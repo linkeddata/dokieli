@@ -2773,6 +2773,41 @@ LIMIT 1";
             return note;
         },
 
+        createRDFaHTML: function(r) {
+            var s = '', property = '', resource = '', content = '', langDatatype = '';
+
+            if (!('about' in r)) {
+                r.about = '#' + DO.U.generateAttributeId().slice(0, 6);
+            }
+            if (!('property' in r)) {
+                //TODO: Figure out how to use user's prefered vocabulary down the line.
+                r.property = 'rdfs:label';
+            }
+            if ('resource' in r) {
+                resource = ' resource="' + r.resource + '"';
+            }
+            if ('content' in r) {
+                content = ' content="' + r.content + '"';
+            }
+            if ('lang' in r) {
+                langDatatype = ' xml:lang="' + r.lang + '" lang="' + r.lang + '"';
+            }
+            else {
+                if ('datatype' in r) {
+                    langDatatype = ' datatype="' + r.content + '"';
+                }
+            }
+
+            if ('rel' in r) {
+                s = '<a about="' + r.about + '" rel="' + r.rel + '" href="' + r.href + '"' + resource + ' property="' + r.property +'"' + content + langDatatype + '>' + r.textContent + '</a>';
+            }
+            else {
+                s = '<span about="' + r.about + '" property="' + r.property + '"' + content + langDatatype + '>' + r.textContent + '</span>';
+            }
+
+           return s;
+        },
+
         Editor: {
             disableEditor: function() {
         //        _mediumEditors[1].destroy();
