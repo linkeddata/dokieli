@@ -3227,14 +3227,6 @@ LIMIT 1";
                                         }
                                         break;
 
-                                    // case 'note':
-                                    //     var selectionUpdated = '<' + tagNames[0] + datetime + '>' + this.base.selection + '</' + tagNames[0] + '>';
-                                    //     MediumEditor.util.insertHTMLCommand(this.base.selectedDocument, selectionUpdated);
-
-                                    //     //Show Form for text entry;
-                                    //     DO.U.Editor.Note();
-                                    //     break;
-
                                     default:
                                         var selectionUpdated = '<' + tagNames[0] + datetime + '>' + this.base.selection + '</' + tagNames[0] + '>';
                                         MediumEditor.util.insertHTMLCommand(this.base.selectedDocument, selectionUpdated);
@@ -3308,7 +3300,7 @@ LIMIT 1";
                                 case 'mark': default:
                                     this.contentFA = '<i class="fa fa-paint-brush"></i>';
                                     break;
-                                case 'note':
+                                case 'article':
                                     this.contentFA = '<i class="fa fa-sticky-note"></i>';
                                     break;
                                 case 'rdfa':
@@ -3592,7 +3584,7 @@ LIMIT 1";
 
                             switch(this.action) {
                                 //External Note
-                                default: //'note'
+                                case 'article': //'note'
                                     //XXX: Experimental: We don't change the source, only refer to it because that's cool.
                                     // ref = '<span class="ref" about="[this:#' + refId + ']" typeof="http://purl.org/dc/dcmitype/Text"><mark id="'+ refId +'" property="schema:description">' + this.base.selection + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#' + id + '">' + refLabel + '</a></sup></span>';
 
@@ -3685,7 +3677,7 @@ console.log(noteData);
                             MediumEditor.util.insertHTMLCommand(this.base.selectedDocument, selectionUpdated);
 
                             switch(this.action) {
-                                case 'note':
+                                case 'article':
                                     var data = '<!DOCTYPE html>\n\
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
     <head>\n\
