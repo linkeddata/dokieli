@@ -2774,7 +2774,7 @@ LIMIT 1";
         },
 
         createRDFaHTML: function(r) {
-            var s = '', property = '', resource = '', content = '', langDatatype = '';
+            var s = '', property = '', resource = '', content = '', langDatatype = '', typeOf = '';
 
             if (!('about' in r)) {
                 r.about = '#' + DO.U.generateAttributeId().slice(0, 6);
@@ -2797,9 +2797,12 @@ LIMIT 1";
                     langDatatype = ' datatype="' + r.content + '"';
                 }
             }
+            if ('typeOf' in r) {
+                typeOf = ' typeof="' + r.typeOf + '"';
+            }
 
             if ('rel' in r) {
-                s = '<a about="' + r.about + '" rel="' + r.rel + '" href="' + r.href + '"' + resource + ' property="' + r.property +'"' + content + langDatatype + '>' + r.textContent + '</a>';
+                s = '<a about="' + r.about + '"' + typeOf + ' rel="' + r.rel + '" href="' + r.href + '"' + resource + ' property="' + r.property +'"' + content + langDatatype + '>' + r.textContent + '</a>';
             }
             else {
                 s = '<span about="' + r.about + '" property="' + r.property + '"' + content + langDatatype + '>' + r.textContent + '</span>';
@@ -3655,6 +3658,7 @@ LIMIT 1";
                                     //TODO: lang, datatype, content
                                     noteData = {
                                         about: opts.about,
+                                        //typeOf: opts.typeOf,
                                         rel: opts.rel,
                                         // property: opts.property
                                         href: opts.href,
