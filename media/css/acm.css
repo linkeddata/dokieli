@@ -158,6 +158,10 @@ font-size:0.5715em;
 position:relative;
 top:-3px;
 }
+#authors sup {
+margin:0 0.1em;
+}
+
 h2, h3,
 #document-identifier dt,
 #document-published dt,

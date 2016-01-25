@@ -207,7 +207,7 @@ text-rendering:optimizeLegibility;
 hyphens:none;
 }
 
-h1,h2,h3,h4, strong, dt, figcaption:before, caption:before, .entry-subtitle {
+h1,h2,h3,h4, strong, dt, figcaption:before, caption:before, #subtitle {
 font-family: "CMUSerif-Bold", serif !important;
 }
 h5,h6, em, cite, dfn, address {
@@ -268,6 +268,7 @@ display:inline;
 }
 
 #subtitle {
+margin-bottom:1em;
 text-align:center;
 }
 
@@ -934,13 +935,6 @@ font-size: inherit;
 }
 input[type=submit] {
 font-weight:bold;
-}
-
-
-
-.entry-subtitle {
-margin-bottom:1em;
-text-align:center;
 }
 
 #abstract,
