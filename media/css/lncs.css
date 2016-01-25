@@ -960,7 +960,7 @@ text-align:center;
 #categories-and-subject-descriptors,
 #keywords {
 padding:0 2.5em;
-margin:0 0 0 1em;
+margin:0 0 1em 0;
 }
 
 #authors dt,
