@@ -75,21 +75,21 @@ var DO = {
                 "@type": "@id"
             },
 
-            "schemaname": "http://schema.org/name",
+            "schemaname": "https://schema.org/name",
             "schemaurl": {
-                "@id": "http://schema.org/url",
+                "@id": "https://schema.org/url",
                 "@type": "@id"
             },
             "schemaimage": {
-                "@id": "http://schema.org/image",
+                "@id": "https://schema.org/image",
                 "@type": "@id"
             },
             "schemacreator": {
-                "@id": "http://schema.org/creator",
+                "@id": "https://schema.org/creator",
                 "@type": "@id"
             },
             "schemalicense": {
-                "@id": "http://schema.org/license",
+                "@id": "https://schema.org/license",
                 "@type": "@id"
             },
 
@@ -827,7 +827,7 @@ var DO = {
             var data = '@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\
 @prefix sterms: <http://www.w3.org/ns/solid/terms#> .\n\
 @prefix pingback: <http://purl.org/net/pingback/> .\n\
-@prefix schema: <http://schema.org/> .\n\
+@prefix schema: <https://schema.org/> .\n\
 <> a sterms:Notification , pingback:Request ;\n\
     pingback:source <' + source + '> ;\n\
     pingback:property <' + property + '> ;\n\
@@ -2758,7 +2758,7 @@ LIMIT 1";
             }
 
             var note = '\n\
-            <article id="' + n.id + '" about="[i:]" typeof="oa:Annotation as:Activity" prefix="schema: http://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'">\n\
+            <article id="' + n.id + '" about="[i:]" typeof="oa:Annotation as:Activity" prefix="schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'">\n\
                 ' + published + '\n\
                 ' + license + '\n\
                 ' + name + '\n\
@@ -3354,7 +3354,7 @@ LIMIT 1";
                             if (this.action == 'rdfa') {
                                 template = [
                                 'about: <input id="rdfa-about" class="medium-editor-toolbar-input" placeholder="http://example.org/foo#bar" /><br/>',
-                                'rel: <input id="rdfa-rel" class="medium-editor-toolbar-input" placeholder="http://schema.org/name"><br/>',
+                                'rel: <input id="rdfa-rel" class="medium-editor-toolbar-input" placeholder="https://schema.org/name"><br/>',
                                 'href <input id="rdfa-href" class="medium-editor-toolbar-input" placeholder="http://example.org/foo#bar" />'
                                 ];
                             }
