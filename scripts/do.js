@@ -3437,8 +3437,13 @@ LIMIT 1";
                             this.setToolbarPosition();
 
                             input.value = opts.url;
-                            //FIXME: for multi-value input/textarea.
-//                            input.focus();
+
+                            if(this.action == 'rdfa') {
+                                input.about.focus();
+                            }
+                            else {
+                                input.focus();
+                            }
 
                             // If we have a target checkbox, we want it to be checked/unchecked
                             // based on whether the existing link has target=_blank
