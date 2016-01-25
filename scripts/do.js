@@ -530,19 +530,15 @@ var DO = {
         getInboxFromRDF: function(url, subjectIRI) {
             url = url || window.location.origin + window.location.pathname;
             subjectIRI = subjectIRI || url;
-            var pIRI = url;
 
-            pIRI = DO.U.stripFragmentFromString(pIRI);
+            url = DO.U.stripFragmentFromString(url);
 
-            if (pIRI.slice(0, 5).toLowerCase() != 'https' && document.location.origin != 'null') {
-                pIRI = document.location.origin + '/,proxy?uri=' + DO.U.encodeString(pIRI);
-            }
 //            console.log(pIRI);
 //            console.log(subjectIRI);
 
             return new Promise(function(resolve, reject) {
                 //FIXME: This doesn't work so well if the document's URL is different than input url
-                SimpleRDF(DO.C.Vocab, pIRI).get().then(
+                SimpleRDF(DO.C.Vocab, url).get().then(
                     function(i) {
                         var s = i.child(subjectIRI);
                         if (s.solidinbox.length > 0) {
