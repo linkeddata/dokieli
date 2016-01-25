@@ -959,7 +959,8 @@ text-align:center;
 #general-terms,
 #categories-and-subject-descriptors,
 #keywords {
-margin:0 2.5em 1em;
+padding:0 2.5em;
+margin:0 0 0 1em;
 }
 
 #authors dt,
