@@ -78,6 +78,10 @@ margin:0 !important;
 padding:0 !important;
 font-size:9pt;
 }
+
+figure pre {
+font-size:6pt;
+}
 }
 
 
@@ -228,7 +232,9 @@ section > h4:before {
 content: counter(section)"." counter(sub-section) "." counter(sub-sub-section) "\00a0\00a0\00a0";
 }
 
-
+p, ol, ul, dl {
+text-align:justify;
+}
 
 li {
 list-style-position:inside;
