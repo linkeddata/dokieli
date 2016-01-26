@@ -148,8 +148,7 @@ margin-bottom:1em;
 }
 
 h1 {
-margin-top:0.75em;
-margin-bottom:1.25em;
+margin:0.75em auto 1.25em auto;
 font-family:Arial, sans-serif;
 font-size:1.75em;
 text-align:center;
