@@ -453,9 +453,8 @@ list-style-type:none;
 #authors {
 font-family:Arial, sans-serif;
 text-align:center;
-margin:0 0 1em -5%;
+margin:0 0 1em 0;
 line-height:1;
-width:110%;
 }
 
 #authors li,
