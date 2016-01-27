@@ -3545,7 +3545,7 @@ LIMIT 1";
                             var refId = 'r-' + id;
                             // var noteId = 'i-' + id;
 
-                            var resourceIRI = document.location.href;
+                            var resourceIRI = DO.U.stripFragmentFromString(document.location.href);
                             //XXX: Temporarily setting this.
                             var containerIRI = window.location.href;
                             containerIRI = containerIRI.substr(0, containerIRI.lastIndexOf('/') + 1);
