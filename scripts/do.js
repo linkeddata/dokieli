@@ -2694,7 +2694,7 @@ LIMIT 1";
             //TODO Change to switch()
             var published = '';
             var license = '';
-            var creator = '', name = '';
+            var creator = '', name = '', createImage = '';
             var hasTarget = '', annotationTextSelector = '', target = '';
             var hX = '';
 
