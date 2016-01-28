@@ -2119,8 +2119,7 @@ var DO = {
         getBaseURLSelection: function() {
             var s = '<div id="base-url-selection"><label>Location of media resources:</label>\n\
             <select name="base-url">\n\
-            <option id="base-url-dokieli" value="base-url-dokieli" selected="selected">Use https://dokie.li/</option>\n\
-            <option id="base-url-absolute" value="base-url-absolute">Use current; ' + DO.U.getBaseURL(document.location.href) + '</option>\n\
+            <option id="base-url-absolute" value="base-url-absolute" selected="selected">Use references as is</option>\n\
             <option id="base-url-relative" value="base-url-relative">Copy to your storage</option>\n\
             </select>\n\
             </div>';
@@ -2129,7 +2128,7 @@ var DO = {
         },
 
         rewriteBaseURL: function(nodes, urlType) {
-            urlType = urlType || 'base-url-dokieli';
+            urlType = urlType || 'base-url-absolute';
             if (typeof nodes === 'object' && nodes.length > 0) {
                 nodes.each(function(i, v) {
                     var url = '', ref = '';
@@ -2161,21 +2160,18 @@ var DO = {
         },
 
         setBaseURL: function(url, urlType) {
-            urlType = urlType || 'base-url-dokieli';
+            urlType = urlType || 'base-url-absolute';
             var matches = [];
             var regexp = /(https?:\/\/([^\/]*)\/|file:\/\/\/)?(.*)/;
 
             matches = url.match(regexp);
             if (matches) {
                 switch(urlType) {
-                    case 'base-url-dokieli':  default:
-                        url = 'https://dokie.li/' + matches[3];
-                        break;
-                    case 'base-url-absolute':
-                        url = DO.U.getBaseURL(document.location.href) + matches[3];
+                    case 'base-url-absolute': default:
+                        url = DO.U.getBaseURL(document.location.href) + matches[3].replace(/^\//g, '');
                         break;
                     case 'base-url-relative':
-                        url = matches[3];
+                        url = matches[3].replace(/^\//g, '');
                         break;
                 }
             }
@@ -2239,7 +2235,7 @@ var DO = {
                 var p = fromURL.slice(0, 4);
                 if (p != 'http' && p != 'file') {
                     var pathToFile = DO.U.setBaseURL(fromURL, 'base-url-relative');
-                    var toURL = baseURL + pathToFile;
+                    var toURL = baseURL + pathToFile.replace(/^\//g, '');
                     DO.U.copyResource(fromURL, toURL);
                }
             });
