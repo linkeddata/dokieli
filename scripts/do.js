@@ -918,6 +918,31 @@ var DO = {
             $('#user-identity-input input#webid').focus();
         },
 
+        //TODO: Generalize this further so that it is not only for submitSignIn
+        enableDisableButton: function(e) {
+            var button = e.data;
+            var input = e.target.value;
+
+            if (input.length > 10 && input.match(/^https?:\/\//g)) {
+                if (typeof e.which !== 'undefined' && e.which == 13) {
+                    if(!button.prop('disabled')) {
+                        button.prop('disabled', 'disabled');
+                        e.preventDefault();
+                        e.stopPropagation();
+                        DO.U.submitSignIn();
+                    }
+                }
+                else {
+                    button.removeAttr('disabled');
+                }
+            }
+            else {
+                if (!button.prop('disabled')) {
+                    button.prop('disabled', 'disabled');
+                }
+            }
+        },
+
         submitSignIn: function() {
             var userIdentityInput = $('#user-identity-input');
             var url = userIdentityInput.find('input#webid').val().trim();
