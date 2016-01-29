@@ -884,17 +884,15 @@ var DO = {
             $(this).prop('disabled', 'disabled');
             $('body').append('<aside id="user-identity-input" class="do on"><button class="close">❌</button><h2>Enter WebID to sign in with</h2><label>HTTP(S) IRI</label><input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="signin">Sign in</button></aside>');
 
-            var buttonSignIn = $('#user-identity-input button.signin');
-            buttonSignIn.prop('disabled', 'disabled');
+            $('#user-identity-input button.signin').prop('disabled', 'disabled');
 
             $('#user-identity-input').on('click', 'button.close', function(e) {
                 $('#document-menu > header .signin-user').removeAttr('disabled');
             });
 
             $('#user-identity-input').on('click', 'button.signin', DO.U.submitSignIn);
-            $('#user-identity-input').on('keyup', 'input#webid', buttonSignIn, DO.U.enableDisableButton);
-            $('#user-identity-input').on('cut', 'input#webid', 'button.signin', DO.U.enableDisableButton);
-            $('#user-identity-input').on('paste', 'input#webid', 'button.signin', DO.U.enableDisableButton);
+            $('#user-identity-input').on('keyup cut paste', 'input#webid', 'button.signin', DO.U.enableDisableButton);
+;
             $('#user-identity-input input#webid').focus();
         },
 
