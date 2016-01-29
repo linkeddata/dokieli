@@ -900,27 +900,32 @@ var DO = {
 
         //TODO: Generalize this further so that it is not only for submitSignIn
         enableDisableButton: function(e) {
-            var button = e.data;
-            var input = e.target.value;
+            var x = $(e.delegateTarget);
+            var button = x.find(e.data);
+            var delay = (e.type == 'cut' || e.type == 'paste') ? 250 : 0;
+            var input = '';
 
-            if (input.length > 10 && input.match(/^https?:\/\//g)) {
-                if (typeof e.which !== 'undefined' && e.which == 13) {
-                    if(!button.prop('disabled')) {
-                        button.prop('disabled', 'disabled');
-                        e.preventDefault();
-                        e.stopPropagation();
-                        DO.U.submitSignIn();
+            window.setTimeout(function () {
+                input = x.find('#' + e.target.id).val();
+                if (input.length > 10 && input.match(/^https?:\/\//g)) {
+                    if (typeof e.which !== 'undefined' && e.which == 13) {
+                        if(!button.prop('disabled')) {
+                            button.prop('disabled', 'disabled');
+                            e.preventDefault();
+                            e.stopPropagation();
+                            DO.U.submitSignIn();
+                        }
+                    }
+                    else {
+                        button.removeAttr('disabled');
                     }
                 }
                 else {
-                    button.removeAttr('disabled');
+                    if (!button.prop('disabled')) {
+                        button.prop('disabled', 'disabled');
+                    }
                 }
-            }
-            else {
-                if (!button.prop('disabled')) {
-                    button.prop('disabled', 'disabled');
-                }
-            }
+            }, delay);
         },
 
         submitSignIn: function() {
