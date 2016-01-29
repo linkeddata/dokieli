@@ -893,7 +893,8 @@ var DO = {
 
             $('#user-identity-input').on('click', 'button.signin', DO.U.submitSignIn);
             $('#user-identity-input').on('keyup', 'input#webid', buttonSignIn, DO.U.enableDisableButton);
-
+            $('#user-identity-input').on('cut', 'input#webid', 'button.signin', DO.U.enableDisableButton);
+            $('#user-identity-input').on('paste', 'input#webid', 'button.signin', DO.U.enableDisableButton);
             $('#user-identity-input input#webid').focus();
         },
 
