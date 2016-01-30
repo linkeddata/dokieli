@@ -891,7 +891,7 @@ var DO = {
             });
 
             $('#user-identity-input').on('click', 'button.signin', DO.U.submitSignIn);
-            $('#user-identity-input').on('keyup cut paste', 'input#webid', 'button.signin', DO.U.enableDisableButton);
+            $('#user-identity-input').on('keyup cut paste input', 'input#webid', 'button.signin', DO.U.enableDisableButton);
 ;
             $('#user-identity-input input#webid').focus();
         },
