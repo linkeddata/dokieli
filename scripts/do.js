@@ -611,16 +611,18 @@ var DO = {
         },
 
         showInboxNotifications: function() {
-            DO.U.getInbox().then(
-                function(i) {
-                    i.forEach(function(inbox) {
-                        DO.U.showNotificationSources(inbox);
-                    });
-                },
-                function(reason) {
-                    console.log(reason);
-                }
-            );
+            if (typeof SimpleRDF !== 'undefined') {
+                DO.U.getInbox().then(
+                    function(i) {
+                        i.forEach(function(inbox) {
+                            DO.U.showNotificationSources(inbox);
+                        });
+                    },
+                    function(reason) {
+                        console.log(reason);
+                    }
+                );
+            }
         },
 
         showNotificationSources: function(url) {
@@ -867,16 +869,18 @@ var DO = {
 
         //TODO: Refactor
         showUserSigninSignup: function(node) {
-            var s = '';
-            if(DO.C.User.IRI) {
-                s+= DO.U.getUserHTML();
-            }
-            else {
-                s+= '<button class="signin-user">Sign in</button>';
-            }
-            $(node).append('<p id="user-signin-signup">' + s + '</p>');
+            if (typeof SimpleRDF !== 'undefined') {
+                var s = '';
+                if(DO.C.User.IRI) {
+                    s+= DO.U.getUserHTML();
+                }
+                else {
+                    s+= '<button class="signin-user">Sign in</button>';
+                }
+                $(node).append('<p id="user-signin-signup">' + s + '</p>');
 
-            $('#document-menu.do').off('click', 'button.signin-user').on('click', 'button.signin-user', DO.U.showUserIdentityInput);
+                $('#document-menu.do').off('click', 'button.signin-user').on('click', 'button.signin-user', DO.U.showUserIdentityInput);
+            }
         },
 
         //TODO: Refactor
