@@ -1604,7 +1604,27 @@ var DO = {
             $(document).on({
                 mouseenter: function () {
                     if($('#'+this.id+' > .do.fragment').length == 0 && this.parentNode.nodeName.toLowerCase() != 'aside'){
-                        $('#'+this.id).prepend('<span class="do fragment" style="height:' + this.clientHeight + 'px; "><a href="#' + this.id + '">' + '🔗' + '</a></span>');
+                        var sign;
+                        switch(this.nodeName.toLowerCase()) {
+                            default:        sign = '🔗'; break;
+                            case 'section':
+                                switch (this.id) {
+                                    default: sign = '§'; break;
+                                    case 'references': sign = '☞'; break;
+                                    case 'acknowledgements': sign = '☺'; break;
+                                    case 'results': sign = '∴'; break;
+                                }
+                                break;
+                            case 'aside':   sign = '†'; break;
+                            case 'p':       sign = '¶'; break;
+                            case 'pre':     sign = '🖩'; break;
+                            case 'nav':     sign = '☞'; break;
+                            case 'figure':  sign = '❧'; break;
+                            case 'img':     sign = '🖼'; break;
+                            case 'video':   sign = '🎞'; break;
+                            case 'audio':   sign = '🔊'; break;
+                        }
+                        $('#'+this.id).prepend('<span class="do fragment" style="height:' + this.clientHeight + 'px; "><a href="#' + this.id + '">' + sign + '</a></span>');
                         var fragment = $('#'+this.id+' > .do.fragment');
                         var fragmentClientWidth = fragment.get(0).clientWidth;
                         fragment.css({
