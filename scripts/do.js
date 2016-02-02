@@ -2605,9 +2605,9 @@ LIMIT 1";
                             var exactEnd = selectorIndex + prefix.length + exact.length;
                             var selection = { start: exactStart, end: exactEnd };
 
-
                             var id = String(Math.abs(DO.U.hashCode(noteIRI))).substr(0, 6);
                             var refId = 'r-' + id;
+                            var refLabel = id;
                             var ref = '<span class="ref do" about="#' + refId + '" typeof="http://purl.org/dc/dcmitype/Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#i-' + id + '" resource="' + noteIRI + '">' + id + '</a></sup></span>';
 
                             MediumEditor.selection.importSelection(selection, containerNode, document);
@@ -2631,14 +2631,22 @@ LIMIT 1";
                                 }
                             }
 
+                            var resourceIRI = DO.U.stripFragmentFromString(document.location.href);
+
+                            var parentNodeWithId = selectedParentNode.closest('[id]');
+                            var targetIRI = (parentNodeWithId) ? resourceIRI + '#' + parentNodeWithId.id : resourceIRI;
+
                             var noteData = {
                                 "type": 'position-quote-selector', //e.g., 'article'
                                 "purpose": "read",
+                                "motivatedByIRI": "oa:replying",
                                 "id": id,
+                                "refId": refId,
                                 "iri": noteIRI, //e.g., https://example.org/path/to/article
                                 "creator": {},
                                 "datetime": datetime,
                                 "target": {
+                                    "iri": targetIRI,
                                     "source": source,
                                     "selector": {
                                         "exact": exact,
@@ -2685,8 +2693,6 @@ LIMIT 1";
 //                                selectedParentNode.parentNode.insertBefore(asideNode, selectedParentNode.nextSibling);
                             }
 
-                            var refId = 'r-' + id;
-                            var refLabel = id;
                             DO.U.positionNote(refId, refLabel, id);
 
                             //Perhaps return something more useful?
@@ -2705,61 +2711,89 @@ LIMIT 1";
         },
 
         createNoteHTML: function(n) {
-            //TODO Change to switch()
+// console.log(n);
+
             var published = '';
             var license = '';
-            var creator = '', name = '', creatorImage = '';
+            var creator = '', authors = '', creatorImage = '';
             var hasTarget = '', annotationTextSelector = '', target = '';
-            var hX = '';
+            var heading, hX;
+            var iAbout = '', iPrefix = '';
+
+            var motivatedByIRI = n.motivatedByIRI || '';
+            var motivatedByLabel = n.motivatedByLabel || '';
+            switch(motivatedByIRI) {
+                case 'oa:replying': default:
+                    motivatedByIRI = 'oa:replying';
+                    motivatedByLabel = 'replies';
+                    targetLabel = 'In reply to';
+                    iAbout = '[i:]';
+                    iPrefix = ' prefix="schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'"';
+                    break;
+                case 'oa:describing':
+                    motivatedByIRI = 'oa:describing';
+                    motivatedByLabel = 'describes';
+                    targetLabel = 'Describes';
+                    iAbout = '#i-' + n.id;
+                break;
+            }
 
             switch(n.purpose) {
                 default:
                     hX = 'h3';
                     break;
-                case "write":
+                case 'write':
                     hX = 'h1';
                     break;
             }
 
+            var creatorName = 'Anonymous';
+            if ('creator' in n) {
+                if ('image' in n.creator !== 'undefined') {
+                    creatorImage = '<img rel="schema:image" src="' + n.creator.image + '" width="48" height="48" />';
+                }
+                if ('iri' in n.creator && 'name' in n.creator) {
+                    creatorName = n.creator.name;
+
+                    creator = '<span about="' + n.creator.iri + '" typeof="schema:Person">' + creatorImage + ' <a rel="schema:url" href="' + n.creator.iri + '"><span about="' + n.creator.iri + '" property="schema:name">' + creatorName + '</span></a></span>';
+                }
+                else {
+                    creator = '<span about="[i:#agent]" typeof="schema:Person">' + creatorName + '</span>';
+                }
+
+                authors = '<dl class="author-name"><dt>Authors</dt><dd><span rel="schema:creator oa:annotatedBy as:actor">' + creator + '</span></dd></dl>';
+            }
+
+            heading = '<' + hX + ' property="schema:name">' + creatorName + ' <span rel="oa:motivatedBy" resource="' + motivatedByIRI + '">' + motivatedByLabel + '</span></' + hX + '>';
+
+            published = '<dl class="published"><dt>Published</dt><dd><a href="' + n.iri + '"><time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="oa:annotatedAt schema:datePublished" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time></a></dd></dl>';
+
             switch(n.type) {
                 case 'position-quote-selector':
-                    published = '<dl class="published"><dt>Published</dt><dd><a href="' + n.iri + '"><time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="oa:annotatedAt schema:datePublished" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time></a></dd></dl>';
-
-                    var creatorName = 'Anonymous';
-                    if (typeof n.creator.image !== 'undefined') {
-                        creatorImage = '<img rel="schema:image" src="' + n.creator.image + '" width="48" height="48" />';
-                    }
-                    if (typeof n.creator.iri !== 'undefined' && typeof n.creator.name !== 'undefined') {
-                        creatorName = '<span about="' + n.creator.iri + '" property="schema:name">' + n.creator.name + '</span>';
-
-                        creator = '<span about="' + n.creator.iri + '" typeof="schema:Person">' + creatorImage + ' <a rel="schema:url" href="' + n.creator.iri + '"> ' + creatorName + '</a></span>';
-                    }
-                    else {
-                        creator = '<span about="[i:#agent]" typeof="schema:Person">' + creatorName + '</span>';
-                    }
-
-                    name = '<' + hX + ' property="schema:name"><span rel="schema:creator oa:annotatedBy as:actor">' + creator + '</span></' + hX + '>';
-
-                    description = '<div property="schema:description" rel="oa:hasBody as:content"><div about="[i:#i]" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">' + n.body + '</div></div>';
-
                     //TODO: Include `a oa:SpecificResource`?
-                    if (typeof n.target != 'undefined' && typeof n.target.selector != 'undefined') { //note, annotation
+                    if (typeof n.target !== 'undefined' && typeof n.target.selector !== 'undefined') { //note, annotation
                         //FIXME: Could resourceIRI be a fragment URI or *make sure* it is the document URL without the fragment?
                         //TODO: Use n.target.iri?
-                        hasTarget = '<a rel="oa:hasTarget sioc:reply_of as:inReplyTo" href="' + n.target.source + '#TODO-PerhapsClosestParentID" resource="' + n.target.source + '#TODO-PerhapsClosestParentID"><span about="[i:]" rel="oa:motivatedBy" resource="oa:replying">In reply to</span></a>';
 
-                        annotationTextSelector = '<span rel="oa:hasSource" resource="' + n.target.source +'"></span><span rel="oa:hasSelector" typeof="oa:TextQuoteSelector"><span property="oa:prefix" xml:lang="en" lang="">' + n.target.selector.prefix + '</span><mark property="oa:exact" xml:lang="en" lang="">' + n.target.selector.exact + '</mark><span property="oa:suffix" xml:lang="en" lang="">' + n.target.selector.suffix + '</span></span>';
+                        body = '<div property="schema:description" rel="oa:hasBody as:content"><div about="[i:#i]" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">' + n.body + '</div></div>';
 
-                        target ='<dl class="target"><dt>' + hasTarget + '</dt><dd><blockquote about="' + n.target.source + '#TODO-PerhapsClosestParentID" cite="' + n.target.source + '#TODO-PerhapsClosestParentID">' + annotationTextSelector + '</blockquote></dd></dl>';
+                        hasTarget = '<a rel="oa:hasTarget as:inReplyTo sioc:reply_of" href="' + n.target.iri + '">' + targetLabel + '</a> (<a about="' + n.target.iri + '" typeof="oa:SpecificResource" rel="oa:hasSource" href="' + n.target.source +'">part of</a>)';
+
+                        annotationTextSelector = '<span rel="oa:hasSelector" typeof="oa:TextQuoteSelector"><span property="oa:prefix" xml:lang="en" lang="en">' + n.target.selector.prefix + '</span><mark property="oa:exact" xml:lang="en" lang="en">' + n.target.selector.exact + '</mark><span property="oa:suffix" xml:lang="en" lang="en">' + n.target.selector.suffix + '</span></span>';
+
+                        target ='<dl class="target"><dt>' + hasTarget + '</dt><dd><blockquote about="' + n.target.iri + '" cite="' + n.target.iri + '">' + annotationTextSelector + '</blockquote></dd></dl>';
                     }
                     break;
 
                 case 'footnote':
-                    description = '<dl><dt property="schema:name">' + n.id + '</dt><dd property="schema:description" datatype="rdf:HTML">' + n.body + '</dd></dl>';
+                    body = '<div class="content" property="schema:description" rel="oa:hasBody as:content"><div about="#' + n.id + '" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">' + n.body + '</div></div>';
+
+                    hasTarget = '<a rel="oa:hasTarget" href="#' + n.refId + '">' + n.refLabel + '</a>';
+
+                    target ='<dl class="target"><dt>' + targetLabel + '</dt><dd>' + hasTarget + '</dd></dl>';
                     break;
 
                 default:
-//                    creator = DO.U.getUserHTML();
                     break;
             }
 
@@ -2768,12 +2802,13 @@ LIMIT 1";
             }
 
             var note = '\n\
-            <article id="' + n.id + '" about="[i:]" typeof="oa:Annotation as:Activity" prefix="schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'">\n\
+            <article id="' + n.id + '" about="' + iAbout + '" typeof="oa:Annotation as:Activity"' + iPrefix + '>\n\
+                ' + heading + '\n\
+                ' + authors + '\n\
                 ' + published + '\n\
                 ' + license + '\n\
-                ' + name + '\n\
-                ' + description + '\n\
                 ' + target + '\n\
+                ' + body + '\n\
             </article>';
 
             return note;
@@ -3521,7 +3556,7 @@ LIMIT 1";
                         },
 
                         completeFormSave: function (opts) {
-                            console.log('completeFormSave() with this.action: ' + this.action);
+// console.log('completeFormSave() with this.action: ' + this.action);
                             this.base.restoreSelection();
                             var range = MediumEditor.selection.getSelectionRange(this.document);
                             var selectedParentElement = this.base.getSelectedParentElement();
@@ -3582,6 +3617,9 @@ LIMIT 1";
                             //TODO: However this label is created
                             var refLabel = id;
 
+                            var parentNodeWithId = selectedParentElement.closest('[id]');
+                            var targetIRI = (parentNodeWithId) ? resourceIRI + '#' + parentNodeWithId.id : resourceIRI;
+
                             //Role/Capability for Authors/Editors
                             var ref = '', refType = ''; //TODO: reference types. UI needs input
                             //TODO: replace refId and noteIRI IRIs
@@ -3600,7 +3638,6 @@ LIMIT 1";
                                 //External Note
                                 case 'article': //'note'
                                     //XXX: Experimental: We don't change the source, only refer to it because that's cool.
-                                    // ref = '<span class="ref" about="[this:#' + refId + ']" typeof="http://purl.org/dc/dcmitype/Text"><mark id="'+ refId +'" property="schema:description">' + this.base.selection + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#' + id + '">' + refLabel + '</a></sup></span>';
 
                                     noteType = 'position-quote-selector';
                                     ref = this.base.selection;
@@ -3609,12 +3646,15 @@ LIMIT 1";
                                     noteData = {
                                         "type": noteType, //e.g., 'article'
                                         "purpose": "write",
+                                        "motivatedByIRI": "oa:replying",
                                         "id": id,
+                                        "refId": refId,
                                         "refLabel": refLabel,
                                         "iri": noteIRI, //e.g., https://example.org/path/to/article
                                         "creator": {},
                                         "datetime": datetime,
                                         "target": {
+                                            "iri": targetIRI,
                                             "source": resourceIRI,
                                             "selector": {
                                                 "exact": exact,
@@ -3651,7 +3691,9 @@ LIMIT 1";
                                     noteData = {
                                         "type": noteType, //e.g., 'article'
                                         "purpose": "write",
+                                        "motivatedByIRI": "oa:describing",
                                         "id": id,
+                                        "refId": refId,
                                         "refLabel": refLabel,
                                         "iri": noteIRI, //e.g., https://example.org/path/to/article
                                         "datetime": datetime,
@@ -3685,7 +3727,7 @@ LIMIT 1";
                             }
 // console.log(note);
 
-console.log(noteData);
+// console.log(noteData);
 
 
                             var selectionUpdated = ref;
@@ -3731,7 +3773,7 @@ console.log(noteData);
                                         function(inbox) {
                                             if (inbox && inbox.length > 0) {
                                                 console.log('inbox: ' + inbox);
-                                                DO.U.notifyInbox(inbox, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', resourceIRI).then(
+                                                DO.U.notifyInbox(inbox, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', targetIRI).then(
                                                         function(response) {
                                                             console.log("Notification: " + response.xhr.getResponseHeader('Location'));
                                                         },
