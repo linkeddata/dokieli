@@ -172,6 +172,10 @@ var DO = {
                 "@id": "http://www.w3.org/ns/ldp#contains",
                 "@type": "@id",
                 "@array": true
+            },
+            "ldpresource": {
+                "@id": "http://www.w3.org/ns/ldp#Resource",
+                "@type": "@id"
             }
         }
     },
@@ -566,8 +570,7 @@ var DO = {
                         var s = i.child(url);
                         s.ldpcontains.forEach(function(resource) {
                             var types = s.child(resource).rdftype;
-                            var n = types.indexOf(DO.C.Vocab.solidnotification["@id"]);
-                            if(n >= 0) {
+                            if(types.indexOf(DO.C.Vocab.ldpresource["@id"]) >= 0) {
                                 notifications.push(resource);
                             }
                         });
@@ -595,7 +598,7 @@ var DO = {
                 var g = SimpleRDF(DO.C.Vocab, url).get().then(
                     function(i) {
                         var s = i.child(url);
-                        if (s.pingbackproperty == DO.C.Vocab.oahasTarget["@id"] && s.pingbacktarget == window.location.origin + window.location.pathname) {
+                        if (s.pingbackproperty == DO.C.Vocab.oahasTarget["@id"] && s.pingbacktarget.indexOf(window.location.origin + window.location.pathname) >= 0) {
                             return resolve(s.pingbacksource);
                         }
                         else {
