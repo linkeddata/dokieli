@@ -2554,10 +2554,7 @@ LIMIT 1";
             var refPP = ref.parent().parent();
 // console.log(refPP);
 
-    //        $('span.note').each(function(i,v) {
-    //            a = $(this).find('a');
-    //            if(a.length > 0) {
-                    noteWidth = Math.ceil(($(window).width() - $('#content').width()) / 2 - 50);
+            noteWidth = Math.ceil(($(window).width() - $('#content').width()) / 2 - 50);
 
             if (noteWidth >= 150) {
 //                    id = a.attr('href');
@@ -2593,8 +2590,6 @@ LIMIT 1";
                     'text-align': 'left'
                 });
             }
-    //            }
-    //        });
         },
 
         positionQuoteSelector: function(noteIRI, containerNode) {
