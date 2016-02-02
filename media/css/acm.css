@@ -151,6 +151,8 @@ h1 {
 margin:0.75em auto 1.25em auto;
 font-family:Arial, sans-serif;
 font-size:1.75em;
+}
+main > article > h1 {
 text-align:center;
 }
 h1 sup,
