@@ -1609,20 +1609,24 @@ var DO = {
                             default:        sign = '🔗'; break;
                             case 'section':
                                 switch (this.id) {
-                                    default: sign = '§'; break;
-                                    case 'references': sign = '☞'; break;
-                                    case 'acknowledgements': sign = '☺'; break;
-                                    case 'results': sign = '∴'; break;
+                                    default:                  sign = '§'; break;
+                                    case 'references':        sign = '☛'; break;
+                                    case 'acknowledgements':  sign = '☺'; break;
+                                    case 'results':           sign = '∞'; break;
+                                    case 'related-work':      sign = '⌘'; break;
+                                    case 'keywords':          sign = '🏷'; break;
+                                    case 'conclusions':       sign = '∴'; break;
                                 }
                                 break;
                             case 'aside':   sign = '†'; break;
                             case 'p':       sign = '¶'; break;
                             case 'pre':     sign = '🖩'; break;
-                            case 'nav':     sign = '☞'; break;
+                            case 'nav':     sign = '☛'; break;
                             case 'figure':  sign = '❧'; break;
                             case 'img':     sign = '🖼'; break;
                             case 'video':   sign = '🎞'; break;
                             case 'audio':   sign = '🔊'; break;
+                            case 'footer':  sign = '⸙'; break;
                         }
                         $('#'+this.id).prepend('<span class="do fragment" style="height:' + this.clientHeight + 'px; "><a href="#' + this.id + '">' + sign + '</a></span>');
                         var fragment = $('#'+this.id+' > .do.fragment');
