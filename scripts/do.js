@@ -140,6 +140,11 @@ var DO = {
                 "@id": "http://www.w3.org/ns/solid/terms#Notification",
                 "@type": "@id"
             },
+
+            "oaannotation": {
+                "@id": "http://www.w3.org/ns/oa#Annotation",
+                "@type": "id"
+            },
             "oahasBody": {
                 "@id": "http://www.w3.org/ns/oa#hasBody",
                 "@type": "@id"
@@ -168,6 +173,23 @@ var DO = {
                 "@id": "http://www.w3.org/ns/oa#annotatedBy",
                 "@type": "@id"
             },
+
+            "asobject": {
+                "@id": "http://www.w3.org/ns/activitystreams#object",
+                "@type": "id",
+                "@type": true
+            },
+            "astarget": {
+                "@id": "http://www.w3.org/ns/activitystreams#target",
+                "@type": "id",
+                "@type": true
+            },
+            "ascontext": {
+                "@id": "http://www.w3.org/ns/activitystreams#context",
+                "@type": "id",
+                "@type": true
+            },
+
             "ldpcontains": {
                 "@id": "http://www.w3.org/ns/ldp#contains",
                 "@type": "@id",
@@ -598,8 +620,8 @@ var DO = {
                 var g = SimpleRDF(DO.C.Vocab, url).get().then(
                     function(i) {
                         var s = i.child(url);
-                        if (s.pingbackproperty == DO.C.Vocab.oahasTarget["@id"] && s.pingbacktarget.indexOf(window.location.origin + window.location.pathname) >= 0) {
-                            return resolve(s.pingbacksource);
+                        if (s.ascontext == DO.C.Vocab.oahasTarget["@id"] && s.astarget.indexOf(window.location.origin + window.location.pathname) >= 0) {
+                            return resolve(s.asobject);
                         }
                         else {
                             return Promise.reject({'message': 'Notification source not found'});
@@ -828,17 +850,16 @@ var DO = {
             }
         },
 
-        notifyInbox: function(url, slug, source, property, target) {
+        notifyInbox: function(url, slug, source, context, target) {
             var data = '@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\
-@prefix sterms: <http://www.w3.org/ns/solid/terms#> .\n\
-@prefix pingback: <http://purl.org/net/pingback/> .\n\
+@prefix as: <http://www.w3.org/ns/activitystreams#> .\n\
 @prefix schema: <https://schema.org/> .\n\
-<> a sterms:Notification , pingback:Request ;\n\
-    pingback:source <' + source + '> ;\n\
-    pingback:property <' + property + '> ;\n\
-    pingback:target <' + target + '> ;\n\
-    schema:dateModified "' + DO.U.getDateTimeISO() + '"^^xsd:dateTime ;\n\
-    schema:creator <' + DO.C.User.IRI + '> ;\n\
+<> a as:Announce ;\n\
+    as:object <' + source + '> ;\n\
+    as:context <' + context + '> ;\n\
+    as:target <' + target + '> ;\n\
+    as:updated "' + DO.U.getDateTimeISO() + '"^^xsd:dateTime ;\n\
+    as:actor <' + DO.C.User.IRI + '> ;\n\
     schema:license <' + DO.C.License.CCBYSA.iri + '> .\n\
 ';
 
