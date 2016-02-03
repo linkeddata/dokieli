@@ -2565,55 +2565,22 @@ LIMIT 1";
         },
 
         positionNote: function(refId, refLabel, noteId) {
-//            console.log('--- positionNote(): ' + refId + ', ' + refLabel + ', ' + noteId);
-            var viewportWidthSplit = Math.ceil(parseInt($(window).width()) / 2);
+            var ref = document.getElementById(refId);
+            var note = document.getElementById(noteId);
+            note.removeAttribute('style');
 
-            var parentPositionLeft, positionLeftCalc, noteWidth = '';
-
-            var ref = $('#' + refId);
-// console.log(ref);
-// console.log(noteId);
-            var note = $('#' + noteId);
-// console.log(note);
-            var refPP = ref.parent().parent();
-// console.log(refPP);
-
-            noteWidth = Math.ceil(($(window).width() - $('#content').width()) / 2 - 50);
-
-            if (noteWidth >= 150) {
-//                    id = a.attr('href');
-                parentPositionLeft = Math.ceil(refPP.position().left);
-
-// console.log(parentPositionLeft);
-// console.log(viewportWidthSplit);
-                if (parentPositionLeft <= viewportWidthSplit) {
-                    positionRightCalc = parentPositionLeft + 'px + ' + noteWidth + 'px - 20px';
-                }
-                else {
-                    positionRightCalc = parentPositionLeft + 'px + ' + refPP.get(0).clientWidth + 'px + 35px';
-                }
-
-// console.log($(this));
-// console.log($(this).position().top);
-// console.log($(this).offset().top);
-
-// console.log($(this).parent());
-// console.log($(this).parent().parent());
-// console.log($(this).parent().parent().parent());
-
-                var bodyWidthThird = ($('body').get(0).clientWidth) / 3;
-
-                //TODO: If there are articles already in the aside.note , the subsequent top values should come after one another
-                note.css({
-                    'position': 'absolute',
-                    'top': 'calc(' + Math.ceil(ref.parent().position().top) + 'px)',
-                    'left': 'calc(' + positionRightCalc + ' + ' + bodyWidthThird + 'px + 2em)',
-                    'z-index': '1',
-                    'width': (bodyWidthThird) + 'px',
-                    'font-size': '0.9em',
-                    'text-align': 'left'
-                });
-            }
+            //TODO: If there are articles already in the aside.note , the subsequent top values should come after one another
+            var style = [
+                'position: absolute',
+                'top: ' + Math.ceil(ref.parentNode.offsetTop) + 'px',
+                'left: auto',
+                'right: calc(-35% - 2.5em)',
+                'z-index: 1',
+                'width: 35%',
+                'font-size: 0.9em',
+                'text-align: left'
+            ].join('; ');
+            note.setAttribute('style', style);
         },
 
         positionQuoteSelector: function(noteIRI, containerNode) {
