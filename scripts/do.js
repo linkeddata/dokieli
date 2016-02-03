@@ -1101,6 +1101,13 @@ var DO = {
                         else {
                             $(this).prop({'rel': 'stylesheet alternate'});
                         }
+
+                        $('span.ref.do').each(function(i){
+                            console.log(this);
+                            var refId = $(this).find('mark').prop('id');
+                            var noteId = $(this).find('a').text();
+                            DO.U.positionNote(refId, noteId, noteId);
+                        });
                     });
 
                     $('#views.do button:disabled').removeAttr('disabled');
