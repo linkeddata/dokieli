@@ -2622,7 +2622,7 @@ LIMIT 1";
                             var id = String(Math.abs(DO.U.hashCode(noteIRI))).substr(0, 6);
                             var refId = 'r-' + id;
                             var refLabel = id;
-                            var ref = '<span class="ref do" about="#' + refId + '" typeof="http://purl.org/dc/dcmitype/Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#i-' + id + '" resource="' + noteIRI + '">' + id + '</a></sup></span>';
+                            var ref = '<span class="ref do" about="#' + refId + '" typeof="http://purl.org/dc/dcmitype/Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#' + id + '" resource="' + noteIRI + '">' + id + '</a></sup></span>';
 
                             MediumEditor.selection.importSelection(selection, containerNode, document);
 
@@ -2686,7 +2686,7 @@ LIMIT 1";
                             }
 
                             var note = DO.U.createNoteHTML(noteData);
-                            note = '<blockquote id="i-' + id + '" cite="' + noteIRI + '">' + note + '</blockquote>';
+                            note = '<blockquote cite="' + noteIRI + '">' + note + '</blockquote>';
 
                             var nES = selectedParentNode.nextElementSibling;
                             //Check if <aside class="note"> exists
@@ -2732,7 +2732,7 @@ LIMIT 1";
             var creator = '', authors = '', creatorImage = '';
             var hasTarget = '', annotationTextSelector = '', target = '';
             var heading, hX;
-            var aId = '', aAbout = '', aPrefix = '';
+            var aAbout = '', aPrefix = '';
 
             var motivatedByIRI = n.motivatedByIRI || '';
             var motivatedByLabel = n.motivatedByLabel || '';
@@ -2741,7 +2741,6 @@ LIMIT 1";
                     motivatedByIRI = 'oa:replying';
                     motivatedByLabel = 'replies';
                     targetLabel = 'In reply to';
-                    aId = n.id;
                     aAbout = '[i:]';
                     aPrefix = ' prefix="schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'"';
                     break;
@@ -2749,8 +2748,7 @@ LIMIT 1";
                     motivatedByIRI = 'oa:describing';
                     motivatedByLabel = 'describes';
                     targetLabel = 'Describes';
-                    aId = 'i-' + n.id;
-                    aAbout = '#i-' + n.id;
+                    aAbout = n.id;
                 break;
             }
 
@@ -2818,7 +2816,7 @@ LIMIT 1";
             }
 
             var note = '\n\
-            <article id="' + aId + '" about="' + aAbout + '" typeof="oa:Annotation as:Activity"' + aPrefix + '>\n\
+            <article id="' + n.id + '" about="' + aAbout + '" typeof="oa:Annotation as:Activity"' + aPrefix + '>\n\
                 ' + heading + '\n\
                 ' + authors + '\n\
                 ' + published + '\n\
@@ -3702,7 +3700,7 @@ LIMIT 1";
                                 case 'mark': //'footnote':
                                     noteType = 'footnote';
 
-                                    ref = '<span class="ref" about="#' + refId + '" typeof="http://purl.org/dc/dcmitype/Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-footnote"><a rel="cito:isCitedBy" href="#i-' + id + '">' + refLabel + '</a></sup></span>';
+                                    ref = '<span class="ref" about="#' + refId + '" typeof="http://purl.org/dc/dcmitype/Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-footnote"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup></span>';
 
                                     noteData = {
                                         "type": noteType, //e.g., 'article'
