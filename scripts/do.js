@@ -2732,7 +2732,7 @@ LIMIT 1";
             var creator = '', authors = '', creatorImage = '';
             var hasTarget = '', annotationTextSelector = '', target = '';
             var heading, hX;
-            var iAbout = '', iPrefix = '';
+            var aId = '', aAbout = '', aPrefix = '';
 
             var motivatedByIRI = n.motivatedByIRI || '';
             var motivatedByLabel = n.motivatedByLabel || '';
@@ -2741,14 +2741,16 @@ LIMIT 1";
                     motivatedByIRI = 'oa:replying';
                     motivatedByLabel = 'replies';
                     targetLabel = 'In reply to';
-                    iAbout = '[i:]';
-                    iPrefix = ' prefix="schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'"';
+                    aId = n.id;
+                    aAbout = '[i:]';
+                    aPrefix = ' prefix="schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'"';
                     break;
                 case 'oa:describing':
                     motivatedByIRI = 'oa:describing';
                     motivatedByLabel = 'describes';
                     targetLabel = 'Describes';
-                    iAbout = '#i-' + n.id;
+                    aId = 'i-' + n.id;
+                    aAbout = '#i-' + n.id;
                 break;
             }
 
@@ -2816,7 +2818,7 @@ LIMIT 1";
             }
 
             var note = '\n\
-            <article id="' + n.id + '" about="' + iAbout + '" typeof="oa:Annotation as:Activity"' + iPrefix + '>\n\
+            <article id="' + aId + '" about="' + aAbout + '" typeof="oa:Annotation as:Activity"' + aPrefix + '>\n\
                 ' + heading + '\n\
                 ' + authors + '\n\
                 ' + published + '\n\
