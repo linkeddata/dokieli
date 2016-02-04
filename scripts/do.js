@@ -263,7 +263,7 @@ var DO = {
         },
 
         authenticateUserFallback: function(url, proxyURL, reasons) {
-            console.log("Try to authenticating through WebID's storage, if not found, try through a known authentication endpoint");
+// console.log("Try to authenticating through WebID's storage, if not found, try through a known authentication endpoint");
             url = url || window.location.origin + window.location.pathname;
 
             var pIRI = url;
@@ -278,9 +278,9 @@ var DO = {
                 SimpleRDF(DO.C.Vocab, pIRI).get().then(
                     function(i) {
                         var s = i.child(url);
-                        console.log(s.storage);
+// console.log(s.storage);
                         if (s.storage && s.storage.length > 0) {
-                            console.log("Try through WebID's storage: " + s.storage[0]);
+// console.log("Try through WebID's storage: " + s.storage[0]);
                             return DO.U.getResourceHeadUser(s.storage[0]);
                         }
                         else {
@@ -303,7 +303,7 @@ var DO = {
                         resolve(i);
                     },
                     function(reason) {
-                        console.log('Try through known authentication endpoint');
+// console.log('Try through known authentication endpoint');
                         DO.U.getResourceHeadUser(DO.C.AuthEndpoint).then(
                             function(i) {
                                 return resolve(i);
@@ -331,7 +331,7 @@ var DO = {
                         if (this.status === 200) {
                             var user = this.getResponseHeader('User');
                             if (user && user.length > 0 && user.slice(0, 4) == 'http') {
-                                console.log('User: ' + user);
+// console.log('User: ' + user);
                                 return resolve(user);
                             }
                         }
@@ -347,9 +347,9 @@ var DO = {
             return new Promise(function(resolve, reject) {
                 DO.U.authenticateUser(url).then(
                     function(userIRI) {
-                        console.log('setUser resolve: ' + userIRI);
+// console.log('setUser resolve: ' + userIRI);
                         DO.C.User.IRI = userIRI;
-                        console.log(DO.C.User.IRI);
+// console.log(DO.C.User.IRI);
                         return resolve(userIRI);
                     },
                     function(xhr) {
@@ -361,7 +361,7 @@ var DO = {
         },
 
         setUserInfo: function(userIRI) {
-            console.log("setUserInfo: " + userIRI);
+// console.log("setUserInfo: " + userIRI);
             if (userIRI) {
                 var pIRI = userIRI;
 
@@ -371,32 +371,32 @@ var DO = {
                 if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
                     pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
                 }
-                console.log("pIRI: " + pIRI);
+// console.log("pIRI: " + pIRI);
 
                 return new Promise(function(resolve, reject) {
                     SimpleRDF(DO.C.Vocab, pIRI).get().then(
                         function(i) {
                             var s = i.child(userIRI);
-                            console.log(s);
+// console.log(s);
                             if (s.foafname) {
                                 DO.C.User.Name = s.foafname;
-                                console.log(DO.C.User.Name);
+// console.log(DO.C.User.Name);
                             }
                             else {
                                 if (s.schemaname) {
                                     DO.C.User.Name = s.schemaname;
-                                    console.log(DO.C.User.Name);
+// console.log(DO.C.User.Name);
                                 }
                             }
 
                             if (s.foafimg) {
                                 DO.C.User.Image = s.foafimg;
-                                console.log(DO.C.User.Image);
+// console.log(DO.C.User.Image);
                             }
                             else {
                                 if (s.schemaimage) {
                                     DO.C.User.Image = s.schemaimage;
-                                    console.log(DO.C.User.Image);
+// console.log(DO.C.User.Image);
                                 }
                             }
 
@@ -835,7 +835,7 @@ var DO = {
 
                     DO.U.putResource(url, data, 'text/turtle; charset=utf-8').then(
                         function(i) {
-//                            console.log(i);
+// console.log(i);
                             return resolve(i);
                         },
                         function(reason) {
@@ -988,12 +988,10 @@ var DO = {
                     function(i) {
                         DO.U.setUserInfo(i).then(
                             function(i) {
-                                console.log("--- USER INFO SET");
-                                console.log(i);
+// console.log(i);
                                 $('#user-signin-signup').html(DO.U.getUserHTML());
                             },
                             function(reason) {
-                                console.log("--- USER INFO NOT SET");
                                 console.log(reason);
                             }
                         );
@@ -1103,7 +1101,6 @@ var DO = {
                         }
 
                         $('span.ref.do').each(function(i){
-                            console.log(this);
                             var refId = $(this).find('mark').prop('id');
                             var noteId = $(this).find('a').text();
                             DO.U.positionNote(refId, noteId, noteId);
@@ -1180,7 +1177,6 @@ var DO = {
                 scriptCurrent.each(function(i, v) {
                     var id = $(v).prop('id');
                     scriptCurrentData[id] = $(v).html().split(/\r\n|\r|\n/);
-                    console.log(scriptCurrentData[id]);
                     scriptCurrentData[id].shift();
                     scriptCurrentData[id].pop();
                     scriptCurrentData[id] = {
@@ -2084,7 +2080,7 @@ var DO = {
 
                 var html = document.documentElement.cloneNode(true);
                 var baseURLSelectionChecked = newDocument.find('select[name="base-url"]');
-                console.log(baseURLSelectionChecked);
+// console.log(baseURLSelectionChecked);
                 if (baseURLSelectionChecked.length > 0) {
                     var baseURLType = baseURLSelectionChecked.val();
                     var nodes = $(html).find('head link, [src], object[data]');
@@ -2100,7 +2096,7 @@ var DO = {
 
                 DO.U.putResource(storageIRI, html).then(
                     function(i) {
-                        console.log(i);
+// console.log(i);
                         newDocument.append('<div class="response-message"><p class="success">New document created at <a href="' + storageIRI + '?edit=true">' + storageIRI + '</a></p></div>');
                         window.open(storageIRI + '?edit=true', '_blank');
                     },
@@ -2266,7 +2262,7 @@ var DO = {
                             var contentType = this.getResponseHeader('Content-Type');
                             DO.U.putResource(toURL, responseText, contentType).then(
                                 function(i) {
-                                    // console.log(i);
+// console.log(i);
                                 },
                                 function(reason) {
                                     console.log(reason);
@@ -3054,32 +3050,14 @@ LIMIT 1";
 
                         handleClick: function(event) { //, editable
                 //console.log('DO.U.Editor.Button.handleClick()');
-                console.log(this);
+// console.log(this);
                             event.preventDefault();
                             event.stopPropagation();
-
 
                             var action = this.getAction();
                             var tagNames = this.getTagNames();
                             var button = this.getButton();
-                //console.log(action);
-                //console.log(tagNames);
-                //console.log(button);
 
-                //                var selectedParentElement = MediumEditor.selection.getSelectedParentElement(MediumEditor.selection.getSelectionRange(this.document));
-                //console.log('selectedParentElement');
-                //console.log(selectedParentElement);
-                //                var firstTextNode = MediumEditor.util.getFirstTextNode(selectedParentElement);
-                //console.log('firstTextNode');
-                //console.log(firstTextNode);
-                            // if (MediumEditor.util.getClosestTag(firstTextNode, 'em')) {
-                            //     return this.execAction('unlink');
-                            // }
-
-                //                var node = document.createElement(tagNames[0]);
-                //console.log(node);
-
-                //console.log('isActive: ' + this.isActive() + '-------');
                             if (this.isActive()) {
                                 return this.base.execAction('removeFormat');
                             }
@@ -3089,14 +3067,14 @@ LIMIT 1";
                                 this.base.selectedDocument = this.document;
                                 this.base.selection = MediumEditor.selection.getSelectionHtml(this.base.selectedDocument);
                                 //.replace(DO.C.Editor.regexEmptyHTMLTags, '');
-                                console.log('this.base.selection:');
-                                console.log(this.base.selection);
+// console.log('this.base.selection:');
+// console.log(this.base.selection);
 
                                 var selectedParentElement = this.base.getSelectedParentElement();
-                                console.log('getSelectedParentElement:');
-                                console.log(selectedParentElement);
+// console.log('getSelectedParentElement:');
+// console.log(selectedParentElement);
                                 var parentSection = MediumEditor.util.getClosestTag(selectedParentElement, 'section');
-                                console.log(parentSection);
+// console.log(parentSection);
 
                                 //XXX: DO NOT REMOVE. Saving the selection should be before inserting/updating HTML.
                                 this.base.saveSelection();
@@ -3108,7 +3086,7 @@ LIMIT 1";
                                         for (var i = 0; i < parentSection.childNodes.length; i++) {
                                             parentSectionHeading = parentSection.childNodes[i].nodeName.toLowerCase();
                                             if(DO.C.Editor.headings.indexOf(parentSectionHeading) > 0) {
-                    //                            console.log(parentSectionHeading);
+// console.log(parentSectionHeading);
                                                 break;
                                             }
                                         }
@@ -3764,10 +3742,10 @@ LIMIT 1";
 
                                     DO.U.putResource(noteIRI, data).then(
                                         function(i) {
-                                            console.log(i);
+// console.log(i);
                                             DO.U.positionQuoteSelector(noteIRI, document.body).then(
                                                 function(i) {
-                                                    console.log(i);
+// console.log(i);
                                                 },
                                                 function(reason) {
                                                     console.log(reason);
@@ -3786,10 +3764,10 @@ LIMIT 1";
                                     DO.U.getInbox(resourceIRI).then(
                                         function(inbox) {
                                             if (inbox && inbox.length > 0) {
-                                                console.log('inbox: ' + inbox);
+// console.log('inbox: ' + inbox);
                                                 DO.U.notifyInbox(inbox, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', targetIRI).then(
                                                         function(response) {
-                                                            console.log("Notification: " + response.xhr.getResponseHeader('Location'));
+// console.log("Notification: " + response.xhr.getResponseHeader('Location'));
                                                         },
                                                         function(reason) {
                                                             console.log(reason);
