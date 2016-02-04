@@ -2904,7 +2904,7 @@ LIMIT 1";
                                 //Formatting
                                 'h2', 'h3', 'h4',
                                 'em', 'strong',
-            // , 'dl' http://xinha.webfactional.com/browser/trunk/plugins/DefinitionList/definition-list.js?rev=516
+                                // , 'dl' http://xinha.webfactional.com/browser/trunk/plugins/DefinitionList/definition-list.js?rev=516
                                 'orderedlist', 'unorderedlist',
                                 'code', 'pre',
 
@@ -2934,8 +2934,9 @@ LIMIT 1";
                                 // 'del',
                                 // 'ins'
                             ],
+                            //This should use relative units because text zoom in/out
+                            diffLeft: 0,
                             diffTop: -10,
-                            diffLeft: -317, //This should use relative units because text zoom in/out
                             allowMultiParagraphSelection: false
                         },
 
