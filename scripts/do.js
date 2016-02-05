@@ -1710,7 +1710,8 @@ var DO = {
                     if (!(node.hasAttribute('class') && (node.getAttribute('class').split(' ').indexOf('do') > -1 || node.getAttribute('class').split(' ').indexOf('firebugResetStyles') > -1))) {
                         var ename = node.nodeName.toLowerCase() ;
                         out += "<" + ename ;
-                        //XXX: Regardless of the location of @lang, ends up at the end
+
+                        var attrList = [];
                         for (var i = node.attributes.length - 1; i >= 0; i--) {
                             var atn = node.attributes[i];
                             if (skipAttributes[atn.name]) continue;
@@ -1719,9 +1720,17 @@ var DO = {
                                 atn.value = atn.value.replace(/(on-document-menu)/, '').trim();
                             }
                             if (!(atn.name == 'class' && atn.value == '')) {
-                                out += ' ' + atn.name + "=\"" + DO.U.htmlEntities(atn.value) + "\"";
+                                attrList.push(atn.name + "=\"" + DO.U.htmlEntities(atn.value) + "\"");
                             }
                         }
+
+                        if (attrList.length > 0) {
+                            attrList.sort(function (a, b) {
+                              return a.toLowerCase().localeCompare(b.toLowerCase());
+                            });
+                            out += ' ' + attrList.join(' ');
+                        }
+
                         if (selfClosing[ename]) { out += " />"; }
                         else {
                             out += '>';
