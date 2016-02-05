@@ -2691,26 +2691,17 @@ LIMIT 1";
                             }
 
                             var note = DO.U.createNoteHTML(noteData);
-                            note = '<blockquote cite="' + noteIRI + '">' + note + '</blockquote>';
-
                             var nES = selectedParentNode.nextElementSibling;
-                            //Check if <aside class="note"> exists
-                            if(nES && nES.nodeName.toLowerCase() == 'aside' && nES.classList.contains('note')) {
-                                var noteNode = DO.U.fragmentFromString(note);
-                                nES.appendChild(noteNode);
-                            }
-                            else {
-                            //XXX: TODO: FIXME: This needs to be revised. Okay, Sarven, but why?
-                                var asideNote = '\n\
-                            <aside class="note">\n\
-                            '+ note + '\n\
-                            </aside>';
-                                var asideNode = DO.U.fragmentFromString(asideNote);
-                                var parentSection = MediumEditor.util.getClosestTag(selectedParentNode, 'section');
-                                parentSection.appendChild(asideNode);
-                                //XXX: Keeping this comment around for emergency
+                            var asideNote = '\n\
+<aside class="note do">\n\
+<blockquote cite="' + noteIRI + '">'+ note + '</blockquote>\n\
+</aside>\n\
+';
+                            var asideNode = DO.U.fragmentFromString(asideNote);
+                            var parentSection = MediumEditor.util.getClosestTag(selectedParentNode, 'section');
+                            parentSection.appendChild(asideNode);
+                            //XXX: Keeping this comment around for emergency
 //                                selectedParentNode.parentNode.insertBefore(asideNode, selectedParentNode.nextSibling);
-                            }
 
                             DO.U.positionNote(refId, refLabel, id);
 
@@ -2821,14 +2812,15 @@ LIMIT 1";
             }
 
             var note = '\n\
-            <article id="' + n.id + '" about="' + aAbout + '" typeof="oa:Annotation as:Activity"' + aPrefix + '>\n\
-                ' + heading + '\n\
-                ' + authors + '\n\
-                ' + published + '\n\
-                ' + license + '\n\
-                ' + target + '\n\
-                ' + body + '\n\
-            </article>';
+<article id="' + n.id + '" about="' + aAbout + '" typeof="oa:Annotation as:Activity"' + aPrefix + '>\n\
+    ' + heading + '\n\
+    ' + authors + '\n\
+    ' + published + '\n\
+    ' + license + '\n\
+    ' + target + '\n\
+    ' + body + '\n\
+</article>\n\
+';
 
             return note;
         },
@@ -3796,21 +3788,13 @@ LIMIT 1";
                                     //TODO: Refactor this what's in positionQuoteSelector
 
                                     var nES = selectedParentElement.nextElementSibling;
-                                    //Check if <aside class="note"> exists
-                                    if(nES && nES.nodeName.toLowerCase() == 'aside' && nES.classList.contains('note')) {
-                                        var noteNode = DO.U.fragmentFromString(note);
-                                        nES.appendChild(noteNode);
-                                    }
-                                    else {
-                                    //XXX: TODO: FIXME: This needs to be revised. Okay, Sarven, but why?
-                                        var asideNote = '\n\
-                                    <aside class="note">\n\
-                                    '+ note + '\n\
-                                    </aside>';
-                                        var asideNode = DO.U.fragmentFromString(asideNote);
-                                        var parentSection = MediumEditor.util.getClosestTag(selectedParentElement, 'section');
-                                        parentSection.appendChild(asideNode);
-                                    }
+                                    var asideNote = '\n\
+<aside class="note">\n\
+'+ note + '\n\
+</aside>';
+                                    var asideNode = DO.U.fragmentFromString(asideNote);
+                                    var parentSection = MediumEditor.util.getClosestTag(selectedParentElement, 'section');
+                                    parentSection.appendChild(asideNode);
 
                                     DO.U.positionNote(refId, refLabel, id);
                                     break;
