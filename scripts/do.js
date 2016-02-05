@@ -1707,7 +1707,10 @@ var DO = {
                     for (var i = 0; i < node.childNodes.length; i++) out += dumpNode(node.childNodes[i]);
                 }
                 else if (1 === node.nodeType) {
-                    if (!(node.hasAttribute('class') && (node.getAttribute('class').split(' ').indexOf('do') > -1 || node.getAttribute('class').split(' ').indexOf('firebugResetStyles') > -1))) {
+                    if (node.hasAttribute('class') && node.classList.contains('do') && node.classList.contains('ref')) {
+                        out += node.querySelector('mark').textContent;
+                    }
+                    else if (!(node.hasAttribute('class') && (node.classList.contains('do') || node.classList.contains('firebugResetStyles')))) {
                         var ename = node.nodeName.toLowerCase() ;
                         out += "<" + ename ;
 
