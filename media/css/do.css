@@ -32,9 +32,9 @@ position:relative;
 menu.do,
 aside.do {
 position:fixed;
-z-index:9;
+z-index:8;
 max-height:calc(100% - 4em);
-background:#fff !important;
+background:#fff;
 font-size:0.8em;
 margin:0;
 }
@@ -48,6 +48,7 @@ top:1em;
 .do.on {
 padding:1em;
 overflow:auto;
+z-index:9;
 }
 .do.on p {
 text-indent:0;
