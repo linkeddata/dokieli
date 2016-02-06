@@ -883,10 +883,7 @@ var DO = {
                 }
                 if (DO.U.urlParam('edit') == 'true') {
                     var url = document.location.href;
-                    url = url.substr(0, url.lastIndexOf('?'));
-                    if (!url.endsWith('/new')) {
-                        window.history.replaceState({}, null, url);
-                    }
+                    window.history.replaceState({}, null, url.substr(0, url.lastIndexOf('?')));
                 }
             }
         },
