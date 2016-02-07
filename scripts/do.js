@@ -2579,7 +2579,10 @@ LIMIT 1";
         positionNote: function(refId, refLabel, noteId) {
             var ref = document.getElementById(refId);
             var note = document.getElementById(noteId);
-            note.removeAttribute('style');
+
+            if (note.hasAttribute('style')) {
+                note.removeAttribute('style');
+            }
 
             //TODO: If there are articles already in the aside.note , the subsequent top values should come after one another
             var style = [
