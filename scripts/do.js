@@ -2555,19 +2555,18 @@ LIMIT 1";
 
         showRefs: function() {
             $('span.ref').each(function() {
-                console.log(this);
-                var ref = $(this).find('> *[id]').get(0);
-                console.log(ref);
+// console.log(this);
+                var ref = $(this).find('> mark[id]').get(0);
+// console.log(ref);
                 var refId = $(ref).prop('id');
-                console.log(refId);
+// console.log(refId);
                 var refA = $(this).find('[class*=ref-] a');
-                console.log(refA);
+// console.log(refA);
                 refA.each(function() {
                     var noteIRI = $(this).prop('href');
-//                    noteId = noteId.substr(noteId.indexOf("#") + 1);
-                    console.log(noteIRI);
+// console.log(noteIRI);
                     var refLabel = $(this).text();
-                    console.log(refLabel);
+// console.log(refLabel);
 
                     //FIXME: the noteId parameter for positionNote shouldn't
                     //rely on refLabel. Grab it from somewhere else.
