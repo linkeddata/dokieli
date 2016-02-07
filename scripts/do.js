@@ -1097,7 +1097,7 @@ var DO = {
                             $(this).prop({'rel': 'stylesheet alternate'});
                         }
 
-                        $('span.ref.do').each(function(i){
+                        $('span.ref').each(function(i){
                             var refId = $(this).find('mark').prop('id');
                             var noteId = $(this).find('a').text();
                             DO.U.positionNote(refId, noteId, noteId);
