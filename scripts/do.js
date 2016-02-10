@@ -1299,6 +1299,7 @@ var DO = {
                 <caption>Document Metadata</caption>\n\
                 <tbody>\n\
                     <tr><th>Authors</th><td>' + contributors + '</td></tr>\n\
+                    <tr><th>Reading time</th><td>' + count.readingTime + ' minutes</td></tr>\n\
                     <tr><th>Characters</th><td>' + count.chars + '</td></tr>\n\
                     <tr><th>Words</th><td>' + count.words + '</td></tr>\n\
                     <tr><th>Lines</th><td>' + count.lines + '</td></tr>\n\
@@ -1312,11 +1313,12 @@ var DO = {
         },
 
         contentCount: function(c) {
-            var content = c.text();
-            var contentCount = { words:0, chars:0, lines:0, pages:{A4:1, USLetter:1}, bytes:0 };
+            var content = c.text().trim();
+            var contentCount = { readingTime:1, words:0, chars:0, lines:0, pages:{A4:1, USLetter:1}, bytes:0 };
             if (content.length > 0) {
                 var linesCount = Math.ceil(c.height() / parseInt(c.css('line-height')));
                 contentCount = {
+                    readingTime: Math.ceil(content.split(' ').length / 200),
                     words: content.match(/\S+/g).length,
                     chars: content.length,
                     lines: linesCount,
