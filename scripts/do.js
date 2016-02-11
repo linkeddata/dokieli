@@ -1644,7 +1644,7 @@ var DO = {
                     $('#'+this.id+' > .do.fragment').remove();
                     $('#'+this.id).filter('[class=""]').removeAttr('class');
                 }
-            }, '#content *[id], #interactions *[id]');
+            }, '#content *[id], #document-interactions *[id]');
         },
 
         forceTrailingSlash: function(aString) {
