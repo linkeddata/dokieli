@@ -53,9 +53,17 @@ var DO = {
             "http://creativecommons.org/publicdomain/zero/1.0/": "CC0",
             "http://creativecommons.org/licenses/by/4.0/": "CC BY 4.0",
             "http://creativecommons.org/licenses/by-sa/4.0/": "CC BY-SA 4.0",
+            "http://creativecommons.org/licenses/by-nc/4.0/": "CC BY-NC 4.0",
+            "http://creativecommons.org/licenses/by-nd/4.0/": "CC BY-ND 4.0",
+            "http://creativecommons.org/licenses/by-nc-sa/4.0/": "CC NC-SA 4.0",
+            "http://creativecommons.org/licenses/by-nc-nd/4.0/": "CC NC-ND 4.0",
             "https://creativecommons.org/publicdomain/zero/1.0/": "CC0",
             "https://creativecommons.org/licenses/by/4.0/": "CC BY 4.0",
-            "https://creativecommons.org/licenses/by-sa/4.0/": "CC BY-SA 4.0"
+            "https://creativecommons.org/licenses/by-sa/4.0/": "CC BY-SA 4.0",
+            "https://creativecommons.org/licenses/by-nc/4.0/": "CC BY-NC 4.0",
+            "https://creativecommons.org/licenses/by-nd/4.0/": "CC BY-ND 4.0",
+            "https://creativecommons.org/licenses/by-nc-sa/4.0/": "CC NC-SA 4.0",
+            "https://creativecommons.org/licenses/by-nc-nd/4.0/": "CC NC-ND 4.0"
         },
         Vocab: {
             "rdftype": {
@@ -3432,6 +3440,10 @@ LIMIT 1";
                                     '<option value="https://creativecommons.org/publicdomain/zero/1.0/" title="Creative Commons Zero">CC0</option>',
                                     '<option value="https://creativecommons.org/licenses/by/4.0/" title="Creative Commons Attribution" selected="selected">CC BY</option>',
                                     '<option value="https://creativecommons.org/licenses/by-sa/4.0/" title="Creative Commons Attribution-ShareAlike">CC BY-SA</option>',
+                                    '<option value="https://creativecommons.org/licenses/by-nc/4.0/" title="Creative Commons Attribution-NonCommercial">CC BY-NC</option>',
+                                    '<option value="https://creativecommons.org/licenses/by-nd/4.0/" title="Creative Commons Attribution-NoDerivatives">CC BY-ND</option>',
+                                    '<option value="https://creativecommons.org/licenses/by-nc-sa/4.0/" title="Creative Commons Attribution-NonCommercial-ShareAlike">CC BY-NC-SA</option>',
+                                    '<option value="https://creativecommons.org/licenses/by-nc-nd/4.0/" title="Creative Commons Attribution-NonCommercial-NoDerivates">CC BY-NC-ND</option>',
                                     '</select>'
                                     ];
                                     break;
