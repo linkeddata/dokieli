@@ -49,10 +49,13 @@ var DO = {
         ProxyURL: 'https://databox.me/,proxy?uri=',
         AuthEndpoint: 'https://databox.me/',
         License: {
-            "CCBYSA": {
-                iri: "http://creativecommons.org/licenses/by-sa/4.0/",
-                name: "CC BY-SA 4.0"
-            }
+            "NoLicense": "No license",
+            "http://creativecommons.org/publicdomain/zero/1.0/": "CC0",
+            "http://creativecommons.org/licenses/by/4.0/": "CC BY 4.0",
+            "http://creativecommons.org/licenses/by-sa/4.0/": "CC BY-SA 4.0",
+            "https://creativecommons.org/publicdomain/zero/1.0/": "CC0",
+            "https://creativecommons.org/licenses/by/4.0/": "CC BY 4.0",
+            "https://creativecommons.org/licenses/by-sa/4.0/": "CC BY-SA 4.0"
         },
         Vocab: {
             "rdftype": {
@@ -850,17 +853,23 @@ var DO = {
             }
         },
 
-        notifyInbox: function(url, slug, source, context, target) {
+        notifyInbox: function(url, slug, source, context, target, licenseIRI) {
             var data = '@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\
 @prefix as: <http://www.w3.org/ns/activitystreams#> .\n\
 @prefix schema: <https://schema.org/> .\n\
-<> a as:Announce ;\n\
-    as:object <' + source + '> ;\n\
-    as:context <' + context + '> ;\n\
-    as:target <' + target + '> ;\n\
-    as:updated "' + DO.U.getDateTimeISO() + '"^^xsd:dateTime ;\n\
-    as:actor <' + DO.C.User.IRI + '> ;\n\
-    schema:license <' + DO.C.License.CCBYSA.iri + '> .\n\
+<> a as:Announce\n\
+    ; as:object <' + source + '>\n\
+    ; as:context <' + context + '>\n\
+    ; as:target <' + target + '>\n\
+    ; as:updated "' + DO.U.getDateTimeISO() + '"^^xsd:dateTime\n\
+    ; as:actor <' + DO.C.User.IRI + '>\n\
+';
+
+            if (licenseIRI != '') {
+                data += '    ; schema:license <' + licenseIRI + '>\n\
+';
+            }
+            data += '    .\n\
 ';
 
             return DO.U.postResource(url, slug, data, 'text/turtle; charset=utf-8');
@@ -2621,6 +2630,8 @@ LIMIT 1";
 
                         var source = target.oahasSource;
 
+                        var licenseIRI = note.schemalicense;
+
                         var containerNodeTextContent = containerNode.textContent;
                         var selectorIndex = containerNodeTextContent.indexOf(prefix + exact + suffix);
                         if (selectorIndex >= 0) {
@@ -2679,10 +2690,7 @@ LIMIT 1";
                                     //TODO: state
                                 },
                                 "body": bodyText,
-                                "license": {
-                                    "iri": DO.C.License.CCBYSA.iri,
-                                    "name": DO.C.License.CCBYSA.name
-                                }
+                                "license": {}
                             }
                             if (annotatedByIRI) {
                                 noteData.creator["iri"] = annotatedByIRI;
@@ -2692,6 +2700,10 @@ LIMIT 1";
                             }
                             if (annotatedByImage) {
                                 noteData.creator["image"] = annotatedByImage;
+                            }
+
+                            if (licenseIRI) {
+                                noteData.license["iri"] = licenseIRI;
                             }
 
                             var note = DO.U.createNoteHTML(noteData);
@@ -2733,6 +2745,7 @@ LIMIT 1";
             var hasTarget = '', annotationTextSelector = '', target = '';
             var heading, hX;
             var aAbout = '', aPrefix = '';
+            var license = '';
 
             var motivatedByIRI = n.motivatedByIRI || '';
             var motivatedByLabel = n.motivatedByLabel || '';
@@ -2811,8 +2824,17 @@ LIMIT 1";
                     break;
             }
 
-            if (typeof n.license != 'undefined' && typeof n.license.iri != 'undefined' && typeof n.license.name != 'undefined') {
-                license = '<dl class="license"><dt>License</dt><dd><a rel="schema:license" href="' + n.license.iri + '">' + n.license.name + '</a></dd></dl>';
+            if ('iri' in n.license) {
+                license = '<dl class="license"><dt>License</dt><dd>';
+                if('name' in n.license) {
+                    license += '<a rel="schema:license" href="' + n.license.iri + '">' + n.license.name + '</a>';
+                }
+                else {
+                    var licenseName = (n.license.iri in DO.C.License) ? DO.C.License[n.license.iri] : n.license.iri;
+
+                    license += '<a rel="schema:license" href="' + n.license.iri + '">' + licenseName + '</a>';
+                }
+                license += '</dd></dl>';
             }
 
             var note = '\n\
@@ -3394,17 +3416,30 @@ LIMIT 1";
 
                         getTemplate: function () {
                             var template = [];
-                            if (this.action == 'rdfa') {
-                                template = [
-                                'about: <input id="rdfa-about" class="medium-editor-toolbar-input" placeholder="http://example.org/foo#bar" /><br/>',
-                                'rel: <input id="rdfa-rel" class="medium-editor-toolbar-input" placeholder="https://schema.org/name"><br/>',
-                                'href <input id="rdfa-href" class="medium-editor-toolbar-input" placeholder="http://example.org/foo#bar" />'
-                                ];
-                            }
-                            else {
-                                template = [
-                                '<textarea cols="20" rows="1" class="medium-editor-toolbar-textarea" placeholder="', this.placeholderText, '"></textarea>'
-                                ];
+                            switch(this.action) {
+                                case 'rdfa':
+                                    template = [
+                                    'about: <input id="rdfa-about" class="medium-editor-toolbar-input" placeholder="http://example.org/foo#bar" /><br/>',
+                                    'rel: <input id="rdfa-rel" class="medium-editor-toolbar-input" placeholder="https://schema.org/name"><br/>',
+                                    'href <input id="rdfa-href" class="medium-editor-toolbar-input" placeholder="http://example.net/baz" />'
+                                    ];
+                                    break;
+                                case 'article':
+                                    template = [
+                                    '<textarea id="article-content" name="content" cols="20" rows="1" class="medium-editor-toolbar-textarea" placeholder="', this.placeholderText, '"></textarea>',
+                                    '<select id="article-license" name="license" class="medium-editor-toolbar-select">',
+                                    '<option value="">No license</option>',
+                                    '<option value="https://creativecommons.org/publicdomain/zero/1.0/" title="Creative Commons Zero">CC0</option>',
+                                    '<option value="https://creativecommons.org/licenses/by/4.0/" title="Creative Commons Attribution" selected="selected">CC BY</option>',
+                                    '<option value="https://creativecommons.org/licenses/by-sa/4.0/" title="Creative Commons Attribution-ShareAlike">CC BY-SA</option>',
+                                    '</select>'
+                                    ];
+                                    break;
+                                default:
+                                    template = [
+                                    '<textarea cols="20" rows="1" class="medium-editor-toolbar-textarea" placeholder="', this.placeholderText, '"></textarea>'
+                                    ];
+                                    break;
                             }
 
                             template.push(
@@ -3481,11 +3516,16 @@ LIMIT 1";
 
                             input.value = opts.url;
 
-                            if(this.action == 'rdfa') {
-                                input.about.focus();
-                            }
-                            else {
-                                input.focus();
+                            switch(this.action) {
+                                case 'rdfa':
+                                    input.about.focus();
+                                    break;
+                                case 'article':
+                                    input.content.focus();
+                                    break;
+                                default:
+                                    input.focus();
+                                    break;
                             }
 
                             // If we have a target checkbox, we want it to be checked/unchecked
@@ -3523,13 +3563,19 @@ LIMIT 1";
                                 buttonCheckbox = this.getAnchorButtonCheckbox();
                             var opts = {};
 
-                            if(this.action == 'rdfa') {
-                                opts.about = this.getInput().about.value;
-                                opts.rel = this.getInput().rel.value;
-                                opts.href = this.getInput().href.value;
-                            }
-                            else {
-                                opts.url = this.getInput().value;
+                            switch(this.action) {
+                                case 'rdfa':
+                                    opts.about = this.getInput().about.value;
+                                    opts.rel = this.getInput().rel.value;
+                                    opts.href = this.getInput().href.value;
+                                    break;
+                                case 'article':
+                                    opts.content = this.getInput().content.value;
+                                    opts.license = this.getInput().license.value;
+                                    break;
+                                default:
+                                    opts.url = this.getInput().value;
+                                    break;
                             }
 
                             if (this.linkValidation) {
@@ -3631,6 +3677,7 @@ LIMIT 1";
                             var noteType = '';
                             var noteData = {};
                             var note = '';
+                            var licenseIRI = '';
 
                             switch(this.action) {
                                 //External Note
@@ -3640,6 +3687,7 @@ LIMIT 1";
                                     noteType = 'position-quote-selector';
                                     ref = this.base.selection;
                                     refLabel = id;
+                                    licenseIRI = opts.license;
 
                                     noteData = {
                                         "type": noteType, //e.g., 'article'
@@ -3661,11 +3709,8 @@ LIMIT 1";
                                             }
                                             //TODO: state
                                         },
-                                        "body": opts.url, //FIXME: This object name is not fun
-                                        "license": {
-                                            "iri": DO.C.License.CCBYSA.iri,
-                                            "name": DO.C.License.CCBYSA.name
-                                        }
+                                        "body": opts.content,
+                                        "license": {}
                                     }
                                     if (DO.C.User.IRI) {
                                         noteData.creator["iri"] = DO.C.User.IRI;
@@ -3675,6 +3720,10 @@ LIMIT 1";
                                     }
                                     if (DO.C.User.Image) {
                                         noteData.creator["image"] = DO.C.User.Image;
+                                    }
+                                    if (opts.license.length > 0) {
+                                        noteData.license["iri"] = opts.license;
+                                        noteData.license["name"] = DO.C.License[opts.license];
                                     }
 
                                     note = DO.U.createNoteHTML(noteData);
@@ -3771,7 +3820,7 @@ LIMIT 1";
                                         function(inbox) {
                                             if (inbox && inbox.length > 0) {
 // console.log('inbox: ' + inbox);
-                                                DO.U.notifyInbox(inbox, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', targetIRI).then(
+                                                DO.U.notifyInbox(inbox, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', targetIRI, licenseIRI).then(
                                                         function(response) {
 // console.log("Notification: " + response.xhr.getResponseHeader('Location'));
                                                         },
@@ -3859,15 +3908,22 @@ LIMIT 1";
 
                         getInput: function () {
                             var r = {};
-                            if (this.action == 'rdfa') {
-                                r.about = this.getForm().querySelector('#rdfa-about.medium-editor-toolbar-input');
-                                r.rel = this.getForm().querySelector('#rdfa-rel.medium-editor-toolbar-input');
-                                r.href = this.getForm().querySelector('#rdfa-href.medium-editor-toolbar-input');
-                                return r;
+                            switch(this.action) {
+                                case 'rdfa':
+                                    r.about = this.getForm().querySelector('#rdfa-about.medium-editor-toolbar-input');
+                                    r.rel = this.getForm().querySelector('#rdfa-rel.medium-editor-toolbar-input');
+                                    r.href = this.getForm().querySelector('#rdfa-href.medium-editor-toolbar-input');
+                                    break;
+                                case 'article':
+                                    r.content = this.getForm().querySelector('#article-content.medium-editor-toolbar-textarea');
+                                    r.license = this.getForm().querySelector('#article-license.medium-editor-toolbar-select');
+                                    break;
+                                default:
+                                    r = this.getForm().querySelector('textarea.medium-editor-toolbar-textarea');
+                                    break;
                             }
-                            else {
-                                return this.getForm().querySelector('textarea.medium-editor-toolbar-textarea');
-                            }
+
+                            return r;
                         },
 
                         getAnchorTargetCheckbox: function () {
