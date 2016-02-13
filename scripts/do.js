@@ -3157,7 +3157,7 @@ LIMIT 1";
                                             var section = document.createElement('section');
                                             section.id = sectionId;
                                             section.setAttribute('rel', 'schema:hasPart');
-                                            section.setAttribute('resource', '[this:#' + sectionId + ']');
+                                            section.setAttribute('resource', '#' + sectionId);
 // console.log(section);
 
 
