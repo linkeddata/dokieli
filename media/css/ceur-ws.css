@@ -45,6 +45,19 @@ margin-right: +8px;
   initial-scale: 1.0;
 }
 
+@media print {
+    body > header address {
+        display:none;
+    }
+    body > header #document-license {
+        width:19em;
+        clear:right;
+        float:right;
+        margin-top:1em !important;
+        margin-right:0;
+    }
+}
+
 A:link {color: #404080; text-decoration: none;}  /* display of links */
 A:visited {color: #404080; text-decoration: none;} /* visited links */
 A:hover {color: #000080; text-decoration: none;} /* links under the cursor */
@@ -118,9 +131,22 @@ body > header {
 body > header address {
     float:left;
 }
+body > header address a {
+    display:inline-block;
+    position:relative;
+}
+body > header address a:hover:after {
+    content:'';
+    position:absolute;
+    background-image:url("./CEUR-WS-logo-blue.png");
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+}
 body > header #document-identifier {
     float:right;
-    margin:1em 7em 0 0.5em;
+    margin:1em 5% 0 0.5em;
     text-align:right;
 }
 body > header #document-identifier dt {
@@ -138,6 +164,8 @@ body > header #document-identifier dd:nth-of-type(1) {
 body > header #document-license {
     color: #777777; font-size: x-small;
     margin-top:7.5em;
+    margin-right:5%;
+    text-align:justify;
 }
 body > header #document-license dt {
     display:none;
@@ -148,6 +176,11 @@ body > header #document-license dd {
 article {
     clear:both;
 }
+dl {
+    -webkit-margin-before:0;
+    -webkit-margin-after:0;
+}
+
 
 #authors {
     padding-bottom:0.5em;
@@ -161,7 +194,7 @@ article {
     display:none;
 }
 #author-org  {
-    list-style-type:none;
+    list-style:none;
 }
 #author-name dd,
 #author-org,
@@ -171,7 +204,7 @@ article {
     padding-left:0;
 }
 #content {
-    width:80%;
+    width:100%;
 }
 footer {
     padding-top:0.5em;
@@ -180,3 +213,4 @@ footer {
     font-size:smaller;
     color:#777777;
 }
+
