@@ -114,6 +114,7 @@ PRE {color:#228120}
 /*dokieli compatible*/
 #document-language {display:none;}
 
+article h1 {font-size:2em;}
 h1 span {display:block;}
 .pages {float:right; padding: 2px; font-size:smaller;}
 .pages dt, .authors dt {display:none;}
