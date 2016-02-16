@@ -368,6 +368,8 @@ border-right: 2px solid rgba(64,64,64,0.9);
 
 img[width="48"][height="48"][rel$="image"] {
 border-radius:0.5em;
+margin-right:0.5em;
+vertical-align:middle;
 }
 
 .sparkline {
