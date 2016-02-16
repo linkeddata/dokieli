@@ -10,7 +10,6 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" media="all" />
         <link rel="stylesheet" href="media/css/editor.css" media="all" />
         <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
-        <script src="scripts/RDFaProcessor.min.1.4.0.js"></script>
         <script src="scripts/simplerdf.js"></script>
         <script src="scripts/html.sortable.min.js"></script>
         <script src="scripts/medium-editor.min.js"></script>
