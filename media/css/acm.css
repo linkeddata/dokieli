@@ -924,6 +924,21 @@ body > footer {
 margin-top:2em;
 }
 
+header nav ul {
+text-align:center;
+}
+
+header nav li:first-child:before {
+content: "";
+}
+header nav li:before {
+content: "• ";
+}
+header nav li {
+display: inline;
+list-style-type: none;
+}
+
 .on {
 display:block;
 }
