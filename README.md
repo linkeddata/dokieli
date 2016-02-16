@@ -83,7 +83,7 @@ experience.
 ## Dependencies
 Again, dokieli is progressively enhanced ("pay-as-you-go"). You can always use
 curl or links/lynx from command-line and get all the content which includes
-triple statements in RDFa, and optionally in Turtle, N-Triples, TriG
+triple statements in RDFa, and optionally in Turtle, N-Triples, JSON-LD, TriG
 (Nanopublications).
 
 * For the purpose of reading, the only requirement is to serve the HTML+RDFa
@@ -97,15 +97,14 @@ write, e.g., your co-authors, or reviewers.
 your Web browser and edit. You have the option to export the document or use
 the Web browser's native local storage.
 
-The "dependencies" listed below only enhance the interaction for authoring.
-They are entirely optional. We intended to further cut down on the dependent
-libraries as we work out the optimizations.
+The libraries listed below are *optional* and progressivel enhance the
+interactions. We intended to further cut down on the dependent libraries as we
+work out the optimizations.
 
 * [jQuery Core](http://jquery.com/) (MIT License)
 * [html5sortable](https://github.com/voidberg/html5sortable) (MIT License)
 * [Shower](https://github.com/shower/shower) (MIT License) used for slideshows
 * [SimpleRDF](https://github.com/nicola/simplerdf) (MIT License) used for RDF
-* [Green Turtle](https://github.com/alexmilowski/green-turtle) (MIT License) for RDFa
 * [Font Awesome](https://github.com/FortAwesome/Font-Awesome) (SIL OFL 1.1 / MIT License)
 * [MediumEditor](https://gitter.im/yabwe/medium-editor) (MIT License)
 
