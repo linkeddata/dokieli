@@ -5,6 +5,7 @@
  * https://github.com/linkeddata/dokieli
  */
 
+var SimpleRDF = ld.SimpleRDF;
 var DO = {
     C: {
         Lang: document.documentElement.lang,
@@ -188,17 +189,17 @@ var DO = {
             "asobject": {
                 "@id": "http://www.w3.org/ns/activitystreams#object",
                 "@type": "id",
-                "@type": true
+                "@array": true
             },
             "astarget": {
                 "@id": "http://www.w3.org/ns/activitystreams#target",
                 "@type": "id",
-                "@type": true
+                "@array": true
             },
             "ascontext": {
                 "@id": "http://www.w3.org/ns/activitystreams#context",
                 "@type": "id",
-                "@type": true
+                "@array": true
             },
 
             "ldpcontains": {
@@ -286,13 +287,13 @@ var DO = {
             pIRI = DO.U.stripFragmentFromString(pIRI);
 
             return new Promise(function(resolve, reject) {
-                SimpleRDF(DO.C.Vocab, pIRI).get().then(
+                SimpleRDF(DO.C.Vocab, pIRI, null, ld.store).get().then(
                     function(i) {
                         var s = i.child(url);
 // console.log(s.storage);
-                        if (s.storage && s.storage.length > 0) {
-// console.log("Try through WebID's storage: " + s.storage[0]);
-                            return DO.U.getResourceHeadUser(s.storage[0]);
+                        if (s.storage && s.storage._array.length > 0) {
+// console.log("Try through WebID's storage: " + s.storage.at(0));
+                            return DO.U.getResourceHeadUser(s.storage.at(0));
                         }
                         else {
                             console.log("---1 WebID's storage NOT FOUND");
@@ -385,7 +386,7 @@ var DO = {
 // console.log("pIRI: " + pIRI);
 
                 return new Promise(function(resolve, reject) {
-                    SimpleRDF(DO.C.Vocab, pIRI).get().then(
+                    SimpleRDF(DO.C.Vocab, pIRI, null, ld.store).get().then(
                         function(i) {
                             var s = i.child(userIRI);
 // console.log(s);
@@ -412,7 +413,7 @@ var DO = {
                             }
 
                             if (s.storage) {
-                                DO.C.User.Storage = s.storage;
+                                DO.C.User.Storage = s.storage._array;
                                 console.log(DO.C.User.Storage);
                             }
                             if (s.preferencesFile && s.preferencesFile.length > 0) {
@@ -420,7 +421,7 @@ var DO = {
                                 console.log(DO.C.User.PreferencesFile);
 
                                 //XXX: Probably https so don't bother with proxy?
-                                SimpleRDF(DO.C.Vocab, s.preferencesFile).get().then(
+                                SimpleRDF(DO.C.Vocab, s.preferencesFile, null, ld.store).get().then(
                                     function(pf) {
                                         DO.C.User.PreferencesFileGraph = pf;
                                         var s = pf.child(userIRI);
@@ -430,10 +431,10 @@ var DO = {
                                         }
 
                                         if (s.workspace) {
-                                            DO.C.User.Workspace = { List: s.workspace };
+                                            DO.C.User.Workspace = { List: s.workspace._array };
                                             //XXX: Too early to tell if this is a good/bad idea. Will revise any way. A bit hacky right now.
-                                            s.workspace.forEach(function(workspace) {
-                                                var wstype = pf.child(workspace).rdftype || [];
+                                            s.workspace._array.forEach(function(workspace) {
+                                                var wstype = pf.child(workspace).rdftype._array || [];
                                                 wstype.forEach(function(w) {
                                                     switch(w) {
                                                         case 'http://www.w3.org/ns/pim/space#PreferencesWorkspace':
@@ -570,17 +571,17 @@ var DO = {
 
             url = DO.U.stripFragmentFromString(url);
 
-//            console.log(pIRI);
-//            console.log(subjectIRI);
+// console.log(url);
+// console.log(subjectIRI);
 
             return new Promise(function(resolve, reject) {
                 //FIXME: This doesn't work so well if the document's URL is different than input url
-                SimpleRDF(DO.C.Vocab, url).get().then(
+                SimpleRDF(DO.C.Vocab, url, null, ld.store).get().then(
                     function(i) {
                         var s = i.child(subjectIRI);
-                        if (s.solidinbox.length > 0) {
-//                            console.log(s.solidinbox);
-                            return resolve(s.solidinbox);
+                        if (s.solidinbox._array.length > 0) {
+                            console.log(s.solidinbox._array);
+                            return resolve(s.solidinbox._array);
                         }
                         var reason = {"message": "Inbox was not found"};
                         return Promise.reject(reason);
@@ -598,11 +599,11 @@ var DO = {
             var notifications = [];
 
             return new Promise(function(resolve, reject) {
-                SimpleRDF(DO.C.Vocab, url).get().then(
+                SimpleRDF(DO.C.Vocab, url, null, ld.store).get().then(
                     function(i) {
                         var s = i.child(url);
                         s.ldpcontains.forEach(function(resource) {
-                            var types = s.child(resource).rdftype;
+                            var types = s.child(resource).rdftype._array;
                             if(types.indexOf(DO.C.Vocab.ldpresource["@id"]) >= 0) {
                                 notifications.push(resource);
                             }
@@ -628,11 +629,11 @@ var DO = {
             url = url || window.location.origin + window.location.pathname;
 
             return new Promise(function(resolve, reject) {
-                var g = SimpleRDF(DO.C.Vocab, url).get().then(
+                var g = SimpleRDF(DO.C.Vocab, url, null, ld.store).get().then(
                     function(i) {
                         var s = i.child(url);
-                        if (s.ascontext == DO.C.Vocab.oahasTarget["@id"] && s.astarget.indexOf(window.location.origin + window.location.pathname) >= 0) {
-                            return resolve(s.asobject);
+                        if (s.ascontext.at(0) == DO.C.Vocab.oahasTarget["@id"] && s.astarget.at(0).indexOf(window.location.origin + window.location.pathname) >= 0) {
+                            return resolve(s.asobject.at(0));
                         }
                         else {
                             return Promise.reject({'message': 'Notification source not found'});
@@ -1675,7 +1676,7 @@ var DO = {
 
         getGraph: function(url) {
             return new Promise(function(resolve, reject) {
-                SimpleRDF(DO.C.Vocab, url).get().then(
+                SimpleRDF(DO.C.Vocab, url, null, ld.store).get().then(
                     function(i){
                        return resolve(i);
                     },
@@ -1947,7 +1948,7 @@ var DO = {
                 var resourcesLi = Array();
                 contains.forEach(function(c){
                     var cg = g.child(c);
-                    var types = cg.rdftype;
+                    var types = cg.rdftype._array;
 
                     var path = DO.U.getUrlPath(c);
                     if(types.indexOf('http://www.w3.org/ns/ldp#Container') > -1){
@@ -2619,7 +2620,7 @@ LIMIT 1";
         positionQuoteSelector: function(noteIRI, containerNode) {
             containerNode = containerNode || document.body;
             return new Promise(function(resolve, reject) {
-                SimpleRDF(DO.C.Vocab, noteIRI).get().then(
+                SimpleRDF(DO.C.Vocab, noteIRI, null, ld.store).get().then(
                     function(i) {
                         var note = i.child(noteIRI);
                         var datetime = note.oaAnnotatedAt;
@@ -3832,7 +3833,7 @@ LIMIT 1";
                                         function(inbox) {
                                             if (inbox && inbox.length > 0) {
 // console.log('inbox: ' + inbox);
-                                                DO.U.notifyInbox(inbox, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', targetIRI, licenseIRI).then(
+                                                DO.U.notifyInbox(inbox, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', targetIRI).then(
                                                         function(response) {
 // console.log("Notification: " + response.xhr.getResponseHeader('Location'));
                                                         },
