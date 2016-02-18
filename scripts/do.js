@@ -36,8 +36,8 @@ var DO = {
         EnableStorageButtons: '<button class="local-storage-enable-html">Enable</button>',
         CDATAStart: '//<![CDATA[',
         CDATAEnd: '//]]>',
-        SortableList: (($('head script[src$="html.sortable.min.js"]').length > 0) ? true : false),
-        EditorAvailable: ($('head script[src$="medium-editor.min.js"]').length > 0),
+        SortableList: !!document.querySelector('head script[src$="html.sortable.min.js"]'),
+        EditorAvailable: !!document.querySelector('head script[src$="medium-editor.min.js"]'),
         EditorEnabled: false,
         Editor: {
             headings: ["h1", "h2", "h3", "h4", "h5", "h6"],
