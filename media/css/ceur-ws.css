@@ -29,7 +29,8 @@
 /* Modified: 11-Dec-2013/M.Jeusfeld  (CEURWSLOGO div)     */
 /* Modified: 24-Mar-2015/M.Jeusfeld  (paper directories)  */
 /* Modified: 16-Jul-2015/C.Lange     (more accessible link colors) */
-/* Modified: 23-Dec-2015/S.Capadisli (dokieli)     */
+/* Modified: 08-Feb-2016/M.Jeusfeld  (distinguidh AUX from CEURTITLES) */
+/* Modified: 21-Feb-2016/S.Capadisli (dokieli)            */
 
 body {
 font-family: arial, sans-serif;
@@ -80,8 +81,14 @@ PRE {color:#228120}
 
 .CEURTOC {width:90%; page-break-before:always;}    /* table of contents a bit narrower than the total page width */
 
+.CEURAUTHOR {font-style:italic;}
 .CEURAUTHORS {font-style:italic;}
-.AUXAUTHORS {font-style:italic;}
+.AUXAUTHOR {font-style:normal;}
+.AUXAUTHORS {font-style:normal;}
+
+.CEURTITLE {font-weight:normal;}
+.AUXTITLE {font-weight:normal;}
+.CEURTITLE:hover {color: #006040;}   /* proper CEURTITLEs get highlighted */
 
 .CEURVOLNR {font-weight:bold; color:#404040; font-size:large;}
 /* write "CEUR-WS.org/" with background color before the VOLNR */
