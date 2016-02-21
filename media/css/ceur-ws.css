@@ -192,13 +192,25 @@ dl {
     -webkit-margin-after:0;
 }
 
-#document-event .CEURFULLTITLE,
-#document-event .CEURCOLOCATEDDESCRIPTION,
-#document-event .CEURLOCATION,
-#document-event .CEURTIME,
-#author-name .CEURVOLEDITOR {
+#document-event {
     font-weight:bold;
     font-size:1.175em;
+}
+
+#document-event .CEURFULLTITLE {
+    padding-top:1.5em;
+    display:block;
+}
+
+#document-event dd.CEURLOCATION,
+#document-event dd.CEURTIME {
+    display:inline;
+}
+#document-event dd.CEURLOCATION:after {
+    content:", ";
+}
+#document-event dd.CEURTIME time:after {
+    content:".";
 }
 
 #authors {
@@ -227,7 +239,6 @@ main {
     clear:both;
 }
 main,
-.CEURFULLTITLE,
 #content {
     padding-top:3em;
 }
