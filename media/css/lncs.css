@@ -869,6 +869,18 @@ ol ol {
     margin-left:1em;
 }
 
+tfoot dl.abbr dt,
+tfoot dl.abbr dd {
+display:inline;
+text-transform:none;
+}
+tfoot dl.abbr dd:after {
+content:"\A";
+white-space:pre;
+}
+tfoot dl.abbr dt:after {
+content:": ";
+}
 
 table {
 width:100%;

@@ -440,6 +440,19 @@ dd {
 margin:0 0 0.5em 0;
 }
 
+tfoot dl.abbr dt,
+tfoot dl.abbr dd {
+display:inline;
+text-transform:none;
+}
+tfoot dl.abbr dd:after {
+content:"\A";
+white-space:pre;
+}
+tfoot dl.abbr dt:after {
+content:": ";
+}
+
 math * {
 padding:0;
 }
