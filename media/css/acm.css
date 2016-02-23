@@ -794,6 +794,10 @@ td {
 padding:0.25em;
 text-align:left;
 }
+.comparison-columns td {
+text-align:center;
+}
+
 caption {
 padding:0.25em 0;
 }
