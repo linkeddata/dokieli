@@ -915,7 +915,7 @@ font-size:0.923em;
 th {
 font-weight:normal;
 }
-.comparison-columns td {
+.comparison-columns tbody td {
 text-align:center;
 }
 

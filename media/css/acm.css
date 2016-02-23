@@ -794,7 +794,7 @@ td {
 padding:0.25em;
 text-align:left;
 }
-.comparison-columns td {
+.comparison-columns tbody td {
 text-align:center;
 }
 
