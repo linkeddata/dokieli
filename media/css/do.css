@@ -9,6 +9,13 @@
 .do {
 display:none !important;
 }
+.tabs nav {
+display:none !important;
+}
+.tabs .selected {
+border:0 !important;
+padding:0 !important;
+}
 }
 
 @media screen {
@@ -163,25 +170,25 @@ display:inline;
 margin-right:1em;
 }
 
-#embed-data-entry nav {
+.tabs nav {
 position:relative;
 z-index:9;
 }
-#embed-data-entry nav ul {
+.tabs nav ul {
 list-style-type: none;
-margin:0;
+margin:0 !important;
 }
-#embed-data-entry nav ul li {
+.tabs nav ul li {
 font-weight:bold;
 display:inline-block;
 border:2px solid #ffffff;
 border-bottom:#cccccc;
 }
-#embed-data-entry nav ul li.selected {
+.tabs nav ul li.selected {
 border:2px solid #cccccc;
 border-bottom-color:#ffffff;
 }
-#embed-data-entry nav ul li a {
+.tabs nav ul li a {
 background-color:#ffffff;
 color:#000000;
 text-decoration:none;
@@ -189,22 +196,23 @@ display:block;
 padding:0.75em 1em;
 outline:none;
 }
-#embed-data-entry nav ul li.selected a {
+.tabs nav ul li.selected a {
 text-decoration:none;
 color:#000000;
 }
-#embed-data-entry > div {
+.tabs > div,
+.tabs > figure {
 display:none;
 clear:both;
 margin-top:-2px;
 }
-#embed-data-entry > div.selected {
+.tabs > div.selected,
+.tabs > figure.selected {
 display:block;
 }
-#embed-data-entry div button {
 
-}
-#embed-data-entry textarea {
+.tabs figure.selected:not([class~=listing]),
+.tabs .selected textarea {
 padding:0.75em 1em;
 display:block;
 border:2px solid #cccccc;

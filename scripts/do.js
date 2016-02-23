@@ -1201,7 +1201,7 @@ var DO = {
                     };
                 });
 
-                var embedMenu = '<aside id="embed-data-entry" class="do on"><button class="close">❌</button>\n\
+                var embedMenu = '<aside id="embed-data-entry" class="do on tabs"><button class="close">❌</button>\n\
                 <h2>Embed Data</h2>\n\
                 <nav><ul><li class="selected"><a href="#embed-data-turtle">Turtle</a></li><li><a href="#embed-data-json-ld">JSON-LD</a></li><li><a href="#embed-data-nanopublication">Nanopublication</a></li></ul></nav>\n\
                 <div id="embed-data-turtle" class="selected"><textarea placeholder="Enter data in text/turtle" name="meta-turtle" cols="80" rows="24">' + ((scriptCurrentData['meta-turtle']) ? scriptCurrentData['meta-turtle'].content : '') + '</textarea><button class="save">Save</button></div>\n\
@@ -2571,6 +2571,21 @@ LIMIT 1";
         //http://stackoverflow.com/a/25214113
         fragmentFromString: function(strHTML) {
             return document.createRange().createContextualFragment(strHTML);
+        },
+
+        showAsTabs: function(id) {
+            $('#' + id + ' nav').on('click', 'a', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                var li = $(this).parent();
+                if(!li.hasClass('class')) {
+                    $('#' + id + ' nav li').removeClass('selected');
+                    li.addClass('selected');
+                    $('#' + id + ' > figure').removeClass('selected');
+                    $('#' + id + ' > figure' + $(this).prop('hash')).addClass('selected');
+                }
+            });
         },
 
         showRefs: function() {
