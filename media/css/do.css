@@ -189,7 +189,7 @@ border:2px solid #cccccc;
 border-bottom-color:#ffffff;
 }
 .tabs nav ul li a {
-background-color:#ffffff;
+background-color:#eeeeee;
 color:#000000;
 text-decoration:none;
 display:block;
@@ -199,6 +199,7 @@ outline:none;
 .tabs nav ul li.selected a {
 text-decoration:none;
 color:#000000;
+background-color:#ffffff;
 }
 .tabs > div,
 .tabs > figure {
