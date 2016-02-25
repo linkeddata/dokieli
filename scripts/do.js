@@ -580,7 +580,7 @@ var DO = {
                     function(i) {
                         var s = i.child(subjectIRI);
                         if (s.solidinbox._array.length > 0) {
-                            console.log(s.solidinbox._array);
+// console.log(s.solidinbox._array);
                             return resolve(s.solidinbox._array);
                         }
                         var reason = {"message": "Inbox was not found"};
