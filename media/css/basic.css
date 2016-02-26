@@ -5,6 +5,10 @@ body {
   line-height: 1.4;
 }
 
+body > header > address {
+text-align:center;
+}
+
 h1 {
   font-family: Serif; font-weight: normal; font-size: 4em;
   text-align: center;
