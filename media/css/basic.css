@@ -8,6 +8,10 @@ body {
 body > header > address {
 text-align:center;
 }
+address object,
+address image {
+vertical-align:center;
+}
 
 h1 {
   font-family: Serif; font-weight: normal; font-size: 4em;
