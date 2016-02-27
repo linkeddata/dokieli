@@ -1593,7 +1593,7 @@ var DO = {
         },
 
         eventLeaveDocumentMenu: function(e) {
-            if (!$(e.target).closest('.do.on').length) {
+            if (!e.target.closest('.do.on')) {
                 DO.U.hideDocumentMenu();
             }
         },
