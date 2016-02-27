@@ -1085,8 +1085,8 @@ var DO = {
 //            DO.U.hideStorage();
         },
 
-        getDocRefType: function() {
-            DO.C.DocRefType = $('head link[rel="stylesheet"][title]').prop('title');
+        setDocRefType: function() {
+            DO.C.DocRefType = document.querySelector('head link[rel="stylesheet"][title]').getAttribute('title');
 
             if (Object.keys(DO.C.RefType).indexOf(DO.C.DocRefType) == -1) {
                 DO.C.DocRefType = 'LNCS';
@@ -4014,7 +4014,7 @@ LIMIT 1";
 
 $(document).ready(function() {
 //    DO.U.initStorage('html');
-//    DO.U.getDocRefType();
+//    DO.U.setDocRefType();
     DO.U.showRefs();
     DO.U.setLocalDocument();
     DO.U.buttonClose();
