@@ -7,7 +7,7 @@ There is no root, authority, or centralisation here. Control yourself!
 dokieli is a decentralized article authoring, annotation, and social
 notification tool which works from a Web browser. While it is a general purpose
 tooling to write articles, it is fully compliant with the [Linked
-Research](https://github.com/csarven/linked-research) initiative and principles,
+Research](https://linkedresearch.org/) initiative and principles,
 and provides features and interactions for scholarly communication.
 
 dokieli's architecture is progressively enhanced such that articles are
