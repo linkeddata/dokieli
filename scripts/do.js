@@ -1031,18 +1031,17 @@ var DO = {
             });
         },
 
-        //TODO: Redo menu
         showDocumentMenu: function() {
-            var body = $('body');
-            var dMenu = $('#document-menu.do');
-            var dMenuButton = dMenu.find('> button');
-            var dHead = dMenu.find('> header');
-            var dInfo = dMenu.find('> div');
+            var body = document.body;
+            var dMenu = document.querySelector('#document-menu.do');
+            var dMenuButton = dMenu.querySelector('button');
+            var dHead = dMenu.querySelector('header');
+            var dInfo = dMenu.querySelector('div');
 
-            dMenuButton.removeClass('show');
-            dMenuButton.prop('title', 'Hide Menu');
-            dMenu.addClass('on');
-            body.addClass('on-document-menu');
+            dMenuButton.classList.remove('show');
+            dMenuButton.setAttribute('title', 'Hide Menu');
+            dMenu.classList.add('on');
+            body.classList.add('on-document-menu');
 
             DO.U.showUserSigninSignup(dHead);
             DO.U.showDocumentDo(dInfo);
@@ -1050,11 +1049,11 @@ var DO = {
             DO.U.showEmbedData(dInfo);
             DO.U.showStorage(dInfo);
             DO.U.showDocumentMetadata(dInfo);
-            if(!body.hasClass("on-slideshow")) {
+            if(!body.classList.contains('on-slideshow')) {
                 DO.U.showToC();
             }
 
-            $(document).on('click', DO.U.eventLeaveDocumentMenu);
+            document.addEventListener('click', DO.U.eventLeaveDocumentMenu);
         },
 
         hideDocumentMenu: function() {
