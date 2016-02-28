@@ -940,29 +940,30 @@ var DO = {
 
         //TODO: Generalize this further so that it is not only for submitSignIn
         enableDisableButton: function(e) {
-            var x = $(e.delegateTarget);
-            var button = x.find(e.data);
+            var x = e.delegateTarget;
+            var button = x.querySelector(e.data);
+
             var delay = (e.type == 'cut' || e.type == 'paste') ? 250 : 0;
             var input = '';
 
             window.setTimeout(function () {
-                input = x.find('#' + e.target.id).val();
+                input = document.getElementById(e.target.id).value;
                 if (input.length > 10 && input.match(/^https?:\/\//g)) {
                     if (typeof e.which !== 'undefined' && e.which == 13) {
-                        if(!button.prop('disabled')) {
-                            button.prop('disabled', 'disabled');
+                        if(!button.getAttribute('disabled')) {
+                            button.setAttribute('disabled', 'disabled');
                             e.preventDefault();
                             e.stopPropagation();
                             DO.U.submitSignIn();
                         }
                     }
                     else {
-                        button.removeAttr('disabled');
+                        button.removeAttribute('disabled');
                     }
                 }
                 else {
-                    if (!button.prop('disabled')) {
-                        button.prop('disabled', 'disabled');
+                    if (!button.getAttribute('disabled')) {
+                        button.setAttribute('disabled', 'disabled');
                     }
                 }
             }, delay);
