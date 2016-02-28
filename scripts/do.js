@@ -909,16 +909,16 @@ var DO = {
         //TODO: Refactor
         showUserSigninSignup: function(node) {
             if (typeof SimpleRDF !== 'undefined') {
-                var s = '';
+                var s = '<button class="signin-user">Sign in</button>';
                 if(DO.C.User.IRI) {
-                    s+= DO.U.getUserHTML();
+                    s = DO.U.getUserHTML();
                 }
-                else {
-                    s+= '<button class="signin-user">Sign in</button>';
-                }
-                $(node).append('<p id="user-signin-signup">' + s + '</p>');
+                node.insertAdjacentHTML('beforeend', '<p id="user-signin-signup">' + s + '</p>');
 
-                $('#document-menu.do').off('click', 'button.signin-user').on('click', 'button.signin-user', DO.U.showUserIdentityInput);
+                var su = document.querySelector('#document-menu button.signin-user');
+                if(su) {
+                    su.addEventListener('click', DO.U.showUserIdentityInput);
+                }
             }
         },
 
