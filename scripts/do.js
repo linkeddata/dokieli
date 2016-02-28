@@ -970,18 +970,19 @@ var DO = {
         },
 
         submitSignIn: function() {
-            var userIdentityInput = $('#user-identity-input');
-            var url = userIdentityInput.find('input#webid').val().trim();
+            var userIdentityInput = document.getElementById('user-identity-input');
+            var url = userIdentityInput.querySelector('input#webid').value.trim();
             if (url.length > 0) {
                 var setUser = function() {
                     return new Promise(function(resolve, reject) {
                         DO.U.setUser(url).then(
                             function(i) {
-                                userIdentityInput.remove();
+                                userIdentityInput.parentNode.removeChild(userIdentityInput);
                                 return resolve(i);
                             },
                             function(reason) {
-                                userIdentityInput.find('.response-message').remove();
+                                var rm = userIdentityInput.querySelector('.response-message');
+                                rm.parentNode.removeChild(rm);
                                 if (reason.length > 0) {
                                     var reasonsList = '<p>Reasons:</p><ul>';
                                     reason.forEach(function(r) {
@@ -990,8 +991,8 @@ var DO = {
                                     reasonsList += '</ul>';
                                 }
 
-                                userIdentityInput.append('<div class="response-message"><p class="error">Unable to sign in with this WebID.</p>' + reasonsList + '</div>');
-                                $('#user-identity-input button.signin').removeAttr('disabled');
+                                userIdentityInput.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to sign in with this WebID.</p>' + reasonsList + '</div>');
+                                document.querySelector('#user-identity-input button.signin').removeAttribute('disabled');
                                 console.log(reason);
                                 return reject(reason);
                             }
@@ -1004,7 +1005,7 @@ var DO = {
                         DO.U.setUserInfo(i).then(
                             function(i) {
 // console.log(i);
-                                $('#user-signin-signup').html(DO.U.getUserHTML());
+                                document.getElementById('user-signin-signup').innerHTML = DO.U.getUserHTML();
                             },
                             function(reason) {
                                 console.log(reason);
