@@ -178,10 +178,9 @@ body > header #document-license {
     margin-right:5%;
     text-align:justify;
 }
-body > header #document-license dt {
-    display:none;
-}
+body > header #document-license dt,
 body > header #document-license dd {
+    display:inline;
     margin-left:0;
 }
 article, pre {
