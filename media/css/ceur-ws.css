@@ -200,7 +200,9 @@ dl {
     padding-top:1.5em;
     display:block;
 }
-
+#document-event dd {
+    margin-bottom:1em;
+}
 #document-event dd.CEURLOCATION,
 #document-event dd.CEURTIME {
     display:inline;
