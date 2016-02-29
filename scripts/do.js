@@ -1173,11 +1173,11 @@ var DO = {
         },
 
         showEmbedData: function(node) {
-            $(node).append('<section id="embed-data-in-html" class="do"><h2>Data</h2><ul><li><button class="embed-data-meta">Embed</button></li></ul></section>');
+            node.insertAdjacentHTML('beforeEnd', '<section id="embed-data-in-html" class="do"><h2>Data</h2><ul><li><button class="embed-data-meta">Embed</button></li></ul></section>');
 
-            $('#embed-data-in-html').off('click', 'button').on('click', 'button', function(e){
-                $(this).prop('disabled', 'disabled');
-                var scriptCurrent = $('head script[id^="meta-"]');
+            var eventEmbedData = function(e) {
+                e.target.setAttribute('disabled', 'disabled');
+                var scriptCurrent = document.querySelectorAll('head script[id^="meta-"]');
 
                 var scriptType = {
                     'meta-turtle': {
@@ -1201,17 +1201,20 @@ var DO = {
                 }
 
                 var scriptCurrentData = {};
-                scriptCurrent.each(function(i, v) {
-                    var id = $(v).prop('id');
-                    scriptCurrentData[id] = $(v).html().split(/\r\n|\r|\n/);
-                    scriptCurrentData[id].shift();
-                    scriptCurrentData[id].pop();
-                    scriptCurrentData[id] = {
-                        'type': $(v).prop('type') || '',
-                        'title': $(v).prop('title') || '',
-                        'content' : scriptCurrentData[id].join('\n')
-                    };
-                });
+                if (scriptCurrent.length > 0) {
+                    for(var i = 0; i < scriptCurrent.length; i++) {
+                        var v = scriptCurrent[i];
+                        var id = v.id;
+                        scriptCurrentData[id] = v.innerHTML.split(/\r\n|\r|\n/);
+                        scriptCurrentData[id].shift();
+                        scriptCurrentData[id].pop();
+                        scriptCurrentData[id] = {
+                            'type': v.getAttribute('type') || '',
+                            'title': v.getAttribute('title') || '',
+                            'content' : scriptCurrentData[id].join('\n')
+                        };
+                    }
+                }
 
                 var embedMenu = '<aside id="embed-data-entry" class="do on tabs"><button class="close">❌</button>\n\
                 <h2>Embed Data</h2>\n\
@@ -1221,51 +1224,63 @@ var DO = {
                 <div id="embed-data-nanopublication"><textarea placeholder="Enter data in application/trig" name="meta-nanopublication" cols="80" rows="24">' + ((scriptCurrentData['meta-nanopublication']) ? scriptCurrentData['meta-nanopublication'].content : '') + '</textarea><button class="save">Save</button></div>\n\
                 </aside>';
 
-                $('body').append(embedMenu);
-                $('#embed-data-turtle textarea').focus();
-                $('#embed-data-entry nav').on('click', 'a', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
+                document.body.insertAdjacentHTML('beforeEnd', embedMenu);
+                document.querySelector('#embed-data-turtle textarea').focus();
+                var a = document.querySelectorAll('#embed-data-entry nav a');
+                for(var i = 0; i < a.length; i++) {
+                    a[i].addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
 
-                    var li = $(this).parent();
-                    if(!li.hasClass('class')) {
-                        $('#embed-data-entry nav li').removeClass('selected');
-                        li.addClass('selected');
-                        $('#embed-data-entry > div').removeClass('selected');
-                        $('#embed-data-entry > div' + $(this).prop('hash')).addClass('selected').find('textarea').focus();
-                    }
+                        var li = e.target.parentNode;
+                        if(!li.classList.contains('selected')) {
+                            document.querySelector('#embed-data-entry nav li.selected').classList.remove('selected');
+                            li.classList.add('selected');
+                            document.querySelector('#embed-data-entry > div.selected').classList.remove('selected');
+                            var d = document.querySelector('#embed-data-entry > div' + e.target.hash);
+                            d.classList.add('selected');
+                            d.querySelector('textarea').focus();
+                        }
+                    });
+                }
+
+                document.querySelector('#embed-data-entry button.close').addEventListener('click', function(e) {
+                    document.querySelector('#embed-data-in-html .embed-data-meta').removeAttribute('disabled');
                 });
 
-                $('#embed-data-entry').on('click', 'button.close', function(e) {
-                    $('#embed-data-in-html .embed-data-meta').removeAttr('disabled');
-                });
+                var buttonSave = document.querySelectorAll('#embed-data-entry button.save');
+                for (var i = 0; i < buttonSave.length; i++) {
+                    buttonSave[i].addEventListener('click', function(e) {
+                        var textarea = e.target.parentNode.querySelector('textarea');
+                        var name = textarea.getAttribute('name');
+                        var scriptEntry = textarea.value;
+                        var script = document.getElementById(name);
 
-                $('#embed-data-entry').on('click', 'button.save', function(e) {
-                    var textarea = $(this).parent().find('textarea');
-                    var name = textarea.prop('name');
-                    var scriptEntry = textarea.val();
-                    var script = $('#' + name);
-
-                    if (scriptEntry.length > 0) {
-                        var scriptContent = '    ' + scriptType[name].scriptStart + scriptType[name].cdataStart + scriptEntry + scriptType[name].cdataEnd + scriptType[name].scriptEnd + '\n    ';
-
-                        //If there was a script already
-                        if (script.length > 0) {
-                            script.html(scriptContent);
+                        if (scriptEntry.length > 0) {
+                            var scriptContent = '    ' + scriptType[name].scriptStart + scriptType[name].cdataStart + scriptEntry + scriptType[name].cdataEnd + scriptType[name].scriptEnd;
+                            //If there was a script already
+                            if (script) {
+                                script.innerHTML = scriptContent;
+                            }
+                            else {
+                                document.querySelector('head').insertAdjacentHTML('beforeEnd', scriptContent);
+                            }
                         }
                         else {
-                            $('head').append(scriptContent);
+                            //Remove if no longer used
+                            script.parentNode.removeChild(script);
                         }
-                    }
-                    else {
-                        //Remove if no longer used
-                        script.remove();
-                    }
 
-                    $('#embed-data-entry').remove();
-                    $('#embed-data-in-html .embed-data-meta').removeAttr('disabled');
-                });
-            });
+                        var ede = document.getElementById('embed-data-entry');
+                        ede.parentNode.removeChild(ede);
+                        document.querySelector('#embed-data-in-html .embed-data-meta').removeAttribute('disabled');
+                    });
+                };
+            };
+
+            var edih = document.querySelector('#embed-data-in-html button');
+            edih.removeEventListener('click', eventEmbedData);
+            edih.addEventListener('click', eventEmbedData);
         },
 
         showTableOfStuff: function(node) {
