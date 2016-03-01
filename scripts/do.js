@@ -1095,80 +1095,99 @@ var DO = {
         },
 
         showViews: function(node) {
-            var stylesheets = $('head link[rel~="stylesheet"][title]:not([href$="do.css"])');
+            var stylesheets = document.querySelectorAll('head link[rel~="stylesheet"][title]:not([href$="do.css"])');
 
             if (stylesheets.length > 1) {
                 var s = '<section id="views" class="do"><h2>Views</h2><ul>';
-                stylesheets.each(function(i, stylesheet) {
-                    var view = $(this).prop('title');
-                    if($(this).is('[rel~="alternate"]')) {
+                for (var i = 0; i < stylesheets.length; i++) {
+                    var stylesheet = stylesheets[i];
+                    var view = stylesheet.getAttribute('title');
+                    if(stylesheet.matches('[rel~="alternate"]')) {
                         s += '<li><button>' + view + '</button></li>';
                     }
                     else {
                         s += '<li><button disabled="disabled">' + view + '</button></li>';
                     }
-                });
+                }
                 s += '<li><button>Native</button></li>';
                 s += '</ul></section>';
 
-                $(node).append(s);
+                node.insertAdjacentHTML('beforeend', s);
 
-                $('#views.do button').on('click', function(e) {
-                    var selected = $(this);
-                    var prevStylesheet = $('head link[rel="stylesheet"][title]:not([href$="do.css"]):not(disabled)').prop('title') || '';
+                var viewButtons = document.querySelectorAll('#views.do button');
+                for (var i = 0; i < viewButtons.length; i++) {
+                    viewButtons[i].addEventListener('click', function(e) {
+                        var selected = e.target;
+                        var prevStylesheet = document.querySelector('head link[rel="stylesheet"][title]:not([href$="do.css"]):not(disabled)');
+                        prevStylesheet = (prevStylesheet) ? prevStylesheet.getAttribute('title') : '';
 
-                    $('head link[rel~="stylesheet"][title]:not([href$="do.css"])').each(function(i, stylesheet) {
-                        $(this).prop('disabled', true); //XXX: Leave this. WebKit wants to trigger this before for some reason.
+                        for (var j = 0; j < stylesheets.length; j++) {
+                            var stylesheet = stylesheets[j];
+                            if (stylesheet.getAttribute('title').toLowerCase() == selected.textContent.toLowerCase()) {
+                                stylesheet.setAttribute('rel', 'stylesheet');
+                                stylesheet.disabled = false;
+                            }
+                            else {
+                                stylesheet.disabled = true; //XXX: Leave this. WebKit wants to trigger this before for some reason.
+                                stylesheet.setAttribute('rel', 'stylesheet alternate');
+                            }
+                        };
 
-                        if ($(this).prop('title').toLowerCase() == selected.text().toLowerCase()) {
-                            $(this).prop({'rel': 'stylesheet', 'disabled': false});
+                        var bd = document.querySelectorAll('#views.do button:disabled');
+                        for(var j = 0; j < bd.length; j++) {
+                            bd[j].disabled = false;
                         }
-                        else {
-                            $(this).prop({'rel': 'stylesheet alternate'});
-                        }
+                        selected.disabled = true;
 
-                        $('span.ref').each(function(i){
-                            var refId = $(this).find('mark').prop('id');
-                            var noteId = $(this).find('a').text();
+                        var sr = document.querySelectorAll('span.ref');
+                        for(var j = 0; j < sr.length; j++) {
+                            var refId = sr[j].querySelector('mark').id;
+                            var noteId = str[j].querySelector('a').textContent;
                             DO.U.positionNote(refId, noteId, noteId);
-                        });
+                        };
+
+                        if (selected.textContent.toLowerCase() == 'shower') {
+                            var slides = document.querySelectorAll('.slide');
+                            for(var j = 0; j < slides.length; j++) {
+                                slides[j].classList.add('do');
+                            }
+                            document.body.classList.add('on-slideshow', 'list');
+                            document.querySelector('head').insertAdjacentHTML('beforeend', '<meta name="viewport" content="width=792, user-scalable=no" />');
+
+                            var dM = document.getElementById('document-menu');
+                            var dMButton = dM.querySelector('header button');
+
+                            dM.classList.remove('on');
+                            var dMSections = dM.querySelectorAll('section');
+                            for (var j = 0; j < dMSections.length; j++) {
+                                dMSections[j].parentNode.removeChild(dMSections[j]);
+                            }
+                            document.body.classList.remove('on-document-menu');
+                            dMButton.classList.add('show');
+                            dMButton.setAttribute('title', 'Open Menu');
+                            var toc = document.getElementById('table-of-contents');
+                            toc = (toc) ? toc.parentNode.removeChild(toc) : false;
+
+                            DO.U.hideStorage();
+
+                            shower.initRun();
+                        }
+                        if (prevStylesheet.toLowerCase() == 'shower') {
+                            var slides = document.querySelectorAll('.slide');
+                            for (var c = 0; c < slides.length; c++){
+                                slides[c].classList.remove('do');
+                            }
+                            document.body.classList.remove('on-slideshow', 'list', 'full');
+                            document.body.removeAttribute('style');
+                            var mV = document.querySelector('head meta[name="viewport"][content="width=792, user-scalable=no"]');
+                            mV = (mV) ? mV.parentNode.removeChild(mV) : false;
+
+                            history.pushState(null, null, window.location.pathname);
+
+                            shower.removeEvents();
+                        }
                     });
-
-                    $('#views.do button:disabled').removeAttr('disabled');
-                    $(this).prop('disabled', 'disabled');
-
-                    if (selected.text().toLowerCase() == 'shower') {
-                        $('.slide').addClass('do');
-                        $('body').addClass('on-slideshow list');
-                        $('head').append('<meta name="viewport" content="width=792, user-scalable=no"/>');
-
-                        var dM = $('#document-menu');
-                        var dMButton = dM.find('header button');
-
-                        dM.removeClass('on').find('section').remove();
-                        $('body').removeClass('on-document-menu');
-                        dMButton.addClass('show');
-                        dMButton.attr('title', 'Open Menu');
-                        $('#table-of-contents').remove();
-                        DO.U.hideStorage();
-
-                        shower.initRun();
-//                        $('head').append('<script src="scripts/shower.js"></script>');
-                    }
-                    if (prevStylesheet.toLowerCase() == 'shower') {
-                        $('.slide').removeClass('do');
-                        $('body').removeClass('on-slideshow list full');
-                        $('body').removeAttr('style');
-                        $('head meta[name="viewport"][content="width=792, user-scalable=no"]').remove();
-//                        $('head script[src="scripts/shower.js"]').remove();
-
-                        history.pushState(null, null, window.location.pathname);
-//                        var lH = window.location.href;
-//                        window.location.href = lH.substr(0, lH.lastIndexOf('?'));
-
-                        shower.removeEvents();
-                    }
-                });
+                }
             }
         },
 
