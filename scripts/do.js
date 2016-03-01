@@ -980,7 +980,9 @@ var DO = {
                             },
                             function(reason) {
                                 var rm = userIdentityInput.querySelector('.response-message');
-                                rm.parentNode.removeChild(rm);
+                                if (rm) {
+                                    rm.parentNode.removeChild(rm);
+                                }
                                 if (reason.length > 0) {
                                     var reasonsList = '<p>Reasons:</p><ul>';
                                     reason.forEach(function(r) {
