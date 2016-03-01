@@ -923,31 +923,29 @@ var DO = {
         },
 
         //TODO: Refactor
-        showUserIdentityInput: function() {
-            $(this).prop('disabled', 'disabled');
-            $('body').append('<aside id="user-identity-input" class="do on"><button class="close">❌</button><h2>Enter WebID to sign in with</h2><label>HTTP(S) IRI</label><input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="signin">Sign in</button></aside>');
-
-            $('#user-identity-input button.signin').prop('disabled', 'disabled');
-
-            $('#user-identity-input').on('click', 'button.close', function(e) {
-                $('#document-menu > header .signin-user').removeAttr('disabled');
+        showUserIdentityInput: function(e) {
+            e.target.setAttribute('disabled', 'disabled');
+            document.body.insertAdjacentHTML('beforeend', '<aside id="user-identity-input" class="do on"><button class="close">❌</button><h2>Enter WebID to sign in with</h2><label>HTTP(S) IRI</label><input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="signin">Sign in</button></aside>');
+            var buttonSignIn = document.querySelector('#user-identity-input button.signin');
+            buttonSignIn.setAttribute('disabled', 'disabled');
+            document.querySelector('#user-identity-input button.close').addEventListener('click', function(e) {
+                document.querySelector('#document-menu button.signin-user').removeAttribute('disabled');
             });
-
-            $('#user-identity-input').on('click', 'button.signin', DO.U.submitSignIn);
-            $('#user-identity-input').on('keyup cut paste input', 'input#webid', 'button.signin', DO.U.enableDisableButton);
-            $('#user-identity-input input#webid').focus();
+            var inputWebid = document.querySelector('#user-identity-input input#webid');
+            buttonSignIn.addEventListener('click', DO.U.submitSignIn);
+            ['keyup', 'cut', 'paste', 'input'].forEach(function(eventType) {
+                inputWebid.addEventListener(eventType, function(e){ DO.U.enableDisableButton(e, buttonSignIn); });
+            });
+            webid.focus();
         },
 
         //TODO: Generalize this further so that it is not only for submitSignIn
-        enableDisableButton: function(e) {
-            var x = e.delegateTarget;
-            var button = x.querySelector(e.data);
-
+        enableDisableButton: function(e, button) {
             var delay = (e.type == 'cut' || e.type == 'paste') ? 250 : 0;
-            var input = '';
+            var input;
 
             window.setTimeout(function () {
-                input = document.getElementById(e.target.id).value;
+                input = e.target.value;
                 if (input.length > 10 && input.match(/^https?:\/\//g)) {
                     if (typeof e.which !== 'undefined' && e.which == 13) {
                         if(!button.getAttribute('disabled')) {
