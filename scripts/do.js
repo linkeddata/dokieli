@@ -723,9 +723,11 @@ var DO = {
                 http.withCredentials = true;
                 http.onreadystatechange = function() {
                     if (this.readyState == this.DONE) {
-                        return resolve({xhr: this});
+                        if (this.status === 200 || this.status === 201 || this.status === 204) {
+                                return resolve({xhr: this});
+                            }
+                        return reject({status: this.status, xhr: this});
                     }
-                    return reject({status: this.status, xhr: this});
                 };
                 http.send();
             });
