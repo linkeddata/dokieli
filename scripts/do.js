@@ -1807,7 +1807,7 @@ var DO = {
             //XXX: Encodes strings as UTF-8. Consider storing bytes instead?
             var blob = new Blob([data], {type:'text/html;charset=utf-8'});
             var pattern = /[^\w]+/ig;
-            var title = $('h1').text().toLowerCase().replace(pattern, '-') || "index";
+            var title = document.querySelector('h1').textContent.toLowerCase().replace(pattern, '-') || "index";
             var timestamp = DO.U.getDateTimeISO().replace(pattern, '') || "now";
 
             var fileName = title + '.' + timestamp + '.html';
