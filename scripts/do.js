@@ -1852,68 +1852,67 @@ var DO = {
         },
 
         showDocumentDo: function(node) {
-            var s = '<section id="document-do" class="do"><h2>Do</h2><ul>';
-
-            if (DO.C.EditorAvailable) {
-                var editFile = '';
-                if (DO.C.EditorEnabled) {
-                    editFile = DO.C.Editor.DisableEditorButton;
-                }
-                else {
-                    editFile = DO.C.Editor.EnableEditorButton;
-                }
-
-                s += '<li>' + editFile + '</li>';
-            }
-
             var buttonDisabled = '';
             if (document.location.protocol == 'file:') {
                 buttonDisabled = ' disabled="disabled"';
             }
+
+            var s = '<section id="document-do" class="do"><h2>Do</h2><ul>';
+            if (DO.C.EditorAvailable) {
+                var editFile = (DO.C.EditorEnabled) ? DO.C.Editor.DisableEditorButton : DO.C.Editor.EnableEditorButton;
+                s += '<li>' + editFile + '</li>';
+            }
             s += '<li><button class="resource-new"'+buttonDisabled+'>New</button></li>';
             s += '<li><button class="resource-save"'+buttonDisabled+'>Save</button></li>';
             s += '<li><button class="resource-save-as">Save As</button></li>';
-
             s += '<li><button class="resource-export">Export</button></li>';
             s += '<li><button class="resource-print">Print</button></li>';
-
             s += '</ul></section>';
+            node.insertAdjacentHTML('beforeend', s);
 
-            $(node).append(s);
-
-            if (DO.C.EditorAvailable) {
-                $('#document-do').on('click', 'button.editor-enable', function(e) {
-                    $(this).parent().html(DO.C.Editor.DisableEditorButton);
-                    DO.U.Editor.enableEditor();
-                });
-                $('#document-do').on('click', 'button.editor-disable', function(e) {
-                    $(this).parent().html(DO.C.Editor.EnableEditorButton);
-                    DO.U.Editor.disableEditor();
-                });
-            }
-
-            $('#document-do').on('click', '.resource-new', DO.U.createNewDocument);
-            $('#document-do').on('click', '.resource-save', function(e) {
-                var url = window.location.origin + window.location.pathname;
-                var data = DO.U.getDocument();
-                DO.U.putResource(url, data).then(
-                    function(i) {
-                        DO.U.hideDocumentMenu();
-                    },
-                    function(reason) {
-                        console.log(reason);
+            var dd = document.getElementById('document-do');
+            dd.addEventListener('click', function(e) {
+                if (DO.C.EditorAvailable) {
+                    if (e.target.matches('button.editor-enable')) {
+                        e.target.parentNode.innerHTML = DO.C.Editor.DisableEditorButton;
+                        DO.U.Editor.enableEditor();
                     }
-                );
-            });
-            $('#document-do').on('click', '.resource-save-as', DO.U.saveAsDocument);
-            //$('#document-do').on('click', '.resource-browser', DO.U.showResourceBrowser);
+                    if (e.target.matches('button.editor-disable')) {
+                        e.target.parentNode.innerHTML = DO.C.Editor.EnableEditorButton;
+                        DO.U.Editor.disableEditor();
+                    }
+                }
 
-            $('#document-do').on('click', '.resource-export', DO.U.exportAsHTML);
+                if (e.target.matches('.resource-new')) {
+                    DO.U.createNewDocument();
+                }
 
-            $('#document-do').on('click', '.resource-print', function(e) {
-                DO.U.hideDocumentMenu();
-                window.print();
-                return false;
+                if (e.target.matches('.resource-save')) {
+                    var url = window.location.origin + window.location.pathname;
+                    var data = DO.U.getDocument();
+                    DO.U.putResource(url, data).then(
+                        function(i) {
+                            DO.U.hideDocumentMenu();
+                        },
+                        function(reason) {
+                            console.log(reason);
+                        }
+                    );
+                }
+
+                if (e.target.matches('.resource-save-as')) {
+                    DO.U.saveAsDocument();
+                }
+
+                if (e.target.matches('.resource-export')) {
+                    DO.U.exportAsHTML();
+                }
+
+                if (e.target.matches('.resource-print')) {
+                    DO.U.hideDocumentMenu();
+                    window.print();
+                    return false;
+                }
             });
         },
 
