@@ -2550,7 +2550,7 @@ LIMIT 1";
                     store.execute(queryA, function(success, results) {
                         if (results.length > 0) {
                             console.log(results);
-                            resultsNode.html(results[0].prefLabel.value + ', <a class="href" href="' + iri + '">' + iri + '</a>');
+                            resultsNode.innerHTML = results[0].prefLabel.value + ', <a class="href" href="' + iri + '">' + iri + '</a>';
                         }
                         else {
                             console.log("NOPE 2");
