@@ -1884,7 +1884,7 @@ var DO = {
                 }
 
                 if (e.target.matches('.resource-new')) {
-                    DO.U.createNewDocument();
+                    DO.U.createNewDocument(e);
                 }
 
                 if (e.target.matches('.resource-save')) {
@@ -1901,7 +1901,7 @@ var DO = {
                 }
 
                 if (e.target.matches('.resource-save-as')) {
-                    DO.U.saveAsDocument();
+                    DO.U.saveAsDocument(e);
                 }
 
                 if (e.target.matches('.resource-export')) {
@@ -2132,123 +2132,140 @@ var DO = {
 
         },
 
-        createNewDocument: function() {
-            $(this).prop('disabled', 'disabled');
-            $('body').append('<aside id="create-new-document" class="do on"><button class="close">❌</button><h2>Create New Document</h2></aside>');
+        createNewDocument: function(e) {
+            e.target.disabled = true;
+            document.body.insertAdjacentHTML('beforeend', '<aside id="create-new-document" class="do on"><button class="close">❌</button><h2>Create New Document</h2></aside>');
 
-            var newDocument = $('#create-new-document');
-            newDocument.on('click', 'button.close', function(e) {
-                $('#document-do .resource-new').removeAttr('disabled');
+            var newDocument = document.getElementById('create-new-document');
+            newDocument.addEventListener('click', function(e) {
+                if (e.target.matches('button.close')) {
+                    document.querySelector('#document-do .resource-new').disabled = false;
+                }
             });
 
-            DO.U.setupResourceBrowser(document.getElementById('create-new-document'));
-            document.getElementById('browser-location').insertAdjacentHTML('afterBegin', '<p>Choose a location to save your new article.</p>');
-            newDocument.append(DO.U.getBaseURLSelection() + '<p>Your new document will be saved at <samp id="location-final">https://example.org/path/to/article</samp></p><button class="create">Create</button>');
-            document.getElementById('browser-location-input').focus();
-            document.getElementById('browser-location-input').placeholder = 'https://example.org/path/to/article';
+            DO.U.setupResourceBrowser(newDocument);
+            document.getElementById('browser-location').insertAdjacentHTML('afterbegin', '<p>Choose a location to save your new article.</p>');
+            newDocument.insertAdjacentHTML('beforeend', DO.U.getBaseURLSelection() + '<p>Your new document will be saved at <samp id="location-final">https://example.org/path/to/article</samp></p><button class="create">Create</button>');
+            var bli = document.getElementById('browser-location-input');
+            bli.focus();
+            bli.placeholder = 'https://example.org/path/to/article';
 
-            newDocument.on('click', 'button.create', function(e) {
-                var newDocument = $('#create-new-document')
-                var storageIRI = newDocument.find('input#browser-location-input').val().trim();
-                newDocument.find('.response-message').remove();
+            newDocument.addEventListener('click', function(e) {
+                if (e.target.matches('button.create')) {
+                    var newDocument = document.getElementById('create-new-document');
+                    var storageIRI = newDocument.querySelector('input#browser-location-input').value.trim();
+                    var rm = newDocument.querySelector('.response-message');
+                    if (rm) {
+                        rm.parentNode.removeChild(rm);
+                    }
 
-                var html = document.documentElement.cloneNode(true);
-                var baseURLSelectionChecked = newDocument.find('select[name="base-url"]');
+                    var html = document.documentElement.cloneNode(true);
+                    var baseURLSelectionChecked = newDocument.querySelector('select[name="base-url"]');
 // console.log(baseURLSelectionChecked);
-                if (baseURLSelectionChecked.length > 0) {
-                    var baseURLType = baseURLSelectionChecked.val();
-                    var nodes = $(html).find('head link, [src], object[data]');
-                    if (baseURLType == 'base-url-relative') {
-                        DO.U.copyRelativeResources(storageIRI, nodes);
-                    }
-                    nodes = DO.U.rewriteBaseURL(nodes, baseURLType);
-                }
-
-                $(html).find('main > article').empty();
-                $(html).find('head title').empty();
-                html = DO.U.getDocument(html);
-
-                DO.U.putResource(storageIRI, html).then(
-                    function(i) {
-// console.log(i);
-                        newDocument.append('<div class="response-message"><p class="success">New document created at <a href="' + storageIRI + '?edit=true">' + storageIRI + '</a></p></div>');
-                        window.open(storageIRI + '?edit=true', '_blank');
-                    },
-                    function(reason) {
-                        switch(reason.status) {
-                            default:
-                                newDocument.append('<div class="response-message"><p class="error">Unable to create new.</p>');
-                                break;
-                            case 0: case 405:
-                                newDocument.append('<div class="response-message"><p class="error">Unable to create new: this location is not writeable.</p></div>');
-                                break;
-                            case 401: case 403:
-                                newDocument.append('<div class="response-message"><p class="error">Unable to create new: you don\'t have permission to write here.</p></div>');
-                                break;
-                            case 406:
-                                newDocument.append('<div class="response-message"><p class="error">Unable to create new: enter a name for your resource.</p></div>');
-                                break;
+                    if (baseURLSelectionChecked.length > 0) {
+                        var baseURLType = baseURLSelectionChecked.value;
+                        var nodes = html.querySelectorAll('head link, [src], object[data]');
+                        if (baseURLType == 'base-url-relative') {
+                            DO.U.copyRelativeResources(storageIRI, nodes);
                         }
-                        console.log(reason);
+                        nodes = DO.U.rewriteBaseURL(nodes, baseURLType);
                     }
-                );
+
+                    html.querySelector('main > article').innerHTML = '';
+                    html.querySelector('head title').innerHTML = '';
+                    html = DO.U.getDocument(html);
+
+                    DO.U.putResource(storageIRI, html).then(
+                        function(i) {
+// console.log(i);
+                            newDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="success">New document created at <a href="' + storageIRI + '?edit=true">' + storageIRI + '</a></p></div>');
+                            window.open(storageIRI + '?edit=true', '_blank');
+                        },
+                        function(reason) {
+                            switch(reason.status) {
+                                default:
+                                    newDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to create new.</p>');
+                                    break;
+                                case 0: case 405:
+                                    newDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to create new: this location is not writeable.</p></div>');
+                                    break;
+                                case 401: case 403:
+                                    newDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to create new: you don\'t have permission to write here.</p></div>');
+                                    break;
+                                case 406:
+                                    newDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to create new: enter a name for your resource.</p></div>');
+                                    break;
+                            }
+                            console.log(reason);
+                        }
+                    );
+                }
             });
         },
 
-        saveAsDocument: function() {
-            $(this).prop('disabled', 'disabled');
-            $('body').append('<aside id="save-as-document" class="do on"><button class="close">❌</button><h2>Save As Document</h2></aside>');
+        saveAsDocument: function(e) {
+            e.target.disabled = true;
+            document.body.insertAdjacentHTML('beforeend', '<aside id="save-as-document" class="do on"><button class="close">❌</button><h2>Save As Document</h2></aside>');
 
-            var saveAsDocument = $('#save-as-document');
-            saveAsDocument.on('click', 'button.close', function(e) {
-                $('#document-do .resource-save-as').removeAttr('disabled');
-            });
-            DO.U.setupResourceBrowser(document.getElementById('save-as-document'));
-            document.getElementById('browser-location').insertAdjacentHTML('afterBegin', '<p>Choose a location to save your new article.</p>');
-            saveAsDocument.append(DO.U.getBaseURLSelection() + '<p>Your new document will be saved at <samp id="location-final">https://example.org/path/to/article</samp></p><button class="create">Save</button>');
-            document.getElementById('browser-location-input').focus();
-            document.getElementById('browser-location-input').placeholder = 'https://example.org/path/to/article';
-
-            saveAsDocument.on('click', 'button.create', function(e) {
-                var saveAsDocument = $('#save-as-document');
-                var storageIRI = saveAsDocument.find('input#browser-location-input').val().trim();
-                saveAsDocument.find('.response-message').remove();
-
-                var html = document.documentElement.cloneNode(true);
-                var baseURLSelectionChecked = saveAsDocument.find('select[name="base-url"]');
-                if (baseURLSelectionChecked.length > 0) {
-                    var baseURLType = baseURLSelectionChecked.val();
-                    var nodes = $(html).find('head link, [src], object[data]');
-                    if (baseURLType == 'base-url-relative') {
-                        DO.U.copyRelativeResources(storageIRI, nodes);
-                    }
-                    nodes = DO.U.rewriteBaseURL(nodes, baseURLType);
+            var saveAsDocument = document.getElementById('save-as-document');
+            saveAsDocument.addEventListener('click', function(e) {
+                if (e.target.matches('button.close')) {
+                    document.querySelector('#document-do .resource-save-as').disabled = false;
                 }
-                html = DO.U.getDocument(html);
+            });
 
-                DO.U.putResource(storageIRI, html).then(
-                    function(i) {
-                        saveAsDocument.append('<div class="response-message"><p class="success">Document saved at <a href="' + storageIRI + '?edit=true">' + storageIRI + '</a></p></div>');
-                        window.open(storageIRI + '?edit=true', '_blank');
-                    },
-                    function(reason) {
-                        switch(reason.status) {
-                            default:
-                                saveAsDocument.append('<div class="response-message"><p class="error">Unable to save.</p></div>');
-                                break;
-                            case 0: case 405:
-                                saveAsDocument.append('<div class="response-message"><p class="error">Unable to save: this location is not writeable.</p></div>');
-                                break;
-                            case 401: case 403:
-                                saveAsDocument.append('<div class="response-message"><p class="error">Unable to save: you don\'t have permission to write here.</p></div>');
-                                break;
-                            case 406:
-                                saveAsDocument.append('<div class="response-message"><p class="error">Unable to save: enter a name for your resource.</p></div>');
-                                break;
-                        }
-                        console.log(reason);
+            DO.U.setupResourceBrowser(saveAsDocument);
+            document.getElementById('browser-location').insertAdjacentHTML('afterbegin', '<p>Choose a location to save your new article.</p>');
+            saveAsDocument.insertAdjacentHTML('beforeend', DO.U.getBaseURLSelection() + '<p>Your new document will be saved at <samp id="location-final">https://example.org/path/to/article</samp></p><button class="create">Save</button>');
+            var bli = document.getElementById('browser-location-input');
+            bli.focus();
+            bli.placeholder = 'https://example.org/path/to/article';
+
+           saveAsDocument.addEventListener('click', function(e) {
+                if (e.target.matches('button.create')) {
+                    var saveAsDocument = document.getElementById('save-as-document');
+                    var storageIRI = saveAsDocument.querySelector('input#browser-location-input').value.trim();
+                    var rm = saveAsDocument.querySelector('.response-message');
+                    if (rm) {
+                        rm.parentNode.removeChild(rm);
                     }
-                );
+
+                    var html = document.documentElement.cloneNode(true);
+                    var baseURLSelectionChecked = saveAsDocument.querySelector('select[name="base-url"]');
+                    if (baseURLSelectionChecked.length > 0) {
+                        var baseURLType = baseURLSelectionChecked.value;
+                        var nodes = html.querySelectorAll('head link, [src], object[data]');
+                        if (baseURLType == 'base-url-relative') {
+                            DO.U.copyRelativeResources(storageIRI, nodes);
+                        }
+                        nodes = DO.U.rewriteBaseURL(nodes, baseURLType);
+                    }
+                    html = DO.U.getDocument(html);
+
+                    DO.U.putResource(storageIRI, html).then(
+                        function(i) {
+                            saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="success">Document saved at <a href="' + storageIRI + '?edit=true">' + storageIRI + '</a></p></div>');
+                            window.open(storageIRI + '?edit=true', '_blank');
+                        },
+                        function(reason) {
+                            switch(reason.status) {
+                                default:
+                                    saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to save.</p></div>');
+                                    break;
+                                case 0: case 405:
+                                    saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to save: this location is not writeable.</p></div>');
+                                    break;
+                                case 401: case 403:
+                                    saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to save: you don\'t have permission to write here.</p></div>');
+                                    break;
+                                case 406:
+                                    saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to save: enter a name for your resource.</p></div>');
+                                    break;
+                            }
+                            console.log(reason);
+                        }
+                    );
+                }
             });
         },
 
@@ -2266,20 +2283,20 @@ var DO = {
         rewriteBaseURL: function(nodes, urlType) {
             urlType = urlType || 'base-url-absolute';
             if (typeof nodes === 'object' && nodes.length > 0) {
-                nodes.each(function(i, v) {
-                    var url = '', ref = '';
-                    var tagName = $(this).prop('tagName').toLowerCase();
-                    switch(tagName) {
+                for (var i = 0; i < nodes.length; i++) {
+                    var node = nodes[i];
+                    var url, ref;
+                    switch(node.tagName.toLowerCase()) {
                         default:
-                            url = $(this).attr('src');
+                            url = node.getAttribute('src');
                             ref = 'src';
                             break;
                         case 'link':
-                            url = $(this).attr('href');
+                            url = node.getAttribute('href');
                             ref = 'href';
                             break;
                         case 'object':
-                            url = $(this).attr('data');
+                            url = node.getAttribute('data');
                             ref = 'data';
                             break;
                     }
@@ -2288,8 +2305,8 @@ var DO = {
                     if (p != 'http' && p != 'file') {
                         url = DO.U.setBaseURL(url, urlType);
                     }
-                    $(this).prop(ref, url);
-                });
+                    node.setAttribute(ref, url);
+                };
             }
 
             return nodes;
@@ -2353,9 +2370,9 @@ var DO = {
             var ref = '';
             var baseURL = DO.U.getBaseURL(storageIRI);
 
-            relativeNodes.each(function(i, v) {
-                var tagName = $(this).prop('tagName').toLowerCase();
-                switch(tagName) {
+            for (var i = 0; i < relativeNodes.length; i++) {
+                var node = relativeNodes[i];
+                switch(node.tagName.toLowerCase()) {
                     default:
                         ref = 'src';
                         break;
@@ -2367,14 +2384,14 @@ var DO = {
                         break;
                 }
 
-                var fromURL = $(this).attr(ref);
+                var fromURL = node.getAttribute(ref);
                 var p = fromURL.slice(0, 4);
                 if (p != 'http' && p != 'file') {
                     var pathToFile = DO.U.setBaseURL(fromURL, 'base-url-relative');
                     var toURL = baseURL + pathToFile.replace(/^\//g, '');
                     DO.U.copyResource(fromURL, toURL);
                }
-            });
+            };
         },
 
         initStorage: function(item) {
