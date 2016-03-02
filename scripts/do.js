@@ -1313,25 +1313,32 @@ var DO = {
                 var key = Object.keys(i)[0];
                 var value = i[key];
                 var checkedInput = '';
-                if($('#table-of-'+ key +'s').length > 0) {
+                if(document.getElementById('table-of-'+ key +'s')) {
                     checkedInput = ' checked="checked"';
                 }
 
                 s+= '<li><input id="t-o-' + key +'" type="checkbox"' + disabledInput + checkedInput + '/><label for="t-o-' + key + '">' + value + '</label></li>';
             });
 
-            $(node).append('<section id="table-of-stuff" class="do"><h2>Table of Stuff</h2><ul>' + s + '</ul></section>');
+            node.insertAdjacentHTML('beforeend', '<section id="table-of-stuff" class="do"><h2>Table of Stuff</h2><ul>' + s + '</ul></section>');
 
             if(DO.C.EditorEnabled) {
-                $('#table-of-stuff').on('click', 'input', function(e){
-                    var id = $(this).prop('id');
-                    var listType = id.slice(4, id.length);
+                document.getElementById('table-of-stuff').addEventListener('click', function(e){
+                    if (e.target.matches('input')) {
+                        var id = e.target.id;
+                        var listType = id.slice(4, id.length);
 
-                    if($(this).prop('checked')) {
-                        DO.U.buildTableOfStuff(listType);
-                    }
-                    else {
-                        $('#table-of-'+listType+'s').remove();
+                        if(!e.target.getAttribute('checked')) {
+                            DO.U.buildTableOfStuff(listType);
+                            e.target.setAttribute('checked', 'checked');
+                        }
+                        else {
+                            var tol = document.getElementById('table-of-'+listType+'s');
+                            if(tol) {
+                                tol.parentNode.removeChild(tol);
+                            }
+                            e.target.removeAttribute('checked');
+                        }
                     }
                 });
             }
@@ -1394,9 +1401,9 @@ var DO = {
         },
 
         showToC: function() {
-            var section = $('h1 ~ div section:not([class~="slide"]):not([id^=table-of])');
+            var sections = document.querySelectorAll('h1 ~ div > section:not([class~="slide"]):not([id^=table-of])');
 
-            if (section.length > 0) {
+            if (sections.length > 0) {
                 var s = '';
                 var sortable = '';
 
@@ -1405,14 +1412,16 @@ var DO = {
                 }
 
                 s = '<aside id="toc" class="do on' + sortable + '"><button class="close">❌</button></aside>';
-                $('body').append(s);
+                document.body.insertAdjacentHTML('beforeend', s);
 
-                DO.U.showTableOfStuff($('#toc'));
+                var toc = document.getElementById('toc');
+
+                DO.U.showTableOfStuff(toc);
 
                 s = '<section id="table-of-contents-i" class="do"><h2>Table of Contents</h2><ol class="toc' + sortable + '">';
-                s += DO.U.getListOfSections(section, DO.C.SortableList);
+                s += DO.U.getListOfSections(sections, DO.C.SortableList);
                 s += '</ol></section>';
-                $('#toc').append(s);
+                toc.insertAdjacentHTML('beforeend', s);
 
                 if(DO.C.SortableList && DO.C.EditorEnabled) {
                     DO.U.sortToC();
@@ -1473,52 +1482,26 @@ var DO = {
             });
         },
 
-        getListOfSections: function(section, sortable) {
+        getListOfSections: function(sections, sortable) {
             var s = attributeClass = '';
             if (sortable == true) { attributeClass = ' class="sortable"'; }
 
-            section.each(function(i,section) {
-                var h = $(section).find('> h2');
-                if (h.length > 0) {
-                    s += '<li data-id="' + section.id +'"><a href="#' + section.id + '">' + h.text() + '</a>';
-                    section = $(section).find('section[rel*="hasPart"]:not([class~="slide"])');
-                    if (section.length > 0) {
-                        s += '<ol'+ attributeClass +'>';
-                        section.each(function(j, section) {
-                            var h = $(section).find('> h3');
-                            if (h.length > 0) {
-                                s += '<li data-id="' + section.id +'"><a href="#' + section.id + '">' + h.text() + '</a>';
-                                section = $(section).find('section[rel*="hasPart"]:not([class~="slide"])');
-                                if (section.length > 0) {
-                                    s += '<ol'+ attributeClass +'>';
-                                    section.each(function(k, section) {
-                                        var h = $(section).find('> h4');
-                                        if (h.length > 0) {
-                                            s += '<li data-id="' + section.id +'"><a href="#' + section.id + '">' + h.text() + '</a>';
-                                            section = $(section).find('section[rel*="hasPart"]:not([class~="slide"])');
-                                            if (section.length > 0) {
-                                                s += '<ol'+ attributeClass +'>';
-                                                section.each(function(k, section) {
-                                                    var h = $(section).find('> h5');
-                                                    if (h.length > 0) {
-                                                        s += '<li data-id="' + section.id +'"><a href="#' + section.id + '">' + h.text() + '</a></li>';
-                                                    }
-                                                });
-                                                s += '</ol>';
-                                            }
-                                            s += '</li>';
-                                        }
-                                    });
-                                    s += '</ol>';
-                                }
-                                s += '</li>';
-                            }
-                        });
-                        s += '</ol>';
+            for (var i = 0; i < sections.length; i++) {
+                var section = sections[i];
+                if(section.id) {
+                    var heading = section.querySelector(':first-child');
+                    if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].indexOf(heading.tagName.toLowerCase()) > -1) {
+                        s += '<li data-id="' + section.id +'"><a href="#' + section.id + '">' + heading.textContent + '</a>';
+                        var subsections = section.parentNode.querySelectorAll('#' + section.id + ' > div > section[rel*="hasPart"]:not([class~="slide"])');
+                        if (subsections) {
+                            s += '<ol'+ attributeClass +'>';
+                            s += DO.U.getListOfSections(subsections, sortable);
+                            s += '</ol>';
+                        }
+                        s += '</li>';
                     }
-                    s += '</li>';
                 }
-            });
+            }
 
             return s;
         },
