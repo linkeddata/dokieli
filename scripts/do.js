@@ -32,7 +32,7 @@ var DO = {
         UseStorage: false,
         AutoSaveId: '',
         AutoSaveTimer: 60000,
-        DisableStorageButtons: '<button class="local-storage-disable-html">Disable</button> | <input id="local-storage-html-autosave" class="autosave" type="checkbox" checked="checked"/> <label for="local-storage-html-autosave">Autosave (1m)</label>',
+        DisableStorageButtons: '<button class="local-storage-disable-html">Disable</button>',
         EnableStorageButtons: '<button class="local-storage-enable-html">Enable</button>',
         CDATAStart: '//<![CDATA[',
         CDATAEnd: '//]]>',
@@ -724,8 +724,8 @@ var DO = {
                 http.onreadystatechange = function() {
                     if (this.readyState == this.DONE) {
                         if (this.status === 200 || this.status === 201 || this.status === 204) {
-                                return resolve({xhr: this});
-                            }
+                            return resolve({xhr: this});
+                        }
                         return reject({status: this.status, xhr: this});
                     }
                 };
@@ -1064,7 +1064,7 @@ var DO = {
 
             var body = document.body;
             var dMenu = document.querySelector('#document-menu.do');
-            var dMenuButton = dMenu.querySelector('button')
+            var dMenuButton = dMenu.querySelector('button');
 
             var uss = dMenu.querySelector('#user-signin-signup');
             uss.parentNode.removeChild(uss);
@@ -2407,39 +2407,46 @@ var DO = {
         },
         disableAutoSave: function(item) {
             clearInterval(DO.C.AutoSaveId);
+            DO.C.AutoSaveId = '';
             console.log(DO.U.getDateTimeISO() + ': Autosave disabled.');
         },
         showStorage: function(node) {
             if (typeof window.localStorage != 'undefined') {
-                var useStorage = '';
+                var useStorage, checked;
 
                 if (DO.C.UseStorage) {
-                    useStorage = DO.C.DisableStorageButtons;
+                    if (DO.C.AutoSaveId) {
+                        checked = ' checked="checked"';
+                    }
+                    useStorage = DO.C.DisableStorageButtons + ' | <input id="local-storage-html-autosave" class="autosave" type="checkbox"' + checked +' /> <label for="local-storage-html-autosave">Autosave ⏲ 1m</label>';
                 }
                 else {
                     useStorage = DO.C.EnableStorageButtons;
                 }
 
-                $(node).append('<section id="local-storage" class="do"><h2>Local Storage</h2>\n\
-                <p>' + useStorage + '</p>\n\
-                </section>');
+                node.insertAdjacentHTML('beforeend', '<section id="local-storage" class="do"><h2>Local Storage</h2><p>' + useStorage + '</p></section>');
 
-                $('#local-storage').on('click', 'button.local-storage-enable-html', function(e) {
-                    $(this).parent().html(DO.C.DisableStorageButtons);
-                    DO.U.enableStorage('html');
-                });
-                $('#local-storage').on('click', 'button.local-storage-disable-html', function(e) {
-                    $(this).parent().html(DO.C.EnableStorageButtons);
-                    DO.U.disableStorage('html');
-                });
-                $('#local-storage').on('click', 'input.autosave', function(e) {
-                    if ($(this).attr('checked') == 'checked') {
-                        $(this).removeAttr('checked');
-                        DO.U.disableAutoSave('html');
+                document.getElementById('local-storage').addEventListener('click', function(e) {
+                    if (e.target.matches('button.local-storage-enable-html')) {
+                        e.target.outerHTML = DO.C.DisableStorageButtons;
+                        DO.U.enableStorage('html');
                     }
-                    else {
-                        $(this).attr('checked', 'checked');
-                        DO.U.enableAutoSave('html');
+
+                    if (e.target.matches('button.local-storage-disable-html')) {
+                        e.target.outerHTML = DO.C.EnableStorageButtons;
+                        DO.U.disableStorage('html');
+                    }
+
+                    if (e.target.matches('input.autosave')) {
+                        console.log(e.target.checked);
+                        if (e.target.getAttribute('checked')) {
+                            e.target.removeAttribute('checked');
+                            DO.U.disableAutoSave('html');
+                        }
+                        else {
+                            e.target.setAttribute('checked', 'checked');
+                            DO.U.enableAutoSave('html');
+                        }
                     }
                 });
             }
