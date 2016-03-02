@@ -2636,16 +2636,25 @@ LIMIT 1";
         },
 
         showAsTabs: function(id) {
-            $('#' + id + ' nav').on('click', 'a', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
+            document.querySelector('#' + id + ' nav').addEventListener('click', function(e) {
+                var a = e.target;
+                if (a.matches('a')) {
+                    e.preventDefault();
+                    e.stopPropagation();
 
-                var li = $(this).parent();
-                if(!li.hasClass('class')) {
-                    $('#' + id + ' nav li').removeClass('selected');
-                    li.addClass('selected');
-                    $('#' + id + ' > figure').removeClass('selected');
-                    $('#' + id + ' > figure' + $(this).prop('hash')).addClass('selected');
+                    var li = a.parentNode;
+                    if(!li.classList.contains('class')) {
+                        var navLi = document.querySelectorAll('#' + id + ' nav li');
+                        for (var i = 0; i < navLi.length; i++) {
+                            navLi[i].classList.remove('selected');
+                        }
+                        li.classList.add('selected');
+                        var figures = document.querySelectorAll('#' + id + ' > figure');
+                        for (var i = 0; i < figures.length; i++) {
+                            figures[i].classList.remove('selected');
+                        }
+                        document.querySelector('#' + id + ' > figure' + a.hash).classList.add('selected');
+                    }
                 }
             });
         },
