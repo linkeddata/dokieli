@@ -1510,11 +1510,10 @@ var DO = {
             var s = elementId = elementTitle = titleType = tableHeading = '';
             var tableList = [];
 
-            if (listType) { tableList = [listType]; }
-            else { tableList = ['content', 'figure', 'table', 'abbr']; }
+            tableList = (listType) ? [listType] : ['content', 'figure', 'table', 'abbr'];
 
             tableList.forEach(function(element) {
-                var e = $(element);
+                var e = document.querySelectorAll(element);
                 if (element == 'content' || e.length > 0) {
                     switch(element) {
                         case 'figure':
@@ -1545,32 +1544,27 @@ var DO = {
                     s += '<div><ol class="toc">';
 
                     if (element == 'content') {
-                        s += DO.U.getListOfSections($('h1 ~ div section:not([class~="slide"])'), false);
+                        s += DO.U.getListOfSections(document.querySelectorAll('h1 ~ div > section:not([class~="slide"])'), false);
                     }
                     else {
                         if (element == 'abbr') {
                             if (e.length > 0) {
-                                e.sort(function(a, b) {
-                                    var textA = $(a).text();
-                                    var textB = $(b).text();
+                                [].slice.call(e).sort(function(a, b) {
+                                    var textA = a.textContent;
+                                    var textB = b.textContent;
                                     return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
                                 });
                             }
 
-                            e.each(function() {
-                                var title = $(this).attr(titleType);
-                                var text = $(this).text();
-                                s += '<dt>' + text + '</dt>';
-                                s += '<dd>' + title + '</dd>';
-                            });
+                            for (var i = 0; i < e.length; i++) {
+                                s += '<dt>' + e[i].textContent + '</dt>';
+                                s += '<dd>' + e[i].getAttribute(titleType) + '</dd>';
+                            };
                         }
                         else {
-                            e.each(function(i,v) {
-                                elementId = $(this).attr('id');
-                                elementTitle = $(this).find(titleType).text();
-
-                                s += '<li><a href="#' + elementId +'">' + elementTitle  +'</a></li>';
-                            });
+                            for (var i = 0; i < e.length; i++) {
+                                s += '<li><a href="#' + e[i].id +'">' + e[i].querySelector(titleType).textContent +'</a></li>';
+                            };
                         }
                     }
 
