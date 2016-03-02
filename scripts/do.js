@@ -2994,9 +2994,8 @@ LIMIT 1";
             enableEditor: function() {
                 //XXX: Consider this as the main wrapper for the editor tool.
                 if (!document.getElementById('document-editor')) {
-                    $('body').append('<aside id="document-editor" class="do"/>');
+                    document.body.insertAdjacentHTML('beforeend', '<aside id="document-editor" class="do"></aside>');
                 }
-        //        $('article:nth(0)').addClass('editable');
 
                 var editableNodes = document.querySelectorAll('main > article');
 
