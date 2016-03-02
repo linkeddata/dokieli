@@ -2446,7 +2446,8 @@ var DO = {
         },
         hideStorage: function() {
             if (DO.C.UseStorage) {
-                $('#local-storage.do').remove();
+                var ls = document.getElementById('local-storage');
+                ls.parentNode.removeChild(ls);
             }
         },
 
