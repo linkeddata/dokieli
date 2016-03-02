@@ -1579,21 +1579,21 @@ var DO = {
             });
 
             //XXX: Tries to find a suitable place to insert.
-            var i = $('#document-status');
-            if (i.length > 0) { i.after(s); }
+            var i = document.getElementById('document-status');
+            if (i) { i.insertAdjacentHTML('afterend', s); }
             else {
-                i = $('#introduction');
-                if (i.length > 0) { i.before(s); }
+                i = document.getElementById('introduction');
+                if (i) { i.insertAdjacentHTML('beforebegin', s); }
                 else {
-                    i = $('#prologue');
-                    if (i.length > 0) { i.before(s); }
+                    i = document.getElementById('prologue');
+                    if (i) { i.insertAdjacentHTML('beforebegin', s); }
                     else {
-                        i = $('#keywords');
-                        if (i.length > 0) { i.after(s); }
+                        i = document.getElementById('keywords');
+                        if (i) { i.insertAdjacentHTML('afterend', s); }
                         else {
-                            i = $('#categories-and-subject-descriptors');
-                            if (i.length > 0) { i.after(s); }
-                            else { $('#content').prepend(s); }
+                            i = document.getElementById('categories-and-subject-descriptors');
+                            if (i) { i.insertAdjacentHTML('afterend', s); }
+                            else { document.getElementById('content').insertAdjacentHTML('afterbegin', s); }
                         }
                     }
                 }
