@@ -1370,14 +1370,6 @@ var DO = {
             }
             contributors += '</ul>';
 
-//            var documentID = $('#document-identifier a');
-//            if (documentID.length > 0) {
-//                documentID = '<tr><th>Document ID</th><td>' + documentID.text() + '</td></tr>';
-//            }
-//            else {
-//                documentID = '';
-//            }
-
             var s = '<section id="document-metadata" class="do"><table>\n\
                 <caption>Document Metadata</caption>\n\
                 <tbody>\n\
@@ -2494,10 +2486,6 @@ var DO = {
             return a;
         },
 
-        openTarget: function() {
-            $(document).find("a.external").attr("target", "_blank");
-        },
-
         buildReferences: function() {
             if (!document.querySelector('#references ol')) {
                 //XXX: Not the best way of doing this, but it allows DO references to be added to the right place.
@@ -2575,17 +2563,24 @@ LIMIT 1";
         },
 
         highlightItems: function() {
-            var d = $(document);
-            d.on({
-                mouseenter: function () {
-                    var c = $(this).prop('class');
-                    d.find('*[class="'+ c +'"]').addClass('do highlight');
-                },
-                mouseleave: function () {
-                    var c = $(this).prop('class');
-                    d.find('*[class="'+ c +'"]').removeClass('do highlight');
-                }
-            }, '*[class*="highlight-"]');
+            var highlights = document.body.querySelectorAll('*[class*="highlight-"]');
+            for (var i = 0; i < highlights.length; i++) {
+                highlights[i].addEventListener('mouseenter', function(e) {
+                    var c = e.target.getAttribute('class');
+                    var highlightsX = document.body.querySelectorAll('*[class*="'+ c +'"]');
+                    for (var j = 0; j < highlightsX.length; j++) {
+                        highlightsX[j].classList.add('do', 'highlight');
+                    }
+                });
+
+                highlights[i].addEventListener('mouseleave', function(e) {
+                    var c = e.target.getAttribute('class');
+                    var highlightsX = document.body.querySelectorAll('*[class*="'+ c +'"]');
+                    for (var j = 0; j < highlightsX.length; j++) {
+                        highlightsX[j].classList.remove('do', 'highlight');
+                    }
+                });
+            }
         },
 
         hashCode: function(s){
@@ -4082,7 +4077,6 @@ $(document).ready(function() {
     DO.U.buttonClose();
     DO.U.highlightItems();
     DO.U.showDocumentInfo();
-//    DO.U.openTarget();
 //    DO.U.buildReferences();
 //    DO.U.getLinkedResearch();
     DO.U.showFragment();
