@@ -2651,25 +2651,26 @@ LIMIT 1";
         },
 
         showRefs: function() {
-            $('span.ref').each(function() {
+            var refs = document.querySelectorAll('span.ref');
+            for (var i = 0; i < refs.length; i++) {
 // console.log(this);
-                var ref = $(this).find('> mark[id]').get(0);
+                var ref = refs[i].querySelector('mark[id]');
 // console.log(ref);
-                var refId = $(ref).prop('id');
+                var refId = ref.id;
 // console.log(refId);
-                var refA = $(this).find('[class*=ref-] a');
+                var refA = refs[i].querySelector('[class*=ref-] a');
 // console.log(refA);
-                refA.each(function() {
-                    var noteIRI = $(this).prop('href');
+                for (var j = 0; j < refA.length; j++) {
+                    var noteIRI = refA[j].href;
 // console.log(noteIRI);
-                    var refLabel = $(this).text();
+                    var refLabel = refA[j].textContent;
 // console.log(refLabel);
 
                     //FIXME: the noteId parameter for positionNote shouldn't
                     //rely on refLabel. Grab it from somewhere else.
                     DO.U.positionNote(refId, refLabel, refLabel);
-                });
-            });
+                };
+            }
         },
 
         positionNote: function(refId, refLabel, noteId) {
