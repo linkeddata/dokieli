@@ -876,7 +876,7 @@ var DO = {
     ; as:actor <' + DO.C.User.IRI + '>\n\
 ';
 
-            if (licenseIRI != '') {
+            if (licenseIRI) {
                 data += '    ; schema:license <' + licenseIRI + '>\n\
 ';
             }
@@ -3909,7 +3909,7 @@ LIMIT 1";
                                         function(inbox) {
                                             if (inbox && inbox.length > 0) {
 // console.log('inbox: ' + inbox);
-                                                DO.U.notifyInbox(inbox, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', targetIRI).then(
+                                                DO.U.notifyInbox(inbox, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', targetIRI, opts.license).then(
                                                         function(response) {
 // console.log("Notification: " + response.xhr.getResponseHeader('Location'));
                                                         },
