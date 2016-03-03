@@ -106,7 +106,8 @@ var DO = {
             },
             "schemacitation": {
                 "@id": "https://schema.org/citation",
-                "@type": "@id"
+                "@type": "@id",
+                "@array": true
             },
 
             "dctermstitle": "http://purl.org/dc/terms/title",
