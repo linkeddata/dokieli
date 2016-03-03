@@ -873,8 +873,12 @@ var DO = {
     ; as:context <' + context + '>\n\
     ; as:target <' + target + '>\n\
     ; as:updated "' + DO.U.getDateTimeISO() + '"^^xsd:dateTime\n\
-    ; as:actor <' + DO.C.User.IRI + '>\n\
 ';
+
+            if (DO.C.User.IRI) {
+                data += '    ; as:actor <' + DO.C.User.IRI + '>\n\
+';
+            }
 
             if (licenseIRI) {
                 data += '    ; schema:license <' + licenseIRI + '>\n\
