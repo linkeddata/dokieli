@@ -1355,13 +1355,14 @@ var DO = {
         },
 
         showDocumentMetadata: function(node) {
-            var content = $('#content');
+            var content = document.getElementById('content');
             var count = DO.U.contentCount(content);
 
             var contributors = '<ul class="contributors">';
-            $('#authors *[rel*="contributor"]').each(function(i,contributor) {
-                contributors += '<li>' + $(this).html() + '</li>';
-            });
+            var relContributors = document.querySelectorAll('#authors *[rel*="contributor"]');
+            for (var i = 0; i < relContributors.length; i++) {
+                contributors += '<li>' + relContributors[i].innerHTML + '</li>';
+            }
             contributors += '</ul>';
 
 //            var documentID = $('#document-identifier a');
@@ -1386,14 +1387,15 @@ var DO = {
                 </tbody>\n\
             </table></section>';
 
-            $(node).append(s);
+            node.insertAdjacentHTML('beforeend', s);
         },
 
         contentCount: function(c) {
-            var content = c.text().trim();
+            var content = c.textContent.trim();
             var contentCount = { readingTime:1, words:0, chars:0, lines:0, pages:{A4:1, USLetter:1}, bytes:0 };
             if (content.length > 0) {
-                var linesCount = Math.ceil(c.height() / parseInt(c.css('line-height')));
+                var lineHeight = c.ownerDocument.defaultView.getComputedStyle(c, null)["line-height"];
+                var linesCount = Math.ceil(c.clientHeight / parseInt(lineHeight));
                 contentCount = {
                     readingTime: Math.ceil(content.split(' ').length / 200),
                     words: content.match(/\S+/g).length,
