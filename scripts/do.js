@@ -104,6 +104,10 @@ var DO = {
                 "@id": "https://schema.org/license",
                 "@type": "@id"
             },
+            "schemacitation": {
+                "@id": "https://schema.org/citation",
+                "@type": "@id"
+            },
 
             "dctermstitle": "http://purl.org/dc/terms/title",
 
