@@ -155,7 +155,7 @@ var DO = {
 
             "oaannotation": {
                 "@id": "http://www.w3.org/ns/oa#Annotation",
-                "@type": "id"
+                "@type": "@id"
             },
             "oahasBody": {
                 "@id": "http://www.w3.org/ns/oa#hasBody",
@@ -188,17 +188,17 @@ var DO = {
 
             "asobject": {
                 "@id": "http://www.w3.org/ns/activitystreams#object",
-                "@type": "id",
+                "@type": "@id",
                 "@array": true
             },
             "astarget": {
                 "@id": "http://www.w3.org/ns/activitystreams#target",
-                "@type": "id",
+                "@type": "@id",
                 "@array": true
             },
             "ascontext": {
                 "@id": "http://www.w3.org/ns/activitystreams#context",
-                "@type": "id",
+                "@type": "@id",
                 "@array": true
             },
 
