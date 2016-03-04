@@ -1649,14 +1649,17 @@ var DO = {
         },
 
         showFragment: function() {
-            $(document).on({
-                mouseenter: function () {
-                    if($('#'+this.id+' > .do.fragment').length == 0 && this.parentNode.nodeName.toLowerCase() != 'aside'){
+            var ids = document.querySelectorAll('#content *[id], #document-interactions *[id]');
+            for(var i = 0; i < ids.length; i++){
+                ids[i].addEventListener('mouseenter', function(e){
+                    console.log(e.target);
+                    var fragment = document.querySelector('#' + e.target.id + ' > .do.fragment');
+                    if (!fragment && e.target.parentNode.nodeName.toLowerCase() != 'aside'){
                         var sign;
-                        switch(this.nodeName.toLowerCase()) {
+                        switch(e.target.nodeName.toLowerCase()) {
                             default:        sign = '🔗'; break;
                             case 'section':
-                                switch (this.id) {
+                                switch (e.target.id) {
                                     default:                  sign = '§'; break;
                                     case 'references':        sign = '☛'; break;
                                     case 'acknowledgements':  sign = '☺'; break;
@@ -1676,21 +1679,22 @@ var DO = {
                             case 'audio':   sign = '🔊'; break;
                             case 'footer':  sign = '⸙'; break;
                         }
-                        $('#'+this.id).prepend('<span class="do fragment" style="height:' + this.clientHeight + 'px; "><a href="#' + this.id + '">' + sign + '</a></span>');
-                        var fragment = $('#'+this.id+' > .do.fragment');
-                        var fragmentClientWidth = fragment.get(0).clientWidth;
-                        fragment.css({
-                            'top': 'calc(' + Math.ceil($(this).position().top) + 'px)',
-                            'left': '-' + (fragmentClientWidth - 2) + 'px',
-                            'width': (fragmentClientWidth - 10) + 'px'
-                        });
+                        e.target.insertAdjacentHTML('afterbegin', '<span class="do fragment"><a href="#' + e.target.id + '">' + sign + '</a></span>');
+                        fragment = document.querySelector('#' + e.target.id + ' > .do.fragment');
+                        var fragmentClientWidth = fragment.clientWidth;
+
+                       fragment.style.top = Math.ceil(e.target.offsetTop) + 'px';
+                       fragment.style.left = '-' + (fragmentClientWidth - 2) + 'px';
+                       fragment.style.height = e.target.clientHeight + 'px';
+                       fragment.style.width = (fragmentClientWidth - 10) + 'px';
                     }
-                },
-                mouseleave: function () {
-                    $('#'+this.id+' > .do.fragment').remove();
-                    $('#'+this.id).filter('[class=""]').removeAttr('class');
-                }
-            }, '#content *[id], #document-interactions *[id]');
+                });
+
+                ids[i].addEventListener('mouseleave', function(e){
+                    var fragment = document.querySelector('#' + e.target.id + ' > .do.fragment');
+                    fragment.parentNode.removeChild(fragment);
+                });
+            }
         },
 
         forceTrailingSlash: function(aString) {
