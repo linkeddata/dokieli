@@ -11,7 +11,6 @@
         <link rel="stylesheet" href="media/css/editor.css" media="all" />
         <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
         <script src="scripts/simplerdf.js"></script>
-        <script src="scripts/html.sortable.min.js"></script>
         <script src="scripts/medium-editor.min.js"></script>
         <script src="scripts/medium-editor-tables.min.js"></script>
         <script src="scripts/do.js"></script>
