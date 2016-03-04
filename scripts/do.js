@@ -3079,9 +3079,6 @@ LIMIT 1";
 
                     DO.C.EditorEnabled = true;
                     return DO.U.Editor.MediumEditor;
-            //            $('.editable').mediumInsert({
-            //                editor: editor
-            //            });
                 }
             },
 
@@ -4027,7 +4024,7 @@ LIMIT 1";
     } //DO.U
 }; //DO
 
-$(document).ready(function() {
+document.addEventListener('DOMContentLoaded', function(){
 //    DO.U.initStorage('html');
 //    DO.U.setDocRefType();
     DO.U.showRefs();
