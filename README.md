@@ -102,8 +102,6 @@ interactions. We intended to further cut down on the dependent libraries as we
 work out the optimizations.
 
 * [jQuery Core](http://jquery.com/) (MIT License)
-* [html5sortable](https://github.com/voidberg/html5sortable) (MIT License)
-* [Shower](https://github.com/shower/shower) (MIT License) used for slideshows
 * [SimpleRDF](https://github.com/nicola/simplerdf) (MIT License) used for RDF
 * [Font Awesome](https://github.com/FortAwesome/Font-Awesome) (SIL OFL 1.1 / MIT License)
 * [MediumEditor](https://gitter.im/yabwe/medium-editor) (MIT License)
