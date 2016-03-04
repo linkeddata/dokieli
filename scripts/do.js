@@ -36,7 +36,7 @@ var DO = {
         EnableStorageButtons: '<button class="local-storage-enable-html">Enable</button>',
         CDATAStart: '//<![CDATA[',
         CDATAEnd: '//]]>',
-        SortableList: !!document.querySelector('head script[src$="html.sortable.min.js"]'),
+        SortableList: false,
         EditorAvailable: !!document.querySelector('head script[src$="medium-editor.min.js"]'),
         EditorEnabled: false,
         Editor: {
@@ -1435,56 +1435,6 @@ var DO = {
         },
 
         sortToC: function() {
-            $('.sortable').sortable({
-                connectWith: '.connected'
-            });
-
-            $('.sortable').sortable().bind('sortupdate', function(e, ui) {
-//ui.item contains the current dragged element.
-//ui.item.index() contains the new index of the dragged element
-//ui.oldindex contains the old index of the dragged element
-//ui.startparent contains the element that the dragged item comes from
-//ui.endparent contains the element that the dragged item was added to
-
-//console.log(ui);
-//console.log(ui.item);
-//console.log(ui.startparent);
-//console.log(ui.oldindex);
-//console.log(ui.endparent);
-//console.log(ui.item.index());
-
-                var id  = $(ui.item).attr('data-id');
-                var node = $('#' + id);
-
-                var endParentId = $(ui.endparent).parent().attr('data-id') || 'content';
-                var endParent = $('#' + endParentId);
-                var endParentHeading = endParent.find('> :header');
-                endParentHeading = (endParentHeading.length > 0) ? parseInt(endParentHeading.prop("tagName").substring(1)) : 1;
-                var afterNode = (endParentHeading == 1) ? endParent.find('> section:nth-of-type(' + ui.item.index() +')')  : endParent.find('*:nth-of-type(1) > section:nth-of-type(' + ui.item.index() +')');
-
-                var aboutContext = (endParentId == 'content') ? '' : '#' + endParentId;
-//                node.attr('about', '[this:' + aboutContext +']');
-
-                var nodeDetached = node.detach();
-
-                var nodeDetachedHeading = nodeDetached.find('> :header');
-                nodeDetachedHeading = (nodeDetachedHeading.length > 0) ? parseInt(nodeDetachedHeading.prop("tagName").substring(1)) : 1;
-
-                var nH = (endParentHeading + 1) - nodeDetachedHeading;
-                nodeDetached.find(':header:nth-of-type(1)').each(function(i, heading) {
-                    var oldHeadingIndex = parseInt($(heading).prop("tagName").substring(1));
-                    var newHeadingIndex = oldHeadingIndex + nH;
-
-                    var newHeading = $('<h' + newHeadingIndex + '></h' + newHeadingIndex + '>');
-                    $.each(heading.attributes, function(index) {
-                        $(newHeading).attr(heading.attributes[index].name, heading.attributes[index].value);
-                    });
-                    $(newHeading).html($(heading).html());
-                    $(heading).after(newHeading).remove();
-                });
-
-                afterNode.after(nodeDetached);
-            });
         },
 
         getListOfSections: function(sections, sortable) {
@@ -1608,8 +1558,6 @@ var DO = {
         buttonClose: function() {
             document.addEventListener('click', function(e) {
                 if (e.target.matches('button.close')) {
-                    console.log(e.target);
-                    console.log(e.target.parentNode);
                     var parent = e.target.parentNode;
                     parent.parentNode.removeChild(parent);
                 }
