@@ -11,7 +11,7 @@ Research](https://linkedresearch.org/) initiative and principles,
 and provides features and interactions for scholarly communication.
 
 dokieli's architecture is progressively enhanced such that articles are
-accessible anywhere from a Line Mode Browser to Firefox Nightly. Articles and
+accessible anywhere from a text-browser to Firefox Nightly. Articles and
 annotations can be `curl`ed and dereferenced to get the complete content in HTML
 and RDF. Articles can be authored both online and offline.
 
@@ -97,11 +97,9 @@ write, e.g., your co-authors, or reviewers.
 your Web browser and edit. You have the option to export the document or use
 the Web browser's native local storage.
 
-The libraries listed below are *optional* and progressivel enhance the
-interactions. We intended to further cut down on the dependent libraries as we
-work out the optimizations.
+The libraries listed below are *optional* and progressively enhance the
+interactions.
 
-* [jQuery Core](http://jquery.com/) (MIT License)
 * [SimpleRDF](https://github.com/nicola/simplerdf) (MIT License) used for RDF
 * [Font Awesome](https://github.com/FortAwesome/Font-Awesome) (SIL OFL 1.1 / MIT License)
 * [MediumEditor](https://gitter.im/yabwe/medium-editor) (MIT License)
