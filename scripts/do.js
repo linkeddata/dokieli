@@ -1606,7 +1606,14 @@ var DO = {
         },
 
         buttonClose: function() {
-            $(document).on('click', 'button.close', function(e) { $(this).parent().remove(); });
+            document.addEventListener('click', function(e) {
+                if (e.target.matches('button.close')) {
+                    console.log(e.target);
+                    console.log(e.target.parentNode);
+                    var parent = e.target.parentNode;
+                    parent.parentNode.removeChild(parent);
+                }
+            });
         },
 
         eventEscapeDocumentMenu: function(e) {
@@ -1652,7 +1659,6 @@ var DO = {
             var ids = document.querySelectorAll('#content *[id], #document-interactions *[id]');
             for(var i = 0; i < ids.length; i++){
                 ids[i].addEventListener('mouseenter', function(e){
-                    console.log(e.target);
                     var fragment = document.querySelector('#' + e.target.id + ' > .do.fragment');
                     if (!fragment && e.target.parentNode.nodeName.toLowerCase() != 'aside'){
                         var sign;
