@@ -32,8 +32,8 @@ var DO = {
         UseStorage: false,
         AutoSaveId: '',
         AutoSaveTimer: 60000,
-        DisableStorageButtons: '<button class="local-storage-disable-html">Disable</button>',
-        EnableStorageButtons: '<button class="local-storage-enable-html">Enable</button>',
+        DisableStorageButtons: '<button class="local-storage-disable-html"><i class="fa fa-database fa-2x"></i>Local Storage</button>',
+        EnableStorageButtons: '<button class="local-storage-enable-html"><i class="fa fa-database fa-2x"></i>Local Storage</button>',
         CDATAStart: '//<![CDATA[',
         CDATAEnd: '//]]>',
         SortableList: false,
@@ -42,8 +42,8 @@ var DO = {
         Editor: {
             headings: ["h1", "h2", "h3", "h4", "h5", "h6"],
             regexEmptyHTMLTags: /<[^\/>][^>]*><\/[^>]+>/gim,
-            DisableEditorButton: '<button class="editor-disable">Read</button>',
-            EnableEditorButton: '<button class="editor-enable">Edit</button>'
+            DisableEditorButton: '<button class="editor-disable"><i class="fa fa-pencil fa-2x"></i>Edit</button>',
+            EnableEditorButton: '<button class="editor-enable"><i class="fa fa-pencil fa-2x"></i>Edit</button>'
         },
         ContextLength: 32,
         InteractionPath: 'i/',
@@ -920,11 +920,11 @@ var DO = {
         //TODO: Refactor
         showUserSigninSignup: function(node) {
             if (typeof SimpleRDF !== 'undefined') {
-                var s = '<button class="signin-user">Sign in</button>';
+                var s = '<button class="signin-user"><i class="fa fa-user-secret fa-2x"></i>Sign in</button>';
                 if(DO.C.User.IRI) {
                     s = DO.U.getUserHTML();
                 }
-                node.insertAdjacentHTML('beforeend', '<p id="user-signin-signup">' + s + '</p>');
+                node.insertAdjacentHTML('beforeend', '<p id="user-info">' + s + '</p>');
 
                 var su = document.querySelector('#document-menu button.signin-user');
                 if(su) {
@@ -1016,7 +1016,7 @@ var DO = {
                         DO.U.setUserInfo(i).then(
                             function(i) {
 // console.log(i);
-                                document.getElementById('user-signin-signup').innerHTML = DO.U.getUserHTML();
+                                document.getElementById('user-info').innerHTML = DO.U.getUserHTML();
                             },
                             function(reason) {
                                 console.log(reason);
@@ -1051,15 +1051,16 @@ var DO = {
             var dInfo = dMenu.querySelector('div');
 
             dMenuButton.classList.remove('show');
+            dMenuButton.classList.add('hide');
             dMenuButton.setAttribute('title', 'Hide Menu');
             dMenu.classList.add('on');
             body.classList.add('on-document-menu');
 
             DO.U.showUserSigninSignup(dHead);
             DO.U.showDocumentDo(dInfo);
-            DO.U.showViews(dInfo);
             DO.U.showEmbedData(dInfo);
             DO.U.showStorage(dInfo);
+            DO.U.showViews(dInfo);
             DO.U.showDocumentMetadata(dInfo);
             if(!body.classList.contains('on-slideshow')) {
                 DO.U.showToC();
@@ -1075,7 +1076,7 @@ var DO = {
             var dMenu = document.querySelector('#document-menu.do');
             var dMenuButton = dMenu.querySelector('button');
 
-            var uss = dMenu.querySelector('#user-signin-signup');
+            var uss = dMenu.querySelector('#user-info');
             uss.parentNode.removeChild(uss);
             dMenu.classList.remove('on');
             var sections = dMenu.querySelectorAll('section');
@@ -1109,7 +1110,8 @@ var DO = {
             var stylesheets = document.querySelectorAll('head link[rel~="stylesheet"][title]:not([href$="do.css"])');
 
             if (stylesheets.length > 1) {
-                var s = '<section id="views" class="do"><h2>Views</h2><ul>';
+                var s = '<section id="views" class="do"><h2>Views</h2><i class="fa fa-magic"></i><ul>';
+                s += '<li><button>Native</button></li>';
                 for (var i = 0; i < stylesheets.length; i++) {
                     var stylesheet = stylesheets[i];
                     var view = stylesheet.getAttribute('title');
@@ -1120,7 +1122,6 @@ var DO = {
                         s += '<li><button disabled="disabled">' + view + '</button></li>';
                     }
                 }
-                s += '<li><button>Native</button></li>';
                 s += '</ul></section>';
 
                 node.insertAdjacentHTML('beforeend', s);
@@ -1203,7 +1204,7 @@ var DO = {
         },
 
         showEmbedData: function(node) {
-            node.insertAdjacentHTML('beforeEnd', '<section id="embed-data-in-html" class="do"><h2>Data</h2><ul><li><button class="embed-data-meta">Embed</button></li></ul></section>');
+            node.insertAdjacentHTML('beforeend', '<section id="embed-data-in-html" class="do"><h2>Data</h2><ul><li><button class="embed-data-meta"><i class="fa fa-table fa-2x"></i>Embed</button></li></ul></section>');
 
             var eventEmbedData = function(e) {
                 e.target.setAttribute('disabled', 'disabled');
@@ -1798,15 +1799,15 @@ var DO = {
             }
 
             var s = '<section id="document-do" class="do"><h2>Do</h2><ul>';
+            s += '<li><button class="resource-new"'+buttonDisabled+'><i class="fa fa-paper-plane-o fa-2x"></i>New</button></li>';
+            s += '<li><button class="resource-save"'+buttonDisabled+'><i class="fa fa-life-ring fa-2x"></i>Save</button></li>';
+            s += '<li><button class="resource-save-as"><i class="fa fa-clone fa-2x"></i>Save As</button></li>';
             if (DO.C.EditorAvailable) {
                 var editFile = (DO.C.EditorEnabled) ? DO.C.Editor.DisableEditorButton : DO.C.Editor.EnableEditorButton;
                 s += '<li>' + editFile + '</li>';
             }
-            s += '<li><button class="resource-new"'+buttonDisabled+'>New</button></li>';
-            s += '<li><button class="resource-save"'+buttonDisabled+'>Save</button></li>';
-            s += '<li><button class="resource-save-as">Save As</button></li>';
-            s += '<li><button class="resource-export">Export</button></li>';
-            s += '<li><button class="resource-print">Print</button></li>';
+            s += '<li><button class="resource-export"><i class="fa fa-external-link fa-2x"></i>Export</button></li>';
+            s += '<li><button class="resource-print"><i class="fa fa-print fa-2x"></i>Print</button></li>';
             s += '</ul></section>';
             node.insertAdjacentHTML('beforeend', s);
 
@@ -2379,7 +2380,7 @@ var DO = {
                     if (DO.C.AutoSaveId) {
                         checked = ' checked="checked"';
                     }
-                    useStorage = DO.C.DisableStorageButtons + ' | <input id="local-storage-html-autosave" class="autosave" type="checkbox"' + checked +' /> <label for="local-storage-html-autosave">Autosave ⏲ 1m</label>';
+                    useStorage = DO.C.DisableStorageButtons + '<input id="local-storage-html-autosave" class="autosave" type="checkbox"' + checked +' /> <label for="local-storage-html-autosave"><i class="fa fa-clock-o"></i> 1m autosave</label>';
                 }
                 else {
                     useStorage = DO.C.EnableStorageButtons;
@@ -2399,7 +2400,6 @@ var DO = {
                     }
 
                     if (e.target.matches('input.autosave')) {
-                        console.log(e.target.checked);
                         if (e.target.getAttribute('checked')) {
                             e.target.removeAttribute('checked');
                             DO.U.disableAutoSave('html');
