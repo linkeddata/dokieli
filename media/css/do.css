@@ -167,13 +167,6 @@ background-color:#eee;
 margin:0;
 padding:0;
 }
-#document-menu > div {
-clear:both;
-float:left;
-width:100%;
-}
-#document-menu section {
-}
 #document-menu section h2 {
 display:none;
 }
@@ -193,6 +186,13 @@ margin:0;
 .signin-user {
 width:33%;
 height:5em;
+}
+#user-info > span {
+margin-left:1.75em;
+float:left;
+}
+#user-info img {
+display:block;
 }
 
 #document-menu p {
