@@ -208,21 +208,21 @@ hyphens:none;
 }
 
 h1,h2,h3,h4, strong, dt, figcaption:before, caption:before, #subtitle {
-font-family: "CMUSerif-Bold", serif !important;
+font-family: "CMUSerif-Bold", serif;
 }
 h5,h6, em, cite, dfn, address {
-font-family: "CMUSerif-Italic", serif !important;
+font-family: "CMUSerif-Italic", serif;
 }
 h1 em, h2 em, h3 em, h4 em, dt dfn {
-font-family: "CMUSerif-BoldItalic", serif !important;
+font-family: "CMUSerif-BoldItalic", serif;
 }
 section article h1,
 section article h2,
 section article h3 {
-font-family:"CMUSerif-Roman", serif !important;
+font-family:"CMUSerif-Roman", serif;
 }
 code, code strong, samp, samp strong pre, kbd, button {
-font-family: "CMUTypewriter-Regular", monospace !important;
+font-family: "CMUTypewriter-Regular", monospace;
 }
 code strong, samp strong {
 font-weight:bold;
@@ -513,7 +513,7 @@ font-size:0.923em;
 
 #author-email,
 #author-uri {
-font-family: "CMUTypewriter-Regular", monospace !important;
+font-family: "CMUTypewriter-Regular", monospace;
 font-size:0.923em;
 }
 
@@ -720,7 +720,7 @@ display:inline;
 content: ",\0020";
 }
 .pages dt {
-font-family: "CMUSerif-Roman" !important;
+font-family: "CMUSerif-Roman";
 margin-right: 0.5em;
 text-transform: lowercase;
 }
