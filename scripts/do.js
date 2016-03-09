@@ -157,6 +157,10 @@ var DO = {
                 "@id": "http://www.w3.org/ns/solid/terms#Notification",
                 "@type": "@id"
             },
+            "solidtemplate": {
+                "@id": "http://www.w3.org/ns/solid/terms#template",
+                "@type": "@id"
+            },
 
             "oaannotation": {
                 "@id": "http://www.w3.org/ns/oa#Annotation",
@@ -1058,6 +1062,7 @@ var DO = {
 
             DO.U.showUserSigninSignup(dHead);
             DO.U.showDocumentDo(dInfo);
+            DO.U.showTemplating(dInfo);
             DO.U.showEmbedData(dInfo);
             DO.U.showStorage(dInfo);
             DO.U.showViews(dInfo);
@@ -1085,7 +1090,7 @@ var DO = {
             dMenuButton.classList.add('show');
             dMenuButton.setAttribute('title', 'Open Menu');
 
-            var removeElementsList = ['toc', 'embed-data-entry', 'create-new-document', 'save-as-document', 'user-identity-input', 'resource-browser'];
+            var removeElementsList = ['toc', 'embed-data-entry', 'create-new-document', 'save-as-document', 'set-template', 'user-identity-input', 'resource-browser'];
             removeElementsList.forEach(function(id) {
                 var element = document.getElementById(id);
                 if(element) {
@@ -1200,7 +1205,243 @@ var DO = {
                 }
             }
         },
+        
+        showTemplating: function(node){
+            node.insertAdjacentHTML('beforeEnd', '<section id="templating" class="do"><h2>Templates</h2><ul><li><button class="choose-template"><i class="fa fa-flask fa-2x"></i>Set Template</button></li></ul></section>');
+            document.querySelector('#templating.do button').addEventListener('click', function(e){
+                DO.U.setTemplate();
+                e.target.setAttribute('disabled', 'disabled');
+            });
+        },
+        
+        getTemplateURL: function(articleHTML){
+            // Assuming it's in a solid:template relation in the articleHTML.
+            return new Promise(function(resolve, reject) {
+              
+                SimpleRDF.parse(articleHTML, 'text/html', document.location.href).then(
+                    function(i) {
+                //      console.log(i);
+                        var g = SimpleRDF(DO.C.Vocab, document.location.href);
+                        g.graph(i);
+                //      console.log(g.toString());
+                        var s = g.child(document.location.href);
+                        if(typeof s.solidtemplate !== 'undefined'){
+                            console.log(s.solidtemplate);
+                            return resolve(s.solidtemplate);
+                        }else{
+                            console.log('Not found');
+                            return reject();
+                        }
+                    },
+                    function(reason) {
+                        console.log('Error parsing');
+                        return reject(reason);
+                    }
+                );
+            });
+        },
+        
+        setTemplate: function(){
+            document.querySelector('body').insertAdjacentHTML('beforeEnd', '<aside id="set-template" class="do on"><button class="close">❌</button><h2>Set Template</h2></aside>');
+            
+            var templateBox = document.getElementById('set-template');
+            templateBox.querySelector('button.close').addEventListener('click', function(e) {
+                document.querySelector('#templating .choose-template').removeAttribute('disabled');
+            });
+            
+            DO.U.setupResourceBrowser(templateBox);
+            document.getElementById('browser-location').insertAdjacentHTML('afterBegin', '<p>Choose a template for this article.</p>');
+            document.getElementById('browser-location-input').focus();
+            document.getElementById('browser-location-input').placeholder = 'https://example.org/path/to/template.html';
+            
+            DO.U.getTemplateURL(DO.U.getDocument()).then(
+                function(templateURL){
+                    var templatePath = templateURL.split('/');
+                    templatePath.pop();
+                    var templateContainer = DO.U.forceTrailingSlash(templatePath.join('/')); // TODO: load resource browser at this location
+                    document.getElementById('browser-location-input').value = templateContainer;
+                    var name = templateURL; /// TODO: get template name from source
+                    document.getElementById('browser-location').insertAdjacentHTML('beforeEnd', '<p>Current template: <a href="' + templateURL + '">' + name + '</a></p>');
+                },
+                function(i){
+                    console.log('Didn\'t get template URI');
+                    console.log(i);
+                }
+            );
+            
+            templateBox.insertAdjacentHTML('beforeEnd', '<p><button class="create" disabled="disabled">Use</button></p>');
+            
+            templateBox.querySelector('button.create').addEventListener('click', function(){
+                var url = templateBox.querySelector('#browser-location-input').value;
+                DO.U.getResource(url).then(
+                    function(got){
+                        DO.U.buildWithTemplate(got.xhr.response).then(
+                            function(r){
+                                var html = document.implementation.createHTMLDocument('html');
+                                html.documentElement.innerHTML = r.article;
+                                document.replaceChild(html.documentElement, document.documentElement);
+                                DO.U.showDocumentInfo();
+                                DO.U.setTemplate();
+                                DO.U.getTemplateURL(r.article).then(
+                                    function(templateURL){
+                                        DO.U.confirmTemplate(templateURL, r.template, document.location.href, r.article, document.getElementById('set-template'));
+                                    },
+                                    function(fail){
+                                        // Temporary hack for Chrome
+                                        DO.U.confirmTemplate(url, r.template, document.location.href, r.article, document.getElementById('set-template'));
+                                        //document.getElementById('set-template').insertAdjacentHTML('beforeEnd', '<p class="error">Could not get template</p>');
+                                    }
+                                );
+                            },
+                            function(r){
+                                console.log('Failed to build');
+                                console.log(r);
+                                document.getElementById('set-template').insertAdjacentHTML('beforeEnd', '<p class="error">Failed to build: ' + r + '</p>');
+                            }
+                        );
+                    },
+                    function(r){
+                        console.log(r);
+                        document.getElementById('set-template').insertAdjacentHTML('beforeEnd', '<p class="error">Could not get template (' + r.status + ': ' + r.xhr.statusText + ')</p>');
+                    }
+                );
+            }, false);
+            
+            templateBox.querySelector('#browser-location-input').addEventListener('keyup', function(e){
+                if (e.target.value.length > 10 && e.target.value.match(/^https?:\/\//g) && e.target.value.slice(-1) != "/") {
+                    templateBox.querySelector('button.create').removeAttribute('disabled');
+                }else{
+                    templateBox.querySelector('button.create').setAttribute('disabled', 'disabled');
+                }
+            }, false);
+            
+            templateBox.querySelector('#browser-ul').addEventListener('click', function(e){
+                if (e.target.value.length > 10 && e.target.value.match(/^https?:\/\//g) && e.target.value.slice(-1) != "/") {
+                    templateBox.querySelector('button.create').removeAttribute('disabled');
+                }else{
+                    templateBox.querySelector('button.create').setAttribute('disabled', 'disabled');
+                }
+            });
+            
+        },
+        
+        buildWithTemplate: function(templateHTML){
+            return new Promise(function(resolve, reject){
 
+                var template = document.implementation.createHTMLDocument("template");
+                template.documentElement.innerHTML = templateHTML;
+                if(template.querySelector('#do-template-script')){
+                    var article = document.cloneNode(true);
+                    // * get stuff to put into template
+                    var main = article.querySelector('main');
+                    if(main){
+                        var title = article.querySelector('title');
+                        // * replace put into template
+                        template.querySelector('#do-template-script').remove();
+                        template.querySelector('main').innerHTML = main.innerHTML;
+                        template.querySelector('title').textContent = title.textContent;
+                        var html_out = DO.U.getDocument(template);
+                        if(!html_out || html_out.length < 1){
+                            return reject('Error building html');
+                        }
+                        return resolve({template: templateHTML, article: html_out});
+                    }else{
+                      return reject('This template does not have a <main>');
+                    }
+                }else{
+                    return reject('This is not a template.');
+                }
+            });
+        },
+        
+        confirmTemplate: function(templateURL, templateHTML, articleURL, articleHTML, node){
+            node.insertAdjacentHTML('beforeEnd', '<p>Previewing: <a href="' + templateURL + '">' + templateURL + '</a></p><p>Warning: article template will not be updated until you confirm!</p>');
+            node.insertAdjacentHTML('beforeEnd', '<p><button class="save">CONFIRM</button> <button class="cancel">Cancel</button></p>');
+            
+            node.querySelector('button.save').addEventListener('click', function(e){
+                DO.U.putResource(articleURL, articleHTML).then(
+                    function(r){
+                        document.getElementById('set-template').insertAdjacentHTML('beforeEnd', '<p class="success">Article saved!</p>');
+                        var article = document.implementation.createHTMLDocument("article");
+                        article.documentElement.innerHTML = articleHTML;
+                        var articleName = article.querySelector('h1').textContent;
+                        node.querySelector('button.save').remove();
+                        node.querySelector('button.cancel').remove();
+                        DO.U.addToTemplate(templateURL, templateHTML, r.xhr.responseURL, articleName);
+                    },
+                    function(r){
+                        var error = '<p class="error">Could not save: ';
+                        switch(r.status){
+                            default:
+                                error += "for unknown reasons ("+r.statusText+")";
+                                break;
+                            case 405:
+                                error += "article not writeable";
+                                break;
+                            case 404:
+                                error += "article not found";
+                                break;
+                            case 401: case 403:
+                                error += "not authorised to write to this article";
+                                break;
+                        }
+                        error += "</p>";
+                        node.insertAdjacentHTML('beforeEnd', error);
+                    }
+                );
+            });
+            node.querySelector('button.cancel').addEventListener('click', function(e){
+                document.location.reload();
+            });
+        },
+        
+        addToTemplate: function(templateURL, templateHTML, articleURL, articleName){
+            var template = document.implementation.createHTMLDocument("template");
+            template.documentElement.innerHTML = templateHTML;
+            console.log(template);
+            var a = template.querySelector('[href="' + articleURL + '"]');
+            var ul = template.querySelector('main ul');
+            if(!ul || typeof ul === "undefined"){
+                template.querySelector('main').appendChild(document.createElement('ul'));
+            }
+            if(!a || typeof a === "undefined"){
+                template.querySelector('main ul').insertAdjacentHTML('beforeEnd', '<li><a href="' + articleURL + '">' + articleName + '</a><time></time></li>');
+                var li = template.querySelector('[href="' + articleURL + '"]').parentNode;
+            }else{
+                var li = a.parentNode;
+            }
+            time = new Date();
+            time = time.toUTCString();
+            li.querySelector('time').textContent = ' (' + time + ')';
+            li.querySelector('time').setAttribute('datetime', time);
+            DO.U.putResource(templateURL, DO.U.getDocument(template)).then(
+                function(r){
+                    console.log('template put success');
+                    document.getElementById('set-template').insertAdjacentHTML('beforeEnd', '<p class="success">Template updated</p>');
+                },
+                function(r){
+                    console.log('template put fail');
+                    var error = '<p class="error">Could not save: ';
+                        switch(r.status){
+                            default:
+                                error += "for unknown reasons ("+r.statusText+")";
+                                break;
+                            case 405:
+                                error += "template not writeable";
+                                break;
+                            case 404:
+                                error += "template not found";
+                                break;
+                            case 401: case 403:
+                                error += "not authorised to write to this template";
+                                break;
+                        }
+                        error += "</p>";
+                        document.getElementById('set-template').insertAdjacentHTML('beforeEnd', error);
+                }
+            );
+        },
+        
         showEmbedData: function(node) {
             node.insertAdjacentHTML('beforeend', '<section id="embed-data-in-html" class="do"><h2>Data</h2><ul><li><button class="embed-data-meta" title="Embed structured data (Turtle, JSON-LD, TRiG)"><i class="fa fa-table fa-2x"></i>Embed Data</button></li></ul></section>');
 
@@ -1926,7 +2167,7 @@ var DO = {
         },
 
         generateBrowserList: function(g, url) {
-
+  
             return new Promise(function(resolve, reject){
 
               document.getElementById('browser-location-input').value = url;

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Linked Research</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <style type="text/css">
+          body { border: 0; margin: 0; font-family: Arial, sans-serif; }
+          header { background-image: url('media/banner.jpg'); }
+          header, footer { background-color: #2d2d2d; overflow: hidden; }
+          header address { float: left; padding: 0.4em; color: #fff; }
+          nav { color: #fff; font-family: Arial, sans-serif; float: left; }
+          nav ul { list-style-type: none; overflow: hidden; padding: 0; margin: 0; margin-top: 1.5em; }
+          nav li { float: left; padding: 0; margin: 0; }
+          nav ul a { color: inherit; text-decoration: none; font-weight: bold; display: inline-block; padding: 0.4em; }
+          nav ul a:hover { text-decoration: underline; }
+          #holder { width: 80%; margin-left: auto; margin-right: auto; }
+          h1 { font-family: Serif; text-align: center; font-weight: normal; font-size: 3em; }
+          a, a:visited { color: inherit; }
+          footer { padding: 0.4em; color: #ccc; }
+        </style>
+        <link href="https://dokie.li/media/css/lncs.css" media="all" rel="stylesheet alternate" title="LNCS" />
+        <link href="https://dokie.li/media/css/acm.css" media="all" rel="stylesheet alternate" title="ACM" />
+        <link href="https://dokie.li/media/css/do.css" rel="stylesheet" media="all" />
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet" media="all" />
+        <link href="https://dokie.li/media/css/editor.css" rel="stylesheet" media="all" />
+        <script src="https://dokie.li/scripts/simplerdf.js"></script>
+        <script src="https://dokie.li/scripts/medium-editor.min.js"></script>
+        <script src="https://dokie.li/scripts/medium-editor-tables.min.js"></script>
+        <script src="scripts/do.js"></script>
+        <script src="scripts/do.template.js" id="do-template-script"></script>
+    </head>
+
+    <body about="" typeof="schema:CreativeWork sioc:Post prov:Entity" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# cc: http://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# schema: http://schema.org/ rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# org: http://www.w3.org/ns/org# biblio: http://purl.org/net/biblio# bibo: http://purl.org/ontology/bibo/ book: http://purl.org/NET/book/vocab# ov: http://open.vocab.org/terms/ doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# sterms: http://www.w3.org/ns/solid/terms#">
+        <header>
+            <address about="#i" typeof="schema:Organization">
+                <a href="/" property="schema:name" rel="schema:url"><object data="https://linkedresearch.org/media/images/linkedresearch.svg" height="64" rel="schema:image" resource="https://linkedresearch.org/media/images/linkedresearch.svg" type="image/svg+xml" width="64"><span property="schema:name" content="Linked Research"></span></object></a>
+            </address>
+            <nav>
+                <ul>
+                    <li><a href="articles">Articles</a></li>
+                    <li><a href="faq">FAQ</a></li>
+                    <li><a href="resources">Resources</a></li>
+                    <li><a href="https://github.com/linkedresearch">Contribute</a></li>
+                    <li><a href="https://gitter.im/linkedresearch">Chat</a></li>
+                </ul>
+            </nav>
+        </header>
+        <div id="holder">
+            <main>
+                <h1 property="schema:name">Sample template</h1>
+            </main>
+        </div>
+        <footer>
+            <p>This is the <a href="https://rhiarobot.databox.me/templates/template" rel="sterms:template">Sample Template</a></p>
+        </footer>
+    </body>
+</html>

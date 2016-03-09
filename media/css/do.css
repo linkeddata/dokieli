@@ -408,7 +408,7 @@ max-height: 16em;
 margin:1em 0;
 }
 #browser-contents ul {
-margin:0;
+margin:0; padding:0;
 }
 #browser-contents ul input[type="radio"] {
 display: none;
