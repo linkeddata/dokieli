@@ -76,7 +76,9 @@ aside.do.on:not([id="toc"]) {
 left: 50%;
 transform: translate(-50%, 0);
 }
-
+aside.do.on a {
+word-wrap:break-word;
+}
 aside.do input {
 padding: 0.2em;
 }
@@ -92,6 +94,7 @@ aside.note:after {
 width:auto;
 position:static;
 }
+
 
 #document-editor {
 position:static;
