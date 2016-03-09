@@ -160,6 +160,7 @@ font-weight:normal;
 #document-menu #user-info button:hover,
 #document-menu section button:hover {
 background-color:#eee;
+cursor:pointer;
 }
 
 #document-menu ul,
