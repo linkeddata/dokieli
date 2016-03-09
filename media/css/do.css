@@ -137,7 +137,9 @@ display:block;
 
 #document-menu > header,
 #document-menu > div,
-#document-menu > footer {
+#document-menu > footer,
+#document-menu #views,
+#document-menu #document-metadata {
 clear:both;
 float:left;
 width:100%;
@@ -244,9 +246,6 @@ margin-right:1em;
 
 #document-menu #views {
 margin:2em 0;
-clear:both;
-float:left;
-width:100%;
 }
 
 #document-menu li {
