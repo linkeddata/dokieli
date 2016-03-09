@@ -40,8 +40,8 @@ menu.do,
 aside.do {
 position:fixed;
 z-index:8;
-max-height:calc(100% - 4em);
-background:#fff;
+max-height:90%;
+background-color:#fff;
 font-size:0.8em;
 margin:0;
 }
@@ -141,6 +141,7 @@ display:block;
 clear:both;
 float:left;
 width:100%;
+background-color:#fff;
 }
 
 #document-menu header button,
