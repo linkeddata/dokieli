@@ -1110,7 +1110,7 @@ var DO = {
             var stylesheets = document.querySelectorAll('head link[rel~="stylesheet"][title]:not([href$="do.css"])');
 
             if (stylesheets.length > 1) {
-                var s = '<section id="views" class="do"><h2>Views</h2><i class="fa fa-magic"></i><ul>';
+                var s = '<section id="document-views" class="do"><h2>Views</h2><i class="fa fa-magic"></i><ul>';
                 s += '<li><button>Native</button></li>';
                 for (var i = 0; i < stylesheets.length; i++) {
                     var stylesheet = stylesheets[i];
@@ -1126,7 +1126,7 @@ var DO = {
 
                 node.insertAdjacentHTML('beforeend', s);
 
-                var viewButtons = document.querySelectorAll('#views.do button');
+                var viewButtons = document.querySelectorAll('#document-views.do button');
                 for (var i = 0; i < viewButtons.length; i++) {
                     viewButtons[i].addEventListener('click', function(e) {
                         var selected = e.target;
@@ -1145,7 +1145,7 @@ var DO = {
                             }
                         };
 
-                        var bd = document.querySelectorAll('#views.do button:disabled');
+                        var bd = document.querySelectorAll('#document-views.do button:disabled');
                         for(var j = 0; j < bd.length; j++) {
                             bd[j].disabled = false;
                         }
