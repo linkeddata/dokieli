@@ -425,6 +425,7 @@ line-height:1;
 font-family:sans-serif;
 padding:0.25em;
 z-index:9;
+hyphens:auto;
 }
 
 button.close {
