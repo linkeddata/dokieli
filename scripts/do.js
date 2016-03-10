@@ -233,7 +233,7 @@ var DO = {
                             function(i) {
                                 resolve(i);
                             },
-                            function(reject) {
+                            function(reason) {
                                 DO.U.authenticateUserFallback(url, '', reasons).then(
                                     function(i) {
                                         resolve(i);
