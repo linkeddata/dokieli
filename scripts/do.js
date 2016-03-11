@@ -1204,7 +1204,7 @@ var DO = {
         },
 
         showEmbedData: function(node) {
-            node.insertAdjacentHTML('beforeend', '<section id="embed-data-in-html" class="do"><h2>Data</h2><ul><li><button class="embed-data-meta"><i class="fa fa-table fa-2x"></i>Embed</button></li></ul></section>');
+            node.insertAdjacentHTML('beforeend', '<section id="embed-data-in-html" class="do"><h2>Data</h2><ul><li><button class="embed-data-meta"><i class="fa fa-table fa-2x"></i>Embed Data</button></li></ul></section>');
 
             var eventEmbedData = function(e) {
                 e.target.setAttribute('disabled', 'disabled');
