@@ -1638,10 +1638,10 @@ var DO = {
                         fragment = document.querySelector('#' + e.target.id + ' > .do.fragment');
                         var fragmentClientWidth = fragment.clientWidth;
 
-                       fragment.style.top = Math.ceil(e.target.offsetTop) + 'px';
-                       fragment.style.left = '-' + (fragmentClientWidth - 2) + 'px';
-                       fragment.style.height = e.target.clientHeight + 'px';
-                       fragment.style.width = (fragmentClientWidth - 10) + 'px';
+                        fragment.style.top = Math.ceil(e.target.offsetTop) + 'px';
+                        fragment.style.left = (offsetLeft - fragmentClientWidth - 2) + 'px';
+                        fragment.style.height = e.target.clientHeight + 'px';
+                        fragment.style.width = (fragmentClientWidth - 10) + 'px';
                     }
                 });
 
@@ -1649,6 +1649,15 @@ var DO = {
                     var fragment = document.querySelector('#' + e.target.id + ' > .do.fragment');
                     fragment.parentNode.removeChild(fragment);
                 });
+            }
+        },
+
+        getOffset: function(el) {
+            var box = el.getBoundingClientRect();
+
+            return {
+                top: box.top + window.pageYOffset - document.documentElement.clientTop,
+                left: box.left + window.pageXOffset - document.documentElement.clientLeft
             }
         },
 
