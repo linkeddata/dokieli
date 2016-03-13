@@ -1638,6 +1638,14 @@ var DO = {
                         fragment = document.querySelector('#' + e.target.id + ' > .do.fragment');
                         var fragmentClientWidth = fragment.clientWidth;
 
+                        var fragmentOffsetLeft = DO.U.getOffset(e.target).left;
+                        var bodyOffsetLeft = DO.U.getOffset(document.body).left;
+
+                        var offsetLeft = 0;
+                        if ((fragmentOffsetLeft - bodyOffsetLeft) > 0) {
+                            offsetLeft = bodyOffsetLeft - 12;
+                        }
+
                         fragment.style.top = Math.ceil(e.target.offsetTop) + 'px';
                         fragment.style.left = (offsetLeft - fragmentClientWidth - 2) + 'px';
                         fragment.style.height = e.target.clientHeight + 'px';
