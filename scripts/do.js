@@ -2875,7 +2875,7 @@ LIMIT 1";
                     break;
             }
 
-            if ('iri' in n.license) {
+            if (n.license && 'iri' in n.license) {
                 license = '<dl class="license"><dt>License</dt><dd>';
                 if('name' in n.license) {
                     license += '<a rel="schema:license" href="' + n.license.iri + '">' + n.license.name + '</a>';
