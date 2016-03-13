@@ -1642,8 +1642,8 @@ var DO = {
                         var bodyOffsetLeft = DO.U.getOffset(document.body).left;
 
                         var offsetLeft = 0;
-                        if ((fragmentOffsetLeft - bodyOffsetLeft) > 0) {
-                            offsetLeft = bodyOffsetLeft - 12;
+                        if ((fragmentOffsetLeft - bodyOffsetLeft) > 200) {
+                            offsetLeft = e.target.offsetLeft;
                         }
 
                         fragment.style.top = Math.ceil(e.target.offsetTop) + 'px';
