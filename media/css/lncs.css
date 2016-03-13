@@ -245,6 +245,7 @@ font-size:1.4615em;
 margin-bottom:1.5em;
 text-align:center;
 }
+aside article h1 { text-align:left; }
 h2 { font-size:1.231em; }
 h3 { font-size:1em; }
 h4 { font-size:1em; }

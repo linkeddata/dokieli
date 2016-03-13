@@ -153,6 +153,7 @@ font-family:Arial, sans-serif;
 font-size:1.75em;
 text-align:center;
 }
+aside article h1 { text-align:left; }
 h1 sup,
 #subtitle sup,
 #authors sup {
