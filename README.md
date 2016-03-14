@@ -30,6 +30,7 @@ that wants to annotate can store their notes at a Webspace in which they control
 * Save document and its dependencies to a new location (anywhere on the Web with LDP support)
 * Annotations (e.g., replies, peer-reviews, liking, resharing). Uses W3C Web Annotation and Social Web data models
 * Inbox notifications for annotations
+* Assign license (e.g., Creative Commons) to the contributions/annotations
 * Assignment of URI fragments (to whatever is of interest) so that other resources on the Web can reference
 * Embedding data blocks, e.g., Turtle, N-Triples, Nanopublications
 * Embedding of media objects, tables, and interactions
