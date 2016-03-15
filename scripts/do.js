@@ -1605,7 +1605,7 @@ var DO = {
         },
 
         showFragment: function() {
-            var ids = document.querySelectorAll('#content *[id], #document-interactions *[id]');
+            var ids = document.querySelectorAll('#content *[id], #document-interactions *[id]:not(input):not(textarea):not(select)');
             for(var i = 0; i < ids.length; i++){
                 ids[i].addEventListener('mouseenter', function(e){
                     var fragment = document.querySelector('#' + e.target.id + ' > .do.fragment');
