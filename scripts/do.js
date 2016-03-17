@@ -32,8 +32,8 @@ var DO = {
         UseStorage: false,
         AutoSaveId: '',
         AutoSaveTimer: 60000,
-        DisableStorageButtons: '<button class="local-storage-disable-html"><i class="fa fa-database fa-2x"></i>Local Storage</button>',
-        EnableStorageButtons: '<button class="local-storage-enable-html"><i class="fa fa-database fa-2x"></i>Local Storage</button>',
+        DisableStorageButtons: '<button class="local-storage-disable-html" title="Disable local storage (temporary) in the browser"><i class="fa fa-database fa-2x"></i>Local Storage</button>',
+        EnableStorageButtons: '<button class="local-storage-enable-html" title="Enable local storage (temporary) in the browser"><i class="fa fa-database fa-2x"></i>Local Storage</button>',
         CDATAStart: '//<![CDATA[',
         CDATAEnd: '//]]>',
         SortableList: false,
@@ -42,8 +42,8 @@ var DO = {
         Editor: {
             headings: ["h1", "h2", "h3", "h4", "h5", "h6"],
             regexEmptyHTMLTags: /<[^\/>][^>]*><\/[^>]+>/gim,
-            DisableEditorButton: '<button class="editor-disable"><i class="fa fa-pencil fa-2x"></i>Edit</button>',
-            EnableEditorButton: '<button class="editor-enable"><i class="fa fa-pencil fa-2x"></i>Edit</button>'
+            DisableEditorButton: '<button class="editor-disable" title="Disable editor"><i class="fa fa-pencil fa-2x"></i>Edit</button>',
+            EnableEditorButton: '<button class="editor-enable" title="Enable editor"><i class="fa fa-pencil fa-2x"></i>Edit</button>'
         },
         ContextLength: 32,
         InteractionPath: 'i/',
@@ -920,7 +920,7 @@ var DO = {
         //TODO: Refactor
         showUserSigninSignup: function(node) {
             if (typeof SimpleRDF !== 'undefined') {
-                var s = '<button class="signin-user"><i class="fa fa-user-secret fa-2x"></i>Sign in</button>';
+                var s = '<button class="signin-user" title="Signin to authenticate"><i class="fa fa-user-secret fa-2x"></i>Sign in</button>';
                 if(DO.C.User.IRI) {
                     s = DO.U.getUserHTML();
                 }
@@ -936,7 +936,7 @@ var DO = {
         //TODO: Refactor
         showUserIdentityInput: function(e) {
             e.target.setAttribute('disabled', 'disabled');
-            document.body.insertAdjacentHTML('beforeend', '<aside id="user-identity-input" class="do on"><button class="close">❌</button><h2>Enter WebID to sign in with</h2><label>HTTP(S) IRI</label><input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="signin">Sign in</button></aside>');
+            document.body.insertAdjacentHTML('beforeend', '<aside id="user-identity-input" class="do on"><button class="close" title="Close">❌</button><h2>Enter WebID to sign in with</h2><label>HTTP(S) IRI</label><input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="signin">Sign in</button></aside>');
             var buttonSignIn = document.querySelector('#user-identity-input button.signin');
             buttonSignIn.setAttribute('disabled', 'disabled');
             document.querySelector('#user-identity-input button.close').addEventListener('click', function(e) {
@@ -1111,12 +1111,12 @@ var DO = {
 
             if (stylesheets.length > 1) {
                 var s = '<section id="document-views" class="do"><h2>Views</h2><i class="fa fa-magic"></i><ul>';
-                s += '<li><button>Native</button></li>';
+                s += '<li><button title="Change to native device/browser view for this article">Native</button></li>';
                 for (var i = 0; i < stylesheets.length; i++) {
                     var stylesheet = stylesheets[i];
                     var view = stylesheet.getAttribute('title');
                     if(stylesheet.matches('[rel~="alternate"]')) {
-                        s += '<li><button>' + view + '</button></li>';
+                        s += '<li><button title="Change to ‘' + view + '’ view">' + view + '</button></li>';
                     }
                     else {
                         s += '<li><button disabled="disabled">' + view + '</button></li>';
@@ -1204,7 +1204,7 @@ var DO = {
         },
 
         showEmbedData: function(node) {
-            node.insertAdjacentHTML('beforeend', '<section id="embed-data-in-html" class="do"><h2>Data</h2><ul><li><button class="embed-data-meta"><i class="fa fa-table fa-2x"></i>Embed Data</button></li></ul></section>');
+            node.insertAdjacentHTML('beforeend', '<section id="embed-data-in-html" class="do"><h2>Data</h2><ul><li><button class="embed-data-meta" title="Embed structured data (Turtle, JSON-LD, TRiG)"><i class="fa fa-table fa-2x"></i>Embed Data</button></li></ul></section>');
 
             var eventEmbedData = function(e) {
                 e.target.setAttribute('disabled', 'disabled');
@@ -1247,7 +1247,7 @@ var DO = {
                     }
                 }
 
-                var embedMenu = '<aside id="embed-data-entry" class="do on tabs"><button class="close">❌</button>\n\
+                var embedMenu = '<aside id="embed-data-entry" class="do on tabs"><button class="close" title="Close">❌</button>\n\
                 <h2>Embed Data</h2>\n\
                 <nav><ul><li class="selected"><a href="#embed-data-turtle">Turtle</a></li><li><a href="#embed-data-json-ld">JSON-LD</a></li><li><a href="#embed-data-nanopublication">Nanopublication</a></li></ul></nav>\n\
                 <div id="embed-data-turtle" class="selected"><textarea placeholder="Enter data in text/turtle" name="meta-turtle" cols="80" rows="24">' + ((scriptCurrentData['meta-turtle']) ? scriptCurrentData['meta-turtle'].content : '') + '</textarea><button class="save">Save</button></div>\n\
@@ -1417,7 +1417,7 @@ var DO = {
                     sortable = ' sortable';
                 }
 
-                s = '<aside id="toc" class="do on' + sortable + '"><button class="close">❌</button></aside>';
+                s = '<aside id="toc" class="do on' + sortable + '"><button class="close" title="Close">❌</button></aside>';
                 document.body.insertAdjacentHTML('beforeend', s);
 
                 var toc = document.getElementById('toc');
@@ -1816,15 +1816,15 @@ var DO = {
             }
 
             var s = '<section id="document-do" class="do"><h2>Do</h2><ul>';
-            s += '<li><button class="resource-new"'+buttonDisabled+'><i class="fa fa-paper-plane-o fa-2x"></i>New</button></li>';
-            s += '<li><button class="resource-save"'+buttonDisabled+'><i class="fa fa-life-ring fa-2x"></i>Save</button></li>';
-            s += '<li><button class="resource-save-as"><i class="fa fa-clone fa-2x"></i>Save As</button></li>';
+            s += '<li><button class="resource-new"'+buttonDisabled+' title="Create new article"><i class="fa fa-paper-plane-o fa-2x"></i>New</button></li>';
+            s += '<li><button class="resource-save"'+buttonDisabled+' title="Save article"><i class="fa fa-life-ring fa-2x"></i>Save</button></li>';
+            s += '<li><button class="resource-save-as" title="Save as article"><i class="fa fa-clone fa-2x"></i>Save As</button></li>';
             if (DO.C.EditorAvailable) {
                 var editFile = (DO.C.EditorEnabled) ? DO.C.Editor.DisableEditorButton : DO.C.Editor.EnableEditorButton;
                 s += '<li>' + editFile + '</li>';
             }
-            s += '<li><button class="resource-export"><i class="fa fa-external-link fa-2x"></i>Export</button></li>';
-            s += '<li><button class="resource-print"><i class="fa fa-print fa-2x"></i>Print</button></li>';
+            s += '<li><button class="resource-export" title="Export article"><i class="fa fa-external-link fa-2x"></i>Export</button></li>';
+            s += '<li><button class="resource-print" title="Print article"><i class="fa fa-print fa-2x"></i>Print</button></li>';
             s += '</ul></section>';
             node.insertAdjacentHTML('beforeend', s);
 
@@ -2079,7 +2079,7 @@ var DO = {
 
         showResourceBrowser: function() {
             this.disabled = "disabled";
-            var browserHTML = '<aside id="resource-browser" class="do on"><button class="close">❌</button><h2>Resource Browser</h2></aside>';
+            var browserHTML = '<aside id="resource-browser" class="do on"><button class="close" title="Close">❌</button><h2>Resource Browser</h2></aside>';
             document.querySelector('body').insertAdjacentHTML('beforeEnd', browserHTML);
 
             document.getElementById('resource-browser').querySelector('button.close').addEventListener('click', function(e) {
@@ -2092,7 +2092,7 @@ var DO = {
 
         createNewDocument: function(e) {
             e.target.disabled = true;
-            document.body.insertAdjacentHTML('beforeend', '<aside id="create-new-document" class="do on"><button class="close">❌</button><h2>Create New Document</h2></aside>');
+            document.body.insertAdjacentHTML('beforeend', '<aside id="create-new-document" class="do on"><button class="close" title="Close">❌</button><h2>Create New Document</h2></aside>');
 
             var newDocument = document.getElementById('create-new-document');
             newDocument.addEventListener('click', function(e) {
@@ -2163,7 +2163,7 @@ var DO = {
 
         saveAsDocument: function(e) {
             e.target.disabled = true;
-            document.body.insertAdjacentHTML('beforeend', '<aside id="save-as-document" class="do on"><button class="close">❌</button><h2>Save As Document</h2></aside>');
+            document.body.insertAdjacentHTML('beforeend', '<aside id="save-as-document" class="do on"><button class="close" title="Close">❌</button><h2>Save As Document</h2></aside>');
 
             var saveAsDocument = document.getElementById('save-as-document');
             saveAsDocument.addEventListener('click', function(e) {
