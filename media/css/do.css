@@ -118,13 +118,13 @@ margin-inline-start:0;
 margin-inline-end:0;
 }
 aside.note.do blockquote dl.author-name {
-font-size:1.25em;
+
 }
 aside.note.do blockquote dl.published,
 aside.note.do blockquote dl.license {
 position:relative;
-top:-2em;
-left:4.75em;
+top:-1.5em;
+left:3.75em;
 }
 aside.note.do blockquote dl.published a,
 aside.note.do blockquote dl.license a {
@@ -138,7 +138,7 @@ text-decoration:underline;
 }
 aside.note.do blockquote article > div {
 position:relative;
-top:-2em;
+top:-1.5em;
 }
 
 
