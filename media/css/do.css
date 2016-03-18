@@ -95,6 +95,52 @@ width:auto;
 position:static;
 }
 
+aside.note.do h3,
+aside.note.do blockquote dt,
+aside.note.do blockquote .target {
+display:none;
+}
+aside.note.do blockquote dl.author-name img[width="48"][height="48"][rel$="image"] {
+vertical-align:top;
+}
+aside.note.do blockquote dl,
+aside.note.do blockquote dl * {
+margin:0;
+margin-block-before:0;
+margin-block-after:0;
+margin-block-start:0;
+margin-block-end:0;
+-webkit-margin-before:0;
+-webkit-margin-after:0;
+-webkit-margin-start:0;
+-webkit-margin-end:0;
+margin-inline-start:0;
+margin-inline-end:0;
+}
+aside.note.do blockquote dl.author-name {
+font-size:1.25em;
+}
+aside.note.do blockquote dl.published,
+aside.note.do blockquote dl.license {
+position:relative;
+top:-2em;
+left:4.75em;
+}
+aside.note.do blockquote dl.published a,
+aside.note.do blockquote dl.license a {
+color:#333;
+text-decoration:none;
+}
+aside.note.do blockquote dl.published a:hover,
+aside.note.do blockquote dl.license a:hover {
+color:#000;
+text-decoration:underline;
+}
+aside.note.do blockquote article > div {
+position:relative;
+top:-2em;
+}
+
 
 #document-editor {
 position:static;

@@ -2667,9 +2667,9 @@ LIMIT 1";
                 'position: absolute',
                 'top: ' + Math.ceil(ref.parentNode.offsetTop) + 'px',
                 'left: auto',
-                'right: calc(-35% - 2.5em)',
+                'right: calc(-25% - 2.5em)',
                 'z-index: 1',
-                'width: 35%',
+                'width: 25%',
                 'font-size: 0.9em',
                 'text-align: left'
             ].join('; ');
