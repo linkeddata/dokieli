@@ -1363,18 +1363,22 @@ var DO = {
         showDocumentMetadata: function(node) {
             var content = document.getElementById('content');
             var count = DO.U.contentCount(content);
+            var contributors = '';
 
-            var contributors = '<ul class="contributors">';
             var relContributors = document.querySelectorAll('#authors *[rel*="contributor"]');
-            for (var i = 0; i < relContributors.length; i++) {
-                contributors += '<li>' + relContributors[i].innerHTML + '</li>';
+            if (relContributors.length > 0) {
+                contributors = '<ul class="contributors">';
+                for (var i = 0; i < relContributors.length; i++) {
+                    contributors += '<li>' + relContributors[i].innerHTML + '</li>';
+                }
+                contributors += '</ul>';
+                contributors = '<tr><th>Authors</th><td>' + contributors + '</td></tr>';
             }
-            contributors += '</ul>';
 
             var s = '<section id="document-metadata" class="do"><table>\n\
                 <caption>Document Metadata</caption>\n\
                 <tbody>\n\
-                    <tr><th>Authors</th><td>' + contributors + '</td></tr>\n\
+                    ' + contributors + '\n\
                     <tr><th>Reading time</th><td>' + count.readingTime + ' minutes</td></tr>\n\
                     <tr><th>Characters</th><td>' + count.chars + '</td></tr>\n\
                     <tr><th>Words</th><td>' + count.words + '</td></tr>\n\
