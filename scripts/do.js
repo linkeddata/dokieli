@@ -1361,7 +1361,7 @@ var DO = {
         },
 
         showDocumentMetadata: function(node) {
-            var content = document.getElementById('content');
+            var content = document.body;
             var count = DO.U.contentCount(content);
             var contributors = '';
 
