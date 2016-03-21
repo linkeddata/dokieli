@@ -1076,8 +1076,6 @@ var DO = {
             var dMenu = document.querySelector('#document-menu.do');
             var dMenuButton = dMenu.querySelector('button');
 
-            var uss = dMenu.querySelector('#user-info');
-            uss.parentNode.removeChild(uss);
             dMenu.classList.remove('on');
             var sections = dMenu.querySelectorAll('section');
             for (var i = 0; i < sections.length; i++) {
