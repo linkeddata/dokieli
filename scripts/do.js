@@ -924,7 +924,7 @@ var DO = {
                 if(DO.C.User.IRI) {
                     s = DO.U.getUserHTML();
                 }
-                node.insertAdjacentHTML('beforeend', '<p id="user-info">' + s + '</p>');
+                node.insertAdjacentHTML('beforeend', '<section id="user-info">' + s + '</section>');
 
                 var su = document.querySelector('#document-menu button.signin-user');
                 if(su) {
