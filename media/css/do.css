@@ -567,3 +567,13 @@ width: 100%;
 max-width: 100px;
 }
 
+/*TODO MOVE TO editor.css */
+.medium-editor-toolbar-form label[for^="rdfa-"] {
+font-weight:bold;
+width:30%;
+text-align:right;
+}
+.medium-editor-toolbar-form input[id^="rdfa-"] {
+height:auto;
+width:65%;
+}

@@ -2942,7 +2942,7 @@ LIMIT 1";
             }
             else {
                 if ('datatype' in r) {
-                    langDatatype = ' datatype="' + r.content + '"';
+                    langDatatype = ' datatype="' + r.datatype + '"';
                 }
             }
             if ('typeOf' in r) {
@@ -3485,9 +3485,14 @@ LIMIT 1";
                             switch(this.action) {
                                 case 'rdfa':
                                     template = [
-                                    'about: <input id="rdfa-about" class="medium-editor-toolbar-input" placeholder="http://example.org/foo#bar" /><br/>',
-                                    'rel: <input id="rdfa-rel" class="medium-editor-toolbar-input" placeholder="https://schema.org/name"><br/>',
-                                    'href <input id="rdfa-href" class="medium-editor-toolbar-input" placeholder="http://example.net/baz" />'
+                                    '<label for="rdfa-about">about</label><input id="rdfa-about" class="medium-editor-toolbar-input" placeholder="https://example.org/foo#bar" /><br/>',
+                                    '<label for="rdfa-resource">resource</label><input id="rdfa-resource" class="medium-editor-toolbar-input" placeholder="https://example.net/baz" /><br/>',
+                                    '<label for="rdfa-typeof">typeof</label><input id="rdfa-typeof" class="medium-editor-toolbar-input" placeholder="https://example.net/baz" /><br/>',
+                                    '<label for="rdfa-rel">rel</label><input id="rdfa-rel" class="medium-editor-toolbar-input" placeholder="schema:url"><br/>',
+                                    '<label for="rdfa-property">property</label><input id="rdfa-property" class="medium-editor-toolbar-input" placeholder="schema:name" /><br/>',
+                                    '<label for="rdfa-href">href</label><input id="rdfa-href" class="medium-editor-toolbar-input" placeholder="https://example.net/baz" /><br/>',
+                                    '<label for="rdfa-content">content</label><input id="rdfa-content" class="medium-editor-toolbar-input" placeholder="Baz" /><br/>',
+                                    '<label for="rdfa-datatype">datatype</label><input id="rdfa-datatype" class="medium-editor-toolbar-input" placeholder="https://example.net/baz" /><br/>'
                                     ];
                                     break;
                                 case 'article':
@@ -3638,6 +3643,11 @@ LIMIT 1";
                                     opts.about = this.getInput().about.value;
                                     opts.rel = this.getInput().rel.value;
                                     opts.href = this.getInput().href.value;
+                                    opts.typeOf = this.getInput().typeOf.value;
+                                    opts.resource = this.getInput().resource.value;
+                                    opts.property = this.getInput().property.value;
+                                    opts.content = this.getInput().content.value;
+                                    opts.datatype = this.getInput().datatype.value;
                                     break;
                                 case 'article':
                                     opts.content = this.getInput().content.value;
@@ -3824,19 +3834,19 @@ LIMIT 1";
 //                                    break;
 
                                 case 'rdfa':
-                                    //TODO: inlist, prefix, monkeys..
-                                    //TODO: lang, datatype, content
+                                    //TODO: inlist, prefix
+                                    //TODO: lang/xmlllang
                                     noteData = {
                                         about: opts.about,
-                                        //typeOf: opts.typeOf,
+                                        typeOf: opts.typeOf,
                                         rel: opts.rel,
-                                        // property: opts.property
                                         href: opts.href,
-                                        // resource:
-                                        // content:
+                                        resource: opts.resource,
+                                        property: opts.property,
+                                        content: opts.content,
+                                        datatype: opts.datatype,
                                         textContent: this.base.selection
-                                        // lang: ''
-                                        // datatype: ''
+                                        // lang: '' and/or xmllang: ''
                                     };
                                     ref = DO.U.createRDFaHTML(noteData);
 
@@ -3983,6 +3993,11 @@ LIMIT 1";
                                     r.about = this.getForm().querySelector('#rdfa-about.medium-editor-toolbar-input');
                                     r.rel = this.getForm().querySelector('#rdfa-rel.medium-editor-toolbar-input');
                                     r.href = this.getForm().querySelector('#rdfa-href.medium-editor-toolbar-input');
+                                    r.typeOf = this.getForm().querySelector('#rdfa-typeof.medium-editor-toolbar-input');
+                                    r.resource = this.getForm().querySelector('#rdfa-resource.medium-editor-toolbar-input');
+                                    r.property = this.getForm().querySelector('#rdfa-property.medium-editor-toolbar-input');
+                                    r.content = this.getForm().querySelector('#rdfa-content.medium-editor-toolbar-input');
+                                    r.datatype = this.getForm().querySelector('#rdfa-datatype.medium-editor-toolbar-input');
                                     break;
                                 case 'article':
                                     r.content = this.getForm().querySelector('#article-content.medium-editor-toolbar-textarea');
