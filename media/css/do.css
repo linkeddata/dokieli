@@ -577,3 +577,8 @@ text-align:right;
 height:auto;
 width:65%;
 }
+/*used with default theme*/
+.medium-editor-toolbar.medium-toolbar-arrow-under:after {
+top:initial;
+bottom:-8px;
+}
