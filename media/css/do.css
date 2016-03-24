@@ -193,6 +193,7 @@ clear:both;
 float:left;
 width:100%;
 background-color:#fff;
+background-image:none;
 }
 
 #document-menu header button,
