@@ -2936,10 +2936,10 @@ LIMIT 1";
                 rel = ' rel="' + r.rel + '"';
             }
             if ('property' in r && r.property != '') {
-                //TODO: Figure out how to use user's prefered vocabulary down the line.
                 property = ' property="' + r.property + '"';
             }
             else {
+                //TODO: Figure out how to use user's prefered vocabulary.
                 property = ' property="rdfs:label"';
             }
             if ('resource' in r && r.resource != '') {
@@ -2964,7 +2964,7 @@ LIMIT 1";
             }
 
             var element = (href == '') ? 'span' : 'a';
-            s = '<' + element + about + content + href + id + langDatatype + property + resource + rel + typeOf + '>' + r.textContent + '</' + element + '>';
+            s = '<' + element + about + content + href + id + langDatatype + property + rel + resource + typeOf + '>' + r.textContent + '</' + element + '>';
 
            return s;
         },
