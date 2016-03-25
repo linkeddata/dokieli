@@ -2923,12 +2923,14 @@ LIMIT 1";
 
         createRDFaHTML: function(r) {
             var s = '', property = '', rel = '', resource = '', href = '', content = '', langDatatype = '', typeOf = '';
+            var idValue = DO.U.generateAttributeId().slice(0, 6);
+            var id = ' id="' + idValue + '"';
 
             if ('about' in r && r.about != '') {
                 about = ' about="' + r.about + '"';
             }
             else {
-                about = ' about="#' + DO.U.generateAttributeId().slice(0, 6) + '"';
+                about = ' about="#' + idValue + '"';
             }
             if ('rel' in r && r.rel != '') {
                 rel = ' rel="' + r.rel + '"';
@@ -2962,10 +2964,10 @@ LIMIT 1";
             }
 
             if (href == '') {
-                s = '<span' + about + typeOf + rel + resource + property + content + langDatatype + '>' + r.textContent + '</span>';
+                s = '<span' + id + about + typeOf + rel + resource + property + content + langDatatype + '>' + r.textContent + '</span>';
             }
             else {
-                s = '<a' + about + typeOf + rel + href + resource + property + content + langDatatype + '>' + r.textContent + '</a>';
+                s = '<a' + id + about + typeOf + rel + href + resource + property + content + langDatatype + '>' + r.textContent + '</a>';
             }
 
            return s;
