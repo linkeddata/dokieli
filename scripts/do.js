@@ -2922,38 +2922,50 @@ LIMIT 1";
         },
 
         createRDFaHTML: function(r) {
-            var s = '', property = '', resource = '', content = '', langDatatype = '', typeOf = '';
+            var s = '', property = '', rel = '', resource = '', href = '', content = '', langDatatype = '', typeOf = '';
 
-            if (!('about' in r)) {
-                r.about = '#' + DO.U.generateAttributeId().slice(0, 6);
+            if ('about' in r && r.about != '') {
+                about = ' about="' + r.about + '"';
             }
-            if (!('property' in r)) {
+            else {
+                about = ' about="#' + DO.U.generateAttributeId().slice(0, 6) + '"';
+            }
+            if ('rel' in r && r.rel != '') {
+                rel = ' rel="' + r.rel + '"';
+            }
+            if ('property' in r && r.property != '') {
                 //TODO: Figure out how to use user's prefered vocabulary down the line.
-                r.property = 'rdfs:label';
+                property = ' property="' + r.property + '"';
             }
-            if ('resource' in r) {
+            else {
+                property = ' property="rdfs:label"';
+            }
+            if ('resource' in r && r.resource != '') {
                 resource = ' resource="' + r.resource + '"';
             }
-            if ('content' in r) {
+            if ('href' in r && r.href != '') {
+                href = ' href="' + r.href + '"';
+            }
+            if ('content' in r && r.content != '') {
                 content = ' content="' + r.content + '"';
             }
-            if ('lang' in r) {
+            if ('lang' in r && r.lang != '') {
                 langDatatype = ' xml:lang="' + r.lang + '" lang="' + r.lang + '"';
             }
             else {
-                if ('datatype' in r) {
+                if ('datatype' in r && r.datatype != '') {
                     langDatatype = ' datatype="' + r.datatype + '"';
                 }
             }
-            if ('typeOf' in r) {
+            if ('typeOf' in r && r.typeOf != '') {
                 typeOf = ' typeof="' + r.typeOf + '"';
             }
 
-            if ('rel' in r) {
-                s = '<a about="' + r.about + '"' + typeOf + ' rel="' + r.rel + '" href="' + r.href + '"' + resource + ' property="' + r.property +'"' + content + langDatatype + '>' + r.textContent + '</a>';
+            if (href == '') {
+                s = '<span' + about + typeOf + rel + resource + property + content + langDatatype + '>' + r.textContent + '</span>';
             }
             else {
-                s = '<span about="' + r.about + '" property="' + r.property + '"' + content + langDatatype + '>' + r.textContent + '</span>';
+                s = '<a' + about + typeOf + rel + href + resource + property + content + langDatatype + '>' + r.textContent + '</a>';
             }
 
            return s;
