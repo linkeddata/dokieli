@@ -2963,12 +2963,8 @@ LIMIT 1";
                 typeOf = ' typeof="' + r.typeOf + '"';
             }
 
-            if (href == '') {
-                s = '<span' + id + about + typeOf + rel + resource + property + content + langDatatype + '>' + r.textContent + '</span>';
-            }
-            else {
-                s = '<a' + id + about + typeOf + rel + href + resource + property + content + langDatatype + '>' + r.textContent + '</a>';
-            }
+            var element = (href == '') ? 'span' : 'a';
+            s = '<' + element + about + content + href + id + langDatatype + property + resource + rel + typeOf + '>' + r.textContent + '</' + element + '>';
 
            return s;
         },
