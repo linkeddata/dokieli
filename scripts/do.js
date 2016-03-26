@@ -2259,6 +2259,10 @@ var DO = {
                         }
                     );
                 }
+                
+                if (e.target.matches('button.close')) {
+                    document.querySelector('#document-do .resource-source').disabled = false;
+                }
             });
         },
 
