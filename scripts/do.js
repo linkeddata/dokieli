@@ -2245,19 +2245,11 @@ var DO = {
                 if (e.target.matches('button.create')) {
                     var url = window.location.origin + window.location.pathname;
                     var data = document.getElementById('source-edit').value;
-                    DO.U.putResource(url, data).then(
-                        function(i) {
-                            sourceBox.insertAdjacentHTML('afterBegin', '<div class="response-message"><p class="success">Saved!</p></div>');
-                            window.setTimeout(function(){
-                                var response = document.getElementById('source-view').querySelector('.response-message');
-                                response.parentNode.removeChild(response);
-                            }, 2000);
-                        },
-                        function(reason) {
-                            console.log(reason);
-                            sourceBox.insertAdjacentHTML('afterBegin', '<div class="response-message"><p class="error">Could not save (' + reason.status + ': ' + reason.xhr.statusText + ').</p></div>');
-                        }
-                    );
+                    document.documentElement.innerHTML = data;
+                    DO.U.showDocumentInfo();
+                    DO.U.showDocumentMenu();
+                    DO.U.viewSource();
+                    document.querySelector('#document-do .resource-source').disabled = true;
                 }
 
                 if (e.target.matches('button.close')) {
