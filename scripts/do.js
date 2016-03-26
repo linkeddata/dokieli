@@ -4103,7 +4103,7 @@ LIMIT 1";
 
         }, //DO.U.Editor
 
-        Init: function() {
+        init: function() {
             //    DO.U.initStorage('html');
             //    DO.U.setDocRefType();
             DO.U.showRefs();
@@ -4120,4 +4120,4 @@ LIMIT 1";
     } //DO.U
 }; //DO
 
-document.addEventListener('DOMContentLoaded', function(){ DO.U.Init(); });
+document.addEventListener('DOMContentLoaded', function(){ DO.U.init(); });
