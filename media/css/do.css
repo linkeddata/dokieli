@@ -209,10 +209,13 @@ font-family:sans-serif;
 font-weight:normal;
 }
 
-#document-menu #user-info button:hover,
 #document-menu section button:hover {
 background-color:#eee;
 cursor:pointer;
+}
+#document-menu section button[disabled]:hover {
+background-color:inherit;
+cursor:default;
 }
 
 #document-menu ul,
