@@ -2236,7 +2236,7 @@ var DO = {
 
         viewSource: function(e) {
             e.target.disabled = true;
-            document.body.insertAdjacentHTML('beforeend', '<aside id="source-view" class="do on"><button class="close" title="Close">❌</button><h2>Source</h2><textarea id="source-edit" rows="24" cols="80"></textarea><p><button class="create">Save</button> <a href="' + window.location.href + '">Reload to update</a></p></aside>');
+            document.body.insertAdjacentHTML('beforeend', '<aside id="source-view" class="do on"><button class="close" title="Close">❌</button><h2>Source</h2><textarea id="source-edit" rows="24" cols="80"></textarea><p><button class="create">Update</button></p></aside>');
             var sourceBox = document.getElementById('source-view');
             var input = document.getElementById('source-edit');
             input.value = DO.U.getDocument();
