@@ -1085,7 +1085,7 @@ var DO = {
             dMenuButton.classList.add('show');
             dMenuButton.setAttribute('title', 'Open Menu');
 
-            var removeElementsList = ['toc', 'embed-data-entry', 'create-new-document', 'save-as-document', 'user-identity-input', 'resource-browser'];
+            var removeElementsList = ['toc', 'embed-data-entry', 'create-new-document', 'source-view', 'save-as-document', 'user-identity-input', 'resource-browser'];
             removeElementsList.forEach(function(id) {
                 var element = document.getElementById(id);
                 if(element) {
@@ -1825,6 +1825,7 @@ var DO = {
                 var editFile = (DO.C.EditorEnabled) ? DO.C.Editor.DisableEditorButton : DO.C.Editor.EnableEditorButton;
                 s += '<li>' + editFile + '</li>';
             }
+            s += '<li><button class="resource-source"'+buttonDisabled+' title="Edit article source code"><i class="fa fa-code fa-2x"></i>Source</button></li>';
             s += '<li><button class="resource-export" title="Export article"><i class="fa fa-external-link fa-2x"></i>Export</button></li>';
             s += '<li><button class="resource-print" title="Print article"><i class="fa fa-print fa-2x"></i>Print</button></li>';
             s += '</ul></section>';
@@ -1858,6 +1859,10 @@ var DO = {
                             console.log(reason);
                         }
                     );
+                }
+                
+                if (e.target.matches('.resource-source')) {
+                    DO.U.viewSource(e);
                 }
 
                 if (e.target.matches('.resource-save-as')) {
@@ -2223,6 +2228,34 @@ var DO = {
                                     break;
                             }
                             console.log(reason);
+                        }
+                    );
+                }
+            });
+        },
+        
+        viewSource: function(e) {
+            e.target.disabled = true;
+            document.body.insertAdjacentHTML('beforeend', '<aside id="source-view" class="do on"><button class="close" title="Close">❌</button><h2>Source</h2><textarea id="source-edit"></textarea><p><button class="create">Save</button> <a href="' + window.location.href + '">Reload to update</a></p></aside>');
+            var sourceBox = document.getElementById('source-view');
+            var input = document.getElementById('source-edit');
+            input.value = DO.U.getDocument();
+            
+            sourceBox.addEventListener('click', function(e) {
+                if (e.target.matches('button.create')) {
+                    var url = window.location.origin + window.location.pathname;
+                    var data = document.getElementById('source-edit').value;
+                    DO.U.putResource(url, data).then(
+                        function(i) {
+                            sourceBox.insertAdjacentHTML('afterBegin', '<div class="response-message"><p class="success">Saved!</p></div>');
+                            window.setTimeout(function(){
+                                var response = document.getElementById('source-view').querySelector('.response-message');
+                                response.parentNode.removeChild(response);
+                            }, 2000);
+                        },
+                        function(reason) {
+                            console.log(reason);
+                            sourceBox.insertAdjacentHTML('afterBegin', '<div class="response-message"><p class="error">Could not save (' + reason.status + ': ' + reason.xhr.statusText + ').</p></div>');
                         }
                     );
                 }

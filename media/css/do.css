@@ -440,6 +440,12 @@ word-wrap: break-word;
 display: block;
 }
 
+#source-view textarea {
+width: 44em;
+height: 36em;
+max-width: 90%; max-height: 90%;
+}
+
 .do.sortable .sortable-placeholder {
 outline: 1px dashed #777;
 }
