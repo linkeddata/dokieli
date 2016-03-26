@@ -1860,7 +1860,7 @@ var DO = {
                         }
                     );
                 }
-                
+
                 if (e.target.matches('.resource-source')) {
                     DO.U.viewSource(e);
                 }
@@ -2233,14 +2233,14 @@ var DO = {
                 }
             });
         },
-        
+
         viewSource: function(e) {
             e.target.disabled = true;
             document.body.insertAdjacentHTML('beforeend', '<aside id="source-view" class="do on"><button class="close" title="Close">❌</button><h2>Source</h2><textarea id="source-edit" rows="24" cols="80"></textarea><p><button class="create">Save</button> <a href="' + window.location.href + '">Reload to update</a></p></aside>');
             var sourceBox = document.getElementById('source-view');
             var input = document.getElementById('source-edit');
             input.value = DO.U.getDocument();
-            
+
             sourceBox.addEventListener('click', function(e) {
                 if (e.target.matches('button.create')) {
                     var url = window.location.origin + window.location.pathname;
@@ -2259,7 +2259,7 @@ var DO = {
                         }
                     );
                 }
-                
+
                 if (e.target.matches('button.close')) {
                     document.querySelector('#document-do .resource-source').disabled = false;
                 }
@@ -4101,21 +4101,23 @@ LIMIT 1";
                 }
             })()
 
-        } //DO.U.Editor
+        }, //DO.U.Editor
+
+        Init: function() {
+            //    DO.U.initStorage('html');
+            //    DO.U.setDocRefType();
+            DO.U.showRefs();
+            DO.U.setLocalDocument();
+            DO.U.buttonClose();
+            DO.U.highlightItems();
+            DO.U.showDocumentInfo();
+            //    DO.U.buildReferences();
+            //    DO.U.getLinkedResearch();
+            DO.U.showFragment();
+            DO.U.setDocumentMode();
+            DO.U.showInboxNotifications();
+        }
     } //DO.U
 }; //DO
 
-document.addEventListener('DOMContentLoaded', function(){
-//    DO.U.initStorage('html');
-//    DO.U.setDocRefType();
-    DO.U.showRefs();
-    DO.U.setLocalDocument();
-    DO.U.buttonClose();
-    DO.U.highlightItems();
-    DO.U.showDocumentInfo();
-//    DO.U.buildReferences();
-//    DO.U.getLinkedResearch();
-    DO.U.showFragment();
-    DO.U.setDocumentMode();
-    DO.U.showInboxNotifications();
-});
+document.addEventListener('DOMContentLoaded', function(){ DO.U.Init(); });
