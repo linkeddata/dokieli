@@ -574,14 +574,19 @@ var DO = {
             url = url || window.location.origin + window.location.pathname;
             subjectIRI = subjectIRI || url;
 
-            url = DO.U.stripFragmentFromString(url);
-
+            var pIRI = url;
+            pIRI = DO.U.stripFragmentFromString(pIRI);
 // console.log(url);
 // console.log(subjectIRI);
 
+            //TODO: Should use both document.location.origin + '/,proxy?uri= and then DO.C.ProxyURL .. like in setUser
+            if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
+                pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
+            }
+
             return new Promise(function(resolve, reject) {
                 //FIXME: This doesn't work so well if the document's URL is different than input url
-                SimpleRDF(DO.C.Vocab, url, null, ld.store).get().then(
+                SimpleRDF(DO.C.Vocab, pIRI, null, ld.store).get().then(
                     function(i) {
                         var s = i.child(subjectIRI);
                         if (s.solidinbox._array.length > 0) {
