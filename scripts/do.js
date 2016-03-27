@@ -876,9 +876,9 @@ var DO = {
 @prefix schema: <https://schema.org/> .';
 
             switch(o.type) {
-                case 'as:Announce':
+                case 'as:Create':
                     data += '\n\
-<> a as:Announce\n\
+<> a as:Create\n\
     ; as:object <' + o.object + '>\n\
     ; as:context ' + o.context + '\n\
     ; as:target <' + o.target + '>\n\
@@ -3951,8 +3951,8 @@ LIMIT 1";
                                         function(inbox) {
                                             if (inbox && inbox.length > 0) {
 // console.log('inbox: ' + inbox);
-                                                var notifiacationData = {
-                                                    "type": "as:Announce",
+                                                var notificationData = {
+                                                    "type": "as:Create",
                                                     "inbox": inbox,
                                                     "slug": id,
                                                     "object": noteIRI,
@@ -3961,7 +3961,7 @@ LIMIT 1";
                                                     "license": opts.license
                                                 };
 
-                                                DO.U.notifyInbox(notifiacationData).then(
+                                                DO.U.notifyInbox(notificationData).then(
                                                     function(response) {
 // console.log("Notification: " + response.xhr.getResponseHeader('Location'));
                                                     },
