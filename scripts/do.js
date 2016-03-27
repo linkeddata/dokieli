@@ -869,30 +869,42 @@ var DO = {
             }
         },
 
-        notifyInbox: function(url, slug, source, context, target, licenseIRI) {
+        notifyInbox: function(o) {
             var data = '@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\
 @prefix as: <http://www.w3.org/ns/activitystreams#> .\n\
-@prefix schema: <https://schema.org/> .\n\
+@prefix oa: <http://www.w3.org/ns/oa#> . \n\
+@prefix schema: <https://schema.org/> .';
+
+            switch(o.type) {
+                case 'as:Announce':
+                    data += '\n\
 <> a as:Announce\n\
-    ; as:object <' + source + '>\n\
-    ; as:context <' + context + '>\n\
-    ; as:target <' + target + '>\n\
+    ; as:object <' + o.object + '>\n\
+    ; as:context ' + o.context + '\n\
+    ; as:target <' + o.target + '>\n\
     ; as:updated "' + DO.U.getDateTimeISO() + '"^^xsd:dateTime\n\
 ';
+                    break;
+            }
 
             if (DO.C.User.IRI) {
                 data += '    ; as:actor <' + DO.C.User.IRI + '>\n\
 ';
             }
 
-            if (licenseIRI) {
-                data += '    ; schema:license <' + licenseIRI + '>\n\
+            if ('license' in o && o.license.length > 0) {
+                data += '    ; schema:license <' + o.license + '>\n\
 ';
             }
             data += '    .\n\
 ';
 
-            return DO.U.postResource(url, slug, data, 'text/turtle; charset=utf-8');
+            var slug;
+            if ('slug' in o) {
+                slug = o.slug;
+            }
+
+            return DO.U.postResource(o.inbox, slug, data, 'text/turtle; charset=utf-8');
         },
 
         urlParam: function(name) {
@@ -3939,14 +3951,24 @@ LIMIT 1";
                                         function(inbox) {
                                             if (inbox && inbox.length > 0) {
 // console.log('inbox: ' + inbox);
-                                                DO.U.notifyInbox(inbox, id, noteIRI, 'http://www.w3.org/ns/oa#hasTarget', targetIRI, opts.license).then(
-                                                        function(response) {
+                                                var notifiacationData = {
+                                                    "type": "as:Announce",
+                                                    "inbox": inbox,
+                                                    "slug": id,
+                                                    "object": noteIRI,
+                                                    "context": "oa:hasTarget",
+                                                    "target": targetIRI,
+                                                    "license": opts.license
+                                                };
+
+                                                DO.U.notifyInbox(notifiacationData).then(
+                                                    function(response) {
 // console.log("Notification: " + response.xhr.getResponseHeader('Location'));
-                                                        },
-                                                        function(reason) {
-                                                            console.log(reason);
-                                                        }
-                                                    );
+                                                    },
+                                                    function(reason) {
+                                                        console.log(reason);
+                                                    }
+                                                );
                                             }
                                         },
                                         function(reason) {
