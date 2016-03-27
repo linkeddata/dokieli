@@ -37,7 +37,7 @@ var DO = {
         CDATAStart: '//<![CDATA[',
         CDATAEnd: '//]]>',
         SortableList: false,
-        EditorAvailable: !!document.querySelector('head script[src$="medium-editor.min.js"]'),
+        EditorAvailable: ('MediumEditor' in window),
         EditorEnabled: false,
         Editor: {
             headings: ["h1", "h2", "h3", "h4", "h5", "h6"],
