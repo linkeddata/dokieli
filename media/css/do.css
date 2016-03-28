@@ -266,6 +266,7 @@ content: '' !important;
 #document-views ul,
 #document-metadata ul,
 #embed-data-in-html ul,
+#share-resource ul,
 #table-of-stuff ul {
 list-style-type:none;
 }
