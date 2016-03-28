@@ -79,7 +79,7 @@ transform:translate(-50%, 0);
 aside.do.on a {
 word-wrap:break-word;
 }
-aside.do.on label {
+aside.do.on:not([id="toc"]) label {
 vertical-align:top;
 min-width:5%;
 display:inline-block;
