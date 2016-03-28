@@ -35,7 +35,7 @@ a {
 text-decoration:none;
 color:#000;
 }
-abbr { border-bottom: none; }
+abbr { border-bottom:none; }
 audio { display:none; }
 iframe { display:none !important; }
 
@@ -69,8 +69,8 @@ column-gap:0.83cm;
 }
 
 .blink {
-animation: none;
--webkit-animation: none;
+animation:none;
+-webkit-animation:none;
 }
 
 button {
@@ -89,16 +89,16 @@ font-size:6pt;
 img { border:0; }
 
 h2, h3, h4, h5, h6, p, ul, ol, li, pre, figure {
-orphans: 2;
-widows: 2;
+orphans:2;
+widows:2;
 }
 
 body {
 font-size:100%;
-font-family: "Times New Roman", serif;
+font-family:"Times New Roman", serif;
 /*position:relative;*/
-counter-reset: section;
-counter-reset: sub-section;
+counter-reset:section;
+counter-reset:sub-section;
 margin:0 auto;
 padding:2em 0;
 width:56.06em;
@@ -115,7 +115,7 @@ h1, #authors, #keywords, #categories-and-subject-descriptors, #general-terms, #r
 hyphens:none;
 }
 
-table, img, object, figure, audio, video, canvas { page-break-inside: avoid; }
+table, img, object, figure, audio, video, canvas { page-break-inside:avoid; }
 object {
 width:100% !important;
 height:auto !important;
@@ -125,7 +125,7 @@ img, video { max-width:100% !important; height:auto !important; }
 
 
 /*
-XXX: column-width doesn't seem to get applied in Firefox
+XXX:column-width doesn't seem to get applied in Firefox
 https://bugzilla.mozilla.org/show_bug.cgi?id=684062
 
 */
@@ -211,25 +211,25 @@ margin-top:1em;
 }
 
 article section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]) {
-counter-increment: section;
-counter-reset: sub-section;
+counter-increment:section;
+counter-reset:sub-section;
 }
 article section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]) section {
-counter-increment: sub-section;
-counter-reset: sub-sub-section;
+counter-increment:sub-section;
+counter-reset:sub-sub-section;
 }
 article section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]) section section {
-counter-increment: sub-sub-section;
-counter-reset: sub-sub-sub-section;
+counter-increment:sub-sub-section;
+counter-reset:sub-sub-sub-section;
 }
 article section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id^=table-of-]) > h2:before {
-content: counter(section) ".\00a0\00a0\00a0\00a0";
+content:counter(section) ".\00a0\00a0\00a0\00a0";
 }
 section > h3:before {
-content: counter(section) "." counter(sub-section) "\00a0\00a0\00a0";
+content:counter(section) "." counter(sub-section) "\00a0\00a0\00a0";
 }
 section > h4:before {
-content: counter(section)"." counter(sub-section) "." counter(sub-sub-section) "\00a0\00a0\00a0";
+content:counter(section)"." counter(sub-section) "." counter(sub-sub-section) "\00a0\00a0\00a0";
 }
 
 p, ol, ul, dl {
@@ -244,7 +244,7 @@ margin-bottom:0.25em;
 code, samp {
 font-size:0.95em;
 font-family:"Courier New", monospace;
-word-wrap: break-word;
+word-wrap:break-word;
 }
 
 p + math, ul + math, ol + math, dl + math, dd > math, div + math, section + math {
@@ -267,9 +267,9 @@ figure.equation {
 counter-increment:equation;
 }
 figure.equation:after {
-content: "(" counter(equation) ")";
+content:"(" counter(equation) ")";
 line-height:0;
-position: absolute;
+position:absolute;
 top:45%;
 right:0;
 }
@@ -284,16 +284,16 @@ font-weight:bold;
 text-align:justify;
 }
 figcaption:before {
-content: "Figure " counter(figure) ": ";
+content:"Figure " counter(figure) ":";
 }
 figure.listing figcaption:before {
-content: "Listing " counter(listing) ": ";
+content:"Listing " counter(listing) ":";
 }
 table {
 counter-increment:table;
 }
 caption:before {
-content: "Table " counter(table) ": ";
+content:"Table " counter(table) ":";
 }
 
 .toc, .toc ol {
@@ -311,72 +311,72 @@ text-align:left !important;
 
 .toc li {
 list-style-position:outside;
-list-style-type: none;
-margin-left: 1.25em;
+list-style-type:none;
+margin-left:1.25em;
 margin-bottom:0.25em;
 }
 .toc li:before {
-margin-left: -1.25em;
+margin-left:-1.25em;
 }
 
 .toc li:not([data-id=abstract]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
-counter-increment: s;
-counter-reset: sub-s;
+counter-increment:s;
+counter-reset:sub-s;
 }
 
 .toc li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
-counter-increment: sub-s;
-counter-reset: sub-sub-s;
+counter-increment:sub-s;
+counter-reset:sub-sub-s;
 }
 .toc li li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
-counter-increment: sub-sub-s;
-counter-reset: sub-sub-sub-s;
+counter-increment:sub-sub-s;
+counter-reset:sub-sub-sub-s;
 }
 .toc li li li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
-counter-increment: sub-sub-sub-s;
-counter-reset: sub-sub-sub-sub-s;
+counter-increment:sub-sub-sub-s;
+counter-reset:sub-sub-sub-sub-s;
 }
 .toc li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
-content: "\00a0" counter(s) "\00a0";
+content:"\00a0" counter(s) "\00a0";
 }
 .toc li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
-content: "\00a0" counter(s) "." counter(sub-s) "\00a0";
+content:"\00a0" counter(s) "." counter(sub-s) "\00a0";
 }
 .toc li li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
-content: "\00a0" counter(s) "." counter(sub-s) "." counter(sub-sub-s) "\00a0";
+content:"\00a0" counter(s) "." counter(sub-s) "." counter(sub-sub-s) "\00a0";
 }
 .toc li li li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
-content: "\00a0" counter(s) "." counter(sub-s) "." counter(sub-sub-s) "." counter(sub-sub-sub-s) "\00a0";
+content:"\00a0" counter(s) "." counter(sub-s) "." counter(sub-sub-s) "." counter(sub-sub-sub-s) "\00a0";
 }
 
 .toc li[data-id=abstract]:before, .toc li[data-id=document-status]:before, .toc li[data-id=keywords]:before, .toc li[data-id=references]:before, .toc li[data-id=categories-and-subject-descriptors]:before, .toc li[data-id=general-terms]:before, .toc li[data-id=appendix]:before, .toc li[data-id=contact-us]:before {
-content: "\00a0\00a0\00a0\00a0";
+content:"\00a0\00a0\00a0\00a0";
 }
 
 
 .tex,
 .latex {
-text-transform: uppercase;
+text-transform:uppercase;
 }
 
 .tex > span,
 .latex > span {
-line-height: 0;
-text-transform: uppercase;
+line-height:0;
+text-transform:uppercase;
 }
 
 .latex > :first-child {
-margin-left: -0.36em;
-margin-right: -0.15em;
-vertical-align: 0.3em;
-font-size: 70%;
+margin-left:-0.36em;
+margin-right:-0.15em;
+vertical-align:0.3em;
+font-size:70%;
 }
 
 .tex > :last-child,
 .latex > :last-child {
-margin-left: -0.1667em;
-margin-right: -0.125em;
-vertical-align: -0.5ex;
+margin-left:-0.1667em;
+margin-right:-0.125em;
+vertical-align:-0.5ex;
 }
 
 
@@ -449,7 +449,7 @@ content:"\A";
 white-space:pre;
 }
 tfoot dl.abbr dt:after {
-content:": ";
+content:":";
 }
 tfoot dl.abbr {
 -webkit-column-count:2;
@@ -689,13 +689,13 @@ text-align:center;
 }
 
 html {
-counter-reset: figure 0;
+counter-reset:figure 0;
 }
 body {
-counter-reset: listing 0;
+counter-reset:listing 0;
 }
 article {
-counter-reset: table 0;
+counter-reset:table 0;
 }
 figure,
 audio,
@@ -715,7 +715,7 @@ text-align:left;
 figure.listing pre {
 border:1px solid #000;
 padding:0.5em;
-counter-reset: precode;
+counter-reset:precode;
 margin-top:0;
 }
 figure.listing pre code:before,
@@ -723,8 +723,8 @@ figure.listing pre samp:before {
 position:absolute;
 left:-1.75em;
 text-align:right;
-content: counter(precode);
-counter-increment: precode;
+content:counter(precode);
+counter-increment:precode;
 }
 
 
@@ -761,29 +761,29 @@ border-collapse:collapse;
 /*-ms-break-inside:avoid;*/
 /*break-inside:avoid;*/
 
-/*-webkit-column-break-before: always;*/
-/*-moz-column-break-before: always;*/
-/*-o-column-break-before: always;*/
-/*column-break-before: always;*/
+/*-webkit-column-break-before:always;*/
+/*-moz-column-break-before:always;*/
+/*-o-column-break-before:always;*/
+/*column-break-before:always;*/
 
-/*-webkit-column-break-before: column;*/
-/*-moz-column-break-before: column;*/
-/*-o-column-break-before: column;*/
-/*column-break-before: column;*/
-/*break-after: column;*/
+/*-webkit-column-break-before:column;*/
+/*-moz-column-break-before:column;*/
+/*-o-column-break-before:column;*/
+/*column-break-before:column;*/
+/*break-after:column;*/
 
-/*column-span: all;*/
+/*column-span:all;*/
 
-/*display: table;*/
-/*float: left;*/
-/*overflow: auto;*/
-/*display: inline-block;*/
+/*display:table;*/
+/*float:left;*/
+/*overflow:auto;*/
+/*display:inline-block;*/
 width:calc(100% - 2px);
 }
 table,
 th,
 td {
-border: 1px solid;
+border:1px solid;
 }
 table thead td:first-child,
 table tfoot td:first-child {
@@ -838,8 +838,8 @@ input,
 textarea,
 select,
 button {
-font-family: inherit;
-font-size: inherit;
+font-family:inherit;
+font-size:inherit;
 }
 input[type=submit] {
 font-weight:bold;
@@ -887,18 +887,18 @@ margin-bottom:0;
 
 
 #references ol {
-counter-reset: list-order;
+counter-reset:list-order;
 }
 #references ol li {
-counter-increment: list-order;
+counter-increment:list-order;
 list-style-position:outside;
-list-style-type: none;
-margin-left: 1.85em;
+list-style-type:none;
+margin-left:1.85em;
 text-align:left;
 }
 #references ol li:before {
-content: "[" counter(list-order) "]\00A0\00A0\00A0";
-margin-left: -1.85em;
+content:"[" counter(list-order) "]\00A0\00A0\00A0";
+margin-left:-1.85em;
 }
 
 #appendix section:first-child h2 {
@@ -907,11 +907,11 @@ margin-top:0;
 
 #appendix section {
 counter-increment:appendix;
-counter-reset: sub-appendix;
+counter-reset:sub-appendix;
 }
 #appendix section section {
 counter-increment:sub-appendix;
-counter-reset: sub-sub-appendix;
+counter-reset:sub-sub-appendix;
 }
 #appendix section section section {
 counter-increment:sub-sub-appendix;
@@ -920,10 +920,10 @@ counter-increment:sub-sub-appendix;
 content:counter(appendix, upper-latin) ".\00A0\00A0\00A0\00A0";
 }
 #appendix section section h3:before {
-content: counter(appendix, upper-latin) "." counter(sub-appendix) "\00a0\00a0\00a0";
+content:counter(appendix, upper-latin) "." counter(sub-appendix) "\00a0\00a0\00a0";
 }
 #appendix section section section h4:before {
-content: counter(appendix, upper-latin) "." counter(sub-appendix)"." counter(sub-sub-appendix) "\00a0\00a0\00a0";
+content:counter(appendix, upper-latin) "." counter(sub-appendix)"." counter(sub-sub-appendix) "\00a0\00a0\00a0";
 }
 
 
@@ -951,14 +951,14 @@ text-align:center;
 }
 
 header nav li:first-child:before {
-content: "";
+content:"";
 }
 header nav li:before {
-content: "• ";
+content:"• ";
 }
 header nav li {
-display: inline;
-list-style-type: none;
+display:inline;
+list-style-type:none;
 }
 
 .on {
@@ -966,9 +966,9 @@ display:block;
 }
 
 @media only screen
-and (min-device-width : 320px)
-and (max-device-width : 568px) {
-body { font-size: 100%; }
+and (min-device-width:320px)
+and (max-device-width:568px) {
+body { font-size:100%; }
 #content {
 -webkit-column-count:1;
 -moz-column-count:1;
@@ -977,8 +977,8 @@ column-count:1;
 }
 
 @media only screen
-and (min-device-width : 768px)
-and (max-device-width : 1024px) {
+and (min-device-width:768px)
+and (max-device-width:1024px) {
 body {
 font-size:100%;
 }
