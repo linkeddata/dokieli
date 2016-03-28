@@ -1682,7 +1682,7 @@ var DO = {
                             case 'audio':   sign = '🔊'; break;
                             case 'footer':  sign = '⸙'; break;
                         }
-                        e.target.insertAdjacentHTML('afterbegin', '<span class="do fragment"><a href="#' + e.target.id + '">' + sign + '</a></span>');
+                        e.target.insertAdjacentHTML('afterbegin', '<span class="do fragment"><a class="fa fa-hashtag" href="#' + e.target.id + '">' + sign + '</a></span>');
                         fragment = document.querySelector('#' + e.target.id + ' > .do.fragment');
                         var fragmentClientWidth = fragment.clientWidth;
 
@@ -1934,7 +1934,7 @@ var DO = {
 
         shareResource: function(e) {
             e.target.disabled = true;
-            document.body.insertAdjacentHTML('beforeend', '<aside id="share-resource" class="do on"><button class="close" title="Close">❌</button><h2>Share</h2><div id="share-resource-input"><ul><li><label for="share-resource-url">URL</label> <input id="share-resource-url" type="text" placeholder="https://example.org/article#introduction" name="share-resource-url" value="' + document.documentURI + '" /></li><li><label for="share-resource-people">People</label> <textarea id="share-resource-people" rows="2" cols="40" name="share-resource-people" placeholder="Enter WebIDs per line"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share">Share</button></aside>');
+            document.body.insertAdjacentHTML('beforeend', '<aside id="share-resource" class="do on"><button class="close" title="Close">❌</button><h2>Share</h2><div id="share-resource-input"><ul><li><label for="share-resource-url">URL</label> <input id="share-resource-url" type="text" placeholder="https://example.org/article#introduction" name="share-resource-url" value="' + document.documentURI + '" /></li><li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share">Share</button></aside>');
 
             var shareResource = document.getElementById('share-resource');
             shareResource.addEventListener('click', function(e) {
@@ -1944,9 +1944,9 @@ var DO = {
 
                 if (e.target.matches('button.share')) {
                     var resource = document.querySelector('#share-resource #share-resource-url').value.trim();
-                    var people = document.querySelector('#share-resource #share-resource-people').value.trim();
+                    var tos = document.querySelector('#share-resource #share-resource-to').value.trim();
                     var note = document.querySelector('#share-resource #share-resource-note').value.trim();
-                    people = people.split(/\r\n|\r|\n/);
+                    tos = tos.split(/\r\n|\r|\n/);
 
                     if (resource.length > 0) {
                         var rm = shareResource.querySelector('.response-message');
@@ -1955,7 +1955,7 @@ var DO = {
                         }
                         shareResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>');
 
-                        people.forEach(function(to) {
+                        tos.forEach(function(to) {
                             var inbox;
                             var inboxResponse = function() {
                                 return new Promise(function(resolve, reject) {
