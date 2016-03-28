@@ -12,34 +12,34 @@ Computer Modern Unicode fonts are from http://canopus.iacp.dvo.ru/~panov/cm-unic
 */
 
 @font-face {
-font-family: "CMUSerif-Roman";
-src: local("CMUSerif-Roman"), url("../fonts/cmunrm.otf");
+font-family:"CMUSerif-Roman";
+src:local("CMUSerif-Roman"), url("../fonts/cmunrm.otf");
 }
 @font-face {
-font-family: "CMUSerif-Bold";
-src: local("CMUSerif-Bold"), url("../fonts/cmunbx.otf");
-font-weight: bold;
+font-family:"CMUSerif-Bold";
+src:local("CMUSerif-Bold"), url("../fonts/cmunbx.otf");
+font-weight:bold;
 }
 @font-face {
-font-family: "CMUSerif-Italic";
-src: local("CMUSerif-Italic"), url("../fonts/cmunti.otf");
-font-style: italic;
+font-family:"CMUSerif-Italic";
+src:local("CMUSerif-Italic"), url("../fonts/cmunti.otf");
+font-style:italic;
 }
 @font-face {
-font-family: "CMUSerif-BoldItalic";
-src: local("CMUSerif-BoldItalic"), url("../fonts/cmunbi.otf");
-font-weight: bold;
-font-style: italic;
+font-family:"CMUSerif-BoldItalic";
+src:local("CMUSerif-BoldItalic"), url("../fonts/cmunbi.otf");
+font-weight:bold;
+font-style:italic;
 }
 @font-face {
-font-family: "CMUTypewriter-Regular";
-src: local("CMUTypewriter-Regular"), url("../fonts/cmuntt.otf");
+font-family:"CMUTypewriter-Regular";
+src:local("CMUTypewriter-Regular"), url("../fonts/cmuntt.otf");
 }
 
 @media print {
 /*
-@media print and (width: 210mm) and (height: 297mm) {
-@media print and (width: 8.5in) and (height: 11in) {
+@media print and (width:210mm) and (height:297mm) {
+@media print and (width:8.5in) and (height:11in) {
 */
 @page {
 /*Standard ISO A4 paper dimensions are:*/
@@ -48,7 +48,7 @@ src: local("CMUTypewriter-Regular"), url("../fonts/cmuntt.otf");
 /*Equivalent A4 paper dimensions in pixels at 300 DPI and 72 DPI respectively are:*/
 /*2480 pixels x 3508 pixels (print resolution)*/
 /*595 pixels x 842 pixels (screen resolution)*/
-/*size: A4;*/
+/*size:A4;*/
 margin:52mm 0;
 }
 
@@ -106,7 +106,7 @@ a {
 text-decoration:none;
 color:#000;
 }
-abbr { border-bottom: none; }
+abbr { border-bottom:none; }
 audio { display:none; }
 iframe { display:none !important; }
 
@@ -117,8 +117,8 @@ font-size:10pt;
 }
 
 .blink {
-animation: none;
--webkit-animation: none;
+animation:none;
+-webkit-animation:none;
 }
 
 object:not([type="text/html"]) { height:auto !important; }
@@ -133,16 +133,16 @@ max-height:100px !important;
 
 * { margin:0; padding:0; filter:none !important; }
 img { border:0; }
-a abbr { cursor: pointer; border-bottom:0; }
+a abbr { cursor:pointer; border-bottom:0; }
 table { border-collapse:collapse; }
 tr { vertical-align:top; }
 ol { list-style-position:inside; }
 h2, h3, h4, h5, h6, p, ul, ol, li, pre, code, samp, audio, video {
-orphans: 3;
-widows: 3;
+orphans:3;
+widows:3;
 }
 
-table, img, object, figure, audio, video, canvas { page-break-inside: avoid; }
+table, img, object, figure, audio, video, canvas { page-break-inside:avoid; }
 object {
 width:100%;
 min-height:240px;
@@ -161,19 +161,19 @@ clear:both;
 }
 
 #references ol {
-counter-reset: list-order;
+counter-reset:list-order;
 text-align:left;
 }
 #references ol li {
-counter-increment: list-order;
+counter-increment:list-order;
 list-style-position:outside;
-list-style-type: none;
-margin-left: 1.1em;
+list-style-type:none;
+margin-left:1.1em;
 font-size:0.923em;
 }
 #references ol li:before {
-content: counter(list-order) ". ";
-margin-left: -1.1em;
+content:counter(list-order) ". ";
+margin-left:-1.1em;
 }
 
 
@@ -186,7 +186,7 @@ word-break:break-all;
 
 body {
 color:#000000;
-font-family: "CMUSerif-Roman", "GNU Unifont", "FreeSerif", "Segoe UI Symbol", serif;
+font-family:"CMUSerif-Roman", "GNU Unifont", "FreeSerif", "Segoe UI Symbol", serif;
 /*font-size:1.689vw;*/
 font-size:125%;
 line-height:1.231;
@@ -208,13 +208,13 @@ hyphens:none;
 }
 
 h1,h2,h3,h4, strong, dt, figcaption:before, caption:before, #subtitle {
-font-family: "CMUSerif-Bold", serif;
+font-family:"CMUSerif-Bold", serif;
 }
 h5,h6, em, cite, dfn, address {
-font-family: "CMUSerif-Italic", serif;
+font-family:"CMUSerif-Italic", serif;
 }
 h1 em, h2 em, h3 em, h4 em, dt dfn {
-font-family: "CMUSerif-BoldItalic", serif;
+font-family:"CMUSerif-BoldItalic", serif;
 }
 section article h1,
 section article h2,
@@ -222,7 +222,7 @@ section article h3 {
 font-family:"CMUSerif-Roman", serif;
 }
 code, code strong, samp, samp strong pre, kbd, button {
-font-family: "CMUTypewriter-Regular", monospace;
+font-family:"CMUTypewriter-Regular", monospace;
 }
 code strong, samp strong {
 font-weight:bold;
@@ -237,7 +237,7 @@ text-indent:1em;
 
 h1,h2,h3,h4,h5,h6 {
 overflow:hidden;
-page-break-after: avoid;
+page-break-after:avoid;
 line-height:1.231;
 }
 h1 {
@@ -337,11 +337,11 @@ left:1.5em;
 width:calc(100% - 1.5em);
 }
 aside.note blockquote article {
-left: 0;
+left:0;
 width:100%;
 }
 aside.note blockquote blockquote {
-padding-left: 0.5em;
+padding-left:0.5em;
 }
 aside.note > blockquote {
 border-left:0;
@@ -359,28 +359,28 @@ left:-1.75em;
 
 
 article section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]) {
-counter-increment: section;
-counter-reset: sub-section;
+counter-increment:section;
+counter-reset:sub-section;
 }
 article section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]) section {
-counter-increment: sub-section;
-counter-reset: sub-sub-section;
+counter-increment:sub-section;
+counter-reset:sub-sub-section;
 }
 article section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]) section section {
-counter-increment: sub-sub-section;
-counter-reset: sub-sub-sub-section;
+counter-increment:sub-sub-section;
+counter-reset:sub-sub-sub-section;
 }
 
 article section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id^=table-of-]) > h2:before {
-content: counter(section) "\00a0\00a0\00a0\00a0";
+content:counter(section) "\00a0\00a0\00a0\00a0";
 }
 
 section > h3:before {
-content: counter(section) "." counter(sub-section) "\00a0\00a0\00a0";
+content:counter(section) "." counter(sub-section) "\00a0\00a0\00a0";
 }
 section > h4:after,
 section > h5:after {
-content: ".";
+content:".";
 }
 
 
@@ -467,7 +467,7 @@ overflow:auto;
 figure.listing pre {
 border:1px solid #000;
 padding:0.5em;
-counter-reset: precode;
+counter-reset:precode;
 margin-top:0;
 }
 figure.listing pre code:before,
@@ -475,8 +475,8 @@ figure.listing pre samp:before {
 position:absolute;
 left:-1.75em;
 text-align:right;
-content: counter(precode);
-counter-increment: precode;
+content:counter(precode);
+counter-increment:precode;
 }
 
 #authors {
@@ -512,7 +512,7 @@ font-size:0.923em;
 
 #author-email,
 #author-uri {
-font-family: "CMUTypewriter-Regular", monospace;
+font-family:"CMUTypewriter-Regular", monospace;
 font-size:0.923em;
 }
 
@@ -579,7 +579,7 @@ white-space:pre;
 #contact-us h2:before,
 #contact-us h3:before,
 #contact-us h4:before {
-content: "";
+content:"";
 }
 
 #document-identifier dt:after,
@@ -599,13 +599,13 @@ content: "";
 #categories-and-subject-descriptors h2:after,
 #keywords h2:after,
 .target dt:after {
-content: ": ";
+content:":";
 }
 
 
 #abstract h2:after,
 #document-status h2:after {
-content: ".";
+content:".";
 }
 
 #abstract h2,
@@ -667,46 +667,46 @@ text-align:left !important;
 
 .toc li {
 list-style-position:outside;
-list-style-type: none;
-margin-left: 1.25em;
+list-style-type:none;
+margin-left:1.25em;
 margin-bottom:0.25em;
 }
 .toc li:before {
-margin-left: -1.25em;
+margin-left:-1.25em;
 }
 
 .toc li:not([data-id=abstract]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
-counter-increment: s;
-counter-reset: sub-s;
+counter-increment:s;
+counter-reset:sub-s;
 }
 
 .toc li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
-counter-increment: sub-s;
-counter-reset: sub-sub-s;
+counter-increment:sub-s;
+counter-reset:sub-sub-s;
 }
 .toc li li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
-counter-increment: sub-sub-s;
-counter-reset: sub-sub-sub-s;
+counter-increment:sub-sub-s;
+counter-reset:sub-sub-sub-s;
 }
 .toc li li li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
-counter-increment: sub-sub-sub-s;
-counter-reset: sub-sub-sub-sub-s;
+counter-increment:sub-sub-sub-s;
+counter-reset:sub-sub-sub-sub-s;
 }
 .toc li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
-content: "\00a0" counter(s) "\00a0";
+content:"\00a0" counter(s) "\00a0";
 }
 .toc li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
-content: "\00a0" counter(s) "." counter(sub-s) "\00a0";
+content:"\00a0" counter(s) "." counter(sub-s) "\00a0";
 }
 .toc li li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
-content: "\00a0" counter(s) "." counter(sub-s) "." counter(sub-sub-s) "\00a0";
+content:"\00a0" counter(s) "." counter(sub-s) "." counter(sub-sub-s) "\00a0";
 }
 .toc li li li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
-content: "\00a0" counter(s) "." counter(sub-s) "." counter(sub-sub-s) "." counter(sub-sub-sub-s) "\00a0";
+content:"\00a0" counter(s) "." counter(sub-s) "." counter(sub-sub-s) "." counter(sub-sub-sub-s) "\00a0";
 }
 
 .toc li[data-id=abstract]:before, .toc li[data-id=document-status]:before, .toc li[data-id=keywords]:before, .toc li[data-id=references]:before, .toc li[data-id=categories-and-subject-descriptors]:before, .toc li[data-id=general-terms]:before, .toc li[data-id=appendix]:before, .toc li[data-id=contact-us]:before {
-content: "\00a0\00a0\00a0\00a0";
+content:"\00a0\00a0\00a0\00a0";
 }
 
 
@@ -716,12 +716,12 @@ content: "\00a0\00a0\00a0\00a0";
 display:inline;
 }
 .pages:before {
-content: ",\0020";
+content:",\0020";
 }
 .pages dt {
-font-family: "CMUSerif-Roman";
-margin-right: 0.5em;
-text-transform: lowercase;
+font-family:"CMUSerif-Roman";
+margin-right:0.5em;
+text-transform:lowercase;
 }
 
 
@@ -756,13 +756,13 @@ margin-bottom:1em;
 }
 
 html {
-counter-reset: figure 0;
+counter-reset:figure 0;
 }
 body {
-counter-reset: listing 0;
+counter-reset:listing 0;
 }
 article {
-counter-reset: table 0;
+counter-reset:table 0;
 }
 figure {
 counter-increment:figure;
@@ -777,20 +777,20 @@ table {
 counter-increment:table;
 }
 figure.equation:after {
-content: "(" counter(equation) ")";
+content:"(" counter(equation) ")";
 line-height:0;
-position: absolute;
+position:absolute;
 top:45%;
 right:0;
 }
 figcaption:before {
-content: "Fig. " counter(figure) ". ";
+content:"Fig. " counter(figure) ". ";
 }
 figure.listing figcaption:before {
-content: "Listing " counter(listing) ". ";
+content:"Listing " counter(listing) ". ";
 }
 caption:before {
-content: "Table " counter(table) ". ";
+content:"Table " counter(table) ". ";
 }
 
 
@@ -834,9 +834,9 @@ figure.equation {
 counter-increment:equation;
 }
 figure.equation:after {
-content: "(" counter(equation) ")";
+content:"(" counter(equation) ")";
 line-height:0;
-position: absolute;
+position:absolute;
 top:45%;
 right:0;
 }
@@ -879,7 +879,7 @@ content:"\A";
 white-space:pre;
 }
 tfoot dl.abbr dt:after {
-content:": ";
+content:":";
 }
 tfoot dl.abbr {
 -webkit-column-count:2;
@@ -952,8 +952,8 @@ input,
 textarea,
 select,
 button {
-font-family: inherit;
-font-size: inherit;
+font-family:inherit;
+font-size:inherit;
 }
 input[type=submit] {
 font-weight:bold;
