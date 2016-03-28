@@ -79,9 +79,15 @@ transform:translate(-50%, 0);
 aside.do.on a {
 word-wrap:break-word;
 }
+aside.do.on label {
+vertical-align:top;
+min-width:5%;
+display:inline-block;
+}
 aside.do input {
 padding:0.2em;
 }
+
 
 aside.note {
 position:static;
@@ -269,6 +275,7 @@ content:'' !important;
 #share-resource ul,
 #table-of-stuff ul {
 list-style-type:none;
+margin-left:0;
 }
 #document-metadata * {
 text-align:left;
