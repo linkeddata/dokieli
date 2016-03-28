@@ -7,8 +7,8 @@ There is no root, authority, or centralisation here. Control yourself!
 dokieli is a decentralized article authoring, annotation, and social
 notification tool which works from a Web browser. While it is a general purpose
 tooling to write articles, it is fully compliant with the [Linked
-Research](https://linkedresearch.org/) initiative and principles,
-and provides features and interactions for scholarly communication.
+Research](https://linkedresearch.org/) initiative and principles, and provides
+features and interactions for scholarly communication.
 
 dokieli's architecture is progressively enhanced such that articles are
 accessible anywhere from a text-browser to Firefox Nightly. Articles and
@@ -18,28 +18,30 @@ and RDF. Articles can be authored both online and offline.
 Where applicable, dokieli can employ participant's e.g., authors, reviewers,
 commenters, WebID and personal online datastores to store and give different
 access controls to the information to different participants. Similarly, anyone
-that wants to annotate can store their notes at a Webspace in which they control.
+that wants to annotate can store their notes at a Webspace in which they
+control.
 
 
 ## Features
-* In-browser document authoring and formatting, and semantic enrichments
+* In-browser document authoring and formatting, and semantic enrichments (RDFa annotations)
 * Information is represented and retrieved following the Linked Data design principles
 * Employs WebID + ACL and personal online datastore where applicable (compliant with [Linked Data Platform](http://www.w3.org/TR/ldp/) and [Solid](https://github.com/solid/solid-spec) servers)
-* Uses author's information from their online profile
-* Creation of new documents from any existing dokieli document
-* Save document and its dependencies to a new location (anywhere on the Web with LDP support)
-* Annotations (e.g., replies, peer-reviews, liking, resharing). Uses W3C Web Annotation and Social Web data models
-* Inbox notifications for annotations
+* Uses author's information from their online profile (WebID)
+* Creation of new documents from any existing dokieli document - part of *self-replicatibility*
+* Save document and its dependencies to a new location (anywhere on the Web with LDP support) - part of *self-replicatibility*
+* Annotations (e.g., replies, peer-reviews, liking, resharing).
+* Uses W3C Web Annotation and W3C Social Web vocabularies and data models
+* Inbox notifications for annotations and social sharing
 * Assign license (e.g., Creative Commons) to the contributions/annotations
 * Assignment of URI fragments (to whatever is of interest) so that other resources on the Web can reference
-* Embedding data blocks, e.g., Turtle, N-Triples, Nanopublications
+* Embedding data blocks, e.g., Turtle, N-Triples, JSON-LD, TriG (Nanopublications)
 * Embedding of media objects, tables, and interactions
 * Automated references and citations
 * Insertion of table of contents, figures, tables, abbreviations
 * Drag and drop to reorganize the document's sections and table of contents
 * In-browser local storage, and document exporting
 * Document metadata
-* Views for screen and print (e.g., ACM, LNCS) - yes, you can output to a paper user interface: PDF
+* Views for screen and print (e.g., ACM, LNCS) - yes, you can output to a *paper user interface*: PDF
 * .. and [many more on the way](https://github.com/linkeddata/dokieli/issues/)
 
 
@@ -71,14 +73,14 @@ feedback can be under their full control, meanwhile allowing who it can be
 visible to or writeable for. If they don't, or the authors don't wish to enable
 open dialogue, that's okay too.
 
-It works towards a solution e.g., proposed
-[acid test](http://csarven.ca/enabling-accessible-knowledge#acid-test) where
-authors and Webizens can both publish and consume, and participate in
-discussions meanwhile having human and machine-friendly information all
-within their control.
+
+It works towards [acid test and user stories](http://csarven.ca/linked-research-scholarly-communication#user-stories)
+where authors and all Webizens can publish and consume, and participate in
+discussions meanwhile having human and machine-friendly information all within
+their control.
 
 dokieli is not perfect, but it is intended to evolve based on our collective
-experience.
+experience and pave the way for tooling with interopability in mind.
 
 
 ## Dependencies
@@ -112,7 +114,7 @@ interactions.
 
 ## How to contribute
 * Use it! Share your work with the others.
-* Enable your colleagues to the same.
+* Enable your colleagues to do the same.
 * Join the [dokieli chat](https://gitter.im/linkeddata/dokieli) for help and discussion.
 * Break things. Report [issues](https://github.com/linkeddata/dokieli/issues/) and document. Resolve issues.
 * Optimize. Work on features.
