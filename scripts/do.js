@@ -875,6 +875,14 @@ var DO = {
         },
 
         notifyInbox: function(o) {
+            var slug, inbox;
+            if ('slug' in o) {
+                slug = o.slug;
+            }
+            if ('inbox' in o) {
+                inbox = o.inbox;
+            }
+
             //TODO: More readable eg whitespace, CRs..
             var data = '@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n\
@@ -902,16 +910,6 @@ var DO = {
             data += '    ; as:updated "' + DO.U.getDateTimeISO() + '"^^xsd:dateTime\n\
 ';
 
-            if ('to' in o && o.to.length > 0) {
-                o.to.forEach(function(iri) {
-                    //TODO: Improve this IRI check
-                    if (!iri.match(/\s/g) && iri.match(/^https?:\/\//gi) && iri.length > 10) {
-                        data += '    ; as:to <' + iri + '>\n\
-';
-                    }
-                });
-            }
-
             if ('summary' in o && o.summary.length > 0) {
                 data += '    ; as:summary """' + o.summary + '"""^^rdf:HTML\n\
 ';
@@ -926,16 +924,21 @@ var DO = {
                 data += '    ; schema:license <' + o.license + '>\n\
 ';
             }
+
+            if ('to' in o && o.to.length > 0 && !o.to.match(/\s/g) && o.to.match(/^https?:\/\//gi)) {
+                data += '    ; as:to <' + o.to + '>\n\
+';
+            }
+
             data += '    .\n\
 ';
 
-            var slug;
-            if ('slug' in o) {
-                slug = o.slug;
+            if (inbox && inbox.length > 0) {
+                return DO.U.postResource(inbox, slug, data, 'text/turtle; charset=utf-8');
             }
-
-            //TODO: make sure inbox is an HTTP IRI
-            return DO.U.postResource(o.inbox, slug, data, 'text/turtle; charset=utf-8');
+            else {
+                return Promise.reject({'message': "No inbox to send notification to"});
+            }
         },
 
         urlParam: function(name) {
@@ -1931,7 +1934,7 @@ var DO = {
 
         shareResource: function(e) {
             e.target.disabled = true;
-            document.body.insertAdjacentHTML('beforeend', '<aside id="share-resource" class="do on"><button class="close" title="Close">❌</button><h2>Share</h2><div id="share-resource-input"><ul><li><label for="share-resource-url">URL</label> <input id="share-resource-url" type="text" placeholder="https://example.org/article#introduction" name="share-resource-url" value="' + document.documentURI + '" /></li><li><label for="share-resource-inbox">Inbox</label> <input id="share-resource-inbox" type="text" placeholder="https://example.org/inbox/" name="share-resource-inbox" value="" /></li><li><label for="share-resource-people">People</label> <textarea id="share-resource-people" rows="2" cols="50" name="share-resource-people" placeholder="Enter WebIDs per line"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="50" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share">Share</button></aside>');
+            document.body.insertAdjacentHTML('beforeend', '<aside id="share-resource" class="do on"><button class="close" title="Close">❌</button><h2>Share</h2><div id="share-resource-input"><ul><li><label for="share-resource-url">URL</label> <input id="share-resource-url" type="text" placeholder="https://example.org/article#introduction" name="share-resource-url" value="' + document.documentURI + '" /></li><li><label for="share-resource-people">People</label> <textarea id="share-resource-people" rows="2" cols="40" name="share-resource-people" placeholder="Enter WebIDs per line"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share">Share</button></aside>');
 
             var shareResource = document.getElementById('share-resource');
             shareResource.addEventListener('click', function(e) {
@@ -1941,36 +1944,61 @@ var DO = {
 
                 if (e.target.matches('button.share')) {
                     var resource = document.querySelector('#share-resource #share-resource-url').value.trim();
-                    var inbox = document.querySelector('#share-resource #share-resource-inbox').value.trim();
                     var people = document.querySelector('#share-resource #share-resource-people').value.trim();
                     var note = document.querySelector('#share-resource #share-resource-note').value.trim();
                     people = people.split(/\r\n|\r|\n/);
 
-                    if (resource.length > 0 && inbox.length > 0) {
-                        var notificationData = {
-                            "type": "as:Announce",
-                            "inbox": inbox,
-                            // "slug": id,
-                            "object": resource,
-                            "to": people,
-                            "summary": note,
-                            "license": "http://creativecommons.org/licenses/by/4.0/"
-                        };
+                    if (resource.length > 0) {
+                        var rm = shareResource.querySelector('.response-message');
+                        if (rm) {
+                            rm.parentNode.removeChild(rm);
+                        }
+                        shareResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>');
 
-                        DO.U.notifyInbox(notificationData).then(
-                            function(response) {
-                                var location = response.xhr.getResponseHeader('Location');
-//console.log(location);
-                                var rm = shareResource.querySelector('.response-message');
-                                if (rm) {
-                                    rm.parentNode.removeChild(rm);
+                        people.forEach(function(to) {
+                            var inbox;
+                            var inboxResponse = function() {
+                                return new Promise(function(resolve, reject) {
+                                    DO.U.getInboxFromRDF(to).then(
+                                        function(inboxes){
+                                            return resolve(inboxes[0]);
+                                        },
+                                        function(reason){
+                                            console.log(reason);
+                                            return reject(reason);
+                                        }
+                                    );
+                                });
+                            };
+
+                            inboxResponse().then(
+                                function(inbox) {
+                                    var notificationData = {
+                                        "type": "as:Announce",
+                                        "inbox": inbox,
+                                        "object": resource,
+                                        "to": to,
+                                        "summary": note,
+                                        "license": "http://creativecommons.org/licenses/by/4.0/"
+                                    };
+
+                                    DO.U.notifyInbox(notificationData).then(
+                                        function(response) {
+                                            var location = response.xhr.getResponseHeader('Location');
+                                            var rm = shareResource.querySelector('.response-message');
+                                            rm.insertAdjacentHTML('beforeend', '<p class="success">Notification sent: <a target="_blank" href="' + location + '">' + location + '</a></p>');
+                                        },
+                                        function(reason) {
+                                            console.log(reason);
+                                        }
+                                    );
+
+                                },
+                                function(reason) {
+                                    console.log(reason);
                                 }
-                                shareResource.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="success">Notification sent: <a target="_blank" href="' + location + '">' + location + '</a></p></div>');
-                            },
-                            function(reason) {
-                                console.log(reason);
-                            }
-                        );
+                            );
+                        });
                     }
                 }
             });
