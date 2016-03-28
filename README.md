@@ -27,8 +27,8 @@ control.
 * Information is represented and retrieved following the Linked Data design principles
 * Employs WebID + ACL and personal online datastore where applicable (compliant with [Linked Data Platform](http://www.w3.org/TR/ldp/) and [Solid](https://github.com/solid/solid-spec) servers)
 * Uses author's information from their online profile (WebID)
-* Creation of new documents from any existing dokieli document - part of *self-replicatibility*
-* Save document and its dependencies to a new location (anywhere on the Web with LDP support) - part of *self-replicatibility*
+* Creation of new documents from any existing dokieli document - part of *self-replication*
+* Save document and its dependencies to a new location (anywhere on the Web with LDP support) - part of *self-replication*
 * Annotations (e.g., replies, peer-reviews, liking, resharing).
 * Uses W3C Web Annotation and W3C Social Web vocabularies and data models
 * Inbox notifications for annotations and social sharing
