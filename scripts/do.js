@@ -1131,7 +1131,7 @@ var DO = {
             dMenuButton.classList.add('show');
             dMenuButton.setAttribute('title', 'Open Menu');
 
-            var removeElementsList = ['toc', 'embed-data-entry', 'create-new-document', 'source-view', 'save-as-document', 'user-identity-input', 'resource-browser'];
+            var removeElementsList = ['toc', 'embed-data-entry', 'create-new-document', 'source-view', 'save-as-document', 'user-identity-input', 'resource-browser', 'share-resource'];
             removeElementsList.forEach(function(id) {
                 var element = document.getElementById(id);
                 if(element) {
