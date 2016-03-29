@@ -1682,7 +1682,7 @@ var DO = {
                             case 'audio':   sign = '🔊'; break;
                             case 'footer':  sign = '⸙'; break;
                         }
-                        e.target.insertAdjacentHTML('afterbegin', '<span class="do fragment"><a class="fa fa-hashtag" href="#' + e.target.id + '">' + sign + '</a></span>');
+                        e.target.insertAdjacentHTML('afterbegin', '<span class="do fragment"><a href="#' + e.target.id + '">' + sign + '</a></span>');
                         fragment = document.querySelector('#' + e.target.id + ' > .do.fragment');
                         var fragmentClientWidth = fragment.clientWidth;
 
