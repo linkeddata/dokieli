@@ -72,6 +72,11 @@ var DO = {
                 "@type": "@id",
                 "@array": true
             },
+            "rdfsSeeAlso": {
+                "@id": "http://www.w3.org/2000/01/rdf-schema#seeAlso",
+                "@type": "@id",
+                "@array": true
+            },
             "foafname": "http://xmlns.com/foaf/0.1/name",
             "foafhomepage": {
                 "@id": "http://xmlns.com/foaf/0.1/homepage",
@@ -85,6 +90,11 @@ var DO = {
             "foafmaker": {
                 "@id": "http://xmlns.com/foaf/0.1/maker",
                 "@type": "@id"
+            },
+            "foafknows": {
+                "@id": "http://xmlns.com/foaf/0.1/knows",
+                "@type": "@id",
+                "@array": true
             },
 
             "schemaname": "https://schema.org/name",
@@ -106,6 +116,11 @@ var DO = {
             },
             "schemacitation": {
                 "@id": "https://schema.org/citation",
+                "@type": "@id",
+                "@array": true
+            },
+            "schemaknows": {
+                "@id": "https://schema.org/knows",
                 "@type": "@id",
                 "@array": true
             },
