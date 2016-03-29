@@ -1695,7 +1695,7 @@ var DO = {
                         }
 
                         fragment.style.top = Math.ceil(e.target.offsetTop) + 'px';
-                        fragment.style.left = (offsetLeft - fragmentClientWidth - 2) + 'px';
+                        fragment.style.left = (offsetLeft - fragmentClientWidth) + 'px';
                         fragment.style.height = e.target.clientHeight + 'px';
                         fragment.style.width = (fragmentClientWidth - 10) + 'px';
                     }
