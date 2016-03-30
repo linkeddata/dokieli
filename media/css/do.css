@@ -87,7 +87,9 @@ display:inline-block;
 aside.do input {
 padding:0.2em;
 }
-
+aside.do.on ul {
+margin:0;
+}
 
 .do.on #share-resource-contacts li {
 margin:0.25em 0;
