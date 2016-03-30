@@ -1950,7 +1950,10 @@ var DO = {
         shareResource: function(e, iri) {
             iri = iri || document.documentURI;
             e.target.disabled = true;
-            document.body.insertAdjacentHTML('beforeend', '<aside id="share-resource" class="do on"><button class="close" title="Close">❌</button><h2>Share resource</h2><div id="share-resource-input"><p>Send a notification about <code>' + iri +'</code></p><ul><li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share">Share</button></aside>');
+
+            var addContactsButton = (DO.C.User.IRI) ? '<li><button class="add">Add from contacts</button></li>' : '';
+
+            document.body.insertAdjacentHTML('beforeend', '<aside id="share-resource" class="do on"><button class="close" title="Close">❌</button><h2>Share resource</h2><div id="share-resource-input"><p>Send a notification about <code>' + iri +'</code></p><ul><li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li>' + addContactsButton + '<li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share">Share</button></aside>');
 
             var shareResource = document.getElementById('share-resource');
             shareResource.addEventListener('click', function(e) {
@@ -1958,10 +1961,21 @@ var DO = {
                     document.querySelector('#document-do .resource-share').disabled = false;
                 }
 
+                if (DO.C.User.IRI && e.target.matches('button.add')) {
+                    DO.U.selectContacts(e, DO.C.User.IRI);
+                }
+
                 if (e.target.matches('button.share')) {
                     var tos = document.querySelector('#share-resource #share-resource-to').value.trim();
+                    tos = (tos.length > 0) ? tos.split(/\r\n|\r|\n/) : [];
                     var note = document.querySelector('#share-resource #share-resource-note').value.trim();
-                    tos = tos.split(/\r\n|\r|\n/);
+
+                    var srci = document.querySelectorAll('#share-resource-contacts input:checked');
+                    if (srci.length > 0) {
+                        for(var i = 0; i < srci.length; i++) {
+                          tos.push(srci[i].value);
+                        }
+                    }
 
                     if (iri.length > 0) {
                         var rm = shareResource.querySelector('.response-message');
@@ -2007,7 +2021,6 @@ var DO = {
                                             console.log(reason);
                                         }
                                     );
-
                                 },
                                 function(reason) {
                                     console.log(reason);
@@ -2044,6 +2057,53 @@ var DO = {
                 );
             });
         },
+
+        selectContacts: function(e, url) {
+            DO.U.getContacts(url).then(
+                function(contacts) {
+                    e.target.parentNode.innerHTML = '<label>Select from contacts</label><ul id="share-resource-contacts"></ul>';
+                    var shareResourceContacts = document.getElementById('share-resource-contacts');
+                    var counter = 1;
+                    contacts.forEach(function(url) {
+                        var pIRI = url;
+                        pIRI = DO.U.stripFragmentFromString(pIRI);
+                        if (pIRI.slice(0, 5).toLowerCase() == 'http:') {
+                            pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
+                        }
+//console.log('pIRI: ' + pIRI);
+//console.log('url: ' + url);
+                        SimpleRDF(DO.C.Vocab, pIRI, null, ld.store).get().then(
+                            function(i) {
+// console.log(i);
+                                var s = i.child(url);
+                                if(s._graph.length > 0) {
+                                    var name = s.foafname || s.schemaname || '';
+                                    var img = s.foafimg || s["http://xmlns.com/foaf/0.1/depiction"] || s.schemaimage || '';
+// console.log(name);
+// console.log(img);
+                                    if (img.length > 0 || name.length > 0) {
+                                        img = (img.length > 0) ? '<img width="32" height="32" src="' + img + '" />' : '';
+                                        shareResourceContacts.insertAdjacentHTML('beforeend', '<li><input id="share-resource-contact-' + counter + '" type="checkbox" value="' + url + '" /><label for="share-resource-contact-' + counter + '">' + img + name + '</label></li>');
+                                        counter++;
+                                    }
+                                }
+                                else {
+                                    console.log('No profile: ' + url);
+                                }
+                            },
+                            function(reason){
+                                console.log(reason);
+                                console.log('No profile: ' + url);
+                            }
+                        );
+                    });
+                },
+                function(reason) {
+                    console.log(reason);
+                }
+            );
+        },
+
 
         nextLevelButton: function(button, url) {
             var final = document.getElementById('location-final');

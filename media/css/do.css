@@ -89,6 +89,17 @@ padding:0.2em;
 }
 
 
+.do.on #share-resource-contacts li {
+margin:0.25em 0;
+}
+.do.on #share-resource-contacts {
+max-height:30em;
+overflow:auto;
+}
+.do.on #share-resource-contacts label {
+vertical-align:middle;
+}
+
 aside.note {
 position:static;
 border:0;
