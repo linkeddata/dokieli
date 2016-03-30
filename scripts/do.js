@@ -2019,6 +2019,32 @@ var DO = {
             });
         },
 
+        getContacts: function(url) {
+            var pIRI = url;
+            pIRI = DO.U.stripFragmentFromString(pIRI);
+            if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
+                pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
+            }
+
+            return new Promise(function(resolve, reject) {
+                SimpleRDF(DO.C.Vocab, pIRI, null, ld.store).get().then(
+                    function(i) {
+// console.log(i);
+                        var s = i.child(url);
+                        var knows = s.foafknows;
+                        var seeAlso = s.rdfsSeeAlso;
+// console.log(knows._array);
+// console.log(seeAlso);
+                        return resolve(knows._array);
+                    },
+                    function(reason){
+                        console.log(reason);
+                        return reject(reason);
+                    }
+                );
+            });
+        },
+
         nextLevelButton: function(button, url) {
             var final = document.getElementById('location-final');
             button.addEventListener('click', function(){
