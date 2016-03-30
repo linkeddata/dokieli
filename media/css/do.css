@@ -100,6 +100,10 @@ overflow:auto;
 vertical-align:middle;
 }
 
+#source-view textarea {
+font-family:monospace;
+}
+
 aside.note {
 position:static;
 border:0;
