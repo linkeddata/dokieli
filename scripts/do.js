@@ -1978,7 +1978,7 @@ var DO = {
             
             replyToResource.addEventListener('click', function(e) {
                 if (e.target.matches('button.close')) {
-                    document.querySelector('#document-do .resource-share').disabled = false;
+                    document.querySelector('#document-do .resource-reply').disabled = false;
                 }
                 
                 if (e.target.matches('button.reply')) {
