@@ -3241,6 +3241,12 @@ LIMIT 1";
                 var pText = ["Make it so!", "This is not a Paper", "Cogito Ergo Sum", "Do One Thing and Do It Well", "Free Your Mind", "Do or Do Not"];
                 pText = pText[Math.floor(Math.random() * pText.length)];
 
+
+                var buttonLabelsType = '';
+                if (document.location.protocol == 'http:' || document.location.protocol == 'https:') {
+                    buttonsLabelsType = 'fontawesome';
+                }
+
                 if (typeof MediumEditor !== 'undefined') {
                     DO.U.Editor.MediumEditor = new MediumEditor(editableNodes, {
                         elementsContainer: document.getElementById('document-editor'),
@@ -3256,7 +3262,7 @@ LIMIT 1";
                             cleanTags: ['meta', 'link', 'style', 'script', 'br', 'hr']
                         },
 
-                        buttonLabels: 'fontawesome',
+                        buttonLabels: buttonLabelsType,
             //          fileDragging: false, //https://github.com/yabwe/medium-editor/issues/789
 
                         toolbar: {
