@@ -15,7 +15,7 @@
         <script src="scripts/do.js"></script>
     </head>
 
-    <body about="" typeof="schema:CreativeWork sioc:Post prov:Entity" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# schema: http://schema.org/ sioc: http://rdfs.org/sioc/ns# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# bibo: http://purl.org/ontology/bibo/ dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa#">
+    <body about="" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# schema: http://schema.org/ sioc: http://rdfs.org/sioc/ns# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# bibo: http://purl.org/ontology/bibo/ dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa#" typeof="schema:CreativeWork sioc:Post prov:Entity">
         <main>
             <article about="" typeof="schema:ScholarlyArticle">
                 <h1 property="schema:name">A Sample <em>ACM</em> SIG Proceedings Paper in LaTeX Format<sup>∗</sup></h1>
@@ -54,7 +54,7 @@
                 <div id="content">
                     <section id="abstract">
                         <h2>Abstract</h2>
-                        <div property="schema:abstract" datatype="rdf:HTML">
+                        <div datatype="rdf:HTML" property="schema:abstract">
                             <p>This paper provides a sample of a <span class="latex">L<span>a</span>T<span>e</span>X</span> document which conforms to the formatting guidelines for ACM SIG Proceedings. It complements the document <em>Author’s Guide to Preparing ACM SIG Proceedings Using <span class="latex">L<span>a</span>T<span>e</span>X</span>2<sub>ε</sub> and Bib<span class="tex">T<span>e</span>X</span></em>. This source file has been written with the intention of being compiled under <span class="latex">L<span>a</span>T<span>e</span>X</span>2<sub>ε</sub> and BibTeX.</p>
                             <p>The developers have tried to include every imaginable sort of <q>bells and whistles</q>, such as a subtitle, footnotes on title, subtitle and authors, as well as in the text, and every optional component (e.g. Acknowledgments, Additional Authors, Appendices), not to mention examples of equations, theorems, tables and figures.</p>
                             <p>To make best use of this sample document, run it through <span class="latex">L<span>a</span>T<span>e</span>X</span> and BibTeX, and compare this source code with the printed output produced by the dvi file.</p>
@@ -93,7 +93,7 @@
 
                     <section id="introduction" rel="schema:hasPart" resource="#introduction">
                         <h2 property="schema:name">Introduction</h2>
-                        <div property="schema:description" resource="#introduction" typeof="deo:Introduction" datatype="rdf:HTML">
+                        <div datatype="rdf:HTML" property="schema:description" resource="#introduction" typeof="deo:Introduction">
                             <p>The <em>proceedings</em> are the records of a conference. ACM seeks to give these conference by-products a uniform, high-quality appearance. To do this, ACM has some rigid requirements for the format of the proceedings documents: there is a specified format (balanced  double columns), a specified set of fonts (Arial or Helvetica and Times Roman) in certain specified sizes (for instance, 9 point for body copy), a specified live area (18 × 23.5 cm [7" × 9.25"]) centered on the page, specified size of margins (1.9 cm [0.75"]) top, (2.54 cm [1"]) bottom and (1.9 cm [.75"]) left and right; specified column width (8.45 cm [3.33"]) and gutter size (.83 cm [.33"]).</p>
 
                             <p>The good news is, with only a handful of manual settings<sup class="note"><a href="#note-1">1</a></sup>, the <span class="latex">L<span>a</span>T<span>e</span>X</span> document class file handles all of this for you.</p>
@@ -119,7 +119,7 @@
 
                             <section id="type-changes-and-special-characters" rel="schema:hasPart" resource="#type-changes-and-special-characters">
                                 <h3 property="schema:name">Type Changes and <em>Special</em> Characters</h3>
-                                <div property="schema:description">
+                                <div datatype="rdf:HTML" property="schema:description">
                                     <p>We have already seen several typeface changes in this sample. You can indicate italicized words or phrases in your text with the command <code>\textit</code>; emboldening with the command <code>\textbf</code> and typewriter-style (for instance, for computer code) with <code>\texttt</code>. But remember, you do not have to indicate typestyle changes when such changes are part of the <em>structural</em> elements of your article; for instance, the heading of this subsection will be in a sans serif<sup class="note"><a href="#note-3">3</a></sup> typeface, but that is handled by the document class file. Take care with the use of<sup class="note"><a href="#note-4">4</a></sup> the curly braces in typeface changes; they mark the beginning and end of the text that is to be in the different typeface.</p>
 
                                     <aside class="note">
@@ -133,7 +133,7 @@
 
                             <section id="math-equations" rel="schema:hasPart" resource="#math-equations">
                                 <h3 property="schema:name">Math Equations</h3>
-                                <div property="schema:description">
+                                <div datatype="rdf:HTML" property="schema:description">
                                     <p>You may want to display math equations in three distinct styles: inline, numbered or non-numbered display. Each of the three are discussed in the next sections.</p>
 
                                     <section id="inline-in-text-equations" rel="schema:hasPart" resource="#inline-in-text-equations">
@@ -145,7 +145,7 @@
 
                                     <section id="display-equations" rel="schema:hasPart" resource="#display-equations">
                                         <h4 property="schema:name">Display Equations</h4>
-                                        <div property="schema:description">
+                                        <div datatype="rdf:HTML" property="schema:description">
                                             <p>A numbered display equation – one set off by vertical space from the text and centered horizontally – is produced by the <strong>equation</strong> environment. An unnumbered display equation is produced by the <strong>displaymath</strong> environment.</p>
                                             <p>Again, in either environment, you can use any of the symbols and structures available in <span class="latex">L<span>a</span>T<span>e</span>X</span>; this section will just give a couple of examples of display equations in context. First, consider the equation, shown as an inline equation above:</p>
 
@@ -243,7 +243,7 @@
 
                             <section id="citations" rel="schema:hasPart" resource="#citations">
                                 <h3 property="schema:name">Citations</h3>
-                                <div property="schema:description">
+                                <div datatype="rdf:HTML" property="schema:description">
                                     <p>Citations to articles [<a class="ref" href="#1">1</a>, <a class="ref" href="#3">3</a>, <a class="ref" href="#3">3</a>, <a class="ref" href="#4">4</a>], conference proceedings [<a class="ref" href="#2">2</a>] or books <cite>[<a class="ref" href="#5">5</a>, <a class="ref" href="#6">6</a>]</cite> listed in the Bibliography section of your article will occur throughout the text of your article. You should use BibTeX to automatically produce this bibliography; you simply need to insert one of several citation commands with a key of the item cited in the proper location in the <code>.tex</code> file [<a class="ref" href="#5">5</a>]. The key is a short reference you invent to uniquely identify each work; in this sample document, the key is the first author’s surname and a word from the title. This identifying key is included with each item in the <code>.bib</code> file for your article.</p>
 
                                     <p>The details of the construction of the <code>.bib</code> file are beyond the scope of this sample document, but more information can be found in the <em>Author’s Guide</em>, and exhaustive details in the <em><span class="latex">L<span>a</span>T<span>e</span>X</span> User’s Guide</em>[<a class="ref" href="#5">5</a>].</p>
@@ -254,7 +254,7 @@
 
                             <section id="tables" rel="schema:hasPart" resource="#tables">
                                 <h3 property="schema:name">Tables</h3>
-                                <div property="schema:description">
+                                <div datatype="rdf:HTML" property="schema:description">
                                     <p>Because tables cannot be split across pages, the best placement for them is typically the top of the page nearest their initial cite. To ensure this proper <q>floating</q> placement of tables, use the environment <strong>table</strong> to enclose the table’s contents and the table caption. The contents of the table itself must go in the <strong>tabular</strong> environment, to be aligned properly in rows and columns, with the desired horizontal and vertical rules. Again, detailed instructions on <strong>tabular</strong> material is found in the <em><span class="latex">L<span>a</span>T<span>e</span>X</span> User’s Guide</em>.</p>
 
                                     <p>Immediately following this sentence is the point at which Table [<a href="#frequency-of-special-characters">Frequency of Special Characters</a>] is included in the input file; compare the placement of the table here with the table in the printed dvi output of this document.</p>
@@ -299,7 +299,7 @@
 
                             <section id="figures" rel="schema:hasPart" resource="#figures">
                                 <h3 property="schema:name">Figures</h3>
-                                <div property="schema:description">
+                                <div datatype="rdf:HTML" property="schema:description">
                                     <p>Like tables, figures cannot be split across pages; the best placement for them is typically the top or the bottom of the page nearest their initial cite. To ensure this proper <q>floating</q> placement of figures, use the environment <strong>figure</strong> to enclose the figure and its caption.</p>
 
                                     <p>This sample document contains examples of <strong>.eps</strong> and <strong>.ps</strong> files to be displayable with <span class="latex">L<span>a</span>T<span>e</span>X</span>. More details on each of these is found in the <em>Author’s Guide</em>.</p>
@@ -328,7 +328,7 @@
 
                             <section id="theorem-like-constructs" rel="schema:hasPart" resource="#theorem-like-constructs">
                                 <h3 property="schema:name">Theorem-like Constructs</h3>
-                                <div property="schema:description">
+                                <div datatype="rdf:HTML" property="schema:description">
                                     <p>Other common constructs that may occur in your article are the forms for logical constructs like theorems, axioms, corollaries and proofs. There are two forms, one produced by the command <code>\newtheorem</code> and the other by the command <code>\newdef</code>; perhaps the clearest and easiest way to distinguish them is to compare the two in the output of this sample document:</p>
 
                                     <p>This uses the <strong>theorem</strong> environment, created by the <code>\newtheorem</code> command:</p>
@@ -617,7 +617,7 @@
 
                     <section id="conclusions" rel="schema:hasPart" resource="#conclusions">
                         <h2 property="schema:name">Conclusions</h2>
-                        <div property="schema:description" typeof="deo:Conclusion">
+                        <div datatype="rdf:HTML" property="schema:description" resource="#conclusions" typeof="deo:Conclusion">
                             <p>This paragraph will end the body of this sample document. Remember that you might still have Acknowledgments or Appendices; brief samples of these follow. There is still the Bibliography to deal with; and we will make a disclaimer about that here: with the exception of the reference to the <span class="latex">L<span>a</span>T<span>e</span>X</span> book, the citations in this paper are to articles which have nothing to do with the present subject and are used as examples only.</p>
                         </div>
                     </section>

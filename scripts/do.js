@@ -2076,6 +2076,7 @@ var DO = {
                             function(i) {
 // console.log(i);
                                 var s = i.child(url);
+// console.log(s);
                                 if(s._graph.length > 0 && s.solidinbox && s.solidinbox._array.length > 0) {
                                     var name = s.foafname || s.schemaname || '';
                                     var img = s.foafimg || s["http://xmlns.com/foaf/0.1/depiction"] || s.schemaimage || '';
@@ -2088,7 +2089,7 @@ var DO = {
                                     }
                                 }
                                 else {
-                                    console.log('No profile: ' + url);
+                                    console.log('No inbox: ' + url);
                                 }
                             },
                             function(reason){

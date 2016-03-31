@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-    xml:lang="en" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
         <meta charset="utf-8" />
         <title>Author Guidelines for the Preparation of Contributions to Springer Computer Science Proceedings</title>
@@ -16,56 +15,44 @@
         <script src="scripts/do.js"></script>
         <style>
 @media print {
-.h1 {
-font-size:14pt;
-}
-.h2 {
-font-size:12pt;
-}
-.h3 {
-font-size:10pt;
-}
-.h4 {
-font-size:10pt;
-}
-.h5 {
-font-size:10pt;
-}
-.h6 {
-font-size:9pt;
-}
+.h1 { font-size:14pt; }
+.h2 { font-size:12pt; }
+.h3 { font-size:10pt; }
+.h4 { font-size:10pt; }
+.h5 { font-size:10pt; }
+.h6 { font-size:9pt; }
 }
 
 .h1 {
-font-family: "CMU Serif Bold", serif !important;
+font-family: "CMU Serif Bold", serif;
 font-size:1.4615em;
 }
 .h2 {
-font-family: "CMU Serif Bold", serif !important;
+font-family: "CMU Serif Bold", serif;
 font-size:1.231em;
 }
 .h3 {
-font-family: "CMU Serif Bold", serif !important;
+font-family: "CMU Serif Bold", serif;
 font-size:1em;
 }
 .h4 {
-font-family: "CMU Serif Bold", serif !important;
+font-family: "CMU Serif Bold", serif;
 font-size:1em;
 }
 .h5 {
-font-family: "CMU Serif Italic", serif !important;
+font-family: "CMU Serif Italic", serif;
 font-size:1em;
 font-weight:normal;
 }
 .h6 {
-font-family: "CMU Serif Italic", serif !important;
+font-family: "CMU Serif Italic", serif;
 font-size:0.923em;
 font-weight:normal;
 }
         </style>
     </head>
 
-    <body about="" typeof="schema:CreativeWork sioc:Post prov:Entity" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# schema: http://schema.org/ sioc: http://rdfs.org/sioc/ns# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# bibo: http://purl.org/ontology/bibo/ dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa#">
+    <body about="" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# schema: http://schema.org/ sioc: http://rdfs.org/sioc/ns# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# bibo: http://purl.org/ontology/bibo/ dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa#" typeof="schema:CreativeWork sioc:Post prov:Entity">
         <main>
             <article about="" typeof="schema:ScholarlyArticle">
                 <h1 property="schema:name">Author Guidelines for the Preparation of Contributions to Springer Computer Science Proceedings</h1>
@@ -97,7 +84,7 @@ font-weight:normal;
                 <div id="content">
                     <section id="abstract">
                         <h2>Abstract</h2>
-                        <div property="schema:abstract">
+                        <div datatype="rdf:HTML" property="schema:abstract">
                             <p>The abstract is a mandatory element that should summarize the contents of the paper and should contain at least 70 and at most 150 words. Abstract and keywords are freely available in SpringerLink.</p>
                         </div>
                     </section>
@@ -113,7 +100,7 @@ font-weight:normal;
 
                     <section id="introduction" rel="schema:hasPart" resource="#introduction">
                         <h2 property="schema:name">Introduction</h2>
-                        <div property="schema:description" datatype="rdf:HTML">
+                        <div datatype="rdf:HTML" property="schema:description">
                             <p>You will find here Springer’s guidelines for the preparation of proceedings papers to be published in one of the following series, in printed and electronic form:</p>
 
                             <ul>
@@ -138,7 +125,7 @@ font-weight:normal;
                         <div property="schema:description">
                             <section id="structuring-your-paper" rel="schema:hasPart" resource="#structuring-your-paper">
                                 <h3 property="schema:name">Structuring Your Paper</h3>
-                                <div property="schema:description">
+                                <div datatype="rdf:HTML" property="schema:description">
                                     <section id="affiliations" rel="schema:hasPart" resource="#affiliations">
                                         <h4 property="schema:name">Affiliations</h4>
                                         <div property="schema:description">
@@ -148,7 +135,7 @@ font-weight:normal;
 
                                     <section id="headings" rel="schema:hasPart" resource="#headings">
                                         <h4 property="schema:name">Headings</h4>
-                                        <div property="schema:description">
+                                        <div datatype="rdf:HTML" property="schema:description">
                                             <p>Headings should be capitalized (i.e., nouns, verbs, and all other words except articles, prepositions, and conjunctions should be set with an initial capital) and should, with the exception of the title, be aligned to the left. Only the first two levels of section headings should be numbered, as shown in Table 1. The respective font sizes are also given in Table 1. Kindly refrain from using “0” when numbering your section headings.</p>
 
                                             <table>
@@ -173,7 +160,7 @@ font-weight:normal;
 
                                     <section id="lemmas-propositions-and-theorems" rel="schema:hasPart" resource="#lemmas-propositions-and-theorems">
                                         <h4 property="schema:name">Lemmas, Propositions, and Theorems</h4>
-                                        <div property="schema:description">
+                                        <div datatype="rdf:HTML" property="schema:description">
                                             <p>The numbers accorded to lemmas, propositions, and theorems, etc. should appear in consecutive order, starting with Lemma 1.
                                             Please do not include section counters in the numbering like “Theorem 1.1”.</p>
                                         </div>
@@ -183,7 +170,7 @@ font-weight:normal;
 
                             <section id="length-of-papers" rel="schema:hasPart" resource="#length-of-paper">
                                 <h3 property="schema:name">Length of Papers</h3>
-                                <div property="schema:description">
+                                <div datatype="rdf:HTML" property="schema:description">
                                     <p>We only wish to publish papers of significant scientific content. Very short papers will be moved to the back matter, will not be made available for indexing, and will not be visible as individual papers on SpringerLink.</p>
                                 </div>
                             </section>
@@ -197,7 +184,7 @@ font-weight:normal;
 
                             <section id="figures-and-tables" rel="schema:hasPart" resource="#length-of-paper">
                                 <h3 property="schema:name">Figures and Tables</h3>
-                                <div property="schema:description">
+                                <div datatype="rdf:HTML" property="schema:description">
                                     <p>It is essential that all illustrations are clear and legible. Vector graphics (rather than rasterized images) should be used for diagrams and schemas whenever possible. Please check that the lines in line drawings are not interrupted and have a constant width. Grids and details within the figures must be clearly legible and may not be written one on top of the other. Line drawings are to have a resolution of at least 800 dpi (preferably 1200 dpi). The lettering in figures should not use font sizes</p>
 
                                     <figure>
@@ -206,7 +193,7 @@ font-weight:normal;
                                     </figure>
 
                                     <figure>
-                                        <img src="artifacts-artificial-intelligence.png" width="360" height="274"/>
+                                        <img src="artifacts-artificial-intelligence.png" width="360" height="274" />
                                         <figcaption>Artifacts empowered by Artificial Intelligence (Source: LNCS 5640, p. 115)</figcaption>
                                     </figure>
 
@@ -227,7 +214,7 @@ font-weight:normal;
 
                             <section id="formulas" rel="schema:hasPart" resource="#formulas">
                                 <h3 property="schema:name">Formulas</h3>
-                                <div property="schema:description">
+                                <div datatype="rdf:HTML" property="schema:description">
                                     <p>Displayed equations or formulas are centered and set on a separate line (with an extra line or half line space above and below). Displayed expressions should be numbered for reference. The numbers should be consecutive within the contribution, with numbers enclosed in parentheses and set on the right margin. Please do not include section counters in the numbering.</p>
 
                                     <figure class="equation" typeof="doco:FormulaBox">
@@ -242,7 +229,7 @@ font-weight:normal;
 
                             <section id="footnotes" rel="schema:hasPart" resource="#footnotes">
                                 <h3 property="schema:name">Footnotes</h3>
-                                <div property="schema:description">
+                                <div datatype="rdf:HTML" property="schema:description">
                                     <p>The superscript numeral used to refer to a footnote appears in the text either directly after the word to be discussed or – in relation to a phrase or a sentence – following the punctuation mark (comma, semicolon, or period).<sup><a href="#note-1">1</a></sup></p>
                                     <p>For remarks pertaining to the title or the authors’ names, in the header of a paper, symbols should be used instead of a number (see first page of this document). Please note that no footnotes may be included in the abstract.</p>
 
@@ -259,25 +246,25 @@ font-weight:normal;
                                     <p>Program listings or program commands in the text are normally set in typewriter font:</p>
                                     <figure class="listing">
                                         <pre>
-    <code>program Inflation (Output)</code>
-    <code>  {Assuming annual inflation rates of 7%, 8%, and</code>
-    <code>  10%,... years};</code>
-    <code>  const MaxYears = 10;</code>
-    <code>  var Year: 0..MaxYears;</code>
-    <code>      Factor1, Factor2, Factor3: Real;</code>
-    <code>  begin</code>
-    <code>    Year := 0;</code>
-    <code>    Factor1 := 1.0; Factor2 := 1.0; Factor3 := 1.0;</code>
-    <code>    WriteLn('Year 7% 8% 10%'); WriteLn;</code>
-    <code>    repeat</code>
-    <code>      Year := Year + 1;</code>
-    <code>      Factor1 := Factor1 * 1.07;</code>
-    <code>      Factor2 := Factor2 * 1.08;</code>
-    <code>      Factor3 := Factor3 * 1.10;</code>
-    <code>      WriteLn(Year:5,Factor1:7:3,Factor2:7:3,</code>
-    <code>        Factor3:7:3)</code>
-    <code>    until Year = MaxYears</code>
-    <code>end.</code>
+<code>program Inflation (Output)</code>
+<code>  {Assuming annual inflation rates of 7%, 8%, and</code>
+<code>  10%,... years};</code>
+<code>  const MaxYears = 10;</code>
+<code>  var Year: 0..MaxYears;</code>
+<code>      Factor1, Factor2, Factor3: Real;</code>
+<code>  begin</code>
+<code>    Year := 0;</code>
+<code>    Factor1 := 1.0; Factor2 := 1.0; Factor3 := 1.0;</code>
+<code>    WriteLn('Year 7% 8% 10%'); WriteLn;</code>
+<code>    repeat</code>
+<code>      Year := Year + 1;</code>
+<code>      Factor1 := Factor1 * 1.07;</code>
+<code>      Factor2 := Factor2 * 1.08;</code>
+<code>      Factor3 := Factor3 * 1.10;</code>
+<code>      WriteLn(Year:5,Factor1:7:3,Factor2:7:3,</code>
+<code>        Factor3:7:3)</code>
+<code>    until Year = MaxYears</code>
+<code>end.</code>
                                         </pre>
 
                                         <figcaption>[Example of a computer program from Jensen K., Wirth N.: Pascal User Manual and Report. Springer, New York (1991)]</figcaption>
@@ -287,7 +274,7 @@ font-weight:normal;
 
                             <section id="citations-and-bibliography" rel="schema:hasPart" resource="#citations-and-bibliography">
                                 <h3 property="schema:name">Citations and Bibliography</h3>
-                                <div property="schema:description">
+                                <div datatype="rdf:HTML" property="schema:description">
                                     <p>For citations in the text, please use square brackets and consecutive numbers. We would write [<a class="ref" href="#ref-1">1</a>,<a class="ref" href="#ref-2">2</a>,<a class="ref" href="#ref-3">3</a>,<a class="ref" href="#ref-4">4</a>,<a class="ref" href="#ref-5">5</a>] for consecutive numbers and [<a class="ref" href="#ref-1">1</a>], [<a class="ref" href="#ref-3">3</a>], [<a class="ref" href="#ref-5">5</a>] for non-consecutive numbers. The numbers in the bibliography section are without square brackets. We prefer numbered references to other styles of references, such as those with abbreviated names and years.</p>
 
                                     <p>Please write all references using the Latin alphabet. If the title of the book you are referring to is, e.g., in Russian or Chinese, then please write (in Russian) or (in Chinese) at the end of the transcript or translation of the title.</p>
@@ -315,12 +302,12 @@ font-weight:normal;
 
                             <section id="plagiarism" rel="schema:hasPart" resource="#plagiarism">
                                 <h3 property="schema:name">Plagiarism</h3>
-                                <div property="schema:description">
+                                <div datatype="rdf:HTML" property="schema:description">
                                     <p>Springer takes plagiarism seriously. If an author has copied from another author or has used parts of another author’s work (text, tables, figures, etc.), without his or her permission and a reference, then the paper on SpringerLink will be given a “retracted” stamp, and an erratum explaining the reasons for the retraction will be included. In addition, the volume editors and the author’s academic supervisors will be informed that plagiarism has been committed. Please note that a retracted paper remains visible, with its “retracted” stamp. It does not simply disappear.</p>
 
                                     <section id="acknowledgements" rel="schema:hasPart" resource="#acknowledgements">
                                         <h4 property="schema:name">Acknowledgements</h4>
-                                        <div property="schema:description">
+                                        <div datatype="rdf:HTML" property="schema:description">
                                             <p>This should always be a run-in heading and not a section or subsection heading. It should not be assigned a number. The acknowledgements may include reference to grants or supports received in relation to the work presented in the paper.</p>
                                         </div>
                                     </section>
@@ -334,21 +321,21 @@ font-weight:normal;
                         <div property="schema:description">
                             <section id="copyright-form" rel="schema:hasPart" resource="#copyright-form">
                                 <h3 property="schema:name">Copyright Form</h3>
-                                <div property="schema:description">
+                                <div datatype="rdf:HTML" property="schema:description">
                                     <p>There are different copyright forms in place for the different Springer Computer Science proceedings book series. A prefilled copyright form is usually available from the conference website. Please send your signed copyright form to your conference publication contact, either as a scanned PDF or by fax or by courier. One author may sign on behalf of all of the other authors of a particular paper. In this case, the author signs for and accepts responsibility for releasing this material on behalf of any and all coauthors. Digital signatures are not acceptable.</p>
                                 </div>
                             </section>
 
                             <section id="contact-author-information" rel="schema:hasPart" resource="#contact-author-information">
                                 <h3 property="schema:name">Contact Author Information</h3>
-                                <div property="schema:description">
+                                <div datatype="rdf:HTML" property="schema:description">
                                     <p>Kindly assure that, when you submit the final version of your paper, you also provide  the name and e-mail address of the contact author for your paper. These details are  used to compile a list of contact authors for our typesetting partners SPS in India. The  contact author must be available to check the paper roughly seven weeks before the  start of the conference, or before the book is due to leave the printing office, in the  case of post-conference proceedings. Please also mark the corresponding author in the  header of the paper, preferably with a small envelope. If this is not done by you, it  will be carried out by our typesetters.</p>
                                 </div>
                             </section>
 
                             <section id="correct-representation-of-author-names" rel="schema:hasPart" resource="#correct-representation-of-author-names">
                                 <h3 property="schema:name">Correct Representation of Author Names</h3>
-                                <div property="schema:description">
+                                <div datatype="rdf:HTML" property="schema:description">
                                     <p> Authors’ names should be written out in full at the tops of the papers. They are shortened by us to “initials surname” in the running heads and take the form “surname, given name” in the author index. If you or any of your co-authors have more than one family name, it should be made quite clear how your name is to be displayed in the running heads and the author index. Chinese authors should write their given names in front of their surnames at the tops of their papers. If you only have one (main) name, please make sure that this name is written out in full in the running heads, when you check your final PDF. Names and affiliations cannot be changed once a paper has been published.</p>
                                 </div>
                             </section>
@@ -362,14 +349,14 @@ font-weight:normal;
 
                             <section id="what-will-be-done-with-your-paper" rel="schema:hasPart" resource="#what-will-be-done-with-your-paper">
                                 <h3 property="schema:name">What Will Be Done with Your Paper</h3>
-                                <div property="schema:description">
+                                <div datatype="rdf:HTML" property="schema:description">
                                     <p>If the instructions have been followed closely, then only very minor alterations will be made to your paper. The production team at SPS checks the format of the paper, and if, for example, vertical spacing has been inserted or removed, then this is remedied. In addition, running-heads, final page numbers, and a copyright line are inserted, and the capitalization of the headings is checked and corrected if need be. Finally, the reference section is attuned to our specifications (see also Section 2.7). Light technical copyediting may also be performed for post-proceedings.</p>
                                 </div>
                             </section>
 
                             <section id="proof-reading-stage" rel="schema:hasPart" resource="#proof-reading-stage">
                                 <h3 property="schema:name">Proof Reading Stage</h3>
-                                <div property="schema:description">
+                                <div datatype="rdf:HTML" property="schema:description">
                                     <p>Once the files have been worked upon, SPS sends a copy of the final PDF of each paper to its contact author. The contact author is asked to check through the final PDF to make sure that no errors have crept in during the transfer or preparation of the files. This should not be seen as an opportunity to update or copyedit the paper, which is not possible due to time constraints. Only errors introduced during the preparation of the files will be corrected. Particular attention should be paid to the references section.</p>
 
                                     <p>If SPS does not receive a reply from a particular contact author, within the timeframe given (usually 72 hours), then it is presumed that the author has found no errors in the paper. The tight publication schedule of our proceedings series does not allow SPS to send reminders or search for alternative e-mail addresses on the Internet.</p>
@@ -384,14 +371,14 @@ font-weight:normal;
 
                     <section id="online-publication-in-springerlink" rel="schema:hasPart" resource="#online-publication-in-springerlink">
                         <h2 property="schema:name">Online Publication in SpringerLink</h2>
-                        <div property="schema:description">
+                        <div datatype="rdf:HTML" property="schema:description">
                             <p>All papers are published in our digital library, SpringerLink. Only subscribers to Springer’s eBook packages or to the electronic book series are able to access the full text PDFs of our online publications. Front and back matter, as well as abstracts and references, are freely available for all users.</p>
                         </div>
                     </section>
 
                     <section id="checklist-of-items-to-be-sent-to-volume-editor" rel="schema:hasPart" resource="#checklist-of-items-to-be-sent-to-volume-editor">
                         <h2 property="schema:name">Checklist of Items to Be Sent to Volume Editor</h2>
-                        <div property="schema:description">
+                        <div datatype="rdf:HTML" property="schema:description">
                             <ul>
                                 <li>The final source files, incl. any non-standard fonts.</li>
                                 <li>A final PDF file corresponding exactly to the final source files.</li>
@@ -405,14 +392,14 @@ font-weight:normal;
 
                     <section id="appendix" rel="schema:hasPart" resource="#appendix">
                         <h2 property="schema:name">Appendix: Springer Author Discount</h2>
-                        <div property="schema:description">
+                        <div datatype="rdf:HTML" property="schema:description">
                             <p>Authors contributing to any of Springer’s Computer Science proceedings publications are entitled to a 33.3% discount off all Springer products when placing an order through springer.com. To make use of this discount, please access the following page: <code>http://www.springer.com/gp/authors-editors/book-authorseditors/springertoken-request-for-springer-authors/4090</code>. You will be requested to give full details of your Springer publication and will be given a so-called SpringerToken. This token is a number that must be entered when placing an order through www.springer.com, in order to obtain the discount.</p>
                         </div>
                     </section>
 
                     <section id="contact-us" rel="schema:hasPart" resource="#contact-us">
                         <h2 property="schema:name">Contact Us</h2>
-                        <div property="schema:description">
+                        <div datatype="rdf:HTML" property="schema:description">
                             <p>If you have any further questions regarding the preparation of your paper, then please do not hesitate to get in touch with us.</p>
 
                             <ul>
