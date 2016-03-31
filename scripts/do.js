@@ -913,6 +913,9 @@ var DO = {
     ; as:context ' + o.context + '\n\
     ; as:target <' + o.target + '>\n\
 ';
+                    if('inReplyTo' in o){
+                        data += '    ; as:inReplyTo <' + o.inReplyTo + '>\n';
+                    }
                     break;
 
                 case 'as:Announce':
@@ -947,7 +950,7 @@ var DO = {
 
             data += '    .\n\
 ';
-
+            console.log(data);
             if (inbox && inbox.length > 0) {
                 return DO.U.postResource(inbox, slug, data, 'text/turtle; charset=utf-8');
             }
@@ -1880,6 +1883,7 @@ var DO = {
 
             var s = '<section id="document-do" class="do"><h2>Do</h2><ul>';
             s += '<li><button class="resource-share" title="Share resource"><i class="fa fa-bullhorn fa-2x"></i>Share</button></li>';
+            s += '<li><button class="resource-reply" title="Reply"><i class="fa fa-reply fa-2x"></i>Reply</button></li>';
             s += '<li><button class="resource-new"'+buttonDisabled+' title="Create new article"><i class="fa fa-paper-plane-o fa-2x"></i>New</button></li>';
             s += '<li><button class="resource-save"'+buttonDisabled+' title="Save article"><i class="fa fa-life-ring fa-2x"></i>Save</button></li>';
             s += '<li><button class="resource-save-as" title="Save as article"><i class="fa fa-clone fa-2x"></i>Save As</button></li>';
@@ -1897,6 +1901,10 @@ var DO = {
             dd.addEventListener('click', function(e) {
                 if (e.target.matches('.resource-share')) {
                     DO.U.shareResource(e);
+                }
+                
+                if (e.target.matches('.resource-reply')) {
+                    DO.U.replyToResource(e);
                 }
 
                 if (DO.C.EditorAvailable) {
@@ -1943,6 +1951,125 @@ var DO = {
                     DO.U.hideDocumentMenu();
                     window.print();
                     return false;
+                }
+            });
+        },
+        
+        replyToResource: function(e, iri){
+            iri = iri || document.documentURI;
+            e.target.disabled = true;
+
+            // TODO: New article should launch choose location for new, and generate HTML with inReplyTo prefilled
+            document.body.insertAdjacentHTML('beforeend', '<aside id="reply-to-resource" class="do on"><button class="close" title="Close">❌</button><h2>Reply to resource</h2><div id="reply-to-resource-input"><p>Reply to <code>' + iri +'</code></p><ul><li><a href="new?edit=true" target="_blank"><i class="fa fa-paper-plane-o"></i> New article</a> (TODO)</li><li><p><label for="reply-to-resource-note">Quick reply (plain text note)</label></p><p><textarea id="reply-to-resource-note" rows="10" cols="40" name="reply-to-resource-note" placeholder="Great article!"></textarea></p><li><label for="reply-note-iri">Where to save your reply</label> <input type="text" id="reply-note-iri" name="reply-note-iri" placeholder="https://datastore.com/path/to/note" /></li></li></ul></div><button class="reply">Send</button></aside>');
+
+            // TODO: License
+            // TODO: ACL - can choose whether to make this reply private (to self), visible only to article author(s), visible to own contacts, public
+            // TODO: Show name and face of signed in user reply is from, or 'anon' if article can host replies
+            // TODO: resource browser, in absence of settings
+
+            var replyToResource = document.getElementById('reply-to-resource');
+            replyToResource.addEventListener('click', function(e) {
+                if (e.target.matches('button.close')) {
+                    document.querySelector('#document-do .resource-share').disabled = false;
+                }
+                
+                if (e.target.matches('button.reply')) {
+                    var note = document.querySelector('#reply-to-resource #reply-to-resource-note').value.trim();
+                    
+                    if (iri.length > 0) {
+                        var rm = replyToResource.querySelector('.response-message');
+                        if (rm) {
+                            rm.parentNode.removeChild(rm);
+                        }
+                        replyToResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>');
+                        
+                        var datetime = DO.U.getDateTimeISO();
+                        var id = DO.U.generateAttributeId().slice(0, 6);
+                        var noteIRI = document.querySelector('#reply-to-resource #reply-note-iri').value.trim();
+                        var noteData = {
+                                "type": 'position-quote-selector', //e.g., 'article'
+                                "purpose": "write",
+                                "motivatedByIRI": "oa:replying",
+                                "id": id,
+                                "iri": noteIRI, //e.g., https://example.org/path/to/article
+                                "creator": {},
+                                "datetime": datetime,
+                                "inReplyTo": iri,
+                                "body": note, // content
+                                "license": {}
+                            }
+                        if (DO.C.User.IRI) {
+                            noteData.creator["iri"] = DO.C.User.IRI;
+                        }
+                        if (DO.C.User.Name) {
+                            noteData.creator["name"] = DO.C.User.Name;
+                        }
+                        if (DO.C.User.Image) {
+                            noteData.creator["image"] = DO.C.User.Image;
+                        }
+
+                        var noteHTML = DO.U.createNoteHTML(noteData);
+                        console.log(noteHTML);
+                        
+                        DO.U.putResource(noteIRI, noteHTML).then(
+                            function(i){
+                                replyToResource.querySelector('.response-message').innerHTML = '<p class="success">Reply saved!</p>';
+                                // Then send notification
+                                DO.U.getInbox(iri).then(
+                                    function(inbox) {
+                                        if (inbox && inbox.length > 0) {
+        // console.log('inbox: ' + inbox);
+                                            var notificationData = {
+                                                "type": "as:Create",
+                                                "inbox": inbox,
+                                                "slug": id,
+                                                "object": noteIRI,
+                                                "context": "as:inReplyTo",
+                                                "target": iri,
+                                                //"license": opts.license
+                                            };
+        
+                                            DO.U.notifyInbox(notificationData).then(
+                                                function(response) {
+        // console.log("Notification: " + response.xhr.getResponseHeader('Location'));
+                                                    replyToResource.querySelector('.response-message').innerHTML = '<p class="success">Notification sent.</p>';
+                                                },
+                                                function(reason) {
+                                                    console.log(reason);
+                                                    replyToResource.querySelector('.response-message').innerHTML = '<p class="error">We couldn\'t notify the author of your reply.</p>';
+                                                }
+                                            );
+                                         }
+                                    },
+                                    function(reason) {
+                                        // FIXME: this isn't getting thrown, gets stuck in getInbox
+                                        console.log('No inbox, no notification sent');
+                                        console.log(reason);
+                                        replyToResource.querySelector('.response-message').innerHTML = '<p class="error">We couldn\'t notify the author of your reply.</p>';
+                                    }
+                                );
+                            },
+                            function(reason){
+                                console.log(reason);
+                                switch(reason.status){
+                                    default:
+                                        replyToResource.querySelector('.response-message').innerHTML = '<p class="error">Can\'t save your reply.</p>';
+                                        break;
+                                    case 0: case 405:
+                                        replyToResource.querySelector('.response-message').innerHTML = '<p class="error">Can\'t save your reply: this location is not writeable.</p>';
+                                        break;
+                                    case 401: case 403:
+                                        replyToResource.querySelector('.response-message').innerHTML = '<p class="error">Can\'t save your reply: you don\'t have permission to write here.</p>';
+                                        break;
+                                    case 406:
+                                        replyToResource.querySelector('.response-message').innerHTML = '<p class="error">Can\'t save your reply: enter a name for your resource.</p>';
+                                        break;
+                                }
+                            }
+                        );
+
+
+                    }
                 }
             });
         },
@@ -3124,17 +3251,31 @@ LIMIT 1";
             switch(n.type) {
                 case 'position-quote-selector':
                     //TODO: Include `a oa:SpecificResource`?
-                    if (typeof n.target !== 'undefined' && typeof n.target.selector !== 'undefined') { //note, annotation
+                    if ((typeof n.target !== 'undefined' && typeof n.target.selector !== 'undefined') || typeof n.inReplyTo !== 'undefined') { //note, annotation, reply
                         //FIXME: Could resourceIRI be a fragment URI or *make sure* it is the document URL without the fragment?
                         //TODO: Use n.target.iri?
 
                         body = '<div property="schema:description" rel="oa:hasBody as:content"><div about="[i:#i]" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">' + n.body + '</div></div>';
+                        
+                        if (typeof n.target !== 'undefined') {
+                            var targetIRI = n.target.iri;
+                            if (typeof n.target.selector !== 'undefined') {
+                                annotationTextSelector = '<span rel="oa:hasSelector" typeof="oa:TextQuoteSelector"><span property="oa:prefix" xml:lang="en" lang="en">' + n.target.selector.prefix + '</span><mark property="oa:exact" xml:lang="en" lang="en">' + n.target.selector.exact + '</mark><span property="oa:suffix" xml:lang="en" lang="en">' + n.target.selector.suffix + '</span></span>';
+                            }
+                        }else{
+                            var targetIRI = n.inReplyTo;
+                            // TODO: pass document title and maybe author so they can be displayed on the reply too.
+                        }
 
-                        hasTarget = '<a rel="oa:hasTarget as:inReplyTo sioc:reply_of" href="' + n.target.iri + '">' + targetLabel + '</a> (<a about="' + n.target.iri + '" typeof="oa:SpecificResource" rel="oa:hasSource" href="' + n.target.source +'">part of</a>)';
+                        hasTarget = '<a rel="oa:hasTarget as:inReplyTo sioc:reply_of" href="' + targetIRI + '">' + targetLabel + '</a>';
+                        if (typeof n.target !== 'undefined' && typeof n.target.source !== 'undefined') {
+                            hasTarget += '(<a about="' + n.target.iri + '" typeof="oa:SpecificResource" rel="oa:hasSource" href="' + n.target.source +'">part of</a>)';
+                        }
 
-                        annotationTextSelector = '<span rel="oa:hasSelector" typeof="oa:TextQuoteSelector"><span property="oa:prefix" xml:lang="en" lang="en">' + n.target.selector.prefix + '</span><mark property="oa:exact" xml:lang="en" lang="en">' + n.target.selector.exact + '</mark><span property="oa:suffix" xml:lang="en" lang="en">' + n.target.selector.suffix + '</span></span>';
-
-                        target ='<dl class="target"><dt>' + hasTarget + '</dt><dd><blockquote about="' + n.target.iri + '" cite="' + n.target.iri + '">' + annotationTextSelector + '</blockquote></dd></dl>';
+                        target ='<dl class="target"><dt>' + hasTarget + '</dt>';
+                        if (typeof n.target !== 'undefined' && typeof n.target.selector !== 'undefined') {
+                            target += '<dd><blockquote about="' + targetIRI + '" cite="' + targetIRI + '">' + annotationTextSelector + '</blockquote></dd></dl>';
+                        }
                     }
                     break;
 
