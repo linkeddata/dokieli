@@ -1960,14 +1960,22 @@ var DO = {
             e.target.disabled = true;
 
             // TODO: New article should launch choose location for new, and generate HTML with inReplyTo prefilled
-            document.body.insertAdjacentHTML('beforeend', '<aside id="reply-to-resource" class="do on"><button class="close" title="Close">❌</button><h2>Reply to resource</h2><div id="reply-to-resource-input"><p>Reply to <code>' + iri +'</code></p><ul><li><a href="new?edit=true" target="_blank"><i class="fa fa-paper-plane-o"></i> New article</a> (TODO)</li><li><p><label for="reply-to-resource-note">Quick reply (plain text note)</label></p><p><textarea id="reply-to-resource-note" rows="10" cols="40" name="reply-to-resource-note" placeholder="Great article!"></textarea></p><li><label for="reply-note-iri">Where to save your reply</label> <input type="text" id="reply-note-iri" name="reply-note-iri" placeholder="https://datastore.com/path/to/note" /></li></li></ul></div><button class="reply">Send</button></aside>');
+            document.body.insertAdjacentHTML('beforeend', '<aside id="reply-to-resource" class="do on"><button class="close" title="Close">❌</button><h2>Reply to this</h2><div id="reply-to-resource-input"><p>Reply to <code>' + iri +'</code></p><ul><li><a href="new?edit=true" target="_blank"><i class="fa fa-paper-plane-o"></i> New article</a> (TODO)</li><li><p><label for="reply-to-resource-note">Quick reply (plain text note)</label></p><p><textarea id="reply-to-resource-note" rows="10" cols="40" name="reply-to-resource-note" placeholder="Great article!"></textarea></p></li></ul></div>');
 
             // TODO: License
             // TODO: ACL - can choose whether to make this reply private (to self), visible only to article author(s), visible to own contacts, public
             // TODO: Show name and face of signed in user reply is from, or 'anon' if article can host replies
-            // TODO: resource browser, in absence of settings
 
             var replyToResource = document.getElementById('reply-to-resource');
+            
+            DO.U.setupResourceBrowser(replyToResource);
+            document.getElementById('browser-location').insertAdjacentHTML('afterbegin', '<p>Choose a location to save your reply.</p>');
+            replyToResource.insertAdjacentHTML('beforeend', '<p>Your reply will be saved at <samp id="location-final">https://example.org/path/to/article</samp></p>');
+            var bli = document.getElementById('browser-location-input');
+            bli.focus();
+            bli.placeholder = 'https://example.org/path/to/article';
+            replyToResource.insertAdjacentHTML('beforeEnd', '<button class="reply">Send</button></aside>');
+            
             replyToResource.addEventListener('click', function(e) {
                 if (e.target.matches('button.close')) {
                     document.querySelector('#document-do .resource-share').disabled = false;
@@ -1976,16 +1984,16 @@ var DO = {
                 if (e.target.matches('button.reply')) {
                     var note = document.querySelector('#reply-to-resource #reply-to-resource-note').value.trim();
                     
-                    if (iri.length > 0) {
-                        var rm = replyToResource.querySelector('.response-message');
-                        if (rm) {
-                            rm.parentNode.removeChild(rm);
-                        }
-                        replyToResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>');
+                    var rm = replyToResource.querySelector('.response-message');
+                    if (rm) {
+                        rm.parentNode.removeChild(rm);
+                    }
+                    replyToResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>');
+                    if (iri.length > 0 && note.length > 0) {
                         
                         var datetime = DO.U.getDateTimeISO();
                         var id = DO.U.generateAttributeId().slice(0, 6);
-                        var noteIRI = document.querySelector('#reply-to-resource #reply-note-iri').value.trim();
+                        var noteIRI = document.querySelector('#reply-to-resource #location-final').innerText.trim();
                         var noteData = {
                                 "type": 'position-quote-selector', //e.g., 'article'
                                 "purpose": "write",
@@ -2067,8 +2075,8 @@ var DO = {
                                 }
                             }
                         );
-
-
+                    }else{
+                        replyToResource.querySelector('.response-message').innerHTML = '<p class="error">Need a note and a location to save it.</p>';
                     }
                 }
             });
