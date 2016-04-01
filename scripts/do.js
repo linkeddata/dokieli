@@ -1959,8 +1959,7 @@ var DO = {
             iri = iri || document.documentURI;
             e.target.disabled = true;
 
-            // TODO: New article should launch choose location for new, and generate HTML with inReplyTo prefilled
-            document.body.insertAdjacentHTML('beforeend', '<aside id="reply-to-resource" class="do on"><button class="close" title="Close">❌</button><h2>Reply to this</h2><div id="reply-to-resource-input"><p>Reply to <code>' + iri +'</code></p><ul><li><a href="new?edit=true" target="_blank"><i class="fa fa-paper-plane-o"></i> New article</a> (TODO)</li><li><p><label for="reply-to-resource-note">Quick reply (plain text note)</label></p><p><textarea id="reply-to-resource-note" rows="10" cols="40" name="reply-to-resource-note" placeholder="Great article!"></textarea></p></li></ul></div>');
+            document.body.insertAdjacentHTML('beforeend', '<aside id="reply-to-resource" class="do on"><button class="close" title="Close">❌</button><h2>Reply to this</h2><div id="reply-to-resource-input"><p>Reply to <code>' + iri +'</code></p><ul><li><p><label for="reply-to-resource-note">Quick reply (plain text note)</label></p><p><textarea id="reply-to-resource-note" rows="10" cols="40" name="reply-to-resource-note" placeholder="Great article!"></textarea></p></li></ul></div>');
 
             // TODO: License
             // TODO: ACL - can choose whether to make this reply private (to self), visible only to article author(s), visible to own contacts, public
@@ -1974,7 +1973,11 @@ var DO = {
             var bli = document.getElementById('browser-location-input');
             bli.focus();
             bli.placeholder = 'https://example.org/path/to/article';
-            replyToResource.insertAdjacentHTML('beforeEnd', '<button class="reply">Send</button></aside>');
+            replyToResource.insertAdjacentHTML('beforeEnd', '<button class="reply">Send now</button>');
+            // TODO: New in editor make this button do something.
+            //       Question: when should the notification be sent?
+            replyToResource.insertAdjacentHTML('beforeEnd', 'or <button class="reply-new"><i class="fa fa-paper-plane-o"></i> Write reply in new window</button>');
+            replyToResource.insertAdjacentHTML('beforeEnd', '</aside>');
             
             replyToResource.addEventListener('click', function(e) {
                 if (e.target.matches('button.close')) {
