@@ -3242,10 +3242,6 @@ LIMIT 1";
                 pText = pText[Math.floor(Math.random() * pText.length)];
 
                 if (typeof MediumEditor !== 'undefined') {
-                    var buttonLabelsType = '';
-                    if (document.location.protocol == 'http:' || document.location.protocol == 'https:') {
-                        buttonsLabelsType = 'fontawesome';
-                    }
                     DO.U.Editor.MediumEditor = new MediumEditor(editableNodes, {
                         elementsContainer: document.getElementById('document-editor'),
                         placeholder: {
@@ -3260,7 +3256,7 @@ LIMIT 1";
                             cleanTags: ['meta', 'link', 'style', 'script', 'br', 'hr']
                         },
 
-                        buttonLabels: buttonLabelsType,
+                        buttonLabels: (document.location.protocol == 'http:' || document.location.protocol == 'https:') ? 'fontawesome' : '',
             //          fileDragging: false, //https://github.com/yabwe/medium-editor/issues/789
 
                         toolbar: {
