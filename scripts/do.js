@@ -3241,13 +3241,11 @@ LIMIT 1";
                 var pText = ["Make it so!", "This is not a Paper", "Cogito Ergo Sum", "Do One Thing and Do It Well", "Free Your Mind", "Do or Do Not"];
                 pText = pText[Math.floor(Math.random() * pText.length)];
 
-
-                var buttonLabelsType = '';
-                if (document.location.protocol == 'http:' || document.location.protocol == 'https:') {
-                    buttonsLabelsType = 'fontawesome';
-                }
-
                 if (typeof MediumEditor !== 'undefined') {
+                    var buttonLabelsType = '';
+                    if (document.location.protocol == 'http:' || document.location.protocol == 'https:') {
+                        buttonsLabelsType = 'fontawesome';
+                    }
                     DO.U.Editor.MediumEditor = new MediumEditor(editableNodes, {
                         elementsContainer: document.getElementById('document-editor'),
                         placeholder: {
