@@ -1984,7 +1984,7 @@ var DO = {
             replyToResource.insertAdjacentHTML('beforeEnd', '<button class="reply">Send now</button>');
             // TODO: New in editor make this button do something.
             //       Question: when should the notification be sent?
-            replyToResource.insertAdjacentHTML('beforeEnd', 'or <button class="reply-new"><i class="fa fa-paper-plane-o"></i> Write reply in new window</button>');
+            //replyToResource.insertAdjacentHTML('beforeEnd', 'or <button class="reply-new"><i class="fa fa-paper-plane-o"></i> Write reply in new window</button>');
             replyToResource.insertAdjacentHTML('beforeEnd', '</aside>');
             
             replyToResource.addEventListener('click', function(e) {
