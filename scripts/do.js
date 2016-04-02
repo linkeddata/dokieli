@@ -2024,7 +2024,7 @@ var DO = {
                         
                         DO.U.putResource(noteIRI, noteHTML).then(
                             function(i){
-                                replyToResource.querySelector('.response-message').innerHTML = '<p class="success">Reply saved!</p>';
+                                replyToResource.querySelector('.response-message').innerHTML = '<p class="success"><a href="' + i.xhr.responseURL + '">Reply saved!</a></p>';
                                 // Then send notification
                                 DO.U.getInbox(iri).then(
                                     function(inbox) {
@@ -2043,11 +2043,11 @@ var DO = {
                                             DO.U.notifyInbox(notificationData).then(
                                                 function(response) {
         // console.log("Notification: " + response.xhr.getResponseHeader('Location'));
-                                                    replyToResource.querySelector('.response-message').innerHTML = '<p class="success">Notification sent.</p>';
+                                                    replyToResource.querySelector('.response-message').innerHTML += '<p class="success">Notification sent.</p>';
                                                 },
                                                 function(reason) {
                                                     console.log(reason);
-                                                    replyToResource.querySelector('.response-message').innerHTML = '<p class="error">We couldn\'t notify the author of your reply.</p>';
+                                                    replyToResource.querySelector('.response-message').innerHTML += '<p class="error">We couldn\'t notify the author of your reply.</p>';
                                                 }
                                             );
                                          }
@@ -2056,7 +2056,7 @@ var DO = {
                                         // FIXME: this isn't getting thrown, gets stuck in getInbox
                                         console.log('No inbox, no notification sent');
                                         console.log(reason);
-                                        replyToResource.querySelector('.response-message').innerHTML = '<p class="error">We couldn\'t notify the author of your reply.</p>';
+                                        replyToResource.querySelector('.response-message').innerHTML += '<p class="error">We couldn\'t notify the author of your reply.</p>';
                                     }
                                 );
                             },
