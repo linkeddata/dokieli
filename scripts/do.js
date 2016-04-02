@@ -907,6 +907,9 @@ var DO = {
 ';
 
             switch(o.type) {
+                default:
+                    data += '<> a solid:Notification\n'
+                    break;
                 case 'as:Create':
                     data += '<> a as:Create\n\
     ; as:object <' + o.object + '>\n\
@@ -930,6 +933,11 @@ var DO = {
 
             if ('summary' in o && o.summary.length > 0) {
                 data += '    ; as:summary """' + o.summary + '"""^^rdf:HTML\n\
+';
+            }
+            
+            if ('content' in o && o.content.length > 0) {
+                data += '    ; as:content """' + o.content + '"""^^rdf:HTML\n\
 ';
             }
 
