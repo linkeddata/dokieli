@@ -2270,7 +2270,9 @@ var DO = {
                         triggerBrowse(input.value);
                     }
                     if(final){
-                        final.textContent = input.value + "{name}";
+                        //final.textContent = input.value + "{name}";
+                        var d = new Date();
+                        final.textContent = input.value + DO.U.generateAttributeId().slice(0, 6);
                     }
                 }else{
                     browseButton.disabled = 'disabled';
@@ -2343,7 +2345,7 @@ var DO = {
             newDocument.addEventListener('click', function(e) {
                 if (e.target.matches('button.create')) {
                     var newDocument = document.getElementById('create-new-document');
-                    var storageIRI = newDocument.querySelector('input#browser-location-input').value.trim();
+                    var storageIRI = newDocument.querySelector('#location-final').innerText.trim();
                     var rm = newDocument.querySelector('.response-message');
                     if (rm) {
                         rm.parentNode.removeChild(rm);
@@ -2414,7 +2416,7 @@ var DO = {
            saveAsDocument.addEventListener('click', function(e) {
                 if (e.target.matches('button.create')) {
                     var saveAsDocument = document.getElementById('save-as-document');
-                    var storageIRI = saveAsDocument.querySelector('input#browser-location-input').value.trim();
+                    var storageIRI = saveAsDocument.querySelector('#location-final').innerText.trim();
                     var rm = saveAsDocument.querySelector('.response-message');
                     if (rm) {
                         rm.parentNode.removeChild(rm);
