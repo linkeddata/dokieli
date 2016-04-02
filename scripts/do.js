@@ -2428,7 +2428,7 @@ var DO = {
                 storageBox.appendChild(browserul);
             }
 
-            if(DO.C.User.Storage) {
+            if(DO.C.User.Storage && DO.C.User.Storage.length > 0) {
                 var storageUrl = DO.U.forceTrailingSlash(DO.C.User.Storage[0]); // TODO: options for multiple storage
                 input.value = storageUrl;
                 DO.U.getGraph(storageUrl).then(function(g){
