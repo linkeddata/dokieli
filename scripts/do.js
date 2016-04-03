@@ -1919,6 +1919,7 @@ var DO = {
                     var data = DO.U.getDocument();
                     DO.U.putResource(url, data).then(
                         function(i) {
+                            DO.U.showActionMessage(document.getElementById('document-menu'), 'Saved');
                             DO.U.hideDocumentMenu();
                         },
                         function(reason) {
