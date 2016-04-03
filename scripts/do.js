@@ -1947,6 +1947,15 @@ var DO = {
             });
         },
 
+        showActionMessage: function(node, message) {
+            var message = '<aside id="document-action-message" class="do on"><p>' + message + '</p></aside>';
+            node.insertAdjacentHTML('afterend', message);
+            window.setTimeout(function () {
+                var dam = document.getElementById('document-action-message');
+                dam.parentNode.removeChild(dam);
+            }, 1500);
+        },
+
         shareResource: function(e, iri) {
             iri = iri || document.documentURI;
             e.target.disabled = true;
