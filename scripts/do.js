@@ -907,19 +907,20 @@ var DO = {
 ';
 
             switch(o.type) {
-                case 'as:Create':
-                    data += '<> a as:Create\n\
-    ; as:object <' + o.object + '>\n\
-    ; as:context ' + o.context + '\n\
-    ; as:target <' + o.target + '>\n\
-';
-                    break;
-
-                case 'as:Announce':
+                case 'as:Announce': default:
                     data += '<> a as:Announce\n\
     ; as:object <' + o.object + '>\n\
 ';
                     break;
+            }
+
+            if ('context' in o && o.context.length > 0) {
+                data += '    ; as:context ' + o.context + '\n\
+';
+            }
+            if ('target' in o && o.target.length > 0) {
+                data += '    ; as:target <' + o.target + '>\n\
+';
             }
 
             data += '    ; as:updated "' + DO.U.getDateTimeISO() + '"^^xsd:dateTime\n\
@@ -4177,7 +4178,7 @@ LIMIT 1";
                                             if (inbox && inbox.length > 0) {
 // console.log('inbox: ' + inbox);
                                                 var notificationData = {
-                                                    "type": "as:Create",
+                                                    "type": "as:Announce",
                                                     "inbox": inbox,
                                                     "slug": id,
                                                     "object": noteIRI,
