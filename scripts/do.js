@@ -977,7 +977,7 @@ var DO = {
 
             data += '    .\n\
 ';
-            console.log(data);
+
             if (inbox && inbox.length > 0) {
                 return DO.U.postResource(inbox, slug, data, 'text/turtle; charset=utf-8');
             }
@@ -3410,6 +3410,13 @@ LIMIT 1";
             s = '<' + element + about + content + href + id + langDatatype + property + rel + resource + typeOf + '>' + r.textContent + '</' + element + '>';
 
            return s;
+        },
+
+
+        getLicenseOptionsHTML: function(type) {
+            var type = type || 'cc';
+
+            return DO.C.LicenseOptions[type].join('');
         },
 
         Editor: {
