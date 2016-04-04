@@ -3959,14 +3959,7 @@ LIMIT 1";
                                     template = [
                                     '<textarea id="article-content" name="content" cols="20" rows="1" class="medium-editor-toolbar-textarea" placeholder="', this.placeholderText, '"></textarea>',
                                     '<select id="article-license" name="license" class="medium-editor-toolbar-select">',
-                                    '<option value="">No license</option>',
-                                    '<option value="https://creativecommons.org/publicdomain/zero/1.0/" title="Creative Commons Zero">CC0</option>',
-                                    '<option value="https://creativecommons.org/licenses/by/4.0/" title="Creative Commons Attribution" selected="selected">CC BY</option>',
-                                    '<option value="https://creativecommons.org/licenses/by-sa/4.0/" title="Creative Commons Attribution-ShareAlike">CC BY-SA</option>',
-                                    '<option value="https://creativecommons.org/licenses/by-nc/4.0/" title="Creative Commons Attribution-NonCommercial">CC BY-NC</option>',
-                                    '<option value="https://creativecommons.org/licenses/by-nd/4.0/" title="Creative Commons Attribution-NoDerivatives">CC BY-ND</option>',
-                                    '<option value="https://creativecommons.org/licenses/by-nc-sa/4.0/" title="Creative Commons Attribution-NonCommercial-ShareAlike">CC BY-NC-SA</option>',
-                                    '<option value="https://creativecommons.org/licenses/by-nc-nd/4.0/" title="Creative Commons Attribution-NonCommercial-NoDerivates">CC BY-NC-ND</option>',
+                                    DO.U.getLicenseOptionsHTML(),
                                     '</select>'
                                     ];
                                     break;
