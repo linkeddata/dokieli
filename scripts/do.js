@@ -916,7 +916,7 @@ var DO = {
                     data += '<> a as:Create\n';
                     break;
             }
-            
+
             if('object' in o){
                 data += '    ; as:object <' + o.object + '>\n';
             }
@@ -941,7 +941,7 @@ var DO = {
                 data += '    ; as:summary """' + o.summary + '"""^^rdf:HTML\n\
 ';
             }
-            
+
             if ('content' in o && o.content.length > 0) {
                 data += '    ; as:content """' + o.content + '"""^^rdf:HTML\n\
 ';
@@ -1116,7 +1116,7 @@ var DO = {
                     DO.U.showDocumentMenu();
                 }
                 else {
-                    DO.U.hideDocumentMenu();
+                    DO.U.hideDocumentMenu(e);
                 }
             });
         },
@@ -1147,7 +1147,7 @@ var DO = {
             document.addEventListener('click', DO.U.eventLeaveDocumentMenu);
         },
 
-        hideDocumentMenu: function() {
+        hideDocumentMenu: function(e) {
             document.removeEventListener('click', DO.U.eventLeaveDocumentMenu);
 
             var body = document.body;
@@ -1647,13 +1647,13 @@ var DO = {
 
         eventEscapeDocumentMenu: function(e) {
             if (e.keyCode == 27) { // Escape
-                DO.U.hideDocumentMenu();
+                DO.U.hideDocumentMenu(e);
             }
         },
 
         eventLeaveDocumentMenu: function(e) {
             if (!e.target.closest('.do.on')) {
-                DO.U.hideDocumentMenu();
+                DO.U.hideDocumentMenu(e);
             }
         },
 
@@ -1916,7 +1916,7 @@ var DO = {
                 if (e.target.matches('.resource-share')) {
                     DO.U.shareResource(e);
                 }
-                
+
                 if (e.target.matches('.resource-reply')) {
                     DO.U.replyToResource(e);
                 }
@@ -1924,11 +1924,11 @@ var DO = {
                 if (DO.C.EditorAvailable) {
                     if (e.target.matches('button.editor-enable')) {
                         e.target.parentNode.innerHTML = DO.C.Editor.DisableEditorButton;
-                        DO.U.Editor.enableEditor();
+                        DO.U.Editor.enableEditor(e);
                     }
                     if (e.target.matches('button.editor-disable')) {
                         e.target.parentNode.innerHTML = DO.C.Editor.EnableEditorButton;
-                        DO.U.Editor.disableEditor();
+                        DO.U.Editor.disableEditor(e);
                     }
                 }
 
@@ -1942,7 +1942,7 @@ var DO = {
                     DO.U.putResource(url, data).then(
                         function(i) {
                             DO.U.showActionMessage(document.getElementById('document-menu'), 'Saved');
-                            DO.U.hideDocumentMenu();
+                            DO.U.hideDocumentMenu(e);
                         },
                         function(reason) {
                             console.log(reason);
@@ -1959,17 +1959,17 @@ var DO = {
                 }
 
                 if (e.target.matches('.resource-export')) {
-                    DO.U.exportAsHTML();
+                    DO.U.exportAsHTML(e);
                 }
 
                 if (e.target.matches('.resource-print')) {
-                    DO.U.hideDocumentMenu();
+                    DO.U.hideDocumentMenu(e);
                     window.print();
                     return false;
                 }
             });
         },
-        
+
         replyToResource: function(e, iri){
             iri = iri || window.location.origin + window.location.pathname;
             e.target.disabled = true;
@@ -1981,7 +1981,7 @@ var DO = {
             // TODO: Show name and face of signed in user reply is from, or 'anon' if article can host replies
 
             var replyToResource = document.getElementById('reply-to-resource');
-            
+
             DO.U.setupResourceBrowser(replyToResource);
             document.getElementById('browser-location').insertAdjacentHTML('afterbegin', '<p>Choose a location to save your reply.</p>');
             replyToResource.insertAdjacentHTML('beforeend', '<p>Your reply will be saved at <samp id="location-final">https://example.org/path/to/article</samp></p>');
@@ -1993,22 +1993,22 @@ var DO = {
             //       Question: when should the notification be sent?
             //replyToResource.insertAdjacentHTML('beforeEnd', 'or <button class="reply-new"><i class="fa fa-paper-plane-o"></i> Write reply in new window</button>');
             replyToResource.insertAdjacentHTML('beforeEnd', '</aside>');
-            
+
             replyToResource.addEventListener('click', function(e) {
                 if (e.target.matches('button.close')) {
                     document.querySelector('#document-do .resource-reply').disabled = false;
                 }
-                
+
                 if (e.target.matches('button.reply')) {
                     var note = document.querySelector('#reply-to-resource #reply-to-resource-note').value.trim();
-                    
+
                     var rm = replyToResource.querySelector('.response-message');
                     if (rm) {
                         rm.parentNode.removeChild(rm);
                     }
                     replyToResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>');
                     if (iri.length > 0 && note.length > 0) {
-                        
+
                         var datetime = DO.U.getDateTimeISO();
                         var id = DO.U.generateAttributeId().slice(0, 6);
                         var noteIRI = document.querySelector('#reply-to-resource #location-final').innerText.trim();
@@ -2035,7 +2035,7 @@ var DO = {
                         }
 
                         var noteHTML = DO.U.createNoteHTML(noteData);
-                        
+
                         DO.U.putResource(noteIRI, noteHTML).then(
                             function(i){
                                 replyToResource.querySelector('.response-message').innerHTML = '<p class="success"><a href="' + i.xhr.responseURL + '">Reply saved!</a></p>';
@@ -2052,7 +2052,7 @@ var DO = {
                                                 "target": iri,
                                                 //"license": opts.license
                                             };
-        
+
                                             DO.U.notifyInbox(notificationData).then(
                                                 function(response) {
         // console.log("Notification: " + response.xhr.getResponseHeader('Location'));
@@ -3289,7 +3289,7 @@ LIMIT 1";
                         //TODO: Use n.target.iri?
 
                         body = '<div property="schema:description" rel="oa:hasBody as:content"><div about="[i:#i]" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">' + n.body + '</div></div>';
-                        
+
                         if (typeof n.target !== 'undefined') {
                             var targetIRI = n.target.iri;
                             if (typeof n.target.selector !== 'undefined') {
@@ -3400,13 +3400,13 @@ LIMIT 1";
         },
 
         Editor: {
-            disableEditor: function() {
+            disableEditor: function(e) {
         //        _mediumEditors[1].destroy();
                 DO.C.EditorEnabled = false;
                 return DO.U.Editor.MediumEditor.destroy();
             },
 
-            enableEditor: function() {
+            enableEditor: function(e) {
                 //XXX: Consider this as the main wrapper for the editor tool.
                 if (!document.getElementById('document-editor')) {
                     document.body.insertAdjacentHTML('beforeend', '<aside id="document-editor" class="do"></aside>');
