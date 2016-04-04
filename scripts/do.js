@@ -66,6 +66,19 @@ var DO = {
             "https://creativecommons.org/licenses/by-nc-sa/4.0/": "CC BY-NC-SA 4.0",
             "https://creativecommons.org/licenses/by-nc-nd/4.0/": "CC BY-NC-ND 4.0"
         },
+        LicenseOptions: {
+            'cc': [
+                '<option value="">No license</option>',
+                '<option value="https://creativecommons.org/publicdomain/zero/1.0/" title="Creative Commons Zero">CC0</option>',
+                '<option value="https://creativecommons.org/licenses/by/4.0/" title="Creative Commons Attribution" selected="selected">CC BY</option>',
+                '<option value="https://creativecommons.org/licenses/by-sa/4.0/" title="Creative Commons Attribution-ShareAlike">CC BY-SA</option>',
+                '<option value="https://creativecommons.org/licenses/by-nc/4.0/" title="Creative Commons Attribution-NonCommercial">CC BY-NC</option>',
+                '<option value="https://creativecommons.org/licenses/by-nd/4.0/" title="Creative Commons Attribution-NoDerivatives">CC BY-ND</option>',
+                '<option value="https://creativecommons.org/licenses/by-nc-sa/4.0/" title="Creative Commons Attribution-NonCommercial-ShareAlike">CC BY-NC-SA</option>',
+                '<option value="https://creativecommons.org/licenses/by-nc-nd/4.0/" title="Creative Commons Attribution-NonCommercial-NoDerivates">CC BY-NC-ND</option>'
+            ]
+        },
+
         Vocab: {
             "rdftype": {
                 "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
