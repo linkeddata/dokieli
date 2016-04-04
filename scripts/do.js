@@ -1971,7 +1971,7 @@ var DO = {
         },
         
         replyToResource: function(e, iri){
-            iri = iri || document.documentURI;
+            iri = iri || window.location.origin + window.location.pathname;
             e.target.disabled = true;
 
             document.body.insertAdjacentHTML('beforeend', '<aside id="reply-to-resource" class="do on"><button class="close" title="Close">❌</button><h2>Reply to this</h2><div id="reply-to-resource-input"><p>Reply to <code>' + iri +'</code></p><ul><li><p><label for="reply-to-resource-note">Quick reply (plain text note)</label></p><p><textarea id="reply-to-resource-note" rows="10" cols="40" name="reply-to-resource-note" placeholder="Great article!"></textarea></p></li></ul></div>');
@@ -2035,7 +2035,6 @@ var DO = {
                         }
 
                         var noteHTML = DO.U.createNoteHTML(noteData);
-                        console.log(noteHTML);
                         
                         DO.U.putResource(noteIRI, noteHTML).then(
                             function(i){
