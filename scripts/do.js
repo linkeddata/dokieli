@@ -1987,7 +1987,7 @@ var DO = {
             iri = iri || window.location.origin + window.location.pathname;
             e.target.disabled = true;
 
-            document.body.insertAdjacentHTML('beforeend', '<aside id="reply-to-resource" class="do on"><button class="close" title="Close">❌</button><h2>Reply to this</h2><div id="reply-to-resource-input"><p>Reply to <code>' + iri +'</code></p><ul><li><p><label for="reply-to-resource-note">Quick reply (plain text note)</label></p><p><textarea id="reply-to-resource-note" rows="10" cols="40" name="reply-to-resource-note" placeholder="Great article!"></textarea></p></li></ul></div>');
+            document.body.insertAdjacentHTML('beforeend', '<aside id="reply-to-resource" class="do on"><button class="close" title="Close">❌</button><h2>Reply to this</h2><div id="reply-to-resource-input"><p>Reply to <code>' + iri +'</code></p><ul><li><p><label for="reply-to-resource-note">Quick reply (plain text note)</label></p><p><textarea id="reply-to-resource-note" rows="10" cols="40" name="reply-to-resource-note" placeholder="Great article!"></textarea></p></li><li><label for="reply-to-resource-license">License</label> <select id="reply-to-resource-license" name="reply-to-resource-license">' + DO.U.getLicenseOptionsHTML() + '</select></li></ul></div>');
 
             // TODO: License
             // TODO: ACL - can choose whether to make this reply private (to self), visible only to article author(s), visible to own contacts, public
@@ -2026,17 +2026,17 @@ var DO = {
                         var id = DO.U.generateAttributeId().slice(0, 6);
                         var noteIRI = document.querySelector('#reply-to-resource #location-final').innerText.trim();
                         var noteData = {
-                                "type": 'position-quote-selector', //e.g., 'article'
-                                "purpose": "write",
-                                "motivatedByIRI": "oa:replying",
-                                "id": id,
-                                "iri": noteIRI, //e.g., https://example.org/path/to/article
-                                "creator": {},
-                                "datetime": datetime,
-                                "inReplyTo": iri,
-                                "body": note, // content
-                                "license": {}
-                            }
+                            "type": 'position-quote-selector', //e.g., 'article'
+                            "purpose": "write",
+                            "motivatedByIRI": "oa:replying",
+                            "id": id,
+                            "iri": noteIRI, //e.g., https://example.org/path/to/article
+                            "creator": {},
+                            "datetime": datetime,
+                            "inReplyTo": iri,
+                            "body": note, // content
+                            "license": {}
+                        };
                         if (DO.C.User.IRI) {
                             noteData.creator["iri"] = DO.C.User.IRI;
                         }
@@ -2045,6 +2045,12 @@ var DO = {
                         }
                         if (DO.C.User.Image) {
                             noteData.creator["image"] = DO.C.User.Image;
+                        }
+
+                        var license = document.querySelector('#reply-to-resource-license');
+                        if (license && license.length > 0) {
+                            noteData.license["iri"] = license.value.trim();
+                            noteData.license["name"] = DO.C.License[license.value.trim()];
                         }
 
                         var noteHTML = DO.U.createNoteHTML(noteData);
@@ -2063,7 +2069,7 @@ var DO = {
                                                 "object": noteIRI,
                                                 "context": "as:inReplyTo",
                                                 "target": iri,
-                                                //"license": opts.license
+                                                "license": noteData.license["iri"]
                                             };
 
                                             DO.U.notifyInbox(notificationData).then(
