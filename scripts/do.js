@@ -2259,7 +2259,7 @@ var DO = {
                     DO.U.getGraph(url).then(
                         function(g){
                             if(final){
-                                final.textContent = url + "{name}";
+                                final.textContent = url + DO.U.generateAttributeId().slice(0, 6);
                             }
                             return DO.U.generateBrowserList(g, url);
                         },
