@@ -91,6 +91,8 @@ var DO = {
                 "@array": true
             },
             "foafname": "http://xmlns.com/foaf/0.1/name",
+            "foaffamilyName": "http://xmlns.com/foaf/0.1/familyName",
+            "foafgivenName": "http://xmlns.com/foaf/0.1/givenName",
             "foafhomepage": {
                 "@id": "http://xmlns.com/foaf/0.1/homepage",
                 "@type": "@id"
@@ -123,6 +125,10 @@ var DO = {
                 "@id": "https://schema.org/creator",
                 "@type": "@id"
             },
+            "schemaauthor": {
+                "@id": "https://schema.org/author",
+                "@type": "@id"
+            },
             "schemalicense": {
                 "@id": "https://schema.org/license",
                 "@type": "@id"
@@ -139,6 +145,11 @@ var DO = {
             },
 
             "dctermstitle": "http://purl.org/dc/terms/title",
+            "dctermscreator": {
+                "@id": "http://purl.org/dc/terms/creator",
+                "@type": "@id",
+                "@array": true
+            },
 
             "storage": {
                 "@id": "http://www.w3.org/ns/pim/space#storage",
