@@ -2950,38 +2950,109 @@ var DO = {
             }
         },
 
-        getLinkedResearch: function(iri, resultsNode) {
-            //TODO: rdfstore may not be parsing or loading RDFa properly.
-            var queryA = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n\
-PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n\
-PREFIX dcterms: <http://purl.org/dc/terms/>\n\
-SELECT ?prefLabel\n\
-WHERE {\n\
-    OPTIONAL { <" + iri + "> skos:prefLabel ?prefLabel . }\n\
-    OPTIONAL { <" + iri + "> rdfs:label ?prefLabel . }\n\
-    OPTIONAL { <" + iri + "> schema:name ?prefLabel . }\n\
-    OPTIONAL { <" + iri + "> skos:notation ?prefLabel . }\n\
-    OPTIONAL { <" + iri + "> dcterms:identifier ?prefLabel . }\n\
-    FILTER (LANG(?prefLabel) = '' || LANGMATCHES(LANG(?prefLabel), '" + DO.C.Lang + "'))\n\
-}\n\
-LIMIT 1";
+        getCitation: function(i, options) {
+            var iri = i;
+            if (typeof options !== 'undefined' && 'type' in options && options.type == 'doi') {
+//                iri = 'http://dx.doi.org/' + i.trim();
+                iri = 'http://data.crossref.org/' + i.trim();
+            }
+            else {
+                var x = iri.toLowerCase().trim().split('/');
+                if (x[2] == 'doi.org' || x[2] == 'dx.doi.org') {
+                    var y = x[0] + '//' + x[2] + '/';
+                    iri = 'http://data.crossref.org/' + iri.substr(y.length, iri.length);
+                }
+            }
 
-            var store = rdfstore.create();
-            store.load('remote', iri, function(success, results){
-                if (success) {
-                    store.execute(queryA, function(success, results) {
-                        if (results.length > 0) {
-                            console.log(results);
-                            resultsNode.innerHTML = results[0].prefLabel.value + ', <a class="href" href="' + iri + '">' + iri + '</a>';
+console.log(iri);
+
+            var pIRI = iri;
+            pIRI = DO.U.stripFragmentFromString(pIRI);
+            console.log(pIRI);
+            //TODO: Should use both document.location.origin + '/,proxy?uri= and then DO.C.ProxyURL .. like in setUser
+            if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
+                pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
+            }
+
+            return DO.U.getGraph(pIRI);
+        },
+
+        getCitationHTML: function(citation, citationURI, options) {
+            if (!citationURI) { return Promise.reject({'message': 'No subject URI provided.'}); }
+
+            var subject, title, authorList, author;
+            var authors = [];
+
+            return new Promise(function(resolve, reject) {
+                citation.then(
+                    function(i) {
+                        console.log(i);
+                        subject = i.child(citationURI);
+                        if (typeof options === 'undefined' && !('type' in options)) {
+                            options.type = '';
                         }
-                        else {
-                            console.log("NOPE 2");
+                        switch(options.type) {
+                            case 'doi':
+                                title = subject.dctermstitle;
+                                authorList = subject.dctermscreator._array.forEach(function(s) {
+                                    s = subject.child(s);
+// console.log(author);
+                                    if (s.foafName && s.foafName.length > 0) {
+                                        author = name;
+                                    }
+
+                                    if (s.foaffamilyName && s.foaffamilyName.length > 0 && s.foafgivenName && s.foafgivenName.length > 0) {
+                                        switch(DO.C.DocRefType) {
+                                            case 'LNCS': default:
+                                                author = s.foaffamilyName + ', ' + s.foafgivenName.slice(0,1) + '.';
+                                                break;
+                                        }
+                                    }
+
+                                    authors.push(author);
+                                });
+// console.log(title);
+// console.log(authors.join(', '));
+                                authors = authors.join(', ');
+                                break;
+                            default:
+                                title = subject.schemaname || subject.dctermstitle;
+                                //TODO work with authorList
+                                authorList = subject['http://purl.org/ontology/bibo/authorList'];
+                                if (authorList) {
+                                    //FIXME: This is duplicate of above because of Promise..
+                                    authorList = subject.dctermscreator._array.forEach(function(s) {
+                                        s = subject.child(s);
+                                        console.log(author);
+                                        if (s.foafName && s.foafName.length > 0) {
+                                            author = name;
+                                        }
+
+                                        if (s.foaffamilyName && s.foaffamilyName.length > 0 && s.foafgivenName && s.foafgivenName.length > 0) {
+                                            switch(DO.C.DocRefType) {
+                                                case 'LNCS': default:
+                                                    author = s.foaffamilyName + ', ' + s.foafgivenName.slice(0,1) + '.';
+                                                    break;
+                                            }
+                                        }
+
+                                        authors.push(author);
+                                    });
+                                }
+                                else {
+                                    authors = subject.schemaauthor || subject.dctermscreator;
+                                }
+                                break;
                         }
-                    });
-                }
-                else {
-                    console.log("NOPE 1");
-                }
+                        var s = '<li>' + authors + ': ' + title + ', <a href="' + citationURI + '" rel="schema:citation">' + citationURI + '</a></li>';
+console.log(s);
+                        return resolve(s);
+                    },
+                    function(reason) {
+                        console.log(reason);
+                        return reject(reason);
+                    }
+                );
             });
         },
 
