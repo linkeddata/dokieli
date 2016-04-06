@@ -1134,7 +1134,7 @@ var DO = {
         },
 
         showDocumentInfo: function() {
-            document.body.insertAdjacentHTML('beforeend', '<menu id="document-menu" class="do"><button class="show" title="Open Menu">☰</button><header></header><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><a href="https://github.com/linkeddata/dokieli">dokieli</a></dd><dd id="about-linked-research"><a href="https://linkedresearch.org/">Linked Research</a></dd></dl></footer></menu>');
+            document.body.insertAdjacentHTML('beforeend', '<menu id="document-menu" class="do"><button class="show" title="Open Menu">☰</button><header></header><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><a href="https://github.com/linkeddata/dokieli">dokieli</a></dd></dl></footer></menu>');
             document.querySelector('#document-menu > button').addEventListener('click', function(e) {
                 if (e.target.classList.contains('show')) {
                     DO.U.showDocumentMenu();
@@ -4616,7 +4616,6 @@ console.log(s);
             DO.U.highlightItems();
             DO.U.showDocumentInfo();
             //    DO.U.buildReferences();
-            //    DO.U.getLinkedResearch();
             DO.U.showFragment();
             DO.U.setDocumentMode();
             DO.U.showInboxNotifications();
