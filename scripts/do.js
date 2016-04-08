@@ -2986,11 +2986,11 @@ var DO = {
                 }
             }
 
-console.log(iri);
+//console.log(iri);
 
             var pIRI = iri;
             pIRI = DO.U.stripFragmentFromString(pIRI);
-            console.log(pIRI);
+//console.log(pIRI);
             //TODO: Should use both document.location.origin + '/,proxy?uri= and then DO.C.ProxyURL .. like in setUser
             if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
                 pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
@@ -2999,83 +2999,89 @@ console.log(iri);
             return DO.U.getGraph(pIRI);
         },
 
-        getCitationHTML: function(citation, citationURI, options) {
-            if (!citationURI) { return Promise.reject({'message': 'No subject URI provided.'}); }
+        getCitationHTML: function(citationGraph, citationURI, options) {
+            var subject, title;
+            var authors = [], authorList = [];
 
-            var subject, title, authorList, author;
-            var authors = [];
+            subject = citationGraph.child(citationURI);
+            title = subject.schemaname || subject.dctermstitle || subject.rdfslabel;
 
-            return new Promise(function(resolve, reject) {
-                citation.then(
-                    function(i) {
-                        console.log(i);
-                        subject = i.child(citationURI);
-                        if (typeof options === 'undefined' && !('type' in options)) {
-                            options.type = '';
-                        }
-                        switch(options.type) {
-                            case 'doi':
-                                title = subject.dctermstitle;
-                                authorList = subject.dctermscreator._array.forEach(function(s) {
-                                    s = subject.child(s);
-// console.log(author);
-                                    if (s.foafName && s.foafName.length > 0) {
-                                        author = name;
-                                    }
+//console.log(subject);
+            var biboAuthorList = subject.biboauthorList;
+//            s = subject.child(s);
+//console.log(biboAuthorList);
+            var sa = subject.schemaauthor;
+//console.log(sa);
+            if (biboAuthorList !== 'undefined') {
+                var traverseRDFList = function(item) {
+                    var s = citationGraph.child(item);
 
-                                    if (s.foaffamilyName && s.foaffamilyName.length > 0 && s.foafgivenName && s.foafgivenName.length > 0) {
-                                        switch(DO.C.DocRefType) {
-                                            case 'LNCS': default:
-                                                author = s.foaffamilyName + ', ' + s.foafgivenName.slice(0,1) + '.';
-                                                break;
-                                        }
-                                    }
-
-                                    authors.push(author);
-                                });
-// console.log(title);
-// console.log(authors.join(', '));
-                                authors = authors.join(', ');
-                                break;
-                            default:
-                                title = subject.schemaname || subject.dctermstitle;
-                                //TODO work with authorList
-                                authorList = subject['http://purl.org/ontology/bibo/authorList'];
-                                if (authorList) {
-                                    //FIXME: This is duplicate of above because of Promise..
-                                    authorList = subject.dctermscreator._array.forEach(function(s) {
-                                        s = subject.child(s);
-                                        console.log(author);
-                                        if (s.foafName && s.foafName.length > 0) {
-                                            author = name;
-                                        }
-
-                                        if (s.foaffamilyName && s.foaffamilyName.length > 0 && s.foafgivenName && s.foafgivenName.length > 0) {
-                                            switch(DO.C.DocRefType) {
-                                                case 'LNCS': default:
-                                                    author = s.foaffamilyName + ', ' + s.foafgivenName.slice(0,1) + '.';
-                                                    break;
-                                            }
-                                        }
-
-                                        authors.push(author);
-                                    });
-                                }
-                                else {
-                                    authors = subject.schemaauthor || subject.dctermscreator;
-                                }
-                                break;
-                        }
-                        var s = '<li>' + authors + ': ' + title + ', <a href="' + citationURI + '" rel="schema:citation">' + citationURI + '</a></li>';
-console.log(s);
-                        return resolve(s);
-                    },
-                    function(reason) {
-                        console.log(reason);
-                        return reject(reason);
+                    //FIXME: This doesn't look pretty - Poke @nicola
+                    var bnode = s._iri._iri;
+//console.log(bnode);
+                    var authorItem = subject.child(bnode);
+//console.log(authorItem);
+//console.log(authorItem.rdffirst);
+                    if (authorItem.rdffirst) {
+                        authorList.push(authorItem.rdffirst);
                     }
-                );
-            });
+                    if (authorItem.rdfrest !== 'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil') {
+                        traverseRDFList(authorItem.rdfrest);
+                    }
+                };
+
+                traverseRDFList(biboAuthorList);
+
+//console.log(authorList);
+            }
+            else {
+                if (subject.schemaauthor && subject.schemaauthor._array.length > 0) {
+                    authorList = subject.schemaauthor._array;
+                }
+                else if (subject.dctermscreator && subject.dctermscreator._array.length > 0) {
+                    authorList = subject.dctermscreator._array;
+                }
+            }
+
+            if(authorList.length > 0) {
+                authorList.forEach(function(authorIRI) {
+                    var s = subject.child(authorIRI);
+                    var author = '';
+                    if (s.schemaname && s.schemaname.length > 0) {
+                        author = s.schemaname;
+                    }
+                    else if (s.foafname && s.foafname.length > 0) {
+                        author = s.foafname;
+                    }
+
+                    var createRefName = function(fN, gN) {
+                        switch(DO.C.DocRefType) {
+                            case 'LNCS': default:
+                                return fN + ', ' + gN.slice(0,1) + '.';
+                                break;
+                        }
+                    };
+
+                    if (s.schemafamilyName && s.schemafamilyName.length > 0 && s.schemagivenName && s.schemagivenName.length > 0) {
+                        author = createRefName(s.schemafamilyName, s.schemagivenName);
+                    }
+                    else if (s.foaffamilyName && s.foaffamilyName.length > 0 && s.foafgivenName && s.foafgivenName.length > 0) {
+                        author = createRefName(s.foaffamilyName, s.foafgivenName);
+                    }
+
+                    if (author !== '') {
+                        authors.push(author);
+                    }
+                    else {
+                        authors.push(authorIRI);
+                    }
+                });
+                authors = authors.join(', ');
+            }
+
+            var citationHTML = authors + ': ' + title + ', <a href="' + citationURI + '" rel="schema:citation">' + citationURI + '</a>';
+console.log(citationHTML);
+            return Promise.resolve(citationHTML);
         },
 
         highlightItems: function() {
