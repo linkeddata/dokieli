@@ -85,6 +85,19 @@ var DO = {
                 "@type": "@id",
                 "@array": true
             },
+            "rdffirst": {
+                "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#first",
+                "@type": "@id"
+            },
+            "rdfrest": {
+                "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest",
+                "@type": "@id"
+            },
+            "rdfnil": {
+                "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil",
+                "@type": "@id"
+            },
+
             "rdfsSeeAlso": {
                 "@id": "http://www.w3.org/2000/01/rdf-schema#seeAlso",
                 "@type": "@id",
@@ -113,6 +126,8 @@ var DO = {
             },
 
             "schemaname": "https://schema.org/name",
+            "schemafamilyName": "https://schema.org/familyName",
+            "schemagivenName": "https://schema.org/givenName",
             "schemaurl": {
                 "@id": "https://schema.org/url",
                 "@type": "@id"
@@ -123,11 +138,13 @@ var DO = {
             },
             "schemacreator": {
                 "@id": "https://schema.org/creator",
-                "@type": "@id"
+                "@type": "@id",
+                "@array": true
             },
             "schemaauthor": {
                 "@id": "https://schema.org/author",
-                "@type": "@id"
+                "@type": "@id",
+                "@array": true
             },
             "schemalicense": {
                 "@id": "https://schema.org/license",
@@ -149,6 +166,11 @@ var DO = {
                 "@id": "http://purl.org/dc/terms/creator",
                 "@type": "@id",
                 "@array": true
+            },
+
+            "biboauthorList": {
+                "@id": "http://purl.org/ontology/bibo/authorList",
+                "@type": "@id"
             },
 
             "storage": {
