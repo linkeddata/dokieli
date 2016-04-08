@@ -3006,13 +3006,8 @@ var DO = {
             subject = citationGraph.child(citationURI);
             title = subject.schemaname || subject.dctermstitle || subject.rdfslabel;
 
-//console.log(subject);
-            var biboAuthorList = subject.biboauthorList;
-//            s = subject.child(s);
-//console.log(biboAuthorList);
-            var sa = subject.schemaauthor;
-//console.log(sa);
-            if (biboAuthorList !== 'undefined') {
+// console.log(subject);
+            if (subject.biboauthorList) {
                 var traverseRDFList = function(item) {
                     var s = citationGraph.child(item);
 
@@ -3030,11 +3025,10 @@ var DO = {
                     }
                 };
 
-                traverseRDFList(biboAuthorList);
-
-//console.log(authorList);
+                traverseRDFList(subject.biboauthorList);
             }
             else {
+                console.log(subject.dctermscreator);
                 if (subject.schemaauthor && subject.schemaauthor._array.length > 0) {
                     authorList = subject.schemaauthor._array;
                 }
@@ -3042,6 +3036,7 @@ var DO = {
                     authorList = subject.dctermscreator._array;
                 }
             }
+//console.log(authorList);
 
             if(authorList.length > 0) {
                 authorList.forEach(function(authorIRI) {
