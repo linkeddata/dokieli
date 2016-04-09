@@ -9,9 +9,7 @@
 .medium-editor-table-builder-grid {
   border: 1px solid #000;
   border-radius: 3px;
-  height: 162px;
-  overflow: hidden;
-  width: 162px; }
+  overflow: hidden; }
 
 .medium-editor-table-builder-cell {
   background-color: #333;
@@ -35,3 +33,23 @@
 .medium-editor-table,
 .medium-editor-table td {
   border: 1px dashed #e3e3e3; }
+
+.medium-editor-table-builder-toolbar {
+  display: block;
+  min-width: 162px;
+  background-color: #333;
+  font-size: 0.8em;
+  color: white; }
+  .medium-editor-table-builder-toolbar span {
+    width: 45px;
+    display: block;
+    float: left;
+    margin-left: 5px; }
+  .medium-editor-table-builder-toolbar button {
+    margin: 0 3px;
+    background-color: #333;
+    border: 0;
+    width: 30px;
+    cursor: pointer; }
+    .medium-editor-table-builder-toolbar button i {
+      color: white; }
