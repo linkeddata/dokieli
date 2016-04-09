@@ -1276,7 +1276,7 @@ var DO = {
                         var sr = document.querySelectorAll('span.ref');
                         for(var j = 0; j < sr.length; j++) {
                             var refId = sr[j].querySelector('mark').id;
-                            var noteId = str[j].querySelector('a').textContent;
+                            var noteId = sr[j].querySelector('a').textContent;
                             DO.U.positionNote(refId, noteId, noteId);
                         };
 
@@ -3436,7 +3436,7 @@ console.log(citationHTML);
                     }
                     break;
 
-                case 'footnote':
+                case 'ref-footnote':
                     body = '<div class="content" property="schema:description" rel="oa:hasBody as:content"><div about="#' + n.id + '" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">' + n.body + '</div></div>';
 
                     hasTarget = '<a rel="oa:hasTarget" href="#' + n.refId + '">' + n.refLabel + '</a>';
@@ -3999,7 +3999,7 @@ console.log(citationHTML);
                             this.contentDefault = '<b>' + this.label + '</b>';
                             switch(this.action) {
                                 case 'mark': default:
-                                    this.contentFA = '<i class="fa fa-paint-brush"></i>';
+                                    this.contentFA = '<i class="fa fa-hashtag"></i>';
                                     break;
                                 case 'article':
                                     this.contentFA = '<i class="fa fa-sticky-note"></i>';
@@ -4072,6 +4072,12 @@ console.log(citationHTML);
                                     '<select id="article-license" name="license" class="medium-editor-toolbar-select">',
                                     DO.U.getLicenseOptionsHTML(),
                                     '</select>'
+                                    ];
+                                    break;
+                                case 'mark':
+                                    template = [
+                                    '<input type="radio" name="citation-type" value="ref-footnote" id="ref-footnote" /> <label for="ref-footnote">Footnote</label>',
+                                    '<textarea id="citation-content" cols="20" rows="1" class="medium-editor-toolbar-textarea" placeholder="', this.placeholderText, '"></textarea>'
                                     ];
                                     break;
                                 default:
@@ -4162,6 +4168,10 @@ console.log(citationHTML);
                                 case 'article':
                                     input.content.focus();
                                     break;
+                                case 'mark':
+                                    input.content.focus();
+                                    document.querySelector('.medium-editor-toolbar-form input[name="citation-type"]').checked = true;
+                                    break;
                                 default:
                                     input.focus();
                                     break;
@@ -4217,6 +4227,11 @@ console.log(citationHTML);
                                     opts.content = this.getInput().content.value;
                                     opts.license = this.getInput().license.value;
                                     break;
+                                case 'mark':
+                                    opts.citationType = this.getInput().citationType.value;
+                                    opts.content = this.getInput().content.value;
+                                    break;
+
                                 default:
                                     opts.url = this.getInput().value;
                                     break;
@@ -4355,7 +4370,7 @@ console.log(citationHTML);
                                         },
                                         "body": opts.content,
                                         "license": {}
-                                    }
+                                    };
                                     if (DO.C.User.IRI) {
                                         noteData.creator["iri"] = DO.C.User.IRI;
                                     }
@@ -4374,24 +4389,26 @@ console.log(citationHTML);
                                     break;
 
                                 //Internal Note
-                                case 'mark': //'footnote':
-                                    noteType = 'footnote';
+                                case 'mark': //footnote reference
+                                    ref = '<span class="ref" about="#' + refId + '" typeof="http://purl.org/dc/dcmitype/Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="' + opts.citationType + '"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup></span>';
 
-                                    ref = '<span class="ref" about="#' + refId + '" typeof="http://purl.org/dc/dcmitype/Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-footnote"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup></span>';
-
-                                    noteData = {
-                                        "type": noteType, //e.g., 'article'
-                                        "purpose": "write",
-                                        "motivatedByIRI": "oa:describing",
-                                        "id": id,
-                                        "refId": refId,
-                                        "refLabel": refLabel,
-                                        "iri": noteIRI, //e.g., https://example.org/path/to/article
-                                        "datetime": datetime,
-                                        "body": opts.url //FIXME: This object name is not fun
+                                    switch(opts.citationType) {
+                                        case 'ref-footnote': default:
+                                            noteData = {
+                                                "type": opts.citationType,
+                                                "purpose": "write",
+                                                "motivatedByIRI": "oa:describing",
+                                                "id": id,
+                                                "refId": refId,
+                                                "refLabel": refLabel,
+                                                "iri": noteIRI,
+                                                "datetime": datetime,
+                                                "body": opts.content
+                                            };
+// console.log(noteData);
+                                            note = DO.U.createNoteHTML(noteData);
+                                            break;
                                     }
-
-                                    note = DO.U.createNoteHTML(noteData);
                                     break;
                                 // case 'reference':
                                 //     ref = '<span class="ref" about="[this:#' + refId + ']" typeof="http://purl.org/dc/dcmitype/Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span> <span class="ref-reference">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span></span>';
@@ -4494,16 +4511,21 @@ console.log(citationHTML);
                                 case 'mark': //footnote
                                     //TODO: Refactor this what's in positionQuoteSelector
 
-                                    var nES = selectedParentElement.nextElementSibling;
-                                    var asideNote = '\n\
+                                    switch(opts.citationType) {
+                                        case 'ref-footnote': default:
+                                            var nES = selectedParentElement.nextElementSibling;
+                                            var asideNote = '\n\
 <aside class="note">\n\
 '+ note + '\n\
 </aside>';
-                                    var asideNode = DO.U.fragmentFromString(asideNote);
-                                    var parentSection = MediumEditor.util.getClosestTag(selectedParentElement, 'section');
-                                    parentSection.appendChild(asideNode);
+                                            var asideNode = DO.U.fragmentFromString(asideNote);
+                                            var parentSection = MediumEditor.util.getClosestTag(selectedParentElement, 'section');
+                                            parentSection.appendChild(asideNode);
 
-                                    DO.U.positionNote(refId, refLabel, id);
+                                            DO.U.positionNote(refId, refLabel, id);
+                                            break;
+                                    }
+
                                     break;
                             }
 
@@ -4577,6 +4599,11 @@ console.log(citationHTML);
                                     r.content = this.getForm().querySelector('#article-content.medium-editor-toolbar-textarea');
                                     r.license = this.getForm().querySelector('#article-license.medium-editor-toolbar-select');
                                     break;
+                                case 'mark':
+                                    r.citationType = this.getForm().querySelector('input[name="citation-type"]:checked');
+                                    r.content = this.getForm().querySelector('#citation-content.medium-editor-toolbar-textarea');
+                                    break;
+
                                 default:
                                     r = this.getForm().querySelector('textarea.medium-editor-toolbar-textarea');
                                     break;
