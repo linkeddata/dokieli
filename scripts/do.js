@@ -4393,7 +4393,6 @@ console.log(citationHTML);
 
                                 //Internal Note
                                 case 'mark': //footnote reference
-
                                     switch(opts.citationType) {
                                         case 'ref-footnote': default:
                                             docRefType = '<sup class="' + opts.citationType + '"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup>';
@@ -4570,9 +4569,7 @@ console.log(citationHTML);
                                                         document.querySelector('main > article > div').insertAdjacentHTML('beforeend', section);
                                                         r = document.querySelector('#references ol');
                                                     }
-                                                    rLength = r.querySelectorAll('li').length;
-                                                    i = (rLength == 0) ? 1 : rLength;
-                                                    var citationHTML = '<li id="ref-' + i + '">' + citation + '</li>';
+                                                    var citationHTML = '<li id="' + id + '">' + citation + '</li>';
                                                     r.insertAdjacentHTML('beforeend', citationHTML);
                                                 },
                                                 function(reason){
