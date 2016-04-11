@@ -3004,9 +3004,10 @@ var DO = {
             var authors = [], authorList = [];
 
             subject = citationGraph.child(citationURI);
-            title = subject.schemaname || subject.dctermstitle || subject.rdfslabel;
-
+            title = subject.schemaname || subject.dctermstitle || subject.rdfslabel || '';
+            title = title.replace(/ & /g, " &amp; ");
 // console.log(subject);
+// console.log(subject.biboauthorList);
             if (subject.biboauthorList) {
                 var traverseRDFList = function(item) {
                     var s = citationGraph.child(item);
@@ -3028,7 +3029,6 @@ var DO = {
                 traverseRDFList(subject.biboauthorList);
             }
             else {
-                console.log(subject.dctermscreator);
                 if (subject.schemaauthor && subject.schemaauthor._array.length > 0) {
                     authorList = subject.schemaauthor._array;
                 }
@@ -4077,6 +4077,8 @@ console.log(citationHTML);
                                 case 'mark':
                                     template = [
                                     '<input type="radio" name="citation-type" value="ref-footnote" id="ref-footnote" /> <label for="ref-footnote">Footnote</label>',
+                                    '<input type="radio" name="citation-type" value="ref-reference" id="ref-reference" /> <label for="ref-reference">Reference</label>',
+                                    '<input type="text" name="citation-url" value="" id="citation-url" class="medium-editor-toolbar-input" placeholder="http://example.org/article#results" />',
                                     '<textarea id="citation-content" cols="20" rows="1" class="medium-editor-toolbar-textarea" placeholder="', this.placeholderText, '"></textarea>'
                                     ];
                                     break;
@@ -4169,7 +4171,7 @@ console.log(citationHTML);
                                     input.content.focus();
                                     break;
                                 case 'mark':
-                                    input.content.focus();
+                                    input.url.focus();
                                     document.querySelector('.medium-editor-toolbar-form input[name="citation-type"]').checked = true;
                                     break;
                                 default:
@@ -4229,6 +4231,7 @@ console.log(citationHTML);
                                     break;
                                 case 'mark':
                                     opts.citationType = this.getInput().citationType.value;
+                                    opts.url = this.getInput().url.value;
                                     opts.content = this.getInput().content.value;
                                     break;
 
@@ -4390,10 +4393,10 @@ console.log(citationHTML);
 
                                 //Internal Note
                                 case 'mark': //footnote reference
-                                    ref = '<span class="ref" about="#' + refId + '" typeof="http://purl.org/dc/dcmitype/Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="' + opts.citationType + '"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup></span>';
 
                                     switch(opts.citationType) {
                                         case 'ref-footnote': default:
+                                            docRefType = '<sup class="' + opts.citationType + '"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup>';
                                             noteData = {
                                                 "type": opts.citationType,
                                                 "purpose": "write",
@@ -4408,7 +4411,14 @@ console.log(citationHTML);
 // console.log(noteData);
                                             note = DO.U.createNoteHTML(noteData);
                                             break;
+
+                                        case 'ref-reference':
+                                            docRefType = '<span class="' + opts.citationType + '">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span>';
+
+                                            break;
                                     }
+
+                                    ref = '<span class="ref" about="#' + refId + '" typeof="http://purl.org/dc/dcmitype/Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark>' + docRefType +'</span>';
                                     break;
                                 // case 'reference':
                                 //     ref = '<span class="ref" about="[this:#' + refId + ']" typeof="http://purl.org/dc/dcmitype/Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span> <span class="ref-reference">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span></span>';
@@ -4508,7 +4518,7 @@ console.log(citationHTML);
                                     );
                                 break;
 
-                                case 'mark': //footnote
+                                case 'mark': //footnote reference
                                     //TODO: Refactor this what's in positionQuoteSelector
 
                                     switch(opts.citationType) {
@@ -4523,6 +4533,53 @@ console.log(citationHTML);
                                             parentSection.appendChild(asideNode);
 
                                             DO.U.positionNote(refId, refLabel, id);
+                                            break;
+                                        case 'ref-reference':
+                                            var options = {'type': 'doi'};
+                                            options = {};
+
+                                            var citation = function() {
+                                                return new Promise(function(resolve, reject) {
+                                                    DO.U.getCitation(opts.url, options).then(
+                                                        function(citation){
+                                                            return resolve(citation);
+                                                        },
+                                                        function(reason){
+                                                            console.log(reason);
+                                                            return reject(reason);
+                                                        }
+                                                    );
+                                                });
+                                            };
+
+                                            citation().then(
+                                                function(citationGraph) {
+                                                    //FIXME: subjectIRI shouldn't be set here. Bug in RDFaProcessor. See also: https://github.com/linkeddata/dokieli/issues/132
+                                                    var subjectIRI = window.location.origin + window.location.pathname;
+                                                    return DO.U.getCitationHTML(citationGraph, subjectIRI, options);
+                                                },
+                                                function(reason) {
+                                                    console.log(reason);
+                                                    return Promise.reject({'message': reason});
+                                                }
+                                            ).then(
+                                                function(citation){
+                                                    var r = document.querySelector('#references ol');
+                                                    if (!r) {
+                                                        var section = '<section id="references"><h2>References</h2><div><ol></ol></div></section>';
+                                                        document.querySelector('main > article > div').insertAdjacentHTML('beforeend', section);
+                                                        r = document.querySelector('#references ol');
+                                                    }
+                                                    rLength = r.querySelectorAll('li').length;
+                                                    i = (rLength == 0) ? 1 : rLength;
+                                                    var citationHTML = '<li id="ref-' + i + '">' + citation + '</li>';
+                                                    r.insertAdjacentHTML('beforeend', citationHTML);
+                                                },
+                                                function(reason){
+                                                    console.log(reason);
+                                                    return reason;
+                                                }
+                                            );
                                             break;
                                     }
 
@@ -4601,6 +4658,7 @@ console.log(citationHTML);
                                     break;
                                 case 'mark':
                                     r.citationType = this.getForm().querySelector('input[name="citation-type"]:checked');
+                                    r.url = this.getForm().querySelector('#citation-url.medium-editor-toolbar-input');
                                     r.content = this.getForm().querySelector('#citation-content.medium-editor-toolbar-textarea');
                                     break;
 
@@ -4659,13 +4717,12 @@ console.log(citationHTML);
 
         init: function() {
             //    DO.U.initStorage('html');
-            //    DO.U.setDocRefType();
+            DO.U.setDocRefType();
             DO.U.showRefs();
             DO.U.setLocalDocument();
             DO.U.buttonClose();
             DO.U.highlightItems();
             DO.U.showDocumentInfo();
-            //    DO.U.buildReferences();
             DO.U.showFragment();
             DO.U.setDocumentMode();
             DO.U.showInboxNotifications();
