@@ -2931,47 +2931,6 @@ var DO = {
             return a;
         },
 
-        buildReferences: function() {
-            if (!document.querySelector('#references ol')) {
-                //XXX: Not the best way of doing this, but it allows DO references to be added to the right place.
-                var references = document.getElementById('references');
-                references.insertAdjacentHTML('beforeend', '\n<div><ol>\n</ol></div>\n');
-
-                var refs = document.querySelectorAll('span.ref');
-                if (refs) {
-                    for (var i = 0; i < refs.length; i++) {
-                        var referenceText = '';
-                        var referenceLink = '';
-                        var refId = (i+1);
-                        var href = refs[i].getAttribute('href');
-                        var title = refs[i].getAttribute('title');
-
-                        if (title) {
-                            referenceText = title.replace(/ & /g, " &amp; ");
-                        }
-                        if (href) {
-                            referenceLink = href.replace(/&/g, "&amp;");
-                            referenceLink = '<a about="" rel="schema:citation" href="' + referenceLink + '">' + referenceLink + '</a>';
-                            if (title) {
-                                referenceLink = ', ' + referenceLink;
-                            }
-                        }
-
-                        refs[i].outerHTML = ' ' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a class="ref" href="#ref-' + refId + '">' + refId + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose;
-
-                        document.querySelector('#references ol').insertAdjacentHTML('beforeend', '\n    <li id="ref-' + refId + '"></li>');
-
-                        if(refs[i].classList.contains('do')) {
-                            DO.U.getLinkedResearch(href, document.querySelector('#references #ref-' + refId));
-                        }
-                        else {
-                            document.querySelector('#references #ref-' + refId).innerHTML = referenceText + referenceLink;
-                        }
-                    }
-                }
-            }
-        },
-
         getCitation: function(i, options) {
             var iri = i;
             if (typeof options !== 'undefined' && 'type' in options && options.type == 'doi') {
