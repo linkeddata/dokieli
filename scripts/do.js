@@ -2933,7 +2933,8 @@ var DO = {
 
         getCitation: function(i, options) {
             var iri = i;
-            if (typeof options !== 'undefined' && 'type' in options && options.type == 'doi') {
+            // if (typeof options !== 'undefined' && 'type' in options && options.type == 'doi') {
+            if (i.toLowerCase().slice(0,4) !== 'http') {
 //                iri = 'http://dx.doi.org/' + i.trim();
                 iri = 'http://data.crossref.org/' + i.trim();
             }
@@ -4513,8 +4514,15 @@ console.log(citationHTML);
                                             citation().then(
                                                 function(citationGraph) {
                                                     //FIXME: subjectIRI shouldn't be set here. Bug in RDFaProcessor. See also: https://github.com/linkeddata/dokieli/issues/132
-                                                    var subjectIRI = window.location.origin + window.location.pathname;
-                                                    return DO.U.getCitationHTML(citationGraph, subjectIRI, options);
+                                                    var citationURI = '';
+                                                    //FIXME: temp fugly hack
+                                                    if(opts.url.toLowerCase().slice(0,4) !== 'http') {
+                                                        citationURI = 'http://dx.doi.org/' + opts.url;
+                                                    }
+                                                    else {
+                                                        citationURI = window.location.origin + window.location.pathname;
+                                                    }
+                                                    return DO.U.getCitationHTML(citationGraph, citationURI, options);
                                                 },
                                                 function(reason) {
                                                     console.log(reason);
