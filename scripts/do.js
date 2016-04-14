@@ -93,10 +93,6 @@ var DO = {
                 "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest",
                 "@type": "@id"
             },
-            "rdfnil": {
-                "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#nil",
-                "@type": "@id"
-            },
 
             "rdfsSeeAlso": {
                 "@id": "http://www.w3.org/2000/01/rdf-schema#seeAlso",
@@ -574,12 +570,6 @@ var DO = {
             if (document.location.protocol == 'file:') {
                 DO.C.LocalDocument = true;
             }
-        },
-
-        putPingbackTriple: function(url, pingbackOf, pingbackTo) {
-            var data = '<'+ pingbackOf + '> <http://purl.org/net/pingback/to> <' + pingbackTo + '> .';
-
-            DO.U.putResource(url, data, 'text/turtle; charset=utf-8');
         },
 
         //Copied from https://github.com/deiu/solid-plume/blob/gh-pages/app/solid.js
@@ -3035,7 +3025,7 @@ var DO = {
             }
 
             var citationHTML = authors + ': ' + title + ', <a href="' + citationURI + '" rel="schema:citation">' + citationURI + '</a>';
-console.log(citationHTML);
+//console.log(citationHTML);
             return Promise.resolve(citationHTML);
         },
 
