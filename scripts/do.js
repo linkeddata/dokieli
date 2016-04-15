@@ -2358,7 +2358,6 @@ var DO = {
         },
 
         generateBrowserList: function(g, url) {
-
             return new Promise(function(resolve, reject){
 
               document.getElementById('browser-location-input').value = url;
@@ -2688,14 +2687,12 @@ var DO = {
         },
 
         getBaseURLSelection: function() {
-            var s = '<div id="base-url-selection"><label>Location of media resources:</label>\n\
+            return '<div id="base-url-selection"><label>Location of media resources:</label>\n\
             <select name="base-url">\n\
             <option id="base-url-absolute" value="base-url-absolute" selected="selected">Use references as is</option>\n\
             <option id="base-url-relative" value="base-url-relative">Copy to your storage</option>\n\
             </select>\n\
             </div>';
-
-            return s;
         },
 
         rewriteBaseURL: function(nodes, urlType) {
@@ -3622,17 +3619,6 @@ var DO = {
                 }
             },
 
-            //Sets the selection to any given node. Same as MediumEditor.selection.select()
-            //TODO: Remove.
-            // selectNode: function(selection, node) {
-            //     var h = document.createRange();
-            //     h.selectNodeContents(node);
-            //     selection.removeAllRanges();
-            //     selection.addRange(h);
-            //     console.log(h);
-            // },
-
-            //in-reply-to? author+ title? description? published updated? [actions: edit? delete? voteUp? voteDown? follow?]
             Button: (function () {
                 if (typeof MediumEditor !== 'undefined') {
                     return MediumEditor.extensions.button.extend({
@@ -3792,7 +3778,6 @@ var DO = {
                                                 var sPE = selectedParentElement.nodeName.toLowerCase();
                                                 switch(sPE) {
                                                     case "p": default:
-                                                        //TODO: There should be a simpler way to do wrap <p> (w/o jQuery)
                                                         var xSPE = document.createElement(sPE);
                                                         xSPE.appendChild(fragment.cloneNode(true));
                                                         fragment = DO.U.fragmentFromString(xSPE.outerHTML);
@@ -4670,7 +4655,6 @@ var DO = {
         }, //DO.U.Editor
 
         init: function() {
-            //    DO.U.initStorage('html');
             DO.U.setDocRefType();
             DO.U.showRefs();
             DO.U.setLocalDocument();

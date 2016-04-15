@@ -36,7 +36,7 @@ control.
 * Assignment of URI fragments (to whatever is of interest) so that other resources on the Web can reference
 * Embedding data blocks, e.g., Turtle, N-Triples, JSON-LD, TriG (Nanopublications)
 * Embedding of media objects, tables, and interactions
-* Automated references and citations
+* Automated references and citations (retrieves and reuses structured information)
 * Insertion of table of contents, figures, tables, abbreviations
 * Drag and drop to reorganize the document's sections and table of contents
 * In-browser local storage, and document exporting
