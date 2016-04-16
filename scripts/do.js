@@ -1034,7 +1034,7 @@ var DO = {
         //TODO: Refactor
         showUserSigninSignup: function(node) {
             if (typeof SimpleRDF !== 'undefined') {
-                var s = '<button class="signin-user" title="Signin to authenticate"><i class="fa fa-user-secret fa-2x"></i>Sign in</button>';
+                var s = '<button class="signin-user" title="Sign in to authenticate"><i class="fa fa-user-secret fa-2x"></i>Sign in</button>';
                 if(DO.C.User.IRI) {
                     s = DO.U.getUserHTML();
                 }
@@ -1223,7 +1223,7 @@ var DO = {
 
             if (stylesheets.length > 1) {
                 var s = '<section id="document-views" class="do"><h2>Views</h2><i class="fa fa-magic"></i><ul>';
-                s += '<li><button title="Change to native device/browser view for this article">Native</button></li>';
+                s += '<li><button title="Change to native device/browser view">Native</button></li>';
                 for (var i = 0; i < stylesheets.length; i++) {
                     var stylesheet = stylesheets[i];
                     var view = stylesheet.getAttribute('title');
