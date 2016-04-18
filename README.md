@@ -64,15 +64,15 @@ guidelines using the LNCS typographical rules, and vice versa (see the menu) ;)
 
 ## Design
 There is nothing to install or setup, out of band tooling or account creations
-for its core functionality. The Web browser is the only requirement. Reasonable?
-It is entirely progressively enhanced: intended to minimize friction in
-publishing and consuming. Works on local machine, and is functional from ground
-up. Additional features can be used with the "pay-as-you-go" design approach
-e.g., if authors or reviewers have a WebID and a personal storage space, their
+for its core functionality. The Web browser is the only requirement. It is
+entirely progressively enhanced (complete separation of structure/data,
+presentation, and behaviour layers): intended to minimize friction in publishing
+and consuming. Works on local machine, and is functional from ground up.
+Additional features can be used with the "pay-as-you-go" design approach e.g.,
+if authors or reviewers have a WebID and a personal storage space, their
 feedback can be under their full control, meanwhile allowing who it can be
 visible to or writeable for. If they don't, or the authors don't wish to enable
 open dialogue, that's okay too.
-
 
 It works towards [acid test and user stories](http://csarven.ca/linked-research-scholarly-communication#user-stories)
 where authors and all Webizens can publish and consume, and participate in
