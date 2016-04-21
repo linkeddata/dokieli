@@ -3276,6 +3276,28 @@ var DO = {
                             //XXX: Keeping this comment around for emergency
 //                                selectedParentNode.parentNode.insertBefore(asideNode, selectedParentNode.nextSibling);
 
+                            if(DO.C.User.IRI) {
+                                var noteDelete = document.querySelector('aside.do blockquote[cite="' + noteIRI + '"] article button.delete');
+                                if (noteDelete) {
+                                    noteDelete.addEventListener('click', function(e) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+
+                                        DO.U.deleteResource(noteIRI).then(
+                                            function(i){
+                                                var aside = noteDelete.closest('aside.do');
+                                                aside.parentNode.removeChild(aside);
+                                                var span = document.querySelector('span[about="#' + refId + '"]');
+                                                span.outerHTML = span.querySelector('mark').textContent;
+                                                //TODO: Delete notification or send delete activity
+                                            },
+                                            function(reason){
+                                                console.log(reason);
+                                            }
+                                        );
+                                    });
+                                }
+                            }
                             DO.U.positionNote(refId, refLabel, id);
 
                             //Perhaps return something more useful?
@@ -3303,6 +3325,7 @@ var DO = {
             var heading, hX;
             var aAbout = '', aPrefix = '';
             var license = '';
+            var buttonDelete = '';
 
             var motivatedByIRI = n.motivatedByIRI || '';
             var motivatedByLabel = n.motivatedByLabel || '';
@@ -3325,6 +3348,9 @@ var DO = {
             switch(n.purpose) {
                 default:
                     hX = 'h3';
+                    if ('creator' in n && 'iri' in n.creator && DO.C.User.IRI) {
+                        buttonDelete = '<button class="delete"><i class="fa fa-trash"></i></button>' ;
+                    }
                     break;
                 case 'write':
                     hX = 'h1';
@@ -3409,7 +3435,7 @@ var DO = {
             }
 
             var note = '\n\
-<article id="' + n.id + '" about="' + aAbout + '" typeof="oa:Annotation as:Activity"' + aPrefix + '>\n\
+<article id="' + n.id + '" about="' + aAbout + '" typeof="oa:Annotation as:Activity"' + aPrefix + '>'+buttonDelete+'\n\
     ' + heading + '\n\
     ' + authors + '\n\
     ' + published + '\n\
