@@ -1245,8 +1245,10 @@ var DO = {
         },
 
         setDocRefType: function() {
-            DO.C.DocRefType = document.querySelector('head link[rel="stylesheet"][title]').getAttribute('title');
-
+            var link = document.querySelector('head link[rel="stylesheet"][title]');
+            if (link) {
+                DO.C.DocRefType = link.getAttribute('title');
+            }
             if (Object.keys(DO.C.RefType).indexOf(DO.C.DocRefType) == -1) {
                 DO.C.DocRefType = 'LNCS';
             }
