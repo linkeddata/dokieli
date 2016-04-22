@@ -1145,6 +1145,39 @@ var DO = {
             }
         },
 
+        afterSignIn: function() {
+            var user = document.querySelectorAll('aside.do article *[rel~="schema:creator"] > *[about="' + DO.C.User.IRI + '"]');
+            for(var i = 0; i < user.length; i++) {
+                var article = user[i].closest('article');
+                article.insertAdjacentHTML('afterbegin', '<button class="delete"><i class="fa fa-trash"></i></button>');
+            }
+
+            var buttonDelete = document.querySelectorAll('aside.do blockquote[cite] article button.delete');
+            for(var i = 0; i < buttonDelete.length; i++) {
+                buttonDelete[i].addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var article = e.target.closest('article');
+                    var refId = 'r-' + article.id;
+                    var noteIRI = article.closest('blockquote[cite]');
+                    noteIRI = noteIRI.getAttribute('cite');
+
+                    DO.U.deleteResource(noteIRI).then(
+                        function(i){
+                            var aside = e.target.closest('aside.do');
+                            aside.parentNode.removeChild(aside);
+                            var span = document.querySelector('span[about="#' + refId + '"]');
+                            span.outerHTML = span.querySelector('mark').textContent;
+                            //TODO: Delete notification or send delete activity
+                        },
+                        function(reason){
+                            console.log(reason);
+                        }
+                    );
+                });
+            }
+        },
+
         showDocumentInfo: function() {
             document.body.insertAdjacentHTML('beforeend', '<menu id="document-menu" class="do"><button class="show" title="Open Menu">☰</button><header></header><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><i class="fa fa-github"></i> <a href="https://github.com/linkeddata/dokieli">dokieli</a></dd></dl></footer></menu>');
             document.querySelector('#document-menu > button').addEventListener('click', function(e) {
