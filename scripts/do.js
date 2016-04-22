@@ -5,7 +5,7 @@
  * https://github.com/linkeddata/dokieli
  */
 
-var SimpleRDF = ld.SimpleRDF;
+var SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined;
 var DO = {
     C: {
         Lang: document.documentElement.lang,
