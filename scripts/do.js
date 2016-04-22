@@ -1131,6 +1131,7 @@ var DO = {
                             function(i) {
 // console.log(i);
                                 document.getElementById('user-info').innerHTML = DO.U.getUserHTML();
+                                DO.U.afterSignIn();
                             },
                             function(reason) {
                                 console.log(reason);
