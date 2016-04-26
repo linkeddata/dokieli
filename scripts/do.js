@@ -1859,80 +1859,89 @@ var DO = {
         },
 
         getDocument: function(cn) {
-            var html = cn || document.documentElement.cloneNode(true);
+            var node = cn || document.documentElement.cloneNode(true);
+            var options = {
+                'selfClosing': "br img input area base basefont col colgroup source wbr isindex link meta param hr",
+                'skipAttributes': "contenteditable spellcheck medium-editor-index data-medium-editor-element data-medium-focused data-placeholder role aria-multiline style"
+            }
+
             var s = "<!DOCTYPE html>\n";
             s += '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n    ';
-
-            var selfClosing = {};
-            "br img input area base basefont col colgroup source wbr isindex link meta param hr".split(' ').forEach(function (n) {
-                selfClosing[n] = true;
-            });
-            var skipAttributes = {};
-            "contenteditable spellcheck medium-editor-index data-medium-editor-element data-medium-focused data-placeholder role aria-multiline style".split(' ').forEach(function (n) {
-                skipAttributes[n] = true;
-            });
-            var noEsc = [false];
-            //Adapted from https://github.com/w3c/respec/blob/develop/js/ui/save-html.js#L194
-            var dumpNode = function (node) {
-                var out = '';
-                // if the node is the document node.. process the children
-                if (node.nodeType === 9 || (node.nodeType === 1 && node.nodeName.toLowerCase() == "html")) {
-                    for (var i = 0; i < node.childNodes.length; i++) out += dumpNode(node.childNodes[i]);
-                }
-                else if (1 === node.nodeType) {
-                    if (node.hasAttribute('class') && node.classList.contains('do') && node.classList.contains('ref')) {
-                        out += node.querySelector('mark').textContent;
-                    }
-                    else if (!(node.hasAttribute('class') && (node.classList.contains('do') || node.classList.contains('firebugResetStyles')))) {
-                        var ename = node.nodeName.toLowerCase() ;
-                        out += "<" + ename ;
-
-                        var attrList = [];
-                        for (var i = node.attributes.length - 1; i >= 0; i--) {
-                            var atn = node.attributes[i];
-                            if (skipAttributes[atn.name]) continue;
-                            if (/^\d+$/.test(atn.name)) continue;
-                            if (atn.name == 'class' && (atn.value.split(' ').indexOf('on-document-menu') > -1)) {
-                                atn.value = atn.value.replace(/(on-document-menu)/, '').trim();
-                            }
-                            if (!(atn.name == 'class' && atn.value == '')) {
-                                attrList.push(atn.name + "=\"" + DO.U.htmlEntities(atn.value) + "\"");
-                            }
-                        }
-
-                        if (attrList.length > 0) {
-                            attrList.sort(function (a, b) {
-                              return a.toLowerCase().localeCompare(b.toLowerCase());
-                            });
-                            out += ' ' + attrList.join(' ');
-                        }
-
-                        if (selfClosing[ename]) { out += " />"; }
-                        else {
-                            out += '>';
-                            noEsc.push(ename === "style" || ename === "script");
-                            for (var i = 0; i < node.childNodes.length; i++) out += dumpNode(node.childNodes[i]);
-                            noEsc.pop();
-                            out += '</' + ename + '>';
-                        }
-                    }
-                }
-                else if (8 === node.nodeType) {
-                    //XXX: If comments are not tabbed in source, a new line is not prepended
-                    out += "<!--" + node.nodeValue + "-->";
-                }
-                else if (3 === node.nodeType || 4 === node.nodeType) {
-                    //XXX: Remove new lines which were added after DOM ready
-                    var nl = node.nodeValue.replace(/\n+$/, '');
-                    out += noEsc[noEsc.length - 1] ? nl : nl.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-                }
-                else {
-                    console.log("Warning; Cannot handle serialising nodes of type: " + node.nodeType);
-                }
-                return out;
-            };
-            s += dumpNode(html) + "\n</html>\n";
+            s += DO.U.domToString(node, options) + "\n</html>\n";
             return s;
+        },
+
+        domToString: function(node, options) {
+          var selfClosing = {};
+          options.selfClosing.split(' ').forEach(function (n) {
+              selfClosing[n] = true;
+          });
+          var skipAttributes = {};
+          options.skipAttributes.split(' ').forEach(function (n) {
+              skipAttributes[n] = true;
+          });
+          var noEsc = [false];
+          //wasDerivedFrom https://github.com/w3c/respec/blob/develop/js/ui/save-html.js
+          var dumpNode = function (node) {
+              var out = '';
+              // if the node is the document node.. process the children
+              if (node.nodeType === 9 || (node.nodeType === 1 && node.nodeName.toLowerCase() == "html")) {
+                  for (var i = 0; i < node.childNodes.length; i++) out += dumpNode(node.childNodes[i]);
+              }
+              else if (1 === node.nodeType) {
+                  if (node.hasAttribute('class') && node.classList.contains('do') && node.classList.contains('ref')) {
+                      out += node.querySelector('mark').textContent;
+                  }
+                  else if (!(node.hasAttribute('class') && (node.classList.contains('do') || node.classList.contains('firebugResetStyles')))) {
+                      var ename = node.nodeName.toLowerCase() ;
+                      out += "<" + ename ;
+
+                      var attrList = [];
+                      for (var i = node.attributes.length - 1; i >= 0; i--) {
+                          var atn = node.attributes[i];
+                          if (skipAttributes[atn.name]) continue;
+                          if (/^\d+$/.test(atn.name)) continue;
+                          if (atn.name == 'class' && (atn.value.split(' ').indexOf('on-document-menu') > -1)) {
+                              atn.value = atn.value.replace(/(on-document-menu)/, '').trim();
+                          }
+                          if (!(atn.name == 'class' && atn.value == '')) {
+                              attrList.push(atn.name + "=\"" + DO.U.htmlEntities(atn.value) + "\"");
+                          }
+                      }
+
+                      if (attrList.length > 0) {
+                          attrList.sort(function (a, b) {
+                            return a.toLowerCase().localeCompare(b.toLowerCase());
+                          });
+                          out += ' ' + attrList.join(' ');
+                      }
+
+                      if (selfClosing[ename]) { out += " />"; }
+                      else {
+                          out += '>';
+                          noEsc.push(ename === "style" || ename === "script");
+                          for (var i = 0; i < node.childNodes.length; i++) out += dumpNode(node.childNodes[i]);
+                          noEsc.pop();
+                          out += '</' + ename + '>';
+                      }
+                  }
+              }
+              else if (8 === node.nodeType) {
+                  //XXX: If comments are not tabbed in source, a new line is not prepended
+                  out += "<!--" + node.nodeValue + "-->";
+              }
+              else if (3 === node.nodeType || 4 === node.nodeType) {
+                  //XXX: Remove new lines which were added after DOM ready
+                  var nl = node.nodeValue.replace(/\n+$/, '');
+                  out += noEsc[noEsc.length - 1] ? nl : nl.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+              }
+              else {
+                  console.log("Warning; Cannot handle serialising nodes of type: " + node.nodeType);
+              }
+              return out;
+          };
+
+          return dumpNode(node);
         },
 
         exportAsHTML: function() {
