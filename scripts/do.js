@@ -1872,14 +1872,19 @@ var DO = {
         },
 
         domToString: function(node, options) {
+          var options = options || {};
           var selfClosing = {};
-          options.selfClosing.split(' ').forEach(function (n) {
-              selfClosing[n] = true;
-          });
+          if ('selfClosing' in options) {
+              options.selfClosing.split(' ').forEach(function (n) {
+                  selfClosing[n] = true;
+              });
+          }
           var skipAttributes = {};
-          options.skipAttributes.split(' ').forEach(function (n) {
-              skipAttributes[n] = true;
-          });
+          if ('skipAttributes' in options) {
+              options.skipAttributes.split(' ').forEach(function (n) {
+                  skipAttributes[n] = true;
+              });
+          }
           var noEsc = [false];
           //wasDerivedFrom https://github.com/w3c/respec/blob/develop/js/ui/save-html.js
           var dumpNode = function (node) {
@@ -1905,7 +1910,7 @@ var DO = {
                               atn.value = atn.value.replace(/(on-document-menu)/, '').trim();
                           }
                           if (!(atn.name == 'class' && atn.value == '')) {
-                              attrList.push(atn.name + "=\"" + DO.U.htmlEntities(atn.value) + "\"");
+                              attrList.push(atn.name + "=\"" + atn.value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;') + "\"");
                           }
                       }
 
