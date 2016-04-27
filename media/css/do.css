@@ -233,6 +233,10 @@ font-family:sans-serif;
 font-weight:normal;
 }
 
+#document-menu section {
+width:100%;
+}
+
 #document-menu section button:hover {
 background-color:#eee;
 cursor:pointer;
