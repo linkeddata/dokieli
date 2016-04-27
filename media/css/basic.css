@@ -39,13 +39,6 @@ aside ul { list-style: none; padding: 0; }
 footer { margin-top:2em; }
 footer a { color: inherit; }
 
-/* Menu fixes
-   TODO: make it so this isn't necessary.
-*/
-#document-menu section { width: 100%; }
-
-/* </menu fixes> */
-
 /* dokieli homepage styles */
 #do-index h1 {
   text-align: center;
