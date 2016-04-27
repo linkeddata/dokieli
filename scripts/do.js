@@ -2666,6 +2666,7 @@ var DO = {
 
            saveAsDocument.addEventListener('click', function(e) {
                 if (e.target.matches('button.create')) {
+                    var currentDocumentURL = window.location.origin + window.location.pathname;
                     var saveAsDocument = document.getElementById('save-as-document');
                     var storageIRI = saveAsDocument.querySelector('#location-final').innerText.trim();
                     var rm = saveAsDocument.querySelector('.response-message');
@@ -2674,6 +2675,8 @@ var DO = {
                     }
 
                     var html = document.documentElement.cloneNode(true);
+                    var wasDerivedOn = DO.U.getDateTimeISO();
+                    html.querySelector('#content').insertAdjacentHTML('beforebegin', '<dl id="document-derived-from"><dt>Derived From</dt><dd><a href="' + currentDocumentURL + '" rel="prov:wasDerivedFrom">' + currentDocumentURL + '</a></dd><dt>Derived On</dt><dd><time datetime="' + wasDerivedOn + '">' + wasDerivedOn + '</time></dd></dl>');
                     var baseURLSelectionChecked = saveAsDocument.querySelector('select[name="base-url"]');
                     if (baseURLSelectionChecked.length > 0) {
                         var baseURLType = baseURLSelectionChecked.value;
