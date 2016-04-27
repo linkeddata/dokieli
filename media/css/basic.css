@@ -1,16 +1,9 @@
 body {
-  margin:2em auto;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 1.1em;
   line-height: 1.4;
-}
-
-body > header > address {
-text-align:center;
-}
-address object,
-address image {
-vertical-align:middle;
+  color:#333;
+  margin: 0; padding: 0;
 }
 
 h1 {
@@ -26,10 +19,15 @@ h4 { font-size: 1.2em; font-style: italic; }
 section article h1,
 section article h2,
 section article h3 {
-margin:0;
-font-size:1em;
-font-weight:normal;
-text-align:left;
+  margin:0;
+  font-size:1em;
+  font-weight:normal;
+  text-align:left;
+}
+
+section {
+  width: 100%;
+  padding: 0 0.5em;
 }
 
 a { color: #000; }
@@ -39,52 +37,127 @@ nav ul,
 aside ul { list-style: none; padding: 0; }
 
 footer { margin-top:2em; }
+footer a { color: inherit; }
 
-#do-new,
-#do-examples,
-#do-examples li {
+/* Menu fixes
+   TODO: make it so this isn't necessary.
+*/
+#document-menu section { width: 100%; }
+
+/* </menu fixes> */
+
+/* dokieli homepage styles */
+#do-index h1 {
+  text-align: center;
+  font-size: 4em;
+  font-family: Serif; font-weight: normal;
+  margin-top: 0.5em; margin-bottom: 0em;
+}
+
+#do-index #introduction p:first-of-type {
+  text-align: center;
+  font-size: 1.4em;
+}
+#do-index #features, footer {
+  overflow: hidden;
+  padding-top: 1em; padding-bottom: 1em;
+  background-color: #333;
+  color: #EBEBEB;
+}
+
+#do-index #features {
+  width: 100%;
+}
+
+#do-index #features ul {
+  list-style-type: none;
+  padding: 0; margin: 0;
+  font-size: 0.6em;
+  text-align: center;
+}
+
+#do-index #features ul li {
+  overflow: hidden;s
+}
+#do-index #features ul span {
+  display: block;
+  font-size: 2em;
+  margin: 0;
+}
+#do-index #features li span:first-child {
   display: inline-block;
 }
-#do-new {
-  border: 1px solid #000;
-  border-radius: 8px;
-  margin-right: 1.8em;
+#do-index #features li span:last-child {
+  display: inline-block;
+  color: #a8a8a8;
 }
-#do-new:hover {
-  border-color:#555;
+#do-index #features ul li a {
+  display: inline-block;
+  color: inherit; text-decoration: none;
+  width: 100%;
 }
-#do-new a {
-  display: block;
-  padding: 0.6em 3.75em 0.6em 0.6em;
-  font-weight: bold;
-  font-size: 1.8em;
-  text-decoration: none;
+#do-index #features ul li:hover, #do-index #features ul li:hover span {
+  /*background-color: #BCDE8A; */
+  background-color: #444;
+  /*color: #333;*/
 }
-#do-new a:before {
-  content: "+ ";
+#do-index #features ul i {
+  width: 1em;
+  height: 1em;
+  padding: 0.3em; margin: 0 0.2em;
+  color: #81bb2c; background-color: #fff;
+  border-radius: 50%;
+  text-align: center;
 }
 
-#do-examples {
-  position: relative;
-  top: 0.5em;
-  left: 0;
+#do-index #features i.solid img {
+  width: 100%; background-color: #81bb2c; display: block;
 }
-#do-examples li:after {
-  content:", ";
-}
-#do-examples li:last-child:after {
-  content:"";
-}
-#do-examples span {
-  display: block;
-  padding: 0;
-  margin: 0 0 0.6em 0;
-  font-weight: bold;
+
+#do-index #video {
+  text-align: center;
+  width: 100%;
+  background-color: #ccc;
 }
 
 @media screen and (min-width: 768px){
-  body {
+
+  section {
     width: 60%;
-    max-width: 1200px;
+    margin: 2em auto;
+    padding: 0;
+  }
+
+  #do-index #features ul {
+    font-size: 1.2em;
+    float: left;
+    width: 100%;
+  }
+  #do-index #features ul li { 
+    float: left;
+    width: 50%;
+    padding: 0.6em 0;
+  }
+  #do-index #features ul li:nth-child(odd) {
+    text-align:right;
+    clear:left;
+  }
+  #do-index #features ul li:nth-child(even) {
+    text-align:left;
+  }
+  #do-index #features ul li span {
+    font-size: 1em;
+  }
+  #do-index #features ul li span:first-of-type {
+    padding-top: 1em;
+  }
+  #do-index #features ul li:nth-child(odd) i,
+  #do-index #features ul li:nth-child(odd) p {
+    float:right;
+  }
+  #do-index #features ul li:nth-child(even) i,
+  #do-index #features ul li:nth-child(even) p {
+    float: left;
   }
 }
+/* </dokieli homepage styles> */
