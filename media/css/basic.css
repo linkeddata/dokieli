@@ -4,6 +4,7 @@ body {
   line-height: 1.4;
   color:#333;
   margin: 0; padding: 0;
+  width:100%;
 }
 
 h1 {
@@ -26,7 +27,7 @@ section article h3 {
 }
 
 section {
-  width: 100%;
+  max-width: calc(100% - 1em);
   padding: 0 0.5em;
 }
 
@@ -44,7 +45,7 @@ body > footer a, body > footer a:hover { color: inherit; }
   text-align: center;
   font-size: 4em;
   font-family: Serif; font-weight: normal;
-  margin-top: 0.5em; margin-bottom: 0em;
+  margin-top: 0.5em; margin-bottom: 0;
 }
 
 #do-index #introduction {
@@ -59,7 +60,10 @@ body > footer a, body > footer a:hover { color: inherit; }
 }
 
 #do-index #features {
-  width: 100%;
+  width:100%;
+  max-width:calc(100% - 1em);
+  padding-left:0.5em;
+  padding-right:0.5em;
 }
 
 #do-index #features ul {
@@ -118,13 +122,11 @@ video {
 }
 
 @media screen and (min-width: 768px){
-
   section {
     width: 60%;
     margin: 2em auto;
     padding: 0;
   }
-
   #do-index #features ul {
     font-size: 1.2em;
     float: left;
