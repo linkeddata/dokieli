@@ -63,11 +63,26 @@
                                     <i class="fa fa-3x fa-flask"></i>
                                     <span>Open source and under ongoing development...</span><span>dogfooding, feedback and contributions welcome.</span>
                                 </a></li>
-                                <li><a href="#">
+                                <li><a class="action-menu" href="">
                                     <i class="fa fa-3x fa-bars"></i>
                                     <span>Try it now!</span><span>This webpage is a dokieli article.</span>
                                 </a></li>
                             </ul>
+                            <script>//<![CDATA[
+                                var actionMenu = document.querySelectorAll('.action-menu');
+                                for (var i = 0; i < actionMenu.length; i++) {
+                                    actionMenu[i].addEventListener('click', function(e) {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                        if (document.body.classList.contains('on-document-menu')) {
+                                            DO.U.hideDocumentMenu(e);
+                                        }
+                                        else {
+                                            DO.U.showDocumentMenu(e);
+                                        }
+                                    });
+                                }
+                            //]]></script>
                         </div>
                     </section>
 
