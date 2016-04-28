@@ -90,20 +90,20 @@
                         <h2 property="schema:name">Developers</h2>
                         <div datatype="rdf:HTML" property="schema:description">
                             <p>dokieli is open source; you can find the code at <i class="fa fa-github"></i> <a href="https://github.com/linkeddata/dokieli">github.com/linkeddata/dokieli</a>. This is very much a work in progress, so contributions, issues, bug reports and feature requests are welcome. You can also <strong>join the chat</strong> on <a href="https://gitter.im/linkeddata/dokieli">Gitter</a>.</p>
-                            <p>We're building dokieli to be something we want to use, so we encourage dogfooding! Check out <a href="https://github.com/linkeddata/dokieli/wiki#examples-in-the-wild">examples in the wild</a>.</p>
+                            <p>We’re building dokieli to be something we want to use, so we encourage dogfooding! Check out <a href="https://github.com/linkeddata/dokieli/wiki#examples-in-the-wild">examples in the wild</a>.</p>
                         </div>
                     </section>
                     <section id="roadmap" inlist="" rel="schema:hasPart" resource="#roadmap">
                         <h2 property="schema:name">Roadmap</h2>
                         <div datatype="rdf:HTML" property="schema:description">
-                            <h3>What we're currently working on</h3>
+                            <h3>What we’re currently working on</h3>
                             <ul>
                                 <li>Docs!</li>
                                 <li>Reusable HTML templates</li>
                                 <li>Semantic markup editor</li>
                                 <li>UI improvements and bug fixes</li>
                             </ul>
-                            <h3>What we'll work on next</h3>
+                            <h3>What we’ll work on next</h3>
                             <ul>
                                 <li>Paragraph level annotations/replies</li>
                                 <li>Storage settings for article replies and notification inboxes</li>
@@ -116,7 +116,7 @@
                             <ul>
                                 <li>Threaded annotations/replies</li>
                                 <li>Different types of annotations/replies, and ability to close them</li>
-                                <li>Displaying notifications for interactions that aren't annotations</li>
+                                <li>Displaying notifications for interactions that aren’t annotations</li>
                                 <li>Drop-in partial templates</li>
                                 <li>UI improvements/customisation for authenticated users</li>
                                 <li>Better handling of multimedia, figures, embedded scripts, maths and live data</li>
@@ -124,7 +124,7 @@
                                 <li>Realtime collaborative editing</li>
                                 <li>A 'marketplace' for views/themes/styles and facility to quickly add/remove them from an article</li>
                             </ul>
-                            <p>If you are using dokieli and have feature requests, please do <a href="https://github.com/linkeddata/dokieli/issues">raise an issue</a> or +1 an existing one! If you're a developer, feel free to jump in and tackle any of these.</p>
+                            <p>If you are using dokieli and have feature requests, please do <a href="https://github.com/linkeddata/dokieli/issues">raise an issue</a> or +1 an existing one! If you’re a developer, feel free to jump in and tackle any of these.</p>
                         </div>
                     </section>
                     <section id="researchers" inlist="" rel="schema:hasPart" resource="#researchers">
@@ -136,7 +136,7 @@
                         </div>
                     </section>
                     <section id="video" inlist="" rel="schema:hasPart" resource="#video-dokieli">
-                        <meta property="schema:name" content="Screencast" />
+                        <h2 property="schema:name">Video dokieli</h2>
                         <div datatype="rdf:HTML">
                             <video id="video-dokieli" rel="schema:hasPart" preload="none" controls="controls" width="800" height="600" poster="https://dokie.li/media/images/dokieli-article-fragment.svg">
                                 <source about="#video-dokieli" rel="schema:hasPart" resource="https://dokie.li/media/video/dokieli.webm"  typeof="fabio:Film" src="https://dokie.li/media/video/dokieli.webm" type="video/webm">
@@ -147,12 +147,15 @@
                                 </track>
                             </video>
                         </div>
+                        <style>/*<![CDATA[*/
+                        #video h2 { display:none }
+                        /*]]>*/</style>
                     </section>
                     <section id="publish" inlist="" rel="schema:hasPart" resource="#publish">
                         <h2 property="schema:name">Write and publish</h2>
                         <div datatype="rdf:HTML" property="schema:description">
                             <p>dokieli articles are completely decentralised! This means you publish where you choose, and we have no central servers to monitor or control your content or the interactions of your readers. Simply add the dokieli CSS and JavaScript to any HTML page to immediately add in-browser editing and annotations.</p>
-                            <p>You can download the dependencies to work offline, or use them directly from <a about="" rel="doap:homepage" href="https://dokie.li/">dokie.li</a>. Use in-browser local storage to save your changes or export to save to your harddrive, and to any webserver when you're ready to share your article.</p>
+                            <p>You can download the dependencies to work offline, or use them directly from <a about="" rel="doap:homepage" href="https://dokie.li/">dokie.li</a>. Use in-browser local storage to save your changes or export to save to your harddrive, and to any webserver when you’re ready to share your article.</p>
                         </div>
                     </section>
                     <section id="solid" inlist="" rel="schema:hasPart" resource="#solid">
@@ -165,7 +168,7 @@
                     <section id="annotate" inlist="" rel="schema:hasPart" resource="#annotate">
                         <h2 property="schema:name">Annotations and replies</h2>
                         <div datatype="rdf:HTML" property="schema:description">
-                            <p>Wherever your article is published, readers can leave annotations and replies if they have their own personal datastore to save them to. If your article is published on a Solid server, you can offer to store annotations and replies on their behalf, and enable anonymous responses too. All annotations and replies can be saved with a <meta class="fa fa-creative-commons" /> Creative Commons license.</p>
+                            <p>Wherever your article is published, readers can leave annotations and replies if they have their own personal datastore to save them to. If your article is published on a Solid server, you can offer to store annotations and replies on their behalf, and enable anonymous responses too. All annotations and replies can be saved with a <i class="fa fa-creative-commons"></i> Creative Commons license.</p>
                         </div>
                     </section>
                     <section id="notify" inlist="" rel="schema:hasPart" resource="#notify">
@@ -177,7 +180,7 @@
                     <section id="embed" inlist="" rel="schema:hasPart" resource="#embed">
                         <h2 property="schema:name">Rich embedding</h2>
                         <div datatype="rdf:HTML" property="schema:description">
-                            <p>A dokieli article is simply an HTML <i class="fa fa-html5"></i> document, so anything you can include in an HTML page you can include in your article. We're adding new features to the UI to help with this all the time. You can directly embed raw data; in Turtle, JSON-LD, or TRiG (Nanopublications).</p>
+                            <p>A dokieli article is simply an HTML <i class="fa fa-html5"></i> document, so anything you can include in an HTML page you can include in your article. We’re adding new features to the UI to help with this all the time. You can directly embed raw data; in Turtle, JSON-LD, or TRiG (Nanopublications).</p>
                         </div>
                     </section>
                     <section id="semantics" inlist="" rel="schema:hasPart" resource="#semantics">
@@ -201,9 +204,9 @@
                     <section id="dive-in" inlist="" rel="schema:hasPart" resource="#dive-in">
                         <h2 property="schema:name">Dive in</h2>
                         <div datatype="rdf:HTML" property="schema:description">
-                            <p>This page itself is a dokieli document, so to get started, open the menu in the top right and click <em>edit</em>. You can change this page to your heart's content, try out different <i class="fa fa-magic"></i> <em>views</em>, then <i class="fa fa-external-link"></i> <em>export</em> the HTML and upload it somewhere you control.</p>
+                            <p>This page itself is a dokieli document, so to get started, open the menu in the top right and click <em>edit</em>. You can change this page to your heart’s content, try out different <i class="fa fa-magic"></i> <em>views</em>, then <i class="fa fa-external-link"></i> <em>export</em> the HTML and upload it somewhere you control.</p>
 
-                            <p>If you have a Solid pod, you can click <i class="fa fa-lightbulb-o"></i> <em>new</em> (for a blank document) or <i class="fa fa-paper-plane-o"></i> <em>save as</em> (for a copy of this one) and choose where you'd like to save it. You'll be redirected to your new document, where you can edit away and have changes automatically saved to your pod. Of course, you'll also be able to interact with your new document using other Solid applications!</p>
+                            <p>If you have a Solid pod, you can click <i class="fa fa-lightbulb-o"></i> <em>new</em> (for a blank document) or <i class="fa fa-paper-plane-o"></i> <em>save as</em> (for a copy of this one) and choose where you'd like to save it. You'll be redirected to your new document, where you can edit away and have changes automatically saved to your pod. Of course, you’ll also be able to interact with your new document using other Solid applications!</p>
                         </div>
                     </section>
                 </div>
