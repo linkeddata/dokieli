@@ -119,6 +119,7 @@ body > footer a, body > footer a:hover { color: inherit; }
 
 video {
   max-width: 100%;
+  height: auto;
 }
 
 @media screen and (min-width: 768px){
