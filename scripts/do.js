@@ -1183,7 +1183,7 @@ var DO = {
             document.body.insertAdjacentHTML('beforeend', '<menu id="document-menu" class="do"><button class="show" title="Open Menu">☰</button><header></header><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><i class="fa fa-github"></i> <a href="https://github.com/linkeddata/dokieli">dokieli</a></dd></dl></footer></menu>');
             document.querySelector('#document-menu > button').addEventListener('click', function(e) {
                 if (e.target.classList.contains('show')) {
-                    DO.U.showDocumentMenu();
+                    DO.U.showDocumentMenu(e);
                 }
                 else {
                     DO.U.hideDocumentMenu(e);
@@ -1191,7 +1191,10 @@ var DO = {
             });
         },
 
-        showDocumentMenu: function() {
+        showDocumentMenu: function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+
             var body = document.body;
             var dMenu = document.querySelector('#document-menu.do');
             var dMenuButton = dMenu.querySelector('button');
@@ -2728,7 +2731,7 @@ var DO = {
                     var data = document.getElementById('source-edit').value;
                     document.documentElement.innerHTML = data;
                     DO.U.showDocumentInfo();
-                    DO.U.showDocumentMenu();
+                    DO.U.showDocumentMenu(e);
                     DO.U.viewSource();
                     document.querySelector('#document-do .resource-source').disabled = true;
                 }
