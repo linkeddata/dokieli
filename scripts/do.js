@@ -42,8 +42,8 @@ var DO = {
         Editor: {
             headings: ["h1", "h2", "h3", "h4", "h5", "h6"],
             regexEmptyHTMLTags: /<[^\/>][^>]*><\/[^>]+>/gim,
-            DisableEditorButton: '<button class="editor-disable" title="Disable editor"><i class="fa fa-pencil fa-2x"></i>Edit</button>',
-            EnableEditorButton: '<button class="editor-enable" title="Enable editor"><i class="fa fa-pencil fa-2x"></i>Edit</button>'
+            DisableEditorButton: '<button class="editor-disable" title="Disable editor"><i class="fa fa-i-cursor fa-2x"></i>Edit</button>',
+            EnableEditorButton: '<button class="editor-enable" title="Enable editor"><i class="fa fa-i-cursor fa-2x"></i>Edit</button>'
         },
         ContextLength: 32,
         InteractionPath: 'i/',
@@ -1984,9 +1984,9 @@ var DO = {
             var s = '<section id="document-do" class="do"><h2>Do</h2><ul>';
             s += '<li><button class="resource-share" title="Share resource"><i class="fa fa-bullhorn fa-2x"></i>Share</button></li>';
             s += '<li><button class="resource-reply" title="Reply"><i class="fa fa-reply fa-2x"></i>Reply</button></li>';
-            s += '<li><button class="resource-new"'+buttonDisabled+' title="Create new article"><i class="fa fa-paper-plane-o fa-2x"></i>New</button></li>';
+            s += '<li><button class="resource-new"'+buttonDisabled+' title="Create new article"><i class="fa fa-lightbulb-o fa-2x"></i></i>New</button></li>';
             s += '<li><button class="resource-save"'+buttonDisabled+' title="Save article"><i class="fa fa-life-ring fa-2x"></i>Save</button></li>';
-            s += '<li><button class="resource-save-as" title="Save as article"><i class="fa fa-clone fa-2x"></i>Save As</button></li>';
+            s += '<li><button class="resource-save-as" title="Save as article"><i class="fa fa-paper-plane-o fa-2x"></i>Save As</button></li>';
             if (DO.C.EditorAvailable) {
                 var editFile = (DO.C.EditorEnabled) ? DO.C.Editor.DisableEditorButton : DO.C.Editor.EnableEditorButton;
                 s += '<li>' + editFile + '</li>';
@@ -2676,7 +2676,7 @@ var DO = {
 
                     var html = document.documentElement.cloneNode(true);
                     var wasDerivedOn = DO.U.getDateTimeISO();
-                    html.querySelector('#content').insertAdjacentHTML('beforebegin', '<dl id="document-derived-from"><dt>Derived From</dt><dd><a href="' + currentDocumentURL + '" rel="prov:wasDerivedFrom">' + currentDocumentURL + '</a></dd><dt>Derived On</dt><dd><time datetime="' + wasDerivedOn + '">' + wasDerivedOn + '</time></dd></dl>');
+                    html.querySelector('#content').insertAdjacentHTML('beforebegin', '<dl id="document-derivation"><dt>Derived From</dt><dd><a href="' + currentDocumentURL + '" rel="prov:wasDerivedFrom">' + currentDocumentURL + '</a></dd><dt>Derived On</dt><dd><time datetime="' + wasDerivedOn + '">' + wasDerivedOn + '</time></dd></dl>');
                     var baseURLSelectionChecked = saveAsDocument.querySelector('select[name="base-url"]');
                     if (baseURLSelectionChecked.length > 0) {
                         var baseURLType = baseURLSelectionChecked.value;
