@@ -36,8 +36,8 @@ a:hover { color: #555; }
 nav ul,
 aside ul { list-style: none; padding: 0; }
 
-footer { margin-top:2em; }
-footer a, footer a:hover { color: inherit; }
+body > footer { margin-top:2em; }
+body > footer a, body > footer a:hover { color: inherit; }
 
 /* dokieli homepage styles */
 #do-index h1 {
@@ -51,7 +51,7 @@ footer a, footer a:hover { color: inherit; }
   text-align: center;
   font-size: 1.4em;
 }
-#do-index #features, footer {
+#do-index #features, body > footer {
   overflow: hidden;
   padding-top: 1em; padding-bottom: 1em;
   background-color: #333;

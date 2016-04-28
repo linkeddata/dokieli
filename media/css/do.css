@@ -182,6 +182,13 @@ z-index:8;
 margin:0;
 width:20em;
 }
+#document-menu {
+color:#000;
+}
+#document-menu footer {
+color:inherit;
+}
+
 /*de-timblulating*/
 #document-menu table {
 background-color:#fff;
@@ -233,8 +240,10 @@ font-family:sans-serif;
 font-weight:normal;
 }
 
-#document-menu section {
+.do.on section {
 width:100%;
+margin:0;
+padding:0;
 }
 
 #document-menu section button:hover {
