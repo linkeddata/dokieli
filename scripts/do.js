@@ -2662,12 +2662,13 @@ var DO = {
 
             DO.U.setupResourceBrowser(saveAsDocument);
             document.getElementById('browser-location').insertAdjacentHTML('afterbegin', '<p>Choose a location to save your new article.</p>');
-            saveAsDocument.insertAdjacentHTML('beforeend', DO.U.getBaseURLSelection() + '<p>Your new document will be saved at <samp id="location-final">https://example.org/path/to/article</samp></p><button class="create">Save</button>');
+            saveAsDocument.insertAdjacentHTML('beforeend', DO.U.getBaseURLSelection() + '<p>Your new document will be saved at <samp id="location-final">https://example.org/path/to/article</samp></p><p><input type="checkbox" id="derivation-data" name="derivation-data" checked="checked"><label for="derivation-data">Derivation data</label></p><button class="create">Save</button>');
+
             var bli = document.getElementById('browser-location-input');
             bli.focus();
             bli.placeholder = 'https://example.org/path/to/article';
 
-           saveAsDocument.addEventListener('click', function(e) {
+            saveAsDocument.addEventListener('click', function(e) {
                 if (e.target.matches('button.create')) {
                     var currentDocumentURL = window.location.origin + window.location.pathname;
                     var saveAsDocument = document.getElementById('save-as-document');
@@ -2678,16 +2679,19 @@ var DO = {
                     }
 
                     var html = document.documentElement.cloneNode(true);
-                    var wasDerivedOn = DO.U.getDateTimeISO();
-                    html.querySelector('#content').insertAdjacentHTML('beforebegin', '<dl id="document-derivation"><dt>Derived From</dt><dd><a href="' + currentDocumentURL + '" rel="prov:wasDerivedFrom">' + currentDocumentURL + '</a></dd><dt>Derived On</dt><dd><time datetime="' + wasDerivedOn + '">' + wasDerivedOn + '</time></dd></dl>');
-                    var baseURLSelectionChecked = saveAsDocument.querySelector('select[name="base-url"]');
-                    if (baseURLSelectionChecked.length > 0) {
-                        var baseURLType = baseURLSelectionChecked.value;
-                        var nodes = html.querySelectorAll('head link, [src], object[data]');
-                        if (baseURLType == 'base-url-relative') {
-                            DO.U.copyRelativeResources(storageIRI, nodes);
+                    var wasDerived = document.querySelector('#derivation-data');
+                    if (wasDerived.checked) {
+                        var wasDerivedOn = DO.U.getDateTimeISO();
+                        html.querySelector('#content').insertAdjacentHTML('beforebegin', '<dl id="document-derived-from"><dt>Derived From</dt><dd><a href="' + currentDocumentURL + '" rel="prov:wasDerivedFrom">' + currentDocumentURL + '</a></dd></dl><dl id="document-derived-on"><dt>Derived On</dt><dd><time datetime="' + wasDerivedOn + '">' + wasDerivedOn + '</time></dd></dl>' + "\n");
+                        var baseURLSelectionChecked = saveAsDocument.querySelector('select[name="base-url"]');
+                        if (baseURLSelectionChecked.length > 0) {
+                            var baseURLType = baseURLSelectionChecked.value;
+                            var nodes = html.querySelectorAll('head link, [src], object[data]');
+                            if (baseURLType == 'base-url-relative') {
+                                DO.U.copyRelativeResources(storageIRI, nodes);
+                            }
+                            nodes = DO.U.rewriteBaseURL(nodes, baseURLType);
                         }
-                        nodes = DO.U.rewriteBaseURL(nodes, baseURLType);
                     }
                     html = DO.U.getDocument(html);
 
