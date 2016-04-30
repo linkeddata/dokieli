@@ -1965,15 +1965,9 @@ var DO = {
             var a = document.createElement("a");
             a.download = fileName;
 
-            if (window.webkitURL != null) {
-                a.href = window.webkitURL.createObjectURL(blob);
-            }
-            else {
-                a.href = window.URL.createObjectURL(blob);
-                a.style.display = "none";
-                document.body.appendChild(a);
-            }
-
+            a.href = window.URL.createObjectURL(blob);
+            a.style.display = "none";
+            document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
         },
