@@ -1861,11 +1861,22 @@ var DO = {
             return doctype;
         },
 
-        getDocument: function(cn) {
+        getDocument: function(cn, options) {
             var node = cn || document.documentElement.cloneNode(true);
-            var options = {
+            options = options || {
                 'selfClosing': "br img input area base basefont col colgroup source wbr isindex link meta param hr",
-                'skipAttributes': "contenteditable spellcheck medium-editor-index data-medium-editor-element data-medium-focused data-placeholder role aria-multiline style"
+                'skipAttributes': "contenteditable spellcheck medium-editor-index data-medium-editor-element data-medium-focused data-placeholder role aria-multiline style",
+                'sortAttributes': true,
+                'skipNodeWithClass': 'do',
+                'classWithChildText': {
+                    'class': '.do.ref',
+                    'element': 'mark'
+                },
+                'replaceClassItemWith': {
+                    'source': 'on-document-menu',
+                    'target': ''
+                },
+                'skipClassWithValue': ''
             }
 
             var s = "<!DOCTYPE html>\n";
@@ -1876,32 +1887,33 @@ var DO = {
 
         domToString: function(node, options) {
           var options = options || {};
-          var selfClosing = {};
+          var selfClosing = [];
           if ('selfClosing' in options) {
               options.selfClosing.split(' ').forEach(function (n) {
                   selfClosing[n] = true;
               });
           }
-          var skipAttributes = {};
+          var skipAttributes = []
           if ('skipAttributes' in options) {
               options.skipAttributes.split(' ').forEach(function (n) {
                   skipAttributes[n] = true;
               });
           }
+
           var noEsc = [false];
           //wasDerivedFrom https://github.com/w3c/respec/blob/develop/js/ui/save-html.js
-          var dumpNode = function (node) {
+          var dumpNode = function(node) {
               var out = '';
               // if the node is the document node.. process the children
               if (node.nodeType === 9 || (node.nodeType === 1 && node.nodeName.toLowerCase() == "html")) {
                   for (var i = 0; i < node.childNodes.length; i++) out += dumpNode(node.childNodes[i]);
               }
               else if (1 === node.nodeType) {
-                  if (node.hasAttribute('class') && node.classList.contains('do') && node.classList.contains('ref')) {
-                      out += node.querySelector('mark').textContent;
+                  if (node.hasAttribute('class') && 'classWithChildText' in options && node.matches(options.classWithChildText.class)) {
+                      out += node.querySelector(options.classWithChildText.element).textContent;
                   }
-                  else if (!(node.hasAttribute('class') && (node.classList.contains('do') || node.classList.contains('firebugResetStyles')))) {
-                      var ename = node.nodeName.toLowerCase() ;
+                  else if (!(node.matches('.firebugResetStyles') || ('skipNodeWithClass' in options && node.matches('.' + options.skipNodeWithClass)))) {
+                      var ename = node.nodeName.toLowerCase();
                       out += "<" + ename ;
 
                       var attrList = [];
@@ -1909,19 +1921,22 @@ var DO = {
                           var atn = node.attributes[i];
                           if (skipAttributes[atn.name]) continue;
                           if (/^\d+$/.test(atn.name)) continue;
-                          if (atn.name == 'class' && (atn.value.split(' ').indexOf('on-document-menu') > -1)) {
-                              atn.value = atn.value.replace(/(on-document-menu)/, '').trim();
+                          if (atn.name == 'class' && 'replaceClassItemWith' in options && (atn.value.split(' ').indexOf(options.replaceClassItemWith.source) > -1)) {
+                              var re = new RegExp(options.replaceClassItemWith.source, 'g');
+                              atn.value = atn.value.replace(re, options.replaceClassItemWith.target).trim();
                           }
-                          if (!(atn.name == 'class' && atn.value == '')) {
+                          if (!(atn.name == 'class' && 'skipClassWithValue' in options && options.skipClassWithValue == atn.value)) {
                               attrList.push(atn.name + "=\"" + atn.value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;') + "\"");
                           }
                       }
 
-                      if (attrList.length > 0) {
-                          attrList.sort(function (a, b) {
-                            return a.toLowerCase().localeCompare(b.toLowerCase());
-                          });
-                          out += ' ' + attrList.join(' ');
+                      if('sortAttributes' in options && options.sortAttributes) {
+                          if (attrList.length > 0) {
+                              attrList.sort(function (a, b) {
+                                  return a.toLowerCase().localeCompare(b.toLowerCase());
+                              });
+                              out += ' ' + attrList.join(' ');
+                          }
                       }
 
                       if (selfClosing[ename]) { out += " />"; }
@@ -1935,7 +1950,7 @@ var DO = {
                   }
               }
               else if (8 === node.nodeType) {
-                  //XXX: If comments are not tabbed in source, a new line is not prepended
+                  //FIXME: If comments are not tabbed in source, a new line is not prepended
                   out += "<!--" + node.nodeValue + "-->";
               }
               else if (3 === node.nodeType || 4 === node.nodeType) {
