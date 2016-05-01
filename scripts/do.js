@@ -1233,6 +1233,7 @@ var DO = {
                 sections[i].parentNode.removeChild(sections[i]);
             };
             body.classList.remove('on-document-menu');
+            dMenuButton.classList.remove('hide');
             dMenuButton.classList.add('show');
             dMenuButton.setAttribute('title', 'Open Menu');
 
