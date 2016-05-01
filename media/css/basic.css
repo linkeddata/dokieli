@@ -30,6 +30,10 @@ section {
   max-width: calc(100% - 1em);
   padding: 0 0.5em;
 }
+section section {
+  width:100%;
+  max-width:none;
+}
 
 a { color: #000; }
 a:hover { color: #555; }
