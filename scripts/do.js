@@ -1931,13 +1931,13 @@ var DO = {
                             }
                         }
 
-                        if('sortAttributes' in options && options.sortAttributes) {
-                            if (attrList.length > 0) {
+                        if (attrList.length > 0) {
+                            if('sortAttributes' in options && options.sortAttributes) {
                                 attrList.sort(function (a, b) {
                                     return a.toLowerCase().localeCompare(b.toLowerCase());
                                 });
-                                out += ' ' + attrList.join(' ');
                             }
+                            out += ' ' + attrList.join(' ');
                         }
 
                         if (selfClosing[ename]) { out += " />"; }
