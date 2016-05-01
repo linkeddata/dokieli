@@ -201,7 +201,9 @@ position:absolute;
 top:0.615em;
 right:0.615em;
 font-size:1.75em;
+display:inherit;
 }
+
 #document-menu > header {
 display:none;
 }
