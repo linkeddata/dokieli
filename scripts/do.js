@@ -1913,7 +1913,7 @@ var DO = {
                     if (node.hasAttribute('class') && 'classWithChildText' in options && node.matches(options.classWithChildText.class)) {
                         out += node.querySelector(options.classWithChildText.element).textContent;
                     }
-                    else if (!(node.matches('.firebugResetStyles') || ('skipNodeWithClass' in options && node.matches('.' + options.skipNodeWithClass)))) {
+                    else if (!('skipNodeWithClass' in options && node.matches('.' + options.skipNodeWithClass))) {
                         var ename = node.nodeName.toLowerCase();
                         out += "<" + ename ;
 
