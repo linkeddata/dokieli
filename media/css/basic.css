@@ -7,6 +7,27 @@ body {
   width:100%;
 }
 
+body > header {
+text-align:center;
+}
+body > header {
+  margin-top:2em;
+}
+
+header nav ul {
+text-align:center;
+}
+header nav li {
+list-style-type:none;
+display:inline;
+}
+header nav li:before {
+content:"\2022\0020";
+}
+header nav li:first-child:before {
+content:"";
+}
+
 h1 {
   font-family: Serif; font-weight: normal; font-size: 4em;
   text-align: center;
@@ -34,6 +55,11 @@ section section {
   width:100%;
   max-width:none;
 }
+dl[id^="document-"]{
+  width:100%;
+  max-width:none;
+}
+
 
 a { color: #000; }
 a:hover { color: #555; }
@@ -125,12 +151,19 @@ video {
   max-width: 100%;
   height: auto;
 }
+video, audio, object {
+  vertical-align: middle;
+}
 
 @media screen and (min-width: 768px){
   section {
     width: 60%;
     margin: 2em auto;
     padding: 0;
+  }
+  dl[id^="document-"] {
+    width:60%;
+    margin:0 auto;
   }
   #do-index #features ul {
     font-size: 1.2em;
