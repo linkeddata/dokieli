@@ -55,9 +55,13 @@ section section {
   width:100%;
   max-width:none;
 }
-dl[id^="document-"]{
-  width:100%;
-  max-width:none;
+dl[id^="document-"], #authors {
+  max-width: none;
+  width: 100%;
+}
+#authors dd, #authors li, #keywords li {
+  display: inline;
+  text-align: left;
 }
 
 
