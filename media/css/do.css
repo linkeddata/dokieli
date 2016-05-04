@@ -90,6 +90,10 @@ padding:0.2em;
 aside.do.on ul {
 margin:0;
 }
+aside.do.on section + section {
+margin-top:1em;
+}
+
 
 .do.on #share-resource-contacts li {
 margin:0.25em 0;
@@ -170,9 +174,20 @@ position:static;
 }
 
 #toc {
-left:1em;
+top:0;
+left:0;
 z-index:8;
+border:0;
+border-radius:0;
+border-bottom: 1px solid #ccc;
+border-bottom-right-radius: 0.5em;
+border-right: 1px solid #ccc;
+box-shadow: 0.25em 0.25em 0.25em rgba(0, 0, 0, 0.1);
 }
+#toc ul {
+margin-top:1em;
+}
+
 .success { background-color:#FFFFFF; color:#647819; font-weight:bold; }
 .warning { background-color:#FFFF00; color:#000000; font-weight:bold; }
 .error { background-color:#FF0000; color:#FFFFFF; font-weight:bold; }
@@ -244,6 +259,7 @@ font-weight:normal;
 
 .do.on section {
 width:100%;
+max-width:none;
 margin:0;
 padding:0;
 }
