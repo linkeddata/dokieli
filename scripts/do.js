@@ -1880,7 +1880,8 @@ var DO = {
                 'skipClassWithValue': ''
             }
 
-            var s = "<!DOCTYPE html>\n";
+            var doctype = DO.U.getDoctype();
+            var s =  (doctype.length > 0) ? doctype + "\n" : '';
             s += DO.U.domToString(node, options);
             return s;
         },
@@ -1938,10 +1939,11 @@ var DO = {
                         if (selfClosing[ename]) { out += " />"; }
                         else {
                             out += '>';
+                            out += (ename == 'html') ? "\n    " : '';
                             noEsc.push(ename === "style" || ename === "script");
                             for (var i = 0; i < node.childNodes.length; i++) out += dumpNode(node.childNodes[i]);
                             noEsc.pop();
-                            out += '</' + ename + '>';
+                            out += (ename == 'body') ? '</' + ename + '>' + "\n" : '</' + ename + '>';
                         }
                     }
                 }
