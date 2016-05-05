@@ -1881,8 +1881,7 @@ var DO = {
             }
 
             var s = "<!DOCTYPE html>\n";
-            s += '<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n    ';
-            s += DO.U.domToString(node, options) + "\n</html>\n";
+            s += DO.U.domToString(node, options);
             return s;
         },
 
@@ -1905,11 +1904,7 @@ var DO = {
             //wasDerivedFrom https://github.com/w3c/respec/blob/develop/js/ui/save-html.js
             var dumpNode = function(node) {
                 var out = '';
-                // if the node is the document node.. process the children
-                if (node.nodeType === 9 || (node.nodeType === 1 && node.nodeName.toLowerCase() == "html")) {
-                    for (var i = 0; i < node.childNodes.length; i++) out += dumpNode(node.childNodes[i]);
-                }
-                else if (1 === node.nodeType) {
+                if (1 === node.nodeType) {
                     if (node.hasAttribute('class') && 'classWithChildText' in options && node.matches(options.classWithChildText.class)) {
                         out += node.querySelector(options.classWithChildText.element).textContent;
                     }
