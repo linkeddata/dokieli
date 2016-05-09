@@ -1902,7 +1902,7 @@ var DO = {
             }
 
             var noEsc = [false];
-            //wasDerivedFrom https://github.com/w3c/respec/blob/develop/js/ui/save-html.js
+
             var dumpNode = function(node) {
                 var out = '';
                 if (1 === node.nodeType) {
