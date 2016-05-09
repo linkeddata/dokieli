@@ -3063,19 +3063,11 @@ var DO = {
                         author = s.foafname;
                     }
 
-                    var createRefName = function(fN, gN) {
-                        switch(DO.C.DocRefType) {
-                            case 'LNCS': default:
-                                return fN + ', ' + gN.slice(0,1) + '.';
-                                break;
-                        }
-                    };
-
                     if (s.schemafamilyName && s.schemafamilyName.length > 0 && s.schemagivenName && s.schemagivenName.length > 0) {
-                        author = createRefName(s.schemafamilyName, s.schemagivenName);
+                        author = DO.U.createRefName(s.schemafamilyName, s.schemagivenName);
                     }
                     else if (s.foaffamilyName && s.foaffamilyName.length > 0 && s.foafgivenName && s.foafgivenName.length > 0) {
-                        author = createRefName(s.foaffamilyName, s.foafgivenName);
+                        author = DO.U.createRefName(s.foaffamilyName, s.foafgivenName);
                     }
 
                     if (author !== '') {
@@ -3091,6 +3083,21 @@ var DO = {
             var citationHTML = authors + ': ' + title + ', <a href="' + citationURI + '" rel="schema:citation">' + citationURI + '</a>';
 //console.log(citationHTML);
             return Promise.resolve(citationHTML);
+        },
+
+        createRefName: function(familyName, givenName, refType) {
+            refType = refType || DO.C.DocRefType;
+            switch(refType) {
+                case 'LNCS': default:
+                    return familyName + ', ' + givenName.slice(0,1) + '.';
+                    break;
+                case 'ACM':
+                    return givenName.slice(0,1) + '. ' + familyName;
+                    break;
+                case 'fullName':
+                    return givenName + ' ' + familyName;
+                    break;
+            }
         },
 
         highlightItems: function() {
