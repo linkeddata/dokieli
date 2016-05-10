@@ -1905,6 +1905,7 @@ var DO = {
 
             var dumpNode = function(node) {
                 var out = '';
+                if (typeof node.nodeType === 'undefined') return out
                 if (1 === node.nodeType) {
                     if (node.hasAttribute('class') && 'classWithChildText' in options && node.matches(options.classWithChildText.class)) {
                         out += node.querySelector(options.classWithChildText.element).textContent;
