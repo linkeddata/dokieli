@@ -2211,7 +2211,7 @@ var DO = {
         },
 
         shareResource: function(e, iri) {
-            iri = iri || document.documentURI;
+            iri = iri || window.location.origin + window.location.pathname;
             e.target.disabled = true;
 
             var addContactsButton = (DO.C.User.IRI) ? '<li><button class="add">Add from contacts</button></li>' : '';
