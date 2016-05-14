@@ -1865,7 +1865,7 @@ var DO = {
         getDocument: function(cn, options) {
             var node = cn || document.documentElement.cloneNode(true);
             options = options || {
-                'selfClosing': "br img input area base basefont col colgroup source wbr isindex link meta param hr",
+                'selfClosing': "area base basefont br col colgroup hr img input isindex link meta param source wbr",
                 'skipAttributes': "contenteditable spellcheck medium-editor-index data-medium-editor-element data-medium-focused data-placeholder role aria-multiline style",
                 'sortAttributes': true,
                 'skipNodeWithClass': 'do',
@@ -3604,11 +3604,11 @@ var DO = {
                         },
                         disableDoubleReturn: true,
                         paste: {
-                            forcePlainText: true,
-                            cleanPastedHTML: false,
+                            forcePlainText: false,
+                            cleanPastedHTML: true,
                             cleanReplacements: [],
                             cleanAttrs: ['class', 'style', 'dir'],
-                            cleanTags: ['meta', 'link', 'style', 'script', 'br', 'hr']
+                            cleanTags: ['area', 'basefont', 'br', 'font', 'hr', 'isindex', 'link', 'script', 'style', 'wbr']
                         },
 
                         buttonLabels: (document.location.protocol == 'http:' || document.location.protocol == 'https:') ? 'fontawesome' : '',
