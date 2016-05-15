@@ -26,7 +26,8 @@ var DO = {
         },
         Stylesheets: [],
         User: {
-            IRI: null
+            IRI: null,
+            Role: null
         },
         LocalDocument: false,
         UseStorage: false,
@@ -1020,14 +1021,19 @@ var DO = {
         },
 
         setDocumentMode: function(mode) {
-            if (DO.C.EditorAvailable) {
-                if (DO.U.urlParam('edit') == 'true' || mode == 'edit') {
-                    DO.U.Editor.enableEditor();
-                }
-                if (DO.U.urlParam('edit') == 'true') {
-                    var url = document.location.href;
-                    window.history.replaceState({}, null, url.substr(0, url.lastIndexOf('?')));
-                }
+            switch(mode || '') {
+                case 'author': default:
+                    if (DO.C.EditorAvailable) {
+                        if (DO.U.urlParam('author') == 'true' || mode == 'author') {
+                            DO.U.Editor.enableEditor('author');
+                            DO.C.User.Role = 'author';
+                        }
+                        if (DO.U.urlParam('author') == 'true') {
+                            var url = document.location.href;
+                            window.history.replaceState({}, null, url.substr(0, url.lastIndexOf('?')));
+                        }
+                    }
+                    break;
             }
         },
 
@@ -1999,7 +2005,7 @@ var DO = {
             s += '<li><button class="resource-save"'+buttonDisabled+' title="Save article"><i class="fa fa-life-ring fa-2x"></i>Save</button></li>';
             s += '<li><button class="resource-save-as" title="Save as article"><i class="fa fa-paper-plane-o fa-2x"></i>Save As</button></li>';
             if (DO.C.EditorAvailable) {
-                var editFile = (DO.C.EditorEnabled) ? DO.C.Editor.DisableEditorButton : DO.C.Editor.EnableEditorButton;
+                var editFile = (DO.C.EditorEnabled && DO.C.User.Role == 'author') ? DO.C.Editor.DisableEditorButton : DO.C.Editor.EnableEditorButton;
                 s += '<li>' + editFile + '</li>';
             }
             s += '<li><button class="resource-source"'+buttonDisabled+' title="Edit article source code"><i class="fa fa-code fa-2x"></i>Source</button></li>';
@@ -2021,7 +2027,7 @@ var DO = {
                 if (DO.C.EditorAvailable) {
                     if (e.target.matches('button.editor-enable')) {
                         e.target.parentNode.innerHTML = DO.C.Editor.DisableEditorButton;
-                        DO.U.Editor.enableEditor(e);
+                        DO.U.Editor.enableEditor('author', e);
                     }
                     if (e.target.matches('button.editor-disable')) {
                         e.target.parentNode.innerHTML = DO.C.Editor.EnableEditorButton;
@@ -2632,8 +2638,8 @@ var DO = {
                     DO.U.putResource(storageIRI, html).then(
                         function(i) {
 // console.log(i);
-                            newDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="success">New document created at <a href="' + storageIRI + '?edit=true">' + storageIRI + '</a></p></div>');
-                            window.open(storageIRI + '?edit=true', '_blank');
+                            newDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="success">New document created at <a href="' + storageIRI + '?author=true">' + storageIRI + '</a></p></div>');
+                            window.open(storageIRI + '?author=true', '_blank');
                         },
                         function(reason) {
                             switch(reason.status) {
@@ -2705,8 +2711,8 @@ var DO = {
 
                     DO.U.putResource(storageIRI, html).then(
                         function(i) {
-                            saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="success">Document saved at <a href="' + storageIRI + '?edit=true">' + storageIRI + '</a></p></div>');
-                            window.open(storageIRI + '?edit=true', '_blank');
+                            saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="success">Document saved at <a href="' + storageIRI + '?author=true">' + storageIRI + '</a></p></div>');
+                            window.open(storageIRI + '?author=true', '_blank');
                         },
                         function(reason) {
                             switch(reason.status) {
@@ -3585,22 +3591,20 @@ var DO = {
                 return DO.U.Editor.MediumEditor.destroy();
             },
 
-            enableEditor: function(e) {
-                //XXX: Consider this as the main wrapper for the editor tool.
+            enableEditor: function(editorMode, e) {
+                if (typeof DO.U.Editor.MediumEditor !== 'undefined') {
+                    DO.U.Editor.disableEditor();
+                }
+
                 if (!document.getElementById('document-editor')) {
                     document.body.insertAdjacentHTML('beforeend', '<aside id="document-editor" class="do"></aside>');
                 }
 
-                var editableNodes = document.querySelectorAll('main > article');
-
-                var pText = ["Make it so!", "This is not a Paper", "Cogito Ergo Sum", "Do One Thing and Do It Well", "Free Your Mind", "Do or Do Not"];
-                pText = pText[Math.floor(Math.random() * pText.length)];
-
-                if (typeof MediumEditor !== 'undefined') {
-                    DO.U.Editor.MediumEditor = new MediumEditor(editableNodes, {
+                var editorOptions = {
+                    author: {
                         elementsContainer: document.getElementById('document-editor'),
                         placeholder: {
-                            text: pText
+                            text: ["Make it so!", "This is not a Paper", "Cogito Ergo Sum", "Do One Thing and Do It Well", "Free Your Mind", "Do or Do Not"][Math.floor(Math.random() * 6)]
                         },
                         disableDoubleReturn: true,
                         paste: {
@@ -3610,110 +3614,41 @@ var DO = {
                             cleanAttrs: ['class', 'style', 'dir'],
                             cleanTags: ['area', 'basefont', 'br', 'font', 'hr', 'isindex', 'link', 'script', 'style', 'wbr']
                         },
-
                         buttonLabels: (document.location.protocol == 'http:' || document.location.protocol == 'https:') ? 'fontawesome' : '',
-            //          fileDragging: false, //https://github.com/yabwe/medium-editor/issues/789
-
                         toolbar: {
-                            buttons: [
-                                //Formatting
-                                'h2', 'h3', 'h4',
-                                'em', 'strong',
-                                // , 'dl' http://xinha.webfactional.com/browser/trunk/plugins/DefinitionList/definition-list.js?rev=516
-                                'orderedlist', 'unorderedlist',
-                                'code', 'pre',
-
-                                //Media / Figure
-                                'image',
-                                'table', /*spreadshet, */
-                                /*audio, video*/
-
-                                //References
-                                'anchor',
-                                'cite',
-                                'q',
-                                // {
-                                //     name: 'quote',
-                                //     contentFA: '<i class="fa fa-indent"></i>'
-                                // },
-                                /*object, script*/
-
-                                //Semantic Marking
-                                'rdfa',
-
-                                //Annotation
-                                'mark',
-                                'note'
-
-                                //Editorial
-                                // 'del',
-                                // 'ins'
-                            ],
-                            //This should use relative units because text zoom in/out
+                            buttons: ['h2', 'h3', 'h4', 'em', 'strong', 'orderedlist', 'unorderedlist', 'code', 'pre', 'image', 'table', 'anchor', 'cite', 'q', 'rdfa', 'mark', 'note'],
                             diffLeft: 0,
                             diffTop: -10,
                             allowMultiParagraphSelection: false
                         },
-
-                        //TODO: medium-editor shouldn't just pass these commands to execAction but first check to see if there is a button extension with the same action name.
-                        // https://github.com/yabwe/medium-editor/issues/802
-                        // keyboardCommands: {
-                        //     commands: [
-                        //         {
-                        //             command: 'strong',
-                        //             key: 'B',
-                        //             meta: true,
-                        //             shift: false,
-                        //             alt: false
-                        //         },
-                        //         {
-                        //             command: 'em',
-                        //             key: 'I',
-                        //             meta: true,
-                        //             shift: false,
-                        //             alt: false
-                        //         }
-                        //     ]
-                        // },
-
-
-                        // anchor: {
-                            // customClassOption: 'do ref',
-                            // customClassOptionText: 'Citation'
-                            // linkValidation: false,
-                            // placeholderText: 'Paste or type a link',
-                            // targetCheckbox: false,
-                            // targetCheckboxText: 'Open in new window'
-                        // },
-                        //XXX: may be useful but it adds extra <span> inside <a>.
-                        // autoLink: true,
                         anchorPreview: false,
-
                         extensions: {
                             'h2': new DO.U.Editor.Button({action:'h2', label:'h2'}),
                             'h3': new DO.U.Editor.Button({action:'h3', label:'h3'}),
                             'h4': new DO.U.Editor.Button({action:'h4', label:'h4'}),
-
                             'em': new DO.U.Editor.Button({action:'em', label:'em'}),
                             'strong': new DO.U.Editor.Button({action:'strong', label:'strong'}),
                             'code': new DO.U.Editor.Button({action:'code', label:'code'}),
-
                             'cite': new DO.U.Editor.Button({action:'cite', label:'cite'}),
                             'q': new DO.U.Editor.Button({action:'q', label:'q'}),
-
                             'rdfa': new DO.U.Editor.Note({action:'rdfa', label:'rdfa'}),
-
                             'mark': new DO.U.Editor.Note({action:'mark', label:'mark'}),
                             'note': new DO.U.Editor.Note({action:'article', label:'note'}),
-
-                            //XXX: Interesting for editor
-                            // 'del': new DO.U.Editor.Button({action:'del', label:'del'}),
-                            // 'ins': new DO.U.Editor.Button({action:'ins', label:'ins'})
-
                             'table': new MediumEditorTable()
-            //                'spreadsheet': new MediumEditorSpreadsheet()
                         }
-                    });
+                    }
+                };
+
+                switch(editorMode) {
+                    case 'author': default:
+                        eNodes = document.querySelectorAll('main > article');
+                        eOptions = editorOptions.author;
+                        DO.C.User.Role = 'author';
+                        break;
+                }
+
+                if (typeof MediumEditor !== 'undefined') {
+                    DO.U.Editor.MediumEditor = new MediumEditor(eNodes, eOptions);
 
                     DO.C.EditorEnabled = true;
                     return DO.U.Editor.MediumEditor;
