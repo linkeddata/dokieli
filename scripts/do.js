@@ -4466,42 +4466,40 @@ var DO = {
                                                     console.log(reason);
                                                 }
                                             );
+
+                                            //TODO: resourceIRI should be the closest IRI (not necessarily the document). Test resolve/reject better.
+                                            DO.U.getInbox(resourceIRI).then(
+                                                function(inbox) {
+                                                    if (inbox && inbox.length > 0) {
+// console.log('inbox: ' + inbox);
+                                                        var notificationData = {
+                                                            "type": "as:Announce",
+                                                            "inbox": inbox,
+                                                            "slug": id,
+                                                            "object": noteIRI,
+                                                            "context": "oa:hasTarget",
+                                                            "target": targetIRI,
+                                                            "license": opts.license
+                                                        };
+
+                                                        DO.U.notifyInbox(notificationData).then(
+                                                            function(response) {
+// console.log("Notification: " + response.xhr.getResponseHeader('Location'));
+                                                            },
+                                                            function(reason) {
+                                                                console.log(reason);
+                                                            }
+                                                        );
+                                                    }
+                                                },
+                                                function(reason) {
+                                                    console.log('TODO: How can the interaction inform the target?');
+                                                    console.log(reason);
+                                                }
+                                            );
                                         },
                                         function(reason) {
                                             console.log('PUT failed');
-                                            console.log(reason);
-                                        }
-                                    );
-
-// console.log('resourceIRI: ' + resourceIRI);
-
-                                    //TODO: resourceIRI should be the closest IRI (not necessarily the document). Test resolve/reject better.
-                                    DO.U.getInbox(resourceIRI).then(
-                                        function(inbox) {
-                                            if (inbox && inbox.length > 0) {
-// console.log('inbox: ' + inbox);
-                                                var notificationData = {
-                                                    "type": "as:Announce",
-                                                    "inbox": inbox,
-                                                    "slug": id,
-                                                    "object": noteIRI,
-                                                    "context": "oa:hasTarget",
-                                                    "target": targetIRI,
-                                                    "license": opts.license
-                                                };
-
-                                                DO.U.notifyInbox(notificationData).then(
-                                                    function(response) {
-// console.log("Notification: " + response.xhr.getResponseHeader('Location'));
-                                                    },
-                                                    function(reason) {
-                                                        console.log(reason);
-                                                    }
-                                                );
-                                            }
-                                        },
-                                        function(reason) {
-                                            console.log('TODO: How can the interaction inform the target?');
                                             console.log(reason);
                                         }
                                     );
