@@ -1021,19 +1021,19 @@ var DO = {
         },
 
         setDocumentMode: function(mode) {
-            switch(mode || '') {
-                case 'author': default:
-                    if (DO.C.EditorAvailable) {
-                        if (DO.U.urlParam('author') == 'true' || mode == 'author') {
-                            DO.U.Editor.enableEditor('author');
-                            DO.C.User.Role = 'author';
-                        }
+            if (DO.C.EditorAvailable) {
+                switch(mode || '') {
+                    case 'author':
                         if (DO.U.urlParam('author') == 'true') {
                             var url = document.location.href;
                             window.history.replaceState({}, null, url.substr(0, url.lastIndexOf('?')));
                         }
-                    }
-                    break;
+                        DO.U.Editor.enableEditor('author');
+                        break;
+                    case 'social': default:
+                        DO.U.Editor.enableEditor('social');
+                        break;
+                }
             }
         },
 
@@ -3636,6 +3636,20 @@ var DO = {
                             'note': new DO.U.Editor.Note({action:'article', label:'note'}),
                             'table': new MediumEditorTable()
                         }
+                    },
+
+                    social: {
+                        elementsContainer: document.getElementById('document-editor'),
+                        buttonLabels: (document.location.protocol == 'http:' || document.location.protocol == 'https:') ? 'fontawesome' : '',
+                        toolbar: {
+                            buttons: ['note'],
+                            allowMultiParagraphSelection: false
+                        },
+                        disableEditing: true,
+                        anchorPreview: false,
+                        extensions: {
+                            'note': new DO.U.Editor.Note({action:'article', label:'note'})
+                        }
                     }
                 };
 
@@ -3644,6 +3658,11 @@ var DO = {
                         eNodes = document.querySelectorAll('main > article');
                         eOptions = editorOptions.author;
                         DO.C.User.Role = 'author';
+                        break;
+                    case 'social':
+                        eNodes = document.querySelectorAll('main > article');
+                        eOptions = editorOptions.social;
+                        DO.C.User.Role = 'social';
                         break;
                 }
 
