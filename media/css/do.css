@@ -580,7 +580,6 @@ font-variant:small-caps;
 font-style:normal;
 }
 
-@media screen {
 .todo {
 background-color:#f0f;
 }
@@ -642,6 +641,7 @@ height:1em;
 width:100%;
 max-width:100px;
 }
+}
 
 /*TODO MOVE TO editor.css */
 .medium-editor-toolbar-form label[for^="rdfa-"] {
@@ -663,7 +663,8 @@ bottom:-8px;
 display:block;
 }
 #citation-content,
-#bookmark-content {
+#bookmark-content,
+#article-content {
 width: 94%;
 margin: 0 auto;
 display: block;
