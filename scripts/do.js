@@ -3398,13 +3398,13 @@ var DO = {
 
         createNoteHTML: function(n) {
 // console.log(n);
-
             var published = '';
             var license = '';
             var creator = '', authors = '', creatorImage = '';
             var hasTarget = '', annotationTextSelector = '', target = '';
             var heading, hX;
             var aAbout = '', aPrefix = '';
+            var body = '';
             var license = '';
             var buttonDelete = '';
 
@@ -3423,7 +3423,14 @@ var DO = {
                     motivatedByLabel = 'describes';
                     targetLabel = 'Describes';
                     aAbout = n.id;
-                break;
+                    break;
+                case 'oa:bookmarking':
+                    motivatedByIRI = 'oa:bookmarking';
+                    motivatedByLabel = 'bookmarks';
+                    targetLabel = 'Bookmarked';
+                    aAbout = '[i:]';
+                    aPrefix = ' prefix="schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'"';
+                    break;
             }
 
             switch(n.purpose) {
@@ -3457,10 +3464,10 @@ var DO = {
 
             heading = '<' + hX + ' property="schema:name">' + creatorName + ' <span rel="oa:motivatedBy" resource="' + motivatedByIRI + '">' + motivatedByLabel + '</span></' + hX + '>';
 
-            published = '<dl class="published"><dt>Published</dt><dd><a href="' + n.iri + '"><time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="oa:annotatedAt schema:datePublished" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time></a></dd></dl>';
+            published = '<dl class="published"><dt>+Published</dt><dd><a href="' + n.iri + '"><time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="oa:annotatedAt schema:datePublished" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time></a></dd></dl>';
 
             switch(n.type) {
-                case 'position-quote-selector':
+                case 'position-quote-selector': case 'bookmark':
                     //TODO: Include `a oa:SpecificResource`?
                     if ((typeof n.target !== 'undefined' && typeof n.target.selector !== 'undefined') || typeof n.inReplyTo !== 'undefined') { //note, annotation, reply
                         //FIXME: Could resourceIRI be a fragment URI or *make sure* it is the document URL without the fragment?
@@ -3641,13 +3648,14 @@ var DO = {
                         elementsContainer: document.getElementById('document-editor'),
                         buttonLabels: (document.location.protocol == 'http:' || document.location.protocol == 'https:') ? 'fontawesome' : '',
                         toolbar: {
-                            buttons: ['note'],
+                            buttons: ['note', 'bookmark'],
                             allowMultiParagraphSelection: false
                         },
                         disableEditing: true,
                         anchorPreview: false,
                         extensions: {
-                            'note': new DO.U.Editor.Note({action:'article', label:'note'})
+                            'note': new DO.U.Editor.Note({action:'article', label:'note'}),
+                            'bookmark': new DO.U.Editor.Note({action:'bookmark', label:'bookmark'})
                         }
                     }
                 };
@@ -3996,6 +4004,9 @@ var DO = {
                                 case 'rdfa':
                                     this.contentFA = '<i class="fa fa-rocket"></i>';
                                     break;
+                                case 'bookmark':
+                                    this.contentFA = '<i class="fa fa-bookmark"></i>';
+                                    break;
                             }
                             MediumEditor.extensions.form.prototype.init.apply(this, arguments);
 
@@ -4069,6 +4080,11 @@ var DO = {
                                     '<input type="radio" name="citation-type" value="ref-reference" id="ref-reference" /> <label for="ref-reference">Reference</label>',
                                     '<input type="text" name="citation-url" value="" id="citation-url" class="medium-editor-toolbar-input" placeholder="http://example.org/article#results" />',
                                     '<textarea id="citation-content" cols="20" rows="1" class="medium-editor-toolbar-textarea" placeholder="', this.placeholderText, '"></textarea>'
+                                    ];
+                                    break;
+                                case 'bookmark':
+                                    template = [
+                                    '<textarea id="bookmark-content" name="content" cols="20" rows="1" class="medium-editor-toolbar-textarea" placeholder="', this.placeholderText, '"></textarea>'
                                     ];
                                     break;
                                 default:
@@ -4163,6 +4179,9 @@ var DO = {
                                     input.url.focus();
                                     document.querySelector('.medium-editor-toolbar-form input[name="citation-type"]').checked = true;
                                     break;
+                                case 'bookmark':
+                                    input.content.focus();
+                                    break;
                                 default:
                                     input.focus();
                                     break;
@@ -4221,6 +4240,9 @@ var DO = {
                                 case 'cite':
                                     opts.citationType = this.getInput().citationType.value;
                                     opts.url = this.getInput().url.value;
+                                    opts.content = this.getInput().content.value;
+                                    break;
+                                case 'bookmark':
                                     opts.content = this.getInput().content.value;
                                     break;
 
@@ -4332,7 +4354,7 @@ var DO = {
 
                             switch(this.action) {
                                 //External Note
-                                case 'article': //'note'
+                                case 'article':
                                     //XXX: Experimental: We don't change the source, only refer to it because that's cool.
 
                                     noteType = 'position-quote-selector';
@@ -4428,13 +4450,50 @@ var DO = {
                                         // lang: '' and/or xmllang: ''
                                     };
                                     ref = DO.U.createRDFaHTML(noteData);
+                                    break;
 
+                                case 'bookmark':
+                                    noteType = 'bookmark';
+                                    noteData = {
+                                        "type": noteType,
+                                        "purpose": "write",
+                                        "motivatedByIRI": "oa:bookmarking",
+                                        "id": id,
+                                        "refId": refId,
+                                        "refLabel": refLabel,
+                                        "iri": noteIRI, //e.g., https://example.org/path/to/article
+                                        "creator": {},
+                                        "datetime": datetime,
+                                        "target": {
+                                            "iri": targetIRI,
+                                            "source": resourceIRI,
+                                            "selector": {
+                                                "exact": exact,
+                                                "prefix": prefix,
+                                                "suffix": suffix
+                                            }
+                                            //TODO: state
+                                        },
+                                        "body": opts.content,
+                                        "license": {}
+                                    };
+                                    if (DO.C.User.IRI) {
+                                        noteData.creator["iri"] = DO.C.User.IRI;
+                                    }
+                                    if (DO.C.User.Name) {
+                                        noteData.creator["name"] = DO.C.User.Name;
+                                    }
+                                    if (DO.C.User.Image) {
+                                        noteData.creator["image"] = DO.C.User.Image;
+                                    }
+
+                                    note = DO.U.createNoteHTML(noteData);
+                                    ref = '<span class="ref" about="#' + refId + '" typeof="http://purl.org/dc/dcmitype/Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark></span>';
                                     break;
                             }
 // console.log(note);
 
 // console.log(noteData);
-
 
                             var selectionUpdated = ref;
                             MediumEditor.util.insertHTMLCommand(this.base.selectedDocument, selectionUpdated);
@@ -4502,7 +4561,7 @@ var DO = {
                                             console.log(reason);
                                         }
                                     );
-                                break;
+                                    break;
 
                                 case 'cite': //footnote reference
                                     //TODO: Refactor this what's in positionQuoteSelector
@@ -4573,7 +4632,30 @@ var DO = {
                                             );
                                             break;
                                     }
+                                    break;
 
+                                case 'bookmark':
+                                    var data = '<!DOCTYPE html>\n\
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
+    <head>\n\
+        <meta charset="utf-8" />\n\
+        <title>' + noteIRI + '</title>\n\
+    </head>\n\
+    <body>\n\
+        <main>' + note + '\n\
+        </main>\n\
+    </body>\n\
+</html>\n\
+';
+                                    DO.U.putResource(noteIRI, data).then(
+                                        function(i) {
+                                            //TODO: Let the user know that it was bookmarked
+                                        },
+                                        function(reason) {
+                                            console.log('PUT failed');
+                                            console.log(reason);
+                                        }
+                                    );
                                     break;
                             }
 
@@ -4651,6 +4733,9 @@ var DO = {
                                     r.citationType = this.getForm().querySelector('input[name="citation-type"]:checked');
                                     r.url = this.getForm().querySelector('#citation-url.medium-editor-toolbar-input');
                                     r.content = this.getForm().querySelector('#citation-content.medium-editor-toolbar-textarea');
+                                    break;
+                                case 'bookmark':
+                                    r.content = this.getForm().querySelector('#bookmark-content.medium-editor-toolbar-textarea');
                                     break;
 
                                 default:
