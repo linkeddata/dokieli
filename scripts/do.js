@@ -1755,6 +1755,17 @@ var DO = {
             return decodeURIComponent(string.replace(/\+/g,  " "));
         },
 
+        uniqueArray: function(a){
+            var n = {}, r = [];
+            for(var i = 0; i < a.length; i++) {
+                if (!n[a[i]]) {
+                    n[a[i]] = true; 
+                    r.push(a[i]); 
+                }
+            }
+            return r;
+        },
+
         stripFragmentFromString: function(string) {
             if (typeof string === "string") {
                 stringIndexFragment = string.indexOf('#');
