@@ -3616,7 +3616,7 @@ var DO = {
                         },
                         buttonLabels: (document.location.protocol == 'http:' || document.location.protocol == 'https:') ? 'fontawesome' : '',
                         toolbar: {
-                            buttons: ['h2', 'h3', 'h4', 'em', 'strong', 'orderedlist', 'unorderedlist', 'code', 'pre', 'image', 'table', 'anchor', 'cite', 'q', 'rdfa', 'mark', 'note'],
+                            buttons: ['h2', 'h3', 'h4', 'em', 'strong', 'orfderedlist', 'unorderedlist', 'code', 'pre', 'image', 'table', 'anchor', 'q', 'rdfa', 'cite', 'note'],
                             diffLeft: 0,
                             diffTop: -10,
                             allowMultiParagraphSelection: false
@@ -3629,10 +3629,9 @@ var DO = {
                             'em': new DO.U.Editor.Button({action:'em', label:'em'}),
                             'strong': new DO.U.Editor.Button({action:'strong', label:'strong'}),
                             'code': new DO.U.Editor.Button({action:'code', label:'code'}),
-                            'cite': new DO.U.Editor.Button({action:'cite', label:'cite'}),
                             'q': new DO.U.Editor.Button({action:'q', label:'q'}),
                             'rdfa': new DO.U.Editor.Note({action:'rdfa', label:'rdfa'}),
-                            'mark': new DO.U.Editor.Note({action:'mark', label:'mark'}),
+                            'cite': new DO.U.Editor.Note({action:'cite', label:'cite'}),
                             'note': new DO.U.Editor.Note({action:'article', label:'note'}),
                             'table': new MediumEditorTable()
                         }
@@ -3988,7 +3987,7 @@ var DO = {
                             this.useQueryState = true;
                             this.contentDefault = '<b>' + this.label + '</b>';
                             switch(this.action) {
-                                case 'mark': default:
+                                case 'cite': default:
                                     this.contentFA = '<i class="fa fa-hashtag"></i>';
                                     break;
                                 case 'article':
@@ -4064,7 +4063,7 @@ var DO = {
                                     '</select>'
                                     ];
                                     break;
-                                case 'mark':
+                                case 'cite':
                                     template = [
                                     '<input type="radio" name="citation-type" value="ref-footnote" id="ref-footnote" /> <label for="ref-footnote">Footnote</label>',
                                     '<input type="radio" name="citation-type" value="ref-reference" id="ref-reference" /> <label for="ref-reference">Reference</label>',
@@ -4160,7 +4159,7 @@ var DO = {
                                 case 'article':
                                     input.content.focus();
                                     break;
-                                case 'mark':
+                                case 'cite':
                                     input.url.focus();
                                     document.querySelector('.medium-editor-toolbar-form input[name="citation-type"]').checked = true;
                                     break;
@@ -4219,7 +4218,7 @@ var DO = {
                                     opts.content = this.getInput().content.value;
                                     opts.license = this.getInput().license.value;
                                     break;
-                                case 'mark':
+                                case 'cite':
                                     opts.citationType = this.getInput().citationType.value;
                                     opts.url = this.getInput().url.value;
                                     opts.content = this.getInput().content.value;
@@ -4382,7 +4381,7 @@ var DO = {
                                     break;
 
                                 //Internal Note
-                                case 'mark': //footnote reference
+                                case 'cite': //footnote reference
                                     switch(opts.citationType) {
                                         case 'ref-footnote': default:
                                             docRefType = '<sup class="' + opts.citationType + '"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup>';
@@ -4505,7 +4504,7 @@ var DO = {
                                     );
                                 break;
 
-                                case 'mark': //footnote reference
+                                case 'cite': //footnote reference
                                     //TODO: Refactor this what's in positionQuoteSelector
 
                                     switch(opts.citationType) {
@@ -4648,7 +4647,7 @@ var DO = {
                                     r.content = this.getForm().querySelector('#article-content.medium-editor-toolbar-textarea');
                                     r.license = this.getForm().querySelector('#article-license.medium-editor-toolbar-select');
                                     break;
-                                case 'mark':
+                                case 'cite':
                                     r.citationType = this.getForm().querySelector('input[name="citation-type"]:checked');
                                     r.url = this.getForm().querySelector('#citation-url.medium-editor-toolbar-input');
                                     r.content = this.getForm().querySelector('#citation-content.medium-editor-toolbar-textarea');
