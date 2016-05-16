@@ -62,6 +62,7 @@ dl[id^="document-"], #authors {
 #authors dd, #authors li, #keywords li {
   display: inline;
   text-align: left;
+  margin-left:1em;
 }
 
 
@@ -161,12 +162,12 @@ video, audio, object {
 
 @media screen and (min-width: 768px){
   section {
-    width: 60%;
+    width: 50%;
     margin: 2em auto;
     padding: 0;
   }
   dl[id^="document-"], #authors {
-    width:60%;
+    width:50%;
     margin:0 auto;
   }
   #do-index #features ul {
