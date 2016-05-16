@@ -3464,7 +3464,7 @@ var DO = {
 
             heading = '<' + hX + ' property="schema:name">' + creatorName + ' <span rel="oa:motivatedBy" resource="' + motivatedByIRI + '">' + motivatedByLabel + '</span></' + hX + '>';
 
-            published = '<dl class="published"><dt>+Published</dt><dd><a href="' + n.iri + '"><time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="oa:annotatedAt schema:datePublished" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time></a></dd></dl>';
+            published = '<dl class="published"><dt>Published</dt><dd><a href="' + n.iri + '"><time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="oa:annotatedAt schema:datePublished" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time></a></dd></dl>';
 
             switch(n.type) {
                 case 'position-quote-selector': case 'bookmark':
@@ -3478,6 +3478,18 @@ var DO = {
                                 if ('describing' in n.body.purpose && 'text' in n.body.purpose.describing) {
                                     body = '<div property="schema:description" rel="oa:hasBody as:content"><div about="[i:#i]" typeof="oa:TextualBody as:Note" property="oa:text" rel="oa:hasPurpose" resource="oa:describing" datatype="rdf:HTML">' + n.body.purpose.describing.text + '</div></div>';
                                 }
+                                if ('tagging' in n.body.purpose && 'text' in n.body.purpose.tagging) {
+                                    var tags = n.body.purpose.tagging.text;
+                                    //TODO: Each tag should have its own statement?
+                                    // var tags = '<dl class="tags"><dt>Tags</dt><ul>';
+                                    // n.body.purpose.tagging.text.split(',').forEach(function(i){
+                                    //     tags += '<li>' + DO.U.htmlEntities(i.trim()) + '</li>';
+                                    // });
+                                    // tags += '</ul></dl>';
+
+                                    body += '<div property="schema:description" rel="oa:hasBody as:content"><div about="[i:#tags]" typeof="oa:TextualBody as:Note" property="oa:text" rel="oa:hasPurpose" resource="oa:tagging" datatype="rdf:HTML">' + tags + '</div></div>';
+                                }
+
                             }
                             else {
                                 body = '<div property="schema:description" rel="oa:hasBody as:content"><div about="[i:#i]" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">' + n.body + '</div></div>';
@@ -4094,7 +4106,8 @@ var DO = {
                                     break;
                                 case 'bookmark':
                                     template = [
-                                    '<textarea id="bookmark-content" name="content" cols="20" rows="1" class="medium-editor-toolbar-textarea" placeholder="Description"></textarea>'
+                                    '<label for="bookmark-tagging">Tags</label> <input id="bookmark-tagging" class="medium-editor-toolbar-input" placeholder="Separate tags with commas" /><br/>',
+                                    '<textarea id="bookmark-content" name="content" cols="20" rows="2" class="medium-editor-toolbar-textarea" placeholder="Description"></textarea>'
                                     ];
                                     break;
                                 default:
@@ -4254,6 +4267,7 @@ var DO = {
                                     break;
                                 case 'bookmark':
                                     opts.content = this.getInput().content.value;
+                                    opts.tagging = this.getInput().tagging.value;
                                     break;
 
                                 default:
@@ -4488,6 +4502,9 @@ var DO = {
                                             "purpose": {
                                                 "describing": {
                                                     "text": opts.content
+                                                },
+                                                "tagging": {
+                                                    "text": opts.tagging
                                                 }
                                             }
                                         },
@@ -4752,6 +4769,7 @@ var DO = {
                                     break;
                                 case 'bookmark':
                                     r.content = this.getForm().querySelector('#bookmark-content.medium-editor-toolbar-textarea');
+                                    r.tagging = this.getForm().querySelector('#bookmark-tagging.medium-editor-toolbar-input');
                                     break;
 
                                 default:
