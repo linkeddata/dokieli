@@ -662,9 +662,11 @@ bottom:-8px;
 #citation-url {
 display:block;
 }
-#citation-content {
+#citation-content,
+#bookmark-content {
 width:calc(100% - 16px);
 }
-.medium-editor-toolbar-form label[for^="ref-"] {
+.medium-editor-toolbar-form label[for^="ref-"],
+.medium-editor-toolbar-form label[for^="bookmark-"] {
 width:auto;
 }
