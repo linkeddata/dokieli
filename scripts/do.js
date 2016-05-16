@@ -2117,7 +2117,7 @@ var DO = {
                         var noteIRI = document.querySelector('#reply-to-resource #location-final').innerText.trim();
                         var noteData = {
                             "type": 'position-quote-selector', //e.g., 'article'
-                            "purpose": "write",
+                            "mode": "write",
                             "motivatedByIRI": "oa:replying",
                             "id": id,
                             "iri": noteIRI, //e.g., https://example.org/path/to/article
@@ -3310,7 +3310,7 @@ var DO = {
 
                             var noteData = {
                                 "type": 'position-quote-selector', //e.g., 'article'
-                                "purpose": "read",
+                                "mode": "read",
                                 "motivatedByIRI": "oa:replying",
                                 "id": id,
                                 "refId": refId,
@@ -3433,7 +3433,7 @@ var DO = {
                     break;
             }
 
-            switch(n.purpose) {
+            switch(n.mode) {
                 default:
                     hX = 'h3';
                     if ('creator' in n && 'iri' in n.creator && DO.C.User.IRI) {
@@ -4364,7 +4364,7 @@ var DO = {
 
                                     noteData = {
                                         "type": noteType, //e.g., 'article'
-                                        "purpose": "write",
+                                        "mode": "write",
                                         "motivatedByIRI": "oa:replying",
                                         "id": id,
                                         "refId": refId,
@@ -4409,7 +4409,7 @@ var DO = {
                                             docRefType = '<sup class="' + opts.citationType + '"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup>';
                                             noteData = {
                                                 "type": opts.citationType,
-                                                "purpose": "write",
+                                                "mode": "write",
                                                 "motivatedByIRI": "oa:describing",
                                                 "id": id,
                                                 "refId": refId,
@@ -4456,7 +4456,7 @@ var DO = {
                                     noteType = 'bookmark';
                                     noteData = {
                                         "type": noteType,
-                                        "purpose": "write",
+                                        "mode": "write",
                                         "motivatedByIRI": "oa:bookmarking",
                                         "id": id,
                                         "refId": refId,
