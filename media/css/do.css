@@ -664,7 +664,9 @@ display:block;
 }
 #citation-content,
 #bookmark-content {
-width:calc(100% - 16px);
+width: 94%;
+margin: 0 auto;
+display: block;
 }
 .medium-editor-toolbar-form label[for^="ref-"],
 .medium-editor-toolbar-form label[for^="bookmark-"] {
