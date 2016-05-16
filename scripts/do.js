@@ -3487,18 +3487,20 @@ var DO = {
                         if ('body' in n) {
                             if(typeof n.body === 'object' && 'purpose' in n.body) {
                                 if ('describing' in n.body.purpose && 'text' in n.body.purpose.describing) {
-                                    body = '<div property="schema:description" rel="oa:hasBody as:content"><div about="[i:#i]" typeof="oa:TextualBody as:Note" property="oa:text" rel="oa:hasPurpose" resource="oa:describing" datatype="rdf:HTML">' + n.body.purpose.describing.text + '</div></div>';
+                                    body += '<div property="schema:description" rel="oa:hasBody as:content"><div about="[i:#i]" typeof="oa:TextualBody as:Note" property="oa:text" rel="oa:hasPurpose" resource="oa:describing" datatype="rdf:HTML">' + n.body.purpose.describing.text + '</div></div>';
                                 }
                                 if ('tagging' in n.body.purpose && 'text' in n.body.purpose.tagging) {
-                                    var tags = n.body.purpose.tagging.text;
-                                    //TODO: Each tag should have its own statement?
-                                    // var tags = '<dl class="tags"><dt>Tags</dt><ul>';
-                                    // n.body.purpose.tagging.text.split(',').forEach(function(i){
-                                    //     tags += '<li>' + DO.U.htmlEntities(i.trim()) + '</li>';
-                                    // });
-                                    // tags += '</ul></dl>';
+                                    var tagsArray = [];
+                                    n.body.purpose.tagging.text.split(',').forEach(function(i){
+                                        tagsArray.push(DO.U.htmlEntities(i.trim()));
+                                    });
+                                    var tagsArray = DO.U.uniqueArray(tagsArray);
 
-                                    body += '<div property="schema:description" rel="oa:hasBody as:content"><div about="[i:#tags]" typeof="oa:TextualBody as:Note" property="oa:text" rel="oa:hasPurpose" resource="oa:tagging" datatype="rdf:HTML">' + tags + '</div></div>';
+                                    body += '<div property="schema:description" rel="oa:hasBody as:content"><dl class="tags"><dt>Tags</dt><dd><ul>';
+                                    tagsArray.forEach(function(i){
+                                        body += '<li about="[i:#tag-' + DO.U.generateAttributeId(null, i) + ']" typeof="oa:TextualBody as:Note" property="oa:text" rel="oa:hasPurpose" resource="oa:tagging" datatype="rdf:HTML">' + i + '</li>';
+                                    })
+                                    body += '</ul></dd></dl></div>';
                                 }
 
                             }
