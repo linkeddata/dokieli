@@ -3473,7 +3473,17 @@ var DO = {
                         //FIXME: Could resourceIRI be a fragment URI or *make sure* it is the document URL without the fragment?
                         //TODO: Use n.target.iri?
 
-                        body = '<div property="schema:description" rel="oa:hasBody as:content"><div about="[i:#i]" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">' + n.body + '</div></div>';
+                        if ('body' in n) {
+                            if(typeof n.body === 'object' && 'purpose' in n.body) {
+                                if ('describing' in n.body.purpose && 'text' in n.body.purpose.describing) {
+                                    body = '<div property="schema:description" rel="oa:hasBody as:content"><div about="[i:#i]" typeof="oa:TextualBody as:Note" property="oa:text" rel="oa:hasPurpose" resource="oa:describing" datatype="rdf:HTML">' + n.body.purpose.describing.text + '</div></div>';
+                                }
+                            }
+                            else {
+                                body = '<div property="schema:description" rel="oa:hasBody as:content"><div about="[i:#i]" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">' + n.body + '</div></div>';
+                            }
+
+                        }
 
                         if (typeof n.target !== 'undefined') {
                             var targetIRI = n.target.iri;
@@ -4084,7 +4094,7 @@ var DO = {
                                     break;
                                 case 'bookmark':
                                     template = [
-                                    '<textarea id="bookmark-content" name="content" cols="20" rows="1" class="medium-editor-toolbar-textarea" placeholder="', this.placeholderText, '"></textarea>'
+                                    '<textarea id="bookmark-content" name="content" cols="20" rows="1" class="medium-editor-toolbar-textarea" placeholder="Description"></textarea>'
                                     ];
                                     break;
                                 default:
@@ -4474,7 +4484,13 @@ var DO = {
                                             }
                                             //TODO: state
                                         },
-                                        "body": opts.content,
+                                        "body": {
+                                            "purpose": {
+                                                "describing": {
+                                                    "text": opts.content
+                                                }
+                                            }
+                                        },
                                         "license": {}
                                     };
                                     if (DO.C.User.IRI) {
