@@ -658,3 +658,13 @@ width:65%;
 top:initial;
 bottom:-8px;
 }
+
+#citation-url {
+display:block;
+}
+#citation-content {
+width:calc(100% - 16px);
+}
+.medium-editor-toolbar-form label[for^="ref-"] {
+width:auto;
+}
