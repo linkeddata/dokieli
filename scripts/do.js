@@ -4039,18 +4039,22 @@ var DO = {
                             this.tagNames = [this.action];
                             this.useQueryState = true;
                             this.contentDefault = '<b>' + this.label + '</b>';
+                            this.signInRequired = false;
+
                             switch(this.action) {
                                 case 'cite': default:
                                     this.contentFA = '<i class="fa fa-hashtag"></i>';
                                     break;
                                 case 'article':
                                     this.contentFA = '<i class="fa fa-sticky-note"></i>';
+                                    this.signInRequired = true;
                                     break;
                                 case 'rdfa':
                                     this.contentFA = '<i class="fa fa-rocket"></i>';
                                     break;
                                 case 'bookmark':
                                     this.contentFA = '<i class="fa fa-bookmark"></i>';
+                                    this.signInRequired = true;
                                     break;
                             }
                             MediumEditor.extensions.form.prototype.init.apply(this, arguments);
@@ -4066,7 +4070,10 @@ var DO = {
                             event.preventDefault();
                             event.stopPropagation();
 
-                            if (DO.C.User.IRI) {
+                            if(this.signInRequired && !DO.C.User.IRI) {
+                                DO.U.showUserIdentityInput();
+                            }
+                            else {
                                 var range = MediumEditor.selection.getSelectionRange(this.document);
 
                                 if (range.startContainer.nodeName.toLowerCase() === 'a' ||
@@ -4078,9 +4085,6 @@ var DO = {
                                 if (!this.isDisplayed()) {
                                     this.showForm();
                                 }
-                            }
-                            else {
-                                DO.U.showUserIdentityInput();
                             }
                             return false;
                         },
