@@ -2238,7 +2238,9 @@ var DO = {
 
         shareResource: function(e, iri) {
             iri = iri || window.location.origin + window.location.pathname;
-            e.target.disabled = true;
+            if (e) {
+                e.target.disabled = true;
+            }
 
             var addContactsButton = (DO.C.User.IRI) ? '<li><button class="add">Add from contacts</button></li>' : '';
 
@@ -3694,14 +3696,15 @@ var DO = {
                         elementsContainer: document.getElementById('document-editor'),
                         buttonLabels: (document.location.protocol == 'http:' || document.location.protocol == 'https:') ? 'fontawesome' : '',
                         toolbar: {
-                            buttons: ['note', 'bookmark'],
+                            buttons: ['share', 'bookmark', 'note'],
                             allowMultiParagraphSelection: false
                         },
                         disableEditing: true,
                         anchorPreview: false,
                         extensions: {
                             'note': new DO.U.Editor.Note({action:'article', label:'note'}),
-                            'bookmark': new DO.U.Editor.Note({action:'bookmark', label:'bookmark'})
+                            'bookmark': new DO.U.Editor.Note({action:'bookmark', label:'bookmark'}),
+                            'share': new DO.U.Editor.Note({action:'share', label:'share'})
                         }
                     }
                 };
@@ -4057,6 +4060,10 @@ var DO = {
                                     this.contentFA = '<i class="fa fa-bookmark"></i>';
                                     this.signInRequired = true;
                                     break;
+                                case 'share':
+                                    this.contentFA = '<i class="fa fa-bullhorn"></i>';
+                                    this.signInRequired = true;
+                                    break;
                             }
                             MediumEditor.extensions.form.prototype.init.apply(this, arguments);
 
@@ -4088,6 +4095,15 @@ var DO = {
                                         if (!this.isDisplayed()) {
                                             this.showForm();
                                         }
+                                        break;
+                                    case 'share':
+                                        this.base.restoreSelection();
+                                        var resourceIRI = DO.U.stripFragmentFromString(document.location.href);
+                                        var id = this.base.getSelectedParentElement().closest('[id]').id;
+                                        resourceIRI = (id) ? resourceIRI + '#' + id : resourceIRI;
+                                        this.window.getSelection().removeAllRanges();
+                                        this.base.checkSelection();
+                                        DO.U.shareResource(null, resourceIRI);
                                         break;
                                 }
                             }
