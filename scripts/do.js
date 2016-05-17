@@ -4705,7 +4705,7 @@ var DO = {
                                     break;
                             }
 
-                            window.getSelection().removeAllRanges();
+                            this.window.getSelection().removeAllRanges();
                             this.base.checkSelection();
                         },
 
