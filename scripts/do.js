@@ -1072,7 +1072,7 @@ var DO = {
             ['keyup', 'cut', 'paste', 'input'].forEach(function(eventType) {
                 inputWebid.addEventListener(eventType, function(e){ DO.U.enableDisableButton(e, buttonSignIn); });
             });
-            webid.focus();
+            inputWebid.focus();
         },
 
         //TODO: Generalize this further so that it is not only for submitSignIn
