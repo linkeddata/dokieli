@@ -4075,16 +4075,20 @@ var DO = {
                                 DO.U.showUserIdentityInput();
                             }
                             else {
-                                var range = MediumEditor.selection.getSelectionRange(this.document);
+                                switch(this.action) {
+                                    default:
+                                        var range = MediumEditor.selection.getSelectionRange(this.document);
 
-                                if (range.startContainer.nodeName.toLowerCase() === 'a' ||
-                                    range.endContainer.nodeName.toLowerCase() === 'a' ||
-                                    MediumEditor.util.getClosestTag(MediumEditor.selection.getSelectedParentElement(range), 'a')) {
-                                    return this.execAction('unlink');
-                                }
+                                        if (range.startContainer.nodeName.toLowerCase() === 'a' ||
+                                            range.endContainer.nodeName.toLowerCase() === 'a' ||
+                                            MediumEditor.util.getClosestTag(MediumEditor.selection.getSelectedParentElement(range), 'a')) {
+                                            return this.execAction('unlink');
+                                        }
 
-                                if (!this.isDisplayed()) {
-                                    this.showForm();
+                                        if (!this.isDisplayed()) {
+                                            this.showForm();
+                                        }
+                                        break;
                                 }
                             }
                             return false;
