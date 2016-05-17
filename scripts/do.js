@@ -3668,7 +3668,7 @@ var DO = {
                         },
                         buttonLabels: (document.location.protocol == 'http:' || document.location.protocol == 'https:') ? 'fontawesome' : '',
                         toolbar: {
-                            buttons: ['h2', 'h3', 'h4', 'em', 'strong', 'orfderedlist', 'unorderedlist', 'code', 'pre', 'image', 'table', 'anchor', 'q', 'rdfa', 'cite', 'note'],
+                            buttons: ['h2', 'h3', 'h4', 'em', 'strong', 'orderedlist', 'unorderedlist', 'code', 'pre', 'image', 'table', 'anchor', 'q', 'rdfa', 'cite', 'note'],
                             diffLeft: 0,
                             diffTop: -10,
                             allowMultiParagraphSelection: false
