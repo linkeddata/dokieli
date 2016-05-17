@@ -2051,6 +2051,7 @@ var DO = {
                     if (e.target.matches('button.editor-disable')) {
                         e.target.parentNode.innerHTML = DO.C.Editor.EnableEditorButton;
                         DO.U.Editor.disableEditor(e);
+                        DO.U.Editor.enableEditor('social', e);
                     }
                 }
 
