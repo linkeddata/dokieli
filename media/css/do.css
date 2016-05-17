@@ -662,12 +662,12 @@ bottom:-8px;
 #citation-url {
 display:block;
 }
-#citation-content,
-#bookmark-content,
-#article-content {
-width: 94%;
-margin: 0 auto;
-display: block;
+.medium-editor-toolbar-form textarea {
+padding:0.5em;
+width:calc(100% - 1em - 2px);
+width:-moz-available;
+margin:0 auto;
+display:block;
 }
 .medium-editor-toolbar-form label[for^="ref-"],
 .medium-editor-toolbar-form label[for^="bookmark-"] {
