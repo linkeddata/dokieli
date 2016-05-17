@@ -3652,6 +3652,7 @@ var DO = {
 
                 var editorOptions = {
                     author: {
+                        id: 'author',
                         elementsContainer: document.getElementById('document-editor'),
                         placeholder: {
                             text: ["Make it so!", "This is not a Paper", "Cogito Ergo Sum", "Do One Thing and Do It Well", "Free Your Mind", "Do or Do Not"][Math.floor(Math.random() * 6)]
@@ -3688,6 +3689,7 @@ var DO = {
                     },
 
                     social: {
+                        id: 'social',
                         elementsContainer: document.getElementById('document-editor'),
                         buttonLabels: (document.location.protocol == 'http:' || document.location.protocol == 'https:') ? 'fontawesome' : '',
                         toolbar: {
