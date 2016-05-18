@@ -2249,7 +2249,10 @@ var DO = {
             var shareResource = document.getElementById('share-resource');
             shareResource.addEventListener('click', function(e) {
                 if (e.target.matches('button.close')) {
-                    document.querySelector('#document-do .resource-share').disabled = false;
+                    var rs = document.querySelector('#document-do .resource-share');
+                    if (rs) {
+                        rs.disabled = false;
+                    }
                 }
 
                 if (DO.C.User.IRI && e.target.matches('button.add')) {
