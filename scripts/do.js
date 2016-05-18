@@ -2302,7 +2302,7 @@ var DO = {
                                         "object": iri,
                                         "to": to,
                                         "summary": note,
-                                        "license": "http://creativecommons.org/licenses/by/4.0/"
+                                        "license": "https://creativecommons.org/licenses/by/4.0/"
                                     };
 
                                     DO.U.notifyInbox(notificationData).then(
