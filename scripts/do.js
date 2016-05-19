@@ -2135,7 +2135,7 @@ var DO = {
                         var id = DO.U.generateAttributeId().slice(0, 6);
                         var noteIRI = document.querySelector('#reply-to-resource #location-final').innerText.trim();
                         var noteData = {
-                            "type": 'position-quote-selector', //e.g., 'article'
+                            "type": 'article',
                             "mode": "write",
                             "motivatedByIRI": "oa:replying",
                             "id": id,
@@ -3333,7 +3333,7 @@ var DO = {
                             var targetIRI = (parentNodeWithId) ? resourceIRI + '#' + parentNodeWithId.id : resourceIRI;
 
                             var noteData = {
-                                "type": 'position-quote-selector', //e.g., 'article'
+                                "type": 'article',
                                 "mode": "read",
                                 "motivatedByIRI": "oa:replying",
                                 "id": id,
@@ -3500,7 +3500,7 @@ var DO = {
             }
 
             switch(n.type) {
-                case 'position-quote-selector': case 'bookmark': case 'approve':
+                case 'article': case 'bookmark': case 'approve':
                     //TODO: Include `a oa:SpecificResource`?
                     if ((typeof n.target !== 'undefined' && typeof n.target.selector !== 'undefined') || typeof n.inReplyTo !== 'undefined') { //note, annotation, reply
                         //FIXME: Could resourceIRI be a fragment URI or *make sure* it is the document URL without the fragment?
@@ -4460,7 +4460,7 @@ var DO = {
                                 case 'article': case 'approve':
                                     switch(this.action) {
                                         default:
-                                            noteType = 'position-quote-selector';
+                                            noteType = 'article';
                                             break;
                                         case 'approve':
                                             noteType = 'approve';
@@ -4472,7 +4472,7 @@ var DO = {
                                     licenseIRI = opts.license;
 
                                     noteData = {
-                                        "type": noteType, //e.g., 'article'
+                                        "type": noteType,
                                         "mode": "write",
                                         "motivatedByIRI": "oa:replying",
                                         "id": id,
