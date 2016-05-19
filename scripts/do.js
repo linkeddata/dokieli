@@ -944,7 +944,6 @@ var DO = {
 ';
 
             switch(o.type) {
-
                 case 'as:Announce': default:
                     data += '<> a as:Announce\n';
                     break;
@@ -3429,6 +3428,7 @@ var DO = {
             var hasTarget = '', annotationTextSelector = '', target = '';
             var heading, hX;
             var aAbout = '', aPrefix = '';
+            var noteType = '';
             var body = '';
             var license = '';
             var buttonDelete = '';
@@ -3492,7 +3492,15 @@ var DO = {
             published = '<dl class="published"><dt>Published</dt><dd><a href="' + n.iri + '"><time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="oa:annotatedAt schema:datePublished" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time></a></dd></dl>';
 
             switch(n.type) {
-                case 'position-quote-selector': case 'bookmark':
+                default:
+                    break;
+                case 'approve':
+                    noteType = ' as:Like';
+                    break;
+            }
+
+            switch(n.type) {
+                case 'position-quote-selector': case 'bookmark': case 'approve':
                     //TODO: Include `a oa:SpecificResource`?
                     if ((typeof n.target !== 'undefined' && typeof n.target.selector !== 'undefined') || typeof n.inReplyTo !== 'undefined') { //note, annotation, reply
                         //FIXME: Could resourceIRI be a fragment URI or *make sure* it is the document URL without the fragment?
@@ -3572,7 +3580,7 @@ var DO = {
             }
 
             var note = '\n\
-<article id="' + n.id + '" about="' + aAbout + '" typeof="oa:Annotation as:Activity"' + aPrefix + '>'+buttonDelete+'\n\
+<article id="' + n.id + '" about="' + aAbout + '" typeof="oa:Annotation as:Activity' + noteType + '"' + aPrefix + '>'+buttonDelete+'\n\
     ' + heading + '\n\
     ' + authors + '\n\
     ' + published + '\n\
@@ -3699,7 +3707,7 @@ var DO = {
                         elementsContainer: document.getElementById('document-editor'),
                         buttonLabels: (document.location.protocol == 'http:' || document.location.protocol == 'https:') ? 'fontawesome' : '',
                         toolbar: {
-                            buttons: ['share', 'bookmark', 'note'],
+                            buttons: ['share', 'approve', 'bookmark', 'note'],
                             allowMultiParagraphSelection: false
                         },
                         disableEditing: true,
@@ -3707,7 +3715,8 @@ var DO = {
                         extensions: {
                             'note': new DO.U.Editor.Note({action:'article', label:'note'}),
                             'bookmark': new DO.U.Editor.Note({action:'bookmark', label:'bookmark'}),
-                            'share': new DO.U.Editor.Note({action:'share', label:'share'})
+                            'share': new DO.U.Editor.Note({action:'share', label:'share'}),
+                            'approve': new DO.U.Editor.Note({action:'approve', label:'approve'})
                         }
                     }
                 };
@@ -4067,6 +4076,10 @@ var DO = {
                                     this.contentFA = '<i class="fa fa-bullhorn"></i>';
                                     this.signInRequired = true;
                                     break;
+                                case 'approve':
+                                    this.contentFA = '<i class="fa fa-thumbs-up"></i>';
+                                    this.signInRequired = true;
+                                    break;
                             }
                             MediumEditor.extensions.form.prototype.init.apply(this, arguments);
 
@@ -4099,6 +4112,7 @@ var DO = {
                                             this.showForm();
                                         }
                                         break;
+
                                     case 'share':
                                         this.base.restoreSelection();
                                         var resourceIRI = DO.U.stripFragmentFromString(document.location.href);
@@ -4107,6 +4121,14 @@ var DO = {
                                         this.window.getSelection().removeAllRanges();
                                         this.base.checkSelection();
                                         DO.U.shareResource(null, resourceIRI);
+                                        break;
+
+                                    case 'approve':
+                                        var opts = {
+                                            license: 'https://creativecommons.org/licenses/by/4.0/',
+                                            content: ''
+                                        }
+                                        this.completeFormSave(opts);
                                         break;
                                 }
                             }
@@ -4435,10 +4457,16 @@ var DO = {
 
                             switch(this.action) {
                                 //External Note
-                                case 'article':
-                                    //XXX: Experimental: We don't change the source, only refer to it because that's cool.
+                                case 'article': case 'approve':
+                                    switch(this.action) {
+                                        default:
+                                            noteType = 'position-quote-selector';
+                                            break;
+                                        case 'approve':
+                                            noteType = 'approve';
+                                            break;
+                                    }
 
-                                    noteType = 'position-quote-selector';
                                     ref = this.base.selection;
                                     refLabel = id;
                                     licenseIRI = opts.license;
@@ -4589,7 +4617,7 @@ var DO = {
                             MediumEditor.util.insertHTMLCommand(this.base.selectedDocument, selectionUpdated);
 
                             switch(this.action) {
-                                case 'article':
+                                case 'article': case 'approve':
                                     var data = '<!DOCTYPE html>\n\
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
     <head>\n\
