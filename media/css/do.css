@@ -397,6 +397,7 @@ font-size:1.4em;
 }
 
 #document-menu .editor-disable,
+#document-menu .review-disable,
 #document-menu .local-storage-disable-html {
 background-color:#eee;
 }

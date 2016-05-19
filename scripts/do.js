@@ -44,6 +44,8 @@ var DO = {
             headings: ["h1", "h2", "h3", "h4", "h5", "h6"],
             regexEmptyHTMLTags: /<[^\/>][^>]*><\/[^>]+>/gim,
             ButtonLabelType: (document.querySelector('head link[rel~="stylesheet"][href*="font-awesome"]') ? (!navigator.onLine && document.querySelector('head link[rel~="stylesheet"][href*="font-awesome"][href^="http"]') ? '': 'fontawesome') : '' ),
+            DisableReviewButton: '<button class="review-disable" title="Disable review"><i class="fa fa-balance-scale fa-2x"></i>Review</button>',
+            EnableReviewButton: '<button class="review-enable" title="Enable review"><i class="fa fa-balance-scale fa-2x"></i>Review</button>',
             DisableEditorButton: '<button class="editor-disable" title="Disable editor"><i class="fa fa-i-cursor fa-2x"></i>Edit</button>',
             EnableEditorButton: '<button class="editor-enable" title="Enable editor"><i class="fa fa-i-cursor fa-2x"></i>Edit</button>'
         },
@@ -1032,6 +1034,9 @@ var DO = {
                         break;
                     case 'social': default:
                         DO.U.Editor.enableEditor('social');
+                        break;
+                    case 'review':
+                        DO.U.Editor.enableEditor('review');
                         break;
                 }
             }
@@ -2026,6 +2031,9 @@ var DO = {
             if (DO.C.EditorAvailable) {
                 var editFile = (DO.C.EditorEnabled && DO.C.User.Role == 'author') ? DO.C.Editor.DisableEditorButton : DO.C.Editor.EnableEditorButton;
                 s += '<li>' + editFile + '</li>';
+
+                var reviewArticle = (DO.C.EditorEnabled && DO.C.User.Role == 'review') ? DO.C.Editor.DisableReviewButton : DO.C.Editor.EnableReviewButton;
+                s += '<li>' + reviewArticle + '</li>';
             }
             s += '<li><button class="resource-source"'+buttonDisabled+' title="Edit article source code"><i class="fa fa-code fa-2x"></i>Source</button></li>';
             s += '<li><button class="resource-export" title="Export article"><i class="fa fa-external-link fa-2x"></i>Export</button></li>';
@@ -2044,14 +2052,20 @@ var DO = {
                 }
 
                 if (DO.C.EditorAvailable) {
-                    if (e.target.matches('button.editor-enable')) {
-                        e.target.parentNode.innerHTML = DO.C.Editor.DisableEditorButton;
-                        DO.U.Editor.enableEditor('author', e);
-                    }
-                    if (e.target.matches('button.editor-disable')) {
+                    if (e.target.matches('button.editor-disable') ||
+                        e.target.matches('button.review-disable')) {
                         e.target.parentNode.innerHTML = DO.C.Editor.EnableEditorButton;
-                        DO.U.Editor.disableEditor(e);
                         DO.U.Editor.enableEditor('social', e);
+                    }
+                    else {
+                        if (e.target.matches('button.editor-enable')) {
+                            e.target.parentNode.innerHTML = DO.C.Editor.DisableEditorButton;
+                            DO.U.Editor.enableEditor('author', e);
+                        }
+                        else if (e.target.matches('button.review-enable')) {
+                            e.target.parentNode.innerHTML = DO.C.Editor.DisableEditorButton;
+                            DO.U.Editor.enableEditor('review', e);
+                        }
                     }
                 }
 
@@ -3444,6 +3458,13 @@ var DO = {
                     aAbout = '[i:]';
                     aPrefix = ' prefix="schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'"';
                     break;
+                case 'oa:reviewing':
+                    motivatedByIRI = 'oa:reviewing';
+                    motivatedByLabel = 'reviews';
+                    targetLabel = 'Review of';
+                    aAbout = '[i:]';
+                    aPrefix = ' prefix="schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'"';
+                    break;
                 case 'oa:describing':
                     motivatedByIRI = 'oa:describing';
                     motivatedByLabel = 'describes';
@@ -3507,7 +3528,7 @@ var DO = {
                         //FIXME: Could resourceIRI be a fragment URI or *make sure* it is the document URL without the fragment?
                         //TODO: Use n.target.iri?
 
-                        if ('body' in n) {
+                        if (typeof n.body !== 'undefined') {
                             if(typeof n.body === 'object' && 'purpose' in n.body) {
                                 if ('describing' in n.body.purpose && 'text' in n.body.purpose.describing) {
                                     body += '<div property="schema:description" rel="oa:hasBody as:content"><div about="[i:#i]" typeof="oa:TextualBody as:Note" property="oa:text" rel="oa:hasPurpose" resource="oa:describing" datatype="rdf:HTML">' + n.body.purpose.describing.text + '</div></div>';
@@ -3528,9 +3549,8 @@ var DO = {
 
                             }
                             else if (n.body.length > 0) {
-                                body = '<div property="schema:description" rel="oa:hasBody as:content"><div about="[i:#i]" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">' + n.body + '</div></div>';
+                                body += '<div property="schema:description" rel="oa:hasBody as:content"><div about="[i:#i]" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">' + n.body + '</div></div>';
                             }
-
                         }
 
                         if (typeof n.target !== 'undefined') {
@@ -3720,9 +3740,25 @@ var DO = {
                             'share': new DO.U.Editor.Note({action:'share', label:'share'}),
                             'approve': new DO.U.Editor.Note({action:'approve', label:'approve'})
                         }
+                    },
+
+                    review: {
+                        id: 'review',
+                        elementsContainer: document.getElementById('document-editor'),
+                        buttonLabels: DO.C.Editor.ButtonLabelType,
+                        toolbar: {
+                            buttons: ['approve'],
+                            allowMultiParagraphSelection: false
+                        },
+                        disableEditing: true,
+                        anchorPreview: false,
+                        extensions: {
+                            'approve': new DO.U.Editor.Note({action:'approve', label:'approve'})
+                        }
                     }
                 };
 
+                //TODO: Refactor
                 switch(editorMode) {
                     case 'author': default:
                         eNodes = document.querySelectorAll('main > article');
@@ -3733,6 +3769,11 @@ var DO = {
                         eNodes = document.querySelectorAll('main > article');
                         eOptions = editorOptions.social;
                         DO.C.User.Role = 'social';
+                        break;
+                    case 'review':
+                        eNodes = document.querySelectorAll('main > article');
+                        eOptions = editorOptions.review;
+                        DO.C.User.Role = 'review';
                         break;
                 }
 
@@ -4110,7 +4151,14 @@ var DO = {
                                             return this.execAction('unlink');
                                         }
 
-                                        if (!this.isDisplayed()) {
+                                        if (this.action == 'approve' && DO.U.Editor.MediumEditor.options.id == 'social'){
+                                            var opts = {
+                                                license: 'https://creativecommons.org/licenses/by/4.0/',
+                                                content: ''
+                                            }
+                                            this.completeFormSave(opts);
+                                        }
+                                        else if (!this.isDisplayed()) {
                                             this.showForm();
                                         }
                                         break;
@@ -4123,14 +4171,6 @@ var DO = {
                                         this.window.getSelection().removeAllRanges();
                                         this.base.checkSelection();
                                         DO.U.shareResource(null, resourceIRI);
-                                        break;
-
-                                    case 'approve':
-                                        var opts = {
-                                            license: 'https://creativecommons.org/licenses/by/4.0/',
-                                            content: ''
-                                        }
-                                        this.completeFormSave(opts);
                                         break;
                                 }
                             }
@@ -4171,6 +4211,14 @@ var DO = {
                                     template = [
                                     '<textarea id="article-content" name="content" cols="20" rows="1" class="medium-editor-toolbar-textarea" placeholder="', this.placeholderText, '"></textarea>',
                                     '<select id="article-license" name="license" class="medium-editor-toolbar-select">',
+                                    DO.U.getLicenseOptionsHTML(),
+                                    '</select>'
+                                    ];
+                                    break;
+                                case 'approve':
+                                    template = [
+                                    '<textarea id="approve-content" name="content" cols="20" rows="2" class="medium-editor-toolbar-textarea" placeholder="Strong point? Convincing argument?"></textarea>',
+                                    '<select id="approve-license" name="license" class="medium-editor-toolbar-select">',
                                     DO.U.getLicenseOptionsHTML(),
                                     '</select>'
                                     ];
@@ -4276,7 +4324,7 @@ var DO = {
                                 case 'rdfa':
                                     input.about.focus();
                                     break;
-                                case 'article':
+                                case 'article': case 'approve':
                                     input.content.focus();
                                     break;
                                 case 'cite':
@@ -4337,7 +4385,7 @@ var DO = {
                                     opts.content = this.getInput().content.value;
                                     opts.datatype = this.getInput().datatype.value;
                                     break;
-                                case 'article':
+                                case 'article': case 'approve':
                                     opts.content = this.getInput().content.value;
                                     opts.license = this.getInput().license.value;
                                     break;
@@ -4456,6 +4504,7 @@ var DO = {
                             var noteData = {};
                             var note = '';
                             var licenseIRI = '';
+                            var motivatedBy = 'oa:replying';
 
                             switch(this.action) {
                                 //External Note
@@ -4466,6 +4515,10 @@ var DO = {
                                             break;
                                         case 'approve':
                                             noteType = 'approve';
+                                            console.log(this.base.options.id);
+                                            if (DO.U.Editor.MediumEditor.options.id == 'review') {
+                                                motivatedBy = 'oa:reviewing';
+                                            }
                                             break;
                                     }
 
@@ -4476,7 +4529,7 @@ var DO = {
                                     noteData = {
                                         "type": noteType,
                                         "mode": "write",
-                                        "motivatedByIRI": "oa:replying",
+                                        "motivatedByIRI": motivatedBy,
                                         "id": id,
                                         "refId": refId,
                                         "refLabel": refLabel,
@@ -4849,6 +4902,10 @@ var DO = {
                                 case 'article':
                                     r.content = this.getForm().querySelector('#article-content.medium-editor-toolbar-textarea');
                                     r.license = this.getForm().querySelector('#article-license.medium-editor-toolbar-select');
+                                    break;
+                                case 'approve':
+                                    r.content = this.getForm().querySelector('#approve-content.medium-editor-toolbar-textarea');
+                                    r.license = this.getForm().querySelector('#approve-license.medium-editor-toolbar-select');
                                     break;
                                 case 'cite':
                                     r.citationType = this.getForm().querySelector('input[name="citation-type"]:checked');
