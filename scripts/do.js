@@ -43,6 +43,7 @@ var DO = {
         Editor: {
             headings: ["h1", "h2", "h3", "h4", "h5", "h6"],
             regexEmptyHTMLTags: /<[^\/>][^>]*><\/[^>]+>/gim,
+            ButtonLabelType: (document.querySelector('head link[rel~="stylesheet"][href*="font-awesome"]') ? (!navigator.onLine && document.querySelector('head link[rel~="stylesheet"][href*="font-awesome"][href^="http"]') ? '': 'fontawesome') : '' ),
             DisableEditorButton: '<button class="editor-disable" title="Disable editor"><i class="fa fa-i-cursor fa-2x"></i>Edit</button>',
             EnableEditorButton: '<button class="editor-enable" title="Enable editor"><i class="fa fa-i-cursor fa-2x"></i>Edit</button>'
         },
@@ -3679,7 +3680,7 @@ var DO = {
                             cleanAttrs: ['class', 'style', 'dir'],
                             cleanTags: ['area', 'basefont', 'br', 'font', 'hr', 'isindex', 'link', 'script', 'style', 'wbr']
                         },
-                        buttonLabels: (document.location.protocol == 'http:' || document.location.protocol == 'https:') ? 'fontawesome' : '',
+                        buttonLabels: DO.C.Editor.ButtonLabelType,
                         toolbar: {
                             buttons: ['h2', 'h3', 'h4', 'em', 'strong', 'orderedlist', 'unorderedlist', 'code', 'pre', 'image', 'table', 'anchor', 'q', 'rdfa', 'cite', 'note'],
                             diffLeft: 0,
@@ -3705,7 +3706,7 @@ var DO = {
                     social: {
                         id: 'social',
                         elementsContainer: document.getElementById('document-editor'),
-                        buttonLabels: (document.location.protocol == 'http:' || document.location.protocol == 'https:') ? 'fontawesome' : '',
+                        buttonLabels: DO.C.Editor.ButtonLabelType,
                         toolbar: {
                             buttons: ['share', 'approve', 'bookmark', 'note'],
                             allowMultiParagraphSelection: false
