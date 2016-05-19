@@ -3527,7 +3527,7 @@ var DO = {
                                 }
 
                             }
-                            else {
+                            else if (n.body.length > 0) {
                                 body = '<div property="schema:description" rel="oa:hasBody as:content"><div about="[i:#i]" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">' + n.body + '</div></div>';
                             }
 
@@ -3538,7 +3538,8 @@ var DO = {
                             if (typeof n.target.selector !== 'undefined') {
                                 annotationTextSelector = '<span rel="oa:hasSelector" typeof="oa:TextQuoteSelector"><span property="oa:prefix" xml:lang="en" lang="en">' + n.target.selector.prefix + '</span><mark property="oa:exact" xml:lang="en" lang="en">' + n.target.selector.exact + '</mark><span property="oa:suffix" xml:lang="en" lang="en">' + n.target.selector.suffix + '</span></span>';
                             }
-                        }else{
+                        }
+                        else{
                             var targetIRI = n.inReplyTo;
                             // TODO: pass document title and maybe author so they can be displayed on the reply too.
                         }
