@@ -3519,10 +3519,13 @@ var DO = {
                 case 'approve':
                     noteType = ' as:Like';
                     break;
+                case 'disapprove':
+                    noteType = ' as:Dislike';
+                    break;
             }
 
             switch(n.type) {
-                case 'article': case 'bookmark': case 'approve':
+                case 'article': case 'bookmark': case 'approve': case 'disapprove':
                     //TODO: Include `a oa:SpecificResource`?
                     if ((typeof n.target !== 'undefined' && typeof n.target.selector !== 'undefined') || typeof n.inReplyTo !== 'undefined') { //note, annotation, reply
                         //FIXME: Could resourceIRI be a fragment URI or *make sure* it is the document URL without the fragment?
@@ -3747,13 +3750,14 @@ var DO = {
                         elementsContainer: document.getElementById('document-editor'),
                         buttonLabels: DO.C.Editor.ButtonLabelType,
                         toolbar: {
-                            buttons: ['approve'],
+                            buttons: ['approve', 'disapprove'],
                             allowMultiParagraphSelection: false
                         },
                         disableEditing: true,
                         anchorPreview: false,
                         extensions: {
-                            'approve': new DO.U.Editor.Note({action:'approve', label:'approve'})
+                            'approve': new DO.U.Editor.Note({action:'approve', label:'approve'}),
+                            'disapprove': new DO.U.Editor.Note({action:'disapprove', label:'disapprove'})
                         }
                     }
                 };
@@ -4123,6 +4127,10 @@ var DO = {
                                     this.contentFA = '<i class="fa fa-thumbs-up"></i>';
                                     this.signInRequired = true;
                                     break;
+                                case 'disapprove':
+                                    this.contentFA = '<i class="fa fa-thumbs-down"></i>';
+                                    this.signInRequired = true;
+                                    break;
                             }
                             MediumEditor.extensions.form.prototype.init.apply(this, arguments);
 
@@ -4219,6 +4227,14 @@ var DO = {
                                     template = [
                                     '<textarea id="approve-content" name="content" cols="20" rows="2" class="medium-editor-toolbar-textarea" placeholder="Strong point? Convincing argument?"></textarea>',
                                     '<select id="approve-license" name="license" class="medium-editor-toolbar-select">',
+                                    DO.U.getLicenseOptionsHTML(),
+                                    '</select>'
+                                    ];
+                                    break;
+                                case 'disapprove':
+                                    template = [
+                                    '<textarea id="disapprove-content" name="content" cols="20" rows="2" class="medium-editor-toolbar-textarea" placeholder="Weak point? Error? Inaccurate?"></textarea>',
+                                    '<select id="disapprove-license" name="license" class="medium-editor-toolbar-select">',
                                     DO.U.getLicenseOptionsHTML(),
                                     '</select>'
                                     ];
@@ -4324,7 +4340,7 @@ var DO = {
                                 case 'rdfa':
                                     input.about.focus();
                                     break;
-                                case 'article': case 'approve':
+                                case 'article': case 'approve': case 'disapprove':
                                     input.content.focus();
                                     break;
                                 case 'cite':
@@ -4385,7 +4401,7 @@ var DO = {
                                     opts.content = this.getInput().content.value;
                                     opts.datatype = this.getInput().datatype.value;
                                     break;
-                                case 'article': case 'approve':
+                                case 'article': case 'approve': case 'disapprove':
                                     opts.content = this.getInput().content.value;
                                     opts.license = this.getInput().license.value;
                                     break;
@@ -4508,17 +4524,19 @@ var DO = {
 
                             switch(this.action) {
                                 //External Note
-                                case 'article': case 'approve':
+                                case 'article': case 'approve': case 'disapprove':
+                                    if (DO.U.Editor.MediumEditor.options.id == 'review') {
+                                        motivatedBy = 'oa:reviewing';
+                                    }
                                     switch(this.action) {
                                         default:
                                             noteType = 'article';
                                             break;
                                         case 'approve':
                                             noteType = 'approve';
-                                            console.log(this.base.options.id);
-                                            if (DO.U.Editor.MediumEditor.options.id == 'review') {
-                                                motivatedBy = 'oa:reviewing';
-                                            }
+                                            break;
+                                        case 'disapprove':
+                                            noteType = 'disapprove';
                                             break;
                                     }
 
@@ -4672,7 +4690,7 @@ var DO = {
                             MediumEditor.util.insertHTMLCommand(this.base.selectedDocument, selectionUpdated);
 
                             switch(this.action) {
-                                case 'article': case 'approve':
+                                case 'article': case 'approve': case 'disapprove':
                                     var data = '<!DOCTYPE html>\n\
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
     <head>\n\
@@ -4906,6 +4924,10 @@ var DO = {
                                 case 'approve':
                                     r.content = this.getForm().querySelector('#approve-content.medium-editor-toolbar-textarea');
                                     r.license = this.getForm().querySelector('#approve-license.medium-editor-toolbar-select');
+                                    break;
+                                case 'disapprove':
+                                    r.content = this.getForm().querySelector('#disapprove-content.medium-editor-toolbar-textarea');
+                                    r.license = this.getForm().querySelector('#disapprove-license.medium-editor-toolbar-select');
                                     break;
                                 case 'cite':
                                     r.citationType = this.getForm().querySelector('input[name="citation-type"]:checked');
