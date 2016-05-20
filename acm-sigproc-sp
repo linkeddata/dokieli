@@ -305,12 +305,12 @@
                                     <p>This sample document contains examples of <strong>.eps</strong> and <strong>.ps</strong> files to be displayable with <span class="latex">L<span>a</span>T<span>e</span>X</span>. More details on each of these is found in the <em>Author’s Guide</em>.</p>
 
                                     <figure>
-                                        <img width="13%" height="13%" src="fly.png"/>
+                                        <img height="13%" src="media/images/fly.png" width="13%" />
                                         <figcaption>A sample black and white graphic (.eps format).</figcaption>
                                     </figure>
 
                                     <figure>
-                                        <img width="25%" height="25%" src="fly.png"/>
+                                        <img height="25%" src="media/images/fly.png" width="25%" />
                                         <figcaption>A sample black and white graphic (.eps format) that has been resized with the <code>epsfig</code> command.</figcaption>
                                     </figure>
 
@@ -319,7 +319,7 @@
                                     <p>Note that either <strong>.ps</strong> or <strong>.eps</strong> formats are used; use the <code>\epsfig</code> or <code>\psfig</code> commands as appropriate for the different file types.</p>
 
                                     <figure>
-                                        <object type="image/svg+xml" data="rosette.svg" width="240" height="240"></object>
+                                        <object data="media/images/rosette.svg" height="240" type="image/svg+xml" width="240"></object>
                                         <figcaption>A sample black and white graphic (.ps format) that has been resized with the <code>psfig</code> command.</figcaption>
                                     </figure>
                                 </div>
@@ -602,7 +602,7 @@
                                     </table>
 
                                     <figure>
-                                        <img width="100%" height="auto" src="flies.png"/>
+                                        <img height="auto" src="media/images/flies.png" width="100%" />
                                         <figcaption>A sample black and white graphic (.eps format) that needs to span two columns of text.</figcaption>
                                     </figure>
                                 </div>

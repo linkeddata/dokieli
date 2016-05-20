@@ -122,13 +122,13 @@ font-weight:normal;
 
                     <section id="preperation-of-your-paper" rel="schema:hasPart" resource="#preperation-of-your-paper">
                         <h2 property="schema:name">Preparation of Your Paper</h2>
-                        <div property="schema:description">
+                        <div datatype="rdf:HTML" property="schema:description">
                             <section id="structuring-your-paper" rel="schema:hasPart" resource="#structuring-your-paper">
                                 <h3 property="schema:name">Structuring Your Paper</h3>
                                 <div datatype="rdf:HTML" property="schema:description">
                                     <section id="affiliations" rel="schema:hasPart" resource="#affiliations">
                                         <h4 property="schema:name">Affiliations</h4>
-                                        <div property="schema:description">
+                                        <div datatype="rdf:HTML" property="schema:description">
                                             <p>The affiliated institutions are to be listed directly below the names of the uthors. Multiple affiliations should be marked with superscript Arabic numbers, and they should each start on a new line as shown in this document. In addition to the nameof your affiliation, we would ask you to give the town and the country in which it is situated. If you prefer to include the entire postal address, then please feel free to do so. E-mail addresses should start on a new line and should be grouped per affiliation.</p>
                                         </div>
                                     </section>
@@ -177,7 +177,7 @@ font-weight:normal;
 
                             <section id="page-numbering-and-running-heads" rel="schema:hasPart" resource="#page-numbering-and-running-heads">
                                 <h3 property="schema:name">Page Numbering and Running Heads</h3>
-                                <div property="schema:description">
+                                <div datatype="rdf:HTML" property="schema:description">
                                     <p>There is no need to include page numbers or running heads; this will be done at our end. If your paper title is too long to serve as a running head, it will be shortened. Your suggestion as to how to shorten it would be most welcome.</p>
                                 </div>
                             </section>
@@ -188,12 +188,12 @@ font-weight:normal;
                                     <p>It is essential that all illustrations are clear and legible. Vector graphics (rather than rasterized images) should be used for diagrams and schemas whenever possible. Please check that the lines in line drawings are not interrupted and have a constant width. Grids and details within the figures must be clearly legible and may not be written one on top of the other. Line drawings are to have a resolution of at least 800 dpi (preferably 1200 dpi). The lettering in figures should not use font sizes</p>
 
                                     <figure>
-                                        <object type="image/svg+xml" data="power-distribution.svg" width="360" height="252"></object>
+                                        <object data="media/images/power-distribution.svg" height="252" type="image/svg+xml" width="360"></object>
                                         <figcaption>Power distribution of channel at 1555 nm along the link of 383 km (Source: LNCS 5412, p. 323)</figcaption>
                                     </figure>
 
                                     <figure>
-                                        <img src="artifacts-artificial-intelligence.png" width="360" height="274" />
+                                        <img height="274" src="media/images/artifacts-artificial-intelligence.png" width="360" />
                                         <figcaption>Artifacts empowered by Artificial Intelligence (Source: LNCS 5640, p. 115)</figcaption>
                                     </figure>
 
@@ -205,7 +205,7 @@ font-weight:normal;
                                     <section id="remark-1" rel="schema:hasPart" resource="#remark-1">
                                         <!-- In theory, this is not the proper heading here (it should probably be h3), but that's what the Author Instructions' example is doing. -->
                                         <h5 property="schema:name">Remark 1</h5>
-                                        <div property="schema:description">
+                                        <div datatype="rdf:HTML" property="schema:description">
                                             <p>In the printed volumes, illustrations are generally black and white (halftones), and only in exceptional cases, and if the author or the conference organization is prepared to cover the extra costs involved, are colored pictures accepted. Colored pictures are welcome in the electronic version free of charge. If you send colored figures that are to be printed in black and white, please make sure that they really are also legible in black and white. Some colors show up very poorly when printed in black and white.</p>
                                         </div>
                                     </section>
@@ -242,7 +242,7 @@ font-weight:normal;
 
                             <section id="program-code" rel="schema:hasPart" resource="#program-code">
                                 <h3 property="schema:name">Program Code</h3>
-                                <div property="schema:description">
+                                <div datatype="rdf:HTML" property="schema:description">
                                     <p>Program listings or program commands in the text are normally set in typewriter font:</p>
                                     <figure class="listing">
                                         <pre>
@@ -318,7 +318,7 @@ font-weight:normal;
 
                     <section id="additional-information-required-from-authors" rel="schema:hasPart" resource="#additional-information-required-from-authors">
                         <h2 property="schema:name">Additional Information Required from Authors</h2>
-                        <div property="schema:description">
+                        <div datatype="rdf:HTML" property="schema:description">
                             <section id="copyright-form" rel="schema:hasPart" resource="#copyright-form">
                                 <h3 property="schema:name">Copyright Form</h3>
                                 <div datatype="rdf:HTML" property="schema:description">
@@ -344,7 +344,7 @@ font-weight:normal;
 
                     <section id="typesetting-of-your-paper-at-springer" rel="schema:hasPart" resource="#typesetting-of-your-paper-at-springer">
                         <h2 property="schema:name">Typesetting of Your Paper at Springer</h2>
-                        <div property="schema:description">
+                        <div datatype="rdf:HTML" property="schema:description">
                             <p>Please make sure that the paper you submit is final and complete, that any copyright issues have been resolved, that the authors listed at the top of the chapter really are the final authors, and that you have not omitted any references. Following publication, it is not possible to alter or withdraw your paper on SpringerLink. Kindly note that we prefer the use of American English.</p>
 
                             <section id="what-will-be-done-with-your-paper" rel="schema:hasPart" resource="#what-will-be-done-with-your-paper">
