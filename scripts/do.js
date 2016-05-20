@@ -3391,7 +3391,8 @@ var DO = {
 </aside>\n\
 ';
                             var asideNode = DO.U.fragmentFromString(asideNote);
-                            var parentSection = MediumEditor.util.getClosestTag(selectedParentNode, 'section');
+                            var parentSection = MediumEditor.util.getClosestTag(selectedParentNode, 'section')
+                            || MediumEditor.util.getClosestTag(selectedParentNode, 'div');
                             parentSection.appendChild(asideNode);
                             //XXX: Keeping this comment around for emergency
 //                                selectedParentNode.parentNode.insertBefore(asideNode, selectedParentNode.nextSibling);
