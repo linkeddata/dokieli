@@ -556,7 +556,7 @@ var DO = {
 
             var userImage = '';
             if (DO.C.User.Image) {
-                userImage = '<img rel="schema:image" src="' + DO.C.User.Image + '" width="48" height="48"/>';
+                userImage = '<img alt="" height="48" rel="schema:image" src="' + DO.C.User.Image + '" width="48" />';
             }
 
             var user = ''
@@ -2391,7 +2391,7 @@ var DO = {
 // console.log(name);
 // console.log(img);
                                     if (img.length > 0 || name.length > 0) {
-                                        img = (img.length > 0) ? '<img width="32" height="32" src="' + img + '" />' : '';
+                                        img = (img.length > 0) ? '<img alt="" height="32" src="' + img + '" width="32" />' : '';
                                         shareResourceContacts.insertAdjacentHTML('beforeend', '<li><input id="share-resource-contact-' + counter + '" type="checkbox" value="' + url + '" /><label for="share-resource-contact-' + counter + '">' + img + name + '</label></li>');
                                         counter++;
                                     }
@@ -3496,7 +3496,7 @@ var DO = {
             var creatorName = 'Anonymous';
             if ('creator' in n) {
                 if ('image' in n.creator !== 'undefined') {
-                    creatorImage = '<img rel="schema:image" src="' + n.creator.image + '" width="48" height="48" />';
+                    creatorImage = '<img alt="" height="48" rel="schema:image" src="' + n.creator.image + '" width="48" />';
                 }
                 if ('iri' in n.creator && 'name' in n.creator) {
                     creatorName = n.creator.name;
