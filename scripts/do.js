@@ -3593,16 +3593,7 @@ var DO = {
             }
 
             if (n.license && 'iri' in n.license) {
-                license = '<dl class="license"><dt>License</dt><dd>';
-                if('name' in n.license) {
-                    license += '<a rel="schema:license" href="' + n.license.iri + '">' + n.license.name + '</a>';
-                }
-                else {
-                    var licenseName = (n.license.iri in DO.C.License) ? DO.C.License[n.license.iri] : n.license.iri;
-
-                    license += '<a rel="schema:license" href="' + n.license.iri + '">' + licenseName + '</a>';
-                }
-                license += '</dd></dl>';
+                license = DO.U.createLicenseHTML(n.license);
             }
 
             var note = '\n\
