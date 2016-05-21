@@ -3563,14 +3563,14 @@ var DO = {
                                 annotationTextSelector = '<span rel="oa:hasSelector" typeof="oa:TextQuoteSelector"><span property="oa:prefix" xml:lang="en" lang="en">' + n.target.selector.prefix + '</span><mark property="oa:exact" xml:lang="en" lang="en">' + n.target.selector.exact + '</mark><span property="oa:suffix" xml:lang="en" lang="en">' + n.target.selector.suffix + '</span></span>';
                             }
                         }
-                        else{
+                        else {
                             var targetIRI = n.inReplyTo;
                             // TODO: pass document title and maybe author so they can be displayed on the reply too.
                         }
 
                         hasTarget = '<a rel="oa:hasTarget as:inReplyTo sioc:reply_of" href="' + targetIRI + '">' + targetLabel + '</a>';
                         if (typeof n.target !== 'undefined' && typeof n.target.source !== 'undefined') {
-                            hasTarget += '(<a about="' + n.target.iri + '" typeof="oa:SpecificResource" rel="oa:hasSource" href="' + n.target.source +'">part of</a>)';
+                            hasTarget += ' (<a about="' + n.target.iri + '" typeof="oa:SpecificResource" rel="oa:hasSource" href="' + n.target.source +'">part of</a>)';
                         }
 
                         target ='<dl class="target"><dt>' + hasTarget + '</dt>';
