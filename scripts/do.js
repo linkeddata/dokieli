@@ -3456,27 +3456,27 @@ var DO = {
                     motivatedByIRI = 'oa:replying';
                     motivatedByLabel = 'replies';
                     targetLabel = 'In reply to';
-                    aAbout = '[i:]';
+                    aAbout = 'i:';
                     aPrefix = ' prefix="schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'"';
                     break;
                 case 'oa:reviewing':
                     motivatedByIRI = 'oa:reviewing';
                     motivatedByLabel = 'reviews';
                     targetLabel = 'Review of';
-                    aAbout = '[i:]';
+                    aAbout = 'i:';
                     aPrefix = ' prefix="schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'"';
                     break;
                 case 'oa:describing':
                     motivatedByIRI = 'oa:describing';
                     motivatedByLabel = 'describes';
                     targetLabel = 'Describes';
-                    aAbout = n.id;
+                    aAbout = '#' + n.id;
                     break;
                 case 'oa:bookmarking':
                     motivatedByIRI = 'oa:bookmarking';
                     motivatedByLabel = 'bookmarks';
                     targetLabel = 'Bookmarked';
-                    aAbout = '[i:]';
+                    aAbout = 'i:';
                     aPrefix = ' prefix="schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'"';
                     break;
             }
@@ -3535,7 +3535,7 @@ var DO = {
                         if (typeof n.body !== 'undefined') {
                             if(typeof n.body === 'object' && 'purpose' in n.body) {
                                 if ('describing' in n.body.purpose && 'text' in n.body.purpose.describing) {
-                                    body += '<div property="schema:description" rel="oa:hasBody as:content"><div about="[i:#i]" typeof="oa:TextualBody as:Note" property="oa:text" rel="oa:hasPurpose" resource="oa:describing" datatype="rdf:HTML">' + n.body.purpose.describing.text + '</div></div>';
+                                    body += '<section id="note" rel="oa:hasBody" resource="i:#note"><h2 property="schema:name" rel="oa:hasPurpose" resource="oa:describing">Note</h2><div datatype="rdf:HTML" property="oa:text as:content schema:description" resource="i:#note" typeof="oa:TextualBody as:Note">' + n.body.purpose.describing.text + '</div></section>';
                                 }
                                 if ('tagging' in n.body.purpose && 'text' in n.body.purpose.tagging) {
                                     var tagsArray = [];
@@ -3544,16 +3544,16 @@ var DO = {
                                     });
                                     var tagsArray = DO.U.uniqueArray(tagsArray);
 
-                                    body += '<div property="schema:description" rel="oa:hasBody as:content"><dl class="tags"><dt>Tags</dt><dd><ul>';
+                                    body += '<dl id="tags" class="tags"><dt>Tags</dt><dd><ul rel="oa:hasBody">';
                                     tagsArray.forEach(function(i){
-                                        body += '<li about="[i:#tag-' + DO.U.generateAttributeId(null, i) + ']" typeof="oa:TextualBody as:Note" property="oa:text" rel="oa:hasPurpose" resource="oa:tagging" datatype="rdf:HTML">' + i + '</li>';
+                                        body += '<li about="i:#tag-' + DO.U.generateAttributeId(null, i) + '" typeof="oa:TextualBody as:Note" property="oa:text" rel="oa:hasPurpose" resource="oa:tagging" datatype="rdf:HTML">' + i + '</li>';
                                     })
-                                    body += '</ul></dd></dl></div>';
+                                    body += '</ul></dd></dl>';
                                 }
 
                             }
                             else if (n.body.length > 0) {
-                                body += '<div property="schema:description" rel="oa:hasBody as:content"><div about="[i:#i]" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">' + n.body + '</div></div>';
+                                body += '<section id="note" rel="oa:hasBody" resource="i:#note"><h2 property="schema:name">Note</h2><div datatype="rdf:HTML" property="oa:text as:content schema:description" resource="i:#note" typeof="oa:TextualBody as:Note">' + n.body + '</div></section>';
                             }
                         }
 
@@ -3581,7 +3581,7 @@ var DO = {
                     break;
 
                 case 'ref-footnote':
-                    body = '<div class="content" property="schema:description" rel="oa:hasBody as:content"><div about="#' + n.id + '" typeof="oa:TextualBody as:Note" property="oa:text" datatype="rdf:HTML">' + n.body + '</div></div>';
+                    body = '<section rel="oa:hasBody" resource="#' + n.id + '-note"><h2 property="schema:name">Note</h2><div datatype="rdf:HTML" property="oa:text as:content schema:description" resource="#' + n.id + '-note" typeof="oa:TextualBody as:Note">' + n.body + '</div></section>';
 
                     hasTarget = '<a rel="oa:hasTarget" href="#' + n.refId + '">' + n.refLabel + '</a>';
 
