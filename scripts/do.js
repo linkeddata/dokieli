@@ -3300,7 +3300,8 @@ var DO = {
                         var bodyText = body.oatext;
                         var target = i.child(note.oahasTarget);
 
-                        var selector = target.oahasSelector;
+                        var selector = i.child(target.oahasSelector);
+
                         var exact = selector.oaexact;
                         var prefix = selector.oaprefix;
                         var suffix = selector.oasuffix;
@@ -3310,6 +3311,7 @@ var DO = {
                         var licenseIRI = note.schemalicense;
 
                         var containerNodeTextContent = containerNode.textContent;
+
                         var selectorIndex = containerNodeTextContent.indexOf(prefix + exact + suffix);
                         if (selectorIndex >= 0) {
                             var exactStart = selectorIndex + prefix.length
@@ -3560,7 +3562,7 @@ var DO = {
                         if (typeof n.target !== 'undefined') {
                             var targetIRI = n.target.iri;
                             if (typeof n.target.selector !== 'undefined') {
-                                annotationTextSelector = '<span rel="oa:hasSelector" typeof="oa:TextQuoteSelector"><span property="oa:prefix" xml:lang="en" lang="en">' + n.target.selector.prefix + '</span><mark property="oa:exact" xml:lang="en" lang="en">' + n.target.selector.exact + '</mark><span property="oa:suffix" xml:lang="en" lang="en">' + n.target.selector.suffix + '</span></span>';
+                                annotationTextSelector = '<span rel="oa:hasSelector" resource="i:#text-quote-selector" typeof="oa:TextQuoteSelector"><span property="oa:prefix" xml:lang="en" lang="en">' + n.target.selector.prefix + '</span><mark property="oa:exact" xml:lang="en" lang="en">' + n.target.selector.exact + '</mark><span property="oa:suffix" xml:lang="en" lang="en">' + n.target.selector.suffix + '</span></span>';
                             }
                         }
                         else {
