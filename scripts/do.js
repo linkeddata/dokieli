@@ -3558,7 +3558,11 @@ var DO = {
 
                             }
                             else if (n.body.length > 0) {
-                                body += '<section id="note" rel="oa:hasBody" resource="i:#note"><h2 property="schema:name">Note</h2><div datatype="rdf:HTML" property="oa:text as:content schema:description" resource="i:#note" typeof="oa:TextualBody as:Note">' + n.body + '</div></section>';
+                                if (n.license && 'iri' in n.license) {
+                                    license = DO.U.createLicenseHTML(n.license, 'oa:rights', 'Rights');
+                                }
+
+                                body += '<section id="note" rel="oa:hasBody" resource="i:#note"><h2 property="schema:name">Note</h2><div datatype="rdf:HTML" property="oa:text as:content schema:description" resource="i:#note" typeof="oa:TextualBody as:Note">' + n.body + '</div>' + license + '</section>';
                             }
                         }
 
