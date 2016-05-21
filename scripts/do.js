@@ -3559,7 +3559,7 @@ var DO = {
                             }
                             else if (n.body.length > 0) {
                                 if (n.license && 'iri' in n.license) {
-                                    license = DO.U.createLicenseHTML(n.license, 'oa:rights', 'Rights');
+                                    license = DO.U.createLicenseHTML(n.license, {rel:'oa:rights', label:'Rights'});
                                 }
 
                                 body += '<section id="note" rel="oa:hasBody" resource="i:#note"><h2 property="schema:name">Note</h2><div datatype="rdf:HTML" property="oa:text as:content schema:description" resource="i:#note" typeof="oa:TextualBody as:Note">' + n.body + '</div>' + license + '</section>';
@@ -3620,10 +3620,10 @@ var DO = {
             return note;
         },
 
-        createLicenseHTML: function(n, rel, label) {
+        createLicenseHTML: function(n, options) {
             var license = '';
-            rel = rel || 'schema:license';
-            label = label || 'License';
+            rel = (options && options.rel) ? options.rel : 'schema:license';
+            label = (options && options.label) ? options.label : 'License';
 
             if (typeof n.iri !== 'undefined') {
                 license = '<dl class="' + label.toLowerCase() + '"><dt>' + label + '</dt><dd>';
