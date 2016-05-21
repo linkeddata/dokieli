@@ -3619,6 +3619,26 @@ var DO = {
             return note;
         },
 
+        createLicenseHTML: function(n, rel, label) {
+            var license = '';
+            rel = rel || 'schema:license';
+            label = label || 'License';
+
+            if (typeof n.iri !== 'undefined') {
+                license = '<dl class="' + label.toLowerCase() + '"><dt>' + label + '</dt><dd>';
+                if('name' in n) {
+                    license += '<a href="' + n.iri + '" rel="' + rel + '">' + n.name + '</a>';
+                }
+                else {
+                    var licenseName = (n.iri in DO.C.License) ? DO.C.License[n.iri] : n.iri;
+                    license += '<a href="' + n.iri + '" rel="' + rel + '">' + licenseName + '</a>';
+                }
+                license += '</dd></dl>';
+            }
+
+            return license;
+        },
+
         createRDFaHTML: function(r) {
             var s = '', property = '', rel = '', resource = '', href = '', content = '', langDatatype = '', typeOf = '';
             var idValue = DO.U.generateAttributeId().slice(0, 6);
