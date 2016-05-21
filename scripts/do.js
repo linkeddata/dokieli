@@ -3542,7 +3542,10 @@ var DO = {
                                 if ('tagging' in n.body.purpose && 'text' in n.body.purpose.tagging) {
                                     var tagsArray = [];
                                     n.body.purpose.tagging.text.split(',').forEach(function(i){
-                                        tagsArray.push(DO.U.htmlEntities(i.trim()));
+                                        var tag = DO.U.htmlEntities(i.trim());
+                                        if(tag.length > 0) {
+                                            tagsArray.push(tag);
+                                        }
                                     });
                                     var tagsArray = DO.U.uniqueArray(tagsArray);
 
