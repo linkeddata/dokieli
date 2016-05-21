@@ -3577,8 +3577,9 @@ var DO = {
 
                         target ='<dl class="target"><dt>' + hasTarget + '</dt>';
                         if (typeof n.target !== 'undefined' && typeof n.target.selector !== 'undefined') {
-                            target += '<dd><blockquote about="' + targetIRI + '" cite="' + targetIRI + '">' + annotationTextSelector + '</blockquote></dd></dl>';
+                            target += '<dd><blockquote about="' + targetIRI + '" cite="' + targetIRI + '">' + annotationTextSelector + '</blockquote></dd>';
                         }
+                        target += '</dl>';
                     }
                     break;
 
