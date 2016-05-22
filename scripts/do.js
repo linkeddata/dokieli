@@ -2385,7 +2385,6 @@ var DO = {
         },
 
         setupResourceBrowser: function(parent){
-
             parent.insertAdjacentHTML('beforeEnd', '<div id="browser-location"><label for="browser-location-input">URL</label> <input type="text" id="browser-location-input" name="browser-location-input" placeholder="https://example.org/path/to/" /><button id="browser-location-update" disabled="disabled">Browse</button></div>\n\
             <div id="browser-contents"></div>');
 
@@ -2440,7 +2439,8 @@ var DO = {
                         var d = new Date();
                         final.textContent = input.value + DO.U.generateAttributeId().slice(0, 6);
                     }
-                }else{
+                }
+                else {
                     browseButton.disabled = 'disabled';
                     if(final){
                         final.textContent = input.value;
@@ -2487,7 +2487,6 @@ var DO = {
             }, false);
 
             DO.U.setupResourceBrowser(document.getElementById('resource-browser'));
-
         },
 
         createNewDocument: function(e) {
@@ -2904,7 +2903,6 @@ var DO = {
                     iri = 'http://data.crossref.org/' + iri.substr(y.length, iri.length);
                 }
             }
-
 //console.log(iri);
 
             var pIRI = iri;
