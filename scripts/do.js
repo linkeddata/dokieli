@@ -747,6 +747,7 @@ var DO = {
         },
 
         putResourceACL: function(accessToURL, aclSuffix, agentIRI) {
+            aclSuffix = aclSuffix || '.acl';
             if (accessToURL && accessToURL.length > 10 && aclSuffix && aclSuffix.length > 0 && agentIRI && agentIRI.length > 10) {
                 return new Promise(function(resolve, reject) {
                     var url = accessToURL + aclSuffix;
