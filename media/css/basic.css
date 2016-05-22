@@ -75,6 +75,10 @@ aside ul { list-style: none; padding: 0; }
 body > footer { margin-top:2em; }
 body > footer a, body > footer a:hover { color: inherit; }
 
+aside.note.do blockquote article section {
+margin:0;
+}
+
 /* dokieli homepage styles */
 #do-index h1 {
   text-align: center;

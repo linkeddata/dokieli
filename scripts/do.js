@@ -3426,8 +3426,9 @@ var DO = {
                         if (typeof n.target !== 'undefined' && typeof n.target.selector !== 'undefined') {
                             target += '<dd><blockquote about="' + targetIRI + '" cite="' + targetIRI + '">' + annotationTextSelector + '</blockquote></dd>';
                         }
-                        target += '<dt>Rendered via</dt><dd><a about="' + targetIRI + '" href="https://dokie.li/" rel="oa:renderedVia">dokieli</a></dd>';
                         target += '</dl>';
+
+                        target += '<dl class="renderedvia"><dt>Rendered via</dt><dd><a about="' + targetIRI + '" href="https://dokie.li/" rel="oa:renderedVia">dokieli</a></dd></dl>';
                     }
                     break;
 
