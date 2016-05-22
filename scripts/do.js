@@ -1868,10 +1868,10 @@ var DO = {
             return new Promise(function(resolve, reject) {
                 SimpleRDF(DO.C.Vocab, url, null, ld.store).get().then(
                     function(i){
-                       return resolve(i);
+                        return resolve(i);
                     },
                     function(reason) {
-                      return reject(reason);
+                        return reject(reason);
                     }
                 );
             });
@@ -3529,7 +3529,6 @@ var DO = {
 
             switch(n.type) {
                 case 'article': case 'bookmark': case 'approve': case 'disapprove': case 'specificity':
-                    //TODO: Include `a oa:SpecificResource`?
                     if ((typeof n.target !== 'undefined' && typeof n.target.selector !== 'undefined') || typeof n.inReplyTo !== 'undefined') { //note, annotation, reply
                         //FIXME: Could resourceIRI be a fragment URI or *make sure* it is the document URL without the fragment?
                         //TODO: Use n.target.iri?
@@ -3586,6 +3585,7 @@ var DO = {
                         if (typeof n.target !== 'undefined' && typeof n.target.selector !== 'undefined') {
                             target += '<dd><blockquote about="' + targetIRI + '" cite="' + targetIRI + '">' + annotationTextSelector + '</blockquote></dd>';
                         }
+                        target += '<dt>Rendered via</dt><dd><a about="' + targetIRI + '" href="https://dokie.li/" rel="oa:renderedVia">dokieli</a></dd>';
                         target += '</dl>';
                     }
                     break;
