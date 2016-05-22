@@ -29,7 +29,7 @@ control.
 * Uses author's information from their online profile (WebID)
 * Creation of new documents from any existing dokieli document - part of *self-replication*
 * Save document and its dependencies to a new location (anywhere on the Web with LDP support) - part of *self-replication*
-* Annotations (e.g., replies, peer-reviews, liking, resharing).
+* Annotations (e.g., replies, peer-reviews, liking, resharing, bookmarking).
 * Uses W3C Web Annotation and W3C Social Web vocabularies and data models
 * Inbox notifications for annotations and social sharing
 * Assign license (e.g., Creative Commons) to the contributions/annotations
