@@ -315,27 +315,11 @@ var DO = {
                         function(i) {
                             var s = i.child(userIRI);
 // console.log(s);
-                            if (s.foafname) {
-                                DO.C.User.Name = s.foafname;
+                            DO.C.User.Name = s.foafname || s.schemaname || undefined;
 // console.log(DO.C.User.Name);
-                            }
-                            else {
-                                if (s.schemaname) {
-                                    DO.C.User.Name = s.schemaname;
-// console.log(DO.C.User.Name);
-                                }
-                            }
 
-                            if (s.foafimg) {
-                                DO.C.User.Image = s.foafimg;
+                            DO.C.User.Image = s.foafimg || s.schemaimage || undefined;
 // console.log(DO.C.User.Image);
-                            }
-                            else {
-                                if (s.schemaimage) {
-                                    DO.C.User.Image = s.schemaimage;
-// console.log(DO.C.User.Image);
-                                }
-                            }
 
                             if (s.storage) {
                                 DO.C.User.Storage = s.storage._array;
