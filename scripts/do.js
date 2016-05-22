@@ -11,18 +11,9 @@ var DO = {
         Lang: document.documentElement.lang,
         DocRefType: '',
         RefType: {
-            LNCS: {
-                InlineOpen: '[',
-                InlineClose: ']'
-            },
-            ACM: {
-                InlineOpen: '[',
-                InlineClose: ']'
-            },
-            APA: {
-                InlineOpen: '(',
-                InlineClose: ')'
-            }
+            LNCS: { InlineOpen: '[', InlineClose: ']' },
+            ACM: { InlineOpen: '[', InlineClose: ']' },
+            APA: { InlineOpen: '(', InlineClose: ')' }
         },
         Stylesheets: [],
         User: {
