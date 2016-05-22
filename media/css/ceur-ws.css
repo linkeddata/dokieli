@@ -30,7 +30,7 @@
 /* Modified: 24-Mar-2015/M.Jeusfeld  (paper directories)  */
 /* Modified: 16-Jul-2015/C.Lange     (more accessible link colors) */
 /* Modified: 08-Feb-2016/M.Jeusfeld  (distinguidh AUX from CEURTITLES) */
-/* Modified: 21-Feb-2016/S.Capadisli (dokieli)            */
+/* Modified: 22-May-2016/S.Capadisli (dokieli)            */
 
 body {
 font-family: arial, sans-serif;
@@ -65,6 +65,7 @@ margin-right: +8px;
 A:link {color: #404080; text-decoration: none;}  /* display of links */
 A:visited {color: #404080; text-decoration: none;} /* visited links */
 A:hover {color: #000080; text-decoration: none;} /* links under the cursor */
+:target {background-color:#FFFFFF;} /* background for current fragment */
 
 H1 {color:#000000; font-family:arial, cursive, sans-serif;}
 
