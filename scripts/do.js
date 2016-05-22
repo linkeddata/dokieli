@@ -84,199 +84,67 @@ var DO = {
         },
 
         Vocab: {
-            "rdftype": {
-                "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
-                "@type": "@id",
-                "@array": true
-            },
-            "rdffirst": {
-                "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#first",
-                "@type": "@id"
-            },
-            "rdfrest": {
-                "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest",
-                "@type": "@id"
-            },
+            "rdftype": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "@type": "@id", "@array": true },
+            "rdffirst": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#first", "@type": "@id" },
+            "rdfrest": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest", "@type": "@id" },
 
-            "rdfsSeeAlso": {
-                "@id": "http://www.w3.org/2000/01/rdf-schema#seeAlso",
-                "@type": "@id",
-                "@array": true
-            },
+            "rdfsSeeAlso": { "@id": "http://www.w3.org/2000/01/rdf-schema#seeAlso", "@type": "@id", "@array": true },
+
             "foafname": "http://xmlns.com/foaf/0.1/name",
             "foaffamilyName": "http://xmlns.com/foaf/0.1/familyName",
             "foafgivenName": "http://xmlns.com/foaf/0.1/givenName",
-            "foafhomepage": {
-                "@id": "http://xmlns.com/foaf/0.1/homepage",
-                "@type": "@id"
-            },
-            "foafimg": {
-                "@id": "http://xmlns.com/foaf/0.1/img",
-                "@type": "@id"
-            },
+            "foafhomepage": { "@id": "http://xmlns.com/foaf/0.1/homepage", "@type": "@id" },
+            "foafimg": { "@id": "http://xmlns.com/foaf/0.1/img", "@type": "@id" },
             "foafnick": "http://xmlns.com/foaf/0.1/nick",
-            "foafmaker": {
-                "@id": "http://xmlns.com/foaf/0.1/maker",
-                "@type": "@id"
-            },
-            "foafknows": {
-                "@id": "http://xmlns.com/foaf/0.1/knows",
-                "@type": "@id",
-                "@array": true
-            },
+            "foafmaker": { "@id": "http://xmlns.com/foaf/0.1/maker", "@type": "@id" },
+            "foafknows": { "@id": "http://xmlns.com/foaf/0.1/knows", "@type": "@id", "@array": true },
 
             "schemaname": "https://schema.org/name",
             "schemafamilyName": "https://schema.org/familyName",
             "schemagivenName": "https://schema.org/givenName",
-            "schemaurl": {
-                "@id": "https://schema.org/url",
-                "@type": "@id"
-            },
-            "schemaimage": {
-                "@id": "https://schema.org/image",
-                "@type": "@id"
-            },
-            "schemacreator": {
-                "@id": "https://schema.org/creator",
-                "@type": "@id",
-                "@array": true
-            },
-            "schemaauthor": {
-                "@id": "https://schema.org/author",
-                "@type": "@id",
-                "@array": true
-            },
-            "schemalicense": {
-                "@id": "https://schema.org/license",
-                "@type": "@id"
-            },
-            "schemacitation": {
-                "@id": "https://schema.org/citation",
-                "@type": "@id",
-                "@array": true
-            },
-            "schemaknows": {
-                "@id": "https://schema.org/knows",
-                "@type": "@id",
-                "@array": true
-            },
+            "schemaurl": { "@id": "https://schema.org/url", "@type": "@id" },
+            "schemaimage": { "@id": "https://schema.org/image", "@type": "@id" },
+            "schemacreator": { "@id": "https://schema.org/creator", "@type": "@id", "@array": true },
+            "schemaauthor": { "@id": "https://schema.org/author", "@type": "@id", "@array": true },
+            "schemalicense": { "@id": "https://schema.org/license", "@type": "@id" },
+            "schemacitation": { "@id": "https://schema.org/citation", "@type": "@id", "@array": true },
+            "schemaknows": { "@id": "https://schema.org/knows", "@type": "@id", "@array": true },
 
             "dctermstitle": "http://purl.org/dc/terms/title",
-            "dctermscreator": {
-                "@id": "http://purl.org/dc/terms/creator",
-                "@type": "@id",
-                "@array": true
-            },
+            "dctermscreator": { "@id": "http://purl.org/dc/terms/creator", "@type": "@id", "@array": true },
 
-            "biboauthorList": {
-                "@id": "http://purl.org/ontology/bibo/authorList",
-                "@type": "@id"
-            },
+            "biboauthorList": { "@id": "http://purl.org/ontology/bibo/authorList", "@type": "@id" },
 
-            "storage": {
-                "@id": "http://www.w3.org/ns/pim/space#storage",
-                "@type": "@id",
-                "@array": true
-            },
-            "preferencesFile": {
-                "@id": "http://www.w3.org/ns/pim/space#preferencesFile",
-                "@type": "@id"
-            },
-            "workspace": {
-                "@id": "http://www.w3.org/ns/pim/space#workspace",
-                "@type": "@id",
-                "@array": true
-            },
-            "masterWorkspace": {
-                "@id": "http://www.w3.org/ns/pim/space#masterWorkspace",
-                "@type": "@id"
-            },
+            "storage": { "@id": "http://www.w3.org/ns/pim/space#storage", "@type": "@id", "@array": true },
+            "preferencesFile": { "@id": "http://www.w3.org/ns/pim/space#preferencesFile", "@type": "@id" },
+            "workspace": { "@id": "http://www.w3.org/ns/pim/space#workspace", "@type": "@id", "@array": true },
+            "masterWorkspace": { "@id": "http://www.w3.org/ns/pim/space#masterWorkspace", "@type": "@id" },
 
-            "pingbackto": {
-                "@id": "http://purl.org/net/pingback/to",
-                "@type": "@id",
-                "@array": true
-            },
-            "pingbacksource": {
-                "@id": "http://purl.org/net/pingback/source",
-                "@type": "@id"
-            },
-            "pingbackproperty": {
-                "@id": "http://purl.org/net/pingback/property",
-                "@type": "@id"
-            },
-            "pingbacktarget": {
-                "@id": "http://purl.org/net/pingback/target",
-                "@type": "@id"
-            },
-            "solidinbox": {
-                "@id": "http://www.w3.org/ns/solid/terms#inbox",
-                "@type": "@id",
-                "@array": true
-            },
-            "solidnotification": {
-                "@id": "http://www.w3.org/ns/solid/terms#Notification",
-                "@type": "@id"
-            },
+            "pingbackto": { "@id": "http://purl.org/net/pingback/to", "@type": "@id", "@array": true },
+            "pingbacksource": { "@id": "http://purl.org/net/pingback/source", "@type": "@id" },
+            "pingbackproperty": { "@id": "http://purl.org/net/pingback/property", "@type": "@id" },
+            "pingbacktarget": { "@id": "http://purl.org/net/pingback/target", "@type": "@id" },
+            "solidinbox": { "@id": "http://www.w3.org/ns/solid/terms#inbox", "@type": "@id", "@array": true },
+            "solidnotification": { "@id": "http://www.w3.org/ns/solid/terms#Notification", "@type": "@id" },
 
-            "oaannotation": {
-                "@id": "http://www.w3.org/ns/oa#Annotation",
-                "@type": "@id"
-            },
-            "oahasBody": {
-                "@id": "http://www.w3.org/ns/oa#hasBody",
-                "@type": "@id"
-            },
-            "oahasTarget": {
-                "@id": "http://www.w3.org/ns/oa#hasTarget",
-                "@type": "@id"
-            },
-            "oahasSource": {
-                "@id": "http://www.w3.org/ns/oa#hasSource",
-                "@type": "@id"
-            },
-            "oahasSelector": {
-                "@id": "http://www.w3.org/ns/oa#hasSelector",
-                "@type": "@id"
-            },
+            "oaannotation": { "@id": "http://www.w3.org/ns/oa#Annotation", "@type": "@id" },
+            "oahasBody": { "@id": "http://www.w3.org/ns/oa#hasBody", "@type": "@id" },
+            "oahasTarget": { "@id": "http://www.w3.org/ns/oa#hasTarget", "@type": "@id" },
+            "oahasSource": { "@id": "http://www.w3.org/ns/oa#hasSource", "@type": "@id" },
+            "oahasSelector": { "@id": "http://www.w3.org/ns/oa#hasSelector", "@type": "@id" },
             "oaexact": "http://www.w3.org/ns/oa#exact",
             "oaprefix": "http://www.w3.org/ns/oa#prefix",
             "oasuffix": "http://www.w3.org/ns/oa#suffix",
             "oatext": "http://www.w3.org/ns/oa#text",
-            "oaAnnotatedAt": {
-                "@id": "http://www.w3.org/ns/oa#annotatedAt",
-                "@type": "@id"
-            },
-            "oaAnnotatedBy": {
-                "@id": "http://www.w3.org/ns/oa#annotatedBy",
-                "@type": "@id"
-            },
+            "oaAnnotatedAt": { "@id": "http://www.w3.org/ns/oa#annotatedAt", "@type": "@id" },
+            "oaAnnotatedBy": { "@id": "http://www.w3.org/ns/oa#annotatedBy", "@type": "@id" },
 
-            "asobject": {
-                "@id": "http://www.w3.org/ns/activitystreams#object",
-                "@type": "@id",
-                "@array": true
-            },
-            "astarget": {
-                "@id": "http://www.w3.org/ns/activitystreams#target",
-                "@type": "@id",
-                "@array": true
-            },
-            "ascontext": {
-                "@id": "http://www.w3.org/ns/activitystreams#context",
-                "@type": "@id",
-                "@array": true
-            },
+            "asobject": { "@id": "http://www.w3.org/ns/activitystreams#object", "@type": "@id", "@array": true },
+            "astarget": { "@id": "http://www.w3.org/ns/activitystreams#target", "@type": "@id", "@array": true },
+            "ascontext": { "@id": "http://www.w3.org/ns/activitystreams#context", "@type": "@id", "@array": true },
 
-            "ldpcontains": {
-                "@id": "http://www.w3.org/ns/ldp#contains",
-                "@type": "@id",
-                "@array": true
-            },
-            "ldpresource": {
-                "@id": "http://www.w3.org/ns/ldp#Resource",
-                "@type": "@id"
-            }
+            "ldpcontains": { "@id": "http://www.w3.org/ns/ldp#contains", "@type": "@id", "@array": true },
+            "ldpresource": { "@id": "http://www.w3.org/ns/ldp#Resource", "@type": "@id" }
         }
     },
 
