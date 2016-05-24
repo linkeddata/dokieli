@@ -3090,7 +3090,7 @@ var DO = {
 // console.log(ref);
                 var refId = ref.id;
 // console.log(refId);
-                var refA = refs[i].querySelector('[class*=ref-] a');
+                var refA = refs[i].querySelectorAll('[class*=ref-] a');
 // console.log(refA);
                 for (var j = 0; j < refA.length; j++) {
                     var noteIRI = refA[j].href;
