@@ -1166,12 +1166,7 @@ var DO = {
                         }
                         selected.disabled = true;
 
-                        var sr = document.querySelectorAll('span.ref');
-                        for(var j = 0; j < sr.length; j++) {
-                            var refId = sr[j].querySelector('mark').id;
-                            var noteId = sr[j].querySelector('a').textContent;
-                            DO.U.positionNote(refId, noteId, noteId);
-                        };
+                        DO.U.showRefs();
 
                         if (selected.textContent.toLowerCase() == 'shower') {
                             var slides = document.querySelectorAll('.slide');
@@ -3093,14 +3088,13 @@ var DO = {
                 var refA = refs[i].querySelectorAll('[class*=ref-] a');
 // console.log(refA);
                 for (var j = 0; j < refA.length; j++) {
-                    var noteIRI = refA[j].href;
-// console.log(noteIRI);
+                    var noteId = refA[j].getAttribute('href').substr(1);
+// console.log(noteId);
                     var refLabel = refA[j].textContent;
 // console.log(refLabel);
 
-                    //FIXME: the noteId parameter for positionNote shouldn't
-                    //rely on refLabel. Grab it from somewhere else.
-                    DO.U.positionNote(refId, refLabel, refLabel);
+// console.log(refId + ' ' +  refLabel + ' ' + noteId);
+                    DO.U.positionNote(refId, refLabel, noteId);
                 };
             }
         },
