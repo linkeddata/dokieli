@@ -1653,6 +1653,7 @@ var DO = {
                             case 'p':       sign = '¶'; break;
                             case 'pre':     sign = '🖩'; break;
                             case 'nav':     sign = '☛'; break;
+                            case 'table':   sign = '𝄜'; break;
                             case 'figure':  sign = '❦'; break;
                             case 'img':     sign = '🖼'; break;
                             case 'video':   sign = '🎞'; break;
