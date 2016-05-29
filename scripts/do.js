@@ -2901,12 +2901,14 @@ var DO = {
         },
 
         getCitationHTML: function(citationGraph, citationURI, options) {
-            var subject, title;
+            var subject, title, datePublished;
             var authors = [], authorList = [];
 
             subject = citationGraph.child(citationURI);
             title = subject.schemaname || subject.dctermstitle || subject.rdfslabel || '';
             title = title.replace(/ & /g, " &amp; ");
+            datePublished = subject.schemadatePublished || subject.dctermsissued || subject.dctermscreated || '';
+            datePublished = (datePublished) ? ', ' + datePublished.substr(0,4) : '';
 // console.log(subject);
 // console.log(subject.biboauthorList);
             if (subject.biboauthorList) {
@@ -2967,7 +2969,7 @@ var DO = {
                 authors = authors.join(', ');
             }
 
-            var citationHTML = authors + ': ' + title + ', <a href="' + citationURI + '" rel="schema:citation">' + citationURI + '</a>';
+            var citationHTML = authors + ': ' + title + datePublished + ', <a href="' + citationURI + '" rel="schema:citation">' + citationURI + '</a>';
 //console.log(citationHTML);
             return Promise.resolve(citationHTML);
         },
