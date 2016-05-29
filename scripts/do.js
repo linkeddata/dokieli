@@ -100,9 +100,12 @@ var DO = {
             "schemalicense": { "@id": "https://schema.org/license", "@type": "@id" },
             "schemacitation": { "@id": "https://schema.org/citation", "@type": "@id", "@array": true },
             "schemaknows": { "@id": "https://schema.org/knows", "@type": "@id", "@array": true },
+            "schemadatePublished": "https://schema.org/datePublished",
 
             "dctermstitle": "http://purl.org/dc/terms/title",
             "dctermscreator": { "@id": "http://purl.org/dc/terms/creator", "@type": "@id", "@array": true },
+            "dctermsissued": "http://purl.org/dc/terms/issued",
+            "dctermscreated": "http://purl.org/dc/terms/created",
 
             "biboauthorList": { "@id": "http://purl.org/ontology/bibo/authorList", "@type": "@id" },
 
