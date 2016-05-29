@@ -104,6 +104,7 @@ var DO = {
 
             "dctermstitle": "http://purl.org/dc/terms/title",
             "dctermscreator": { "@id": "http://purl.org/dc/terms/creator", "@type": "@id", "@array": true },
+            "dctermsdate": "http://purl.org/dc/terms/date",
             "dctermsissued": "http://purl.org/dc/terms/issued",
             "dctermscreated": "http://purl.org/dc/terms/created",
 
@@ -2907,7 +2908,7 @@ var DO = {
             subject = citationGraph.child(citationURI);
             title = subject.schemaname || subject.dctermstitle || subject.rdfslabel || '';
             title = title.replace(/ & /g, " &amp; ");
-            datePublished = subject.schemadatePublished || subject.dctermsissued || subject.dctermscreated || '';
+            datePublished = subject.schemadatePublished || subject.dctermsissued || subject.dctermsdate || subject.dctermscreated || '';
             datePublished = (datePublished) ? ', ' + datePublished.substr(0,4) : '';
             dateAccessed = ' [Accessed: ' + DO.U.getDateTimeISO() + ']';
 // console.log(subject);
