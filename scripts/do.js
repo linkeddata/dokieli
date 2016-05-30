@@ -4657,11 +4657,13 @@ var DO = {
 
                                             citation().then(
                                                 function(citationGraph) {
-                                                    //FIXME: subjectIRI shouldn't be set here. Bug in RDFaProcessor. See also: https://github.com/linkeddata/dokieli/issues/132
                                                     var citationURI = '';
-                                                    //FIXME: temp fugly hack
-                                                    if(opts.url.toLowerCase().slice(0,4) !== 'http') {
+                                                    if(opts.url.match(/^10\.\d+\//)) {
                                                         citationURI = 'http://dx.doi.org/' + opts.url;
+                                                    }
+                                                    //FIXME: subjectIRI shouldn't be set here. Bug in RDFaProcessor (see also SimpleRDF ES5/6). See also: https://github.com/linkeddata/dokieli/issues/132
+                                                    else if (opts.url.toLowerCase().indexOf('//dx.doi.org/') >= 0) {
+                                                        citationURI = window.location.origin + window.location.pathname;
                                                     }
                                                     else {
                                                         citationURI = window.location.origin + window.location.pathname;
