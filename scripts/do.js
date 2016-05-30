@@ -4300,10 +4300,6 @@ var DO = {
                                     break;
                             }
 
-                            if (this.linkValidation) {
-                                opts.url = this.checkLinkFormat(opts.url);
-                            }
-
                             opts.target = '_self';
                             if (targetCheckbox && targetCheckbox.checked) {
                                 opts.target = '_blank';
@@ -4312,6 +4308,10 @@ var DO = {
                             if (buttonCheckbox && buttonCheckbox.checked) {
                                 opts.buttonClass = this.customClassOption;
                             }
+
+                            Object.keys(opts).forEach(function(key) {
+                                opts[key] = opts[key].trim();
+                            });
 
                             return opts;
                         },
