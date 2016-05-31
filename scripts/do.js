@@ -2901,7 +2901,7 @@ var DO = {
             return DO.U.getGraph(pIRI);
         },
 
-        getCitationHTML: function(citationGraph, citationURI, options) {
+        getCitationHTML: function(citationGraph, citationURI, refId, options) {
             var subject, title, datePublished, dateAccessed;
             var authors = [], authorList = [];
 
@@ -2971,7 +2971,7 @@ var DO = {
                 authors = authors.join(', ');
             }
 
-            var citationHTML = authors + ': ' + title + datePublished + ', <a href="' + citationURI + '" rel="schema:citation">' + citationURI + '</a>' + dateAccessed;
+            var citationHTML = authors + ': ' + title + datePublished + ', <a about="#' + refId + '" href="' + citationURI + '" rel="schema:citation">' + citationURI + '</a>' + dateAccessed;
 //console.log(citationHTML);
             return Promise.resolve(citationHTML);
         },
@@ -4472,12 +4472,12 @@ var DO = {
                                             break;
 
                                         case 'ref-reference':
-                                            docRefType = '<span class="' + opts.citationType + '">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span>';
-
+                                            docRefType = '<span class="' + opts.citationType + '">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span>';
+                                            ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dcmitype:Text"><mark id="'+ refId +'" property="oa:text">' + exact + '</mark>' + docRefType +'</span>';
                                             break;
                                     }
 
-                                    ref = '<span class="ref" about="#' + refId + '" typeof="http://purl.org/dc/dcmitype/Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark>' + docRefType +'</span>';
+                                    ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dcmitype:Text"><mark id="'+ refId +'" property="oa:text">' + exact + '</mark>' + docRefType +'</span>';
                                     break;
                                 // case 'reference':
                                 //     ref = '<span class="ref" about="[this:#' + refId + ']" typeof="http://purl.org/dc/dcmitype/Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span> <span class="ref-reference">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span></span>';
@@ -4639,7 +4639,7 @@ var DO = {
                                             break;
                                         case 'ref-reference':
                                             var options = {'type': 'doi'};
-                                            options = {};
+                                            options = { refId: refId };
 
                                             var citation = function() {
                                                 return new Promise(function(resolve, reject) {
@@ -4668,7 +4668,7 @@ var DO = {
                                                     else {
                                                         citationURI = window.location.origin + window.location.pathname;
                                                     }
-                                                    return DO.U.getCitationHTML(citationGraph, citationURI, options);
+                                                    return DO.U.getCitationHTML(citationGraph, citationURI, refId, options);
                                                 },
                                                 function(reason) {
                                                     console.log(reason);
