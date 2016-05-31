@@ -3165,7 +3165,7 @@ var DO = {
                             var id = String(Math.abs(DO.U.hashCode(noteIRI))).substr(0, 6);
                             var refId = 'r-' + id;
                             var refLabel = id;
-                            var ref = '<span class="ref do" about="#' + refId + '" typeof="http://purl.org/dc/dcmitype/Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#' + id + '" resource="' + noteIRI + '">' + id + '</a></sup></span>';
+                            var ref = '<span class="ref do" about="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#' + id + '" resource="' + noteIRI + '">' + id + '</a></sup></span>';
 
                             MediumEditor.selection.importSelection(selection, containerNode, document);
 
@@ -4475,14 +4475,14 @@ var DO = {
 
                                         case 'ref-reference':
                                             docRefType = '<span class="' + opts.citationType + '">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span>';
-                                            ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dcmitype:Text"><mark id="'+ refId +'" property="oa:text">' + exact + '</mark>' + docRefType +'</span>';
+                                            ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="oa:text">' + exact + '</mark>' + docRefType +'</span>';
                                             break;
                                     }
 
-                                    ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dcmitype:Text"><mark id="'+ refId +'" property="oa:text">' + exact + '</mark>' + docRefType +'</span>';
+                                    ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="oa:text">' + exact + '</mark>' + docRefType +'</span>';
                                     break;
                                 // case 'reference':
-                                //     ref = '<span class="ref" about="[this:#' + refId + ']" typeof="http://purl.org/dc/dcmitype/Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span> <span class="ref-reference">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span></span>';
+                                //     ref = '<span class="ref" about="[this:#' + refId + ']" typeof="dctypes:Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span> <span class="ref-reference">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span></span>';
 //                                    break;
 
                                 case 'rdfa':
@@ -4548,7 +4548,7 @@ var DO = {
                                     }
 
                                     note = DO.U.createNoteHTML(noteData);
-                                    ref = '<span class="ref" about="#' + refId + '" typeof="http://purl.org/dc/dcmitype/Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark></span>';
+                                    ref = '<span class="ref" about="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark></span>';
                                     break;
                             }
 // console.log(note);
