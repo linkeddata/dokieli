@@ -3294,6 +3294,7 @@ var DO = {
             var body = '';
             var license = '';
             var buttonDelete = '';
+            var note = '';
 
             var motivatedByIRI = n.motivatedByIRI || '';
             var motivatedByLabel = n.motivatedByLabel || '';
@@ -3359,6 +3360,10 @@ var DO = {
             heading = '<' + hX + ' property="schema:name">' + creatorName + ' <span rel="oa:motivatedBy" resource="' + motivatedByIRI + '">' + motivatedByLabel + '</span></' + hX + '>';
 
             published = '<dl class="published"><dt>Published</dt><dd><a href="' + n.iri + '"><time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="oa:annotatedAt schema:datePublished" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time></a></dd></dl>';
+
+            if (n.license && 'iri' in n.license) {
+                license = DO.U.createLicenseHTML(n.license);
+            }
 
             switch(n.type) {
                 default:
@@ -3432,26 +3437,8 @@ var DO = {
                         target += '</dl>';
 
                         target += '<dl class="renderedvia"><dt>Rendered via</dt><dd><a about="' + targetIRI + '" href="https://dokie.li/" rel="oa:renderedVia">dokieli</a></dd></dl>';
-                    }
-                    break;
 
-                case 'ref-footnote':
-                    body = '<section rel="oa:hasBody" resource="#' + n.id + '-note"><h2 property="schema:name">Note</h2><div datatype="rdf:HTML" property="oa:text as:content schema:description" resource="#' + n.id + '-note" typeof="oa:TextualBody as:Note">' + n.body + '</div></section>';
-
-                    hasTarget = '<a rel="oa:hasTarget" href="#' + n.refId + '">' + n.refLabel + '</a>';
-
-                    target ='<dl class="target"><dt>' + targetLabel + '</dt><dd>' + hasTarget + '</dd></dl>';
-                    break;
-
-                default:
-                    break;
-            }
-
-            if (n.license && 'iri' in n.license) {
-                license = DO.U.createLicenseHTML(n.license);
-            }
-
-            var note = '\n\
+                        note = '\n\
 <article id="' + n.id + '" about="' + aAbout + '" typeof="oa:Annotation as:Activity' + noteType + '"' + aPrefix + '>'+buttonDelete+'\n\
     ' + heading + '\n\
     ' + authors + '\n\
@@ -3461,6 +3448,21 @@ var DO = {
     ' + body + '\n\
 </article>\n\
 ';
+                    }
+                    break;
+
+                case 'ref-footnote':
+                    note = '\n\
+<dl about="#' + n.id +'" id="' + n.id +'" typeof="oa:Annotation">\n\
+    <dt><a href="#' + n.refId + '" rel="oa:hasTarget">' + n.refLabel + '</a><meta rel="oa:motivation" resource="' + motivatedByIRI + '" /></dt>\n\
+    <dd rel="oa:hasBody" resource="#n-' + n.id + '"><div datatype="rdf:HTML" property="oa:text" resource="#n-' + n.id + '" typeof="oa:TextualBody">' + n.body + '</div></dd>\n\
+</dl>\n\
+';
+                    break;
+
+                default:
+                    break;
+            }
 
             return note;
         },
