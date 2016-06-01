@@ -872,12 +872,23 @@ var DO = {
 
         setDocumentMode: function(mode) {
             if (DO.C.EditorAvailable) {
+                if (DO.U.urlParam('author') == 'true' || DO.U.urlParam('social') == 'true' || DO.U.urlParam('review') == 'true') {
+                    if (DO.U.urlParam('author') == 'true') {
+                        mode = 'author';
+                        console.log(mode);
+                    }
+                    else if (DO.U.urlParam('social') == 'true') {
+                        mode = 'social';
+                    }
+                    else if (DO.U.urlParam('review') == 'true') {
+                        mode = 'review';
+                    }
+                    var url = document.location.href;
+                    window.history.replaceState({}, null, url.substr(0, url.lastIndexOf('?')));
+                }
+
                 switch(mode || '') {
                     case 'author':
-                        if (DO.U.urlParam('author') == 'true') {
-                            var url = document.location.href;
-                            window.history.replaceState({}, null, url.substr(0, url.lastIndexOf('?')));
-                        }
                         DO.U.Editor.enableEditor('author');
                         break;
                     case 'social': default:
