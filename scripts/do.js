@@ -3632,24 +3632,9 @@ var DO = {
                     }
                 };
 
-                //TODO: Refactor
-                switch(editorMode) {
-                    case 'author': default:
-                        eNodes = document.querySelectorAll('main > article');
-                        eOptions = editorOptions.author;
-                        DO.C.User.Role = 'author';
-                        break;
-                    case 'social':
-                        eNodes = document.querySelectorAll('main > article');
-                        eOptions = editorOptions.social;
-                        DO.C.User.Role = 'social';
-                        break;
-                    case 'review':
-                        eNodes = document.querySelectorAll('main > article');
-                        eOptions = editorOptions.review;
-                        DO.C.User.Role = 'review';
-                        break;
-                }
+                eNodes = document.querySelectorAll('main > article');
+                eOptions = editorOptions[editorMode];
+                DO.C.User.Role = editorMode;
 
                 if (typeof MediumEditor !== 'undefined') {
                     DO.U.Editor.MediumEditor = new MediumEditor(eNodes, eOptions);
