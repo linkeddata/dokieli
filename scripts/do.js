@@ -3452,10 +3452,13 @@ var DO = {
                     break;
 
                 case 'ref-footnote':
+                    var citationURL = (typeof n.citationURL !== 'undefined' && n.citationURL != '') ? '<a href="' + n.citationURL + '" rel="rdfs:seeAlso">' + n.citationURL + '</a>' : '';
+                    var body = (typeof n.body !== 'undefined' && n.body != '') ? ((citationURL) ? ', ' + n.body : n.body) : '';
+
                     note = '\n\
 <dl about="#' + n.id +'" id="' + n.id +'" typeof="oa:Annotation">\n\
     <dt><a href="#' + n.refId + '" rel="oa:hasTarget">' + n.refLabel + '</a><meta rel="oa:motivation" resource="' + motivatedByIRI + '" /></dt>\n\
-    <dd rel="oa:hasBody" resource="#n-' + n.id + '"><div datatype="rdf:HTML" property="oa:text" resource="#n-' + n.id + '" typeof="oa:TextualBody">' + n.body + '</div></dd>\n\
+    <dd rel="oa:hasBody" resource="#n-' + n.id + '"><div datatype="rdf:HTML" property="oa:text" resource="#n-' + n.id + '" typeof="oa:TextualBody">' + citationURL + body + '</div></dd>\n\
 </dl>\n\
 ';
                     break;
@@ -4467,7 +4470,8 @@ var DO = {
                                                 "refLabel": refLabel,
                                                 "iri": noteIRI,
                                                 "datetime": datetime,
-                                                "body": opts.content
+                                                "body": opts.content,
+                                                "citationURL": opts.url
                                             };
 // console.log(noteData);
                                             note = DO.U.createNoteHTML(noteData);
