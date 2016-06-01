@@ -3306,8 +3306,8 @@ var DO = {
                     aAbout = 'i:';
                     aPrefix = ' prefix="schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'"';
                     break;
-                case 'oa:reviewing':
-                    motivatedByIRI = 'oa:reviewing';
+                case 'oa:assessing':
+                    motivatedByIRI = 'oa:assessing';
                     motivatedByLabel = 'reviews';
                     targetLabel = 'Review of';
                     aAbout = 'i:';
@@ -4407,7 +4407,7 @@ var DO = {
                                 //External Note
                                 case 'article': case 'approve': case 'disapprove': case 'specificity':
                                     if (DO.U.Editor.MediumEditor.options.id == 'review') {
-                                        motivatedBy = 'oa:reviewing';
+                                        motivatedBy = 'oa:assessing';
                                     }
 
                                     ref = this.base.selection;
