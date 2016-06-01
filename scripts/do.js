@@ -873,12 +873,11 @@ var DO = {
         setDocumentMode: function(mode) {
             if (DO.C.EditorAvailable) {
                 if (DO.U.urlParam('author') == 'true' || DO.U.urlParam('social') == 'true' || DO.U.urlParam('review') == 'true') {
-                    if (DO.U.urlParam('author') == 'true') {
-                        mode = 'author';
-                        console.log(mode);
-                    }
-                    else if (DO.U.urlParam('social') == 'true') {
+                    if (DO.U.urlParam('social') == 'true') {
                         mode = 'social';
+                    }
+                    else if (DO.U.urlParam('author') == 'true') {
+                        mode = 'author';
                     }
                     else if (DO.U.urlParam('review') == 'true') {
                         mode = 'review';
@@ -888,11 +887,11 @@ var DO = {
                 }
 
                 switch(mode || '') {
-                    case 'author':
-                        DO.U.Editor.enableEditor('author');
-                        break;
                     case 'social': default:
                         DO.U.Editor.enableEditor('social');
+                        break;
+                    case 'author':
+                        DO.U.Editor.enableEditor('author');
                         break;
                     case 'review':
                         DO.U.Editor.enableEditor('review');
