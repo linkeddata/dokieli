@@ -680,3 +680,7 @@ display:block;
 .medium-editor-toolbar-form label[for^="bookmark-"] {
 width:auto;
 }
+
+[data-medium-editor-element] img {
+max-width:auto;
+}
