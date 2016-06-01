@@ -3297,7 +3297,7 @@ var DO = {
             var note = '';
 
             var motivatedByIRI = n.motivatedByIRI || '';
-            var motivatedByLabel = n.motivatedByLabel || '';
+            var motivatedByLabel = '';
             switch(motivatedByIRI) {
                 case 'oa:replying': default:
                     motivatedByIRI = 'oa:replying';
@@ -3307,20 +3307,17 @@ var DO = {
                     aPrefix = ' prefix="schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'"';
                     break;
                 case 'oa:assessing':
-                    motivatedByIRI = 'oa:assessing';
                     motivatedByLabel = 'reviews';
                     targetLabel = 'Review of';
                     aAbout = 'i:';
                     aPrefix = ' prefix="schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'"';
                     break;
                 case 'oa:describing':
-                    motivatedByIRI = 'oa:describing';
                     motivatedByLabel = 'describes';
                     targetLabel = 'Describes';
                     aAbout = '#' + n.id;
                     break;
                 case 'oa:bookmarking':
-                    motivatedByIRI = 'oa:bookmarking';
                     motivatedByLabel = 'bookmarks';
                     targetLabel = 'Bookmarked';
                     aAbout = 'i:';
