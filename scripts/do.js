@@ -4735,25 +4735,9 @@ var DO = {
                             var close = form.querySelector('.medium-editor-toolbar-close'),
                                 save = form.querySelector('.medium-editor-toolbar-save');
 
-                            if (this.action == 'rdfa') {
-                                var input = form.querySelector('.medium-editor-toolbar-input');
-                            }
-                            else {
-                                var input = form.querySelector('.medium-editor-toolbar-textarea');
-                            }
-
-                            // Handle clicks on the form itself
                             this.on(form, 'click', this.handleFormClick.bind(this));
-
-                            // Handle typing in the textbox
-                            this.on(input, 'keyup', this.handleTextboxKeyup.bind(this));
-
-                            // Handle close button clicks
                             this.on(close, 'click', this.handleCloseClick.bind(this));
-
-                            // Handle save button clicks (capture)
                             this.on(save, 'click', this.handleSaveClick.bind(this), true);
-
                         },
 
                         createForm: function () {
