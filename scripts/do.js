@@ -3642,8 +3642,8 @@ var DO = {
                     }
                 };
 
-                eNodes = document.querySelectorAll('main > article');
-                eOptions = editorOptions[editorMode];
+                var eNodes = document.querySelectorAll('main > article');
+                var eOptions = editorOptions[editorMode];
                 DO.C.User.Role = editorMode;
 
                 if (typeof MediumEditor !== 'undefined') {
