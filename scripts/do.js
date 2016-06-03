@@ -108,6 +108,8 @@ var DO = {
             "dctermsissued": "http://purl.org/dc/terms/issued",
             "dctermscreated": "http://purl.org/dc/terms/created",
 
+            "skosprefLabel": { "@id": "http://www.w3.org/2004/02/skos/core#prefLabel", "@type": "@id", "@array": true },
+
             "biboauthorList": { "@id": "http://purl.org/ontology/bibo/authorList", "@type": "@id" },
 
             "storage": { "@id": "http://www.w3.org/ns/pim/space#storage", "@type": "@id", "@array": true },
