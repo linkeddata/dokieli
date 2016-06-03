@@ -3073,6 +3073,17 @@ var DO = {
             return document.createRange().createContextualFragment(strHTML);
         },
 
+        getTriplesFromGraph: function(url) {
+            return DO.U.getGraph(url)
+                .then(function(i){
+                    console.log(i);
+                    return i._graph;
+                })
+                .catch(function(error){
+                    console.log(error);
+                });
+        },
+
         showAsTabs: function(id) {
             document.querySelector('#' + id + ' nav').addEventListener('click', function(e) {
                 var a = e.target;
