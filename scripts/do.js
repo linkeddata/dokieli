@@ -3084,6 +3084,40 @@ var DO = {
                 });
         },
 
+        getListHTMLFromTriples: function(triples, options) {
+            options = options || {element: 'ul'};
+            var elementId = ('elementId' in options) ? ' id="' + options.elementId + '"' : '';
+            var elementName = ('elementId' in options) ? ' name="' + options.elementId + '"' : '';
+            var elementTitle = ('elementId' in options) ? options.elementId : '';
+            var items = '';
+            triples.forEach(function(t){
+                var s = t.subject.nominalValue;
+                var o = t.object.nominalValue;
+                switch(options.element) {
+                    case 'ol': case 'ul': default:
+                        items += '<li><a href="' + s + '">' + o + '</a></li>';
+                        break;
+                    case 'dl':
+                        items += '<dd><a href="' + s + '">' + o + '</a></dd>';
+                        break;
+                    case 'select':
+                        items += '<option value="' +   s + '">' + o + '</option>';
+                        break;
+                }
+            });
+
+            switch(options.element) {
+                case 'ul': default:
+                    return '<ul' + elementId + '>' + items + '</ul>';
+                case 'ol':
+                    return '<ol' + elementId + '>' + items + '</ol>';
+                case 'dl':
+                    return '<dl' + elementId + '><dt>' + elementTitle + '</dt>' + items + '</dl>';
+                case 'select':
+                    return '<select' + elementId + elementName + '>' + items + '</select>';
+            }
+        },
+
         showAsTabs: function(id) {
             document.querySelector('#' + id + ' nav').addEventListener('click', function(e) {
                 var a = e.target;
