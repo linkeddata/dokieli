@@ -449,7 +449,7 @@ var DO = {
         },
 
         getInbox: function(url) {
-            url = url || window.location.origin + window.location.pathname;
+            url = url || location.href.split(location.search||location.hash||/[?#]/)[0];
 
             var promise = function() {
                 return new Promise(function(resolve, reject) {
