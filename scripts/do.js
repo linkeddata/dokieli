@@ -3770,7 +3770,7 @@ WHERE {\n\
                         },
                         buttonLabels: DO.C.Editor.ButtonLabelType,
                         toolbar: {
-                            buttons: ['h2', 'h3', 'h4', 'em', 'strong', 'orderedlist', 'unorderedlist', 'code', 'pre', 'image', 'table', 'anchor', 'q', 'rdfa', 'cite', 'note'],
+                            buttons: ['h2', 'h3', 'h4', 'em', 'strong', 'orderedlist', 'unorderedlist', 'code', 'pre', 'image', 'table', 'anchor', 'q', 'sparkline', 'rdfa', 'cite', 'note'],
                             diffLeft: 0,
                             diffTop: -10,
                             allowMultiParagraphSelection: false
@@ -3784,6 +3784,7 @@ WHERE {\n\
                             'strong': new DO.U.Editor.Button({action:'strong', label:'strong'}),
                             'code': new DO.U.Editor.Button({action:'code', label:'code'}),
                             'q': new DO.U.Editor.Button({action:'q', label:'q'}),
+                            'sparkline': new DO.U.Editor.Note({action:'sparkline', label:'sparkline'}),
                             'rdfa': new DO.U.Editor.Note({action:'rdfa', label:'rdfa'}),
                             'cite': new DO.U.Editor.Note({action:'cite', label:'cite'}),
                             'note': new DO.U.Editor.Note({action:'article', label:'note'}),
@@ -4185,6 +4186,9 @@ WHERE {\n\
                                     this.contentFA = '<i class="fa fa-crosshairs"></i>';
                                     this.signInRequired = true;
                                     break;
+                                case 'sparkline':
+                                    this.contentFA = '<i class="fa fa-bar-chart"></i>';
+                                    break;
                             }
                             MediumEditor.extensions.form.prototype.init.apply(this, arguments);
 
@@ -4315,6 +4319,12 @@ WHERE {\n\
                                     '<textarea id="bookmark-content" name="content" cols="20" rows="2" class="medium-editor-toolbar-textarea" placeholder="Description"></textarea>'
                                     ];
                                     break;
+                                case 'sparkline':
+                                    template = [
+                                    '<input type="text" name="sparkline-search" value="" id="sparkline-search" class="medium-editor-toolbar-input" placeholder="Enter search terms" /><br/>',
+                                    '<input type="hidden" name="sparkline-selection-text" value="" id="sparkline-selection-text" />'
+                                    ];
+                                    break;
                                 default:
                                     template = [
                                     '<textarea cols="20" rows="1" class="medium-editor-toolbar-textarea" placeholder="', this.placeholderText, '"></textarea>'
@@ -4412,6 +4422,106 @@ WHERE {\n\
                                     input.url.focus();
                                     document.querySelector('.medium-editor-toolbar-form input[name="citation-type"]').checked = true;
                                     break;
+                                case 'sparkline':
+                                    input.search.focus();
+// console.log(input);
+// console.log(this);
+                                    input.search.value = selection;
+
+                                    var sparqlEndpoint = 'http://worldbank.270a.info/';
+                                    var resourceType = '<http://purl.org/linked-data/cube#DataSet>';
+                                    var sparklineGraphId = 'sparkline-graph';
+                                    var resultContainerId = 'sparkline-select';
+                                    //TODO: This should be from user's preference?
+                                    var lang = 'en';
+
+                                    //TODO: What's the best way for user input? ' of '
+                                    var textInputA = selection.split(' of ')[0];
+                                    //TODO: Normalise textInputB (refArea "Canada" -> "CA")
+                                    var textInputB = selection.split(' of ')[1];
+
+                                    var queryURL = DO.U.createSPARQLQueryURLWithTextInput(sparqlEndpoint, resourceType, textInputA, lang);
+
+                                    var sG = document.getElementById(sparklineGraphId);
+                                    if(sG) {
+                                        sG.parentNode.removeChild(sG);
+                                    }
+
+                                    form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', '<div id="' + sparklineGraphId + '" class="fa fa-spinner fa-pulse"></div>');
+                                    sG = document.getElementById(sparklineGraphId);
+
+                                    DO.U.getTriplesFromGraph(queryURL)
+                                        .then(function(triples){
+                                            sG.removeAttribute('class');
+                                            triples = DO.U.sortTriples(triples, { sortBy: 'object' });
+                                            return DO.U.getListHTMLFromTriples(triples, {element: 'select', elementId: resultContainerId});
+                                        })
+                                        .then(function(listHTML){
+                                            sG.innerHTML = listHTML;
+                                        })
+                                        .then(function(x){
+                                            var rC = document.getElementById(resultContainerId);
+                                            rC.addEventListener('change', function(e) {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                var sparkline = sG.querySelectorAll('.sparkline');
+                                                for (var i = 0; i < sparkline.length; i++) {
+                                                    sparkline[i].parentNode.removeChild(sparkline[i]);
+                                                }
+                                                var dataset = e.target.value;
+                                                var title = e.target.querySelector('*[value="' + e.target.value + '"]').textContent.trim();
+                                                //XXX: Should this replace the initial search term?
+                                                form.querySelector('#sparkline-selection-text').value = title;
+
+                                                var refArea = textInputB;
+                                                var paramDimension = "\n\
+    ?propertyRefArea rdfs:subPropertyOf* sdmx-dimension:refArea .\n\
+    ?observation ?propertyRefArea [ skos:notation '" + refArea + "' ] .";
+
+// console.log(dataset);
+// console.log(refArea);
+                                                var queryURL = DO.U.createSPARQLQueryURLGetObservationsWithDimension(sparqlEndpoint, dataset, paramDimension);
+// console.log(queryURL);
+                                                DO.U.getTriplesFromGraph(queryURL)
+                                                    .then(function(triples){
+// console.log(triples);
+                                                        if(triples.length > 0) {
+                                                            var observations = {};
+                                                            triples.forEach(function(t){
+                                                                var s = t.subject.nominalValue;
+                                                                var p = t.predicate.nominalValue;
+                                                                var o = t.object.nominalValue;
+                                                                observations[s] = observations[s] || {};
+                                                                observations[s][p] = o;
+                                                            });
+// console.log(observations);
+                                                            var list = [], item;
+                                                            Object.keys(observations).forEach(function(key) {
+                                                                item = {};
+                                                                item[key] = observations[key];
+                                                                list.push(item[key]);
+                                                            });
+                                                            var sortByKey = 'http://purl.org/linked-data/sdmx/2009/dimension#refPeriod';
+                                                            list.sort(function (a, b) {
+                                                                return a[sortByKey].toLowerCase().localeCompare(b[sortByKey].toLowerCase());
+                                                            });
+// console.log(list);
+                                                            var options = {
+                                                                url: dataset,
+                                                                title: title ,
+                                                                cssStroke: '#000'
+                                                            };
+                                                            var sparkline = DO.U.getSparkline(list, options);
+                                                            sG.insertAdjacentHTML('beforeend', '<span class="sparkline">' + sparkline + '</span> <span class="sparkline">' + triples.length + ' observations</span>');
+                                                        }
+                                                        else {
+                                                            //TODO: Temporary. This shouldn't really happen. Only display datasets with observations beforehand. SPARQL ASK subquery.
+                                                            sG.insertAdjacentHTML('beforeend', '<span class="sparkline">0 observations. Select another.</span>');
+                                                        }
+                                                    });
+                                            });
+                                        });
+                                    break;
                                 case 'bookmark':
                                     input.content.focus();
                                     break;
@@ -4479,7 +4589,12 @@ WHERE {\n\
                                     opts.content = this.getInput().content.value;
                                     opts.tagging = this.getInput().tagging.value;
                                     break;
-
+                                case 'sparkline':
+                                    opts.search = this.getInput().search.value;
+                                    opts.select = this.getInput().select.value;
+                                    opts.sparkline = this.getInput().sparkline.innerHTML;
+                                    opts.selectionText = this.getInput().selectionText.value;
+                                    break;
                                 default:
                                     opts.url = this.getInput().value;
                                     break;
@@ -4588,6 +4703,10 @@ WHERE {\n\
                             var motivatedBy = 'oa:replying';
 
                             switch(this.action) {
+                                case 'sparkline':
+                                    ref = '<a href="' + opts.select + '">' + opts.selectionText + '</a> <span class="sparkline">' + opts.sparkline + '</sparkline>';
+                                    break;
+
                                 //External Note
                                 case 'article': case 'approve': case 'disapprove': case 'specificity':
                                     if (DO.U.Editor.MediumEditor.options.id == 'review') {
@@ -4980,6 +5099,12 @@ WHERE {\n\
                                 case 'bookmark':
                                     r.content = this.getForm().querySelector('#bookmark-content.medium-editor-toolbar-textarea');
                                     r.tagging = this.getForm().querySelector('#bookmark-tagging.medium-editor-toolbar-input');
+                                    break;
+                                case 'sparkline':
+                                    r.search = this.getForm().querySelector('#sparkline-search.medium-editor-toolbar-input');
+                                    r.select = this.getForm().querySelector('#sparkline-select');
+                                    r.sparkline = this.getForm().querySelector('#sparkline-graph .sparkline');
+                                    r.selectionText = this.getForm().querySelector('#sparkline-selection-text');
                                     break;
 
                                 default:
