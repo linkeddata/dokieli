@@ -3097,6 +3097,29 @@ WHERE {\n\
             return sparqlEndpoint + "?query=" + DO.U.encodeString(query);
         },
 
+        createSPARQLQueryURLGetObservationsWithDimension: function(sparqlEndpoint, dataset, paramDimension, options) {
+            var query = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n\
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n\
+PREFIX dcterms: <http://purl.org/dc/terms/>\n\
+PREFIX qb: <http://purl.org/linked-data/cube#>\n\
+PREFIX sdmx-dimension: <http://purl.org/linked-data/sdmx/2009/dimension#>\n\
+PREFIX sdmx-measure: <http://purl.org/linked-data/sdmx/2009/measure#>\n\
+CONSTRUCT {\n\
+    ?observation sdmx-dimension:refPeriod ?refPeriod .\n\
+    ?observation sdmx-measure:obsValue ?obsValue .\n\
+}\n\
+WHERE {\n\
+    ?observation qb:dataSet <" + dataset + "> .\n\
+    " + paramDimension + "\n\
+    ?propertyRefPeriod rdfs:subPropertyOf* sdmx-dimension:refPeriod .\n\
+    ?observation ?propertyRefPeriod ?refPeriod .\n\
+    ?propertyMeasure rdfs:subPropertyOf* sdmx-measure:obsValue .\n\
+    ?observation ?propertyMeasure ?obsValue .\n\
+}";
+
+            return sparqlEndpoint + "?query=" + DO.U.encodeString(query);
+        },
+
         getTriplesFromGraph: function(url) {
             return DO.U.getGraph(url)
                 .then(function(i){
