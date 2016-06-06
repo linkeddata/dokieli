@@ -3120,10 +3120,88 @@ WHERE {\n\
             return sparqlEndpoint + "?query=" + DO.U.encodeString(query);
         },
 
+        getSparkline: function(data, options) {
+            options = options || {};
+            if(!('cssStroke' in options)) {
+                options[cssStroke] = '#333';
+            }
+
+            var obsValue = 'http://purl.org/linked-data/sdmx/2009/measure#obsValue';
+
+            var svg = '<svg version="1.1"\n\
+    baseProfile="full"\n\
+    xmlns="http://www.w3.org/2000/svg"\n\
+    xmlns:xlink="http://www.w3.org/1999/xlink"\n\
+    width="100%" height="100%">\n\
+    <style type="text/css"><![CDATA[\n\
+        line {\n\
+            stroke:' + options.cssStroke + ';\n\
+            stroke-width:1px;\n\
+        }\n\
+        circle {\n\
+            stroke:#f00;\n\
+            fill:#f00;\n\
+        }\n\
+    ]]></style>\n\
+';
+
+            var dotSize = 1;
+            var values = data.map(function(n) { return n[obsValue]; }),
+                min = Math.min.apply(null, values),
+                max = Math.max.apply(null, values);
+
+            var new_max = 98;
+            var new_min = 0;
+            var range = new_max - new_min;
+
+            var parts = values.map(function (v) {
+                return (new_max - new_min) / (max - min) * (v - min) + new_min || 0;
+            });
+
+            var div = 100 / parts.length;
+            var x1 = 0, y1 = 0, x2 = div / 2, y2 = range - parts[0];
+
+            var lines = '';
+            for (var i=0; i < parts.length; i++) {
+                x1 = x2; y1 = y2;
+                x2 = range * (i / parts.length) + (div / 2);
+                y2 = range - parts[i];
+
+                lines += '<line' +
+                    ' x1="' + x1 + '%"' +
+                    ' x2="' + x2 + '%"' +
+                    ' y1="' + y1 + '%"' +
+                    ' y2="' + y2 + '%"' +
+                    '/>';
+
+                //Last data item
+                if(i+1 === parts.length) {
+                    lines += '<circle' +
+                        ' cx="' + (x2 - dotSize) + '%"' +
+                        ' cy="' + (y2 + 2 * dotSize) + '%"' +
+                        ' r="' + dotSize + '"' +
+                        '/>';
+                }
+            }
+
+//            document.documentElement.setAttribute('class', '');
+            //TODO: Link each point to an observation
+            svg += '<g>';
+            if (options && 'url' in options && options && 'title' in options) {
+                svg += '<a target="_blank" xlink:href="' + options.url + '" xlink:title="' + options.title + '">' + lines + '</a>';
+            }
+            else {
+                svg += lines;
+            }
+            svg += '</g></svg>';
+
+            return svg;
+        },
+
         getTriplesFromGraph: function(url) {
             return DO.U.getGraph(url)
                 .then(function(i){
-                    console.log(i);
+// console.log(i);
                     return i._graph;
                 })
                 .catch(function(error){
