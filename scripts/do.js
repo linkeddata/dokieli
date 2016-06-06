@@ -4442,6 +4442,12 @@ WHERE {\n\
 
                                     var queryURL = DO.U.createSPARQLQueryURLWithTextInput(sparqlEndpoint, resourceType, textInputA, lang);
 
+                                    var pIRI = queryURL;
+                                    if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
+                                        pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
+                                    }
+                                    queryURL = pIRI;
+
                                     var sG = document.getElementById(sparklineGraphId);
                                     if(sG) {
                                         sG.parentNode.removeChild(sG);
@@ -4482,6 +4488,12 @@ WHERE {\n\
 // console.log(refArea);
                                                 var queryURL = DO.U.createSPARQLQueryURLGetObservationsWithDimension(sparqlEndpoint, dataset, paramDimension);
 // console.log(queryURL);
+                                                var pIRI = queryURL;
+                                                if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
+                                                    pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
+                                                }
+                                                queryURL = pIRI;
+
                                                 DO.U.getTriplesFromGraph(queryURL)
                                                     .then(function(triples){
 // console.log(triples);
