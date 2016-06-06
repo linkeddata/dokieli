@@ -650,6 +650,33 @@ width:100%;
 max-width:100px;
 display:inline-block;
 }
+.medium-editor-toolbar-form .sparkline {
+margin:0.25em;
+}
+.medium-editor-toolbar-form .sparkline svg line {
+stroke:#fff;
+stroke-width:1px;
+}
+.medium-editor-toolbar-form .sparkline svg circle.point {
+stroke:#f00;
+fill:#f00;
+}
+.medium-editor-toolbar-form *[id^="sparkline-"] {
+overflow:auto;
+max-height:15em;
+max-width:30em;
+}
+.medium-editor-toolbar-form *[id^="sparkline-"] li {
+float:none;
+margin-bottom:0.2em;
+}
+.medium-editor-toolbar-form *[id^="sparkline-"] a {
+font-size:0.9em;
+line-height:1.2;
+word-wrap:break-word;
+font-weight:normal;
+}
+
 
 /*TODO MOVE TO editor.css */
 .medium-editor-toolbar-form label[for^="rdfa-"] {
