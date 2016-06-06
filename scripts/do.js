@@ -3209,6 +3209,19 @@ WHERE {\n\
                 });
         },
 
+        sortTriples(triples, options) {
+            options = options || {};
+            if(!('sortBy' in options)) {
+                options['sortBy'] = 'object';
+            }
+
+            triples._graph.sort(function (a, b) {
+                return a[options.sortBy].nominalValue.toLowerCase().localeCompare(b[options.sortBy].nominalValue.toLowerCase());
+            });
+
+            return triples;
+        },
+
         getListHTMLFromTriples: function(triples, options) {
             options = options || {element: 'ul'};
             var elementId = ('elementId' in options) ? ' id="' + options.elementId + '"' : '';
