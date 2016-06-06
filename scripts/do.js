@@ -4391,9 +4391,12 @@ WHERE {\n\
                                 };
                             }
 
+                            //XXX: Get this before getForm.
+                            var selection = MediumEditor.selection.getSelectionHtml(this.document).trim();
                             this.base.saveSelection();
                             this.hideToolbarDefaultActions();
-                            this.getForm().style.display = 'block';
+                            var form = this.getForm();
+                            form.style.display = 'block';
                             this.setToolbarPosition();
 
                             input.value = opts.url;
@@ -4504,6 +4507,7 @@ WHERE {\n\
                         },
 
                         completeFormSave: function (opts) {
+// console.log(opts);
 // console.log('completeFormSave() with this.action: ' + this.action);
                             this.base.restoreSelection();
                             var range = MediumEditor.selection.getSelectionRange(this.document);
