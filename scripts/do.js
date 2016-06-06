@@ -3076,6 +3076,27 @@ var DO = {
             return document.createRange().createContextualFragment(strHTML);
         },
 
+        createSPARQLQueryURLWithTextInput: function(sparqlEndpoint, resourceType, textInput, lang, options) {
+            lang = lang || 'en';
+            var query = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n\
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n\
+PREFIX dcterms: <http://purl.org/dc/terms/>\n\
+PREFIX qb: <http://purl.org/linked-data/cube#>\n\
+CONSTRUCT {\n\
+    ?resource skos:prefLabel ?prefLabel .\n\
+}\n\
+WHERE {\n\
+    ?resource a " + resourceType + " .\n\
+    OPTIONAL { ?resource dcterms:title ?prefLabel . }\n\
+    OPTIONAL { ?resource skos:prefLabel ?prefLabel . }\n\
+    OPTIONAL { ?resource rdfs:label ?prefLabel . }\n\
+    FILTER (!STRSTARTS(STR(?resource), 'http://purl.org/linked-data/sdmx/'))\n\
+    FILTER (REGEX(?prefLabel, '" + textInput +"', 'i'))\n\
+    FILTER (LANG(?prefLabel) = '' || LANGMATCHES(LANG(?prefLabel), '" + lang + "'))\n\
+}";
+            return sparqlEndpoint + "?query=" + DO.U.encodeString(query);
+        },
+
         getTriplesFromGraph: function(url) {
             return DO.U.getGraph(url)
                 .then(function(i){
