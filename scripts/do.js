@@ -1344,7 +1344,7 @@ var DO = {
         },
 
         showTableOfStuff: function(node) {
-            var disabledInput = s = '';
+            var disabledInput = '', s = '';
             if (!DO.C.EditorEnabled) {
                 disabledInput = ' disabled="disabled"';
             }
