@@ -4439,7 +4439,12 @@ WHERE {\n\
                                     //TODO: What's the best way for user input? ' of '
                                     var textInputA = selection.split(' of ')[0];
                                     //TODO: Normalise textInputB (refArea "Canada" -> "CA")
-                                    var textInputB = selection.split(' of ')[1];
+                                    var textInputB = selection.substr(selection.indexOf(' of ') + 4);
+
+                                    //FIXME: This is a hack.
+                                    if (textInputB.length > 2) {
+                                        textInputB = DO.C.RefAreas[textInputB];
+                                    }
 
                                     var queryURL = DO.U.createSPARQLQueryURLWithTextInput(sparqlEndpoint, resourceType, textInputA, lang);
 
