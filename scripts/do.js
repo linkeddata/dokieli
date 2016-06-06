@@ -3129,7 +3129,6 @@ WHERE {\n\
             var obsValue = 'http://purl.org/linked-data/sdmx/2009/measure#obsValue';
 
             var svg = '<svg version="1.1"\n\
-    baseProfile="full"\n\
     xmlns="http://www.w3.org/2000/svg"\n\
     xmlns:xlink="http://www.w3.org/1999/xlink"\n\
     width="100%" height="100%">\n\
