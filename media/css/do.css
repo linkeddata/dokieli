@@ -651,7 +651,7 @@ max-width:100px;
 display:inline-block;
 }
 .medium-editor-toolbar-form .sparkline {
-margin:0.25em;
+margin:0.25em 0.5em;
 }
 .medium-editor-toolbar-form .sparkline svg line {
 stroke:#fff;

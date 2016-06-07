@@ -4512,7 +4512,7 @@ WHERE {\n\
                                             rC.addEventListener('change', function(e) {
                                                 e.preventDefault();
                                                 e.stopPropagation();
-                                                var sparkline = sG.querySelectorAll('.sparkline');
+                                                var sparkline = sG.querySelectorAll('.sparkline, .sparkline-info');
                                                 for (var i = 0; i < sparkline.length; i++) {
                                                     sparkline[i].parentNode.removeChild(sparkline[i]);
                                                 }
@@ -4566,11 +4566,11 @@ WHERE {\n\
                                                                 cssStroke: '#000'
                                                             };
                                                             var sparkline = DO.U.getSparkline(list, options);
-                                                            sG.insertAdjacentHTML('beforeend', '<span class="sparkline">' + sparkline + '</span> <span class="sparkline">' + triples.length + ' observations</span>');
+                                                            sG.insertAdjacentHTML('beforeend', '<span class="sparkline">' + sparkline + '</span> <span class="sparkline-info">' + triples.length + ' observations</span>');
                                                         }
                                                         else {
                                                             //TODO: Temporary. This shouldn't really happen. Only display datasets with observations beforehand. SPARQL ASK subquery.
-                                                            sG.insertAdjacentHTML('beforeend', '<span class="sparkline">0 observations. Select another.</span>');
+                                                            sG.insertAdjacentHTML('beforeend', '<span class="sparkline-info">0 observations. Select another.</span>');
                                                         }
                                                     });
                                             });
