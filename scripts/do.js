@@ -4220,7 +4220,7 @@ WHERE {\n\
                                     this.signInRequired = true;
                                     break;
                                 case 'sparkline':
-                                    this.contentFA = '<i class="fa fa-bar-chart"></i>';
+                                    this.contentFA = '<i class="fa fa-line-chart"></i>';
                                     break;
                             }
                             MediumEditor.extensions.form.prototype.init.apply(this, arguments);
