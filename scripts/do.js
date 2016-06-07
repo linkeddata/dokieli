@@ -4495,7 +4495,7 @@ WHERE {\n\
                                         sG.parentNode.removeChild(sG);
                                     }
 
-                                    form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', '<div id="' + sparklineGraphId + '" class="fa fa-spinner fa-pulse"></div>');
+                                    form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', '<div id="' + sparklineGraphId + '"></div><i class="fa fa-spinner fa-pulse"></i>');
                                     sG = document.getElementById(sparklineGraphId);
 
                                     DO.U.getTriplesFromGraph(queryURL)
@@ -4506,6 +4506,7 @@ WHERE {\n\
                                         })
                                         .then(function(listHTML){
                                             sG.innerHTML = listHTML;
+                                            form.removeChild(form.querySelector('.fa.fa-spinner.fa-pulse'));
                                         })
                                         .then(function(x){
                                             var rC = document.getElementById(resultContainerId);
@@ -4516,6 +4517,8 @@ WHERE {\n\
                                                 for (var i = 0; i < sparkline.length; i++) {
                                                     sparkline[i].parentNode.removeChild(sparkline[i]);
                                                 }
+                                                form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', '<i class="fa fa-spinner fa-pulse"></i>');
+
                                                 var dataset = e.target.value;
                                                 var title = e.target.querySelector('*[value="' + e.target.value + '"]').textContent.trim();
                                                 //XXX: Should this replace the initial search term?
@@ -4567,6 +4570,7 @@ WHERE {\n\
                                                             };
                                                             var sparkline = DO.U.getSparkline(list, options);
                                                             sG.insertAdjacentHTML('beforeend', '<span class="sparkline">' + sparkline + '</span> <span class="sparkline-info">' + triples.length + ' observations</span>');
+                                                                form.removeChild(form.querySelector('.fa.fa-spinner.fa-pulse'));
                                                         }
                                                         else {
                                                             //TODO: Temporary. This shouldn't really happen. Only display datasets with observations beforehand. SPARQL ASK subquery.
