@@ -3080,21 +3080,53 @@ var DO = {
 
         createSPARQLQueryURLWithTextInput: function(sparqlEndpoint, resourceType, textInput, lang, options) {
             lang = lang || 'en';
+            options = options || {};
+            var filterFromOptions = '', optionalForLabels = '';
+            if ('filter' in options) {
+                if(resourceType == '<http://purl.org/linked-data/cube#DataSet>' || resourceType == 'qb:DataSet'
+                    && 'dimensionRefAreaNotation' in options.filter) {
+                    filterFromOptions = " ; ?propertyRefArea [ skos:notation '" + options.filter.dimensionRefAreaNotation + "' ]";
+                }
+            }
+
+            if ('optional' in options) {
+                if('prefLabels' in options.optional) {
+                    optionalForLabels = "\n\
+    VALUES ?labelProperty {";
+                    options.optional.prefLabels.forEach(function(property){
+                        optionalForLabels += ' ' + property;
+                    });
+                    optionalForLabels += ' }';
+                }
+            }
+            else {
+                optionalForLabels = "\n\
+    VALUES ?labelProperty { rdfs:label }";
+            }
+
+//    FILTER (!STRSTARTS(STR(?resource), 'http://purl.org/linked-data/sdmx/'))\n\
             var query = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n\
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n\
 PREFIX dcterms: <http://purl.org/dc/terms/>\n\
 PREFIX qb: <http://purl.org/linked-data/cube#>\n\
+PREFIX sdmx-dimension: <http://purl.org/linked-data/sdmx/2009/dimension#>\n\
+PREFIX sdmx-measure: <http://purl.org/linked-data/sdmx/2009/measure#>\n\
 CONSTRUCT {\n\
     ?resource skos:prefLabel ?prefLabel .\n\
 }\n\
 WHERE {\n\
-    ?resource a " + resourceType + " .\n\
-    OPTIONAL { ?resource dcterms:title ?prefLabel . }\n\
-    OPTIONAL { ?resource skos:prefLabel ?prefLabel . }\n\
-    OPTIONAL { ?resource rdfs:label ?prefLabel . }\n\
-    FILTER (!STRSTARTS(STR(?resource), 'http://purl.org/linked-data/sdmx/'))\n\
-    FILTER (REGEX(?prefLabel, '" + textInput +"', 'i'))\n\
-    FILTER (LANG(?prefLabel) = '' || LANGMATCHES(LANG(?prefLabel), '" + lang + "'))\n\
+    {\n\
+        SELECT DISTINCT ?propertyRefArea\n\
+        WHERE {\n\
+            ?propertyRefArea rdfs:subPropertyOf* sdmx-dimension:refArea .\n\
+        }\n\
+    }"
++ optionalForLabels + "\n\
+    ?resource\n\
+        a " + resourceType + " ;\n\
+        ?labelProperty ?prefLabel .\n\
+    FILTER (CONTAINS(LCASE(?prefLabel), '" + textInput + "') && (LANG(?prefLabel) = '' || LANGMATCHES(LANG(?prefLabel), '" + lang + "')))\n\
+    [] qb:dataSet ?resource" + filterFromOptions + " .\n\
 }";
             return sparqlEndpoint + "?query=" + DO.U.encodeString(query);
         },
@@ -4446,7 +4478,11 @@ WHERE {\n\
                                         textInputB = DO.C.RefAreas[textInputB];
                                     }
 
-                                    var queryURL = DO.U.createSPARQLQueryURLWithTextInput(sparqlEndpoint, resourceType, textInputA, lang);
+                                    var options = {};
+                                    options.filter = { dimensionRefAreaNotation: textInputB };
+                                    options.optional = { prefLabels: ["dcterms:title"] };
+
+                                    var queryURL = DO.U.createSPARQLQueryURLWithTextInput(sparqlEndpoint, resourceType, textInputA.toLowerCase(), lang, options);
 
                                     var pIRI = queryURL;
                                     if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
