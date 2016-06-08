@@ -3101,9 +3101,6 @@ var DO = {
                 }
                 resourcePattern = dimensionDefault + dataSetPattern + dimensionPattern + notationPattern;
             }
-            else {
-                resourcePattern = "[] [] ?resource .";
-            }
 
             labelsPattern = "\n\
 ";
