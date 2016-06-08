@@ -1641,7 +1641,7 @@ var DO = {
 
         stripFragmentFromString: function(string) {
             if (typeof string === "string") {
-                stringIndexFragment = string.indexOf('#');
+                var stringIndexFragment = string.indexOf('#');
 
                 if (stringIndexFragment >= 0) {
                     string = string.substring(0, stringIndexFragment);
