@@ -3081,12 +3081,28 @@ var DO = {
         createSPARQLQueryURLWithTextInput: function(sparqlEndpoint, resourceType, textInput, lang, options) {
             lang = lang || 'en';
             options = options || {};
-            var filterFromOptions = '', labelsPattern = '';
+            var labelsPattern = '', resourcePattern = '';
             if ('filter' in options) {
                 if(resourceType == '<http://purl.org/linked-data/cube#DataSet>' || resourceType == 'qb:DataSet'
                     && 'dimensionRefAreaNotation' in options.filter) {
-                    filterFromOptions = " ; ?propertyRefArea [ skos:notation '" + options.filter.dimensionRefAreaNotation + "' ]";
+                        var dimensionPattern, dimensionDefault = '';
+                        var dataSetPattern = "\n\
+    [] qb:dataSet ?resource";
+                    if ('dimensionProperty' in options.filter) {
+                        dimensionPattern = " ; " + options.filter.dimensionProperty;
+                    }
+                    else {
+                        var dimensionDefault = " .\n\
+    { SELECT DISTINCT ?propertyRefArea WHERE { ?propertyRefArea rdfs:subPropertyOf* sdmx-dimension:refArea . } }";
+                        dimensionPattern = " ; ?propertyRefArea ";
+
+                    }
+                    var notationPattern = " [ skos:notation '" + options.filter.dimensionRefAreaNotation + "' ] ."
                 }
+                resourcePattern = dimensionDefault + dataSetPattern + dimensionPattern + notationPattern;
+            }
+            else {
+                resourcePattern = "[] [] ?resource .";
             }
 
             labelsPattern = "\n\
@@ -3121,16 +3137,10 @@ CONSTRUCT {\n\
     ?resource skos:prefLabel ?prefLabel .\n\
 }\n\
 WHERE {\n\
-    {\n\
-        SELECT DISTINCT ?propertyRefArea\n\
-        WHERE {\n\
-            ?propertyRefArea rdfs:subPropertyOf* sdmx-dimension:refArea .\n\
-        }\n\
-    }\n\
     ?resource a " + resourceType + " ."
 + labelsPattern + "\n\
-    FILTER (CONTAINS(LCASE(?prefLabel), '" + textInput + "') && (LANG(?prefLabel) = '' || LANGMATCHES(LANG(?prefLabel), '" + lang + "')))\n\
-    [] qb:dataSet ?resource" + filterFromOptions + " .\n\
+    FILTER (CONTAINS(LCASE(?prefLabel), '" + textInput + "') && (LANG(?prefLabel) = '' || LANGMATCHES(LANG(?prefLabel), '" + lang + "')))"
++ resourcePattern + "\n\
 }";
             return sparqlEndpoint + "?query=" + DO.U.encodeString(query);
         },
@@ -4483,7 +4493,10 @@ WHERE {\n\
                                     }
 
                                     var options = {};
-                                    options.filter = { dimensionRefAreaNotation: textInputB };
+                                    options.filter = {
+                                        dimensionProperty: 'sdmx-dimension:refArea',
+                                        dimensionRefAreaNotation: textInputB
+                                    };
                                     options.optional = { prefLabels: ["dcterms:title"] };
 
                                     var queryURL = DO.U.createSPARQLQueryURLWithTextInput(sparqlEndpoint, resourceType, textInputA.toLowerCase(), lang, options);
