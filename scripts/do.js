@@ -3330,19 +3330,22 @@ WHERE {\n\
 // console.log(this);
                 var ref = refs[i].querySelector('mark[id]');
 // console.log(ref);
-                var refId = ref.id;
+                if (ref) {
+                    var refId = ref.id;
 // console.log(refId);
-                var refA = refs[i].querySelectorAll('[class*=ref-] a');
+                    var refA = refs[i].querySelectorAll('[class*=ref-] a');
 // console.log(refA);
-                for (var j = 0; j < refA.length; j++) {
-                    var noteId = refA[j].getAttribute('href').substr(1);
+                    for (var j = 0; j < refA.length; j++) {
+                        //XXX: Assuming this is always an internal anchor?
+                        var noteId = refA[j].getAttribute('href').substr(1);
 // console.log(noteId);
-                    var refLabel = refA[j].textContent;
+                        var refLabel = refA[j].textContent;
 // console.log(refLabel);
 
 // console.log(refId + ' ' +  refLabel + ' ' + noteId);
-                    DO.U.positionNote(refId, refLabel, noteId);
-                };
+                        DO.U.positionNote(refId, refLabel, noteId);
+                    }
+                }
             }
         },
 
