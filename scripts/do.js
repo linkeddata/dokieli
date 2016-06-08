@@ -3097,7 +3097,7 @@ var DO = {
                         dimensionPattern = " ; ?propertyRefArea ";
 
                     }
-                    var notationPattern = " [ skos:notation '" + options.filter.dimensionRefAreaNotation + "' ] ."
+                    var notationPattern = " [ skos:notation '" + options.filter.dimensionRefAreaNotation.toUpperCase() + "' ] ."
                 }
                 resourcePattern = dimensionDefault + dataSetPattern + dimensionPattern + notationPattern;
             }
