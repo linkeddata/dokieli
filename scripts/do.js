@@ -3081,7 +3081,7 @@ var DO = {
         createSPARQLQueryURLWithTextInput: function(sparqlEndpoint, resourceType, textInput, lang, options) {
             lang = lang || 'en';
             options = options || {};
-            var filterFromOptions = '', optionalForLabels = '';
+            var filterFromOptions = '', labelsPattern = '';
             if ('filter' in options) {
                 if(resourceType == '<http://purl.org/linked-data/cube#DataSet>' || resourceType == 'qb:DataSet'
                     && 'dimensionRefAreaNotation' in options.filter) {
@@ -3089,20 +3089,26 @@ var DO = {
                 }
             }
 
+            labelsPattern = "\n\
+";
             if ('optional' in options) {
                 if('prefLabels' in options.optional) {
-                    optionalForLabels = "\n\
-    VALUES ?labelProperty {";
-                    options.optional.prefLabels.forEach(function(property){
-                        optionalForLabels += ' ' + property;
-                    });
-                    optionalForLabels += ' }';
+                    if (options.optional.prefLabels.length == 1) {
+                        labelsPattern += "    ?resource " + options.optional.prefLabels[0] + " ?prefLabel .";
+                    }
+                    else {
+                        labelsPattern += "    VALUES ?labelProperty {";
+                        options.optional.prefLabels.forEach(function(property){
+                            labelsPattern += ' ' + property;
+                        });
+                        labelsPattern += " } ?resource ?labelProperty ?prefLabel .";
+                    }
                 }
             }
             else {
-                optionalForLabels = "\n\
-    VALUES ?labelProperty { rdfs:label }";
+                labelsPattern += "    ?resource rdfs:label ?prefLabel .";
             }
+
 
 //    FILTER (!STRSTARTS(STR(?resource), 'http://purl.org/linked-data/sdmx/'))\n\
             var query = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n\
@@ -3120,11 +3126,9 @@ WHERE {\n\
         WHERE {\n\
             ?propertyRefArea rdfs:subPropertyOf* sdmx-dimension:refArea .\n\
         }\n\
-    }"
-+ optionalForLabels + "\n\
-    ?resource\n\
-        a " + resourceType + " ;\n\
-        ?labelProperty ?prefLabel .\n\
+    }\n\
+    ?resource a " + resourceType + " ."
++ labelsPattern + "\n\
     FILTER (CONTAINS(LCASE(?prefLabel), '" + textInput + "') && (LANG(?prefLabel) = '' || LANGMATCHES(LANG(?prefLabel), '" + lang + "')))\n\
     [] qb:dataSet ?resource" + filterFromOptions + " .\n\
 }";
