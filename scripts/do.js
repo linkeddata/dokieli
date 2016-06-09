@@ -3078,10 +3078,14 @@ var DO = {
             return document.createRange().createContextualFragment(strHTML);
         },
 
-        createSPARQLQueryURLWithTextInput: function(sparqlEndpoint, resourceType, textInput, lang, options) {
-            lang = lang || 'en';
+        createSPARQLQueryURLWithTextInput: function(sparqlEndpoint, resourceType, textInput, options) {
             options = options || {};
             var labelsPattern = '', resourcePattern = '';
+
+            if(!('lang' in options)) {
+                options['lang'] = 'en';
+            }
+
             if ('filter' in options) {
                 if(resourceType == '<http://purl.org/linked-data/cube#DataSet>' || resourceType == 'qb:DataSet'
                     && 'dimensionRefAreaNotation' in options.filter) {
@@ -3136,7 +3140,7 @@ CONSTRUCT {\n\
 WHERE {\n\
     ?resource a " + resourceType + " ."
 + labelsPattern + "\n\
-    FILTER (CONTAINS(LCASE(?prefLabel), '" + textInput + "') && (LANG(?prefLabel) = '' || LANGMATCHES(LANG(?prefLabel), '" + lang + "')))"
+    FILTER (CONTAINS(LCASE(?prefLabel), '" + textInput + "') && (LANG(?prefLabel) = '' || LANGMATCHES(LANG(?prefLabel), '" + options.lang + "')))"
 + resourcePattern + "\n\
 }";
             return sparqlEndpoint + "?query=" + DO.U.encodeString(query);
@@ -4499,7 +4503,7 @@ WHERE {\n\
                                     };
                                     options.optional = { prefLabels: ["dcterms:title"] };
 
-                                    var queryURL = DO.U.createSPARQLQueryURLWithTextInput(sparqlEndpoint, resourceType, textInputA.toLowerCase(), lang, options);
+                                    var queryURL = DO.U.createSPARQLQueryURLWithTextInput(sparqlEndpoint, resourceType, textInputA.toLowerCase(), options);
 
                                     var pIRI = queryURL;
                                     if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
