@@ -3392,9 +3392,19 @@ WHERE {\n\
 
                         var selector = i.child(target.oahasSelector);
 
-                        var exact = selector.oaexact;
-                        var prefix = selector.oaprefix;
-                        var suffix = selector.oasuffix;
+                        var exact, prefix, suffix;
+                        var selectorTypes = selector.rdftype._array;
+                        if(selectorTypes.indexOf('http://www.w3.org/ns/oa#TextQuoteSelector') >= 0) {
+                            exact = selector.oaexact;
+                            prefix = selector.oaprefix;
+                            suffix = selector.oasuffix;
+                        }
+                        else if (selectorTypes.indexOf('http://www.w3.org/ns/oa#FragmentSelector') >= 0) {
+                            var refinedBy = i.child(selector["http://www.w3.org/ns/oa#refinedBy"]);
+                            exact = refinedBy.oaexact;
+                            prefix = refinedBy.oaprefix;
+                            suffix = refinedBy.oasuffix;
+                        }
 
                         var source = target.oahasSource;
 
@@ -3659,8 +3669,10 @@ WHERE {\n\
 
                         if (typeof n.target !== 'undefined') {
                             var targetIRI = n.target.iri;
+                            var targetIRIFragment = n.target.iri.substr(n.target.iri.lastIndexOf('#'));
+                            //TODO: Handle when there is no fragment
                             if (typeof n.target.selector !== 'undefined') {
-                                annotationTextSelector = '<span rel="oa:hasSelector" resource="i:#text-quote-selector" typeof="oa:TextQuoteSelector"><span property="oa:prefix" xml:lang="en" lang="en">' + n.target.selector.prefix + '</span><mark property="oa:exact" xml:lang="en" lang="en">' + n.target.selector.exact + '</mark><span property="oa:suffix" xml:lang="en" lang="en">' + n.target.selector.suffix + '</span></span>';
+                                annotationTextSelector = '<span rel="oa:hasSelector" resource="i:#fragment-selector" typeof="oa:FragmentSelector"><meta property="rdf:value" content="' + targetIRIFragment + '" xml:lang="" lang="" rel="dcterms:conformsTo" resource="https://tools.ietf.org/html/rfc3987" /><span rel="oa:refinedBy" resource="i#text-quote-selector" typeof="oa:TextQuoteSelector"><span property="oa:prefix" xml:lang="en" lang="en">' + n.target.selector.prefix + '</span><mark property="oa:exact" xml:lang="en" lang="en">' + n.target.selector.exact + '</mark><span property="oa:suffix" xml:lang="en" lang="en">' + n.target.selector.suffix + '</span></span></span>';
                             }
                         }
                         else {
