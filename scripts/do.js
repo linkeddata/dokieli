@@ -4594,7 +4594,7 @@ WHERE {\n\
                                                                 form.removeChild(form.querySelector('.fa.fa-spinner.fa-pulse'));
                                                         }
                                                         else {
-                                                            //TODO: Temporary. This shouldn't really happen. Only display datasets with observations beforehand. SPARQL ASK subquery.
+                                                            //This shouldn't happen.
                                                             sG.insertAdjacentHTML('beforeend', '<span class="sparkline-info">0 observations. Select another.</span>');
                                                         }
                                                     });
