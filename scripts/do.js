@@ -3186,21 +3186,7 @@ WHERE {\n\
 
             var obsValue = 'http://purl.org/linked-data/sdmx/2009/measure#obsValue';
 
-            var svg = '<svg version="1.1"\n\
-    xmlns="http://www.w3.org/2000/svg"\n\
-    xmlns:xlink="http://www.w3.org/1999/xlink"\n\
-    width="100%" height="100%">\n\
-    <style type="text/css"><![CDATA[\n\
-        line {\n\
-            stroke:' + options.cssStroke + ';\n\
-            stroke-width:1px;\n\
-        }\n\
-        circle {\n\
-            stroke:#f00;\n\
-            fill:#f00;\n\
-        }\n\
-    ]]></style>\n\
-';
+            var svg = '<svg height="100%" prefix="prov: http://www.w3.org/ns/prov# schema: https://schema.org/" version="1.1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><style type="text/css"><![CDATA[ line { stroke:' + options.cssStroke + '; stroke-width:1px; } circle { stroke:#f00; fill:#f00; } ]]></style>';
 
             var dotSize = 1;
             var values = data.map(function(n) { return n[obsValue]; }),
@@ -3229,7 +3215,7 @@ WHERE {\n\
                     ' x2="' + x2 + '%"' +
                     ' y1="' + y1 + '%"' +
                     ' y2="' + y2 + '%"' +
-                    '/>';
+                    ' />';
 
                 //Last data item
                 if(i+1 === parts.length) {
@@ -3237,7 +3223,7 @@ WHERE {\n\
                         ' cx="' + (x2 - dotSize) + '%"' +
                         ' cy="' + (y2 + 2 * dotSize) + '%"' +
                         ' r="' + dotSize + '"' +
-                        '/>';
+                        ' />';
                 }
             }
 
@@ -3245,7 +3231,8 @@ WHERE {\n\
             //TODO: Link each point to an observation
             svg += '<g>';
             if (options && 'url' in options && options && 'title' in options) {
-                svg += '<a target="_blank" xlink:href="' + options.url + '" xlink:title="' + options.title + '">' + lines + '</a>';
+                svg += '<title property="schema:name">' + options['title'] + '</title>';
+                svg += '<a rel="prov:wasDerivedFrom" resource="' + options.url + '" target="_blank" xlink:href="' + options.url + '" xlink:title="' + options.title + '">' + lines + '</a>';
             }
             else {
                 svg += lines;
@@ -4811,7 +4798,10 @@ WHERE {\n\
 
                             switch(this.action) {
                                 case 'sparkline':
-                                    ref = '<a href="' + opts.select + '">' + opts.selectionText + '</a> <span class="sparkline">' + opts.sparkline + '</sparkline>';
+                                    var figureIRI = DO.U.generateAttributeId(null, opts.selectionText);
+                                    ref = '<span rel="schema:hasPart" resource="#figure-' + figureIRI + '">\n\
+                                    <a href="' + opts.select + '" property="schema:name" rel="prov:wasDerivedFrom" resource="' + opts.select + '" typeof="schema:Dataset">' + opts.selectionText + '</a> \n\
+                                    <span class="sparkline" rel="schema:image" resource="#' + figureIRI + '">' + opts.sparkline + '</span></span>';
                                     break;
 
                                 //External Note
