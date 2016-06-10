@@ -1612,6 +1612,15 @@ var DO = {
             }
         },
 
+        updateDocumentTitle: function(e) {
+            if (!e.target.matches('h1')) {
+                var h1 = document.querySelector('main > article > h1');
+                if (h1) {
+                    document.title = h1.textContent.trim();
+                }
+            }
+        },
+
         utf8Tob64: function(s) {
             return window.btoa(encodeURIComponent(s));
         },
@@ -3804,6 +3813,7 @@ WHERE {\n\
             disableEditor: function(e) {
         //        _mediumEditors[1].destroy();
                 DO.C.EditorEnabled = false;
+                document.removeEventListener('click', DO.U.updateDocumentTitle);
                 return DO.U.Editor.MediumEditor.destroy();
             },
 
@@ -3895,12 +3905,18 @@ WHERE {\n\
                 var eOptions = editorOptions[editorMode];
                 DO.C.User.Role = editorMode;
 
+
                 if (typeof MediumEditor !== 'undefined') {
                     DO.U.Editor.MediumEditor = new MediumEditor(eNodes, eOptions);
-
                     DO.C.EditorEnabled = true;
+
+                    if(editorMode == 'author') {
+                        document.addEventListener('click', DO.U.updateDocumentTitle);
+                    }
+
                     return DO.U.Editor.MediumEditor;
                 }
+
             },
 
             Button: (function () {
