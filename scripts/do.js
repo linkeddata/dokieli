@@ -3185,6 +3185,7 @@ WHERE {\n\
             }
 
             var obsValue = 'http://purl.org/linked-data/sdmx/2009/measure#obsValue';
+            var observation = 'http://purl.org/linked-data/cube#Observation';
 
             var svg = '<svg height="100%" prefix="prov: http://www.w3.org/ns/prov# schema: https://schema.org/" version="1.1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><style type="text/css"><![CDATA[ line { stroke:' + options.cssStroke + '; stroke-width:1px; } circle { stroke:#f00; fill:#f00; } ]]></style>';
 
@@ -3210,33 +3211,35 @@ WHERE {\n\
                 x2 = range * (i / parts.length) + (div / 2);
                 y2 = range - parts[i];
 
-                lines += '<line' +
+                lines += '<a target="_blank" xlink:href="' + data[i][observation] + '"><line' +
                     ' x1="' + x1 + '%"' +
                     ' x2="' + x2 + '%"' +
                     ' y1="' + y1 + '%"' +
                     ' y2="' + y2 + '%"' +
-                    ' />';
+                    ' /></a>';
 
                 //Last data item
                 if(i+1 === parts.length) {
-                    lines += '<circle' +
+                    lines += '<a target="_blank" xlink:href="' + data[i][observation] + '"><circle' +
                         ' cx="' + (x2 - dotSize) + '%"' +
                         ' cy="' + (y2 + 2 * dotSize) + '%"' +
                         ' r="' + dotSize + '"' +
-                        ' />';
+                        ' /></a>';
                 }
             }
 
 //            document.documentElement.setAttribute('class', '');
             //TODO: Link each point to an observation
-            svg += '<g>';
-            if (options && 'url' in options && options && 'title' in options) {
+            var wasDerivedFrom = '';
+            if(options && 'url' in options) {
+                wasDerivedFrom = ' rel="prov:wasDerivedFrom" resource="' + options.url + '"';
+//                svg += '<a rel="prov:wasDerivedFrom" resource="' + options.url + '" target="_blank" xlink:href="' + options.url + '" xlink:title="' + options.title + '">' + lines + '</a>';
+            }
+            svg += '<g' + wasDerivedFrom + '>';
+            if (options && 'title' in options) {
                 svg += '<title property="schema:name">' + options['title'] + '</title>';
-                svg += '<a rel="prov:wasDerivedFrom" resource="' + options.url + '" target="_blank" xlink:href="' + options.url + '" xlink:title="' + options.title + '">' + lines + '</a>';
             }
-            else {
-                svg += lines;
-            }
+            svg += lines;
             svg += '</g></svg>';
 
             return svg;
@@ -4591,6 +4594,7 @@ WHERE {\n\
                                                             var list = [], item;
                                                             Object.keys(observations).forEach(function(key) {
                                                                 item = {};
+                                                                observations[key]['http://purl.org/linked-data/cube#Observation'] = key;
                                                                 item[key] = observations[key];
                                                                 list.push(item[key]);
                                                             });
