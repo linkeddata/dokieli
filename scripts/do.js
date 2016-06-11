@@ -3187,7 +3187,7 @@ WHERE {\n\
             var obsValue = 'http://purl.org/linked-data/sdmx/2009/measure#obsValue';
             var observation = 'http://purl.org/linked-data/cube#Observation';
 
-            var svg = '<svg height="100%" prefix="prov: http://www.w3.org/ns/prov# schema: https://schema.org/" version="1.1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><style type="text/css"><![CDATA[ line { stroke:' + options.cssStroke + '; stroke-width:1px; } circle { stroke:#f00; fill:#f00; } ]]></style>';
+            var svg = '<svg height="100%" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# xsd: http://www.w3.org/2001/XMLSchema# qb: http://purl.org/linked-data/cube# prov: http://www.w3.org/ns/prov# schema: https://schema.org/" version="1.1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><style type="text/css"><![CDATA[ line { stroke:' + options.cssStroke + '; stroke-width:1px; } circle { stroke:#f00; fill:#f00; } ]]></style>';
 
             var dotSize = 1;
             var values = data.map(function(n) { return n[obsValue]; }),
@@ -3211,7 +3211,7 @@ WHERE {\n\
                 x2 = range * (i / parts.length) + (div / 2);
                 y2 = range - parts[i];
 
-                lines += '<a target="_blank" xlink:href="' + data[i][observation] + '"><line' +
+                lines += '<a rel="rdfs:seeAlso" resource="' + data[i][observation] + '" target="_blank" xlink:href="' + data[i][observation] + '"><line' +
                     ' x1="' + x1 + '%"' +
                     ' x2="' + x2 + '%"' +
                     ' y1="' + y1 + '%"' +
@@ -3220,7 +3220,7 @@ WHERE {\n\
 
                 //Last data item
                 if(i+1 === parts.length) {
-                    lines += '<a target="_blank" xlink:href="' + data[i][observation] + '"><circle' +
+                    lines += '<a rel="rdfs:seeAlso" resource="' + data[i][observation] + '" target="_blank" xlink:href="' + data[i][observation] + '"><circle' +
                         ' cx="' + (x2 - dotSize) + '%"' +
                         ' cy="' + (y2 + 2 * dotSize) + '%"' +
                         ' r="' + dotSize + '"' +
@@ -4804,7 +4804,7 @@ WHERE {\n\
                                 case 'sparkline':
                                     var figureIRI = DO.U.generateAttributeId(null, opts.selectionText);
                                     ref = '<span rel="schema:hasPart" resource="#figure-' + figureIRI + '">\n\
-                                    <a href="' + opts.select + '" property="schema:name" rel="prov:wasDerivedFrom" resource="' + opts.select + '" typeof="schema:Dataset">' + opts.selectionText + '</a> \n\
+                                    <a href="' + opts.select + '" property="schema:name" rel="prov:wasDerivedFrom" resource="' + opts.select + '" typeof="qb:DataSet">' + opts.selectionText + '</a> \n\
                                     <span class="sparkline" rel="schema:image" resource="#' + figureIRI + '">' + opts.sparkline + '</span></span>';
                                     break;
 
