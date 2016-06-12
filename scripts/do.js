@@ -4851,7 +4851,7 @@ WHERE {\n\
                                 case 'sparkline':
                                     var figureIRI = DO.U.generateAttributeId(null, opts.selectionDataSet);
                                     ref = '<span rel="schema:hasPart" resource="#figure-' + figureIRI + '">\n\
-                                    <a href="' + opts.select + '" property="schema:name" rel="prov:wasDerivedFrom" resource="' + opts.select + '" typeof="qb:DataSet">' + opts.selectionDataSet + '</a>\n\
+                                    <a href="' + opts.select + '" property="schema:name" rel="prov:wasDerivedFrom" resource="' + opts.select + '" typeof="qb:DataSet">' + opts.selectionDataSet + '</a> [' + DO.U.htmlEntities(DO.C.RefAreas[opts.selectionRefArea]) + ']\n\
                                     <span class="sparkline" rel="schema:image" resource="#' + figureIRI + '">' + opts.sparkline + '</span></span>';
                                     break;
 
