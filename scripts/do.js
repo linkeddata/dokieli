@@ -4607,7 +4607,7 @@ WHERE {\n\
                                                 //XXX: Should this replace the initial search term?
                                                 form.querySelector('#sparkline-selection-dataset').value = title;
 
-                                                var refArea = textInputB;
+                                                var refArea = textInputB.toUpperCase();
                                                 var paramDimension = "\n\
     ?propertyRefArea rdfs:subPropertyOf* sdmx-dimension:refArea .\n\
     ?observation ?propertyRefArea [ skos:notation '" + refArea + "' ] .";
