@@ -3220,7 +3220,7 @@ WHERE {\n\
 
                 //Last data item
                 if(i+1 === parts.length) {
-                    lines += '<a rel="rdfs:seeAlso" resource="' + data[i][observation] + '" target="_blank" xlink:href="' + data[i][observation] + '"><circle' +
+                    lines += '<a target="_blank" xlink:href="' + data[i][observation] + '"><circle' +
                         ' cx="' + (x2 - dotSize) + '%"' +
                         ' cy="' + (y2 + 2 * dotSize) + '%"' +
                         ' r="' + dotSize + '"' +
