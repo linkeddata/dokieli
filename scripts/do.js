@@ -4389,7 +4389,8 @@ WHERE {\n\
                                 case 'sparkline':
                                     template = [
                                     '<input type="text" name="sparkline-search" value="" id="sparkline-search" class="medium-editor-toolbar-input" placeholder="Enter search terms" /><br/>',
-                                    '<input type="hidden" name="sparkline-selection-dataset" value="" id="sparkline-selection-dataset" />'
+                                    '<input type="hidden" name="sparkline-selection-dataset" value="" id="sparkline-selection-dataset" />',
+                                    '<input type="hidden" name="sparkline-selection-refarea" value="" id="sparkline-selection-refarea" />'
                                     ];
                                     break;
                                 default:
@@ -4606,6 +4607,7 @@ WHERE {\n\
                                                 var title = e.target.querySelector('*[value="' + e.target.value + '"]').textContent.trim();
                                                 //XXX: Should this replace the initial search term?
                                                 form.querySelector('#sparkline-selection-dataset').value = title;
+                                                form.querySelector('#sparkline-selection-refarea').value = textInputB.toUpperCase();
 
                                                 var refArea = textInputB.toUpperCase();
                                                 var paramDimension = "\n\
@@ -4736,6 +4738,7 @@ WHERE {\n\
                                     opts.select = this.getInput().select.value;
                                     opts.sparkline = this.getInput().sparkline.innerHTML;
                                     opts.selectionDataSet = this.getInput().selectionDataSet.value;
+                                    opts.selectionRefArea = this.getInput().selectionRefArea.value;
                                     break;
                                 default:
                                     opts.url = this.getInput().value;
@@ -5250,6 +5253,7 @@ WHERE {\n\
                                     r.select = this.getForm().querySelector('#sparkline-select');
                                     r.sparkline = this.getForm().querySelector('#sparkline-graph .sparkline');
                                     r.selectionDataSet = this.getForm().querySelector('#sparkline-selection-dataset');
+                                    r.selectionRefArea = this.getForm().querySelector('#sparkline-selection-refarea');
                                     break;
 
                                 default:
