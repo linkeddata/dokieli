@@ -3221,8 +3221,8 @@ WHERE {\n\
                 //Last data item
                 if(i+1 === parts.length) {
                     lines += '<a target="_blank" xlink:href="' + data[i][observation] + '"><circle' +
-                        ' cx="' + (x2 - dotSize) + '%"' +
-                        ' cy="' + (y2 + 2 * dotSize) + '%"' +
+                        ' cx="' + x2 + '%"' +
+                        ' cy="' + y2 + '%"' +
                         ' r="' + dotSize + '"' +
                         ' /></a>';
                 }
