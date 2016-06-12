@@ -4389,7 +4389,7 @@ WHERE {\n\
                                 case 'sparkline':
                                     template = [
                                     '<input type="text" name="sparkline-search" value="" id="sparkline-search" class="medium-editor-toolbar-input" placeholder="Enter search terms" /><br/>',
-                                    '<input type="hidden" name="sparkline-selection-text" value="" id="sparkline-selection-text" />'
+                                    '<input type="hidden" name="sparkline-selection-dataset" value="" id="sparkline-selection-dataset" />'
                                     ];
                                     break;
                                 default:
@@ -4551,7 +4551,7 @@ WHERE {\n\
                                             e.stopPropagation();
                                             textInputB = e.target.value;
                                             input.search.value = textInputA + ' of ' + textInputB;
-                                            form.querySelector('#sparkline-selection-text').value = input.search.value;
+                                            form.querySelector('#sparkline-selection-dataset').value = input.search.value;
 
                                             _this.base.restoreSelection();
                                             MediumEditor.util.insertHTMLCommand(document, input.search.value);
@@ -4605,7 +4605,7 @@ WHERE {\n\
                                                 var dataset = e.target.value;
                                                 var title = e.target.querySelector('*[value="' + e.target.value + '"]').textContent.trim();
                                                 //XXX: Should this replace the initial search term?
-                                                form.querySelector('#sparkline-selection-text').value = title;
+                                                form.querySelector('#sparkline-selection-dataset').value = title;
 
                                                 var refArea = textInputB;
                                                 var paramDimension = "\n\
@@ -4735,7 +4735,7 @@ WHERE {\n\
                                     opts.search = this.getInput().search.value;
                                     opts.select = this.getInput().select.value;
                                     opts.sparkline = this.getInput().sparkline.innerHTML;
-                                    opts.selectionText = this.getInput().selectionText.value;
+                                    opts.selectionDataSet = this.getInput().selectionDataSet.value;
                                     break;
                                 default:
                                     opts.url = this.getInput().value;
@@ -4846,9 +4846,9 @@ WHERE {\n\
 
                             switch(this.action) {
                                 case 'sparkline':
-                                    var figureIRI = DO.U.generateAttributeId(null, opts.selectionText);
+                                    var figureIRI = DO.U.generateAttributeId(null, opts.selectionDataSet);
                                     ref = '<span rel="schema:hasPart" resource="#figure-' + figureIRI + '">\n\
-                                    <a href="' + opts.select + '" property="schema:name" rel="prov:wasDerivedFrom" resource="' + opts.select + '" typeof="qb:DataSet">' + opts.selectionText + '</a> \n\
+                                    <a href="' + opts.select + '" property="schema:name" rel="prov:wasDerivedFrom" resource="' + opts.select + '" typeof="qb:DataSet">' + opts.selectionDataSet + '</a>\n\
                                     <span class="sparkline" rel="schema:image" resource="#' + figureIRI + '">' + opts.sparkline + '</span></span>';
                                     break;
 
@@ -5249,7 +5249,7 @@ WHERE {\n\
                                     r.search = this.getForm().querySelector('#sparkline-search.medium-editor-toolbar-input');
                                     r.select = this.getForm().querySelector('#sparkline-select');
                                     r.sparkline = this.getForm().querySelector('#sparkline-graph .sparkline');
-                                    r.selectionText = this.getForm().querySelector('#sparkline-selection-text');
+                                    r.selectionDataSet = this.getForm().querySelector('#sparkline-selection-dataset');
                                     break;
 
                                 default:
