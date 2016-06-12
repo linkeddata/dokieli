@@ -3228,14 +3228,12 @@ WHERE {\n\
                 }
             }
 
-//            document.documentElement.setAttribute('class', '');
-            //TODO: Link each point to an observation
             var wasDerivedFrom = '';
             if(options && 'url' in options) {
                 wasDerivedFrom = ' rel="prov:wasDerivedFrom" resource="' + options.url + '"';
-//                svg += '<a rel="prov:wasDerivedFrom" resource="' + options.url + '" target="_blank" xlink:href="' + options.url + '" xlink:title="' + options.title + '">' + lines + '</a>';
             }
             svg += '<g' + wasDerivedFrom + '>';
+            svg += '<meta rel="schema:license" resource="https://creativecommons.org/publicdomain/zero/1.0/" />';
             if (options && 'title' in options) {
                 svg += '<title property="schema:name">' + options['title'] + '</title>';
             }
