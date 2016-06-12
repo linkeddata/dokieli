@@ -4528,7 +4528,7 @@ WHERE {\n\
 
                                     if(!DO.C.RefAreas[textInputB.toUpperCase()]) {
                                         Object.keys(DO.C.RefAreas).forEach(function(key) {
-                                            if(DO.C.RefAreas[key] == textInputB) {
+                                            if(DO.C.RefAreas[key].toLowerCase() == textInputB.toLowerCase()) {
                                                 textInputB = key;
                                             }
                                         });
