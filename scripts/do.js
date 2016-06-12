@@ -4526,7 +4526,7 @@ WHERE {\n\
                                     var textInputA = selection.split(' of ')[0];
                                     var textInputB = selection.substr(selection.indexOf(' of ') + 4);
 
-                                    if(!DO.C.RefAreas[textInputB]) {
+                                    if(!DO.C.RefAreas[textInputB.toUpperCase()]) {
                                         Object.keys(DO.C.RefAreas).forEach(function(key) {
                                             if(DO.C.RefAreas[key] == textInputB) {
                                                 textInputB = key;
@@ -4539,7 +4539,7 @@ WHERE {\n\
                                         sG.parentNode.removeChild(sG);
                                     }
 
-                                    if(!DO.C.RefAreas[textInputB]) {
+                                    if(!DO.C.RefAreas[textInputB.toUpperCase()]) {
                                         var refAreas;
                                         Object.keys(DO.C.RefAreas).forEach(function(key) {
                                             refAreas += '<option value="' + key + '">' + key + ' - ' + DO.C.RefAreas[key] + '</option>';
