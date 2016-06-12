@@ -4552,7 +4552,8 @@ WHERE {\n\
                                             e.stopPropagation();
                                             textInputB = e.target.value;
                                             input.search.value = textInputA + ' of ' + textInputB;
-                                            form.querySelector('#sparkline-selection-dataset').value = input.search.value;
+                                            form.querySelector('#sparkline-selection-dataset').value = textInputA;
+                                            form.querySelector('#sparkline-selection-refarea').value = textInputB;
 
                                             _this.base.restoreSelection();
                                             MediumEditor.util.insertHTMLCommand(document, input.search.value);
