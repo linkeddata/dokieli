@@ -4495,9 +4495,25 @@ WHERE {\n\
                                     break;
                                 case 'sparkline':
                                     input.search.focus();
-// console.log(input);
-// console.log(this);
                                     input.search.value = selection;
+
+                                    var inputSearch = function(e){
+                                        if(e.which == 13) {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            _this.base.restoreSelection();
+                                            MediumEditor.util.insertHTMLCommand(document, e.target.value);
+                                            var selection = { start: initialSelectionState.start, end: (initialSelectionState.start + e.target.value.length) };
+                                            MediumEditor.selection.importSelection(selection, initialSelectedParentElement, document);
+                                            _this.base.checkSelection();
+                                            e.target.setAttribute('data-event-keyup-enter', true);
+                                            _this.showForm();
+                                            return;
+                                        }
+                                    }
+                                    if(!input.search.getAttribute('data-event-keyup-enter')) {
+                                        input.search.addEventListener('keyup', inputSearch, false);
+                                    }
 
                                     var sparqlEndpoint = 'http://worldbank.270a.info/';
                                     var resourceType = '<http://purl.org/linked-data/cube#DataSet>';
@@ -4536,7 +4552,6 @@ WHERE {\n\
                                             textInputB = e.target.value;
                                             input.search.value = textInputA + ' of ' + textInputB;
                                             form.querySelector('#sparkline-selection-text').value = input.search.value;
-
 
                                             _this.base.restoreSelection();
                                             MediumEditor.util.insertHTMLCommand(document, input.search.value);
