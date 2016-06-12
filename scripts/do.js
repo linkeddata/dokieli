@@ -4455,6 +4455,7 @@ WHERE {\n\
                         },
 
                         showForm: function (opts) {
+                            var _this = this;
                             var input = this.getInput(),
                                 targetCheckbox = this.getAnchorTargetCheckbox(),
                                 buttonCheckbox = this.getAnchorButtonCheckbox();
@@ -4467,6 +4468,9 @@ WHERE {\n\
                                     url: opts
                                 };
                             }
+
+                            var initialSelectedParentElement = this.base.getSelectedParentElement();
+                            var initialSelectionState = MediumEditor.selection.exportSelection(initialSelectedParentElement, this.document);
 
                             //XXX: Get this before getForm.
                             var selection = MediumEditor.selection.getSelectionHtml(this.document).trim();
@@ -4517,6 +4521,31 @@ WHERE {\n\
                                     var sG = document.getElementById(sparklineGraphId);
                                     if(sG) {
                                         sG.parentNode.removeChild(sG);
+                                    }
+
+                                    if(!DO.C.RefAreas[textInputB]) {
+                                        var refAreas;
+                                        Object.keys(DO.C.RefAreas).forEach(function(key) {
+                                            refAreas += '<option value="' + key + '">' + key + ' - ' + DO.C.RefAreas[key] + '</option>';
+                                        });
+                                        form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', '<div id="' + sparklineGraphId + '">`' + textInputB + '` is not available. Try: ' + '<select name="refAreas"><option>Select a reference area</option>' + refAreas + '</select></div>');
+                                        var rA = document.querySelector('#' + sparklineGraphId + ' select[name="refAreas"]');
+                                        rA.addEventListener('change', function(e) {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            textInputB = e.target.value;
+                                            input.search.value = textInputA + ' of ' + textInputB;
+                                            form.querySelector('#sparkline-selection-text').value = input.search.value;
+
+
+                                            _this.base.restoreSelection();
+                                            MediumEditor.util.insertHTMLCommand(document, input.search.value);
+                                            var selection = { start: initialSelectionState.start, end: (initialSelectionState.start + input.search.value.length) };
+                                            MediumEditor.selection.importSelection(selection, initialSelectedParentElement, document);
+                                            _this.base.checkSelection();
+                                            _this.showForm();
+                                        });
+                                        return;
                                     }
 
                                     var options = {};
