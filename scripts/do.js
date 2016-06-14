@@ -642,7 +642,7 @@ var DO = {
                 http.withCredentials = true;
                 http.onreadystatechange = function() {
                     if (this.readyState == this.DONE) {
-                        if (this.status === 200 || this.status === 201 || this.status === 204) {
+                        if (this.status === 200) {
                             return resolve({xhr: this});
                         }
                         return reject({status: this.status, xhr: this});
