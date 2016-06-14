@@ -3233,7 +3233,7 @@ WHERE {\n\
                 wasDerivedFrom = ' rel="prov:wasDerivedFrom" resource="' + options.url + '"';
             }
             svg += '<g' + wasDerivedFrom + '>';
-            svg += '<meta rel="schema:license" resource="https://creativecommons.org/publicdomain/zero/1.0/" />';
+            svg += '<metadata rel="schema:license" resource="https://creativecommons.org/publicdomain/zero/1.0/" />';
             if (options && 'title' in options) {
                 svg += '<title property="schema:name">' + options['title'] + '</title>';
             }
