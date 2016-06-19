@@ -79,7 +79,7 @@ var DO = {
             "rdffirst": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#first", "@type": "@id" },
             "rdfrest": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest", "@type": "@id" },
 
-            "rdfsSeeAlso": { "@id": "http://www.w3.org/2000/01/rdf-schema#seeAlso", "@type": "@id", "@array": true },
+            "rdfsseeAlso": { "@id": "http://www.w3.org/2000/01/rdf-schema#seeAlso", "@type": "@id", "@array": true },
 
             "foafname": "http://xmlns.com/foaf/0.1/name",
             "foaffamilyName": "http://xmlns.com/foaf/0.1/familyName",
@@ -120,10 +120,6 @@ var DO = {
             "workspace": { "@id": "http://www.w3.org/ns/pim/space#workspace", "@type": "@id", "@array": true },
             "masterWorkspace": { "@id": "http://www.w3.org/ns/pim/space#masterWorkspace", "@type": "@id" },
 
-            "pingbackto": { "@id": "http://purl.org/net/pingback/to", "@type": "@id", "@array": true },
-            "pingbacksource": { "@id": "http://purl.org/net/pingback/source", "@type": "@id" },
-            "pingbackproperty": { "@id": "http://purl.org/net/pingback/property", "@type": "@id" },
-            "pingbacktarget": { "@id": "http://purl.org/net/pingback/target", "@type": "@id" },
             "solidinbox": { "@id": "http://www.w3.org/ns/solid/terms#inbox", "@type": "@id", "@array": true },
             "solidnotification": { "@id": "http://www.w3.org/ns/solid/terms#Notification", "@type": "@id" },
 
@@ -136,8 +132,8 @@ var DO = {
             "oaprefix": "http://www.w3.org/ns/oa#prefix",
             "oasuffix": "http://www.w3.org/ns/oa#suffix",
             "oatext": "http://www.w3.org/ns/oa#text",
-            "oaAnnotatedAt": { "@id": "http://www.w3.org/ns/oa#annotatedAt", "@type": "@id" },
-            "oaAnnotatedBy": { "@id": "http://www.w3.org/ns/oa#annotatedBy", "@type": "@id" },
+            "oaannotatedAt": { "@id": "http://www.w3.org/ns/oa#annotatedAt", "@type": "@id" },
+            "oaannotatedBy": { "@id": "http://www.w3.org/ns/oa#annotatedBy", "@type": "@id" },
 
             "asobject": { "@id": "http://www.w3.org/ns/activitystreams#object", "@type": "@id", "@array": true },
             "astarget": { "@id": "http://www.w3.org/ns/activitystreams#target", "@type": "@id", "@array": true },
@@ -2223,7 +2219,7 @@ var DO = {
 // console.log(i);
                         var s = i.child(url);
                         var knows = s.foafknows;
-                        var seeAlso = s.rdfsSeeAlso;
+                        var seeAlso = s.rdfsseeAlso;
 // console.log(knows._array);
 // console.log(seeAlso);
                         return resolve(knows._array);
@@ -3378,8 +3374,8 @@ WHERE {\n\
                 SimpleRDF(DO.C.Vocab, noteIRI, null, ld.store).get().then(
                     function(i) {
                         var note = i.child(noteIRI);
-                        var datetime = note.oaAnnotatedAt;
-                        var annotatedByIRI = note.oaAnnotatedBy;
+                        var datetime = note.oaannotatedAt;
+                        var annotatedByIRI = note.oaannotatedBy;
                         var annotatedBy = i.child(annotatedByIRI);
                         var annotatedByName = annotatedBy.schemaname;
                         var annotatedByImage = annotatedBy.schemaimage;
