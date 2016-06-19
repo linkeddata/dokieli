@@ -426,11 +426,13 @@ var DO = {
             }
         },
 
-        //Copied from https://github.com/deiu/solid-plume/blob/gh-pages/app/solid.js
+        //https://github.com/solid/solid.js/blob/master/lib/util/web-util.js
         parseLinkHeader: function(link) {
+            if (!link) {
+                return {}
+            }
             var linkexp = /<[^>]*>\s*(\s*;\s*[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*")))*(,|$)/g;
             var paramexp = /[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*"))/g;
-
             var matches = link.match(linkexp);
             var rels = {};
             for (var i = 0; i < matches.length; i++) {
@@ -443,7 +445,13 @@ var DO = {
                     var paramsplit = p.split('=');
                     var name = paramsplit[0];
                     var rel = paramsplit[1].replace(/["']/g, '');
-                    rels[rel] = href;
+                    if (!rels[rel]) {
+                        rels[rel] = []
+                    }
+                    rels[rel].push(href)
+                    if (rels[rel].length > 1) {
+                        rels[rel].sort()
+                    }
                 }
             }
             return rels;
