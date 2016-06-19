@@ -649,6 +649,7 @@ height:1em;
 width:100%;
 max-width:100px;
 display:inline-block;
+vertical-align:middle;
 }
 .medium-editor-toolbar-form .sparkline {
 margin:0.25em 0.5em;
