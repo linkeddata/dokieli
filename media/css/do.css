@@ -709,6 +709,6 @@ display:block;
 width:auto;
 }
 
-[data-medium-editor-element] img {
+.medium-editor-element img {
 max-width:none;
 }
