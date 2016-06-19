@@ -3649,13 +3649,15 @@ WHERE {\n\
                                             tagsArray.push(tag);
                                         }
                                     });
-                                    var tagsArray = DO.U.uniqueArray(tagsArray);
+                                    if (tagsArray.length > 0){
+                                        tagsArray = DO.U.uniqueArray(tagsArray);
 
-                                    body += '<dl id="tags" class="tags"><dt>Tags</dt><dd><ul rel="oa:hasBody">';
-                                    tagsArray.forEach(function(i){
-                                        body += '<li about="i:#tag-' + DO.U.generateAttributeId(null, i) + '" typeof="oa:TextualBody as:Note" property="oa:text" rel="oa:hasPurpose" resource="oa:tagging" datatype="rdf:HTML">' + i + '</li>';
-                                    })
-                                    body += '</ul></dd></dl>';
+                                        body += '<dl id="tags" class="tags"><dt>Tags</dt><dd><ul rel="oa:hasBody">';
+                                        tagsArray.forEach(function(i){
+                                            body += '<li about="i:#tag-' + DO.U.generateAttributeId(null, i) + '" typeof="oa:TextualBody as:Note" property="oa:text" rel="oa:hasPurpose" resource="oa:tagging" datatype="rdf:HTML">' + i + '</li>';
+                                        })
+                                        body += '</ul></dd></dl>';
+                                    }
                                 }
 
                             }
