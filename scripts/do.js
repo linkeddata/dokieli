@@ -3831,7 +3831,7 @@ WHERE {\n\
                         },
                         buttonLabels: DO.C.Editor.ButtonLabelType,
                         toolbar: {
-                            buttons: ['h2', 'h3', 'h4', 'em', 'strong', 'orderedlist', 'unorderedlist', 'code', 'pre', 'image', 'table', 'anchor', 'q', 'sparkline', 'rdfa', 'cite', 'note'],
+                            buttons: ['h2', 'h3', 'h4', 'em', 'strong', 'orderedlist', 'unorderedlist', 'code', 'pre', 'image', 'anchor', 'q', 'sparkline', 'rdfa', 'cite', 'note'],
                             diffLeft: 0,
                             diffTop: -10,
                             allowMultiParagraphSelection: false
@@ -3848,8 +3848,7 @@ WHERE {\n\
                             'sparkline': new DO.U.Editor.Note({action:'sparkline', label:'sparkline'}),
                             'rdfa': new DO.U.Editor.Note({action:'rdfa', label:'rdfa'}),
                             'cite': new DO.U.Editor.Note({action:'cite', label:'cite'}),
-                            'note': new DO.U.Editor.Note({action:'article', label:'note'}),
-                            'table': new MediumEditorTable()
+                            'note': new DO.U.Editor.Note({action:'article', label:'note'})
                         }
                     },
 
@@ -3888,6 +3887,11 @@ WHERE {\n\
                         }
                     }
                 };
+
+                if('MediumEditorTable' in window) {
+                    editorOptions.author.extensions['table'] = new MediumEditorTable();
+                    editorOptions.author.toolbar.buttons.splice(10, 0, 'table');
+                }
 
                 var eNodes = document.querySelectorAll('main > article');
                 var eOptions = editorOptions[editorMode];
