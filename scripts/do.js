@@ -3574,6 +3574,11 @@ WHERE {\n\
                     targetLabel = 'Describes';
                     aAbout = '#' + n.id;
                     break;
+                case 'oa:commenting':
+                    motivatedByLabel = 'comments';
+                    targetLabel = 'Comments on';
+                    aAbout = '#' + n.id;
+                    break;
                 case 'oa:bookmarking':
                     motivatedByLabel = 'bookmarks';
                     targetLabel = 'Bookmarked';
@@ -3631,7 +3636,7 @@ WHERE {\n\
             }
 
             switch(n.type) {
-                case 'article': case 'bookmark': case 'approve': case 'disapprove': case 'specificity':
+                case 'article': case 'note': case 'bookmark': case 'approve': case 'disapprove': case 'specificity':
                     if ((typeof n.target !== 'undefined' && typeof n.target.selector !== 'undefined') || typeof n.inReplyTo !== 'undefined') { //note, annotation, reply
                         //FIXME: Could resourceIRI be a fragment URI or *make sure* it is the document URL without the fragment?
                         //TODO: Use n.target.iri?
@@ -3854,7 +3859,7 @@ WHERE {\n\
                             'sparkline': new DO.U.Editor.Note({action:'sparkline', label:'sparkline'}),
                             'rdfa': new DO.U.Editor.Note({action:'rdfa', label:'rdfa'}),
                             'cite': new DO.U.Editor.Note({action:'cite', label:'cite'}),
-                            'note': new DO.U.Editor.Note({action:'article', label:'note'})
+                            'note': new DO.U.Editor.Note({action:'note', label:'note'})
                         }
                     },
 
@@ -4240,6 +4245,9 @@ WHERE {\n\
                                     this.contentFA = '<i class="fa fa-sticky-note"></i>';
                                     this.signInRequired = true;
                                     break;
+                                case 'note':
+                                    this.contentFA = '<i class="fa fa-sticky-note"></i>';
+                                    break;
                                 case 'rdfa':
                                     this.contentFA = '<i class="fa fa-rocket"></i>';
                                     break;
@@ -4352,6 +4360,15 @@ WHERE {\n\
                                     break;
                                 case 'article':
                                     template = [
+                                    '<textarea id="article-content" name="content" cols="20" rows="1" class="medium-editor-toolbar-textarea" placeholder="', this.placeholderText, '"></textarea>',
+                                    '<select id="article-license" name="license" class="medium-editor-toolbar-select">',
+                                    DO.U.getLicenseOptionsHTML(),
+                                    '</select>'
+                                    ];
+                                    break;
+                                case 'note':
+                                    template = [
+                                    '<label for="bookmark-tagging">Tags</label> <input id="bookmark-tagging" class="medium-editor-toolbar-input" placeholder="Separate tags with commas" /><br/>',
                                     '<textarea id="article-content" name="content" cols="20" rows="1" class="medium-editor-toolbar-textarea" placeholder="', this.placeholderText, '"></textarea>',
                                     '<select id="article-license" name="license" class="medium-editor-toolbar-select">',
                                     DO.U.getLicenseOptionsHTML(),
@@ -4497,7 +4514,7 @@ WHERE {\n\
                                 case 'rdfa':
                                     input.about.focus();
                                     break;
-                                case 'article': case 'approve': case 'disapprove': case 'specificity':
+                                case 'article': case 'note': case 'approve': case 'disapprove': case 'specificity':
                                     input.content.focus();
                                     break;
                                 case 'cite':
@@ -4735,6 +4752,11 @@ WHERE {\n\
                                     opts.content = this.getInput().content.value;
                                     opts.license = this.getInput().license.value;
                                     break;
+                                case 'note':
+                                    opts.content = this.getInput().content.value;
+                                    opts.tagging = this.getInput().tagging.value;
+                                    opts.license = this.getInput().license.value;
+                                    break;
                                 case 'cite':
                                     opts.citationType = this.getInput().citationType.value;
                                     opts.url = this.getInput().url.value;
@@ -4916,6 +4938,59 @@ WHERE {\n\
                                     break;
 
                                 //Internal Note
+                                case 'note':
+                                    docRefType = '<sup class="ref-comment"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup>';
+                                    noteType = 'note';
+                                    noteData = {
+                                        "type": noteType,
+                                        "mode": "read",
+                                        "motivatedByIRI": "oa:commenting",
+                                        "id": id,
+                                        "refId": refId,
+                                        "refLabel": refLabel,
+                                        "iri": noteIRI, //e.g., https://example.org/path/to/article
+                                        "creator": {},
+                                        "datetime": datetime,
+                                        "target": {
+                                            "iri": targetIRI,
+                                            "source": resourceIRI,
+                                            "selector": {
+                                                "exact": exact,
+                                                "prefix": prefix,
+                                                "suffix": suffix
+                                            }
+                                            //TODO: state
+                                        },
+                                        "body": {
+                                            "purpose": {
+                                                "describing": {
+                                                    "text": opts.content
+                                                },
+                                                "tagging": {
+                                                    "text": opts.tagging
+                                                }
+                                            }
+                                        },
+                                        "license": {}
+                                    };
+                                    if (DO.C.User.IRI) {
+                                        noteData.creator["iri"] = DO.C.User.IRI;
+                                    }
+                                    if (DO.C.User.Name) {
+                                        noteData.creator["name"] = DO.C.User.Name;
+                                    }
+                                    if (DO.C.User.Image) {
+                                        noteData.creator["image"] = DO.C.User.Image;
+                                    }
+                                    if (opts.license.length > 0) {
+                                        noteData.license["iri"] = opts.license;
+                                        noteData.license["name"] = DO.C.License[opts.license];
+                                    }
+
+                                    note = DO.U.createNoteHTML(noteData);
+                                    ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="oa:text">' + exact + '</mark>' + docRefType +'</span>';
+                                    break;
+
                                 case 'cite': //footnote reference
                                     switch(opts.citationType) {
                                         case 'ref-footnote': default:
@@ -5085,6 +5160,19 @@ WHERE {\n\
                                     );
                                     break;
 
+                                case 'note':
+                                    var nES = selectedParentElement.nextElementSibling;
+                                    var asideNote = '\n\
+<aside class="note">\n\
+'+ note + '\n\
+</aside>';
+                                    var asideNode = DO.U.fragmentFromString(asideNote);
+                                    var parentSection = MediumEditor.util.getClosestTag(selectedParentElement, 'section');
+                                    parentSection.appendChild(asideNode);
+
+                                    DO.U.positionNote(refId, refLabel, id);
+                                    break;
+
                                 case 'cite': //footnote reference
                                     //TODO: Refactor this what's in positionQuoteSelector
 
@@ -5236,6 +5324,11 @@ WHERE {\n\
                                     break;
                                 case 'article':
                                     r.content = this.getForm().querySelector('#article-content.medium-editor-toolbar-textarea');
+                                    r.license = this.getForm().querySelector('#article-license.medium-editor-toolbar-select');
+                                    break;
+                                case 'note':
+                                    r.content = this.getForm().querySelector('#article-content.medium-editor-toolbar-textarea');
+                                    r.tagging = this.getForm().querySelector('#bookmark-tagging.medium-editor-toolbar-input');
                                     r.license = this.getForm().querySelector('#article-license.medium-editor-toolbar-select');
                                     break;
                                 case 'approve':
