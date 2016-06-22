@@ -107,6 +107,7 @@ var DO = {
             "dctermsdate": "http://purl.org/dc/terms/date",
             "dctermsissued": "http://purl.org/dc/terms/issued",
             "dctermscreated": "http://purl.org/dc/terms/created",
+            "dctermsrights": "http://purl.org/dc/terms/rights",
 
             "skosprefLabel": { "@id": "http://www.w3.org/2004/02/skos/core#prefLabel", "@type": "@id", "@array": true },
 
@@ -120,8 +121,8 @@ var DO = {
             "workspace": { "@id": "http://www.w3.org/ns/pim/space#workspace", "@type": "@id", "@array": true },
             "masterWorkspace": { "@id": "http://www.w3.org/ns/pim/space#masterWorkspace", "@type": "@id" },
 
+            "ldpinbox": { "@id": "http://www.w3.org/ns/ldp#inbox", "@type": "@id", "@array": true },
             "solidinbox": { "@id": "http://www.w3.org/ns/solid/terms#inbox", "@type": "@id", "@array": true },
-            "solidnotification": { "@id": "http://www.w3.org/ns/solid/terms#Notification", "@type": "@id" },
 
             "oaannotation": { "@id": "http://www.w3.org/ns/oa#Annotation", "@type": "@id" },
             "oahasBody": { "@id": "http://www.w3.org/ns/oa#hasBody", "@type": "@id" },
