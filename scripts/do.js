@@ -3412,7 +3412,7 @@ WHERE {\n\
 
                         var source = target.oahasSource;
 
-                        var licenseIRI = note.schemalicense;
+                        var licenseIRI = note.schemalicense || note.dctermsrights;
 
                         var containerNodeTextContent = containerNode.textContent;
 
@@ -3552,7 +3552,6 @@ WHERE {\n\
             var aAbout = '', aPrefix = '';
             var noteType = '';
             var body = '';
-            var license = '';
             var buttonDelete = '';
             var note = '';
 
@@ -3671,7 +3670,7 @@ WHERE {\n\
                             }
                             else if (n.body.length > 0) {
                                 if (n.license && 'iri' in n.license) {
-                                    license = DO.U.createLicenseHTML(n.license, {rel:'oa:rights', label:'Rights'});
+                                    license = DO.U.createLicenseHTML(n.license, {rel:'dcterms:rights', label:'Rights'});
                                 }
 
                                 body += '<section id="note" rel="oa:hasBody" resource="i:#note"><h2 property="schema:name">Note</h2><div datatype="rdf:HTML" property="oa:text as:content schema:description" resource="i:#note" typeof="oa:TextualBody as:Note">' + n.body + '</div>' + license + '</section>';
