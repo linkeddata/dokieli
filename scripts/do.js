@@ -503,8 +503,10 @@ var DO = {
                 SimpleRDF(DO.C.Vocab, pIRI, null, ld.store).get().then(
                     function(i) {
                         var s = i.child(subjectIRI);
-                        if (s.solidinbox._array.length > 0) {
-// console.log(s.solidinbox._array);
+                        if (s.ldpinbox._array.length > 0){
+                            return resolve(s.ldpinbox._array);
+                        }
+                        else if (s.solidinbox._array.length > 0){
                             return resolve(s.solidinbox._array);
                         }
                         var reason = {"message": "Inbox was not found"};
@@ -2260,7 +2262,7 @@ var DO = {
 // console.log(i);
                                 var s = i.child(url);
 // console.log(s);
-                                if(s._graph.length > 0 && s.solidinbox && s.solidinbox._array.length > 0) {
+                                if((s._graph.length > 0 && s.ldpinbox && s.ldpinbox._array.length > 0) || (s._graph.length > 0 && s.solidinbox && s.solidinbox._array.length > 0)) {
                                     var name = s.foafname || s.schemaname || '';
                                     var img = s.foafimg || s["http://xmlns.com/foaf/0.1/depiction"] || s.schemaimage || '';
 // console.log(name);
