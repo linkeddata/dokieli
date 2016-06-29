@@ -459,29 +459,34 @@ var DO = {
         },
 
         getInbox: function(url) {
-            url = url || location.href.split(location.search||location.hash||/[?#]/)[0];
-
-            var promise = function() {
+            if (url) {
+                return DO.U.getInboxFromRDF(url);
+            }
+            else {
+                var uri = location.href.split(location.search||location.hash||/[?#]/)[0];
                 return new Promise(function(resolve, reject) {
-                    DO.U.getResourceHead(url).then(
-                        function(i) {
-                            resolve(i);
+                    SimpleRDF.parse(DO.U.getDocument(), 'text/html', uri).then(
+                        function(i){
+                            //TODO: Should this get all of the inboxes or a given subject's?
+                            //TODO: Remove ldpinbox or solidinbox
+                            var inbox = i.match(uri, DO.C.Vocab['ldpinbox']['@id']);
+                            if (typeof inbox._graph[0] == 'object') {
+                                return resolve([inbox._graph[0].object.nominalValue]);
+                            }
+                            inbox = i.match(uri, DO.C.Vocab['solidinbox']['@id']);
+                            if (typeof inbox._graph[0] == 'object') {
+                                return resolve([inbox._graph[0].object.nominalValue]);
+                            }
+                            var reason = {"message": "Inbox was not found"};
+                            return Promise.reject(reason);
                         },
-                        function(reason) {
-                            reject(reason);
+                        function(reason){
+                            var reason = {"message": "Inbox was not found"};
+                            return reject(reason);
                         }
-                    )
+                    );
                 });
-            };
-
-            return promise().then(
-                function(i) {
-                    return DO.U.getInboxFromRDF(url);
-                },
-                function(reason) {
-                    return Promise.reject(reason);
-                }
-            );
+            }
         },
 
         getInboxFromRDF: function(url, subjectIRI) {
