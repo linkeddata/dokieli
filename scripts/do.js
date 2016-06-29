@@ -3608,7 +3608,7 @@ WHERE {\n\
 
             var creatorName = 'Anonymous';
             if ('creator' in n) {
-                if ('image' in n.creator !== 'undefined') {
+                if ('image' in n.creator) {
                     creatorImage = '<img alt="" height="48" rel="schema:image" src="' + n.creator.image + '" width="48" />';
                 }
                 if ('iri' in n.creator && 'name' in n.creator) {
