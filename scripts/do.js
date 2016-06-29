@@ -599,11 +599,11 @@ var DO = {
                     i.forEach(function(notification) {
                         DO.U.getNotificationSource(notification).then(
                             function(source) {
-                                DO.U.getResourceHead(source).then(
-                                    function(head) {
-                                        DO.U.positionQuoteSelector(source);
+                                DO.U.positionQuoteSelector(source).then(
+                                    function(notificationIRI){
+                                        return notificationIRI;
                                     },
-                                    function(reason) {
+                                    function(reason){
                                         console.log('Notification source is unreachable');
                                     }
                                 );
