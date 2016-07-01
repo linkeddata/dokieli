@@ -628,7 +628,7 @@ var DO = {
                 http.withCredentials = true;
                 http.onreadystatechange = function() {
                     if (this.readyState == this.DONE) {
-                        if (this.status === 200) {
+                        if (this.status === 200 || this.status === 204) {
                             return resolve({'headers': this.getAllResponseHeaders()});
                         }
                         return reject({status: this.status, xhr: this});
@@ -646,7 +646,7 @@ var DO = {
                 http.withCredentials = true;
                 http.onreadystatechange = function() {
                     if (this.readyState == this.DONE) {
-                        if (this.status === 200) {
+                        if (this.status === 200 || this.status === 204) {
                             return resolve({'headers': this.getAllResponseHeaders()});
                         }
                         return reject({status: this.status, xhr: this});
