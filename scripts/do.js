@@ -620,6 +620,24 @@ var DO = {
             );
         },
 
+        getResourceOptions: function(url) {
+            url = url || window.location.origin + window.location.pathname;
+            return new Promise(function(resolve, reject) {
+                var http = new XMLHttpRequest();
+                http.open('OPTIONS', url);
+                http.withCredentials = true;
+                http.onreadystatechange = function() {
+                    if (this.readyState == this.DONE) {
+                        if (this.status === 200) {
+                            return resolve({'headers': this.getAllResponseHeaders()});
+                        }
+                        return reject({status: this.status, xhr: this});
+                    }
+                };
+                http.send();
+            });
+        },
+
         getResourceHead: function(url) {
             url = url || window.location.origin + window.location.pathname;
             return new Promise(function(resolve, reject) {
