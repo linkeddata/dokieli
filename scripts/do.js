@@ -899,7 +899,22 @@ var DO = {
 ';
 
             if (inbox && inbox.length > 0) {
-                return DO.U.postResource(inbox, slug, data, 'text/turtle; charset=utf-8');
+                DO.U.getAcceptPostPreference(inbox).then(
+                    function(preferredContentType){
+                        switch(preferredContentType) {
+                            case 'text/turtle': default:
+                                return DO.U.postResource(inbox, slug, data, 'text/turtle; charset=utf-8');
+                                break;
+                            case 'application/ld+json':
+                                //TODO: Reserialise Turtle data to JSON-LD
+        //                        return DO.U.postResource(inbox, slug, data, 'application/ld+json; charset=utf-8');
+                                break;
+                        }
+                    },
+                    function(reason){
+                        return reason;
+                    }
+                );
             }
             else {
                 return Promise.reject({'message': "No inbox to send notification to"});
