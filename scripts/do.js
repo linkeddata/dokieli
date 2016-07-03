@@ -631,7 +631,12 @@ var DO = {
                     if (this.readyState == this.DONE) {
                         if (this.status === 200 || this.status === 204) {
                             if('header' in options) {
-                                return resolve({'headers': this.getResponseHeader(options.header)});
+                                if(this.getResponseHeader(options.header)) {
+                                    return resolve({'headers': this.getResponseHeader(options.header)});
+                                }
+                                else {
+                                    return reject({'message': "'" + options.header + "' header not found"});
+                                }
                             }
                             return resolve({'headers': this.getAllResponseHeaders()});
                         }
