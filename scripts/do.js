@@ -905,13 +905,14 @@ var DO = {
                             case 'text/turtle': default:
                                 return DO.U.postResource(inbox, slug, data, 'text/turtle; charset=utf-8');
                                 break;
-                            case 'application/ld+json':
+                            case 'application/ld+json': case 'application/json':
                                 //TODO: Reserialise Turtle data to JSON-LD
         //                        return DO.U.postResource(inbox, slug, data, 'application/ld+json; charset=utf-8');
                                 break;
                         }
                     },
                     function(reason){
+                        console.log(reason);
                         return reason;
                     }
                 );
@@ -928,7 +929,7 @@ var DO = {
                     if (header.indexOf('text/turtle') > -1 || header.indexOf('*/*') > -1) {
                         return 'text/turtle';
                     }
-                    else if (header.indexOf('application/ld+json') > -1) {
+                    else if (header.indexOf('application/ld+json') > -1 || header.indexOf('application/json') > -1) {
                         return 'application/ld+json';
                     }
                     else {
@@ -937,7 +938,6 @@ var DO = {
                     }
                 },
                 function(reason) {
-                    console.log(reason);
                     return;
                 }
             );
