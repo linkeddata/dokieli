@@ -906,6 +906,28 @@ var DO = {
             }
         },
 
+        getAcceptPostPreference: function(url) {
+            return DO.U.getResourceOptions(url, {'header': 'Accept-Post'}).then(
+                function(i){
+                    var header = i.headers.trim().split(/\s*,\s*/);
+                    if (header.indexOf('text/turtle') > -1 || header.indexOf('*/*') > -1) {
+                        return 'text/turtle';
+                    }
+                    else if (header.indexOf('application/ld+json') > -1) {
+                        return 'application/ld+json';
+                    }
+                    else {
+                        console.log('Accept-Post contains unrecognised media-range; ' + i.headers);
+                        return i.headers;
+                    }
+                },
+                function(reason) {
+                    console.log(reason);
+                    return;
+                }
+            );
+        },
+
         urlParam: function(name) {
             var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
             if (results===null){
