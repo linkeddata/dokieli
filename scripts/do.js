@@ -489,6 +489,28 @@ var DO = {
             }
         },
 
+        getInboxFromHead: function(url) {
+            return DO.U.getResourceHead(url, {'header': 'Allow'}).then(
+                function(i){
+                    var linkHeaders = DO.U.parseLinkHeader(i.headers);
+                    if ('http://www.w3.org/ns/ldp#inbox' in linkHeaders) {
+                        return linkHeaders['http://www.w3.org/ns/ldp#inbox'][0];
+                    }
+                    else if ('http://www.w3.org/ns/solid/terms#inbox' in linkHeaders) {
+                        return linkHeaders['http://www.w3.org/ns/solid/terms#inbox'][0];
+                    }
+                    else {
+                        return Promise.reject({'message': "'Inbox was not found in 'Link' header"});
+                    }
+                },
+                function(reason){
+                    console.log(reason);
+                    return Promise.reject({'message': "'Link' header not found"});
+                }
+            );
+        },
+
+
         getInboxFromRDF: function(url, subjectIRI) {
             url = url || window.location.origin + window.location.pathname;
             subjectIRI = subjectIRI || url;
