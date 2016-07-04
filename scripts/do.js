@@ -490,14 +490,14 @@ var DO = {
         },
 
         getInboxFromHead: function(url) {
-            return DO.U.getResourceHead(url, {'header': 'Allow'}).then(
+            return DO.U.getResourceHead(url, {'header': 'Link'}).then(
                 function(i){
                     var linkHeaders = DO.U.parseLinkHeader(i.headers);
                     if ('http://www.w3.org/ns/ldp#inbox' in linkHeaders) {
-                        return linkHeaders['http://www.w3.org/ns/ldp#inbox'][0];
+                        return linkHeaders['http://www.w3.org/ns/ldp#inbox'];
                     }
                     else if ('http://www.w3.org/ns/solid/terms#inbox' in linkHeaders) {
-                        return linkHeaders['http://www.w3.org/ns/solid/terms#inbox'][0];
+                        return linkHeaders['http://www.w3.org/ns/solid/terms#inbox'];
                     }
                     else {
                         return Promise.reject({'message': "'Inbox was not found in 'Link' header"});
