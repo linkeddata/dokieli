@@ -477,7 +477,7 @@ var DO = {
                             if (typeof inbox._graph[0] == 'object') {
                                 return resolve([inbox._graph[0].object.nominalValue]);
                             }
-                            var reason = {"message": "Inbox was not found"};
+                            var reason = {"message": "Inbox was not found in message body"};
                             return Promise.reject(reason);
                         },
                         function(reason){
@@ -536,8 +536,8 @@ var DO = {
                         else if (s.solidinbox._array.length > 0){
                             return resolve(s.solidinbox._array);
                         }
-                        var reason = {"message": "Inbox was not found"};
-                        return Promise.reject(reason);
+                        var reason = {"message": "Inbox was not found in message body"};
+                        return reject(reason);
                     },
                     function(reason) {
                         console.log(reason);
