@@ -669,7 +669,7 @@ var DO = {
             });
         },
 
-        getResourceHead: function(url) {
+        getResourceHead: function(url, options) {
             url = url || window.location.origin + window.location.pathname;
             return new Promise(function(resolve, reject) {
                 var http = new XMLHttpRequest();
@@ -677,8 +677,13 @@ var DO = {
                 http.withCredentials = true;
                 http.onreadystatechange = function() {
                     if (this.readyState == this.DONE) {
-                        if (this.status === 200 || this.status === 204) {
-                            return resolve({'headers': this.getAllResponseHeaders()});
+                        if('header' in options) {
+                            if(this.getResponseHeader(options.header)) {
+                                return resolve({'headers': this.getResponseHeader(options.header)});
+                            }
+                            else {
+                                return reject({'message': "'" + options.header + "' header not found"});
+                            }
                         }
                         return reject({status: this.status, xhr: this});
                     }
