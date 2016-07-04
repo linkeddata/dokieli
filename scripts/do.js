@@ -460,7 +460,14 @@ var DO = {
 
         getInbox: function(url) {
             if (url) {
-                return DO.U.getInboxFromRDF(url);
+                return DO.U.getInboxFromHead(url).then(
+                    function(i){
+                        return i;
+                    },
+                    function(x){
+                        return DO.U.getInboxFromRDF(url);
+                    }
+                );
             }
             else {
                 var uri = location.href.split(location.search||location.hash||/[?#]/)[0];
@@ -481,8 +488,7 @@ var DO = {
                             return Promise.reject(reason);
                         },
                         function(reason){
-                            var reason = {"message": "Inbox was not found"};
-                            return reject(reason);
+                            return DO.U.getInboxFromHead(url);
                         }
                     );
                 });
