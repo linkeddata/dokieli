@@ -599,7 +599,7 @@ var DO = {
             url = url || window.location.origin + window.location.pathname;
 
             return new Promise(function(resolve, reject) {
-                var g = SimpleRDF(DO.C.Vocab, url, null, ld.store).get().then(
+                SimpleRDF(DO.C.Vocab, url, null, ld.store).get().then(
                     function(i) {
                         var s = i.child(url);
                         if (s.ascontext.at(0).iri().toString() == DO.C.Vocab.oahasTarget["@id"] && s.astarget.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
