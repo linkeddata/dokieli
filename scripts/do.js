@@ -332,7 +332,7 @@ var DO = {
                                 DO.C.User.Storage = s.storage._array;
                             }
 
-                            if (s.preferencesFile && s.preferencesFile.iri().toString().length > 0) {
+                            if (s.preferencesFile && s.preferencesFile.iri() && s.preferencesFile.iri().toString().length > 0) {
                                 DO.C.User.PreferencesFile = s.preferencesFile.iri().toString();
 
                                 //XXX: Probably https so don't bother with proxy?
@@ -3551,7 +3551,8 @@ WHERE {\n\
 // console.log(annotatedBy);
                         var annotatedByName = annotatedBy.schemaname;
 // console.log(annotatedByName);
-                        var annotatedByImage = annotatedBy.schemaimage.iri().toString();
+                        var annotatedByImage = annotatedBy.schemaimage || '';
+                        annotatedByImage = (annotatedByImage && annotatedByImage.iri()) ? annotatedByImage.iri().toString() : undefined;
 // console.log(annotatedByImage);
                         var body = i.child(note.oahasBody.iri());
 // console.log(body);
