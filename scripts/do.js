@@ -537,9 +537,11 @@ var DO = {
                     function(i) {
                         var s = i.child(subjectIRI);
                         if (s.ldpinbox._array.length > 0){
+// console.log(s.ldpinbox._array);
                             return resolve(s.ldpinbox._array);
                         }
                         else if (s.solidinbox._array.length > 0){
+// console.log(s.solidinbox._array);
                             return resolve(s.solidinbox._array);
                         }
                         var reason = {"message": "Inbox was not found in message body"};
@@ -940,6 +942,7 @@ var DO = {
             data += '    .\n\
 ';
 
+// console.log(data);
 
             if (inbox && inbox.length > 0) {
                 var pIRI = inbox;
@@ -950,15 +953,37 @@ var DO = {
                 }
                 return DO.U.getAcceptPostPreference(pIRI).then(
                     function(preferredContentType){
-//  console.log(preferredContentType);
+// console.log(preferredContentType);
                         switch(preferredContentType) {
-                            case 'text/turtle': default:
+                            case 'text/turtle':
                                 //FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
                                 return DO.U.postResource(pIRI, slug, data, 'text/turtle; charset=utf-8');
                                 break;
-                            case 'application/ld+json': case 'application/json':
+                            case 'application/ld+json': case 'application/json': default:
                                 //TODO: Reserialise Turtle data to JSON-LD
         //                        return DO.U.postResource(inbox, slug, data, 'application/ld+json; charset=utf-8');
+
+
+                                return SimpleRDF.parse(data, 'text/turtle', '_:dokieli').then(
+                                    function(g) {
+// console.log(g);
+                                        return ld.store.serializers['application/ld+json'].serialize(g._graph).then(
+                                            function(i){
+                                                var x = JSON.parse(i);
+// console.log(x);
+                                                x[0]["@context"] = "http://www.w3.org/ns/activitystreams#";
+                                                delete x[0]["@id"];
+                                                var data = JSON.stringify(x[0]);
+// console.log(data);
+                                                return DO.U.postResource(pIRI, slug, data, 'application/ld+json; charset=utf-8');
+                                            }
+                                        );
+                                    },
+                                    function(reason) {
+                                        return reason;
+                                    }
+                                );
+
                                 break;
                         }
                     },
@@ -983,10 +1008,10 @@ var DO = {
             return DO.U.getResourceOptions(pIRI, {'header': 'Accept-Post'}).then(
                 function(i){
                     var header = i.headers.trim().split(/\s*,\s*/);
-                    if (header.indexOf('text/turtle') > -1 || header.indexOf('*/*') > -1) {
+                    if (header.indexOf('text/turtle') > -1) {
                         return 'text/turtle';
                     }
-                    else if (header.indexOf('application/ld+json') > -1 || header.indexOf('application/json') > -1) {
+                    else if (header.indexOf('application/ld+json') > -1 || header.indexOf('application/json') > -1 || header.indexOf('*/*') > -1) {
                         return 'application/ld+json';
                     }
                     else {
@@ -2330,7 +2355,7 @@ console.log(inbox);
                                             rm.insertAdjacentHTML('beforeend', '<p class="success">Notification sent: <a target="_blank" href="' + location + '">' + location + '</a></p>');
                                         },
                                         function(reason) {
-                                            console.log(reason);
+//                                             console.log(reason);
                                         }
                                     );
                                 },
