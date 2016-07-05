@@ -972,7 +972,7 @@ var DO = {
                                                 var x = JSON.parse(i);
 // console.log(x);
                                                 x[0]["@context"] = "http://www.w3.org/ns/activitystreams#";
-                                                delete x[0]["@id"];
+                                                x[0]["@id"] = "";
                                                 var data = JSON.stringify(x[0]);
 // console.log(data);
                                                 return DO.U.postResource(pIRI, slug, data, 'application/ld+json; charset=utf-8');
