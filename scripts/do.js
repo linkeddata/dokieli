@@ -955,11 +955,11 @@ var DO = {
                     function(preferredContentType){
 // console.log(preferredContentType);
                         switch(preferredContentType) {
-                            case 'text/turtle':
+                            case 'text/turtle': default:
                                 //FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
                                 return DO.U.postResource(pIRI, slug, data, 'text/turtle; charset=utf-8');
                                 break;
-                            case 'application/ld+json': case 'application/json': default:
+                            case 'application/ld+json': case 'application/json':
                                 //TODO: Reserialise Turtle data to JSON-LD
         //                        return DO.U.postResource(inbox, slug, data, 'application/ld+json; charset=utf-8');
 
