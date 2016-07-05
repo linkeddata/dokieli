@@ -141,7 +141,8 @@ var DO = {
             "ascontext": { "@id": "http://www.w3.org/ns/activitystreams#context", "@type": "@id", "@array": true },
 
             "ldpcontains": { "@id": "http://www.w3.org/ns/ldp#contains", "@type": "@id", "@array": true },
-            "ldpresource": { "@id": "http://www.w3.org/ns/ldp#Resource", "@type": "@id" }
+            "ldpresource": { "@id": "http://www.w3.org/ns/ldp#Resource", "@type": "@id", "@array": true  },
+            "ldpcontainer": { "@id": "http://www.w3.org/ns/ldp#Container", "@type": "@id", "@array": true  }
         },
 
         RefAreas: {"AF":"Afghanistan","A9":"Africa","AL":"Albania","DZ":"Algeria","AS":"American Samoa","L5":"Andean Region","AD":"Andorra","AO":"Angola","AG":"Antigua and Barbuda","1A":"Arab World","AR":"Argentina","AM":"Armenia","AW":"Aruba","AU":"Australia","AT":"Austria","AZ":"Azerbaijan","BS":"Bahamas, The","BH":"Bahrain","BD":"Bangladesh","BB":"Barbados","BY":"Belarus","BE":"Belgium","BZ":"Belize","BJ":"Benin","BM":"Bermuda","BT":"Bhutan","BO":"Bolivia","BA":"Bosnia and Herzegovina","BW":"Botswana","BR":"Brazil","BN":"Brunei Darussalam","BG":"Bulgaria","BF":"Burkina Faso","BI":"Burundi","CV":"Cabo Verde","KH":"Cambodia","CM":"Cameroon","CA":"Canada","S3":"Caribbean small states","KY":"Cayman Islands","CF":"Central African Republic","TD":"Chad","JG":"Channel Islands","CL":"Chile","CN":"China","CO":"Colombia","KM":"Comoros","CD":"Congo, Dem. Rep.","CG":"Congo, Rep.","CR":"Costa Rica","CI":"Cote d'Ivoire","HR":"Croatia","CU":"Cuba","CW":"Curacao","CY":"Cyprus","CZ":"Czech Republic","DK":"Denmark","DJ":"Djibouti","DM":"Dominica","DO":"Dominican Republic","Z4":"East Asia & Pacific (all income levels)","4E":"East Asia & Pacific (developing only)","C4":"East Asia and the Pacific (IFC classification)","EC":"Ecuador","EG":"Egypt, Arab Rep.","SV":"El Salvador","GQ":"Equatorial Guinea","ER":"Eritrea","EE":"Estonia","ET":"Ethiopia","XC":"Euro area","Z7":"Europe & Central Asia (all income levels)","7E":"Europe & Central Asia (developing only)","C5":"Europe and Central Asia (IFC classification)","EU":"European Union","FO":"Faeroe Islands","FJ":"Fiji","FI":"Finland","FR":"France","PF":"French Polynesia","GA":"Gabon","GM":"Gambia, The","GE":"Georgia","DE":"Germany","GH":"Ghana","GR":"Greece","GL":"Greenland","GD":"Grenada","GU":"Guam","GT":"Guatemala","GN":"Guinea","GW":"Guinea-Bissau","GY":"Guyana","HT":"Haiti","XE":"Heavily indebted poor countries (HIPC)","XD":"High income","XS":"High income: OECD","XR":"High income: nonOECD","HN":"Honduras","HK":"Hong Kong SAR, China","HU":"Hungary","IS":"Iceland","IN":"India","ID":"Indonesia","IR":"Iran, Islamic Rep.","IQ":"Iraq","IE":"Ireland","IM":"Isle of Man","IL":"Israel","IT":"Italy","JM":"Jamaica","JP":"Japan","JO":"Jordan","KZ":"Kazakhstan","KE":"Kenya","KI":"Kiribati","KP":"Korea, Dem. Rep.","KR":"Korea, Rep.","KV":"Kosovo","KW":"Kuwait","KG":"Kyrgyz Republic","LA":"Lao PDR","ZJ":"Latin America & Caribbean (all income levels)","XJ":"Latin America & Caribbean (developing only)","L4":"Latin America and the Caribbean","C6":"Latin America and the Caribbean (IFC classification)","LV":"Latvia","XL":"Least developed countries: UN classification","LB":"Lebanon","LS":"Lesotho","LR":"Liberia","LY":"Libya","LI":"Liechtenstein","LT":"Lithuania","XO":"Low & middle income","XM":"Low income","XN":"Lower middle income","LU":"Luxembourg","MO":"Macao SAR, China","MK":"Macedonia, FYR","MG":"Madagascar","MW":"Malawi","MY":"Malaysia","MV":"Maldives","ML":"Mali","MT":"Malta","MH":"Marshall Islands","MR":"Mauritania","MU":"Mauritius","MX":"Mexico","L6":"Mexico and Central America","FM":"Micronesia, Fed. Sts.","ZQ":"Middle East & North Africa (all income levels)","XQ":"Middle East & North Africa (developing only)","C7":"Middle East and North Africa (IFC classification)","XP":"Middle income","MD":"Moldova","MC":"Monaco","MN":"Mongolia","ME":"Montenegro","MA":"Morocco","MZ":"Mozambique","MM":"Myanmar","NA":"Namibia","NP":"Nepal","NL":"Netherlands","NC":"New Caledonia","NZ":"New Zealand","NI":"Nicaragua","NE":"Niger","NG":"Nigeria","M2":"North Africa","XU":"North America","MP":"Northern Mariana Islands","NO":"Norway","XY":"Not classified","OE":"OECD members","OM":"Oman","S4":"Other small states","S2":"Pacific island small states","PK":"Pakistan","PW":"Palau","PA":"Panama","PG":"Papua New Guinea","PY":"Paraguay","PE":"Peru","PH":"Philippines","PL":"Poland","PT":"Portugal","PR":"Puerto Rico","QA":"Qatar","RO":"Romania","RU":"Russian Federation","RW":"Rwanda","WS":"Samoa","SM":"San Marino","ST":"Sao Tome and Principe","SA":"Saudi Arabia","SN":"Senegal","RS":"Serbia","SC":"Seychelles","SL":"Sierra Leone","SG":"Singapore","SX":"Sint Maarten (Dutch part)","SK":"Slovak Republic","SI":"Slovenia","S1":"Small states","SB":"Solomon Islands","SO":"Somalia","ZA":"South Africa","8S":"South Asia","C8":"South Asia (IFC classification)","SS":"South Sudan","L7":"Southern Cone Extended","ES":"Spain","LK":"Sri Lanka","KN":"St. Kitts and Nevis","LC":"St. Lucia","MF":"St. Martin (French part)","VC":"St. Vincent and the Grenadines","C9":"Sub-Saharan Africa (IFC classification)","ZG":"Sub-Saharan Africa (all income levels)","ZF":"Sub-Saharan Africa (developing only)","A4":"Sub-Saharan Africa excluding South Africa","A5":"Sub-Saharan Africa excluding South Africa and Nigeria","SD":"Sudan","SR":"Suriname","SZ":"Swaziland","SE":"Sweden","CH":"Switzerland","SY":"Syrian Arab Republic","TJ":"Tajikistan","TZ":"Tanzania","TH":"Thailand","TL":"Timor-Leste","TG":"Togo","TO":"Tonga","TT":"Trinidad and Tobago","TN":"Tunisia","TR":"Turkey","TM":"Turkmenistan","TC":"Turks and Caicos Islands","TV":"Tuvalu","UG":"Uganda","UA":"Ukraine","AE":"United Arab Emirates","GB":"United Kingdom","US":"United States","XT":"Upper middle income","UY":"Uruguay","UZ":"Uzbekistan","VU":"Vanuatu","VE":"Venezuela, RB","VN":"Vietnam","VI":"Virgin Islands (U.S.)","PS":"West Bank and Gaza","1W":"World","YE":"Yemen, Rep.","ZM":"Zambia","ZW":"Zimbabwe"}
@@ -226,7 +227,7 @@ var DO = {
 // console.log(s.storage);
                         if (s.storage && s.storage._array.length > 0) {
 // console.log("Try through WebID's storage: " + s.storage.at(0));
-                            return DO.U.getResourceHeadUser(s.storage.at(0));
+                            return DO.U.getResourceHeadUser(s.storage.at(0).iri().toString());
                         }
                         else {
                             console.log("---1 WebID's storage NOT FOUND");
@@ -324,21 +325,18 @@ var DO = {
                             var s = i.child(userIRI);
 // console.log(s);
                             DO.C.User.Name = s.foafname || s.schemaname || undefined;
-// console.log(DO.C.User.Name);
-
                             DO.C.User.Image = s.foafimg || s.schemaimage || undefined;
-// console.log(DO.C.User.Image);
+                            DO.C.User.Image = (DO.C.User.Image && DO.C.User.Image.iri()) ? DO.C.User.Image.iri().toString() : undefined;
 
                             if (s.storage) {
                                 DO.C.User.Storage = s.storage._array;
-                                console.log(DO.C.User.Storage);
                             }
-                            if (s.preferencesFile && s.preferencesFile.length > 0) {
-                                DO.C.User.PreferencesFile = s.preferencesFile;
-                                console.log(DO.C.User.PreferencesFile);
+
+                            if (s.preferencesFile && s.preferencesFile.iri().toString().length > 0) {
+                                DO.C.User.PreferencesFile = s.preferencesFile.iri().toString();
 
                                 //XXX: Probably https so don't bother with proxy?
-                                SimpleRDF(DO.C.Vocab, s.preferencesFile, null, ld.store).get().then(
+                                SimpleRDF(DO.C.Vocab, DO.C.User.PreferencesFile, null, ld.store).get().then(
                                     function(pf) {
                                         DO.C.User.PreferencesFileGraph = pf;
                                         var s = pf.child(userIRI);
@@ -348,15 +346,15 @@ var DO = {
                                         }
 
                                         if (s.workspace) {
-                                            DO.C.User.Workspace = { List: s.workspace._array };
-                                            //XXX: Too early to tell if this is a good/bad idea. Will revise any way. A bit hacky right now.
-                                            s.workspace._array.forEach(function(workspace) {
-                                                var wstype = pf.child(workspace).rdftype._array || [];
-                                                wstype.forEach(function(w) {
+                                            DO.C.User.Workspace = { List: s.workspace };
+                                            s.workspace.forEach(function(wsGraph) {
+                                                var workspace = wsGraph.iri().toString();
+                                                var wstype = pf.child(workspace).rdftype || [];
+                                                wstype.forEach(function(wGraph) {
+                                                    var w = wGraph.iri().toString();
                                                     switch(w) {
                                                         case 'http://www.w3.org/ns/pim/space#PreferencesWorkspace':
                                                             DO.C.User.Workspace.Preferences = workspace;
-                                                            ;
                                                             break;
                                                         case 'http://www.w3.org/ns/pim/space#MasterWorkspace':
                                                             DO.C.User.Workspace.Master = workspace;
@@ -496,7 +494,13 @@ var DO = {
         },
 
         getInboxFromHead: function(url) {
-            return DO.U.getResourceHead(url, {'header': 'Link'}).then(
+            var pIRI = url;
+            pIRI = DO.U.stripFragmentFromString(pIRI);
+            if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
+                pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
+            }
+
+            return DO.U.getResourceHead(pIRI, {'header': 'Link'}).then(
                 function(i){
                     var linkHeaders = DO.U.parseLinkHeader(i.headers);
                     if ('http://www.w3.org/ns/ldp#inbox' in linkHeaders) {
@@ -510,7 +514,7 @@ var DO = {
                     }
                 },
                 function(reason){
-                    console.log(reason);
+//                    console.log(reason);
                     return Promise.reject({'message': "'Link' header not found"});
                 }
             );
@@ -523,10 +527,6 @@ var DO = {
 
             var pIRI = url;
             pIRI = DO.U.stripFragmentFromString(pIRI);
-// console.log(url);
-// console.log(subjectIRI);
-
-            //TODO: Should use both document.location.origin + '/,proxy?uri= and then DO.C.ProxyURL .. like in setUser
             if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
                 pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
             }
@@ -562,12 +562,21 @@ var DO = {
                     function(i) {
                         var s = i.child(url);
                         s.ldpcontains.forEach(function(resource) {
-                            var types = s.child(resource).rdftype._array;
-                            if(types.indexOf(DO.C.Vocab.ldpresource["@id"]) >= 0) {
+                            resource = resource.iri().toString();
+// console.log(resource);
+                            var types = s.child(resource).rdftype;
+// console.log(types);
+                            var resourceTypes = [];
+                            types.forEach(function(type){
+                                resourceTypes.push(type.iri().toString());
+// console.log(type);
+                            });
+
+                            if(resourceTypes.indexOf(DO.C.Vocab.ldpresource["@id"]) > -1 && resourceTypes.indexOf(DO.C.Vocab.ldpcontainer["@id"]) < 0) {
                                 notifications.push(resource);
                             }
                         });
-
+// console.log(notifications);
                         if (notifications.length > 0) {
                             return resolve(notifications);
                         }
@@ -591,8 +600,8 @@ var DO = {
                 var g = SimpleRDF(DO.C.Vocab, url, null, ld.store).get().then(
                     function(i) {
                         var s = i.child(url);
-                        if (s.ascontext.at(0) == DO.C.Vocab.oahasTarget["@id"] && s.astarget.at(0).indexOf(window.location.origin + window.location.pathname) >= 0) {
-                            return resolve(s.asobject.at(0));
+                        if (s.ascontext.at(0).iri().toString() == DO.C.Vocab.oahasTarget["@id"] && s.astarget.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
+                            return resolve(s.asobject.at(0).iri().toString());
                         }
                         else {
                             return Promise.reject({'message': 'Notification source not found'});
@@ -931,12 +940,21 @@ var DO = {
             data += '    .\n\
 ';
 
+
             if (inbox && inbox.length > 0) {
-                DO.U.getAcceptPostPreference(inbox).then(
+                var pIRI = inbox;
+                pIRI = DO.U.stripFragmentFromString(inbox);
+
+                if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
+                    pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
+                }
+                return DO.U.getAcceptPostPreference(pIRI).then(
                     function(preferredContentType){
+//  console.log(preferredContentType);
                         switch(preferredContentType) {
                             case 'text/turtle': default:
-                                return DO.U.postResource(inbox, slug, data, 'text/turtle; charset=utf-8');
+                                //FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
+                                return DO.U.postResource(pIRI, slug, data, 'text/turtle; charset=utf-8');
                                 break;
                             case 'application/ld+json': case 'application/json':
                                 //TODO: Reserialise Turtle data to JSON-LD
@@ -956,7 +974,13 @@ var DO = {
         },
 
         getAcceptPostPreference: function(url) {
-            return DO.U.getResourceOptions(url, {'header': 'Accept-Post'}).then(
+            var pIRI = url;
+            pIRI = DO.U.stripFragmentFromString(url);
+            if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
+                pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
+            }
+
+            return DO.U.getResourceOptions(pIRI, {'header': 'Accept-Post'}).then(
                 function(i){
                     var header = i.headers.trim().split(/\s*,\s*/);
                     if (header.indexOf('text/turtle') > -1 || header.indexOf('*/*') > -1) {
@@ -2162,10 +2186,12 @@ var DO = {
                             function(i){
                                 replyToResource.querySelector('.response-message').innerHTML = '<p class="success"><a href="' + i.xhr.responseURL + '">Reply saved!</a></p>';
                                 // Then send notification
-                                DO.U.getInbox(iri).then(
+                                DO.U.getInbox().then(
                                     function(inbox) {
-                                        if (inbox && inbox.length > 0) {
-        // console.log('inbox: ' + inbox);
+console.log(inbox);
+                                        if (inbox.length > 0) {
+                                            inbox = inbox[0];
+
                                             var notificationData = {
                                                 "type": "as:Announce",
                                                 "inbox": inbox,
@@ -2275,9 +2301,9 @@ var DO = {
                             var inbox;
                             var inboxResponse = function() {
                                 return new Promise(function(resolve, reject) {
-                                    DO.U.getInboxFromRDF(to).then(
+                                    DO.U.getInbox(to).then(
                                         function(inboxes){
-                                            return resolve(inboxes[0]);
+                                            return resolve(inboxes[0].iri().toString());
                                         },
                                         function(reason){
                                             console.log(reason);
@@ -2297,7 +2323,7 @@ var DO = {
                                         "summary": note,
                                         "license": "https://creativecommons.org/licenses/by/4.0/"
                                     };
-
+// console.log(notificationData);
                                     DO.U.notifyInbox(notificationData).then(
                                         function(response) {
                                             var location = response.xhr.getResponseHeader('Location');
@@ -2329,13 +2355,12 @@ var DO = {
             return new Promise(function(resolve, reject) {
                 SimpleRDF(DO.C.Vocab, pIRI, null, ld.store).get().then(
                     function(i) {
-// console.log(i);
                         var s = i.child(url);
                         var knows = s.foafknows;
                         var seeAlso = s.rdfsseeAlso;
-// console.log(knows._array);
+// console.log(knows);
 // console.log(seeAlso);
-                        return resolve(knows._array);
+                        return resolve(knows);
                     },
                     function(reason){
                         console.log(reason);
@@ -2352,6 +2377,7 @@ var DO = {
                     var shareResourceContacts = document.getElementById('share-resource-contacts');
                     var counter = 1;
                     contacts.forEach(function(url) {
+                        url = url.iri().toString();
                         var pIRI = url;
                         pIRI = DO.U.stripFragmentFromString(pIRI);
                         if (pIRI.slice(0, 5).toLowerCase() == 'http:') {
@@ -2366,9 +2392,9 @@ var DO = {
 // console.log(s);
                                 if((s._graph.length > 0 && s.ldpinbox && s.ldpinbox._array.length > 0) || (s._graph.length > 0 && s.solidinbox && s.solidinbox._array.length > 0)) {
                                     var name = s.foafname || s.schemaname || '';
-                                    var img = s.foafimg || s["http://xmlns.com/foaf/0.1/depiction"] || s.schemaimage || '';
-// console.log(name);
-// console.log(img);
+                                    var img = s.foafimg.iri() || s["http://xmlns.com/foaf/0.1/depiction"].iri() || s.schemaimage.iri() || '';
+                                    img = img.toString();
+
                                     if (img.length > 0 || name.length > 0) {
                                         img = (img.length > 0) ? '<img alt="" height="32" src="' + img + '" width="32" />' : '';
                                         shareResourceContacts.insertAdjacentHTML('beforeend', '<li><input id="share-resource-contact-' + counter + '" type="checkbox" value="' + url + '" /><label for="share-resource-contact-' + counter + '">' + img + name + '</label></li>');
@@ -2444,8 +2470,7 @@ var DO = {
 
         generateBrowserList: function(g, url) {
             return new Promise(function(resolve, reject){
-
-              document.getElementById('browser-location-input').value = url;
+                document.getElementById('browser-location-input').value = url;
 
                 var msgs = document.getElementById('browser-location').querySelectorAll('.response-message');
                 for(var i = 0; i < msgs.length; i++){
@@ -2468,16 +2493,22 @@ var DO = {
                 var containersLi = Array();
                 var resourcesLi = Array();
                 contains.forEach(function(c){
+                    c = c.iri().toString();
                     var cg = g.child(c);
-                    var types = cg.rdftype._array;
+                    var types = cg.rdftype;
+                    var resourceTypes = [];
+                    types.forEach(function(type){
+                        resourceTypes.push(type.iri().toString());
+                    });
 
                     var path = DO.U.getUrlPath(c);
-                    if(types.indexOf('http://www.w3.org/ns/ldp#Container') > -1){
+                    if(resourceTypes.indexOf('http://www.w3.org/ns/ldp#Container') > -1){
                         var slug = path[path.length-2];
                         containersLi.push('<li class="container"><input type="radio" name="resources" value="' + c + '" id="' + slug + '"/><label for="' + slug + '">' + slug + '</label></li>');
-                    }else{
-                      var slug = path[path.length-1];
-                      resourcesLi.push('<li><input type="radio" name="resources" value="' + c + '" id="' + slug + '"/><label for="' + slug + '">' + slug + '</label></li>');
+                    }
+                    else {
+                        var slug = path[path.length-1];
+                        resourcesLi.push('<li><input type="radio" name="resources" value="' + c + '" id="' + slug + '"/><label for="' + slug + '">' + slug + '</label></li>');
                     }
 
                 });
@@ -2577,7 +2608,7 @@ var DO = {
             }
 
             if(DO.C.User.Storage && DO.C.User.Storage.length > 0) {
-                var storageUrl = DO.U.forceTrailingSlash(DO.C.User.Storage[0]); // TODO: options for multiple storage
+                var storageUrl = DO.U.forceTrailingSlash(DO.C.User.Storage[0].iri().toString()); // TODO: options for multiple storage
                 input.value = storageUrl;
                 DO.U.getGraph(storageUrl).then(function(g){
                     DO.U.generateBrowserList(g, storageUrl);
@@ -3487,38 +3518,61 @@ WHERE {\n\
                 SimpleRDF(DO.C.Vocab, noteIRI, null, ld.store).get().then(
                     function(i) {
                         var note = i.child(noteIRI);
+// console.log(note);
                         var datetime = note.oaannotatedAt;
-                        var annotatedByIRI = note.oaannotatedBy;
+// console.log(datetime);
+                        var annotatedByIRI = note.oaannotatedBy.iri();
+// console.log(annotatedByIRI);
                         var annotatedBy = i.child(annotatedByIRI);
+// console.log(annotatedBy);
                         var annotatedByName = annotatedBy.schemaname;
-                        var annotatedByImage = annotatedBy.schemaimage;
-                        var body = i.child(note.oahasBody);
+// console.log(annotatedByName);
+                        var annotatedByImage = annotatedBy.schemaimage.iri().toString();
+// console.log(annotatedByImage);
+                        var body = i.child(note.oahasBody.iri());
+// console.log(body);
+                        var bodyLicenseIRI = body.schemalicense || body.dctermsrights;
+// console.log(bodyLicenseIRI);
+                        bodyLicenseIRI = (bodyLicenseIRI && bodyLicenseIRI.iri()) ? bodyLicenseIRI.iri().toString() : undefined;
+// console.log(bodyLicenseIRI);
                         var bodyText = body.oatext;
-                        var target = i.child(note.oahasTarget);
-
-                        var selector = i.child(target.oahasSelector);
-
+// console.log(bodyText);
+                        var target = i.child(note.oahasTarget.iri());
+// console.log(target);
+// console.log(target.oahasSelector.iri());
+                        var selector = i.child(target.oahasSelector.iri());
+// console.log(selector);
                         var exact, prefix, suffix;
-                        var selectorTypes = selector.rdftype._array;
-                        if(selectorTypes.indexOf('http://www.w3.org/ns/oa#TextQuoteSelector') >= 0) {
+// console.log(selector.rdftype);
+// console.log(selector.rdftype._array);
+                        //FIXME: This is taking the first rdf:type. There could be multiple.
+                        var selectorTypes = selector.rdftype.at(0).iri().toString();
+// console.log(selectorTypes);
+                        if(selectorTypes == 'http://www.w3.org/ns/oa#TextQuoteSelector') {
                             exact = selector.oaexact;
                             prefix = selector.oaprefix;
                             suffix = selector.oasuffix;
                         }
-                        else if (selectorTypes.indexOf('http://www.w3.org/ns/oa#FragmentSelector') >= 0) {
-                            var refinedBy = i.child(selector["http://www.w3.org/ns/oa#refinedBy"]);
+                        else if (selectorTypes == 'http://www.w3.org/ns/oa#FragmentSelector') {
+                            var refinedBy = i.child(selector["http://www.w3.org/ns/oa#refinedBy"].iri());
                             exact = refinedBy.oaexact;
                             prefix = refinedBy.oaprefix;
                             suffix = refinedBy.oasuffix;
                         }
-
+// console.log(exact);
+// console.log(prefix);
+// console.log(suffix);
                         var source = target.oahasSource;
-
+// console.log(source);
+// console.log(source.iri());
                         var licenseIRI = note.schemalicense || note.dctermsrights;
-
+                        licenseIRI = (licenseIRI && licenseIRI.iri()) ? licenseIRI.iri().toString() : undefined;
+// console.log(licenseIRI);
                         var containerNodeTextContent = containerNode.textContent;
-
+//console.log(containerNodeTextContent);
+// console.log(prefix + exact + suffix);
                         var selectorIndex = containerNodeTextContent.indexOf(prefix + exact + suffix);
+// console.log(selectorIndex);
                         if (selectorIndex >= 0) {
                             var exactStart = selectorIndex + prefix.length
                             var exactEnd = selectorIndex + prefix.length + exact.length;
@@ -3772,7 +3826,7 @@ WHERE {\n\
                             }
                             else if (n.body.length > 0) {
                                 if (n.license && 'iri' in n.license) {
-                                    license = DO.U.createLicenseHTML(n.license, {rel:'dcterms:rights', label:'Rights'});
+                                    license = DO.U.createLicenseHTML(n.license, {rel:'http://purl.org/dc/terms/rights', label:'Rights'});
                                 }
 
                                 body += '<section id="note" rel="oa:hasBody" resource="i:#note"><h2 property="schema:name">Note</h2><div datatype="rdf:HTML" property="oa:text as:content schema:description" resource="i:#note" typeof="oa:TextualBody as:Note">' + n.body + '</div>' + license + '</section>';
@@ -4409,7 +4463,7 @@ WHERE {\n\
                                         if (this.action == 'approve' && DO.U.Editor.MediumEditor.options.id == 'social'){
                                             var opts = {
                                                 license: 'https://creativecommons.org/licenses/by/4.0/',
-                                                content: ''
+                                                content: 'Liked'
                                             }
                                             this.completeFormSave(opts);
                                         }
@@ -5226,11 +5280,11 @@ WHERE {\n\
                                                 }
                                             );
 
-                                            //TODO: resourceIRI should be the closest IRI (not necessarily the document). Test resolve/reject better.
-                                            DO.U.getInbox(resourceIRI).then(
+                                            //TODO: resourceIRI for getInbox should be the closest IRI (not necessarily the document). Test resolve/reject better.
+                                            DO.U.getInbox().then(
                                                 function(inbox) {
-                                                    if (inbox && inbox.length > 0) {
-// console.log('inbox: ' + inbox);
+                                                    if (inbox.length > 0) {
+                                                        inbox = inbox[0];
                                                         var notificationData = {
                                                             "type": "as:Announce",
                                                             "inbox": inbox,
