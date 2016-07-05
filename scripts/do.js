@@ -3182,7 +3182,7 @@ console.log(inbox);
             var hash = 0;
             if (s.length == 0) return hash;
             for (i = 0; i < s.length; i++) {
-                char = s.charCodeAt(i);
+                var char = s.charCodeAt(i);
                 hash = ((hash<<5)-hash)+char;
                 hash = hash & hash; // Convert to 32bit integer
             }
@@ -3587,7 +3587,7 @@ WHERE {\n\
 
                             //XXX: Review
                             var selection = window.getSelection();
-                            r = selection.getRangeAt(0);
+                            var r = selection.getRangeAt(0);
                             selection.removeAllRanges();
                             selection.addRange(r);
                             r.collapse(true);
@@ -3710,6 +3710,7 @@ WHERE {\n\
             var body = '';
             var buttonDelete = '';
             var note = '';
+            var targetLabel = '';
 
             var motivatedByIRI = n.motivatedByIRI || '';
             var motivatedByLabel = '';
@@ -3893,8 +3894,8 @@ WHERE {\n\
 
         createLicenseHTML: function(n, options) {
             var license = '';
-            rel = (options && options.rel) ? options.rel : 'schema:license';
-            label = (options && options.label) ? options.label : 'License';
+            var rel = (options && options.rel) ? options.rel : 'schema:license';
+            var label = (options && options.label) ? options.label : 'License';
 
             if (typeof n.iri !== 'undefined') {
                 license = '<dl class="' + label.toLowerCase() + '"><dt>' + label + '</dt><dd>';
