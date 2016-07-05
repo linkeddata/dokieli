@@ -2298,12 +2298,11 @@ console.log(inbox);
                         shareResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>');
 
                         tos.forEach(function(to) {
-                            var inbox;
                             var inboxResponse = function() {
                                 return new Promise(function(resolve, reject) {
                                     DO.U.getInbox(to).then(
                                         function(inboxes){
-                                            return resolve(inboxes[0].iri().toString());
+                                            return resolve(inboxes[0]);
                                         },
                                         function(reason){
                                             console.log(reason);
