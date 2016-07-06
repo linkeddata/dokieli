@@ -602,7 +602,7 @@ var DO = {
                 SimpleRDF(DO.C.Vocab, url, null, ld.store).get().then(
                     function(i) {
                         var s = i.child(url);
-                        if (s.ascontext && s.astarget && s.ascontext.at(0) s.astarget.at(0) && s.ascontext.at(0).iri().toString() == DO.C.Vocab.oahasTarget["@id"] && s.astarget.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
+                        if (s.ascontext && s.astarget && s.ascontext.at(0) && s.astarget.at(0) && s.ascontext.at(0).iri().toString() == DO.C.Vocab.oahasTarget["@id"] && s.astarget.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
                             return resolve(s.asobject.at(0).iri().toString());
                         }
                         else {
