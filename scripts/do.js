@@ -1008,10 +1008,10 @@ var DO = {
             return DO.U.getResourceOptions(pIRI, {'header': 'Accept-Post'}).then(
                 function(i){
                     var header = i.headers.trim().split(/\s*,\s*/);
-                    if (header.indexOf('text/turtle') > -1) {
+                    if (header.indexOf('text/turtle') > -1 || header.indexOf('*/*') > -1) {
                         return 'text/turtle';
                     }
-                    else if (header.indexOf('application/ld+json') > -1 || header.indexOf('application/json') > -1 || header.indexOf('*/*') > -1) {
+                    else if (header.indexOf('application/ld+json') > -1 || header.indexOf('application/json') > -1) {
                         return 'application/ld+json';
                     }
                     else {
