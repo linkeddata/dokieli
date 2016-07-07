@@ -3418,7 +3418,7 @@ WHERE {\n\
                 });
         },
 
-        sortTriples(triples, options) {
+        sortTriples: function(triples, options) {
             options = options || {};
             if(!('sortBy' in options)) {
                 options['sortBy'] = 'object';
