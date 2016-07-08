@@ -574,7 +574,7 @@ var DO = {
 // console.log(type);
                             });
 
-                            if(resourceTypes.indexOf(DO.C.Vocab.ldpresource["@id"]) > -1 && resourceTypes.indexOf(DO.C.Vocab.ldpcontainer["@id"]) < 0) {
+                            if(resourceTypes.indexOf(DO.C.Vocab.ldpcontainer["@id"]) < 0) {
                                 notifications.push(resource);
                             }
                         });
