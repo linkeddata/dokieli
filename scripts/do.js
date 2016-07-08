@@ -713,7 +713,7 @@ var DO = {
             url = url || window.location.origin + window.location.pathname;
             headers = headers || {};
             if(typeof headers['Accept'] == 'undefined') {
-                headers['Accept'] = 'text/turtle; charset=utf-8';
+                headers['Accept'] = 'text/turtle';
             }
 
             return new Promise(function(resolve, reject) {
