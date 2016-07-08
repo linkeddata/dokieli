@@ -538,11 +538,11 @@ var DO = {
                         var s = i.child(subjectIRI);
                         if (s.ldpinbox._array.length > 0){
 // console.log(s.ldpinbox._array);
-                            return resolve(s.ldpinbox._array);
+                            return resolve([s.ldpinbox.at(0).iri().toString()]);
                         }
                         else if (s.solidinbox._array.length > 0){
 // console.log(s.solidinbox._array);
-                            return resolve(s.solidinbox._array);
+                            return resolve([s.solidinbox.at(0).iri().toString()]);
                         }
                         var reason = {"message": "Inbox was not found in message body"};
                         return reject(reason);
