@@ -1772,7 +1772,7 @@ var DO = {
 
         updateDocumentTitle: function(e) {
             if (!e.target.matches('h1')) {
-                var h1 = document.querySelector('main > article > h1');
+                var h1 = document.querySelector('main article > h1');
                 if (h1) {
                     document.title = h1.textContent.trim();
                 }
@@ -2703,7 +2703,7 @@ console.log(inbox);
                         nodes = DO.U.rewriteBaseURL(nodes, baseURLType);
                     }
 
-                    html.querySelector('main > article').innerHTML = '';
+                    html.querySelector('main article').innerHTML = '';
                     html.querySelector('head title').innerHTML = '';
                     html = DO.U.getDocument(html);
 
@@ -4088,10 +4088,9 @@ WHERE {\n\
                     editorOptions.author.toolbar.buttons.splice(10, 0, 'table');
                 }
 
-                var eNodes = document.querySelectorAll('main > article');
+                var eNodes = document.querySelector('main article');
                 var eOptions = editorOptions[editorMode];
                 DO.C.User.Role = editorMode;
-
 
                 if (typeof MediumEditor !== 'undefined') {
                     DO.U.Editor.MediumEditor = new MediumEditor(eNodes, eOptions);
@@ -4103,7 +4102,6 @@ WHERE {\n\
 
                     return DO.U.Editor.MediumEditor;
                 }
-
             },
 
             Button: (function () {
@@ -5415,7 +5413,7 @@ WHERE {\n\
                                                     var r = document.querySelector('#references ol');
                                                     if (!r) {
                                                         var section = '<section id="references"><h2>References</h2><div><ol></ol></div></section>';
-                                                        document.querySelector('main > article > div').insertAdjacentHTML('beforeend', section);
+                                                        document.querySelector('main article > div').insertAdjacentHTML('beforeend', section);
                                                         r = document.querySelector('#references ol');
                                                     }
                                                     var citationHTML = '<li id="' + id + '">' + citation + '</li>';
