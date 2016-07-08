@@ -961,9 +961,7 @@ var DO = {
                                 break;
                             case 'application/ld+json': case 'application/json':
                                 //TODO: Reserialise Turtle data to JSON-LD
-        //                        return DO.U.postResource(inbox, slug, data, 'application/ld+json; charset=utf-8');
-
-
+                                // return DO.U.postResource(inbox, slug, data, 'application/ld+json; charset=utf-8');
                                 return SimpleRDF.parse(data, 'text/turtle', '_:dokieli').then(
                                     function(g) {
 // console.log(g);
@@ -1020,7 +1018,7 @@ var DO = {
                     }
                 },
                 function(reason) {
-                    return;
+                    return 'application/ld+json';
                 }
             );
         },
