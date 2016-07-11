@@ -12,8 +12,7 @@ var DO = {
         DocRefType: '',
         RefType: {
             LNCS: { InlineOpen: '[', InlineClose: ']' },
-            ACM: { InlineOpen: '[', InlineClose: ']' },
-            APA: { InlineOpen: '(', InlineClose: ')' }
+            ACM: { InlineOpen: '[', InlineClose: ']' }
         },
         Stylesheets: [],
         User: {
