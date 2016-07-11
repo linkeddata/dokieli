@@ -687,6 +687,7 @@ var DO = {
 
         getResourceHead: function(url, options) {
             url = url || window.location.origin + window.location.pathname;
+            options = options || {};
             return new Promise(function(resolve, reject) {
                 var http = new XMLHttpRequest();
                 http.open('HEAD', url);
