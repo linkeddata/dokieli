@@ -681,6 +681,9 @@ var DO = {
                         return reject({status: this.status, xhr: this});
                     }
                 };
+                http.onerror = function () {
+                    return reject({status: this.status, xhr: this});
+                }
                 http.send();
             });
         },
