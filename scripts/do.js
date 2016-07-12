@@ -957,9 +957,11 @@ var DO = {
                 if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
                     pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
                 }
-                return DO.U.getAcceptPostPreference(pIRI).then(
-                    function(preferredContentType){
-// console.log(preferredContentType);
+                return DO.U.getAcceptPostPreference(pIRI)
+                    .catch(function(reason){
+                        return reason;
+                    })
+                    .then(function(preferredContentType){
                         switch(preferredContentType) {
                             case 'text/turtle': default:
                                 //FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
@@ -979,7 +981,12 @@ var DO = {
                                                 x[0]["@id"] = "";
                                                 var data = JSON.stringify(x[0]);
 // console.log(data);
-                                                return DO.U.postResource(pIRI, slug, data, 'application/ld+json; charset=utf-8');
+                                                return DO.U.postResource(pIRI, slug, data, 'application/ld+json; charset=utf-8').catch(function(reason){
+                                                        if(reason.xhr.status == 0){
+                                                            var options = {'noCredentials': true};
+                                                            DO.U.postResource(pIRI, slug, data, 'application/ld+json; charset=utf-8', null, options);
+                                                        }
+                                                });
                                             }
                                         );
                                     },
@@ -987,15 +994,9 @@ var DO = {
                                         return reason;
                                     }
                                 );
-
                                 break;
                         }
-                    },
-                    function(reason){
-                        console.log(reason);
-                        return reason;
-                    }
-                );
+                    });
             }
             else {
                 return Promise.reject({'message': "No inbox to send notification to"});
@@ -1009,8 +1010,11 @@ var DO = {
                 pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
             }
 
-            return DO.U.getResourceOptions(pIRI, {'header': 'Accept-Post'}).then(
-                function(i){
+            return DO.U.getResourceOptions(pIRI, {'header': 'Accept-Post'})
+                .catch(function(reason) {
+                    return {'headers': 'application/ld+json'};
+                })
+                .then(function(i){
                     var header = i.headers.trim().split(/\s*,\s*/);
                     if (header.indexOf('text/turtle') > -1 || header.indexOf('*/*') > -1) {
                         return 'text/turtle';
@@ -1022,11 +1026,7 @@ var DO = {
                         console.log('Accept-Post contains unrecognised media-range; ' + i.headers);
                         return i.headers;
                     }
-                },
-                function(reason) {
-                    return 'application/ld+json';
-                }
-            );
+                });
         },
 
         urlParam: function(name) {
