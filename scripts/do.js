@@ -3723,7 +3723,7 @@ WHERE {\n\
                         }
                     },
                     function(reason) {
-                        console.log(reason);
+// console.log(reason);
                         return reject(reason);
                     }
                 );
