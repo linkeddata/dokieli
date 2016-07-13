@@ -3686,7 +3686,7 @@ WHERE {\n\
 ';
                             var asideNode = DO.U.fragmentFromString(asideNote);
                             var parentSection = MediumEditor.util.getClosestTag(selectedParentNode, 'section')
-                            || MediumEditor.util.getClosestTag(selectedParentNode, 'div');
+                            || MediumEditor.util.getClosestTag(selectedParentNode, 'div') || MediumEditor.util.getClosestTag(selectedParentNode, 'article');
                             parentSection.appendChild(asideNode);
                             //XXX: Keeping this comment around for emergency
 //                                selectedParentNode.parentNode.insertBefore(asideNode, selectedParentNode.nextSibling);
