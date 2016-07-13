@@ -738,18 +738,21 @@ var DO = {
             });
         },
 
-        putResource: function(url, data, contentType, links) {
+        putResource: function(url, data, contentType, links, options) {
             if (url && url.length > 0) {
                 contentType = contentType || 'text/html; charset=utf-8';
                 var ldpResource = '<http://www.w3.org/ns/ldp#Resource>; rel="type"';
                 links = (links) ? ldpResource + ', ' + links : ldpResource;
+                options = options || {};
 
                 return new Promise(function(resolve, reject) {
                     var http = new XMLHttpRequest();
                     http.open('PUT', url);
                     http.setRequestHeader('Content-Type', contentType);
                     http.setRequestHeader('Link', links);
-                    http.withCredentials = true;
+                    if (!options.noCredentials) {
+                        http.withCredentials = true;
+                    }
                     http.onreadystatechange = function() {
                         if (this.readyState == this.DONE) {
                             if (this.status === 200 || this.status === 201 || this.status === 204) {
