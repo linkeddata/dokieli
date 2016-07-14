@@ -3868,8 +3868,9 @@ WHERE {\n\
                             }
                         }
 
+                        var targetIRI = '';
                         if (typeof n.target !== 'undefined') {
-                            var targetIRI = n.target.iri;
+                            targetIRI = n.target.iri;
                             var targetIRIFragment = n.target.iri.substr(n.target.iri.lastIndexOf('#'));
                             //TODO: Handle when there is no fragment
                             if (typeof n.target.selector !== 'undefined') {
@@ -3877,8 +3878,10 @@ WHERE {\n\
                             }
                         }
                         else {
-                            var targetIRI = n.inReplyTo;
-                            // TODO: pass document title and maybe author so they can be displayed on the reply too.
+                            if('inReplyTo' in n) {
+                                targetIRI = n.inReplyTo;
+                                // TODO: pass document title and maybe author so they can be displayed on the reply too.
+                            }
                         }
 
                         hasTarget = '<a rel="oa:hasTarget as:inReplyTo sioc:reply_of" href="' + targetIRI + '">' + targetLabel + '</a>';
