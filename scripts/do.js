@@ -3837,7 +3837,7 @@ WHERE {\n\
                         if (typeof n.body !== 'undefined') {
                             if(typeof n.body === 'object' && 'purpose' in n.body) {
                                 if ('describing' in n.body.purpose && 'text' in n.body.purpose.describing) {
-                                    body += '<section id="note" rel="oa:hasBody" resource="i:#note"><h2 property="schema:name" rel="oa:hasPurpose" resource="oa:describing">Note</h2><div datatype="rdf:HTML" property="oa:text as:content schema:description" resource="i:#note" typeof="oa:TextualBody as:Note">' + n.body.purpose.describing.text + '</div></section>';
+                                    body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="i:#note-' + n.id + '"><h2 property="schema:name" rel="oa:hasPurpose" resource="oa:describing">Note</h2><div datatype="rdf:HTML" property="oa:text as:content schema:description" resource="i:#note-' + n.id + '" typeof="oa:TextualBody as:Note">' + n.body.purpose.describing.text + '</div></section>';
                                 }
                                 if ('tagging' in n.body.purpose && 'text' in n.body.purpose.tagging) {
                                     var tagsArray = [];
@@ -3864,7 +3864,7 @@ WHERE {\n\
                                     license = DO.U.createLicenseHTML(n.license, {rel:'http://purl.org/dc/terms/rights', label:'Rights'});
                                 }
 
-                                body += '<section id="note" rel="oa:hasBody" resource="i:#note"><h2 property="schema:name">Note</h2><div datatype="rdf:HTML" property="oa:text as:content schema:description" resource="i:#note" typeof="oa:TextualBody as:Note">' + n.body + '</div>' + license + '</section>';
+                                body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="i:#note-' + n.id + '"><h2 property="schema:name">Note</h2><div datatype="rdf:HTML" property="oa:text as:content schema:description" resource="i:#note" typeof="oa:TextualBody as:Note">' + n.body + '</div>' + license + '</section>';
                             }
                         }
 
