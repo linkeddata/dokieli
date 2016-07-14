@@ -3596,7 +3596,7 @@ WHERE {\n\
 // console.log(exact);
 // console.log(prefix);
 // console.log(suffix);
-                        var source = target.oahasSource;
+                        var source = target.oahasSource.iri().toString();
 // console.log(source);
 // console.log(source.iri());
                         var licenseIRI = note.schemalicense || note.dctermsrights;
