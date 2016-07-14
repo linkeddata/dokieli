@@ -637,16 +637,23 @@ var DO = {
             DO.U.getNotifications(url).then(
                 function(i) {
                     i.forEach(function(notification) {
-                        DO.U.getNotificationSource(notification).then(
-                            function(source) {
-                                DO.U.positionQuoteSelector(source).then(
-                                    function(notificationIRI){
-                                        return notificationIRI;
-                                    },
-                                    function(reason){
-                                        console.log('Notification source is unreachable');
-                                    }
-                                );
+                        DO.U.getGraph(notification).then(
+                            function(i) {
+                                var s = i.child(notification);
+                                if (s.ascontext && s.astarget && s.ascontext.at(0) && s.astarget.at(0) && s.astarget.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
+                                    var context = s.ascontext.at(0).iri().toString();
+                                    var source = s.asobject.at(0).iri().toString();
+                                    return DO.U.positionQuoteSelector(source).then(
+                                        function(notificationIRI){
+                                            return notificationIRI;
+                                        },
+                                        function(reason){
+                                            console.log('Notification source is unreachable');
+                                        });
+                                }
+                                else {
+                                    return Promise.reject({'message': 'Notification source not found'});
+                                }
                             },
                             function(reason) {
                                 console.log('Notification source does not exist');
@@ -3574,29 +3581,39 @@ WHERE {\n\
                         var target = i.child(note.oahasTarget.iri());
 // console.log(target);
 // console.log(target.oahasSelector.iri());
-                        var selector = i.child(target.oahasSelector.iri());
-// console.log(selector);
+
                         var exact, prefix, suffix;
+
+                        var selector = target.oahasSelector;
+                        if(selector && selector.iri()) {
+                            selector = i.child(selector.iri());
+// console.log(selector);
+
 // console.log(selector.rdftype);
 // console.log(selector.rdftype._array);
-                        //FIXME: This is taking the first rdf:type. There could be multiple.
-                        var selectorTypes = selector.rdftype.at(0).iri().toString();
+                            //FIXME: This is taking the first rdf:type. There could be multiple.
+                            var selectorTypes = selector.rdftype.at(0).iri().toString();
 // console.log(selectorTypes);
-                        if(selectorTypes == 'http://www.w3.org/ns/oa#TextQuoteSelector') {
-                            exact = selector.oaexact;
-                            prefix = selector.oaprefix;
-                            suffix = selector.oasuffix;
+                            if(selectorTypes == 'http://www.w3.org/ns/oa#TextQuoteSelector') {
+                                exact = selector.oaexact;
+                                prefix = selector.oaprefix;
+                                suffix = selector.oasuffix;
+                            }
+                            else if (selectorTypes == 'http://www.w3.org/ns/oa#FragmentSelector') {
+                                var refinedBy = i.child(selector["http://www.w3.org/ns/oa#refinedBy"].iri());
+                                exact = refinedBy.oaexact;
+                                prefix = refinedBy.oaprefix;
+                                suffix = refinedBy.oasuffix;
+                            }
                         }
-                        else if (selectorTypes == 'http://www.w3.org/ns/oa#FragmentSelector') {
-                            var refinedBy = i.child(selector["http://www.w3.org/ns/oa#refinedBy"].iri());
-                            exact = refinedBy.oaexact;
-                            prefix = refinedBy.oaprefix;
-                            suffix = refinedBy.oasuffix;
-                        }
+
 // console.log(exact);
 // console.log(prefix);
 // console.log(suffix);
-                        var source = target.oahasSource.iri().toString();
+                        var source = target.oahasSource;
+                        if(source && source.iri()){
+                            source = source.toString();
+                        }
 // console.log(source);
 // console.log(source.iri());
                         var licenseIRI = note.schemalicense || note.dctermsrights;
