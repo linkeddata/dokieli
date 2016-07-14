@@ -134,10 +134,12 @@ var DO = {
             "oatext": "http://www.w3.org/ns/oa#text",
             "oaannotatedAt": { "@id": "http://www.w3.org/ns/oa#annotatedAt", "@type": "@id" },
             "oaannotatedBy": { "@id": "http://www.w3.org/ns/oa#annotatedBy", "@type": "@id" },
+            "oamotivatedBy": { "@id": "http://www.w3.org/ns/oa#motivatedBy", "@type": "@id" },
 
             "asobject": { "@id": "http://www.w3.org/ns/activitystreams#object", "@type": "@id", "@array": true },
             "astarget": { "@id": "http://www.w3.org/ns/activitystreams#target", "@type": "@id", "@array": true },
             "ascontext": { "@id": "http://www.w3.org/ns/activitystreams#context", "@type": "@id", "@array": true },
+            "asinReplyTo": { "@id": "http://www.w3.org/ns/activitystreams#inReplyTo", "@type": "@id", "@array": true },
 
             "ldpcontains": { "@id": "http://www.w3.org/ns/ldp#contains", "@type": "@id", "@array": true },
             "ldpresource": { "@id": "http://www.w3.org/ns/ldp#Resource", "@type": "@id", "@array": true  },
