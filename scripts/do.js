@@ -4029,7 +4029,9 @@ WHERE {\n\
                 return DO.U.Editor.MediumEditor.destroy();
             },
 
-            enableEditor: function(editorMode, e) {
+            enableEditor: function(editorMode, e, selector) {
+                selector = selector || 'main article';
+
                 if (typeof DO.U.Editor.MediumEditor !== 'undefined') {
                     DO.U.Editor.disableEditor();
                 }
@@ -4117,7 +4119,7 @@ WHERE {\n\
                     editorOptions.author.toolbar.buttons.splice(10, 0, 'table');
                 }
 
-                var eNodes = document.querySelector('main article');
+                var eNodes = document.querySelector(selector);
                 var eOptions = editorOptions[editorMode];
                 DO.C.User.Role = editorMode;
 
