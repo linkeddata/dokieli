@@ -1961,7 +1961,7 @@ var DO = {
         },
 
         domToString: function(node, options) {
-            var options = options || {};
+            options = options || {};
             var selfClosing = [];
             if ('selfClosing' in options) {
                 options.selfClosing.split(' ').forEach(function (n) {
