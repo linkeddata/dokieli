@@ -912,6 +912,10 @@ padding:0.25em;
 vertical-align:baseline;
 font-size:0.923em;
 }
+table ul,
+table ol {
+margin:0;
+}
 th {
 font-weight:normal;
 }
@@ -1044,7 +1048,9 @@ margin-top:-1.75em;
 list-style-position:inside;
 margin-bottom:1em;
 }
-
+#content table ul {
+margin-bottom:0;
+}
 
 .entry-author,
 .datetimestamp,
