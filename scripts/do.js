@@ -1939,7 +1939,7 @@ var DO = {
         getDocument: function(cn, options) {
             var node = cn || document.documentElement.cloneNode(true);
             options = options || {
-                'selfClosing': "area base basefont br col colgroup hr img input isindex link meta param source wbr",
+                'selfClosing': "area base basefont br col colgroup embed hr img input isindex link meta metadata param source wbr",
                 'skipAttributes': "contenteditable spellcheck medium-editor-index data-medium-editor-element data-medium-editor-editor-index data-medium-focused data-placeholder role aria-multiline style",
                 'sortAttributes': true,
                 'skipNodeWithClass': 'do',
