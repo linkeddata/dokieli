@@ -3361,7 +3361,7 @@ WHERE {\n\
         getSparkline: function(data, options) {
             options = options || {};
             if(!('cssStroke' in options)) {
-                options[cssStroke] = '#333';
+                options['cssStroke'] = '#333';
             }
 
             var svg = '<svg height="100%" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# xsd: http://www.w3.org/2001/XMLSchema# qb: http://purl.org/linked-data/cube# prov: http://www.w3.org/ns/prov# schema: https://schema.org/" version="1.1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink"><style type="text/css">/*<![CDATA[*/line { stroke:' + options.cssStroke + '; stroke-width:1px; } circle { stroke:#f00; fill:#f00; }/*]]>*/</style>';
@@ -3375,7 +3375,7 @@ WHERE {\n\
         drawSparklineGraph: function(data, options) {
             options = options || {};
             if(!('cssStroke' in options)) {
-                options[cssStroke] = '#333';
+                options['cssStroke'] = '#333';
             }
             var svg= '';
 
@@ -3430,7 +3430,7 @@ WHERE {\n\
             if (options && 'title' in options) {
                 svg += '<title property="schema:name">' + options['title'] + '</title>';
             }
-            svg += lines;
+            svg += lines + '</g>';
 
             return svg;
         },
@@ -5639,15 +5639,17 @@ WHERE {\n\
         }, //DO.U.Editor
 
         init: function() {
-            DO.U.setDocRefType();
-            DO.U.showRefs();
-            DO.U.setLocalDocument();
-            DO.U.buttonClose();
-            DO.U.highlightItems();
-            DO.U.showDocumentInfo();
-            DO.U.showFragment();
-            DO.U.setDocumentMode();
-            DO.U.showInboxNotifications();
+            if(document.body) {
+                DO.U.setDocRefType();
+                DO.U.showRefs();
+                DO.U.setLocalDocument();
+                DO.U.buttonClose();
+                DO.U.highlightItems();
+                DO.U.showDocumentInfo();
+                DO.U.showFragment();
+                DO.U.setDocumentMode();
+                DO.U.showInboxNotifications();
+            }
         }
     } //DO.U
 }; //DO
