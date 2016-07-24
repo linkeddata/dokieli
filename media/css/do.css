@@ -663,7 +663,6 @@ stroke:#f00;
 fill:#f00;
 }
 .medium-editor-toolbar-form *[id^="sparkline-"] {
-overflow:auto;
 max-height:15em;
 max-width:30em;
 }
