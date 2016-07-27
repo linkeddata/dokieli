@@ -3107,9 +3107,11 @@ console.log(inbox);
             return DO.U.getGraph(pIRI);
         },
 
-        getCitationHTML: function(citationGraph, citationURI, refId, options) {
+        getCitationHTML: function(citationGraph, citationURI, options) {
+            options = options || {};
             var subject, title, datePublished, dateAccessed;
             var authors = [], authorList = [];
+            var citationId = ('citationId' in options) ? options.citationId : citationURI;
 
             subject = citationGraph.child(citationURI);
             title = subject.schemaname || subject.dctermstitle || subject.rdfslabel || '';
@@ -3175,7 +3177,7 @@ console.log(inbox);
                 authors = authors.join(', ');
             }
 
-            var citationHTML = authors + ': ' + title + datePublished + ', <a about="#' + refId + '" href="' + citationURI + '" rel="schema:citation">' + citationURI + '</a>' + dateAccessed;
+            var citationHTML = authors + ': ' + title + datePublished + ', <a about="#' + options.refId + '" href="' + citationId + '" rel="schema:citation">' + citationId + '</a>' + dateAccessed;
 //console.log(citationHTML);
             return Promise.resolve(citationHTML);
         },
@@ -5413,8 +5415,7 @@ WHERE {\n\
                                             DO.U.positionNote(refId, refLabel, id);
                                             break;
                                         case 'ref-reference':
-                                            var options = {'type': 'doi'};
-                                            options = { refId: refId };
+                                            var options = { refId: refId, citationId: opts.url };
 
                                             var citation = function() {
                                                 return new Promise(function(resolve, reject) {
@@ -5435,6 +5436,7 @@ WHERE {\n\
                                                     var citationURI = '';
                                                     if(opts.url.match(/^10\.\d+\//)) {
                                                         citationURI = 'http://dx.doi.org/' + opts.url;
+                                                        options.citationId = citationURI;
                                                     }
                                                     //FIXME: subjectIRI shouldn't be set here. Bug in RDFaProcessor (see also SimpleRDF ES5/6). See also: https://github.com/linkeddata/dokieli/issues/132
                                                     else if (opts.url.toLowerCase().indexOf('//dx.doi.org/') >= 0) {
@@ -5446,7 +5448,8 @@ WHERE {\n\
                                                     else {
                                                         citationURI = window.location.origin + window.location.pathname;
                                                     }
-                                                    return DO.U.getCitationHTML(citationGraph, citationURI, refId, options);
+
+                                                    return DO.U.getCitationHTML(citationGraph, citationURI, options);
                                                 },
                                                 function(reason) {
                                                     console.log(reason);
