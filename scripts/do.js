@@ -3121,18 +3121,12 @@ console.log(inbox);
 // console.log(subject.biboauthorList);
             if (subject.biboauthorList) {
                 var traverseRDFList = function(item) {
-                    var s = citationGraph.child(item);
+                    var authorItem = citationGraph.child(item.iri());
 
-                    //FIXME: This doesn't look pretty - Poke @nicola
-                    var bnode = s._iri._iri;
-//console.log(bnode);
-                    var authorItem = subject.child(bnode);
-//console.log(authorItem);
-//console.log(authorItem.rdffirst);
                     if (authorItem.rdffirst) {
-                        authorList.push(authorItem.rdffirst);
+                        authorList.push(authorItem.rdffirst.iri().toString());
                     }
-                    if (authorItem.rdfrest !== 'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil') {
+                    if (authorItem.rdfrest && authorItem.rdfrest.iri().toString() !== 'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil') {
                         traverseRDFList(authorItem.rdfrest);
                     }
                 };
