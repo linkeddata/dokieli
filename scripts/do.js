@@ -5438,7 +5438,10 @@ WHERE {\n\
                                                     }
                                                     //FIXME: subjectIRI shouldn't be set here. Bug in RDFaProcessor (see also SimpleRDF ES5/6). See also: https://github.com/linkeddata/dokieli/issues/132
                                                     else if (opts.url.toLowerCase().indexOf('//dx.doi.org/') >= 0) {
-                                                        citationURI = window.location.origin + window.location.pathname;
+                                                        citationURI = opts.url;
+                                                        if (opts.url.toLowerCase().startsWith('https:')) {
+                                                            citationURI = opts.url.replace(/^https/, 'http');
+                                                        }
                                                     }
                                                     else {
                                                         citationURI = window.location.origin + window.location.pathname;
