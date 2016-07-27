@@ -3135,10 +3135,14 @@ console.log(inbox);
             }
             else {
                 if (subject.schemaauthor && subject.schemaauthor._array.length > 0) {
-                    authorList = subject.schemaauthor._array;
+                    subject.schemaauthor.forEach(function(a) {
+                        authorList.push(a.iri().toString());
+                    });
                 }
                 else if (subject.dctermscreator && subject.dctermscreator._array.length > 0) {
-                    authorList = subject.dctermscreator._array;
+                    subject.dctermscreator.forEach(function(a) {
+                        authorList.push(a.iri().toString());
+                    });
                 }
             }
 //console.log(authorList);
