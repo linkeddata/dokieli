@@ -141,6 +141,8 @@ var DO = {
             "ascontext": { "@id": "http://www.w3.org/ns/activitystreams#context", "@type": "@id", "@array": true },
             "asinReplyTo": { "@id": "http://www.w3.org/ns/activitystreams#inReplyTo", "@type": "@id", "@array": true },
 
+            "siocreplyof": { "@id": "http://rdfs.org/sioc/ns#reply_of", "@type": "@id", "@array": true },
+
             "ldpcontains": { "@id": "http://www.w3.org/ns/ldp#contains", "@type": "@id", "@array": true },
             "ldpresource": { "@id": "http://www.w3.org/ns/ldp#Resource", "@type": "@id", "@array": true  },
             "ldpcontainer": { "@id": "http://www.w3.org/ns/ldp#Container", "@type": "@id", "@array": true  }
@@ -3109,16 +3111,14 @@ console.log(inbox);
 
         getCitationHTML: function(citationGraph, citationURI, options) {
             options = options || {};
-            var subject, title, datePublished, dateAccessed;
-            var authors = [], authorList = [];
             var citationId = ('citationId' in options) ? options.citationId : citationURI;
-
-            subject = citationGraph.child(citationURI);
-            title = subject.schemaname || subject.dctermstitle || subject.rdfslabel || '';
+            var title = subject.schemaname || subject.dctermstitle || subject.rdfslabel || '';
             title = title.replace(/ & /g, " &amp; ");
-            datePublished = subject.schemadatePublished || subject.dctermsissued || subject.dctermsdate || subject.dctermscreated || '';
+            var datePublished = subject.schemadatePublished || subject.dctermsissued || subject.dctermsdate || subject.dctermscreated || '';
             datePublished = (datePublished) ? ', ' + datePublished.substr(0,4) : '';
-            dateAccessed = ' [Accessed: ' + DO.U.getDateTimeISO() + ']';
+            var dateAccessed = ' [Accessed: ' + DO.U.getDateTimeISO() + ']';
+            var authors = [], authorList = [];
+            var subject = citationGraph.child(citationURI);
 // console.log(subject);
 // console.log(subject.biboauthorList);
             if (subject.biboauthorList) {
