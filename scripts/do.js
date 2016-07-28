@@ -3112,13 +3112,13 @@ console.log(inbox);
         getCitationHTML: function(citationGraph, citationURI, options) {
             options = options || {};
             var citationId = ('citationId' in options) ? options.citationId : citationURI;
+            var subject = citationGraph.child(citationURI);
             var title = subject.schemaname || subject.dctermstitle || subject.rdfslabel || '';
             title = title.replace(/ & /g, " &amp; ");
             var datePublished = subject.schemadatePublished || subject.dctermsissued || subject.dctermsdate || subject.dctermscreated || '';
             datePublished = (datePublished) ? ', ' + datePublished.substr(0,4) : '';
             var dateAccessed = ' [Accessed: ' + DO.U.getDateTimeISO() + ']';
             var authors = [], authorList = [];
-            var subject = citationGraph.child(citationURI);
 // console.log(subject);
 // console.log(subject.biboauthorList);
             if (subject.biboauthorList) {
@@ -3135,17 +3135,15 @@ console.log(inbox);
 
                 traverseRDFList(subject.biboauthorList);
             }
-            else {
-                if (subject.schemaauthor && subject.schemaauthor._array.length > 0) {
-                    subject.schemaauthor.forEach(function(a) {
-                        authorList.push(a.iri().toString());
-                    });
-                }
-                else if (subject.dctermscreator && subject.dctermscreator._array.length > 0) {
-                    subject.dctermscreator.forEach(function(a) {
-                        authorList.push(a.iri().toString());
-                    });
-                }
+            else if (subject.schemaauthor && subject.schemaauthor._array.length > 0) {
+                subject.schemaauthor.forEach(function(a) {
+                    authorList.push(a.iri().toString());
+                });
+            }
+            else if (subject.dctermscreator && subject.dctermscreator._array.length > 0) {
+                subject.dctermscreator.forEach(function(a) {
+                    authorList.push(a.iri().toString());
+                });
             }
 //console.log(authorList);
 
