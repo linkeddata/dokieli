@@ -645,13 +645,27 @@ var DO = {
                                 if (s.ascontext && s.astarget && s.ascontext.at(0) && s.astarget.at(0) && s.astarget.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
                                     var context = s.ascontext.at(0).iri().toString();
                                     var source = s.asobject.at(0).iri().toString();
-                                    return DO.U.positionQuoteSelector(source).then(
-                                        function(notificationIRI){
-                                            return notificationIRI;
-                                        },
-                                        function(reason){
-                                            console.log('Notification source is unreachable');
-                                        });
+                                    switch(context) {
+                                        case 'http://www.w3.org/ns/oa#hasTarget':
+                                            return DO.U.positionQuoteSelector(source).then(
+                                                function(notificationIRI){
+                                                    return notificationIRI;
+                                                },
+                                                function(reason){
+                                                    console.log('Notification source is unreachable');
+                                                });
+                                        case 'http://www.w3.org/ns/activitystreams#inReplyTo': case 'http://rdfs.org/sioc/ns#reply_of':
+                                            return DO.U.positionInteractions(source).then(
+                                                function(notificationIRI){
+                                                    return notificationIRI;
+                                                },
+                                                function(reason){
+                                                    console.log('Notification source is unreachable');
+                                                });
+                                        default:
+                                            console.log('Unknown context: ' + context);
+                                            return Promise.reject({'message': 'Unknown context ' + context});
+                                    }
                                 }
                                 else {
                                     return Promise.reject({'message': 'Notification source not found'});
