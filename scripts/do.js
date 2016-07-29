@@ -598,28 +598,6 @@ var DO = {
             });
         },
 
-        getNotificationSource: function(url) {
-            url = url || window.location.origin + window.location.pathname;
-
-            return new Promise(function(resolve, reject) {
-                SimpleRDF(DO.C.Vocab, url, null, ld.store).get().then(
-                    function(i) {
-                        var s = i.child(url);
-                        if (s.ascontext && s.astarget && s.ascontext.at(0) && s.astarget.at(0) && s.ascontext.at(0).iri().toString() == DO.C.Vocab.oahasTarget["@id"] && s.astarget.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
-                            return resolve(s.asobject.at(0).iri().toString());
-                        }
-                        else {
-                            return Promise.reject({'message': 'Notification source not found'});
-                        }
-                    },
-                    function(reason) {
-                        console.log(reason);
-                        return reject(reason);
-                    }
-                );
-            });
-        },
-
         showInboxNotifications: function() {
             if (typeof SimpleRDF !== 'undefined') {
                 DO.U.getInbox().then(
