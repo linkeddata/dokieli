@@ -3759,6 +3759,88 @@ WHERE {\n\
             });
         },
 
+        positionInteractions: function(noteIRI, containerNode) {
+            containerNode = containerNode || document.body;
+            return new Promise(function(resolve, reject) {
+                SimpleRDF(DO.C.Vocab, noteIRI, null, ld.store).get().then(
+                    function(i) {
+                        var note = i.child(noteIRI);
+// console.log(note);
+// console.log(note._graph);
+// var interactionsCount = note._graph.length;
+                        var interactions = document.getElementById('document-interactions');
+                        if(!interactions) {
+                            interactions = document.querySelector('main article');
+                            var interactionsSection = '<section class="do" id="document-interactions"><h2>Interactions</h2><div>';
+// interactionsSection += '<p class="count"><data about="" datatype="xsd:nonNegativeInteger" property="sioc:num_replies" value="' + interactionsCount + '">' + interactionsCount + '</data> interactions</p>';
+                            interactionsSection += '</div></section>';
+                            interactions.insertAdjacentHTML('beforeend', interactionsSection);
+                        }
+
+                        interactions = document.querySelector('#document-interactions > div');
+
+                        var id = String(Math.abs(DO.U.hashCode(noteIRI))).substr(0, 6);
+                        var refId = 'r-' + id;
+                        var refLabel = id;
+
+                        var motivatedBy = 'oa:replying';
+                        if(note.oamotivatedBy && note.oamotivatedBy.iri()) {
+                            motivatedBy = note.oamotivatedBy.iri().toString();
+                        }
+
+                        var datetime = note.oaannotatedAt;
+//console.log(note.oahasBody);
+// console.log(note.oahasBody.iri());
+                        var body = i.child(note.oahasBody.iri().toString());
+// console.log(body);
+                        var bodyText = body.oatext;
+// console.log(bodyText);
+// console.log(note.oahasTarget.iri());
+                        var target = i.child(note.oahasTarget.iri());
+// console.log(target);
+                        var targetIRI = target.iri().toString();
+// console.log(targetIRI);
+
+                        var inReplyTo = note.asinReplyTo.at(0).iri().toString();
+
+                        var noteData = {
+                            "type": 'article',
+                            "mode": "read",
+                            "motivatedByIRI": motivatedBy,
+                            "id": id,
+                            "refId": refId,
+                            "refLabel": refLabel,
+                            "iri": noteIRI,
+                            "creator": {},
+                            "datetime": datetime,
+                            "inReplyTo": inReplyTo,
+                            "body": bodyText,
+                            "license": {}
+                        };
+                        if (note.schemacreator.at(0) && note.schemacreator.at(0).iri()) {
+                            noteData.creator["iri"] = note.schemacreator.at(0).iri().toString();
+                            var creator = i.child(noteData.creator["iri"]);
+                            if (creator.schemaname) {
+                                noteData.creator["name"] = creator.schemaname;
+                            }
+                            if (creator.schemaimage && creator.schemaimage.iri()) {
+                                noteData.creator["image"] = creator.schemaimage.iri().toString();
+                            }
+                        }
+
+                        var licenseIRI = note.schemalicense || note.dctermsrights;
+                        licenseIRI = (licenseIRI && licenseIRI.iri()) ? licenseIRI.iri().toString() : undefined;
+                        if (licenseIRI) {
+                            noteData.license["iri"] = licenseIRI;
+                            noteData.license["name"] = DO.C.License[licenseIRI];
+                        }
+
+                        var interaction = DO.U.createNoteHTML(noteData);
+                        interactions.insertAdjacentHTML('beforeend', interaction);
+                    });
+            });
+        },
+
         createNoteHTML: function(n) {
 // console.log(n);
             var published = '';
