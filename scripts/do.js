@@ -3848,7 +3848,7 @@ WHERE {\n\
             var note = '';
             var targetLabel = '';
             var articleClass = '';
-            var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'";
+            var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri + '"';
 
             var motivatedByIRI = n.motivatedByIRI || '';
             var motivatedByLabel = '';
@@ -3858,7 +3858,7 @@ WHERE {\n\
                     motivatedByLabel = 'replies';
                     targetLabel = 'In reply to';
                     aAbout = 'i:';
-                    aPrefix = prefixes';
+                    aPrefix = prefixes;
                     break;
                 case 'oa:assessing':
                     motivatedByLabel = 'reviews';
