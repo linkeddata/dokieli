@@ -3938,7 +3938,7 @@ WHERE {\n\
                         if (typeof n.body !== 'undefined') {
                             if(typeof n.body === 'object' && 'purpose' in n.body) {
                                 if ('describing' in n.body.purpose && 'text' in n.body.purpose.describing) {
-                                    body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="i:#note-' + n.id + '"><h2 property="schema:name" rel="oa:hasPurpose" resource="oa:describing">Note</h2><div datatype="rdf:HTML" property="oa:text as:content schema:description" resource="i:#note-' + n.id + '" typeof="oa:TextualBody as:Note">' + n.body.purpose.describing.text + '</div></section>';
+                                    body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="i:#note-' + n.id + '"><h2 property="schema:name" rel="oa:hasPurpose" resource="oa:describing">Note</h2><div datatype="rdf:HTML" property="rdf:value as:content schema:description" resource="i:#note-' + n.id + '" typeof="oa:TextualBody as:Note">' + n.body.purpose.describing.text + '</div></section>';
                                 }
                                 if ('tagging' in n.body.purpose && 'text' in n.body.purpose.tagging) {
                                     var tagsArray = [];
@@ -3953,7 +3953,7 @@ WHERE {\n\
 
                                         body += '<dl id="tags" class="tags"><dt>Tags</dt><dd><ul rel="oa:hasBody">';
                                         tagsArray.forEach(function(i){
-                                            body += '<li about="i:#tag-' + DO.U.generateAttributeId(null, i) + '" typeof="oa:TextualBody as:Note" property="oa:text" rel="oa:hasPurpose" resource="oa:tagging" datatype="rdf:HTML">' + i + '</li>';
+                                            body += '<li about="i:#tag-' + DO.U.generateAttributeId(null, i) + '" typeof="oa:TextualBody as:Note" property="rdf:value" rel="oa:hasPurpose" resource="oa:tagging" datatype="rdf:HTML">' + i + '</li>';
                                         })
                                         body += '</ul></dd></dl>';
                                     }
@@ -3965,7 +3965,7 @@ WHERE {\n\
                                     license = DO.U.createLicenseHTML(n.license, {rel:'http://purl.org/dc/terms/rights', label:'Rights'});
                                 }
 
-                                body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="i:#note-' + n.id + '"><h2 property="schema:name">Note</h2><div datatype="rdf:HTML" property="oa:text as:content schema:description" resource="i:#note-' + n.id + '"" typeof="oa:TextualBody as:Note">' + n.body + '</div>' + license + '</section>';
+                                body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="i:#note-' + n.id + '"><h2 property="schema:name">Note</h2><div datatype="rdf:HTML" property="rdf:value as:content schema:description" resource="i:#note-' + n.id + '"" typeof="oa:TextualBody as:Note">' + n.body + '</div>' + license + '</section>';
                             }
                         }
 
@@ -4018,7 +4018,7 @@ WHERE {\n\
                     note = '\n\
 <dl about="#' + n.id +'" id="' + n.id +'" typeof="oa:Annotation">\n\
     <dt><a href="#' + n.refId + '" rel="oa:hasTarget">' + n.refLabel + '</a><meta rel="oa:motivation" resource="' + motivatedByIRI + '" /></dt>\n\
-    <dd rel="oa:hasBody" resource="#n-' + n.id + '"><div datatype="rdf:HTML" property="oa:text" resource="#n-' + n.id + '" typeof="oa:TextualBody">' + citationURL + body + '</div></dd>\n\
+    <dd rel="oa:hasBody" resource="#n-' + n.id + '"><div datatype="rdf:HTML" property="rdf:value" resource="#n-' + n.id + '" typeof="oa:TextualBody">' + citationURL + body + '</div></dd>\n\
 </dl>\n\
 ';
                     break;
@@ -5285,7 +5285,7 @@ WHERE {\n\
                                     }
 
                                     note = DO.U.createNoteHTML(noteData);
-                                    ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="oa:text">' + exact + '</mark>' + docRefType +'</span>';
+                                    ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="rdf:value">' + exact + '</mark>' + docRefType +'</span>';
                                     break;
 
                                 case 'cite': //footnote reference
@@ -5313,7 +5313,7 @@ WHERE {\n\
                                             break;
                                     }
 
-                                    ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="oa:text">' + exact + '</mark>' + docRefType +'</span>';
+                                    ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="rdf:value">' + exact + '</mark>' + docRefType +'</span>';
                                     break;
                                 // case 'reference':
                                 //     ref = '<span class="ref" about="[this:#' + refId + ']" typeof="dctypes:Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span> <span class="ref-reference">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span></span>';
