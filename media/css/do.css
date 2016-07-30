@@ -122,12 +122,12 @@ width:auto;
 position:static;
 }
 
-#document-interactions article h2,
-#document-interactions article h3,
-#document-interactions dt,
-#document-interactions .target,
-#document-interactions .renderedvia,
-#document-interactions .rights,
+#document-interactions article.do h2,
+#document-interactions article.do h3,
+#document-interactions article.do dt,
+#document-interactions article.do .target,
+#document-interactions article.do .renderedvia,
+#document-interactions article.do .rights,
 aside.note.do h2,
 aside.note.do h3,
 aside.note.do blockquote dt,
@@ -140,8 +140,8 @@ aside.note.do blockquote dl.author-name img[width="48"][height="48"][rel$="image
 vertical-align:top;
 }
 #document-interactions section,
-#document-interactions dl,
-#document-interactions dl *,
+#document-interactions article.do dl,
+#document-interactions article.do dl *,
 aside.note.do blockquote dl,
 aside.note.do blockquote dl * {
 margin:0;

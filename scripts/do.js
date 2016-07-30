@@ -3763,7 +3763,7 @@ WHERE {\n\
                         var interactions = document.getElementById('document-interactions');
                         if(!interactions) {
                             interactions = document.querySelector('main article');
-                            var interactionsSection = '<section class="do" id="document-interactions"><h2>Interactions</h2><div>';
+                            var interactionsSection = '<section id="document-interactions"><h2>Interactions</h2><div>';
 // interactionsSection += '<p class="count"><data about="" datatype="xsd:nonNegativeInteger" property="sioc:num_replies" value="' + interactionsCount + '">' + interactionsCount + '</data> interactions</p>';
                             interactionsSection += '</div></section>';
                             interactions.insertAdjacentHTML('beforeend', interactionsSection);
@@ -3846,6 +3846,7 @@ WHERE {\n\
             var buttonDelete = '';
             var note = '';
             var targetLabel = '';
+            var articleClass = '';
 
             var motivatedByIRI = n.motivatedByIRI || '';
             var motivatedByLabel = '';
@@ -3887,6 +3888,7 @@ WHERE {\n\
                     if ('creator' in n && 'iri' in n.creator && DO.C.User.IRI) {
                         buttonDelete = '<button class="delete"><i class="fa fa-trash"></i></button>' ;
                     }
+                    articleClass = ' class="do"';
                     break;
                 case 'write':
                     hX = 'h1';
@@ -3999,7 +4001,7 @@ WHERE {\n\
                         target += '<dl class="renderedvia"><dt>Rendered via</dt><dd><a about="' + targetIRI + '" href="https://dokie.li/" rel="oa:renderedVia">dokieli</a></dd></dl>';
 
                         note = '\n\
-<article id="' + n.id + '" about="' + aAbout + '" typeof="oa:Annotation as:Activity' + noteType + '"' + aPrefix + '>'+buttonDelete+'\n\
+<article id="' + n.id + '" about="' + aAbout + '" typeof="oa:Annotation as:Activity' + noteType + '"' + aPrefix + articleClass + '>'+buttonDelete+'\n\
     ' + heading + '\n\
     ' + authors + '\n\
     ' + published + '\n\
