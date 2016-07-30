@@ -3857,13 +3857,13 @@ WHERE {\n\
                     motivatedByLabel = 'replies';
                     targetLabel = 'In reply to';
                     aAbout = 'i:';
-                    aPrefix = ' prefix="schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'"';
+                    aPrefix = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'"';
                     break;
                 case 'oa:assessing':
                     motivatedByLabel = 'reviews';
                     targetLabel = 'Review of';
                     aAbout = 'i:';
-                    aPrefix = ' prefix="schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'"';
+                    aPrefix = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'"';
                     break;
                 case 'oa:describing':
                     motivatedByLabel = 'describes';
@@ -3879,7 +3879,7 @@ WHERE {\n\
                     motivatedByLabel = 'bookmarks';
                     targetLabel = 'Bookmarked';
                     aAbout = 'i:';
-                    aPrefix = ' prefix="schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'"';
+                    aPrefix = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'"';
                     break;
             }
 
