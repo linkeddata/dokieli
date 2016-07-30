@@ -3579,7 +3579,7 @@ WHERE {\n\
 // console.log(bodyLicenseIRI);
                         bodyLicenseIRI = (bodyLicenseIRI && bodyLicenseIRI.iri()) ? bodyLicenseIRI.iri().toString() : undefined;
 // console.log(bodyLicenseIRI);
-                        var bodyText = body.oatext;
+                        var bodyText = body.rdfvalue;
 // console.log(bodyText);
                         var target = i.child(note.oahasTarget.iri());
 // console.log(target);
@@ -3786,7 +3786,7 @@ WHERE {\n\
 // console.log(note.oahasBody.iri());
                         var body = i.child(note.oahasBody.iri().toString());
 // console.log(body);
-                        var bodyText = body.oatext;
+                        var bodyText = body.rdfvalue;
 // console.log(bodyText);
 // console.log(note.oahasTarget.iri());
                         var target = i.child(note.oahasTarget.iri());
