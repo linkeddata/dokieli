@@ -122,6 +122,12 @@ width:auto;
 position:static;
 }
 
+#document-interactions article h2,
+#document-interactions article h3,
+#document-interactions dt,
+#document-interactions .target,
+#document-interactions .renderedvia,
+#document-interactions .rights,
 aside.note.do h2,
 aside.note.do h3,
 aside.note.do blockquote dt,
@@ -133,6 +139,9 @@ display:none;
 aside.note.do blockquote dl.author-name img[width="48"][height="48"][rel$="image"] {
 vertical-align:top;
 }
+#document-interactions section,
+#document-interactions dl,
+#document-interactions dl *,
 aside.note.do blockquote dl,
 aside.note.do blockquote dl * {
 margin:0;
@@ -147,9 +156,7 @@ margin-block-end:0;
 margin-inline-start:0;
 margin-inline-end:0;
 }
-aside.note.do blockquote dl.author-name {
 
-}
 aside.note.do blockquote dl.published,
 aside.note.do blockquote dl.license,
 aside.note.do blockquote dl.rights {
