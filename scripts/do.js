@@ -3848,6 +3848,7 @@ WHERE {\n\
             var note = '';
             var targetLabel = '';
             var articleClass = '';
+            var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'";
 
             var motivatedByIRI = n.motivatedByIRI || '';
             var motivatedByLabel = '';
@@ -3857,13 +3858,13 @@ WHERE {\n\
                     motivatedByLabel = 'replies';
                     targetLabel = 'In reply to';
                     aAbout = 'i:';
-                    aPrefix = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'"';
+                    aPrefix = prefixes';
                     break;
                 case 'oa:assessing':
                     motivatedByLabel = 'reviews';
                     targetLabel = 'Review of';
                     aAbout = 'i:';
-                    aPrefix = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'"';
+                    aPrefix = prefixes;
                     break;
                 case 'oa:describing':
                     motivatedByLabel = 'describes';
@@ -3879,7 +3880,7 @@ WHERE {\n\
                     motivatedByLabel = 'bookmarks';
                     targetLabel = 'Bookmarked';
                     aAbout = 'i:';
-                    aPrefix = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri +'"';
+                    aPrefix = prefixes;
                     break;
             }
 
@@ -3907,7 +3908,7 @@ WHERE {\n\
                     creator = '<span about="' + n.creator.iri + '" typeof="schema:Person">' + creatorImage + ' <a rel="schema:url" href="' + n.creator.iri + '"><span about="' + n.creator.iri + '" property="schema:name">' + creatorName + '</span></a></span>';
                 }
                 else {
-                    creator = '<span about="[i:#agent]" typeof="schema:Person">' + creatorName + '</span>';
+                    creator = '<span about="i:#agent" typeof="schema:Person">' + creatorName + '</span>';
                 }
 
                 authors = '<dl class="author-name"><dt>Authors</dt><dd><span rel="schema:creator oa:annotatedBy as:actor">' + creator + '</span></dd></dl>';
