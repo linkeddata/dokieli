@@ -633,6 +633,7 @@ var DO = {
                                                 function(reason){
                                                     console.log('Notification source is unreachable');
                                                 });
+
                                         case 'http://www.w3.org/ns/activitystreams#inReplyTo': case 'http://rdfs.org/sioc/ns#reply_of':
                                             return DO.U.positionInteractions(source).then(
                                                 function(notificationIRI){
@@ -641,6 +642,7 @@ var DO = {
                                                 function(reason){
                                                     console.log('Notification source is unreachable');
                                                 });
+
                                         default:
                                             console.log('Unknown context: ' + context);
                                             return Promise.reject({'message': 'Unknown context ' + context});
@@ -1828,11 +1830,12 @@ var DO = {
             return string;
         },
 
-        showFragment: function() {
-            var ids = document.querySelectorAll('#content *[id], #document-interactions *[id]:not(input):not(textarea):not(select)');
+        showFragment: function(selector) {
+            var ids = (selector) ? document.querySelectorAll(selector) : document.querySelectorAll('#content *[id], *[id]:not(input):not(textarea):not(select)');
+
             for(var i = 0; i < ids.length; i++){
                 ids[i].addEventListener('mouseenter', function(e){
-                    var fragment = document.querySelector('#' + e.target.id + ' > .do.fragment');
+                    var fragment = document.querySelector('*[id="' + e.target.id + '"] > .do.fragment');
                     if (!fragment && e.target.parentNode.nodeName.toLowerCase() != 'aside'){
                         var sign;
                         switch(e.target.nodeName.toLowerCase()) {
@@ -1860,7 +1863,7 @@ var DO = {
                             case 'footer':  sign = '⸙'; break;
                         }
                         e.target.insertAdjacentHTML('afterbegin', '<span class="do fragment"><a href="#' + e.target.id + '">' + sign + '</a></span>');
-                        fragment = document.querySelector('#' + e.target.id + ' > .do.fragment');
+                        fragment = document.querySelector('[id="' + e.target.id + '"] > .do.fragment');
                         var fragmentClientWidth = fragment.clientWidth;
 
                         var fragmentOffsetLeft = DO.U.getOffset(e.target).left;
@@ -1879,7 +1882,7 @@ var DO = {
                 });
 
                 ids[i].addEventListener('mouseleave', function(e){
-                    var fragment = document.querySelector('#' + e.target.id + ' > .do.fragment');
+                    var fragment = document.querySelector('[id="' + e.target.id + '"] > .do.fragment');
                     fragment.parentNode.removeChild(fragment);
                 });
             }
