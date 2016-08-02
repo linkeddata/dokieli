@@ -1834,9 +1834,8 @@ var DO = {
             var ids = (selector) ? document.querySelectorAll(selector) : document.querySelectorAll('main *[id]:not(input):not(textarea):not(select):not(#content)');
 
             for(var i = 0; i < ids.length; i++){
-                var element = ids[i];
-                element.addEventListener('mouseenter', function(e){
-                    var fragment = element.querySelector('.do.fragment');
+                ids[i].addEventListener('mouseenter', function(e){
+                    var fragment = document.querySelector('*[id="' + e.target.id + '"] > .do.fragment');
                     if (!fragment && e.target.parentNode.nodeName.toLowerCase() != 'aside'){
                         var sign;
                         switch(e.target.nodeName.toLowerCase()) {
@@ -1882,8 +1881,8 @@ var DO = {
                     }
                 });
 
-                element.addEventListener('mouseleave', function(e){
-                    var fragment = element.querySelector('.do.fragment');
+                ids[i].addEventListener('mouseleave', function(e){
+                    var fragment = document.querySelector('[id="' + e.target.id + '"] > .do.fragment');
                     fragment.parentNode.removeChild(fragment);
                 });
             }
