@@ -1831,7 +1831,7 @@ var DO = {
         },
 
         showFragment: function(selector) {
-            var ids = (selector) ? document.querySelectorAll(selector) : document.querySelectorAll('main *[id]:not(input):not(textarea):not(select)');
+            var ids = (selector) ? document.querySelectorAll(selector) : document.querySelectorAll('main *[id]:not(input):not(textarea):not(select):not(#content)');
 
             for(var i = 0; i < ids.length; i++){
                 ids[i].addEventListener('mouseenter', function(e){
