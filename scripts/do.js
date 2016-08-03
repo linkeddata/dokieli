@@ -3972,7 +3972,7 @@ WHERE {\n\
                                     license = DO.U.createLicenseHTML(n.license, {rel:'http://purl.org/dc/terms/rights', label:'Rights'});
                                 }
 
-                                body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="i:#note-' + n.id + '"><h2 property="schema:name">Note</h2><div datatype="rdf:HTML" property="rdf:value as:content schema:description" resource="i:#note-' + n.id + '"" typeof="oa:TextualBody as:Note">' + n.body + '</div>' + license + '</section>';
+                                body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="i:#note-' + n.id + '"><h2 property="schema:name">Note</h2><div datatype="rdf:HTML" property="rdf:value as:content schema:description" resource="i:#note-' + n.id + '" typeof="oa:TextualBody as:Note">' + n.body + '</div>' + license + '</section>';
                             }
                         }
 
