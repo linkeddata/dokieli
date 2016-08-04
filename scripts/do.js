@@ -899,14 +899,9 @@ var DO = {
 @prefix schema: <https://schema.org/> .\n\
 ';
 
-            switch(o.type) {
-                case 'as:Announce': default:
-                    data += '<> a as:Announce\n';
-                    break;
-
-                case 'as:Create':
-                    data += '<> a as:Create\n';
-                    break;
+            data += '<>\n';
+            if (o.type.length > 0) {
+                data += '    a ' + o.type.join(', ') + '\n';
             }
 
             if('object' in o){
@@ -2232,7 +2227,7 @@ console.log(inbox);
                                             inbox = inbox[0];
 
                                             var notificationData = {
-                                                "type": "as:Announce",
+                                                "type": ['as:Announce'],
                                                 "inbox": inbox,
                                                 "object": noteIRI,
                                                 "context": "as:inReplyTo",
@@ -2354,7 +2349,7 @@ console.log(inbox);
                             inboxResponse().then(
                                 function(inbox) {
                                     var notificationData = {
-                                        "type": "as:Announce",
+                                        "type": ['as:Announce'],
                                         "inbox": inbox,
                                         "object": iri,
                                         "to": to,
@@ -5393,7 +5388,6 @@ WHERE {\n\
                                     break;
                             }
 // console.log(note);
-
 // console.log(noteData);
 
                             var selectionUpdated = ref;
@@ -5401,6 +5395,13 @@ WHERE {\n\
 
                             switch(this.action) {
                                 case 'article': case 'approve': case 'disapprove': case 'specificity':
+                                    var notificationType;
+                                    switch(this.action) {
+                                        default: case 'article': case 'specificity': notificationType = ['as:Announce']; break;
+                                        case 'approve': notificationType = ['as:Like']; break;
+                                        case 'disapprove': notificationType = ['as:Dislike']; break;
+                                    }
+
                                     var data = '<!DOCTYPE html>\n\
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
     <head>\n\
@@ -5432,7 +5433,7 @@ WHERE {\n\
                                                     if (inbox.length > 0) {
                                                         inbox = inbox[0];
                                                         var notificationData = {
-                                                            "type": "as:Announce",
+                                                            "type": notificationType,
                                                             "inbox": inbox,
                                                             "slug": id,
                                                             "object": noteIRI,
