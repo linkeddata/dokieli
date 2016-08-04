@@ -952,6 +952,10 @@ var DO = {
             data += '    .\n\
 ';
 
+            if ('statements' in o) {
+                data += o.statements;
+            }
+
 // console.log(data);
 
             if (inbox && inbox.length > 0) {
