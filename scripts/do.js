@@ -621,34 +621,50 @@ var DO = {
                         DO.U.getGraph(notification).then(
                             function(i) {
                                 var s = i.child(notification);
-                                if (s.ascontext && s.astarget && s.ascontext.at(0) && s.astarget.at(0) && s.astarget.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
-                                    var context = s.ascontext.at(0).iri().toString();
-                                    var source = s.asobject.at(0).iri().toString();
-                                    switch(context) {
-                                        case 'http://www.w3.org/ns/oa#hasTarget':
-                                            return DO.U.positionQuoteSelector(source).then(
-                                                function(notificationIRI){
-                                                    return notificationIRI;
-                                                },
-                                                function(reason){
-                                                    console.log('Notification source is unreachable');
-                                                });
 
-                                        case 'http://www.w3.org/ns/activitystreams#inReplyTo': case 'http://rdfs.org/sioc/ns#reply_of':
-                                            return DO.U.positionInteractions(source).then(
-                                                function(notificationIRI){
-                                                    return notificationIRI;
-                                                },
-                                                function(reason){
-                                                    console.log('Notification source is unreachable');
-                                                });
+                                var nTypes = s.rdftype || [];
 
-                                        default:
-                                            console.log('Unknown context: ' + context);
-                                            return Promise.reject({'message': 'Unknown context ' + context});
-                                    }
+                                if (nTypes._array.length > 0) {
+                                    //FIXME: Looping is not a good idea. If there are multipe types, it should pick one to make a decision
+                                    nTypes.forEach(function(nType){
+                                        var type = nType.iri().toString();
+                                        switch(type) {// default:
+                                            case 'http://www.w3.org/ns/activitystreams#Announce':
+                                                if(s.asobject && s.asobject.at(0) && s.astarget && s.astarget.at(0) && s.astarget.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
+                                                    var object = s.asobject.at(0).iri().toString();
+                                                    return DO.U.positionQuoteSelector(object).then(
+                                                        function(notificationIRI){
+                                                            return notificationIRI;
+                                                        },
+                                                        function(reason){
+                                                            console.log('Notification source is unreachable');
+                                                        });
+                                                }
+                                                break;
+
+                                            case 'http://www.w3.org/ns/activitystreams#Like':
+                                            case 'http://www.w3.org/ns/activitystreams#Dislike':
+                                                if(s.asobject && s.asobject.at(0) && s.ascontext && s.ascontext.at(0) && s.asobject.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
+                                                    var context = s.ascontext.at(0).iri().toString();
+                                                    return DO.U.positionQuoteSelector(context).then(
+                                                        function(notificationIRI){
+                                                            return notificationIRI;
+                                                        },
+                                                        function(reason){
+                                                            console.log('Notification source is unreachable');
+                                                        });
+                                                }
+                                                break;
+
+                                            default:
+                                                console.log('Unknown type: ' + type);
+                                                return Promise.reject({'message': 'Unknown type ' + type});
+                                        }
+                                    });
                                 }
+                                //XXX: For some reason the subject doesn't doesn't have a type?
                                 else {
+                                    console.log('Notification has no type.');
                                     return Promise.reject({'message': 'Notification source not found'});
                                 }
                             },
@@ -899,10 +915,7 @@ var DO = {
 @prefix schema: <https://schema.org/> .\n\
 ';
 
-            data += '<>\n';
-            if (o.type.length > 0) {
-                data += '    a ' + o.type.join(', ') + '\n';
-            }
+            data += '<> a ' + o.type.join(', ') + '\n';
 
             if('object' in o){
                 data += '    ; as:object <' + o.object + '>\n';
@@ -913,7 +926,7 @@ var DO = {
             }
 
             if ('context' in o && o.context.length > 0) {
-                data += '    ; as:context ' + o.context + '\n\
+                data += '    ; as:context  <' + o.context + '>\n\
 ';
             }
             if ('target' in o && o.target.length > 0) {
@@ -953,7 +966,8 @@ var DO = {
 ';
 
             if ('statements' in o) {
-                data += o.statements;
+                data += o.statements + '\n\
+';
             }
 
 // console.log(data);
@@ -2190,15 +2204,18 @@ var DO = {
                         var datetime = DO.U.getDateTimeISO();
                         var id = DO.U.generateAttributeId().slice(0, 6);
                         var noteIRI = document.querySelector('#reply-to-resource #location-final').innerText.trim();
+                        var motivatedBy = "oa:replying";
                         var noteData = {
                             "type": 'article',
                             "mode": "write",
-                            "motivatedByIRI": "oa:replying",
+                            "motivatedByIRI": motivatedBy,
                             "id": id,
                             "iri": noteIRI, //e.g., https://example.org/path/to/article
                             "creator": {},
                             "datetime": datetime,
-                            "inReplyTo": iri,
+                            "target": {
+                                "iri": iri
+                            },
                             "body": note, // content
                             "license": {}
                         };
@@ -2230,13 +2247,16 @@ console.log(inbox);
                                         if (inbox.length > 0) {
                                             inbox = inbox[0];
 
+                                            var notificationStatements = '<' + noteIRI + '> a oa:Annotation\n\
+    ; oa:motivation ' + motivatedBy + '\n\
+    .';
                                             var notificationData = {
                                                 "type": ['as:Announce'],
                                                 "inbox": inbox,
                                                 "object": noteIRI,
-                                                "context": "as:inReplyTo",
                                                 "target": iri,
-                                                "license": noteData.license["iri"]
+                                                "license": noteData.license["iri"],
+                                                "statements": notificationStatements
                                             };
 
                                             DO.U.notifyInbox(notificationData).then(
@@ -3575,7 +3595,13 @@ WHERE {\n\
                         var annotatedByImage = annotatedBy.schemaimage || '';
                         annotatedByImage = (annotatedByImage && annotatedByImage.iri()) ? annotatedByImage.iri().toString() : undefined;
 // console.log(annotatedByImage);
+
+                        var licenseIRI = note.schemalicense || note.dctermsrights;
+                        licenseIRI = (licenseIRI && licenseIRI.iri()) ? licenseIRI.iri().toString() : undefined;
+// console.log(licenseIRI);
+
                         var body = i.child(note.oahasBody.iri());
+//                        var body = i.child(note.oahasBody.iri().toString());
 // console.log(body);
                         var bodyLicenseIRI = body.schemalicense || body.dctermsrights;
 // console.log(bodyLicenseIRI);
@@ -3585,10 +3611,32 @@ WHERE {\n\
 // console.log(bodyText);
                         var target = i.child(note.oahasTarget.iri());
 // console.log(target);
+                        var targetIRI = target.iri().toString();
+// console.log(targetIRI);
+
+//                        var inReplyTo = note.asinReplyTo.at(0).iri().toString();
+
+
 // console.log(target.oahasSelector.iri());
 
-                        var exact, prefix, suffix;
+                        var source = target.oahasSource;
+                        if(source && source.iri()){
+                            source = source.toString();
+                        }
+// console.log(source);
+// console.log(source.iri());
 
+
+                        var id = String(Math.abs(DO.U.hashCode(noteIRI))).substr(0, 6);
+                        var refId = 'r-' + id;
+                        var refLabel = id;
+
+                        var motivatedBy = 'oa:replying';
+                        if(note.oamotivatedBy && note.oamotivatedBy.iri()) {
+                            motivatedBy = note.oamotivatedBy.iri().toString();
+                        }
+
+                        var exact, prefix, suffix;
                         var selector = target.oahasSelector;
                         if(selector && selector.iri()) {
                             selector = i.child(selector.iri());
@@ -3611,19 +3659,10 @@ WHERE {\n\
                                 suffix = refinedBy.oasuffix;
                             }
                         }
-
 // console.log(exact);
 // console.log(prefix);
 // console.log(suffix);
-                        var source = target.oahasSource;
-                        if(source && source.iri()){
-                            source = source.toString();
-                        }
-// console.log(source);
-// console.log(source.iri());
-                        var licenseIRI = note.schemalicense || note.dctermsrights;
-                        licenseIRI = (licenseIRI && licenseIRI.iri()) ? licenseIRI.iri().toString() : undefined;
-// console.log(licenseIRI);
+
                         var containerNodeTextContent = containerNode.textContent;
 //console.log(containerNodeTextContent);
 // console.log(prefix + exact + suffix);
@@ -3634,9 +3673,7 @@ WHERE {\n\
                             var exactEnd = selectorIndex + prefix.length + exact.length;
                             var selection = { start: exactStart, end: exactEnd };
 
-                            var id = String(Math.abs(DO.U.hashCode(noteIRI))).substr(0, 6);
-                            var refId = 'r-' + id;
-                            var refLabel = id;
+
                             var ref = '<span class="ref do" about="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#' + id + '" resource="' + noteIRI + '">' + id + '</a></sup></span>';
 
                             MediumEditor.selection.importSelection(selection, containerNode, document);
@@ -3668,7 +3705,7 @@ WHERE {\n\
                             var noteData = {
                                 "type": 'article',
                                 "mode": "read",
-                                "motivatedByIRI": "oa:replying",
+                                "motivatedByIRI": motivatedBy,
                                 "id": id,
                                 "refId": refId,
                                 "iri": noteIRI, //e.g., https://example.org/path/to/article
@@ -3700,7 +3737,7 @@ WHERE {\n\
                             if (licenseIRI) {
                                 noteData.license["iri"] = licenseIRI;
                             }
-
+// console.log(noteData);
                             var note = DO.U.createNoteHTML(noteData);
                             var nES = selectedParentNode.nextElementSibling;
                             var asideNote = '\n\
@@ -3742,8 +3779,59 @@ WHERE {\n\
                             //Perhaps return something more useful?
                             return resolve(noteIRI);
                         }
+                        // else {
+                        //     return Promise.reject({'message': "Can't match the text"});
+                        // }
+
+                        //XXX: Interactions
                         else {
-                            return Promise.reject({'message': "Can't match the text"});
+                            var interactions = document.getElementById('document-interactions');
+                            if(!interactions) {
+                                interactions = document.querySelector('main article');
+                                var interactionsSection = '<section id="document-interactions"><h2>Interactions</h2><div>';
+// interactionsSection += '<p class="count"><data about="" datatype="xsd:nonNegativeInteger" property="sioc:num_replies" value="' + interactionsCount + '">' + interactionsCount + '</data> interactions</p>';
+                                interactionsSection += '</div></section>';
+                                interactions.insertAdjacentHTML('beforeend', interactionsSection);
+                            }
+
+                            interactions = document.querySelector('#document-interactions > div');
+
+                            var noteData = {
+                                "type": 'article',
+                                "mode": "read",
+                                "motivatedByIRI": motivatedBy,
+                                "id": id,
+                                "refId": refId,
+                                "refLabel": refLabel,
+                                "iri": noteIRI,
+                                "creator": {},
+                                "datetime": datetime,
+                                "target": {
+                                    "iri": targetIRI
+                                },
+                                "body": bodyText,
+                                "license": {}
+                            };
+console.log(noteData);
+
+                            if (note.schemacreator.at(0) && note.schemacreator.at(0).iri()) {
+                                noteData.creator["iri"] = note.schemacreator.at(0).iri().toString();
+                                var creator = i.child(noteData.creator["iri"]);
+                                if (creator.schemaname) {
+                                    noteData.creator["name"] = creator.schemaname;
+                                }
+                                if (creator.schemaimage && creator.schemaimage.iri()) {
+                                    noteData.creator["image"] = creator.schemaimage.iri().toString();
+                                }
+                            }
+
+                            if (licenseIRI) {
+                                noteData.license["iri"] = licenseIRI;
+                                noteData.license["name"] = DO.C.License[licenseIRI];
+                            }
+
+                            var interaction = DO.U.createNoteHTML(noteData);
+                            interactions.insertAdjacentHTML('beforeend', interaction);
                         }
                     },
                     function(reason) {
@@ -3913,7 +4001,7 @@ WHERE {\n\
                     creator = '<span about="i:#agent" typeof="schema:Person">' + creatorName + '</span>';
                 }
 
-                authors = '<dl class="author-name"><dt>Authors</dt><dd><span rel="schema:creator oa:annotatedBy as:actor">' + creator + '</span></dd></dl>';
+                authors = '<dl class="author-name"><dt>Authors</dt><dd><span rel="schema:creator oa:annotatedBy">' + creator + '</span></dd></dl>';
             }
 
             heading = '<' + hX + ' property="schema:name">' + creatorName + ' <span rel="oa:motivatedBy" resource="' + motivatedByIRI + '">' + motivatedByLabel + '</span></' + hX + '>';
@@ -3924,27 +4012,27 @@ WHERE {\n\
                 license = DO.U.createLicenseHTML(n.license);
             }
 
-            switch(n.type) {
-                default:
-                    break;
-                case 'approve':
-                    noteType = ' as:Like';
-                    break;
-                case 'disapprove':
-                    noteType = ' as:Dislike';
-                    break;
-            }
+            // switch(n.type) {
+            //     default:
+            //         break;
+            //     case 'approve':
+            //         noteType = ' as:Like';
+            //         break;
+            //     case 'disapprove':
+            //         noteType = ' as:Dislike';
+            //         break;
+            // }
 
             switch(n.type) {
                 case 'article': case 'note': case 'bookmark': case 'approve': case 'disapprove': case 'specificity':
-                    if ((typeof n.target !== 'undefined' && typeof n.target.selector !== 'undefined') || typeof n.inReplyTo !== 'undefined') { //note, annotation, reply
+                    if (typeof n.target !== 'undefined') { //note, annotation, reply
                         //FIXME: Could resourceIRI be a fragment URI or *make sure* it is the document URL without the fragment?
                         //TODO: Use n.target.iri?
 
                         if (typeof n.body !== 'undefined') {
                             if(typeof n.body === 'object' && 'purpose' in n.body) {
                                 if ('describing' in n.body.purpose && 'text' in n.body.purpose.describing) {
-                                    body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="i:#note-' + n.id + '"><h2 property="schema:name" rel="oa:hasPurpose" resource="oa:describing">Note</h2><div datatype="rdf:HTML" property="rdf:value as:content schema:description" resource="i:#note-' + n.id + '" typeof="oa:TextualBody as:Note">' + n.body.purpose.describing.text + '</div></section>';
+                                    body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="i:#note-' + n.id + '"><h2 property="schema:name" rel="oa:hasPurpose" resource="oa:describing">Note</h2><div datatype="rdf:HTML" property="rdf:value schema:description" resource="i:#note-' + n.id + '" typeof="oa:TextualBody">' + n.body.purpose.describing.text + '</div></section>';
                                 }
                                 if ('tagging' in n.body.purpose && 'text' in n.body.purpose.tagging) {
                                     var tagsArray = [];
@@ -3959,7 +4047,7 @@ WHERE {\n\
 
                                         body += '<dl id="tags" class="tags"><dt>Tags</dt><dd><ul rel="oa:hasBody">';
                                         tagsArray.forEach(function(i){
-                                            body += '<li about="i:#tag-' + DO.U.generateAttributeId(null, i) + '" typeof="oa:TextualBody as:Note" property="rdf:value" rel="oa:hasPurpose" resource="oa:tagging" datatype="rdf:HTML">' + i + '</li>';
+                                            body += '<li about="i:#tag-' + DO.U.generateAttributeId(null, i) + '" typeof="oa:TextualBody" property="rdf:value" rel="oa:hasPurpose" resource="oa:tagging" datatype="rdf:HTML">' + i + '</li>';
                                         })
                                         body += '</ul></dd></dl>';
                                     }
@@ -3971,7 +4059,7 @@ WHERE {\n\
                                     license = DO.U.createLicenseHTML(n.license, {rel:'http://purl.org/dc/terms/rights', label:'Rights'});
                                 }
 
-                                body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="i:#note-' + n.id + '"><h2 property="schema:name">Note</h2><div datatype="rdf:HTML" property="rdf:value as:content schema:description" resource="i:#note-' + n.id + '" typeof="oa:TextualBody as:Note">' + n.body + '</div>' + license + '</section>';
+                                body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="i:#note-' + n.id + '"><h2 property="schema:name">Note</h2><div datatype="rdf:HTML" property="rdf:value schema:description" resource="i:#note-' + n.id + '" typeof="oa:TextualBody">' + n.body + '</div>' + license + '</section>';
                             }
                         }
 
@@ -3984,16 +4072,16 @@ WHERE {\n\
                                 annotationTextSelector = '<span rel="oa:hasSelector" resource="i:#fragment-selector" typeof="oa:FragmentSelector"><meta property="rdf:value" content="' + targetIRIFragment + '" xml:lang="" lang="" rel="dcterms:conformsTo" resource="https://tools.ietf.org/html/rfc3987" /><span rel="oa:refinedBy" resource="i#text-quote-selector" typeof="oa:TextQuoteSelector"><span property="oa:prefix" xml:lang="en" lang="en">' + n.target.selector.prefix + '</span><mark property="oa:exact" xml:lang="en" lang="en">' + n.target.selector.exact + '</mark><span property="oa:suffix" xml:lang="en" lang="en">' + n.target.selector.suffix + '</span></span></span>';
                             }
                         }
-                        else {
-                            if('inReplyTo' in n) {
-                                targetIRI = n.inReplyTo;
-                                // TODO: pass document title and maybe author so they can be displayed on the reply too.
-                            }
-                        }
+                        // else {
+                        //     if('inReplyTo' in n) {
+                        //         targetIRI = n.inReplyTo;
+                        //         // TODO: pass document title and maybe author so they can be displayed on the reply too.
+                        //     }
+                        // }
 
-                        hasTarget = '<a rel="oa:hasTarget as:inReplyTo sioc:reply_of" href="' + targetIRI + '">' + targetLabel + '</a>';
+                        hasTarget = '<a href="' + targetIRI + '" rel="oa:hasTarget">' + targetLabel + '</a>';
                         if (typeof n.target !== 'undefined' && typeof n.target.source !== 'undefined') {
-                            hasTarget += ' (<a about="' + n.target.iri + '" typeof="oa:SpecificResource" rel="oa:hasSource" href="' + n.target.source +'">part of</a>)';
+                            hasTarget += ' (<a about="' + n.target.iri + '" href="' + n.target.source +'" rel="oa:hasSource" typeof="oa:SpecificResource">part of</a>)';
                         }
 
                         target ='<dl class="target"><dt>' + hasTarget + '</dt>';
@@ -4005,7 +4093,7 @@ WHERE {\n\
                         target += '<dl class="renderedvia"><dt>Rendered via</dt><dd><a about="' + targetIRI + '" href="https://dokie.li/" rel="oa:renderedVia">dokieli</a></dd></dl>';
 
                         note = '\n\
-<article id="' + n.id + '" about="' + aAbout + '" typeof="oa:Annotation as:Activity' + noteType + '"' + aPrefix + articleClass + '>'+buttonDelete+'\n\
+<article id="' + n.id + '" about="' + aAbout + '" typeof="oa:Annotation' + noteType + '"' + aPrefix + articleClass + '>'+buttonDelete+'\n\
     ' + heading + '\n\
     ' + authors + '\n\
     ' + published + '\n\
@@ -5244,10 +5332,11 @@ WHERE {\n\
                                 case 'note':
                                     docRefType = '<sup class="ref-comment"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup>';
                                     noteType = 'note';
+                                    motivatedBy = "oa:commenting";
                                     noteData = {
                                         "type": noteType,
                                         "mode": "read",
-                                        "motivatedByIRI": "oa:commenting",
+                                        "motivatedByIRI": motivatedBy,
                                         "id": id,
                                         "refId": refId,
                                         "refLabel": refLabel,
@@ -5297,11 +5386,12 @@ WHERE {\n\
                                 case 'cite': //footnote reference
                                     switch(opts.citationType) {
                                         case 'ref-footnote': default:
+                                            motivatedBy = "oa:describing";
                                             docRefType = '<sup class="' + opts.citationType + '"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup>';
                                             noteData = {
                                                 "type": opts.citationType,
                                                 "mode": "write",
-                                                "motivatedByIRI": "oa:describing",
+                                                "motivatedByIRI": motivatedBy,
                                                 "id": id,
                                                 "refId": refId,
                                                 "refLabel": refLabel,
@@ -5345,10 +5435,11 @@ WHERE {\n\
 
                                 case 'bookmark':
                                     noteType = 'bookmark';
+                                    motivatedBy = "oa:bookmarking";
                                     noteData = {
                                         "type": noteType,
                                         "mode": "write",
-                                        "motivatedByIRI": "oa:bookmarking",
+                                        "motivatedByIRI": motivatedBy,
                                         "id": id,
                                         "refId": refId,
                                         "refLabel": refLabel,
@@ -5399,11 +5490,33 @@ WHERE {\n\
 
                             switch(this.action) {
                                 case 'article': case 'approve': case 'disapprove': case 'specificity':
-                                    var notificationType;
+                                    var notificationType, notificationObject, notificationContext, notificationTarget, notificationStatements;
+                                    //FIXME: Sarven, seriously? These switches are 💩. Don't be lazy!
                                     switch(this.action) {
-                                        default: case 'article': case 'specificity': notificationType = ['as:Announce']; break;
-                                        case 'approve': notificationType = ['as:Like']; break;
-                                        case 'disapprove': notificationType = ['as:Dislike']; break;
+                                        default: case 'article': case 'specificity':
+                                            notificationType = ['as:Announce'];
+                                            notificationObject = noteIRI;
+                                            notificationTarget = targetIRI;
+                                            notificationStatements = '<' + targetIRI + '> a oa:Annotation\n\
+    ; oa:motivation ' + motivatedBy + '\n\
+    .';
+                                            break;
+                                        case 'approve':
+                                            notificationType = ['as:Like'];
+                                            notificationObject = targetIRI;
+                                            notificationContext = noteIRI;
+                                            notificationStatements = '<' + noteIRI + '> a oa:Annotation\n\
+    ; oa:motivation ' + motivatedBy + '\n\
+    .';
+                                            break;
+                                        case 'disapprove':
+                                            notificationType = ['as:Dislike'];
+                                            notificationObject = targetIRI;
+                                            notificationContext = noteIRI;
+                                            notificationStatements = '<' + noteIRI + '> a oa:Annotation\n\
+    ; oa:motivation ' + motivatedBy + '\n\
+    .';
+                                            break;
                                     }
 
                                     var data = '<!DOCTYPE html>\n\
@@ -5440,11 +5553,19 @@ WHERE {\n\
                                                             "type": notificationType,
                                                             "inbox": inbox,
                                                             "slug": id,
-                                                            "object": noteIRI,
-                                                            "context": "oa:hasTarget",
-                                                            "target": targetIRI,
+                                                            "object": notificationObject,
                                                             "license": opts.license
                                                         };
+
+                                                        if(typeof notificationTarget !== 'undefined') {
+                                                            notificationData['target'] = notificationTarget;
+                                                        }
+                                                        if(typeof notificationContext !== 'undefined') {
+                                                            notificationData['context'] = notificationContext;
+                                                        }
+                                                        if(typeof notificationStatements !== 'undefined') {
+                                                            notificationData['statements'] = notificationStatements;
+                                                        }
 
                                                         DO.U.notifyInbox(notificationData).then(
                                                             function(response) {
