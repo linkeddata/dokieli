@@ -141,6 +141,8 @@ var DO = {
             "astarget": { "@id": "http://www.w3.org/ns/activitystreams#target", "@type": "@id", "@array": true },
             "ascontext": { "@id": "http://www.w3.org/ns/activitystreams#context", "@type": "@id", "@array": true },
             "asinReplyTo": { "@id": "http://www.w3.org/ns/activitystreams#inReplyTo", "@type": "@id", "@array": true },
+            "asactor": { "@id": "http://www.w3.org/ns/activitystreams#actor", "@type": "@id" },
+            "asupdated": "http://www.w3.org/ns/activitystreams#updated",
 
             "siocreplyof": { "@id": "http://rdfs.org/sioc/ns#reply_of", "@type": "@id", "@array": true },
 
