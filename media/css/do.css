@@ -122,6 +122,9 @@ width:auto;
 position:static;
 }
 
+#document-interactions article + article {
+margin-top:1em;
+}
 #document-interactions article.do h2,
 #document-interactions article.do h3,
 #document-interactions article.do dt,
