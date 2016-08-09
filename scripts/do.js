@@ -646,15 +646,60 @@ var DO = {
 
                                             case 'http://www.w3.org/ns/activitystreams#Like':
                                             case 'http://www.w3.org/ns/activitystreams#Dislike':
-                                                if(s.asobject && s.asobject.at(0) && s.ascontext && s.ascontext.at(0) && s.asobject.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
-                                                    var context = s.ascontext.at(0).iri().toString();
-                                                    return DO.U.positionQuoteSelector(context).then(
-                                                        function(notificationIRI){
-                                                            return notificationIRI;
-                                                        },
-                                                        function(reason){
-                                                            console.log('Notification source is unreachable');
-                                                        });
+                                                if(s.asobject && s.asobject.at(0)) {
+                                                    if(s.ascontext && s.ascontext.at(0) && s.asobject.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
+                                                        var context = s.ascontext.at(0).iri().toString();
+                                                        return DO.U.positionQuoteSelector(context).then(
+                                                            function(notificationIRI){
+                                                                return notificationIRI;
+                                                            },
+                                                            function(reason){
+                                                                console.log('Notification source is unreachable');
+                                                            });
+                                                    }
+                                                    else {
+                                                        var targetIRI = s.asobject.at(0).iri().toString();
+                                                        var motivatedBy = 'oa:assessing';
+                                                        var id = String(Math.abs(DO.U.hashCode(notification))).substr(0, 6);
+                                                        var refId = 'r-' + id;
+                                                        var refLabel = id;
+
+                                                        var noteData = {
+                                                            "type": 'article',
+                                                            "mode": "read",
+                                                            "motivatedByIRI": motivatedBy,
+                                                            "id": id,
+                                                            "refId": refId,
+                                                            "refLabel": refLabel,
+                                                            "iri": notification, //'#' + id,
+                                                            "creator": {},
+                                                            "target": {
+                                                                "iri": targetIRI
+                                                            },
+                                                            "body": type.substr(type.lastIndexOf('#') + 1) + 'd',
+                                                            "license": {}
+                                                        };
+
+                                                        if (s.asactor && s.asactor.iri()){
+                                                            noteData['creator'] = {
+                                                                'iri': s.asactor.iri().toString()
+                                                            }
+                                                        }
+                                                        else if(type == 'http://www.w3.org/ns/activitystreams#Dislike'){
+                                                            noteData['creator'] = {
+                                                                'name': 'Anonymous Coward'
+                                                            }
+                                                        }
+                                                        if (s.asupdated){
+                                                            noteData['datetime'] = s.asupdated;
+                                                        }
+                                                        if (s.schemalicense && s.schemalicense.iri()){
+                                                            noteData.license["iri"] = s.schemalicense.iri().toString();
+                                                            noteData.license["name"] = DO.C.License[noteData.license["iri"]];
+                                                        }
+
+                                                        DO.U.addInteraction(noteData);
+                                                    }
                                                 }
                                                 break;
 
@@ -3787,17 +3832,6 @@ WHERE {\n\
 
                         //XXX: Interactions
                         else {
-                            var interactions = document.getElementById('document-interactions');
-                            if(!interactions) {
-                                interactions = document.querySelector('main article');
-                                var interactionsSection = '<section id="document-interactions"><h2>Interactions</h2><div>';
-// interactionsSection += '<p class="count"><data about="" datatype="xsd:nonNegativeInteger" property="sioc:num_replies" value="' + interactionsCount + '">' + interactionsCount + '</data> interactions</p>';
-                                interactionsSection += '</div></section>';
-                                interactions.insertAdjacentHTML('beforeend', interactionsSection);
-                            }
-
-                            interactions = document.querySelector('#document-interactions > div');
-
                             var noteData = {
                                 "type": 'article',
                                 "mode": "read",
@@ -3832,8 +3866,7 @@ console.log(noteData);
                                 noteData.license["name"] = DO.C.License[licenseIRI];
                             }
 
-                            var interaction = DO.U.createNoteHTML(noteData);
-                            interactions.insertAdjacentHTML('beforeend', interaction);
+                            DO.U.addInteraction(noteData);
                         }
                     },
                     function(reason) {
@@ -4006,17 +4039,26 @@ console.log(noteData);
             }
 
             var creatorName = 'Anonymous';
+            var creatorIRI = 'i:#agent';
             if ('creator' in n) {
                 if ('image' in n.creator) {
                     creatorImage = '<img alt="" height="48" rel="schema:image" src="' + n.creator.image + '" width="48" />';
                 }
-                if ('iri' in n.creator && 'name' in n.creator) {
+                if('iri' in n.creator) {
+                    creatorIRI = n.creator.iri;
+                }
+                if('name' in n.creator) {
                     creatorName = n.creator.name;
+                }
 
-                    creator = '<span about="' + n.creator.iri + '" typeof="schema:Person">' + creatorImage + ' <a rel="schema:url" href="' + n.creator.iri + '"><span about="' + n.creator.iri + '" property="schema:name">' + creatorName + '</span></a></span>';
+                if ('iri' in n.creator && 'name' in n.creator) {
+                    creator = '<span about="' + creatorIRI + '" typeof="schema:Person">' + creatorImage + ' <a rel="schema:url" href="' + creatorIRI + '"><span about="' + creatorIRI + '" property="schema:name">' + creatorName + '</span></a></span>';
+                }
+                else if('iri' in n.creator) {
+                    creator = '<span about="' + creatorIRI + '" typeof="schema:Person">' + creatorImage +' <a rel="schema:url" href="' + creatorIRI + '">' + creatorIRI + '</a></span>';
                 }
                 else {
-                    creator = '<span about="i:#agent" typeof="schema:Person">' + creatorName + '</span>';
+                    creator = '<span about="' + creatorIRI + '" typeof="schema:Person">' + creatorName + '</span>';
                 }
 
                 authors = '<dl class="author-name"><dt>Authors</dt><dd><span rel="schema:creator oa:annotatedBy">' + creator + '</span></dd></dl>';
