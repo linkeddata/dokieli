@@ -3844,6 +3844,22 @@ console.log(noteData);
             });
         },
 
+        addInteraction: function(noteData) {
+            var interaction = DO.U.createNoteHTML(noteData);
+            var interactions = document.getElementById('document-interactions');
+
+            if(!interactions) {
+                interactions = document.querySelector('main article');
+                var interactionsSection = '<section id="document-interactions"><h2>Interactions</h2><div>';
+// interactionsSection += '<p class="count"><data about="" datatype="xsd:nonNegativeInteger" property="sioc:num_replies" value="' + interactionsCount + '">' + interactionsCount + '</data> interactions</p>';
+                interactionsSection += '</div></section>';
+                interactions.insertAdjacentHTML('beforeend', interactionsSection);
+            }
+
+            interactions = document.querySelector('#document-interactions > div');
+            interactions.insertAdjacentHTML('beforeend', interaction);
+        },
+
         positionInteractions: function(noteIRI, containerNode) {
             containerNode = containerNode || document.body;
             return new Promise(function(resolve, reject) {
