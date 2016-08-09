@@ -4084,7 +4084,7 @@ console.log(noteData);
                         }
 
                         var targetIRI = '';
-                        if (typeof n.target !== 'undefined') {
+                        if (typeof n.target !== 'undefined' && 'iri' in n.target) {
                             targetIRI = n.target.iri;
                             var targetIRIFragment = n.target.iri.substr(n.target.iri.lastIndexOf('#'));
                             //TODO: Handle when there is no fragment
