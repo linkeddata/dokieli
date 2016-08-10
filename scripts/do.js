@@ -3912,7 +3912,7 @@ WHERE {\n\
             var note = '';
             var targetLabel = '';
             var articleClass = '';
-            var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: https://schema.org/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri + '"';
+            var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: https://schema.org/ dcterms: http://purl.org/dc/terms/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri + '"';
 
             var motivatedByIRI = n.motivatedByIRI || '';
             var motivatedByLabel = '';
@@ -4041,7 +4041,7 @@ WHERE {\n\
                             }
                             else if (n.body.length > 0) {
                                 if (n.license && 'iri' in n.license) {
-                                    license = DO.U.createLicenseHTML(n.license, {rel:'http://purl.org/dc/terms/rights', label:'Rights'});
+                                    license = DO.U.createLicenseHTML(n.license, {rel:'dcterms:rights', label:'Rights'});
                                 }
 
                                 body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="i:#note-' + n.id + '"><h2 property="schema:name">Note</h2><div datatype="rdf:HTML" property="rdf:value schema:description" resource="i:#note-' + n.id + '" typeof="oa:TextualBody">' + n.body + '</div>' + license + '</section>';
