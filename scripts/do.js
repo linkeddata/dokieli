@@ -133,7 +133,6 @@ var DO = {
             "oaprefix": "http://www.w3.org/ns/oa#prefix",
             "oasuffix": "http://www.w3.org/ns/oa#suffix",
             "oatext": "http://www.w3.org/ns/oa#text",
-            "oaannotatedAt": { "@id": "http://www.w3.org/ns/oa#annotatedAt", "@type": "@id" },
             "oamotivatedBy": { "@id": "http://www.w3.org/ns/oa#motivatedBy", "@type": "@id" },
 
             "assubject": { "@id": "http://www.w3.org/ns/activitystreams#subject", "@type": "@id", "@array": true },
@@ -3634,7 +3633,7 @@ WHERE {\n\
                     function(i) {
                         var note = i.child(noteIRI);
 // console.log(note);
-                        var datetime = note.oaannotatedAt;
+                        var datetime = note.schemadatePublished || note.dctermscreated;
 // console.log(datetime);
                         var annotatedBy = note.schemacreator || note.dctermscreator;
                         var annotatedByIRI;
@@ -3991,7 +3990,7 @@ WHERE {\n\
             heading = '<' + hX + ' property="schema:name">' + creatorName + ' <span rel="oa:motivatedBy" resource="' + motivatedByIRI + '">' + motivatedByLabel + '</span></' + hX + '>';
 
             if ('datetime' in n){
-                published = '<dl class="published"><dt>Published</dt><dd><a href="' + n.iri + '"><time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="oa:annotatedAt schema:datePublished" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time></a></dd></dl>';
+                published = '<dl class="published"><dt>Published</dt><dd><a href="' + n.iri + '"><time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="schema:datePublished" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time></a></dd></dl>';
             }
 
             if (n.license && 'iri' in n.license) {
