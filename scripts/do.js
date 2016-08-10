@@ -137,6 +137,7 @@ var DO = {
             "oaannotatedBy": { "@id": "http://www.w3.org/ns/oa#annotatedBy", "@type": "@id" },
             "oamotivatedBy": { "@id": "http://www.w3.org/ns/oa#motivatedBy", "@type": "@id" },
 
+            "assubject": { "@id": "http://www.w3.org/ns/activitystreams#subject", "@type": "@id", "@array": true },
             "asobject": { "@id": "http://www.w3.org/ns/activitystreams#object", "@type": "@id", "@array": true },
             "astarget": { "@id": "http://www.w3.org/ns/activitystreams#target", "@type": "@id", "@array": true },
             "ascontext": { "@id": "http://www.w3.org/ns/activitystreams#context", "@type": "@id", "@array": true },
