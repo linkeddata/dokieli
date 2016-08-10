@@ -637,7 +637,7 @@ var DO = {
                                         if(s.asobject && s.asobject.at(0)) {
                                             if(s.ascontext && s.ascontext.at(0) && s.asobject.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
                                                 var context = s.ascontext.at(0).iri().toString();
-                                                return DO.U.positionQuoteSelector(context).then(
+                                                return DO.U.positionInteraction(context).then(
                                                     function(notificationIRI){
                                                         return notificationIRI;
                                                     },
@@ -699,7 +699,7 @@ var DO = {
                                     else if(resourceTypes.indexOf('http://www.w3.org/ns/activitystreams#Announce') > -1) {
                                         if(s.asobject && s.asobject.at(0) && s.astarget && s.astarget.at(0) && s.astarget.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
                                             var object = s.asobject.at(0).iri().toString();
-                                            return DO.U.positionQuoteSelector(object).then(
+                                            return DO.U.positionInteraction(object).then(
                                                 function(notificationIRI){
                                                     return notificationIRI;
                                                 },
@@ -3628,7 +3628,7 @@ WHERE {\n\
             note.setAttribute('style', style);
         },
 
-        positionQuoteSelector: function(noteIRI, containerNode) {
+        positionInteraction: function(noteIRI, containerNode) {
             containerNode = containerNode || document.body;
             return new Promise(function(resolve, reject) {
                 SimpleRDF(DO.C.Vocab, noteIRI, null, ld.store).get().then(
@@ -5518,7 +5518,7 @@ WHERE {\n\
                                     DO.U.putResource(noteIRI, data).then(
                                         function(i) {
 // console.log(i);
-                                            DO.U.positionQuoteSelector(noteIRI, document.body).then(
+                                            DO.U.positionInteraction(noteIRI, document.body).then(
                                                 function(i) {
 // console.log(i);
                                                 },
@@ -5587,7 +5587,7 @@ WHERE {\n\
                                     break;
 
                                 case 'cite': //footnote reference
-                                    //TODO: Refactor this what's in positionQuoteSelector
+                                    //TODO: Refactor this what's in positionInteraction
 
                                     switch(opts.citationType) {
                                         case 'ref-footnote': default:
