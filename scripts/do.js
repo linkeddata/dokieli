@@ -134,7 +134,6 @@ var DO = {
             "oasuffix": "http://www.w3.org/ns/oa#suffix",
             "oatext": "http://www.w3.org/ns/oa#text",
             "oaannotatedAt": { "@id": "http://www.w3.org/ns/oa#annotatedAt", "@type": "@id" },
-            "oaannotatedBy": { "@id": "http://www.w3.org/ns/oa#annotatedBy", "@type": "@id" },
             "oamotivatedBy": { "@id": "http://www.w3.org/ns/oa#motivatedBy", "@type": "@id" },
 
             "assubject": { "@id": "http://www.w3.org/ns/activitystreams#subject", "@type": "@id", "@array": true },
@@ -692,7 +691,6 @@ var DO = {
                                                 DO.U.addInteraction(noteData);
                                             }
                                         }
-
                                     }
                                     else if(resourceTypes.indexOf('http://www.w3.org/ns/activitystreams#Relationship') > -1){
                                     //TODO
@@ -3638,11 +3636,15 @@ WHERE {\n\
 // console.log(note);
                         var datetime = note.oaannotatedAt;
 // console.log(datetime);
-                        var annotatedByIRI = note.oaannotatedBy.iri();
+                        var annotatedBy = note.schemacreator || note.dctermscreator;
+                        var annotatedByIRI;
+                        if (annotatedBy && annotatedBy.at(0) && annotatedBy.at(0).iri()) {
+                            annotatedByIRI = annotatedBy.at(0).iri();
 // console.log(annotatedByIRI);
-                        var annotatedBy = i.child(annotatedByIRI);
+                            annotatedBy = i.child(annotatedByIRI);
 // console.log(annotatedBy);
-                        var annotatedByName = annotatedBy.schemaname;
+                        }
+                        var annotatedByName = (annotatedBy.schemaname) ? annotatedBy.schemaname : undefined;
 // console.log(annotatedByName);
                         var annotatedByImage = annotatedBy.schemaimage || '';
                         annotatedByImage = (annotatedByImage && annotatedByImage.iri()) ? annotatedByImage.iri().toString() : undefined;
@@ -3854,7 +3856,7 @@ WHERE {\n\
                                 "license": {}
                             };
 
-                            if (note.schemacreator.at(0) && note.schemacreator.at(0).iri()) {
+                            if (note.schemacreator && note.schemacreator.at(0) && note.schemacreator.at(0).iri()) {
                                 noteData.creator["iri"] = note.schemacreator.at(0).iri().toString();
                                 var creator = i.child(noteData.creator["iri"]);
                                 if (creator.schemaname) {
@@ -3983,7 +3985,7 @@ WHERE {\n\
                     creator = '<span about="' + creatorIRI + '" typeof="schema:Person">' + creatorName + '</span>';
                 }
 
-                authors = '<dl class="author-name"><dt>Authors</dt><dd><span rel="schema:creator oa:annotatedBy">' + creator + '</span></dd></dl>';
+                authors = '<dl class="author-name"><dt>Authors</dt><dd><span rel="schema:creator">' + creator + '</span></dd></dl>';
             }
 
             heading = '<' + hX + ' property="schema:name">' + creatorName + ' <span rel="oa:motivatedBy" resource="' + motivatedByIRI + '">' + motivatedByLabel + '</span></' + hX + '>';
