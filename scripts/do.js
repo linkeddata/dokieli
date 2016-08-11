@@ -4020,7 +4020,7 @@ WHERE {\n\
 
             switch(n.type) {
                 case 'article': case 'note': case 'bookmark': case 'approve': case 'disapprove': case 'specificity':
-                    if (typeof n.target !== 'undefined') { //note, annotation, reply
+                    if (typeof n.target !== 'undefined' || typeof n.inReplyTo !== 'undefined') { //note, annotation, reply
                         //FIXME: Could resourceIRI be a fragment URI or *make sure* it is the document URL without the fragment?
                         //TODO: Use n.target.iri?
 
@@ -4059,6 +4059,7 @@ WHERE {\n\
                         }
 
                         var targetIRI = '';
+                        var targetRelation = 'oa:hasTarget';
                         if (typeof n.target !== 'undefined' && 'iri' in n.target) {
                             targetIRI = n.target.iri;
                             var targetIRIFragment = n.target.iri.substr(n.target.iri.lastIndexOf('#'));
@@ -4067,14 +4068,13 @@ WHERE {\n\
                                 annotationTextSelector = '<span rel="oa:hasSelector" resource="i:#fragment-selector" typeof="oa:FragmentSelector"><meta property="rdf:value" content="' + targetIRIFragment + '" xml:lang="" lang="" rel="dcterms:conformsTo" resource="https://tools.ietf.org/html/rfc3987" /><span rel="oa:refinedBy" resource="i#text-quote-selector" typeof="oa:TextQuoteSelector"><span property="oa:prefix" xml:lang="en" lang="en">' + n.target.selector.prefix + '</span><mark property="oa:exact" xml:lang="en" lang="en">' + n.target.selector.exact + '</mark><span property="oa:suffix" xml:lang="en" lang="en">' + n.target.selector.suffix + '</span></span></span>';
                             }
                         }
-                        // else {
-                        //     if('inReplyTo' in n) {
-                        //         targetIRI = n.inReplyTo;
-                        //         // TODO: pass document title and maybe author so they can be displayed on the reply too.
-                        //     }
-                        // }
+                        else if(typeof n.inReplyTo !== 'undefined' && 'iri' in n.inReplyTo) {
+                            targetIRI = n.inReplyTo.iri;
+                            targetRelation = ('rel' in n.inReplyTo) ? n.inReplyTo.rel : 'as:inReplyTo';
+                            // TODO: pass document title and maybe author so they can be displayed on the reply too.
+                        }
 
-                        hasTarget = '<a href="' + targetIRI + '" rel="oa:hasTarget">' + targetLabel + '</a>';
+                        hasTarget = '<a href="' + targetIRI + '" rel="' + targetRelation + '">' + targetLabel + '</a>';
                         if (typeof n.target !== 'undefined' && typeof n.target.source !== 'undefined') {
                             hasTarget += ' (<a about="' + n.target.iri + '" href="' + n.target.source +'" rel="oa:hasSource" typeof="oa:SpecificResource">part of</a>)';
                         }
