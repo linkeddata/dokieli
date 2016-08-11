@@ -3638,8 +3638,10 @@ WHERE {\n\
 
         positionInteraction: function(noteIRI, containerNode) {
             containerNode = containerNode || document.body;
+            var pIRI = DO.U.getProxyableIRI(noteIRI);
+
             return new Promise(function(resolve, reject) {
-                SimpleRDF(DO.C.Vocab, noteIRI, null, ld.store).get().then(
+                SimpleRDF(DO.C.Vocab, pIRI, null, ld.store).get().then(
                     function(i) {
                         var note = i.child(noteIRI);
 // console.log(note);
