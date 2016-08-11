@@ -101,8 +101,10 @@ var DO = {
             "schemacitation": { "@id": "https://schema.org/citation", "@type": "@id", "@array": true },
             "schemaknows": { "@id": "https://schema.org/knows", "@type": "@id", "@array": true },
             "schemadatePublished": "https://schema.org/datePublished",
+            "schemadescription": "https://schema.org/description",
 
             "dctermstitle": "http://purl.org/dc/terms/title",
+            "dctermsdescription": "http://purl.org/dc/terms/description",
             "dctermscreator": { "@id": "http://purl.org/dc/terms/creator", "@type": "@id", "@array": true },
             "dctermsdate": "http://purl.org/dc/terms/date",
             "dctermsissued": "http://purl.org/dc/terms/issued",
