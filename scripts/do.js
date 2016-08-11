@@ -731,6 +731,14 @@ var DO = {
             );
         },
 
+        getProxyableIRI: function(url) {
+            var pIRI = DO.U.stripFragmentFromString(url);
+            if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
+                pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
+            }
+            return pIRI;
+        },
+
         getResourceOptions: function(url, options) {
             url = url || window.location.origin + window.location.pathname;
             options = options || {};
