@@ -3894,40 +3894,54 @@ WHERE {\n\
                             }
                         }
                         else {
-                            var noteData = {
-                                "type": 'article',
-                                "mode": "read",
-                                "motivatedByIRI": motivatedBy,
-                                "id": id,
-                                "refId": refId,
-                                "refLabel": refLabel,
-                                "iri": noteIRI,
-                                "creator": {},
-                                "datetime": datetime,
-                                "target": {
-                                    "iri": targetIRI
-                                },
-                                "body": bodyText,
-                                "license": {}
-                            };
-
-                            if (note.schemacreator && note.schemacreator.at(0) && note.schemacreator.at(0).iri()) {
-                                noteData.creator["iri"] = note.schemacreator.at(0).iri().toString();
-                                var creator = i.child(noteData.creator["iri"]);
-                                if (creator.schemaname) {
-                                    noteData.creator["name"] = creator.schemaname;
-                                }
-                                if (creator.schemaimage && creator.schemaimage.iri()) {
-                                    noteData.creator["image"] = creator.schemaimage.iri().toString();
-                                }
+                            var inReplyTo, inReplyToRel;
+                            if (note.asinReplyTo && note.asinReplyTo.at(0) && note.asinReplyTo.at(0).iri()) {
+                                inReplyTo = note.asinReplyTo.at(0).iri().toString();
+                                inReplyToRel = 'as:inReplyTo';
+                            }
+                            else if(note.siocreplyof && note.siocreplyof.at(0) && note.siocreplyof.at(0).iri()) {
+                                inReplyTo = note.siocreplyof.at(0).iri().toString();
+                                inReplyToRel = 'sioc:reply_of';
                             }
 
-                            if (licenseIRI) {
-                                noteData.license["iri"] = licenseIRI;
-                                noteData.license["name"] = DO.C.License[licenseIRI];
+                            if(inReplyTo && inReplyTo.indexOf(window.location.origin + window.location.pathname) >= 0) {
+                                var noteData = {
+                                    "type": 'article',
+                                    "mode": "read",
+                                    "motivatedByIRI": motivatedBy,
+                                    "id": id,
+                                    "refId": refId,
+                                    "refLabel": refLabel,
+                                    "iri": noteIRI,
+                                    "creator": {},
+                                    "inReplyTo": {
+                                        'iri': inReplyTo,
+                                        'rel': inReplyToRel
+                                    },
+                                    "body": bodyText,
+                                    "license": {}
+                                };
+                                if (annotatedByIRI) {
+                                    noteData.creator["iri"] = annotatedByIRI;
+                                }
+                                if (annotatedByName) {
+                                    noteData.creator["name"] = annotatedByName;
+                                }
+                                if (annotatedByImage) {
+                                    noteData.creator["image"] = annotatedByImage;
+                                }
+                                if (licenseIRI) {
+                                    noteData.license["iri"] = licenseIRI;
+                                    noteData.license["name"] = DO.C.License[licenseIRI];
+                                }
+                                if (datetime) {
+                                    noteDate.datetime = datetime;
+                                }
+                                DO.U.addInteraction(noteData);
                             }
-
-                            DO.U.addInteraction(noteData);
+                            else {
+                                console.log('Source is not an oa:Annotation and it is not a reply to');
+                            }
                         }
                     },
                     function(reason) {
