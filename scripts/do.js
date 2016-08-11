@@ -3645,6 +3645,10 @@ WHERE {\n\
                     function(i) {
                         var note = i.child(noteIRI);
 // console.log(note);
+                        var id = String(Math.abs(DO.U.hashCode(noteIRI))).substr(0, 6);
+                        var refId = 'r-' + id;
+                        var refLabel = id;
+
                         var datetime = note.schemadatePublished || note.dctermscreated;
 // console.log(datetime);
                         var annotatedBy = note.schemacreator || note.dctermscreator;
@@ -3665,190 +3669,230 @@ WHERE {\n\
                         licenseIRI = (licenseIRI && licenseIRI.iri()) ? licenseIRI.iri().toString() : undefined;
 // console.log(licenseIRI);
 
-                        var body = i.child(note.oahasBody.iri());
+                        var motivatedBy = 'oa:replying';
+
+                        var bodyText = note.schemadescription;
+                        if(!bodyText) {
+                            bodyText = note.dctermsdescription;
+                            if(!bodyText)  {
+                                bodyText = note.ascontent;
+                            }
+                        }
+
+                        var types = note.rdftype;
+// console.log(types);
+                        var resourceTypes = [];
+                        types.forEach(function(type){
+                            resourceTypes.push(type.iri().toString());
+// console.log(type);
+                        });
+
+                        if(resourceTypes.indexOf('http://www.w3.org/ns/oa#Annotation') > -1) {
+                            var body = i.child(note.oahasBody.iri());
 //                        var body = i.child(note.oahasBody.iri().toString());
 // console.log(body);
-                        var bodyLicenseIRI = body.schemalicense || body.dctermsrights;
+                            var bodyLicenseIRI = body.schemalicense || body.dctermsrights;
 // console.log(bodyLicenseIRI);
-                        bodyLicenseIRI = (bodyLicenseIRI && bodyLicenseIRI.iri()) ? bodyLicenseIRI.iri().toString() : undefined;
+                            bodyLicenseIRI = (bodyLicenseIRI && bodyLicenseIRI.iri()) ? bodyLicenseIRI.iri().toString() : undefined;
 // console.log(bodyLicenseIRI);
-                        var bodyText = body.rdfvalue;
+                            bodyText = body.rdfvalue;
 // console.log(bodyText);
-                        var target = i.child(note.oahasTarget.iri());
+                            var target = i.child(note.oahasTarget.iri());
 // console.log(target);
-                        var targetIRI = target.iri().toString();
+                            var targetIRI = target.iri().toString();
 // console.log(targetIRI);
 
-//                        var inReplyTo = note.asinReplyTo.at(0).iri().toString();
-
-
-// console.log(target.oahasSelector.iri());
-
-                        var source = target.oahasSource;
-                        if(source && source.iri()){
-                            source = source.toString();
-                        }
+                            var source = target.oahasSource;
+                            if(source && source.iri()){
+                                source = source.toString();
+                            }
 // console.log(source);
 // console.log(source.iri());
 
+                            if(note.oamotivatedBy && note.oamotivatedBy.iri()) {
+                                motivatedBy = note.oamotivatedBy.iri().toString();
+                            }
 
-                        var id = String(Math.abs(DO.U.hashCode(noteIRI))).substr(0, 6);
-                        var refId = 'r-' + id;
-                        var refLabel = id;
-
-                        var motivatedBy = 'oa:replying';
-                        if(note.oamotivatedBy && note.oamotivatedBy.iri()) {
-                            motivatedBy = note.oamotivatedBy.iri().toString();
-                        }
-
-                        var exact, prefix, suffix;
-                        var selector = target.oahasSelector;
-                        if(selector && selector.iri()) {
-                            selector = i.child(selector.iri());
+                            var exact, prefix, suffix;
+                            var selector = target.oahasSelector;
+                            if(selector && selector.iri()) {
+                                selector = i.child(selector.iri());
 // console.log(selector);
 
 // console.log(selector.rdftype);
 // console.log(selector.rdftype._array);
-                            //FIXME: This is taking the first rdf:type. There could be multiple.
-                            var selectorTypes = selector.rdftype.at(0).iri().toString();
+                                //FIXME: This is taking the first rdf:type. There could be multiple.
+                                var selectorTypes = selector.rdftype.at(0).iri().toString();
 // console.log(selectorTypes);
-                            if(selectorTypes == 'http://www.w3.org/ns/oa#TextQuoteSelector') {
-                                exact = selector.oaexact;
-                                prefix = selector.oaprefix;
-                                suffix = selector.oasuffix;
+                                if(selectorTypes == 'http://www.w3.org/ns/oa#TextQuoteSelector') {
+                                    exact = selector.oaexact;
+                                    prefix = selector.oaprefix;
+                                    suffix = selector.oasuffix;
+                                }
+                                else if (selectorTypes == 'http://www.w3.org/ns/oa#FragmentSelector') {
+                                    var refinedBy = i.child(selector["http://www.w3.org/ns/oa#refinedBy"].iri());
+                                    exact = refinedBy.oaexact;
+                                    prefix = refinedBy.oaprefix;
+                                    suffix = refinedBy.oasuffix;
+                                }
                             }
-                            else if (selectorTypes == 'http://www.w3.org/ns/oa#FragmentSelector') {
-                                var refinedBy = i.child(selector["http://www.w3.org/ns/oa#refinedBy"].iri());
-                                exact = refinedBy.oaexact;
-                                prefix = refinedBy.oaprefix;
-                                suffix = refinedBy.oasuffix;
-                            }
-                        }
 // console.log(exact);
 // console.log(prefix);
 // console.log(suffix);
 
-                        var containerNodeTextContent = containerNode.textContent;
+                            var containerNodeTextContent = containerNode.textContent;
 //console.log(containerNodeTextContent);
 // console.log(prefix + exact + suffix);
-                        var selectorIndex = containerNodeTextContent.indexOf(prefix + exact + suffix);
+                            var selectorIndex = containerNodeTextContent.indexOf(prefix + exact + suffix);
 // console.log(selectorIndex);
-                        if (selectorIndex >= 0) {
-                            var exactStart = selectorIndex + prefix.length
-                            var exactEnd = selectorIndex + prefix.length + exact.length;
-                            var selection = { start: exactStart, end: exactEnd };
+                            if (selectorIndex >= 0) {
+                                var exactStart = selectorIndex + prefix.length
+                                var exactEnd = selectorIndex + prefix.length + exact.length;
+                                var selection = { start: exactStart, end: exactEnd };
 
+                                var ref = '<span class="ref do" about="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#' + id + '" resource="' + noteIRI + '">' + id + '</a></sup></span>';
 
-                            var ref = '<span class="ref do" about="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#' + id + '" resource="' + noteIRI + '">' + id + '</a></sup></span>';
+                                MediumEditor.selection.importSelection(selection, containerNode, document);
 
-                            MediumEditor.selection.importSelection(selection, containerNode, document);
+                                //XXX: Review
+                                var selection = window.getSelection();
+                                var r = selection.getRangeAt(0);
+                                selection.removeAllRanges();
+                                selection.addRange(r);
+                                r.collapse(true);
+                                var selectedParentNode = r.commonAncestorContainer.parentNode;
+                                var selectedParentNodeValue = r.commonAncestorContainer.nodeValue;
 
-                            //XXX: Review
-                            var selection = window.getSelection();
-                            var r = selection.getRangeAt(0);
-                            selection.removeAllRanges();
-                            selection.addRange(r);
-                            r.collapse(true);
-                            var selectedParentNode = r.commonAncestorContainer.parentNode;
-                            var selectedParentNodeValue = r.commonAncestorContainer.nodeValue;
+                                var selectionUpdated = DO.U.fragmentFromString(selectedParentNodeValue.substr(0, r.startOffset) + ref + selectedParentNodeValue.substr(r.startOffset + exact.length));
 
-                            var selectionUpdated = DO.U.fragmentFromString(selectedParentNodeValue.substr(0, r.startOffset) + ref + selectedParentNodeValue.substr(r.startOffset + exact.length));
-
-                            //XXX: Review. This feels a bit dirty
-                            for(var i = 0; i < selectedParentNode.childNodes.length; i++) {
-                                var n = selectedParentNode.childNodes[i];
-                                if (n.nodeType === 3 && n.nodeValue == selectedParentNodeValue) {
-                                    selectedParentNode.replaceChild(selectionUpdated, n);
-                                }
-                            }
-
-                            var resourceIRI = DO.U.stripFragmentFromString(document.location.href);
-
-                            var parentNodeWithId = selectedParentNode.closest('[id]');
-                            var targetIRI = (parentNodeWithId) ? resourceIRI + '#' + parentNodeWithId.id : resourceIRI;
-
-                            var noteData = {
-                                "type": 'article',
-                                "mode": "read",
-                                "motivatedByIRI": motivatedBy,
-                                "id": id,
-                                "refId": refId,
-                                "iri": noteIRI, //e.g., https://example.org/path/to/article
-                                "creator": {},
-                                "datetime": datetime,
-                                "target": {
-                                    "iri": targetIRI,
-                                    "source": source,
-                                    "selector": {
-                                        "exact": exact,
-                                        "prefix": prefix,
-                                        "suffix": suffix
+                                //XXX: Review. This feels a bit dirty
+                                for(var i = 0; i < selectedParentNode.childNodes.length; i++) {
+                                    var n = selectedParentNode.childNodes[i];
+                                    if (n.nodeType === 3 && n.nodeValue == selectedParentNodeValue) {
+                                        selectedParentNode.replaceChild(selectionUpdated, n);
                                     }
-                                    //TODO: state
-                                },
-                                "body": bodyText,
-                                "license": {}
-                            }
-                            if (annotatedByIRI) {
-                                noteData.creator["iri"] = annotatedByIRI;
-                            }
-                            if (annotatedByName) {
-                                noteData.creator["name"] = annotatedByName;
-                            }
-                            if (annotatedByImage) {
-                                noteData.creator["image"] = annotatedByImage;
-                            }
+                                }
 
-                            if (licenseIRI) {
-                                noteData.license["iri"] = licenseIRI;
-                            }
+                                var resourceIRI = DO.U.stripFragmentFromString(document.location.href);
+
+                                var parentNodeWithId = selectedParentNode.closest('[id]');
+                                var targetIRI = (parentNodeWithId) ? resourceIRI + '#' + parentNodeWithId.id : resourceIRI;
+
+                                var noteData = {
+                                    "type": 'article',
+                                    "mode": "read",
+                                    "motivatedByIRI": motivatedBy,
+                                    "id": id,
+                                    "refId": refId,
+                                    "iri": noteIRI, //e.g., https://example.org/path/to/article
+                                    "creator": {},
+                                    "datetime": datetime,
+                                    "target": {
+                                        "iri": targetIRI,
+                                        "source": source,
+                                        "selector": {
+                                            "exact": exact,
+                                            "prefix": prefix,
+                                            "suffix": suffix
+                                        }
+                                        //TODO: state
+                                    },
+                                    "body": bodyText,
+                                    "license": {}
+                                }
+                                if (annotatedByIRI) {
+                                    noteData.creator["iri"] = annotatedByIRI;
+                                }
+                                if (annotatedByName) {
+                                    noteData.creator["name"] = annotatedByName;
+                                }
+                                if (annotatedByImage) {
+                                    noteData.creator["image"] = annotatedByImage;
+                                }
+
+                                if (licenseIRI) {
+                                    noteData.license["iri"] = licenseIRI;
+                                }
 // console.log(noteData);
-                            var note = DO.U.createNoteHTML(noteData);
-                            var nES = selectedParentNode.nextElementSibling;
-                            var asideNote = '\n\
+                                var note = DO.U.createNoteHTML(noteData);
+                                var nES = selectedParentNode.nextElementSibling;
+                                var asideNote = '\n\
 <aside class="note do">\n\
 <blockquote cite="' + noteIRI + '">'+ note + '</blockquote>\n\
 </aside>\n\
 ';
-                            var asideNode = DO.U.fragmentFromString(asideNote);
-                            var parentSection = MediumEditor.util.getClosestTag(selectedParentNode, 'section')
-                            || MediumEditor.util.getClosestTag(selectedParentNode, 'div') || MediumEditor.util.getClosestTag(selectedParentNode, 'article');
-                            parentSection.appendChild(asideNode);
-                            //XXX: Keeping this comment around for emergency
-//                                selectedParentNode.parentNode.insertBefore(asideNode, selectedParentNode.nextSibling);
+                                var asideNode = DO.U.fragmentFromString(asideNote);
+                                var parentSection = MediumEditor.util.getClosestTag(selectedParentNode, 'section')
+                                || MediumEditor.util.getClosestTag(selectedParentNode, 'div') || MediumEditor.util.getClosestTag(selectedParentNode, 'article');
+                                parentSection.appendChild(asideNode);
+                                //XXX: Keeping this comment around for emergency
+    //                                selectedParentNode.parentNode.insertBefore(asideNode, selectedParentNode.nextSibling);
 
-                            if(DO.C.User.IRI) {
-                                var noteDelete = document.querySelector('aside.do blockquote[cite="' + noteIRI + '"] article button.delete');
-                                if (noteDelete) {
-                                    noteDelete.addEventListener('click', function(e) {
-                                        e.preventDefault();
-                                        e.stopPropagation();
+                                if(DO.C.User.IRI) {
+                                    var noteDelete = document.querySelector('aside.do blockquote[cite="' + noteIRI + '"] article button.delete');
+                                    if (noteDelete) {
+                                        noteDelete.addEventListener('click', function(e) {
+                                            e.preventDefault();
+                                            e.stopPropagation();
 
-                                        DO.U.deleteResource(noteIRI).then(
-                                            function(i){
-                                                var aside = noteDelete.closest('aside.do');
-                                                aside.parentNode.removeChild(aside);
-                                                var span = document.querySelector('span[about="#' + refId + '"]');
-                                                span.outerHTML = span.querySelector('mark').textContent;
-                                                //TODO: Delete notification or send delete activity
-                                            },
-                                            function(reason){
-                                                console.log(reason);
-                                            }
-                                        );
-                                    });
+                                            DO.U.deleteResource(noteIRI).then(
+                                                function(i){
+                                                    var aside = noteDelete.closest('aside.do');
+                                                    aside.parentNode.removeChild(aside);
+                                                    var span = document.querySelector('span[about="#' + refId + '"]');
+                                                    span.outerHTML = span.querySelector('mark').textContent;
+                                                    //TODO: Delete notification or send delete activity
+                                                },
+                                                function(reason){
+                                                    console.log(reason);
+                                                }
+                                            );
+                                        });
+                                    }
                                 }
+                                DO.U.positionNote(refId, refLabel, id);
+
+                                //Perhaps return something more useful?
+                                return resolve(noteIRI);
                             }
-                            DO.U.positionNote(refId, refLabel, id);
 
-                            //Perhaps return something more useful?
-                            return resolve(noteIRI);
+                            //XXX: Annotation without a selection
+                            else {
+                                var noteData = {
+                                    "type": 'article',
+                                    "mode": "read",
+                                    "motivatedByIRI": motivatedBy,
+                                    "id": id,
+                                    "refId": refId,
+                                    "refLabel": refLabel,
+                                    "iri": noteIRI,
+                                    "creator": {},
+                                    "datetime": datetime,
+                                    "target": {
+                                        "iri": targetIRI
+                                    },
+                                    "body": bodyText,
+                                    "license": {}
+                                };
+                                if (annotatedByIRI) {
+                                    noteData.creator["iri"] = annotatedByIRI;
+                                }
+                                if (annotatedByName) {
+                                    noteData.creator["name"] = annotatedByName;
+                                }
+                                if (annotatedByImage) {
+                                    noteData.creator["image"] = annotatedByImage;
+                                }
+                                if (licenseIRI) {
+                                    noteData.license["iri"] = licenseIRI;
+                                    noteData.license["name"] = DO.C.License[licenseIRI];
+                                }
+                                if (datetime) {
+                                    noteDate.datetime = datetime;
+                                }
+                                DO.U.addInteraction(noteData);
+                            }
                         }
-                        // else {
-                        //     return Promise.reject({'message': "Can't match the text"});
-                        // }
-
-                        //XXX: Interactions
                         else {
                             var noteData = {
                                 "type": 'article',
