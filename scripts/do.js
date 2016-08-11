@@ -694,7 +694,16 @@ var DO = {
                                         }
                                     }
                                     else if(resourceTypes.indexOf('http://www.w3.org/ns/activitystreams#Relationship') > -1){
-                                    //TODO
+                                        if(s.assubject && s.assubject.at(0) && s.asrelationship && s.asrelationship.at(0) && s.asobject && s.asobject.at(0) && s.asobject.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
+                                            var subject = s.assubject.at(0).iri().toString();
+                                            return DO.U.positionInteraction(subject).then(
+                                                function(notificationIRI){
+                                                    return notificationIRI;
+                                                },
+                                                function(reason){
+                                                    console.log('Notification source is unreachable');
+                                                });
+                                        }
                                     }
                                     else if(resourceTypes.indexOf('http://www.w3.org/ns/activitystreams#Announce') > -1) {
                                         if(s.asobject && s.asobject.at(0) && s.astarget && s.astarget.at(0) && s.astarget.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
