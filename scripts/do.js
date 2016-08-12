@@ -3897,7 +3897,7 @@ WHERE {\n\
                                     noteData.license["name"] = DO.C.License[licenseIRI];
                                 }
                                 if (datetime) {
-                                    noteDate.datetime = datetime;
+                                    noteData.datetime = datetime;
                                 }
                                 DO.U.addInteraction(noteData);
                             }
@@ -3944,7 +3944,7 @@ WHERE {\n\
                                     noteData.license["name"] = DO.C.License[licenseIRI];
                                 }
                                 if (datetime) {
-                                    noteDate.datetime = datetime;
+                                    noteData.datetime = datetime;
                                 }
                                 DO.U.addInteraction(noteData);
                             }
