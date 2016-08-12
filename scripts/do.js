@@ -4076,17 +4076,6 @@ WHERE {\n\
                 license = DO.U.createLicenseHTML(n.license);
             }
 
-            // switch(n.type) {
-            //     default:
-            //         break;
-            //     case 'approve':
-            //         noteType = ' as:Like';
-            //         break;
-            //     case 'disapprove':
-            //         noteType = ' as:Dislike';
-            //         break;
-            // }
-
             switch(n.type) {
                 case 'article': case 'note': case 'bookmark': case 'approve': case 'disapprove': case 'specificity':
                     if (typeof n.target !== 'undefined' || typeof n.inReplyTo !== 'undefined') { //note, annotation, reply
