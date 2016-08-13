@@ -317,15 +317,7 @@ var DO = {
         setUserInfo: function(userIRI) {
 // console.log("setUserInfo: " + userIRI);
             if (userIRI) {
-                var pIRI = userIRI;
-
-                pIRI = DO.U.stripFragmentFromString(pIRI);
-
-                //TODO: Should use both document.location.origin + '/,proxy?uri= and then DO.C.ProxyURL .. like in setUser
-                if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
-                    pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
-                }
-// console.log("pIRI: " + pIRI);
+                var pIRI = DO.U.getProxyableIRI(userIRI);
 
                 return new Promise(function(resolve, reject) {
                     SimpleRDF(DO.C.Vocab, pIRI, null, ld.store).get().then(
@@ -502,11 +494,7 @@ var DO = {
         },
 
         getInboxFromHead: function(url) {
-            var pIRI = url;
-            pIRI = DO.U.stripFragmentFromString(pIRI);
-            if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
-                pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
-            }
+            var pIRI = DO.U.getProxyableIRI(url);
 
             return DO.U.getResourceHead(pIRI, {'header': 'Link'}).then(
                 function(i){
@@ -533,11 +521,7 @@ var DO = {
             url = url || window.location.origin + window.location.pathname;
             subjectIRI = subjectIRI || url;
 
-            var pIRI = url;
-            pIRI = DO.U.stripFragmentFromString(pIRI);
-            if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
-                pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
-            }
+            var pIRI = DO.U.getProxyableIRI(url);
 
             return new Promise(function(resolve, reject) {
                 //FIXME: This doesn't work so well if the document's URL is different than input url
@@ -1041,12 +1025,8 @@ var DO = {
 // console.log(data);
 
             if (inbox && inbox.length > 0) {
-                var pIRI = inbox;
-                pIRI = DO.U.stripFragmentFromString(inbox);
+                var pIRI = DO.U.getProxyableIRI(inbox);
 
-                if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
-                    pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
-                }
                 return DO.U.getAcceptPostPreference(pIRI)
                     .catch(function(reason){
                         return reason;
@@ -1094,11 +1074,7 @@ var DO = {
         },
 
         getAcceptPostPreference: function(url) {
-            var pIRI = url;
-            pIRI = DO.U.stripFragmentFromString(url);
-            if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
-                pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
-            }
+            var pIRI = DO.U.getProxyableIRI(url);
 
             return DO.U.getResourceOptions(pIRI, {'header': 'Accept-Post'})
                 .catch(function(reason) {
@@ -2471,11 +2447,7 @@ console.log(inbox);
         },
 
         getContacts: function(url) {
-            var pIRI = url;
-            pIRI = DO.U.stripFragmentFromString(pIRI);
-            if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
-                pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
-            }
+            var pIRI = DO.U.getProxyableIRI(url);
 
             return new Promise(function(resolve, reject) {
                 SimpleRDF(DO.C.Vocab, pIRI, null, ld.store).get().then(
@@ -2503,11 +2475,7 @@ console.log(inbox);
                     var counter = 1;
                     contacts.forEach(function(url) {
                         url = url.iri().toString();
-                        var pIRI = url;
-                        pIRI = DO.U.stripFragmentFromString(pIRI);
-                        if (pIRI.slice(0, 5).toLowerCase() == 'http:') {
-                            pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
-                        }
+                        var pIRI = DO.U.getProxyableIRI(url);
 //console.log('pIRI: ' + pIRI);
 //console.log('url: ' + url);
                         SimpleRDF(DO.C.Vocab, pIRI, null, ld.store).get().then(
@@ -3181,13 +3149,7 @@ console.log(inbox);
             }
 //console.log(iri);
 
-            var pIRI = iri;
-            pIRI = DO.U.stripFragmentFromString(pIRI);
-//console.log(pIRI);
-            //TODO: Should use both document.location.origin + '/,proxy?uri= and then DO.C.ProxyURL .. like in setUser
-            if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
-                pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
-            }
+            var pIRI = DO.U.getProxyableIRI(iri);
 
             return DO.U.getGraph(pIRI);
         },
@@ -5045,11 +5007,7 @@ WHERE {\n\
 
                                     var queryURL = DO.U.createSPARQLQueryURLWithTextInput(sparqlEndpoint, resourceType, textInputA.toLowerCase(), options);
 
-                                    var pIRI = queryURL;
-                                    if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
-                                        pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
-                                    }
-                                    queryURL = pIRI;
+                                    queryURL = DO.U.getProxyableIRI(queryURL);
 
                                     form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', '<div id="' + sparklineGraphId + '"></div><i class="fa fa-spinner fa-pulse"></i>');
                                     sG = document.getElementById(sparklineGraphId);
@@ -5090,11 +5048,7 @@ WHERE {\n\
 // console.log(refArea);
                                                 var queryURL = DO.U.createSPARQLQueryURLGetObservationsWithDimension(sparqlEndpoint, dataset, paramDimension);
 // console.log(queryURL);
-                                                var pIRI = queryURL;
-                                                if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
-                                                    pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
-                                                }
-                                                queryURL = pIRI;
+                                                queryURL = DO.U.getProxyableIRI(queryURL);
 
                                                 DO.U.getTriplesFromGraph(queryURL)
                                                     .then(function(triples){
