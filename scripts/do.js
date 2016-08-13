@@ -1964,16 +1964,7 @@ var DO = {
         },
 
         getGraph: function(url) {
-            return new Promise(function(resolve, reject) {
-                SimpleRDF(DO.C.Vocab, url, null, ld.store).get().then(
-                    function(i){
-                        return resolve(i);
-                    },
-                    function(reason) {
-                        return reject(reason);
-                    }
-                );
-            });
+            return SimpleRDF(DO.C.Vocab, url, null, ld.store).get();
         },
 
         getDoctype: function() {
