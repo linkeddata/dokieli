@@ -1975,6 +1975,15 @@ var DO = {
             return SimpleRDF(DO.C.Vocab, url, null, ld.store).get();
         },
 
+        serializeGraph(g, options) {
+            options = options || {};
+            if (!('contentType' in options)) {
+                options['contentType'] = 'text/turtle';
+            }
+
+            return ld.store.serializers[options.contentType].serialize(g._graph);
+        },
+
         getDoctype: function() {
             /* Get DOCTYPE from http://stackoverflow.com/a/10162353 */
             var node = document.doctype;
