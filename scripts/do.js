@@ -1036,7 +1036,11 @@ var DO = {
                             case 'application/ld+json': case 'application/json':
                                 //TODO: Reserialise Turtle data to JSON-LD
                                 // return DO.U.postResource(inbox, slug, data, 'application/ld+json; charset=utf-8');
-                                return SimpleRDF.parse(data, 'text/turtle', '_:dokieli').then(
+                                var options = {
+                                  'contentType': 'text/turtle',
+                                  'subjectURI': '_:dokieli'
+                                };
+                                return DO.U.getGraphFromData(data, options).then(
                                     function(g) {
 // console.log(g);
                                         var options = {
