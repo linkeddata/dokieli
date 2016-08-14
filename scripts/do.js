@@ -466,7 +466,11 @@ var DO = {
             }
             else {
                 var uri = location.href.split(location.search||location.hash||/[?#]/)[0];
-                return SimpleRDF.parse(DO.U.getDocument(), 'text/html', uri)
+                var options = {
+                    'contentType': 'text/html',
+                    'subjectURI': uri
+                }
+                return DO.U.getGraphFromData(DO.U.getDocument(), options)
                     .then(
                         function(i){
                             //TODO: Should this get all of the inboxes or a given subject's?
