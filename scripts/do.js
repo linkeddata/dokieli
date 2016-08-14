@@ -1961,10 +1961,10 @@ var DO = {
 
         getGraphFromData: function(data, options) {
             options = options || {};
-            if ('contentType' in options) {
+            if (!('contentType' in options)) {
                 options['contentType'] = 'text/turtle';
             }
-            if ('subjectURI' in options) {
+            if (!('subjectURI' in options)) {
                 options['subjectURI'] = '_:dokieli';
             }
 
