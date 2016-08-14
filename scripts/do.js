@@ -1039,7 +1039,10 @@ var DO = {
                                 return SimpleRDF.parse(data, 'text/turtle', '_:dokieli').then(
                                     function(g) {
 // console.log(g);
-                                        return ld.store.serializers['application/ld+json'].serialize(g._graph).then(
+                                        var options = {
+                                          'contentType': 'application/ld+json'
+                                        };
+                                        return DO.U.serializeGraph(g, options).then(
                                             function(i){
                                                 var x = JSON.parse(i);
 // console.log(x);
