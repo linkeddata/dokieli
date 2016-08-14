@@ -228,8 +228,8 @@ var DO = {
 
             pIRI = DO.U.stripFragmentFromString(pIRI);
 
-            return new Promise(function(resolve, reject) {
-                SimpleRDF(DO.C.Vocab, pIRI, null, ld.store).get().then(
+            return DO.U.getGraph(pIRI)
+                .then(
                     function(i) {
                         var s = i.child(url);
 // console.log(s.storage);
@@ -245,7 +245,7 @@ var DO = {
                         }
                     },
                     function(reason) {
-                        //XXX: Is SimpleRDF even ever hitting this?
+                        //XXX: Is this even hit?
                         console.log("---2 WebID's storage NOT FOUND");
                         reason["message"] = "WebID's storage was not found";
                         reasons.push(reason);
@@ -254,25 +254,23 @@ var DO = {
                 )
                 .then(
                     function(i) {
-                        resolve(i);
+                        return i;
                     },
                     function(reason) {
 // console.log('Try through known authentication endpoint');
                         DO.U.getResourceHeadUser(DO.C.AuthEndpoint).then(
                             function(i) {
-                                return resolve(i);
+                                return i;
                             },
                             function(reason) {
                                 console.log("--- Known authentication endpoint didn't work");
                                 reason["message"] = "Known authentication endpoint didn't work";
                                 reasons.push(reason);
-                                return reject(reasons);
+                                return Promise.reject(reasons);
                             }
                         );
                     }
                 );
-
-            });
         },
 
         getResourceHeadUser: function(url) {
@@ -319,8 +317,8 @@ var DO = {
             if (userIRI) {
                 var pIRI = DO.U.getProxyableIRI(userIRI);
 
-                return new Promise(function(resolve, reject) {
-                    SimpleRDF(DO.C.Vocab, pIRI, null, ld.store).get().then(
+                return DO.U.getGraph(pIRI)
+                    .then(
                         function(i) {
                             var s = i.child(userIRI);
 // console.log(s);
@@ -336,7 +334,7 @@ var DO = {
                                 DO.C.User.PreferencesFile = s.preferencesFile.iri().toString();
 
                                 //XXX: Probably https so don't bother with proxy?
-                                SimpleRDF(DO.C.Vocab, DO.C.User.PreferencesFile, null, ld.store).get().then(
+                                DO.U.getGraph(DO.C.User.PreferencesFile).then(
                                     function(pf) {
                                         DO.C.User.PreferencesFileGraph = pf;
                                         var s = pf.child(userIRI);
@@ -384,11 +382,10 @@ var DO = {
                                     }
                                 );
                             }
-                            return resolve(userIRI);
+                            return userIRI;
                         },
-                        function(reason) { return reject(reason); }
+                        function(reason) { return reason; }
                     );
-                });
             }
             else {
                 console.log('NO USER IRI');
@@ -469,18 +466,18 @@ var DO = {
             }
             else {
                 var uri = location.href.split(location.search||location.hash||/[?#]/)[0];
-                return new Promise(function(resolve, reject) {
-                    SimpleRDF.parse(DO.U.getDocument(), 'text/html', uri).then(
+                return SimpleRDF.parse(DO.U.getDocument(), 'text/html', uri)
+                    .then(
                         function(i){
                             //TODO: Should this get all of the inboxes or a given subject's?
                             //TODO: Remove ldpinbox or solidinbox
                             var inbox = i.match(uri, DO.C.Vocab['ldpinbox']['@id']);
                             if (typeof inbox._graph[0] == 'object') {
-                                return resolve([inbox._graph[0].object.nominalValue]);
+                                return [inbox._graph[0].object.nominalValue];
                             }
                             inbox = i.match(uri, DO.C.Vocab['solidinbox']['@id']);
                             if (typeof inbox._graph[0] == 'object') {
-                                return resolve([inbox._graph[0].object.nominalValue]);
+                                return [inbox._graph[0].object.nominalValue];
                             }
                             var reason = {"message": "Inbox was not found in message body"};
                             return Promise.reject(reason);
@@ -489,7 +486,6 @@ var DO = {
                             return DO.U.getInboxFromHead(url);
                         }
                     );
-                });
             }
         },
 
@@ -523,36 +519,35 @@ var DO = {
 
             var pIRI = DO.U.getProxyableIRI(url);
 
-            return new Promise(function(resolve, reject) {
                 //FIXME: This doesn't work so well if the document's URL is different than input url
-                SimpleRDF(DO.C.Vocab, pIRI, null, ld.store).get().then(
+            return DO.U.getGraph(pIRI)
+                .then(
                     function(i) {
                         var s = i.child(subjectIRI);
                         if (s.ldpinbox._array.length > 0){
 // console.log(s.ldpinbox._array);
-                            return resolve([s.ldpinbox.at(0).iri().toString()]);
+                            return [s.ldpinbox.at(0).iri().toString()];
                         }
                         else if (s.solidinbox._array.length > 0){
 // console.log(s.solidinbox._array);
-                            return resolve([s.solidinbox.at(0).iri().toString()]);
+                            return [s.solidinbox.at(0).iri().toString()];
                         }
                         var reason = {"message": "Inbox was not found in message body"};
-                        return reject(reason);
+                        return Promise.reject(reason);
                     },
                     function(reason) {
                         console.log(reason);
-                        return reject(reason);
+                        return reason;
                     }
                 );
-            });
         },
 
         getNotifications: function(url) {
             url = url || window.location.origin + window.location.pathname;
             var notifications = [];
 
-            return new Promise(function(resolve, reject) {
-                SimpleRDF(DO.C.Vocab, url, null, ld.store).get().then(
+            return DO.U.getGraph(url)
+                .then(
                     function(i) {
                         var s = i.child(url);
                         s.ldpcontains.forEach(function(resource) {
@@ -572,7 +567,7 @@ var DO = {
                         });
 // console.log(notifications);
                         if (notifications.length > 0) {
-                            return resolve(notifications);
+                            return notifications;
                         }
                         else {
                             var reason = {"message": "There are no notifications."};
@@ -581,10 +576,9 @@ var DO = {
                     },
                     function(reason) {
                         console.log(reason);
-                        return reject(reason);
+                        return reason;
                     }
                 );
-            });
         },
 
         showInboxNotifications: function() {
@@ -697,7 +691,7 @@ var DO = {
                                                     return notificationIRI;
                                                 },
                                                 function(reason){
-                                                    console.log('Notification source is unreachable');
+                                                    console.log('Notification ' + notification + ' is unreachable');
                                                 });
                                         }
                                     }
@@ -713,13 +707,15 @@ var DO = {
                                 }
                             },
                             function(reason) {
-                                console.log('Notification source does not exist');
+                                console.log('Notification ' + notification + ' is unreachable. ' + reason);
+                                return reason;
                             }
                         );
                     });
                 },
                 function(reason) {
-                    console.log(reason);
+                    console.log('No notifications');
+                    return reason;
                 }
             );
         },
@@ -2392,17 +2388,15 @@ console.log(inbox);
 
                         tos.forEach(function(to) {
                             var inboxResponse = function() {
-                                return new Promise(function(resolve, reject) {
-                                    DO.U.getInbox(to).then(
+                                return DO.U.getInbox(to).then(
                                         function(inboxes){
-                                            return resolve(inboxes[0]);
+                                            return inboxes[0];
                                         },
                                         function(reason){
                                             console.log(reason);
-                                            return reject(reason);
+                                            return reason;
                                         }
                                     );
-                                });
                             };
 
                             inboxResponse().then(
@@ -2440,22 +2434,21 @@ console.log(inbox);
         getContacts: function(url) {
             var pIRI = DO.U.getProxyableIRI(url);
 
-            return new Promise(function(resolve, reject) {
-                SimpleRDF(DO.C.Vocab, pIRI, null, ld.store).get().then(
+            return DO.U.getGraph(pIRI)
+                .then(
                     function(i) {
                         var s = i.child(url);
                         var knows = s.foafknows;
                         var seeAlso = s.rdfsseeAlso;
 // console.log(knows);
 // console.log(seeAlso);
-                        return resolve(knows);
+                        return knows;
                     },
                     function(reason){
                         console.log(reason);
                         return reject(reason);
                     }
                 );
-            });
         },
 
         selectContacts: function(e, url) {
@@ -2469,7 +2462,7 @@ console.log(inbox);
                         var pIRI = DO.U.getProxyableIRI(url);
 //console.log('pIRI: ' + pIRI);
 //console.log('url: ' + url);
-                        SimpleRDF(DO.C.Vocab, pIRI, null, ld.store).get().then(
+                        DO.U.getGraph(pIRI).then(
                             function(i) {
 // console.log(i);
                                 var s = i.child(url);
@@ -3602,8 +3595,8 @@ WHERE {\n\
             containerNode = containerNode || document.body;
             var pIRI = DO.U.getProxyableIRI(noteIRI);
 
-            return new Promise(function(resolve, reject) {
-                SimpleRDF(DO.C.Vocab, pIRI, null, ld.store).get().then(
+            return DO.U.getGraph(pIRI)
+                .then(
                     function(i) {
                         var note = i.child(noteIRI);
 // console.log(note);
@@ -3815,7 +3808,7 @@ WHERE {\n\
                                 DO.U.positionNote(refId, refLabel, id);
 
                                 //Perhaps return something more useful?
-                                return resolve(noteIRI);
+                                return noteIRI;
                             }
 
                             //XXX: Annotation without a selection
@@ -3911,7 +3904,6 @@ WHERE {\n\
                         return reject(reason);
                     }
                 );
-            });
         },
 
         addInteraction: function(noteData) {
