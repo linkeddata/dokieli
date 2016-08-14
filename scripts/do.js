@@ -1959,6 +1959,18 @@ var DO = {
             return aString.split("/");
         },
 
+        getGraphFromData: function(data, options) {
+            options = options || {};
+            if ('contentType' in options) {
+                options['contentType'] = 'text/turtle';
+            }
+            if ('subjectURI' in options) {
+                options['subjectURI'] = '_:dokieli';
+            }
+
+            return SimpleRDF.parse(data, options['contentType'], options['subjectURI']);
+        },
+
         getGraph: function(url) {
             return SimpleRDF(DO.C.Vocab, url, null, ld.store).get();
         },
