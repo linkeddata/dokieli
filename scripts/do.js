@@ -1363,8 +1363,6 @@ var DO = {
                     element.parentNode.removeChild(element);
                 }
             });
-
-//            DO.U.hideStorage();
         },
 
         setDocRefType: function() {
@@ -2493,13 +2491,11 @@ console.log(inbox);
                     contacts.forEach(function(url) {
                         url = url.iri().toString();
                         var pIRI = DO.U.getProxyableIRI(url);
-//console.log('pIRI: ' + pIRI);
-//console.log('url: ' + url);
+
                         DO.U.getGraph(pIRI).then(
                             function(i) {
-// console.log(i);
                                 var s = i.child(url);
-// console.log(s);
+
                                 if((s._graph.length > 0 && s.ldpinbox && s.ldpinbox._array.length > 0) || (s._graph.length > 0 && s.solidinbox && s.solidinbox._array.length > 0)) {
                                     var name = s.foafname || s.schemaname || '';
                                     var img = s.foafimg.iri() || s["http://xmlns.com/foaf/0.1/depiction"].iri() || s.schemaimage.iri() || '';
@@ -2696,7 +2692,6 @@ console.log(inbox);
                         triggerBrowse(input.value);
                     }
                     if(final){
-                        //final.textContent = input.value + "{name}";
                         var d = new Date();
                         final.textContent = input.value + DO.U.generateAttributeId().slice(0, 6);
                     }
@@ -2795,7 +2790,6 @@ console.log(inbox);
 
                     DO.U.putResource(storageIRI, html).then(
                         function(i) {
-// console.log(i);
                             newDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="success">New document created at <a href="' + storageIRI + '?author=true">' + storageIRI + '</a></p></div>');
                             window.open(storageIRI + '?author=true', '_blank');
                         },
@@ -2998,14 +2992,7 @@ console.log(inbox);
                         if (this.status === 200 || this.status === 201 || this.status === 204) {
                             var responseText = this.responseText;
                             var contentType = this.getResponseHeader('Content-Type');
-                            DO.U.putResource(toURL, responseText, contentType).then(
-                                function(i) {
-// console.log(i);
-                                },
-                                function(reason) {
-                                    console.log(reason);
-                                }
-                            );
+                            DO.U.putResource(toURL, responseText, contentType);
                         }
                     }
                 };
@@ -3498,7 +3485,6 @@ WHERE {\n\
         getTriplesFromGraph: function(url) {
             return DO.U.getGraph(url)
                 .then(function(i){
-// console.log(i);
                     return i._graph;
                 })
                 .catch(function(error){
@@ -3710,7 +3696,10 @@ WHERE {\n\
 // console.log(selector.rdftype);
 // console.log(selector.rdftype._array);
                                 //FIXME: This is taking the first rdf:type. There could be multiple.
-                                var selectorTypes = selector.rdftype.at(0).iri().toString();
+                                var selectorTypes;
+                                if (selector.rdftype && selector.rdftype.at(0) && selector.rdftype.at(0).iri()) {
+                                    selectorTypes = selector.rdftype.at(0).iri().toString();
+                                }
 // console.log(selectorTypes);
                                 if(selectorTypes == 'http://www.w3.org/ns/oa#TextQuoteSelector') {
                                     exact = selector.oaexact;
