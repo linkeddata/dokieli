@@ -1038,7 +1038,6 @@ var DO = {
                                 return DO.U.postResource(pIRI, slug, data, 'text/turtle; charset=utf-8');
                                 break;
                             case 'application/ld+json': case 'application/json':
-                                //TODO: Reserialise Turtle data to JSON-LD
                                 // return DO.U.postResource(inbox, slug, data, 'application/ld+json; charset=utf-8');
                                 var options = {
                                   'contentType': 'text/turtle',
