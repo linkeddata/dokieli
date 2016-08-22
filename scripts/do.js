@@ -923,17 +923,15 @@ var DO = {
             });
         },
 
-        putResourceACL: function(accessToURL, aclSuffix, agentIRI) {
-            aclSuffix = aclSuffix || '.acl';
-            if (accessToURL && accessToURL.length > 10 && aclSuffix && aclSuffix.length > 0 && agentIRI && agentIRI.length > 10) {
+        putResourceACL: function(accessToURL, aclURL, agentIRI) {
+            if (accessToURL && accessToURL.length > 10 && aclURL && aclURL.length > 10 && agentIRI && agentIRI.length > 10) {
                 return new Promise(function(resolve, reject) {
-                    var url = accessToURL + aclSuffix;
                     var data = '@prefix acl: <http://www.w3.org/ns/auth/acl#> .\n\
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .\n\
 [ a acl:Authorization ; acl:accessTo <' + accessToURL + '> ; acl:mode acl:Read ; acl:agentClass foaf:Agent ] .\n\
-[ a acl:Authorization ; acl:accessTo <' + accessToURL + '> ; acl:accessTo <' + accessToURL + aclSuffix + '> ; acl:mode acl:Control , acl:Read , acl:Write ; acl:agent <' + agentIRI + '> ] .';
+[ a acl:Authorization ; acl:accessTo <' + accessToURL + '> ; acl:accessTo <' + aclURL + '> ; acl:mode acl:Control , acl:Read , acl:Write ; acl:agent <' + agentIRI + '> ] .';
 
-                    DO.U.putResource(url, data, 'text/turtle; charset=utf-8').then(
+                    DO.U.putResource(aclURL, data, 'text/turtle; charset=utf-8').then(
                         function(i) {
 // console.log(i);
                             return resolve(i);
@@ -946,7 +944,7 @@ var DO = {
                 });
             }
             else {
-                return Promise.reject({'message': 'accessToURL: ' + accessToURL + ' or aclSuffix: ' + aclSuffix + ' or agentIRI: ' + agentIRI + ' not good.'});
+                return Promise.reject({'message': 'accessToURL: ' + accessToURL + ' or aclURL: ' + aclURL + ' or agentIRI: ' + agentIRI + ' not good.'});
             }
         },
 
