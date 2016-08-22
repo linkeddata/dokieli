@@ -923,29 +923,37 @@ var DO = {
             });
         },
 
-        putResourceACL: function(accessToURL, aclURL, agentIRI) {
-            if (accessToURL && accessToURL.length > 10 && aclURL && aclURL.length > 10 && agentIRI && agentIRI.length > 10) {
-                return new Promise(function(resolve, reject) {
-                    var data = '@prefix acl: <http://www.w3.org/ns/auth/acl#> .\n\
-@prefix foaf: <http://xmlns.com/foaf/0.1/> .\n\
-[ a acl:Authorization ; acl:accessTo <' + accessToURL + '> ; acl:mode acl:Read ; acl:agentClass foaf:Agent ] .\n\
-[ a acl:Authorization ; acl:accessTo <' + accessToURL + '> ; acl:accessTo <' + aclURL + '> ; acl:mode acl:Control , acl:Read , acl:Write ; acl:agent <' + agentIRI + '> ] .';
+        putResourceACL: function(accessToURL, aclURL, acl) {
+            acl = acl || {
+                'u': { 'iri': [DO.C.User.IRI], 'mode': ['acl:Control', 'acl:Read', 'acl:Write'] },
+                'g': { 'iri': ['http://xmlns.com/foaf/0.1/Agent'], 'mode': ['acl:Read'] },
+                'o': { 'iri': [], 'mode': [] }
+            };
 
-                    DO.U.putResource(aclURL, data, 'text/turtle; charset=utf-8').then(
-                        function(i) {
-// console.log(i);
-                            return resolve(i);
-                        },
-                        function(reason) {
-                            console.log(reason);
-                            return reject(reason);
-                        }
-                    );
-                });
+            var agent, agentClass, mode;
+            if('u' in acl && 'iri' in acl.u && 'mode' in acl.u) {
+                agent = '<' + acl.u.iri.join('> , <') + '>';
+                mode = acl.u.mode.join(' , ');
             }
             else {
-                return Promise.reject({'message': 'accessToURL: ' + accessToURL + ' or aclURL: ' + aclURL + ' or agentIRI: ' + agentIRI + ' not good.'});
+                agent = '<' + DO.C.User.IRI + '>';
+                mode = 'acl:Control , acl:Read , acl:Write';
             }
+
+            var authorizations = [];
+
+            authorizations.push('[ a acl:Authorization ; acl:accessTo <' + accessToURL + '> ; acl:accessTo <' + aclURL + '> ; acl:mode ' + mode + ' ; acl:agent ' + agent + ' ] .');
+
+            if('g' in acl && 'iri' in acl.g && acl.g.iri.length >= 0) {
+                agentClass = '<' + acl.g.iri.join('> , <') + '>';
+                mode = acl.g.mode.join(' , ');
+                authorizations.push('[ a acl:Authorization ; acl:accessTo <' + accessToURL + '> ; acl:mode ' + mode + ' ; acl:agentClass ' + agentClass + ' ] .');
+            }
+
+            var data = '@prefix acl: <http://www.w3.org/ns/auth/acl#> .\n\
+'+ authorizations.join('\n') + '\n\
+';
+            return DO.U.putResource(aclURL, data, 'text/turtle; charset=utf-8');
         },
 
         notifyInbox: function(o) {
