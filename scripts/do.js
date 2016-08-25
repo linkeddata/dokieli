@@ -2147,15 +2147,16 @@ var DO = {
             var s = '<section id="document-do" class="do"><h2>Do</h2><ul>';
             s += '<li><button class="resource-share" title="Share resource"><i class="fa fa-bullhorn fa-2x"></i>Share</button></li>';
             s += '<li><button class="resource-reply" title="Reply"><i class="fa fa-reply fa-2x"></i>Reply</button></li>';
+            if (DO.C.EditorAvailable) {
+                var reviewArticle = (DO.C.EditorEnabled && DO.C.User.Role == 'review') ? DO.C.Editor.DisableReviewButton : DO.C.Editor.EnableReviewButton;
+                s += '<li>' + reviewArticle + '</li>';
+            }
             s += '<li><button class="resource-new"'+buttonDisabled+' title="Create new article"><i class="fa fa-lightbulb-o fa-2x"></i></i>New</button></li>';
             s += '<li><button class="resource-save"'+buttonDisabled+' title="Save article"><i class="fa fa-life-ring fa-2x"></i>Save</button></li>';
             s += '<li><button class="resource-save-as" title="Save as article"><i class="fa fa-paper-plane-o fa-2x"></i>Save As</button></li>';
             if (DO.C.EditorAvailable) {
                 var editFile = (DO.C.EditorEnabled && DO.C.User.Role == 'author') ? DO.C.Editor.DisableEditorButton : DO.C.Editor.EnableEditorButton;
                 s += '<li>' + editFile + '</li>';
-
-                var reviewArticle = (DO.C.EditorEnabled && DO.C.User.Role == 'review') ? DO.C.Editor.DisableReviewButton : DO.C.Editor.EnableReviewButton;
-                s += '<li>' + reviewArticle + '</li>';
             }
             s += '<li><button class="resource-source"'+buttonDisabled+' title="Edit article source code"><i class="fa fa-code fa-2x"></i>Source</button></li>';
             s += '<li><button class="resource-export" title="Export article"><i class="fa fa-external-link fa-2x"></i>Export</button></li>';
