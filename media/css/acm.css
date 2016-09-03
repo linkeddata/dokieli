@@ -281,19 +281,19 @@ margin-bottom:1em;
 figcaption,
 caption {
 font-weight:bold;
-text-align:justify;
+text-align:center;
 }
 figcaption:before {
-content:"Figure " counter(figure) ":";
+content:"Figure " counter(figure) ": ";
 }
 figure.listing figcaption:before {
-content:"Listing " counter(listing) ":";
+content:"Listing " counter(listing) ": ";
 }
 table {
 counter-increment:table;
 }
 caption:before {
-content:"Table " counter(table) ":";
+content:"Table " counter(table) ": ";
 }
 
 .toc, .toc ol {
