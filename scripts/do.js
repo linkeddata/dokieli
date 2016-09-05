@@ -2502,7 +2502,10 @@ console.log(inbox);
 
                                 if((s._graph.length > 0 && s.ldpinbox && s.ldpinbox._array.length > 0) || (s._graph.length > 0 && s.solidinbox && s.solidinbox._array.length > 0)) {
                                     var name = s.foafname || s.schemaname || '';
-                                    var img = s.foafimg.iri() || s["http://xmlns.com/foaf/0.1/depiction"].iri() || s.schemaimage.iri() || '';
+                                    var img = s.foafimg;
+                                    img = (img) ? img : s["http://xmlns.com/foaf/0.1/depiction"];
+                                    img = (img) ? img : s.schemaimage;
+                                    img = (img) ? img.iri() : '';
                                     img = img.toString();
 
                                     if (img.length > 0 || name.length > 0) {
