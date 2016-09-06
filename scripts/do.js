@@ -1069,7 +1069,7 @@ var DO = {
                                             function(i){
                                                 var x = JSON.parse(i);
 // console.log(x);
-                                                x[0]["@context"] = "https://www.w3.org/ns/activitystreams";
+                                                x[0]["@context"] = ["http://www.w3.org/ns/activitystreams.jsonld", {"oa": "http://www.w3.org/ns/anno.jsonld"}];
                                                 x[0]["@id"] = "";
                                                 var data = JSON.stringify(x[0]) + '\n';
 // console.log(data);
