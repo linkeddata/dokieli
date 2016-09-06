@@ -509,7 +509,6 @@ var DO = {
                     }
                 },
                 function(reason){
-//                    console.log(reason);
                     return Promise.reject({'message': "'Link' header not found"});
                 }
             );
@@ -968,7 +967,7 @@ var DO = {
             var data = '@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n\
 @prefix as: <http://www.w3.org/ns/activitystreams#> .\n\
-@prefix oa: <http://www.w3.org/ns/oa#> . \n\
+@prefix oa: <http://www.w3.org/ns/oa#> .\n\
 @prefix schema: <https://schema.org/> .\n\
 ';
 
@@ -1060,7 +1059,7 @@ var DO = {
 // console.log(x);
                                                 x[0]["@context"] = "https://www.w3.org/ns/activitystreams";
                                                 x[0]["@id"] = "";
-                                                var data = JSON.stringify(x[0]);
+                                                var data = JSON.stringify(x[0]) + '\n';
 // console.log(data);
                                                 return DO.U.postResource(pIRI, slug, data, 'application/ld+json; charset=utf-8').catch(function(reason){
                                                         if(reason.xhr.status == 0){
