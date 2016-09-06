@@ -1996,6 +1996,39 @@ var DO = {
             return ld.store.serializers[options.contentType].serialize(g._graph);
         },
 
+        serializeData: function(data, fromContentType, toContentType, options) {
+            if (fromContentType == toContentType) {
+                return Promise.resolve(data);
+            }
+            else {
+                var o = {
+                  'contentType': fromContentType,
+                  'subjectURI': options.subjectURI
+                };
+                return DO.U.getGraphFromData(data, o).then(
+                    function(g) {
+                        var o = {
+                          'contentType': toContentType
+                        };
+                        return DO.U.serializeGraph(g, o).then(
+                            function(i){
+                                switch(toContentType) {
+                                    case 'application/ld+json': default:
+                                        var x = JSON.parse(i);
+                                        x[0]["@context"] = "https://www.w3.org/ns/activitystreams";
+                                        x[0]["@id"] = "";
+                                        return JSON.stringify(x[0]) + '\n';
+                                }
+                            }
+                        );
+                    },
+                    function(reason) {
+                        return reason;
+                    }
+                );
+            }
+        },
+
         getDoctype: function() {
             /* Get DOCTYPE from http://stackoverflow.com/a/10162353 */
             var node = document.doctype;
