@@ -5518,7 +5518,7 @@ WHERE {\n\
                                             notificationType = ['as:Announce'];
                                             notificationObject = noteIRI;
                                             notificationTarget = targetIRI;
-                                            notificationStatements = '<' + targetIRI + '> a oa:Annotation\n\
+                                            notificationStatements = '<' + noteIRI + '> a oa:Annotation\n\
     ; oa:motivation ' + motivatedBy + '\n\
     .';
                                             break;
