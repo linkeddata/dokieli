@@ -452,14 +452,14 @@ var DO = {
             return rels;
         },
 
-        getInbox: function(url) {
+        getEndpoint: function(property, url) {
             if (url) {
-                return DO.U.getInboxFromHead(url).then(
+                return DO.U.getEndpointFromHead(property, url).then(
                     function(i){
                         return i;
                     },
                     function(x){
-                        return DO.U.getInboxFromRDF(url);
+                        return DO.U.getEndpointFromRDF(property, url);
                     }
                 );
             }
@@ -486,13 +486,13 @@ var DO = {
                             return Promise.reject(reason);
                         },
                         function(reason){
-                            return DO.U.getInboxFromHead(url);
+                            return DO.U.getEndpointFromHead(property, uri);
                         }
                     );
             }
         },
 
-        getInboxFromHead: function(url) {
+        getEndpointFromHead: function(property, url) {
             var pIRI = DO.U.getProxyableIRI(url);
 
             return DO.U.getResourceHead(pIRI, {'header': 'Link'}).then(
@@ -514,14 +514,13 @@ var DO = {
             );
         },
 
-
-        getInboxFromRDF: function(url, subjectIRI) {
+        getEndpointFromRDF: function(property, url, subjectIRI) {
             url = url || window.location.origin + window.location.pathname;
             subjectIRI = subjectIRI || url;
 
             var pIRI = DO.U.getProxyableIRI(url);
 
-                //FIXME: This doesn't work so well if the document's URL is different than input url
+            //FIXME: This doesn't work so well if the document's URL is different than input url
             return DO.U.getGraph(pIRI)
                 .then(
                     function(i) {
@@ -585,7 +584,7 @@ var DO = {
 
         showInboxNotifications: function() {
             if (typeof SimpleRDF !== 'undefined') {
-                DO.U.getInbox().then(
+                DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id']).then(
                     function(i) {
                         i.forEach(function(inbox) {
                             DO.U.showNotificationSources(inbox);
@@ -2307,7 +2306,7 @@ var DO = {
                             function(i){
                                 replyToResource.querySelector('.response-message').innerHTML = '<p class="success"><a href="' + i.xhr.responseURL + '">Reply saved!</a></p>';
                                 // Then send notification
-                                DO.U.getInbox().then(
+                                DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id']).then(
                                     function(inbox) {
 console.log(inbox);
                                         if (inbox.length > 0) {
@@ -2338,7 +2337,7 @@ console.log(inbox);
                                          }
                                     },
                                     function(reason) {
-                                        // FIXME: this isn't getting thrown, gets stuck in getInbox
+                                        // FIXME: this isn't getting thrown, gets stuck in getEndpoint
                                         console.log('No inbox, no notification sent');
                                         console.log(reason);
                                         replyToResource.querySelector('.response-message').innerHTML += '<p class="error">We couldn\'t notify the author of your reply.</p>';
@@ -2423,7 +2422,7 @@ console.log(inbox);
 
                         tos.forEach(function(to) {
                             var inboxResponse = function() {
-                                return DO.U.getInbox(to).then(
+                                return DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id'], to).then(
                                         function(inboxes){
                                             return inboxes[0];
                                         },
@@ -5248,7 +5247,6 @@ WHERE {\n\
                             // var noteId = 'i-' + id;
 
                             var resourceIRI = DO.U.stripFragmentFromString(document.location.href);
-                            //XXX: Temporarily setting this.
                             var containerIRI = window.location.href;
                             containerIRI = containerIRI.substr(0, containerIRI.lastIndexOf('/') + 1);
 
@@ -5565,8 +5563,8 @@ WHERE {\n\
                                                 }
                                             );
 
-                                            //TODO: resourceIRI for getInbox should be the closest IRI (not necessarily the document). Test resolve/reject better.
-                                            DO.U.getInbox().then(
+                                            //TODO: resourceIRI for getEndpoint should be the closest IRI (not necessarily the document). Test resolve/reject better.
+                                            DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id']).then(
                                                 function(inbox) {
                                                     if (inbox.length > 0) {
                                                         inbox = inbox[0];
