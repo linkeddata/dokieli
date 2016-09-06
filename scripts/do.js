@@ -473,17 +473,19 @@ var DO = {
                     .then(
                         function(i){
                             //TODO: Should this get all of the inboxes or a given subject's?
-                            //TODO: Remove ldpinbox or solidinbox
-                            var inbox = i.match(uri, DO.C.Vocab['ldpinbox']['@id']);
-                            if (typeof inbox._graph[0] == 'object') {
-                                return [inbox._graph[0].object.nominalValue];
+                            var endpoint = i.match(uri, property);
+                            if (typeof endpoint._graph[0] == 'object') {
+                                return [endpoint._graph[0].object.nominalValue];
                             }
-                            inbox = i.match(uri, DO.C.Vocab['solidinbox']['@id']);
-                            if (typeof inbox._graph[0] == 'object') {
-                                return [inbox._graph[0].object.nominalValue];
+                            //TODO: Remove solidinbox (when LDN goes through).
+                            if (property == DO.C.Vocab['ldpinbox']) {
+                                endpoint = i.match(uri, DO.C.Vocab['solidinbox']['@id']);
+                                if (typeof endpoint._graph[0] == 'object') {
+                                    return [endpoint._graph[0].object.nominalValue];
+                                }
                             }
-                            var reason = {"message": "Inbox was not found in message body"};
-                            return Promise.reject(reason);
+                            console.log(property + ' endpoint was not found in message body');
+                            return DO.U.getEndpointFromHead(property, uri);
                         },
                         function(reason){
                             return DO.U.getEndpointFromHead(property, uri);
@@ -498,15 +500,13 @@ var DO = {
             return DO.U.getResourceHead(pIRI, {'header': 'Link'}).then(
                 function(i){
                     var linkHeaders = DO.U.parseLinkHeader(i.headers);
-                    if ('http://www.w3.org/ns/ldp#inbox' in linkHeaders) {
-                        return linkHeaders['http://www.w3.org/ns/ldp#inbox'];
+                    if (property in linkHeaders) {
+                        return linkHeaders[property];
                     }
-                    else if ('http://www.w3.org/ns/solid/terms#inbox' in linkHeaders) {
+                    else if (property == 'http://www.w3.org/ns/ldp#inbox' && 'http://www.w3.org/ns/solid/terms#inbox' in linkHeaders) {
                         return linkHeaders['http://www.w3.org/ns/solid/terms#inbox'];
                     }
-                    else {
-                        return Promise.reject({'message': "'Inbox was not found in 'Link' header"});
-                    }
+                    return Promise.reject({'message': property + " endpoint was not found in 'Link' header"});
                 },
                 function(reason){
                     return Promise.reject({'message': "'Link' header not found"});
@@ -525,15 +525,28 @@ var DO = {
                 .then(
                     function(i) {
                         var s = i.child(subjectIRI);
-                        if (s.ldpinbox._array.length > 0){
+
+                        switch(property) {
+                            case DO.C.Vocab['ldpinbox']['@id']:
+                            case DO.C.Vocab['solidinbox']['@id']:
+                                if (s.ldpinbox._array.length > 0){
 // console.log(s.ldpinbox._array);
-                            return [s.ldpinbox.at(0).iri().toString()];
-                        }
-                        else if (s.solidinbox._array.length > 0){
+                                    return [s.ldpinbox.at(0).iri().toString()];
+                                }
+                                else if (s.solidinbox._array.length > 0){
 // console.log(s.solidinbox._array);
-                            return [s.solidinbox.at(0).iri().toString()];
+                                    return [s.solidinbox.at(0).iri().toString()];
+                                }
+                                break;
+                            case DO.C.Vocab['oaannotationService']['@id']:
+                                if (s.oaannotationService._array.length > 0){
+// console.log(s.oaannotationService._array);
+                                    return [s.oaannotationService.at(0).iri().toString()];
+                                }
+                                break;
                         }
-                        var reason = {"message": "Inbox was not found in message body"};
+
+                        var reason = {"message": property + " endpoint was not found in message body"};
                         return Promise.reject(reason);
                     },
                     function(reason) {
@@ -4739,44 +4752,58 @@ WHERE {\n\
                         handleClick: function (event) {
                             event.preventDefault();
                             event.stopPropagation();
-
-                            if(this.signInRequired && !DO.C.User.IRI) {
-                                DO.U.showUserIdentityInput();
-                            }
-                            else {
-                                switch(this.action) {
+                            var _this = this;
+                            var showAction = function() {
+                                switch(_this.action) {
                                     default:
-                                        var range = MediumEditor.selection.getSelectionRange(this.document);
+                                        var range = MediumEditor.selection.getSelectionRange(_this.document);
 
                                         if (range.startContainer.nodeName.toLowerCase() === 'a' ||
                                             range.endContainer.nodeName.toLowerCase() === 'a' ||
                                             MediumEditor.util.getClosestTag(MediumEditor.selection.getSelectedParentElement(range), 'a')) {
-                                            return this.execAction('unlink');
+                                            return _this.execAction('unlink');
                                         }
 
-                                        if (this.action == 'approve' && DO.U.Editor.MediumEditor.options.id == 'social'){
+                                        if (_this.action == 'approve' && DO.U.Editor.MediumEditor.options.id == 'social'){
                                             var opts = {
                                                 license: 'https://creativecommons.org/licenses/by/4.0/',
                                                 content: 'Liked'
                                             }
-                                            this.completeFormSave(opts);
+                                            _this.completeFormSave(opts);
                                         }
-                                        else if (!this.isDisplayed()) {
-                                            this.showForm();
+                                        else if (!_this.isDisplayed()) {
+                                            _this.showForm();
                                         }
                                         break;
 
                                     case 'share':
-                                        this.base.restoreSelection();
+                                        _this.base.restoreSelection();
                                         var resourceIRI = DO.U.stripFragmentFromString(document.location.href);
-                                        var id = this.base.getSelectedParentElement().closest('[id]').id;
+                                        var id = _this.base.getSelectedParentElement().closest('[id]').id;
                                         resourceIRI = (id) ? resourceIRI + '#' + id : resourceIRI;
-                                        this.window.getSelection().removeAllRanges();
-                                        this.base.checkSelection();
+                                        _this.window.getSelection().removeAllRanges();
+                                        _this.base.checkSelection();
                                         DO.U.shareResource(null, resourceIRI);
                                         break;
                                 }
-                            }
+                            };
+
+                            return DO.U.getEndpoint(DO.C.Vocab['oaannotationService']['@id']).then(
+                                function(url) {
+                                    DO.C.AnnotationService = url[0];
+                                    showAction();
+                                },
+                                function(reason) {
+                                    console.log(reason.message);
+                                    if(_this.signInRequired && !DO.C.User.IRI) {
+                                        DO.U.showUserIdentityInput();
+                                    }
+                                    else {
+                                        showAction();
+                                    }
+                                }
+                            );
+
                             return false;
                         },
 
@@ -5282,21 +5309,28 @@ WHERE {\n\
                             var resourceIRI = DO.U.stripFragmentFromString(document.location.href);
                             var containerIRI = window.location.href;
                             var contentType = 'text/html';
-                            containerIRI = containerIRI.substr(0, containerIRI.lastIndexOf('/') + 1);
 
-                            //XXX: Preferring masterWorkspace over the others. Good/bad idea?
-                            //Need more granular workspace selection, e.g., PublicAnnotations. Defaulting to PublicWorkspace if no masterWorkspace
-                            if (typeof DO.C.User.masterWorkspace != 'undefined' && DO.C.User.masterWorkspace.length > 0) {
-                                containerIRI = DO.C.User.masterWorkspace + DO.C.InteractionPath;
+                            if(typeof DO.C.AnnotationService !== 'undefined' && !DO.C.User.IRI) {
+                                containerIRI = DO.C.AnnotationService;
+                                contentType = 'application/ld+json';
                             }
                             else {
-                                if (typeof DO.C.User.Workspace != 'undefined') {
-                                    if (typeof DO.C.User.Workspace.Master != 'undefined' && DO.C.User.Workspace.Master.length > 0) {
-                                        containerIRI = DO.C.User.Workspace.Master + DO.C.InteractionPath;
-                                    }
-                                    else {
-                                        if (typeof DO.C.User.Workspace.Public != 'undefined' && DO.C.User.Workspace.Public.length > 0) {
-                                            containerIRI = DO.C.User.Workspace.Public + DO.C.InteractionPath;
+                                containerIRI = containerIRI.substr(0, containerIRI.lastIndexOf('/') + 1);
+
+                                //XXX: Preferring masterWorkspace over the others. Good/bad idea?
+                                //Need more granular workspace selection, e.g., PublicAnnotations. Defaulting to PublicWorkspace if no masterWorkspace
+                                if (typeof DO.C.User.masterWorkspace != 'undefined' && DO.C.User.masterWorkspace.length > 0) {
+                                    containerIRI = DO.C.User.masterWorkspace + DO.C.InteractionPath;
+                                }
+                                else {
+                                    if (typeof DO.C.User.Workspace != 'undefined') {
+                                        if (typeof DO.C.User.Workspace.Master != 'undefined' && DO.C.User.Workspace.Master.length > 0) {
+                                            containerIRI = DO.C.User.Workspace.Master + DO.C.InteractionPath;
+                                        }
+                                        else {
+                                            if (typeof DO.C.User.Workspace.Public != 'undefined' && DO.C.User.Workspace.Public.length > 0) {
+                                                containerIRI = DO.C.User.Workspace.Public + DO.C.InteractionPath;
+                                            }
                                         }
                                     }
                                 }
