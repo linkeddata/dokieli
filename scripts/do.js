@@ -134,6 +134,7 @@ var DO = {
             "oaprefix": "http://www.w3.org/ns/oa#prefix",
             "oasuffix": "http://www.w3.org/ns/oa#suffix",
             "oamotivatedBy": { "@id": "http://www.w3.org/ns/oa#motivatedBy", "@type": "@id" },
+            "oaannotationService": { "@id": "http://www.w3.org/ns/oa#annotationService", "@type": "@id", "@array": true },
 
             "assubject": { "@id": "http://www.w3.org/ns/activitystreams#subject", "@type": "@id", "@array": true },
             "asobject": { "@id": "http://www.w3.org/ns/activitystreams#object", "@type": "@id", "@array": true },
