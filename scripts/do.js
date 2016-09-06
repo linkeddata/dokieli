@@ -5281,6 +5281,7 @@ WHERE {\n\
 
                             var resourceIRI = DO.U.stripFragmentFromString(document.location.href);
                             var containerIRI = window.location.href;
+                            var contentType = 'text/html';
                             containerIRI = containerIRI.substr(0, containerIRI.lastIndexOf('/') + 1);
 
                             //XXX: Preferring masterWorkspace over the others. Good/bad idea?
@@ -5584,60 +5585,63 @@ WHERE {\n\
 </html>\n\
 ';
 
-                                    DO.U.putResource(noteIRI, data).then(
-                                        function(i) {
-// console.log(i);
-                                            DO.U.positionInteraction(noteIRI, document.body).then(
+                                    DO.U.serializeData(data, 'text/html', contentType, { subjectURI: noteIRI }).then(
+                                        function(data) {
+                                            DO.U.putResource(noteIRI, data, contentType).then(
                                                 function(i) {
+                                                    DO.U.positionInteraction(noteIRI, document.body).then(
+                                                        function(i) {
 // console.log(i);
-                                                },
-                                                function(reason) {
-                                                    console.log(reason);
-                                                }
-                                            );
-
-                                            //TODO: resourceIRI for getEndpoint should be the closest IRI (not necessarily the document). Test resolve/reject better.
-                                            DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id']).then(
-                                                function(inbox) {
-                                                    if (inbox.length > 0) {
-                                                        inbox = inbox[0];
-                                                        var notificationData = {
-                                                            "type": notificationType,
-                                                            "inbox": inbox,
-                                                            "slug": id,
-                                                            "object": notificationObject,
-                                                            "license": opts.license
-                                                        };
-
-                                                        if(typeof notificationTarget !== 'undefined') {
-                                                            notificationData['target'] = notificationTarget;
+                                                        },
+                                                        function(reason) {
+                                                            console.log(reason);
                                                         }
-                                                        if(typeof notificationContext !== 'undefined') {
-                                                            notificationData['context'] = notificationContext;
-                                                        }
-                                                        if(typeof notificationStatements !== 'undefined') {
-                                                            notificationData['statements'] = notificationStatements;
-                                                        }
+                                                    );
 
-                                                        DO.U.notifyInbox(notificationData).then(
-                                                            function(response) {
+                                                    //TODO: resourceIRI for getEndpoint should be the closest IRI (not necessarily the document). Test resolve/reject better.
+                                                    DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id']).then(
+                                                        function(inbox) {
+                                                            if (inbox.length > 0) {
+                                                                inbox = inbox[0];
+                                                                var notificationData = {
+                                                                    "type": notificationType,
+                                                                    "inbox": inbox,
+                                                                    "slug": id,
+                                                                    "object": notificationObject,
+                                                                    "license": opts.license
+                                                                };
+
+                                                                if(typeof notificationTarget !== 'undefined') {
+                                                                    notificationData['target'] = notificationTarget;
+                                                                }
+                                                                if(typeof notificationContext !== 'undefined') {
+                                                                    notificationData['context'] = notificationContext;
+                                                                }
+                                                                if(typeof notificationStatements !== 'undefined') {
+                                                                    notificationData['statements'] = notificationStatements;
+                                                                }
+
+                                                                DO.U.notifyInbox(notificationData).then(
+                                                                    function(response) {
 // console.log("Notification: " + response.xhr.getResponseHeader('Location'));
-                                                            },
-                                                            function(reason) {
-                                                                console.log(reason);
+                                                                    },
+                                                                    function(reason) {
+                                                                        console.log(reason);
+                                                                    }
+                                                                );
                                                             }
-                                                        );
-                                                    }
+                                                        },
+                                                        function(reason) {
+                                                            console.log('TODO: How can the interaction inform the target?');
+                                                            console.log(reason);
+                                                        }
+                                                    );
                                                 },
                                                 function(reason) {
-                                                    console.log('TODO: How can the interaction inform the target?');
+                                                    console.log('PUT failed');
                                                     console.log(reason);
                                                 }
                                             );
-                                        },
-                                        function(reason) {
-                                            console.log('PUT failed');
-                                            console.log(reason);
                                         }
                                     );
                                     break;
