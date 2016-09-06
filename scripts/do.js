@@ -1073,10 +1073,10 @@ var DO = {
                                                 x[0]["@id"] = "";
                                                 var data = JSON.stringify(x[0]) + '\n';
 // console.log(data);
-                                                return DO.U.postResource(pIRI, slug, data, 'application/ld+json; charset=utf-8').catch(function(reason){
+                                                return DO.U.postResource(pIRI, slug, data, 'application/ld+json; profile="http://www.w3.org/ns/anno.jsonld').catch(function(reason){
                                                         if(reason.xhr.status == 0){
                                                             var options = {'noCredentials': true};
-                                                            DO.U.postResource(pIRI, slug, data, 'application/ld+json; charset=utf-8', null, options);
+                                                            DO.U.postResource(pIRI, slug, data, 'application/ld+json; profile="http://www.w3.org/ns/anno.jsonld', null, options);
                                                         }
                                                 });
                                             }
