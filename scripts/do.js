@@ -2032,7 +2032,7 @@ var DO = {
                                         var x = JSON.parse(i);
                                         x[0]["@context"] = ["http://www.w3.org/ns/anno.jsonld", {"as": "http://www.w3.org/ns/activitystreams"}];
                                         x[0]["@id"] = "";
-                                        return JSON.stringify(x[0]) + '\n';
+                                        return JSON.stringify(x) + '\n';
                                 }
                             }
                         );
