@@ -4012,7 +4012,7 @@ WHERE {\n\
 // console.log(n);
             var published = '';
             var license = '';
-            var creator = '', authors = '', creatorImage = '';
+            var creator = '', authors = '', creatorImage = '', creatorNameIRI = '', creatorURLNameIRI = '';
             var hasTarget = '', annotationTextSelector = '', target = '';
             var heading, hX;
             var aAbout = '', aPrefix = '';
@@ -4071,28 +4071,26 @@ WHERE {\n\
                     break;
             }
 
-            var creatorName = 'Anonymous';
+            var creatorName = '';
             var creatorIRI = 'i:#agent';
             if ('creator' in n) {
                 if ('image' in n.creator) {
-                    creatorImage = '<img alt="" height="48" rel="schema:image" src="' + n.creator.image + '" width="48" />';
+                    creatorImage = '<img alt="" height="48" rel="schema:image" src="' + n.creator.image + '" width="48" /> ';
                 }
                 if('iri' in n.creator) {
                     creatorIRI = n.creator.iri;
                 }
                 if('name' in n.creator) {
                     creatorName = n.creator.name;
-                }
-
-                if ('iri' in n.creator && 'name' in n.creator) {
-                    creator = '<span about="' + creatorIRI + '" typeof="schema:Person">' + creatorImage + ' <a rel="schema:url" href="' + creatorIRI + '"><span about="' + creatorIRI + '" property="schema:name">' + creatorName + '</span></a></span>';
-                }
-                else if('iri' in n.creator) {
-                    creator = '<span about="' + creatorIRI + '" typeof="schema:Person">' + creatorImage +' <a rel="schema:url" href="' + creatorIRI + '">' + creatorIRI + '</a></span>';
+                    creatorNameIRI = '<span about="' + creatorIRI + '" property="schema:name">' + creatorName + '</span>';
                 }
                 else {
-                    creator = '<span about="' + creatorIRI + '" typeof="schema:Person">' + creatorName + '</span>';
+                    creatorNameIRI = creatorName = creatorIRI;
                 }
+
+                creatorURLNameIRI = ('url' in n.creator) ? '<a href="' + n.creator.url + '" rel="schema:url">' + creatorNameIRI + '</a>' : '<a href="' + creatorIRI + '">' + creatorNameIRI + '</a>';
+
+                creator = '<span about="' + creatorIRI + '" typeof="schema:Person">' + creatorImage + creatorURLNameIRI + '</span>';
 
                 authors = '<dl class="author-name"><dt>Authors</dt><dd><span rel="schema:creator">' + creator + '</span></dd></dl>';
             }
