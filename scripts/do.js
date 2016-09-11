@@ -322,7 +322,7 @@ var DO = {
                             var s = i.child(userIRI);
 // console.log(s);
                             DO.C.User.Name = s.foafname || s.schemaname || undefined;
-                            DO.C.User.Image = s.foafimg || s.schemaimage || undefined;
+                            DO.C.User.Image = s.foafimg || s.schemaimage || s["http://xmlns.com/foaf/0.1/depiction"] || undefined;
                             DO.C.User.Image = (DO.C.User.Image && DO.C.User.Image.iri()) ? DO.C.User.Image.iri().toString() : undefined;
 
                             if (s.storage) {
