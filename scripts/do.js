@@ -1073,7 +1073,7 @@ var DO = {
 // console.log(x);
                                                 x[0]["@context"] = ["http://www.w3.org/ns/activitystreams", {"oa": "http://www.w3.org/ns/anno.jsonld"}];
                                                 x[0]["@id"] = "";
-                                                var data = JSON.stringify(x[0]) + '\n';
+                                                var data = JSON.stringify(x) + '\n';
 // console.log(data);
                                                 return DO.U.postResource(pIRI, slug, data, 'application/ld+json; profile="http://www.w3.org/ns/anno.jsonld').catch(function(reason){
                                                         if(reason.xhr.status == 0){
