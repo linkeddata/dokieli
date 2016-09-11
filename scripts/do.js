@@ -2341,6 +2341,9 @@ var DO = {
                         if (DO.C.User.Image) {
                             noteData.creator["image"] = DO.C.User.Image;
                         }
+                        if (DO.C.User.URL) {
+                            noteData.creator["url"] = DO.C.User.URL;
+                        }
 
                         var license = document.querySelector('#reply-to-resource-license');
                         if (license && license.length > 0) {
@@ -3694,6 +3697,8 @@ WHERE {\n\
                         var annotatedByImage = annotatedBy.schemaimage || '';
                         annotatedByImage = (annotatedByImage && annotatedByImage.iri()) ? annotatedByImage.iri().toString() : undefined;
 // console.log(annotatedByImage);
+                        var annotatedByURL = annotatedBy.schemaurl || '';
+                        annotatedByURL = (annotatedByURL && annotatedByURL.iri()) ? annotatedByURL.iri().toString() : undefined;
 
                         var licenseIRI = note.schemalicense || note.dctermsrights;
                         licenseIRI = (licenseIRI && licenseIRI.iri()) ? licenseIRI.iri().toString() : undefined;
@@ -3841,6 +3846,9 @@ WHERE {\n\
                                 }
                                 if (annotatedByImage) {
                                     noteData.creator["image"] = annotatedByImage;
+                                }
+                                if (annotatedByURL) {
+                                    noteData.creator["url"] = annotatedByURL;
                                 }
 
                                 if (licenseIRI) {
@@ -5410,6 +5418,9 @@ WHERE {\n\
                                     if (DO.C.User.Image) {
                                         noteData.creator["image"] = DO.C.User.Image;
                                     }
+                                    if (DO.C.User.URL) {
+                                        noteData.creator["url"] = DO.C.User.URL;
+                                    }
                                     if (opts.license.length > 0) {
                                         noteData.license["iri"] = opts.license;
                                         noteData.license["name"] = DO.C.License[opts.license];
@@ -5462,6 +5473,9 @@ WHERE {\n\
                                     }
                                     if (DO.C.User.Image) {
                                         noteData.creator["image"] = DO.C.User.Image;
+                                    }
+                                    if (DO.C.User.URL) {
+                                        noteData.creator["url"] = DO.C.User.URL;
                                     }
                                     if (opts.license.length > 0) {
                                         noteData.license["iri"] = opts.license;
@@ -5566,7 +5580,9 @@ WHERE {\n\
                                     if (DO.C.User.Image) {
                                         noteData.creator["image"] = DO.C.User.Image;
                                     }
-
+                                    if (DO.C.User.URL) {
+                                        noteData.creator["url"] = DO.C.User.URL;
+                                    }
                                     note = DO.U.createNoteHTML(noteData);
                                     ref = '<span class="ref" about="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark></span>';
                                     break;
