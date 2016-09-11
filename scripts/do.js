@@ -324,6 +324,8 @@ var DO = {
                             DO.C.User.Name = s.foafname || s.schemaname || undefined;
                             DO.C.User.Image = s.foafimg || s.schemaimage || s["http://xmlns.com/foaf/0.1/depiction"] || undefined;
                             DO.C.User.Image = (DO.C.User.Image && DO.C.User.Image.iri()) ? DO.C.User.Image.iri().toString() : undefined;
+                            DO.C.User.URL = s.foafhomepage || s["http://xmlns.com/foaf/0.1/weblog"] || s.schemaurl || undefined;
+                            DO.C.User.URL = (DO.C.User.URL && DO.C.User.URL.iri()) ? DO.C.User.URL.iri().toString() : undefined;
 
                             if (s.storage) {
                                 DO.C.User.Storage = s.storage._array;
