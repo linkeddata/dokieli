@@ -2028,11 +2028,13 @@ var DO = {
                         return DO.U.serializeGraph(g, o).then(
                             function(i){
                                 switch(toContentType) {
-                                    case 'application/ld+json': default:
+                                    case 'application/ld+json':
                                         var x = JSON.parse(i);
                                         x[0]["@context"] = ["http://www.w3.org/ns/anno.jsonld", {"as": "http://www.w3.org/ns/activitystreams"}];
                                         x[0]["@id"] = "";
                                         return JSON.stringify(x) + '\n';
+                                    default:
+                                        return i;
                                 }
                             }
                         );
