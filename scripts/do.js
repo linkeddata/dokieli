@@ -5278,7 +5278,9 @@ WHERE {\n\
                             }
 
                             Object.keys(opts).forEach(function(key) {
-                                opts[key] = opts[key].trim();
+                                if(typeof opts[key] === 'string') {
+                                    opts[key] = opts[key].trim();
+                                }
                             });
 
                             return opts;
