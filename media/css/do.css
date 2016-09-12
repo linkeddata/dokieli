@@ -725,8 +725,19 @@ vertical-align:top;
 }
 
 .medium-editor-toolbar-form label[for^="ref-"],
+.medium-editor-toolbar-form label[for^="annotation-location-"],
 .medium-editor-toolbar-form label[for^="bookmark-"] {
 width:auto;
+font-size:1em;
+line-height:1;
+}
+.medium-editor-toolbar-form .annotation-location-selection {
+margin: 0 1em;
+display:inline-block;
+vertical-align: top;
+}
+.medium-editor-toolbar-form #annotation-location-personal-storage {
+margin-left: 68px;
 }
 
 .medium-editor-element img {
