@@ -713,7 +713,17 @@ width:calc(100% - 1em - 2px);
 width:-moz-available;
 margin:0 auto;
 display:block;
+font-size:1em;
 }
+.medium-editor-toolbar-form select {
+display:inline-block;
+font-size:1em;
+}
+.medium-editor-toolbar-form select#article-license {
+margin-top:0.1em;
+vertical-align:top;
+}
+
 .medium-editor-toolbar-form label[for^="ref-"],
 .medium-editor-toolbar-form label[for^="bookmark-"] {
 width:auto;
