@@ -502,6 +502,7 @@ var DO = {
             return DO.U.getResourceHead(pIRI, {'header': 'Link'}).then(
                 function(i){
                     var linkHeaders = DO.U.parseLinkHeader(i.headers);
+
                     if (property in linkHeaders) {
                         return linkHeaders[property];
                     }
@@ -2550,8 +2551,8 @@ console.log(inbox);
                             function(i) {
                                 var s = i.child(url);
 
-                                if((s._graph.length > 0 && s.ldpinbox && s.ldpinbox._array.length > 0) || (s._graph.length > 0 && s.solidinbox && s.solidinbox._array.length > 0)) {
-                                    var name = s.foafname || s.schemaname || '';
+                                var addShareResourceContact = function(s) {
+                                    var name = s.foafname || s.schemaname || url;
                                     var img = s.foafimg;
                                     img = (img) ? img : s["http://xmlns.com/foaf/0.1/depiction"];
                                     img = (img) ? img : s.schemaimage;
@@ -2560,12 +2561,24 @@ console.log(inbox);
 
                                     if (img.length > 0 || name.length > 0) {
                                         img = (img.length > 0) ? '<img alt="" height="32" src="' + img + '" width="32" />' : '';
-                                        shareResourceContacts.insertAdjacentHTML('beforeend', '<li><input id="share-resource-contact-' + counter + '" type="checkbox" value="' + url + '" /><label for="share-resource-contact-' + counter + '">' + img + name + '</label></li>');
+                                        shareResourceContacts.insertAdjacentHTML('beforeend', '<li><input id="share-resource-contact-' + counter + '" type="checkbox" value="' + url + '" /><label for="share-resource-contact-' + counter + '">' + img + '<a href="' + url + '" target="_blank">' + name + '</a></label></li>');
                                         counter++;
                                     }
+                                };
+
+                                if((s.ldpinbox && s.ldpinbox._array.length > 0) || (s.solidinbox && s.solidinbox._array.length > 0)) {
+                                    addShareResourceContact(s);
                                 }
                                 else {
-                                    console.log('No inbox: ' + url);
+                                    DO.U.getEndpointFromHead(DO.C.Vocab['ldpinbox']['@id'], url).then(
+                                        function(i){
+                                            addShareResourceContact(s);
+                                        },
+                                        function(reason){
+                                            console.log(reason);
+                                            console.log('No inbox: ' + url);
+                                        }
+                                    );
                                 }
                             },
                             function(reason){
