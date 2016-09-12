@@ -4275,9 +4275,16 @@ WHERE {\n\
             var element = (href == '') ? 'span' : 'a';
             s = '<' + element + about + content + href + id + langDatatype + property + rel + resource + typeOf + '>' + r.textContent + '</' + element + '>';
 
-           return s;
+            return s;
         },
 
+        getAnnotationLocationHTML: function() {
+            var s = '';
+            if(typeof DO.C.AnnotationService !== 'undefined' && DO.C.User.Storage && DO.C.User.Storage.length > 0) {
+                s = 'Store at: <input type="checkbox" id="annotation-location-service" name="annotation-location-service" /><label for="annotation-location-service">Annotation service</label><br /><input type="checkbox" id="annotation-location-personal-storage" name="annotation-location-personal-storage" checked="checked" /><label for="annotation-location-personal-storage">Personal storage</label>';
+            }
+            return s;
+        },
 
         getLicenseOptionsHTML: function(type) {
             var type = type || 'cc';
