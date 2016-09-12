@@ -4174,12 +4174,16 @@ WHERE {\n\
 
                         target += '<dl class="renderedvia"><dt>Rendered via</dt><dd><a about="' + targetIRI + '" href="https://dokie.li/" rel="oa:renderedVia">dokieli</a></dd></dl>';
 
+                        var canonicalUUID = DO.U.generateUUID();
+                        var canonical = '<dl class="canonical"><dt>Canonical</dt><dd about="i:" rel="oa:canonical" resource="urn:uuid:' + canonicalUUID + '">' + canonicalUUID + '</dd></dl>';
+
                         note = '\n\
 <article id="' + n.id + '" about="' + aAbout + '" typeof="oa:Annotation' + noteType + '"' + aPrefix + articleClass + '>'+buttonDelete+'\n\
     ' + heading + '\n\
     ' + authors + '\n\
     ' + published + '\n\
     ' + license + '\n\
+    ' + canonical + '\n\
     ' + target + '\n\
     ' + body + '\n\
 </article>\n\
