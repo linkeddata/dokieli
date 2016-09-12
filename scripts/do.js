@@ -41,8 +41,8 @@ var DO = {
         },
         ContextLength: 32,
         InteractionPath: 'i/',
-        ProxyURL: 'https://linkedresearch.org/proxy?uri=',
-        AuthEndpoint: 'https://linkedresearch.org/',
+        ProxyURL: 'https://dokie.li/proxy?uri=',
+        AuthEndpoint: 'https://dokie.li/',
         License: {
             "NoLicense": "No license",
             "http://creativecommons.org/publicdomain/zero/1.0/": "CC0 1.0",
