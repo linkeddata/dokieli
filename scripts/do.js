@@ -4810,6 +4810,10 @@ WHERE {\n\
                             return DO.U.getEndpoint(DO.C.Vocab['oaannotationService']['@id']).then(
                                 function(url) {
                                     DO.C.AnnotationService = url[0];
+                                    var annotationServices = document.querySelectorAll('.annotation-location-selection');
+                                    for (var i = 0; i < annotationServices.length; i++) {
+                                        annotationServices[i].innerHTML = DO.U.getAnnotationLocationHTML();
+                                    }
                                     showAction();
                                 },
                                 function(reason) {
@@ -4858,10 +4862,11 @@ WHERE {\n\
                                     break;
                                 case 'article':
                                     template = [
-                                    '<textarea id="article-content" name="content" cols="20" rows="1" class="medium-editor-toolbar-textarea" placeholder="', this.placeholderText, '"></textarea>',
+                                    '<textarea id="article-content" name="content" cols="20" rows="5" class="medium-editor-toolbar-textarea" placeholder="', this.placeholderText, '"></textarea>',
                                     '<select id="article-license" name="license" class="medium-editor-toolbar-select">',
                                     DO.U.getLicenseOptionsHTML(),
-                                    '</select>'
+                                    '</select>',
+                                    '<span class="annotation-location-selection">' + DO.U.getAnnotationLocationHTML() + '</span>'
                                     ];
                                     break;
                                 case 'note':
@@ -5240,6 +5245,8 @@ WHERE {\n\
                                     break;
                                 case 'article': case 'approve': case 'disapprove': case 'specificity':
                                     opts.content = this.getInput().content.value;
+                                    opts.annotationLocationService = this.getInput().annotationLocationService.checked;
+                                    opts.annotationLocationPersonalStorage = this.getInput().annotationLocationPersonalStorage.checked;
                                     opts.license = this.getInput().license.value;
                                     break;
                                 case 'note':
@@ -5329,13 +5336,12 @@ WHERE {\n\
 
                             var resourceIRI = DO.U.stripFragmentFromString(document.location.href);
                             var containerIRI = window.location.href;
-                            var contentType = 'text/html';
 
-                            if(typeof DO.C.AnnotationService !== 'undefined' && !DO.C.User.IRI) {
-                                containerIRI = DO.C.AnnotationService;
-                                contentType = 'application/ld+json';
-                            }
-                            else {
+                            var contentType = 'text/html';
+                            var noteIRI, noteURL;
+                            var annotationDistribution = [] , aLS = {};
+
+                            if(opts.annotationLocationPersonalStorage) {
                                 containerIRI = containerIRI.substr(0, containerIRI.lastIndexOf('/') + 1);
 
                                 //XXX: Preferring masterWorkspace over the others. Good/bad idea?
@@ -5355,9 +5361,27 @@ WHERE {\n\
                                         }
                                     }
                                 }
+
+                                contentType = 'text/html';
+                                noteURL = noteIRI = containerIRI + id;
+                                aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'contentType': contentType, 'canonical': true };
+                                annotationDistribution.push(aLS);
+                            }
+                            if(typeof DO.C.AnnotationService !== 'undefined' && opts.annotationLocationService) {
+                                containerIRI = DO.C.AnnotationService;
+                                contentType = 'application/ld+json';
+                                if(!opts.annotationLocationPersonalStorage) {
+                                    noteURL = noteIRI = containerIRI + id;
+                                    aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'contentType': contentType, 'canonical': true };
+                                }
+                                else {
+                                    noteURL = containerIRI + id;
+                                    aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'contentType': contentType };
+                                }
+                                annotationDistribution.push(aLS);
                             }
 
-                            var noteIRI = containerIRI + id;
+console.log(annotationDistribution);
                             //TODO: However this label is created
                             var refLabel = id;
 
@@ -5648,65 +5672,81 @@ WHERE {\n\
 </html>\n\
 ';
 
-                                    DO.U.serializeData(data, 'text/html', contentType, { subjectURI: noteIRI }).then(
-                                        function(data) {
-                                            DO.U.putResource(noteIRI, data, contentType).then(
-                                                function(i) {
-                                                    DO.U.positionInteraction(noteIRI, document.body).then(
-                                                        function(i) {
-// console.log(i);
-                                                        },
-                                                        function(reason) {
-                                                            console.log(reason);
-                                                        }
-                                                    );
-
-                                                    //TODO: resourceIRI for getEndpoint should be the closest IRI (not necessarily the document). Test resolve/reject better.
-                                                    DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id']).then(
-                                                        function(inbox) {
-                                                            if (inbox.length > 0) {
-                                                                inbox = inbox[0];
-                                                                var notificationData = {
-                                                                    "type": notificationType,
-                                                                    "inbox": inbox,
-                                                                    "slug": id,
-                                                                    "object": notificationObject,
-                                                                    "license": opts.license
-                                                                };
-
-                                                                if(typeof notificationTarget !== 'undefined') {
-                                                                    notificationData['target'] = notificationTarget;
-                                                                }
-                                                                if(typeof notificationContext !== 'undefined') {
-                                                                    notificationData['context'] = notificationContext;
-                                                                }
-                                                                if(typeof notificationStatements !== 'undefined') {
-                                                                    notificationData['statements'] = notificationStatements;
-                                                                }
-
-                                                                DO.U.notifyInbox(notificationData).then(
-                                                                    function(response) {
-// console.log("Notification: " + response.xhr.getResponseHeader('Location'));
-                                                                    },
-                                                                    function(reason) {
-                                                                        console.log(reason);
-                                                                    }
-                                                                );
-                                                            }
-                                                        },
-                                                        function(reason) {
-                                                            console.log('TODO: How can the interaction inform the target?');
-                                                            console.log(reason);
-                                                        }
-                                                    );
-                                                },
-                                                function(reason) {
-                                                    console.log('PUT failed');
-                                                    console.log(reason);
+                                    annotationDistribution.forEach(function(i){
+                                        DO.U.serializeData(data, 'text/html', i['contentType'], { 'subjectURI': i['noteIRI'] }).then(
+                                            function(data) {
+                                                if(!('canonical' in i)) {
+                                                    switch(i['contentType']) {
+                                                        default: break;
+                                                        case 'application/ld+json':
+                                                            var x = JSON.parse(data);
+                                                            x[0]["via"] = x[0]["@id"];
+                                                            x[0]["@id"] = i['noteURL'];
+                                                            data = JSON.stringify(x);
+                                                            break;
+                                                    }
                                                 }
-                                            );
-                                        }
-                                    );
+
+                                                DO.U.putResource(i['noteURL'], data, i['contentType']).then(
+                                                    function(response) {
+                                                        if(i['canonical']) {
+                                                            DO.U.positionInteraction(i['noteIRI'], document.body).then(
+                                                                function(r) {
+// console.log(i);
+                                                                },
+                                                                function(reason) {
+                                                                    console.log(reason);
+                                                                }
+                                                            );
+
+                                                            //TODO: resourceIRI for getEndpoint should be the closest IRI (not necessarily the document). Test resolve/reject better.
+                                                            DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id']).then(
+                                                                function(inbox) {
+                                                                    if (inbox.length > 0) {
+                                                                        inbox = inbox[0];
+                                                                        var notificationData = {
+                                                                            "type": notificationType,
+                                                                            "inbox": inbox,
+                                                                            "slug": id,
+                                                                            "object": notificationObject,
+                                                                            "license": opts.license
+                                                                        };
+
+                                                                        if(typeof notificationTarget !== 'undefined') {
+                                                                            notificationData['target'] = notificationTarget;
+                                                                        }
+                                                                        if(typeof notificationContext !== 'undefined') {
+                                                                            notificationData['context'] = notificationContext;
+                                                                        }
+                                                                        if(typeof notificationStatements !== 'undefined') {
+                                                                            notificationData['statements'] = notificationStatements;
+                                                                        }
+
+                                                                        DO.U.notifyInbox(notificationData).then(
+                                                                            function(response) {
+// console.log("Notification: " + response.xhr.getResponseHeader('Location'));
+                                                                            },
+                                                                            function(reason) {
+                                                                                console.log(reason);
+                                                                            }
+                                                                        );
+                                                                    }
+                                                                },
+                                                                function(reason) {
+                                                                    console.log('TODO: How can the interaction inform the target?');
+                                                                    console.log(reason);
+                                                                }
+                                                            );
+                                                        }
+                                                    },
+                                                    function(reason) {
+                                                        console.log('PUT failed');
+                                                        console.log(reason);
+                                                    }
+                                                );
+                                            }
+                                        );
+                                    });
                                     break;
 
                                 case 'note':
@@ -5877,6 +5917,8 @@ WHERE {\n\
                                     break;
                                 case 'article':
                                     r.content = this.getForm().querySelector('#article-content.medium-editor-toolbar-textarea');
+                                    r.annotationLocationService = this.getForm().querySelector('#annotation-location-service');
+                                    r.annotationLocationPersonalStorage = this.getForm().querySelector('#annotation-location-personal-storage');
                                     r.license = this.getForm().querySelector('#article-license.medium-editor-toolbar-select');
                                     break;
                                 case 'note':
