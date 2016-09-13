@@ -131,12 +131,14 @@ margin-top:1em;
 #document-interactions article.do .target,
 #document-interactions article.do .renderedvia,
 #document-interactions article.do .rights,
+#document-interactions article.do .canonical,
 aside.note.do h2,
 aside.note.do h3,
 aside.note.do blockquote dt,
 aside.note.do blockquote .target,
 aside.note.do blockquote .renderedvia,
-aside.note.do blockquote .rights {
+aside.note.do blockquote .rights,
+aside.note.do blockquote .canonical {
 display:none;
 }
 aside.note.do blockquote dl.author-name img[width="48"][height="48"][rel$="image"] {
