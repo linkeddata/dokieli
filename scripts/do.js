@@ -5260,8 +5260,10 @@ WHERE {\n\
                                     break;
                                 case 'article': case 'approve': case 'disapprove': case 'specificity':
                                     opts.content = this.getInput().content.value;
-                                    opts.annotationLocationService = this.getInput().annotationLocationService.checked;
-                                    opts.annotationLocationPersonalStorage = this.getInput().annotationLocationPersonalStorage.checked;
+                                    var aLS = this.getInput().annotationLocationService;
+                                    if(aLS) { opts.annotationLocationService = aLS.checked };
+                                    var aLPS = this.getInput().annotationLocationPersonalStorage;
+                                    if(aLPS) { opts.annotationLocationPersonalStorage = aLPS.checked };
                                     opts.license = this.getInput().license.value;
                                     break;
                                 case 'note':
@@ -5382,16 +5384,20 @@ WHERE {\n\
                                 aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'contentType': contentType, 'canonical': true };
                                 annotationDistribution.push(aLS);
                             }
-                            if(typeof DO.C.AnnotationService !== 'undefined' && opts.annotationLocationService) {
+                            if(typeof DO.C.AnnotationService !== 'undefined') {
                                 containerIRI = DO.C.AnnotationService;
                                 contentType = 'application/ld+json';
-                                if(!opts.annotationLocationPersonalStorage) {
+                                if(!opts.annotationLocationPersonalStorage && opts.annotationLocationService) {
                                     noteURL = noteIRI = containerIRI + id;
                                     aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'contentType': contentType, 'canonical': true };
                                 }
-                                else {
+                                else if(opts.annotationLocationPersonalStorage) {
                                     noteURL = containerIRI + id;
                                     aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'contentType': contentType };
+                                }
+                                else {
+                                    noteURL = noteIRI = containerIRI + id;
+                                    aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'contentType': contentType, 'canonical': true };
                                 }
                                 annotationDistribution.push(aLS);
                             }
