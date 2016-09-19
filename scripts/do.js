@@ -562,8 +562,9 @@ var DO = {
         getNotifications: function(url) {
             url = url || window.location.origin + window.location.pathname;
             var notifications = [];
+            var pIRI = DO.U.getProxyableIRI(url);
 
-            return DO.U.getGraph(url)
+            return DO.U.getGraph(pIRI)
                 .then(
                     function(i) {
                         var s = i.child(url);
@@ -617,7 +618,8 @@ var DO = {
             DO.U.getNotifications(url).then(
                 function(i) {
                     i.forEach(function(notification) {
-                        DO.U.getGraph(notification).then(
+                        var pIRI = DO.U.getProxyableIRI(notification);
+                        DO.U.getGraph(pIRI).then(
                             function(i) {
                                 var s = i.child(notification);
                                 var types = s.rdftype._array || [];
