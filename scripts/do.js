@@ -144,6 +144,8 @@ var DO = {
             "asinReplyTo": { "@id": "http://www.w3.org/ns/activitystreams#inReplyTo", "@type": "@id", "@array": true },
             "asactor": { "@id": "http://www.w3.org/ns/activitystreams#actor", "@type": "@id" },
             "asupdated": "http://www.w3.org/ns/activitystreams#updated",
+            "aspublished": "http://www.w3.org/ns/activitystreams#published",
+            "ascontent": "http://www.w3.org/ns/activitystreams#content",
 
             "siocreplyof": { "@id": "http://rdfs.org/sioc/ns#reply_of", "@type": "@id", "@array": true },
 
