@@ -1075,6 +1075,7 @@ var DO = {
                                                 var x = JSON.parse(i);
 // console.log(x);
                                                 x[0]["@context"] = ["http://www.w3.org/ns/activitystreams", {"oa": "http://www.w3.org/ns/anno.jsonld"}];
+                                                x[0]["@id"] = (x[0]["@id"].slice(0,2) == '_:') ? '' : x[0]["@id"];
                                                 var data = JSON.stringify(x) + '\n';
 // console.log(data);
                                                 return DO.U.postResource(pIRI, slug, data, 'application/ld+json; profile="http://www.w3.org/ns/anno.jsonld').catch(function(reason){
@@ -2033,6 +2034,7 @@ var DO = {
                                     case 'application/ld+json':
                                         var x = JSON.parse(i);
                                         x[0]["@context"] = ["http://www.w3.org/ns/anno.jsonld", {"as": "http://www.w3.org/ns/activitystreams"}];
+                                        x[0]["@id"] = (x[0]["@id"].slice(0,2) == '_:') ? '' : x[0]["@id"];
                                         return JSON.stringify(x) + '\n';
                                     default:
                                         return i;
