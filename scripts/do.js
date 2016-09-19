@@ -3701,9 +3701,9 @@ WHERE {\n\
                         var refId = 'r-' + id;
                         var refLabel = id;
 
-                        var datetime = note.schemadatePublished || note.dctermscreated;
+                        var datetime = note.schemadatePublished || note.dctermscreated || note.aspublished;
 // console.log(datetime);
-                        var annotatedBy = note.schemacreator || note.dctermscreator;
+                        var annotatedBy = note.schemacreator || note.dctermscreator || note.asactor;
                         var annotatedByIRI;
                         if (annotatedBy && annotatedBy.at(0) && annotatedBy.at(0).iri()) {
                             annotatedByIRI = annotatedBy.at(0).iri();
