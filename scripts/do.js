@@ -1080,10 +1080,10 @@ var DO = {
                                                 x[0]["@id"] = (x[0]["@id"].slice(0,2) == '_:') ? '' : x[0]["@id"];
                                                 var data = JSON.stringify(x) + '\n';
 // console.log(data);
-                                                return DO.U.postResource(pIRI, slug, data, 'application/ld+json; profile="http://www.w3.org/ns/anno.jsonld').catch(function(reason){
+                                                return DO.U.postResource(pIRI, slug, data, 'application/ld+json; profile="http://www.w3.org/ns/anno.jsonld"').catch(function(reason){
                                                         if(reason.xhr.status == 0){
                                                             var options = {'noCredentials': true};
-                                                            DO.U.postResource(pIRI, slug, data, 'application/ld+json; profile="http://www.w3.org/ns/anno.jsonld', null, options);
+                                                            DO.U.postResource(pIRI, slug, data, 'application/ld+json; profile="http://www.w3.org/ns/anno.jsonld"', null, options);
                                                         }
                                                 });
                                             }
