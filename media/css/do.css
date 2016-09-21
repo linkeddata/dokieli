@@ -738,7 +738,7 @@ margin: 0 1em;
 display:inline-block;
 vertical-align: top;
 }
-.medium-editor-toolbar-form #annotation-location-personal-storage {
+.medium-editor-toolbar-form input:nth-of-type(2):before {
 margin-left: 68px;
 }
 

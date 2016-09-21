@@ -4298,10 +4298,15 @@ WHERE {\n\
         },
 
         getAnnotationLocationHTML: function() {
-            var s = '';
-            if(typeof DO.C.AnnotationService !== 'undefined' && DO.C.User.Storage && DO.C.User.Storage.length > 0) {
-                s = 'Store at: <input type="checkbox" id="annotation-location-service" name="annotation-location-service" /><label for="annotation-location-service">Annotation service</label><br /><input type="checkbox" id="annotation-location-personal-storage" name="annotation-location-personal-storage" checked="checked" /><label for="annotation-location-personal-storage">Personal storage</label>';
+            var s = '', inputs = [], checked = '';
+            if(typeof DO.C.AnnotationService !== 'undefined') {
+                checked = (DO.C.User.Storage) ? '': ' checked="checked" disabled="disabled"';
+                inputs.push('<input type="checkbox" id="annotation-location-service" name="annotation-location-service"' + checked + ' /><label for="annotation-location-service">Annotation service</label>');
             }
+            if(DO.C.User.Storage && DO.C.User.Storage.length > 0) {
+                inputs.push('<input type="checkbox" id="annotation-location-personal-storage" name="annotation-location-personal-storage" checked="checked" /><label for="annotation-location-personal-storage">Personal storage</label>');
+            }
+            s = 'Store at: ' + inputs.join('');
             return s;
         },
 
@@ -4826,21 +4831,25 @@ WHERE {\n\
                                 }
                             };
 
+                            var updateAnnotationServiceForm = function() {
+                                var annotationServices = document.querySelectorAll('.annotation-location-selection');
+                                for (var i = 0; i < annotationServices.length; i++) {
+                                    annotationServices[i].innerHTML = DO.U.getAnnotationLocationHTML();
+                                }
+                            };
+
                             return DO.U.getEndpoint(DO.C.Vocab['oaannotationService']['@id']).then(
                                 function(url) {
                                     DO.C.AnnotationService = url[0];
-                                    var annotationServices = document.querySelectorAll('.annotation-location-selection');
-                                    for (var i = 0; i < annotationServices.length; i++) {
-                                        annotationServices[i].innerHTML = DO.U.getAnnotationLocationHTML();
-                                    }
+                                    updateAnnotationServiceForm();
                                     showAction();
                                 },
                                 function(reason) {
-                                    console.log(reason.message);
                                     if(_this.signInRequired && !DO.C.User.IRI) {
                                         DO.U.showUserIdentityInput();
                                     }
                                     else {
+                                        updateAnnotationServiceForm();
                                         showAction();
                                     }
                                 }
@@ -5362,7 +5371,7 @@ WHERE {\n\
                             var noteIRI, noteURL;
                             var annotationDistribution = [] , aLS = {};
 
-                            if(opts.annotationLocationPersonalStorage) {
+                            if(opts.annotationLocationPersonalStorage || (DO.C.User.Storage && DO.C.User.Storage.length > 0)) {
                                 containerIRI = containerIRI.substr(0, containerIRI.lastIndexOf('/') + 1);
 
                                 //XXX: Preferring masterWorkspace over the others. Good/bad idea?
@@ -5378,6 +5387,9 @@ WHERE {\n\
                                         else {
                                             if (typeof DO.C.User.Workspace.Public != 'undefined' && DO.C.User.Workspace.Public.length > 0) {
                                                 containerIRI = DO.C.User.Workspace.Public + DO.C.InteractionPath;
+                                            }
+                                            else {
+                                                containerIRI = DO.U.forceTrailingSlash(DO.C.User.Storage[0].iri().toString());
                                             }
                                         }
                                     }
