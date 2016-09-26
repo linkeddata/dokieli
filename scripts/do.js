@@ -1738,7 +1738,7 @@ var DO = {
                     var heading = section.querySelector(':first-child');
                     if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].indexOf(heading.tagName.toLowerCase()) > -1) {
                         s += '<li data-id="' + section.id +'"><a href="#' + section.id + '">' + heading.textContent + '</a>';
-                        var subsections = section.parentNode.querySelectorAll('#' + section.id + ' > div > section[rel*="hasPart"]:not([class~="slide"])');
+                        var subsections = section.parentNode.querySelectorAll('[id="' + section.id + '"] > div > section[rel*="hasPart"]:not([class~="slide"])');
                         if (subsections.length > 0) {
                             s += '<ol'+ attributeClass +'>';
                             s += DO.U.getListOfSections(subsections, sortable);
