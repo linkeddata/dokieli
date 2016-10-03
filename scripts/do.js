@@ -147,7 +147,7 @@ var DO = {
             "aspublished": "http://www.w3.org/ns/activitystreams#published",
             "ascontent": "http://www.w3.org/ns/activitystreams#content",
             "asname": "http://www.w3.org/ns/activitystreams#name",
-            "asimage": { "@id": "http://www.w3.org/ns/activitystreams#subject", "@type": "@id" },
+            "asimage": { "@id": "http://www.w3.org/ns/activitystreams#image", "@type": "@id" },
 
             "siocreplyof": { "@id": "http://rdfs.org/sioc/ns#reply_of", "@type": "@id", "@array": true },
 
