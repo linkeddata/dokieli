@@ -325,7 +325,7 @@ var DO = {
                         function(i) {
                             var s = i.child(userIRI);
 // console.log(s);
-                            DO.C.User.Name = s.foafname || s.schemaname || undefined;
+                            DO.C.User.Name = s.foafname || s.schemaname || s.asname || undefined;
                             DO.C.User.Image = s.foafimg || s.schemaimage || s.asimage || s["http://xmlns.com/foaf/0.1/depiction"] || undefined;
                             DO.C.User.Image = (DO.C.User.Image && DO.C.User.Image.iri()) ? DO.C.User.Image.iri().toString() : undefined;
                             DO.C.User.URL = s.foafhomepage || s["http://xmlns.com/foaf/0.1/weblog"] || s.schemaurl || undefined;
@@ -2560,7 +2560,7 @@ console.log(inbox);
                                 var s = i.child(url);
 
                                 var addShareResourceContact = function(s) {
-                                    var name = s.foafname || s.schemaname || url;
+                                    var name = s.foafname || s.schemaname || s.asname || url;
                                     var img = s.foafimg;
                                     img = (img) ? img : s["http://xmlns.com/foaf/0.1/depiction"];
                                     img = (img) ? img : s.schemaimage;
