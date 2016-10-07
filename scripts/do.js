@@ -188,7 +188,7 @@ var DO = {
                     else {
                         if(url.slice(0, 5).toLowerCase() == 'http:') {
                             //TODO: First try document's proxy?
-                            DO.U.authenticateUserFallback(url, DO.C.ProxyURL, reasons).then(
+                            DO.U.authenticateUserFallback(url, '', reasons).then(
                                 function(i) {
                                     resolve(i);
                                 },
@@ -222,14 +222,7 @@ var DO = {
         authenticateUserFallback: function(url, proxyURL, reasons) {
 // console.log("Try to authenticating through WebID's storage, if not found, try through a known authentication endpoint");
             url = url || window.location.origin + window.location.pathname;
-
-            var pIRI = url;
-
-            if (proxyURL) {
-                pIRI = proxyURL + DO.U.encodeString(url);
-            }
-
-            pIRI = DO.U.stripFragmentFromString(pIRI);
+            var pIRI = DO.U.getProxyableIRI(url, proxyURL);
 
             return DO.U.getGraph(pIRI)
                 .then(
