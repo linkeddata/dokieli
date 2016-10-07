@@ -743,10 +743,12 @@ var DO = {
             );
         },
 
-        getProxyableIRI: function(url) {
+        getProxyableIRI: function(url, proxyURL) {
             var pIRI = DO.U.stripFragmentFromString(url);
+            proxyURL = proxyURL || DO.C.ProxyURL;
+
             if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
-                pIRI = DO.C.ProxyURL + DO.U.encodeString(pIRI);
+                pIRI = proxyURL + DO.U.encodeString(pIRI);
             }
             return pIRI;
         },
