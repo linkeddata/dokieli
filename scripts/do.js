@@ -290,24 +290,6 @@ var DO = {
             });
         },
 
-        setUser: function(url) {
-            url = url || window.location.origin + window.location.pathname;
-            return new Promise(function(resolve, reject) {
-                DO.U.authenticateUser(url).then(
-                    function(userIRI) {
-// console.log('setUser resolve: ' + userIRI);
-                        DO.C.User.IRI = userIRI;
-// console.log(DO.C.User.IRI);
-                        return resolve(userIRI);
-                    },
-                    function(xhr) {
-                        console.log('setUser reject');
-                        return reject(xhr);
-                    }
-                );
-            });
-        },
-
         setUserInfo: function(userIRI) {
 // console.log("setUserInfo: " + userIRI);
             if (userIRI) {
@@ -318,6 +300,7 @@ var DO = {
                         function(i) {
                             var s = i.child(userIRI);
 // console.log(s);
+                            DO.C.User.IRI = userIRI;
                             DO.C.User.Name = s.foafname || s.schemaname || s.asname || undefined;
                             DO.C.User.Image = s.foafimg || s.schemaimage || s.asimage || s["http://xmlns.com/foaf/0.1/depiction"] || undefined;
                             DO.C.User.Image = (DO.C.User.Image && DO.C.User.Image.iri()) ? DO.C.User.Image.iri().toString() : undefined;
@@ -380,7 +363,7 @@ var DO = {
                                     }
                                 );
                             }
-                            return userIRI;
+                            return DO.C.User;
                         },
                         function(reason) { return reason; }
                     );
@@ -399,12 +382,12 @@ var DO = {
             }
 
             var userImage = '';
-            if (DO.C.User.Image) {
+            if ('Image' in DO.C.User && DO.C.User.Image.length > 0) {
                 userImage = '<img alt="" height="48" rel="schema:image" src="' + DO.C.User.Image + '" width="48" />';
             }
 
             var user = ''
-            if (DO.C.User.IRI) {
+            if ('IRI' in DO.C.User && DO.C.User.IRI.length > 0) {
                 user = '<span about="' + DO.C.User.IRI + '" typeof="schema:Person">' + userImage + ' <a rel="schema:url" href="' + DO.C.User.IRI + '"> ' + userName + '</a></span>';
             }
             else {
@@ -1231,12 +1214,29 @@ var DO = {
             var userIdentityInput = document.getElementById('user-identity-input');
             var url = userIdentityInput.querySelector('input#webid').value.trim();
             if (url.length > 0) {
-                var setUser = function() {
-                    return new Promise(function(resolve, reject) {
-                        DO.U.setUser(url).then(
+                DO.U.setUserInfo(url).then(
+                    function(i) {
+// console.log(i);
+                        var uI = document.getElementById('user-info');
+                        if(uI) {
+                            uI.innerHTML = DO.U.getUserHTML();
+                        }
+
+                        DO.U.authenticateUser(url).then(
+                            function(userIRI) {
+        // console.log('setUser resolve: ' + userIRI);
+                                DO.C.User.IRI = userIRI;
+        // console.log(DO.C.User.IRI);
+                                return userIRI;
+                            },
+                            function(xhr) {
+                                console.log('setUser reject');
+                                return xhr;
+                            }
+                        ).then(
                             function(i) {
                                 userIdentityInput.parentNode.removeChild(userIdentityInput);
-                                return resolve(i);
+                                return i;
                             },
                             function(reason) {
                                 var rm = userIdentityInput.querySelector('.response-message');
@@ -1254,25 +1254,14 @@ var DO = {
                                 userIdentityInput.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to sign in with this WebID.</p>' + reasonsList + '</div>');
                                 document.querySelector('#user-identity-input button.signin').removeAttribute('disabled');
                                 console.log(reason);
-                                return reject(reason);
+                                return reason;
                             }
-                        );
-                    });
-                };
-
-                setUser().then(
-                    function(i) {
-                        DO.U.setUserInfo(i).then(
-                            function(i) {
-// console.log(i);
-                                var uI = document.getElementById('user-info');
-                                if(uI) {
-                                    uI.innerHTML = DO.U.getUserHTML();
-                                }
+                        ).then(
+                            function(i){
                                 DO.U.afterSignIn();
                             },
-                            function(reason) {
-                                console.log(reason);
+                            function(reason){
+                                console.log('--- ' + url + ' is not authenticated.');
                             }
                         );
                     },
