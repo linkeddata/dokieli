@@ -5358,7 +5358,7 @@ WHERE {\n\
                             var noteIRI, noteURL;
                             var annotationDistribution = [] , aLS = {};
 
-                            if(opts.annotationLocationPersonalStorage || (DO.C.User.Storage && DO.C.User.Storage.length > 0)) {
+                            if(opts.annotationLocationPersonalStorage || (!opts.annotationLocationPersonalStorage && !opts.annotationLocationService && DO.C.User.Storage && DO.C.User.Storage.length > 0)) {
                                 containerIRI = containerIRI.substr(0, containerIRI.lastIndexOf('/') + 1);
 
                                 //XXX: Preferring masterWorkspace over the others. Good/bad idea?
@@ -5387,7 +5387,7 @@ WHERE {\n\
                                 aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'contentType': contentType, 'canonical': true };
                                 annotationDistribution.push(aLS);
                             }
-                            if(typeof DO.C.AnnotationService !== 'undefined') {
+                            if(opts.annotationLocationService && typeof DO.C.AnnotationService !== 'undefined') {
                                 containerIRI = DO.C.AnnotationService;
                                 contentType = 'application/ld+json';
                                 if(!opts.annotationLocationPersonalStorage && opts.annotationLocationService) {
