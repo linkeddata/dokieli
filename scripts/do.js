@@ -721,9 +721,9 @@ var DO = {
 
         getProxyableIRI: function(url, proxyURL) {
             var pIRI = DO.U.stripFragmentFromString(url);
-            proxyURL = proxyURL || DO.C.ProxyURL;
 
-            if (document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
+            if (typeof document !== 'undefined' && document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
+                proxyURL = proxyURL || DO.C.ProxyURL;
                 pIRI = proxyURL + DO.U.encodeString(pIRI);
             }
             return pIRI;
