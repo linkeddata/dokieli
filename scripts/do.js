@@ -2006,7 +2006,7 @@ var DO = {
             return SimpleRDF(DO.C.Vocab, url, null, ld.store).get();
         },
 
-        serializeGraph(g, options) {
+        serializeGraph: function(g, options) {
             options = options || {};
             if (!('contentType' in options)) {
                 options['contentType'] = 'text/turtle';
