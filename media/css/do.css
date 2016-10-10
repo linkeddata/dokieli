@@ -321,6 +321,7 @@ height:5em;
 #user-info > span {
 margin-left:1.75em;
 float:left;
+width:calc(100% - 1.75em);
 }
 #user-info img {
 display:block;
