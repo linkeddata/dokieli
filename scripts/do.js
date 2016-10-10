@@ -6047,6 +6047,7 @@ console.log(annotationDistribution);
 
         init: function() {
             if(document.body) {
+                DO.U.setPolyfill();
                 DO.U.setDocRefType();
                 DO.U.showRefs();
                 DO.U.setLocalDocument();
