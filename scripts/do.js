@@ -2217,37 +2217,37 @@ var DO = {
 
             var dd = document.getElementById('document-do');
             dd.addEventListener('click', function(e) {
-                if (e.target.matches('.resource-share')) {
+                if (e.target.closest('.resource-share')) {
                     DO.U.shareResource(e);
                 }
 
-                if (e.target.matches('.resource-reply')) {
+                if (e.target.closest('.resource-reply')) {
                     DO.U.replyToResource(e);
                 }
 
                 if (DO.C.EditorAvailable) {
-                    if (e.target.matches('button.editor-disable') ||
-                        e.target.matches('button.review-disable')) {
+                    if (e.target.closest('button.editor-disable') ||
+                        e.target.closest('button.review-disable')) {
                         e.target.parentNode.innerHTML = DO.C.Editor.EnableEditorButton;
                         DO.U.Editor.enableEditor('social', e);
                     }
                     else {
-                        if (e.target.matches('button.editor-enable')) {
+                        if (e.target.closest('button.editor-enable')) {
                             e.target.parentNode.innerHTML = DO.C.Editor.DisableEditorButton;
                             DO.U.Editor.enableEditor('author', e);
                         }
-                        else if (e.target.matches('button.review-enable')) {
+                        else if (e.target.closest('button.review-enable')) {
                             e.target.parentNode.innerHTML = DO.C.Editor.DisableEditorButton;
                             DO.U.Editor.enableEditor('review', e);
                         }
                     }
                 }
 
-                if (e.target.matches('.resource-new')) {
+                if (e.target.closest('.resource-new')) {
                     DO.U.createNewDocument(e);
                 }
 
-                if (e.target.matches('.resource-save')) {
+                if (e.target.closest('.resource-save')) {
                     var url = window.location.origin + window.location.pathname;
                     var data = DO.U.getDocument();
                     DO.U.putResource(url, data).then(
@@ -2261,19 +2261,19 @@ var DO = {
                     );
                 }
 
-                if (e.target.matches('.resource-source')) {
+                if (e.target.closest('.resource-source')) {
                     DO.U.viewSource(e);
                 }
 
-                if (e.target.matches('.resource-save-as')) {
+                if (e.target.closest('.resource-save-as')) {
                     DO.U.saveAsDocument(e);
                 }
 
-                if (e.target.matches('.resource-export')) {
+                if (e.target.closest('.resource-export')) {
                     DO.U.exportAsHTML(e);
                 }
 
-                if (e.target.matches('.resource-print')) {
+                if (e.target.closest('.resource-print')) {
                     DO.U.hideDocumentMenu(e);
                     window.print();
                     return false;
@@ -3158,12 +3158,12 @@ console.log(inbox);
                 node.insertAdjacentHTML('beforeend', '<section id="local-storage" class="do"><h2>Local Storage</h2><p>' + useStorage + '</p></section>');
 
                 document.getElementById('local-storage').addEventListener('click', function(e) {
-                    if (e.target.matches('button.local-storage-enable-html')) {
+                    if (e.target.closest('button.local-storage-enable-html')) {
                         e.target.outerHTML = DO.C.DisableStorageButtons;
                         DO.U.enableStorage('html');
                     }
 
-                    if (e.target.matches('button.local-storage-disable-html')) {
+                    if (e.target.closest('button.local-storage-disable-html')) {
                         e.target.outerHTML = DO.C.EnableStorageButtons;
                         DO.U.disableStorage('html');
                     }
