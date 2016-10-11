@@ -2458,12 +2458,16 @@ console.log(inbox);
                     DO.U.selectContacts(e, DO.C.User.IRI);
                 }
 
+
                 if (e.target.matches('button.share')) {
-                    e.target.disabled = 'disabled';
-                    e.target.insertAdjacentHTML('afterend', '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
                     var tos = document.querySelector('#share-resource #share-resource-to').value.trim();
                     tos = (tos.length > 0) ? tos.split(/\r\n|\r|\n/) : [];
                     var note = document.querySelector('#share-resource #share-resource-note').value.trim();
+
+                    var ps = document.querySelectorAll('#share-resource-contacts .progress');
+                    ps.forEach(function(p){
+                        p.parentNode.removeChild(p);
+                    });
 
                     var srci = document.querySelectorAll('#share-resource-contacts input:checked');
                     if (srci.length > 0) {
@@ -2473,56 +2477,75 @@ console.log(inbox);
                     }
 
                     if (iri.length > 0) {
-                        var rm = shareResource.querySelector('.response-message');
-                        if (rm) {
-                            rm.parentNode.removeChild(rm);
-                        }
-                        shareResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>');
+                        // var rm = shareResource.querySelector('.response-message');
+                        // if (rm) {
+                        //     rm.parentNode.removeChild(rm);
+                        // }
+                        // shareResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>');
 
-                        tos.forEach(function(to) {
-                            var inboxResponse = function() {
-                                return DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id'], to).then(
-                                        function(inboxes){
-                                            return inboxes[0];
-                                        },
-                                        function(reason){
-                                            console.log(reason);
-                                            return reason;
-                                        }
-                                    );
-                            };
+                        var sendNotifications = function(tos){
+                            return new Promise(function(resolve, reject){
+                                tos.forEach(function(to) {
+                                    var toInput = shareResource.querySelector('[value="' + to + '"]');
+                                    toInput.parentNode.insertAdjacentHTML('beforeend', '<span class="progress"><i class="fa fa-circle-o-notch fa-spin fa-fw "></i></span>');
 
-                            inboxResponse().then(
-                                function(inbox) {
-                                    var notificationData = {
-                                        "type": ['as:Announce'],
-                                        "inbox": inbox,
-                                        "object": iri,
-                                        "to": to,
-                                        "summary": note,
-                                        "license": "https://creativecommons.org/licenses/by/4.0/"
+                                    var inboxResponse = function() {
+                                        return DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id'], to).then(
+                                                function(inboxes){
+                                                    return inboxes[0];
+                                                },
+                                                function(reason){
+                                                    console.log(reason);
+                                                    return reason;
+                                                }
+                                            );
                                     };
+
+                                    inboxResponse().then(
+                                        function(inbox) {
+                                            var notificationData = {
+                                                "type": ['as:Announce'],
+                                                "inbox": inbox,
+                                                "object": iri,
+                                                "to": to,
+                                                "summary": note,
+                                                "license": "https://creativecommons.org/licenses/by/4.0/"
+                                            };
 // console.log(notificationData);
-                                    DO.U.notifyInbox(notificationData).then(
-                                        function(response) {
-                                            var location = response.xhr.getResponseHeader('Location');
-                                            var rm = shareResource.querySelector('.response-message');
-                                            rm.insertAdjacentHTML('beforeend', '<p class="success">Notification sent: <a target="_blank" href="' + location + '">' + location + '</a></p>');
+                                            DO.U.notifyInbox(notificationData).then(
+                                                function(response) {
+                                                    if(typeof response !== 'undefined' && response.xhr.getResponseHeader('Location')) {
+                                                        var location = response.xhr.getResponseHeader('Location');
+
+                                                        toInput.parentNode.querySelector('.progress').innerHTML = '<span class="progress"><a target="_blank" href="' + location + '"><i class="fa fa-check-circle fa-fw"></i></a></span>';
+
+                                                        // var rm = shareResource.querySelector('.response-message');
+                                                        // rm.insertAdjacentHTML('beforeend', '<p class="success">Notification sent: <a target="_blank" href="' + location + '">' + location + '</a></p>');
+                                                        // return location;
+                                                    }
+                                                    else {
+                                                        toInput.parentNode.querySelector('.progress').innerHTML = '<span class="progress"><i class="fa fa-times-circle fa-fw "></i> Unable to notify. Try later.</span>';
+                                                        // return Promise.reject(response);
+                                                    }
+                                                },
+                                                function(reason) {
+// console.log(reason);
+                                                    toInput.parentNode.querySelector('.progress').innerHTML = '<span class="progress"><i class="fa fa-times-circle fa-fw "></i> Unable to notify. Try later.</span>';
+//                                                     return reason;
+                                                }
+                                            );
                                         },
                                         function(reason) {
-//                                             console.log(reason);
+// console.log(reason);
+                                                 toInput.parentNode.querySelector('.progress').innerHTML = '<span class="progress"><i class="fa fa-times-circle fa-fw "></i> Inbox not responding. Try later.</span>';
+//                                             return reason;
                                         }
                                     );
-                                },
-                                function(reason) {
-                                    console.log(reason);
-                                }
-                            ).then(function(done){
-                                e.target.removeAttribute('disabled');
-                                var i = shareResource.querySelector('button.share + i');
-                                i.parentNode.removeChild(i);
+                                });
                             });
-                        });
+                        };
+
+                        sendNotifications(tos);
                     }
                 }
             });
