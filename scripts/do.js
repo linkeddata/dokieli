@@ -2459,6 +2459,8 @@ console.log(inbox);
                 }
 
                 if (e.target.matches('button.share')) {
+                    e.target.disabled = 'disabled';
+                    e.target.insertAdjacentHTML('afterend', '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
                     var tos = document.querySelector('#share-resource #share-resource-to').value.trim();
                     tos = (tos.length > 0) ? tos.split(/\r\n|\r|\n/) : [];
                     var note = document.querySelector('#share-resource #share-resource-note').value.trim();
@@ -2515,7 +2517,11 @@ console.log(inbox);
                                 function(reason) {
                                     console.log(reason);
                                 }
-                            );
+                            ).then(function(done){
+                                e.target.removeAttribute('disabled');
+                                var i = shareResource.querySelector('button.share + i');
+                                i.parentNode.removeChild(i);
+                            });
                         });
                     }
                 }
