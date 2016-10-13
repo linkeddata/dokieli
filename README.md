@@ -33,6 +33,7 @@ control.
 * Annotations (e.g., replies, peer-reviews, liking, resharing, bookmarking)
 * Inbox notifications for annotations and social sharing (implements W3C [Linked Data Notifications](https://www.w3.org/TR/ldn/))
 * Assign license (e.g., [Creative Commons](https://creativecommons.org/)) to the contributions/annotations
+* Uses [schema.org](http://schema.org/), [SPAR Ontologies](http://www.sparontologies.net/), [PROV-O](https://www.w3.org/TR/prov-o/)
 * Assignment of URI fragments (to whatever is of interest) so that other resources on the Web can reference
 * Embedding data blocks, e.g., Turtle, N-Triples, JSON-LD, TriG (Nanopublications)
 * Embedding of media objects, tables, and interactions
@@ -43,6 +44,14 @@ control.
 * Document metadata
 * Views for screen and print (e.g., ACM, LNCS) - yes, you can output to a *paper user interface*: PDF
 * .. and [many more on the way](https://github.com/linkeddata/dokieli/issues/)
+
+## Screencasts
+Also available on https://dokie.li/ (with captions):
+
+* Overview: http://dokie.li/media/video/dokieli.webm
+* Annotation: http://dokie.li/media/video/dokieli-annotation.webm
+* Share: http://dokie.li/media/video/dokieli-share.webm
+* Sparqlines: http://dokie.li/media/video/dokieli.webm (see also [article](http://csarven.ca/sparqlines))
 
 
 ## Examples
