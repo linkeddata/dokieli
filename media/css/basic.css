@@ -37,7 +37,7 @@ h2, h3, h4 { font-family: Arial, Helvetica, sans-serif; }
 h2 { font-size: 1.4em; line-height:1; }
 h3 { font-size: 1.2em; line-height:0.8; }
 h4 { font-size: 1.2em; font-style: italic; }
-
+h1, h2, h3, h4 { color:#00A000; }
 section article h1,
 section article h2,
 section article h3 {
@@ -66,8 +66,8 @@ dl[id^="document-"], #authors {
 }
 
 
-a { color: #000; }
-a:hover { color: #555; }
+a { color: #00A000; }
+a:hover { color: #00B400; }
 
 nav ul,
 aside ul { list-style: none; padding: 0; }
