@@ -25,11 +25,11 @@ control.
 ## Features
 * In-browser document authoring and formatting, and semantic enrichments (RDFa annotations)
 * Information is represented and retrieved following the Linked Data design principles
-* Employs WebID + ACL and personal online datastore where applicable (compliant with [Linked Data Platform](http://www.w3.org/TR/ldp/) and [Solid](https://github.com/solid/solid-spec) servers)
+* Employs [WebID](https://www.w3.org/2005/Incubator/webid/spec/identity/), [WebID+TLS](https://www.w3.org/2005/Incubator/webid/spec/tls/), [Web Access Control](https://www.w3.org/wiki/WebAccessControl)/ACL and personal online datastore where applicable (compliant with [Linked Data Platform](http://www.w3.org/TR/ldp/) and [Solid](https://github.com/solid/solid-spec) servers)
 * Uses author's information from their online profile (WebID)
 * Creation of new documents from any existing dokieli document - part of *self-replication*
 * Save document and its dependencies to a new location (anywhere on the Web with LDP support) - part of *self-replication*
-* Uses W3C [Web Annotation Model](https://www.w3.org/TR/annotation-model/) and Activity Streams 2.0 vocabulary](https://www.w3.org/TR/activitystreams-vocabulary)
+* Uses W3C [Web Annotation Model](https://www.w3.org/TR/annotation-model/) and [Activity Streams 2.0 vocabulary](https://www.w3.org/TR/activitystreams-vocabulary)
 * Annotations (e.g., replies, peer-reviews, liking, resharing, bookmarking)
 * Inbox notifications for annotations and social sharing (implements W3C [Linked Data Notifications](https://www.w3.org/TR/ldn/))
 * Assign license (e.g., [Creative Commons](https://creativecommons.org/)) to the contributions/annotations
