@@ -675,9 +675,10 @@ stroke-width:1px;
 stroke:#f00;
 fill:#f00;
 }
-.medium-editor-toolbar-form *[id^="sparkline-"] {
+.medium-editor-toolbar-form *[id^="sparkline-select"] {
 max-height:15em;
 max-width:30em;
+width:100%;
 }
 .medium-editor-toolbar-form *[id^="sparkline-"] li {
 float:none;
