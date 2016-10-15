@@ -1424,15 +1424,16 @@ var DO = {
                         prevStylesheet = (prevStylesheet) ? prevStylesheet.getAttribute('title') : '';
 
                         for (var j = 0; j < stylesheets.length; j++) {
-                            var stylesheet = stylesheets[j];
-                            if (stylesheet.getAttribute('title').toLowerCase() == selected.textContent.toLowerCase()) {
-                                stylesheet.setAttribute('rel', 'stylesheet');
-                                stylesheet.disabled = false;
-                            }
-                            else {
-                                stylesheet.disabled = true; //XXX: Leave this. WebKit wants to trigger this before for some reason.
-                                stylesheet.setAttribute('rel', 'stylesheet alternate');
-                            }
+                            (function(stylesheet) {
+                                if (stylesheet.getAttribute('title').toLowerCase() == selected.textContent.toLowerCase()) {
+                                    stylesheet.disabled = false;
+                                    stylesheet.setAttribute('rel', 'stylesheet');
+                                }
+                                else {
+                                    stylesheet.disabled = true; //XXX: Leave this. WebKit wants to trigger this before for some reason.
+                                    stylesheet.setAttribute('rel', 'stylesheet alternate');
+                                }
+                            })(stylesheets[j]);
                         };
 
                         var bd = document.querySelectorAll('#document-views.do button:disabled');
