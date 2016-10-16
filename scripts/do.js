@@ -90,18 +90,18 @@ var DO = {
             "foafmaker": { "@id": "http://xmlns.com/foaf/0.1/maker", "@type": "@id" },
             "foafknows": { "@id": "http://xmlns.com/foaf/0.1/knows", "@type": "@id", "@array": true },
 
-            "schemaname": "https://schema.org/name",
-            "schemafamilyName": "https://schema.org/familyName",
-            "schemagivenName": "https://schema.org/givenName",
-            "schemaurl": { "@id": "https://schema.org/url", "@type": "@id" },
-            "schemaimage": { "@id": "https://schema.org/image", "@type": "@id" },
-            "schemacreator": { "@id": "https://schema.org/creator", "@type": "@id", "@array": true },
-            "schemaauthor": { "@id": "https://schema.org/author", "@type": "@id", "@array": true },
-            "schemalicense": { "@id": "https://schema.org/license", "@type": "@id" },
-            "schemacitation": { "@id": "https://schema.org/citation", "@type": "@id", "@array": true },
-            "schemaknows": { "@id": "https://schema.org/knows", "@type": "@id", "@array": true },
-            "schemadatePublished": "https://schema.org/datePublished",
-            "schemadescription": "https://schema.org/description",
+            "schemaname": "http://schema.org/name",
+            "schemafamilyName": "http://schema.org/familyName",
+            "schemagivenName": "http://schema.org/givenName",
+            "schemaurl": { "@id": "http://schema.org/url", "@type": "@id" },
+            "schemaimage": { "@id": "http://schema.org/image", "@type": "@id" },
+            "schemacreator": { "@id": "http://schema.org/creator", "@type": "@id", "@array": true },
+            "schemaauthor": { "@id": "http://schema.org/author", "@type": "@id", "@array": true },
+            "schemalicense": { "@id": "http://schema.org/license", "@type": "@id" },
+            "schemacitation": { "@id": "http://schema.org/citation", "@type": "@id", "@array": true },
+            "schemaknows": { "@id": "http://schema.org/knows", "@type": "@id", "@array": true },
+            "schemadatePublished": "http://schema.org/datePublished",
+            "schemadescription": "http://schema.org/description",
 
             "dctermstitle": "http://purl.org/dc/terms/title",
             "dctermsdescription": "http://purl.org/dc/terms/description",
@@ -967,7 +967,7 @@ var DO = {
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n\
 @prefix as: <https://www.w3.org/ns/activitystreams#> .\n\
 @prefix oa: <http://www.w3.org/ns/oa#> .\n\
-@prefix schema: <https://schema.org/> .\n\
+@prefix schema: <http://schema.org/> .\n\
 ';
 
             data += '<> a ' + o.type.join(', ') + '\n';
@@ -3519,7 +3519,7 @@ WHERE {\n\
                 options['cssStroke'] = '#333';
             }
 
-            var svg = '<svg height="100%" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# xsd: http://www.w3.org/2001/XMLSchema# qb: http://purl.org/linked-data/cube# prov: http://www.w3.org/ns/prov# schema: https://schema.org/" version="1.1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink"><style type="text/css">/*<![CDATA[*/line { stroke:' + options.cssStroke + '; stroke-width:1px; } circle { stroke:#f00; fill:#f00; }/*]]>*/</style>';
+            var svg = '<svg height="100%" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# xsd: http://www.w3.org/2001/XMLSchema# qb: http://purl.org/linked-data/cube# prov: http://www.w3.org/ns/prov# schema: http://schema.org/" version="1.1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink"><style type="text/css">/*<![CDATA[*/line { stroke:' + options.cssStroke + '; stroke-width:1px; } circle { stroke:#f00; fill:#f00; }/*]]>*/</style>';
 
             svg += DO.U.drawSparklineGraph(data, options);
             svg += '</svg>';
@@ -4071,7 +4071,7 @@ WHERE {\n\
             var note = '';
             var targetLabel = '';
             var articleClass = '';
-            var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: https://schema.org/ dcterms: http://purl.org/dc/terms/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# i: ' + n.iri + '"';
+            var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: http://schema.org/ dcterms: http://purl.org/dc/terms/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# i: ' + n.iri + '"';
 
             var motivatedByIRI = n.motivatedByIRI || '';
             var motivatedByLabel = '';
