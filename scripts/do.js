@@ -136,18 +136,18 @@ var DO = {
             "oamotivatedBy": { "@id": "http://www.w3.org/ns/oa#motivatedBy", "@type": "@id" },
             "oaannotationService": { "@id": "http://www.w3.org/ns/oa#annotationService", "@type": "@id", "@array": true },
 
-            "assubject": { "@id": "http://www.w3.org/ns/activitystreams#subject", "@type": "@id", "@array": true },
-            "asobject": { "@id": "http://www.w3.org/ns/activitystreams#object", "@type": "@id", "@array": true },
-            "astarget": { "@id": "http://www.w3.org/ns/activitystreams#target", "@type": "@id", "@array": true },
-            "asrelationship": { "@id": "http://www.w3.org/ns/activitystreams#relationship", "@type": "@id", "@array": true },
-            "ascontext": { "@id": "http://www.w3.org/ns/activitystreams#context", "@type": "@id", "@array": true },
-            "asinReplyTo": { "@id": "http://www.w3.org/ns/activitystreams#inReplyTo", "@type": "@id", "@array": true },
-            "asactor": { "@id": "http://www.w3.org/ns/activitystreams#actor", "@type": "@id" },
-            "asupdated": "http://www.w3.org/ns/activitystreams#updated",
-            "aspublished": "http://www.w3.org/ns/activitystreams#published",
-            "ascontent": "http://www.w3.org/ns/activitystreams#content",
-            "asname": "http://www.w3.org/ns/activitystreams#name",
-            "asimage": { "@id": "http://www.w3.org/ns/activitystreams#image", "@type": "@id" },
+            "assubject": { "@id": "https://www.w3.org/ns/activitystreams#subject", "@type": "@id", "@array": true },
+            "asobject": { "@id": "https://www.w3.org/ns/activitystreams#object", "@type": "@id", "@array": true },
+            "astarget": { "@id": "https://www.w3.org/ns/activitystreams#target", "@type": "@id", "@array": true },
+            "asrelationship": { "@id": "https://www.w3.org/ns/activitystreams#relationship", "@type": "@id", "@array": true },
+            "ascontext": { "@id": "https://www.w3.org/ns/activitystreams#context", "@type": "@id", "@array": true },
+            "asinReplyTo": { "@id": "https://www.w3.org/ns/activitystreams#inReplyTo", "@type": "@id", "@array": true },
+            "asactor": { "@id": "https://www.w3.org/ns/activitystreams#actor", "@type": "@id" },
+            "asupdated": "https://www.w3.org/ns/activitystreams#updated",
+            "aspublished": "https://www.w3.org/ns/activitystreams#published",
+            "ascontent": "https://www.w3.org/ns/activitystreams#content",
+            "asname": "https://www.w3.org/ns/activitystreams#name",
+            "asimage": { "@id": "https://www.w3.org/ns/activitystreams#image", "@type": "@id" },
 
             "siocreplyof": { "@id": "http://rdfs.org/sioc/ns#reply_of", "@type": "@id", "@array": true },
 
@@ -610,8 +610,8 @@ var DO = {
                                         resourceTypes.push(type.iri().toString());
                                     });
 
-                                    if(resourceTypes.indexOf('http://www.w3.org/ns/activitystreams#Like') > -1 ||
-                                       resourceTypes.indexOf('http://www.w3.org/ns/activitystreams#Dislike') > -1){
+                                    if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Like') > -1 ||
+                                       resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Dislike') > -1){
                                         if(s.asobject && s.asobject.at(0)) {
                                             if(s.ascontext && s.ascontext.at(0) && s.asobject.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
                                                 var context = s.ascontext.at(0).iri().toString();
@@ -630,7 +630,7 @@ var DO = {
                                                 var refId = 'r-' + id;
                                                 var refLabel = id;
 
-                                                var bodyText = (resourceTypes.indexOf('http://www.w3.org/ns/activitystreams#Like') > -1) ? 'Liked' : 'Disliked';
+                                                var bodyText = (resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Like') > -1) ? 'Liked' : 'Disliked';
 
                                                 var noteData = {
                                                     "type": 'article',
@@ -653,7 +653,7 @@ var DO = {
                                                         'iri': s.asactor.iri().toString()
                                                     }
                                                 }
-                                                else if(type == 'http://www.w3.org/ns/activitystreams#Dislike'){
+                                                else if(type == 'https://www.w3.org/ns/activitystreams#Dislike'){
                                                     noteData['creator'] = {
                                                         'name': 'Anonymous Coward'
                                                     }
@@ -670,7 +670,7 @@ var DO = {
                                             }
                                         }
                                     }
-                                    else if(resourceTypes.indexOf('http://www.w3.org/ns/activitystreams#Relationship') > -1){
+                                    else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Relationship') > -1){
                                         if(s.assubject && s.assubject.at(0) && s.asrelationship && s.asrelationship.at(0) && s.asobject && s.asobject.at(0) && s.asobject.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
                                             var subject = s.assubject.at(0).iri().toString();
                                             return DO.U.positionInteraction(subject).then(
@@ -682,7 +682,7 @@ var DO = {
                                                 });
                                         }
                                     }
-                                    else if(resourceTypes.indexOf('http://www.w3.org/ns/activitystreams#Announce') > -1) {
+                                    else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Announce') > -1) {
                                         if(s.asobject && s.asobject.at(0) && s.astarget && s.astarget.at(0) && s.astarget.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
                                             var object = s.asobject.at(0).iri().toString();
                                             return DO.U.positionInteraction(object).then(
@@ -965,7 +965,7 @@ var DO = {
             //TODO: More readable eg whitespace, CRs..
             var data = '@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n\
-@prefix as: <http://www.w3.org/ns/activitystreams#> .\n\
+@prefix as: <https://www.w3.org/ns/activitystreams#> .\n\
 @prefix oa: <http://www.w3.org/ns/oa#> .\n\
 @prefix schema: <https://schema.org/> .\n\
 ';
@@ -1056,7 +1056,7 @@ var DO = {
                                             function(i){
                                                 var x = JSON.parse(i);
 // console.log(x);
-                                                x[0]["@context"] = ["http://www.w3.org/ns/activitystreams", {"oa": "http://www.w3.org/ns/anno.jsonld"}];
+                                                x[0]["@context"] = ["https://www.w3.org/ns/activitystreams", {"oa": "http://www.w3.org/ns/anno.jsonld"}];
                                                 x[0]["@id"] = (x[0]["@id"].slice(0,2) == '_:') ? '' : x[0]["@id"];
                                                 var data = JSON.stringify(x) + '\n';
 // console.log(data);
@@ -2035,7 +2035,7 @@ var DO = {
                                 switch(toContentType) {
                                     case 'application/ld+json':
                                         var x = JSON.parse(i);
-                                        x[0]["@context"] = ["http://www.w3.org/ns/anno.jsonld", {"as": "http://www.w3.org/ns/activitystreams"}];
+                                        x[0]["@context"] = ["http://www.w3.org/ns/anno.jsonld", {"as": "https://www.w3.org/ns/activitystreams"}];
                                         x[0]["@id"] = (x[0]["@id"].slice(0,2) == '_:') ? '' : x[0]["@id"];
                                         return JSON.stringify(x) + '\n';
                                     default:
@@ -4071,7 +4071,7 @@ WHERE {\n\
             var note = '';
             var targetLabel = '';
             var articleClass = '';
-            var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: https://schema.org/ dcterms: http://purl.org/dc/terms/ oa: http://www.w3.org/ns/oa# as: http://www.w3.org/ns/activitystreams# i: ' + n.iri + '"';
+            var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: https://schema.org/ dcterms: http://purl.org/dc/terms/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# i: ' + n.iri + '"';
 
             var motivatedByIRI = n.motivatedByIRI || '';
             var motivatedByLabel = '';
