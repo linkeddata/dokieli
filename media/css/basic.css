@@ -65,6 +65,88 @@ dl[id^="document-"], #authors {
   margin-left:1em;
 }
 
+#authors {
+margin:0 auto 2.5em -3%;
+text-align:center;
+width:106%;
+}
+
+#authors dl {
+line-height:1;
+}
+
+#author-org {
+font-size:0.923em;
+}
+
+#author-email,
+#author-uri {
+fontfamily:monospace;
+font-size:0.923em;
+}
+
+
+#authors dl,
+#authors ul {
+margin:0;
+text-align:center;
+}
+
+.authors {
+margin:0;
+}
+
+#authors dd,
+#authors li,
+.authors dd {
+display:inline !important;
+margin:0;
+}
+
+#authors dd:not(:empty):after,
+#author-email li:not(:empty):after,
+#author-org li:not(:empty):after,
+#author-uri li:not(:empty):after,
+.authors dd:not(:empty):after {
+content:",\0020";
+}
+#authors dd:last-child:after,
+#author-email li:last-child:after,
+#author-org li:last-child:after,
+#author-uri li:last-child:after,
+.authors dd:last-child:after {
+content:"";
+}
+#authors sup {
+margin-left:1px;
+}
+#authors sup:after {
+content:",";
+}
+#authors sup:last-child:after,
+#authors sup:first-child:after {
+content:"" !important;
+}
+#authors dt,
+.authors dt {
+display:none;
+}
+
+#authors p {
+text-align:center;
+}
+
+#authors li {
+list-style-type:none;
+}
+
+ul ul {
+margin-left:1em;
+}
+
+#document-identifier {
+margin-top:1em;
+}
 
 a { color: #009000; }
 ul { padding: 0; }
