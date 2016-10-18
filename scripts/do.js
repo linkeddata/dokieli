@@ -2358,9 +2358,22 @@ var DO = {
                             noteData.license["name"] = DO.C.License[license.value.trim()];
                         }
 
-                        var noteHTML = DO.U.createNoteHTML(noteData);
+                        var note = DO.U.createNoteHTML(noteData);
 
-                        DO.U.putResource(noteIRI, noteHTML).then(
+                        var data = '<!DOCTYPE html>\n\
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
+    <head>\n\
+        <meta charset="utf-8" />\n\
+        <title>' + noteIRI + '</title>\n\
+    </head>\n\
+    <body>\n\
+        <main>' + note + '\n\
+        </main>\n\
+    </body>\n\
+</html>\n\
+';
+
+                        DO.U.putResource(noteIRI, data).then(
                             function(i){
                                 replyToResource.querySelector('.response-message').innerHTML = '<p class="success"><a href="' + i.xhr.responseURL + '">Reply saved!</a></p>';
                                 // Then send notification
