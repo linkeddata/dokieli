@@ -482,6 +482,7 @@ line-height:1;
 #categories-and-subject-descriptors li,
 #keywords li {
 list-style-type:none;
+margin-left:0;
 }
 
 #authors li {
