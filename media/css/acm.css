@@ -477,12 +477,15 @@ text-align:center;
 margin:0 0 1em 0;
 line-height:1;
 }
-
+#authors ul,
+#categories-and-subject-descriptors ul,
+#keywords ul {
+margin-left:0;
+}
 #authors li,
 #categories-and-subject-descriptors li,
 #keywords li {
 list-style-type:none;
-margin-left:0;
 }
 
 #authors li {
