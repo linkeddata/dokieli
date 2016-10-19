@@ -146,6 +146,9 @@ column-gap:1.9em;
 p, ol, ul, table, figure {
 margin-bottom:1em;
 }
+ul, ol {
+margin-left:1em;
+}
 
 h1 {
 margin:0.75em auto 1.25em auto;
@@ -237,7 +240,7 @@ text-align:justify;
 }
 
 li {
-list-style-position:inside;
+/*list-style-position:inside;*/
 margin-bottom:0.25em;
 }
 
