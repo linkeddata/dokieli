@@ -891,6 +891,7 @@ margin-bottom:0;
 
 #references ol {
 counter-reset:list-order;
+margin-left:0;
 }
 #references ol li {
 counter-increment:list-order;
