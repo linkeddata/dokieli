@@ -32,7 +32,7 @@ h1 {
   font-family: Serif; font-weight: normal; font-size: 4em;
   text-align: center;
   margin:0.75em 0;
-  color:#009000;
+  color:#000;
 }
 h2, h3, h4 { font-family: Arial, Helvetica, sans-serif; }
 h2 { font-size: 1.4em; line-height:1; }
