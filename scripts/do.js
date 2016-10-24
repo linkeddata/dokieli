@@ -2078,7 +2078,7 @@ var DO = {
                     'element': 'mark'
                 },
                 'replaceClassItemWith': {
-                    'source': 'on-document-menu',
+                    'source': "on-document-menu medium-editor-element",
                     'target': ''
                 },
                 'skipClassWithValue': ''
@@ -2123,9 +2123,13 @@ var DO = {
                             var atn = node.attributes[i];
                             if (skipAttributes[atn.name]) continue;
                             if (/^\d+$/.test(atn.name)) continue;
-                            if (atn.name == 'class' && 'replaceClassItemWith' in options && (atn.value.split(' ').indexOf(options.replaceClassItemWith.source) > -1)) {
-                                var re = new RegExp(options.replaceClassItemWith.source, 'g');
-                                atn.value = atn.value.replace(re, options.replaceClassItemWith.target).trim();
+                            if (atn.name == 'class' && 'replaceClassItemWith' in options) {
+                                atn.value.split(' ').forEach(function(aValue){
+                                    if(options.replaceClassItemWith.source.split(' ').indexOf(aValue) > -1) {
+                                        var re = new RegExp(aValue, 'g');
+                                        atn.value = atn.value.replace(re, options.replaceClassItemWith.target).trim();
+                                    }
+                                });
                             }
                             if (!(atn.name == 'class' && 'skipClassWithValue' in options && options.skipClassWithValue == atn.value)) {
                                 attrList.push(atn.name + "=\"" + atn.value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;') + "\"");
