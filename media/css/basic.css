@@ -47,6 +47,7 @@ section article h3 {
   text-align:left;
 }
 
+article article,
 section {
   max-width: calc(100% - 1em);
   padding: 0 0.5em;
@@ -149,7 +150,7 @@ margin-top:1em;
 }
 
 a { color: #009000; }
-ul { padding: 0; }
+ul { padding: 0; margin-bottom:1em; }
 nav ul,
 aside ul { list-style: none; }
 
@@ -245,6 +246,7 @@ video, audio, object {
 }
 
 @media screen and (min-width: 768px){
+  article article,
   section {
     width: 50%;
     margin: 2em auto;
