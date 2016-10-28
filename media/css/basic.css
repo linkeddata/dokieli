@@ -56,6 +56,19 @@ section section {
   width:100%;
   max-width:none;
 }
+dl[id^="document-"] dt,
+dl[id^="document-"] dd {
+display:inline;
+}
+dl[id^="document-"] dt {
+font-weight:bold;
+}
+dl[id^="document-"] dt:after{
+content:": ";
+}
+dl[id^="document-"] dd {
+margin:0;
+}
 dl[id^="document-"], #authors {
   max-width: none;
   width: 100%;
