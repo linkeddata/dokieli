@@ -250,6 +250,12 @@ margin:0;
   background-color: #ccc;
 }
 
+ul#program-committee {
+column-count: 2;
+-moz-column-count: 2;
+-webkit-column-count: 2;
+}
+
 video {
   max-width: 100%;
   height: auto;
