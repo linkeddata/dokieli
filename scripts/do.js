@@ -382,7 +382,7 @@ var DO = {
             }
 
             var userImage = '';
-            if ('Image' in DO.C.User && DO.C.User.Image.length > 0) {
+            if ('Image' in DO.C.User && typeof DO.C.User.Image !== 'undefined' && DO.C.User.Image.length > 0) {
                 userImage = '<img alt="" height="48" rel="schema:image" src="' + DO.C.User.Image + '" width="48" />';
             }
 
