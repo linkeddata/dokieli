@@ -70,7 +70,8 @@ dl[id^="document-"] dt:after,
 dl[class~="inbox"] dt:after {
 content:": ";
 }
-dl[id^="document-"] dd {
+dl[id^="document-"] dd,
+dl[class~="inbox"] dd {
 margin:0;
 }
 dl[id^="document-"], #authors {
