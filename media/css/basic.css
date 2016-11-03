@@ -57,13 +57,17 @@ section section {
   max-width:none;
 }
 dl[id^="document-"] dt,
-dl[id^="document-"] dd {
+dl[id^="document-"] dd,
+dl[class~="inbox"] dt,
+dl[class~="inbox"] dd {
 display:inline;
 }
-dl[id^="document-"] dt {
+dl[id^="document-"] dt,
+dl[class~="inbox"] dt {
 font-weight:bold;
 }
-dl[id^="document-"] dt:after{
+dl[id^="document-"] dt:after,
+dl[class~="inbox"] dt:after {
 content:": ";
 }
 dl[id^="document-"] dd {
