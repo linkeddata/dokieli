@@ -83,11 +83,13 @@ font-size:6pt;
 }
 
 #document-in-reply-to dd a,
-#document-inbox dd a {
+#document-inbox dd a,
+.inbox dd a {
 font-size:0;
 }
 #document-in-reply-to dd a:before,
-#document-inbox dd a:before {
+#document-inbox dd a:before,
+.inbox dd a:before {
 content:attr(href);
 font-size:9pt;
 }
