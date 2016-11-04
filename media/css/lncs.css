@@ -128,6 +128,18 @@ height:100px !important;
 min-height:auto !important;
 max-height:100px !important;
 }
+
+#document-in-reply-to dd a,
+#document-inbox dd a,
+.inbox dd a {
+font-size:0;
+}
+#document-in-reply-to dd a:before,
+#document-inbox dd a:before,
+.inbox dd a:before {
+content:attr(href);
+font-size:10pt;
+}
 } /* media print */
 
 
@@ -598,7 +610,8 @@ content:"";
 #general-terms h2:after,
 #categories-and-subject-descriptors h2:after,
 #keywords h2:after,
-.target dt:after {
+.target dt:after,
+.inbox dt:after {
 content:":";
 }
 
@@ -643,7 +656,9 @@ content:".";
 #document-event dt,
 #document-event dt + dd,
 #document-inbox dt,
-#document-inbox dt + dd {
+#document-inbox dt + dd,
+.inbox dt,
+.inbox dt + dd {
 display:inline;
 }
 
