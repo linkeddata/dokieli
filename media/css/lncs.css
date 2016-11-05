@@ -162,7 +162,7 @@ min-height:240px;
 object[type="text/html"] { min-height:480px; }
 img { max-width:100%; height:auto; vertical-align:middle; }
 video, audio { display:block; max-width:60%; height:auto; margin:0 auto; }
-iframe { display:block; margin:0 auto; width:calc(); }
+iframe { display:block; margin:0 auto; }
 
 
 object.slides { display:none; }
@@ -321,7 +321,7 @@ section article img {
 margin-right:0.25em;
 }
 section article p:last-child {
-margin-bottom:0;`
+margin-bottom:0;
 }
 
 
