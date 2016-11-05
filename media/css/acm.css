@@ -82,16 +82,14 @@ figure pre {
 font-size:6pt;
 }
 
-#document-in-reply-to dd a,
-#document-inbox dd a,
+dl[id^="document-"] dd a,
 .inbox dd a {
-font-size:0;
+font-size:0 !important;
 }
-#document-in-reply-to dd a:before,
-#document-inbox dd a:before,
+dl[id^="document-"] a:before,
 .inbox dd a:before {
-content:attr(href);
-font-size:9pt;
+content:attr(href) !important;
+font-size:10pt !important;
 }
 }
 
