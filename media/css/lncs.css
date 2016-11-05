@@ -130,11 +130,15 @@ min-height:auto !important;
 max-height:100px !important;
 }
 
-dl[id^="document-"] dd a,
+#document-in-reply-to dd a,
+#document-see-also dd a,
+#document-inbox dd a,
 .inbox dd a {
 font-size:0 !important;
 }
-dl[id^="document-"] a:before,
+#document-in-reply-to dd a:before,
+#document-see-also dd a:before,
+#document-inbox dd a:before,
 .inbox dd a:before {
 content:attr(href) !important;
 font-size:10pt !important;
