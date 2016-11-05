@@ -445,7 +445,7 @@ dl.proof dd span {
 display:inline;
 }
 dl.proof dd > *:last-child:after {
-content:"\00A0\00A0\25A1";
+content:"\00a0\00a0\25a1";
 font-size:1.5em;
 }
 
@@ -654,12 +654,12 @@ display:inline;
 }
 #general-terms li:after,
 #categories-and-subject-descriptors li:after {
-content:";\00A0";
+content:";\00a0";
 }
 #general-terms li:after,
 #keywords li:after,
 #document-format dd:after {
-content:",\00A0";
+content:",\00a0";
 }
 #general-terms li:last-child:after,
 #categories-and-subject-descriptors li:last-child:after,
@@ -915,7 +915,7 @@ margin-left:1.85em;
 text-align:left;
 }
 #references ol li:before {
-content:"[" counter(list-order) "]\00A0\00A0\00A0";
+content:"[" counter(list-order) "]\00a0\00a0\00a0";
 margin-left:-1.85em;
 }
 
@@ -935,7 +935,7 @@ counter-reset:sub-sub-appendix;
 counter-increment:sub-sub-appendix;
 }
 #appendix section h2:before {
-content:counter(appendix, upper-latin) ".\00A0\00A0\00A0\00A0";
+content:counter(appendix, upper-latin) ".\00a0\00a0\00a0\00a0";
 }
 #appendix section section h3:before {
 content:counter(appendix, upper-latin) "." counter(sub-appendix) "\00a0\00a0\00a0";
