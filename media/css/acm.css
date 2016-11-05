@@ -186,6 +186,7 @@ h2, h3,
 #document-license dt,
 #document-format dt,
 #document-inbox dt,
+#document-see-also dt,
 #appendix dt {
 font-size:1.333em;
 }
@@ -692,7 +693,8 @@ margin:0 2%;
 #document-in-reply-to dd,
 #document-license dd,
 #document-format dd,
-#document-inbox dd {
+#document-inbox dd,
+#document-see-also dd {
 text-align:left;
 margin-left:0;
 }
