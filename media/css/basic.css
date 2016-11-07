@@ -269,6 +269,35 @@ video, audio, object {
   vertical-align: middle;
 }
 
+figure,
+audio,
+video,
+iframe,
+canvas {
+margin:1em 0;
+position:relative;
+text-align:center;
+}
+figure pre,
+figcaption {
+text-align:left;
+}
+figure.listing pre {
+border:1px solid #000;
+padding:0.5em;
+counter-reset:precode;
+margin-top:0;
+}
+figure.listing pre code:before,
+figure.listing pre samp:before {
+position:absolute;
+left:-1.75em;
+text-align:right;
+content:counter(precode);
+counter-increment:precode;
+}
+
+
 @media screen and (min-width: 768px){
   article > article,
   section {
