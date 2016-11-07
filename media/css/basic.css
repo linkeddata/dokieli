@@ -47,7 +47,7 @@ section article h3 {
   text-align:left;
 }
 
-article article,
+article > article,
 section {
   max-width: calc(100% - 1em);
   padding: 0 0.5em;
@@ -270,7 +270,7 @@ video, audio, object {
 }
 
 @media screen and (min-width: 768px){
-  article article,
+  article > article,
   section {
     width: 50%;
     margin: 2em auto;
