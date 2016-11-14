@@ -56,6 +56,53 @@ section section {
   width:100%;
   max-width:none;
 }
+
+main form {
+margin:1em 0;
+}
+main form ul,
+main form ol {
+margin:0;
+}
+main form li {
+margin-bottom:0.5em;
+list-style-type:none;
+}
+main form p {
+text-indent:0;
+}
+main fieldset {
+padding:1em;
+}
+main legend { font-weight:bold; }
+main label {
+display:inline-block;
+font-weight:bold;
+width:10%;
+vertical-align:top;
+}
+main input,
+main textarea,
+main select,
+main button {
+font-family:inherit;
+font-size:inherit;
+}
+main input,
+main textarea,
+main select {
+padding:0.25em;
+display:inline-block;
+}
+main input,
+main textarea {
+width:80%;
+}
+main input[type=submit] {
+font-weight:bold;
+width:auto;
+}
+
 dl[id^="document-"] dt,
 dl[id^="document-"] dd,
 dl[class~="inbox"] dt,
