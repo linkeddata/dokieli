@@ -45,6 +45,9 @@ control.
 * Views for screen and print (e.g., ACM, LNCS) - yes, you can output to a *paper user interface*: PDF
 * .. and [many more on the way](https://github.com/linkeddata/dokieli/issues/)
 
+"Yea, okay, whatever, but it doesn't do x, y, z!" -- We hear ye! You are welcome to create [issues](https://github.com/linkeddata/dokieli/issues/), [discuss](https://gitter.im/linkeddata/dokieli), or pull requests. Make it so!
+
+
 ## Screencasts
 Also available on https://dokie.li/ (with captions):
 
