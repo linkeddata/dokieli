@@ -72,6 +72,18 @@ var DO = {
                 '<option value="https://creativecommons.org/licenses/by-nc-nd/4.0/" title="Creative Commons Attribution-NonCommercial-NoDerivates">CC BY-NC-ND</option>'
             ]
         },
+        CitationOptions: [
+            '<option value="http://purl.org/spar/cito/cites">cites</option>',
+            '<option value="http://purl.org/spar/cito/citesAsAuthority">authority</option>',
+            '<option value="http://purl.org/spar/cito/citesAsDataSource">data source</option>',
+            '<option value="http://purl.org/spar/cito/citesAsEvidence">evidence</option>',
+            '<option value="http://purl.org/spar/cito/citesAsMetadataDocument">metadata document</option>',
+            '<option value="http://purl.org/spar/cito/citesAsPotentialSolution">potential solution</option>',
+            '<option value="http://purl.org/spar/cito/citesAsRecommendedReading">recommended reading</option>',
+            '<option value="http://purl.org/spar/cito/citesAsRelated">related</option>',
+            '<option value="http://purl.org/spar/cito/citesAsSourceDocument">source document</option>',
+            '<option value="http://purl.org/spar/cito/citesForInformation">for information</option>'
+        ],
 
         Vocab: {
             "rdftype": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "@type": "@id", "@array": true },
