@@ -3359,7 +3359,7 @@ console.log(inbox);
                 authors = authors.join(', ');
             }
 
-            var citationHTML = authors + ': ' + title + datePublished + ', <a about="#' + options.refId + '" href="' + citationId + '" rel="schema:citation">' + citationId + '</a>' + dateAccessed;
+            var citationHTML = authors + ': ' + title + datePublished + ', <a about="#' + options.refId + '" href="' + citationId + '" rel="schema:citation ' + options.citationRelation  + '">' + citationId + '</a>' + dateAccessed;
 //console.log(citationHTML);
             return Promise.resolve(citationHTML);
         },
@@ -4999,6 +4999,9 @@ WHERE {\n\
                                     template = [
                                     '<input type="radio" name="citation-type" value="ref-footnote" id="ref-footnote" /> <label for="ref-footnote">Footnote</label>',
                                     '<input type="radio" name="citation-type" value="ref-reference" id="ref-reference" /> <label for="ref-reference">Reference</label>',
+                                    '<select id="citation-relation" name="citation-relation" class="medium-editor-toolbar-select">',
+                                    DO.U.getCitationOptionsHTML(),
+                                    '</select>',
                                     '<input type="text" name="citation-url" value="" id="citation-url" class="medium-editor-toolbar-input" placeholder="http://example.org/article#results" />',
                                     '<textarea id="citation-content" cols="20" rows="1" class="medium-editor-toolbar-textarea" placeholder="', this.placeholderText, '"></textarea>'
                                     ];
@@ -5351,6 +5354,7 @@ WHERE {\n\
                                     break;
                                 case 'cite':
                                     opts.citationType = this.getInput().citationType.value;
+                                    opts.citationRelation = this.getInput().citationRelation.value;
                                     opts.url = this.getInput().url.value;
                                     opts.content = this.getInput().content.value;
                                     break;
@@ -6044,6 +6048,7 @@ console.log(annotationDistribution);
                                     break;
                                 case 'cite':
                                     r.citationType = this.getForm().querySelector('input[name="citation-type"]:checked');
+                                    r.citationRelation = this.getForm().querySelector('#citation-relation.medium-editor-toolbar-select');
                                     r.url = this.getForm().querySelector('#citation-url.medium-editor-toolbar-input');
                                     r.content = this.getForm().querySelector('#citation-content.medium-editor-toolbar-textarea');
                                     break;

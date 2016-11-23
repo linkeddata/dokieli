@@ -745,6 +745,9 @@ vertical-align: top;
 .medium-editor-toolbar-form input:nth-of-type(2):before {
 margin-left: 68px;
 }
+#ref-reference {
+margin-left:1.5em;
+}
 
 .medium-editor-element img {
 max-width:none;
