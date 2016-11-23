@@ -3392,7 +3392,9 @@ console.log(inbox);
                 authors = authors.join(', ') + ': ';
             }
 
-            var citationHTML = authors + title + datePublished + '<a about="#' + options.refId + '" href="' + citationId + '" rel="schema:citation ' + options.citationRelation  + '">' + citationId + '</a>' + dateAccessed;
+            var content = ('content' in options && options.content.length > 0) ? options.content + ', ' : '';
+
+            var citationHTML = authors + title + datePublished + content + '<a about="#' + options.refId + '" href="' + citationId + '" rel="schema:citation ' + options.citationRelation  + '">' + citationId + '</a>' + dateAccessed;
 //console.log(citationHTML);
             return Promise.resolve(citationHTML);
         },
