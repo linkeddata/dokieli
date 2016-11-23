@@ -72,7 +72,7 @@ var DO = {
                 '<option value="https://creativecommons.org/licenses/by-nc-nd/4.0/" title="Creative Commons Attribution-NonCommercial-NoDerivates">CC BY-NC-ND</option>'
             ]
         },
-        CitationOption: [
+        CitationOptions: [
             '<option value="http://purl.org/spar/cito/agreesWith">agrees with</option>',
             '<option value="http://purl.org/spar/cito/citesAsAuthority">as authority</option>',
             '<option value="http://purl.org/spar/cito/citesAsDataSource">as data source</option>',
