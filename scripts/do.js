@@ -5881,7 +5881,9 @@ console.log(annotationDistribution);
                                             DO.U.positionNote(refId, refLabel, id);
                                             break;
                                         case 'ref-reference':
-                                            var options = { refId: refId, citationId: opts.url };
+                                            var options = opts;
+                                            options['citationId'] = opts.url;
+                                            options['refId'] = refId;
 
                                             var citation = function() {
                                                 return new Promise(function(resolve, reject) {
