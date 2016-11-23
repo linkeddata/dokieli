@@ -3331,8 +3331,9 @@ console.log(inbox);
             var subject = citationGraph.child(citationURI);
             var title = subject.schemaname || subject.dctermstitle || subject.rdfslabel || '';
             title = title.replace(/ & /g, " &amp; ");
+            title = (title.length > 0) ? title + ', ' : '';
             var datePublished = subject.schemadatePublished || subject.dctermsissued || subject.dctermsdate || subject.dctermscreated || '';
-            datePublished = (datePublished) ? ', ' + datePublished.substr(0,4) : '';
+            datePublished = (datePublished) ? datePublished.substr(0,4) + ', ' : '';
             var dateAccessed = ' [Accessed: ' + DO.U.getDateTimeISO() + ']';
             var authors = [], authorList = [];
 // console.log(subject);
@@ -3388,10 +3389,10 @@ console.log(inbox);
                         authors.push(authorIRI);
                     }
                 });
-                authors = authors.join(', ');
+                authors = authors.join(', ') + ': ';
             }
 
-            var citationHTML = authors + ': ' + title + datePublished + ', <a about="#' + options.refId + '" href="' + citationId + '" rel="schema:citation ' + options.citationRelation  + '">' + citationId + '</a>' + dateAccessed;
+            var citationHTML = authors + title + datePublished + '<a about="#' + options.refId + '" href="' + citationId + '" rel="schema:citation ' + options.citationRelation  + '">' + citationId + '</a>' + dateAccessed;
 //console.log(citationHTML);
             return Promise.resolve(citationHTML);
         },
