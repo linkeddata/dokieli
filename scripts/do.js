@@ -4375,6 +4375,12 @@ WHERE {\n\
             return DO.C.LicenseOptions[type].join('');
         },
 
+        getCitationOptionsHTML: function(type) {
+            var type = type || 'cites';
+
+            return DO.C.CitationOptions.join('');
+        },
+
         Editor: {
             disableEditor: function(e) {
         //        _mediumEditors[1].destroy();
