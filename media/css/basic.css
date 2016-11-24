@@ -321,9 +321,9 @@ audio,
 video,
 iframe,
 canvas {
-margin:1em 0;
-position:relative;
+margin:1em auto;
 text-align:center;
+display:block;
 }
 figure pre,
 figcaption {
