@@ -296,13 +296,13 @@ margin:0;
   width: 100%; background-color: #009000; display: block;
 }
 
-#do-index #video {
+#do-index #video-overview {
   text-align: center;
   width: 100%;
   background-color: #ccc;
 }
 #do-index #features h2,
-#do-index #video h2 {
+#do-index #video-overview h2 {
 display:none;
 }
 
@@ -330,9 +330,11 @@ margin:1em auto;
 text-align:center;
 display:block;
 }
-figure pre,
-figcaption {
+figure pre {
 text-align:left;
+}
+figcaption {
+text-align:center;
 }
 figure.listing pre {
 border:1px solid #000;
