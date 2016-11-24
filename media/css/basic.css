@@ -301,6 +301,11 @@ margin:0;
   width: 100%;
   background-color: #ccc;
 }
+#do-index #features h2,
+#do-index #video h2 {
+display:none;
+}
+
 
 ul#program-committee {
 column-count: 2;
