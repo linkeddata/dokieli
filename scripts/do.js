@@ -3396,7 +3396,7 @@ console.log(inbox);
 
             var citationHTML = authors + title + datePublished + content + '<a about="#' + options.refId + '" href="' + citationId + '" rel="schema:citation ' + options.citationRelation  + '">' + citationId + '</a>' + dateAccessed;
 //console.log(citationHTML);
-            return Promise.resolve(citationHTML);
+            return citationHTML;
         },
 
         createRefName: function(familyName, givenName, refType) {
@@ -5938,8 +5938,8 @@ console.log(annotationDistribution);
                                                 });
                                             };
 
-                                            citation().then(
-                                                function(citationGraph) {
+                                            citation()
+                                                .then(function(citationGraph) {
                                                     var citationURI = '';
                                                     if(opts.url.match(/^10\.\d+\//)) {
                                                         citationURI = 'http://dx.doi.org/' + opts.url;
@@ -5956,14 +5956,8 @@ console.log(annotationDistribution);
                                                         citationURI = window.location.origin + window.location.pathname;
                                                     }
 
-                                                    return DO.U.getCitationHTML(citationGraph, citationURI, options);
-                                                },
-                                                function(reason) {
-                                                    console.log(reason);
-                                                    return Promise.reject({'message': reason});
-                                                }
-                                            ).then(
-                                                function(citation){
+                                                    var citation = DO.U.getCitationHTML(citationGraph, citationURI, options);
+
                                                     var r = document.querySelector('#references ol');
                                                     if (!r) {
                                                         var section = '<section id="references"><h2>References</h2><div><ol></ol></div></section>';
@@ -5972,12 +5966,32 @@ console.log(annotationDistribution);
                                                     }
                                                     var citationHTML = '<li id="' + id + '">' + citation + '</li>';
                                                     r.insertAdjacentHTML('beforeend', citationHTML);
-                                                },
-                                                function(reason){
-                                                    console.log(reason);
-                                                    return reason;
-                                                }
-                                            );
+
+// console.log(options.url);
+                                                    var s = citationGraph.child(citationURI);
+// console.log(s);
+                                                    if (s.ldpinbox._array.length > 0) {
+                                                        var inbox = s.ldpinbox.at(0).iri().toString();
+// console.log(inbox);
+
+                                                        var citedBy = location.href.split(location.search||location.hash||/[?#]/)[0] + '#' + options.refId;
+
+                                                        var notificationStatements = '<' + citedBy + '> <' + options.citationRelation + '> <' + options.url + '> .';
+
+                                                        var notificationData = {
+                                                            "type": ['as:Announce'],
+                                                            "inbox": inbox,
+                                                            "object": citedBy,
+                                                            "target": options.url,
+                                                            "statements": notificationStatements
+                                                        };
+
+                                                        DO.U.notifyInbox(notificationData).then(
+                                                            function(s){
+                                                                console.log('Sent Linked Data Notification: ' + options.url);
+                                                            });
+                                                    }
+                                                });
                                             break;
                                     }
                                     break;
