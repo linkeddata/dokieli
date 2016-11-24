@@ -105,11 +105,14 @@
                         <div datatype="rdf:HTML" property="schema:description">
                             <p>Wherever your article is published, readers can leave annotations and replies if they have their own personal datastore to save them to. If your article is published on a Solid server, you can offer to store annotations and replies on their behalf, and enable anonymous responses too. All annotations and replies can be saved with a <i class="fa fa-creative-commons"></i> Creative Commons license.</p>
 
-                            <video id="video-dokieli-annotation" rel="schema:hasPart" preload="none" controls="controls" width="800" height="600" poster="https://dokie.li/media/images/dokieli-annotation.jpg">
-                                <source about="#video-dokieli-annotation" rel="schema:hasPart" resource="https://dokie.li/media/video/dokieli-annotation.webm"  typeof="fabio:Film" src="https://dokie.li/media/video/dokieli-annotation.webm" type="video/webm">
-                                    <span about="https://dokie.li/media/video/dokieli-annotation.webm" property="schema:name">Video of dokieli Annotation</span>
-                                </source>
-                            </video>
+                            <figure id="figure-dokieli-annotation" rel="schema:hasPart" resource="#figure-dokieli-annotation">
+                                <video id="video-dokieli-annotation" rel="schema:hasPart" preload="none" controls="controls" width="800" poster="https://dokie.li/media/images/dokieli-annotation.jpg">
+                                    <source about="#video-dokieli-annotation" rel="schema:hasPart" resource="https://dokie.li/media/video/dokieli-annotation.webm"  typeof="fabio:Film" src="https://dokie.li/media/video/dokieli-annotation.webm" type="video/webm">
+                                        <span about="https://dokie.li/media/video/dokieli-annotation.webm" property="schema:name">Video of dokieli Web Annotation</span>
+                                    </source>
+                                </video>
+                                <figcaption property="schema:name">Video of dokieli Web Annotation</figcaption>
+                            </figure>
                         </div>
                     </section>
                     <section id="notify" inlist="" rel="schema:hasPart" resource="#notify">
@@ -117,11 +120,14 @@
                         <div datatype="rdf:HTML" property="schema:description">
                             <p>dokieli implements <a about="" rel="doap:implements" href="https://www.w3.org/TR/ldn">Linked Data Notifications</a> (Working Draft at <a href="http://www.w3.org/Social/WG">W3C Social Web Working Group</a>) for notifications about articles (or any part of them). Whenever someone interacts with your article through dokieli, you'll receive a notification in the appropriate <a about="" href="inbox/" rel="ldp:inbox">inbox</a> <i class="fa fa-inbox"></i>. Right now you get notifications for annotations, replies, shares, reviews, citations/links, bookmarks and likes.</p>
 
-                            <video id="video-dokieli-share" rel="schema:hasPart" preload="none" controls="controls" width="800" height="600" poster="https://dokie.li/media/images/dokieli-share.jpg">
-                                <source about="#video-dokieli-share" rel="schema:hasPart" resource="https://dokie.li/media/video/dokieli-share.webm"  typeof="fabio:Film" src="https://dokie.li/media/video/dokieli-share.webm" type="video/webm">
-                                    <span about="https://dokie.li/media/video/dokieli-share.webm" property="schema:name">Video of dokieli Share</span>
-                                </source>
-                            </video>
+                            <figure id="figure-dokieli-share" rel="schema:hasPart" resource="#figure-dokieli-share">
+                                <video id="video-dokieli-share" rel="schema:hasPart" preload="none" controls="controls" width="800" poster="https://dokie.li/media/images/dokieli-share.jpg">
+                                    <source about="#video-dokieli-share" rel="schema:hasPart" resource="https://dokie.li/media/video/dokieli-share.webm"  typeof="fabio:Film" src="https://dokie.li/media/video/dokieli-share.webm" type="video/webm">
+                                        <span about="https://dokie.li/media/video/dokieli-share.webm" property="schema:name">Video of dokieli Share</span>
+                                    </source>
+                                </video>
+                                <figcaption property="schema:name">Video of dokieli Share</figcaption>
+                            </figure>
                         </div>
                     </section>
                     <section id="embed" inlist="" rel="schema:hasPart" resource="#embed">
@@ -152,7 +158,7 @@
                     <section id="video" inlist="" rel="schema:hasPart" resource="#video-dokieli">
                         <h2 property="schema:name">Video dokieli</h2>
                         <div datatype="rdf:HTML">
-                            <video id="video-dokieli" rel="schema:hasPart" preload="none" controls="controls" width="800" height="600" poster="https://dokie.li/media/images/dokieli-article-fragment.svg">
+                            <video id="video-dokieli" rel="schema:hasPart" preload="none" controls="controls" width="800" poster="https://dokie.li/media/images/dokieli-article-fragment.svg">
                                 <source about="#video-dokieli" rel="schema:hasPart" resource="https://dokie.li/media/video/dokieli.webm"  typeof="fabio:Film" src="https://dokie.li/media/video/dokieli.webm" type="video/webm">
                                     <span about="https://dokie.li/media/video/dokieli.webm" property="schema:name">Video of dokieli</span>
                                 </source>
@@ -171,19 +177,25 @@
                         <div datatype="rdf:HTML" property="schema:description">
                             <p>dokieli envisions research results, analysis and data all being produced interactively on the web and seamlessly linked to and from ‘papers’. Through annotations and notifications, the academic process of peer-review can be open, transparent and decentralised.</p>
 
-                            <video controls="controls" height="400" id="video-dokieli-citation" poster="https://dokie.li/media/images/dokieli-citation.jpg" preload="none" about="" rel="schema:hasPart" width="800">
-                                <source about="#video-dokieli-citation" rel="schema:hasPart" resource="https://dokie.li/media/video/dokieli-citation.webm" src="https://dokie.li/media/video/dokieli-citation.webm" type="video/webm" typeof="fabio:Film">
-                                    <span about="https://dokie.li/media/video/dokieli-citation.webm" property="schema:name">Video of granular semantic citations in dokieli</span>
-                                </source>
-                            </video>
+                            <figure id="figure-dokieli-citation" rel="schema:hasPart" resource="#figure-dokieli-citation">
+                                <video controls="controls" id="video-dokieli-citation" poster="https://dokie.li/media/images/dokieli-citation.jpg" preload="none" width="800" about="" rel="schema:hasPart">
+                                    <source about="#video-dokieli-citation" rel="schema:hasPart" resource="https://dokie.li/media/video/dokieli-citation.webm" src="https://dokie.li/media/video/dokieli-citation.webm" type="video/webm" typeof="fabio:Film">
+                                        <span about="https://dokie.li/media/video/dokieli-citation.webm" property="schema:name">Video of semantic inline citations and notification in dokieli</span>
+                                    </source>
+                                </video>
+                                <figcaption property="schema:name">Video of semantic inline citations and notification in dokieli</figcaption>
+                            </figure>
 
                             <p id="linked-research">This is in line with the goals of the <i class="fa fa-mortar-board"></i> <a href="https://linkedresearch.org/">Linked Research</a> initiative. As an increasing number of conferences are accepting HTML submissions, you can write your paper <i class="fa fa-newspaper-o"></i> with dokieli and export to HTML or PDF for submission; we provide stylesheets for <a href="https://dokie.li/lncs-splnproc">LNCS</a> and <a href="https://dokie.li/acm-sigproc-sp">ACM</a> publication layouts out of the box. Here is <a href="http://csarven.ca/dokieli">one article, about dokieli</a>, and <a href="https://github.com/linkeddata/dokieli/wiki#examples-in-the-wild">others in the wild</a>.</p>
 
-                            <video controls="controls" height="400" id="video-dokieli-sparqlines" poster="https://dokie.li/media/images/GDP-per-capita-growth--annual---.svg" preload="none" about="" rel="schema:hasPart" width="800">
-                                <source about="#video-dokieli-sparqlines" rel="schema:hasPart" resource="https://dokie.li/media/video/dokieli-sparqlines.webm" src="https://dokie.li/media/video/dokieli-sparqlines.webm" type="video/webm" typeof="fabio:Film">
-                                    <span about="https://dokie.li/media/video/dokieli-sparqlines.webm" property="schema:name">Video of Sparqlines interaction in dokieli</span>
-                                </source>
-                            </video>
+                            <figure id="figure-dokieli-sparqlines" rel="schema:hasPart" resource="#figure-dokieli-sparqlines">
+                                <video controls="controls" id="video-dokieli-sparqlines" poster="https://dokie.li/media/images/GDP-per-capita-growth--annual---.svg" preload="none" about="" rel="schema:hasPart" width="800">
+                                    <source about="#video-dokieli-sparqlines" rel="schema:hasPart" resource="https://dokie.li/media/video/dokieli-sparqlines.webm" src="https://dokie.li/media/video/dokieli-sparqlines.webm" type="video/webm" typeof="fabio:Film">
+                                        <span about="https://dokie.li/media/video/dokieli-sparqlines.webm" property="schema:name">Video of Sparqlines interaction in dokieli</span>
+                                    </source>
+                                </video>
+                                <figcaption property="schema:name">Video of Sparqlines interaction in dokieli</figcaption>
+                            </figure>
                         </div>
                     </section>
                     <section id="developers" inlist="" rel="schema:hasPart" resource="#developers">
