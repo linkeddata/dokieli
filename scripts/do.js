@@ -3438,7 +3438,7 @@ console.log(inbox);
 
             var content = ('content' in options && options.content.length > 0) ? options.content + ', ' : '';
 
-            var citationReason = 'Reason: ' + DO.C.Citation[options.citationRelation;
+            var citationReason = 'Reason: ' + DO.C.Citation[options.citationRelation];
 
             var citationHTML = authors + title + datePublished + content + '<a about="#' + options.refId + '" href="' + citationId + '" rel="schema:citation ' + options.citationRelation  + '">' + citationId + '</a> ' + dateAccessed + ', ' + citationReason;
 //console.log(citationHTML);
