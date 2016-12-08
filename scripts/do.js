@@ -3440,7 +3440,7 @@ console.log(inbox);
 
             var citationReason = 'Reason: ' + DO.C.Citation[options.citationRelation];
 
-            var citationHTML = authors + title + datePublished + content + '<a about="#' + options.refId + '" href="' + citationId + '" rel="schema:citation ' + options.citationRelation  + '">' + citationId + '</a> ' + dateAccessed + ', ' + citationReason;
+            var citationHTML = authors + title + datePublished + content + '<a about="#' + options.refId + '" href="' + citationId + '" rel="schema:citation ' + options.citationRelation  + '">' + citationId + '</a> [' + dateAccessed + ', ' + citationReason + ']';
 //console.log(citationHTML);
             return citationHTML;
         },
