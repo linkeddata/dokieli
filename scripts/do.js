@@ -3378,7 +3378,7 @@ console.log(inbox);
             title = (title.length > 0) ? title + ', ' : '';
             var datePublished = subject.schemadatePublished || subject.dctermsissued || subject.dctermsdate || subject.dctermscreated || '';
             datePublished = (datePublished) ? datePublished.substr(0,4) + ', ' : '';
-            var dateAccessed = ' [Accessed: ' + DO.U.getDateTimeISO() + ']';
+            var dateAccessed = 'Accessed: ' + DO.U.getDateTimeISO();
             var authors = [], authorList = [];
 // console.log(subject);
 // console.log(subject.biboauthorList);
@@ -3438,7 +3438,9 @@ console.log(inbox);
 
             var content = ('content' in options && options.content.length > 0) ? options.content + ', ' : '';
 
-            var citationHTML = authors + title + datePublished + content + '<a about="#' + options.refId + '" href="' + citationId + '" rel="schema:citation ' + options.citationRelation  + '">' + citationId + '</a>' + dateAccessed;
+            var citationReason = 'Reason: ' + DO.C.Citation[options.citationRelation;
+
+            var citationHTML = authors + title + datePublished + content + '<a about="#' + options.refId + '" href="' + citationId + '" rel="schema:citation ' + options.citationRelation  + '">' + citationId + '</a> ' + dateAccessed + ', ' + citationReason;
 //console.log(citationHTML);
             return citationHTML;
         },
