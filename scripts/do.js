@@ -116,7 +116,6 @@ var DO = {
             'http://purl.org/spar/cito/usesDataFrom': 'uses data from',
             'http://purl.org/spar/cito/usesMethodIn': 'uses method in'
         },
-
         CitationOptions: [
             '<option value="http://purl.org/spar/cito/agreesWith">agrees with</option>',
             '<option value="http://purl.org/spar/cito/cites">cites</option>',
@@ -4458,7 +4457,12 @@ WHERE {\n\
         getCitationOptionsHTML: function(type) {
             var type = type || 'cites';
 
-            return DO.C.CitationOptions.join('');
+            var s = '';
+            Object.keys(DO.C.Citation).forEach(function(uri){
+                s += '<option value="' + uri + '">' + DO.C.Citation[uri]  + '</option>';
+            })
+
+            return s;
         },
 
         Editor: {
