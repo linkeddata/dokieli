@@ -900,7 +900,7 @@ content:"\A";
 white-space:pre;
 }
 tfoot dl.abbr dt:after {
-content:":";
+content:": ";
 }
 tfoot dl.abbr {
 -webkit-column-count:2;
