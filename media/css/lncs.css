@@ -874,6 +874,12 @@ aside.note dd {
 text-align:left;
 }
 
+
+dl[rel="skos:hasTopConcept"] dd:after { content: "\A"; white-space:pre; }
+dl[rel="skos:hasTopConcept"] dt,
+dl[rel="skos:hasTopConcept"] dd { display:inline; }
+dl[rel="skos:hasTopConcept"] dt:after { content: ": "; }
+p + dl[rel="skos:hasTopConcept"] { margin-top:0; }
 p + dl {
 margin-top:1.25em;
 }
