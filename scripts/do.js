@@ -740,6 +740,17 @@ var DO = {
                                                     noteData['creator'] = {
                                                         'iri': s.asactor.iri().toString()
                                                     }
+                                                    var a = i.child(noteData['creator']['iri']);
+                                                    var actorName = a.foafname || a.schemaname || a.asname || undefined;
+                                                    var actorImage = a.foafimg || a.schemaimage || a.asimage || s["http://xmlns.com/foaf/0.1/depiction"] || undefined;
+                                                    actorImage = (actorImage && actorImage.iri()) ? actorImage.iri().toString() : undefined;
+
+                                                    if(typeof actorName != 'undefined') {
+                                                        noteData['creator']['name'] = actorName;
+                                                    }
+                                                    if(typeof actorImage != 'undefined') {
+                                                        noteData['creator']['image'] = actorImage;
+                                                    }
                                                 }
                                                 else if(type == 'https://www.w3.org/ns/activitystreams#Dislike'){
                                                     noteData['creator'] = {
