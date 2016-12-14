@@ -840,6 +840,11 @@ float:left;
 .figure-column-2 figure:first-child {
 margin-left:0;
 }
+.figure-column-2 object,
+.figure-column-2 video,
+.figure-column-2 audio {
+max-width:100%;
+}
 
 p + math, ul + math, ol + math, dl + math, dd > math, div + math, section + math {
 text-align:center;
