@@ -3792,6 +3792,24 @@ WHERE {\n\
             });
         },
 
+        getReferenceLabel: function(motivatedBy) {
+            var s = '🗨';
+            motivatedBy = motivatedBy || '';
+            //TODO: uriToPrefix
+            motivatedBy = (motivatedBy.length > 0 && motivatedBy.slice(0, 4) == 'http' && motivatedBy.indexOf('#') > -1) ? 'oa:' + motivatedBy.substr(motivatedBy.lastIndexOf('#') + 1) : motivatedBy;
+
+            switch(motivatedBy) {
+                default: break;
+                case 'oa:assessing':  s = '✪'; break;
+                case 'oa:commenting': s = '🗨'; break;
+                case 'oa:bookmark':   s = '🔖'; break;
+                case 'oa:replying':   s = '💬'; break;
+                case 'oa:describing': s = '※'; break;
+            }
+
+            return s;
+        },
+
         showRefs: function() {
             var refs = document.querySelectorAll('span.ref');
             for (var i = 0; i < refs.length; i++) {
@@ -3916,6 +3934,7 @@ WHERE {\n\
 
                             if(note.oamotivatedBy && note.oamotivatedBy.iri()) {
                                 motivatedBy = note.oamotivatedBy.iri().toString();
+                                refLabel = DO.U.getReferenceLabel(motivatedBy);
                             }
 
                             var exact, prefix, suffix;
@@ -3958,7 +3977,7 @@ WHERE {\n\
                                 var exactEnd = selectorIndex + prefix.length + exact.length;
                                 var selection = { start: exactStart, end: exactEnd };
 
-                                var ref = '<span class="ref do" about="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#' + id + '" resource="' + noteIRI + '">' + id + '</a></sup></span>';
+                                var ref = '<span class="ref do" about="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#' + id + '" resource="' + noteIRI + '">' + refLabel + '</a></sup></span>';
 
                                 MediumEditor.selection.importSelection(selection, containerNode, document);
 
@@ -5585,7 +5604,7 @@ WHERE {\n\
                             }
 
 console.log(annotationDistribution);
-                            //TODO: However this label is created
+                            //XXX: Defaulting to id but overwritten by motivation symbol
                             var refLabel = id;
 
                             var parentNodeWithId = selectedParentElement.closest('[id]');
@@ -5618,10 +5637,10 @@ console.log(annotationDistribution);
                                 case 'article': case 'approve': case 'disapprove': case 'specificity':
                                     if (DO.U.Editor.MediumEditor.options.id == 'review') {
                                         motivatedBy = 'oa:assessing';
+                                        refLabel = DO.U.getReferenceLabel(motivatedBy);
                                     }
 
                                     ref = this.base.selection;
-                                    refLabel = id;
                                     licenseIRI = opts.license;
 
                                     noteData = {
@@ -5668,9 +5687,10 @@ console.log(annotationDistribution);
 
                                 //Internal Note
                                 case 'note':
+                                    motivatedBy = "oa:commenting";
+                                    refLabel = DO.U.getReferenceLabel(motivatedBy);
                                     docRefType = '<sup class="ref-comment"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup>';
                                     noteType = 'note';
-                                    motivatedBy = "oa:commenting";
                                     noteData = {
                                         "type": noteType,
                                         "mode": "read",
@@ -5728,6 +5748,7 @@ console.log(annotationDistribution);
                                     switch(opts.citationType) {
                                         case 'ref-footnote': default:
                                             motivatedBy = "oa:describing";
+                                            refLabel = DO.U.getReferenceLabel(motivatedBy);
                                             docRefType = '<sup class="' + opts.citationType + '"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup>';
                                             noteData = {
                                                 "type": opts.citationType,
@@ -5746,6 +5767,7 @@ console.log(annotationDistribution);
                                             break;
 
                                         case 'ref-reference':
+                                            refLabel = DO.U.getReferenceLabel('oa:describing');
                                             docRefType = '<span class="' + opts.citationType + '">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span>';
                                             break;
                                     }
@@ -5777,6 +5799,7 @@ console.log(annotationDistribution);
                                 case 'bookmark':
                                     noteType = 'bookmark';
                                     motivatedBy = "oa:bookmarking";
+                                    refLabel = DO.U.getReferenceLabel(motivatedBy);
                                     noteData = {
                                         "type": noteType,
                                         "mode": "write",
