@@ -94,9 +94,11 @@ aside.do.on section + section {
 margin-top:1em;
 }
 
-
-.do.on #share-resource-contacts li {
-margin:0.25em 0;
+#share-resource.do.on li {
+margin:0 0 0.5em 0;
+}
+.do.on #share-resource-address-book > label {
+font-weight:bold;
 }
 .do.on #share-resource-contacts {
 max-height:30em;
