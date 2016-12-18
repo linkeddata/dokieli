@@ -2558,7 +2558,7 @@ console.log(inbox);
                 e.target.disabled = true;
             }
 
-            var addContactsButton = (DO.C.User.IRI) ? '<li><button class="add">Add from contacts</button></li>' : '';
+            var addContactsButton = (DO.C.User.IRI) ? '<li id="share-resource-address-book"><button class="add"><i class="fa fa-address-book"></i> Add from contacts</button></li>' : '';
 
             document.body.insertAdjacentHTML('beforeend', '<aside id="share-resource" class="do on"><button class="close" title="Close">❌</button><h2>Share resource</h2><div id="share-resource-input"><p>Send a notification about <code>' + iri +'</code></p><ul><li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li>' + addContactsButton + '<li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share">Share</button></aside>');
 
