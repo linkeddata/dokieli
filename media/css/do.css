@@ -96,15 +96,19 @@ margin-top:1em;
 
 #share-resource.do.on li {
 margin:0 0 0.5em 0;
+line-height: 1;
 }
-.do.on #share-resource-address-book > label {
+#share-resource.do.on #share-resource-address-book {
+margin-bottom:1em;
+}
+#share-resource.do.on #share-resource-address-book > label {
 font-weight:bold;
 }
-.do.on #share-resource-contacts {
+#share-resource.do.on #share-resource-contacts {
 max-height:30em;
 overflow:auto;
 }
-.do.on #share-resource-contacts label {
+#share-resource.do.on #share-resource-contacts label {
 vertical-align:middle;
 }
 
