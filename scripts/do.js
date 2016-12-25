@@ -1321,48 +1321,50 @@ var DO = {
                             uI.innerHTML = DO.U.getUserHTML();
                         }
 
-                        DO.U.authenticateUser(url).then(
-                            function(userIRI) {
-        // console.log('setUser resolve: ' + userIRI);
-                                DO.C.User.IRI = userIRI;
-        // console.log(DO.C.User.IRI);
-                                return userIRI;
-                            },
-                            function(xhr) {
-                                console.log('setUser reject');
-                                return xhr;
-                            }
-                        ).then(
-                            function(i) {
-                                userIdentityInput.parentNode.removeChild(userIdentityInput);
-                                return i;
-                            },
-                            function(reason) {
-                                var rm = userIdentityInput.querySelector('.response-message');
-                                if (rm) {
-                                    rm.parentNode.removeChild(rm);
-                                }
-                                if (reason.length > 0) {
-                                    var reasonsList = '<p>Reasons:</p><ul>';
-                                    reason.forEach(function(r) {
-                                        reasonsList += '<li>' + r.message + '</li>';
-                                    });
-                                    reasonsList += '</ul>';
-                                }
+                        userIdentityInput.parentNode.removeChild(userIdentityInput);
+                        DO.U.afterSignIn();
 
-                                userIdentityInput.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to sign in with this WebID.</p>' + reasonsList + '</div>');
-                                document.querySelector('#user-identity-input button.signin').removeAttribute('disabled');
-                                console.log(reason);
-                                return reason;
-                            }
-                        ).then(
-                            function(i){
-                                DO.U.afterSignIn();
-                            },
-                            function(reason){
-                                console.log('--- ' + url + ' is not authenticated.');
-                            }
-                        );
+                        //TODO: Refactor this elsewhere. Especially the reasonList for not authenticating.
+                        // DO.U.authenticateUser(url).then(
+                        //     function(userIRI) {
+                        //         DO.C.User.IRI = userIRI;
+                        //         return userIRI;
+                        //     },
+                        //     function(xhr) {
+                        //         console.log('setUser reject');
+                        //         return xhr;
+                        //     }
+                        // ).then(
+                        //     function(i) {
+                        //         userIdentityInput.parentNode.removeChild(userIdentityInput);
+                        //         return i;
+                        //     },
+                        //     function(reason) {
+                        //         var rm = userIdentityInput.querySelector('.response-message');
+                        //         if (rm) {
+                        //             rm.parentNode.removeChild(rm);
+                        //         }
+                        //         if (reason.length > 0) {
+                        //             var reasonsList = '<p>Reasons:</p><ul>';
+                        //             reason.forEach(function(r) {
+                        //                 reasonsList += '<li>' + r.message + '</li>';
+                        //             });
+                        //             reasonsList += '</ul>';
+                        //         }
+
+                        //         userIdentityInput.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to sign in with this WebID.</p>' + reasonsList + '</div>');
+                        //         document.querySelector('#user-identity-input button.signin').removeAttribute('disabled');
+                        //         console.log(reason);
+                        //         return reason;
+                        //     }
+                        // ).then(
+                        //     function(i){
+                        //         DO.U.afterSignIn();
+                        //     },
+                        //     function(reason){
+                        //         console.log('--- ' + url + ' is not authenticated.');
+                        //     }
+                        // );
                     },
                     function(reason) {
                         console.log("--- NO USER");
