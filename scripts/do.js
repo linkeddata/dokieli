@@ -402,54 +402,7 @@ var DO = {
                             if (s.preferencesFile && s.preferencesFile.iri() && s.preferencesFile.iri().toString().length > 0) {
                                 DO.C.User.PreferencesFile = s.preferencesFile.iri().toString();
 
-                                //XXX: Probably https so don't bother with proxy?
-                                DO.U.getGraph(DO.C.User.PreferencesFile).then(
-                                    function(pf) {
-                                        DO.C.User.PreferencesFileGraph = pf;
-                                        var s = pf.child(userIRI);
-
-                                        if (s.masterWorkspace) {
-                                            DO.C.User.masterWorkspace = s.masterWorkspace;
-                                        }
-
-                                        if (s.workspace) {
-                                            DO.C.User.Workspace = { List: s.workspace };
-                                            s.workspace.forEach(function(wsGraph) {
-                                                var workspace = wsGraph.iri().toString();
-                                                var wstype = pf.child(workspace).rdftype || [];
-                                                wstype.forEach(function(wGraph) {
-                                                    var w = wGraph.iri().toString();
-                                                    switch(w) {
-                                                        case 'http://www.w3.org/ns/pim/space#PreferencesWorkspace':
-                                                            DO.C.User.Workspace.Preferences = workspace;
-                                                            break;
-                                                        case 'http://www.w3.org/ns/pim/space#MasterWorkspace':
-                                                            DO.C.User.Workspace.Master = workspace;
-                                                            break;
-                                                        case 'http://www.w3.org/ns/pim/space#PublicWorkspace':
-                                                            DO.C.User.Workspace.Public = workspace;
-                                                            break;
-                                                        case 'http://www.w3.org/ns/pim/space#PrivateWorkspace':
-                                                            DO.C.User.Workspace.Private = workspace;
-                                                            break;
-                                                        case 'http://www.w3.org/ns/pim/space#SharedWorkspace':
-                                                            DO.C.User.Workspace.Shared = workspace;
-                                                            break;
-                                                        case 'http://www.w3.org/ns/pim/space#ApplicationWorkspace':
-                                                            DO.C.User.Workspace.Application = workspace;
-                                                            break;
-                                                        case 'http://www.w3.org/ns/pim/space#Workspace':
-                                                            DO.C.User.Workspace.Work = workspace;
-                                                            break;
-                                                        case 'http://www.w3.org/ns/pim/space#FamilyWorkspace':
-                                                            DO.C.User.Workspace.Family = workspace;
-                                                            break;
-                                                    }
-                                                });
-                                            });
-                                        }
-                                    }
-                                );
+                                DO.U.setUserWorkspaces(DO.C.User.PreferencesFile);
                             }
                             return DO.C.User;
                         },
@@ -460,6 +413,57 @@ var DO = {
                 console.log('NO USER IRI');
                 return Promise.reject();
             }
+        },
+
+        setUserWorkspaces: function(userPreferenceFile){
+            //XXX: Probably https so don't bother with proxy?
+            DO.U.getGraph(userPreferenceFile).then(
+                function(pf) {
+                    DO.C.User.PreferencesFileGraph = pf;
+                    var s = pf.child(DO.C.User.IRI);
+
+                    if (s.masterWorkspace) {
+                        DO.C.User.masterWorkspace = s.masterWorkspace;
+                    }
+
+                    if (s.workspace) {
+                        DO.C.User.Workspace = { List: s.workspace };
+                        s.workspace.forEach(function(wsGraph) {
+                            var workspace = wsGraph.iri().toString();
+                            var wstype = pf.child(workspace).rdftype || [];
+                            wstype.forEach(function(wGraph) {
+                                var w = wGraph.iri().toString();
+                                switch(w) {
+                                    case 'http://www.w3.org/ns/pim/space#PreferencesWorkspace':
+                                        DO.C.User.Workspace.Preferences = workspace;
+                                        break;
+                                    case 'http://www.w3.org/ns/pim/space#MasterWorkspace':
+                                        DO.C.User.Workspace.Master = workspace;
+                                        break;
+                                    case 'http://www.w3.org/ns/pim/space#PublicWorkspace':
+                                        DO.C.User.Workspace.Public = workspace;
+                                        break;
+                                    case 'http://www.w3.org/ns/pim/space#PrivateWorkspace':
+                                        DO.C.User.Workspace.Private = workspace;
+                                        break;
+                                    case 'http://www.w3.org/ns/pim/space#SharedWorkspace':
+                                        DO.C.User.Workspace.Shared = workspace;
+                                        break;
+                                    case 'http://www.w3.org/ns/pim/space#ApplicationWorkspace':
+                                        DO.C.User.Workspace.Application = workspace;
+                                        break;
+                                    case 'http://www.w3.org/ns/pim/space#Workspace':
+                                        DO.C.User.Workspace.Work = workspace;
+                                        break;
+                                    case 'http://www.w3.org/ns/pim/space#FamilyWorkspace':
+                                        DO.C.User.Workspace.Family = workspace;
+                                        break;
+                                }
+                            });
+                        });
+                    }
+                }
+            );
         },
 
         getUserHTML: function() {
