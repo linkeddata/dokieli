@@ -5559,26 +5559,22 @@ WHERE {\n\
                             var annotationDistribution = [] , aLS = {};
 
                             if(opts.annotationLocationPersonalStorage || (!opts.annotationLocationPersonalStorage && !opts.annotationLocationService && DO.C.User.Storage && DO.C.User.Storage.length > 0)) {
-                                containerIRI = containerIRI.substr(0, containerIRI.lastIndexOf('/') + 1);
+                                if(DO.C.User.Storage && DO.C.User.Storage.length > 0) {
+                                    containerIRI = DO.U.forceTrailingSlash(DO.C.User.Storage[0].iri().toString());
+                                }
+                                else {
+                                    containerIRI = containerIRI.substr(0, containerIRI.lastIndexOf('/') + 1);
+                                }
 
-                                //XXX: Preferring masterWorkspace over the others. Good/bad idea?
-                                //Need more granular workspace selection, e.g., PublicAnnotations. Defaulting to PublicWorkspace if no masterWorkspace
                                 if (typeof DO.C.User.masterWorkspace != 'undefined' && DO.C.User.masterWorkspace.length > 0) {
                                     containerIRI = DO.C.User.masterWorkspace + DO.C.InteractionPath;
                                 }
-                                else {
-                                    if (typeof DO.C.User.Workspace != 'undefined') {
-                                        if (typeof DO.C.User.Workspace.Master != 'undefined' && DO.C.User.Workspace.Master.length > 0) {
-                                            containerIRI = DO.C.User.Workspace.Master + DO.C.InteractionPath;
-                                        }
-                                        else {
-                                            if (typeof DO.C.User.Workspace.Public != 'undefined' && DO.C.User.Workspace.Public.length > 0) {
-                                                containerIRI = DO.C.User.Workspace.Public + DO.C.InteractionPath;
-                                            }
-                                            else {
-                                                containerIRI = DO.U.forceTrailingSlash(DO.C.User.Storage[0].iri().toString());
-                                            }
-                                        }
+                                else if(typeof DO.C.User.Workspace != 'undefined') {
+                                    if (typeof DO.C.User.Workspace.Master != 'undefined' && DO.C.User.Workspace.Master.length > 0) {
+                                        containerIRI = DO.C.User.Workspace.Master + DO.C.InteractionPath;
+                                    }
+                                    else if(typeof DO.C.User.Workspace.Public != 'undefined' && DO.C.User.Workspace.Public.length > 0) {
+                                        containerIRI = DO.C.User.Workspace.Public + DO.C.InteractionPath;
                                     }
                                 }
 
