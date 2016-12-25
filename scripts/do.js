@@ -402,7 +402,8 @@ var DO = {
                             if (s.preferencesFile && s.preferencesFile.iri() && s.preferencesFile.iri().toString().length > 0) {
                                 DO.C.User.PreferencesFile = s.preferencesFile.iri().toString();
 
-                                DO.U.setUserWorkspaces(DO.C.User.PreferencesFile);
+                                //TODO: Reconsider if/where to use this.
+                                // DO.U.setUserWorkspaces(DO.C.User.PreferencesFile);
                             }
                             return DO.C.User;
                         },
