@@ -2119,7 +2119,7 @@ var DO = {
                 options['contentType'] = 'text/turtle';
             }
 
-            return ld.store.serializers[options.contentType].serialize(g._graph);
+            return ld.store.serializers[options.contentType].serialize(g.graph());
         },
 
         serializeData: function(data, fromContentType, toContentType, options) {
@@ -3721,7 +3721,7 @@ WHERE {\n\
         getTriplesFromGraph: function(url) {
             return DO.U.getGraph(url)
                 .then(function(i){
-                    return i._graph;
+                    return i.graph();
                 })
                 .catch(function(error){
                     console.log(error);
@@ -3734,7 +3734,7 @@ WHERE {\n\
                 options['sortBy'] = 'object';
             }
 
-            triples._graph.sort(function (a, b) {
+            triples.graph().sort(function (a, b) {
                 return a[options.sortBy].nominalValue.toLowerCase().localeCompare(b[options.sortBy].nominalValue.toLowerCase());
             });
 
