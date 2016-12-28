@@ -548,17 +548,17 @@ var DO = {
                     .then(
                         function(i){
                             //TODO: Should this get all of the inboxes or a given subject's?
-                            var endpoint = i.match(uri, property);
-                            if (typeof endpoint._graph[0] == 'object') {
-                                return [endpoint._graph[0].object.nominalValue];
-                            }
+                            var endpoints = i.match(uri, property).toArray();
+
                             //TODO: Remove solidinbox (when LDN goes through).
-                            if (property == DO.C.Vocab['ldpinbox']) {
-                                endpoint = i.match(uri, DO.C.Vocab['solidinbox']['@id']);
-                                if (typeof endpoint._graph[0] == 'object') {
-                                    return [endpoint._graph[0].object.nominalValue];
-                                }
+                            if (endpoints.length == 0 && property == DO.C.Vocab['ldpinbox']) {
+                                endpoints = i.match(uri, DO.C.Vocab['solidinbox']['@id']).toArray();
                             }
+
+                            if (endpoints.length > 0) {
+                                return endpoints.map(function(t){ return t.object.nominalValue; });
+                            }
+
                             console.log(property + ' endpoint was not found in message body');
                             return DO.U.getEndpointFromHead(property, uri);
                         },
