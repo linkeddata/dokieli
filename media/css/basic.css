@@ -96,7 +96,7 @@ display:inline-block;
 }
 main input,
 main textarea {
-width:80%;
+width:65%;
 }
 main input[type=submit] {
 font-weight:bold;
