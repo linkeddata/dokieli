@@ -2119,7 +2119,7 @@ var DO = {
                 options['contentType'] = 'text/turtle';
             }
 
-            return ld.store.serializers[options.contentType].serialize(g.graph());
+            return ld.store.serializers[options.contentType].serialize(g);
         },
 
         serializeData: function(data, fromContentType, toContentType, options) {
