@@ -693,22 +693,99 @@ var DO = {
                     i.forEach(function(notification) {
                         var pIRI = DO.U.getProxyableIRI(notification);
                         DO.U.getGraph(pIRI).then(
-                            function(i) {
-                                var s = i.child(notification);
-                                var types = s.rdftype._array || [];
+                            function(g) {
+// console.log(g);
+                                var subjects = [];
+                                g.graph().toArray().forEach(function(t){
+                                    subjects.push(t.subject.nominalValue);
+                                });
+                                subjects = DO.U.uniqueArray(subjects);
+// console.log(subjects);
+                                subjects.forEach(function(i){
+                                    var s = g.child(i)
+                                    var types = s.rdftype._array || [];
 
-                                if (types.length > 0) {
-                                    var resourceTypes = [];
-                                    types.forEach(function(type){
-                                        resourceTypes.push(type.iri().toString());
-                                    });
+                                    if (types.length > 0) {
+                                        var resourceTypes = [];
+                                        types.forEach(function(type){
+                                            resourceTypes.push(type.iri().toString());
+                                        });
 
-                                    if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Like') > -1 ||
-                                       resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Dislike') > -1){
-                                        if(s.asobject && s.asobject.at(0)) {
-                                            if(s.ascontext && s.ascontext.at(0) && s.asobject.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
-                                                var context = s.ascontext.at(0).iri().toString();
-                                                return DO.U.positionInteraction(context).then(
+                                        if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Like') > -1 ||
+                                           resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Dislike') > -1){
+                                            if(s.asobject && s.asobject.at(0)) {
+                                                if(s.ascontext && s.ascontext.at(0) && s.asobject.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
+                                                    var context = s.ascontext.at(0).iri().toString();
+                                                    return DO.U.positionInteraction(context).then(
+                                                        function(notificationIRI){
+                                                            return notificationIRI;
+                                                        },
+                                                        function(reason){
+                                                            console.log('Notification source is unreachable');
+                                                        });
+                                                }
+                                                else {
+                                                    var targetIRI = s.asobject.at(0).iri().toString();
+                                                    var motivatedBy = 'oa:assessing';
+                                                    var id = String(Math.abs(DO.U.hashCode(notification))).substr(0, 6);
+                                                    var refId = 'r-' + id;
+                                                    var refLabel = id;
+
+                                                    var bodyText = (resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Like') > -1) ? 'Liked' : 'Disliked';
+
+                                                    var noteData = {
+                                                        "type": 'article',
+                                                        "mode": "read",
+                                                        "motivatedByIRI": motivatedBy,
+                                                        "id": id,
+                                                        "refId": refId,
+                                                        "refLabel": refLabel,
+                                                        "iri": notification,
+                                                        "creator": {},
+                                                        "target": {
+                                                            "iri": targetIRI
+                                                        },
+                                                        "body": bodyText,
+                                                        "license": {}
+                                                    };
+
+                                                    if (s.asactor && s.asactor.iri()){
+                                                        noteData['creator'] = {
+                                                            'iri': s.asactor.iri().toString()
+                                                        }
+                                                        var a = g.child(noteData['creator']['iri']);
+                                                        var actorName = a.foafname || a.schemaname || a.asname || undefined;
+                                                        var actorImage = a.foafimg || a.schemaimage || a.asimage || s["http://xmlns.com/foaf/0.1/depiction"] || undefined;
+                                                        actorImage = (actorImage && actorImage.iri()) ? actorImage.iri().toString() : undefined;
+
+                                                        if(typeof actorName != 'undefined') {
+                                                            noteData['creator']['name'] = actorName;
+                                                        }
+                                                        if(typeof actorImage != 'undefined') {
+                                                            noteData['creator']['image'] = actorImage;
+                                                        }
+                                                    }
+                                                    else if(type == 'https://www.w3.org/ns/activitystreams#Dislike'){
+                                                        noteData['creator'] = {
+                                                            'name': 'Anonymous Coward'
+                                                        }
+                                                    }
+                                                    if (s.asupdated){
+                                                        noteData['datetime'] = s.asupdated;
+                                                    }
+                                                    if (s.schemalicense && s.schemalicense.iri()){
+                                                        noteData.license["iri"] = s.schemalicense.iri().toString();
+                                                        noteData.license["name"] = DO.C.License[noteData.license["iri"]];
+                                                    }
+
+                                                    DO.U.addInteraction(noteData);
+                                                }
+                                            }
+                                        }
+                                        else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Relationship') > -1){
+                                            if(s.assubject && s.assubject.at(0) && s.asrelationship && s.asrelationship.at(0) && s.asobject && s.asobject.at(0) && s.asobject.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
+                                                var subject = s.assubject.at(0).iri().toString();
+                                                return DO.U.positionInteraction(subject).then(
                                                     function(notificationIRI){
                                                         return notificationIRI;
                                                     },
@@ -716,98 +793,29 @@ var DO = {
                                                         console.log('Notification source is unreachable');
                                                     });
                                             }
-                                            else {
-                                                var targetIRI = s.asobject.at(0).iri().toString();
-                                                var motivatedBy = 'oa:assessing';
-                                                var id = String(Math.abs(DO.U.hashCode(notification))).substr(0, 6);
-                                                var refId = 'r-' + id;
-                                                var refLabel = id;
-
-                                                var bodyText = (resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Like') > -1) ? 'Liked' : 'Disliked';
-
-                                                var noteData = {
-                                                    "type": 'article',
-                                                    "mode": "read",
-                                                    "motivatedByIRI": motivatedBy,
-                                                    "id": id,
-                                                    "refId": refId,
-                                                    "refLabel": refLabel,
-                                                    "iri": notification,
-                                                    "creator": {},
-                                                    "target": {
-                                                        "iri": targetIRI
+                                        }
+                                        else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Announce') > -1) {
+                                            if(s.asobject && s.asobject.at(0) && s.astarget && s.astarget.at(0) && s.astarget.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
+                                                var object = s.asobject.at(0).iri().toString();
+                                                return DO.U.positionInteraction(object).then(
+                                                    function(notificationIRI){
+                                                        return notificationIRI;
                                                     },
-                                                    "body": bodyText,
-                                                    "license": {}
-                                                };
-
-                                                if (s.asactor && s.asactor.iri()){
-                                                    noteData['creator'] = {
-                                                        'iri': s.asactor.iri().toString()
-                                                    }
-                                                    var a = i.child(noteData['creator']['iri']);
-                                                    var actorName = a.foafname || a.schemaname || a.asname || undefined;
-                                                    var actorImage = a.foafimg || a.schemaimage || a.asimage || s["http://xmlns.com/foaf/0.1/depiction"] || undefined;
-                                                    actorImage = (actorImage && actorImage.iri()) ? actorImage.iri().toString() : undefined;
-
-                                                    if(typeof actorName != 'undefined') {
-                                                        noteData['creator']['name'] = actorName;
-                                                    }
-                                                    if(typeof actorImage != 'undefined') {
-                                                        noteData['creator']['image'] = actorImage;
-                                                    }
-                                                }
-                                                else if(type == 'https://www.w3.org/ns/activitystreams#Dislike'){
-                                                    noteData['creator'] = {
-                                                        'name': 'Anonymous Coward'
-                                                    }
-                                                }
-                                                if (s.asupdated){
-                                                    noteData['datetime'] = s.asupdated;
-                                                }
-                                                if (s.schemalicense && s.schemalicense.iri()){
-                                                    noteData.license["iri"] = s.schemalicense.iri().toString();
-                                                    noteData.license["name"] = DO.C.License[noteData.license["iri"]];
-                                                }
-
-                                                DO.U.addInteraction(noteData);
+                                                    function(reason){
+                                                        console.log('Notification ' + notification + ' is unreachable');
+                                                    });
                                             }
                                         }
-                                    }
-                                    else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Relationship') > -1){
-                                        if(s.assubject && s.assubject.at(0) && s.asrelationship && s.asrelationship.at(0) && s.asobject && s.asobject.at(0) && s.asobject.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
-                                            var subject = s.assubject.at(0).iri().toString();
-                                            return DO.U.positionInteraction(subject).then(
-                                                function(notificationIRI){
-                                                    return notificationIRI;
-                                                },
-                                                function(reason){
-                                                    console.log('Notification source is unreachable');
-                                                });
-                                        }
-                                    }
-                                    else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Announce') > -1) {
-                                        if(s.asobject && s.asobject.at(0) && s.astarget && s.astarget.at(0) && s.astarget.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
-                                            var object = s.asobject.at(0).iri().toString();
-                                            return DO.U.positionInteraction(object).then(
-                                                function(notificationIRI){
-                                                    return notificationIRI;
-                                                },
-                                                function(reason){
-                                                    console.log('Notification ' + notification + ' is unreachable');
-                                                });
+                                        else {
+                                            console.log(i + ' has unrecognised types: ' + resourceTypes);
+                                            // return Promise.reject({'message': 'Unrecognised types ' + resourceTypes});
                                         }
                                     }
                                     else {
-                                        console.log('Unknown type: ' + type);
-                                        return Promise.reject({'message': 'Unknown type ' + type});
+                                        // console.log('Skipping ' + i + ': No type.');
+                                        // return Promise.reject({'message': 'Notification has no type. What to do?'});
                                     }
-                                }
-                                //XXX: For some reason the subject doesn't doesn't have a type?
-                                else {
-                                    console.log('Notification has no type. What to do?');
-                                    return Promise.reject({'message': 'Notification has no type. What to do?'});
-                                }
+                                });
                             },
                             function(reason) {
                                 console.log('Notification ' + notification + ' is unreachable. ' + reason);
