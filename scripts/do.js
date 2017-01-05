@@ -383,32 +383,44 @@ var DO = {
             if (userIRI) {
                 var pIRI = DO.U.getProxyableIRI(userIRI);
 
-                return DO.U.getGraph(pIRI)
-                    .then(
-                        function(i) {
-                            var s = i.child(userIRI);
+                return DO.U.getResource(pIRI).then(
+                    function(response){
+                      var cT = response.xhr.getResponseHeader('Content-Type');
+                      var contentType = (cT) ? cT.split(';')[0].trim() : 'text/turtle';
+
+                        var options = {
+                            'contentType': response.xhr.getResponseHeader('Content-Type').split(';')[0].trim(),
+                            'subjectURI': DO.U.stripFragmentFromString(userIRI)
+                        };
+// console.log(options);
+                        return DO.U.getGraphFromData(response.xhr.responseText, options).then(
+                            function(g){
+                                var s = SimpleRDF(DO.C.Vocab, options['subjectURI'], g, ld.store).child(userIRI);
 // console.log(s);
-                            DO.C.User.IRI = userIRI;
-                            DO.C.User.Name = s.foafname || s.schemaname || s.asname || undefined;
-                            DO.C.User.Image = s.foafimg || s.schemaimage || s.asimage || s["http://xmlns.com/foaf/0.1/depiction"] || undefined;
-                            DO.C.User.Image = (DO.C.User.Image && DO.C.User.Image.iri()) ? DO.C.User.Image.iri().toString() : undefined;
-                            DO.C.User.URL = s.foafhomepage || s["http://xmlns.com/foaf/0.1/weblog"] || s.schemaurl || undefined;
-                            DO.C.User.URL = (DO.C.User.URL && DO.C.User.URL.iri()) ? DO.C.User.URL.iri().toString() : undefined;
+                                DO.C.User.IRI = userIRI;
+                                DO.C.User.Name = s.foafname || s.schemaname || s.asname || undefined;
+                                DO.C.User.Image = s.foafimg || s.schemaimage || s.asimage || s["http://xmlns.com/foaf/0.1/depiction"] || undefined;
+                                DO.C.User.Image = (DO.C.User.Image && DO.C.User.Image.iri()) ? DO.C.User.Image.iri().toString() : undefined;
+                                DO.C.User.URL = s.foafhomepage || s["http://xmlns.com/foaf/0.1/weblog"] || s.schemaurl || undefined;
+                                DO.C.User.URL = (DO.C.User.URL && DO.C.User.URL.iri()) ? DO.C.User.URL.iri().toString() : undefined;
 
-                            if (s.storage) {
-                                DO.C.User.Storage = s.storage._array;
-                            }
+                                if (s.storage) {
+                                    DO.C.User.Storage = s.storage._array;
+                                }
 
-                            if (s.preferencesFile && s.preferencesFile.iri() && s.preferencesFile.iri().toString().length > 0) {
-                                DO.C.User.PreferencesFile = s.preferencesFile.iri().toString();
+                                if (s.preferencesFile && s.preferencesFile.iri() && s.preferencesFile.iri().toString().length > 0) {
+                                    DO.C.User.PreferencesFile = s.preferencesFile.iri().toString();
 
-                                //TODO: Reconsider if/where to use this.
-                                // DO.U.setUserWorkspaces(DO.C.User.PreferencesFile);
-                            }
-                            return DO.C.User;
-                        },
-                        function(reason) { return reason; }
-                    );
+                                    //TODO: Reconsider if/where to use this.
+                                    // DO.U.setUserWorkspaces(DO.C.User.PreferencesFile);
+                                }
+                                return DO.C.User;
+                            },
+                            function(reason) { return reason; }
+                        );
+                    },
+                    function(reason) { return reason; }
+                );
             }
             else {
                 console.log('NO USER IRI');
