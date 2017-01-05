@@ -399,17 +399,17 @@ var DO = {
 // console.log(s);
                                 DO.C.User.IRI = userIRI;
                                 DO.C.User.Name = s.foafname || s.schemaname || s.asname || undefined;
+
                                 DO.C.User.Image = s.foafimg || s.schemaimage || s.asimage || s["http://xmlns.com/foaf/0.1/depiction"] || undefined;
-                                DO.C.User.Image = (DO.C.User.Image && DO.C.User.Image.iri()) ? DO.C.User.Image.iri().toString() : undefined;
+                                DO.C.User.Image = (DO.C.User.Image) ? DO.C.User.Image : undefined;
                                 DO.C.User.URL = s.foafhomepage || s["http://xmlns.com/foaf/0.1/weblog"] || s.schemaurl || undefined;
-                                DO.C.User.URL = (DO.C.User.URL && DO.C.User.URL.iri()) ? DO.C.User.URL.iri().toString() : undefined;
 
                                 if (s.storage) {
                                     DO.C.User.Storage = s.storage._array;
                                 }
 
-                                if (s.preferencesFile && s.preferencesFile.iri() && s.preferencesFile.iri().toString().length > 0) {
-                                    DO.C.User.PreferencesFile = s.preferencesFile.iri().toString();
+                                if (s.preferencesFile && s.preferencesFile.length > 0) {
+                                    DO.C.User.PreferencesFile = s.preferencesFile;
 
                                     //TODO: Reconsider if/where to use this.
                                     // DO.U.setUserWorkspaces(DO.C.User.PreferencesFile);
