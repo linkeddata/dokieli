@@ -2841,12 +2841,11 @@ console.log(inbox);
                 var containersLi = Array();
                 var resourcesLi = Array();
                 contains.forEach(function(c){
-                    c = c.iri().toString();
                     var cg = g.child(c);
                     var types = cg.rdftype;
                     var resourceTypes = [];
                     types.forEach(function(type){
-                        resourceTypes.push(type.iri().toString());
+                        resourceTypes.push(type);
                     });
 
                     var path = DO.U.getUrlPath(c);
