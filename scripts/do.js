@@ -174,6 +174,7 @@ var DO = {
             "foafgivenName": "http://xmlns.com/foaf/0.1/givenName",
             "foafhomepage": { "@id": "http://xmlns.com/foaf/0.1/homepage", "@type": "@id" },
             "foafimg": { "@id": "http://xmlns.com/foaf/0.1/img", "@type": "@id" },
+            "foafdepiction": { "@id": "http://xmlns.com/foaf/0.1/depiction", "@type": "@id" },
             "foafnick": "http://xmlns.com/foaf/0.1/nick",
             "foafmaker": { "@id": "http://xmlns.com/foaf/0.1/maker", "@type": "@id" },
             "foafknows": { "@id": "http://xmlns.com/foaf/0.1/knows", "@type": "@id", "@array": true },
@@ -2722,24 +2723,16 @@ console.log(inbox);
                     var shareResourceContacts = document.getElementById('share-resource-contacts');
                     var counter = 1;
                     contacts.forEach(function(url) {
-                        url = url.iri().toString();
                         var pIRI = DO.U.getProxyableIRI(url);
-
                         DO.U.getGraph(pIRI).then(
                             function(i) {
                                 var s = i.child(url);
 
                                 var addShareResourceContact = function(s) {
                                     var name = s.foafname || s.schemaname || s.asname || url;
-                                    var img = s.foafimg;
-                                    img = (img) ? img : s["http://xmlns.com/foaf/0.1/depiction"];
-                                    img = (img) ? img : s.schemaimage;
-                                    img = (img) ? img : s.asimage;
-                                    img = (img) ? img.iri() : '';
-                                    img = img.toString();
-
-                                    if (img.length > 0 || name.length > 0) {
-                                        img = (img.length > 0) ? '<img alt="" height="32" src="' + img + '" width="32" />' : '';
+                                    var img = s.foafimg || s.schemaimage || s.asimage || s.foafdepiction || undefined;
+                                    if (img && img.length > 0 || name && name.length > 0) {
+                                        img = (img && img.length > 0) ? '<img alt="" height="32" src="' + img + '" width="32" />' : '';
                                         shareResourceContacts.insertAdjacentHTML('beforeend', '<li><input id="share-resource-contact-' + counter + '" type="checkbox" value="' + url + '" /><label for="share-resource-contact-' + counter + '">' + img + '<a href="' + url + '" target="_blank">' + name + '</a></label></li>');
                                         counter++;
                                     }
@@ -2754,21 +2747,21 @@ console.log(inbox);
                                             addShareResourceContact(s);
                                         },
                                         function(reason){
-                                            console.log(reason);
-                                            console.log('No inbox: ' + url);
+                                            // console.log(reason);
+                                            console.log(url + ' has no Inbox.');
                                         }
                                     );
                                 }
                             },
                             function(reason){
-                                console.log(reason);
+                                // console.log(reason);
                                 console.log('No profile: ' + url);
                             }
                         );
                     });
                 },
                 function(reason) {
-                    console.log(reason);
+                    // console.log(reason);
                 }
             );
         },
@@ -2962,7 +2955,7 @@ console.log(inbox);
             }
 
             if(DO.C.User.Storage && DO.C.User.Storage.length > 0) {
-                var storageUrl = DO.U.forceTrailingSlash(DO.C.User.Storage[0].iri().toString()); // TODO: options for multiple storage
+                var storageUrl = DO.U.forceTrailingSlash(DO.C.User.Storage[0]); // TODO: options for multiple storage
                 input.value = storageUrl;
                 DO.U.getGraph(storageUrl).then(function(g){
                     DO.U.generateBrowserList(g, storageUrl);
