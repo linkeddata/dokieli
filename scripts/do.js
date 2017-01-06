@@ -166,8 +166,9 @@ var DO = {
             "rdffirst": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#first", "@type": "@id" },
             "rdfrest": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest", "@type": "@id" },
             "rdfvalue": "http://www.w3.org/1999/02/22-rdf-syntax-ns#value",
-
             "rdfsseeAlso": { "@id": "http://www.w3.org/2000/01/rdf-schema#seeAlso", "@type": "@id", "@array": true },
+
+            "owlsameAs": { "@id": "http://www.w3.org/2002/07/owl#sameAs", "@type": "@id", "@array": true },
 
             "foafname": "http://xmlns.com/foaf/0.1/name",
             "foaffamilyName": "http://xmlns.com/foaf/0.1/familyName",
