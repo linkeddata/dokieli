@@ -385,49 +385,34 @@ var DO = {
         setUserInfo: function(userIRI) {
 // console.log("setUserInfo: " + userIRI);
             if (userIRI) {
-                var pIRI = DO.U.getProxyableIRI(userIRI);
-
-                return DO.U.getResource(pIRI, {'Accept': DO.C.AvailableMediaTypes.join(',')}).then(
-                    function(response){
-                      var cT = response.xhr.getResponseHeader('Content-Type');
-                      var contentType = (cT) ? cT.split(';')[0].trim() : 'text/turtle';
-
-                        var options = {
-                            'contentType': response.xhr.getResponseHeader('Content-Type').split(';')[0].trim(),
-                            'subjectURI': DO.U.stripFragmentFromString(userIRI)
-                        };
-// console.log(options);
-                        return DO.U.getGraphFromData(response.xhr.responseText, options).then(
-                            function(g){
-                                var s = SimpleRDF(DO.C.Vocab, options['subjectURI'], g, ld.store).child(userIRI);
+                return DO.U.getResourceGraph(userIRI).then(
+                    function(g){
+                        var s = g.child(userIRI);
 // console.log(s);
-                                DO.C.User.IRI = userIRI;
-                                DO.C.User.Name = s.foafname || s.schemaname || s.asname || undefined;
+                        DO.C.User.IRI = userIRI;
+                        DO.C.User.Name = s.foafname || s.schemaname || s.asname || undefined;
 
-                                DO.C.User.Image = s.foafimg || s.schemaimage || s.asimage || s["http://xmlns.com/foaf/0.1/depiction"] || undefined;
-                                DO.C.User.Image = (DO.C.User.Image) ? DO.C.User.Image : undefined;
-                                DO.C.User.URL = s.foafhomepage || s["http://xmlns.com/foaf/0.1/weblog"] || s.schemaurl || undefined;
+                        DO.C.User.Image = s.foafimg || s.schemaimage || s.asimage || s["http://xmlns.com/foaf/0.1/depiction"] || undefined;
+                        DO.C.User.Image = (DO.C.User.Image) ? DO.C.User.Image : undefined;
+                        DO.C.User.URL = s.foafhomepage || s["http://xmlns.com/foaf/0.1/weblog"] || s.schemaurl || undefined;
 
-                                if (s.storage) {
-                                    DO.C.User.Storage = s.storage._array;
-                                }
+                        if (s.storage) {
+                            DO.C.User.Storage = s.storage._array;
+                        }
 
-                                if (s.preferencesFile && s.preferencesFile.length > 0) {
-                                    DO.C.User.PreferencesFile = s.preferencesFile;
+                        if (s.preferencesFile && s.preferencesFile.length > 0) {
+                            DO.C.User.PreferencesFile = s.preferencesFile;
 
-                                    //TODO: Reconsider if/where to use this.
-                                    // DO.U.setUserWorkspaces(DO.C.User.PreferencesFile);
-                                }
-                                return DO.C.User;
-                            },
-                            function(reason) { return reason; }
-                        );
+                            //TODO: Reconsider if/where to use this.
+                            // DO.U.setUserWorkspaces(DO.C.User.PreferencesFile);
+                        }
+                        return DO.C.User;
                     },
                     function(reason) { return reason; }
                 );
             }
             else {
-                console.log('NO USER IRI');
+                console.log('No user IRI');
                 return Promise.reject();
             }
         },
@@ -2687,6 +2672,30 @@ console.log(inbox);
                     }
                 }
             });
+        },
+
+        getResourceGraph: function(iri){
+            var pIRI = DO.U.getProxyableIRI(iri);
+
+            return DO.U.getResource(pIRI, {'Accept': DO.C.AvailableMediaTypes.join(',')}).then(
+                function(response){
+                    var cT = response.xhr.getResponseHeader('Content-Type');
+                    var contentType = (cT) ? cT.split(';')[0].trim() : 'text/turtle';
+
+                    var options = {
+                        'contentType': contentType,
+                        'subjectURI': DO.U.stripFragmentFromString(iri)
+                    };
+
+                    return DO.U.getGraphFromData(response.xhr.responseText, options).then(
+                        function(g){
+                            return SimpleRDF(DO.C.Vocab, options['subjectURI'], g, ld.store);
+                        },
+                        function(reason) { return reason; }
+                    );
+                },
+                function(reason) { return reason; }
+            );
         },
 
         getContacts: function(url) {
