@@ -2721,7 +2721,7 @@ console.log(inbox);
         selectContacts: function(e, url) {
             DO.U.getContacts(url).then(
                 function(contacts) {
-                    e.target.parentNode.innerHTML = '<label>Select from contacts</label><ul id="share-resource-contacts"></ul>';
+                    e.target.parentNode.innerHTML = '<p>Select from contacts</p><ul id="share-resource-contacts"></ul>';
                     var shareResourceContacts = document.getElementById('share-resource-contacts');
                     var counter = 1;
                     contacts.forEach(function(url) {
