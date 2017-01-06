@@ -320,7 +320,7 @@ var DO = {
 // console.log(s.storage);
                         if (s.storage && s.storage._array.length > 0) {
 // console.log("Try through WebID's storage: " + s.storage.at(0));
-                            return DO.U.getResourceHeadUser(s.storage.at(0).iri().toString());
+                            return DO.U.getResourceHeadUser(s.storage.at(0));
                         }
                         else {
                             console.log("---1 WebID's storage NOT FOUND");
@@ -443,10 +443,10 @@ var DO = {
                     if (s.workspace) {
                         DO.C.User.Workspace = { List: s.workspace };
                         s.workspace.forEach(function(wsGraph) {
-                            var workspace = wsGraph.iri().toString();
+                            var workspace = wsGraph;
                             var wstype = pf.child(workspace).rdftype || [];
                             wstype.forEach(function(wGraph) {
-                                var w = wGraph.iri().toString();
+                                var w = wGraph;
                                 switch(w) {
                                     case 'http://www.w3.org/ns/pim/space#PreferencesWorkspace':
                                         DO.C.User.Workspace.Preferences = workspace;
@@ -620,17 +620,17 @@ var DO = {
                             case DO.C.Vocab['solidinbox']['@id']:
                                 if (s.ldpinbox._array.length > 0){
 // console.log(s.ldpinbox._array);
-                                    return [s.ldpinbox.at(0).iri().toString()];
+                                    return [s.ldpinbox.at(0)];
                                 }
                                 else if (s.solidinbox._array.length > 0){
 // console.log(s.solidinbox._array);
-                                    return [s.solidinbox.at(0).iri().toString()];
+                                    return [s.solidinbox.at(0)];
                                 }
                                 break;
                             case DO.C.Vocab['oaannotationService']['@id']:
                                 if (s.oaannotationService._array.length > 0){
 // console.log(s.oaannotationService._array);
-                                    return [s.oaannotationService.at(0).iri().toString()];
+                                    return [s.oaannotationService.at(0)];
                                 }
                                 break;
                         }
@@ -655,17 +655,10 @@ var DO = {
                     function(i) {
                         var s = i.child(url);
                         s.ldpcontains.forEach(function(resource) {
-                            resource = resource.iri().toString();
 // console.log(resource);
                             var types = s.child(resource).rdftype;
 // console.log(types);
-                            var resourceTypes = [];
-                            types.forEach(function(type){
-                                resourceTypes.push(type.iri().toString());
-// console.log(type);
-                            });
-
-                            if(resourceTypes.indexOf(DO.C.Vocab.ldpcontainer["@id"]) < 0) {
+                            if(types.indexOf(DO.C.Vocab.ldpcontainer["@id"]) < 0) {
                                 notifications.push(resource);
                             }
                         });
@@ -719,16 +712,12 @@ var DO = {
                                     var types = s.rdftype._array || [];
 
                                     if (types.length > 0) {
-                                        var resourceTypes = [];
-                                        types.forEach(function(type){
-                                            resourceTypes.push(type.iri().toString());
-                                        });
-
+                                        var resourceTypes = types;
                                         if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Like') > -1 ||
                                            resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Dislike') > -1){
                                             if(s.asobject && s.asobject.at(0)) {
-                                                if(s.ascontext && s.ascontext.at(0) && s.asobject.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
-                                                    var context = s.ascontext.at(0).iri().toString();
+                                                if(s.ascontext && s.ascontext.at(0) && s.asobject.at(0).indexOf(window.location.origin + window.location.pathname) >= 0) {
+                                                    var context = s.ascontext.at(0);
                                                     return DO.U.positionInteraction(context).then(
                                                         function(notificationIRI){
                                                             return notificationIRI;
@@ -738,7 +727,7 @@ var DO = {
                                                         });
                                                 }
                                                 else {
-                                                    var targetIRI = s.asobject.at(0).iri().toString();
+                                                    var targetIRI = s.asobject.at(0);
                                                     var motivatedBy = 'oa:assessing';
                                                     var id = String(Math.abs(DO.U.hashCode(notification))).substr(0, 6);
                                                     var refId = 'r-' + id;
@@ -762,14 +751,14 @@ var DO = {
                                                         "license": {}
                                                     };
 
-                                                    if (s.asactor && s.asactor.iri()){
+                                                    if (s.asactor && s.asactor){
                                                         noteData['creator'] = {
-                                                            'iri': s.asactor.iri().toString()
+                                                            'iri': s.asactor
                                                         }
                                                         var a = g.child(noteData['creator']['iri']);
                                                         var actorName = a.foafname || a.schemaname || a.asname || undefined;
                                                         var actorImage = a.foafimg || a.schemaimage || a.asimage || s["http://xmlns.com/foaf/0.1/depiction"] || undefined;
-                                                        actorImage = (actorImage && actorImage.iri()) ? actorImage.iri().toString() : undefined;
+                                                        actorImage = (actorImage) ? actorImage : undefined;
 
                                                         if(typeof actorName != 'undefined') {
                                                             noteData['creator']['name'] = actorName;
@@ -786,8 +775,8 @@ var DO = {
                                                     if (s.asupdated){
                                                         noteData['datetime'] = s.asupdated;
                                                     }
-                                                    if (s.schemalicense && s.schemalicense.iri()){
-                                                        noteData.license["iri"] = s.schemalicense.iri().toString();
+                                                    if (s.schemalicense){
+                                                        noteData.license["iri"] = s.schemalicense;
                                                         noteData.license["name"] = DO.C.License[noteData.license["iri"]];
                                                     }
 
@@ -796,8 +785,8 @@ var DO = {
                                             }
                                         }
                                         else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Relationship') > -1){
-                                            if(s.assubject && s.assubject.at(0) && s.asrelationship && s.asrelationship.at(0) && s.asobject && s.asobject.at(0) && s.asobject.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
-                                                var subject = s.assubject.at(0).iri().toString();
+                                            if(s.assubject && s.assubject.at(0) && s.asrelationship && s.asrelationship.at(0) && s.asobject && s.asobject.at(0) && s.asobject.at(0).indexOf(window.location.origin + window.location.pathname) >= 0) {
+                                                var subject = s.assubject.at(0);
                                                 return DO.U.positionInteraction(subject).then(
                                                     function(notificationIRI){
                                                         return notificationIRI;
@@ -808,8 +797,9 @@ var DO = {
                                             }
                                         }
                                         else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Announce') > -1) {
-                                            if(s.asobject && s.asobject.at(0) && s.astarget && s.astarget.at(0) && s.astarget.at(0).iri().toString().indexOf(window.location.origin + window.location.pathname) >= 0) {
-                                                var object = s.asobject.at(0).iri().toString();
+                                            if(s.asobject && s.asobject.at(0) && s.astarget && s.astarget.at(0) && s.astarget.at(0).indexOf(window.location.origin + window.location.pathname) >= 0) {
+                                                var object = s.asobject.at(0);
+
                                                 return DO.U.positionInteraction(object).then(
                                                     function(notificationIRI){
                                                         return notificationIRI;
@@ -2140,7 +2130,7 @@ var DO = {
                 options['contentType'] = 'text/turtle';
             }
 
-            return ld.store.serializers[options.contentType].serialize(g);
+            return ld.store.serializers[options.contentType].serialize(g._graph);
         },
 
         serializeData: function(data, fromContentType, toContentType, options) {
@@ -2631,7 +2621,7 @@ console.log(inbox);
                         var sendNotifications = function(tos){
                             return new Promise(function(resolve, reject){
                                 tos.forEach(function(to) {
-                                    var toInput = shareResource.querySelector('[value="' + to + '"]');
+                                    var toInput = shareResource.querySelector('[value="' + to + '"]') || shareResource.querySelector('#share-resource-to');
                                     toInput.parentNode.insertAdjacentHTML('beforeend', '<span class="progress"><i class="fa fa-circle-o-notch fa-spin fa-fw "></i></span>');
 
                                     var inboxResponse = function() {
@@ -3412,14 +3402,19 @@ console.log(inbox);
             var authors = [], authorList = [];
 // console.log(subject);
 // console.log(subject.biboauthorList);
+// console.log(subject.schemaauthor);
+// console.log(subject.dctermscreator);
             if (subject.biboauthorList) {
                 var traverseRDFList = function(item) {
-                    var authorItem = citationGraph.child(item.iri());
-
+                    var authorItem = citationGraph.child(item);
+// console.log(authorItem);
+// console.log(authorItem.iri().toString());
+// console.log(authorItem.rdffirst);
+// console.log(authorItem.rdfrest);
                     if (authorItem.rdffirst) {
-                        authorList.push(authorItem.rdffirst.iri().toString());
+                        authorList.push(authorItem.rdffirst);
                     }
-                    if (authorItem.rdfrest && authorItem.rdfrest.iri().toString() !== 'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil') {
+                    if (authorItem.rdfrest && authorItem.rdfrest !== 'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil') {
                         traverseRDFList(authorItem.rdfrest);
                     }
                 };
@@ -3428,15 +3423,15 @@ console.log(inbox);
             }
             else if (subject.schemaauthor && subject.schemaauthor._array.length > 0) {
                 subject.schemaauthor.forEach(function(a) {
-                    authorList.push(a.iri().toString());
+                    authorList.push(a);
                 });
             }
             else if (subject.dctermscreator && subject.dctermscreator._array.length > 0) {
                 subject.dctermscreator.forEach(function(a) {
-                    authorList.push(a.iri().toString());
+                    authorList.push(a);
                 });
             }
-//console.log(authorList);
+console.log(authorList);
 
             if(authorList.length > 0) {
                 authorList.forEach(function(authorIRI) {
@@ -3893,8 +3888,9 @@ WHERE {\n\
 // console.log(datetime);
                         var annotatedBy = note.schemacreator || note.dctermscreator || note.asactor;
                         var annotatedByIRI;
-                        if (annotatedBy && annotatedBy.at(0) && annotatedBy.at(0).iri()) {
-                            annotatedByIRI = annotatedBy.at(0).iri();
+// console.log(annotatedBy);
+                        if (annotatedBy && annotatedBy.at(0)) {
+                            annotatedByIRI = annotatedBy.at(0);
 // console.log(annotatedByIRI);
                             annotatedBy = i.child(annotatedByIRI);
 // console.log(annotatedBy);
@@ -3902,13 +3898,13 @@ WHERE {\n\
                         var annotatedByName = (annotatedBy.schemaname) ? annotatedBy.schemaname : undefined;
 // console.log(annotatedByName);
                         var annotatedByImage = annotatedBy.schemaimage || '';
-                        annotatedByImage = (annotatedByImage && annotatedByImage.iri()) ? annotatedByImage.iri().toString() : undefined;
+// console.log(annotatedByImage);
+                        annotatedByImage = (annotatedByImage) ? annotatedByImage : undefined;
 // console.log(annotatedByImage);
                         var annotatedByURL = annotatedBy.schemaurl || '';
-                        annotatedByURL = (annotatedByURL && annotatedByURL.iri()) ? annotatedByURL.iri().toString() : undefined;
+                        annotatedByURL = (annotatedByURL) ? annotatedByURL : undefined;
 
-                        var licenseIRI = note.schemalicense || note.dctermsrights;
-                        licenseIRI = (licenseIRI && licenseIRI.iri()) ? licenseIRI.iri().toString() : undefined;
+                        var licenseIRI = note.schemalicense || note.dctermsrights || undefined;
 // console.log(licenseIRI);
 
                         var motivatedBy = 'oa:replying';
@@ -3925,49 +3921,43 @@ WHERE {\n\
 // console.log(types);
                         var resourceTypes = [];
                         types.forEach(function(type){
-                            resourceTypes.push(type.iri().toString());
+                            resourceTypes.push(type);
 // console.log(type);
                         });
 
                         if(resourceTypes.indexOf('http://www.w3.org/ns/oa#Annotation') > -1) {
-                            var body = i.child(note.oahasBody.iri());
-//                        var body = i.child(note.oahasBody.iri().toString());
+                            var body = i.child(note.oahasBody);
 // console.log(body);
-                            var bodyLicenseIRI = body.schemalicense || body.dctermsrights;
-// console.log(bodyLicenseIRI);
-                            bodyLicenseIRI = (bodyLicenseIRI && bodyLicenseIRI.iri()) ? bodyLicenseIRI.iri().toString() : undefined;
+                            var bodyLicenseIRI = body.schemalicense || body.dctermsrights || undefined;
 // console.log(bodyLicenseIRI);
                             bodyText = body.rdfvalue;
 // console.log(bodyText);
-                            var target = i.child(note.oahasTarget.iri());
+                            var target = i.child(note.oahasTarget);
 // console.log(target);
                             var targetIRI = target.iri().toString();
 // console.log(targetIRI);
 
                             var source = target.oahasSource;
-                            if(source && source.iri()){
-                                source = source.toString();
-                            }
 // console.log(source);
-// console.log(source.iri());
+// console.log(note.oamotivatedBy);
 
-                            if(note.oamotivatedBy && note.oamotivatedBy.iri()) {
-                                motivatedBy = note.oamotivatedBy.iri().toString();
+                            if(note.oamotivatedBy) {
+                                motivatedBy = note.oamotivatedBy;
                                 refLabel = DO.U.getReferenceLabel(motivatedBy);
                             }
 
                             var exact, prefix, suffix;
                             var selector = target.oahasSelector;
-                            if(selector && selector.iri()) {
-                                selector = i.child(selector.iri());
+                            if(selector) {
+                                selector = i.child(selector);
 // console.log(selector);
 
 // console.log(selector.rdftype);
 // console.log(selector.rdftype._array);
                                 //FIXME: This is taking the first rdf:type. There could be multiple.
                                 var selectorTypes;
-                                if (selector.rdftype && selector.rdftype.at(0) && selector.rdftype.at(0).iri()) {
-                                    selectorTypes = selector.rdftype.at(0).iri().toString();
+                                if (selector.rdftype && selector.rdftype.at(0)) {
+                                    selectorTypes = selector.rdftype.at(0);
                                 }
 // console.log(selectorTypes);
                                 if(selectorTypes == 'http://www.w3.org/ns/oa#TextQuoteSelector') {
@@ -4144,12 +4134,12 @@ WHERE {\n\
                         }
                         else {
                             var inReplyTo, inReplyToRel;
-                            if (note.asinReplyTo && note.asinReplyTo.at(0) && note.asinReplyTo.at(0).iri()) {
-                                inReplyTo = note.asinReplyTo.at(0).iri().toString();
+                            if (note.asinReplyTo && note.asinReplyTo.at(0)) {
+                                inReplyTo = note.asinReplyTo.at(0);
                                 inReplyToRel = 'as:inReplyTo';
                             }
-                            else if(note.siocreplyof && note.siocreplyof.at(0) && note.siocreplyof.at(0).iri()) {
-                                inReplyTo = note.siocreplyof.at(0).iri().toString();
+                            else if(note.siocreplyof && note.siocreplyof.at(0)) {
+                                inReplyTo = note.siocreplyof.at(0);
                                 inReplyToRel = 'sioc:reply_of';
                             }
 
@@ -5054,8 +5044,6 @@ WHERE {\n\
                                     }
                                 }
                             );
-
-                            return false;
                         },
 
                         // Called when user hits the defined shortcut (CTRL / COMMAND + K)
@@ -5577,7 +5565,7 @@ WHERE {\n\
 
                             if(opts.annotationLocationPersonalStorage || (!opts.annotationLocationPersonalStorage && !opts.annotationLocationService && DO.C.User.Storage && DO.C.User.Storage.length > 0)) {
                                 if(DO.C.User.Storage && DO.C.User.Storage.length > 0) {
-                                    containerIRI = DO.U.forceTrailingSlash(DO.C.User.Storage[0].iri().toString());
+                                    containerIRI = DO.U.forceTrailingSlash(DO.C.User.Storage[0]);
                                 }
                                 else {
                                     containerIRI = containerIRI.substr(0, containerIRI.lastIndexOf('/') + 1);
@@ -5618,7 +5606,7 @@ WHERE {\n\
                                 annotationDistribution.push(aLS);
                             }
 
-console.log(annotationDistribution);
+// console.log(annotationDistribution);
                             //XXX: Defaulting to id but overwritten by motivation symbol
                             var refLabel = id;
 
@@ -6071,7 +6059,7 @@ console.log(annotationDistribution);
                                                     var s = citationGraph.child(citationURI);
 // console.log(s);
                                                     if (s.ldpinbox._array.length > 0) {
-                                                        var inbox = s.ldpinbox.at(0).iri().toString();
+                                                        var inbox = s.ldpinbox.at(0);
 // console.log(inbox);
 
                                                         var citedBy = location.href.split(location.search||location.hash||/[?#]/)[0] + '#' + options.refId;
