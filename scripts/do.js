@@ -3407,24 +3407,27 @@ console.log(inbox);
 // console.log(subject.biboauthorList);
 // console.log(subject.schemaauthor);
 // console.log(subject.dctermscreator);
-            if (subject.biboauthorList) {
-                var traverseRDFList = function(item) {
-                    var authorItem = citationGraph.child(item);
-// console.log(authorItem);
-// console.log(authorItem.iri().toString());
-// console.log(authorItem.rdffirst);
-// console.log(authorItem.rdfrest);
-                    if (authorItem.rdffirst) {
-                        authorList.push(authorItem.rdffirst);
-                    }
-                    if (authorItem.rdfrest && authorItem.rdfrest !== 'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil') {
-                        traverseRDFList(authorItem.rdfrest);
-                    }
-                };
 
-                traverseRDFList(subject.biboauthorList);
-            }
-            else if (subject.schemaauthor && subject.schemaauthor._array.length > 0) {
+            //XXX: FIXME: Putting this off for now because SimpleRDF is not finding the bnode for some reason in citationGraph.child(item), or at least authorItem.rdffirst (undefined)
+//             if (subject.biboauthorList) {
+//                 var traverseRDFList = function(item) {
+//                     var authorItem = citationGraph.child(item);
+// // console.log(authorItem);
+// // console.log(authorItem.iri().toString());
+// // console.log(authorItem.rdffirst);
+// // console.log(authorItem.rdfrest);
+//                     if (authorItem.rdffirst) {
+//                         authorList.push(authorItem.rdffirst);
+//                     }
+//                     if (authorItem.rdfrest && authorItem.rdfrest !== 'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil') {
+//                         traverseRDFList(authorItem.rdfrest);
+//                     }
+//                 };
+
+//                 traverseRDFList(subject.biboauthorList);
+//             }
+//             else
+            if (subject.schemaauthor && subject.schemaauthor._array.length > 0) {
                 subject.schemaauthor.forEach(function(a) {
                     authorList.push(a);
                 });
@@ -3434,7 +3437,7 @@ console.log(inbox);
                     authorList.push(a);
                 });
             }
-console.log(authorList);
+// console.log(authorList);
 
             if(authorList.length > 0) {
                 authorList.forEach(function(authorIRI) {
