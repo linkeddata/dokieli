@@ -2698,15 +2698,12 @@ console.log(inbox);
             );
         },
 
-        getContacts: function(url) {
-            var pIRI = DO.U.getProxyableIRI(url);
-
-            return DO.U.getGraph(pIRI)
-                .then(
-                    function(i) {
-                        var s = i.child(url);
-                        var knows = s.foafknows;
-                        var seeAlso = s.rdfsseeAlso;
+        getContacts: function(iri) {
+            return DO.U.getResourceGraph(iri).then(
+                function(g){
+                    var s = g.child(iri);
+                    var knows = s.foafknows;
+                    // var seeAlso = s.rdfsseeAlso;
 // console.log(knows);
 // console.log(seeAlso);
                         return knows;
