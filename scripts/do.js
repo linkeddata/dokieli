@@ -161,6 +161,8 @@ var DO = {
             '<option value="http://purl.org/spar/cito/usesMethodIn">uses method in</option>'
         ],
 
+        AvailableMediaTypes: ['text/turtle', 'application/ld+json', 'application/rdf+xml', 'application/xhtml+xml', 'text/html'],
+
         Vocab: {
             "rdftype": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "@type": "@id", "@array": true },
             "rdffirst": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#first", "@type": "@id" },
@@ -385,7 +387,7 @@ var DO = {
             if (userIRI) {
                 var pIRI = DO.U.getProxyableIRI(userIRI);
 
-                return DO.U.getResource(pIRI).then(
+                return DO.U.getResource(pIRI, {'Accept': DO.C.AvailableMediaTypes.join(',')}).then(
                     function(response){
                       var cT = response.xhr.getResponseHeader('Content-Type');
                       var contentType = (cT) ? cT.split(';')[0].trim() : 'text/turtle';
