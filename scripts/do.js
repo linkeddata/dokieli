@@ -675,7 +675,7 @@ var DO = {
                         });
                     },
                     function(reason) {
-                        console.log(reason);
+                        // console.log(reason);
                     }
                 );
             }
