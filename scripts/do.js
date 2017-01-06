@@ -6082,7 +6082,7 @@ WHERE {\n\
 
                                                         DO.U.notifyInbox(notificationData).then(
                                                             function(s){
-                                                                console.log('Sent Linked Data Notification: ' + options.url);
+                                                                console.log('Sent Linked Data Notification to ' + inbox);
                                                             });
                                                     }
                                                 });
