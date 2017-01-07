@@ -2570,6 +2570,7 @@ console.log(inbox);
 
             var shareResource = document.getElementById('share-resource');
             shareResource.addEventListener('click', function(e) {
+
                 if (e.target.matches('button.close')) {
                     var rs = document.querySelector('#document-do .resource-share');
                     if (rs) {
@@ -2578,6 +2579,8 @@ console.log(inbox);
                 }
 
                 if (DO.C.User.IRI && e.target.matches('button.add')) {
+                    e.preventDefault();
+                    e.stopPropagation();
                     DO.U.selectContacts(e, DO.C.User.IRI);
                 }
 
