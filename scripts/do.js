@@ -389,12 +389,16 @@ var DO = {
                     function(g){
                         var s = g.child(userIRI);
 // console.log(s);
+                        DO.C.User.Graph = s;
                         DO.C.User.IRI = userIRI;
                         DO.C.User.Name = s.foafname || s.schemaname || s.asname || undefined;
 
                         DO.C.User.Image = s.foafimg || s.schemaimage || s.asimage || s["http://xmlns.com/foaf/0.1/depiction"] || undefined;
                         DO.C.User.Image = (DO.C.User.Image) ? DO.C.User.Image : undefined;
                         DO.C.User.URL = s.foafhomepage || s["http://xmlns.com/foaf/0.1/weblog"] || s.schemaurl || undefined;
+                        DO.C.User.Knows = (s.foafknows && s.foafknows._array.length > 0) ? DO.U.uniqueArray(s.foafknows._array) : [];
+                        DO.C.User.TempKnows = [];
+                        DO.C.User.SameAs = [];
 
                         if (s.storage) {
                             DO.C.User.Storage = s.storage._array;
@@ -2570,7 +2574,6 @@ console.log(inbox);
 
             var shareResource = document.getElementById('share-resource');
             shareResource.addEventListener('click', function(e) {
-
                 if (e.target.matches('button.close')) {
                     var rs = document.querySelector('#document-do .resource-share');
                     if (rs) {
@@ -2583,7 +2586,6 @@ console.log(inbox);
                     e.stopPropagation();
                     DO.U.selectContacts(e, DO.C.User.IRI);
                 }
-
 
                 if (e.target.matches('button.share')) {
                     var tos = document.querySelector('#share-resource #share-resource-to').value.trim();
@@ -2702,20 +2704,64 @@ console.log(inbox);
         },
 
         getContacts: function(iri) {
-            return DO.U.getResourceGraph(iri).then(
-                function(g){
-                    var s = g.child(iri);
-                    var knows = s.foafknows;
-                    // var seeAlso = s.rdfsseeAlso;
-// console.log(knows);
-// console.log(seeAlso);
-                        return knows;
-                    },
-                    function(reason){
-                        console.log(reason);
-                        return reject(reason);
-                    }
-                );
+            var processSameAs = function(s) {
+                if (s.owlsameAs && s.owlsameAs._array.length > 0){
+                    var iris = s.owlsameAs._array;
+                    var promises = [];
+                    iris.forEach(function(iri){
+// console.log(iri);
+                        if(iri != DO.C.User.IRI && DO.C.User.SameAs.indexOf(iri) < 0) {
+                            DO.C.User.SameAs.push(iri);
+                            DO.C.User.SameAs = DO.U.uniqueArray(DO.C.User.SameAs);
+                            promises.push(DO.U.getContacts(iri));
+                        }
+                    });
+
+                    return Promise.all(promises)
+                        .then((results) => {
+// console.log(results);
+                            return Promise.resolve(([].concat.apply([], results)));
+                        })
+                        .catch((e) => {
+                            console.log('--- catch ---');
+// console.trace();
+                            //probably e.xhr.status == 0
+                            console.log(e);
+                            return Promise.resolve([]);
+                        });
+                }
+                else {
+                    return Promise.resolve([]);
+                }
+            };
+
+            var fyn = function(iri){
+                if (iri == DO.C.User.IRI && DO.C.User.SameAs.indexOf(iri) < 0) {
+                    DO.C.User.TempKnows = DO.U.uniqueArray(DO.C.User.TempKnows.concat(DO.C.User.Knows));
+
+                    return processSameAs(DO.C.User.Graph);
+                }
+                else {
+                    return DO.U.getResourceGraph(iri).then(
+                        function(g){
+// console.log(g);
+                            if(typeof g._graph == 'undefined') {
+                                return Promise.resolve([]);
+                            }
+                            var s = g.child(iri);
+                            if(s.foafknows && s.foafknows._array.length > 0){
+                                DO.C.User.TempKnows = DO.U.uniqueArray(DO.C.User.TempKnows.concat(s.foafknows._array));
+                            }
+
+                            return processSameAs(s);
+                        },
+                        function(reason){
+                            return Promise.resolve([]);
+                        });
+                }
+            }
+
+            return fyn(iri).then(function(i){ return DO.C.User.TempKnows; });
         },
 
         selectContacts: function(e, url) {
@@ -2726,6 +2772,7 @@ console.log(inbox);
                     var counter = 1;
                     contacts.forEach(function(url) {
                         var pIRI = DO.U.getProxyableIRI(url);
+
                         DO.U.getGraph(pIRI).then(
                             function(i) {
                                 var s = i.child(url);
@@ -2746,6 +2793,7 @@ console.log(inbox);
                                 else {
                                     DO.U.getEndpointFromHead(DO.C.Vocab['ldpinbox']['@id'], url).then(
                                         function(i){
+                                            console.log(url + ' has Inbox: ' + i);
                                             addShareResourceContact(s);
                                         },
                                         function(reason){
@@ -2763,7 +2811,7 @@ console.log(inbox);
                     });
                 },
                 function(reason) {
-                    // console.log(reason);
+                   console.log(reason);
                 }
             );
         },
