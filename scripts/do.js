@@ -1650,7 +1650,7 @@ var DO = {
                 <div id="embed-data-nanopublication"><textarea placeholder="Enter data in TriG" name="meta-nanopublication" cols="80" rows="24">' + ((scriptCurrentData['meta-nanopublication']) ? scriptCurrentData['meta-nanopublication'].content : '') + '</textarea><button class="save">Save</button></div>\n\
                 </aside>';
 
-                document.body.insertAdjacentHTML('beforeEnd', embedMenu);
+                document.body.insertAdjacentHTML('beforeend', embedMenu);
                 document.querySelector('#embed-data-turtle textarea').focus();
                 var a = document.querySelectorAll('#embed-data-entry nav a');
                 for(var i = 0; i < a.length; i++) {
@@ -1689,7 +1689,7 @@ var DO = {
                                 script.innerHTML = scriptContent;
                             }
                             else {
-                                document.querySelector('head').insertAdjacentHTML('beforeEnd', scriptContent);
+                                document.querySelector('head').insertAdjacentHTML('beforeend', scriptContent);
                             }
                         }
                         else {
@@ -2413,11 +2413,11 @@ var DO = {
             var bli = document.getElementById('browser-location-input');
             bli.focus();
             bli.placeholder = 'https://example.org/path/to/article';
-            replyToResource.insertAdjacentHTML('beforeEnd', '<button class="reply">Send now</button>');
+            replyToResource.insertAdjacentHTML('beforeend', '<button class="reply">Send now</button>');
             // TODO: New in editor make this button do something.
             //       Question: when should the notification be sent?
-            //replyToResource.insertAdjacentHTML('beforeEnd', 'or <button class="reply-new"><i class="fa fa-paper-plane-o"></i> Write reply in new window</button>');
-            replyToResource.insertAdjacentHTML('beforeEnd', '</aside>');
+            //replyToResource.insertAdjacentHTML('beforeend', 'or <button class="reply-new"><i class="fa fa-paper-plane-o"></i> Write reply in new window</button>');
+            replyToResource.insertAdjacentHTML('beforeend', '</aside>');
 
             replyToResource.addEventListener('click', function(e) {
                 if (e.target.matches('button.close')) {
@@ -2589,7 +2589,7 @@ console.log(inbox);
                 if (DO.C.User.IRI && e.target.matches('button.add')) {
                     e.preventDefault();
                     e.stopPropagation();
-                    e.target.parentNode.insertAdjacentHTML('beforeEnd', '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+                    e.target.parentNode.insertAdjacentHTML('beforeend', '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
                     DO.U.selectContacts(e, DO.C.User.IRI);
                 }
 
@@ -2783,7 +2783,6 @@ console.log(inbox);
                             DO.U.getGraph(pIRI).then(
                                 function(i) {
                                     var s = i.child(url);
-
                                     var addShareResourceContact = function(s) {
                                         var name = s.foafname || s.schemaname || s.asname || url;
                                         var img = s.foafimg || s.schemaimage || s.asimage || s.foafdepiction || undefined;
@@ -2800,12 +2799,12 @@ console.log(inbox);
                                     else {
                                         DO.U.getEndpointFromHead(DO.C.Vocab['ldpinbox']['@id'], url).then(
                                             function(i){
-                                                console.log(url + ' has Inbox: ' + i);
+                                                // console.log(url + ' has Inbox: ' + i);
                                                 addShareResourceContact(s);
                                             },
                                             function(reason){
                                                 // console.log(reason);
-                                                console.log(url + ' has no Inbox.');
+                                                // console.log(url + ' has no Inbox.');
                                             }
                                         );
                                     }
@@ -2843,17 +2842,17 @@ console.log(inbox);
                             var inputBox = document.getElementById('browser-location');
                             switch(reason.slice(-3)) { // TODO: simplerdf needs to pass status codes better than in a string.
                                 default:
-                                    inputBox.insertAdjacentHTML('beforeEnd', '<div class="response-message"><p class="error">Unable to access ('+ reason +').</p>');
+                                    inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to access ('+ reason +').</p>');
                                     break;
                                 case '404':
-                                    inputBox.insertAdjacentHTML('beforeEnd', '<div class="response-message"><p class="error">Not found.</p></div>');
+                                    inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Not found.</p></div>');
                                     break;
                                 case '401': case '403':
                                     var msg = 'You don\'t have permission to access this location.';
                                     if(!DO.C.User.IRI){
                                         msg += '</p><p>Try signing in to access your datastore.';
                                     }
-                                    inputBox.insertAdjacentHTML('beforeEnd', '<div class="response-message"><p class="error">' + msg + '</p></div>');
+                                    inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">' + msg + '</p></div>');
                                     break;
                             }
                         }
@@ -2894,7 +2893,7 @@ console.log(inbox);
                     urlPath.splice(-2,2);
                     var prevUrl = DO.U.forceTrailingSlash(urlPath.join("/"));
                     var upBtn = '<li class="container"><input type="radio" name="containers" value="' + prevUrl + '" id="' + prevUrl + '" /><label for="' + prevUrl + '" id="browser-up">..</label></li>';
-                    list.insertAdjacentHTML('afterBegin', upBtn);
+                    list.insertAdjacentHTML('afterbegin', upBtn);
                 }
 
                 var current = g.child(url);
@@ -2927,11 +2926,11 @@ console.log(inbox);
                     return a.toLowerCase().localeCompare(b.toLowerCase());
                 });
                 var liHTML = containersLi.join('\n') + resourcesLi.join('\n');
-                list.insertAdjacentHTML('beforeEnd', liHTML);
+                list.insertAdjacentHTML('beforeend', liHTML);
 
                 var buttons = list.querySelectorAll('label');
                 if(buttons.length <= 1){
-                    list.insertAdjacentHTML('beforeEnd', '<p><em>(empty)</em></p>');
+                    list.insertAdjacentHTML('beforeend', '<p><em>(empty)</em></p>');
                 }
 
                 for(var i = 0; i < buttons.length; i++) {
@@ -2944,7 +2943,7 @@ console.log(inbox);
         },
 
         setupResourceBrowser: function(parent){
-            parent.insertAdjacentHTML('beforeEnd', '<div id="browser-location"><label for="browser-location-input">URL</label> <input type="text" id="browser-location-input" name="browser-location-input" placeholder="https://example.org/path/to/" /><button id="browser-location-update" disabled="disabled">Browse</button></div>\n\
+            parent.insertAdjacentHTML('beforeend', '<div id="browser-location"><label for="browser-location-input">URL</label> <input type="text" id="browser-location-input" name="browser-location-input" placeholder="https://example.org/path/to/" /><button id="browser-location-update" disabled="disabled">Browse</button></div>\n\
             <div id="browser-contents"></div>');
 
             var triggerBrowse = function(url){
@@ -2962,22 +2961,22 @@ console.log(inbox);
                         var list = document.getElementById('browser-ul');
                         switch(reason.slice(-3)) { // TODO: simplerdf needs to pass status codes better than in a string.
                             default:
-                                inputBox.insertAdjacentHTML('beforeEnd', '<div class="response-message"><p class="error">Unable to access ('+ reason +').</p>');
+                                inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to access ('+ reason +').</p>');
                                 break;
                             case '404':
-                                inputBox.insertAdjacentHTML('beforeEnd', '<div class="response-message"><p class="error">Not found.</p></div>');
+                                inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Not found.</p></div>');
                                 break;
                             case '401': case '403':
                                 var msg = 'You don\'t have permission to access this location.';
                                 if(!DO.C.User.IRI){
                                     msg += '</p><p>Try signing in to access your datastore.';
                                 }
-                                inputBox.insertAdjacentHTML('beforeEnd', '<div class="response-message"><p class="error">' + msg + '</p></div>');
+                                inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">' + msg + '</p></div>');
                                 break;
                         }
                     });
                 }else{
-                    inputBox.insertAdjacentHTML('beforeEnd', '<div class="response-message"><p class="error">This is not a valid location.</p></div>');
+                    inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">This is not a valid location.</p></div>');
                 }
             }
 
@@ -3038,7 +3037,7 @@ console.log(inbox);
         showResourceBrowser: function() {
             this.disabled = "disabled";
             var browserHTML = '<aside id="resource-browser" class="do on"><button class="close" title="Close">❌</button><h2>Resource Browser</h2></aside>';
-            document.querySelector('body').insertAdjacentHTML('beforeEnd', browserHTML);
+            document.querySelector('body').insertAdjacentHTML('beforeend', browserHTML);
 
             document.getElementById('resource-browser').querySelector('button.close').addEventListener('click', function(e) {
                 document.querySelector('#document-do .resource-browser').removeAttribute('disabled');
