@@ -397,6 +397,8 @@ var DO = {
                         DO.C.User.Image = (DO.C.User.Image) ? DO.C.User.Image : undefined;
                         DO.C.User.URL = s.foafhomepage || s["http://xmlns.com/foaf/0.1/weblog"] || s.schemaurl || undefined;
                         DO.C.User.Knows = (s.foafknows && s.foafknows._array.length > 0) ? DO.U.uniqueArray(s.foafknows._array) : [];
+                        DO.C.User.Knows = (s.schemaknows && s.schemaknows._array.length > 0) ? DO.U.uniqueArray(DO.C.User.Knows.concat(s.schemaknows._array)) : DO.C.User.Knows;
+
                         DO.C.User.TempKnows = [];
                         DO.C.User.SameAs = [];
 
@@ -2759,6 +2761,9 @@ console.log(inbox);
                             var s = g.child(iri);
                             if(s.foafknows && s.foafknows._array.length > 0){
                                 DO.C.User.TempKnows = DO.U.uniqueArray(DO.C.User.TempKnows.concat(s.foafknows._array));
+                            }
+                            if(s.schemaknows && s.schemaknows._array.length > 0){
+                                DO.C.User.TempKnows = DO.U.uniqueArray(DO.C.User.TempKnows.concat(s.schemaknows._array));
                             }
 
                             return processSameAs(s);
