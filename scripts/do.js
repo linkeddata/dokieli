@@ -393,7 +393,7 @@ var DO = {
                         DO.C.User.IRI = userIRI;
                         DO.C.User.Name = s.foafname || s.schemaname || s.asname || undefined;
 
-                        DO.C.User.Image = s.foafimg || s.schemaimage || s.asimage || s["http://xmlns.com/foaf/0.1/depiction"] || undefined;
+                        DO.C.User.Image = s.foafimg || s.schemaimage || s.asimage || s.foafdepiction || undefined;
                         DO.C.User.Image = (DO.C.User.Image) ? DO.C.User.Image : undefined;
                         DO.C.User.URL = s.foafhomepage || s["http://xmlns.com/foaf/0.1/weblog"] || s.schemaurl || undefined;
                         DO.C.User.Knows = (s.foafknows && s.foafknows._array.length > 0) ? DO.U.uniqueArray(s.foafknows._array) : [];
@@ -751,7 +751,7 @@ var DO = {
                                                         }
                                                         var a = g.child(noteData['creator']['iri']);
                                                         var actorName = a.foafname || a.schemaname || a.asname || undefined;
-                                                        var actorImage = a.foafimg || a.schemaimage || a.asimage || s["http://xmlns.com/foaf/0.1/depiction"] || undefined;
+                                                        var actorImage = a.foafimg || a.schemaimage || a.asimage || s.foafdepiction || undefined;
                                                         actorImage = (actorImage) ? actorImage : undefined;
 
                                                         if(typeof actorName != 'undefined') {
