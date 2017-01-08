@@ -1272,7 +1272,7 @@ var DO = {
             if (e) {
                 e.target.setAttribute('disabled', 'disabled');
             }
-            document.body.insertAdjacentHTML('beforeend', '<aside id="user-identity-input" class="do on"><button class="close" title="Close">❌</button><h2>Enter WebID to sign in with</h2><label>HTTP(S) IRI</label><input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="signin">Sign in</button></aside>');
+            document.body.insertAdjacentHTML('beforeend', '<aside id="user-identity-input" class="do on"><button class="close" title="Close">❌</button><h2>Sign in with WebID</h2><label>HTTP(S) IRI</label> <input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="signin">Sign in</button></aside>');
             var buttonSignIn = document.querySelector('#user-identity-input button.signin');
             buttonSignIn.setAttribute('disabled', 'disabled');
             document.querySelector('#user-identity-input button.close').addEventListener('click', function(e) {
@@ -5398,7 +5398,7 @@ WHERE {\n\
 
                                     queryURL = DO.U.getProxyableIRI(queryURL);
 
-                                    form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', '<div id="' + sparklineGraphId + '"></div><i class="fa fa-spinner fa-pulse"></i>');
+                                    form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', '<div id="' + sparklineGraphId + '"></div><i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
                                     sG = document.getElementById(sparklineGraphId);
 
                                     DO.U.getTriplesFromGraph(queryURL)
@@ -5420,7 +5420,7 @@ WHERE {\n\
                                                 for (var i = 0; i < sparkline.length; i++) {
                                                     sparkline[i].parentNode.removeChild(sparkline[i]);
                                                 }
-                                                form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', '<i class="fa fa-spinner fa-pulse"></i>');
+                                                form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
 
                                                 var dataset = e.target.value;
                                                 var title = e.target.querySelector('*[value="' + e.target.value + '"]').textContent.trim();
