@@ -168,6 +168,7 @@ var DO = {
             "rdffirst": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#first", "@type": "@id" },
             "rdfrest": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest", "@type": "@id" },
             "rdfvalue": "http://www.w3.org/1999/02/22-rdf-syntax-ns#value",
+            "rdfslabel": { "@id": "http://www.w3.org/2000/01/rdf-schema#label" },
             "rdfsseeAlso": { "@id": "http://www.w3.org/2000/01/rdf-schema#seeAlso", "@type": "@id", "@array": true },
 
             "owlsameAs": { "@id": "http://www.w3.org/2002/07/owl#sameAs", "@type": "@id", "@array": true },
@@ -391,7 +392,7 @@ var DO = {
 // console.log(s);
                         DO.C.User.Graph = s;
                         DO.C.User.IRI = userIRI;
-                        DO.C.User.Name = s.foafname || s.schemaname || s.asname || undefined;
+                        DO.C.User.Name = s.foafname || s.schemaname || s.asname || s.rdfslabel || undefined;
 
                         DO.C.User.Image = s.foafimg || s.schemaimage || s.asimage || s.foafdepiction || undefined;
                         DO.C.User.Image = (DO.C.User.Image) ? DO.C.User.Image : undefined;
@@ -750,7 +751,7 @@ var DO = {
                                                             'iri': s.asactor
                                                         }
                                                         var a = g.child(noteData['creator']['iri']);
-                                                        var actorName = a.foafname || a.schemaname || a.asname || undefined;
+                                                        var actorName = a.foafname || a.schemaname || a.asname || a.rdfslabel || undefined;
                                                         var actorImage = a.foafimg || a.schemaimage || a.asimage || s.foafdepiction || undefined;
                                                         actorImage = (actorImage) ? actorImage : undefined;
 
@@ -2791,7 +2792,7 @@ console.log(inbox);
                                 function(i) {
                                     var s = i.child(url);
                                     var addShareResourceContact = function(s) {
-                                        var name = s.foafname || s.schemaname || s.asname || url;
+                                        var name = s.foafname || s.schemaname || s.asname || s.rdfslabel || url;
                                         var img = s.foafimg || s.schemaimage || s.asimage || s.foafdepiction || undefined;
                                         if (img && img.length > 0 || name && name.length > 0) {
                                             img = (img && img.length > 0) ? '<img alt="" height="32" src="' + img + '" width="32" />' : '';
@@ -3522,6 +3523,9 @@ console.log(inbox);
                     }
                     else if (s.foafname && s.foafname.length > 0) {
                         author = s.foafname;
+                    }
+                    else if (s.rdfslabel && s.rdfslabel.length > 0) {
+                        author = s.rdfslabel;
                     }
 
                     if (s.schemafamilyName && s.schemafamilyName.length > 0 && s.schemagivenName && s.schemagivenName.length > 0) {
