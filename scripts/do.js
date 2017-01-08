@@ -2568,9 +2568,14 @@ console.log(inbox);
                 e.target.disabled = true;
             }
 
-            var addContactsButton = (DO.C.User.IRI) ? '<li id="share-resource-address-book"><button class="add"><i class="fa fa-address-book"></i> Add from contacts</button></li>' : '';
+            var addContactsButtonDisable = '', noContactsText = '';
+            if(!(DO.C.User.Graph && ((DO.C.User.Knows && DO.C.User.Knows.length > 0) || (DO.C.User.Graph.owlsameAs && DO.C.User.Graph.owlsameAs._array.length > 0)))) {
+                addContactsButtonDisable = ' disabled="disabled"';
+                noContactsText = '<p>No contacts with <i class="fa fa-inbox"></i> Inboxes found. Acquire <i class="fa fa-thermometer-empty"></i> cool friends‽</p><p>Optionally enter targets individually:</p>';
+            }
+            var addContactsButton = '<li id="share-resource-address-book"><button class="add"' + addContactsButtonDisable + '><i class="fa fa-address-book"></i> Add from contacts</button>' + noContactsText + '</li>';
 
-            document.body.insertAdjacentHTML('beforeend', '<aside id="share-resource" class="do on"><button class="close" title="Close">❌</button><h2>Share resource</h2><div id="share-resource-input"><p>Send a notification about <code>' + iri +'</code></p><ul><li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li>' + addContactsButton + '<li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share">Share</button></aside>');
+            document.body.insertAdjacentHTML('beforeend', '<aside id="share-resource" class="do on"><button class="close" title="Close">❌</button><h2>Share resource</h2><div id="share-resource-input"><p>Send a notification about <code>' + iri +'</code></p><ul>' + addContactsButton + '<li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share">Share</button></aside>');
 
             var shareResource = document.getElementById('share-resource');
             shareResource.addEventListener('click', function(e) {
@@ -2584,6 +2589,7 @@ console.log(inbox);
                 if (DO.C.User.IRI && e.target.matches('button.add')) {
                     e.preventDefault();
                     e.stopPropagation();
+                    e.target.parentNode.insertAdjacentHTML('beforeEnd', '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
                     DO.U.selectContacts(e, DO.C.User.IRI);
                 }
 
@@ -2615,7 +2621,7 @@ console.log(inbox);
                             return new Promise(function(resolve, reject){
                                 tos.forEach(function(to) {
                                     var toInput = shareResource.querySelector('[value="' + to + '"]') || shareResource.querySelector('#share-resource-to');
-                                    toInput.parentNode.insertAdjacentHTML('beforeend', '<span class="progress"><i class="fa fa-circle-o-notch fa-spin fa-fw "></i></span>');
+                                    toInput.parentNode.insertAdjacentHTML('beforeend', '<span class="progress"><i class="fa fa-circle-o-notch fa-spin fa-fw"></i></span>');
 
                                     var inboxResponse = function() {
                                         return DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id'], to).then(
@@ -2767,48 +2773,53 @@ console.log(inbox);
         selectContacts: function(e, url) {
             DO.U.getContacts(url).then(
                 function(contacts) {
-                    e.target.parentNode.innerHTML = '<p>Select from contacts</p><ul id="share-resource-contacts"></ul>';
-                    var shareResourceContacts = document.getElementById('share-resource-contacts');
-                    var counter = 1;
-                    contacts.forEach(function(url) {
-                        var pIRI = DO.U.getProxyableIRI(url);
+                    if(contacts.length > 0) {
+                        e.target.parentNode.innerHTML = '<p>Select from contacts</p><ul id="share-resource-contacts"></ul>';
+                        var shareResourceContacts = document.getElementById('share-resource-contacts');
+                        var counter = 1;
+                        contacts.forEach(function(url) {
+                            var pIRI = DO.U.getProxyableIRI(url);
 
-                        DO.U.getGraph(pIRI).then(
-                            function(i) {
-                                var s = i.child(url);
+                            DO.U.getGraph(pIRI).then(
+                                function(i) {
+                                    var s = i.child(url);
 
-                                var addShareResourceContact = function(s) {
-                                    var name = s.foafname || s.schemaname || s.asname || url;
-                                    var img = s.foafimg || s.schemaimage || s.asimage || s.foafdepiction || undefined;
-                                    if (img && img.length > 0 || name && name.length > 0) {
-                                        img = (img && img.length > 0) ? '<img alt="" height="32" src="' + img + '" width="32" />' : '';
-                                        shareResourceContacts.insertAdjacentHTML('beforeend', '<li><input id="share-resource-contact-' + counter + '" type="checkbox" value="' + url + '" /><label for="share-resource-contact-' + counter + '">' + img + '<a href="' + url + '" target="_blank">' + name + '</a></label></li>');
-                                        counter++;
-                                    }
-                                };
-
-                                if((s.ldpinbox && s.ldpinbox._array.length > 0) || (s.solidinbox && s.solidinbox._array.length > 0)) {
-                                    addShareResourceContact(s);
-                                }
-                                else {
-                                    DO.U.getEndpointFromHead(DO.C.Vocab['ldpinbox']['@id'], url).then(
-                                        function(i){
-                                            console.log(url + ' has Inbox: ' + i);
-                                            addShareResourceContact(s);
-                                        },
-                                        function(reason){
-                                            // console.log(reason);
-                                            console.log(url + ' has no Inbox.');
+                                    var addShareResourceContact = function(s) {
+                                        var name = s.foafname || s.schemaname || s.asname || url;
+                                        var img = s.foafimg || s.schemaimage || s.asimage || s.foafdepiction || undefined;
+                                        if (img && img.length > 0 || name && name.length > 0) {
+                                            img = (img && img.length > 0) ? '<img alt="" height="32" src="' + img + '" width="32" />' : '';
+                                            shareResourceContacts.insertAdjacentHTML('beforeend', '<li><input id="share-resource-contact-' + counter + '" type="checkbox" value="' + url + '" /><label for="share-resource-contact-' + counter + '">' + img + '<a href="' + url + '" target="_blank">' + name + '</a></label></li>');
+                                            counter++;
                                         }
-                                    );
+                                    };
+
+                                    if((s.ldpinbox && s.ldpinbox._array.length > 0) || (s.solidinbox && s.solidinbox._array.length > 0)) {
+                                        addShareResourceContact(s);
+                                    }
+                                    else {
+                                        DO.U.getEndpointFromHead(DO.C.Vocab['ldpinbox']['@id'], url).then(
+                                            function(i){
+                                                console.log(url + ' has Inbox: ' + i);
+                                                addShareResourceContact(s);
+                                            },
+                                            function(reason){
+                                                // console.log(reason);
+                                                console.log(url + ' has no Inbox.');
+                                            }
+                                        );
+                                    }
+                                },
+                                function(reason){
+                                    // console.log(reason);
+                                    console.log('No profile: ' + url);
                                 }
-                            },
-                            function(reason){
-                                // console.log(reason);
-                                console.log('No profile: ' + url);
-                            }
-                        );
-                    });
+                            );
+                        });
+                    }
+                    else {
+                        e.target.parentNode.innerHTML = 'No contacts with <i class="fa fa-inbox"></i> Inboxes found. Acquire <i class="fa fa-thermometer-empty"></i> cool friends‽</p><p>Optionally enter targets individually:</p>';
+                    }
                 },
                 function(reason) {
                    console.log(reason);
