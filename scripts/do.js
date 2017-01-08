@@ -1319,6 +1319,8 @@ var DO = {
 
         submitSignIn: function() {
             var userIdentityInput = document.getElementById('user-identity-input');
+            userIdentityInput.insertAdjacentHTML('beforeend', '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+
             var url = userIdentityInput.querySelector('input#webid').value.trim();
             if (url.length > 0) {
                 DO.U.setUserInfo(url).then(
