@@ -3,13 +3,13 @@
     <head>
         <meta charset="utf-8" />
         <title></title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="stylesheet" href="media/css/basic.css" media="all" title="Basic" />
-        <link rel="stylesheet alternate" href="media/css/lncs.css" media="all" title="LNCS" />
-        <link rel="stylesheet alternate" href="media/css/acm.css" media="all" title="ACM" />
-        <link rel="stylesheet" href="media/css/do.css" media="all" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" media="all" />
-        <link rel="stylesheet" href="media/css/editor.css" media="all" />
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+        <link href="media/css/basic.css" media="all" rel="stylesheet" title="Basic" />
+        <link href="media/css/lncs.css" media="all" rel="stylesheet alternate" title="LNCS" />
+        <link href="media/css/acm.css" media="all" rel="stylesheet alternate" title="ACM" />
+        <link href="media/css/do.css" media="all" rel="stylesheet" />
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" rel="stylesheet" />
+        <link href="media/css/editor.css" media="all" rel="stylesheet" />
         <script src="scripts/simplerdf.js"></script>
         <script src="scripts/medium-editor.min.js"></script>
         <script src="scripts/medium-editor-tables.min.js"></script>
