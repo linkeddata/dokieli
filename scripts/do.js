@@ -2705,7 +2705,7 @@ console.log(inbox);
 
                     return DO.U.getGraphFromData(response.xhr.responseText, options).then(
                         function(g){
-                            return SimpleRDF(DO.C.Vocab, options['subjectURI'], g, ld.store);
+                            return SimpleRDF(DO.C.Vocab, options['subjectURI'], g, ld.store).child(pIRI + iri.substr(iri.lastIndexOf('#')));
                         },
                         function(reason) { return reason; }
                     );
@@ -2786,9 +2786,7 @@ console.log(inbox);
                         var shareResourceContacts = document.getElementById('share-resource-contacts');
                         var counter = 1;
                         contacts.forEach(function(url) {
-                            var pIRI = DO.U.getProxyableIRI(url);
-
-                            DO.U.getGraph(pIRI).then(
+                            DO.U.getResourceGraph(url).then(
                                 function(i) {
                                     var s = i.child(url);
                                     var addShareResourceContact = function(s) {
