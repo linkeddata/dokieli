@@ -2673,8 +2673,10 @@ console.log(inbox);
 // console.log(notificationData);
                                             DO.U.notifyInbox(notificationData).then(
                                                 function(response) {
-                                                    if(typeof response !== 'undefined' && response.xhr.getResponseHeader('Location')) {
-                                                        var location = response.xhr.getResponseHeader('Location');
+                                                    var location = response.xhr.getResponseHeader('Location');
+
+                                                    if(typeof response !== 'undefined' && location) {
+                                                        location = DO.U.getAbsoluteIRI(inbox, location);
 
                                                         toInput.parentNode.querySelector('.progress').innerHTML = '<span class="progress"><a target="_blank" href="' + location + '"><i class="fa fa-check-circle fa-fw"></i></a></span>';
 
