@@ -3460,9 +3460,7 @@ console.log(inbox);
             }
 //console.log(iri);
 
-            var pIRI = DO.U.getProxyableIRI(iri);
-
-            return DO.U.getGraph(pIRI);
+            return DO.U.getResourceGraph(iri);
         },
 
         getCitationHTML: function(citationGraph, citationURI, options) {
