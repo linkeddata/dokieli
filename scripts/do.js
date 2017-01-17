@@ -829,6 +829,26 @@ var DO = {
             );
         },
 
+        getAbsoluteIRI(base, location){
+            var iri = location;
+
+            if(location.toLowerCase().slice(0,4) != 'http') {
+                if(location.startsWith('/')){
+                    var x = base.toLowerCase().trim().split('/');
+
+                    iri = x[0]+'//'+x[2]+location;
+                }
+                else if(!base.endsWith('/')){
+                    iri = base.substr(0, base.lastIndexOf('/') + 1) + location;
+                }
+                else {
+                    iri = base + location;
+                }
+            }
+
+            return iri;
+        },
+
         getProxyableIRI: function(url, proxyURL) {
             var pIRI = DO.U.stripFragmentFromString(url);
 
