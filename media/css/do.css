@@ -39,7 +39,7 @@ position:relative;
 menu.do,
 aside.do {
 position:fixed;
-z-index:8;
+z-index:2147483646;
 max-height:90%;
 background-color:#fff;
 font-size:0.8em;
@@ -55,7 +55,7 @@ top:1em;
 .do.on {
 padding:1em;
 overflow:auto;
-z-index:9;
+z-index:2147483647;
 }
 .do.on p {
 text-indent:0;
@@ -201,7 +201,7 @@ position:static;
 #toc {
 top:0;
 left:0;
-z-index:8;
+z-index:2147483646;
 border:0;
 border-radius:0;
 border-bottom: 1px solid #ccc;
@@ -369,7 +369,7 @@ display:none;
 }
 
 #table-of-stuff {
-z-index:8;
+z-index:2147483646;
 }
 
 #table-of-stuff li/*,
@@ -437,7 +437,7 @@ margin-top:1em;
 
 .tabs nav {
 position:relative;
-z-index:9;
+z-index:2147483647;
 }
 .tabs nav ul {
 list-style-type:none;
@@ -561,7 +561,7 @@ cursor:-webkit-grab;
 line-height:1;
 font-family:sans-serif;
 padding:0.25em;
-z-index:9;
+z-index:2147483647;
 hyphens:initial;
 }
 
@@ -569,13 +569,13 @@ button.close {
 position:absolute;
 top:0.5em;
 right:0.5em;
-z-index:9;
+z-index:2147483647;
 }
 button.delete {
 position:absolute;
 top:0;
 right:0;
-z-index:9;
+z-index:2147483647;
 }
 
 .do.position-relative {

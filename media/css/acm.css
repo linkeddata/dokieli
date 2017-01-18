@@ -31,7 +31,7 @@ h4 { font-size:11pt !important; }
 h6 { font-size:9pt !important; }*/
 h1 sup { font-size:9pt !important; }
 
-a {
+a, abbr {
 text-decoration:none;
 color:#000;
 }
@@ -127,8 +127,8 @@ h1, #authors, #keywords, #categories-and-subject-descriptors, #general-terms, #r
 hyphens:none;
 }
 
-table, img, object, figure, audio, video, canvas { page-break-inside:avoid; }
-object {
+table, img, object, iframe, figure, audio, video, canvas { page-break-inside:avoid; }
+object, iframe {
 width:100% !important;
 height:auto !important;
 min-height:240px !important;
