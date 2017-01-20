@@ -51,9 +51,10 @@ control.
 ## Screencasts
 Also available on https://dokie.li/ (with captions):
 
-* Overview: http://dokie.li/media/video/dokieli.webm
+* Overview: http://dokie.li/media/video/dokieli.webm (a little old, see shorter/newer Annotation below)
 * Annotation: http://dokie.li/media/video/dokieli-annotation.webm
 * Share: http://dokie.li/media/video/dokieli-share.webm
+* Citation: http://dokie.li/media/video/dokieli-citation.webm
 * Sparqlines: http://dokie.li/media/video/dokieli.webm (see also [article](http://csarven.ca/sparqlines))
 
 
