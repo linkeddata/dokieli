@@ -130,7 +130,7 @@ interactions.
 * [Renato Stauffer](https://github.com/reni99)
 * Your name here. See below :)
 
-## Acknowlegements
+## Acknowledgements
 * [Nicola Greco](https://github.com/nicola)
 * [Tim Berners-Lee](https://github.com/timbl)
 * [Melvin Carvalho](https://github.com/melvincarvalho)
