@@ -139,7 +139,7 @@ interactions.
 * [Sandro Hawke](https://github.com/sandhawke)
 * [Amy van der Hiel](https://github.com/amyvdh)
 * [Henry Story](https://github.com/bblfish)
-* [Kingsley Idehen](https://github.com/kidehen) ([OpenLink Software](https://github.com/openlink))
+* [Kingsley Idehen](https://github.com/kidehen) (and [OpenLink Software](https://github.com/openlink))
 * Your name here. See below :)
 
 ## How to contribute
