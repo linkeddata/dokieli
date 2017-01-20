@@ -126,18 +126,24 @@ interactions.
 ## Contributors
 * [Sarven Capadisli](https://github.com/csarven)
 * [Amy Guy](https://github.com/rhiaro)
-* [Tim Berners-Lee](https://github.com/timbl)
 * [Nicola Greco](https://github.com/nicola)
 * [Dmitri Zagidulin](https://github.com/dmitrizagidulin)
+* [Tim Berners-Lee](https://github.com/timbl)
 * [Melvin Carvalho](https://github.com/melvincarvalho)
+* [Andrei Vlad Sambra](https://github.com/deiu)
+* [Sandro Hawke](https://github.com/sandhawke)
+* [Amy van der Hiel](https://github.com/amyvdh)
+* [Henry Story](https://github.com/bblfish)
 * [OpenLink Software](https://github.com/openlink)
 * [Renato Stauffer](https://github.com/reni99)
 * [Chris Chapman](https://github.com/cdchapman)
-* Get your first PR accepted, and then add your name :)
+* Your name here. See below :)
 
 ## How to contribute
-* Use it! Share your work with the others.
-* Enable your colleagues to do the same.
+* Use it! Break things. Report [issues](https://github.com/linkeddata/dokieli/issues/) and document.
+* Fix issues.
+* Improve documentation (for the website or repository)
 * Join the [dokieli chat](https://gitter.im/linkeddata/dokieli) for help and discussion.
-* Break things. Report [issues](https://github.com/linkeddata/dokieli/issues/) and document. Resolve issues.
-* Optimize. Work on features.
+* Request new features.
+* Publish articles with it.
+* .. and however else you want to contribute.
