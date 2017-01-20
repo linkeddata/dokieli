@@ -149,4 +149,5 @@ interactions.
 * Join the [dokieli chat](https://gitter.im/linkeddata/dokieli) for help and discussion.
 * Request new features.
 * Publish articles with it.
+* Encourage the ideas/work/movement.
 * .. and however else you want to contribute.
