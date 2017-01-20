@@ -126,17 +126,20 @@ interactions.
 ## Contributors
 * [Sarven Capadisli](https://github.com/csarven)
 * [Amy Guy](https://github.com/rhiaro)
+* [Chris Chapman](https://github.com/cdchapman)
+* [Renato Stauffer](https://github.com/reni99)
+* Your name here. See below :)
+
+## Acknowlegements
 * [Nicola Greco](https://github.com/nicola)
-* [Dmitri Zagidulin](https://github.com/dmitrizagidulin)
 * [Tim Berners-Lee](https://github.com/timbl)
 * [Melvin Carvalho](https://github.com/melvincarvalho)
 * [Andrei Vlad Sambra](https://github.com/deiu)
+* [Dmitri Zagidulin](https://github.com/dmitrizagidulin)
 * [Sandro Hawke](https://github.com/sandhawke)
 * [Amy van der Hiel](https://github.com/amyvdh)
 * [Henry Story](https://github.com/bblfish)
 * [OpenLink Software](https://github.com/openlink)
-* [Renato Stauffer](https://github.com/reni99)
-* [Chris Chapman](https://github.com/cdchapman)
 * Your name here. See below :)
 
 ## How to contribute
