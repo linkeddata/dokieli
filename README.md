@@ -126,8 +126,14 @@ interactions.
 ## Contributors
 * [Sarven Capadisli](https://github.com/csarven)
 * [Amy Guy](https://github.com/rhiaro)
-* [Chris Chapman](https://github.com/cdchapman)
+* [Tim Berners-Lee](https://github.com/timbl)
+* [Nicola Greco](https://github.com/nicola)
+* [Dmitri Zagidulin](https://github.com/dmitrizagidulin)
+* [Melvin Carvalho](https://github.com/melvincarvalho)
+* [OpenLink Software](https://github.com/openlink)
 * [Renato Stauffer](https://github.com/reni99)
+* [Chris Chapman](https://github.com/cdchapman)
+* Get your first PR accepted, and then add your name :)
 
 ## How to contribute
 * Use it! Share your work with the others.
