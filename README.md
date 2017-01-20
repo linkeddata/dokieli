@@ -123,6 +123,11 @@ interactions.
 ## License
 [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
+## Contributors
+* [Sarven Capadisli](https://github.com/csarven)
+* [Amy Guy](https://github.com/rhiaro)
+* [Chris Chapman](https://github.com/cdchapman)
+* [Renato Stauffer](https://github.com/reni99)
 
 ## How to contribute
 * Use it! Share your work with the others.
