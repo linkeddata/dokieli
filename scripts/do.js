@@ -724,7 +724,7 @@ var DO = {
                                                 else {
                                                     var targetIRI = s.asobject.at(0);
                                                     var motivatedBy = 'oa:assessing';
-                                                    var id = String(Math.abs(DO.U.hashCode(notification))).substr(0, 6);
+                                                    var id = String(Math.abs(DO.U.hashCode(notification)));
                                                     var refId = 'r-' + id;
                                                     var refLabel = id;
 
@@ -2460,7 +2460,7 @@ var DO = {
                     if (iri.length > 0 && note.length > 0) {
 
                         var datetime = DO.U.getDateTimeISO();
-                        var id = DO.U.generateAttributeId().slice(0, 6);
+                        var id = DO.U.generateAttributeId();
                         var noteIRI = document.querySelector('#reply-to-resource #location-final').innerText.trim();
                         var motivatedBy = "oa:replying";
                         var noteData = {
@@ -2862,7 +2862,7 @@ console.log(inbox);
                     DO.U.getGraph(url).then(
                         function(g){
                             if(final){
-                                final.textContent = url + DO.U.generateAttributeId().slice(0, 6);
+                                final.textContent = url + DO.U.generateAttributeId();
                             }
                             return DO.U.generateBrowserList(g, url);
                         },
@@ -3022,7 +3022,7 @@ console.log(inbox);
                     }
                     if(final){
                         var d = new Date();
-                        final.textContent = input.value + DO.U.generateAttributeId().slice(0, 6);
+                        final.textContent = input.value + DO.U.generateAttributeId();
                     }
                 }
                 else {
@@ -3982,7 +3982,7 @@ WHERE {\n\
                     function(i) {
                         var note = i.child(noteIRI);
 // console.log(note);
-                        var id = String(Math.abs(DO.U.hashCode(noteIRI))).substr(0, 6);
+                        var id = String(Math.abs(DO.U.hashCode(noteIRI)));
                         var refId = 'r-' + id;
                         var refLabel = id;
 
@@ -4532,7 +4532,7 @@ WHERE {\n\
 
         createRDFaHTML: function(r) {
             var s = '', property = '', rel = '', resource = '', href = '', content = '', langDatatype = '', typeOf = '';
-            var idValue = DO.U.generateAttributeId().slice(0, 6);
+            var idValue = DO.U.generateAttributeId();
             var id = ' id="' + idValue + '"';
 
             if ('about' in r && r.about != '') {
@@ -5654,7 +5654,7 @@ WHERE {\n\
                             suffix = DO.U.htmlEntities(suffix);
 
                             var datetime = DO.U.getDateTimeISO();
-                            var id = DO.U.generateAttributeId().slice(0, 6);
+                            var id = DO.U.generateAttributeId();
                             var refId = 'r-' + id;
                             // var noteId = 'i-' + id;
 
