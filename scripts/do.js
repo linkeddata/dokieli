@@ -91,7 +91,7 @@ var DO = {
             'http://purl.org/spar/cito/credits': 'credits',
             'http://purl.org/spar/cito/critiques': 'critiques',
             'http://purl.org/spar/cito/derides': 'derides',
-            'http://purl.org/spar/cito/describes': 'desribes',
+            'http://purl.org/spar/cito/describes': 'describes',
             'http://purl.org/spar/cito/disagreesWith': 'disagrees with',
             'http://purl.org/spar/cito/discusses': 'discusses',
             'http://purl.org/spar/cito/disputes': 'disputes',
