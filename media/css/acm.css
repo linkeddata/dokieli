@@ -81,13 +81,8 @@ figure pre {
 font-size:6pt;
 }
 
-#document-in-reply-to dd a,
-#document-see-also dd a,
-#document-inbox dd a,
-.inbox dd a {
-font-size:0 !important;
-}
 #document-in-reply-to dd a:before,
+#document-annotation-service dd:before,
 #document-see-also dd a:before,
 #document-inbox dd a:before,
 .inbox dd a:before {
@@ -186,6 +181,7 @@ h2, h3,
 #document-modified dt,
 #document-appeared dt,
 #document-in-reply-to dt,
+#document-annotation-service dt,
 #document-license dt,
 #document-format dt,
 #document-inbox dt,
@@ -697,6 +693,7 @@ margin:0 2%;
 #document-modified dd,
 #document-appeared dd,
 #document-in-reply-to dd,
+#document-annotation-service dd,
 #document-license dd,
 #document-format dd,
 #document-inbox dd,
