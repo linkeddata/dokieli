@@ -9,6 +9,12 @@
 .do {
 display:none !important;
 }
+span.do.ref {
+display:inline !important;
+}
+span.do.ref sup {
+display:none;
+}
 .tabs nav {
 display:none !important;
 }
