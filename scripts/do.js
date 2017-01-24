@@ -4581,7 +4581,7 @@ WHERE {\n\
         getAnnotationLocationHTML: function() {
             var s = '', inputs = [], checked = '';
             if(typeof DO.C.AnnotationService !== 'undefined') {
-                checked = (DO.C.User.Storage) ? '': ' checked="checked" disabled="disabled"';
+                checked = (DO.C.User.Storage && DO.C.User.Storage.length > 0) ? '': ' checked="checked" disabled="disabled"';
                 inputs.push('<input type="checkbox" id="annotation-location-service" name="annotation-location-service"' + checked + ' /><label for="annotation-location-service">Annotation service</label>');
             }
             if(DO.C.User.Storage && DO.C.User.Storage.length > 0) {
