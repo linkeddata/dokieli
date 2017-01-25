@@ -5950,7 +5950,7 @@ WHERE {\n\
                                         noteData.creator["url"] = DO.C.User.URL;
                                     }
                                     note = DO.U.createNoteHTML(noteData);
-                                    ref = '<span class="ref" about="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark></span>';
+                                    ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark></span>';
                                     break;
                             }
 // console.log(note);
