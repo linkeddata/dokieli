@@ -154,7 +154,7 @@ aside.note.do blockquote .canonical {
 display:none;
 }
 aside.note.do blockquote dl.author-name img[width="48"][height="48"][rel$="image"] {
-vertical-align:top;
+/*vertical-align:top;*/
 }
 #document-interactions section,
 #document-interactions article.do dl,
@@ -174,18 +174,18 @@ margin-inline-start:0;
 margin-inline-end:0;
 }
 
-aside.note.do blockquote dl.published,
+/*aside.note.do blockquote dl.published,
 aside.note.do blockquote dl.license,
 aside.note.do blockquote dl.rights {
 position:relative;
 top:-1.5em;
 left:3.75em;
-}
+}*/
 aside.note.do blockquote dl.published a,
 aside.note.do blockquote dl.license a,
 aside.note.do blockquote dl.rights a {
 color:#333;
-text-decoration:none;
+/*text-decoration:none;*/
 }
 aside.note.do blockquote dl.published a:hover,
 aside.note.do blockquote dl.license a:hover,
@@ -193,11 +193,11 @@ aside.note.do blockquote dl.rights a:hover {
 color:#000;
 text-decoration:underline;
 }
-aside.note.do blockquote article > div,
+/*aside.note.do blockquote article > div,
 aside.note.do blockquote article > section {
 position:relative;
 top:-1.5em;
-}
+}*/
 
 
 #document-editor {
