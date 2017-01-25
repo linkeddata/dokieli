@@ -4088,7 +4088,7 @@ WHERE {\n\
                                 var exactEnd = selectorIndex + prefix.length + exact.length;
                                 var selection = { start: exactStart, end: exactEnd };
 
-                                var ref = '<span class="ref do" about="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#' + id + '" resource="' + noteIRI + '">' + refLabel + '</a></sup></span>';
+                                var ref = '<span class="ref do" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#' + id + '" resource="' + noteIRI + '">' + refLabel + '</a></sup></span>';
 
                                 MediumEditor.selection.importSelection(selection, containerNode, document);
 
