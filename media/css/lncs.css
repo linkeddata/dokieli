@@ -67,6 +67,10 @@ h4 { font-size:10pt !important; }
 h5 { font-size:10pt !important; }
 h6 { font-size:9pt !important; }
 
+body > nav,
+body > header nav,
+body > footer nav { display:none; }
+
 caption, td, th,
 #author-org,
 #author-uri,
