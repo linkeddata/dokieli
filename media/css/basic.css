@@ -287,13 +287,12 @@ margin:0;
   width: 1em;
   height: 1em;
   padding: 0.3em; margin: 0 0.2em;
-  color: #009000; background-color: #fff;
   border-radius: 50%;
   text-align: center;
 }
 
 #do-index #features i.solid img {
-  width: 100%; background-color: #009000; display: block;
+  width: 100%; display: block;
 }
 
 #do-index #video-overview {
