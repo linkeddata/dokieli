@@ -249,10 +249,8 @@ right:0.615em;
 font-size:1.75em;
 display:inherit;
 padding:0;
-}
-
-#document-menu > button i {
-padding:0.5em;
+width:2em;
+height:2em;
 }
 
 #document-menu > header {
