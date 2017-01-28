@@ -8,7 +8,6 @@
         <link rel="stylesheet alternate" href="https://www.w3.org/StyleSheets/TR/W3C-ED.css" media="all" title="W3C-ED"/>
         <link rel="stylesheet" href="media/css/do.css" media="all" />
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />
-        <link rel="stylesheet" href="media/css/editor.css" media="all" />
         <script src="scripts/simplerdf.js"></script>
         <script src="scripts/medium-editor.min.js"></script>
         <script src="scripts/medium-editor-tables.min.js"></script>
