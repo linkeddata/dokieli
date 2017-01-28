@@ -249,8 +249,9 @@ right:0.615em;
 font-size:1.75em;
 display:inherit;
 padding:0;
-width:2em;
-height:2em;
+width:1.5em;
+height:1.5em;
+vertical-align:middle;
 }
 
 #document-menu > header {
@@ -403,7 +404,7 @@ font-weight:bold;
 display:inline;
 }
 #document-menu dt:after {
-content:":";
+content:": ";
 }
 #document-menu dd {
 display:inline;
