@@ -248,6 +248,11 @@ top:0.615em;
 right:0.615em;
 font-size:1.75em;
 display:inherit;
+padding:0;
+}
+
+#document-menu > button i {
+padding:0.5em;
 }
 
 #document-menu > header {
@@ -318,7 +323,7 @@ width:33.33%;
 height:5em;
 float:left;
 }
-#document-menu button .fa {
+#document-menu section button .fa {
 display:block;
 margin-bottom:0.25em;
 }

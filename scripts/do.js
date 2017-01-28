@@ -1441,13 +1441,15 @@ var DO = {
         },
 
         showDocumentInfo: function() {
-            document.body.insertAdjacentHTML('beforeend', '<menu id="document-menu" class="do"><button class="show" title="Open Menu">☰</button><header></header><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><i class="fa fa-github"></i> <a href="https://github.com/linkeddata/dokieli">dokieli</a></dd></dl></footer></menu>');
-            document.querySelector('#document-menu > button').addEventListener('click', function(e) {
-                if (e.target.classList.contains('show')) {
-                    DO.U.showDocumentMenu(e);
-                }
-                else {
-                    DO.U.hideDocumentMenu(e);
+            document.body.insertAdjacentHTML('beforeend', '<menu id="document-menu" class="do"><button class="show" title="Open Menu"><i class="fa fa-bars"></i></button><header></header><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><i class="fa fa-github"></i> <a href="https://github.com/linkeddata/dokieli">dokieli</a></dd></dl></footer></menu>');
+            document.querySelector('#document-menu').addEventListener('click', function(e) {
+                if(e.target.closest('button')){
+                    if (e.target.closest('button').classList.contains('show')) {
+                        DO.U.showDocumentMenu(e);
+                    }
+                    else {
+                        DO.U.hideDocumentMenu(e);
+                    }
                 }
             });
         },
@@ -1465,6 +1467,7 @@ var DO = {
             dMenuButton.classList.remove('show');
             dMenuButton.classList.add('hide');
             dMenuButton.setAttribute('title', 'Hide Menu');
+            dMenuButton.innerHTML = '<i class="fa fa-minus"></i>';
             dMenu.classList.add('on');
             body.classList.add('on-document-menu');
 
@@ -1497,6 +1500,7 @@ var DO = {
             dMenuButton.classList.remove('hide');
             dMenuButton.classList.add('show');
             dMenuButton.setAttribute('title', 'Open Menu');
+            dMenuButton.innerHTML = '<i class="fa fa-bars"></i>';
 
             var removeElementsList = ['toc', 'embed-data-entry', 'create-new-document', 'source-view', 'save-as-document', 'user-identity-input', 'resource-browser', 'share-resource', 'reply-to-resource'];
             removeElementsList.forEach(function(id) {
