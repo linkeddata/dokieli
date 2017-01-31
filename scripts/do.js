@@ -362,11 +362,13 @@ var DO = {
                 );
         },
 
-        getResourceHeadUser: function(url) {
+        getResourceHeadUser: function(url, options) {
             return new Promise(function(resolve, reject) {
                 var http = new XMLHttpRequest();
                 http.open('HEAD', url);
-                http.withCredentials = true;
+                if (!options.noCredentials) {
+                    http.withCredentials = true;
+                }
                 http.onreadystatechange = function() {
                     if (this.readyState == this.DONE) {
                         if (this.status === 200) {
@@ -865,7 +867,9 @@ var DO = {
             return new Promise(function(resolve, reject) {
                 var http = new XMLHttpRequest();
                 http.open('OPTIONS', url);
-                http.withCredentials = true;
+                if (!options.noCredentials) {
+                    http.withCredentials = true;
+                }
                 http.onreadystatechange = function() {
                     if (this.readyState == this.DONE) {
                         if (this.status === 200 || this.status === 204) {
@@ -895,7 +899,9 @@ var DO = {
             return new Promise(function(resolve, reject) {
                 var http = new XMLHttpRequest();
                 http.open('HEAD', url);
-                http.withCredentials = true;
+                if (!options.noCredentials) {
+                    http.withCredentials = true;
+                }
                 http.onreadystatechange = function() {
                     if (this.readyState == this.DONE) {
                         if('header' in options) {
@@ -913,7 +919,7 @@ var DO = {
             });
         },
 
-        getResource: function(url, headers) {
+        getResource: function(url, headers, options) {
             url = url || window.location.origin + window.location.pathname;
             headers = headers || {};
             if(typeof headers['Accept'] == 'undefined') {
@@ -926,7 +932,9 @@ var DO = {
                 Object.keys(headers).forEach(function(key) {
                     http.setRequestHeader(key, headers[key]);
                 });
-                http.withCredentials = true;
+                if (!options.noCredentials) {
+                    http.withCredentials = true;
+                }
                 http.onreadystatechange = function() {
                     if (this.readyState == this.DONE) {
                         if (this.status === 200) {
@@ -1004,7 +1012,7 @@ var DO = {
             }
         },
 
-        patchResource: function(url, deleteBGP, insertBGP) {
+        patchResource: function(url, deleteBGP, insertBGP, options) {
             //insertBGP and deleteBGP are basic graph patterns.
             if (deleteBGP) {
                 deleteBGP = 'DELETE DATA { ' + deleteBGP + ' };';
@@ -1020,7 +1028,9 @@ var DO = {
                 var http = new XMLHttpRequest();
                 http.open('PATCH', url);
                 http.setRequestHeader('Content-Type', 'application/sparql-update; charset=utf-8');
-                http.withCredentials = true;
+                if (!options.noCredentials) {
+                    http.withCredentials = true;
+                }
                 http.onreadystatechange = function() {
                     if (this.readyState == this.DONE) {
                         if (this.status === 200 || this.status === 201 || this.status === 204) {
@@ -1033,11 +1043,13 @@ var DO = {
             });
         },
 
-        deleteResource: function(url) {
+        deleteResource: function(url, options) {
             return new Promise(function(resolve, reject) {
                 var http = new XMLHttpRequest();
                 http.open('DELETE', url);
-                http.withCredentials = true;
+                if (!options.noCredentials) {
+                    http.withCredentials = true;
+                }
                 http.onreadystatechange = function() {
                     if (this.readyState == this.DONE) {
                         if (this.status === 200 || this.status === 202 || this.status === 204) {
@@ -2719,8 +2731,12 @@ console.log(inbox);
 
         getResourceGraph: function(iri){
             var pIRI = DO.U.getProxyableIRI(iri);
+            var options = {};
+            if (iri.slice(0, 5).toLowerCase() == 'http:') {
+                options['noCredentials'] = true;
+            }
 
-            return DO.U.getResource(pIRI, {'Accept': DO.C.AvailableMediaTypes.join(',')}).then(
+            return DO.U.getResource(pIRI, {'Accept': DO.C.AvailableMediaTypes.join(',')}, options).then(
                 function(response){
                     var cT = response.xhr.getResponseHeader('Content-Type');
                     var contentType = (cT) ? cT.split(';')[0].trim() : 'text/turtle';
@@ -3316,11 +3332,13 @@ console.log(inbox);
         },
 
         //I want HTTP COPY and I want it now!
-        copyResource: function(fromURL, toURL) {
+        copyResource: function(fromURL, toURL, options) {
             if (fromURL != '' && toURL != '') {
                 var http = new XMLHttpRequest();
                 http.open('GET', fromURL);
-                http.withCredentials = true;
+                if (!options.noCredentials) {
+                    http.withCredentials = true;
+                }
                 http.onreadystatechange = function() {
                     if (this.readyState == this.DONE) {
                         if (this.status === 200 || this.status === 201 || this.status === 204) {
