@@ -343,6 +343,14 @@ width:calc(100% - 1.75em);
 #user-info img {
 display:block;
 }
+#user-info a {
+margin-top: 1em;
+margin-bottom: 1em;
+display: inline-block;
+}
+#user-info img + a {
+margin:0;
+}
 
 #document-menu p {
 text-indent:0;
