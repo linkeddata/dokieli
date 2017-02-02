@@ -5,6 +5,7 @@
  * https://github.com/linkeddata/dokieli
  */
 
+if(typeof DO === 'undefined'){
 var SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined;
 var DO = {
     C: {
@@ -6397,3 +6398,4 @@ WHERE {\n\
 }; //DO
 
 document.addEventListener('DOMContentLoaded', function(){ DO.U.init(); });
+}
