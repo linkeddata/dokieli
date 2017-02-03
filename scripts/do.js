@@ -3867,7 +3867,7 @@ WHERE {\n\
                 options['sortBy'] = 'object';
             }
 
-            triples.graph().sort(function (a, b) {
+            triples._graph.sort(function (a, b) {
                 return a[options.sortBy].nominalValue.toLowerCase().localeCompare(b[options.sortBy].nominalValue.toLowerCase());
             });
 
@@ -5462,7 +5462,7 @@ WHERE {\n\
                                         })
                                         .then(function(listHTML){
                                             sG.innerHTML = listHTML;
-                                            form.removeChild(form.querySelector('.fa.fa-spinner.fa-pulse'));
+                                            form.removeChild(form.querySelector('.fa.fa-circle-o-notch.fa-spin'));
                                         })
                                         .then(function(x){
                                             var rC = document.getElementById(resultContainerId);
@@ -5524,7 +5524,7 @@ WHERE {\n\
                                                             };
                                                             var sparkline = DO.U.getSparkline(list, options);
                                                             sG.insertAdjacentHTML('beforeend', '<span class="sparkline">' + sparkline + '</span> <span class="sparkline-info">' + triples.length + ' observations</span>');
-                                                                form.removeChild(form.querySelector('.fa.fa-spinner.fa-pulse'));
+                                                                form.removeChild(form.querySelector('.fa.fa-circle-o-notch.fa-spin'));
                                                         }
                                                         else {
                                                             //This shouldn't happen.
