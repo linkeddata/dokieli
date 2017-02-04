@@ -45,33 +45,14 @@ var DO = {
         ProxyURL: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/proxy?uri=' : 'https://dokie.li/proxy?uri='),
         AuthEndpoint: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/' : 'https://dokie.li/'),
         License: {
-            "NoLicense": "No license",
-            "http://creativecommons.org/publicdomain/zero/1.0/": "CC0 1.0",
-            "http://creativecommons.org/licenses/by/4.0/": "CC BY 4.0",
-            "http://creativecommons.org/licenses/by-sa/4.0/": "CC BY-SA 4.0",
-            "http://creativecommons.org/licenses/by-nc/4.0/": "CC BY-NC 4.0",
-            "http://creativecommons.org/licenses/by-nd/4.0/": "CC BY-ND 4.0",
-            "http://creativecommons.org/licenses/by-nc-sa/4.0/": "CC BY-NC-SA 4.0",
-            "http://creativecommons.org/licenses/by-nc-nd/4.0/": "CC BY-NC-ND 4.0",
-            "https://creativecommons.org/publicdomain/zero/1.0/": "CC0 1.0",
-            "https://creativecommons.org/licenses/by/4.0/": "CC BY 4.0",
-            "https://creativecommons.org/licenses/by-sa/4.0/": "CC BY-SA 4.0",
-            "https://creativecommons.org/licenses/by-nc/4.0/": "CC BY-NC 4.0",
-            "https://creativecommons.org/licenses/by-nd/4.0/": "CC BY-ND 4.0",
-            "https://creativecommons.org/licenses/by-nc-sa/4.0/": "CC BY-NC-SA 4.0",
-            "https://creativecommons.org/licenses/by-nc-nd/4.0/": "CC BY-NC-ND 4.0"
-        },
-        LicenseOptions: {
-            'cc': [
-                '<option value="">No license</option>',
-                '<option value="https://creativecommons.org/publicdomain/zero/1.0/" title="Creative Commons Zero">CC0</option>',
-                '<option value="https://creativecommons.org/licenses/by/4.0/" title="Creative Commons Attribution" selected="selected">CC BY</option>',
-                '<option value="https://creativecommons.org/licenses/by-sa/4.0/" title="Creative Commons Attribution-ShareAlike">CC BY-SA</option>',
-                '<option value="https://creativecommons.org/licenses/by-nc/4.0/" title="Creative Commons Attribution-NonCommercial">CC BY-NC</option>',
-                '<option value="https://creativecommons.org/licenses/by-nd/4.0/" title="Creative Commons Attribution-NoDerivatives">CC BY-ND</option>',
-                '<option value="https://creativecommons.org/licenses/by-nc-sa/4.0/" title="Creative Commons Attribution-NonCommercial-ShareAlike">CC BY-NC-SA</option>',
-                '<option value="https://creativecommons.org/licenses/by-nc-nd/4.0/" title="Creative Commons Attribution-NonCommercial-NoDerivates">CC BY-NC-ND</option>'
-            ]
+            "NoLicense": { 'name': 'No license', 'description': 'No license' },
+            "https://creativecommons.org/publicdomain/zero/1.0/": {'name': 'CC0 1.0', 'description': 'Creative Commons Zero'},
+            "https://creativecommons.org/licenses/by/4.0/": {'name': 'CC BY 4.0', 'description': 'Creative Commons Attribution'},
+            "https://creativecommons.org/licenses/by-sa/4.0/": {'name': 'CC BY-SA 4.0', 'description': 'Creative Commons Attribution-ShareAlike'},
+            "https://creativecommons.org/licenses/by-nc/4.0/": {'name': 'CC BY-NC 4.0', 'description': 'Creative Commons Attribution-NonCommercial'},
+            "https://creativecommons.org/licenses/by-nd/4.0/": {'name': 'CC BY-ND 4.0', 'description': 'Creative Commons Attribution-NoDerivatives'},
+            "https://creativecommons.org/licenses/by-nc-sa/4.0/": {'name': 'CC BY-NC-SA 4.0', 'description': 'Creative Commons Attribution-NonCommercial-ShareAlike'},
+            "https://creativecommons.org/licenses/by-nc-nd/4.0/": {'name': 'CC BY-NC-ND 4.0', 'description': 'Creative Commons Attribution-NonCommercial-NoDerivates'}
         },
         Citation: {
             'http://purl.org/spar/cito/agreesWith': 'agrees with',
@@ -731,7 +712,7 @@ var DO = {
                                                     }
                                                     if (s.schemalicense){
                                                         noteData.license["iri"] = s.schemalicense;
-                                                        noteData.license["name"] = DO.C.License[noteData.license["iri"]];
+                                                        noteData.license["name"] = DO.C.License[noteData.license["iri"]].name;
                                                     }
 
                                                     DO.U.addInteraction(noteData);
@@ -2467,7 +2448,7 @@ var DO = {
                         var license = document.querySelector('#reply-to-resource-license');
                         if (license && license.length > 0) {
                             noteData.license["iri"] = license.value.trim();
-                            noteData.license["name"] = DO.C.License[license.value.trim()];
+                            noteData.license["name"] = DO.C.License[license.value.trim()].name;
                         }
 
                         var note = DO.U.createNoteHTML(noteData);
@@ -4206,7 +4187,7 @@ WHERE {\n\
                                 }
                                 if (licenseIRI) {
                                     noteData.license["iri"] = licenseIRI;
-                                    noteData.license["name"] = DO.C.License[licenseIRI];
+                                    noteData.license["name"] = DO.C.License[licenseIRI].name;
                                 }
                                 if (datetime) {
                                     noteData.datetime = datetime;
@@ -4253,7 +4234,6 @@ WHERE {\n\
                                 }
                                 if (licenseIRI) {
                                     noteData.license["iri"] = licenseIRI;
-                                    noteData.license["name"] = DO.C.License[licenseIRI];
                                 }
                                 if (datetime) {
                                     noteData.datetime = datetime;
@@ -4498,11 +4478,16 @@ WHERE {\n\
             if (typeof n.iri !== 'undefined') {
                 license = '<dl class="' + label.toLowerCase() + '"><dt>' + label + '</dt><dd>';
                 if('name' in n) {
-                    license += '<a href="' + n.iri + '" rel="' + rel + '">' + n.name + '</a>';
+                    var title = ('description' in n) ? ' title="' + n.description + '"' : '';
+                    license += '<a href="' + n.iri + '" rel="' + rel + '"' + title + '>' + n.name + '</a>';
                 }
                 else {
-                    var licenseName = (n.iri in DO.C.License) ? DO.C.License[n.iri] : n.iri;
-                    license += '<a href="' + n.iri + '" rel="' + rel + '">' + licenseName + '</a>';
+                    var licenseName = n.iri, licenseDescription = n.iri;
+                    if (n.iri in DO.C.License) {
+                        licenseName = DO.C.License[n.iri].name;
+                        licenseDescription = DO.C.License[n.iri].description;
+                    }
+                    license += '<a href="' + n.iri + '" rel="' + rel + '" title="' + licenseDescription + '">' + licenseName + '</a>';
                 }
                 license += '</dd></dl>';
             }
@@ -4574,7 +4559,13 @@ WHERE {\n\
         getLicenseOptionsHTML: function(type) {
             var type = type || 'cc';
 
-            return DO.C.LicenseOptions[type].join('');
+            var s = '', selected = '';
+            Object.keys(DO.C.License).forEach(function(uri){
+                selected = (DO.C.License[uri].name === 'CC BY 4.0') ? ' selected="selected"' : '';
+                s += '<option value="' + uri + '" title="' + DO.C.License[uri].description  + '"' + selected + '>' + DO.C.License[uri].name  + '</option>';
+            })
+
+            return s;
         },
 
         getCitationOptionsHTML: function(type) {
@@ -5765,7 +5756,6 @@ WHERE {\n\
                                     }
                                     if (opts.license.length > 0) {
                                         noteData.license["iri"] = opts.license;
-                                        noteData.license["name"] = DO.C.License[opts.license];
                                     }
                                     note = DO.U.createNoteHTML(noteData);
                                     break;
@@ -5822,7 +5812,6 @@ WHERE {\n\
                                     }
                                     if (opts.license.length > 0) {
                                         noteData.license["iri"] = opts.license;
-                                        noteData.license["name"] = DO.C.License[opts.license];
                                     }
 
                                     note = DO.U.createNoteHTML(noteData);
