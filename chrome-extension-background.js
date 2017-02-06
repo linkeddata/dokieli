@@ -29,8 +29,7 @@ function injectResources(tabId, files) {
 }
 
 function load_dokieli(tab) {
-  injectResources(tab.id, ["media/css/chrome-extension-font-awesome.min.css", "media/css/do.css"]).then(() => {
-//     console.log('Injected sources');
+  injectResources(tab.id, ["media/css/font-awesome.min.css", "media/css/do.css"]).then(() => {
   }).catch(err => {
      console.log('Error occurred: '+err);
   });
