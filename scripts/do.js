@@ -328,7 +328,7 @@ var DO = {
         },
 
         getAgentImage: function(s) {
-            return s.foafname || s.schemaname || s.asname || s.rdfslabel || undefined;
+            return s.foafimg || s.schemaimage || s.asimage || s.foafdepiction || undefined;
         },
 
         setUserInfo: function(userIRI) {
@@ -340,10 +340,8 @@ var DO = {
 // console.log(s);
                         DO.C.User.Graph = s;
                         DO.C.User.IRI = userIRI;
-                        DO.C.User.Name = s.foafname || s.schemaname || s.asname || s.rdfslabel || undefined;
-
-                        DO.C.User.Image = s.foafimg || s.schemaimage || s.asimage || s.foafdepiction || undefined;
-                        DO.C.User.Image = (DO.C.User.Image) ? DO.C.User.Image : undefined;
+                        DO.C.User.Name = DO.U.getAgentName(s);
+                        DO.C.User.Image = DO.U.getAgentImage(s);
                         DO.C.User.URL = s.foafhomepage || s["http://xmlns.com/foaf/0.1/weblog"] || s.schemaurl || undefined;
                         DO.C.User.Knows = (s.foafknows && s.foafknows._array.length > 0) ? DO.U.uniqueArray(s.foafknows._array) : [];
                         DO.C.User.Knows = (s.schemaknows && s.schemaknows._array.length > 0) ? DO.U.uniqueArray(DO.C.User.Knows.concat(s.schemaknows._array)) : DO.C.User.Knows;
