@@ -3458,7 +3458,7 @@ console.log(inbox);
             options = options || {};
             var citationId = ('citationId' in options) ? options.citationId : citationURI;
             var subject = citationGraph.child(citationURI);
-            var title = subject.schemaname || subject.dctermstitle || subject.rdfslabel || '';
+            var title = DO.U.getResourceLabel(subject) || '';
             title = title.replace(/ & /g, " &amp; ");
             title = (title.length > 0) ? title + ', ' : '';
             var datePublished = subject.schemadatePublished || subject.dctermsissued || subject.dctermsdate || subject.dctermscreated || '';
