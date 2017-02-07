@@ -2765,29 +2765,20 @@ console.log(inbox);
                     if(contacts.length > 0) {
                         e.target.parentNode.innerHTML = '<p>Select from contacts</p><ul id="share-resource-contacts"></ul>';
                         var shareResourceContacts = document.getElementById('share-resource-contacts');
-                        var counter = 1;
+
                         contacts.forEach(function(url) {
                             DO.U.getResourceGraph(url).then(
                                 function(i) {
                                     var s = i.child(url);
-                                    var addShareResourceContact = function(s) {
-                                        var name = s.foafname || s.schemaname || s.asname || s.rdfslabel || url;
-                                        var img = s.foafimg || s.schemaimage || s.asimage || s.foafdepiction || undefined;
-                                        if (img && img.length > 0 || name && name.length > 0) {
-                                            img = (img && img.length > 0) ? '<img alt="" height="32" src="' + img + '" width="32" />' : '';
-                                            shareResourceContacts.insertAdjacentHTML('beforeend', '<li><input id="share-resource-contact-' + counter + '" type="checkbox" value="' + url + '" /><label for="share-resource-contact-' + counter + '">' + img + '<a href="' + url + '" target="_blank">' + name + '</a></label></li>');
-                                            counter++;
-                                        }
-                                    };
 
                                     if((s.ldpinbox && s.ldpinbox._array.length > 0) || (s.solidinbox && s.solidinbox._array.length > 0)) {
-                                        addShareResourceContact(s);
+                                        DO.U.addShareResourceContactInput(shareResourceContacts, s);
                                     }
                                     else {
                                         DO.U.getEndpointFromHead(DO.C.Vocab['ldpinbox']['@id'], url).then(
                                             function(i){
                                                 // console.log(url + ' has Inbox: ' + i);
-                                                addShareResourceContact(s);
+                                                DO.U.addShareResourceContactInput(shareResourceContacts, s);
                                             },
                                             function(reason){
                                                 // console.log(reason);
@@ -2813,6 +2804,14 @@ console.log(inbox);
             );
         },
 
+        addShareResourceContactInput: function(node, s) {
+            var iri = s.iri();
+            var id = encodeURIComponent(iri);
+            var name = s.foafname || s.schemaname || s.asname || s.rdfslabel || iri;
+            var img = s.foafimg || s.schemaimage || s.asimage || s.foafdepiction || undefined;
+            img = (img && img.length > 0) ? '<img alt="" height="32" src="' + img + '" width="32" />' : '';
+            node.insertAdjacentHTML('beforeend', '<li><input id="share-resource-contact-' + id + '" type="checkbox" value="' + iri + '" /><label for="share-resource-contact-' + id + '">' + img + '<a href="' + iri + '" target="_blank">' + name + '</a></label></li>');
+        },
 
         nextLevelButton: function(button, url) {
             var final = document.getElementById('location-final');
