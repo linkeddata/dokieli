@@ -352,6 +352,7 @@ var DO = {
 
                         DO.C.User.TempKnows = [];
                         DO.C.User.SameAs = [];
+                        DO.C.User.Contacts = [];
 
                         if (s.storage) {
                             DO.C.User.Storage = s.storage._array;
@@ -2769,57 +2770,73 @@ console.log(inbox);
         },
 
         selectContacts: function(e, url) {
-            DO.U.getContacts(url).then(
-                function(contacts) {
-                    if(contacts.length > 0) {
-                        e.target.parentNode.innerHTML = '<p>Select from contacts</p><ul id="share-resource-contacts"></ul>';
-                        var shareResourceContacts = document.getElementById('share-resource-contacts');
+            e.target.parentNode.innerHTML = '<p>Select from contacts</p><ul id="share-resource-contacts"></ul>';
+            var shareResourceContacts = document.getElementById('share-resource-contacts');
 
-                        contacts.forEach(function(url) {
-                            DO.U.getResourceGraph(url).then(
-                                function(i) {
-                                    var s = i.child(url);
+            if(DO.C.User.Contacts.length > 0){
+                DO.C.User.Contacts.forEach(function(s){
+                    // console.log(s);
+                    DO.U.addShareResourceContactInput(shareResourceContacts, s);
+                });
+            }
+            else {
+                DO.U.getContacts(url).then(
+                    function(contacts) {
+                        if(contacts.length > 0) {
+                            contacts.forEach(function(url) {
+                                DO.U.getResourceGraph(url).then(
+                                    function(i) {
+                                        // console.log(i);
+                                        var s = i.child(url);
+                                        DO.C.User.Contacts.push(s);
 
-                                    if((s.ldpinbox && s.ldpinbox._array.length > 0) || (s.solidinbox && s.solidinbox._array.length > 0)) {
                                         DO.U.addShareResourceContactInput(shareResourceContacts, s);
+                                    },
+                                    function(reason){
+                                        // console.log(reason);
+                                        console.log('No profile: ' + url);
                                     }
-                                    else {
-                                        DO.U.getEndpointFromHead(DO.C.Vocab['ldpinbox']['@id'], url).then(
-                                            function(i){
-                                                // console.log(url + ' has Inbox: ' + i);
-                                                DO.U.addShareResourceContactInput(shareResourceContacts, s);
-                                            },
-                                            function(reason){
-                                                // console.log(reason);
-                                                // console.log(url + ' has no Inbox.');
-                                            }
-                                        );
-                                    }
-                                },
-                                function(reason){
-                                    // console.log(reason);
-                                    console.log('No profile: ' + url);
-                                }
-                            );
-                        });
+                                );
+                            });
+                        }
+                        else {
+                            e.target.parentNode.innerHTML = 'No contacts with <i class="fa fa-inbox"></i> Inboxes found. Acquire <i class="fa fa-thermometer-empty"></i> cool friends‽</p><p>Optionally enter targets individually:</p>';
+                        }
+                    },
+                    function(reason) {
+                       console.log(reason);
                     }
-                    else {
-                        e.target.parentNode.innerHTML = 'No contacts with <i class="fa fa-inbox"></i> Inboxes found. Acquire <i class="fa fa-thermometer-empty"></i> cool friends‽</p><p>Optionally enter targets individually:</p>';
-                    }
-                },
-                function(reason) {
-                   console.log(reason);
-                }
-            );
+                );
+            }
         },
 
         addShareResourceContactInput: function(node, s) {
-            var iri = s.iri();
+            var iri = s.iri().toString();
+// console.log(iri.toString());
             var id = encodeURIComponent(iri);
             var name = DO.U.getAgentName(s) || iri;
             var img = DO.U.getAgentImage(s);
             img = (img && img.length > 0) ? '<img alt="" height="32" src="' + img + '" width="32" />' : '';
-            node.insertAdjacentHTML('beforeend', '<li><input id="share-resource-contact-' + id + '" type="checkbox" value="' + iri + '" /><label for="share-resource-contact-' + id + '">' + img + '<a href="' + iri + '" target="_blank">' + name + '</a></label></li>');
+            var input = '<li><input id="share-resource-contact-' + id + '" type="checkbox" value="' + iri + '" /><label for="share-resource-contact-' + id + '">' + img + '<a href="' + iri + '" target="_blank">' + name + '</a></label></li>';
+
+
+            //TODO: This should update DO.C.User.Contacts' Inbox value so that it is not checked again when #share-resource-contacts input:checked
+            if((s.ldpinbox && s.ldpinbox._array.length > 0) || (s.solidinbox && s.solidinbox._array.length > 0)) {
+                node.insertAdjacentHTML('beforeend', input);
+            }
+            else {
+                DO.U.getEndpointFromHead(DO.C.Vocab['ldpinbox']['@id'], iri).then(
+                    function(i){
+                        // console.log(iri + ' has Inbox: ' + i);
+
+                        node.insertAdjacentHTML('beforeend', input);
+                    },
+                    function(reason){
+                        // console.log(reason);
+                        // console.log(iri + ' has no Inbox.');
+                    }
+                );
+            }
         },
 
         nextLevelButton: function(button, url) {
