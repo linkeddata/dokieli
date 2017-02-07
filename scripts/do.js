@@ -323,6 +323,10 @@ var DO = {
             });
         },
 
+        getResourceLabel: function(s) {
+            return s.dctermstitle || DO.U.getAgentName(s) || undefined;
+        },
+
         getAgentName: function(s) {
             return s.foafname || s.schemaname || s.asname || s.rdfslabel || undefined;
         },
