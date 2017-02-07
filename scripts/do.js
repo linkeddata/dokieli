@@ -697,9 +697,8 @@ var DO = {
                                                             'iri': s.asactor
                                                         }
                                                         var a = g.child(noteData['creator']['iri']);
-                                                        var actorName = a.foafname || a.schemaname || a.asname || a.rdfslabel || undefined;
-                                                        var actorImage = a.foafimg || a.schemaimage || a.asimage || s.foafdepiction || undefined;
-                                                        actorImage = (actorImage) ? actorImage : undefined;
+                                                        var actorName = DO.U.getAgentName(a);
+                                                        var actorImage = DO.U.getAgentImage(a);
 
                                                         if(typeof actorName != 'undefined') {
                                                             noteData['creator']['name'] = actorName;
@@ -2813,8 +2812,8 @@ console.log(inbox);
         addShareResourceContactInput: function(node, s) {
             var iri = s.iri();
             var id = encodeURIComponent(iri);
-            var name = s.foafname || s.schemaname || s.asname || s.rdfslabel || iri;
-            var img = s.foafimg || s.schemaimage || s.asimage || s.foafdepiction || undefined;
+            var name = DO.U.getAgentName(s) || iri;
+            var img = DO.U.getAgentImage(s);
             img = (img && img.length > 0) ? '<img alt="" height="32" src="' + img + '" width="32" />' : '';
             node.insertAdjacentHTML('beforeend', '<li><input id="share-resource-contact-' + id + '" type="checkbox" value="' + iri + '" /><label for="share-resource-contact-' + id + '">' + img + '<a href="' + iri + '" target="_blank">' + name + '</a></label></li>');
         },
@@ -3501,16 +3500,7 @@ console.log(inbox);
             if(authorList.length > 0) {
                 authorList.forEach(function(authorIRI) {
                     var s = subject.child(authorIRI);
-                    var author = '';
-                    if (s.schemaname && s.schemaname.length > 0) {
-                        author = s.schemaname;
-                    }
-                    else if (s.foafname && s.foafname.length > 0) {
-                        author = s.foafname;
-                    }
-                    else if (s.rdfslabel && s.rdfslabel.length > 0) {
-                        author = s.rdfslabel;
-                    }
+                    var author = DO.U.getAgentName(s);
 
                     if (s.schemafamilyName && s.schemafamilyName.length > 0 && s.schemagivenName && s.schemagivenName.length > 0) {
                         author = DO.U.createRefName(s.schemafamilyName, s.schemagivenName);
