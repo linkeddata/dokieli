@@ -323,6 +323,10 @@ var DO = {
             });
         },
 
+        getAgentName: function(s) {
+            return s.foafname || s.schemaname || s.asname || s.rdfslabel || undefined;
+        },
+
         setUserInfo: function(userIRI) {
 // console.log("setUserInfo: " + userIRI);
             if (userIRI) {
