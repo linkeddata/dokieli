@@ -3957,11 +3957,9 @@ WHERE {\n\
                             annotatedBy = i.child(annotatedByIRI);
 // console.log(annotatedBy);
                         }
-                        var annotatedByName = (annotatedBy.schemaname) ? annotatedBy.schemaname : undefined;
+                        var annotatedByName = DO.U.getAgentName(annotatedBy);
 // console.log(annotatedByName);
-                        var annotatedByImage = annotatedBy.schemaimage || '';
-// console.log(annotatedByImage);
-                        annotatedByImage = (annotatedByImage) ? annotatedByImage : undefined;
+                        var annotatedByImage = DO.U.getAgentImage(annotatedBy);
 // console.log(annotatedByImage);
                         var annotatedByURL = annotatedBy.schemaurl || '';
                         annotatedByURL = (annotatedByURL) ? annotatedByURL : undefined;
