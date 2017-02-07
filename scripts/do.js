@@ -4190,6 +4190,7 @@ WHERE {\n\
                                     "body": bodyText,
                                     "license": {}
                                 };
+
                                 if (annotatedByIRI) {
                                     noteData.creator["iri"] = annotatedByIRI;
                                 }
@@ -4200,12 +4201,13 @@ WHERE {\n\
                                     noteData.creator["image"] = annotatedByImage;
                                 }
                                 if (licenseIRI) {
-                                    noteData.license["iri"] = licenseIRI;
-                                    noteData.license["name"] = DO.C.License[licenseIRI].name;
+                                    noteData.license["iri"] = licenseIRI.iri().toString();
+                                    noteData.license["name"] = DO.C.License[noteData.license["iri"]].name;
                                 }
                                 if (datetime) {
                                     noteData.datetime = datetime;
                                 }
+// console.log(noteData)
                                 DO.U.addInteraction(noteData);
                             }
                         }
