@@ -336,6 +336,9 @@ var DO = {
                 else if (s.foaffamilyName && s.foaffamilyName.length > 0 && s.foafgivenName && s.foafgivenName.length > 0) {
                     name = s.foafgivenName + ' ' + s.foaffamilyName;
                 }
+                else if(s.foafnick && s.foafnick.length > 0){
+                    name = s.foafnick;
+                }
             }
             return name;
         },
