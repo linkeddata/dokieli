@@ -328,7 +328,16 @@ var DO = {
         },
 
         getAgentName: function(s) {
-            return s.foafname || s.schemaname || s.asname || s.rdfslabel || undefined;
+            var name = s.foafname || s.schemaname || s.asname || s.rdfslabel || undefined;
+            if (typeof name === 'undefined') {
+                if (s.schemafamilyName && s.schemafamilyName.length > 0 && s.schemagivenName && s.schemagivenName.length > 0) {
+                    name = s.schemagivenName + ' ' + s.schemafamilyName;
+                }
+                else if (s.foaffamilyName && s.foaffamilyName.length > 0 && s.foafgivenName && s.foafgivenName.length > 0) {
+                    name = s.foafgivenName + ' ' + s.foaffamilyName;
+                }
+            }
+            return name;
         },
 
         getAgentImage: function(s) {
