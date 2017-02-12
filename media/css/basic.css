@@ -350,6 +350,9 @@ text-align:right;
 content:counter(precode);
 counter-increment:precode;
 }
+pre {
+overflow:auto;
+}
 
 
 @media screen and (min-width: 768px){
