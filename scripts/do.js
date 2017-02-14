@@ -3488,6 +3488,7 @@ console.log(inbox);
             options = options || {};
             var citationId = ('citationId' in options) ? options.citationId : citationURI;
             var subject = citationGraph.child(citationURI);
+// console.log(citationGraph.toString());
 // console.log(citationGraph);
 // console.log(citationURI);
 // console.log(citationId);
