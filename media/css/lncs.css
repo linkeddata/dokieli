@@ -60,12 +60,12 @@ width:122mm !important;
 height:193mm !important; /* A4 - LNCS height*/
 }
 
-h1 { font-size:14pt !important; }
-h2 { font-size:12pt !important; }
-h3 { font-size:10pt !important; }
-h4 { font-size:10pt !important; }
-h5 { font-size:10pt !important; }
-h6 { font-size:9pt !important; }
+h1, .h1 { font-size:14pt !important; }
+h2, .h2 { font-size:12pt !important; }
+h3, .h3 { font-size:10pt !important; }
+h4, .h4 { font-size:10pt !important; }
+h5, .h5 { font-size:10pt !important; }
+h6, .h6 { font-size:9pt !important; }
 
 body > nav,
 body > header nav,
@@ -254,17 +254,17 @@ overflow:hidden;
 page-break-after:avoid;
 line-height:1.231;
 }
-h1 {
+h1, .h1 {
 font-size:1.4615em;
 margin-bottom:1.5em;
 text-align:center;
 }
 aside article h1 { text-align:left; }
-h2 { font-size:1.231em; }
-h3 { font-size:1em; }
-h4 { font-size:1em; }
-h5 { font-size:1em; }
-h6 { font-size:0.923em; }
+h2, .h2 { font-size:1.231em; }
+h3, .h3 { font-size:1em; }
+h4, .h4 { font-size:1em; }
+h5, .h5 { font-size:1em; }
+h6, .h6 { font-size:0.923em; }
 
 h2 {
 margin-top:1.25em;
