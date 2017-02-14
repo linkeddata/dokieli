@@ -2708,7 +2708,8 @@ console.log(inbox);
 
                     return DO.U.getGraphFromData(response.xhr.responseText, options).then(
                         function(g){
-                            return SimpleRDF(DO.C.Vocab, options['subjectURI'], g, ld.store).child(pIRI + iri.substr(iri.lastIndexOf('#')));
+                            var fragment = (iri.lastIndexOf('#') >= 0) ? iri.substr(iri.lastIndexOf('#')) : '';
+                            return SimpleRDF(DO.C.Vocab, options['subjectURI'], g, ld.store).child(pIRI + fragment);
                         },
                         function(reason) { return reason; }
                     );
@@ -3487,6 +3488,10 @@ console.log(inbox);
             options = options || {};
             var citationId = ('citationId' in options) ? options.citationId : citationURI;
             var subject = citationGraph.child(citationURI);
+// console.log(citationGraph);
+// console.log(citationURI);
+// console.log(citationId);
+
             var title = DO.U.getResourceLabel(subject) || '';
             title = title.replace(/ & /g, " &amp; ");
             title = (title.length > 0) ? title + ', ' : '';
