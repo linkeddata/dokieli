@@ -3534,6 +3534,11 @@ console.log(inbox);
                     authorList.push(a);
                 });
             }
+            else if (subject.asactor && subject.asactor._array.length > 0) {
+                subject.asactor.forEach(function(a) {
+                    authorList.push(a);
+                });
+            }
 // console.log(authorList);
 
             if(authorList.length > 0) {
