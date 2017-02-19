@@ -219,6 +219,10 @@ margin-left:1em;
 margin-top:1em;
 }
 
+#keywords h2 {
+font-size:1em;
+}
+
 a { color: #009000; }
 ul { padding: 0; margin-bottom:1em; }
 nav ul,
