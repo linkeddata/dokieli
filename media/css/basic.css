@@ -121,6 +121,11 @@ dl[id^="document-"] dd,
 dl[class~="inbox"] dd {
 margin:0;
 }
+dl[id^="document-"] dd + dt:before {
+content:"\A";
+white-space:pre;
+}
+
 dl[id^="document-"], #authors {
   max-width: none;
   width: 100%;
