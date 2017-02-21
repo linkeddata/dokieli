@@ -235,6 +235,27 @@ aside.note.do blockquote article section {
 margin:0;
 }
 
+tfoot dl.abbr dt,
+tfoot dl.abbr dd {
+display:inline;
+text-transform:none;
+}
+tfoot dl.abbr dd {
+margin-left:0;
+}
+tfoot dl.abbr dd:after {
+content:"\A";
+white-space:pre;
+}
+tfoot dl.abbr dt:after {
+content:": ";
+}
+tfoot dl.abbr {
+-webkit-column-count:2;
+-moz-column-count:2;
+column-count:2;
+}
+
 /* dokieli homepage styles */
 #do-index h1 {
   text-align: center;
