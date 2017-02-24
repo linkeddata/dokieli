@@ -3486,14 +3486,22 @@ console.log(inbox);
 
         getCitationHTML: function(citationGraph, citationURI, options) {
             options = options || {};
-            var citationId = ('citationId' in options) ? options.citationId : citationURI;
+            // var citationId = ('citationId' in options) ? options.citationId : citationURI;
             var subject = citationGraph.child(citationURI);
-// console.log(citationGraph.toString());
 // console.log(citationGraph);
-// console.log(citationURI);
-// console.log(citationId);
+// console.log('citationGraph.iri().toString(): ' + citationGraph.iri().toString());
+// console.log('citationGraph.toString(): ' + citationGraph.toString());
+// console.log('options.citationId: ' + options.citationId);
+// console.log('citationURI: ' + citationURI);
+// console.log('subject.iri().toString(): ' + subject.iri().toString());
 
-            var title = DO.U.getResourceLabel(subject) || '';
+            var title = DO.U.getResourceLabel(subject);
+            //FIXME: This is a stupid hack because RDFa parser is not setting the base properly.
+            if(typeof title == 'undefined') {
+                subject = citationGraph.child(options.citationId);
+
+                title = DO.U.getResourceLabel(subject) || '';
+            }
             title = title.replace(/ & /g, " &amp; ");
             title = (title.length > 0) ? title + ', ' : '';
             var datePublished = subject.schemadatePublished || subject.dctermsissued || subject.dctermsdate || subject.dctermscreated || '';
@@ -3567,7 +3575,7 @@ console.log(inbox);
 
             var citationReason = 'Reason: ' + DO.C.Citation[options.citationRelation];
 
-            var citationHTML = authors + title + datePublished + content + '<a about="#' + options.refId + '" href="' + citationId + '" rel="schema:citation ' + options.citationRelation  + '">' + citationId + '</a> [' + dateAccessed + ', ' + citationReason + ']';
+            var citationHTML = authors + title + datePublished + content + '<a about="#' + options.refId + '" href="' + options.citationId + '" rel="schema:citation ' + options.citationRelation  + '">' + options.citationId + '</a> [' + dateAccessed + ', ' + citationReason + ']';
 //console.log(citationHTML);
             return citationHTML;
         },
@@ -6122,74 +6130,62 @@ WHERE {\n\
                                             options['citationId'] = opts.url;
                                             options['refId'] = refId;
 
-                                            var citation = function() {
-                                                return new Promise(function(resolve, reject) {
-                                                    DO.U.getCitation(opts.url, options).then(
-                                                        function(citation){
-                                                            return resolve(citation);
-                                                        },
-                                                        function(reason){
-                                                            console.log(reason);
-                                                            return reject(reason);
-                                                        }
-                                                    );
-                                                });
-                                            };
+                                            DO.U.getCitation(opts.url, options).then(function(citationGraph) {
+                                                var citationURI = '';
+                                                if(opts.url.match(/^10\.\d+\//)) {
+                                                    citationURI = 'http://dx.doi.org/' + opts.url;
+                                                    options.citationId = citationURI;
+                                                }
+                                                //FIXME: subjectIRI shouldn't be set here. Bug in RDFaProcessor (see also SimpleRDF ES5/6). See also: https://github.com/linkeddata/dokieli/issues/132
+                                                else if (opts.url.toLowerCase().indexOf('//dx.doi.org/') >= 0) {
+                                                    citationURI = opts.url;
+                                                    if (opts.url.toLowerCase().startsWith('https:')) {
+                                                        citationURI = opts.url.replace(/^https/, 'http');
+                                                    }
+                                                }
+                                                else if (DO.U.stripFragmentFromString(options.citationId) != DO.U.getProxyableIRI(options.citationId)) {
+                                                    citationURI = window.location.origin + window.location.pathname;
+                                                }
+                                                else {
+                                                    citationURI = options.citationId;
+                                                }
 
-                                            citation()
-                                                .then(function(citationGraph) {
-                                                    var citationURI = '';
-                                                    if(opts.url.match(/^10\.\d+\//)) {
-                                                        citationURI = 'http://dx.doi.org/' + opts.url;
-                                                        options.citationId = citationURI;
-                                                    }
-                                                    //FIXME: subjectIRI shouldn't be set here. Bug in RDFaProcessor (see also SimpleRDF ES5/6). See also: https://github.com/linkeddata/dokieli/issues/132
-                                                    else if (opts.url.toLowerCase().indexOf('//dx.doi.org/') >= 0) {
-                                                        citationURI = opts.url;
-                                                        if (opts.url.toLowerCase().startsWith('https:')) {
-                                                            citationURI = opts.url.replace(/^https/, 'http');
-                                                        }
-                                                    }
-                                                    else {
-                                                        citationURI = window.location.origin + window.location.pathname;
-                                                    }
+                                                var citation = DO.U.getCitationHTML(citationGraph, citationURI, options);
 
-                                                    var citation = DO.U.getCitationHTML(citationGraph, citationURI, options);
-
-                                                    var r = document.querySelector('#references ol');
-                                                    if (!r) {
-                                                        var section = '<section id="references"><h2>References</h2><div><ol></ol></div></section>';
-                                                        document.querySelector('main article > div').insertAdjacentHTML('beforeend', section);
-                                                        r = document.querySelector('#references ol');
-                                                    }
-                                                    var citationHTML = '<li id="' + id + '">' + citation + '</li>';
-                                                    r.insertAdjacentHTML('beforeend', citationHTML);
+                                                var r = document.querySelector('#references ol');
+                                                if (!r) {
+                                                    var section = '<section id="references"><h2>References</h2><div><ol></ol></div></section>';
+                                                    document.querySelector('main article > div').insertAdjacentHTML('beforeend', section);
+                                                    r = document.querySelector('#references ol');
+                                                }
+                                                var citationHTML = '<li id="' + id + '">' + citation + '</li>';
+                                                r.insertAdjacentHTML('beforeend', citationHTML);
 
 // console.log(options.url);
-                                                    var s = citationGraph.child(citationURI);
+                                                var s = citationGraph.child(citationURI);
 // console.log(s);
-                                                    if (s.ldpinbox._array.length > 0) {
-                                                        var inbox = s.ldpinbox.at(0);
+                                                if (s.ldpinbox._array.length > 0) {
+                                                    var inbox = s.ldpinbox.at(0);
 // console.log(inbox);
 
-                                                        var citedBy = location.href.split(location.search||location.hash||/[?#]/)[0] + '#' + options.refId;
+                                                    var citedBy = location.href.split(location.search||location.hash||/[?#]/)[0] + '#' + options.refId;
 
-                                                        var notificationStatements = '<' + citedBy + '> <' + options.citationRelation + '> <' + options.url + '> .';
+                                                    var notificationStatements = '<' + citedBy + '> <' + options.citationRelation + '> <' + options.url + '> .';
 
-                                                        var notificationData = {
-                                                            "type": ['as:Announce'],
-                                                            "inbox": inbox,
-                                                            "object": citedBy,
-                                                            "target": options.url,
-                                                            "statements": notificationStatements
-                                                        };
+                                                    var notificationData = {
+                                                        "type": ['as:Announce'],
+                                                        "inbox": inbox,
+                                                        "object": citedBy,
+                                                        "target": options.url,
+                                                        "statements": notificationStatements
+                                                    };
 
-                                                        DO.U.notifyInbox(notificationData).then(
-                                                            function(s){
-                                                                console.log('Sent Linked Data Notification to ' + inbox);
-                                                            });
-                                                    }
-                                                });
+                                                    DO.U.notifyInbox(notificationData).then(
+                                                        function(s){
+                                                            console.log('Sent Linked Data Notification to ' + inbox);
+                                                        });
+                                                }
+                                            });
                                             break;
                                     }
                                     break;
