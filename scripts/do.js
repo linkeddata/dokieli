@@ -324,7 +324,7 @@ var DO = {
         },
 
         getResourceLabel: function(s) {
-            return s.dctermstitle || DO.U.getAgentName(s) || undefined;
+            return s.dctermstitle || s['http://purl.org/dc/elements/1.1/title'] || DO.U.getAgentName(s) || undefined;
         },
 
         getAgentName: function(s) {
