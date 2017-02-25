@@ -29,12 +29,12 @@ content:"";
 }
 
 h1 {
-  font-family: Serif; font-weight: normal; font-size: 4em;
+  font-weight: normal;
+  font-size: 4em;
   text-align: center;
   margin:0.75em 0;
   color:#000;
 }
-h2, h3, h4 { font-family: Arial, Helvetica, sans-serif; }
 h2 { font-size: 1.4em; line-height:1; }
 h3 { font-size: 1.2em; line-height:0.8; }
 h4 { font-size: 1.2em; font-style: italic; }
@@ -261,10 +261,8 @@ font-weight:bold;
 
 /* dokieli homepage styles */
 #do-index h1 {
-  text-align: center;
-  font-size: 4em;
-  font-family: Serif; font-weight: normal;
-  margin-top: 0.5em; margin-bottom: 0;
+  margin-top: 0.5em;
+  margin-bottom: 0;
 }
 
 #do-index #introduction {
@@ -328,16 +326,22 @@ font-weight:bold;
   width: 100%; display: block;
 }
 
+#do-index #read-write-web,
 #do-index #video-overview {
   text-align: center;
   width: 100%;
-  background-color: #ccc;
+  background-color: #ddd;
 }
 #do-index #features h2,
 #do-index #video-overview h2 {
-display:none;
+  display:none;
 }
-
+#do-index #read-write-web {
+  text-align:center;
+  font-size:2em;
+  padding:1em 0;
+  margin:1em 0;
+}
 
 ul#program-committee {
 column-count: 2;
