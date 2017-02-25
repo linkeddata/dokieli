@@ -396,7 +396,7 @@ overflow:auto;
   article > article,
   section {
     width: 50%;
-    margin: 2em auto;
+    margin: 3em auto;
     padding: 0;
   }
   dl[id^="document-"], #authors {
