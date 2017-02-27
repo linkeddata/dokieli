@@ -128,6 +128,7 @@ var DO = {
             "schemaimage": { "@id": "http://schema.org/image", "@type": "@id" },
             "schemacreator": { "@id": "http://schema.org/creator", "@type": "@id", "@array": true },
             "schemaauthor": { "@id": "http://schema.org/author", "@type": "@id", "@array": true },
+            "schemacontributor": { "@id": "http://schema.org/contributor", "@type": "@id", "@array": true },
             "schemalicense": { "@id": "http://schema.org/license", "@type": "@id" },
             "schemacitation": { "@id": "http://schema.org/citation", "@type": "@id", "@array": true },
             "schemaknows": { "@id": "http://schema.org/knows", "@type": "@id", "@array": true },
