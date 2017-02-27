@@ -1760,7 +1760,17 @@ var DO = {
         showDocumentMetadata: function(node) {
             var content = document.body;
             var count = DO.U.contentCount(content);
-            var contributors = '';
+            var authors = '', contributors = '';
+
+            var relAuthors = document.querySelectorAll('#authors *[rel*="author"]');
+            if (relAuthors.length > 0) {
+                authors = '<ul class="authors">';
+                for (var i = 0; i < relAuthors.length; i++) {
+                    authors += '<li>' + relAuthors[i].innerHTML + '</li>';
+                }
+                authors += '</ul>';
+                authors = '<tr><th>Authors</th><td>' + authors + '</td></tr>';
+            }
 
             var relContributors = document.querySelectorAll('#authors *[rel*="contributor"]');
             if (relContributors.length > 0) {
@@ -1769,12 +1779,13 @@ var DO = {
                     contributors += '<li>' + relContributors[i].innerHTML + '</li>';
                 }
                 contributors += '</ul>';
-                contributors = '<tr><th>Authors</th><td>' + contributors + '</td></tr>';
+                contributors = '<tr><th>Contributors</th><td>' + contributors + '</td></tr>';
             }
 
             var s = '<section id="document-metadata" class="do"><table>\n\
                 <caption>Document Metadata</caption>\n\
                 <tbody>\n\
+                    ' + authors + '\n\
                     ' + contributors + '\n\
                     <tr><th>Reading time</th><td>' + count.readingTime + ' minutes</td></tr>\n\
                     <tr><th>Characters</th><td>' + count.chars + '</td></tr>\n\
