@@ -1763,7 +1763,7 @@ var DO = {
             var authors = '', contributors = '';
 
             //TODO This should be rewritten to work with the existing RDFa and not HTML
-            var relAuthors = document.querySelectorAll('#authors *[rel*="author"]');
+            var relAuthors = document.querySelectorAll('#authors *[rel~="schema:author"]');
             if (relAuthors.length > 0) {
                 authors = '<ul class="authors">';
                 for (var i = 0; i < relAuthors.length; i++) {
@@ -1773,7 +1773,7 @@ var DO = {
                 authors = '<tr><th>Authors</th><td>' + authors + '</td></tr>';
             }
 
-            var relContributors = document.querySelectorAll('#authors *[rel*="contributor"]');
+            var relContributors = document.querySelectorAll('#authors *[rel~="schema:contributor"]');
             if (relContributors.length > 0) {
                 contributors = '<ul class="contributors">';
                 for (var i = 0; i < relContributors.length; i++) {
