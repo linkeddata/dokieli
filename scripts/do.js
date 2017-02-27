@@ -1769,24 +1769,28 @@ var DO = {
             DO.U.getGraphFromData(data, options).then(
                 function(i){
                     var g = SimpleRDF(DO.C.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
-                    g.schemaauthor.forEach(function(s){
-                        var label = DO.U.getResourceLabel(g.child(s));
-                        if(typeof label !== 'undefined'){
-                            authors.push('<li>' + label + '</li>');
-                        }
-                    });
-                    if(authors.length > 0){
-                        authors = '<tr><th>Authors</th><td><ul class="authors">' + authors.join('') + '</ul></td></tr>';
+                    if(g.schemaauthor.length > 0) {
+                      g.schemaauthor.forEach(function(s){
+                          var label = DO.U.getResourceLabel(g.child(s));
+                          if(typeof label !== 'undefined'){
+                              authors.push('<li>' + label + '</li>');
+                          }
+                      });
+                      if(authors.length > 0){
+                          authors = '<tr><th>Authors</th><td><ul class="authors">' + authors.join('') + '</ul></td></tr>';
+                      }
                     }
 
-                    g.schemacontributor.forEach(function(s){
-                        var label = DO.U.getResourceLabel(g.child(s));
-                        if(typeof label !== 'undefined'){
-                            contributors.push('<li>' + label + '</li>');
+                    if(g.schemacontributor.length > 0) {
+                        g.schemacontributor.forEach(function(s){
+                            var label = DO.U.getResourceLabel(g.child(s));
+                            if(typeof label !== 'undefined'){
+                                contributors.push('<li>' + label + '</li>');
+                            }
+                        });
+                        if(contributors.length > 0){
+                            contributors = '<tr><th>Contributors</th><td><ul class="contributors">' + contributors.join('') + '</ul></td></tr>';
                         }
-                    });
-                    if(contributors.length > 0){
-                        authors = '<tr><th>Contributors</th><td><ul class="contributors">' + contributors.join('') + '</ul></td></tr>';
                     }
                 });
 
