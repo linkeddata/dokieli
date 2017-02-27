@@ -1770,7 +1770,8 @@ var DO = {
             DO.U.getGraphFromData(data, options).then(
                 function(i){
                     var g = SimpleRDF(DO.C.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
-                    if(g.schemaauthor.length > 0) {
+
+                    if(g.schemaauthor._array.length > 0) {
                       g.schemaauthor.forEach(function(s){
                           var label = DO.U.getResourceLabel(g.child(s));
                           if(typeof label !== 'undefined'){
@@ -1782,7 +1783,7 @@ var DO = {
                       }
                     }
 
-                    if(g.schemacontributor.length > 0) {
+                    if(g.schemacontributor._array.length > 0) {
                         g.schemacontributor.forEach(function(s){
                             var label = DO.U.getResourceLabel(g.child(s));
                             if(typeof label !== 'undefined'){
@@ -1793,24 +1794,26 @@ var DO = {
                             contributors = '<tr><th>Contributors</th><td><ul class="contributors">' + contributors.join('') + '</ul></td></tr>';
                         }
                     }
+
+                    return authors + contributors;
+                }).then(
+                function(people){
+                    var s = '<section id="document-metadata" class="do"><table>\n\
+                        <caption>Document Metadata</caption>\n\
+                        <tbody>\n\
+                            ' + people + '\n\
+                            <tr><th>Reading time</th><td>' + count.readingTime + ' minutes</td></tr>\n\
+                            <tr><th>Characters</th><td>' + count.chars + '</td></tr>\n\
+                            <tr><th>Words</th><td>' + count.words + '</td></tr>\n\
+                            <tr><th>Lines</th><td>' + count.lines + '</td></tr>\n\
+                            <tr><th>A4 Pages</th><td>' + count.pages.A4 + '</td></tr>\n\
+                            <tr><th>US Letter</th><td>' + count.pages.USLetter + '</td></tr>\n\
+                            <tr><th>Bytes</th><td>' + count.bytes + '</td></tr>\n\
+                        </tbody>\n\
+                    </table></section>';
+
+                    node.insertAdjacentHTML('beforeend', s);
                 });
-
-            var s = '<section id="document-metadata" class="do"><table>\n\
-                <caption>Document Metadata</caption>\n\
-                <tbody>\n\
-                    ' + authors + '\n\
-                    ' + contributors + '\n\
-                    <tr><th>Reading time</th><td>' + count.readingTime + ' minutes</td></tr>\n\
-                    <tr><th>Characters</th><td>' + count.chars + '</td></tr>\n\
-                    <tr><th>Words</th><td>' + count.words + '</td></tr>\n\
-                    <tr><th>Lines</th><td>' + count.lines + '</td></tr>\n\
-                    <tr><th>A4 Pages</th><td>' + count.pages.A4 + '</td></tr>\n\
-                    <tr><th>US Letter</th><td>' + count.pages.USLetter + '</td></tr>\n\
-                    <tr><th>Bytes</th><td>' + count.bytes + '</td></tr>\n\
-                </tbody>\n\
-            </table></section>';
-
-            node.insertAdjacentHTML('beforeend', s);
         },
 
         contentCount: function(c) {
