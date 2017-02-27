@@ -1762,11 +1762,12 @@ var DO = {
             var count = DO.U.contentCount(content);
             var authors = '', contributors = '';
 
+            //TODO This should be rewritten to work with the existing RDFa and not HTML
             var relAuthors = document.querySelectorAll('#authors *[rel*="author"]');
             if (relAuthors.length > 0) {
                 authors = '<ul class="authors">';
                 for (var i = 0; i < relAuthors.length; i++) {
-                    authors += '<li>' + relAuthors[i].innerHTML + '</li>';
+                    authors += '<li>' + relAuthors[i].textContent + '</li>';
                 }
                 authors += '</ul>';
                 authors = '<tr><th>Authors</th><td>' + authors + '</td></tr>';
@@ -1776,7 +1777,7 @@ var DO = {
             if (relContributors.length > 0) {
                 contributors = '<ul class="contributors">';
                 for (var i = 0; i < relContributors.length; i++) {
-                    contributors += '<li>' + relContributors[i].innerHTML + '</li>';
+                    contributors += '<li>' + relContributors[i].textContent + '</li>';
                 }
                 contributors += '</ul>';
                 contributors = '<tr><th>Contributors</th><td>' + contributors + '</td></tr>';
