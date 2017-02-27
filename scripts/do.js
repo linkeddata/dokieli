@@ -1760,28 +1760,35 @@ var DO = {
         showDocumentMetadata: function(node) {
             var content = document.body;
             var count = DO.U.contentCount(content);
-            var authors = '', contributors = '';
+            var authors = [], contributors = [];
 
-            //TODO This should be rewritten to work with the existing RDFa and not HTML
-            var relAuthors = document.querySelectorAll('#authors *[rel~="schema:author"]');
-            if (relAuthors.length > 0) {
-                authors = '<ul class="authors">';
-                for (var i = 0; i < relAuthors.length; i++) {
-                    authors += '<li>' + relAuthors[i].textContent + '</li>';
-                }
-                authors += '</ul>';
-                authors = '<tr><th>Authors</th><td>' + authors + '</td></tr>';
-            }
+            var data = DO.U.getDocument();
+            var subjectURI = window.location.origin + window.location.pathname;
+            var options = {'contentType': 'text/html', 'subjectURI': subjectURI };
 
-            var relContributors = document.querySelectorAll('#authors *[rel~="schema:contributor"]');
-            if (relContributors.length > 0) {
-                contributors = '<ul class="contributors">';
-                for (var i = 0; i < relContributors.length; i++) {
-                    contributors += '<li>' + relContributors[i].textContent + '</li>';
-                }
-                contributors += '</ul>';
-                contributors = '<tr><th>Contributors</th><td>' + contributors + '</td></tr>';
-            }
+            DO.U.getGraphFromData(data, options).then(
+                function(i){
+                    var g = SimpleRDF(DO.C.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
+                    g.schemaauthor.forEach(function(s){
+                        var label = DO.U.getResourceLabel(g.child(s));
+                        if(typeof label !== 'undefined'){
+                            authors.push('<li>' + label + '</li>');
+                        }
+                    });
+                    if(authors.length > 0){
+                        authors = '<tr><th>Authors</th><td><ul class="authors">' + authors.join('') + '</ul></td></tr>';
+                    }
+
+                    g.schemacontributor.forEach(function(s){
+                        var label = DO.U.getResourceLabel(g.child(s));
+                        if(typeof label !== 'undefined'){
+                            contributors.push('<li>' + label + '</li>');
+                        }
+                    });
+                    if(contributors.length > 0){
+                        authors = '<tr><th>Contributors</th><td><ul class="contributors">' + contributors.join('') + '</ul></td></tr>';
+                    }
+                });
 
             var s = '<section id="document-metadata" class="do"><table>\n\
                 <caption>Document Metadata</caption>\n\
