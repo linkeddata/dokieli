@@ -568,12 +568,8 @@ content:"";
 #authors sup {
 margin-left:1px;
 }
-#authors sup:after {
+#authors sup + sup:before {
 content:",";
-}
-#authors sup:last-child:after,
-#authors sup:first-child:after {
-content:"" !important;
 }
 
 #document-event dd:after,
