@@ -2503,18 +2503,7 @@ var DO = {
 
             var note = DO.U.createNoteDataHTML(noteData);
 
-            var data = '<!DOCTYPE html>\n\
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
-  <head>\n\
-    <meta charset="utf-8" />\n\
-    <title>' + noteIRI + '</title>\n\
-  </head>\n\
-  <body>\n\
-    <main>' + note + '\n\
-    </main>\n\
-  </body>\n\
-</html>\n\
-';
+            var data = DO.U.createNoteHTML(noteIRI, note);
 
             DO.U.putResource(noteIRI, data).then(
               function(i){
@@ -6049,18 +6038,7 @@ WHERE {\n\
                       break;
                   }
 
-                  var data = '<!DOCTYPE html>\n\
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
-  <head>\n\
-    <meta charset="utf-8" />\n\
-    <title>' + noteIRI + '</title>\n\
-  </head>\n\
-  <body>\n\
-    <main>' + note + '\n\
-    </main>\n\
-  </body>\n\
-</html>\n\
-';
+                  var data = DO.U.createNoteHTML(noteIRI, note);
 
                   annotationDistribution.forEach(function(i){
                     DO.U.serializeData(data, 'text/html', i['contentType'], { 'subjectURI': i['noteIRI'] }).then(
@@ -6234,18 +6212,8 @@ WHERE {\n\
                   break;
 
                 case 'bookmark':
-                  var data = '<!DOCTYPE html>\n\
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
-  <head>\n\
-    <meta charset="utf-8" />\n\
-    <title>' + noteIRI + '</title>\n\
-  </head>\n\
-  <body>\n\
-    <main>' + note + '\n\
-    </main>\n\
-  </body>\n\
-</html>\n\
-';
+                  var data = DO.U.createNoteHTML(noteIRI, note);
+
                   DO.U.putResource(noteIRI, data).then(
                     function(i) {
                       //TODO: Let the user know that it was bookmarked
