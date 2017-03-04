@@ -2501,7 +2501,7 @@ var DO = {
               noteData.license["name"] = DO.C.License[license.value.trim()].name;
             }
 
-            var note = DO.U.createNoteHTML(noteData);
+            var note = DO.U.createNoteDataHTML(noteData);
 
             var data = '<!DOCTYPE html>\n\
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
@@ -4189,7 +4189,7 @@ WHERE {\n\
                   noteData.license["iri"] = licenseIRI;
                 }
 // console.log(noteData);
-                var note = DO.U.createNoteHTML(noteData);
+                var note = DO.U.createNoteDataHTML(noteData);
                 var nES = selectedParentNode.nextElementSibling;
                 var asideNote = '\n\
 <aside class="note do">\n\
@@ -4328,7 +4328,7 @@ WHERE {\n\
     },
 
     addInteraction: function(noteData) {
-      var interaction = DO.U.createNoteHTML(noteData);
+      var interaction = DO.U.createNoteDataHTML(noteData);
       var interactions = document.getElementById('document-interactions');
 
       if(!interactions) {
@@ -4343,7 +4343,7 @@ WHERE {\n\
       interactions.insertAdjacentHTML('beforeend', interaction);
     },
 
-    createNoteHTML: function(n) {
+    createNoteDataHTML: function(n) {
 // console.log(n);
       var published = '';
       var license = '';
@@ -5832,7 +5832,7 @@ WHERE {\n\
                   if (opts.license.length > 0) {
                     noteData.license["iri"] = opts.license;
                   }
-                  note = DO.U.createNoteHTML(noteData);
+                  note = DO.U.createNoteDataHTML(noteData);
                   break;
 
                 //Internal Note
@@ -5889,7 +5889,7 @@ WHERE {\n\
                     noteData.license["iri"] = opts.license;
                   }
 
-                  note = DO.U.createNoteHTML(noteData);
+                  note = DO.U.createNoteDataHTML(noteData);
                   ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="rdf:value">' + exact + '</mark>' + docRefType +'</span>';
                   break;
 
@@ -5912,7 +5912,7 @@ WHERE {\n\
                         "citationURL": opts.url
                       };
 // console.log(noteData);
-                      note = DO.U.createNoteHTML(noteData);
+                      note = DO.U.createNoteDataHTML(noteData);
                       break;
 
                     case 'ref-reference':
@@ -5993,7 +5993,7 @@ WHERE {\n\
                   if (DO.C.User.URL) {
                     noteData.creator["url"] = DO.C.User.URL;
                   }
-                  note = DO.U.createNoteHTML(noteData);
+                  note = DO.U.createNoteDataHTML(noteData);
                   ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark></span>';
                   break;
               }
