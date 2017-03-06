@@ -630,7 +630,7 @@ font-style:normal;
 background-color:#f0f;
 }
 .todo:before {
-content:"TODO:";
+content:"TODO: ";
 }
 
 .rtl {
