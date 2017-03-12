@@ -627,7 +627,7 @@ font-style:normal;
 }
 
 .todo {
-background-color:#f0f;
+background-color:#c0c0ff;
 }
 .todo:before {
 content:"TODO: ";
