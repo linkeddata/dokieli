@@ -633,6 +633,12 @@ background-color:#f0f;
 content:"TODO: ";
 }
 
+.outline {
+background-color:#eee;
+border:1px dashed #000;
+font-style:italic;
+}
+
 .rtl {
 unicode-bidi:bidi-override;
 direction:rtl;
