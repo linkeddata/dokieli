@@ -626,6 +626,9 @@ font-variant:small-caps;
 font-style:normal;
 }
 
+.todo, .outline {
+border:1px dashed #333;
+}
 .todo {
 background-color:#c0c0ff;
 }
@@ -635,7 +638,6 @@ content:"TODO: ";
 
 .outline {
 background-color:#eee;
-border:1px dashed #000;
 font-style:italic;
 }
 
