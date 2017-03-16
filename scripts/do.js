@@ -2223,21 +2223,7 @@ var DO = {
 
     getDocument: function(cn, options) {
       var node = cn || document.documentElement.cloneNode(true);
-      options = options || {
-        'selfClosing': "area base basefont br col colgroup embed hr img input isindex link meta metadata param source wbr",
-        'skipAttributes': "contenteditable spellcheck medium-editor-index data-medium-editor-element data-medium-editor-editor-index data-medium-focused data-placeholder role aria-multiline style",
-        'sortAttributes': true,
-        'skipNodeWithClass': 'do',
-        'classWithChildText': {
-          'class': '.do.ref',
-          'element': 'mark'
-        },
-        'replaceClassItemWith': {
-          'source': "on-document-menu medium-editor-element",
-          'target': ''
-        },
-        'skipClassWithValue': ''
-      }
+      options = options || DO.C.DOMNormalisation;
 
       var doctype = DO.U.getDoctype();
       var s =  (doctype.length > 0) ? doctype + "\n" : '';
