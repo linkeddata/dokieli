@@ -642,7 +642,7 @@ font-style:italic;
 .todo:before {
 content:"TODO: ";
 }
-.fixme:before {
+.outline:before {
 content:"OUTLINE: ";
 }
 .fixme:before {
