@@ -41,6 +41,22 @@ var DO = {
       DisableEditorButton: '<button class="editor-disable" title="Disable editor"><i class="fa fa-i-cursor fa-2x"></i>Edit</button>',
       EnableEditorButton: '<button class="editor-enable" title="Enable editor"><i class="fa fa-i-cursor fa-2x"></i>Edit</button>'
     },
+    DOMNormalisation: {
+      'selfClosing': "area base basefont br col colgroup embed hr img input isindex link meta metadata param source wbr",
+      'skipAttributes': "contenteditable spellcheck medium-editor-index data-medium-editor-element data-medium-editor-editor-index data-medium-focused data-placeholder role aria-multiline style",
+      'sortAttributes': true,
+      'skipNodeWithClass': 'do',
+      'classWithChildText': {
+        'class': '.do.ref',
+        'element': 'mark'
+      },
+      'replaceClassItemWith': {
+        'source': "on-document-menu medium-editor-element",
+        'target': ''
+      },
+      'skipClassWithValue': ''
+    },
+
     ContextLength: 32,
     InteractionPath: 'i/',
     ProxyURL: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/proxy?uri=' : 'https://dokie.li/proxy?uri='),
