@@ -626,19 +626,27 @@ font-variant:small-caps;
 font-style:normal;
 }
 
-.todo, .outline {
+.todo, .outline, .fixme {
 border:1px dashed #333;
 }
 .todo {
-background-color:#c0c0ff;
+background-color:#d0ddff;
+}
+.fixme {
+background-color: #ffd0d0;
+}
+.outline {
+background-color:#eee;
+font-style:italic;
 }
 .todo:before {
 content:"TODO: ";
 }
-
-.outline {
-background-color:#eee;
-font-style:italic;
+.fixme:before {
+content:"OUTLINE: ";
+}
+.fixme:before {
+content:"FIXME: ";
 }
 
 .rtl {
