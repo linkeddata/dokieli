@@ -583,10 +583,7 @@ var DO = {
       url = url || window.location.origin + window.location.pathname;
       subjectIRI = subjectIRI || url;
 
-      var pIRI = DO.U.getProxyableIRI(url);
-
-      //FIXME: This doesn't work so well if the document's URL is different than input url
-      return DO.U.getGraph(pIRI)
+      return DO.U.getResourceGraph(subjectIRI)
         .then(
           function(i) {
             var s = i.child(subjectIRI);
