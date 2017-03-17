@@ -85,14 +85,6 @@ figure pre {
 font-size:6pt;
 }
 
-#document-in-reply-to dd a:before,
-#document-annotation-service dd:before,
-#document-see-also dd a:before,
-#document-inbox dd a:before,
-.inbox dd a:before {
-content:attr(href) !important;
-font-size:10pt !important;
-}
 }
 
 

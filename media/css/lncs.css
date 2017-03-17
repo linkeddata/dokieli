@@ -135,14 +135,6 @@ min-height:auto !important;
 max-height:100px !important;
 }
 
-#document-in-reply-to dd a:before,
-#document-see-also dd a:before,
-#document-inbox dd a:before,
-#document-annotation-service dd a:before,
-.inbox dd a:before {
-content:attr(href) !important;
-font-size:10pt !important;
-}
 } /* media print */
 
 
