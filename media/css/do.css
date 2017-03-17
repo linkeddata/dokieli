@@ -278,6 +278,9 @@ width:100%;
 background-color:#fff;
 background-image:none;
 }
+#document-menu #document-metadata .people th {
+vertical-align:top;
+}
 
 #document-menu header button,
 #document-menu div button,

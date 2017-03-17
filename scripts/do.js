@@ -1793,7 +1793,7 @@ var DO = {
               }
             });
             if(authors.length > 0){
-              authors = '<tr><th>Authors</th><td><ul class="authors">' + authors.join('') + '</ul></td></tr>';
+              authors = '<tr class="people"><th>Authors</th><td><ul class="authors">' + authors.join('') + '</ul></td></tr>';
             }
           }
 
@@ -1805,7 +1805,7 @@ var DO = {
               }
             });
             if(contributors.length > 0){
-              contributors = '<tr><th>Contributors</th><td><ul class="contributors">' + contributors.join('') + '</ul></td></tr>';
+              contributors = '<tr class="people"><th>Contributors</th><td><ul class="contributors">' + contributors.join('') + '</ul></td></tr>';
             }
           }
 
