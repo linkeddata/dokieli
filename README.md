@@ -118,7 +118,7 @@ interactions.
 
 * [SimpleRDF](https://github.com/nicola/simplerdf) (MIT License) used for RDF
 * [Font Awesome](https://github.com/FortAwesome/Font-Awesome) (SIL OFL 1.1 / MIT License)
-* [MediumEditor](https://gitter.im/yabwe/medium-editor) (MIT License)
+* [MediumEditor](https://github.com/yabwe/medium-editor) (MIT License)
 
 
 ## License
