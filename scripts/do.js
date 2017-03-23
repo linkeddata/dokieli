@@ -2749,11 +2749,11 @@ console.log(inbox);
           });
 
           return Promise.all(promises)
-            .then((results) => {
+            .then(function(results) {
 // console.log(results);
               return Promise.resolve(([].concat.apply([], results)));
             })
-            .catch((e) => {
+            .catch(function(e) {
               console.log('--- catch ---');
 // console.trace();
               //probably e.xhr.status == 0
