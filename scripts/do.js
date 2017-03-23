@@ -806,7 +806,7 @@ var DO = {
       );
     },
 
-    getAbsoluteIRI(base, location){
+    getAbsoluteIRI: function(base, location){
       var iri = location;
 
       if(location.toLowerCase().slice(0,4) != 'http') {
