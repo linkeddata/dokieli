@@ -158,7 +158,7 @@ var DO = {
       "dctermsdate": "http://purl.org/dc/terms/date",
       "dctermsissued": "http://purl.org/dc/terms/issued",
       "dctermscreated": "http://purl.org/dc/terms/created",
-      "dctermsrights": "http://purl.org/dc/terms/rights",
+      "dctermsrights": { "@id": "http://purl.org/dc/terms/rights", "@type": "@id" },
 
       "skosprefLabel": { "@id": "http://www.w3.org/2004/02/skos/core#prefLabel", "@type": "@id", "@array": true },
 
