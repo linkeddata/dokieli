@@ -3087,6 +3087,45 @@ console.log(inbox);
       DO.U.setupResourceBrowser(document.getElementById('resource-browser'));
     },
 
+    openDocument: function(e) {
+      if(typeof e !== 'undefined') {
+        e.target.disabled = true;
+      }
+      document.body.insertAdjacentHTML('beforeend', '<aside id="open-new-document" class="do on"><button class="close" title="Close">❌</button><h2>Open New Document</h2></aside>');
+
+      var openDocument = document.getElementById('open-new-document');
+      openDocument.addEventListener('click', function(e) {
+        if (e.target.matches('button.close')) {
+          document.querySelector('#document-do .resource-open').disabled = false;
+        }
+      });
+
+      DO.U.setupResourceBrowser(openDocument);
+      openDocument.insertAdjacentHTML('beforeend', '<button class="open">Open</button>');
+
+      openDocument.addEventListener('click', function(e) {
+        if (e.target.matches('button.open')) {
+          var openDocument = document.getElementById('open-new-document');
+          var rm = openDocument.querySelector('.response-message');
+          if (rm) {
+            rm.parentNode.removeChild(rm);
+          }
+
+          var bli = document.getElementById('browser-location-input');
+          var headers = { 'Accept': '*/*' };
+          var options = { 'noCredentials': true };
+          DO.U.getResource(bli.value, headers, options).then(
+            function(i){
+              console.log(i);
+            },
+            function(reason){
+              console.log(reason);
+            }
+          );
+        }
+      });
+    },
+
     createNewDocument: function(e) {
       e.target.disabled = true;
       document.body.insertAdjacentHTML('beforeend', '<aside id="create-new-document" class="do on"><button class="close" title="Close">❌</button><h2>Create New Document</h2></aside>');
