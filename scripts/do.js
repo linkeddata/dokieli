@@ -3091,9 +3091,9 @@ console.log(inbox);
       if(typeof e !== 'undefined') {
         e.target.disabled = true;
       }
-      document.body.insertAdjacentHTML('beforeend', '<aside id="open-new-document" class="do on"><button class="close" title="Close">❌</button><h2>Open New Document</h2></aside>');
+      document.body.insertAdjacentHTML('beforeend', '<aside id="open-document" class="do on"><button class="close" title="Close">❌</button><h2>Open Document</h2></aside>');
 
-      var openDocument = document.getElementById('open-new-document');
+      var openDocument = document.getElementById('open-document');
       openDocument.addEventListener('click', function(e) {
         if (e.target.matches('button.close')) {
           document.querySelector('#document-do .resource-open').disabled = false;
@@ -3105,18 +3105,74 @@ console.log(inbox);
 
       openDocument.addEventListener('click', function(e) {
         if (e.target.matches('button.open')) {
-          var openDocument = document.getElementById('open-new-document');
+          var openDocument = document.getElementById('open-document');
           var rm = openDocument.querySelector('.response-message');
           if (rm) {
             rm.parentNode.removeChild(rm);
           }
 
           var bli = document.getElementById('browser-location-input');
-          var headers = { 'Accept': '*/*' };
-          var options = { 'noCredentials': true };
-          DO.U.getResource(bli.value, headers, options).then(
-            function(i){
-              console.log(i);
+          var iri = bli.value;
+          var headers = { 'Accept': 'text/html, application/xhtml+xml' };
+          var options = {};
+          if (iri.slice(0, 5).toLowerCase() == 'http:') {
+            options['noCredentials'] = true;
+          }
+          DO.U.getResource(iri, headers, options).then(
+            function(response){
+// console.log(response);
+              var cT = response.xhr.getResponseHeader('Content-Type');
+              var contentType = (cT) ? cT.split(';')[0].trim() : 'text/turtle';
+              // console.log(contentType);
+
+              if(contentType == 'text/html' || contentType == 'application/xhtml+xml') {
+                // var fragment = DO.U.fragmentFromString(response.xhr.responseText);
+                var template = document.implementation.createHTMLDocument('template');
+// console.log(template);
+                template.documentElement.innerHTML = response.xhr.responseText;
+// console.log(template);
+
+                var documentHasDokieli = template.querySelectorAll('head script[src$="/do.js"]');
+// console.log(documentHasDokieli);
+// console.log(documentHasDokieli.length)
+                if(documentHasDokieli.length == 0) {
+                  var doFiles = ['font-awesome.min.css', 'do.css', 'simplerdf.js', 'medium-editor.min.js', 'do.js'];
+                  doFiles.forEach(function(i){
+// console.log(i);
+                    var media = i.endsWith('.css') ? template.querySelectorAll('head link[rel~="stylesheet"][href$="/' + i + '"]') : template.querySelectorAll('head script[src$="/' + i + '"]');
+// console.log(media);
+// console.log(media.length)
+                    if (media.length == 0) {
+                      switch(i) {
+                        case 'font-awesome.min.css':
+                          template.querySelectorAll('head').insertAdjacentHTML('beforeend', '<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" rel="stylesheet" />');
+                          break;
+                        case 'do.css':
+                          template.querySelector('head').insertAdjacentHTML('beforeend', '<link href="https://dokie.li/media/css/' + i + '" media="all" rel="stylesheet" />');
+                          break;
+                        case 'simplerdf.js': case 'medium-editor.min.js': case 'do.js':
+                          template.querySelector('head').insertAdjacentHTML('beforeend', '<script src="https://dokie.li/scripts/' + i + '"></script>')
+                          break;
+                      }
+                    }
+// console.log(template)
+                  });
+
+                  document.documentElement.innerHTML = template.documentElement.innerHTML;
+                  //TODO: Open this on new tab.. it'll have to save first, and then open (like )
+                  history.pushState(null, null, iri);
+                  DO.U.init();
+                }
+                else {
+                  window.open(iri, '_blank');
+                  return;
+                }
+
+              }
+              else {
+                //TODO: Handle server returning wrong Response/Content-Type for the Request/Accept
+              }
+
             },
             function(reason){
               console.log(reason);
