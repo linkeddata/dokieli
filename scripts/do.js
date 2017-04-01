@@ -3158,8 +3158,9 @@ console.log(inbox);
 // console.log(template)
                   });
 
+                  document.documentElement.removeAttribute('id');
+                  document.documentElement.removeAttribute('class');
                   document.documentElement.innerHTML = template.documentElement.innerHTML;
-                  //TODO: Open this on new tab.. it'll have to save first, and then open (like )
                   history.pushState(null, null, iri);
                   DO.U.init();
                 }
