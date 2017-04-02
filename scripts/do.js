@@ -3163,6 +3163,7 @@ console.log(inbox);
                   document.documentElement.innerHTML = template.documentElement.innerHTML;
                   history.pushState(null, null, iri);
                   DO.U.init();
+                  openDocument.parentNode.removeChild(openDocument);
                 }
                 else {
                   window.open(iri, '_blank');
