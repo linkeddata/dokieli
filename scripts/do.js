@@ -2349,13 +2349,13 @@ var DO = {
       s += '<li><button class="resource-open"'+buttonDisabled+' title="Open article"><i class="fa fa-coffee fa-2x"></i></i>Open</button></li>';
       s += '<li><button class="resource-save"'+buttonDisabled+' title="Save article"><i class="fa fa-life-ring fa-2x"></i>Save</button></li>';
       s += '<li><button class="resource-save-as" title="Save as article"><i class="fa fa-paper-plane-o fa-2x"></i>Save As</button></li>';
+      s += '<li><button class="resource-export" title="Export article"><i class="fa fa-external-link fa-2x"></i>Export</button></li>';
+      s += '<li><button class="resource-print" title="Print article"><i class="fa fa-print fa-2x"></i>Print</button></li>';
       if (DO.C.EditorAvailable) {
         var editFile = (DO.C.EditorEnabled && DO.C.User.Role == 'author') ? DO.C.Editor.DisableEditorButton : DO.C.Editor.EnableEditorButton;
         s += '<li>' + editFile + '</li>';
       }
       s += '<li><button class="resource-source"'+buttonDisabled+' title="Edit article source code"><i class="fa fa-code fa-2x"></i>Source</button></li>';
-      s += '<li><button class="resource-export" title="Export article"><i class="fa fa-external-link fa-2x"></i>Export</button></li>';
-      s += '<li><button class="resource-print" title="Print article"><i class="fa fa-print fa-2x"></i>Print</button></li>';
       s += '</ul></section>';
       node.insertAdjacentHTML('beforeend', s);
 
