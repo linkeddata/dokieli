@@ -3120,6 +3120,7 @@ console.log(inbox);
           var iri = bli.value;
           var headers = { 'Accept': 'text/html, application/xhtml+xml' };
           var options = {};
+          iri = DO.U.getProxyableIRI(iri);
           if (iri.slice(0, 5).toLowerCase() == 'http:') {
             options['noCredentials'] = true;
           }
