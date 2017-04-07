@@ -2346,6 +2346,7 @@ var DO = {
         s += '<li>' + reviewArticle + '</li>';
       }
       s += '<li><button class="resource-new"'+buttonDisabled+' title="Create new article"><i class="fa fa-lightbulb-o fa-2x"></i></i>New</button></li>';
+      s += '<li><button class="resource-open"'+buttonDisabled+' title="Open article"><i class="fa fa-coffee fa-2x"></i></i>Open</button></li>';
       s += '<li><button class="resource-save"'+buttonDisabled+' title="Save article"><i class="fa fa-life-ring fa-2x"></i>Save</button></li>';
       s += '<li><button class="resource-save-as" title="Save as article"><i class="fa fa-paper-plane-o fa-2x"></i>Save As</button></li>';
       if (DO.C.EditorAvailable) {
@@ -2388,6 +2389,10 @@ var DO = {
 
         if (e.target.closest('.resource-new')) {
           DO.U.createNewDocument(e);
+        }
+
+        if (e.target.closest('.resource-open')) {
+          DO.U.openDocument(e);
         }
 
         if (e.target.closest('.resource-save')) {
