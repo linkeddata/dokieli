@@ -3120,11 +3120,11 @@ console.log(inbox);
           var iri = bli.value;
           var headers = { 'Accept': 'text/html, application/xhtml+xml' };
           var options = {};
-          iri = DO.U.getProxyableIRI(iri);
-          if (iri.slice(0, 5).toLowerCase() == 'http:') {
+          var pIRI = DO.U.getProxyableIRI(iri);
+          if (pIRI.slice(0, 5).toLowerCase() == 'http:') {
             options['noCredentials'] = true;
           }
-          DO.U.getResource(iri, headers, options).then(
+          DO.U.getResource(pIRI, headers, options).then(
             function(response){
 // console.log(response);
               var cT = response.xhr.getResponseHeader('Content-Type');
@@ -3175,7 +3175,6 @@ console.log(inbox);
                   window.open(iri, '_blank');
                   return;
                 }
-
               }
               else {
                 //TODO: Handle server returning wrong Response/Content-Type for the Request/Accept
