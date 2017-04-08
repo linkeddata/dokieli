@@ -2509,7 +2509,7 @@ var DO = {
 
             var note = DO.U.createNoteDataHTML(noteData);
 
-            var data = DO.U.createNoteHTML(noteIRI, note);
+            var data = DO.U.createHTML(noteIRI, note);
 
             DO.U.putResource(noteIRI, data).then(
               function(i){
@@ -4435,7 +4435,7 @@ WHERE {\n\
       interactions.insertAdjacentHTML('beforeend', interaction);
     },
 
-    createNoteHTML: function(title, main, options) {
+    createHTML: function(title, main, options) {
       return '<!DOCTYPE html>\n\
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
     <head>\n\
@@ -6141,7 +6141,7 @@ WHERE {\n\
                       break;
                   }
 
-                  var data = DO.U.createNoteHTML(noteIRI, note);
+                  var data = DO.U.createHTML(noteIRI, note);
 
                   annotationDistribution.forEach(function(i){
                     DO.U.serializeData(data, 'text/html', i['contentType'], { 'subjectURI': i['noteIRI'] }).then(
@@ -6315,7 +6315,7 @@ WHERE {\n\
                   break;
 
                 case 'bookmark':
-                  var data = DO.U.createNoteHTML(noteIRI, note);
+                  var data = DO.U.createHTML(noteIRI, note);
 
                   DO.U.putResource(noteIRI, data).then(
                     function(i) {
