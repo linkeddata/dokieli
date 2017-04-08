@@ -4435,6 +4435,10 @@ WHERE {\n\
       interactions.insertAdjacentHTML('beforeend', interaction);
     },
 
+    getRDFaPrefixHTML: function(prefixes){
+      return Object.keys(prefixes).map(function(i){ return i + ': ' + prefixes[i]; }).join(' ');
+    },
+
     createHTML: function(title, main, options) {
       return '<!DOCTYPE html>\n\
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
