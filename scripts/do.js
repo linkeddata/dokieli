@@ -4440,13 +4440,16 @@ WHERE {\n\
     },
 
     createHTML: function(title, main, options) {
+      options = options || {};
+      var prefix = ('prefixes' in options && Object.keys(options.prefixes).length > 0) ? ' prefix="' + DO.U.getRDFaPrefixHTML(options.prefixes) + '"' : '';
+
       return '<!DOCTYPE html>\n\
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
     <head>\n\
         <meta charset="utf-8" />\n\
         <title>' + title + '</title>\n\
     </head>\n\
-    <body>\n\
+    <body' + prefix + '>\n\
         <main>' + main + '\n\
         </main>\n\
     </body>\n\
