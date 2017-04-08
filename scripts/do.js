@@ -4435,15 +4435,15 @@ WHERE {\n\
       interactions.insertAdjacentHTML('beforeend', interaction);
     },
 
-    createNoteHTML: function(noteIRI, note, options) {
+    createNoteHTML: function(title, main, options) {
       return '<!DOCTYPE html>\n\
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
     <head>\n\
         <meta charset="utf-8" />\n\
-        <title>' + noteIRI + '</title>\n\
+        <title>' + title + '</title>\n\
     </head>\n\
     <body>\n\
-        <main>' + note + '\n\
+        <main>' + main + '\n\
         </main>\n\
     </body>\n\
 </html>\n\
