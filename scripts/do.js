@@ -3688,7 +3688,7 @@ console.log(inbox);
         title = DO.U.getResourceLabel(subject) || '';
       }
       title = title.replace(/ & /g, " &amp; ");
-      title = (title.length > 0) ? title + ', ' : '';
+      title = (title.length > 0) ? '<cite>' + title + '</cite>, ' : '';
       var datePublished = subject.schemadatePublished || subject.dctermsissued || subject.dctermsdate || subject.dctermscreated || '';
       datePublished = (datePublished) ? datePublished.substr(0,4) + ', ' : '';
       var dateAccessed = 'Accessed: ' + DO.U.getDateTimeISO();
