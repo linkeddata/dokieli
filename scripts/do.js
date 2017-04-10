@@ -183,6 +183,7 @@ var DO = {
       "ldpinbox": { "@id": "http://www.w3.org/ns/ldp#inbox", "@type": "@id", "@array": true },
       "solidinbox": { "@id": "http://www.w3.org/ns/solid/terms#inbox", "@type": "@id", "@array": true },
 
+      "oaannotation": { "@id": "http://www.w3.org/ns/oa#Annotation", "@type": "@id" },
       "oahasBody": { "@id": "http://www.w3.org/ns/oa#hasBody", "@type": "@id" },
       "oahasTarget": { "@id": "http://www.w3.org/ns/oa#hasTarget", "@type": "@id" },
       "oahasSource": { "@id": "http://www.w3.org/ns/oa#hasSource", "@type": "@id" },
