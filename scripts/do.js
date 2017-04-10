@@ -4454,14 +4454,14 @@ WHERE {\n\
 
       return '<!DOCTYPE html>\n\
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
-    <head>\n\
-        <meta charset="utf-8" />\n\
-        <title>' + title + '</title>\n\
-    </head>\n\
-    <body' + prefix + '>\n\
-        <main>' + main + '\n\
-        </main>\n\
-    </body>\n\
+  <head>\n\
+    <meta charset="utf-8" />\n\
+    <title>' + title + '</title>\n\
+  </head>\n\
+  <body' + prefix + '>\n\
+    <main>' + main + '\n\
+    </main>\n\
+  </body>\n\
 </html>\n\
 ';
     },
