@@ -118,6 +118,14 @@ var DO = {
 
     AvailableMediaTypes: ['text/turtle', 'application/ld+json', 'application/rdf+xml', 'application/xhtml+xml', 'text/html'],
 
+    Prefixes: {
+      'xsd': 'http://www.w3.org/2001/XMLSchema#',
+      'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+      'as': 'https://www.w3.org/ns/activitystreams#',
+      'oa': 'http://www.w3.org/ns/oa#',
+      'schema': 'http://schema.org/'
+    },
+
     Vocab: {
       "rdftype": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "@type": "@id", "@array": true },
       "rdffirst": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#first", "@type": "@id" },
