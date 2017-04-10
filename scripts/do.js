@@ -1090,69 +1090,80 @@ var DO = {
         inbox = o.inbox;
       }
 
-      //TODO: More readable eg whitespace, CRs..
-      var data = '@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\
-@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n\
-@prefix as: <https://www.w3.org/ns/activitystreams#> .\n\
-@prefix oa: <http://www.w3.org/ns/oa#> .\n\
-@prefix schema: <http://schema.org/> .\n\
-';
+      var types = '<dt>Types</dt>';
+      o.type.forEach(function(t){
+        types += '<dd><a about="" href="' + DO.C.Prefixes[t.split(':')[0]] + t.split(':')[1] + '" typeof="'+ t +'">' + t.split(':')[1] + '</a></dd>';
+      });
 
-      data += '<> a ' + o.type.join(', ') + '\n';
+      var asobject = ('object' in o) ? '<dt>Object</dt><dd><a href="' + o.object + '" property="as:object">' + o.object + '</a></dd>' : '';
 
-      if('object' in o){
-        data += '  ; as:object <' + o.object + '>\n';
+      var asinReplyTo = ('inReplyTo' in o) ? '<dt>In reply to</dt><dd><a href="' + o.inReplyTo + '" property="as:inReplyTo">' + o.inReplyTo + '</a></dd>' : '';
+
+      var ascontext = ('context' in o && o.context.length > 0) ? '<dt>Context</dt><dd><a href="' + o.context + '" property="as:context">' + o.context + '</a></dd>' : '';
+
+      var astarget = ('target' in o && o.target.length > 0) ? '<dt>Target</dt><dd><a href="' + o.target + '" property="as:target">' + o.target + '</a></dd>' : '';
+
+      var datetime = DO.U.getDateTimeISO();
+      var asupdated = '<dt>Updated</dt><dd><time datetime="' + datetime + '" datatype="xsd:dateTime" property="as:updated" content="' + datetime + '">' + datetime.substr(0,19).replace('T', ' ') + '</time></dd>';
+
+      var assummary = ('summary' in o && o.summary.length > 0) ? '<dt>Summary</dt><dd property="as:summary" datatype="rdf:HTML">' + o.summary + '</dd>' : '';
+
+      var ascontent = ('content' in o && o.content.length > 0) ? '<dt>Content</dt><dd property="as:content" datatype="rdf:HTML">' + o.content + '</dd>' : '';
+
+      var asactor = (DO.C.User.IRI) ? '<dt>Actor</dt><dd><a href="' + DO.C.User.IRI + '" property="as:actor">' + DO.C.User.IRI + '</a></dd>' : '';
+
+      var license = ('license' in o && o.license.length > 0) ? '<dt>License</dt><dd><a href="' + o.license + '" property="schema:license">' + o.license + '</a></dd>' : '';
+
+      var asto = ('to' in o && o.to.length > 0 && !o.to.match(/\s/g) && o.to.match(/^https?:\/\//gi)) ? '<dt>To</dt><dd><a href="' + o.to + '" property="as:to">' + o.to + '</a></dd>' : '';
+
+
+      var statements = ('statements' in o) ? o.statements : '';
+
+      var dl = [
+                types,
+                asobject,
+                ascontext,
+                astarget,
+                asupdated,
+                assummary,
+                ascontent,
+                asactor,
+                license,
+                asto
+                ].map(function(n) { if (n != '') { return '      ' + n + '\n'; } }).join('');
+
+
+      //TODO: Come up with a better title. reuse `types` e.g., Activity Created, Announced..
+      var title = 'Notification';
+      if(types.indexOf('as:Announce') > -1){
+        title += ': Announced';
+      }
+      else if (types.indexOf('as:Created') > -1){
+        title += ': Created';
+      }
+      else if (types.indexOf('as:Liked') > -1){
+        title += ': Liked';
+      }
+      else if (types.indexOf('as:Disliked') > -1){
+        title += ': Disliked';
       }
 
-      if('inReplyTo' in o){
-        data += '  ; as:inReplyTo <' + o.inReplyTo + '>\n';
-      }
-
-      if ('context' in o && o.context.length > 0) {
-        data += '  ; as:context  <' + o.context + '>\n\
-';
-      }
-      if ('target' in o && o.target.length > 0) {
-        data += '  ; as:target <' + o.target + '>\n\
-';
-      }
-
-      data += '  ; as:updated "' + DO.U.getDateTimeISO() + '"^^xsd:dateTime\n\
+      var data = '\n\
+<article>\n\
+  <h1>' + title + '</h1>\n\
+  <section>\n\
+    <dl about="">\n\
+' + dl +
+'    </dl>\n\
+' + statements +
+'  </section>\n\
+</article>\n\
 ';
 
-      if ('summary' in o && o.summary.length > 0) {
-        data += '  ; as:summary """' + o.summary + '"""^^rdf:HTML\n\
-';
-      }
+      var options = {};
+      options.prefixes = DO.C.Prefixes;
 
-      if ('content' in o && o.content.length > 0) {
-        data += '  ; as:content """' + o.content + '"""^^rdf:HTML\n\
-';
-      }
-
-      if (DO.C.User.IRI) {
-        data += '  ; as:actor <' + DO.C.User.IRI + '>\n\
-';
-      }
-
-      if ('license' in o && o.license.length > 0) {
-        data += '  ; schema:license <' + o.license + '>\n\
-';
-      }
-
-      if ('to' in o && o.to.length > 0 && !o.to.match(/\s/g) && o.to.match(/^https?:\/\//gi)) {
-        data += '  ; as:to <' + o.to + '>\n\
-';
-      }
-
-      data += '  .\n\
-';
-
-      if ('statements' in o) {
-        data += o.statements + '\n\
-';
-      }
-
+      data = DO.U.createHTML(title, data, options);
 // console.log(data);
 
       if (inbox && inbox.length > 0) {
@@ -1163,16 +1174,54 @@ var DO = {
             return reason;
           })
           .then(function(preferredContentType){
+// console.log(preferredContentType);
             switch(preferredContentType) {
-              case 'text/turtle': default:
-                //FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
-                return DO.U.postResource(pIRI, slug, data, 'text/turtle; charset=utf-8');
+              case 'text/html': case 'application/xhtml+xml':
+                return DO.U.postResource(pIRI, slug, data, 'text/html; charset=utf-8').catch(function(reason){
+                  if(reason.xhr.status == 0){
+                    var options = {'noCredentials': true};
+                    DO.U.postResource(pIRI, slug, data, 'text/html; charset=utf-8');
+                  }
+                });
                 break;
-              case 'application/ld+json': case 'application/json':
+              case 'text/turtle':
+                //FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
+                // return DO.U.postResource(pIRI, slug, data, 'text/turtle; charset=utf-8');
+                var options = {
+                  'contentType': 'text/html',
+                  // 'subjectURI': '_:dokieli'
+                  'subjectURI': ''
+                };
+                return DO.U.getGraphFromData(data, options).then(
+                  function(g) {
+// console.log(g);
+                    var options = {
+                      'contentType': 'text/turtle',
+                      'subjectURI': '_:dokieli'
+                    };
+                    return DO.U.serializeGraph(g, options).then(
+                      function(data){
+// console.log(data);
+                        return DO.U.postResource(pIRI, slug, data, 'text/turtle').catch(function(reason){
+                          if(reason.xhr.status == 0){
+                            var options = {'noCredentials': true};
+                            DO.U.postResource(pIRI, slug, data, 'text/turtle', null, options);
+                          }
+                        });
+                      }
+                    );
+                  },
+                  function(reason) {
+                    return reason;
+                  }
+                );
+
+                break;
+              case 'application/ld+json': case 'application/json':  case '*/*': default:
                 // return DO.U.postResource(inbox, slug, data, 'application/ld+json; charset=utf-8');
                 var options = {
-                  'contentType': 'text/turtle',
-                  'subjectURI': '_:dokieli'
+                  'contentType': 'text/html',
+                  'subjectURI': ''
                 };
                 return DO.U.getGraphFromData(data, options).then(
                   function(g) {
@@ -1185,7 +1234,9 @@ var DO = {
                         var x = JSON.parse(i);
 // console.log(x);
                         x[0]["@context"] = ["https://www.w3.org/ns/activitystreams", {"oa": "http://www.w3.org/ns/anno.jsonld"}];
-                        x[0]["@id"] = (x[0]["@id"].slice(0,2) == '_:') ? '' : x[0]["@id"];
+                        // If from is Turtle:
+                        // x[0]["@id"] = (x[0]["@id"].slice(0,2) == '_:') ? '' : x[0]["@id"];
+                        x[0]["@id"] = (x[0]["@id"].slice(0,17) == 'http://localhost/') ? '' : x[0]["@id"];
                         var data = JSON.stringify(x) + '\n';
 // console.log(data);
                         return DO.U.postResource(pIRI, slug, data, 'application/ld+json; profile="http://www.w3.org/ns/anno.jsonld"').catch(function(reason){
@@ -1219,7 +1270,10 @@ var DO = {
         })
         .then(function(i){
           var header = i.headers.trim().split(/\s*,\s*/);
-          if (header.indexOf('text/turtle') > -1 || header.indexOf('*/*') > -1) {
+          if (header.indexOf('text/html') > -1 || header.indexOf('application/xhtml+xml') > -1) {
+            return 'text/html';
+          }
+          else if (header.indexOf('text/turtle') > -1 || header.indexOf('*/*') > -1) {
             return 'text/turtle';
           }
           else if (header.indexOf('application/ld+json') > -1 || header.indexOf('application/json') > -1) {
@@ -2530,9 +2584,11 @@ console.log(inbox);
                     if (inbox.length > 0) {
                       inbox = inbox[0];
 
-                      var notificationStatements = '<' + noteIRI + '> a oa:Annotation\n\
-  ; oa:motivation ' + motivatedBy + '\n\
-  .';
+                      var notificationStatements = '    <dl about="' + noteIRI + '">\n\
+      <dt>Object type</dt><dd><a about="' + noteIRI + '" typeof="oa:Annotation" href="' + DO.C.Vocab['oaannotation']['@id'] + '">Annotation</a></dd>\n\
+      <dt>Motivation</dt><dd><a href="' + DO.C.Prefixes[motivatedBy.split(':')[0]] + motivatedBy.split(':')[1] + '" property="oa:motivation">' + motivatedBy.split(':')[1] + '</a></dd>\n\
+    </dl>\n\
+';
                       var notificationData = {
                         "type": ['as:Announce'],
                         "inbox": inbox,
@@ -6129,31 +6185,26 @@ WHERE {\n\
               switch(this.action) {
                 case 'article': case 'approve': case 'disapprove': case 'specificity':
                   var notificationType, notificationObject, notificationContext, notificationTarget, notificationStatements;
-                  //FIXME: Sarven, seriously? These switches are 💩. Don't be lazy!
+                  notificationStatements = '    <dl about="' + noteIRI + '">\n\
+      <dt>Object type</dt><dd><a about="' + noteIRI + '" typeof="oa:Annotation" href="' + DO.C.Vocab['oaannotation']['@id'] + '">Annotation</a></dd>\n\
+      <dt>Motivation</dt><dd><a href="' + DO.C.Prefixes[motivatedBy.split(':')[0]] + motivatedBy.split(':')[1] + '" property="oa:motivation">' + motivatedBy.split(':')[1] + '</a></dd>\n\
+    </dl>\n\
+';
                   switch(this.action) {
                     default: case 'article': case 'specificity':
                       notificationType = ['as:Announce'];
                       notificationObject = noteIRI;
                       notificationTarget = targetIRI;
-                      notificationStatements = '<' + noteIRI + '> a oa:Annotation\n\
-  ; oa:motivation ' + motivatedBy + '\n\
-  .';
                       break;
                     case 'approve':
                       notificationType = ['as:Like'];
                       notificationObject = targetIRI;
                       notificationContext = noteIRI;
-                      notificationStatements = '<' + noteIRI + '> a oa:Annotation\n\
-  ; oa:motivation ' + motivatedBy + '\n\
-  .';
                       break;
                     case 'disapprove':
                       notificationType = ['as:Dislike'];
                       notificationObject = targetIRI;
                       notificationContext = noteIRI;
-                      notificationStatements = '<' + noteIRI + '> a oa:Annotation\n\
-  ; oa:motivation ' + motivatedBy + '\n\
-  .';
                       break;
                   }
 
@@ -6311,6 +6362,14 @@ WHERE {\n\
                           var citedBy = location.href.split(location.search||location.hash||/[?#]/)[0] + '#' + options.refId;
 
                           var notificationStatements = '<' + citedBy + '> <' + options.citationRelation + '> <' + options.url + '> .';
+
+                          notificationStatements = '    <dl about="' + citedBy + '">\n\
+      <dt>Action</dt><dd>Citation</dd>\n\
+      <dt>Cited by</dt><dd><a href="' + citedBy + '">' + citedBy + '</a></dd>\n\
+      <dt>Cites</dt><dd><a href="' + options.url + '" property="' + options.citationRelation + '">' + options.url + '</a></dd>\n\
+      <dt>Citation type</dt><dd><a href="' + options.url + '">' + options.citationRelation + '</a></dd>\n\
+    </dl>\n\
+';
 
                           var notificationData = {
                             "type": ['as:Announce'],
