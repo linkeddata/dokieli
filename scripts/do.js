@@ -6354,7 +6354,10 @@ WHERE {\n\
 
 // console.log(options.url);
                         var s = citationGraph.child(citationURI);
-// console.log(s);
+                        if(s.ldpinbox._array.length == 0) {
+                          s = citationGraph.child(options.citationId);
+                        }
+
                         if (s.ldpinbox._array.length > 0) {
                           var inbox = s.ldpinbox.at(0);
 // console.log(inbox);
