@@ -6370,7 +6370,7 @@ WHERE {\n\
       <dt>Action</dt><dd>Citation</dd>\n\
       <dt>Cited by</dt><dd><a href="' + citedBy + '">' + citedBy + '</a></dd>\n\
       <dt>Cites</dt><dd><a href="' + options.url + '" property="' + options.citationRelation + '">' + options.url + '</a></dd>\n\
-      <dt>Citation type</dt><dd><a href="' + options.url + '">' + options.citationRelation + '</a></dd>\n\
+      <dt>Citation type</dt><dd><a href="' + options.url + '">' + DO.C.Citation[options.citationRelation] + '</a></dd>\n\
     </dl>\n\
 ';
 
