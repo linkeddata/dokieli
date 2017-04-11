@@ -1189,18 +1189,18 @@ var DO = {
                 // return DO.U.postResource(pIRI, slug, data, 'text/turtle; charset=utf-8');
                 var options = {
                   'contentType': 'text/html',
-                  // 'subjectURI': '_:dokieli'
-                  'subjectURI': ''
+                  'subjectURI': 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d'
                 };
                 return DO.U.getGraphFromData(data, options).then(
                   function(g) {
 // console.log(g);
                     var options = {
-                      'contentType': 'text/turtle',
-                      'subjectURI': '_:dokieli'
+                      'contentType': 'text/turtle'
                     };
                     return DO.U.serializeGraph(g, options).then(
                       function(data){
+                        //FIXME: FUGLY because parser defaults to localhost. Using UUID to minimise conflict
+                        data = data.replace(/http:\/\/localhost\/d79351f4-cdb8-4228-b24f-3e9ac74a840d/g, '');
 // console.log(data);
                         return DO.U.postResource(pIRI, slug, data, 'text/turtle').catch(function(reason){
                           if(reason.xhr.status == 0){
