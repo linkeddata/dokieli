@@ -1175,6 +1175,11 @@ var DO = {
           })
           .then(function(preferredContentType){
 // console.log(preferredContentType);
+            var options = {
+              'contentType': 'text/html',
+              'subjectURI': 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d'
+            };
+
             switch(preferredContentType) {
               case 'text/html': case 'application/xhtml+xml':
                 return DO.U.postResource(pIRI, slug, data, 'text/html; charset=utf-8').catch(function(reason){
@@ -1187,10 +1192,6 @@ var DO = {
               case 'text/turtle':
                 //FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
                 // return DO.U.postResource(pIRI, slug, data, 'text/turtle; charset=utf-8');
-                var options = {
-                  'contentType': 'text/html',
-                  'subjectURI': 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d'
-                };
                 return DO.U.getGraphFromData(data, options).then(
                   function(g) {
 // console.log(g);
@@ -1218,11 +1219,6 @@ var DO = {
 
                 break;
               case 'application/ld+json': case 'application/json':  case '*/*': default:
-                // return DO.U.postResource(inbox, slug, data, 'application/ld+json; charset=utf-8');
-                var options = {
-                  'contentType': 'text/html',
-                  'subjectURI': 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d'
-                };
                 return DO.U.getGraphFromData(data, options).then(
                   function(g) {
 // console.log(g);
