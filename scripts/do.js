@@ -1221,7 +1221,7 @@ var DO = {
                 // return DO.U.postResource(inbox, slug, data, 'application/ld+json; charset=utf-8');
                 var options = {
                   'contentType': 'text/html',
-                  'subjectURI': ''
+                  'subjectURI': 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d'
                 };
                 return DO.U.getGraphFromData(data, options).then(
                   function(g) {
@@ -1236,7 +1236,7 @@ var DO = {
                         x[0]["@context"] = ["https://www.w3.org/ns/activitystreams", {"oa": "http://www.w3.org/ns/anno.jsonld"}];
                         // If from is Turtle:
                         // x[0]["@id"] = (x[0]["@id"].slice(0,2) == '_:') ? '' : x[0]["@id"];
-                        x[0]["@id"] = (x[0]["@id"].slice(0,17) == 'http://localhost/') ? '' : x[0]["@id"];
+                        x[0]["@id"] = (x[0]["@id"] == 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d') ? '' : x[0]["@id"];
                         var data = JSON.stringify(x) + '\n';
 // console.log(data);
                         return DO.U.postResource(pIRI, slug, data, 'application/ld+json; profile="http://www.w3.org/ns/anno.jsonld"').catch(function(reason){
