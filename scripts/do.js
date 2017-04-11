@@ -4417,7 +4417,7 @@ WHERE {\n\
                   noteData.creator["image"] = annotatedByImage;
                 }
                 if (licenseIRI) {
-                  noteData.license["iri"] = licenseIRI.iri().toString();
+                  noteData.license["iri"] = licenseIRI;
                   noteData.license["name"] = DO.C.License[noteData.license["iri"]].name;
                 }
                 if (datetime) {
