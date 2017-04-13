@@ -700,6 +700,21 @@ max-height:48px;
 max-width:48px;
 }
 
+span.do.ref {
+position:relative;
+}
+span.do.ref mark + sup[class^="ref-"] {
+position:absolute;
+bottom:1em;
+right:-0.75em;
+color:#000;
+line-height:1;
+text-shadow: 1px 1px 1px #000;
+}
+span.do.ref mark + sup[class^="ref-"] a {
+color:#000;
+}
+
 .ref-comment a,
 .ref-reference a,
 .ref-annotation a {
