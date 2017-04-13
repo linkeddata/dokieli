@@ -704,17 +704,18 @@ span.do.ref {
 position:relative;
 }
 span.do.ref mark + sup[class^="ref-"] {
-font-size:1em;
 position:absolute;
 top:initial;
 bottom:1em;
 right:-0.75em;
 color:#000;
-line-height:1;
 text-shadow: 1px 1px 1px #000;
 }
-span.do.ref mark + sup[class^="ref-"] a {
+span.do.ref mark + sup[class^="ref-"],
+span.do.ref mark + sup[class^="ref-"] * {
 color:#000;
+font-size:1em;
+line-height:1;
 }
 
 .ref-comment a,
