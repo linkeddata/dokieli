@@ -713,9 +713,11 @@ text-shadow: 1px 1px 1px #000;
 }
 span.do.ref mark + sup[class^="ref-"],
 span.do.ref mark + sup[class^="ref-"] * {
-color:#000;
 font-size:1em;
+font-weight:normal;
+font-style:normal;
 line-height:1;
+color:#000;
 }
 
 .ref-comment a,
