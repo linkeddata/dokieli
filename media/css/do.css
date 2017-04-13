@@ -700,23 +700,26 @@ max-height:48px;
 max-width:48px;
 }
 
-span.do.ref {
+span.ref[typeof~="dctypes:Text"] {
 position:relative;
 }
-span.do.ref mark + sup[class^="ref-"] {
+span.ref[typeof~="dctypes:Text"] mark + sup[class^="ref-"] {
+color:#000;
+text-shadow: 1px 1px 1px #000;
+}
+span.do.ref[typeof~="dctypes:Text"] mark + sup[class^="ref-"] {
 position:absolute;
 top:initial;
 bottom:1em;
 right:-0.75em;
-color:#000;
-text-shadow: 1px 1px 1px #000;
 }
-span.do.ref mark + sup[class^="ref-"],
-span.do.ref mark + sup[class^="ref-"] * {
+span.ref[typeof~="dctypes:Text"] mark + sup[class^="ref-"],
+span.ref[typeof~="dctypes:Text"] mark + sup[class^="ref-"] * {
 font-size:1em;
 font-weight:normal;
 font-style:normal;
 line-height:1;
+padding:0;
 color:#000;
 }
 
