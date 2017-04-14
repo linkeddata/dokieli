@@ -3488,6 +3488,21 @@ console.log(inbox);
       return url;
     },
 
+    getPathURL: function(url) {
+      if(typeof url === 'string') {
+        var i  = url.indexOf('?');
+        if(i > -1) {
+          url = url.substr(0, i);
+        }
+        i = url.indexOf('#');
+        if(i > -1) {
+          url = url.substr(0, i);
+        }
+      }
+
+      return url;
+    },
+
     //I want HTTP COPY and I want it now!
     copyResource: function(fromURL, toURL, options) {
       if (fromURL != '' && toURL != '') {
