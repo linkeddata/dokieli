@@ -695,12 +695,14 @@ var DO = {
                   var s = g.child(i)
                   var types = s.rdftype._array || [];
 
+                  var currentPathURL = window.location.origin + window.location.pathname;
+
                   if (types.length > 0) {
                     var resourceTypes = types;
                     if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Like') > -1 ||
                        resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Dislike') > -1){
                       if(s.asobject && s.asobject.at(0)) {
-                        if(s.ascontext && s.ascontext.at(0) && s.asobject.at(0).indexOf(window.location.origin + window.location.pathname) >= 0) {
+                        if(s.ascontext && s.ascontext.at(0) && DO.U.getPathURL(s.asobject.at(0)) == currentPathURL) {
                           var context = s.ascontext.at(0);
                           return DO.U.positionInteraction(context).then(
                             function(notificationIRI){
@@ -768,7 +770,7 @@ var DO = {
                       }
                     }
                     else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Relationship') > -1){
-                      if(s.assubject && s.assubject.at(0) && s.asrelationship && s.asrelationship.at(0) && s.asobject && s.asobject.at(0) && s.asobject.at(0).indexOf(window.location.origin + window.location.pathname) >= 0) {
+                      if(s.assubject && s.assubject.at(0) && s.asrelationship && s.asrelationship.at(0) && s.asobject && s.asobject.at(0) && DO.U.getPathURL(s.asobject.at(0)) == currentPathURL) {
                         var subject = s.assubject.at(0);
                         return DO.U.positionInteraction(subject).then(
                           function(notificationIRI){
@@ -780,7 +782,7 @@ var DO = {
                       }
                     }
                     else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Announce') > -1) {
-                      if(s.asobject && s.asobject.at(0) && s.astarget && s.astarget.at(0) && s.astarget.at(0).indexOf(window.location.origin + window.location.pathname) >= 0) {
+                      if(s.asobject && s.asobject.at(0) && s.astarget && s.astarget.at(0) && DO.U.getPathURL(s.astarget.at(0)) == currentPathURL) {
                         var object = s.asobject.at(0);
 
                         return DO.U.positionInteraction(object).then(
