@@ -727,6 +727,7 @@ color:#000;
 .ref-reference a,
 .ref-annotation a {
 text-decoration:none;
+border-bottom:0;
 }
 
 .sparkline {
