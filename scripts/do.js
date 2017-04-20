@@ -2784,14 +2784,20 @@ console.log(inbox);
       });
     },
 
-    getResourceGraph: function(iri){
+    getResourceGraph: function(iri, headers, options){
+      var defaultHeaders = {'Accept': DO.C.AvailableMediaTypes.join(',')};
+      headers = headers || defaultHeaders;
+      if (!('Accept' in headers)){
+        Object.assign(headers, defaultHeaders);
+      }
+      options = options || {};
       var pIRI = DO.U.getProxyableIRI(iri);
       var options = {};
-      if (iri.slice(0, 5).toLowerCase() == 'http:') {
+      if (!('noCredentials' in options) && iri.slice(0, 5).toLowerCase() == 'http:') {
         options['noCredentials'] = true;
       }
 
-      return DO.U.getResource(pIRI, {'Accept': DO.C.AvailableMediaTypes.join(',')}, options).then(
+      return DO.U.getResource(pIRI, headers, options).then(
         function(response){
           var cT = response.xhr.getResponseHeader('Content-Type');
           var contentType = (cT) ? cT.split(';')[0].trim() : 'text/turtle';
