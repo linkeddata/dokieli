@@ -480,7 +480,7 @@ var DO = {
       }
 
       var user = ''
-      if ('IRI' in DO.C.User && DO.C.User.IRI.length > 0) {
+      if ('IRI' in DO.C.User && DO.C.User.IRI !== null && DO.C.User.IRI.length > 0) {
         user = '<span about="' + DO.C.User.IRI + '" typeof="schema:Person">' + userImage + ' <a rel="schema:url" href="' + DO.C.User.IRI + '"> ' + userName + '</a></span>';
       }
       else {
