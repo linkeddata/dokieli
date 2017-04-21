@@ -1237,11 +1237,13 @@ var DO = {
                         x[0]["@id"] = (x[0]["@id"] == 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d') ? '' : x[0]["@id"];
 
                         //XXX: Workaround for rdf-parser-rdfa bug that gives '@langauge' instead of @type when encountering datatype in HTML+RDFa . TODO: Link to bug here
-                        if('https://www.w3.org/ns/activitystreams#updated' in x[0]) {
-                          x[0]['https://www.w3.org/ns/activitystreams#updated'] = {
-                            '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
-                            '@value': x[0]['https://www.w3.org/ns/activitystreams#updated']['@value']
-                          };
+                        for(var i = 0; i < x.length; i++){
+                          if('https://www.w3.org/ns/activitystreams#updated' in x[i]) {
+                            x[i]['https://www.w3.org/ns/activitystreams#updated'] = {
+                              '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
+                              '@value': x[i]['https://www.w3.org/ns/activitystreams#updated']['@value']
+                            };
+                          }
                         }
 
                         var data = JSON.stringify(x) + '\n';
