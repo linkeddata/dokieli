@@ -1202,9 +1202,14 @@ var DO = {
                     };
                     return DO.U.serializeGraph(g, options).then(
                       function(data){
+// console.log(data);
+
                         //FIXME: FUGLY because parser defaults to localhost. Using UUID to minimise conflict
                         data = data.replace(/http:\/\/localhost\/d79351f4-cdb8-4228-b24f-3e9ac74a840d/g, '');
-// console.log(data);
+
+                        //XXX: Workaround for rdf-parser-rdfa bug that gives '@langauge' instead of @type when encountering datatype in HTML+RDFa . TODO: Link to bug here
+                        data = data.replace(/Z"@en;/, 'Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;');
+
                         return DO.U.postResource(pIRI, slug, data, 'text/turtle').catch(function(reason){
                           if(reason.xhr.status == 0){
                             var options = {'noCredentials': true};
