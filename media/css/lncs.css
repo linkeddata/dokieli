@@ -937,8 +937,12 @@ vertical-align:baseline;
 font-size:0.923em;
 }
 table ul,
-table ol {
+table ol,
+table li,
+table p,
+table dd {
 margin:0;
+text-align:left;
 }
 th {
 font-weight:normal;
