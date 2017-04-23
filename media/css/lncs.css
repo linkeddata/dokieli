@@ -227,7 +227,7 @@ section article h2,
 section article h3 {
 font-family:"CMUSerif-Roman", serif;
 }
-code, code strong, samp, samp strong pre, kbd, button {
+code, code strong, samp, samp strong, pre, kbd, button {
 font-family:"CMUTypewriter-Regular", monospace;
 }
 code strong, samp strong {
