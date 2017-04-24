@@ -3082,7 +3082,7 @@ console.log(inbox);
       var triggerBrowse = function(url){
         var inputBox = document.getElementById('browser-location');
         if (url.length > 10 && url.match(/^https?:\/\//g) && url.slice(-1) == "/"){
-          DO.U.getGraph(url).then(function(g){
+          DO.U.getResourceGraph(url).then(function(g){
             DO.U.generateBrowserList(g, url).then(function(l){
               return l;
             },
