@@ -677,6 +677,9 @@ padding-right:0;
 ol, ul, dd, table {
 margin-bottom:1em;
 }
+ol, ul, dl {
+margin-left:2em;
+}
 
 figure,
 audio,
@@ -886,9 +889,6 @@ margin:1em 0;
 }
 form li {
 margin-bottom:0.5em;
-}
-form p {
-text-indent:0;
 }
 fieldset {
 padding:1em;
