@@ -678,7 +678,7 @@ ol, ul, dd, table {
 margin-bottom:1em;
 }
 ol, ul, dl {
-margin-left:2em;
+margin-left:1em;
 }
 
 figure,
@@ -730,7 +730,7 @@ top:45%;
 right:0;
 }
 figcaption:before {
-content:"Fig. " counter(figure) ". ";
+content:"Figure " counter(figure) ". ";
 }
 figure.listing figcaption:before {
 content:"Listing " counter(listing) ". ";
@@ -1005,11 +1005,11 @@ margin-top:-1.75em;
 }
 
 
-#content ul {
+ul {
 list-style-position:inside;
 margin-bottom:1em;
 }
-#content table ul {
+table ul {
 margin-bottom:0;
 }
 
