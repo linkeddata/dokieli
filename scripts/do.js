@@ -2964,7 +2964,7 @@ console.log(inbox);
       var final = document.getElementById('location-final');
       button.addEventListener('click', function(){
         if(button.parentNode.classList.contains('container')){
-          DO.U.getGraph(url).then(
+          DO.U.getResourceGraph(url).then(
             function(g){
               if(final){
                 final.textContent = url + DO.U.generateAttributeId();
@@ -3149,7 +3149,7 @@ console.log(inbox);
       if(DO.C.User.Storage && DO.C.User.Storage.length > 0) {
         var storageUrl = DO.U.forceTrailingSlash(DO.C.User.Storage[0]); // TODO: options for multiple storage
         input.value = storageUrl;
-        DO.U.getGraph(storageUrl).then(function(g){
+        DO.U.getResourceGraph(storageUrl).then(function(g){
           DO.U.generateBrowserList(g, storageUrl);
         });
       }
