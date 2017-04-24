@@ -2800,7 +2800,7 @@ console.log(inbox);
       options = options || {};
       var pIRI = DO.U.getProxyableIRI(iri);
       var options = {};
-      if (!('noCredentials' in options) && iri.slice(0, 5).toLowerCase() == 'http:') {
+      if (iri.slice(0, 5).toLowerCase() == 'http:') {
         options['noCredentials'] = true;
       }
 
