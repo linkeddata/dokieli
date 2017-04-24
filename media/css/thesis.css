@@ -240,15 +240,16 @@ margin-top:1.25em;
 margin-bottom:0.75em;
 }
 h3 {
-margin-top:1.5em;
-margin-bottom:0.5em;
+margin:1.5em 0;
 }
 h4 {
-margin-top:1em;
-display:inline;
+margin:1em 0;
+font-style:italic;
 }
 h5 {
-display:inline;
+margin:1em 0;
+font-style:italic;
+font-weight:normal;
 }
 
 /*
@@ -350,98 +351,41 @@ left:-1.75em;
 }
 
 
-article section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]) {
+article section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id=acknowledgements]) {
 counter-increment:section;
 counter-reset:sub-section;
 }
-article section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]) section {
+article section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id=acknowledgements]) section {
 counter-increment:sub-section;
 counter-reset:sub-sub-section;
 }
-article section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]) section section {
+article section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id=acknowledgements]) section section {
 counter-increment:sub-sub-section;
 counter-reset:sub-sub-sub-section;
 }
-
+article section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id=acknowledgements]) section section section {
+counter-increment:sub-sub-sub-section;
+counter-reset:sub-sub-sub-sub-section;
+}
+article section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id=acknowledgements]) section section section section {
+counter-increment:sub-sub-sub-sub-section;
+counter-reset:sub-sub-sub-sub-sub-section;
+}
 article section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id^=table-of-]) > h2:before {
-content:counter(section) "\00a0\00a0\00a0\00a0";
+content:counter(section) ". ";
 }
-
 section > h3:before {
-content:counter(section) "." counter(sub-section) "\00a0\00a0\00a0";
+content:counter(section) "." counter(sub-section) ". ";
 }
-section > h4:after,
-section > h5:after {
-content:".";
+section > h4:before {
+content:counter(section) "." counter(sub-section) "." counter(sub-sub-section) ". ";
 }
-
-
-h1 + p,
-h2 + p,
-h3 + p,
-h4 + p,
-h5 + p,
-div > p:first-child,
-dl + p ,
-ul + p,
-figure + p,
-audio + p,
-video + p,
-iframe + p,
-blockquote p {
-text-indent:0;
+section > h5:before {
+content:counter(section) "." counter(sub-section) "." counter(sub-sub-section) "." counter(sub-sub-sub-section) ". ";
 }
-h1 + p {
-margin-bottom:1em;
+section > h6:before {
+content:counter(section) "." counter(sub-section) "." counter(sub-sub-section) "." counter(sub-sub-sub-section) "." counter(sub-sub-sub-sub-section) ". ";
 }
-
-
-
-h4 + p,
-h5 + p,
-h4 + div,
-h5 + div,
-h4 + div p,
-h5 + div p {
-display:inline;
-text-align:justify;
-
-/*This is a bit hacky.. it appears to work in Webkit and maybe it shouldn't -- breaking words inappropriately*/
-/*word-break:break-all;*/
-
-/*
-Testing?
-text-justify:distribute;
-word-break:break-all;
-hyphens:auto;
-text-wrap:normal;
-line-break:normal;
-*/
-}
-h4 + p + p,
-h5 + p + p,
-h4 + div p + p,
-h5 + div p + p {
-display:block;
-}
-
-
-
-h3 + div section:before,
-h4 + p:after,
-h5 + p:after,
-h4 + div p:after,
-h5 + div p:after,
-section + p:before,
-section + dl:before {
-content:"\A";
-white-space:pre;
-}
-
-section + p:before {
-text-indent:0;
-}
-
 
 fieldset {
 padding:1em;
