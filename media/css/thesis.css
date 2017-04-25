@@ -125,6 +125,8 @@ height:100px !important;
 min-height:auto !important;
 max-height:100px !important;
 }
+
+.NOTES { display:none; }
 } /* media print */
 
 
