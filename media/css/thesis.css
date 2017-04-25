@@ -127,6 +127,13 @@ max-height:100px !important;
 }
 
 .NOTES { display:none; }
+
+article a[href]:after {
+content:" ["attr(href)"]";
+word-wrap:break-word;
+word-break:break-all;
+display:inline-block;
+}
 } /* media print */
 
 
