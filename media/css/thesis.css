@@ -64,6 +64,9 @@ h6, .h6 { font-size:9pt !important; }
 h2 {
 page-break-before: always;
 }
+h2,h3,h4,h5,h6 {
+page-break-after: avoid;
+}
 
 body > nav,
 body > header nav,
@@ -137,7 +140,7 @@ max-height:100px !important;
 
 .NOTES { display:none; }
 
-article a:not([href^="#ref-"]):after {
+article a[href^="http"]:after {
 content:"\00a0<"attr(href)">";
 word-wrap:break-word;
 word-break:break-all;
@@ -204,7 +207,7 @@ color:#000000;
 font-family:"DejaVu Serif", serif;
 /*font-size:1.689vw;*/
 font-size:125%;
-line-height:1.5;
+line-height:2;
 position:relative;
 margin:0 auto;
 padding:2.5em 0;
