@@ -1604,7 +1604,7 @@ var DO = {
     showViews: function(node) {
       var stylesheets = document.querySelectorAll('head link[rel~="stylesheet"][title]:not([href$="do.css"])');
 
-      if (stylesheets.length > 1) {
+      if (stylesheets.length > 0) {
         var s = '<section id="document-views" class="do"><h2>Views</h2><i class="fa fa-magic"></i><ul>';
         s += '<li><button title="Change to native device/browser view">Native</button></li>';
         for (var i = 0; i < stylesheets.length; i++) {
