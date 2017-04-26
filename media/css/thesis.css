@@ -138,7 +138,7 @@ min-height:auto !important;
 max-height:100px !important;
 }
 
-.NOTES { display:none; }
+.NOTES,.TODO,.OUTLINE,.FIXME { display:none; }
 
 article a[href^="http"]:after {
 content:"\00a0<"attr(href)">";
@@ -242,7 +242,7 @@ margin-bottom:1em;
 h1,h2,h3,h4,h5,h6 {
 overflow:hidden;
 page-break-after:avoid;
-line-height:1.231;
+/*line-height:1.231;*/
 }
 h1, .h1 {
 font-size:1.5em;
@@ -871,6 +871,7 @@ table {
 width:100%;
 margin-top:1em;
 text-align:left;
+line-height:1.5;
 }
 table + table {
 margin-top:2em;
