@@ -45,8 +45,8 @@ width:145mm !important;
 height:137mm !important;
 }
 
-h1, .h1 { font-size:28pt !important; }
-h2, .h2 { font-size:24pt !important; }
+h1, .h1 { font-size:24pt !important; }
+h2, .h2 { font-size:12pt !important; }
 h3, .h3 { font-size:10pt !important; }
 h4, .h4 { font-size:10pt !important; }
 h5, .h5 { font-size:10pt !important; }
@@ -212,7 +212,7 @@ hyphens:auto;*/
 hyphens:none;
 }
 
-h1,h2,h3,h4,h5,h6, figcaption, caption, #subtitle {
+h2,h3,h4,h5,h6, figcaption, caption {
 font-family:sans-serif;
 }
 
