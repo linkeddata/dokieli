@@ -628,18 +628,21 @@ font-variant:small-caps;
 font-style:normal;
 }
 
-.todo, .outline, .fixme {
+.todo, .outline, .fixme, .notes {
 border:1px dashed #333;
 }
 .todo {
 background-color:#d0ddff;
 }
 .fixme {
-background-color: #ffd0d0;
+background-color:#ffd0d0;
 }
 .outline {
 background-color:#eee;
 font-style:italic;
+}
+.notes {
+background-color:#ffffd0;
 }
 .todo:before {
 content:"TODO: ";
@@ -649,6 +652,9 @@ content:"OUTLINE: ";
 }
 .fixme:before {
 content:"FIXME: ";
+}
+.notes:before {
+content:"NOTES: ";
 }
 
 .rtl {
