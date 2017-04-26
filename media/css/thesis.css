@@ -138,7 +138,7 @@ min-height:auto !important;
 max-height:100px !important;
 }
 
-.NOTES,.TODO,.OUTLINE,.FIXME { display:none; }
+.notes,.todo,.outline,.fixme { display:none; }
 
 article a[href^="http"]:after {
 content:"\00a0<"attr(href)">";
