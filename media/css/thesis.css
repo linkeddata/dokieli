@@ -55,7 +55,7 @@ height:137mm !important;
 }
 
 h1, .h1 { font-size:22pt !important; font-weight:normal; }
-h2, .h2 { font-size:12pt !important; }
+h2, .h2 { font-size:16pt !important; font-weight:normal; }
 h3, .h3 { font-size:10pt !important; }
 h4, .h4 { font-size:10pt !important; }
 h5, .h5 { font-size:10pt !important; }
@@ -242,13 +242,13 @@ page-break-after:avoid;
 line-height:1.231;
 }
 h1, .h1 {
-font-size:1.4615em;
+font-size:1.5em;
 font-weight:normal;
 margin-bottom:1.5em;
 text-align:center;
 }
 aside article h1 { text-align:left; }
-h2, .h2 { font-size:1.231em; }
+h2, .h2 { font-size:1.3em; }
 h3, .h3 { font-size:1em; }
 h4, .h4 { font-size:1em; }
 h5, .h5 { font-size:1em; }
@@ -257,6 +257,7 @@ h6, .h6 { font-size:0.923em; }
 h2 {
 margin-top:1.25em;
 margin-bottom:0.75em;
+font-weight:normal;
 }
 h3 {
 margin:1.5em 0;
