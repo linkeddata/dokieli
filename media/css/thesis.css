@@ -11,6 +11,10 @@
 @media print and (width:210mm) and (height:297mm) {
 @media print and (width:8.5in) and (height:11in) {
 */
+
+
+
+
 @page {
 /*Standard ISO A4 paper dimensions are:*/
 /*210mm x 297mm*/
@@ -21,20 +25,25 @@
 /*size:A4;*/
 /*size:210mm 297mm;*/
 margin:20mm 25mm 40mm 40mm;
-}
-/*@page:first {
-margin:20mm 25mm 40mm 40mm;
-}
-@page:right {
-margin:20mm 25mm 40mm 40mm;
-}*/
-@page:left {
-margin:20mm 40mm 40mm 25mm;
-}
-@page:first{
-margin:40mm;
+
+@bottom-center {
+content: counter(page);
 }
 
+h2 { break-before: left !important; }
+}
+
+/*
+@page :first {
+margin:20mm 40mm;
+}
+*/
+@page :left {
+margin:20mm 40mm 40mm 25mm;
+}
+@page :right {
+margin:20mm 25mm 40mm 40mm;
+}
 
 
 body {
@@ -45,7 +54,7 @@ width:145mm !important;
 height:137mm !important;
 }
 
-h1, .h1 { font-size:24pt !important; }
+h1, .h1 { font-size:22pt !important; font-weight:normal; }
 h2, .h2 { font-size:12pt !important; }
 h3, .h3 { font-size:10pt !important; }
 h4, .h4 { font-size:10pt !important; }
@@ -128,8 +137,8 @@ max-height:100px !important;
 
 .NOTES { display:none; }
 
-article a[href]:after {
-content:" ["attr(href)"]";
+article a:not([href^="#ref-"]):after {
+content:"\00a0<"attr(href)">";
 word-wrap:break-word;
 word-break:break-all;
 display:inline-block;
@@ -192,7 +201,7 @@ word-break:break-all;
 
 body {
 color:#000000;
-font-family:serif;
+font-family:"DejaVu Serif", serif;
 /*font-size:1.689vw;*/
 font-size:125%;
 line-height:1.5;
@@ -213,11 +222,11 @@ hyphens:none;
 }
 
 h2,h3,h4,h5,h6, figcaption, caption {
-font-family:sans-serif;
+font-family:"DejaVu Sans", sans-serif;
 }
 
 code, code strong, samp, samp strong, pre, kbd, button {
-font-family:monospace;
+font-family:"DejaVu Sans Mono", monospace;
 }
 code strong, samp strong {
 font-weight:bold;
@@ -234,6 +243,7 @@ line-height:1.231;
 }
 h1, .h1 {
 font-size:1.4615em;
+font-weight:normal;
 margin-bottom:1.5em;
 text-align:center;
 }
