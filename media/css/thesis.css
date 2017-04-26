@@ -334,9 +334,10 @@ position:relative;
 margin:1em 0;
 border-top:1px solid #000;
 padding-top:0.25em;
-font-size:0.923em;
+font-size:0.9em;
+line-height:1.75;
 }
-
+/*
 aside.note:after {
 content:"";
 width:50%;
@@ -346,7 +347,7 @@ top:-1px;
 right:0;
 height:1px;
 }
-
+*/
 aside.note article {
 position:relative;
 left:1.5em;
