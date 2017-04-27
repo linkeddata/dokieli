@@ -52,7 +52,7 @@ margin:0 auto !important;
 padding:0 !important;
 width:145mm !important;
 height:137mm !important;
-line-height:2;
+line-height:2 !important;
 }
 
 h1, .h1 { font-size:22pt !important; font-weight:normal; }
@@ -904,9 +904,6 @@ table p,
 table dd {
 margin:0;
 text-align:left;
-}
-th {
-font-weight:normal;
 }
 .comparison-columns tbody td {
 text-align:center;
