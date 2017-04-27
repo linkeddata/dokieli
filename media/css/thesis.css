@@ -247,6 +247,7 @@ margin-bottom:1em;
 h1,h2,h3,h4,h5,h6 {
 overflow:hidden;
 page-break-after:avoid;
+font-weight:normal;
 /*line-height:1.231;*/
 }
 h1, .h1 {
@@ -257,8 +258,8 @@ text-align:center;
 }
 aside article h1 { text-align:left; }
 h2, .h2 { font-size:1.3em; }
-h3, .h3 { font-size:1.15em; }
-h4, .h4 { font-size:1.05em; }
+h3, .h3 { font-size:1.2em; }
+h4, .h4 { font-size:1.1em; }
 h5, .h5 { font-size:1em; }
 h6, .h6 { font-size:0.9em; }
 
@@ -266,15 +267,8 @@ h2, h3, h4, h5, h6 {
 margin-top:1.5em;
 margin-bottom:0.5em;
 }
-h2 {
-font-weight:normal;
-}
-h4 {
+h4, h5 {
 font-style:italic;
-}
-h5 {
-font-style:italic;
-font-weight:normal;
 }
 
 /*
