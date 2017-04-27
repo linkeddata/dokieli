@@ -52,6 +52,7 @@ margin:0 auto !important;
 padding:0 !important;
 width:145mm !important;
 height:137mm !important;
+line-height:2;
 }
 
 h1, .h1 { font-size:22pt !important; font-weight:normal; }
@@ -146,6 +147,10 @@ word-wrap:break-word;
 word-break:break-all;
 display:inline-block;
 }
+aside.note {
+line-height:1.75;
+}
+
 } /* media print */
 
 
@@ -207,7 +212,7 @@ color:#000000;
 font-family:"DejaVu Serif", serif;
 /*font-size:1.689vw;*/
 font-size:125%;
-line-height:2;
+line-height:1.5;
 position:relative;
 margin:0 auto;
 padding:2.5em 0;
@@ -334,7 +339,7 @@ margin:1em 0;
 border-top:1px solid #000;
 padding-top:0.25em;
 font-size:0.9em;
-line-height:1.75;
+line-height:1;
 }
 /*
 aside.note:after {
@@ -871,7 +876,6 @@ table {
 width:100%;
 margin-top:1em;
 text-align:left;
-line-height:1.5;
 }
 table + table {
 margin-top:2em;
