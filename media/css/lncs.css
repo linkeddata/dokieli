@@ -820,7 +820,7 @@ content:"Table " counter(table) ". ";
 float:left;
 width:100%;
 }
-.figure-column-2 + *{
+.figure-column-2 + * {
 clear:both;
 }
 .figure-column-2 figure {
@@ -829,9 +829,11 @@ width:47.5%;
 margin-left:5%;
 float:left;
 }
-.figure-column-2 figure:first-child {
+.figure-column-2 figure:nth-child(odd) {
+clear:both;
 margin-left:0;
 }
+.figure-column-2 img,
 .figure-column-2 object,
 .figure-column-2 video,
 .figure-column-2 audio {
