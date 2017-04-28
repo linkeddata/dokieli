@@ -151,6 +151,10 @@ aside.note {
 line-height:1.75;
 }
 
+#abstract, ol, ul, p, dd {
+text-align:justify;
+}
+
 } /* media print */
 
 
@@ -217,7 +221,7 @@ position:relative;
 margin:0 auto;
 padding:2.5em 0;
 width:41em;
-width:80%;
+width:64%;
 /*-moz-hyphens:auto;
 -webkit-hyphens:auto;
 -ms-hyphens:auto;
@@ -818,10 +822,6 @@ right:0;
 }
 
 
-
-#abstract, ol, ul, p, dd {
-text-align:justify;
-}
 aside.note ol,
 aside.note ul,
 aside.note p,
