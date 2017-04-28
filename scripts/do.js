@@ -1830,7 +1830,6 @@ var DO = {
           if (e.target.matches('input')) {
             var id = e.target.id;
             var listType = id.slice(4, id.length);
-
             if(!e.target.getAttribute('checked')) {
               DO.U.buildTableOfStuff(listType);
               e.target.setAttribute('checked', 'checked');
@@ -2040,7 +2039,10 @@ var DO = {
             }
             else {
               for (var i = 0; i < e.length; i++) {
-                s += '<li><a href="#' + e[i].id +'">' + e[i].querySelector(titleType).textContent +'</a></li>';
+                var title = e[i].querySelector(titleType);
+                if(title) {
+                  s += '<li><a href="#' + e[i].id +'">' + title.textContent +'</a></li>';
+                }
               };
             }
           }
