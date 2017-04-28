@@ -873,6 +873,7 @@ table {
 width:100%;
 margin-top:1em;
 text-align:left;
+font-size:0.9em;
 }
 table + table {
 margin-top:2em;
@@ -890,7 +891,7 @@ tbody {
 border-bottom:2pt solid #000;
 }
 th, td {
-padding:0.25em;
+padding:0.25em 0.25em 0.25em 0;
 vertical-align:baseline;
 font-size:0.923em;
 }
