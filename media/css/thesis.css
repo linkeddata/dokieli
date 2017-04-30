@@ -148,7 +148,7 @@ word-break:break-all;
 display:inline-block;
 }
 aside.note {
-line-height:1.75;
+line-height:1.5;
 }
 
 #abstract, ol, ul, p, dd {
@@ -338,7 +338,6 @@ margin:1em 0;
 border-top:1px solid #000;
 padding-top:0.25em;
 font-size:0.9em;
-line-height:1;
 }
 /*
 aside.note:after {
