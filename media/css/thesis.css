@@ -151,7 +151,7 @@ aside.note {
 line-height:1.5;
 }
 
-#abstract, ol, ul, p, dd {
+#abstract, ol, ul, p, dd, blockquote {
 text-align:justify;
 }
 
