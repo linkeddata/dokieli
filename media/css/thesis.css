@@ -151,8 +151,11 @@ aside.note {
 line-height:1.5;
 }
 
-#abstract, ol, ul, p, dd, blockquote {
+#abstract, ol, ul, p, dd {
 text-align:justify;
+}
+blockquote * {
+text-align:left;
 }
 
 } /* media print */
