@@ -1629,7 +1629,7 @@ var DO = {
         for (var i = 0; i < viewButtons.length; i++) {
           viewButtons[i].addEventListener('click', function(e) {
             var selected = e.target;
-            var prevStylesheet = document.querySelector('head link[rel="stylesheet"][title]:not([href$="do.css"]):not(disabled)');
+            var prevStylesheet = DO.U.getCurrentStylesheet();
             prevStylesheet = (prevStylesheet) ? prevStylesheet.getAttribute('title') : '';
 
             for (var j = 0; j < stylesheets.length; j++) {
