@@ -1601,6 +1601,10 @@ var DO = {
       }
     },
 
+    getCurrentStylesheet: function() {
+      return document.querySelector('head link[rel="stylesheet"][title]:not([href$="do.css"]):not(disabled)').href;
+    },
+
     showViews: function(node) {
       var stylesheets = document.querySelectorAll('head link[rel~="stylesheet"][title]:not([href$="do.css"])');
 
