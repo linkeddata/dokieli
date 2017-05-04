@@ -46,6 +46,9 @@ section article h3 {
   font-weight:normal;
   text-align:left;
 }
+#subtitle {
+text-align:center;
+}
 
 article > article,
 section {
