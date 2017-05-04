@@ -1601,8 +1601,8 @@ var DO = {
       }
     },
 
-    getCurrentStylesheet: function() {
-      return document.querySelector('head link[rel="stylesheet"][title]:not([href$="do.css"]):not(disabled)').href;
+    getCurrentLinkStylesheet: function() {
+      return document.querySelector('head link[rel="stylesheet"][title]:not([href$="do.css"]):not(disabled)');
     },
 
     showViews: function(node) {
@@ -1629,7 +1629,7 @@ var DO = {
         for (var i = 0; i < viewButtons.length; i++) {
           viewButtons[i].addEventListener('click', function(e) {
             var selected = e.target;
-            var prevStylesheet = DO.U.getCurrentStylesheet();
+            var prevStylesheet = DO.U.getCurrentLinkStylesheet();
             prevStylesheet = (prevStylesheet) ? prevStylesheet.getAttribute('title') : '';
 
             for (var j = 0; j < stylesheets.length; j++) {
