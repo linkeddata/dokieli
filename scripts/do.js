@@ -5467,7 +5467,8 @@ WHERE {\n\
                   '<textarea id="approve-content" name="content" cols="20" rows="2" class="medium-editor-toolbar-textarea" placeholder="Strong point? Convincing argument?"></textarea>',
                   '<select id="approve-license" name="license" class="medium-editor-toolbar-select">',
                   DO.U.getLicenseOptionsHTML(),
-                  '</select>'
+                  '</select>',
+                  '<span class="annotation-location-selection">' + DO.U.getAnnotationLocationHTML() + '</span>'
                   ];
                   break;
                 case 'disapprove':
@@ -5475,7 +5476,8 @@ WHERE {\n\
                   '<textarea id="disapprove-content" name="content" cols="20" rows="2" class="medium-editor-toolbar-textarea" placeholder="Weak point? Error? Inaccurate?"></textarea>',
                   '<select id="disapprove-license" name="license" class="medium-editor-toolbar-select">',
                   DO.U.getLicenseOptionsHTML(),
-                  '</select>'
+                  '</select>',
+                  '<span class="annotation-location-selection">' + DO.U.getAnnotationLocationHTML() + '</span>'
                   ];
                   break;
                 case 'specificity':
@@ -5483,7 +5485,8 @@ WHERE {\n\
                   '<textarea id="specificity-content" name="content" cols="20" rows="2" class="medium-editor-toolbar-textarea" placeholder="Citation or specificity needed?"></textarea>',
                   '<select id="specificity-license" name="license" class="medium-editor-toolbar-select">',
                   DO.U.getLicenseOptionsHTML(),
-                  '</select>'
+                  '</select>',
+                  '<span class="annotation-location-selection">' + DO.U.getAnnotationLocationHTML() + '</span>'
                   ];
                   break;
                 case 'cite':
@@ -6512,14 +6515,20 @@ WHERE {\n\
                   break;
                 case 'approve':
                   r.content = this.getForm().querySelector('#approve-content.medium-editor-toolbar-textarea');
+                  r.annotationLocationService = this.getForm().querySelector('#annotation-location-service');
+                  r.annotationLocationPersonalStorage = this.getForm().querySelector('#annotation-location-personal-storage');
                   r.license = this.getForm().querySelector('#approve-license.medium-editor-toolbar-select');
                   break;
                 case 'disapprove':
                   r.content = this.getForm().querySelector('#disapprove-content.medium-editor-toolbar-textarea');
+                  r.annotationLocationService = this.getForm().querySelector('#annotation-location-service');
+                  r.annotationLocationPersonalStorage = this.getForm().querySelector('#annotation-location-personal-storage');
                   r.license = this.getForm().querySelector('#disapprove-license.medium-editor-toolbar-select');
                   break;
                 case 'specificity':
                   r.content = this.getForm().querySelector('#specificity-content.medium-editor-toolbar-textarea');
+                  r.annotationLocationService = this.getForm().querySelector('#annotation-location-service');
+                  r.annotationLocationPersonalStorage = this.getForm().querySelector('#annotation-location-personal-storage');
                   r.license = this.getForm().querySelector('#specificity-license.medium-editor-toolbar-select');
                   break;
                 case 'cite':
