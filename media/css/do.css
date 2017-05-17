@@ -131,6 +131,17 @@ position:static;
 #document-interactions article + article {
 margin-top:1em;
 }
+
+aside.note.do blockquote article {
+position: absolute;
+left: auto;
+right: -27%;
+z-index: 1;
+width: 25%;
+font-size: 0.9em;
+text-align: left;
+}
+
 #document-interactions article.do h2,
 #document-interactions article.do h3,
 #document-interactions article.do dt,

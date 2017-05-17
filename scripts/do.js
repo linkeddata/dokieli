@@ -4197,14 +4197,7 @@ WHERE {\n\
 
       //TODO: If there are articles already in the aside.note , the subsequent top values should come after one another
       var style = [
-        'position: absolute',
-        'top: ' + Math.ceil(ref.parentNode.offsetTop) + 'px',
-        'left: auto',
-        'right: -27%',
-        'z-index: 1',
-        'width: 25%',
-        'font-size: 0.9em',
-        'text-align: left'
+        'top: ' + Math.ceil(ref.parentNode.offsetTop) + 'px'
       ].join('; ');
       note.setAttribute('style', style);
     },
