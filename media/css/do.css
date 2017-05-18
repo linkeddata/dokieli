@@ -24,6 +24,12 @@ padding:0 !important;
 }
 }
 
+@media screen and (max-width: 840px){
+aside.note.do blockquote article {
+position: static !important;
+}
+}
+
 @media screen {
 body.on-document-menu > *:not([class~="on"]) {
 opacity:0.5;
