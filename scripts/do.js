@@ -3152,8 +3152,12 @@ console.log(inbox);
         storageBox.appendChild(browserul);
       }
 
+      var storageUrl = DO.C.AnnotationService;
       if(DO.C.User.Storage && DO.C.User.Storage.length > 0) {
-        var storageUrl = DO.U.forceTrailingSlash(DO.C.User.Storage[0]); // TODO: options for multiple storage
+        storageUrl = DO.U.forceTrailingSlash(DO.C.User.Storage[0]); // TODO: options for multiple storage
+      }
+
+      if(storageUrl){
         input.value = storageUrl;
         DO.U.getResourceGraph(storageUrl).then(function(g){
           DO.U.generateBrowserList(g, storageUrl);
