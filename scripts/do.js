@@ -3401,7 +3401,7 @@ console.log(inbox);
           var wasDerived = document.querySelector('#derivation-data');
           if (wasDerived.checked) {
             var wasDerivedOn = DO.U.getDateTimeISO();
-            html.querySelector('#content').insertAdjacentHTML('beforebegin', '<dl id="document-derived-from"><dt>Derived From</dt><dd><a href="' + currentDocumentURL + '" rel="prov:wasDerivedFrom">' + currentDocumentURL + '</a></dd></dl><dl id="document-derived-on"><dt>Derived On</dt><dd><time datetime="' + wasDerivedOn + '">' + wasDerivedOn + '</time></dd></dl>' + "\n");
+            html.querySelector('main article').insertAdjacentHTML('beforebegin', '<dl id="document-derived-from"><dt>Derived From</dt><dd><a href="' + currentDocumentURL + '" rel="prov:wasDerivedFrom">' + currentDocumentURL + '</a></dd></dl><dl id="document-derived-on"><dt>Derived On</dt><dd><time datetime="' + wasDerivedOn + '">' + wasDerivedOn + '</time></dd></dl>' + "\n");
             var baseURLSelectionChecked = saveAsDocument.querySelector('select[name="base-url"]');
             if (baseURLSelectionChecked.length > 0) {
               var baseURLType = baseURLSelectionChecked.value;
