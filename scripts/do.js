@@ -3182,6 +3182,10 @@ console.log(inbox);
           }, false);
           */
         }
+      ).then(
+        function(i){
+          document.getElementById('location-final').textContent = input.value + DO.U.generateAttributeId();
+        }
       );
     },
 
