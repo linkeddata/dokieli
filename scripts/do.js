@@ -3152,29 +3152,37 @@ console.log(inbox);
         storageBox.appendChild(browserul);
       }
 
-      var storageUrl = DO.C.AnnotationService;
-      if(DO.C.User.Storage && DO.C.User.Storage.length > 0) {
-        storageUrl = DO.U.forceTrailingSlash(DO.C.User.Storage[0]); // TODO: options for multiple storage
-      }
+      var storageUrl;
+      DO.U.getEndpoint(DO.C.Vocab['oaannotationService']['@id']).then(
+        function(url) {
+          storageUrl = url[0];
+        }
+      ).then(
+        function(i) {
+          if(DO.C.User.Storage && DO.C.User.Storage.length > 0) {
+            storageUrl = DO.U.forceTrailingSlash(DO.C.User.Storage[0]); // TODO: options for multiple storage
+          }
 
-      if(storageUrl){
-        input.value = storageUrl;
-        DO.U.getResourceGraph(storageUrl).then(function(g){
-          DO.U.generateBrowserList(g, storageUrl);
-        });
-      }
+          if(storageUrl){
+            input.value = storageUrl;
+            DO.U.getResourceGraph(storageUrl).then(function(g){
+              DO.U.generateBrowserList(g, storageUrl);
+            });
+          }
 
-      browseButton.addEventListener('click', function(){
-        triggerBrowse(input.value);
-      }, false);
-      /* TODO: Replace/augment button with live updates from typing; this needs a delay on the keyup.
-      document.getElementById('browser-location-input').addEventListener('keyup', function(){
-        var url = this.value;
-        DO.U.getGraph(url).then(function(g){
-          DO.U.generateBrowserList(g, url);
-        });
-      }, false);
-      */
+          browseButton.addEventListener('click', function(){
+            triggerBrowse(input.value);
+          }, false);
+          /* TODO: Replace/augment button with live updates from typing; this needs a delay on the keyup.
+          document.getElementById('browser-location-input').addEventListener('keyup', function(){
+            var url = this.value;
+            DO.U.getGraph(url).then(function(g){
+              DO.U.generateBrowserList(g, url);
+            });
+          }, false);
+          */
+        }
+      );
     },
 
     showResourceBrowser: function() {
