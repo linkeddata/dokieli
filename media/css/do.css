@@ -43,6 +43,8 @@ transition:opacity 1s ease-in-out;
 outline:none;
 }
 
+main { position:relative; }
+
 menu.do,
 aside.do {
 position:fixed;
