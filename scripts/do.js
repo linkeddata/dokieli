@@ -4209,8 +4209,6 @@ WHERE {\n\
         note.removeAttribute('style');
       }
 
-      note.parentNode.parentNode.parentNode.setAttribute('style', 'position:relative');
-
       //TODO: If there are articles already in the aside.note , the subsequent top values should come after one another
       var style = [
         'top: ' + Math.ceil(ref.parentNode.offsetTop) + 'px'
