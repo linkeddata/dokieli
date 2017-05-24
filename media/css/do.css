@@ -734,6 +734,7 @@ right:-0.75em;
 }
 span.ref[typeof~="dctypes:Text"] mark + sup[class^="ref-"],
 span.ref[typeof~="dctypes:Text"] mark + sup[class^="ref-"] * {
+font-family:monospace;
 font-size:1em;
 font-weight:normal;
 font-style:normal;
