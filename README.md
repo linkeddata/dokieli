@@ -29,6 +29,7 @@ control.
 * Uses author's information from their online profile (WebID)
 * Creation of new documents from any existing dokieli document - part of *self-replication*
 * Save document and its dependencies to a new location (anywhere on the Web with LDP support) - part of *self-replication*
+* Open and edit (HTML+RDFa) URLs
 * Uses W3C [Web Annotation Model](https://www.w3.org/TR/annotation-model/) and [Activity Streams 2.0 vocabulary](https://www.w3.org/TR/activitystreams-vocabulary)
 * Annotations (e.g., replies, peer-reviews, liking, resharing, bookmarking)
 * Inbox notifications for annotations and social sharing (implements W3C [Linked Data Notifications](https://www.w3.org/TR/ldn/))
