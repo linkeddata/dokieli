@@ -11,9 +11,9 @@ Research](https://linkedresearch.org/) initiative and principles, and provides
 features and interactions for scholarly communication.
 
 dokieli's architecture is progressively enhanced such that articles are
-accessible anywhere from a text-browser to Firefox Nightly. Articles and
-annotations can be `curl`ed and dereferenced to get the complete content in HTML
-and RDF. Articles can be authored both online and offline.
+accessible anywhere from a text-browser to Firefox Nightly. Articles,
+annotations, and notifications can be `curl`ed and dereferenced to get the complete
+content in HTML and RDF. Articles can be authored both online and offline.
 
 Where applicable, dokieli can employ participant's e.g., authors, reviewers,
 commenters, WebID and personal online datastores to store and give different
