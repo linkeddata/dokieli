@@ -106,6 +106,12 @@ font-weight:bold;
 width:auto;
 }
 
+blockquote {
+padding-left:1em;
+border-left:0.25em solid #ccc;
+margin:0;
+}
+
 dl[id^="document-"] dt,
 dl[id^="document-"] dd,
 dl[class~="inbox"] dt,
