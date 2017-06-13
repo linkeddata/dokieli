@@ -468,7 +468,7 @@ var DO = {
     },
 
     getUserHTML: function() {
-      var userName = 'Anonymous';
+      var userName = DO.C.SecretAgentNames[Math.floor(Math.random() * DO.C.SecretAgentNames.length)];
       if (DO.C.User.Name) {
         //XXX: We have the IRI already
         userName = '<span about="' + DO.C.User.IRI + '" property="schema:name">' + DO.C.User.Name + '</span>';
@@ -4649,7 +4649,7 @@ WHERE {\n\
           creatorNameIRI = '<span about="' + creatorIRI + '" property="schema:name">' + creatorName + '</span>';
         }
         else {
-          creatorNameIRI = creatorName = creatorIRI;
+          creatorNameIRI = DO.C.SecretAgentNames[Math.floor(Math.random() * DO.C.SecretAgentNames.length)];
         }
 
         creatorURLNameIRI = ('url' in n.creator) ? '<a href="' + n.creator.url + '" rel="schema:url">' + creatorNameIRI + '</a>' : '<a href="' + creatorIRI + '">' + creatorNameIRI + '</a>';
