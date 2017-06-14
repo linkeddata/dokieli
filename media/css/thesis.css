@@ -13,8 +13,6 @@
 */
 
 
-
-
 @page {
 /*Standard ISO A4 paper dimensions are:*/
 /*210mm x 297mm*/
@@ -568,14 +566,7 @@ content:"";
 content:":";
 }
 
-/*
-#abstract h2:after,
-#document-status h2:after {
-content:".";
-}
-*/
-/*#abstract h2,
-#abstract div, #abstract div *:first-child,*/
+
 #document-status h2,
 #document-status div, #document-status div *:first-child,
 #categories-and-subject-descriptors h2,
