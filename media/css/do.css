@@ -43,6 +43,33 @@ transition:opacity 1s ease-in-out;
 outline:none;
 }
 
+
+/*Animated adapted from https://github.com/daneden/animate.css using MIT license*/
+.animated {
+  animation-duration: 0.25s;
+  animation-fill-mode: both;
+}
+@keyframes zoomOut {
+  from {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+    transform: scale3d(.3, .3, .3);
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.zoomOut {
+  animation-name: zoomOut;
+}
+
+
+
 main > article { position:relative; }
 
 menu.do,
