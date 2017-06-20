@@ -2087,7 +2087,7 @@ var DO = {
       document.addEventListener('click', function(e) {
         if (e.target.matches('button.close')) {
           var parent = e.target.parentNode;
-          parent.setAttribute('class', parent.getAttribute('class') + ' animated zoomOut').parentNode.removeChild(parent);
+          parent.parentNode.removeChild(parent);
         }
       });
     },
