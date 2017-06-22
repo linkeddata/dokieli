@@ -2490,6 +2490,18 @@ var DO = {
             },
             function(reason) {
               console.log(reason);
+              switch(reason.xhr.status) {
+                default: case 405:
+                  e.target.disabled = true;
+                  DO.U.showActionMessage(document.getElementById('document-menu'), "Server doesn't allow this resource to be rewritten.");
+                  break;
+                case 401:
+                  DO.U.showActionMessage(document.getElementById('document-menu'), "Need to authenticate before saving.");
+                  break;
+                case 403:
+                  DO.U.showActionMessage(document.getElementById('document-menu'), "You are not authorized to save.");
+                  break;
+              }
             }
           );
         }
