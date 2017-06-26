@@ -1,0 +1,837 @@
+/** IOS Press template
+ *
+ * Ruben Taelman <ruben.taelman@ugent.be> http://www.rubensworks.net/
+ * http://www.apache.org/licenses/LICENSE-2.0.html Apache License, Version 2.0
+ * Derived from: https://github.com/linkeddata/dokieli/blob/master/media/css/acm.css
+ */
+
+/*
+SWJ IOS Press template: http://www.semantic-web-journal.net/authors, https://vtex-soft.github.io/texsupport.iospress-ds/
+*/
+
+@media print {
+    @page {
+        margin: 4.1cm 2.4cm 4.1cm 2.4cm
+    }
+    body {
+        font-size: 10pt !important;
+        padding: 0 !important;
+        margin: 0 auto !important;
+        width: 16.2cm !important;
+        height: 21.5cm !important
+    }
+    h1,
+    .h1 {
+        font-size: 20pt !important;
+        font-weight: semi-bold !important
+    }
+    h2,
+    .h2 {
+        font-size: 10pt !important
+    }
+    h3,
+    .h3 {
+        font-size: 10pt !important
+    }
+    h4,
+    .h4 {
+        font-size: 10pt !important
+    }
+    h5,
+    .h5 {
+        font-size: 10pt !important
+    }
+    h6,
+    .h6 {
+        font-size: 9pt !important
+    }
+    body>nav,
+    body>header nav,
+    body>footer nav {
+        display: none
+    }
+    a,
+    abbr {
+        text-decoration: none;
+        color: #000
+    }
+    audio {
+        display: none
+    }
+    iframe {
+        display: none !important
+    }
+    #references ol {
+        font-family: "Times New Roman", serif;
+        font-size: 9pt
+    }
+    #author-name {
+        font-size: 12pt
+    }
+    #author-org {
+        font-size: 10pt
+    }
+    .blink {
+        animation: none;
+        -webkit-animation: none
+    }
+    button {
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 9pt
+    }
+    figure pre {
+        font-size: 6pt
+    }
+}
+* {
+    margin: 0;
+    padding: 0;
+    filter: none !important
+}
+img {
+    border: 0
+}
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+ul,
+ol,
+li,
+pre,
+figure {
+    orphans: 2;
+    widows: 2
+}
+body {
+    font-size: 100%;
+    font-family: "Times New Roman", serif;
+    counter-reset: section;
+    counter-reset: sub-section;
+    margin: 0 auto;
+    padding: 2em 0;
+    width: 56.06em;
+    -moz-hyphens: auto;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    hyphens: auto;
+    line-height: 1.2em
+}
+h1,
+#authors,
+#keywords,
+#categories-and-subject-descriptors,
+#general-terms,
+#references,
+pre,
+code,
+samp {
+    -moz-hyphens: none;
+    -webkit-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none
+}
+table,
+img,
+object,
+iframe,
+figure,
+audio,
+video,
+canvas {
+    page-break-inside: avoid
+}
+object,
+iframe {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 240px !important
+}
+img,
+video {
+    max-width: 100% !important;
+    height: auto !important
+}
+main,
+footer {
+    clear: both;
+    float: left;
+    width: 100%;
+    margin-top: 1em;
+    -webkit-column-count: 2;
+    -webkit-column-gap: 1.9em;
+    -moz-column-count: 2;
+    -moz-column-gap: 1.9em;
+    column-count: 2;
+    column-gap: 1.9em
+}
+ol,
+ul,
+table,
+figure {
+    margin-bottom: 1em
+}
+ul,
+ol {
+    margin-left: 1em
+}
+section:not([id=abstract]) p {
+    text-indent: 1em
+}
+h1 {
+    margin: 0.75em auto 1.25em auto;
+    text-align: left;
+    font-size: 2.5em;
+    font-weight: semibold;
+    line-height: 1.1em
+}
+aside main h1 {
+    text-align: left
+}
+h1 sup,
+#subtitle sup,
+#authors sup {
+    font-weight: 300;
+    font-size: 0.5715em;
+    position: relative;
+    top: -3px
+}
+#authors sup {
+    margin: 0 0.1em
+}
+h2,
+dt {
+    font-weight: bold
+}
+h3 {
+    text-transform: capitalize;
+    font-weight: normal;
+    font-style: italic;
+    margin-top: 2em;
+    margin-bottom: 1.5em
+}
+h4 {
+    font-weight: normal;
+    font-style: italic;
+    text-transform: capitalize;
+    margin-top: 2em;
+    margin-bottom: 1.5em
+}
+#subtitle {
+    font-family: Arial, sans-serif;
+    font-size: 1.5em;
+    text-align: center
+}
+h2 {
+    margin-top: 2em;
+    margin-bottom: 1.5em;
+    text-align: left
+}
+section#abstract h2 {
+    margin-bottom: 0em
+}
+main section:first-child h2 {
+    margin-top: 0
+}
+h3,
+h4,
+h5,
+h6 {
+    margin-top: 1em
+}
+section#abstract h2 {
+    text-align: left
+}
+section#abstract h2:after {
+    content: "."
+}
+dl.references {
+    counter-reset: reference
+}
+dl.references dt {
+    display: none
+}
+dl.references dd {
+    margin: 0 0 0 2.1em;
+    text-indent: -2.1em;
+    counter-increment: reference;
+    font-size: 0.9em
+}
+dl.references dd:before {
+    content: "[" counter(reference) "]  ";
+    display: inline-block;
+    width: 2.1em;
+    text-align: right
+}
+main section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]) {
+    counter-increment: section;
+    counter-reset: sub-section
+}
+main section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]) h3 {
+    counter-increment: sub-section;
+    counter-reset: sub-sub-section
+}
+main section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]) h4 {
+    counter-increment: sub-sub-section;
+    counter-reset: sub-sub-sub-section
+}
+main section:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id^=table-of-])>h2:before {
+    content: counter(section) ".   "
+}
+section:not([id=abstract]):not([id=references])>h2:before {
+    content: counter(section) "  "
+}
+section>h3:before {
+    content: counter(section) "." counter(sub-section) ".  "
+}
+section>h4:before {
+    content: counter(section) "." counter(sub-section) "." counter(sub-sub-section) "  "
+}
+p,
+ol,
+ul,
+dl {
+    text-align: justify
+}
+li {
+    margin-bottom: 0.25em
+}
+code,
+samp {
+    font-size: 0.95em;
+    font-family: "Courier New", monospace;
+    word-wrap: break-word
+}
+p+math,
+ul+math,
+ol+math,
+dl+math,
+dd>math,
+div+math,
+section+math {
+    text-align: center;
+    margin-top: 1em;
+    margin-bottom: 1em
+}
+p+math,
+ul+math,
+ol+math,
+dl+math,
+dd>math,
+div+math,
+section+math,
+figure math {
+    display: block;
+    font-size: 0.95em
+}
+figure object,
+figure img,
+figure pre {
+    margin-bottom: 1em
+}
+figcaption,
+caption {
+    font-weight: bold;
+    text-align: center
+}
+.toc,
+.toc ol {
+    list-style: none;
+    -moz-hyphens: none;
+    -webkit-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none
+}
+.toc ol,
+.toc li {
+    margin: 0;
+    text-align: left !important
+}
+.toc li {
+    list-style-position: outside;
+    list-style-type: none;
+    margin-left: 1.25em;
+    margin-bottom: 0.25em
+}
+.toc li:before {
+    margin-left: -1.25em
+}
+.toc li:not([data-id=abstract]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
+    counter-increment: s;
+    counter-reset: sub-s
+}
+.toc li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
+    counter-increment: sub-s;
+    counter-reset: sub-sub-s
+}
+.toc li li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
+    counter-increment: sub-sub-s;
+    counter-reset: sub-sub-sub-s
+}
+.toc li li li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
+    counter-increment: sub-sub-sub-s;
+    counter-reset: sub-sub-sub-sub-s
+}
+.toc li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
+    content: " " counter(s) " "
+}
+.toc li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
+    content: " " counter(s) "." counter(sub-s) " "
+}
+.toc li li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
+    content: " " counter(s) "." counter(sub-s) "." counter(sub-sub-s) " "
+}
+.toc li li li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
+    content: " " counter(s) "." counter(sub-s) "." counter(sub-sub-s) "." counter(sub-sub-sub-s) " "
+}
+.toc li[data-id=abstract]:before,
+.toc li[data-id=document-status]:before,
+.toc li[data-id=keywords]:before,
+.toc li[data-id=references]:before,
+.toc li[data-id=categories-and-subject-descriptors]:before,
+.toc li[data-id=general-terms]:before,
+.toc li[data-id=appendix]:before,
+.toc li[data-id=contact-us]:before {
+    content: "\00a0\00a0\00a0\00a0"
+}
+.tex,
+.latex {
+    text-transform: uppercase
+}
+.tex>span,
+.latex>span {
+    line-height: 0;
+    text-transform: uppercase
+}
+.latex>:first-child {
+    margin-left: -0.36em;
+    margin-right: -0.15em;
+    vertical-align: 0.3em;
+    font-size: 70%
+}
+.tex>:last-child,
+.latex>:last-child {
+    margin-left: -0.1667em;
+    margin-right: -0.125em;
+    vertical-align: -0.5ex
+}
+dl.theorem,
+dl.definition {
+    text-indent: 1em
+}
+dl.theorem dt {
+    display: inline;
+    font-variant: small-caps;
+    font-weight: normal;
+    text-transform: none
+}
+dl.theorem dt:after {
+    content: ". "
+}
+dl.theorem dd {
+    display: inline
+}
+dl.theorem dd span {
+    display: inline;
+    font-style: italic
+}
+dl.definition dt {
+    display: inline;
+    font-weight: normal;
+    text-transform: none;
+    font-style: italic
+}
+dl.definition dt:after {
+    content: ". "
+}
+dl.definition dd {
+    display: inline
+}
+dl.definition dd span {
+    display: inline
+}
+dl.proof dt {
+    display: inline;
+    font-variant: small-caps;
+    font-weight: normal;
+    text-transform: none
+}
+dl.proof dt:after {
+    content: ". "
+}
+dl.proof dd {
+    display: inline
+}
+dl.proof dd span {
+    display: inline
+}
+dl.proof dd>*:last-child:after {
+    content: "\00a0\00a0\25a1";
+    font-size: 1.5em
+}
+dd {
+    margin: 0 0 0.5em 0
+}
+tfoot dl.abbr dt,
+tfoot dl.abbr dd {
+    display: inline;
+    text-transform: none
+}
+tfoot dl.abbr dd {
+    margin-left: 0
+}
+tfoot dl.abbr dd:after {
+    content: "\A";
+    white-space: pre
+}
+tfoot dl.abbr dt:after {
+    content: ": "
+}
+tfoot dl.abbr {
+    -webkit-column-count: 2;
+    -moz-column-count: 2;
+    column-count: 2
+}
+math * {
+    padding: 0
+}
+fieldset {
+    padding: 1em
+}
+fieldset ul {
+    list-style-type: none
+}
+#categories-and-subject-descriptors ul,
+#keywords ul {
+    margin-left: 0
+}
+#categories-and-subject-descriptors li,
+#keywords li {
+    list-style-type: none
+}
+#author-org {
+    font-size: 1.0835em
+}
+#author-email {
+    font-family: Helvetica, Arial, sans-serif
+}
+#authors {
+    list-style: none;
+    margin: 1em 0;
+    padding: 0;
+    font-size: 1.1em
+}
+#authors li {
+    display: inline
+}
+#authors li:not(:last-child):not(:nth-last-child(2))::after {
+    content: ", "
+}
+#authors li:nth-last-child(2)::after {
+    content: " and "
+}
+#affiliations {
+    list-style: none;
+    margin-left: 0
+}
+#affiliations li {
+    font-style: italic
+}
+#affiliations li sup {
+    margin-right: 0.2em
+}
+#general-terms li,
+#keywords li,
+#document-format dd {
+    display: inline
+}
+#general-terms li:after,
+#categories-and-subject-descriptors li:after {
+    content: ";\00a0"
+}
+#general-terms li:after,
+#keywords li:after,
+#document-format dd:after {
+    content: ",\00a0"
+}
+#general-terms li:last-child:after,
+#categories-and-subject-descriptors li:last-child:after,
+#keywords li:last-child:after,
+#document-format dd:last-child:after {
+    content: ""
+}
+#general-terms h2,
+#categories-and-subject-descriptors h2,
+#keywords h2 {
+    text-transform: capitalize
+}
+.authors dd:not(:empty):after {
+    content: ",\0020"
+}
+.authors dd:last-child:after {
+    content: ""
+}
+main>dl[id^="document-"] {
+    float: left;
+    width: 46%;
+    margin: 0 2%
+}
+#document-identifier dd,
+#document-published dd,
+#document-modified dd,
+#document-appeared dd,
+#document-in-reply-to dd,
+#document-annotation-service dd,
+#document-license dd,
+#document-format dd,
+#document-inbox dd,
+#document-see-also dd {
+    text-align: left;
+    margin-left: 0
+}
+header #document-identifier dd,
+#document-event dt,
+#document-event dd {
+    text-align: center
+}
+html {
+    counter-reset: figure 0
+}
+body {
+    counter-reset: listing 0
+}
+main {
+    counter-reset: table 0
+}
+figure,
+audio,
+video {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    position: relative;
+    text-align: center
+}
+pre {
+    overflow: auto
+}
+figure pre {
+    text-align: left
+}
+figure.listing pre,
+figure.algorithm pre {
+    border: 1px solid #000;
+    padding: 0.5em;
+    counter-reset: precode;
+    margin-top: 0;
+    line-height: 1.2em
+}
+figure.listing pre code:before,
+figure.listing pre samp:before,
+figure.algorithm pre code:before,
+figure.algorithm pre samp:before {
+    position: absolute;
+    left: -1.75em;
+    text-align: right;
+    #content: counter(precode);
+    counter-increment: precode
+}
+table {
+    border-collapse: collapse;
+    width: calc(100% - 2px)
+}
+table,
+th,
+td {
+    border: 1px solid
+}
+table thead td:first-child,
+table tfoot td:first-child {
+    border: 0
+}
+th,
+td {
+    padding: 0.25em;
+    text-align: left
+}
+.comparison-columns tbody td {
+    text-align: center
+}
+caption {
+    padding: 0.25em 0
+}
+tbody th {
+    text-align: left
+}
+form {
+    margin: 1em 0
+}
+form li {
+    margin-bottom: 0.5em
+}
+form p {
+    text-indent: 0
+}
+fieldset {
+    padding: 1em
+}
+legend {
+    font-weight: bold
+}
+label {
+    display: inline-block;
+    font-weight: bold
+}
+form label {
+    width: 17%;
+    vertical-align: top
+}
+label[for=nobot] {
+    width: auto
+}
+input,
+textarea,
+label {
+    padding: 0.25em
+}
+input,
+textarea,
+select,
+button {
+    font-family: inherit;
+    font-size: inherit
+}
+input[type=submit] {
+    font-weight: bold
+}
+figcaption {
+    margin-bottom: 1em
+}
+.count {
+    margin-bottom: 0;
+    font-weight: normal;
+    font-size: 1em
+}
+.count:after {
+    content: ':'
+}
+section main {
+    margin: 0 0 2em 0
+}
+section main main {
+    padding-left: 2.25em;
+    margin-bottom: 0;
+    border-left: 2px solid #ccc
+}
+section main h1,
+section main h2,
+section main h3 {
+    margin-bottom: 0;
+    font-size: 1em
+}
+section main h1,
+section main h2,
+section main h3 {
+    margin-top: 0
+}
+section main img {
+    vertical-align: middle;
+    margin-right: 0.25em
+}
+section main p:last-child {
+    margin-bottom: 0
+}
+#appendix section:first-child h2 {
+    margin-top: 0
+}
+#appendix section {
+    counter-increment: appendix;
+    counter-reset: sub-appendix
+}
+#appendix section section {
+    counter-increment: sub-appendix;
+    counter-reset: sub-sub-appendix
+}
+#appendix section section section {
+    counter-increment: sub-sub-appendix
+}
+#appendix section h2:before {
+    content: counter(appendix, upper-latin) ".    "
+}
+#appendix section section h3:before {
+    content: counter(appendix, upper-latin) "." counter(sub-appendix) "   "
+}
+#appendix section section section h4:before {
+    content: counter(appendix, upper-latin) "." counter(sub-appendix) "." counter(sub-sub-appendix) "   "
+}
+#interaction-write,
+dl.entry-author,
+dl.datetimestamp,
+dl.entry-replies,
+dl.article_labels * {
+    display: none
+}
+body>header,
+body>footer {
+    text-align: center
+}
+body>header {
+    margin-bottom: 2em
+}
+body>footer {
+    margin-top: 2em
+}
+header nav ul {
+    text-align: center
+}
+header nav li:first-child:before {
+    content: ""
+}
+header nav li:before {
+    content: "* "
+}
+header nav li {
+    display: inline;
+    list-style-type: none
+}
+ul#program-committee {
+    column-count: 2;
+    -moz-column-count: 2;
+    -webkit-column-count: 2;
+    text-align: left
+}
+.on {
+    display: block
+}
+@media only screen and (min-device-width: 320px) and (max-device-width: 568px) {
+    body {
+        font-size: 100%
+    }
+    main {
+        -webkit-column-count: 1;
+        -moz-column-count: 1;
+        column-count: 1
+    }
+}
+@media only screen and (min-device-width: 768px) and (max-device-width: 1024px) {
+    body {
+        font-size: 100%
+    }
+}
+figure img {
+    width: 100%
+}
+.todo {
+    color: red
+}
+.todo::before {
+    content: "TODO: "
+}
+main code {
+    font-family: "Ubuntu Mono", monospace
+}
+li p {
+    display: inline
+}
