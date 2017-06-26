@@ -3189,6 +3189,11 @@ console.log(inbox);
         DO.U.getEndpoint(DO.C.Vocab['oaannotationService']['@id']).then(
           function(storageUrl) {
             DO.U.initBrowse(storageUrl[0], input, browseButton);
+          },
+          function(){
+            browseButton.addEventListener('click', function(){
+              DO.U.triggerBrowse(input.value);
+            }, false);
           }
         )
       }
