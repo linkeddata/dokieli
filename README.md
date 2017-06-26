@@ -97,6 +97,7 @@ These libraries *optional* when dokieli is used as single-page application:
 * [Chris Chapman](https://github.com/cdchapman)
 * [Renato Stauffer](https://github.com/reni99)
 * [Kingsley Idehen](https://github.com/kidehen) (and [OpenLink Software](https://github.com/openlink))
+* [Ruben Taelman](https://github.com/rubensworks)
 
 ### Acknowledgements
 * [Nicola Greco](https://github.com/nicola)
