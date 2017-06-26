@@ -3093,43 +3093,56 @@ console.log(inbox);
       });
     },
 
+    initBrowse: function(storageUrl, input, browseButton){
+      input.value = storageUrl;
+      DO.U.getResourceGraph(storageUrl).then(function(g){
+        DO.U.generateBrowserList(g, storageUrl);
+      }).then(function(i){
+        document.getElementById('location-final').textContent = input.value + DO.U.generateAttributeId();
+      });
+
+      browseButton.addEventListener('click', function(){
+        DO.U.triggerBrowse(input.value);
+      }, false);
+    },
+
+    triggerBrowse: function(url){
+      var inputBox = document.getElementById('browser-location');
+      if (url.length > 10 && url.match(/^https?:\/\//g) && url.slice(-1) == "/"){
+        DO.U.getResourceGraph(url).then(function(g){
+          DO.U.generateBrowserList(g, url).then(function(l){
+            return l;
+          },
+          function(reason){
+            console.log('???? ' + reason); // Probably no reason for it to get to here
+          });
+        },
+        function(reason){
+          var list = document.getElementById('browser-ul');
+          switch(reason.slice(-3)) { // TODO: simplerdf needs to pass status codes better than in a string.
+            default:
+              inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to access ('+ reason +').</p>');
+              break;
+            case '404':
+              inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Not found.</p></div>');
+              break;
+            case '401': case '403':
+              var msg = 'You don\'t have permission to access this location.';
+              if(!DO.C.User.IRI){
+                msg += '</p><p>Try signing in to access your datastore.';
+              }
+              inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">' + msg + '</p></div>');
+              break;
+          }
+        });
+      }else{
+        inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">This is not a valid location.</p></div>');
+      }
+    },
+
     setupResourceBrowser: function(parent){
       parent.insertAdjacentHTML('beforeend', '<div id="browser-location"><label for="browser-location-input">URL</label> <input type="text" id="browser-location-input" name="browser-location-input" placeholder="https://example.org/path/to/" /><button id="browser-location-update" disabled="disabled">Browse</button></div>\n\
       <div id="browser-contents"></div>');
-
-      var triggerBrowse = function(url){
-        var inputBox = document.getElementById('browser-location');
-        if (url.length > 10 && url.match(/^https?:\/\//g) && url.slice(-1) == "/"){
-          DO.U.getResourceGraph(url).then(function(g){
-            DO.U.generateBrowserList(g, url).then(function(l){
-              return l;
-            },
-            function(reason){
-              console.log('???? ' + reason); // Probably no reason for it to get to here
-            });
-          },
-          function(reason){
-            var list = document.getElementById('browser-ul');
-            switch(reason.slice(-3)) { // TODO: simplerdf needs to pass status codes better than in a string.
-              default:
-                inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to access ('+ reason +').</p>');
-                break;
-              case '404':
-                inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Not found.</p></div>');
-                break;
-              case '401': case '403':
-                var msg = 'You don\'t have permission to access this location.';
-                if(!DO.C.User.IRI){
-                  msg += '</p><p>Try signing in to access your datastore.';
-                }
-                inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">' + msg + '</p></div>');
-                break;
-            }
-          });
-        }else{
-          inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">This is not a valid location.</p></div>');
-        }
-      }
 
       var inputBox = document.getElementById('browser-location');
       var storageBox = document.getElementById('browser-contents');
@@ -3141,10 +3154,9 @@ console.log(inbox);
         if (input.value.length > 10 && input.value.match(/^https?:\/\//g) && input.value.slice(-1) == "/") {
           browseButton.removeAttribute('disabled');
           if(e.which == 13){
-            triggerBrowse(input.value);
+            DO.U.triggerBrowse(input.value);
           }
           if(final){
-            var d = new Date();
             final.textContent = input.value + DO.U.generateAttributeId();
           }
         }
@@ -3165,40 +3177,21 @@ console.log(inbox);
       }
 
       var storageUrl;
-      DO.U.getEndpoint(DO.C.Vocab['oaannotationService']['@id']).then(
-        function(url) {
-          storageUrl = url[0];
-        }
-      ).then(
-        function(i) {
-          if(DO.C.User.Storage && DO.C.User.Storage.length > 0) {
-            storageUrl = DO.U.forceTrailingSlash(DO.C.User.Storage[0]); // TODO: options for multiple storage
-          }
 
-          if(storageUrl){
-            input.value = storageUrl;
-            DO.U.getResourceGraph(storageUrl).then(function(g){
-              DO.U.generateBrowserList(g, storageUrl);
-            });
-          }
+      if(DO.C.User.Storage && DO.C.User.Storage.length > 0) {
+        storageUrl = DO.U.forceTrailingSlash(DO.C.User.Storage[0]); // TODO: options for multiple storage
+      }
 
-          browseButton.addEventListener('click', function(){
-            triggerBrowse(input.value);
-          }, false);
-          /* TODO: Replace/augment button with live updates from typing; this needs a delay on the keyup.
-          document.getElementById('browser-location-input').addEventListener('keyup', function(){
-            var url = this.value;
-            DO.U.getGraph(url).then(function(g){
-              DO.U.generateBrowserList(g, url);
-            });
-          }, false);
-          */
-        }
-      ).then(
-        function(i){
-          document.getElementById('location-final').textContent = input.value + DO.U.generateAttributeId();
-        }
-      );
+      if(storageUrl){
+        DO.U.initBrowse(storageUrl, input, browseButton);
+      }
+      else {
+        DO.U.getEndpoint(DO.C.Vocab['oaannotationService']['@id']).then(
+          function(storageUrl) {
+            DO.U.initBrowse(storageUrl[0], input, browseButton);
+          }
+        )
+      }
     },
 
     showResourceBrowser: function() {
