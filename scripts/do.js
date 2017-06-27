@@ -3564,7 +3564,7 @@ console.log(inbox);
       if (fromURL != '' && toURL != '') {
         var http = new XMLHttpRequest();
         http.open('GET', fromURL);
-        if (!options.noCredentials) {
+        if (options && !options.noCredentials) {
           http.withCredentials = true;
         }
         http.onreadystatechange = function() {
