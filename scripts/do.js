@@ -3572,7 +3572,12 @@ console.log(inbox);
             if (this.status === 200 || this.status === 201 || this.status === 204) {
               var responseText = this.responseText;
               var contentType = this.getResponseHeader('Content-Type');
-              DO.U.putResource(toURL, responseText, contentType);
+              DO.U.putResource(toURL, responseText, contentType).catch(function(reason){
+                if(reason.xhr.status == 0){
+                  var options = {'noCredentials': true};
+                  DO.U.putResource(toURL, responseText, contentType, null, options);
+                }
+              });
             }
           }
         };
