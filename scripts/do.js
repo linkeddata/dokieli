@@ -181,7 +181,6 @@ var DO = {
       "masterWorkspace": { "@id": "http://www.w3.org/ns/pim/space#masterWorkspace", "@type": "@id" },
 
       "ldpinbox": { "@id": "http://www.w3.org/ns/ldp#inbox", "@type": "@id", "@array": true },
-      "solidinbox": { "@id": "http://www.w3.org/ns/solid/terms#inbox", "@type": "@id", "@array": true },
 
       "oaannotation": { "@id": "http://www.w3.org/ns/oa#Annotation", "@type": "@id" },
       "oahasBody": { "@id": "http://www.w3.org/ns/oa#hasBody", "@type": "@id" },
@@ -550,11 +549,6 @@ var DO = {
               //TODO: Should this get all of the inboxes or a given subject's?
               var endpoints = i.match(uri, property).toArray();
 
-              //TODO: Remove solidinbox (when LDN goes through).
-              if (endpoints.length == 0 && property == DO.C.Vocab['ldpinbox']) {
-                endpoints = i.match(uri, DO.C.Vocab['solidinbox']['@id']).toArray();
-              }
-
               if (endpoints.length > 0) {
                 return endpoints.map(function(t){ return t.object.nominalValue; });
               }
@@ -579,9 +573,6 @@ var DO = {
           if (property in linkHeaders) {
             return linkHeaders[property];
           }
-          else if (property == 'http://www.w3.org/ns/ldp#inbox' && 'http://www.w3.org/ns/solid/terms#inbox' in linkHeaders) {
-            return linkHeaders['http://www.w3.org/ns/solid/terms#inbox'];
-          }
           return Promise.reject({'message': property + " endpoint was not found in 'Link' header"});
         },
         function(reason){
@@ -601,14 +592,9 @@ var DO = {
 
             switch(property) {
               case DO.C.Vocab['ldpinbox']['@id']:
-              case DO.C.Vocab['solidinbox']['@id']:
                 if (s.ldpinbox._array.length > 0){
 // console.log(s.ldpinbox._array);
                   return [s.ldpinbox.at(0)];
-                }
-                else if (s.solidinbox._array.length > 0){
-// console.log(s.solidinbox._array);
-                  return [s.solidinbox.at(0)];
                 }
                 break;
               case DO.C.Vocab['oaannotationService']['@id']:
@@ -2960,7 +2946,7 @@ console.log(inbox);
 
 
       //TODO: This should update DO.C.User.Contacts' Inbox value so that it is not checked again when #share-resource-contacts input:checked
-      if((s.ldpinbox && s.ldpinbox._array.length > 0) || (s.solidinbox && s.solidinbox._array.length > 0)) {
+      if(s.ldpinbox && s.ldpinbox._array.length > 0){
         node.insertAdjacentHTML('beforeend', input);
       }
       else {
