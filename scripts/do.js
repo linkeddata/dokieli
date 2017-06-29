@@ -833,6 +833,7 @@ var DO = {
         proxyURL = ('proxyURL' in options) ? options.proxyURL : DO.C.ProxyURL;
         pIRI = proxyURL + DO.U.encodeString(pIRI);
       }
+// console.log('pIRI: ' + pIRI);
       return pIRI;
     },
 
@@ -2803,11 +2804,17 @@ console.log(inbox);
         Object.assign(headers, defaultHeaders);
       }
       options = options || {};
-      var pIRI = DO.U.getProxyableIRI(iri);
-      var options = {};
+
       if (iri.slice(0, 5).toLowerCase() == 'http:') {
         options['noCredentials'] = true;
+
+        if (document.domain != iri.split('/')[2]) {
+          options['forceProxy'] = true;
+        }
       }
+
+// console.log(options);
+      var pIRI = DO.U.getProxyableIRI(iri, options);
 
       return DO.U.getResource(pIRI, headers, options).then(
         function(response){
@@ -2827,7 +2834,15 @@ console.log(inbox);
             function(reason) { return reason; }
           );
         },
-        function(reason) { return reason; }
+        function(reason) {
+// console.log(reason);
+//           if(reason.xhr.status == 0) {
+//             return DO.U.getResourceGraph(iri, headers, {'forceProxy': true, 'noCredentials': true});
+//           }
+//           else {
+            return reason;
+          // }
+        }
       );
     },
 
