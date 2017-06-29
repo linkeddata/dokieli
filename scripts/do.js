@@ -233,7 +233,7 @@ var DO = {
                 resolve(i);
               },
               function(reason) {
-                DO.U.authenticateUserFallback(url, '', reasons).then(
+                DO.U.authenticateUserFallback(url, reasons).then(
                   function(i) {
                     resolve(i);
                   },
@@ -247,7 +247,7 @@ var DO = {
           else {
             if(url.slice(0, 5).toLowerCase() == 'http:') {
               //TODO: First try document's proxy?
-              DO.U.authenticateUserFallback(url, '', reasons).then(
+              DO.U.authenticateUserFallback(url, reasons).then(
                 function(i) {
                   resolve(i);
                 },
@@ -278,10 +278,10 @@ var DO = {
       });
     },
 
-    authenticateUserFallback: function(url, proxyURL, reasons) {
+    authenticateUserFallback: function(url, reasons) {
 // console.log("Try to authenticating through WebID's storage, if not found, try through a known authentication endpoint");
       url = url || window.location.origin + window.location.pathname;
-      var pIRI = DO.U.getProxyableIRI(url, proxyURL);
+      var pIRI = DO.U.getProxyableIRI(url);
 
       return DO.U.getGraph(pIRI)
         .then(
@@ -825,11 +825,12 @@ var DO = {
       return iri;
     },
 
-    getProxyableIRI: function(url, proxyURL) {
+    getProxyableIRI: function(url, options) {
       var pIRI = DO.U.stripFragmentFromString(url);
+      options = options || {};
 
-      if (typeof document !== 'undefined' && document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') {
-        proxyURL = proxyURL || DO.C.ProxyURL;
+      if ((typeof document !== 'undefined' && document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') || 'forceProxy' in options) {
+        proxyURL = ('proxyURL' in options) ? options.proxyURL : DO.C.ProxyURL;
         pIRI = proxyURL + DO.U.encodeString(pIRI);
       }
       return pIRI;
