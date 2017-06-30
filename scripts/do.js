@@ -3245,67 +3245,81 @@ console.log(inbox);
           if (pIRI.slice(0, 5).toLowerCase() == 'http:') {
             options['noCredentials'] = true;
           }
-          DO.U.getResource(pIRI, headers, options).then(
-            function(response){
+
+          var handleResource = function(pIRI, headers, options) {
+            DO.U.getResource(pIRI, headers, options).then(
+              function(response){
 // console.log(response);
-              var cT = response.xhr.getResponseHeader('Content-Type');
-              var contentType = (cT) ? cT.split(';')[0].trim() : 'text/turtle';
-              // console.log(contentType);
+                var cT = response.xhr.getResponseHeader('Content-Type');
+                var contentType = (cT) ? cT.split(';')[0].trim() : 'text/turtle';
+                // console.log(contentType);
 
-              if(contentType == 'text/html' || contentType == 'application/xhtml+xml') {
-                // var fragment = DO.U.fragmentFromString(response.xhr.responseText);
-                var template = document.implementation.createHTMLDocument('template');
+                if(contentType == 'text/html' || contentType == 'application/xhtml+xml') {
+                  // var fragment = DO.U.fragmentFromString(response.xhr.responseText);
+                  var template = document.implementation.createHTMLDocument('template');
 // console.log(template);
-                template.documentElement.innerHTML = response.xhr.responseText;
+                  template.documentElement.innerHTML = response.xhr.responseText;
 // console.log(template);
 
-                var documentHasDokieli = template.querySelectorAll('head script[src$="/do.js"]');
+                  var documentHasDokieli = template.querySelectorAll('head script[src$="/do.js"]');
 // console.log(documentHasDokieli);
 // console.log(documentHasDokieli.length)
-                if(documentHasDokieli.length == 0) {
-                  var doFiles = ['font-awesome.min.css', 'do.css', 'simplerdf.js', 'medium-editor.min.js', 'do.js'];
-                  doFiles.forEach(function(i){
+                  if(documentHasDokieli.length == 0) {
+                    var doFiles = ['font-awesome.min.css', 'do.css', 'simplerdf.js', 'medium-editor.min.js', 'do.js'];
+                    doFiles.forEach(function(i){
 // console.log(i);
-                    var media = i.endsWith('.css') ? template.querySelectorAll('head link[rel~="stylesheet"][href$="/' + i + '"]') : template.querySelectorAll('head script[src$="/' + i + '"]');
+                      var media = i.endsWith('.css') ? template.querySelectorAll('head link[rel~="stylesheet"][href$="/' + i + '"]') : template.querySelectorAll('head script[src$="/' + i + '"]');
 // console.log(media);
 // console.log(media.length)
-                    if (media.length == 0) {
-                      switch(i) {
-                        case 'font-awesome.min.css':
-                          template.querySelector('head').insertAdjacentHTML('beforeend', '<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" rel="stylesheet" />');
-                          break;
-                        case 'do.css':
-                          template.querySelector('head').insertAdjacentHTML('beforeend', '<link href="https://dokie.li/media/css/' + i + '" media="all" rel="stylesheet" />');
-                          break;
-                        case 'simplerdf.js': case 'medium-editor.min.js': case 'do.js':
-                          template.querySelector('head').insertAdjacentHTML('beforeend', '<script src="https://dokie.li/scripts/' + i + '"></script>')
-                          break;
+                      if (media.length == 0) {
+                        switch(i) {
+                          case 'font-awesome.min.css':
+                            template.querySelector('head').insertAdjacentHTML('beforeend', '<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" rel="stylesheet" />');
+                            break;
+                          case 'do.css':
+                            template.querySelector('head').insertAdjacentHTML('beforeend', '<link href="https://dokie.li/media/css/' + i + '" media="all" rel="stylesheet" />');
+                            break;
+                          case 'simplerdf.js': case 'medium-editor.min.js': case 'do.js':
+                            template.querySelector('head').insertAdjacentHTML('beforeend', '<script src="https://dokie.li/scripts/' + i + '"></script>')
+                            break;
+                        }
                       }
-                    }
 // console.log(template)
-                  });
+                    });
 
-                  document.documentElement.removeAttribute('id');
-                  document.documentElement.removeAttribute('class');
-                  document.documentElement.innerHTML = template.documentElement.innerHTML;
-                  history.pushState(null, null, iri);
-                  DO.U.init();
-                  // openDocument.parentNode.removeChild(openDocument);
+                    document.documentElement.removeAttribute('id');
+                    document.documentElement.removeAttribute('class');
+                    document.documentElement.innerHTML = template.documentElement.innerHTML;
+                    history.pushState(null, null, iri);
+                    DO.U.init();
+                    // openDocument.parentNode.removeChild(openDocument);
+                  }
+                  else {
+                    window.open(iri, '_blank');
+                    return;
+                  }
                 }
                 else {
-                  window.open(iri, '_blank');
-                  return;
+                  //TODO: Handle server returning wrong Response/Content-Type for the Request/Accept
+                }
+
+              },
+              function(reason){
+console.log(reason);
+// console.log(options);
+                if(reason.xhr.status == 0) {
+                  var pIRI = DO.U.getProxyableIRI(iri, {'forceProxy': true});
+                  return handleResource(pIRI, headers, options);
+                }
+                else {
+// console.log(reason);
+                  return reason;
                 }
               }
-              else {
-                //TODO: Handle server returning wrong Response/Content-Type for the Request/Accept
-              }
+            );
+          };
 
-            },
-            function(reason){
-              console.log(reason);
-            }
-          );
+          handleResource(pIRI, headers, options);
         }
       });
     },
