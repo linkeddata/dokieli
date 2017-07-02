@@ -3290,8 +3290,8 @@ console.log(inbox);
                     document.documentElement.removeAttribute('id');
                     document.documentElement.removeAttribute('class');
                     document.documentElement.innerHTML = template.documentElement.innerHTML;
-                    history.pushState(null, null, iri);
                     DO.U.init();
+                    history.pushState(null, null, iri);
                     // openDocument.parentNode.removeChild(openDocument);
                   }
                   else {
