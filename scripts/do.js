@@ -2066,9 +2066,9 @@ var DO = {
               if (i) { i.insertAdjacentHTML('afterend', s); }
               else {
                 i = document.getElementById('authors');
-                if(i) { i.insertAdjacentHTML('afterend', s); }
+                if (i) { i.insertAdjacentHTML('afterend', s); }
                 else {
-                  i = document.querySelector('article').insertAdjacentHTML('afterbegin', s); }
+                  i = document.querySelector('article').insertAdjacentHTML('afterbegin', s);
                 }
               }
             }
