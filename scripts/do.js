@@ -2064,7 +2064,13 @@ var DO = {
             else {
               i = document.getElementById('categories-and-subject-descriptors');
               if (i) { i.insertAdjacentHTML('afterend', s); }
-              else { document.getElementById('content').insertAdjacentHTML('afterbegin', s); }
+              else {
+                i = document.getElementById('authors');
+                if(i) { i.insertAdjacentHTML('afterend', s); }
+                else {
+                  i = document.querySelector('article').insertAdjacentHTML('afterbegin', s); }
+                }
+              }
             }
           }
         }
