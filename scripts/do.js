@@ -1961,7 +1961,7 @@ var DO = {
           if (heading) {
             s += '<li data-id="' + section.id +'"><a href="#' + section.id + '">' + heading.textContent + '</a>';
             var subsections = section.parentNode.querySelectorAll('[id="' + section.id + '"] > div > section[rel*="hasPart"]:not([class~="slide"]), [id="' + section.id + '"] > section[rel*="hasPart"]:not([class~="slide"])');
-console.log(subsections);
+
             if (subsections.length > 0) {
               s += '<ol'+ attributeClass +'>';
               s += DO.U.getListOfSections(subsections, sortable);
