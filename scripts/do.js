@@ -3304,8 +3304,7 @@ console.log(inbox);
                     });
 
                     var nodes = template.querySelectorAll('head link, [src], object[data]');
-                    var baseURLType = 'base-url-absolute';
-                    nodes = DO.U.rewriteBaseURL(nodes, baseURLType);
+                    nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': 'base-url-absolute', 'iri': iri});
 
                     document.documentElement.removeAttribute('id');
                     document.documentElement.removeAttribute('class');
@@ -3380,7 +3379,7 @@ console.log(reason);
             if (baseURLType == 'base-url-relative') {
               DO.U.copyRelativeResources(storageIRI, nodes);
             }
-            nodes = DO.U.rewriteBaseURL(nodes, baseURLType);
+            nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType});
           }
 
           html.querySelector('main article').innerHTML = '';
@@ -3455,7 +3454,7 @@ console.log(reason);
               if (baseURLType == 'base-url-relative') {
                 DO.U.copyRelativeResources(storageIRI, nodes);
               }
-              nodes = DO.U.rewriteBaseURL(nodes, baseURLType);
+              nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType});
             }
           }
           html = DO.U.getDocument(html);
@@ -3520,8 +3519,8 @@ console.log(reason);
       </div>';
     },
 
-    rewriteBaseURL: function(nodes, urlType) {
-      urlType = urlType || 'base-url-absolute';
+    rewriteBaseURL: function(nodes, options) {
+      options = options || {};
       if (typeof nodes === 'object' && nodes.length > 0) {
         for (var i = 0; i < nodes.length; i++) {
           var node = nodes[i];
@@ -3543,7 +3542,7 @@ console.log(reason);
 
           var s = url.split(':')[0];
           if (s != 'http' && s != 'https' && s != 'file' && s != 'data' && s != 'urn') {
-            url = DO.U.setBaseURL(url, urlType);
+            url = DO.U.setBaseURL(url, options);
           }
           node.setAttribute(ref, url);
         };
@@ -3552,16 +3551,25 @@ console.log(reason);
       return nodes;
     },
 
-    setBaseURL: function(url, urlType) {
-      urlType = urlType || 'base-url-absolute';
+    setBaseURL: function(url, options) {
+      options = options || {};
+      var urlType = ('baseURLType' in options) ? options.baseURLType : 'base-url-absolute';
+
       var matches = [];
-      var regexp = /(https?:\/\/([^\/]*)\/|file:\/\/\/|data:|urn:)?(.*)/;
+      var regexp = /(https?:\/\/([^\/]*)\/|file:\/\/\/|data:|urn:|\/\/)?(.*)/;
 
       matches = url.match(regexp);
+
       if (matches) {
         switch(urlType) {
           case 'base-url-absolute': default:
-            url = DO.U.getBaseURL(document.location.href) + matches[3].replace(/^\//g, '');
+            if(matches[1] == '//' && 'iri' in options){
+              url = options.iri.split(':')[0] + url;
+            }
+            else {
+              href = ('iri' in options) ? DO.U.getProxyableIRI(options.iri) : document.location.href;
+              url = DO.U.getBaseURL(href) + matches[3].replace(/^\//g, '');
+            }
             break;
           case 'base-url-relative':
             url = matches[3].replace(/^\//g, '');
@@ -3642,7 +3650,7 @@ console.log(reason);
         var fromURL = node.getAttribute(ref);
         var s = fromURL.split(':')[0];
         if (s != 'http' && s != 'https' && s != 'file' && s != 'data' && s != 'urn' && s != 'urn') {
-          var pathToFile = DO.U.setBaseURL(fromURL, 'base-url-relative');
+          var pathToFile = DO.U.setBaseURL(fromURL, {'baseURLType': 'base-url-relative'});
           var toURL = baseURL + pathToFile.replace(/^\//g, '');
           DO.U.copyResource(fromURL, toURL);
          }
