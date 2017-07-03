@@ -3555,7 +3555,7 @@ console.log(reason);
     setBaseURL: function(url, urlType) {
       urlType = urlType || 'base-url-absolute';
       var matches = [];
-      var regexp = /(https?:\/\/([^\/]*)\/|file:\/\/\/)?(.*)/;
+      var regexp = /(https?:\/\/([^\/]*)\/|file:\/\/\/|data:|urn:)?(.*)/;
 
       matches = url.match(regexp);
       if (matches) {
