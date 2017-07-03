@@ -3542,8 +3542,6 @@ console.log(reason);
           }
 
           var s = url.split(':')[0];
-console.log(url);
-console.log(s);
           if (s != 'http' && s != 'https' && s != 'file' && s != 'data' && s != 'urn') {
             url = DO.U.setBaseURL(url, urlType);
           }
