@@ -3541,7 +3541,7 @@ console.log(reason);
           }
 
           var s = url.split(':')[1];
-          if (s != 'http' && s != 'https' && s != 'file' && s != 'data' && p != 'urn') {
+          if (s != 'http' && s != 'https' && s != 'file' && s != 'data' && s != 'urn') {
             url = DO.U.setBaseURL(url, urlType);
           }
           node.setAttribute(ref, url);
@@ -3640,7 +3640,7 @@ console.log(reason);
 
         var fromURL = node.getAttribute(ref);
         var s = fromURL.split(':')[1];
-        if (s != 'http' && s != 'https' && s != 'file' && s != 'data' && p != 'urn') {
+        if (s != 'http' && s != 'https' && s != 'file' && s != 'data' && s != 'urn' && s != 'urn') {
           var pathToFile = DO.U.setBaseURL(fromURL, 'base-url-relative');
           var toURL = baseURL + pathToFile.replace(/^\//g, '');
           DO.U.copyResource(fromURL, toURL);
