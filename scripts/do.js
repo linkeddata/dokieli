@@ -59,7 +59,8 @@ var DO = {
 
     ContextLength: 32,
     InteractionPath: 'i/',
-    ProxyURL: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/proxy?uri=' : 'https://dokie.li/proxy?uri='),
+    // ProxyURL: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/proxy?uri=' : 'https://dokie.li/proxy?uri='),
+    ProxyURL: 'https://dokie.li/proxy?uri=',
     AuthEndpoint: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/' : 'https://dokie.li/'),
     License: {
       "NoLicense": { 'name': 'No license', 'description': 'No license' },
@@ -3540,7 +3541,9 @@ console.log(reason);
               break;
           }
 
-          var s = url.split(':')[1];
+          var s = url.split(':')[0];
+console.log(url);
+console.log(s);
           if (s != 'http' && s != 'https' && s != 'file' && s != 'data' && s != 'urn') {
             url = DO.U.setBaseURL(url, urlType);
           }
@@ -3639,7 +3642,7 @@ console.log(reason);
         }
 
         var fromURL = node.getAttribute(ref);
-        var s = fromURL.split(':')[1];
+        var s = fromURL.split(':')[0];
         if (s != 'http' && s != 'https' && s != 'file' && s != 'data' && s != 'urn' && s != 'urn') {
           var pathToFile = DO.U.setBaseURL(fromURL, 'base-url-relative');
           var toURL = baseURL + pathToFile.replace(/^\//g, '');
