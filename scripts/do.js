@@ -59,8 +59,7 @@ var DO = {
 
     ContextLength: 32,
     InteractionPath: 'i/',
-    // ProxyURL: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/proxy?uri=' : 'https://dokie.li/proxy?uri='),
-    ProxyURL: 'https://dokie.li/proxy?uri=',
+    ProxyURL: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/proxy?uri=' : 'https://dokie.li/proxy?uri='),
     AuthEndpoint: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/' : 'https://dokie.li/'),
     License: {
       "NoLicense": { 'name': 'No license', 'description': 'No license' },
