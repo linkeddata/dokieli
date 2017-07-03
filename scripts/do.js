@@ -1957,10 +1957,11 @@ var DO = {
       for (var i = 0; i < sections.length; i++) {
         var section = sections[i];
         if(section.id) {
-          var heading = section.querySelector(':first-child');
-          if (['h1', 'h2', 'h3', 'h4', 'h5', 'h6'].indexOf(heading.tagName.toLowerCase()) > -1) {
+          var heading = section.querySelector('h1, h2, h3, h4, h5, h6, header h1, header h2, header h3, header h4, header h5, header h6');
+          if (heading) {
             s += '<li data-id="' + section.id +'"><a href="#' + section.id + '">' + heading.textContent + '</a>';
-            var subsections = section.parentNode.querySelectorAll('[id="' + section.id + '"] > div > section[rel*="hasPart"]:not([class~="slide"])');
+            var subsections = section.parentNode.querySelectorAll('[id="' + section.id + '"] > div > section[rel*="hasPart"]:not([class~="slide"]), [id="' + section.id + '"] > section[rel*="hasPart"]:not([class~="slide"])');
+console.log(subsections);
             if (subsections.length > 0) {
               s += '<ol'+ attributeClass +'>';
               s += DO.U.getListOfSections(subsections, sortable);
