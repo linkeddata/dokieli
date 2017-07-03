@@ -1590,7 +1590,7 @@ var DO = {
     },
 
     getCurrentLinkStylesheet: function() {
-      return document.querySelector('head link[rel="stylesheet"][title]:not([href$="do.css"]):not(disabled)');
+      return document.querySelector('head link[rel="stylesheet"][title]:not([href$="do.css"]):not([disabled])');
     },
 
     showViews: function(node) {
@@ -1615,74 +1615,82 @@ var DO = {
 
         var viewButtons = document.querySelectorAll('#document-views.do button');
         for (var i = 0; i < viewButtons.length; i++) {
-          viewButtons[i].addEventListener('click', function(e) {
-            var selected = e.target;
-            var prevStylesheet = DO.U.getCurrentLinkStylesheet();
-            prevStylesheet = (prevStylesheet) ? prevStylesheet.getAttribute('title') : '';
-
-            for (var j = 0; j < stylesheets.length; j++) {
-              (function(stylesheet) {
-                if (stylesheet.getAttribute('title').toLowerCase() == selected.textContent.toLowerCase()) {
-                  stylesheet.disabled = false;
-                  stylesheet.setAttribute('rel', 'stylesheet');
-                }
-                else {
-                  stylesheet.disabled = true; //XXX: Leave this. WebKit wants to trigger this before for some reason.
-                  stylesheet.setAttribute('rel', 'stylesheet alternate');
-                }
-              })(stylesheets[j]);
-            };
-
-            var bd = document.querySelectorAll('#document-views.do button:disabled');
-            for(var j = 0; j < bd.length; j++) {
-              bd[j].disabled = false;
-            }
-            selected.disabled = true;
-
-            DO.U.showRefs();
-
-            if (selected.textContent.toLowerCase() == 'shower') {
-              var slides = document.querySelectorAll('.slide');
-              for(var j = 0; j < slides.length; j++) {
-                slides[j].classList.add('do');
-              }
-              document.body.classList.add('on-slideshow', 'list');
-              document.querySelector('head').insertAdjacentHTML('beforeend', '<meta name="viewport" content="width=792, user-scalable=no" />');
-
-              var dM = document.getElementById('document-menu');
-              var dMButton = dM.querySelector('header button');
-
-              dM.classList.remove('on');
-              var dMSections = dM.querySelectorAll('section');
-              for (var j = 0; j < dMSections.length; j++) {
-                dMSections[j].parentNode.removeChild(dMSections[j]);
-              }
-              document.body.classList.remove('on-document-menu');
-              dMButton.classList.add('show');
-              dMButton.setAttribute('title', 'Open Menu');
-              var toc = document.getElementById('table-of-contents');
-              toc = (toc) ? toc.parentNode.removeChild(toc) : false;
-
-              DO.U.hideStorage();
-
-              shower.initRun();
-            }
-            if (prevStylesheet.toLowerCase() == 'shower') {
-              var slides = document.querySelectorAll('.slide');
-              for (var c = 0; c < slides.length; c++){
-                slides[c].classList.remove('do');
-              }
-              document.body.classList.remove('on-slideshow', 'list', 'full');
-              document.body.removeAttribute('style');
-              var mV = document.querySelector('head meta[name="viewport"][content="width=792, user-scalable=no"]');
-              mV = (mV) ? mV.parentNode.removeChild(mV) : false;
-
-              history.pushState(null, null, window.location.pathname);
-
-              shower.removeEvents();
-            }
-          });
+          viewButtons[i].removeEventListener('click', DO.U.initCurrentStylesheet);
+          viewButtons[i].addEventListener('click', DO.U.initCurrentStylesheet);
         }
+      }
+    },
+
+    initCurrentStylesheet: function(e) {
+      var currentStylesheet = DO.U.getCurrentLinkStylesheet();
+      currentStylesheet = (currentStylesheet) ? currentStylesheet.getAttribute('title') : '';
+      var selected = (e && e.target) ? e.target.textContent.toLowerCase() : currentStylesheet.toLowerCase();
+      var stylesheets = document.querySelectorAll('head link[rel~="stylesheet"][title]:not([href$="do.css"])');
+
+      for (var j = 0; j < stylesheets.length; j++) {
+        (function(stylesheet) {
+          if (stylesheet.getAttribute('title').toLowerCase() != selected) {
+              stylesheet.disabled = true;
+              stylesheet.setAttribute('rel', 'stylesheet alternate');
+          }
+        })(stylesheets[j]);
+      };
+      for (var j = 0; j < stylesheets.length; j++) {
+        (function(stylesheet) {
+          if (stylesheet.getAttribute('title').toLowerCase() == selected) {
+              stylesheet.setAttribute('rel', 'stylesheet');
+              stylesheet.disabled = false;
+          }
+        })(stylesheets[j]);
+      }
+
+      var bd = document.querySelectorAll('#document-views.do button:disabled');
+      for(var j = 0; j < bd.length; j++) {
+        bd[j].disabled = false;
+      }
+      selected.disabled = true;
+
+      DO.U.showRefs();
+
+      if (selected == 'shower') {
+        var slides = document.querySelectorAll('.slide');
+        for(var j = 0; j < slides.length; j++) {
+          slides[j].classList.add('do');
+        }
+        document.body.classList.add('on-slideshow', 'list');
+        document.querySelector('head').insertAdjacentHTML('beforeend', '<meta name="viewport" content="width=792, user-scalable=no" />');
+
+        var dM = document.getElementById('document-menu');
+        var dMButton = dM.querySelector('header button');
+
+        dM.classList.remove('on');
+        var dMSections = dM.querySelectorAll('section');
+        for (var j = 0; j < dMSections.length; j++) {
+          dMSections[j].parentNode.removeChild(dMSections[j]);
+        }
+        document.body.classList.remove('on-document-menu');
+        dMButton.classList.add('show');
+        dMButton.setAttribute('title', 'Open Menu');
+        var toc = document.getElementById('table-of-contents');
+        toc = (toc) ? toc.parentNode.removeChild(toc) : false;
+
+        DO.U.hideStorage();
+
+        shower.initRun();
+      }
+      if (currentStylesheet.toLowerCase() == 'shower') {
+        var slides = document.querySelectorAll('.slide');
+        for (var c = 0; c < slides.length; c++){
+          slides[c].classList.remove('do');
+        }
+        document.body.classList.remove('on-slideshow', 'list', 'full');
+        document.body.removeAttribute('style');
+        var mV = document.querySelector('head meta[name="viewport"][content="width=792, user-scalable=no"]');
+        mV = (mV) ? mV.parentNode.removeChild(mV) : false;
+
+        history.pushState(null, null, window.location.pathname);
+
+        shower.removeEvents();
       }
     },
 
@@ -6651,6 +6659,7 @@ WHERE {\n\
 
     init: function() {
       if(document.body) {
+        DO.U.initCurrentStylesheet();
         DO.U.setPolyfill();
         DO.U.setDocRefType();
         DO.U.showRefs();
