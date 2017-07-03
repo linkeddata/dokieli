@@ -3302,6 +3302,10 @@ console.log(inbox);
 // console.log(template)
                     });
 
+                    var nodes = template.querySelectorAll('head link, [src], object[data]');
+                    var baseURLType = 'base-url-absolute';
+                    nodes = DO.U.rewriteBaseURL(nodes, baseURLType);
+
                     document.documentElement.removeAttribute('id');
                     document.documentElement.removeAttribute('class');
                     document.documentElement.innerHTML = template.documentElement.innerHTML;
