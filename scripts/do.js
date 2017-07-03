@@ -3564,7 +3564,7 @@ console.log(reason);
         switch(urlType) {
           case 'base-url-absolute': default:
             if(matches[1] == '//' && 'iri' in options){
-              url = options.iri.split(':')[0] + url;
+              url = options.iri.split(':')[0] + ':' + url;
             }
             else {
               href = ('iri' in options) ? DO.U.getProxyableIRI(options.iri) : document.location.href;
