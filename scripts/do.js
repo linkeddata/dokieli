@@ -1495,7 +1495,7 @@ var DO = {
     },
 
     showDocumentInfo: function() {
-      document.body.insertAdjacentHTML('beforeend', '<menu id="document-menu" class="do"><button class="show" title="Open Menu"><i class="fa fa-bars"></i></button><header></header><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><i class="fa fa-github"></i> <a href="https://github.com/linkeddata/dokieli">dokieli</a></dd></dl></footer></menu>');
+      document.body.insertAdjacentHTML('beforeend', '<menu id="document-menu" class="do"><button class="show" title="Open Menu"><i class="fa fa-bars"></i></button><header></header><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"<a href="https://dokie.li/">dokieli</a></dd></dl></footer></menu>');
       document.querySelector('#document-menu').addEventListener('click', function(e) {
         var button = e.target.closest('button');
         if(button){
