@@ -1990,7 +1990,7 @@ var DO = {
       tableList = (listType) ? [listType] : ['content', 'figure', 'table', 'abbr'];
 
       tableList.forEach(function(element) {
-        var e = document.querySelectorAll(element);
+        var e = document.querySelectorAll('section:not([class~="do"]) ' + element);
         if (element == 'content' || e.length > 0) {
           switch(element) {
             case 'figure':
@@ -2042,7 +2042,12 @@ var DO = {
               for (var i = 0; i < e.length; i++) {
                 var title = e[i].querySelector(titleType);
                 if(title) {
-                  s += '<li><a href="#' + e[i].id +'">' + title.textContent +'</a></li>';
+                  if(e[i].id){
+                    s += '<li><a href="#' + e[i].id +'">' + title.textContent +'</a></li>';
+                  }
+                  else {
+                    s += '<li>' + title.textContent +'</li>';
+                  }
                 }
               };
             }
