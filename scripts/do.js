@@ -3465,8 +3465,9 @@ console.log(reason);
 
           DO.U.putResource(storageIRI, html).then(
             function(i) {
-              saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="success">Document saved at <a href="' + storageIRI + '?author=true">' + storageIRI + '</a></p></div>');
-              window.open(storageIRI + '?author=true', '_blank');
+              var url = ('xhr' in i && i.xhr.getResponseHeader('Location')) ? i.xhr.getResponseHeader('Location') : storageIRI;
+              saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="success">Document saved at <a href="' + url + '?author=true">' + url + '</a></p></div>');
+              window.open(url + '?author=true', '_blank');
             },
             function(reason) {
               switch(reason.status) {
