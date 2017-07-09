@@ -512,6 +512,8 @@ line-height:1;
 #document-event dt, #document-event dd,
 #document-inbox dt, #document-inbox dd,
 #document-see-also dt, #document-see-also dd,
+#document-derived-from dt, #document-derived-from dd,
+#document-derived-on dt, #document-derived-on dd,
 #general-terms h2, #general-terms li,
 #keywords h2, #keywords li,
 #categories-and-subject-descriptors h2, #categories-and-subject-descriptors li {
@@ -601,6 +603,8 @@ content:"";
 #document-event dt:after,
 #document-inbox dt:after,
 #document-see-also dt:after,
+#document-derived-from dt:after,
+#document-derived-on dt:after,
 #general-terms h2:after,
 #categories-and-subject-descriptors h2:after,
 #keywords h2:after,
@@ -655,6 +659,10 @@ content:".";
 #document-inbox dt + dd,
 #document-see-also dt,
 #document-see-also dt + dd,
+#document-derived-from dt,
+#document-derived-from dt + dd,
+#document-derived-on dt,
+#document-derived-on dt + dd,
 .inbox dt,
 .inbox dt + dd {
 display:inline;
@@ -1065,7 +1073,9 @@ content:"";
 #document-language dt,
 #document-status dt,
 #document-format dt,
-#document-event dt {
+#document-event dt,
+#document-derived-from dt,
+#document-derived-on dt {
 text-transform:capitalize;
 }
 
