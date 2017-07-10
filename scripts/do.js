@@ -3386,7 +3386,8 @@ console.log(reason);
             nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType});
           }
 
-          html.querySelector('main article').innerHTML = '';
+          html.querySelector('body').innerHTML = '';
+          html.insertAdjacentHTML('beforeend', '<main><article about="" typeof="schema:Article"></article></main>');
           html.querySelector('head title').innerHTML = '';
           html = DO.U.getDocument(html);
 
