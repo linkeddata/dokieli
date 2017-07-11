@@ -938,6 +938,7 @@ var DO = {
           if (!options.noCredentials) {
             http.withCredentials = true;
           }
+          DO.U.showXHRProgressHTML(http, options);
           http.onreadystatechange = function() {
             if (this.readyState == this.DONE) {
               if (this.status === 200 || this.status === 201 || this.status === 204) {
@@ -946,9 +947,6 @@ var DO = {
               return reject({status: this.status, xhr: this});
             }
           };
-
-          DO.U.showXHRProgressHTML(http, options);
-
           http.send(data);
         });
       }
@@ -975,6 +973,7 @@ var DO = {
           if (!options.noCredentials) {
             http.withCredentials = true;
           }
+          DO.U.showXHRProgressHTML(http, options);
           http.onreadystatechange = function() {
             if (this.readyState == this.DONE) {
               if (this.status === 200 || this.status === 201 || this.status === 204) {
@@ -1010,6 +1009,7 @@ var DO = {
         if (!options.noCredentials) {
           http.withCredentials = true;
         }
+        DO.U.showXHRProgressHTML(http, options);
         http.onreadystatechange = function() {
           if (this.readyState == this.DONE) {
             if (this.status === 200 || this.status === 201 || this.status === 204) {
