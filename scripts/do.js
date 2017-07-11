@@ -1586,8 +1586,8 @@ var DO = {
       if ('progress' in options) {
         http.upload.onprogress = function(e) {
           if (e.lengthComputable) {
-            options.progressNode.value = (e.loaded / e.total) * 100;
-            options.progressNode.textContent = options.progressNode.value; // Fallback for unsupported browsers.
+            options.progress.value = (e.loaded / e.total) * 100;
+            options.progress.textContent = options.progress.value; // Fallback for unsupported browsers.
           }
         };
       }
@@ -3477,8 +3477,16 @@ console.log(reason);
           }
           html = DO.U.getDocument(html);
 
-          DO.U.putResource(storageIRI, html).then(
+          var progress = saveAsDocument.querySelector('progress');
+          if(progress) {
+            progress.parentNode.removeChild(progress);
+          }
+          e.target.insertAdjacentHTML('afterend', '<progress min="0" max="100" value="0"></progress>');
+          progress = saveAsDocument.querySelector('progress');
+
+          DO.U.putResource(storageIRI, html, null, null, { 'progress': progress }).then(
             function(i) {
+              progress.parentNode.removeChild(progress);
               var url = ('xhr' in i && i.xhr.getResponseHeader('Location')) ? i.xhr.getResponseHeader('Location') : storageIRI;
               saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="success">Document saved at <a href="' + url + '?author=true">' + url + '</a></p></div>');
               window.open(url + '?author=true', '_blank');
