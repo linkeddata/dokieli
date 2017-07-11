@@ -947,6 +947,8 @@ var DO = {
             }
           };
 
+          DO.U.showXHRProgressHTML(http, options);
+
           http.send(data);
         });
       }
