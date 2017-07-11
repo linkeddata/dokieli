@@ -946,6 +946,7 @@ var DO = {
               return reject({status: this.status, xhr: this});
             }
           };
+
           http.send(data);
         });
       }
@@ -1577,6 +1578,17 @@ var DO = {
           el = el.parentElement;
         }
       };
+    },
+
+    showXHRProgressHTML: function(http, options) {
+      if ('progress' in options) {
+        http.upload.onprogress = function(e) {
+          if (e.lengthComputable) {
+            options.progressNode.value = (e.loaded / e.total) * 100;
+            options.progressNode.textContent = options.progressNode.value; // Fallback for unsupported browsers.
+          }
+        };
+      }
     },
 
     setDocRefType: function() {
