@@ -68,7 +68,7 @@ outline:none;
   animation-name: zoomOut;
 }
 
-
+progress { margin:0 1em; }
 
 main > article { position:relative; }
 
