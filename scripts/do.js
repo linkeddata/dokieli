@@ -118,6 +118,8 @@ var DO = {
 
     AvailableMediaTypes: ['text/turtle', 'application/ld+json', 'application/rdf+xml', 'application/xhtml+xml', 'text/html'],
 
+    AcceptBinaryTypes: ['image/png', 'image/jpeg', 'image/gif'],
+
     Prefixes: {
       'xsd': 'http://www.w3.org/2001/XMLSchema#',
       'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
@@ -1052,7 +1054,7 @@ var DO = {
       if (fromURL != '' && toURL != '') {
         DO.U.getResource(fromURL, headers, options).then(
           function(i){
-            var response = (['image/png', 'image/jpeg', 'image/gif'].indexOf('contentType')) ? i.xhr.response : i.xhr.responseText;
+            var response = (DO.C.AcceptBinaryTypes.indexOf(contentType)) ? i.xhr.response : i.xhr.responseText;
 
             var contentType = i.xhr.getResponseHeader('Content-Type');
             DO.U.putResource(toURL, response, contentType, null, options).catch(
