@@ -911,6 +911,9 @@ var DO = {
         if (!options.noCredentials) {
           http.withCredentials = true;
         }
+        if(headers['Accept'] == '*/*') {
+          http.responseType = "arraybuffer";
+        }
         http.onreadystatechange = function() {
           if (this.readyState == this.DONE) {
             if (this.status === 200) {
@@ -1039,6 +1042,28 @@ var DO = {
         };
         http.send();
       });
+    },
+
+    //I want HTTP COPY and I want it now!
+    copyResource: function(fromURL, toURL, options) {
+      options = options || {};
+      var headers = { 'Accept': '*/*' };
+
+      if (fromURL != '' && toURL != '') {
+        DO.U.getResource(fromURL, headers, options).then(
+          function(i){
+            var response = (['image/png', 'image/jpeg', 'image/gif'].indexOf('contentType')) ? i.xhr.response : i.xhr.responseText;
+
+            var contentType = i.xhr.getResponseHeader('Content-Type');
+            DO.U.putResource(toURL, response, contentType, null, options).catch(
+              function(reason){
+                if(reason.xhr.status == 0){
+                  options.noCredentials =  true;
+                  DO.U.putResource(toURL, response, contentType, null, options);
+                }
+              });
+          });
+      }
     },
 
     putResourceACL: function(accessToURL, aclURL, acl) {
@@ -3452,7 +3477,7 @@ console.log(reason);
 
       saveAsDocument.addEventListener('click', function(e) {
         if (e.target.matches('button.create')) {
-          var currentDocumentURL = window.location.origin + window.location.pathname;
+          var currentDocumentURL = DO.U.stripFragmentFromString(document.location.href);
           var saveAsDocument = document.getElementById('save-as-document');
           var storageIRI = saveAsDocument.querySelector('#location-final').innerText.trim();
           var rm = saveAsDocument.querySelector('.response-message');
@@ -3628,32 +3653,6 @@ console.log(reason);
       }
 
       return url;
-    },
-
-    //I want HTTP COPY and I want it now!
-    copyResource: function(fromURL, toURL, options) {
-      if (fromURL != '' && toURL != '') {
-        var http = new XMLHttpRequest();
-        http.open('GET', fromURL);
-        if (options && !options.noCredentials) {
-          http.withCredentials = true;
-        }
-        http.onreadystatechange = function() {
-          if (this.readyState == this.DONE) {
-            if (this.status === 200 || this.status === 201 || this.status === 204) {
-              var responseText = this.responseText;
-              var contentType = this.getResponseHeader('Content-Type');
-              DO.U.putResource(toURL, responseText, contentType).catch(function(reason){
-                if(reason.xhr.status == 0){
-                  var options = {'noCredentials': true};
-                  DO.U.putResource(toURL, responseText, contentType, null, options);
-                }
-              });
-            }
-          }
-        };
-        http.send();
-      }
     },
 
     copyRelativeResources: function(storageIRI, relativeNodes) {
