@@ -3492,15 +3492,15 @@ console.log(reason);
           if (wasDerived.checked) {
             var wasDerivedOn = DO.U.getDateTimeISO();
             html.querySelector('main article').insertAdjacentHTML('beforebegin', '<dl id="document-derived-from"><dt>Derived From</dt><dd><a href="' + currentDocumentURL + '" rel="prov:wasDerivedFrom">' + currentDocumentURL + '</a></dd></dl><dl id="document-derived-on"><dt>Derived On</dt><dd><time datetime="' + wasDerivedOn + '">' + wasDerivedOn + '</time></dd></dl>' + "\n");
-            var baseURLSelectionChecked = saveAsDocument.querySelector('select[name="base-url"]');
-            if (baseURLSelectionChecked.length > 0) {
-              var baseURLType = baseURLSelectionChecked.value;
-              var nodes = html.querySelectorAll('head link, [src], object[data]');
-              if (baseURLType == 'base-url-relative') {
-                DO.U.copyRelativeResources(storageIRI, nodes);
-              }
-              nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType});
+          }
+          var baseURLSelectionChecked = saveAsDocument.querySelector('select[name="base-url"]');
+          if (baseURLSelectionChecked.length > 0) {
+            var baseURLType = baseURLSelectionChecked.value;
+            var nodes = html.querySelectorAll('head link, [src], object[data]');
+            if (baseURLType == 'base-url-relative') {
+              DO.U.copyRelativeResources(storageIRI, nodes);
             }
+            nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType});
           }
           html = DO.U.getDocument(html);
 
