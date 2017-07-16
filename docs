@@ -75,6 +75,13 @@
             </div>
           </section>
 
+          <section id="structure-and-semantics" inlist="" rel="schema:hasPart" resource="#structure-and-semantics">
+            <h2 property="schema:name">Structure and Semantics</h2>
+            <div datatype="rdf:HTML" property="schema:description">
+
+            </div>
+          </section>
+
           <section id="html-patterns" inlist="" rel="schema:hasPart" resource="#html-patterns">
             <h2 property="schema:name">HTML patterns</h2>
             <div datatype="rdf:HTML" property="schema:description">
