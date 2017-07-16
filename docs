@@ -79,13 +79,12 @@
             <h2 property="schema:name">Structure and Semantics</h2>
             <div datatype="rdf:HTML" property="schema:description">
 
-            </div>
-          </section>
-
-          <section id="html-patterns" inlist="" rel="schema:hasPart" resource="#html-patterns">
-            <h2 property="schema:name">HTML patterns</h2>
-            <div datatype="rdf:HTML" property="schema:description">
-              <p>Documents use HTML5 <cite><a href="https://www.w3.org/TR/html-polyglot/" rel="cito:citesAsAuthority">Polyglot Markup</a></cite> to ensure that when served as (X)HTML respectively, they can be processed as either HTML or XML, which is useful in XML ecosystems and toolchains.</p>
+              <section id="html-patterns" inlist="" rel="schema:hasPart" resource="#html-patterns">
+                <h2 property="schema:name">HTML patterns</h2>
+                <div datatype="rdf:HTML" property="schema:description">
+                  <p>Documents use HTML5 <cite><a href="https://www.w3.org/TR/html-polyglot/" rel="cito:citesAsAuthority">Polyglot Markup</a></cite> to ensure that when served as (X)HTML respectively, they can be processed as either HTML or XML, which is useful in XML ecosystems and toolchains.</p>
+                </div>
+              </section>
             </div>
           </section>
 
