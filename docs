@@ -56,7 +56,22 @@
           <section id="principles" inlist="" rel="schema:hasPart" resource="#principles">
             <h2 property="schema:name">Principles</h2>
             <div datatype="rdf:HTML" property="schema:description">
-                <p></p>
+              <p>Towards enabling the <em>write</em> dimension of the <em>read-write</em> Web:</p>
+
+              <dl>
+                <dt>Data storage independent of service providers</dt>
+                <dd></dd>
+                <dt>Separation of concerns</dt>
+                <dd></dd>
+                <dt>Interoperability</dt>
+                <dd></dd>
+                <dt>Accessibility</dt>
+                <dd></dd>
+                <dt>Freedom of expression</dt>
+                <dd></dd>
+                <dt>Web of trust</dt>
+                <dd></dd>
+              </dl>
             </div>
           </section>
 
