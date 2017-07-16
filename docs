@@ -37,6 +37,16 @@
           <dt>License</dt>
           <dd><a href="https://creativecommons.org/licenses/by/4.0/" rel="schema:license" title="Creative Commons Attribution 4.0 Unported">CC BY 4.0</a></dd>
         </dl>
+
+        <div id="content">
+          <section id="abstract">
+            <h2>Abstract</h2>
+            <div datatype="rdf:HTML" property="schema:abstract">
+              <p>This is a living document. It is intended to help brave developers as well as authors. It will explain the principles behind dokieli, architectural and design patterns.</p>
+            </div>
+          </section>
+
+        </div>
       </article>
     </main>
   </body>
