@@ -46,6 +46,13 @@
             </div>
           </section>
 
+          <section id="principles" inlist="" rel="schema:hasPart" resource="#principles">
+            <h2 property="schema:name">Personal storage</h2>
+            <div datatype="rdf:HTML" property="schema:description">
+                <p></p>
+            </div>
+          </section>
+
         </div>
       </article>
     </main>
