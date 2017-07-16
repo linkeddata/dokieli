@@ -39,6 +39,13 @@
         </dl>
 
         <div id="content">
+          <section id="document-status" rel="schema:hasPart" resource="#document-status">
+            <h2 about="#document-status" property="schema:name" typeof="bibo:DocumentStatus">Document Status</h2>
+            <div datatype="rdf:HTML" property="schema:description">
+              <p>Living document.</p>
+            </div>
+          </section>
+
           <section id="abstract">
             <h2>Abstract</h2>
             <div datatype="rdf:HTML" property="schema:abstract">
