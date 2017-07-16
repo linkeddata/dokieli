@@ -83,9 +83,9 @@
               <p>dokieli initially represents <em>all</em> information with HTML+RDFa. Maintains a strong practice of having human-visible content, meanwhile keeping machine-readable data in context (eg using article's text as literal object values). This tends to avoid data duplication or data islands, which can occur when other RDF serialisations are included within HTML (<code>script</code> element). One exception to this "rule" is if authors use the embed data feature to include Turtle, JSON-LD, or TriG data blocks.</p>
 
               <section id="html-patterns" inlist="" rel="schema:hasPart" resource="#html-patterns">
-                <h2 property="schema:name">HTML patterns</h2>
+                <h3 property="schema:name">HTML patterns</h3>
                 <div datatype="rdf:HTML" property="schema:description">
-                  <p>Documents use HTML5 <cite><a href="https://www.w3.org/TR/html-polyglot/" rel="cito:citesAsAuthority">Polyglot Markup</a></cite> to ensure that when served as (X)HTML respectively, they can be processed as either HTML or XML, which is useful in XML ecosystems and toolchains.</p>
+                  <p id="html-polyglot">HTML5 <cite><a href="https://www.w3.org/TR/html-polyglot/" rel="cito:citesAsAuthority">Polyglot Markup</a></cite> is used to ensure that when content is processed or served as HTML or XHTML (<code>text/html<code>, <code>application/xhtml+xml</code>), they can be used out of the box in both HTML and XML based ecosystems without further intervention.</p>
                 </div>
               </section>
             </div>
