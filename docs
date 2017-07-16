@@ -17,6 +17,26 @@
     <main>
       <article about="" typeof="schema:Article">
         <h1 property="schema:name">dokieli documentation></h1>
+
+        <dl id="document-identifier">
+          <dt>Identifier</dt>
+          <dd><a href="https://dokie.li/docs" rel="owl:sameAs">https://dokie.li/docs</a></dd>
+        </dl>
+
+        <dl id="document-published">
+          <dt>Published</dt>
+          <dd><time content="2017-07-15T00:00:00Z" datatype="xsd:dateTime" datetime="2017-07-15T00:00:00Z" property="schema:datePublished">2017-07-15</time></dd>
+        </dl>
+
+        <dl id="document-modified">
+          <dt>Modified</dt>
+          <dd><time content="2017-07-16T00:00:00Z" datatype="xsd:dateTime" datetime="2017-07-16T00:00:00Z" property="schema:dateModified">2017-07-16</time></dd>
+        </dl>
+
+        <dl id="document-license">
+          <dt>License</dt>
+          <dd><a href="https://creativecommons.org/licenses/by/4.0/" rel="schema:license" title="Creative Commons Attribution 4.0 Unported">CC BY 4.0</a></dd>
+        </dl>
       </article>
     </main>
   </body>
