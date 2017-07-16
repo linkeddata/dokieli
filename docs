@@ -78,6 +78,7 @@
           <section id="structure-and-semantics" inlist="" rel="schema:hasPart" resource="#structure-and-semantics">
             <h2 property="schema:name">Structure and Semantics</h2>
             <div datatype="rdf:HTML" property="schema:description">
+              <p>dokieli can serialise articles, annotations, and notifications in HTML+RDFa, Turtle, and JSON-LD, depending on server content-negotiation. Articles (typically prose content) however tend to remain as HTML+RDFa so that information is usable by both humans and machine consumers while maintaining lowest requirements for publishing, eg. a single URL with full payload in HTML+RDFa can be accessible from virtually any HTTP server. No additional requirements necessary from clients (eg. JavaScript enabled) or servers (eg. additional RDF based content-negotiation). For annotations and notifications, dokieli first meets interoperability requirements (for protocols and vocabularies), and remains flexible about the serialisation that servers prefer. Similarly for consuming content, it can work with any of the serialisations as mentioned.</p>
 
               <section id="html-patterns" inlist="" rel="schema:hasPart" resource="#html-patterns">
                 <h2 property="schema:name">HTML patterns</h2>
