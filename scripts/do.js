@@ -3795,6 +3795,7 @@ console.log(reason);
     },
 
     getCitation: function(i, options) {
+      options = options || {};
       var iri = i;
       // if (typeof options !== 'undefined' && 'type' in options && options.type == 'doi') {
       if (i.toLowerCase().slice(0,4) !== 'http') {
