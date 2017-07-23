@@ -103,6 +103,15 @@
 
                     <dt id="html-divs">Divisions</dt>
                     <dd><code>div</code>s within <code>section</code> are used to wrap a block of arbitrary markup and content. See also RDFa below.</dd>
+
+                    <dt id="html-rdfa">RDFa</dt>
+                    <dd>dokieli can consumes and produce <a href="https://www.w3.org/TR/rdfa-core/">RDFa Core</a> 1.1 syntax.</dd>
+                    <dd>To preserve the order of content appearance, <code>@inlist</code> is used eg. <code>&lt;section inlist=""</code>, <code>&lt;dd id="Sarven-Capadisli" inlist="" rel="bibo:authorList" resource="http://csarven.ca/#i"&gt;</code>.</dd>
+                    <dd>A <code>section</code>s <code>@id</code> value is used as part of <code>section</code>'s <code>@resource</code> as a fragment, eg. <code>&lt;section id="introduction" rel="schema:hasPart" resource="#introduction"&gt;</code>. This allows the same identifier to be used for humans and machines, the value is derived from normalising its heading value as mentioned earlier.</dd>
+                    <dd>Relating parts is done with <code>rel="schema:hasPart"</code>, eg. sections with subsection: <pre><code>&lt;section id="structure-and-semantics" inlist="" rel="schema:hasPart" resource="#structure-and-semantics"&gt;</code>
+<code>  &lt;section id="html-patterns" inlist="" rel="schema:hasPart" resource="#html-patterns"&gt;</code></pre>
+                    </dd>
+                    <dd><code>div</code>s are used to hold a block of HTML markup and types of content together eg. <code>&lt;div datatype="rdf:HTML" property="schema:description" resource="#introduction" typeof="deo:Introduction"&gt;</code> makes it possible to declare that it contains HTML markup, and describes an introductory text</dd>
                   </dl>
                 </div>
               </section>
