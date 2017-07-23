@@ -1755,8 +1755,8 @@ var DO = {
             cdataEnd: '\n' + DO.C.CDATAEnd,
             scriptEnd: '</script>'
           },
-          'meta-nanopublication': {
-            scriptStart: '<script id="meta-nanopublication" type="application/trig" title="Nanopublication">',
+          'meta-trig': {
+            scriptStart: '<script id="meta-trig" type="application/trig" title="TriG">',
             cdataStart: '# ' + DO.C.CDATAStart + '\n',
             cdataEnd: '\n# ' + DO.C.CDATAEnd,
             scriptEnd: '</script>'
@@ -1781,10 +1781,10 @@ var DO = {
 
         var embedMenu = '<aside id="embed-data-entry" class="do on tabs"><button class="close" title="Close">❌</button>\n\
         <h2>Embed Data</h2>\n\
-        <nav><ul><li class="selected"><a href="#embed-data-turtle">Turtle</a></li><li><a href="#embed-data-json-ld">JSON-LD</a></li><li><a href="#embed-data-nanopublication">Nanopublication</a></li></ul></nav>\n\
+        <nav><ul><li class="selected"><a href="#embed-data-turtle">Turtle</a></li><li><a href="#embed-data-json-ld">JSON-LD</a></li><li><a href="#embed-data-trig">TriG</a></li></ul></nav>\n\
         <div id="embed-data-turtle" class="selected"><textarea placeholder="Enter data in Turtle" name="meta-turtle" cols="80" rows="24">' + ((scriptCurrentData['meta-turtle']) ? scriptCurrentData['meta-turtle'].content : '') + '</textarea><button class="save">Save</button></div>\n\
         <div id="embed-data-json-ld"><textarea placeholder="Enter data in JSON-LD" name="meta-json-ld" cols="80" rows="24">' + ((scriptCurrentData['meta-json-ld']) ? scriptCurrentData['meta-json-ld'].content : '') + '</textarea><button class="save">Save</button></div>\n\
-        <div id="embed-data-nanopublication"><textarea placeholder="Enter data in TriG" name="meta-nanopublication" cols="80" rows="24">' + ((scriptCurrentData['meta-nanopublication']) ? scriptCurrentData['meta-nanopublication'].content : '') + '</textarea><button class="save">Save</button></div>\n\
+        <div id="embed-data-trig"><textarea placeholder="Enter data in TriG" name="meta-trig" cols="80" rows="24">' + ((scriptCurrentData['meta-trig']) ? scriptCurrentData['meta-trig'].content : '') + '</textarea><button class="save">Save</button></div>\n\
         </aside>';
 
         document.body.insertAdjacentHTML('beforeend', embedMenu);
