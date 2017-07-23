@@ -87,7 +87,7 @@
                 <div datatype="rdf:HTML" property="schema:description">
                   <dl>
                     <dt id="html-markup-syntax">Markup syntax</dt>
-                    <dd>HTML5 <cite><a href="https://www.w3.org/TR/html-polyglot/" rel="cito:citesAsAuthority">Polyglot Markup</a></cite> is used to ensure that when content is processed or served as HTML or XHTML (<code>text/html<code>, <code>application/xhtml+xml</code>), they can be used out of the box in both HTML and XML based ecosystems without further intervention.</dd>
+                    <dd>HTML5 <cite><a href="https://www.w3.org/TR/html-polyglot/" rel="cito:citesAsAuthority">Polyglot Markup</a></cite> is used to ensure that when content is processed or served as HTML or XHTML (<code>text/html</code>, <code>application/xhtml+xml</code>), they can be used out of the box in both HTML and XML based ecosystems without further intervention. See also <code>getDocument</code> (do.js) for details on DOM normalisation.</dd>
                   </dl>
                 </div>
               </section>
