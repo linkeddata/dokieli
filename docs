@@ -100,6 +100,9 @@
 
                     <dt id="html-sections">Sections</dt>
                     <dd>Sectioning is declared with <code>section</code> and typically have a heading, eg <code>h2</code> as its first child. Subsections may appear as a child of parent <code>section</code>, or as a child of <code>div</code> (which is a child of parent <code>section</code>), i.e., <code>section section</code> or <code>section div section</code>. The headings of subsections are enumerated eg. <code>section h2</code> would have a subsection with <section>section h3</section>. Sections <code>id</code>s and heading text are used to dynamically build the table of contents.</dd>
+
+                    <dt id="html-divs">Divisions</dt>
+                    <dd><code>div</code>s within <code>section</code> are used to wrap a block of arbitrary markup and content. See also RDFa below.</dd>
                   </dl>
                 </div>
               </section>
