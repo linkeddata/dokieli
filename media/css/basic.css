@@ -233,6 +233,7 @@ font-size:1em;
 }
 
 a { color: #009000; }
+code, samp { color:#c83500; font-size:1.15em; }
 ul { padding: 0; margin-bottom:1em; }
 nav ul,
 aside ul { list-style: none; }
