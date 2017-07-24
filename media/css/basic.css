@@ -233,13 +233,61 @@ font-size:1em;
 }
 
 a { color: #009000; }
-code, samp { color:#c83500; font-size:1.15em; }
+code, samp { color:#c83500; }
+pre code, pre samp { color:#000; }
 ul { padding: 0; margin-bottom:1em; }
 nav ul,
 aside ul { list-style: none; }
 
 body > footer { margin-top:2em; }
 body > footer a, body > footer a:hover { color: inherit; }
+
+video {
+  max-width: 100%;
+  height: auto;
+}
+video, audio, object {
+  vertical-align: middle;
+}
+
+figure,
+audio,
+video,
+iframe,
+canvas {
+margin:1em auto;
+text-align:center;
+display:block;
+}
+figure pre {
+text-align:left;
+}
+figcaption {
+text-align:center;
+}
+figure.listing pre {
+border:1px solid #000;
+padding:0.5em;
+counter-reset:precode;
+margin-top:0;
+overflow:auto;
+}
+figure.listing pre code:before,
+figure.listing pre samp:before {
+position:absolute;
+left:-1.75em;
+text-align:right;
+content:counter(precode);
+counter-increment:precode;
+}
+pre {
+overflow:auto;
+page-break-inside: avoid;
+hyphens: none;
+background-color:#fcfcfc;
+border-left:0.5em solid #c0c0c0;
+padding:1em;
+}
 
 aside.note.do blockquote article section {
 margin:0;
@@ -268,6 +316,9 @@ column-count:2;
 tfoot dl.abbr dt {
 font-weight:bold;
 }
+
+
+
 
 /* dokieli homepage styles */
 #do-index h1 {
@@ -357,50 +408,6 @@ ul#program-committee {
 column-count: 2;
 -moz-column-count: 2;
 -webkit-column-count: 2;
-}
-
-video {
-  max-width: 100%;
-  height: auto;
-}
-video, audio, object {
-  vertical-align: middle;
-}
-
-figure,
-audio,
-video,
-iframe,
-canvas {
-margin:1em auto;
-text-align:center;
-display:block;
-}
-figure pre {
-text-align:left;
-}
-figcaption {
-text-align:center;
-}
-figure.listing pre {
-border:1px solid #000;
-padding:0.5em;
-counter-reset:precode;
-margin-top:0;
-overflow:auto;
-}
-figure.listing pre code:before,
-figure.listing pre samp:before {
-position:absolute;
-left:-1.75em;
-text-align:right;
-content:counter(precode);
-counter-increment:precode;
-}
-pre {
-overflow:auto;
-page-break-inside: avoid;
-hyphens: none;
 }
 
 
