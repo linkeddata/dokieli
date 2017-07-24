@@ -412,7 +412,7 @@ hyphens: none;
     padding: 0;
   }
   dl[id^="document-"], #authors {
-    width:50%;
+    max-width:50%;
     margin:0 auto;
   }
   #do-index #features ul {
