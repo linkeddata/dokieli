@@ -266,6 +266,11 @@ figcaption {
 text-align:center;
 }
 figure.listing pre {
+padding-top:1.6em;
+padding-bottom:1.6em;
+background:linear-gradient(#fff 50%, #f7f7f7 0) 0 0/3.2em 3.2em;
+}
+figure.listing pre {
 border-top:1px solid #bbb;
 border-right:1px solid #bbb;
 border-bottom:1px solid #bbb;
