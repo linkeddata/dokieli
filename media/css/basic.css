@@ -266,8 +266,9 @@ figcaption {
 text-align:center;
 }
 figure.listing pre {
-border:1px solid #000;
-padding:0.5em;
+border-top:1px solid #bbb;
+border-right:1px solid #bbb;
+border-bottom:1px solid #bbb;
 counter-reset:precode;
 margin-top:0;
 }
@@ -283,8 +284,8 @@ pre {
 overflow:auto;
 page-break-inside: avoid;
 hyphens: none;
-background-color:#fcfcfc;
-border-left:0.5em solid #c0c0c0;
+background-color:#fbfbfb;
+border-left:0.5em solid #bbb;
 padding:1em;
 }
 
