@@ -242,14 +242,6 @@ aside ul { list-style: none; }
 body > footer { margin-top:2em; }
 body > footer a, body > footer a:hover { color: inherit; }
 
-video {
-  max-width: 100%;
-  height: auto;
-}
-video, audio, object {
-  vertical-align: middle;
-}
-
 figure,
 audio,
 video,
@@ -259,6 +251,14 @@ margin:1em auto;
 text-align:center;
 display:block;
 }
+video {
+max-width: 100%;
+height: auto;
+}
+video, audio, object {
+vertical-align: middle;
+}
+figure { position:relative; }
 figure pre {
 text-align:left;
 }
