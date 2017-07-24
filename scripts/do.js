@@ -1744,19 +1744,19 @@ var DO = {
 
         var scriptType = {
           'meta-turtle': {
-            scriptStart: '<script id="meta-turtle" type="text/turtle" title="Turtle">',
+            scriptStart: '<script id="meta-turtle" title="Turtle" type="text/turtle">',
             cdataStart: '# ' + DO.C.CDATAStart + '\n',
             cdataEnd: '\n# ' + DO.C.CDATAEnd,
             scriptEnd: '</script>'
           },
           'meta-json-ld': {
-            scriptStart: '<script id="meta-json-ld" type="application/ld+json" title="JSON-LD">',
+            scriptStart: '<script id="meta-json-ld" title="JSON-LD" type="application/ld+json">',
             cdataStart: DO.C.CDATAStart + '\n',
             cdataEnd: '\n' + DO.C.CDATAEnd,
             scriptEnd: '</script>'
           },
           'meta-trig': {
-            scriptStart: '<script id="meta-trig" type="application/trig" title="TriG">',
+            scriptStart: '<script id="meta-trig" title="TriG" type="application/trig">',
             cdataStart: '# ' + DO.C.CDATAStart + '\n',
             cdataEnd: '\n# ' + DO.C.CDATAEnd,
             scriptEnd: '</script>'
