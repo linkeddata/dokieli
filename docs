@@ -30,7 +30,7 @@
 
         <dl id="document-modified">
           <dt>Modified</dt>
-          <dd><time content="2017-07-16T00:00:00Z" datatype="xsd:dateTime" datetime="2017-07-16T00:00:00Z" property="schema:dateModified">2017-07-16</time></dd>
+          <dd><time content="2017-07-16T00:00:00Z" datatype="xsd:dateTime" datetime="2017-07-16T00:00:00Z" property="schema:dateModified">2017-07-24</time></dd>
         </dl>
 
         <dl id="document-license">
