@@ -404,10 +404,10 @@ hyphens: none;
 }
 
 
-@media screen and (min-width: 768px){
+@media screen and (min-width: 980px){
   article > article,
   section {
-    width: 50%;
+    max-width: 50em;
     margin: 3em auto;
     padding: 0;
   }
