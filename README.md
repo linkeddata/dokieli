@@ -6,8 +6,8 @@ There is no root, authority, or centralisation here. Control yourself!
 
 dokieli is a decentralised article authoring, annotation, and social
 notification tool which works from Web browsers. It is built with the
-following principles in mind: accessibility, decentralisation,
-interoperability, openness.
+following principles in mind: freedom of expression, decentralisation,
+interoperability.
 
 It can be used as a:
 * single-page application - open any dokieli article
