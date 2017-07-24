@@ -399,6 +399,8 @@ counter-increment:precode;
 }
 pre {
 overflow:auto;
+page-break-inside: avoid;
+hyphens: none;
 }
 
 
