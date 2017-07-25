@@ -236,9 +236,8 @@ font-size:1em;
 a { color: #009000; }
 code, samp { color:#c83500; }
 pre code, pre samp { color:#000; }
-ul { padding: 0; margin-bottom:1em; }
-nav ul,
-aside ul { list-style: none; }
+ul { padding: 0; margin-bottom:1em; list-style-position: inside; }
+nav ul { list-style: none; }
 dt { font-weight: bold; }
 body > footer { margin-top:2em; }
 body > footer a, body > footer a:hover { color: inherit; }
