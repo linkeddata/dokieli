@@ -4,13 +4,13 @@
     <meta charset="utf-8" />
     <title>dokieli documentation</title>
     <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <link href="https://dokie.li/media/css/basic.css" media="all" rel="stylesheet" title="Basic" />
+    <link href="media/css/basic.css" media="all" rel="stylesheet" title="Basic" />
     <link href="https://dokie.li/media/css/do.css" media="all" rel="stylesheet" />
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" rel="stylesheet" />
     <script src="https://dokie.li/scripts/simplerdf.js"></script>
     <script src="https://dokie.li/scripts/medium-editor.min.js"></script>
-    <script src="https://dokie.li/scripts/medium-editor-tables.min.js"></script>
-    <script src="https://dokie.li/scripts/do.js"></script>
+        <script src="https://dokie.li/scripts/medium-editor-tables.min.js"></script>
+    <script src="scripts/do.js"></script>
   </head>
 
   <body about="" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ dctypes: http://purl.org/dc/dcmitype/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# cc: https://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# qb: http://purl.org/linked-data/cube# schema: http://schema.org/ void: http://rdfs.org/ns/void# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# org: http://www.w3.org/ns/org# biblio: http://purl.org/net/biblio# bibo: http://purl.org/ontology/bibo/ book: http://purl.org/NET/book/vocab# ov: http://open.vocab.org/terms/ sioc: http://rdfs.org/sioc/ns# doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp# solid: http://www.w3.org/ns/solid/terms# acl: http://www.w3.org/ns/auth/acl# dio: https://w3id.org/dio#" typeof="schema:CreativeWork sioc:Post prov:Entity">
@@ -58,20 +58,6 @@
             <div datatype="rdf:HTML" property="schema:description">
               <p>Towards enabling the <em>write</em> dimension of the <em>read-write</em> Web:</p>
 
-              <dl>
-                <dt>Data storage independent of service providers</dt>
-                <dd></dd>
-                <dt>Separation of concerns</dt>
-                <dd></dd>
-                <dt>Interoperability</dt>
-                <dd></dd>
-                <dt>Accessibility</dt>
-                <dd></dd>
-                <dt>Freedom of expression</dt>
-                <dd></dd>
-                <dt>Web of trust</dt>
-                <dd></dd>
-              </dl>
             </div>
           </section>
 
@@ -80,17 +66,17 @@
             <div datatype="rdf:HTML" property="schema:description">
               <p>dokieli can serialise articles, annotations, and notifications in HTML+RDFa, Turtle, and JSON-LD, depending on server content-negotiation. Articles are represented in HTML+RDFa so that information is usable by both humans and machine consumers while maintaining lowest requirements for publishing, eg. a single URL with full payload in HTML+RDFa can be accessible from any HTTP server. No additional requirements necessary from clients (eg. JavaScript support and enabled) or servers (eg. additional RDF based content-negotiation). For annotations and notifications, dokieli first meets interoperability requirements (for protocols and vocabularies), and remains flexible about the serialisation that servers prefer. Similarly for consuming content, it can work with any of the serialisations as mentioned.</p>
 
-              <p>dokieli initially represents <em>all</em> information with HTML+RDFa. Maintains a strong practice of having human-visible content, meanwhile keeping machine-readable data in context (eg using article's text as literal object values). This tends to avoid data duplication or data islands, which can occur when other RDF serialisations are included within HTML (eg within <code>script</code>). One exception to this "rule" is if authors use the <cite>embed data</cite> feature to include Turtle, JSON-LD, or TriG data blocks.</p>
+              <p>dokieli initially represents <em>all</em> information with HTML+RDFa. Maintains a strong practice of having human-visible content, meanwhile keeping machine-readable data in context (eg using article's text as literal object values). This tends to avoid data duplication or data islands, which can occur when other RDF serialisations are included within HTML (eg within <code>script</code>). One exception to this "rule" is if authors use the <cite>Embed Data</cite> feature to include Turtle, JSON-LD, or TriG data blocks.</p>
 
               <section id="html-patterns" inlist="" rel="schema:hasPart" resource="#html-patterns">
                 <h3 property="schema:name">HTML patterns</h3>
                 <div datatype="rdf:HTML" property="schema:description">
                   <dl>
                     <dt id="html-markup-syntax">Markup syntax</dt>
-                    <dd>HTML5 <cite><a href="https://www.w3.org/TR/html-polyglot/" rel="cito:citesAsAuthority">Polyglot Markup</a></cite> is used to ensure that when content is processed or served as HTML or XHTML (<code>text/html</code>, <code>application/xhtml+xml</code>), they can be used out of the box in both HTML and XML based ecosystems without further intervention. See also <code>getDocument</code> (do.js) for details on DOM normalisation.</dd>
+                    <dd>HTML5 <cite><a href="https://www.w3.org/TR/html-polyglot/" rel="cito:citesAsAuthority">Polyglot Markup</a></cite> is used to ensure that when content is processed or served as HTML or XHTML (<code>text/html</code>, <code>application/xhtml+xml</code>), they can be used in both HTML and XML ecosystems without further intervention. See also <code>getDocument</code> (do.js) for details on DOM normalisation.</dd>
 
                     <dt id="html-identifiers">Identifiers</dt>
-                    <dd>Unique identifiers (<code>@id</code>) may be placed on any element. Identifiers are auto-generated by normalising some input eg. <code>section</code>s use their heading's text content as input, <code>table</code>s from <code>caption</code>. Anything of importance should have an identifier, and aimed to be included for common patterns out of the box. See also <code>generateAttributeId</code> (do.js) and its application in different places.</dd>
+                    <dd>Unique identifiers (<code>@id</code>) may be placed on any element. Identifiers are auto-generated by normalising some input eg. <code>section</code>s use their heading's text content as input, <code>table</code>s from <code>caption</code>. Anything of importance should have an identifier, and aimed to be included for common patterns out of the box. <code>@id</code> values are reused in RDFa. See also <code>generateAttributeId</code> (do.js) and its application in different places.</dd>
 
                     <dt id="html-embed-turtle-json-ld-trig">Embedding Turtle, JSON-LD, and TriG</dt>
                     <dd>Turtle, JSON-LD, and TriG syntaxes are placed within respective <code>script</code> blocks in <code>head</code> eg <code>&lt;script id="meta-json-ld" type="application/ld+json" title="JSON-LD"&gt;&lt;/script&gt;</code>. Data is enclosed in <code>CDATA</code> sections. This pattern is detected, visible and editable from <cite>Embed Data</cite> in dokieli menu. See also <code>showEmbedData</code> (do.js).</dd>
@@ -105,8 +91,8 @@
                     <dd><code>div</code>s within <code>section</code> are used to wrap a block of arbitrary markup and content. See also RDFa below.</dd>
 
                     <dt id="html-rdfa">RDFa</dt>
-                    <dd>dokieli can consumes and produce <cite><a href="https://www.w3.org/TR/rdfa-core/">RDFa Core 1.1</a></cite> syntax.</dd>
-                    <dd>To preserve the order of content appearance, <code>@inlist</code> is used eg. <code>&lt;section inlist=""</code>, <code>&lt;dd id="Sarven-Capadisli" inlist="" rel="bibo:authorList" resource="http://csarven.ca/#i"&gt;</code>.</dd>
+                    <dd>dokieli can consume and produce <cite><a href="https://www.w3.org/TR/rdfa-core/">RDFa Core 1.1</a></cite> syntax.</dd>
+                    <dd>To preserve the order of content, <code>@inlist</code> is used eg. <code>&lt;section inlist=""</code>, <code>&lt;dd id="Sarven-Capadisli" inlist="" rel="bibo:authorList" resource="http://csarven.ca/#i"&gt;</code>.</dd>
                     <dd>A <code>section</code>s <code>@id</code> value is used as part of <code>section</code>'s <code>@resource</code> as a fragment, eg. <code>&lt;section id="introduction" rel="schema:hasPart" resource="#introduction"&gt;</code>. This allows the same identifier to be used for humans and machines, the value is derived from normalising its heading value as mentioned earlier.</dd>
                     <dd>Relating parts is done with <code>rel="schema:hasPart"</code>, eg. sections with subsection: <pre><code>&lt;section id="structure-and-semantics" inlist="" rel="schema:hasPart" resource="#structure-and-semantics"&gt;</code>
 <code>  &lt;section id="html-patterns" inlist="" rel="schema:hasPart" resource="#html-patterns"&gt;</code></pre>
@@ -115,6 +101,28 @@
                   </dl>
                 </div>
               </section>
+            </div>
+          </section>
+
+          <section id="http-operations" inlist="" rel="schema:hasPart" resource="#http-operations">
+            <h2 property="schema:name">HTTP operations</h2>
+            <div datatype="rdf:HTML" property="schema:description">
+              <p id="http-put">dokieli conforms to <cite><a href="https://www.w3.org/TR/ldp/" rel="cito:citesAsAuthority">Linked Data Platform</a></cite> (LDP) protocol for create, update, and dete operations.</p>
+
+              <p>Article operations like <cite>New</cite>, <cite>Save</cite>, <cite>Save As</cite>  <cite>Reply</cite> and <cite>Review</cite> and other annotation operations use <code>HTTP PUT</code>. Notifications are sent with <code>HTTP POST</code>. <cite>Save</cite> and <cite>Save As</cite> normalises the HTML before sending.</p>
+
+              <aside id="http-patch">
+                <p>Reasons for using <code>HTTP POST</code> and <code>PUT</code> instead of <code>HTTP PATCH</code>:</p>
+
+                <ul>
+                  <li>Servers with <cite><a href="https://tools.ietf.org/html/rfc5261" rel="cito:citesAsAuthority">XML Patch</a></cite> and mediatype <code>application/xml-patch+xml</code> (<cite><a href="https://tools.ietf.org/html/rfc7351" rel="cito:citesAsAuthority">RFC 7351</a></cite>) capability in the Linked Data ecosystem are not well supported.</li>
+
+                  <li><code>HTTP PATCH</code> with <cite><a href="https://www.w3.org/TR/sparql11-update/" rel="cito:citesAsAuthority">SPARQL Update</a></cite> (using mediatype <code>application/sparql-update</code>) would not work for RDFa representations because it would require additional server-side knowledge: HTML+RDFa serializer. This also makes server implementations a dependency for dokieli which is an undesirable design pattern.</li>
+
+                  <li><code>HTTP PATCH</code> can help to optimise HTTP requests provided that the server processes the SPARQL query and eventually publishes the final state of the article. dokieli's use of <code>HTTP POST</code> and <code>HTTP PUT</code> on the other hand does not expect or impose operations other than to store and serve the article.</li>
+                </ul>
+              </aside>
+
             </div>
           </section>
 
