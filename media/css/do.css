@@ -125,6 +125,7 @@ padding:0.2em;
 }
 aside.do.on ul {
 margin:0;
+list-style: none;
 }
 aside.do.on section + section {
 margin-top:1em;
