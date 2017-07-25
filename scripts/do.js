@@ -209,6 +209,7 @@ var DO = {
       "asimage": { "@id": "https://www.w3.org/ns/activitystreams#image", "@type": "@id" },
 
       "siocreplyof": { "@id": "http://rdfs.org/sioc/ns#reply_of", "@type": "@id", "@array": true },
+      "siocavatar": { "@id": "http://rdfs.org/sioc/ns#avatar", "@type": "@id" },
 
       "ldpcontains": { "@id": "http://www.w3.org/ns/ldp#contains", "@type": "@id", "@array": true },
       "ldpresource": { "@id": "http://www.w3.org/ns/ldp#Resource", "@type": "@id", "@array": true  },
@@ -374,7 +375,7 @@ var DO = {
     },
 
     getAgentImage: function(s) {
-      return s.foafimg || s.schemaimage || s.asimage || s.foafdepiction || undefined;
+      return s.foafimg || s.schemaimage || s.asimage || s.siocavatar || s.foafdepiction || undefined;
     },
 
     setUserInfo: function(userIRI) {
