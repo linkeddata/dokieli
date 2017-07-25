@@ -220,7 +220,8 @@ text-align:center;
 list-style-type:none;
 }
 
-ul ul {
+ul ul,
+ol ol {
 margin-left:1em;
 }
 
