@@ -1548,28 +1548,35 @@ var DO = {
 
       var body = document.body;
       var dMenu = document.querySelector('#document-menu.do');
-      var dMenuButton = dMenu.querySelector('button');
-      var dHead = dMenu.querySelector('header');
-      var dInfo = dMenu.querySelector('div');
 
-      dMenuButton.classList.remove('show');
-      dMenuButton.classList.add('hide');
-      dMenuButton.setAttribute('title', 'Hide Menu');
-      dMenuButton.innerHTML = '<i class="fa fa-minus"></i>';
-      dMenu.classList.add('on');
-      body.classList.add('on-document-menu');
+      if(dMenu) {
+        var dMenuButton = dMenu.querySelector('button');
+        var dHead = dMenu.querySelector('header');
+        var dInfo = dMenu.querySelector('div');
 
-      DO.U.showUserSigninSignup(dHead);
-      DO.U.showDocumentDo(dInfo);
-      DO.U.showEmbedData(dInfo);
-      DO.U.showStorage(dInfo);
-      DO.U.showViews(dInfo);
-      DO.U.showDocumentMetadata(dInfo);
-      if(!body.classList.contains('on-slideshow')) {
-        DO.U.showToC();
+        dMenuButton.classList.remove('show');
+        dMenuButton.classList.add('hide');
+        dMenuButton.setAttribute('title', 'Hide Menu');
+        dMenuButton.innerHTML = '<i class="fa fa-minus"></i>';
+        dMenu.classList.add('on');
+        body.classList.add('on-document-menu');
+
+        DO.U.showUserSigninSignup(dHead);
+        DO.U.showDocumentDo(dInfo);
+        DO.U.showEmbedData(dInfo);
+        DO.U.showStorage(dInfo);
+        DO.U.showViews(dInfo);
+        DO.U.showDocumentMetadata(dInfo);
+        if(!body.classList.contains('on-slideshow')) {
+          DO.U.showToC();
+        }
+
+        document.addEventListener('click', DO.U.eventLeaveDocumentMenu);
       }
-
-      document.addEventListener('click', DO.U.eventLeaveDocumentMenu);
+      else {
+        DO.U.showDocumentInfo();
+        DO.U.showDocumentMenu();
+      }
     },
 
     hideDocumentMenu: function(e) {
