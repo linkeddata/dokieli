@@ -1645,6 +1645,8 @@ var DO = {
     },
 
     showViews: function(node) {
+      if(document.querySelector('#document-views')) { return; }
+
       var stylesheets = document.querySelectorAll('head link[rel~="stylesheet"][title]:not([href$="do.css"])');
 
       if (stylesheets.length > 0) {
@@ -1746,6 +1748,8 @@ var DO = {
     },
 
     showEmbedData: function(node) {
+      if(document.querySelector('#embed-data-in-html')) { return; }
+
       node.insertAdjacentHTML('beforeend', '<section id="embed-data-in-html" class="do"><h2>Data</h2><ul><li><button class="embed-data-meta" title="Embed structured data (Turtle, JSON-LD, TRiG)"><i class="fa fa-table fa-2x"></i>Embed Data</button></li></ul></section>');
 
       var eventEmbedData = function(e) {
@@ -1902,6 +1906,8 @@ var DO = {
     },
 
     showDocumentMetadata: function(node) {
+      if(document.querySelector('#document-metadata')) { return; }
+
       var content = document.body;
       var count = DO.U.contentCount(content);
       var authors = [], contributors = [];
@@ -1978,6 +1984,8 @@ var DO = {
     },
 
     showToC: function() {
+      if(document.querySelector('#toc')) { return; }
+
       var sections = document.querySelectorAll('h1 ~ div > section:not([class~="slide"]):not([id^=table-of])');
 
       if (sections.length > 0) {
@@ -2477,6 +2485,8 @@ var DO = {
     },
 
     showDocumentDo: function(node) {
+      if(document.querySelector('#document-do')) { return; }
+
       var buttonDisabled = '';
       if (document.location.protocol == 'file:') {
         buttonDisabled = ' disabled="disabled"';
@@ -3796,6 +3806,8 @@ console.log(reason);
       console.log(DO.U.getDateTimeISO() + ': Autosave disabled.');
     },
     showStorage: function(node) {
+      if(document.querySelector('#local-storage')) { return; }
+
       if (typeof window.localStorage != 'undefined') {
         var useStorage, checked;
 
