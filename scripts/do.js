@@ -1425,11 +1425,14 @@ var DO = {
       }, delay);
     },
 
-    submitSignIn: function() {
+    submitSignIn: function(url) {
       var userIdentityInput = document.getElementById('user-identity-input');
-      userIdentityInput.insertAdjacentHTML('beforeend', '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+      if(userIdentityInput) {
+        userIdentityInput.insertAdjacentHTML('beforeend', '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+      }
 
-      var url = userIdentityInput.querySelector('input#webid').value.trim();
+      url = url || userIdentityInput.querySelector('input#webid').value.trim();
+
       if (url.length > 0) {
         DO.U.setUserInfo(url).then(
           function(i) {
@@ -1439,50 +1442,11 @@ var DO = {
               uI.innerHTML = DO.U.getUserHTML();
             }
 
-            userIdentityInput.parentNode.removeChild(userIdentityInput);
+            if(userIdentityInput) {
+              userIdentityInput.parentNode.removeChild(userIdentityInput);
+            }
+
             DO.U.afterSignIn();
-
-            //TODO: Refactor this elsewhere. Especially the reasonList for not authenticating.
-            // DO.U.authenticateUser(url).then(
-            //   function(userIRI) {
-            //     DO.C.User.IRI = userIRI;
-            //     return userIRI;
-            //   },
-            //   function(xhr) {
-            //     console.log('setUser reject');
-            //     return xhr;
-            //   }
-            // ).then(
-            //   function(i) {
-            //     userIdentityInput.parentNode.removeChild(userIdentityInput);
-            //     return i;
-            //   },
-            //   function(reason) {
-            //     var rm = userIdentityInput.querySelector('.response-message');
-            //     if (rm) {
-            //       rm.parentNode.removeChild(rm);
-            //     }
-            //     if (reason.length > 0) {
-            //       var reasonsList = '<p>Reasons:</p><ul>';
-            //       reason.forEach(function(r) {
-            //         reasonsList += '<li>' + r.message + '</li>';
-            //       });
-            //       reasonsList += '</ul>';
-            //     }
-
-            //     userIdentityInput.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to sign in with this WebID.</p>' + reasonsList + '</div>');
-            //     document.querySelector('#user-identity-input button.signin').removeAttribute('disabled');
-            //     console.log(reason);
-            //     return reason;
-            //   }
-            // ).then(
-            //   function(i){
-            //     DO.U.afterSignIn();
-            //   },
-            //   function(reason){
-            //     console.log('--- ' + url + ' is not authenticated.');
-            //   }
-            // );
           },
           function(reason) {
             console.log("--- NO USER");
