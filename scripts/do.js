@@ -2747,7 +2747,7 @@ console.log(inbox);
       }
       var addContactsButton = '<li id="share-resource-address-book"><button class="add"' + addContactsButtonDisable + '><i class="fa fa-address-book"></i> Add from contacts</button>' + noContactsText + '</li>';
 
-      document.body.insertAdjacentHTML('beforeend', '<aside id="share-resource" class="do on"><button class="close" title="Close">❌</button><h2>Share resource</h2><div id="share-resource-input"><p>Send a notification about <code>' + iri +'</code></p><ul>' + addContactsButton + '<li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share">Share</button></aside>');
+      document.body.insertAdjacentHTML('beforeend', '<aside id="share-resource" class="do on"><button class="close" title="Close">❌</button><h2>Share resource</h2><div id="share-resource-input"><p>Send a notification about <code>' + iri +'</code></p><ul>' + addContactsButton + '<li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li><li id="share-resource-internet-archive"><input name="share-resource-internet-archive" type="checkbox" /> <label for="share-resource-internet-archive">Send to <a href="https://archive.org/" target="_blank">Internet Archive</a></label></li></ul></div><button class="share">Share</button></aside>');
 
       var shareResource = document.getElementById('share-resource');
       shareResource.addEventListener('click', function(e) {
@@ -2854,6 +2854,69 @@ console.log(inbox);
             };
 
             sendNotifications(tos);
+
+            var sria = document.querySelector('#share-resource-internet-archive input:checked');
+            if(sria){
+              var noteData = {
+                "url": iri,
+                "annotation": {
+                  "@context": "http://www.w3.org/ns/anno.jsonld",
+                  "@type": "http://www.w3.org/ns/oa#Annotation",
+                  "@id": "",
+                  "motivatedBy": "http://www.w3.org/ns/oa#commenting",
+                  "target": iri,
+                  "http://purl.org/dc/terms/rights": "https://creativecommons.org/publicdomain/zero/1.0/",
+                  "message": ""
+                }
+              };
+
+              if (DO.C.User.IRI) {
+                noteData['creator'] = {};
+                noteData.creator["iri"] = DO.C.User.IRI;
+              }
+              if (DO.C.User.Name) {
+                noteData.creator["name"] = DO.C.User.Name;
+              }
+              if (DO.C.User.Image) {
+                noteData.creator["image"] = DO.C.User.Image;
+              }
+              if (DO.C.User.URL) {
+                noteData.creator["url"] = DO.C.User.URL;
+              }
+
+              if(note.length > 0) {
+                noteData.message = note;
+                noteData["hasBody"] = {
+                  "type": "TextualBody",
+                  "value": note,
+                  "format": "text/plain"
+                }
+              }
+
+              var internetArchive = document.querySelector('#share-resource-internet-archive');
+              internetArchive.insertAdjacentHTML('beforeend', ' <span class="progress"><i class="fa fa-circle-o-notch fa-spin fa-fw"></i></span>');
+
+              DO.U.postResource('https://pragma.archivelab.org', '', JSON.stringify(noteData), 'application/json', '', {'noCredentials': true}).then(
+                function(i){
+                  try {
+                    var response = JSON.parse(i.xhr.responseText);
+
+                    if('wayback_id' in response && response.wayback_id.length > 0){
+                      var location = 'https://web.archive.org' + response.wayback_id;
+                      internetArchive.innerHTML = 'Archived <span class="progress"><a target="_blank" href="' + location + '"><i class="fa fa-check-circle fa-fw"></i></a></span>';
+                    }
+                    else {
+                      internetArchive.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to archive. Try later.';
+                    }
+                  }catch(e){
+                    internetArchive.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to archive. Try later.';
+                  }
+                },
+                function(reason){
+                    internetArchive.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to archive. Try later.';
+                }
+              );
+            }
           }
         }
       });
