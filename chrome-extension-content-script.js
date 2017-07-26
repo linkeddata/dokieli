@@ -1,4 +1,5 @@
 var g_loaded = false;
+var cur_webid = null;
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   var initialized = (DO!==undefined && DO.U!==undefined && g_loaded);
@@ -8,8 +9,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
     else if (request.action == "dokieli.menu") {
       var iri = null;
-
-      if (!g_loaded) {
+      if (!g_loaded && !document.querySelector('#document-menu')) {
         document.head.insertAdjacentHTML('beforeend', "<style>@font-face{font-family:'FontAwesome' ;src:url('" + chrome.extension.getURL('/media/fonts/fontawesome-webfont.eot?v=4.7.0') + "');src:url('" + chrome.extension.getURL('/media/fonts/fontawesome-webfont.eot?#iefix&v=4.7.0') + "') format('embedded-opentype'),url('" + chrome.extension.getURL('/media/fonts/fontawesome-webfont.woff2?v=4.7.0') + "') format('woff2'),url('" + chrome.extension.getURL('/media/fonts/fontawesome-webfont.woff?v=4.7.0') + "') format('woff'),url('" + chrome.extension.getURL('/media/fonts/fontawesome-webfont.ttf?v=4.7.0') + "') format('truetype'),url('" + chrome.extension.getURL('/media/fonts/fontawesome-webfont.svg?v=4.7.0#fontawesomeregular') + "') format('svg'); }</style>");
 
         document.body.setAttribute('about', '');
@@ -30,11 +30,11 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         catch(e) {
           console.log("dokieli:"+e);
         } 
-      } 
-      sendResponse({}); /* stop */
+      }
 
-      if (iri) {
-        DO.U.setUserWebId(iri);
+      if (iri && (cur_webid==null || cur_webid!=iri)) {
+        DO.U.submitSignIn(iri);
+        cur_webid = iri;
       }
       DO.U.showDocumentMenu();
     }
@@ -43,6 +43,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
   }
   catch(e) {
-    console.log("Dokieli: onMsg="+e);
+    console.log("dokieli: onMsg="+e);
   }
 });
