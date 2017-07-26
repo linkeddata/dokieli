@@ -1361,7 +1361,7 @@ var DO = {
 
     //TODO: Refactor
     showUserSigninSignup: function(node) {
-      if (typeof SimpleRDF !== 'undefined') {
+      if (typeof SimpleRDF !== 'undefined' && !document.querySelector('#user-info')) {
         var s = '<button class="signin-user" title="Sign in to authenticate"><i class="fa fa-user-secret fa-2x"></i>Sign in</button>';
         if(DO.C.User.IRI) {
           s = DO.U.getUserHTML();
@@ -1589,7 +1589,9 @@ var DO = {
       dMenu.classList.remove('on');
       var sections = dMenu.querySelectorAll('section');
       for (var i = 0; i < sections.length; i++) {
-        sections[i].parentNode.removeChild(sections[i]);
+        if(sections[i].id != 'user-info' && !sections[i].querySelector('button.signin-user')) {
+          sections[i].parentNode.removeChild(sections[i]);
+        }
       };
       body.classList.remove('on-document-menu');
       dMenuButton.classList.remove('hide');
