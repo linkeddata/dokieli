@@ -1541,8 +1541,10 @@ var DO = {
     },
 
     showDocumentMenu: function(e) {
-      e.preventDefault();
-      e.stopPropagation();
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
 
       var body = document.body;
       var dMenu = document.querySelector('#document-menu.do');
