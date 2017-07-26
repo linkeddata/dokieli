@@ -2825,27 +2825,27 @@ console.log(inbox);
                           if(typeof response !== 'undefined' && location) {
                             location = DO.U.getAbsoluteIRI(inbox, location);
 
-                            toInput.parentNode.querySelector('.progress').innerHTML = '<span class="progress"><a target="_blank" href="' + location + '"><i class="fa fa-check-circle fa-fw"></i></a></span>';
+                            toInput.parentNode.querySelector('.progress').innerHTML = '<a target="_blank" href="' + location + '"><i class="fa fa-check-circle fa-fw"></i></a>';
 
                             // var rm = shareResource.querySelector('.response-message');
                             // rm.insertAdjacentHTML('beforeend', '<p class="success">Notification sent: <a target="_blank" href="' + location + '">' + location + '</a></p>');
                             // return location;
                           }
                           else {
-                            toInput.parentNode.querySelector('.progress').innerHTML = '<span class="progress"><i class="fa fa-times-circle fa-fw "></i> Unable to notify. Try later.</span>';
+                            toInput.parentNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to notify. Try later.';
                             // return Promise.reject(response);
                           }
                         },
                         function(reason) {
 // console.log(reason);
-                          toInput.parentNode.querySelector('.progress').innerHTML = '<span class="progress"><i class="fa fa-times-circle fa-fw "></i> Unable to notify. Try later.</span>';
+                          toInput.parentNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to notify. Try later.';
 //                           return reason;
                         }
                       );
                     },
                     function(reason) {
 // console.log(reason);
-                         toInput.parentNode.querySelector('.progress').innerHTML = '<span class="progress"><i class="fa fa-times-circle fa-fw "></i> Inbox not responding. Try later.</span>';
+                         toInput.parentNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Inbox not responding. Try later.';
 //                       return reason;
                     }
                   );
