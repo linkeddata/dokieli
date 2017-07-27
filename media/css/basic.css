@@ -1,7 +1,7 @@
 body {
   font-family: Arial, Helvetica, sans-serif;
-  font-size: 1.2em;
-  line-height: 1.6;
+  font-size: 1.1em;
+  line-height: 1.3;
   color:#333;
   margin: 0; padding: 0;
   width:100%;
@@ -52,7 +52,7 @@ text-align:center;
 
 article > article,
 section,
-article > dl[id^="document-"], article > #authors {
+dl[id^="document-"], #authors {
   max-width: calc(100% - 2em);
   padding: 0 0.5em;
 }
@@ -136,10 +136,6 @@ content:"\A";
 white-space:pre;
 }
 
-dl[id^="document-"], #authors {
-  max-width: none;
-  width: 100%;
-}
 #authors dd, #authors li, #keywords li {
   display: inline;
   text-align: left;
@@ -250,6 +246,22 @@ letter-spacing:0;
 ul { padding: 0; margin-bottom:1em; list-style-position: inside; }
 nav ul { list-style: none; }
 dt { font-weight: bold; }
+
+h3 + div section:before,
+section + p:before,
+section + dl:before {
+content:"\A";
+white-space:pre;
+}
+
+dd + dd {
+margin-top:1em;
+}
+dt + dd { margin-top:0; }
+dd + dt { margin-top: 1em; }
+
+p + dl { margin-top:0; }
+
 body > footer { margin-top:2em; }
 body > footer a, body > footer a:hover { color: inherit; }
 
@@ -464,11 +476,15 @@ column-count: 2;
 
 
 @media screen and (min-width: 980px){
+  body {
+    font-size: 1.2em;
+    line-height: 1.6;
+  }
+
   article > article,
   section {
     max-width: 50em;
     margin: 3em auto;
-    padding: 0;
   }
   dl[id^="document-"], #authors {
     max-width: 50em;
