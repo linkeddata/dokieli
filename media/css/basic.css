@@ -54,7 +54,7 @@ article > article,
 section,
 dl[id^="document-"], #authors {
   max-width: calc(100% - 2em);
-  padding: 0 0.5em;
+  margin: 0 0.5em;
 }
 section section {
   padding:0;
@@ -466,6 +466,9 @@ content:"Table " counter(table) ". ";
   font-size:2em;
   padding:1em 0;
   margin:1em 0;
+}
+#read-write-web:before {
+content:"";
 }
 
 ul#program-committee {
