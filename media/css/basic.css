@@ -234,8 +234,18 @@ font-size:1em;
 }
 
 a { color: #009000; }
-code, samp { color:#c83500; }
-pre code, pre samp { color:#000; }
+code, samp { background-color:#f3f3f3; padding:0.1em 0; }
+code:before, code:after, samp:before, samp:after {
+content:"\00a0";
+letter-spacing:-0.2em;
+}
+
+pre code, pre samp { background-color:inherit; padding:0; }
+pre code:before, pre code:after, pre samp:before, pre samp:after {
+content:"";
+padding:0;
+letter-spacing:0;
+}
 ul { padding: 0; margin-bottom:1em; list-style-position: inside; }
 nav ul { list-style: none; }
 dt { font-weight: bold; }
@@ -268,19 +278,18 @@ text-align:center;
 figure.listing pre {
 padding-top:1.6em;
 padding-bottom:1.6em;
-background:linear-gradient(#fff 50%, #f7f7f7 0) 0 0/3.2em 3.2em;
-}
-figure.listing pre {
+background:linear-gradient(#fff 50%, #f3f3f3 0) 0 0/3.2em 3.2em;
 border-top:1px solid #bbb;
 border-right:1px solid #bbb;
 border-bottom:1px solid #bbb;
 counter-reset:precode;
 margin-top:0;
+margin-left:1.75em;
 }
 figure.listing pre code:before,
 figure.listing pre samp:before {
 position:absolute;
-left:-1.75em;
+left:0;
 text-align:right;
 content:counter(precode);
 counter-increment:precode;
