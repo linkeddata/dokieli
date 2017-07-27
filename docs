@@ -97,7 +97,7 @@
                     <dd>Relating parts is done with <code>rel="schema:hasPart"</code>, eg. sections with subsection: <pre><code>&lt;section id="structure-and-semantics" inlist="" rel="schema:hasPart" resource="#structure-and-semantics"&gt;</code>
 <code>  &lt;section id="html-patterns" inlist="" rel="schema:hasPart" resource="#html-patterns"&gt;</code></pre>
                     </dd>
-                    <dd><code>div</code>s are used to hold a block of HTML markup and types of content together eg. <code>&lt;div datatype="rdf:HTML" property="schema:description" resource="#introduction" typeof="deo:Introduction"&gt;</code> makes it possible to declare that it contains HTML markup, and describes an introductory text</dd>
+                    <dd><code>div</code>s are used to hold a block of HTML markup and types of content together eg. <code>&lt;div datatype="rdf:HTML" property="schema:description" resource="#introduction" typeof="deo:Introduction"&gt;</code> makes it possible to declare that it contains HTML markup, and describes an introductory text.</dd>
                     <dd>Some of the prefixes (<code>@prefix</code>) on the <code>body</code> element are defined in the <cite><a href="https://www.w3.org/2011/rdfa-context/rdfa-1.1.html">RDFa Core Initial Context</a></cite>. These prefixes are defined in dokieli for the purpose of being compact, robust, and to minimise potential errors for consumers.</dd>
                   </dl>
 
@@ -166,6 +166,13 @@
                 </ul>
               </aside>
 
+            </div>
+          </section>
+
+          <section id="web-extension" inlist="" rel="schema:hasPart" resource="#web-extension">
+            <h2 property="schema:name">Web Extension</h2>
+            <div datatype="rdf:HTML" property="schema:description">
+              <p>The dokieli Web Extension is a minimal package of dokieli which contains the core CSS and JavaScript that works as a browser add-on. When user triggers it from their browser toolbar, it provides the same functionality as a <cite>single-page application</cite>, i.e., initialised and rendered in the browser DOM.</p>
             </div>
           </section>
 
