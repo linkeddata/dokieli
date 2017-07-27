@@ -2846,33 +2846,32 @@ console.log(inbox);
                 "url": iri,
                 "annotation": {
                   "@context": "http://www.w3.org/ns/anno.jsonld",
-                  "@type": "http://www.w3.org/ns/oa#Annotation",
-                  "@id": "",
-                  "motivatedBy": "http://www.w3.org/ns/oa#commenting",
+                  "@type": "Annotation",
+                  "motivation": "commenting",
                   "target": iri,
-                  "http://purl.org/dc/terms/rights": "https://creativecommons.org/publicdomain/zero/1.0/",
+                  "rights": "https://creativecommons.org/publicdomain/zero/1.0/",
                   "message": ""
                 }
               };
 
               if (DO.C.User.IRI) {
-                noteData['creator'] = {};
-                noteData.creator["iri"] = DO.C.User.IRI;
+                noteData.annotation['creator'] = {};
+                noteData.annotation.creator["@id"] = DO.C.User.IRI;
               }
               if (DO.C.User.Name) {
-                noteData.creator["name"] = DO.C.User.Name;
+                noteData.annotation.creator["http://schema.org/name"] = DO.C.User.Name;
               }
               if (DO.C.User.Image) {
-                noteData.creator["image"] = DO.C.User.Image;
+                noteData.annotation.creator["http://schema.org/image"] = DO.C.User.Image;
               }
               if (DO.C.User.URL) {
-                noteData.creator["url"] = DO.C.User.URL;
+                noteData.annotation.creator["http://schema.org/url"] = DO.C.User.URL;
               }
 
               if(note.length > 0) {
-                noteData.message = note;
-                noteData["hasBody"] = {
-                  "type": "TextualBody",
+                noteData.annotation.message = note;
+                noteData.annotation["body"] = {
+                  "@type": "TextualBody",
                   "value": note,
                   "format": "text/plain"
                 }
