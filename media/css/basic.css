@@ -51,8 +51,9 @@ text-align:center;
 }
 
 article > article,
-section {
-  max-width: calc(100% - 1em);
+section,
+article > dl[id^="document-"], article > #authors {
+  max-width: calc(100% - 2em);
   padding: 0 0.5em;
 }
 section section {
