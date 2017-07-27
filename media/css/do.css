@@ -357,6 +357,7 @@ cursor:default;
 #toc h2 {
 margin:0;
 padding:0;
+list-style-image:none;
 }
 #document-menu section h2 {
 display:none;
