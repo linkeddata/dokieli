@@ -2847,10 +2847,9 @@ console.log(inbox);
                 "annotation": {
                   "@context": "http://www.w3.org/ns/anno.jsonld",
                   "@type": "Annotation",
-                  "motivation": "commenting",
+                  "motivation": "linking",
                   "target": iri,
-                  "rights": "https://creativecommons.org/publicdomain/zero/1.0/",
-                  "message": ""
+                  "rights": "https://creativecommons.org/publicdomain/zero/1.0/"
                 }
               };
 
@@ -2869,12 +2868,7 @@ console.log(inbox);
               }
 
               if(note.length > 0) {
-                noteData.annotation.message = note;
-                noteData.annotation["body"] = {
-                  "@type": "TextualBody",
-                  "value": note,
-                  "format": "text/plain"
-                }
+                noteData.annotation["message"] = note;
               }
 
               var internetArchive = document.querySelector('#share-resource-internet-archive');
