@@ -53,7 +53,6 @@ text-align:center;
 article > article,
 section,
 dl[id^="document-"], #authors {
-  max-width: calc(100% - 2em);
   margin: 0 0.5em;
 }
 section section {
@@ -255,7 +254,7 @@ white-space:pre;
 }
 
 dd {
-margin-left:1em;
+margin-left:0.5em;
 }
 dd + dd {
 margin-top:1em;
@@ -492,14 +491,25 @@ column-count: 2;
   }
 
   article > article,
-  section {
-    max-width: 50em;
-    margin: 3em auto;
-  }
+  section,
   dl[id^="document-"], #authors {
     max-width: 50em;
-    margin:0 auto;
   }
+
+  article > article,
+  section {
+    margin: 3em auto;
+  }
+
+  dl[id^="document-"], #authors {
+    max-width: 50em;
+    margin: 0 auto;
+  }
+
+  dd {
+    margin-left: 1em
+  }
+
   #do-index #features ul {
     font-size: 1.2em;
     float: left;
