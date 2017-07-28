@@ -4,12 +4,12 @@
     <meta charset="utf-8" />
     <title>dokieli documentation</title>
     <meta content="width=device-width, initial-scale=1" name="viewport" />
-    <link href="media/css/basic.css" media="all" rel="stylesheet" title="Basic" />
+    <link href="https://dokie.li/media/css/basic.css" media="all" rel="stylesheet" title="Basic" />
     <link href="https://dokie.li/media/css/do.css" media="all" rel="stylesheet" />
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" rel="stylesheet" />
     <script src="https://dokie.li/scripts/simplerdf.js"></script>
     <script src="https://dokie.li/scripts/medium-editor.min.js"></script>
-        <script src="https://dokie.li/scripts/medium-editor-tables.min.js"></script>
+    <script src="https://dokie.li/scripts/medium-editor-tables.min.js"></script>
     <script src="scripts/do.js"></script>
   </head>
 
@@ -125,7 +125,7 @@
 <code>      &lt;/article&gt;</code>
 <code>    &lt;/main&gt;</code>
 <code></code>
-<codE>  &lt;/body&gt;</code>
+<code>  &lt;/body&gt;</code>
 <code>&lt;/html&gt;</code></pre>
                     <figcaption>Article HTML template</figcaption>
                   </figure>
@@ -173,6 +173,14 @@
             <h2 property="schema:name">Web Extension</h2>
             <div datatype="rdf:HTML" property="schema:description">
               <p>The dokieli Web Extension is a minimal package of dokieli which contains the core CSS and JavaScript that works as a browser add-on. When user triggers it from their browser toolbar, it provides the same functionality as a <cite>single-page application</cite>, i.e., initialised and rendered in the browser DOM.</p>
+manifest.json:
+<pre>
+  "applications": {
+    "gecko": {
+      "id": "i@dokie.li"
+    }
+  },
+</pre>
             </div>
           </section>
 
