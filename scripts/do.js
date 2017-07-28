@@ -1425,13 +1425,16 @@ var DO = {
       }, delay);
     },
 
+    //FIXME: This parameter value can be an event or a string
     submitSignIn: function(url) {
-      var userIdentityInput = document.getElementById('user-identity-input');
-      if(userIdentityInput) {
-        userIdentityInput.insertAdjacentHTML('beforeend', '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
-      }
+      if(typeof url !== 'string') {
+        var userIdentityInput = document.getElementById('user-identity-input');
+        if(userIdentityInput) {
+          userIdentityInput.insertAdjacentHTML('beforeend', '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+        }
 
-      url = url || userIdentityInput.querySelector('input#webid').value.trim();
+        url = userIdentityInput.querySelector('input#webid').value.trim();
+      }
 
       if (url.length > 0) {
         DO.U.setUserInfo(url).then(
