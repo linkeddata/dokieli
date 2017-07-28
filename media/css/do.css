@@ -25,6 +25,7 @@ padding:0 !important;
 }
 
 @media screen and (max-width: 840px){
+aside.note.do blockquote .article ,
 aside.note.do blockquote article {
 position: static !important;
 }
@@ -70,7 +71,10 @@ outline:none;
 
 progress { margin:0 1em; }
 
-main > article { position:relative; }
+main.article ,
+main > article { 
+  position:relative; 
+}
 
 menu.do,
 aside.do {
@@ -125,7 +129,6 @@ padding:0.2em;
 }
 aside.do.on ul {
 margin:0;
-list-style: none;
 }
 aside.do.on section + section {
 margin-top:1em;
@@ -164,10 +167,12 @@ width:auto;
 position:static;
 }
 
+#document-interactions .article + .article ,
 #document-interactions article + article {
 margin-top:1em;
 }
 
+aside.note.do blockquote .article ,
 aside.note.do blockquote article {
 position: absolute;
 left: auto;
@@ -178,6 +183,13 @@ font-size: 0.9em;
 text-align: left;
 }
 
+#document-interactions .article.do h2,
+#document-interactions .article.do h3,
+#document-interactions .article.do dt,
+#document-interactions .article.do .target,
+#document-interactions .article.do .renderedvia,
+#document-interactions .article.do .rights,
+#document-interactions .article.do .canonical,
 #document-interactions article.do h2,
 #document-interactions article.do h3,
 #document-interactions article.do dt,
@@ -197,6 +209,9 @@ display:none;
 aside.note.do blockquote dl.author-name img[width="48"][height="48"][rel$="image"] {
 /*vertical-align:top;*/
 }
+
+#document-interactions .article.do dl,
+#document-interactions .article.do dl *,
 #document-interactions section,
 #document-interactions article.do dl,
 #document-interactions article.do dl *,
@@ -625,6 +640,7 @@ font-family:sans-serif;
 padding:0.25em;
 z-index:2147483647;
 hyphens:initial;
+color: black;
 }
 
 button.close {
@@ -651,6 +667,12 @@ display:none;
 .do.slide {
 display:block;
 }
+
+.on-slideshow .article h1,
+.on-slideshow .article #authors,
+.on-slideshow .article > dl,
+.on-slideshow .article > div > dl,
+.on-slideshow .article section:not([class~="do"]),
 .on-slideshow > header,
 .on-slideshow > footer,
 .on-slideshow #comments,

@@ -10,6 +10,7 @@ if(typeof DO === 'undefined'){
 var SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined;
 var DO = {
   C: {
+    Extension: false,
     Lang: document.documentElement.lang,
     DocRefType: '',
     RefType: {
@@ -1492,6 +1493,25 @@ var DO = {
       }
     },
 
+    setUserWebId: function(url) {
+        if (url && url.length > 0) {
+            DO.U.setUserInfo(url).then(
+                function(i) {
+                    var uI = document.getElementById('user-info');
+                    if(uI) {
+                        uI.innerHTML = DO.U.getUserHTML();
+                    }
+                    DO.U.afterSignIn();
+                },
+                function(reason) {
+                    console.log("--- NO USER");
+                    console.log(reason);
+                }
+            );
+        }
+    },
+
+
     afterSignIn: function() {
       var user = document.querySelectorAll('aside.do article *[rel~="schema:creator"] > *[about="' + DO.C.User.IRI + '"]');
       for(var i = 0; i < user.length; i++) {
@@ -1541,8 +1561,15 @@ var DO = {
     },
 
     showDocumentMenu: function(e) {
-      e.preventDefault();
-      e.stopPropagation();
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+
+      var menu = document.querySelector('#document-menu');
+      if (menu && menu.classList && menu.classList.contains("on")) {
+        DO.U.hideDocumentMenu();
+      }
 
       var body = document.body;
       var dMenu = document.querySelector('#document-menu.do');
@@ -2156,7 +2183,12 @@ var DO = {
 
     updateDocumentTitle: function(e) {
       if (!e.target.matches('h1')) {
-        var h1 = document.querySelector('main article > h1');
+        var h1;
+        if (!DO.C.Extension)
+            h1 = document.querySelector('main article > h1');
+        else
+            h1 = document.querySelector('main.article > h1');
+
         if (h1) {
           document.title = h1.textContent.trim();
         }
@@ -2202,8 +2234,13 @@ var DO = {
     },
 
     showFragment: function(selector) {
-      var ids = (selector) ? document.querySelectorAll(selector) : document.querySelectorAll('main *[id]:not(input):not(textarea):not(select):not(#content)');
+      var ids;
 
+      if (!DO.C.Extension)
+         ids = (selector) ? document.querySelectorAll(selector) : document.querySelectorAll('main *[id]:not(input):not(textarea):not(select):not(#content)');
+      else
+         ids = (selector) ? document.querySelectorAll(selector) : document.querySelectorAll('main.article *[id]:not(input):not(textarea):not(select):not(#content)');
+    
       for(var i = 0; i < ids.length; i++){
         ids[i].addEventListener('mouseenter', function(e){
           var fragment = document.querySelector('*[id="' + e.target.id + '"] > .do.fragment');
@@ -3491,7 +3528,13 @@ console.log(reason);
             nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType});
           }
 
-          html.querySelector('body').innerHTML = '<main><article about="" typeof="schema:Article"></article></main>';
+//??##
+          if (!DO.C.Extension)
+            html.querySelector('body').innerHTML = '<main><article about="" typeof="schema:Article"></article></main>';
+          else
+            html.querySelector('body').innerHTML = '<main class="article" id="content" about="" typeof="schema:Article"></main>';
+
+
           html.querySelector('head title').innerHTML = '';
           html = DO.U.getDocument(html);
 
@@ -3555,7 +3598,12 @@ console.log(reason);
           var wasDerived = document.querySelector('#derivation-data');
           if (wasDerived.checked) {
             var wasDerivedOn = DO.U.getDateTimeISO();
-            html.querySelector('main article').insertAdjacentHTML('beforebegin', '<dl id="document-derived-from"><dt>Derived From</dt><dd><a href="' + currentDocumentURL + '" rel="prov:wasDerivedFrom">' + currentDocumentURL + '</a></dd></dl><dl id="document-derived-on"><dt>Derived On</dt><dd><time datetime="' + wasDerivedOn + '">' + wasDerivedOn + '</time></dd></dl>' + "\n");
+//??##
+            if (!DO.C.Extension)
+              html.querySelector('main article').insertAdjacentHTML('beforebegin', '<dl id="document-derived-from"><dt>Derived From</dt><dd><a href="' + currentDocumentURL + '" rel="prov:wasDerivedFrom">' + currentDocumentURL + '</a></dd></dl><dl id="document-derived-on"><dt>Derived On</dt><dd><time datetime="' + wasDerivedOn + '">' + wasDerivedOn + '</time></dd></dl>' + "\n");
+            else
+              html.querySelector('main.article').insertAdjacentHTML('beforebegin', '<dl id="document-derived-from"><dt>Derived From</dt><dd><a href="' + currentDocumentURL + '" rel="prov:wasDerivedFrom">' + currentDocumentURL + '</a></dd></dl><dl id="document-derived-on"><dt>Derived On</dt><dd><time datetime="' + wasDerivedOn + '">' + wasDerivedOn + '</time></dd></dl>' + "\n");
+
           }
           var baseURLSelectionChecked = saveAsDocument.querySelector('select[name="base-url"]');
           if (baseURLSelectionChecked.length > 0) {
@@ -4691,7 +4739,11 @@ WHERE {\n\
       var interactions = document.getElementById('document-interactions');
 
       if(!interactions) {
-        interactions = document.querySelector('main article');
+        if (!DO.C.Extension)
+            interactions = document.querySelector('main article');
+        else
+            interactions = document.querySelector('main.article');
+
         var interactionsSection = '<section id="document-interactions"><h2>Interactions</h2><div>';
 // interactionsSection += '<p class="count"><data about="" datatype="xsd:nonNegativeInteger" property="sioc:num_replies" value="' + interactionsCount + '">' + interactionsCount + '</data> interactions</p>';
         interactionsSection += '</div></section>';
@@ -5044,7 +5096,10 @@ WHERE {\n\
       },
 
       enableEditor: function(editorMode, e, selector) {
-        selector = selector || 'main article';
+        if (!DO.C.Extension)
+            selector = selector || 'main article';
+        else
+            selector = selector || 'main.article';
 
         if (typeof DO.U.Editor.MediumEditor !== 'undefined') {
           DO.U.Editor.disableEditor();
@@ -6551,7 +6606,12 @@ WHERE {\n\
                         var r = document.querySelector('#references ol');
                         if (!r) {
                           var section = '<section id="references"><h2>References</h2><div><ol></ol></div></section>';
-                          document.querySelector('main article > div').insertAdjacentHTML('beforeend', section);
+
+                          if (!DO.C.Extension)
+                            document.querySelector('main article > div').insertAdjacentHTML('beforeend', section);
+                          else
+                            document.querySelector('main.article').insertAdjacentHTML('beforeend', section);
+
                           r = document.querySelector('#references ol');
                         }
                         var citationHTML = '<li id="' + id + '">' + citation + '</li>';
@@ -6777,9 +6837,31 @@ WHERE {\n\
         DO.U.setDocumentMode();
         DO.U.showInboxNotifications();
       }
+    },
+
+    initExtensionMode: function() {
+        if(document.body) {
+            DO.C.Extension = true;
+            DO.C.Editor.ButtonLabelType = 'fontawesome';
+            DO.U.setPolyfill();
+            DO.U.setDocRefType();
+            DO.U.showRefs();
+            DO.U.setLocalDocument();
+            DO.U.buttonClose();
+//            DO.U.buttonCloseMenu();
+            DO.U.highlightItems();
+            DO.U.showDocumentInfo();
+            DO.U.showFragment();
+            DO.U.setDocumentMode();
+            DO.U.showInboxNotifications();
+        }
     }
+
   } //DO.U
 }; //DO
 
-document.addEventListener('DOMContentLoaded', function(){ DO.U.init(); });
+
+ if (!(DO_extension!==undefined && DO_extension == true)) {
+   document.addEventListener('DOMContentLoaded', function(){ DO.U.init(); });
+ }
 }
