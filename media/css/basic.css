@@ -254,6 +254,9 @@ content:"\A";
 white-space:pre;
 }
 
+dd {
+margin-left:1em;
+}
 dd + dd {
 margin-top:1em;
 }
@@ -298,6 +301,7 @@ border-bottom:1px solid #bbb;
 counter-reset:precode;
 margin-top:0;
 margin-left:1.75em;
+line-height: 1.6;
 }
 figure.listing pre code:before,
 figure.listing pre samp:before {
