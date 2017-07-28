@@ -3758,8 +3758,13 @@ var DO = {
     },
 
     showFragment: function(selector) {
-      var ids = (selector) ? document.querySelectorAll(selector) : document.querySelectorAll('main *[id]:not(input):not(textarea):not(select):not(#content)');
+      var ids;
 
+      if (!DO.C.Extension)
+         ids = (selector) ? document.querySelectorAll(selector) : document.querySelectorAll('main *[id]:not(input):not(textarea):not(select):not(#content)');
+      else
+         ids = (selector) ? document.querySelectorAll(selector) : document.querySelectorAll('main.article *[id]:not(input):not(textarea):not(select):not(#content)');
+    
       for(var i = 0; i < ids.length; i++){
         ids[i].addEventListener('mouseenter', function(e){
           var fragment = document.querySelector('*[id="' + e.target.id + '"] > .do.fragment');
@@ -9238,6 +9243,25 @@ WHERE {\n\
         DO.U.initMath();
       }
     }
+
+    initExtensionMode: function() {
+        if(document.body) {
+            DO.C.Extension = true;
+            DO.C.Editor.ButtonLabelType = 'fontawesome';
+            DO.U.setPolyfill();
+            DO.U.setDocRefType();
+            DO.U.showRefs();
+            DO.U.setLocalDocument();
+            DO.U.buttonClose();
+//            DO.U.buttonCloseMenu();
+            DO.U.highlightItems();
+            DO.U.showDocumentInfo();
+            DO.U.showFragment();
+            DO.U.setDocumentMode();
+            DO.U.showInboxNotifications();
+        }
+    }
+
   } //DO.U
 }; //DO
 

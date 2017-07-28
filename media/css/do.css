@@ -25,6 +25,7 @@ padding:0 !important;
 }
 
 @media screen and (max-width: 840px){
+aside.note.do blockquote .article ,
 aside.note.do blockquote article {
 position: static !important;
 }
@@ -310,6 +311,7 @@ width:auto;
 position:static;
 }
 
+#document-interactions .article + .article ,
 #document-interactions article + article {
 margin-top:1em;
 }
@@ -345,6 +347,13 @@ width:100%;
 position:relative;
 }
 
+#document-interactions .article.do h2,
+#document-interactions .article.do h3,
+#document-interactions .article.do dt,
+#document-interactions .article.do .target,
+#document-interactions .article.do .renderedvia,
+#document-interactions .article.do .rights,
+#document-interactions .article.do .canonical,
 #document-interactions article.do h2,
 #document-interactions article.do h3,
 #document-interactions article.do h4,
@@ -366,6 +375,9 @@ display:none;
 aside.note.do blockquote dl.author-name img[width="48"][height="48"][rel$="image"] {
 /*vertical-align:top;*/
 }
+
+#document-interactions .article.do dl,
+#document-interactions .article.do dl *,
 #document-interactions section,
 #document-interactions article.do dl,
 #document-interactions article.do dl *,
@@ -936,6 +948,7 @@ line-height:1;
 padding:0.25em;
 z-index:2147483647;
 hyphens:initial;
+color: black;
 }
 
 button.close {
@@ -964,6 +977,12 @@ body[typeof="bibo:Slideshow"] .slide,
 .do.slide {
 display:block;
 }
+
+.on-slideshow .article h1,
+.on-slideshow .article #authors,
+.on-slideshow .article > dl,
+.on-slideshow .article > div > dl,
+.on-slideshow .article section:not([class~="do"]),
 .on-slideshow > header,
 .on-slideshow > footer,
 .on-slideshow #comments,
