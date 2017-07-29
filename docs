@@ -5,11 +5,11 @@
     <title>dokieli documentation</title>
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <link href="media/css/basic.css" media="all" rel="stylesheet" title="Basic" />
-    <link href="https://dokie.li/media/css/do.css" media="all" rel="stylesheet" />
+    <link href="media/css/do.css" media="all" rel="stylesheet" />
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" rel="stylesheet" />
-    <script src="https://dokie.li/scripts/simplerdf.js"></script>
-    <script src="https://dokie.li/scripts/medium-editor.min.js"></script>
-    <script src="https://dokie.li/scripts/medium-editor-tables.min.js"></script>
+    <script src="scripts/simplerdf.js"></script>
+    <script src="scripts/medium-editor.min.js"></script>
+    <script src="scripts/medium-editor-tables.min.js"></script>
     <script src="scripts/do.js"></script>
   </head>
 
@@ -30,7 +30,7 @@
 
         <dl id="document-modified">
           <dt>Modified</dt>
-          <dd><time content="2017-07-16T00:00:00Z" datatype="xsd:dateTime" datetime="2017-07-16T00:00:00Z" property="schema:dateModified">2017-07-24</time></dd>
+          <dd><time content="2017-07-29T00:00:00Z" datatype="xsd:dateTime" datetime="2017-07-20T00:00:00Z" property="schema:dateModified">2017-07-29</time></dd>
         </dl>
 
         <dl id="document-license">
