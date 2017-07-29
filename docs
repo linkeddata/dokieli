@@ -68,6 +68,8 @@
 
               <p>dokieli initially represents <em>all</em> information with HTML+RDFa. Maintains a strong practice of having human-visible content, meanwhile keeping machine-readable data in context (eg using article's text as literal object values). This tends to avoid data duplication or data islands, which can occur when other RDF serialisations are included within HTML (eg within <code>script</code>). One exception to this "rule" is allowing authors to use the built-in <cite>Embed Data</cite> feature to include Turtle, JSON-LD, or TriG data blocks for alternative reasons.</p>
 
+              <p id="separation-of-concerns">dokieli adopts <cite>progressive enhancement</cite> strategy for the structural, presentational, and behavioural layers to allow content and base functionality to be accessible through different media and devices. The content in HTML+RDFa that dokieli produces <em>is</em> accessible (readable) without requiring any CSS or JavaScript. Breaking this "rule" in future development should considered to be an anti-pattern (or a bug) in dokieli.</p>
+
               <section id="html-patterns" inlist="" rel="schema:hasPart" resource="#html-patterns">
                 <h3 property="schema:name">HTML patterns</h3>
                 <div datatype="rdf:HTML" property="schema:description">
