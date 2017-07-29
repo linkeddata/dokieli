@@ -94,7 +94,7 @@
 <code>&lt;link href="https://dokie.li/media/css/do.css" media="all" rel="stylesheet" /&gt;</code></pre> See also <code>showViews</code> (do.js).</dd>
 
                     <dt id="html-sections">Sections</dt>
-                    <dd>Sectioning is declared with <code>section</code> and typically have a heading, eg <code>h2</code> as its first child. Subsections may appear as a child of parent <code>section</code>, or as a child of <code>div</code> (which is a child of parent <code>section</code>), i.e., <code>section section</code> or <code>section div section</code>. The headings of subsections are enumerated eg. <code>section h2</code> would have a subsection with <code>section h3</code>. Sections <code>id</code>s and heading text are used to dynamically build the table of contents.</dd>
+                    <dd>Sectioning is declared with <code>section</code> and typically have a heading, eg <code>h2</code> as its first child. Subsections may appear as a child of parent <code>section</code>, or as a child of <code>div</code> (which is a child of parent <code>section</code>), i.e. <code>section section</code> or <code>section div section</code>. The headings of subsections are enumerated eg. <code>section h2</code> would have a subsection with <code>section h3</code>. Sections <code>id</code>s and heading text are used to dynamically build the table of contents.</dd>
 
                     <dt id="html-divs">Divisions</dt>
                     <dd><code>div</code>s within <code>section</code> are used to wrap a block of arbitrary markup and content. See also RDFa below.</dd>
@@ -181,7 +181,7 @@
           <section id="web-extension" inlist="" rel="schema:hasPart" resource="#web-extension">
             <h2 property="schema:name">Web Extension</h2>
             <div datatype="rdf:HTML" property="schema:description">
-              <p>The dokieli <cite>Web Extension</cite> is a minimal package of dokieli which contains the core CSS and JavaScript that works as a browser add-on. When user triggers it from their browser toolbar, it provides the same functionality as a <cite>single-page application</cite>, i.e., initialised and rendered in the browser DOM.</p>
+              <p>The dokieli <cite>Web Extension</cite> is a minimal package of dokieli which contains the core CSS and JavaScript that works as a browser add-on. When user triggers it from their browser toolbar, it provides the same functionality as a <cite>single-page application</cite>, i.e. initialised and rendered in the browser DOM. Currently the extension works with Firefox and Chrome/Chromium browsers. For Firefox, the extension can be packaged with <samp>xpi-pack</samp> and imported from the <cite>Add-ons Manager</cite>. For Chrome/Chromium, the directory can be imported from <cite>Extensions</cite> (developer mode). Alternatively, the extensions are available from <cite><a href="https://addons.mozilla.org/en-US/firefox/addon/dokieli/">Add-ons for Firefox</a></cite> and <cite><a href="https://chrome.google.com/webstore/detail/ddmhaonbhodhgkaljpjlglodncddalid">Chrome Web Store</a></cite>.</p>
             </div>
           </section>
 
