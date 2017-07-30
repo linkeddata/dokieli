@@ -1835,7 +1835,7 @@ var DO = {
         disabledInput = ' disabled="disabled"';
       }
 
-      tableList = [{'content': 'Contents'}, {'figure': 'Figures'}, {'table': 'Tables'}, {'abbr': 'Abbreviations'}];
+      var tableList = [{'content': 'Contents'}, {'figure': 'Figures'}, {'table': 'Tables'}, {'abbr': 'Abbreviations'}];
       tableList.forEach(function(i) {
         var key = Object.keys(i)[0];
         var value = i[key];
