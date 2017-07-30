@@ -30,7 +30,7 @@ var DO = {
     CDATAStart: '//<![CDATA[',
     CDATAEnd: '//]]>',
     SortableList: false,
-    EditorAvailable: ('MediumEditor' in window),
+    EditorAvailable: (typeof MediumEditor !== 'undefined'),
     EditorEnabled: false,
     Editor: {
       headings: ["h1", "h2", "h3", "h4", "h5", "h6"],
