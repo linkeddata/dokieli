@@ -1987,7 +1987,7 @@ var DO = {
     },
 
     getListOfSections: function(sections, sortable) {
-      var s = attributeClass = '';
+      var s = '', attributeClass = '';
       if (sortable == true) { attributeClass = ' class="sortable"'; }
 
       for (var i = 0; i < sections.length; i++) {
