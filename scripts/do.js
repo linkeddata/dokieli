@@ -833,7 +833,7 @@ var DO = {
       options = options || {};
 
       if ((typeof document !== 'undefined' && document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') || 'forceProxy' in options) {
-        proxyURL = ('proxyURL' in options) ? options.proxyURL : DO.C.ProxyURL;
+        var proxyURL = ('proxyURL' in options) ? options.proxyURL : DO.C.ProxyURL;
         pIRI = proxyURL + DO.U.encodeString(pIRI);
       }
 // console.log('pIRI: ' + pIRI);
