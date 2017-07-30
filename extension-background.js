@@ -45,27 +45,30 @@ function show_Menu(tab) {
 }
 
 browser.browserAction.onClicked.addListener(function(tab){
-  browser.management.getAll(function(ext_info){
-    for(var i =0; i < ext_info.length; i++) {
-      if (ext_info[i].shortName==="opl_youid") {
-        opl_youid_id = ext_info[i].id;
-        break;
+  if(typeof browser.management.getAll !== 'undefined') {
+    browser.management.getAll(function(ext_info){
+      for(var i =0; i < ext_info.length; i++) {
+        if (ext_info[i].shortName==="opl_youid") {
+          opl_youid_id = ext_info[i].id;
+          break;
+        }
       }
+    });
+  }
+
+  browser.runtime.sendMessage(opl_youid_id, {getWebId: true},
+    function(response) {
+    if (response) {
+      g_webid = response.webid;
     }
 
-    browser.runtime.sendMessage(opl_youid_id, {getWebId: true},
+    browser.tabs.sendMessage(tab.id, {action: "dokieli.status"},
       function(response) {
-      if (response)
-      g_webid = response.webid;
-
-      browser.tabs.sendMessage(tab.id, {action: "dokieli.status"},
-        function(response) {
-          if (response && !response.dokieli) {
-            load_dokieli(tab);
-          }
-          show_Menu(tab);
-        });
-    });
+        if (response && !response.dokieli) {
+          load_dokieli(tab);
+        }
+        show_Menu(tab);
+      });
   });
 });
 
