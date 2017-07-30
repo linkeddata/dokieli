@@ -78,7 +78,7 @@
                 <div datatype="rdf:HTML" property="schema:description">
                   <p>There is no RDF class or metadata in <em>articles</em> that would indicate that it is a "dokieli" document. They would would contain classes like <samp>schema:CreativeWork sioc:Post prov:Entity schema:Article</samp> but that's not unique to dokieli (it could be any document). Since <em>Articles</em> are in HTML+RDFa, a "dokieli" document may contain a triple with an object IRI like <code>https://dokie.li/media/css/do.css</code>. Some RDFa parsers may parse the triple with <code>rel="stylesheet"</code>. HTML-only parsing may reveal more, eg. <samp>do.js</samp>.</p>
 
-                  <p>In <em>annotations</em>, it is possible to know that the article was rendered by dokieli: <code>?s oa:renderedBy &lt;https://dokie.li/&gt;</code>), and we can assume that the annotation was created by it as well. Aside: do.css and do.js are not included in annotations.</p>
+                  <p>In <em>annotations</em>, it is possible to know that the article was rendered by dokieli: <code>?s oa:renderedVia &lt;https://dokie.li/&gt;</code>), and we can assume that the annotation was created by it as well. Aside: do.css and do.js are not included in annotations.</p>
 
                   <p>Nothing in <em>notifications</em> would indicate that it was created by dokieli. Aside: do.css and do.js are not included in notifications.</p>
                 </div>
