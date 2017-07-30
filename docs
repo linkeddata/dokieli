@@ -72,6 +72,18 @@
 
               <p>dokieli initially represents <em>all</em> information with HTML+RDFa. Maintains a strong practice of having human-visible content, meanwhile keeping machine-readable data in context (eg using article's text as literal object values). This tends to avoid data duplication or data islands, which can occur when other RDF serialisations are included within HTML (eg within <code>script</code>). One exception to this "rule" is allowing authors to use the built-in <cite>Embed Data</cite> feature to include Turtle, JSON-LD, or TriG data blocks for alternative reasons.</p>
 
+
+              <section id="dokieli-documents" inlist="" rel="schema:hasPart" resource="#dokieli-documents">
+                <h3 property="schema:name">dokieli documents</h3>
+                <div datatype="rdf:HTML" property="schema:description">
+                  <p>There is no RDF class or metadata in <em>articles</em> that would indicate that it is a "dokieli" document. They would would contain classes like <samp>schema:CreativeWork sioc:Post prov:Entity schema:Article</samp> but that's not unique to dokieli (it could be any document). Since <em>Articles</em> are in HTML+RDFa, a "dokieli" document may contain a triple with an object IRI like <code>https://dokie.li/media/css/do.css</code>. Some RDFa parsers may parse the triple with <code>rel="stylesheet"</code>. HTML-only parsing may reveal more, eg. <samp>do.js</samp>.</p>
+
+                  <p>In <em>annotations</em>, it is possible to know that the article was rendered by dokieli: <code>?s oa:renderedBy &lt;http://dokie.li/&gt;</code>), and we can assume that the annotation was created by it as well. Aside: do.css and do.js are not included in annotations.</p>
+
+                  <p>Nothing in <em>notifications</em> would indicate that it was created by dokieli. Aside: do.css and do.js are not included in notifications.</p>
+                </div>
+              </section>
+
               <section id="html-patterns" inlist="" rel="schema:hasPart" resource="#html-patterns">
                 <h3 property="schema:name">HTML patterns</h3>
                 <div datatype="rdf:HTML" property="schema:description">
@@ -110,8 +122,7 @@
                     <dd>Some of the prefixes (<code>@prefix</code>) on the <code>body</code> element are defined in the <cite><a href="https://www.w3.org/2011/rdfa-context/rdfa-1.1.html">RDFa Core Initial Context</a></cite>. These prefixes are defined in dokieli for the purpose of being compact, robust, and to minimise potential errors for consumers.</dd>
                   </dl>
 
-
-                  <p>Article..</p>
+                  <p>Article.. TODO</p>
                   <figure class="listing">
                   <pre><code>&lt;!DOCTYPE html&gt;</code>
 <code>&lt;html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"&gt;</code>
@@ -145,7 +156,8 @@
 
 
                   <p>Annotation:</p>
-<pre></pre>
+<pre>
+</pre>
 
                   <p>Notification:</p>
 <pre></pre>
