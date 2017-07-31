@@ -110,7 +110,7 @@
                         <li><code>main &gt; article</code> (querySelector) is considered to be the location of the primary content.</li>
                         <li><code>h1</code> is typically the first element node after <code>main &gt; article</code></li>
                         <li><code>figure</code>s have <code>figcaptions</code> for things like <code>audio</code>, <code>canvas</code>, <code>iframe</code>, <code>img</code>, <code>object</code>, <code>pre</code>, <code>video</code>. For scripts of all sorts, <code>figure class="listing"</code> is used, and <code>pre</code> for the code itself with <code>code</code> The <code>listing</code> class is intended to hint at the possibility to style each line of code, eg. line numbers. View-source.</li>
-                        <li>There is a resource type, eg. <code>schema:Article</code> that can be found in <code>main > article</code> which is about the article. <code>body</code> may contain broad classes.</code></li>
+                        <li>There is a resource type, eg. <code>schema:Article</code> that can be found in <code>main &gt; article</code> which is about the article. <code>body</code> may contain broad classes.</li>
                       </ul>
                     </dd>
 
