@@ -4694,7 +4694,7 @@ WHERE {\n\
       var prefix = ('prefixes' in options && Object.keys(options.prefixes).length > 0) ? ' prefix="' + DO.U.getRDFaPrefixHTML(options.prefixes) + '"' : '';
 
       return '<!DOCTYPE html>\n\
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">\n\
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">\n\
   <head>\n\
     <meta charset="utf-8" />\n\
     <title>' + title + '</title>\n\
@@ -4851,7 +4851,7 @@ WHERE {\n\
               var targetIRIFragment = n.target.iri.substr(n.target.iri.lastIndexOf('#'));
               //TODO: Handle when there is no fragment
               if (typeof n.target.selector !== 'undefined') {
-                annotationTextSelector = '<div rel="oa:hasSelector" resource="i:#fragment-selector" typeof="oa:FragmentSelector"><dl class="conformsto"><dt>Fragment selector conforms to</dt><dd><a property="rdf:value" content="' + targetIRIFragment + '" xml:lang="" lang="" rel="dcterms:conformsTo" resource="https://tools.ietf.org/html/rfc3987">RFC 3987</a></dd></dl><dl rel="oa:refinedBy" resource="i:#text-quote-selector" typeof="oa:TextQuoteSelector"><dt>Refined by</dt><dd><span property="oa:prefix" xml:lang="en" lang="en">' + n.target.selector.prefix + '</span><mark property="oa:exact" xml:lang="en" lang="en">' + n.target.selector.exact + '</mark><span property="oa:suffix" xml:lang="en" lang="en">' + n.target.selector.suffix + '</span></dd></dl></div>';
+                annotationTextSelector = '<div rel="oa:hasSelector" resource="i:#fragment-selector" typeof="oa:FragmentSelector"><dl class="conformsto"><dt>Fragment selector conforms to</dt><dd><a content="' + targetIRIFragment + '" lang="" property="rdf:value" rel="dcterms:conformsTo" resource="https://tools.ietf.org/html/rfc3987" xml:lang="">RFC 3987</a></dd></dl><dl rel="oa:refinedBy" resource="i:#text-quote-selector" typeof="oa:TextQuoteSelector"><dt>Refined by</dt><dd><span lang="en" property="oa:prefix" xml:lang="en">' + n.target.selector.prefix + '</span><mark lang="en" property="oa:exact" xml:lang="en">' + n.target.selector.exact + '</mark><span lang="en" property="oa:suffix" xml:lang="en">' + n.target.selector.suffix + '</span></dd></dl></div>';
               }
             }
             else if(typeof n.inReplyTo !== 'undefined' && 'iri' in n.inReplyTo) {
