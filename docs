@@ -76,11 +76,18 @@
               <section id="dokieli-documents" inlist="" rel="schema:hasPart" resource="#dokieli-documents">
                 <h3 property="schema:name">dokieli documents</h3>
                 <div datatype="rdf:HTML" property="schema:description">
-                  <p>There is no RDF class or metadata in <em>articles</em> that would indicate that it is a "dokieli" document. They would contain classes like <samp>schema:CreativeWork sioc:Post prov:Entity schema:Article</samp> but that's not unique to dokieli (it could be any document).</p>
+                  <p>Is there such thing as a "dokieli" document? Must there be?</p>
 
-                  <p>In <em>annotations</em>, it is possible to know that the article was rendered by dokieli: <code>?s oa:renderedVia &lt;https://dokie.li/&gt;</code>), and we can assume that the annotation was created by it as well.</p>
+                  <dl>
+                    <dt>Article</dt>
+                    <dd>An article may contain RDF classes like <samp>schema:CreativeWork sioc:Post prov:Entity schema:Article</samp>, otherwise, there is no unique data that would indicate that it is a "dokieli" document. If the HTML+RDFa representation includes do.js and the DOM is ready, the <code>DO</code>: <code>Object { C: {…}, U: {…} }</code> will be available.</dd>
 
-                  <p>Nothing in <em>notifications</em> would indicate that it was created by dokieli.</p>
+                    <dt>Annotation</dt>
+                    <dd>An annotation has the <code>oa:Annotation</code> class. It is possible to know that the article was rendered by dokieli: <code>?s oa:renderedVia &lt;https://dokie.li/&gt;</code>, and we can assume that the annotation was created by it as well. This is not strictly true since that property could have been put there by something else. Annotations represented in HTML+RDFa do not include do.js.</dd>
+
+                    <dt>Notification</dt>
+                    <dd>A notification may have one of the following classes: <code>as:Announce</code>, <code>as:Like</code>, <code>as:Dislike</code>, <code>as:Relationship</code>. Notifications represented in HTML+RDFa do not include do.js.</dd>
+                  </dl>
                 </div>
               </section>
 
