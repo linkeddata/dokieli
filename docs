@@ -127,6 +127,9 @@
                       </figure>
                     </dd>
 
+                    <dt id="html-aside">Aside</dt>
+                    <dd><code>aside</code>s tend to appear as the last element node in <code>section</code>. Similar to node pattern to <code>section</code>s otherwise.</dd>
+
                     <dt id="html-divs">Divisions</dt>
                     <dd><code>div</code>s within <code>section</code> are used to wrap a block of arbitrary markup and content. See also RDFa below.</dd>
 
