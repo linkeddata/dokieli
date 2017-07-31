@@ -4851,7 +4851,7 @@ WHERE {\n\
               var targetIRIFragment = n.target.iri.substr(n.target.iri.lastIndexOf('#'));
               //TODO: Handle when there is no fragment
               if (typeof n.target.selector !== 'undefined') {
-                annotationTextSelector = '<span rel="oa:hasSelector" resource="i:#fragment-selector" typeof="oa:FragmentSelector"><meta property="rdf:value" content="' + targetIRIFragment + '" xml:lang="" lang="" rel="dcterms:conformsTo" resource="https://tools.ietf.org/html/rfc3987" /><span rel="oa:refinedBy" resource="i:#text-quote-selector" typeof="oa:TextQuoteSelector"><span property="oa:prefix" xml:lang="en" lang="en">' + n.target.selector.prefix + '</span><mark property="oa:exact" xml:lang="en" lang="en">' + n.target.selector.exact + '</mark><span property="oa:suffix" xml:lang="en" lang="en">' + n.target.selector.suffix + '</span></span></span>';
+                annotationTextSelector = '<div rel="oa:hasSelector" resource="i:#fragment-selector" typeof="oa:FragmentSelector"><dl class="conformsto"><dt>Fragment selector conforms to</dt><dd><a property="rdf:value" content="' + targetIRIFragment + '" xml:lang="" lang="" rel="dcterms:conformsTo" resource="https://tools.ietf.org/html/rfc3987">RFC3987</a></dd></dl><dl rel="oa:refinedBy" resource="i:#text-quote-selector" typeof="oa:TextQuoteSelector"><dt>Refined by</dt><dd><span property="oa:prefix" xml:lang="en" lang="en">' + n.target.selector.prefix + '</span><mark property="oa:exact" xml:lang="en" lang="en">' + n.target.selector.exact + '</mark><span property="oa:suffix" xml:lang="en" lang="en">' + n.target.selector.suffix + '</span></dd></div>';
               }
             }
             else if(typeof n.inReplyTo !== 'undefined' && 'iri' in n.inReplyTo) {
