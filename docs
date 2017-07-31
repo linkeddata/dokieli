@@ -94,6 +94,8 @@
               <section id="html-patterns" inlist="" rel="schema:hasPart" resource="#html-patterns">
                 <h3 property="schema:name">HTML patterns</h3>
                 <div datatype="rdf:HTML" property="schema:description">
+                  <p>Some general HTML design patterns:</p>
+
                   <dl>
                     <dt id="html-markup-syntax">Markup syntax</dt>
                     <dd>HTML5 <cite><a href="https://www.w3.org/TR/html-polyglot/" rel="cito:citesAsAuthority">Polyglot Markup</a></cite> is used to ensure that when content is processed or served as HTML or XHTML (<code>text/html</code>, <code>application/xhtml+xml</code>), they can generally be used in both HTML and XML ecosystems without further intervention. See also <code>getDocument</code> (do.js) for details on DOM normalisation.</dd>
@@ -129,9 +131,17 @@
                     <dd>Some of the prefixes (<code>@prefix</code>) on the <code>body</code> element are defined in the <cite><a href="https://www.w3.org/2011/rdfa-context/rdfa-1.1.html">RDFa Core Initial Context</a></cite>. These prefixes are defined in dokieli for the purpose of being compact, robust, and to minimise potential errors for consumers.</dd>
                   </dl>
 
-                  <p>Article.. TODO</p>
-                  <figure class="listing">
-                  <pre><code>&lt;!DOCTYPE html&gt;</code>
+                  <p id="future-template">There is a work in progress to have a distribution version of dokeli, requiring only do.css and do.js in templates.</p>
+
+                  <section id="html-article" rel="schema:hasPart" resource="#html-article">
+                    <h4 property="schema:name">Article.. TODO</h4>
+                    <div property="schema:description">
+                      <p>asdfdsaf </p>
+
+
+
+                      <figure class="listing">
+                        <pre><code>&lt;!DOCTYPE html&gt;</code>
 <code>&lt;html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"&gt;</code>
 <code>  &lt;head&gt;</code>
 <code>    &lt;meta charset="utf-8" /&gt;</code>
@@ -154,12 +164,10 @@
 <code></code>
 <code>  &lt;/body&gt;</code>
 <code>&lt;/html&gt;</code></pre>
-                    <figcaption>Article HTML template</figcaption>
-                  </figure>
-
-                  <aside>
-                    <p>Future HTML template will only require do.css and do.js</p>
-                  </aside>
+                        <figcaption>Article HTML template</figcaption>
+                      </figure>
+                    </div>
+                  </section>
 
 
                   <p>Annotation:</p>
@@ -200,7 +208,7 @@
           <section id="web-extension" inlist="" rel="schema:hasPart" resource="#web-extension">
             <h2 property="schema:name">Web Extension</h2>
             <div datatype="rdf:HTML" property="schema:description">
-              <p>The dokieli <cite>Web Extension</cite> is a minimal package of dokieli which contains the core CSS and JavaScript that works as a browser add-on. When user triggers it from their browser toolbar, it provides the same functionality as a <cite>single-page application</cite>, i.e. initialised and rendered in the browser DOM. Currently the extension works with Firefox and Chrome/Chromium browsers. For Firefox, the extension can be packaged with <samp>xpi-pack</samp> and imported from the <cite>Add-ons Manager</cite>. For Chrome/Chromium, the directory can be imported from <cite>Extensions</cite> (developer mode). Alternatively, the extensions are available from <cite><a href="https://addons.mozilla.org/en-US/firefox/addon/dokieli/">Add-ons for Firefox</a></cite> and <cite><a href="https://chrome.google.com/webstore/detail/ddmhaonbhodhgkaljpjlglodncddalid">Chrome Web Store</a></cite>.</p>
+              <p>The dokieli <cite><a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions">Web Extension</a></cite> is a minimal package of dokieli which contains the core CSS and JavaScript that works as a browser add-on. When user triggers it from their browser toolbar, it provides the same functionality as a <cite>single-page application</cite>, i.e. initialised and rendered in the browser DOM. Currently the extension works with Firefox and Chrome/Chromium browsers. For Firefox, the extension can be packaged with <samp>xpi-pack</samp> and imported from the <cite>Add-ons Manager</cite>. For Chrome/Chromium, the directory can be imported from <cite>Extensions</cite> (developer mode). Alternatively, the extensions are available from <cite><a href="https://addons.mozilla.org/en-US/firefox/addon/dokieli/">Add-ons for Firefox</a></cite> and <cite><a href="https://chrome.google.com/webstore/detail/ddmhaonbhodhgkaljpjlglodncddalid">Chrome Web Store</a></cite>.</p>
             </div>
           </section>
 
