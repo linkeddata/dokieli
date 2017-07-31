@@ -141,7 +141,7 @@
                   <section id="html-article" rel="schema:hasPart" resource="#html-article">
                     <h4 property="schema:name">Article.. TODO</h4>
                     <div property="schema:description">
-                      <p>.</p>
+                      <p>See also <code>createNoteDataHTML</code> in do.js</p>
 
                       <figure class="listing">
                         <pre><code>&lt;!DOCTYPE html&gt;</code>
@@ -178,6 +178,8 @@
                       <p>Annotations have their own URL, fetched, parsed, and then introduced into the DOM. They are normally appended at the bottom of a node (<code>section</code>) in which the annotation has a reference to. It is not required to introduce all of the annotation content into the DOM, nor all of it has to be human-visible. This is a run-time inclusion and typically included within <code>&lt;aside class="note do"&gt;&lt;/aside&gt;</code>. Write operations like <cite>Save</cite>, <cite>Save As</cite>, <cite>Snapshot</cite> (export) will exclude this (<code>class~="do"</code>) when it normalises the DOM to HTML.</p>
 
                       <p>Currently dokieli uses <cite><a href="https://www.w3.org/TR/annotation-vocab/#replying">oa:replying</a></cite>, <cite><a href="https://www.w3.org/TR/annotation-vocab/#commenting">oa:commenting</a></cite>, <cite><a href="https://www.w3.org/TR/annotation-vocab/#describing">oa:describing</a></cite>, <cite><a href="https://www.w3.org/TR/annotation-vocab/#assessing">oa:assessing</a></cite>, <cite><a href="https://www.w3.org/TR/annotation-vocab/#bookmarking">oa:bookmarking</a></cite> for <em>motivations</em>, and <cite><a href="https://www.w3.org/TR/annotation-vocab/#describing">oa:describing</a></cite> and <cite><a href="https://www.w3.org/TR/annotation-vocab/#tagging">oa:tagging</a></cite> for annotation <em>purpose</em>.</p>
+
+                      <p>See also <code>createNoteDataHTML</code> in do.js</p>
 
                       <p>Here an annotation resource:</p>
 
