@@ -172,10 +172,85 @@
                     </div>
                   </section>
 
+                  <section id="html-annotation" rel="schema:hasPart" resource="#html-annotation">
+                    <h4 property="schema:name">Annotation</h4>
+                    <div property="schema:description">
+                      <p>An annotation resource is along these lines:</p>
 
-                  <p>Annotation:</p>
-<pre>
-</pre>
+                      <figure class="listing">
+                      <pre><code>&lt;!DOCTYPE html&gt;</code>
+<code>&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;</code>
+<code>  &lt;head&gt;</code>
+<code>    &lt;meta charset="utf-8" /&gt;</code>
+<code>    &lt;title&gt;https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f&lt;/title&gt;</code>
+<code>  &lt;/head&gt;</code>
+<code>  &lt;body&gt;</code>
+<code>    &lt;main&gt;</code>
+<code>      &lt;article id="b6738766-3ce5-4054-96a9-ced7f05b439f" about="i:" typeof="oa:Annotation" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: http://schema.org/ dcterms: http://purl.org/dc/terms/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# i: https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f"&gt;</code>
+<code>        &lt;h1 property="schema:name"&gt;Sarven Capadisli &lt;span rel="oa:motivatedBy" resource="oa:replying"&gt;replies&lt;/span&gt;&lt;/h1&gt;</code>
+<code></code>
+<code>        &lt;dl class="author-name"&gt;</code>
+<code>          &lt;dt&gt;Authors&lt;/dt&gt;</code>
+<code>          &lt;dd&gt;&lt;span rel="schema:creator"&gt;&lt;span about="http://csarven.ca/#i" typeof="schema:Person"&gt;&lt;img alt="" height="48" rel="schema:image" src="http://csarven.ca/media/images/sarven-capadisli.jpg" width="48" /&gt; &lt;a href="http://csarven.ca/" rel="schema:url"&gt;&lt;span about="http://csarven.ca/#i" property="schema:name"&gt;Sarven Capadisli&lt;/span&gt;&lt;/a&gt;&lt;/span&gt;&lt;/span&gt;&lt;/dd&gt;</code>
+<code>        &lt;/dl&gt;</code>
+<code></code>
+<code>        &lt;dl class="published"&gt;</code>
+<code>          &lt;dt&gt;Published&lt;/dt&gt;</code>
+<code>          &lt;dd&gt;&lt;a href="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f"&gt;&lt;time datetime="2017-04-15T21:24:58.293Z" datatype="xsd:dateTime" property="schema:datePublished" content="2017-04-15T21:24:58.293Z"&gt;2017-04-15 21:24:58&lt;/time&gt;&lt;/a&gt;</code>
+<code>          &lt;/dd&gt;</code>
+<code>        &lt;/dl&gt;</code>
+<code></code>
+<code>        &lt;dl class="rights"&gt;</code>
+<code>          &lt;dt&gt;Rights&lt;/dt&gt;</code>
+<code>          &lt;dd&gt;&lt;a href="https://creativecommons.org/licenses/by/4.0/" rel="dcterms:rights" title="Creative Commons Attribution"&gt;CC BY 4.0&lt;/a&gt;&lt;/dd&gt;</code>
+<code>        &lt;/dl&gt;</code>
+<code></code>
+<code>        &lt;dl class="canonical"&gt;</code>
+<code>          &lt;dt&gt;Canonical&lt;/dt&gt;</code>
+<code>          &lt;dd about="i:" rel="oa:canonical" resource="urn:uuid:48355bb0-0afd-4f73-9a18-f1e8b6fb415b"&gt;48355bb0-0afd-4f73-9a18-f1e8b6fb415b&lt;/dd&gt;</code>
+<code>        &lt;/dl&gt;</code>
+<code></code>
+<code>        &lt;dl class="target"&gt;</code>
+<code>          &lt;dt&gt;&lt;a href="http://csarven.ca/dokieli-rww#abstract" rel="oa:hasTarget"&gt;In reply to&lt;/a&gt; (&lt;a about="http://csarven.ca/dokieli-rww#abstract" href="http://csarven.ca/dokieli-rww" rel="oa:hasSource" typeof="oa:SpecificResource"&gt;part of&lt;/a&gt;)&lt;/dt&gt;</code>
+<code>          &lt;dd&gt;</code>
+<code>            &lt;blockquote about="http://csarven.ca/dokieli-rww#abstract" cite="http://csarven.ca/dokieli-rww#abstract"&gt;</code>
+<code>              &lt;div rel="oa:hasSelector" resource="i:#fragment-selector" typeof="oa:FragmentSelector"&gt;</code>
+<code>                &lt;dl class="conformsto"&gt;</code>
+<code>                  &lt;dt&gt;Fragment selector conforms to&lt;/dt&gt;</code>
+<code>                  &lt;dd&gt;&lt;a property="rdf:value" content="#abstract" xml:lang="" lang="" rel="dcterms:conformsTo" href="https://tools.ietf.org/html/rfc3987"&gt;RFC3987&lt;/a&gt;&lt;/dd&gt;</code>
+<code>                &lt;/dl&gt;</code>
+<code></code>
+<code>                &lt;dl class="refinedby" rel="oa:refinedBy" resource="i:#text-quote-selector" typeof="oa:TextQuoteSelector"&gt;</code>
+<code>                  &lt;dt&gt;Refined by&lt;/dt&gt;</code>
+<code>                  &lt;dd&gt;&lt;span property="oa:prefix" xml:lang="en" lang="en"&gt;rchitecture and implementation, &lt;/span&gt;&lt;mark property="oa:exact" xml:lang="en" lang="en"&gt;demonstrating advanced document authoring and interaction without a single point of control&lt;/mark&gt;&lt;span property="oa:suffix" xml:lang="en" lang="en"&gt;. Such an environment provides t&lt;/span&gt;&lt;/dd&gt;</code>
+<code>                &lt;/dl&gt;</code>
+<code>              &lt;/div&gt;</code>
+<code>            &lt;/blockquote&gt;</code>
+<code>          &lt;/dd&gt;</code>
+<code>        &lt;/dl&gt;</code>
+<code></code>
+<code>        &lt;dl class="renderedvia"&gt;</code>
+<code>          &lt;dt&gt;Rendered via&lt;/dt&gt;</code>
+<code>          &lt;dd&gt;&lt;a about="http://csarven.ca/dokieli-rww#abstract" href="https://dokie.li/" rel="oa:renderedVia"&gt;dokieli&lt;/a&gt;&lt;/dd&gt;</code>
+<code>        &lt;/dl&gt;</code>
+<code></code>
+<code>        &lt;section id="note-b6738766-3ce5-4054-96a9-ced7f05b439f" rel="oa:hasBody" resource="i:#note-b6738766-3ce5-4054-96a9-ced7f05b439f"&gt;</code>
+<code>          &lt;h2 property="schema:name"&gt;Note&lt;/h2&gt;</code>
+<code>          &lt;div datatype="rdf:HTML" property="rdf:value schema:description" resource="i:#note-b6738766-3ce5-4054-96a9-ced7f05b439f" typeof="oa:TextualBody"&gt;What are you trying to tell me? That I can dodge bullets?&lt;/div&gt;</code>
+<code>          &lt;dl class="rights"&gt;</code>
+<code>            &lt;dt&gt;Rights&lt;/dt&gt;</code>
+<code>            &lt;dd&gt;&lt;a href="https://creativecommons.org/licenses/by/4.0/" rel="dcterms:rights" title="Creative Commons Attribution"&gt;CC BY 4.0&lt;/a&gt;&lt;/dd&gt;</code>
+<code>          &lt;/dl&gt;</code>
+<code>        &lt;/section&gt;</code>
+<code>      &lt;/article&gt;</code>
+<code>    &lt;/main&gt;</code>
+<code>  &lt;/body&gt;</code>
+<code>&lt;/html&gt;</code></pre>
+                        <figcaption>Annotation HTML template</figcaption>
+                      </figure>
+                    </div>
+                  </section>
+
 
                   <p>Notification:</p>
 <pre></pre>
