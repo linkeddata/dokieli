@@ -108,6 +108,8 @@ These libraries *optional* when dokieli is used as single-page application:
 * [Sandro Hawke](https://github.com/sandhawke)
 * [Amy van der Hiel](https://github.com/amyvdh)
 * [Henry Story](https://github.com/bblfish)
+* [Benjamin Young](https://github.com/bigbluehat)
+* [Gerben Treora](https://github.com/treora)
 
 ## How to contribute
 * Use it. Break it. Report it. Fix it! See [issues](https://github.com/linkeddata/dokieli/issues/).
