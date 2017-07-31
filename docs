@@ -138,8 +138,10 @@
                     </div>
                   </div>
 
+                  <p>Servers should use <code>UTF-8</code> character encoding in their HTTP responses to articles, annotations, and notifications. <code>&lt;meta charset="utf-8" /&gt;</code> is used in HTML.</p>
+
                   <section id="html-article" rel="schema:hasPart" resource="#html-article">
-                    <h4 property="schema:name">Article.. TODO</h4>
+                    <h4 property="schema:name">Article</h4>
                     <div property="schema:description">
                       <p>See also <code>createNoteDataHTML</code> in do.js</p>
 
