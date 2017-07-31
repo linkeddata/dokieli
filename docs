@@ -131,14 +131,17 @@
                     <dd>Some of the prefixes (<code>@prefix</code>) on the <code>body</code> element are defined in the <cite><a href="https://www.w3.org/2011/rdfa-context/rdfa-1.1.html">RDFa Core Initial Context</a></cite>. These prefixes are defined in dokieli for the purpose of being compact, robust, and to minimise potential errors for consumers.</dd>
                   </dl>
 
-                  <p id="future-template">There is a work in progress to have a distribution version of dokeli, requiring only do.css and do.js in templates.</p>
+                  <div class="note">
+                    <h4>Note</h4>
+                    <div>
+                      <p>There is a <em>work in progress</em> to have a distribution version of dokeli, requiring only <samp>do.css</samp> and <samp>do.js</samp> in templates.</p>
+                    </div>
+                  </div>
 
                   <section id="html-article" rel="schema:hasPart" resource="#html-article">
                     <h4 property="schema:name">Article.. TODO</h4>
                     <div property="schema:description">
-                      <p>asdfdsaf </p>
-
-
+                      <p>.</p>
 
                       <figure class="listing">
                         <pre><code>&lt;!DOCTYPE html&gt;</code>
