@@ -37,7 +37,7 @@ h1 {
 }
 h2 { font-size: 1.4em; line-height:1; }
 h3 { font-size: 1.2em; line-height:0.8; margin-top: 2em ;}
-h4 { font-size: 1.2em; font-style: italic; }
+h4 { font-size: 1.1em; margin:1.5em auto 0 auto; }
 section article h1,
 section article h2,
 section article h3 {
@@ -246,9 +246,10 @@ ul { padding: 0; margin-bottom:1em; list-style-position: inside; }
 nav ul { list-style: none; }
 dt { font-weight: bold; }
 
-h3 + div section:before,
+/*h3 + div section:before,*/
 section + p:before,
-section + dl:before {
+section + dl:before,
+section + div:before {
 content:"\A";
 white-space:pre;
 }
@@ -322,6 +323,26 @@ padding:1em;
 aside.note.do blockquote article section {
 margin:0;
 }
+
+div.issue, div.note {
+background-color:#fbfffb;
+border-left:0.5em solid #009000;
+padding: 1em 1.2em 0.5em;
+
+}
+div.issue h4, div.note h4 {
+/*text-transform: uppercase;*/
+/*font-weight:normal;*/
+margin:0;
+}
+div.issue h4 {
+color:#ae1e1e;
+}
+div.note h4 {
+color:#009000;
+}
+
+
 
 tfoot dl.abbr dt,
 tfoot dl.abbr dd {
