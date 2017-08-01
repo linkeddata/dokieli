@@ -210,7 +210,7 @@
                       <p>Here is an annotation resource at <a href="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f">https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f</a> with all information human-visible and machine-readable (HTML+RDFa):</p>
 
                       <figure>
-                        <object data="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f" height="700" type="text/html" width="100%"></object>
+                        <object data="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f" height="680" type="text/html" width="100%"></object>
                         <figcaption>A reply Web Annotation with replying motivation</figcaption>
                       </figure>
 
@@ -301,7 +301,14 @@
 
                       <p>See also <code>createNoteDataHTML</code> in do.js</p>
 
-                      <p>Here a notification resource:</p>
+                      <p>Here is a notification resource at <a href="https://linkedresearch.org/inbox/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f">https://linkedresearch.org/inbox/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f</a> with all information human-visible and machine-readable (HTML+RDFa):</p>
+
+                      <figure>
+                        <object data="https://linkedresearch.org/inbox/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f" height="420" type="text/html" width="100%"></object>
+                        <figcaption>A notification referring to an annotation</figcaption>
+                      </figure>
+
+                      <p>Its source:</p>
 
                       <figure class="listing">
                         <pre><code>&lt;!DOCTYPE html&gt;</code>
