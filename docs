@@ -114,23 +114,23 @@
                       </ul>
                     </dd>
 
-                    <dt id="html-sections">Sections</dt>
+                    <dt id="html-section">Section</dt>
                     <dd>Sectioning is declared with <code>section</code> and typically have a heading, eg <code>h2</code> as its first child. Subsections may appear as a child of parent <code>section</code>, or as a child of <code>div</code> (which is a child of parent <code>section</code>), i.e. <code>section section</code> or <code>section div section</code>. The headings of subsections are enumerated eg. <code>section h2</code> would have a subsection with <code>section h3</code>. Sections <code>id</code>s and heading text are used to dynamically build the table of contents.
-                      <figure>
-                        <pre><code class="highlight-section">&lt;section&gt;</code>
+                      <figure class="listing" id="#html-section-source" rel="schema:hasPart" resource="#html-section-source">
+                        <pre about="#html-section-source" property="schema:description" typeof="fabio:Script"><code class="highlight-section">&lt;section&gt;</code>
 <samp class="highlight-h2">&lt;h2&gt;</samp>
 <code class="highlight-div">&lt;div&gt;</code>
   <code class="highlight-section">&lt;section&gt;</code>
     <samp class="highlight-h3">&lt;h3&gt;</samp>
     <code class="highlight-div">&lt;div&gt;</code></pre>
-                        <figcaption><samp class="highlight-h2">h2</samp> and <samp class="highlight-h3">h3</samp> are used for <code class="highlight-section">section</code> titles, <code class="highlight-div">div</code> as a typical wrapper for descriptions, as well as to contain further sub-sectioned content.</figcaption>
+                        <figcaption property="schema:name"><samp class="highlight-h2">h2</samp> and <samp class="highlight-h3">h3</samp> are used for <code class="highlight-section">section</code> titles, <code class="highlight-div">div</code> as a typical wrapper for descriptions, as well as to contain further sub-sectioned content.</figcaption>
                       </figure>
                     </dd>
 
                     <dt id="html-aside">Aside</dt>
                     <dd><code>aside</code>s tend to appear as the last element node in <code>section</code>. Similar to node pattern to <code>section</code>s otherwise.</dd>
 
-                    <dt id="html-divs">Divisions</dt>
+                    <dt id="html-div">Division</dt>
                     <dd><code>div</code>s within <code>section</code> are used to wrap a block of arbitrary markup and content. See also RDFa below.</dd>
 
 
