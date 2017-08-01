@@ -354,7 +354,7 @@
 <code>    &lt;/main&gt;</code>
 <code>  &lt;/body&gt;</code>
 <code>&lt;/html&gt;</code></pre>
-                        <figcaption property="schema:name">Notification HTML template</figcaption>
+                        <figcaption property="schema:name">Example notification HTML</figcaption>
                       </figure>
                     </div>
                   </section>
