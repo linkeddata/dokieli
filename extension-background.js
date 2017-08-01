@@ -41,7 +41,7 @@ function load_dokieli(tab) {
 function show_Menu(tab) {
   browser.tabs.sendMessage(tab.id, {action: "dokieli.menu", webid:g_webid},
     function(response) {
-  });  
+  });
 }
 
 browser.browserAction.onClicked.addListener(function(tab){
@@ -75,7 +75,7 @@ browser.browserAction.onClicked.addListener(function(tab){
 browser.runtime.onMessage.addListener(function(request, sender, sendResponse){
   try {
     if (request.property == "webid" && g_webid) {
-      sendResponse({"webid":g_webid}); 
+      sendResponse({"webid":g_webid});
     }
     else {
       sendResponse({}); /* stop */

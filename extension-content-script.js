@@ -6,7 +6,7 @@ browser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   var initialized = (DO!==undefined && DO.U!==undefined && g_loaded);
   try {
     if (request.action == "dokieli.status") {
-      sendResponse({"dokieli":initialized}); 
+      sendResponse({"dokieli":initialized});
     }
     else if (request.action == "dokieli.menu") {
       var iri = null;
@@ -28,7 +28,7 @@ browser.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         }
         catch(e) {
           console.log("dokieli:"+e);
-        } 
+        }
       }
 
       if (iri && (cur_webid==null || cur_webid!=iri)) {
