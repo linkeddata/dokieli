@@ -328,7 +328,8 @@ vertical-align:top;
 aside button.delete {
 display:block;
 border:0;
-background-color:#fff;
+background-color:#fff !important;
+color:#000 !important;
 padding:0;
 margin:0;
 font-size:1em;
@@ -341,15 +342,6 @@ width:100%;
 max-width:none;
 margin:0;
 padding:0;
-}
-
-#document-menu section button:hover {
-background-color:#eee;
-cursor:pointer;
-}
-#document-menu section button[disabled]:hover {
-background-color:inherit;
-cursor:default;
 }
 
 #document-menu ul,
@@ -366,7 +358,22 @@ display:none;
 width:33.33%;
 height:5em;
 float:left;
+color:#000 !important;
+background-color:#fff !important;
 }
+#document-menu section button:hover {
+background-color:#eee !important;
+cursor:pointer !important;
+}
+#document-menu section button[disabled] {
+color:#777 !important;
+background-color:#fff !important;
+}
+#document-menu section button[disabled]:hover {
+/*background-color:inherit !important;*/
+cursor:default !important;
+}
+
 #document-menu section button .fa {
 display:block;
 margin-bottom:0.25em;
