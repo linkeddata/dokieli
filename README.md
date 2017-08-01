@@ -17,6 +17,10 @@ An extended description of its design and architecture is available here:
 [Decentralised Authoring, Annotations and Notifications for a Read-Write-Web
 with dokieli](http://csarven.ca/dokieli-rww)
 
+## Documentation
+See the [documentation](https://dokie.li/docs) for developers and authors. It
+explains dokieli's principles, architectural and design patterns.
+
 
 ## Features
 * In-browser document authoring and formatting, and semantic enrichments (RDFa annotations)
