@@ -1,6 +1,4 @@
 
-var DO_extension = true;
-
 (function () {
 
   var g_loaded = false;
