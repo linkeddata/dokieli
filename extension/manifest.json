@@ -24,12 +24,12 @@
     {
       "matches": ["file:///*/*","*://*/*"],
       "js": [
+             "browser.js",
+             "extension-content-script.js",
              "scripts/simplerdf.js", 
              "scripts/medium-editor.min.js", 
              "scripts/medium-editor-tables.min.js",
-             "scripts/do.js",
-             "browser.js",
-             "extension-content-script.js"
+             "scripts/do.js"
              ],
       "run_at": "document_idle"
     }

@@ -9247,13 +9247,12 @@ WHERE {\n\
     initExtensionMode: function() {
         if(document.body) {
             DO.C.Extension = true;
-            DO.C.Editor.ButtonLabelType = 'fontawesome';
+            DO.U.initCurrentStylesheet();
             DO.U.setPolyfill();
             DO.U.setDocRefType();
             DO.U.showRefs();
             DO.U.setLocalDocument();
             DO.U.buttonClose();
-//            DO.U.buttonCloseMenu();
             DO.U.highlightItems();
             DO.U.showDocumentInfo();
             DO.U.showFragment();
