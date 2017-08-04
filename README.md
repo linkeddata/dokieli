@@ -11,11 +11,13 @@ interoperability.
 
 It can be used as a:
 * single-page application - open any dokieli article
-* browser extension - import this repository in your Web browser
+* browser extension - import this repository in your Web browser or install Web
+Extension from [Add-ons for Firefox](https://addons.mozilla.org/en-US/firefox/addon/dokieli/)
+or [Chrome Web Store](https://chrome.google.com/webstore/detail/ddmhaonbhodhgkaljpjlglodncddalid)
 
 ## Documentation
-* For brave developers and authors: see the [documentation](https://dokie.li/docs)
-that explains dokieli's principles, architectural and design patterns.
+* For brave developers and authors: the canonical [documentation](https://dokie.li/docs)
+explains dokieli's principles, architectural and design patterns.
 * For academics: [Decentralised Authoring, Annotations and Notifications for a Read-Write-Web with dokieli](http://csarven.ca/dokieli-rww)
 
 
