@@ -2531,7 +2531,7 @@ var DO = {
 
       var iri = DO.U.stripFragmentFromString(document.location.href);
 
-      document.body.insertAdjacentHTML('beforeend', '<aside id="snapshot-document" class="do on"><button class="close" title="Close">❌</button><h2>Snapshot Document</h2><p><code>' + iri + '</code></p><ul><li><button class="export-as-html">Export</button> HTML</li><li><button class="snapshot-internet-archive">Send</button> to <a href="https://archive.org/" target="_blank">Internet Archive</a></li></ul></aside>');
+      document.body.insertAdjacentHTML('beforeend', '<aside id="snapshot-document" class="do on"><button class="close" title="Close">❌</button><h2>Snapshot Document</h2><p><code>' + iri + '</code> will be snapshot. Note that behaviour differ for each action. See the links for more information.</p><ul><li><button class="export-as-html">Export</button> this article as HTML and save to file.</li><li><a href="http://web.archive.org/" target="_blank">Internet Archive</a>: <button class="snapshot-internet-archive">Capture</button> all crawlable resources referenced in this article.</li></ul></aside>');
 
       var snapshotDocument = document.getElementById('snapshot-document');
       snapshotDocument.addEventListener('click', function(e) {
