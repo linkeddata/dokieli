@@ -2505,7 +2505,7 @@ var DO = {
               case 'https://pragma.archivelab.org': default:
                 if('wayback_id' in response && response.wayback_id.length > 0){
                   var location = 'https://web.archive.org' + response.wayback_id;
-                  archiveNode.innerHTML = 'Archived <span class="progress"><a target="_blank" href="' + location + '"><i class="fa fa-check-circle fa-fw"></i></a></span>';
+                  archiveNode.innerHTML = '<i class="fa fa-archive fa-fw"></i> Archived at <a target="_blank" href="' + location + '">' + location + '</a>';
                 }
                 else {
                   archiveNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to archive. Try later.';
