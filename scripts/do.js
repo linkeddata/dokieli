@@ -2453,8 +2453,7 @@ var DO = {
       document.body.removeChild(a);
     },
 
-    //TODO: Abstract a bit more eg loop through endpoints
-    snapshotAtEndpoint: function(e, iri, endpoint, options){
+    snapshotAtEndpoint: function(e, iri, endpoint, noteData, options){
       iri = iri || window.location.origin + window.location.pathname;
       endpoint = endpoint || 'https://pragma.archivelab.org';
       options = options || {};
@@ -2463,7 +2462,7 @@ var DO = {
         options["contentType"] = 'application/json';
       }
 
-      var noteData = {
+      noteData = noteData || {
         "url": iri,
         "annotation": {
           "@context": "http://www.w3.org/ns/anno.jsonld",
@@ -2502,13 +2501,19 @@ var DO = {
           try {
             var response = JSON.parse(i.xhr.responseText);
 
-            if('wayback_id' in response && response.wayback_id.length > 0){
-              var location = 'https://web.archive.org' + response.wayback_id;
-              archiveNode.innerHTML = 'Archived <span class="progress"><a target="_blank" href="' + location + '"><i class="fa fa-check-circle fa-fw"></i></a></span>';
+            switch(endpoint) {
+              case 'https://pragma.archivelab.org': default:
+                if('wayback_id' in response && response.wayback_id.length > 0){
+                  var location = 'https://web.archive.org' + response.wayback_id;
+                  archiveNode.innerHTML = 'Archived <span class="progress"><a target="_blank" href="' + location + '"><i class="fa fa-check-circle fa-fw"></i></a></span>';
+                }
+                else {
+                  archiveNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to archive. Try later.';
+                }
+
+                break;
             }
-            else {
-              archiveNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to archive. Try later.';
-            }
+
           }catch(e){
             archiveNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to archive. Try later.';
           }
@@ -2542,7 +2547,7 @@ var DO = {
           var options = {
             "contentType": 'application/json'
           };
-          DO.U.snapshotAtEndpoint(e, iri, 'https://pragma.archivelab.org', options);
+          DO.U.snapshotAtEndpoint(e, iri, 'https://pragma.archivelab.org', '', options);
         }
       });
     },
