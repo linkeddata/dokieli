@@ -2519,6 +2519,34 @@ var DO = {
       );
     },
 
+    snapshotDocument: function(e) {
+      if(typeof e !== 'undefined') {
+        e.target.disabled = true;
+      }
+
+      var iri = DO.U.stripFragmentFromString(document.location.href);
+
+      document.body.insertAdjacentHTML('beforeend', '<aside id="snapshot-document" class="do on"><button class="close" title="Close">❌</button><h2>Snapshot Document</h2><p><code>' + iri + '</code></p><ul><li><button class="export-as-html">Export</button> HTML</li><li><button class="snapshot-internet-archive">Send</button> to <a href="https://archive.org/" target="_blank">Internet Archive</a></li></ul></aside>');
+
+      var snapshotDocument = document.getElementById('snapshot-document');
+      snapshotDocument.addEventListener('click', function(e) {
+        if (e.target.matches('button.close')) {
+          document.querySelector('#document-do .resource-snapshot').disabled = false;
+        }
+
+        if (e.target.matches('button.export-as-html')) {
+          DO.U.exportAsHTML(e);
+        }
+
+        if(e.target.matches('button.snapshot-internet-archive')){
+          var options = {
+            "contentType": 'application/json'
+          };
+          DO.U.snapshotAtEndpoint(e, iri, 'https://pragma.archivelab.org', options);
+        }
+      });
+    },
+
     showDocumentDo: function(node) {
       if(document.querySelector('#document-do')) { return; }
 
