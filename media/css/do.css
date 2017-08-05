@@ -411,7 +411,9 @@ text-indent:0;
 content:'' !important;
 }
 
-
+#snapshot-document ul {
+list-style: disc none inside;
+}
 
 
 #document-do ul,
