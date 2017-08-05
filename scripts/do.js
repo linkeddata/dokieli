@@ -2453,6 +2453,72 @@ var DO = {
       document.body.removeChild(a);
     },
 
+    //TODO: Abstract a bit more eg loop through endpoints
+    snapshotAtEndpoint: function(e, iri, endpoint, options){
+      iri = iri || window.location.origin + window.location.pathname;
+      endpoint = endpoint || 'https://pragma.archivelab.org';
+      options = options || {};
+
+      if(!('contentType' in options)){
+        options["contentType"] = 'application/json';
+      }
+
+      var noteData = {
+        "url": iri,
+        "annotation": {
+          "@context": "http://www.w3.org/ns/anno.jsonld",
+          "@type": "Annotation",
+          "motivation": "linking",
+          "target": iri,
+          "rights": "https://creativecommons.org/publicdomain/zero/1.0/"
+        }
+      };
+
+      if (DO.C.User.IRI) {
+        noteData.annotation['creator'] = {};
+        noteData.annotation.creator["@id"] = DO.C.User.IRI;
+      }
+      if (DO.C.User.Name) {
+        noteData.annotation.creator["http://schema.org/name"] = DO.C.User.Name;
+      }
+      if (DO.C.User.Image) {
+        noteData.annotation.creator["http://schema.org/image"] = DO.C.User.Image;
+      }
+      if (DO.C.User.URL) {
+        noteData.annotation.creator["http://schema.org/url"] = DO.C.User.URL;
+      }
+
+      // if(note.length > 0) {
+      //   noteData.annotation["message"] = note;
+      // }
+
+      if(typeof e !== 'undefined' && e.target.closest('button')){
+        var archiveNode = e.target.closest('button').parentNode;
+        archiveNode.insertAdjacentHTML('beforeend', ' <span class="progress"><i class="fa fa-circle-o-notch fa-spin fa-fw"></i></span>');
+      }
+
+      DO.U.postResource(endpoint, '', JSON.stringify(noteData), options.contentType, '', {'noCredentials': true}).then(
+        function(i){
+          try {
+            var response = JSON.parse(i.xhr.responseText);
+
+            if('wayback_id' in response && response.wayback_id.length > 0){
+              var location = 'https://web.archive.org' + response.wayback_id;
+              archiveNode.innerHTML = 'Archived <span class="progress"><a target="_blank" href="' + location + '"><i class="fa fa-check-circle fa-fw"></i></a></span>';
+            }
+            else {
+              archiveNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to archive. Try later.';
+            }
+          }catch(e){
+            archiveNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to archive. Try later.';
+          }
+        },
+        function(reason){
+          archiveNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to archive. Try later.';
+        }
+      );
+    },
+
     showDocumentDo: function(node) {
       if(document.querySelector('#document-do')) { return; }
 
