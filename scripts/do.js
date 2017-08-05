@@ -2647,7 +2647,7 @@ var DO = {
         }
 
         if (e.target.closest('.resource-snapshot')) {
-          DO.U.exportAsHTML(e);
+          DO.U.snapshotDocument(e);
         }
 
         if (e.target.closest('.resource-print')) {
