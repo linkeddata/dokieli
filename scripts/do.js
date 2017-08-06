@@ -478,12 +478,12 @@ var DO = {
 
       var userImage = '';
       if ('Image' in DO.C.User && typeof DO.C.User.Image !== 'undefined' && DO.C.User.Image.length > 0) {
-        userImage = '<img alt="" height="48" rel="schema:image" src="' + DO.C.User.Image + '" width="48" />';
+        userImage = '<img alt="" height="48" rel="schema:image" src="' + DO.C.User.Image + '" width="48" /> ';
       }
 
       var user = ''
       if ('IRI' in DO.C.User && DO.C.User.IRI !== null && DO.C.User.IRI.length > 0) {
-        user = '<span about="' + DO.C.User.IRI + '" typeof="schema:Person">' + userImage + ' <a rel="schema:url" href="' + DO.C.User.IRI + '"> ' + userName + '</a></span>';
+        user = '<span about="' + DO.C.User.IRI + '" typeof="schema:Person">' + userImage + '<a rel="schema:url" href="' + DO.C.User.IRI + '"> ' + userName + '</a></span>';
       }
       else {
         user = '<span typeof="schema:Person">' + userName + '</span>';
