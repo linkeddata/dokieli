@@ -30,7 +30,7 @@
 
         <dl id="document-modified">
           <dt>Modified</dt>
-          <dd><time content="2017-07-29T00:00:00Z" datatype="xsd:dateTime" datetime="2017-07-20T00:00:00Z" property="schema:dateModified">2017-07-29</time></dd>
+          <dd><time content="2017-08-06T00:00:00Z" datatype="xsd:dateTime" datetime="2017-08-06T00:00:00Z" property="schema:dateModified">2017-08-06</time></dd>
         </dl>
 
         <dl id="document-license">
@@ -262,7 +262,27 @@
 <code>&lt;dd&gt;&lt;time datetime="2017-08-06T00:29:45.342Z"&gt;2017-08-06T00:29:45.342Z&lt;/time&gt;&lt;/dd&gt;</code>
 <code>&lt;/dl&gt;</code></pre>
 
-                      <p>If a document is derived from another like through dokieli's <cite>Save As</cite> operation, derived from and derived on information is declared.</p>
+                      <p>If a document is derived from another using the <cite>Save As</cite> operation, derived from and derived on information is declared.</p>
+
+                      <p>The markup for an anonymous profile is like:</p>
+<pre id="html-profile-anonymous"><code>&lt;span typeof="schema:Person"&gt;Lunatic Scholar&lt;/span&gt;</code></pre>
+
+                      <p>The markup for a WebID profile including their name:</p>
+<pre id="html-profile-iri-name"><code>&lt;span about="http://csarven.ca/#i" property="schema:name"&gt;Sarven Capadisli&lt;/span&gt;</code></pre>
+
+                      <p>If they have an image:</p>
+<pre id="html-profile-image"><code>&lt;img alt="" height="48" rel="schema:image" src="http://csarven.ca/media/images/sarven-capadisli.jpg" width="48" /&gt;</code></pre>
+
+                      <p>Progressively described name, image, and URL is useful in templates:</p>
+<pre id="html-profile-iri-name-image-enhanced"><code>&lt;span about="http://csarven.ca/#i" typeof="schema:Person"&gt;&lt;img alt="" height="48" rel="schema:image" src="http://csarven.ca/media/images/sarven-capadisli.jpg" width="48" /&gt; &lt;a href="http://csarven.ca/" rel="schema:url"&gt;&lt;span about="http://csarven.ca/#i" property="schema:name"&gt;Sarven Capadisli&lt;/span&gt;&lt;/a&gt;&lt;/span&gt;</code></pre>
+
+                      <p>Alternatively a pattern that follows the DRY principle:</p>
+<pre id="html-profile-iri-name-image-dry"><code>&lt;a about="http://csarven.ca/#i" href="http://csarven.ca/" property="schema:name" rel="schema:url" typeof="schema:Person"&gt;Sarven Capadisli&lt;/a&gt;</code></pre>
+
+                      <p>If they are one of the authors of a document, the profile can be wrapped like:</p>
+<pre id="html-profile-author"><code>&lt;dd id="Sarven-Capadisli" inlist="" rel="bibo:authorList" resource="http://csarven.ca/#i"&gt;&lt;span about="" rel="schema:creator schema:publisher schema:author"&gt;&lt;!-- profile --&gt;&lt;/span&gt;&lt;/dd&gt;</code></pre>
+
+                      <p>See also <code>getUserHTML</code> in do.js</p>
                     </div>
                   </section>
 
