@@ -498,7 +498,7 @@ font-size:1.4em;
 #document-menu .editor-disable,
 #document-menu .review-disable,
 #document-menu .local-storage-disable-html {
-background-color:#eee;
+background-color:#eee !important;
 }
 #document-menu .local-storage-disable-html {
 margin-right:0.25em;
