@@ -39,17 +39,17 @@
         </dl>
 
         <div id="content">
-          <section id="document-status" rel="schema:hasPart" resource="#document-status">
-            <h2 about="#document-status" property="schema:name" typeof="bibo:DocumentStatus">Document Status</h2>
-            <div datatype="rdf:HTML" property="schema:description">
-              <p>Living document.</p>
-            </div>
-          </section>
-
           <section id="abstract">
             <h2>Abstract</h2>
             <div datatype="rdf:HTML" property="schema:abstract">
               <p>This documentation is intended to help brave developers and authors. It explains dokieli's principles, architectural and design patterns.</p>
+            </div>
+          </section>
+
+          <section id="document-status" rel="schema:hasPart" resource="#document-status">
+            <h2 about="#document-status" property="schema:name" typeof="bibo:DocumentStatus">Document Status</h2>
+            <div datatype="rdf:HTML" property="schema:description">
+              <p>Living document.</p>
             </div>
           </section>
 
