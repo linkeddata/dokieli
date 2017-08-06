@@ -1377,18 +1377,18 @@ var DO = {
 
     //TODO: Refactor
     showUserIdentityInput: function(e) {
-      if (e) {
-        e.target.setAttribute('disabled', 'disabled');
+      if(typeof e !== 'undefined') {
+        e.target.disabled = true;
       }
       document.body.insertAdjacentHTML('beforeend', '<aside id="user-identity-input" class="do on"><button class="close" title="Close">❌</button><h2>Sign in with WebID</h2><label>HTTP(S) IRI</label> <input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="signin">Sign in</button></aside>');
       var buttonSignIn = document.querySelector('#user-identity-input button.signin');
       buttonSignIn.setAttribute('disabled', 'disabled');
-      document.querySelector('#user-identity-input button.close').addEventListener('click', function(e) {
-        var sU = document.querySelector('#document-menu button.signin-user');
-        if(sU) {
-          sU.removeAttribute('disabled');
+      document.querySelector('#user-identity-input').addEventListener('click', function(e) {
+        if (e.target.matches('button.close')) {
+          document.querySelector('#document-menu button.signin-user').disabled = false;
         }
       });
+
       var inputWebid = document.querySelector('#user-identity-input input#webid');
       buttonSignIn.addEventListener('click', DO.U.submitSignIn);
       ['keyup', 'cut', 'paste', 'input'].forEach(function(eventType) {
@@ -1560,6 +1560,7 @@ var DO = {
           sections[i].parentNode.removeChild(sections[i]);
         }
       };
+      dMenu.querySelector('button.signin-user').disabled = false;
       body.classList.remove('on-document-menu');
       dMenuButton.classList.remove('hide');
       dMenuButton.classList.add('show');
