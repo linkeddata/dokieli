@@ -236,6 +236,13 @@
 <code>&lt;/dl&gt;</code></pre>
 
                       <p>Dates, you know.. kinda useful. The example above duplicates the ISO date in <code>@content</code> and <code>@datetime</code>, but only one needs to be there, given that there parsers for different RDFa verions.</p>
+
+                      <pre><code>&lt;dl id="document-license"&gt;</code>
+<code>  &lt;dt&gt;License&lt;/dt&gt;</code>
+<code>  &lt;dd&gt;&lt;a href="https://creativecommons.org/licenses/by/4.0/" rel="schema:license" title="Creative Commons Attribution 4.0 Unported"&gt;CC BY 4.0&lt;/a&gt;&lt;/dd&gt;</code>
+<code>&lt;/dl&gt;</code></pre>
+
+                      <p>Nice to declare a license or rights to signal under what conditions the document may be reused, reshared or remixed, eg. via <cite><a href="https://creativecommons.org/">Creative Commons</a></cite> license. Articles and notifications tend to use <code>schema:license</code> and annotations use <code>dcterms:rights</code> (given <cite><a href="https://www.w3.org/TR/annotation-vocab/">Web Annotation Vocabulary</a></cite>).</p>
                     </div>
                   </section>
 
