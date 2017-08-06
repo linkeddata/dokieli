@@ -253,13 +253,13 @@
                       <p>Nice to declare a license or rights to signal under what conditions the document may be reused, reshared or remixed, eg. via <cite><a href="https://creativecommons.org/">Creative Commons</a></cite> license. Articles and notifications tend to use <code>schema:license</code> and annotations use <code>dcterms:rights</code> (given <cite><a href="https://www.w3.org/TR/annotation-vocab/">Web Annotation Vocabulary</a></cite>).</p>
 
                       <pre id="html-document-derived-from-on"><code>&lt;dl id="document-derived-from"&gt;</code>
-<code>&lt;dt&gt;Derived From&lt;/dt&lt;</code>
-<code>&lt;dd&gt;&lt;a href="https://dokie.li/" rel="prov:wasDerivedFrom">https://dokie.li/&lt;/a&gt;&lt;/dd&gt;</code>
-<code>&lt;/dl&lt;</code>
+<code>  &lt;dt&gt;Derived From&lt;/dt&lt;</code>
+<code>  &lt;dd&gt;&lt;a href="https://dokie.li/" rel="prov:wasDerivedFrom">https://dokie.li/&lt;/a&gt;&lt;/dd&gt;</code>
+<code>&lt;/dl&gt;</code>
 <code></code>
-<code>&lt;dl id="document-derived-on"&lt;</code>
+<code>&lt;dl id="document-derived-on"&gt;</code>
 <code>  &lt;dt&gt;Derived On&lt;/dt&gt;</code>
-<code>&lt;dd&gt;&lt;time datetime="2017-08-06T00:29:45.342Z"&gt;2017-08-06T00:29:45.342Z&lt;/time&gt;&lt;/dd&gt;</code>
+<code>  &lt;dd&gt;&lt;time datetime="2017-08-06T00:29:45.342Z"&gt;2017-08-06T00:29:45.342Z&lt;/time&gt;&lt;/dd&gt;</code>
 <code>&lt;/dl&gt;</code></pre>
 
                       <p>If a document is derived from another using the <cite>Save As</cite> operation, derived from and derived on information is declared.</p>
