@@ -2142,7 +2142,7 @@ var DO = {
 
     updateDocumentTitle: function(e) {
       if (!e.target.matches('h1')) {
-        var h1 = document.querySelector('main article > h1');
+        var h1 = document.querySelector('h1');
         if (h1) {
           document.title = h1.textContent.trim();
         }
