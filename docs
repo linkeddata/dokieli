@@ -243,6 +243,13 @@
 <code>&lt;/dl&gt;</code></pre>
 
                       <p>Nice to declare a license or rights to signal under what conditions the document may be reused, reshared or remixed, eg. via <cite><a href="https://creativecommons.org/">Creative Commons</a></cite> license. Articles and notifications tend to use <code>schema:license</code> and annotations use <code>dcterms:rights</code> (given <cite><a href="https://www.w3.org/TR/annotation-vocab/">Web Annotation Vocabulary</a></cite>).</p>
+
+                      <pre><code>&lt;dl class="canonical"&gt;</code>
+<code>  &lt;dt&gt;Canonical&lt;/dt&gt;</code>
+<code>  &lt;dd rel="oa:canonical" resource="urn:uuid:48355bb0-0afd-4f73-9a18-f1e8b6fb415b">48355bb0-0afd-4f73-9a18-f1e8b6fb415b&lt;/dd&gt;</code>
+<code>&lt;/dl&gt;</code></pre>
+
+                      <p><code>oa:canonical</code> refers to a canonical IRI that can be used to deduplicate the annotation. If an user chooses to store their annotation at their personal Webspace as well as when an annotation service (if offered), dokieli treats the resource at personal space as the canonical, and the resource at the annotation service as the copy where it refers to the personal space (<code>oa:via</code>).</p>
                     </div>
                   </section>
 
