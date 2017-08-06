@@ -197,6 +197,12 @@
                       </figure>
 
                       <p>The subject of the following statements may be anywhere in a document. They tend to give some provenance level information and intended to bring more context and attract reuse of the document in different ways.</p>
+
+                      <pre><code>&lt;dl id="document-identifier"&gt;</code>
+<code>  &lt;dt&gt;Identifier&lt;/dt&gt;</code>
+<code>  &lt;dd&gt;&lt;a href="http://csarven.ca/dokieli-rww" rel="owl:sameAs">http://csarven.ca/dokieli-rww&lt;/a&gt;&lt;/dd&gt;&lt;/dl&gt;</code></pre>
+
+                      <p>The <code>owl:sameAs</code> indirectly gives this article, ie. any copy, an identifier. The identifier is typically where an article was originally made accessible from, so having this by default for copy distribution helps to keep its connection to source. </p>
                     </div>
                   </section>
 
