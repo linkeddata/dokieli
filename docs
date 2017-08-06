@@ -217,6 +217,13 @@
 <code>&lt;/dl&gt;</code></pre>
 
                       <p>If an article is a reply to objects(s), it can have properties like <samp>sioc:reply_of</samp> or <code>as:inReplyTo</code>. This helps to keep connections.</p>
+
+                      <pre><code>&lt;dl id="document-annotation-service"&gt;</code>
+<code>  &lt;dt&gt;Annotation Service&lt;/dt&gt;</code>
+<code>  &lt;dd&gt;&lt;a href="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/" rel="oa:annotationService"&gt;annotation/&lt;/a&gt;&lt;/dd&gt;</code>
+<code>&lt;/dl&gt;</code></pre>
+
+                      <p>An article may refer to an annotation service (<code>oa:annotationService</code>) that conforms to the <cite><a href="https://www.w3.org/TR/annotation-protocol/">Web Annotation Protocol</a></cite>. See also <code>DO.C.AnnotationService</code> in <code>do.js</code>.</p>
                     </div>
                   </section>
 
