@@ -203,6 +203,13 @@
 <code>  &lt;dd&gt;&lt;a href="http://csarven.ca/dokieli-rww" rel="owl:sameAs">http://csarven.ca/dokieli-rww&lt;/a&gt;&lt;/dd&gt;&lt;/dl&gt;</code></pre>
 
                       <p>The <code>owl:sameAs</code> indirectly gives this article, ie. any copy, an identifier. The identifier is typically where an article was originally made accessible from, so having this by default for copy distribution helps to keep its connection to source. </p>
+
+                      <pre><code>&lt;dl id="document-inbox"&gt;</code>
+<code>  &lt;dt&gt;Notifications Inbox&lt;/dt&gt;</code>
+<code>  &lt;dd&gt;&lt;a href="https://linkedresearch.org/inbox/csarven.ca/dokieli-rww/" rel="ldp:inbox">inbox/&lt;/a&gt;&lt;/dd&gt;</code>
+<code>&lt;/dl&gt;</code></pre>
+
+                      <p><code>ldp:inbox</code> relation gives an article its own Inbox where it can receive notifications about eg annotations or activities relevant to an article. The notifications can be consumed by applications to offer additional content and interactive possibilities. dokieli can both send and consume notifications by way of discovering an article's inbox. Notifications are created for activities like announcements, creating, (dis)liking, and consumd in order to be display in context of available content. The protocol to send and consume notifications in dokieli uses <cite><a href="https://www.w3.org/TR/ldn/">Linked Data Notifications</a></cite>.</p>
                     </div>
                   </section>
 
