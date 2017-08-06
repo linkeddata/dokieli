@@ -200,7 +200,8 @@
 
                       <pre><code>&lt;dl id="document-identifier"&gt;</code>
 <code>  &lt;dt&gt;Identifier&lt;/dt&gt;</code>
-<code>  &lt;dd&gt;&lt;a href="http://csarven.ca/dokieli-rww" rel="owl:sameAs">http://csarven.ca/dokieli-rww&lt;/a&gt;&lt;/dd&gt;&lt;/dl&gt;</code></pre>
+<code>  &lt;dd&gt;&lt;a href="http://csarven.ca/dokieli-rww" rel="owl:sameAs">http://csarven.ca/dokieli-rww&lt;/a&gt;&lt;/dd&gt;</code>
+<code>&lt;/dl&gt;</code></pre>
 
                       <p>The <code>owl:sameAs</code> indirectly gives this article, ie. any copy, an identifier. The identifier is typically where an article was originally made accessible from, so having this by default for copy distribution helps to keep its connection to source. </p>
 
@@ -235,7 +236,7 @@
 <code>  &lt;dd&gt;&lt;time content="2017-03-12T00:00:00Z" datatype="xsd:dateTime" datetime="2017-03-12T00:00:00Z" property="schema:dateModified"&gt;2017-03-18&lt;/time&gt;&lt;/dd&gt;</code>
 <code>&lt;/dl&gt;</code></pre>
 
-                      <p>Dates, you know.. kinda useful. The example above duplicates the ISO date in <code>@content</code> and <code>@datetime</code>, but only one needs to be there, given that there parsers for different RDFa verions.</p>
+                      <p>Dates, you know.. kinda useful. The example above duplicates the ISO date in <code>@content</code> and <code>@datetime</code>, but only one needs to be there, given that there parsers for different RDFa versions.</p>
 
                       <pre><code>&lt;dl id="document-license"&gt;</code>
 <code>  &lt;dt&gt;License&lt;/dt&gt;</code>
@@ -243,6 +244,19 @@
 <code>&lt;/dl&gt;</code></pre>
 
                       <p>Nice to declare a license or rights to signal under what conditions the document may be reused, reshared or remixed, eg. via <cite><a href="https://creativecommons.org/">Creative Commons</a></cite> license. Articles and notifications tend to use <code>schema:license</code> and annotations use <code>dcterms:rights</code> (given <cite><a href="https://www.w3.org/TR/annotation-vocab/">Web Annotation Vocabulary</a></cite>).</p>
+
+                      <pre><code>&lt;dl id="document-derived-from"&gt;</code>
+<code>&lt;dt&gt;Derived From&lt;/dt&lt;</code>
+<code>&lt;dd&gt;&lt;a href="https://dokie.li/" rel="prov:wasDerivedFrom">https://dokie.li/&lt;/a&gt;&lt;/dd&gt;</code>
+<code>&lt;/dl&lt;</code>
+<code></code>
+<code>&lt;dl id="document-derived-on"&lt;</code>
+<code>  &lt;dt&gt;Derived On&lt;/dt&gt;</code>
+<code>&lt;dd&gt;&lt;time datetime="2017-08-06T00:29:45.342Z"&gt;2017-08-06T00:29:45.342Z&lt;/time&gt;&lt;/dd&gt;</code>
+<code>&lt;/dl&gt;</code></pre>
+
+                      <p>If a document is derived from another like through dokieli's <cite>Save As</cite> operation, derived from and derived on information is declared.</p>
+
 
                       <pre><code>&lt;dl class="canonical"&gt;</code>
 <code>  &lt;dt&gt;Canonical&lt;/dt&gt;</code>
