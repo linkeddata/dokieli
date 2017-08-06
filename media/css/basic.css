@@ -491,6 +491,7 @@ content:"\00a0\00a0\00a0\00a0";
   max-width:calc(100% - 1em);
   padding-left:0.5em;
   padding-right:0.5em;
+  margin:0;
 }
 
 #do-index #features ul {
