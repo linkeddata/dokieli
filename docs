@@ -210,6 +210,13 @@
 <code>&lt;/dl&gt;</code></pre>
 
                       <p><code>ldp:inbox</code> relation gives an article its own Inbox where it can receive notifications about eg annotations or activities relevant to an article. The notifications can be consumed by applications to offer additional content and interactive possibilities. dokieli can both send and consume notifications by way of discovering an article's inbox. Notifications are created for activities like announcements, creating, (dis)liking, and consumd in order to be display in context of available content. The protocol to send and consume notifications in dokieli uses <cite><a href="https://www.w3.org/TR/ldn/">Linked Data Notifications</a></cite>.</p>
+
+                      <pre><code>&lt;dl id="document-in-reply-to"&gt;</code>
+<code>  &lt;dt&gt;In Reply To&lt;/dt&gt;</code>
+<code>  &lt;dd&gt;&lt;a href="https://linkedresearch.org/calls" rel="sioc:reply_of"&gt;Call for Linked Research&lt;/a&gt;&lt;/dd&gt;</code>
+<code>&lt;/dl&gt;</code></pre>
+
+                      <p>If an article is a reply to objects(s), it can have properties like <samp>sioc:reply_of</samp> or <code>as:inReplyTo</code>. This helps to keep connections.</p>
                     </div>
                   </section>
 
