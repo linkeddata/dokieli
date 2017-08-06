@@ -94,7 +94,7 @@
               <section id="html-patterns" inlist="" rel="schema:hasPart" resource="#html-patterns">
                 <h3 property="schema:name">HTML patterns</h3>
                 <div datatype="rdf:HTML" property="schema:description">
-                  <p>One of the goals of dokieli is not to impose arbitrary restrictions on type of nodes as well as the order they should be in HTML+RDFa. It has its own design patterns. It is an ongoing work to make dokieli as flexible as it can be on what it can consume. Take what you like:</p>
+                  <p>One of the goals of dokieli is not to impose arbitrary restrictions on type of nodes as well as the order they should be in HTML+RDFa. It has its own design patterns. It is an ongoing work to make dokieli as flexible as it can be on what it can consume. Ultimately, well-formed and valid HTML - along with accompanying RDFa, Turtle, JSON-LD, TriG etc - is the only requirement here. Take what you like:</p>
 
                   <dl>
                     <dt id="html-markup-syntax">Markup syntax</dt>
@@ -434,7 +434,7 @@
           <section id="http-operations" inlist="" rel="schema:hasPart" resource="#http-operations">
             <h2 property="schema:name">HTTP operations</h2>
             <div datatype="rdf:HTML" property="schema:description">
-              <p id="http-put">dokieli conforms to <cite><a href="https://www.w3.org/TR/ldp/" rel="cito:citesAsAuthority">Linked Data Platform</a></cite> (LDP) protocol for create, update, and dete operations.</p>
+              <p id="http-put">dokieli conforms to <cite><a href="https://www.w3.org/TR/ldp/" rel="cito:citesAsAuthority">Linked Data Platform</a></cite> (LDP) protocol for create, update, and delete operations.</p>
 
               <p>Article operations like <cite>New</cite>, <cite>Save</cite>, <cite>Save As</cite>  <cite>Reply</cite> and <cite>Review</cite> and other annotation operations use <code>HTTP PUT</code>. Notifications are sent with <code>HTTP POST</code>. <cite>Save</cite> and <cite>Save As</cite> normalises the HTML before sending.</p>
 
