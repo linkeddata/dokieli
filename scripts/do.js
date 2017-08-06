@@ -3489,7 +3489,8 @@ console.log(reason);
 
       DO.U.setupResourceBrowser(newDocument);
       document.getElementById('browser-location').insertAdjacentHTML('afterbegin', '<p>Choose a location to save your new article.</p>');
-      newDocument.insertAdjacentHTML('beforeend', DO.U.getBaseURLSelection() + '<p>Your new document will be saved at <samp id="location-final">https://example.org/path/to/article</samp></p><button class="create">Create</button>');
+      var baseURLSelection = (document.location.protocol == 'file:') ? '' : DO.U.getBaseURLSelection();
+      newDocument.insertAdjacentHTML('beforeend', baseURLSelection + '<p>Your new document will be saved at <samp id="location-final">https://example.org/path/to/article</samp></p><button class="create">Create</button>');
       var bli = document.getElementById('browser-location-input');
       bli.focus();
       bli.placeholder = 'https://example.org/path/to/article';
