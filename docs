@@ -256,14 +256,6 @@
 <code>&lt;/dl&gt;</code></pre>
 
                       <p>If a document is derived from another like through dokieli's <cite>Save As</cite> operation, derived from and derived on information is declared.</p>
-
-
-                      <pre><code>&lt;dl class="canonical"&gt;</code>
-<code>  &lt;dt&gt;Canonical&lt;/dt&gt;</code>
-<code>  &lt;dd rel="oa:canonical" resource="urn:uuid:48355bb0-0afd-4f73-9a18-f1e8b6fb415b">48355bb0-0afd-4f73-9a18-f1e8b6fb415b&lt;/dd&gt;</code>
-<code>&lt;/dl&gt;</code></pre>
-
-                      <p><code>oa:canonical</code> refers to a canonical IRI that can be used to deduplicate the annotation. If an user chooses to store their annotation at their personal Webspace as well as when an annotation service (if offered), dokieli treats the resource at personal space as the canonical, and the resource at the annotation service as the copy where it refers to the personal space (<code>oa:via</code>).</p>
                     </div>
                   </section>
 
@@ -358,6 +350,13 @@
 <code>&lt;/html&gt;</code></pre>
                         <figcaption property="schema:name">Example annotation HTML</figcaption>
                       </figure>
+
+                      <pre><code>&lt;dl class="canonical"&gt;</code>
+<code>  &lt;dt&gt;Canonical&lt;/dt&gt;</code>
+<code>  &lt;dd rel="oa:canonical" resource="urn:uuid:48355bb0-0afd-4f73-9a18-f1e8b6fb415b">48355bb0-0afd-4f73-9a18-f1e8b6fb415b&lt;/dd&gt;</code>
+<code>&lt;/dl&gt;</code></pre>
+
+                      <p><code>oa:canonical</code> refers to a canonical IRI that can be used to deduplicate the annotation. If an user chooses to store their annotation at their personal Webspace as well as when an annotation service (if offered), dokieli treats the resource at personal space as the canonical, and the resource at the annotation service as the copy where it refers to the personal space (<code>oa:via</code>).</p>
                     </div>
                   </section>
 
