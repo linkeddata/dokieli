@@ -66,14 +66,13 @@
           <section id="structure-and-semantics" inlist="" rel="schema:hasPart" resource="#structure-and-semantics">
             <h2 property="schema:name">Structure and Semantics</h2>
             <div datatype="rdf:HTML" property="schema:description">
-              <p>This section describes dokieli's practices, and offers some guidelines for developers and authors that would like to maintain uniformity. Consumers of dokieli should not treat the information here as a profile, or as a yet another super or subset of HTML+RDFa when they author or build new functionality. Takeaway what you want, there is no proprietary lock-in here.</p>
+              <p>This section describes dokieli's practices, and offers some guidelines for developers and authors that would like to maintain uniformity in what they develop or publish. Consumers of dokieli should not treat the information here as a <em>profile</em>, or as a yet another super or subset of HTML+RDFa when they author or build new functionality. Takeaway what you want, there is no proprietary lock-in here.</p>
 
               <p id="separation-of-concerns">dokieli adopts <cite>progressive enhancement</cite> strategy for the structural, presentational, and behavioural layers to allow content and base functionality to be accessible through different media and devices. The content in HTML+RDFa that dokieli produces <em>is</em> accessible (readable) without requiring any CSS or JavaScript, ie. text-browser safe. Breaking this "rule" in future development should be considered an anti-pattern (or a bug) in dokieli.</p>
 
-              <p>dokieli can serialise articles, annotations, and notifications in HTML+RDFa, Turtle, and JSON-LD, depending on server content-negotiation. Articles are represented in HTML+RDFa so that information is usable by both humans and machine consumers while maintaining lowest requirements for publishing, eg. a single URL with full payload in HTML+RDFa can be accessible from any HTTP server. No additional requirements necessary from clients (eg. JavaScript support and enabled) or servers (eg. additional RDF based content-negotiation). For annotations and notifications, dokieli first meets interoperability requirements (for protocols and vocabularies), and remains flexible about the serialisation that servers prefer. Similarly for consuming content, it can work with any of the serialisations as mentioned.</p>
+              <p id="serialisations">dokieli can serialise articles, annotations, and notifications in HTML+RDFa, Turtle, and JSON-LD, depending on server content-negotiation. Articles are represented in HTML+RDFa so that information is usable by both humans and machine consumers while maintaining lowest requirements for publishing, eg. a single URL with full payload in HTML+RDFa can be accessible from any HTTP server. No additional requirements necessary from clients (eg. JavaScript support and enabled) or servers (eg. additional RDF based content-negotiation). For annotations and notifications, dokieli first meets interoperability requirements (for protocols and vocabularies), and remains flexible about the serialisation that servers prefer. Similarly for consuming content, it can work with any of the serialisations as mentioned.</p>
 
-              <p>dokieli initially represents <em>all</em> information with HTML+RDFa. Maintains a strong practice of having human-visible content, meanwhile keeping machine-readable data in context (eg. using article's text as literal object values). This tends to avoid data duplication or data islands, which can occur when other RDF serialisations are included within HTML (eg. within <code>script</code>). One exception to this "rule" is allowing authors to use the built-in <cite>Embed Data</cite> feature to include Turtle, JSON-LD, or TriG data blocks for alternative reasons.</p>
-
+              <p id="human-machine-readable">dokieli initially represents <em>all</em> information with HTML+RDFa. Maintains a strong practice of having human-visible content, meanwhile keeping machine-readable data in context (eg. using article's text as literal object values). This tends to avoid data duplication or data islands, which can occur when other RDF serialisations are included within HTML (eg. within <code>script</code>). One exception to this "rule" is allowing authors to use the built-in <cite>Embed Data</cite> feature to include Turtle, JSON-LD, or TriG data blocks for alternative reasons.</p>
 
               <section id="dokieli-documents" inlist="" rel="schema:hasPart" resource="#dokieli-documents">
                 <h3 property="schema:name">dokieli documents</h3>
@@ -171,7 +170,7 @@
                     </div>
                   </div>
 
-                  <p>Servers should use <code>UTF-8</code> character encoding in their HTTP responses to articles, annotations, and notifications. <code>&lt;meta charset="utf-8" /&gt;</code> is used in HTML.</p>
+                  <p id="html-charset">Servers should use <code>UTF-8</code> character encoding in their HTTP responses to articles, annotations, and notifications. <code>&lt;meta charset="utf-8" /&gt;</code> is used in HTML.</p>
 
                   <section id="html-article" rel="schema:hasPart" resource="#html-article">
                     <h4 property="schema:name">Article</h4>
@@ -206,35 +205,35 @@
 
                       <p>The subject of the following statements may be anywhere in a document. They tend to give some provenance level information and intended to bring more context and attract reuse of the document in different ways.</p>
 
-                      <pre><code>&lt;dl id="document-identifier"&gt;</code>
+                      <pre id="html-document-identifier"><code>&lt;dl id="document-identifier"&gt;</code>
 <code>  &lt;dt&gt;Identifier&lt;/dt&gt;</code>
 <code>  &lt;dd&gt;&lt;a href="http://csarven.ca/dokieli-rww" rel="owl:sameAs">http://csarven.ca/dokieli-rww&lt;/a&gt;&lt;/dd&gt;</code>
 <code>&lt;/dl&gt;</code></pre>
 
                       <p>The <code>owl:sameAs</code> indirectly gives this article, ie. any copy, an identifier. The identifier is typically where an article was originally made accessible from, so having this by default for copy distribution helps to keep its connection to source. </p>
 
-                      <pre><code>&lt;dl id="document-inbox"&gt;</code>
+                      <pre id="html-document-inbox"><code>&lt;dl id="document-inbox"&gt;</code>
 <code>  &lt;dt&gt;Notifications Inbox&lt;/dt&gt;</code>
 <code>  &lt;dd&gt;&lt;a href="https://linkedresearch.org/inbox/csarven.ca/dokieli-rww/" rel="ldp:inbox">inbox/&lt;/a&gt;&lt;/dd&gt;</code>
 <code>&lt;/dl&gt;</code></pre>
 
-                      <p><code>ldp:inbox</code> relation gives an article its own Inbox where it can receive notifications about eg. annotations or activities relevant to an article. The notifications can be consumed by applications to offer additional content and interactive possibilities. dokieli can both send and consume notifications by way of discovering an article's inbox. Notifications are created for activities like announcements, creating, (dis)liking, and consumd in order to be display in context of available content. The protocol to send and consume notifications in dokieli uses <cite><a href="https://www.w3.org/TR/ldn/">Linked Data Notifications</a></cite>.</p>
+                      <p><code>ldp:inbox</code> relation gives an article its own Inbox where it can receive notifications about eg. annotations or activities relevant to an article. The notifications can be consumed by applications to offer additional content and interactive possibilities. dokieli can both send and consume notifications by way of discovering an article's inbox. Notifications are created for activities like announcements, creating, (dis)liking, and consumed in order to be displayed in context of available content. The protocol to send and consume notifications in dokieli uses <cite><a href="https://www.w3.org/TR/ldn/">Linked Data Notifications</a></cite>.</p>
 
-                      <pre><code>&lt;dl id="document-in-reply-to"&gt;</code>
+                      <pre id="html-document-in-reply-to"><code>&lt;dl id="document-in-reply-to"&gt;</code>
 <code>  &lt;dt&gt;In Reply To&lt;/dt&gt;</code>
 <code>  &lt;dd&gt;&lt;a href="https://linkedresearch.org/calls" rel="sioc:reply_of"&gt;Call for Linked Research&lt;/a&gt;&lt;/dd&gt;</code>
 <code>&lt;/dl&gt;</code></pre>
 
                       <p>If an article is a reply to objects(s), it can have properties like <samp>sioc:reply_of</samp> or <code>as:inReplyTo</code>. This helps to keep connections.</p>
 
-                      <pre><code>&lt;dl id="document-annotation-service"&gt;</code>
+                      <pre id="html-document-annotation-service"><code>&lt;dl id="document-annotation-service"&gt;</code>
 <code>  &lt;dt&gt;Annotation Service&lt;/dt&gt;</code>
 <code>  &lt;dd&gt;&lt;a href="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/" rel="oa:annotationService"&gt;annotation/&lt;/a&gt;&lt;/dd&gt;</code>
 <code>&lt;/dl&gt;</code></pre>
 
                       <p>An article may refer to an annotation service (<code>oa:annotationService</code>) that conforms to the <cite><a href="https://www.w3.org/TR/annotation-protocol/">Web Annotation Protocol</a></cite>. See also <code>DO.C.AnnotationService</code> in <code>do.js</code>.</p>
 
-                      <pre><code>&lt;dl id="document-published"&gt;</code>
+                      <pre id="html-document-published-modified"><code>&lt;dl id="document-published"&gt;</code>
 <code>  &lt;dt&gt;Published&lt;/dt&gt;</code>
 <code>  &lt;dd&gt;&lt;time content="2017-02-27T00:00:00Z" datatype="xsd:dateTime" datetime="2017-02-27T00:00:00Z" property="schema:datePublished">2017-02-27&lt;/time&gt;&lt;/dd&gt;</code>
 <code>&lt;/dl&gt;</code>
@@ -246,14 +245,14 @@
 
                       <p>Dates, you know.. kinda useful. The example above duplicates the ISO date in <code>@content</code> and <code>@datetime</code>, but only one needs to be there, given that there parsers for different RDFa versions.</p>
 
-                      <pre><code>&lt;dl id="document-license"&gt;</code>
+                      <pre id="html-document-license-rights"><code>&lt;dl id="document-license"&gt;</code>
 <code>  &lt;dt&gt;License&lt;/dt&gt;</code>
 <code>  &lt;dd&gt;&lt;a href="https://creativecommons.org/licenses/by/4.0/" rel="schema:license" title="Creative Commons Attribution 4.0 Unported"&gt;CC BY 4.0&lt;/a&gt;&lt;/dd&gt;</code>
 <code>&lt;/dl&gt;</code></pre>
 
                       <p>Nice to declare a license or rights to signal under what conditions the document may be reused, reshared or remixed, eg. via <cite><a href="https://creativecommons.org/">Creative Commons</a></cite> license. Articles and notifications tend to use <code>schema:license</code> and annotations use <code>dcterms:rights</code> (given <cite><a href="https://www.w3.org/TR/annotation-vocab/">Web Annotation Vocabulary</a></cite>).</p>
 
-                      <pre><code>&lt;dl id="document-derived-from"&gt;</code>
+                      <pre id="html-document-derived-from-on"><code>&lt;dl id="document-derived-from"&gt;</code>
 <code>&lt;dt&gt;Derived From&lt;/dt&lt;</code>
 <code>&lt;dd&gt;&lt;a href="https://dokie.li/" rel="prov:wasDerivedFrom">https://dokie.li/&lt;/a&gt;&lt;/dd&gt;</code>
 <code>&lt;/dl&lt;</code>
@@ -359,7 +358,7 @@
                         <figcaption property="schema:name">Example annotation HTML</figcaption>
                       </figure>
 
-                      <pre><code>&lt;dl class="canonical"&gt;</code>
+                      <pre id="html-canonical"><code>&lt;dl class="canonical"&gt;</code>
 <code>  &lt;dt&gt;Canonical&lt;/dt&gt;</code>
 <code>  &lt;dd rel="oa:canonical" resource="urn:uuid:48355bb0-0afd-4f73-9a18-f1e8b6fb415b">48355bb0-0afd-4f73-9a18-f1e8b6fb415b&lt;/dd&gt;</code>
 <code>&lt;/dl&gt;</code></pre>
@@ -368,7 +367,7 @@
 
                       <p>If an annotation resource is introduced to the article's DOM as part of an <code>aside</code>, they have a structure similar to an <code>article</code>, and may be displayed in different ways, eg. in marginalia:</p>
 
-                      <pre><code>&lt;aside class="note do"&gt;</code>
+                      <pre id="html-aside-do"><code>&lt;aside class="note do"&gt;</code>
 <code>  &lt;blockquote cite="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f"&gt;</code>
 <code>    &lt;article about="i:" id="461819979" prefix="i: https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f" typeof="oa:Annotation"&gt;</code>
 <code>    &lt;!-- Reconstruction of the original annotation (from RDF) --&gt;</code>
@@ -378,7 +377,7 @@
 
                       <p>An inline reference to that annotation as aside would have a structure like:</p>
 
-                      <pre><code>&lt;span class="ref do" rel="schema:hasPart" resource="#r-461819979" typeof="dctypes:Text"&gt;&lt;mark id="r-461819979" property="schema:description"&gt;demonstrating advanced document authoring and interaction without a single point of control&lt;/mark&gt;&lt;sup class="ref-annotation"&gt;&lt;a rel="cito:hasReplyFrom" href="#461819979" resource="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f"&gt;💬&lt;/a&gt;&lt;/sup&gt;&lt;/span&gt;</code></pre>
+                      <pre id="html-ref-do"><code>&lt;span class="ref do" rel="schema:hasPart" resource="#r-461819979" typeof="dctypes:Text"&gt;&lt;mark id="r-461819979" property="schema:description"&gt;demonstrating advanced document authoring and interaction without a single point of control&lt;/mark&gt;&lt;sup class="ref-annotation"&gt;&lt;a rel="cito:hasReplyFrom" href="#461819979" resource="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f"&gt;💬&lt;/a&gt;&lt;/sup&gt;&lt;/span&gt;</code></pre>
 
                       <p>Note that the human-visible anchor hyperlinks (<samp>#461819979</samp>) to the annotation <code>aside id="461819979"</code>.</p>
                     </div>
@@ -387,7 +386,7 @@
                   <section id="html-notification" rel="schema:hasPart" resource="#html-notification">
                     <h4 property="schema:name">Notification</h4>
                     <div property="schema:description">
-                      <p>Notifications are discovered from Inboxes (<cide><a href="https://www.w3.org/TR/ldn/">LDN</a></cide>). An article (or a fragment within) may have an inbox relation (<code>ldp:inbox</code>) which helps dokieli to discover it, and then fetch the notifications.</p>
+                      <p>Notifications are discovered from <cite><a href="https://www.w3.org/TR/ldn/">LDN</a></cite> Inboxes. An article (or a fragment within) may have an inbox relation (<code>ldp:inbox</code>) which helps dokieli to discover it, and then fetch the notifications.</p>
 
                       <p>Notifications are intended to be brief, giving sufficient information for consumers to decide if they want use to them. If the notifications are generated by dokieli, eg. via an annotation activity, they typically include some provenance level data like generation date, actor that triggered it, license, where the annotation can be found, what it annotated, and the motivation for it. Notifications will not include the annotation body, but consumers can fetch their URLs (as mentioned in the <a href="#html-annotation">annotation section</a>).</p>
 
