@@ -224,6 +224,18 @@
 <code>&lt;/dl&gt;</code></pre>
 
                       <p>An article may refer to an annotation service (<code>oa:annotationService</code>) that conforms to the <cite><a href="https://www.w3.org/TR/annotation-protocol/">Web Annotation Protocol</a></cite>. See also <code>DO.C.AnnotationService</code> in <code>do.js</code>.</p>
+
+                      <pre><code>&lt;dl id="document-published"&gt;</code>
+<code>  &lt;dt&gt;Published&lt;/dt&gt;</code>
+<code>  &lt;dd&gt;&lt;time content="2017-02-27T00:00:00Z" datatype="xsd:dateTime" datetime="2017-02-27T00:00:00Z" property="schema:datePublished">2017-02-27&lt;/time&gt;&lt;/dd&gt;</code>
+<code>&lt;/dl&gt;</code>
+<code></code>
+<code>&lt;dl id="document-modified"&gt;</code>
+<code>  &lt;dt&gt;Modified&lt;/dt&gt;</code>
+<code>  &lt;dd&gt;&lt;time content="2017-03-12T00:00:00Z" datatype="xsd:dateTime" datetime="2017-03-12T00:00:00Z" property="schema:dateModified"&gt;2017-03-18&lt;/time&gt;&lt;/dd&gt;</code>
+<code>&lt;/dl&gt;</code></pre>
+
+                      <p>Dates, you know.. kinda useful. The example above duplicates the ISO date in <code>@content</code> and <code>@datetime</code>, but only one needs to be there, given that there parsers for different RDFa verions.</p>
                     </div>
                   </section>
 
