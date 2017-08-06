@@ -3683,7 +3683,7 @@ console.log(reason);
           }
 
           var s = url.split(':')[0];
-          if (s != 'http' && s != 'https' && s != 'file' && s != 'data' && s != 'urn') {
+          if (s != 'http' && s != 'https' && s != 'file' && s != 'data' && s != 'urn' && document.location.protocol != 'file:') {
             url = DO.U.setBaseURL(url, options);
           }
           node.setAttribute(ref, url);
