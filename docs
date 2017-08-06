@@ -129,12 +129,12 @@
 <samp class="highlight-h2">  &lt;h2&gt;</samp>
 <code class="highlight-section">  &lt;section&gt;</code>
 <samp class="highlight-h3">    &lt;h3&gt;</samp></pre>
-                        <figcaption property="schema:name"><samp class="highlight-h2">h2</samp> and <samp class="highlight-h3">h3</samp> are used for <code class="highlight-section">section</code> titles, <code class="highlight-div">div</code> as a typical wrapper for descriptions, as well as to contain further sub-sectioned content.</figcaption>
+                        <figcaption property="schema:name"><samp class="highlight-h2">h2</samp> and <samp class="highlight-h3">h3</samp> are used for <code class="highlight-section">section</code> titles, <code class="highlight-div">div</code> as a typical wrapper (eg. for <em>descriptions</em>), as well as to contain further sub-sectioned content.</figcaption>
                       </figure>
                     </dd>
 
                     <dt id="html-aside">Aside</dt>
-                    <dd><code>aside</code>s can technically appear anywhere, but tend to appear as the last element node in <code>section</code>. It has a similar structure to <code>section</code> otherwise.</dd>
+                    <dd><code>aside</code>s can technically appear anywhere, but tend to appear as the last element node in <code>section</code>, eg. for related content, footnotes. If the <code>aside</code> is introduced to the DOM via JavaScript for like annotations, they have a similar structure to <code>section</code>.</dd>
 
                     <dt id="html-div">Division</dt>
                     <dd><code>div</code>s within <code>section</code> are used to wrap a block of arbitrary markup and content. See also RDFa below.</dd>
@@ -363,6 +363,22 @@
 <code>&lt;/dl&gt;</code></pre>
 
                       <p><code>oa:canonical</code> refers to a canonical IRI that can be used to deduplicate the annotation. If an user chooses to store their annotation at their personal Webspace as well as when an annotation service (if offered), dokieli treats the resource at personal space as the canonical, and the resource at the annotation service as the copy where it refers to the personal space (<code>oa:via</code>).</p>
+
+                      <p>If an annotation resource is introduced to the article's DOM as part of an <code>aside</code>, they have a structure similar to an <code>article</code>, and may be displayed in different ways, eg. in marginalia:</p>
+
+                      <pre><code>&lt;aside class="note do"&gt;</code>
+<code>  &lt;blockquote cite="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f"&gt;</code>
+<code>    &lt;article about="i:" id="461819979" prefix="i: https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f" typeof="oa:Annotation"&gt;</code>
+<code>    &lt;!-- Reconstruction of the original annotation (from RDF) --&gt;</code>
+<code>    &lt;/article&gt;</code>
+<code>  &lt;/blockquote&gt;</code>
+<code>&lt;/aside&gt;</code></pre>
+
+                      <p>An inline reference to that annotation as aside would have a structure like:</p>
+
+                      <pre><code>&lt;span class="ref do" rel="schema:hasPart" resource="#r-461819979" typeof="dctypes:Text"&gt;&lt;mark id="r-461819979" property="schema:description"&gt;demonstrating advanced document authoring and interaction without a single point of control&lt;/mark&gt;&lt;sup class="ref-annotation"&gt;&lt;a rel="cito:hasReplyFrom" href="#461819979" resource="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f"&gt;💬&lt;/a&gt;&lt;/sup&gt;&lt;/span&gt;</code></pre>
+
+                      <p>Note that the human-visible anchor hyperlinks (<samp>#461819979</samp>) to the annotation <code>aside id="461819979"</code>.</p>
                     </div>
                   </section>
 
