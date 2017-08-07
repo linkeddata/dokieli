@@ -232,7 +232,7 @@ font-size:1em;
 
 a { color: #009000; }
 code, samp { background-color:#f3f3f3; padding:0.1em 0; }
-code:before, code:after, samp:before, samp:after {
+code:before, code:after, samp:before, samp:after, kbd:before, kbd:after {
 content:"\00a0";
 letter-spacing:-0.2em;
 }
@@ -243,6 +243,14 @@ content:"";
 padding:0;
 letter-spacing:0;
 }
+
+kbd {
+padding:0.25em 0;
+border-radius:0.25em;
+border:1px solid #ccc;
+box-shadow:inset -2px -2px 1px #eee;
+}
+
 ul { padding: 0; margin-bottom:1em; list-style-position: inside; }
 nav ul { list-style: none; }
 dt { font-weight: bold; }
