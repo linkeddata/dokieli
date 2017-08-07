@@ -3389,7 +3389,7 @@ console.log(inbox);
 
           var bli = document.getElementById('browser-location-input');
           var iri = bli.value;
-          var headers = { 'Accept': 'text/html, application/xhtml+xml' };
+          var headers = { 'Accept': DO.C.AvailableMediaTypes.join(',') };
           var options = {};
           var pIRI = DO.U.getProxyableIRI(iri);
           if (pIRI.slice(0, 5).toLowerCase() == 'http:') {
@@ -3404,11 +3404,21 @@ console.log(inbox);
                 var contentType = (cT) ? cT.split(';')[0].trim() : 'text/turtle';
                 // console.log(contentType);
 
-                if(contentType == 'text/html' || contentType == 'application/xhtml+xml') {
+                if(DO.C.AvailableMediaTypes.indexOf(contentType) > -1) {
                   // var fragment = DO.U.fragmentFromString(response.xhr.responseText);
                   var template = document.implementation.createHTMLDocument('template');
 // console.log(template);
-                  template.documentElement.innerHTML = response.xhr.responseText;
+
+                  switch(contentType){
+                    case 'text/html': case 'application/xhtml+xml':
+                      template.documentElement.innerHTML = response.xhr.responseText;
+                      break;
+
+                    default:
+                      template.documentElement.innerHTML = '<pre>' + response.xhr.responseText.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</pre>';
+                      break;
+                  }
+
 // console.log(template);
 
                   var documentHasDokieli = template.querySelectorAll('head script[src$="/do.js"]');
