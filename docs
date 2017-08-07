@@ -495,6 +495,14 @@
             </div>
           </section>
 
+          <section id="authentication" inlist="" rel="schema:hasPart" resource="#authentication">
+            <h2 property="schema:name">Authentication</h2>
+            <div datatype="rdf:HTML" property="schema:description">
+              <p>dokieli was originally intended to handle different authentication mechanisms. <a href="https://www.w3.org/2005/Incubator/webid/spec/tls/">WebID-TLS</a> is currently supported to authenticate with servers.</p>
+            </div>
+          </section>
+
+
           <section id="http-operations" inlist="" rel="schema:hasPart" resource="#http-operations">
             <h2 property="schema:name">HTTP operations</h2>
             <div datatype="rdf:HTML" property="schema:description">
