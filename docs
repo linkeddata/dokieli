@@ -172,7 +172,7 @@
 
                   <p id="html-charset">Servers should use <code>UTF-8</code> character encoding in their HTTP responses to articles, annotations, and notifications. <code>&lt;meta charset="utf-8" /&gt;</code> is used in HTML.</p>
 
-                  <section id="html-article" rel="schema:hasPart" resource="#html-article">
+                  <section id="html-article" inlist="" rel="schema:hasPart" resource="#html-article">
                     <h4 property="schema:name">Article</h4>
                     <div property="schema:description">
                       <p>See also <var>createNoteDataHTML</var> in do.js</p>
@@ -286,7 +286,7 @@
                     </div>
                   </section>
 
-                  <section id="html-annotation" rel="schema:hasPart" resource="#html-annotation">
+                  <section id="html-annotation" inlist="" rel="schema:hasPart" resource="#html-annotation">
                     <h4 property="schema:name">Annotation</h4>
                     <div property="schema:description">
                       <p>Annotations have their own URL, fetched, parsed, and then introduced into the DOM. They are normally appended at the bottom of a node (<code>section</code>) in which the annotation has a reference to. It is not required to introduce all of the annotation content into the DOM, nor all of it has to be human-visible. This is a run-time inclusion and typically included within <code>&lt;aside class="note do"&gt;&lt;/aside&gt;</code>. Write operations like <cite>Save</cite>, <cite>Save As</cite>, <cite>Snapshot</cite> (export) will exclude this (<code>class~="do"</code>) when it normalises the DOM to HTML.</p>
@@ -403,7 +403,7 @@
                     </div>
                   </section>
 
-                  <section id="html-notification" rel="schema:hasPart" resource="#html-notification">
+                  <section id="html-notification" inlist="" rel="schema:hasPart" resource="#html-notification">
                     <h4 property="schema:name">Notification</h4>
                     <div property="schema:description">
                       <p>Notifications are discovered from <cite><a href="https://www.w3.org/TR/ldn/">LDN</a></cite> Inboxes. An article (or a fragment within) may have an inbox relation (<code>ldp:inbox</code>) which helps dokieli to discover it, and then fetch the notifications.</p>
