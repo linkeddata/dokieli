@@ -502,6 +502,14 @@
             </div>
           </section>
 
+          <section id="personal-storage" inlist="" rel="schema:hasPart" resource="#personal-storage">
+            <h2 property="schema:name">Storage</h2>
+            <div datatype="rdf:HTML" property="schema:description">
+              <p id="personal-storage">WebID's with <code>pim:storage</code> can get to use their personal online data storage with dokieli's read-write operations, eg all annotations, <cite>Reply</cite>, <cite>Review</cite>, <cite>New</cite>, <cite>Save As</cite>.</p>
+
+              <p id="local-storage">There is a <cite>Local Storage</cite> feature which uses user-agent's <var>window.localStorage</var>, with default 1m autosave.</p>
+            </div>
+          </section>
 
           <section id="http-operations" inlist="" rel="schema:hasPart" resource="#http-operations">
             <h2 property="schema:name">HTTP operations</h2>
