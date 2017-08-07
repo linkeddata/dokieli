@@ -237,7 +237,7 @@ content:"\00a0";
 letter-spacing:-0.2em;
 }
 
-pre code, pre samp { background-color:inherit; padding:0; }
+pre code, pre samp { background-color:inherit; padding:0; white-space: pre-wrap; }
 pre code:before, pre code:after, pre samp:before, pre samp:after {
 content:"";
 padding:0;
