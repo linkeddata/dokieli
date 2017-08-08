@@ -276,7 +276,7 @@
                       <p>Progressively described name, image, and URL is useful in templates:</p>
 <pre id="html-profile-iri-name-image-enhanced"><code>&lt;span about="http://csarven.ca/#i" typeof="schema:Person"&gt;&lt;img alt="" height="48" rel="schema:image" src="http://csarven.ca/media/images/sarven-capadisli.jpg" width="48" /&gt; &lt;a href="http://csarven.ca/" rel="schema:url"&gt;&lt;span about="http://csarven.ca/#i" property="schema:name"&gt;Sarven Capadisli&lt;/span&gt;&lt;/a&gt;&lt;/span&gt;</code></pre>
 
-                      <p>Alternatively a pattern that follows the DRY principle:</p>
+                      <p>Alternatively applying the DRY principle:</p>
 <pre id="html-profile-iri-name-image-dry"><code>&lt;a about="http://csarven.ca/#i" href="http://csarven.ca/" property="schema:name" rel="schema:url" typeof="schema:Person"&gt;Sarven Capadisli&lt;/a&gt;</code></pre>
 
                       <p>If they are one of the authors of a document, the profile can be wrapped like:</p>
@@ -492,6 +492,34 @@
             <h2 property="schema:name">dokieli Menu</h2>
             <div datatype="rdf:HTML" property="schema:description">
               <p>Describe each feature..</p>
+              <dl>
+                <dt><button class="signin-user" title="Sign in to authenticate"><i class="fa fa-user-secret fa-2x"></i>Sign in</button></dt>
+                <dd></dd>
+                <dt><button class="resource-share" title="Share resource"><i class="fa fa-bullhorn fa-2x"></i>Share</button></dt>
+                <dd></dd>
+                <dt><button class="resource-reply" title="Reply"><i class="fa fa-reply fa-2x"></i>Reply</button></dt>
+                <dd></dd>
+                <dt><button class="review-enable" title="Enable review"><i class="fa fa-balance-scale fa-2x"></i>Review</button></dt>
+                <dd></dd>
+                <dt><button class="resource-new" title="Create new article"><i class="fa fa-lightbulb-o fa-2x"></i>New</button></dt>
+                <dd></dd>
+                <dt><button class="resource-open" title="Open article"><i class="fa fa-coffee fa-2x"></i>Open</button></dt>
+                <dd></dd>
+                <dt><button class="resource-save" title="Save article"><i class="fa fa-life-ring fa-2x"></i>Save</button></dt>
+                <dd></dd>
+                <dt><button class="resource-save-as" title="Save as article"><i class="fa fa-paper-plane-o fa-2x"></i>Save As</button></dt>
+                <dd></dd>
+                <dt><button class="resource-snapshot" title="Snapshot article"><i class="fa fa-external-link fa-2x"></i>Snapshot</button></dt>
+                <dd></dd>
+                <dt><button class="resource-print" title="Print article"><i class="fa fa-print fa-2x"></i>Print</button></dt>
+                <dd></dd>
+                <dt><button class="editor-enable" title="Enable editor"><i class="fa fa-i-cursor fa-2x"></i>Edit</button></dt>
+                <dd></dd>
+                <dt><button class="resource-source" title="Edit article source code"><i class="fa fa-code fa-2x"></i>Source</button></dt>
+                <dd></dd>
+                <dt><button class="embed-data-meta" title="Embed structured data (Turtle, JSON-LD, TRiG)"><i class="fa fa-table fa-2x"></i>Embed Data</button></dt>
+                <dd></dd>
+              </dl>
             </div>
           </section>
 
