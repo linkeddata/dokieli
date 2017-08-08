@@ -495,7 +495,10 @@
               <dl>
                 <dt><button class="signin-user" title="Sign in to authenticate"><i class="fa fa-user-secret fa-2x"></i>Sign in</button></dt>
                 <dd>This is where the user can enter their WebID to let dokieli know about who they are. dokieli fetches their WebID and related information to further help with dokieli's operations. Authentication is not done at this stage.</dd>
+
                 <dt><button class="resource-share" title="Share resource"><i class="fa fa-bullhorn fa-2x"></i>Share</button></dt>
+                <dd>User can share the current article or a part of it with their contacts, automatically discovered via <samp>foaf:knows</samp> as well as traversing equivalent profiles (<code>owl:sameAs</code>). Notification can also be sent to specific targets by entering their IRIs. dokieli sends a notification to the selected targets with information like: who sent it, when, license, motivation.</dd>
+
                 <dt><button class="resource-reply" title="Reply"><i class="fa fa-reply fa-2x"></i>Reply</button></dt>
                 <dd></dd>
                 <dt><button class="review-enable" title="Enable review"><i class="fa fa-balance-scale fa-2x"></i>Review</button></dt>
