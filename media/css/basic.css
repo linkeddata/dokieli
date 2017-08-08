@@ -549,7 +549,7 @@ margin:0 auto;
 }
 
 #do-index #read-write-web,
-#do-index #video-overview {
+#do-index #figure-dokieli-overview {
   text-align: center;
   width: 100%;
   background-color: #ddd;
@@ -557,7 +557,7 @@ margin:0 auto;
   max-width:initial;
 }
 #do-index #features h2,
-#do-index #video-overview h2 {
+#do-index #figure-dokieli-overview h2 {
   display:none;
 }
 #do-index #read-write-web {
