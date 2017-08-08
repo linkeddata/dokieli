@@ -1720,7 +1720,7 @@ var DO = {
     showEmbedData: function(node) {
       if(document.querySelector('#embed-data-in-html')) { return; }
 
-      node.insertAdjacentHTML('beforeend', '<section id="embed-data-in-html" class="do"><h2>Data</h2><ul><li><button class="embed-data-meta" title="Embed structured data (Turtle, JSON-LD, TRiG)"><i class="fa fa-table fa-2x"></i>Embed Data</button></li></ul></section>');
+      node.insertAdjacentHTML('beforeend', '<section id="embed-data-in-html" class="do"><h2>Data</h2><ul><li><button class="embed-data-meta" title="Embed structured data (Turtle, JSON-LD, TriG)"><i class="fa fa-table fa-2x"></i>Embed Data</button></li></ul></section>');
 
       var eventEmbedData = function(e) {
         e.target.setAttribute('disabled', 'disabled');
