@@ -518,9 +518,9 @@
                 <dt><button class="editor-enable" title="Enable editor"><i class="fa fa-i-cursor fa-2x"></i>Edit</button></dt>
                 <dd></dd>
                 <dt><button class="resource-source" title="Edit article source code"><i class="fa fa-code fa-2x"></i>Source</button></dt>
-                <dd></dd>
-                <dt><button class="embed-data-meta" title="Embed structured data (Turtle, JSON-LD, TRiG)"><i class="fa fa-table fa-2x"></i>Embed Data</button></dt>
-                <dd></dd>
+                <dd>Users can edit the current state of the article.</dd>
+                <dt><button class="embed-data-meta" title="Embed structured data (Turtle, JSON-LD, TriG)"><i class="fa fa-table fa-2x"></i>Embed Data</button></dt>
+                <dd>This feature allows hidden RDF data to be stored with the document. Turtle, JSON-LD, and TriG can all be edited and stored independently.</dd>
               </dl>
             </div>
           </section>
