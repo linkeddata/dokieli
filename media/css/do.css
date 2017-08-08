@@ -326,6 +326,11 @@ vertical-align:top;
 #document-menu header button,
 #document-menu div button,
 #document-menu footer button,
+button[class~="signin-user"],
+button[class|="resource"],
+button[class~="editor-enable"],
+button[class~="review-enable"],
+button[class~="embed-data-meta"],
 aside button.delete {
 display:block;
 border:0;
@@ -375,15 +380,25 @@ background-color:#fff !important;
 cursor:default !important;
 }
 
+button[class~="signin-user"] .fa,
+button[class|="resource"] .fa,
+button[class~="review-enable"] .fa,
+button[class~="editor-enable"] .fa,
+button[class~="embed-data-meta"] .fa {
+margin-right:0.25em;
+vertical-align: middle;
+}
+
 #document-menu section button .fa {
 display:block;
 margin-bottom:0.25em;
+margin-right:0;
 }
 
 #user-info {
 margin:0;
 }
-.signin-user {
+#document-menu .signin-user {
 width:33%;
 height:5em;
 }
