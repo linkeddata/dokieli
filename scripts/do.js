@@ -1385,7 +1385,10 @@ var DO = {
       buttonSignIn.setAttribute('disabled', 'disabled');
       document.querySelector('#user-identity-input').addEventListener('click', function(e) {
         if (e.target.matches('button.close')) {
-          document.querySelector('#document-menu button.signin-user').disabled = false;
+          var signinUser = document.querySelector('#document-menu button.signin-user');
+          if(signinUser) {
+            signinUser.disabled = false;
+          }
         }
       });
 
