@@ -4,17 +4,49 @@
   var g_loaded = false;
   var cur_webid = null;
 
+  //iteraction with YouID content script for get current WebId
+  window.addEventListener("message", recvMessage, false);
+
+  function recvMessage(event)
+  {
+    var ev_data;
+
+    if (String(event.data).lastIndexOf("youid_rc:",0)!==0)
+      return;
+
+    try {
+      ev_data = JSON.parse(event.data.substr(9));
+    } catch(e) {}
+
+
+    if (ev_data && ev_data.webid) {
+      var iri = ev_data.webid;
+
+      if (g_loaded && (cur_webid==null || cur_webid!=iri)) 
+         DO.U.setUserWebId(iri);
+
+      cur_webid = iri;
+    }
+  }
+
+
+
+
   Browser.api.runtime.onMessage.addListener(function(request, sender, sendResponse)
   {
     var initialized = (DO!==undefined && DO.U!==undefined && g_loaded);
     try {
       if (request.action == "dokieli.status")
       {
+        // request current WebId from YouID.extension content script
+        window.postMessage('youid:{"getWebId": true}', "*");
+        // send to Dokieli backgroud script
         sendResponse({"dokieli":initialized}); 
       }
       else if (request.action == "dokieli.menu")
       {
         var iri = null;
+
 
         if (!g_loaded) {
 
@@ -34,20 +66,11 @@
           g_loaded = true;
         }
 
-        if (request.webid) {
-          try {
-            var w = JSON.parse(request.webid);
-            iri = w.id;
-          } catch(e) {
-            console.log("Dokieli:"+e);
-          } 
-        } 
         sendResponse({}); /* stop */
 
-        if (iri && (cur_webid==null || cur_webid!=iri)) {
-          DO.U.setUserWebId(iri);
-          cur_webid = iri;
-        }
+        if (cur_webid!==null)
+          DO.U.setUserWebId(cur_webid);
+
         DO.U.showDocumentMenu();
       }
       else
