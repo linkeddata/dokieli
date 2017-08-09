@@ -3,8 +3,6 @@ document.addEventListener('DOMContentLoaded',
 
 function()
 {
-  var opl_youid_id = null;
-  var g_webid = null;
 
   function injectResources(tabId, files) {
     var getFileExtension = /(?:\.([^.]+))?$/;
@@ -45,7 +43,7 @@ function()
 
   function show_Menu(tab)
   {
-     Browser.api.tabs.sendMessage(tab.id, {action: "dokieli.menu", webid:g_webid}, 
+     Browser.api.tabs.sendMessage(tab.id, {action: "dokieli.menu"}, 
        function(response) {
      });  
   }
@@ -54,58 +52,13 @@ function()
   Browser.api.browserAction.onClicked.addListener(
      function(tab) 
      {
-       if (Browser.isChromeWebExt){
-         Browser.api.management.getAll(function(ext_info){
-            for(var i =0; i < ext_info.length; i++) {
-              if (ext_info[i].shortName==="opl_youid") {
-                opl_youid_id = ext_info[i].id;
-                break;
-              }
-            }
-
-            Browser.api.runtime.sendMessage(opl_youid_id, {getWebId: true},
-              function(response) {
-                if (response)
-                  g_webid = response.webid;
-
-                Browser.api.tabs.sendMessage(tab.id, {action: "dokieli.status"}, 
-                  function(response) {
-                    if (response && !response.dokieli)
-                      load_dokieli(tab);
-                    show_Menu(tab);
-                });  
-              });
-
-         });
-       } else {
-          Browser.api.tabs.sendMessage(tab.id, {action: "dokieli.status"}, 
-            function(response) {
-              if (response && !response.dokieli)
-                load_dokieli(tab);
-              show_Menu(tab);
-          });  
-       }
-
+       Browser.api.tabs.sendMessage(tab.id, {action: "dokieli.status"}, 
+         function(response) {
+           if (response && !response.dokieli)
+             load_dokieli(tab);
+           show_Menu(tab);
+       });  
      }); 
-
-
-
-  Browser.api.runtime.onMessage.addListener(function(request, sender, sendResponse)
-  {
-    try {
-      if (request.property == "webid" && g_webid)
-      {
-        sendResponse({"webid":g_webid}); 
-      }
-      else
-      {
-        sendResponse({}); /* stop */
-      }
-    } catch(e) {
-      console.log("Dokieli: onMsg="+e);
-    }
-
-  });
 
 });
 
