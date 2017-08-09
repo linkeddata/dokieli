@@ -1563,7 +1563,10 @@ var DO = {
           sections[i].parentNode.removeChild(sections[i]);
         }
       };
-      dMenu.querySelector('button.signin-user').disabled = false;
+      var buttonSigninUser = dMenu.querySelector('button.signin-user');
+      if(buttonSigninUser) {
+        dMenu.querySelector('button.signin-user').disabled = false;
+      }
       body.classList.remove('on-document-menu');
       dMenuButton.classList.remove('hide');
       dMenuButton.classList.add('show');
