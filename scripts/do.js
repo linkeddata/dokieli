@@ -1070,36 +1070,41 @@ var DO = {
     },
 
     putResourceACL: function(accessToURL, aclURL, acl) {
-      acl = acl || {
-        'u': { 'iri': [DO.C.User.IRI], 'mode': ['acl:Control', 'acl:Read', 'acl:Write'] },
-        'g': { 'iri': ['http://xmlns.com/foaf/0.1/Agent'], 'mode': ['acl:Read'] },
-        'o': { 'iri': [], 'mode': [] }
-      };
+      if(DO.C.User.IRI) {
+        acl = acl || {
+          'u': { 'iri': [DO.C.User.IRI], 'mode': ['acl:Control', 'acl:Read', 'acl:Write'] },
+          'g': { 'iri': ['http://xmlns.com/foaf/0.1/Agent'], 'mode': ['acl:Read'] },
+          'o': { 'iri': [], 'mode': [] }
+        };
 
-      var agent, agentClass, mode;
-      if('u' in acl && 'iri' in acl.u && 'mode' in acl.u) {
-        agent = '<' + acl.u.iri.join('> , <') + '>';
-        mode = acl.u.mode.join(' , ');
-      }
-      else {
-        agent = '<' + DO.C.User.IRI + '>';
-        mode = 'acl:Control , acl:Read , acl:Write';
-      }
+        var agent, agentClass, mode;
+        if('u' in acl && 'iri' in acl.u && 'mode' in acl.u) {
+          agent = '<' + acl.u.iri.join('> , <') + '>';
+          mode = acl.u.mode.join(' , ');
+        }
+        else {
+          agent = '<' + DO.C.User.IRI + '>';
+          mode = 'acl:Control , acl:Read , acl:Write';
+        }
 
-      var authorizations = [];
+        var authorizations = [];
 
-      authorizations.push('[ a acl:Authorization ; acl:accessTo <' + accessToURL + '> ; acl:accessTo <' + aclURL + '> ; acl:mode ' + mode + ' ; acl:agent ' + agent + ' ] .');
+        authorizations.push('[ a acl:Authorization ; acl:accessTo <' + accessToURL + '> ; acl:accessTo <' + aclURL + '> ; acl:mode ' + mode + ' ; acl:agent ' + agent + ' ] .');
 
-      if('g' in acl && 'iri' in acl.g && acl.g.iri.length >= 0) {
-        agentClass = '<' + acl.g.iri.join('> , <') + '>';
-        mode = acl.g.mode.join(' , ');
-        authorizations.push('[ a acl:Authorization ; acl:accessTo <' + accessToURL + '> ; acl:mode ' + mode + ' ; acl:agentClass ' + agentClass + ' ] .');
-      }
+        if('g' in acl && 'iri' in acl.g && acl.g.iri.length >= 0) {
+          agentClass = '<' + acl.g.iri.join('> , <') + '>';
+          mode = acl.g.mode.join(' , ');
+          authorizations.push('[ a acl:Authorization ; acl:accessTo <' + accessToURL + '> ; acl:mode ' + mode + ' ; acl:agentClass ' + agentClass + ' ] .');
+        }
 
-      var data = '@prefix acl: <http://www.w3.org/ns/auth/acl#> .\n\
+        var data = '@prefix acl: <http://www.w3.org/ns/auth/acl#> .\n\
 '+ authorizations.join('\n') + '\n\
 ';
-      return DO.U.putResource(aclURL, data, 'text/turtle; charset=utf-8');
+        return DO.U.putResource(aclURL, data, 'text/turtle; charset=utf-8');
+      }
+      else {
+        console.log('Go through sign-in or do: DO.C.User.IRI = "https://example.org/#i";');
+      }
     },
 
     notifyInbox: function(o) {
