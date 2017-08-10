@@ -518,7 +518,7 @@
                     <dt><button class="resource-open" title="Open article"><i class="fa fa-coffee fa-2x"></i>Open</button></dt>
                     <dd></dd>
                     <dt><button class="resource-save" title="Save article"><i class="fa fa-life-ring fa-2x"></i>Save</button></dt>
-                    <dd></dd>
+                    <dd>This requests a write operation (HTTP PUT) to the current location of the document (<var>window.location</var>).</dd>
                     <dt><button class="resource-save-as" title="Save as article"><i class="fa fa-paper-plane-o fa-2x"></i>Save As</button></dt>
                     <dd></dd>
                     <dt><button class="resource-snapshot" title="Snapshot article"><i class="fa fa-external-link fa-2x"></i>Snapshot</button></dt>
