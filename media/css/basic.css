@@ -478,26 +478,25 @@ content:"\00a0\00a0\00a0\00a0";
 
 
 /* dokieli homepage styles */
-#do-index h1 {
-  margin-top: 0.5em;
-  margin-bottom: 0;
-}
-
-#do-index #introduction {
+[property~="doap:shortdesc"]:first-child {
   text-align: center;
   font-size: 1.4em;
 }
-#do-index #features, body > footer {
+#dokieli-features, footer {
   overflow: hidden;
-  padding-top: 1em; padding-bottom: 1em;
+  padding-top: 1em;
+  padding-bottom: 1em;
   background-color: #333;
   color: #EBEBEB;
 }
-#do-index body > footer section {
-margin:0 auto;
+
+#help-and-shape {
+  width: 100%;
+  margin:0 auto;
+  max-width:initial;
 }
 
-#do-index #features {
+#dokieli-features {
   width:100%;
   max-width:calc(100% - 1em);
   padding-left:0.5em;
@@ -505,38 +504,38 @@ margin:0 auto;
   margin:0;
 }
 
-#do-index #features ul {
+#dokieli-features ul {
   list-style-type: none;
   padding: 0; margin: 0;
   font-size: 0.6em;
   text-align: center;
 }
 
-#do-index #features ul li {
+#dokieli-features ul li {
   overflow: hidden;
 }
-#do-index #features ul span {
+#dokieli-features ul span {
   display: block;
   font-size: 2em;
   margin: 0;
 }
-#do-index #features li span:first-child {
+#dokieli-features li span:first-child {
   display: inline-block;
 }
-#do-index #features li span:last-child {
+#dokieli-features li span:last-child {
   display: inline-block;
   color: #a8a8a8;
 }
-#do-index #features ul li a {
+#dokieli-features ul li a {
   display: inline-block;
   color: inherit; text-decoration: none;
   width: 100%;
 }
 
-#do-index #features ul li:hover, #do-index #features ul li:hover span {
+#dokieli-features ul li:hover, #dokieli-features ul li:hover span {
   background-color: #444;
 }
-#do-index #features ul i {
+#dokieli-features ul i {
   width: 1em;
   height: 1em;
   padding: 0.3em; margin: 0 0.2em;
@@ -544,23 +543,23 @@ margin:0 auto;
   text-align: center;
 }
 
-#do-index #features i.solid img {
+#dokieli-features i.solid img {
   width: 100%; display: block;
 }
 
-#do-index #read-write-web,
-#do-index #figure-dokieli-overview {
+#read-write-web,
+#figure-dokieli-overview {
   text-align: center;
   width: 100%;
   background-color: #ddd;
   margin:0 auto;
   max-width:initial;
 }
-#do-index #features h2,
-#do-index #figure-dokieli-overview h2 {
+#dokieli-features h2,
+#figure-dokieli-overview h2 {
   display:none;
 }
-#do-index #read-write-web {
+#read-write-web {
   text-align:center;
   font-size:2em;
   padding:1em 0;
@@ -598,7 +597,8 @@ column-count: 2;
   }
 
   dl[id^="document-"], #authors,
-  *[id^=table-of-] {
+  *[id^=table-of-],
+  #help-and-shape {
     max-width: 50em;
     margin: 0 auto;
   }
@@ -607,35 +607,35 @@ column-count: 2;
     margin-left: 1em
   }
 
-  #do-index #features ul {
+  #dokieli-features ul {
     font-size: 1.2em;
     float: left;
     width: 100%;
   }
-  #do-index #features ul li {
+  #dokieli-features ul li {
     float: left;
     width: 50%;
     padding: 0.6em 0;
   }
-  #do-index #features ul li:nth-child(odd) {
+  #dokieli-features ul li:nth-child(odd) {
     text-align:right;
     clear:left;
   }
-  #do-index #features ul li:nth-child(even) {
+  #dokieli-features ul li:nth-child(even) {
     text-align:left;
   }
-  #do-index #features ul li span {
+  #dokieli-features ul li span {
     font-size: 1em;
   }
-  #do-index #features ul li span:first-of-type {
+  #dokieli-features ul li span:first-of-type {
     padding-top: 1em;
   }
-  #do-index #features ul li:nth-child(odd) i,
-  #do-index #features ul li:nth-child(odd) p {
+  #dokieli-features ul li:nth-child(odd) i,
+  #dokieli-features ul li:nth-child(odd) p {
     float:right;
   }
-  #do-index #features ul li:nth-child(even) i,
-  #do-index #features ul li:nth-child(even) p {
+  #dokieli-features ul li:nth-child(even) i,
+  #dokieli-features ul li:nth-child(even) p {
     float: left;
   }
 }
