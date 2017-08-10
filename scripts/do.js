@@ -1502,7 +1502,7 @@ var DO = {
 
     initDocumentActions: function() {
       document.addEventListener('click', function(e) {
-        if (e.target.closest('[href="#document-menu"][typeof="schema:ActivateAction"]')) {
+        if (e.target.closest('[about="#document-menu"][typeof="schema:ActivateAction"], [href="#document-menu"][typeof="schema:ActivateAction"], [resource="#document-menu"][typeof="schema:ActivateAction"]')) {
           e.preventDefault();
           e.stopPropagation();
 
