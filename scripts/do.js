@@ -1500,6 +1500,22 @@ var DO = {
       }
     },
 
+    initDocumentActions: function() {
+      document.addEventListener('click', function(e) {
+        if (e.target.closest('[href="#document-menu"][typeof="schema:ActivateAction"]')) {
+          e.preventDefault();
+          e.stopPropagation();
+
+          if (document.body.classList.contains('on-document-menu')) {
+            DO.U.hideDocumentMenu(e);
+          }
+          else {
+            DO.U.showDocumentMenu(e);
+          }
+        }
+      });
+    },
+
     showDocumentInfo: function() {
       document.body.insertAdjacentHTML('beforeend', '<menu id="document-menu" class="do"><button class="show" title="Open Menu"><i class="fa fa-bars"></i></button><header></header><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><a href="https://dokie.li/">dokieli</a></dd></dl></footer></menu>');
       document.querySelector('#document-menu').addEventListener('click', function(e) {
@@ -6821,6 +6837,7 @@ WHERE {\n\
         DO.U.setLocalDocument();
         DO.U.buttonClose();
         DO.U.highlightItems();
+        DO.U.initDocumentActions();
         DO.U.showDocumentInfo();
         DO.U.showFragment();
         DO.U.setDocumentMode();
