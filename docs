@@ -531,6 +531,8 @@
                     <dt><button class="embed-data-meta" title="Embed structured data (Turtle, JSON-LD, TriG)"><i class="fa fa-table fa-2x"></i>Embed Data</button></dt>
                     <dd>This feature allows hidden RDF data to be stored with the document. Turtle, JSON-LD, and TriG can all be edited and stored independently.</dd>
                   </dl>
+
+                  <p id="base-url-selection-method">To determine the base URL, when new documents are created or saved as, media resources from <var>head link, [src], object[data]</var> (querySelector) will have their URLs normalised to use current document's base URL as its absolute URL (this is the <q>Use references as is</q> option). If <q>Copy to your storage</q> is selected, relative URLs will not be updated (as the copy operation maintains the same structure)</p>
                 </div>
               </section>
             </div>
