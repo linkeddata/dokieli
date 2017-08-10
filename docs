@@ -58,7 +58,7 @@
           <section id="principles" inlist="" rel="schema:hasPart" resource="#principles">
             <h2 property="schema:name">Principles</h2>
             <div datatype="rdf:HTML" property="schema:description">
-              <p>Towards enabling the <em>write</em> dimension of the <em>read-write</em> Web:</p>
+              <p>Towards improving the <em>write</em> dimension of the <em>read-write</em> Web, dokieli's design subscribes to the following principles: freedom of expression, interoperability, decentralisation, evolvability, universal access, separation of concerns, <code>█ + █ > = █ █</code>.</p>
 
             </div>
           </section>
