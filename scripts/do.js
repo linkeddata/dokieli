@@ -3390,16 +3390,29 @@ console.log(inbox);
       DO.U.setupResourceBrowser(document.getElementById('resource-browser'));
     },
 
+    openInputFile: function(e) {
+      var reader = new FileReader();
+      reader.onload = function(){
+        document.documentElement.innerHTML = reader.result;
+        DO.U.init();
+      };
+      reader.readAsText(e.target.files[0]);
+    },
+
     openDocument: function(e) {
       if(typeof e !== 'undefined') {
         e.target.disabled = true;
       }
-      document.body.insertAdjacentHTML('beforeend', '<aside id="open-document" class="do on"><button class="close" title="Close">❌</button><h2>Open Document</h2></aside>');
+      document.body.insertAdjacentHTML('beforeend', '<aside id="open-document" class="do on"><button class="close" title="Close">❌</button><h2>Open Document</h2><p<label for="open-local-file">Open local file</label> <input type="file" id="open-local-file" name="open-local-file" /></p></aside>');
 
       var openDocument = document.getElementById('open-document');
       openDocument.addEventListener('click', function(e) {
         if (e.target.matches('button.close')) {
           document.querySelector('#document-do .resource-open').disabled = false;
+        }
+
+        if (e.target.matches('#open-local-file')){
+          e.target.addEventListener('change', DO.U.openInputFile, false);
         }
       });
 
