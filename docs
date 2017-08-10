@@ -517,7 +517,7 @@
                     <dt><button class="resource-open" title="Open article"><i class="fa fa-coffee fa-2x"></i>Open</button></dt>
                     <dd></dd>
                     <dt><button class="resource-save" title="Save article"><i class="fa fa-life-ring fa-2x"></i>Save</button></dt>
-                    <dd>This requests a write operation (HTTP PUT) to the current location of the document (<var>window.location</var>).</dd>
+                    <dd>This feature makes a <a href="#http-put">write operation</a> (<code>HTTP PUT</code>) request to the current location of the document (<var>window.location</var>).</dd>
                     <dt><button class="resource-save-as" title="Save as article"><i class="fa fa-paper-plane-o fa-2x"></i>Save As</button></dt>
                     <dd></dd>
                     <dt><button class="resource-snapshot" title="Snapshot article"><i class="fa fa-external-link fa-2x"></i>Snapshot</button></dt>
@@ -557,7 +557,7 @@
             <div datatype="rdf:HTML" property="schema:description">
               <p>dokieli conforms to <cite><a href="https://www.w3.org/TR/ldp/" rel="cito:citesAsAuthority">Linked Data Platform</a></cite> (LDP) protocol for create, update, and delete operations.</p>
 
-              <p id="http-put">Article operations like <cite>New</cite>, <cite>Save</cite>, <cite>Save As</cite>  <cite>Reply</cite> and <cite>Review</cite> and other annotation operations use <code>HTTP PUT</code>.</p>
+              <p id="http-put">Article operations like <cite>New</cite>, <cite>Save</cite>, <cite>Save As</cite>,  <cite>Reply</cite> and <cite>Review</cite> and other annotation operations use <code>HTTP PUT</code>.</p>
 
               <p id="http-post">Notifications are sent with <code>HTTP POST</code>. <cite>Save</cite> and <cite>Save As</cite> normalises the HTML before sending.</p>
 
