@@ -494,7 +494,7 @@
               <section id="document-modes" inlist="" rel="schema:hasPart" resource="#document-modes">
                 <h3 property="schema:name">Document modes</h3>
                 <div datatype="rdf:HTML" property="schema:description">
-                  <p>The UI reflects document modes: <cite>author</cite>, <cite>review</cite>, <cite>social</cite>. By default the <cite>social</cite> mode is engaged. The <i class="fa fa-bars"></i> <a href="#dokieli-menu">dokieli menu</a> allows the user to engage the author mode through the <i class="fa fa-i-cursor"></i> <a href="#editor-enable">Edit</a> operation, and the review mode with <i class="fa fa-balance-scale"></i> <a href="#review-enable">Review</a>.</p>
+                  <p>The UI reflects document modes: <cite>author</cite>, <cite>review</cite>, <cite>social</cite>. By default the <cite>social</cite> mode is engaged. The <i class="fa fa-bars"></i> <a href="#dokieli-menu">dokieli menu</a> allows the user to engage the author mode through the <i class="fa fa-i-cursor"></i> <a href="#editor-enable">Edit</a> operation, and the review mode with <i class="fa fa-balance-scale"></i> <a href="#review-enable">Review</a>. See also <var>setDocumentMode</var> in do.js.</p>
                 </div>
               </section>
 
