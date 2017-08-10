@@ -332,7 +332,7 @@ button[class~="editor-enable"],
 button[class~="review-enable"],
 button[class~="embed-data-meta"],
 aside button.delete {
-display:block;
+display:inline-block;
 border:0;
 background-color:#fff !important;
 color:#000 !important;
