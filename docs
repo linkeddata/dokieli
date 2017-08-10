@@ -533,6 +533,8 @@
                   </dl>
 
                   <p id="base-url-selection-method">To determine the base URL, when new documents are created or saved as, media resources from <var>head link, [src], object[data]</var> (querySelector) will have their URLs normalised to use current document's base URL as its absolute URL (this is the <q>Use references as is</q> option). If <q>Copy to your storage</q> is selected, relative URLs will not be updated (as the copy operation maintains the same structure)</p>
+
+                  <p id="resource-browser-method">The resource browser in <cite>New</cite> and <cite>Save As</cite> operations makes use of the base URL in the input to view available resources and containers. It does this by fetching and looking at the descriptions of the accessible URLs via <code>ldp:contains</code>. Resources (<code>ldp:Resource</code> but not <code>ldp:Container</code>) are displayed differently than containers (<code>ldp:Container</code>). Users can navigate through this Webspace similar to a local filesystem user interface.</p>
                 </div>
               </section>
             </div>
