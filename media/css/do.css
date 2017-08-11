@@ -289,7 +289,7 @@ position:absolute;
 top:0.615em;
 right:0.615em;
 font-size:1.75em;
-display:inherit;
+display:inherit !important;
 padding:0;
 width:1.5em;
 height:1.5em;
