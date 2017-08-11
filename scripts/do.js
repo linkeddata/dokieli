@@ -3526,6 +3526,8 @@ console.log(reason);
         }
 
         document.documentElement.innerHTML = template.documentElement.innerHTML;
+
+        //FIXME: Is ther a way to update the window state for file:///path/to/file ?
         if(!iri.startsWith('file:')) {
           history.pushState(null, null, iri);
         }
