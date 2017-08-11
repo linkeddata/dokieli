@@ -3647,7 +3647,8 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           var wasDerived = document.querySelector('#derivation-data');
           if (wasDerived.checked) {
             var wasDerivedOn = DO.U.getDateTimeISO();
-            html.querySelector('main article').insertAdjacentHTML('beforebegin', '<dl id="document-derived-from"><dt>Derived From</dt><dd><a href="' + currentDocumentURL + '" rel="prov:wasDerivedFrom">' + currentDocumentURL + '</a></dd></dl><dl id="document-derived-on"><dt>Derived On</dt><dd><time datetime="' + wasDerivedOn + '">' + wasDerivedOn + '</time></dd></dl>' + "\n");
+            var nodeInsertLocation = html.querySelector('main article') || html.querySelector('body');
+            nodeInsertLocation.insertAdjacentHTML('beforebegin', '<dl id="document-derived-from"><dt>Derived From</dt><dd><a href="' + currentDocumentURL + '" rel="prov:wasDerivedFrom">' + currentDocumentURL + '</a></dd></dl><dl id="document-derived-on"><dt>Derived On</dt><dd><time datetime="' + wasDerivedOn + '">' + wasDerivedOn + '</time></dd></dl>' + "\n");
           }
           var baseURLSelectionChecked = saveAsDocument.querySelector('select[name="base-url"]');
           if (baseURLSelectionChecked.length > 0) {
@@ -4785,7 +4786,7 @@ WHERE {\n\
       var interactions = document.getElementById('document-interactions');
 
       if(!interactions) {
-        interactions = document.querySelector('main article');
+        interactions = document.querySelector('main article') || document.body;
         var interactionsSection = '<section id="document-interactions"><h2>Interactions</h2><div>';
 // interactionsSection += '<p class="count"><data about="" datatype="xsd:nonNegativeInteger" property="sioc:num_replies" value="' + interactionsCount + '">' + interactionsCount + '</data> interactions</p>';
         interactionsSection += '</div></section>';
@@ -5227,7 +5228,7 @@ WHERE {\n\
           editorOptions.author.toolbar.buttons.splice(10, 0, 'table');
         }
 
-        var eNodes = document.querySelector(selector);
+        var eNodes = document.querySelector(selector) || document.body;
         var eOptions = editorOptions[editorMode];
         DO.C.User.Role = editorMode;
 
@@ -5238,6 +5239,10 @@ WHERE {\n\
           if(editorMode == 'author') {
             document.addEventListener('click', DO.U.updateDocumentTitle);
           }
+
+          document.querySelectorAll('.do').forEach(function(node){
+            node.setAttribute('contenteditable', 'false');
+          })
 
           return DO.U.Editor.MediumEditor;
         }
@@ -6644,8 +6649,9 @@ WHERE {\n\
 
                         var r = document.querySelector('#references ol');
                         if (!r) {
+                          var nodeInsertLocation = document.querySelector('main article > div') || document.body;
                           var section = '<section id="references"><h2>References</h2><div><ol></ol></div></section>';
-                          document.querySelector('main article > div').insertAdjacentHTML('beforeend', section);
+                          nodeInsertLocation.insertAdjacentHTML('beforeend', section);
                           r = document.querySelector('#references ol');
                         }
                         var citationHTML = '<li id="' + id + '">' + citation + '</li>';
