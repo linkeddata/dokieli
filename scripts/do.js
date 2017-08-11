@@ -3391,12 +3391,17 @@ console.log(inbox);
     },
 
     openInputFile: function(e) {
+      var file = e.target.files[0];
+console.log(file);
+      var contentType = file.type;
+
       var reader = new FileReader();
       reader.onload = function(){
-        document.documentElement.innerHTML = reader.result;
-        DO.U.init();
+// console.log(reader);
+
+        DO.U.spawnDokieli(reader.result, contentType, 'file:' + file.name);
       };
-      reader.readAsText(e.target.files[0]);
+      reader.readAsText(file);
     },
 
     openDocument: function(e) {
@@ -3406,6 +3411,9 @@ console.log(inbox);
       document.body.insertAdjacentHTML('beforeend', '<aside id="open-document" class="do on"><button class="close" title="Close">❌</button><h2>Open Document</h2><p<label for="open-local-file">Open local file</label> <input type="file" id="open-local-file" name="open-local-file" /></p></aside>');
 
       var openDocument = document.getElementById('open-document');
+      DO.U.setupResourceBrowser(openDocument);
+      openDocument.insertAdjacentHTML('beforeend', '<button class="open">Open</button>');
+
       openDocument.addEventListener('click', function(e) {
         if (e.target.matches('button.close')) {
           document.querySelector('#document-do .resource-open').disabled = false;
@@ -3414,12 +3422,7 @@ console.log(inbox);
         if (e.target.matches('#open-local-file')){
           e.target.addEventListener('change', DO.U.openInputFile, false);
         }
-      });
 
-      DO.U.setupResourceBrowser(openDocument);
-      openDocument.insertAdjacentHTML('beforeend', '<button class="open">Open</button>');
-
-      openDocument.addEventListener('click', function(e) {
         if (e.target.matches('button.open')) {
           var openDocument = document.getElementById('open-document');
           var rm = openDocument.querySelector('.response-message');
@@ -3444,68 +3447,7 @@ console.log(inbox);
                 var contentType = (cT) ? cT.split(';')[0].trim() : 'text/turtle';
                 // console.log(contentType);
 
-                if(DO.C.AvailableMediaTypes.indexOf(contentType) > -1) {
-                  // var fragment = DO.U.fragmentFromString(response.xhr.responseText);
-                  var template = document.implementation.createHTMLDocument('template');
-// console.log(template);
-
-                  switch(contentType){
-                    case 'text/html': case 'application/xhtml+xml':
-                      template.documentElement.innerHTML = response.xhr.responseText;
-                      break;
-
-                    default:
-                      template.documentElement.innerHTML = '<pre>' + response.xhr.responseText.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</pre>';
-                      break;
-                  }
-
-// console.log(template);
-
-                  var documentHasDokieli = template.querySelectorAll('head script[src$="/do.js"]');
-// console.log(documentHasDokieli);
-// console.log(documentHasDokieli.length)
-                  if(documentHasDokieli.length == 0) {
-                    var doFiles = ['font-awesome.min.css', 'do.css', 'simplerdf.js', 'medium-editor.min.js', 'do.js'];
-                    doFiles.forEach(function(i){
-// console.log(i);
-                      var media = i.endsWith('.css') ? template.querySelectorAll('head link[rel~="stylesheet"][href$="/' + i + '"]') : template.querySelectorAll('head script[src$="/' + i + '"]');
-// console.log(media);
-// console.log(media.length)
-                      if (media.length == 0) {
-                        switch(i) {
-                          case 'font-awesome.min.css':
-                            template.querySelector('head').insertAdjacentHTML('beforeend', '<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" rel="stylesheet" />');
-                            break;
-                          case 'do.css':
-                            template.querySelector('head').insertAdjacentHTML('beforeend', '<link href="https://dokie.li/media/css/' + i + '" media="all" rel="stylesheet" />');
-                            break;
-                          case 'simplerdf.js': case 'medium-editor.min.js': case 'do.js':
-                            template.querySelector('head').insertAdjacentHTML('beforeend', '<script src="https://dokie.li/scripts/' + i + '"></script>')
-                            break;
-                        }
-                      }
-// console.log(template)
-                    });
-
-                    var nodes = template.querySelectorAll('head link, [src], object[data]');
-                    nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': 'base-url-absolute', 'iri': iri});
-
-                    document.documentElement.removeAttribute('id');
-                    document.documentElement.removeAttribute('class');
-                    document.documentElement.innerHTML = template.documentElement.innerHTML;
-                    DO.U.init();
-                    history.pushState(null, null, iri);
-                    // openDocument.parentNode.removeChild(openDocument);
-                  }
-                  else {
-                    window.open(iri, '_blank');
-                    return;
-                  }
-                }
-                else {
-                  //TODO: Handle server returning wrong Response/Content-Type for the Request/Accept
-                }
-
+                DO.U.spawnDokieli(response.xhr.responseText, contentType, iri);
               },
               function(reason){
 console.log(reason);
@@ -3526,6 +3468,74 @@ console.log(reason);
         }
       });
     },
+
+    spawnDokieli: function(data, contentType, iri){
+      if(DO.C.AvailableMediaTypes.indexOf(contentType) > -1) {
+        // var fragment = DO.U.fragmentFromString(response.xhr.responseText);
+        var template = document.implementation.createHTMLDocument('template');
+// console.log(template);
+
+        switch(contentType){
+          case 'text/html': case 'application/xhtml+xml':
+            template.documentElement.innerHTML = data;
+            break;
+
+          default:
+            template.documentElement.innerHTML = '<pre>' + data.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</pre>';
+            break;
+        }
+
+// console.log(template);
+
+        var documentHasDokieli = template.querySelectorAll('head script[src$="/do.js"]');
+// console.log(documentHasDokieli);
+// console.log(documentHasDokieli.length)
+        if(documentHasDokieli.length == 0) {
+          var doFiles = ['font-awesome.min.css', 'do.css', 'simplerdf.js', 'medium-editor.min.js', 'do.js'];
+          doFiles.forEach(function(i){
+// console.log(i);
+            var media = i.endsWith('.css') ? template.querySelectorAll('head link[rel~="stylesheet"][href$="/' + i + '"]') : template.querySelectorAll('head script[src$="/' + i + '"]');
+// console.log(media);
+// console.log(media.length)
+            if (media.length == 0) {
+              switch(i) {
+                case 'font-awesome.min.css':
+                  template.querySelector('head').insertAdjacentHTML('beforeend', '<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" rel="stylesheet" />');
+                  break;
+                case 'do.css':
+                  template.querySelector('head').insertAdjacentHTML('beforeend', '<link href="https://dokie.li/media/css/' + i + '" media="all" rel="stylesheet" />');
+                  break;
+                case 'simplerdf.js': case 'medium-editor.min.js': case 'do.js':
+                  template.querySelector('head').insertAdjacentHTML('beforeend', '<script src="https://dokie.li/scripts/' + i + '"></script>')
+                  break;
+              }
+            }
+// console.log(template)
+          });
+
+          var nodes = template.querySelectorAll('head link, [src], object[data]');
+          nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': 'base-url-absolute', 'iri': iri});
+
+          document.documentElement.removeAttribute('id');
+          document.documentElement.removeAttribute('class');
+        }
+        else {
+          if(!iri.startsWith('file:')) {
+            window.open(iri, '_blank');
+          }
+        }
+
+        document.documentElement.innerHTML = template.documentElement.innerHTML;
+        if(!iri.startsWith('file:')) {
+          history.pushState(null, null, iri);
+        }
+        DO.U.init();
+      }
+      else {
+console.log('//TODO: Handle server returning wrong Response/Content-Type for the Request/Accept');
+      }
+    },
+
 
     createNewDocument: function(e) {
       e.target.disabled = true;
