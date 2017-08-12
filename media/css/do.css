@@ -449,6 +449,8 @@ margin:0;
 #document-metadata table * {
 border:0;
 padding-left:0;
+color:#000 !important;
+background-color:#fff !important;
 }
 #document-metadata caption {
 font-size:1.231em;
