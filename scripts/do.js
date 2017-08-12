@@ -3647,7 +3647,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           var wasDerived = document.querySelector('#derivation-data');
           if (wasDerived.checked) {
             var wasDerivedOn = DO.U.getDateTimeISO();
-            var nodeInsertLocation = html.querySelector('main article') || html.querySelector('body');
+            var nodeInsertLocation = html.querySelector('main > article') || html.querySelector('body');
             nodeInsertLocation.insertAdjacentHTML('beforebegin', '<dl id="document-derived-from"><dt>Derived From</dt><dd><a href="' + currentDocumentURL + '" rel="prov:wasDerivedFrom">' + currentDocumentURL + '</a></dd></dl><dl id="document-derived-on"><dt>Derived On</dt><dd><time datetime="' + wasDerivedOn + '">' + wasDerivedOn + '</time></dd></dl>' + "\n");
           }
           var baseURLSelectionChecked = saveAsDocument.querySelector('select[name="base-url"]');
@@ -4786,7 +4786,7 @@ WHERE {\n\
       var interactions = document.getElementById('document-interactions');
 
       if(!interactions) {
-        interactions = document.querySelector('main article') || document.body;
+        interactions = document.querySelector('main > article') || document.body;
         var interactionsSection = '<section id="document-interactions"><h2>Interactions</h2><div>';
 // interactionsSection += '<p class="count"><data about="" datatype="xsd:nonNegativeInteger" property="sioc:num_replies" value="' + interactionsCount + '">' + interactionsCount + '</data> interactions</p>';
         interactionsSection += '</div></section>';
@@ -5139,7 +5139,7 @@ WHERE {\n\
       },
 
       enableEditor: function(editorMode, e, selector) {
-        selector = selector || 'main article';
+        selector = selector || 'main > article';
 
         if (typeof DO.U.Editor.MediumEditor !== 'undefined') {
           DO.U.Editor.disableEditor();
@@ -6649,7 +6649,7 @@ WHERE {\n\
 
                         var r = document.querySelector('#references ol');
                         if (!r) {
-                          var nodeInsertLocation = document.querySelector('main article > div') || document.body;
+                          var nodeInsertLocation = document.querySelector('main > article > div') || document.body;
                           var section = '<section id="references"><h2>References</h2><div><ol></ol></div></section>';
                           nodeInsertLocation.insertAdjacentHTML('beforeend', section);
                           r = document.querySelector('#references ol');
