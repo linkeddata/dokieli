@@ -3379,13 +3379,8 @@ console.log(inbox);
     },
 
     showResourceBrowser: function() {
-      this.disabled = "disabled";
       var browserHTML = '<aside id="resource-browser" class="do on"><button class="close" title="Close">❌</button><h2>Resource Browser</h2></aside>';
       document.querySelector('body').insertAdjacentHTML('beforeend', browserHTML);
-
-      document.getElementById('resource-browser').querySelector('button.close').addEventListener('click', function(e) {
-        document.querySelector('#document-do .resource-browser').removeAttribute('disabled');
-      }, false);
 
       DO.U.setupResourceBrowser(document.getElementById('resource-browser'));
     },
