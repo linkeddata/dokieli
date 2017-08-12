@@ -3392,7 +3392,7 @@ console.log(inbox);
 
     openInputFile: function(e) {
       var file = e.target.files[0];
-console.log(file);
+// console.log(file);
       var contentType = file.type;
 
       var reader = new FileReader();
@@ -3526,14 +3526,18 @@ console.log(reason);
 
         document.documentElement.innerHTML = template.documentElement.innerHTML;
 
-        var iriProtocol = iri.split('//')[0];
-        var iriHost = iri.split('//')[1].split('/')[0];
-
-        if(!iri.startsWith('file:') && document.location.protocol == iriProtocol && document.location.host == iriHost) {
-          try {
-            history.pushState(null, null, iri);
+// console.log(document.location.protocol);
+        if(!iri.startsWith('file:')){
+          var iriHost = iri.split('//')[1].split('/')[0];
+          var iriProtocol = iri.split('//')[0];
+// console.log(iriHost);
+// console.log(iriProtocol);
+          if(document.location.protocol == iriProtocol && document.location.host == iriHost) {
+            try {
+              history.pushState(null, null, iri);
+            }
+            catch(e) { console.log('Cannot change pushState due to cross-origin.'); }
           }
-          catch(e) { console.log('Cannot change pushState due to cross-origin.'); }
         }
         DO.U.init();
       }
