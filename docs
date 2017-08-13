@@ -535,7 +535,7 @@
                     <dd><cite>Editor</cite> is one of the modes a user can be in. The available features reflects to edit operation. Editing is separated from the saving operation.</dd>
 
                     <dt id="resource-source"><button class="resource-source" title="Edit article source code"><i class="fa fa-code"></i>Source</button></dt>
-                    <dd>Users can edit the current state of the article.</dd>
+                    <dd>Users can edit the current state of the article. <em>Updating</em>, only updates the DOM, and leave the saving to <cite>Save</cite> or <cite>Save As</cite>.</dd>
 
                     <dt id="embed-data-meta"><button class="embed-data-meta" title="Embed structured data (Turtle, JSON-LD, TriG)"><i class="fa fa-table"></i>Embed Data</button></dt>
                     <dd>This feature allows hidden RDF data to be stored with the document. Turtle, JSON-LD, and TriG can all be edited and stored independently.</dd>
