@@ -254,6 +254,7 @@ box-shadow:inset -2px -2px 1px #eee;
 ul { padding: 0; margin-bottom:1em; list-style-position: inside; }
 nav ul { list-style: none; }
 dt { font-weight: bold; }
+dt i.fa { margin-right:0.5em;}
 
 /*h3 + div section:before,*/
 section + p:before,
