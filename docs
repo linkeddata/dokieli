@@ -30,7 +30,7 @@
 
         <dl id="document-modified">
           <dt>Modified</dt>
-          <dd><time content="2017-08-10T00:00:00Z" datatype="xsd:dateTime" datetime="2017-08-10T00:00:00Z" property="schema:dateModified">2017-08-10</time></dd>
+          <dd><time content="2017-08-14T00:00:00Z" datatype="xsd:dateTime" datetime="2017-08-14T00:00:00Z" property="schema:dateModified">2017-08-14</time></dd>
         </dl>
 
         <dl id="document-license">
@@ -258,7 +258,7 @@
 <code></code>
 <code>&lt;dl id="document-derived-on"&gt;</code>
 <code>  &lt;dt&gt;Derived On&lt;/dt&gt;</code>
-<code>  &lt;dd&gt;&lt;time datetime="2017-08-10T00:29:45.342Z"&gt;2017-08-10T00:29:45.342Z&lt;/time&gt;&lt;/dd&gt;</code>
+<code>  &lt;dd&gt;&lt;time datetime="2017-08-06T00:29:45.342Z"&gt;2017-08-06T00:29:45.342Z&lt;/time&gt;&lt;/dd&gt;</code>
 <code>&lt;/dl&gt;</code></pre>
 
                       <p>If a document is derived from another using the <cite>Save As</cite> operation, derived from and derived on information is declared.</p>
