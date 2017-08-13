@@ -508,7 +508,7 @@
                     <dd>User can share the current article or a part of it with their contacts, automatically discovered via <samp>foaf:knows</samp> as well as traversing equivalent profiles (<code>owl:sameAs</code>). Notification can also be sent to specific targets by entering their IRIs. dokieli sends a notification to the selected targets with information like: who sent it, when, license, motivation.</dd>
 
                     <dt id="resource-reply"><button class="resource-reply" title="Reply"><i class="fa fa-reply"></i>Reply</button></dt>
-                    <dd></dd>
+                    <dd>An article can be replied with a note and have its own <a href="#resource-license-method">license</a>. To choose the location of the reply, the <a href="#resource-browser-method">resource browser</a> can be used on <a href="#personal-storage">personal storage</a> or an annotation service.</dd>
 
                     <dt id="review-enable"><button class="review-enable" title="Enable review"><i class="fa fa-balance-scale"></i>Review</button></dt>
                     <dd>This feature changes the <a href="#document-modes">document mode</a> to <cite>Review</cite> and gives different context for annotations. When a user selects a span of text, a toolbar provides the following options to motivations:
