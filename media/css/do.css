@@ -492,10 +492,15 @@ display:inline;
 margin-left:0;
 }
 #document-menu dd:after {
-content:", ";
+content:"";
+margin-right:1em;
 }
 #document-menu dd:last-child:after {
 content:"";
+}
+#document-menu footer img,
+#document-menu footer i.fa {
+vertical-align:middle;
 }
 
 
