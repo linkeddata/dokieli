@@ -330,7 +330,7 @@ vertical-align:top;
 button[class~="signin-user"],
 button[class|="resource"],
 button[class~="editor-enable"],
-button[class~="review-enable"],
+button[class|="review"],
 button[class~="embed-data-meta"],
 aside button.delete {
 display:inline-block;
@@ -383,7 +383,7 @@ cursor:default !important;
 
 button[class~="signin-user"] .fa,
 button[class|="resource"] .fa,
-button[class~="review-enable"] .fa,
+button[class|="review"] .fa,
 button[class~="editor-enable"] .fa,
 button[class~="embed-data-meta"] .fa {
 margin-right:0.25em;
