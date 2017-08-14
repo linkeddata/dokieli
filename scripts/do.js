@@ -1029,22 +1029,28 @@ var DO = {
     },
 
     deleteResource: function(url, options) {
-      return new Promise(function(resolve, reject) {
-        var http = new XMLHttpRequest();
-        http.open('DELETE', url);
-        if (!options.noCredentials) {
-          http.withCredentials = true;
-        }
-        http.onreadystatechange = function() {
-          if (this.readyState == this.DONE) {
-            if (this.status === 200 || this.status === 202 || this.status === 204) {
-              return resolve(true);
-            }
-            return reject({status: this.status, xhr: this});
+      if (url && url.length > 0) {
+        options = options || {};
+        return new Promise(function(resolve, reject) {
+          var http = new XMLHttpRequest();
+          http.open('DELETE', url);
+          if (!options.noCredentials) {
+            http.withCredentials = true;
           }
-        };
-        http.send();
-      });
+          http.onreadystatechange = function() {
+            if (this.readyState == this.DONE) {
+              if (this.status === 200 || this.status === 202 || this.status === 204) {
+                return resolve(true);
+              }
+              return reject({status: this.status, xhr: this});
+            }
+          };
+          http.send();
+        });
+      }
+      else {
+        return Promise.reject({'message': 'url parameter not valid'});
+      }
     },
 
     //I want HTTP COPY and I want it now!
