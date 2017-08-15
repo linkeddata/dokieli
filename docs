@@ -473,20 +473,6 @@
             </div>
           </section>
 
-          <section id="presentation" inlist="" rel="schema:hasPart" resource="#presentation">
-            <h2 property="schema:name">Presentation</h2>
-            <div datatype="rdf:HTML" property="schema:description">
-              <p>..</p>
-            </div>
-          </section>
-
-          <section id="behaviour" inlist="" rel="schema:hasPart" resource="#behaviour">
-            <h2 property="schema:name">Behaviour</h2>
-            <div datatype="rdf:HTML" property="schema:description">
-              <p>..</p>
-            </div>
-          </section>
-
           <section id="user-interface" inlist="" rel="schema:hasPart" resource="#user-interface">
             <h2 property="schema:name">User interface</h2>
             <div datatype="rdf:HTML" property="schema:description">
@@ -556,6 +542,11 @@
                   <p id="resource-browser-method">The <em>resource browser</em> eg. available for <cite>New</cite>, <cite>Open</cite>, <cite>Save As</cite> operations can be used to navigate through a Webspace. It does this by using the <cite><a href="https://www.w3.org/TR/ldp/">Linked Data Platform</a></cite>'s containment rules to retrieve and then display the container's index. If the user's personal storage location is known, it will be used as default location for the resource browser. Alternatively, if the article refers to an annotation service, it will be used as start location.</p>
 
                   <p id="resource-license-method">Users are given a choice to specify the <em>rights and license</em> for their annotations from a list of <cite><a href="https://creativecommons.org/">Creative Commons</a></cite> licenses, eg. <span resource="#annotation-rights" typeof="schema:ChooseAction">CC BY 4.0</span>.</p>
+
+                  <dl>
+                    <dt id="dokieli-views"><i class="fa fa-magic"></i>Views</dt>
+                    <dd>The dokieli menu will list primary and alternate stylesheets that are <a href="#html-css">detected in HTML</a>. <cite>Native</cite> is always available and it will essentially disable all other stylesheets, thereby user-agent's default stylesheets are gets applied. When a view is selected, eg. <cite>Basic</cite> (which happens to be the one that is used on this article as primary), it becomes the primary stylesheet, and the rest of the stylesheets become alternate and disabled.</dd>
+                  </dl>
                 </div>
               </section>
             </div>
