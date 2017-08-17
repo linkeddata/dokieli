@@ -9,7 +9,6 @@
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" rel="stylesheet" />
     <script src="scripts/simplerdf.js"></script>
     <script src="scripts/medium-editor.min.js"></script>
-    <script src="scripts/medium-editor-tables.min.js"></script>
     <script src="scripts/do.js"></script>
   </head>
 
