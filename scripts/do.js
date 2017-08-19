@@ -2713,10 +2713,13 @@ var DO = {
 
       var replyToResource = document.getElementById('reply-to-resource');
 
-      DO.U.setupResourceBrowser(replyToResource);
-      document.getElementById('browser-location').insertAdjacentHTML('afterbegin', '<p>Choose a location to save your reply.</p>');
-      replyToResource.insertAdjacentHTML('beforeend', '<p>Your reply will be saved at <samp id="location-final">https://example.org/path/to/article</samp></p>');
-      var bli = document.getElementById('browser-location-input');
+      var id = 'location-reply-to';
+      var action = 'write';
+
+      DO.U.setupResourceBrowser(replyToResource, id, action);
+      document.getElementById(id).insertAdjacentHTML('afterbegin', '<p>Choose a location to save your reply.</p>');
+      replyToResource.insertAdjacentHTML('beforeend', '<p>Your reply will be saved at <samp id="' + id +'-' + action + '">https://example.org/path/to/article</samp></p>');
+      var bli = document.getElementById(id + '-input');
       bli.focus();
       bli.placeholder = 'https://example.org/path/to/article';
       replyToResource.insertAdjacentHTML('beforeend', '<button class="reply">Send now</button>');
@@ -2741,14 +2744,14 @@ var DO = {
           if (iri.length > 0 && note.length > 0) {
 
             var datetime = DO.U.getDateTimeISO();
-            var id = DO.U.generateAttributeId();
-            var noteIRI = document.querySelector('#reply-to-resource #location-final').innerText.trim();
+            var attributeId = DO.U.generateAttributeId();
+            var noteIRI = document.querySelector('#reply-to-resource #' + id + '-' + action).innerText.trim();
             var motivatedBy = "oa:replying";
             var noteData = {
               "type": 'article',
               "mode": "write",
               "motivatedByIRI": motivatedBy,
-              "id": id,
+              "id": attributeId,
               "iri": noteIRI, //e.g., https://example.org/path/to/article
               "creator": {},
               "datetime": datetime,
@@ -3167,19 +3170,18 @@ console.log(inbox);
       }
     },
 
-    nextLevelButton: function(button, url) {
-      var final = document.getElementById('location-final');
+    nextLevelButton: function(button, url, id, action) {
+      var actionNode = document.getElementById(id + '-' + action);
+
       button.addEventListener('click', function(){
         if(button.parentNode.classList.contains('container')){
           DO.U.getResourceGraph(url).then(
             function(g){
-              if(final){
-                final.textContent = url + DO.U.generateAttributeId();
-              }
-              return DO.U.generateBrowserList(g, url);
+              actionNode.textContent = (action == 'write') ? url + DO.U.generateAttributeId() : url;
+              return DO.U.generateBrowserList(g, url, id, action);
             },
             function(reason){
-              var inputBox = document.getElementById('browser-location');
+              var inputBox = document.getElementById(id);
               switch(reason.slice(-3)) { // TODO: simplerdf needs to pass status codes better than in a string.
                 default:
                   inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to access ('+ reason +').</p>');
@@ -3197,35 +3199,37 @@ console.log(inbox);
               }
             }
           );
-        }else{
-          document.getElementById('browser-location-input').value = url;
+        }
+        else {
+          document.getElementById(id + '-input').value = url;
           var alreadyChecked = button.parentNode.querySelector('input[type="radio"]').checked;
           var radios = button.parentNode.parentNode.querySelectorAll('input[checked="true"]');
-          if(final){
-            final.textContent = url;
-          }
+
+          actionNode.textContent =  url;
+
           for(var i = 0; i < radios.length; i++){
             radios[i].removeAttribute('checked');
           }
           if(alreadyChecked){
             button.parentNode.querySelector('input[type="radio"]').removeAttribute('checked');
-          }else{
+          }
+          else{
             button.parentNode.querySelector('input[type="radio"]').setAttribute('checked', 'true');
           }
         }
       }, false);
     },
 
-    generateBrowserList: function(g, url) {
+    generateBrowserList: function(g, url, id, action) {
       return new Promise(function(resolve, reject){
-        document.getElementById('browser-location-input').value = url;
+        document.getElementById(id + '-input').value = url;
 
-        var msgs = document.getElementById('browser-location').querySelectorAll('.response-message');
+        var msgs = document.getElementById(id).querySelectorAll('.response-message');
         for(var i = 0; i < msgs.length; i++){
           msgs[i].parentNode.removeChild(msgs[i]);
         }
 
-        var list = document.getElementById('browser-ul');
+        var list = document.getElementById(id + '-ul');
         list.innerHTML = '';
 
         var urlPath = DO.U.getUrlPath(url);
@@ -3275,31 +3279,31 @@ console.log(inbox);
 
         for(var i = 0; i < buttons.length; i++) {
           var nextUrl = buttons[i].parentNode.querySelector('input').value;
-          DO.U.nextLevelButton(buttons[i], nextUrl);
+          DO.U.nextLevelButton(buttons[i], nextUrl, id, action);
         }
 
         return resolve(list);
       });
     },
 
-    initBrowse: function(storageUrl, input, browseButton){
+    initBrowse: function(storageUrl, input, browseButton, id, action){
       input.value = storageUrl;
       DO.U.getResourceGraph(storageUrl).then(function(g){
-        DO.U.generateBrowserList(g, storageUrl);
+        DO.U.generateBrowserList(g, storageUrl, id, action);
       }).then(function(i){
-        document.getElementById('location-final').textContent = input.value + DO.U.generateAttributeId();
+        document.getElementById(id + '-' + action).textContent = (action == 'write') ? input.value + DO.U.generateAttributeId() : input.value;
       });
 
       browseButton.addEventListener('click', function(){
-        DO.U.triggerBrowse(input.value);
+        DO.U.triggerBrowse(input.value, id, action);
       }, false);
     },
 
-    triggerBrowse: function(url){
-      var inputBox = document.getElementById('browser-location');
+    triggerBrowse: function(url, id, action){
+      var inputBox = document.getElementById(id);
       if (url.length > 10 && url.match(/^https?:\/\//g) && url.slice(-1) == "/"){
         DO.U.getResourceGraph(url).then(function(g){
-          DO.U.generateBrowserList(g, url).then(function(l){
+          DO.U.generateBrowserList(g, url, id, action).then(function(l){
             return l;
           },
           function(reason){
@@ -3307,7 +3311,7 @@ console.log(inbox);
           });
         },
         function(reason){
-          var list = document.getElementById('browser-ul');
+          var list = document.getElementById(id + '-ul');
           switch(reason.slice(-3)) { // TODO: simplerdf needs to pass status codes better than in a string.
             default:
               inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to access ('+ reason +').</p>');
@@ -3324,43 +3328,46 @@ console.log(inbox);
               break;
           }
         });
-      }else{
+      }
+      else{
         inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">This is not a valid location.</p></div>');
       }
     },
 
-    setupResourceBrowser: function(parent){
-      parent.insertAdjacentHTML('beforeend', '<div id="browser-location"><label for="browser-location-input">URL</label> <input type="text" id="browser-location-input" name="browser-location-input" placeholder="https://example.org/path/to/" /><button id="browser-location-update" disabled="disabled">Browse</button></div>\n\
-      <div id="browser-contents"></div>');
+    setupResourceBrowser: function(parent, id, action){
+      id = id || 'browser-location';
+      action = action || 'write';
 
-      var inputBox = document.getElementById('browser-location');
-      var storageBox = document.getElementById('browser-contents');
-      var input = document.getElementById('browser-location-input');
-      var browseButton = document.getElementById('browser-location-update');
+      parent.insertAdjacentHTML('beforeend', '<div id="' + id + '"><label for="' + id +'-input">URL</label> <input type="text" id="' + id +'-input" name="' + id + '-input" placeholder="https://example.org/path/to/" /><button id="' + id +'-update" disabled="disabled">Browse</button></div>\n\
+      <div id="' + id +'-contents"></div>');
+
+      var inputBox = document.getElementById(id);
+      var storageBox = document.getElementById(id + '-contents');
+      var input = document.getElementById(id + '-input');
+      var browseButton = document.getElementById(id + '-update');
 
       input.addEventListener('keyup', function(e){
-        var final = document.getElementById('location-final');
+        var actionNode = document.getElementById(id + '-' + action);
         if (input.value.length > 10 && input.value.match(/^https?:\/\//g) && input.value.slice(-1) == "/") {
           browseButton.removeAttribute('disabled');
           if(e.which == 13){
-            DO.U.triggerBrowse(input.value);
+            DO.U.triggerBrowse(input.value, id, action);
           }
-          if(final){
-            final.textContent = input.value + DO.U.generateAttributeId();
+          if(action){
+            action.textContent = input.value + DO.U.generateAttributeId();
           }
         }
         else {
           browseButton.disabled = 'disabled';
-          if(final){
-            final.textContent = input.value;
-          }
+
+          actionNode.textContent = (action == 'write') ? input.value : 'xxxxxxxxxxxxxxxx';
         }
       }, false);
 
-      var browserul = document.getElementById('browser-ul');
+      var browserul = document.getElementById(id + '-ul');
       if(!browserul){
         browserul = document.createElement('ul');
-        browserul.id = "browser-ul";
+        browserul.id = id + '-ul';
 
         storageBox.appendChild(browserul);
       }
@@ -3372,27 +3379,30 @@ console.log(inbox);
       }
 
       if(storageUrl){
-        DO.U.initBrowse(storageUrl, input, browseButton);
+        DO.U.initBrowse(storageUrl, input, browseButton, id, action);
       }
       else {
         DO.U.getEndpoint(DO.C.Vocab['oaannotationService']['@id']).then(
           function(storageUrl) {
-            DO.U.initBrowse(storageUrl[0], input, browseButton);
+            DO.U.initBrowse(storageUrl[0], input, browseButton, id, action);
           },
           function(){
             browseButton.addEventListener('click', function(){
-              DO.U.triggerBrowse(input.value);
+              DO.U.triggerBrowse(input.value, id, action);
             }, false);
           }
         )
       }
     },
 
-    showResourceBrowser: function() {
-      var browserHTML = '<aside id="resource-browser" class="do on"><button class="close" title="Close">❌</button><h2>Resource Browser</h2></aside>';
+    showResourceBrowser: function(id) {
+      id = id || 'location-' + DO.U.generateAttributeId();
+      action = 'write';
+
+      var browserHTML = '<aside id="resource-browser-' + id + '" class="do on"><button class="close" title="Close">❌</button><h2>Resource Browser</h2></aside>';
       document.querySelector('body').insertAdjacentHTML('beforeend', browserHTML);
 
-      DO.U.setupResourceBrowser(document.getElementById('resource-browser'));
+      DO.U.setupResourceBrowser(document.getElementById('resource-browser-' + id), id, action);
     },
 
     openInputFile: function(e) {
@@ -3415,9 +3425,13 @@ console.log(inbox);
       }
       document.body.insertAdjacentHTML('beforeend', '<aside id="open-document" class="do on"><button class="close" title="Close">❌</button><h2>Open Document</h2><p<label for="open-local-file">Open local file</label> <input type="file" id="open-local-file" name="open-local-file" /></p></aside>');
 
+      var id = 'location-open-document';
+      var action = 'read';
+
       var openDocument = document.getElementById('open-document');
-      DO.U.setupResourceBrowser(openDocument);
-      openDocument.insertAdjacentHTML('beforeend', '<button class="open">Open</button>');
+      DO.U.setupResourceBrowser(openDocument , id, action);
+      idSamp = (typeof DO.C.User.Storage == 'undefined') ? '' : '<p><samp id="' + id + '-' + action + '">https://example.org/path/to/article</samp></p>';
+      openDocument.insertAdjacentHTML('beforeend', idSamp + '<button class="open">Open</button>');
 
       openDocument.addEventListener('click', function(e) {
         if (e.target.matches('button.close')) {
@@ -3435,7 +3449,7 @@ console.log(inbox);
             rm.parentNode.removeChild(rm);
           }
 
-          var bli = document.getElementById('browser-location-input');
+          var bli = document.getElementById(id + '-input');
           var iri = bli.value;
           var headers = { 'Accept': DO.C.AvailableMediaTypes.join(',') };
           var options = {};
@@ -3563,18 +3577,21 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         }
       });
 
-      DO.U.setupResourceBrowser(newDocument);
-      document.getElementById('browser-location').insertAdjacentHTML('afterbegin', '<p>Choose a location to save your new article.</p>');
+      var id = 'location-new';
+      var action = 'write';
+
+      DO.U.setupResourceBrowser(newDocument, id, action);
+      document.getElementById(id).insertAdjacentHTML('afterbegin', '<p>Choose a location to save your new article.</p>');
       var baseURLSelection = (document.location.protocol == 'file:') ? '' : DO.U.getBaseURLSelection();
-      newDocument.insertAdjacentHTML('beforeend', baseURLSelection + '<p>Your new document will be saved at <samp id="location-final">https://example.org/path/to/article</samp></p><button class="create">Create</button>');
-      var bli = document.getElementById('browser-location-input');
+      newDocument.insertAdjacentHTML('beforeend', baseURLSelection + '<p>Your new document will be saved at <samp id="' + id + '-' + action + '">https://example.org/path/to/article</samp></p><button class="create">Create</button>');
+      var bli = document.getElementById(id + '-input');
       bli.focus();
       bli.placeholder = 'https://example.org/path/to/article';
 
       newDocument.addEventListener('click', function(e) {
         if (e.target.matches('button.create')) {
           var newDocument = document.getElementById('create-new-document');
-          var storageIRI = newDocument.querySelector('#location-final').innerText.trim();
+          var storageIRI = newDocument.querySelector('#' + id + '-' + action).innerText.trim();
           var rm = newDocument.querySelector('.response-message');
           if (rm) {
             rm.parentNode.removeChild(rm);
@@ -3634,11 +3651,14 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         }
       });
 
-      DO.U.setupResourceBrowser(saveAsDocument);
-      document.getElementById('browser-location').insertAdjacentHTML('afterbegin', '<p>Choose a location to save your new article.</p>');
-      saveAsDocument.insertAdjacentHTML('beforeend', DO.U.getBaseURLSelection() + '<p>Your new document will be saved at <samp id="location-final">https://example.org/path/to/article</samp></p><p><input type="checkbox" id="derivation-data" name="derivation-data" checked="checked"><label for="derivation-data">Derivation data</label></p><button class="create">Save</button>');
+      var id = 'location-save-as';
+      var action = 'write';
 
-      var bli = document.getElementById('browser-location-input');
+      DO.U.setupResourceBrowser(saveAsDocument, id, action);
+      document.getElementById(id).insertAdjacentHTML('afterbegin', '<p>Choose a location to save your new article.</p>');
+      saveAsDocument.insertAdjacentHTML('beforeend', DO.U.getBaseURLSelection() + '<p>Your new document will be saved at <samp id="' + id + '-' + action + '">https://example.org/path/to/article</samp></p><p><input type="checkbox" id="derivation-data" name="derivation-data" checked="checked"><label for="derivation-data">Derivation data</label></p><button class="create">Save</button>');
+
+      var bli = document.getElementById(id + '-input');
       bli.focus();
       bli.placeholder = 'https://example.org/path/to/article';
 
@@ -3646,7 +3666,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         if (e.target.matches('button.create')) {
           var currentDocumentURL = DO.U.stripFragmentFromString(document.location.href);
           var saveAsDocument = document.getElementById('save-as-document');
-          var storageIRI = saveAsDocument.querySelector('#location-final').innerText.trim();
+          var storageIRI = saveAsDocument.querySelector('#' + id + '-' + action).innerText.trim();
           var rm = saveAsDocument.querySelector('.response-message');
           if (rm) {
             rm.parentNode.removeChild(rm);
