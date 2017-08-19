@@ -3650,27 +3650,40 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         }
       });
 
+      var fieldset = '';
 
       locationInboxId = 'location-inbox';
       locationInboxAction = 'read';
-      var fieldset = '';
       saveAsDocument.insertAdjacentHTML('beforeend', '<fieldset id="' + locationInboxId + '-fieldset"><legend>Set Inbox</legend></fieldset>');
       fieldset = saveAsDocument.querySelectorAll('fieldset')[0];
       DO.U.setupResourceBrowser(fieldset, locationInboxId, locationInboxAction);
-      fieldset.insertAdjacentHTML('beforeend', '<p>Article\'s Inbox will be set to: <samp id="' + locationInboxId + '-' + locationInboxAction + '"></samp></p>');
+      fieldset.insertAdjacentHTML('beforeend', '<p>Article\'s <em>inbox</em> will be set to: <samp id="' + locationInboxId + '-' + locationInboxAction + '"></samp></p>');
       var lii = document.getElementById(locationInboxId + '-input');
       lii.focus();
       lii.placeholder = 'https://example.org/path/to/inbox/';
 
+
+      locationAnnotationServiceId = 'location-annotation-service';
+      locationAnnotationServiceAction = 'read';
+      saveAsDocument.insertAdjacentHTML('beforeend', '<fieldset id="' + locationAnnotationServiceId + '-fieldset"><legend>Set Annotation Service</legend></fieldset>');
+      fieldset = saveAsDocument.querySelectorAll('fieldset')[1];
+      DO.U.setupResourceBrowser(fieldset, locationAnnotationServiceId, locationAnnotationServiceAction);
+      fieldset.insertAdjacentHTML('beforeend', '<p>Article\'s <em>annotation service</em> will be set to: <samp id="' + locationAnnotationServiceId + '-' + locationAnnotationServiceAction + '"></samp></p>');
+      var lasi = document.getElementById(locationAnnotationServiceId + '-input');
+      lasi.focus();
+      lasi.placeholder = 'https://example.org/path/to/annotation/';
+
+
       var id = 'location-save-as';
       var action = 'write';
       saveAsDocument.insertAdjacentHTML('beforeend', '<fieldset id="' + id + '-fieldset"><legend>Save to</legend></fieldset>');
-      fieldset = saveAsDocument.querySelectorAll('fieldset')[1];
+      fieldset = saveAsDocument.querySelectorAll('fieldset')[2];
       DO.U.setupResourceBrowser(fieldset, id, action);
-      fieldset.insertAdjacentHTML('beforeend', '<p>Article will be saved at: <samp id="' + id + '-' + action + '"></samp></p>' + DO.U.getBaseURLSelection() + '<p><input type="checkbox" id="derivation-data" name="derivation-data" checked="checked"><label for="derivation-data">Derivation data</label></p><button class="create">Save</button>');
+      fieldset.insertAdjacentHTML('beforeend', '<p>Article will be saved at: <samp id="' + id + '-' + action + '"></samp></p>' + DO.U.getBaseURLSelection() + '<p><input type="checkbox" id="derivation-data" name="derivation-data" checked="checked" /><label for="derivation-data">Derivation data</label></p><button class="create">Save</button>');
       var bli = document.getElementById(id + '-input');
       bli.focus();
       bli.placeholder = 'https://example.org/path/to/article';
+
 
       saveAsDocument.addEventListener('click', function(e) {
         if (e.target.matches('button.create')) {
@@ -3684,7 +3697,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           }
 
           if(storageIRI.length == 0) {
-            saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Specify the location to save the article to and optionally set its Inbox.</p></div>');
+            saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Specify the location to save the article to, and optionally set its <em>inbox</em> or <em>annotation service</em>.</p></div>');
             return;
           }
 
@@ -3700,6 +3713,11 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           var inboxLocation = saveAsDocument.querySelector('#' + locationInboxId + '-' + locationInboxAction).innerText.trim();
           if (inboxLocation.length > 0) {
             nodeInsertLocation.insertAdjacentHTML('beforebegin', '<dl id="document-inbox"><dt>Notifications Inbox</dt><dd><a href="' + inboxLocation + '" rel="ldp:inbox">' + inboxLocation + '</a></dd></dl>' + "\n");
+          }
+
+          var annotationServiceLocation = saveAsDocument.querySelector('#' + locationAnnotationServiceId + '-' + locationAnnotationServiceAction).innerText.trim();
+          if (annotationServiceLocation.length > 0) {
+            nodeInsertLocation.insertAdjacentHTML('beforebegin', '<dl id="document-annotation-service"><dt>Annotation Service</dt><dd><a href="' + annotationServiceLocation + '" rel="oa:annotationService">' + annotationServiceLocation + '</a></dd></dl>' + "\n");
           }
 
           var baseURLSelectionChecked = saveAsDocument.querySelector('select[name="base-url"]');
