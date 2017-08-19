@@ -584,37 +584,37 @@ border:2px solid #cccccc;
 font-weight:normal;
 }
 
-#browser-contents {
+[id$="-contents"] {
 overflow-x:hidden;
 overflow-y:auto;
 min-width:25%;
 max-height:16em;
 margin:1em 0;
 }
-#browser-contents ul {
+[id$="-contents"] ul {
 margin:0;
 }
-#browser-contents ul input[type="radio"] {
+[id$="-contents"] ul input[type="radio"] {
 display:none;
 }
-#browser-contents ul label {
+[id$="-contents"] ul label {
 display:block;
 padding:0.4em;
 cursor:pointer;
 }
-#browser-contents li {
+[id$="-contents"] li {
 list-style-type:none;
 }
-#browser-contents .container {
+[id$="-contents"] .container {
 background-color:#f2f2f2;
 }
-#browser-contents .container:hover {
+[id$="-contents"] .container:hover {
 background-color:#ccc;
 }
-#browser-contents input[checked="true"] + label {
+[id$="-contents"] input[checked="true"] + label {
 font-weight:bold;
 }
-#location-final {
+[id$="-write"], [id$="-read"] {
 display:block;
 word-wrap:break-word;
 }
