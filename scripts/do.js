@@ -3359,8 +3359,7 @@ console.log(inbox);
         }
         else {
           browseButton.disabled = 'disabled';
-
-          actionNode.textContent = (action == 'write') ? input.value : 'xxxxxxxxxxxxxxxx';
+          actionNode.textContent = input.value;
         }
       }, false);
 
@@ -3651,13 +3650,24 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         }
       });
 
+
+      locationInboxId = 'location-inbox';
+      locationInboxAction = 'read';
+      var fieldset = '';
+      saveAsDocument.insertAdjacentHTML('beforeend', '<fieldset id="' + locationInboxId + '-fieldset"><legend>Set Inbox</legend></fieldset>');
+      fieldset = saveAsDocument.querySelectorAll('fieldset')[0];
+      DO.U.setupResourceBrowser(fieldset, locationInboxId, locationInboxAction);
+      fieldset.insertAdjacentHTML('beforeend', '<p>Article\'s Inbox will be set to: <samp id="' + locationInboxId + '-' + locationInboxAction + '"></samp></p>');
+      var lii = document.getElementById(locationInboxId + '-input');
+      lii.focus();
+      lii.placeholder = 'https://example.org/path/to/inbox/';
+
       var id = 'location-save-as';
       var action = 'write';
-
-      DO.U.setupResourceBrowser(saveAsDocument, id, action);
-      document.getElementById(id).insertAdjacentHTML('afterbegin', '<p>Choose a location to save your new article.</p>');
-      saveAsDocument.insertAdjacentHTML('beforeend', DO.U.getBaseURLSelection() + '<p>Your new document will be saved at <samp id="' + id + '-' + action + '">https://example.org/path/to/article</samp></p><p><input type="checkbox" id="derivation-data" name="derivation-data" checked="checked"><label for="derivation-data">Derivation data</label></p><button class="create">Save</button>');
-
+      saveAsDocument.insertAdjacentHTML('beforeend', '<fieldset id="' + id + '-fieldset"><legend>Save to</legend></fieldset>');
+      fieldset = saveAsDocument.querySelectorAll('fieldset')[1];
+      DO.U.setupResourceBrowser(fieldset, id, action);
+      fieldset.insertAdjacentHTML('beforeend', '<p>Article will be saved at: <samp id="' + id + '-' + action + '"></samp></p>' + DO.U.getBaseURLSelection() + '<p><input type="checkbox" id="derivation-data" name="derivation-data" checked="checked"><label for="derivation-data">Derivation data</label></p><button class="create">Save</button>');
       var bli = document.getElementById(id + '-input');
       bli.focus();
       bli.placeholder = 'https://example.org/path/to/article';
@@ -3667,18 +3677,31 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           var currentDocumentURL = DO.U.stripFragmentFromString(document.location.href);
           var saveAsDocument = document.getElementById('save-as-document');
           var storageIRI = saveAsDocument.querySelector('#' + id + '-' + action).innerText.trim();
+
           var rm = saveAsDocument.querySelector('.response-message');
           if (rm) {
             rm.parentNode.removeChild(rm);
           }
 
+          if(storageIRI.length == 0) {
+            saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Specify the location to save the article to and optionally set its Inbox.</p></div>');
+            return;
+          }
+
           var html = document.documentElement.cloneNode(true);
+          var nodeInsertLocation = html.querySelector('main > article') || html.querySelector('body');
+
           var wasDerived = document.querySelector('#derivation-data');
           if (wasDerived.checked) {
             var wasDerivedOn = DO.U.getDateTimeISO();
-            var nodeInsertLocation = html.querySelector('main > article') || html.querySelector('body');
             nodeInsertLocation.insertAdjacentHTML('beforebegin', '<dl id="document-derived-from"><dt>Derived From</dt><dd><a href="' + currentDocumentURL + '" rel="prov:wasDerivedFrom">' + currentDocumentURL + '</a></dd></dl><dl id="document-derived-on"><dt>Derived On</dt><dd><time datetime="' + wasDerivedOn + '">' + wasDerivedOn + '</time></dd></dl>' + "\n");
           }
+
+          var inboxLocation = saveAsDocument.querySelector('#' + locationInboxId + '-' + locationInboxAction).innerText.trim();
+          if (inboxLocation.length > 0) {
+            nodeInsertLocation.insertAdjacentHTML('beforebegin', '<dl id="document-inbox"><dt>Notifications Inbox</dt><dd><a href="' + inboxLocation + '" rel="ldp:inbox">' + inboxLocation + '</a></dd></dl>' + "\n");
+          }
+
           var baseURLSelectionChecked = saveAsDocument.querySelector('select[name="base-url"]');
           if (baseURLSelectionChecked.length > 0) {
             var baseURLType = baseURLSelectionChecked.value;

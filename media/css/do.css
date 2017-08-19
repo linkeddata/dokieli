@@ -121,8 +121,17 @@ vertical-align:top;
 min-width:5%;
 display:inline-block;
 }
+aside.do.on:not([id="toc"]) label[for$="-input"] {
+vertical-align: middle;
+}
+
 aside.do input {
 padding:0.2em;
+}
+aside.do input[type="checkbox"] {
+padding:0;
+margin-left:0;
+vertical-align: middle;
 }
 aside.do.on ul {
 margin:0;
@@ -584,43 +593,90 @@ border:2px solid #cccccc;
 font-weight:normal;
 }
 
-[id$="-contents"] {
+aside.do.on [id$="-contents"] {
 overflow-x:hidden;
 overflow-y:auto;
 min-width:25%;
 max-height:16em;
-margin:1em 0;
 }
-[id$="-contents"] ul {
+aside.do.on [id$="-contents"] ul {
 margin:0;
 }
-[id$="-contents"] ul input[type="radio"] {
+aside.do.on [id$="-contents"] ul input[type="radio"] {
 display:none;
 }
-[id$="-contents"] ul label {
+aside.do.on [id$="-contents"] ul label {
 display:block;
 padding:0.4em;
 cursor:pointer;
 }
-[id$="-contents"] li {
+aside.do.on [id$="-contents"] li {
 list-style-type:none;
 }
-[id$="-contents"] .container {
+aside.do.on [id$="-contents"] ul li:first-child:before {
+/*margin-top:0.5em;*/
+}
+aside.do.on [id$="-contents"] ul li {
+border-left:1px dotted #ccc;
+border-right:1px dotted #ccc;
+}
+aside.do.on [id$="-contents"] ul li:first-child {
+border-top:1px dotted #ccc;
+margin-top:0.25em;
+}
+aside.do.on [id$="-contents"] ul li:last-child {
+border-bottom:1px dotted #ccc;
+}
+
+aside.do.on [id$="-contents"] .container {
 background-color:#f2f2f2;
 }
-[id$="-contents"] .container:hover {
+aside.do.on [id$="-contents"] .container:hover {
 background-color:#ccc;
 }
-[id$="-contents"] input[checked="true"] + label {
+aside.do.on [id$="-contents"] .container label {
+display:block;
+}
+aside.do.on [id$="-contents"] input[checked="true"] + label {
 font-weight:bold;
 }
-[id$="-write"], [id$="-read"] {
+aside.do.on [id$="-write"], [id$="-read"] {
 display:block;
 word-wrap:break-word;
 }
-#base-url-selection label {
+aside.do.on #base-url-selection label {
 display:block;
 }
+
+aside.do.on fieldset {
+border:0;
+margin:0;
+padding:0;
+}
+aside.do.on fieldset legend {
+font-weight:bold;
+padding:0;
+}
+aside.do.on fieldset + fieldset {
+margin-top:1em;
+}
+
+aside.do.on fieldset samp {
+background:none;
+font-weight:bold;
+}
+aside.do.on fieldset samp:before, aside.do.on fieldset samp:after {
+content:"";
+}
+aside.do.on fieldset p {
+margin:0.5em 0;
+}
+
+
+aside.do.on fieldset *:not(legend) {
+/*display:none;*/
+}
+
 
 .do.sortable .sortable-placeholder {
 outline:1px dashed #777;
