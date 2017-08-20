@@ -102,6 +102,8 @@ border:1px solid #ccc;
 border-radius:0.5em;
 box-shadow:0.25em 0.25em 0.25em rgba(0,0,0,0.1);
 max-width:35em;
+width:90%;
+
 }
 menu.do.on {
 border-left:1px solid #ccc;
@@ -133,6 +135,17 @@ padding:0;
 margin-left:0;
 vertical-align: middle;
 }
+aside.do input[type="text"] {
+width:60%;
+max-width:22em;
+}
+
+aside.do textarea {
+width:96% !important;
+max-width:44em !important;
+font-size:1em !important;
+}
+
 aside.do.on ul {
 margin:0;
 padding:0;
