@@ -161,7 +161,7 @@ vertical-align:middle;
 }
 
 #source-view textarea {
-font-family:monospace;
+font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
 }
 
 aside.note {
@@ -349,7 +349,7 @@ color:#000 !important;
 padding:0;
 margin:0;
 font-size:1em;
-font-family:sans-serif;
+font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 font-weight:normal;
 }
 
@@ -710,7 +710,7 @@ cursor:-webkit-grab;
 
 .do button {
 line-height:1;
-font-family:sans-serif;
+font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 padding:0.25em;
 z-index:2147483647;
 hyphens:initial;
@@ -808,7 +808,7 @@ font-size:1em;
 padding-right:10px;
 height:100%;
 display:block;
-font-family:monospace;
+font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
 font-weight:normal;
 outline:none;
 text-align:right;
@@ -851,7 +851,7 @@ right:-0.75em;
 }
 span.ref[typeof~="dctypes:Text"] mark + sup[class^="ref-"],
 span.ref[typeof~="dctypes:Text"] mark + sup[class^="ref-"] * {
-font-family:monospace;
+font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
 font-size:1em;
 font-weight:normal;
 font-style:normal;
