@@ -40,7 +40,8 @@
   ],
   "permissions": [
     "activeTab",
-    "management"
+    "management",
+    "<all_urls>"
   ],
   "web_accessible_resources": [
     "media/css/*",
