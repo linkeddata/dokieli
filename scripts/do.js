@@ -2278,9 +2278,7 @@ var DO = {
         ids[i].addEventListener('mouseenter', function(e){
           var fragment = document.querySelector('*[id="' + e.target.id + '"] > .do.fragment');
           if (!fragment && e.target.parentNode.nodeName.toLowerCase() != 'aside'){
-            var nodeId = (e.target.nodeName.toLowerCase() == "section") ? '#' + e.target.id : '';
-
-            sign = DO.C.SelectorSign[e.target.nodeName.toLowerCase() + nodeId] || DO.C.SelectorSign["*"];
+            sign = DO.U.getSelectorSign(e.target);
 
             e.target.insertAdjacentHTML('afterbegin', '<span class="do fragment"><a href="#' + e.target.id + '">' + sign + '</a></span>');
             fragment = document.querySelector('[id="' + e.target.id + '"] > .do.fragment');
