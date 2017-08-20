@@ -2247,6 +2247,30 @@ var DO = {
       return string;
     },
 
+    getSelectorSign: function(node) {
+      if(!node) {
+        return DO.C.SelectorSign["*"];
+      }
+
+      if (typeof node === 'object') {
+        var nodeName = node.nodeName.toLowerCase();
+        var nodeId = '';
+
+        if(node.id) {
+          switch(nodeName) {
+            default: break;
+            case 'section': case 'dl':
+              nodeId = '#' + node.id;
+              break;
+          }
+        }
+
+        return DO.C.SelectorSign[nodeName + nodeId] || DO.C.SelectorSign["*"];
+      }
+
+      return DO.C.SelectorSign["*"];
+    },
+
     showFragment: function(selector) {
       var ids = (selector) ? document.querySelectorAll(selector) : document.querySelectorAll('main *[id]:not(input):not(textarea):not(select):not(#content)');
 
