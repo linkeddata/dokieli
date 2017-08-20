@@ -57,6 +57,28 @@ var DO = {
       'skipClassWithValue': ''
     },
 
+    SelectorSign: {
+      "*": '🔗',
+      "aside": "†",
+      "audio": "🔊",
+      "dfn": "📇",
+      "figure": "❦",
+      "footer": "⸙",
+      "nav": "☛",
+      "img": "🖼",
+      "p": "¶",
+      "pre": "🖩",
+      "section": "§",
+      "section#acknowledgements": "☺",
+      "section#conclusions": "∴",
+      "section#keywords": "🏷",
+      "section#references": "☛",
+      "section#related-work": "⌘",
+      "section#results": "∞",
+      "table": "𝄜",
+      "video": "🎞"
+    },
+
     ContextLength: 32,
     InteractionPath: 'i/',
     ProxyURL: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/proxy?uri=' : 'https://dokie.li/proxy?uri='),
