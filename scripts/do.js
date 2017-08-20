@@ -3359,7 +3359,9 @@ console.log(inbox);
         }
         else {
           browseButton.disabled = 'disabled';
-          actionNode.textContent = input.value;
+          if(actionNode) {
+            actionNode.textContent = input.value;
+          }
         }
       }, false);
 
@@ -3394,14 +3396,15 @@ console.log(inbox);
       }
     },
 
-    showResourceBrowser: function(id) {
+    showResourceBrowser: function(id, action) {
       id = id || 'location-' + DO.U.generateAttributeId();
-      action = 'write';
+      action = action || 'write';
 
       var browserHTML = '<aside id="resource-browser-' + id + '" class="do on"><button class="close" title="Close">❌</button><h2>Resource Browser</h2></aside>';
       document.querySelector('body').insertAdjacentHTML('beforeend', browserHTML);
 
       DO.U.setupResourceBrowser(document.getElementById('resource-browser-' + id), id, action);
+      document.getElementById('resource-browser-' + id).insertAdjacentHTML('beforeend', '<p><samp id="' + id + '-' + action + '"></samp></p>');
     },
 
     openInputFile: function(e) {
