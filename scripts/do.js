@@ -58,11 +58,13 @@ var DO = {
     },
 
     SelectorSign: {
-      "*": '🔗',
+      "*": "🔗",
       "aside": "†",
       "audio": "🔊",
       "dl#document-published": "📅",
       "dl#document-modified": "📅",
+      "dl#document-inbox": "📥",
+      "dl#document-annotation-service": "※",
       "dfn": "📇",
       "figure": "❦",
       "footer": "⸙",
