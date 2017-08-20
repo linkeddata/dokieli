@@ -2254,32 +2254,10 @@ var DO = {
         ids[i].addEventListener('mouseenter', function(e){
           var fragment = document.querySelector('*[id="' + e.target.id + '"] > .do.fragment');
           if (!fragment && e.target.parentNode.nodeName.toLowerCase() != 'aside'){
-            var sign;
-            switch(e.target.nodeName.toLowerCase()) {
-              default:    sign = '🔗'; break;
-              case 'section':
-                switch (e.target.id) {
-                  default:          sign = '§'; break;
-                  case 'references':    sign = '☛'; break;
-                  case 'acknowledgements':  sign = '☺'; break;
-                  case 'results':       sign = '∞'; break;
-                  case 'related-work':    sign = '⌘'; break;
-                  case 'keywords':      sign = '🏷'; break;
-                  case 'conclusions':     sign = '∴'; break;
-                }
-                break;
-              case 'aside':   sign = '†'; break;
-              case 'p':     sign = '¶'; break;
-              case 'pre':   sign = '🖩'; break;
-              case 'nav':   sign = '☛'; break;
-              case 'dfn':   sign = '📇'; break;
-              case 'table':   sign = '𝄜'; break;
-              case 'figure':  sign = '❦'; break;
-              case 'img':   sign = '🖼'; break;
-              case 'video':   sign = '🎞'; break;
-              case 'audio':   sign = '🔊'; break;
-              case 'footer':  sign = '⸙'; break;
-            }
+            var nodeId = (e.target.nodeName.toLowerCase() == "section") ? '#' + e.target.id : '';
+
+            sign = DO.C.SelectorSign[e.target.nodeName.toLowerCase() + nodeId] || DO.C.SelectorSign["*"];
+
             e.target.insertAdjacentHTML('afterbegin', '<span class="do fragment"><a href="#' + e.target.id + '">' + sign + '</a></span>');
             fragment = document.querySelector('[id="' + e.target.id + '"] > .do.fragment');
             var fragmentClientWidth = fragment.clientWidth;
