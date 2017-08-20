@@ -58,18 +58,18 @@ browser.browserAction.onClicked.addListener(function(tab){
 
   browser.runtime.sendMessage(opl_youid_id, {getWebId: true},
     function(response) {
-    if (response) {
-      g_webid = response.webid;
-    }
+      if (response) {
+        g_webid = response.webid;
+      }
 
-    browser.tabs.sendMessage(tab.id, {action: "dokieli.status"},
-      function(response) {
-        if (response && !response.dokieli) {
-          load_dokieli(tab);
-        }
-        show_Menu(tab);
-      });
-  });
+      browser.tabs.sendMessage(tab.id, {action: "dokieli.status"},
+        function(response) {
+          if (response && !response.dokieli) {
+            load_dokieli(tab);
+          }
+          show_Menu(tab);
+        });
+    });
 });
 
 browser.runtime.onMessage.addListener(function(request, sender, sendResponse){
