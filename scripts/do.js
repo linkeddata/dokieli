@@ -1090,9 +1090,9 @@ var DO = {
       if (fromURL != '' && toURL != '') {
         DO.U.getResource(fromURL, headers, options).then(
           function(i){
+            var contentType = i.xhr.getResponseHeader('Content-Type');
             var response = (DO.C.AcceptBinaryTypes.indexOf(contentType)) ? i.xhr.response : i.xhr.responseText;
 
-            var contentType = i.xhr.getResponseHeader('Content-Type');
             DO.U.putResource(toURL, response, contentType, null, options).catch(
               function(reason){
                 if(reason.xhr.status == 0){
@@ -3938,6 +3938,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         var s = fromURL.split(':')[0];
         if (s != 'http' && s != 'https' && s != 'file' && s != 'data' && s != 'urn' && s != 'urn') {
           var pathToFile = DO.U.setBaseURL(fromURL, {'baseURLType': 'base-url-relative'});
+          fromURL = DO.U.getBaseURL(document.location.href) + pathToFile.replace(/^\//g, '');
           var toURL = baseURL + pathToFile.replace(/^\//g, '');
           DO.U.copyResource(fromURL, toURL);
          }
