@@ -287,11 +287,18 @@ top:-1.5em;
 position:static;
 }
 
+
+#document-menu,
+#toc {
+margin:0;
+width:20em;
+}
+
+
 #toc {
 top:0;
 left:0;
 z-index:2147483646;
-width:20em;
 border:0;
 border-radius:0;
 border-bottom: 1px solid #ccc;
@@ -309,10 +316,6 @@ margin-top:0.5em;
 .error { background-color:#FF0000; color:#FFFFFF; font-weight:bold; }
 .highlight { background-color:#00FFFF; color:#000000; }
 
-#document-menu {
-margin:0;
-width:20em;
-}
 #document-menu {
 color:#000;
 }
