@@ -73,7 +73,7 @@ progress { margin:0 1em; }
 main > article { position:relative; }
 
 .do,
-.do *:not([class~="fa"]) {
+.do:not([typeof~="dctypes:Text"]) *:not([class~="fa"]) {
 font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 font-size:1em;
 }
