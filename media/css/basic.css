@@ -226,10 +226,6 @@ margin-left:1em;
 margin-top:1em;
 }
 
-#keywords h2 {
-font-size:1em;
-}
-
 a { color: #009000; }
 code, samp { background-color:#f3f3f3; padding:0.1em 0; }
 code:before, code:after, samp:before, samp:after, kbd:before, kbd:after {
