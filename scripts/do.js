@@ -1869,7 +1869,10 @@ var DO = {
                 }
               });
 
-              DO.U.showVisualisationGraph(document.location.href, DO.U.getDocument(), '#graph-view');
+              var optionsNormalisation = DO.C.DOMNormalisation;
+              delete optionsNormalisation['skipNodeWithClass'];
+
+              DO.U.showVisualisationGraph(document.location.href, DO.U.getDocument(null, optionsNormalisation), '#graph-view');
             }
           });
         }
