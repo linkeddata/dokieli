@@ -837,6 +837,36 @@ var DO = {
       );
     },
 
+    getVisualisationGraphData: function(url, data, options) {
+      return new Promise(function(resolve, reject) {
+        DO.U.getGraphFromData(data, options).then(
+          function(g){
+// console.log(g);
+            var g = SimpleRDF(DO.C.Vocab, options['subjectURI'], g, ld.store).child(url);
+            var graph = {"nodes":[], "links": []};
+
+            g.graph().toArray().forEach(function(t){
+              var group = 1;
+              switch(t.predicate.nominalValue){
+                default:
+                  group = 1;
+                  break;
+                // case DO.C.Vocab['rdftype']['@id']:
+                //   group = 2;
+                //   break;
+              }
+
+              graph.nodes.push({"id": t.subject.nominalValue, "group": group});
+              graph.nodes.push({"id": t.object.nominalValue, "group": group});
+              graph.links.push({"source": t.subject.nominalValue, "target": t.object.nominalValue, "value": t.predicate.nominalValue});
+            });
+
+            return resolve(graph);
+          }
+        );
+      });
+    },
+
     getAbsoluteIRI: function(base, location){
       var iri = location;
 
