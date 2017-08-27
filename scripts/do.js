@@ -30,6 +30,7 @@ var DO = {
     CDATAStart: '//<![CDATA[',
     CDATAEnd: '//]]>',
     SortableList: false,
+    GraphViewerAvailable: (typeof d3 !== 'undefined'),
     EditorAvailable: (typeof MediumEditor !== 'undefined'),
     EditorEnabled: false,
     Editor: {
@@ -1822,6 +1823,10 @@ var DO = {
 
       if (stylesheets.length > 0) {
         var s = '<section id="document-views" class="do"><h2>Views</h2><i class="fa fa-magic"></i><ul>';
+        if (DO.C.GraphViewerAvailable) {
+          s += '<li><button class="resource-visualise" title="Change to graph view">Graph</button></li>';
+        }
+
         s += '<li><button title="Change to native device/browser view">Native</button></li>';
         for (var i = 0; i < stylesheets.length; i++) {
           var stylesheet = stylesheets[i];
@@ -1837,10 +1842,36 @@ var DO = {
 
         node.insertAdjacentHTML('beforeend', s);
 
-        var viewButtons = document.querySelectorAll('#document-views.do button');
+        var viewButtons = document.querySelectorAll('#document-views.do button:not([class~="resource-visualise"])');
         for (var i = 0; i < viewButtons.length; i++) {
           viewButtons[i].removeEventListener('click', DO.U.initCurrentStylesheet);
           viewButtons[i].addEventListener('click', DO.U.initCurrentStylesheet);
+        }
+
+        if(DO.C.GraphViewerAvailable) {
+          document.querySelector('#document-views.do').addEventListener('click', function(e){
+            if (e.target.closest('.resource-visualise')) {
+              if(document.querySelector('#graph-view')) { return; }
+
+              if (e) {
+                e.target.disabled = true;
+              }
+
+              document.body.insertAdjacentHTML('beforeend', '<aside id="graph-view" class="do on"><button class="close" title="Close">❌</button><h2>Graph view</h2></aside>');
+
+              var graphView = document.getElementById('graph-view');
+              graphView.addEventListener('click', function(e) {
+                if (e.target.matches('button.close')) {
+                  var rv = document.querySelector('#document-views .resource-visualise');
+                  if (rv) {
+                    rv.disabled = false;
+                  }
+                }
+              });
+
+              DO.U.showVisualisationGraph(document.location.href, DO.U.getDocument(), '#graph-view');
+            }
+          });
         }
       }
     },
