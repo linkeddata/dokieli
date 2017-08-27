@@ -68,6 +68,18 @@ outline:none;
   animation-name: zoomOut;
 }
 
+
+#graph-view {
+width:auto;
+height:auto;
+max-width:90%;
+max-height:90%;
+}
+#graph-view svg {
+margin:0 auto;
+display:block;
+}
+
 svg.graph-visualisation .node {
 stroke: #fff;
 stroke-width: 1.5px;
