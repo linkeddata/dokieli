@@ -68,6 +68,17 @@ outline:none;
   animation-name: zoomOut;
 }
 
+svg.graph-visualisation .node {
+stroke: #fff;
+stroke-width: 1.5px;
+}
+
+svg.graph-visualisation .link {
+fill: none;
+stroke: #bbb;
+}
+
+
 progress { margin:0 1em; }
 
 main > article { position:relative; }
