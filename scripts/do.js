@@ -845,8 +845,8 @@ var DO = {
       options = options || {
         'contentType': 'text/html',
         'subjectURI': url,
-        'width': 480,
-        'height': 320
+        'width': 640,
+        'height': 480
       };
 
       // if(!("width" in options) && !("height" in options)) {
@@ -890,7 +890,7 @@ var DO = {
           .force("link", d3.forceLink().distance(10).strength(0.5))
           .force("charge", d3.forceManyBody())
           // .force("center", d3.forceCenter());
-          .force("center", d3.forceCenter(options.width / 2, options.height / 6));
+          .force("center", d3.forceCenter(options.width / 2, options.height / 2));
 
       DO.U.getVisualisationGraphData(url, data, options).then(
         function(graph){
