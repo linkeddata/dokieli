@@ -838,6 +838,7 @@ var DO = {
       );
     },
 
+    //Borrowed the d3 parts from https://bl.ocks.org/mbostock/4600693
     showVisualisationGraph: function(url, data, selector, options) {
       url = url || window.location.origin + window.location.pathname;
       data = data || DO.U.getDocument();
