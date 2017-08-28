@@ -1779,7 +1779,7 @@ var DO = {
       dMenuButton.setAttribute('title', 'Open Menu');
       dMenuButton.innerHTML = '<i class="fa fa-bars"></i>';
 
-      var removeElementsList = ['toc', 'embed-data-entry', 'create-new-document', 'open-document', 'source-view', 'save-as-document', 'user-identity-input', 'resource-browser', 'share-resource', 'reply-to-resource', 'snapshot-document'];
+      var removeElementsList = ['toc', 'embed-data-entry', 'create-new-document', 'open-document', 'source-view', 'save-as-document', 'user-identity-input', 'resource-browser', 'share-resource', 'reply-to-resource', 'snapshot-document', 'graph-view'];
       removeElementsList.forEach(function(id) {
         var element = document.getElementById(id);
         if(element) {
