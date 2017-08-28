@@ -951,6 +951,7 @@ var DO = {
 // console.log(g);
             var g = SimpleRDF(DO.C.Vocab, options['subjectURI'], g, ld.store).child(url);
             var graph = {"nodes":[], "links": []};
+            var graphNodes = [];
 
             g.graph().toArray().forEach(function(t){
               var group = 1;
@@ -963,11 +964,19 @@ var DO = {
                 //   break;
               }
 
-              graph.nodes.push({"id": t.subject.nominalValue, "group": group});
-              graph.nodes.push({"id": t.object.nominalValue, "group": group});
+              if(graphNodes.indexOf(t.subject.nominalValue + ' ' + group) == -1) {
+                graphNodes.push(t.subject.nominalValue + ' ' + group);
+                graph.nodes.push({"id": t.subject.nominalValue, "group": group});
+              }
+              if(graphNodes.indexOf(t.object.nominalValue + ' ' + group) == -1) {
+                graphNodes.push(t.object.nominalValue + ' ' + group);
+                graph.nodes.push({"id": t.object.nominalValue, "group": group});
+              }
+
               graph.links.push({"source": t.subject.nominalValue, "target": t.object.nominalValue, "value": t.predicate.nominalValue});
             });
 
+            delete graphNodes;
             return resolve(graph);
           }
         );
