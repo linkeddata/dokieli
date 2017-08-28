@@ -82,7 +82,7 @@ display:block;
 
 svg.graph-visualisation .node {
 stroke: #fff;
-stroke-width: 1.5px;
+stroke-width: 1px;
 }
 
 svg.graph-visualisation .link {
