@@ -983,6 +983,67 @@ var DO = {
       });
     },
 
+    showInboxGraph: function(url, selector, options){
+      var uri = url || location.href.split(location.search||location.hash||/[?#]/)[0];
+      options = options || {
+        'contentType': 'text/html',
+        'subjectURI': uri
+      }
+
+      DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id'], uri).then(
+        function(i) {
+          i.forEach(function(inbox) {
+            DO.U.getNotifications(inbox).then(
+              function(i) {
+                var promises = [];
+
+                i.forEach(function(notification) {
+                  var pIRI = DO.U.getProxyableIRI(notification);
+                  promises.push(DO.U.getGraph(pIRI));
+                });
+
+                var dataGraph = SimpleRDF();
+
+                Promise.all(promises)
+                  .then(function(graphs) {
+                    graphs.forEach(function(g){
+                      dataGraph.graph().addAll(g.graph());
+                    });
+
+                    var options = {
+                      'contentType': 'text/turtle'
+                    };
+                    DO.U.serializeGraph(dataGraph, options).then(
+                      function(data){
+                        //FIXME: FUGLY because parser defaults to localhost. Using UUID to minimise conflict
+                        data = data.replace(/http:\/\/localhost\/d79351f4-cdb8-4228-b24f-3e9ac74a840d/g, '');
+
+                        //XXX: Workaround for rdf-parser-rdfa bug that gives '@langauge' instead of @type when encountering datatype in HTML+RDFa . TODO: Link to bug here
+                        data = data.replace(/Z"@en;/, 'Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;');
+
+                      return data;
+                    }).then(
+                      function(data){
+                        var url = inbox;
+                        var options = {
+                          'contentType': 'text/turtle',
+                          'subjectURI': url,
+                          'width': 640,
+                          'height': 480
+                        };
+
+                        DO.U.showVisualisationGraph(url, data, selector, options);
+                    });
+                  });
+              });
+          });
+        },
+        function(reason) {
+          console.log(reason);
+        }
+      );
+    },
+
     getAbsoluteIRI: function(base, location){
       var iri = location;
 
