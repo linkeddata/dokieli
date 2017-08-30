@@ -884,14 +884,13 @@ var DO = {
       }
 
       var svg = d3.select(selector).insert('svg', ':first-child')
-          .attr('width', options.width)
-          .attr('height', options.height)
-          .attr('id', id);
-
-      svg.attr('xmlns', 'xmlns="http://www.w3.org/2000/svg');
-      svg.attr('version', '1.1');
-      svg.attr('xml:lang', 'en');
-      svg.attr('prefix', 'rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# xsd: http://www.w3.org/2001/XMLSchema# schema: http://schema.org/');
+        .attr('width', options.width)
+        .attr('height', options.height)
+        .attr('id', id);
+        .attr('xmlns', 'xmlns="http://www.w3.org/2000/svg')
+        .attr('version', '1.1')
+        .attr('xml:lang', 'en')
+        .attr('prefix', 'rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# xsd: http://www.w3.org/2001/XMLSchema# schema: http://schema.org/');
 
       svg.append('metadata')
         .append('tspan')
