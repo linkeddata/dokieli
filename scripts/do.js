@@ -1999,11 +1999,10 @@ var DO = {
         })(stylesheets[j]);
       }
 
-      var bd = document.querySelectorAll('#document-views.do button:disabled');
+      var bd = document.querySelectorAll('#document-views.do button');
       for(var j = 0; j < bd.length; j++) {
-        bd[j].disabled = false;
+        bd[j].disabled = (e.target.textContent == bd[j].textContent) ? true : false;
       }
-      selected.disabled = true;
 
       DO.U.showRefs();
 
