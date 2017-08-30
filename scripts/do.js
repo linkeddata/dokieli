@@ -847,7 +847,8 @@ var DO = {
         'contentType': 'text/html',
         'subjectURI': url,
         'width': 640,
-        'height': 480
+        'height': 480,
+        'license': 'https://creativecommons.org/licenses/by/4.0/'
       };
 
       // if(!("width" in options) && !("height" in options)) {
