@@ -1049,7 +1049,7 @@ var DO = {
                           'subjectURI': url,
                           'width': 640,
                           'height': 480,
-                          'license', 'https://creativecommons.org/licenses/by/4.0/'
+                          'license': 'https://creativecommons.org/licenses/by/4.0/'
                         };
 
                         DO.U.showVisualisationGraph(url, data, selector, options);
