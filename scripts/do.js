@@ -886,7 +886,7 @@ var DO = {
       var svg = d3.select(selector).insert('svg', ':first-child')
         .attr('width', options.width)
         .attr('height', options.height)
-        .attr('id', id);
+        .attr('id', id)
         .attr('xmlns', 'xmlns="http://www.w3.org/2000/svg')
         .attr('version', '1.1')
         .attr('xml:lang', 'en')
