@@ -80,17 +80,6 @@ margin:0 auto;
 display:block;
 }
 
-svg.graph-visualisation .node {
-stroke: #fff;
-stroke-width: 1px;
-}
-
-svg.graph-visualisation .link {
-fill: none;
-stroke: #bbb;
-}
-
-
 progress { margin:0 1em; }
 
 main > article { position:relative; }

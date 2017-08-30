@@ -879,11 +879,12 @@ var DO = {
         d.fx = null, d.fy = null;
       }
 
-      var svg = d3.select(selector).append('svg')
+      var svg = d3.select(selector).insert('svg', ':first-child')
           .attr('width', options.width)
           .attr('height', options.height)
-          .attr('class', 'graph-visualisation')
           .attr('id', DO.U.generateAttributeId());
+
+      svg.append('style').text('.node { stroke: #fff; stroke-width: 1px; } .link { fill: none; stroke: #bbb; }');
 
       var color = d3.scaleOrdinal(d3.schemeCategory20);
 
