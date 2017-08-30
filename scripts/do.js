@@ -885,6 +885,11 @@ var DO = {
           .attr('height', options.height)
           .attr('id', DO.U.generateAttributeId());
 
+      svg.attr('xmlns', 'xmlns="http://www.w3.org/2000/svg');
+      svg.attr('version', '1.1');
+      svg.attr('xml:lang', 'en');
+      svg.attr('prefix', 'rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# xsd: http://www.w3.org/2001/XMLSchema# schema: http://schema.org/');
+
       svg.append('style').text('.node { stroke: #fff; stroke-width: 1px; } .link { fill: none; stroke: #bbb; }');
 
       var color = d3.scaleOrdinal(d3.schemeCategory20);
