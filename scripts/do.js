@@ -851,6 +851,9 @@ var DO = {
         'license': 'https://creativecommons.org/licenses/by/4.0/'
       };
 
+      var id = DO.U.generateAttributeId();
+      document.querySelector(selector).insertAdjacentHTML('afterbegin', '<span id="progress-' + id + '" class="progress"><i class="fa fa-circle-o-notch fa-spin fa-fw"></i></span>');
+
       // if(!("width" in options) && !("height" in options)) {
       //   options["width"] = 640;
       //   options["height"] = 480;
@@ -883,7 +886,7 @@ var DO = {
       var svg = d3.select(selector).insert('svg', ':first-child')
           .attr('width', options.width)
           .attr('height', options.height)
-          .attr('id', DO.U.generateAttributeId());
+          .attr('id', id);
 
       svg.attr('xmlns', 'xmlns="http://www.w3.org/2000/svg');
       svg.attr('version', '1.1');
@@ -964,8 +967,9 @@ var DO = {
           function ticked() {
             link.attr("d", positionLink);
             node.attr("transform", positionNode);
+            var progress = document.getElementById('progress-' + id)
+            progress.parentNode.removeChild(progress);
           }
-
         });
     },
 
