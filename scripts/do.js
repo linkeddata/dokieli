@@ -894,6 +894,7 @@ var DO = {
         .append('tspan')
           .attr('rel', 'schema:creator')
           .attr('resource', 'https://dokie.li/');
+
       if('license' in options) {
         svg.select('metadata')
           .append('tspan')
@@ -901,9 +902,10 @@ var DO = {
             .attr('resource', options.license);
       }
 
-      if ('title' in options) {
+      if('title' in options) {
         svg.append('title')
-          .attr('property', 'schema:name');
+          .attr('property', 'schema:name')
+          .text(options.title);
       }
 
       svg.append('style').text('.node { stroke: #fff; stroke-width: 1px; } .link { fill: none; stroke: #bbb; }');
