@@ -31,6 +31,7 @@ position: static !important;
 }
 
 @media screen {
+body { visibility:visible !important; }
 body.on-document-menu > *:not([class~="on"]) {
 opacity:0.5;
 transition:opacity 1s ease-in-out;
