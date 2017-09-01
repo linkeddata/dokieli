@@ -721,15 +721,17 @@ var DO = {
                     if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Like') > -1 ||
                        resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Dislike') > -1){
                       if(s.asobject && s.asobject.at(0)) {
-                        if(s.ascontext && s.ascontext.at(0) && DO.U.getPathURL(s.asobject.at(0)) == currentPathURL) {
-                          var context = s.ascontext.at(0);
-                          return DO.U.positionInteraction(context).then(
-                            function(notificationIRI){
-                              return notificationIRI;
-                            },
-                            function(reason){
-                              console.log('Notification source is unreachable');
-                            });
+                        if(s.ascontext && s.ascontext.at(0)){
+                          if(DO.U.getPathURL(s.asobject.at(0)) == currentPathURL) {
+                            var context = s.ascontext.at(0);
+                            return DO.U.positionInteraction(context).then(
+                              function(notificationIRI){
+                                return notificationIRI;
+                              },
+                              function(reason){
+                                console.log('Notification source is unreachable');
+                              });
+                          }
                         }
                         else {
                           var iri = s.iri().toString();
