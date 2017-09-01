@@ -881,7 +881,7 @@ var DO = {
         d.fx = null, d.fy = null;
       }
 
-      var svg = d3.select(selector).insert('svg', ':first-child')
+      var svg = d3.select(selector).append('svg')
         .attr('width', options.width)
         .attr('height', options.height)
         .attr('id', DO.U.generateAttributeId())
