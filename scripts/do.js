@@ -732,9 +732,10 @@ var DO = {
                             });
                         }
                         else {
+                          var iri = s.iri().toString();
                           var targetIRI = s.asobject.at(0);
                           var motivatedBy = 'oa:assessing';
-                          var id = String(Math.abs(DO.U.hashCode(notification)));
+                          var id = String(Math.abs(DO.U.hashCode(iri)));
                           var refId = 'r-' + id;
                           var refLabel = id;
 
@@ -747,7 +748,7 @@ var DO = {
                             "id": id,
                             "refId": refId,
                             "refLabel": refLabel,
-                            "iri": notification,
+                            "iri": iri,
                             "creator": {},
                             "target": {
                               "iri": targetIRI
