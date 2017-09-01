@@ -814,7 +814,7 @@ var DO = {
                       }
                     }
                     else {
-                      console.log(i + ' has unrecognised types: ' + resourceTypes);
+                      // console.log(i + ' has unrecognised types: ' + resourceTypes);
                       // return Promise.reject({'message': 'Unrecognised types ' + resourceTypes});
                     }
                   }
