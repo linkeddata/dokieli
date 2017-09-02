@@ -3311,7 +3311,26 @@ console.log(inbox);
             'subjectURI': DO.U.stripFragmentFromString(iri)
           };
 
-          return DO.U.getGraphFromData(response.xhr.responseText, options).then(
+          var data = response.xhr.responseText;
+
+          //FIXME: This is a dirty filthy fugly but a *fix* to get around the baseURI not being passed to the DOM parser. This injects the `base` element into the document so that the RDFa parse fallsback to that. The actual fix should happen upstream. See related issues:
+          // https://github.com/linkeddata/dokieli/issues/132
+          // https://github.com/rdf-ext/rdf-parser-dom/issues/2
+          // https://github.com/rdf-ext/rdf-parser-rdfa/issues/3
+          // https://github.com/simplerdf/simplerdf/issues/19
+
+          if(options.contentType == 'text/html' || options.contentType == 'application/xhtml+xml') {
+            var template = document.implementation.createHTMLDocument('template');
+            template.documentElement.innerHTML = response.xhr.responseText;
+            template.contentType = options.contentType;
+            var base = template.querySelector('head base[href]');
+            if (!base) {
+              template.querySelector('head').insertAdjacentHTML('afterbegin', '<base href="' + options.subjectURI + '" />');
+              data = template.documentElement.outerHTML;
+            }
+          }
+
+          return DO.U.getGraphFromData(data, options).then(
             function(g){
               var fragment = (iri.lastIndexOf('#') >= 0) ? iri.substr(iri.lastIndexOf('#')) : '';
               return SimpleRDF(DO.C.Vocab, options['subjectURI'], g, ld.store).child(pIRI + fragment);
