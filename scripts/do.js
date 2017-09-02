@@ -846,16 +846,15 @@ var DO = {
       url = url || window.location.origin + window.location.pathname;
       data = data || DO.U.getDocument();
       selector = selector || 'body';
-      options = options || {
-        'contentType': 'text/html',
-        'subjectURI': url,
-        'license': 'https://creativecommons.org/licenses/by/4.0/'
-      };
+      options = options || {};
+      options['contentType'] = options.contentType || 'text/html';
+      options['subjectURI'] = options.subjectURI || url;
+      options['license'] = options.license || 'https://creativecommons.org/licenses/by/4.0/';
+      var width = options.width || '100%';
+      var height = options.height || '100%';
 
       var id = DO.U.generateAttributeId();
 
-      var width = options.width || '100%';
-      var height = options.height || '100%';
 
       function positionLink(d) {
         return "M" + d[0].x + "," + d[0].y
@@ -1056,8 +1055,7 @@ var DO = {
                         var url = inbox;
                         var options = {
                           'contentType': 'text/turtle',
-                          'subjectURI': url,
-                          'license': 'https://creativecommons.org/licenses/by/4.0/'
+                          'subjectURI': url
                         };
 
                         DO.U.showVisualisationGraph(url, data, selector, options);
