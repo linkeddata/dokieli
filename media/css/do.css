@@ -69,14 +69,14 @@ outline:none;
   animation-name: zoomOut;
 }
 
-
-#graph-view {
-width:auto;
-height:auto;
-max-width:90%;
-max-height:90%;
+figure svg.graph {
+min-width:640px;
+min-height:640px;
 }
-#graph-view svg {
+
+#graph-view svg.graph {
+width:480px;
+height:480px;
 margin:0 auto;
 display:block;
 }

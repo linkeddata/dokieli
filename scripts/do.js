@@ -849,15 +849,13 @@ var DO = {
       options = options || {
         'contentType': 'text/html',
         'subjectURI': url,
-        'width': 640,
-        'height': 480,
         'license': 'https://creativecommons.org/licenses/by/4.0/'
       };
 
-      // if(!("width" in options) && !("height" in options)) {
-      //   options["width"] = 640;
-      //   options["height"] = 480;
-      // }
+      var id = DO.U.generateAttributeId();
+
+      var width = options.width || '100%';
+      var height = options.height || '100%';
 
       function positionLink(d) {
         return "M" + d[0].x + "," + d[0].y
@@ -884,13 +882,18 @@ var DO = {
       }
 
       var svg = d3.select(selector).append('svg')
-        .attr('width', options.width)
-        .attr('height', options.height)
-        .attr('id', DO.U.generateAttributeId())
+        .attr('width', width)
+        .attr('height', height)
+        .attr('id', id)
+        .attr('class', 'graph')
         .attr('xmlns', 'http://www.w3.org/2000/svg')
         .attr('version', '1.1')
         .attr('xml:lang', 'en')
         .attr('prefix', 'rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# xsd: http://www.w3.org/2001/XMLSchema# schema: http://schema.org/');
+
+      var s = document.getElementById(id);
+      width = options.width || parseInt(s.ownerDocument.defaultView.getComputedStyle(s, null)["width"]);
+      height = options.height || parseInt(s.ownerDocument.defaultView.getComputedStyle(s, null)["height"]);
 
       svg.append('metadata')
         .append('tspan')
@@ -918,7 +921,7 @@ var DO = {
           .force("link", d3.forceLink().distance(10).strength(0.5))
           .force("charge", d3.forceManyBody())
           // .force("center", d3.forceCenter());
-          .force("center", d3.forceCenter(options.width / 2, options.height / 2));
+          .force("center", d3.forceCenter(width / 2, height / 2));
 
       DO.U.getVisualisationGraphData(url, data, options).then(
         function(graph){
@@ -1054,8 +1057,6 @@ var DO = {
                         var options = {
                           'contentType': 'text/turtle',
                           'subjectURI': url,
-                          'width': 640,
-                          'height': 480,
                           'license': 'https://creativecommons.org/licenses/by/4.0/'
                         };
 
