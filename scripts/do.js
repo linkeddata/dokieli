@@ -1928,16 +1928,16 @@ var DO = {
             s += '<li><button disabled="disabled">' + view + '</button></li>';
           }
         }
-
-        var viewButtons = document.querySelectorAll('#document-views.do button:not([class~="resource-visualise"])');
-        for (var i = 0; i < viewButtons.length; i++) {
-          viewButtons[i].removeEventListener('click', DO.U.initCurrentStylesheet);
-          viewButtons[i].addEventListener('click', DO.U.initCurrentStylesheet);
-        }
       }
 
       s += '</ul></section>';
       node.insertAdjacentHTML('beforeend', s);
+
+      var viewButtons = document.querySelectorAll('#document-views.do button:not([class~="resource-visualise"])');
+      for (var i = 0; i < viewButtons.length; i++) {
+        viewButtons[i].removeEventListener('click', DO.U.initCurrentStylesheet);
+        viewButtons[i].addEventListener('click', DO.U.initCurrentStylesheet);
+      }
 
       if(DO.C.GraphViewerAvailable) {
         document.querySelector('#document-views.do').addEventListener('click', function(e){
