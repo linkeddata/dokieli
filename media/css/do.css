@@ -807,6 +807,7 @@ text-transform:lowercase;
 font-variant:small-caps;
 font-style:normal;
 }
+em.rfc2119 { color: #f00; }
 
 .todo, .outline, .fixme, .notes {
 border:1px dashed #333;
