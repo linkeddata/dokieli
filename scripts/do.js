@@ -1013,10 +1013,10 @@ var DO = {
 
     showInboxGraph: function(url, selector, options){
       var uri = url || location.href.split(location.search||location.hash||/[?#]/)[0];
-      options = options || {
-        'contentType': 'text/html',
-        'subjectURI': uri
-      }
+      options = options || {};
+
+      options['contentType'] = options.contentType || 'text/html';
+      options['subjectURI'] = options.subjectURI || uri;
 
       DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id'], uri).then(
         function(i) {
