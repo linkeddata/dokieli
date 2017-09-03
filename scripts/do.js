@@ -1014,7 +1014,6 @@ var DO = {
     showInboxGraph: function(url, selector, options){
       var uri = url || location.href.split(location.search||location.hash||/[?#]/)[0];
       options = options || {};
-
       options['contentType'] = options.contentType || 'text/html';
       options['subjectURI'] = options.subjectURI || uri;
 
@@ -1038,28 +1037,22 @@ var DO = {
                       dataGraph.graph().addAll(g.graph());
                     });
 
-                    var options = {
-                      'contentType': 'text/turtle'
-                    };
-                    DO.U.serializeGraph(dataGraph, options).then(
-                      function(data){
+                    DO.U.serializeGraph(dataGraph, { 'contentType': 'text/turtle' })
+                      .then(function(data){
                         //FIXME: FUGLY because parser defaults to localhost. Using UUID to minimise conflict
                         data = data.replace(/http:\/\/localhost\/d79351f4-cdb8-4228-b24f-3e9ac74a840d/g, '');
 
                         //XXX: Workaround for rdf-parser-rdfa bug that gives '@langauge' instead of @type when encountering datatype in HTML+RDFa . TODO: Link to bug here
                         data = data.replace(/Z"@en;/, 'Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;');
 
-                      return data;
-                    }).then(
-                      function(data){
-                        var url = inbox;
-                        var options = {
-                          'contentType': 'text/turtle',
-                          'subjectURI': url
-                        };
+                        return data;
+                      })
+                      .then(function(data){
+                        options['contentType'] = 'text/turtle';
+                        options['subjectURI'] = inbox;
 
-                        DO.U.showVisualisationGraph(url, data, selector, options);
-                    });
+                        DO.U.showVisualisationGraph(inbox, data, selector, options);
+                      });
                   });
               });
           });
