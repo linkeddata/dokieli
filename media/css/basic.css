@@ -375,16 +375,16 @@ font-weight:bold;
 }
 
 html {
-counter-reset:figure 0;
+counter-reset:figcaption 0;
 }
 body {
 counter-reset:listing 0;
 }
 article {
-counter-reset:table 0;
+counter-reset:caption 0;
 }
-figure {
-counter-increment:figure;
+figcaption {
+counter-increment:figcaption;
 }
 figure.listing {
 counter-increment:listing;
@@ -392,8 +392,8 @@ counter-increment:listing;
 figure.equation {
 counter-increment:equation;
 }
-table {
-counter-increment:table;
+caption {
+counter-increment:caption;
 }
 figure.equation:after {
 content:"(" counter(equation) ")";
@@ -403,13 +403,13 @@ top:45%;
 right:0;
 }
 figcaption:before {
-content:"Fig. " counter(figure) ". ";
+content:"Fig. " counter(figcaption) ". ";
 }
 figure.listing figcaption:before {
 content:"Listing " counter(listing) ". ";
 }
 caption:before {
-content:"Table " counter(table) ". ";
+content:"Table " counter(caption) ". ";
 }
 
 

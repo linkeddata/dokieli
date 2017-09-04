@@ -264,8 +264,8 @@ figure math {
 display:block;
 font-size:0.95em;
 }
-figure {
-counter-increment:figure;
+figcaption {
+counter-increment:figcaption;
 }
 figure.listing {
 counter-increment:listing;
@@ -291,16 +291,16 @@ font-weight:bold;
 text-align:center;
 }
 figcaption:before {
-content:"Figure " counter(figure) ": ";
+content:"Figure " counter(figcaption) ": ";
 }
 figure.listing figcaption:before {
 content:"Listing " counter(listing) ": ";
 }
-table {
-counter-increment:table;
+caption {
+counter-increment:caption;
 }
 caption:before {
-content:"Table " counter(table) ": ";
+content:"Table " counter(caption) ": ";
 }
 
 .toc, .toc ol {
@@ -704,13 +704,13 @@ text-align:center;
 }
 
 html {
-counter-reset:figure 0;
+counter-reset:figcaption 0;
 }
 body {
 counter-reset:listing 0;
 }
 article {
-counter-reset:table 0;
+counter-reset:caption 0;
 }
 figure,
 audio,
