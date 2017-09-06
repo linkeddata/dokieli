@@ -448,7 +448,7 @@
 <code>            &lt;dd&gt;&lt;a href="http://csarven.ca/#i" property="as:actor"&gt;http://csarven.ca/#i&lt;/a&gt;&lt;/dd&gt;</code>
 <code></code>
 <code>            &lt;dt&gt;License&lt;/dt&gt;</code>
-<code>            &lt;dd&gt;&lt;a href="https://creativecommons.org/licenses/by/4.0/" property="schema:license"&gt;https://creativecommons.org/licenses/by/4.0/&lt;/a&gt;&lt;/dd&gt;</code>
+<code>            &lt;dd&gt;&lt;a href="https://creativecommons.org/publicdomain/zero/1.0/" property="schema:license"&gt;https://creativecommons.org/publicdomain/zero/1.0/&lt;/a&gt;&lt;/dd&gt;</code>
 <code>          &lt;/dl&gt;</code>
 <code></code>
 <code>          &lt;dl about="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f"&gt;</code>
