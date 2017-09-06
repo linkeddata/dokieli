@@ -1776,9 +1776,10 @@ var DO = {
         }
       });
 
-      document.querySelectorAll('[about="#annotation-rights"][typeof="schema:ChooseAction"], [href="#annotation-rights"][typeof="schema:ChooseAction"], [resource="#annotation-rights"][typeof="schema:ChooseAction"]').forEach(function(node){
-        node.parentNode.replaceChild(DO.U.fragmentFromString('<select>' + DO.U.getLicenseOptionsHTML() + '</select>'), node);
-      });
+      var annotationRights = document.querySelectorAll('[about="#annotation-rights"][typeof="schema:ChooseAction"], [href="#annotation-rights"][typeof="schema:ChooseAction"], [resource="#annotation-rights"][typeof="schema:ChooseAction"]');
+      for (var i = 0; i < annotationRights.length; i++){
+        annotationRights[i].parentNode.replaceChild(DO.U.fragmentFromString('<select>' + DO.U.getLicenseOptionsHTML() + '</select>'), annotationRights[i]);
+      }
     },
 
     showDocumentInfo: function() {
