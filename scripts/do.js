@@ -91,6 +91,7 @@ var DO = {
     InteractionPath: 'i/',
     ProxyURL: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/proxy?uri=' : 'https://dokie.li/proxy?uri='),
     AuthEndpoint: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/' : 'https://dokie.li/'),
+    NotificationLicense: 'https://creativecommons.org/publicdomain/zero/1.0/',
     License: {
       "NoLicense": { 'name': 'No license', 'description': 'No license' },
       "https://creativecommons.org/publicdomain/zero/1.0/": {'name': 'CC0 1.0', 'description': 'Creative Commons Zero'},
@@ -1399,10 +1400,9 @@ var DO = {
 
       var asactor = (DO.C.User.IRI) ? '<dt>Actor</dt><dd><a href="' + DO.C.User.IRI + '" property="as:actor">' + DO.C.User.IRI + '</a></dd>' : '';
 
-      var license = ('license' in o && o.license.length > 0) ? '<dt>License</dt><dd><a href="' + o.license + '" property="schema:license">' + o.license + '</a></dd>' : '';
+      var license = '<dt>License</dt><dd><a href="' + DO.C.NotificationLicense + '" property="schema:license">' + DO.C.NotificationLicense + '</a></dd>';
 
       var asto = ('to' in o && o.to.length > 0 && !o.to.match(/\s/g) && o.to.match(/^https?:\/\//gi)) ? '<dt>To</dt><dd><a href="' + o.to + '" property="as:to">' + o.to + '</a></dd>' : '';
-
 
       var statements = ('statements' in o) ? o.statements : '';
 
