@@ -62,6 +62,7 @@ var DO = {
       "*": "🔗",
       "aside": "†",
       "audio": "🔊",
+      "code": "#",
       "dl#document-annotation-service": "※",
       "dl#document-license": "🌻",
       "dl#document-identifier": "🚩",
