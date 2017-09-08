@@ -572,7 +572,6 @@ column-count: 2;
 -webkit-column-count: 2;
 }
 
-
 @media screen and (min-width: 980px){
   body {
     font-size: 1.2em;
@@ -584,7 +583,7 @@ column-count: 2;
 
   article > article,
   section,
-  dl[id^="document-"], #authors {
+  dl[id^="document-"], #authors, hr {
     max-width: 50em;
   }
 
@@ -595,7 +594,7 @@ column-count: 2;
 
   dl[id^="document-"], #authors,
   *[id^=table-of-],
-  #help-and-shape {
+  #help-and-shape, hr {
     max-width: 50em;
     margin: 0 auto;
   }
