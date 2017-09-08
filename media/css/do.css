@@ -86,7 +86,7 @@ figure .progress { display:block; margin:0 auto; }
 
 main > article { position:relative; }
 
-.do,
+.do:not(code):not(samp):not(pre):not(kbd),
 .do *:not([class~="fa"]) {
 font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 font-size:1em;
@@ -865,11 +865,11 @@ outline:none;
 text-align:right;
 text-decoration:none;
 }
-.listing code {
+.listing pre code {
 margin-left:-2.25em;
 padding-left:2.25em;
 }
-.listing code .do.fragment a {
+.listing pre code .do.fragment a {
 padding-right:0;
 line-height:1;
 vertical-align: middle;
