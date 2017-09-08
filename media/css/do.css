@@ -865,6 +865,16 @@ outline:none;
 text-align:right;
 text-decoration:none;
 }
+.listing code {
+margin-left:-2.25em;
+padding-left:2.25em;
+}
+.listing code .do.fragment a {
+padding-right:0;
+line-height:1;
+vertical-align: middle;
+}
+
 .do.fragment a:first-child {
 border-right:2px solid rgba(128,128,128,0.2);
 }
