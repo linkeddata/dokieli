@@ -918,6 +918,48 @@ text-decoration:none;
 border-bottom:0;
 }
 
+.cool-media {
+background: -moz-linear-gradient(left, rgba(198,255,255,0.5) 0%, rgba(0,178,255,0.5) 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(198,255,255,0.5)), color-stop(100%,rgba(0,178,255,0.5))); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(left, rgba(198,255,255,0.5) 0%,rgba(0,178,255,0.5) 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(left, rgba(198,255,255,0.5) 0%,rgba(0,178,255,0.5) 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(left, rgba(198,255,255,0.5) 0%,rgba(0,178,255,0.5) 100%); /* IE10+ */
+background: linear-gradient(to right, rgba(198,255,255,0.5) 0%,rgba(0,178,255,0.5) 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#80c6ffff', endColorstr='#8000b2ff',GradientType=1 ); /* IE6-9 */
+}
+.hot-media {
+background: -moz-linear-gradient(left, rgba(255,255,0,0.5) 0%, rgba(255,0,0,0.5) 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(255,255,0,0.5)), color-stop(100%,rgba(255,0,0,0.5))); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(left, rgba(255,255,0,0.5) 0%,rgba(255,0,0,0.5) 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(left, rgba(255,255,0,0.5) 0%,rgba(255,0,0,0.5) 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(left, rgba(255,255,0,0.5) 0%,rgba(255,0,0,0.5) 100%); /* IE10+ */
+background: linear-gradient(to right, rgba(255,255,0,0.5) 0%,rgba(255,0,0,0.5) 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#80ffff00', endColorstr='#80ff0000',GradientType=1 ); /* IE6-9 */
+}
+
+.unicode-red-pill:before,
+hr.unicode-red-pill:after {
+background-image:url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgNTEyLjAwNSA1MTIuMDA1IiB4bWw6c3BhY2U9InByZXNlcnZlIiBmaWxsPSIjZjAwIj48cGF0aCBkPSJNMzQuNjg3LDMwOS44MzhMMzA5LjgzOCwzNC42ODdjNDYuMjQ4LTQ2LjI0OSwxMjEuMjI5LTQ2LjI0OSwxNjcuNDksMGM0Ni4yMzYsNDYuMjQ5LDQ2LjIzNiwxMjEuMjM1LDAsMTY3LjQ4MyAgTDIwMi4xNyw0NzcuMzI4Yy00Ni4yNDgsNDYuMjM2LTEyMS4yMzQsNDYuMjM2LTE2Ny40ODMsMEMtMTEuNTYyLDQzMS4wNjYtMTEuNTYyLDM1Ni4wODYsMzQuNjg3LDMwOS44Mzh6IE0yMTQuMzIsMTk2LjQ0MyAgbDEwMC4zOTgsMTAwLjM5M2wxMTUuMzczLTExNS4zNjFjMjcuNzA5LTI3LjcyNywzMi4wNzgtNzcuMDQzLDQuMzU5LTEwNC43NjRjLTI3LjczMi0yNy43MjUtNzIuNjgtMjcuNzI1LTEwMC40LDBMMjE0LjMyLDE5Ni40NDN6Ii8%2BPC9zdmc%2B");
+}
+.unicode-blue-pill:before {
+background-image:url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48IURPQ1RZUEUgc3ZnIFBVQkxJQyAiLS8vVzNDLy9EVEQgU1ZHIDEuMS8vRU4iICJodHRwOi8vd3d3LnczLm9yZy9HcmFwaGljcy9TVkcvMS4xL0RURC9zdmcxMS5kdGQiPjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiB2aWV3Qm94PSIwIDAgNTEyLjAwNSA1MTIuMDA1IiB4bWw6c3BhY2U9InByZXNlcnZlIiBmaWxsPSIjMDBmIj48cGF0aCBkPSJNMzQuNjg3LDMwOS44MzhMMzA5LjgzOCwzNC42ODdjNDYuMjQ4LTQ2LjI0OSwxMjEuMjI5LTQ2LjI0OSwxNjcuNDksMGM0Ni4yMzYsNDYuMjQ5LDQ2LjIzNiwxMjEuMjM1LDAsMTY3LjQ4MyAgTDIwMi4xNyw0NzcuMzI4Yy00Ni4yNDgsNDYuMjM2LTEyMS4yMzQsNDYuMjM2LTE2Ny40ODMsMEMtMTEuNTYyLDQzMS4wNjYtMTEuNTYyLDM1Ni4wODYsMzQuNjg3LDMwOS44Mzh6IE0yMTQuMzIsMTk2LjQ0MyAgbDEwMC4zOTgsMTAwLjM5M2wxMTUuMzczLTExNS4zNjFjMjcuNzA5LTI3LjcyNywzMi4wNzgtNzcuMDQzLDQuMzU5LTEwNC43NjRjLTI3LjczMi0yNy43MjUtNzIuNjgtMjcuNzI1LTEwMC40LDBMMjE0LjMyLDE5Ni40NDN6Ii8%2BPC9zdmc%2B");
+}
+.unicode-red-pill:before, .unicode-blue-pill:before, hr.unicode-red-pill:after {
+background-position:0 0;
+background-repeat:no-repeat;
+background-size:contain;
+display:inline-block;
+height:1em;
+width:1.25em;
+content:"";
+}
+
+hr[class|="unicode"] {
+border:0;
+text-align:center;
+} 
+
+
 .sparkline {
 height:1em;
 width:100%;
