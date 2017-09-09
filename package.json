@@ -1,0 +1,33 @@
+{
+  "name": "dokieli",
+  "version": "0.2.16",
+  "description": "dokieli is a client-side editor for decentralised article publishing, annotations and social interactions",
+  "main": "./src/dokieli.js",
+  "scripts": {
+    "build-dist": "webpack --progress --colors",
+    "build": "npm run build-dist",
+    "test": "echo 'No unit tests yet'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/linkeddata/dokieli"
+  },
+  "keywords": [
+    "decentralized",
+    "linked",
+    "data",
+    "research",
+    "webid",
+    "rdf"
+  ],
+  "author": "the dokieli team",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/linkeddata/dokieli/issues"
+  },
+  "homepage": "https://dokie.li/",
+  "dependencies": {},
+  "devDependencies": {
+    "webpack": "^3.5.5"
+  }
+}
