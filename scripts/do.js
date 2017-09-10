@@ -1996,7 +1996,7 @@ var DO = {
 
       var bd = document.querySelectorAll('#document-views.do button');
       for(var j = 0; j < bd.length; j++) {
-        bd[j].disabled = (e.target.textContent == bd[j].textContent) ? true : false;
+        bd[j].disabled = (e && e.target && (e.target.textContent == bd[j].textContent)) ? true : false;
       }
 
       DO.U.showRefs();
