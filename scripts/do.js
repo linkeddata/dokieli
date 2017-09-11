@@ -3237,16 +3237,18 @@ console.log(inbox);
 // console.log(notificationData);
                       DO.U.notifyInbox(notificationData).then(
                         function(response) {
-                          var location = response.xhr.getResponseHeader('Location');
+                          if(typeof response !== 'undefined') {
+                            var location = response.xhr.getResponseHeader('Location');
 
-                          if(typeof response !== 'undefined' && location) {
-                            location = DO.U.getAbsoluteIRI(inbox, location);
+                            if(location) {
+                              location = DO.U.getAbsoluteIRI(inbox, location);
 
-                            toInput.parentNode.querySelector('.progress').innerHTML = '<a target="_blank" href="' + location + '"><i class="fa fa-check-circle fa-fw"></i></a>';
+                              toInput.parentNode.querySelector('.progress').innerHTML = '<a target="_blank" href="' + location + '"><i class="fa fa-check-circle fa-fw"></i></a>';
 
-                            // var rm = shareResource.querySelector('.response-message');
-                            // rm.insertAdjacentHTML('beforeend', '<p class="success">Notification sent: <a target="_blank" href="' + location + '">' + location + '</a></p>');
-                            // return location;
+                              // var rm = shareResource.querySelector('.response-message');
+                              // rm.insertAdjacentHTML('beforeend', '<p class="success">Notification sent: <a target="_blank" href="' + location + '">' + location + '</a></p>');
+                              // return location;
+                            }
                           }
                           else {
                             toInput.parentNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to notify. Try later.';
