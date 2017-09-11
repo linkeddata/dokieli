@@ -438,6 +438,10 @@ background-color:#fff !important;
 cursor:default !important;
 }
 
+#document-menu button i.fa {
+font-family:FontAwesome !important;
+}
+
 button[class~="signin-user"] .fa,
 button[class|="resource"] .fa,
 button[class|="review"] .fa,
