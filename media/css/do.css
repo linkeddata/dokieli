@@ -966,8 +966,8 @@ content:"";
 hr.unicode-blue-pill.unicode-red-pill {
 border:0;
 text-align:center;
-} 
-
+font-size:2em;
+}
 
 .sparkline {
 height:1em;
