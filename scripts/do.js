@@ -2009,17 +2009,28 @@ var DO = {
         document.body.classList.add('on-slideshow', 'list');
         document.querySelector('head').insertAdjacentHTML('beforeend', '<meta name="viewport" content="width=792, user-scalable=no" />');
 
-        var dM = document.getElementById('document-menu');
-        var dMButton = dM.querySelector('header button');
 
-        dM.classList.remove('on');
-        var dMSections = dM.querySelectorAll('section');
-        for (var j = 0; j < dMSections.length; j++) {
-          dMSections[j].parentNode.removeChild(dMSections[j]);
+        var body = document.body;
+        var dMenu = document.querySelector('#document-menu.do');
+
+        if(dMenu) {
+          var dMenuButton = dMenu.querySelector('button');
+          var dHead = dMenu.querySelector('header');
+          var dInfo = dMenu.querySelector('div');
+
+          dMenuButton.classList.remove('show');
+          dMenuButton.classList.add('hide');
+          dMenuButton.setAttribute('title', 'Open Menu');
+          dMenuButton.innerHTML = '<i class="fa fa-minus"></i>';
+          dMenu.classList.remove('on');
+          body.classList.remove('on-document-menu');
+
+          var dMenuSections = dMenu.querySelectorAll('section');
+          for (var j = 0; j < dMenuSections.length; j++) {
+            dMenuSections[j].parentNode.removeChild(dMSections[j]);
+          }
         }
-        document.body.classList.remove('on-document-menu');
-        dMButton.classList.add('show');
-        dMButton.setAttribute('title', 'Open Menu');
+
         var toc = document.getElementById('table-of-contents');
         toc = (toc) ? toc.parentNode.removeChild(toc) : false;
 
