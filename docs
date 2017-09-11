@@ -223,10 +223,10 @@
 
                       <pre id="html-document-in-reply-to"><code>&lt;dl id="document-in-reply-to"&gt;</code>
 <code>  &lt;dt&gt;In Reply To&lt;/dt&gt;</code>
-<code>  &lt;dd&gt;&lt;a href="https://linkedresearch.org/calls" rel="sioc:reply_of"&gt;Call for Linked Research&lt;/a&gt;&lt;/dd&gt;</code>
+<code>  &lt;dd&gt;&lt;a href="https://linkedresearch.org/calls" rel="as:inReplyTo"&gt;Call for Linked Research&lt;/a&gt;&lt;/dd&gt;</code>
 <code>&lt;/dl&gt;</code></pre>
 
-                      <p>If an article is a reply to objects(s), it can have properties like <samp>sioc:reply_of</samp> or <code>as:inReplyTo</code>. This helps to keep connections.</p>
+                      <p>If an article is a reply to objects(s), it can have a property like <code>as:inReplyTo</code>.</p>
 
                       <pre id="html-document-annotation-service"><code>&lt;dl id="document-annotation-service"&gt;</code>
 <code>  &lt;dt&gt;Annotation Service&lt;/dt&gt;</code>
