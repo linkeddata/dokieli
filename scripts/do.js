@@ -1773,8 +1773,8 @@ var DO = {
         var scriptType = {
           'meta-turtle': {
             scriptStart: '<script id="meta-turtle" title="Turtle" type="text/turtle">',
-            cdataStart: '# ' + DO.C.CDATAStart + '\n',
-            cdataEnd: '\n# ' + DO.C.CDATAEnd,
+            cdataStart: DO.C.CDATAStart + '\n',
+            cdataEnd: '\n' + DO.C.CDATAEnd,
             scriptEnd: '</script>'
           },
           'meta-json-ld': {
@@ -1785,8 +1785,8 @@ var DO = {
           },
           'meta-trig': {
             scriptStart: '<script id="meta-trig" title="TriG" type="application/trig">',
-            cdataStart: '# ' + DO.C.CDATAStart + '\n',
-            cdataEnd: '\n# ' + DO.C.CDATAEnd,
+            cdataStart: DO.C.CDATAStart + '\n',
+            cdataEnd: '\n' + DO.C.CDATAEnd,
             scriptEnd: '</script>'
           }
         }
@@ -1848,12 +1848,13 @@ var DO = {
             var script = document.getElementById(name);
 
             if (scriptEntry.length > 0) {
-              var scriptContent = '  ' + scriptType[name].scriptStart + scriptType[name].cdataStart + scriptEntry + scriptType[name].cdataEnd + scriptType[name].scriptEnd;
               //If there was a script already
               if (script) {
+                var scriptContent = scriptType[name].cdataStart + scriptEntry + scriptType[name].cdataEnd;
                 script.innerHTML = scriptContent;
               }
               else {
+                var scriptContent = '  ' + scriptType[name].scriptStart + scriptType[name].cdataStart + scriptEntry + scriptType[name].cdataEnd + scriptType[name].scriptEnd;
                 document.querySelector('head').insertAdjacentHTML('beforeend', scriptContent);
               }
             }
