@@ -3162,6 +3162,29 @@ console.log(inbox);
       }, 1500);
     },
 
+
+    getMatchFromData: function(data, spo, options) {
+      if (data == "") { return Promise.reject({}); }
+
+      spo = spo || {};
+      spo["subject"] = spo.subject || window.location.origin + window.location.pathname;
+      spo["predicate"] = spo.predicate || DO.C.Vocab["rdfslabel"];
+
+      options = options || {};
+      options["contentType"] = options.contentType || 'text/html';
+      options["subjectURI"] = options.subjectURI || spo.subject;
+
+      return DO.U.getGraphFromData(data, options).then(
+        function(g) {
+          var s = SimpleRDF(DO.C.Vocab, spo.subject, g, ld.store).child(spo.subject);
+
+          return s[spo.predicate];
+        },
+        function(reason){
+          return undefined;
+        });
+    },
+
     shareResource: function(e, iri) {
       iri = iri || window.location.origin + window.location.pathname;
       if (e) {
