@@ -1393,7 +1393,12 @@ var DO = {
         asObjectTypes += '</dl>';
       }
 
-      var asobject = ('object' in o) ? '<dt>Object</dt><dd><a href="' + o.object + '" property="as:object">' + o.object + '</a>' + asObjectTypes + '</dd>' : '';
+      var asObjectLicense = '';
+      if ('object' in o && 'objectLicense' in o && o.objectLicense.length > 0) {
+        asObjectLicense = '<dl><dt>License</dt><dd><a about="' + o.object + '" href="' + o.objectLicense + '" property="schema:license">' + o.objectLicense + '</a></dd></dl>';
+      }
+
+      var asobject = ('object' in o) ? '<dt>Object</dt><dd><a href="' + o.object + '" property="as:object">' + o.object + '</a>' + asObjectTypes + asObjectLicense + '</dd>' : '';
 
       var asinReplyTo = ('inReplyTo' in o) ? '<dt>In reply to</dt><dd><a href="' + o.inReplyTo + '" property="as:inReplyTo">' + o.inReplyTo + '</a></dd>' : '';
 
@@ -3251,18 +3256,49 @@ console.log(inbox);
 
             var sendNotifications = function(tos){
               return new Promise(function(resolve, reject){
-                var spo = {
-                  "subject": iri,
-                  "predicate": DO.C.Vocab["rdftype"]["@id"]
-                }; 
+                var notificationData = {
+                  "type": ['as:Announce'],
+                  "object": iri,
+                  "summary": note,
+                  "license": "https://creativecommons.org/licenses/by/4.0/"
+                };
 
+                var data = DO.U.getDocument();
                 var options = {
                   "contentType": "text/html",
                   "subjectURI": iri
                 }
+                var spo = {
+                  "subject": iri,
+                  "predicate": DO.C.Vocab["rdftype"]["@id"]
+                };
 
-                DO.U.getMatchFromData(DO.U.getDocument(), spo, options).then(function(supplementalData){
+                DO.U.getMatchFromData(data, spo, options).then(function(supplementalData) {
+// console.log(supplementalData);
+                  if (typeof supplementalData !== 'undefined' && supplementalData._array.length > 0) {
+                    notificationData["objectTypes"] = supplementalData._array;
+                  }
+                  return Promise.resolve();
+                }).then(function(supplementalData){
+// console.log(supplementalData);
+
+                  var spo = {
+                    "subject": iri,
+                    "predicate": DO.C.Vocab["schemalicense"]["@id"]
+                  };
+
+                  return DO.U.getMatchFromData(data, spo, options).then(function(supplementalData) {
+// console.log(supplementalData);
+                    if (typeof supplementalData !== 'undefined' && supplementalData.length > 0) {
+                      notificationData["objectLicense"] = supplementalData;
+                    }
+                    return Promise.resolve();
+                  });
+                }).then(function(supplementalData){
+// console.log(notificationData);
                   tos.forEach(function(to) {
+                    notificationData["to"] = to;
+
                     var toInput = shareResource.querySelector('[value="' + to + '"]') || shareResource.querySelector('#share-resource-to');
                     toInput.parentNode.insertAdjacentHTML('beforeend', '<span class="progress"><i class="fa fa-circle-o-notch fa-spin fa-fw"></i></span>');
 
@@ -3280,18 +3316,7 @@ console.log(inbox);
 
                     inboxResponse().then(
                       function(inbox) {
-                        var notificationData = {
-                          "type": ['as:Announce'],
-                          "inbox": inbox,
-                          "object": iri,
-                          "to": to,
-                          "summary": note,
-                          "license": "https://creativecommons.org/licenses/by/4.0/"
-                        };
-
-                        if (typeof supplementalData !== 'undefined' && supplementalData._array.length > 0) {
-                          notificationData["objectTypes"] = supplementalData._array;
-                        }
+                        notificationData["inbox"] = inbox;
 
 // console.log(notificationData);
 
