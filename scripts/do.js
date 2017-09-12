@@ -3300,7 +3300,7 @@ console.log(inbox);
                     notificationData["to"] = to;
 
                     var toInput = shareResource.querySelector('[value="' + to + '"]') || shareResource.querySelector('#share-resource-to');
-                    toInput.parentNode.insertAdjacentHTML('beforeend', '<span class="progress"><i class="fa fa-circle-o-notch fa-spin fa-fw"></i></span>');
+                    toInput.parentNode.insertAdjacentHTML('beforeend', '<span class="progress" data-to="' + to + '"><i class="fa fa-circle-o-notch fa-spin fa-fw"></i></span>');
 
                     var inboxResponse = function() {
                       return DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id'], to).then(
@@ -3317,7 +3317,6 @@ console.log(inbox);
                     inboxResponse().then(
                       function(inbox) {
                         notificationData["inbox"] = inbox;
-
 // console.log(notificationData);
 
                         DO.U.notifyInbox(notificationData).then(
@@ -3328,7 +3327,7 @@ console.log(inbox);
                               if(location) {
                                 location = DO.U.getAbsoluteIRI(inbox, location);
 
-                                toInput.parentNode.querySelector('.progress').innerHTML = '<a target="_blank" href="' + location + '"><i class="fa fa-check-circle fa-fw"></i></a>';
+                                toInput.parentNode.querySelector('.progress[data-to="' + to + '"]').innerHTML = '<a target="_blank" href="' + location + '"><i class="fa fa-check-circle fa-fw"></i></a>';
 
                                 // var rm = shareResource.querySelector('.response-message');
                                 // rm.insertAdjacentHTML('beforeend', '<p class="success">Notification sent: <a target="_blank" href="' + location + '">' + location + '</a></p>');
@@ -3336,20 +3335,20 @@ console.log(inbox);
                               }
                             }
                             else {
-                              toInput.parentNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to notify. Try later.';
+                              toInput.parentNode.querySelector('.progress[data-to="' + to + '"]').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to notify. Try later.';
                               // return Promise.reject(response);
                             }
                           },
                           function(reason) {
 // console.log(reason);
-                            toInput.parentNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to notify. Try later.';
+                            toInput.parentNode.querySelector('.progress[data-to="' + to + '"]').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to notify. Try later.';
 //                           return reason;
                           }
                         );
                       },
                       function(reason) {
 // console.log(reason);
-                           toInput.parentNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Inbox not responding. Try later.';
+                           toInput.parentNode.querySelector('.progress[data-to="' + to + '"]').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Inbox not responding. Try later.';
 //                       return reason;
                       }
                     );
