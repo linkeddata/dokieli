@@ -1384,7 +1384,16 @@ var DO = {
         types += '<dd><a about="" href="' + DO.C.Prefixes[t.split(':')[0]] + t.split(':')[1] + '" typeof="'+ t +'">' + t.split(':')[1] + '</a></dd>';
       });
 
-      var asobject = ('object' in o) ? '<dt>Object</dt><dd><a href="' + o.object + '" property="as:object">' + o.object + '</a></dd>' : '';
+      var asObjectTypes = '';
+      if ('object' in o && 'objectTypes' in o && o.objectTypes.length > 0) {
+        asObjectTypes = '<dl><dt>Types</dt>';
+        o.objectTypes.forEach(function(t){
+          asObjectTypes += '<dd><a about="' + o.object + '" href="' + t + '" typeof="'+ t +'">' + t + '</a></dd>';
+        });
+        asObjectTypes += '</dl>';
+      }
+
+      var asobject = ('object' in o) ? '<dt>Object</dt><dd><a href="' + o.object + '" property="as:object">' + o.object + '</a>' + asObjectTypes + '</dd>' : '';
 
       var asinReplyTo = ('inReplyTo' in o) ? '<dt>In reply to</dt><dd><a href="' + o.inReplyTo + '" property="as:inReplyTo">' + o.inReplyTo + '</a></dd>' : '';
 
@@ -3181,7 +3190,7 @@ console.log(inbox);
           return s[spo.predicate];
         },
         function(reason){
-          return undefined;
+          return Promise.resolve(undefined);
         });
     },
 
@@ -3242,66 +3251,84 @@ console.log(inbox);
 
             var sendNotifications = function(tos){
               return new Promise(function(resolve, reject){
-                tos.forEach(function(to) {
-                  var toInput = shareResource.querySelector('[value="' + to + '"]') || shareResource.querySelector('#share-resource-to');
-                  toInput.parentNode.insertAdjacentHTML('beforeend', '<span class="progress"><i class="fa fa-circle-o-notch fa-spin fa-fw"></i></span>');
+                var spo = {
+                  "subject": iri,
+                  "predicate": DO.C.Vocab["rdftype"]["@id"]
+                }; 
 
-                  var inboxResponse = function() {
-                    return DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id'], to).then(
-                        function(inboxes){
-                          return inboxes[0];
-                        },
-                        function(reason){
-                          console.log(reason);
-                          return reason;
+                var options = {
+                  "contentType": "text/html",
+                  "subjectURI": iri
+                }
+
+                DO.U.getMatchFromData(DO.U.getDocument(), spo, options).then(function(supplementalData){
+                  tos.forEach(function(to) {
+                    var toInput = shareResource.querySelector('[value="' + to + '"]') || shareResource.querySelector('#share-resource-to');
+                    toInput.parentNode.insertAdjacentHTML('beforeend', '<span class="progress"><i class="fa fa-circle-o-notch fa-spin fa-fw"></i></span>');
+
+                    var inboxResponse = function() {
+                      return DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id'], to).then(
+                          function(inboxes){
+                            return inboxes[0];
+                          },
+                          function(reason){
+                            console.log(reason);
+                            return reason;
+                          }
+                        );
+                    };
+
+                    inboxResponse().then(
+                      function(inbox) {
+                        var notificationData = {
+                          "type": ['as:Announce'],
+                          "inbox": inbox,
+                          "object": iri,
+                          "to": to,
+                          "summary": note,
+                          "license": "https://creativecommons.org/licenses/by/4.0/"
+                        };
+
+                        if (typeof supplementalData !== 'undefined' && supplementalData._array.length > 0) {
+                          notificationData["objectTypes"] = supplementalData._array;
                         }
-                      );
-                  };
 
-                  inboxResponse().then(
-                    function(inbox) {
-                      var notificationData = {
-                        "type": ['as:Announce'],
-                        "inbox": inbox,
-                        "object": iri,
-                        "to": to,
-                        "summary": note,
-                        "license": "https://creativecommons.org/licenses/by/4.0/"
-                      };
 // console.log(notificationData);
-                      DO.U.notifyInbox(notificationData).then(
-                        function(response) {
-                          if(typeof response !== 'undefined') {
-                            var location = response.xhr.getResponseHeader('Location');
 
-                            if(location) {
-                              location = DO.U.getAbsoluteIRI(inbox, location);
+                        DO.U.notifyInbox(notificationData).then(
+                          function(response) {
+                            if(typeof response !== 'undefined') {
+                              var location = response.xhr.getResponseHeader('Location');
 
-                              toInput.parentNode.querySelector('.progress').innerHTML = '<a target="_blank" href="' + location + '"><i class="fa fa-check-circle fa-fw"></i></a>';
+                              if(location) {
+                                location = DO.U.getAbsoluteIRI(inbox, location);
 
-                              // var rm = shareResource.querySelector('.response-message');
-                              // rm.insertAdjacentHTML('beforeend', '<p class="success">Notification sent: <a target="_blank" href="' + location + '">' + location + '</a></p>');
-                              // return location;
+                                toInput.parentNode.querySelector('.progress').innerHTML = '<a target="_blank" href="' + location + '"><i class="fa fa-check-circle fa-fw"></i></a>';
+
+                                // var rm = shareResource.querySelector('.response-message');
+                                // rm.insertAdjacentHTML('beforeend', '<p class="success">Notification sent: <a target="_blank" href="' + location + '">' + location + '</a></p>');
+                                // return location;
+                              }
                             }
-                          }
-                          else {
+                            else {
+                              toInput.parentNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to notify. Try later.';
+                              // return Promise.reject(response);
+                            }
+                          },
+                          function(reason) {
+// console.log(reason);
                             toInput.parentNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to notify. Try later.';
-                            // return Promise.reject(response);
-                          }
-                        },
-                        function(reason) {
-// console.log(reason);
-                          toInput.parentNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to notify. Try later.';
 //                           return reason;
-                        }
-                      );
-                    },
-                    function(reason) {
+                          }
+                        );
+                      },
+                      function(reason) {
 // console.log(reason);
-                         toInput.parentNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Inbox not responding. Try later.';
+                           toInput.parentNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Inbox not responding. Try later.';
 //                       return reason;
-                    }
-                  );
+                      }
+                    );
+                  });
                 });
               });
             };
