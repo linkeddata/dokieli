@@ -6,7 +6,8 @@
   "scripts": {
     "build-dist": "webpack --progress --colors",
     "build": "npm run build-dist",
-    "test": "echo 'No unit tests yet'"
+    "test": "echo 'No unit tests yet'",
+    "watch": "webpack --progress --colors --watch"
   },
   "repository": {
     "type": "git",
