@@ -112,7 +112,6 @@
                         <li><code>title</code> is used.</li>
                         <li><code>main &gt; article</code> (querySelector) is considered to be the location of the primary content.</li>
                         <li><code>h1</code> is typically the first element node after <code>main &gt; article</code></li>
-                        <li><code>figure</code>s have <code>figcaptions</code> for things like <code>audio</code>, <code>canvas</code>, <code>iframe</code>, <code>img</code>, <code>object</code>, <code>pre</code>, <code>video</code>. For scripts of all sorts, <code>figure class="listing"</code> is used, and <code>pre</code> for the code itself with <code>code</code> The <code>listing</code> class is intended to hint at the possibility to style each line of code, eg. line numbers. View-source.</li>
                         <li>There is a resource type, eg. <code>schema:Article</code> that can be found in <code>main &gt; article</code> which is about the article. <code>body</code> may contain broad classes.</li>
                       </ul>
                     </dd>
@@ -142,6 +141,62 @@
                     <dt id="html-div">Division</dt>
                     <dd><code>div</code>s within <code>section</code> are used to wrap a block of arbitrary markup and content. See also RDFa below.</dd>
 
+                    <dt id="htlm-figure">Figure</dt>
+                    <dd><code>figure</code>s typically have <code>figcaptions</code> for things like <code>audio</code>, <code>canvas</code>, <code>iframe</code>, <code>img</code>, <code>object</code>, <code>pre</code>, <code>video</code>. For code scripts, <code>figure class="listing"</code> is used, and <code>pre</code> for the code itself with <code>code</code> The <code>listing</code> class is intended to have a collection of figures, which could also have a unique presentation, for example with line numbers or have its caption be prefixed with <q>Listing</q> and counter.
+
+                      <figure class="listing" id="#html-section-source" rel="schema:hasPart" resource="#html-section-source">
+                        <pre about="#html-section-source" property="schema:description" typeof="fabio:Script"><code class="highlight-section">&lt;section&gt;</code>
+<samp class="highlight-h2">  &lt;h2&gt;</samp>
+<code class="highlight-div">  &lt;div&gt;</code>
+<code class="highlight-section">    &lt;section&gt;</code></pre>
+                        <figcaption>Snippet of <a href="#html-section-source">section source</a> code</figcaption>
+                      </figure>
+
+<table>
+  <caption>Comparison of systems</caption>
+  <thead>
+    <tr>
+      <th></th>
+      <th>d<sub>1</sub></th>
+      <th>d<sub>2</sub></th>
+      <th>d<sub>3</sub></th>
+      <th>m<sub>1</sub></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><th>Foo</th><td>m</td><td>o</td><td>n</td><td>1</td></tr>
+    <tr><th>Bar</th><td>k</td><td>e</td><td>y</td><td>2</td></tr>
+    <tr><th>Baz</th><td>!</td><td>@</td><td>#</td><td>3</td></tr>
+  </tbody>
+  <tfoot>
+    <tr><td colspan="4">Table columns list the dimensions: d<sub>1</sub>, d<sub>2</sub>, d<sub>3</sub>, d<sub>1</sub>, and the measure: m<sub>m</sub>.</td></tr>
+  </tfoot>
+</table>
+
+                      <p>For mathematical equations <code>figure class="equation"</code> can be used to hint at an equation display.</p>
+
+                      <figure class="equation" typeof="doco:FormulaBox">
+                        <math xmlns="http://www.w3.org/1998/Math/MathML">
+                          <mtable>
+                            <mtr>
+                              <mtd>
+                                <munder>
+                                  <mi>lim</mi>
+                                  <mrow>
+                                    <mi>n</mi>
+                                    <mo>→</mo>
+                                    <mo>∞</mo>
+                                  </mrow>
+                                </munder>
+                                <mi>x</mi>
+                                <mo>=</mo>
+                                <mn>0</mn>
+                              </mtd>
+                            </mtr>
+                          </mtable>
+                        </math>
+                      </figure>
+                    </dd>
 
                     <dt id="html-embed-turtle-json-ld-trig">Embedding Turtle, JSON-LD, and TriG</dt>
                     <dd>Turtle, JSON-LD, and TriG syntaxes are placed within respective <code>script</code> blocks in <code>head</code> eg. <code>&lt;script id="meta-json-ld" type="application/ld+json" title="JSON-LD"&gt;&lt;/script&gt;</code>. Data is enclosed in <code>CDATA</code> sections. This pattern is detected, visible and editable from <cite>Embed Data</cite> in <i class="fa fa-bars"></i> <a href="#dokieli-menu">dokieli menu</a>. See also <var>showEmbedData</var> (do.js).</dd>
