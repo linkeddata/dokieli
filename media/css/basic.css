@@ -403,7 +403,7 @@ top:45%;
 right:0;
 }
 figcaption:before {
-content:"Fig. " counter(figcaption) ". ";
+content:"Figure " counter(figcaption) ". ";
 }
 figure.listing figcaption:before {
 content:"Listing " counter(listing) ". ";
@@ -411,6 +411,64 @@ content:"Listing " counter(listing) ". ";
 caption:before {
 content:"Table " counter(caption) ". ";
 }
+
+table {
+width:100%;
+margin-top:1em;
+text-align:left;
+}
+table + table {
+margin-top:2em;
+}
+caption {
+text-align:left;
+font-size:0.923em;
+border-bottom:2pt solid #000;
+padding:0 0.25em 0.25em;
+}
+thead {
+border-bottom:1pt solid #000;
+}
+tbody {
+border-bottom:2pt solid #000;
+}
+th, td {
+padding:0.25em;
+vertical-align:baseline;
+font-size:0.923em;
+}
+table ul,
+table ol,
+table li,
+table p,
+table dd {
+margin:0;
+text-align:left;
+}
+th {
+/*font-weight:normal;*/
+}
+tfoot dl.abbr dt,
+tfoot dl.abbr dd {
+display:inline;
+text-transform:none;
+}
+tfoot dl.abbr dd {
+margin-left:0;
+}
+tfoot dl.abbr dd:after {
+content:"\A";
+white-space:pre;
+}
+tfoot dl.abbr dt:after {
+content:": ";
+}
+tfoot dl.abbr {
+-webkit-column-count:2;
+-moz-column-count:2;
+column-count:2;
+}
+
 
 
 .toc, .toc ol {
