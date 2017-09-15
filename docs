@@ -611,26 +611,6 @@
             </div>
           </section>
 
-          <section id="authentication" inlist="" rel="schema:hasPart" resource="#authentication">
-            <h2 property="schema:name">Authentication</h2>
-            <div datatype="rdf:HTML" property="schema:description">
-              <p>dokieli was originally intended to handle different authentication mechanisms. <a href="https://www.w3.org/2005/Incubator/webid/spec/tls/">WebID-TLS</a> is currently supported to authenticate with servers.</p>
-            </div>
-          </section>
-
-          <section id="storage" inlist="" rel="schema:hasPart" resource="#storage">
-            <h2 property="schema:name">Storage</h2>
-            <div datatype="rdf:HTML" property="schema:description">
-              <dl>
-                <dt id="personal-storage">Personal storage</dt>
-                <dd>WebID's with <code>pim:storage</code> can get to use their personal online data storage with dokieli's read-write operations, eg all annotations, <cite>Reply</cite>, <cite>Review</cite>, <cite>New</cite>, <cite>Save As</cite>.</dd>
-
-                <dt id="local-storage">Local storage</dt>
-                <dd>There is a <cite>Local Storage</cite> feature which uses user-agent's <var>window.localStorage</var>, with default 1m autosave.</dd>
-              </dl>
-            </div>
-          </section>
-
           <section id="http-operations" inlist="" rel="schema:hasPart" resource="#http-operations">
             <h2 property="schema:name">HTTP operations</h2>
             <div datatype="rdf:HTML" property="schema:description">
@@ -672,7 +652,6 @@
                 </tfoot>
               </table>
 
-
               <aside id="http-patch">
                 <p>Current reasons for using <code>HTTP POST</code> and <code>PUT</code> instead of <code>PATCH</code>:</p>
 
@@ -684,6 +663,26 @@
                   <li><code>HTTP PATCH</code> can help to optimise HTTP requests provided that the server processes the SPARQL query and eventually publishes the final state of the article. dokieli's use of <code>HTTP POST</code> and <code>HTTP PUT</code> on the other hand does not expect or impose operations other than to store and serve the article. If servers would like to do versioning and how, dokieli leaves it to the servers to decide.</li>
                 </ul>
               </aside>
+            </div>
+          </section>
+
+          <section id="authentication" inlist="" rel="schema:hasPart" resource="#authentication">
+            <h2 property="schema:name">Authentication</h2>
+            <div datatype="rdf:HTML" property="schema:description">
+              <p>dokieli was originally intended to handle different authentication mechanisms. <a href="https://www.w3.org/2005/Incubator/webid/spec/tls/">WebID-TLS</a> is currently supported to authenticate with servers.</p>
+            </div>
+          </section>
+
+          <section id="storage" inlist="" rel="schema:hasPart" resource="#storage">
+            <h2 property="schema:name">Storage</h2>
+            <div datatype="rdf:HTML" property="schema:description">
+              <dl>
+                <dt id="personal-storage">Personal storage</dt>
+                <dd>WebID's with <code>pim:storage</code> can get to use their personal online data storage with dokieli's read-write operations, eg all annotations, <cite>Reply</cite>, <cite>Review</cite>, <cite>New</cite>, <cite>Save As</cite>.</dd>
+
+                <dt id="local-storage">Local storage</dt>
+                <dd>There is a <cite>Local Storage</cite> feature which uses user-agent's <var>window.localStorage</var>, with default 1m autosave.</dd>
+              </dl>
             </div>
           </section>
 
