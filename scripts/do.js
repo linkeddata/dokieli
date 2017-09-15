@@ -31,6 +31,7 @@ var DO = {
     CDATAEnd: '//]]>',
     SortableList: false,
     GraphViewerAvailable: (typeof d3 !== 'undefined'),
+    MathAvailable: (typeof MathJax !== 'undefined'),
     EditorAvailable: (typeof MediumEditor !== 'undefined'),
     EditorEnabled: false,
     Editor: {
@@ -5600,6 +5601,34 @@ WHERE {\n\
       return s;
     },
 
+    initMath: function(config) {
+      if (!DO.C.MathAvailable) { return; }
+
+      config = config || {
+        skipTags: ["script","noscript","style","textarea","pre","code", "math"],
+        ignoreClass: "equation",
+        MathML: {
+          useMathMLspacing: true
+        },
+        tex2jax: {
+          inlineMath: [["$","$"],["\\(","\\)"]]
+        }
+      }
+
+      MathJax.Hub.Config(config);
+
+      MathJax.Hub.Register.StartupHook("End Jax",function () {
+        var BROWSER = MathJax.Hub.Browser;
+        var jax = "SVG";
+        if (BROWSER.isMSIE && BROWSER.hasMathPlayer) jax = "NativeMML";
+        if (BROWSER.isFirefox) jax = "NativeMML";
+        if (BROWSER.isSafari && BROWSER.versionAtLeast("5.0")) jax = "NativeMML";
+
+        MathJax.Hub.setRenderer(jax);
+      });
+
+    },
+
     Editor: {
       disableEditor: function(e) {
     //    _mediumEditors[1].destroy();
@@ -5619,6 +5648,8 @@ WHERE {\n\
           document.body.insertAdjacentHTML('beforeend', '<aside id="document-editor" class="do"></aside>');
         }
 
+
+
         var editorOptions = {
           author: {
             id: 'author',
@@ -5636,7 +5667,7 @@ WHERE {\n\
             },
             buttonLabels: DO.C.Editor.ButtonLabelType,
             toolbar: {
-              buttons: ['h2', 'h3', 'h4', 'em', 'strong', 'orderedlist', 'unorderedlist', 'code', 'pre', 'image', 'anchor', 'q', 'sparkline', 'rdfa', 'cite', 'note'],
+              buttons: ['h2', 'h3', 'h4', 'em', 'strong', 'orderedlist', 'unorderedlist', 'code', 'pre', 'math', 'image', 'anchor', 'q', 'sparkline', 'rdfa', 'cite', 'note'],
               diffLeft: 0,
               diffTop: -10,
               allowMultiParagraphSelection: false
@@ -5649,6 +5680,7 @@ WHERE {\n\
               'em': new DO.U.Editor.Button({action:'em', label:'em'}),
               'strong': new DO.U.Editor.Button({action:'strong', label:'strong'}),
               'code': new DO.U.Editor.Button({action:'code', label:'code'}),
+              'math': new DO.U.Editor.Button({action:'math', label:'math'}),
               'q': new DO.U.Editor.Button({action:'q', label:'q'}),
               'sparkline': new DO.U.Editor.Note({action:'sparkline', label:'sparkline'}),
               'rdfa': new DO.U.Editor.Note({action:'rdfa', label:'rdfa'}),
@@ -5734,6 +5766,7 @@ WHERE {\n\
                 case 'em': this.contentFA = '<i class="fa fa-italic"></i>'; break;
                 case 'strong': this.contentFA = '<i class="fa fa-bold"></i>'; break;
                 case 'q': this.contentFA = '<i class="fa fa-quote-right"></i>'; break;
+                case 'math': this.contentFA = '<i class="fa fa-calculator"></i>'; break;
                 default: break;
               }
 
@@ -5960,16 +5993,39 @@ WHERE {\n\
                         // parentSection.parentNode.insertBefore(section, parentSection.nextSibling);
                       }
                     }
+
+                    this.base.restoreSelection();
+                    this.base.checkSelection();
+                    break;
+
+                  case 'math':
+                    var QUEUE = MathJax.Hub.Queue;  // shorthand for the queue
+                    var math = null;                // the element jax for the math output.
+
+                    var selection = this.base.selection;
+
+                    var selectionId = DO.U.generateAttributeId();
+
+                    var selectionUpdated = '<span id="' + selectionId + '">${}$</span>';
+
+                    MediumEditor.util.insertHTMLCommand(this.base.selectedDocument, selectionUpdated);
+
+                    MathJax.Hub.Queue(["Typeset", MathJax.Hub, selectionId]);
+                    var math = MathJax.Hub.getAllJax(selectionId)[0];
+                    MathJax.Hub.Queue(["Text", math, selection]);
+
+                    MediumEditor.selection.selectNode(document.getElementById(selectionId), document);
                     break;
 
                   default:
                     var selectionUpdated = '<' + tagNames[0] + datetime + '>' + this.base.selection + '</' + tagNames[0] + '>';
                     MediumEditor.util.insertHTMLCommand(this.base.selectedDocument, selectionUpdated);
+                    this.base.restoreSelection();
+                    this.base.checkSelection();
+
                     break;
                 }
 
-                this.base.restoreSelection();
-                this.base.checkSelection();
                 this.setActive();
               }
             }
@@ -7347,6 +7403,7 @@ WHERE {\n\
         DO.U.showFragment();
         DO.U.setDocumentMode();
         DO.U.showInboxNotifications();
+        DO.U.initMath();
       }
     }
   } //DO.U
