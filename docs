@@ -119,7 +119,7 @@
 
                     <dt id="html-section">Section</dt>
                     <dd>Sectioning is declared with <code>section</code> and typically have a heading, eg. <code>h2</code> as its first child. Subsections may appear as a child of parent <code>section</code>, or as a child of <code>div</code> (which is a child of parent <code>section</code>), ie. <code>section section</code> or <code>section div section</code>. The headings of subsections are enumerated eg. <code>section h2</code> would have a subsection with <code>section h3</code>. Sections <code>id</code>s and heading text are used to dynamically build the table of contents.
-                      <figure class="listing" id="#html-section-source" rel="schema:hasPart" resource="#html-section-source">
+                      <figure class="listing" id="html-section-source" rel="schema:hasPart" resource="#html-section-source">
                         <pre about="#html-section-source" property="schema:description" typeof="fabio:Script"><code class="highlight-section">&lt;section&gt;</code>
 <samp class="highlight-h2">  &lt;h2&gt;</samp>
 <code class="highlight-div">  &lt;div&gt;</code>
@@ -170,7 +170,7 @@
                           <tr><th>Baz</th><td>!</td><td>@</td><td>#</td><td>3</td></tr>
                         </tbody>
                         <tfoot>
-                          <tr><td colspan="4">Table columns list the dimensions: d<sub>1</sub>, d<sub>2</sub>, d<sub>3</sub>, d<sub>1</sub>, and the measure: m<sub>m</sub>.</td></tr>
+                          <tr><td colspan="4">Table columns list the dimensions: d<sub>1</sub>, d<sub>2</sub>, d<sub>3</sub>, and the measure: m<sub>1</sub>.</td></tr>
                         </tfoot>
                       </table>
 
