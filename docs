@@ -143,7 +143,7 @@
                     <dd><code>div</code>s within <code>section</code> are used to wrap a block of arbitrary markup and content. See also RDFa below.</dd>
 
                     <dt id="html-figure">Figure</dt>
-                    <dd><code>figure</code>s typically have <code>figcaptions</code> for things like <code>audio</code>, <code>canvas</code>, <code>iframe</code>, <code>img</code>, <code>object</code>, <code>pre</code>, <code>video</code>. For code scripts, <code>figure class="listing"</code> is used, and <code>pre</code> for the code itself with <code>code</code> The <code>listing</code> class is intended to have a collection of figures, which could also have a unique presentation, for example with line numbers or have its caption be prefixed with <q>Listing</q> and counter.
+                    <dd><code>figure</code>s typically have <code>figcaptions</code> for things like <code>audio</code>, <code>canvas</code>, <code>iframe</code>, <code>img</code>, <code>object</code>, <code>pre</code>, <code>video</code>, <code>math</code>. For code scripts, <code>figure class="listing"</code> is used, and <code>pre</code> for the code itself with <code>code</code> The <code>listing</code> class is intended to have a collection of figures, which could also have a unique presentation, for example with line numbers or have its caption be prefixed with <q>Listing</q> and counter.
 
                       <figure class="listing" id="#html-section-source" rel="schema:hasPart" resource="#html-section-source">
                         <pre about="#html-section-source" property="schema:description" typeof="fabio:Script"><code class="highlight-section">&lt;section&gt;</code>
@@ -174,7 +174,7 @@
                         </tfoot>
                       </table>
 
-                      <p>For mathematical equations <code>figure class="equation"</code> can be used to hint at an equation display.</p>
+                      <p>For mathematical equations <code>figure class="equation"</code> can be used to hint at an equation display. <cite><a href="https://www.w3.org/TR/MathML/">MathML</a></cite> base equation with <code>&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;</math> can be included here (see also source). Alternatively, <cite>TeX</cite> and <cite><a href="http://asciimath.org/">ASCIIMath</a></cite> syntaxes can be input within the authoring mode (via <cite>Edit</cite>).</p>
 
                       <figure class="equation" typeof="doco:FormulaBox">
                         <math xmlns="http://www.w3.org/1998/Math/MathML">
