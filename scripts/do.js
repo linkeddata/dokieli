@@ -5648,8 +5648,6 @@ WHERE {\n\
           document.body.insertAdjacentHTML('beforeend', '<aside id="document-editor" class="do"></aside>');
         }
 
-
-
         var editorOptions = {
           author: {
             id: 'author',
@@ -5667,7 +5665,7 @@ WHERE {\n\
             },
             buttonLabels: DO.C.Editor.ButtonLabelType,
             toolbar: {
-              buttons: ['h2', 'h3', 'h4', 'em', 'strong', 'orderedlist', 'unorderedlist', 'code', 'pre', 'math', 'image', 'anchor', 'q', 'sparkline', 'rdfa', 'cite', 'note'],
+              buttons: ['h2', 'h3', 'h4', 'em', 'strong', 'orderedlist', 'unorderedlist', 'code', 'pre', 'image', 'anchor', 'q', 'sparkline', 'rdfa', 'cite', 'note'],
               diffLeft: 0,
               diffTop: -10,
               allowMultiParagraphSelection: false
@@ -5680,7 +5678,6 @@ WHERE {\n\
               'em': new DO.U.Editor.Button({action:'em', label:'em'}),
               'strong': new DO.U.Editor.Button({action:'strong', label:'strong'}),
               'code': new DO.U.Editor.Button({action:'code', label:'code'}),
-              'math': new DO.U.Editor.Button({action:'math', label:'math'}),
               'q': new DO.U.Editor.Button({action:'q', label:'q'}),
               'sparkline': new DO.U.Editor.Note({action:'sparkline', label:'sparkline'}),
               'rdfa': new DO.U.Editor.Note({action:'rdfa', label:'rdfa'}),
@@ -5724,6 +5721,11 @@ WHERE {\n\
             }
           }
         };
+
+        if('MathJax' in window) {
+          editorOptions.author.extensions['math'] = new DO.U.Editor.Button({action:'math', label:'math'});
+          editorOptions.author.toolbar.buttons.splice(7, 0, 'math');
+        }
 
         if('MediumEditorTable' in window) {
           editorOptions.author.extensions['table'] = new MediumEditorTable();
