@@ -5611,7 +5611,11 @@ WHERE {\n\
           useMathMLspacing: true
         },
         tex2jax: {
-          inlineMath: [["$","$"],["\\(","\\)"]]
+          inlineMath: [["$","$"],["\\(","\\)"]],
+          processEscapes: true
+        },
+        asciimath2jax: {
+          delimiters: [['$','$'], ['`','`']]
         }
       }
 
@@ -6008,7 +6012,7 @@ WHERE {\n\
 
                     var selectionId = DO.U.generateAttributeId();
 
-                    var selectionUpdated = '<span id="' + selectionId + '">${}$</span>';
+                    var selectionUpdated = '<span id="' + selectionId + '">$$</span>';
 
                     MediumEditor.util.insertHTMLCommand(this.base.selectedDocument, selectionUpdated);
 
