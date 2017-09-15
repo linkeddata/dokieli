@@ -153,7 +153,7 @@
                         <figcaption>Snippet of <a href="#html-section-source">section source</a> code</figcaption>
                       </figure>
 
-                      <table>
+                      <table id="comparison-of-systems">
                         <caption>Comparison of systems</caption>
                         <thead>
                           <tr>
