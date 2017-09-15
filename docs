@@ -174,7 +174,7 @@
                         </tfoot>
                       </table>
 
-                      <p>For mathematical equations <code>figure class="equation"</code> can be used to hint at an equation display. <cite><a href="https://www.w3.org/TR/MathML/">MathML</a></cite> base equation with <code>&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;</code> root can be included here (see also source). Alternatively, <cite>TeX</cite> (eg. <samp>\lim_{x \to \infty} \exp(-x) = 0</samp>) and <cite><a href="http://asciimath.org/">ASCIIMath</a></cite> (eg. <samp>sum_(i=1)^n i^3=((n(n+1))/2)^2</samp>) syntaxes can be input within the authoring mode (via <cite>Edit</cite>).</p>
+                      <p>For mathematical equations <code>figure class="equation"</code> can be used to hint at an equation display. <cite><a href="https://www.w3.org/TR/MathML/">MathML</a></cite> base equation with <code>&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;</code> root can be included here (see also source). Alternatively, <cite>TeX</cite>, eg. <samp>\lim_{x \to \infty} \exp(-x) = 0</samp> and <cite><a href="http://asciimath.org/">ASCIIMath</a></cite>, eg. <samp>sum_(i=1)^n i^3=((n(n+1))/2)^2</samp>, syntaxes can be input within the authoring mode (via <cite>Edit</cite>).</p>
 
                       <figure class="equation" typeof="doco:FormulaBox">
                         <math xmlns="http://www.w3.org/1998/Math/MathML">
