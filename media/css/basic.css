@@ -248,8 +248,10 @@ box-shadow:inset -2px -2px 1px #eee;
 }
 
 code, samp, kbd, tt{
+/*
 font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
 font-size:0.95em;
+*/
 }
 
 ul { padding: 0; margin-bottom:1em; list-style-position: inside; }
