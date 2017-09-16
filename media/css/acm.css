@@ -683,6 +683,9 @@ float:left;
 width:46%;
 margin:0 2%;
 }
+article > dl[id^="document-"]:nth-child(odd) {
+clear:both;
+}
 
 #document-identifier dd,
 #document-published dd,
