@@ -173,11 +173,10 @@
                           <tr><td colspan="4">Table columns list the dimensions: d<sub>1</sub>, d<sub>2</sub>, d<sub>3</sub>, and the measure: m<sub>1</sub>.</td></tr>
                         </tfoot>
                       </table>
+                    </dd>
 
-                      <dl id="html-math">
-                        <dt>Math</dt>
-                        <dd>For mathematical equations <code>figure class="equation"</code> can be used to hint at an equation display. <cite><a href="https://www.w3.org/TR/MathML/">MathML</a></cite> base equation with <code>&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;</code> root can be included here (see also source). Alternatively, if <cite><a href="https://www.mathjax.org/">MathJax</a></cite> JavaScript is available in the document, <cite><a href="https://en.wikibooks.org/wiki/LaTeX/Mathematics">(La)TeX</a></cite>, eg. <samp>\lim_{x \to \infty} \exp(-x) = 0</samp> and <cite><a href="http://asciimath.org/">ASCIIMath</a></cite>, eg. <samp>sum_(i=1)^n i^3=((n(n+1))/2)^2</samp>, syntaxes can be input within the authoring mode (via <cite>Edit</cite>).</dd>
-                      </dl>
+                      <dt id="html-math">Math</dt>
+                      <dd>For mathematical equations <code>figure class="equation"</code> can be used to hint at an equation display. <cite><a href="https://www.w3.org/TR/MathML/">MathML</a></cite> base equation with <code>&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;</code> root can be included here (see also source). Alternatively, if <cite><a href="https://www.mathjax.org/">MathJax</a></cite> JavaScript is available in the document, <cite><a href="https://en.wikibooks.org/wiki/LaTeX/Mathematics">(La)TeX</a></cite>, eg. <samp>\lim_{x \to \infty} \exp(-x) = 0</samp> and <cite><a href="http://asciimath.org/">ASCIIMath</a></cite>, eg. <samp>sum_(i=1)^n i^3=((n(n+1))/2)^2</samp>, syntaxes can be input within the authoring mode (via <cite>Edit</cite>).
 
                       <figure class="equation" typeof="doco:FormulaBox">
                         <math xmlns="http://www.w3.org/1998/Math/MathML">
