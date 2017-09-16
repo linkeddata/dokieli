@@ -145,11 +145,11 @@
                     <dt id="html-figure">Figure</dt>
                     <dd><code>figure</code>s typically have <code>figcaptions</code> for things like <code>audio</code>, <code>canvas</code>, <code>iframe</code>, <code>img</code>, <code>object</code>, <code>pre</code>, <code>video</code>, <code>math</code>. For code scripts, <code>figure class="listing"</code> is used, and <code>pre</code> for the code itself with <code>code</code> The <code>listing</code> class is intended to have a collection of figures, which could also have a unique presentation, for example with line numbers or have its caption be prefixed with <q>Listing</q> and counter.
 
-                      <figure class="listing" id="#html-section-source" rel="schema:hasPart" resource="#html-section-source">
-                        <pre about="#html-section-source" property="schema:description" typeof="fabio:Script"><code class="highlight-section">&lt;section&gt;</code>
-<samp class="highlight-h2">  &lt;h2&gt;</samp>
-<code class="highlight-div">  &lt;div&gt;</code>
-<code class="highlight-section">    &lt;section&gt;</code></pre>
+                      <figure class="listing" id="#html-figure-listing" rel="schema:hasPart" resource="#html-figure-listing">
+                        <pre about="#html-figure-listing" property="schema:description" typeof="fabio:Script"><code class="highlight-section">&lt;section&gt;</code>
+<samp>  &lt;h2&gt;</samp>
+<code>  &lt;div&gt;</code>
+<code>    &lt;section&gt;</code></pre>
                         <figcaption>Snippet of <a href="#html-section-source">section source</a> code</figcaption>
                       </figure>
 
