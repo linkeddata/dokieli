@@ -116,18 +116,20 @@ npm run watch
 * [Renato Stauffer](https://github.com/reni99)
 * [Kingsley Idehen](https://github.com/kidehen) (and [OpenLink Software](https://github.com/openlink))
 * [Ruben Taelman](https://github.com/rubensworks)
+* [Dmitri Zagidulin](https://github.com/dmitrizagidulin)
+* [Sergey Malinin](https://github.com/smalinin)
 
 ### Acknowledgements
 * [Nicola Greco](https://github.com/nicola)
 * [Tim Berners-Lee](https://github.com/timbl)
 * [Melvin Carvalho](https://github.com/melvincarvalho)
 * [Andrei Vlad Sambra](https://github.com/deiu)
-* [Dmitri Zagidulin](https://github.com/dmitrizagidulin)
 * [Sandro Hawke](https://github.com/sandhawke)
 * [Amy van der Hiel](https://github.com/amyvdh)
 * [Henry Story](https://github.com/bblfish)
 * [Benjamin Young](https://github.com/bigbluehat)
 * [Gerben Treora](https://github.com/treora)
+* [Herbert Van de Sompel](https://github.com/hvdsomp)
 
 ## How to contribute
 * Use it. Break it. Report it. Fix it! See [issues](https://github.com/linkeddata/dokieli/issues/).
