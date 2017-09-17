@@ -695,6 +695,20 @@
             </div>
           </section>
 
+          <section id="development" inlist="" rel="schema:hasPart" resource="#development">
+            <h2 property="schema:name">Development</h2>
+            <div datatype="rdf:HTML" property="schema:description">
+<pre><code>git clone https://github.com/linkeddata/dokieli</code>
+<code>cd dokieli</code>
+<code></code>
+<code># Creates scripts/do.js.</code>
+<code>npm run build</code>
+<code></code>
+<code># Watch and update files</code>
+<code>npm run watch</code></pre>
+            </div>
+          </section>
+
         </div>
       </article>
     </main>

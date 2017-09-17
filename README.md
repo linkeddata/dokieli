@@ -90,6 +90,21 @@ These libraries *optional* when dokieli is used as single-page application:
 * [MediumEditor](https://github.com/yabwe/medium-editor) (MIT License)
 
 
+## Development
+* See the [dokieli documentation](https://dokie.li/docs). Quick dev:
+```
+git clone https://github.com/linkeddata/dokieli
+cd dokieli
+
+# Creates scripts/do.js.
+npm run build
+
+# Watch and update files
+npm run watch
+
+```
+
+
 ## License
 [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
