@@ -7,7 +7,7 @@
  */
 
 if(typeof DO === 'undefined'){
-var SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined;
+global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined;
 var DO = {
   C: require('./config'),
 
