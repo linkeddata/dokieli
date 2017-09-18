@@ -2076,7 +2076,7 @@ var DO = {
 
       var content = document.body;
       var count = DO.U.contentCount(content);
-      var authors = [], contributors = [];
+      var authors = [], contributors = [], editors = [];
 
       var data = DO.U.getDocument();
       var subjectURI = window.location.origin + window.location.pathname;
@@ -2085,6 +2085,18 @@ var DO = {
       DO.U.getGraphFromData(data, options).then(
         function(i){
           var g = SimpleRDF(DO.C.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
+
+          if(g.schemaeditor._array.length > 0) {
+            g.schemaeditor.forEach(function(s){
+              var label = DO.U.getResourceLabel(g.child(s));
+              if(typeof label !== 'undefined'){
+                editors.push('<li>' + label + '</li>');
+              }
+            });
+            if(editors.length > 0){
+              editors = '<tr class="people"><th>Editors</th><td><ul class="editors">' + editors.join('') + '</ul></td></tr>';
+            }
+          }
 
           if(g.schemaauthor._array.length > 0) {
             g.schemaauthor.forEach(function(s){
@@ -7455,6 +7467,7 @@ module.exports = {
     "schemacreator": { "@id": "http://schema.org/creator", "@type": "@id", "@array": true },
     "schemaauthor": { "@id": "http://schema.org/author", "@type": "@id", "@array": true },
     "schemacontributor": { "@id": "http://schema.org/contributor", "@type": "@id", "@array": true },
+    "schemaeditor": { "@id": "http://schema.org/editor", "@type": "@id", "@array": true },
     "schemalicense": { "@id": "http://schema.org/license", "@type": "@id" },
     "schemacitation": { "@id": "http://schema.org/citation", "@type": "@id", "@array": true },
     "schemaknows": { "@id": "http://schema.org/knows", "@type": "@id", "@array": true },
