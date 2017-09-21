@@ -855,36 +855,43 @@ var DO = {
       return pIRI;
     },
 
-    getResourceOptions: function(url, options) {
+    /**
+     * getResourceOptions
+     *
+     * @param [url] {string} Defaults to current url
+     *
+     * @param [options={}] {object}
+     * @param [options.header] {string} Specific response header to return
+     * @param [options.noCredentials] {boolean}
+     *
+     * @returns {Promise} Resolves with `{ headers: ... }` object
+     */
+    getResourceOptions: function getResourceOptions (url, options = {}) {
       url = url || window.location.origin + window.location.pathname;
-      options = options || {};
-      return new Promise(function(resolve, reject) {
-        var http = new XMLHttpRequest();
-        http.open('OPTIONS', url);
-        if (!options.noCredentials) {
-          http.withCredentials = true;
-        }
-        http.onreadystatechange = function() {
-          if (this.readyState == this.DONE) {
-            if (this.status === 200 || this.status === 204) {
-              if('header' in options) {
-                if(this.getResponseHeader(options.header)) {
-                  return resolve({'headers': this.getResponseHeader(options.header)});
-                }
-                else {
-                  return reject({'message': "'" + options.header + "' header not found"});
-                }
-              }
-              return resolve({'headers': this.getAllResponseHeaders()});
-            }
-            return reject({status: this.status, xhr: this});
+
+      let fetchOptions = Object.assign({}, options, { method: 'OPTIONS' })
+
+      if (!options.noCredentials) {
+        fetchOptions.credentials = 'include'
+      }
+
+      return DO.C.fetch(url, fetchOptions)
+        .then(response => {
+          if (!response.ok) {  // not a 200 level response
+            let error = new Error('Error fetching resource OPTIONS: ' +
+              response.status + ' ' + response.statusText)
+            error.status = response.status
+            error.response = response
+
+            throw error
           }
-        };
-        http.onerror = function () {
-          return reject({status: this.status, xhr: this});
-        }
-        http.send();
-      });
+
+          if (options.header) {  // specific header requested
+            return { headers: response.headers.get(options.header) }
+          }
+
+          return { headers: response.headers }  // Not currently used anywhere
+        })
     },
 
     getResourceHead: function(url, options) {
@@ -1333,25 +1340,25 @@ var DO = {
       }
     },
 
-    getAcceptPostPreference: function(url) {
+    getAcceptPostPreference: function getAcceptPostPreference (url) {
       var pIRI = DO.U.getProxyableIRI(url);
 
       return DO.U.getResourceOptions(pIRI, {'header': 'Accept-Post'})
-        .catch(function(reason) {
+        .catch(function (error) {
+          console.error(error);
+
           return {'headers': 'application/ld+json'};
         })
-        .then(function(i){
+        .then(function (i) {
           var header = i.headers.trim().split(/\s*,\s*/);
+
           if (header.indexOf('text/html') > -1 || header.indexOf('application/xhtml+xml') > -1) {
             return 'text/html';
-          }
-          else if (header.indexOf('text/turtle') > -1 || header.indexOf('*/*') > -1) {
+          } else if (header.indexOf('text/turtle') > -1 || header.indexOf('*/*') > -1) {
             return 'text/turtle';
-          }
-          else if (header.indexOf('application/ld+json') > -1 || header.indexOf('application/json') > -1) {
+          } else if (header.indexOf('application/ld+json') > -1 || header.indexOf('application/json') > -1) {
             return 'application/ld+json';
-          }
-          else {
+          } else {
             console.log('Accept-Post contains unrecognised media-range; ' + i.headers);
             return i.headers;
           }
