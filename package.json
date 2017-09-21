@@ -27,7 +27,9 @@
     "url": "https://github.com/linkeddata/dokieli/issues"
   },
   "homepage": "https://dokie.li/",
-  "dependencies": {},
+  "dependencies": {
+    "whatwg-fetch": "^2.0.3"
+  },
   "devDependencies": {
     "webpack": "^3.5.5"
   }
