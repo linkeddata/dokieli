@@ -1005,6 +1005,8 @@ var DO = {
                 options.noCredentials =  true;
                 return DO.U.putResource(toURL, contents, contentType, null, options);
               }
+
+              throw error  // re-throw error
             })
         })
     },
@@ -3053,13 +3055,12 @@ console.log(inbox);
       });
     },
 
-    getResourceGraph: function getResourceGraph (iri, headers, options) {
+    getResourceGraph: function getResourceGraph (iri, headers, options = {}) {
       var defaultHeaders = {'Accept': DO.C.AvailableMediaTypes.join(',')};
       headers = headers || defaultHeaders;
       if (!('Accept' in headers)){
         Object.assign(headers, defaultHeaders);
       }
-      options = options || {};
 
       if (iri.slice(0, 5).toLowerCase() === 'http:') {
         options['noCredentials'] = true;
@@ -3071,17 +3072,13 @@ console.log(inbox);
 
       var pIRI = DO.U.getProxyableIRI(iri, options);
 
-      let options
-
       return fetcher.getResource(pIRI, headers, options)
         .then(response => {
           let cT = response.headers.get('Content-Type');
           let contentType = (cT) ? cT.split(';')[ 0 ].trim() : 'text/turtle';
 
-          options = {
-            'contentType': contentType,
-            'subjectURI': DO.U.stripFragmentFromString(iri)
-          }
+          options.contentType = contentType
+          options.subjectURI =  DO.U.stripFragmentFromString(iri)
 
           return response.text()
         })
