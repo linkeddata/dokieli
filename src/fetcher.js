@@ -1,6 +1,6 @@
 'use strict'
 
-const fetch = require('whatwg-fetch')  // Uses native fetch() in the browser
+const fetch = require('node-fetch')  // Uses native fetch() in the browser
 
 module.exports = {
   currentLocation,

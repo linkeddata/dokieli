@@ -29,7 +29,7 @@
   },
   "homepage": "https://dokie.li/",
   "dependencies": {
-    "whatwg-fetch": "^2.0.3"
+    "node-fetch": "^1.7.3"
   },
   "devDependencies": {
     "standard": "^10.0.3",
