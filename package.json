@@ -6,7 +6,8 @@
   "scripts": {
     "build-dist": "webpack --progress --colors",
     "build": "npm run build-dist",
-    "test": "echo 'No unit tests yet'",
+    "standard": "standard src/fetcher.js",
+    "test": "npm run standard",
     "watch": "webpack --progress --colors --watch"
   },
   "repository": {
@@ -31,6 +32,18 @@
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
+    "standard": "^10.0.3",
     "webpack": "^3.5.5"
+  },
+  "standard": {
+    "globals": [
+      "DO",
+      "describe",
+      "it",
+      "before",
+      "beforeEach",
+      "after",
+      "afterEach"
+    ]
   }
 }
