@@ -92,10 +92,12 @@ module.exports = __webpack_require__(1);
  * https://github.com/linkeddata/dokieli
  */
 
+const fetcher = __webpack_require__(3)
+
 if(typeof DO === 'undefined'){
 global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined;
 var DO = {
-  C: __webpack_require__(3),
+  C: __webpack_require__(5),
 
   U: {
     //Tries to authenticate with given URI. If authenticated, returns the 'User' header value.
@@ -445,7 +447,7 @@ var DO = {
     getEndpointFromHead: function(property, url) {
       var pIRI = DO.U.getProxyableIRI(url);
 
-      return DO.U.getResourceHead(pIRI, {'header': 'Link'}).then(
+      return fetcher.getResourceHead(pIRI, {'header': 'Link'}).then(
         function(i){
           var linkHeaders = DO.U.parseLinkHeader(i.headers);
 
@@ -941,102 +943,6 @@ var DO = {
       return pIRI;
     },
 
-    /**
-     * getResourceOptions
-     *
-     * @param [url] {string} Defaults to current url
-     *
-     * @param [options={}] {object}
-     * @param [options.header] {string} Specific response header to return
-     * @param [options.noCredentials] {boolean}
-     *
-     * @returns {Promise} Resolves with `{ headers: ... }` object
-     */
-    getResourceOptions: function getResourceOptions (url, options = {}) {
-      url = url || window.location.origin + window.location.pathname;
-
-      let fetchOptions = Object.assign({}, options, { method: 'OPTIONS' })
-
-      if (!options.noCredentials) {
-        fetchOptions.credentials = 'include'
-      }
-
-      return DO.C.fetch(url, fetchOptions)
-        .then(response => {
-          if (!response.ok) {  // not a 200 level response
-            let error = new Error('Error fetching resource OPTIONS: ' +
-              response.status + ' ' + response.statusText)
-            error.status = response.status
-            error.response = response
-
-            throw error
-          }
-
-          if (options.header) {  // specific header requested
-            return { headers: response.headers.get(options.header) }
-          }
-
-          return { headers: response.headers }  // Not currently used anywhere
-        })
-    },
-
-    getResourceHead: function(url, options) {
-      url = url || window.location.origin + window.location.pathname;
-      options = options || {};
-      return new Promise(function(resolve, reject) {
-        var http = new XMLHttpRequest();
-        http.open('HEAD', url);
-        if (!options.noCredentials) {
-          http.withCredentials = true;
-        }
-        http.onreadystatechange = function() {
-          if (this.readyState == this.DONE) {
-            if('header' in options) {
-              if(this.getResponseHeader(options.header)) {
-                return resolve({'headers': this.getResponseHeader(options.header)});
-              }
-              else {
-                return reject({'message': "'" + options.header + "' header not found"});
-              }
-            }
-            return reject({status: this.status, xhr: this});
-          }
-        };
-        http.send();
-      });
-    },
-
-    getResource: function(url, headers, options) {
-      url = url || window.location.origin + window.location.pathname;
-      headers = headers || {};
-      if(typeof headers['Accept'] == 'undefined') {
-        headers['Accept'] = 'text/turtle';
-      }
-
-      return new Promise(function(resolve, reject) {
-        var http = new XMLHttpRequest();
-        http.open('GET', url);
-        Object.keys(headers).forEach(function(key) {
-          http.setRequestHeader(key, headers[key]);
-        });
-        if (!options.noCredentials) {
-          http.withCredentials = true;
-        }
-        if(headers['Accept'] == '*/*') {
-          http.responseType = "arraybuffer";
-        }
-        http.onreadystatechange = function() {
-          if (this.readyState == this.DONE) {
-            if (this.status === 200) {
-              return resolve({xhr: this});
-            }
-            return reject({status: this.status, xhr: this});
-          }
-        };
-        http.send();
-      });
-    },
-
     putResource: function(url, data, contentType, links, options) {
       if (url && url.length > 0) {
         contentType = contentType || 'text/html; charset=utf-8';
@@ -1167,7 +1073,7 @@ var DO = {
       var headers = { 'Accept': '*/*' };
 
       if (fromURL != '' && toURL != '') {
-        DO.U.getResource(fromURL, headers, options).then(
+        fetcher.getResource(fromURL, headers, options).then(
           function(i){
             var contentType = i.xhr.getResponseHeader('Content-Type');
             var response = (DO.C.AcceptBinaryTypes.indexOf(contentType)) ? i.xhr.response : i.xhr.responseText;
@@ -1429,7 +1335,7 @@ var DO = {
     getAcceptPostPreference: function getAcceptPostPreference (url) {
       var pIRI = DO.U.getProxyableIRI(url);
 
-      return DO.U.getResourceOptions(pIRI, {'header': 'Accept-Post'})
+      return fetcher.getResourceOptions(pIRI, {'header': 'Accept-Post'})
         .catch(function (error) {
           console.error(error);
 
@@ -3246,7 +3152,7 @@ console.log(inbox);
 // console.log(options);
       var pIRI = DO.U.getProxyableIRI(iri, options);
 
-      return DO.U.getResource(pIRI, headers, options).then(
+      return fetcher.getResource(pIRI, headers, options).then(
         function(response){
           var cT = response.xhr.getResponseHeader('Content-Type');
           var contentType = (cT) ? cT.split(';')[0].trim() : 'text/turtle';
@@ -3720,7 +3626,7 @@ console.log(inbox);
           }
 
           var handleResource = function(pIRI, headers, options) {
-            DO.U.getResource(pIRI, headers, options).then(
+            fetcher.getResource(pIRI, headers, options).then(
               function(response){
 // console.log(response);
                 var cT = response.xhr.getResponseHeader('Content-Type');
@@ -7319,12 +7225,172 @@ module.exports = g;
 
 "use strict";
 
+
+const fetch = __webpack_require__(4)  // Uses native fetch() in the browser
+
+module.exports = {
+  currentLocation,
+  getResource,
+  getResourceHead,
+  getResourceOptions
+}
+
+/**
+ * @returns {string}
+ */
+function currentLocation () {
+  return window.location.origin + window.location.pathname
+}
+
+/**
+ * getResource
+ *
+ * @param url {string}
+ *
+ * @param headers {object}
+ * @param [headers.accept='text/turtle'] {string}
+ *
+ * @param options {object}
+ *
+ * @returns {Promise<string>|Promise<ArrayBuffer>}
+ */
+function getResource (url, headers = {}, options = {}) {
+  url = url || currentLocation()
+
+  options.method = 'GET'
+
+  if (!headers['Accept']) {
+    headers['Accept'] = 'text/turtle'
+  }
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  options.headers = Object.assign({}, headers)
+
+  return fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 200 level response
+        let error = new Error('Error fetching resource: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      if (headers['Accept'] === '*/*') {
+        return response.arrayBuffer()
+      } else {
+        return response.text()
+      }
+    })
+}
+
+/**
+ * getResourceHead
+ *
+ * @param [url] {string}
+ *
+ * @param options {object}
+ * @param options.header {string}
+ *
+ * @returns {Promise<string>} Resolves with contents of specified header
+ */
+function getResourceHead (url, options = {}) {
+  url = url || currentLocation()
+
+  if (!options.header) {
+    return Promise.reject(new Error('options.header not specified'))
+  }
+
+  options.method = 'HEAD'
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  return fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 200 level response
+        let error = new Error('Error fetching resource HEAD: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      let header = response.headers.get(options.header)
+
+      if (!header) {
+        throw new Error("'" + options.header + "' header not found")
+      }
+
+      return header
+    })
+}
+
+/**
+ * getResourceOptions
+ *
+ * @param [url] {string} Defaults to current url
+ *
+ * @param [options={}] {object}
+ * @param [options.header] {string} Specific response header to return
+ * @param [options.noCredentials] {boolean}
+ *
+ * @returns {Promise} Resolves with `{ headers: ... }` object
+ */
+function getResourceOptions (url, options = {}) {
+  url = url || currentLocation()
+
+  options.method = 'OPTIONS'
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  return fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 200 level response
+        let error = new Error('Error fetching resource OPTIONS: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      if (options.header) {  // specific header requested
+        return { headers: response.headers.get(options.header) }
+      }
+
+      return { headers: response.headers }  // Not currently used anywhere
+    })
+}
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_4__;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 /**
  * Configuration
  */
 module.exports = {
-  fetch: __webpack_require__(4),  // Uses native fetch() in the browser
-
   Lang: document.documentElement.lang,
   DocRefType: '',
   RefType: {
@@ -7570,12 +7636,6 @@ module.exports = {
   RefAreas: {"AF":"Afghanistan","A9":"Africa","AL":"Albania","DZ":"Algeria","AS":"American Samoa","L5":"Andean Region","AD":"Andorra","AO":"Angola","AG":"Antigua and Barbuda","1A":"Arab World","AR":"Argentina","AM":"Armenia","AW":"Aruba","AU":"Australia","AT":"Austria","AZ":"Azerbaijan","BS":"Bahamas, The","BH":"Bahrain","BD":"Bangladesh","BB":"Barbados","BY":"Belarus","BE":"Belgium","BZ":"Belize","BJ":"Benin","BM":"Bermuda","BT":"Bhutan","BO":"Bolivia","BA":"Bosnia and Herzegovina","BW":"Botswana","BR":"Brazil","BN":"Brunei Darussalam","BG":"Bulgaria","BF":"Burkina Faso","BI":"Burundi","CV":"Cabo Verde","KH":"Cambodia","CM":"Cameroon","CA":"Canada","S3":"Caribbean small states","KY":"Cayman Islands","CF":"Central African Republic","TD":"Chad","JG":"Channel Islands","CL":"Chile","CN":"China","CO":"Colombia","KM":"Comoros","CD":"Congo, Dem. Rep.","CG":"Congo, Rep.","CR":"Costa Rica","CI":"Cote d'Ivoire","HR":"Croatia","CU":"Cuba","CW":"Curacao","CY":"Cyprus","CZ":"Czech Republic","DK":"Denmark","DJ":"Djibouti","DM":"Dominica","DO":"Dominican Republic","Z4":"East Asia & Pacific (all income levels)","4E":"East Asia & Pacific (developing only)","C4":"East Asia and the Pacific (IFC classification)","EC":"Ecuador","EG":"Egypt, Arab Rep.","SV":"El Salvador","GQ":"Equatorial Guinea","ER":"Eritrea","EE":"Estonia","ET":"Ethiopia","XC":"Euro area","Z7":"Europe & Central Asia (all income levels)","7E":"Europe & Central Asia (developing only)","C5":"Europe and Central Asia (IFC classification)","EU":"European Union","FO":"Faeroe Islands","FJ":"Fiji","FI":"Finland","FR":"France","PF":"French Polynesia","GA":"Gabon","GM":"Gambia, The","GE":"Georgia","DE":"Germany","GH":"Ghana","GR":"Greece","GL":"Greenland","GD":"Grenada","GU":"Guam","GT":"Guatemala","GN":"Guinea","GW":"Guinea-Bissau","GY":"Guyana","HT":"Haiti","XE":"Heavily indebted poor countries (HIPC)","XD":"High income","XS":"High income: OECD","XR":"High income: nonOECD","HN":"Honduras","HK":"Hong Kong SAR, China","HU":"Hungary","IS":"Iceland","IN":"India","ID":"Indonesia","IR":"Iran, Islamic Rep.","IQ":"Iraq","IE":"Ireland","IM":"Isle of Man","IL":"Israel","IT":"Italy","JM":"Jamaica","JP":"Japan","JO":"Jordan","KZ":"Kazakhstan","KE":"Kenya","KI":"Kiribati","KP":"Korea, Dem. Rep.","KR":"Korea, Rep.","KV":"Kosovo","KW":"Kuwait","KG":"Kyrgyz Republic","LA":"Lao PDR","ZJ":"Latin America & Caribbean (all income levels)","XJ":"Latin America & Caribbean (developing only)","L4":"Latin America and the Caribbean","C6":"Latin America and the Caribbean (IFC classification)","LV":"Latvia","XL":"Least developed countries: UN classification","LB":"Lebanon","LS":"Lesotho","LR":"Liberia","LY":"Libya","LI":"Liechtenstein","LT":"Lithuania","XO":"Low & middle income","XM":"Low income","XN":"Lower middle income","LU":"Luxembourg","MO":"Macao SAR, China","MK":"Macedonia, FYR","MG":"Madagascar","MW":"Malawi","MY":"Malaysia","MV":"Maldives","ML":"Mali","MT":"Malta","MH":"Marshall Islands","MR":"Mauritania","MU":"Mauritius","MX":"Mexico","L6":"Mexico and Central America","FM":"Micronesia, Fed. Sts.","ZQ":"Middle East & North Africa (all income levels)","XQ":"Middle East & North Africa (developing only)","C7":"Middle East and North Africa (IFC classification)","XP":"Middle income","MD":"Moldova","MC":"Monaco","MN":"Mongolia","ME":"Montenegro","MA":"Morocco","MZ":"Mozambique","MM":"Myanmar","NA":"Namibia","NP":"Nepal","NL":"Netherlands","NC":"New Caledonia","NZ":"New Zealand","NI":"Nicaragua","NE":"Niger","NG":"Nigeria","M2":"North Africa","XU":"North America","MP":"Northern Mariana Islands","NO":"Norway","XY":"Not classified","OE":"OECD members","OM":"Oman","S4":"Other small states","S2":"Pacific island small states","PK":"Pakistan","PW":"Palau","PA":"Panama","PG":"Papua New Guinea","PY":"Paraguay","PE":"Peru","PH":"Philippines","PL":"Poland","PT":"Portugal","PR":"Puerto Rico","QA":"Qatar","RO":"Romania","RU":"Russian Federation","RW":"Rwanda","WS":"Samoa","SM":"San Marino","ST":"Sao Tome and Principe","SA":"Saudi Arabia","SN":"Senegal","RS":"Serbia","SC":"Seychelles","SL":"Sierra Leone","SG":"Singapore","SX":"Sint Maarten (Dutch part)","SK":"Slovak Republic","SI":"Slovenia","S1":"Small states","SB":"Solomon Islands","SO":"Somalia","ZA":"South Africa","8S":"South Asia","C8":"South Asia (IFC classification)","SS":"South Sudan","L7":"Southern Cone Extended","ES":"Spain","LK":"Sri Lanka","KN":"St. Kitts and Nevis","LC":"St. Lucia","MF":"St. Martin (French part)","VC":"St. Vincent and the Grenadines","C9":"Sub-Saharan Africa (IFC classification)","ZG":"Sub-Saharan Africa (all income levels)","ZF":"Sub-Saharan Africa (developing only)","A4":"Sub-Saharan Africa excluding South Africa","A5":"Sub-Saharan Africa excluding South Africa and Nigeria","SD":"Sudan","SR":"Suriname","SZ":"Swaziland","SE":"Sweden","CH":"Switzerland","SY":"Syrian Arab Republic","TJ":"Tajikistan","TZ":"Tanzania","TH":"Thailand","TL":"Timor-Leste","TG":"Togo","TO":"Tonga","TT":"Trinidad and Tobago","TN":"Tunisia","TR":"Turkey","TM":"Turkmenistan","TC":"Turks and Caicos Islands","TV":"Tuvalu","UG":"Uganda","UA":"Ukraine","AE":"United Arab Emirates","GB":"United Kingdom","US":"United States","XT":"Upper middle income","UY":"Uruguay","UZ":"Uzbekistan","VU":"Vanuatu","VE":"Venezuela, RB","VN":"Vietnam","VI":"Virgin Islands (U.S.)","PS":"West Bank and Gaza","1W":"World","YE":"Yemen, Rep.","ZM":"Zambia","ZW":"Zimbabwe"}
 }
 
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_4__;
 
 /***/ })
 /******/ ]);
