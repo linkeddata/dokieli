@@ -982,25 +982,31 @@ var DO = {
     },
 
     //I want HTTP COPY and I want it now!
-    copyResource: function(fromURL, toURL, options) {
-      options = options || {};
-      var headers = { 'Accept': '*/*' };
+    copyResource: function copyResource (fromURL, toURL, options = {}) {
+      let headers = { 'Accept': '*/*' }
+      let contentType
 
-      if (fromURL != '' && toURL != '') {
-        fetcher.getResource(fromURL, headers, options).then(
-          function(i){
-            var contentType = i.xhr.getResponseHeader('Content-Type');
-            var response = (DO.C.AcceptBinaryTypes.indexOf(contentType)) ? i.xhr.response : i.xhr.responseText;
-
-            DO.U.putResource(toURL, response, contentType, null, options).catch(
-              function(reason){
-                if(reason.xhr.status == 0){
-                  options.noCredentials =  true;
-                  DO.U.putResource(toURL, response, contentType, null, options);
-                }
-              });
-          });
+      if (!fromURL || !toURL) {
+        return Promise.reject(new Error('Missing fromURL or toURL in copyResource'))
       }
+
+      return fetcher.getResource(fromURL, headers, options)
+        .then(response => {
+          contentType = response.headers.get('Content-Type')
+
+          return (DO.C.AcceptBinaryTypes.indexOf(contentType))
+            ? response.arrayBuffer()
+            : response.text()
+        })
+        .then(contents => {
+          return DO.U.putResource(toURL, contents, contentType, null, options)
+            .catch(error => {
+              if(error.status === 0){
+                options.noCredentials =  true;
+                return DO.U.putResource(toURL, contents, contentType, null, options);
+              }
+            })
+        })
     },
 
     putResourceACL: function(accessToURL, aclURL, acl) {
@@ -3047,7 +3053,7 @@ console.log(inbox);
       });
     },
 
-    getResourceGraph: function(iri, headers, options){
+    getResourceGraph: function getResourceGraph (iri, headers, options) {
       var defaultHeaders = {'Accept': DO.C.AvailableMediaTypes.join(',')};
       headers = headers || defaultHeaders;
       if (!('Accept' in headers)){
@@ -3055,64 +3061,55 @@ console.log(inbox);
       }
       options = options || {};
 
-      if (iri.slice(0, 5).toLowerCase() == 'http:') {
+      if (iri.slice(0, 5).toLowerCase() === 'http:') {
         options['noCredentials'] = true;
 
-        if (document.domain != iri.split('/')[2]) {
+        if (document.domain !== iri.split('/')[2]) {
           options['forceProxy'] = true;
         }
       }
 
-// console.log(options);
       var pIRI = DO.U.getProxyableIRI(iri, options);
 
-      return fetcher.getResource(pIRI, headers, options).then(
-        function(response){
-          var cT = response.xhr.getResponseHeader('Content-Type');
-          var contentType = (cT) ? cT.split(';')[0].trim() : 'text/turtle';
+      let options
 
-          var options = {
+      return fetcher.getResource(pIRI, headers, options)
+        .then(response => {
+          let cT = response.headers.get('Content-Type');
+          let contentType = (cT) ? cT.split(';')[ 0 ].trim() : 'text/turtle';
+
+          options = {
             'contentType': contentType,
             'subjectURI': DO.U.stripFragmentFromString(iri)
-          };
+          }
 
-          var data = response.xhr.responseText;
-
-          //FIXME: This is a dirty filthy fugly but a *fix* to get around the baseURI not being passed to the DOM parser. This injects the `base` element into the document so that the RDFa parse fallsback to that. The actual fix should happen upstream. See related issues:
+          return response.text()
+        })
+        .then(data => {
+          // FIXME: This is a dirty filthy fugly but a *fix* to get around the baseURI not being passed to the DOM parser. This injects the `base` element into the document so that the RDFa parse fallsback to that. The actual fix should happen upstream. See related issues:
           // https://github.com/linkeddata/dokieli/issues/132
           // https://github.com/rdf-ext/rdf-parser-dom/issues/2
           // https://github.com/rdf-ext/rdf-parser-rdfa/issues/3
           // https://github.com/simplerdf/simplerdf/issues/19
 
-          if(options.contentType == 'text/html' || options.contentType == 'application/xhtml+xml') {
-            var template = document.implementation.createHTMLDocument('template');
+          if (options.contentType === 'text/html' || options.contentType === 'application/xhtml+xml') {
+            let template = document.implementation.createHTMLDocument('template');
             template.documentElement.innerHTML = response.xhr.responseText;
             template.contentType = options.contentType;
-            var base = template.querySelector('head base[href]');
+            let base = template.querySelector('head base[href]');
             if (!base) {
               template.querySelector('head').insertAdjacentHTML('afterbegin', '<base href="' + options.subjectURI + '" />');
               data = template.documentElement.outerHTML;
             }
           }
 
-          return DO.U.getGraphFromData(data, options).then(
-            function(g){
-              var fragment = (iri.lastIndexOf('#') >= 0) ? iri.substr(iri.lastIndexOf('#')) : '';
-              return SimpleRDF(DO.C.Vocab, options['subjectURI'], g, ld.store).child(pIRI + fragment);
-            },
-            function(reason) { return reason; }
-          );
-        },
-        function(reason) {
-// console.log(reason);
-//           if(reason.xhr.status == 0) {
-//             return DO.U.getResourceGraph(iri, headers, {'forceProxy': true, 'noCredentials': true});
-//           }
-//           else {
-            return reason;
-          // }
-        }
-      );
+          return DO.U.getGraphFromData(data, options)
+        })
+        .then(graph => {
+          let fragment = (iri.lastIndexOf('#') >= 0) ? iri.substr(iri.lastIndexOf('#')) : ''
+
+          return SimpleRDF(DO.C.Vocab, options[ 'subjectURI' ], graph, ld.store).child(pIRI + fragment)
+        })
     },
 
     getContacts: function(iri) {
@@ -3500,7 +3497,7 @@ console.log(inbox);
       reader.readAsText(file);
     },
 
-    openDocument: function(e) {
+    openDocument: function (e) {
       if(typeof e !== 'undefined') {
         e.target.disabled = true;
       }
@@ -3514,7 +3511,7 @@ console.log(inbox);
       idSamp = (typeof DO.C.User.Storage == 'undefined') ? '' : '<p><samp id="' + id + '-' + action + '">https://example.org/path/to/article</samp></p>';
       openDocument.insertAdjacentHTML('beforeend', idSamp + '<button class="open">Open</button>');
 
-      openDocument.addEventListener('click', function(e) {
+      openDocument.addEventListener('click', function (e) {
         if (e.target.matches('button.close')) {
           document.querySelector('#document-do .resource-open').disabled = false;
         }
@@ -3539,30 +3536,27 @@ console.log(inbox);
             options['noCredentials'] = true;
           }
 
-          var handleResource = function(pIRI, headers, options) {
-            fetcher.getResource(pIRI, headers, options).then(
-              function(response){
-// console.log(response);
-                var cT = response.xhr.getResponseHeader('Content-Type');
-                var contentType = (cT) ? cT.split(';')[0].trim() : 'text/turtle';
-                // console.log(contentType);
-
-                DO.U.spawnDokieli(response.xhr.responseText, contentType, iri);
-              },
-              function(reason){
-console.log(reason);
-// console.log(options);
-                if(reason.xhr.status == 0) {
+          var handleResource = function handleResource (pIRI, headers, options) {
+            return fetcher.getResource(pIRI, headers, options)
+              .catch(error => {
+                if (error.status === 0) {
+                  // retry with proxied uri
                   var pIRI = DO.U.getProxyableIRI(iri, {'forceProxy': true});
                   return handleResource(pIRI, headers, options);
                 }
-                else {
-// console.log(reason);
-                  return reason;
-                }
-              }
-            );
-          };
+
+                throw error  // else, re-throw the error
+              })
+              .then(response => {
+                var cT = response.headers.get('Content-Type');
+                var contentType = (cT) ? cT.split(';')[0].trim() : 'text/turtle';
+
+                return response.text()
+                  .then(responseText => {
+                    DO.U.spawnDokieli(responseText, contentType, iri);
+                  })
+              })
+          }
 
           handleResource(pIRI, headers, options);
         }
