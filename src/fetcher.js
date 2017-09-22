@@ -55,11 +55,7 @@ function getResource (url, headers = {}, options = {}) {
         throw error
       }
 
-      if (headers['Accept'] === '*/*') {
-        return response.arrayBuffer()
-      } else {
-        return response.text()
-      }
+      return response
     })
 }
 
