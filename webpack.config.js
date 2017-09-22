@@ -20,7 +20,7 @@ module.exports = {
     ]
   },
   externals: {
-    'whatwg-fetch': 'fetch'
+    'node-fetch': 'fetch'
   },
   devtool: 'source-map'
 }
