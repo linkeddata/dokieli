@@ -3,8 +3,6 @@
  * Configuration
  */
 module.exports = {
-  fetch: require('whatwg-fetch'),  // Uses native fetch() in the browser
-
   Lang: document.documentElement.lang,
   DocRefType: '',
   RefType: {
