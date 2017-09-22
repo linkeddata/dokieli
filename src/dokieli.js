@@ -6,6 +6,8 @@
  * https://github.com/linkeddata/dokieli
  */
 
+const fetcher = require('./fetcher')
+
 if(typeof DO === 'undefined'){
 global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined;
 var DO = {
@@ -359,7 +361,7 @@ var DO = {
     getEndpointFromHead: function(property, url) {
       var pIRI = DO.U.getProxyableIRI(url);
 
-      return DO.U.getResourceHead(pIRI, {'header': 'Link'}).then(
+      return fetcher.getResourceHead(pIRI, {'header': 'Link'}).then(
         function(i){
           var linkHeaders = DO.U.parseLinkHeader(i.headers);
 
@@ -855,102 +857,6 @@ var DO = {
       return pIRI;
     },
 
-    /**
-     * getResourceOptions
-     *
-     * @param [url] {string} Defaults to current url
-     *
-     * @param [options={}] {object}
-     * @param [options.header] {string} Specific response header to return
-     * @param [options.noCredentials] {boolean}
-     *
-     * @returns {Promise} Resolves with `{ headers: ... }` object
-     */
-    getResourceOptions: function getResourceOptions (url, options = {}) {
-      url = url || window.location.origin + window.location.pathname;
-
-      let fetchOptions = Object.assign({}, options, { method: 'OPTIONS' })
-
-      if (!options.noCredentials) {
-        fetchOptions.credentials = 'include'
-      }
-
-      return DO.C.fetch(url, fetchOptions)
-        .then(response => {
-          if (!response.ok) {  // not a 200 level response
-            let error = new Error('Error fetching resource OPTIONS: ' +
-              response.status + ' ' + response.statusText)
-            error.status = response.status
-            error.response = response
-
-            throw error
-          }
-
-          if (options.header) {  // specific header requested
-            return { headers: response.headers.get(options.header) }
-          }
-
-          return { headers: response.headers }  // Not currently used anywhere
-        })
-    },
-
-    getResourceHead: function(url, options) {
-      url = url || window.location.origin + window.location.pathname;
-      options = options || {};
-      return new Promise(function(resolve, reject) {
-        var http = new XMLHttpRequest();
-        http.open('HEAD', url);
-        if (!options.noCredentials) {
-          http.withCredentials = true;
-        }
-        http.onreadystatechange = function() {
-          if (this.readyState == this.DONE) {
-            if('header' in options) {
-              if(this.getResponseHeader(options.header)) {
-                return resolve({'headers': this.getResponseHeader(options.header)});
-              }
-              else {
-                return reject({'message': "'" + options.header + "' header not found"});
-              }
-            }
-            return reject({status: this.status, xhr: this});
-          }
-        };
-        http.send();
-      });
-    },
-
-    getResource: function(url, headers, options) {
-      url = url || window.location.origin + window.location.pathname;
-      headers = headers || {};
-      if(typeof headers['Accept'] == 'undefined') {
-        headers['Accept'] = 'text/turtle';
-      }
-
-      return new Promise(function(resolve, reject) {
-        var http = new XMLHttpRequest();
-        http.open('GET', url);
-        Object.keys(headers).forEach(function(key) {
-          http.setRequestHeader(key, headers[key]);
-        });
-        if (!options.noCredentials) {
-          http.withCredentials = true;
-        }
-        if(headers['Accept'] == '*/*') {
-          http.responseType = "arraybuffer";
-        }
-        http.onreadystatechange = function() {
-          if (this.readyState == this.DONE) {
-            if (this.status === 200) {
-              return resolve({xhr: this});
-            }
-            return reject({status: this.status, xhr: this});
-          }
-        };
-        http.send();
-      });
-    },
-
     putResource: function(url, data, contentType, links, options) {
       if (url && url.length > 0) {
         contentType = contentType || 'text/html; charset=utf-8';
@@ -1081,7 +987,7 @@ var DO = {
       var headers = { 'Accept': '*/*' };
 
       if (fromURL != '' && toURL != '') {
-        DO.U.getResource(fromURL, headers, options).then(
+        fetcher.getResource(fromURL, headers, options).then(
           function(i){
             var contentType = i.xhr.getResponseHeader('Content-Type');
             var response = (DO.C.AcceptBinaryTypes.indexOf(contentType)) ? i.xhr.response : i.xhr.responseText;
@@ -1343,7 +1249,7 @@ var DO = {
     getAcceptPostPreference: function getAcceptPostPreference (url) {
       var pIRI = DO.U.getProxyableIRI(url);
 
-      return DO.U.getResourceOptions(pIRI, {'header': 'Accept-Post'})
+      return fetcher.getResourceOptions(pIRI, {'header': 'Accept-Post'})
         .catch(function (error) {
           console.error(error);
 
@@ -3160,7 +3066,7 @@ console.log(inbox);
 // console.log(options);
       var pIRI = DO.U.getProxyableIRI(iri, options);
 
-      return DO.U.getResource(pIRI, headers, options).then(
+      return fetcher.getResource(pIRI, headers, options).then(
         function(response){
           var cT = response.xhr.getResponseHeader('Content-Type');
           var contentType = (cT) ? cT.split(';')[0].trim() : 'text/turtle';
@@ -3634,7 +3540,7 @@ console.log(inbox);
           }
 
           var handleResource = function(pIRI, headers, options) {
-            DO.U.getResource(pIRI, headers, options).then(
+            fetcher.getResource(pIRI, headers, options).then(
               function(response){
 // console.log(response);
                 var cT = response.xhr.getResponseHeader('Content-Type');
