@@ -1,5 +1,7 @@
 'use strict'
 
+const fetch = require('whatwg-fetch')  // Uses native fetch() in the browser
+
 module.exports = {
   currentLocation,
   getResource,
@@ -41,7 +43,7 @@ function getResource (url, headers = {}, options = {}) {
 
   options.headers = Object.assign({}, headers)
 
-  return DO.C.fetch(url, options)
+  return fetch(url, options)
 
     .then(response => {
       if (!response.ok) {  // not a 200 level response
@@ -84,7 +86,7 @@ function getResourceHead (url, options = {}) {
     options.credentials = 'include'
   }
 
-  return DO.C.fetch(url, options)
+  return fetch(url, options)
 
     .then(response => {
       if (!response.ok) {  // not a 200 level response
@@ -126,7 +128,7 @@ function getResourceOptions (url, options = {}) {
     options.credentials = 'include'
   }
 
-  return DO.C.fetch(url, options)
+  return fetch(url, options)
 
     .then(response => {
       if (!response.ok) {  // not a 200 level response
