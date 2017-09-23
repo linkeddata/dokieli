@@ -549,7 +549,7 @@ content:"\00a0\00a0\00a0\00a0";
   padding-top: 1em;
   padding-bottom: 1em;
   background-color: #333;
-  color: #EBEBEB;
+  color: #eee;
 }
 
 #help-and-shape {
@@ -597,15 +597,19 @@ content:"\00a0\00a0\00a0\00a0";
 #dokieli-features ul li:hover, #dokieli-features ul li:hover span {
   background-color: #444;
 }
-#dokieli-features ul i {
+#dokieli-features ul i,
+#dokieli-features ul svg {
   width: 1em;
   height: 1em;
   padding: 0.3em; margin: 0 0.2em;
-  border-radius: 50%;
+  /*border-radius: 50%;*/
   text-align: center;
 }
+#dokieli-features ul svg {
+  font-size:3em;
+}
 
-#dokieli-features i.solid img {
+#dokieli-features i img {
   width: 100%; display: block;
 }
 
@@ -692,11 +696,13 @@ column-count: 2;
     padding-top: 1em;
   }
   #dokieli-features ul li:nth-child(odd) i,
-  #dokieli-features ul li:nth-child(odd) p {
+  #dokieli-features ul li:nth-child(odd) p,
+  #dokieli-features ul li:nth-child(even) svg {
     float:right;
   }
   #dokieli-features ul li:nth-child(even) i,
-  #dokieli-features ul li:nth-child(even) p {
+  #dokieli-features ul li:nth-child(even) p,
+  #dokieli-features ul li:nth-child(even) svg {
     float: left;
   }
 }
