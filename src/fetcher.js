@@ -97,10 +97,10 @@ function getResourceHead (url, options = {}) {
       let header = response.headers.get(options.header)
 
       if (!header) {
-        throw new Error("'" + options.header + "' header not found")
+        throw new Error({'message': "'" + options.header + "' header not found"})
       }
 
-      return header
+      return { 'headers': header }
     })
 }
 

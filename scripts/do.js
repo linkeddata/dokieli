@@ -3177,7 +3177,7 @@ console.log(inbox);
 
           if (options.contentType === 'text/html' || options.contentType === 'application/xhtml+xml') {
             let template = document.implementation.createHTMLDocument('template');
-            template.documentElement.innerHTML = response.xhr.responseText;
+            template.documentElement.innerHTML = data;
             template.contentType = options.contentType;
             let base = template.querySelector('head base[href]');
             if (!base) {
@@ -7314,10 +7314,10 @@ function getResourceHead (url, options = {}) {
       let header = response.headers.get(options.header)
 
       if (!header) {
-        throw new Error("'" + options.header + "' header not found")
+        throw new Error({'message': "'" + options.header + "' header not found"})
       }
 
-      return header
+      return { 'headers': header }
     })
 }
 
