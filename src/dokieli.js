@@ -3774,7 +3774,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         html.querySelector('head title').innerHTML = ''
         html = DO.U.getDocument(html)
 
-        DO.U.putResource(storageIRI, html)
+        fetcher.putResource(storageIRI, html)
           .then(() => {
             newDocument.insertAdjacentHTML('beforeend',
               '<div class="response-message"><p class="success">' +
@@ -3815,7 +3815,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       })
     },
 
-    saveAsDocument: function(e) {
+    saveAsDocument: function saveAsDocument (e) {
       e.target.disabled = true;
       document.body.insertAdjacentHTML('beforeend', '<aside id="save-as-document" class="do on"><button class="close" title="Close">❌</button><h2>Save As Document</h2></aside>');
 
@@ -3861,86 +3861,116 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       bli.placeholder = 'https://example.org/path/to/article';
 
 
-      saveAsDocument.addEventListener('click', function(e) {
-        if (e.target.matches('button.create')) {
-          var currentDocumentURL = DO.U.stripFragmentFromString(document.location.href);
-          var saveAsDocument = document.getElementById('save-as-document');
-          var storageIRI = saveAsDocument.querySelector('#' + id + '-' + action).innerText.trim();
-
-          var rm = saveAsDocument.querySelector('.response-message');
-          if (rm) {
-            rm.parentNode.removeChild(rm);
-          }
-
-          if(storageIRI.length == 0) {
-            saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Specify the location to save the article to, and optionally set its <em>inbox</em> or <em>annotation service</em>.</p></div>');
-            return;
-          }
-
-          var html = document.documentElement.cloneNode(true);
-          var nodeInsertLocation = html.querySelector('main > article') || html.querySelector('body');
-
-          var wasDerived = document.querySelector('#derivation-data');
-          if (wasDerived.checked) {
-            var wasDerivedOn = DO.U.getDateTimeISO();
-            nodeInsertLocation.insertAdjacentHTML('beforebegin', '<dl id="document-derived-from"><dt>Derived From</dt><dd><a href="' + currentDocumentURL + '" rel="prov:wasDerivedFrom">' + currentDocumentURL + '</a></dd></dl><dl id="document-derived-on"><dt>Derived On</dt><dd><time datetime="' + wasDerivedOn + '">' + wasDerivedOn + '</time></dd></dl>' + "\n");
-          }
-
-          var inboxLocation = saveAsDocument.querySelector('#' + locationInboxId + '-' + locationInboxAction).innerText.trim();
-          if (inboxLocation.length > 0) {
-            nodeInsertLocation.insertAdjacentHTML('beforebegin', '<dl id="document-inbox"><dt>Notifications Inbox</dt><dd><a href="' + inboxLocation + '" rel="ldp:inbox">' + inboxLocation + '</a></dd></dl>' + "\n");
-          }
-
-          var annotationServiceLocation = saveAsDocument.querySelector('#' + locationAnnotationServiceId + '-' + locationAnnotationServiceAction).innerText.trim();
-          if (annotationServiceLocation.length > 0) {
-            nodeInsertLocation.insertAdjacentHTML('beforebegin', '<dl id="document-annotation-service"><dt>Annotation Service</dt><dd><a href="' + annotationServiceLocation + '" rel="oa:annotationService">' + annotationServiceLocation + '</a></dd></dl>' + "\n");
-          }
-
-          var baseURLSelectionChecked = saveAsDocument.querySelector('select[name="base-url"]');
-          if (baseURLSelectionChecked.length > 0) {
-            var baseURLType = baseURLSelectionChecked.value;
-            var nodes = html.querySelectorAll('head link, [src], object[data]');
-            if (baseURLType == 'base-url-relative') {
-              DO.U.copyRelativeResources(storageIRI, nodes);
-            }
-            nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType});
-          }
-          html = DO.U.getDocument(html);
-
-          var progress = saveAsDocument.querySelector('progress');
-          if(progress) {
-            progress.parentNode.removeChild(progress);
-          }
-          e.target.insertAdjacentHTML('afterend', '<progress min="0" max="100" value="0"></progress>');
-          progress = saveAsDocument.querySelector('progress');
-
-          DO.U.putResource(storageIRI, html, null, null, { 'progress': progress }).then(
-            function(i) {
-              progress.parentNode.removeChild(progress);
-              var url = ('xhr' in i && i.xhr.getResponseHeader('Location')) ? i.xhr.getResponseHeader('Location') : storageIRI;
-              saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="success">Document saved at <a href="' + url + '?author=true">' + url + '</a></p></div>');
-              window.open(url + '?author=true', '_blank');
-            },
-            function(reason) {
-              switch(reason.status) {
-                default:
-                  saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to save.</p></div>');
-                  break;
-                case 0: case 405:
-                  saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to save: this location is not writeable.</p></div>');
-                  break;
-                case 401: case 403:
-                  saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to save: you don\'t have permission to write here.</p></div>');
-                  break;
-                case 406:
-                  saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to save: enter a name for your resource.</p></div>');
-                  break;
-              }
-              console.log(reason);
-            }
-          );
+      saveAsDocument.addEventListener('click', e => {
+        if (!e.target.matches('button.create')) {
+          return
         }
-      });
+
+        var currentDocumentURL = DO.U.stripFragmentFromString(document.location.href)
+        var saveAsDocument = document.getElementById('save-as-document')
+        var storageIRI = saveAsDocument.querySelector('#' + id + '-' + action).innerText.trim()
+
+        var rm = saveAsDocument.querySelector('.response-message')
+        if (rm) {
+          rm.parentNode.removeChild(rm)
+        }
+
+        if(!storageIRI.length) {
+          saveAsDocument.insertAdjacentHTML('beforeend',
+            '<div class="response-message"><p class="error">' +
+            'Specify the location to save the article to, and optionally set its <em>inbox</em> or <em>annotation service</em>.</p></div>'
+          )
+
+          return
+        }
+
+        var html = document.documentElement.cloneNode(true)
+        var nodeInsertLocation = html.querySelector('main > article') || html.querySelector('body')
+
+        var wasDerived = document.querySelector('#derivation-data')
+        if (wasDerived.checked) {
+          var wasDerivedOn = DO.U.getDateTimeISO()
+          nodeInsertLocation.insertAdjacentHTML('beforebegin',
+            '<dl id="document-derived-from"><dt>Derived From</dt><dd><a href="' +
+            currentDocumentURL + '" rel="prov:wasDerivedFrom">' +
+            currentDocumentURL + '</a></dd></dl><dl id="document-derived-on"><dt>Derived On</dt><dd><time datetime="' +
+            wasDerivedOn + '">' + wasDerivedOn + '</time></dd></dl>' + '\n'
+          )
+        }
+
+        var inboxLocation = saveAsDocument.querySelector('#' + locationInboxId + '-' + locationInboxAction).innerText.trim()
+        if (inboxLocation) {
+          nodeInsertLocation.insertAdjacentHTML('beforebegin', '<dl id="document-inbox"><dt>Notifications Inbox</dt><dd><a href="' + inboxLocation + '" rel="ldp:inbox">' + inboxLocation + '</a></dd></dl>' + "\n")
+        }
+
+        var annotationServiceLocation = saveAsDocument.querySelector('#' + locationAnnotationServiceId + '-' + locationAnnotationServiceAction).innerText.trim()
+        if (annotationServiceLocation) {
+          nodeInsertLocation.insertAdjacentHTML('beforebegin', '<dl id="document-annotation-service"><dt>Annotation Service</dt><dd><a href="' + annotationServiceLocation + '" rel="oa:annotationService">' + annotationServiceLocation + '</a></dd></dl>' + "\n")
+        }
+
+        var baseURLSelectionChecked = saveAsDocument.querySelector('select[name="base-url"]')
+        if (baseURLSelectionChecked.length > 0) {
+          var baseURLType = baseURLSelectionChecked.value
+          var nodes = html.querySelectorAll('head link, [src], object[data]')
+          if (baseURLType == 'base-url-relative') {
+            DO.U.copyRelativeResources(storageIRI, nodes)
+          }
+          // TODO: 'nodes' not used anywhere:
+          // nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType})
+        }
+
+        html = DO.U.getDocument(html)
+
+        var progress = saveAsDocument.querySelector('progress')
+        if(progress) {
+          progress.parentNode.removeChild(progress)
+        }
+        e.target.insertAdjacentHTML('afterend', '<progress min="0" max="100" value="0"></progress>')
+        progress = saveAsDocument.querySelector('progress')
+
+        fetcher.putResource(storageIRI, html, null, null, { 'progress': progress })
+
+          .then(response => {
+            progress.parentNode.removeChild(progress)
+
+            let url = response.url || storageIRI
+
+            saveAsDocument.insertAdjacentHTML('beforeend',
+              '<div class="response-message"><p class="success">' +
+              'Document saved at <a href="' + url + '?author=true">' + url + '</a></p></div>'
+            )
+
+            window.open(url + '?author=true', '_blank')
+          })
+
+          .catch(error => {
+            console.error('Error saving document', error)
+
+            let message
+
+            switch (error.status) {
+              case 0:
+              case 405:
+                message = 'this location is not writable'
+                break
+              case 401:
+              case 403:
+                message = 'you do not have permission to write here'
+                break
+              case 406:
+                message = 'enter a name for your resource'
+                break
+              default:
+                message = error.message
+                break
+            }
+
+            saveAsDocument.insertAdjacentHTML('beforeend',
+              '<div class="response-message"><p class="error">' +
+              'Unable to save:' + message + '</p></div>'
+            )
+          })
+      })
     },
 
     viewSource: function(e) {
