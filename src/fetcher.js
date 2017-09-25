@@ -2,11 +2,15 @@
 
 const fetch = require('node-fetch')  // Uses native fetch() in the browser
 
+const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
+const LDP_RESOURCE = '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
+
 module.exports = {
   currentLocation,
   getResource,
   getResourceHead,
-  getResourceOptions
+  getResourceOptions,
+  putResource
 }
 
 /**
@@ -46,7 +50,7 @@ function getResource (url, headers = {}, options = {}) {
   return fetch(url, options)
 
     .then(response => {
-      if (!response.ok) {  // not a 200 level response
+      if (!response.ok) {  // not a 2xx level response
         let error = new Error('Error fetching resource: ' +
           response.status + ' ' + response.statusText)
         error.status = response.status
@@ -85,7 +89,7 @@ function getResourceHead (url, options = {}) {
   return fetch(url, options)
 
     .then(response => {
-      if (!response.ok) {  // not a 200 level response
+      if (!response.ok) {  // not a 2xx level response
         let error = new Error('Error fetching resource HEAD: ' +
           response.status + ' ' + response.statusText)
         error.status = response.status
@@ -97,7 +101,7 @@ function getResourceHead (url, options = {}) {
       let header = response.headers.get(options.header)
 
       if (!header) {
-        throw new Error({'message': "'" + options.header + "' header not found"})
+        throw new Error("'" + options.header + "' header not found")
       }
 
       return { 'headers': header }
@@ -127,7 +131,7 @@ function getResourceOptions (url, options = {}) {
   return fetch(url, options)
 
     .then(response => {
-      if (!response.ok) {  // not a 200 level response
+      if (!response.ok) {  // not a 2xx level response
         let error = new Error('Error fetching resource OPTIONS: ' +
           response.status + ' ' + response.statusText)
         error.status = response.status
@@ -141,5 +145,59 @@ function getResourceOptions (url, options = {}) {
       }
 
       return { headers: response.headers }  // Not currently used anywhere
+    })
+}
+
+/**
+ * putResource
+ *
+ * @param url {string}
+ *
+ * @param data {string|object}
+ *
+ * @param [contentType=DEFAULT_CONTENT_TYPE] {string}
+ *
+ * @param [links=LDP_RESOURCE] {string}
+ *
+ * @param [options={}] {object}
+ *
+ * @returns {Promise<Response>}
+ */
+function putResource (url, data, contentType, links, options = {}) {
+  if (!url) {
+    return Promise.reject(new Error('Cannot PUT resource - missing url'))
+  }
+
+  options.method = 'PUT'
+
+  options.body = data
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  options.headers = options.headers || {}
+
+  options.headers['Content-Type'] = contentType || DEFAULT_CONTENT_TYPE
+
+  links = links
+    ? LDP_RESOURCE + ', ' + links
+    : LDP_RESOURCE
+
+  options.headers['Link'] = links
+
+  return fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error writing resource: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      return response
     })
 }
