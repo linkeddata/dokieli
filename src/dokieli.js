@@ -1011,42 +1011,61 @@ var DO = {
         })
     },
 
-    putResourceACL: function(accessToURL, aclURL, acl) {
-      if(DO.C.User.IRI) {
-        acl = acl || {
-          'u': { 'iri': [DO.C.User.IRI], 'mode': ['acl:Control', 'acl:Read', 'acl:Write'] },
-          'g': { 'iri': ['http://xmlns.com/foaf/0.1/Agent'], 'mode': ['acl:Read'] },
-          'o': { 'iri': [], 'mode': [] }
-        };
+    /**
+     * putResourceACL
+     *
+     * TODO: This doesn't seem to be used anywhere...
+     *
+     * @param accessToURL
+     * @param aclURL
+     * @param acl
+     *
+     * @returns {Promise<Response|null>}
+     */
+    putResourceACL: function putResourceACL (accessToURL, aclURL, acl) {
+      if(!DO.C.User.IRI) {
+        console.log('Go through sign-in or do: DO.C.User.IRI = "https://example.org/#i";')
+        return Promise.resolve(null)
+      }
 
-        var agent, agentClass, mode;
-        if('u' in acl && 'iri' in acl.u && 'mode' in acl.u) {
-          agent = '<' + acl.u.iri.join('> , <') + '>';
-          mode = acl.u.mode.join(' , ');
-        }
-        else {
-          agent = '<' + DO.C.User.IRI + '>';
-          mode = 'acl:Control , acl:Read , acl:Write';
-        }
+      acl = acl || {
+        'u': { 'iri': [DO.C.User.IRI], 'mode': ['acl:Control', 'acl:Read', 'acl:Write'] },
+        'g': { 'iri': ['http://xmlns.com/foaf/0.1/Agent'], 'mode': ['acl:Read'] },
+        'o': { 'iri': [], 'mode': [] }
+      };
 
-        var authorizations = [];
+      let agent, agentClass, mode
 
-        authorizations.push('[ a acl:Authorization ; acl:accessTo <' + accessToURL + '> ; acl:accessTo <' + aclURL + '> ; acl:mode ' + mode + ' ; acl:agent ' + agent + ' ] .');
-
-        if('g' in acl && 'iri' in acl.g && acl.g.iri.length >= 0) {
-          agentClass = '<' + acl.g.iri.join('> , <') + '>';
-          mode = acl.g.mode.join(' , ');
-          authorizations.push('[ a acl:Authorization ; acl:accessTo <' + accessToURL + '> ; acl:mode ' + mode + ' ; acl:agentClass ' + agentClass + ' ] .');
-        }
-
-        var data = '@prefix acl: <http://www.w3.org/ns/auth/acl#> .\n\
-'+ authorizations.join('\n') + '\n\
-';
-        return DO.U.putResource(aclURL, data, 'text/turtle; charset=utf-8');
+      if('u' in acl && 'iri' in acl.u && 'mode' in acl.u) {
+        agent = '<' + acl.u.iri.join('> , <') + '>'
+        mode = acl.u.mode.join(' , ')
       }
       else {
-        console.log('Go through sign-in or do: DO.C.User.IRI = "https://example.org/#i";');
+        agent = '<' + DO.C.User.IRI + '>';
+        mode = 'acl:Control , acl:Read , acl:Write'
       }
+
+      let authorizations = []
+
+      authorizations.push(
+        '[ a acl:Authorization ; acl:accessTo <' +
+        accessToURL + '> ; acl:accessTo <' + aclURL + '> ; acl:mode ' + mode +
+        ' ; acl:agent ' + agent + ' ] .'
+      )
+
+      if('g' in acl && 'iri' in acl.g && acl.g.iri.length >= 0) {
+        agentClass = '<' + acl.g.iri.join('> , <') + '>';
+        mode = acl.g.mode.join(' , ')
+        authorizations.push(
+          '[ a acl:Authorization ; acl:accessTo <' + accessToURL +
+          '> ; acl:mode ' + mode + ' ; acl:agentClass ' + agentClass + ' ] .'
+        )
+      }
+
+      let data = '@prefix acl: <http://www.w3.org/ns/auth/acl#> .\n' +
+        authorizations.join('\n') + '\n'
+
+      return fetcher.putResource(aclURL, data, 'text/turtle; charset=utf-8')
     },
 
     notifyInbox: function(o) {
@@ -2596,37 +2615,49 @@ var DO = {
       });
     },
 
-    showDocumentDo: function(node) {
-      if(document.querySelector('#document-do')) { return; }
+    showDocumentDo: function showDocumentDo (node) {
+      if (document.querySelector('#document-do')) { return; }
 
       var buttonDisabled = '';
-      if (document.location.protocol == 'file:') {
+      if (document.location.protocol === 'file:') {
         buttonDisabled = ' disabled="disabled"';
       }
 
       var s = '<section id="document-do" class="do"><h2>Do</h2><ul>';
       s += '<li><button class="resource-share" title="Share resource"><i class="fa fa-bullhorn fa-2x"></i>Share</button></li>';
       s += '<li><button class="resource-reply" title="Reply"><i class="fa fa-reply fa-2x"></i>Reply</button></li>';
+
       if (DO.C.EditorAvailable) {
-        var reviewArticle = (DO.C.EditorEnabled && DO.C.User.Role == 'review') ? DO.C.Editor.DisableReviewButton : DO.C.Editor.EnableReviewButton;
+        var reviewArticle = (DO.C.EditorEnabled && DO.C.User.Role == 'review')
+          ? DO.C.Editor.DisableReviewButton
+          : DO.C.Editor.EnableReviewButton;
         s += '<li>' + reviewArticle + '</li>';
       }
+
       s += '<li><button class="resource-new" title="Create new article"><i class="fa fa-lightbulb-o fa-2x"></i></i>New</button></li>';
       s += '<li><button class="resource-open" title="Open article"><i class="fa fa-coffee fa-2x"></i></i>Open</button></li>';
-      s += '<li><button class="resource-save"'+buttonDisabled+' title="Save article"><i class="fa fa-life-ring fa-2x"></i>Save</button></li>';
+      s += '<li><button class="resource-save"' + buttonDisabled +
+        ' title="Save article"><i class="fa fa-life-ring fa-2x"></i>Save</button></li>';
       s += '<li><button class="resource-save-as" title="Save as article"><i class="fa fa-paper-plane-o fa-2x"></i>Save As</button></li>';
       s += '<li><button class="resource-snapshot" title="Snapshot article"><i class="fa fa-external-link fa-2x"></i>Snapshot</button></li>';
       s += '<li><button class="resource-print" title="Print article"><i class="fa fa-print fa-2x"></i>Print</button></li>';
+
       if (DO.C.EditorAvailable) {
-        var editFile = (DO.C.EditorEnabled && DO.C.User.Role == 'author') ? DO.C.Editor.DisableEditorButton : DO.C.Editor.EnableEditorButton;
+        var editFile = (DO.C.EditorEnabled && DO.C.User.Role === 'author')
+          ? DO.C.Editor.DisableEditorButton
+          : DO.C.Editor.EnableEditorButton;
         s += '<li>' + editFile + '</li>';
       }
-      s += '<li><button class="resource-source"'+buttonDisabled+' title="Edit article source code"><i class="fa fa-code fa-2x"></i>Source</button></li>';
+
+      s += '<li><button class="resource-source"' + buttonDisabled +
+        ' title="Edit article source code"><i class="fa fa-code fa-2x"></i>Source</button></li>';
       s += '</ul></section>';
+
       node.insertAdjacentHTML('beforeend', s);
 
       var dd = document.getElementById('document-do');
-      dd.addEventListener('click', function(e) {
+
+      dd.addEventListener('click', e => {
         if (e.target.closest('.resource-share')) {
           DO.U.shareResource(e);
         }
@@ -2664,27 +2695,35 @@ var DO = {
         if (e.target.closest('.resource-save')) {
           var url = window.location.origin + window.location.pathname;
           var data = DO.U.getDocument();
-          DO.U.putResource(url, data).then(
-            function(i) {
-              DO.U.showActionMessage(document.getElementById('document-menu'), 'Saved');
-              DO.U.hideDocumentMenu(e);
-            },
-            function(reason) {
-              console.log(reason);
-              switch(reason.xhr.status) {
-                default: case 405:
-                  e.target.disabled = true;
-                  DO.U.showActionMessage(document.getElementById('document-menu'), "Server doesn't allow this resource to be rewritten.");
-                  break;
+
+          fetcher.putResource(url, data)
+            .then(() => {
+              DO.U.showActionMessage(document.getElementById('document-menu'), 'Saved')
+              DO.U.hideDocumentMenu(e)
+            })
+            .catch(error => {
+              console.error(error)
+
+              let message
+
+              switch (error.status) {
                 case 401:
-                  DO.U.showActionMessage(document.getElementById('document-menu'), "Need to authenticate before saving.");
-                  break;
+                  message = 'Need to authenticate before saving'
+                  break
+
                 case 403:
-                  DO.U.showActionMessage(document.getElementById('document-menu'), "You are not authorized to save.");
-                  break;
+                  message = 'You are not authorized to save'
+                  break
+
+                case 405:
+                default:
+                  e.target.disabled = true
+                  message = 'Server doesn\'t allow this resource to be rewritten'
+                  break
               }
-            }
-          );
+
+              DO.U.showActionMessage(document.getElementById('document-menu'), message)
+            })
         }
 
         if (e.target.closest('.resource-source')) {
@@ -2707,156 +2746,197 @@ var DO = {
       });
     },
 
-    replyToResource: function(e, iri){
-      iri = iri || window.location.origin + window.location.pathname;
-      e.target.disabled = true;
+    replyToResource: function replyToResource (e, iri) {
+      iri = iri || fetcher.currentLocation()
+      e.target.disabled = true
 
-      document.body.insertAdjacentHTML('beforeend', '<aside id="reply-to-resource" class="do on"><button class="close" title="Close">❌</button><h2>Reply to this</h2><div id="reply-to-resource-input"><p>Reply to <code>' + iri +'</code></p><ul><li><p><label for="reply-to-resource-note">Quick reply (plain text note)</label></p><p><textarea id="reply-to-resource-note" rows="10" cols="40" name="reply-to-resource-note" placeholder="Great article!"></textarea></p></li><li><label for="reply-to-resource-license">License</label> <select id="reply-to-resource-license" name="reply-to-resource-license">' + DO.U.getLicenseOptionsHTML() + '</select></li></ul></div>');
+      document.body.insertAdjacentHTML('beforeend', '<aside id="reply-to-resource" class="do on"><button class="close" title="Close">❌</button><h2>Reply to this</h2><div id="reply-to-resource-input"><p>Reply to <code>' +
+        iri +'</code></p><ul><li><p><label for="reply-to-resource-note">Quick reply (plain text note)</label></p><p><textarea id="reply-to-resource-note" rows="10" cols="40" name="reply-to-resource-note" placeholder="Great article!"></textarea></p></li><li><label for="reply-to-resource-license">License</label> <select id="reply-to-resource-license" name="reply-to-resource-license">' +
+        DO.U.getLicenseOptionsHTML() + '</select></li></ul></div>')
 
       // TODO: License
       // TODO: ACL - can choose whether to make this reply private (to self), visible only to article author(s), visible to own contacts, public
       // TODO: Show name and face of signed in user reply is from, or 'anon' if article can host replies
 
-      var replyToResource = document.getElementById('reply-to-resource');
+      var replyToResource = document.getElementById('reply-to-resource')
 
-      var id = 'location-reply-to';
-      var action = 'write';
+      var id = 'location-reply-to'
+      var action = 'write'
 
-      DO.U.setupResourceBrowser(replyToResource, id, action);
-      document.getElementById(id).insertAdjacentHTML('afterbegin', '<p>Choose a location to save your reply.</p>');
-      replyToResource.insertAdjacentHTML('beforeend', '<p>Your reply will be saved at <samp id="' + id +'-' + action + '">https://example.org/path/to/article</samp></p>');
-      var bli = document.getElementById(id + '-input');
-      bli.focus();
-      bli.placeholder = 'https://example.org/path/to/article';
-      replyToResource.insertAdjacentHTML('beforeend', '<button class="reply">Send now</button>');
+      DO.U.setupResourceBrowser(replyToResource, id, action)
+      document.getElementById(id).insertAdjacentHTML('afterbegin', '<p>Choose a location to save your reply.</p>')
+
+      replyToResource.insertAdjacentHTML('beforeend', '<p>Your reply will be saved at <samp id="' + id +'-' + action +
+        '">https://example.org/path/to/article</samp></p>')
+
+      var bli = document.getElementById(id + '-input')
+      bli.focus()
+      bli.placeholder = 'https://example.org/path/to/article'
+      replyToResource.insertAdjacentHTML('beforeend', '<button class="reply">Send now</button>')
+
       // TODO: New in editor make this button do something.
       //     Question: when should the notification be sent?
       //replyToResource.insertAdjacentHTML('beforeend', 'or <button class="reply-new"><i class="fa fa-paper-plane-o"></i> Write reply in new window</button>');
-      replyToResource.insertAdjacentHTML('beforeend', '</aside>');
+      replyToResource.insertAdjacentHTML('beforeend', '</aside>')
 
-      replyToResource.addEventListener('click', function(e) {
+      replyToResource.addEventListener('click', e => {
         if (e.target.matches('button.close')) {
-          document.querySelector('#document-do .resource-reply').disabled = false;
+          document.querySelector('#document-do .resource-reply').disabled = false
         }
 
         if (e.target.matches('button.reply')) {
-          var note = document.querySelector('#reply-to-resource #reply-to-resource-note').value.trim();
+          var note = document
+            .querySelector('#reply-to-resource #reply-to-resource-note')
+            .value.trim()
 
-          var rm = replyToResource.querySelector('.response-message');
+          var rm = replyToResource.querySelector('.response-message')
           if (rm) {
-            rm.parentNode.removeChild(rm);
+            rm.parentNode.removeChild(rm)
           }
-          replyToResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>');
-          if (iri.length > 0 && note.length > 0) {
-
-            var datetime = DO.U.getDateTimeISO();
-            var attributeId = DO.U.generateAttributeId();
-            var noteIRI = document.querySelector('#reply-to-resource #' + id + '-' + action).innerText.trim();
-            var motivatedBy = "oa:replying";
-            var noteData = {
-              "type": 'article',
-              "mode": "write",
-              "motivatedByIRI": motivatedBy,
-              "id": attributeId,
-              "iri": noteIRI, //e.g., https://example.org/path/to/article
-              "creator": {},
-              "datetime": datetime,
-              "target": {
-                "iri": iri
-              },
-              "body": note, // content
-              "license": {}
-            };
-            if (DO.C.User.IRI) {
-              noteData.creator["iri"] = DO.C.User.IRI;
-            }
-            if (DO.C.User.Name) {
-              noteData.creator["name"] = DO.C.User.Name;
-            }
-            if (DO.C.User.Image) {
-              noteData.creator["image"] = DO.C.User.Image;
-            }
-            if (DO.C.User.URL) {
-              noteData.creator["url"] = DO.C.User.URL;
-            }
-
-            var license = document.querySelector('#reply-to-resource-license');
-            if (license && license.length > 0) {
-              noteData.license["iri"] = license.value.trim();
-              noteData.license["name"] = DO.C.License[license.value.trim()].name;
-            }
-
-            var note = DO.U.createNoteDataHTML(noteData);
-
-            var data = DO.U.createHTML(noteIRI, note);
-
-            DO.U.putResource(noteIRI, data).then(
-              function(i){
-                replyToResource.querySelector('.response-message').innerHTML = '<p class="success"><a href="' + i.xhr.responseURL + '">Reply saved!</a></p>';
-                // Then send notification
-                DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id']).then(
-                  function(inbox) {
-console.log(inbox);
-                    if (inbox.length > 0) {
-                      inbox = inbox[0];
-
-                      var notificationStatements = '    <dl about="' + noteIRI + '">\n\
-      <dt>Object type</dt><dd><a about="' + noteIRI + '" typeof="oa:Annotation" href="' + DO.C.Vocab['oaannotation']['@id'] + '">Annotation</a></dd>\n\
-      <dt>Motivation</dt><dd><a href="' + DO.C.Prefixes[motivatedBy.split(':')[0]] + motivatedBy.split(':')[1] + '" property="oa:motivation">' + motivatedBy.split(':')[1] + '</a></dd>\n\
-    </dl>\n\
-';
-                      var notificationData = {
-                        "type": ['as:Announce'],
-                        "inbox": inbox,
-                        "object": noteIRI,
-                        "target": iri,
-                        "license": noteData.license["iri"],
-                        "statements": notificationStatements
-                      };
-
-                      DO.U.notifyInbox(notificationData).then(
-                        function(response) {
-    // console.log("Notification: " + response.xhr.getResponseHeader('Location'));
-                          replyToResource.querySelector('.response-message').innerHTML += '<p class="success">Notification sent.</p>';
-                        },
-                        function(reason) {
-                          console.log(reason);
-                          replyToResource.querySelector('.response-message').innerHTML += '<p class="error">We couldn\'t notify the author of your reply.</p>';
-                        }
-                      );
-                     }
-                  },
-                  function(reason) {
-                    // FIXME: this isn't getting thrown, gets stuck in getEndpoint
-                    console.log('No inbox, no notification sent');
-                    console.log(reason);
-                    replyToResource.querySelector('.response-message').innerHTML += '<p class="error">We couldn\'t notify the author of your reply.</p>';
-                  }
-                );
-              },
-              function(reason){
-                console.log(reason);
-                switch(reason.status){
-                  default:
-                    replyToResource.querySelector('.response-message').innerHTML = '<p class="error">Can\'t save your reply.</p>';
-                    break;
-                  case 0: case 405:
-                    replyToResource.querySelector('.response-message').innerHTML = '<p class="error">Can\'t save your reply: this location is not writeable.</p>';
-                    break;
-                  case 401: case 403:
-                    replyToResource.querySelector('.response-message').innerHTML = '<p class="error">Can\'t save your reply: you don\'t have permission to write here.</p>';
-                    break;
-                  case 406:
-                    replyToResource.querySelector('.response-message').innerHTML = '<p class="error">Can\'t save your reply: enter a name for your resource.</p>';
-                    break;
-                }
-              }
-            );
-          }else{
-            replyToResource.querySelector('.response-message').innerHTML = '<p class="error">Need a note and a location to save it.</p>';
-          }
+          replyToResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>')
         }
-      });
+
+        if (!iri || !note) {
+          replyToResource
+            .querySelector('.response-message')
+            .innerHTML = '<p class="error">Need a note and a location to save it.</p>'
+          return
+        }
+
+        var datetime = DO.U.getDateTimeISO()
+        var attributeId = DO.U.generateAttributeId()
+        var noteIRI = document.querySelector('#reply-to-resource #' + id +
+          '-' + action).innerText.trim()
+        var motivatedBy = "oa:replying"
+        var noteData = {
+          "type": 'article',
+          "mode": "write",
+          "motivatedByIRI": motivatedBy,
+          "id": attributeId,
+          "iri": noteIRI, //e.g., https://example.org/path/to/article
+          "creator": {},
+          "datetime": datetime,
+          "target": {
+            "iri": iri
+          },
+          "body": note, // content
+          "license": {}
+        }
+        if (DO.C.User.IRI) {
+          noteData.creator["iri"] = DO.C.User.IRI
+        }
+        if (DO.C.User.Name) {
+          noteData.creator["name"] = DO.C.User.Name
+        }
+        if (DO.C.User.Image) {
+          noteData.creator["image"] = DO.C.User.Image
+        }
+        if (DO.C.User.URL) {
+          noteData.creator["url"] = DO.C.User.URL
+        }
+
+        var license = document.querySelector('#reply-to-resource-license')
+        if (license && license.length > 0) {
+          noteData.license["iri"] = license.value.trim()
+          noteData.license["name"] = DO.C.License[license.value.trim()].name
+        }
+
+        var note = DO.U.createNoteDataHTML(noteData)
+
+        var data = DO.U.createHTML(noteIRI, note)
+
+        fetcher.putResource(noteIRI, data)
+
+          .catch(error => {
+            console.error('Could not save reply:', error)
+
+            let errorMessage
+
+            switch (error.status) {
+              case 0:
+              case 405:
+                errorMessage = 'this location is not writable'
+                break
+              case 401:
+              case 403:
+                errorMessage = 'you do not have permission to write here'
+                break
+              case 406:
+                errorMessage = 'enter a name for your resource'
+                break
+              default:
+                // some other reason
+                errorMessage = error.message
+                break
+            }
+
+            // re-throw, to break out of the promise chain
+            throw new Error('Cannot save your reply:', errorMessage)
+          })
+
+          .then(response => {
+            replyToResource
+              .querySelector('.response-message')
+              .innerHTML = '<p class="success"><a href="' + response.url + '">Reply saved!</a></p>'
+
+            // Determine the inbox endpoint, to send the notification to
+            return DO.U.getEndpoint(DO.C.Vocab[ 'ldpinbox' ][ '@id' ])
+              .catch(error => {
+                console.error('Could not fetch inbox endpoint:', error)
+
+                // re-throw
+                throw new Error('Could not determine the author inbox endpoint')
+              })
+          })
+
+          .then(inbox => {
+            if (!inbox) {
+              throw new Error('Author inbox endpoint is empty or missing')
+            }
+
+            inbox = inbox[0]
+
+            let notificationStatements = '    <dl about="' + noteIRI +
+              '">\n<dt>Object type</dt><dd><a about="' +
+              noteIRI + '" typeof="oa:Annotation" href="' +
+              DO.C.Vocab['oaannotation']['@id'] +
+              '">Annotation</a></dd>\n<dt>Motivation</dt><dd><a href="' +
+              DO.C.Prefixes[motivatedBy.split(':')[0]] +
+              motivatedBy.split(':')[1] + '" property="oa:motivation">' +
+              motivatedBy.split(':')[1] + '</a></dd>\n</dl>\n'
+
+            let notificationData = {
+              "type": ['as:Announce'],
+              "inbox": inbox,
+              "object": noteIRI,
+              "target": iri,
+              "license": noteData.license["iri"],
+              "statements": notificationStatements
+            }
+
+            DO.U.notifyInbox(notificationData)
+              .catch(error => {
+                console.error('Failed sending notification to ' + inbox + ' :', error)
+
+                throw new Error('Failed sending notification to author inbox')
+              })
+          })
+
+          .then(() => {  // Success!
+            replyToResource
+              .querySelector('.response-message')
+              .innerHTML += '<p class="success">Notification sent</p>';
+          })
+
+          .catch(error => {
+            // Catch-all error, actually notify the user
+            replyToResource
+              .querySelector('.response-message')
+              .innerHTML += '<p class="error">' +
+                'We could not notify the author of your reply:' +
+                error.message + '</p>'
+          })
+      })
     },
 
     showActionMessage: function(node, message) {
@@ -3638,7 +3718,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
     },
 
 
-    createNewDocument: function(e) {
+    createNewDocument: function createNewDocument (e) {
       e.target.disabled = true;
       document.body.insertAdjacentHTML('beforeend', '<aside id="create-new-document" class="do on"><button class="close" title="Close">❌</button><h2>Create New Document</h2></aside>');
 
