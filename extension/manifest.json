@@ -2,7 +2,7 @@
   "name": "dokieli Browser Extension",
   "short_name": "dokieli Extension",
   "author":"dokieli Team",
-  "version": "1.2.4",
+  "version": "1.2.6",
   "manifest_version": 2,
   "minimum_chrome_version": "18",
   "description": "dokieli is a clientside editor for decentralised article publishing, annotations and social interactions.",
@@ -22,7 +22,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["file:///*/*","*://*/*"],
+      "matches": ["<all_urls>"],
       "js": [
              "browser.js",
              "extension-content-script.js",
@@ -37,9 +37,8 @@
   "permissions": [
     "tabs", 
     "activeTab",
-    "*://*/*", 
-    "file:///*/*",
-    "management"
+    "management",
+    "<all_urls>"
   ],
   "web_accessible_resources": [
       "media/css/*",
