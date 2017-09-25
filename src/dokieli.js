@@ -949,37 +949,6 @@ var DO = {
       }
     },
 
-    //I want HTTP COPY and I want it now!
-    copyResource: function copyResource (fromURL, toURL, options = {}) {
-      let headers = { 'Accept': '*/*' }
-      let contentType
-
-      if (!fromURL || !toURL) {
-        return Promise.reject(new Error('Missing fromURL or toURL in copyResource'))
-      }
-
-      return fetcher.getResource(fromURL, headers, options)
-        .then(response => {
-          contentType = response.headers.get('Content-Type')
-
-          return (DO.C.AcceptBinaryTypes.indexOf(contentType))
-            ? response.arrayBuffer()
-            : response.text()
-        })
-        .then(contents => {
-          return fetcher.putResource(toURL, contents, contentType, null, options)
-            .catch(error => {
-              if (error.status === 0) {
-                // Retry with no credentials
-                options.noCredentials =  true
-                return fetcher.putResource(toURL, contents, contentType, null, options)
-              }
-
-              throw error  // re-throw error
-            })
-        })
-    },
-
     notifyInbox: function(o) {
       var slug, inbox;
       if ('slug' in o) {
@@ -4002,7 +3971,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       return url;
     },
 
-    copyRelativeResources: function(storageIRI, relativeNodes) {
+    copyRelativeResources: function copyRelativeResources (storageIRI, relativeNodes) {
       var ref = '';
       var baseURL = DO.U.getBaseURL(storageIRI);
 
@@ -4026,7 +3995,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           var pathToFile = DO.U.setBaseURL(fromURL, {'baseURLType': 'base-url-relative'});
           fromURL = DO.U.getBaseURL(document.location.href) + pathToFile.replace(/^\//g, '');
           var toURL = baseURL + pathToFile.replace(/^\//g, '');
-          DO.U.copyResource(fromURL, toURL);
+          fetcher.copyResource(fromURL, toURL);
          }
       };
     },
