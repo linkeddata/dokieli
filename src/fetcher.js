@@ -6,12 +6,44 @@ const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
 const LDP_RESOURCE = '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
 
 module.exports = {
+  copyResource,
   currentLocation,
   getResource,
   getResourceHead,
   getResourceOptions,
   putResource,
   putResourceACL
+}
+
+// I want HTTP COPY and I want it now!
+function copyResource (fromURL, toURL, options = {}) {
+  let headers = { 'Accept': '*/*' }
+  let contentType
+
+  if (!fromURL || !toURL) {
+    return Promise.reject(new Error('Missing fromURL or toURL in copyResource'))
+  }
+
+  return getResource(fromURL, headers, options)
+    .then(response => {
+      contentType = response.headers.get('Content-Type')
+
+      return (DO.C.AcceptBinaryTypes.indexOf(contentType))
+        ? response.arrayBuffer()
+        : response.text()
+    })
+    .then(contents => {
+      return putResource(toURL, contents, contentType, null, options)
+        .catch(error => {
+          if (error.status === 0) {
+            // Retry with no credentials
+            options.noCredentials = true
+            return putResource(toURL, contents, contentType, null, options)
+          }
+
+          throw error  // re-throw error
+        })
+    })
 }
 
 /**
@@ -215,7 +247,7 @@ function putResource (url, data, contentType, links, options = {}) {
  * @returns {Promise<Response|null>}
  */
 function putResourceACL (accessToURL, aclURL, acl) {
-  if(!DO.C.User.IRI) {
+  if (!DO.C.User.IRI) {
     console.log('Go through sign-in or do: DO.C.User.IRI = "https://example.org/#i";')
     return Promise.resolve(null)
   }
@@ -224,16 +256,15 @@ function putResourceACL (accessToURL, aclURL, acl) {
     'u': { 'iri': [DO.C.User.IRI], 'mode': ['acl:Control', 'acl:Read', 'acl:Write'] },
     'g': { 'iri': ['http://xmlns.com/foaf/0.1/Agent'], 'mode': ['acl:Read'] },
     'o': { 'iri': [], 'mode': [] }
-  };
+  }
 
   let agent, agentClass, mode
 
-  if('u' in acl && 'iri' in acl.u && 'mode' in acl.u) {
+  if ('u' in acl && 'iri' in acl.u && 'mode' in acl.u) {
     agent = '<' + acl.u.iri.join('> , <') + '>'
     mode = acl.u.mode.join(' , ')
-  }
-  else {
-    agent = '<' + DO.C.User.IRI + '>';
+  } else {
+    agent = '<' + DO.C.User.IRI + '>'
     mode = 'acl:Control , acl:Read , acl:Write'
   }
 
@@ -245,8 +276,8 @@ function putResourceACL (accessToURL, aclURL, acl) {
     ' ; acl:agent ' + agent + ' ] .'
   )
 
-  if('g' in acl && 'iri' in acl.g && acl.g.iri.length >= 0) {
-    agentClass = '<' + acl.g.iri.join('> , <') + '>';
+  if ('g' in acl && 'iri' in acl.g && acl.g.iri.length >= 0) {
+    agentClass = '<' + acl.g.iri.join('> , <') + '>'
     mode = acl.g.mode.join(' , ')
     authorizations.push(
       '[ a acl:Authorization ; acl:accessTo <' + accessToURL +
