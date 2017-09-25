@@ -11,6 +11,7 @@ module.exports = {
   getResource,
   getResourceHead,
   getResourceOptions,
+  patchResource,
   putResource,
   putResourceACL
 }
@@ -178,6 +179,44 @@ function getResourceOptions (url, options = {}) {
       }
 
       return { headers: response.headers }  // Not currently used anywhere
+    })
+}
+
+function patchResource (url, deleteBGP, insertBGP, options = {}) {
+  // insertBGP and deleteBGP are basic graph patterns.
+  if (deleteBGP) {
+    deleteBGP = 'DELETE DATA { ' + deleteBGP + ' };'
+  }
+
+  if (insertBGP) {
+    insertBGP = 'INSERT DATA { ' + insertBGP + ' };'
+  }
+
+  options.body = deleteBGP + insertBGP
+
+  options.method = 'PATCH'
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  options.headers = options.headers || {}
+
+  options.headers['Content-Type'] = 'application/sparql-update; charset=utf-8'
+
+  return fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error patching resource: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      return response
     })
 }
 
