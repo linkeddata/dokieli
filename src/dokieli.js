@@ -857,38 +857,6 @@ var DO = {
       return pIRI;
     },
 
-    putResource: function(url, data, contentType, links, options) {
-      if (url && url.length > 0) {
-        contentType = contentType || 'text/html; charset=utf-8';
-        var ldpResource = '<http://www.w3.org/ns/ldp#Resource>; rel="type"';
-        links = (links) ? ldpResource + ', ' + links : ldpResource;
-        options = options || {};
-
-        return new Promise(function(resolve, reject) {
-          var http = new XMLHttpRequest();
-          http.open('PUT', url);
-          http.setRequestHeader('Content-Type', contentType);
-          http.setRequestHeader('Link', links);
-          if (!options.noCredentials) {
-            http.withCredentials = true;
-          }
-          DO.U.showXHRProgressHTML(http, options);
-          http.onreadystatechange = function() {
-            if (this.readyState == this.DONE) {
-              if (this.status === 200 || this.status === 201 || this.status === 204) {
-                return resolve({xhr: this});
-              }
-              return reject({status: this.status, xhr: this});
-            }
-          };
-          http.send(data);
-        });
-      }
-      else {
-        return Promise.reject({'message': 'url parameter not valid'});
-      }
-    },
-
     postResource: function(url, slug, data, contentType, links, options) {
       if (url && url.length > 0) {
         contentType = contentType || 'text/html; charset=utf-8';
@@ -999,11 +967,12 @@ var DO = {
             : response.text()
         })
         .then(contents => {
-          return DO.U.putResource(toURL, contents, contentType, null, options)
+          return fetcher.putResource(toURL, contents, contentType, null, options)
             .catch(error => {
-              if(error.status === 0){
-                options.noCredentials =  true;
-                return DO.U.putResource(toURL, contents, contentType, null, options);
+              if (error.status === 0) {
+                // Retry with no credentials
+                options.noCredentials =  true
+                return fetcher.putResource(toURL, contents, contentType, null, options)
               }
 
               throw error  // re-throw error
@@ -6607,7 +6576,7 @@ WHERE {\n\
 
                 //External Note
                 case 'article': case 'approve': case 'disapprove': case 'specificity':
-                  if (DO.U.Editor.MediumEditor.options.id == 'review') {
+                  if (DO.U.Editor.MediumEditor.options.id === 'review') {
                     motivatedBy = 'oa:assessing';
                     refLabel = DO.U.getReferenceLabel(motivatedBy);
                   }
@@ -6852,81 +6821,94 @@ WHERE {\n\
 
                   var data = DO.U.createHTML(noteIRI, note);
 
-                  annotationDistribution.forEach(function(i){
-                    DO.U.serializeData(data, 'text/html', i['contentType'], { 'subjectURI': i['noteIRI'] }).then(
-                      function(data) {
-                        if(!('canonical' in i)) {
-                          switch(i['contentType']) {
-                            default: break;
+                  annotationDistribution.forEach(annotation => {
+                    DO.U.serializeData(data, 'text/html', annotation['contentType'], { 'subjectURI': annotation['noteIRI'] })
+
+                      .catch(error => {
+                        console.log('Error serializing annotation:', error)
+
+                        throw error  // re-throw, break out of promise chain
+                      })
+
+                      .then(data => {
+                        if (!('canonical' in annotation)) {
+                          switch (annotation[ 'contentType' ]) {
                             case 'application/ld+json':
-                              var x = JSON.parse(data);
-                              x[0]["via"] = x[0]["@id"];
-                              x[0]["@id"] = i['noteURL'];
-                              data = JSON.stringify(x);
-                              break;
+                              let x = JSON.parse(data)
+                              x[ 0 ][ "via" ] = x[ 0 ][ "@id" ]
+                              x[ 0 ][ "@id" ] = annotation[ 'noteURL' ]
+                              data = JSON.stringify(x)
+                              break
+                            default:
+                              break
                           }
                         }
 
-                        DO.U.putResource(i['noteURL'], data, i['contentType']).then(
-                          function(response) {
-                            if(i['canonical']) {
-                              DO.U.positionInteraction(i['noteIRI'], document.body).then(
-                                function(r) {
-// console.log(i);
-                                },
-                                function(reason) {
-                                  console.log(reason);
-                                }
-                              );
+                        return fetcher.putResource(annotation[ 'noteURL' ], data, annotation[ 'contentType' ])
+                          .catch(error => {
+                            console.log('Error saving annotation:', error)
+                            throw error // re-throw, break out of promise chain
+                          })
+                      })
 
-                              //TODO: resourceIRI for getEndpoint should be the closest IRI (not necessarily the document). Test resolve/reject better.
-                              DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id']).then(
-                                function(inbox) {
-                                  if (inbox.length > 0) {
-                                    inbox = inbox[0];
-                                    var notificationData = {
-                                      "type": notificationType,
-                                      "inbox": inbox,
-                                      "slug": id,
-                                      "object": notificationObject,
-                                      "license": opts.license
-                                    };
+                      .then(() => {
+                        if (!annotation[ 'canonical' ]) {
+                          // Nothing else needs to be done, go on to the
+                          // next annotation (error will be suppressed in
+                          // the catch-all .catch() clause below)
+                          throw new Error()
+                        }
 
-                                    if(typeof notificationTarget !== 'undefined') {
-                                      notificationData['target'] = notificationTarget;
-                                    }
-                                    if(typeof notificationContext !== 'undefined') {
-                                      notificationData['context'] = notificationContext;
-                                    }
-                                    if(typeof notificationStatements !== 'undefined') {
-                                      notificationData['statements'] = notificationStatements;
-                                    }
+                        return DO.U.positionInteraction(annotation[ 'noteIRI' ], document.body)
+                          .catch(console.log)
+                      })
 
-                                    DO.U.notifyInbox(notificationData).then(
-                                      function(response) {
-// console.log("Notification: " + response.xhr.getResponseHeader('Location'));
-                                      },
-                                      function(reason) {
-                                        console.log(reason);
-                                      }
-                                    );
-                                  }
-                                },
-                                function(reason) {
-                                  console.log('TODO: How can the interaction inform the target?');
-                                  console.log(reason);
-                                }
-                              );
-                            }
-                          },
-                          function(reason) {
-                            console.log('PUT failed');
-                            console.log(reason);
+                      .then(() => {
+                        return DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id'])
+                          .catch(error => {
+                            console.log('Error fetching ldpinbox endpoint:', error)
+                            throw error
+                          })
+                      })
+
+                      .then(inbox => {
+                        // TODO: resourceIRI for getEndpoint should be the
+                        // closest IRI (not necessarily the document).
+                        // Test resolve/reject better.
+
+                        if (inbox.length > 0) {
+                          inbox = inbox[0];
+                          let notificationData = {
+                            "type": notificationType,
+                            "inbox": inbox,
+                            "slug": id,
+                            "object": notificationObject,
+                            "license": opts.license
+                          };
+
+                          if(typeof notificationTarget !== 'undefined') {
+                            notificationData['target'] = notificationTarget;
                           }
-                        );
-                      }
-                    );
-                  });
+                          if(typeof notificationContext !== 'undefined') {
+                            notificationData['context'] = notificationContext;
+                          }
+                          if(typeof notificationStatements !== 'undefined') {
+                            notificationData['statements'] = notificationStatements;
+                          }
+
+                          return DO.U.notifyInbox(notificationData)
+                            .catch(error => {
+                              console.log('Error notifying the inbox:', error)
+                            })
+                        }
+                      })
+
+                      .catch(() => {  // catch-all
+                        // suppress the error, it was already logged to the console above
+                        // nothing else needs to be done, the loop will proceed
+                        // to the next annotation
+                      })
+                  })  // annotationDistribution.forEach
                   break;
 
                 case 'note':
@@ -7038,16 +7020,15 @@ WHERE {\n\
                 case 'bookmark':
                   var data = DO.U.createHTML(noteIRI, note);
 
-                  DO.U.putResource(noteIRI, data).then(
-                    function(i) {
-                      //TODO: Let the user know that it was bookmarked
-                    },
-                    function(reason) {
-                      console.log('PUT failed');
-                      console.log(reason);
-                    }
-                  );
-                  break;
+                  fetcher.putResource(noteIRI, data)
+                    .then(() => {
+                      // TODO: Let the user know that it was bookmarked
+                    })
+                    .catch(error => {
+                      console.log('Error saving bookmark:', error)
+                    })
+
+                  break
               }
 
               this.window.getSelection().removeAllRanges();
