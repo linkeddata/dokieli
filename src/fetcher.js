@@ -8,6 +8,7 @@ const LDP_RESOURCE = '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
 module.exports = {
   copyResource,
   currentLocation,
+  deleteResource,
   getResource,
   getResourceHead,
   getResourceOptions,
@@ -52,6 +53,41 @@ function copyResource (fromURL, toURL, options = {}) {
  */
 function currentLocation () {
   return window.location.origin + window.location.pathname
+}
+
+/**
+ * deleteResource
+ *
+ * @param url {string}
+ * @param options {object}
+ *
+ * @returns {Promise<Response>}
+ */
+function deleteResource (url, options = {}) {
+  if (!url) {
+    return Promise.reject(new Error('Cannot DELETE resource - missing url'))
+  }
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  options.method = 'DELETE'
+
+  return fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error deleting resource: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      return response
+    })
 }
 
 /**

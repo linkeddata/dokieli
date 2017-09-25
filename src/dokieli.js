@@ -892,31 +892,6 @@ var DO = {
       }
     },
 
-    deleteResource: function(url, options) {
-      if (url && url.length > 0) {
-        options = options || {};
-        return new Promise(function(resolve, reject) {
-          var http = new XMLHttpRequest();
-          http.open('DELETE', url);
-          if (!options.noCredentials) {
-            http.withCredentials = true;
-          }
-          http.onreadystatechange = function() {
-            if (this.readyState == this.DONE) {
-              if (this.status === 200 || this.status === 202 || this.status === 204) {
-                return resolve(true);
-              }
-              return reject({status: this.status, xhr: this});
-            }
-          };
-          http.send();
-        });
-      }
-      else {
-        return Promise.reject({'message': 'url parameter not valid'});
-      }
-    },
-
     notifyInbox: function(o) {
       var slug, inbox;
       if ('slug' in o) {
@@ -1307,18 +1282,14 @@ var DO = {
           var noteIRI = article.closest('blockquote[cite]');
           noteIRI = noteIRI.getAttribute('cite');
 
-          DO.U.deleteResource(noteIRI).then(
-            function(i){
-              var aside = e.target.closest('aside.do');
-              aside.parentNode.removeChild(aside);
-              var span = document.querySelector('span[about="#' + refId + '"]');
-              span.outerHTML = span.querySelector('mark').textContent;
+          fetcher.deleteResource(noteIRI)
+            .then(() => {
+              var aside = e.target.closest('aside.do')
+              aside.parentNode.removeChild(aside)
+              var span = document.querySelector('span[about="#' + refId + '"]')
+              span.outerHTML = span.querySelector('mark').textContent
               //TODO: Delete notification or send delete activity
-            },
-            function(reason){
-              console.log(reason);
-            }
-          );
+            })
         });
       }
     },
@@ -4790,18 +4761,14 @@ WHERE {\n\
                       e.preventDefault();
                       e.stopPropagation();
 
-                      DO.U.deleteResource(noteIRI).then(
-                        function(i){
-                          var aside = noteDelete.closest('aside.do');
-                          aside.parentNode.removeChild(aside);
-                          var span = document.querySelector('span[about="#' + refId + '"]');
-                          span.outerHTML = span.querySelector('mark').textContent;
-                          //TODO: Delete notification or send delete activity
-                        },
-                        function(reason){
-                          console.log(reason);
-                        }
-                      );
+                      fetcher.deleteResource(noteIRI)
+                        .then(() => {
+                          var aside = noteDelete.closest('aside.do')
+                          aside.parentNode.removeChild(aside)
+                          var span = document.querySelector('span[about="#' + refId + '"]')
+                          span.outerHTML = span.querySelector('mark').textContent
+                          // TODO: Delete notification or send delete activity
+                        })
                     });
                   }
                 }
