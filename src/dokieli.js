@@ -892,38 +892,6 @@ var DO = {
       }
     },
 
-    patchResource: function(url, deleteBGP, insertBGP, options) {
-      //insertBGP and deleteBGP are basic graph patterns.
-      if (deleteBGP) {
-        deleteBGP = 'DELETE DATA { ' + deleteBGP + ' };';
-      }
-
-      if (insertBGP) {
-        insertBGP = 'INSERT DATA { ' + insertBGP + ' };';
-      }
-
-      data = deleteBGP + insertBGP;
-
-      return new Promise(function(resolve, reject) {
-        var http = new XMLHttpRequest();
-        http.open('PATCH', url);
-        http.setRequestHeader('Content-Type', 'application/sparql-update; charset=utf-8');
-        if (!options.noCredentials) {
-          http.withCredentials = true;
-        }
-        DO.U.showXHRProgressHTML(http, options);
-        http.onreadystatechange = function() {
-          if (this.readyState == this.DONE) {
-            if (this.status === 200 || this.status === 201 || this.status === 204) {
-              return resolve({xhr: this});
-            }
-            return reject({status: this.status, xhr: this});
-          }
-        };
-        http.send(data);
-      });
-    },
-
     deleteResource: function(url, options) {
       if (url && url.length > 0) {
         options = options || {};
