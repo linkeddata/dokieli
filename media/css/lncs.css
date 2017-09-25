@@ -777,16 +777,16 @@ margin-bottom:1em;
 }
 
 html {
-counter-reset:figure 0;
+counter-reset:figcaption 0;
 }
 body {
 counter-reset:listing 0;
 }
 article {
-counter-reset:table 0;
+counter-reset:caption 0;
 }
-figure {
-counter-increment:figure;
+figcaption {
+counter-increment:figcaption;
 }
 figure.listing {
 counter-increment:listing;
@@ -794,8 +794,8 @@ counter-increment:listing;
 figure.equation {
 counter-increment:equation;
 }
-table {
-counter-increment:table;
+caption {
+counter-increment:caption;
 }
 figure.equation:after {
 content:"(" counter(equation) ")";
@@ -805,17 +805,18 @@ top:45%;
 right:0;
 }
 figcaption:before {
-content:"Fig. " counter(figure) ". ";
+content:"Fig. " counter(figcaption) ". ";
 }
 figure.listing figcaption:before {
 content:"Listing " counter(listing) ". ";
 }
 caption:before {
-content:"Table " counter(table) ". ";
+content:"Table " counter(caption) ". ";
 }
 
 
-.figure-column-2 {
+.figure-column-2,
+.figure-column-3 {
 /*-webkit-column-count:2;*/
 /*-webkit-column-width:47.5%;*/
 /*-webkit-column-gap:5%;*/
@@ -828,23 +829,37 @@ content:"Table " counter(table) ". ";
 float:left;
 width:100%;
 }
-.figure-column-2 + * {
+.figure-column-2 + *,
+.figure-column-3 + * {
 clear:both;
 }
-.figure-column-2 figure {
+.figure-column-2 figure,
+.figure-column-3 figure {
 margin-top:0;
 width:47.5%;
 margin-left:5%;
 float:left;
 }
+.figure-column-3 figure {
+width:30%;
+}
+
 .figure-column-2 figure:nth-child(odd) {
+clear:both;
+margin-left:0;
+}
+.figure-column-3 figure:nth-child(3n + 1) {
 clear:both;
 margin-left:0;
 }
 .figure-column-2 img,
 .figure-column-2 object,
 .figure-column-2 video,
-.figure-column-2 audio {
+.figure-column-2 audio,
+.figure-column-3 img,
+.figure-column-3 object,
+.figure-column-3 video,
+.figure-column-3 audio {
 max-width:100%;
 }
 

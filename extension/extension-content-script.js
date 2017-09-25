@@ -23,7 +23,7 @@
       var iri = ev_data.webid;
 
       if (g_loaded && (cur_webid==null || cur_webid!=iri)) 
-         DO.U.setUserWebId(iri);
+         DO.U.submitSignIn(iri);
 
       cur_webid = iri;
     }
@@ -69,7 +69,7 @@
         sendResponse({}); /* stop */
 
         if (cur_webid!==null)
-          DO.U.setUserWebId(cur_webid);
+          DO.U.submitSignIn(cur_webid);
 
         DO.U.showDocumentMenu();
       }

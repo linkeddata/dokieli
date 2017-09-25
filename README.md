@@ -11,11 +11,14 @@ interoperability.
 
 It can be used as a:
 * single-page application - open any dokieli article
-* browser extension - import this repository in your Web browser
+* browser extension - import this repository in your Web browser or install Web
+Extension from [Add-ons for Firefox](https://addons.mozilla.org/en-US/firefox/addon/dokieli/)
+or [Chrome Web Store](https://chrome.google.com/webstore/detail/ddmhaonbhodhgkaljpjlglodncddalid)
 
-An extended description of its design and architecture is available here:
-[Decentralised Authoring, Annotations and Notifications for a Read-Write-Web
-with dokieli](http://csarven.ca/dokieli-rww)
+## Documentation
+* For brave developers and authors: the canonical [documentation](https://dokie.li/docs)
+explains dokieli's principles, architectural and design patterns.
+* For academics: [Decentralised Authoring, Annotations and Notifications for a Read-Write-Web with dokieli](http://csarven.ca/dokieli-rww)
 
 
 ## Features
@@ -87,6 +90,21 @@ These libraries *optional* when dokieli is used as single-page application:
 * [MediumEditor](https://github.com/yabwe/medium-editor) (MIT License)
 
 
+## Development
+* See the [dokieli documentation](https://dokie.li/docs). Quick dev:
+```
+git clone https://github.com/linkeddata/dokieli
+cd dokieli
+
+# Creates scripts/do.js.
+npm run build
+
+# Watch and update files
+npm run watch
+
+```
+
+
 ## License
 [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
@@ -98,16 +116,20 @@ These libraries *optional* when dokieli is used as single-page application:
 * [Renato Stauffer](https://github.com/reni99)
 * [Kingsley Idehen](https://github.com/kidehen) (and [OpenLink Software](https://github.com/openlink))
 * [Ruben Taelman](https://github.com/rubensworks)
+* [Dmitri Zagidulin](https://github.com/dmitrizagidulin)
+* [Sergey Malinin](https://github.com/smalinin)
 
 ### Acknowledgements
 * [Nicola Greco](https://github.com/nicola)
 * [Tim Berners-Lee](https://github.com/timbl)
 * [Melvin Carvalho](https://github.com/melvincarvalho)
 * [Andrei Vlad Sambra](https://github.com/deiu)
-* [Dmitri Zagidulin](https://github.com/dmitrizagidulin)
 * [Sandro Hawke](https://github.com/sandhawke)
 * [Amy van der Hiel](https://github.com/amyvdh)
 * [Henry Story](https://github.com/bblfish)
+* [Benjamin Young](https://github.com/bigbluehat)
+* [Gerben Treora](https://github.com/treora)
+* [Herbert Van de Sompel](https://github.com/hvdsomp)
 
 ## How to contribute
 * Use it. Break it. Report it. Fix it! See [issues](https://github.com/linkeddata/dokieli/issues/).

@@ -1,715 +1,716 @@
 <!DOCTYPE html>
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <meta charset="utf-8" />
-        <title>A Sample ACM SIG Proceedings Paper in LaTeX Format</title>
-        <link rel="stylesheet alternate" href="media/css/lncs.css" media="all" title="LNCS" />
-        <link rel="stylesheet" href="media/css/acm.css" media="all" title="ACM" />
-        <link rel="stylesheet alternate" href="https://www.w3.org/StyleSheets/TR/W3C-ED.css" media="all" title="W3C-ED"/>
-        <link rel="stylesheet" href="media/css/do.css" media="all" />
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />
-        <script src="scripts/simplerdf.js"></script>
-        <script src="scripts/medium-editor.min.js"></script>
-        <script src="scripts/medium-editor-tables.min.js"></script>
-        <script src="scripts/do.js"></script>
-    </head>
+  <head>
+    <meta charset="utf-8" />
+    <title>A Sample ACM SIG Proceedings Paper in LaTeX Format</title>
+    <link rel="stylesheet alternate" href="media/css/lncs.css" media="all" title="LNCS" />
+    <link rel="stylesheet" href="media/css/acm.css" media="all" title="ACM" />
+    <link rel="stylesheet alternate" href="https://www.w3.org/StyleSheets/TR/W3C-ED.css" media="all" title="W3C-ED"/>
+    <link rel="stylesheet" href="media/css/do.css" media="all" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="scripts/simplerdf.js"></script>
+    <script src="scripts/medium-editor.min.js"></script>
+    <script src="scripts/medium-editor-tables.min.js"></script>
+    <script src="scripts/do.js"></script>
+  </head>
 
-    <body about="" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ dctypes: http://purl.org/dc/dcmitype/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# cc: https://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# qb: http://purl.org/linked-data/cube# schema: http://schema.org/ void: http://rdfs.org/ns/void# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# org: http://www.w3.org/ns/org# biblio: http://purl.org/net/biblio# bibo: http://purl.org/ontology/bibo/ book: http://purl.org/NET/book/vocab# ov: http://open.vocab.org/terms/ sioc: http://rdfs.org/sioc/ns# doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp# solid: http://www.w3.org/ns/solid/terms# acl: http://www.w3.org/ns/auth/acl# dio: https://w3id.org/dio#" typeof="schema:CreativeWork sioc:Post prov:Entity">
-        <main>
-            <article about="" typeof="schema:ScholarlyArticle">
-                <h1 property="schema:name">A Sample <em>ACM</em> SIG Proceedings Paper in LaTeX Format<sup>∗</sup></h1>
-                <p id="subtitle">[Extended Abstract] <sup>†</sup></p>
+  <body about="" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ dctypes: http://purl.org/dc/dcmitype/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# cc: https://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# qb: http://purl.org/linked-data/cube# schema: http://schema.org/ void: http://rdfs.org/ns/void# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# org: http://www.w3.org/ns/org# biblio: http://purl.org/net/biblio# bibo: http://purl.org/ontology/bibo/ book: http://purl.org/NET/book/vocab# ov: http://open.vocab.org/terms/ sioc: http://rdfs.org/sioc/ns# doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp# solid: http://www.w3.org/ns/solid/terms# acl: http://www.w3.org/ns/auth/acl# dio: https://w3id.org/dio#" typeof="schema:CreativeWork sioc:Post prov:Entity">
+    <main>
+      <article about="" typeof="schema:ScholarlyArticle">
+        <h1 property="schema:name">A Sample <em>ACM</em> SIG Proceedings Paper in LaTeX Format<sup>∗</sup></h1>
+        <p id="subtitle">[Extended Abstract] <sup>†</sup></p>
 
-                <div id="authors">
-                    <dl id="author-name">
-                        <dt>Authors</dt>
-                        <dd id="author-1"><span about="" rel="schema:creator schema:publisher schema:contributor schema:author"><a about="#Ben-Trovato" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Ben Trovato</a></span><span about="#Ben-Trovato" rel="schema:memberOf" resource="#Institute-for-Clarity-in-Documentation"></span><sup><a href="#author-org-1">1</a></sup><sup><a href="#author-email-1">‡</a></sup></dd>
-                        <dd id="author-2"><span about="" rel="schema:contributor"><a about="#G-K-M-Tobin" typeof="schema:Person" rel="schema:url" property="schema:name" href="">G.K.M. Tobin</a></span><span about="#G-K-M-Tobin" rel="schema:memberOf" resource="#Institute-for-Clarity-in-Documentation"></span><sup><a href="#author-org-2">2</a></sup><sup><a href="#author-email-2">§</a></sup></dd>
-                        <dd id="author-3"><span about="" rel="schema:contributor"><a about="#Lars-Thørväld" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Lars Thørväld</a></span><span about="#Lars-Thørväld" rel="schema:memberOf" resource="#The-Thørväld-Group"></span><sup><a href="#author-org-3">3</a></sup><sup><a href="#author-email-3">¶</a></sup></dd>
-                        <dd id="author-4"><span about="" rel="schema:contributor"><a about="#Lawrence-P-Leipuner" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Lawrence P. Leipuner</a></span><span about="#Lawrence-P-Leipuner" rel="schema:memberOf" resource="#Brookhaven-Laboratories"></span><sup><a href="#author-org-4">4</a></sup><sup><a href="#author-email-4">x</a></sup></dd>
-                        <dd id="author-5"><span about="" rel="schema:contributor"><a about="#Sean-Fogarty" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Sean Fogarty</a></span><span about="#Sean-Fogarty" rel="schema:memberOf" resource="#NASA-Ames-Research-Center"></span><sup><a href="#author-org-5">5</a></sup><sup><a href="#author-email-5">y</a></sup></dd>
-                        <dd id="author-6"><span about="" rel="schema:contributor"><a about="#Charles-Palmer" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Charles Palmer</a></span><span about="#Charles-Palmer" rel="schema:memberOf" resource="#Palmer-Research-Laboratories"></span><sup><a href="#author-org-6">6</a></sup><sup><a href="#author-email-6">z</a></sup></dd>
-                    </dl>
+        <div id="authors">
+          <dl id="author-name">
+            <dt>Authors</dt>
+            <dd id="author-1"><span about="" rel="schema:creator schema:publisher schema:author"><a about="#Ben-Trovato" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Ben Trovato</a></span><span about="#Ben-Trovato" rel="schema:memberOf" resource="#Institute-for-Clarity-in-Documentation"></span><sup><a href="#author-org-1">1</a></sup><sup><a href="#author-email-1">‡</a></sup></dd>
+            <dd id="author-2"><span about="" rel="schema:author"><a about="#G-K-M-Tobin" typeof="schema:Person" rel="schema:url" property="schema:name" href="">G.K.M. Tobin</a></span><span about="#G-K-M-Tobin" rel="schema:memberOf" resource="#Institute-for-Clarity-in-Documentation"></span><sup><a href="#author-org-2">2</a></sup><sup><a href="#author-email-2">§</a></sup></dd>
+            <dd id="author-3"><span about="" rel="schema:author"><a about="#Lars-Thørväld" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Lars Thørväld</a></span><span about="#Lars-Thørväld" rel="schema:memberOf" resource="#The-Thørväld-Group"></span><sup><a href="#author-org-3">3</a></sup><sup><a href="#author-email-3">¶</a></sup></dd>
+            <dd id="author-4"><span about="" rel="schema:author"><a about="#Lawrence-P-Leipuner" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Lawrence P. Leipuner</a></span><span about="#Lawrence-P-Leipuner" rel="schema:memberOf" resource="#Brookhaven-Laboratories"></span><sup><a href="#author-org-4">4</a></sup><sup><a href="#author-email-4">x</a></sup></dd>
+            <dd id="author-5"><span about="" rel="schema:author"><a about="#Sean-Fogarty" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Sean Fogarty</a></span><span about="#Sean-Fogarty" rel="schema:memberOf" resource="#NASA-Ames-Research-Center"></span><sup><a href="#author-org-5">5</a></sup><sup><a href="#author-email-5">y</a></sup></dd>
+            <dd id="author-6"><span about="" rel="schema:author"><a about="#Charles-Palmer" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Charles Palmer</a></span><span about="#Charles-Palmer" rel="schema:memberOf" resource="#Palmer-Research-Laboratories"></span><sup><a href="#author-org-6">6</a></sup><sup><a href="#author-email-6">z</a></sup></dd>
+          </dl>
 
-                    <ul id="author-org">
-                        <li id="author-org-1"><sup>1</sup><a about="#Institute-for-Clarity-in-Documentation" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.acm.org/">Institute for Clarity in Documentation</a>, <span class="adr"><span class="street-address">1932 Wallamaloo Lane</span>, <span class="region">Wallamaloo</span>, <span class="country-name">New Zealand</span></span></li>
-                        <li id="author-org-2"><sup>2</sup><a about="#Institute-for-Clarity-in-Documentation" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.acm.org/">Institute for Clarity in Documentation</a>, <span class="adr"><span class="post-office-box">P.O. Box 1212</span>, <span class="locality">Dublin</span>, <span class="region">Ohio</span> <span clss="postal-code">43017-6221</span></span></li>
-                        <li id="author-org-3"><sup>3</sup><a about="#The-Thørväld-Group" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.acm.org/">The Thørväld Group</a>, <span class="adr"><span class="locality">Hekla</span>, <span class="country-name">Iceland</span></span></li>
-                        <li id="author-org-4"><sup>4</sup><a about="#Brookhaven-Laboratories" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.bnl.gov/">Brookhaven Laboratories</a>, <span class="adr"><span class="street-address">Brookhaven National Lab</span>, <span class="post-office-box">P.O. Box 5000</span></span></li>
-                        <li id="author-org-5"><sup>5</sup><a about="#NASA-Ames-Research-Center" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.nasa.gov/centers/ames">NASA Ames Research Center</a>, <span class="adr"><span class="locality">Moffett Field</span>, <span class="region">California</span> <span class="postal-code">94035</span></span></li>
-                        <li id="author-org-6"><sup>6</sup><a about="#Palmer-Research-Laboratories" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.palmerlab.umd.edu/">Palmer Research Laboratories</a>, <span class="adr"><span class="street-address">8600 Datapoint Drive</span>, <span class="locality">San Antonio</span>, <span class="region">Texas</span> <span class="postal-code">78229</span></span></li>
-                    </ul>
+          <ul id="author-org">
+            <li id="author-org-1"><sup>1</sup><a about="#Institute-for-Clarity-in-Documentation" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.acm.org/">Institute for Clarity in Documentation</a>, <span class="adr"><span class="street-address">1932 Wallamaloo Lane</span>, <span class="region">Wallamaloo</span>, <span class="country-name">New Zealand</span></span></li>
+            <li id="author-org-2"><sup>2</sup><a about="#Institute-for-Clarity-in-Documentation" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.acm.org/">Institute for Clarity in Documentation</a>, <span class="adr"><span class="post-office-box">P.O. Box 1212</span>, <span class="locality">Dublin</span>, <span class="region">Ohio</span> <span clss="postal-code">43017-6221</span></span></li>
+            <li id="author-org-3"><sup>3</sup><a about="#The-Thørväld-Group" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.acm.org/">The Thørväld Group</a>, <span class="adr"><span class="locality">Hekla</span>, <span class="country-name">Iceland</span></span></li>
+            <li id="author-org-4"><sup>4</sup><a about="#Brookhaven-Laboratories" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.bnl.gov/">Brookhaven Laboratories</a>, <span class="adr"><span class="street-address">Brookhaven National Lab</span>, <span class="post-office-box">P.O. Box 5000</span></span></li>
+            <li id="author-org-5"><sup>5</sup><a about="#NASA-Ames-Research-Center" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.nasa.gov/centers/ames">NASA Ames Research Center</a>, <span class="adr"><span class="locality">Moffett Field</span>, <span class="region">California</span> <span class="postal-code">94035</span></span></li>
+            <li id="author-org-6"><sup>6</sup><a about="#Palmer-Research-Laboratories" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.palmerlab.umd.edu/">Palmer Research Laboratories</a>, <span class="adr"><span class="street-address">8600 Datapoint Drive</span>, <span class="locality">San Antonio</span>, <span class="region">Texas</span> <span class="postal-code">78229</span></span></li>
+          </ul>
 
-                    <ul id="author-email">
-                        <li id="author-email-1"><sup>‡</sup><a about="#Ben-Trovato" rel="schema:email" href="mailto:trovato@corporation.com">trovato@corporation.com</a></li>
-                        <li id="author-email-2"><sup>§</sup><a about="#G-K-M-Tobin" rel="schema:email" href="mailto:webmaster@marysville-ohio.com">webmaster@marysville-ohio.com</a></li>
-                        <li id="author-email-3"><sup>¶</sup><a about="#Lars-Thørväld" rel="schema:email" href="mailto:larst@affiliation.org">larst@affiliation.org</a></li>
-                        <li id="author-email-4"><sup>x</sup><a about="#Lawrence-P-Leipuner" rel="schema:email" href="mailto:lleipuner@researchlabs.org">lleipuner@researchlabs.org</a></li>
-                        <li id="author-email-5"><sup>y</sup><a about="#Sean-Fogarty" rel="schema:email" href="mailto:fogartys@amesres.org">fogartys@amesres.org</a></li>
-                        <li id="author-email-6"><sup>z</sup><a about="#Charles-Palmer" rel="schema:email" href="mailto:cpalmer@prl.com">cpalmer@prl.com</a></li>
-                    </ul>
+          <ul id="author-email">
+            <li id="author-email-1"><sup>‡</sup><a about="#Ben-Trovato" rel="schema:email" href="mailto:trovato@corporation.com">trovato@corporation.com</a></li>
+            <li id="author-email-2"><sup>§</sup><a about="#G-K-M-Tobin" rel="schema:email" href="mailto:webmaster@marysville-ohio.com">webmaster@marysville-ohio.com</a></li>
+            <li id="author-email-3"><sup>¶</sup><a about="#Lars-Thørväld" rel="schema:email" href="mailto:larst@affiliation.org">larst@affiliation.org</a></li>
+            <li id="author-email-4"><sup>x</sup><a about="#Lawrence-P-Leipuner" rel="schema:email" href="mailto:lleipuner@researchlabs.org">lleipuner@researchlabs.org</a></li>
+            <li id="author-email-5"><sup>y</sup><a about="#Sean-Fogarty" rel="schema:email" href="mailto:fogartys@amesres.org">fogartys@amesres.org</a></li>
+            <li id="author-email-6"><sup>z</sup><a about="#Charles-Palmer" rel="schema:email" href="mailto:cpalmer@prl.com">cpalmer@prl.com</a></li>
+          </ul>
+        </div>
+
+        <div id="content">
+          <section id="abstract">
+            <h2>Abstract</h2>
+            <div datatype="rdf:HTML" property="schema:abstract">
+              <p>This paper provides a sample of a <span class="latex">L<span>a</span>T<span>e</span>X</span> document which conforms to the formatting guidelines for ACM SIG Proceedings. It complements the document <em>Author’s Guide to Preparing ACM SIG Proceedings Using <span class="latex">L<span>a</span>T<span>e</span>X</span>2<sub>ε</sub> and Bib<span class="tex">T<span>e</span>X</span></em>. This source file has been written with the intention of being compiled under <span class="latex">L<span>a</span>T<span>e</span>X</span>2<sub>ε</sub> and BibTeX.</p>
+              <p>The developers have tried to include every imaginable sort of <q>bells and whistles</q>, such as a subtitle, footnotes on title, subtitle and authors, as well as in the text, and every optional component (e.g. Acknowledgments, Additional Authors, Appendices), not to mention examples of equations, theorems, tables and figures.</p>
+              <p>To make best use of this sample document, run it through <span class="latex">L<span>a</span>T<span>e</span>X</span> and BibTeX, and compare this source code with the printed output produced by the dvi file.</p>
+            </div>
+          </section>
+
+          <section id="categories-and-subject-descriptors">
+            <h2>Categories and Subject Descriptors</h2>
+            <div>
+              <ul>
+                <li><a rel="schema:about" resource="http://acm.rkbexplorer.com/ontologies/acm#H.4" href="http://www.acm.org/about/class/ccs98-html#H.4">H.4</a> [<strong>Information Systems Applications</strong>]: Miscellaneous</li>
+                <li><a rel="schema:about" resource="http://acm.rkbexplorer.com/ontologies/acm#D.2.8" href="http://www.acm.org/about/class/ccs98-html#D.2.8">D.2.8</a> [<strong>Software Engineering</strong>]: Metrics — <em>complexity measures, performance measures</em></li>
+              </ul>
+            </div>
+          </section>
+
+          <section id="general-terms">
+            <h2>General Terms</h2>
+            <div>
+              <ul>
+                <li>Theory</li>
+              </ul>
+            </div>
+          </section>
+
+          <section id="keywords">
+            <h2>Keywords</h2>
+            <div>
+              <ul rel="schema:about">
+                <li><a resource="http://dbpedia.org/resource/Proceedings" href="http://en.wikipedia.org/wiki/Proceedings">ACM proceedings</a></li>
+                <li><a resource="http://dbpedia.org/resource/LaTeX" href="http://en.wikipedia.org/wiki/LaTeX"><span class="latex">L<span>a</span>T<span>e</span>X</span></a></li>
+                <li><a resource="http://dbpedia.org/resource/Tag_(metadata)" href="http://en.wikipedia.org/wiki/Tag_%28metadata%29">text tagging</a></li>
+              </ul>
+            </div>
+          </section>
+
+          <section id="introduction" rel="schema:hasPart" resource="#introduction">
+            <h2 property="schema:name">Introduction</h2>
+            <div datatype="rdf:HTML" property="schema:description" resource="#introduction" typeof="deo:Introduction">
+              <p>The <em>proceedings</em> are the records of a conference. ACM seeks to give these conference by-products a uniform, high-quality appearance. To do this, ACM has some rigid requirements for the format of the proceedings documents: there is a specified format (balanced  double columns), a specified set of fonts (Arial or Helvetica and Times Roman) in certain specified sizes (for instance, 9 point for body copy), a specified live area (18 × 23.5 cm [7" × 9.25"]) centered on the page, specified size of margins (1.9 cm [0.75"]) top, (2.54 cm [1"]) bottom and (1.9 cm [.75"]) left and right; specified column width (8.45 cm [3.33"]) and gutter size (.83 cm [.33"]).</p>
+
+              <p>The good news is, with only a handful of manual settings<sup class="note"><a href="#note-1">1</a></sup>, the <span class="latex">L<span>a</span>T<span>e</span>X</span> document class file handles all of this for you.</p>
+
+              <aside class="note">
+                <p id="note-1"><sup>1</sup> Two of these, the <code>\numberofauthors</code> and <code>\alignauthor</code> commands, you have already used; another, <code>\balancecolumns</code>, will be used in your very last run of <span class="latex">L<span>a</span>T<span>e</span>X</span> to ensure balanced column heights on the last page.</p>
+              </aside>
+
+              <p>The remainder of this document is concerned with showing, in the context of an <q>actual</q> document, the <span class="latex">L<span>a</span>T<span>e</span>X</span> commands specifically available for denoting the structure of a proceedings paper, rather than with giving rigorous descriptions or explanations of such commands.</p>
+            </div>
+          </section>
+
+          <section id="the-body-of-the-paper" rel="schema:hasPart" resource="#the-body-of-the-paper">
+            <h2 property="schema:name">The <em>Body</em> of the Paper</h2>
+            <div property="schema:description">
+              <p>Typically, the body of a paper is organized into a hierarchical structure, with numbered or unnumbered headings for sections, subsections, sub-subsections, and even smaller sections. The command \section that precedes this paragraph is part of such a hierarchy.<sup class="note"><a href="#note-2">2</a></sup> <span class="latex">L<span>a</span>T<span>e</span>X</span> handles the numbering and placement of these headings for you, when you use the appropriate heading commands around the titles of the headings. If you want a sub-subsection or smaller part to be unnumbered in your output, simply append an asterisk to the command name. Examples of both numbered and unnumbered headings will appear throughout the balance of this sample document.</p>
+
+              <aside class="note">
+                <p id="note-2"><sup>2</sup> This is the second footnote. It starts a series of three footnotes that add nothing informational, but just give an idea of how footnotes work and look. It is a wordy one, just so you see how a longish one plays out.</p>
+              </aside>
+
+              <p>Because the entire article is contained in the <strong>document</strong> environment, you can indicate the start of a new paragraph with a blank line in your input file; that is why this sentence forms a separate paragraph.</p>
+
+              <section id="type-changes-and-special-characters" rel="schema:hasPart" resource="#type-changes-and-special-characters">
+                <h3 property="schema:name">Type Changes and <em>Special</em> Characters</h3>
+                <div datatype="rdf:HTML" property="schema:description">
+                  <p>We have already seen several typeface changes in this sample. You can indicate italicized words or phrases in your text with the command <code>\textit</code>; emboldening with the command <code>\textbf</code> and typewriter-style (for instance, for computer code) with <code>\texttt</code>. But remember, you do not have to indicate typestyle changes when such changes are part of the <em>structural</em> elements of your article; for instance, the heading of this subsection will be in a sans serif<sup class="note"><a href="#note-3">3</a></sup> typeface, but that is handled by the document class file. Take care with the use of<sup class="note"><a href="#note-4">4</a></sup> the curly braces in typeface changes; they mark the beginning and end of the text that is to be in the different typeface.</p>
+
+                  <aside class="note">
+                    <p id="note-3"><sup>3</sup> A third footnote, here. Let’s make this a rather short one to see how it looks.</p>
+                    <p id="note-4"><sup>4</sup> A fourth, and last, footnote.</p>
+                  </aside>
+
+                  <p>You can use whatever symbols, accented characters, or non-English characters you need anywhere in your document; you can find a complete list of what is available in the <em><span class="latex">L<span>a</span>T<span>e</span>X</span> User’s Guide</em>[<a class="ref" href="#5">5</a>].</p>
                 </div>
-
-                <div id="content">
-                    <section id="abstract">
-                        <h2>Abstract</h2>
-                        <div datatype="rdf:HTML" property="schema:abstract">
-                            <p>This paper provides a sample of a <span class="latex">L<span>a</span>T<span>e</span>X</span> document which conforms to the formatting guidelines for ACM SIG Proceedings. It complements the document <em>Author’s Guide to Preparing ACM SIG Proceedings Using <span class="latex">L<span>a</span>T<span>e</span>X</span>2<sub>ε</sub> and Bib<span class="tex">T<span>e</span>X</span></em>. This source file has been written with the intention of being compiled under <span class="latex">L<span>a</span>T<span>e</span>X</span>2<sub>ε</sub> and BibTeX.</p>
-                            <p>The developers have tried to include every imaginable sort of <q>bells and whistles</q>, such as a subtitle, footnotes on title, subtitle and authors, as well as in the text, and every optional component (e.g. Acknowledgments, Additional Authors, Appendices), not to mention examples of equations, theorems, tables and figures.</p>
-                            <p>To make best use of this sample document, run it through <span class="latex">L<span>a</span>T<span>e</span>X</span> and BibTeX, and compare this source code with the printed output produced by the dvi file.</p>
-                        </div>
-                    </section>
-
-                    <section id="categories-and-subject-descriptors">
-                        <h2>Categories and Subject Descriptors</h2>
-                        <div>
-                            <ul>
-                                <li><a rel="schema:about" resource="http://acm.rkbexplorer.com/ontologies/acm#H.4" href="http://www.acm.org/about/class/ccs98-html#H.4">H.4</a> [<strong>Information Systems Applications</strong>]: Miscellaneous</li>
-                                <li><a rel="schema:about" resource="http://acm.rkbexplorer.com/ontologies/acm#D.2.8" href="http://www.acm.org/about/class/ccs98-html#D.2.8">D.2.8</a> [<strong>Software Engineering</strong>]: Metrics — <em>complexity measures, performance measures</em></li>
-                            </ul>
-                        </div>
-                    </section>
-
-                    <section id="general-terms">
-                        <h2>General Terms</h2>
-                        <div>
-                            <ul>
-                                <li>Theory</li>
-                            </ul>
-                        </div>
-                    </section>
-
-                    <section id="keywords">
-                        <h2>Keywords</h2>
-                        <div>
-                            <ul rel="schema:about">
-                                <li><a resource="http://dbpedia.org/resource/Proceedings" href="http://en.wikipedia.org/wiki/Proceedings">ACM proceedings</a></li>
-                                <li><a resource="http://dbpedia.org/resource/LaTeX" href="http://en.wikipedia.org/wiki/LaTeX"><span class="latex">L<span>a</span>T<span>e</span>X</span></a></li>
-                                <li><a resource="http://dbpedia.org/resource/Tag_(metadata)" href="http://en.wikipedia.org/wiki/Tag_%28metadata%29">text tagging</a></li>
-                            </ul>
-                        </div>
-                    </section>
-
-                    <section id="introduction" rel="schema:hasPart" resource="#introduction">
-                        <h2 property="schema:name">Introduction</h2>
-                        <div datatype="rdf:HTML" property="schema:description" resource="#introduction" typeof="deo:Introduction">
-                            <p>The <em>proceedings</em> are the records of a conference. ACM seeks to give these conference by-products a uniform, high-quality appearance. To do this, ACM has some rigid requirements for the format of the proceedings documents: there is a specified format (balanced  double columns), a specified set of fonts (Arial or Helvetica and Times Roman) in certain specified sizes (for instance, 9 point for body copy), a specified live area (18 × 23.5 cm [7" × 9.25"]) centered on the page, specified size of margins (1.9 cm [0.75"]) top, (2.54 cm [1"]) bottom and (1.9 cm [.75"]) left and right; specified column width (8.45 cm [3.33"]) and gutter size (.83 cm [.33"]).</p>
-
-                            <p>The good news is, with only a handful of manual settings<sup class="note"><a href="#note-1">1</a></sup>, the <span class="latex">L<span>a</span>T<span>e</span>X</span> document class file handles all of this for you.</p>
-
-                            <aside class="note">
-                                <p id="note-1"><sup>1</sup> Two of these, the <code>\numberofauthors</code> and <code>\alignauthor</code> commands, you have already used; another, <code>\balancecolumns</code>, will be used in your very last run of <span class="latex">L<span>a</span>T<span>e</span>X</span> to ensure balanced column heights on the last page.</p>
-                            </aside>
-
-                            <p>The remainder of this document is concerned with showing, in the context of an <q>actual</q> document, the <span class="latex">L<span>a</span>T<span>e</span>X</span> commands specifically available for denoting the structure of a proceedings paper, rather than with giving rigorous descriptions or explanations of such commands.</p>
-                        </div>
-                    </section>
-
-                    <section id="the-body-of-the-paper" rel="schema:hasPart" resource="#the-body-of-the-paper">
-                        <h2 property="schema:name">The <em>Body</em> of the Paper</h2>
-                        <div property="schema:description">
-                            <p>Typically, the body of a paper is organized into a hierarchical structure, with numbered or unnumbered headings for sections, subsections, sub-subsections, and even smaller sections. The command \section that precedes this paragraph is part of such a hierarchy.<sup class="note"><a href="#note-2">2</a></sup> <span class="latex">L<span>a</span>T<span>e</span>X</span> handles the numbering and placement of these headings for you, when you use the appropriate heading commands around the titles of the headings. If you want a sub-subsection or smaller part to be unnumbered in your output, simply append an asterisk to the command name. Examples of both numbered and unnumbered headings will appear throughout the balance of this sample document.</p>
-
-                            <aside class="note">
-                                <p id="note-2"><sup>2</sup> This is the second footnote. It starts a series of three footnotes that add nothing informational, but just give an idea of how footnotes work and look. It is a wordy one, just so you see how a longish one plays out.</p>
-                            </aside>
-
-                            <p>Because the entire article is contained in the <strong>document</strong> environment, you can indicate the start of a new paragraph with a blank line in your input file; that is why this sentence forms a separate paragraph.</p>
-
-                            <section id="type-changes-and-special-characters" rel="schema:hasPart" resource="#type-changes-and-special-characters">
-                                <h3 property="schema:name">Type Changes and <em>Special</em> Characters</h3>
-                                <div datatype="rdf:HTML" property="schema:description">
-                                    <p>We have already seen several typeface changes in this sample. You can indicate italicized words or phrases in your text with the command <code>\textit</code>; emboldening with the command <code>\textbf</code> and typewriter-style (for instance, for computer code) with <code>\texttt</code>. But remember, you do not have to indicate typestyle changes when such changes are part of the <em>structural</em> elements of your article; for instance, the heading of this subsection will be in a sans serif<sup class="note"><a href="#note-3">3</a></sup> typeface, but that is handled by the document class file. Take care with the use of<sup class="note"><a href="#note-4">4</a></sup> the curly braces in typeface changes; they mark the beginning and end of the text that is to be in the different typeface.</p>
-
-                                    <aside class="note">
-                                        <p id="note-3"><sup>3</sup> A third footnote, here. Let’s make this a rather short one to see how it looks.</p>
-                                        <p id="note-4"><sup>4</sup> A fourth, and last, footnote.</p>
-                                    </aside>
-
-                                    <p>You can use whatever symbols, accented characters, or non-English characters you need anywhere in your document; you can find a complete list of what is available in the <em><span class="latex">L<span>a</span>T<span>e</span>X</span> User’s Guide</em>[<a class="ref" href="#5">5</a>].</p>
-                                </div>
-                            </section>
-
-                            <section id="math-equations" rel="schema:hasPart" resource="#math-equations">
-                                <h3 property="schema:name">Math Equations</h3>
-                                <div datatype="rdf:HTML" property="schema:description">
-                                    <p>You may want to display math equations in three distinct styles: inline, numbered or non-numbered display. Each of the three are discussed in the next sections.</p>
-
-                                    <section id="inline-in-text-equations" rel="schema:hasPart" resource="#inline-in-text-equations">
-                                        <h4 property="schema:name">Inline (In-text) Equations</h4>
-                                        <div property="schema:description">
-                                            <p>A formula that appears in the running text is called an inline or in-text formula. It is produced by the <strong>math</strong> environment, which can be invoked with the usual <code>\begin. . .\end</code> construction or with the short form <code>$. . .$</code>. You can use any of the symbols and structures, from α to ω, available in <span class="latex">L<span>a</span>T<span>e</span>X</span>[<a class="ref" href="#5">5</a>]; this section will simply show a few examples of in-text equations in context. Notice how this equation: lim<sub><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math>→∞</sub> <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>x</mi><mo>=</mo><mn>0</mn></mrow></math>, set here in in-line math style, looks slightly different when set in display style. (See next section).</p>
-                                        </div>
-                                    </section>
-
-                                    <section id="display-equations" rel="schema:hasPart" resource="#display-equations">
-                                        <h4 property="schema:name">Display Equations</h4>
-                                        <div datatype="rdf:HTML" property="schema:description">
-                                            <p>A numbered display equation – one set off by vertical space from the text and centered horizontally – is produced by the <strong>equation</strong> environment. An unnumbered display equation is produced by the <strong>displaymath</strong> environment.</p>
-                                            <p>Again, in either environment, you can use any of the symbols and structures available in <span class="latex">L<span>a</span>T<span>e</span>X</span>; this section will just give a couple of examples of display equations in context. First, consider the equation, shown as an inline equation above:</p>
-
-                                            <figure class="equation" typeof="doco:FormulaBox">
-                                                <math xmlns="http://www.w3.org/1998/Math/MathML">
-                                                    <mtable>
-                                                        <mtr>
-                                                            <mtd>
-                                                                <munder>
-                                                                    <mi>lim</mi>
-                                                                    <mrow>
-                                                                        <mi>n</mi>
-                                                                        <mo>→</mo>
-                                                                        <mo>∞</mo>
-                                                                    </mrow>
-                                                                </munder>
-                                                                <mi>x</mi>
-                                                                <mo>=</mo>
-                                                                <mn>0</mn>
-                                                            </mtd>
-                                                        </mtr>
-                                                    </mtable>
-                                                </math>
-                                            </figure>
-
-                                            <p>Notice how it is formatted somewhat differently in the <strong>displaymath</strong> environment. Now, we’ll enter an unnumbered equation:</p>
-
-                                            <math xmlns="http://www.w3.org/1998/Math/MathML">
-                                                <mtable displaystyle="true">
-                                                    <mtr>
-                                                        <mtd columnalign="left">
-                                                            <mstyle displaystyle="true">
-                                                                <munderover>
-                                                                    <mo>∑</mo>
-                                                                    <mrow>
-                                                                        <mi>i</mi>
-                                                                        <mo>=</mo>
-                                                                        <mn>0</mn>
-                                                                    </mrow>
-                                                                    <mo>∞</mo>
-                                                                </munderover>
-                                                            </mstyle>
-                                                            <mi>x</mi>
-                                                            <mo>+</mo>
-                                                            <mn>1</mn>
-                                                        </mtd>
-                                                    </mtr>
-                                                </mtable>
-                                            </math>
-
-                                            <p>and follow it with another numbered equation:</p>
-
-                                            <figure class="equation" typeof="doco:FormulaBox">
-                                                <math xmlns="http://www.w3.org/1998/Math/MathML">
-                                                    <mtable displaystyle="true">
-                                                        <mtr>
-                                                            <mtd columnalign="left">
-                                                                <mstyle>
-                                                                    <munderover>
-                                                                        <mo>∑</mo>
-                                                                        <mrow>
-                                                                            <mi>i</mi>
-                                                                            <mo>=</mo>
-                                                                            <mn>0</mn>
-                                                                        </mrow>
-                                                                        <mo>∞</mo>
-                                                                    </munderover>
-                                                                </mstyle>
-                                                                <msub>
-                                                                    <mi>x</mi>
-                                                                    <mi>i</mi>
-                                                                </msub>
-                                                                <mo>=</mo>
-                                                                <msubsup>
-                                                                    <mo>∫</mo>
-                                                                    <mn>0</mn>
-                                                                    <mrow>
-                                                                        <mi>π</mi>
-                                                                        <mo>+</mo>
-                                                                        <mn>2</mn>
-                                                                    </mrow>
-                                                                </msubsup>
-                                                                <mi>f</mi>
-                                                            </mtd>
-                                                        </mtr>
-                                                    </mtable>
-                                                </math>
-                                            </figure>
-
-                                            <p>just to demonstrate <span class="latex">L<span>a</span>T<span>e</span>X</span>’s able handling of numbering.</p>
-                                        </div>
-                                    </section>
-                                </div>
-                            </section>
-
-                            <section id="citations" rel="schema:hasPart" resource="#citations">
-                                <h3 property="schema:name">Citations</h3>
-                                <div datatype="rdf:HTML" property="schema:description">
-                                    <p>Citations to articles [<a class="ref" href="#1">1</a>, <a class="ref" href="#3">3</a>, <a class="ref" href="#3">3</a>, <a class="ref" href="#4">4</a>], conference proceedings [<a class="ref" href="#2">2</a>] or books <cite>[<a class="ref" href="#5">5</a>, <a class="ref" href="#6">6</a>]</cite> listed in the Bibliography section of your article will occur throughout the text of your article. You should use BibTeX to automatically produce this bibliography; you simply need to insert one of several citation commands with a key of the item cited in the proper location in the <code>.tex</code> file [<a class="ref" href="#5">5</a>]. The key is a short reference you invent to uniquely identify each work; in this sample document, the key is the first author’s surname and a word from the title. This identifying key is included with each item in the <code>.bib</code> file for your article.</p>
-
-                                    <p>The details of the construction of the <code>.bib</code> file are beyond the scope of this sample document, but more information can be found in the <em>Author’s Guide</em>, and exhaustive details in the <em><span class="latex">L<span>a</span>T<span>e</span>X</span> User’s Guide</em>[<a class="ref" href="#5">5</a>].</p>
-
-                                    <p>This article shows only the plainest form of the citation command, using <code>\cite</code>. This is what is stipulated in the SIGS style specifications. No other citation format is endorsed.</p>
-                                </div>
-                            </section>
-
-                            <section id="tables" rel="schema:hasPart" resource="#tables">
-                                <h3 property="schema:name">Tables</h3>
-                                <div datatype="rdf:HTML" property="schema:description">
-                                    <p>Because tables cannot be split across pages, the best placement for them is typically the top of the page nearest their initial cite. To ensure this proper <q>floating</q> placement of tables, use the environment <strong>table</strong> to enclose the table’s contents and the table caption. The contents of the table itself must go in the <strong>tabular</strong> environment, to be aligned properly in rows and columns, with the desired horizontal and vertical rules. Again, detailed instructions on <strong>tabular</strong> material is found in the <em><span class="latex">L<span>a</span>T<span>e</span>X</span> User’s Guide</em>.</p>
-
-                                    <p>Immediately following this sentence is the point at which Table [<a href="#frequency-of-special-characters">Frequency of Special Characters</a>] is included in the input file; compare the placement of the table here with the table in the printed dvi output of this document.</p>
-
-                                    <table id="frequency-of-special-characters">
-                                        <caption>Frequency of Special Characters</caption>
-                                        <thead>
-                                            <tr>
-                                                <th>Non-English or Math</th>
-                                                <th>Frequency</th>
-                                                <th>Comments</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>Ø</td>
-                                                <td>1 in 1,000</td>
-                                                <td>For Swedish names</td>
-                                            </tr>
-                                            <tr>
-                                                <td>π</td>
-                                                <td>1 in 5</td>
-                                                <td>Common in math</td>
-                                            </tr>
-                                            <tr>
-                                                <td>$</td>
-                                                <td>4 in 5</td>
-                                                <td>Used in business</td>
-                                            </tr>
-                                            <tr>
-                                                <td><math><msubsup><mi>Ψ</mi><mn>1</mn><mn>2</mn></msubsup></math></td>
-                                                <td>1 in 40,000</td>
-                                                <td>Unexplained usage</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                    <p>To set a wider table, which takes up the whole width of the page’s live area, use the environment <strong>table*</strong> to enclose the table’s contents and the table caption. As with a single-column table, this wide table will <q>float</q> to a location deemed more desirable. Immediately following this sentence is the point at which Table 2 is included in the input file; again, it is instructive to compare the placement of the table here with the table in the printed dvi output of this document.</p>
-                                </div>
-                            </section>
-
-
-                            <section id="figures" rel="schema:hasPart" resource="#figures">
-                                <h3 property="schema:name">Figures</h3>
-                                <div datatype="rdf:HTML" property="schema:description">
-                                    <p>Like tables, figures cannot be split across pages; the best placement for them is typically the top or the bottom of the page nearest their initial cite. To ensure this proper <q>floating</q> placement of figures, use the environment <strong>figure</strong> to enclose the figure and its caption.</p>
-
-                                    <p>This sample document contains examples of <strong>.eps</strong> and <strong>.ps</strong> files to be displayable with <span class="latex">L<span>a</span>T<span>e</span>X</span>. More details on each of these is found in the <em>Author’s Guide</em>.</p>
-
-                                    <figure>
-                                        <img height="13%" src="media/images/fly.png" width="13%" />
-                                        <figcaption>A sample black and white graphic (.eps format).</figcaption>
-                                    </figure>
-
-                                    <figure>
-                                        <img height="25%" src="media/images/fly.png" width="25%" />
-                                        <figcaption>A sample black and white graphic (.eps format) that has been resized with the <code>epsfig</code> command.</figcaption>
-                                    </figure>
-
-                                    <p>As was the case with tables, you may want a figure that spans two columns. To do this, and still to ensure proper <q>floating</q> placement of tables, use the environment <strong>figure*</strong> to enclose the figure and its caption.</p>
-
-                                    <p>Note that either <strong>.ps</strong> or <strong>.eps</strong> formats are used; use the <code>\epsfig</code> or <code>\psfig</code> commands as appropriate for the different file types.</p>
-
-                                    <figure>
-                                        <object data="media/images/rosette.svg" height="240" type="image/svg+xml" width="240"></object>
-                                        <figcaption>A sample black and white graphic (.ps format) that has been resized with the <code>psfig</code> command.</figcaption>
-                                    </figure>
-                                </div>
-                            </section>
-
-
-                            <section id="theorem-like-constructs" rel="schema:hasPart" resource="#theorem-like-constructs">
-                                <h3 property="schema:name">Theorem-like Constructs</h3>
-                                <div datatype="rdf:HTML" property="schema:description">
-                                    <p>Other common constructs that may occur in your article are the forms for logical constructs like theorems, axioms, corollaries and proofs. There are two forms, one produced by the command <code>\newtheorem</code> and the other by the command <code>\newdef</code>; perhaps the clearest and easiest way to distinguish them is to compare the two in the output of this sample document:</p>
-
-                                    <p>This uses the <strong>theorem</strong> environment, created by the <code>\newtheorem</code> command:</p>
-
-                                    <dl class="theorem">
-                                        <dt>Theorem 1</dt>
-                                        <dd><span>Let <math><mi>f</mi></math> be continuous on <math><mo form="prefix">[</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo form="postfix">]</mo></math>. If G is an antiderivative for f on [a, b], then</span>
-
-                                            <math xmlns="http://www.w3.org/1998/Math/MathML">
-                                                <mtable class="m-equation" displaystyle="true">
-                                                    <mtr>
-                                                        <mtd columnalign="left">
-                                                            <mstyle displaystyle="true">
-                                                                <munderover>
-                                                                    <mo>∫</mo>
-                                                                    <mi>a</mi>
-                                                                    <mi>b</mi>
-                                                                </munderover>
-                                                            </mstyle>
-                                                            <mi>f</mi>
-                                                            <mrow>
-                                                                <mo form="prefix">(</mo>
-                                                                <mi>t</mi>
-                                                                <mo form="postfix">)</mo>
-                                                            </mrow>
-                                                            <mo>ⅆ</mo>
-                                                            <mi>t</mi>
-                                                            <mo>=</mo>
-                                                            <mi>G</mi>
-                                                            <mrow>
-                                                                <mo form="prefix">(</mo>
-                                                                <mi>b</mi>
-                                                                <mo form="postfix">)</mo>
-                                                            </mrow>
-                                                            <mo>-</mo>
-                                                            <mi>G</mi>
-                                                            <mrow>
-                                                                <mo form="prefix">(</mo>
-                                                                <mi>a</mi>
-                                                                <mo form="postfix">)</mo>
-                                                            </mrow>
-                                                            <mo>.</mo>
-                                                        </mtd>
-                                                    </mtr>
-                                                </mtable>
-                                            </math>
-                                        </dd>
-                                    </dl>
-
-                                    <p>The other uses the <strong>definition</strong> environment, created by the <code>\newdef</code> command:</p>
-
-                                    <dl class="definition">
-                                        <dt>Definition 1</dt>
-                                        <dd><span>If <math><mi>z</mi></math> is irrational, then by <math><msup><mi>e</mi><mi>z</mi></msup></math> we mean the unique number which has logarithm <math><mi>z</mi></math>:</span>
-                                            <math>
-                                                <mo>log</mo>
-                                                <msup>
-                                                    <mi>e</mi>
-                                                    <mi>z</mi>
-                                                </msup>
-                                                <mo>=</mo>
-                                                <mi>z</mi>
-                                            </math>
-                                        </dd>
-                                    </dl>
-
-                                    <p>Two lists of constructs that use one of these forms is given in the <em>Author’s Guidelines</em>.</p>
-
-                                    <p>There is one other similar construct environment, which is already set up for you; i.e. you must <em>not</em> use a <code>\newdef</code> command to create it: the <strong>proof</strong> environment. Here is a example of its use:</p>
-
-                                    <dl class="proof">
-                                        <dt>Proof</dt>
-                                        <dd><span>Suppose on the contrary there exists a real number <math><mi>L</mi></math> such that</span>
-                                            <math xmlns="http://www.w3.org/1998/Math/MathML">
-                                                <mtable class="m-equation" displaystyle="true">
-                                                    <mtr>
-                                                        <mtd columnalign="left">
-                                                            <mstyle displaystyle="true">
-                                                                <munder>
-                                                                    <mi>lim</mi>
-                                                                    <mrow>
-                                                                        <mi>x</mi>
-                                                                        <mo>→</mo>
-                                                                        <mo>∞</mo>
-                                                                    </mrow>
-                                                                </munder>
-                                                            </mstyle>
-                                                            <mfrac linethickness="1">
-                                                                <mrow>
-                                                                    <mi>f</mi>
-                                                                    <mrow>
-                                                                        <mo form="prefix">(</mo>
-                                                                        <mi>x</mi>
-                                                                        <mo form="postfix">)</mo>
-                                                                    </mrow>
-                                                                </mrow>
-                                                                <mrow>
-                                                                    <mi>g</mi>
-                                                                    <mrow>
-                                                                        <mo form="prefix">(</mo>
-                                                                        <mi>x</mi>
-                                                                        <mo form="postfix">)</mo>
-                                                                    </mrow>
-                                                                </mrow>
-                                                            </mfrac>
-                                                            <mo>=</mo>
-                                                            <mi>L</mi>
-                                                            <mo>.</mo>
-                                                        </mtd>
-                                                    </mtr>
-                                                </mtable>
-                                            </math>
-
-                                            <p>Then</p>
-
-                                            <math xmlns="http://www.w3.org/1998/Math/MathML">
-                                                <mtable class="m-equation" displaystyle="true">
-                                                    <mtr>
-                                                        <mtd columnalign="left">
-                                                            <mi>l</mi>
-                                                            <mo>=</mo>
-                                                            <mstyle displaystyle="true">
-                                                                <munder>
-                                                                    <mi>lim</mi>
-                                                                    <mrow>
-                                                                        <mi>x</mi>
-                                                                        <mo>→</mo>
-                                                                        <mi>c</mi>
-                                                                    </mrow>
-                                                                </munder>
-                                                            </mstyle>
-                                                            <mi>f</mi>
-                                                            <mrow>
-                                                                <mo form="prefix">(</mo>
-                                                                <mi>x</mi>
-                                                                <mo form="postfix">)</mo>
-                                                            </mrow>
-                                                            <mo>=</mo>
-                                                            <mstyle displaystyle="true">
-                                                                <munder>
-                                                                    <mi>lim</mi>
-                                                                    <mrow>
-                                                                        <mi>x</mi>
-                                                                        <mo>→</mo>
-                                                                        <mi>c</mi>
-                                                                    </mrow>
-                                                                </munder>
-                                                            </mstyle>
-                                                            <mrow>
-                                                                <mo rspace="0.3em" lspace="0em" stretchy="true" fence="true" form="prefix">[</mo>
-                                                                <mi>g</mi>
-                                                                <mrow>
-                                                                    <mi>x</mi>
-                                                                </mrow>
-                                                                <mo>⋅</mo>
-                                                                <mfrac linethickness="1">
-                                                                    <mrow>
-                                                                        <mi>f</mi>
-                                                                        <mrow>
-                                                                            <mo form="prefix">(</mo>
-                                                                            <mi>x</mi>
-                                                                            <mo form="postfix">)</mo>
-                                                                        </mrow>
-                                                                    </mrow>
-                                                                    <mrow>
-                                                                        <mi>g</mi>
-                                                                        <mrow>
-                                                                            <mo form="prefix">(</mo>
-                                                                            <mi>x</mi>
-                                                                            <mo form="postfix">)</mo>
-                                                                        </mrow>
-                                                                    </mrow>
-                                                                </mfrac>
-                                                                <mo rspace="0em" lspace="0.3em" stretchy="true" fence="true" form="postfix">]</mo>
-                                                            </mrow>
-                                                            <mo>=</mo>
-                                                            <mstyle displaystyle="true">
-                                                                <munder>
-                                                                    <mi>lim</mi>
-                                                                    <mrow>
-                                                                        <mi>x</mi>
-                                                                        <mo>→</mo>
-                                                                        <mi>c</mi>
-                                                                    </mrow>
-                                                                </munder>
-                                                            </mstyle>
-                                                            <mi>g</mi>
-                                                            <mrow>
-                                                                <mo form="prefix">(</mo>
-                                                                <mi>x</mi>
-                                                                <mo form="postfix">)</mo>
-                                                            </mrow>
-                                                            <mo>⋅</mo>
-                                                            <mstyle displaystyle="true">
-                                                                <munder>
-                                                                    <mi>lim</mi>
-                                                                    <mrow>
-                                                                        <mi>x</mi>
-                                                                        <mo>→</mo>
-                                                                        <mi>c</mi>
-                                                                    </mrow>
-                                                                </munder>
-                                                            </mstyle>
-                                                            <mfrac linethickness="1">
-                                                                <mrow>
-                                                                    <mi>f</mi>
-                                                                    <mrow>
-                                                                        <mo form="prefix">(</mo>
-                                                                        <mi>x</mi>
-                                                                        <mo form="postfix">)</mo>
-                                                                    </mrow>
-                                                                </mrow>
-                                                                <mrow>
-                                                                    <mi>g</mi>
-                                                                    <mrow>
-                                                                        <mo form="prefix">(</mo>
-                                                                        <mi>x</mi>
-                                                                        <mo form="postfix">)</mo>
-                                                                    </mrow>
-                                                                </mrow>
-                                                            </mfrac>
-                                                            <mo>=</mo>
-                                                            <mn>0</mn>
-                                                            <mo>⋅</mo>
-                                                            <mi>L</mi>
-                                                            <mo>=</mo>
-                                                            <mn>0</mn>
-                                                            <mo>,</mo>
-                                                        </mtd>
-                                                    </mtr>
-                                                </mtable>
-                                            </math>
-
-                                            <p>which contradicts our assumption that <math><mi>l</mi><mo>≠</mo><mn>0</mn></math>.</p>
-                                        </dd>
-                                    </dl>
-
-                                    <p>Complete rules about using these environments and using the two different creation commands are in the <em>Author’s Guide</em>; please consult it for more detailed instructions. If you need to use another construct, not listed therein, which you want to have the same formatting as the Theorem or the Definition[<a class="ref" href="#6">6</a>] shown above, use the <code>\newtheorem</code> or the <code>\newdef</code> command, respectively, to create it.</p>
-
-                                    <table id="some-typical-commands">
-                                        <caption>Some Typical Commands</caption>
-                                        <thead>
-                                            <tr>
-                                                <th>Command</th>
-                                                <th>A Number</th>
-                                                <th>Comments</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td><code>\alignauthor</code></td>
-                                                <td>100</td>
-                                                <td>Author alignment</td>
-                                            </tr>
-                                            <tr>
-                                                <td><code>\numberofauthors</code></td>
-                                                <td>200</td>
-                                                <td>Author enumeration</td>
-                                            </tr>
-                                            <tr>
-                                                <td><code>\table</code></td>
-                                                <td>300</td>
-                                                <td>For tables</td>
-                                            </tr>
-                                            <tr>
-                                                <td><code>\table*</code></td>
-                                                <td>400</td>
-                                                <td>For wider tables</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-
-                                    <figure>
-                                        <img height="auto" src="media/images/flies.png" width="100%" />
-                                        <figcaption>A sample black and white graphic (.eps format) that needs to span two columns of text.</figcaption>
-                                    </figure>
-                                </div>
-                            </section>
-
-                            <dl>
-                                <dt>A <em>Caveat</em> for the <span class="tex">T<span>e</span>X</span> Expert</dt>
-                                <dd>Because you have just been given permission to use the <code>\newdef</code> command to create a new form, you might think you can use <span class="tex">T<span>e</span>X</span>’s <code>\def</code> to create a new command: <em>Please refrain from doing this!</em> Remember that your <span class="latex">L<span>a</span>T<span>e</span>X</span> source code is primarily intended to create camera-ready copy, but may be converted to other forms – e.g. HTML. If you inadvertently omit some or all of the <code>\def</code>s recompilation will be, to say the least, problematic.</dd>
-                            </dl>
-                        </div>
-                    </section>
-
-                    <section id="conclusions" rel="schema:hasPart" resource="#conclusions">
-                        <h2 property="schema:name">Conclusions</h2>
-                        <div datatype="rdf:HTML" property="schema:description" resource="#conclusions" typeof="deo:Conclusion">
-                            <p>This paragraph will end the body of this sample document. Remember that you might still have Acknowledgments or Appendices; brief samples of these follow. There is still the Bibliography to deal with; and we will make a disclaimer about that here: with the exception of the reference to the <span class="latex">L<span>a</span>T<span>e</span>X</span> book, the citations in this paper are to articles which have nothing to do with the present subject and are used as examples only.</p>
-                        </div>
-                    </section>
-
-                    <section id="acknowledgements" rel="schema:hasPart" resource="#acknowledgements">
-                        <h2 property="schema:name">Acknowledgements</h2>
-                        <div property="schema:description">
-                            <p>This section is optional; it is a location for you to acknowledge grants, funding, editing assistance and what have you. In the present case, for example, the authors would like to thank Gerald Murray of ACM for his help in codifying this <em>Author’s Guide</em> and the <strong>.cls</strong> and <strong>.tex</strong> files that it describes.</p>
-                        </div>
-                    </section>
-
-                    <section id="additional-authors" rel="schema:hasPart" resource="#additional-authors">
-                        <h2 property="schema:name">Additional Authors</h2>
-                        <div property="schema:description">
-                            <p>Additional authors: John Smith (The Thørväld Group, email: <code><a href="mailto:jsmith@affiliation.org">jsmith@affiliation.org</a></code>) and Julius P. Kumquat (The Kumquat Consortium, email: <code><a href="mailto:jpkumquat@consortium.net">jpkumquat@consortium.net</a></code>).</p>
-                        </div>
-                    </section>
-
-                    <section id="references">
-                        <h2>References</h2>
-                        <div>
-                            <ol>
-                                <li id="ref-1" property="schema:citation">Bowman, M., Debray, S. K., and Peterson, L. L. 1993. Reasoning about naming systems. <em>ACM Trans. Program. Lang. Syst.</em> 15, 5 (Nov. 1993), 795-825.</li>
-                                <li id="ref-2" property="schema:citation">J. Braams. Babel, a multilingual style-option system for use with <span class="latex">L<span>a</span>T<span>e</span>X</span>’s standard document styles. <em>TUGboat</em>, 12(2):291–301, June 1991.</li>
-                                <li id="ref-3" property="schema:citation">M. Clark. Post congress tristesse. In <em>TeX90 Conference Proceedings</em>, pages 84–89. TeX Users Group, March 1991.</li>
-                                <li id="ref-4" property="schema:citation">M. Herlihy. A methodology for implementing highly concurrent data objects. <em>ACM Trans. Program. Lang. Syst.</em>, 15(5):745–770, November 1993.</li>
-                                <li id="ref-5" property="schema:citation">L. Lamport. <em>LaTeX User’s Guide and Document Reference Manual</em>. Addison-Wesley Publishing Company, Reading, Massachusetts, 1986.</li>
-                                <li id="ref-6" property="schema:citation">S. Salas and E. Hille. <em>Calculus: One and Several Variable</em>. John Wiley and Sons, New York, 1978.</li>
-                            </ol>
-                        </div>
-                    </section>
-
-                    <section id="appendix">
-                        <dl>
-                            <dt>Appendix</dt>
-                            <dd>
-                                <section>
-                                    <h2>Headings in Appendices</h2>
-                                    <div>
-                                        <p>The rules about hierarchical headings discussed above for the body of the article are different in the appendices. In the <strong>appendix</strong> environment, the <strong>command</strong> section is used to indicate the start of each Appendix, with alphabetic order designation (i.e. the first is A, the second B, etc.) and a title (if you include one). So, if you need hierarchical structure within an Appendix, start with <strong>subsection</strong> as the highest level. Here is an outline of the body of this document in Appendix-appropriate form:</p>
-
-                                        <section>
-                                            <h3>Introduction</h3>
-                                        </section>
-
-                                        <section>
-                                            <h3>The Body of the Paper</h3>
-                                            <div>
-                                                <section>
-                                                    <h4>Type Changes and Special Characters</h4>
-                                                </section>
-
-                                                <section>
-                                                    <h4>Math Equations</h4>
-                                                </section>
-                                            </div>
-                                        </section>
-
-                                        <section>
-                                            <h3>Conclusions</h3>
-                                        </section>
-
-                                        <section>
-                                            <h3>Acknowledgments</h3>
-                                        </section>
-
-                                        <section>
-                                            <h3>Additional Authors</h3>
-                                            <div>
-                                                <p>This section is inserted by <span class="latex">L<span>a</span>T<span>e</span>X</span>; you do not insert it. You just add the names and information in the <code>\additionalauthors</code> command at the start of the document.</p>
-                                            </div>
-                                        </section>
-                                        <section>
-                                            <h3>References</h3>
-                                            <div>
-                                                <p>Generated by bibtex from your .bib file. Run latex, then bibtex, then latex twice (to resolve references) to create the .bbl file. Insert that .bbl file into the .tex source file and comment out the command <code>\thebibliography</code>.</p>
-                                            </div>
-                                        </section>
-                                    </div>
-                                </section>
-
-                                <section>
-                                    <h2>More Help For The Hardy</h2>
-                                    <div>
-                                        <p>The acm_proc_article-sp document class file itself is chockfull of succinct and helpful comments. If you consider yourself a moderately experienced to expert user of <span class="latex">L<span>a</span>T<span>e</span>X</span>, you may find reading it useful but please remember not to change it.</p>
-                                    </div>
-                                </section>
-                            </dd>
-                        </dl>
-                    </section>
+              </section>
+
+              <section id="math-equations" rel="schema:hasPart" resource="#math-equations">
+                <h3 property="schema:name">Math Equations</h3>
+                <div datatype="rdf:HTML" property="schema:description">
+                  <p>You may want to display math equations in three distinct styles: inline, numbered or non-numbered display. Each of the three are discussed in the next sections.</p>
+
+                  <section id="inline-in-text-equations" rel="schema:hasPart" resource="#inline-in-text-equations">
+                    <h4 property="schema:name">Inline (In-text) Equations</h4>
+                    <div property="schema:description">
+                      <p>A formula that appears in the running text is called an inline or in-text formula. It is produced by the <strong>math</strong> environment, which can be invoked with the usual <code>\begin. . .\end</code> construction or with the short form <code>$. . .$</code>. You can use any of the symbols and structures, from α to ω, available in <span class="latex">L<span>a</span>T<span>e</span>X</span>[<a class="ref" href="#5">5</a>]; this section will simply show a few examples of in-text equations in context. Notice how this equation: lim<sub><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>n</mi></math>→∞</sub> <math xmlns="http://www.w3.org/1998/Math/MathML"><mrow><mi>x</mi><mo>=</mo><mn>0</mn></mrow></math>, set here in in-line math style, looks slightly different when set in display style. (See next section).</p>
+                    </div>
+                  </section>
+
+                  <section id="display-equations" rel="schema:hasPart" resource="#display-equations">
+                    <h4 property="schema:name">Display Equations</h4>
+                    <div datatype="rdf:HTML" property="schema:description">
+                      <p>A numbered display equation – one set off by vertical space from the text and centered horizontally – is produced by the <strong>equation</strong> environment. An unnumbered display equation is produced by the <strong>displaymath</strong> environment.</p>
+                      <p>Again, in either environment, you can use any of the symbols and structures available in <span class="latex">L<span>a</span>T<span>e</span>X</span>; this section will just give a couple of examples of display equations in context. First, consider the equation, shown as an inline equation above:</p>
+
+                      <figure class="equation" typeof="doco:FormulaBox">
+                        <math xmlns="http://www.w3.org/1998/Math/MathML">
+                          <mtable>
+                            <mtr>
+                              <mtd>
+                                <munder>
+                                  <mi>lim</mi>
+                                  <mrow>
+                                    <mi>n</mi>
+                                    <mo>→</mo>
+                                    <mo>∞</mo>
+                                  </mrow>
+                                </munder>
+                                <mi>x</mi>
+                                <mo>=</mo>
+                                <mn>0</mn>
+                              </mtd>
+                            </mtr>
+                          </mtable>
+                        </math>
+                      </figure>
+
+                      <p>Notice how it is formatted somewhat differently in the <strong>displaymath</strong> environment. Now, we’ll enter an unnumbered equation:</p>
+
+                      <math xmlns="http://www.w3.org/1998/Math/MathML">
+                        <mtable displaystyle="true">
+                          <mtr>
+                            <mtd columnalign="left">
+                              <mstyle displaystyle="true">
+                                <munderover>
+                                  <mo>∑</mo>
+                                  <mrow>
+                                    <mi>i</mi>
+                                    <mo>=</mo>
+                                    <mn>0</mn>
+                                  </mrow>
+                                  <mo>∞</mo>
+                                </munderover>
+                              </mstyle>
+                              <mi>x</mi>
+                              <mo>+</mo>
+                              <mn>1</mn>
+                            </mtd>
+                          </mtr>
+                        </mtable>
+                      </math>
+
+                      <p>and follow it with another numbered equation:</p>
+
+                      <figure class="equation" typeof="doco:FormulaBox">
+                        <math xmlns="http://www.w3.org/1998/Math/MathML">
+                          <mtable displaystyle="true">
+                            <mtr>
+                              <mtd columnalign="left">
+                                <mstyle>
+                                  <munderover>
+                                    <mo>∑</mo>
+                                    <mrow>
+                                      <mi>i</mi>
+                                      <mo>=</mo>
+                                      <mn>0</mn>
+                                    </mrow>
+                                    <mo>∞</mo>
+                                  </munderover>
+                                </mstyle>
+                                <msub>
+                                  <mi>x</mi>
+                                  <mi>i</mi>
+                                </msub>
+                                <mo>=</mo>
+                                <msubsup>
+                                  <mo>∫</mo>
+                                  <mn>0</mn>
+                                  <mrow>
+                                    <mi>π</mi>
+                                    <mo>+</mo>
+                                    <mn>2</mn>
+                                  </mrow>
+                                </msubsup>
+                                <mi>f</mi>
+                              </mtd>
+                            </mtr>
+                          </mtable>
+                        </math>
+                      </figure>
+
+                      <p>just to demonstrate <span class="latex">L<span>a</span>T<span>e</span>X</span>’s able handling of numbering.</p>
+                    </div>
+                  </section>
                 </div>
+              </section>
 
-            </article>
-        </main>
-    </body>
+              <section id="citations" rel="schema:hasPart" resource="#citations">
+                <h3 property="schema:name">Citations</h3>
+                <div datatype="rdf:HTML" property="schema:description">
+                  <p>Citations to articles [<a class="ref" href="#1">1</a>, <a class="ref" href="#3">3</a>, <a class="ref" href="#3">3</a>, <a class="ref" href="#4">4</a>], conference proceedings [<a class="ref" href="#2">2</a>] or books <cite>[<a class="ref" href="#5">5</a>, <a class="ref" href="#6">6</a>]</cite> listed in the Bibliography section of your article will occur throughout the text of your article. You should use BibTeX to automatically produce this bibliography; you simply need to insert one of several citation commands with a key of the item cited in the proper location in the <code>.tex</code> file [<a class="ref" href="#5">5</a>]. The key is a short reference you invent to uniquely identify each work; in this sample document, the key is the first author’s surname and a word from the title. This identifying key is included with each item in the <code>.bib</code> file for your article.</p>
+
+                  <p>The details of the construction of the <code>.bib</code> file are beyond the scope of this sample document, but more information can be found in the <em>Author’s Guide</em>, and exhaustive details in the <em><span class="latex">L<span>a</span>T<span>e</span>X</span> User’s Guide</em>[<a class="ref" href="#5">5</a>].</p>
+
+                  <p>This article shows only the plainest form of the citation command, using <code>\cite</code>. This is what is stipulated in the SIGS style specifications. No other citation format is endorsed.</p>
+                </div>
+              </section>
+
+              <section id="tables" rel="schema:hasPart" resource="#tables">
+                <h3 property="schema:name">Tables</h3>
+                <div datatype="rdf:HTML" property="schema:description">
+                  <p>Because tables cannot be split across pages, the best placement for them is typically the top of the page nearest their initial cite. To ensure this proper <q>floating</q> placement of tables, use the environment <strong>table</strong> to enclose the table’s contents and the table caption. The contents of the table itself must go in the <strong>tabular</strong> environment, to be aligned properly in rows and columns, with the desired horizontal and vertical rules. Again, detailed instructions on <strong>tabular</strong> material is found in the <em><span class="latex">L<span>a</span>T<span>e</span>X</span> User’s Guide</em>.</p>
+
+                  <p>Immediately following this sentence is the point at which Table [<a href="#frequency-of-special-characters">Frequency of Special Characters</a>] is included in the input file; compare the placement of the table here with the table in the printed dvi output of this document.</p>
+
+                  <table id="frequency-of-special-characters">
+                    <caption>Frequency of Special Characters</caption>
+                    <thead>
+                      <tr>
+                        <th>Non-English or Math</th>
+                        <th>Frequency</th>
+                        <th>Comments</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>Ø</td>
+                        <td>1 in 1,000</td>
+                        <td>For Swedish names</td>
+                      </tr>
+                      <tr>
+                        <td>π</td>
+                        <td>1 in 5</td>
+                        <td>Common in math</td>
+                      </tr>
+                      <tr>
+                        <td>$</td>
+                        <td>4 in 5</td>
+                        <td>Used in business</td>
+                      </tr>
+                      <tr>
+                        <td><math><msubsup><mi>Ψ</mi><mn>1</mn><mn>2</mn></msubsup></math></td>
+                        <td>1 in 40,000</td>
+                        <td>Unexplained usage</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <p>To set a wider table, which takes up the whole width of the page’s live area, use the environment <strong>table*</strong> to enclose the table’s contents and the table caption. As with a single-column table, this wide table will <q>float</q> to a location deemed more desirable. Immediately following this sentence is the point at which Table 2 is included in the input file; again, it is instructive to compare the placement of the table here with the table in the printed dvi output of this document.</p>
+                </div>
+              </section>
+
+
+              <section id="figures" rel="schema:hasPart" resource="#figures">
+                <h3 property="schema:name">Figures</h3>
+                <div datatype="rdf:HTML" property="schema:description">
+                  <p>Like tables, figures cannot be split across pages; the best placement for them is typically the top or the bottom of the page nearest their initial cite. To ensure this proper <q>floating</q> placement of figures, use the environment <strong>figure</strong> to enclose the figure and its caption.</p>
+
+                  <p>This sample document contains examples of <strong>.eps</strong> and <strong>.ps</strong> files to be displayable with <span class="latex">L<span>a</span>T<span>e</span>X</span>. More details on each of these is found in the <em>Author’s Guide</em>.</p>
+
+                  <figure>
+                    <img height="13%" src="media/images/fly.png" width="13%" />
+                    <figcaption>A sample black and white graphic (.eps format).</figcaption>
+                  </figure>
+
+                  <figure>
+                    <img height="25%" src="media/images/fly.png" width="25%" />
+                    <figcaption>A sample black and white graphic (.eps format) that has been resized with the <code>epsfig</code> command.</figcaption>
+                  </figure>
+
+                  <p>As was the case with tables, you may want a figure that spans two columns. To do this, and still to ensure proper <q>floating</q> placement of tables, use the environment <strong>figure*</strong> to enclose the figure and its caption.</p>
+
+                  <p>Note that either <strong>.ps</strong> or <strong>.eps</strong> formats are used; use the <code>\epsfig</code> or <code>\psfig</code> commands as appropriate for the different file types.</p>
+
+                  <figure>
+                    <object data="media/images/rosette.svg" height="240" type="image/svg+xml" width="240"></object>
+                    <figcaption>A sample black and white graphic (.ps format) that has been resized with the <code>psfig</code> command.</figcaption>
+                  </figure>
+                </div>
+              </section>
+
+
+              <section id="theorem-like-constructs" rel="schema:hasPart" resource="#theorem-like-constructs">
+                <h3 property="schema:name">Theorem-like Constructs</h3>
+                <div datatype="rdf:HTML" property="schema:description">
+                  <p>Other common constructs that may occur in your article are the forms for logical constructs like theorems, axioms, corollaries and proofs. There are two forms, one produced by the command <code>\newtheorem</code> and the other by the command <code>\newdef</code>; perhaps the clearest and easiest way to distinguish them is to compare the two in the output of this sample document:</p>
+
+                  <p>This uses the <strong>theorem</strong> environment, created by the <code>\newtheorem</code> command:</p>
+
+                  <dl class="theorem">
+                    <dt>Theorem 1</dt>
+                    <dd><span>Let <math><mi>f</mi></math> be continuous on <math><mo form="prefix">[</mo><mi>a</mi><mo>,</mo><mi>b</mi><mo form="postfix">]</mo></math>. If G is an antiderivative for f on [a, b], then</span>
+
+                      <math xmlns="http://www.w3.org/1998/Math/MathML">
+                        <mtable class="m-equation" displaystyle="true">
+                          <mtr>
+                            <mtd columnalign="left">
+                              <mstyle displaystyle="true">
+                                <munderover>
+                                  <mo>∫</mo>
+                                  <mi>a</mi>
+                                  <mi>b</mi>
+                                </munderover>
+                              </mstyle>
+                              <mi>f</mi>
+                              <mrow>
+                                <mo form="prefix">(</mo>
+                                <mi>t</mi>
+                                <mo form="postfix">)</mo>
+                              </mrow>
+                              <mo>ⅆ</mo>
+                              <mi>t</mi>
+                              <mo>=</mo>
+                              <mi>G</mi>
+                              <mrow>
+                                <mo form="prefix">(</mo>
+                                <mi>b</mi>
+                                <mo form="postfix">)</mo>
+                              </mrow>
+                              <mo>-</mo>
+                              <mi>G</mi>
+                              <mrow>
+                                <mo form="prefix">(</mo>
+                                <mi>a</mi>
+                                <mo form="postfix">)</mo>
+                              </mrow>
+                              <mo>.</mo>
+                            </mtd>
+                          </mtr>
+                        </mtable>
+                      </math>
+                    </dd>
+                  </dl>
+
+                  <p>The other uses the <strong>definition</strong> environment, created by the <code>\newdef</code> command:</p>
+
+                  <dl class="definition">
+                    <dt>Definition 1</dt>
+                    <dd><span>If <math><mi>z</mi></math> is irrational, then by <math><msup><mi>e</mi><mi>z</mi></msup></math> we mean the unique number which has logarithm <math><mi>z</mi></math>:</span>
+                      <math>
+                        <mo>log</mo>
+                        <msup>
+                          <mi>e</mi>
+                          <mi>z</mi>
+                        </msup>
+                        <mo>=</mo>
+                        <mi>z</mi>
+                      </math>
+                    </dd>
+                  </dl>
+
+                  <p>Two lists of constructs that use one of these forms is given in the <em>Author’s Guidelines</em>.</p>
+
+                  <p>There is one other similar construct environment, which is already set up for you; i.e. you must <em>not</em> use a <code>\newdef</code> command to create it: the <strong>proof</strong> environment. Here is a example of its use:</p>
+
+                  <dl class="proof">
+                    <dt>Proof</dt>
+                    <dd><span>Suppose on the contrary there exists a real number <math><mi>L</mi></math> such that</span>
+                      <math xmlns="http://www.w3.org/1998/Math/MathML">
+                        <mtable class="m-equation" displaystyle="true">
+                          <mtr>
+                            <mtd columnalign="left">
+                              <mstyle displaystyle="true">
+                                <munder>
+                                  <mi>lim</mi>
+                                  <mrow>
+                                    <mi>x</mi>
+                                    <mo>→</mo>
+                                    <mo>∞</mo>
+                                  </mrow>
+                                </munder>
+                              </mstyle>
+                              <mfrac linethickness="1">
+                                <mrow>
+                                  <mi>f</mi>
+                                  <mrow>
+                                    <mo form="prefix">(</mo>
+                                    <mi>x</mi>
+                                    <mo form="postfix">)</mo>
+                                  </mrow>
+                                </mrow>
+                                <mrow>
+                                  <mi>g</mi>
+                                  <mrow>
+                                    <mo form="prefix">(</mo>
+                                    <mi>x</mi>
+                                    <mo form="postfix">)</mo>
+                                  </mrow>
+                                </mrow>
+                              </mfrac>
+                              <mo>=</mo>
+                              <mi>L</mi>
+                              <mo>.</mo>
+                            </mtd>
+                          </mtr>
+                        </mtable>
+                      </math>
+
+                      <p>Then</p>
+
+                      <math xmlns="http://www.w3.org/1998/Math/MathML">
+                        <mtable class="m-equation" displaystyle="true">
+                          <mtr>
+                            <mtd columnalign="left">
+                              <mi>l</mi>
+                              <mo>=</mo>
+                              <mstyle displaystyle="true">
+                                <munder>
+                                  <mi>lim</mi>
+                                  <mrow>
+                                    <mi>x</mi>
+                                    <mo>→</mo>
+                                    <mi>c</mi>
+                                  </mrow>
+                                </munder>
+                              </mstyle>
+                              <mi>f</mi>
+                              <mrow>
+                                <mo form="prefix">(</mo>
+                                <mi>x</mi>
+                                <mo form="postfix">)</mo>
+                              </mrow>
+                              <mo>=</mo>
+                              <mstyle displaystyle="true">
+                                <munder>
+                                  <mi>lim</mi>
+                                  <mrow>
+                                    <mi>x</mi>
+                                    <mo>→</mo>
+                                    <mi>c</mi>
+                                  </mrow>
+                                </munder>
+                              </mstyle>
+                              <mrow>
+                                <mo rspace="0.3em" lspace="0em" stretchy="true" fence="true" form="prefix">[</mo>
+                                <mi>g</mi>
+                                <mrow>
+                                  <mi>x</mi>
+                                </mrow>
+                                <mo>⋅</mo>
+                                <mfrac linethickness="1">
+                                  <mrow>
+                                    <mi>f</mi>
+                                    <mrow>
+                                      <mo form="prefix">(</mo>
+                                      <mi>x</mi>
+                                      <mo form="postfix">)</mo>
+                                    </mrow>
+                                  </mrow>
+                                  <mrow>
+                                    <mi>g</mi>
+                                    <mrow>
+                                      <mo form="prefix">(</mo>
+                                      <mi>x</mi>
+                                      <mo form="postfix">)</mo>
+                                    </mrow>
+                                  </mrow>
+                                </mfrac>
+                                <mo rspace="0em" lspace="0.3em" stretchy="true" fence="true" form="postfix">]</mo>
+                              </mrow>
+                              <mo>=</mo>
+                              <mstyle displaystyle="true">
+                                <munder>
+                                  <mi>lim</mi>
+                                  <mrow>
+                                    <mi>x</mi>
+                                    <mo>→</mo>
+                                    <mi>c</mi>
+                                  </mrow>
+                                </munder>
+                              </mstyle>
+                              <mi>g</mi>
+                              <mrow>
+                                <mo form="prefix">(</mo>
+                                <mi>x</mi>
+                                <mo form="postfix">)</mo>
+                              </mrow>
+                              <mo>⋅</mo>
+                              <mstyle displaystyle="true">
+                                <munder>
+                                  <mi>lim</mi>
+                                  <mrow>
+                                    <mi>x</mi>
+                                    <mo>→</mo>
+                                    <mi>c</mi>
+                                  </mrow>
+                                </munder>
+                              </mstyle>
+                              <mfrac linethickness="1">
+                                <mrow>
+                                  <mi>f</mi>
+                                  <mrow>
+                                    <mo form="prefix">(</mo>
+                                    <mi>x</mi>
+                                    <mo form="postfix">)</mo>
+                                  </mrow>
+                                </mrow>
+                                <mrow>
+                                  <mi>g</mi>
+                                  <mrow>
+                                    <mo form="prefix">(</mo>
+                                    <mi>x</mi>
+                                    <mo form="postfix">)</mo>
+                                  </mrow>
+                                </mrow>
+                              </mfrac>
+                              <mo>=</mo>
+                              <mn>0</mn>
+                              <mo>⋅</mo>
+                              <mi>L</mi>
+                              <mo>=</mo>
+                              <mn>0</mn>
+                              <mo>,</mo>
+                            </mtd>
+                          </mtr>
+                        </mtable>
+                      </math>
+
+                      <p>which contradicts our assumption that <math><mi>l</mi><mo>≠</mo><mn>0</mn></math>.</p>
+                    </dd>
+                  </dl>
+
+                  <p>Complete rules about using these environments and using the two different creation commands are in the <em>Author’s Guide</em>; please consult it for more detailed instructions. If you need to use another construct, not listed therein, which you want to have the same formatting as the Theorem or the Definition[<a class="ref" href="#6">6</a>] shown above, use the <code>\newtheorem</code> or the <code>\newdef</code> command, respectively, to create it.</p>
+
+                  <table id="some-typical-commands">
+                    <caption>Some Typical Commands</caption>
+                    <thead>
+                      <tr>
+                        <th>Command</th>
+                        <th>A Number</th>
+                        <th>Comments</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><code>\alignauthor</code></td>
+                        <td>100</td>
+                        <td>Author alignment</td>
+                      </tr>
+                      <tr>
+                        <td><code>\numberofauthors</code></td>
+                        <td>200</td>
+                        <td>Author enumeration</td>
+                      </tr>
+                      <tr>
+                        <td><code>\table</code></td>
+                        <td>300</td>
+                        <td>For tables</td>
+                      </tr>
+                      <tr>
+                        <td><code>\table*</code></td>
+                        <td>400</td>
+                        <td>For wider tables</td>
+                      </tr>
+                    </tbody>
+                  </table>
+
+                  <figure>
+                    <img height="auto" src="media/images/flies.png" width="100%" />
+                    <figcaption>A sample black and white graphic (.eps format) that needs to span two columns of text.</figcaption>
+                  </figure>
+                </div>
+              </section>
+
+              <dl>
+                <dt>A <em>Caveat</em> for the <span class="tex">T<span>e</span>X</span> Expert</dt>
+                <dd>Because you have just been given permission to use the <code>\newdef</code> command to create a new form, you might think you can use <span class="tex">T<span>e</span>X</span>’s <code>\def</code> to create a new command: <em>Please refrain from doing this!</em> Remember that your <span class="latex">L<span>a</span>T<span>e</span>X</span> source code is primarily intended to create camera-ready copy, but may be converted to other forms – e.g. HTML. If you inadvertently omit some or all of the <code>\def</code>s recompilation will be, to say the least, problematic.</dd>
+              </dl>
+            </div>
+          </section>
+
+          <section id="conclusions" rel="schema:hasPart" resource="#conclusions">
+            <h2 property="schema:name">Conclusions</h2>
+            <div datatype="rdf:HTML" property="schema:description" resource="#conclusions" typeof="deo:Conclusion">
+              <p>This paragraph will end the body of this sample document. Remember that you might still have Acknowledgments or Appendices; brief samples of these follow. There is still the Bibliography to deal with; and we will make a disclaimer about that here: with the exception of the reference to the <span class="latex">L<span>a</span>T<span>e</span>X</span> book, the citations in this paper are to articles which have nothing to do with the present subject and are used as examples only.</p>
+            </div>
+          </section>
+
+          <section id="acknowledgements" rel="schema:hasPart" resource="#acknowledgements">
+            <h2 property="schema:name">Acknowledgements</h2>
+            <div property="schema:description">
+              <p>This section is optional; it is a location for you to acknowledge grants, funding, editing assistance and what have you. In the present case, for example, the authors would like to thank Gerald Murray of ACM for his help in codifying this <em>Author’s Guide</em> and the <strong>.cls</strong> and <strong>.tex</strong> files that it describes.</p>
+            </div>
+          </section>
+
+          <section id="additional-authors" rel="schema:hasPart" resource="#additional-authors">
+            <h2 property="schema:name">Additional Authors</h2>
+            <div property="schema:description">
+              <p>Additional authors: John Smith (The Thørväld Group, email: <code><a href="mailto:jsmith@affiliation.org">jsmith@affiliation.org</a></code>) and Julius P. Kumquat (The Kumquat Consortium, email: <code><a href="mailto:jpkumquat@consortium.net">jpkumquat@consortium.net</a></code>).</p>
+            </div>
+          </section>
+
+          <section id="references">
+            <h2>References</h2>
+            <div>
+              <ol>
+                <li id="ref-1" property="schema:citation">Bowman, M., Debray, S. K., and Peterson, L. L. 1993. Reasoning about naming systems. <em>ACM Trans. Program. Lang. Syst.</em> 15, 5 (Nov. 1993), 795-825.</li>
+                <li id="ref-2" property="schema:citation">J. Braams. Babel, a multilingual style-option system for use with <span class="latex">L<span>a</span>T<span>e</span>X</span>’s standard document styles. <em>TUGboat</em>, 12(2):291–301, June 1991.</li>
+                <li id="ref-3" property="schema:citation">M. Clark. Post congress tristesse. In <em>TeX90 Conference Proceedings</em>, pages 84–89. TeX Users Group, March 1991.</li>
+                <li id="ref-4" property="schema:citation">M. Herlihy. A methodology for implementing highly concurrent data objects. <em>ACM Trans. Program. Lang. Syst.</em>, 15(5):745–770, November 1993.</li>
+                <li id="ref-5" property="schema:citation">L. Lamport. <em>LaTeX User’s Guide and Document Reference Manual</em>. Addison-Wesley Publishing Company, Reading, Massachusetts, 1986.</li>
+                <li id="ref-6" property="schema:citation">S. Salas and E. Hille. <em>Calculus: One and Several Variable</em>. John Wiley and Sons, New York, 1978.</li>
+              </ol>
+            </div>
+          </section>
+
+          <section id="appendix">
+            <dl>
+              <dt>Appendix</dt>
+              <dd>
+                <section>
+                  <h2>Headings in Appendices</h2>
+                  <div>
+                    <p>The rules about hierarchical headings discussed above for the body of the article are different in the appendices. In the <strong>appendix</strong> environment, the <strong>command</strong> section is used to indicate the start of each Appendix, with alphabetic order designation (i.e. the first is A, the second B, etc.) and a title (if you include one). So, if you need hierarchical structure within an Appendix, start with <strong>subsection</strong> as the highest level. Here is an outline of the body of this document in Appendix-appropriate form:</p>
+
+                    <section>
+                      <h3>Introduction</h3>
+                    </section>
+
+                    <section>
+                      <h3>The Body of the Paper</h3>
+                      <div>
+                        <section>
+                          <h4>Type Changes and Special Characters</h4>
+                        </section>
+
+                        <section>
+                          <h4>Math Equations</h4>
+                        </section>
+                      </div>
+                    </section>
+
+                    <section>
+                      <h3>Conclusions</h3>
+                    </section>
+
+                    <section>
+                      <h3>Acknowledgments</h3>
+                    </section>
+
+                    <section>
+                      <h3>Additional Authors</h3>
+                      <div>
+                        <p>This section is inserted by <span class="latex">L<span>a</span>T<span>e</span>X</span>; you do not insert it. You just add the names and information in the <code>\additionalauthors</code> command at the start of the document.</p>
+                      </div>
+                    </section>
+                    <section>
+                      <h3>References</h3>
+                      <div>
+                        <p>Generated by bibtex from your .bib file. Run latex, then bibtex, then latex twice (to resolve references) to create the .bbl file. Insert that .bbl file into the .tex source file and comment out the command <code>\thebibliography</code>.</p>
+                      </div>
+                    </section>
+                  </div>
+                </section>
+
+                <section>
+                  <h2>More Help For The Hardy</h2>
+                  <div>
+                    <p>The acm_proc_article-sp document class file itself is chockfull of succinct and helpful comments. If you consider yourself a moderately experienced to expert user of <span class="latex">L<span>a</span>T<span>e</span>X</span>, you may find reading it useful but please remember not to change it.</p>
+                  </div>
+                </section>
+              </dd>
+            </dl>
+          </section>
+        </div>
+
+      </article>
+    </main>
+  </body>
 </html>
