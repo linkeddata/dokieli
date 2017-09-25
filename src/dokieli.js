@@ -3719,77 +3719,100 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
 
     createNewDocument: function createNewDocument (e) {
-      e.target.disabled = true;
-      document.body.insertAdjacentHTML('beforeend', '<aside id="create-new-document" class="do on"><button class="close" title="Close">❌</button><h2>Create New Document</h2></aside>');
+      e.target.disabled = true
+      document.body.insertAdjacentHTML('beforeend', '<aside id="create-new-document" class="do on"><button class="close" title="Close">❌</button><h2>Create New Document</h2></aside>')
 
-      var newDocument = document.getElementById('create-new-document');
-      newDocument.addEventListener('click', function(e) {
+      var newDocument = document.getElementById('create-new-document')
+      newDocument.addEventListener('click', e => {
         if (e.target.matches('button.close')) {
-          document.querySelector('#document-do .resource-new').disabled = false;
+          document.querySelector('#document-do .resource-new').disabled = false
         }
-      });
+      })
 
-      var id = 'location-new';
-      var action = 'write';
+      var id = 'location-new'
+      var action = 'write'
 
-      DO.U.setupResourceBrowser(newDocument, id, action);
-      document.getElementById(id).insertAdjacentHTML('afterbegin', '<p>Choose a location to save your new article.</p>');
-      var baseURLSelection = (document.location.protocol == 'file:') ? '' : DO.U.getBaseURLSelection();
-      newDocument.insertAdjacentHTML('beforeend', baseURLSelection + '<p>Your new document will be saved at <samp id="' + id + '-' + action + '">https://example.org/path/to/article</samp></p><button class="create">Create</button>');
-      var bli = document.getElementById(id + '-input');
-      bli.focus();
-      bli.placeholder = 'https://example.org/path/to/article';
+      DO.U.setupResourceBrowser(newDocument, id, action)
+      document.getElementById(id).insertAdjacentHTML('afterbegin', '<p>Choose a location to save your new article.</p>')
+      var baseURLSelection = (document.location.protocol == 'file:') ? '' : DO.U.getBaseURLSelection()
 
-      newDocument.addEventListener('click', function(e) {
-        if (e.target.matches('button.create')) {
-          var newDocument = document.getElementById('create-new-document');
-          var storageIRI = newDocument.querySelector('#' + id + '-' + action).innerText.trim();
-          var rm = newDocument.querySelector('.response-message');
-          if (rm) {
-            rm.parentNode.removeChild(rm);
-          }
+      newDocument.insertAdjacentHTML('beforeend', baseURLSelection +
+        '<p>Your new document will be saved at <samp id="' + id + '-' + action +
+        '">https://example.org/path/to/article</samp></p><button class="create">Create</button>')
 
-          var html = document.documentElement.cloneNode(true);
-          var baseURLSelectionChecked = newDocument.querySelector('select[name="base-url"]');
-// console.log(baseURLSelectionChecked);
-          if (baseURLSelectionChecked.length > 0) {
-            var baseURLType = baseURLSelectionChecked.value;
-            var nodes = html.querySelectorAll('head link, [src], object[data]');
-            if (baseURLType == 'base-url-relative') {
-              DO.U.copyRelativeResources(storageIRI, nodes);
-            }
-            nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType});
-          }
+      var bli = document.getElementById(id + '-input')
+      bli.focus()
+      bli.placeholder = 'https://example.org/path/to/article'
 
-          html.querySelector('body').innerHTML = '<main><article about="" typeof="schema:Article"></article></main>';
-          html.querySelector('head title').innerHTML = '';
-          html = DO.U.getDocument(html);
-
-          DO.U.putResource(storageIRI, html).then(
-            function(i) {
-              newDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="success">New document created at <a href="' + storageIRI + '?author=true">' + storageIRI + '</a></p></div>');
-              window.open(storageIRI + '?author=true', '_blank');
-            },
-            function(reason) {
-              switch(reason.status) {
-                default:
-                  newDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to create new.</p>');
-                  break;
-                case 0: case 405:
-                  newDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to create new: this location is not writeable.</p></div>');
-                  break;
-                case 401: case 403:
-                  newDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to create new: you don\'t have permission to write here.</p></div>');
-                  break;
-                case 406:
-                  newDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to create new: enter a name for your resource.</p></div>');
-                  break;
-              }
-              console.log(reason);
-            }
-          );
+      newDocument.addEventListener('click', e => {
+        if (!e.target.matches('button.create')) {
+          return
         }
-      });
+
+        var newDocument = document.getElementById('create-new-document')
+        var storageIRI = newDocument.querySelector('#' + id + '-' + action).innerText.trim()
+        var rm = newDocument.querySelector('.response-message')
+        if (rm) {
+          rm.parentNode.removeChild(rm)
+        }
+
+        var html = document.documentElement.cloneNode(true)
+        var baseURLSelectionChecked = newDocument.querySelector('select[name="base-url"]')
+        // console.log(baseURLSelectionChecked);
+
+        if (baseURLSelectionChecked.length > 0) {
+          var baseURLType = baseURLSelectionChecked.value
+          var nodes = html.querySelectorAll('head link, [src], object[data]')
+          if (baseURLType == 'base-url-relative') {
+            DO.U.copyRelativeResources(storageIRI, nodes)
+          }
+          // TODO: the variable nodes, below, is never used
+          // nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType})
+        }
+
+        html.querySelector('body').innerHTML = '<main><article about="" typeof="schema:Article"></article></main>'
+        html.querySelector('head title').innerHTML = ''
+        html = DO.U.getDocument(html)
+
+        DO.U.putResource(storageIRI, html)
+          .then(() => {
+            newDocument.insertAdjacentHTML('beforeend',
+              '<div class="response-message"><p class="success">' +
+              'New document created at <a href="' + storageIRI +
+              '?author=true">' + storageIRI + '</a></p></div>'
+            )
+
+            window.open(storageIRI + '?author=true', '_blank')
+          })
+
+          .catch(error => {
+            console.error('Error creating a new document:', error)
+
+            let message
+
+            switch (error.status) {
+              case 0:
+              case 405:
+                message = 'this location is not writable'
+                break
+              case 401:
+              case 403:
+                message = 'you do not have permission to write here'
+                break
+              case 406:
+                message = 'enter a name for your resource'
+                break
+              default:
+                message = error.message
+                break
+            }
+
+            newDocument.insertAdjacentHTML('beforeend',
+              '<div class="response-message"><p class="error">' +
+              'Could not create new document: ' + message + '</p>'
+            )
+          })
+      })
     },
 
     saveAsDocument: function(e) {
