@@ -3,6 +3,10 @@
  * Configuration
  */
 module.exports = {
+<<<<<<< 5d7a3120c64e480d6124f81324b4ae15d36376f6
+=======
+  Extension: false,
+>>>>>>> Sync with original dokieli ver 0.2.17
   Lang: document.documentElement.lang,
   DocRefType: '',
   RefType: {

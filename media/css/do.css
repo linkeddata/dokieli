@@ -311,7 +311,7 @@ width:auto;
 position:static;
 }
 
-#document-interactions .article + .article ,
+#document-interactions .article + .article, 
 #document-interactions article + article {
 margin-top:1em;
 }
@@ -948,7 +948,6 @@ line-height:1;
 padding:0.25em;
 z-index:2147483647;
 hyphens:initial;
-color: black;
 }
 
 button.close {
@@ -977,15 +976,14 @@ body[typeof="bibo:Slideshow"] .slide,
 .do.slide {
 display:block;
 }
-
+.on-slideshow > header,
+.on-slideshow > footer,
+.on-slideshow #comments,
 .on-slideshow .article h1,
 .on-slideshow .article #authors,
 .on-slideshow .article > dl,
 .on-slideshow .article > div > dl,
 .on-slideshow .article section:not([class~="do"]),
-.on-slideshow > header,
-.on-slideshow > footer,
-.on-slideshow #comments,
 .on-slideshow article h1,
 .on-slideshow article #authors,
 .on-slideshow article > dl,

@@ -822,7 +822,7 @@ text-align: center;
 /*border-radius: 50%;*/
 }
 #dokieli-features ul svg {
-font-size:3em;
+  font-size:3em;
 }
 
 #dokieli-features i img {
@@ -843,7 +843,7 @@ font-size:2em;
 padding:1em 0;
 margin-top:1em;
 }
-#dokieli-read-write-web:before {
+#read-write-web:before {
 content:"";
 }
 
