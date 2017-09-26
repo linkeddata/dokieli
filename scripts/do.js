@@ -943,38 +943,6 @@ var DO = {
       return pIRI;
     },
 
-    putResource: function(url, data, contentType, links, options) {
-      if (url && url.length > 0) {
-        contentType = contentType || 'text/html; charset=utf-8';
-        var ldpResource = '<http://www.w3.org/ns/ldp#Resource>; rel="type"';
-        links = (links) ? ldpResource + ', ' + links : ldpResource;
-        options = options || {};
-
-        return new Promise(function(resolve, reject) {
-          var http = new XMLHttpRequest();
-          http.open('PUT', url);
-          http.setRequestHeader('Content-Type', contentType);
-          http.setRequestHeader('Link', links);
-          if (!options.noCredentials) {
-            http.withCredentials = true;
-          }
-          DO.U.showXHRProgressHTML(http, options);
-          http.onreadystatechange = function() {
-            if (this.readyState == this.DONE) {
-              if (this.status === 200 || this.status === 201 || this.status === 204) {
-                return resolve({xhr: this});
-              }
-              return reject({status: this.status, xhr: this});
-            }
-          };
-          http.send(data);
-        });
-      }
-      else {
-        return Promise.reject({'message': 'url parameter not valid'});
-      }
-    },
-
     postResource: function(url, slug, data, contentType, links, options) {
       if (url && url.length > 0) {
         contentType = contentType || 'text/html; charset=utf-8';
@@ -1007,131 +975,6 @@ var DO = {
       }
       else {
         return Promise.reject({'message': 'url parameter not valid'});
-      }
-    },
-
-    patchResource: function(url, deleteBGP, insertBGP, options) {
-      //insertBGP and deleteBGP are basic graph patterns.
-      if (deleteBGP) {
-        deleteBGP = 'DELETE DATA { ' + deleteBGP + ' };';
-      }
-
-      if (insertBGP) {
-        insertBGP = 'INSERT DATA { ' + insertBGP + ' };';
-      }
-
-      data = deleteBGP + insertBGP;
-
-      return new Promise(function(resolve, reject) {
-        var http = new XMLHttpRequest();
-        http.open('PATCH', url);
-        http.setRequestHeader('Content-Type', 'application/sparql-update; charset=utf-8');
-        if (!options.noCredentials) {
-          http.withCredentials = true;
-        }
-        DO.U.showXHRProgressHTML(http, options);
-        http.onreadystatechange = function() {
-          if (this.readyState == this.DONE) {
-            if (this.status === 200 || this.status === 201 || this.status === 204) {
-              return resolve({xhr: this});
-            }
-            return reject({status: this.status, xhr: this});
-          }
-        };
-        http.send(data);
-      });
-    },
-
-    deleteResource: function(url, options) {
-      if (url && url.length > 0) {
-        options = options || {};
-        return new Promise(function(resolve, reject) {
-          var http = new XMLHttpRequest();
-          http.open('DELETE', url);
-          if (!options.noCredentials) {
-            http.withCredentials = true;
-          }
-          http.onreadystatechange = function() {
-            if (this.readyState == this.DONE) {
-              if (this.status === 200 || this.status === 202 || this.status === 204) {
-                return resolve(true);
-              }
-              return reject({status: this.status, xhr: this});
-            }
-          };
-          http.send();
-        });
-      }
-      else {
-        return Promise.reject({'message': 'url parameter not valid'});
-      }
-    },
-
-    //I want HTTP COPY and I want it now!
-    copyResource: function copyResource (fromURL, toURL, options = {}) {
-      let headers = { 'Accept': '*/*' }
-      let contentType
-
-      if (!fromURL || !toURL) {
-        return Promise.reject(new Error('Missing fromURL or toURL in copyResource'))
-      }
-
-      return fetcher.getResource(fromURL, headers, options)
-        .then(response => {
-          contentType = response.headers.get('Content-Type')
-
-          return (DO.C.AcceptBinaryTypes.indexOf(contentType))
-            ? response.arrayBuffer()
-            : response.text()
-        })
-        .then(contents => {
-          return DO.U.putResource(toURL, contents, contentType, null, options)
-            .catch(error => {
-              if(error.status === 0){
-                options.noCredentials =  true;
-                return DO.U.putResource(toURL, contents, contentType, null, options);
-              }
-
-              throw error  // re-throw error
-            })
-        })
-    },
-
-    putResourceACL: function(accessToURL, aclURL, acl) {
-      if(DO.C.User.IRI) {
-        acl = acl || {
-          'u': { 'iri': [DO.C.User.IRI], 'mode': ['acl:Control', 'acl:Read', 'acl:Write'] },
-          'g': { 'iri': ['http://xmlns.com/foaf/0.1/Agent'], 'mode': ['acl:Read'] },
-          'o': { 'iri': [], 'mode': [] }
-        };
-
-        var agent, agentClass, mode;
-        if('u' in acl && 'iri' in acl.u && 'mode' in acl.u) {
-          agent = '<' + acl.u.iri.join('> , <') + '>';
-          mode = acl.u.mode.join(' , ');
-        }
-        else {
-          agent = '<' + DO.C.User.IRI + '>';
-          mode = 'acl:Control , acl:Read , acl:Write';
-        }
-
-        var authorizations = [];
-
-        authorizations.push('[ a acl:Authorization ; acl:accessTo <' + accessToURL + '> ; acl:accessTo <' + aclURL + '> ; acl:mode ' + mode + ' ; acl:agent ' + agent + ' ] .');
-
-        if('g' in acl && 'iri' in acl.g && acl.g.iri.length >= 0) {
-          agentClass = '<' + acl.g.iri.join('> , <') + '>';
-          mode = acl.g.mode.join(' , ');
-          authorizations.push('[ a acl:Authorization ; acl:accessTo <' + accessToURL + '> ; acl:mode ' + mode + ' ; acl:agentClass ' + agentClass + ' ] .');
-        }
-
-        var data = '@prefix acl: <http://www.w3.org/ns/auth/acl#> .\n\
-'+ authorizations.join('\n') + '\n\
-';
-        return DO.U.putResource(aclURL, data, 'text/turtle; charset=utf-8');
-      }
-      else {
-        console.log('Go through sign-in or do: DO.C.User.IRI = "https://example.org/#i";');
       }
     },
 
@@ -1525,18 +1368,14 @@ var DO = {
           var noteIRI = article.closest('blockquote[cite]');
           noteIRI = noteIRI.getAttribute('cite');
 
-          DO.U.deleteResource(noteIRI).then(
-            function(i){
-              var aside = e.target.closest('aside.do');
-              aside.parentNode.removeChild(aside);
-              var span = document.querySelector('span[about="#' + refId + '"]');
-              span.outerHTML = span.querySelector('mark').textContent;
+          fetcher.deleteResource(noteIRI)
+            .then(() => {
+              var aside = e.target.closest('aside.do')
+              aside.parentNode.removeChild(aside)
+              var span = document.querySelector('span[about="#' + refId + '"]')
+              span.outerHTML = span.querySelector('mark').textContent
               //TODO: Delete notification or send delete activity
-            },
-            function(reason){
-              console.log(reason);
-            }
-          );
+            })
         });
       }
     },
@@ -2682,37 +2521,49 @@ var DO = {
       });
     },
 
-    showDocumentDo: function(node) {
-      if(document.querySelector('#document-do')) { return; }
+    showDocumentDo: function showDocumentDo (node) {
+      if (document.querySelector('#document-do')) { return; }
 
       var buttonDisabled = '';
-      if (document.location.protocol == 'file:') {
+      if (document.location.protocol === 'file:') {
         buttonDisabled = ' disabled="disabled"';
       }
 
       var s = '<section id="document-do" class="do"><h2>Do</h2><ul>';
       s += '<li><button class="resource-share" title="Share resource"><i class="fa fa-bullhorn fa-2x"></i>Share</button></li>';
       s += '<li><button class="resource-reply" title="Reply"><i class="fa fa-reply fa-2x"></i>Reply</button></li>';
+
       if (DO.C.EditorAvailable) {
-        var reviewArticle = (DO.C.EditorEnabled && DO.C.User.Role == 'review') ? DO.C.Editor.DisableReviewButton : DO.C.Editor.EnableReviewButton;
+        var reviewArticle = (DO.C.EditorEnabled && DO.C.User.Role == 'review')
+          ? DO.C.Editor.DisableReviewButton
+          : DO.C.Editor.EnableReviewButton;
         s += '<li>' + reviewArticle + '</li>';
       }
+
       s += '<li><button class="resource-new" title="Create new article"><i class="fa fa-lightbulb-o fa-2x"></i></i>New</button></li>';
       s += '<li><button class="resource-open" title="Open article"><i class="fa fa-coffee fa-2x"></i></i>Open</button></li>';
-      s += '<li><button class="resource-save"'+buttonDisabled+' title="Save article"><i class="fa fa-life-ring fa-2x"></i>Save</button></li>';
+      s += '<li><button class="resource-save"' + buttonDisabled +
+        ' title="Save article"><i class="fa fa-life-ring fa-2x"></i>Save</button></li>';
       s += '<li><button class="resource-save-as" title="Save as article"><i class="fa fa-paper-plane-o fa-2x"></i>Save As</button></li>';
       s += '<li><button class="resource-snapshot" title="Snapshot article"><i class="fa fa-external-link fa-2x"></i>Snapshot</button></li>';
       s += '<li><button class="resource-print" title="Print article"><i class="fa fa-print fa-2x"></i>Print</button></li>';
+
       if (DO.C.EditorAvailable) {
-        var editFile = (DO.C.EditorEnabled && DO.C.User.Role == 'author') ? DO.C.Editor.DisableEditorButton : DO.C.Editor.EnableEditorButton;
+        var editFile = (DO.C.EditorEnabled && DO.C.User.Role === 'author')
+          ? DO.C.Editor.DisableEditorButton
+          : DO.C.Editor.EnableEditorButton;
         s += '<li>' + editFile + '</li>';
       }
-      s += '<li><button class="resource-source"'+buttonDisabled+' title="Edit article source code"><i class="fa fa-code fa-2x"></i>Source</button></li>';
+
+      s += '<li><button class="resource-source"' + buttonDisabled +
+        ' title="Edit article source code"><i class="fa fa-code fa-2x"></i>Source</button></li>';
       s += '</ul></section>';
+
       node.insertAdjacentHTML('beforeend', s);
 
       var dd = document.getElementById('document-do');
-      dd.addEventListener('click', function(e) {
+
+      dd.addEventListener('click', e => {
         if (e.target.closest('.resource-share')) {
           DO.U.shareResource(e);
         }
@@ -2750,27 +2601,35 @@ var DO = {
         if (e.target.closest('.resource-save')) {
           var url = window.location.origin + window.location.pathname;
           var data = DO.U.getDocument();
-          DO.U.putResource(url, data).then(
-            function(i) {
-              DO.U.showActionMessage(document.getElementById('document-menu'), 'Saved');
-              DO.U.hideDocumentMenu(e);
-            },
-            function(reason) {
-              console.log(reason);
-              switch(reason.xhr.status) {
-                default: case 405:
-                  e.target.disabled = true;
-                  DO.U.showActionMessage(document.getElementById('document-menu'), "Server doesn't allow this resource to be rewritten.");
-                  break;
+
+          fetcher.putResource(url, data)
+            .then(() => {
+              DO.U.showActionMessage(document.getElementById('document-menu'), 'Saved')
+              DO.U.hideDocumentMenu(e)
+            })
+            .catch(error => {
+              console.error(error)
+
+              let message
+
+              switch (error.status) {
                 case 401:
-                  DO.U.showActionMessage(document.getElementById('document-menu'), "Need to authenticate before saving.");
-                  break;
+                  message = 'Need to authenticate before saving'
+                  break
+
                 case 403:
-                  DO.U.showActionMessage(document.getElementById('document-menu'), "You are not authorized to save.");
-                  break;
+                  message = 'You are not authorized to save'
+                  break
+
+                case 405:
+                default:
+                  e.target.disabled = true
+                  message = 'Server doesn\'t allow this resource to be rewritten'
+                  break
               }
-            }
-          );
+
+              DO.U.showActionMessage(document.getElementById('document-menu'), message)
+            })
         }
 
         if (e.target.closest('.resource-source')) {
@@ -2793,156 +2652,197 @@ var DO = {
       });
     },
 
-    replyToResource: function(e, iri){
-      iri = iri || window.location.origin + window.location.pathname;
-      e.target.disabled = true;
+    replyToResource: function replyToResource (e, iri) {
+      iri = iri || fetcher.currentLocation()
+      e.target.disabled = true
 
-      document.body.insertAdjacentHTML('beforeend', '<aside id="reply-to-resource" class="do on"><button class="close" title="Close">❌</button><h2>Reply to this</h2><div id="reply-to-resource-input"><p>Reply to <code>' + iri +'</code></p><ul><li><p><label for="reply-to-resource-note">Quick reply (plain text note)</label></p><p><textarea id="reply-to-resource-note" rows="10" cols="40" name="reply-to-resource-note" placeholder="Great article!"></textarea></p></li><li><label for="reply-to-resource-license">License</label> <select id="reply-to-resource-license" name="reply-to-resource-license">' + DO.U.getLicenseOptionsHTML() + '</select></li></ul></div>');
+      document.body.insertAdjacentHTML('beforeend', '<aside id="reply-to-resource" class="do on"><button class="close" title="Close">❌</button><h2>Reply to this</h2><div id="reply-to-resource-input"><p>Reply to <code>' +
+        iri +'</code></p><ul><li><p><label for="reply-to-resource-note">Quick reply (plain text note)</label></p><p><textarea id="reply-to-resource-note" rows="10" cols="40" name="reply-to-resource-note" placeholder="Great article!"></textarea></p></li><li><label for="reply-to-resource-license">License</label> <select id="reply-to-resource-license" name="reply-to-resource-license">' +
+        DO.U.getLicenseOptionsHTML() + '</select></li></ul></div>')
 
       // TODO: License
       // TODO: ACL - can choose whether to make this reply private (to self), visible only to article author(s), visible to own contacts, public
       // TODO: Show name and face of signed in user reply is from, or 'anon' if article can host replies
 
-      var replyToResource = document.getElementById('reply-to-resource');
+      var replyToResource = document.getElementById('reply-to-resource')
 
-      var id = 'location-reply-to';
-      var action = 'write';
+      var id = 'location-reply-to'
+      var action = 'write'
 
-      DO.U.setupResourceBrowser(replyToResource, id, action);
-      document.getElementById(id).insertAdjacentHTML('afterbegin', '<p>Choose a location to save your reply.</p>');
-      replyToResource.insertAdjacentHTML('beforeend', '<p>Your reply will be saved at <samp id="' + id +'-' + action + '">https://example.org/path/to/article</samp></p>');
-      var bli = document.getElementById(id + '-input');
-      bli.focus();
-      bli.placeholder = 'https://example.org/path/to/article';
-      replyToResource.insertAdjacentHTML('beforeend', '<button class="reply">Send now</button>');
+      DO.U.setupResourceBrowser(replyToResource, id, action)
+      document.getElementById(id).insertAdjacentHTML('afterbegin', '<p>Choose a location to save your reply.</p>')
+
+      replyToResource.insertAdjacentHTML('beforeend', '<p>Your reply will be saved at <samp id="' + id +'-' + action +
+        '">https://example.org/path/to/article</samp></p>')
+
+      var bli = document.getElementById(id + '-input')
+      bli.focus()
+      bli.placeholder = 'https://example.org/path/to/article'
+      replyToResource.insertAdjacentHTML('beforeend', '<button class="reply">Send now</button>')
+
       // TODO: New in editor make this button do something.
       //     Question: when should the notification be sent?
       //replyToResource.insertAdjacentHTML('beforeend', 'or <button class="reply-new"><i class="fa fa-paper-plane-o"></i> Write reply in new window</button>');
-      replyToResource.insertAdjacentHTML('beforeend', '</aside>');
+      replyToResource.insertAdjacentHTML('beforeend', '</aside>')
 
-      replyToResource.addEventListener('click', function(e) {
+      replyToResource.addEventListener('click', e => {
         if (e.target.matches('button.close')) {
-          document.querySelector('#document-do .resource-reply').disabled = false;
+          document.querySelector('#document-do .resource-reply').disabled = false
         }
 
         if (e.target.matches('button.reply')) {
-          var note = document.querySelector('#reply-to-resource #reply-to-resource-note').value.trim();
+          var note = document
+            .querySelector('#reply-to-resource #reply-to-resource-note')
+            .value.trim()
 
-          var rm = replyToResource.querySelector('.response-message');
+          var rm = replyToResource.querySelector('.response-message')
           if (rm) {
-            rm.parentNode.removeChild(rm);
+            rm.parentNode.removeChild(rm)
           }
-          replyToResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>');
-          if (iri.length > 0 && note.length > 0) {
-
-            var datetime = DO.U.getDateTimeISO();
-            var attributeId = DO.U.generateAttributeId();
-            var noteIRI = document.querySelector('#reply-to-resource #' + id + '-' + action).innerText.trim();
-            var motivatedBy = "oa:replying";
-            var noteData = {
-              "type": 'article',
-              "mode": "write",
-              "motivatedByIRI": motivatedBy,
-              "id": attributeId,
-              "iri": noteIRI, //e.g., https://example.org/path/to/article
-              "creator": {},
-              "datetime": datetime,
-              "target": {
-                "iri": iri
-              },
-              "body": note, // content
-              "license": {}
-            };
-            if (DO.C.User.IRI) {
-              noteData.creator["iri"] = DO.C.User.IRI;
-            }
-            if (DO.C.User.Name) {
-              noteData.creator["name"] = DO.C.User.Name;
-            }
-            if (DO.C.User.Image) {
-              noteData.creator["image"] = DO.C.User.Image;
-            }
-            if (DO.C.User.URL) {
-              noteData.creator["url"] = DO.C.User.URL;
-            }
-
-            var license = document.querySelector('#reply-to-resource-license');
-            if (license && license.length > 0) {
-              noteData.license["iri"] = license.value.trim();
-              noteData.license["name"] = DO.C.License[license.value.trim()].name;
-            }
-
-            var note = DO.U.createNoteDataHTML(noteData);
-
-            var data = DO.U.createHTML(noteIRI, note);
-
-            DO.U.putResource(noteIRI, data).then(
-              function(i){
-                replyToResource.querySelector('.response-message').innerHTML = '<p class="success"><a href="' + i.xhr.responseURL + '">Reply saved!</a></p>';
-                // Then send notification
-                DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id']).then(
-                  function(inbox) {
-console.log(inbox);
-                    if (inbox.length > 0) {
-                      inbox = inbox[0];
-
-                      var notificationStatements = '    <dl about="' + noteIRI + '">\n\
-      <dt>Object type</dt><dd><a about="' + noteIRI + '" typeof="oa:Annotation" href="' + DO.C.Vocab['oaannotation']['@id'] + '">Annotation</a></dd>\n\
-      <dt>Motivation</dt><dd><a href="' + DO.C.Prefixes[motivatedBy.split(':')[0]] + motivatedBy.split(':')[1] + '" property="oa:motivation">' + motivatedBy.split(':')[1] + '</a></dd>\n\
-    </dl>\n\
-';
-                      var notificationData = {
-                        "type": ['as:Announce'],
-                        "inbox": inbox,
-                        "object": noteIRI,
-                        "target": iri,
-                        "license": noteData.license["iri"],
-                        "statements": notificationStatements
-                      };
-
-                      DO.U.notifyInbox(notificationData).then(
-                        function(response) {
-    // console.log("Notification: " + response.xhr.getResponseHeader('Location'));
-                          replyToResource.querySelector('.response-message').innerHTML += '<p class="success">Notification sent.</p>';
-                        },
-                        function(reason) {
-                          console.log(reason);
-                          replyToResource.querySelector('.response-message').innerHTML += '<p class="error">We couldn\'t notify the author of your reply.</p>';
-                        }
-                      );
-                     }
-                  },
-                  function(reason) {
-                    // FIXME: this isn't getting thrown, gets stuck in getEndpoint
-                    console.log('No inbox, no notification sent');
-                    console.log(reason);
-                    replyToResource.querySelector('.response-message').innerHTML += '<p class="error">We couldn\'t notify the author of your reply.</p>';
-                  }
-                );
-              },
-              function(reason){
-                console.log(reason);
-                switch(reason.status){
-                  default:
-                    replyToResource.querySelector('.response-message').innerHTML = '<p class="error">Can\'t save your reply.</p>';
-                    break;
-                  case 0: case 405:
-                    replyToResource.querySelector('.response-message').innerHTML = '<p class="error">Can\'t save your reply: this location is not writeable.</p>';
-                    break;
-                  case 401: case 403:
-                    replyToResource.querySelector('.response-message').innerHTML = '<p class="error">Can\'t save your reply: you don\'t have permission to write here.</p>';
-                    break;
-                  case 406:
-                    replyToResource.querySelector('.response-message').innerHTML = '<p class="error">Can\'t save your reply: enter a name for your resource.</p>';
-                    break;
-                }
-              }
-            );
-          }else{
-            replyToResource.querySelector('.response-message').innerHTML = '<p class="error">Need a note and a location to save it.</p>';
-          }
+          replyToResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>')
         }
-      });
+
+        if (!iri || !note) {
+          replyToResource
+            .querySelector('.response-message')
+            .innerHTML = '<p class="error">Need a note and a location to save it.</p>'
+          return
+        }
+
+        var datetime = DO.U.getDateTimeISO()
+        var attributeId = DO.U.generateAttributeId()
+        var noteIRI = document.querySelector('#reply-to-resource #' + id +
+          '-' + action).innerText.trim()
+        var motivatedBy = "oa:replying"
+        var noteData = {
+          "type": 'article',
+          "mode": "write",
+          "motivatedByIRI": motivatedBy,
+          "id": attributeId,
+          "iri": noteIRI, //e.g., https://example.org/path/to/article
+          "creator": {},
+          "datetime": datetime,
+          "target": {
+            "iri": iri
+          },
+          "body": note, // content
+          "license": {}
+        }
+        if (DO.C.User.IRI) {
+          noteData.creator["iri"] = DO.C.User.IRI
+        }
+        if (DO.C.User.Name) {
+          noteData.creator["name"] = DO.C.User.Name
+        }
+        if (DO.C.User.Image) {
+          noteData.creator["image"] = DO.C.User.Image
+        }
+        if (DO.C.User.URL) {
+          noteData.creator["url"] = DO.C.User.URL
+        }
+
+        var license = document.querySelector('#reply-to-resource-license')
+        if (license && license.length > 0) {
+          noteData.license["iri"] = license.value.trim()
+          noteData.license["name"] = DO.C.License[license.value.trim()].name
+        }
+
+        var note = DO.U.createNoteDataHTML(noteData)
+
+        var data = DO.U.createHTML(noteIRI, note)
+
+        fetcher.putResource(noteIRI, data)
+
+          .catch(error => {
+            console.error('Could not save reply:', error)
+
+            let errorMessage
+
+            switch (error.status) {
+              case 0:
+              case 405:
+                errorMessage = 'this location is not writable'
+                break
+              case 401:
+              case 403:
+                errorMessage = 'you do not have permission to write here'
+                break
+              case 406:
+                errorMessage = 'enter a name for your resource'
+                break
+              default:
+                // some other reason
+                errorMessage = error.message
+                break
+            }
+
+            // re-throw, to break out of the promise chain
+            throw new Error('Cannot save your reply:', errorMessage)
+          })
+
+          .then(response => {
+            replyToResource
+              .querySelector('.response-message')
+              .innerHTML = '<p class="success"><a href="' + response.url + '">Reply saved!</a></p>'
+
+            // Determine the inbox endpoint, to send the notification to
+            return DO.U.getEndpoint(DO.C.Vocab[ 'ldpinbox' ][ '@id' ])
+              .catch(error => {
+                console.error('Could not fetch inbox endpoint:', error)
+
+                // re-throw
+                throw new Error('Could not determine the author inbox endpoint')
+              })
+          })
+
+          .then(inbox => {
+            if (!inbox) {
+              throw new Error('Author inbox endpoint is empty or missing')
+            }
+
+            inbox = inbox[0]
+
+            let notificationStatements = '    <dl about="' + noteIRI +
+              '">\n<dt>Object type</dt><dd><a about="' +
+              noteIRI + '" typeof="oa:Annotation" href="' +
+              DO.C.Vocab['oaannotation']['@id'] +
+              '">Annotation</a></dd>\n<dt>Motivation</dt><dd><a href="' +
+              DO.C.Prefixes[motivatedBy.split(':')[0]] +
+              motivatedBy.split(':')[1] + '" property="oa:motivation">' +
+              motivatedBy.split(':')[1] + '</a></dd>\n</dl>\n'
+
+            let notificationData = {
+              "type": ['as:Announce'],
+              "inbox": inbox,
+              "object": noteIRI,
+              "target": iri,
+              "license": noteData.license["iri"],
+              "statements": notificationStatements
+            }
+
+            DO.U.notifyInbox(notificationData)
+              .catch(error => {
+                console.error('Failed sending notification to ' + inbox + ' :', error)
+
+                throw new Error('Failed sending notification to author inbox')
+              })
+          })
+
+          .then(() => {  // Success!
+            replyToResource
+              .querySelector('.response-message')
+              .innerHTML += '<p class="success">Notification sent</p>';
+          })
+
+          .catch(error => {
+            // Catch-all error, actually notify the user
+            replyToResource
+              .querySelector('.response-message')
+              .innerHTML += '<p class="error">' +
+                'We could not notify the author of your reply:' +
+                error.message + '</p>'
+          })
+      })
     },
 
     showActionMessage: function(node, message) {
@@ -3724,81 +3624,104 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
     },
 
 
-    createNewDocument: function(e) {
-      e.target.disabled = true;
-      document.body.insertAdjacentHTML('beforeend', '<aside id="create-new-document" class="do on"><button class="close" title="Close">❌</button><h2>Create New Document</h2></aside>');
+    createNewDocument: function createNewDocument (e) {
+      e.target.disabled = true
+      document.body.insertAdjacentHTML('beforeend', '<aside id="create-new-document" class="do on"><button class="close" title="Close">❌</button><h2>Create New Document</h2></aside>')
 
-      var newDocument = document.getElementById('create-new-document');
-      newDocument.addEventListener('click', function(e) {
+      var newDocument = document.getElementById('create-new-document')
+      newDocument.addEventListener('click', e => {
         if (e.target.matches('button.close')) {
-          document.querySelector('#document-do .resource-new').disabled = false;
+          document.querySelector('#document-do .resource-new').disabled = false
         }
-      });
+      })
 
-      var id = 'location-new';
-      var action = 'write';
+      var id = 'location-new'
+      var action = 'write'
 
-      DO.U.setupResourceBrowser(newDocument, id, action);
-      document.getElementById(id).insertAdjacentHTML('afterbegin', '<p>Choose a location to save your new article.</p>');
-      var baseURLSelection = (document.location.protocol == 'file:') ? '' : DO.U.getBaseURLSelection();
-      newDocument.insertAdjacentHTML('beforeend', baseURLSelection + '<p>Your new document will be saved at <samp id="' + id + '-' + action + '">https://example.org/path/to/article</samp></p><button class="create">Create</button>');
-      var bli = document.getElementById(id + '-input');
-      bli.focus();
-      bli.placeholder = 'https://example.org/path/to/article';
+      DO.U.setupResourceBrowser(newDocument, id, action)
+      document.getElementById(id).insertAdjacentHTML('afterbegin', '<p>Choose a location to save your new article.</p>')
+      var baseURLSelection = (document.location.protocol == 'file:') ? '' : DO.U.getBaseURLSelection()
 
-      newDocument.addEventListener('click', function(e) {
-        if (e.target.matches('button.create')) {
-          var newDocument = document.getElementById('create-new-document');
-          var storageIRI = newDocument.querySelector('#' + id + '-' + action).innerText.trim();
-          var rm = newDocument.querySelector('.response-message');
-          if (rm) {
-            rm.parentNode.removeChild(rm);
-          }
+      newDocument.insertAdjacentHTML('beforeend', baseURLSelection +
+        '<p>Your new document will be saved at <samp id="' + id + '-' + action +
+        '">https://example.org/path/to/article</samp></p><button class="create">Create</button>')
 
-          var html = document.documentElement.cloneNode(true);
-          var baseURLSelectionChecked = newDocument.querySelector('select[name="base-url"]');
-// console.log(baseURLSelectionChecked);
-          if (baseURLSelectionChecked.length > 0) {
-            var baseURLType = baseURLSelectionChecked.value;
-            var nodes = html.querySelectorAll('head link, [src], object[data]');
-            if (baseURLType == 'base-url-relative') {
-              DO.U.copyRelativeResources(storageIRI, nodes);
-            }
-            nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType});
-          }
+      var bli = document.getElementById(id + '-input')
+      bli.focus()
+      bli.placeholder = 'https://example.org/path/to/article'
 
-          html.querySelector('body').innerHTML = '<main><article about="" typeof="schema:Article"></article></main>';
-          html.querySelector('head title').innerHTML = '';
-          html = DO.U.getDocument(html);
-
-          DO.U.putResource(storageIRI, html).then(
-            function(i) {
-              newDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="success">New document created at <a href="' + storageIRI + '?author=true">' + storageIRI + '</a></p></div>');
-              window.open(storageIRI + '?author=true', '_blank');
-            },
-            function(reason) {
-              switch(reason.status) {
-                default:
-                  newDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to create new.</p>');
-                  break;
-                case 0: case 405:
-                  newDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to create new: this location is not writeable.</p></div>');
-                  break;
-                case 401: case 403:
-                  newDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to create new: you don\'t have permission to write here.</p></div>');
-                  break;
-                case 406:
-                  newDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to create new: enter a name for your resource.</p></div>');
-                  break;
-              }
-              console.log(reason);
-            }
-          );
+      newDocument.addEventListener('click', e => {
+        if (!e.target.matches('button.create')) {
+          return
         }
-      });
+
+        var newDocument = document.getElementById('create-new-document')
+        var storageIRI = newDocument.querySelector('#' + id + '-' + action).innerText.trim()
+        var rm = newDocument.querySelector('.response-message')
+        if (rm) {
+          rm.parentNode.removeChild(rm)
+        }
+
+        var html = document.documentElement.cloneNode(true)
+        var baseURLSelectionChecked = newDocument.querySelector('select[name="base-url"]')
+        // console.log(baseURLSelectionChecked);
+
+        if (baseURLSelectionChecked.length > 0) {
+          var baseURLType = baseURLSelectionChecked.value
+          var nodes = html.querySelectorAll('head link, [src], object[data]')
+          if (baseURLType == 'base-url-relative') {
+            DO.U.copyRelativeResources(storageIRI, nodes)
+          }
+          // TODO: the variable nodes, below, is never used
+          // nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType})
+        }
+
+        html.querySelector('body').innerHTML = '<main><article about="" typeof="schema:Article"></article></main>'
+        html.querySelector('head title').innerHTML = ''
+        html = DO.U.getDocument(html)
+
+        fetcher.putResource(storageIRI, html)
+          .then(() => {
+            newDocument.insertAdjacentHTML('beforeend',
+              '<div class="response-message"><p class="success">' +
+              'New document created at <a href="' + storageIRI +
+              '?author=true">' + storageIRI + '</a></p></div>'
+            )
+
+            window.open(storageIRI + '?author=true', '_blank')
+          })
+
+          .catch(error => {
+            console.error('Error creating a new document:', error)
+
+            let message
+
+            switch (error.status) {
+              case 0:
+              case 405:
+                message = 'this location is not writable'
+                break
+              case 401:
+              case 403:
+                message = 'you do not have permission to write here'
+                break
+              case 406:
+                message = 'enter a name for your resource'
+                break
+              default:
+                message = error.message
+                break
+            }
+
+            newDocument.insertAdjacentHTML('beforeend',
+              '<div class="response-message"><p class="error">' +
+              'Could not create new document: ' + message + '</p>'
+            )
+          })
+      })
     },
 
-    saveAsDocument: function(e) {
+    saveAsDocument: function saveAsDocument (e) {
       e.target.disabled = true;
       document.body.insertAdjacentHTML('beforeend', '<aside id="save-as-document" class="do on"><button class="close" title="Close">❌</button><h2>Save As Document</h2></aside>');
 
@@ -3844,86 +3767,116 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       bli.placeholder = 'https://example.org/path/to/article';
 
 
-      saveAsDocument.addEventListener('click', function(e) {
-        if (e.target.matches('button.create')) {
-          var currentDocumentURL = DO.U.stripFragmentFromString(document.location.href);
-          var saveAsDocument = document.getElementById('save-as-document');
-          var storageIRI = saveAsDocument.querySelector('#' + id + '-' + action).innerText.trim();
-
-          var rm = saveAsDocument.querySelector('.response-message');
-          if (rm) {
-            rm.parentNode.removeChild(rm);
-          }
-
-          if(storageIRI.length == 0) {
-            saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Specify the location to save the article to, and optionally set its <em>inbox</em> or <em>annotation service</em>.</p></div>');
-            return;
-          }
-
-          var html = document.documentElement.cloneNode(true);
-          var nodeInsertLocation = html.querySelector('main > article') || html.querySelector('body');
-
-          var wasDerived = document.querySelector('#derivation-data');
-          if (wasDerived.checked) {
-            var wasDerivedOn = DO.U.getDateTimeISO();
-            nodeInsertLocation.insertAdjacentHTML('beforebegin', '<dl id="document-derived-from"><dt>Derived From</dt><dd><a href="' + currentDocumentURL + '" rel="prov:wasDerivedFrom">' + currentDocumentURL + '</a></dd></dl><dl id="document-derived-on"><dt>Derived On</dt><dd><time datetime="' + wasDerivedOn + '">' + wasDerivedOn + '</time></dd></dl>' + "\n");
-          }
-
-          var inboxLocation = saveAsDocument.querySelector('#' + locationInboxId + '-' + locationInboxAction).innerText.trim();
-          if (inboxLocation.length > 0) {
-            nodeInsertLocation.insertAdjacentHTML('beforebegin', '<dl id="document-inbox"><dt>Notifications Inbox</dt><dd><a href="' + inboxLocation + '" rel="ldp:inbox">' + inboxLocation + '</a></dd></dl>' + "\n");
-          }
-
-          var annotationServiceLocation = saveAsDocument.querySelector('#' + locationAnnotationServiceId + '-' + locationAnnotationServiceAction).innerText.trim();
-          if (annotationServiceLocation.length > 0) {
-            nodeInsertLocation.insertAdjacentHTML('beforebegin', '<dl id="document-annotation-service"><dt>Annotation Service</dt><dd><a href="' + annotationServiceLocation + '" rel="oa:annotationService">' + annotationServiceLocation + '</a></dd></dl>' + "\n");
-          }
-
-          var baseURLSelectionChecked = saveAsDocument.querySelector('select[name="base-url"]');
-          if (baseURLSelectionChecked.length > 0) {
-            var baseURLType = baseURLSelectionChecked.value;
-            var nodes = html.querySelectorAll('head link, [src], object[data]');
-            if (baseURLType == 'base-url-relative') {
-              DO.U.copyRelativeResources(storageIRI, nodes);
-            }
-            nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType});
-          }
-          html = DO.U.getDocument(html);
-
-          var progress = saveAsDocument.querySelector('progress');
-          if(progress) {
-            progress.parentNode.removeChild(progress);
-          }
-          e.target.insertAdjacentHTML('afterend', '<progress min="0" max="100" value="0"></progress>');
-          progress = saveAsDocument.querySelector('progress');
-
-          DO.U.putResource(storageIRI, html, null, null, { 'progress': progress }).then(
-            function(i) {
-              progress.parentNode.removeChild(progress);
-              var url = ('xhr' in i && i.xhr.getResponseHeader('Location')) ? i.xhr.getResponseHeader('Location') : storageIRI;
-              saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="success">Document saved at <a href="' + url + '?author=true">' + url + '</a></p></div>');
-              window.open(url + '?author=true', '_blank');
-            },
-            function(reason) {
-              switch(reason.status) {
-                default:
-                  saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to save.</p></div>');
-                  break;
-                case 0: case 405:
-                  saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to save: this location is not writeable.</p></div>');
-                  break;
-                case 401: case 403:
-                  saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to save: you don\'t have permission to write here.</p></div>');
-                  break;
-                case 406:
-                  saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to save: enter a name for your resource.</p></div>');
-                  break;
-              }
-              console.log(reason);
-            }
-          );
+      saveAsDocument.addEventListener('click', e => {
+        if (!e.target.matches('button.create')) {
+          return
         }
-      });
+
+        var currentDocumentURL = DO.U.stripFragmentFromString(document.location.href)
+        var saveAsDocument = document.getElementById('save-as-document')
+        var storageIRI = saveAsDocument.querySelector('#' + id + '-' + action).innerText.trim()
+
+        var rm = saveAsDocument.querySelector('.response-message')
+        if (rm) {
+          rm.parentNode.removeChild(rm)
+        }
+
+        if(!storageIRI.length) {
+          saveAsDocument.insertAdjacentHTML('beforeend',
+            '<div class="response-message"><p class="error">' +
+            'Specify the location to save the article to, and optionally set its <em>inbox</em> or <em>annotation service</em>.</p></div>'
+          )
+
+          return
+        }
+
+        var html = document.documentElement.cloneNode(true)
+        var nodeInsertLocation = html.querySelector('main > article') || html.querySelector('body')
+
+        var wasDerived = document.querySelector('#derivation-data')
+        if (wasDerived.checked) {
+          var wasDerivedOn = DO.U.getDateTimeISO()
+          nodeInsertLocation.insertAdjacentHTML('beforebegin',
+            '<dl id="document-derived-from"><dt>Derived From</dt><dd><a href="' +
+            currentDocumentURL + '" rel="prov:wasDerivedFrom">' +
+            currentDocumentURL + '</a></dd></dl><dl id="document-derived-on"><dt>Derived On</dt><dd><time datetime="' +
+            wasDerivedOn + '">' + wasDerivedOn + '</time></dd></dl>' + '\n'
+          )
+        }
+
+        var inboxLocation = saveAsDocument.querySelector('#' + locationInboxId + '-' + locationInboxAction).innerText.trim()
+        if (inboxLocation) {
+          nodeInsertLocation.insertAdjacentHTML('beforebegin', '<dl id="document-inbox"><dt>Notifications Inbox</dt><dd><a href="' + inboxLocation + '" rel="ldp:inbox">' + inboxLocation + '</a></dd></dl>' + "\n")
+        }
+
+        var annotationServiceLocation = saveAsDocument.querySelector('#' + locationAnnotationServiceId + '-' + locationAnnotationServiceAction).innerText.trim()
+        if (annotationServiceLocation) {
+          nodeInsertLocation.insertAdjacentHTML('beforebegin', '<dl id="document-annotation-service"><dt>Annotation Service</dt><dd><a href="' + annotationServiceLocation + '" rel="oa:annotationService">' + annotationServiceLocation + '</a></dd></dl>' + "\n")
+        }
+
+        var baseURLSelectionChecked = saveAsDocument.querySelector('select[name="base-url"]')
+        if (baseURLSelectionChecked.length > 0) {
+          var baseURLType = baseURLSelectionChecked.value
+          var nodes = html.querySelectorAll('head link, [src], object[data]')
+          if (baseURLType == 'base-url-relative') {
+            DO.U.copyRelativeResources(storageIRI, nodes)
+          }
+          // TODO: 'nodes' not used anywhere:
+          // nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType})
+        }
+
+        html = DO.U.getDocument(html)
+
+        var progress = saveAsDocument.querySelector('progress')
+        if(progress) {
+          progress.parentNode.removeChild(progress)
+        }
+        e.target.insertAdjacentHTML('afterend', '<progress min="0" max="100" value="0"></progress>')
+        progress = saveAsDocument.querySelector('progress')
+
+        fetcher.putResource(storageIRI, html, null, null, { 'progress': progress })
+
+          .then(response => {
+            progress.parentNode.removeChild(progress)
+
+            let url = response.url || storageIRI
+
+            saveAsDocument.insertAdjacentHTML('beforeend',
+              '<div class="response-message"><p class="success">' +
+              'Document saved at <a href="' + url + '?author=true">' + url + '</a></p></div>'
+            )
+
+            window.open(url + '?author=true', '_blank')
+          })
+
+          .catch(error => {
+            console.error('Error saving document', error)
+
+            let message
+
+            switch (error.status) {
+              case 0:
+              case 405:
+                message = 'this location is not writable'
+                break
+              case 401:
+              case 403:
+                message = 'you do not have permission to write here'
+                break
+              case 406:
+                message = 'enter a name for your resource'
+                break
+              default:
+                message = error.message
+                break
+            }
+
+            saveAsDocument.insertAdjacentHTML('beforeend',
+              '<div class="response-message"><p class="error">' +
+              'Unable to save:' + message + '</p></div>'
+            )
+          })
+      })
     },
 
     viewSource: function(e) {
@@ -4043,7 +3996,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       return url;
     },
 
-    copyRelativeResources: function(storageIRI, relativeNodes) {
+    copyRelativeResources: function copyRelativeResources (storageIRI, relativeNodes) {
       var ref = '';
       var baseURL = DO.U.getBaseURL(storageIRI);
 
@@ -4067,7 +4020,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           var pathToFile = DO.U.setBaseURL(fromURL, {'baseURLType': 'base-url-relative'});
           fromURL = DO.U.getBaseURL(document.location.href) + pathToFile.replace(/^\//g, '');
           var toURL = baseURL + pathToFile.replace(/^\//g, '');
-          DO.U.copyResource(fromURL, toURL);
+          fetcher.copyResource(fromURL, toURL);
          }
       };
     },
@@ -4894,18 +4847,14 @@ WHERE {\n\
                       e.preventDefault();
                       e.stopPropagation();
 
-                      DO.U.deleteResource(noteIRI).then(
-                        function(i){
-                          var aside = noteDelete.closest('aside.do');
-                          aside.parentNode.removeChild(aside);
-                          var span = document.querySelector('span[about="#' + refId + '"]');
-                          span.outerHTML = span.querySelector('mark').textContent;
-                          //TODO: Delete notification or send delete activity
-                        },
-                        function(reason){
-                          console.log(reason);
-                        }
-                      );
+                      fetcher.deleteResource(noteIRI)
+                        .then(() => {
+                          var aside = noteDelete.closest('aside.do')
+                          aside.parentNode.removeChild(aside)
+                          var span = document.querySelector('span[about="#' + refId + '"]')
+                          span.outerHTML = span.querySelector('mark').textContent
+                          // TODO: Delete notification or send delete activity
+                        })
                     });
                   }
                 }
@@ -6560,7 +6509,7 @@ WHERE {\n\
 
                 //External Note
                 case 'article': case 'approve': case 'disapprove': case 'specificity':
-                  if (DO.U.Editor.MediumEditor.options.id == 'review') {
+                  if (DO.U.Editor.MediumEditor.options.id === 'review') {
                     motivatedBy = 'oa:assessing';
                     refLabel = DO.U.getReferenceLabel(motivatedBy);
                   }
@@ -6805,81 +6754,94 @@ WHERE {\n\
 
                   var data = DO.U.createHTML(noteIRI, note);
 
-                  annotationDistribution.forEach(function(i){
-                    DO.U.serializeData(data, 'text/html', i['contentType'], { 'subjectURI': i['noteIRI'] }).then(
-                      function(data) {
-                        if(!('canonical' in i)) {
-                          switch(i['contentType']) {
-                            default: break;
+                  annotationDistribution.forEach(annotation => {
+                    DO.U.serializeData(data, 'text/html', annotation['contentType'], { 'subjectURI': annotation['noteIRI'] })
+
+                      .catch(error => {
+                        console.log('Error serializing annotation:', error)
+
+                        throw error  // re-throw, break out of promise chain
+                      })
+
+                      .then(data => {
+                        if (!('canonical' in annotation)) {
+                          switch (annotation[ 'contentType' ]) {
                             case 'application/ld+json':
-                              var x = JSON.parse(data);
-                              x[0]["via"] = x[0]["@id"];
-                              x[0]["@id"] = i['noteURL'];
-                              data = JSON.stringify(x);
-                              break;
+                              let x = JSON.parse(data)
+                              x[ 0 ][ "via" ] = x[ 0 ][ "@id" ]
+                              x[ 0 ][ "@id" ] = annotation[ 'noteURL' ]
+                              data = JSON.stringify(x)
+                              break
+                            default:
+                              break
                           }
                         }
 
-                        DO.U.putResource(i['noteURL'], data, i['contentType']).then(
-                          function(response) {
-                            if(i['canonical']) {
-                              DO.U.positionInteraction(i['noteIRI'], document.body).then(
-                                function(r) {
-// console.log(i);
-                                },
-                                function(reason) {
-                                  console.log(reason);
-                                }
-                              );
+                        return fetcher.putResource(annotation[ 'noteURL' ], data, annotation[ 'contentType' ])
+                          .catch(error => {
+                            console.log('Error saving annotation:', error)
+                            throw error // re-throw, break out of promise chain
+                          })
+                      })
 
-                              //TODO: resourceIRI for getEndpoint should be the closest IRI (not necessarily the document). Test resolve/reject better.
-                              DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id']).then(
-                                function(inbox) {
-                                  if (inbox.length > 0) {
-                                    inbox = inbox[0];
-                                    var notificationData = {
-                                      "type": notificationType,
-                                      "inbox": inbox,
-                                      "slug": id,
-                                      "object": notificationObject,
-                                      "license": opts.license
-                                    };
+                      .then(() => {
+                        if (!annotation[ 'canonical' ]) {
+                          // Nothing else needs to be done, go on to the
+                          // next annotation (error will be suppressed in
+                          // the catch-all .catch() clause below)
+                          throw new Error()
+                        }
 
-                                    if(typeof notificationTarget !== 'undefined') {
-                                      notificationData['target'] = notificationTarget;
-                                    }
-                                    if(typeof notificationContext !== 'undefined') {
-                                      notificationData['context'] = notificationContext;
-                                    }
-                                    if(typeof notificationStatements !== 'undefined') {
-                                      notificationData['statements'] = notificationStatements;
-                                    }
+                        return DO.U.positionInteraction(annotation[ 'noteIRI' ], document.body)
+                          .catch(console.log)
+                      })
 
-                                    DO.U.notifyInbox(notificationData).then(
-                                      function(response) {
-// console.log("Notification: " + response.xhr.getResponseHeader('Location'));
-                                      },
-                                      function(reason) {
-                                        console.log(reason);
-                                      }
-                                    );
-                                  }
-                                },
-                                function(reason) {
-                                  console.log('TODO: How can the interaction inform the target?');
-                                  console.log(reason);
-                                }
-                              );
-                            }
-                          },
-                          function(reason) {
-                            console.log('PUT failed');
-                            console.log(reason);
+                      .then(() => {
+                        return DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id'])
+                          .catch(error => {
+                            console.log('Error fetching ldpinbox endpoint:', error)
+                            throw error
+                          })
+                      })
+
+                      .then(inbox => {
+                        // TODO: resourceIRI for getEndpoint should be the
+                        // closest IRI (not necessarily the document).
+                        // Test resolve/reject better.
+
+                        if (inbox.length > 0) {
+                          inbox = inbox[0];
+                          let notificationData = {
+                            "type": notificationType,
+                            "inbox": inbox,
+                            "slug": id,
+                            "object": notificationObject,
+                            "license": opts.license
+                          };
+
+                          if(typeof notificationTarget !== 'undefined') {
+                            notificationData['target'] = notificationTarget;
                           }
-                        );
-                      }
-                    );
-                  });
+                          if(typeof notificationContext !== 'undefined') {
+                            notificationData['context'] = notificationContext;
+                          }
+                          if(typeof notificationStatements !== 'undefined') {
+                            notificationData['statements'] = notificationStatements;
+                          }
+
+                          return DO.U.notifyInbox(notificationData)
+                            .catch(error => {
+                              console.log('Error notifying the inbox:', error)
+                            })
+                        }
+                      })
+
+                      .catch(() => {  // catch-all
+                        // suppress the error, it was already logged to the console above
+                        // nothing else needs to be done, the loop will proceed
+                        // to the next annotation
+                      })
+                  })  // annotationDistribution.forEach
                   break;
 
                 case 'note':
@@ -6991,16 +6953,15 @@ WHERE {\n\
                 case 'bookmark':
                   var data = DO.U.createHTML(noteIRI, note);
 
-                  DO.U.putResource(noteIRI, data).then(
-                    function(i) {
-                      //TODO: Let the user know that it was bookmarked
-                    },
-                    function(reason) {
-                      console.log('PUT failed');
-                      console.log(reason);
-                    }
-                  );
-                  break;
+                  fetcher.putResource(noteIRI, data)
+                    .then(() => {
+                      // TODO: Let the user know that it was bookmarked
+                    })
+                    .catch(error => {
+                      console.log('Error saving bookmark:', error)
+                    })
+
+                  break
               }
 
               this.window.getSelection().removeAllRanges();
@@ -7219,11 +7180,50 @@ module.exports = g;
 
 const fetch = __webpack_require__(4)  // Uses native fetch() in the browser
 
+const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
+const LDP_RESOURCE = '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
+
 module.exports = {
+  copyResource,
   currentLocation,
+  deleteResource,
   getResource,
   getResourceHead,
-  getResourceOptions
+  getResourceOptions,
+  patchResource,
+  putResource,
+  putResourceACL
+}
+
+// I want HTTP COPY and I want it now!
+function copyResource (fromURL, toURL, options = {}) {
+  let headers = { 'Accept': '*/*' }
+  let contentType
+
+  if (!fromURL || !toURL) {
+    return Promise.reject(new Error('Missing fromURL or toURL in copyResource'))
+  }
+
+  return getResource(fromURL, headers, options)
+    .then(response => {
+      contentType = response.headers.get('Content-Type')
+
+      return (DO.C.AcceptBinaryTypes.indexOf(contentType))
+        ? response.arrayBuffer()
+        : response.text()
+    })
+    .then(contents => {
+      return putResource(toURL, contents, contentType, null, options)
+        .catch(error => {
+          if (error.status === 0) {
+            // Retry with no credentials
+            options.noCredentials = true
+            return putResource(toURL, contents, contentType, null, options)
+          }
+
+          throw error  // re-throw error
+        })
+    })
 }
 
 /**
@@ -7231,6 +7231,41 @@ module.exports = {
  */
 function currentLocation () {
   return window.location.origin + window.location.pathname
+}
+
+/**
+ * deleteResource
+ *
+ * @param url {string}
+ * @param options {object}
+ *
+ * @returns {Promise<Response>}
+ */
+function deleteResource (url, options = {}) {
+  if (!url) {
+    return Promise.reject(new Error('Cannot DELETE resource - missing url'))
+  }
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  options.method = 'DELETE'
+
+  return fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error deleting resource: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      return response
+    })
 }
 
 /**
@@ -7263,7 +7298,7 @@ function getResource (url, headers = {}, options = {}) {
   return fetch(url, options)
 
     .then(response => {
-      if (!response.ok) {  // not a 200 level response
+      if (!response.ok) {  // not a 2xx level response
         let error = new Error('Error fetching resource: ' +
           response.status + ' ' + response.statusText)
         error.status = response.status
@@ -7302,7 +7337,7 @@ function getResourceHead (url, options = {}) {
   return fetch(url, options)
 
     .then(response => {
-      if (!response.ok) {  // not a 200 level response
+      if (!response.ok) {  // not a 2xx level response
         let error = new Error('Error fetching resource HEAD: ' +
           response.status + ' ' + response.statusText)
         error.status = response.status
@@ -7314,7 +7349,7 @@ function getResourceHead (url, options = {}) {
       let header = response.headers.get(options.header)
 
       if (!header) {
-        throw new Error({'message': "'" + options.header + "' header not found"})
+        throw new Error("'" + options.header + "' header not found")
       }
 
       return { 'headers': header }
@@ -7344,7 +7379,7 @@ function getResourceOptions (url, options = {}) {
   return fetch(url, options)
 
     .then(response => {
-      if (!response.ok) {  // not a 200 level response
+      if (!response.ok) {  // not a 2xx level response
         let error = new Error('Error fetching resource OPTIONS: ' +
           response.status + ' ' + response.statusText)
         error.status = response.status
@@ -7359,6 +7394,154 @@ function getResourceOptions (url, options = {}) {
 
       return { headers: response.headers }  // Not currently used anywhere
     })
+}
+
+function patchResource (url, deleteBGP, insertBGP, options = {}) {
+  // insertBGP and deleteBGP are basic graph patterns.
+  if (deleteBGP) {
+    deleteBGP = 'DELETE DATA { ' + deleteBGP + ' };'
+  }
+
+  if (insertBGP) {
+    insertBGP = 'INSERT DATA { ' + insertBGP + ' };'
+  }
+
+  options.body = deleteBGP + insertBGP
+
+  options.method = 'PATCH'
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  options.headers = options.headers || {}
+
+  options.headers['Content-Type'] = 'application/sparql-update; charset=utf-8'
+
+  return fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error patching resource: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      return response
+    })
+}
+
+/**
+ * putResource
+ *
+ * @param url {string}
+ *
+ * @param data {string|object}
+ *
+ * @param [contentType=DEFAULT_CONTENT_TYPE] {string}
+ *
+ * @param [links=LDP_RESOURCE] {string}
+ *
+ * @param [options={}] {object}
+ *
+ * @returns {Promise<Response>}
+ */
+function putResource (url, data, contentType, links, options = {}) {
+  if (!url) {
+    return Promise.reject(new Error('Cannot PUT resource - missing url'))
+  }
+
+  options.method = 'PUT'
+
+  options.body = data
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  options.headers = options.headers || {}
+
+  options.headers['Content-Type'] = contentType || DEFAULT_CONTENT_TYPE
+
+  links = links
+    ? LDP_RESOURCE + ', ' + links
+    : LDP_RESOURCE
+
+  options.headers['Link'] = links
+
+  return fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error writing resource: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      return response
+    })
+}
+
+/**
+ * putResourceACL
+ *
+ * TODO: This doesn't seem to be used anywhere...
+ *
+ * @param accessToURL
+ * @param aclURL
+ * @param acl
+ *
+ * @returns {Promise<Response|null>}
+ */
+function putResourceACL (accessToURL, aclURL, acl) {
+  if (!DO.C.User.IRI) {
+    console.log('Go through sign-in or do: DO.C.User.IRI = "https://example.org/#i";')
+    return Promise.resolve(null)
+  }
+
+  acl = acl || {
+    'u': { 'iri': [DO.C.User.IRI], 'mode': ['acl:Control', 'acl:Read', 'acl:Write'] },
+    'g': { 'iri': ['http://xmlns.com/foaf/0.1/Agent'], 'mode': ['acl:Read'] },
+    'o': { 'iri': [], 'mode': [] }
+  }
+
+  let agent, agentClass, mode
+
+  if ('u' in acl && 'iri' in acl.u && 'mode' in acl.u) {
+    agent = '<' + acl.u.iri.join('> , <') + '>'
+    mode = acl.u.mode.join(' , ')
+  } else {
+    agent = '<' + DO.C.User.IRI + '>'
+    mode = 'acl:Control , acl:Read , acl:Write'
+  }
+
+  let authorizations = []
+
+  authorizations.push(
+    '[ a acl:Authorization ; acl:accessTo <' +
+    accessToURL + '> ; acl:accessTo <' + aclURL + '> ; acl:mode ' + mode +
+    ' ; acl:agent ' + agent + ' ] .'
+  )
+
+  if ('g' in acl && 'iri' in acl.g && acl.g.iri.length >= 0) {
+    agentClass = '<' + acl.g.iri.join('> , <') + '>'
+    mode = acl.g.mode.join(' , ')
+    authorizations.push(
+      '[ a acl:Authorization ; acl:accessTo <' + accessToURL +
+      '> ; acl:mode ' + mode + ' ; acl:agentClass ' + agentClass + ' ] .'
+    )
+  }
+
+  let data = '@prefix acl: <http://www.w3.org/ns/auth/acl#> .\n' +
+    authorizations.join('\n') + '\n'
+
+  return putResource(aclURL, data, 'text/turtle; charset=utf-8')
 }
 
 
