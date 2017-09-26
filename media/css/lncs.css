@@ -1075,7 +1075,7 @@ content:",\0020";
 #categories-and-subject-descriptors li:last-child:after,
 #keywords li:first-child:before,
 #document-format dd:last-child:after,
-#document-in-reply-to dd:last-child:afte, {
+#document-in-reply-to dd:last-child:after {
 content:"";
 }
 
