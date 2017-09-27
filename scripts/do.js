@@ -1834,7 +1834,7 @@ var DO = {
     showDocumentMetadata: function(node) {
       if(document.querySelector('#document-metadata')) { return; }
 
-      var content = document.body;
+      var content = document.querySelector('main > article') || document.body;
       var count = DO.U.contentCount(content);
       var authors = [], contributors = [], editors = [];
 
@@ -1904,7 +1904,7 @@ var DO = {
     },
 
     contentCount: function(c) {
-      var content = c.textContent.trim();
+      var content = DO.U.fragmentFromString(DO.U.domToString(c)).textContent.trim();
       var contentCount = { readingTime:1, words:0, chars:0, lines:0, pages:{A4:1, USLetter:1}, bytes:0 };
       if (content.length > 0) {
         var lineHeight = c.ownerDocument.defaultView.getComputedStyle(c, null)["line-height"];
