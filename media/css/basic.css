@@ -418,7 +418,7 @@ counter-reset:listing 0;
 article {
 counter-reset:caption 0;
 }
-figcaption {
+figure:not([class~="listing"]):not([class~="equation"]) figcaption {
 counter-increment:figcaption;
 }
 figure.listing {
