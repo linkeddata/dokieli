@@ -86,7 +86,7 @@ figure .progress { display:block; margin:0 auto; }
 
 main > article { position:relative; }
 
-.do:not(code):not(samp):not(pre):not(kbd):not(button),
+.do:not(code):not(samp):not(pre):not(kbd):not(button):not([class~="highlight"]),
 .do *:not([class~="fa"]) {
 font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 }
