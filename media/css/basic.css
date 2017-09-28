@@ -663,7 +663,8 @@ column-count: 2;
 
   dl[id^="document-"], #authors,
   *[id^=table-of-],
-  #help-and-shape, hr {
+  #help-and-shape, hr,
+  aside {
     max-width: 50em;
     margin: 0 auto;
   }
