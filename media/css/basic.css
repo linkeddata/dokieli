@@ -340,10 +340,9 @@ margin:0;
 div.issue, div.note {
 background-color:#fbfffb;
 border-left:0.5em solid #009000;
-padding: 1em 1.2em 0.5em;
-
+padding: 1em 1.2em;
 }
-div.issue h4, div.note h4 {
+div.issue > *, div.note > * {
 /*text-transform: uppercase;*/
 /*font-weight:normal;*/
 margin:0;
@@ -353,6 +352,10 @@ color:#ae1e1e;
 }
 div.note h4 {
 color:#009000;
+}
+div.issue *:last-child,
+div.note *:last-child {
+margin-bottom:0;
 }
 
 
