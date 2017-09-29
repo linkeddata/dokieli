@@ -11,6 +11,8 @@ const fetcher = require('./fetcher')
 if(typeof DO === 'undefined'){
 global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined;
 var DO = {
+  fetcher,
+
   C: require('./config'),
 
   U: {
