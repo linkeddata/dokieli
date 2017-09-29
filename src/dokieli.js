@@ -4187,8 +4187,9 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       var highlights = document.body.querySelectorAll('*[class*="highlight-"]');
       for (var i = 0; i < highlights.length; i++) {
         highlights[i].addEventListener('mouseenter', function(e) {
-          var c = e.target.getAttribute('class');
-          var highlightsX = document.body.querySelectorAll('*[class*="'+ c +'"]');
+          var c = e.target.getAttribute('class').split(' ')
+                    .filter(function(s) { return s.startsWith('highlight-'); });
+          var highlightsX = document.body.querySelectorAll('*[class~="'+ c[0] +'"]');
           for (var j = 0; j < highlightsX.length; j++) {
             highlightsX[j].classList.add('do', 'highlight');
           }
@@ -4196,7 +4197,9 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
         highlights[i].addEventListener('mouseleave', function(e) {
           var c = e.target.getAttribute('class');
-          var highlightsX = document.body.querySelectorAll('*[class*="'+ c +'"]');
+          var c = e.target.getAttribute('class').split(' ')
+                    .filter(function(s) { return s.startsWith('highlight-'); });
+          var highlightsX = document.body.querySelectorAll('*[class~="'+ c[0] +'"]');
           for (var j = 0; j < highlightsX.length; j++) {
             highlightsX[j].classList.remove('do', 'highlight');
           }
