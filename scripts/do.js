@@ -97,6 +97,8 @@ const fetcher = __webpack_require__(3)
 if(typeof DO === 'undefined'){
 global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined;
 var DO = {
+  fetcher,
+
   C: __webpack_require__(5),
 
   U: {
