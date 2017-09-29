@@ -120,7 +120,7 @@
                     <dt id="html-section">Section</dt>
                     <dd>Sectioning is declared with <code>section</code> and typically have a heading, eg. <code>h2</code> as its first child. Subsections may appear as a child of parent <code>section</code>, or as a child of <code>div</code> (which is a child of parent <code>section</code>), ie. <code>section section</code> or <code>section div section</code>. The headings of subsections are enumerated eg. <code>section h2</code> would have a subsection with <code>section h3</code>. Sections <code>id</code>s and heading text are used to dynamically build the table of contents.
                       <figure class="listing" id="html-section-source" rel="schema:hasPart" resource="#html-section-source">
-                        <pre about="#html-section-source" property="schema:description" typeof="fabio:Script"><code class="highlight-section">&lt;section&gt;</code>
+                        <pre about="#html-section-source" lang="" property="schema:description" typeof="fabio:Script" xml:lang=""><code class="highlight-section">&lt;section&gt;</code>
 <samp class="highlight-h2">  &lt;h2&gt;</samp>
 <code class="highlight-div">  &lt;div&gt;</code>
 <code class="highlight-section">    &lt;section&gt;</code>
@@ -146,7 +146,7 @@
                     <dd><code>figure</code>s typically have <code>figcaptions</code> for things like <code>audio</code>, <code>canvas</code>, <code>iframe</code>, <code>img</code>, <code>object</code>, <code>pre</code>, <code>video</code>, <code>math</code>. For code scripts, <code>figure class="listing"</code> is used, and <code>pre</code> for the code itself with <code>code</code> The <code>listing</code> class is intended to have a collection of figures, which could also have a unique presentation, for example with line numbers or have its caption be prefixed with <q>Listing</q> and counter.
 
                       <figure class="listing" id="html-figure-listing" rel="schema:hasPart" resource="#html-figure-listing">
-                        <pre about="#html-figure-listing" property="schema:description" typeof="fabio:Script"><code class="highlight-section">&lt;section&gt;</code>
+                        <pre about="#html-figure-listing" lang="" property="schema:description" typeof="fabio:Script" xml:lang=""><code class="highlight-section">&lt;section&gt;</code>
 <samp>  &lt;h2&gt;</samp>
 <code>  &lt;div&gt;</code>
 <code>    &lt;section&gt;</code></pre>
@@ -238,7 +238,7 @@
                       <p>See also <var>createNoteDataHTML</var> (do.js)</p>
 
                       <figure class="listing" id="#html-article-source" rel="schema:hasPart" resource="#html-article-source">
-                        <pre about="#html-article-source" property="schema:description" typeof="fabio:Script"><code>&lt;!DOCTYPE html&gt;</code>
+                        <pre about="#html-article-source" lang="" property="schema:description" typeof="fabio:Script" xml:lang=""><code>&lt;!DOCTYPE html&gt;</code>
 <code>&lt;html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"&gt;</code>
 <code>  &lt;head&gt;</code>
 <code>    &lt;meta charset="utf-8" /&gt;</code>
@@ -365,7 +365,7 @@
                       <p>Its source:</p>
 
                       <figure class="listing" id="html-annotation-source" rel="schema:hasPart" resource="#html-annotation-source">
-                        <pre about="#html-annotation-source" property="schema:description" typeof="fabio:Script"><code>&lt;!DOCTYPE html&gt;</code>
+                        <pre about="#html-annotation-source" lang="" property="schema:description" typeof="fabio:Script" xml:lang=""><code>&lt;!DOCTYPE html&gt;</code>
 <code>&lt;html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"&gt;</code>
 <code>  &lt;head&gt;</code>
 <code>    &lt;meta charset="utf-8" /&gt;</code>
@@ -482,7 +482,7 @@
                       <p>Its source:</p>
 
                       <figure class="listing" id="html-notification-source" rel="schema:hasPart" resource="#html-notification-source">
-                        <pre about="#html-notification-source" property="schema:description" typeof="fabio:Script"><code>&lt;!DOCTYPE html&gt;</code>
+                        <pre about="#html-notification-source" lang="" property="schema:description" typeof="fabio:Script" xml:lang=""><code>&lt;!DOCTYPE html&gt;</code>
 <code>&lt;html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"&gt;</code>
 <code>  &lt;head&gt;</code>
 <code>    &lt;meta charset="utf-8" /&gt;</code>
