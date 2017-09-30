@@ -330,9 +330,10 @@ figcaption {
 text-align:center;
 }
 figure.listing pre {
-padding-top:1.6em;
+padding-top:3.2em;
 padding-bottom:1.6em;
-background:linear-gradient(#fff 50%, #f3f3f3 0) 0 0/3.2em 3.2em;
+/*background:linear-gradient(#fff 50%, #f3f3f3 0) 0 0/3.2em 3.2em;*/
+background-color:#fff;
 border-top:1px solid #bbb;
 border-right:1px solid #bbb;
 border-bottom:1px solid #bbb;
@@ -340,6 +341,14 @@ counter-reset:precode;
 margin-top:0;
 margin-left:1.75em;
 line-height: 1.6;
+}
+figure.listing pre code {
+display:block;
+margin-top:-1.6em;
+margin-right:-1em;
+}
+figure.listing pre code:nth-child(odd) {
+background-color:#f3f3f3;
 }
 figure.listing pre code:before,
 figure.listing pre samp:before {
