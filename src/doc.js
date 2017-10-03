@@ -12,7 +12,7 @@ module.exports = {
 function domToString (node, options = {}) {
   var selfClosing = []
 
-  if ('selfClosing' in options) {
+  if (options.selfClosing) {
     options.selfClosing.split(' ').forEach(function (n) {
       selfClosing[n] = true
     })
@@ -20,7 +20,7 @@ function domToString (node, options = {}) {
 
   var skipAttributes = []
 
-  if ('skipAttributes' in options) {
+  if (options.skipAttributes) {
     options.skipAttributes.split(' ').forEach(function (n) {
       skipAttributes[n] = true
     })
@@ -40,7 +40,7 @@ function dumpNode (node, options, skipAttributes, selfClosing, noEsc) {
     if (node.hasAttribute('class') && 'classWithChildText' in options &&
         node.matches(options.classWithChildText.class)) {
       out += node.querySelector(options.classWithChildText.element).textContent
-    } else if (!('skipNodeWithClass' in options && node.matches('.' + options.skipNodeWithClass))) {
+    } else if (!(options.skipNodeWithClass && node.matches('.' + options.skipNodeWithClass))) {
       var ename = node.nodeName.toLowerCase()
       out += '<' + ename
 
@@ -91,7 +91,7 @@ function dumpNode (node, options, skipAttributes, selfClosing, noEsc) {
         out += (ename === 'html') ? '\n  ' : ''
         noEsc.push(ename === 'style' || ename === 'script')
         for (var i = 0; i < node.childNodes.length; i++) {
-          out += dumpNode(node.childNodes[i])
+          out += dumpNode(node.childNodes[i], options, skipAttributes, selfClosing, noEsc)
         }
         noEsc.pop()
         out += (ename === 'body') ? '</' + ename + '>' + '\n' : '</' + ename + '>'

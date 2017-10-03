@@ -7,7 +7,7 @@
 		exports["DO"] = factory(require("fetch"));
 	else
 		root["DO"] = factory(root["fetch"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_4__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_8__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -70,18 +70,1149 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 6);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(1);
+"use strict";
+
+/**
+ * Configuration
+ */
+module.exports = {
+  Lang: document.documentElement.lang,
+  DocRefType: '',
+  RefType: {
+    LNCS: { InlineOpen: '[', InlineClose: ']' },
+    ACM: { InlineOpen: '[', InlineClose: ']' }
+  },
+  Stylesheets: [],
+  User: {
+    IRI: null,
+    Role: null
+  },
+  LocalDocument: false,
+  UseStorage: false,
+  AutoSaveId: '',
+  AutoSaveTimer: 60000,
+  DisableStorageButtons: '<button class="local-storage-disable-html" title="Disable local storage (temporary) in the browser"><i class="fa fa-database fa-2x"></i>Local Storage</button>',
+  EnableStorageButtons: '<button class="local-storage-enable-html" title="Enable local storage (temporary) in the browser"><i class="fa fa-database fa-2x"></i>Local Storage</button>',
+  CDATAStart: '//<![CDATA[',
+  CDATAEnd: '//]]>',
+  SortableList: false,
+  GraphViewerAvailable: (typeof d3 !== 'undefined'),
+  MathAvailable: (typeof MathJax !== 'undefined'),
+  EditorAvailable: (typeof MediumEditor !== 'undefined'),
+  EditorEnabled: false,
+  Editor: {
+    headings: ["h1", "h2", "h3", "h4", "h5", "h6"],
+    regexEmptyHTMLTags: /<[^\/>][^>]*><\/[^>]+>/gim,
+    ButtonLabelType: (((window.chrome && chrome.runtime && chrome.runtime.id) || (typeof browser !== 'undefined' && browser.runtime && browser.runtime.id)) ? 'fontawesome' : (document.querySelector('head link[rel~="stylesheet"][href*="font-awesome"]') ? (!navigator.onLine && document.querySelector('head link[rel~="stylesheet"][href*="font-awesome"][href^="http"]') ? '': 'fontawesome') : '' )),
+    DisableReviewButton: '<button class="review-disable" title="Disable review"><i class="fa fa-balance-scale fa-2x"></i>Review</button>',
+    EnableReviewButton: '<button class="review-enable" title="Enable review"><i class="fa fa-balance-scale fa-2x"></i>Review</button>',
+    DisableEditorButton: '<button class="editor-disable" title="Disable editor"><i class="fa fa-i-cursor fa-2x"></i>Edit</button>',
+    EnableEditorButton: '<button class="editor-enable" title="Enable editor"><i class="fa fa-i-cursor fa-2x"></i>Edit</button>'
+  },
+  DOMNormalisation: {
+    'selfClosing': "area base basefont br col colgroup embed hr img input isindex link meta metadata param source wbr",
+    'skipAttributes': "contenteditable spellcheck medium-editor-index data-medium-editor-element data-medium-editor-editor-index data-medium-focused data-placeholder role aria-multiline style",
+    'sortAttributes': true,
+    'skipNodeWithClass': 'do',
+    'classWithChildText': {
+      'class': '.do.ref',
+      'element': 'mark'
+    },
+    'replaceClassItemWith': {
+      'source': "on-document-menu medium-editor-element",
+      'target': ''
+    },
+    'skipClassWithValue': ''
+  },
+
+  SelectorSign: {
+    "*": "🔗",
+    "aside": "†",
+    "audio": "🔊",
+    "code": "#",
+    "dl#document-annotation-service": "※",
+    "dl#document-license": "🌻",
+    "dl#document-identifier": "🚩",
+    "dl#document-inbox": "📥",
+    "dl#document-in-reply-to": "⮪",
+    "dl#document-modified": "📅",
+    "dl#document-published": "📅",
+    "dfn": "📇",
+    "figure": "❦",
+    "footer": "⸙",
+    "img": "🖼",
+    "nav": "☛",
+    "p": "¶",
+    "pre": "🖩",
+    "section": "§",
+    "section#acknowledgements": "☺",
+    "section#conclusions": "∴",
+    "section#keywords": "🏷",
+    "section#references": "☛",
+    "section#related-work": "⌘",
+    "section#results": "∞",
+    "table": "𝄜",
+    "video": "🎞"
+  },
+
+  ContextLength: 32,
+  InteractionPath: 'i/',
+  ProxyURL: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/proxy?uri=' : 'https://dokie.li/proxy?uri='),
+  AuthEndpoint: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/' : 'https://dokie.li/'),
+  NotificationLicense: 'https://creativecommons.org/publicdomain/zero/1.0/',
+  License: {
+    "NoLicense": { 'name': 'No license', 'description': 'No license' },
+    "https://creativecommons.org/publicdomain/zero/1.0/": {'name': 'CC0 1.0', 'description': 'Creative Commons Zero'},
+    "https://creativecommons.org/licenses/by/4.0/": {'name': 'CC BY 4.0', 'description': 'Creative Commons Attribution'},
+    "https://creativecommons.org/licenses/by-sa/4.0/": {'name': 'CC BY-SA 4.0', 'description': 'Creative Commons Attribution-ShareAlike'},
+    "https://creativecommons.org/licenses/by-nc/4.0/": {'name': 'CC BY-NC 4.0', 'description': 'Creative Commons Attribution-NonCommercial'},
+    "https://creativecommons.org/licenses/by-nd/4.0/": {'name': 'CC BY-ND 4.0', 'description': 'Creative Commons Attribution-NoDerivatives'},
+    "https://creativecommons.org/licenses/by-nc-sa/4.0/": {'name': 'CC BY-NC-SA 4.0', 'description': 'Creative Commons Attribution-NonCommercial-ShareAlike'},
+    "https://creativecommons.org/licenses/by-nc-nd/4.0/": {'name': 'CC BY-NC-ND 4.0', 'description': 'Creative Commons Attribution-NonCommercial-NoDerivates'}
+  },
+  Citation: {
+    'http://purl.org/spar/cito/agreesWith': 'agrees with',
+    'http://purl.org/spar/cito/cites': 'cites',
+    'http://purl.org/spar/cito/citesAsAuthority': 'cites as authority',
+    'http://purl.org/spar/cito/citesAsDataSource': 'cites as data source',
+    'http://purl.org/spar/cito/citesAsEvidence': 'cites as evidence',
+    'http://purl.org/spar/cito/citesAsMetadataDocument': 'cites as metadata document',
+    'http://purl.org/spar/cito/citesAsPotentialSolution': 'cites as potential solution',
+    'http://purl.org/spar/cito/citesAsRecommendedReading': 'cites as potential reading',
+    'http://purl.org/spar/cito/citesAsRelated': 'cites as related',
+    'http://purl.org/spar/cito/citesAsSourceDocument': 'cites as source document',
+    'http://purl.org/spar/cito/citesForInformation': 'cites for information',
+    'http://purl.org/spar/cito/compiles': 'compiles',
+    'http://purl.org/spar/cito/confirms': 'confirms',
+    'http://purl.org/spar/cito/containsAssertionFrom': 'contains assertion from',
+    'http://purl.org/spar/cito/corrects': 'corrects',
+    'http://purl.org/spar/cito/credits': 'credits',
+    'http://purl.org/spar/cito/critiques': 'critiques',
+    'http://purl.org/spar/cito/derides': 'derides',
+    'http://purl.org/spar/cito/describes': 'describes',
+    'http://purl.org/spar/cito/disagreesWith': 'disagrees with',
+    'http://purl.org/spar/cito/discusses': 'discusses',
+    'http://purl.org/spar/cito/disputes': 'disputes',
+    'http://purl.org/spar/cito/documents': 'documents',
+    'http://purl.org/spar/cito/extends': 'extends',
+    'http://purl.org/spar/cito/includesExcerptFrom': 'includes excerpt from',
+    'http://purl.org/spar/cito/includesQuotationFrom': 'includes quotation from',
+    'http://purl.org/spar/cito/obtainsBackgroundFrom': 'obtains background from',
+    'http://purl.org/spar/cito/obtainsSupportFrom': 'obtains support from',
+    'http://purl.org/spar/cito/parodies': 'parodies',
+    'http://purl.org/spar/cito/plagiarizes': 'plagiarizes',
+    'http://purl.org/spar/cito/qualifies': 'qualifies',
+    'http://purl.org/spar/cito/refutes': 'refutes',
+    'http://purl.org/spar/cito/repliesTo': 'replies to',
+    'http://purl.org/spar/cito/retracts': 'retracts',
+    'http://purl.org/spar/cito/reviews': 'reviews',
+    'http://purl.org/spar/cito/ridicules': 'ridicules',
+    'http://purl.org/spar/cito/speculatesOn': 'speculates on',
+    'http://purl.org/spar/cito/supports': 'supports',
+    'http://purl.org/spar/cito/updates': 'updates',
+    'http://purl.org/spar/cito/usesConclusionsFrom': 'uses conclusions from',
+    'http://purl.org/spar/cito/usesDataFrom': 'uses data from',
+    'http://purl.org/spar/cito/usesMethodIn': 'uses method in'
+  },
+
+  AvailableMediaTypes: ['text/turtle', 'application/ld+json', 'application/rdf+xml', 'application/xhtml+xml', 'text/html'],
+
+  AcceptBinaryTypes: ['image/png', 'image/jpeg', 'image/gif'],
+
+  Prefixes: {
+    'xsd': 'http://www.w3.org/2001/XMLSchema#',
+    'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+    'as': 'https://www.w3.org/ns/activitystreams#',
+    'oa': 'http://www.w3.org/ns/oa#',
+    'schema': 'http://schema.org/'
+  },
+
+  Vocab: {
+    "rdftype": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "@type": "@id", "@array": true },
+    "rdffirst": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#first", "@type": "@id" },
+    "rdfrest": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest", "@type": "@id" },
+    "rdfvalue": "http://www.w3.org/1999/02/22-rdf-syntax-ns#value",
+    "rdfslabel": { "@id": "http://www.w3.org/2000/01/rdf-schema#label" },
+    "rdfsseeAlso": { "@id": "http://www.w3.org/2000/01/rdf-schema#seeAlso", "@type": "@id", "@array": true },
+
+    "owlsameAs": { "@id": "http://www.w3.org/2002/07/owl#sameAs", "@type": "@id", "@array": true },
+
+    "foafname": "http://xmlns.com/foaf/0.1/name",
+    "foaffamilyName": "http://xmlns.com/foaf/0.1/familyName",
+    "foafgivenName": "http://xmlns.com/foaf/0.1/givenName",
+    "foafhomepage": { "@id": "http://xmlns.com/foaf/0.1/homepage", "@type": "@id" },
+    "foafimg": { "@id": "http://xmlns.com/foaf/0.1/img", "@type": "@id" },
+    "foafdepiction": { "@id": "http://xmlns.com/foaf/0.1/depiction", "@type": "@id" },
+    "foafnick": "http://xmlns.com/foaf/0.1/nick",
+    "foafmaker": { "@id": "http://xmlns.com/foaf/0.1/maker", "@type": "@id" },
+    "foafknows": { "@id": "http://xmlns.com/foaf/0.1/knows", "@type": "@id", "@array": true },
+
+    "schemaname": "http://schema.org/name",
+    "schemafamilyName": "http://schema.org/familyName",
+    "schemagivenName": "http://schema.org/givenName",
+    "schemaurl": { "@id": "http://schema.org/url", "@type": "@id" },
+    "schemaimage": { "@id": "http://schema.org/image", "@type": "@id" },
+    "schemacreator": { "@id": "http://schema.org/creator", "@type": "@id", "@array": true },
+    "schemaauthor": { "@id": "http://schema.org/author", "@type": "@id", "@array": true },
+    "schemacontributor": { "@id": "http://schema.org/contributor", "@type": "@id", "@array": true },
+    "schemaeditor": { "@id": "http://schema.org/editor", "@type": "@id", "@array": true },
+    "schemalicense": { "@id": "http://schema.org/license", "@type": "@id" },
+    "schemacitation": { "@id": "http://schema.org/citation", "@type": "@id", "@array": true },
+    "schemaknows": { "@id": "http://schema.org/knows", "@type": "@id", "@array": true },
+    "schemadatePublished": "http://schema.org/datePublished",
+    "schemadescription": "http://schema.org/description",
+
+    "dctermstitle": "http://purl.org/dc/terms/title",
+    "dctermsdescription": "http://purl.org/dc/terms/description",
+    "dctermscreator": { "@id": "http://purl.org/dc/terms/creator", "@type": "@id", "@array": true },
+    "dctermsdate": "http://purl.org/dc/terms/date",
+    "dctermsissued": "http://purl.org/dc/terms/issued",
+    "dctermscreated": "http://purl.org/dc/terms/created",
+    "dctermsrights": { "@id": "http://purl.org/dc/terms/rights", "@type": "@id" },
+
+    "skosprefLabel": { "@id": "http://www.w3.org/2004/02/skos/core#prefLabel", "@type": "@id", "@array": true },
+
+    "refPeriod": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod",
+    "obsValue": "http://purl.org/linked-data/sdmx/2009/measure#obsValue",
+
+    "biboauthorList": { "@id": "http://purl.org/ontology/bibo/authorList", "@type": "@id" },
+
+    "storage": { "@id": "http://www.w3.org/ns/pim/space#storage", "@type": "@id", "@array": true },
+    "preferencesFile": { "@id": "http://www.w3.org/ns/pim/space#preferencesFile", "@type": "@id" },
+    "workspace": { "@id": "http://www.w3.org/ns/pim/space#workspace", "@type": "@id", "@array": true },
+    "masterWorkspace": { "@id": "http://www.w3.org/ns/pim/space#masterWorkspace", "@type": "@id" },
+
+    "ldpinbox": { "@id": "http://www.w3.org/ns/ldp#inbox", "@type": "@id", "@array": true },
+
+    "oaannotation": { "@id": "http://www.w3.org/ns/oa#Annotation", "@type": "@id" },
+    "oahasBody": { "@id": "http://www.w3.org/ns/oa#hasBody", "@type": "@id" },
+    "oahasTarget": { "@id": "http://www.w3.org/ns/oa#hasTarget", "@type": "@id" },
+    "oahasSource": { "@id": "http://www.w3.org/ns/oa#hasSource", "@type": "@id" },
+    "oahasSelector": { "@id": "http://www.w3.org/ns/oa#hasSelector", "@type": "@id" },
+    "oaexact": "http://www.w3.org/ns/oa#exact",
+    "oaprefix": "http://www.w3.org/ns/oa#prefix",
+    "oasuffix": "http://www.w3.org/ns/oa#suffix",
+    "oamotivatedBy": { "@id": "http://www.w3.org/ns/oa#motivatedBy", "@type": "@id" },
+    "oaannotationService": { "@id": "http://www.w3.org/ns/oa#annotationService", "@type": "@id", "@array": true },
+
+    "assubject": { "@id": "https://www.w3.org/ns/activitystreams#subject", "@type": "@id", "@array": true },
+    "asobject": { "@id": "https://www.w3.org/ns/activitystreams#object", "@type": "@id", "@array": true },
+    "astarget": { "@id": "https://www.w3.org/ns/activitystreams#target", "@type": "@id", "@array": true },
+    "asrelationship": { "@id": "https://www.w3.org/ns/activitystreams#relationship", "@type": "@id", "@array": true },
+    "ascontext": { "@id": "https://www.w3.org/ns/activitystreams#context", "@type": "@id", "@array": true },
+    "asinReplyTo": { "@id": "https://www.w3.org/ns/activitystreams#inReplyTo", "@type": "@id", "@array": true },
+    "asactor": { "@id": "https://www.w3.org/ns/activitystreams#actor", "@type": "@id" },
+    "asupdated": "https://www.w3.org/ns/activitystreams#updated",
+    "aspublished": "https://www.w3.org/ns/activitystreams#published",
+    "ascontent": "https://www.w3.org/ns/activitystreams#content",
+    "asname": "https://www.w3.org/ns/activitystreams#name",
+    "asimage": { "@id": "https://www.w3.org/ns/activitystreams#image", "@type": "@id" },
+
+    "siocreplyof": { "@id": "http://rdfs.org/sioc/ns#reply_of", "@type": "@id", "@array": true },
+    "siocavatar": { "@id": "http://rdfs.org/sioc/ns#avatar", "@type": "@id" },
+
+    "ldpcontains": { "@id": "http://www.w3.org/ns/ldp#contains", "@type": "@id", "@array": true },
+    "ldpresource": { "@id": "http://www.w3.org/ns/ldp#Resource", "@type": "@id", "@array": true  },
+    "ldpcontainer": { "@id": "http://www.w3.org/ns/ldp#Container", "@type": "@id", "@array": true  }
+  },
+
+  SecretAgentNames: ['Abraham Lincoln', 'Admiral Awesome', 'Anonymous Coward', 'Believe it or not', 'Creative Monkey', 'Senegoid', 'Dog from the Web', 'Ekrub', 'Elegant Banana', 'Foo Bar', 'Lbmit', 'Lunatic Scholar', 'NahuLcm', 'Noslen', 'Okie Dokie', 'Samurai Cat', 'Vegan Superstar'],
+
+  RefAreas: {"AF":"Afghanistan","A9":"Africa","AL":"Albania","DZ":"Algeria","AS":"American Samoa","L5":"Andean Region","AD":"Andorra","AO":"Angola","AG":"Antigua and Barbuda","1A":"Arab World","AR":"Argentina","AM":"Armenia","AW":"Aruba","AU":"Australia","AT":"Austria","AZ":"Azerbaijan","BS":"Bahamas, The","BH":"Bahrain","BD":"Bangladesh","BB":"Barbados","BY":"Belarus","BE":"Belgium","BZ":"Belize","BJ":"Benin","BM":"Bermuda","BT":"Bhutan","BO":"Bolivia","BA":"Bosnia and Herzegovina","BW":"Botswana","BR":"Brazil","BN":"Brunei Darussalam","BG":"Bulgaria","BF":"Burkina Faso","BI":"Burundi","CV":"Cabo Verde","KH":"Cambodia","CM":"Cameroon","CA":"Canada","S3":"Caribbean small states","KY":"Cayman Islands","CF":"Central African Republic","TD":"Chad","JG":"Channel Islands","CL":"Chile","CN":"China","CO":"Colombia","KM":"Comoros","CD":"Congo, Dem. Rep.","CG":"Congo, Rep.","CR":"Costa Rica","CI":"Cote d'Ivoire","HR":"Croatia","CU":"Cuba","CW":"Curacao","CY":"Cyprus","CZ":"Czech Republic","DK":"Denmark","DJ":"Djibouti","DM":"Dominica","DO":"Dominican Republic","Z4":"East Asia & Pacific (all income levels)","4E":"East Asia & Pacific (developing only)","C4":"East Asia and the Pacific (IFC classification)","EC":"Ecuador","EG":"Egypt, Arab Rep.","SV":"El Salvador","GQ":"Equatorial Guinea","ER":"Eritrea","EE":"Estonia","ET":"Ethiopia","XC":"Euro area","Z7":"Europe & Central Asia (all income levels)","7E":"Europe & Central Asia (developing only)","C5":"Europe and Central Asia (IFC classification)","EU":"European Union","FO":"Faeroe Islands","FJ":"Fiji","FI":"Finland","FR":"France","PF":"French Polynesia","GA":"Gabon","GM":"Gambia, The","GE":"Georgia","DE":"Germany","GH":"Ghana","GR":"Greece","GL":"Greenland","GD":"Grenada","GU":"Guam","GT":"Guatemala","GN":"Guinea","GW":"Guinea-Bissau","GY":"Guyana","HT":"Haiti","XE":"Heavily indebted poor countries (HIPC)","XD":"High income","XS":"High income: OECD","XR":"High income: nonOECD","HN":"Honduras","HK":"Hong Kong SAR, China","HU":"Hungary","IS":"Iceland","IN":"India","ID":"Indonesia","IR":"Iran, Islamic Rep.","IQ":"Iraq","IE":"Ireland","IM":"Isle of Man","IL":"Israel","IT":"Italy","JM":"Jamaica","JP":"Japan","JO":"Jordan","KZ":"Kazakhstan","KE":"Kenya","KI":"Kiribati","KP":"Korea, Dem. Rep.","KR":"Korea, Rep.","KV":"Kosovo","KW":"Kuwait","KG":"Kyrgyz Republic","LA":"Lao PDR","ZJ":"Latin America & Caribbean (all income levels)","XJ":"Latin America & Caribbean (developing only)","L4":"Latin America and the Caribbean","C6":"Latin America and the Caribbean (IFC classification)","LV":"Latvia","XL":"Least developed countries: UN classification","LB":"Lebanon","LS":"Lesotho","LR":"Liberia","LY":"Libya","LI":"Liechtenstein","LT":"Lithuania","XO":"Low & middle income","XM":"Low income","XN":"Lower middle income","LU":"Luxembourg","MO":"Macao SAR, China","MK":"Macedonia, FYR","MG":"Madagascar","MW":"Malawi","MY":"Malaysia","MV":"Maldives","ML":"Mali","MT":"Malta","MH":"Marshall Islands","MR":"Mauritania","MU":"Mauritius","MX":"Mexico","L6":"Mexico and Central America","FM":"Micronesia, Fed. Sts.","ZQ":"Middle East & North Africa (all income levels)","XQ":"Middle East & North Africa (developing only)","C7":"Middle East and North Africa (IFC classification)","XP":"Middle income","MD":"Moldova","MC":"Monaco","MN":"Mongolia","ME":"Montenegro","MA":"Morocco","MZ":"Mozambique","MM":"Myanmar","NA":"Namibia","NP":"Nepal","NL":"Netherlands","NC":"New Caledonia","NZ":"New Zealand","NI":"Nicaragua","NE":"Niger","NG":"Nigeria","M2":"North Africa","XU":"North America","MP":"Northern Mariana Islands","NO":"Norway","XY":"Not classified","OE":"OECD members","OM":"Oman","S4":"Other small states","S2":"Pacific island small states","PK":"Pakistan","PW":"Palau","PA":"Panama","PG":"Papua New Guinea","PY":"Paraguay","PE":"Peru","PH":"Philippines","PL":"Poland","PT":"Portugal","PR":"Puerto Rico","QA":"Qatar","RO":"Romania","RU":"Russian Federation","RW":"Rwanda","WS":"Samoa","SM":"San Marino","ST":"Sao Tome and Principe","SA":"Saudi Arabia","SN":"Senegal","RS":"Serbia","SC":"Seychelles","SL":"Sierra Leone","SG":"Singapore","SX":"Sint Maarten (Dutch part)","SK":"Slovak Republic","SI":"Slovenia","S1":"Small states","SB":"Solomon Islands","SO":"Somalia","ZA":"South Africa","8S":"South Asia","C8":"South Asia (IFC classification)","SS":"South Sudan","L7":"Southern Cone Extended","ES":"Spain","LK":"Sri Lanka","KN":"St. Kitts and Nevis","LC":"St. Lucia","MF":"St. Martin (French part)","VC":"St. Vincent and the Grenadines","C9":"Sub-Saharan Africa (IFC classification)","ZG":"Sub-Saharan Africa (all income levels)","ZF":"Sub-Saharan Africa (developing only)","A4":"Sub-Saharan Africa excluding South Africa","A5":"Sub-Saharan Africa excluding South Africa and Nigeria","SD":"Sudan","SR":"Suriname","SZ":"Swaziland","SE":"Sweden","CH":"Switzerland","SY":"Syrian Arab Republic","TJ":"Tajikistan","TZ":"Tanzania","TH":"Thailand","TL":"Timor-Leste","TG":"Togo","TO":"Tonga","TT":"Trinidad and Tobago","TN":"Tunisia","TR":"Turkey","TM":"Turkmenistan","TC":"Turks and Caicos Islands","TV":"Tuvalu","UG":"Uganda","UA":"Ukraine","AE":"United Arab Emirates","GB":"United Kingdom","US":"United States","XT":"Upper middle income","UY":"Uruguay","UZ":"Uzbekistan","VU":"Vanuatu","VE":"Venezuela, RB","VN":"Vietnam","VI":"Virgin Islands (U.S.)","PS":"West Bank and Gaza","1W":"World","YE":"Yemen, Rep.","ZM":"Zambia","ZW":"Zimbabwe"}
+}
 
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+const config = __webpack_require__(0)
+
+module.exports = {
+  encodeString,
+  decodeString,
+  getAbsoluteIRI,
+  getProxyableIRI,
+  stripFragmentFromString
+}
+
+function encodeString (string) {
+  return encodeURIComponent(string).replace(/'/g, '%27').replace(/"/g, '%22')
+}
+
+/**
+ * UNUSED
+ *
+ * @param string {string}
+ *
+ * @returns {string}
+ */
+function decodeString (string) {
+  return decodeURIComponent(string.replace(/\+/g, ' '))
+}
+
+function getAbsoluteIRI (base, location) {
+  var iri = location
+
+  if (location.toLowerCase().slice(0, 4) !== 'http') {
+    if (location.startsWith('/')) {
+      var x = base.toLowerCase().trim().split('/')
+
+      iri = x[0] + '//' + x[2] + location
+    } else if (!base.endsWith('/')) {
+      iri = base.substr(0, base.lastIndexOf('/') + 1) + location
+    } else {
+      iri = base + location
+    }
+  }
+
+  return iri
+}
+
+function getProxyableIRI (url, options = {}) {
+  var pIRI = stripFragmentFromString(url)
+
+  if ((typeof document !== 'undefined' && document.location.protocol === 'https:' && pIRI.slice(0, 5).toLowerCase() === 'http:') || 'forceProxy' in options) {
+    var proxyURL = ('proxyURL' in options) ? options.proxyURL : config.ProxyURL
+    pIRI = proxyURL + encodeString(pIRI)
+  }
+
+  return pIRI
+}
+
+function stripFragmentFromString (string) {
+  if (typeof string === 'string') {
+    let stringIndexFragment = string.indexOf('#')
+
+    if (stringIndexFragment >= 0) {
+      string = string.substring(0, stringIndexFragment)
+    }
+  }
+  return string
+}
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {
+
+global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined
+
+const Config = __webpack_require__(0)
+
+module.exports = {
+  getGraph,
+  getGraphFromData,
+  serializeData,
+  serializeGraph
+}
+
+function getGraph (url) {
+  return SimpleRDF(Config.Vocab, url, null, ld.store).get()
+}
+
+function getGraphFromData (data, options = {}) {
+  if (!('contentType' in options)) {
+    options['contentType'] = 'text/turtle'
+  }
+  if (!('subjectURI' in options)) {
+    options['subjectURI'] = '_:dokieli'
+  }
+
+  return SimpleRDF.parse(data, options['contentType'], options['subjectURI'])
+}
+
+/**
+ * @param data
+ * @param fromContentType
+ * @param toContentType
+ * @param options
+ *
+ * @returns {Promise}
+ */
+function serializeData (data, fromContentType, toContentType, options) {
+  if (fromContentType === toContentType) {
+    return Promise.resolve(data)
+  }
+
+  options.contentType = fromContentType
+
+  return getGraphFromData(data, options)
+    .then(g => {
+      options.contentType = toContentType
+
+      return serializeGraph(g, options)
+    })
+    .then(data => {
+      switch (toContentType) {
+        case 'application/ld+json':
+          var parsed = JSON.parse(data)
+
+          parsed[0]['@context'] = [
+            'http://www.w3.org/ns/anno.jsonld',
+            {'as': 'https://www.w3.org/ns/activitystreams'}
+          ]
+
+          parsed[0]['@id'] = (parsed[0]['@id'].slice(0, 2) === '_:')
+            ? ''
+            : parsed[0]['@id']
+
+          return JSON.stringify(parsed) + '\n'
+
+        default:
+          return data
+      }
+    })
+}
+
+function serializeGraph (g, options = {}) {
+  if (!('contentType' in options)) {
+    options['contentType'] = 'text/turtle'
+  }
+
+  return ld.store.serializers[options.contentType].serialize(g._graph)
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+const fetch = __webpack_require__(8)  // Uses native fetch() in the browser
+const Config = __webpack_require__(0)
+const uri = __webpack_require__(1)
+const graph = __webpack_require__(2)
+
+const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
+const LDP_RESOURCE = '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
+
+module.exports = {
+  copyResource,
+  currentLocation,
+  deleteResource,
+  getAcceptPostPreference,
+  getResource,
+  getResourceHead,
+  getResourceGraph,
+  getResourceOptions,
+  parseLinkHeader,
+  patchResource,
+  postResource,
+  putResource,
+  putResourceACL
+}
+
+// I want HTTP COPY and I want it now!
+function copyResource (fromURL, toURL, options = {}) {
+  let headers = { 'Accept': '*/*' }
+  let contentType
+
+  if (!fromURL || !toURL) {
+    return Promise.reject(new Error('Missing fromURL or toURL in copyResource'))
+  }
+
+  return getResource(fromURL, headers, options)
+    .then(response => {
+      contentType = response.headers.get('Content-Type')
+
+      return (Config.AcceptBinaryTypes.indexOf(contentType))
+        ? response.arrayBuffer()
+        : response.text()
+    })
+    .then(contents => {
+      return putResource(toURL, contents, contentType, null, options)
+        .catch(error => {
+          if (error.status === 0) {
+            // Retry with no credentials
+            options.noCredentials = true
+            return putResource(toURL, contents, contentType, null, options)
+          }
+
+          throw error  // re-throw error
+        })
+    })
+}
+
+/**
+ * @returns {string}
+ */
+function currentLocation () {
+  return window.location.origin + window.location.pathname
+}
+
+/**
+ * deleteResource
+ *
+ * @param url {string}
+ * @param options {object}
+ *
+ * @returns {Promise<Response>}
+ */
+function deleteResource (url, options = {}) {
+  if (!url) {
+    return Promise.reject(new Error('Cannot DELETE resource - missing url'))
+  }
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  options.method = 'DELETE'
+
+  return fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error deleting resource: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      return response
+    })
+}
+
+function getAcceptPostPreference (url) {
+  const pIRI = uri.getProxyableIRI(url)
+
+  return getResourceOptions(pIRI, {'header': 'Accept-Post'})
+    .catch(error => {
+      console.error(error)
+
+      return {'headers': 'application/ld+json'}
+    })
+    .then(result => {
+      let header = result.headers.trim().split(/\s*, \s*/)
+
+      if (header.indexOf('text/html') > -1 || header.indexOf('application/xhtml+xml') > -1) {
+        return 'text/html'
+      } else if (header.indexOf('text/turtle') > -1 || header.indexOf('*/*') > -1) {
+        return 'text/turtle'
+      } else if (header.indexOf('application/ld+json') > -1 || header.indexOf('application/json') > -1) {
+        return 'application/ld+json'
+      } else {
+        console.log('Accept-Post contains unrecognised media-range; ' + result.headers)
+        return result.headers
+      }
+    })
+}
+
+/**
+ * getResource
+ *
+ * @param url {string}
+ *
+ * @param headers {object}
+ * @param [headers.accept='text/turtle'] {string}
+ *
+ * @param options {object}
+ *
+ * @returns {Promise<string>|Promise<ArrayBuffer>}
+ */
+function getResource (url, headers = {}, options = {}) {
+  url = url || currentLocation()
+
+  options.method = 'GET'
+
+  if (!headers['Accept']) {
+    headers['Accept'] = 'text/turtle'
+  }
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  options.headers = Object.assign({}, headers)
+
+  return fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error fetching resource: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      return response
+    })
+}
+
+/**
+ * getResourceHead
+ *
+ * @param [url] {string}
+ *
+ * @param options {object}
+ * @param options.header {string}
+ *
+ * @returns {Promise<string>} Resolves with contents of specified header
+ */
+function getResourceHead (url, options = {}) {
+  url = url || currentLocation()
+
+  if (!options.header) {
+    return Promise.reject(new Error('options.header not specified'))
+  }
+
+  options.method = 'HEAD'
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  return fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error fetching resource HEAD: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      let header = response.headers.get(options.header)
+
+      if (!header) {
+        throw new Error("'" + options.header + "' header not found")
+      }
+
+      return { 'headers': header }
+    })
+}
+
+function getResourceGraph (iri, headers, options = {}) {
+  let defaultHeaders = {'Accept': Config.AvailableMediaTypes.join(',')}
+  headers = headers || defaultHeaders
+  if (!('Accept' in headers)) {
+    Object.assign(headers, defaultHeaders)
+  }
+
+  if (iri.slice(0, 5).toLowerCase() === 'http:') {
+    options['noCredentials'] = true
+
+    if (document.domain !== iri.split('/')[2]) {
+      options['forceProxy'] = true
+    }
+  }
+
+  let pIRI = uri.getProxyableIRI(iri, options)
+
+  return getResource(pIRI, headers, options)
+    .then(response => {
+      let cT = response.headers.get('Content-Type')
+      options.contentType = (cT) ? cT.split(';')[ 0 ].trim() : 'text/turtle'
+
+      options.subjectURI = uri.stripFragmentFromString(iri)
+
+      return response.text()
+    })
+    .then(data => {
+      // FIXME: This is a dirty filthy fugly but a *fix* to get around the baseURI not being passed to the DOM parser. This injects the `base` element into the document so that the RDFa parse fallsback to that. The actual fix should happen upstream. See related issues:
+      // https://github.com/linkeddata/dokieli/issues/132
+      // https://github.com/rdf-ext/rdf-parser-dom/issues/2
+      // https://github.com/rdf-ext/rdf-parser-rdfa/issues/3
+      // https://github.com/simplerdf/simplerdf/issues/19
+
+      if (options.contentType === 'text/html' || options.contentType === 'application/xhtml+xml') {
+        let template = document.implementation.createHTMLDocument('template')
+        template.documentElement.innerHTML = data
+        template.contentType = options.contentType
+        let base = template.querySelector('head base[href]')
+        if (!base) {
+          template.querySelector('head').insertAdjacentHTML('afterbegin', '<base href="' + options.subjectURI + '" />')
+          data = template.documentElement.outerHTML
+        }
+      }
+
+      return graph.getGraphFromData(data, options)
+    })
+    .then(g => {
+      let fragment = (iri.lastIndexOf('#') >= 0) ? iri.substr(iri.lastIndexOf('#')) : ''
+
+      return SimpleRDF(Config.Vocab, options[ 'subjectURI' ], g, ld.store).child(pIRI + fragment)
+    })
+}
+
+/**
+ * getResourceOptions
+ *
+ * @param [url] {string} Defaults to current url
+ *
+ * @param [options={}] {object}
+ * @param [options.header] {string} Specific response header to return
+ * @param [options.noCredentials] {boolean}
+ *
+ * @returns {Promise} Resolves with `{ headers: ... }` object
+ */
+function getResourceOptions (url, options = {}) {
+  url = url || currentLocation()
+
+  options.method = 'OPTIONS'
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  return fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error fetching resource OPTIONS: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      if (options.header) {  // specific header requested
+        return { headers: response.headers.get(options.header) }
+      }
+
+      return { headers: response.headers }  // Not currently used anywhere
+    })
+}
+
+function parseLinkHeader (link) {
+  if (!link) {
+    return {}
+  }
+  var linkexp = /<[^>]*>\s*(\s*\s*[^()<>@,;:"/[\]?={} \t]+=(([^()<>@,;:"/[\]?={} \t]+)|("[^"]*")))*(,|$)/g
+  var paramexp = /[^()<>@,;:"/[\]?={} \t]+=(([^()<>@,;:"/[\]?={} \t]+)|("[^"]*"))/g
+  var matches = link.match(linkexp)
+  var rels = {}
+  for (var i = 0; i < matches.length; i++) {
+    var split = matches[i].split('>')
+    var href = split[0].substring(1)
+    var ps = split[1]
+    var s = ps.match(paramexp)
+    for (var j = 0; j < s.length; j++) {
+      var p = s[j]
+      var paramsplit = p.split('=')
+      // var name = paramsplit[0]
+      var rel = paramsplit[1].replace(/["']/g, '')
+      if (!rels[rel]) {
+        rels[rel] = []
+      }
+      rels[rel].push(href)
+      if (rels[rel].length > 1) {
+        rels[rel].sort()
+      }
+    }
+  }
+  return rels
+}
+
+function patchResource (url, deleteBGP, insertBGP, options = {}) {
+  // insertBGP and deleteBGP are basic graph patterns.
+  if (deleteBGP) {
+    deleteBGP = 'DELETE DATA { ' + deleteBGP + ' };'
+  }
+
+  if (insertBGP) {
+    insertBGP = 'INSERT DATA { ' + insertBGP + ' };'
+  }
+
+  options.body = deleteBGP + insertBGP
+
+  options.method = 'PATCH'
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  options.headers = options.headers || {}
+
+  options.headers['Content-Type'] = 'application/sparql-update; charset=utf-8'
+
+  return fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error patching resource: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      return response
+    })
+}
+
+function postResource (url, slug, data, contentType, links, options = {}) {
+  if (!url) {
+    return Promise.reject(new Error('Cannot POST resource - missing url'))
+  }
+
+  options.method = 'PUT'
+
+  options.body = data
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  options.headers = options.headers || {}
+
+  options.headers['Content-Type'] = contentType || DEFAULT_CONTENT_TYPE
+
+  links = links
+    ? LDP_RESOURCE + ', ' + links
+    : LDP_RESOURCE
+
+  options.headers['Link'] = links
+
+  if (slug) {
+    options.headers['Slug'] = slug
+  }
+
+  return fetch(url, options)
+
+    .catch(error => {
+      if (error.status === 0 && !options.noCredentials) {
+        // Possible CORS error, retry with no credentials
+        options.noCredentials = true
+        return postResource(url, slug, data, contentType, options)
+      }
+
+      throw error
+    })
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error creating resource: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      return response
+    })
+}
+
+/**
+ * putResource
+ *
+ * @param url {string}
+ *
+ * @param data {string|object}
+ *
+ * @param [contentType=DEFAULT_CONTENT_TYPE] {string}
+ *
+ * @param [links=LDP_RESOURCE] {string}
+ *
+ * @param [options={}] {object}
+ *
+ * @returns {Promise<Response>}
+ */
+function putResource (url, data, contentType, links, options = {}) {
+  if (!url) {
+    return Promise.reject(new Error('Cannot PUT resource - missing url'))
+  }
+
+  options.method = 'PUT'
+
+  options.body = data
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  options.headers = options.headers || {}
+
+  options.headers['Content-Type'] = contentType || DEFAULT_CONTENT_TYPE
+
+  links = links
+    ? LDP_RESOURCE + ', ' + links
+    : LDP_RESOURCE
+
+  options.headers['Link'] = links
+
+  return fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error writing resource: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      return response
+    })
+}
+
+/**
+ * putResourceACL
+ *
+ * TODO: This doesn't seem to be used anywhere...
+ *
+ * @param accessToURL
+ * @param aclURL
+ * @param acl
+ *
+ * @returns {Promise<Response|null>}
+ */
+function putResourceACL (accessToURL, aclURL, acl) {
+  if (!Config.User.IRI) {
+    console.log('Go through sign-in or do: DO.C.User.IRI = "https://example.org/#i";')
+    return Promise.resolve(null)
+  }
+
+  acl = acl || {
+    'u': { 'iri': [Config.User.IRI], 'mode': ['acl:Control', 'acl:Read', 'acl:Write'] },
+    'g': { 'iri': ['http://xmlns.com/foaf/0.1/Agent'], 'mode': ['acl:Read'] },
+    'o': { 'iri': [], 'mode': [] }
+  }
+
+  let agent, agentClass, mode
+
+  if ('u' in acl && 'iri' in acl.u && 'mode' in acl.u) {
+    agent = '<' + acl.u.iri.join('> , <') + '>'
+    mode = acl.u.mode.join(' , ')
+  } else {
+    agent = '<' + Config.User.IRI + '>'
+    mode = 'acl:Control , acl:Read , acl:Write'
+  }
+
+  let authorizations = []
+
+  authorizations.push(
+    '[ a acl:Authorization ; acl:accessTo <' +
+    accessToURL + '> ; acl:accessTo <' + aclURL + '> ; acl:mode ' + mode +
+    ' ; acl:agent ' + agent + ' ] .'
+  )
+
+  if ('g' in acl && 'iri' in acl.g && acl.g.iri.length >= 0) {
+    agentClass = '<' + acl.g.iri.join('> , <') + '>'
+    mode = acl.g.mode.join(' , ')
+    authorizations.push(
+      '[ a acl:Authorization ; acl:accessTo <' + accessToURL +
+      '> ; acl:mode ' + mode + ' ; acl:agentClass ' + agentClass + ' ] .'
+    )
+  }
+
+  let data = '@prefix acl: <http://www.w3.org/ns/auth/acl#> .\n' +
+    authorizations.join('\n') + '\n'
+
+  return putResource(aclURL, data, 'text/turtle; charset=utf-8')
+}
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+const Config = __webpack_require__(0)
+
+module.exports = {
+  domToString,
+  dumpNode,
+  getDoctype,
+  getDocument
+}
+
+function domToString (node, options = {}) {
+  var selfClosing = []
+
+  if (options.selfClosing) {
+    options.selfClosing.split(' ').forEach(function (n) {
+      selfClosing[n] = true
+    })
+  }
+
+  var skipAttributes = []
+
+  if (options.skipAttributes) {
+    options.skipAttributes.split(' ').forEach(function (n) {
+      skipAttributes[n] = true
+    })
+  }
+
+  var noEsc = [ false ]
+
+  return dumpNode(node, options, skipAttributes, selfClosing, noEsc)
+}
+
+function dumpNode (node, options, skipAttributes, selfClosing, noEsc) {
+  var out = ''
+
+  if (typeof node.nodeType === 'undefined') return out
+
+  if (node.nodeType === 1) {
+    if (node.hasAttribute('class') && 'classWithChildText' in options &&
+        node.matches(options.classWithChildText.class)) {
+      out += node.querySelector(options.classWithChildText.element).textContent
+    } else if (!(options.skipNodeWithClass && node.matches('.' + options.skipNodeWithClass))) {
+      var ename = node.nodeName.toLowerCase()
+      out += '<' + ename
+
+      var attrList = []
+
+      for (let i = node.attributes.length - 1; i >= 0; i--) {
+        var atn = node.attributes[i]
+
+        if (skipAttributes[atn.name]) continue
+
+        if (/^\d+$/.test(atn.name)) continue
+
+        if (atn.name === 'class' && 'replaceClassItemWith' in options) {
+          atn.value.split(' ').forEach(function (aValue) {
+            if (options.replaceClassItemWith.source.split(' ').indexOf(aValue) > -1) {
+              var re = new RegExp(aValue, 'g')
+              atn.value = atn.value.replace(re, options.replaceClassItemWith.target).trim()
+            }
+          })
+        }
+
+        if (!(atn.name === 'class' && 'skipClassWithValue' in options &&
+            options.skipClassWithValue === atn.value)) {
+          attrList.push(
+            atn.name + '="' +
+            atn.value
+              .replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;') +
+            '"')
+        }
+      }
+
+      if (attrList.length > 0) {
+        if ('sortAttributes' in options && options.sortAttributes) {
+          attrList.sort(function (a, b) {
+            return a.toLowerCase().localeCompare(b.toLowerCase())
+          })
+        }
+        out += ' ' + attrList.join(' ')
+      }
+
+      if (selfClosing[ename]) {
+        out += ' />'
+      } else {
+        out += '>'
+        out += (ename === 'html') ? '\n  ' : ''
+        noEsc.push(ename === 'style' || ename === 'script')
+        for (var i = 0; i < node.childNodes.length; i++) {
+          out += dumpNode(node.childNodes[i], options, skipAttributes, selfClosing, noEsc)
+        }
+        noEsc.pop()
+        out += (ename === 'body') ? '</' + ename + '>' + '\n' : '</' + ename + '>'
+      }
+    }
+  } else if (node.nodeType === 8) {
+    // FIXME: If comments are not tabbed in source, a new line is not prepended
+    out += '<!--' + node.nodeValue + '-->'
+  } else if (node.nodeType === 3 || node.nodeType === 4) {
+    // XXX: Remove new lines which were added after DOM ready
+    let nl = node.nodeValue.replace(/\n+$/, '')
+    out += noEsc[noEsc.length - 1]
+      ? nl
+      : nl.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  } else {
+    console.log('Warning; Cannot handle serialising nodes of type: ' + node.nodeType)
+  }
+
+  return out
+}
+
+function getDoctype () {
+  /* Get DOCTYPE from http://stackoverflow.com/a/10162353 */
+  var node = document.doctype
+  var doctype = ''
+
+  if (node !== null) {
+    doctype = '<!DOCTYPE ' +
+      node.name +
+      (node.publicId ? ' PUBLIC "' + node.publicId + '"' : '') +
+      (!node.publicId && node.systemId ? ' SYSTEM' : '') +
+      (node.systemId ? ' "' + node.systemId + '"' : '') +
+      '>'
+  }
+  return doctype
+}
+
+function getDocument (cn, options) {
+  let node = cn || document.documentElement.cloneNode(true)
+  options = options || Config.DOMNormalisation
+
+  let doctype = getDoctype()
+  let s = (doctype.length > 0) ? doctype + '\n' : ''
+  s += domToString(node, options)
+  return s
+}
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(7);
+
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/** dokieli
@@ -92,14 +1223,18 @@ module.exports = __webpack_require__(1);
  * https://github.com/linkeddata/dokieli
  */
 
-const fetcher = __webpack_require__(3)
+const fetcher = __webpack_require__(4)
+const doc = __webpack_require__(5)
+const uri = __webpack_require__(1)
+const graph = __webpack_require__(2)
+const inbox = __webpack_require__(9)
 
 if(typeof DO === 'undefined'){
 global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined;
 var DO = {
   fetcher,
 
-  C: __webpack_require__(5),
+  C: __webpack_require__(0),
 
   U: {
     //Tries to authenticate with given URI. If authenticated, returns the 'User' header value.
@@ -164,9 +1299,9 @@ var DO = {
     authenticateUserFallback: function(url, reasons) {
 // console.log("Try to authenticating through WebID's storage, if not found, try through a known authentication endpoint");
       url = url || window.location.origin + window.location.pathname;
-      var pIRI = DO.U.getProxyableIRI(url);
+      var pIRI = uri.getProxyableIRI(url);
 
-      return DO.U.getGraph(pIRI)
+      return graph.getGraph(pIRI)
         .then(
           function(i) {
             var s = i.child(url);
@@ -261,7 +1396,7 @@ var DO = {
     setUserInfo: function(userIRI) {
 // console.log("setUserInfo: " + userIRI);
       if (userIRI) {
-        return DO.U.getResourceGraph(userIRI).then(
+        return fetcher.getResourceGraph(userIRI).then(
           function(g){
             var s = g.child(userIRI);
 // console.log(s);
@@ -300,7 +1435,7 @@ var DO = {
 
     setUserWorkspaces: function(userPreferenceFile){
       //XXX: Probably https so don't bother with proxy?
-      DO.U.getGraph(userPreferenceFile).then(
+      graph.getGraph(userPreferenceFile).then(
         function(pf) {
           DO.C.User.PreferencesFileGraph = pf;
           var s = pf.child(DO.C.User.IRI);
@@ -378,132 +1513,12 @@ var DO = {
       }
     },
 
-    //https://github.com/solid/solid.js/blob/master/lib/util/web-util.js
-    parseLinkHeader: function(link) {
-      if (!link) {
-        return {}
-      }
-      var linkexp = /<[^>]*>\s*(\s*;\s*[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*")))*(,|$)/g;
-      var paramexp = /[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*"))/g;
-      var matches = link.match(linkexp);
-      var rels = {};
-      for (var i = 0; i < matches.length; i++) {
-        var split = matches[i].split('>');
-        var href = split[0].substring(1);
-        var ps = split[1];
-        var s = ps.match(paramexp);
-        for (var j = 0; j < s.length; j++) {
-          var p = s[j];
-          var paramsplit = p.split('=');
-          var name = paramsplit[0];
-          var rel = paramsplit[1].replace(/["']/g, '');
-          if (!rels[rel]) {
-            rels[rel] = []
-          }
-          rels[rel].push(href)
-          if (rels[rel].length > 1) {
-            rels[rel].sort()
-          }
-        }
-      }
-      return rels;
-    },
-
-    getEndpoint: function(property, url) {
-      if (url) {
-        return DO.U.getEndpointFromHead(property, url).then(
-          function(i){
-            return i;
-          },
-          function(x){
-            return DO.U.getEndpointFromRDF(property, url);
-          }
-        );
-      }
-      else {
-        var uri = location.href.split(location.search||location.hash||/[?#]/)[0];
-        var options = {
-          'contentType': 'text/html',
-          'subjectURI': uri
-        }
-        return DO.U.getGraphFromData(DO.U.getDocument(), options)
-          .then(
-            function(i){
-              //TODO: Should this get all of the inboxes or a given subject's?
-              var endpoints = i.match(uri, property).toArray();
-
-              if (endpoints.length > 0) {
-                return endpoints.map(function(t){ return t.object.nominalValue; });
-              }
-
-              console.log(property + ' endpoint was not found in message body');
-              return DO.U.getEndpointFromHead(property, uri);
-            },
-            function(reason){
-              return DO.U.getEndpointFromHead(property, uri);
-            }
-          );
-      }
-    },
-
-    getEndpointFromHead: function(property, url) {
-      var pIRI = DO.U.getProxyableIRI(url);
-
-      return fetcher.getResourceHead(pIRI, {'header': 'Link'}).then(
-        function(i){
-          var linkHeaders = DO.U.parseLinkHeader(i.headers);
-
-          if (property in linkHeaders) {
-            return linkHeaders[property];
-          }
-          return Promise.reject({'message': property + " endpoint was not found in 'Link' header"});
-        },
-        function(reason){
-          return Promise.reject({'message': "'Link' header not found"});
-        }
-      );
-    },
-
-    getEndpointFromRDF: function(property, url, subjectIRI) {
-      url = url || window.location.origin + window.location.pathname;
-      subjectIRI = subjectIRI || url;
-
-      return DO.U.getResourceGraph(subjectIRI)
-        .then(
-          function(i) {
-            var s = i.child(subjectIRI);
-
-            switch(property) {
-              case DO.C.Vocab['ldpinbox']['@id']:
-                if (s.ldpinbox._array.length > 0){
-// console.log(s.ldpinbox._array);
-                  return [s.ldpinbox.at(0)];
-                }
-                break;
-              case DO.C.Vocab['oaannotationService']['@id']:
-                if (s.oaannotationService._array.length > 0){
-// console.log(s.oaannotationService._array);
-                  return [s.oaannotationService.at(0)];
-                }
-                break;
-            }
-
-            var reason = {"message": property + " endpoint was not found in message body"};
-            return Promise.reject(reason);
-          },
-          function(reason) {
-            console.log(reason);
-            return reason;
-          }
-        );
-    },
-
     getNotifications: function(url) {
       url = url || window.location.origin + window.location.pathname;
       var notifications = [];
-      var pIRI = DO.U.getProxyableIRI(url);
+      var pIRI = uri.getProxyableIRI(url);
 
-      return DO.U.getGraph(pIRI)
+      return graph.getGraph(pIRI)
         .then(
           function(i) {
             var s = i.child(url);
@@ -533,7 +1548,7 @@ var DO = {
 
     showInboxNotifications: function() {
       if (typeof SimpleRDF !== 'undefined') {
-        DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id']).then(
+        inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id']).then(
           function(i) {
             i.forEach(function(inbox) {
               DO.U.showNotificationSources(inbox);
@@ -550,8 +1565,8 @@ var DO = {
       DO.U.getNotifications(url).then(
         function(i) {
           i.forEach(function(notification) {
-            var pIRI = DO.U.getProxyableIRI(notification);
-            DO.U.getGraph(pIRI).then(
+            var pIRI = uri.getProxyableIRI(notification);
+            graph.getGraph(pIRI).then(
               function(g) {
 // console.log(g);
                 var subjects = [];
@@ -694,7 +1709,7 @@ var DO = {
     //Borrowed the d3 parts from https://bl.ocks.org/mbostock/4600693
     showVisualisationGraph: function(url, data, selector, options) {
       url = url || window.location.origin + window.location.pathname;
-      data = data || DO.U.getDocument();
+      data = data || doc.getDocument();
       selector = selector || 'body';
       options = options || {};
       options['contentType'] = options.contentType || 'text/html';
@@ -824,7 +1839,7 @@ var DO = {
 
     getVisualisationGraphData: function(url, data, options) {
       return new Promise(function(resolve, reject) {
-        DO.U.getGraphFromData(data, options).then(
+        graph.getGraphFromData(data, options).then(
           function(g){
 // console.log(g);
             var g = SimpleRDF(DO.C.Vocab, options['subjectURI'], g, ld.store).child(url);
@@ -867,7 +1882,7 @@ var DO = {
       options['contentType'] = options.contentType || 'text/html';
       options['subjectURI'] = options.subjectURI || uri;
 
-      DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id'], uri).then(
+      inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id'], uri).then(
         function(i) {
           i.forEach(function(inbox) {
             DO.U.getNotifications(inbox).then(
@@ -875,8 +1890,8 @@ var DO = {
                 var promises = [];
 
                 i.forEach(function(notification) {
-                  var pIRI = DO.U.getProxyableIRI(notification);
-                  promises.push(DO.U.getGraph(pIRI));
+                  var pIRI = uri.getProxyableIRI(notification);
+                  promises.push(graph.getGraph(pIRI));
                 });
 
                 var dataGraph = SimpleRDF();
@@ -887,7 +1902,7 @@ var DO = {
                       dataGraph.graph().addAll(g.graph());
                     });
 
-                    DO.U.serializeGraph(dataGraph, { 'contentType': 'text/turtle' })
+                    graph.serializeGraph(dataGraph, { 'contentType': 'text/turtle' })
                       .then(function(data){
                         //FIXME: FUGLY because parser defaults to localhost. Using UUID to minimise conflict
                         data = data.replace(/http:\/\/localhost\/d79351f4-cdb8-4228-b24f-3e9ac74a840d/g, '');
@@ -911,303 +1926,6 @@ var DO = {
           console.log(reason);
         }
       );
-    },
-
-    getAbsoluteIRI: function(base, location){
-      var iri = location;
-
-      if(location.toLowerCase().slice(0,4) != 'http') {
-        if(location.startsWith('/')){
-          var x = base.toLowerCase().trim().split('/');
-
-          iri = x[0]+'//'+x[2]+location;
-        }
-        else if(!base.endsWith('/')){
-          iri = base.substr(0, base.lastIndexOf('/') + 1) + location;
-        }
-        else {
-          iri = base + location;
-        }
-      }
-
-      return iri;
-    },
-
-    getProxyableIRI: function(url, options) {
-      var pIRI = DO.U.stripFragmentFromString(url);
-      options = options || {};
-
-      if ((typeof document !== 'undefined' && document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') || 'forceProxy' in options) {
-        var proxyURL = ('proxyURL' in options) ? options.proxyURL : DO.C.ProxyURL;
-        pIRI = proxyURL + DO.U.encodeString(pIRI);
-      }
-// console.log('pIRI: ' + pIRI);
-      return pIRI;
-    },
-
-    postResource: function(url, slug, data, contentType, links, options) {
-      if (url && url.length > 0) {
-        contentType = contentType || 'text/html; charset=utf-8';
-        var ldpResource = '<http://www.w3.org/ns/ldp#Resource>; rel="type"';
-        links = (links) ? ldpResource + ', ' + links : ldpResource;
-        options = options || {};
-
-        return new Promise(function(resolve, reject) {
-          var http = new XMLHttpRequest();
-          http.open('POST', url);
-          http.setRequestHeader('Content-Type', contentType);
-          http.setRequestHeader('Link', links);
-          if (slug && slug.length > 0) {
-            http.setRequestHeader('Slug', slug);
-          }
-          if (!options.noCredentials) {
-            http.withCredentials = true;
-          }
-          DO.U.showXHRProgressHTML(http, options);
-          http.onreadystatechange = function() {
-            if (this.readyState == this.DONE) {
-              if (this.status === 200 || this.status === 201 || this.status === 204) {
-                return resolve({xhr: this});
-              }
-              return reject({status: this.status, xhr: this});
-            }
-          };
-          http.send(data);
-        });
-      }
-      else {
-        return Promise.reject({'message': 'url parameter not valid'});
-      }
-    },
-
-    notifyInbox: function(o) {
-      var slug, inbox;
-      if ('slug' in o) {
-        slug = o.slug;
-      }
-      if ('inbox' in o) {
-        inbox = o.inbox;
-      }
-
-      var types = '<dt>Types</dt>';
-      o.type.forEach(function(t){
-        types += '<dd><a about="" href="' + DO.C.Prefixes[t.split(':')[0]] + t.split(':')[1] + '" typeof="'+ t +'">' + t.split(':')[1] + '</a></dd>';
-      });
-
-      var asObjectTypes = '';
-      if ('object' in o && 'objectTypes' in o && o.objectTypes.length > 0) {
-        asObjectTypes = '<dl><dt>Types</dt>';
-        o.objectTypes.forEach(function(t){
-          asObjectTypes += '<dd><a about="' + o.object + '" href="' + t + '" typeof="'+ t +'">' + t + '</a></dd>';
-        });
-        asObjectTypes += '</dl>';
-      }
-
-      var asObjectLicense = '';
-      if ('object' in o && 'objectLicense' in o && o.objectLicense.length > 0) {
-        asObjectLicense = '<dl><dt>License</dt><dd><a about="' + o.object + '" href="' + o.objectLicense + '" property="schema:license">' + o.objectLicense + '</a></dd></dl>';
-      }
-
-      var asobject = ('object' in o) ? '<dt>Object</dt><dd><a href="' + o.object + '" property="as:object">' + o.object + '</a>' + asObjectTypes + asObjectLicense + '</dd>' : '';
-
-      var asinReplyTo = ('inReplyTo' in o) ? '<dt>In reply to</dt><dd><a href="' + o.inReplyTo + '" property="as:inReplyTo">' + o.inReplyTo + '</a></dd>' : '';
-
-      var ascontext = ('context' in o && o.context.length > 0) ? '<dt>Context</dt><dd><a href="' + o.context + '" property="as:context">' + o.context + '</a></dd>' : '';
-
-      var astarget = ('target' in o && o.target.length > 0) ? '<dt>Target</dt><dd><a href="' + o.target + '" property="as:target">' + o.target + '</a></dd>' : '';
-
-      var datetime = DO.U.getDateTimeISO();
-      var asupdated = '<dt>Updated</dt><dd><time datetime="' + datetime + '" datatype="xsd:dateTime" property="as:updated" content="' + datetime + '">' + datetime.substr(0,19).replace('T', ' ') + '</time></dd>';
-
-      var assummary = ('summary' in o && o.summary.length > 0) ? '<dt>Summary</dt><dd property="as:summary" datatype="rdf:HTML">' + o.summary + '</dd>' : '';
-
-      var ascontent = ('content' in o && o.content.length > 0) ? '<dt>Content</dt><dd property="as:content" datatype="rdf:HTML">' + o.content + '</dd>' : '';
-
-      var asactor = (DO.C.User.IRI) ? '<dt>Actor</dt><dd><a href="' + DO.C.User.IRI + '" property="as:actor">' + DO.C.User.IRI + '</a></dd>' : '';
-
-      var license = '<dt>License</dt><dd><a href="' + DO.C.NotificationLicense + '" property="schema:license">' + DO.C.NotificationLicense + '</a></dd>';
-
-      var asto = ('to' in o && o.to.length > 0 && !o.to.match(/\s/g) && o.to.match(/^https?:\/\//gi)) ? '<dt>To</dt><dd><a href="' + o.to + '" property="as:to">' + o.to + '</a></dd>' : '';
-
-      var statements = ('statements' in o) ? o.statements : '';
-
-      var dl = [
-                types,
-                asobject,
-                ascontext,
-                astarget,
-                asupdated,
-                assummary,
-                ascontent,
-                asactor,
-                license,
-                asto
-                ].map(function(n) { if (n != '') { return '      ' + n + '\n'; } }).join('');
-
-
-      //TODO: Come up with a better title. reuse `types` e.g., Activity Created, Announced..
-      var title = 'Notification';
-      if(types.indexOf('as:Announce') > -1){
-        title += ': Announced';
-      }
-      else if (types.indexOf('as:Created') > -1){
-        title += ': Created';
-      }
-      else if (types.indexOf('as:Liked') > -1){
-        title += ': Liked';
-      }
-      else if (types.indexOf('as:Disliked') > -1){
-        title += ': Disliked';
-      }
-
-      var data = '\n\
-<article>\n\
-  <h1>' + title + '</h1>\n\
-  <section>\n\
-    <dl about="">\n\
-' + dl +
-'    </dl>\n\
-' + statements +
-'  </section>\n\
-</article>\n\
-';
-
-      var options = {};
-      options.prefixes = DO.C.Prefixes;
-
-      data = DO.U.createHTML(title, data, options);
-// console.log(data);
-
-      if (inbox && inbox.length > 0) {
-        var pIRI = DO.U.getProxyableIRI(inbox);
-
-        return DO.U.getAcceptPostPreference(pIRI)
-          .catch(function(reason){
-            return reason;
-          })
-          .then(function(preferredContentType){
-// console.log(preferredContentType);
-            var options = {
-              'contentType': 'text/html',
-              'subjectURI': 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d'
-            };
-
-            switch(preferredContentType) {
-              case 'text/html': case 'application/xhtml+xml':
-                return DO.U.postResource(pIRI, slug, data, 'text/html; charset=utf-8').catch(function(reason){
-                  if(reason.xhr.status == 0){
-                    var options = {'noCredentials': true};
-                    DO.U.postResource(pIRI, slug, data, 'text/html; charset=utf-8');
-                  }
-                });
-                break;
-              case 'text/turtle':
-                //FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
-                // return DO.U.postResource(pIRI, slug, data, 'text/turtle; charset=utf-8');
-                return DO.U.getGraphFromData(data, options).then(
-                  function(g) {
-// console.log(g);
-                    var options = {
-                      'contentType': 'text/turtle'
-                    };
-                    return DO.U.serializeGraph(g, options).then(
-                      function(data){
-// console.log(data);
-
-                        //FIXME: FUGLY because parser defaults to localhost. Using UUID to minimise conflict
-                        data = data.replace(/http:\/\/localhost\/d79351f4-cdb8-4228-b24f-3e9ac74a840d/g, '');
-
-                        //XXX: Workaround for rdf-parser-rdfa bug that gives '@langauge' instead of @type when encountering datatype in HTML+RDFa . TODO: Link to bug here
-                        data = data.replace(/Z"@en;/, 'Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;');
-
-                        return DO.U.postResource(pIRI, slug, data, 'text/turtle').catch(function(reason){
-                          if(reason.xhr.status == 0){
-                            var options = {'noCredentials': true};
-                            DO.U.postResource(pIRI, slug, data, 'text/turtle', null, options);
-                          }
-                        });
-                      }
-                    );
-                  },
-                  function(reason) {
-                    return reason;
-                  }
-                );
-
-                break;
-              case 'application/ld+json': case 'application/json':  case '*/*': default:
-                return DO.U.getGraphFromData(data, options).then(
-                  function(g) {
-// console.log(g);
-                    var options = {
-                      'contentType': 'application/ld+json'
-                    };
-                    return DO.U.serializeGraph(g, options).then(
-                      function(i){
-                        var x = JSON.parse(i);
-// console.log(x);
-                        x[0]["@context"] = ["https://www.w3.org/ns/activitystreams", {"oa": "http://www.w3.org/ns/anno.jsonld"}];
-                        // If from is Turtle:
-                        // x[0]["@id"] = (x[0]["@id"].slice(0,2) == '_:') ? '' : x[0]["@id"];
-                        x[0]["@id"] = (x[0]["@id"] == 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d') ? '' : x[0]["@id"];
-
-                        //XXX: Workaround for rdf-parser-rdfa bug that gives '@langauge' instead of @type when encountering datatype in HTML+RDFa . TODO: Link to bug here
-                        for(var i = 0; i < x.length; i++){
-                          if('https://www.w3.org/ns/activitystreams#updated' in x[i]) {
-                            x[i]['https://www.w3.org/ns/activitystreams#updated'] = {
-                              '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
-                              '@value': x[i]['https://www.w3.org/ns/activitystreams#updated']['@value']
-                            };
-                          }
-                        }
-
-                        var data = JSON.stringify(x) + '\n';
-// console.log(data);
-                        return DO.U.postResource(pIRI, slug, data, 'application/ld+json; profile="http://www.w3.org/ns/anno.jsonld"').catch(function(reason){
-                            if(reason.xhr.status == 0){
-                              var options = {'noCredentials': true};
-                              DO.U.postResource(pIRI, slug, data, 'application/ld+json; profile="http://www.w3.org/ns/anno.jsonld"', null, options);
-                            }
-                        });
-                      }
-                    );
-                  },
-                  function(reason) {
-                    return reason;
-                  }
-                );
-                break;
-            }
-          });
-      }
-      else {
-        return Promise.reject({'message': "No inbox to send notification to"});
-      }
-    },
-
-    getAcceptPostPreference: function getAcceptPostPreference (url) {
-      var pIRI = DO.U.getProxyableIRI(url);
-
-      return fetcher.getResourceOptions(pIRI, {'header': 'Accept-Post'})
-        .catch(function (error) {
-          console.error(error);
-
-          return {'headers': 'application/ld+json'};
-        })
-        .then(function (i) {
-          var header = i.headers.trim().split(/\s*,\s*/);
-
-          if (header.indexOf('text/html') > -1 || header.indexOf('application/xhtml+xml') > -1) {
-            return 'text/html';
-          } else if (header.indexOf('text/turtle') > -1 || header.indexOf('*/*') > -1) {
-            return 'text/turtle';
-          } else if (header.indexOf('application/ld+json') > -1 || header.indexOf('application/json') > -1) {
-            return 'application/ld+json';
-          } else {
-            console.log('Accept-Post contains unrecognised media-range; ' + i.headers);
-            return i.headers;
-          }
-        });
     },
 
     urlParam: function(name) {
@@ -1585,7 +2303,7 @@ var DO = {
             var optionsNormalisation = DO.C.DOMNormalisation;
             delete optionsNormalisation['skipNodeWithClass'];
 
-            DO.U.showVisualisationGraph(document.location.href, DO.U.getDocument(null, optionsNormalisation), '#graph-view');
+            DO.U.showVisualisationGraph(document.location.href, doc.getDocument(null, optionsNormalisation), '#graph-view');
           }
         });
       }
@@ -1840,11 +2558,11 @@ var DO = {
       var count = DO.U.contentCount(content);
       var authors = [], contributors = [], editors = [];
 
-      var data = DO.U.getDocument();
+      var data = doc.getDocument();
       var subjectURI = window.location.origin + window.location.pathname;
       var options = {'contentType': 'text/html', 'subjectURI': subjectURI };
 
-      DO.U.getGraphFromData(data, options).then(
+      graph.getGraphFromData(data, options).then(
         function(i){
           var g = SimpleRDF(DO.C.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
 
@@ -1905,8 +2623,8 @@ var DO = {
         });
     },
 
-    contentCount: function(c) {
-      var content = DO.U.fragmentFromString(DO.U.domToString(c)).textContent.trim();
+    contentCount: function contentCount (c) {
+      var content = DO.U.fragmentFromString(doc.domToString(c)).textContent.trim();
       var contentCount = { readingTime:1, words:0, chars:0, lines:0, pages:{A4:1, USLetter:1}, bytes:0 };
       if (content.length > 0) {
         var lineHeight = c.ownerDocument.defaultView.getComputedStyle(c, null)["line-height"];
@@ -2128,14 +2846,6 @@ var DO = {
       return unescape(decodeURIComponent(window.atob(s)));
     },
 
-    encodeString: function(string) {
-      return encodeURIComponent(string).replace(/'/g,"%27").replace(/"/g,"%22");
-    },
-
-    decodeString: function(string) {
-      return decodeURIComponent(string.replace(/\+/g,  " "));
-    },
-
     uniqueArray: function(a){
       var n = {}, r = [];
       for(var i = 0; i < a.length; i++) {
@@ -2145,17 +2855,6 @@ var DO = {
         }
       }
       return r;
-    },
-
-    stripFragmentFromString: function(string) {
-      if (typeof string === "string") {
-        var stringIndexFragment = string.indexOf('#');
-
-        if (stringIndexFragment >= 0) {
-          string = string.substring(0, stringIndexFragment);
-        }
-      }
-      return string;
     },
 
     getSelectorSign: function(node) {
@@ -2235,177 +2934,8 @@ var DO = {
       return aString.split("/");
     },
 
-    getGraphFromData: function(data, options) {
-      options = options || {};
-      if (!('contentType' in options)) {
-        options['contentType'] = 'text/turtle';
-      }
-      if (!('subjectURI' in options)) {
-        options['subjectURI'] = '_:dokieli';
-      }
-
-      return SimpleRDF.parse(data, options['contentType'], options['subjectURI']);
-    },
-
-    getGraph: function(url) {
-      return SimpleRDF(DO.C.Vocab, url, null, ld.store).get();
-    },
-
-    serializeGraph: function(g, options) {
-      options = options || {};
-      if (!('contentType' in options)) {
-        options['contentType'] = 'text/turtle';
-      }
-
-      return ld.store.serializers[options.contentType].serialize(g._graph);
-    },
-
-    serializeData: function(data, fromContentType, toContentType, options) {
-      if (fromContentType == toContentType) {
-        return Promise.resolve(data);
-      }
-      else {
-        var o = {
-          'contentType': fromContentType,
-          'subjectURI': options.subjectURI
-        };
-        return DO.U.getGraphFromData(data, o).then(
-          function(g) {
-            var o = {
-              'contentType': toContentType
-            };
-            return DO.U.serializeGraph(g, o).then(
-              function(i){
-                switch(toContentType) {
-                  case 'application/ld+json':
-                    var x = JSON.parse(i);
-                    x[0]["@context"] = ["http://www.w3.org/ns/anno.jsonld", {"as": "https://www.w3.org/ns/activitystreams"}];
-                    x[0]["@id"] = (x[0]["@id"].slice(0,2) == '_:') ? '' : x[0]["@id"];
-                    return JSON.stringify(x) + '\n';
-                  default:
-                    return i;
-                }
-              }
-            );
-          },
-          function(reason) {
-            return reason;
-          }
-        );
-      }
-    },
-
-    getDoctype: function() {
-      /* Get DOCTYPE from http://stackoverflow.com/a/10162353 */
-      var node = document.doctype;
-      var doctype = '';
-      if (node !== null) {
-        doctype = "<!DOCTYPE "
-          + node.name
-          + (node.publicId ? ' PUBLIC "' + node.publicId + '"' : '')
-          + (!node.publicId && node.systemId ? ' SYSTEM' : '')
-          + (node.systemId ? ' "' + node.systemId + '"' : '')
-          + '>';
-      }
-      return doctype;
-    },
-
-    getDocument: function(cn, options) {
-      var node = cn || document.documentElement.cloneNode(true);
-      options = options || DO.C.DOMNormalisation;
-
-      var doctype = DO.U.getDoctype();
-      var s =  (doctype.length > 0) ? doctype + "\n" : '';
-      s += DO.U.domToString(node, options);
-      return s;
-    },
-
-    domToString: function(node, options) {
-      options = options || {};
-      var selfClosing = [];
-      if ('selfClosing' in options) {
-        options.selfClosing.split(' ').forEach(function (n) {
-          selfClosing[n] = true;
-        });
-      }
-      var skipAttributes = []
-      if ('skipAttributes' in options) {
-        options.skipAttributes.split(' ').forEach(function (n) {
-          skipAttributes[n] = true;
-        });
-      }
-
-      var noEsc = [false];
-
-      var dumpNode = function(node) {
-        var out = '';
-        if (typeof node.nodeType === 'undefined') return out
-        if (1 === node.nodeType) {
-          if (node.hasAttribute('class') && 'classWithChildText' in options && node.matches(options.classWithChildText.class)) {
-            out += node.querySelector(options.classWithChildText.element).textContent;
-          }
-          else if (!('skipNodeWithClass' in options && node.matches('.' + options.skipNodeWithClass))) {
-            var ename = node.nodeName.toLowerCase();
-            out += "<" + ename ;
-
-            var attrList = [];
-            for (var i = node.attributes.length - 1; i >= 0; i--) {
-              var atn = node.attributes[i];
-              if (skipAttributes[atn.name]) continue;
-              if (/^\d+$/.test(atn.name)) continue;
-              if (atn.name == 'class' && 'replaceClassItemWith' in options) {
-                atn.value.split(' ').forEach(function(aValue){
-                  if(options.replaceClassItemWith.source.split(' ').indexOf(aValue) > -1) {
-                    var re = new RegExp(aValue, 'g');
-                    atn.value = atn.value.replace(re, options.replaceClassItemWith.target).trim();
-                  }
-                });
-              }
-              if (!(atn.name == 'class' && 'skipClassWithValue' in options && options.skipClassWithValue == atn.value)) {
-                attrList.push(atn.name + "=\"" + atn.value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;') + "\"");
-              }
-            }
-
-            if (attrList.length > 0) {
-              if('sortAttributes' in options && options.sortAttributes) {
-                attrList.sort(function (a, b) {
-                  return a.toLowerCase().localeCompare(b.toLowerCase());
-                });
-              }
-              out += ' ' + attrList.join(' ');
-            }
-
-            if (selfClosing[ename]) { out += " />"; }
-            else {
-              out += '>';
-              out += (ename == 'html') ? "\n  " : '';
-              noEsc.push(ename === "style" || ename === "script");
-              for (var i = 0; i < node.childNodes.length; i++) out += dumpNode(node.childNodes[i]);
-              noEsc.pop();
-              out += (ename == 'body') ? '</' + ename + '>' + "\n" : '</' + ename + '>';
-            }
-          }
-        }
-        else if (8 === node.nodeType) {
-          //FIXME: If comments are not tabbed in source, a new line is not prepended
-          out += "<!--" + node.nodeValue + "-->";
-        }
-        else if (3 === node.nodeType || 4 === node.nodeType) {
-          //XXX: Remove new lines which were added after DOM ready
-          var nl = node.nodeValue.replace(/\n+$/, '');
-          out += noEsc[noEsc.length - 1] ? nl : nl.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        }
-        else {
-          console.log("Warning; Cannot handle serialising nodes of type: " + node.nodeType);
-        }
-        return out;
-      };
-
-      return dumpNode(node);
-    },
-
     exportAsHTML: function() {
-      var data = DO.U.getDocument();
+      var data = doc.getDocument();
       //XXX: Encodes strings as UTF-8. Consider storing bytes instead?
       var blob = new Blob([data], {type:'text/html;charset=utf-8'});
       var pattern = /[^\w]+/ig;
@@ -2424,13 +2954,12 @@ var DO = {
       document.body.removeChild(a);
     },
 
-    snapshotAtEndpoint: function(e, iri, endpoint, noteData, options){
+    snapshotAtEndpoint: function snapshotAtEndpoint (e, iri, endpoint, noteData, options = {}) {
       iri = iri || window.location.origin + window.location.pathname;
       endpoint = endpoint || 'https://pragma.archivelab.org';
-      options = options || {};
 
       if(!('contentType' in options)){
-        options["contentType"] = 'application/json';
+        options['contentType'] = 'application/json';
       }
 
       noteData = noteData || {
@@ -2462,37 +2991,42 @@ var DO = {
       //   noteData.annotation["message"] = note;
       // }
 
-      if(typeof e !== 'undefined' && e.target.closest('button')){
+      if (typeof e !== 'undefined' && e.target.closest('button')) {
         var archiveNode = e.target.closest('button').parentNode;
         archiveNode.insertAdjacentHTML('beforeend', ' <span class="progress"><i class="fa fa-circle-o-notch fa-spin fa-fw"></i></span>');
       }
 
-      DO.U.postResource(endpoint, '', JSON.stringify(noteData), options.contentType, '', {'noCredentials': true}).then(
-        function(i){
-          try {
-            var response = JSON.parse(i.xhr.responseText);
+      options.noCredentials = true
 
-            switch(endpoint) {
-              case 'https://pragma.archivelab.org': default:
-                if('wayback_id' in response && response.wayback_id.length > 0){
-                  var location = 'https://web.archive.org' + response.wayback_id;
-                  archiveNode.innerHTML = '<i class="fa fa-archive fa-fw"></i> Archived at <a target="_blank" href="' + location + '">' + location + '</a>';
-                }
-                else {
-                  archiveNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to archive. Try later.';
-                }
+      return fetcher.postResource(endpoint, '', JSON.stringify(noteData), options.contentType, null, options)
 
-                break;
-            }
+        .then(response => response.json())
 
-          }catch(e){
-            archiveNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to archive. Try later.';
+        .then(response => {
+          switch (endpoint) {
+            case 'https://pragma.archivelab.org':
+            default:
+              if (response['wayback_id']) {
+                let location = 'https://web.archive.org' + response.wayback_id
+
+                archiveNode
+                  .innerHTML = '<i class="fa fa-archive fa-fw"></i> Archived at <a target="_blank" href="' +
+                  location + '">' + location + '</a>'
+              } else {
+                archiveNode
+                  .querySelector('.progress')
+                  .innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to archive. Try later.'
+              }
+
+              break
           }
-        },
-        function(reason){
-          archiveNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to archive. Try later.';
-        }
-      );
+        })
+
+        .catch(() => {
+          archiveNode
+            .querySelector('.progress')
+            .innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to archive. Try later.'
+        })
     },
 
     snapshotDocument: function(e) {
@@ -2500,7 +3034,7 @@ var DO = {
         e.target.disabled = true;
       }
 
-      var iri = DO.U.stripFragmentFromString(document.location.href);
+      var iri = uri.stripFragmentFromString(document.location.href);
 
       document.body.insertAdjacentHTML('beforeend', '<aside id="snapshot-document" class="do on"><button class="close" title="Close">❌</button><h2>Snapshot Document</h2><p><code>' + iri + '</code> will be snapshot. Note that behaviour differ for each action. See the links for more information.</p><ul><li><button class="export-as-html">Export</button> this article as HTML and save to file.</li><li><a href="http://web.archive.org/" target="_blank">Internet Archive</a>: <button class="snapshot-internet-archive">Capture</button> all crawlable resources referenced in this article.</li></ul></aside>');
 
@@ -2602,7 +3136,7 @@ var DO = {
 
         if (e.target.closest('.resource-save')) {
           var url = window.location.origin + window.location.pathname;
-          var data = DO.U.getDocument();
+          var data = doc.getDocument();
 
           fetcher.putResource(url, data)
             .then(() => {
@@ -2788,7 +3322,7 @@ var DO = {
               .innerHTML = '<p class="success"><a href="' + response.url + '">Reply saved!</a></p>'
 
             // Determine the inbox endpoint, to send the notification to
-            return DO.U.getEndpoint(DO.C.Vocab[ 'ldpinbox' ][ '@id' ])
+            return inbox.getEndpoint(DO.C.Vocab[ 'ldpinbox' ][ '@id' ])
               .catch(error => {
                 console.error('Could not fetch inbox endpoint:', error)
 
@@ -2822,7 +3356,7 @@ var DO = {
               "statements": notificationStatements
             }
 
-            DO.U.notifyInbox(notificationData)
+            inbox.notifyInbox(notificationData)
               .catch(error => {
                 console.error('Failed sending notification to ' + inbox + ' :', error)
 
@@ -2856,31 +3390,8 @@ var DO = {
       }, 1500);
     },
 
-
-    getMatchFromData: function(data, spo, options) {
-      if (data == "") { return Promise.reject({}); }
-
-      spo = spo || {};
-      spo["subject"] = spo.subject || window.location.origin + window.location.pathname;
-      spo["predicate"] = spo.predicate || DO.C.Vocab["rdfslabel"];
-
-      options = options || {};
-      options["contentType"] = options.contentType || 'text/html';
-      options["subjectURI"] = options.subjectURI || spo.subject;
-
-      return DO.U.getGraphFromData(data, options).then(
-        function(g) {
-          var s = SimpleRDF(DO.C.Vocab, spo.subject, g, ld.store).child(spo.subject);
-
-          return s[spo.predicate];
-        },
-        function(reason){
-          return Promise.resolve(undefined);
-        });
-    },
-
-    shareResource: function(e, iri) {
-      iri = iri || window.location.origin + window.location.pathname;
+    shareResource: function shareResource (e, iri) {
+      iri = iri || fetcher.currentLocation();
       if (e) {
         e.target.disabled = true;
       }
@@ -2895,7 +3406,7 @@ var DO = {
       document.body.insertAdjacentHTML('beforeend', '<aside id="share-resource" class="do on"><button class="close" title="Close">❌</button><h2>Share resource</h2><div id="share-resource-input"><p>Send a notification about <code>' + iri +'</code></p><ul>' + addContactsButton + '<li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share">Share</button></aside>');
 
       var shareResource = document.getElementById('share-resource');
-      shareResource.addEventListener('click', function(e) {
+      shareResource.addEventListener('click', function (e) {
         if (e.target.matches('button.close')) {
           var rs = document.querySelector('#document-do .resource-share');
           if (rs) {
@@ -2927,174 +3438,19 @@ var DO = {
             }
           }
 
-          if (iri.length > 0) {
-            // var rm = shareResource.querySelector('.response-message');
-            // if (rm) {
-            //   rm.parentNode.removeChild(rm);
-            // }
-            // shareResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>');
-
-            var sendNotifications = function(tos){
-              return new Promise(function(resolve, reject){
-                var notificationData = {
-                  "type": ['as:Announce'],
-                  "object": iri,
-                  "summary": note,
-                  "license": "https://creativecommons.org/licenses/by/4.0/"
-                };
-
-                var data = DO.U.getDocument();
-                var options = {
-                  "contentType": "text/html",
-                  "subjectURI": iri
-                }
-                var spo = {
-                  "subject": iri,
-                  "predicate": DO.C.Vocab["rdftype"]["@id"]
-                };
-
-                DO.U.getMatchFromData(data, spo, options).then(function(supplementalData) {
-// console.log(supplementalData);
-                  if (typeof supplementalData !== 'undefined' && supplementalData._array.length > 0) {
-                    notificationData["objectTypes"] = supplementalData._array;
-                  }
-                  return Promise.resolve();
-                }).then(function(supplementalData){
-// console.log(supplementalData);
-
-                  var spo = {
-                    "subject": iri,
-                    "predicate": DO.C.Vocab["schemalicense"]["@id"]
-                  };
-
-                  return DO.U.getMatchFromData(data, spo, options).then(function(supplementalData) {
-// console.log(supplementalData);
-                    if (typeof supplementalData !== 'undefined' && supplementalData.length > 0) {
-                      notificationData["objectLicense"] = supplementalData;
-                    }
-                    return Promise.resolve();
-                  });
-                }).then(function(supplementalData){
-// console.log(notificationData);
-                  tos.forEach(function(to) {
-                    notificationData["to"] = to;
-
-                    var toInput = shareResource.querySelector('[value="' + to + '"]') || shareResource.querySelector('#share-resource-to');
-                    toInput.parentNode.insertAdjacentHTML('beforeend', '<span class="progress" data-to="' + to + '"><i class="fa fa-circle-o-notch fa-spin fa-fw"></i></span>');
-
-                    var inboxResponse = function() {
-                      return DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id'], to).then(
-                          function(inboxes){
-                            return inboxes[0];
-                          },
-                          function(reason){
-                            console.log(reason);
-                            return reason;
-                          }
-                        );
-                    };
-
-                    inboxResponse().then(
-                      function(inbox) {
-                        notificationData["inbox"] = inbox;
-// console.log(notificationData);
-
-                        DO.U.notifyInbox(notificationData).then(
-                          function(response) {
-                            if(typeof response !== 'undefined') {
-                              var location = response.xhr.getResponseHeader('Location');
-
-                              if(location) {
-                                location = DO.U.getAbsoluteIRI(inbox, location);
-
-                                toInput.parentNode.querySelector('.progress[data-to="' + to + '"]').innerHTML = '<a target="_blank" href="' + location + '"><i class="fa fa-check-circle fa-fw"></i></a>';
-
-                                // var rm = shareResource.querySelector('.response-message');
-                                // rm.insertAdjacentHTML('beforeend', '<p class="success">Notification sent: <a target="_blank" href="' + location + '">' + location + '</a></p>');
-                                // return location;
-                              }
-                            }
-                            else {
-                              toInput.parentNode.querySelector('.progress[data-to="' + to + '"]').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to notify. Try later.';
-                              // return Promise.reject(response);
-                            }
-                          },
-                          function(reason) {
-// console.log(reason);
-                            toInput.parentNode.querySelector('.progress[data-to="' + to + '"]').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to notify. Try later.';
-//                           return reason;
-                          }
-                        );
-                      },
-                      function(reason) {
-// console.log(reason);
-                           toInput.parentNode.querySelector('.progress[data-to="' + to + '"]').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Inbox not responding. Try later.';
-//                       return reason;
-                      }
-                    );
-                  });
-                });
-              });
-            };
-
-            sendNotifications(tos);
+          if (!iri) {
+            return
           }
+
+          // var rm = shareResource.querySelector('.response-message');
+          // if (rm) {
+          //   rm.parentNode.removeChild(rm);
+          // }
+          // shareResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>');
+
+          return inbox.sendNotifications(tos, note, iri, shareResource)
         }
       });
-    },
-
-    getResourceGraph: function getResourceGraph (iri, headers, options = {}) {
-      var defaultHeaders = {'Accept': DO.C.AvailableMediaTypes.join(',')};
-      headers = headers || defaultHeaders;
-      if (!('Accept' in headers)){
-        Object.assign(headers, defaultHeaders);
-      }
-
-      if (iri.slice(0, 5).toLowerCase() === 'http:') {
-        options['noCredentials'] = true;
-
-        if (document.domain !== iri.split('/')[2]) {
-          options['forceProxy'] = true;
-        }
-      }
-
-      var pIRI = DO.U.getProxyableIRI(iri, options);
-
-      return fetcher.getResource(pIRI, headers, options)
-        .then(response => {
-          let cT = response.headers.get('Content-Type');
-          let contentType = (cT) ? cT.split(';')[ 0 ].trim() : 'text/turtle';
-
-          options.contentType = contentType
-          options.subjectURI =  DO.U.stripFragmentFromString(iri)
-
-          return response.text()
-        })
-        .then(data => {
-          // FIXME: This is a dirty filthy fugly but a *fix* to get around the baseURI not being passed to the DOM parser. This injects the `base` element into the document so that the RDFa parse fallsback to that. The actual fix should happen upstream. See related issues:
-          // https://github.com/linkeddata/dokieli/issues/132
-          // https://github.com/rdf-ext/rdf-parser-dom/issues/2
-          // https://github.com/rdf-ext/rdf-parser-rdfa/issues/3
-          // https://github.com/simplerdf/simplerdf/issues/19
-
-          if (options.contentType === 'text/html' || options.contentType === 'application/xhtml+xml') {
-            let template = document.implementation.createHTMLDocument('template');
-            template.documentElement.innerHTML = data;
-            template.contentType = options.contentType;
-            let base = template.querySelector('head base[href]');
-            if (!base) {
-              template.querySelector('head').insertAdjacentHTML('afterbegin', '<base href="' + options.subjectURI + '" />');
-              data = template.documentElement.outerHTML;
-            }
-          }
-
-          return DO.U.getGraphFromData(data, options)
-        })
-        .then(graph => {
-          let fragment = (iri.lastIndexOf('#') >= 0) ? iri.substr(iri.lastIndexOf('#')) : ''
-
-          return SimpleRDF(DO.C.Vocab, options[ 'subjectURI' ], graph, ld.store).child(pIRI + fragment)
-        })
     },
 
     getContacts: function(iri) {
@@ -3136,7 +3492,7 @@ var DO = {
           return processSameAs(DO.C.User.Graph);
         }
         else {
-          return DO.U.getResourceGraph(iri).then(
+          return fetcher.getResourceGraph(iri).then(
             function(g){
 // console.log(g);
               if(typeof g._graph == 'undefined') {
@@ -3176,7 +3532,7 @@ var DO = {
           function(contacts) {
             if(contacts.length > 0) {
               contacts.forEach(function(url) {
-                DO.U.getResourceGraph(url).then(
+                fetcher.getResourceGraph(url).then(
                   function(i) {
                     // console.log(i);
                     var s = i.child(url);
@@ -3217,7 +3573,7 @@ var DO = {
         node.insertAdjacentHTML('beforeend', input);
       }
       else {
-        DO.U.getEndpointFromHead(DO.C.Vocab['ldpinbox']['@id'], iri).then(
+        inbox.getEndpointFromHead(DO.C.Vocab['ldpinbox']['@id'], iri).then(
           function(i){
             // console.log(iri + ' has Inbox: ' + i);
 
@@ -3236,7 +3592,7 @@ var DO = {
 
       button.addEventListener('click', function(){
         if(button.parentNode.classList.contains('container')){
-          DO.U.getResourceGraph(url).then(
+          fetcher.getResourceGraph(url).then(
             function(g){
               actionNode.textContent = (action == 'write') ? url + DO.U.generateAttributeId() : url;
               return DO.U.generateBrowserList(g, url, id, action);
@@ -3349,7 +3705,7 @@ var DO = {
 
     initBrowse: function(storageUrl, input, browseButton, id, action){
       input.value = storageUrl;
-      DO.U.getResourceGraph(storageUrl).then(function(g){
+      fetcher.getResourceGraph(storageUrl).then(function(g){
         DO.U.generateBrowserList(g, storageUrl, id, action);
       }).then(function(i){
         document.getElementById(id + '-' + action).textContent = (action == 'write') ? input.value + DO.U.generateAttributeId() : input.value;
@@ -3363,7 +3719,7 @@ var DO = {
     triggerBrowse: function(url, id, action){
       var inputBox = document.getElementById(id);
       if (url.length > 10 && url.match(/^https?:\/\//g) && url.slice(-1) == "/"){
-        DO.U.getResourceGraph(url).then(function(g){
+        fetcher.getResourceGraph(url).then(function(g){
           DO.U.generateBrowserList(g, url, id, action).then(function(l){
             return l;
           },
@@ -3444,7 +3800,7 @@ var DO = {
         DO.U.initBrowse(storageUrl, input, browseButton, id, action);
       }
       else {
-        DO.U.getEndpoint(DO.C.Vocab['oaannotationService']['@id']).then(
+        inbox.getEndpoint(DO.C.Vocab['oaannotationService']['@id']).then(
           function(storageUrl) {
             DO.U.initBrowse(storageUrl[0], input, browseButton, id, action);
           },
@@ -3516,7 +3872,7 @@ var DO = {
           var iri = bli.value;
           var headers = { 'Accept': DO.C.AvailableMediaTypes.join(',') };
           var options = {};
-          var pIRI = DO.U.getProxyableIRI(iri);
+          var pIRI = uri.getProxyableIRI(iri);
           if (pIRI.slice(0, 5).toLowerCase() == 'http:') {
             options['noCredentials'] = true;
           }
@@ -3526,7 +3882,7 @@ var DO = {
               .catch(error => {
                 if (error.status === 0) {
                   // retry with proxied uri
-                  var pIRI = DO.U.getProxyableIRI(iri, {'forceProxy': true});
+                  var pIRI = uri.getProxyableIRI(iri, {'forceProxy': true});
                   return handleResource(pIRI, headers, options);
                 }
 
@@ -3550,7 +3906,6 @@ var DO = {
 
     spawnDokieli: function(data, contentType, iri){
       if(DO.C.AvailableMediaTypes.indexOf(contentType) > -1) {
-        // var fragment = DO.U.fragmentFromString(response.xhr.responseText);
         var template = document.implementation.createHTMLDocument('template');
 // console.log(template);
 
@@ -3680,7 +4035,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
         html.querySelector('body').innerHTML = '<main><article about="" typeof="schema:Article"></article></main>'
         html.querySelector('head title').innerHTML = ''
-        html = DO.U.getDocument(html)
+        html = doc.getDocument(html)
 
         fetcher.putResource(storageIRI, html)
           .then(() => {
@@ -3774,7 +4129,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           return
         }
 
-        var currentDocumentURL = DO.U.stripFragmentFromString(document.location.href)
+        var currentDocumentURL = uri.stripFragmentFromString(document.location.href)
         var saveAsDocument = document.getElementById('save-as-document')
         var storageIRI = saveAsDocument.querySelector('#' + id + '-' + action).innerText.trim()
 
@@ -3827,7 +4182,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           // nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType})
         }
 
-        html = DO.U.getDocument(html)
+        html = doc.getDocument(html)
 
         var progress = saveAsDocument.querySelector('progress')
         if(progress) {
@@ -3886,7 +4241,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       document.body.insertAdjacentHTML('beforeend', '<aside id="source-view" class="do on"><button class="close" title="Close">❌</button><h2>Source</h2><textarea id="source-edit" rows="24" cols="80"></textarea><p><button class="create">Update</button></p></aside>');
       var sourceBox = document.getElementById('source-view');
       var input = document.getElementById('source-edit');
-      input.value = DO.U.getDocument();
+      input.value = doc.getDocument();
 
       sourceBox.addEventListener('click', function(e) {
         if (e.target.matches('button.create')) {
@@ -3962,7 +4317,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
               url = options.iri.split(':')[0] + ':' + url;
             }
             else {
-              href = ('iri' in options) ? DO.U.getProxyableIRI(options.iri) : document.location.href;
+              href = ('iri' in options) ? uri.getProxyableIRI(options.iri) : document.location.href;
               url = DO.U.getBaseURL(href) + matches[3].replace(/^\//g, '');
             }
             break;
@@ -4049,7 +4404,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
     saveStorage: function(item) {
       switch(item) {
         case 'html': default:
-          var object = DO.U.getDocument();
+          var object = doc.getDocument();
           break;
       }
       localStorage.setItem(item, object);
@@ -4155,7 +4510,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       }
 //console.log(iri);
 
-      return DO.U.getResourceGraph(iri);
+      return fetcher.getResourceGraph(iri);
     },
 
     getCitationHTML: function(citationGraph, citationURI, options) {
@@ -4408,7 +4763,7 @@ WHERE {\n\
   FILTER (CONTAINS(LCASE(?prefLabel), '" + textInput + "') && (LANG(?prefLabel) = '' || LANGMATCHES(LANG(?prefLabel), '" + options.lang + "')))"
 + resourcePattern + "\n\
 }";
-       return sparqlEndpoint + "?query=" + DO.U.encodeString(query);
+       return sparqlEndpoint + "?query=" + uri.encodeString(query);
       },
 
       getObservationsWithDimension: function(sparqlEndpoint, dataset, paramDimension, options) {
@@ -4431,7 +4786,7 @@ WHERE {\n\
   ?observation ?propertyMeasure ?obsValue .\n\
 }";
 
-        return sparqlEndpoint + "?query=" + DO.U.encodeString(query);
+        return sparqlEndpoint + "?query=" + uri.encodeString(query);
       },
     },
 
@@ -4513,7 +4868,7 @@ WHERE {\n\
     },
 
     getTriplesFromGraph: function(url) {
-      return DO.U.getGraph(url)
+      return graph.getGraph(url)
         .then(function(i){
           return i.graph();
         })
@@ -4653,9 +5008,9 @@ WHERE {\n\
 
     positionInteraction: function(noteIRI, containerNode) {
       containerNode = containerNode || document.body;
-      var pIRI = DO.U.getProxyableIRI(noteIRI);
+      var pIRI = uri.getProxyableIRI(noteIRI);
 
-      return DO.U.getGraph(pIRI)
+      return graph.getGraph(pIRI)
         .then(
           function(i) {
             var note = i.child(noteIRI);
@@ -4782,12 +5137,12 @@ WHERE {\n\
                 //XXX: Review. This feels a bit dirty
                 for(var i = 0; i < selectedParentNode.childNodes.length; i++) {
                   var n = selectedParentNode.childNodes[i];
-                  if (n.nodeType === 3 && n.nodeValue == selectedParentNodeValue) {
+                  if (n.nodeType === 3 && n.nodeValue === selectedParentNodeValue) {
                     selectedParentNode.replaceChild(selectionUpdated, n);
                   }
                 }
 
-                var resourceIRI = DO.U.stripFragmentFromString(document.location.href);
+                var resourceIRI = uri.stripFragmentFromString(document.location.href);
 
                 var parentNodeWithId = selectedParentNode.closest('[id]');
                 var targetIRI = (parentNodeWithId) ? resourceIRI + '#' + parentNodeWithId.id : resourceIRI;
@@ -5884,7 +6239,7 @@ WHERE {\n\
 
                   case 'share':
                     _this.base.restoreSelection();
-                    var resourceIRI = DO.U.stripFragmentFromString(document.location.href);
+                    var resourceIRI = uri.stripFragmentFromString(document.location.href);
                     var id = _this.base.getSelectedParentElement().closest('[id]').id;
                     resourceIRI = (id) ? resourceIRI + '#' + id : resourceIRI;
                     _this.window.getSelection().removeAllRanges();
@@ -5901,7 +6256,7 @@ WHERE {\n\
                 }
               };
 
-              return DO.U.getEndpoint(DO.C.Vocab['oaannotationService']['@id']).then(
+              return inbox.getEndpoint(DO.C.Vocab['oaannotationService']['@id']).then(
                 function(url) {
                   DO.C.AnnotationService = url[0];
                   updateAnnotationServiceForm();
@@ -6199,7 +6554,7 @@ WHERE {\n\
 
                   var queryURL = DO.U.SPARQLQueryURL.getResourcesOfTypeWithLabel(sparqlEndpoint, resourceType, textInputA.toLowerCase(), options);
 
-                  queryURL = DO.U.getProxyableIRI(queryURL);
+                  queryURL = uri.getProxyableIRI(queryURL);
 
                   form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', '<div id="' + sparklineGraphId + '"></div><i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
                   sG = document.getElementById(sparklineGraphId);
@@ -6240,7 +6595,7 @@ WHERE {\n\
 // console.log(refArea);
                         var queryURL = DO.U.SPARQLQueryURL.getObservationsWithDimension(sparqlEndpoint, dataset, paramDimension);
 // console.log(queryURL);
-                        queryURL = DO.U.getProxyableIRI(queryURL);
+                        queryURL = uri.getProxyableIRI(queryURL);
 
                         DO.U.getTriplesFromGraph(queryURL)
                           .then(function(triples){
@@ -6432,7 +6787,7 @@ WHERE {\n\
               var refId = 'r-' + id;
               // var noteId = 'i-' + id;
 
-              var resourceIRI = DO.U.stripFragmentFromString(document.location.href);
+              var resourceIRI = uri.stripFragmentFromString(document.location.href);
               var containerIRI = window.location.href;
 
               var contentType = 'text/html';
@@ -6760,7 +7115,7 @@ WHERE {\n\
                   var data = DO.U.createHTML(noteIRI, note);
 
                   annotationDistribution.forEach(annotation => {
-                    DO.U.serializeData(data, 'text/html', annotation['contentType'], { 'subjectURI': annotation['noteIRI'] })
+                    graph.serializeData(data, 'text/html', annotation['contentType'], { 'subjectURI': annotation['noteIRI'] })
 
                       .catch(error => {
                         console.log('Error serializing annotation:', error)
@@ -6802,7 +7157,7 @@ WHERE {\n\
                       })
 
                       .then(() => {
-                        return DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id'])
+                        return inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id'])
                           .catch(error => {
                             console.log('Error fetching ldpinbox endpoint:', error)
                             throw error
@@ -6834,7 +7189,7 @@ WHERE {\n\
                             notificationData['statements'] = notificationStatements;
                           }
 
-                          return DO.U.notifyInbox(notificationData)
+                          return inbox.notifyInbox(notificationData)
                             .catch(error => {
                               console.log('Error notifying the inbox:', error)
                             })
@@ -6896,7 +7251,7 @@ WHERE {\n\
                             citationURI = opts.url.replace(/^https/, 'http');
                           }
                         }
-                        else if (DO.U.stripFragmentFromString(options.citationId) != DO.U.getProxyableIRI(options.citationId)) {
+                        else if (uri.stripFragmentFromString(options.citationId) !== uri.getProxyableIRI(options.citationId)) {
                           citationURI = window.location.origin + window.location.pathname;
                         }
                         else {
@@ -6945,7 +7300,7 @@ WHERE {\n\
                             "statements": notificationStatements
                           };
 
-                          DO.U.notifyInbox(notificationData).then(
+                          inbox.notifyInbox(notificationData).then(
                             function(s){
                               console.log('Sent Linked Data Notification to ' + inbox);
                             });
@@ -7147,668 +7502,406 @@ WHERE {\n\
 
 module.exports = DO
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ }),
-/* 2 */
+/* 8 */
 /***/ (function(module, exports) {
 
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
+module.exports = __WEBPACK_EXTERNAL_MODULE_8__;
 
 /***/ }),
-/* 3 */
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-const fetch = __webpack_require__(4)  // Uses native fetch() in the browser
-
-const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
-const LDP_RESOURCE = '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
+const doc = __webpack_require__(5)
+const uri = __webpack_require__(1)
+const graph = __webpack_require__(2)
+const fetcher = __webpack_require__(4)
+const Config = __webpack_require__(0)
 
 module.exports = {
-  copyResource,
-  currentLocation,
-  deleteResource,
-  getResource,
-  getResourceHead,
-  getResourceOptions,
-  patchResource,
-  putResource,
-  putResourceACL
+  getEndpoint,
+  getEndpointFromHead,
+  getEndpointFromRDF,
+  getMatchFromData,
+  notifyInbox,
+  sendNotifications
 }
 
-// I want HTTP COPY and I want it now!
-function copyResource (fromURL, toURL, options = {}) {
-  let headers = { 'Accept': '*/*' }
-  let contentType
+function sendNotifications (tos, note, iri, shareResource) {
+  return new Promise((resolve, reject) => {
+    var notificationData = {
+      'type': ['as:Announce'],
+      'object': iri,
+      'summary': note,
+      'license': 'https://creativecommons.org/licenses/by/4.0/'
+    }
 
-  if (!fromURL || !toURL) {
-    return Promise.reject(new Error('Missing fromURL or toURL in copyResource'))
+    let data = doc.getDocument()
+
+    let options = {
+      'contentType': 'text/html',
+      'subjectURI': iri
+    }
+    var spo = {
+      'subject': iri,
+      'predicate': Config.Vocab['rdftype']['@id']
+    }
+
+    getMatchFromData(data, spo, options)
+      .then(supplementalData => {
+        if (typeof supplementalData !== 'undefined' && supplementalData._array.length > 0) {
+          notificationData['objectTypes'] = supplementalData._array
+        }
+
+        let spo = {
+          'subject': iri,
+          'predicate': Config.Vocab['schemalicense']['@id']
+        }
+
+        return getMatchFromData(data, spo, options)
+          .then(data => {
+            if (typeof data !== 'undefined' && data.length > 0) {
+              notificationData['objectLicense'] = data
+            }
+          })
+      })
+      .then(() => {
+        tos.forEach(to => {
+          notificationData['to'] = to
+
+          var toInput = shareResource.querySelector('[value="' + to + '"]') ||
+            shareResource.querySelector('#share-resource-to')
+
+          toInput.parentNode.insertAdjacentHTML('beforeend',
+            '<span class="progress" data-to="' + to +
+            '"><i class="fa fa-circle-o-notch fa-spin fa-fw"></i></span>')
+
+          inboxResponse(to, toInput)
+
+            .then(inbox => {
+              notificationData['inbox'] = inbox
+
+              notifyInbox(notificationData)
+
+                .catch(error => {
+                  console.log('Error in notifyInbox:', error)
+                  toInput
+                    .parentNode
+                    .querySelector('.progress[data-to="' + to + '"]')
+                    .innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to notify. Try later.'
+                })
+
+                .then(response => {
+                    var location = response.headers.get('Location')
+
+                    if (location) {
+                      location = uri.getAbsoluteIRI(inbox, location)
+
+                      toInput
+                        .parentNode
+                        .querySelector('.progress[data-to="' + to + '"]')
+                        .innerHTML = '<a target="_blank" href="' +
+                        location + '"><i class="fa fa-check-circle fa-fw"></i></a>'
+                    }
+                  }
+                )
+            })
+        })
+      })
+  })
+}
+
+function getMatchFromData (data, spo = {}, options = {}) {
+  if (!data) { return Promise.resolve({}) }
+
+  spo['subject'] = spo.subject || window.location.origin + window.location.pathname
+  spo['predicate'] = spo.predicate || Config.Vocab['rdfslabel']
+
+  options['contentType'] = options.contentType || 'text/html'
+  options['subjectURI'] = options.subjectURI || spo.subject
+
+  return graph.getGraphFromData(data, options)
+    .then(g => {
+      let s = SimpleRDF(Config.Vocab, spo.subject, g, ld.store).child(spo.subject)
+
+      return s[spo.predicate]
+    })
+    .catch(() => {
+      return undefined
+    })
+}
+
+function inboxResponse (to, toInput) {
+  return getEndpoint(Config.Vocab['ldpinbox']['@id'], to)
+    .then(inboxes => inboxes[0])
+
+    .catch(error => {
+      console.log('Error in inboxResponse:', error)
+
+      toInput
+        .parentNode
+        .querySelector('.progress[data-to="' + to + '"]')
+        .innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Inbox not responding. Try later.'
+    })
+}
+
+function notifyInbox (o) {
+  var slug, inbox
+
+  if ('slug' in o) {
+    slug = o.slug
+  }
+  if ('inbox' in o) {
+    inbox = o.inbox
   }
 
-  return getResource(fromURL, headers, options)
-    .then(response => {
-      contentType = response.headers.get('Content-Type')
+  var types = '<dt>Types</dt>'
 
-      return (DO.C.AcceptBinaryTypes.indexOf(contentType))
-        ? response.arrayBuffer()
-        : response.text()
+  o.type.forEach(function (t) {
+    types += '<dd><a about="" href="' + Config.Prefixes[t.split(':')[0]] + t.split(':')[1] + '" typeof="'+ t +'">' + t.split(':')[1] + '</a></dd>'
+  })
+
+  var asObjectTypes = ''
+  if ('object' in o && 'objectTypes' in o && o.objectTypes.length > 0) {
+    asObjectTypes = '<dl><dt>Types</dt>'
+    o.objectTypes.forEach(function(t){
+      asObjectTypes += '<dd><a about="' + o.object + '" href="' + t + '" typeof="'+ t +'">' + t + '</a></dd>'
     })
-    .then(contents => {
-      return putResource(toURL, contents, contentType, null, options)
-        .catch(error => {
-          if (error.status === 0) {
-            // Retry with no credentials
-            options.noCredentials = true
-            return putResource(toURL, contents, contentType, null, options)
+    asObjectTypes += '</dl>'
+  }
+
+  var asObjectLicense = ''
+  if ('object' in o && 'objectLicense' in o && o.objectLicense.length > 0) {
+    asObjectLicense = '<dl><dt>License</dt><dd><a about="' + o.object + '" href="' + o.objectLicense + '" property="schema:license">' + o.objectLicense + '</a></dd></dl>'
+  }
+
+  var asobject = ('object' in o) ? '<dt>Object</dt><dd><a href="' + o.object + '" property="as:object">' + o.object + '</a>' + asObjectTypes + asObjectLicense + '</dd>' : ''
+
+  var asinReplyTo = ('inReplyTo' in o) ? '<dt>In reply to</dt><dd><a href="' + o.inReplyTo + '" property="as:inReplyTo">' + o.inReplyTo + '</a></dd>' : ''
+
+  var ascontext = ('context' in o && o.context.length > 0) ? '<dt>Context</dt><dd><a href="' + o.context + '" property="as:context">' + o.context + '</a></dd>' : ''
+
+  var astarget = ('target' in o && o.target.length > 0) ? '<dt>Target</dt><dd><a href="' + o.target + '" property="as:target">' + o.target + '</a></dd>' : ''
+
+  var datetime = DO.U.getDateTimeISO()
+  var asupdated = '<dt>Updated</dt><dd><time datetime="' + datetime + '" datatype="xsd:dateTime" property="as:updated" content="' + datetime + '">' + datetime.substr(0,19).replace('T', ' ') + '</time></dd>'
+
+  var assummary = ('summary' in o && o.summary.length > 0) ? '<dt>Summary</dt><dd property="as:summary" datatype="rdf:HTML">' + o.summary + '</dd>' : ''
+
+  var ascontent = ('content' in o && o.content.length > 0) ? '<dt>Content</dt><dd property="as:content" datatype="rdf:HTML">' + o.content + '</dd>' : ''
+
+  var asactor = (Config.User.IRI) ? '<dt>Actor</dt><dd><a href="' + Config.User.IRI + '" property="as:actor">' + Config.User.IRI + '</a></dd>' : ''
+
+  var license = '<dt>License</dt><dd><a href="' + Config.NotificationLicense + '" property="schema:license">' + Config.NotificationLicense + '</a></dd>'
+
+  var asto = ('to' in o && o.to.length > 0 && !o.to.match(/\s/g) && o.to.match(/^https?:\/\//gi)) ? '<dt>To</dt><dd><a href="' + o.to + '" property="as:to">' + o.to + '</a></dd>' : ''
+
+  var statements = ('statements' in o) ? o.statements : ''
+
+  var dl = [
+    types,
+    asobject,
+    ascontext,
+    astarget,
+    asupdated,
+    assummary,
+    ascontent,
+    asactor,
+    license,
+    asto
+  ].map(function (n) { if (n !== '') { return '      ' + n + '\n' } }).join('')
+
+
+  // TODO: Come up with a better title. reuse `types` e.g., Activity Created, Announced..
+  var title = 'Notification'
+  if(types.indexOf('as:Announce') > -1){
+    title += ': Announced'
+  } else if (types.indexOf('as:Created') > -1){
+    title += ': Created'
+  } else if (types.indexOf('as:Liked') > -1){
+    title += ': Liked'
+  } else if (types.indexOf('as:Disliked') > -1){
+    title += ': Disliked'
+  }
+
+  var data = '\n\
+<article>\n\
+  <h1>' + title + '</h1>\n\
+  <section>\n\
+    <dl about="">\n\
+' + dl +
+    '    </dl>\n\
+    ' + statements +
+    '  </section>\n\
+    </article>\n\
+    '
+
+  var options = {}
+  options.prefixes = Config.Prefixes
+
+  data = DO.U.createHTML(title, data, options)
+
+  if (!inbox) {
+    return Promise.reject(new Error('No inbox to send notification to'))
+  }
+
+  var pIRI = uri.getProxyableIRI(inbox)
+
+  return fetcher.getAcceptPostPreference(pIRI)
+    .then(preferredContentType => {
+      let options = {
+        'contentType': 'text/html',
+        'subjectURI': 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d'
+      }
+
+      switch (preferredContentType) {
+        case 'text/html':
+        case 'application/xhtml+xml':
+          return fetcher.postResource(pIRI, slug, data, 'text/html; charset=utf-8')
+
+        case 'text/turtle':
+          // FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
+          // return DO.U.postResource(pIRI, slug, data, 'text/turtle; charset=utf-8')
+          return graph.getGraphFromData(data, options)
+            .then(g => {
+              let options = {
+                'contentType': 'text/turtle'
+              }
+
+              return graph.serializeGraph(g, options)
+            })
+            .then(data => {
+              // FIXME: FUGLY because parser defaults to localhost. Using UUID to minimise conflict
+              data = data.replace(/http:\/\/localhost\/d79351f4-cdb8-4228-b24f-3e9ac74a840d/g, '')
+
+              // XXX: Workaround for rdf-parser-rdfa bug that gives
+              // '@language' instead of @type when encountering datatype in HTML+RDFa .
+              // TODO: Link to bug here
+              data = data.replace(/Z"@en;/, 'Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;')
+
+              return fetcher.postResource(pIRI, slug, data, 'text/turtle')
+            })
+
+        case 'application/ld+json':
+        case 'application/json':
+        case '*/*':
+        default:
+          return graph.getGraphFromData(data, options)
+            .then(g => {
+              let options = {
+                'contentType': 'application/ld+json'
+              }
+
+              return graph.serializeGraph(g, options)
+            })
+            .then(serialized => {
+              let parsedData = JSON.parse(serialized)
+
+              parsedData[0]["@context"] = [
+                "https://www.w3.org/ns/activitystreams",
+                {"oa": "http://www.w3.org/ns/anno.jsonld"}
+              ]
+              // If from is Turtle:
+              // x[0]["@id"] = (x[0]["@id"].slice(0,2) == '_:') ? '' : x[0]["@id"];
+              parsedData[0]["@id"] = (parsedData[0]["@id"] === 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d') ? '' : parsedData[0]["@id"];
+
+              // XXX: Workaround for rdf-parser-rdfa bug that gives
+              // '@language' instead of @type when encountering datatype in HTML+RDFa .
+              // TODO: Link to bug here
+              for (let i = 0; i < parsedData.length; i++) {
+                if ('https://www.w3.org/ns/activitystreams#updated' in parsedData[i]) {
+                  parsedData[i]['https://www.w3.org/ns/activitystreams#updated'] = {
+                    '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
+                    '@value': parsedData[i]['https://www.w3.org/ns/activitystreams#updated']['@value']
+                  }
+                }
+              }
+
+              let data = JSON.stringify(parsedData) + '\n'
+
+              return fetcher.postResource(pIRI, slug, data, 'application/ld+json; profile="http://www.w3.org/ns/anno.jsonld"')
+            })
+      }
+    })
+}
+
+function getEndpoint (property, url) {
+  if (url) {
+    return getEndpointFromHead(property, url)
+      .catch(() => getEndpointFromRDF(property, url))
+  } else {
+    var uri = window.location.href.split(window.location.search || window.location.hash || /[?#]/)[0]
+
+    var options = {
+      'contentType': 'text/html',
+      'subjectURI': uri
+    }
+
+    return graph.getGraphFromData(doc.getDocument(), options)
+      .then(function (result) {
+          // TODO: Should this get all of the inboxes or a given subject's?
+          var endpoints = result.match(uri, property).toArray()
+
+          if (endpoints.length > 0) {
+            return endpoints.map(function(t){ return t.object.nominalValue })
           }
 
-          throw error  // re-throw error
+          console.log(property + ' endpoint was not found in message body')
+          return getEndpointFromHead(property, uri)
         })
-    })
+      .catch(() => getEndpointFromHead(property, uri))
+  }
 }
 
-/**
- * @returns {string}
- */
-function currentLocation () {
-  return window.location.origin + window.location.pathname
+function getEndpointFromHead (property, url) {
+  var pIRI = uri.getProxyableIRI(url);
+
+  return fetcher.getResourceHead(pIRI, {'header': 'Link'}).then(
+    function (i) {
+      var linkHeaders = fetcher.parseLinkHeader(i.headers)
+
+      if (property in linkHeaders) {
+        return linkHeaders[property]
+      }
+      return Promise.reject({'message': property + " endpoint was not found in 'Link' header"})
+    },
+    function (reason) {
+      return Promise.reject({'message': "'Link' header not found"})
+    }
+  );
 }
 
-/**
- * deleteResource
- *
- * @param url {string}
- * @param options {object}
- *
- * @returns {Promise<Response>}
- */
-function deleteResource (url, options = {}) {
-  if (!url) {
-    return Promise.reject(new Error('Cannot DELETE resource - missing url'))
-  }
+function getEndpointFromRDF (property, url, subjectIRI) {
+  url = url || window.location.origin + window.location.pathname
+  subjectIRI = subjectIRI || url
 
-  if (!options.noCredentials) {
-    options.credentials = 'include'
-  }
+  return fetcher.getResourceGraph(subjectIRI)
+    .then(function (i) {
+        var s = i.child(subjectIRI)
 
-  options.method = 'DELETE'
+        switch (property) {
+          case Config.Vocab['ldpinbox']['@id']:
+            if (s.ldpinbox._array.length > 0){
+// console.log(s.ldpinbox._array)
+              return [s.ldpinbox.at(0)]
+            }
+            break
+          case Config.Vocab['oaannotationService']['@id']:
+            if (s.oaannotationService._array.length > 0){
+// console.log(s.oaannotationService._array)
+              return [s.oaannotationService.at(0)]
+            }
+            break
+        }
 
-  return fetch(url, options)
-
-    .then(response => {
-      if (!response.ok) {  // not a 2xx level response
-        let error = new Error('Error deleting resource: ' +
-          response.status + ' ' + response.statusText)
-        error.status = response.status
-        error.response = response
-
-        throw error
+        throw new Error(property + ' endpoint was not found in message body')
       }
-
-      return response
-    })
-}
-
-/**
- * getResource
- *
- * @param url {string}
- *
- * @param headers {object}
- * @param [headers.accept='text/turtle'] {string}
- *
- * @param options {object}
- *
- * @returns {Promise<string>|Promise<ArrayBuffer>}
- */
-function getResource (url, headers = {}, options = {}) {
-  url = url || currentLocation()
-
-  options.method = 'GET'
-
-  if (!headers['Accept']) {
-    headers['Accept'] = 'text/turtle'
-  }
-
-  if (!options.noCredentials) {
-    options.credentials = 'include'
-  }
-
-  options.headers = Object.assign({}, headers)
-
-  return fetch(url, options)
-
-    .then(response => {
-      if (!response.ok) {  // not a 2xx level response
-        let error = new Error('Error fetching resource: ' +
-          response.status + ' ' + response.statusText)
-        error.status = response.status
-        error.response = response
-
-        throw error
-      }
-
-      return response
-    })
-}
-
-/**
- * getResourceHead
- *
- * @param [url] {string}
- *
- * @param options {object}
- * @param options.header {string}
- *
- * @returns {Promise<string>} Resolves with contents of specified header
- */
-function getResourceHead (url, options = {}) {
-  url = url || currentLocation()
-
-  if (!options.header) {
-    return Promise.reject(new Error('options.header not specified'))
-  }
-
-  options.method = 'HEAD'
-
-  if (!options.noCredentials) {
-    options.credentials = 'include'
-  }
-
-  return fetch(url, options)
-
-    .then(response => {
-      if (!response.ok) {  // not a 2xx level response
-        let error = new Error('Error fetching resource HEAD: ' +
-          response.status + ' ' + response.statusText)
-        error.status = response.status
-        error.response = response
-
-        throw error
-      }
-
-      let header = response.headers.get(options.header)
-
-      if (!header) {
-        throw new Error("'" + options.header + "' header not found")
-      }
-
-      return { 'headers': header }
-    })
-}
-
-/**
- * getResourceOptions
- *
- * @param [url] {string} Defaults to current url
- *
- * @param [options={}] {object}
- * @param [options.header] {string} Specific response header to return
- * @param [options.noCredentials] {boolean}
- *
- * @returns {Promise} Resolves with `{ headers: ... }` object
- */
-function getResourceOptions (url, options = {}) {
-  url = url || currentLocation()
-
-  options.method = 'OPTIONS'
-
-  if (!options.noCredentials) {
-    options.credentials = 'include'
-  }
-
-  return fetch(url, options)
-
-    .then(response => {
-      if (!response.ok) {  // not a 2xx level response
-        let error = new Error('Error fetching resource OPTIONS: ' +
-          response.status + ' ' + response.statusText)
-        error.status = response.status
-        error.response = response
-
-        throw error
-      }
-
-      if (options.header) {  // specific header requested
-        return { headers: response.headers.get(options.header) }
-      }
-
-      return { headers: response.headers }  // Not currently used anywhere
-    })
-}
-
-function patchResource (url, deleteBGP, insertBGP, options = {}) {
-  // insertBGP and deleteBGP are basic graph patterns.
-  if (deleteBGP) {
-    deleteBGP = 'DELETE DATA { ' + deleteBGP + ' };'
-  }
-
-  if (insertBGP) {
-    insertBGP = 'INSERT DATA { ' + insertBGP + ' };'
-  }
-
-  options.body = deleteBGP + insertBGP
-
-  options.method = 'PATCH'
-
-  if (!options.noCredentials) {
-    options.credentials = 'include'
-  }
-
-  options.headers = options.headers || {}
-
-  options.headers['Content-Type'] = 'application/sparql-update; charset=utf-8'
-
-  return fetch(url, options)
-
-    .then(response => {
-      if (!response.ok) {  // not a 2xx level response
-        let error = new Error('Error patching resource: ' +
-          response.status + ' ' + response.statusText)
-        error.status = response.status
-        error.response = response
-
-        throw error
-      }
-
-      return response
-    })
-}
-
-/**
- * putResource
- *
- * @param url {string}
- *
- * @param data {string|object}
- *
- * @param [contentType=DEFAULT_CONTENT_TYPE] {string}
- *
- * @param [links=LDP_RESOURCE] {string}
- *
- * @param [options={}] {object}
- *
- * @returns {Promise<Response>}
- */
-function putResource (url, data, contentType, links, options = {}) {
-  if (!url) {
-    return Promise.reject(new Error('Cannot PUT resource - missing url'))
-  }
-
-  options.method = 'PUT'
-
-  options.body = data
-
-  if (!options.noCredentials) {
-    options.credentials = 'include'
-  }
-
-  options.headers = options.headers || {}
-
-  options.headers['Content-Type'] = contentType || DEFAULT_CONTENT_TYPE
-
-  links = links
-    ? LDP_RESOURCE + ', ' + links
-    : LDP_RESOURCE
-
-  options.headers['Link'] = links
-
-  return fetch(url, options)
-
-    .then(response => {
-      if (!response.ok) {  // not a 2xx level response
-        let error = new Error('Error writing resource: ' +
-          response.status + ' ' + response.statusText)
-        error.status = response.status
-        error.response = response
-
-        throw error
-      }
-
-      return response
-    })
-}
-
-/**
- * putResourceACL
- *
- * TODO: This doesn't seem to be used anywhere...
- *
- * @param accessToURL
- * @param aclURL
- * @param acl
- *
- * @returns {Promise<Response|null>}
- */
-function putResourceACL (accessToURL, aclURL, acl) {
-  if (!DO.C.User.IRI) {
-    console.log('Go through sign-in or do: DO.C.User.IRI = "https://example.org/#i";')
-    return Promise.resolve(null)
-  }
-
-  acl = acl || {
-    'u': { 'iri': [DO.C.User.IRI], 'mode': ['acl:Control', 'acl:Read', 'acl:Write'] },
-    'g': { 'iri': ['http://xmlns.com/foaf/0.1/Agent'], 'mode': ['acl:Read'] },
-    'o': { 'iri': [], 'mode': [] }
-  }
-
-  let agent, agentClass, mode
-
-  if ('u' in acl && 'iri' in acl.u && 'mode' in acl.u) {
-    agent = '<' + acl.u.iri.join('> , <') + '>'
-    mode = acl.u.mode.join(' , ')
-  } else {
-    agent = '<' + DO.C.User.IRI + '>'
-    mode = 'acl:Control , acl:Read , acl:Write'
-  }
-
-  let authorizations = []
-
-  authorizations.push(
-    '[ a acl:Authorization ; acl:accessTo <' +
-    accessToURL + '> ; acl:accessTo <' + aclURL + '> ; acl:mode ' + mode +
-    ' ; acl:agent ' + agent + ' ] .'
-  )
-
-  if ('g' in acl && 'iri' in acl.g && acl.g.iri.length >= 0) {
-    agentClass = '<' + acl.g.iri.join('> , <') + '>'
-    mode = acl.g.mode.join(' , ')
-    authorizations.push(
-      '[ a acl:Authorization ; acl:accessTo <' + accessToURL +
-      '> ; acl:mode ' + mode + ' ; acl:agentClass ' + agentClass + ' ] .'
     )
-  }
-
-  let data = '@prefix acl: <http://www.w3.org/ns/auth/acl#> .\n' +
-    authorizations.join('\n') + '\n'
-
-  return putResource(aclURL, data, 'text/turtle; charset=utf-8')
-}
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_4__;
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-/**
- * Configuration
- */
-module.exports = {
-  Lang: document.documentElement.lang,
-  DocRefType: '',
-  RefType: {
-    LNCS: { InlineOpen: '[', InlineClose: ']' },
-    ACM: { InlineOpen: '[', InlineClose: ']' }
-  },
-  Stylesheets: [],
-  User: {
-    IRI: null,
-    Role: null
-  },
-  LocalDocument: false,
-  UseStorage: false,
-  AutoSaveId: '',
-  AutoSaveTimer: 60000,
-  DisableStorageButtons: '<button class="local-storage-disable-html" title="Disable local storage (temporary) in the browser"><i class="fa fa-database fa-2x"></i>Local Storage</button>',
-  EnableStorageButtons: '<button class="local-storage-enable-html" title="Enable local storage (temporary) in the browser"><i class="fa fa-database fa-2x"></i>Local Storage</button>',
-  CDATAStart: '//<![CDATA[',
-  CDATAEnd: '//]]>',
-  SortableList: false,
-  GraphViewerAvailable: (typeof d3 !== 'undefined'),
-  MathAvailable: (typeof MathJax !== 'undefined'),
-  EditorAvailable: (typeof MediumEditor !== 'undefined'),
-  EditorEnabled: false,
-  Editor: {
-    headings: ["h1", "h2", "h3", "h4", "h5", "h6"],
-    regexEmptyHTMLTags: /<[^\/>][^>]*><\/[^>]+>/gim,
-    ButtonLabelType: (((window.chrome && chrome.runtime && chrome.runtime.id) || (typeof browser !== 'undefined' && browser.runtime && browser.runtime.id)) ? 'fontawesome' : (document.querySelector('head link[rel~="stylesheet"][href*="font-awesome"]') ? (!navigator.onLine && document.querySelector('head link[rel~="stylesheet"][href*="font-awesome"][href^="http"]') ? '': 'fontawesome') : '' )),
-    DisableReviewButton: '<button class="review-disable" title="Disable review"><i class="fa fa-balance-scale fa-2x"></i>Review</button>',
-    EnableReviewButton: '<button class="review-enable" title="Enable review"><i class="fa fa-balance-scale fa-2x"></i>Review</button>',
-    DisableEditorButton: '<button class="editor-disable" title="Disable editor"><i class="fa fa-i-cursor fa-2x"></i>Edit</button>',
-    EnableEditorButton: '<button class="editor-enable" title="Enable editor"><i class="fa fa-i-cursor fa-2x"></i>Edit</button>'
-  },
-  DOMNormalisation: {
-    'selfClosing': "area base basefont br col colgroup embed hr img input isindex link meta metadata param source wbr",
-    'skipAttributes': "contenteditable spellcheck medium-editor-index data-medium-editor-element data-medium-editor-editor-index data-medium-focused data-placeholder role aria-multiline style",
-    'sortAttributes': true,
-    'skipNodeWithClass': 'do',
-    'classWithChildText': {
-      'class': '.do.ref',
-      'element': 'mark'
-    },
-    'replaceClassItemWith': {
-      'source': "on-document-menu medium-editor-element",
-      'target': ''
-    },
-    'skipClassWithValue': ''
-  },
-
-  SelectorSign: {
-    "*": "🔗",
-    "aside": "†",
-    "audio": "🔊",
-    "code": "#",
-    "dl#document-annotation-service": "※",
-    "dl#document-license": "🌻",
-    "dl#document-identifier": "🚩",
-    "dl#document-inbox": "📥",
-    "dl#document-in-reply-to": "⮪",
-    "dl#document-modified": "📅",
-    "dl#document-published": "📅",
-    "dfn": "📇",
-    "figure": "❦",
-    "footer": "⸙",
-    "img": "🖼",
-    "nav": "☛",
-    "p": "¶",
-    "pre": "🖩",
-    "section": "§",
-    "section#acknowledgements": "☺",
-    "section#conclusions": "∴",
-    "section#keywords": "🏷",
-    "section#references": "☛",
-    "section#related-work": "⌘",
-    "section#results": "∞",
-    "table": "𝄜",
-    "video": "🎞"
-  },
-
-  ContextLength: 32,
-  InteractionPath: 'i/',
-  ProxyURL: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/proxy?uri=' : 'https://dokie.li/proxy?uri='),
-  AuthEndpoint: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/' : 'https://dokie.li/'),
-  NotificationLicense: 'https://creativecommons.org/publicdomain/zero/1.0/',
-  License: {
-    "NoLicense": { 'name': 'No license', 'description': 'No license' },
-    "https://creativecommons.org/publicdomain/zero/1.0/": {'name': 'CC0 1.0', 'description': 'Creative Commons Zero'},
-    "https://creativecommons.org/licenses/by/4.0/": {'name': 'CC BY 4.0', 'description': 'Creative Commons Attribution'},
-    "https://creativecommons.org/licenses/by-sa/4.0/": {'name': 'CC BY-SA 4.0', 'description': 'Creative Commons Attribution-ShareAlike'},
-    "https://creativecommons.org/licenses/by-nc/4.0/": {'name': 'CC BY-NC 4.0', 'description': 'Creative Commons Attribution-NonCommercial'},
-    "https://creativecommons.org/licenses/by-nd/4.0/": {'name': 'CC BY-ND 4.0', 'description': 'Creative Commons Attribution-NoDerivatives'},
-    "https://creativecommons.org/licenses/by-nc-sa/4.0/": {'name': 'CC BY-NC-SA 4.0', 'description': 'Creative Commons Attribution-NonCommercial-ShareAlike'},
-    "https://creativecommons.org/licenses/by-nc-nd/4.0/": {'name': 'CC BY-NC-ND 4.0', 'description': 'Creative Commons Attribution-NonCommercial-NoDerivates'}
-  },
-  Citation: {
-    'http://purl.org/spar/cito/agreesWith': 'agrees with',
-    'http://purl.org/spar/cito/cites': 'cites',
-    'http://purl.org/spar/cito/citesAsAuthority': 'cites as authority',
-    'http://purl.org/spar/cito/citesAsDataSource': 'cites as data source',
-    'http://purl.org/spar/cito/citesAsEvidence': 'cites as evidence',
-    'http://purl.org/spar/cito/citesAsMetadataDocument': 'cites as metadata document',
-    'http://purl.org/spar/cito/citesAsPotentialSolution': 'cites as potential solution',
-    'http://purl.org/spar/cito/citesAsRecommendedReading': 'cites as potential reading',
-    'http://purl.org/spar/cito/citesAsRelated': 'cites as related',
-    'http://purl.org/spar/cito/citesAsSourceDocument': 'cites as source document',
-    'http://purl.org/spar/cito/citesForInformation': 'cites for information',
-    'http://purl.org/spar/cito/compiles': 'compiles',
-    'http://purl.org/spar/cito/confirms': 'confirms',
-    'http://purl.org/spar/cito/containsAssertionFrom': 'contains assertion from',
-    'http://purl.org/spar/cito/corrects': 'corrects',
-    'http://purl.org/spar/cito/credits': 'credits',
-    'http://purl.org/spar/cito/critiques': 'critiques',
-    'http://purl.org/spar/cito/derides': 'derides',
-    'http://purl.org/spar/cito/describes': 'describes',
-    'http://purl.org/spar/cito/disagreesWith': 'disagrees with',
-    'http://purl.org/spar/cito/discusses': 'discusses',
-    'http://purl.org/spar/cito/disputes': 'disputes',
-    'http://purl.org/spar/cito/documents': 'documents',
-    'http://purl.org/spar/cito/extends': 'extends',
-    'http://purl.org/spar/cito/includesExcerptFrom': 'includes excerpt from',
-    'http://purl.org/spar/cito/includesQuotationFrom': 'includes quotation from',
-    'http://purl.org/spar/cito/obtainsBackgroundFrom': 'obtains background from',
-    'http://purl.org/spar/cito/obtainsSupportFrom': 'obtains support from',
-    'http://purl.org/spar/cito/parodies': 'parodies',
-    'http://purl.org/spar/cito/plagiarizes': 'plagiarizes',
-    'http://purl.org/spar/cito/qualifies': 'qualifies',
-    'http://purl.org/spar/cito/refutes': 'refutes',
-    'http://purl.org/spar/cito/repliesTo': 'replies to',
-    'http://purl.org/spar/cito/retracts': 'retracts',
-    'http://purl.org/spar/cito/reviews': 'reviews',
-    'http://purl.org/spar/cito/ridicules': 'ridicules',
-    'http://purl.org/spar/cito/speculatesOn': 'speculates on',
-    'http://purl.org/spar/cito/supports': 'supports',
-    'http://purl.org/spar/cito/updates': 'updates',
-    'http://purl.org/spar/cito/usesConclusionsFrom': 'uses conclusions from',
-    'http://purl.org/spar/cito/usesDataFrom': 'uses data from',
-    'http://purl.org/spar/cito/usesMethodIn': 'uses method in'
-  },
-
-  AvailableMediaTypes: ['text/turtle', 'application/ld+json', 'application/rdf+xml', 'application/xhtml+xml', 'text/html'],
-
-  AcceptBinaryTypes: ['image/png', 'image/jpeg', 'image/gif'],
-
-  Prefixes: {
-    'xsd': 'http://www.w3.org/2001/XMLSchema#',
-    'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-    'as': 'https://www.w3.org/ns/activitystreams#',
-    'oa': 'http://www.w3.org/ns/oa#',
-    'schema': 'http://schema.org/'
-  },
-
-  Vocab: {
-    "rdftype": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "@type": "@id", "@array": true },
-    "rdffirst": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#first", "@type": "@id" },
-    "rdfrest": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest", "@type": "@id" },
-    "rdfvalue": "http://www.w3.org/1999/02/22-rdf-syntax-ns#value",
-    "rdfslabel": { "@id": "http://www.w3.org/2000/01/rdf-schema#label" },
-    "rdfsseeAlso": { "@id": "http://www.w3.org/2000/01/rdf-schema#seeAlso", "@type": "@id", "@array": true },
-
-    "owlsameAs": { "@id": "http://www.w3.org/2002/07/owl#sameAs", "@type": "@id", "@array": true },
-
-    "foafname": "http://xmlns.com/foaf/0.1/name",
-    "foaffamilyName": "http://xmlns.com/foaf/0.1/familyName",
-    "foafgivenName": "http://xmlns.com/foaf/0.1/givenName",
-    "foafhomepage": { "@id": "http://xmlns.com/foaf/0.1/homepage", "@type": "@id" },
-    "foafimg": { "@id": "http://xmlns.com/foaf/0.1/img", "@type": "@id" },
-    "foafdepiction": { "@id": "http://xmlns.com/foaf/0.1/depiction", "@type": "@id" },
-    "foafnick": "http://xmlns.com/foaf/0.1/nick",
-    "foafmaker": { "@id": "http://xmlns.com/foaf/0.1/maker", "@type": "@id" },
-    "foafknows": { "@id": "http://xmlns.com/foaf/0.1/knows", "@type": "@id", "@array": true },
-
-    "schemaname": "http://schema.org/name",
-    "schemafamilyName": "http://schema.org/familyName",
-    "schemagivenName": "http://schema.org/givenName",
-    "schemaurl": { "@id": "http://schema.org/url", "@type": "@id" },
-    "schemaimage": { "@id": "http://schema.org/image", "@type": "@id" },
-    "schemacreator": { "@id": "http://schema.org/creator", "@type": "@id", "@array": true },
-    "schemaauthor": { "@id": "http://schema.org/author", "@type": "@id", "@array": true },
-    "schemacontributor": { "@id": "http://schema.org/contributor", "@type": "@id", "@array": true },
-    "schemaeditor": { "@id": "http://schema.org/editor", "@type": "@id", "@array": true },
-    "schemalicense": { "@id": "http://schema.org/license", "@type": "@id" },
-    "schemacitation": { "@id": "http://schema.org/citation", "@type": "@id", "@array": true },
-    "schemaknows": { "@id": "http://schema.org/knows", "@type": "@id", "@array": true },
-    "schemadatePublished": "http://schema.org/datePublished",
-    "schemadescription": "http://schema.org/description",
-
-    "dctermstitle": "http://purl.org/dc/terms/title",
-    "dctermsdescription": "http://purl.org/dc/terms/description",
-    "dctermscreator": { "@id": "http://purl.org/dc/terms/creator", "@type": "@id", "@array": true },
-    "dctermsdate": "http://purl.org/dc/terms/date",
-    "dctermsissued": "http://purl.org/dc/terms/issued",
-    "dctermscreated": "http://purl.org/dc/terms/created",
-    "dctermsrights": { "@id": "http://purl.org/dc/terms/rights", "@type": "@id" },
-
-    "skosprefLabel": { "@id": "http://www.w3.org/2004/02/skos/core#prefLabel", "@type": "@id", "@array": true },
-
-    "refPeriod": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod",
-    "obsValue": "http://purl.org/linked-data/sdmx/2009/measure#obsValue",
-
-    "biboauthorList": { "@id": "http://purl.org/ontology/bibo/authorList", "@type": "@id" },
-
-    "storage": { "@id": "http://www.w3.org/ns/pim/space#storage", "@type": "@id", "@array": true },
-    "preferencesFile": { "@id": "http://www.w3.org/ns/pim/space#preferencesFile", "@type": "@id" },
-    "workspace": { "@id": "http://www.w3.org/ns/pim/space#workspace", "@type": "@id", "@array": true },
-    "masterWorkspace": { "@id": "http://www.w3.org/ns/pim/space#masterWorkspace", "@type": "@id" },
-
-    "ldpinbox": { "@id": "http://www.w3.org/ns/ldp#inbox", "@type": "@id", "@array": true },
-
-    "oaannotation": { "@id": "http://www.w3.org/ns/oa#Annotation", "@type": "@id" },
-    "oahasBody": { "@id": "http://www.w3.org/ns/oa#hasBody", "@type": "@id" },
-    "oahasTarget": { "@id": "http://www.w3.org/ns/oa#hasTarget", "@type": "@id" },
-    "oahasSource": { "@id": "http://www.w3.org/ns/oa#hasSource", "@type": "@id" },
-    "oahasSelector": { "@id": "http://www.w3.org/ns/oa#hasSelector", "@type": "@id" },
-    "oaexact": "http://www.w3.org/ns/oa#exact",
-    "oaprefix": "http://www.w3.org/ns/oa#prefix",
-    "oasuffix": "http://www.w3.org/ns/oa#suffix",
-    "oamotivatedBy": { "@id": "http://www.w3.org/ns/oa#motivatedBy", "@type": "@id" },
-    "oaannotationService": { "@id": "http://www.w3.org/ns/oa#annotationService", "@type": "@id", "@array": true },
-
-    "assubject": { "@id": "https://www.w3.org/ns/activitystreams#subject", "@type": "@id", "@array": true },
-    "asobject": { "@id": "https://www.w3.org/ns/activitystreams#object", "@type": "@id", "@array": true },
-    "astarget": { "@id": "https://www.w3.org/ns/activitystreams#target", "@type": "@id", "@array": true },
-    "asrelationship": { "@id": "https://www.w3.org/ns/activitystreams#relationship", "@type": "@id", "@array": true },
-    "ascontext": { "@id": "https://www.w3.org/ns/activitystreams#context", "@type": "@id", "@array": true },
-    "asinReplyTo": { "@id": "https://www.w3.org/ns/activitystreams#inReplyTo", "@type": "@id", "@array": true },
-    "asactor": { "@id": "https://www.w3.org/ns/activitystreams#actor", "@type": "@id" },
-    "asupdated": "https://www.w3.org/ns/activitystreams#updated",
-    "aspublished": "https://www.w3.org/ns/activitystreams#published",
-    "ascontent": "https://www.w3.org/ns/activitystreams#content",
-    "asname": "https://www.w3.org/ns/activitystreams#name",
-    "asimage": { "@id": "https://www.w3.org/ns/activitystreams#image", "@type": "@id" },
-
-    "siocreplyof": { "@id": "http://rdfs.org/sioc/ns#reply_of", "@type": "@id", "@array": true },
-    "siocavatar": { "@id": "http://rdfs.org/sioc/ns#avatar", "@type": "@id" },
-
-    "ldpcontains": { "@id": "http://www.w3.org/ns/ldp#contains", "@type": "@id", "@array": true },
-    "ldpresource": { "@id": "http://www.w3.org/ns/ldp#Resource", "@type": "@id", "@array": true  },
-    "ldpcontainer": { "@id": "http://www.w3.org/ns/ldp#Container", "@type": "@id", "@array": true  }
-  },
-
-  SecretAgentNames: ['Abraham Lincoln', 'Admiral Awesome', 'Anonymous Coward', 'Believe it or not', 'Creative Monkey', 'Senegoid', 'Dog from the Web', 'Ekrub', 'Elegant Banana', 'Foo Bar', 'Lbmit', 'Lunatic Scholar', 'NahuLcm', 'Noslen', 'Okie Dokie', 'Samurai Cat', 'Vegan Superstar'],
-
-  RefAreas: {"AF":"Afghanistan","A9":"Africa","AL":"Albania","DZ":"Algeria","AS":"American Samoa","L5":"Andean Region","AD":"Andorra","AO":"Angola","AG":"Antigua and Barbuda","1A":"Arab World","AR":"Argentina","AM":"Armenia","AW":"Aruba","AU":"Australia","AT":"Austria","AZ":"Azerbaijan","BS":"Bahamas, The","BH":"Bahrain","BD":"Bangladesh","BB":"Barbados","BY":"Belarus","BE":"Belgium","BZ":"Belize","BJ":"Benin","BM":"Bermuda","BT":"Bhutan","BO":"Bolivia","BA":"Bosnia and Herzegovina","BW":"Botswana","BR":"Brazil","BN":"Brunei Darussalam","BG":"Bulgaria","BF":"Burkina Faso","BI":"Burundi","CV":"Cabo Verde","KH":"Cambodia","CM":"Cameroon","CA":"Canada","S3":"Caribbean small states","KY":"Cayman Islands","CF":"Central African Republic","TD":"Chad","JG":"Channel Islands","CL":"Chile","CN":"China","CO":"Colombia","KM":"Comoros","CD":"Congo, Dem. Rep.","CG":"Congo, Rep.","CR":"Costa Rica","CI":"Cote d'Ivoire","HR":"Croatia","CU":"Cuba","CW":"Curacao","CY":"Cyprus","CZ":"Czech Republic","DK":"Denmark","DJ":"Djibouti","DM":"Dominica","DO":"Dominican Republic","Z4":"East Asia & Pacific (all income levels)","4E":"East Asia & Pacific (developing only)","C4":"East Asia and the Pacific (IFC classification)","EC":"Ecuador","EG":"Egypt, Arab Rep.","SV":"El Salvador","GQ":"Equatorial Guinea","ER":"Eritrea","EE":"Estonia","ET":"Ethiopia","XC":"Euro area","Z7":"Europe & Central Asia (all income levels)","7E":"Europe & Central Asia (developing only)","C5":"Europe and Central Asia (IFC classification)","EU":"European Union","FO":"Faeroe Islands","FJ":"Fiji","FI":"Finland","FR":"France","PF":"French Polynesia","GA":"Gabon","GM":"Gambia, The","GE":"Georgia","DE":"Germany","GH":"Ghana","GR":"Greece","GL":"Greenland","GD":"Grenada","GU":"Guam","GT":"Guatemala","GN":"Guinea","GW":"Guinea-Bissau","GY":"Guyana","HT":"Haiti","XE":"Heavily indebted poor countries (HIPC)","XD":"High income","XS":"High income: OECD","XR":"High income: nonOECD","HN":"Honduras","HK":"Hong Kong SAR, China","HU":"Hungary","IS":"Iceland","IN":"India","ID":"Indonesia","IR":"Iran, Islamic Rep.","IQ":"Iraq","IE":"Ireland","IM":"Isle of Man","IL":"Israel","IT":"Italy","JM":"Jamaica","JP":"Japan","JO":"Jordan","KZ":"Kazakhstan","KE":"Kenya","KI":"Kiribati","KP":"Korea, Dem. Rep.","KR":"Korea, Rep.","KV":"Kosovo","KW":"Kuwait","KG":"Kyrgyz Republic","LA":"Lao PDR","ZJ":"Latin America & Caribbean (all income levels)","XJ":"Latin America & Caribbean (developing only)","L4":"Latin America and the Caribbean","C6":"Latin America and the Caribbean (IFC classification)","LV":"Latvia","XL":"Least developed countries: UN classification","LB":"Lebanon","LS":"Lesotho","LR":"Liberia","LY":"Libya","LI":"Liechtenstein","LT":"Lithuania","XO":"Low & middle income","XM":"Low income","XN":"Lower middle income","LU":"Luxembourg","MO":"Macao SAR, China","MK":"Macedonia, FYR","MG":"Madagascar","MW":"Malawi","MY":"Malaysia","MV":"Maldives","ML":"Mali","MT":"Malta","MH":"Marshall Islands","MR":"Mauritania","MU":"Mauritius","MX":"Mexico","L6":"Mexico and Central America","FM":"Micronesia, Fed. Sts.","ZQ":"Middle East & North Africa (all income levels)","XQ":"Middle East & North Africa (developing only)","C7":"Middle East and North Africa (IFC classification)","XP":"Middle income","MD":"Moldova","MC":"Monaco","MN":"Mongolia","ME":"Montenegro","MA":"Morocco","MZ":"Mozambique","MM":"Myanmar","NA":"Namibia","NP":"Nepal","NL":"Netherlands","NC":"New Caledonia","NZ":"New Zealand","NI":"Nicaragua","NE":"Niger","NG":"Nigeria","M2":"North Africa","XU":"North America","MP":"Northern Mariana Islands","NO":"Norway","XY":"Not classified","OE":"OECD members","OM":"Oman","S4":"Other small states","S2":"Pacific island small states","PK":"Pakistan","PW":"Palau","PA":"Panama","PG":"Papua New Guinea","PY":"Paraguay","PE":"Peru","PH":"Philippines","PL":"Poland","PT":"Portugal","PR":"Puerto Rico","QA":"Qatar","RO":"Romania","RU":"Russian Federation","RW":"Rwanda","WS":"Samoa","SM":"San Marino","ST":"Sao Tome and Principe","SA":"Saudi Arabia","SN":"Senegal","RS":"Serbia","SC":"Seychelles","SL":"Sierra Leone","SG":"Singapore","SX":"Sint Maarten (Dutch part)","SK":"Slovak Republic","SI":"Slovenia","S1":"Small states","SB":"Solomon Islands","SO":"Somalia","ZA":"South Africa","8S":"South Asia","C8":"South Asia (IFC classification)","SS":"South Sudan","L7":"Southern Cone Extended","ES":"Spain","LK":"Sri Lanka","KN":"St. Kitts and Nevis","LC":"St. Lucia","MF":"St. Martin (French part)","VC":"St. Vincent and the Grenadines","C9":"Sub-Saharan Africa (IFC classification)","ZG":"Sub-Saharan Africa (all income levels)","ZF":"Sub-Saharan Africa (developing only)","A4":"Sub-Saharan Africa excluding South Africa","A5":"Sub-Saharan Africa excluding South Africa and Nigeria","SD":"Sudan","SR":"Suriname","SZ":"Swaziland","SE":"Sweden","CH":"Switzerland","SY":"Syrian Arab Republic","TJ":"Tajikistan","TZ":"Tanzania","TH":"Thailand","TL":"Timor-Leste","TG":"Togo","TO":"Tonga","TT":"Trinidad and Tobago","TN":"Tunisia","TR":"Turkey","TM":"Turkmenistan","TC":"Turks and Caicos Islands","TV":"Tuvalu","UG":"Uganda","UA":"Ukraine","AE":"United Arab Emirates","GB":"United Kingdom","US":"United States","XT":"Upper middle income","UY":"Uruguay","UZ":"Uzbekistan","VU":"Vanuatu","VE":"Venezuela, RB","VN":"Vietnam","VI":"Virgin Islands (U.S.)","PS":"West Bank and Gaza","1W":"World","YE":"Yemen, Rep.","ZM":"Zambia","ZW":"Zimbabwe"}
 }
 
 

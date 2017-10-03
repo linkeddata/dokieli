@@ -2689,7 +2689,6 @@ var DO = {
 
     spawnDokieli: function(data, contentType, iri){
       if(DO.C.AvailableMediaTypes.indexOf(contentType) > -1) {
-        // var fragment = DO.U.fragmentFromString(response.xhr.responseText);
         var template = document.implementation.createHTMLDocument('template');
 // console.log(template);
 
