@@ -13,6 +13,7 @@ module.exports = {
   getResourceHead,
   getResourceOptions,
   patchResource,
+  postResource,
   putResource,
   putResourceACL
 }
@@ -245,6 +246,49 @@ function patchResource (url, deleteBGP, insertBGP, options = {}) {
     .then(response => {
       if (!response.ok) {  // not a 2xx level response
         let error = new Error('Error patching resource: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      return response
+    })
+}
+
+function postResource (url, slug, data, contentType, links, options = {}) {
+  if (!url) {
+    return Promise.reject(new Error('Cannot POST resource - missing url'))
+  }
+
+  options.method = 'PUT'
+
+  options.body = data
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  options.headers = options.headers || {}
+
+  options.headers['Content-Type'] = contentType || DEFAULT_CONTENT_TYPE
+
+  links = links
+    ? LDP_RESOURCE + ', ' + links
+    : LDP_RESOURCE
+
+  options.headers['Link'] = links
+
+  if (slug) {
+    options.headers['Slug'] = slug
+  }
+
+  return fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error creating resource: ' +
           response.status + ' ' + response.statusText)
         error.status = response.status
         error.response = response
