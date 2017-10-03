@@ -2004,10 +2004,6 @@ var DO = {
       return unescape(decodeURIComponent(window.atob(s)));
     },
 
-    decodeString: function(string) {
-      return decodeURIComponent(string.replace(/\+/g,  " "));
-    },
-
     uniqueArray: function(a){
       var n = {}, r = [];
       for(var i = 0; i < a.length; i++) {
