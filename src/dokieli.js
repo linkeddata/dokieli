@@ -79,7 +79,7 @@ var DO = {
     authenticateUserFallback: function(url, reasons) {
 // console.log("Try to authenticating through WebID's storage, if not found, try through a known authentication endpoint");
       url = url || window.location.origin + window.location.pathname;
-      var pIRI = DO.U.getProxyableIRI(url);
+      var pIRI = uri.getProxyableIRI(url);
 
       return DO.U.getGraph(pIRI)
         .then(
@@ -362,7 +362,7 @@ var DO = {
     },
 
     getEndpointFromHead: function(property, url) {
-      var pIRI = DO.U.getProxyableIRI(url);
+      var pIRI = uri.getProxyableIRI(url);
 
       return fetcher.getResourceHead(pIRI, {'header': 'Link'}).then(
         function(i){
@@ -416,7 +416,7 @@ var DO = {
     getNotifications: function(url) {
       url = url || window.location.origin + window.location.pathname;
       var notifications = [];
-      var pIRI = DO.U.getProxyableIRI(url);
+      var pIRI = uri.getProxyableIRI(url);
 
       return DO.U.getGraph(pIRI)
         .then(
@@ -465,7 +465,7 @@ var DO = {
       DO.U.getNotifications(url).then(
         function(i) {
           i.forEach(function(notification) {
-            var pIRI = DO.U.getProxyableIRI(notification);
+            var pIRI = uri.getProxyableIRI(notification);
             DO.U.getGraph(pIRI).then(
               function(g) {
 // console.log(g);
@@ -790,7 +790,7 @@ var DO = {
                 var promises = [];
 
                 i.forEach(function(notification) {
-                  var pIRI = DO.U.getProxyableIRI(notification);
+                  var pIRI = uri.getProxyableIRI(notification);
                   promises.push(DO.U.getGraph(pIRI));
                 });
 
@@ -846,17 +846,6 @@ var DO = {
       }
 
       return iri;
-    },
-
-    getProxyableIRI: function getProxyableIRI (url, options = {}) {
-      var pIRI = DO.U.stripFragmentFromString(url);
-
-      if ((typeof document !== 'undefined' && document.location.protocol === 'https:' && pIRI.slice(0, 5).toLowerCase() === 'http:') || 'forceProxy' in options) {
-        var proxyURL = ('proxyURL' in options) ? options.proxyURL : DO.C.ProxyURL;
-        pIRI = proxyURL + uri.encodeString(pIRI);
-      }
-// console.log('pIRI: ' + pIRI);
-      return pIRI;
     },
 
     notifyInbox: function notifyInbox (o) {
@@ -960,7 +949,7 @@ var DO = {
         return Promise.reject(new Error('No inbox to send notification to'))
       }
 
-      var pIRI = DO.U.getProxyableIRI(inbox)
+      var pIRI = uri.getProxyableIRI(inbox)
 
       return DO.U.getAcceptPostPreference(pIRI)
         .catch(function(reason){
@@ -1062,7 +1051,7 @@ var DO = {
     },
 
     getAcceptPostPreference: function getAcceptPostPreference (url) {
-      var pIRI = DO.U.getProxyableIRI(url);
+      var pIRI = uri.getProxyableIRI(url);
 
       return fetcher.getResourceOptions(pIRI, {'header': 'Accept-Post'})
         .catch(function (error) {
@@ -2015,17 +2004,6 @@ var DO = {
       return r;
     },
 
-    stripFragmentFromString: function(string) {
-      if (typeof string === "string") {
-        var stringIndexFragment = string.indexOf('#');
-
-        if (stringIndexFragment >= 0) {
-          string = string.substring(0, stringIndexFragment);
-        }
-      }
-      return string;
-    },
-
     getSelectorSign: function(node) {
       if(!node) {
         return DO.C.SelectorSign["*"];
@@ -2368,7 +2346,7 @@ var DO = {
         e.target.disabled = true;
       }
 
-      var iri = DO.U.stripFragmentFromString(document.location.href);
+      var iri = uri.stripFragmentFromString(document.location.href);
 
       document.body.insertAdjacentHTML('beforeend', '<aside id="snapshot-document" class="do on"><button class="close" title="Close">❌</button><h2>Snapshot Document</h2><p><code>' + iri + '</code> will be snapshot. Note that behaviour differ for each action. See the links for more information.</p><ul><li><button class="export-as-html">Export</button> this article as HTML and save to file.</li><li><a href="http://web.archive.org/" target="_blank">Internet Archive</a>: <button class="snapshot-internet-archive">Capture</button> all crawlable resources referenced in this article.</li></ul></aside>');
 
@@ -2926,7 +2904,7 @@ var DO = {
         }
       }
 
-      var pIRI = DO.U.getProxyableIRI(iri, options);
+      var pIRI = uri.getProxyableIRI(iri, options);
 
       return fetcher.getResource(pIRI, headers, options)
         .then(response => {
@@ -2934,7 +2912,7 @@ var DO = {
           let contentType = (cT) ? cT.split(';')[ 0 ].trim() : 'text/turtle';
 
           options.contentType = contentType
-          options.subjectURI =  DO.U.stripFragmentFromString(iri)
+          options.subjectURI =  uri.stripFragmentFromString(iri)
 
           return response.text()
         })
@@ -3384,7 +3362,7 @@ var DO = {
           var iri = bli.value;
           var headers = { 'Accept': DO.C.AvailableMediaTypes.join(',') };
           var options = {};
-          var pIRI = DO.U.getProxyableIRI(iri);
+          var pIRI = uri.getProxyableIRI(iri);
           if (pIRI.slice(0, 5).toLowerCase() == 'http:') {
             options['noCredentials'] = true;
           }
@@ -3394,7 +3372,7 @@ var DO = {
               .catch(error => {
                 if (error.status === 0) {
                   // retry with proxied uri
-                  var pIRI = DO.U.getProxyableIRI(iri, {'forceProxy': true});
+                  var pIRI = uri.getProxyableIRI(iri, {'forceProxy': true});
                   return handleResource(pIRI, headers, options);
                 }
 
@@ -3642,7 +3620,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           return
         }
 
-        var currentDocumentURL = DO.U.stripFragmentFromString(document.location.href)
+        var currentDocumentURL = uri.stripFragmentFromString(document.location.href)
         var saveAsDocument = document.getElementById('save-as-document')
         var storageIRI = saveAsDocument.querySelector('#' + id + '-' + action).innerText.trim()
 
@@ -3830,7 +3808,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
               url = options.iri.split(':')[0] + ':' + url;
             }
             else {
-              href = ('iri' in options) ? DO.U.getProxyableIRI(options.iri) : document.location.href;
+              href = ('iri' in options) ? uri.getProxyableIRI(options.iri) : document.location.href;
               url = DO.U.getBaseURL(href) + matches[3].replace(/^\//g, '');
             }
             break;
@@ -4521,7 +4499,7 @@ WHERE {\n\
 
     positionInteraction: function(noteIRI, containerNode) {
       containerNode = containerNode || document.body;
-      var pIRI = DO.U.getProxyableIRI(noteIRI);
+      var pIRI = uri.getProxyableIRI(noteIRI);
 
       return DO.U.getGraph(pIRI)
         .then(
@@ -4650,12 +4628,12 @@ WHERE {\n\
                 //XXX: Review. This feels a bit dirty
                 for(var i = 0; i < selectedParentNode.childNodes.length; i++) {
                   var n = selectedParentNode.childNodes[i];
-                  if (n.nodeType === 3 && n.nodeValue == selectedParentNodeValue) {
+                  if (n.nodeType === 3 && n.nodeValue === selectedParentNodeValue) {
                     selectedParentNode.replaceChild(selectionUpdated, n);
                   }
                 }
 
-                var resourceIRI = DO.U.stripFragmentFromString(document.location.href);
+                var resourceIRI = uri.stripFragmentFromString(document.location.href);
 
                 var parentNodeWithId = selectedParentNode.closest('[id]');
                 var targetIRI = (parentNodeWithId) ? resourceIRI + '#' + parentNodeWithId.id : resourceIRI;
@@ -5752,7 +5730,7 @@ WHERE {\n\
 
                   case 'share':
                     _this.base.restoreSelection();
-                    var resourceIRI = DO.U.stripFragmentFromString(document.location.href);
+                    var resourceIRI = uri.stripFragmentFromString(document.location.href);
                     var id = _this.base.getSelectedParentElement().closest('[id]').id;
                     resourceIRI = (id) ? resourceIRI + '#' + id : resourceIRI;
                     _this.window.getSelection().removeAllRanges();
@@ -6067,7 +6045,7 @@ WHERE {\n\
 
                   var queryURL = DO.U.SPARQLQueryURL.getResourcesOfTypeWithLabel(sparqlEndpoint, resourceType, textInputA.toLowerCase(), options);
 
-                  queryURL = DO.U.getProxyableIRI(queryURL);
+                  queryURL = uri.getProxyableIRI(queryURL);
 
                   form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', '<div id="' + sparklineGraphId + '"></div><i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
                   sG = document.getElementById(sparklineGraphId);
@@ -6108,7 +6086,7 @@ WHERE {\n\
 // console.log(refArea);
                         var queryURL = DO.U.SPARQLQueryURL.getObservationsWithDimension(sparqlEndpoint, dataset, paramDimension);
 // console.log(queryURL);
-                        queryURL = DO.U.getProxyableIRI(queryURL);
+                        queryURL = uri.getProxyableIRI(queryURL);
 
                         DO.U.getTriplesFromGraph(queryURL)
                           .then(function(triples){
@@ -6300,7 +6278,7 @@ WHERE {\n\
               var refId = 'r-' + id;
               // var noteId = 'i-' + id;
 
-              var resourceIRI = DO.U.stripFragmentFromString(document.location.href);
+              var resourceIRI = uri.stripFragmentFromString(document.location.href);
               var containerIRI = window.location.href;
 
               var contentType = 'text/html';
@@ -6764,7 +6742,7 @@ WHERE {\n\
                             citationURI = opts.url.replace(/^https/, 'http');
                           }
                         }
-                        else if (DO.U.stripFragmentFromString(options.citationId) != DO.U.getProxyableIRI(options.citationId)) {
+                        else if (uri.stripFragmentFromString(options.citationId) !== uri.getProxyableIRI(options.citationId)) {
                           citationURI = window.location.origin + window.location.pathname;
                         }
                         else {
