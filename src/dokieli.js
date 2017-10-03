@@ -7,6 +7,7 @@
  */
 
 const fetcher = require('./fetcher')
+const uri = require('./uri')
 
 if(typeof DO === 'undefined'){
 global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined;
@@ -847,54 +848,18 @@ var DO = {
       return iri;
     },
 
-    getProxyableIRI: function(url, options) {
+    getProxyableIRI: function getProxyableIRI (url, options = {}) {
       var pIRI = DO.U.stripFragmentFromString(url);
-      options = options || {};
 
-      if ((typeof document !== 'undefined' && document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') || 'forceProxy' in options) {
+      if ((typeof document !== 'undefined' && document.location.protocol === 'https:' && pIRI.slice(0, 5).toLowerCase() === 'http:') || 'forceProxy' in options) {
         var proxyURL = ('proxyURL' in options) ? options.proxyURL : DO.C.ProxyURL;
-        pIRI = proxyURL + DO.U.encodeString(pIRI);
+        pIRI = proxyURL + uri.encodeString(pIRI);
       }
 // console.log('pIRI: ' + pIRI);
       return pIRI;
     },
 
-    postResource: function(url, slug, data, contentType, links, options) {
-      if (url && url.length > 0) {
-        contentType = contentType || 'text/html; charset=utf-8';
-        var ldpResource = '<http://www.w3.org/ns/ldp#Resource>; rel="type"';
-        links = (links) ? ldpResource + ', ' + links : ldpResource;
-        options = options || {};
-
-        return new Promise(function(resolve, reject) {
-          var http = new XMLHttpRequest();
-          http.open('POST', url);
-          http.setRequestHeader('Content-Type', contentType);
-          http.setRequestHeader('Link', links);
-          if (slug && slug.length > 0) {
-            http.setRequestHeader('Slug', slug);
-          }
-          if (!options.noCredentials) {
-            http.withCredentials = true;
-          }
-          DO.U.showXHRProgressHTML(http, options);
-          http.onreadystatechange = function() {
-            if (this.readyState == this.DONE) {
-              if (this.status === 200 || this.status === 201 || this.status === 204) {
-                return resolve({xhr: this});
-              }
-              return reject({status: this.status, xhr: this});
-            }
-          };
-          http.send(data);
-        });
-      }
-      else {
-        return Promise.reject({'message': 'url parameter not valid'});
-      }
-    },
-
-    notifyInbox: function(o) {
+    notifyInbox: function notifyInbox (o) {
       var slug, inbox;
       if ('slug' in o) {
         slug = o.slug;
@@ -959,7 +924,7 @@ var DO = {
                 ].map(function(n) { if (n != '') { return '      ' + n + '\n'; } }).join('');
 
 
-      //TODO: Come up with a better title. reuse `types` e.g., Activity Created, Announced..
+      // TODO: Come up with a better title. reuse `types` e.g., Activity Created, Announced..
       var title = 'Notification';
       if(types.indexOf('as:Announce') > -1){
         title += ': Announced';
@@ -990,113 +955,110 @@ var DO = {
       options.prefixes = DO.C.Prefixes;
 
       data = DO.U.createHTML(title, data, options);
+
+      if (!inbox) {
+        return Promise.reject(new Error('No inbox to send notification to'))
+      }
+
+      var pIRI = DO.U.getProxyableIRI(inbox)
+
+      return DO.U.getAcceptPostPreference(pIRI)
+        .catch(function(reason){
+          return reason;
+        })
+        .then(function(preferredContentType){
+          var options = {
+            'contentType': 'text/html',
+            'subjectURI': 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d'
+          };
+
+          switch(preferredContentType) {
+            case 'text/html': case 'application/xhtml+xml':
+            return DO.U.postResource(pIRI, slug, data, 'text/html; charset=utf-8').catch(function(reason){
+              if(reason.xhr.status == 0){
+                var options = {'noCredentials': true};
+                DO.U.postResource(pIRI, slug, data, 'text/html; charset=utf-8');
+              }
+            });
+            break;
+            case 'text/turtle':
+              //FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
+              // return DO.U.postResource(pIRI, slug, data, 'text/turtle; charset=utf-8');
+              return DO.U.getGraphFromData(data, options).then(
+                function(g) {
+// console.log(g);
+                  var options = {
+                    'contentType': 'text/turtle'
+                  };
+                  return DO.U.serializeGraph(g, options).then(
+                    function(data){
 // console.log(data);
 
-      if (inbox && inbox.length > 0) {
-        var pIRI = DO.U.getProxyableIRI(inbox);
+                      //FIXME: FUGLY because parser defaults to localhost. Using UUID to minimise conflict
+                      data = data.replace(/http:\/\/localhost\/d79351f4-cdb8-4228-b24f-3e9ac74a840d/g, '');
 
-        return DO.U.getAcceptPostPreference(pIRI)
-          .catch(function(reason){
-            return reason;
-          })
-          .then(function(preferredContentType){
-// console.log(preferredContentType);
-            var options = {
-              'contentType': 'text/html',
-              'subjectURI': 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d'
-            };
+                      //XXX: Workaround for rdf-parser-rdfa bug that gives '@langauge' instead of @type when encountering datatype in HTML+RDFa . TODO: Link to bug here
+                      data = data.replace(/Z"@en;/, 'Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;');
 
-            switch(preferredContentType) {
-              case 'text/html': case 'application/xhtml+xml':
-                return DO.U.postResource(pIRI, slug, data, 'text/html; charset=utf-8').catch(function(reason){
-                  if(reason.xhr.status == 0){
-                    var options = {'noCredentials': true};
-                    DO.U.postResource(pIRI, slug, data, 'text/html; charset=utf-8');
-                  }
-                });
-                break;
-              case 'text/turtle':
-                //FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
-                // return DO.U.postResource(pIRI, slug, data, 'text/turtle; charset=utf-8');
-                return DO.U.getGraphFromData(data, options).then(
-                  function(g) {
-// console.log(g);
-                    var options = {
-                      'contentType': 'text/turtle'
-                    };
-                    return DO.U.serializeGraph(g, options).then(
-                      function(data){
-// console.log(data);
-
-                        //FIXME: FUGLY because parser defaults to localhost. Using UUID to minimise conflict
-                        data = data.replace(/http:\/\/localhost\/d79351f4-cdb8-4228-b24f-3e9ac74a840d/g, '');
-
-                        //XXX: Workaround for rdf-parser-rdfa bug that gives '@langauge' instead of @type when encountering datatype in HTML+RDFa . TODO: Link to bug here
-                        data = data.replace(/Z"@en;/, 'Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;');
-
-                        return DO.U.postResource(pIRI, slug, data, 'text/turtle').catch(function(reason){
-                          if(reason.xhr.status == 0){
-                            var options = {'noCredentials': true};
-                            DO.U.postResource(pIRI, slug, data, 'text/turtle', null, options);
-                          }
-                        });
-                      }
-                    );
-                  },
-                  function(reason) {
-                    return reason;
-                  }
-                );
-
-                break;
-              case 'application/ld+json': case 'application/json':  case '*/*': default:
-                return DO.U.getGraphFromData(data, options).then(
-                  function(g) {
-// console.log(g);
-                    var options = {
-                      'contentType': 'application/ld+json'
-                    };
-                    return DO.U.serializeGraph(g, options).then(
-                      function(i){
-                        var x = JSON.parse(i);
-// console.log(x);
-                        x[0]["@context"] = ["https://www.w3.org/ns/activitystreams", {"oa": "http://www.w3.org/ns/anno.jsonld"}];
-                        // If from is Turtle:
-                        // x[0]["@id"] = (x[0]["@id"].slice(0,2) == '_:') ? '' : x[0]["@id"];
-                        x[0]["@id"] = (x[0]["@id"] == 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d') ? '' : x[0]["@id"];
-
-                        //XXX: Workaround for rdf-parser-rdfa bug that gives '@langauge' instead of @type when encountering datatype in HTML+RDFa . TODO: Link to bug here
-                        for(var i = 0; i < x.length; i++){
-                          if('https://www.w3.org/ns/activitystreams#updated' in x[i]) {
-                            x[i]['https://www.w3.org/ns/activitystreams#updated'] = {
-                              '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
-                              '@value': x[i]['https://www.w3.org/ns/activitystreams#updated']['@value']
-                            };
-                          }
+                      return DO.U.postResource(pIRI, slug, data, 'text/turtle').catch(function(reason){
+                        if(reason.xhr.status == 0){
+                          var options = {'noCredentials': true};
+                          DO.U.postResource(pIRI, slug, data, 'text/turtle', null, options);
                         }
+                      });
+                    }
+                  );
+                },
+                function(reason) {
+                  return reason;
+                }
+              );
 
-                        var data = JSON.stringify(x) + '\n';
-// console.log(data);
-                        return DO.U.postResource(pIRI, slug, data, 'application/ld+json; profile="http://www.w3.org/ns/anno.jsonld"').catch(function(reason){
-                            if(reason.xhr.status == 0){
-                              var options = {'noCredentials': true};
-                              DO.U.postResource(pIRI, slug, data, 'application/ld+json; profile="http://www.w3.org/ns/anno.jsonld"', null, options);
-                            }
-                        });
+              break;
+            case 'application/ld+json': case 'application/json':  case '*/*': default:
+            return DO.U.getGraphFromData(data, options).then(
+              function(g) {
+// console.log(g);
+                var options = {
+                  'contentType': 'application/ld+json'
+                };
+                return DO.U.serializeGraph(g, options).then(
+                  function(i){
+                    var x = JSON.parse(i);
+// console.log(x);
+                    x[0]["@context"] = ["https://www.w3.org/ns/activitystreams", {"oa": "http://www.w3.org/ns/anno.jsonld"}];
+                    // If from is Turtle:
+                    // x[0]["@id"] = (x[0]["@id"].slice(0,2) == '_:') ? '' : x[0]["@id"];
+                    x[0]["@id"] = (x[0]["@id"] == 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d') ? '' : x[0]["@id"];
+
+                    //XXX: Workaround for rdf-parser-rdfa bug that gives '@langauge' instead of @type when encountering datatype in HTML+RDFa . TODO: Link to bug here
+                    for(var i = 0; i < x.length; i++){
+                      if('https://www.w3.org/ns/activitystreams#updated' in x[i]) {
+                        x[i]['https://www.w3.org/ns/activitystreams#updated'] = {
+                          '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
+                          '@value': x[i]['https://www.w3.org/ns/activitystreams#updated']['@value']
+                        };
                       }
-                    );
-                  },
-                  function(reason) {
-                    return reason;
+                    }
+
+                    var data = JSON.stringify(x) + '\n';
+// console.log(data);
+                    return DO.U.postResource(pIRI, slug, data, 'application/ld+json; profile="http://www.w3.org/ns/anno.jsonld"').catch(function(reason){
+                      if(reason.xhr.status == 0){
+                        var options = {'noCredentials': true};
+                        DO.U.postResource(pIRI, slug, data, 'application/ld+json; profile="http://www.w3.org/ns/anno.jsonld"', null, options);
+                      }
+                    });
                   }
                 );
-                break;
-            }
-          });
-      }
-      else {
-        return Promise.reject({'message': "No inbox to send notification to"});
-      }
+              },
+              function(reason) {
+                return reason;
+              }
+            );
+            break;
+          }
+        })
     },
 
     getAcceptPostPreference: function getAcceptPostPreference (url) {
@@ -2040,10 +2002,6 @@ var DO = {
 
     b64Toutf8: function(s) {
       return unescape(decodeURIComponent(window.atob(s)));
-    },
-
-    encodeString: function(string) {
-      return encodeURIComponent(string).replace(/'/g,"%27").replace(/"/g,"%22");
     },
 
     decodeString: function(string) {
@@ -4322,7 +4280,7 @@ WHERE {\n\
   FILTER (CONTAINS(LCASE(?prefLabel), '" + textInput + "') && (LANG(?prefLabel) = '' || LANGMATCHES(LANG(?prefLabel), '" + options.lang + "')))"
 + resourcePattern + "\n\
 }";
-       return sparqlEndpoint + "?query=" + DO.U.encodeString(query);
+       return sparqlEndpoint + "?query=" + uri.encodeString(query);
       },
 
       getObservationsWithDimension: function(sparqlEndpoint, dataset, paramDimension, options) {
@@ -4345,7 +4303,7 @@ WHERE {\n\
   ?observation ?propertyMeasure ?obsValue .\n\
 }";
 
-        return sparqlEndpoint + "?query=" + DO.U.encodeString(query);
+        return sparqlEndpoint + "?query=" + uri.encodeString(query);
       },
     },
 
