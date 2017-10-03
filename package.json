@@ -6,7 +6,7 @@
   "scripts": {
     "build-dist": "webpack --progress --colors",
     "build": "npm run build-dist",
-    "standard": "standard src/fetcher.js src/uri.js src/graph.js",
+    "standard": "standard src/fetcher.js src/uri.js src/graph.js src/doc.js",
     "test": "npm run standard",
     "watch": "webpack --progress --colors --watch"
   },
