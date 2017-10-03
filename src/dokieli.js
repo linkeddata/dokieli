@@ -951,7 +951,7 @@ var DO = {
 
       var pIRI = uri.getProxyableIRI(inbox)
 
-      return DO.U.getAcceptPostPreference(pIRI)
+      return fetcher.getAcceptPostPreference(pIRI)
         .catch(function(reason){
           return reason;
         })
@@ -1048,31 +1048,6 @@ var DO = {
             break;
           }
         })
-    },
-
-    getAcceptPostPreference: function getAcceptPostPreference (url) {
-      var pIRI = uri.getProxyableIRI(url);
-
-      return fetcher.getResourceOptions(pIRI, {'header': 'Accept-Post'})
-        .catch(function (error) {
-          console.error(error);
-
-          return {'headers': 'application/ld+json'};
-        })
-        .then(function (i) {
-          var header = i.headers.trim().split(/\s*,\s*/);
-
-          if (header.indexOf('text/html') > -1 || header.indexOf('application/xhtml+xml') > -1) {
-            return 'text/html';
-          } else if (header.indexOf('text/turtle') > -1 || header.indexOf('*/*') > -1) {
-            return 'text/turtle';
-          } else if (header.indexOf('application/ld+json') > -1 || header.indexOf('application/json') > -1) {
-            return 'application/ld+json';
-          } else {
-            console.log('Accept-Post contains unrecognised media-range; ' + i.headers);
-            return i.headers;
-          }
-        });
     },
 
     urlParam: function(name) {
