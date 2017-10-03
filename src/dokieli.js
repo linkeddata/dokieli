@@ -7,7 +7,10 @@
  */
 
 const fetcher = require('./fetcher')
+const doc = require('./doc')
 const uri = require('./uri')
+const graph = require('./graph')
+const inbox = require('./inbox')
 
 if(typeof DO === 'undefined'){
 global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined;
@@ -81,7 +84,7 @@ var DO = {
       url = url || window.location.origin + window.location.pathname;
       var pIRI = uri.getProxyableIRI(url);
 
-      return DO.U.getGraph(pIRI)
+      return graph.getGraph(pIRI)
         .then(
           function(i) {
             var s = i.child(url);
@@ -176,7 +179,7 @@ var DO = {
     setUserInfo: function(userIRI) {
 // console.log("setUserInfo: " + userIRI);
       if (userIRI) {
-        return DO.U.getResourceGraph(userIRI).then(
+        return fetcher.getResourceGraph(userIRI).then(
           function(g){
             var s = g.child(userIRI);
 // console.log(s);
@@ -215,7 +218,7 @@ var DO = {
 
     setUserWorkspaces: function(userPreferenceFile){
       //XXX: Probably https so don't bother with proxy?
-      DO.U.getGraph(userPreferenceFile).then(
+      graph.getGraph(userPreferenceFile).then(
         function(pf) {
           DO.C.User.PreferencesFileGraph = pf;
           var s = pf.child(DO.C.User.IRI);
@@ -293,132 +296,12 @@ var DO = {
       }
     },
 
-    //https://github.com/solid/solid.js/blob/master/lib/util/web-util.js
-    parseLinkHeader: function(link) {
-      if (!link) {
-        return {}
-      }
-      var linkexp = /<[^>]*>\s*(\s*;\s*[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*")))*(,|$)/g;
-      var paramexp = /[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*"))/g;
-      var matches = link.match(linkexp);
-      var rels = {};
-      for (var i = 0; i < matches.length; i++) {
-        var split = matches[i].split('>');
-        var href = split[0].substring(1);
-        var ps = split[1];
-        var s = ps.match(paramexp);
-        for (var j = 0; j < s.length; j++) {
-          var p = s[j];
-          var paramsplit = p.split('=');
-          var name = paramsplit[0];
-          var rel = paramsplit[1].replace(/["']/g, '');
-          if (!rels[rel]) {
-            rels[rel] = []
-          }
-          rels[rel].push(href)
-          if (rels[rel].length > 1) {
-            rels[rel].sort()
-          }
-        }
-      }
-      return rels;
-    },
-
-    getEndpoint: function(property, url) {
-      if (url) {
-        return DO.U.getEndpointFromHead(property, url).then(
-          function(i){
-            return i;
-          },
-          function(x){
-            return DO.U.getEndpointFromRDF(property, url);
-          }
-        );
-      }
-      else {
-        var uri = location.href.split(location.search||location.hash||/[?#]/)[0];
-        var options = {
-          'contentType': 'text/html',
-          'subjectURI': uri
-        }
-        return DO.U.getGraphFromData(DO.U.getDocument(), options)
-          .then(
-            function(i){
-              //TODO: Should this get all of the inboxes or a given subject's?
-              var endpoints = i.match(uri, property).toArray();
-
-              if (endpoints.length > 0) {
-                return endpoints.map(function(t){ return t.object.nominalValue; });
-              }
-
-              console.log(property + ' endpoint was not found in message body');
-              return DO.U.getEndpointFromHead(property, uri);
-            },
-            function(reason){
-              return DO.U.getEndpointFromHead(property, uri);
-            }
-          );
-      }
-    },
-
-    getEndpointFromHead: function(property, url) {
-      var pIRI = uri.getProxyableIRI(url);
-
-      return fetcher.getResourceHead(pIRI, {'header': 'Link'}).then(
-        function(i){
-          var linkHeaders = DO.U.parseLinkHeader(i.headers);
-
-          if (property in linkHeaders) {
-            return linkHeaders[property];
-          }
-          return Promise.reject({'message': property + " endpoint was not found in 'Link' header"});
-        },
-        function(reason){
-          return Promise.reject({'message': "'Link' header not found"});
-        }
-      );
-    },
-
-    getEndpointFromRDF: function(property, url, subjectIRI) {
-      url = url || window.location.origin + window.location.pathname;
-      subjectIRI = subjectIRI || url;
-
-      return DO.U.getResourceGraph(subjectIRI)
-        .then(
-          function(i) {
-            var s = i.child(subjectIRI);
-
-            switch(property) {
-              case DO.C.Vocab['ldpinbox']['@id']:
-                if (s.ldpinbox._array.length > 0){
-// console.log(s.ldpinbox._array);
-                  return [s.ldpinbox.at(0)];
-                }
-                break;
-              case DO.C.Vocab['oaannotationService']['@id']:
-                if (s.oaannotationService._array.length > 0){
-// console.log(s.oaannotationService._array);
-                  return [s.oaannotationService.at(0)];
-                }
-                break;
-            }
-
-            var reason = {"message": property + " endpoint was not found in message body"};
-            return Promise.reject(reason);
-          },
-          function(reason) {
-            console.log(reason);
-            return reason;
-          }
-        );
-    },
-
     getNotifications: function(url) {
       url = url || window.location.origin + window.location.pathname;
       var notifications = [];
       var pIRI = uri.getProxyableIRI(url);
 
-      return DO.U.getGraph(pIRI)
+      return graph.getGraph(pIRI)
         .then(
           function(i) {
             var s = i.child(url);
@@ -448,7 +331,7 @@ var DO = {
 
     showInboxNotifications: function() {
       if (typeof SimpleRDF !== 'undefined') {
-        DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id']).then(
+        inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id']).then(
           function(i) {
             i.forEach(function(inbox) {
               DO.U.showNotificationSources(inbox);
@@ -466,7 +349,7 @@ var DO = {
         function(i) {
           i.forEach(function(notification) {
             var pIRI = uri.getProxyableIRI(notification);
-            DO.U.getGraph(pIRI).then(
+            graph.getGraph(pIRI).then(
               function(g) {
 // console.log(g);
                 var subjects = [];
@@ -609,7 +492,7 @@ var DO = {
     //Borrowed the d3 parts from https://bl.ocks.org/mbostock/4600693
     showVisualisationGraph: function(url, data, selector, options) {
       url = url || window.location.origin + window.location.pathname;
-      data = data || DO.U.getDocument();
+      data = data || doc.getDocument();
       selector = selector || 'body';
       options = options || {};
       options['contentType'] = options.contentType || 'text/html';
@@ -739,7 +622,7 @@ var DO = {
 
     getVisualisationGraphData: function(url, data, options) {
       return new Promise(function(resolve, reject) {
-        DO.U.getGraphFromData(data, options).then(
+        graph.getGraphFromData(data, options).then(
           function(g){
 // console.log(g);
             var g = SimpleRDF(DO.C.Vocab, options['subjectURI'], g, ld.store).child(url);
@@ -782,7 +665,7 @@ var DO = {
       options['contentType'] = options.contentType || 'text/html';
       options['subjectURI'] = options.subjectURI || uri;
 
-      DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id'], uri).then(
+      inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id'], uri).then(
         function(i) {
           i.forEach(function(inbox) {
             DO.U.getNotifications(inbox).then(
@@ -791,7 +674,7 @@ var DO = {
 
                 i.forEach(function(notification) {
                   var pIRI = uri.getProxyableIRI(notification);
-                  promises.push(DO.U.getGraph(pIRI));
+                  promises.push(graph.getGraph(pIRI));
                 });
 
                 var dataGraph = SimpleRDF();
@@ -802,7 +685,7 @@ var DO = {
                       dataGraph.graph().addAll(g.graph());
                     });
 
-                    DO.U.serializeGraph(dataGraph, { 'contentType': 'text/turtle' })
+                    graph.serializeGraph(dataGraph, { 'contentType': 'text/turtle' })
                       .then(function(data){
                         //FIXME: FUGLY because parser defaults to localhost. Using UUID to minimise conflict
                         data = data.replace(/http:\/\/localhost\/d79351f4-cdb8-4228-b24f-3e9ac74a840d/g, '');
@@ -826,228 +709,6 @@ var DO = {
           console.log(reason);
         }
       );
-    },
-
-    getAbsoluteIRI: function(base, location){
-      var iri = location;
-
-      if(location.toLowerCase().slice(0,4) != 'http') {
-        if(location.startsWith('/')){
-          var x = base.toLowerCase().trim().split('/');
-
-          iri = x[0]+'//'+x[2]+location;
-        }
-        else if(!base.endsWith('/')){
-          iri = base.substr(0, base.lastIndexOf('/') + 1) + location;
-        }
-        else {
-          iri = base + location;
-        }
-      }
-
-      return iri;
-    },
-
-    notifyInbox: function notifyInbox (o) {
-      var slug, inbox;
-      if ('slug' in o) {
-        slug = o.slug;
-      }
-      if ('inbox' in o) {
-        inbox = o.inbox;
-      }
-
-      var types = '<dt>Types</dt>';
-      o.type.forEach(function(t){
-        types += '<dd><a about="" href="' + DO.C.Prefixes[t.split(':')[0]] + t.split(':')[1] + '" typeof="'+ t +'">' + t.split(':')[1] + '</a></dd>';
-      });
-
-      var asObjectTypes = '';
-      if ('object' in o && 'objectTypes' in o && o.objectTypes.length > 0) {
-        asObjectTypes = '<dl><dt>Types</dt>';
-        o.objectTypes.forEach(function(t){
-          asObjectTypes += '<dd><a about="' + o.object + '" href="' + t + '" typeof="'+ t +'">' + t + '</a></dd>';
-        });
-        asObjectTypes += '</dl>';
-      }
-
-      var asObjectLicense = '';
-      if ('object' in o && 'objectLicense' in o && o.objectLicense.length > 0) {
-        asObjectLicense = '<dl><dt>License</dt><dd><a about="' + o.object + '" href="' + o.objectLicense + '" property="schema:license">' + o.objectLicense + '</a></dd></dl>';
-      }
-
-      var asobject = ('object' in o) ? '<dt>Object</dt><dd><a href="' + o.object + '" property="as:object">' + o.object + '</a>' + asObjectTypes + asObjectLicense + '</dd>' : '';
-
-      var asinReplyTo = ('inReplyTo' in o) ? '<dt>In reply to</dt><dd><a href="' + o.inReplyTo + '" property="as:inReplyTo">' + o.inReplyTo + '</a></dd>' : '';
-
-      var ascontext = ('context' in o && o.context.length > 0) ? '<dt>Context</dt><dd><a href="' + o.context + '" property="as:context">' + o.context + '</a></dd>' : '';
-
-      var astarget = ('target' in o && o.target.length > 0) ? '<dt>Target</dt><dd><a href="' + o.target + '" property="as:target">' + o.target + '</a></dd>' : '';
-
-      var datetime = DO.U.getDateTimeISO();
-      var asupdated = '<dt>Updated</dt><dd><time datetime="' + datetime + '" datatype="xsd:dateTime" property="as:updated" content="' + datetime + '">' + datetime.substr(0,19).replace('T', ' ') + '</time></dd>';
-
-      var assummary = ('summary' in o && o.summary.length > 0) ? '<dt>Summary</dt><dd property="as:summary" datatype="rdf:HTML">' + o.summary + '</dd>' : '';
-
-      var ascontent = ('content' in o && o.content.length > 0) ? '<dt>Content</dt><dd property="as:content" datatype="rdf:HTML">' + o.content + '</dd>' : '';
-
-      var asactor = (DO.C.User.IRI) ? '<dt>Actor</dt><dd><a href="' + DO.C.User.IRI + '" property="as:actor">' + DO.C.User.IRI + '</a></dd>' : '';
-
-      var license = '<dt>License</dt><dd><a href="' + DO.C.NotificationLicense + '" property="schema:license">' + DO.C.NotificationLicense + '</a></dd>';
-
-      var asto = ('to' in o && o.to.length > 0 && !o.to.match(/\s/g) && o.to.match(/^https?:\/\//gi)) ? '<dt>To</dt><dd><a href="' + o.to + '" property="as:to">' + o.to + '</a></dd>' : '';
-
-      var statements = ('statements' in o) ? o.statements : '';
-
-      var dl = [
-                types,
-                asobject,
-                ascontext,
-                astarget,
-                asupdated,
-                assummary,
-                ascontent,
-                asactor,
-                license,
-                asto
-                ].map(function(n) { if (n != '') { return '      ' + n + '\n'; } }).join('');
-
-
-      // TODO: Come up with a better title. reuse `types` e.g., Activity Created, Announced..
-      var title = 'Notification';
-      if(types.indexOf('as:Announce') > -1){
-        title += ': Announced';
-      }
-      else if (types.indexOf('as:Created') > -1){
-        title += ': Created';
-      }
-      else if (types.indexOf('as:Liked') > -1){
-        title += ': Liked';
-      }
-      else if (types.indexOf('as:Disliked') > -1){
-        title += ': Disliked';
-      }
-
-      var data = '\n\
-<article>\n\
-  <h1>' + title + '</h1>\n\
-  <section>\n\
-    <dl about="">\n\
-' + dl +
-'    </dl>\n\
-' + statements +
-'  </section>\n\
-</article>\n\
-';
-
-      var options = {};
-      options.prefixes = DO.C.Prefixes;
-
-      data = DO.U.createHTML(title, data, options);
-
-      if (!inbox) {
-        return Promise.reject(new Error('No inbox to send notification to'))
-      }
-
-      var pIRI = uri.getProxyableIRI(inbox)
-
-      return fetcher.getAcceptPostPreference(pIRI)
-        .catch(function(reason){
-          return reason;
-        })
-        .then(function(preferredContentType){
-          var options = {
-            'contentType': 'text/html',
-            'subjectURI': 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d'
-          };
-
-          switch(preferredContentType) {
-            case 'text/html': case 'application/xhtml+xml':
-            return DO.U.postResource(pIRI, slug, data, 'text/html; charset=utf-8').catch(function(reason){
-              if(reason.xhr.status == 0){
-                var options = {'noCredentials': true};
-                DO.U.postResource(pIRI, slug, data, 'text/html; charset=utf-8');
-              }
-            });
-            break;
-            case 'text/turtle':
-              //FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
-              // return DO.U.postResource(pIRI, slug, data, 'text/turtle; charset=utf-8');
-              return DO.U.getGraphFromData(data, options).then(
-                function(g) {
-// console.log(g);
-                  var options = {
-                    'contentType': 'text/turtle'
-                  };
-                  return DO.U.serializeGraph(g, options).then(
-                    function(data){
-// console.log(data);
-
-                      //FIXME: FUGLY because parser defaults to localhost. Using UUID to minimise conflict
-                      data = data.replace(/http:\/\/localhost\/d79351f4-cdb8-4228-b24f-3e9ac74a840d/g, '');
-
-                      //XXX: Workaround for rdf-parser-rdfa bug that gives '@langauge' instead of @type when encountering datatype in HTML+RDFa . TODO: Link to bug here
-                      data = data.replace(/Z"@en;/, 'Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;');
-
-                      return DO.U.postResource(pIRI, slug, data, 'text/turtle').catch(function(reason){
-                        if(reason.xhr.status == 0){
-                          var options = {'noCredentials': true};
-                          DO.U.postResource(pIRI, slug, data, 'text/turtle', null, options);
-                        }
-                      });
-                    }
-                  );
-                },
-                function(reason) {
-                  return reason;
-                }
-              );
-
-              break;
-            case 'application/ld+json': case 'application/json':  case '*/*': default:
-            return DO.U.getGraphFromData(data, options).then(
-              function(g) {
-// console.log(g);
-                var options = {
-                  'contentType': 'application/ld+json'
-                };
-                return DO.U.serializeGraph(g, options).then(
-                  function(i){
-                    var x = JSON.parse(i);
-// console.log(x);
-                    x[0]["@context"] = ["https://www.w3.org/ns/activitystreams", {"oa": "http://www.w3.org/ns/anno.jsonld"}];
-                    // If from is Turtle:
-                    // x[0]["@id"] = (x[0]["@id"].slice(0,2) == '_:') ? '' : x[0]["@id"];
-                    x[0]["@id"] = (x[0]["@id"] == 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d') ? '' : x[0]["@id"];
-
-                    //XXX: Workaround for rdf-parser-rdfa bug that gives '@langauge' instead of @type when encountering datatype in HTML+RDFa . TODO: Link to bug here
-                    for(var i = 0; i < x.length; i++){
-                      if('https://www.w3.org/ns/activitystreams#updated' in x[i]) {
-                        x[i]['https://www.w3.org/ns/activitystreams#updated'] = {
-                          '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
-                          '@value': x[i]['https://www.w3.org/ns/activitystreams#updated']['@value']
-                        };
-                      }
-                    }
-
-                    var data = JSON.stringify(x) + '\n';
-// console.log(data);
-                    return DO.U.postResource(pIRI, slug, data, 'application/ld+json; profile="http://www.w3.org/ns/anno.jsonld"').catch(function(reason){
-                      if(reason.xhr.status == 0){
-                        var options = {'noCredentials': true};
-                        DO.U.postResource(pIRI, slug, data, 'application/ld+json; profile="http://www.w3.org/ns/anno.jsonld"', null, options);
-                      }
-                    });
-                  }
-                );
-              },
-              function(reason) {
-                return reason;
-              }
-            );
-            break;
-          }
-        })
     },
 
     urlParam: function(name) {
@@ -1425,7 +1086,7 @@ var DO = {
             var optionsNormalisation = DO.C.DOMNormalisation;
             delete optionsNormalisation['skipNodeWithClass'];
 
-            DO.U.showVisualisationGraph(document.location.href, DO.U.getDocument(null, optionsNormalisation), '#graph-view');
+            DO.U.showVisualisationGraph(document.location.href, doc.getDocument(null, optionsNormalisation), '#graph-view');
           }
         });
       }
@@ -1680,11 +1341,11 @@ var DO = {
       var count = DO.U.contentCount(content);
       var authors = [], contributors = [], editors = [];
 
-      var data = DO.U.getDocument();
+      var data = doc.getDocument();
       var subjectURI = window.location.origin + window.location.pathname;
       var options = {'contentType': 'text/html', 'subjectURI': subjectURI };
 
-      DO.U.getGraphFromData(data, options).then(
+      graph.getGraphFromData(data, options).then(
         function(i){
           var g = SimpleRDF(DO.C.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
 
@@ -1745,8 +1406,8 @@ var DO = {
         });
     },
 
-    contentCount: function(c) {
-      var content = DO.U.fragmentFromString(DO.U.domToString(c)).textContent.trim();
+    contentCount: function contentCount (c) {
+      var content = DO.U.fragmentFromString(doc.domToString(c)).textContent.trim();
       var contentCount = { readingTime:1, words:0, chars:0, lines:0, pages:{A4:1, USLetter:1}, bytes:0 };
       if (content.length > 0) {
         var lineHeight = c.ownerDocument.defaultView.getComputedStyle(c, null)["line-height"];
@@ -2056,177 +1717,8 @@ var DO = {
       return aString.split("/");
     },
 
-    getGraphFromData: function(data, options) {
-      options = options || {};
-      if (!('contentType' in options)) {
-        options['contentType'] = 'text/turtle';
-      }
-      if (!('subjectURI' in options)) {
-        options['subjectURI'] = '_:dokieli';
-      }
-
-      return SimpleRDF.parse(data, options['contentType'], options['subjectURI']);
-    },
-
-    getGraph: function(url) {
-      return SimpleRDF(DO.C.Vocab, url, null, ld.store).get();
-    },
-
-    serializeGraph: function(g, options) {
-      options = options || {};
-      if (!('contentType' in options)) {
-        options['contentType'] = 'text/turtle';
-      }
-
-      return ld.store.serializers[options.contentType].serialize(g._graph);
-    },
-
-    serializeData: function(data, fromContentType, toContentType, options) {
-      if (fromContentType == toContentType) {
-        return Promise.resolve(data);
-      }
-      else {
-        var o = {
-          'contentType': fromContentType,
-          'subjectURI': options.subjectURI
-        };
-        return DO.U.getGraphFromData(data, o).then(
-          function(g) {
-            var o = {
-              'contentType': toContentType
-            };
-            return DO.U.serializeGraph(g, o).then(
-              function(i){
-                switch(toContentType) {
-                  case 'application/ld+json':
-                    var x = JSON.parse(i);
-                    x[0]["@context"] = ["http://www.w3.org/ns/anno.jsonld", {"as": "https://www.w3.org/ns/activitystreams"}];
-                    x[0]["@id"] = (x[0]["@id"].slice(0,2) == '_:') ? '' : x[0]["@id"];
-                    return JSON.stringify(x) + '\n';
-                  default:
-                    return i;
-                }
-              }
-            );
-          },
-          function(reason) {
-            return reason;
-          }
-        );
-      }
-    },
-
-    getDoctype: function() {
-      /* Get DOCTYPE from http://stackoverflow.com/a/10162353 */
-      var node = document.doctype;
-      var doctype = '';
-      if (node !== null) {
-        doctype = "<!DOCTYPE "
-          + node.name
-          + (node.publicId ? ' PUBLIC "' + node.publicId + '"' : '')
-          + (!node.publicId && node.systemId ? ' SYSTEM' : '')
-          + (node.systemId ? ' "' + node.systemId + '"' : '')
-          + '>';
-      }
-      return doctype;
-    },
-
-    getDocument: function(cn, options) {
-      var node = cn || document.documentElement.cloneNode(true);
-      options = options || DO.C.DOMNormalisation;
-
-      var doctype = DO.U.getDoctype();
-      var s =  (doctype.length > 0) ? doctype + "\n" : '';
-      s += DO.U.domToString(node, options);
-      return s;
-    },
-
-    domToString: function(node, options) {
-      options = options || {};
-      var selfClosing = [];
-      if ('selfClosing' in options) {
-        options.selfClosing.split(' ').forEach(function (n) {
-          selfClosing[n] = true;
-        });
-      }
-      var skipAttributes = []
-      if ('skipAttributes' in options) {
-        options.skipAttributes.split(' ').forEach(function (n) {
-          skipAttributes[n] = true;
-        });
-      }
-
-      var noEsc = [false];
-
-      var dumpNode = function(node) {
-        var out = '';
-        if (typeof node.nodeType === 'undefined') return out
-        if (1 === node.nodeType) {
-          if (node.hasAttribute('class') && 'classWithChildText' in options && node.matches(options.classWithChildText.class)) {
-            out += node.querySelector(options.classWithChildText.element).textContent;
-          }
-          else if (!('skipNodeWithClass' in options && node.matches('.' + options.skipNodeWithClass))) {
-            var ename = node.nodeName.toLowerCase();
-            out += "<" + ename ;
-
-            var attrList = [];
-            for (var i = node.attributes.length - 1; i >= 0; i--) {
-              var atn = node.attributes[i];
-              if (skipAttributes[atn.name]) continue;
-              if (/^\d+$/.test(atn.name)) continue;
-              if (atn.name == 'class' && 'replaceClassItemWith' in options) {
-                atn.value.split(' ').forEach(function(aValue){
-                  if(options.replaceClassItemWith.source.split(' ').indexOf(aValue) > -1) {
-                    var re = new RegExp(aValue, 'g');
-                    atn.value = atn.value.replace(re, options.replaceClassItemWith.target).trim();
-                  }
-                });
-              }
-              if (!(atn.name == 'class' && 'skipClassWithValue' in options && options.skipClassWithValue == atn.value)) {
-                attrList.push(atn.name + "=\"" + atn.value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;') + "\"");
-              }
-            }
-
-            if (attrList.length > 0) {
-              if('sortAttributes' in options && options.sortAttributes) {
-                attrList.sort(function (a, b) {
-                  return a.toLowerCase().localeCompare(b.toLowerCase());
-                });
-              }
-              out += ' ' + attrList.join(' ');
-            }
-
-            if (selfClosing[ename]) { out += " />"; }
-            else {
-              out += '>';
-              out += (ename == 'html') ? "\n  " : '';
-              noEsc.push(ename === "style" || ename === "script");
-              for (var i = 0; i < node.childNodes.length; i++) out += dumpNode(node.childNodes[i]);
-              noEsc.pop();
-              out += (ename == 'body') ? '</' + ename + '>' + "\n" : '</' + ename + '>';
-            }
-          }
-        }
-        else if (8 === node.nodeType) {
-          //FIXME: If comments are not tabbed in source, a new line is not prepended
-          out += "<!--" + node.nodeValue + "-->";
-        }
-        else if (3 === node.nodeType || 4 === node.nodeType) {
-          //XXX: Remove new lines which were added after DOM ready
-          var nl = node.nodeValue.replace(/\n+$/, '');
-          out += noEsc[noEsc.length - 1] ? nl : nl.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        }
-        else {
-          console.log("Warning; Cannot handle serialising nodes of type: " + node.nodeType);
-        }
-        return out;
-      };
-
-      return dumpNode(node);
-    },
-
     exportAsHTML: function() {
-      var data = DO.U.getDocument();
+      var data = doc.getDocument();
       //XXX: Encodes strings as UTF-8. Consider storing bytes instead?
       var blob = new Blob([data], {type:'text/html;charset=utf-8'});
       var pattern = /[^\w]+/ig;
@@ -2245,13 +1737,12 @@ var DO = {
       document.body.removeChild(a);
     },
 
-    snapshotAtEndpoint: function(e, iri, endpoint, noteData, options){
+    snapshotAtEndpoint: function snapshotAtEndpoint (e, iri, endpoint, noteData, options = {}) {
       iri = iri || window.location.origin + window.location.pathname;
       endpoint = endpoint || 'https://pragma.archivelab.org';
-      options = options || {};
 
       if(!('contentType' in options)){
-        options["contentType"] = 'application/json';
+        options['contentType'] = 'application/json';
       }
 
       noteData = noteData || {
@@ -2283,37 +1774,42 @@ var DO = {
       //   noteData.annotation["message"] = note;
       // }
 
-      if(typeof e !== 'undefined' && e.target.closest('button')){
+      if (typeof e !== 'undefined' && e.target.closest('button')) {
         var archiveNode = e.target.closest('button').parentNode;
         archiveNode.insertAdjacentHTML('beforeend', ' <span class="progress"><i class="fa fa-circle-o-notch fa-spin fa-fw"></i></span>');
       }
 
-      DO.U.postResource(endpoint, '', JSON.stringify(noteData), options.contentType, '', {'noCredentials': true}).then(
-        function(i){
-          try {
-            var response = JSON.parse(i.xhr.responseText);
+      options.noCredentials = true
 
-            switch(endpoint) {
-              case 'https://pragma.archivelab.org': default:
-                if('wayback_id' in response && response.wayback_id.length > 0){
-                  var location = 'https://web.archive.org' + response.wayback_id;
-                  archiveNode.innerHTML = '<i class="fa fa-archive fa-fw"></i> Archived at <a target="_blank" href="' + location + '">' + location + '</a>';
-                }
-                else {
-                  archiveNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to archive. Try later.';
-                }
+      return fetcher.postResource(endpoint, '', JSON.stringify(noteData), options.contentType, null, options)
 
-                break;
-            }
+        .then(response => response.json())
 
-          }catch(e){
-            archiveNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to archive. Try later.';
+        .then(response => {
+          switch (endpoint) {
+            case 'https://pragma.archivelab.org':
+            default:
+              if (response['wayback_id']) {
+                let location = 'https://web.archive.org' + response.wayback_id
+
+                archiveNode
+                  .innerHTML = '<i class="fa fa-archive fa-fw"></i> Archived at <a target="_blank" href="' +
+                  location + '">' + location + '</a>'
+              } else {
+                archiveNode
+                  .querySelector('.progress')
+                  .innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to archive. Try later.'
+              }
+
+              break
           }
-        },
-        function(reason){
-          archiveNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to archive. Try later.';
-        }
-      );
+        })
+
+        .catch(() => {
+          archiveNode
+            .querySelector('.progress')
+            .innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to archive. Try later.'
+        })
     },
 
     snapshotDocument: function(e) {
@@ -2423,7 +1919,7 @@ var DO = {
 
         if (e.target.closest('.resource-save')) {
           var url = window.location.origin + window.location.pathname;
-          var data = DO.U.getDocument();
+          var data = doc.getDocument();
 
           fetcher.putResource(url, data)
             .then(() => {
@@ -2609,7 +2105,7 @@ var DO = {
               .innerHTML = '<p class="success"><a href="' + response.url + '">Reply saved!</a></p>'
 
             // Determine the inbox endpoint, to send the notification to
-            return DO.U.getEndpoint(DO.C.Vocab[ 'ldpinbox' ][ '@id' ])
+            return inbox.getEndpoint(DO.C.Vocab[ 'ldpinbox' ][ '@id' ])
               .catch(error => {
                 console.error('Could not fetch inbox endpoint:', error)
 
@@ -2643,7 +2139,7 @@ var DO = {
               "statements": notificationStatements
             }
 
-            DO.U.notifyInbox(notificationData)
+            inbox.notifyInbox(notificationData)
               .catch(error => {
                 console.error('Failed sending notification to ' + inbox + ' :', error)
 
@@ -2677,31 +2173,8 @@ var DO = {
       }, 1500);
     },
 
-
-    getMatchFromData: function(data, spo, options) {
-      if (data == "") { return Promise.reject({}); }
-
-      spo = spo || {};
-      spo["subject"] = spo.subject || window.location.origin + window.location.pathname;
-      spo["predicate"] = spo.predicate || DO.C.Vocab["rdfslabel"];
-
-      options = options || {};
-      options["contentType"] = options.contentType || 'text/html';
-      options["subjectURI"] = options.subjectURI || spo.subject;
-
-      return DO.U.getGraphFromData(data, options).then(
-        function(g) {
-          var s = SimpleRDF(DO.C.Vocab, spo.subject, g, ld.store).child(spo.subject);
-
-          return s[spo.predicate];
-        },
-        function(reason){
-          return Promise.resolve(undefined);
-        });
-    },
-
-    shareResource: function(e, iri) {
-      iri = iri || window.location.origin + window.location.pathname;
+    shareResource: function shareResource (e, iri) {
+      iri = iri || fetcher.currentLocation();
       if (e) {
         e.target.disabled = true;
       }
@@ -2716,7 +2189,7 @@ var DO = {
       document.body.insertAdjacentHTML('beforeend', '<aside id="share-resource" class="do on"><button class="close" title="Close">❌</button><h2>Share resource</h2><div id="share-resource-input"><p>Send a notification about <code>' + iri +'</code></p><ul>' + addContactsButton + '<li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share">Share</button></aside>');
 
       var shareResource = document.getElementById('share-resource');
-      shareResource.addEventListener('click', function(e) {
+      shareResource.addEventListener('click', function (e) {
         if (e.target.matches('button.close')) {
           var rs = document.querySelector('#document-do .resource-share');
           if (rs) {
@@ -2748,174 +2221,19 @@ var DO = {
             }
           }
 
-          if (iri.length > 0) {
-            // var rm = shareResource.querySelector('.response-message');
-            // if (rm) {
-            //   rm.parentNode.removeChild(rm);
-            // }
-            // shareResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>');
-
-            var sendNotifications = function(tos){
-              return new Promise(function(resolve, reject){
-                var notificationData = {
-                  "type": ['as:Announce'],
-                  "object": iri,
-                  "summary": note,
-                  "license": "https://creativecommons.org/licenses/by/4.0/"
-                };
-
-                var data = DO.U.getDocument();
-                var options = {
-                  "contentType": "text/html",
-                  "subjectURI": iri
-                }
-                var spo = {
-                  "subject": iri,
-                  "predicate": DO.C.Vocab["rdftype"]["@id"]
-                };
-
-                DO.U.getMatchFromData(data, spo, options).then(function(supplementalData) {
-// console.log(supplementalData);
-                  if (typeof supplementalData !== 'undefined' && supplementalData._array.length > 0) {
-                    notificationData["objectTypes"] = supplementalData._array;
-                  }
-                  return Promise.resolve();
-                }).then(function(supplementalData){
-// console.log(supplementalData);
-
-                  var spo = {
-                    "subject": iri,
-                    "predicate": DO.C.Vocab["schemalicense"]["@id"]
-                  };
-
-                  return DO.U.getMatchFromData(data, spo, options).then(function(supplementalData) {
-// console.log(supplementalData);
-                    if (typeof supplementalData !== 'undefined' && supplementalData.length > 0) {
-                      notificationData["objectLicense"] = supplementalData;
-                    }
-                    return Promise.resolve();
-                  });
-                }).then(function(supplementalData){
-// console.log(notificationData);
-                  tos.forEach(function(to) {
-                    notificationData["to"] = to;
-
-                    var toInput = shareResource.querySelector('[value="' + to + '"]') || shareResource.querySelector('#share-resource-to');
-                    toInput.parentNode.insertAdjacentHTML('beforeend', '<span class="progress" data-to="' + to + '"><i class="fa fa-circle-o-notch fa-spin fa-fw"></i></span>');
-
-                    var inboxResponse = function() {
-                      return DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id'], to).then(
-                          function(inboxes){
-                            return inboxes[0];
-                          },
-                          function(reason){
-                            console.log(reason);
-                            return reason;
-                          }
-                        );
-                    };
-
-                    inboxResponse().then(
-                      function(inbox) {
-                        notificationData["inbox"] = inbox;
-// console.log(notificationData);
-
-                        DO.U.notifyInbox(notificationData).then(
-                          function(response) {
-                            if(typeof response !== 'undefined') {
-                              var location = response.xhr.getResponseHeader('Location');
-
-                              if(location) {
-                                location = DO.U.getAbsoluteIRI(inbox, location);
-
-                                toInput.parentNode.querySelector('.progress[data-to="' + to + '"]').innerHTML = '<a target="_blank" href="' + location + '"><i class="fa fa-check-circle fa-fw"></i></a>';
-
-                                // var rm = shareResource.querySelector('.response-message');
-                                // rm.insertAdjacentHTML('beforeend', '<p class="success">Notification sent: <a target="_blank" href="' + location + '">' + location + '</a></p>');
-                                // return location;
-                              }
-                            }
-                            else {
-                              toInput.parentNode.querySelector('.progress[data-to="' + to + '"]').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to notify. Try later.';
-                              // return Promise.reject(response);
-                            }
-                          },
-                          function(reason) {
-// console.log(reason);
-                            toInput.parentNode.querySelector('.progress[data-to="' + to + '"]').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to notify. Try later.';
-//                           return reason;
-                          }
-                        );
-                      },
-                      function(reason) {
-// console.log(reason);
-                           toInput.parentNode.querySelector('.progress[data-to="' + to + '"]').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Inbox not responding. Try later.';
-//                       return reason;
-                      }
-                    );
-                  });
-                });
-              });
-            };
-
-            sendNotifications(tos);
+          if (!iri) {
+            return
           }
+
+          // var rm = shareResource.querySelector('.response-message');
+          // if (rm) {
+          //   rm.parentNode.removeChild(rm);
+          // }
+          // shareResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>');
+
+          return inbox.sendNotifications(tos, note, iri, shareResource)
         }
       });
-    },
-
-    getResourceGraph: function getResourceGraph (iri, headers, options = {}) {
-      var defaultHeaders = {'Accept': DO.C.AvailableMediaTypes.join(',')};
-      headers = headers || defaultHeaders;
-      if (!('Accept' in headers)){
-        Object.assign(headers, defaultHeaders);
-      }
-
-      if (iri.slice(0, 5).toLowerCase() === 'http:') {
-        options['noCredentials'] = true;
-
-        if (document.domain !== iri.split('/')[2]) {
-          options['forceProxy'] = true;
-        }
-      }
-
-      var pIRI = uri.getProxyableIRI(iri, options);
-
-      return fetcher.getResource(pIRI, headers, options)
-        .then(response => {
-          let cT = response.headers.get('Content-Type');
-          let contentType = (cT) ? cT.split(';')[ 0 ].trim() : 'text/turtle';
-
-          options.contentType = contentType
-          options.subjectURI =  uri.stripFragmentFromString(iri)
-
-          return response.text()
-        })
-        .then(data => {
-          // FIXME: This is a dirty filthy fugly but a *fix* to get around the baseURI not being passed to the DOM parser. This injects the `base` element into the document so that the RDFa parse fallsback to that. The actual fix should happen upstream. See related issues:
-          // https://github.com/linkeddata/dokieli/issues/132
-          // https://github.com/rdf-ext/rdf-parser-dom/issues/2
-          // https://github.com/rdf-ext/rdf-parser-rdfa/issues/3
-          // https://github.com/simplerdf/simplerdf/issues/19
-
-          if (options.contentType === 'text/html' || options.contentType === 'application/xhtml+xml') {
-            let template = document.implementation.createHTMLDocument('template');
-            template.documentElement.innerHTML = data;
-            template.contentType = options.contentType;
-            let base = template.querySelector('head base[href]');
-            if (!base) {
-              template.querySelector('head').insertAdjacentHTML('afterbegin', '<base href="' + options.subjectURI + '" />');
-              data = template.documentElement.outerHTML;
-            }
-          }
-
-          return DO.U.getGraphFromData(data, options)
-        })
-        .then(graph => {
-          let fragment = (iri.lastIndexOf('#') >= 0) ? iri.substr(iri.lastIndexOf('#')) : ''
-
-          return SimpleRDF(DO.C.Vocab, options[ 'subjectURI' ], graph, ld.store).child(pIRI + fragment)
-        })
     },
 
     getContacts: function(iri) {
@@ -2957,7 +2275,7 @@ var DO = {
           return processSameAs(DO.C.User.Graph);
         }
         else {
-          return DO.U.getResourceGraph(iri).then(
+          return fetcher.getResourceGraph(iri).then(
             function(g){
 // console.log(g);
               if(typeof g._graph == 'undefined') {
@@ -2997,7 +2315,7 @@ var DO = {
           function(contacts) {
             if(contacts.length > 0) {
               contacts.forEach(function(url) {
-                DO.U.getResourceGraph(url).then(
+                fetcher.getResourceGraph(url).then(
                   function(i) {
                     // console.log(i);
                     var s = i.child(url);
@@ -3038,7 +2356,7 @@ var DO = {
         node.insertAdjacentHTML('beforeend', input);
       }
       else {
-        DO.U.getEndpointFromHead(DO.C.Vocab['ldpinbox']['@id'], iri).then(
+        inbox.getEndpointFromHead(DO.C.Vocab['ldpinbox']['@id'], iri).then(
           function(i){
             // console.log(iri + ' has Inbox: ' + i);
 
@@ -3057,7 +2375,7 @@ var DO = {
 
       button.addEventListener('click', function(){
         if(button.parentNode.classList.contains('container')){
-          DO.U.getResourceGraph(url).then(
+          fetcher.getResourceGraph(url).then(
             function(g){
               actionNode.textContent = (action == 'write') ? url + DO.U.generateAttributeId() : url;
               return DO.U.generateBrowserList(g, url, id, action);
@@ -3170,7 +2488,7 @@ var DO = {
 
     initBrowse: function(storageUrl, input, browseButton, id, action){
       input.value = storageUrl;
-      DO.U.getResourceGraph(storageUrl).then(function(g){
+      fetcher.getResourceGraph(storageUrl).then(function(g){
         DO.U.generateBrowserList(g, storageUrl, id, action);
       }).then(function(i){
         document.getElementById(id + '-' + action).textContent = (action == 'write') ? input.value + DO.U.generateAttributeId() : input.value;
@@ -3184,7 +2502,7 @@ var DO = {
     triggerBrowse: function(url, id, action){
       var inputBox = document.getElementById(id);
       if (url.length > 10 && url.match(/^https?:\/\//g) && url.slice(-1) == "/"){
-        DO.U.getResourceGraph(url).then(function(g){
+        fetcher.getResourceGraph(url).then(function(g){
           DO.U.generateBrowserList(g, url, id, action).then(function(l){
             return l;
           },
@@ -3265,7 +2583,7 @@ var DO = {
         DO.U.initBrowse(storageUrl, input, browseButton, id, action);
       }
       else {
-        DO.U.getEndpoint(DO.C.Vocab['oaannotationService']['@id']).then(
+        inbox.getEndpoint(DO.C.Vocab['oaannotationService']['@id']).then(
           function(storageUrl) {
             DO.U.initBrowse(storageUrl[0], input, browseButton, id, action);
           },
@@ -3501,7 +2819,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
         html.querySelector('body').innerHTML = '<main><article about="" typeof="schema:Article"></article></main>'
         html.querySelector('head title').innerHTML = ''
-        html = DO.U.getDocument(html)
+        html = doc.getDocument(html)
 
         fetcher.putResource(storageIRI, html)
           .then(() => {
@@ -3648,7 +2966,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           // nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType})
         }
 
-        html = DO.U.getDocument(html)
+        html = doc.getDocument(html)
 
         var progress = saveAsDocument.querySelector('progress')
         if(progress) {
@@ -3707,7 +3025,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       document.body.insertAdjacentHTML('beforeend', '<aside id="source-view" class="do on"><button class="close" title="Close">❌</button><h2>Source</h2><textarea id="source-edit" rows="24" cols="80"></textarea><p><button class="create">Update</button></p></aside>');
       var sourceBox = document.getElementById('source-view');
       var input = document.getElementById('source-edit');
-      input.value = DO.U.getDocument();
+      input.value = doc.getDocument();
 
       sourceBox.addEventListener('click', function(e) {
         if (e.target.matches('button.create')) {
@@ -3870,7 +3188,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
     saveStorage: function(item) {
       switch(item) {
         case 'html': default:
-          var object = DO.U.getDocument();
+          var object = doc.getDocument();
           break;
       }
       localStorage.setItem(item, object);
@@ -3976,7 +3294,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       }
 //console.log(iri);
 
-      return DO.U.getResourceGraph(iri);
+      return fetcher.getResourceGraph(iri);
     },
 
     getCitationHTML: function(citationGraph, citationURI, options) {
@@ -4334,7 +3652,7 @@ WHERE {\n\
     },
 
     getTriplesFromGraph: function(url) {
-      return DO.U.getGraph(url)
+      return graph.getGraph(url)
         .then(function(i){
           return i.graph();
         })
@@ -4476,7 +3794,7 @@ WHERE {\n\
       containerNode = containerNode || document.body;
       var pIRI = uri.getProxyableIRI(noteIRI);
 
-      return DO.U.getGraph(pIRI)
+      return graph.getGraph(pIRI)
         .then(
           function(i) {
             var note = i.child(noteIRI);
@@ -5722,7 +5040,7 @@ WHERE {\n\
                 }
               };
 
-              return DO.U.getEndpoint(DO.C.Vocab['oaannotationService']['@id']).then(
+              return inbox.getEndpoint(DO.C.Vocab['oaannotationService']['@id']).then(
                 function(url) {
                   DO.C.AnnotationService = url[0];
                   updateAnnotationServiceForm();
@@ -6581,7 +5899,7 @@ WHERE {\n\
                   var data = DO.U.createHTML(noteIRI, note);
 
                   annotationDistribution.forEach(annotation => {
-                    DO.U.serializeData(data, 'text/html', annotation['contentType'], { 'subjectURI': annotation['noteIRI'] })
+                    graph.serializeData(data, 'text/html', annotation['contentType'], { 'subjectURI': annotation['noteIRI'] })
 
                       .catch(error => {
                         console.log('Error serializing annotation:', error)
@@ -6623,7 +5941,7 @@ WHERE {\n\
                       })
 
                       .then(() => {
-                        return DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id'])
+                        return inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id'])
                           .catch(error => {
                             console.log('Error fetching ldpinbox endpoint:', error)
                             throw error
@@ -6655,7 +5973,7 @@ WHERE {\n\
                             notificationData['statements'] = notificationStatements;
                           }
 
-                          return DO.U.notifyInbox(notificationData)
+                          return inbox.notifyInbox(notificationData)
                             .catch(error => {
                               console.log('Error notifying the inbox:', error)
                             })
@@ -6766,7 +6084,7 @@ WHERE {\n\
                             "statements": notificationStatements
                           };
 
-                          DO.U.notifyInbox(notificationData).then(
+                          inbox.notifyInbox(notificationData).then(
                             function(s){
                               console.log('Sent Linked Data Notification to ' + inbox);
                             });

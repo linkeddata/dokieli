@@ -41,11 +41,11 @@ function serializeData (data, fromContentType, toContentType, options) {
 
   options.contentType = fromContentType
 
-  return graph.getGraphFromData(data, options)
+  return getGraphFromData(data, options)
     .then(g => {
       options.contentType = toContentType
 
-      return graph.serializeGraph(g, options)
+      return serializeGraph(g, options)
     })
     .then(data => {
       switch (toContentType) {
