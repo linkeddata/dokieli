@@ -1,8 +1,9 @@
 'use strict'
 
 const fetch = require('node-fetch')  // Uses native fetch() in the browser
-
+const Config = require('./config')
 const uri = require('./uri')
+const graph = require('./graph')
 
 const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
 const LDP_RESOURCE = '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
@@ -14,6 +15,7 @@ module.exports = {
   getAcceptPostPreference,
   getResource,
   getResourceHead,
+  getResourceGraph,
   getResourceOptions,
   patchResource,
   postResource,
@@ -34,7 +36,7 @@ function copyResource (fromURL, toURL, options = {}) {
     .then(response => {
       contentType = response.headers.get('Content-Type')
 
-      return (DO.C.AcceptBinaryTypes.indexOf(contentType))
+      return (Config.AcceptBinaryTypes.indexOf(contentType))
         ? response.arrayBuffer()
         : response.text()
     })
@@ -207,6 +209,59 @@ function getResourceHead (url, options = {}) {
     })
 }
 
+function getResourceGraph (iri, headers, options = {}) {
+  let defaultHeaders = {'Accept': Config.AvailableMediaTypes.join(',')}
+  headers = headers || defaultHeaders
+  if (!('Accept' in headers)) {
+    Object.assign(headers, defaultHeaders)
+  }
+
+  if (iri.slice(0, 5).toLowerCase() === 'http:') {
+    options['noCredentials'] = true
+
+    if (document.domain !== iri.split('/')[2]) {
+      options['forceProxy'] = true
+    }
+  }
+
+  let pIRI = uri.getProxyableIRI(iri, options)
+
+  return getResource(pIRI, headers, options)
+    .then(response => {
+      let cT = response.headers.get('Content-Type')
+      options.contentType = (cT) ? cT.split(';')[ 0 ].trim() : 'text/turtle'
+
+      options.subjectURI = uri.stripFragmentFromString(iri)
+
+      return response.text()
+    })
+    .then(data => {
+      // FIXME: This is a dirty filthy fugly but a *fix* to get around the baseURI not being passed to the DOM parser. This injects the `base` element into the document so that the RDFa parse fallsback to that. The actual fix should happen upstream. See related issues:
+      // https://github.com/linkeddata/dokieli/issues/132
+      // https://github.com/rdf-ext/rdf-parser-dom/issues/2
+      // https://github.com/rdf-ext/rdf-parser-rdfa/issues/3
+      // https://github.com/simplerdf/simplerdf/issues/19
+
+      if (options.contentType === 'text/html' || options.contentType === 'application/xhtml+xml') {
+        let template = document.implementation.createHTMLDocument('template')
+        template.documentElement.innerHTML = data
+        template.contentType = options.contentType
+        let base = template.querySelector('head base[href]')
+        if (!base) {
+          template.querySelector('head').insertAdjacentHTML('afterbegin', '<base href="' + options.subjectURI + '" />')
+          data = template.documentElement.outerHTML
+        }
+      }
+
+      return graph.getGraphFromData(data, options)
+    })
+    .then(g => {
+      let fragment = (iri.lastIndexOf('#') >= 0) ? iri.substr(iri.lastIndexOf('#')) : ''
+
+      return SimpleRDF(Config.Vocab, options[ 'subjectURI' ], g, ld.store).child(pIRI + fragment)
+    })
+}
+
 /**
  * getResourceOptions
  *
@@ -314,6 +369,16 @@ function postResource (url, slug, data, contentType, links, options = {}) {
 
   return fetch(url, options)
 
+    .catch(error => {
+      if (error.status === 0 && !options.noCredentials) {
+        // Possible CORS error, retry with no credentials
+        options.noCredentials = true
+        return postResource(url, slug, data, contentType, options)
+      }
+
+      throw error
+    })
+
     .then(response => {
       if (!response.ok) {  // not a 2xx level response
         let error = new Error('Error creating resource: ' +
@@ -394,13 +459,13 @@ function putResource (url, data, contentType, links, options = {}) {
  * @returns {Promise<Response|null>}
  */
 function putResourceACL (accessToURL, aclURL, acl) {
-  if (!DO.C.User.IRI) {
+  if (!Config.User.IRI) {
     console.log('Go through sign-in or do: DO.C.User.IRI = "https://example.org/#i";')
     return Promise.resolve(null)
   }
 
   acl = acl || {
-    'u': { 'iri': [DO.C.User.IRI], 'mode': ['acl:Control', 'acl:Read', 'acl:Write'] },
+    'u': { 'iri': [Config.User.IRI], 'mode': ['acl:Control', 'acl:Read', 'acl:Write'] },
     'g': { 'iri': ['http://xmlns.com/foaf/0.1/Agent'], 'mode': ['acl:Read'] },
     'o': { 'iri': [], 'mode': [] }
   }
@@ -411,7 +476,7 @@ function putResourceACL (accessToURL, aclURL, acl) {
     agent = '<' + acl.u.iri.join('> , <') + '>'
     mode = acl.u.mode.join(' , ')
   } else {
-    agent = '<' + DO.C.User.IRI + '>'
+    agent = '<' + Config.User.IRI + '>'
     mode = 'acl:Control , acl:Read , acl:Write'
   }
 
