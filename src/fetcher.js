@@ -2,6 +2,8 @@
 
 const fetch = require('node-fetch')  // Uses native fetch() in the browser
 
+const uri = require('./uri')
+
 const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
 const LDP_RESOURCE = '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
 
@@ -9,6 +11,7 @@ module.exports = {
   copyResource,
   currentLocation,
   deleteResource,
+  getAcceptPostPreference,
   getResource,
   getResourceHead,
   getResourceOptions,
@@ -88,6 +91,31 @@ function deleteResource (url, options = {}) {
       }
 
       return response
+    })
+}
+
+function getAcceptPostPreference (url) {
+  const pIRI = uri.getProxyableIRI(url)
+
+  return getResourceOptions(pIRI, {'header': 'Accept-Post'})
+    .catch(error => {
+      console.error(error)
+
+      return {'headers': 'application/ld+json'}
+    })
+    .then(result => {
+      let header = result.headers.trim().split(/\s*, \s*/)
+
+      if (header.indexOf('text/html') > -1 || header.indexOf('application/xhtml+xml') > -1) {
+        return 'text/html'
+      } else if (header.indexOf('text/turtle') > -1 || header.indexOf('*/*') > -1) {
+        return 'text/turtle'
+      } else if (header.indexOf('application/ld+json') > -1 || header.indexOf('application/json') > -1) {
+        return 'application/ld+json'
+      } else {
+        console.log('Accept-Post contains unrecognised media-range; ' + result.headers)
+        return result.headers
+      }
     })
 }
 
