@@ -2,12 +2,17 @@
 
 global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined
 
-const graph = require('./graph')
+const Config = require('./config')
 
 module.exports = {
+  getGraph,
   getGraphFromData,
   serializeData,
   serializeGraph
+}
+
+function getGraph (url) {
+  return SimpleRDF(Config.Vocab, url, null, ld.store).get()
 }
 
 function getGraphFromData (data, options = {}) {
