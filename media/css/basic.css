@@ -177,17 +177,6 @@ width:106%;
 line-height:1;
 }
 
-#author-org {
-font-size:0.923em;
-}
-
-#author-email,
-#author-uri {
-font-family:monospace;
-font-size:0.923em;
-}
-
-
 #authors dl,
 #authors ul {
 margin:0;
