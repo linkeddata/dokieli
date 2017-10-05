@@ -4,7 +4,8 @@ const Config = require('./config')
 
 module.exports = {
   enableDisableButton,
-  getUserHTML
+  getUserHTML,
+  showUserIdentityInput
 }
 
 // TODO: Generalize this further so that it is not only for submitSignIn
@@ -60,4 +61,28 @@ function getUserHTML () {
   }
 
   return user
+}
+
+function showUserIdentityInput (e) {
+  if (typeof e !== 'undefined') {
+    e.target.disabled = true
+  }
+  document.body.insertAdjacentHTML('beforeend', '<aside id="user-identity-input" class="do on"><button class="close" title="Close">❌</button><h2>Sign in with WebID</h2><label>HTTP(S) IRI</label> <input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="signin">Sign in</button></aside>')
+  var buttonSignIn = document.querySelector('#user-identity-input button.signin')
+  buttonSignIn.setAttribute('disabled', 'disabled')
+  document.querySelector('#user-identity-input').addEventListener('click', function (e) {
+    if (e.target.matches('button.close')) {
+      var signinUser = document.querySelector('#document-menu button.signin-user')
+      if (signinUser) {
+        signinUser.disabled = false
+      }
+    }
+  })
+
+  var inputWebid = document.querySelector('#user-identity-input input#webid')
+  buttonSignIn.addEventListener('click', DO.U.submitSignIn);
+  ['keyup', 'cut', 'paste', 'input'].forEach(function (eventType) {
+    inputWebid.addEventListener(eventType, function (e) { enableDisableButton(e, buttonSignIn) })
+  })
+  inputWebid.focus()
 }
