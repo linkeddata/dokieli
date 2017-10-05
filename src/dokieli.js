@@ -11,6 +11,7 @@ const doc = require('./doc')
 const uri = require('./uri')
 const graph = require('./graph')
 const inbox = require('./inbox')
+const util = require('./util')
 
 if(typeof DO === 'undefined'){
 global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined;
@@ -293,7 +294,7 @@ var DO = {
                 g.graph().toArray().forEach(function(t){
                   subjects.push(t.subject.nominalValue);
                 });
-                subjects = DO.U.uniqueArray(subjects);
+                subjects = util.uniqueArray(subjects);
 // console.log(subjects);
                 subjects.forEach(function(i){
                   var s = g.child(i)
@@ -1450,17 +1451,6 @@ var DO = {
       return unescape(decodeURIComponent(window.atob(s)));
     },
 
-    uniqueArray: function uniqueArray (a) {
-      var n = {}, r = [];
-      for(var i = 0; i < a.length; i++) {
-        if (!n[a[i]]) {
-          n[a[i]] = true;
-          r.push(a[i]);
-        }
-      }
-      return r;
-    },
-
     getSelectorSign: function(node) {
       if(!node) {
         return DO.C.SelectorSign["*"];
@@ -2066,7 +2056,7 @@ var DO = {
 // console.log(iri);
             if(iri != DO.C.User.IRI && DO.C.User.SameAs.indexOf(iri) < 0) {
               DO.C.User.SameAs.push(iri);
-              DO.C.User.SameAs = DO.U.uniqueArray(DO.C.User.SameAs);
+              DO.C.User.SameAs = util.uniqueArray(DO.C.User.SameAs);
               promises.push(DO.U.getContacts(iri));
             }
           });
@@ -2091,7 +2081,7 @@ var DO = {
 
       var fyn = function(iri){
         if (iri == DO.C.User.IRI && DO.C.User.SameAs.indexOf(iri) < 0) {
-          DO.C.User.TempKnows = DO.U.uniqueArray(DO.C.User.TempKnows.concat(DO.C.User.Knows));
+          DO.C.User.TempKnows = util.uniqueArray(DO.C.User.TempKnows.concat(DO.C.User.Knows));
 
           return processSameAs(DO.C.User.Graph);
         }
@@ -2104,10 +2094,10 @@ var DO = {
               }
               var s = g.child(iri);
               if(s.foafknows && s.foafknows._array.length > 0){
-                DO.C.User.TempKnows = DO.U.uniqueArray(DO.C.User.TempKnows.concat(s.foafknows._array));
+                DO.C.User.TempKnows = util.uniqueArray(DO.C.User.TempKnows.concat(s.foafknows._array));
               }
               if(s.schemaknows && s.schemaknows._array.length > 0){
-                DO.C.User.TempKnows = DO.U.uniqueArray(DO.C.User.TempKnows.concat(s.schemaknows._array));
+                DO.C.User.TempKnows = util.uniqueArray(DO.C.User.TempKnows.concat(s.schemaknows._array));
               }
 
               return processSameAs(s);
@@ -4079,7 +4069,7 @@ WHERE {\n\
                     }
                   });
                   if (tagsArray.length > 0){
-                    tagsArray = DO.U.uniqueArray(tagsArray);
+                    tagsArray = util.uniqueArray(tagsArray);
 
                     body += '<dl id="tags" class="tags"><dt>Tags</dt><dd><ul rel="oa:hasBody">';
                     tagsArray.forEach(function(i){
