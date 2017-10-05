@@ -2,6 +2,7 @@
 
 const Config = require('./config')
 const fetcher = require('./fetcher')
+const util = require('./util')
 
 module.exports = {
   afterSignIn,
@@ -115,8 +116,8 @@ function setUserInfo (userIRI) {
       DO.C.User.Name = DO.U.getAgentName(s)
       DO.C.User.Image = DO.U.getAgentImage(s)
       DO.C.User.URL = s.foafhomepage || s['http://xmlns.com/foaf/0.1/weblog'] || s.schemaurl || undefined
-      DO.C.User.Knows = (s.foafknows && s.foafknows._array.length > 0) ? DO.U.uniqueArray(s.foafknows._array) : []
-      DO.C.User.Knows = (s.schemaknows && s.schemaknows._array.length > 0) ? DO.U.uniqueArray(DO.C.User.Knows.concat(s.schemaknows._array)) : DO.C.User.Knows
+      DO.C.User.Knows = (s.foafknows && s.foafknows._array.length > 0) ? util.uniqueArray(s.foafknows._array) : []
+      DO.C.User.Knows = (s.schemaknows && s.schemaknows._array.length > 0) ? util.uniqueArray(DO.C.User.Knows.concat(s.schemaknows._array)) : DO.C.User.Knows
 
       DO.C.User.TempKnows = []
       DO.C.User.SameAs = []
