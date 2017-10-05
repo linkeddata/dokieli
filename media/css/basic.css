@@ -161,10 +161,9 @@ content:"\A";
 white-space:pre;
 }
 
-#authors dd, #authors li, #keywords li {
+#authors dd, #authors li, {
   display: inline;
   text-align: left;
-  margin-left:1em;
 }
 
 #authors {
@@ -229,6 +228,16 @@ text-align:center;
 
 #authors li {
 list-style-type:none;
+}
+
+#keywords li {
+display:inline;
+}
+#keywords li:after {
+content:", ";
+}
+#keywords li:last-child:after {
+content:"";
 }
 
 ul ul,
