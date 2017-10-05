@@ -154,27 +154,7 @@ var DO = {
     },
 
     getResourceLabel: function(s) {
-      return s.dctermstitle || s['http://purl.org/dc/elements/1.1/title'] || DO.U.getAgentName(s) || undefined;
-    },
-
-    getAgentName: function(s) {
-      var name = s.foafname || s.schemaname || s.asname || s.rdfslabel || undefined;
-      if (typeof name === 'undefined') {
-        if (s.schemafamilyName && s.schemafamilyName.length > 0 && s.schemagivenName && s.schemagivenName.length > 0) {
-          name = s.schemagivenName + ' ' + s.schemafamilyName;
-        }
-        else if (s.foaffamilyName && s.foaffamilyName.length > 0 && s.foafgivenName && s.foafgivenName.length > 0) {
-          name = s.foafgivenName + ' ' + s.foaffamilyName;
-        }
-        else if(s.foafnick && s.foafnick.length > 0){
-          name = s.foafnick;
-        }
-      }
-      return name;
-    },
-
-    getAgentImage: function(s) {
-      return s.foafimg || s.schemaimage || s.asimage || s.siocavatar || s.foafdepiction || undefined;
+      return s.dctermstitle || s['http://purl.org/dc/elements/1.1/title'] || auth.getAgentName(s) || undefined;
     },
 
     setUserWorkspaces: function(userPreferenceFile){
@@ -350,8 +330,8 @@ var DO = {
                               'iri': s.asactor
                             }
                             var a = g.child(noteData['creator']['iri']);
-                            var actorName = DO.U.getAgentName(a);
-                            var actorImage = DO.U.getAgentImage(a);
+                            var actorName = auth.getAgentName(a);
+                            var actorImage = auth.getAgentImage(a);
 
                             if(typeof actorName != 'undefined') {
                               noteData['creator']['name'] = actorName;
@@ -2156,8 +2136,8 @@ var DO = {
       var iri = s.iri().toString();
 // console.log(iri.toString());
       var id = encodeURIComponent(iri);
-      var name = DO.U.getAgentName(s) || iri;
-      var img = DO.U.getAgentImage(s);
+      var name = auth.getAgentName(s) || iri;
+      var img = auth.getAgentImage(s);
       img = (img && img.length > 0) ? '<img alt="" height="32" src="' + img + '" width="32" />' : '';
       var input = '<li><input id="share-resource-contact-' + id + '" type="checkbox" value="' + iri + '" /><label for="share-resource-contact-' + id + '">' + img + '<a href="' + iri + '" target="_blank">' + name + '</a></label></li>';
 
@@ -3175,7 +3155,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       if(authorList.length > 0) {
         authorList.forEach(function(authorIRI) {
           var s = subject.child(authorIRI);
-          var author = DO.U.getAgentName(s);
+          var author = auth.getAgentName(s);
 
           if (s.schemafamilyName && s.schemafamilyName.length > 0 && s.schemagivenName && s.schemagivenName.length > 0) {
             author = DO.U.createRefName(s.schemafamilyName, s.schemagivenName);
@@ -3624,9 +3604,9 @@ WHERE {\n\
               annotatedBy = i.child(annotatedByIRI);
 // console.log(annotatedBy);
             }
-            var annotatedByName = DO.U.getAgentName(annotatedBy);
+            var annotatedByName = auth.getAgentName(annotatedBy);
 // console.log(annotatedByName);
-            var annotatedByImage = DO.U.getAgentImage(annotatedBy);
+            var annotatedByImage = auth.getAgentImage(annotatedBy);
 // console.log(annotatedByImage);
             var annotatedByURL = annotatedBy.schemaurl || '';
             annotatedByURL = (annotatedByURL) ? annotatedByURL : undefined;

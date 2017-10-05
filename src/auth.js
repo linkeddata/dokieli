@@ -7,6 +7,8 @@ const util = require('./util')
 module.exports = {
   afterSignIn,
   enableDisableButton,
+  getAgentImage,
+  getAgentName,
   getUserHTML,
   setUserInfo,
   showUserIdentityInput,
@@ -14,7 +16,7 @@ module.exports = {
 }
 
 function afterSignIn () {
-  var user = document.querySelectorAll('aside.do article *[rel~="schema:creator"] > *[about="' + DO.C.User.IRI + '"]')
+  var user = document.querySelectorAll('aside.do article *[rel~="schema:creator"] > *[about="' + Config.User.IRI + '"]')
   for (let i = 0; i < user.length; i++) {
     var article = user[i].closest('article')
     article.insertAdjacentHTML('afterbegin', '<button class="delete"><i class="fa fa-trash"></i></button>')
@@ -55,7 +57,7 @@ function enableDisableButton (e, button) {
           button.setAttribute('disabled', 'disabled')
           e.preventDefault()
           e.stopPropagation()
-          DO.U.submitSignIn()
+          submitSignIn()
         }
       } else {
         button.removeAttribute('disabled')
@@ -66,6 +68,25 @@ function enableDisableButton (e, button) {
       }
     }
   }, delay)
+}
+
+function getAgentImage (s) {
+  return s.foafimg || s.schemaimage || s.asimage || s.siocavatar ||
+    s.foafdepiction || undefined
+}
+
+function getAgentName (s) {
+  var name = s.foafname || s.schemaname || s.asname || s.rdfslabel || undefined
+  if (typeof name === 'undefined') {
+    if (s.schemafamilyName && s.schemafamilyName.length > 0 && s.schemagivenName && s.schemagivenName.length > 0) {
+      name = s.schemagivenName + ' ' + s.schemafamilyName
+    } else if (s.foaffamilyName && s.foaffamilyName.length > 0 && s.foafgivenName && s.foafgivenName.length > 0) {
+      name = s.foafgivenName + ' ' + s.foaffamilyName
+    } else if (s.foafnick && s.foafnick.length > 0) {
+      name = s.foafnick
+    }
+  }
+  return name
 }
 
 function getUserHTML () {
@@ -111,32 +132,31 @@ function setUserInfo (userIRI) {
     .then(g => {
       var s = g.child(userIRI)
 
-      DO.C.User.Graph = s
-      DO.C.User.IRI = userIRI
-      DO.C.User.Name = DO.U.getAgentName(s)
-      DO.C.User.Image = DO.U.getAgentImage(s)
-      DO.C.User.URL = s.foafhomepage || s['http://xmlns.com/foaf/0.1/weblog'] || s.schemaurl || undefined
-      DO.C.User.Knows = (s.foafknows && s.foafknows._array.length > 0) ? util.uniqueArray(s.foafknows._array) : []
-      DO.C.User.Knows = (s.schemaknows && s.schemaknows._array.length > 0) ? util.uniqueArray(DO.C.User.Knows.concat(s.schemaknows._array)) : DO.C.User.Knows
+      Config.User.Graph = s
+      Config.User.IRI = userIRI
+      Config.User.Name = getAgentName(s)
+      Config.User.Image = getAgentImage(s)
+      Config.User.URL = s.foafhomepage || s['http://xmlns.com/foaf/0.1/weblog'] || s.schemaurl || undefined
+      Config.User.Knows = (s.foafknows && s.foafknows._array.length > 0) ? util.uniqueArray(s.foafknows._array) : []
+      Config.User.Knows = (s.schemaknows && s.schemaknows._array.length > 0) ? util.uniqueArray(Config.User.Knows.concat(s.schemaknows._array)) : Config.User.Knows
 
-      DO.C.User.TempKnows = []
-      DO.C.User.SameAs = []
-      DO.C.User.Contacts = []
+      Config.User.TempKnows = []
+      Config.User.SameAs = []
+      Config.User.Contacts = []
 
       if (s.storage) {
-        DO.C.User.Storage = s.storage._array
+        Config.User.Storage = s.storage._array
       }
 
       if (s.preferencesFile && s.preferencesFile.length > 0) {
-        DO.C.User.PreferencesFile = s.preferencesFile
+        Config.User.PreferencesFile = s.preferencesFile
 
         // TODO: Reconsider if/where to use this.
-        // DO.U.setUserWorkspaces(DO.C.User.PreferencesFile);
+        // setUserWorkspaces(Config.User.PreferencesFile)
       }
-      return DO.C.User
+      return Config.User
     })
 }
-
 
 function showUserIdentityInput (e) {
   if (typeof e !== 'undefined') {
@@ -155,7 +175,7 @@ function showUserIdentityInput (e) {
   })
 
   var inputWebid = document.querySelector('#user-identity-input input#webid')
-  buttonSignIn.addEventListener('click', DO.U.submitSignIn);
+  buttonSignIn.addEventListener('click', submitSignIn);
   ['keyup', 'cut', 'paste', 'input'].forEach(function (eventType) {
     inputWebid.addEventListener(eventType, function (e) { enableDisableButton(e, buttonSignIn) })
   })
@@ -174,7 +194,7 @@ function submitSignIn (url) {
   }
 
   if (url.length > 0) {
-    DO.U.setUserInfo(url).then(
+    setUserInfo(url).then(
       function (i) {
 // console.log(i);
         var uI = document.getElementById('user-info')
@@ -186,7 +206,7 @@ function submitSignIn (url) {
           userIdentityInput.parentNode.removeChild(userIdentityInput)
         }
 
-        DO.U.afterSignIn()
+        afterSignIn()
       },
       function (reason) {
         console.log('--- NO USER')
