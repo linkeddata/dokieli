@@ -176,7 +176,7 @@ var DO = {
       return s.foafimg || s.schemaimage || s.asimage || s.siocavatar || s.foafdepiction || undefined;
     },
 
-    setUserInfo: function(userIRI) {
+    setUserInfo: function setUserInfo (userIRI) {
 // console.log("setUserInfo: " + userIRI);
       if (userIRI) {
         return fetcher.getResourceGraph(userIRI).then(
@@ -741,40 +741,6 @@ var DO = {
         if(su) {
           su.addEventListener('click', DO.U.showUserIdentityInput);
         }
-      }
-    },
-
-    //FIXME: This parameter value can be an event or a string
-    submitSignIn: function submitSignIn (url) {
-      if(typeof url !== 'string') {
-        var userIdentityInput = document.getElementById('user-identity-input');
-        if(userIdentityInput) {
-          userIdentityInput.insertAdjacentHTML('beforeend', '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
-        }
-
-        url = userIdentityInput.querySelector('input#webid').value.trim();
-      }
-
-      if (url.length > 0) {
-        DO.U.setUserInfo(url).then(
-          function(i) {
-// console.log(i);
-            var uI = document.getElementById('user-info');
-            if(uI) {
-              uI.innerHTML = DO.U.getUserHTML();
-            }
-
-            if(userIdentityInput) {
-              userIdentityInput.parentNode.removeChild(userIdentityInput);
-            }
-
-            DO.U.afterSignIn();
-          },
-          function(reason) {
-            console.log("--- NO USER");
-            console.log(reason);
-          }
-        );
       }
     },
 
