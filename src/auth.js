@@ -4,6 +4,8 @@ const Config = require('./config')
 const fetcher = require('./fetcher')
 const util = require('./util')
 
+// const { OIDCWebClient } = require('@trust/oidc-web')
+
 module.exports = {
   afterSignIn,
   enableDisableButton,
@@ -217,27 +219,31 @@ function showUserSigninSignup (node) {
 function submitSignIn (url) {
   if (typeof url !== 'string') {
     var userIdentityInput = document.getElementById('user-identity-input')
+
     if (userIdentityInput) {
-      userIdentityInput.insertAdjacentHTML('beforeend', '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>')
+      userIdentityInput.insertAdjacentHTML('beforeend',
+        '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>')
     }
 
     url = userIdentityInput.querySelector('input#webid').value.trim()
   }
 
-  if (url) {
-    setUserInfo(url)
-      .then(i => {
-
-        var uI = document.getElementById('user-info')
-        if (uI) {
-          uI.innerHTML = getUserHTML()
-        }
-
-        if (userIdentityInput) {
-          userIdentityInput.parentNode.removeChild(userIdentityInput)
-        }
-
-        afterSignIn()
-      })
+  if (!url) {
+    console.log('submitSignIn - no user url input')
+    return Promise.resolve()
   }
+
+  return setUserInfo(url)
+    .then(() => {
+      var uI = document.getElementById('user-info')
+      if (uI) {
+        uI.innerHTML = getUserHTML()
+      }
+
+      if (userIdentityInput) {
+        userIdentityInput.parentNode.removeChild(userIdentityInput)
+      }
+
+      afterSignIn()
+    })
 }
