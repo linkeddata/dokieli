@@ -7,6 +7,7 @@ module.exports = {
   afterSignIn,
   enableDisableButton,
   getUserHTML,
+  setUserInfo,
   showUserIdentityInput,
   submitSignIn
 }
@@ -94,6 +95,47 @@ function getUserHTML () {
 
   return user
 }
+
+/**
+ * @param userIRI {string}
+ *
+ * @returns {Promise}
+ */
+function setUserInfo (userIRI) {
+  if (!userIRI) {
+    return Promise.reject(new Error('Could not set user info - no user IRI'))
+  }
+
+  return fetcher.getResourceGraph(userIRI)
+    .then(g => {
+      var s = g.child(userIRI)
+
+      DO.C.User.Graph = s
+      DO.C.User.IRI = userIRI
+      DO.C.User.Name = DO.U.getAgentName(s)
+      DO.C.User.Image = DO.U.getAgentImage(s)
+      DO.C.User.URL = s.foafhomepage || s['http://xmlns.com/foaf/0.1/weblog'] || s.schemaurl || undefined
+      DO.C.User.Knows = (s.foafknows && s.foafknows._array.length > 0) ? DO.U.uniqueArray(s.foafknows._array) : []
+      DO.C.User.Knows = (s.schemaknows && s.schemaknows._array.length > 0) ? DO.U.uniqueArray(DO.C.User.Knows.concat(s.schemaknows._array)) : DO.C.User.Knows
+
+      DO.C.User.TempKnows = []
+      DO.C.User.SameAs = []
+      DO.C.User.Contacts = []
+
+      if (s.storage) {
+        DO.C.User.Storage = s.storage._array
+      }
+
+      if (s.preferencesFile && s.preferencesFile.length > 0) {
+        DO.C.User.PreferencesFile = s.preferencesFile
+
+        // TODO: Reconsider if/where to use this.
+        // DO.U.setUserWorkspaces(DO.C.User.PreferencesFile);
+      }
+      return DO.C.User
+    })
+}
+
 
 function showUserIdentityInput (e) {
   if (typeof e !== 'undefined') {
