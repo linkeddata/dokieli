@@ -7,7 +7,8 @@ module.exports = {
   afterSignIn,
   enableDisableButton,
   getUserHTML,
-  showUserIdentityInput
+  showUserIdentityInput,
+  submitSignIn
 }
 
 function afterSignIn () {
@@ -116,4 +117,38 @@ function showUserIdentityInput (e) {
     inputWebid.addEventListener(eventType, function (e) { enableDisableButton(e, buttonSignIn) })
   })
   inputWebid.focus()
+}
+
+// FIXME: This parameter value can be an event or a string
+function submitSignIn (url) {
+  if (typeof url !== 'string') {
+    var userIdentityInput = document.getElementById('user-identity-input')
+    if (userIdentityInput) {
+      userIdentityInput.insertAdjacentHTML('beforeend', '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>')
+    }
+
+    url = userIdentityInput.querySelector('input#webid').value.trim()
+  }
+
+  if (url.length > 0) {
+    DO.U.setUserInfo(url).then(
+      function (i) {
+// console.log(i);
+        var uI = document.getElementById('user-info')
+        if (uI) {
+          uI.innerHTML = getUserHTML()
+        }
+
+        if (userIdentityInput) {
+          userIdentityInput.parentNode.removeChild(userIdentityInput)
+        }
+
+        DO.U.afterSignIn()
+      },
+      function (reason) {
+        console.log('--- NO USER')
+        console.log(reason)
+      }
+    )
+  }
 }
