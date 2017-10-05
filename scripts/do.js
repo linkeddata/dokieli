@@ -1228,6 +1228,7 @@ const doc = __webpack_require__(5)
 const uri = __webpack_require__(1)
 const graph = __webpack_require__(2)
 const inbox = __webpack_require__(9)
+const util = __webpack_require__(10)
 
 if(typeof DO === 'undefined'){
 global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined;
@@ -1370,67 +1371,7 @@ var DO = {
     },
 
     getResourceLabel: function(s) {
-      return s.dctermstitle || s['http://purl.org/dc/elements/1.1/title'] || DO.U.getAgentName(s) || undefined;
-    },
-
-    getAgentName: function(s) {
-      var name = s.foafname || s.schemaname || s.asname || s.rdfslabel || undefined;
-      if (typeof name === 'undefined') {
-        if (s.schemafamilyName && s.schemafamilyName.length > 0 && s.schemagivenName && s.schemagivenName.length > 0) {
-          name = s.schemagivenName + ' ' + s.schemafamilyName;
-        }
-        else if (s.foaffamilyName && s.foaffamilyName.length > 0 && s.foafgivenName && s.foafgivenName.length > 0) {
-          name = s.foafgivenName + ' ' + s.foaffamilyName;
-        }
-        else if(s.foafnick && s.foafnick.length > 0){
-          name = s.foafnick;
-        }
-      }
-      return name;
-    },
-
-    getAgentImage: function(s) {
-      return s.foafimg || s.schemaimage || s.asimage || s.siocavatar || s.foafdepiction || undefined;
-    },
-
-    setUserInfo: function(userIRI) {
-// console.log("setUserInfo: " + userIRI);
-      if (userIRI) {
-        return fetcher.getResourceGraph(userIRI).then(
-          function(g){
-            var s = g.child(userIRI);
-// console.log(s);
-            DO.C.User.Graph = s;
-            DO.C.User.IRI = userIRI;
-            DO.C.User.Name = DO.U.getAgentName(s);
-            DO.C.User.Image = DO.U.getAgentImage(s);
-            DO.C.User.URL = s.foafhomepage || s["http://xmlns.com/foaf/0.1/weblog"] || s.schemaurl || undefined;
-            DO.C.User.Knows = (s.foafknows && s.foafknows._array.length > 0) ? DO.U.uniqueArray(s.foafknows._array) : [];
-            DO.C.User.Knows = (s.schemaknows && s.schemaknows._array.length > 0) ? DO.U.uniqueArray(DO.C.User.Knows.concat(s.schemaknows._array)) : DO.C.User.Knows;
-
-            DO.C.User.TempKnows = [];
-            DO.C.User.SameAs = [];
-            DO.C.User.Contacts = [];
-
-            if (s.storage) {
-              DO.C.User.Storage = s.storage._array;
-            }
-
-            if (s.preferencesFile && s.preferencesFile.length > 0) {
-              DO.C.User.PreferencesFile = s.preferencesFile;
-
-              //TODO: Reconsider if/where to use this.
-              // DO.U.setUserWorkspaces(DO.C.User.PreferencesFile);
-            }
-            return DO.C.User;
-          },
-          function(reason) { return reason; }
-        );
-      }
-      else {
-        console.log('No user IRI');
-        return Promise.reject();
-      }
+      return s.dctermstitle || s['http://purl.org/dc/elements/1.1/title'] || auth.getAgentName(s) || undefined;
     },
 
     setUserWorkspaces: function(userPreferenceFile){
@@ -1482,29 +1423,6 @@ var DO = {
           }
         }
       );
-    },
-
-    getUserHTML: function() {
-      var userName = DO.C.SecretAgentNames[Math.floor(Math.random() * DO.C.SecretAgentNames.length)];
-      if (DO.C.User.Name) {
-        //XXX: We have the IRI already
-        userName = '<span about="' + DO.C.User.IRI + '" property="schema:name">' + DO.C.User.Name + '</span>';
-      }
-
-      var userImage = '';
-      if ('Image' in DO.C.User && typeof DO.C.User.Image !== 'undefined' && DO.C.User.Image.length > 0) {
-        userImage = '<img alt="" height="48" rel="schema:image" src="' + DO.C.User.Image + '" width="48" /> ';
-      }
-
-      var user = ''
-      if ('IRI' in DO.C.User && DO.C.User.IRI !== null && DO.C.User.IRI.length > 0) {
-        user = '<span about="' + DO.C.User.IRI + '" typeof="schema:Person">' + userImage + '<a rel="schema:url" href="' + DO.C.User.IRI + '"> ' + userName + '</a></span>';
-      }
-      else {
-        user = '<span typeof="schema:Person">' + userName + '</span>';
-      }
-
-      return user;
     },
 
     setLocalDocument: function() {
@@ -1573,7 +1491,7 @@ var DO = {
                 g.graph().toArray().forEach(function(t){
                   subjects.push(t.subject.nominalValue);
                 });
-                subjects = DO.U.uniqueArray(subjects);
+                subjects = util.uniqueArray(subjects);
 // console.log(subjects);
                 subjects.forEach(function(i){
                   var s = g.child(i)
@@ -1629,8 +1547,8 @@ var DO = {
                               'iri': s.asactor
                             }
                             var a = g.child(noteData['creator']['iri']);
-                            var actorName = DO.U.getAgentName(a);
-                            var actorImage = DO.U.getAgentImage(a);
+                            var actorName = auth.getAgentName(a);
+                            var actorImage = auth.getAgentImage(a);
 
                             if(typeof actorName != 'undefined') {
                               noteData['creator']['name'] = actorName;
@@ -1968,138 +1886,6 @@ var DO = {
       }
     },
 
-    //TODO: Refactor
-    showUserSigninSignup: function(node) {
-      if (typeof SimpleRDF !== 'undefined' && !document.querySelector('#user-info')) {
-        var s = '<button class="signin-user" title="Sign in to authenticate"><i class="fa fa-user-secret fa-2x"></i>Sign in</button>';
-        if(DO.C.User.IRI) {
-          s = DO.U.getUserHTML();
-        }
-        node.insertAdjacentHTML('beforeend', '<section id="user-info">' + s + '</section>');
-
-        var su = document.querySelector('#document-menu button.signin-user');
-        if(su) {
-          su.addEventListener('click', DO.U.showUserIdentityInput);
-        }
-      }
-    },
-
-    //TODO: Refactor
-    showUserIdentityInput: function(e) {
-      if(typeof e !== 'undefined') {
-        e.target.disabled = true;
-      }
-      document.body.insertAdjacentHTML('beforeend', '<aside id="user-identity-input" class="do on"><button class="close" title="Close">❌</button><h2>Sign in with WebID</h2><label>HTTP(S) IRI</label> <input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="signin">Sign in</button></aside>');
-      var buttonSignIn = document.querySelector('#user-identity-input button.signin');
-      buttonSignIn.setAttribute('disabled', 'disabled');
-      document.querySelector('#user-identity-input').addEventListener('click', function(e) {
-        if (e.target.matches('button.close')) {
-          var signinUser = document.querySelector('#document-menu button.signin-user');
-          if(signinUser) {
-            signinUser.disabled = false;
-          }
-        }
-      });
-
-      var inputWebid = document.querySelector('#user-identity-input input#webid');
-      buttonSignIn.addEventListener('click', DO.U.submitSignIn);
-      ['keyup', 'cut', 'paste', 'input'].forEach(function(eventType) {
-        inputWebid.addEventListener(eventType, function(e){ DO.U.enableDisableButton(e, buttonSignIn); });
-      });
-      inputWebid.focus();
-    },
-
-    //TODO: Generalize this further so that it is not only for submitSignIn
-    enableDisableButton: function(e, button) {
-      var delay = (e.type == 'cut' || e.type == 'paste') ? 250 : 0;
-      var input;
-
-      window.setTimeout(function () {
-        input = e.target.value;
-        if (input.length > 10 && input.match(/^https?:\/\//g)) {
-          if (typeof e.which !== 'undefined' && e.which == 13) {
-            if(!button.getAttribute('disabled')) {
-              button.setAttribute('disabled', 'disabled');
-              e.preventDefault();
-              e.stopPropagation();
-              DO.U.submitSignIn();
-            }
-          }
-          else {
-            button.removeAttribute('disabled');
-          }
-        }
-        else {
-          if (!button.getAttribute('disabled')) {
-            button.setAttribute('disabled', 'disabled');
-          }
-        }
-      }, delay);
-    },
-
-    //FIXME: This parameter value can be an event or a string
-    submitSignIn: function(url) {
-      if(typeof url !== 'string') {
-        var userIdentityInput = document.getElementById('user-identity-input');
-        if(userIdentityInput) {
-          userIdentityInput.insertAdjacentHTML('beforeend', '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
-        }
-
-        url = userIdentityInput.querySelector('input#webid').value.trim();
-      }
-
-      if (url.length > 0) {
-        DO.U.setUserInfo(url).then(
-          function(i) {
-// console.log(i);
-            var uI = document.getElementById('user-info');
-            if(uI) {
-              uI.innerHTML = DO.U.getUserHTML();
-            }
-
-            if(userIdentityInput) {
-              userIdentityInput.parentNode.removeChild(userIdentityInput);
-            }
-
-            DO.U.afterSignIn();
-          },
-          function(reason) {
-            console.log("--- NO USER");
-            console.log(reason);
-          }
-        );
-      }
-    },
-
-    afterSignIn: function() {
-      var user = document.querySelectorAll('aside.do article *[rel~="schema:creator"] > *[about="' + DO.C.User.IRI + '"]');
-      for(var i = 0; i < user.length; i++) {
-        var article = user[i].closest('article');
-        article.insertAdjacentHTML('afterbegin', '<button class="delete"><i class="fa fa-trash"></i></button>');
-      }
-
-      var buttonDelete = document.querySelectorAll('aside.do blockquote[cite] article button.delete');
-      for(var i = 0; i < buttonDelete.length; i++) {
-        buttonDelete[i].addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          var article = e.target.closest('article');
-          var refId = 'r-' + article.id;
-          var noteIRI = article.closest('blockquote[cite]');
-          noteIRI = noteIRI.getAttribute('cite');
-
-          fetcher.deleteResource(noteIRI)
-            .then(() => {
-              var aside = e.target.closest('aside.do')
-              aside.parentNode.removeChild(aside)
-              var span = document.querySelector('span[about="#' + refId + '"]')
-              span.outerHTML = span.querySelector('mark').textContent
-              //TODO: Delete notification or send delete activity
-            })
-        });
-      }
-    },
-
     initDocumentActions: function() {
       document.addEventListener('click', function(e) {
         if (e.target.closest('[about="#document-menu"][typeof="schema:ActivateAction"], [href="#document-menu"][typeof="schema:ActivateAction"], [resource="#document-menu"][typeof="schema:ActivateAction"]')) {
@@ -2136,7 +1922,7 @@ var DO = {
       });
     },
 
-    showDocumentMenu: function(e) {
+    showDocumentMenu: function showDocumentMenu (e) {
       if (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -2157,7 +1943,7 @@ var DO = {
         dMenu.classList.add('on');
         body.classList.add('on-document-menu');
 
-        DO.U.showUserSigninSignup(dHead);
+        auth.showUserSigninSignup(dHead);
         DO.U.showDocumentDo(dInfo);
         DO.U.showEmbedData(dInfo);
         DO.U.showStorage(dInfo);
@@ -2846,17 +2632,6 @@ var DO = {
       return unescape(decodeURIComponent(window.atob(s)));
     },
 
-    uniqueArray: function(a){
-      var n = {}, r = [];
-      for(var i = 0; i < a.length; i++) {
-        if (!n[a[i]]) {
-          n[a[i]] = true;
-          r.push(a[i]);
-        }
-      }
-      return r;
-    },
-
     getSelectorSign: function(node) {
       if(!node) {
         return DO.C.SelectorSign["*"];
@@ -3462,7 +3237,7 @@ var DO = {
 // console.log(iri);
             if(iri != DO.C.User.IRI && DO.C.User.SameAs.indexOf(iri) < 0) {
               DO.C.User.SameAs.push(iri);
-              DO.C.User.SameAs = DO.U.uniqueArray(DO.C.User.SameAs);
+              DO.C.User.SameAs = util.uniqueArray(DO.C.User.SameAs);
               promises.push(DO.U.getContacts(iri));
             }
           });
@@ -3487,7 +3262,7 @@ var DO = {
 
       var fyn = function(iri){
         if (iri == DO.C.User.IRI && DO.C.User.SameAs.indexOf(iri) < 0) {
-          DO.C.User.TempKnows = DO.U.uniqueArray(DO.C.User.TempKnows.concat(DO.C.User.Knows));
+          DO.C.User.TempKnows = util.uniqueArray(DO.C.User.TempKnows.concat(DO.C.User.Knows));
 
           return processSameAs(DO.C.User.Graph);
         }
@@ -3500,10 +3275,10 @@ var DO = {
               }
               var s = g.child(iri);
               if(s.foafknows && s.foafknows._array.length > 0){
-                DO.C.User.TempKnows = DO.U.uniqueArray(DO.C.User.TempKnows.concat(s.foafknows._array));
+                DO.C.User.TempKnows = util.uniqueArray(DO.C.User.TempKnows.concat(s.foafknows._array));
               }
               if(s.schemaknows && s.schemaknows._array.length > 0){
-                DO.C.User.TempKnows = DO.U.uniqueArray(DO.C.User.TempKnows.concat(s.schemaknows._array));
+                DO.C.User.TempKnows = util.uniqueArray(DO.C.User.TempKnows.concat(s.schemaknows._array));
               }
 
               return processSameAs(s);
@@ -3562,8 +3337,8 @@ var DO = {
       var iri = s.iri().toString();
 // console.log(iri.toString());
       var id = encodeURIComponent(iri);
-      var name = DO.U.getAgentName(s) || iri;
-      var img = DO.U.getAgentImage(s);
+      var name = auth.getAgentName(s) || iri;
+      var img = auth.getAgentImage(s);
       img = (img && img.length > 0) ? '<img alt="" height="32" src="' + img + '" width="32" />' : '';
       var input = '<li><input id="share-resource-contact-' + id + '" type="checkbox" value="' + iri + '" /><label for="share-resource-contact-' + id + '">' + img + '<a href="' + iri + '" target="_blank">' + name + '</a></label></li>';
 
@@ -4581,7 +4356,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       if(authorList.length > 0) {
         authorList.forEach(function(authorIRI) {
           var s = subject.child(authorIRI);
-          var author = DO.U.getAgentName(s);
+          var author = auth.getAgentName(s);
 
           if (s.schemafamilyName && s.schemafamilyName.length > 0 && s.schemagivenName && s.schemagivenName.length > 0) {
             author = DO.U.createRefName(s.schemafamilyName, s.schemagivenName);
@@ -5030,9 +4805,9 @@ WHERE {\n\
               annotatedBy = i.child(annotatedByIRI);
 // console.log(annotatedBy);
             }
-            var annotatedByName = DO.U.getAgentName(annotatedBy);
+            var annotatedByName = auth.getAgentName(annotatedBy);
 // console.log(annotatedByName);
-            var annotatedByImage = DO.U.getAgentImage(annotatedBy);
+            var annotatedByImage = auth.getAgentImage(annotatedBy);
 // console.log(annotatedByImage);
             var annotatedByURL = annotatedBy.schemaurl || '';
             annotatedByURL = (annotatedByURL) ? annotatedByURL : undefined;
@@ -5475,7 +5250,7 @@ WHERE {\n\
                     }
                   });
                   if (tagsArray.length > 0){
-                    tagsArray = DO.U.uniqueArray(tagsArray);
+                    tagsArray = util.uniqueArray(tagsArray);
 
                     body += '<dl id="tags" class="tags"><dt>Tags</dt><dd><ul rel="oa:hasBody">';
                     tagsArray.forEach(function(i){
@@ -7902,6 +7677,35 @@ function getEndpointFromRDF (property, url, subjectIRI) {
         throw new Error(property + ' endpoint was not found in message body')
       }
     )
+}
+
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = {
+  uniqueArray
+}
+
+/**
+ * @param a {Array}
+ *
+ * @returns {Array}
+ */
+function uniqueArray (a) {
+  var n = {}
+  var r = []
+  for (var i = 0; i < a.length; i++) {
+    if (!n[a[i]]) {
+      n[a[i]] = true
+      r.push(a[i])
+    }
+  }
+  return r
 }
 
 
