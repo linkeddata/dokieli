@@ -1,11 +1,42 @@
 'use strict'
 
 const Config = require('./config')
+const fetcher = require('./fetcher')
 
 module.exports = {
+  afterSignIn,
   enableDisableButton,
   getUserHTML,
   showUserIdentityInput
+}
+
+function afterSignIn () {
+  var user = document.querySelectorAll('aside.do article *[rel~="schema:creator"] > *[about="' + DO.C.User.IRI + '"]')
+  for (let i = 0; i < user.length; i++) {
+    var article = user[i].closest('article')
+    article.insertAdjacentHTML('afterbegin', '<button class="delete"><i class="fa fa-trash"></i></button>')
+  }
+
+  var buttonDelete = document.querySelectorAll('aside.do blockquote[cite] article button.delete')
+  for (let i = 0; i < buttonDelete.length; i++) {
+    buttonDelete[i].addEventListener('click', function (e) {
+      e.preventDefault()
+      e.stopPropagation()
+      var article = e.target.closest('article')
+      var refId = 'r-' + article.id
+      var noteIRI = article.closest('blockquote[cite]')
+      noteIRI = noteIRI.getAttribute('cite')
+
+      fetcher.deleteResource(noteIRI)
+        .then(() => {
+          var aside = e.target.closest('aside.do')
+          aside.parentNode.removeChild(aside)
+          var span = document.querySelector('span[about="#' + refId + '"]')
+          span.outerHTML = span.querySelector('mark').textContent
+          // TODO: Delete notification or send delete activity
+        })
+    })
+  }
 }
 
 // TODO: Generalize this further so that it is not only for submitSignIn

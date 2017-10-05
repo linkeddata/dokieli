@@ -744,61 +744,8 @@ var DO = {
       }
     },
 
-    //TODO: Refactor
-    showUserIdentityInput: function showUserIdentityInput (e) {
-      if(typeof e !== 'undefined') {
-        e.target.disabled = true;
-      }
-      document.body.insertAdjacentHTML('beforeend', '<aside id="user-identity-input" class="do on"><button class="close" title="Close">❌</button><h2>Sign in with WebID</h2><label>HTTP(S) IRI</label> <input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="signin">Sign in</button></aside>');
-      var buttonSignIn = document.querySelector('#user-identity-input button.signin');
-      buttonSignIn.setAttribute('disabled', 'disabled');
-      document.querySelector('#user-identity-input').addEventListener('click', function(e) {
-        if (e.target.matches('button.close')) {
-          var signinUser = document.querySelector('#document-menu button.signin-user');
-          if(signinUser) {
-            signinUser.disabled = false;
-          }
-        }
-      });
-
-      var inputWebid = document.querySelector('#user-identity-input input#webid');
-      buttonSignIn.addEventListener('click', DO.U.submitSignIn);
-      ['keyup', 'cut', 'paste', 'input'].forEach(function(eventType) {
-        inputWebid.addEventListener(eventType, function(e){ DO.U.enableDisableButton(e, buttonSignIn); });
-      });
-      inputWebid.focus();
-    },
-
-    //TODO: Generalize this further so that it is not only for submitSignIn
-    enableDisableButton: function(e, button) {
-      var delay = (e.type == 'cut' || e.type == 'paste') ? 250 : 0;
-      var input;
-
-      window.setTimeout(function () {
-        input = e.target.value;
-        if (input.length > 10 && input.match(/^https?:\/\//g)) {
-          if (typeof e.which !== 'undefined' && e.which == 13) {
-            if(!button.getAttribute('disabled')) {
-              button.setAttribute('disabled', 'disabled');
-              e.preventDefault();
-              e.stopPropagation();
-              DO.U.submitSignIn();
-            }
-          }
-          else {
-            button.removeAttribute('disabled');
-          }
-        }
-        else {
-          if (!button.getAttribute('disabled')) {
-            button.setAttribute('disabled', 'disabled');
-          }
-        }
-      }, delay);
-    },
-
     //FIXME: This parameter value can be an event or a string
-    submitSignIn: function(url) {
+    submitSignIn: function submitSignIn (url) {
       if(typeof url !== 'string') {
         var userIdentityInput = document.getElementById('user-identity-input');
         if(userIdentityInput) {
@@ -828,35 +775,6 @@ var DO = {
             console.log(reason);
           }
         );
-      }
-    },
-
-    afterSignIn: function() {
-      var user = document.querySelectorAll('aside.do article *[rel~="schema:creator"] > *[about="' + DO.C.User.IRI + '"]');
-      for(var i = 0; i < user.length; i++) {
-        var article = user[i].closest('article');
-        article.insertAdjacentHTML('afterbegin', '<button class="delete"><i class="fa fa-trash"></i></button>');
-      }
-
-      var buttonDelete = document.querySelectorAll('aside.do blockquote[cite] article button.delete');
-      for(var i = 0; i < buttonDelete.length; i++) {
-        buttonDelete[i].addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          var article = e.target.closest('article');
-          var refId = 'r-' + article.id;
-          var noteIRI = article.closest('blockquote[cite]');
-          noteIRI = noteIRI.getAttribute('cite');
-
-          fetcher.deleteResource(noteIRI)
-            .then(() => {
-              var aside = e.target.closest('aside.do')
-              aside.parentNode.removeChild(aside)
-              var span = document.querySelector('span[about="#' + refId + '"]')
-              span.outerHTML = span.querySelector('mark').textContent
-              //TODO: Delete notification or send delete activity
-            })
-        });
       }
     },
 
