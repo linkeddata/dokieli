@@ -12,6 +12,7 @@ module.exports = {
   getUserHTML,
   setUserInfo,
   showUserIdentityInput,
+  showUserSigninSignup,
   submitSignIn
 }
 
@@ -23,6 +24,7 @@ function afterSignIn () {
   }
 
   var buttonDelete = document.querySelectorAll('aside.do blockquote[cite] article button.delete')
+
   for (let i = 0; i < buttonDelete.length; i++) {
     buttonDelete[i].addEventListener('click', function (e) {
       e.preventDefault()
@@ -136,9 +138,15 @@ function setUserInfo (userIRI) {
       Config.User.IRI = userIRI
       Config.User.Name = getAgentName(s)
       Config.User.Image = getAgentImage(s)
-      Config.User.URL = s.foafhomepage || s['http://xmlns.com/foaf/0.1/weblog'] || s.schemaurl || undefined
-      Config.User.Knows = (s.foafknows && s.foafknows._array.length > 0) ? util.uniqueArray(s.foafknows._array) : []
-      Config.User.Knows = (s.schemaknows && s.schemaknows._array.length > 0) ? util.uniqueArray(Config.User.Knows.concat(s.schemaknows._array)) : Config.User.Knows
+      Config.User.URL = s.foafhomepage ||
+        s['http://xmlns.com/foaf/0.1/weblog'] || s.schemaurl
+
+      Config.User.Knows = (s.foafknows && s.foafknows._array.length > 0)
+        ? util.uniqueArray(s.foafknows._array)
+        : []
+      Config.User.Knows = (s.schemaknows && s.schemaknows._array.length > 0)
+        ? util.uniqueArray(Config.User.Knows.concat(s.schemaknows._array))
+        : Config.User.Knows
 
       Config.User.TempKnows = []
       Config.User.SameAs = []
@@ -162,10 +170,13 @@ function showUserIdentityInput (e) {
   if (typeof e !== 'undefined') {
     e.target.disabled = true
   }
+
   document.body.insertAdjacentHTML('beforeend', '<aside id="user-identity-input" class="do on"><button class="close" title="Close">❌</button><h2>Sign in with WebID</h2><label>HTTP(S) IRI</label> <input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="signin">Sign in</button></aside>')
+
   var buttonSignIn = document.querySelector('#user-identity-input button.signin')
   buttonSignIn.setAttribute('disabled', 'disabled')
-  document.querySelector('#user-identity-input').addEventListener('click', function (e) {
+
+  document.querySelector('#user-identity-input').addEventListener('click', e => {
     if (e.target.matches('button.close')) {
       var signinUser = document.querySelector('#document-menu button.signin-user')
       if (signinUser) {
@@ -175,11 +186,31 @@ function showUserIdentityInput (e) {
   })
 
   var inputWebid = document.querySelector('#user-identity-input input#webid')
-  buttonSignIn.addEventListener('click', submitSignIn);
-  ['keyup', 'cut', 'paste', 'input'].forEach(function (eventType) {
-    inputWebid.addEventListener(eventType, function (e) { enableDisableButton(e, buttonSignIn) })
+
+  buttonSignIn.addEventListener('click', submitSignIn)
+
+  let events = ['keyup', 'cut', 'paste', 'input']
+
+  events.forEach(eventType => {
+    inputWebid.addEventListener(eventType, e => { enableDisableButton(e, buttonSignIn) })
   })
+
   inputWebid.focus()
+}
+
+function showUserSigninSignup (node) {
+  if (!document.querySelector('#user-info')) {
+    var s = '<button class="signin-user" title="Sign in to authenticate"><i class="fa fa-user-secret fa-2x"></i>Sign in</button>'
+    if (Config.User.IRI) {
+      s = getUserHTML()
+    }
+    node.insertAdjacentHTML('beforeend', '<section id="user-info">' + s + '</section>')
+
+    var su = document.querySelector('#document-menu button.signin-user')
+    if (su) {
+      su.addEventListener('click', showUserIdentityInput)
+    }
+  }
 }
 
 // FIXME: This parameter value can be an event or a string
@@ -193,10 +224,10 @@ function submitSignIn (url) {
     url = userIdentityInput.querySelector('input#webid').value.trim()
   }
 
-  if (url.length > 0) {
-    setUserInfo(url).then(
-      function (i) {
-// console.log(i);
+  if (url) {
+    setUserInfo(url)
+      .then(i => {
+
         var uI = document.getElementById('user-info')
         if (uI) {
           uI.innerHTML = getUserHTML()
@@ -207,11 +238,6 @@ function submitSignIn (url) {
         }
 
         afterSignIn()
-      },
-      function (reason) {
-        console.log('--- NO USER')
-        console.log(reason)
-      }
-    )
+      })
   }
 }

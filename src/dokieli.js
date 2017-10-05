@@ -669,22 +669,6 @@ var DO = {
       }
     },
 
-    //TODO: Refactor
-    showUserSigninSignup: function(node) {
-      if (typeof SimpleRDF !== 'undefined' && !document.querySelector('#user-info')) {
-        var s = '<button class="signin-user" title="Sign in to authenticate"><i class="fa fa-user-secret fa-2x"></i>Sign in</button>';
-        if(DO.C.User.IRI) {
-          s = DO.U.getUserHTML();
-        }
-        node.insertAdjacentHTML('beforeend', '<section id="user-info">' + s + '</section>');
-
-        var su = document.querySelector('#document-menu button.signin-user');
-        if(su) {
-          su.addEventListener('click', DO.U.showUserIdentityInput);
-        }
-      }
-    },
-
     initDocumentActions: function() {
       document.addEventListener('click', function(e) {
         if (e.target.closest('[about="#document-menu"][typeof="schema:ActivateAction"], [href="#document-menu"][typeof="schema:ActivateAction"], [resource="#document-menu"][typeof="schema:ActivateAction"]')) {
@@ -721,7 +705,7 @@ var DO = {
       });
     },
 
-    showDocumentMenu: function(e) {
+    showDocumentMenu: function showDocumentMenu (e) {
       if (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -742,7 +726,7 @@ var DO = {
         dMenu.classList.add('on');
         body.classList.add('on-document-menu');
 
-        DO.U.showUserSigninSignup(dHead);
+        auth.showUserSigninSignup(dHead);
         DO.U.showDocumentDo(dInfo);
         DO.U.showEmbedData(dInfo);
         DO.U.showStorage(dInfo);
