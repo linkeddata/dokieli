@@ -7,7 +7,7 @@
 		exports["DO"] = factory(require("fetch"));
 	else
 		root["DO"] = factory(root["fetch"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_8__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_9__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 6);
+/******/ 	return __webpack_require__(__webpack_require__.s = 7);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -336,196 +336,10 @@ module.exports = {
 "use strict";
 
 
-const config = __webpack_require__(0)
-
-module.exports = {
-  encodeString,
-  decodeString,
-  getAbsoluteIRI,
-  getProxyableIRI,
-  stripFragmentFromString
-}
-
-function encodeString (string) {
-  return encodeURIComponent(string).replace(/'/g, '%27').replace(/"/g, '%22')
-}
-
-/**
- * UNUSED
- *
- * @param string {string}
- *
- * @returns {string}
- */
-function decodeString (string) {
-  return decodeURIComponent(string.replace(/\+/g, ' '))
-}
-
-function getAbsoluteIRI (base, location) {
-  var iri = location
-
-  if (location.toLowerCase().slice(0, 4) !== 'http') {
-    if (location.startsWith('/')) {
-      var x = base.toLowerCase().trim().split('/')
-
-      iri = x[0] + '//' + x[2] + location
-    } else if (!base.endsWith('/')) {
-      iri = base.substr(0, base.lastIndexOf('/') + 1) + location
-    } else {
-      iri = base + location
-    }
-  }
-
-  return iri
-}
-
-function getProxyableIRI (url, options = {}) {
-  var pIRI = stripFragmentFromString(url)
-
-  if ((typeof document !== 'undefined' && document.location.protocol === 'https:' && pIRI.slice(0, 5).toLowerCase() === 'http:') || 'forceProxy' in options) {
-    var proxyURL = ('proxyURL' in options) ? options.proxyURL : config.ProxyURL
-    pIRI = proxyURL + encodeString(pIRI)
-  }
-
-  return pIRI
-}
-
-function stripFragmentFromString (string) {
-  if (typeof string === 'string') {
-    let stringIndexFragment = string.indexOf('#')
-
-    if (stringIndexFragment >= 0) {
-      string = string.substring(0, stringIndexFragment)
-    }
-  }
-  return string
-}
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(global) {
-
-global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined
-
+const fetch = __webpack_require__(9)  // Uses native fetch() in the browser
 const Config = __webpack_require__(0)
-
-module.exports = {
-  getGraph,
-  getGraphFromData,
-  serializeData,
-  serializeGraph
-}
-
-function getGraph (url) {
-  return SimpleRDF(Config.Vocab, url, null, ld.store).get()
-}
-
-function getGraphFromData (data, options = {}) {
-  if (!('contentType' in options)) {
-    options['contentType'] = 'text/turtle'
-  }
-  if (!('subjectURI' in options)) {
-    options['subjectURI'] = '_:dokieli'
-  }
-
-  return SimpleRDF.parse(data, options['contentType'], options['subjectURI'])
-}
-
-/**
- * @param data
- * @param fromContentType
- * @param toContentType
- * @param options
- *
- * @returns {Promise}
- */
-function serializeData (data, fromContentType, toContentType, options) {
-  if (fromContentType === toContentType) {
-    return Promise.resolve(data)
-  }
-
-  options.contentType = fromContentType
-
-  return getGraphFromData(data, options)
-    .then(g => {
-      options.contentType = toContentType
-
-      return serializeGraph(g, options)
-    })
-    .then(data => {
-      switch (toContentType) {
-        case 'application/ld+json':
-          var parsed = JSON.parse(data)
-
-          parsed[0]['@context'] = [
-            'http://www.w3.org/ns/anno.jsonld',
-            {'as': 'https://www.w3.org/ns/activitystreams'}
-          ]
-
-          parsed[0]['@id'] = (parsed[0]['@id'].slice(0, 2) === '_:')
-            ? ''
-            : parsed[0]['@id']
-
-          return JSON.stringify(parsed) + '\n'
-
-        default:
-          return data
-      }
-    })
-}
-
-function serializeGraph (g, options = {}) {
-  if (!('contentType' in options)) {
-    options['contentType'] = 'text/turtle'
-  }
-
-  return ld.store.serializers[options.contentType].serialize(g._graph)
-}
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-const fetch = __webpack_require__(8)  // Uses native fetch() in the browser
-const Config = __webpack_require__(0)
-const uri = __webpack_require__(1)
-const graph = __webpack_require__(2)
+const uri = __webpack_require__(2)
+const graph = __webpack_require__(3)
 
 const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
 const LDP_RESOURCE = '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
@@ -1058,6 +872,192 @@ function putResourceACL (accessToURL, aclURL, acl) {
 
 
 /***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+const config = __webpack_require__(0)
+
+module.exports = {
+  encodeString,
+  decodeString,
+  getAbsoluteIRI,
+  getProxyableIRI,
+  stripFragmentFromString
+}
+
+function encodeString (string) {
+  return encodeURIComponent(string).replace(/'/g, '%27').replace(/"/g, '%22')
+}
+
+/**
+ * UNUSED
+ *
+ * @param string {string}
+ *
+ * @returns {string}
+ */
+function decodeString (string) {
+  return decodeURIComponent(string.replace(/\+/g, ' '))
+}
+
+function getAbsoluteIRI (base, location) {
+  var iri = location
+
+  if (location.toLowerCase().slice(0, 4) !== 'http') {
+    if (location.startsWith('/')) {
+      var x = base.toLowerCase().trim().split('/')
+
+      iri = x[0] + '//' + x[2] + location
+    } else if (!base.endsWith('/')) {
+      iri = base.substr(0, base.lastIndexOf('/') + 1) + location
+    } else {
+      iri = base + location
+    }
+  }
+
+  return iri
+}
+
+function getProxyableIRI (url, options = {}) {
+  var pIRI = stripFragmentFromString(url)
+
+  if ((typeof document !== 'undefined' && document.location.protocol === 'https:' && pIRI.slice(0, 5).toLowerCase() === 'http:') || 'forceProxy' in options) {
+    var proxyURL = ('proxyURL' in options) ? options.proxyURL : config.ProxyURL
+    pIRI = proxyURL + encodeString(pIRI)
+  }
+
+  return pIRI
+}
+
+function stripFragmentFromString (string) {
+  if (typeof string === 'string') {
+    let stringIndexFragment = string.indexOf('#')
+
+    if (stringIndexFragment >= 0) {
+      string = string.substring(0, stringIndexFragment)
+    }
+  }
+  return string
+}
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {
+
+global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined
+
+const Config = __webpack_require__(0)
+
+module.exports = {
+  getGraph,
+  getGraphFromData,
+  serializeData,
+  serializeGraph
+}
+
+function getGraph (url) {
+  return SimpleRDF(Config.Vocab, url, null, ld.store).get()
+}
+
+function getGraphFromData (data, options = {}) {
+  if (!('contentType' in options)) {
+    options['contentType'] = 'text/turtle'
+  }
+  if (!('subjectURI' in options)) {
+    options['subjectURI'] = '_:dokieli'
+  }
+
+  return SimpleRDF.parse(data, options['contentType'], options['subjectURI'])
+}
+
+/**
+ * @param data
+ * @param fromContentType
+ * @param toContentType
+ * @param options
+ *
+ * @returns {Promise}
+ */
+function serializeData (data, fromContentType, toContentType, options) {
+  if (fromContentType === toContentType) {
+    return Promise.resolve(data)
+  }
+
+  options.contentType = fromContentType
+
+  return getGraphFromData(data, options)
+    .then(g => {
+      options.contentType = toContentType
+
+      return serializeGraph(g, options)
+    })
+    .then(data => {
+      switch (toContentType) {
+        case 'application/ld+json':
+          var parsed = JSON.parse(data)
+
+          parsed[0]['@context'] = [
+            'http://www.w3.org/ns/anno.jsonld',
+            {'as': 'https://www.w3.org/ns/activitystreams'}
+          ]
+
+          parsed[0]['@id'] = (parsed[0]['@id'].slice(0, 2) === '_:')
+            ? ''
+            : parsed[0]['@id']
+
+          return JSON.stringify(parsed) + '\n'
+
+        default:
+          return data
+      }
+    })
+}
+
+function serializeGraph (g, options = {}) {
+  if (!('contentType' in options)) {
+    options['contentType'] = 'text/turtle'
+  }
+
+  return ld.store.serializers[options.contentType].serialize(g._graph)
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1208,11 +1208,40 @@ function getDocument (cn, options) {
 /* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(7);
+"use strict";
+
+
+module.exports = {
+  uniqueArray
+}
+
+/**
+ * @param a {Array}
+ *
+ * @returns {Array}
+ */
+function uniqueArray (a) {
+  var n = {}
+  var r = []
+  for (var i = 0; i < a.length; i++) {
+    if (!n[a[i]]) {
+      n[a[i]] = true
+      r.push(a[i])
+    }
+  }
+  return r
+}
 
 
 /***/ }),
 /* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(8);
+
+
+/***/ }),
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/** dokieli
@@ -1223,12 +1252,13 @@ module.exports = __webpack_require__(7);
  * https://github.com/linkeddata/dokieli
  */
 
-const fetcher = __webpack_require__(4)
+const fetcher = __webpack_require__(1)
 const doc = __webpack_require__(5)
-const uri = __webpack_require__(1)
-const graph = __webpack_require__(2)
-const inbox = __webpack_require__(9)
-const util = __webpack_require__(10)
+const uri = __webpack_require__(2)
+const graph = __webpack_require__(3)
+const inbox = __webpack_require__(10)
+const util = __webpack_require__(6)
+const auth = __webpack_require__(11)
 
 if(typeof DO === 'undefined'){
 global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined;
@@ -7277,25 +7307,25 @@ WHERE {\n\
 
 module.exports = DO
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_8__;
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
 
 /***/ }),
 /* 9 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_9__;
+
+/***/ }),
+/* 10 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 const doc = __webpack_require__(5)
-const uri = __webpack_require__(1)
-const graph = __webpack_require__(2)
-const fetcher = __webpack_require__(4)
+const uri = __webpack_require__(2)
+const graph = __webpack_require__(3)
+const fetcher = __webpack_require__(1)
 const Config = __webpack_require__(0)
 
 module.exports = {
@@ -7681,31 +7711,258 @@ function getEndpointFromRDF (property, url, subjectIRI) {
 
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
+const Config = __webpack_require__(0)
+const fetcher = __webpack_require__(1)
+const util = __webpack_require__(6)
+
+// const { OIDCWebClient } = require('@trust/oidc-web')
+
 module.exports = {
-  uniqueArray
+  afterSignIn,
+  enableDisableButton,
+  getAgentImage,
+  getAgentName,
+  getUserHTML,
+  setUserInfo,
+  showUserIdentityInput,
+  showUserSigninSignup,
+  submitSignIn
+}
+
+function afterSignIn () {
+  var user = document.querySelectorAll('aside.do article *[rel~="schema:creator"] > *[about="' + Config.User.IRI + '"]')
+  for (let i = 0; i < user.length; i++) {
+    var article = user[i].closest('article')
+    article.insertAdjacentHTML('afterbegin', '<button class="delete"><i class="fa fa-trash"></i></button>')
+  }
+
+  var buttonDelete = document.querySelectorAll('aside.do blockquote[cite] article button.delete')
+
+  for (let i = 0; i < buttonDelete.length; i++) {
+    buttonDelete[i].addEventListener('click', function (e) {
+      e.preventDefault()
+      e.stopPropagation()
+      var article = e.target.closest('article')
+      var refId = 'r-' + article.id
+      var noteIRI = article.closest('blockquote[cite]')
+      noteIRI = noteIRI.getAttribute('cite')
+
+      fetcher.deleteResource(noteIRI)
+        .then(() => {
+          var aside = e.target.closest('aside.do')
+          aside.parentNode.removeChild(aside)
+          var span = document.querySelector('span[about="#' + refId + '"]')
+          span.outerHTML = span.querySelector('mark').textContent
+          // TODO: Delete notification or send delete activity
+        })
+    })
+  }
+}
+
+// TODO: Generalize this further so that it is not only for submitSignIn
+function enableDisableButton (e, button) {
+  var delay = (e.type === 'cut' || e.type === 'paste') ? 250 : 0
+  var input
+
+  window.setTimeout(function () {
+    input = e.target.value
+    if (input.length > 10 && input.match(/^https?:\/\//g)) {
+      if (typeof e.which !== 'undefined' && e.which === 13) {
+        if (!button.getAttribute('disabled')) {
+          button.setAttribute('disabled', 'disabled')
+          e.preventDefault()
+          e.stopPropagation()
+          submitSignIn()
+        }
+      } else {
+        button.removeAttribute('disabled')
+      }
+    } else {
+      if (!button.getAttribute('disabled')) {
+        button.setAttribute('disabled', 'disabled')
+      }
+    }
+  }, delay)
+}
+
+function getAgentImage (s) {
+  return s.foafimg || s.schemaimage || s.asimage || s.siocavatar ||
+    s.foafdepiction || undefined
+}
+
+function getAgentName (s) {
+  var name = s.foafname || s.schemaname || s.asname || s.rdfslabel || undefined
+  if (typeof name === 'undefined') {
+    if (s.schemafamilyName && s.schemafamilyName.length > 0 && s.schemagivenName && s.schemagivenName.length > 0) {
+      name = s.schemagivenName + ' ' + s.schemafamilyName
+    } else if (s.foaffamilyName && s.foaffamilyName.length > 0 && s.foafgivenName && s.foafgivenName.length > 0) {
+      name = s.foafgivenName + ' ' + s.foaffamilyName
+    } else if (s.foafnick && s.foafnick.length > 0) {
+      name = s.foafnick
+    }
+  }
+  return name
+}
+
+function getUserHTML () {
+  let userName = Config.SecretAgentNames[Math.floor(Math.random() * Config.SecretAgentNames.length)]
+
+  if (Config.User.Name) {
+    // XXX: We have the IRI already
+    userName = '<span about="' + Config.User.IRI + '" property="schema:name">' +
+      Config.User.Name + '</span>'
+  }
+
+  let userImage = ''
+
+  if ('Image' in Config.User && typeof Config.User.Image !== 'undefined' && Config.User.Image.length > 0) {
+    userImage = '<img alt="" height="48" rel="schema:image" src="' +
+      Config.User.Image + '" width="48" /> '
+  }
+
+  let user = ''
+
+  if ('IRI' in Config.User && Config.User.IRI !== null && Config.User.IRI.length > 0) {
+    user = '<span about="' + Config.User.IRI + '" typeof="schema:Person">' +
+      userImage + '<a rel="schema:url" href="' + Config.User.IRI + '"> ' +
+      userName + '</a></span>'
+  } else {
+    user = '<span typeof="schema:Person">' + userName + '</span>'
+  }
+
+  return user
 }
 
 /**
- * @param a {Array}
+ * @param userIRI {string}
  *
- * @returns {Array}
+ * @returns {Promise}
  */
-function uniqueArray (a) {
-  var n = {}
-  var r = []
-  for (var i = 0; i < a.length; i++) {
-    if (!n[a[i]]) {
-      n[a[i]] = true
-      r.push(a[i])
+function setUserInfo (userIRI) {
+  if (!userIRI) {
+    return Promise.reject(new Error('Could not set user info - no user IRI'))
+  }
+
+  return fetcher.getResourceGraph(userIRI)
+    .then(g => {
+      var s = g.child(userIRI)
+
+      Config.User.Graph = s
+      Config.User.IRI = userIRI
+      Config.User.Name = getAgentName(s)
+      Config.User.Image = getAgentImage(s)
+      Config.User.URL = s.foafhomepage ||
+        s['http://xmlns.com/foaf/0.1/weblog'] || s.schemaurl
+
+      Config.User.Knows = (s.foafknows && s.foafknows._array.length > 0)
+        ? util.uniqueArray(s.foafknows._array)
+        : []
+      Config.User.Knows = (s.schemaknows && s.schemaknows._array.length > 0)
+        ? util.uniqueArray(Config.User.Knows.concat(s.schemaknows._array))
+        : Config.User.Knows
+
+      Config.User.TempKnows = []
+      Config.User.SameAs = []
+      Config.User.Contacts = []
+
+      if (s.storage) {
+        Config.User.Storage = s.storage._array
+      }
+
+      if (s.preferencesFile && s.preferencesFile.length > 0) {
+        Config.User.PreferencesFile = s.preferencesFile
+
+        // TODO: Reconsider if/where to use this.
+        // setUserWorkspaces(Config.User.PreferencesFile)
+      }
+      return Config.User
+    })
+}
+
+function showUserIdentityInput (e) {
+  if (typeof e !== 'undefined') {
+    e.target.disabled = true
+  }
+
+  document.body.insertAdjacentHTML('beforeend', '<aside id="user-identity-input" class="do on"><button class="close" title="Close">❌</button><h2>Sign in with WebID</h2><label>HTTP(S) IRI</label> <input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="signin">Sign in</button></aside>')
+
+  var buttonSignIn = document.querySelector('#user-identity-input button.signin')
+  buttonSignIn.setAttribute('disabled', 'disabled')
+
+  document.querySelector('#user-identity-input').addEventListener('click', e => {
+    if (e.target.matches('button.close')) {
+      var signinUser = document.querySelector('#document-menu button.signin-user')
+      if (signinUser) {
+        signinUser.disabled = false
+      }
+    }
+  })
+
+  var inputWebid = document.querySelector('#user-identity-input input#webid')
+
+  buttonSignIn.addEventListener('click', submitSignIn)
+
+  let events = ['keyup', 'cut', 'paste', 'input']
+
+  events.forEach(eventType => {
+    inputWebid.addEventListener(eventType, e => { enableDisableButton(e, buttonSignIn) })
+  })
+
+  inputWebid.focus()
+}
+
+function showUserSigninSignup (node) {
+  if (!document.querySelector('#user-info')) {
+    var s = '<button class="signin-user" title="Sign in to authenticate"><i class="fa fa-user-secret fa-2x"></i>Sign in</button>'
+    if (Config.User.IRI) {
+      s = getUserHTML()
+    }
+    node.insertAdjacentHTML('beforeend', '<section id="user-info">' + s + '</section>')
+
+    var su = document.querySelector('#document-menu button.signin-user')
+    if (su) {
+      su.addEventListener('click', showUserIdentityInput)
     }
   }
-  return r
+}
+
+// FIXME: This parameter value can be an event or a string
+function submitSignIn (url) {
+  if (typeof url !== 'string') {
+    var userIdentityInput = document.getElementById('user-identity-input')
+
+    if (userIdentityInput) {
+      userIdentityInput.insertAdjacentHTML('beforeend',
+        '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>')
+    }
+
+    url = userIdentityInput.querySelector('input#webid').value.trim()
+  }
+
+  if (!url) {
+    console.log('submitSignIn - no user url input')
+    return Promise.resolve()
+  }
+
+  return setUserInfo(url)
+    .then(() => {
+      var uI = document.getElementById('user-info')
+      if (uI) {
+        uI.innerHTML = getUserHTML()
+      }
+
+      if (userIdentityInput) {
+        userIdentityInput.parentNode.removeChild(userIdentityInput)
+      }
+
+      afterSignIn()
+    })
 }
 
 
