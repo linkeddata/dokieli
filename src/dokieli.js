@@ -7,6 +7,7 @@
  */
 
 const fetcher = require('./fetcher')
+const auth = require('./auth')
 const doc = require('./doc')
 const uri = require('./uri')
 const graph = require('./graph')
@@ -6034,21 +6035,25 @@ WHERE {\n\
 
     }, //DO.U.Editor
 
-    init: function() {
-      if(document.body) {
-        DO.U.initCurrentStylesheet();
-        DO.U.setPolyfill();
-        DO.U.setDocRefType();
-        DO.U.showRefs();
-        DO.U.setLocalDocument();
-        DO.U.buttonClose();
-        DO.U.highlightItems();
-        DO.U.initDocumentActions();
-        DO.U.showDocumentInfo();
-        DO.U.showFragment();
-        DO.U.setDocumentMode();
-        DO.U.showInboxNotifications();
-        DO.U.initMath();
+    init: function init () {
+      if (document.body) {
+        DO.U.initCurrentStylesheet()
+        DO.U.setPolyfill()
+        DO.U.setDocRefType()
+        DO.U.showRefs()
+        DO.U.setLocalDocument()
+
+        auth.initClient(DO.C)
+        auth.checkCurrentSession(DO.C)
+
+        DO.U.buttonClose()
+        DO.U.highlightItems()
+        DO.U.initDocumentActions()
+        DO.U.showDocumentInfo()
+        DO.U.showFragment()
+        DO.U.setDocumentMode()
+        DO.U.showInboxNotifications()
+        DO.U.initMath()
       }
     }
   } //DO.U
