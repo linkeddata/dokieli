@@ -29,8 +29,11 @@
   },
   "homepage": "https://dokie.li/",
   "dependencies": {
-    "@trust/oidc-web": "0.0.0",
-    "node-fetch": "^1.7.3"
+    "@trust/oidc-web": "0.1.0",
+    "li": "^1.2.1",
+    "node-fetch": "^1.7.3",
+    "valid-url": "^1.0.9",
+    "whatwg-url": "^6.3.0"
   },
   "devDependencies": {
     "standard": "^10.0.3",

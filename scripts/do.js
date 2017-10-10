@@ -1,13 +1,13 @@
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
-		module.exports = factory(require("fetch"), require("window"), require("crypto"), require("TextEncoder"));
+		module.exports = factory(require("window"), require("fetch"), require("crypto"), require("TextEncoder"));
 	else if(typeof define === 'function' && define.amd)
-		define(["fetch", "window", "crypto", "TextEncoder"], factory);
+		define(["window", "fetch", "crypto", "TextEncoder"], factory);
 	else if(typeof exports === 'object')
-		exports["DO"] = factory(require("fetch"), require("window"), require("crypto"), require("TextEncoder"));
+		exports["DO"] = factory(require("window"), require("fetch"), require("crypto"), require("TextEncoder"));
 	else
-		root["DO"] = factory(root["fetch"], root["window"], root["crypto"], root["TextEncoder"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_5__, __WEBPACK_EXTERNAL_MODULE_9__, __WEBPACK_EXTERNAL_MODULE_63__) {
+		root["DO"] = factory(root["window"], root["fetch"], root["crypto"], root["TextEncoder"]);
+})(this, function(__WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_5__, __WEBPACK_EXTERNAL_MODULE_9__, __WEBPACK_EXTERNAL_MODULE_63__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 43);
+/******/ 	return __webpack_require__(__webpack_require__.s = 42);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -81,14 +81,14 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 module.exports = {
-  Formats: __webpack_require__(23),
-  Initializer: __webpack_require__(24),
+  Formats: __webpack_require__(22),
+  Initializer: __webpack_require__(23),
   JSONDocument: __webpack_require__(52),
   JSONMapping: __webpack_require__(53),
-  JSONPatch: __webpack_require__(25),
+  JSONPatch: __webpack_require__(24),
   JSONPointer: __webpack_require__(14),
   JSONSchema: __webpack_require__(54),
-  Validator: __webpack_require__(26)
+  Validator: __webpack_require__(25)
 };
 
 /***/ }),
@@ -129,16 +129,16 @@ module.exports = g;
  * @module JSON Object Signing and Encryption (JOSE)
  */
 var JWA = __webpack_require__(15);
-var JWK = __webpack_require__(31);
+var JWK = __webpack_require__(30);
 var JWKSet = __webpack_require__(67);
 var JWT = __webpack_require__(68);
-var JWS = __webpack_require__(37);
-var Base64URLSchema = __webpack_require__(34);
-var JOSEHeaderSchema = __webpack_require__(36);
+var JWS = __webpack_require__(36);
+var Base64URLSchema = __webpack_require__(33);
+var JOSEHeaderSchema = __webpack_require__(35);
 var JWKSchema = __webpack_require__(10);
-var JWKSetSchema = __webpack_require__(32);
-var JWTClaimsSetSchema = __webpack_require__(35);
-var JWTSchema = __webpack_require__(33
+var JWKSetSchema = __webpack_require__(31);
+var JWTClaimsSetSchema = __webpack_require__(34);
+var JWTSchema = __webpack_require__(32
 
 /**
  * Export
@@ -159,17 +159,17 @@ var JWTSchema = __webpack_require__(33
 
 /***/ }),
 /* 3 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_3__;
+
+/***/ }),
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 module.exports = __webpack_require__(55).default;
 module.exports.default = module.exports;
 
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_4__;
 
 /***/ }),
 /* 5 */
@@ -2828,12 +2828,12 @@ module.exports = JWKSchema;
 const Config = __webpack_require__(7)
 const uri = __webpack_require__(12)
 const graph = __webpack_require__(13)
-const regex = __webpack_require__(45)
+const regex = __webpack_require__(44)
 
 const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
 const LDP_RESOURCE = '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
 
-var fetch = __webpack_require__(4)  // Uses native fetch() in the browser
+var fetch = __webpack_require__(5)  // Uses native fetch() in the browser
 
 module.exports = {
   copyResource,
@@ -2853,7 +2853,7 @@ module.exports = {
 }
 
 function initFetch (authenticatedFetch) {
-  fetch = authenticatedFetch || __webpack_require__(4)
+  fetch = authenticatedFetch || __webpack_require__(5)
 }
 
 // I want HTTP COPY and I want it now!
@@ -3845,10 +3845,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * TODO
  * - switch between Node.js webcrypto package and browser implementation
  */
-var base64url = __webpack_require__(3);
+var base64url = __webpack_require__(4);
 var supportedAlgorithms = __webpack_require__(60);
 
-var _require = __webpack_require__(29
+var _require = __webpack_require__(28
 
 /**
  * JWA
@@ -4016,7 +4016,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var fetch = __webpack_require__(4);
+var fetch = __webpack_require__(5);
 var onHttpError = __webpack_require__(18);
 var PoPToken = __webpack_require__(76);
 
@@ -4252,302 +4252,6 @@ module.exports = onHttpError;
 "use strict";
 
 
-const Config = __webpack_require__(7)
-const fetcher = __webpack_require__(11)
-const util = __webpack_require__(20)
-
-const { OIDCWebClient } = __webpack_require__(46)
-
-module.exports = {
-  afterSignIn,
-  checkCurrentSession,
-  enableDisableButton,
-  getAgentImage,
-  getAgentName,
-  getUserHTML,
-  initClient,
-  setUserInfo,
-  showUserIdentityInput,
-  showUserSigninSignup,
-  submitSignIn,
-  webIdFromSession
-}
-
-function afterSignIn () {
-  console.log('In afterSignIn()')
-
-  var user = document.querySelectorAll('aside.do article *[rel~="schema:creator"] > *[about="' + Config.User.IRI + '"]')
-  for (let i = 0; i < user.length; i++) {
-    var article = user[i].closest('article')
-    article.insertAdjacentHTML('afterbegin', '<button class="delete"><i class="fa fa-trash"></i></button>')
-  }
-
-  var buttonDelete = document.querySelectorAll('aside.do blockquote[cite] article button.delete')
-
-  for (let i = 0; i < buttonDelete.length; i++) {
-    buttonDelete[i].addEventListener('click', function (e) {
-      e.preventDefault()
-      e.stopPropagation()
-      var article = e.target.closest('article')
-      var refId = 'r-' + article.id
-      var noteIRI = article.closest('blockquote[cite]')
-      noteIRI = noteIRI.getAttribute('cite')
-
-      fetcher.deleteResource(noteIRI)
-        .then(() => {
-          var aside = e.target.closest('aside.do')
-          aside.parentNode.removeChild(aside)
-          var span = document.querySelector('span[about="#' + refId + '"]')
-          span.outerHTML = span.querySelector('mark').textContent
-          // TODO: Delete notification or send delete activity
-        })
-    })
-  }
-}
-
-function checkCurrentSession (config) {
-  return config.auth.currentSession()
-    .then(session => initUserFromSession(session))
-}
-
-// TODO: Generalize this further so that it is not only for submitSignIn
-function enableDisableButton (e, button) {
-  var delay = (e.type === 'cut' || e.type === 'paste') ? 250 : 0
-  var input
-
-  window.setTimeout(function () {
-    input = e.target.value
-    if (input.length > 10 && input.match(/^https?:\/\//g)) {
-      if (typeof e.which !== 'undefined' && e.which === 13) {
-        if (!button.getAttribute('disabled')) {
-          button.setAttribute('disabled', 'disabled')
-          e.preventDefault()
-          e.stopPropagation()
-          submitSignIn()
-        }
-      } else {
-        button.removeAttribute('disabled')
-      }
-    } else {
-      if (!button.getAttribute('disabled')) {
-        button.setAttribute('disabled', 'disabled')
-      }
-    }
-  }, delay)
-}
-
-function getAgentImage (s) {
-  return s.foafimg || s.schemaimage || s.asimage || s.siocavatar ||
-    s.foafdepiction || undefined
-}
-
-function getAgentName (s) {
-  var name = s.foafname || s.schemaname || s.asname || s.rdfslabel || undefined
-  if (typeof name === 'undefined') {
-    if (s.schemafamilyName && s.schemafamilyName.length > 0 && s.schemagivenName && s.schemagivenName.length > 0) {
-      name = s.schemagivenName + ' ' + s.schemafamilyName
-    } else if (s.foaffamilyName && s.foaffamilyName.length > 0 && s.foafgivenName && s.foafgivenName.length > 0) {
-      name = s.foafgivenName + ' ' + s.foaffamilyName
-    } else if (s.foafnick && s.foafnick.length > 0) {
-      name = s.foafnick
-    }
-  }
-  return name
-}
-
-function getUserHTML () {
-  let userName = Config.SecretAgentNames[Math.floor(Math.random() * Config.SecretAgentNames.length)]
-
-  if (Config.User.Name) {
-    // XXX: We have the IRI already
-    userName = '<span about="' + Config.User.IRI + '" property="schema:name">' +
-      Config.User.Name + '</span>'
-  }
-
-  let userImage = ''
-
-  if ('Image' in Config.User && typeof Config.User.Image !== 'undefined' && Config.User.Image.length > 0) {
-    userImage = '<img alt="" height="48" rel="schema:image" src="' +
-      Config.User.Image + '" width="48" /> '
-  }
-
-  let user = ''
-
-  if ('IRI' in Config.User && Config.User.IRI !== null && Config.User.IRI.length > 0) {
-    user = '<span about="' + Config.User.IRI + '" typeof="schema:Person">' +
-      userImage + '<a rel="schema:url" href="' + Config.User.IRI + '"> ' +
-      userName + '</a></span>'
-  } else {
-    user = '<span typeof="schema:Person">' + userName + '</span>'
-  }
-
-  return user
-}
-
-function initClient (config) {
-  config.auth = new OIDCWebClient({})
-}
-
-function initUserFromSession (session) {
-  if (!session) {
-    return Promise.resolve()
-  }
-
-  console.log('Initializing user from session:', session)
-
-  fetcher.initFetch(session.fetch)
-
-  let webIdUrl = webIdFromSession(session)
-
-  Config.session = session
-  Config.webId = webIdUrl
-
-  console.log('Setting user info for web id:', webIdUrl)
-
-  return setUserInfo(webIdUrl)
-
-    .then(() => {
-      var uI = document.getElementById('user-info')
-      if (uI) {
-        uI.innerHTML = getUserHTML()
-      }
-
-      return afterSignIn()
-    })
-}
-
-/**
- * @param userIRI {string}
- *
- * @returns {Promise}
- */
-function setUserInfo (userIRI) {
-  if (!userIRI) {
-    return Promise.reject(new Error('Could not set user info - no user IRI'))
-  }
-
-  return fetcher.getResourceGraph(userIRI)
-    .then(g => {
-      var s = g.child(userIRI)
-
-      Config.User.Graph = s
-      Config.User.IRI = userIRI
-      Config.User.Name = getAgentName(s)
-      Config.User.Image = getAgentImage(s)
-      Config.User.URL = s.foafhomepage ||
-        s['http://xmlns.com/foaf/0.1/weblog'] || s.schemaurl
-
-      Config.User.Knows = (s.foafknows && s.foafknows._array.length > 0)
-        ? util.uniqueArray(s.foafknows._array)
-        : []
-      Config.User.Knows = (s.schemaknows && s.schemaknows._array.length > 0)
-        ? util.uniqueArray(Config.User.Knows.concat(s.schemaknows._array))
-        : Config.User.Knows
-
-      Config.User.TempKnows = []
-      Config.User.SameAs = []
-      Config.User.Contacts = []
-
-      if (s.storage) {
-        Config.User.Storage = s.storage._array
-      }
-
-      if (s.preferencesFile && s.preferencesFile.length > 0) {
-        Config.User.PreferencesFile = s.preferencesFile
-
-        // TODO: Reconsider if/where to use this.
-        // setUserWorkspaces(Config.User.PreferencesFile)
-      }
-      return Config.User
-    })
-}
-
-function showUserIdentityInput (e) {
-  if (typeof e !== 'undefined') {
-    e.target.disabled = true
-  }
-
-  document.body.insertAdjacentHTML('beforeend', '<aside id="user-identity-input" class="do on"><button class="close" title="Close">❌</button><h2>Sign in with WebID</h2><label>HTTP(S) IRI</label> <input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="signin">Sign in</button></aside>')
-
-  var buttonSignIn = document.querySelector('#user-identity-input button.signin')
-  buttonSignIn.setAttribute('disabled', 'disabled')
-
-  document.querySelector('#user-identity-input').addEventListener('click', e => {
-    if (e.target.matches('button.close')) {
-      var signinUser = document.querySelector('#document-menu button.signin-user')
-      if (signinUser) {
-        signinUser.disabled = false
-      }
-    }
-  })
-
-  var inputWebid = document.querySelector('#user-identity-input input#webid')
-
-  buttonSignIn.addEventListener('click', submitSignIn)
-
-  let events = ['keyup', 'cut', 'paste', 'input']
-
-  events.forEach(eventType => {
-    inputWebid.addEventListener(eventType, e => { enableDisableButton(e, buttonSignIn) })
-  })
-
-  inputWebid.focus()
-}
-
-function showUserSigninSignup (node) {
-  if (!document.querySelector('#user-info')) {
-    var s = '<button class="signin-user" title="Sign in to authenticate"><i class="fa fa-user-secret fa-2x"></i>Sign in</button>'
-    if (Config.User.IRI) {
-      s = getUserHTML()
-    }
-    node.insertAdjacentHTML('beforeend', '<section id="user-info">' + s + '</section>')
-
-    var su = document.querySelector('#document-menu button.signin-user')
-    if (su) {
-      su.addEventListener('click', showUserIdentityInput)
-    }
-  }
-}
-
-// FIXME: This parameter value can be an event or a string
-function submitSignIn (url) {
-  if (typeof url !== 'string') {
-    var userIdentityInput = document.getElementById('user-identity-input')
-
-    if (userIdentityInput) {
-      userIdentityInput.insertAdjacentHTML('beforeend',
-        '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>')
-    }
-
-    url = userIdentityInput.querySelector('input#webid').value.trim()
-  }
-
-  if (!url) {
-    console.log('submitSignIn - no user url input')
-    return Promise.resolve()
-  }
-
-  return Config.auth.login(url)  // currently results in a window redirect
-
-  // if (userIdentityInput) {
-  //   userIdentityInput.parentNode.removeChild(userIdentityInput)
-  // }
-}
-
-function webIdFromSession (session) {
-  if (!session || !session.hasCredentials()) { return null }
-
-  return session.idClaims.sub
-}
-
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
 module.exports = {
   uniqueArray
 }
@@ -4571,25 +4275,25 @@ function uniqueArray (a) {
 
 
 /***/ }),
-/* 21 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-module.exports = __webpack_require__(22)
+module.exports = __webpack_require__(21)
 
 
 /***/ }),
-/* 22 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/**
  * Dependencies
  */
 const assert = __webpack_require__(8)
-const fetch = __webpack_require__(4)
-const { URL } = __webpack_require__(5)
+const fetch = __webpack_require__(5)
+const { URL } = __webpack_require__(3)
 const Headers = fetch.Headers ? fetch.Headers : global.Headers
 const {JSONDocument} = __webpack_require__(0)
 const {JWKSet} = __webpack_require__(2)
@@ -4931,7 +4635,7 @@ module.exports = RelyingParty
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 23 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5073,7 +4777,7 @@ var Formats = function () {
 module.exports = Formats.initialize();
 
 /***/ }),
-/* 24 */
+/* 23 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5397,7 +5101,7 @@ var Initializer = function () {
 module.exports = Initializer;
 
 /***/ }),
-/* 25 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5624,7 +5328,7 @@ var JSONPatch = function () {
 module.exports = JSONPatch;
 
 /***/ }),
-/* 26 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5641,7 +5345,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var formats = __webpack_require__(23);
+var formats = __webpack_require__(22);
 
 /**
  * For variable iterator counter
@@ -6857,7 +6561,7 @@ var Validator = function () {
 module.exports = Validator;
 
 /***/ }),
-/* 27 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6869,7 +6573,7 @@ module.exports = TextEncoder;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 28 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6907,19 +6611,19 @@ var NotSupportedError = function (_Error) {
 module.exports = NotSupportedError;
 
 /***/ }),
-/* 29 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 module.exports = {
-  DataError: __webpack_require__(30),
-  NotSupportedError: __webpack_require__(28)
+  DataError: __webpack_require__(29),
+  NotSupportedError: __webpack_require__(27)
 };
 
 /***/ }),
-/* 30 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -6954,7 +6658,7 @@ var DataError = function (_Error) {
 module.exports = DataError;
 
 /***/ }),
-/* 31 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7028,7 +6732,7 @@ var JWK = function (_JSONDocument) {
 module.exports = JWK;
 
 /***/ }),
-/* 32 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7062,7 +6766,7 @@ var JWKSchema = __webpack_require__(10
 module.exports = JWKSetSchema;
 
 /***/ }),
-/* 33 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7071,9 +6775,9 @@ module.exports = JWKSetSchema;
 /**
  * Dependencies
  */
-var Base64URLSchema = __webpack_require__(34);
-var JWTClaimsSetSchema = __webpack_require__(35);
-var JOSEHeaderSchema = __webpack_require__(36);
+var Base64URLSchema = __webpack_require__(33);
+var JWTClaimsSetSchema = __webpack_require__(34);
+var JOSEHeaderSchema = __webpack_require__(35);
 
 var _require = __webpack_require__(0
 
@@ -7215,7 +6919,7 @@ var JWTSchema = new JSONSchema({
 module.exports = JWTSchema;
 
 /***/ }),
-/* 34 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7243,7 +6947,7 @@ var Base64URLSchema = new JSONSchema({
 module.exports = Base64URLSchema;
 
 /***/ }),
-/* 35 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7459,7 +7163,7 @@ var JWTClaimsSetSchema = new JSONSchema({
 module.exports = JWTClaimsSetSchema;
 
 /***/ }),
-/* 36 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8044,7 +7748,7 @@ var JOSEHeaderSchema = new JSONSchema({
 module.exports = JOSEHeaderSchema;
 
 /***/ }),
-/* 37 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8059,10 +7763,10 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 /**
  * Dependencies
  */
-var base64url = __webpack_require__(3);
+var base64url = __webpack_require__(4);
 var JWA = __webpack_require__(15);
 
-var _require = __webpack_require__(29
+var _require = __webpack_require__(28
 
 /**
  * JWS
@@ -8176,7 +7880,7 @@ var JWS = function () {
 module.exports = JWS;
 
 /***/ }),
-/* 38 */
+/* 37 */
 /***/ (function(module, exports) {
 
 /**
@@ -8238,7 +7942,7 @@ module.exports = FormUrlEncoded
 
 
 /***/ }),
-/* 39 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8321,7 +8025,7 @@ var FormUrlEncoded = function () {
 module.exports = FormUrlEncoded;
 
 /***/ }),
-/* 40 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8400,13 +8104,17 @@ module.exports = LocalJsonStore;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 41 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
+var _require = __webpack_require__(3),
+    URL = _require.URL;
+
 // URI parameter types
+
 
 var HASH = 'hash';
 var QUERY = 'query';
@@ -8414,6 +8122,7 @@ var QUERY = 'query';
 module.exports = {
   clearAuthResponseFromUrl: clearAuthResponseFromUrl,
   currentLocation: currentLocation,
+  currentLocationNoAuth: currentLocationNoAuth,
   currentUriHasAuthResponse: currentUriHasAuthResponse,
   stateFromUri: stateFromUri,
   redirectTo: redirectTo,
@@ -8426,16 +8135,42 @@ module.exports = {
    * the current url's hash fragment.
    */
 };function clearAuthResponseFromUrl() {
-  // TODO: Implement
-  var clearedUrl = currentLocation();
+  var clearedUrl = currentLocationNoAuth();
 
   replaceCurrentUrl(clearedUrl);
 }
 
 /**
+ * Returns the current url with the authentication response hash fragments
+ * (containing access token, id token, state, etc) removed
+ *
+ * @returns {string}
+ */
+function currentLocationNoAuth() {
+  var currentUrl = new URL(currentLocation());
+
+  if (!currentUrl.hash) {
+    return currentUrl.toString();
+  } // nothing needs to be done
+
+  var hashFragments = currentUrl.hash.split('&');
+
+  var authParams = ['id_token', 'access_token', 'state', 'token_type', 'expires_in'];
+
+  hashFragments = hashFragments.filter(function (f) {
+    var fragmentKey = f.split('=')[0];
+    return !authParams.includes(fragmentKey);
+  });
+
+  currentUrl.hash = hashFragments.join('&');
+
+  return currentUrl.toString();
+}
+
+/**
  * Returns the current window's URI
  *
- * @return {string|null}
+ * @returns {string|null}
  */
 function currentLocation() {
   if (typeof window === 'undefined') {
@@ -8453,7 +8188,7 @@ function currentLocation() {
  * Tests whether the current URI is the result of an AuthenticationRequest
  * return redirect.
  *
- * @return {boolean}
+ * @returns {boolean}
  */
 function currentUriHasAuthResponse() {
   var currentUri = currentLocation();
@@ -8468,7 +8203,7 @@ function currentUriHasAuthResponse() {
  * @param uri {string}
  * @param uriType {string} 'hash' or 'query'
  *
- * @return {string|null} Value of the `state` query or hash fragment param
+ * @returns {string|null} Value of the `state` query or hash fragment param
  */
 function stateFromUri(uri) {
   var uriType = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : HASH;
@@ -8531,7 +8266,7 @@ function redirectTo(uri) {
 }
 
 /***/ }),
-/* 42 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8678,14 +8413,14 @@ function getDocument (cn, options) {
 
 
 /***/ }),
-/* 43 */
+/* 42 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(44);
+module.exports = __webpack_require__(43);
 
 
 /***/ }),
-/* 44 */
+/* 43 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/** dokieli
@@ -8697,13 +8432,12 @@ module.exports = __webpack_require__(44);
  */
 
 const fetcher = __webpack_require__(11)
-const auth = __webpack_require__(19)
-const doc = __webpack_require__(42)
+const auth = __webpack_require__(45)
+const doc = __webpack_require__(41)
 const uri = __webpack_require__(12)
 const graph = __webpack_require__(13)
 const inbox = __webpack_require__(84)
-const util = __webpack_require__(20)
-const auth = __webpack_require__(19)
+const util = __webpack_require__(19)
 
 if(typeof DO === 'undefined'){
 global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined;
@@ -14759,7 +14493,7 @@ module.exports = DO
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 45 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14773,6 +14507,302 @@ module.exports = {
 
 
 /***/ }),
+/* 45 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+const Config = __webpack_require__(7)
+const fetcher = __webpack_require__(11)
+const util = __webpack_require__(19)
+
+const { OIDCWebClient } = __webpack_require__(46)
+
+module.exports = {
+  afterSignIn,
+  checkCurrentSession,
+  enableDisableButton,
+  getAgentImage,
+  getAgentName,
+  getUserHTML,
+  initClient,
+  setUserInfo,
+  showUserIdentityInput,
+  showUserSigninSignup,
+  submitSignIn,
+  webIdFromSession
+}
+
+function afterSignIn () {
+  console.log('In afterSignIn()')
+
+  var user = document.querySelectorAll('aside.do article *[rel~="schema:creator"] > *[about="' + Config.User.IRI + '"]')
+  for (let i = 0; i < user.length; i++) {
+    var article = user[i].closest('article')
+    article.insertAdjacentHTML('afterbegin', '<button class="delete"><i class="fa fa-trash"></i></button>')
+  }
+
+  var buttonDelete = document.querySelectorAll('aside.do blockquote[cite] article button.delete')
+
+  for (let i = 0; i < buttonDelete.length; i++) {
+    buttonDelete[i].addEventListener('click', function (e) {
+      e.preventDefault()
+      e.stopPropagation()
+      var article = e.target.closest('article')
+      var refId = 'r-' + article.id
+      var noteIRI = article.closest('blockquote[cite]')
+      noteIRI = noteIRI.getAttribute('cite')
+
+      fetcher.deleteResource(noteIRI)
+        .then(() => {
+          var aside = e.target.closest('aside.do')
+          aside.parentNode.removeChild(aside)
+          var span = document.querySelector('span[about="#' + refId + '"]')
+          span.outerHTML = span.querySelector('mark').textContent
+          // TODO: Delete notification or send delete activity
+        })
+    })
+  }
+}
+
+function checkCurrentSession (config) {
+  return config.auth.currentSession()
+    .then(session => initUserFromSession(session))
+}
+
+// TODO: Generalize this further so that it is not only for submitSignIn
+function enableDisableButton (e, button) {
+  var delay = (e.type === 'cut' || e.type === 'paste') ? 250 : 0
+  var input
+
+  window.setTimeout(function () {
+    input = e.target.value
+    if (input.length > 10 && input.match(/^https?:\/\//g)) {
+      if (typeof e.which !== 'undefined' && e.which === 13) {
+        if (!button.getAttribute('disabled')) {
+          button.setAttribute('disabled', 'disabled')
+          e.preventDefault()
+          e.stopPropagation()
+          submitSignIn()
+        }
+      } else {
+        button.removeAttribute('disabled')
+      }
+    } else {
+      if (!button.getAttribute('disabled')) {
+        button.setAttribute('disabled', 'disabled')
+      }
+    }
+  }, delay)
+}
+
+function getAgentImage (s) {
+  return s.foafimg || s.schemaimage || s.asimage || s.siocavatar ||
+    s.foafdepiction || undefined
+}
+
+function getAgentName (s) {
+  var name = s.foafname || s.schemaname || s.asname || s.rdfslabel || undefined
+  if (typeof name === 'undefined') {
+    if (s.schemafamilyName && s.schemafamilyName.length > 0 && s.schemagivenName && s.schemagivenName.length > 0) {
+      name = s.schemagivenName + ' ' + s.schemafamilyName
+    } else if (s.foaffamilyName && s.foaffamilyName.length > 0 && s.foafgivenName && s.foafgivenName.length > 0) {
+      name = s.foafgivenName + ' ' + s.foaffamilyName
+    } else if (s.foafnick && s.foafnick.length > 0) {
+      name = s.foafnick
+    }
+  }
+  return name
+}
+
+function getUserHTML () {
+  let userName = Config.SecretAgentNames[Math.floor(Math.random() * Config.SecretAgentNames.length)]
+
+  if (Config.User.Name) {
+    // XXX: We have the IRI already
+    userName = '<span about="' + Config.User.IRI + '" property="schema:name">' +
+      Config.User.Name + '</span>'
+  }
+
+  let userImage = ''
+
+  if ('Image' in Config.User && typeof Config.User.Image !== 'undefined' && Config.User.Image.length > 0) {
+    userImage = '<img alt="" height="48" rel="schema:image" src="' +
+      Config.User.Image + '" width="48" /> '
+  }
+
+  let user = ''
+
+  if ('IRI' in Config.User && Config.User.IRI !== null && Config.User.IRI.length > 0) {
+    user = '<span about="' + Config.User.IRI + '" typeof="schema:Person">' +
+      userImage + '<a rel="schema:url" href="' + Config.User.IRI + '"> ' +
+      userName + '</a></span>'
+  } else {
+    user = '<span typeof="schema:Person">' + userName + '</span>'
+  }
+
+  return user
+}
+
+function initClient (config) {
+  config.auth = new OIDCWebClient({})
+}
+
+function initUserFromSession (session) {
+  if (!session) {
+    return Promise.resolve()
+  }
+
+  console.log('Initializing user from session:', session)
+
+  fetcher.initFetch(session.fetch)
+
+  let webIdUrl = webIdFromSession(session)
+
+  Config.session = session
+  Config.webId = webIdUrl
+
+  console.log('Setting user info for web id:', webIdUrl)
+
+  return setUserInfo(webIdUrl)
+
+    .then(() => {
+      var uI = document.getElementById('user-info')
+      if (uI) {
+        uI.innerHTML = getUserHTML()
+      }
+
+      return afterSignIn()
+    })
+}
+
+/**
+ * @param userIRI {string}
+ *
+ * @returns {Promise}
+ */
+function setUserInfo (userIRI) {
+  if (!userIRI) {
+    return Promise.reject(new Error('Could not set user info - no user IRI'))
+  }
+
+  return fetcher.getResourceGraph(userIRI)
+    .then(g => {
+      var s = g.child(userIRI)
+
+      Config.User.Graph = s
+      Config.User.IRI = userIRI
+      Config.User.Name = getAgentName(s)
+      Config.User.Image = getAgentImage(s)
+      Config.User.URL = s.foafhomepage ||
+        s['http://xmlns.com/foaf/0.1/weblog'] || s.schemaurl
+
+      Config.User.Knows = (s.foafknows && s.foafknows._array.length > 0)
+        ? util.uniqueArray(s.foafknows._array)
+        : []
+      Config.User.Knows = (s.schemaknows && s.schemaknows._array.length > 0)
+        ? util.uniqueArray(Config.User.Knows.concat(s.schemaknows._array))
+        : Config.User.Knows
+
+      Config.User.TempKnows = []
+      Config.User.SameAs = []
+      Config.User.Contacts = []
+
+      if (s.storage) {
+        Config.User.Storage = s.storage._array
+      }
+
+      if (s.preferencesFile && s.preferencesFile.length > 0) {
+        Config.User.PreferencesFile = s.preferencesFile
+
+        // TODO: Reconsider if/where to use this.
+        // setUserWorkspaces(Config.User.PreferencesFile)
+      }
+      return Config.User
+    })
+}
+
+function showUserIdentityInput (e) {
+  if (typeof e !== 'undefined') {
+    e.target.disabled = true
+  }
+
+  document.body.insertAdjacentHTML('beforeend', '<aside id="user-identity-input" class="do on"><button class="close" title="Close">❌</button><h2>Sign in with WebID</h2><label>HTTP(S) IRI</label> <input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="signin">Sign in</button></aside>')
+
+  var buttonSignIn = document.querySelector('#user-identity-input button.signin')
+  buttonSignIn.setAttribute('disabled', 'disabled')
+
+  document.querySelector('#user-identity-input').addEventListener('click', e => {
+    if (e.target.matches('button.close')) {
+      var signinUser = document.querySelector('#document-menu button.signin-user')
+      if (signinUser) {
+        signinUser.disabled = false
+      }
+    }
+  })
+
+  var inputWebid = document.querySelector('#user-identity-input input#webid')
+
+  buttonSignIn.addEventListener('click', submitSignIn)
+
+  let events = ['keyup', 'cut', 'paste', 'input']
+
+  events.forEach(eventType => {
+    inputWebid.addEventListener(eventType, e => { enableDisableButton(e, buttonSignIn) })
+  })
+
+  inputWebid.focus()
+}
+
+function showUserSigninSignup (node) {
+  if (!document.querySelector('#user-info')) {
+    var s = '<button class="signin-user" title="Sign in to authenticate"><i class="fa fa-user-secret fa-2x"></i>Sign in</button>'
+    if (Config.User.IRI) {
+      s = getUserHTML()
+    }
+    node.insertAdjacentHTML('beforeend', '<section id="user-info">' + s + '</section>')
+
+    var su = document.querySelector('#document-menu button.signin-user')
+    if (su) {
+      su.addEventListener('click', showUserIdentityInput)
+    }
+  }
+}
+
+// FIXME: This parameter value can be an event or a string
+function submitSignIn (url) {
+  if (typeof url !== 'string') {
+    var userIdentityInput = document.getElementById('user-identity-input')
+
+    if (userIdentityInput) {
+      userIdentityInput.insertAdjacentHTML('beforeend',
+        '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>')
+    }
+
+    url = userIdentityInput.querySelector('input#webid').value.trim()
+  }
+
+  if (!url) {
+    console.log('submitSignIn - no user url input')
+    return Promise.resolve()
+  }
+
+  return Config.auth.login(url)  // currently results in a window redirect
+
+  // if (userIdentityInput) {
+  //   userIdentityInput.parentNode.removeChild(userIdentityInput)
+  // }
+}
+
+function webIdFromSession (session) {
+  if (!session || !session.hasCredentials()) { return null }
+
+  return session.idClaims.sub
+}
+
+
+/***/ }),
 /* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -14781,7 +14811,7 @@ module.exports = {
 
 module.exports = {
   'OIDCWebClient': __webpack_require__(47),
-  'LocalJsonStore': __webpack_require__(40)
+  'LocalJsonStore': __webpack_require__(39)
 };
 
 /***/ }),
@@ -14795,13 +14825,13 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var RelyingParty = __webpack_require__(21);
+var RelyingParty = __webpack_require__(20);
 var Session = __webpack_require__(17);
 var storage = __webpack_require__(83);
 
 // URI parameter types
 
-var _require = __webpack_require__(41),
+var _require = __webpack_require__(40),
     QUERY = _require.QUERY;
 
 var OIDCWebClient = function () {
@@ -14827,7 +14857,7 @@ var OIDCWebClient = function () {
 
     this.defaults = options.defaults || {};
 
-    this.browser = options.browser || __webpack_require__(41);
+    this.browser = options.browser || __webpack_require__(40);
 
     this.provider = options.provider || this.defaults.issuer || null;
 
@@ -15888,7 +15918,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var JSONPatch = __webpack_require__(25);
+var JSONPatch = __webpack_require__(24);
 
 /**
  * JSONDocument
@@ -16179,8 +16209,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Initializer = __webpack_require__(24);
-var Validator = __webpack_require__(26);
+var Initializer = __webpack_require__(23);
+var Validator = __webpack_require__(25);
 
 /**
  * JSONSchema
@@ -16793,9 +16823,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var base64url = __webpack_require__(3);
+var base64url = __webpack_require__(4);
 var crypto = __webpack_require__(9);
-var TextEncoder = __webpack_require__(27
+var TextEncoder = __webpack_require__(26
 
 /**
  * HMAC with SHA-2 Functions
@@ -16921,9 +16951,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var base64url = __webpack_require__(3);
+var base64url = __webpack_require__(4);
 var crypto = __webpack_require__(9);
-var TextEncoder = __webpack_require__(27
+var TextEncoder = __webpack_require__(26
 
 /**
  * RSASSA-PKCS1-v1_5
@@ -17069,7 +17099,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 /**
  * Dependencies
  */
-var NotSupportedError = __webpack_require__(28
+var NotSupportedError = __webpack_require__(27
 
 /**
  * Operations
@@ -17214,8 +17244,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var _require = __webpack_require__(0),
     JSONDocument = _require.JSONDocument;
 
-var JWKSetSchema = __webpack_require__(32);
-var JWK = __webpack_require__(31
+var JWKSetSchema = __webpack_require__(31);
+var JWK = __webpack_require__(30
 
 /**
  * JWKSet
@@ -17311,14 +17341,14 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 /**
  * Dependencies
  */
-var base64url = __webpack_require__(3);
+var base64url = __webpack_require__(4);
 
 var _require = __webpack_require__(0),
     JSONDocument = _require.JSONDocument;
 
-var JWTSchema = __webpack_require__(33);
-var JWS = __webpack_require__(37);
-var DataError = __webpack_require__(30
+var JWTSchema = __webpack_require__(32);
+var JWS = __webpack_require__(36);
+var DataError = __webpack_require__(29
 
 /**
  * JWT
@@ -17595,11 +17625,11 @@ module.exports = JWT;
  * Dependencies
  */
 const assert = __webpack_require__(8)
-const base64url = __webpack_require__(3)
+const base64url = __webpack_require__(4)
 const crypto = __webpack_require__(9)
 const { JWT } = __webpack_require__(2)
-const FormUrlEncoded = __webpack_require__(38)
-const { URL } = __webpack_require__(5)
+const FormUrlEncoded = __webpack_require__(37)
+const { URL } = __webpack_require__(3)
 
 /**
  * Authentication Request
@@ -17792,13 +17822,13 @@ module.exports = AuthenticationRequest
 /* WEBPACK VAR INJECTION */(function(global, Buffer) {/**
  * Dependencies
  */
-const { URL } = __webpack_require__(5)
+const { URL } = __webpack_require__(3)
 const assert = __webpack_require__(8)
 const crypto = __webpack_require__(9)
-const base64url = __webpack_require__(3)
-const fetch = __webpack_require__(4)
+const base64url = __webpack_require__(4)
+const fetch = __webpack_require__(5)
 const Headers = fetch.Headers ? fetch.Headers : global.Headers
-const FormUrlEncoded = __webpack_require__(38)
+const FormUrlEncoded = __webpack_require__(37)
 const IDToken = __webpack_require__(71)
 const Session = __webpack_require__(73)
 const onHttpError = __webpack_require__(16)
@@ -18539,7 +18569,7 @@ module.exports = IDTokenSchema
 "use strict";
 
 
-const fetch = __webpack_require__(4)
+const fetch = __webpack_require__(5)
 const onHttpError = __webpack_require__(16)
 const PoPToken = __webpack_require__(74)
 
@@ -18587,7 +18617,7 @@ class Session {
    * @returns {Session}
    */
   static fromAuthResponse (response) {
-    const RelyingParty = __webpack_require__(22)  // import here due to circular dep
+    const RelyingParty = __webpack_require__(21)  // import here due to circular dep
 
     let payload = response.decoded.payload
     let registration = response.rp.registration
@@ -18706,7 +18736,7 @@ module.exports = Session
 "use strict";
 
 
-const { URL } = __webpack_require__(5)
+const { URL } = __webpack_require__(3)
 const {JWT, JWK} = __webpack_require__(2)
 
 const DEFAULT_MAX_AGE = 3600  // Default token expiration, in seconds
@@ -18931,7 +18961,7 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var _require = __webpack_require__(5),
+var _require = __webpack_require__(3),
     URL = _require.URL;
 
 var _require2 = __webpack_require__(2),
@@ -19057,9 +19087,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  * Dependencies
  */
 var assert = __webpack_require__(8);
-var fetch = __webpack_require__(4);
+var fetch = __webpack_require__(5);
 
-var _require = __webpack_require__(5),
+var _require = __webpack_require__(3),
     URL = _require.URL;
 
 var Headers = fetch.Headers ? fetch.Headers : global.Headers;
@@ -19477,15 +19507,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * Dependencies
  */
 var assert = __webpack_require__(8);
-var base64url = __webpack_require__(3);
+var base64url = __webpack_require__(4);
 var crypto = __webpack_require__(9);
 
 var _require = __webpack_require__(2),
     JWT = _require.JWT;
 
-var FormUrlEncoded = __webpack_require__(39);
+var FormUrlEncoded = __webpack_require__(38);
 
-var _require2 = __webpack_require__(5),
+var _require2 = __webpack_require__(3),
     URL = _require2.URL;
 
 /**
@@ -19687,15 +19717,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 /**
  * Dependencies
  */
-var _require = __webpack_require__(5),
+var _require = __webpack_require__(3),
     URL = _require.URL;
 
 var assert = __webpack_require__(8);
 var crypto = __webpack_require__(9);
-var base64url = __webpack_require__(3);
-var fetch = __webpack_require__(4);
+var base64url = __webpack_require__(4);
+var fetch = __webpack_require__(5);
 var Headers = fetch.Headers ? fetch.Headers : global.Headers;
-var FormUrlEncoded = __webpack_require__(39);
+var FormUrlEncoded = __webpack_require__(38);
 var IDToken = __webpack_require__(80);
 var Session = __webpack_require__(17);
 var onHttpError = __webpack_require__(18);
@@ -20638,8 +20668,8 @@ module.exports = RelyingPartySchema;
 "use strict";
 /* WEBPACK VAR INJECTION */(function(global) {
 
-var RelyingParty = __webpack_require__(21);
-var LocalJsonStore = __webpack_require__(40);
+var RelyingParty = __webpack_require__(20);
+var LocalJsonStore = __webpack_require__(39);
 var Session = __webpack_require__(17);
 
 module.exports = {
@@ -20688,7 +20718,7 @@ function defaultProviderStore(store) {
 "use strict";
 
 
-const doc = __webpack_require__(42)
+const doc = __webpack_require__(41)
 const uri = __webpack_require__(12)
 const graph = __webpack_require__(13)
 const fetcher = __webpack_require__(11)
