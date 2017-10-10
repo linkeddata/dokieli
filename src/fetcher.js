@@ -1,12 +1,14 @@
 'use strict'
 
-const fetch = require('node-fetch')  // Uses native fetch() in the browser
 const Config = require('./config')
 const uri = require('./uri')
 const graph = require('./graph')
+const regex = require('./regex')
 
 const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
 const LDP_RESOURCE = '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
+
+var fetch = require('node-fetch')  // Uses native fetch() in the browser
 
 module.exports = {
   copyResource,
@@ -17,11 +19,16 @@ module.exports = {
   getResourceHead,
   getResourceGraph,
   getResourceOptions,
+  initFetch,
   parseLinkHeader,
   patchResource,
   postResource,
   putResource,
   putResourceACL
+}
+
+function initFetch (authenticatedFetch) {
+  fetch = authenticatedFetch || require('node-fetch')
 }
 
 // I want HTTP COPY and I want it now!
@@ -307,15 +314,14 @@ function parseLinkHeader (link) {
   if (!link) {
     return {}
   }
-  var linkexp = /<[^>]*>\s*(\s*\s*[^()<>@,;:"/[\]?={} \t]+=(([^()<>@,;:"/[\]?={} \t]+)|("[^"]*")))*(,|$)/g
-  var paramexp = /[^()<>@,;:"/[\]?={} \t]+=(([^()<>@,;:"/[\]?={} \t]+)|("[^"]*"))/g
-  var matches = link.match(linkexp)
+
+  var matches = link.match(regex.linkexp)
   var rels = {}
   for (var i = 0; i < matches.length; i++) {
     var split = matches[i].split('>')
     var href = split[0].substring(1)
     var ps = split[1]
-    var s = ps.match(paramexp)
+    var s = ps.match(regex.paramexp)
     for (var j = 0; j < s.length; j++) {
       var p = s[j]
       var paramsplit = p.split('=')

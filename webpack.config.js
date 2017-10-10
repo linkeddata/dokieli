@@ -20,7 +20,10 @@ module.exports = {
     ]
   },
   externals: {
-    'node-fetch': 'fetch'
+    'node-fetch': 'fetch',
+    'text-encoding': 'TextEncoder',
+    'whatwg-url': 'window',
+    '@trust/webcrypto': 'crypto'
   },
   devtool: 'source-map'
 }

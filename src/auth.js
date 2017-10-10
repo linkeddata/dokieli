@@ -3,22 +3,28 @@
 const Config = require('./config')
 const fetcher = require('./fetcher')
 const util = require('./util')
+const provider = require('./authorized-provider')
 
-// const { OIDCWebClient } = require('@trust/oidc-web')
+const { OIDCWebClient } = require('@trust/oidc-web')
 
 module.exports = {
   afterSignIn,
+  checkCurrentSession,
   enableDisableButton,
   getAgentImage,
   getAgentName,
   getUserHTML,
+  initClient,
   setUserInfo,
   showUserIdentityInput,
   showUserSigninSignup,
-  submitSignIn
+  submitSignIn,
+  webIdFromSession
 }
 
 function afterSignIn () {
+  console.log('In afterSignIn()')
+
   var user = document.querySelectorAll('aside.do article *[rel~="schema:creator"] > *[about="' + Config.User.IRI + '"]')
   for (let i = 0; i < user.length; i++) {
     var article = user[i].closest('article')
@@ -46,6 +52,11 @@ function afterSignIn () {
         })
     })
   }
+}
+
+function checkCurrentSession (config) {
+  return config.auth.currentSession()
+    .then(session => initUserFromSession(session))
 }
 
 // TODO: Generalize this further so that it is not only for submitSignIn
@@ -120,6 +131,38 @@ function getUserHTML () {
   }
 
   return user
+}
+
+function initClient (config) {
+  config.auth = new OIDCWebClient({})
+}
+
+function initUserFromSession (session) {
+  if (!session || !session.hasCredentials()) {
+    return Promise.resolve()
+  }
+
+  console.log('Initializing user from session:', session)
+
+  fetcher.initFetch(session.fetch)
+
+  let webIdUrl = webIdFromSession(session)
+
+  Config.session = session
+  Config.webId = webIdUrl
+
+  console.log('Setting user info for web id:', webIdUrl)
+
+  return setUserInfo(webIdUrl)
+
+    .then(() => {
+      var uI = document.getElementById('user-info')
+      if (uI) {
+        uI.innerHTML = getUserHTML()
+      }
+
+      return afterSignIn()
+    })
 }
 
 /**
@@ -233,17 +276,25 @@ function submitSignIn (url) {
     return Promise.resolve()
   }
 
-  return setUserInfo(url)
-    .then(() => {
-      var uI = document.getElementById('user-info')
-      if (uI) {
-        uI.innerHTML = getUserHTML()
+  // First, discover the authorized provider for a web id
+  return provider.authorizedProviderFor(url)
+
+    .then(providerUrl => {
+      if (providerUrl) {
+        // currently results in a window redirect
+        return Config.auth.login(providerUrl)
       }
 
-      if (userIdentityInput) {
-        userIdentityInput.parentNode.removeChild(userIdentityInput)
-      }
-
-      afterSignIn()
+      console.log('No authorized provider discovered for:', url)
     })
+
+  // if (userIdentityInput) {
+  //   userIdentityInput.parentNode.removeChild(userIdentityInput)
+  // }
+}
+
+function webIdFromSession (session) {
+  if (!session || !session.hasCredentials()) { return null }
+
+  return session.idClaims.sub
 }
