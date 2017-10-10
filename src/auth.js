@@ -137,7 +137,7 @@ function initClient (config) {
 }
 
 function initUserFromSession (session) {
-  if (!session) {
+  if (!session || !session.hasCredentials()) {
     return Promise.resolve()
   }
 

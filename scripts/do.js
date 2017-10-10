@@ -8153,7 +8153,9 @@ function currentLocationNoAuth() {
     return currentUrl.toString();
   } // nothing needs to be done
 
-  var hashFragments = currentUrl.hash.split('&');
+  var hashFragments = currentUrl.hash.slice(1); // drop leading #
+
+  hashFragments = hashFragments.split('&');
 
   var authParams = ['id_token', 'access_token', 'state', 'token_type', 'expires_in'];
 
@@ -14650,7 +14652,7 @@ function initClient (config) {
 }
 
 function initUserFromSession (session) {
-  if (!session) {
+  if (!session || !session.hasCredentials()) {
     return Promise.resolve()
   }
 
@@ -14948,6 +14950,10 @@ var OIDCWebClient = function () {
       var state = this.browser.stateFromUri(responseUri);
 
       return this.providers.get(state).then(function (provider) {
+        if (!provider) {
+          throw new Error('Could not load provider uri from response state param');
+        }
+
         return _this3.rpFor(provider);
       }).then(function (rp) {
         return rp.validateResponse(responseUri, _this3.store);
@@ -14955,6 +14961,10 @@ var OIDCWebClient = function () {
         _this3.browser.clearAuthResponseFromUrl();
 
         return _this3.session.save(session); // returns session
+      }).catch(function (error) {
+        console.log(error);
+
+        return null;
       });
     }
 
