@@ -3,6 +3,7 @@
 const Config = require('./config')
 const fetcher = require('./fetcher')
 const util = require('./util')
+const provider = require('./authorized-provider')
 
 const { OIDCWebClient } = require('@trust/oidc-web')
 
@@ -275,7 +276,17 @@ function submitSignIn (url) {
     return Promise.resolve()
   }
 
-  return Config.auth.login(url)  // currently results in a window redirect
+  // First, discover the authorized provider for a web id
+  return provider.authorizedProviderFor(url)
+
+    .then(providerUrl => {
+      if (providerUrl) {
+        // currently results in a window redirect
+        return Config.auth.login(providerUrl)
+      }
+
+      console.log('No authorized provider discovered for:', url)
+    })
 
   // if (userIdentityInput) {
   //   userIdentityInput.parentNode.removeChild(userIdentityInput)

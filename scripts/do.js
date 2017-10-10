@@ -7,7 +7,7 @@
 		exports["DO"] = factory(require("window"), require("fetch"), require("crypto"), require("TextEncoder"));
 	else
 		root["DO"] = factory(root["window"], root["fetch"], root["crypto"], root["TextEncoder"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_3__, __WEBPACK_EXTERNAL_MODULE_5__, __WEBPACK_EXTERNAL_MODULE_9__, __WEBPACK_EXTERNAL_MODULE_63__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_2__, __WEBPACK_EXTERNAL_MODULE_4__, __WEBPACK_EXTERNAL_MODULE_9__, __WEBPACK_EXTERNAL_MODULE_67__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -83,11 +83,11 @@ return /******/ (function(modules) { // webpackBootstrap
 module.exports = {
   Formats: __webpack_require__(22),
   Initializer: __webpack_require__(23),
-  JSONDocument: __webpack_require__(52),
-  JSONMapping: __webpack_require__(53),
+  JSONDocument: __webpack_require__(56),
+  JSONMapping: __webpack_require__(57),
   JSONPatch: __webpack_require__(24),
   JSONPointer: __webpack_require__(14),
-  JSONSchema: __webpack_require__(54),
+  JSONSchema: __webpack_require__(58),
   Validator: __webpack_require__(25)
 };
 
@@ -120,6 +120,12 @@ module.exports = g;
 
 /***/ }),
 /* 2 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE_2__;
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -130,12 +136,12 @@ module.exports = g;
  */
 var JWA = __webpack_require__(15);
 var JWK = __webpack_require__(30);
-var JWKSet = __webpack_require__(67);
-var JWT = __webpack_require__(68);
+var JWKSet = __webpack_require__(71);
+var JWT = __webpack_require__(72);
 var JWS = __webpack_require__(36);
 var Base64URLSchema = __webpack_require__(33);
 var JOSEHeaderSchema = __webpack_require__(35);
-var JWKSchema = __webpack_require__(10);
+var JWKSchema = __webpack_require__(12);
 var JWKSetSchema = __webpack_require__(31);
 var JWTClaimsSetSchema = __webpack_require__(34);
 var JWTSchema = __webpack_require__(32
@@ -158,24 +164,18 @@ var JWTSchema = __webpack_require__(32
 };
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports) {
 
-module.exports = __WEBPACK_EXTERNAL_MODULE_3__;
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(55).default;
-module.exports.default = module.exports;
-
+module.exports = __WEBPACK_EXTERNAL_MODULE_4__;
 
 /***/ }),
 /* 5 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __WEBPACK_EXTERNAL_MODULE_5__;
+module.exports = __webpack_require__(59).default;
+module.exports.default = module.exports;
+
 
 /***/ }),
 /* 6 */
@@ -192,9 +192,9 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_5__;
 
 
 
-var base64 = __webpack_require__(56)
-var ieee754 = __webpack_require__(57)
-var isArray = __webpack_require__(58)
+var base64 = __webpack_require__(60)
+var ieee754 = __webpack_require__(61)
+var isArray = __webpack_require__(62)
 
 exports.Buffer = Buffer
 exports.SlowBuffer = SlowBuffer
@@ -2303,7 +2303,7 @@ function isBuffer(b) {
 // ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-var util = __webpack_require__(48);
+var util = __webpack_require__(52);
 var hasOwn = Object.prototype.hasOwnProperty;
 var pSlice = Array.prototype.slice;
 var functionsHaveNames = (function () {
@@ -2741,99 +2741,15 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_9__;
 "use strict";
 
 
-/**
- * Dependencies
- * @ignore
- */
-
-var _require = __webpack_require__(0),
-    JSONSchema = _require.JSONSchema;
-
-var _require2 = __webpack_require__(66
-
-/**
- * JWK Schema
- */
-),
-    BASE64_REGEXP = _require2.BASE64_REGEXP;
-
-var JWKSchema = new JSONSchema({
-  type: 'object',
-  properties: {
-
-    kty: {
-      type: 'string',
-      //format: 'case-sensitive',
-      enum: ['RSA', 'EC', 'oct'] // other values MAY be used
-    },
-
-    use: {
-      type: 'string',
-      //format: 'case-sensitive',
-      enum: ['sig', 'enc'] // other values MAY be used
-    },
-
-    key_ops: {
-      type: 'array',
-      //format: 'case-sensitive',
-      items: {
-        enum: ['sign', 'verify', 'encrypt', 'decrypt', 'wrapKey', 'unwrapKey', 'deriveKey', 'deriveBits'] // other values MAY be used
-      }
-    },
-
-    alg: {
-      type: 'string',
-      //format: 'case-sensitive',
-      enum: ['HS256', 'HS384', 'HS512', 'RS256', 'RS384', 'RS512', 'ES256', 'ES384', 'ES512', 'PS256', 'PS384', 'PS512', 'none'] // other values MAY be used
-    },
-
-    kid: {
-      type: 'string'
-    },
-
-    x5u: {
-      type: 'string'
-      //format: 'url'
-    },
-
-    x5c: {
-      type: 'array'
-      //format: BASE64_REGEXP
-    },
-
-    x5t: {
-      type: 'string'
-      //format: BASE64_REGEXP
-    }
-
-    //'x5t#S256': {
-    //  type: 'string',
-    //  //format: BASE64_REGEXP
-    //}
-  }
-});
-
-/**
- * Export
- */
-module.exports = JWKSchema;
-
-/***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
 const Config = __webpack_require__(7)
-const uri = __webpack_require__(12)
+const uri = __webpack_require__(11)
 const graph = __webpack_require__(13)
 const regex = __webpack_require__(44)
 
 const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
 const LDP_RESOURCE = '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
 
-var fetch = __webpack_require__(5)  // Uses native fetch() in the browser
+var fetch = __webpack_require__(4)  // Uses native fetch() in the browser
 
 module.exports = {
   copyResource,
@@ -2853,7 +2769,7 @@ module.exports = {
 }
 
 function initFetch (authenticatedFetch) {
-  fetch = authenticatedFetch || __webpack_require__(5)
+  fetch = authenticatedFetch || __webpack_require__(4)
 }
 
 // I want HTTP COPY and I want it now!
@@ -3367,7 +3283,7 @@ function putResourceACL (accessToURL, aclURL, acl) {
 
 
 /***/ }),
-/* 12 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3438,6 +3354,90 @@ function stripFragmentFromString (string) {
   return string
 }
 
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * Dependencies
+ * @ignore
+ */
+
+var _require = __webpack_require__(0),
+    JSONSchema = _require.JSONSchema;
+
+var _require2 = __webpack_require__(70
+
+/**
+ * JWK Schema
+ */
+),
+    BASE64_REGEXP = _require2.BASE64_REGEXP;
+
+var JWKSchema = new JSONSchema({
+  type: 'object',
+  properties: {
+
+    kty: {
+      type: 'string',
+      //format: 'case-sensitive',
+      enum: ['RSA', 'EC', 'oct'] // other values MAY be used
+    },
+
+    use: {
+      type: 'string',
+      //format: 'case-sensitive',
+      enum: ['sig', 'enc'] // other values MAY be used
+    },
+
+    key_ops: {
+      type: 'array',
+      //format: 'case-sensitive',
+      items: {
+        enum: ['sign', 'verify', 'encrypt', 'decrypt', 'wrapKey', 'unwrapKey', 'deriveKey', 'deriveBits'] // other values MAY be used
+      }
+    },
+
+    alg: {
+      type: 'string',
+      //format: 'case-sensitive',
+      enum: ['HS256', 'HS384', 'HS512', 'RS256', 'RS384', 'RS512', 'ES256', 'ES384', 'ES512', 'PS256', 'PS384', 'PS512', 'none'] // other values MAY be used
+    },
+
+    kid: {
+      type: 'string'
+    },
+
+    x5u: {
+      type: 'string'
+      //format: 'url'
+    },
+
+    x5c: {
+      type: 'array'
+      //format: BASE64_REGEXP
+    },
+
+    x5t: {
+      type: 'string'
+      //format: BASE64_REGEXP
+    }
+
+    //'x5t#S256': {
+    //  type: 'string',
+    //  //format: BASE64_REGEXP
+    //}
+  }
+});
+
+/**
+ * Export
+ */
+module.exports = JWKSchema;
 
 /***/ }),
 /* 13 */
@@ -3845,8 +3845,8 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * TODO
  * - switch between Node.js webcrypto package and browser implementation
  */
-var base64url = __webpack_require__(4);
-var supportedAlgorithms = __webpack_require__(60);
+var base64url = __webpack_require__(5);
+var supportedAlgorithms = __webpack_require__(64);
 
 var _require = __webpack_require__(28
 
@@ -4016,9 +4016,9 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var fetch = __webpack_require__(5);
+var fetch = __webpack_require__(4);
 var onHttpError = __webpack_require__(18);
-var PoPToken = __webpack_require__(76);
+var PoPToken = __webpack_require__(80);
 
 var Session = function () {
   /**
@@ -4167,7 +4167,7 @@ var Session = function () {
   }, {
     key: 'fromAuthResponse',
     value: function fromAuthResponse(response) {
-      var RelyingParty = __webpack_require__(77); // import here due to circular dep
+      var RelyingParty = __webpack_require__(81); // import here due to circular dep
 
       var payload = response.decoded.payload;
       var registration = response.rp.registration;
@@ -4292,14 +4292,14 @@ module.exports = __webpack_require__(21)
  * Dependencies
  */
 const assert = __webpack_require__(8)
-const fetch = __webpack_require__(5)
-const { URL } = __webpack_require__(3)
+const fetch = __webpack_require__(4)
+const { URL } = __webpack_require__(2)
 const Headers = fetch.Headers ? fetch.Headers : global.Headers
 const {JSONDocument} = __webpack_require__(0)
-const {JWKSet} = __webpack_require__(2)
-const AuthenticationRequest = __webpack_require__(69)
-const AuthenticationResponse = __webpack_require__(70)
-const RelyingPartySchema = __webpack_require__(75)
+const {JWKSet} = __webpack_require__(3)
+const AuthenticationRequest = __webpack_require__(73)
+const AuthenticationResponse = __webpack_require__(74)
+const RelyingPartySchema = __webpack_require__(79)
 const onHttpError = __webpack_require__(16)
 
 /**
@@ -6568,7 +6568,7 @@ module.exports = Validator;
 /* WEBPACK VAR INJECTION */(function(global) {
 
 var TextEncoder = global.TextEncoder ? global.TextEncoder // browser
-: __webpack_require__(63).TextEncoder; // node shim
+: __webpack_require__(67).TextEncoder; // node shim
 module.exports = TextEncoder;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
@@ -6680,7 +6680,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var _require = __webpack_require__(0),
     JSONDocument = _require.JSONDocument;
 
-var JWKSchema = __webpack_require__(10);
+var JWKSchema = __webpack_require__(12);
 var JWA = __webpack_require__(15
 
 /**
@@ -6745,7 +6745,7 @@ module.exports = JWK;
 var _require = __webpack_require__(0),
     JSONSchema = _require.JSONSchema;
 
-var JWKSchema = __webpack_require__(10
+var JWKSchema = __webpack_require__(12
 
 /**
  * JWKSetSchema
@@ -7172,7 +7172,7 @@ module.exports = JWTClaimsSetSchema;
 /**
  * Dependencies
  */
-var JWKSchema = __webpack_require__(10);
+var JWKSchema = __webpack_require__(12);
 
 var _require = __webpack_require__(0
 
@@ -7763,7 +7763,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 /**
  * Dependencies
  */
-var base64url = __webpack_require__(4);
+var base64url = __webpack_require__(5);
 var JWA = __webpack_require__(15);
 
 var _require = __webpack_require__(28
@@ -8110,7 +8110,7 @@ module.exports = LocalJsonStore;
 "use strict";
 
 
-var _require = __webpack_require__(3),
+var _require = __webpack_require__(2),
     URL = _require.URL;
 
 // URI parameter types
@@ -8433,12 +8433,12 @@ module.exports = __webpack_require__(43);
  * https://github.com/linkeddata/dokieli
  */
 
-const fetcher = __webpack_require__(11)
+const fetcher = __webpack_require__(10)
 const auth = __webpack_require__(45)
 const doc = __webpack_require__(41)
-const uri = __webpack_require__(12)
+const uri = __webpack_require__(11)
 const graph = __webpack_require__(13)
-const inbox = __webpack_require__(84)
+const inbox = __webpack_require__(88)
 const util = __webpack_require__(19)
 
 if(typeof DO === 'undefined'){
@@ -14516,10 +14516,11 @@ module.exports = {
 
 
 const Config = __webpack_require__(7)
-const fetcher = __webpack_require__(11)
+const fetcher = __webpack_require__(10)
 const util = __webpack_require__(19)
+const provider = __webpack_require__(46)
 
-const { OIDCWebClient } = __webpack_require__(46)
+const { OIDCWebClient } = __webpack_require__(50)
 
 module.exports = {
   afterSignIn,
@@ -14790,7 +14791,17 @@ function submitSignIn (url) {
     return Promise.resolve()
   }
 
-  return Config.auth.login(url)  // currently results in a window redirect
+  // First, discover the authorized provider for a web id
+  return provider.authorizedProviderFor(url)
+
+    .then(providerUrl => {
+      if (providerUrl) {
+        // currently results in a window redirect
+        return Config.auth.login(providerUrl)
+      }
+
+      console.log('No authorized provider discovered for:', url)
+    })
 
   // if (userIdentityInput) {
   //   userIdentityInput.parentNode.removeChild(userIdentityInput)
@@ -14811,13 +14822,483 @@ function webIdFromSession (session) {
 "use strict";
 
 
+const { URL } = __webpack_require__(2)
+const validUrl = __webpack_require__(47)
+const fetch = __webpack_require__(4)
+const li = __webpack_require__(49)
+const fetcher = __webpack_require__(10)
+const { getProxyableIRI } = __webpack_require__(11)
+
 module.exports = {
-  'OIDCWebClient': __webpack_require__(47),
+  discoverProviderFor,
+  parseProviderLink,
+  authorizedProviderFor,
+  providerExists,
+  validateProviderUri
+}
+
+/**
+ * @param uri {string} Provider URI or Web ID URI
+ *
+ * @returns {Promise<string>}
+ */
+function authorizedProviderFor (uri) {
+  // First, determine if the uri is an OIDC provider
+  return providerExists(uri)
+    .then(providerUri => {
+      if (providerUri) {
+        return providerUri  // the given uri's origin hosts an OIDC provider
+      }
+
+      // Given uri is not a provider (for example, a static Web ID profile URI)
+      // Discover its preferred provider
+      return discoverProviderFor(uri)
+    })
+}
+
+/**
+ * @param uri {string} Provider URI or Web ID URI
+ *
+ * @returns {Promise<string|null>} Returns the Provider URI origin if an OIDC
+ *   provider exists at the given uri, or `null` if none exists
+ */
+function providerExists (uri) {
+  let providerOrigin = (new URL(uri)).origin
+  let providerConfigUri = getProxyableIRI(providerOrigin + '/.well-known/openid-configuration')
+
+  return fetch(providerConfigUri, { method: 'HEAD' })
+    .then(result => {
+      if (result.ok) {
+        return providerOrigin
+      }
+
+      console.log('Could not discover provider via', providerConfigUri)
+      return null
+    })
+    .catch(() => {
+      console.log('Could not discover provider via', providerConfigUri)
+    })
+}
+
+/**
+ *
+ * @param webId {string} Web ID URI
+ *
+ * @returns {Promise<string>} Resolves with the preferred provider uri for the
+ *  given Web ID, extracted from Link rel header or profile body. If no
+ *  provider URI was found, reject with an error.
+ */
+function discoverProviderFor (webId) {
+  return discoverFromHeaders(webId)
+
+    .then(providerFromHeaders => providerFromHeaders || discoverFromProfile(webId))
+
+    .then(providerUri => {
+      if (!providerUri) {
+        console.log('Could not discover provider from headers or profile')
+      }
+
+      // drop the path (provider origin only)
+      if (providerUri) {
+        providerUri = (new URL(providerUri)).origin
+      }
+
+      validateProviderUri(providerUri, webId)  // Throw an error if empty or invalid
+
+      return providerUri
+    })
+}
+
+/**
+ * @param webId {string}
+ *
+ * @returns {Promise<string|null>}
+ */
+function discoverFromHeaders (webId) {
+  let profile = getProxyableIRI(webId)
+  return fetch(profile, { method: 'OPTIONS' })
+    .then(response => {
+      if (response.ok) {
+        return parseProviderLink(response.headers)
+      }
+
+      console.log('Could not discover provider from OPTIONS', profile)
+      return null
+    })
+    .catch(() => {
+      console.log('Could not discover provider from OPTIONS', profile)
+    })
+}
+
+function discoverFromProfile (webId) {
+  let profile = getProxyableIRI(webId)
+
+  return fetcher.getResourceGraph(profile)
+    .then(graph => {
+      let subgraph = graph.child(webId)
+
+      let providerUri = subgraph['http://www.w3.org/ns/solid/terms#oidcIssuer']
+
+      return providerUri
+    })
+
+  // const store = rdf.graph()
+  //
+  // const fetcher = rdf.fetcher(store)
+  //
+  // return fetcher.fetch(webId, { force: true })
+  //   .then(response => {
+  //     if (!response.ok) {
+  //       let error = new Error(`Could not reach Web ID ${webId} to discover provider`)
+  //       error.status = 400
+  //       throw error
+  //     }
+  //
+  //     let providerTerm = rdf.namedNode('http://www.w3.org/ns/solid/terms#oidcIssuer')
+  //     let providerUri = store.anyValue(rdf.namedNode(webId), providerTerm)
+  //
+  //     return providerUri
+  //   })
+}
+
+/**
+ * Returns the contents of the OIDC issuer Link rel header.
+ *
+ * @see https://openid.net/specs/openid-connect-discovery-1_0.html#IssuerDiscovery
+ *
+ * @param headers {Headers} Response headers from an OPTIONS call
+ *
+ * @return {string}
+ */
+function parseProviderLink (headers) {
+  let links = li.parse(headers.get('link')) || {}
+
+  return links['http://openid.net/specs/connect/1.0/issuer']
+}
+
+/**
+ * Validates a preferred provider uri (makes sure it's a well-formed URI).
+ *
+ * @param provider {string} Identity provider URI
+ *
+ * @throws {Error} If the URI is invalid
+ */
+function validateProviderUri (provider, webId) {
+  if (!provider) {
+    let error = new Error(`OIDC issuer not advertised for ${webId}.
+    See https://github.com/solid/webid-oidc-spec#authorized-oidc-issuer-discovery`)
+    error.status = 400
+    throw error
+  }
+
+  if (!validUrl.isUri(provider)) {
+    let error = new Error(`OIDC issuer for ${webId} is not a valid URI: ${provider}`)
+    error.status = 400
+    throw error
+  }
+}
+
+
+/***/ }),
+/* 47 */
+/***/ (function(module, exports, __webpack_require__) {
+
+/* WEBPACK VAR INJECTION */(function(module) {(function(module) {
+    'use strict';
+
+    module.exports.is_uri = is_iri;
+    module.exports.is_http_uri = is_http_iri;
+    module.exports.is_https_uri = is_https_iri;
+    module.exports.is_web_uri = is_web_iri;
+    // Create aliases
+    module.exports.isUri = is_iri;
+    module.exports.isHttpUri = is_http_iri;
+    module.exports.isHttpsUri = is_https_iri;
+    module.exports.isWebUri = is_web_iri;
+
+
+    // private function
+    // internal URI spitter method - direct from RFC 3986
+    var splitUri = function(uri) {
+        var splitted = uri.match(/(?:([^:\/?#]+):)?(?:\/\/([^\/?#]*))?([^?#]*)(?:\?([^#]*))?(?:#(.*))?/);
+        return splitted;
+    };
+
+    function is_iri(value) {
+        if (!value) {
+            return;
+        }
+
+        // check for illegal characters
+        if (/[^a-z0-9\:\/\?\#\[\]\@\!\$\&\'\(\)\*\+\,\;\=\.\-\_\~\%]/i.test(value)) return;
+
+        // check for hex escapes that aren't complete
+        if (/%[^0-9a-f]/i.test(value)) return;
+        if (/%[0-9a-f](:?[^0-9a-f]|$)/i.test(value)) return;
+
+        var splitted = [];
+        var scheme = '';
+        var authority = '';
+        var path = '';
+        var query = '';
+        var fragment = '';
+        var out = '';
+
+        // from RFC 3986
+        splitted = splitUri(value);
+        scheme = splitted[1]; 
+        authority = splitted[2];
+        path = splitted[3];
+        query = splitted[4];
+        fragment = splitted[5];
+
+        // scheme and path are required, though the path can be empty
+        if (!(scheme && scheme.length && path.length >= 0)) return;
+
+        // if authority is present, the path must be empty or begin with a /
+        if (authority && authority.length) {
+            if (!(path.length === 0 || /^\//.test(path))) return;
+        } else {
+            // if authority is not present, the path must not start with //
+            if (/^\/\//.test(path)) return;
+        }
+
+        // scheme must begin with a letter, then consist of letters, digits, +, ., or -
+        if (!/^[a-z][a-z0-9\+\-\.]*$/.test(scheme.toLowerCase()))  return;
+
+        // re-assemble the URL per section 5.3 in RFC 3986
+        out += scheme + ':';
+        if (authority && authority.length) {
+            out += '//' + authority;
+        }
+
+        out += path;
+
+        if (query && query.length) {
+            out += '?' + query;
+        }
+
+        if (fragment && fragment.length) {
+            out += '#' + fragment;
+        }
+
+        return out;
+    }
+
+    function is_http_iri(value, allowHttps) {
+        if (!is_iri(value)) {
+            return;
+        }
+
+        var splitted = [];
+        var scheme = '';
+        var authority = '';
+        var path = '';
+        var port = '';
+        var query = '';
+        var fragment = '';
+        var out = '';
+
+        // from RFC 3986
+        splitted = splitUri(value);
+        scheme = splitted[1]; 
+        authority = splitted[2];
+        path = splitted[3];
+        query = splitted[4];
+        fragment = splitted[5];
+
+        if (!scheme)  return;
+
+        if(allowHttps) {
+            if (scheme.toLowerCase() != 'https') return;
+        } else {
+            if (scheme.toLowerCase() != 'http') return;
+        }
+
+        // fully-qualified URIs must have an authority section that is
+        // a valid host
+        if (!authority) {
+            return;
+        }
+
+        // enable port component
+        if (/:(\d+)$/.test(authority)) {
+            port = authority.match(/:(\d+)$/)[0];
+            authority = authority.replace(/:\d+$/, '');
+        }
+
+        out += scheme + ':';
+        out += '//' + authority;
+        
+        if (port) {
+            out += port;
+        }
+        
+        out += path;
+        
+        if(query && query.length){
+            out += '?' + query;
+        }
+
+        if(fragment && fragment.length){
+            out += '#' + fragment;
+        }
+        
+        return out;
+    }
+
+    function is_https_iri(value) {
+        return is_http_iri(value, true);
+    }
+
+    function is_web_iri(value) {
+        return (is_http_iri(value) || is_https_iri(value));
+    }
+
+})(module);
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(48)(module)))
+
+/***/ }),
+/* 48 */
+/***/ (function(module, exports) {
+
+module.exports = function(module) {
+	if(!module.webpackPolyfill) {
+		module.deprecate = function() {};
+		module.paths = [];
+		// module.parent = undefined by default
+		if(!module.children) module.children = [];
+		Object.defineProperty(module, "loaded", {
+			enumerable: true,
+			get: function() {
+				return module.l;
+			}
+		});
+		Object.defineProperty(module, "id", {
+			enumerable: true,
+			get: function() {
+				return module.i;
+			}
+		});
+		module.webpackPolyfill = 1;
+	}
+	return module;
+};
+
+
+/***/ }),
+/* 49 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;(function (name, definition, context) {
+
+  //try CommonJS, then AMD (require.js), then use global.
+
+  if (typeof module != 'undefined' && module.exports) module.exports = definition();
+  else if (typeof context['define'] == 'function' && context['define']['amd']) !(__WEBPACK_AMD_DEFINE_FACTORY__ = (definition),
+				__WEBPACK_AMD_DEFINE_RESULT__ = (typeof __WEBPACK_AMD_DEFINE_FACTORY__ === 'function' ?
+				(__WEBPACK_AMD_DEFINE_FACTORY__.call(exports, __webpack_require__, exports, module)) :
+				__WEBPACK_AMD_DEFINE_FACTORY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+  else context[name] = definition();
+
+})('li', function () {
+  // compile regular expressions ahead of time for efficiency
+  var relsRegExp = /^;\s*([^"=]+)=(?:"([^"]+)"|([^";,]+)(?:[;,]|$))/;
+  var keysRegExp = /([^\s]+)/g;
+  var sourceRegExp = /^<([^>]*)>/;
+  var delimiterRegExp = /^\s*,\s*/;
+
+  return {
+    parse: function (linksHeader, options) {
+      var match;
+      var source;
+      var rels;
+      var extended = options && options.extended || false;
+      var links = [];
+
+      while (linksHeader) {
+        linksHeader = linksHeader.trim();
+
+        // Parse `<link>`
+        source = sourceRegExp.exec(linksHeader);
+        if (!source) break;
+
+        var current = {
+          link: source[1]
+        };
+
+        // Move cursor
+        linksHeader = linksHeader.slice(source[0].length);
+
+        // Parse `; attr=relation` and `; attr="relation"`
+
+        var nextDelimiter = linksHeader.match(delimiterRegExp);
+        while(linksHeader && (!nextDelimiter || nextDelimiter.index > 0)) {
+          match = relsRegExp.exec(linksHeader);
+          if (!match) break;
+
+          // Move cursor
+          linksHeader = linksHeader.slice(match[0].length);
+          nextDelimiter = linksHeader.match(delimiterRegExp);
+
+
+          if (match[1] === 'rel' || match[1] === 'rev') {
+            // Add either quoted rel or unquoted rel
+            rels = (match[2] || match[3]).split(/\s+/);
+            current[match[1]] = rels;
+          } else {
+            current[match[1]] = match[2] || match[3];
+          }
+        }
+
+        links.push(current);
+        // Move cursor
+        linksHeader = linksHeader.replace(delimiterRegExp, '');
+      }
+
+      if (!extended) {
+        return links.reduce(function(result, currentLink) {
+          if (currentLink.rel) {
+            currentLink.rel.forEach(function(rel) {
+              result[rel] = currentLink.link;
+            });
+          }
+          return result;
+        }, {});
+      }
+
+      return links;
+    },
+    stringify: function (headerObject, callback) {
+      var result = "";
+      for (var x in headerObject) {
+        result += '<' + headerObject[x] + '>; rel="' + x + '", ';
+      }
+      result = result.substring(0, result.length - 2);
+
+      return result;
+    }
+  };
+
+}, this);
+
+
+/***/ }),
+/* 50 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = {
+  'OIDCWebClient': __webpack_require__(51),
   'LocalJsonStore': __webpack_require__(39)
 };
 
 /***/ }),
-/* 47 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14829,7 +15310,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 
 var RelyingParty = __webpack_require__(20);
 var Session = __webpack_require__(17);
-var storage = __webpack_require__(83);
+var storage = __webpack_require__(87);
 
 // URI parameter types
 
@@ -15090,7 +15571,7 @@ var OIDCWebClient = function () {
 module.exports = OIDCWebClient;
 
 /***/ }),
-/* 48 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {// Copyright Joyent, Inc. and other Node contributors.
@@ -15618,7 +16099,7 @@ function isPrimitive(arg) {
 }
 exports.isPrimitive = isPrimitive;
 
-exports.isBuffer = __webpack_require__(50);
+exports.isBuffer = __webpack_require__(54);
 
 function objectToString(o) {
   return Object.prototype.toString.call(o);
@@ -15662,7 +16143,7 @@ exports.log = function() {
  *     prototype.
  * @param {function} superCtor Constructor function to inherit prototype from.
  */
-exports.inherits = __webpack_require__(51);
+exports.inherits = __webpack_require__(55);
 
 exports._extend = function(origin, add) {
   // Don't do anything if add isn't an object
@@ -15680,10 +16161,10 @@ function hasOwnProperty(obj, prop) {
   return Object.prototype.hasOwnProperty.call(obj, prop);
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(49)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(53)))
 
 /***/ }),
-/* 49 */
+/* 53 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -15873,7 +16354,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 50 */
+/* 54 */
 /***/ (function(module, exports) {
 
 module.exports = function isBuffer(arg) {
@@ -15884,7 +16365,7 @@ module.exports = function isBuffer(arg) {
 }
 
 /***/ }),
-/* 51 */
+/* 55 */
 /***/ (function(module, exports) {
 
 if (typeof Object.create === 'function') {
@@ -15913,7 +16394,7 @@ if (typeof Object.create === 'function') {
 
 
 /***/ }),
-/* 52 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16099,7 +16580,7 @@ var JSONDocument = function () {
 module.exports = JSONDocument;
 
 /***/ }),
-/* 53 */
+/* 57 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16200,7 +16681,7 @@ var JSONMapping = function () {
 module.exports = JSONMapping;
 
 /***/ }),
-/* 54 */
+/* 58 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16317,12 +16798,12 @@ var JSONSchema = function () {
 module.exports = JSONSchema;
 
 /***/ }),
-/* 55 */
+/* 59 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(Buffer) {
-var pad_string_1 = __webpack_require__(59);
+var pad_string_1 = __webpack_require__(63);
 function encode(input, encoding) {
     if (encoding === void 0) { encoding = "utf8"; }
     if (Buffer.isBuffer(input)) {
@@ -16362,7 +16843,7 @@ exports.default = base64url;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6).Buffer))
 
 /***/ }),
-/* 56 */
+/* 60 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16483,7 +16964,7 @@ function fromByteArray (uint8) {
 
 
 /***/ }),
-/* 57 */
+/* 61 */
 /***/ (function(module, exports) {
 
 exports.read = function (buffer, offset, isLE, mLen, nBytes) {
@@ -16573,7 +17054,7 @@ exports.write = function (buffer, value, offset, isLE, mLen, nBytes) {
 
 
 /***/ }),
-/* 58 */
+/* 62 */
 /***/ (function(module, exports) {
 
 var toString = {}.toString;
@@ -16584,7 +17065,7 @@ module.exports = Array.isArray || function (arr) {
 
 
 /***/ }),
-/* 59 */
+/* 63 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16612,7 +17093,7 @@ exports.default = padString;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6).Buffer))
 
 /***/ }),
-/* 60 */
+/* 64 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16621,10 +17102,10 @@ exports.default = padString;
 /**
  * Local dependencies
  */
-var None = __webpack_require__(61);
-var HMAC = __webpack_require__(62);
-var RSASSA_PKCS1_v1_5 = __webpack_require__(64);
-var SupportedAlgorithms = __webpack_require__(65
+var None = __webpack_require__(65);
+var HMAC = __webpack_require__(66);
+var RSASSA_PKCS1_v1_5 = __webpack_require__(68);
+var SupportedAlgorithms = __webpack_require__(69
 
 /**
  * Register Supported Algorithms
@@ -16768,7 +17249,7 @@ supportedAlgorithms.define('RS512', 'importKey', new RSASSA_PKCS1_v1_5({
 );module.exports = supportedAlgorithms;
 
 /***/ }),
-/* 61 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16818,7 +17299,7 @@ var None = function () {
 module.exports = None;
 
 /***/ }),
-/* 62 */
+/* 66 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16833,7 +17314,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var base64url = __webpack_require__(4);
+var base64url = __webpack_require__(5);
 var crypto = __webpack_require__(9);
 var TextEncoder = __webpack_require__(26
 
@@ -16940,13 +17421,13 @@ module.exports = HMAC;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6).Buffer))
 
 /***/ }),
-/* 63 */
+/* 67 */
 /***/ (function(module, exports) {
 
-module.exports = __WEBPACK_EXTERNAL_MODULE_63__;
+module.exports = __WEBPACK_EXTERNAL_MODULE_67__;
 
 /***/ }),
-/* 64 */
+/* 68 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16961,7 +17442,7 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var base64url = __webpack_require__(4);
+var base64url = __webpack_require__(5);
 var crypto = __webpack_require__(9);
 var TextEncoder = __webpack_require__(26
 
@@ -17096,7 +17577,7 @@ module.exports = RSASSA_PKCS1_v1_5;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6).Buffer))
 
 /***/ }),
-/* 65 */
+/* 69 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17207,7 +17688,7 @@ var SupportedAlgorithms = function () {
 module.exports = SupportedAlgorithms;
 
 /***/ }),
-/* 66 */
+/* 70 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17233,7 +17714,7 @@ Formats.register('base64url', new RegExp());
 Formats.register('MediaType', new RegExp());
 
 /***/ }),
-/* 67 */
+/* 71 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17332,7 +17813,7 @@ var JWKSet = function (_JSONDocument) {
 module.exports = JWKSet;
 
 /***/ }),
-/* 68 */
+/* 72 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17351,7 +17832,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 /**
  * Dependencies
  */
-var base64url = __webpack_require__(4);
+var base64url = __webpack_require__(5);
 
 var _require = __webpack_require__(0),
     JSONDocument = _require.JSONDocument;
@@ -17628,18 +18109,18 @@ var JWT = function (_JSONDocument) {
 module.exports = JWT;
 
 /***/ }),
-/* 69 */
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(Buffer) {/**
  * Dependencies
  */
 const assert = __webpack_require__(8)
-const base64url = __webpack_require__(4)
+const base64url = __webpack_require__(5)
 const crypto = __webpack_require__(9)
-const { JWT } = __webpack_require__(2)
+const { JWT } = __webpack_require__(3)
 const FormUrlEncoded = __webpack_require__(37)
-const { URL } = __webpack_require__(3)
+const { URL } = __webpack_require__(2)
 
 /**
  * Authentication Request
@@ -17826,21 +18307,21 @@ module.exports = AuthenticationRequest
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6).Buffer))
 
 /***/ }),
-/* 70 */
+/* 74 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, Buffer) {/**
  * Dependencies
  */
-const { URL } = __webpack_require__(3)
+const { URL } = __webpack_require__(2)
 const assert = __webpack_require__(8)
 const crypto = __webpack_require__(9)
-const base64url = __webpack_require__(4)
-const fetch = __webpack_require__(5)
+const base64url = __webpack_require__(5)
+const fetch = __webpack_require__(4)
 const Headers = fetch.Headers ? fetch.Headers : global.Headers
 const FormUrlEncoded = __webpack_require__(37)
-const IDToken = __webpack_require__(71)
-const Session = __webpack_require__(73)
+const IDToken = __webpack_require__(75)
+const Session = __webpack_require__(77)
 const onHttpError = __webpack_require__(16)
 
 /**
@@ -18361,14 +18842,14 @@ module.exports = AuthenticationResponse
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(6).Buffer))
 
 /***/ }),
-/* 71 */
+/* 75 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
  * Local dependencies
  */
-const {JWT} = __webpack_require__(2)
-const IDTokenSchema = __webpack_require__(72)
+const {JWT} = __webpack_require__(3)
+const IDTokenSchema = __webpack_require__(76)
 
 /**
  * IDToken
@@ -18390,13 +18871,13 @@ module.exports = IDToken
 
 
 /***/ }),
-/* 72 */
+/* 76 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
  * Local dependencies
  */
-const {JWTSchema} = __webpack_require__(2)
+const {JWTSchema} = __webpack_require__(3)
 
 /**
  * IDToken Schema
@@ -18573,15 +19054,15 @@ module.exports = IDTokenSchema
 
 
 /***/ }),
-/* 73 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-const fetch = __webpack_require__(5)
+const fetch = __webpack_require__(4)
 const onHttpError = __webpack_require__(16)
-const PoPToken = __webpack_require__(74)
+const PoPToken = __webpack_require__(78)
 
 class Session {
   /**
@@ -18740,14 +19221,14 @@ module.exports = Session
 
 
 /***/ }),
-/* 74 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-const { URL } = __webpack_require__(3)
-const {JWT, JWK} = __webpack_require__(2)
+const { URL } = __webpack_require__(2)
+const {JWT, JWK} = __webpack_require__(3)
 
 const DEFAULT_MAX_AGE = 3600  // Default token expiration, in seconds
 
@@ -18833,7 +19314,7 @@ module.exports = PoPToken
 
 
 /***/ }),
-/* 75 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -18957,7 +19438,7 @@ module.exports = RelyingPartySchema
 
 
 /***/ }),
-/* 76 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18971,10 +19452,10 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var _require = __webpack_require__(3),
+var _require = __webpack_require__(2),
     URL = _require.URL;
 
-var _require2 = __webpack_require__(2),
+var _require2 = __webpack_require__(3),
     JWT = _require2.JWT,
     JWK = _require2.JWK;
 
@@ -19079,7 +19560,7 @@ var PoPToken = function (_JWT) {
 module.exports = PoPToken;
 
 /***/ }),
-/* 77 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19097,9 +19578,9 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
  * Dependencies
  */
 var assert = __webpack_require__(8);
-var fetch = __webpack_require__(5);
+var fetch = __webpack_require__(4);
 
-var _require = __webpack_require__(3),
+var _require = __webpack_require__(2),
     URL = _require.URL;
 
 var Headers = fetch.Headers ? fetch.Headers : global.Headers;
@@ -19107,12 +19588,12 @@ var Headers = fetch.Headers ? fetch.Headers : global.Headers;
 var _require2 = __webpack_require__(0),
     JSONDocument = _require2.JSONDocument;
 
-var _require3 = __webpack_require__(2),
+var _require3 = __webpack_require__(3),
     JWKSet = _require3.JWKSet;
 
-var AuthenticationRequest = __webpack_require__(78);
-var AuthenticationResponse = __webpack_require__(79);
-var RelyingPartySchema = __webpack_require__(82);
+var AuthenticationRequest = __webpack_require__(82);
+var AuthenticationResponse = __webpack_require__(83);
+var RelyingPartySchema = __webpack_require__(86);
 var onHttpError = __webpack_require__(18);
 
 /**
@@ -19501,7 +19982,7 @@ module.exports = RelyingParty;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 78 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19517,15 +19998,15 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * Dependencies
  */
 var assert = __webpack_require__(8);
-var base64url = __webpack_require__(4);
+var base64url = __webpack_require__(5);
 var crypto = __webpack_require__(9);
 
-var _require = __webpack_require__(2),
+var _require = __webpack_require__(3),
     JWT = _require.JWT;
 
 var FormUrlEncoded = __webpack_require__(38);
 
-var _require2 = __webpack_require__(3),
+var _require2 = __webpack_require__(2),
     URL = _require2.URL;
 
 /**
@@ -19714,7 +20195,7 @@ module.exports = AuthenticationRequest;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6).Buffer))
 
 /***/ }),
-/* 79 */
+/* 83 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19727,16 +20208,16 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 /**
  * Dependencies
  */
-var _require = __webpack_require__(3),
+var _require = __webpack_require__(2),
     URL = _require.URL;
 
 var assert = __webpack_require__(8);
 var crypto = __webpack_require__(9);
-var base64url = __webpack_require__(4);
-var fetch = __webpack_require__(5);
+var base64url = __webpack_require__(5);
+var fetch = __webpack_require__(4);
 var Headers = fetch.Headers ? fetch.Headers : global.Headers;
 var FormUrlEncoded = __webpack_require__(38);
-var IDToken = __webpack_require__(80);
+var IDToken = __webpack_require__(84);
 var Session = __webpack_require__(17);
 var onHttpError = __webpack_require__(18);
 
@@ -20305,7 +20786,7 @@ module.exports = AuthenticationResponse;
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(6).Buffer))
 
 /***/ }),
-/* 80 */
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20322,10 +20803,10 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 /**
  * Local dependencies
  */
-var _require = __webpack_require__(2),
+var _require = __webpack_require__(3),
     JWT = _require.JWT;
 
-var IDTokenSchema = __webpack_require__(81);
+var IDTokenSchema = __webpack_require__(85);
 
 /**
  * IDToken
@@ -20363,7 +20844,7 @@ var IDToken = function (_JWT) {
 module.exports = IDToken;
 
 /***/ }),
-/* 81 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20372,7 +20853,7 @@ module.exports = IDToken;
 /**
  * Local dependencies
  */
-var _require = __webpack_require__(2),
+var _require = __webpack_require__(3),
     JWTSchema = _require.JWTSchema;
 
 /**
@@ -20551,7 +21032,7 @@ var IDTokenSchema = JWTSchema.extend({
 module.exports = IDTokenSchema;
 
 /***/ }),
-/* 82 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20672,7 +21153,7 @@ var RelyingPartySchema = new JSONSchema({
 module.exports = RelyingPartySchema;
 
 /***/ }),
-/* 83 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20722,16 +21203,16 @@ function defaultProviderStore(store) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }),
-/* 84 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
 const doc = __webpack_require__(41)
-const uri = __webpack_require__(12)
+const uri = __webpack_require__(11)
 const graph = __webpack_require__(13)
-const fetcher = __webpack_require__(11)
+const fetcher = __webpack_require__(10)
 const Config = __webpack_require__(7)
 
 module.exports = {
