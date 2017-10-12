@@ -246,7 +246,6 @@ function getResourceGraph (iri, headers, options = {}) {
       if (options.contentType === 'text/html' || options.contentType === 'application/xhtml+xml') {
         let template = document.implementation.createHTMLDocument('template')
         template.documentElement.innerHTML = data
-        template.contentType = options.contentType
         let base = template.querySelector('head base[href]')
         if (!base) {
           template.querySelector('head').insertAdjacentHTML('afterbegin', '<base href="' + options.subjectURI + '" />')
