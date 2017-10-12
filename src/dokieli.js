@@ -4210,7 +4210,7 @@ WHERE {\n\
 
       var s = '', selected = '';
       Object.keys(DO.C.License).forEach(function(iri){
-        selected = (DO.C.License[uri].name === 'CC BY 4.0') ? ' selected="selected"' : '';
+        selected = (DO.C.License[iri].name === 'CC BY 4.0') ? ' selected="selected"' : '';
         s += '<option value="' + iri + '" title="' + DO.C.License[iri].description  + '"' + selected + '>' + DO.C.License[uri].name  + '</option>';
       })
 
