@@ -579,12 +579,12 @@ var DO = {
     },
 
     showInboxGraph: function(url, selector, options){
-      var uri = url || location.href.split(location.search||location.hash||/[?#]/)[0];
+      var iri = url || location.href.split(location.search||location.hash||/[?#]/)[0];
       options = options || {};
       options['contentType'] = options.contentType || 'text/html';
-      options['subjectURI'] = options.subjectURI || uri;
+      options['subjectURI'] = options.subjectURI || iri;
 
-      inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id'], uri).then(
+      inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id'], iri).then(
         function(i) {
           i.forEach(function(inbox) {
             DO.U.getNotifications(inbox).then(
@@ -4209,9 +4209,9 @@ WHERE {\n\
       var type = type || 'cc';
 
       var s = '', selected = '';
-      Object.keys(DO.C.License).forEach(function(uri){
+      Object.keys(DO.C.License).forEach(function(iri){
         selected = (DO.C.License[uri].name === 'CC BY 4.0') ? ' selected="selected"' : '';
-        s += '<option value="' + uri + '" title="' + DO.C.License[uri].description  + '"' + selected + '>' + DO.C.License[uri].name  + '</option>';
+        s += '<option value="' + iri + '" title="' + DO.C.License[iri].description  + '"' + selected + '>' + DO.C.License[uri].name  + '</option>';
       })
 
       return s;
@@ -4221,8 +4221,8 @@ WHERE {\n\
       var type = type || 'cites';
 
       var s = '';
-      Object.keys(DO.C.Citation).forEach(function(uri){
-        s += '<option value="' + uri + '">' + DO.C.Citation[uri]  + '</option>';
+      Object.keys(DO.C.Citation).forEach(function(iri){
+        s += '<option value="' + iri + '">' + DO.C.Citation[iri]  + '</option>';
       })
 
       return s;
