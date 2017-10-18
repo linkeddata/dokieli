@@ -711,7 +711,7 @@ function postResource (url, slug, data, contentType, links, options = {}) {
     return Promise.reject(new Error('Cannot POST resource - missing url'))
   }
 
-  options.method = 'PUT'
+  options.method = 'POST'
 
   options.body = data
 
