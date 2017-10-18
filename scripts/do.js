@@ -338,8 +338,9 @@ module.exports = {
 
 const fetch = __webpack_require__(9)  // Uses native fetch() in the browser
 const Config = __webpack_require__(0)
-const uri = __webpack_require__(2)
-const graph = __webpack_require__(3)
+const doc = __webpack_require__(2)
+const uri = __webpack_require__(3)
+const graph = __webpack_require__(4)
 
 const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
 const LDP_RESOURCE = '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
@@ -580,13 +581,7 @@ function getResourceGraph (iri, headers, options = {}) {
       // https://github.com/simplerdf/simplerdf/issues/19
 
       if (options.contentType === 'text/html' || options.contentType === 'application/xhtml+xml') {
-        let template = document.implementation.createHTMLDocument('template')
-        template.documentElement.innerHTML = data
-        let base = template.querySelector('head base[href]')
-        if (!base) {
-          template.querySelector('head').insertAdjacentHTML('afterbegin', '<base href="' + options.subjectURI + '" />')
-          data = template.documentElement.outerHTML
-        }
+        data = doc.setHTMLBase(data, options.subjectURI)
       }
 
       return graph.getGraphFromData(data, options)
@@ -877,199 +872,14 @@ function putResourceACL (accessToURL, aclURL, acl) {
 "use strict";
 
 
-const config = __webpack_require__(0)
-
-module.exports = {
-  encodeString,
-  decodeString,
-  getAbsoluteIRI,
-  getProxyableIRI,
-  stripFragmentFromString
-}
-
-function encodeString (string) {
-  return encodeURIComponent(string).replace(/'/g, '%27').replace(/"/g, '%22')
-}
-
-/**
- * UNUSED
- *
- * @param string {string}
- *
- * @returns {string}
- */
-function decodeString (string) {
-  return decodeURIComponent(string.replace(/\+/g, ' '))
-}
-
-function getAbsoluteIRI (base, location) {
-  var iri = location
-
-  if (location.toLowerCase().slice(0, 4) !== 'http') {
-    if (location.startsWith('/')) {
-      var x = base.toLowerCase().trim().split('/')
-
-      iri = x[0] + '//' + x[2] + location
-    } else if (!base.endsWith('/')) {
-      iri = base.substr(0, base.lastIndexOf('/') + 1) + location
-    } else {
-      iri = base + location
-    }
-  }
-
-  return iri
-}
-
-function getProxyableIRI (url, options = {}) {
-  var pIRI = stripFragmentFromString(url)
-
-  if ((typeof document !== 'undefined' && document.location.protocol === 'https:' && pIRI.slice(0, 5).toLowerCase() === 'http:') || 'forceProxy' in options) {
-    var proxyURL = ('proxyURL' in options) ? options.proxyURL : config.ProxyURL
-    pIRI = proxyURL + encodeString(pIRI)
-  }
-
-  return pIRI
-}
-
-function stripFragmentFromString (string) {
-  if (typeof string === 'string') {
-    let stringIndexFragment = string.indexOf('#')
-
-    if (stringIndexFragment >= 0) {
-      string = string.substring(0, stringIndexFragment)
-    }
-  }
-  return string
-}
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(global) {
-
-global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined
-
-const Config = __webpack_require__(0)
-
-module.exports = {
-  getGraph,
-  getGraphFromData,
-  serializeData,
-  serializeGraph
-}
-
-function getGraph (url) {
-  return SimpleRDF(Config.Vocab, url, null, ld.store).get()
-}
-
-function getGraphFromData (data, options = {}) {
-  if (!('contentType' in options)) {
-    options['contentType'] = 'text/turtle'
-  }
-  if (!('subjectURI' in options)) {
-    options['subjectURI'] = '_:dokieli'
-  }
-
-  return SimpleRDF.parse(data, options['contentType'], options['subjectURI'])
-}
-
-/**
- * @param data
- * @param fromContentType
- * @param toContentType
- * @param options
- *
- * @returns {Promise}
- */
-function serializeData (data, fromContentType, toContentType, options) {
-  if (fromContentType === toContentType) {
-    return Promise.resolve(data)
-  }
-
-  options.contentType = fromContentType
-
-  return getGraphFromData(data, options)
-    .then(g => {
-      options.contentType = toContentType
-
-      return serializeGraph(g, options)
-    })
-    .then(data => {
-      switch (toContentType) {
-        case 'application/ld+json':
-          var parsed = JSON.parse(data)
-
-          parsed[0]['@context'] = [
-            'http://www.w3.org/ns/anno.jsonld',
-            {'as': 'https://www.w3.org/ns/activitystreams'}
-          ]
-
-          parsed[0]['@id'] = (parsed[0]['@id'].slice(0, 2) === '_:')
-            ? ''
-            : parsed[0]['@id']
-
-          return JSON.stringify(parsed) + '\n'
-
-        default:
-          return data
-      }
-    })
-}
-
-function serializeGraph (g, options = {}) {
-  if (!('contentType' in options)) {
-    options['contentType'] = 'text/turtle'
-  }
-
-  return ld.store.serializers[options.contentType].serialize(g._graph)
-}
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
 const Config = __webpack_require__(0)
 
 module.exports = {
   domToString,
   dumpNode,
   getDoctype,
-  getDocument
+  getDocument,
+  setHTMLBase
 }
 
 function domToString (node, options = {}) {
@@ -1202,6 +1012,203 @@ function getDocument (cn, options) {
   return s
 }
 
+function setHTMLBase (data, baseURI) {
+  let template = document.implementation.createHTMLDocument()
+  template.documentElement.innerHTML = data
+  let base = template.querySelector('head base[href]')
+  if (!base) {
+    template.querySelector('head').insertAdjacentHTML('afterbegin', '<base href="' + baseURI + '" />')
+    data = template.documentElement.outerHTML
+  }
+  return data
+}
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+const config = __webpack_require__(0)
+
+module.exports = {
+  encodeString,
+  decodeString,
+  getAbsoluteIRI,
+  getProxyableIRI,
+  stripFragmentFromString
+}
+
+function encodeString (string) {
+  return encodeURIComponent(string).replace(/'/g, '%27').replace(/"/g, '%22')
+}
+
+/**
+ * UNUSED
+ *
+ * @param string {string}
+ *
+ * @returns {string}
+ */
+function decodeString (string) {
+  return decodeURIComponent(string.replace(/\+/g, ' '))
+}
+
+function getAbsoluteIRI (base, location) {
+  var iri = location
+
+  if (location.toLowerCase().slice(0, 4) !== 'http') {
+    if (location.startsWith('/')) {
+      var x = base.toLowerCase().trim().split('/')
+
+      iri = x[0] + '//' + x[2] + location
+    } else if (!base.endsWith('/')) {
+      iri = base.substr(0, base.lastIndexOf('/') + 1) + location
+    } else {
+      iri = base + location
+    }
+  }
+
+  return iri
+}
+
+function getProxyableIRI (url, options = {}) {
+  var pIRI = stripFragmentFromString(url)
+
+  if ((typeof document !== 'undefined' && document.location.protocol === 'https:' && pIRI.slice(0, 5).toLowerCase() === 'http:') || 'forceProxy' in options) {
+    var proxyURL = ('proxyURL' in options) ? options.proxyURL : config.ProxyURL
+    pIRI = proxyURL + encodeString(pIRI)
+  }
+
+  return pIRI
+}
+
+function stripFragmentFromString (string) {
+  if (typeof string === 'string') {
+    let stringIndexFragment = string.indexOf('#')
+
+    if (stringIndexFragment >= 0) {
+      string = string.substring(0, stringIndexFragment)
+    }
+  }
+  return string
+}
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {
+
+global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined
+
+const Config = __webpack_require__(0)
+
+module.exports = {
+  getGraph,
+  getGraphFromData,
+  serializeData,
+  serializeGraph
+}
+
+function getGraph (url) {
+  return SimpleRDF(Config.Vocab, url, null, ld.store).get()
+}
+
+function getGraphFromData (data, options = {}) {
+  if (!('contentType' in options)) {
+    options['contentType'] = 'text/turtle'
+  }
+  if (!('subjectURI' in options)) {
+    options['subjectURI'] = '_:dokieli'
+  }
+
+  return SimpleRDF.parse(data, options['contentType'], options['subjectURI'])
+}
+
+/**
+ * @param data
+ * @param fromContentType
+ * @param toContentType
+ * @param options
+ *
+ * @returns {Promise}
+ */
+function serializeData (data, fromContentType, toContentType, options) {
+  if (fromContentType === toContentType) {
+    return Promise.resolve(data)
+  }
+
+  options.contentType = fromContentType
+
+  return getGraphFromData(data, options)
+    .then(g => {
+      options.contentType = toContentType
+
+      return serializeGraph(g, options)
+    })
+    .then(data => {
+      switch (toContentType) {
+        case 'application/ld+json':
+          var parsed = JSON.parse(data)
+
+          parsed[0]['@context'] = [
+            'http://www.w3.org/ns/anno.jsonld',
+            {'as': 'https://www.w3.org/ns/activitystreams'}
+          ]
+
+          parsed[0]['@id'] = (parsed[0]['@id'].slice(0, 2) === '_:')
+            ? ''
+            : parsed[0]['@id']
+
+          return JSON.stringify(parsed) + '\n'
+
+        default:
+          return data
+      }
+    })
+}
+
+function serializeGraph (g, options = {}) {
+  if (!('contentType' in options)) {
+    options['contentType'] = 'text/turtle'
+  }
+
+  return ld.store.serializers[options.contentType].serialize(g._graph)
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
 
 /***/ }),
 /* 6 */
@@ -1252,9 +1259,9 @@ module.exports = __webpack_require__(8);
  */
 
 const fetcher = __webpack_require__(1)
-const doc = __webpack_require__(5)
-const uri = __webpack_require__(2)
-const graph = __webpack_require__(3)
+const doc = __webpack_require__(2)
+const uri = __webpack_require__(3)
+const graph = __webpack_require__(4)
 const inbox = __webpack_require__(10)
 const util = __webpack_require__(6)
 const auth = __webpack_require__(11)
@@ -7306,7 +7313,7 @@ WHERE {\n\
 
 module.exports = DO
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
 
 /***/ }),
 /* 9 */
@@ -7321,9 +7328,9 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_9__;
 "use strict";
 
 
-const doc = __webpack_require__(5)
-const uri = __webpack_require__(2)
-const graph = __webpack_require__(3)
+const doc = __webpack_require__(2)
+const uri = __webpack_require__(3)
+const graph = __webpack_require__(4)
 const fetcher = __webpack_require__(1)
 const Config = __webpack_require__(0)
 
@@ -7570,7 +7577,9 @@ function notifyInbox (o) {
 
         case 'text/turtle':
           // FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
-          // return DO.U.postResource(pIRI, slug, data, 'text/turtle; charset=utf-8')
+
+          data = doc.setHTMLBase(data, options.subjectURI)
+
           return graph.getGraphFromData(data, options)
             .then(g => {
               let options = {
@@ -7595,6 +7604,8 @@ function notifyInbox (o) {
         case 'application/json':
         case '*/*':
         default:
+          data = doc.setHTMLBase(data, options.subjectURI)
+
           return graph.getGraphFromData(data, options)
             .then(g => {
               let options = {

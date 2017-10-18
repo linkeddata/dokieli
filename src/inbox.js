@@ -249,7 +249,9 @@ function notifyInbox (o) {
 
         case 'text/turtle':
           // FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
-          // return DO.U.postResource(pIRI, slug, data, 'text/turtle; charset=utf-8')
+
+          data = doc.setHTMLBase(data, options.subjectURI)
+
           return graph.getGraphFromData(data, options)
             .then(g => {
               let options = {
@@ -274,6 +276,8 @@ function notifyInbox (o) {
         case 'application/json':
         case '*/*':
         default:
+          data = doc.setHTMLBase(data, options.subjectURI)
+
           return graph.getGraphFromData(data, options)
             .then(g => {
               let options = {

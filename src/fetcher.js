@@ -2,6 +2,7 @@
 
 const fetch = require('node-fetch')  // Uses native fetch() in the browser
 const Config = require('./config')
+const doc = require('./doc')
 const uri = require('./uri')
 const graph = require('./graph')
 
@@ -244,13 +245,7 @@ function getResourceGraph (iri, headers, options = {}) {
       // https://github.com/simplerdf/simplerdf/issues/19
 
       if (options.contentType === 'text/html' || options.contentType === 'application/xhtml+xml') {
-        let template = document.implementation.createHTMLDocument('template')
-        template.documentElement.innerHTML = data
-        let base = template.querySelector('head base[href]')
-        if (!base) {
-          template.querySelector('head').insertAdjacentHTML('afterbegin', '<base href="' + options.subjectURI + '" />')
-          data = template.documentElement.outerHTML
-        }
+        data = doc.setHTMLBase(data, options.subjectURI)
       }
 
       return graph.getGraphFromData(data, options)
