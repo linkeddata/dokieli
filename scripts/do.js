@@ -7547,10 +7547,10 @@ function notifyInbox (o) {
     <dl about="">\n\
 ' + dl +
     '    </dl>\n\
-    ' + statements +
-    '  </section>\n\
-    </article>\n\
-    '
+' + statements +
+'  </section>\n\
+</article>\n\
+'
 
   var options = {}
   options.prefixes = Config.Prefixes
