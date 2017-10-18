@@ -6,7 +6,8 @@ module.exports = {
   domToString,
   dumpNode,
   getDoctype,
-  getDocument
+  getDocument,
+  setHTMLBase
 }
 
 function domToString (node, options = {}) {
@@ -137,4 +138,15 @@ function getDocument (cn, options) {
   let s = (doctype.length > 0) ? doctype + '\n' : ''
   s += domToString(node, options)
   return s
+}
+
+function setHTMLBase (data, baseURI) {
+  let template = document.implementation.createHTMLDocument()
+  template.documentElement.innerHTML = data
+  let base = template.querySelector('head base[href]')
+  if (!base) {
+    template.querySelector('head').insertAdjacentHTML('afterbegin', '<base href="' + baseURI + '" />')
+    data = template.documentElement.outerHTML
+  }
+  return data
 }
