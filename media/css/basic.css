@@ -1,6 +1,8 @@
 @media print {
 @page {
-
+  @bottom-center {
+    content: counter(page);
+  }
 }
 
 body {
