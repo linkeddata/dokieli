@@ -2389,17 +2389,10 @@ var DO = {
              + " " + d[2].x + "," + d[2].y;
       }
 
-<<<<<<< 5d7a3120c64e480d6124f81324b4ae15d36376f6
       function positionNode(d) {
         return "translate(" + d.x + "," + d.y + ")";
-=======
-      if ((typeof document !== 'undefined' && document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') || 'forceProxy' in options) {
-        var proxyURL = ('proxyURL' in options) ? options.proxyURL : DO.C.ProxyURL;
-        pIRI = proxyURL + DO.U.encodeString(pIRI);
->>>>>>> Sync with original dokieli ver 0.2.17
       }
 
-<<<<<<< 5d7a3120c64e480d6124f81324b4ae15d36376f6
       function dragstarted(d) {
         if (!d3.event.active) simulation.alphaTarget(0.3).restart();
         d.fx = d.x, d.fy = d.y;
@@ -2427,14 +2420,6 @@ var DO = {
       var s = document.getElementById(id);
       width = options.width || parseInt(s.ownerDocument.defaultView.getComputedStyle(s, null)["width"]);
       height = options.height || parseInt(s.ownerDocument.defaultView.getComputedStyle(s, null)["height"]);
-=======
-    putResource: function(url, data, contentType, links, options) {
-      if (url && url.length > 0) {
-        contentType = contentType || 'text/html; charset=utf-8';
-        var ldpResource = '<http://www.w3.org/ns/ldp#Resource>; rel="type"';
-        links = (links) ? ldpResource + ', ' + links : ldpResource;
-        options = options || {};
->>>>>>> Sync with original dokieli ver 0.2.17
 
       svg.append('metadata')
         .append('tspan')
@@ -3032,7 +3017,6 @@ var DO = {
 
       s += '</ul></section>';
       node.insertAdjacentHTML('beforeend', s);
-<<<<<<< 5d7a3120c64e480d6124f81324b4ae15d36376f6
 
       var viewButtons = document.querySelectorAll('#document-views.do button:not([class~="resource-visualise"])');
       for (var i = 0; i < viewButtons.length; i++) {
@@ -3045,20 +3029,6 @@ var DO = {
           if (e.target.closest('.resource-visualise')) {
             if(document.querySelector('#graph-view')) { return; }
 
-=======
-
-      var viewButtons = document.querySelectorAll('#document-views.do button:not([class~="resource-visualise"])');
-      for (var i = 0; i < viewButtons.length; i++) {
-        viewButtons[i].removeEventListener('click', DO.U.initCurrentStylesheet);
-        viewButtons[i].addEventListener('click', DO.U.initCurrentStylesheet);
-      }
-
-      if(DO.C.GraphViewerAvailable) {
-        document.querySelector('#document-views.do').addEventListener('click', function(e){
-          if (e.target.closest('.resource-visualise')) {
-            if(document.querySelector('#graph-view')) { return; }
-
->>>>>>> Sync with original dokieli ver 0.2.17
             if (e) {
               e.target.disabled = true;
             }
@@ -3787,30 +3757,6 @@ var DO = {
       return DO.C.SelectorSign["*"];
     },
 
-    getSelectorSign: function(node) {
-      if(!node) {
-        return DO.C.SelectorSign["*"];
-      }
-
-      if (typeof node === 'object') {
-        var nodeName = node.nodeName.toLowerCase();
-        var nodeId = '';
-
-        if(node.id) {
-          switch(nodeName) {
-            default: break;
-            case 'section': case 'dl':
-              nodeId = '#' + node.id;
-              break;
-          }
-        }
-
-        return DO.C.SelectorSign[nodeName + nodeId] || DO.C.SelectorSign["*"];
-      }
-
-      return DO.C.SelectorSign["*"];
-    },
-
     showFragment: function(selector) {
       var ids = (selector) ? document.querySelectorAll(selector) : document.querySelectorAll('main *[id]:not(input):not(textarea):not(select):not(#content)');
 
@@ -3859,10 +3805,9 @@ var DO = {
         originalurl = (originalurl) ? '<dt>Original</dt><dd><a href="' + originalurl + '" target="_blank">' + originalurl + '</a></dd>' : '';
 
         var versionurl = i.getAttribute('data-versionurl');
-        versionurl = (versionurl) ? versionurl.trim() : undefined;
+        verionurl = (versionurl) ? versionurl.trim() : undefined;
         var versiondate = i.getAttribute('data-versiondate');
         var nearlinkdateurl = '';
-
         if (versiondate) {
           versiondate = versiondate.trim();
           versiondateNumeric = versiondate.replace(/\D/g, '');
@@ -5010,17 +4955,10 @@ console.log(reason);
     setupResourceBrowser: function(parent, id, action){
       id = id || 'browser-location';
       action = action || 'write';
-<<<<<<< 5d7a3120c64e480d6124f81324b4ae15d36376f6
 
       parent.insertAdjacentHTML('beforeend', '<div id="' + id + '"><label for="' + id +'-input">URL</label> <input type="text" id="' + id +'-input" name="' + id + '-input" placeholder="https://example.org/path/to/" /><button id="' + id +'-update" disabled="disabled">Browse</button></div>\n\
       <div id="' + id +'-contents"></div>');
 
-=======
-
-      parent.insertAdjacentHTML('beforeend', '<div id="' + id + '"><label for="' + id +'-input">URL</label> <input type="text" id="' + id +'-input" name="' + id + '-input" placeholder="https://example.org/path/to/" /><button id="' + id +'-update" disabled="disabled">Browse</button></div>\n\
-      <div id="' + id +'-contents"></div>');
-
->>>>>>> Sync with original dokieli ver 0.2.17
       var inputBox = document.getElementById(id);
       var storageBox = document.getElementById(id + '-contents');
       var input = document.getElementById(id + '-input');
@@ -5838,16 +5776,21 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       else if (subject.rellatestversion) {
         dataVersionURL = subject.rellatestversion;
       }
-      dataVersionURL = (dataVersionURL) ? ' data-versionurl="' + dataVersionURL + '"' : '';
 
-      var dataVersionDate = (dateVersion) ? ' data-versiondate="' + dateVersion + '"' : '';
+      if (dataVersionURL) {
+        dataVersionURL = ' data-versionurl="' + dataVersionURL + '"';
+      }
+      var dataVersionDate;
+      if (dateVersion) {
+        dataVersionDate = ' data-versiondate="' + dateVersion + '"';
+      }
 
       var content = ('content' in options && options.content.length > 0) ? options.content + ', ' : '';
 
       var citationReason = 'Reason: ' + DO.C.Citation[options.citationRelation];
 
-      var citationHTML = authors + title + datePublished + content + '<a about="#' + options.refId + '"' + dataVersionDate + dataVersionURL + ' href="' + options.citationId + '" rel="schema:citation ' + options.citationRelation  + '" title="' + DO.C.Citation[options.citationRelation] + '">' + options.citationId + '</a> [' + dateAccessed + ', ' + citationReason + ']';
-// console.log(citationHTML);
+      var citationHTML = authors + title + datePublished + content + '<a about="#' + options.refId + '"' + dataVersionDate + dataVersionURL + ' href="' + options.citationId + '" rel="schema:citation ' + options.citationRelation  + '">' + options.citationId + '</a> [' + dateAccessed + ', ' + citationReason + ']';
+//console.log(citationHTML);
       return citationHTML;
     },
 
@@ -7352,38 +7295,6 @@ WHERE {\n\
 
           return info;
       });
-    },
-
-    initMath: function(config) {
-      if (!DO.C.MathAvailable) { return; }
-
-      config = config || {
-        skipTags: ["script","noscript","style","textarea","pre","code", "math"],
-        ignoreClass: "equation",
-        MathML: {
-          useMathMLspacing: true
-        },
-        tex2jax: {
-          inlineMath: [["$","$"],["\\(","\\)"]],
-          processEscapes: true
-        },
-        asciimath2jax: {
-          delimiters: [['$','$'], ['`','`']]
-        }
-      }
-
-      MathJax.Hub.Config(config);
-
-      MathJax.Hub.Register.StartupHook("End Jax",function () {
-        var BROWSER = MathJax.Hub.Browser;
-        var jax = "SVG";
-        if (BROWSER.isMSIE && BROWSER.hasMathPlayer) jax = "NativeMML";
-        if (BROWSER.isFirefox) jax = "NativeMML";
-        if (BROWSER.isSafari && BROWSER.versionAtLeast("5.0")) jax = "NativeMML";
-
-        MathJax.Hub.setRenderer(jax);
-      });
-
     },
 
     Editor: {
@@ -9331,26 +9242,6 @@ WHERE {\n\
         DO.U.initMath();
       }
     }
-
-    initExtensionMode: function() {
-      if(document.body) {
-        DO.C.Extension = true;
-        DO.U.initCurrentStylesheet();
-        DO.U.setPolyfill();
-        DO.U.setDocRefType();
-        DO.U.showRefs();
-        DO.U.setLocalDocument();
-        DO.U.buttonClose();
-        DO.U.highlightItems();
-        DO.U.initDocumentActions();
-        DO.U.showDocumentInfo();
-        DO.U.showFragment();
-        DO.U.setDocumentMode();
-        DO.U.showInboxNotifications();
-        DO.U.initMath();
-      }
-    }
-
   } //DO.U
 }; //DO
 
