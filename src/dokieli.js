@@ -3067,6 +3067,7 @@ console.log(inbox);
         Object.assign(headers, defaultHeaders);
       }
 
+/***
       if (iri.slice(0, 5).toLowerCase() === 'http:') {
         options['noCredentials'] = true;
 
@@ -3074,6 +3075,7 @@ console.log(inbox);
           options['forceProxy'] = true;
         }
       }
+***/
 
       var pIRI = DO.U.getProxyableIRI(iri, options);
 
