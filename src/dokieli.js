@@ -4257,7 +4257,21 @@ WHERE {\n\
 
         MathJax.Hub.setRenderer(jax);
       });
+    },
 
+    setDateModified: function(node, datetime) {
+      node = node || document.querySelector('#document-modified [property*=":modified"], #document-modified [property*=":dateModified"]')
+      datetime = datetime || DO.U.getDateTimeISO();
+
+      if(node) {
+        if(node.getAttribute('datetime')) {
+          node.setAttribute('datetime', datetime);
+        }
+        if(node.getAttribute('content')) {
+          node.setAttribute('content', datetime);
+        }
+        node.textContent = datetime.substr(0, datetime.indexOf('T'));
+      }
     },
 
     Editor: {
