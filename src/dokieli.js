@@ -4187,7 +4187,9 @@ WHERE {\n\
       }
 
       var element = (href == '') ? 'span' : 'a';
-      s = '<' + element + about + content + href + id + langDatatype + property + rel + resource + typeOf + '>' + r.textContent + '</' + element + '>';
+      var textContent = r.textContent || r.href || '';
+
+      s = '<' + element + about + content + href + id + langDatatype + property + rel + resource + typeOf + '>' + textContent + '</' + element + '>';
 
       return s;
     },
