@@ -4272,7 +4272,7 @@ WHERE {\n\
     },
 
     setDateModified: function(node, datetime) {
-      node = node || document.querySelector('#document-modified [property*=":modified"], #document-modified [property*=":dateModified"]')
+      node = node || document.querySelector('#document-modified [property*=":modified"], #document-modified [property*=":dateModified"]');
       datetime = datetime || DO.U.getDateTimeISO();
 
       if(node) {
@@ -4287,8 +4287,8 @@ WHERE {\n\
     },
 
     setDatePublished: function(node, datetime) {
-      node = node || document.querySelector('#document-published [property*=":issued"], #document-published [property*=":datePublished"]')
-      datetime = datetime || DO.U.getDateTimeISO();
+      node = node || document.querySelector('#document-published [property*=":issued"], #document-published [property*=":datePublished"]');
+      var datetime = datetime || DO.U.getDateTimeISO();
 
       if(node) {
         if(node.getAttribute('datetime')) {
@@ -4298,6 +4298,15 @@ WHERE {\n\
           node.setAttribute('content', datetime);
         }
         node.textContent = datetime.substr(0, datetime.indexOf('T'));
+      }
+      else {
+        var documentPublished = '        <dl id="document-published">\n\
+          <dt>Published</dt>\n\
+          <dd><time content="' + datetime + '" datatype="xsd:dateTime" datetime="' + datetime + '" property="schema:datePublished">' + datetime.substr(0, datetime.indexOf('T')) + '</time></dd>\n\
+        </dl>\n\
+';
+
+        document.querySelector('main > article').insertAdjacentHTML('afterbegin', documentPublished);
       }
     },
 
