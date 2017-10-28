@@ -5448,7 +5448,7 @@ WHERE {\n\
         }
       }
 
-      var element = (href == '') ? 'span' : 'a';
+      var element = ('datatype' in r && r.datatype == 'xsd:dateTime') ? 'time' : ((href == '') ? 'span' : 'a');
       var textContent = r.textContent || r.href || '';
 
       s = '<' + element + about + content + href + id + langDatatype + property + rel + resource + typeOf + '>' + textContent + '</' + element + '>';
