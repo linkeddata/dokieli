@@ -5406,14 +5406,14 @@ WHERE {\n\
                 }
 
                 if (typeof DO.C.User.masterWorkspace != 'undefined' && DO.C.User.masterWorkspace.length > 0) {
-                  containerIRI = DO.C.User.masterWorkspace + DO.C.InteractionPath;
+                  containerIRI = DO.C.User.masterWorkspace;
                 }
                 else if(typeof DO.C.User.Workspace != 'undefined') {
                   if (typeof DO.C.User.Workspace.Master != 'undefined' && DO.C.User.Workspace.Master.length > 0) {
-                    containerIRI = DO.C.User.Workspace.Master + DO.C.InteractionPath;
+                    containerIRI = DO.C.User.Workspace.Master;
                   }
                   else if(typeof DO.C.User.Workspace.Public != 'undefined' && DO.C.User.Workspace.Public.length > 0) {
-                    containerIRI = DO.C.User.Workspace.Public + DO.C.InteractionPath;
+                    containerIRI = DO.C.User.Workspace.Public;
                   }
                 }
 

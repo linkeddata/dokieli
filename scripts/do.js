@@ -163,7 +163,6 @@ module.exports = {
   },
 
   ContextLength: 32,
-  InteractionPath: 'i/',
   ProxyURL: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/proxy?uri=' : 'https://dokie.li/proxy?uri='),
   AuthEndpoint: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/' : 'https://dokie.li/'),
   NotificationLicense: 'https://creativecommons.org/publicdomain/zero/1.0/',
@@ -6658,14 +6657,14 @@ WHERE {\n\
                 }
 
                 if (typeof DO.C.User.masterWorkspace != 'undefined' && DO.C.User.masterWorkspace.length > 0) {
-                  containerIRI = DO.C.User.masterWorkspace + DO.C.InteractionPath;
+                  containerIRI = DO.C.User.masterWorkspace;
                 }
                 else if(typeof DO.C.User.Workspace != 'undefined') {
                   if (typeof DO.C.User.Workspace.Master != 'undefined' && DO.C.User.Workspace.Master.length > 0) {
-                    containerIRI = DO.C.User.Workspace.Master + DO.C.InteractionPath;
+                    containerIRI = DO.C.User.Workspace.Master;
                   }
                   else if(typeof DO.C.User.Workspace.Public != 'undefined' && DO.C.User.Workspace.Public.length > 0) {
-                    containerIRI = DO.C.User.Workspace.Public + DO.C.InteractionPath;
+                    containerIRI = DO.C.User.Workspace.Public;
                   }
                 }
 
