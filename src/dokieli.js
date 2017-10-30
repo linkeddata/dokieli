@@ -209,12 +209,6 @@ var DO = {
       );
     },
 
-    setLocalDocument: function() {
-      if (document.location.protocol == 'file:') {
-        DO.C.LocalDocument = true;
-      }
-    },
-
     getNotifications: function(url) {
       url = url || window.location.origin + window.location.pathname;
       var notifications = [];
@@ -6090,7 +6084,6 @@ WHERE {\n\
         DO.U.setPolyfill();
         DO.U.setDocRefType();
         DO.U.showRefs();
-        DO.U.setLocalDocument();
         DO.U.buttonClose();
         DO.U.highlightItems();
         DO.U.initDocumentActions();

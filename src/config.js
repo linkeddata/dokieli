@@ -14,7 +14,7 @@ module.exports = {
     IRI: null,
     Role: null
   },
-  LocalDocument: false,
+  LocalDocument: (document.location.protocol == 'file:'),
   UseStorage: false,
   AutoSaveId: '',
   AutoSaveTimer: 60000,

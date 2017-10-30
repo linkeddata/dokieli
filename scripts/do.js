@@ -94,7 +94,7 @@ module.exports = {
     IRI: null,
     Role: null
   },
-  LocalDocument: false,
+  LocalDocument: (document.location.protocol == 'file:'),
   UseStorage: false,
   AutoSaveId: '',
   AutoSaveTimer: 60000,
@@ -1459,12 +1459,6 @@ var DO = {
           }
         }
       );
-    },
-
-    setLocalDocument: function() {
-      if (document.location.protocol == 'file:') {
-        DO.C.LocalDocument = true;
-      }
     },
 
     getNotifications: function(url) {
@@ -7342,7 +7336,6 @@ WHERE {\n\
         DO.U.setPolyfill();
         DO.U.setDocRefType();
         DO.U.showRefs();
-        DO.U.setLocalDocument();
         DO.U.buttonClose();
         DO.U.highlightItems();
         DO.U.initDocumentActions();
