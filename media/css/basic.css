@@ -163,6 +163,14 @@ content:"\A";
 white-space:pre;
 }
 
+dl[id^="document-"] dd:after {
+content:", ";
+}
+dl[id^="document-"] dd:last-child:after {
+content:"";
+}
+
+
 #authors dd, #authors li, {
   display: inline;
   text-align: left;
