@@ -2344,7 +2344,7 @@ var DO = {
           checkedInput = ' checked="checked"';
         }
 
-        s+= '<li><input id="t-o-' + key +'" type="checkbox"' + disabledInput + checkedInput + '/><label for="t-o-' + key + '">' + value + '</label></li>';
+        s += '<li><input id="t-o-' + key +'" type="checkbox"' + disabledInput + checkedInput + '/><label for="t-o-' + key + '">' + value + '</label></li>';
       });
 
       node.insertAdjacentHTML('beforeend', '<section id="table-of-stuff" class="do"><h2>Table of Stuff</h2><ul>' + s + '</ul></section>');
@@ -2465,29 +2465,29 @@ var DO = {
     },
 
     showDocumentItems: function() {
-      if(document.querySelector('#document-items')) { return; }
+      var documentItems = document.querySelector('#document-items');
+
+      if(documentItems) { return; }
+
+      documentItems = '<aside id="document-items" class="do on"><button class="close" title="Close">❌</button></aside>';
+      document.body.insertAdjacentHTML('beforeend', documentItems);
+      documentItems = document.getElementById('document-items');
 
       var sections = document.querySelectorAll('h1 ~ div > section:not([class~="slide"]):not([id^=table-of])');
-
       if (sections.length > 0) {
-        var s = '';
+        DO.U.showTableOfStuff(documentItems);
+
         var sortable = '';
 
         if(DO.C.SortableList && DO.C.EditorEnabled) {
           sortable = ' sortable';
         }
 
-        s = '<aside id="document-items" class="do on' + sortable + '"><button class="close" title="Close">❌</button></aside>';
-        document.body.insertAdjacentHTML('beforeend', s);
+        var toc = '<section id="table-of-contents-i" class="do"' + sortable + '><h2>Table of Contents</h2><ol class="toc' + sortable + '">';
+        toc += DO.U.getListOfSections(sections, DO.C.SortableList);
+        toc += '</ol></section>';
 
-        var documentItems = document.getElementById('document-items');
-
-        DO.U.showTableOfStuff(documentItems);
-
-        s = '<section id="table-of-contents-i" class="do"><h2>Table of Contents</h2><ol class="toc' + sortable + '">';
-        s += DO.U.getListOfSections(sections, DO.C.SortableList);
-        s += '</ol></section>';
-        documentItems.insertAdjacentHTML('beforeend', s);
+        document.getElementById('document-items').insertAdjacentHTML('beforeend', toc);
 
         if(DO.C.SortableList && DO.C.EditorEnabled) {
           DO.U.sortToC();
