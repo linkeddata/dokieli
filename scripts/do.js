@@ -5524,9 +5524,19 @@ WHERE {\n\
       });
     },
 
-    setDateModified: function(node, datetime) {
-      node = node || document.querySelector('#document-modified [property*=":modified"], #document-modified [property*=":dateModified"]');
-      datetime = datetime || DO.U.getDateTimeISO();
+    setDate: function(node, options) {
+      options = options || {};
+      var type;
+
+      switch(options.type) {
+        case 'Created': default: type = 'Created'; break;
+        case 'Published': type = 'Published'; break;
+        case 'Modified': type = 'Modified'; break;
+      }
+
+      node = node || document.querySelector('#document-' + type.toLowerCase() + ' [property*=":date' + type + '"]');
+
+      datetime = ('datetime' in options) ? options.datetime : DO.U.getDateTimeISO();
 
       if(node) {
         if(node.getAttribute('datetime')) {
@@ -5536,6 +5546,9 @@ WHERE {\n\
           node.setAttribute('content', datetime);
         }
         node.textContent = datetime.substr(0, datetime.indexOf('T'));
+      }
+      else {
+        document.querySelector('main > article').insertAdjacentHTML('afterbegin', DO.U.createDateHTML(options));
       }
     },
 
