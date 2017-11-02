@@ -318,8 +318,8 @@ module.exports = {
     "siocavatar": { "@id": "http://rdfs.org/sioc/ns#avatar", "@type": "@id" },
 
     "ldpcontains": { "@id": "http://www.w3.org/ns/ldp#contains", "@type": "@id", "@array": true },
-    "ldpresource": { "@id": "http://www.w3.org/ns/ldp#Resource", "@type": "@id", "@array": true  },
-    "ldpcontainer": { "@id": "http://www.w3.org/ns/ldp#Container", "@type": "@id", "@array": true  }
+    "ldpResource": { "@id": "http://www.w3.org/ns/ldp#Resource", "@type": "@id", "@array": true },
+    "ldpContainer": { "@id": "http://www.w3.org/ns/ldp#Container", "@type": "@id", "@array": true }
   },
 
   SecretAgentNames: ['Abraham Lincoln', 'Admiral Awesome', 'Anonymous Coward', 'Believe it or not', 'Creative Monkey', 'Senegoid', 'Dog from the Web', 'Ekrub', 'Elegant Banana', 'Foo Bar', 'Lbmit', 'Lunatic Scholar', 'NahuLcm', 'Noslen', 'Okie Dokie', 'Samurai Cat', 'Vegan Superstar'],
@@ -1473,7 +1473,7 @@ var DO = {
 // console.log(resource);
               var types = s.child(resource).rdftype;
 // console.log(types);
-              if(types.indexOf(DO.C.Vocab.ldpcontainer["@id"]) < 0) {
+              if(types.indexOf(DO.C.Vocab['ldpContainer']["@id"]) < 0) {
                 notifications.push(resource);
               }
             });
@@ -3126,7 +3126,7 @@ var DO = {
               .innerHTML = '<p class="success"><a href="' + response.url + '">Reply saved!</a></p>'
 
             // Determine the inbox endpoint, to send the notification to
-            return inbox.getEndpoint(DO.C.Vocab[ 'ldpinbox' ][ '@id' ])
+            return inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id'])
               .catch(error => {
                 console.error('Could not fetch inbox endpoint:', error)
 

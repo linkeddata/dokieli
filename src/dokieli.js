@@ -222,7 +222,7 @@ var DO = {
 // console.log(resource);
               var types = s.child(resource).rdftype;
 // console.log(types);
-              if(types.indexOf(DO.C.Vocab.ldpcontainer["@id"]) < 0) {
+              if(types.indexOf(DO.C.Vocab['ldpContainer']["@id"]) < 0) {
                 notifications.push(resource);
               }
             });
@@ -1875,7 +1875,7 @@ var DO = {
               .innerHTML = '<p class="success"><a href="' + response.url + '">Reply saved!</a></p>'
 
             // Determine the inbox endpoint, to send the notification to
-            return inbox.getEndpoint(DO.C.Vocab[ 'ldpinbox' ][ '@id' ])
+            return inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id'])
               .catch(error => {
                 console.error('Could not fetch inbox endpoint:', error)
 
