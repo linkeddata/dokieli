@@ -1070,47 +1070,6 @@ var DO = {
       edih.addEventListener('click', eventEmbedData);
     },
 
-    showTableOfStuff: function(node) {
-      var disabledInput = '', s = '';
-      if (!DO.C.EditorEnabled) {
-        disabledInput = ' disabled="disabled"';
-      }
-
-      var tableList = [{'content': 'Contents'}, {'figure': 'Figures'}, {'table': 'Tables'}, {'abbr': 'Abbreviations'}];
-      tableList.forEach(function(i) {
-        var key = Object.keys(i)[0];
-        var value = i[key];
-        var checkedInput = '';
-        if(document.getElementById('table-of-'+ key +'s')) {
-          checkedInput = ' checked="checked"';
-        }
-
-        s += '<li><input id="t-o-' + key +'" type="checkbox"' + disabledInput + checkedInput + '/><label for="t-o-' + key + '">' + value + '</label></li>';
-      });
-
-      node.insertAdjacentHTML('beforeend', '<section id="table-of-stuff" class="do"><h2>Table of Stuff</h2><ul>' + s + '</ul></section>');
-
-      if(DO.C.EditorEnabled) {
-        document.getElementById('table-of-stuff').addEventListener('click', function(e){
-          if (e.target.matches('input')) {
-            var id = e.target.id;
-            var listType = id.slice(4, id.length);
-            if(!e.target.getAttribute('checked')) {
-              DO.U.buildTableOfStuff(listType);
-              e.target.setAttribute('checked', 'checked');
-            }
-            else {
-              var tol = document.getElementById('table-of-'+listType+'s');
-              if(tol) {
-                tol.parentNode.removeChild(tol);
-              }
-              e.target.removeAttribute('checked');
-            }
-          }
-        });
-      }
-    },
-
     htmlEntities: function(s) {
       return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     },
@@ -1233,6 +1192,47 @@ var DO = {
         if(DO.C.SortableList && DO.C.EditorEnabled) {
           DO.U.sortToC();
         }
+      }
+    },
+
+    showTableOfStuff: function(node) {
+      var disabledInput = '', s = '';
+      if (!DO.C.EditorEnabled) {
+        disabledInput = ' disabled="disabled"';
+      }
+
+      var tableList = [{'content': 'Contents'}, {'figure': 'Figures'}, {'table': 'Tables'}, {'abbr': 'Abbreviations'}];
+      tableList.forEach(function(i) {
+        var key = Object.keys(i)[0];
+        var value = i[key];
+        var checkedInput = '';
+        if(document.getElementById('table-of-'+ key +'s')) {
+          checkedInput = ' checked="checked"';
+        }
+
+        s += '<li><input id="t-o-' + key +'" type="checkbox"' + disabledInput + checkedInput + '/><label for="t-o-' + key + '">' + value + '</label></li>';
+      });
+
+      node.insertAdjacentHTML('beforeend', '<section id="table-of-stuff" class="do"><h2>Table of Stuff</h2><ul>' + s + '</ul></section>');
+
+      if(DO.C.EditorEnabled) {
+        document.getElementById('table-of-stuff').addEventListener('click', function(e){
+          if (e.target.matches('input')) {
+            var id = e.target.id;
+            var listType = id.slice(4, id.length);
+            if(!e.target.getAttribute('checked')) {
+              DO.U.buildTableOfStuff(listType);
+              e.target.setAttribute('checked', 'checked');
+            }
+            else {
+              var tol = document.getElementById('table-of-'+listType+'s');
+              if(tol) {
+                tol.parentNode.removeChild(tol);
+              }
+              e.target.removeAttribute('checked');
+            }
+          }
+        });
       }
     },
 
