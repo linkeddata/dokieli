@@ -5539,20 +5539,27 @@ WHERE {\n\
       }
     },
 
-    createDatePublishedHTML: function(options) {
+    createDateHTML: function(options) {
       options = options || {};
+      var type;
+
+      switch(options.type) {
+        case 'Created': default: type = 'Created'; break;
+        case 'Published': type = 'Published'; break;
+        case 'Modified': type = 'Modified'; break;
+      }
 
       var c = ('class' in options && options.class.length > 0) ? ' class="' + options.class + '"' : '';
-      var id = ('id' in options && options.id.length > 0) ? ' id="' + options.id + '"' : ' id="document-published"';
+      var id = ('id' in options && options.id.length > 0) ? ' id="' + options.id + '"' : ' id="document-' + type.toLowerCase() + '"';
       var datetime = ('datetime' in options) ? options.datetime : DO.U.getDateTimeISO();
 
-      var documentPublished = '        <dl'+c+id+'>\n\
-          <dt>Published</dt>\n\
-          <dd><time content="' + datetime + '" datatype="xsd:dateTime" datetime="' + datetime + '" property="schema:datePublished">' + datetime.substr(0, datetime.indexOf('T')) + '</time></dd>\n\
+      var date = '        <dl'+c+id+'>\n\
+          <dt>' + type + '</dt>\n\
+          <dd><time content="' + datetime + '" datatype="xsd:dateTime" datetime="' + datetime + '" property="schema:date' + type + '">' + datetime.substr(0, datetime.indexOf('T')) + '</time></dd>\n\
         </dl>\n\
 ';
 
-      return documentPublished;
+      return date;
     },
 
     Editor: {
