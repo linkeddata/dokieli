@@ -1292,11 +1292,13 @@ var DO = {
               break;
           }
 
+          elementId = 'table-of-' + element + 's';
+
           if (element == 'abbr') {
-            s += '<section id="table-of-'+ element +'s">';
+            s += '<section id="' + elementId + '">';
           }
           else {
-            s += '<nav id="table-of-'+ element +'s">';
+            s += '<nav id="' + elementId + '">';
           }
           s += '<h2>' + tableHeading + '</h2>';
           s += '<div><ol class="toc">';
@@ -1344,35 +1346,65 @@ var DO = {
         }
       });
 
-      DO.U.insertDocumentLevelHTML(s);
+      DO.U.insertDocumentLevelHTML(s, { 'id': elementId });
     },
 
-    insertDocumentLevelHTML: function(h) {
-      //XXX: Tries to find a suitable place to insert.
-      var i = document.getElementById('document-status');
-      if (i) { i.insertAdjacentHTML('afterend', h); }
-      else {
-        i = document.getElementById('introduction');
-        if (i) { i.insertAdjacentHTML('beforebegin', h); }
-        else {
-          i = document.getElementById('prologue');
-          if (i) { i.insertAdjacentHTML('beforebegin', h); }
-          else {
-            i = document.getElementById('keywords');
-            if (i) { i.insertAdjacentHTML('afterend', h); }
+    insertDocumentLevelHTML: function(h, options) {
+      options = options || {};
+
+      var documentItems = [
+        'document-identifier',
+        'document-created',
+        'document-modified',
+        'document-published',
+        'document-latest-version',
+        'document-predecessor-version',
+        'document-timegate',
+        'document-timemap',
+        'document-license',
+        'document-inbox',
+        'document-annotation-service',
+        'document-in-reply-to',
+        'document-status',
+        'table-of-contents',
+        'table-of-figures',
+        'table-of-tables',
+        'table-of-abbreviations',
+        'authors',
+        'keywords',
+        'categories-and-subject-descriptors',
+        'abstract',
+        'introduction',
+        'prologue'
+      ];
+
+      options['id'] = ('id' in options) ? options.id : documentItems[documentItems.length-1];
+
+      var item = documentItems.indexOf(options.id);
+
+      if(item >= -1) {
+        for(var i = item; i >= 0; i--) {
+          var node = document.getElementById(documentItems[i]);
+
+          if(i == 0) {
+            if (node) {
+              node.insertAdjacentHTML('afterend', h);
+            }
             else {
-              i = document.getElementById('categories-and-subject-descriptors');
-              if (i) { i.insertAdjacentHTML('afterend', h); }
-              else {
-                i = document.getElementById('authors');
-                if (i) { i.insertAdjacentHTML('afterend', h); }
-                else {
-                  i = document.querySelector('article').insertAdjacentHTML('afterbegin', h);
-                }
-              }
+              document.querySelector('article').insertAdjacentHTML('afterbegin', h);
+            }
+            break;
+          }
+          else {
+            if (node) {
+              node.insertAdjacentHTML('afterend', h);
+              break;
             }
           }
         }
+      }
+      else {
+        document.querySelector('article').insertAdjacentHTML('afterbegin', h);
       }
     },
 
