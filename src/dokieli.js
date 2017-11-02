@@ -4293,7 +4293,7 @@ WHERE {\n\
         node.textContent = datetime.substr(0, datetime.indexOf('T'));
       }
       else {
-        document.querySelector('main > article').insertAdjacentHTML('afterbegin', DO.U.createDateHTML(options));
+        DO.U.insertDocumentLevelNode(DO.U.createDateHTML(options));
       }
     },
 
