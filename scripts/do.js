@@ -2603,30 +2603,30 @@ var DO = {
         }
       });
 
-      DO.U.insertDocumentLevelNode(s);
+      DO.U.insertDocumentLevelHTML(s);
     },
 
-    insertDocumentLevelNode: function(node) {
+    insertDocumentLevelHTML: function(h) {
       //XXX: Tries to find a suitable place to insert.
       var i = document.getElementById('document-status');
-      if (i) { i.insertAdjacentHTML('afterend', node); }
+      if (i) { i.insertAdjacentHTML('afterend', h); }
       else {
         i = document.getElementById('introduction');
-        if (i) { i.insertAdjacentHTML('beforebegin', node); }
+        if (i) { i.insertAdjacentHTML('beforebegin', h); }
         else {
           i = document.getElementById('prologue');
-          if (i) { i.insertAdjacentHTML('beforebegin', node); }
+          if (i) { i.insertAdjacentHTML('beforebegin', h); }
           else {
             i = document.getElementById('keywords');
-            if (i) { i.insertAdjacentHTML('afterend', node); }
+            if (i) { i.insertAdjacentHTML('afterend', h); }
             else {
               i = document.getElementById('categories-and-subject-descriptors');
-              if (i) { i.insertAdjacentHTML('afterend', node); }
+              if (i) { i.insertAdjacentHTML('afterend', h); }
               else {
                 i = document.getElementById('authors');
-                if (i) { i.insertAdjacentHTML('afterend', node); }
+                if (i) { i.insertAdjacentHTML('afterend', h); }
                 else {
-                  i = document.querySelector('article').insertAdjacentHTML('afterbegin', node);
+                  i = document.querySelector('article').insertAdjacentHTML('afterbegin', h);
                 }
               }
             }
