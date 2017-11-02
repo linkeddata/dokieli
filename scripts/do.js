@@ -5539,28 +5539,20 @@ WHERE {\n\
       }
     },
 
-    setDatePublished: function(node, datetime) {
-      node = node || document.querySelector('#document-published [property*=":issued"], #document-published [property*=":datePublished"]');
-      var datetime = datetime || DO.U.getDateTimeISO();
+    createDatePublishedHTML: function(options) {
+      options = options || {};
 
-      if(node) {
-        if(node.getAttribute('datetime')) {
-          node.setAttribute('datetime', datetime);
-        }
-        if(node.getAttribute('content')) {
-          node.setAttribute('content', datetime);
-        }
-        node.textContent = datetime.substr(0, datetime.indexOf('T'));
-      }
-      else {
-        var documentPublished = '        <dl id="document-published">\n\
+      var c = ('class' in options && options.class.length > 0) ? ' class="' + options.class + '"' : '';
+      var id = ('id' in options && options.id.length > 0) ? ' id="' + options.id + '"' : ' id="document-published"';
+      var datetime = ('datetime' in options) ? options.datetime : DO.U.getDateTimeISO();
+
+      var documentPublished = '        <dl'+c+id+'>\n\
           <dt>Published</dt>\n\
           <dd><time content="' + datetime + '" datatype="xsd:dateTime" datetime="' + datetime + '" property="schema:datePublished">' + datetime.substr(0, datetime.indexOf('T')) + '</time></dd>\n\
         </dl>\n\
 ';
 
-        document.querySelector('main > article').insertAdjacentHTML('afterbegin', documentPublished);
-      }
+      return documentPublished;
     },
 
     Editor: {
