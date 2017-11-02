@@ -1987,7 +1987,7 @@ var DO = {
         DO.U.showViews(dInfo);
         DO.U.showDocumentMetadata(dInfo);
         if(!body.classList.contains('on-slideshow')) {
-          DO.U.showToC();
+          DO.U.showDocumentItems();
         }
 
         document.addEventListener('click', DO.U.eventLeaveDocumentMenu);
@@ -2022,7 +2022,7 @@ var DO = {
       dMenuButton.setAttribute('title', 'Open Menu');
       dMenuButton.innerHTML = '<i class="fa fa-bars"></i>';
 
-      var removeElementsList = ['toc', 'embed-data-entry', 'create-new-document', 'open-document', 'source-view', 'save-as-document', 'user-identity-input', 'resource-browser', 'share-resource', 'reply-to-resource', 'snapshot-document', 'graph-view'];
+      var removeElementsList = ['document-items', 'embed-data-entry', 'create-new-document', 'open-document', 'source-view', 'save-as-document', 'user-identity-input', 'resource-browser', 'share-resource', 'reply-to-resource', 'snapshot-document', 'graph-view'];
       removeElementsList.forEach(function(id) {
         var element = document.getElementById(id);
         if(element) {
@@ -2464,8 +2464,8 @@ var DO = {
       return contentCount;
     },
 
-    showToC: function() {
-      if(document.querySelector('#toc')) { return; }
+    showDocumentItems: function() {
+      if(document.querySelector('#document-items')) { return; }
 
       var sections = document.querySelectorAll('h1 ~ div > section:not([class~="slide"]):not([id^=table-of])');
 
@@ -2477,17 +2477,17 @@ var DO = {
           sortable = ' sortable';
         }
 
-        s = '<aside id="toc" class="do on' + sortable + '"><button class="close" title="Close">❌</button></aside>';
+        s = '<aside id="document-items" class="do on' + sortable + '"><button class="close" title="Close">❌</button></aside>';
         document.body.insertAdjacentHTML('beforeend', s);
 
-        var toc = document.getElementById('toc');
+        var documentItems = document.getElementById('document-items');
 
-        DO.U.showTableOfStuff(toc);
+        DO.U.showTableOfStuff(documentItems);
 
         s = '<section id="table-of-contents-i" class="do"><h2>Table of Contents</h2><ol class="toc' + sortable + '">';
         s += DO.U.getListOfSections(sections, DO.C.SortableList);
         s += '</ol></section>';
-        toc.insertAdjacentHTML('beforeend', s);
+        documentItems.insertAdjacentHTML('beforeend', s);
 
         if(DO.C.SortableList && DO.C.EditorEnabled) {
           DO.U.sortToC();
