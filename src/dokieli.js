@@ -1349,6 +1349,48 @@ var DO = {
       DO.U.insertDocumentLevelHTML(s, { 'id': elementId });
     },
 
+    createDocumentStatusHTML: function(options) {
+      options = options || {};
+      options['mode'] = ('mode' in options) ? options.mode : '';
+      var type = subjectURI = '';
+
+      switch(options.type) {
+        case 'draft': default: type = 'Draft'; break;
+        case 'published': type = 'Published'; break;
+      }
+
+      switch(options.subjectURI) {
+        default: subjectURI = ' about=""'; break;
+        case type: subjectURI = ' about="' + options.subjectURI + '"'; break;
+      }
+
+      var c = ('class' in options && options.class.length > 0) ? ' class="' + options.class + '"' : '';
+      var id = ('id' in options && options.id.length > 0) ? ' id="' + options.id + '"' : ' id="document-status"';
+      var datetime = ('datetime' in options) ? options.datetime : DO.U.getDateTimeISO();
+
+      var dd = '<dd><span' + subjectURI + ' typeof="pso:' + type.toLowerCase() + '">' + type + '</span></dd>';
+
+      var s;
+      if (options.mode == 'update') {
+        var dl = document.getElementById(options.id);
+        if(dl) {
+          var clone = dl.cloneNode(true);
+          dl.parentNode.removeChild(dl);
+          clone.insertAdjacentHTML('beforeend', dd);
+          s = clone.outerHTML;
+        }
+        else  {
+          s = '<dl'+c+id+'><dt>Document Status</dt>' + dd + '</dl>';
+        }
+      }
+      else {
+        s = '<dl'+c+id+'><dt>Document Status</dt>' + dd + '</dl>';
+      }
+
+// console.log(s);
+      return s;
+    },
+
     insertDocumentLevelHTML: function(h, options) {
       options = options || {};
 
