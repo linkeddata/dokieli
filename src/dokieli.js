@@ -4352,6 +4352,89 @@ WHERE {\n\
       return date;
     },
 
+    getResourceInfo: function(data, options) {
+      data = data || doc.getDocument();
+
+      var info = {
+        'state': DO.C.Vocab['ldpRDFSource']['@id'],
+        'profile': DO.C.Vocab['ldpRDFSource']['@id']
+      };
+
+      options = options || {
+        'contentType': 'text/html',
+        'subjectURI': uri.stripFragmentFromString(document.location.href)
+      }
+
+      return graph.getGraphFromData(data, options).then(
+        function(i){
+          var s = SimpleRDF(DO.C.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
+// console.log(s);
+
+          info['rdftype'] = s.rdftype._array;
+
+          //Check if the resource is immutable
+          s.rdftype.forEach(function(resource) {
+            if (resource == DO.C.Vocab['ldpImmutableResource']['@id']) {
+              info['state'] = DO.C.Vocab['ldpImmutableResource']['@id'];
+            }
+          });
+
+          if (s.reloriginal) {
+            info['state'] = DO.C.Vocab['ldpImmutableResource']['@id'];
+            info['original'] = s.reloriginal;
+
+            if (s.reloriginal == options['subjectURI']) {
+              //URI-R (The Original Resource is a Fixed Resource)
+
+              info['profile'] = DO.C.Vocab['reloriginal']['@id'];
+            }
+            else {
+              //URI-M
+  
+              info['profile'] = DO.C.Vocab['relmemento']['@id'];
+            }
+          }
+
+          if (s.relmemento) {
+            //URI-R
+
+            info['profile'] = DO.C.Vocab['reloriginal']['@id'];
+            info['memento'] = s.relmemento;
+          }
+
+          if(s.reloriginal && s.relmemento && s.reloriginal != s.relmemento) {
+            //URI-M (Mementos without a TimeGate)
+
+            info['info'] = DO.C.Vocab['ldpImmutableResource']['@id'];
+            info['profile'] = DO.C.Vocab['relmemento']['@id'];
+            info['original'] = s.reloriginal;
+            info['memento'] = s.relmento;
+          }
+
+          if(s.rellatestversion) {
+            info['latest-version'] = s.rellatestversion;
+          }
+
+          if(s.relpredecessorversion) {
+            info['predecessor-version'] = s.relpredecessorversion;
+          }
+
+          if(s.reltimemap) {
+            info['timemap'] = s.reltimemap;
+          }
+
+          if(s.reltimegate) {
+            info['timegate'] = s.reltimegate; 
+          }
+
+// console.log(info);
+
+          DO.C['ResourceInfo'] = info;
+
+          return info;
+      });
+    },
+
     Editor: {
       disableEditor: function(e) {
     //    _mediumEditors[1].destroy();
