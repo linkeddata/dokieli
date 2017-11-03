@@ -2730,6 +2730,64 @@ var DO = {
       return s;
     },
 
+
+    showCreateMemento: function(node, options){
+      node = node || document.getElementById('document-items');
+      options = options || {};
+
+      var s, checkedInput, disabledInput;
+
+      s = '<li><input id="c-v" type="checkbox"' + checkedInput + '/><label for="c-v">Create version</label></li>';
+
+      checkedInput = '';
+      if (DO.C.ResourceInfo.rdftype.indexOf(DO.C.Vocab['ldpImmutableResource']['@id']) > -1) {
+        checkedInput = ' checked="checked" disabled="disabled"';
+      }
+      s += '<li><input id="c-m" type="checkbox"' + disabledInput + checkedInput + '/><label for="c-m">Make immutable</label></li>';
+
+      node.insertAdjacentHTML('beforeend', '<section id="document-memento-i" class="do"><h2>Memento</h2><ul>' + s + '</ul></section>');
+
+      if(DO.C.EditorEnabled) {
+        document.getElementById('document-memento-i').addEventListener('click', function(e){
+          if (e.target.matches('input#c-m')) {
+            var id = e.target.id;
+
+            if(!e.target.getAttribute('checked')) {
+              DO.U.setDocumentStatus({ 'mode': 'update', 'id': 'document-status', 'type': 'ldp:ImmutableResource' });
+              e.target.setAttribute('checked', 'checked');
+            }
+            else {
+              var iR = document.querySelector('#document-status dd *[typeof="ldp:ImmutableResource"]');
+              if(iR) {
+                var dd = iR.closest('dd');
+// console.log(dd);
+                dd.parentNode.removeChild(dd);
+              }
+              e.target.removeAttribute('checked');
+            }
+          }
+
+          var dmi = document.getElementById('document-memento-i');
+          var button = dmi.querySelector('button.resource-save');
+          if(!button) {
+            dmi.insertAdjacentHTML('beforeend', '<button class="resource-save" title="Save article"><i class="fa fa-life-ring"></i>Save</button>');
+
+              button = dmi.querySelector('button.resource-save');
+              button.addEventListener('click', e => {
+              DO.U.resourceSave(e);
+            });
+          }
+
+          dmi = document.querySelector('#document-memento-i');
+          var checked = dmi.querySelector('input:checked:not(:disabled)');
+          if(!checked) {
+            button = dmi.querySelector('button.resource-save');
+            button.parentNode.removeChild(button);
+          }
+        });
+      }
+    },
+
     insertDocumentLevelHTML: function(h, options) {
       options = options || {};
 
