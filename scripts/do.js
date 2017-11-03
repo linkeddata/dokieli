@@ -144,6 +144,7 @@ module.exports = {
     "dl#document-in-reply-to": "⮪",
     "dl#document-modified": "📅",
     "dl#document-published": "📅",
+    "dl#document-status": "🎆",
     "dfn": "📇",
     "figure": "❦",
     "footer": "⸙",
