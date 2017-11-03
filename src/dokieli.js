@@ -1375,18 +1375,12 @@ var DO = {
 
       node.insertAdjacentHTML('beforeend', '<section id="document-status-i" class="do"><h2>Document Status</h2><ul id="publication-status-i">' + s + '</ul></section>');
 
-      var documentStatus = document.getElementById('document-status');
-
-      // if(!documentStatus) {
-      //   DO.U.setDocumentStatus();
-      // }
-
       if(DO.C.EditorEnabled) {
         document.getElementById('document-status-i').addEventListener('click', function(e){
           if (e.target.matches('input')) {
             var id = e.target.id;
 // console.log(id)
-            var type = id.slice(4, id.length);
+            var type = 'pso:' + id.slice(4, id.length);
 // console.log(type);
 
             var sLQuery = [];
@@ -1431,23 +1425,26 @@ var DO = {
     createDocumentStatusHTML: function(options) {
       options = options || {};
       options['mode'] = ('mode' in options) ? options.mode : '';
-      var type = subjectURI = '';
+      var typeOf = typeLabel = subjectURI = '';
+
+      typeOf = options.type || 'pso:draft';
 
       switch(options.type) {
-        case 'draft': default: type = 'Draft'; break;
-        case 'published': type = 'Published'; break;
+        case 'pso:draft': default: typeLabel = 'Draft'; break;
+        case 'pso:published': typeLabel = 'Published'; break;
+        case 'ldp:ImmutableResource': typeLabel = 'Immutable'; break;
       }
 
       switch(options.subjectURI) {
         default: subjectURI = ' about=""'; break;
-        case type: subjectURI = ' about="' + options.subjectURI + '"'; break;
+        case typeOf: subjectURI = ' about="' + options.subjectURI + '"'; break;
       }
 
       var c = ('class' in options && options.class.length > 0) ? ' class="' + options.class + '"' : '';
       var id = ('id' in options && options.id.length > 0) ? ' id="' + options.id + '"' : ' id="document-status"';
       var datetime = ('datetime' in options) ? options.datetime : DO.U.getDateTimeISO();
 
-      var dd = '<dd><span' + subjectURI + ' typeof="pso:' + type.toLowerCase() + '">' + type + '</span></dd>';
+      var dd = '<dd><span' + subjectURI + ' typeof="' + typeOf  + '">' + typeLabel + '</span></dd>';
 
       var s;
       if (options.mode == 'update') {
