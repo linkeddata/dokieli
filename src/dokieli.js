@@ -1349,6 +1349,71 @@ var DO = {
       DO.U.insertDocumentLevelHTML(s, { 'id': elementId });
     },
 
+    showDocumentStatus: function(node, options) {
+      var disabledInput = '', s = '';
+      if (!DO.C.EditorEnabled) {
+        disabledInput = ' disabled="disabled"';
+      }
+
+      //pso PublicationStatus
+      var statusList = [{'draft': 'Draft'}, {'published': 'Published'}];
+      statusList.forEach(function(i) {
+        var key = Object.keys(i)[0];
+        var value = i[key];
+        var checkedInput = '';
+
+        if (DO.C.ResourceInfo.rdftype.indexOf(DO.C.Vocab['pso' + key]['@id']) > -1) {
+          checkedInput = ' checked="checked"';
+        }
+
+        s += '<li><input id="p-s-' + key + '" name="p-s" type="radio"' + disabledInput + checkedInput + '/><label for="p-s-' + key + '">' + value + '</label></li>';
+      });
+
+      node.insertAdjacentHTML('beforeend', '<section id="document-status-i" class="do"><h2>Document Status</h2><ul id="publication-status-i">' + s + '</ul></section>');
+
+      var documentStatus = document.getElementById('document-status');
+
+      // if(!documentStatus) {
+      //   DO.U.setDocumentStatus();
+      // }
+
+      if(DO.C.EditorEnabled) {
+        document.getElementById('document-status-i').addEventListener('click', function(e){
+          if (e.target.matches('input')) {
+            var id = e.target.id;
+// console.log(id)
+            var type = id.slice(4, id.length);
+// console.log(type);
+
+            var sLQuery = [];
+            statusList.forEach(function(i){
+              var key = Object.keys(i)[0];
+              sLQuery.push('#document-status dd *[typeof="pso:' + key + '"]');
+            });
+            sLQuery = sLQuery.join(', ');
+// console.log(sLQuery);
+
+            var ps = document.querySelectorAll(sLQuery);
+// console.log(ps);
+            if(ps.length > 0) {
+              ps.forEach(function(i){
+// console.log(i);
+                var dd = i.closest('dd');
+// console.log(dd);
+                dd.parentNode.removeChild(dd);
+              });
+            }
+            e.target.removeAttribute('checked');
+
+            DO.U.setDocumentStatus({ 'mode': 'update', 'id': 'document-status', 'type': type });
+            e.target.setAttribute('checked', 'checked');
+
+            DO.U.getResourceInfo();
+          }
+        });
+      }
+    },
+
     setDocumentStatus: function(options) {
       options = options || {};
       options['id'] = ('id' in options) ? options.id : 'document-status';
