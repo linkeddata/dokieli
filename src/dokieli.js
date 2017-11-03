@@ -1179,6 +1179,8 @@ var DO = {
       if (sections.length > 0) {
         DO.U.showDocumentStatus(documentItems);
 
+        DO.U.showCreateMemento(documentItems);
+
         DO.U.showTableOfStuff(documentItems);
 
         var sortable = '';
