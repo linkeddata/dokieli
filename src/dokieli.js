@@ -1842,37 +1842,7 @@ var DO = {
         }
 
         if (e.target.closest('.resource-save')) {
-          var url = window.location.origin + window.location.pathname;
-          var data = doc.getDocument();
-
-          fetcher.putResource(url, data)
-            .then(() => {
-              DO.U.showActionMessage(document.getElementById('document-menu'), 'Saved')
-              DO.U.hideDocumentMenu(e)
-            })
-            .catch(error => {
-              console.error(error)
-
-              let message
-
-              switch (error.status) {
-                case 401:
-                  message = 'Need to authenticate before saving'
-                  break
-
-                case 403:
-                  message = 'You are not authorized to save'
-                  break
-
-                case 405:
-                default:
-                  e.target.disabled = true
-                  message = 'Server doesn\'t allow this resource to be rewritten'
-                  break
-              }
-
-              DO.U.showActionMessage(document.getElementById('document-menu'), message)
-            })
+          DO.U.resourceSave(e);
         }
 
         if (e.target.closest('.resource-source')) {
@@ -1893,6 +1863,40 @@ var DO = {
           return false;
         }
       });
+    },
+
+    resourceSave: function(e) {
+      var url = window.location.origin + window.location.pathname;
+      var data = doc.getDocument();
+
+      fetcher.putResource(url, data)
+        .then(() => {
+          DO.U.showActionMessage(document.getElementById('document-menu'), 'Saved')
+          DO.U.hideDocumentMenu(e)
+        })
+        .catch(error => {
+          console.error(error)
+
+          let message
+
+          switch (error.status) {
+            case 401:
+              message = 'Need to authenticate before saving'
+              break
+
+            case 403:
+              message = 'You are not authorized to save'
+              break
+
+            case 405:
+            default:
+              e.target.disabled = true
+              message = 'Server doesn\'t allow this resource to be rewritten'
+              break
+          }
+
+          DO.U.showActionMessage(document.getElementById('document-menu'), message)
+        })
     },
 
     replyToResource: function replyToResource (e, iri) {
