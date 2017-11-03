@@ -247,7 +247,10 @@ module.exports = {
     "reltimemap": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#timemap", "@type": "@id" },
     "reltimegate": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#timegate", "@type": "@id" },
     "relpredecessorversion": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#predecessor-version", "@type": "@id" },
-    "rellatestversion": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#latest-version", "@type": "@id" }
+    "rellatestversion": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#latest-version", "@type": "@id" },
+
+    "psodraft": { "@id": "http://purl.org/spar/pso/draft", "@type": "@id" },
+    "psopublished": { "@id": "http://purl.org/spar/pso/published", "@type": "@id" }
   },
 
   SecretAgentNames: ['Abraham Lincoln', 'Admiral Awesome', 'Anonymous Coward', 'Believe it or not', 'Creative Monkey', 'Senegoid', 'Dog from the Web', 'Ekrub', 'Elegant Banana', 'Foo Bar', 'Lbmit', 'Lunatic Scholar', 'NahuLcm', 'Noslen', 'Okie Dokie', 'Samurai Cat', 'Vegan Superstar'],
