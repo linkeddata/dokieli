@@ -327,7 +327,10 @@ module.exports = {
     "reltimemap": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#timemap", "@type": "@id" },
     "reltimegate": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#timegate", "@type": "@id" },
     "relpredecessorversion": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#predecessor-version", "@type": "@id" },
-    "rellatestversion": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#latest-version", "@type": "@id" }
+    "rellatestversion": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#latest-version", "@type": "@id" },
+
+    "psodraft": { "@id": "http://purl.org/spar/pso/draft", "@type": "@id" },
+    "psopublished": { "@id": "http://purl.org/spar/pso/published", "@type": "@id" }
   },
 
   SecretAgentNames: ['Abraham Lincoln', 'Admiral Awesome', 'Anonymous Coward', 'Believe it or not', 'Creative Monkey', 'Senegoid', 'Dog from the Web', 'Ekrub', 'Elegant Banana', 'Foo Bar', 'Lbmit', 'Lunatic Scholar', 'NahuLcm', 'Noslen', 'Okie Dokie', 'Samurai Cat', 'Vegan Superstar'],
@@ -1965,37 +1968,39 @@ var DO = {
         e.stopPropagation();
       }
 
-      var body = document.body;
-      var dMenu = document.querySelector('#document-menu.do');
+      DO.U.getResourceInfo().then(function(resourceInfo){
+        var body = document.body;
+        var dMenu = document.querySelector('#document-menu.do');
 
-      if(dMenu) {
-        var dMenuButton = dMenu.querySelector('button');
-        var dHead = dMenu.querySelector('header');
-        var dInfo = dMenu.querySelector('div');
+        if(dMenu) {
+          var dMenuButton = dMenu.querySelector('button');
+          var dHead = dMenu.querySelector('header');
+          var dInfo = dMenu.querySelector('div');
 
-        dMenuButton.classList.remove('show');
-        dMenuButton.classList.add('hide');
-        dMenuButton.setAttribute('title', 'Hide Menu');
-        dMenuButton.innerHTML = '<i class="fa fa-minus"></i>';
-        dMenu.classList.add('on');
-        body.classList.add('on-document-menu');
+          dMenuButton.classList.remove('show');
+          dMenuButton.classList.add('hide');
+          dMenuButton.setAttribute('title', 'Hide Menu');
+          dMenuButton.innerHTML = '<i class="fa fa-minus"></i>';
+          dMenu.classList.add('on');
+          body.classList.add('on-document-menu');
 
-        auth.showUserSigninSignup(dHead);
-        DO.U.showDocumentDo(dInfo);
-        DO.U.showEmbedData(dInfo);
-        DO.U.showStorage(dInfo);
-        DO.U.showViews(dInfo);
-        DO.U.showDocumentMetadata(dInfo);
-        if(!body.classList.contains('on-slideshow')) {
-          DO.U.showDocumentItems();
+          auth.showUserSigninSignup(dHead);
+          DO.U.showDocumentDo(dInfo);
+          DO.U.showEmbedData(dInfo);
+          DO.U.showStorage(dInfo);
+          DO.U.showViews(dInfo);
+          DO.U.showDocumentMetadata(dInfo);
+          if(!body.classList.contains('on-slideshow')) {
+            DO.U.showDocumentItems();
+          }
+
+          document.addEventListener('click', DO.U.eventLeaveDocumentMenu);
         }
-
-        document.addEventListener('click', DO.U.eventLeaveDocumentMenu);
-      }
-      else {
-        DO.U.showDocumentInfo();
-        DO.U.showDocumentMenu();
-      }
+        else {
+          DO.U.showDocumentInfo();
+          DO.U.showDocumentMenu();
+        }
+      });
     },
 
     hideDocumentMenu: function(e) {
@@ -2606,6 +2611,123 @@ var DO = {
       });
 
       DO.U.insertDocumentLevelHTML(s, { 'id': elementId });
+    },
+
+    showDocumentStatus: function(node, options) {
+      var disabledInput = '', s = '';
+      if (!DO.C.EditorEnabled) {
+        disabledInput = ' disabled="disabled"';
+      }
+
+      //pso PublicationStatus
+      var statusList = [{'draft': 'Draft'}, {'published': 'Published'}];
+      statusList.forEach(function(i) {
+        var key = Object.keys(i)[0];
+        var value = i[key];
+        var checkedInput = '';
+
+        if (DO.C.ResourceInfo.rdftype.indexOf(DO.C.Vocab['pso' + key]['@id']) > -1) {
+          checkedInput = ' checked="checked"';
+        }
+
+        s += '<li><input id="p-s-' + key + '" name="p-s" type="radio"' + disabledInput + checkedInput + '/><label for="p-s-' + key + '">' + value + '</label></li>';
+      });
+
+      node.insertAdjacentHTML('beforeend', '<section id="document-status-i" class="do"><h2>Document Status</h2><ul id="publication-status-i">' + s + '</ul></section>');
+
+      var documentStatus = document.getElementById('document-status');
+
+      // if(!documentStatus) {
+      //   DO.U.setDocumentStatus();
+      // }
+
+      if(DO.C.EditorEnabled) {
+        document.getElementById('document-status-i').addEventListener('click', function(e){
+          if (e.target.matches('input')) {
+            var id = e.target.id;
+// console.log(id)
+            var type = id.slice(4, id.length);
+// console.log(type);
+
+            var sLQuery = [];
+            statusList.forEach(function(i){
+              var key = Object.keys(i)[0];
+              sLQuery.push('#document-status dd *[typeof="pso:' + key + '"]');
+            });
+            sLQuery = sLQuery.join(', ');
+// console.log(sLQuery);
+
+            var ps = document.querySelectorAll(sLQuery);
+// console.log(ps);
+            if(ps.length > 0) {
+              ps.forEach(function(i){
+// console.log(i);
+                var dd = i.closest('dd');
+// console.log(dd);
+                dd.parentNode.removeChild(dd);
+              });
+            }
+            e.target.removeAttribute('checked');
+
+            DO.U.setDocumentStatus({ 'mode': 'update', 'id': 'document-status', 'type': type });
+            e.target.setAttribute('checked', 'checked');
+
+            DO.U.getResourceInfo();
+          }
+        });
+      }
+    },
+
+    setDocumentStatus: function(options) {
+      options = options || {};
+      options['id'] = ('id' in options) ? options.id : 'document-status';
+      options['mode'] = ('mode' in options) ? options.mode : '';
+
+      var s = DO.U.createDocumentStatusHTML(options);
+
+      DO.U.insertDocumentLevelHTML(s, options);
+    },
+
+    createDocumentStatusHTML: function(options) {
+      options = options || {};
+      options['mode'] = ('mode' in options) ? options.mode : '';
+      var type = subjectURI = '';
+
+      switch(options.type) {
+        case 'draft': default: type = 'Draft'; break;
+        case 'published': type = 'Published'; break;
+      }
+
+      switch(options.subjectURI) {
+        default: subjectURI = ' about=""'; break;
+        case type: subjectURI = ' about="' + options.subjectURI + '"'; break;
+      }
+
+      var c = ('class' in options && options.class.length > 0) ? ' class="' + options.class + '"' : '';
+      var id = ('id' in options && options.id.length > 0) ? ' id="' + options.id + '"' : ' id="document-status"';
+      var datetime = ('datetime' in options) ? options.datetime : DO.U.getDateTimeISO();
+
+      var dd = '<dd><span' + subjectURI + ' typeof="pso:' + type.toLowerCase() + '">' + type + '</span></dd>';
+
+      var s;
+      if (options.mode == 'update') {
+        var dl = document.getElementById(options.id);
+        if(dl) {
+          var clone = dl.cloneNode(true);
+          dl.parentNode.removeChild(dl);
+          clone.insertAdjacentHTML('beforeend', dd);
+          s = clone.outerHTML;
+        }
+        else  {
+          s = '<dl'+c+id+'><dt>Document Status</dt>' + dd + '</dl>';
+        }
+      }
+      else {
+        s = '<dl'+c+id+'><dt>Document Status</dt>' + dd + '</dl>';
+      }
+
+// console.log(s);
+      return s;
     },
 
     insertDocumentLevelHTML: function(h, options) {
@@ -5609,6 +5731,89 @@ WHERE {\n\
 ';
 
       return date;
+    },
+
+    getResourceInfo: function(data, options) {
+      data = data || doc.getDocument();
+
+      var info = {
+        'state': DO.C.Vocab['ldpRDFSource']['@id'],
+        'profile': DO.C.Vocab['ldpRDFSource']['@id']
+      };
+
+      options = options || {
+        'contentType': 'text/html',
+        'subjectURI': uri.stripFragmentFromString(document.location.href)
+      }
+
+      return graph.getGraphFromData(data, options).then(
+        function(i){
+          var s = SimpleRDF(DO.C.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
+// console.log(s);
+
+          info['rdftype'] = s.rdftype._array;
+
+          //Check if the resource is immutable
+          s.rdftype.forEach(function(resource) {
+            if (resource == DO.C.Vocab['ldpImmutableResource']['@id']) {
+              info['state'] = DO.C.Vocab['ldpImmutableResource']['@id'];
+            }
+          });
+
+          if (s.reloriginal) {
+            info['state'] = DO.C.Vocab['ldpImmutableResource']['@id'];
+            info['original'] = s.reloriginal;
+
+            if (s.reloriginal == options['subjectURI']) {
+              //URI-R (The Original Resource is a Fixed Resource)
+
+              info['profile'] = DO.C.Vocab['reloriginal']['@id'];
+            }
+            else {
+              //URI-M
+  
+              info['profile'] = DO.C.Vocab['relmemento']['@id'];
+            }
+          }
+
+          if (s.relmemento) {
+            //URI-R
+
+            info['profile'] = DO.C.Vocab['reloriginal']['@id'];
+            info['memento'] = s.relmemento;
+          }
+
+          if(s.reloriginal && s.relmemento && s.reloriginal != s.relmemento) {
+            //URI-M (Mementos without a TimeGate)
+
+            info['info'] = DO.C.Vocab['ldpImmutableResource']['@id'];
+            info['profile'] = DO.C.Vocab['relmemento']['@id'];
+            info['original'] = s.reloriginal;
+            info['memento'] = s.relmento;
+          }
+
+          if(s.rellatestversion) {
+            info['latest-version'] = s.rellatestversion;
+          }
+
+          if(s.relpredecessorversion) {
+            info['predecessor-version'] = s.relpredecessorversion;
+          }
+
+          if(s.reltimemap) {
+            info['timemap'] = s.reltimemap;
+          }
+
+          if(s.reltimegate) {
+            info['timegate'] = s.reltimegate; 
+          }
+
+// console.log(info);
+
+          DO.C['ResourceInfo'] = info;
+
+          return info;
+      });
     },
 
     Editor: {
