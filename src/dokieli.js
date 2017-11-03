@@ -706,37 +706,39 @@ var DO = {
         e.stopPropagation();
       }
 
-      var body = document.body;
-      var dMenu = document.querySelector('#document-menu.do');
+      DO.U.getResourceInfo().then(function(resourceInfo){
+        var body = document.body;
+        var dMenu = document.querySelector('#document-menu.do');
 
-      if(dMenu) {
-        var dMenuButton = dMenu.querySelector('button');
-        var dHead = dMenu.querySelector('header');
-        var dInfo = dMenu.querySelector('div');
+        if(dMenu) {
+          var dMenuButton = dMenu.querySelector('button');
+          var dHead = dMenu.querySelector('header');
+          var dInfo = dMenu.querySelector('div');
 
-        dMenuButton.classList.remove('show');
-        dMenuButton.classList.add('hide');
-        dMenuButton.setAttribute('title', 'Hide Menu');
-        dMenuButton.innerHTML = '<i class="fa fa-minus"></i>';
-        dMenu.classList.add('on');
-        body.classList.add('on-document-menu');
+          dMenuButton.classList.remove('show');
+          dMenuButton.classList.add('hide');
+          dMenuButton.setAttribute('title', 'Hide Menu');
+          dMenuButton.innerHTML = '<i class="fa fa-minus"></i>';
+          dMenu.classList.add('on');
+          body.classList.add('on-document-menu');
 
-        auth.showUserSigninSignup(dHead);
-        DO.U.showDocumentDo(dInfo);
-        DO.U.showEmbedData(dInfo);
-        DO.U.showStorage(dInfo);
-        DO.U.showViews(dInfo);
-        DO.U.showDocumentMetadata(dInfo);
-        if(!body.classList.contains('on-slideshow')) {
-          DO.U.showDocumentItems();
+          auth.showUserSigninSignup(dHead);
+          DO.U.showDocumentDo(dInfo);
+          DO.U.showEmbedData(dInfo);
+          DO.U.showStorage(dInfo);
+          DO.U.showViews(dInfo);
+          DO.U.showDocumentMetadata(dInfo);
+          if(!body.classList.contains('on-slideshow')) {
+            DO.U.showDocumentItems();
+          }
+
+          document.addEventListener('click', DO.U.eventLeaveDocumentMenu);
         }
-
-        document.addEventListener('click', DO.U.eventLeaveDocumentMenu);
-      }
-      else {
-        DO.U.showDocumentInfo();
-        DO.U.showDocumentMenu();
-      }
+        else {
+          DO.U.showDocumentInfo();
+          DO.U.showDocumentMenu();
+        }
+      });
     },
 
     hideDocumentMenu: function(e) {
