@@ -1349,6 +1349,16 @@ var DO = {
       DO.U.insertDocumentLevelHTML(s, { 'id': elementId });
     },
 
+    setDocumentStatus: function(options) {
+      options = options || {};
+      options['id'] = ('id' in options) ? options.id : 'document-status';
+      options['mode'] = ('mode' in options) ? options.mode : '';
+
+      var s = DO.U.createDocumentStatusHTML(options);
+
+      DO.U.insertDocumentLevelHTML(s, options);
+    },
+
     createDocumentStatusHTML: function(options) {
       options = options || {};
       options['mode'] = ('mode' in options) ? options.mode : '';
