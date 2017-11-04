@@ -1924,38 +1924,49 @@ var DO = {
       });
     },
 
-    resourceSave: function(e) {
+    resourceSave: function(e, options) {
       var url = window.location.origin + window.location.pathname;
       var data = doc.getDocument();
+      options = options || {};
 
-      fetcher.putResource(url, data)
-        .then(() => {
-          DO.U.showActionMessage(document.getElementById('document-menu'), 'Saved')
-          DO.U.hideDocumentMenu(e)
-        })
-        .catch(error => {
-          console.error(error)
+      var processPut = function(url, data, options) {
+        fetcher.putResource(url, data)
+          .then(() => {
+            DO.U.showActionMessage(document.getElementById('document-menu'), 'Saved')
+            DO.U.hideDocumentMenu(e)
+          })
+          .catch(error => {
+            console.error(error)
 
-          let message
+            let message
 
-          switch (error.status) {
-            case 401:
-              message = 'Need to authenticate before saving'
-              break
+            switch (error.status) {
+              case 401:
+                message = 'Need to authenticate before saving'
+                break
 
-            case 403:
-              message = 'You are not authorized to save'
-              break
+              case 403:
+                message = 'You are not authorized to save'
+                break
 
-            case 405:
-            default:
-              e.target.disabled = true
-              message = 'Server doesn\'t allow this resource to be rewritten'
-              break
-          }
+              case 405:
+              default:
+                e.target.disabled = true
+                message = 'Server doesn\'t allow this resource to be rewritten'
+                break
+            }
 
-          DO.U.showActionMessage(document.getElementById('document-menu'), message)
-        })
+            DO.U.showActionMessage(document.getElementById('document-menu'), message)
+          })
+      }
+
+      DO.U.getResourceInfo(data, options).then(function(i) {
+        if(DO.C.ResourceInfo.rdftype.indexOf(DO.C.Vocab['ldpImmutableResource']) > -1) {
+
+        }
+      });
+
+      processPut(url, data, options);
     },
 
     replyToResource: function replyToResource (e, iri) {
