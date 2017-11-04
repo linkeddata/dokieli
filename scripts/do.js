@@ -2732,20 +2732,19 @@ var DO = {
       return s;
     },
 
-
     showCreateMemento: function(node, options){
       node = node || document.getElementById('document-items');
       options = options || {};
 
-      var s, checkedInput, disabledInput;
+      var s = checkedInput = disabledInput = '';
+      // checkedInput = ' checked="checked"';
+      // disabledInput = ' disabled="disabled"';
 
-      s = '<li><input id="c-v" type="checkbox"' + checkedInput + '/><label for="c-v">Create version</label></li>';
+      s = '<li><input id="c-v" type="checkbox" /><label for="c-v">Create version</label></li>';
 
-      checkedInput = '';
-      if (DO.C.ResourceInfo.rdftype.indexOf(DO.C.Vocab['ldpImmutableResource']['@id']) > -1) {
-        checkedInput = ' checked="checked" disabled="disabled"';
+      if (DO.C.ResourceInfo.rdftype.indexOf(DO.C.Vocab['ldpImmutableResource']['@id']) < 0) {
+        s += '<li><input id="c-m" type="checkbox" /><label for="c-m">Make immutable</label></li>';
       }
-      s += '<li><input id="c-m" type="checkbox"' + disabledInput + checkedInput + '/><label for="c-m">Make immutable</label></li>';
 
       node.insertAdjacentHTML('beforeend', '<section id="document-memento-i" class="do"><h2>Memento</h2><ul>' + s + '</ul></section>');
 
