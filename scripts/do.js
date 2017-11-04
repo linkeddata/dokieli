@@ -5805,10 +5805,10 @@ WHERE {\n\
         'profile': DO.C.Vocab['ldpRDFSource']['@id']
       };
 
-      options = options || {
-        'contentType': 'text/html',
-        'subjectURI': uri.stripFragmentFromString(document.location.href)
-      }
+      options = options || {};
+
+      options['contentType'] = ('contentType' in options) ? options.contentType : 'text/html';
+      options['subjectURI'] = ('subjectURI' in options) ? options.subjectURI : uri.stripFragmentFromString(document.location.href);
 
       return graph.getGraphFromData(data, options).then(
         function(i){
