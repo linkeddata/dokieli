@@ -1952,6 +1952,44 @@ var DO = {
       DO.U.processPut(url, data, options);
     },
 
+    createImmutableResource: function(url, data, options) {
+      if(!url) return;
+
+      DO.U.setDocumentStatus({ 'mode': 'create', 'id': 'document-status', 'type': 'ldp:ImmutableResource' });
+      DO.U.setDate(null, { 'type': 'Created' });
+
+      var immutableURL = url.substr(0, url.lastIndexOf('/') + 1) + DO.U.generateAttributeId();
+
+//setDocumentIdentifier
+//setDocumentOriginal
+//setDocumentPredecessorVersion
+//setDocumentLatestVersion
+//setDocumenTimeMap
+//setDocumenTimeGate
+
+      // Create URI-M
+      //TODO: Change to POST
+      data = doc.getDocument();
+      DO.U.processPut(immutableURL, data, options);
+
+
+
+      //Update URI-R
+//setDocumentIdentifier
+//setDocumentPredecessorVersion
+//setDocumentLatestVersion
+//setDocumenTimeMap
+//setDocumenTimeGate
+
+      //PUT
+
+
+
+      //TODO: PATCH URI-T
+
+
+    },
+
     createMutableResource: function(url, data, options) {
       if(!url) return;
 
