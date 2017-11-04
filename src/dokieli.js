@@ -1432,7 +1432,7 @@ var DO = {
       typeOf = options.type || 'pso:draft';
 
       switch(options.type) {
-        case 'pso:draft': default: typeLabel = 'Draft'; break;
+        case 'pso:draft': typeLabel = 'Draft'; break;
         case 'pso:published': typeLabel = 'Published'; break;
         case 'ldp:ImmutableResource': typeLabel = 'Immutable'; break;
       }
@@ -1448,9 +1448,13 @@ var DO = {
 
       var dd = '<dd><span' + subjectURI + ' typeof="' + typeOf  + '">' + typeLabel + '</span></dd>';
 
-      var s;
+      var s = '';
+      var dl = document.getElementById(options.id);
+
+      //FIXME: mode should be an array of operations.
+
+      //TODO: s/update/append
       if (options.mode == 'update') {
-        var dl = document.getElementById(options.id);
         if(dl) {
           var clone = dl.cloneNode(true);
           dl.parentNode.removeChild(dl);
@@ -1459,6 +1463,22 @@ var DO = {
         }
         else  {
           s = '<dl'+c+id+'><dt>Document Status</dt>' + dd + '</dl>';
+        }
+      }
+      else if (options.mode == 'delete') {
+        if(dl) {
+          var clone = dl.cloneNode(true);
+          dl.parentNode.removeChild(dl);
+
+          var t = clone.querySelector('[typeof="' + typeOf + '"]');
+          if (t) {
+            t.closest('dl').removeChild(t.parentNode);
+          }
+
+          var cloneDD = clone.querySelectorAll('#' + options.id + ' dd');
+          if (cloneDD.length > 0) {
+            s = clone.outerHTML;
+          }
         }
       }
       else {
