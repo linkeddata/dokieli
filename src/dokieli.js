@@ -1949,44 +1949,38 @@ var DO = {
       var data = doc.getDocument();
       options = options || {};
 
-      var processPut = function(url, data, options) {
-        fetcher.putResource(url, data)
-          .then(() => {
-            DO.U.showActionMessage(document.getElementById('document-menu'), 'Saved')
-            DO.U.hideDocumentMenu(e)
-          })
-          .catch(error => {
-            console.error(error)
+      DO.U.processPut(url, data, options);
+    },
 
-            let message
+    processPut: function(url, data, options) {
+      fetcher.putResource(url, data)
+        .then(() => {
+          DO.U.showActionMessage(document.getElementById('document-menu'), 'Saved')
+          DO.U.hideDocumentMenu(e)
+        })
+        .catch(error => {
+          console.error(error)
 
-            switch (error.status) {
-              case 401:
-                message = 'Need to authenticate before saving'
-                break
+          let message
 
-              case 403:
-                message = 'You are not authorized to save'
-                break
+          switch (error.status) {
+            case 401:
+              message = 'Need to authenticate before saving'
+              break
 
-              case 405:
-              default:
-                e.target.disabled = true
-                message = 'Server doesn\'t allow this resource to be rewritten'
-                break
-            }
+            case 403:
+              message = 'You are not authorized to save'
+              break
 
-            DO.U.showActionMessage(document.getElementById('document-menu'), message)
-          })
-      }
+            case 405:
+            default:
+              e.target.disabled = true
+              message = 'Server doesn\'t allow this resource to be rewritten'
+              break
+          }
 
-      DO.U.getResourceInfo(data, options).then(function(i) {
-        if(DO.C.ResourceInfo.rdftype.indexOf(DO.C.Vocab['ldpImmutableResource']) > -1) {
-
-        }
-      });
-
-      processPut(url, data, options);
+          DO.U.showActionMessage(document.getElementById('document-menu'), message)
+        })
     },
 
     replyToResource: function replyToResource (e, iri) {
