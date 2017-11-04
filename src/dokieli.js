@@ -1952,6 +1952,15 @@ var DO = {
       DO.U.processPut(url, data, options);
     },
 
+    updateMutableResource: function(url, data, options) {
+      if(!url) return;
+
+      DO.U.setDate(null, { 'type': 'Modified' } );
+
+      data = doc.getDocument();
+      DO.U.processPut(url, data, options);
+    },
+
     processPut: function(url, data, options) {
       fetcher.putResource(url, data)
         .then(() => {
