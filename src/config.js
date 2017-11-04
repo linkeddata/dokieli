@@ -245,7 +245,11 @@ module.exports = {
     "ldpRDFSource": { "@id": "http://www.w3.org/ns/ldp#RDFSource", "@type": "@id" },
     "ldpImmutableResource": { "@id": "http://www.w3.org/ns/ldp#ImmutableResource", "@type": "@id" },
 
+    "memMemento": { "@id": "http://mementoweb.org/ns/mem#Memento", "@type": "@id" },
+    "memOriginal": { "@id": "http://mementoweb.org/ns/mem#Original", "@type": "@id" },
+
     "reloriginal": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#original", "@type": "@id" },
+    "relmemento": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#memento", "@type": "@id" },
     "reltimemap": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#timemap", "@type": "@id" },
     "reltimegate": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#timegate", "@type": "@id" },
     "relpredecessorversion": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#predecessor-version", "@type": "@id" },
