@@ -2755,7 +2755,7 @@ var DO = {
             var id = e.target.id;
 
             if(!e.target.getAttribute('checked')) {
-              DO.U.setDocumentStatus({ 'mode': 'update', 'id': 'document-status', 'type': 'ldp:ImmutableResource' });
+              // DO.U.setDocumentStatus({ 'mode': 'update', 'id': 'document-status', 'type': 'ldp:ImmutableResource' });
               e.target.setAttribute('checked', 'checked');
             }
             else {
