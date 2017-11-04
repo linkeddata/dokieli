@@ -765,7 +765,7 @@ var DO = {
       dMenuButton.setAttribute('title', 'Open Menu');
       dMenuButton.innerHTML = '<i class="fa fa-bars"></i>';
 
-      var removeElementsList = ['document-items', 'embed-data-entry', 'create-new-document', 'open-document', 'source-view', 'save-as-document', 'user-identity-input', 'resource-browser', 'share-resource', 'reply-to-resource', 'snapshot-document', 'graph-view'];
+      var removeElementsList = ['document-items', 'embed-data-entry', 'create-new-document', 'open-document', 'source-view', 'save-as-document', 'user-identity-input', 'resource-browser', 'share-resource', 'reply-to-resource', 'memento-document', 'graph-view'];
       removeElementsList.forEach(function(id) {
         var element = document.getElementById(id);
         if(element) {
@@ -1815,19 +1815,19 @@ var DO = {
         })
     },
 
-    snapshotDocument: function(e) {
+    mementoDocument: function(e) {
       if(typeof e !== 'undefined') {
         e.target.disabled = true;
       }
 
       var iri = uri.stripFragmentFromString(document.location.href);
 
-      document.body.insertAdjacentHTML('beforeend', '<aside id="snapshot-document" class="do on"><button class="close" title="Close">❌</button><h2>Snapshot Document</h2><p><code>' + iri + '</code> will be snapshot. Note that behaviour differ for each action. See the links for more information.</p><ul><li><button class="export-as-html">Export</button> this article as HTML and save to file.</li><li><a href="http://web.archive.org/" target="_blank">Internet Archive</a>: <button class="snapshot-internet-archive">Capture</button> all crawlable resources referenced in this article.</li></ul></aside>');
+      document.body.insertAdjacentHTML('beforeend', '<aside id="memento-document" class="do on"><button class="close" title="Close">❌</button><h2>Memento Document</h2><p><code>' + iri + '</code> will be snapshot. Note that behaviour differ for each action. See the links for more information.</p><ul><li><button class="export-as-html">Export</button> this article as HTML and save to file.</li><li><a href="http://web.archive.org/" target="_blank">Internet Archive</a>: <button class="snapshot-internet-archive">Capture</button> all crawlable resources referenced in this article.</li></ul></aside>');
 
-      var snapshotDocument = document.getElementById('snapshot-document');
-      snapshotDocument.addEventListener('click', function(e) {
+      var mementoDocument = document.getElementById('memento-document');
+      mementoDocument.addEventListener('click', function(e) {
         if (e.target.matches('button.close')) {
-          document.querySelector('#document-do .resource-snapshot').disabled = false;
+          document.querySelector('#document-do .resource-memento').disabled = false;
         }
 
         if (e.target.matches('button.export-as-html')) {
@@ -1867,7 +1867,7 @@ var DO = {
       s += '<li><button class="resource-save"' + buttonDisabled +
         ' title="Save article"><i class="fa fa-life-ring fa-2x"></i>Save</button></li>';
       s += '<li><button class="resource-save-as" title="Save as article"><i class="fa fa-paper-plane-o fa-2x"></i>Save As</button></li>';
-      s += '<li><button class="resource-snapshot" title="Snapshot article"><i class="fa fa-external-link fa-2x"></i>Snapshot</button></li>';
+      s += '<li><button class="resource-memento" title="Memento article"><i class="fa fa-clock-o fa-2x"></i>Memento</button></li>';
       s += '<li><button class="resource-print" title="Print article"><i class="fa fa-print fa-2x"></i>Print</button></li>';
 
       if (DO.C.EditorAvailable) {
@@ -1932,8 +1932,8 @@ var DO = {
           DO.U.saveAsDocument(e);
         }
 
-        if (e.target.closest('.resource-snapshot')) {
-          DO.U.snapshotDocument(e);
+        if (e.target.closest('.resource-memento')) {
+          DO.U.mementoDocument(e);
         }
 
         if (e.target.closest('.resource-print')) {
