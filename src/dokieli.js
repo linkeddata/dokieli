@@ -4537,7 +4537,7 @@ WHERE {\n\
         node.textContent = datetime.substr(0, datetime.indexOf('T'));
       }
       else {
-        DO.U.insertDocumentLevelNode(DO.U.createDateHTML(options));
+        DO.U.insertDocumentLevelHTML(DO.U.createDateHTML(options));
       }
     },
 
