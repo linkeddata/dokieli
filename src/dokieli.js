@@ -1952,6 +1952,16 @@ var DO = {
       DO.U.processPut(url, data, options);
     },
 
+    createMutableResource: function(url, data, options) {
+      if(!url) return;
+
+      DO.U.setDate(null, { 'type': 'Created' } );
+
+      //TODO: Change to POST
+      data = doc.getDocument();
+      DO.U.processPut(url, data, options);
+    },
+
     updateMutableResource: function(url, data, options) {
       if(!url) return;
 
