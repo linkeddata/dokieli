@@ -4583,6 +4583,7 @@ WHERE {\n\
 // console.log(s);
 
           info['rdftype'] = s.rdftype._array;
+          info['profile'] = DO.C.Vocab['ldpRDFSource']['@id'];
 
           //Check if the resource is immutable
           s.rdftype.forEach(function(resource) {
@@ -4598,27 +4599,26 @@ WHERE {\n\
             if (s.reloriginal == options['subjectURI']) {
               //URI-R (The Original Resource is a Fixed Resource)
 
-              info['profile'] = DO.C.Vocab['reloriginal']['@id'];
+              info['profile'] = DO.C.Vocab['memOriginal']['@id'];
             }
             else {
               //URI-M
   
-              info['profile'] = DO.C.Vocab['relmemento']['@id'];
+              info['profile'] = DO.C.Vocab['memMemento']['@id'];
             }
           }
 
           if (s.relmemento) {
             //URI-R
 
-            info['profile'] = DO.C.Vocab['reloriginal']['@id'];
+            info['profile'] = DO.C.Vocab['memOriginal']['@id'];
             info['memento'] = s.relmemento;
           }
 
           if(s.reloriginal && s.relmemento && s.reloriginal != s.relmemento) {
-            //URI-M (Mementos without a TimeGate)
+            //URI-M (Memento without a TimeGate)
 
-            info['info'] = DO.C.Vocab['ldpImmutableResource']['@id'];
-            info['profile'] = DO.C.Vocab['relmemento']['@id'];
+            info['profile'] = DO.C.Vocab['memMemento']['@id'];
             info['original'] = s.reloriginal;
             info['memento'] = s.relmento;
           }
