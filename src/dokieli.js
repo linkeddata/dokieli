@@ -1949,7 +1949,54 @@ var DO = {
       var data = doc.getDocument();
       options = options || {};
 
-      DO.U.processPut(url, data, options);
+      DO.U.getResourceInfo(data, options).then(function(i) {
+console.log(DO.C.ResourceInfo);
+
+        var createVersion = document.querySelector('#document-memento-i input#c-v:checked');
+        var createImmutable = document.querySelector('#document-memento-i input#c-m:checked');
+// console.log(createVersion)
+// console.log(createImmutable)
+        switch (DO.C.ResourceInfo['profile']) {
+          case DO.C.Vocab['memOriginal']['@id']:
+            if (createImmutable) {
+console.log('URI-R createImmutableResource 1 ' + url);
+                DO.U.createImmutableResource(url);
+            }
+            else if (createVersion) {
+              if (DO.C.ResourceInfo['state'] == DO.C.Vocab['ldpImmutableResource']) {
+                DO.U.setDocumentStatus({ 'mode': 'delete', 'id': 'document-status', 'type': 'ldp:ImmutableResource' });
+
+console.log('URI-R (Fixed Resource) createMutableResource 1' + url);
+                DO.U.createMutableResource(url);
+              }
+            }
+            else {
+console.log('URI-R updateMutableResource 1 ' + url);
+              DO.U.updateMutableResource(url);
+            }
+            break;
+
+
+          case DO.C.Vocab['memMemento']['@id']: case DO.C.Vocab['ldpRDFSource']['@id']:
+            if (createVersion) {
+console.log('URI-M createMutableResource 2 ' + url);
+              DO.U.createMutableResource(url);
+            }
+            else {
+console.log('URI updateMutableResource 2 ' + url);
+              DO.U.updateMutableResource(url);   
+            }
+            break;
+
+
+          default:
+console.log('URI updateMutableResource 3 ' + url);
+              DO.U.updateMutableResource(url);
+            break;
+        }
+
+
+      });
     },
 
     createImmutableResource: function(url, data, options) {
