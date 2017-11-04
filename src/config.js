@@ -124,6 +124,7 @@ module.exports = {
     'http://purl.org/spar/cito/extends': 'extends',
     'http://purl.org/spar/cito/includesExcerptFrom': 'includes excerpt from',
     'http://purl.org/spar/cito/includesQuotationFrom': 'includes quotation from',
+    'http://purl.org/spar/cito/linksTo': 'links to',
     'http://purl.org/spar/cito/obtainsBackgroundFrom': 'obtains background from',
     'http://purl.org/spar/cito/obtainsSupportFrom': 'obtains support from',
     'http://purl.org/spar/cito/parodies': 'parodies',
