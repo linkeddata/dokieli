@@ -3088,12 +3088,16 @@ var DO = {
 
       var iri = uri.stripFragmentFromString(document.location.href);
 
-      document.body.insertAdjacentHTML('beforeend', '<aside id="memento-document" class="do on"><button class="close" title="Close">❌</button><h2>Memento</h2><ul><li><button class="create-version">Version</button> this article or make it <button class="make-immutable">Immutable</button>.</li><li><button class="export-as-html">Export</button> and save to file.</li><li><button class="snapshot-internet-archive">Capture</button> with <a href="http://web.archive.org/" target="_blank">Internet Archive</a>.</li></ul></aside>');
+      document.body.insertAdjacentHTML('beforeend', '<aside id="memento-document" class="do on"><button class="close" title="Close">❌</button><h2>Memento</h2><ul><li><button class="create-version">Version</button> this article.</li><li>Make this article <button class="create-immutable">Immutable</button> and version it.</li><li><button class="export-as-html">Export</button> and save to file.</li><li><button class="snapshot-internet-archive">Capture</button> with <a href="http://web.archive.org/" target="_blank">Internet Archive</a>.</li></ul></aside>');
 
       var mementoDocument = document.getElementById('memento-document');
       mementoDocument.addEventListener('click', function(e) {
         if (e.target.matches('button.close')) {
           document.querySelector('#document-do .resource-memento').disabled = false;
+        }
+
+        if (e.target.matches('button.create-version') || e.target.matches('button.create-immutable')) {
+          DO.U.resourceSave(e);
         }
 
         if (e.target.matches('button.export-as-html')) {
