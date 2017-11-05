@@ -205,7 +205,7 @@ module.exports = {
 
     "biboauthorList": { "@id": "http://purl.org/ontology/bibo/authorList", "@type": "@id" },
 
-    "storage": { "@id": "http://www.w3.org/ns/pim/space#storage", "@type": "@id", "@array": true },
+    "pimstorage": { "@id": "http://www.w3.org/ns/pim/space#storage", "@type": "@id", "@array": true },
     "preferencesFile": { "@id": "http://www.w3.org/ns/pim/space#preferencesFile", "@type": "@id" },
     "workspace": { "@id": "http://www.w3.org/ns/pim/space#workspace", "@type": "@id", "@array": true },
     "masterWorkspace": { "@id": "http://www.w3.org/ns/pim/space#masterWorkspace", "@type": "@id" },

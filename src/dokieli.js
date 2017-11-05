@@ -90,10 +90,10 @@ var DO = {
         .then(
           function(i) {
             var s = i.child(url);
-// console.log(s.storage);
-            if (s.storage && s.storage._array.length > 0) {
-// console.log("Try through WebID's storage: " + s.storage.at(0));
-              return DO.U.getResourceHeadUser(s.storage.at(0));
+// console.log(s.pimstorage);
+            if (s.pimstorage && s.pimstorage._array.length > 0) {
+// console.log("Try through WebID's storage: " + s.pimstorage.at(0));
+              return DO.U.getResourceHeadUser(s.pimstorage.at(0));
             }
             else {
               console.log("---1 WebID's storage NOT FOUND");

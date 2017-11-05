@@ -285,7 +285,7 @@ module.exports = {
 
     "biboauthorList": { "@id": "http://purl.org/ontology/bibo/authorList", "@type": "@id" },
 
-    "storage": { "@id": "http://www.w3.org/ns/pim/space#storage", "@type": "@id", "@array": true },
+    "pimstorage": { "@id": "http://www.w3.org/ns/pim/space#storage", "@type": "@id", "@array": true },
     "preferencesFile": { "@id": "http://www.w3.org/ns/pim/space#preferencesFile", "@type": "@id" },
     "workspace": { "@id": "http://www.w3.org/ns/pim/space#workspace", "@type": "@id", "@array": true },
     "masterWorkspace": { "@id": "http://www.w3.org/ns/pim/space#masterWorkspace", "@type": "@id" },
@@ -1358,10 +1358,10 @@ var DO = {
         .then(
           function(i) {
             var s = i.child(url);
-// console.log(s.storage);
-            if (s.storage && s.storage._array.length > 0) {
-// console.log("Try through WebID's storage: " + s.storage.at(0));
-              return DO.U.getResourceHeadUser(s.storage.at(0));
+// console.log(s.pimstorage);
+            if (s.pimstorage && s.pimstorage._array.length > 0) {
+// console.log("Try through WebID's storage: " + s.pimstorage.at(0));
+              return DO.U.getResourceHeadUser(s.pimstorage.at(0));
             }
             else {
               console.log("---1 WebID's storage NOT FOUND");
@@ -8293,8 +8293,8 @@ function setUserInfo (userIRI) {
       Config.User.SameAs = []
       Config.User.Contacts = []
 
-      if (s.storage) {
-        Config.User.Storage = s.storage._array
+      if (s.pimstorage) {
+        Config.User.Storage = s.pimstorage._array
       }
 
       if (s.preferencesFile && s.preferencesFile.length > 0) {
