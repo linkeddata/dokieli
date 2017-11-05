@@ -315,7 +315,7 @@ module.exports = {
     "ascontent": "https://www.w3.org/ns/activitystreams#content",
     "asname": "https://www.w3.org/ns/activitystreams#name",
     "asimage": { "@id": "https://www.w3.org/ns/activitystreams#image", "@type": "@id" },
-    "asoutbox": { "@id": "https://www.w3.org/ns/activitystreams#outbox", "@type": "@id" },
+    "asoutbox": { "@id": "https://www.w3.org/ns/activitystreams#outbox", "@type": "@id", "@array": true },
 
     "siocreplyof": { "@id": "http://rdfs.org/sioc/ns#reply_of", "@type": "@id", "@array": true },
     "siocavatar": { "@id": "http://rdfs.org/sioc/ns#avatar", "@type": "@id" },
@@ -8294,8 +8294,11 @@ function setUserInfo (userIRI) {
       Config.User.SameAs = []
       Config.User.Contacts = []
 
-      if (s.pimstorage) {
+      if (s.pimstorage && s.pimstorage._array.length > 0) {
         Config.User.Storage = s.pimstorage._array
+      }
+      else if (s.asoutbox && s.asoutbox._array.length > 0) {
+        Config.User.Storage = s.asoutbox._array
       }
 
       if (s.preferencesFile && s.preferencesFile.length > 0) {

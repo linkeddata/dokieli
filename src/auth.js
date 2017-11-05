@@ -154,10 +154,10 @@ function setUserInfo (userIRI) {
       Config.User.SameAs = []
       Config.User.Contacts = []
 
-      if (s.pimstorage) {
+      if (s.pimstorage && s.pimstorage._array.length > 0) {
         Config.User.Storage = s.pimstorage._array
       }
-      else if (s.asoutbox) {
+      else if (s.asoutbox && s.asoutbox._array.length > 0) {
         Config.User.Storage = s.asoutbox._array
       }
 
