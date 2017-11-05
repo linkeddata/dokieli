@@ -204,6 +204,7 @@ module.exports = {
     'http://purl.org/spar/cito/extends': 'extends',
     'http://purl.org/spar/cito/includesExcerptFrom': 'includes excerpt from',
     'http://purl.org/spar/cito/includesQuotationFrom': 'includes quotation from',
+    'http://purl.org/spar/cito/linksTo': 'links to',
     'http://purl.org/spar/cito/obtainsBackgroundFrom': 'obtains background from',
     'http://purl.org/spar/cito/obtainsSupportFrom': 'obtains support from',
     'http://purl.org/spar/cito/parodies': 'parodies',
@@ -324,7 +325,11 @@ module.exports = {
     "ldpRDFSource": { "@id": "http://www.w3.org/ns/ldp#RDFSource", "@type": "@id" },
     "ldpImmutableResource": { "@id": "http://www.w3.org/ns/ldp#ImmutableResource", "@type": "@id" },
 
+    "memMemento": { "@id": "http://mementoweb.org/ns/mem#Memento", "@type": "@id" },
+    "memOriginal": { "@id": "http://mementoweb.org/ns/mem#Original", "@type": "@id" },
+
     "reloriginal": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#original", "@type": "@id" },
+    "relmemento": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#memento", "@type": "@id" },
     "reltimemap": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#timemap", "@type": "@id" },
     "reltimegate": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#timegate", "@type": "@id" },
     "relpredecessorversion": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#predecessor-version", "@type": "@id" },
@@ -2028,7 +2033,7 @@ var DO = {
       dMenuButton.setAttribute('title', 'Open Menu');
       dMenuButton.innerHTML = '<i class="fa fa-bars"></i>';
 
-      var removeElementsList = ['document-items', 'embed-data-entry', 'create-new-document', 'open-document', 'source-view', 'save-as-document', 'user-identity-input', 'resource-browser', 'share-resource', 'reply-to-resource', 'snapshot-document', 'graph-view'];
+      var removeElementsList = ['document-items', 'embed-data-entry', 'create-new-document', 'open-document', 'source-view', 'save-as-document', 'user-identity-input', 'resource-browser', 'share-resource', 'reply-to-resource', 'memento-document', 'graph-view'];
       removeElementsList.forEach(function(id) {
         var element = document.getElementById(id);
         if(element) {
@@ -2442,8 +2447,6 @@ var DO = {
       if (sections.length > 0) {
         DO.U.showDocumentStatus(documentItems);
 
-        DO.U.showCreateMemento(documentItems);
-
         DO.U.showTableOfStuff(documentItems);
 
         var sortable = '';
@@ -2695,7 +2698,7 @@ var DO = {
       typeOf = options.type || 'pso:draft';
 
       switch(options.type) {
-        case 'pso:draft': default: typeLabel = 'Draft'; break;
+        case 'pso:draft': typeLabel = 'Draft'; break;
         case 'pso:published': typeLabel = 'Published'; break;
         case 'ldp:ImmutableResource': typeLabel = 'Immutable'; break;
       }
@@ -2711,9 +2714,13 @@ var DO = {
 
       var dd = '<dd><span' + subjectURI + ' typeof="' + typeOf  + '">' + typeLabel + '</span></dd>';
 
-      var s;
+      var s = '';
+      var dl = document.getElementById(options.id);
+
+      //FIXME: mode should be an array of operations.
+
+      //TODO: s/update/append
       if (options.mode == 'update') {
-        var dl = document.getElementById(options.id);
         if(dl) {
           var clone = dl.cloneNode(true);
           dl.parentNode.removeChild(dl);
@@ -2722,6 +2729,22 @@ var DO = {
         }
         else  {
           s = '<dl'+c+id+'><dt>Document Status</dt>' + dd + '</dl>';
+        }
+      }
+      else if (options.mode == 'delete') {
+        if(dl) {
+          var clone = dl.cloneNode(true);
+          dl.parentNode.removeChild(dl);
+
+          var t = clone.querySelector('[typeof="' + typeOf + '"]');
+          if (t) {
+            t.closest('dl').removeChild(t.parentNode);
+          }
+
+          var cloneDD = clone.querySelectorAll('#' + options.id + ' dd');
+          if (cloneDD.length > 0) {
+            s = clone.outerHTML;
+          }
         }
       }
       else {
@@ -3058,19 +3081,19 @@ var DO = {
         })
     },
 
-    snapshotDocument: function(e) {
+    mementoDocument: function(e) {
       if(typeof e !== 'undefined') {
         e.target.disabled = true;
       }
 
       var iri = uri.stripFragmentFromString(document.location.href);
 
-      document.body.insertAdjacentHTML('beforeend', '<aside id="snapshot-document" class="do on"><button class="close" title="Close">❌</button><h2>Snapshot Document</h2><p><code>' + iri + '</code> will be snapshot. Note that behaviour differ for each action. See the links for more information.</p><ul><li><button class="export-as-html">Export</button> this article as HTML and save to file.</li><li><a href="http://web.archive.org/" target="_blank">Internet Archive</a>: <button class="snapshot-internet-archive">Capture</button> all crawlable resources referenced in this article.</li></ul></aside>');
+      document.body.insertAdjacentHTML('beforeend', '<aside id="memento-document" class="do on"><button class="close" title="Close">❌</button><h2>Memento</h2><ul><li><button class="create-version">Version</button> this article or make it <button class="make-immutable">Immutable</button>.</li><li><button class="export-as-html">Export</button> and save to file.</li><li><button class="snapshot-internet-archive">Capture</button> with <a href="http://web.archive.org/" target="_blank">Internet Archive</a>.</li></ul></aside>');
 
-      var snapshotDocument = document.getElementById('snapshot-document');
-      snapshotDocument.addEventListener('click', function(e) {
+      var mementoDocument = document.getElementById('memento-document');
+      mementoDocument.addEventListener('click', function(e) {
         if (e.target.matches('button.close')) {
-          document.querySelector('#document-do .resource-snapshot').disabled = false;
+          document.querySelector('#document-do .resource-memento').disabled = false;
         }
 
         if (e.target.matches('button.export-as-html')) {
@@ -3110,7 +3133,7 @@ var DO = {
       s += '<li><button class="resource-save"' + buttonDisabled +
         ' title="Save article"><i class="fa fa-life-ring fa-2x"></i>Save</button></li>';
       s += '<li><button class="resource-save-as" title="Save as article"><i class="fa fa-paper-plane-o fa-2x"></i>Save As</button></li>';
-      s += '<li><button class="resource-snapshot" title="Snapshot article"><i class="fa fa-external-link fa-2x"></i>Snapshot</button></li>';
+      s += '<li><button class="resource-memento" title="Memento article"><i class="fa fa-clock-o fa-2x"></i>Memento</button></li>';
       s += '<li><button class="resource-print" title="Print article"><i class="fa fa-print fa-2x"></i>Print</button></li>';
 
       if (DO.C.EditorAvailable) {
@@ -3175,8 +3198,8 @@ var DO = {
           DO.U.saveAsDocument(e);
         }
 
-        if (e.target.closest('.resource-snapshot')) {
-          DO.U.snapshotDocument(e);
+        if (e.target.closest('.resource-memento')) {
+          DO.U.mementoDocument(e);
         }
 
         if (e.target.closest('.resource-print')) {
@@ -3192,44 +3215,142 @@ var DO = {
       var data = doc.getDocument();
       options = options || {};
 
-      var processPut = function(url, data, options) {
-        fetcher.putResource(url, data)
-          .then(() => {
-            DO.U.showActionMessage(document.getElementById('document-menu'), 'Saved')
-            DO.U.hideDocumentMenu(e)
-          })
-          .catch(error => {
-            console.error(error)
-
-            let message
-
-            switch (error.status) {
-              case 401:
-                message = 'Need to authenticate before saving'
-                break
-
-              case 403:
-                message = 'You are not authorized to save'
-                break
-
-              case 405:
-              default:
-                e.target.disabled = true
-                message = 'Server doesn\'t allow this resource to be rewritten'
-                break
-            }
-
-            DO.U.showActionMessage(document.getElementById('document-menu'), message)
-          })
-      }
-
       DO.U.getResourceInfo(data, options).then(function(i) {
-        if(DO.C.ResourceInfo.rdftype.indexOf(DO.C.Vocab['ldpImmutableResource']) > -1) {
+console.log(DO.C.ResourceInfo);
 
+        var createVersion = document.querySelector('#document-memento-i input#c-v:checked');
+        var createImmutable = document.querySelector('#document-memento-i input#c-m:checked');
+// console.log(createVersion)
+// console.log(createImmutable)
+        switch (DO.C.ResourceInfo['profile']) {
+          case DO.C.Vocab['memOriginal']['@id']:
+            if (createImmutable) {
+console.log('URI-R createImmutableResource 1 ' + url);
+                DO.U.createImmutableResource(url);
+            }
+            else if (createVersion) {
+              if (DO.C.ResourceInfo['state'] == DO.C.Vocab['ldpImmutableResource']) {
+                DO.U.setDocumentStatus({ 'mode': 'delete', 'id': 'document-status', 'type': 'ldp:ImmutableResource' });
+
+console.log('URI-R (Fixed Resource) createMutableResource 1' + url);
+                DO.U.createMutableResource(url);
+              }
+            }
+            else {
+console.log('URI-R updateMutableResource 1 ' + url);
+              DO.U.updateMutableResource(url);
+            }
+            break;
+
+
+          case DO.C.Vocab['memMemento']['@id']: case DO.C.Vocab['ldpRDFSource']['@id']:
+            if (createVersion) {
+console.log('URI-M createMutableResource 2 ' + url);
+              DO.U.createMutableResource(url);
+            }
+            else {
+console.log('URI updateMutableResource 2 ' + url);
+              DO.U.updateMutableResource(url);   
+            }
+            break;
+
+
+          default:
+console.log('URI updateMutableResource 3 ' + url);
+              DO.U.updateMutableResource(url);
+            break;
         }
-      });
 
-      processPut(url, data, options);
+
+      });
+    },
+
+    createImmutableResource: function(url, data, options) {
+      if(!url) return;
+
+      DO.U.setDocumentStatus({ 'mode': 'create', 'id': 'document-status', 'type': 'ldp:ImmutableResource' });
+      DO.U.setDate(null, { 'type': 'Created' });
+
+      var immutableURL = url.substr(0, url.lastIndexOf('/') + 1) + DO.U.generateAttributeId();
+
+//setDocumentIdentifier
+//setDocumentOriginal
+//setDocumentPredecessorVersion
+//setDocumentLatestVersion
+//setDocumenTimeMap
+//setDocumenTimeGate
+
+      // Create URI-M
+      //TODO: Change to POST
+      data = doc.getDocument();
+      DO.U.processPut(immutableURL, data, options);
+
+
+
+      //Update URI-R
+//setDocumentIdentifier
+//setDocumentPredecessorVersion
+//setDocumentLatestVersion
+//setDocumenTimeMap
+//setDocumenTimeGate
+
+      //PUT
+
+
+
+      //TODO: PATCH URI-T
+
+
+    },
+
+    createMutableResource: function(url, data, options) {
+      if(!url) return;
+
+      DO.U.setDate(null, { 'type': 'Created' } );
+
+      //TODO: Change to POST
+      data = doc.getDocument();
+      DO.U.processPut(url, data, options);
+    },
+
+    updateMutableResource: function(url, data, options) {
+      if(!url) return;
+
+      DO.U.setDate(null, { 'type': 'Modified' } );
+
+      data = doc.getDocument();
+      DO.U.processPut(url, data, options);
+    },
+
+    processPut: function(url, data, options) {
+      fetcher.putResource(url, data)
+        .then(() => {
+          DO.U.showActionMessage(document.getElementById('document-menu'), 'Saved')
+          DO.U.hideDocumentMenu(e)
+        })
+        .catch(error => {
+          console.error(error)
+
+          let message
+
+          switch (error.status) {
+            case 401:
+              message = 'Need to authenticate before saving'
+              break
+
+            case 403:
+              message = 'You are not authorized to save'
+              break
+
+            case 405:
+            default:
+              e.target.disabled = true
+              message = 'Server doesn\'t allow this resource to be rewritten'
+              break
+          }
+
+          DO.U.showActionMessage(document.getElementById('document-menu'), message)
+        })
     },
 
     replyToResource: function replyToResource (e, iri) {
@@ -5780,7 +5901,7 @@ WHERE {\n\
         node.textContent = datetime.substr(0, datetime.indexOf('T'));
       }
       else {
-        DO.U.insertDocumentLevelNode(DO.U.createDateHTML(options));
+        DO.U.insertDocumentLevelHTML(DO.U.createDateHTML(options));
       }
     },
 
@@ -5826,6 +5947,7 @@ WHERE {\n\
 // console.log(s);
 
           info['rdftype'] = s.rdftype._array;
+          info['profile'] = DO.C.Vocab['ldpRDFSource']['@id'];
 
           //Check if the resource is immutable
           s.rdftype.forEach(function(resource) {
@@ -5841,27 +5963,26 @@ WHERE {\n\
             if (s.reloriginal == options['subjectURI']) {
               //URI-R (The Original Resource is a Fixed Resource)
 
-              info['profile'] = DO.C.Vocab['reloriginal']['@id'];
+              info['profile'] = DO.C.Vocab['memOriginal']['@id'];
             }
             else {
               //URI-M
   
-              info['profile'] = DO.C.Vocab['relmemento']['@id'];
+              info['profile'] = DO.C.Vocab['memMemento']['@id'];
             }
           }
 
           if (s.relmemento) {
             //URI-R
 
-            info['profile'] = DO.C.Vocab['reloriginal']['@id'];
+            info['profile'] = DO.C.Vocab['memOriginal']['@id'];
             info['memento'] = s.relmemento;
           }
 
           if(s.reloriginal && s.relmemento && s.reloriginal != s.relmemento) {
-            //URI-M (Mementos without a TimeGate)
+            //URI-M (Memento without a TimeGate)
 
-            info['info'] = DO.C.Vocab['ldpImmutableResource']['@id'];
-            info['profile'] = DO.C.Vocab['relmemento']['@id'];
+            info['profile'] = DO.C.Vocab['memMemento']['@id'];
             info['original'] = s.reloriginal;
             info['memento'] = s.relmento;
           }

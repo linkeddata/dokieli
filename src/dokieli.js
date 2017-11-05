@@ -1179,8 +1179,6 @@ var DO = {
       if (sections.length > 0) {
         DO.U.showDocumentStatus(documentItems);
 
-        DO.U.showCreateMemento(documentItems);
-
         DO.U.showTableOfStuff(documentItems);
 
         var sortable = '';
@@ -1822,7 +1820,7 @@ var DO = {
 
       var iri = uri.stripFragmentFromString(document.location.href);
 
-      document.body.insertAdjacentHTML('beforeend', '<aside id="memento-document" class="do on"><button class="close" title="Close">❌</button><h2>Memento Document</h2><p><code>' + iri + '</code> will be snapshot. Note that behaviour differ for each action. See the links for more information.</p><ul><li><button class="export-as-html">Export</button> this article as HTML and save to file.</li><li><a href="http://web.archive.org/" target="_blank">Internet Archive</a>: <button class="snapshot-internet-archive">Capture</button> all crawlable resources referenced in this article.</li></ul></aside>');
+      document.body.insertAdjacentHTML('beforeend', '<aside id="memento-document" class="do on"><button class="close" title="Close">❌</button><h2>Memento</h2><ul><li><button class="create-version">Version</button> this article or make it <button class="make-immutable">Immutable</button>.</li><li><button class="export-as-html">Export</button> and save to file.</li><li><button class="snapshot-internet-archive">Capture</button> with <a href="http://web.archive.org/" target="_blank">Internet Archive</a>.</li></ul></aside>');
 
       var mementoDocument = document.getElementById('memento-document');
       mementoDocument.addEventListener('click', function(e) {
