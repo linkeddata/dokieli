@@ -66,8 +66,8 @@ function sendNotifications (tos, note, iri, shareResource) {
 
           inboxResponse(to, toInput)
 
-            .then(inbox => {
-              notificationData['inbox'] = inbox
+            .then(inboxURL => {
+              notificationData['inbox'] = inboxURL
 
               notifyInbox(notificationData)
 
@@ -83,7 +83,7 @@ function sendNotifications (tos, note, iri, shareResource) {
                     var location = response.headers.get('Location')
 
                     if (location) {
-                      location = uri.getAbsoluteIRI(inbox, location)
+                      location = uri.getAbsoluteIRI(inboxURL, location)
 
                       toInput
                         .parentNode
@@ -134,13 +134,17 @@ function inboxResponse (to, toInput) {
 }
 
 function notifyInbox (o) {
-  var slug, inbox
+  var slug, inboxURL
 
   if ('slug' in o) {
     slug = o.slug
   }
   if ('inbox' in o) {
-    inbox = o.inbox
+    inboxURL = o.inbox
+  }
+
+  if (!inboxURL) {
+    return Promise.reject(new Error('No inbox to send notification to'))
   }
 
   var types = '<dt>Types</dt>'
@@ -229,11 +233,7 @@ function notifyInbox (o) {
 
   data = DO.U.createHTML(title, data, options)
 
-  if (!inbox) {
-    return Promise.reject(new Error('No inbox to send notification to'))
-  }
-
-  var pIRI = uri.getProxyableIRI(inbox)
+  var pIRI = uri.getProxyableIRI(inboxURL)
 
   return fetcher.getAcceptPostPreference(pIRI)
     .then(preferredContentType => {
@@ -322,26 +322,25 @@ function getEndpoint (property, url) {
     return getEndpointFromHead(property, url)
       .catch(() => getEndpointFromRDF(property, url))
   } else {
-    var uri = window.location.href.split(window.location.search || window.location.hash || /[?#]/)[0]
+    var subjectURI = window.location.href.split(window.location.search || window.location.hash || /[?#]/)[0]
 
     var options = {
       'contentType': 'text/html',
-      'subjectURI': uri
+      'subjectURI': subjectURI
     }
 
     return graph.getGraphFromData(doc.getDocument(), options)
       .then(function (result) {
           // TODO: Should this get all of the inboxes or a given subject's?
-          var endpoints = result.match(uri, property).toArray()
-
+          var endpoints = result.match(subjectURI, property).toArray()
           if (endpoints.length > 0) {
             return endpoints.map(function(t){ return t.object.nominalValue })
           }
 
           console.log(property + ' endpoint was not found in message body')
-          return getEndpointFromHead(property, uri)
+          return getEndpointFromHead(property, subjectURI)
         })
-      .catch(() => getEndpointFromHead(property, uri))
+      .catch(() => getEndpointFromHead(property, subjectURI))
   }
 }
 

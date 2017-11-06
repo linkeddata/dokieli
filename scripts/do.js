@@ -1515,8 +1515,8 @@ var DO = {
       if (typeof SimpleRDF !== 'undefined') {
         inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id']).then(
           function(i) {
-            i.forEach(function(inbox) {
-              DO.U.showNotificationSources(inbox);
+            i.forEach(function(inboxURL) {
+              DO.U.showNotificationSources(inboxURL);
             });
           },
           function(reason) {
@@ -1849,8 +1849,8 @@ var DO = {
 
       inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id'], iri).then(
         function(i) {
-          i.forEach(function(inbox) {
-            DO.U.getNotifications(inbox).then(
+          i.forEach(function(inboxURL) {
+            DO.U.getNotifications(inboxURL).then(
               function(i) {
                 var promises = [];
 
@@ -1879,9 +1879,9 @@ var DO = {
                       })
                       .then(function(data){
                         options['contentType'] = 'text/turtle';
-                        options['subjectURI'] = inbox;
+                        options['subjectURI'] = inboxURL;
 
-                        DO.U.showVisualisationGraph(inbox, data, selector, options);
+                        DO.U.showVisualisationGraph(inboxURL, data, selector, options);
                       });
                   });
               });
@@ -3411,12 +3411,12 @@ console.log('updateMutableResource' + url);
               })
           })
 
-          .then(inbox => {
-            if (!inbox) {
+          .then(inboxes => {
+            if (!inboxes) {
               throw new Error('Author inbox endpoint is empty or missing')
             }
 
-            inbox = inbox[0]
+            var inboxURL = inboxes[0]
 
             let notificationStatements = '    <dl about="' + noteIRI +
               '">\n<dt>Object type</dt><dd><a about="' +
@@ -3429,7 +3429,7 @@ console.log('updateMutableResource' + url);
 
             let notificationData = {
               "type": ['as:Announce'],
-              "inbox": inbox,
+              "inbox": inboxURL,
               "object": noteIRI,
               "target": iri,
               "license": noteData.license["iri"],
@@ -3438,7 +3438,7 @@ console.log('updateMutableResource' + url);
 
             inbox.notifyInbox(notificationData)
               .catch(error => {
-                console.error('Failed sending notification to ' + inbox + ' :', error)
+                console.error('Failed sending notification to ' + inboxURL + ' :', error)
 
                 throw new Error('Failed sending notification to author inbox')
               })
@@ -7389,16 +7389,16 @@ WHERE {\n\
                           })
                       })
 
-                      .then(inbox => {
+                      .then(inboxes => {
                         // TODO: resourceIRI for getEndpoint should be the
                         // closest IRI (not necessarily the document).
                         // Test resolve/reject better.
 
-                        if (inbox.length > 0) {
-                          inbox = inbox[0];
+                        if (inboxes.length > 0) {
+                          var inboxURL = inboxes[0];
                           let notificationData = {
                             "type": notificationType,
-                            "inbox": inbox,
+                            "inbox": inboxURL,
                             "slug": id,
                             "object": notificationObject,
                             "license": opts.license
@@ -7502,8 +7502,8 @@ WHERE {\n\
                         }
 
                         if (s.ldpinbox._array.length > 0) {
-                          var inbox = s.ldpinbox.at(0);
-// console.log(inbox);
+                          var inboxURL = s.ldpinbox.at(0);
+// console.log(inboxURL);
 
                           var citedBy = location.href.split(location.search||location.hash||/[?#]/)[0] + '#' + options.refId;
 
@@ -7519,7 +7519,7 @@ WHERE {\n\
 
                           var notificationData = {
                             "type": ['as:Announce'],
-                            "inbox": inbox,
+                            "inbox": inboxURL,
                             "object": citedBy,
                             "target": options.url,
                             "statements": notificationStatements
@@ -7527,7 +7527,7 @@ WHERE {\n\
 
                           inbox.notifyInbox(notificationData).then(
                             function(s){
-                              console.log('Sent Linked Data Notification to ' + inbox);
+                              console.log('Sent Linked Data Notification to ' + inboxURL);
                             });
                         }
                       });
@@ -7807,8 +7807,8 @@ function sendNotifications (tos, note, iri, shareResource) {
 
           inboxResponse(to, toInput)
 
-            .then(inbox => {
-              notificationData['inbox'] = inbox
+            .then(inboxURL => {
+              notificationData['inbox'] = inboxURL
 
               notifyInbox(notificationData)
 
@@ -7824,7 +7824,7 @@ function sendNotifications (tos, note, iri, shareResource) {
                     var location = response.headers.get('Location')
 
                     if (location) {
-                      location = uri.getAbsoluteIRI(inbox, location)
+                      location = uri.getAbsoluteIRI(inboxURL, location)
 
                       toInput
                         .parentNode
@@ -7875,13 +7875,17 @@ function inboxResponse (to, toInput) {
 }
 
 function notifyInbox (o) {
-  var slug, inbox
+  var slug, inboxURL
 
   if ('slug' in o) {
     slug = o.slug
   }
   if ('inbox' in o) {
-    inbox = o.inbox
+    inboxURL = o.inbox
+  }
+
+  if (!inboxURL) {
+    return Promise.reject(new Error('No inbox to send notification to'))
   }
 
   var types = '<dt>Types</dt>'
@@ -7970,11 +7974,7 @@ function notifyInbox (o) {
 
   data = DO.U.createHTML(title, data, options)
 
-  if (!inbox) {
-    return Promise.reject(new Error('No inbox to send notification to'))
-  }
-
-  var pIRI = uri.getProxyableIRI(inbox)
+  var pIRI = uri.getProxyableIRI(inboxURL)
 
   return fetcher.getAcceptPostPreference(pIRI)
     .then(preferredContentType => {
@@ -8063,26 +8063,25 @@ function getEndpoint (property, url) {
     return getEndpointFromHead(property, url)
       .catch(() => getEndpointFromRDF(property, url))
   } else {
-    var uri = window.location.href.split(window.location.search || window.location.hash || /[?#]/)[0]
+    var subjectURI = window.location.href.split(window.location.search || window.location.hash || /[?#]/)[0]
 
     var options = {
       'contentType': 'text/html',
-      'subjectURI': uri
+      'subjectURI': subjectURI
     }
 
     return graph.getGraphFromData(doc.getDocument(), options)
       .then(function (result) {
           // TODO: Should this get all of the inboxes or a given subject's?
-          var endpoints = result.match(uri, property).toArray()
-
+          var endpoints = result.match(subjectURI, property).toArray()
           if (endpoints.length > 0) {
             return endpoints.map(function(t){ return t.object.nominalValue })
           }
 
           console.log(property + ' endpoint was not found in message body')
-          return getEndpointFromHead(property, uri)
+          return getEndpointFromHead(property, subjectURI)
         })
-      .catch(() => getEndpointFromHead(property, uri))
+      .catch(() => getEndpointFromHead(property, subjectURI))
   }
 }
 
