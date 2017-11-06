@@ -8179,7 +8179,7 @@ function afterSignIn () {
         .then(() => {
           var aside = e.target.closest('aside.do')
           aside.parentNode.removeChild(aside)
-          var span = document.querySelector('span[about="#' + refId + '"]')
+          var span = document.querySelector('span[resource="#' + refId + '"]')
           span.outerHTML = span.querySelector('mark').textContent
           // TODO: Delete notification or send delete activity
         })
