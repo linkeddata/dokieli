@@ -1128,6 +1128,7 @@ const Config = __webpack_require__(0)
 module.exports = {
   getGraph,
   getGraphFromData,
+  getMatchFromData,
   serializeData,
   serializeGraph
 }
@@ -1145,6 +1146,26 @@ function getGraphFromData (data, options = {}) {
   }
 
   return SimpleRDF.parse(data, options['contentType'], options['subjectURI'])
+}
+
+function getMatchFromData (data, spo = {}, options = {}) {
+  if (!data) { return Promise.resolve({}) }
+
+  spo['subject'] = spo.subject || window.location.origin + window.location.pathname
+  spo['predicate'] = spo.predicate || Config.Vocab['rdfslabel']
+
+  options['contentType'] = options.contentType || 'text/html'
+  options['subjectURI'] = options.subjectURI || spo.subject
+
+  return getGraphFromData(data, options)
+    .then(g => {
+      let s = SimpleRDF(Config.Vocab, spo.subject, g, ld.store).child(spo.subject)
+
+      return s[spo.predicate]
+    })
+    .catch(() => {
+      return undefined
+    })
 }
 
 /**
@@ -7793,7 +7814,6 @@ module.exports = {
   getEndpoint,
   getEndpointFromHead,
   getEndpointFromRDF,
-  getMatchFromData,
   notifyInbox,
   sendNotifications
 }
@@ -7818,7 +7838,7 @@ function sendNotifications (tos, note, iri, shareResource) {
       'predicate': Config.Vocab['rdftype']['@id']
     }
 
-    getMatchFromData(data, spo, options)
+    graph.getMatchFromData(data, spo, options)
       .then(supplementalData => {
         if (typeof supplementalData !== 'undefined' && supplementalData._array.length > 0) {
           notificationData['objectTypes'] = supplementalData._array
@@ -7829,7 +7849,7 @@ function sendNotifications (tos, note, iri, shareResource) {
           'predicate': Config.Vocab['schemalicense']['@id']
         }
 
-        return getMatchFromData(data, spo, options)
+        return graph.getMatchFromData(data, spo, options)
           .then(data => {
             if (typeof data !== 'undefined' && data.length > 0) {
               notificationData['objectLicense'] = data
@@ -7880,26 +7900,6 @@ function sendNotifications (tos, note, iri, shareResource) {
         })
       })
   })
-}
-
-function getMatchFromData (data, spo = {}, options = {}) {
-  if (!data) { return Promise.resolve({}) }
-
-  spo['subject'] = spo.subject || window.location.origin + window.location.pathname
-  spo['predicate'] = spo.predicate || Config.Vocab['rdfslabel']
-
-  options['contentType'] = options.contentType || 'text/html'
-  options['subjectURI'] = options.subjectURI || spo.subject
-
-  return graph.getGraphFromData(data, options)
-    .then(g => {
-      let s = SimpleRDF(Config.Vocab, spo.subject, g, ld.store).child(spo.subject)
-
-      return s[spo.predicate]
-    })
-    .catch(() => {
-      return undefined
-    })
 }
 
 function inboxResponse (to, toInput) {

@@ -7,6 +7,7 @@ const Config = require('./config')
 module.exports = {
   getGraph,
   getGraphFromData,
+  getMatchFromData,
   serializeData,
   serializeGraph
 }
@@ -24,6 +25,26 @@ function getGraphFromData (data, options = {}) {
   }
 
   return SimpleRDF.parse(data, options['contentType'], options['subjectURI'])
+}
+
+function getMatchFromData (data, spo = {}, options = {}) {
+  if (!data) { return Promise.resolve({}) }
+
+  spo['subject'] = spo.subject || window.location.origin + window.location.pathname
+  spo['predicate'] = spo.predicate || Config.Vocab['rdfslabel']
+
+  options['contentType'] = options.contentType || 'text/html'
+  options['subjectURI'] = options.subjectURI || spo.subject
+
+  return getGraphFromData(data, options)
+    .then(g => {
+      let s = SimpleRDF(Config.Vocab, spo.subject, g, ld.store).child(spo.subject)
+
+      return s[spo.predicate]
+    })
+    .catch(() => {
+      return undefined
+    })
 }
 
 /**
