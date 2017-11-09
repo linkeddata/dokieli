@@ -4728,6 +4728,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       }
     },
 
+    //From http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
     hashCode: function(s){
       var hash = 0;
       if (s.length == 0) return hash;
@@ -4737,6 +4738,23 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         hash = hash & hash; // Convert to 32bit integer
       }
       return hash;
+    },
+
+    // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
+    getHash: function(message, algo = "SHA-256") {
+      var buffer = new TextEncoder("utf-8").encode(message);
+      return crypto.subtle.digest(algo, buffer).then(function (hash) {
+        var hexCodes = [];
+        var view = new DataView(hash);
+        for (var i = 0; i < view.byteLength; i += 4) {
+          var value = view.getUint32(i)
+          var stringValue = value.toString(16)
+          var padding = '00000000'
+          var paddedValue = (padding + stringValue).slice(-padding.length)
+          hexCodes.push(paddedValue);
+        }
+        return hexCodes.join("");
+      });
     },
 
     generateAttributeId: function(prefix, string) {
