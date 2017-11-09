@@ -3227,6 +3227,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
             "id": digest,
             "type": "Update",
             "object": {
+              "id": item,
               "type": "Document",
               "updated": datetime,
               "mediaType": "text/html",
