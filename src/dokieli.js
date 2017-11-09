@@ -3200,8 +3200,9 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
     },
     enableStorage: function(item) {
       DO.C.UseStorage = true;
-      if(localStorage.getItem(item)) {
-        document.documentElement.innerHTML = localStorage.getItem(item);
+      var o = localStorage.getItem(item);
+      if(o) {
+        document.documentElement.innerHTML = JSON.parse(o).object.content;
       }
       console.log(DO.U.getDateTimeISO() + ': Storage enabled.');
       DO.U.enableAutoSave(item);
@@ -3213,13 +3214,30 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       console.log(DO.U.getDateTimeISO() + ': Storage disabled.');
     },
     saveStorage: function(item) {
-      switch(item) {
-        case 'html': default:
-          var object = doc.getDocument();
-          break;
-      }
-      localStorage.setItem(item, object);
-      console.log(DO.U.getDateTimeISO() + ': Document saved.');
+      var content = doc.getDocument();
+
+      DO.U.getHash(content).then(digest => {
+        var o = localStorage.getItem(item);
+
+        if(!o || (o && JSON.parse(o).id != digest)) {
+          var datetime = DO.U.getDateTimeISO();
+
+          var object = {
+            "@context": "https://www.w3.org/ns/activitystreams",
+            "id": digest,
+            "type": "Update",
+            "object": {
+              "type": "Document",
+              "updated": datetime,
+              "mediaType": "text/html",
+              "content": content
+            }
+          };
+
+          localStorage.setItem(item, JSON.stringify(object));
+          console.log(datetime + ': Document saved.');
+        }
+      });
     },
     enableAutoSave: function(item) {
       DO.C.AutoSaveId = setInterval(function() { DO.U.saveStorage(item) }, DO.C.AutoSaveTimer);
