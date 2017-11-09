@@ -4535,25 +4535,27 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
         node.insertAdjacentHTML('beforeend', '<section id="local-storage" class="do"><h2>Local Storage</h2><p>' + useStorage + '</p></section>');
 
+        var item = uri.stripFragmentFromString(document.location.href);
+
         document.getElementById('local-storage').addEventListener('click', function(e) {
           if (e.target.closest('button.local-storage-enable-html')) {
             e.target.outerHTML = DO.C.DisableStorageButtons;
-            DO.U.enableStorage('html');
+            DO.U.enableStorage(item);
           }
 
           if (e.target.closest('button.local-storage-disable-html')) {
             e.target.outerHTML = DO.C.EnableStorageButtons;
-            DO.U.disableStorage('html');
+            DO.U.disableStorage(item);
           }
 
           if (e.target.matches('input.autosave')) {
             if (e.target.getAttribute('checked')) {
               e.target.removeAttribute('checked');
-              DO.U.disableAutoSave('html');
+              DO.U.disableAutoSave(item);
             }
             else {
               e.target.setAttribute('checked', 'checked');
-              DO.U.enableAutoSave('html');
+              DO.U.enableAutoSave(item);
             }
           }
         });
