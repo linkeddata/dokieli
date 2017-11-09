@@ -1895,8 +1895,6 @@ var DO = {
       options = options || {};
 
       DO.U.getResourceInfo(data, options).then(function(i) {
-console.log(DO.C.ResourceInfo);
-
         if (e.target.matches('.create-version')) {
           DO.U.createMutableResource(url);
         }
@@ -4690,6 +4688,10 @@ WHERE {\n\
 
 // console.log(info);
 
+          if(!DO.C.OriginalResourceInfo) {
+            DO.C['OriginalResourceInfo'] = info;
+          }
+
           DO.C['ResourceInfo'] = info;
 
           return info;
@@ -6479,6 +6481,7 @@ WHERE {\n\
         DO.U.buttonClose();
         DO.U.highlightItems();
         DO.U.initDocumentActions();
+        DO.U.getResourceInfo();
         DO.U.showDocumentInfo();
         DO.U.showFragment();
         DO.U.setDocumentMode();
