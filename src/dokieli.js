@@ -4821,8 +4821,53 @@ WHERE {\n\
           DO.U.Editor.MediumEditor = new MediumEditor(eNodes, eOptions);
           DO.C.EditorEnabled = true;
 
-          if(editorMode == 'author') {
+          if (e && e.target.closest('button.editor-enable')) {
+            DO.C.ContentEditable = true;
             document.addEventListener('click', DO.U.updateDocumentTitle);
+
+            var documentLicense = 'document-license';
+            var license = document.getElementById(documentLicense);
+
+            if(!license) {
+              license = document.querySelector('#' + documentLicense + ' [rel="schema:license"]');
+              var dl = '<dl id="' + documentLicense + '"><dt>License</dt><dd><select contenteditable="false" name="license">' + DO.U.getLicenseOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
+              DO.U.insertDocumentLevelHTML(dl, { 'id': documentLicense });
+
+              var select = document.querySelector('#document-license select');
+              select.addEventListener('change', function(e){
+                select.querySelectorAll('option').forEach(function(o){
+                  o.removeAttribute('selected');
+                });
+                select.querySelector('option[value="' + e.target.value + '"]').setAttribute('selected', 'selected');
+              });
+            }
+          }
+          else if (e && (e.target.closest('button.editor-disable') || e.target.closest('button.review-enable'))) {
+            DO.C.ContentEditable = false;
+            var documentLicense = 'document-license';
+            var selected = document.querySelector('#' + documentLicense + ' option:checked');
+
+            if (selected) {
+              var licenseIRI = selected.value;
+
+              var dl = selected.closest('#document-license');
+              dl.removeAttribute('contenteditable');
+
+              if(licenseIRI == '') {
+                dl.parentNode.removeChild(dl);
+              }
+              else {
+                dl.removeAttribute('class');
+                var licenseName = DO.C.License[licenseIRI].name;
+                var licenseDescription = DO.C.License[licenseIRI].description;
+
+                var dd = selected.closest('dd');
+                dd.parentNode.removeChild(dd);
+                dd = '<dd><a href="' + licenseIRI+ '" rel="schema:license" title="' + licenseDescription + '">' + licenseName + '</a></dd>';
+
+                dl.insertAdjacentHTML('beforeend', dd);
+              }
+            }
           }
 
           document.querySelectorAll('.do').forEach(function(node){
