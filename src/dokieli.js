@@ -4506,13 +4506,25 @@ WHERE {\n\
       return s;
     },
 
-    getLicenseOptionsHTML: function(type) {
-      var type = type || 'cc';
+    getLicenseOptionsHTML: function(options) {
+      options = options || {};
+      var s = '', selectedIRI = '';
 
-      var s = '', selected = '';
+      if ('selected' in options) {
+        selectedIRI = options.selected;
+        if (selectedIRI == '') {
+          s += '<option selected="selected" value="">Choose a license</option>';
+        }
+      }
+      else {
+        selectedIRI = 'https://creativecommons.org/licenses/by/4.0/';
+      }
+
       Object.keys(DO.C.License).forEach(function(iri){
-        selected = (DO.C.License[iri].name === 'CC BY 4.0') ? ' selected="selected"' : '';
-        s += '<option value="' + iri + '" title="' + DO.C.License[iri].description  + '"' + selected + '>' + DO.C.License[iri].name  + '</option>';
+        if(iri != 'NoLicense') {
+          var selected = (iri == selectedIRI) ? ' selected="selected"' : '';
+          s += '<option value="' + iri + '" title="' + DO.C.License[iri].description  + '"' + selected + '>' + DO.C.License[iri].name  + '</option>';
+        }
       })
 
       return s;
