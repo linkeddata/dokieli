@@ -1789,7 +1789,7 @@ var DO = {
     },
 
     showDocumentDo: function showDocumentDo (node) {
-      if (document.querySelector('#document-do')) { return; }
+      if (document.getElementById('document-do')) { return; }
 
       var buttonDisabled = '';
       if (document.location.protocol === 'file:') {
