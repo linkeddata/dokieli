@@ -122,12 +122,12 @@ font-size:inherit;
 main input,
 main textarea,
 main select {
-padding:0.25em;
 display:inline-block;
 }
 main input,
 main textarea {
 width:65%;
+padding:0.25em;
 }
 main input[type=submit] {
 font-weight:bold;
