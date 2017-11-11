@@ -4854,6 +4854,22 @@ WHERE {\n\
                 dLS.querySelector('option[value="' + e.target.value + '"]').setAttribute('selected', 'selected');
               });
             }
+
+            var documentStatus = 'document-status';
+            var status = document.getElementById(documentStatus);
+            if(!status) {
+              var dl = '<dl class="do" id="' + documentStatus + '"><dt>Document Status</dt><dd><select contenteditable="false" name="status">' + DO.U.getPublicationStatusOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
+              DO.U.insertDocumentLevelHTML(dl, { 'id': documentStatus });
+
+              var dSS = document.querySelector('#' + documentStatus + ' select');
+              dSS.addEventListener('change', function(e){
+                dSS.querySelectorAll('option').forEach(function(o){
+                  o.removeAttribute('selected');
+                });
+                dSS.querySelector('option[value="' + e.target.value + '"]').setAttribute('selected', 'selected');
+              });
+            }
+
           }
           else if (e && (e.target.closest('button.editor-disable') || e.target.closest('button.review-enable'))) {
             DO.C.ContentEditable = false;
@@ -4874,6 +4890,29 @@ WHERE {\n\
                 var dd = dLS.closest('dd');
                 dd.parentNode.removeChild(dd);
                 dd = '<dd><a href="' + licenseIRI+ '" rel="schema:license" title="' + DO.C.License[licenseIRI].description + '">' + DO.C.License[licenseIRI].name + '</a></dd>';
+                dl.insertAdjacentHTML('beforeend', dd);
+              }
+            }
+
+
+            var documentStatus = 'document-status';
+            var dLS = document.querySelector('#' + documentStatus + ' option:checked');
+
+            if (dLS) {
+              var statusIRI = dLS.value;
+
+              var dl = dLS.closest('#' + documentStatus);
+              dl.removeAttribute('contenteditable');
+
+              if(statusIRI == '') {
+                dl.parentNode.removeChild(dl);
+              }
+              else {
+                dl.removeAttribute('class');
+                var dd = dLS.closest('dd');
+                dd.parentNode.removeChild(dd);
+                dd = '<dd rel="pso:holdsStatusInTime" resource="#' + DO.U.generateAttributeId() + '"><span rel="pso:withStatus" resource="' + statusIRI  + '">' + DO.C.PublicationStatus[statusIRI].name + '</span></dd>';
+
                 dl.insertAdjacentHTML('beforeend', dd);
               }
             }
