@@ -4497,6 +4497,28 @@ WHERE {\n\
       return s;
     },
 
+    getPublicationStatusOptionsHTML: function(options) {
+      options = options || {};
+      var s = '', selectedIRI = '';
+
+      if ('selected' in options) {
+        selectedIRI = options.selected;
+        if (selectedIRI == '') {
+          s += '<option selected="selected" value="">Choose a publication status</option>';
+        }
+      }
+      else {
+        selectedIRI = DO.C.Vocab['psodraft']['@id'];
+      }
+
+      Object.keys(DO.C.PublicationStatus).forEach(function(iri){
+        var selected = (iri == selectedIRI) ? ' selected="selected"' : '';
+        s += '<option value="' + iri + '" title="' + DO.C.PublicationStatus[iri].description  + '"' + selected + '>' + DO.C.PublicationStatus[iri].name  + '</option>';
+      })
+
+      return s;
+    },
+
     getLicenseOptionsHTML: function(options) {
       options = options || {};
       var s = '', selectedIRI = '';
