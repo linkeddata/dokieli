@@ -4820,30 +4820,28 @@ WHERE {\n\
 
             var documentLicense = 'document-license';
             var license = document.getElementById(documentLicense);
-
             if(!license) {
-              license = document.querySelector('#' + documentLicense + ' [rel="schema:license"]');
-              var dl = '<dl id="' + documentLicense + '"><dt>License</dt><dd><select contenteditable="false" name="license">' + DO.U.getLicenseOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
+              var dl = '<dl class="do" id="' + documentLicense + '"><dt>License</dt><dd><select contenteditable="false" name="license">' + DO.U.getLicenseOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
               DO.U.insertDocumentLevelHTML(dl, { 'id': documentLicense });
 
-              var select = document.querySelector('#document-license select');
-              select.addEventListener('change', function(e){
-                select.querySelectorAll('option').forEach(function(o){
+              var dLS = document.querySelector('#' + documentLicense + ' select');
+              dLS.addEventListener('change', function(e){
+                dLS.querySelectorAll('option').forEach(function(o){
                   o.removeAttribute('selected');
                 });
-                select.querySelector('option[value="' + e.target.value + '"]').setAttribute('selected', 'selected');
+                dLS.querySelector('option[value="' + e.target.value + '"]').setAttribute('selected', 'selected');
               });
             }
           }
           else if (e && (e.target.closest('button.editor-disable') || e.target.closest('button.review-enable'))) {
             DO.C.ContentEditable = false;
             var documentLicense = 'document-license';
-            var selected = document.querySelector('#' + documentLicense + ' option:checked');
+            var dLS = document.querySelector('#' + documentLicense + ' option:checked');
 
-            if (selected) {
-              var licenseIRI = selected.value;
+            if (dLS) {
+              var licenseIRI = dLS.value;
 
-              var dl = selected.closest('#document-license');
+              var dl = dLS.closest('#' + documentLicense);
               dl.removeAttribute('contenteditable');
 
               if(licenseIRI == '') {
@@ -4851,13 +4849,9 @@ WHERE {\n\
               }
               else {
                 dl.removeAttribute('class');
-                var licenseName = DO.C.License[licenseIRI].name;
-                var licenseDescription = DO.C.License[licenseIRI].description;
-
-                var dd = selected.closest('dd');
+                var dd = dLS.closest('dd');
                 dd.parentNode.removeChild(dd);
-                dd = '<dd><a href="' + licenseIRI+ '" rel="schema:license" title="' + licenseDescription + '">' + licenseName + '</a></dd>';
-
+                dd = '<dd><a href="' + licenseIRI+ '" rel="schema:license" title="' + DO.C.License[licenseIRI].description + '">' + DO.C.License[licenseIRI].name + '</a></dd>';
                 dl.insertAdjacentHTML('beforeend', dd);
               }
             }
