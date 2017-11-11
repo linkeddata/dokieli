@@ -177,6 +177,10 @@ module.exports = {
     "https://creativecommons.org/licenses/by-nc-sa/4.0/": {'name': 'CC BY-NC-SA 4.0', 'description': 'Creative Commons Attribution-NonCommercial-ShareAlike'},
     "https://creativecommons.org/licenses/by-nc-nd/4.0/": {'name': 'CC BY-NC-ND 4.0', 'description': 'Creative Commons Attribution-NonCommercial-NoDerivates'}
   },
+  PublicationStatus: {
+    "http://purl.org/spar/pso/draft": { 'name': 'Draft', 'description': 'The status of a work (for example a document or a dataset) prior to completion and publication.' },
+    "http://purl.org/spar/pso/published": { 'name': 'Published', 'description': 'The status of material (for example a document or a dataset) that has been published, i.e. made available for people to access, read or use, either freely or for a purchase price or an access fee.' }
+  },
   Citation: {
     'http://purl.org/spar/cito/agreesWith': 'agrees with',
     'http://purl.org/spar/cito/cites': 'cites',
@@ -2467,8 +2471,6 @@ var DO = {
 
       var sections = document.querySelectorAll('h1 ~ div > section:not([class~="slide"]):not([id^=table-of])');
       if (sections.length > 0) {
-        DO.U.showDocumentStatus(documentItems);
-
         DO.U.showTableOfStuff(documentItems);
 
         var sortable = '';
@@ -2643,98 +2645,33 @@ var DO = {
       DO.U.insertDocumentLevelHTML(s, { 'id': elementId });
     },
 
-    showDocumentStatus: function(node, options) {
-      var disabledInput = '', s = '';
-      if (!DO.C.EditorEnabled) {
-        disabledInput = ' disabled="disabled"';
-      }
-
-      //pso PublicationStatus
-      var statusList = [{'draft': 'Draft'}, {'published': 'Published'}];
-      statusList.forEach(function(i) {
-        var key = Object.keys(i)[0];
-        var value = i[key];
-        var checkedInput = '';
-
-        if (DO.C.ResourceInfo.rdftype.indexOf(DO.C.Vocab['pso' + key]['@id']) > -1) {
-          checkedInput = ' checked="checked"';
-        }
-
-        s += '<li><input id="p-s-' + key + '" name="p-s" type="radio"' + disabledInput + checkedInput + '/><label for="p-s-' + key + '">' + value + '</label></li>';
-      });
-
-      node.insertAdjacentHTML('beforeend', '<section id="document-status-i" class="do"><h2>Document Status</h2><ul id="publication-status-i">' + s + '</ul></section>');
-
-      if(DO.C.EditorEnabled) {
-        document.getElementById('document-status-i').addEventListener('click', function(e){
-          if (e.target.matches('input')) {
-            var id = e.target.id;
-// console.log(id)
-            var type = 'pso:' + id.slice(4, id.length);
-// console.log(type);
-
-            var sLQuery = [];
-            statusList.forEach(function(i){
-              var key = Object.keys(i)[0];
-              sLQuery.push('#document-status dd *[typeof="pso:' + key + '"]');
-            });
-            sLQuery = sLQuery.join(', ');
-// console.log(sLQuery);
-
-            var ps = document.querySelectorAll(sLQuery);
-// console.log(ps);
-            if(ps.length > 0) {
-              ps.forEach(function(i){
-// console.log(i);
-                var dd = i.closest('dd');
-// console.log(dd);
-                dd.parentNode.removeChild(dd);
-              });
-            }
-            e.target.removeAttribute('checked');
-
-            DO.U.setDocumentStatus({ 'mode': 'update', 'id': 'document-status', 'type': type });
-            e.target.setAttribute('checked', 'checked');
-
-            DO.U.getResourceInfo();
-          }
-        });
-      }
-    },
-
     setDocumentStatus: function(options) {
       options = options || {};
-      options['id'] = ('id' in options) ? options.id : 'document-status';
-      options['mode'] = ('mode' in options) ? options.mode : '';
 
-      var s = DO.U.createDocumentStatusHTML(options);
+      var s = DO.U.getDocumentStatusHTML(options);
 
       DO.U.insertDocumentLevelHTML(s, options);
     },
 
-    createDocumentStatusHTML: function(options) {
+    getDocumentStatusHTML: function(options) {
       options = options || {};
       options['mode'] = ('mode' in options) ? options.mode : '';
-      var typeOf = typeLabel = subjectURI = '';
-
-      typeOf = options.type || 'pso:draft';
+      options['id'] = ('id' in options) ? options.id : 'document-status';
+      var subjectURI = ('subjectURI' in options) ? ' about="' + options.subjectURI + '"' : '';
+      var typeLabel = '', typeOf = '';
 
       switch(options.type) {
-        case 'pso:draft': typeLabel = 'Draft'; break;
-        case 'pso:published': typeLabel = 'Published'; break;
-        case 'ldp:ImmutableResource': typeLabel = 'Immutable'; break;
+        case 'ldp:ImmutableResource':
+          typeLabel = 'Immutable';
+          typeOf = ' typeof="' + options.type + '"';
+          break;
       }
 
-      switch(options.subjectURI) {
-        default: subjectURI = ' about=""'; break;
-        case typeOf: subjectURI = ' about="' + options.subjectURI + '"'; break;
-      }
-
+      var id = ' id="' + options.id + '"';
       var c = ('class' in options && options.class.length > 0) ? ' class="' + options.class + '"' : '';
-      var id = ('id' in options && options.id.length > 0) ? ' id="' + options.id + '"' : ' id="document-status"';
-      var datetime = ('datetime' in options) ? options.datetime : DO.U.getDateTimeISO();
+      // var datetime = ('datetime' in options) ? options.datetime : DO.U.getDateTimeISO();
 
-      var dd = '<dd><span' + subjectURI + ' typeof="' + typeOf  + '">' + typeLabel + '</span></dd>';
+      var dd = '<dd><span' + subjectURI + typeOf + '>' + typeLabel + '</span></dd>';
 
       var s = '';
       var dl = document.getElementById(options.id);
@@ -2758,7 +2695,7 @@ var DO = {
           var clone = dl.cloneNode(true);
           dl.parentNode.removeChild(dl);
 
-          var t = clone.querySelector('[typeof="' + typeOf + '"]');
+          var t = clone.querySelector('[typeof="' + options.type + '"]');
           if (t) {
             t.closest('dl').removeChild(t.parentNode);
           }
@@ -3193,8 +3130,22 @@ var DO = {
     createImmutableResource: function(url, data, options) {
       if(!url) return;
 
-      DO.U.setDocumentStatus({ 'mode': 'create', 'id': 'document-status', 'type': 'ldp:ImmutableResource' });
       DO.U.setDate(null, { 'type': 'Created' });
+
+      var documentStatus = document.getElementById('document-status');
+      var dSO = {
+        'id': 'document-status',
+        'subjectURI': '',
+        'type': 'ldp:ImmutableResource'
+      }
+      if(documentStatus) {
+        dSO['mode'] = 'update';
+        DO.U.setDocumentStatus(dSO);
+      }
+      else {
+        dSO['mode'] = 'create';
+        DO.U.setDocumentStatus(dSO);
+      }
 
       var immutableURL = url.substr(0, url.lastIndexOf('/') + 1) + DO.U.generateAttributeId();
 
@@ -5789,6 +5740,28 @@ WHERE {\n\
       return s;
     },
 
+    getPublicationStatusOptionsHTML: function(options) {
+      options = options || {};
+      var s = '', selectedIRI = '';
+
+      if ('selected' in options) {
+        selectedIRI = options.selected;
+        if (selectedIRI == '') {
+          s += '<option selected="selected" value="">Choose a publication status</option>';
+        }
+      }
+      else {
+        selectedIRI = DO.C.Vocab['psodraft']['@id'];
+      }
+
+      Object.keys(DO.C.PublicationStatus).forEach(function(iri){
+        var selected = (iri == selectedIRI) ? ' selected="selected"' : '';
+        s += '<option value="' + iri + '" title="' + DO.C.PublicationStatus[iri].description  + '"' + selected + '>' + DO.C.PublicationStatus[iri].name  + '</option>';
+      })
+
+      return s;
+    },
+
     getLicenseOptionsHTML: function(options) {
       options = options || {};
       var s = '', selectedIRI = '';
@@ -6112,30 +6085,44 @@ WHERE {\n\
 
             var documentLicense = 'document-license';
             var license = document.getElementById(documentLicense);
-
             if(!license) {
-              license = document.querySelector('#' + documentLicense + ' [rel="schema:license"]');
-              var dl = '<dl id="' + documentLicense + '"><dt>License</dt><dd><select contenteditable="false" name="license">' + DO.U.getLicenseOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
+              var dl = '<dl class="do" id="' + documentLicense + '"><dt>License</dt><dd><select contenteditable="false" name="license">' + DO.U.getLicenseOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
               DO.U.insertDocumentLevelHTML(dl, { 'id': documentLicense });
 
-              var select = document.querySelector('#document-license select');
-              select.addEventListener('change', function(e){
-                select.querySelectorAll('option').forEach(function(o){
+              var dLS = document.querySelector('#' + documentLicense + ' select');
+              dLS.addEventListener('change', function(e){
+                dLS.querySelectorAll('option').forEach(function(o){
                   o.removeAttribute('selected');
                 });
-                select.querySelector('option[value="' + e.target.value + '"]').setAttribute('selected', 'selected');
+                dLS.querySelector('option[value="' + e.target.value + '"]').setAttribute('selected', 'selected');
               });
             }
+
+            var documentStatus = 'document-status';
+            var status = document.getElementById(documentStatus);
+            if(!status) {
+              var dl = '<dl class="do" id="' + documentStatus + '"><dt>Document Status</dt><dd><select contenteditable="false" name="status">' + DO.U.getPublicationStatusOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
+              DO.U.insertDocumentLevelHTML(dl, { 'id': documentStatus });
+
+              var dSS = document.querySelector('#' + documentStatus + ' select');
+              dSS.addEventListener('change', function(e){
+                dSS.querySelectorAll('option').forEach(function(o){
+                  o.removeAttribute('selected');
+                });
+                dSS.querySelector('option[value="' + e.target.value + '"]').setAttribute('selected', 'selected');
+              });
+            }
+
           }
           else if (e && (e.target.closest('button.editor-disable') || e.target.closest('button.review-enable'))) {
             DO.C.ContentEditable = false;
             var documentLicense = 'document-license';
-            var selected = document.querySelector('#' + documentLicense + ' option:checked');
+            var dLS = document.querySelector('#' + documentLicense + ' option:checked');
 
-            if (selected) {
-              var licenseIRI = selected.value;
+            if (dLS) {
+              var licenseIRI = dLS.value;
 
-              var dl = selected.closest('#document-license');
+              var dl = dLS.closest('#' + documentLicense);
               dl.removeAttribute('contenteditable');
 
               if(licenseIRI == '') {
@@ -6143,12 +6130,31 @@ WHERE {\n\
               }
               else {
                 dl.removeAttribute('class');
-                var licenseName = DO.C.License[licenseIRI].name;
-                var licenseDescription = DO.C.License[licenseIRI].description;
-
-                var dd = selected.closest('dd');
+                var dd = dLS.closest('dd');
                 dd.parentNode.removeChild(dd);
-                dd = '<dd><a href="' + licenseIRI+ '" rel="schema:license" title="' + licenseDescription + '">' + licenseName + '</a></dd>';
+                dd = '<dd><a href="' + licenseIRI+ '" rel="schema:license" title="' + DO.C.License[licenseIRI].description + '">' + DO.C.License[licenseIRI].name + '</a></dd>';
+                dl.insertAdjacentHTML('beforeend', dd);
+              }
+            }
+
+
+            var documentStatus = 'document-status';
+            var dLS = document.querySelector('#' + documentStatus + ' option:checked');
+
+            if (dLS) {
+              var statusIRI = dLS.value;
+
+              var dl = dLS.closest('#' + documentStatus);
+              dl.removeAttribute('contenteditable');
+
+              if(statusIRI == '') {
+                dl.parentNode.removeChild(dl);
+              }
+              else {
+                dl.removeAttribute('class');
+                var dd = dLS.closest('dd');
+                dd.parentNode.removeChild(dd);
+                dd = '<dd rel="pso:holdsStatusInTime" resource="#' + DO.U.generateAttributeId() + '"><span rel="pso:withStatus" resource="' + statusIRI  + '" typeof="pso:PublicationStatus">' + DO.C.PublicationStatus[statusIRI].name + '</span></dd>';
 
                 dl.insertAdjacentHTML('beforeend', dd);
               }

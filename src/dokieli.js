@@ -1353,37 +1353,31 @@ var DO = {
 
     setDocumentStatus: function(options) {
       options = options || {};
-      options['id'] = ('id' in options) ? options.id : 'document-status';
-      options['mode'] = ('mode' in options) ? options.mode : '';
 
-      var s = DO.U.createDocumentStatusHTML(options);
+      var s = DO.U.getDocumentStatusHTML(options);
 
       DO.U.insertDocumentLevelHTML(s, options);
     },
 
-    createDocumentStatusHTML: function(options) {
+    getDocumentStatusHTML: function(options) {
       options = options || {};
       options['mode'] = ('mode' in options) ? options.mode : '';
-      var typeOf = typeLabel = subjectURI = '';
-
-      typeOf = options.type || 'pso:draft';
+      options['id'] = ('id' in options) ? options.id : 'document-status';
+      var subjectURI = ('subjectURI' in options) ? ' about="' + options.subjectURI + '"' : '';
+      var typeLabel = '', typeOf = '';
 
       switch(options.type) {
-        case 'pso:draft': typeLabel = 'Draft'; break;
-        case 'pso:published': typeLabel = 'Published'; break;
-        case 'ldp:ImmutableResource': typeLabel = 'Immutable'; break;
+        case 'ldp:ImmutableResource':
+          typeLabel = 'Immutable';
+          typeOf = ' typeof="' + options.type + '"';
+          break;
       }
 
-      switch(options.subjectURI) {
-        default: subjectURI = ' about=""'; break;
-        case typeOf: subjectURI = ' about="' + options.subjectURI + '"'; break;
-      }
-
+      var id = ' id="' + options.id + '"';
       var c = ('class' in options && options.class.length > 0) ? ' class="' + options.class + '"' : '';
-      var id = ('id' in options && options.id.length > 0) ? ' id="' + options.id + '"' : ' id="document-status"';
-      var datetime = ('datetime' in options) ? options.datetime : DO.U.getDateTimeISO();
+      // var datetime = ('datetime' in options) ? options.datetime : DO.U.getDateTimeISO();
 
-      var dd = '<dd><span' + subjectURI + ' typeof="' + typeOf  + '">' + typeLabel + '</span></dd>';
+      var dd = '<dd><span' + subjectURI + typeOf + '>' + typeLabel + '</span></dd>';
 
       var s = '';
       var dl = document.getElementById(options.id);
@@ -1407,7 +1401,7 @@ var DO = {
           var clone = dl.cloneNode(true);
           dl.parentNode.removeChild(dl);
 
-          var t = clone.querySelector('[typeof="' + typeOf + '"]');
+          var t = clone.querySelector('[typeof="' + options.type + '"]');
           if (t) {
             t.closest('dl').removeChild(t.parentNode);
           }
@@ -1842,8 +1836,22 @@ var DO = {
     createImmutableResource: function(url, data, options) {
       if(!url) return;
 
-      DO.U.setDocumentStatus({ 'mode': 'create', 'id': 'document-status', 'type': 'ldp:ImmutableResource' });
       DO.U.setDate(null, { 'type': 'Created' });
+
+      var documentStatus = document.getElementById('document-status');
+      var dSO = {
+        'id': 'document-status',
+        'subjectURI': '',
+        'type': 'ldp:ImmutableResource'
+      }
+      if(documentStatus) {
+        dSO['mode'] = 'update';
+        DO.U.setDocumentStatus(dSO);
+      }
+      else {
+        dSO['mode'] = 'create';
+        DO.U.setDocumentStatus(dSO);
+      }
 
       var immutableURL = url.substr(0, url.lastIndexOf('/') + 1) + DO.U.generateAttributeId();
 
@@ -4852,7 +4860,7 @@ WHERE {\n\
                 dl.removeAttribute('class');
                 var dd = dLS.closest('dd');
                 dd.parentNode.removeChild(dd);
-                dd = '<dd rel="pso:holdsStatusInTime" resource="#' + DO.U.generateAttributeId() + '"><span rel="pso:withStatus" resource="' + statusIRI  + '">' + DO.C.PublicationStatus[statusIRI].name + '</span></dd>';
+                dd = '<dd rel="pso:holdsStatusInTime" resource="#' + DO.U.generateAttributeId() + '"><span rel="pso:withStatus" resource="' + statusIRI  + '" typeof="pso:PublicationStatus">' + DO.C.PublicationStatus[statusIRI].name + '</span></dd>';
 
                 dl.insertAdjacentHTML('beforeend', dd);
               }
