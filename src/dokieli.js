@@ -1177,8 +1177,6 @@ var DO = {
 
       var sections = document.querySelectorAll('h1 ~ div > section:not([class~="slide"]):not([id^=table-of])');
       if (sections.length > 0) {
-        DO.U.showDocumentStatus(documentItems);
-
         DO.U.showTableOfStuff(documentItems);
 
         var sortable = '';
