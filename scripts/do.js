@@ -3222,7 +3222,6 @@ console.log('updateMutableResource' + url);
 
             case 405:
             default:
-              e.target.disabled = true
               message = 'Server doesn\'t allow this resource to be rewritten'
               break
           }
