@@ -2823,11 +2823,9 @@ var DO = {
             }
             break;
           }
-          else {
-            if (node) {
-              node.insertAdjacentHTML('afterend', h);
-              break;
-            }
+          else if (node) {
+            node.insertAdjacentHTML('afterend', h);
+            break;
           }
         }
       }
