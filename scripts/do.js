@@ -3138,18 +3138,21 @@ var DO = {
         'subjectURI': '',
         'type': 'ldp:ImmutableResource'
       }
+
       if(documentStatus) {
         dSO['mode'] = 'update';
-        DO.U.setDocumentStatus(dSO);
       }
       else {
         dSO['mode'] = 'create';
-        DO.U.setDocumentStatus(dSO);
       }
+
+      DO.U.setDocumentStatus(dSO);
 
       var immutableURL = url.substr(0, url.lastIndexOf('/') + 1) + DO.U.generateAttributeId();
 
 console.log('createImmutableResource ' + immutableURL);
+
+      DO.U.setDocumentIdentifier(immutableURL);
 
 //setDocumentIdentifier
 //setDocumentOriginal
@@ -5825,6 +5828,26 @@ WHERE {\n\
 
         MathJax.Hub.setRenderer(jax);
       });
+    },
+
+    setDocumentIdentifier: function(url) {
+      var elementId = 'document-identifier';
+      url = url || uri.stripFragmentFromString(document.location.href);
+
+      node = document.querySelector('#' + elementId + ' [rel="owl:sameAs"]');
+
+      var documentIdentifier = '<dd><a href="' + url + '" rel="owl:sameAs">' + url + '</a></dd>';
+
+      if(node) {
+        dd = node.closest('dd');
+        var dl = dd.parentNode;
+        dl.removeChild(dd);
+        dl.insertAdjacentHTML('beforeend', documentIdentifier);
+      }
+      else {
+        var s = '<dl id="' + elementId + '"><dt>Identifier</dt>' + documentIdentifier + '</dl>';
+        DO.U.insertDocumentLevelHTML(s, { 'id': elementId });
+      }
     },
 
     setDate: function(node, options) {
