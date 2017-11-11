@@ -2814,17 +2814,12 @@ var DO = {
         for(var i = item; i >= 0; i--) {
           var node = document.getElementById(documentItems[i]);
 
-          if(i == 0) {
-            if (node) {
-              node.insertAdjacentHTML('afterend', h);
-            }
-            else {
-              document.querySelector('article').insertAdjacentHTML('afterbegin', h);
-            }
+          if (node) {
+            node.insertAdjacentHTML('afterend', h);
             break;
           }
-          else if (node) {
-            node.insertAdjacentHTML('afterend', h);
+          else if (i == 0) {
+            document.querySelector('article').insertAdjacentHTML('afterbegin', h);
             break;
           }
         }
