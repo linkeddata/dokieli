@@ -2718,6 +2718,7 @@ var DO = {
       options = options || {};
 
       var documentItems = [
+        'authors',
         'document-identifier',
         'document-created',
         'document-modified',
