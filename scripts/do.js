@@ -5865,9 +5865,11 @@ WHERE {\n\
         case 'Modified': type = 'Modified'; break;
       }
 
-      node = node || document.querySelector('#document-' + type.toLowerCase() + ' [property*=":date' + type + '"]');
+      var elementId = (options.id) ? options.id : 'document-' + type.toLowerCase();
 
-      datetime = ('datetime' in options) ? options.datetime : DO.U.getDateTimeISO();
+      node = node || document.querySelector('#' + elementId + ' [property*=":date' + type + '"]');
+
+      var datetime = ('datetime' in options) ? options.datetime : DO.U.getDateTimeISO();
 
       if(node) {
         if(node.getAttribute('datetime')) {
@@ -5879,7 +5881,7 @@ WHERE {\n\
         node.textContent = datetime.substr(0, datetime.indexOf('T'));
       }
       else {
-        DO.U.insertDocumentLevelHTML(DO.U.createDateHTML(options));
+        DO.U.insertDocumentLevelHTML(DO.U.createDateHTML(options), { 'id': elementId });
       }
     },
 
