@@ -3174,24 +3174,21 @@ console.log('createImmutableResource ' + immutableURL);
       }
       DO.U.setDocumentRelation([r], o);
 
-//setDocumentPredecessorVersion
-//setDocumentLatestVersion
-//setDocumenTimeMap
-//setDocumenTimeGate
-
       // Create URI-M
       //TODO: Change to POST
       data = doc.getDocument();
       DO.U.processPut(immutableURL, data, options);
 
-      //Update URI-R
-//setDocumentIdentifier
-//setDocumentPredecessorVersion
-//setDocumentLatestVersion
-//setDocumenTimeMap
-//setDocumenTimeGate
 
-      //PUT
+
+      //Update URI-R
+      o = { 'id': 'document-latest-version', 'title': 'Latest Version' };
+      r = { 'rel': 'mem:memento rel:latest-version', 'href': immutableURL };
+      DO.U.setDocumentRelation([r], o);
+
+      // Create URI-R
+      data = doc.getDocument();
+      DO.U.processPut(url, data, options);
 
       //TODO: PATCH URI-T
     },
