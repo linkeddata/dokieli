@@ -1455,7 +1455,7 @@ var DO = {
       var item = documentItems.indexOf(options.id);
       var article = document.querySelector('main > article') || document.body;
 
-      if(item >= -1) {
+      if(item > -1) {
         for(var i = item; i >= 0; i--) {
           var node = document.getElementById(documentItems[i]);
 
@@ -1860,7 +1860,16 @@ var DO = {
 
 console.log('createImmutableResource ' + immutableURL);
 
-      DO.U.setDocumentIdentifier(immutableURL);
+      var r = {
+        'rel': 'owl:sameAs',
+        'href': immutableURL
+      };
+      var o = {
+        'id': 'document-identifier',
+        'title': 'Identifier'
+      }
+
+      DO.U.setDocumentRelation([r], o);
 
 //setDocumentIdentifier
 //setDocumentOriginal
@@ -4538,23 +4547,34 @@ WHERE {\n\
       });
     },
 
-    setDocumentIdentifier: function(url) {
-      var elementId = 'document-identifier';
-      url = url || uri.stripFragmentFromString(document.location.href);
+    setDocumentRelation: function(data, options) {
+      if(!data || !options) { return; }
 
-      node = document.querySelector('#' + elementId + ' [rel="owl:sameAs"]');
+      var h = [];
 
-      var documentIdentifier = '<dd><a href="' + url + '" rel="owl:sameAs">' + url + '</a></dd>';
+      data.forEach(function(d){
+        var documentRelation = '<dd>' + DO.U.createRDFaHTML(d) + '</dd>';
+        var dl = document.getElementById(options.id);
 
-      if(node) {
-        dd = node.closest('dd');
-        var dl = dd.parentNode;
-        dl.removeChild(dd);
-        dl.insertAdjacentHTML('beforeend', documentIdentifier);
-      }
-      else {
-        var s = '<dl id="' + elementId + '"><dt>Identifier</dt>' + documentIdentifier + '</dl>';
-        DO.U.insertDocumentLevelHTML(s, { 'id': elementId });
+        if(dl) {
+          var relation = dl.querySelector('[rel="' + d.rel +  '"][href="' + d.href  + '"]');
+
+          if(relation) {
+            dd = relation.closest('dd');
+            if(dd) {
+              dl.removeChild(dd);
+            }
+          }
+          dl.insertAdjacentHTML('beforeend', documentRelation);
+        }
+        else {
+          h.push(documentRelation);
+        }
+      });
+
+      if(h.length > 0) {
+        var html = '<dl id="' + options.id + '"><dt>' + options.title + '</dt>' + h.join('') + '</dl>';
+        DO.U.insertDocumentLevelHTML(html, { 'id': options.id });
       }
     },
 
