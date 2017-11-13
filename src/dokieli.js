@@ -1453,6 +1453,7 @@ var DO = {
       options['id'] = ('id' in options) ? options.id : documentItems[documentItems.length-1];
 
       var item = documentItems.indexOf(options.id);
+      var article = document.querySelector('main > article') || document.body;
 
       if(item >= -1) {
         for(var i = item; i >= 0; i--) {
@@ -1463,13 +1464,13 @@ var DO = {
             break;
           }
           else if (i == 0) {
-            document.querySelector('article').insertAdjacentHTML('afterbegin', h);
+            article.insertAdjacentHTML('afterbegin', h);
             break;
           }
         }
       }
       else {
-        document.querySelector('article').insertAdjacentHTML('afterbegin', h);
+        article.insertAdjacentHTML('afterbegin', h);
       }
     },
 
