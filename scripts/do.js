@@ -3175,6 +3175,8 @@ console.log('createImmutableResource ' + immutableURL);
       }
       DO.U.setDocumentRelation([r], o);
 
+      //TODO document-timegate
+
       o = { 'id': 'document-timemap', 'title': 'TimeMap' };
       r = { 'rel': 'mem:timemap', 'href': containerIRI + '.timemap' };
       DO.U.setDocumentRelation([r], o);
@@ -3200,6 +3202,8 @@ console.log('createImmutableResource ' + immutableURL);
         r = { 'rel': 'mem:memento rel:predecessor-version', 'href': DO.C.OriginalResourceInfo['latest-version'] };
         DO.U.setDocumentRelation([r], o);
       }
+
+      //TODO document-timegate
 
       o = { 'id': 'document-timemap', 'title': 'TimeMap' };
       r = { 'rel': 'mem:timemap', 'href': containerIRI + '.timemap' };
