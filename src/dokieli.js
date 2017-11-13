@@ -1892,6 +1892,12 @@ console.log('createImmutableResource ' + immutableURL);
       r = { 'rel': 'mem:memento rel:latest-version', 'href': immutableURL };
       DO.U.setDocumentRelation([r], o);
 
+      if(DO.C.OriginalResourceInfo['latest-version']) {
+        o = { 'id': 'document-predecessor-version', 'title': 'Predecessor Version' };
+        r = { 'rel': 'mem:memento rel:predecessor-version', 'href': DO.C.OriginalResourceInfo['latest-version'] };
+        DO.U.setDocumentRelation([r], o);
+      }
+
       // Create URI-R
       data = doc.getDocument();
       DO.U.processPut(url, data, options);
