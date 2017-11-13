@@ -1858,7 +1858,8 @@ var DO = {
 
       DO.U.setDocumentStatus(dSO);
 
-      var immutableURL = url.substr(0, url.lastIndexOf('/') + 1) + DO.U.generateAttributeId();
+      var containerIRI = url.substr(0, url.lastIndexOf('/') + 1);
+      var immutableURL = containerIRI + DO.U.generateAttributeId();
 
 console.log('createImmutableResource ' + immutableURL);
 
@@ -1878,6 +1879,10 @@ console.log('createImmutableResource ' + immutableURL);
       else {
         r = { 'rel': 'mem:original', 'href': url };
       }
+      DO.U.setDocumentRelation([r], o);
+
+      o = { 'id': 'document-timemap', 'title': 'TimeMap' };
+      r = { 'rel': 'mem:timemap', 'href': containerIRI + '.timemap' };
       DO.U.setDocumentRelation([r], o);
 
       // Create URI-M
@@ -1901,6 +1906,10 @@ console.log('createImmutableResource ' + immutableURL);
         r = { 'rel': 'mem:memento rel:predecessor-version', 'href': DO.C.OriginalResourceInfo['latest-version'] };
         DO.U.setDocumentRelation([r], o);
       }
+
+      o = { 'id': 'document-timemap', 'title': 'TimeMap' };
+      r = { 'rel': 'mem:timemap', 'href': containerIRI + '.timemap' };
+      DO.U.setDocumentRelation([r], o);
 
       // Create URI-R
       data = doc.getDocument();
