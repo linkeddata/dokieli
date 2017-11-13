@@ -2723,6 +2723,8 @@ var DO = {
         'document-created',
         'document-modified',
         'document-published',
+        'document-original',
+        'document-memento',
         'document-latest-version',
         'document-predecessor-version',
         'document-timegate',
@@ -3154,19 +3156,23 @@ var DO = {
 
 console.log('createImmutableResource ' + immutableURL);
 
-      var r = {
-        'rel': 'owl:sameAs',
-        'href': immutableURL
-      };
-      var o = {
-        'id': 'document-identifier',
-        'title': 'Identifier'
-      }
+      var r, o;
 
+
+      o = { 'id': 'document-identifier', 'title': 'Identifier' };
+      r = { 'rel': 'owl:sameAs', 'href': immutableURL };
       DO.U.setDocumentRelation([r], o);
 
-//setDocumentIdentifier
-//setDocumentOriginal
+
+      o = { 'id': 'document-original', 'title': 'Original resource' };
+      if(DO.C.OriginalResourceInfo.profile == DO.C.Vocab['memOriginalResource']['@id']) {
+        r = { 'rel': 'mem:original', 'href': immutableURL };
+      }
+      else {
+        r = { 'rel': 'mem:original', 'href': url };
+      }
+      DO.U.setDocumentRelation([r], o);
+
 //setDocumentPredecessorVersion
 //setDocumentLatestVersion
 //setDocumenTimeMap
@@ -5960,7 +5966,7 @@ WHERE {\n\
             if (s.reloriginal == options['subjectURI']) {
               //URI-R (The Original Resource is a Fixed Resource)
 
-              info['profile'] = DO.C.Vocab['memOriginal']['@id'];
+              info['profile'] = DO.C.Vocab['memOriginalResource']['@id'];
             }
             else {
               //URI-M
@@ -5972,7 +5978,7 @@ WHERE {\n\
           if (s.relmemento) {
             //URI-R
 
-            info['profile'] = DO.C.Vocab['memOriginal']['@id'];
+            info['profile'] = DO.C.Vocab['memOriginalResource']['@id'];
             info['memento'] = s.relmemento;
           }
 
