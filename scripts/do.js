@@ -3182,6 +3182,10 @@ console.log('createImmutableResource ' + immutableURL);
 
 
       //Update URI-R
+      o = { 'id': 'document-identifier', 'title': 'Identifier' };
+      r = { 'rel': 'owl:sameAs', 'href': url };
+      DO.U.setDocumentRelation([r], o);
+
       o = { 'id': 'document-latest-version', 'title': 'Latest Version' };
       r = { 'rel': 'mem:memento rel:latest-version', 'href': immutableURL };
       DO.U.setDocumentRelation([r], o);
