@@ -1871,7 +1871,8 @@ console.log('createImmutableResource ' + immutableURL);
 
 
       o = { 'id': 'document-original', 'title': 'Original resource' };
-      if(DO.C.OriginalResourceInfo.profile == DO.C.Vocab['memOriginalResource']['@id']) {
+      if (DO.C.OriginalResourceInfo['state'] == DO.C.Vocab['ldpImmutableResource']['@id']
+        && DO.C.OriginalResourceInfo['profile'] == DO.C.Vocab['memOriginalResource']['@id']) {
         r = { 'rel': 'mem:original', 'href': immutableURL };
       }
       else {
