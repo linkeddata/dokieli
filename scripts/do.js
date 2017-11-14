@@ -271,6 +271,8 @@ module.exports = {
     "schemalicense": { "@id": "http://schema.org/license", "@type": "@id" },
     "schemacitation": { "@id": "http://schema.org/citation", "@type": "@id", "@array": true },
     "schemaknows": { "@id": "http://schema.org/knows", "@type": "@id", "@array": true },
+    "schemadateCreated": "http://schema.org/dateCreated",
+    "schemadateModified": "http://schema.org/dateModified",
     "schemadatePublished": "http://schema.org/datePublished",
     "schemadescription": "http://schema.org/description",
 
@@ -686,13 +688,16 @@ function parseLinkHeader (link) {
 
 function patchResource (url, deleteBGP, insertBGP, options = {}) {
   // insertBGP and deleteBGP are basic graph patterns.
-  if (deleteBGP) {
-    deleteBGP = 'DELETE DATA { ' + deleteBGP + ' };'
-  }
+  deleteBGP = (deleteBGP) ? 'DELETE DATA {\n\
+' + deleteBGP + '\n\
+};\n\
+' : '';
 
-  if (insertBGP) {
-    insertBGP = 'INSERT DATA { ' + insertBGP + ' };'
-  }
+  insertBGP = (insertBGP) ? 'INSERT DATA {\n\
+' + insertBGP + '\n\
+};\n\
+' : '';
+
 
   options.body = deleteBGP + insertBGP
 
@@ -2990,6 +2995,9 @@ var DO = {
       document.body.insertAdjacentHTML('beforeend', '<aside id="memento-document" class="do on"><button class="close" title="Close">❌</button><h2>Memento</h2><ul><li><button class="create-version">Version</button> this article.</li><li>Make this article <button class="create-immutable">Immutable</button> and version it.</li><li><button class="export-as-html">Export</button> and save to file.</li><li><button class="snapshot-internet-archive">Capture</button> with <a href="http://web.archive.org/" target="_blank">Internet Archive</a>.</li></ul></aside>');
 
       var mementoDocument = document.getElementById('memento-document');
+
+      DO.U.showTimeMap(mementoDocument);
+
       mementoDocument.addEventListener('click', function(e) {
         if (e.target.matches('button.close')) {
           document.querySelector('#document-do .resource-memento').disabled = false;
@@ -3010,6 +3018,43 @@ var DO = {
           DO.U.snapshotAtEndpoint(e, iri, 'https://pragma.archivelab.org', '', options);
         }
       });
+    },
+
+    showTimeMap: function(node, url) {
+      if (!node) { return; }
+
+      var fallbackURL = document.location.href.substr(0, document.location.href.lastIndexOf('/') + 1) + '.timemap';
+
+      url = url || DO.C.OriginalResourceInfo['timemap'] || fallbackURL;
+
+      var displayMemento = '';
+
+      DO.U.getTriplesFromGraph(url)
+        .then(function(triples){
+          triples = DO.U.sortTriples(triples, { sortBy: 'object' });
+
+          var items = [];
+          triples.forEach(function(t){
+            var s = t.subject.nominalValue;
+            var p = t.predicate.nominalValue;
+            var o = t.object.nominalValue;
+
+            if(p === DO.C.Vocab['schemadateCreated']) {
+              items.push('<li><a href="' + s + '">' + o + '</a></li>');
+            }
+          });
+
+          var html = '<dl class="timemap"><dt>TimeMap</dt><dd><ul>' + items.join('') + '</ul></dd>';
+
+          node.insertAdjacentHTML('beforeend', html);
+        })
+        .catch(error => {
+// console.error(error)
+        });
+    },
+
+    updateTimeMap: function(url, insertBGP, options) {
+      fetcher.patchResource(url, null, insertBGP);
     },
 
     showDocumentDo: function showDocumentDo (node) {
@@ -3134,7 +3179,11 @@ var DO = {
     createImmutableResource: function(url, data, options) {
       if(!url) return;
 
-      DO.U.setDate(null, { 'type': 'Created' });
+      var containerIRI = url.substr(0, url.lastIndexOf('/') + 1);
+      var immutableURL = containerIRI + DO.U.generateAttributeId();
+
+      var date = new Date();
+      DO.U.setDate(null, { 'type': 'Created', 'datetime': date });
 
       var documentStatus = document.getElementById('document-status');
       var dSO = {
@@ -3152,15 +3201,11 @@ var DO = {
 
       DO.U.setDocumentStatus(dSO);
 
-      var containerIRI = url.substr(0, url.lastIndexOf('/') + 1);
-      var immutableURL = containerIRI + DO.U.generateAttributeId();
-
       var r, o;
 
       o = { 'id': 'document-identifier', 'title': 'Identifier' };
       r = { 'rel': 'owl:sameAs', 'href': immutableURL };
       DO.U.setDocumentRelation([r], o);
-
 
       o = { 'id': 'document-original', 'title': 'Original resource' };
       if (DO.C.OriginalResourceInfo['state'] == DO.C.Vocab['ldpImmutableResource']['@id']
@@ -3174,15 +3219,15 @@ var DO = {
 
       //TODO document-timegate
 
+      var timeMapURL = DO.C.OriginalResourceInfo['timemap'] || url + '.timemap';
       o = { 'id': 'document-timemap', 'title': 'TimeMap' };
-      r = { 'rel': 'mem:timemap', 'href': containerIRI + '.timemap' };
+      r = { 'rel': 'mem:timemap', 'href': timeMapURL };
       DO.U.setDocumentRelation([r], o);
 
       // Create URI-M
       data = doc.getDocument();
       //TODO: Change to POST
       DO.U.processPut(immutableURL, data, options);
-
 
 
       //Update URI-R
@@ -3202,15 +3247,24 @@ var DO = {
 
       //TODO document-timegate
 
+      var timeMapURL = DO.C.OriginalResourceInfo['timemap'] || url + '.timemap';
       o = { 'id': 'document-timemap', 'title': 'TimeMap' };
-      r = { 'rel': 'mem:timemap', 'href': containerIRI + '.timemap' };
+      r = { 'rel': 'mem:timemap', 'href': timeMapURL };
       DO.U.setDocumentRelation([r], o);
 
       // Create URI-R
       data = doc.getDocument();
       DO.U.processPut(url, data, options);
 
-      //TODO: PATCH URI-T
+
+      //Update URI-T
+      var insertBGP = '@prefix mem: <http://mementoweb.org/ns#> .\n\
+@prefix schema: <http://schema.org/> .\n\
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\
+<' + timeMapURL + '> mem:memento <' + immutableURL + '> .\n\
+<' + immutableURL + '> schema:dateCreated "' + date.toISOString() + '"^^xsd:dateTime .';
+
+      DO.U.updateTimeMap(timeMapURL, insertBGP)
     },
 
     createMutableResource: function(url, data, options) {
@@ -3267,10 +3321,10 @@ console.log('updateMutableResource' + url);
       fetcher.putResource(url, data)
         .then(() => {
           DO.U.showActionMessage(document.getElementById('document-menu'), 'Saved')
-          DO.U.hideDocumentMenu(e)
+          // DO.U.hideDocumentMenu(e)
         })
         .catch(error => {
-          console.error(error)
+          console.log(error)
 
           let message
 
@@ -5942,7 +5996,7 @@ WHERE {\n\
 
       node = node || document.querySelector('#' + elementId + ' [property*=":date' + type + '"]');
 
-      var datetime = ('datetime' in options) ? options.datetime : DO.U.getDateTimeISO();
+      var datetime = ('datetime' in options) ? options.datetime.toISOString() : DO.U.getDateTimeISO();
 
       if(node) {
         if(node.getAttribute('datetime')) {
@@ -5970,7 +6024,7 @@ WHERE {\n\
 
       var c = ('class' in options && options.class.length > 0) ? ' class="' + options.class + '"' : '';
       var id = ('id' in options && options.id.length > 0) ? ' id="' + options.id + '"' : ' id="document-' + type.toLowerCase() + '"';
-      var datetime = ('datetime' in options) ? options.datetime : DO.U.getDateTimeISO();
+      var datetime = ('datetime' in options) ? options.datetime.toISOString() : DO.U.getDateTimeISO();
 
       var date = '        <dl'+c+id+'>\n\
           <dt>' + type + '</dt>\n\
@@ -6011,7 +6065,7 @@ WHERE {\n\
 
           if (s.reloriginal) {
             info['state'] = DO.C.Vocab['ldpImmutableResource']['@id'];
-            info['original'] = s.reloriginal;
+            info['original'] = s.memoriginal;
 
             if (s.reloriginal == options['subjectURI']) {
               //URI-R (The Original Resource is a Fixed Resource)
@@ -6029,15 +6083,15 @@ WHERE {\n\
             //URI-R
 
             info['profile'] = DO.C.Vocab['memOriginalResource']['@id'];
-            info['memento'] = s.relmemento;
+            info['memento'] = s.memmemento;
           }
 
-          if(s.reloriginal && s.relmemento && s.reloriginal != s.relmemento) {
+          if(s.memoriginal && s.memmemento && s.memoriginal != s.memmemento) {
             //URI-M (Memento without a TimeGate)
 
             info['profile'] = DO.C.Vocab['memMemento']['@id'];
-            info['original'] = s.reloriginal;
-            info['memento'] = s.relmento;
+            info['original'] = s.memoriginal;
+            info['memento'] = s.memmement;
           }
 
           if(s.rellatestversion) {
@@ -6048,12 +6102,12 @@ WHERE {\n\
             info['predecessor-version'] = s.relpredecessorversion;
           }
 
-          if(s.reltimemap) {
-            info['timemap'] = s.reltimemap;
+          if(s.memtimemap) {
+            info['timemap'] = s.memtimemap;
           }
 
-          if(s.reltimegate) {
-            info['timegate'] = s.reltimegate; 
+          if(s.memtimegate) {
+            info['timegate'] = s.memtimegate;
           }
 
 // console.log(info);

@@ -1696,6 +1696,9 @@ var DO = {
       document.body.insertAdjacentHTML('beforeend', '<aside id="memento-document" class="do on"><button class="close" title="Close">❌</button><h2>Memento</h2><ul><li><button class="create-version">Version</button> this article.</li><li>Make this article <button class="create-immutable">Immutable</button> and version it.</li><li><button class="export-as-html">Export</button> and save to file.</li><li><button class="snapshot-internet-archive">Capture</button> with <a href="http://web.archive.org/" target="_blank">Internet Archive</a>.</li></ul></aside>');
 
       var mementoDocument = document.getElementById('memento-document');
+
+      DO.U.showTimeMap(mementoDocument);
+
       mementoDocument.addEventListener('click', function(e) {
         if (e.target.matches('button.close')) {
           document.querySelector('#document-do .resource-memento').disabled = false;
@@ -1716,6 +1719,39 @@ var DO = {
           DO.U.snapshotAtEndpoint(e, iri, 'https://pragma.archivelab.org', '', options);
         }
       });
+    },
+
+    showTimeMap: function(node, url) {
+      if (!node) { return; }
+
+      var fallbackURL = document.location.href.substr(0, document.location.href.lastIndexOf('/') + 1) + '.timemap';
+
+      url = url || DO.C.OriginalResourceInfo['timemap'] || fallbackURL;
+
+      var displayMemento = '';
+
+      DO.U.getTriplesFromGraph(url)
+        .then(function(triples){
+          triples = DO.U.sortTriples(triples, { sortBy: 'object' });
+
+          var items = [];
+          triples.forEach(function(t){
+            var s = t.subject.nominalValue;
+            var p = t.predicate.nominalValue;
+            var o = t.object.nominalValue;
+
+            if(p === DO.C.Vocab['schemadateCreated']) {
+              items.push('<li><a href="' + s + '">' + o + '</a></li>');
+            }
+          });
+
+          var html = '<dl class="timemap"><dt>TimeMap</dt><dd><ul>' + items.join('') + '</ul></dd>';
+
+          node.insertAdjacentHTML('beforeend', html);
+        })
+        .catch(error => {
+// console.error(error)
+        });
     },
 
     updateTimeMap: function(url, insertBGP, options) {
