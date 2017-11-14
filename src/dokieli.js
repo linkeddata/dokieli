@@ -1718,6 +1718,10 @@ var DO = {
       });
     },
 
+    updateTimeMap: function(url, insertBGP, options) {
+      fetcher.patchResource(url, null, insertBGP);
+    },
+
     showDocumentDo: function showDocumentDo (node) {
       if (document.getElementById('document-do')) { return; }
 
@@ -1917,7 +1921,16 @@ var DO = {
       data = doc.getDocument();
       DO.U.processPut(url, data, options);
 
-      //TODO: PATCH URI-T
+
+      //Update URI-T
+      var insertBGP = '@prefix mem: <http://mementoweb.org/ns#> .\n\
+@prefix schema: <http://schema.org/> .\n\
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\
+<' + timeMapURL + '> mem:memento <' + immutableURL + '> .\n\
+<' + immutableURL + '> schema:dateCreated "' + date.toISOString() + '"^^xsd:dateTime .';
+console.log(insertBGP);
+
+      DO.U.updateTimeMap(timeMapURL, insertBGP)
     },
 
     createMutableResource: function(url, data, options) {
