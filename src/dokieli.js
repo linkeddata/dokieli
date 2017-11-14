@@ -1973,10 +1973,10 @@ console.log('updateMutableResource' + url);
       fetcher.putResource(url, data)
         .then(() => {
           DO.U.showActionMessage(document.getElementById('document-menu'), 'Saved')
-          DO.U.hideDocumentMenu(e)
+          // DO.U.hideDocumentMenu(e)
         })
         .catch(error => {
-          console.error(error)
+          console.log(error)
 
           let message
 
