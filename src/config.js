@@ -191,6 +191,8 @@ module.exports = {
     "schemalicense": { "@id": "http://schema.org/license", "@type": "@id" },
     "schemacitation": { "@id": "http://schema.org/citation", "@type": "@id", "@array": true },
     "schemaknows": { "@id": "http://schema.org/knows", "@type": "@id", "@array": true },
+    "schemadateCreated": "http://schema.org/dateCreated",
+    "schemadateModified": "http://schema.org/dateModified",
     "schemadatePublished": "http://schema.org/datePublished",
     "schemadescription": "http://schema.org/description",
 
