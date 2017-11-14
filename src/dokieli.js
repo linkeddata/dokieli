@@ -1946,7 +1946,7 @@ console.log('createMutableResource ' + mutableURL);
 
       data = doc.getDocument();
       //TODO: Change to POST
-      DO.U.processPut(url, data, options);
+      DO.U.processPut(mutableURL, data, options);
 
 
 
