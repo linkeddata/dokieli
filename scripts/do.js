@@ -3228,16 +3228,6 @@ console.log('createMutableResource ' + mutableURL);
       r = { 'rel': 'owl:sameAs', 'href': mutableURL };
       DO.U.setDocumentRelation([r], o);
 
-      data = doc.getDocument();
-      //TODO: Change to POST
-      DO.U.processPut(url, data, options);
-
-
-
-      o = { 'id': 'document-identifier', 'title': 'Identifier' };
-      r = { 'rel': 'owl:sameAs', 'href': url };
-      DO.U.setDocumentRelation([r], o);
-
       o = { 'id': 'document-latest-version', 'title': 'Latest Version' };
       r = { 'rel': 'rel:latest-version', 'href': mutableURL };
       DO.U.setDocumentRelation([r], o);
@@ -3247,6 +3237,16 @@ console.log('createMutableResource ' + mutableURL);
         r = { 'rel': 'rel:predecessor-version', 'href': DO.C.OriginalResourceInfo['latest-version'] };
         DO.U.setDocumentRelation([r], o);
       }
+
+      data = doc.getDocument();
+      //TODO: Change to POST
+      DO.U.processPut(url, data, options);
+
+
+
+      o = { 'id': 'document-identifier', 'title': 'Identifier' };
+      r = { 'rel': 'owl:sameAs', 'href': url };
+      DO.U.setDocumentRelation([r], o);
 
       data = doc.getDocument();
       DO.U.processPut(url, data, options);
