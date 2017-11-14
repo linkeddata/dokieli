@@ -1840,6 +1840,9 @@ var DO = {
     createImmutableResource: function(url, data, options) {
       if(!url) return;
 
+      var containerIRI = url.substr(0, url.lastIndexOf('/') + 1);
+      var immutableURL = containerIRI + DO.U.generateAttributeId();
+
       var date = new Date();
       DO.U.setDate(null, { 'type': 'Created', 'datetime': date });
 
@@ -1859,9 +1862,6 @@ var DO = {
 
       DO.U.setDocumentStatus(dSO);
 
-      var containerIRI = url.substr(0, url.lastIndexOf('/') + 1);
-      var immutableURL = containerIRI + DO.U.generateAttributeId();
-
       var r, o;
 
       o = { 'id': 'document-identifier', 'title': 'Identifier' };
@@ -1880,15 +1880,15 @@ var DO = {
 
       //TODO document-timegate
 
+      var timeMapURL = DO.C.OriginalResourceInfo['timemap'] || url + '.timemap';
       o = { 'id': 'document-timemap', 'title': 'TimeMap' };
-      r = { 'rel': 'mem:timemap', 'href': containerIRI + '.timemap' };
+      r = { 'rel': 'mem:timemap', 'href': timeMapURL };
       DO.U.setDocumentRelation([r], o);
 
       // Create URI-M
       data = doc.getDocument();
       //TODO: Change to POST
       DO.U.processPut(immutableURL, data, options);
-
 
 
       //Update URI-R
@@ -1908,8 +1908,9 @@ var DO = {
 
       //TODO document-timegate
 
+      var timeMapURL = DO.C.OriginalResourceInfo['timemap'] || url + '.timemap';
       o = { 'id': 'document-timemap', 'title': 'TimeMap' };
-      r = { 'rel': 'mem:timemap', 'href': containerIRI + '.timemap' };
+      r = { 'rel': 'mem:timemap', 'href': timeMapURL };
       DO.U.setDocumentRelation([r], o);
 
       // Create URI-R
