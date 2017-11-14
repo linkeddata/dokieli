@@ -4578,18 +4578,25 @@ WHERE {\n\
       if(!data || !options) { return; }
 
       var h = [];
+      var uniqueRelations = ['document-identifier', 'document-original', 'document-memento', 'document-latest-version', 'document-predecessor-version', 'document-timemap', 'document-timegate'];
 
+      var dl = document.getElementById(options.id);
       data.forEach(function(d){
         var documentRelation = '<dd>' + DO.U.createRDFaHTML(d) + '</dd>';
-        var dl = document.getElementById(options.id);
 
         if(dl) {
-          var relation = dl.querySelector('[rel="' + d.rel +  '"][href="' + d.href  + '"]');
+          if (uniqueRelations.indexOf(options.id) > -1) {
+            dd = dl.querySelector('dd');
+            dl.removeChild(dd);
+          }
+          else {
+            var relation = dl.querySelector('[rel="' + d.rel +  '"][href="' + d.href  + '"]');
 
-          if(relation) {
-            dd = relation.closest('dd');
-            if(dd) {
-              dl.removeChild(dd);
+            if(relation) {
+              dd = relation.closest('dd');
+              if(dd) {
+                dl.removeChild(dd);
+              }
             }
           }
           dl.insertAdjacentHTML('beforeend', documentRelation);
