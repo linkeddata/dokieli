@@ -1928,7 +1928,6 @@ var DO = {
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\
 <' + timeMapURL + '> mem:memento <' + immutableURL + '> .\n\
 <' + immutableURL + '> schema:dateCreated "' + date.toISOString() + '"^^xsd:dateTime .';
-console.log(insertBGP);
 
       DO.U.updateTimeMap(timeMapURL, insertBGP)
     },
@@ -4731,7 +4730,7 @@ WHERE {\n\
 
           if (s.reloriginal) {
             info['state'] = DO.C.Vocab['ldpImmutableResource']['@id'];
-            info['original'] = s.reloriginal;
+            info['original'] = s.memoriginal;
 
             if (s.reloriginal == options['subjectURI']) {
               //URI-R (The Original Resource is a Fixed Resource)
@@ -4749,15 +4748,15 @@ WHERE {\n\
             //URI-R
 
             info['profile'] = DO.C.Vocab['memOriginalResource']['@id'];
-            info['memento'] = s.relmemento;
+            info['memento'] = s.memmemento;
           }
 
-          if(s.reloriginal && s.relmemento && s.reloriginal != s.relmemento) {
+          if(s.memoriginal && s.memmemento && s.memoriginal != s.memmemento) {
             //URI-M (Memento without a TimeGate)
 
             info['profile'] = DO.C.Vocab['memMemento']['@id'];
-            info['original'] = s.reloriginal;
-            info['memento'] = s.relmento;
+            info['original'] = s.memoriginal;
+            info['memento'] = s.memmement;
           }
 
           if(s.rellatestversion) {
@@ -4768,12 +4767,12 @@ WHERE {\n\
             info['predecessor-version'] = s.relpredecessorversion;
           }
 
-          if(s.reltimemap) {
-            info['timemap'] = s.reltimemap;
+          if(s.memtimemap) {
+            info['timemap'] = s.memtimemap;
           }
 
-          if(s.reltimegate) {
-            info['timegate'] = s.reltimegate; 
+          if(s.memtimegate) {
+            info['timegate'] = s.memtimegate;
           }
 
 // console.log(info);
