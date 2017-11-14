@@ -329,13 +329,16 @@ function parseLinkHeader (link) {
 
 function patchResource (url, deleteBGP, insertBGP, options = {}) {
   // insertBGP and deleteBGP are basic graph patterns.
-  if (deleteBGP) {
-    deleteBGP = 'DELETE DATA { ' + deleteBGP + ' };'
-  }
+  deleteBGP = (deleteBGP) ? 'DELETE DATA {\n\
+' + deleteBGP + '\n\
+};\n\
+' : '';
 
-  if (insertBGP) {
-    insertBGP = 'INSERT DATA { ' + insertBGP + ' };'
-  }
+  insertBGP = (insertBGP) ? 'INSERT DATA {\n\
+' + insertBGP + '\n\
+};\n\
+' : '';
+
 
   options.body = deleteBGP + insertBGP
 
