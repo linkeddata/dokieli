@@ -1840,7 +1840,8 @@ var DO = {
     createImmutableResource: function(url, data, options) {
       if(!url) return;
 
-      DO.U.setDate(null, { 'type': 'Created' });
+      var date = new Date();
+      DO.U.setDate(null, { 'type': 'Created', 'datetime': date });
 
       var documentStatus = document.getElementById('document-status');
       var dSO = {
@@ -1866,7 +1867,6 @@ var DO = {
       o = { 'id': 'document-identifier', 'title': 'Identifier' };
       r = { 'rel': 'owl:sameAs', 'href': immutableURL };
       DO.U.setDocumentRelation([r], o);
-
 
       o = { 'id': 'document-original', 'title': 'Original resource' };
       if (DO.C.OriginalResourceInfo['state'] == DO.C.Vocab['ldpImmutableResource']['@id']
@@ -4648,7 +4648,7 @@ WHERE {\n\
 
       node = node || document.querySelector('#' + elementId + ' [property*=":date' + type + '"]');
 
-      var datetime = ('datetime' in options) ? options.datetime : DO.U.getDateTimeISO();
+      var datetime = ('datetime' in options) ? options.datetime.toISOString() : DO.U.getDateTimeISO();
 
       if(node) {
         if(node.getAttribute('datetime')) {
@@ -4676,7 +4676,7 @@ WHERE {\n\
 
       var c = ('class' in options && options.class.length > 0) ? ' class="' + options.class + '"' : '';
       var id = ('id' in options && options.id.length > 0) ? ' id="' + options.id + '"' : ' id="document-' + type.toLowerCase() + '"';
-      var datetime = ('datetime' in options) ? options.datetime : DO.U.getDateTimeISO();
+      var datetime = ('datetime' in options) ? options.datetime.toISOString() : DO.U.getDateTimeISO();
 
       var date = '        <dl'+c+id+'>\n\
           <dt>' + type + '</dt>\n\
