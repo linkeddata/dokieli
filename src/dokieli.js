@@ -1861,10 +1861,7 @@ var DO = {
       var containerIRI = url.substr(0, url.lastIndexOf('/') + 1);
       var immutableURL = containerIRI + DO.U.generateAttributeId();
 
-console.log('createImmutableResource ' + immutableURL);
-
       var r, o;
-
 
       o = { 'id': 'document-identifier', 'title': 'Identifier' };
       r = { 'rel': 'owl:sameAs', 'href': immutableURL };
@@ -1888,8 +1885,8 @@ console.log('createImmutableResource ' + immutableURL);
       DO.U.setDocumentRelation([r], o);
 
       // Create URI-M
-      //TODO: Change to POST
       data = doc.getDocument();
+      //TODO: Change to POST
       DO.U.processPut(immutableURL, data, options);
 
 
@@ -1931,7 +1928,32 @@ console.log('createImmutableResource ' + immutableURL);
 
 console.log('createMutableResource ' + mutableURL);
 
+      var r, o;
+
+      o = { 'id': 'document-identifier', 'title': 'Identifier' };
+      r = { 'rel': 'owl:sameAs', 'href': mutableURL };
+      DO.U.setDocumentRelation([r], o);
+
+      data = doc.getDocument();
       //TODO: Change to POST
+      DO.U.processPut(url, data, options);
+
+
+
+      o = { 'id': 'document-identifier', 'title': 'Identifier' };
+      r = { 'rel': 'owl:sameAs', 'href': url };
+      DO.U.setDocumentRelation([r], o);
+
+      o = { 'id': 'document-latest-version', 'title': 'Latest Version' };
+      r = { 'rel': 'rel:latest-version', 'href': mutableURL };
+      DO.U.setDocumentRelation([r], o);
+
+      if(DO.C.OriginalResourceInfo['latest-version']) {
+        o = { 'id': 'document-predecessor-version', 'title': 'Predecessor Version' };
+        r = { 'rel': 'rel:predecessor-version', 'href': DO.C.OriginalResourceInfo['latest-version'] };
+        DO.U.setDocumentRelation([r], o);
+      }
+
       data = doc.getDocument();
       DO.U.processPut(url, data, options);
     },
