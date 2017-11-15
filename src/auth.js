@@ -157,8 +157,9 @@ function setUserInfo (userIRI) {
       if (s.pimstorage && s.pimstorage._array.length > 0) {
         Config.User.Storage = s.pimstorage._array
       }
-      else if (s.asoutbox && s.asoutbox._array.length > 0) {
-        Config.User.Outbox = Config.User.Storage = s.asoutbox._array
+
+      if (s.asoutbox && s.asoutbox._array.length > 0) {
+        Config.User.Outbox = s.asoutbox._array
       }
 
       if (s.preferencesFile && s.preferencesFile.length > 0) {
