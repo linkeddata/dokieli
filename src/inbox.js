@@ -291,9 +291,9 @@ function notifyInbox (o) {
               let data = JSON.stringify(parsedData) + '\n'
 
               var profile = (Config.User.Outbox) ? 'https://www.w3.org/ns/activitystreams' : 'http://www.w3.org/ns/anno.jsonld'
-              profile = '; profile="' + profileIRI + '"'
+              var contentType = 'application/ld+json; profile="' + profile + '"'
 
-              return fetcher.postResource(pIRI, slug, data, 'application/ld+json' + profile)
+              return fetcher.postResource(pIRI, slug, data, contentType)
             })
       }
     })
