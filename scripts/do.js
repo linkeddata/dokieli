@@ -8275,8 +8275,9 @@ function notifyInbox (o) {
 
           return graph.getGraphFromData(data, options)
             .then(g => {
+              var profileAS = (Config.User.Outbox) ? '; profile="https://www.w3.org/ns/activitystreams"' : '';
               let options = {
-                'contentType': 'application/ld+json'
+                'contentType': 'application/ld+json' + profileAS
               }
 
               return graph.serializeGraph(g, options)
