@@ -8223,24 +8223,29 @@ function notifyInbox (o) {
 </article>\n\
 '
 
-  var options = {}
-  options.prefixes = Config.Prefixes
+  data = DO.U.createHTML(title, data, { 'prefixes': Config.Prefixes })
 
-  data = DO.U.createHTML(title, data, options)
+  var options = {
+    'contentType': 'text/html',
+    'subjectURI': 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d',
+    'profile': 'https://www.w3.org/ns/activitystreams'
+  }
+
+  if(DO.C.User.Outbox && DO.C.User.Outbox !== inboxURL) {
+    postActivity(DO.C.User.Outbox[0], slug, data, options);
+  }
 
   var pIRI = uri.getProxyableIRI(inboxURL)
+  return postActivity(pIRI, slug, data, options)
+}
 
-  return fetcher.getAcceptPostPreference(pIRI)
+function postActivity(url, slug, data, options) {
+  return fetcher.getAcceptPostPreference(url)
     .then(preferredContentType => {
-      let options = {
-        'contentType': 'text/html',
-        'subjectURI': 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d'
-      }
-
       switch (preferredContentType) {
         case 'text/html':
         case 'application/xhtml+xml':
-          return fetcher.postResource(pIRI, slug, data, 'text/html; charset=utf-8')
+          return fetcher.postResource(url, slug, data, 'text/html; charset=utf-8')
 
         case 'text/turtle':
           // FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
@@ -8249,11 +8254,7 @@ function notifyInbox (o) {
 
           return graph.getGraphFromData(data, options)
             .then(g => {
-              let options = {
-                'contentType': 'text/turtle'
-              }
-
-              return graph.serializeGraph(g, options)
+              return graph.serializeGraph(g, { 'contentType': 'text/turtle' })
             })
             .then(data => {
               // FIXME: FUGLY because parser defaults to localhost. Using UUID to minimise conflict
@@ -8264,7 +8265,7 @@ function notifyInbox (o) {
               // TODO: Link to bug here
               data = data.replace(/Z"@en;/, 'Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;')
 
-              return fetcher.postResource(pIRI, slug, data, 'text/turtle')
+              return fetcher.postResource(url, slug, data, 'text/turtle')
             })
 
         case 'application/ld+json':
@@ -8275,11 +8276,7 @@ function notifyInbox (o) {
 
           return graph.getGraphFromData(data, options)
             .then(g => {
-              let options = {
-                'contentType': 'application/ld+json'
-              }
-
-              return graph.serializeGraph(g, options)
+              return graph.serializeGraph(g, { 'contentType': 'application/ld+json' })
             })
             .then(serialized => {
               let parsedData = JSON.parse(serialized)
@@ -8306,10 +8303,9 @@ function notifyInbox (o) {
 
               let data = JSON.stringify(parsedData) + '\n'
 
-              var profile = (Config.User.Outbox) ? 'https://www.w3.org/ns/activitystreams' : 'http://www.w3.org/ns/anno.jsonld'
-              profile = '; profile="' + profileIRI + '"'
+              var profile = ('profile' in options) ? '; profile="' + options.profile + '"' : ''
 
-              return fetcher.postResource(pIRI, slug, data, 'application/ld+json' + profile)
+              return fetcher.postResource(url, slug, data, preferredContentType + profile)
             })
       }
     })
@@ -8553,8 +8549,9 @@ function setUserInfo (userIRI) {
       if (s.pimstorage && s.pimstorage._array.length > 0) {
         Config.User.Storage = s.pimstorage._array
       }
-      else if (s.asoutbox && s.asoutbox._array.length > 0) {
-        Config.User.Outbox = Config.User.Storage = s.asoutbox._array
+
+      if (s.asoutbox && s.asoutbox._array.length > 0) {
+        Config.User.Outbox = s.asoutbox._array
       }
 
       if (s.preferencesFile && s.preferencesFile.length > 0) {
