@@ -259,9 +259,8 @@ function notifyInbox (o) {
 
           return graph.getGraphFromData(data, options)
             .then(g => {
-              var profileAS = (Config.User.Outbox) ? '; profile="https://www.w3.org/ns/activitystreams"' : '';
               let options = {
-                'contentType': 'application/ld+json' + profileAS
+                'contentType': 'application/ld+json'
               }
 
               return graph.serializeGraph(g, options)
@@ -291,7 +290,10 @@ function notifyInbox (o) {
 
               let data = JSON.stringify(parsedData) + '\n'
 
-              return fetcher.postResource(pIRI, slug, data, 'application/ld+json; profile="http://www.w3.org/ns/anno.jsonld"')
+              var profile = (Config.User.Outbox) ? 'https://www.w3.org/ns/activitystreams' : 'http://www.w3.org/ns/anno.jsonld'
+              profile = '; profile="' + profileIRI + '"'
+
+              return fetcher.postResource(pIRI, slug, data, 'application/ld+json' + profile)
             })
       }
     })
