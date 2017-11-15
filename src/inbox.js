@@ -256,7 +256,7 @@ function postActivity(url, slug, data, options) {
 
           return graph.getGraphFromData(data, options)
             .then(g => {
-              return graph.serializeGraph(g, { 'contentType': 'application/ld+json' })
+              return graph.serializeGraph(g, { 'contentType': 'application/ld+json', '@context': 'https://www.w3.org/ns/activitystreams' })
             })
             .then(serialized => {
               let parsedData = JSON.parse(serialized)

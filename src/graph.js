@@ -73,10 +73,18 @@ function serializeData (data, fromContentType, toContentType, options) {
         case 'application/ld+json':
           var parsed = JSON.parse(data)
 
-          parsed[0]['@context'] = [
-            'http://www.w3.org/ns/anno.jsonld',
-            {'as': 'https://www.w3.org/ns/activitystreams'}
-          ]
+          if(options['@context'] && options['@context'] == 'https://www.w3.org/ns/activitystreams') {
+            parsed[0]['@context'] = [
+              'https://www.w3.org/ns/activitystreams',
+              {'oa': 'http://www.w3.org/ns/anno.jsonld'}
+            ]            
+          }
+          else {
+            parsed[0]['@context'] = [
+              'http://www.w3.org/ns/anno.jsonld',
+              {'as': 'https://www.w3.org/ns/activitystreams'}
+            ]   
+          }
 
           parsed[0]['@id'] = (parsed[0]['@id'].slice(0, 2) === '_:')
             ? ''
@@ -95,5 +103,13 @@ function serializeGraph (g, options = {}) {
     options['contentType'] = 'text/turtle'
   }
 
-  return ld.store.serializers[options.contentType].serialize(g._graph)
+  if (options.contentType === 'application/ld+json') {
+    return ld.store.serializers[options.contentType].serialize(g._graph)
+      .then((json) => {
+        return jsonld.promises.compact(json, options['@context'], { 'skipExpansion': true })
+      })
+  }
+  else {
+    return ld.store.serializers[options.contentType].serialize(g._graph)
+  }
 }
