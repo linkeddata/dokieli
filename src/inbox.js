@@ -215,10 +215,6 @@ function notifyInbox (o) {
     'profile': 'https://www.w3.org/ns/activitystreams'
   }
 
-  if(DO.C.User.Outbox && DO.C.User.Outbox !== inboxURL) {
-    postActivity(DO.C.User.Outbox[0], slug, data, options);
-  }
-
   var pIRI = uri.getProxyableIRI(inboxURL)
   return postActivity(pIRI, slug, data, options)
 }

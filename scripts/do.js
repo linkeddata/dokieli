@@ -7668,25 +7668,34 @@ WHERE {\n\
                         // closest IRI (not necessarily the document).
                         // Test resolve/reject better.
 
+                        var notificationData = {
+                          "type": notificationType,
+                          "slug": id,
+                          "object": notificationObject,
+                          "license": opts.license
+                        };
+
+                        if(typeof notificationContext !== 'undefined') {
+                          notificationData['context'] = notificationContext;
+                        }
+
                         if (inboxes.length > 0) {
-                          var inboxURL = inboxes[0];
-                          let notificationData = {
-                            "type": notificationType,
-                            "inbox": inboxURL,
-                            "slug": id,
-                            "object": notificationObject,
-                            "license": opts.license
-                          };
+                          var requestURL = inboxes[0];
+
+                          // if(DO.C.User.Outbox && DO.C.User.Outbox !== requestURL) {
+                          //   notificationData['type'] = ['as:Create'];
+                          //   notificationData['inbox'] = DO.C.User.Outbox[0];
+                          //   inbox.notifyInbox(notificationData);
+                          // }
 
                           if(typeof notificationTarget !== 'undefined') {
                             notificationData['target'] = notificationTarget;
                           }
-                          if(typeof notificationContext !== 'undefined') {
-                            notificationData['context'] = notificationContext;
-                          }
                           if(typeof notificationStatements !== 'undefined') {
                             notificationData['statements'] = notificationStatements;
                           }
+
+                          notificationData['inbox'] = requestURL;
 
                           return inbox.notifyInbox(notificationData)
                             .catch(error => {
@@ -8229,10 +8238,6 @@ function notifyInbox (o) {
     'contentType': 'text/html',
     'subjectURI': 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d',
     'profile': 'https://www.w3.org/ns/activitystreams'
-  }
-
-  if(DO.C.User.Outbox && DO.C.User.Outbox !== inboxURL) {
-    postActivity(DO.C.User.Outbox[0], slug, data, options);
   }
 
   var pIRI = uri.getProxyableIRI(inboxURL)
