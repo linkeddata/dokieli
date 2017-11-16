@@ -3039,6 +3039,11 @@ var DO = {
     showTimeMap: function(node, url) {
       if (!node) { return; }
 
+      var timemap = node.querySelector('.timemap');
+      if (timemap) {
+        node.removeChild(timemap);
+      }
+
       var fallbackURL = document.location.href.substr(0, document.location.href.lastIndexOf('/') + 1) + '.timemap';
 
       url = url || DO.C.OriginalResourceInfo['timemap'] || fallbackURL;
