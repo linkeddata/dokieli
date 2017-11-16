@@ -70,6 +70,7 @@ module.exports = {
     "dl#document-original": "♁",
     "dl#document-predecessor-version": "≺",
     "dl#document-published": "📅",
+    "dl#document-resource-state": "🙊",
     "dl#document-status": "🎆",
     "dl#document-timemap": "⌚",
     "dfn": "📇",
