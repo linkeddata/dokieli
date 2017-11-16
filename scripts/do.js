@@ -3057,9 +3057,6 @@ var DO = {
         node.removeChild(timemap);
       }
 
-      // var fallbackURL = document.location.href.substr(0, document.location.href.lastIndexOf('/') + 1) + '.timemap';
-
-
       var displayMemento = '';
 
       DO.U.getTriplesFromGraph(url)
@@ -3077,7 +3074,7 @@ var DO = {
             }
           });
 
-          var html = '<dl class="timemap"><dt>TimeMap</dt><dd><ul>' + items.join('') + '</ul></dd>';
+          var html = '<dl class="timemap"><dt>TimeMap</dt><dd><ul>' + items.join('') + '</ul></dd></dl>';
 
           node.insertAdjacentHTML('beforeend', html);
         })
