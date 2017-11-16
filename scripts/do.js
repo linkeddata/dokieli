@@ -134,7 +134,7 @@ module.exports = {
   },
 
   SelectorSign: {
-    "*": "#",
+    "*": "🔗",
     "aside": "†",
     "audio": "🔊",
     "code": "#",
@@ -143,9 +143,9 @@ module.exports = {
     "dl#document-in-reply-to": "⮪",
     "dl#document-identifier": "🚩",
     "dl#document-inbox": "📥",
-    "dl#document-latest-version": "≍",
+    "dl#document-latest-version": "∼",
     "dl#document-license": "🌻",
-    "dl#document-memento": "📅",
+    "dl#document-memento": "⛰",
     "dl#document-modified": "📅",
     "dl#document-original": "♁",
     "dl#document-predecessor-version": "≺",
