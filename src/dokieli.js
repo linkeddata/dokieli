@@ -1894,8 +1894,9 @@ var DO = {
     createImmutableResource: function(url, data, options) {
       if(!url) return;
 
+      var uuid = DO.U.generateUUID();
       var containerIRI = url.substr(0, url.lastIndexOf('/') + 1);
-      var immutableURL = containerIRI + DO.U.generateAttributeId();
+      var immutableURL = containerIRI + uuid;
 
       var date = new Date();
       DO.U.setDate(null, { 'type': 'Created', 'datetime': date });
@@ -1937,8 +1938,7 @@ var DO = {
 
       // Create URI-M
       data = doc.getDocument();
-      //TODO: Change to POST
-      DO.U.processPut(immutableURL, data, options);
+      DO.U.processSave(containerIRI, uuid, data, options);
 
 
       //Update URI-R
@@ -1965,7 +1965,7 @@ var DO = {
 
       // Create URI-R
       data = doc.getDocument();
-      DO.U.processPut(url, data, options);
+      DO.U.processSave(url, null, data, options);
 
 
       //Update URI-T
@@ -1977,7 +1977,7 @@ var DO = {
 
       DO.U.updateTimeMap(timeMapURL, insertBGP)
 
-      DO.U.showTimeMap(document.getElementById('memento-document'), url)
+      DO.U.showTimeMap(document.getElementById('memento-document'), timeMapURL)
     },
 
     createMutableResource: function(url, data, options) {
@@ -1985,7 +1985,9 @@ var DO = {
 
       DO.U.setDate(null, { 'type': 'Created' } );
 
-      var mutableURL = url.substr(0, url.lastIndexOf('/') + 1) + DO.U.generateAttributeId();
+      var uuid = DO.U.generateUUID();
+      var containerIRI = url.substr(0, url.lastIndexOf('/') + 1);
+      var mutableURL = containerIRI + uuid;
 
 console.log('createMutableResource ' + mutableURL);
 
@@ -2006,9 +2008,7 @@ console.log('createMutableResource ' + mutableURL);
       }
 
       data = doc.getDocument();
-      //TODO: Change to POST
-      DO.U.processPut(mutableURL, data, options);
-
+      DO.U.processSave(containerIRI, uuid, data, options);
 
 
       o = { 'id': 'document-identifier', 'title': 'Identifier' };
@@ -2016,7 +2016,7 @@ console.log('createMutableResource ' + mutableURL);
       DO.U.setDocumentRelation([r], o);
 
       data = doc.getDocument();
-      DO.U.processPut(url, data, options);
+      DO.U.processSave(url, null, data, options);
     },
 
     updateMutableResource: function(url, data, options) {
@@ -2027,11 +2027,15 @@ console.log('createMutableResource ' + mutableURL);
 console.log('updateMutableResource' + url);
 
       data = doc.getDocument();
-      DO.U.processPut(url, data, options);
+      DO.U.processSave(url, null, data, options);
     },
 
-    processPut: function(url, data, options) {
-      fetcher.putResource(url, data)
+    processSave: function(url, slug, data, options) {
+      var request = (slug)
+                    ? fetcher.postResource(url, slug, data)
+                    : fetcher.putResource(url, data)
+
+      request
         .then(() => {
           DO.U.showActionMessage(document.getElementById('document-menu'), 'Saved')
           // DO.U.hideDocumentMenu(e)
