@@ -3287,7 +3287,7 @@ var DO = {
       var insertBGP = '@prefix mem: <http://mementoweb.org/ns#> .\n\
 @prefix schema: <http://schema.org/> .\n\
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\
-<' + timeMapURL + '> mem:memento <' + immutableURL + '> .\n\
+<' + url + '> mem:memento <' + immutableURL + '> .\n\
 <' + immutableURL + '> schema:dateCreated "' + date.toISOString() + '"^^xsd:dateTime .';
 
       DO.U.updateTimeMap(timeMapURL, insertBGP)
