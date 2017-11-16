@@ -1367,7 +1367,11 @@ var DO = {
       var typeLabel = '', typeOf = '';
 
       switch(options.type) {
+        default:
+          definitionTitle = 'Document Status';
+          break;
         case 'ldp:ImmutableResource':
+          definitionTitle = 'Resource State';
           typeLabel = 'Immutable';
           typeOf = ' typeof="' + options.type + '"';
           break;
@@ -1385,35 +1389,39 @@ var DO = {
       //FIXME: mode should be an array of operations.
 
       //TODO: s/update/append
-      if (options.mode == 'update') {
-        if(dl) {
-          var clone = dl.cloneNode(true);
-          dl.parentNode.removeChild(dl);
-          clone.insertAdjacentHTML('beforeend', dd);
-          s = clone.outerHTML;
-        }
-        else  {
-          s = '<dl'+c+id+'><dt>Document Status</dt>' + dd + '</dl>';
-        }
-      }
-      else if (options.mode == 'delete') {
-        if(dl) {
-          var clone = dl.cloneNode(true);
-          dl.parentNode.removeChild(dl);
+      switch (options.mode) {
+        case 'create': default:
+          s = '<dl'+c+id+'><dt>' + definitionTitle + '</dt>' + dd + '</dl>';
+          break;
 
-          var t = clone.querySelector('[typeof="' + options.type + '"]');
-          if (t) {
-            t.closest('dl').removeChild(t.parentNode);
-          }
-
-          var cloneDD = clone.querySelectorAll('#' + options.id + ' dd');
-          if (cloneDD.length > 0) {
+        case 'update':
+          if(dl) {
+            var clone = dl.cloneNode(true);
+            dl.parentNode.removeChild(dl);
+            clone.insertAdjacentHTML('beforeend', dd);
             s = clone.outerHTML;
           }
-        }
-      }
-      else {
-        s = '<dl'+c+id+'><dt>Document Status</dt>' + dd + '</dl>';
+          else  {
+            s = '<dl'+c+id+'><dt>' + definitionTitle + '</dt>' + dd + '</dl>';
+          }
+          break;
+
+        case 'delete':
+          if(dl) {
+            var clone = dl.cloneNode(true);
+            dl.parentNode.removeChild(dl);
+
+            var t = clone.querySelector('[typeof="' + options.type + '"]');
+            if (t) {
+              t.closest('dl').removeChild(t.parentNode);
+            }
+
+            var cloneDD = clone.querySelectorAll('#' + options.id + ' dd');
+            if (cloneDD.length > 0) {
+              s = clone.outerHTML;
+            }
+          }
+          break;
       }
 
 // console.log(s);
@@ -1439,6 +1447,7 @@ var DO = {
         'document-inbox',
         'document-annotation-service',
         'document-in-reply-to',
+        'document-resource-state',
         'document-status',
         'table-of-contents',
         'table-of-figures',
@@ -1724,14 +1733,17 @@ var DO = {
     showTimeMap: function(node, url) {
       if (!node) { return; }
 
+      url = url || DO.C.OriginalResourceInfo['timemap']
+
+      if(!url) { return; }
+
       var timemap = node.querySelector('.timemap');
       if (timemap) {
         node.removeChild(timemap);
       }
 
-      var fallbackURL = document.location.href.substr(0, document.location.href.lastIndexOf('/') + 1) + '.timemap';
+      // var fallbackURL = document.location.href.substr(0, document.location.href.lastIndexOf('/') + 1) + '.timemap';
 
-      url = url || DO.C.OriginalResourceInfo['timemap'] || fallbackURL;
 
       var displayMemento = '';
 
@@ -1891,21 +1903,17 @@ var DO = {
       var date = new Date();
       DO.U.setDate(null, { 'type': 'Created', 'datetime': date });
 
-      var documentStatus = document.getElementById('document-status');
-      var dSO = {
-        'id': 'document-status',
-        'subjectURI': '',
-        'type': 'ldp:ImmutableResource'
-      }
+      var resourceState = document.getElementById('document-resource-state');
+      if(!resourceState){
+        var rSO = {
+          'id': 'document-resource-state',
+          'subjectURI': '',
+          'type': 'ldp:ImmutableResource',
+          'mode': 'create'
+        }
 
-      if(documentStatus) {
-        dSO['mode'] = 'update';
+        DO.U.setDocumentStatus(rSO);
       }
-      else {
-        dSO['mode'] = 'create';
-      }
-
-      DO.U.setDocumentStatus(dSO);
 
       var r, o;
 
@@ -1972,7 +1980,7 @@ var DO = {
 
       DO.U.updateTimeMap(timeMapURL, insertBGP)
 
-      DO.U.showTimeMap(document.getElementById('memento-document'))
+      DO.U.showTimeMap(document.getElementById('memento-document'), url)
     },
 
     createMutableResource: function(url, data, options) {
