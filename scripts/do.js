@@ -3286,6 +3286,8 @@ var DO = {
 <' + immutableURL + '> schema:dateCreated "' + date.toISOString() + '"^^xsd:dateTime .';
 
       DO.U.updateTimeMap(timeMapURL, insertBGP)
+
+      DO.U.showTimeMap(document.getElementById('memento-document'))
     },
 
     createMutableResource: function(url, data, options) {
