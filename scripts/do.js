@@ -3378,7 +3378,7 @@ console.log('updateMutableResource' + url);
 
       request
         .then(() => {
-          DO.U.showActionMessage(document.getElementById('document-menu'), 'Saved')
+          DO.U.showActionMessage(document.body, 'Saved')
           // DO.U.hideDocumentMenu(e)
         })
         .catch(error => {
@@ -3401,7 +3401,7 @@ console.log('updateMutableResource' + url);
               break
           }
 
-          DO.U.showActionMessage(document.getElementById('document-menu'), message)
+          DO.U.showActionMessage(document.body, message)
         })
     },
 
@@ -3600,7 +3600,7 @@ console.log('updateMutableResource' + url);
 
     showActionMessage: function(node, message) {
       var message = '<aside id="document-action-message" class="do on"><p>' + message + '</p></aside>';
-      node.insertAdjacentHTML('afterend', message);
+      node.insertAdjacentHTML('beforeend', message);
       window.setTimeout(function () {
         var dam = document.getElementById('document-action-message');
         dam.parentNode.removeChild(dam);
