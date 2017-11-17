@@ -3039,14 +3039,13 @@ var DO = {
         ' title="Capture with Internet Archive"><i class="fa fa-archive fa-2x"></i>Internet Archive</button></li>');
       li.push('<li><button class="export-as-html" title="Export and save to file"><i class="fa fa-external-link fa-2x"></i>Export</button></li>');
 
+      e.target.insertAdjacentHTML('afterend', '<ul id="memento-items" class="on">' + li.join('') + '</ul>');
 
-      e.target.insertAdjacentHTML('afterend', '<ul id="memento-document" class="on pulse animated">' + li.join('') + '</ul>');
+      var mementoItems = document.getElementById('memento-items');
 
-      var mementoDocument = document.getElementById('memento-document');
+      DO.U.showTimeMap();
 
-      DO.U.showTimeMap(mementoDocument.querySelector('.create-immutable').parentNode);
-
-      mementoDocument.addEventListener('click', function(e) {
+      mementoItems.addEventListener('click', function(e) {
         // if (e.target.matches('button.close')) {
         //   document.querySelector('#document-do .resource-memento').disabled = false;
         // }
@@ -3071,21 +3070,29 @@ var DO = {
     },
 
     showTimeMap: function(node, url) {
-      if (!node) { return; }
-
       url = url || DO.C.OriginalResourceInfo['timemap']
-
       if(!url) { return; }
 
-      var timemap = node.querySelector('.timemap');
-      if (timemap) {
-        node.removeChild(timemap);
-      }
+      var elementId = 'memento-document';
 
       var displayMemento = '';
 
       DO.U.getTriplesFromGraph(url)
-        .then(function(triples){
+        .then(triples => {
+// console.log(triples)
+          if (!node) {
+            node = document.getElementById(elementId);
+            if(!node) {
+              document.body.insertAdjacentHTML('beforeend', '<aside id="' + elementId + '" class="do on"><h2>Memento</h2><button class="close" title="Close">❌</button></aside>');
+              node = document.getElementById(elementId);
+            }
+          }
+
+          var timemap = node.querySelector('.timemap');
+          if (timemap) {
+            node.removeChild(timemap);
+          }
+
           triples = DO.U.sortTriples(triples, { sortBy: 'object' });
 
           var items = [];
@@ -3095,7 +3102,7 @@ var DO = {
             var o = t.object.nominalValue;
 
             if(p === DO.C.Vocab['schemadateCreated']) {
-              items.push('<li><a href="' + s + '">' + o + '</a></li>');
+              items.push('<li><a href="' + s + '" target="_blank">' + o + '</a></li>');
             }
           });
 
@@ -3311,7 +3318,7 @@ var DO = {
 
       DO.U.updateTimeMap(timeMapURL, insertBGP)
 
-      DO.U.showTimeMap(document.getElementById('memento-document'), timeMapURL)
+      DO.U.showTimeMap(null, timeMapURL)
     },
 
     createMutableResource: function(url, data, options) {
@@ -5122,7 +5129,8 @@ WHERE {\n\
           return i.graph();
         })
         .catch(function(error){
-          console.log(error);
+          // console.log(error);
+          throw error;
         });
     },
 
