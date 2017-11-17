@@ -3021,21 +3021,39 @@ var DO = {
       if(typeof e !== 'undefined') {
         e.target.disabled = true;
       }
+      var buttonDisabled = '';
+      if (document.location.protocol === 'file:') {
+        buttonDisabled = ' disabled="disabled"';
+      }
 
       var iri = uri.stripFragmentFromString(document.location.href);
 
-      document.body.insertAdjacentHTML('beforeend', '<aside id="memento-document" class="do on"><button class="close" title="Close">❌</button><h2>Memento</h2><ul><li><button class="create-version">Version</button> this article.</li><li>Make this article <button class="create-immutable">Immutable</button> and version it.</li><li><button class="export-as-html">Export</button> and save to file.</li><li><button class="snapshot-internet-archive">Capture</button> with <a href="http://web.archive.org/" target="_blank">Internet Archive</a>.</li></ul></aside>');
+      var li = [];
+      li.push('<li><button class="resource-save"' + buttonDisabled +
+        ' title="Save article"><i class="fa fa-life-ring fa-2x"></i>Save</button></li>');
+      li.push('<li><button class="create-version"' + buttonDisabled +
+        ' title="Version this article"><i class="fa fa-code-fork fa-2x"></i>Version</button></li>');
+      li.push('<li><button class="create-immutable"' + buttonDisabled +
+        ' title="Make this article immutable and version it"><i class="fa fa-snowflake-o fa-2x"></i>Immutable</button></li>');
+      li.push('<li><button class="snapshot-internet-archive"' + buttonDisabled +
+        ' title="Capture with Internet Archive"><i class="fa fa-archive fa-2x"></i>Internet Archive</button></li>');
+      li.push('<li><button class="export-as-html" title="Export and save to file"><i class="fa fa-external-link fa-2x"></i>Export</button></li>');
+
+
+      e.target.insertAdjacentHTML('afterend', '<ul id="memento-document" class="on pulse animated">' + li.join('') + '</ul>');
 
       var mementoDocument = document.getElementById('memento-document');
 
-      DO.U.showTimeMap(mementoDocument);
+      DO.U.showTimeMap(mementoDocument.querySelector('.create-immutable').parentNode);
 
       mementoDocument.addEventListener('click', function(e) {
-        if (e.target.matches('button.close')) {
-          document.querySelector('#document-do .resource-memento').disabled = false;
-        }
+        // if (e.target.matches('button.close')) {
+        //   document.querySelector('#document-do .resource-memento').disabled = false;
+        // }
 
-        if (e.target.matches('button.create-version') || e.target.matches('button.create-immutable')) {
+        if (e.target.matches('button.resource-save') ||
+            e.target.matches('button.create-version') || 
+            e.target.matches('button.create-immutable')) {
           DO.U.resourceSave(e);
         }
 
@@ -3115,11 +3133,8 @@ var DO = {
 
       s += '<li><button class="resource-new" title="Create new article"><i class="fa fa-lightbulb-o fa-2x"></i></i>New</button></li>';
       s += '<li><button class="resource-open" title="Open article"><i class="fa fa-coffee fa-2x"></i></i>Open</button></li>';
-      s += '<li><button class="resource-save"' + buttonDisabled +
-        ' title="Save article"><i class="fa fa-life-ring fa-2x"></i>Save</button></li>';
       s += '<li><button class="resource-save-as" title="Save as article"><i class="fa fa-paper-plane-o fa-2x"></i>Save As</button></li>';
       s += '<li><button class="resource-memento" title="Memento article"><i class="fa fa-clock-o fa-2x"></i>Memento</button></li>';
-      s += '<li><button class="resource-print" title="Print article"><i class="fa fa-print fa-2x"></i>Print</button></li>';
 
       if (DO.C.EditorAvailable) {
         var editFile = (DO.C.EditorEnabled && DO.C.User.Role === 'author')
@@ -3130,6 +3145,7 @@ var DO = {
 
       s += '<li><button class="resource-source"' + buttonDisabled +
         ' title="Edit article source code"><i class="fa fa-code fa-2x"></i>Source</button></li>';
+      s += '<li><button class="resource-print" title="Print article"><i class="fa fa-print fa-2x"></i>Print</button></li>';
       s += '</ul></section>';
 
       node.insertAdjacentHTML('beforeend', s);
@@ -3171,10 +3187,6 @@ var DO = {
           DO.U.openDocument(e);
         }
 
-        if (e.target.closest('.resource-save')) {
-          DO.U.resourceSave(e);
-        }
-
         if (e.target.closest('.resource-source')) {
           DO.U.viewSource(e);
         }
@@ -3207,7 +3219,7 @@ var DO = {
         else if (e.target.matches('.create-immutable')) {
           DO.U.createImmutableResource(url);
         }
-        else {
+        else if (e.target.matches('.resource-save')) {
           DO.U.updateMutableResource(url);   
         }
       });

@@ -47,9 +47,10 @@ outline:none;
 
 /*Animated adapted from https://github.com/daneden/animate.css using MIT license*/
 .animated {
-  animation-duration: 0.25s;
+  animation-duration: 1s;
   animation-fill-mode: both;
 }
+
 @keyframes zoomOut {
   from {
     opacity: 1;
@@ -68,6 +69,40 @@ outline:none;
 .zoomOut {
   animation-name: zoomOut;
 }
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale3d(.3, .3, .3);
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+.zoomIn {
+  animation-name: zoomIn;
+}
+
+@keyframes pulse {
+  from {
+    transform: scale3d(1, 1, 1);
+  }
+
+  50% {
+    transform: scale3d(1.05, 1.05, 1.05);
+  }
+
+  to {
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+.pulse {
+  animation-name: pulse;
+}
+
 
 figure svg.graph {
 min-width:640px;
@@ -566,6 +601,10 @@ content:"";
 vertical-align:middle;
 }
 
+
+#document-menu .timemap dd {
+display:inline-block;
+}
 
 #document-menu #document-views button {
 width:auto;
