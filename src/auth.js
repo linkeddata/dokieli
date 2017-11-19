@@ -221,9 +221,9 @@ function showUserSigninSignup (node) {
 
 // FIXME: This parameter value can be an event or a string
 function submitSignIn (url) {
-  if (typeof url !== 'string') {
-    var userIdentityInput = document.getElementById('user-identity-input')
+  var userIdentityInput = document.getElementById('user-identity-input')
 
+  if (typeof url !== 'string') {
     if (userIdentityInput) {
       userIdentityInput.insertAdjacentHTML('beforeend',
         '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>')
