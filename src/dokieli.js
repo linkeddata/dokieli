@@ -1697,8 +1697,11 @@ var DO = {
 
     mementoDocument: function(e) {
       if(typeof e !== 'undefined') {
-        e.target.disabled = true;
+        var b = e.target.closest('button');
+        if(b.disabled) { return; }
+        else { b.disabled = true; }
       }
+
       var buttonDisabled = '';
       if (document.location.protocol === 'file:') {
         buttonDisabled = ' disabled="disabled"';
@@ -1717,32 +1720,25 @@ var DO = {
         ' title="Capture with Internet Archive"><i class="fa fa-archive fa-2x"></i>Internet Archive</button></li>');
       li.push('<li><button class="export-as-html" title="Export and save to file"><i class="fa fa-external-link fa-2x"></i>Export</button></li>');
 
-      e.target.insertAdjacentHTML('afterend', '<ul id="memento-items" class="on">' + li.join('') + '</ul>');
+      e.target.closest('button').insertAdjacentHTML('afterend', '<ul id="memento-items" class="on">' + li.join('') + '</ul>');
 
       var mementoItems = document.getElementById('memento-items');
 
       DO.U.showTimeMap();
 
       mementoItems.addEventListener('click', function(e) {
-        // if (e.target.matches('button.close')) {
-        //   document.querySelector('#document-do .resource-memento').disabled = false;
-        // }
-
-        if (e.target.matches('button.resource-save') ||
-            e.target.matches('button.create-version') || 
-            e.target.matches('button.create-immutable')) {
+        if (e.target.closest('button.resource-save') ||
+            e.target.closest('button.create-version') || 
+            e.target.closest('button.create-immutable')) {
           DO.U.resourceSave(e);
         }
 
-        if (e.target.matches('button.export-as-html')) {
+        if (e.target.closest('button.export-as-html')) {
           DO.U.exportAsHTML(e);
         }
 
-        if(e.target.matches('button.snapshot-internet-archive')){
-          var options = {
-            "contentType": 'application/json'
-          };
-          DO.U.snapshotAtEndpoint(e, iri, 'https://pragma.archivelab.org', '', options);
+        if (e.target.closest('button.snapshot-internet-archive')){
+          DO.U.snapshotAtEndpoint(e, iri, 'https://pragma.archivelab.org', '', {'contentType': 'application/json'});
         }
       });
     },
