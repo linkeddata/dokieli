@@ -3217,13 +3217,13 @@ var DO = {
       options = options || {};
 
       DO.U.getResourceInfo(data, options).then(function(i) {
-        if (e.target.matches('.create-version')) {
+        if (e.target.closest('.create-version')) {
           DO.U.createMutableResource(url);
         }
-        else if (e.target.matches('.create-immutable')) {
+        else if (e.target.closest('.create-immutable')) {
           DO.U.createImmutableResource(url);
         }
-        else if (e.target.matches('.resource-save')) {
+        else if (e.target.closest('.resource-save')) {
           DO.U.updateMutableResource(url);   
         }
       });
