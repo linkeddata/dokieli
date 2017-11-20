@@ -1,6 +1,6 @@
 'use strict'
 
-const config = require('./config')
+const Config = require('./config')
 
 module.exports = {
   encodeString,
@@ -47,7 +47,7 @@ function getProxyableIRI (url, options = {}) {
   var pIRI = stripFragmentFromString(url)
 
   if ((typeof document !== 'undefined' && document.location.protocol === 'https:' && pIRI.slice(0, 5).toLowerCase() === 'http:') || 'forceProxy' in options) {
-    var proxyURL = ('proxyURL' in options) ? options.proxyURL : config.ProxyURL
+    var proxyURL = ('proxyURL' in options) ? options.proxyURL : Config.ProxyURL
     pIRI = proxyURL + encodeString(pIRI)
   }
 

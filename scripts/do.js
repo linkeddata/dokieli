@@ -1065,7 +1065,7 @@ function setHTMLBase (data, baseURI) {
 "use strict";
 
 
-const config = __webpack_require__(0)
+const Config = __webpack_require__(0)
 
 module.exports = {
   encodeString,
@@ -1112,7 +1112,7 @@ function getProxyableIRI (url, options = {}) {
   var pIRI = stripFragmentFromString(url)
 
   if ((typeof document !== 'undefined' && document.location.protocol === 'https:' && pIRI.slice(0, 5).toLowerCase() === 'http:') || 'forceProxy' in options) {
-    var proxyURL = ('proxyURL' in options) ? options.proxyURL : config.ProxyURL
+    var proxyURL = ('proxyURL' in options) ? options.proxyURL : Config.ProxyURL
     pIRI = proxyURL + encodeString(pIRI)
   }
 
