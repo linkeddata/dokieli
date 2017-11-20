@@ -106,7 +106,12 @@ function serializeGraph (g, options = {}) {
   if (options.contentType === 'application/ld+json') {
     return ld.store.serializers[options.contentType].serialize(g._graph)
       .then((json) => {
-        return jsonld.promises.compact(json, options['@context'], { 'skipExpansion': true })
+        if ('context' in options) {
+          return jsonld.promises.compact(json, options['context'], { 'graph': true, 'skipExpansion': true })
+        }
+        else {
+          return json
+        }
       })
   }
   else {
