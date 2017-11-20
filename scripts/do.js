@@ -8268,7 +8268,7 @@ function notifyInbox (o) {
   var title = 'Notification'
   if(types.indexOf('as:Announce') > -1){
     title += ': Announced'
-  } else if (types.indexOf('as:Created') > -1){
+  } else if (types.indexOf('as:Create') > -1){
     title += ': Created'
   } else if (types.indexOf('as:Liked') > -1){
     title += ': Liked'
