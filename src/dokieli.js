@@ -1348,18 +1348,22 @@ var DO = {
         }
       });
 
-      DO.U.insertDocumentLevelHTML(s, { 'id': elementId });
+      DO.U.insertDocumentLevelHTML(document, s, { 'id': elementId });
     },
 
-    setDocumentStatus: function(options) {
+    setDocumentStatus: function(rootNode, options) {
+      rootNode = rootNode || document;
       options = options || {};
 
-      var s = DO.U.getDocumentStatusHTML(options);
+      var s = DO.U.getDocumentStatusHTML(rootNode, options);
 
-      DO.U.insertDocumentLevelHTML(s, options);
+      rootNode = DO.U.insertDocumentLevelHTML(rootNode, s, options);
+
+      return rootNode;
     },
 
-    getDocumentStatusHTML: function(options) {
+    getDocumentStatusHTML: function(rootNode, options) {
+      rootNode = rootNode || document;
       options = options || {};
       options['mode'] = ('mode' in options) ? options.mode : '';
       options['id'] = ('id' in options) ? options.id : 'document-status';
@@ -1384,7 +1388,7 @@ var DO = {
       var dd = '<dd><span' + subjectURI + typeOf + '>' + typeLabel + '</span></dd>';
 
       var s = '';
-      var dl = document.getElementById(options.id);
+      var dl = rootNode.querySelector('#' + options.id);
 
       //FIXME: mode should be an array of operations.
 
@@ -1428,7 +1432,8 @@ var DO = {
       return s;
     },
 
-    insertDocumentLevelHTML: function(h, options) {
+    insertDocumentLevelHTML: function(rootNode, h, options) {
+      rootNode = rootNode || document;
       options = options || {};
 
       var documentItems = [
@@ -1464,11 +1469,12 @@ var DO = {
       options['id'] = ('id' in options) ? options.id : documentItems[documentItems.length-1];
 
       var item = documentItems.indexOf(options.id);
-      var article = document.querySelector('main > article') || document.body;
+
+      var article = rootNode.querySelector('main > article') || rootNode.querySelector('body');
 
       if(item > -1) {
         for(var i = item; i >= 0; i--) {
-          var node = document.getElementById(documentItems[i]);
+          var node = rootNode.querySelector('#' + documentItems[i]);
 
           if (node) {
             node.insertAdjacentHTML('afterend', h);
@@ -1483,6 +1489,8 @@ var DO = {
       else {
         article.insertAdjacentHTML('afterbegin', h);
       }
+
+      return rootNode;
     },
 
     buttonClose: function() {
@@ -1790,7 +1798,7 @@ var DO = {
     },
 
     updateTimeMap: function(url, insertBGP, options) {
-      fetcher.patchResource(url, null, insertBGP);
+      return fetcher.patchResource(url, null, insertBGP);
     },
 
     showDocumentDo: function showDocumentDo (node) {
@@ -1913,10 +1921,12 @@ var DO = {
       var containerIRI = url.substr(0, url.lastIndexOf('/') + 1);
       var immutableURL = containerIRI + uuid;
 
-      var date = new Date();
-      DO.U.setDate(null, { 'type': 'Created', 'datetime': date });
+      var rootNode = document.documentElement.cloneNode(true);
 
-      var resourceState = document.getElementById('document-resource-state');
+      var date = new Date();
+      rootNode = DO.U.setDate(rootNode, { 'type': 'Created', 'datetime': date });
+
+      var resourceState = rootNode.querySelector('#' + 'document-resource-state');
       if(!resourceState){
         var rSO = {
           'id': 'document-resource-state',
@@ -1925,14 +1935,14 @@ var DO = {
           'mode': 'create'
         }
 
-        DO.U.setDocumentStatus(rSO);
+        rootNode = DO.U.setDocumentStatus(rootNode, rSO);
       }
 
       var r, o;
 
       o = { 'id': 'document-identifier', 'title': 'Identifier' };
       r = { 'rel': 'owl:sameAs', 'href': immutableURL };
-      DO.U.setDocumentRelation([r], o);
+      rootNode = DO.U.setDocumentRelation(rootNode, [r], o);
 
       o = { 'id': 'document-original', 'title': 'Original resource' };
       if (DO.C.OriginalResourceInfo['state'] == DO.C.Vocab['ldpImmutableResource']['@id']
@@ -1942,45 +1952,51 @@ var DO = {
       else {
         r = { 'rel': 'mem:original', 'href': url };
       }
-      DO.U.setDocumentRelation([r], o);
+      rootNode = DO.U.setDocumentRelation(rootNode, [r], o);
 
       //TODO document-timegate
 
       var timeMapURL = DO.C.OriginalResourceInfo['timemap'] || url + '.timemap';
       o = { 'id': 'document-timemap', 'title': 'TimeMap' };
       r = { 'rel': 'mem:timemap', 'href': timeMapURL };
-      DO.U.setDocumentRelation([r], o);
+      rootNode = DO.U.setDocumentRelation(rootNode, [r], o);
 
       // Create URI-M
-      data = doc.getDocument();
+      data = doc.getDocument(rootNode);
       DO.U.processSave(containerIRI, uuid, data, options);
 
 
-      //Update URI-R
-      o = { 'id': 'document-identifier', 'title': 'Identifier' };
-      r = { 'rel': 'owl:sameAs', 'href': url };
-      DO.U.setDocumentRelation([r], o);
-
-      o = { 'id': 'document-latest-version', 'title': 'Latest Version' };
-      r = { 'rel': 'mem:memento rel:latest-version', 'href': immutableURL };
-      DO.U.setDocumentRelation([r], o);
-
-      if(DO.C.OriginalResourceInfo['latest-version']) {
-        o = { 'id': 'document-predecessor-version', 'title': 'Predecessor Version' };
-        r = { 'rel': 'mem:memento rel:predecessor-version', 'href': DO.C.OriginalResourceInfo['latest-version'] };
-        DO.U.setDocumentRelation([r], o);
-      }
-
-      //TODO document-timegate
-
       var timeMapURL = DO.C.OriginalResourceInfo['timemap'] || url + '.timemap';
-      o = { 'id': 'document-timemap', 'title': 'TimeMap' };
-      r = { 'rel': 'mem:timemap', 'href': timeMapURL };
-      DO.U.setDocumentRelation([r], o);
 
-      // Create URI-R
-      data = doc.getDocument();
-      DO.U.processSave(url, null, data, options);
+
+      //Update URI-R
+      if (DO.C.OriginalResourceInfo['state'] != DO.C.Vocab['ldpImmutableResource']['@id']) {
+        DO.U.setDate(document, { 'type': 'Created', 'datetime': date });
+
+        o = { 'id': 'document-identifier', 'title': 'Identifier' };
+        r = { 'rel': 'owl:sameAs', 'href': url };
+        DO.U.setDocumentRelation(document, [r], o);
+
+        o = { 'id': 'document-latest-version', 'title': 'Latest Version' };
+        r = { 'rel': 'mem:memento rel:latest-version', 'href': immutableURL };
+        DO.U.setDocumentRelation(document, [r], o);
+
+        if(DO.C.OriginalResourceInfo['latest-version']) {
+          o = { 'id': 'document-predecessor-version', 'title': 'Predecessor Version' };
+          r = { 'rel': 'mem:memento rel:predecessor-version', 'href': DO.C.OriginalResourceInfo['latest-version'] };
+          DO.U.setDocumentRelation(document, [r], o);
+        }
+
+        //TODO document-timegate
+
+        o = { 'id': 'document-timemap', 'title': 'TimeMap' };
+        r = { 'rel': 'mem:timemap', 'href': timeMapURL };
+        DO.U.setDocumentRelation(document, [r], o);
+
+        // Create URI-R
+        data = doc.getDocument();
+        DO.U.processSave(url, null, data, options);
+      }
 
 
       //Update URI-T
@@ -1990,9 +2006,11 @@ var DO = {
 <' + url + '> mem:memento <' + immutableURL + '> .\n\
 <' + immutableURL + '> schema:dateCreated "' + date.toISOString() + '"^^xsd:dateTime .';
 
-      DO.U.updateTimeMap(timeMapURL, insertBGP)
+      DO.U.updateTimeMap(timeMapURL, insertBGP).then(() =>{
+        DO.U.showTimeMap(null, timeMapURL)
+      });
 
-      DO.U.showTimeMap(null, timeMapURL)
+      DO.U.getResourceInfo();
     },
 
     createMutableResource: function(url, data, options) {
@@ -4677,13 +4695,15 @@ WHERE {\n\
       });
     },
 
-    setDocumentRelation: function(data, options) {
+    setDocumentRelation: function(rootNode, data, options) {
+      rootNode = rootNode || document;
       if(!data || !options) { return; }
 
       var h = [];
       var uniqueRelations = ['document-identifier', 'document-original', 'document-memento', 'document-latest-version', 'document-predecessor-version', 'document-timemap', 'document-timegate'];
 
-      var dl = document.getElementById(options.id);
+      var dl = rootNode.querySelector('#' + options.id);
+
       data.forEach(function(d){
         var documentRelation = '<dd>' + DO.U.createRDFaHTML(d) + '</dd>';
 
@@ -4711,11 +4731,14 @@ WHERE {\n\
 
       if(h.length > 0) {
         var html = '<dl id="' + options.id + '"><dt>' + options.title + '</dt>' + h.join('') + '</dl>';
-        DO.U.insertDocumentLevelHTML(html, { 'id': options.id });
+        rootNode = DO.U.insertDocumentLevelHTML(rootNode, html, { 'id': options.id });
       }
+
+      return rootNode;
     },
 
-    setDate: function(node, options) {
+    setDate: function(rootNode, options) {
+      rootNode = rootNode || document;
       options = options || {};
       var type;
 
@@ -4727,7 +4750,7 @@ WHERE {\n\
 
       var elementId = (options.id) ? options.id : 'document-' + type.toLowerCase();
 
-      node = node || document.querySelector('#' + elementId + ' [property*=":date' + type + '"]');
+      var node = rootNode.querySelector('#' + elementId + ' [property*=":date' + type + '"]');
 
       var datetime = ('datetime' in options) ? options.datetime.toISOString() : DO.U.getDateTimeISO();
 
@@ -4741,8 +4764,10 @@ WHERE {\n\
         node.textContent = datetime.substr(0, datetime.indexOf('T'));
       }
       else {
-        DO.U.insertDocumentLevelHTML(DO.U.createDateHTML(options), { 'id': elementId });
+        rootNode = DO.U.insertDocumentLevelHTML(rootNode, DO.U.createDateHTML(options), { 'id': elementId });
       }
+
+      return rootNode;
     },
 
     createDateHTML: function(options) {
@@ -4812,7 +4837,7 @@ WHERE {\n\
             }
           }
 
-          if (s.relmemento) {
+          if (s.memmemento) {
             //URI-R
 
             info['profile'] = DO.C.Vocab['memOriginalResource']['@id'];
@@ -4974,7 +4999,7 @@ WHERE {\n\
             var license = document.getElementById(documentLicense);
             if(!license) {
               var dl = '<dl class="do" id="' + documentLicense + '"><dt>License</dt><dd><select contenteditable="false" name="license">' + DO.U.getLicenseOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
-              DO.U.insertDocumentLevelHTML(dl, { 'id': documentLicense });
+              DO.U.insertDocumentLevelHTML(document, dl, { 'id': documentLicense });
 
               var dLS = document.querySelector('#' + documentLicense + ' select');
               dLS.addEventListener('change', function(e){
@@ -4989,7 +5014,7 @@ WHERE {\n\
             var status = document.getElementById(documentStatus);
             if(!status) {
               var dl = '<dl class="do" id="' + documentStatus + '"><dt>Document Status</dt><dd><select contenteditable="false" name="status">' + DO.U.getPublicationStatusOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
-              DO.U.insertDocumentLevelHTML(dl, { 'id': documentStatus });
+              DO.U.insertDocumentLevelHTML(document, dl, { 'id': documentStatus });
 
               var dSS = document.querySelector('#' + documentStatus + ' select');
               dSS.addEventListener('change', function(e){
