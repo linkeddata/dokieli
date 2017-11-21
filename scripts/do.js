@@ -3338,34 +3338,32 @@ var DO = {
         DO.U.showTimeMap(null, timeMapURL)
       });
 
-      DO.U.getResourceInfo();
+      DO.U.getResourceInfo(null, { 'mode': 'update' });
     },
 
     createMutableResource: function(url, data, options) {
       if(!url) return;
 
-      DO.U.setDate(null, { 'type': 'Created' } );
+      DO.U.setDate(document, { 'type': 'Created' } );
 
       var uuid = DO.U.generateUUID();
       var containerIRI = url.substr(0, url.lastIndexOf('/') + 1);
       var mutableURL = containerIRI + uuid;
 
-console.log('createMutableResource ' + mutableURL);
-
       var r, o;
 
       o = { 'id': 'document-identifier', 'title': 'Identifier' };
       r = { 'rel': 'owl:sameAs', 'href': mutableURL };
-      DO.U.setDocumentRelation([r], o);
+      DO.U.setDocumentRelation(document, [r], o);
 
       o = { 'id': 'document-latest-version', 'title': 'Latest Version' };
       r = { 'rel': 'rel:latest-version', 'href': mutableURL };
-      DO.U.setDocumentRelation([r], o);
+      DO.U.setDocumentRelation(document, [r], o);
 
       if(DO.C.OriginalResourceInfo['latest-version']) {
         o = { 'id': 'document-predecessor-version', 'title': 'Predecessor Version' };
         r = { 'rel': 'rel:predecessor-version', 'href': DO.C.OriginalResourceInfo['latest-version'] };
-        DO.U.setDocumentRelation([r], o);
+        DO.U.setDocumentRelation(document, [r], o);
       }
 
       data = doc.getDocument();
@@ -3374,21 +3372,23 @@ console.log('createMutableResource ' + mutableURL);
 
       o = { 'id': 'document-identifier', 'title': 'Identifier' };
       r = { 'rel': 'owl:sameAs', 'href': url };
-      DO.U.setDocumentRelation([r], o);
+      DO.U.setDocumentRelation(document, [r], o);
 
       data = doc.getDocument();
-      DO.U.processSave(url, null, data, options);
+      DO.U.processSave(url, null, data, options).then(() => {
+        DO.U.getResourceInfo(null, { 'mode': 'update' });
+      });
     },
 
     updateMutableResource: function(url, data, options) {
       if(!url) return;
 
-      DO.U.setDate(null, { 'type': 'Modified' } );
-
-console.log('updateMutableResource' + url);
+      DO.U.setDate(document, { 'type': 'Modified' } );
 
       data = doc.getDocument();
-      DO.U.processSave(url, null, data, options);
+      DO.U.processSave(url, null, data, options).then(() => {
+        DO.U.getResourceInfo(null, { 'mode': 'update' });
+      });
     },
 
     processSave: function(url, slug, data, options) {
@@ -3396,10 +3396,10 @@ console.log('updateMutableResource' + url);
                     ? fetcher.postResource(url, slug, data)
                     : fetcher.putResource(url, data)
 
-      request
-        .then(() => {
+      return request
+        .then(response => {
           DO.U.showActionMessage(document.body, 'Saved')
-          // DO.U.hideDocumentMenu(e)
+          return response
         })
         .catch(error => {
           console.log(error)
@@ -6198,7 +6198,7 @@ WHERE {\n\
 
 // console.log(info);
 
-          if(!DO.C.OriginalResourceInfo) {
+          if(!DO.C.OriginalResourceInfo || ('mode' in options && options.mode == 'update' )) {
             DO.C['OriginalResourceInfo'] = info;
           }
 
