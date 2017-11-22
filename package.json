@@ -29,7 +29,8 @@
   },
   "homepage": "https://dokie.li/",
   "dependencies": {
-    "node-fetch": "^1.7.3"
+    "node-fetch": "^1.7.3",
+    "npm": "^5.5.1"
   },
   "devDependencies": {
     "standard": "^10.0.3",
