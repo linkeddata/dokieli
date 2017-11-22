@@ -48,7 +48,7 @@ module.exports = {
       'element': 'mark'
     },
     'replaceClassItemWith': {
-      'source': "on-document-menu medium-editor-element",
+      'source': "on-document-menu medium-editor-element medium-editor-placeholder",
       'target': ''
     },
     'skipClassWithValue': ''
