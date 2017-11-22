@@ -3685,70 +3685,6 @@ var DO = {
       });
     },
 
-    getContacts: function(iri) {
-      var fyn = function(iri){
-        if (iri == DO.C.User.IRI && DO.C.User.SameAs.indexOf(iri) < 0) {
-          DO.C.User.TempKnows = util.uniqueArray(DO.C.User.TempKnows.concat(DO.C.User.Knows));
-
-          return DO.U.processUserSameAs(DO.C.User.Graph);
-        }
-        else {
-          return fetcher.getResourceGraph(iri).then(
-            function(g){
-// console.log(g);
-              if(typeof g._graph == 'undefined') {
-                return Promise.resolve([]);
-              }
-              var s = g.child(iri);
-              if(s.foafknows && s.foafknows._array.length > 0){
-                DO.C.User.TempKnows = util.uniqueArray(DO.C.User.TempKnows.concat(s.foafknows._array));
-              }
-              if(s.schemaknows && s.schemaknows._array.length > 0){
-                DO.C.User.TempKnows = util.uniqueArray(DO.C.User.TempKnows.concat(s.schemaknows._array));
-              }
-
-              return DO.U.processUserSameAs(s);
-            },
-            function(reason){
-              return Promise.resolve([]);
-            });
-        }
-      }
-
-      return fyn(iri).then(function(i){ return DO.C.User.TempKnows; });
-    },
-
-    processUserSameAs:function(s) {
-      if (s.owlsameAs && s.owlsameAs._array.length > 0){
-        var iris = s.owlsameAs._array;
-        var promises = [];
-        iris.forEach(function(iri){
-// console.log(iri);
-          if(iri != DO.C.User.IRI && DO.C.User.SameAs.indexOf(iri) < 0) {
-            DO.C.User.SameAs.push(iri);
-            DO.C.User.SameAs = util.uniqueArray(DO.C.User.SameAs);
-            promises.push(DO.U.getContacts(iri));
-          }
-        });
-
-        return Promise.all(promises)
-          .then(function(results) {
-// console.log(results);
-            return Promise.resolve(([].concat.apply([], results)));
-          })
-          .catch(function(e) {
-            console.log('--- catch ---');
-// console.trace();
-            //probably e.xhr.status == 0
-            console.log(e);
-            return Promise.resolve([]);
-          });
-      }
-      else {
-        return Promise.resolve([]);
-      }
-    },
-
     selectContacts: function(e, url) {
       e.target.parentNode.innerHTML = '<p>Select from contacts</p><ul id="share-resource-contacts"></ul>';
       var shareResourceContacts = document.getElementById('share-resource-contacts');
@@ -3760,7 +3696,7 @@ var DO = {
         });
       }
       else {
-        DO.U.getContacts(url).then(
+        auth.getContacts(url).then(
           function(contacts) {
             if(contacts.length > 0) {
               contacts.forEach(function(url) {
@@ -6844,7 +6780,7 @@ WHERE {\n\
                 },
                 function(reason) {
                   if(_this.signInRequired && !DO.C.User.IRI) {
-                    DO.U.showUserIdentityInput();
+                    auth.showUserIdentityInput();
                   }
                   else {
                     updateAnnotationServiceForm();
@@ -8489,14 +8425,25 @@ module.exports = {
   enableDisableButton,
   getAgentImage,
   getAgentName,
+  getAgentSupplementalInfo,
+  getContacts,
   getUserHTML,
   setUserInfo,
   showUserIdentityInput,
   showUserSigninSignup,
-  submitSignIn
+  submitSignIn,
+  processSameAs
 }
 
+
 function afterSignIn () {
+  getAgentSupplementalInfo(Config.User.IRI).then(() => {
+      var uI = document.getElementById('user-info')
+      if (uI) {
+        uI.innerHTML = getUserHTML()
+      }
+  });
+
   var user = document.querySelectorAll('aside.do article *[rel~="schema:creator"] > *[about="' + Config.User.IRI + '"]')
   for (let i = 0; i < user.length; i++) {
     var article = user[i].closest('article')
@@ -8571,6 +8518,12 @@ function getAgentName (s) {
   return name
 }
 
+function getAgentStorage (s) {
+  return (s.pimstorage && s.pimstorage._array.length > 0)
+    ? s.pimstorage._array
+    : undefined
+}
+
 function getUserHTML () {
   let userName = Config.SecretAgentNames[Math.floor(Math.random() * Config.SecretAgentNames.length)]
 
@@ -8632,9 +8585,7 @@ function setUserInfo (userIRI) {
       Config.User.SameAs = []
       Config.User.Contacts = []
 
-      if (s.pimstorage && s.pimstorage._array.length > 0) {
-        Config.User.Storage = s.pimstorage._array
-      }
+      Config.User.Storage = getAgentStorage(s)
 
       if (s.asoutbox && s.asoutbox._array.length > 0) {
         Config.User.Outbox = s.asoutbox._array
@@ -8728,6 +8679,111 @@ function submitSignIn (url) {
 
       afterSignIn()
     })
+}
+
+function processSameAs(s, method) {
+  if (s.owlsameAs && s.owlsameAs._array.length > 0){
+    var iris = s.owlsameAs._array;
+    var promises = [];
+    iris.forEach(function(iri){
+// console.log(iri);
+      if(iri != Config.User.IRI && Config.User.SameAs.indexOf(iri) < 0) {
+        Config.User.SameAs.push(iri);
+        Config.User.SameAs = util.uniqueArray(Config.User.SameAs);
+
+        switch(method) {
+          default:
+            promises.push(Promise.resolve(Config.User.SameAs));
+            break;
+          case 'getContacts':
+            promises.push(getContacts(iri));
+            break;
+          case 'getAgentSupplementalInfo':
+            promises.push(getAgentSupplementalInfo(iri));
+            break;
+        }
+      }
+    });
+
+    return Promise.all(promises)
+      .then(function(results) {
+// console.log(results);
+        return Promise.resolve(([].concat.apply([], results)));
+      })
+      .catch(function(e) {
+// console.trace();
+        //probably e.xhr.status == 0
+console.log(e);
+        return Promise.resolve([]);
+      });
+  }
+  else {
+    return Promise.resolve([]);
+  }
+}
+
+function getContacts(iri) {
+  var fyn = function(iri){
+    if (iri == Config.User.IRI && Config.User.SameAs.indexOf(iri) < 0) {
+      Config.User.TempKnows = util.uniqueArray(Config.User.TempKnows.concat(Config.User.Knows));
+
+      return processSameAs(Config.User.Graph, 'getContacts');
+    }
+    else {
+      return fetcher.getResourceGraph(iri).then(
+        function(g){
+// console.log(g);
+          if(typeof g._graph == 'undefined') {
+            return Promise.resolve([]);
+          }
+          var s = g.child(iri);
+          if(s.foafknows && s.foafknows._array.length > 0){
+            Config.User.TempKnows = util.uniqueArray(Config.User.TempKnows.concat(s.foafknows._array));
+          }
+          if(s.schemaknows && s.schemaknows._array.length > 0){
+            Config.User.TempKnows = util.uniqueArray(Config.User.TempKnows.concat(s.schemaknows._array));
+          }
+
+          return processSameAs(s, 'getContacts');
+        },
+        function(reason){
+          return Promise.resolve([]);
+        });
+    }
+  }
+
+  return fyn(iri).then(function(i){ return Config.User.TempKnows; });
+}
+
+function getAgentSupplementalInfo(iri) {
+  var fyn = function(iri){
+    if (iri != Config.User.IRI && Config.User.SameAs.indexOf(iri) < 0) {
+      return processSameAs(Config.User.Graph, 'getAgentSupplementalInfo');
+    }
+    else {
+      return fetcher.getResourceGraph(iri).then(
+        function(g){
+          if(typeof g._graph == 'undefined') {
+            return Promise.resolve([]);
+          }
+
+          var s = g.child(iri);
+
+          Config.User.Name = Config.User.Name || getAgentName(s);
+
+          Config.User.Image = Config.User.Image || getAgentImage(s);
+
+          Config.User.Storage = Config.User.Storage || getAgentStorage(s);
+
+          return processSameAs(s, 'getAgentSupplementalInfo');
+        },
+        function(reason){
+          return Promise.resolve([]);
+        });
+    }
+  }
+
+  return fyn(iri);
 }
 
 
