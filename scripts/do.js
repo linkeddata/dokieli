@@ -3686,42 +3686,11 @@ var DO = {
     },
 
     getContacts: function(iri) {
-      var processSameAs = function(s) {
-        if (s.owlsameAs && s.owlsameAs._array.length > 0){
-          var iris = s.owlsameAs._array;
-          var promises = [];
-          iris.forEach(function(iri){
-// console.log(iri);
-            if(iri != DO.C.User.IRI && DO.C.User.SameAs.indexOf(iri) < 0) {
-              DO.C.User.SameAs.push(iri);
-              DO.C.User.SameAs = util.uniqueArray(DO.C.User.SameAs);
-              promises.push(DO.U.getContacts(iri));
-            }
-          });
-
-          return Promise.all(promises)
-            .then(function(results) {
-// console.log(results);
-              return Promise.resolve(([].concat.apply([], results)));
-            })
-            .catch(function(e) {
-              console.log('--- catch ---');
-// console.trace();
-              //probably e.xhr.status == 0
-              console.log(e);
-              return Promise.resolve([]);
-            });
-        }
-        else {
-          return Promise.resolve([]);
-        }
-      };
-
       var fyn = function(iri){
         if (iri == DO.C.User.IRI && DO.C.User.SameAs.indexOf(iri) < 0) {
           DO.C.User.TempKnows = util.uniqueArray(DO.C.User.TempKnows.concat(DO.C.User.Knows));
 
-          return processSameAs(DO.C.User.Graph);
+          return DO.U.processUserSameAs(DO.C.User.Graph);
         }
         else {
           return fetcher.getResourceGraph(iri).then(
@@ -3738,7 +3707,7 @@ var DO = {
                 DO.C.User.TempKnows = util.uniqueArray(DO.C.User.TempKnows.concat(s.schemaknows._array));
               }
 
-              return processSameAs(s);
+              return DO.U.processUserSameAs(s);
             },
             function(reason){
               return Promise.resolve([]);
@@ -3747,6 +3716,37 @@ var DO = {
       }
 
       return fyn(iri).then(function(i){ return DO.C.User.TempKnows; });
+    },
+
+    processUserSameAs:function(s) {
+      if (s.owlsameAs && s.owlsameAs._array.length > 0){
+        var iris = s.owlsameAs._array;
+        var promises = [];
+        iris.forEach(function(iri){
+// console.log(iri);
+          if(iri != DO.C.User.IRI && DO.C.User.SameAs.indexOf(iri) < 0) {
+            DO.C.User.SameAs.push(iri);
+            DO.C.User.SameAs = util.uniqueArray(DO.C.User.SameAs);
+            promises.push(DO.U.getContacts(iri));
+          }
+        });
+
+        return Promise.all(promises)
+          .then(function(results) {
+// console.log(results);
+            return Promise.resolve(([].concat.apply([], results)));
+          })
+          .catch(function(e) {
+            console.log('--- catch ---');
+// console.trace();
+            //probably e.xhr.status == 0
+            console.log(e);
+            return Promise.resolve([]);
+          });
+      }
+      else {
+        return Promise.resolve([]);
+      }
     },
 
     selectContacts: function(e, url) {
