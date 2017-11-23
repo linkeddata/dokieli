@@ -2489,29 +2489,15 @@ var DO = {
     },
 
     showDocumentItems: function() {
-      var documentItems = document.querySelector('#document-items');
+      var documentItems = document.getElementById('document-items');
 
       if(documentItems) { return; }
-
-      documentItems = '<aside id="document-items" class="do on"><button class="close" title="Close">❌</button></aside>';
-      document.body.insertAdjacentHTML('beforeend', documentItems);
-      documentItems = document.getElementById('document-items');
 
       var sections = document.querySelectorAll('h1 ~ div > section:not([class~="slide"]):not([id^=table-of])');
       if (sections.length > 0) {
         DO.U.showTableOfStuff(documentItems);
 
-        var sortable = '';
-
-        if(DO.C.SortableList && DO.C.EditorEnabled) {
-          sortable = ' sortable';
-        }
-
-        var toc = '<section id="table-of-contents-i" class="do"' + sortable + '><h2>Table of Contents</h2><ol class="toc' + sortable + '">';
-        toc += DO.U.getListOfSections(sections, DO.C.SortableList);
-        toc += '</ol></section>';
-
-        document.getElementById('document-items').insertAdjacentHTML('beforeend', toc);
+        DO.U.showTableOfContents(documentItems, sections)
 
         if(DO.C.SortableList && DO.C.EditorEnabled) {
           DO.U.sortToC();
@@ -2520,7 +2506,15 @@ var DO = {
     },
 
     showTableOfStuff: function(node) {
-      var disabledInput = '', s = '';
+      if (!node) {
+        node = document.getElementById('document-items');
+        if (!node) {
+          document.body.insertAdjacentHTML('beforeend', '<aside id="document-items" class="do on"><button class="close" title="Close">❌</button></aside>');
+          node = document.getElementById('document-items');
+        }
+      }
+
+      var disabledInput = '', s = [];
       if (!DO.C.EditorEnabled) {
         disabledInput = ' disabled="disabled"';
       }
@@ -2534,31 +2528,53 @@ var DO = {
           checkedInput = ' checked="checked"';
         }
 
-        s += '<li><input id="t-o-' + key +'" type="checkbox"' + disabledInput + checkedInput + '/><label for="t-o-' + key + '">' + value + '</label></li>';
+        s.push('<li><input id="t-o-' + key +'" type="checkbox"' + disabledInput + checkedInput + '/><label for="t-o-' + key + '">' + value + '</label></li>');
       });
 
-      node.insertAdjacentHTML('beforeend', '<section id="table-of-stuff" class="do"><h2>Table of Stuff</h2><ul>' + s + '</ul></section>');
+      if (s.length > 0) {
+        node.insertAdjacentHTML('beforeend', '<section id="table-of-stuff" class="do"><h2>Table of Stuff</h2><ul>' + s.join('') + '</ul></section>');
 
-      if(DO.C.EditorEnabled) {
-        document.getElementById('table-of-stuff').addEventListener('click', function(e){
-          if (e.target.matches('input')) {
-            var id = e.target.id;
-            var listType = id.slice(4, id.length);
-            if(!e.target.getAttribute('checked')) {
-              DO.U.buildTableOfStuff(listType);
-              e.target.setAttribute('checked', 'checked');
-            }
-            else {
-              var tol = document.getElementById('table-of-'+listType+'s');
-              if(tol) {
-                tol.parentNode.removeChild(tol);
+        if(DO.C.EditorEnabled) {
+          document.getElementById('table-of-stuff').addEventListener('click', function(e){
+            if (e.target.matches('input')) {
+              var id = e.target.id;
+              var listType = id.slice(4, id.length);
+              if(!e.target.getAttribute('checked')) {
+                DO.U.buildTableOfStuff(listType);
+                e.target.setAttribute('checked', 'checked');
               }
-              e.target.removeAttribute('checked');
+              else {
+                var tol = document.getElementById('table-of-'+listType+'s');
+                if(tol) {
+                  tol.parentNode.removeChild(tol);
+                }
+                e.target.removeAttribute('checked');
+              }
             }
-          }
-        });
+          });
+        } 
       }
     },
+
+    showTableOfContents: function(node, sections, options) {
+      options = options || {}
+      var sortable = (DO.C.SortableList && DO.C.EditorEnabled) ? ' sortable' : '';
+
+      if (!node) {
+        node = document.getElementById('document-items');
+        if (!node) {
+          document.body.insertAdjacentHTML('beforeend', '<aside id="document-items" class="do on"><button class="close" title="Close">❌</button></aside>');
+          node = document.getElementById('document-items');
+        }
+      }
+
+      var toc = '<section id="table-of-contents-i" class="do"' + sortable + '><h2>Table of Contents</h2><ol class="toc' + sortable + '">';
+      toc += DO.U.getListOfSections(sections, DO.C.SortableList);
+      toc += '</ol></section>';
+
+      node.insertAdjacentHTML('beforeend', toc);
+    },
+
 
     sortToC: function() {
     },
