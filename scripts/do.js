@@ -8518,6 +8518,10 @@ function getAgentName (s) {
   return name
 }
 
+function getAgentURL (s) {
+  return s.foafhomepage || s['http://xmlns.com/foaf/0.1/weblog'] || s.schemaurl || undefined
+}
+
 function getAgentStorage (s) {
   return (s.pimstorage && s.pimstorage._array.length > 0)
     ? s.pimstorage._array
@@ -8586,8 +8590,7 @@ function setUserInfo (userIRI) {
       Config.User.IRI = userIRI
       Config.User.Name = getAgentName(s)
       Config.User.Image = getAgentImage(s)
-      Config.User.URL = s.foafhomepage ||
-        s['http://xmlns.com/foaf/0.1/weblog'] || s.schemaurl
+      Config.User.URL = getAgentURL(s)
 
       Config.User.Knows = getAgentKnows(s)
       Config.User.SameAs = []
