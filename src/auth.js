@@ -110,6 +110,21 @@ function getAgentStorage (s) {
     : undefined
 }
 
+function getAgentKnows (s) {
+  var knows = [];
+
+  if(s.foafknows && s.foafknows._array.length > 0){
+    knows = knows.concat(s.foafknows._array);
+  }
+  if(s.schemaknows && s.schemaknows._array.length > 0){
+    knows = knows.concat(s.schemaknows._array);
+  }
+
+  knows = util.uniqueArray(knows);
+
+  return (knows.length > 0) ? knows : undefined;
+}
+
 function getUserHTML () {
   let userName = Config.SecretAgentNames[Math.floor(Math.random() * Config.SecretAgentNames.length)]
 
@@ -160,13 +175,7 @@ function setUserInfo (userIRI) {
       Config.User.URL = s.foafhomepage ||
         s['http://xmlns.com/foaf/0.1/weblog'] || s.schemaurl
 
-      Config.User.Knows = (s.foafknows && s.foafknows._array.length > 0)
-        ? util.uniqueArray(s.foafknows._array)
-        : []
-      Config.User.Knows = (s.schemaknows && s.schemaknows._array.length > 0)
-        ? util.uniqueArray(Config.User.Knows.concat(s.schemaknows._array))
-        : Config.User.Knows
-
+      Config.User.Knows = getAgentKnows(s)
       Config.User.TempKnows = []
       Config.User.SameAs = []
       Config.User.Contacts = []
@@ -267,7 +276,7 @@ function submitSignIn (url) {
     })
 }
 
-function processSameAs(s, method) {
+function processSameAs(s, callback) {
   if (s.owlsameAs && s.owlsameAs._array.length > 0){
     var iris = s.owlsameAs._array;
     var promises = [];
@@ -277,16 +286,11 @@ function processSameAs(s, method) {
         Config.User.SameAs.push(iri);
         Config.User.SameAs = util.uniqueArray(Config.User.SameAs);
 
-        switch(method) {
-          default:
-            promises.push(Promise.resolve(Config.User.SameAs));
-            break;
-          case 'getContacts':
-            promises.push(getContacts(iri));
-            break;
-          case 'getAgentSupplementalInfo':
-            promises.push(getAgentSupplementalInfo(iri));
-            break;
+        if (callback) {
+          promises.push(callback(iri));
+        }
+        else {
+          promises.push(Promise.resolve(Config.User.SameAs));
         }
       }
     });
@@ -310,10 +314,10 @@ console.log(e);
 
 function getContacts(iri) {
   var fyn = function(iri){
-    if (iri == Config.User.IRI && Config.User.SameAs.indexOf(iri) < 0) {
+    if (Config.User.SameAs.indexOf(iri) < 0) {
       Config.User.TempKnows = util.uniqueArray(Config.User.TempKnows.concat(Config.User.Knows));
 
-      return processSameAs(Config.User.Graph, 'getContacts');
+      return processSameAs(Config.User.Graph, getContacts);
     }
     else {
       return fetcher.getResourceGraph(iri).then(
@@ -322,15 +326,12 @@ function getContacts(iri) {
           if(typeof g._graph == 'undefined') {
             return Promise.resolve([]);
           }
-          var s = g.child(iri);
-          if(s.foafknows && s.foafknows._array.length > 0){
-            Config.User.TempKnows = util.uniqueArray(Config.User.TempKnows.concat(s.foafknows._array));
-          }
-          if(s.schemaknows && s.schemaknows._array.length > 0){
-            Config.User.TempKnows = util.uniqueArray(Config.User.TempKnows.concat(s.schemaknows._array));
-          }
 
-          return processSameAs(s, 'getContacts');
+          var s = g.child(iri);
+
+          Config.User.TempKnows = getAgentKnows(s);
+
+          return processSameAs(s, getContacts);
         },
         function(reason){
           return Promise.resolve([]);
@@ -344,7 +345,7 @@ function getContacts(iri) {
 function getAgentSupplementalInfo(iri) {
   var fyn = function(iri){
     if (iri != Config.User.IRI && Config.User.SameAs.indexOf(iri) < 0) {
-      return processSameAs(Config.User.Graph, 'getAgentSupplementalInfo');
+      return processSameAs(Config.User.Graph, getAgentSupplementalInfo);
     }
     else {
       return fetcher.getResourceGraph(iri).then(
@@ -361,7 +362,9 @@ function getAgentSupplementalInfo(iri) {
 
           Config.User.Storage = Config.User.Storage || getAgentStorage(s);
 
-          return processSameAs(s, 'getAgentSupplementalInfo');
+          Config.User.Knows = Config.User.Knows || getAgentKnows(s);
+
+          return processSameAs(s, getAgentSupplementalInfo);
         },
         function(reason){
           return Promise.resolve([]);
