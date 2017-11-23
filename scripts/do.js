@@ -3630,7 +3630,7 @@ var DO = {
       var addContactsButtonDisable = '', noContactsText = '';
       if(!(DO.C.User.Graph && ((DO.C.User.Knows && DO.C.User.Knows.length > 0) || (DO.C.User.Graph.owlsameAs && DO.C.User.Graph.owlsameAs._array.length > 0)))) {
         addContactsButtonDisable = ' disabled="disabled"';
-        noContactsText = '<p>No contacts with an <i class="fa fa-inbox"></i> Inbox found. Acquire <i class="fa fa-thermometer-empty"></i> cool friends‽</p><p>Optionally enter targets individually:</p>';
+        noContactsText = '<p>Sign in to select from your list of contacts, alternatively, enter contacts individually:</p>';
       }
       var addContactsButton = '<li id="share-resource-address-book"><button class="add"' + addContactsButtonDisable + '><i class="fa fa-address-book"></i> Add from contacts</button>' + noContactsText + '</li>';
 
@@ -3685,7 +3685,8 @@ var DO = {
     },
 
     selectContacts: function(e, url) {
-      e.target.parentNode.innerHTML = '<p>Select from contacts</p><ul id="share-resource-contacts"></ul>';
+      var li = e.target.parentNode;
+      li.innerHTML = '<p>Select from contacts</p><ul id="share-resource-contacts"></ul>';
       var shareResourceContacts = document.getElementById('share-resource-contacts');
 
       if(DO.C.User.Contacts.length > 0){
@@ -3715,7 +3716,7 @@ var DO = {
               });
             }
             else {
-              e.target.parentNode.innerHTML = 'No contacts with <i class="fa fa-inbox"></i> Inboxes found. Acquire <i class="fa fa-thermometer-empty"></i> cool friends‽</p><p>Optionally enter targets individually:</p>';
+              li.innerHTML = 'No contacts with <i class="fa fa-inbox"></i> Inboxes found in your profile, but you can enter contacts individually:';
             }
           },
           function(reason) {
@@ -8589,7 +8590,6 @@ function setUserInfo (userIRI) {
         s['http://xmlns.com/foaf/0.1/weblog'] || s.schemaurl
 
       Config.User.Knows = getAgentKnows(s)
-      Config.User.TempKnows = []
       Config.User.SameAs = []
       Config.User.Contacts = []
 
@@ -8727,22 +8727,25 @@ console.log(e);
 
 function getContacts(iri) {
   var fyn = function(iri){
-    if (Config.User.SameAs.indexOf(iri) < 0) {
-      Config.User.TempKnows = util.uniqueArray(Config.User.TempKnows.concat(Config.User.Knows));
-
+    if (iri == Config.User.IRI) {
       return processSameAs(Config.User.Graph, getContacts);
     }
     else {
       return fetcher.getResourceGraph(iri).then(
         function(g){
-// console.log(g);
           if(typeof g._graph == 'undefined') {
             return Promise.resolve([]);
           }
 
           var s = g.child(iri);
 
-          Config.User.TempKnows = getAgentKnows(s);
+          var knows = getAgentKnows(s) || [];
+
+          if (knows.length > 0) {
+            Config.User.Knows = (Config.User.Knows)
+              ? util.uniqueArray(Config.User.knows.concat(knows))
+              : knows;
+          }
 
           return processSameAs(s, getContacts);
         },
@@ -8752,12 +8755,12 @@ function getContacts(iri) {
     }
   }
 
-  return fyn(iri).then(function(i){ return Config.User.TempKnows; });
+  return fyn(iri).then(function(i){ return Config.User.Knows || []; });
 }
 
 function getAgentSupplementalInfo(iri) {
   var fyn = function(iri){
-    if (iri != Config.User.IRI && Config.User.SameAs.indexOf(iri) < 0) {
+    if (iri == Config.User.IRI) {
       return processSameAs(Config.User.Graph, getAgentSupplementalInfo);
     }
     else {
@@ -8766,16 +8769,26 @@ function getAgentSupplementalInfo(iri) {
           if(typeof g._graph == 'undefined') {
             return Promise.resolve([]);
           }
-
           var s = g.child(iri);
 
           Config.User.Name = Config.User.Name || getAgentName(s);
 
           Config.User.Image = Config.User.Image || getAgentImage(s);
 
-          Config.User.Storage = Config.User.Storage || getAgentStorage(s);
+          var storage = getAgentStorage(s) || [];
+          var knows = getAgentKnows(s) || [];
 
-          Config.User.Knows = Config.User.Knows || getAgentKnows(s);
+          if (storage.length > 0) {
+            Config.User.Storage = (Config.User.Storage)
+              ? util.uniqueArray(Config.User.Storage.concat(storage))
+              : storage;
+          }
+
+          if (knows.length > 0) {
+            Config.User.Knows = (Config.User.Knows)
+              ? util.uniqueArray(Config.User.knows.concat(knows))
+              : knows;
+          }
 
           return processSameAs(s, getAgentSupplementalInfo);
         },

@@ -2308,7 +2308,7 @@ var DO = {
       var addContactsButtonDisable = '', noContactsText = '';
       if(!(DO.C.User.Graph && ((DO.C.User.Knows && DO.C.User.Knows.length > 0) || (DO.C.User.Graph.owlsameAs && DO.C.User.Graph.owlsameAs._array.length > 0)))) {
         addContactsButtonDisable = ' disabled="disabled"';
-        noContactsText = '<p>No contacts with an <i class="fa fa-inbox"></i> Inbox found. Acquire <i class="fa fa-thermometer-empty"></i> cool friends‽</p><p>Optionally enter targets individually:</p>';
+        noContactsText = '<p>Sign in to select from your list of contacts, alternatively, enter contacts individually:</p>';
       }
       var addContactsButton = '<li id="share-resource-address-book"><button class="add"' + addContactsButtonDisable + '><i class="fa fa-address-book"></i> Add from contacts</button>' + noContactsText + '</li>';
 
@@ -2363,7 +2363,8 @@ var DO = {
     },
 
     selectContacts: function(e, url) {
-      e.target.parentNode.innerHTML = '<p>Select from contacts</p><ul id="share-resource-contacts"></ul>';
+      var li = e.target.parentNode;
+      li.innerHTML = '<p>Select from contacts</p><ul id="share-resource-contacts"></ul>';
       var shareResourceContacts = document.getElementById('share-resource-contacts');
 
       if(DO.C.User.Contacts.length > 0){
@@ -2393,7 +2394,7 @@ var DO = {
               });
             }
             else {
-              e.target.parentNode.innerHTML = 'No contacts with <i class="fa fa-inbox"></i> Inboxes found. Acquire <i class="fa fa-thermometer-empty"></i> cool friends‽</p><p>Optionally enter targets individually:</p>';
+              li.innerHTML = 'No contacts with <i class="fa fa-inbox"></i> Inboxes found in your profile, but you can enter contacts individually:';
             }
           },
           function(reason) {
