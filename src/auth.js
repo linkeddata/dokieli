@@ -282,8 +282,7 @@ function processSameAs(s, callback) {
     iris.forEach(function(iri){
 // console.log(iri);
       if(iri != Config.User.IRI && Config.User.SameAs.indexOf(iri) < 0) {
-        Config.User.SameAs.push(iri);
-        Config.User.SameAs = util.uniqueArray(Config.User.SameAs);
+        Config.User.SameAs = util.uniqueArray(Config.User.SameAs.concat(iri));
 
         if (callback) {
           promises.push(callback(iri));
