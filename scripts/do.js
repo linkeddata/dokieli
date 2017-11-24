@@ -377,6 +377,7 @@ const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
 const LDP_RESOURCE = '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
 
 module.exports = {
+  setAcceptRDFTypes,
   copyResource,
   currentLocation,
   deleteResource,
@@ -390,6 +391,18 @@ module.exports = {
   postResource,
   putResource,
   putResourceACL
+}
+
+function setAcceptRDFTypes(options) {
+  options = options || {};
+
+  return Config.AvailableMediaTypes.map(i => {
+    if (i == 'application/xhtml+xml' || i == 'text/html') {
+      // q = Number(Math.round((q-0.1)+'e2')+'e-2');
+      return i + ';q=0.9';
+    }
+    return i;
+  }).join(',');
 }
 
 // I want HTTP COPY and I want it now!
