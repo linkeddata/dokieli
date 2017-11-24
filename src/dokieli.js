@@ -3248,21 +3248,25 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         DO.U.enableStorage(item);
       }
     },
+
     enableStorage: function(item) {
       DO.C.UseStorage = true;
       var o = localStorage.getItem(item);
-      if(o) {
+      o = JSON.parse(o);
+      if('object' in o && 'content' in o.object) {
         document.documentElement.innerHTML = JSON.parse(o).object.content;
       }
       console.log(DO.U.getDateTimeISO() + ': Storage enabled.');
       DO.U.enableAutoSave(item);
     },
+
     disableStorage: function(item) {
       DO.C.UseStorage = false;
       localStorage.removeItem(item);
       DO.U.disableAutoSave(item);
       console.log(DO.U.getDateTimeISO() + ': Storage disabled.');
     },
+
     saveStorage: function(item) {
       var content = doc.getDocument();
 
@@ -3290,15 +3294,18 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         }
       });
     },
+
     enableAutoSave: function(item) {
       DO.C.AutoSaveId = setInterval(function() { DO.U.saveStorage(item) }, DO.C.AutoSaveTimer);
       console.log(DO.U.getDateTimeISO() + ': Autosave enabled.');
     },
+
     disableAutoSave: function(item) {
       clearInterval(DO.C.AutoSaveId);
       DO.C.AutoSaveId = '';
       console.log(DO.U.getDateTimeISO() + ': Autosave disabled.');
     },
+
     showStorage: function(node) {
       if(document.querySelector('#local-storage')) { return; }
 
@@ -3343,6 +3350,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         });
       }
     },
+
     hideStorage: function() {
       if (DO.C.UseStorage) {
         var ls = document.getElementById('local-storage');
