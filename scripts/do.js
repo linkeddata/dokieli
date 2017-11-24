@@ -3744,7 +3744,7 @@ var DO = {
               });
             }
             else {
-              li.innerHTML = 'No contacts with <i class="fa fa-inbox"></i> Inboxes found in your profile, but you can enter contacts individually:';
+              li.innerHTML = 'No contacts with <i class="fa fa-inbox"></i> inbox found in your profile, but you can enter contacts individually:';
             }
           },
           function(reason) {
