@@ -311,7 +311,7 @@ function getEndpoint (property, url) {
             return endpoints.map(function(t){ return t.object.nominalValue })
           }
 
-          console.log(property + ' endpoint was not found in message body')
+// console.log(property + ' endpoint was not found in message body')
           return getEndpointFromHead(property, subjectURI)
         })
       .catch(() => getEndpointFromHead(property, subjectURI))

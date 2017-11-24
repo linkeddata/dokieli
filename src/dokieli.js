@@ -251,7 +251,7 @@ var DO = {
             });
           },
           function(reason) {
-            console.log(reason);
+// console.log(reason);
           }
         );
       }
@@ -2404,7 +2404,6 @@ var DO = {
                   },
                   function(reason){
                     // console.log(reason);
-                    console.log('No profile: ' + url);
                   }
                 );
               });
