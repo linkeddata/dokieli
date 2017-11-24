@@ -133,25 +133,33 @@ function getAgentKnows (s) {
 }
 
 
-function getAgentSeeAlso(s) {
-  var iri = s.iri().toString();
+function getAgentSeeAlso(s, iri) {
+  if (!s) { return; }
+  iri = iri || s.iri().toString();
+
+// console.log(Config.User.SeeAlso)
 
   if (s.rdfsseeAlso && s.rdfsseeAlso._array.length > 0) {
-    Config.User.SeeAlso = util.uniqueArray(Config.User.SeeAlso.concat(s.rdfsseeAlso._array));
-
     s.rdfsseeAlso.forEach(function(seeAlso){
-      fetcher.getResourceGraph(seeAlso)
-        .then(g => {
-          var s = g.child(iri)
+// console.log(seeAlso)
+      if (Config.User.SeeAlso.indexOf(seeAlso) < 0) {
+        fetcher.getResourceGraph(seeAlso)
+          .then(g => {
+            Config.User.SeeAlso = util.uniqueArray(Config.User.SeeAlso.concat(seeAlso));
 
-          var knows = getAgentKnows(s) || [];
+            var s = g.child(iri)
 
-          if (knows.length > 0) {
-            Config.User.Knows = (Config.User.Knows)
-              ? util.uniqueArray(Config.User.knows.concat(knows))
-              : knows;
-          }
-        })
+            var knows = getAgentKnows(s) || [];
+
+            if (knows.length > 0) {
+              Config.User.Knows = (Config.User.Knows)
+                ? util.uniqueArray(Config.User.Knows.concat(knows))
+                : knows;
+            }
+
+            getAgentSeeAlso(s, iri)
+          })
+      }
     })
   }
 }
@@ -359,7 +367,7 @@ function getContacts(iri) {
 
           if (knows.length > 0) {
             Config.User.Knows = (Config.User.Knows)
-              ? util.uniqueArray(Config.User.knows.concat(knows))
+              ? util.uniqueArray(Config.User.Knows.concat(knows))
               : knows;
           }
 
@@ -402,7 +410,7 @@ function getAgentSupplementalInfo(iri) {
 
           if (knows.length > 0) {
             Config.User.Knows = (Config.User.Knows)
-              ? util.uniqueArray(Config.User.knows.concat(knows))
+              ? util.uniqueArray(Config.User.Knows.concat(knows))
               : knows;
           }
 
