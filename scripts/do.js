@@ -8575,34 +8575,54 @@ function getAgentKnows (s) {
 }
 
 
-function getAgentSeeAlso(s, iri) {
-  if (!s) { return; }
-  iri = iri || s.iri().toString();
+function getAgentSeeAlso(g, baseURI, subjectURI) {
+  if (!g) { return; }
 
-// console.log(Config.User.SeeAlso)
+  subjectURI = baseURI = baseURI || g.iri().toString();
 
-  if (s.rdfsseeAlso && s.rdfsseeAlso._array.length > 0) {
-    s.rdfsseeAlso.forEach(function(seeAlso){
-// console.log(seeAlso)
-      if (Config.User.SeeAlso.indexOf(seeAlso) < 0) {
-        fetcher.getResourceGraph(seeAlso)
-          .then(g => {
-            Config.User.SeeAlso = util.uniqueArray(Config.User.SeeAlso.concat(seeAlso));
+  var seeAlso = g.child(baseURI).rdfsseeAlso;
 
-            var s = g.child(iri)
+  if (seeAlso && seeAlso._array.length > 0) {
+    var iris = [];
+    var promises = [];
 
-            var knows = getAgentKnows(s) || [];
-
-            if (knows.length > 0) {
-              Config.User.Knows = (Config.User.Knows)
-                ? util.uniqueArray(Config.User.Knows.concat(knows))
-                : knows;
-            }
-
-            getAgentSeeAlso(s, iri)
-          })
+    seeAlso._array.forEach(function(iri){
+      if (Config.User.SeeAlso.indexOf(iri) < 0) {
+        iris.push(iri)
       }
-    })
+    });
+
+    iris.forEach(function(iri){
+      Config.User.SeeAlso = util.uniqueArray(Config.User.SeeAlso.concat(iri));
+
+      fetcher.getResourceGraph(iri)
+        .then(g => {
+
+          var s = g.child(subjectURI)
+
+          var knows = getAgentKnows(s) || [];
+
+          if (knows.length > 0) {
+            Config.User.Knows = (Config.User.Knows)
+              ? util.uniqueArray(Config.User.Knows.concat(knows))
+              : knows;
+          }
+
+          promises.push(getAgentSeeAlso(g, iri, subjectURI))
+        })
+    });
+
+    return Promise.all(promises)
+      .then(function(results) {
+// console.log(results);
+        return Promise.resolve(([].concat.apply([], results)));
+      })
+      .catch(function(e) {
+        return Promise.resolve([]);
+      });
+  }
+  else {
+    return Promise.resolve([])
   }
 }
 
