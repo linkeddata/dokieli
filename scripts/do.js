@@ -475,7 +475,7 @@ function getAcceptPostPreference (url) {
       return {'headers': 'application/ld+json'}
     })
     .then(result => {
-      let header = result.headers.trim().split(/\s*, \s*/)
+      let header = result.headers.trim().split(/\s*,\s*/)
 
       if (header.indexOf('text/html') > -1 || header.indexOf('application/xhtml+xml') > -1) {
         return 'text/html'
