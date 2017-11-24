@@ -12,6 +12,7 @@ module.exports = {
   getAgentImage,
   getAgentName,
   getAgentSupplementalInfo,
+  getAgentSeeAlso,
   getContacts,
   getUserHTML,
   setUserInfo,
@@ -29,6 +30,8 @@ function afterSignIn () {
         uI.innerHTML = getUserHTML()
       }
   });
+
+  getAgentSeeAlso(Config.User.Graph);
 
   var user = document.querySelectorAll('aside.do article *[rel~="schema:creator"] > *[about="' + Config.User.IRI + '"]')
   for (let i = 0; i < user.length; i++) {
@@ -129,6 +132,30 @@ function getAgentKnows (s) {
   return (knows.length > 0) ? knows : undefined;
 }
 
+
+function getAgentSeeAlso(s) {
+  var iri = s.iri().toString();
+
+  if (s.rdfsseeAlso && s.rdfsseeAlso._array.length > 0) {
+    Config.User.SeeAlso = util.uniqueArray(Config.User.SeeAlso.concat(s.rdfsseeAlso._array));
+
+    s.rdfsseeAlso.forEach(function(seeAlso){
+      fetcher.getResourceGraph(seeAlso)
+        .then(g => {
+          var s = g.child(iri)
+
+          var knows = getAgentKnows(s) || [];
+
+          if (knows.length > 0) {
+            Config.User.Knows = (Config.User.Knows)
+              ? util.uniqueArray(Config.User.knows.concat(knows))
+              : knows;
+          }
+        })
+    })
+  }
+}
+
 function getUserHTML () {
   let userName = Config.SecretAgentNames[Math.floor(Math.random() * Config.SecretAgentNames.length)]
 
@@ -178,9 +205,10 @@ function setUserInfo (userIRI) {
       Config.User.Image = getAgentImage(s)
       Config.User.URL = getAgentURL(s)
 
+      Config.User.Contacts = []
       Config.User.Knows = getAgentKnows(s)
       Config.User.SameAs = []
-      Config.User.Contacts = []
+      Config.User.SeeAlso = []
 
       Config.User.Storage = getAgentStorage(s)
 
