@@ -592,7 +592,7 @@ function getResourceHead (url, options = {}) {
 }
 
 function getResourceGraph (iri, headers, options = {}) {
-  let defaultHeaders = {'Accept': Config.AvailableMediaTypes.join(',')}
+  let defaultHeaders = {'Accept': setAcceptRDFTypes()}
   headers = headers || defaultHeaders
   if (!('Accept' in headers)) {
     Object.assign(headers, defaultHeaders)
@@ -4046,7 +4046,7 @@ var DO = {
 
       var openDocument = document.getElementById('open-document');
       DO.U.setupResourceBrowser(openDocument , id, action);
-      idSamp = (typeof DO.C.User.Storage == 'undefined') ? '' : '<p><samp id="' + id + '-' + action + '">https://example.org/path/to/article</samp></p>';
+      var idSamp = (typeof DO.C.User.Storage == 'undefined') ? '' : '<p><samp id="' + id + '-' + action + '">https://example.org/path/to/article</samp></p>';
       openDocument.insertAdjacentHTML('beforeend', idSamp + '<button class="open">Open</button>');
 
       openDocument.addEventListener('click', function (e) {
@@ -4067,7 +4067,7 @@ var DO = {
 
           var bli = document.getElementById(id + '-input');
           var iri = bli.value;
-          var headers = { 'Accept': DO.C.AvailableMediaTypes.join(',') };
+          var headers = { 'Accept': fetcher.setAcceptRDFTypes() };
           var options = {};
           var pIRI = uri.getProxyableIRI(iri);
           if (pIRI.slice(0, 5).toLowerCase() == 'http:') {
