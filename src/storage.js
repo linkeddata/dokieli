@@ -11,6 +11,8 @@ module.exports = {
   updateStorageDocument,
   enableAutoSave,
   disableAutoSave,
+  removeStorageItem,
+  removeStorageProfile,
   getStorageProfile,
   updateStorageProfile,
   showStorage,
@@ -79,6 +81,16 @@ function disableAutoSave(key) {
   clearInterval(Config.AutoSaveId);
   Config.AutoSaveId = '';
   console.log(util.getDateTimeISO() + ': ' + key + ' autosave disabled.');
+}
+
+function removeStorageItem(key) {
+  console.log(util.getDateTimeISO() + ': ' + key + ' removed.')
+  localStorage.removeItem(key);
+}
+
+function removeStorageProfile() {
+  var key = uri.stripFragmentFromString(document.location.href) + '#DO.C.User'
+  removeStorageItem(key)
 }
 
 function getStorageProfile() {
