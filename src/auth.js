@@ -3,6 +3,7 @@
 const Config = require('./config')
 const fetcher = require('./fetcher')
 const util = require('./util')
+const uri = require('./uri')
 const storage = require('./storage')
 
 // const { OIDCWebClient } = require('@trust/oidc-web')
@@ -54,12 +55,39 @@ function getUserHTML () {
 }
 
 function showUserSigninSignup (node) {
-  if (!document.querySelector('#user-info')) {
-    var s = '<button class="signin-user" title="Sign in to authenticate"><i class="fa fa-user-secret fa-2x"></i>Sign in</button>'
+  var userInfo = document.getElementById('user-info');
+
+  if (!userInfo) {
+    var s = ''
+
     if (Config.User.IRI) {
-      s = getUserHTML()
+      s = getUserHTML() + '<button class="signout-user"><i class="fa fa-hand-spock-o"></i></button>'
     }
+    else {
+      s = '<button class="signin-user" title="Sign in to authenticate"><i class="fa fa-user-secret fa-2x"></i>Sign in</button>'
+    }
+
     node.insertAdjacentHTML('beforeend', '<section id="user-info">' + s + '</section>')
+
+    userInfo = document.getElementById('user-info')
+
+    userInfo.addEventListener('click', function(e) {
+      e.preventDefault()
+      e.stopPropagation()
+
+      if (e.target.closest('.signout-user')) {
+        storage.removeStorageProfile()
+
+        Config.User = {
+          IRI: null,
+          Role: null
+        }
+
+        util.removeChildren(node);
+
+        showUserSigninSignup(document.querySelector('#document-menu header'))
+      }
+    });
 
     var su = document.querySelector('#document-menu button.signin-user')
     if (su) {
@@ -149,7 +177,8 @@ function submitSignIn (url) {
     .then(() => {
       var uI = document.getElementById('user-info')
       if (uI) {
-        uI.innerHTML = getUserHTML()
+        util.removeChildren(uI);
+        uI.insertAdjacentHTML('beforeend', getUserHTML() + '<button class="signout-user"><i class="fa fa-hand-spock-o"></i></button>');
       }
 
       if (userIdentityInput) {
@@ -212,7 +241,7 @@ function afterSignIn () {
     .then(function(results) {
       var uI = document.getElementById('user-info')
       if (uI) {
-        uI.innerHTML = getUserHTML()
+        uI.innerHTML = getUserHTML() + '<button class="signout-user"><i class="fa fa-hand-spock-o"></i></button>'
       }
 
       storage.updateStorageProfile(Config.User)

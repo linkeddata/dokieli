@@ -443,7 +443,8 @@ function stripFragmentFromString (string) {
 module.exports = {
   uniqueArray,
   getHash,
-  getDateTimeISO
+  getDateTimeISO,
+  removeChildren
 }
 
 /**
@@ -483,6 +484,13 @@ function getHash (message, algo = "SHA-256") {
 function getDateTimeISO() {
   var date = new Date();
   return date.toISOString();
+}
+
+
+function removeChildren (node) {
+  while (node.firstChild) {
+    node.removeChild(node.firstChild);
+  }
 }
 
 
@@ -1364,6 +1372,8 @@ module.exports = {
   updateStorageDocument,
   enableAutoSave,
   disableAutoSave,
+  removeStorageItem,
+  removeStorageProfile,
   getStorageProfile,
   updateStorageProfile,
   showStorage,
@@ -1432,6 +1442,16 @@ function disableAutoSave(key) {
   clearInterval(Config.AutoSaveId);
   Config.AutoSaveId = '';
   console.log(util.getDateTimeISO() + ': ' + key + ' autosave disabled.');
+}
+
+function removeStorageItem(key) {
+  console.log(util.getDateTimeISO() + ': ' + key + ' removed.')
+  localStorage.removeItem(key);
+}
+
+function removeStorageProfile() {
+  var key = uri.stripFragmentFromString(document.location.href) + '#DO.C.User'
+  removeStorageItem(key)
 }
 
 function getStorageProfile() {
@@ -8574,6 +8594,7 @@ function getEndpointFromRDF (property, url, subjectIRI) {
 const Config = __webpack_require__(0)
 const fetcher = __webpack_require__(3)
 const util = __webpack_require__(2)
+const uri = __webpack_require__(1)
 const storage = __webpack_require__(7)
 
 // const { OIDCWebClient } = require('@trust/oidc-web')
@@ -8625,12 +8646,39 @@ function getUserHTML () {
 }
 
 function showUserSigninSignup (node) {
-  if (!document.querySelector('#user-info')) {
-    var s = '<button class="signin-user" title="Sign in to authenticate"><i class="fa fa-user-secret fa-2x"></i>Sign in</button>'
+  var userInfo = document.getElementById('user-info');
+
+  if (!userInfo) {
+    var s = ''
+
     if (Config.User.IRI) {
-      s = getUserHTML()
+      s = getUserHTML() + '<button class="signout-user"><i class="fa fa-hand-spock-o"></i></button>'
     }
+    else {
+      s = '<button class="signin-user" title="Sign in to authenticate"><i class="fa fa-user-secret fa-2x"></i>Sign in</button>'
+    }
+
     node.insertAdjacentHTML('beforeend', '<section id="user-info">' + s + '</section>')
+
+    userInfo = document.getElementById('user-info')
+
+    userInfo.addEventListener('click', function(e) {
+      e.preventDefault()
+      e.stopPropagation()
+
+      if (e.target.closest('.signout-user')) {
+        storage.removeStorageProfile()
+
+        Config.User = {
+          IRI: null,
+          Role: null
+        }
+
+        util.removeChildren(node);
+
+        showUserSigninSignup(document.querySelector('#document-menu header'))
+      }
+    });
 
     var su = document.querySelector('#document-menu button.signin-user')
     if (su) {
@@ -8720,7 +8768,8 @@ function submitSignIn (url) {
     .then(() => {
       var uI = document.getElementById('user-info')
       if (uI) {
-        uI.innerHTML = getUserHTML()
+        util.removeChildren(uI);
+        uI.insertAdjacentHTML('beforeend', getUserHTML() + '<button class="signout-user"><i class="fa fa-hand-spock-o"></i></button>');
       }
 
       if (userIdentityInput) {
@@ -8783,7 +8832,7 @@ function afterSignIn () {
     .then(function(results) {
       var uI = document.getElementById('user-info')
       if (uI) {
-        uI.innerHTML = getUserHTML()
+        uI.innerHTML = getUserHTML() + '<button class="signout-user"><i class="fa fa-hand-spock-o"></i></button>'
       }
 
       storage.updateStorageProfile(Config.User)
