@@ -3,7 +3,8 @@
 module.exports = {
   uniqueArray,
   getHash,
-  getDateTimeISO
+  getDateTimeISO,
+  removeChildren
 }
 
 /**
@@ -43,4 +44,11 @@ function getHash (message, algo = "SHA-256") {
 function getDateTimeISO() {
   var date = new Date();
   return date.toISOString();
+}
+
+
+function removeChildren (node) {
+  while (node.firstChild) {
+    node.removeChild(node.firstChild);
+  }
 }
