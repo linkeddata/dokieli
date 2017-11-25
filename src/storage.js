@@ -11,6 +11,7 @@ module.exports = {
   updateStorageDocument,
   enableAutoSave,
   disableAutoSave,
+  getStorageProfile,
   updateStorageProfile,
   showStorage,
   hideStorage
@@ -80,32 +81,42 @@ function disableAutoSave(key) {
   console.log(util.getDateTimeISO() + ': ' + key + ' autosave disabled.');
 }
 
-function updateStorageProfile(User) {
-  var key = uri.stripFragmentFromString(document.location.href) + '#' + User.IRI
+function getStorageProfile() {
+  var key = uri.stripFragmentFromString(document.location.href) + '#DO.C.User'
 
-  util.getHash(key).then(digest => {
+  return util.getHash(key).then(digest => {
     var o = localStorage.getItem(key);
 
-    if(!o || (o && JSON.parse(o).id != digest)) {
-      var datetime = util.getDateTimeISO();
-
-      //cyclic
-      delete User.Graph
-
-      var object = {
-        "@context": "https://www.w3.org/ns/activitystreams",
-        "id": digest,
-        "type": "Update",
-        "object": {
-          "id": key,
-          "type": "Profile",
-          "describes": User
-        }
-      };
-
-      localStorage.setItem(key, JSON.stringify(object));
-      console.log(datetime + ': User ' + User.IRI + ' saved.');
+    if(o && JSON.parse(o).id == digest) {
+      return JSON.parse(o)
     }
+  });
+}
+
+function updateStorageProfile(User) {
+  var key = uri.stripFragmentFromString(document.location.href) + '#DO.C.User'
+
+  util.getHash(key).then(digest => {
+    var datetime = util.getDateTimeISO();
+
+    //cyclic
+    delete User.Graph
+
+    var object = {
+      "@context": "https://www.w3.org/ns/activitystreams",
+      "id": digest,
+      "type": "Update",
+      "object": {
+        "id": key,
+        "type": "Profile",
+        "describes": User
+      },
+      "datetime": datetime,
+      "actor": User.IRI
+    };
+
+    localStorage.setItem(key, JSON.stringify(object));
+    console.log(datetime + ': User ' + User.IRI + ' saved.');
   });
 }
 

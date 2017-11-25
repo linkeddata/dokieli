@@ -635,6 +635,20 @@ var DO = {
       }
     },
 
+    initUser: function() {
+      storage.getStorageProfile().then(user => {
+        if(user) {
+          DO.C['User'] = user.object.describes;
+        }
+
+        var dMenu = document.querySelector('#document-menu.do');
+
+        if(dMenu) {
+          auth.showUserSigninSignup(dMenu.querySelector('header'));
+        }
+      });
+    },
+
     setDocumentMode: function(mode) {
       if (DO.C.EditorAvailable) {
         if (DO.U.urlParam('author') == 'true' || DO.U.urlParam('social') == 'true' || DO.U.urlParam('review') == 'true') {
@@ -6580,6 +6594,7 @@ WHERE {\n\
         DO.U.setDocumentMode();
         DO.U.showInboxNotifications();
         DO.U.initMath();
+        DO.U.initUser();
       }
     }
   } //DO.U
