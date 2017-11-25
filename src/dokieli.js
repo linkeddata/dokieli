@@ -644,7 +644,7 @@ var DO = {
         var dMenu = document.querySelector('#document-menu.do');
 
         if(dMenu) {
-          auth.showUserSigninSignup(dMenu.querySelector('header'));
+          auth.showUserSigninSignout(dMenu.querySelector('header'));
         }
       });
     },
@@ -737,7 +737,7 @@ var DO = {
           dMenu.classList.add('on');
           body.classList.add('on-document-menu');
 
-          auth.showUserSigninSignup(dHead);
+          auth.showUserSigninSignout(dHead);
           DO.U.showDocumentDo(dInfo);
           DO.U.showEmbedData(dInfo);
           storage.showStorage(dInfo);

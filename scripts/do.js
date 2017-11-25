@@ -2211,7 +2211,7 @@ var DO = {
         var dMenu = document.querySelector('#document-menu.do');
 
         if(dMenu) {
-          auth.showUserSigninSignup(dMenu.querySelector('header'));
+          auth.showUserSigninSignout(dMenu.querySelector('header'));
         }
       });
     },
@@ -2304,7 +2304,7 @@ var DO = {
           dMenu.classList.add('on');
           body.classList.add('on-document-menu');
 
-          auth.showUserSigninSignup(dHead);
+          auth.showUserSigninSignout(dHead);
           DO.U.showDocumentDo(dInfo);
           DO.U.showEmbedData(dInfo);
           storage.showStorage(dInfo);
@@ -8610,7 +8610,7 @@ module.exports = {
   getUserHTML,
   setUserInfo,
   showUserIdentityInput,
-  showUserSigninSignup,
+  showUserSigninSignout,
   submitSignIn,
   processSameAs
 }
@@ -8645,7 +8645,7 @@ function getUserHTML () {
   return user
 }
 
-function showUserSigninSignup (node) {
+function showUserSigninSignout (node) {
   var userInfo = document.getElementById('user-info');
 
   if (!userInfo) {
@@ -8676,7 +8676,7 @@ function showUserSigninSignup (node) {
 
         util.removeChildren(node);
 
-        showUserSigninSignup(document.querySelector('#document-menu header'))
+        showUserSigninSignout(document.querySelector('#document-menu header'))
       }
     });
 

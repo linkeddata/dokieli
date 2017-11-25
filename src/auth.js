@@ -19,7 +19,7 @@ module.exports = {
   getUserHTML,
   setUserInfo,
   showUserIdentityInput,
-  showUserSigninSignup,
+  showUserSigninSignout,
   submitSignIn,
   processSameAs
 }
@@ -54,7 +54,7 @@ function getUserHTML () {
   return user
 }
 
-function showUserSigninSignup (node) {
+function showUserSigninSignout (node) {
   var userInfo = document.getElementById('user-info');
 
   if (!userInfo) {
@@ -85,7 +85,7 @@ function showUserSigninSignup (node) {
 
         util.removeChildren(node);
 
-        showUserSigninSignup(document.querySelector('#document-menu header'))
+        showUserSigninSignout(document.querySelector('#document-menu header'))
       }
     });
 
