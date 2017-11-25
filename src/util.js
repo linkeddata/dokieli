@@ -1,7 +1,8 @@
 'use strict'
 
 module.exports = {
-  uniqueArray
+  uniqueArray,
+  getDateTimeISO
 }
 
 /**
@@ -19,4 +20,9 @@ function uniqueArray (a) {
     }
   }
   return r
+}
+
+function getDateTimeISO() {
+  var date = new Date();
+  return date.toISOString();
 }

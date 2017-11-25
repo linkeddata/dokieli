@@ -1264,10 +1264,45 @@ function serializeGraph (g, options = {}) {
     })
 }
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
 /* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = {
+  uniqueArray,
+  getDateTimeISO
+}
+
+/**
+ * @param a {Array}
+ *
+ * @returns {Array}
+ */
+function uniqueArray (a) {
+  var n = {}
+  var r = []
+  for (var i = 0; i < a.length; i++) {
+    if (!n[a[i]]) {
+      n[a[i]] = true
+      r.push(a[i])
+    }
+  }
+  return r
+}
+
+function getDateTimeISO() {
+  var date = new Date();
+  return date.toISOString();
+}
+
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports) {
 
 var g;
@@ -1294,35 +1329,6 @@ module.exports = g;
 
 
 /***/ }),
-/* 6 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = {
-  uniqueArray
-}
-
-/**
- * @param a {Array}
- *
- * @returns {Array}
- */
-function uniqueArray (a) {
-  var n = {}
-  var r = []
-  for (var i = 0; i < a.length; i++) {
-    if (!n[a[i]]) {
-      n[a[i]] = true
-      r.push(a[i])
-    }
-  }
-  return r
-}
-
-
-/***/ }),
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -1346,7 +1352,7 @@ const doc = __webpack_require__(2)
 const uri = __webpack_require__(3)
 const graph = __webpack_require__(4)
 const inbox = __webpack_require__(10)
-const util = __webpack_require__(6)
+const util = __webpack_require__(5)
 const auth = __webpack_require__(11)
 
 if(typeof DO === 'undefined'){
@@ -2734,7 +2740,7 @@ var DO = {
 
       var id = ' id="' + options.id + '"';
       var c = ('class' in options && options.class.length > 0) ? ' class="' + options.class + '"' : '';
-      // var datetime = ('datetime' in options) ? options.datetime : DO.U.getDateTimeISO();
+      // var datetime = ('datetime' in options) ? options.datetime : util.getDateTimeISO();
 
       var dd = '<dd><span' + subjectURI + typeOf + '>' + typeLabel + '</span></dd>';
 
@@ -2965,7 +2971,7 @@ var DO = {
       var blob = new Blob([data], {type:'text/html;charset=utf-8'});
       var pattern = /[^\w]+/ig;
       var title = document.querySelector('h1').textContent.toLowerCase().replace(pattern, '-') || "index";
-      var timestamp = DO.U.getDateTimeISO().replace(pattern, '') || "now";
+      var timestamp = util.getDateTimeISO().replace(pattern, '') || "now";
 
       var fileName = title + '.' + timestamp + '.html';
 
@@ -3260,7 +3266,7 @@ var DO = {
           DO.U.createImmutableResource(url);
         }
         else if (e.target.closest('.resource-save')) {
-          DO.U.updateMutableResource(url);   
+          DO.U.updateMutableResource(url);
         }
       });
     },
@@ -3505,7 +3511,7 @@ var DO = {
           return
         }
 
-        var datetime = DO.U.getDateTimeISO()
+        var datetime = util.getDateTimeISO()
         var attributeId = DO.U.generateAttributeId()
         var noteIRI = document.querySelector('#reply-to-resource #' + id +
           '-' + action).innerText.trim()
@@ -4348,7 +4354,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
         var wasDerived = document.querySelector('#derivation-data')
         if (wasDerived.checked) {
-          var wasDerivedOn = DO.U.getDateTimeISO()
+          var wasDerivedOn = util.getDateTimeISO()
           nodeInsertLocation.insertAdjacentHTML('beforebegin',
             '<dl id="document-derived-from"><dt>Derived From</dt><dd><a href="' +
             currentDocumentURL + '" rel="prov:wasDerivedFrom">' +
@@ -4591,7 +4597,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       if('object' in o && 'content' in o.object) {
         document.documentElement.innerHTML = JSON.parse(o).object.content;
       }
-      console.log(DO.U.getDateTimeISO() + ': Storage enabled.');
+      console.log(util.getDateTimeISO() + ': Storage enabled.');
       DO.U.enableAutoSave(item);
     },
 
@@ -4599,7 +4605,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       DO.C.UseStorage = false;
       localStorage.removeItem(item);
       DO.U.disableAutoSave(item);
-      console.log(DO.U.getDateTimeISO() + ': Storage disabled.');
+      console.log(util.getDateTimeISO() + ': Storage disabled.');
     },
 
     saveStorage: function(item) {
@@ -4609,7 +4615,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         var o = localStorage.getItem(item);
 
         if(!o || (o && JSON.parse(o).id != digest)) {
-          var datetime = DO.U.getDateTimeISO();
+          var datetime = util.getDateTimeISO();
 
           var object = {
             "@context": "https://www.w3.org/ns/activitystreams",
@@ -4632,13 +4638,13 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
     enableAutoSave: function(item) {
       DO.C.AutoSaveId = setInterval(function() { DO.U.saveStorage(item) }, DO.C.AutoSaveTimer);
-      console.log(DO.U.getDateTimeISO() + ': Autosave enabled.');
+      console.log(util.getDateTimeISO() + ': Autosave enabled.');
     },
 
     disableAutoSave: function(item) {
       clearInterval(DO.C.AutoSaveId);
       DO.C.AutoSaveId = '';
-      console.log(DO.U.getDateTimeISO() + ': Autosave disabled.');
+      console.log(util.getDateTimeISO() + ': Autosave disabled.');
     },
 
     showStorage: function(node) {
@@ -4701,7 +4707,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
     createAttributeDateTime: function(element) {
       //Creates datetime attribute.
       //TODO: Include @data-author for the signed in user e.g., WebID or URL.
-      var a = DO.U.getDateTimeISO();
+      var a = util.getDateTimeISO();
 
       switch(element) {
         case 'mark': case 'article':
@@ -4760,7 +4766,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       title = (title.length > 0) ? '<cite>' + title + '</cite>, ' : '';
       var datePublished = subject.schemadatePublished || subject.dctermsissued || subject.dctermsdate || subject.dctermscreated || '';
       datePublished = (datePublished) ? datePublished.substr(0,4) + ', ' : '';
-      var dateAccessed = 'Accessed: ' + DO.U.getDateTimeISO();
+      var dateAccessed = 'Accessed: ' + util.getDateTimeISO();
       var authors = [], authorList = [];
 // console.log(subject);
 // console.log(subject.biboauthorList);
@@ -6047,7 +6053,7 @@ WHERE {\n\
 
       var node = rootNode.querySelector('#' + elementId + ' [property*=":date' + type + '"]');
 
-      var datetime = ('datetime' in options) ? options.datetime.toISOString() : DO.U.getDateTimeISO();
+      var datetime = ('datetime' in options) ? options.datetime.toISOString() : util.getDateTimeISO();
 
       if(node) {
         if(node.getAttribute('datetime')) {
@@ -6077,7 +6083,7 @@ WHERE {\n\
 
       var c = ('class' in options && options.class.length > 0) ? ' class="' + options.class + '"' : '';
       var id = ('id' in options && options.id.length > 0) ? ' id="' + options.id + '"' : ' id="document-' + type.toLowerCase() + '"';
-      var datetime = ('datetime' in options) ? options.datetime.toISOString() : DO.U.getDateTimeISO();
+      var datetime = ('datetime' in options) ? options.datetime.toISOString() : util.getDateTimeISO();
 
       var date = '        <dl'+c+id+'>\n\
           <dt>' + type + '</dt>\n\
@@ -7334,7 +7340,7 @@ WHERE {\n\
 // console.log('-' + suffix + '-');
               suffix = DO.U.htmlEntities(suffix);
 
-              var datetime = DO.U.getDateTimeISO();
+              var datetime = util.getDateTimeISO();
               var id = DO.U.generateAttributeId();
               var refId = 'r-' + id;
               // var noteId = 'i-' + id;
@@ -8063,7 +8069,7 @@ WHERE {\n\
 
 module.exports = DO
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(5)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
 /* 9 */
@@ -8078,6 +8084,7 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_9__;
 "use strict";
 
 
+const util = __webpack_require__(5)
 const doc = __webpack_require__(2)
 const uri = __webpack_require__(3)
 const graph = __webpack_require__(4)
@@ -8232,7 +8239,7 @@ function notifyInbox (o) {
 
   var astarget = ('target' in o && o.target.length > 0) ? '<dt>Target</dt><dd><a href="' + o.target + '" property="as:target">' + o.target + '</a></dd>' : ''
 
-  var datetime = DO.U.getDateTimeISO()
+  var datetime = util.getDateTimeISO()
   var asupdated = '<dt>Updated</dt><dd><time datetime="' + datetime + '" datatype="xsd:dateTime" property="as:updated" content="' + datetime + '">' + datetime.substr(0,19).replace('T', ' ') + '</time></dd>'
 
   var assummary = ('summary' in o && o.summary.length > 0) ? '<dt>Summary</dt><dd property="as:summary" datatype="rdf:HTML">' + o.summary + '</dd>' : ''
@@ -8452,7 +8459,7 @@ function getEndpointFromRDF (property, url, subjectIRI) {
 
 const Config = __webpack_require__(0)
 const fetcher = __webpack_require__(1)
-const util = __webpack_require__(6)
+const util = __webpack_require__(5)
 
 // const { OIDCWebClient } = require('@trust/oidc-web')
 

@@ -1,5 +1,6 @@
 'use strict'
 
+const util = require('./util')
 const doc = require('./doc')
 const uri = require('./uri')
 const graph = require('./graph')
@@ -154,7 +155,7 @@ function notifyInbox (o) {
 
   var astarget = ('target' in o && o.target.length > 0) ? '<dt>Target</dt><dd><a href="' + o.target + '" property="as:target">' + o.target + '</a></dd>' : ''
 
-  var datetime = DO.U.getDateTimeISO()
+  var datetime = util.getDateTimeISO()
   var asupdated = '<dt>Updated</dt><dd><time datetime="' + datetime + '" datatype="xsd:dateTime" property="as:updated" content="' + datetime + '">' + datetime.substr(0,19).replace('T', ' ') + '</time></dd>'
 
   var assummary = ('summary' in o && o.summary.length > 0) ? '<dt>Summary</dt><dd property="as:summary" datatype="rdf:HTML">' + o.summary + '</dd>' : ''

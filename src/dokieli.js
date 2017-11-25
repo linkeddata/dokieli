@@ -1399,7 +1399,7 @@ var DO = {
 
       var id = ' id="' + options.id + '"';
       var c = ('class' in options && options.class.length > 0) ? ' class="' + options.class + '"' : '';
-      // var datetime = ('datetime' in options) ? options.datetime : DO.U.getDateTimeISO();
+      // var datetime = ('datetime' in options) ? options.datetime : util.getDateTimeISO();
 
       var dd = '<dd><span' + subjectURI + typeOf + '>' + typeLabel + '</span></dd>';
 
@@ -1630,7 +1630,7 @@ var DO = {
       var blob = new Blob([data], {type:'text/html;charset=utf-8'});
       var pattern = /[^\w]+/ig;
       var title = document.querySelector('h1').textContent.toLowerCase().replace(pattern, '-') || "index";
-      var timestamp = DO.U.getDateTimeISO().replace(pattern, '') || "now";
+      var timestamp = util.getDateTimeISO().replace(pattern, '') || "now";
 
       var fileName = title + '.' + timestamp + '.html';
 
@@ -1925,7 +1925,7 @@ var DO = {
           DO.U.createImmutableResource(url);
         }
         else if (e.target.closest('.resource-save')) {
-          DO.U.updateMutableResource(url);   
+          DO.U.updateMutableResource(url);
         }
       });
     },
@@ -2170,7 +2170,7 @@ var DO = {
           return
         }
 
-        var datetime = DO.U.getDateTimeISO()
+        var datetime = util.getDateTimeISO()
         var attributeId = DO.U.generateAttributeId()
         var noteIRI = document.querySelector('#reply-to-resource #' + id +
           '-' + action).innerText.trim()
@@ -3013,7 +3013,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
         var wasDerived = document.querySelector('#derivation-data')
         if (wasDerived.checked) {
-          var wasDerivedOn = DO.U.getDateTimeISO()
+          var wasDerivedOn = util.getDateTimeISO()
           nodeInsertLocation.insertAdjacentHTML('beforebegin',
             '<dl id="document-derived-from"><dt>Derived From</dt><dd><a href="' +
             currentDocumentURL + '" rel="prov:wasDerivedFrom">' +
@@ -3256,7 +3256,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       if('object' in o && 'content' in o.object) {
         document.documentElement.innerHTML = JSON.parse(o).object.content;
       }
-      console.log(DO.U.getDateTimeISO() + ': Storage enabled.');
+      console.log(util.getDateTimeISO() + ': Storage enabled.');
       DO.U.enableAutoSave(item);
     },
 
@@ -3264,7 +3264,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       DO.C.UseStorage = false;
       localStorage.removeItem(item);
       DO.U.disableAutoSave(item);
-      console.log(DO.U.getDateTimeISO() + ': Storage disabled.');
+      console.log(util.getDateTimeISO() + ': Storage disabled.');
     },
 
     saveStorage: function(item) {
@@ -3274,7 +3274,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         var o = localStorage.getItem(item);
 
         if(!o || (o && JSON.parse(o).id != digest)) {
-          var datetime = DO.U.getDateTimeISO();
+          var datetime = util.getDateTimeISO();
 
           var object = {
             "@context": "https://www.w3.org/ns/activitystreams",
@@ -3297,13 +3297,13 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
     enableAutoSave: function(item) {
       DO.C.AutoSaveId = setInterval(function() { DO.U.saveStorage(item) }, DO.C.AutoSaveTimer);
-      console.log(DO.U.getDateTimeISO() + ': Autosave enabled.');
+      console.log(util.getDateTimeISO() + ': Autosave enabled.');
     },
 
     disableAutoSave: function(item) {
       clearInterval(DO.C.AutoSaveId);
       DO.C.AutoSaveId = '';
-      console.log(DO.U.getDateTimeISO() + ': Autosave disabled.');
+      console.log(util.getDateTimeISO() + ': Autosave disabled.');
     },
 
     showStorage: function(node) {
@@ -3366,7 +3366,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
     createAttributeDateTime: function(element) {
       //Creates datetime attribute.
       //TODO: Include @data-author for the signed in user e.g., WebID or URL.
-      var a = DO.U.getDateTimeISO();
+      var a = util.getDateTimeISO();
 
       switch(element) {
         case 'mark': case 'article':
@@ -3425,7 +3425,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       title = (title.length > 0) ? '<cite>' + title + '</cite>, ' : '';
       var datePublished = subject.schemadatePublished || subject.dctermsissued || subject.dctermsdate || subject.dctermscreated || '';
       datePublished = (datePublished) ? datePublished.substr(0,4) + ', ' : '';
-      var dateAccessed = 'Accessed: ' + DO.U.getDateTimeISO();
+      var dateAccessed = 'Accessed: ' + util.getDateTimeISO();
       var authors = [], authorList = [];
 // console.log(subject);
 // console.log(subject.biboauthorList);
@@ -4712,7 +4712,7 @@ WHERE {\n\
 
       var node = rootNode.querySelector('#' + elementId + ' [property*=":date' + type + '"]');
 
-      var datetime = ('datetime' in options) ? options.datetime.toISOString() : DO.U.getDateTimeISO();
+      var datetime = ('datetime' in options) ? options.datetime.toISOString() : util.getDateTimeISO();
 
       if(node) {
         if(node.getAttribute('datetime')) {
@@ -4742,7 +4742,7 @@ WHERE {\n\
 
       var c = ('class' in options && options.class.length > 0) ? ' class="' + options.class + '"' : '';
       var id = ('id' in options && options.id.length > 0) ? ' id="' + options.id + '"' : ' id="document-' + type.toLowerCase() + '"';
-      var datetime = ('datetime' in options) ? options.datetime.toISOString() : DO.U.getDateTimeISO();
+      var datetime = ('datetime' in options) ? options.datetime.toISOString() : util.getDateTimeISO();
 
       var date = '        <dl'+c+id+'>\n\
           <dt>' + type + '</dt>\n\
@@ -5999,7 +5999,7 @@ WHERE {\n\
 // console.log('-' + suffix + '-');
               suffix = DO.U.htmlEntities(suffix);
 
-              var datetime = DO.U.getDateTimeISO();
+              var datetime = util.getDateTimeISO();
               var id = DO.U.generateAttributeId();
               var refId = 'r-' + id;
               // var noteId = 'i-' + id;
