@@ -3,6 +3,7 @@
 const Config = require('./config')
 const fetcher = require('./fetcher')
 const util = require('./util')
+const storage = require('./storage')
 
 // const { OIDCWebClient } = require('@trust/oidc-web')
 
@@ -213,6 +214,8 @@ function afterSignIn () {
       if (uI) {
         uI.innerHTML = getUserHTML()
       }
+
+      storage.updateStorageProfile(Config.User)
 
       return Promise.resolve();
     })

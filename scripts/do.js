@@ -7,7 +7,7 @@
 		exports["DO"] = factory(require("fetch"));
 	else
 		root["DO"] = factory(root["fetch"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_9__) {
+})(this, function(__WEBPACK_EXTERNAL_MODULE_10__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -70,7 +70,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 7);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -493,7 +493,7 @@ function getDateTimeISO() {
 "use strict";
 
 
-const fetch = __webpack_require__(9)  // Uses native fetch() in the browser
+const fetch = __webpack_require__(10)  // Uses native fetch() in the browser
 const Config = __webpack_require__(0)
 const doc = __webpack_require__(4)
 const uri = __webpack_require__(1)
@@ -1350,11 +1350,182 @@ module.exports = g;
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(8);
+"use strict";
+
+
+const Config = __webpack_require__(0)
+const util = __webpack_require__(2)
+const uri = __webpack_require__(1)
+
+module.exports = {
+  initStorage,
+  enableStorage,
+  disableStorage,
+  updateStorageDocument,
+  enableAutoSave,
+  disableAutoSave,
+  updateStorageProfile,
+  showStorage,
+  hideStorage
+}
+
+
+function initStorage(key) {
+  if (typeof window.localStorage != 'undefined') {
+    enableStorage(key);
+  }
+}
+
+function enableStorage(key) {
+  Config.UseStorage = true;
+  var o = localStorage.getItem(key);
+  try {
+    JSON.parse(o).object.Document;
+    document.documentElement.innerHTML = JSON.parse(o).object.content;
+  } catch(e){}
+  console.log(util.getDateTimeISO() + ': ' + key + ' storage enabled.');
+  enableAutoSave(key);
+}
+
+function disableStorage(key) {
+  Config.UseStorage = false;
+  localStorage.removeItem(key);
+  disableAutoSave(key);
+  console.log(util.getDateTimeISO() + ': ' + key + ' storage disabled.');
+}
+
+function updateStorageDocument(key) {
+  var content = doc.getDocument();
+
+  util.getHash(content).then(digest => {
+    var o = localStorage.getItem(key);
+
+    if(!o || (o && JSON.parse(o).id != digest)) {
+      var datetime = util.getDateTimeISO();
+
+      var object = {
+        "@context": "https://www.w3.org/ns/activitystreams",
+        "id": digest,
+        "type": "Update",
+        "object": {
+          "id": key,
+          "type": "Document",
+          "updated": datetime,
+          "mediaType": "text/html",
+          "content": content
+        }
+      };
+
+      localStorage.setItem(key, JSON.stringify(object));
+      console.log(datetime + ': Document saved.');
+    }
+  });
+}
+
+function enableAutoSave(key) {
+  Config.AutoSaveId = setInterval(function() { updateStorageDocument(key) }, Config.AutoSaveTimer);
+  console.log(util.getDateTimeISO() + ': ' + key + ' autosave enabled.');
+}
+
+function disableAutoSave(key) {
+  clearInterval(Config.AutoSaveId);
+  Config.AutoSaveId = '';
+  console.log(util.getDateTimeISO() + ': ' + key + ' autosave disabled.');
+}
+
+function updateStorageProfile(User) {
+  var key = uri.stripFragmentFromString(document.location.href) + '#' + User.IRI
+
+  util.getHash(key).then(digest => {
+    var o = localStorage.getItem(key);
+
+    if(!o || (o && JSON.parse(o).id != digest)) {
+      var datetime = util.getDateTimeISO();
+
+      //cyclic
+      delete User.Graph
+
+      var object = {
+        "@context": "https://www.w3.org/ns/activitystreams",
+        "id": digest,
+        "type": "Update",
+        "object": {
+          "id": key,
+          "type": "Profile",
+          "describes": User
+        }
+      };
+
+      localStorage.setItem(key, JSON.stringify(object));
+      console.log(datetime + ': User ' + User.IRI + ' saved.');
+    }
+  });
+}
+
+function showStorage(node) {
+  if(document.querySelector('#local-storage')) { return; }
+
+  if (typeof window.localStorage != 'undefined') {
+    var useStorage, checked;
+
+    if (Config.UseStorage) {
+      // if (Config.AutoSaveId) {
+      //   checked = ' checked="checked"';
+      // }
+      // useStorage = Config.DisableStorageButtons + '<input id="local-storage-html-autosave" class="autosave" type="checkbox"' + checked +' /> <label for="local-storage-html-autosave"><i class="fa fa-clock-o"></i> 1m autosave</label>';
+      useStorage = Config.DisableStorageButtons;
+
+    }
+    else {
+      useStorage = Config.EnableStorageButtons;
+    }
+
+    node.insertAdjacentHTML('beforeend', '<section id="local-storage" class="do"><h2>Local Storage</h2><p>' + useStorage + '</p></section>');
+
+    var key = uri.stripFragmentFromString(document.location.href);
+
+    document.getElementById('local-storage').addEventListener('click', function(e) {
+      if (e.target.closest('button.local-storage-enable-html')) {
+        e.target.outerHTML = Config.DisableStorageButtons;
+        enableStorage(key);
+      }
+
+      if (e.target.closest('button.local-storage-disable-html')) {
+        e.target.outerHTML = Config.EnableStorageButtons;
+        disableStorage(key);
+      }
+
+      // if (e.target.matches('input.autosave')) {
+      //   if (e.target.getAttribute('checked')) {
+      //     e.target.removeAttribute('checked');
+      //     disableAutoSave(key);
+      //   }
+      //   else {
+      //     e.target.setAttribute('checked', 'checked');
+      //     enableAutoSave(key);
+      //   }
+      // }
+    });
+  }
+}
+
+function hideStorage() {
+  if (Config.UseStorage) {
+    var ls = document.getElementById('local-storage');
+    ls.parentNode.removeChild(ls);
+  }
+}
 
 
 /***/ }),
 /* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(9);
+
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/** dokieli
@@ -1369,9 +1540,9 @@ const fetcher = __webpack_require__(3)
 const doc = __webpack_require__(4)
 const uri = __webpack_require__(1)
 const graph = __webpack_require__(5)
-const inbox = __webpack_require__(10)
+const inbox = __webpack_require__(11)
 const util = __webpack_require__(2)
-const storage = __webpack_require__(11)
+const storage = __webpack_require__(7)
 const auth = __webpack_require__(12)
 
 if(typeof DO === 'undefined'){
@@ -7954,13 +8125,13 @@ module.exports = DO
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports) {
 
-module.exports = __WEBPACK_EXTERNAL_MODULE_9__;
+module.exports = __WEBPACK_EXTERNAL_MODULE_10__;
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8333,177 +8504,6 @@ function getEndpointFromRDF (property, url, subjectIRI) {
 
 
 /***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-const Config = __webpack_require__(0)
-const util = __webpack_require__(2)
-const uri = __webpack_require__(1)
-
-module.exports = {
-  initStorage,
-  enableStorage,
-  disableStorage,
-  updateStorageDocument,
-  enableAutoSave,
-  disableAutoSave,
-  updateStorageProfile,
-  showStorage,
-  hideStorage
-}
-
-
-function initStorage(key) {
-  if (typeof window.localStorage != 'undefined') {
-    enableStorage(key);
-  }
-}
-
-function enableStorage(key) {
-  Config.UseStorage = true;
-  var o = localStorage.getItem(key);
-  try {
-    JSON.parse(o).object.Document;
-    document.documentElement.innerHTML = JSON.parse(o).object.content;
-  } catch(e){}
-  console.log(util.getDateTimeISO() + ': ' + key + ' storage enabled.');
-  enableAutoSave(key);
-}
-
-function disableStorage(key) {
-  Config.UseStorage = false;
-  localStorage.removeItem(key);
-  disableAutoSave(key);
-  console.log(util.getDateTimeISO() + ': ' + key + ' storage disabled.');
-}
-
-function updateStorageDocument(key) {
-  var content = doc.getDocument();
-
-  util.getHash(content).then(digest => {
-    var o = localStorage.getItem(key);
-
-    if(!o || (o && JSON.parse(o).id != digest)) {
-      var datetime = util.getDateTimeISO();
-
-      var object = {
-        "@context": "https://www.w3.org/ns/activitystreams",
-        "id": digest,
-        "type": "Update",
-        "object": {
-          "id": key,
-          "type": "Document",
-          "updated": datetime,
-          "mediaType": "text/html",
-          "content": content
-        }
-      };
-
-      localStorage.setItem(key, JSON.stringify(object));
-      console.log(datetime + ': Document saved.');
-    }
-  });
-}
-
-function enableAutoSave(key) {
-  Config.AutoSaveId = setInterval(function() { updateStorageDocument(key) }, Config.AutoSaveTimer);
-  console.log(util.getDateTimeISO() + ': ' + key + ' autosave enabled.');
-}
-
-function disableAutoSave(key) {
-  clearInterval(Config.AutoSaveId);
-  Config.AutoSaveId = '';
-  console.log(util.getDateTimeISO() + ': ' + key + ' autosave disabled.');
-}
-
-function updateStorageProfile(User) {
-  var key = uri.stripFragmentFromString(document.location.href) + '#' + User.IRI
-
-  util.getHash(key).then(digest => {
-    var o = localStorage.getItem(key);
-
-    if(!o || (o && JSON.parse(o).id != digest)) {
-      var datetime = util.getDateTimeISO();
-
-      //cyclic
-      delete User.Graph
-
-      var object = {
-        "@context": "https://www.w3.org/ns/activitystreams",
-        "id": digest,
-        "type": "Update",
-        "object": {
-          "id": key,
-          "type": "Profile",
-          "describes": User
-        }
-      };
-
-      localStorage.setItem(key, JSON.stringify(object));
-      console.log(datetime + ': User ' + User.IRI + ' saved.');
-    }
-  });
-}
-
-function showStorage(node) {
-  if(document.querySelector('#local-storage')) { return; }
-
-  if (typeof window.localStorage != 'undefined') {
-    var useStorage, checked;
-
-    if (Config.UseStorage) {
-      // if (Config.AutoSaveId) {
-      //   checked = ' checked="checked"';
-      // }
-      // useStorage = Config.DisableStorageButtons + '<input id="local-storage-html-autosave" class="autosave" type="checkbox"' + checked +' /> <label for="local-storage-html-autosave"><i class="fa fa-clock-o"></i> 1m autosave</label>';
-      useStorage = Config.DisableStorageButtons;
-
-    }
-    else {
-      useStorage = Config.EnableStorageButtons;
-    }
-
-    node.insertAdjacentHTML('beforeend', '<section id="local-storage" class="do"><h2>Local Storage</h2><p>' + useStorage + '</p></section>');
-
-    var key = uri.stripFragmentFromString(document.location.href);
-
-    document.getElementById('local-storage').addEventListener('click', function(e) {
-      if (e.target.closest('button.local-storage-enable-html')) {
-        e.target.outerHTML = Config.DisableStorageButtons;
-        enableStorage(key);
-      }
-
-      if (e.target.closest('button.local-storage-disable-html')) {
-        e.target.outerHTML = Config.EnableStorageButtons;
-        disableStorage(key);
-      }
-
-      // if (e.target.matches('input.autosave')) {
-      //   if (e.target.getAttribute('checked')) {
-      //     e.target.removeAttribute('checked');
-      //     disableAutoSave(key);
-      //   }
-      //   else {
-      //     e.target.setAttribute('checked', 'checked');
-      //     enableAutoSave(key);
-      //   }
-      // }
-    });
-  }
-}
-
-function hideStorage() {
-  if (Config.UseStorage) {
-    var ls = document.getElementById('local-storage');
-    ls.parentNode.removeChild(ls);
-  }
-}
-
-
-/***/ }),
 /* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -8513,6 +8513,7 @@ function hideStorage() {
 const Config = __webpack_require__(0)
 const fetcher = __webpack_require__(3)
 const util = __webpack_require__(2)
+const storage = __webpack_require__(7)
 
 // const { OIDCWebClient } = require('@trust/oidc-web')
 
@@ -8723,6 +8724,8 @@ function afterSignIn () {
       if (uI) {
         uI.innerHTML = getUserHTML()
       }
+
+      storage.updateStorageProfile(Config.User)
 
       return Promise.resolve();
     })
