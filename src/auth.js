@@ -180,7 +180,7 @@ function setUserInfo (userIRI) {
       Config.User.Image = getAgentImage(s)
       Config.User.URL = getAgentURL(s)
 
-      Config.User.Contacts = []
+      Config.User.Contacts = {}
       Config.User.Knows = getAgentKnows(s)
       Config.User.SameAs = []
       Config.User.SeeAlso = []
@@ -344,7 +344,7 @@ function getAgentSeeAlso(g, baseURI, subjectURI) {
 
 function getContacts(iri) {
   var fyn = function(iri){
-    if (iri == Config.User.IRI) {
+    if ((iri == Config.User.IRI) && Config.User.Graph) {
       return processSameAs(Config.User.Graph, getContacts);
     }
     else {

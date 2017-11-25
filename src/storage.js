@@ -100,7 +100,13 @@ function updateStorageProfile(User) {
     var datetime = util.getDateTimeISO();
 
     //cyclic
-    delete User.Graph
+    if (User.Graph) {
+      delete User.Graph
+    }
+
+    if (User.Contacts) {
+      User.Contacts = {}
+    }
 
     var object = {
       "@context": "https://www.w3.org/ns/activitystreams",

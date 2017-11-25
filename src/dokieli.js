@@ -2337,13 +2337,21 @@ var DO = {
       }
 
       var addContactsButtonDisable = '', noContactsText = '';
-      if(!(DO.C.User.Graph && ((DO.C.User.Knows && DO.C.User.Knows.length > 0) || (DO.C.User.Graph.owlsameAs && DO.C.User.Graph.owlsameAs._array.length > 0)))) {
+      if (!DO.C.User.IRI && !(DO.C.User.Graph && ((DO.C.User.Knows && DO.C.User.Knows.length > 0) || (DO.C.User.Graph.owlsameAs && DO.C.User.Graph.owlsameAs._array.length > 0)))) {
         addContactsButtonDisable = ' disabled="disabled"';
         noContactsText = '<p>Sign in to select from your list of contacts, alternatively, enter contacts individually:</p>';
       }
-      var addContactsButton = '<li id="share-resource-address-book"><button class="add"' + addContactsButtonDisable + '><i class="fa fa-address-book"></i> Add from contacts</button>' + noContactsText + '</li>';
 
-      document.body.insertAdjacentHTML('beforeend', '<aside id="share-resource" class="do on"><button class="close" title="Close">❌</button><h2>Share resource</h2><div id="share-resource-input"><p>Send a notification about <code>' + iri +'</code></p><ul>' + addContactsButton + '<li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share">Share</button></aside>');
+      document.body.insertAdjacentHTML('beforeend', '<aside id="share-resource" class="do on"><button class="close" title="Close">❌</button><h2>Share resource</h2><div id="share-resource-input"><p>Send a notification about <code>' + iri +'</code></p><ul><li id="share-resource-address-book"></li><li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share">Share</button></aside>');
+
+      var li = document.getElementById('share-resource-address-book');
+
+      if (DO.C.User.Contacts && Object.keys(DO.C.User.Contacts).length > 0) {
+        DO.U.selectContacts(li, DO.C.User.IRI);
+      }
+      else {
+        li.insertAdjacentHTML('beforeend', '<button class="add"' + addContactsButtonDisable + '><i class="fa fa-address-book"></i> Add from contacts</button>' + noContactsText);
+      }
 
       var shareResource = document.getElementById('share-resource');
       shareResource.addEventListener('click', function (e) {
@@ -2357,8 +2365,9 @@ var DO = {
         if (DO.C.User.IRI && e.target.matches('button.add')) {
           e.preventDefault();
           e.stopPropagation();
-          e.target.parentNode.insertAdjacentHTML('beforeend', '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
-          DO.U.selectContacts(e, DO.C.User.IRI);
+          var li = e.target.closest('li');
+          li.insertAdjacentHTML('beforeend', '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+          DO.U.selectContacts(li, DO.C.User.IRI);
         }
 
         if (e.target.matches('button.share')) {
@@ -2393,44 +2402,62 @@ var DO = {
       });
     },
 
-    selectContacts: function(e, url) {
-      var li = e.target.parentNode;
-      li.innerHTML = '<p>Select from contacts</p><ul id="share-resource-contacts"></ul>';
+    selectContacts: function(node, url) {
+      node.innerHTML = '<p>Select from contacts</p><ul id="share-resource-contacts"></ul>';
       var shareResourceContacts = document.getElementById('share-resource-contacts');
 
-      if(DO.C.User.Contacts.length > 0){
-        DO.C.User.Contacts.forEach(function(s){
-          // console.log(s);
-          DO.U.addShareResourceContactInput(shareResourceContacts, s);
+      DO.C.User['Contacts'] = DO.C.User.Contacts || {};
+
+      if(DO.C.User.Contacts && Object.keys(DO.C.User.Contacts).length > 0){
+        Object.keys(DO.C.User.Contacts).forEach(function(iri){
+          DO.U.addShareResourceContactInput(shareResourceContacts, DO.C.User.Contacts[iri]);
         });
       }
       else {
         auth.getContacts(url).then(
           function(contacts) {
             if(contacts.length > 0) {
-              contacts.forEach(function(url) {
-                fetcher.getResourceGraph(url).then(
-                  function(i) {
+              var promises = [];
+
+              var gC = function(url) {
+                return new Promise(function(resolve, reject) {
+                  fetcher.getResourceGraph(url).then(i => {
                     // console.log(i);
                     var s = i.child(url);
-                    DO.C.User.Contacts.push(s);
+
 
                     DO.U.addShareResourceContactInput(shareResourceContacts, s);
-                  },
-                  function(reason){
-                    // console.log(reason);
-                  }
-                );
+
+                    return Promise.resolve([]);
+                  }).catch(err => {
+// console.log(err)
+                    return Promise.resolve([]);
+                  });
+                });
+              }
+
+              contacts.forEach(function(url) {
+                promises.push(gC(url))
               });
+
+              return Promise.all(promises).then(r => {
+console.log(r)
+                return r;
+              }).catch(err => {
+console.log(err)
+              })
             }
             else {
-              li.innerHTML = 'No contacts with <i class="fa fa-inbox"></i> inbox found in your profile, but you can enter contacts individually:';
+              node.innerHTML = 'No contacts with <i class="fa fa-inbox"></i> inbox found in your profile, but you can enter contacts individually:';
             }
           },
           function(reason) {
-             console.log(reason);
+console.log(reason);
           }
-        );
+        ).then(() => {
+console.log('.... updateStorageProfile')
+          storage.updateStorageProfile(DO.C.User)
+        });
       }
     },
 
@@ -2445,13 +2472,15 @@ var DO = {
 
 
       //TODO: This should update DO.C.User.Contacts' Inbox value so that it is not checked again when #share-resource-contacts input:checked
-      if(s.ldpinbox && s.ldpinbox._array.length > 0){
+      if (s.ldpinbox && s.ldpinbox._array.length > 0) {
+        DO.C.User.Contacts[iri] = s;
         node.insertAdjacentHTML('beforeend', input);
       }
       else {
         inbox.getEndpointFromHead(DO.C.Vocab['ldpinbox']['@id'], iri).then(
           function(i){
             // console.log(iri + ' has Inbox: ' + i);
+            DO.C.User.Contacts[iri] = s;
 
             node.insertAdjacentHTML('beforeend', input);
           },
