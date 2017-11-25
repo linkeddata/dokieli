@@ -8711,14 +8711,25 @@ function setUserInfo (userIRI) {
 }
 
 function afterSignIn () {
-  getAgentSupplementalInfo(Config.User.IRI).then(() => {
+  var promises = [];
+
+  promises.push(getAgentSupplementalInfo(Config.User.IRI))
+
+  promises.push(getAgentSeeAlso(Config.User.Graph))
+
+  Promise.all(promises)
+    .then(function(results) {
       var uI = document.getElementById('user-info')
       if (uI) {
         uI.innerHTML = getUserHTML()
       }
-  });
 
-  getAgentSeeAlso(Config.User.Graph);
+      return Promise.resolve();
+    })
+    .catch(function(e) {
+      return Promise.resolve();
+    });
+
 
   var user = document.querySelectorAll('aside.do article *[rel~="schema:creator"] > *[about="' + Config.User.IRI + '"]')
   for (let i = 0; i < user.length; i++) {
@@ -8750,46 +8761,42 @@ function afterSignIn () {
 }
 
 function getAgentSupplementalInfo(iri) {
-  var fyn = function(iri){
-    if (iri == Config.User.IRI) {
-      return processSameAs(Config.User.Graph, getAgentSupplementalInfo);
-    }
-    else {
-      return fetcher.getResourceGraph(iri).then(
-        function(g){
-          if(typeof g._graph == 'undefined') {
-            return Promise.resolve([]);
-          }
-          var s = g.child(iri);
-
-          Config.User.Name = Config.User.Name || getAgentName(s);
-
-          Config.User.Image = Config.User.Image || getAgentImage(s);
-
-          var storage = getAgentStorage(s) || [];
-          var knows = getAgentKnows(s) || [];
-
-          if (storage.length > 0) {
-            Config.User.Storage = (Config.User.Storage)
-              ? util.uniqueArray(Config.User.Storage.concat(storage))
-              : storage;
-          }
-
-          if (knows.length > 0) {
-            Config.User.Knows = (Config.User.Knows)
-              ? util.uniqueArray(Config.User.Knows.concat(knows))
-              : knows;
-          }
-
-          return processSameAs(s, getAgentSupplementalInfo);
-        },
-        function(reason){
-          return Promise.resolve([]);
-        });
-    }
+  if (iri == Config.User.IRI) {
+    return processSameAs(Config.User.Graph, getAgentSupplementalInfo);
   }
+  else {
+    return fetcher.getResourceGraph(iri).then(
+      function(g){
+        if(typeof g._graph == 'undefined') {
+          return Promise.resolve([]);
+        }
+        var s = g.child(iri);
 
-  return fyn(iri);
+        Config.User.Name = Config.User.Name || getAgentName(s);
+
+        Config.User.Image = Config.User.Image || getAgentImage(s);
+
+        var storage = getAgentStorage(s) || [];
+        var knows = getAgentKnows(s) || [];
+
+        if (storage.length > 0) {
+          Config.User.Storage = (Config.User.Storage)
+            ? util.uniqueArray(Config.User.Storage.concat(storage))
+            : storage;
+        }
+
+        if (knows.length > 0) {
+          Config.User.Knows = (Config.User.Knows)
+            ? util.uniqueArray(Config.User.Knows.concat(knows))
+            : knows;
+        }
+
+        return processSameAs(s, getAgentSupplementalInfo);
+      },
+      function(reason){
+        return Promise.resolve([]);
+      });
+  }
 }
 
 function getAgentSeeAlso(g, baseURI, subjectURI) {
@@ -8829,10 +8836,9 @@ function getAgentSeeAlso(g, baseURI, subjectURI) {
         })
     });
 
-    return Promise.all(promises)
+    Promise.all(promises)
       .then(function(results) {
-// console.log(results);
-        return Promise.resolve(([].concat.apply([], results)));
+        return Promise.resolve([]);
       })
       .catch(function(e) {
         return Promise.resolve([]);
@@ -8885,7 +8891,7 @@ function processSameAs(s, callback) {
       if(iri != Config.User.IRI && Config.User.SameAs.indexOf(iri) < 0) {
         Config.User.SameAs = util.uniqueArray(Config.User.SameAs.concat(iri));
 
-        if (callback) {
+        if (typeof callback !== 'undefined') {
           promises.push(callback(iri));
         }
         else {
@@ -8896,13 +8902,9 @@ function processSameAs(s, callback) {
 
     return Promise.all(promises)
       .then(function(results) {
-// console.log(results);
-        return Promise.resolve(([].concat.apply([], results)));
+        return Promise.resolve([]);
       })
       .catch(function(e) {
-// console.trace();
-        //probably e.xhr.status == 0
-console.log(e);
         return Promise.resolve([]);
       });
   }
