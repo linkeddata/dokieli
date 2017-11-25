@@ -12,6 +12,7 @@ const uri = require('./uri')
 const graph = require('./graph')
 const inbox = require('./inbox')
 const util = require('./util')
+const storage = require('./storage')
 const auth = require('./auth')
 
 if(typeof DO === 'undefined'){
@@ -725,7 +726,7 @@ var DO = {
           auth.showUserSigninSignup(dHead);
           DO.U.showDocumentDo(dInfo);
           DO.U.showEmbedData(dInfo);
-          DO.U.showStorage(dInfo);
+          storage.showStorage(dInfo);
           DO.U.showViews(dInfo);
           DO.U.showDocumentMetadata(dInfo);
           if(!body.classList.contains('on-slideshow')) {
@@ -938,7 +939,7 @@ var DO = {
         var toc = document.getElementById('table-of-contents');
         toc = (toc) ? toc.parentNode.removeChild(toc) : false;
 
-        DO.U.hideStorage();
+        storage.hideStorage();
 
         shower.initRun();
       }
@@ -3241,126 +3242,6 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           fetcher.copyResource(fromURL, toURL);
          }
       };
-    },
-
-    initStorage: function(item) {
-      if (typeof window.localStorage != 'undefined') {
-        DO.U.enableStorage(item);
-      }
-    },
-
-    enableStorage: function(item) {
-      DO.C.UseStorage = true;
-      var o = localStorage.getItem(item);
-      o = JSON.parse(o);
-      if('object' in o && 'content' in o.object) {
-        document.documentElement.innerHTML = JSON.parse(o).object.content;
-      }
-      console.log(util.getDateTimeISO() + ': Storage enabled.');
-      DO.U.enableAutoSave(item);
-    },
-
-    disableStorage: function(item) {
-      DO.C.UseStorage = false;
-      localStorage.removeItem(item);
-      DO.U.disableAutoSave(item);
-      console.log(util.getDateTimeISO() + ': Storage disabled.');
-    },
-
-    saveStorage: function(item) {
-      var content = doc.getDocument();
-
-      DO.U.getHash(content).then(digest => {
-        var o = localStorage.getItem(item);
-
-        if(!o || (o && JSON.parse(o).id != digest)) {
-          var datetime = util.getDateTimeISO();
-
-          var object = {
-            "@context": "https://www.w3.org/ns/activitystreams",
-            "id": digest,
-            "type": "Update",
-            "object": {
-              "id": item,
-              "type": "Document",
-              "updated": datetime,
-              "mediaType": "text/html",
-              "content": content
-            }
-          };
-
-          localStorage.setItem(item, JSON.stringify(object));
-          console.log(datetime + ': Document saved.');
-        }
-      });
-    },
-
-    enableAutoSave: function(item) {
-      DO.C.AutoSaveId = setInterval(function() { DO.U.saveStorage(item) }, DO.C.AutoSaveTimer);
-      console.log(util.getDateTimeISO() + ': Autosave enabled.');
-    },
-
-    disableAutoSave: function(item) {
-      clearInterval(DO.C.AutoSaveId);
-      DO.C.AutoSaveId = '';
-      console.log(util.getDateTimeISO() + ': Autosave disabled.');
-    },
-
-    showStorage: function(node) {
-      if(document.querySelector('#local-storage')) { return; }
-
-      if (typeof window.localStorage != 'undefined') {
-        var useStorage, checked;
-
-        if (DO.C.UseStorage) {
-          if (DO.C.AutoSaveId) {
-            checked = ' checked="checked"';
-          }
-          useStorage = DO.C.DisableStorageButtons + '<input id="local-storage-html-autosave" class="autosave" type="checkbox"' + checked +' /> <label for="local-storage-html-autosave"><i class="fa fa-clock-o"></i> 1m autosave</label>';
-        }
-        else {
-          useStorage = DO.C.EnableStorageButtons;
-        }
-
-        node.insertAdjacentHTML('beforeend', '<section id="local-storage" class="do"><h2>Local Storage</h2><p>' + useStorage + '</p></section>');
-
-        var item = uri.stripFragmentFromString(document.location.href);
-
-        document.getElementById('local-storage').addEventListener('click', function(e) {
-          if (e.target.closest('button.local-storage-enable-html')) {
-            e.target.outerHTML = DO.C.DisableStorageButtons;
-            DO.U.enableStorage(item);
-          }
-
-          if (e.target.closest('button.local-storage-disable-html')) {
-            e.target.outerHTML = DO.C.EnableStorageButtons;
-            DO.U.disableStorage(item);
-          }
-
-          if (e.target.matches('input.autosave')) {
-            if (e.target.getAttribute('checked')) {
-              e.target.removeAttribute('checked');
-              DO.U.disableAutoSave(item);
-            }
-            else {
-              e.target.setAttribute('checked', 'checked');
-              DO.U.enableAutoSave(item);
-            }
-          }
-        });
-      }
-    },
-
-    hideStorage: function() {
-      if (DO.C.UseStorage) {
-        var ls = document.getElementById('local-storage');
-        ls.parentNode.removeChild(ls);
-      }
-    },
-
-    getDateTimeISO: function() {
-      var date = new Date();
-      return date.toISOString();
     },
 
     createAttributeDateTime: function(element) {

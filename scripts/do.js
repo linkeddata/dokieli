@@ -367,11 +367,137 @@ module.exports = {
 "use strict";
 
 
+const Config = __webpack_require__(0)
+
+module.exports = {
+  encodeString,
+  decodeString,
+  getAbsoluteIRI,
+  getProxyableIRI,
+  stripFragmentFromString
+}
+
+function encodeString (string) {
+  return encodeURIComponent(string).replace(/'/g, '%27').replace(/"/g, '%22')
+}
+
+/**
+ * UNUSED
+ *
+ * @param string {string}
+ *
+ * @returns {string}
+ */
+function decodeString (string) {
+  return decodeURIComponent(string.replace(/\+/g, ' '))
+}
+
+function getAbsoluteIRI (base, location) {
+  var iri = location
+
+  if (location.toLowerCase().slice(0, 4) !== 'http') {
+    if (location.startsWith('/')) {
+      var x = base.toLowerCase().trim().split('/')
+
+      iri = x[0] + '//' + x[2] + location
+    } else if (!base.endsWith('/')) {
+      iri = base.substr(0, base.lastIndexOf('/') + 1) + location
+    } else {
+      iri = base + location
+    }
+  }
+
+  return iri
+}
+
+function getProxyableIRI (url, options = {}) {
+  var pIRI = stripFragmentFromString(url)
+
+  if ((typeof document !== 'undefined' && document.location.protocol === 'https:' && pIRI.slice(0, 5).toLowerCase() === 'http:') || 'forceProxy' in options) {
+    var proxyURL = ('proxyURL' in options) ? options.proxyURL : Config.ProxyURL
+    pIRI = proxyURL + encodeString(pIRI)
+  }
+
+  return pIRI
+}
+
+function stripFragmentFromString (string) {
+  if (typeof string === 'string') {
+    let stringIndexFragment = string.indexOf('#')
+
+    if (stringIndexFragment >= 0) {
+      string = string.substring(0, stringIndexFragment)
+    }
+  }
+  return string
+}
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = {
+  uniqueArray,
+  getHash,
+  getDateTimeISO
+}
+
+/**
+ * @param a {Array}
+ *
+ * @returns {Array}
+ */
+function uniqueArray (a) {
+  var n = {}
+  var r = []
+  for (var i = 0; i < a.length; i++) {
+    if (!n[a[i]]) {
+      n[a[i]] = true
+      r.push(a[i])
+    }
+  }
+  return r
+}
+
+// https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
+function getHash (message, algo = "SHA-256") {
+  var buffer = new TextEncoder("utf-8").encode(message);
+  return crypto.subtle.digest(algo, buffer).then(function (hash) {
+    var hexCodes = [];
+    var view = new DataView(hash);
+    for (var i = 0; i < view.byteLength; i += 4) {
+      var value = view.getUint32(i)
+      var stringValue = value.toString(16)
+      var padding = '00000000'
+      var paddedValue = (padding + stringValue).slice(-padding.length)
+      hexCodes.push(paddedValue);
+    }
+    return hexCodes.join("");
+  });
+}
+
+function getDateTimeISO() {
+  var date = new Date();
+  return date.toISOString();
+}
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 const fetch = __webpack_require__(9)  // Uses native fetch() in the browser
 const Config = __webpack_require__(0)
-const doc = __webpack_require__(2)
-const uri = __webpack_require__(3)
-const graph = __webpack_require__(4)
+const doc = __webpack_require__(4)
+const uri = __webpack_require__(1)
+const graph = __webpack_require__(5)
 
 const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
 const LDP_RESOURCE = '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
@@ -913,7 +1039,7 @@ function putResourceACL (accessToURL, aclURL, acl) {
 
 
 /***/ }),
-/* 2 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1072,80 +1198,7 @@ function setHTMLBase (data, baseURI) {
 
 
 /***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-const Config = __webpack_require__(0)
-
-module.exports = {
-  encodeString,
-  decodeString,
-  getAbsoluteIRI,
-  getProxyableIRI,
-  stripFragmentFromString
-}
-
-function encodeString (string) {
-  return encodeURIComponent(string).replace(/'/g, '%27').replace(/"/g, '%22')
-}
-
-/**
- * UNUSED
- *
- * @param string {string}
- *
- * @returns {string}
- */
-function decodeString (string) {
-  return decodeURIComponent(string.replace(/\+/g, ' '))
-}
-
-function getAbsoluteIRI (base, location) {
-  var iri = location
-
-  if (location.toLowerCase().slice(0, 4) !== 'http') {
-    if (location.startsWith('/')) {
-      var x = base.toLowerCase().trim().split('/')
-
-      iri = x[0] + '//' + x[2] + location
-    } else if (!base.endsWith('/')) {
-      iri = base.substr(0, base.lastIndexOf('/') + 1) + location
-    } else {
-      iri = base + location
-    }
-  }
-
-  return iri
-}
-
-function getProxyableIRI (url, options = {}) {
-  var pIRI = stripFragmentFromString(url)
-
-  if ((typeof document !== 'undefined' && document.location.protocol === 'https:' && pIRI.slice(0, 5).toLowerCase() === 'http:') || 'forceProxy' in options) {
-    var proxyURL = ('proxyURL' in options) ? options.proxyURL : Config.ProxyURL
-    pIRI = proxyURL + encodeString(pIRI)
-  }
-
-  return pIRI
-}
-
-function stripFragmentFromString (string) {
-  if (typeof string === 'string') {
-    let stringIndexFragment = string.indexOf('#')
-
-    if (stringIndexFragment >= 0) {
-      string = string.substring(0, stringIndexFragment)
-    }
-  }
-  return string
-}
-
-
-/***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1267,59 +1320,6 @@ function serializeGraph (g, options = {}) {
 /* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = {
-  uniqueArray,
-  getHash,
-  getDateTimeISO
-}
-
-/**
- * @param a {Array}
- *
- * @returns {Array}
- */
-function uniqueArray (a) {
-  var n = {}
-  var r = []
-  for (var i = 0; i < a.length; i++) {
-    if (!n[a[i]]) {
-      n[a[i]] = true
-      r.push(a[i])
-    }
-  }
-  return r
-}
-
-// https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
-function getHash (message, algo = "SHA-256") {
-  var buffer = new TextEncoder("utf-8").encode(message);
-  return crypto.subtle.digest(algo, buffer).then(function (hash) {
-    var hexCodes = [];
-    var view = new DataView(hash);
-    for (var i = 0; i < view.byteLength; i += 4) {
-      var value = view.getUint32(i)
-      var stringValue = value.toString(16)
-      var padding = '00000000'
-      var paddedValue = (padding + stringValue).slice(-padding.length)
-      hexCodes.push(paddedValue);
-    }
-    return hexCodes.join("");
-  });
-}
-
-function getDateTimeISO() {
-  var date = new Date();
-  return date.toISOString();
-}
-
-
-/***/ }),
 /* 6 */
 /***/ (function(module, exports) {
 
@@ -1365,13 +1365,14 @@ module.exports = __webpack_require__(8);
  * https://github.com/linkeddata/dokieli
  */
 
-const fetcher = __webpack_require__(1)
-const doc = __webpack_require__(2)
-const uri = __webpack_require__(3)
-const graph = __webpack_require__(4)
+const fetcher = __webpack_require__(3)
+const doc = __webpack_require__(4)
+const uri = __webpack_require__(1)
+const graph = __webpack_require__(5)
 const inbox = __webpack_require__(10)
-const util = __webpack_require__(5)
-const auth = __webpack_require__(11)
+const util = __webpack_require__(2)
+const storage = __webpack_require__(11)
+const auth = __webpack_require__(12)
 
 if(typeof DO === 'undefined'){
 global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined;
@@ -2084,7 +2085,7 @@ var DO = {
           auth.showUserSigninSignup(dHead);
           DO.U.showDocumentDo(dInfo);
           DO.U.showEmbedData(dInfo);
-          DO.U.showStorage(dInfo);
+          storage.showStorage(dInfo);
           DO.U.showViews(dInfo);
           DO.U.showDocumentMetadata(dInfo);
           if(!body.classList.contains('on-slideshow')) {
@@ -2297,7 +2298,7 @@ var DO = {
         var toc = document.getElementById('table-of-contents');
         toc = (toc) ? toc.parentNode.removeChild(toc) : false;
 
-        DO.U.hideStorage();
+        storage.hideStorage();
 
         shower.initRun();
       }
@@ -4600,126 +4601,6 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           fetcher.copyResource(fromURL, toURL);
          }
       };
-    },
-
-    initStorage: function(item) {
-      if (typeof window.localStorage != 'undefined') {
-        DO.U.enableStorage(item);
-      }
-    },
-
-    enableStorage: function(item) {
-      DO.C.UseStorage = true;
-      var o = localStorage.getItem(item);
-      o = JSON.parse(o);
-      if('object' in o && 'content' in o.object) {
-        document.documentElement.innerHTML = JSON.parse(o).object.content;
-      }
-      console.log(util.getDateTimeISO() + ': Storage enabled.');
-      DO.U.enableAutoSave(item);
-    },
-
-    disableStorage: function(item) {
-      DO.C.UseStorage = false;
-      localStorage.removeItem(item);
-      DO.U.disableAutoSave(item);
-      console.log(util.getDateTimeISO() + ': Storage disabled.');
-    },
-
-    saveStorage: function(item) {
-      var content = doc.getDocument();
-
-      DO.U.getHash(content).then(digest => {
-        var o = localStorage.getItem(item);
-
-        if(!o || (o && JSON.parse(o).id != digest)) {
-          var datetime = util.getDateTimeISO();
-
-          var object = {
-            "@context": "https://www.w3.org/ns/activitystreams",
-            "id": digest,
-            "type": "Update",
-            "object": {
-              "id": item,
-              "type": "Document",
-              "updated": datetime,
-              "mediaType": "text/html",
-              "content": content
-            }
-          };
-
-          localStorage.setItem(item, JSON.stringify(object));
-          console.log(datetime + ': Document saved.');
-        }
-      });
-    },
-
-    enableAutoSave: function(item) {
-      DO.C.AutoSaveId = setInterval(function() { DO.U.saveStorage(item) }, DO.C.AutoSaveTimer);
-      console.log(util.getDateTimeISO() + ': Autosave enabled.');
-    },
-
-    disableAutoSave: function(item) {
-      clearInterval(DO.C.AutoSaveId);
-      DO.C.AutoSaveId = '';
-      console.log(util.getDateTimeISO() + ': Autosave disabled.');
-    },
-
-    showStorage: function(node) {
-      if(document.querySelector('#local-storage')) { return; }
-
-      if (typeof window.localStorage != 'undefined') {
-        var useStorage, checked;
-
-        if (DO.C.UseStorage) {
-          if (DO.C.AutoSaveId) {
-            checked = ' checked="checked"';
-          }
-          useStorage = DO.C.DisableStorageButtons + '<input id="local-storage-html-autosave" class="autosave" type="checkbox"' + checked +' /> <label for="local-storage-html-autosave"><i class="fa fa-clock-o"></i> 1m autosave</label>';
-        }
-        else {
-          useStorage = DO.C.EnableStorageButtons;
-        }
-
-        node.insertAdjacentHTML('beforeend', '<section id="local-storage" class="do"><h2>Local Storage</h2><p>' + useStorage + '</p></section>');
-
-        var item = uri.stripFragmentFromString(document.location.href);
-
-        document.getElementById('local-storage').addEventListener('click', function(e) {
-          if (e.target.closest('button.local-storage-enable-html')) {
-            e.target.outerHTML = DO.C.DisableStorageButtons;
-            DO.U.enableStorage(item);
-          }
-
-          if (e.target.closest('button.local-storage-disable-html')) {
-            e.target.outerHTML = DO.C.EnableStorageButtons;
-            DO.U.disableStorage(item);
-          }
-
-          if (e.target.matches('input.autosave')) {
-            if (e.target.getAttribute('checked')) {
-              e.target.removeAttribute('checked');
-              DO.U.disableAutoSave(item);
-            }
-            else {
-              e.target.setAttribute('checked', 'checked');
-              DO.U.enableAutoSave(item);
-            }
-          }
-        });
-      }
-    },
-
-    hideStorage: function() {
-      if (DO.C.UseStorage) {
-        var ls = document.getElementById('local-storage');
-        ls.parentNode.removeChild(ls);
-      }
-    },
-
-    getDateTimeISO: function() {
-      var date = new Date();
-      return date.toISOString();
     },
 
     createAttributeDateTime: function(element) {
@@ -8085,11 +7966,11 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_9__;
 "use strict";
 
 
-const util = __webpack_require__(5)
-const doc = __webpack_require__(2)
-const uri = __webpack_require__(3)
-const graph = __webpack_require__(4)
-const fetcher = __webpack_require__(1)
+const util = __webpack_require__(2)
+const doc = __webpack_require__(4)
+const uri = __webpack_require__(1)
+const graph = __webpack_require__(5)
+const fetcher = __webpack_require__(3)
 const Config = __webpack_require__(0)
 
 module.exports = {
@@ -8459,8 +8340,149 @@ function getEndpointFromRDF (property, url, subjectIRI) {
 
 
 const Config = __webpack_require__(0)
-const fetcher = __webpack_require__(1)
-const util = __webpack_require__(5)
+const util = __webpack_require__(2)
+const uri = __webpack_require__(1)
+
+module.exports = {
+  initStorage,
+  enableStorage,
+  disableStorage,
+  updateStorageDocument,
+  enableAutoSave,
+  disableAutoSave,
+  showStorage,
+  hideStorage
+}
+
+
+function initStorage(key) {
+  if (typeof window.localStorage != 'undefined') {
+    enableStorage(key);
+  }
+}
+
+function enableStorage(key) {
+  Config.UseStorage = true;
+  var o = localStorage.getItem(key);
+  try {
+    JSON.parse(o).object.Document;
+    document.documentElement.innerHTML = JSON.parse(o).object.content;
+  } catch(e){}
+  console.log(util.getDateTimeISO() + ': ' + key + ' storage enabled.');
+  enableAutoSave(key);
+}
+
+function disableStorage(key) {
+  Config.UseStorage = false;
+  localStorage.removeItem(key);
+  disableAutoSave(key);
+  console.log(util.getDateTimeISO() + ': ' + key + ' storage disabled.');
+}
+
+function updateStorageDocument(key) {
+  var content = doc.getDocument();
+
+  util.getHash(content).then(digest => {
+    var o = localStorage.getItem(key);
+
+    if(!o || (o && JSON.parse(o).id != digest)) {
+      var datetime = util.getDateTimeISO();
+
+      var object = {
+        "@context": "https://www.w3.org/ns/activitystreams",
+        "id": digest,
+        "type": "Update",
+        "object": {
+          "id": key,
+          "type": "Document",
+          "updated": datetime,
+          "mediaType": "text/html",
+          "content": content
+        }
+      };
+
+      localStorage.setItem(key, JSON.stringify(object));
+      console.log(datetime + ': Document saved.');
+    }
+  });
+}
+
+function enableAutoSave(key) {
+  Config.AutoSaveId = setInterval(function() { updateStorageDocument(key) }, Config.AutoSaveTimer);
+  console.log(util.getDateTimeISO() + ': ' + key + ' autosave enabled.');
+}
+
+function disableAutoSave(key) {
+  clearInterval(Config.AutoSaveId);
+  Config.AutoSaveId = '';
+  console.log(util.getDateTimeISO() + ': ' + key + ' autosave disabled.');
+}
+
+function showStorage(node) {
+  if(document.querySelector('#local-storage')) { return; }
+
+  if (typeof window.localStorage != 'undefined') {
+    var useStorage, checked;
+
+    if (Config.UseStorage) {
+      // if (Config.AutoSaveId) {
+      //   checked = ' checked="checked"';
+      // }
+      // useStorage = Config.DisableStorageButtons + '<input id="local-storage-html-autosave" class="autosave" type="checkbox"' + checked +' /> <label for="local-storage-html-autosave"><i class="fa fa-clock-o"></i> 1m autosave</label>';
+      useStorage = Config.DisableStorageButtons;
+
+    }
+    else {
+      useStorage = Config.EnableStorageButtons;
+    }
+
+    node.insertAdjacentHTML('beforeend', '<section id="local-storage" class="do"><h2>Local Storage</h2><p>' + useStorage + '</p></section>');
+
+    var key = uri.stripFragmentFromString(document.location.href);
+
+    document.getElementById('local-storage').addEventListener('click', function(e) {
+      if (e.target.closest('button.local-storage-enable-html')) {
+        e.target.outerHTML = Config.DisableStorageButtons;
+        enableStorage(key);
+      }
+
+      if (e.target.closest('button.local-storage-disable-html')) {
+        e.target.outerHTML = Config.EnableStorageButtons;
+        disableStorage(key);
+      }
+
+      // if (e.target.matches('input.autosave')) {
+      //   if (e.target.getAttribute('checked')) {
+      //     e.target.removeAttribute('checked');
+      //     disableAutoSave(key);
+      //   }
+      //   else {
+      //     e.target.setAttribute('checked', 'checked');
+      //     enableAutoSave(key);
+      //   }
+      // }
+    });
+  }
+}
+
+function hideStorage() {
+  if (Config.UseStorage) {
+    var ls = document.getElementById('local-storage');
+    ls.parentNode.removeChild(ls);
+  }
+}
+
+
+/***/ }),
+/* 12 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+const Config = __webpack_require__(0)
+const fetcher = __webpack_require__(3)
+const util = __webpack_require__(2)
 
 // const { OIDCWebClient } = require('@trust/oidc-web')
 
