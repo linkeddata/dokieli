@@ -61,7 +61,7 @@ function showUserSigninSignout (node) {
     var s = ''
 
     if (Config.User.IRI) {
-      s = getUserHTML() + '<button class="signout-user"><i class="fa fa-hand-spock-o"></i></button>'
+      s = getUserHTML() + '<button class="signout-user" title="Live long and prosper"><i class="fa fa-hand-spock-o"></i></button>'
     }
     else {
       s = '<button class="signin-user" title="Sign in to authenticate"><i class="fa fa-user-secret fa-2x"></i>Sign in</button>'
@@ -178,7 +178,7 @@ function submitSignIn (url) {
       var uI = document.getElementById('user-info')
       if (uI) {
         util.removeChildren(uI);
-        uI.insertAdjacentHTML('beforeend', getUserHTML() + '<button class="signout-user"><i class="fa fa-hand-spock-o"></i></button>');
+        uI.insertAdjacentHTML('beforeend', getUserHTML() + '<button class="signout-user" title="Live long and prosper"><i class="fa fa-hand-spock-o"></i></button>');
       }
 
       if (userIdentityInput) {
@@ -241,7 +241,7 @@ function afterSignIn () {
     .then(function(results) {
       var uI = document.getElementById('user-info')
       if (uI) {
-        uI.innerHTML = getUserHTML() + '<button class="signout-user"><i class="fa fa-hand-spock-o"></i></button>'
+        uI.innerHTML = getUserHTML() + '<button class="signout-user" title="Live long and prosper"><i class="fa fa-hand-spock-o"></i></button>'
       }
 
       storage.updateStorageProfile(Config.User)
