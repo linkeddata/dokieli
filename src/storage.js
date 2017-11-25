@@ -11,6 +11,7 @@ module.exports = {
   updateStorageDocument,
   enableAutoSave,
   disableAutoSave,
+  updateStorageProfile,
   showStorage,
   hideStorage
 }
@@ -77,6 +78,35 @@ function disableAutoSave(key) {
   clearInterval(Config.AutoSaveId);
   Config.AutoSaveId = '';
   console.log(util.getDateTimeISO() + ': ' + key + ' autosave disabled.');
+}
+
+function updateStorageProfile(User) {
+  var key = uri.stripFragmentFromString(document.location.href) + '#' + User.IRI
+
+  util.getHash(key).then(digest => {
+    var o = localStorage.getItem(key);
+
+    if(!o || (o && JSON.parse(o).id != digest)) {
+      var datetime = util.getDateTimeISO();
+
+      //cyclic
+      delete User.Graph
+
+      var object = {
+        "@context": "https://www.w3.org/ns/activitystreams",
+        "id": digest,
+        "type": "Update",
+        "object": {
+          "id": key,
+          "type": "Profile",
+          "describes": User
+        }
+      };
+
+      localStorage.setItem(key, JSON.stringify(object));
+      console.log(datetime + ': User ' + User.IRI + ' saved.');
+    }
+  });
 }
 
 function showStorage(node) {
