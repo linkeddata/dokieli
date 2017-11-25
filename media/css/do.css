@@ -474,6 +474,14 @@ background-color:#fff !important;
 /*background-color:inherit !important;*/
 cursor:default !important;
 }
+#document-menu section button.signout-user {
+width:auto;
+height:auto;
+float: none;
+margin-left:1em;
+margin-top:1.25em;
+}
+
 
 #document-menu button i.fa {
 font-family:FontAwesome !important;
@@ -496,15 +504,21 @@ margin-right:0;
 
 #user-info {
 margin:0;
+display:inline-block;
+/*margin-left:0.75em;*/
+/*max-width:75%;*/
+position:relative;
 }
 #document-menu .signin-user {
-width:33%;
-height:5em;
+/*width:33%;
+height:5em;*/
 }
 #user-info > span {
-margin-left:1.75em;
 float:left;
-width:calc(100% - 1.75em);
+margin-left: 1.75em;
+max-width:75%;
+min-height: 5.5em;
+/*width:calc(100% - 1.75em);*/
 }
 #user-info img {
 display:block;
