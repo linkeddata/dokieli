@@ -646,7 +646,7 @@ var DO = {
         if(dMenu) {
           auth.showUserSigninSignout(dMenu.querySelector('header'));
         }
-      });
+      }).catch(() => {});
     },
 
     setDocumentMode: function(mode) {

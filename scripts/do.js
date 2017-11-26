@@ -1445,64 +1445,78 @@ function disableAutoSave(key) {
 }
 
 function removeStorageItem(key) {
-  console.log(util.getDateTimeISO() + ': ' + key + ' removed.')
-  localStorage.removeItem(key);
+  if (window.localStorage) {
+    console.log(util.getDateTimeISO() + ': ' + key + ' removed.')
+    localStorage.removeItem(key);
+  }
 }
 
 function removeStorageProfile() {
-  var key = uri.stripFragmentFromString(document.location.href) + '#DO.C.User'
-  removeStorageItem(key)
+  if (window.localStorage) {
+    var key = uri.stripFragmentFromString(document.location.href) + '#DO.C.User'
+    removeStorageItem(key)
+  }
 }
 
 function getStorageProfile() {
-  var key = uri.stripFragmentFromString(document.location.href) + '#DO.C.User'
+  if (window.localStorage) {
+    var key = uri.stripFragmentFromString(document.location.href) + '#DO.C.User'
 
-  return util.getHash(key).then(digest => {
-    var o = localStorage.getItem(key);
+    return util.getHash(key).then(digest => {
+      var o = localStorage.getItem(key);
 
-    if(o && JSON.parse(o).id == digest) {
-      return JSON.parse(o)
-    }
-  });
+      if(o && JSON.parse(o).id == digest) {
+        return JSON.parse(o)
+      }
+    });
+  }
+  else {
+    return Promise.reject({'message': 'localStorage is unavailable'})
+  }
 }
 
 function updateStorageProfile(User) {
-  var key = uri.stripFragmentFromString(document.location.href) + '#DO.C.User'
+  if (window.localStorage) {
+    var key = uri.stripFragmentFromString(document.location.href) + '#DO.C.User'
 
-  util.getHash(key).then(digest => {
-    var datetime = util.getDateTimeISO();
+    util.getHash(key).then(digest => {
+      var datetime = util.getDateTimeISO();
 
-    //cyclic
-    if (User.Graph) {
-      delete User.Graph
-    }
+      //cyclic
+      if (User.Graph) {
+        delete User.Graph
+      }
 
-    if (User.Contacts) {
-      User.Contacts = {}
-    }
+      if (User.Contacts) {
+        User.Contacts = {}
+      }
 
-    var object = {
-      "@context": "https://www.w3.org/ns/activitystreams",
-      "id": digest,
-      "type": "Update",
-      "object": {
-        "id": key,
-        "type": "Profile",
-        "describes": User
-      },
-      "datetime": datetime,
-      "actor": User.IRI
-    };
+      var object = {
+        "@context": "https://www.w3.org/ns/activitystreams",
+        "id": digest,
+        "type": "Update",
+        "object": {
+          "id": key,
+          "type": "Profile",
+          "describes": User
+        },
+        "datetime": datetime,
+        "actor": User.IRI
+      };
 
-    localStorage.setItem(key, JSON.stringify(object));
-    console.log(datetime + ': User ' + User.IRI + ' saved.');
-  });
+      localStorage.setItem(key, JSON.stringify(object));
+      console.log(datetime + ': User ' + User.IRI + ' saved.');
+    });
+  }
+  else {
+    return Promise.reject({'message': 'localStorage is unavailable'})
+  }
 }
 
 function showStorage(node) {
-  if(document.querySelector('#local-storage')) { return; }
+  if (window.localStorage) {
+    if(document.querySelector('#local-storage')) { return; }
 
-  if (typeof window.localStorage != 'undefined') {
     var useStorage, checked;
 
     if (Config.UseStorage) {
@@ -2213,7 +2227,7 @@ var DO = {
         if(dMenu) {
           auth.showUserSigninSignout(dMenu.querySelector('header'));
         }
-      });
+      }).catch(() => {});
     },
 
     setDocumentMode: function(mode) {
