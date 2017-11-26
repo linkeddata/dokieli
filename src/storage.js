@@ -44,34 +44,6 @@ function disableStorage(key) {
   console.log(util.getDateTimeISO() + ': ' + key + ' storage disabled.');
 }
 
-function updateStorageDocument(key) {
-  var content = doc.getDocument();
-
-  util.getHash(content).then(digest => {
-    var o = localStorage.getItem(key);
-
-    if(!o || (o && JSON.parse(o).id != digest)) {
-      var datetime = util.getDateTimeISO();
-
-      var object = {
-        "@context": "https://www.w3.org/ns/activitystreams",
-        "id": digest,
-        "type": "Update",
-        "object": {
-          "id": key,
-          "type": "Document",
-          "updated": datetime,
-          "mediaType": "text/html",
-          "content": content
-        }
-      };
-
-      localStorage.setItem(key, JSON.stringify(object));
-      console.log(datetime + ': Document saved.');
-    }
-  });
-}
-
 function enableAutoSave(key) {
   Config.AutoSaveId = setInterval(function() { updateStorageDocument(key) }, Config.AutoSaveTimer);
   console.log(util.getDateTimeISO() + ': ' + key + ' autosave enabled.');
@@ -101,13 +73,12 @@ function getStorageProfile() {
   if (window.localStorage) {
     var key = uri.stripFragmentFromString(document.location.href) + '#DO.C.User'
 
-    return util.getHash(key).then(digest => {
-      var o = localStorage.getItem(key);
+    var id = DO.U.generateUUID();
+    var o = localStorage.getItem(key);
 
-      if(o && JSON.parse(o).id == digest) {
-        return JSON.parse(o)
-      }
-    });
+    if(o && JSON.parse(o).id == id) {
+      return JSON.parse(o)
+    }
   }
   else {
     return Promise.reject({'message': 'localStorage is unavailable'})
@@ -118,34 +89,33 @@ function updateStorageProfile(User) {
   if (window.localStorage) {
     var key = uri.stripFragmentFromString(document.location.href) + '#DO.C.User'
 
-    util.getHash(key).then(digest => {
-      var datetime = util.getDateTimeISO();
+    var id = DO.U.generateUUID();
+    var datetime = util.getDateTimeISO();
 
-      //cyclic
-      if (User.Graph) {
-        delete User.Graph
-      }
+    //cyclic
+    if (User.Graph) {
+      delete User.Graph
+    }
 
-      if (User.Contacts) {
-        User.Contacts = {}
-      }
+    if (User.Contacts) {
+      User.Contacts = {}
+    }
 
-      var object = {
-        "@context": "https://www.w3.org/ns/activitystreams",
-        "id": digest,
-        "type": "Update",
-        "object": {
-          "id": key,
-          "type": "Profile",
-          "describes": User
-        },
-        "datetime": datetime,
-        "actor": User.IRI
-      };
+    var object = {
+      "@context": "https://www.w3.org/ns/activitystreams",
+      "id": id,
+      "type": "Update",
+      "object": {
+        "id": key,
+        "type": "Profile",
+        "describes": User
+      },
+      "datetime": datetime,
+      "actor": User.IRI
+    };
 
-      localStorage.setItem(key, JSON.stringify(object));
-      console.log(datetime + ': User ' + User.IRI + ' saved.');
-    });
+    localStorage.setItem(key, JSON.stringify(object));
+    console.log(datetime + ': User ' + User.IRI + ' saved.');
   }
   else {
     return Promise.reject({'message': 'localStorage is unavailable'})

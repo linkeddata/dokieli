@@ -636,17 +636,16 @@ var DO = {
     },
 
     initUser: function() {
-      storage.getStorageProfile().then(user => {
-        if(user) {
-          DO.C['User'] = user.object.describes;
-        }
+      var user = storage.getStorageProfile();
+      if(user) {
+        DO.C['User'] = user.object.describes;
+      }
 
-        var dMenu = document.querySelector('#document-menu.do');
+      var dMenu = document.querySelector('#document-menu.do');
 
-        if(dMenu) {
-          auth.showUserSigninSignout(dMenu.querySelector('header'));
-        }
-      }).catch(() => {});
+      if(dMenu) {
+        auth.showUserSigninSignout(dMenu.querySelector('header'));
+      }
     },
 
     setDocumentMode: function(mode) {

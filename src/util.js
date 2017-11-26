@@ -27,7 +27,7 @@ function uniqueArray (a) {
 // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
 function getHash (message, algo = "SHA-256") {
   var buffer = new TextEncoder("utf-8").encode(message);
-  return crypto.subtle.digest(algo, buffer).then(function (hash) {
+  return window.crypto.subtle.digest(algo, buffer).then(function (hash) {
     var hexCodes = [];
     var view = new DataView(hash);
     for (var i = 0; i < view.byteLength; i += 4) {
