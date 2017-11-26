@@ -50,25 +50,23 @@ function updateStorageDocument(key) {
   var id = DO.U.generateUUID();
   var o = localStorage.getItem(key);
 
-  if(!o || (o && JSON.parse(o).id != digest)) {
-    var datetime = util.getDateTimeISO();
+  var datetime = util.getDateTimeISO();
 
-    var object = {
-      "@context": "https://www.w3.org/ns/activitystreams",
-      "id": id,
-      "type": "Update",
-      "object": {
-        "id": key,
-        "type": "Document",
-        "updated": datetime,
-        "mediaType": "text/html",
-        "content": content
-      }
-    };
+  var object = {
+    "@context": "https://www.w3.org/ns/activitystreams",
+    "id": id,
+    "type": "Update",
+    "object": {
+      "id": key,
+      "type": "Document",
+      "updated": datetime,
+      "mediaType": "text/html",
+      "content": content
+    }
+  };
 
-    localStorage.setItem(key, JSON.stringify(object));
-    console.log(datetime + ': Document saved.');
-  }
+  localStorage.setItem(key, JSON.stringify(object));
+  console.log(datetime + ': Document saved.');
 }
 
 function enableAutoSave(key) {
@@ -100,12 +98,9 @@ function getStorageProfile() {
   if (window.localStorage) {
     var key = uri.stripFragmentFromString(document.location.href) + '#DO.C.User'
 
-    var id = DO.U.generateUUID();
     var o = localStorage.getItem(key);
 
-    if(o && JSON.parse(o).id == id) {
-      return JSON.parse(o)
-    }
+    return JSON.parse(o)
   }
   else {
     return Promise.reject({'message': 'localStorage is unavailable'})
