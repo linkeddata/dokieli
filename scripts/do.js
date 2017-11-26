@@ -1405,6 +1405,33 @@ function disableStorage(key) {
   console.log(util.getDateTimeISO() + ': ' + key + ' storage disabled.');
 }
 
+function updateStorageDocument(key) {
+  var content = doc.getDocument();
+
+  var id = DO.U.generateUUID();
+  var o = localStorage.getItem(key);
+
+  if(!o || (o && JSON.parse(o).id != digest)) {
+    var datetime = util.getDateTimeISO();
+
+    var object = {
+      "@context": "https://www.w3.org/ns/activitystreams",
+      "id": id,
+      "type": "Update",
+      "object": {
+        "id": key,
+        "type": "Document",
+        "updated": datetime,
+        "mediaType": "text/html",
+        "content": content
+      }
+    };
+
+    localStorage.setItem(key, JSON.stringify(object));
+    console.log(datetime + ': Document saved.');
+  }
+}
+
 function enableAutoSave(key) {
   Config.AutoSaveId = setInterval(function() { updateStorageDocument(key) }, Config.AutoSaveTimer);
   console.log(util.getDateTimeISO() + ': ' + key + ' autosave enabled.');
