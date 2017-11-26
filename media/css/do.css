@@ -477,7 +477,6 @@ cursor:default !important;
 #document-menu section button.signout-user {
 width:auto;
 height:auto;
-float: none;
 margin-left:1em;
 margin-top:1.25em;
 }
