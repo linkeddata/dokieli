@@ -636,16 +636,11 @@ var DO = {
     },
 
     initUser: function() {
-      var user = storage.getStorageProfile();
-      if(user) {
-        DO.C['User'] = user.object.describes;
-      }
-
-      var dMenu = document.querySelector('#document-menu.do');
-
-      if(dMenu) {
-        auth.showUserSigninSignout(dMenu.querySelector('header'));
-      }
+      storage.getStorageProfile().then(user => {
+        if (typeof user !== 'undefined' && 'object' in user) {
+          DO.C['User'] = user.object.describes;
+        }
+      })
     },
 
     setDocumentMode: function(mode) {
@@ -6609,6 +6604,7 @@ WHERE {\n\
 
     init: function() {
       if(document.body) {
+        DO.U.initUser();
         DO.U.initCurrentStylesheet();
         DO.U.setPolyfill();
         DO.U.setDocRefType();
@@ -6622,7 +6618,6 @@ WHERE {\n\
         DO.U.setDocumentMode();
         DO.U.showInboxNotifications();
         DO.U.initMath();
-        DO.U.initUser();
       }
     }
   } //DO.U
