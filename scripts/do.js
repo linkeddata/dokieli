@@ -8879,7 +8879,6 @@ function afterSignIn () {
       return Promise.resolve();
     });
 
-
   var user = document.querySelectorAll('aside.do article *[rel~="schema:creator"] > *[about="' + Config.User.IRI + '"]')
   for (let i = 0; i < user.length; i++) {
     var article = user[i].closest('article')

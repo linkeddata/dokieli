@@ -249,12 +249,11 @@ function afterSignIn () {
         uI.innerHTML = getUserSignedInHTML()
       }
 
-      storage.updateStorageProfile(Config.User)
+      return storage.updateStorageProfile(Config.User)
     })
     .catch(function(e) {
       return Promise.resolve();
     });
-
 
   var user = document.querySelectorAll('aside.do article *[rel~="schema:creator"] > *[about="' + Config.User.IRI + '"]')
   for (let i = 0; i < user.length; i++) {
