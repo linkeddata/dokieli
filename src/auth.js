@@ -250,8 +250,6 @@ function afterSignIn () {
       }
 
       storage.updateStorageProfile(Config.User)
-
-      return Promise.resolve();
     })
     .catch(function(e) {
       return Promise.resolve();

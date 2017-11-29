@@ -1442,66 +1442,100 @@ function disableAutoSave(key) {
 }
 
 function removeStorageItem(key) {
-  if (window.localStorage) {
-    console.log(util.getDateTimeISO() + ': ' + key + ' removed.')
-    localStorage.removeItem(key);
+  if (!key) { Promise.resolve(); }
+
+  console.log(util.getDateTimeISO() + ': ' + key + ' removed.')
+
+  if (Config.WebExtension) {
+    var browser = (typeof browser !== 'undefined') ? browser : chrome;
+
+    return browser.storage.local.remove(key);
   }
-}
-
-function removeStorageProfile() {
-  if (window.localStorage) {
-    var key = uri.stripFragmentFromString(document.location.href) + '#DO.C.User'
-    removeStorageItem(key)
-  }
-}
-
-function getStorageProfile() {
-  if (window.localStorage) {
-    var key = uri.stripFragmentFromString(document.location.href) + '#DO.C.User'
-
-    var o = localStorage.getItem(key);
-
-    return JSON.parse(o)
+  else if (window.localStorage) {
+    return Promise.resolve(localStorage.removeItem(key));
   }
   else {
-    return Promise.reject({'message': 'localStorage is unavailable'})
+    return Promise.reject({'message': 'storage is unavailable'})
+  }
+}
+
+function removeStorageProfile(key) {
+  key = key || 'DO.C.User';
+
+  return removeStorageItem(key)
+}
+
+function getStorageProfile(key) {
+  key = key || 'DO.C.User'
+
+  if (Config.WebExtension) {
+    //WebExtension
+    if (typeof browser !== 'undefined') {
+      return browser.storage.local.get(key).then(function(o){ console.log(o[key]); return o[key]; });
+    }
+    else {
+      var value = {};
+
+      chrome.storage.local.get(key, function(o){ value = o[key]; })
+
+      return new Promise(function(resolve, reject){
+        window.setTimeout(function() {
+          return resolve(value)
+        }, 50);
+      });
+    }
+  }
+  else if (window.localStorage) {
+    var o = localStorage.getItem(key);
+    return Promise.resolve(JSON.parse(o));
+  }
+  else {
+    return Promise.reject({'message': 'storage is unavailable'})
   }
 }
 
 function updateStorageProfile(User) {
-  if (window.localStorage) {
-    var key = uri.stripFragmentFromString(document.location.href) + '#DO.C.User'
+  var key = 'DO.C.User'
 
-    var id = DO.U.generateUUID();
-    var datetime = util.getDateTimeISO();
+  var id = DO.U.generateUUID();
+  var datetime = util.getDateTimeISO();
 
-    //cyclic
-    if (User.Graph) {
-      delete User.Graph
+  //because.. cyclic
+  if (User.Graph) {
+    delete User.Graph
+  }
+
+  if (User.Contacts) {
+    User.Contacts = {}
+  }
+
+  var object = {
+    "@context": "https://www.w3.org/ns/activitystreams",
+    "id": id,
+    "type": "Update",
+    "object": {
+      "id": key,
+      "type": "Profile",
+      "describes": User
+    },
+    "datetime": datetime,
+    "actor": User.IRI
+  };
+
+  if (Config.WebExtension) {
+    if (typeof browser !== 'undefined') {
+      return browser.storage.local.set({[key]: object});
     }
-
-    if (User.Contacts) {
-      User.Contacts = {}
+    else {
+      return Promise.resolve(chrome.storage.local.set({[key]: object}));
     }
-
-    var object = {
-      "@context": "https://www.w3.org/ns/activitystreams",
-      "id": id,
-      "type": "Update",
-      "object": {
-        "id": key,
-        "type": "Profile",
-        "describes": User
-      },
-      "datetime": datetime,
-      "actor": User.IRI
-    };
-
-    localStorage.setItem(key, JSON.stringify(object));
+  }
+  else if (window.localStorage) {
     console.log(datetime + ': User ' + User.IRI + ' saved.');
+    return Promise.resolve(localStorage.setItem(key, JSON.stringify(object)));
   }
   else {
-    return Promise.reject({'message': 'localStorage is unavailable'})
+    return Promise.reject({'message': 'storage is unavailable'})
   }
 }
 
@@ -4022,7 +4056,6 @@ console.log(err)
 console.log(reason);
           }
         ).then(() => {
-console.log('.... updateStorageProfile')
           storage.updateStorageProfile(DO.C.User)
         });
       }
@@ -8840,9 +8873,7 @@ function afterSignIn () {
         uI.innerHTML = getUserSignedInHTML()
       }
 
-      storage.updateStorageProfile(Config.User)
-
-      return Promise.resolve();
+      return storage.updateStorageProfile(Config.User)
     })
     .catch(function(e) {
       return Promise.resolve();

@@ -2449,7 +2449,6 @@ console.log(err)
 console.log(reason);
           }
         ).then(() => {
-console.log('.... updateStorageProfile')
           storage.updateStorageProfile(DO.C.User)
         });
       }
