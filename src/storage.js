@@ -108,9 +108,8 @@ function getStorageProfile(key) {
   key = key || 'DO.C.User'
 
   if (Config.WebExtension) {
-    //WebExtension
     if (typeof browser !== 'undefined') {
-      return browser.storage.local.get(key).then(function(o){ console.log(o[key]); return o[key]; });
+      return browser.storage.local.get(key).then(function(o){ return o[key]; });
     }
     else {
       var value = {};
