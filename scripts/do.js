@@ -1449,7 +1449,7 @@ function removeStorageItem(key) {
   if (Config.WebExtension) {
     var browser = (typeof browser !== 'undefined') ? browser : chrome;
 
-    return browser.storage.local.remove(key);
+    return browser.storage.sync.remove(key);
   }
   else if (window.localStorage) {
     return Promise.resolve(localStorage.removeItem(key));
@@ -1470,12 +1470,12 @@ function getStorageProfile(key) {
 
   if (Config.WebExtension) {
     if (typeof browser !== 'undefined') {
-      return browser.storage.local.get(key).then(function(o){ return o[key]; });
+      return browser.storage.sync.get(key).then(function(o){ return o[key]; });
     }
     else {
       var value = {};
 
-      chrome.storage.local.get(key, function(o){ value = o[key]; })
+      chrome.storage.sync.get(key, function(o){ value = o[key]; })
 
       return new Promise(function(resolve, reject){
         window.setTimeout(function() {
@@ -1523,10 +1523,10 @@ function updateStorageProfile(User) {
 
   if (Config.WebExtension) {
     if (typeof browser !== 'undefined') {
-      return browser.storage.local.set({[key]: object});
+      return browser.storage.sync.set({[key]: object});
     }
     else {
-      return Promise.resolve(chrome.storage.local.set({[key]: object}));
+      return Promise.resolve(chrome.storage.sync.set({[key]: object}));
     }
   }
   else if (window.localStorage) {
