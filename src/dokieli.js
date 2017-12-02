@@ -2927,8 +2927,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           if (baseURLType == 'base-url-relative') {
             DO.U.copyRelativeResources(storageIRI, nodes)
           }
-          // TODO: the variable nodes, below, is never used
-          // nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType})
+          nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType})
         }
 
         html.querySelector('body').innerHTML = '<main><article about="" typeof="schema:Article"></article></main>'
@@ -3076,8 +3075,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           if (baseURLType == 'base-url-relative') {
             DO.U.copyRelativeResources(storageIRI, nodes)
           }
-          // TODO: 'nodes' not used anywhere:
-          // nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType})
+          nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType})
         }
 
         html = doc.getDocument(html)
