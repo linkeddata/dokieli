@@ -3190,7 +3190,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           if (s != 'http' && s != 'https' && s != 'file' && s != 'data' && s != 'urn' && document.location.protocol != 'file:') {
             url = DO.U.setBaseURL(url, options);
           }
-          else if (node.tagName.toLowerCase() != 'a' && url.startsWith('http:')) {
+          else if (url.startsWith('http:') && node.tagName.toLowerCase()) {
             var proxyURL = ('proxyURL' in options) ? options.proxyURL : DO.C.ProxyURL
             url = proxyURL + uri.encodeString(url)
           }
@@ -3271,14 +3271,28 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
             break;
         }
 
-        var fromURL = node.getAttribute(ref);
+        var fromURL = x = node.getAttribute(ref).trim();
+        var pathToFile = '';
         var s = fromURL.split(':')[0];
+
         if (s != 'http' && s != 'https' && s != 'file' && s != 'data' && s != 'urn' && s != 'urn') {
-          var pathToFile = DO.U.setBaseURL(fromURL, {'baseURLType': 'base-url-relative'});
-          fromURL = DO.U.getBaseURL(document.location.href) + pathToFile.replace(/^\//g, '');
-          var toURL = baseURL + pathToFile.replace(/^\//g, '');
+          if (fromURL.startsWith('//')) {
+            fromURL = document.location.protocol + fromURL
+            toURL = baseURL + fromURL.substr(2)
+          }
+          else if (fromURL.startsWith('/')) {
+            pathToFile = DO.U.setBaseURL(fromURL, {'baseURLType': 'base-url-relative'});
+            fromURL = document.location.origin + fromURL
+            toURL = baseURL + pathToFile
+          }
+          else {
+            pathToFile = DO.U.setBaseURL(fromURL, {'baseURLType': 'base-url-relative'});
+            fromURL = DO.U.getBaseURL(document.location.href) + fromURL
+            toURL = baseURL + pathToFile
+          }
+
           fetcher.copyResource(fromURL, toURL);
-         }
+        }
       };
     },
 
