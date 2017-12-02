@@ -2243,7 +2243,7 @@ var DO = {
 
     initUser: function() {
       storage.getStorageProfile().then(user => {
-        if (typeof user !== 'undefined' && 'object' in user) {
+        if (user && 'object' in user) {
           DO.C['User'] = user.object.describes;
         }
       })
