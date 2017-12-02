@@ -4796,6 +4796,10 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           if (s != 'http' && s != 'https' && s != 'file' && s != 'data' && s != 'urn' && document.location.protocol != 'file:') {
             url = DO.U.setBaseURL(url, options);
           }
+          else if (node.tagName.toLowerCase() != 'a' && url.startsWith('http:')) {
+            var proxyURL = ('proxyURL' in options) ? options.proxyURL : DO.C.ProxyURL
+            url = proxyURL + uri.encodeString(url)
+          }
           node.setAttribute(ref, url);
         };
       }
