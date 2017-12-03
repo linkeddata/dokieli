@@ -4542,13 +4542,15 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
         fetcher.putResource(storageIRI, html)
           .then(() => {
+            var documentMode = (DO.C.WebExtension) ? '' : '?author=true'
+
             newDocument.insertAdjacentHTML('beforeend',
               '<div class="response-message"><p class="success">' +
               'New document created at <a href="' + storageIRI +
-              '?author=true">' + storageIRI + '</a></p></div>'
+              documentMode + '">' + storageIRI + '</a></p></div>'
             )
 
-            window.open(storageIRI + '?author=true', '_blank')
+            window.open(storageIRI + documentMode, '_blank')
           })
 
           .catch(error => {
@@ -4700,12 +4702,14 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
             let url = response.url || storageIRI
 
+            var documentMode = (DO.C.WebExtension) ? '' : '?author=true'
+
             saveAsDocument.insertAdjacentHTML('beforeend',
               '<div class="response-message"><p class="success">' +
-              'Document saved at <a href="' + url + '?author=true">' + url + '</a></p></div>'
+              'Document saved at <a href="' + url + documentMode + '">' + url + '</a></p></div>'
             )
 
-            window.open(url + '?author=true', '_blank')
+            window.open(url + documentMode, '_blank')
           })
 
           .catch(error => {
