@@ -1473,6 +1473,7 @@ var DO = {
         'document-predecessor-version',
         'document-timegate',
         'document-timemap',
+        'document-derived-from',
         'document-license',
         'document-inbox',
         'document-annotation-service',
@@ -3051,12 +3052,13 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
         var wasDerived = document.querySelector('#derivation-data')
         if (wasDerived.checked) {
+          var o = { 'id': 'document-derived-from', 'title': 'Derived From' };
+          var r = { 'rel': 'prov:wasDerivedFrom', 'href': currentDocumentURL };
+          html = DO.U.setDocumentRelation(html, [r], o);
+
           var wasDerivedOn = util.getDateTimeISO()
-          nodeInsertLocation.insertAdjacentHTML('beforebegin',
-            '<dl id="document-derived-from"><dt>Derived From</dt><dd><a href="' +
-            currentDocumentURL + '" rel="prov:wasDerivedFrom">' +
-            currentDocumentURL + '</a></dd></dl><dl id="document-derived-on"><dt>Derived On</dt><dd><time datetime="' +
-            wasDerivedOn + '">' + wasDerivedOn + '</time></dd></dl>' + '\n'
+
+          nodeInsertLocation.insertAdjacentHTML('beforebegin', '<dl id="document-derived-on"><dt>Derived On</dt><dd><time datetime="' + wasDerivedOn + '">' + wasDerivedOn + '</time></dd></dl>' + '\n'
           )
         }
 
@@ -4580,7 +4582,7 @@ WHERE {\n\
       if(!data || !options) { return; }
 
       var h = [];
-      var uniqueRelations = ['document-identifier', 'document-original', 'document-memento', 'document-latest-version', 'document-predecessor-version', 'document-timemap', 'document-timegate'];
+      var uniqueRelations = ['document-identifier', 'document-original', 'document-memento', 'document-latest-version', 'document-predecessor-version', 'document-timemap', 'document-timegate', 'document-derived-from'];
 
       var dl = rootNode.querySelector('#' + options.id);
 
