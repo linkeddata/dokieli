@@ -6190,7 +6190,6 @@ WHERE {\n\
       if(!data || !options) { return; }
 
       var h = [];
-      var uniqueRelations = ['document-identifier', 'document-original', 'document-memento', 'document-latest-version', 'document-predecessor-version', 'document-timemap', 'document-timegate', 'document-derived-from',  'document-derived-on'];
 
       var dl = rootNode.querySelector('#' + options.id);
 
@@ -6198,7 +6197,7 @@ WHERE {\n\
         var documentRelation = '<dd>' + DO.U.createRDFaHTML(d) + '</dd>';
 
         if(dl) {
-          if (uniqueRelations.indexOf(options.id) > -1) {
+          if (DO.C.DocumentItems.indexOf(options.id) > -1) {
             dd = dl.querySelector('dd');
             dl.removeChild(dd);
           }
