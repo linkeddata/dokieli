@@ -1474,6 +1474,7 @@ var DO = {
         'document-timegate',
         'document-timemap',
         'document-derived-from',
+        'document-derived-on',
         'document-license',
         'document-inbox',
         'document-annotation-service',
@@ -3056,10 +3057,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           var r = { 'rel': 'prov:wasDerivedFrom', 'href': currentDocumentURL };
           html = DO.U.setDocumentRelation(html, [r], o);
 
-          var wasDerivedOn = util.getDateTimeISO()
-
-          nodeInsertLocation.insertAdjacentHTML('beforebegin', '<dl id="document-derived-on"><dt>Derived On</dt><dd><time datetime="' + wasDerivedOn + '">' + wasDerivedOn + '</time></dd></dl>' + '\n'
-          )
+          html = DO.U.setDate(html, { 'id': 'document-derived-on', 'property': 'prov:generatedAtTime', 'title': 'Derived On' });
         }
 
         var inboxLocation = saveAsDocument.querySelector('#' + locationInboxId + '-' + locationInboxAction).innerText.trim()
@@ -4582,7 +4580,7 @@ WHERE {\n\
       if(!data || !options) { return; }
 
       var h = [];
-      var uniqueRelations = ['document-identifier', 'document-original', 'document-memento', 'document-latest-version', 'document-predecessor-version', 'document-timemap', 'document-timegate', 'document-derived-from'];
+      var uniqueRelations = ['document-identifier', 'document-original', 'document-memento', 'document-latest-version', 'document-predecessor-version', 'document-timemap', 'document-timegate', 'document-derived-from',  'document-derived-on'];
 
       var dl = rootNode.querySelector('#' + options.id);
 
@@ -4623,13 +4621,11 @@ WHERE {\n\
       rootNode = rootNode || document;
       options = options || {};
 
-      var property = ('property' in options) ? options.property : 'schema:dateCreated';
-
       var title = ('title' in options) ? options.title : 'Created';
 
       var id = (options.id) ? options.id : 'document-' + title.toLowerCase().replace(/\W/g, '-');
 
-      var node = rootNode.querySelector('#' + id + ' [property="' + property + '"]');
+      var node = ('property' in options) ? rootNode.querySelector('#' + id + ' [property="' + options.property + '"]') : rootNode.querySelector('#' + id + ' time');
 
       if(node) {
         var datetime = ('datetime' in options) ? options.datetime.toISOString() : util.getDateTimeISO();
@@ -4652,8 +4648,6 @@ WHERE {\n\
     createDateHTML: function(options) {
       options = options || {};
 
-      var property = ('property' in options) ? options.property : 'schema:dateCreated';
-
       var title = ('title' in options) ? options.title : 'Created';
 
       var id = ('id' in options && options.id.length > 0) ? ' id="' + options.id + '"' : ' id="document-' + title.toLowerCase().replace(/\W/g, '-') + '"';
@@ -4661,10 +4655,15 @@ WHERE {\n\
       var c = ('class' in options && options.class.length > 0) ? ' class="' + options.class + '"' : '';
 
       var datetime = ('datetime' in options) ? options.datetime.toISOString() : util.getDateTimeISO();
+      var datetimeLabel = datetime.substr(0, datetime.indexOf('T'));
+
+      var time = ('property' in options)
+        ? '<time content="' + datetime + '" datatype="xsd:dateTime" datetime="' + datetime + '" property="' + options.property + '">' + datetimeLabel + '</time>'
+        : '<time datetime="' + datetime + '">' + datetimeLabel + '</time>';
 
       var date = '        <dl'+c+id+'>\n\
           <dt>' + title + '</dt>\n\
-          <dd><time content="' + datetime + '" datatype="xsd:dateTime" datetime="' + datetime + '" property="' + property + '">' + datetime.substr(0, datetime.indexOf('T')) + '</time></dd>\n\
+          <dd>' + time + '</dd>\n\
         </dl>\n\
 ';
 
