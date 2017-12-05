@@ -4679,7 +4679,9 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
         var annotationServiceLocation = saveAsDocument.querySelector('#' + locationAnnotationServiceId + '-' + locationAnnotationServiceAction).innerText.trim()
         if (annotationServiceLocation) {
-          nodeInsertLocation.insertAdjacentHTML('beforebegin', '<dl id="document-annotation-service"><dt>Annotation Service</dt><dd><a href="' + annotationServiceLocation + '" rel="oa:annotationService">' + annotationServiceLocation + '</a></dd></dl>' + "\n")
+          var o = { 'id': 'document-annotation-service', 'title': 'Annotation Service' };
+          var r = { 'rel': 'ldp:inbox', 'href': annotationServiceLocation };
+          html = DO.U.setDocumentRelation(html, [r], o);
         }
 
         var baseURLSelectionChecked = saveAsDocument.querySelector('select[name="base-url"]')
