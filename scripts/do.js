@@ -4672,7 +4672,9 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
         var inboxLocation = saveAsDocument.querySelector('#' + locationInboxId + '-' + locationInboxAction).innerText.trim()
         if (inboxLocation) {
-          nodeInsertLocation.insertAdjacentHTML('beforebegin', '<dl id="document-inbox"><dt>Notifications Inbox</dt><dd><a href="' + inboxLocation + '" rel="ldp:inbox">' + inboxLocation + '</a></dd></dl>' + "\n")
+          var o = { 'id': 'document-inbox', 'title': 'Notifications Inbox' };
+          var r = { 'rel': 'ldp:inbox', 'href': inboxLocation };
+          html = DO.U.setDocumentRelation(html, [r], o);
         }
 
         var annotationServiceLocation = saveAsDocument.querySelector('#' + locationAnnotationServiceId + '-' + locationAnnotationServiceAction).innerText.trim()
