@@ -4664,6 +4664,10 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           html = DO.U.setDocumentRelation(html, [r], o);
 
           html = DO.U.setDate(html, { 'id': 'document-derived-on', 'property': 'prov:generatedAtTime', 'title': 'Derived On' });
+
+          var o = { 'id': 'document-identifier', 'title': 'Identifier' };
+          var r = { 'rel': 'owl:sameAs', 'href': storageIRI };
+          html = DO.U.setDocumentRelation(html, [r], o);
         }
 
         var inboxLocation = saveAsDocument.querySelector('#' + locationInboxId + '-' + locationInboxAction).innerText.trim()
