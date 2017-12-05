@@ -4655,32 +4655,32 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         }
 
         var html = document.documentElement.cloneNode(true)
-        var nodeInsertLocation = html.querySelector('main > article') || html.querySelector('body')
+        var o, r
 
         var wasDerived = document.querySelector('#derivation-data')
         if (wasDerived.checked) {
-          var o = { 'id': 'document-derived-from', 'title': 'Derived From' };
-          var r = { 'rel': 'prov:wasDerivedFrom', 'href': currentDocumentURL };
+          o = { 'id': 'document-derived-from', 'title': 'Derived From' };
+          r = { 'rel': 'prov:wasDerivedFrom', 'href': currentDocumentURL };
           html = DO.U.setDocumentRelation(html, [r], o);
 
           html = DO.U.setDate(html, { 'id': 'document-derived-on', 'property': 'prov:generatedAtTime', 'title': 'Derived On' });
 
-          var o = { 'id': 'document-identifier', 'title': 'Identifier' };
-          var r = { 'rel': 'owl:sameAs', 'href': storageIRI };
+          o = { 'id': 'document-identifier', 'title': 'Identifier' };
+          r = { 'rel': 'owl:sameAs', 'href': storageIRI };
           html = DO.U.setDocumentRelation(html, [r], o);
         }
 
         var inboxLocation = saveAsDocument.querySelector('#' + locationInboxId + '-' + locationInboxAction).innerText.trim()
         if (inboxLocation) {
-          var o = { 'id': 'document-inbox', 'title': 'Notifications Inbox' };
-          var r = { 'rel': 'ldp:inbox', 'href': inboxLocation };
+          o = { 'id': 'document-inbox', 'title': 'Notifications Inbox' };
+          r = { 'rel': 'ldp:inbox', 'href': inboxLocation };
           html = DO.U.setDocumentRelation(html, [r], o);
         }
 
         var annotationServiceLocation = saveAsDocument.querySelector('#' + locationAnnotationServiceId + '-' + locationAnnotationServiceAction).innerText.trim()
         if (annotationServiceLocation) {
-          var o = { 'id': 'document-annotation-service', 'title': 'Annotation Service' };
-          var r = { 'rel': 'ldp:inbox', 'href': annotationServiceLocation };
+          o = { 'id': 'document-annotation-service', 'title': 'Annotation Service' };
+          r = { 'rel': 'ldp:inbox', 'href': annotationServiceLocation };
           html = DO.U.setDocumentRelation(html, [r], o);
         }
 
