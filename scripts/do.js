@@ -3099,47 +3099,15 @@ var DO = {
       rootNode = rootNode || document;
       options = options || {};
 
-      var documentItems = [
-        'authors',
-        'document-identifier',
-        'document-created',
-        'document-modified',
-        'document-published',
-        'document-original',
-        'document-memento',
-        'document-latest-version',
-        'document-predecessor-version',
-        'document-timegate',
-        'document-timemap',
-        'document-derived-from',
-        'document-derived-on',
-        'document-license',
-        'document-inbox',
-        'document-annotation-service',
-        'document-in-reply-to',
-        'document-resource-state',
-        'document-status',
-        'table-of-contents',
-        'table-of-figures',
-        'table-of-tables',
-        'table-of-abbreviations',
-        'authors',
-        'keywords',
-        'categories-and-subject-descriptors',
-        'abstract',
-        'introduction',
-        'prologue'
-      ];
+      options['id'] = ('id' in options) ? options.id : DO.C.DocumentItems[DO.C.DocumentItems.length-1];
 
-      options['id'] = ('id' in options) ? options.id : documentItems[documentItems.length-1];
-
-      var item = documentItems.indexOf(options.id);
+      var item = DO.C.DocumentItems.indexOf(options.id);
 
       var article = rootNode.querySelector('main > article') || rootNode.querySelector('body');
 
       if(item > -1) {
         for(var i = item; i >= 0; i--) {
-          var node = rootNode.querySelector('#' + documentItems[i]);
+          var node = rootNode.querySelector('#' + DO.C.DocumentItems[i]);
 
           if (node) {
             node.insertAdjacentHTML('afterend', h);
