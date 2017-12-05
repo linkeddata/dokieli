@@ -3556,7 +3556,7 @@ var DO = {
       var rootNode = document.documentElement.cloneNode(true);
 
       var date = new Date();
-      rootNode = DO.U.setDate(rootNode, { 'type': 'Created', 'datetime': date });
+      rootNode = DO.U.setDate(rootNode, { 'id': 'document-created', 'property': 'schema:dateCreated', 'title': 'Created', 'datetime': date });
 
       var resourceState = rootNode.querySelector('#' + 'document-resource-state');
       if(!resourceState){
@@ -3603,7 +3603,7 @@ var DO = {
 
       //Update URI-R
       if (DO.C.OriginalResourceInfo['state'] != DO.C.Vocab['ldpImmutableResource']['@id']) {
-        DO.U.setDate(document, { 'type': 'Created', 'datetime': date });
+        DO.U.setDate(document, { 'id': 'document-created', 'property': 'schema:dateCreated', 'title': 'Created', 'datetime': date });
 
         o = { 'id': 'document-identifier', 'title': 'Identifier' };
         r = { 'rel': 'owl:sameAs', 'href': url };
@@ -3648,7 +3648,7 @@ var DO = {
     createMutableResource: function(url, data, options) {
       if(!url) return;
 
-      DO.U.setDate(document, { 'type': 'Created' } );
+      DO.U.setDate(document, { 'id': 'document-created', 'property': 'schema:dateCreated', 'title': 'Created' } );
 
       var uuid = DO.U.generateUUID();
       var containerIRI = url.substr(0, url.lastIndexOf('/') + 1);
@@ -3687,7 +3687,7 @@ var DO = {
     updateMutableResource: function(url, data, options) {
       if(!url) return;
 
-      DO.U.setDate(document, { 'type': 'Modified' } );
+      DO.U.setDate(document, { 'id': 'document-modified', 'property': 'schema:dateModified', 'title': 'Modified' } );
 
       data = doc.getDocument();
       DO.U.processSave(url, null, data, options).then(() => {
@@ -6228,21 +6228,18 @@ WHERE {\n\
     setDate: function(rootNode, options) {
       rootNode = rootNode || document;
       options = options || {};
-      var type;
 
-      switch(options.type) {
-        case 'Created': default: type = 'Created'; break;
-        case 'Published': type = 'Published'; break;
-        case 'Modified': type = 'Modified'; break;
-      }
+      var property = ('property' in options) ? options.property : 'schema:dateCreated';
 
-      var elementId = (options.id) ? options.id : 'document-' + type.toLowerCase();
+      var title = ('title' in options) ? options.title : 'Created';
 
-      var node = rootNode.querySelector('#' + elementId + ' [property*=":date' + type + '"]');
+      var id = (options.id) ? options.id : 'document-' + title.toLowerCase().replace(/\W/g, '-');
 
-      var datetime = ('datetime' in options) ? options.datetime.toISOString() : util.getDateTimeISO();
+      var node = rootNode.querySelector('#' + id + ' [property="' + property + '"]');
 
       if(node) {
+        var datetime = ('datetime' in options) ? options.datetime.toISOString() : util.getDateTimeISO();
+
         if(node.getAttribute('datetime')) {
           node.setAttribute('datetime', datetime);
         }
@@ -6252,7 +6249,7 @@ WHERE {\n\
         node.textContent = datetime.substr(0, datetime.indexOf('T'));
       }
       else {
-        rootNode = DO.U.insertDocumentLevelHTML(rootNode, DO.U.createDateHTML(options), { 'id': elementId });
+        rootNode = DO.U.insertDocumentLevelHTML(rootNode, DO.U.createDateHTML(options), { 'id': id });
       }
 
       return rootNode;
@@ -6260,21 +6257,20 @@ WHERE {\n\
 
     createDateHTML: function(options) {
       options = options || {};
-      var type;
 
-      switch(options.type) {
-        case 'Created': default: type = 'Created'; break;
-        case 'Published': type = 'Published'; break;
-        case 'Modified': type = 'Modified'; break;
-      }
+      var property = ('property' in options) ? options.property : 'schema:dateCreated';
+
+      var title = ('title' in options) ? options.title : 'Created';
+
+      var id = ('id' in options && options.id.length > 0) ? ' id="' + options.id + '"' : ' id="document-' + title.toLowerCase().replace(/\W/g, '-') + '"';
 
       var c = ('class' in options && options.class.length > 0) ? ' class="' + options.class + '"' : '';
-      var id = ('id' in options && options.id.length > 0) ? ' id="' + options.id + '"' : ' id="document-' + type.toLowerCase() + '"';
+
       var datetime = ('datetime' in options) ? options.datetime.toISOString() : util.getDateTimeISO();
 
       var date = '        <dl'+c+id+'>\n\
-          <dt>' + type + '</dt>\n\
-          <dd><time content="' + datetime + '" datatype="xsd:dateTime" datetime="' + datetime + '" property="schema:date' + type + '">' + datetime.substr(0, datetime.indexOf('T')) + '</time></dd>\n\
+          <dt>' + title + '</dt>\n\
+          <dd><time content="' + datetime + '" datatype="xsd:dateTime" datetime="' + datetime + '" property="' + property + '">' + datetime.substr(0, datetime.indexOf('T')) + '</time></dd>\n\
         </dl>\n\
 ';
 
