@@ -1576,8 +1576,9 @@ var DO = {
 
     buttonClose: function() {
       document.addEventListener('click', function(e) {
-        if (e.target.matches('button.close')) {
-          var parent = e.target.parentNode;
+        var button = e.target.closest('button.close')
+        if (button) {
+          var parent = button.parentNode;
           parent.parentNode.removeChild(parent);
         }
       });
@@ -2180,7 +2181,8 @@ var DO = {
 
     replyToResource: function replyToResource (e, iri) {
       iri = iri || fetcher.currentLocation()
-      e.target.disabled = true
+
+      e.target.closest('button').disabled = true
 
       document.body.insertAdjacentHTML('beforeend', '<aside id="reply-to-resource" class="do on">' + DO.C.Button.Close + '<h2>Reply to this</h2><div id="reply-to-resource-input"><p>Reply to <code>' +
         iri +'</code></p><ul><li><p><label for="reply-to-resource-note">Quick reply (plain text note)</label></p><p><textarea id="reply-to-resource-note" rows="10" cols="40" name="reply-to-resource-note" placeholder="Great article!"></textarea></p></li><li><label for="reply-to-resource-license">License</label> <select id="reply-to-resource-license" name="reply-to-resource-license">' +
@@ -2206,17 +2208,14 @@ var DO = {
       bli.placeholder = 'https://example.org/path/to/article'
       replyToResource.insertAdjacentHTML('beforeend', '<button class="reply">Send now</button>')
 
-      // TODO: New in editor make this button do something.
-      //     Question: when should the notification be sent?
-      //replyToResource.insertAdjacentHTML('beforeend', 'or <button class="reply-new"><i class="fa fa-paper-plane-o"></i> Write reply in new window</button>');
-      replyToResource.insertAdjacentHTML('beforeend', '</aside>')
+      // replyToResource.insertAdjacentHTML('beforeend', 'or <button class="reply-new"><i class="fa fa-paper-plane-o"></i> Write reply in new window</button>');
 
       replyToResource.addEventListener('click', e => {
-        if (e.target.matches('button.close')) {
+        if (e.target.closest('button.close')) {
           document.querySelector('#document-do .resource-reply').disabled = false
         }
 
-        if (e.target.matches('button.reply')) {
+        if (e.target.closest('button.reply')) {
           var note = document
             .querySelector('#reply-to-resource #reply-to-resource-note')
             .value.trim()
@@ -2225,12 +2224,12 @@ var DO = {
           if (rm) {
             rm.parentNode.removeChild(rm)
           }
-          replyToResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>')
         }
 
+        replyToResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>')
+
         if (!iri || !note) {
-          replyToResource
-            .querySelector('.response-message')
+          document.querySelector('#reply-to-resource .response-message')
             .innerHTML = '<p class="error">Need a note and a location to save it.</p>'
           return
         }
