@@ -38,6 +38,9 @@ module.exports = {
     DisableEditorButton: '<button class="editor-disable" title="Disable editor"><i class="fa fa-i-cursor fa-2x"></i>Edit</button>',
     EnableEditorButton: '<button class="editor-enable" title="Enable editor"><i class="fa fa-i-cursor fa-2x"></i>Edit</button>'
   },
+  Button: {
+    Close: '<button class="close" title="Close"><i class="fa fa-close fa-2x"></i></button>'
+  },
   DOMNormalisation: {
     'selfClosing': "area base basefont br col colgroup embed hr img input isindex link meta metadata param source wbr",
     'skipAttributes': "contenteditable spellcheck medium-editor-index data-medium-editor-element data-medium-editor-editor-index data-medium-focused data-placeholder role aria-multiline style",

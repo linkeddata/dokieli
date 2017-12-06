@@ -863,7 +863,7 @@ var DO = {
               e.target.disabled = true;
             }
 
-            document.body.insertAdjacentHTML('beforeend', '<aside id="graph-view" class="do on"><button class="close" title="Close">❌</button><h2>Graph view</h2></aside>');
+            document.body.insertAdjacentHTML('beforeend', '<aside id="graph-view" class="do on">' + DO.C.Button.Close + '<h2>Graph view</h2></aside>');
 
             var graphView = document.getElementById('graph-view');
             graphView.addEventListener('click', function(e) {
@@ -1013,7 +1013,7 @@ var DO = {
           }
         }
 
-        var embedMenu = '<aside id="embed-data-entry" class="do on tabs"><button class="close" title="Close">❌</button>\n\
+        var embedMenu = '<aside id="embed-data-entry" class="do on tabs">' + DO.C.Button.Close + '\n\
         <h2>Embed Data</h2>\n\
         <nav><ul><li class="selected"><a href="#embed-data-turtle">Turtle</a></li><li><a href="#embed-data-json-ld">JSON-LD</a></li><li><a href="#embed-data-trig">TriG</a></li></ul></nav>\n\
         <div id="embed-data-turtle" class="selected"><textarea placeholder="Enter data in Turtle" name="meta-turtle" cols="80" rows="24">' + ((scriptCurrentData['meta-turtle']) ? scriptCurrentData['meta-turtle'].content : '') + '</textarea><button class="save">Save</button></div>\n\
@@ -1196,7 +1196,7 @@ var DO = {
       if (!node) {
         node = document.getElementById('document-items');
         if (!node) {
-          document.body.insertAdjacentHTML('beforeend', '<aside id="document-items" class="do on"><button class="close" title="Close">❌</button></aside>');
+          document.body.insertAdjacentHTML('beforeend', '<aside id="document-items" class="do on">' + DO.C.Button.Close + '</aside>');
           node = document.getElementById('document-items');
         }
       }
@@ -1250,7 +1250,7 @@ var DO = {
       if (!node) {
         node = document.getElementById('document-items');
         if (!node) {
-          document.body.insertAdjacentHTML('beforeend', '<aside id="document-items" class="do on"><button class="close" title="Close">❌</button></aside>');
+          document.body.insertAdjacentHTML('beforeend', '<aside id="document-items" class="do on">' + DO.C.Button.Close + '</aside>');
           node = document.getElementById('document-items');
         }
       }
@@ -1760,7 +1760,7 @@ var DO = {
           if (!node) {
             node = document.getElementById(elementId);
             if(!node) {
-              document.body.insertAdjacentHTML('beforeend', '<aside id="' + elementId + '" class="do on"><h2>Memento</h2><button class="close" title="Close">❌</button></aside>');
+              document.body.insertAdjacentHTML('beforeend', '<aside id="' + elementId + '" class="do on"><h2>Memento</h2>' + DO.C.Button.Close + '</aside>');
               node = document.getElementById(elementId);
             }
           }
@@ -2096,7 +2096,7 @@ var DO = {
       iri = iri || fetcher.currentLocation()
       e.target.disabled = true
 
-      document.body.insertAdjacentHTML('beforeend', '<aside id="reply-to-resource" class="do on"><button class="close" title="Close">❌</button><h2>Reply to this</h2><div id="reply-to-resource-input"><p>Reply to <code>' +
+      document.body.insertAdjacentHTML('beforeend', '<aside id="reply-to-resource" class="do on">' + DO.C.Button.Close + '<h2>Reply to this</h2><div id="reply-to-resource-input"><p>Reply to <code>' +
         iri +'</code></p><ul><li><p><label for="reply-to-resource-note">Quick reply (plain text note)</label></p><p><textarea id="reply-to-resource-note" rows="10" cols="40" name="reply-to-resource-note" placeholder="Great article!"></textarea></p></li><li><label for="reply-to-resource-license">License</label> <select id="reply-to-resource-license" name="reply-to-resource-license">' +
         DO.U.getLicenseOptionsHTML() + '</select></li></ul></div>')
 
@@ -2306,7 +2306,7 @@ var DO = {
         noContactsText = '<p>Sign in to select from your list of contacts, alternatively, enter contacts individually:</p>';
       }
 
-      document.body.insertAdjacentHTML('beforeend', '<aside id="share-resource" class="do on"><button class="close" title="Close">❌</button><h2>Share resource</h2><div id="share-resource-input"><p>Send a notification about <code>' + iri +'</code></p><ul><li id="share-resource-address-book"></li><li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share">Share</button></aside>');
+      document.body.insertAdjacentHTML('beforeend', '<aside id="share-resource" class="do on">' + DO.C.Button.Close + '<h2>Share resource</h2><div id="share-resource-input"><p>Send a notification about <code>' + iri +'</code></p><ul><li id="share-resource-address-book"></li><li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share">Share</button></aside>');
 
       var li = document.getElementById('share-resource-address-book');
 
@@ -2685,7 +2685,7 @@ console.log(reason);
       id = id || 'location-' + DO.U.generateAttributeId();
       action = action || 'write';
 
-      var browserHTML = '<aside id="resource-browser-' + id + '" class="do on"><button class="close" title="Close">❌</button><h2>Resource Browser</h2></aside>';
+      var browserHTML = '<aside id="resource-browser-' + id + '" class="do on">' + DO.C.Button.Close + '<h2>Resource Browser</h2></aside>';
       document.querySelector('body').insertAdjacentHTML('beforeend', browserHTML);
 
       DO.U.setupResourceBrowser(document.getElementById('resource-browser-' + id), id, action);
@@ -2710,7 +2710,7 @@ console.log(reason);
       if(typeof e !== 'undefined') {
         e.target.disabled = true;
       }
-      document.body.insertAdjacentHTML('beforeend', '<aside id="open-document" class="do on"><button class="close" title="Close">❌</button><h2>Open Document</h2><p<label for="open-local-file">Open local file</label> <input type="file" id="open-local-file" name="open-local-file" /></p></aside>');
+      document.body.insertAdjacentHTML('beforeend', '<aside id="open-document" class="do on">' + DO.C.Button.Close + '<h2>Open Document</h2><p<label for="open-local-file">Open local file</label> <input type="file" id="open-local-file" name="open-local-file" /></p></aside>');
 
       var id = 'location-open-document';
       var action = 'read';
@@ -2851,7 +2851,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
     createNewDocument: function createNewDocument (e) {
       e.target.disabled = true
-      document.body.insertAdjacentHTML('beforeend', '<aside id="create-new-document" class="do on"><button class="close" title="Close">❌</button><h2>Create New Document</h2></aside>')
+      document.body.insertAdjacentHTML('beforeend', '<aside id="create-new-document" class="do on">' + DO.C.Button.Close + '<h2>Create New Document</h2></aside>')
 
       var newDocument = document.getElementById('create-new-document')
       newDocument.addEventListener('click', e => {
@@ -2949,7 +2949,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
     saveAsDocument: function saveAsDocument (e) {
       e.target.disabled = true;
-      document.body.insertAdjacentHTML('beforeend', '<aside id="save-as-document" class="do on"><button class="close" title="Close">❌</button><h2>Save As Document</h2></aside>');
+      document.body.insertAdjacentHTML('beforeend', '<aside id="save-as-document" class="do on">' + DO.C.Button.Close + '<h2>Save As Document</h2></aside>');
 
       var saveAsDocument = document.getElementById('save-as-document');
       saveAsDocument.addEventListener('click', function(e) {
@@ -3146,7 +3146,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
     viewSource: function(e) {
       e.target.disabled = true;
-      document.body.insertAdjacentHTML('beforeend', '<aside id="source-view" class="do on"><button class="close" title="Close">❌</button><h2>Source</h2><textarea id="source-edit" rows="24" cols="80"></textarea><p><button class="create">Update</button></p></aside>');
+      document.body.insertAdjacentHTML('beforeend', '<aside id="source-view" class="do on">' + DO.C.Button.Close + '<h2>Source</h2><textarea id="source-edit" rows="24" cols="80"></textarea><p><button class="create">Update</button></p></aside>');
       var sourceBox = document.getElementById('source-view');
       var input = document.getElementById('source-edit');
       input.value = doc.getDocument();
