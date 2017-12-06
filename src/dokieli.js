@@ -836,7 +836,7 @@ var DO = {
         for (var i = 0; i < stylesheets.length; i++) {
           var stylesheet = stylesheets[i];
           var view = stylesheet.getAttribute('title');
-          if(stylesheet.matches('[rel~="alternate"]')) {
+          if(stylesheet.closest('[rel~="alternate"]')) {
             s += '<li><button title="Change to ‘' + view + '’ view">' + view + '</button></li>';
           }
           else {
@@ -867,7 +867,7 @@ var DO = {
 
             var graphView = document.getElementById('graph-view');
             graphView.addEventListener('click', function(e) {
-              if (e.target.matches('button.close')) {
+              if (e.target.closest('button.close')) {
                 var rv = document.querySelector('#document-views .resource-visualise');
                 if (rv) {
                   rv.disabled = false;
@@ -1223,7 +1223,7 @@ var DO = {
 
         if(DO.C.EditorEnabled) {
           document.getElementById('table-of-stuff').addEventListener('click', function(e){
-            if (e.target.matches('input')) {
+            if (e.target.closest('input')) {
               var id = e.target.id;
               var listType = id.slice(4, id.length);
               if(!e.target.getAttribute('checked')) {
@@ -1511,7 +1511,7 @@ var DO = {
     },
 
     updateDocumentTitle: function(e) {
-      if (!e.target.matches('h1')) {
+      if (!e.target.closest('h1')) {
         var h1 = document.querySelector('h1');
         if (h1) {
           document.title = h1.textContent.trim();
@@ -2318,14 +2318,14 @@ var DO = {
 
       var shareResource = document.getElementById('share-resource');
       shareResource.addEventListener('click', function (e) {
-        if (e.target.matches('button.close')) {
+        if (e.target.closest('button.close')) {
           var rs = document.querySelector('#document-do .resource-share');
           if (rs) {
             rs.disabled = false;
           }
         }
 
-        if (DO.C.User.IRI && e.target.matches('button.add')) {
+        if (DO.C.User.IRI && e.target.closest('button.add')) {
           e.preventDefault();
           e.stopPropagation();
           var li = e.target.closest('li');
@@ -2333,7 +2333,7 @@ var DO = {
           DO.U.selectContacts(li, DO.C.User.IRI);
         }
 
-        if (e.target.matches('button.share')) {
+        if (e.target.closest('button.share')) {
           var tos = document.querySelector('#share-resource #share-resource-to').value.trim();
           tos = (tos.length > 0) ? tos.split(/\r\n|\r|\n/) : [];
           var note = document.querySelector('#share-resource #share-resource-note').value.trim();
@@ -2720,15 +2720,15 @@ console.log(reason);
       openDocument.insertAdjacentHTML('beforeend', idSamp + '<button class="open">Open</button>');
 
       openDocument.addEventListener('click', function (e) {
-        if (e.target.matches('button.close')) {
+        if (e.target.closest('button.close')) {
           document.querySelector('#document-do .resource-open').disabled = false;
         }
 
-        if (e.target.matches('#open-local-file')){
+        if (e.target.closest('#open-local-file')){
           e.target.addEventListener('change', DO.U.openInputFile, false);
         }
 
-        if (e.target.matches('button.open')) {
+        if (e.target.closest('button.open')) {
           var openDocument = document.getElementById('open-document');
           var rm = openDocument.querySelector('.response-message');
           if (rm) {
@@ -2854,7 +2854,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
       var newDocument = document.getElementById('create-new-document')
       newDocument.addEventListener('click', e => {
-        if (e.target.matches('button.close')) {
+        if (e.target.closest('button.close')) {
           document.querySelector('#document-do .resource-new').disabled = false
         }
       })
@@ -2875,7 +2875,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       bli.placeholder = 'https://example.org/path/to/article'
 
       newDocument.addEventListener('click', e => {
-        if (!e.target.matches('button.create')) {
+        if (!e.target.closest('button.create')) {
           return
         }
 
@@ -2952,7 +2952,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
       var saveAsDocument = document.getElementById('save-as-document');
       saveAsDocument.addEventListener('click', function(e) {
-        if (e.target.matches('button.close')) {
+        if (e.target.closest('button.close')) {
           document.querySelector('#document-do .resource-save-as').disabled = false;
         }
       });
@@ -2964,7 +2964,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       saveAsDocument.insertAdjacentHTML('beforeend', '<div><input id="' + locationInboxId + '-set" name="' + locationInboxId + '-set" type="checkbox" /> <label for="' + locationInboxId + '-set">Set Inbox</label></div>');
 
       saveAsDocument.addEventListener('click', function(e) {
-        if (e.target.matches('input#' + locationInboxId + '-set')) {
+        if (e.target.closest('input#' + locationInboxId + '-set')) {
           if (e.target.getAttribute('checked')) {
             e.target.removeAttribute('checked');
 
@@ -2990,7 +2990,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       saveAsDocument.insertAdjacentHTML('beforeend', '<div><input id="' + locationAnnotationServiceId + '-set" name="' + locationAnnotationServiceId + '-set" type="checkbox" /> <label for="' + locationAnnotationServiceId + '-set">Set Annotation Service</label></div>');
 
       saveAsDocument.addEventListener('click', function(e) {
-        if (e.target.matches('input#' + locationAnnotationServiceId + '-set')) {
+        if (e.target.closest('input#' + locationAnnotationServiceId + '-set')) {
           if (e.target.getAttribute('checked')) {
             e.target.removeAttribute('checked');
 
@@ -3023,7 +3023,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
 
       saveAsDocument.addEventListener('click', e => {
-        if (!e.target.matches('button.create')) {
+        if (!e.target.closest('button.create')) {
           return
         }
 
@@ -3151,7 +3151,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       input.value = doc.getDocument();
 
       sourceBox.addEventListener('click', function(e) {
-        if (e.target.matches('button.create')) {
+        if (e.target.closest('button.create')) {
           var url = window.location.origin + window.location.pathname;
           var data = document.getElementById('source-edit').value;
           document.documentElement.innerHTML = data;
@@ -3161,7 +3161,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           document.querySelector('#document-do .resource-source').disabled = true;
         }
 
-        if (e.target.matches('button.close')) {
+        if (e.target.closest('button.close')) {
           document.querySelector('#document-do .resource-source').disabled = false;
         }
       });
@@ -3763,7 +3763,7 @@ WHERE {\n\
     showAsTabs: function(id) {
       document.querySelector('#' + id + ' nav').addEventListener('click', function(e) {
         var a = e.target;
-        if (a.matches('a')) {
+        if (a.closest('a')) {
           e.preventDefault();
           e.stopPropagation();
 

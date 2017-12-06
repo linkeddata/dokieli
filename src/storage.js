@@ -210,7 +210,7 @@ function showStorage(node) {
         disableStorage(key);
       }
 
-      // if (e.target.matches('input.autosave')) {
+      // if (e.target.closest('input.autosave')) {
       //   if (e.target.getAttribute('checked')) {
       //     e.target.removeAttribute('checked');
       //     disableAutoSave(key);

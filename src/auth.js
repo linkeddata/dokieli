@@ -112,7 +112,7 @@ function showUserIdentityInput (e) {
   buttonSignIn.setAttribute('disabled', 'disabled')
 
   document.querySelector('#user-identity-input').addEventListener('click', e => {
-    if (e.target.matches('button.close')) {
+    if (e.target.closest('button.close')) {
       var signinUser = document.querySelector('#document-menu button.signin-user')
       if (signinUser) {
         signinUser.disabled = false
