@@ -13,7 +13,7 @@ const graph = require('./graph')
 const inbox = require('./inbox')
 const util = require('./util')
 const storage = require('./storage')
-const auth = require('./auth')
+global.auth = require('./auth')
 
 if(typeof DO === 'undefined'){
 global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined;
