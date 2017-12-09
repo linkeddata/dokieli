@@ -263,141 +263,145 @@ var DO = {
         function(i) {
           i.forEach(function(notification) {
             var pIRI = uri.getProxyableIRI(notification);
-            graph.getGraph(pIRI).then(
-              function(g) {
-// console.log(g);
-                var subjects = [];
-                g.graph().toArray().forEach(function(t){
-                  subjects.push(t.subject.nominalValue);
-                });
-                subjects = util.uniqueArray(subjects);
-// console.log(subjects);
-                subjects.forEach(function(i){
-                  var s = g.child(i)
-                  var types = s.rdftype._array || [];
-
-                  var currentPathURL = window.location.origin + window.location.pathname;
-
-                  if (types.length > 0) {
-                    var resourceTypes = types;
-                    if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Like') > -1 ||
-                       resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Dislike') > -1){
-                      if(s.asobject && s.asobject.at(0)) {
-                        if(s.ascontext && s.ascontext.at(0)){
-                          if(DO.U.getPathURL(s.asobject.at(0)) == currentPathURL) {
-                            var context = s.ascontext.at(0);
-                            return DO.U.positionInteraction(context).then(
-                              function(notificationIRI){
-                                return notificationIRI;
-                              },
-                              function(reason){
-                                console.log('Notification source is unreachable');
-                              });
-                          }
-                        }
-                        else {
-                          var iri = s.iri().toString();
-                          var targetIRI = s.asobject.at(0);
-                          var motivatedBy = 'oa:assessing';
-                          var id = String(Math.abs(DO.U.hashCode(iri)));
-                          var refId = 'r-' + id;
-                          var refLabel = id;
-
-                          var bodyText = (resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Like') > -1) ? 'Liked' : 'Disliked';
-
-                          var noteData = {
-                            "type": 'article',
-                            "mode": "read",
-                            "motivatedByIRI": motivatedBy,
-                            "id": id,
-                            "refId": refId,
-                            "refLabel": refLabel,
-                            "iri": iri,
-                            "creator": {},
-                            "target": {
-                              "iri": targetIRI
-                            },
-                            "body": bodyText,
-                            "license": {}
-                          };
-
-                          if (s.asactor && s.asactor){
-                            noteData['creator'] = {
-                              'iri': s.asactor
-                            }
-                            var a = g.child(noteData['creator']['iri']);
-                            var actorName = auth.getAgentName(a);
-                            var actorImage = auth.getAgentImage(a);
-
-                            if(typeof actorName != 'undefined') {
-                              noteData['creator']['name'] = actorName;
-                            }
-                            if(typeof actorImage != 'undefined') {
-                              noteData['creator']['image'] = actorImage;
-                            }
-                          }
-                          else if(type == 'https://www.w3.org/ns/activitystreams#Dislike'){
-                            noteData['creator'] = {
-                              'name': 'Anonymous Coward'
-                            }
-                          }
-                          if (s.asupdated){
-                            noteData['datetime'] = s.asupdated;
-                          }
-                          if (s.schemalicense){
-                            noteData.license["iri"] = s.schemalicense;
-                            noteData.license["name"] = DO.C.License[noteData.license["iri"]].name;
-                          }
-
-                          DO.U.addInteraction(noteData);
-                        }
-                      }
-                    }
-                    else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Relationship') > -1){
-                      if(s.assubject && s.assubject.at(0) && s.asrelationship && s.asrelationship.at(0) && s.asobject && s.asobject.at(0) && DO.U.getPathURL(s.asobject.at(0)) == currentPathURL) {
-                        var subject = s.assubject.at(0);
-                        return DO.U.positionInteraction(subject).then(
-                          function(notificationIRI){
-                            return notificationIRI;
-                          },
-                          function(reason){
-                            console.log('Notification source is unreachable');
-                          });
-                      }
-                    }
-                    else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Announce') > -1) {
-                      if(s.asobject && s.asobject.at(0) && s.astarget && s.astarget.at(0) && DO.U.getPathURL(s.astarget.at(0)) == currentPathURL) {
-                        var object = s.asobject.at(0);
-
-                        return DO.U.positionInteraction(object).then(
-                          function(notificationIRI){
-                            return notificationIRI;
-                          },
-                          function(reason){
-                            console.log('Notification ' + notification + ' is unreachable');
-                          });
-                      }
-                    }
-                    else {
-                      // console.log(i + ' has unrecognised types: ' + resourceTypes);
-                      // return Promise.reject({'message': 'Unrecognised types ' + resourceTypes});
-                    }
-                  }
-                  else {
-                    // console.log('Skipping ' + i + ': No type.');
-                    // return Promise.reject({'message': 'Notification has no type. What to do?'});
-                  }
-                });
-              },
-              function(reason) {
-                console.log('Notification ' + notification + ' is unreachable. ' + reason);
-                return reason;
-              }
-            );
+            DO.U.showActivities(pIRI);
           });
         },
         function(reason) {
           console.log('No notifications');
+          return reason;
+        }
+      );
+    },
+
+    showActivities: function(url) {
+      graph.getGraph(url).then(
+        function(g) {
+// console.log(g);
+          var subjects = [];
+          g.graph().toArray().forEach(function(t){
+            subjects.push(t.subject.nominalValue);
+          });
+          subjects = util.uniqueArray(subjects);
+// console.log(subjects);
+          subjects.forEach(function(i){
+            var s = g.child(i)
+            var types = s.rdftype._array || [];
+
+            var currentPathURL = window.location.origin + window.location.pathname;
+
+            if (types.length > 0) {
+              var resourceTypes = types;
+              if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Like') > -1 ||
+                 resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Dislike') > -1){
+                if(s.asobject && s.asobject.at(0)) {
+                  if(s.ascontext && s.ascontext.at(0)){
+                    if(DO.U.getPathURL(s.asobject.at(0)) == currentPathURL) {
+                      var context = s.ascontext.at(0);
+                      return DO.U.positionInteraction(context).then(
+                        function(iri){
+                          return iri;
+                        },
+                        function(reason){
+                          console.log(context + ': Context is unreachable');
+                        });
+                    }
+                  }
+                  else {
+                    var iri = s.iri().toString();
+                    var targetIRI = s.asobject.at(0);
+                    var motivatedBy = 'oa:assessing';
+                    var id = String(Math.abs(DO.U.hashCode(iri)));
+                    var refId = 'r-' + id;
+                    var refLabel = id;
+
+                    var bodyText = (resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Like') > -1) ? 'Liked' : 'Disliked';
+
+                    var noteData = {
+                      "type": 'article',
+                      "mode": "read",
+                      "motivatedByIRI": motivatedBy,
+                      "id": id,
+                      "refId": refId,
+                      "refLabel": refLabel,
+                      "iri": iri,
+                      "creator": {},
+                      "target": {
+                        "iri": targetIRI
+                      },
+                      "body": bodyText,
+                      "license": {}
+                    };
+
+                    if (s.asactor && s.asactor){
+                      noteData['creator'] = {
+                        'iri': s.asactor
+                      }
+                      var a = g.child(noteData['creator']['iri']);
+                      var actorName = auth.getAgentName(a);
+                      var actorImage = auth.getAgentImage(a);
+
+                      if(typeof actorName != 'undefined') {
+                        noteData['creator']['name'] = actorName;
+                      }
+                      if(typeof actorImage != 'undefined') {
+                        noteData['creator']['image'] = actorImage;
+                      }
+                    }
+                    else if(type == 'https://www.w3.org/ns/activitystreams#Dislike'){
+                      noteData['creator'] = {
+                        'name': 'Anonymous Coward'
+                      }
+                    }
+                    if (s.asupdated){
+                      noteData['datetime'] = s.asupdated;
+                    }
+                    if (s.schemalicense){
+                      noteData.license["iri"] = s.schemalicense;
+                      noteData.license["name"] = DO.C.License[noteData.license["iri"]].name;
+                    }
+
+                    DO.U.addInteraction(noteData);
+                  }
+                }
+              }
+              else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Relationship') > -1){
+                if(s.assubject && s.assubject.at(0) && s.asrelationship && s.asrelationship.at(0) && s.asobject && s.asobject.at(0) && DO.U.getPathURL(s.asobject.at(0)) == currentPathURL) {
+                  var subject = s.assubject.at(0);
+                  return DO.U.positionInteraction(subject).then(
+                    function(iri){
+                      return iri;
+                    },
+                    function(reason){
+                      console.log(subject + ': subject is unreachable');
+                    });
+                }
+              }
+              else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Announce') > -1) {
+                if(s.asobject && s.asobject.at(0) && s.astarget && s.astarget.at(0) && DO.U.getPathURL(s.astarget.at(0)) == currentPathURL) {
+                  var object = s.asobject.at(0);
+
+                  return DO.U.positionInteraction(object).then(
+                    function(iri){
+                      return iri;
+                    },
+                    function(reason){
+                      console.log(object + ': object is unreachable');
+                    });
+                }
+              }
+              else {
+                // console.log(i + ' has unrecognised types: ' + resourceTypes);
+                // return Promise.reject({'message': 'Unrecognised types ' + resourceTypes});
+              }
+            }
+            else {
+              // console.log('Skipping ' + i + ': No type.');
+              // return Promise.reject({'message': 'Activity has no type. What to do?'});
+            }
+          });
+        },
+        function(reason) {
+          console.log(url + ': is unreachable. ' + reason);
           return reason;
         }
       );
