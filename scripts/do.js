@@ -359,6 +359,29 @@ var DO = {
       );
     },
 
+    showOutboxSources: function(url) {
+      DO.U.getOutboxActivities(url).then(
+        function(i) {
+          i.forEach(function(item) {
+            var pIRI = uri.getProxyableIRI(item);
+
+            DO.U.positionInteraction(pIRI).then(
+              function(iri){
+                return iri;
+              },
+              function(reason){
+                console.log(pIRI + ': is unreachable');
+              });
+
+          });
+        },
+        function(reason) {
+          console.log('No activities');
+          return reason;
+        }
+      );
+    },
+
     getOutboxActivities: function(url) {
       url = url || window.location.origin + window.location.pathname;
       var pIRI = uri.getProxyableIRI(url);
