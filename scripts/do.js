@@ -2605,6 +2605,14 @@ console.log(reason);
       }
     },
 
+    getContactsOutbox: function(s) {
+      var iri = s.iri().toString();
+
+      if (s.asoutbox && s.asoutbox._array.length > 0) {
+        DO.C.User.Contacts.Outbox[iri] = s;
+      }
+    },
+
     nextLevelButton: function(button, url, id, action) {
       var actionNode = document.getElementById(id + '-' + action);
 
