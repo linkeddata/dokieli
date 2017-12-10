@@ -2399,7 +2399,7 @@ var DO = {
 
       var li = document.getElementById('share-resource-address-book');
 
-      if (DO.C.User.Contacts && Object.keys(DO.C.User.Contacts).length > 0) {
+      if (DO.C.User.Contacts.Inbox && Object.keys(DO.C.User.Contacts.Inbox).length > 0) {
         DO.U.selectContacts(li, DO.C.User.IRI);
       }
       else {
@@ -2459,11 +2459,11 @@ var DO = {
       node.innerHTML = '<p>Select from contacts</p><ul id="share-resource-contacts"></ul>';
       var shareResourceContacts = document.getElementById('share-resource-contacts');
 
-      DO.C.User['Contacts'] = DO.C.User.Contacts || {};
+      DO.C.User.Contacts['Inbox'] = DO.C.User.Contacts.Inbox || {};
 
-      if(DO.C.User.Contacts && Object.keys(DO.C.User.Contacts).length > 0){
-        Object.keys(DO.C.User.Contacts).forEach(function(iri){
-          DO.U.addShareResourceContactInput(shareResourceContacts, DO.C.User.Contacts[iri]);
+      if(DO.C.User.Contacts.Inbox && Object.keys(DO.C.User.Contacts.Inbox).length > 0){
+        Object.keys(DO.C.User.Contacts.Inbox).forEach(function(iri){
+          DO.U.addShareResourceContactInput(shareResourceContacts, DO.C.User.Contacts.Inbox[iri]);
         });
       }
       else {
@@ -2523,16 +2523,16 @@ console.log(reason);
       var input = '<li><input id="share-resource-contact-' + id + '" type="checkbox" value="' + iri + '" /><label for="share-resource-contact-' + id + '">' + img + '<a href="' + iri + '" target="_blank">' + name + '</a></label></li>';
 
 
-      //TODO: This should update DO.C.User.Contacts' Inbox value so that it is not checked again when #share-resource-contacts input:checked
+      //TODO: This should update DO.C.User.Contacts.Inbox' Inbox value so that it is not checked again when #share-resource-contacts input:checked
       if (s.ldpinbox && s.ldpinbox._array.length > 0) {
-        DO.C.User.Contacts[iri] = s;
+        DO.C.User.Contacts.Inbox[iri] = s;
         node.insertAdjacentHTML('beforeend', input);
       }
       else {
         inbox.getEndpointFromHead(DO.C.Vocab['ldpinbox']['@id'], iri).then(
           function(i){
             // console.log(iri + ' has Inbox: ' + i);
-            DO.C.User.Contacts[iri] = s;
+            DO.C.User.Contacts.Inbox[iri] = s;
 
             node.insertAdjacentHTML('beforeend', input);
           },
@@ -7036,6 +7036,8 @@ module.exports = {
     "asname": "https://www.w3.org/ns/activitystreams#name",
     "asimage": { "@id": "https://www.w3.org/ns/activitystreams#image", "@type": "@id" },
     "asoutbox": { "@id": "https://www.w3.org/ns/activitystreams#outbox", "@type": "@id", "@array": true },
+    "asitems": { "@id": "https://www.w3.org/ns/activitystreams#items", "@type": "@id", "@array": true },
+    "asorderedItems": { "@id": "https://www.w3.org/ns/activitystreams#orderedItems", "@type": "@id", "@array": true },
 
     "siocreplyof": { "@id": "http://rdfs.org/sioc/ns#reply_of", "@type": "@id", "@array": true },
     "siocavatar": { "@id": "http://rdfs.org/sioc/ns#avatar", "@type": "@id" },
