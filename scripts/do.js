@@ -359,6 +359,35 @@ var DO = {
       );
     },
 
+    getOutboxActivities: function(url) {
+      url = url || window.location.origin + window.location.pathname;
+      var pIRI = uri.getProxyableIRI(url);
+      var headers = { 'Accept': 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"'}
+
+      return fetcher.getResourceGraph(pIRI, headers)
+        .then(
+          function(i) {
+// console.log(i)
+            var s = i.child(url);
+            var items = Object.assign([], s.asitems._array);
+            items = Object.assign(items, s.asorderedItems._array);
+            items = util.uniqueArray(items);
+
+            if (items.length > 0) {
+              return items;
+            }
+            else {
+              var reason = {"message": "There are no activities."};
+              return Promise.reject(reason);
+            }
+          },
+          function(reason) {
+            console.log(reason);
+            return reason;
+          }
+        );
+    },
+
     showActivities: function(url) {
       graph.getGraph(url).then(
         function(g) {
