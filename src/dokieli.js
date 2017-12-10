@@ -2435,6 +2435,7 @@ var DO = {
       var shareResourceContacts = document.getElementById('share-resource-contacts');
 
       DO.C.User.Contacts['Inbox'] = DO.C.User.Contacts.Inbox || {};
+      DO.C.User.Contacts['Outbox'] = DO.C.User.Contacts.Outbox || {};
 
       if(DO.C.User.Contacts.Inbox && Object.keys(DO.C.User.Contacts.Inbox).length > 0){
         Object.keys(DO.C.User.Contacts.Inbox).forEach(function(iri){
@@ -2517,6 +2518,8 @@ console.log(reason);
           }
         );
       }
+
+      DO.U.getContactsOutbox(s);
     },
 
     getContactsOutbox: function(s) {
