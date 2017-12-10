@@ -285,6 +285,8 @@ module.exports = {
     "asname": "https://www.w3.org/ns/activitystreams#name",
     "asimage": { "@id": "https://www.w3.org/ns/activitystreams#image", "@type": "@id" },
     "asoutbox": { "@id": "https://www.w3.org/ns/activitystreams#outbox", "@type": "@id", "@array": true },
+    "asitems": { "@id": "https://www.w3.org/ns/activitystreams#items", "@type": "@id", "@array": true },
+    "asorderedItems": { "@id": "https://www.w3.org/ns/activitystreams#orderedItems", "@type": "@id", "@array": true },
 
     "siocreplyof": { "@id": "http://rdfs.org/sioc/ns#reply_of", "@type": "@id", "@array": true },
     "siocavatar": { "@id": "http://rdfs.org/sioc/ns#avatar", "@type": "@id" },
