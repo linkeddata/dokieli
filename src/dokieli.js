@@ -273,6 +273,15 @@ var DO = {
       );
     },
 
+    showContactsActivities: function() {
+      if (DO.C.User.Contacts.Outbox) {
+        Object.keys(DO.C.User.Contacts.Outbox).forEach(function(iri){
+          var o = DO.C.User.Contacts.Outbox[iri];
+          DO.U.showOutboxSources(o.asoutbox._array[0]);
+        })
+      }
+    },
+
     showOutboxSources: function(url) {
       DO.U.getOutboxActivities(url).then(
         function(i) {
