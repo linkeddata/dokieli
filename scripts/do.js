@@ -7680,6 +7680,7 @@ WHERE {\n\
                 aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'contentType': contentType, 'canonical': true };
                 annotationDistribution.push(aLS);
               }
+
               if(opts.annotationLocationService && typeof DO.C.AnnotationService !== 'undefined') {
                 containerIRI = DO.C.AnnotationService;
                 contentType = 'application/ld+json';
@@ -7975,56 +7976,46 @@ WHERE {\n\
 
                   var data = DO.U.createHTML(noteIRI, note);
 
-                  annotationDistribution.forEach(annotation => {
-                    graph.serializeData(data, 'text/html', annotation['contentType'], { 'subjectURI': annotation['noteIRI'] })
+                  var sendActivity = function(annotation) {
+                    // Intended for oa:annotationService
+                    if (!('canonical' in annotation)) {
+                      switch (annotation[ 'contentType' ]) {
+                        case 'application/ld+json':
+                          let x = JSON.parse(annotation['data'])
+                          x[ 0 ][ "via" ] = x[ 0 ][ "@id" ]
+                          x[ 0 ][ "@id" ] = annotation[ 'noteURL' ]
+                          data = JSON.stringify(x)
+                          break
+                        default:
+                          break
+                      }
+                    }
 
+                    return fetcher.putResource(annotation[ 'noteURL' ], annotation['data'], annotation[ 'contentType' ])
                       .catch(error => {
-                        console.log('Error serializing annotation:', error)
-
-                        throw error  // re-throw, break out of promise chain
+                        console.log('Error saving annotation:', error)
+                        throw error // re-throw, break out of promise chain
                       })
+                  }
 
-                      .then(data => {
-                        if (!('canonical' in annotation)) {
-                          switch (annotation[ 'contentType' ]) {
-                            case 'application/ld+json':
-                              let x = JSON.parse(data)
-                              x[ 0 ][ "via" ] = x[ 0 ][ "@id" ]
-                              x[ 0 ][ "@id" ] = annotation[ 'noteURL' ]
-                              data = JSON.stringify(x)
-                              break
-                            default:
-                              break
-                          }
-                        }
+                  var positionActivity = function(annotation) {
+                    if (!annotation[ 'canonical' ]) {
+                      // Nothing else needs to be done, go on to the
+                      // next annotation (error will be suppressed in
+                      // the catch-all .catch() clause below)
+                      throw new Error()
+                    }
 
-                        return fetcher.putResource(annotation[ 'noteURL' ], data, annotation[ 'contentType' ])
-                          .catch(error => {
-                            console.log('Error saving annotation:', error)
-                            throw error // re-throw, break out of promise chain
-                          })
+                    return DO.U.positionInteraction(annotation[ 'noteIRI' ], document.body)
+                      .catch(console.log)
+                  }
+
+                  var sendNotification = function() {
+                    return inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id'])
+                      .catch(error => {
+                        console.log('Error fetching ldpinbox endpoint:', error)
+                        throw error
                       })
-
-                      .then(() => {
-                        if (!annotation[ 'canonical' ]) {
-                          // Nothing else needs to be done, go on to the
-                          // next annotation (error will be suppressed in
-                          // the catch-all .catch() clause below)
-                          throw new Error()
-                        }
-
-                        return DO.U.positionInteraction(annotation[ 'noteIRI' ], document.body)
-                          .catch(console.log)
-                      })
-
-                      .then(() => {
-                        return inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id'])
-                          .catch(error => {
-                            console.log('Error fetching ldpinbox endpoint:', error)
-                            throw error
-                          })
-                      })
-
                       .then(inboxes => {
                         // TODO: resourceIRI for getEndpoint should be the
                         // closest IRI (not necessarily the document).
@@ -8042,13 +8033,7 @@ WHERE {\n\
                         }
 
                         if (inboxes.length > 0) {
-                          var requestURL = inboxes[0];
-
-                          // if(DO.C.User.Outbox && DO.C.User.Outbox !== requestURL) {
-                          //   notificationData['type'] = ['as:Create'];
-                          //   notificationData['inbox'] = DO.C.User.Outbox[0];
-                          //   inbox.notifyInbox(notificationData);
-                          // }
+                          notificationData['inbox'] = inboxes[0];
 
                           if(typeof notificationTarget !== 'undefined') {
                             notificationData['target'] = notificationTarget;
@@ -8057,14 +8042,31 @@ WHERE {\n\
                             notificationData['statements'] = notificationStatements;
                           }
 
-                          notificationData['inbox'] = requestURL;
-
                           return inbox.notifyInbox(notificationData)
                             .catch(error => {
                               console.log('Error notifying the inbox:', error)
                             })
                         }
                       })
+                  }
+
+                  annotationDistribution.forEach(annotation => {
+// console.log(annotation)
+                    graph.serializeData(data, 'text/html', annotation['contentType'], { 'subjectURI': annotation['noteIRI'] })
+                      .catch(error => {
+                        console.log('Error serializing annotation:', error)
+                        throw error  // re-throw, break out of promise chain
+                      })
+                      .then(data => {
+                        annotation['data'] = data
+                        return annotation
+                      })
+
+                      .then(sendActivity)
+
+                      .then(() => { return positionActivity(annotation) })
+
+                      .then(sendNotification)
 
                       .catch(() => {  // catch-all
                         // suppress the error, it was already logged to the console above
@@ -8497,7 +8499,7 @@ function inboxResponse (to, toInput) {
       toInput
         .parentNode
         .querySelector('.progress[data-to="' + to + '"]')
-        .innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Inbox not responding. Try later.'
+        .innerHTML = '<i class="fa fa-times-circle fa-fw"></i> Inbox not responding. Try later.'
     })
 }
 

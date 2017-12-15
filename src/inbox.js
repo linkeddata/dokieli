@@ -109,7 +109,7 @@ function inboxResponse (to, toInput) {
       toInput
         .parentNode
         .querySelector('.progress[data-to="' + to + '"]')
-        .innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Inbox not responding. Try later.'
+        .innerHTML = '<i class="fa fa-times-circle fa-fw"></i> Inbox not responding. Try later.'
     })
 }
 
