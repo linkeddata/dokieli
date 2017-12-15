@@ -7675,26 +7675,28 @@ WHERE {\n\
                   }
                 }
 
+                var fromContentType = 'text/html';
                 contentType = 'text/html';
                 noteURL = noteIRI = containerIRI + id;
-                aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'contentType': contentType, 'canonical': true };
+                aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true };
                 annotationDistribution.push(aLS);
               }
 
               if(opts.annotationLocationService && typeof DO.C.AnnotationService !== 'undefined') {
                 containerIRI = DO.C.AnnotationService;
+                var fromContentType = 'text/html';
                 contentType = 'application/ld+json';
                 if(!opts.annotationLocationPersonalStorage && opts.annotationLocationService) {
                   noteURL = noteIRI = containerIRI + id;
-                  aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'contentType': contentType, 'canonical': true };
+                  aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true };
                 }
                 else if(opts.annotationLocationPersonalStorage) {
                   noteURL = containerIRI + id;
-                  aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'contentType': contentType };
+                  aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType };
                 }
                 else {
                   noteURL = noteIRI = containerIRI + id;
-                  aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'contentType': contentType, 'canonical': true };
+                  aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true };
                 }
                 annotationDistribution.push(aLS);
               }
@@ -8052,7 +8054,7 @@ WHERE {\n\
 
                   annotationDistribution.forEach(annotation => {
 // console.log(annotation)
-                    graph.serializeData(data, 'text/html', annotation['contentType'], { 'subjectURI': annotation['noteIRI'] })
+                    graph.serializeData(data, annotation['fromContentType'], annotation['contentType'], { 'subjectURI': annotation['noteIRI'] })
                       .catch(error => {
                         console.log('Error serializing annotation:', error)
                         throw error  // re-throw, break out of promise chain
