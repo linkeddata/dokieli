@@ -6021,7 +6021,7 @@ WHERE {\n\
                 options = {
                   '@context': [
                     'https://www.w3.org/ns/activitystreams',
-                    { 'oa': 'http://www.w3.org/ns/anno.jsonld' }
+                    { 'oa': 'http://www.w3.org/ns/oa#' }
                   ],
                   'subjectURI': noteIRI,
                   'profile': 'https://www.w3.org/ns/activitystreams'
@@ -6071,7 +6071,7 @@ WHERE {\n\
                 options = {
                   '@context': [
                     'http://www.w3.org/ns/anno.jsonld',
-                    { 'as': 'https://www.w3.org/ns/activitystreams' }
+                    { 'as': 'https://www.w3.org/ns/activitystreams#' }
                   ],
                   'subjectURI': noteIRI,
                   'profile': 'http://www.w3.org/ns/anno.jsonld'
