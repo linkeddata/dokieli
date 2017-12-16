@@ -6068,7 +6068,6 @@ WHERE {\n\
                 containerIRI = DO.C.AnnotationService;
                 var fromContentType = 'text/html';
                 contentType = 'application/ld+json';
-                options = { 'subjectURI': noteIRI }
 
                 if(!opts.annotationLocationPersonalStorage && opts.annotationLocationService) {
                   noteURL = noteIRI = containerIRI + id;
@@ -6361,9 +6360,12 @@ WHERE {\n\
                       }
                     }
 
+                    var contentType = (annotation.options['profile'])
+                      ? annotation['contentType'] + ';profile="' + annotation.options['profile'] + '"'
+                      : annotation['contentType']
 // console.log(annotation['data'])
 
-                    return fetcher.putResource(annotation[ 'noteURL' ], annotation['data'], annotation[ 'contentType' ])
+                    return fetcher.putResource(annotation[ 'noteURL' ], annotation['data'], contentType)
                       .catch(error => {
                         console.log('Error saving annotation:', error)
                         throw error // re-throw, break out of promise chain
