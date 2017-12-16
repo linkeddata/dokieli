@@ -150,6 +150,73 @@ function serializeData (data, fromContentType, toContentType, options) {
           })
       }     
     })
+    .then(data => {
+      //FIXME: Lazy person's JSON-LD compacting. Expect errors!
+      if (options["@context"]) {
+        var context = (typeof options["@context"] === 'string') ? [options["@context"]] : options['@context']
+
+        data = JSON.parse(data);
+        delete data["@context"]
+        data = JSON.stringify(data)
+
+        context.forEach(function(c){
+          var search = '';
+          var replace = '';
+
+          if (typeof c === 'string') {
+            switch(c) {
+              case 'http://www.w3.org/ns/anno.jsonld':
+                data = data.replace(new RegExp('http://www.w3.org/ns/oa#autoDirection', 'g'), 'auto')
+                data = data.replace(new RegExp('http://www.w3.org/ns/oa#cachedSource', 'g'), 'cached')
+                data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasBody', 'g'), 'body')
+                data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasEndSelector', 'g'), 'endSelector')
+                data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasPurpose', 'g'), 'purpose')
+                data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasScope', 'g'), 'scope')
+                data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasSelector', 'g'), 'selector')
+                data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasSource', 'g'), 'source')
+                data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasStartSelector', 'g'), 'startSelector')
+                data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasTarget', 'g'), 'target')
+                data = data.replace(new RegExp('http://www.w3.org/ns/oa#ltrDirection', 'g'), 'ltr')
+                data = data.replace(new RegExp('http://www.w3.org/ns/oa#motivatedBy', 'g'), 'motivation')
+                data = data.replace(new RegExp('http://www.w3.org/ns/oa#rtlDirection', 'g'), 'rtl')
+                data = data.replace(new RegExp('http://www.w3.org/ns/oa#styledBy', 'g'), 'stylesheet')
+
+                search = 'http://www.w3.org/ns/oa#'
+
+                break
+
+              case 'https://www.w3.org/ns/activitystreams':
+                search = 'https://www.w3.org/ns/activitystreams#'
+                break
+            }
+          }
+          else {
+            replace = Object.keys(c)[0];
+
+            switch(replace) {
+              case 'oa':
+                search = 'http://www.w3.org/ns/oa#'
+                break
+
+              case 'as':
+                search = 'https://www.w3.org/ns/activitystreams#'
+                break
+            }
+
+            replace = replace + ':'
+          }
+
+          data = data.replace(new RegExp(search, 'g'), replace)
+        })
+
+        data = JSON.parse(data)
+        data = Object.assign({"@context": options["@context"]}, data)
+        data = JSON.stringify(data)
+      }
+
+// console.log(data)
+      return data
+    })
 }
 
 function serializeGraph (g, options = {}) {
