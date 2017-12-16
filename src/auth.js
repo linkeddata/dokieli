@@ -220,10 +220,7 @@ function setUserInfo (userIRI) {
       Config.User.SeeAlso = []
 
       Config.User.Storage = getAgentStorage(s)
-
-      if (s.asoutbox && s.asoutbox._array.length > 0) {
-        Config.User.Outbox = s.asoutbox._array
-      }
+      Config.User.Outbox = getAgentOutbox(s)
 
       if (s.preferencesFile && s.preferencesFile.length > 0) {
         Config.User.PreferencesFile = s.preferencesFile
@@ -463,6 +460,12 @@ function getAgentURL (s) {
 function getAgentStorage (s) {
   return (s.pimstorage && s.pimstorage._array.length > 0)
     ? s.pimstorage._array
+    : undefined
+}
+
+function getAgentOutbox (s) {
+  return (s.asoutbox && s.asoutbox._array.length > 0)
+    ? s.asoutbox._array
     : undefined
 }
 
