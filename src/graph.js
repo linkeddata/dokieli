@@ -11,6 +11,7 @@ module.exports = {
   getMatchFromData,
   serializeData,
   serializeGraph
+  applyParserFixes
 }
 
 function getGraph (url) {
@@ -151,6 +152,21 @@ function serializeData (data, fromContentType, toContentType, options) {
     })
 }
 
+function serializeGraph (g, options = {}) {
+  if (!('contentType' in options)) {
+    options['contentType'] = 'text/turtle'
+  }
+
+  return ld.store.serializers[options.contentType].serialize(g._graph)
+    // XXX: .compact doesn't work as advertised
+    // .then((data) => {
+    //   if (options.contentType === 'application/ld+json' && '@context' in options) {
+    //     return jsonld.promises().compact(data, options['@context'], {'skipExpansion': true})
+    //   }
+
+    //   return data
+    // })
+}
 
 function applyParserFixes(data, fromContentType, toContentType) {
   switch(toContentType) {
@@ -181,20 +197,4 @@ function applyParserFixes(data, fromContentType, toContentType) {
   }        
 
   return data;
-}
-
-function serializeGraph (g, options = {}) {
-  if (!('contentType' in options)) {
-    options['contentType'] = 'text/turtle'
-  }
-
-  return ld.store.serializers[options.contentType].serialize(g._graph)
-    // XXX: .compact doesn't work as advertised
-    // .then((data) => {
-    //   if (options.contentType === 'application/ld+json' && '@context' in options) {
-    //     return jsonld.promises().compact(data, options['@context'], {'skipExpansion': true})
-    //   }
-
-    //   return data
-    // })
 }
