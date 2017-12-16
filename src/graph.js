@@ -10,7 +10,7 @@ module.exports = {
   getGraphFromData,
   getMatchFromData,
   serializeData,
-  serializeGraph
+  serializeGraph,
   applyParserFixes
 }
 
