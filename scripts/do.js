@@ -6154,6 +6154,14 @@ WHERE {\n\
                 containerIRI = DO.C.AnnotationService;
                 var fromContentType = 'text/html';
                 contentType = 'application/ld+json';
+                options = {
+                  '@context': [
+                    'http://www.w3.org/ns/anno.jsonld',
+                    { 'as': 'https://www.w3.org/ns/activitystreams' }
+                  ],
+                  'subjectURI': noteIRI,
+                  'profile': 'http://www.w3.org/ns/anno.jsonld'
+                };
 
                 if(!opts.annotationLocationPersonalStorage && opts.annotationLocationService) {
                   noteURL = noteIRI = containerIRI + id;
