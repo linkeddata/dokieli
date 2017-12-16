@@ -4560,10 +4560,10 @@ WHERE {\n\
     getAnnotationLocationHTML: function() {
       var s = '', inputs = [], checked = '';
       if(typeof DO.C.AnnotationService !== 'undefined') {
-        checked = (DO.C.User.Storage && DO.C.User.Storage.length > 0) ? '': ' checked="checked" disabled="disabled"';
+        checked = (DO.C.User.Storage && DO.C.User.Storage.length > 0 || DO.C.User.Outbox && DO.C.User.Outbox.length > 0) ? '': ' checked="checked" disabled="disabled"';
         inputs.push('<input type="checkbox" id="annotation-location-service" name="annotation-location-service"' + checked + ' /><label for="annotation-location-service">Annotation service</label>');
       }
-      if(DO.C.User.Storage && DO.C.User.Storage.length > 0) {
+      if(DO.C.User.Storage && DO.C.User.Storage.length > 0 || DO.C.User.Outbox && DO.C.User.Outbox.length > 0) {
         inputs.push('<input type="checkbox" id="annotation-location-personal-storage" name="annotation-location-personal-storage" checked="checked" /><label for="annotation-location-personal-storage">Personal storage</label>');
       }
       s = 'Store at: ' + inputs.join('');
@@ -6008,9 +6008,34 @@ WHERE {\n\
 
               var contentType = 'text/html';
               var noteIRI, noteURL;
+              var profile, options;
               var annotationDistribution = [] , aLS = {};
 
-              if(opts.annotationLocationPersonalStorage || (!opts.annotationLocationPersonalStorage && !opts.annotationLocationService && DO.C.User.Storage && DO.C.User.Storage.length > 0)) {
+              if(opts.annotationLocationPersonalStorage && DO.C.User.Outbox && DO.C.User.Outbox.length > 0) {
+                containerIRI = DO.U.forceTrailingSlash(DO.C.User.Outbox[0]);
+
+                var fromContentType = 'text/html';
+                contentType = 'application/ld+json';
+
+                noteURL = noteIRI = containerIRI + id;
+                options = {
+                  '@context': [
+                    'https://www.w3.org/ns/activitystreams',
+                    { 'oa': 'http://www.w3.org/ns/anno.jsonld' }
+                  ],
+                  'subjectURI': noteIRI,
+                  'profile': 'https://www.w3.org/ns/activitystreams'
+                };
+                aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'options': options };
+                if (typeof DO.C.User.Storage === 'undefined') {
+                  aLS['canonical'] = true;
+                }
+
+                annotationDistribution.push(aLS);
+              }
+
+              //XXX: Use this as the canonical if available. Note how noteIRI is treated later
+              if(opts.annotationLocationPersonalStorage && DO.C.User.Storage && DO.C.User.Storage.length > 0) {
                 if(DO.C.User.Storage && DO.C.User.Storage.length > 0) {
                   containerIRI = DO.U.forceTrailingSlash(DO.C.User.Storage[0]);
                 }
@@ -6018,6 +6043,7 @@ WHERE {\n\
                   containerIRI = containerIRI.substr(0, containerIRI.lastIndexOf('/') + 1);
                 }
 
+                //XXX: Remove. No longer used
                 if (typeof DO.C.User.masterWorkspace != 'undefined' && DO.C.User.masterWorkspace.length > 0) {
                   containerIRI = DO.C.User.masterWorkspace;
                 }
@@ -6033,7 +6059,8 @@ WHERE {\n\
                 var fromContentType = 'text/html';
                 contentType = 'text/html';
                 noteURL = noteIRI = containerIRI + id;
-                aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true };
+                options = { 'subjectURI': noteIRI };
+                aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true, 'options': options };
                 annotationDistribution.push(aLS);
               }
 
@@ -6041,22 +6068,25 @@ WHERE {\n\
                 containerIRI = DO.C.AnnotationService;
                 var fromContentType = 'text/html';
                 contentType = 'application/ld+json';
+                options = { 'subjectURI': noteIRI }
+
                 if(!opts.annotationLocationPersonalStorage && opts.annotationLocationService) {
                   noteURL = noteIRI = containerIRI + id;
-                  aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true };
+                  aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true, 'options': options };
                 }
                 else if(opts.annotationLocationPersonalStorage) {
                   noteURL = containerIRI + id;
-                  aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType };
+                  aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'options': options };
                 }
                 else {
                   noteURL = noteIRI = containerIRI + id;
-                  aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true };
+                  aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true, 'options': options };
                 }
                 annotationDistribution.push(aLS);
               }
 
 // console.log(annotationDistribution);
+
               //XXX: Defaulting to id but overwritten by motivation symbol
               var refLabel = id;
 
@@ -6313,40 +6343,25 @@ WHERE {\n\
       <dt>Motivation</dt><dd><a href="' + DO.C.Prefixes[motivatedBy.split(':')[0]] + motivatedBy.split(':')[1] + '" property="oa:motivation">' + motivatedBy.split(':')[1] + '</a></dd>\n\
     </dl>\n\
 ';
-                  switch(this.action) {
-                    default: case 'article': case 'specificity':
-                      notificationType = ['as:Announce'];
-                      notificationObject = noteIRI;
-                      notificationTarget = targetIRI;
-                      break;
-                    case 'approve':
-                      notificationType = ['as:Like'];
-                      notificationObject = targetIRI;
-                      notificationContext = noteIRI;
-                      break;
-                    case 'disapprove':
-                      notificationType = ['as:Dislike'];
-                      notificationObject = targetIRI;
-                      notificationContext = noteIRI;
-                      break;
-                  }
 
                   var data = DO.U.createHTML(noteIRI, note);
 
                   var sendActivity = function(annotation) {
-                    // Intended for oa:annotationService
-                    if (!('canonical' in annotation)) {
+                    //Make this annotation refer to the canonical annotation
+                    if (!annotation['canonical']) {
                       switch (annotation[ 'contentType' ]) {
                         case 'application/ld+json':
                           let x = JSON.parse(annotation['data'])
-                          x[ 0 ][ "via" ] = x[ 0 ][ "@id" ]
-                          x[ 0 ][ "@id" ] = annotation[ 'noteURL' ]
-                          data = JSON.stringify(x)
+                          x[ "via" ] = x[ "@id" ]
+                          x[ "@id" ] = annotation[ 'noteURL' ]
+                          annotation['data'] = JSON.stringify(x)
                           break
                         default:
                           break
                       }
                     }
+
+// console.log(annotation['data'])
 
                     return fetcher.putResource(annotation[ 'noteURL' ], annotation['data'], annotation[ 'contentType' ])
                       .catch(error => {
@@ -6356,18 +6371,19 @@ WHERE {\n\
                   }
 
                   var positionActivity = function(annotation) {
-                    if (!annotation[ 'canonical' ]) {
-                      // Nothing else needs to be done, go on to the
-                      // next annotation (error will be suppressed in
-                      // the catch-all .catch() clause below)
-                      throw new Error()
+                    if (!annotation['canonical']) {
+                      return Promise.resolve();
                     }
 
                     return DO.U.positionInteraction(annotation[ 'noteIRI' ], document.body)
                       .catch(console.log)
                   }
 
-                  var sendNotification = function() {
+                  var sendNotification = function(annotation) {
+                    if (!annotation['canonical']) {
+                      return Promise.resolve();
+                    }
+
                     return inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id'])
                       .catch(error => {
                         console.log('Error fetching ldpinbox endpoint:', error)
@@ -6377,6 +6393,24 @@ WHERE {\n\
                         // TODO: resourceIRI for getEndpoint should be the
                         // closest IRI (not necessarily the document).
                         // Test resolve/reject better.
+
+                        switch(this.action) {
+                          default: case 'article': case 'specificity':
+                            notificationType = ['as:Announce'];
+                            notificationObject = annotation['noteIRI'];
+                            notificationTarget = targetIRI;
+                            break;
+                          case 'approve':
+                            notificationType = ['as:Like'];
+                            notificationObject = targetIRI;
+                            notificationContext = annotation['noteIRI'];
+                            break;
+                          case 'disapprove':
+                            notificationType = ['as:Dislike'];
+                            notificationObject = targetIRI;
+                            notificationContext = annotation['noteIRI'];
+                            break;
+                        }
 
                         var notificationData = {
                           "type": notificationType,
@@ -6409,7 +6443,7 @@ WHERE {\n\
 
                   annotationDistribution.forEach(annotation => {
 // console.log(annotation)
-                    graph.serializeData(data, annotation['fromContentType'], annotation['contentType'], { 'subjectURI': annotation['noteIRI'] })
+                    graph.serializeData(data, annotation['fromContentType'], annotation['contentType'], annotation['options'])
                       .catch(error => {
                         console.log('Error serializing annotation:', error)
                         throw error  // re-throw, break out of promise chain
@@ -6419,11 +6453,11 @@ WHERE {\n\
                         return annotation
                       })
 
-                      .then(sendActivity)
+                      .then(() => { return sendActivity(annotation) })
 
                       .then(() => { return positionActivity(annotation) })
 
-                      .then(sendNotification)
+                      .then(() => { return sendNotification(annotation) })
 
                       .catch(() => {  // catch-all
                         // suppress the error, it was already logged to the console above
