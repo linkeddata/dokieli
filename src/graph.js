@@ -80,7 +80,7 @@ function serializeData (data, fromContentType, toContentType, options) {
 // console.log(g)
           return serializeGraph(g, options).then(subjectTriples => {
             if (fromContentType == 'text/html' || fromContentType == 'application/xhtml+xml') {
-              subjectTriples = applyParserFixes(subjectTriples, fromContentType, toContentType);
+              subjectTriples = applyParserFixes(subjectTriples, fromContentType, toContentType)
             }
 
             subjectTriples = JSON.parse(subjectTriples)
@@ -130,17 +130,23 @@ function serializeData (data, fromContentType, toContentType, options) {
               return subject
             }
 
-            var subject = subjectTriples[rootIndex];
+            var subject = subjectTriples[rootIndex]
 
-            Object.assign(data, processObject(subject));
+            Object.assign(data, processObject(subject))
 
 // console.log(data)
 // console.log(JSON.stringify(data))
-            return JSON.stringify(data) + '\n';
+            return JSON.stringify(data) + '\n'
           })
 
         default:
-          return serializeGraph(g, options)
+          return serializeGraph(g, options).then(data => {
+            if (fromContentType == 'text/html' || fromContentType == 'application/xhtml+xml') {
+              data = applyParserFixes(data, fromContentType, toContentType)
+            }
+
+            return data
+          })
       }     
     })
 }
