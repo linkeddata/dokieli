@@ -3149,7 +3149,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         if (annotationServiceLocation) {
           annotationServiceLocation = annotationServiceLocation.innerText.trim();
           o = { 'id': 'document-annotation-service', 'title': 'Annotation Service' };
-          r = { 'rel': 'ldp:inbox', 'href': annotationServiceLocation };
+          r = { 'rel': 'oa:annotationService', 'href': annotationServiceLocation };
           html = DO.U.setDocumentRelation(html, [r], o);
         }
 
