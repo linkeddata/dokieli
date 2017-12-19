@@ -4285,7 +4285,7 @@ WHERE {\n\
       var note = '';
       var targetLabel = '';
       var articleClass = '';
-      var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: http://schema.org/ dcterms: http://purl.org/dc/terms/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# i: ' + n.iri + '"';
+      var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: http://schema.org/ dcterms: http://purl.org/dc/terms/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams#"';
 
       var motivatedByIRI = n.motivatedByIRI || '';
       var motivatedByLabel = '';
@@ -4294,13 +4294,13 @@ WHERE {\n\
           motivatedByIRI = 'oa:replying';
           motivatedByLabel = 'replies';
           targetLabel = 'In reply to';
-          aAbout = 'i:';
+          aAbout = '';
           aPrefix = prefixes;
           break;
         case 'oa:assessing':
           motivatedByLabel = 'reviews';
           targetLabel = 'Review of';
-          aAbout = 'i:';
+          aAbout = '';
           aPrefix = prefixes;
           break;
         case 'oa:describing':
@@ -4316,7 +4316,7 @@ WHERE {\n\
         case 'oa:bookmarking':
           motivatedByLabel = 'bookmarks';
           targetLabel = 'Bookmarked';
-          aAbout = 'i:';
+          aAbout = '';
           aPrefix = prefixes;
           break;
       }
@@ -4335,7 +4335,7 @@ WHERE {\n\
       }
 
       var creatorName = '';
-      var creatorIRI = 'i:#agent';
+      var creatorIRI = '#agent';
       if ('creator' in n) {
         if ('image' in n.creator) {
           creatorImage = '<img alt="" height="48" rel="schema:image" src="' + n.creator.image + '" width="48" /> ';
@@ -4361,7 +4361,9 @@ WHERE {\n\
       heading = '<' + hX + ' property="schema:name">' + creatorName + ' <span rel="oa:motivatedBy" resource="' + motivatedByIRI + '">' + motivatedByLabel + '</span></' + hX + '>';
 
       if ('datetime' in n){
-        published = '<dl class="published"><dt>Published</dt><dd><a href="' + n.iri + '"><time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="schema:datePublished" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time></a></dd></dl>';
+        var time = '<time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="schema:datePublished" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time>';
+        var timeLinked = ('iri' in n) ? '<a href="' + n.iri + '">' + time + '</a>' : time;
+        published = '<dl class="published"><dt>Published</dt><dd>' + timeLinked + '</dd></dl>';
       }
 
       if (n.license && 'iri' in n.license) {
@@ -4377,7 +4379,7 @@ WHERE {\n\
             if (typeof n.body !== 'undefined') {
               if(typeof n.body === 'object' && 'purpose' in n.body) {
                 if ('describing' in n.body.purpose && 'text' in n.body.purpose.describing) {
-                  body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="i:#note-' + n.id + '"><h2 property="schema:name" rel="oa:hasPurpose" resource="oa:describing">Note</h2><div datatype="rdf:HTML" property="rdf:value schema:description" resource="i:#note-' + n.id + '" typeof="oa:TextualBody">' + n.body.purpose.describing.text + '</div></section>';
+                  body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="#note-' + n.id + '"><h2 property="schema:name" rel="oa:hasPurpose" resource="oa:describing">Note</h2><div datatype="rdf:HTML" property="rdf:value schema:description" resource="#note-' + n.id + '" typeof="oa:TextualBody">' + n.body.purpose.describing.text + '</div></section>';
                 }
                 if ('tagging' in n.body.purpose && 'text' in n.body.purpose.tagging) {
                   var tagsArray = [];
@@ -4392,7 +4394,7 @@ WHERE {\n\
 
                     body += '<dl id="tags" class="tags"><dt>Tags</dt><dd><ul rel="oa:hasBody">';
                     tagsArray.forEach(function(i){
-                      body += '<li about="i:#tag-' + DO.U.generateAttributeId(null, i) + '" typeof="oa:TextualBody" property="rdf:value" rel="oa:hasPurpose" resource="oa:tagging" datatype="rdf:HTML">' + i + '</li>';
+                      body += '<li about="#tag-' + DO.U.generateAttributeId(null, i) + '" typeof="oa:TextualBody" property="rdf:value" rel="oa:hasPurpose" resource="oa:tagging" datatype="rdf:HTML">' + i + '</li>';
                     })
                     body += '</ul></dd></dl>';
                   }
@@ -4404,7 +4406,7 @@ WHERE {\n\
                   license = DO.U.createLicenseHTML(n.license, {rel:'dcterms:rights', label:'Rights'});
                 }
 
-                body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="i:#note-' + n.id + '"><h2 property="schema:name">Note</h2>' + license + '<div datatype="rdf:HTML" property="rdf:value schema:description" resource="i:#note-' + n.id + '" typeof="oa:TextualBody">' + n.body + '</div></section>';
+                body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="#note-' + n.id + '"><h2 property="schema:name">Note</h2>' + license + '<div datatype="rdf:HTML" property="rdf:value schema:description" resource="#note-' + n.id + '" typeof="oa:TextualBody">' + n.body + '</div></section>';
               }
             }
 
@@ -4415,7 +4417,7 @@ WHERE {\n\
               var targetIRIFragment = n.target.iri.substr(n.target.iri.lastIndexOf('#'));
               //TODO: Handle when there is no fragment
               if (typeof n.target.selector !== 'undefined') {
-                annotationTextSelector = '<div rel="oa:hasSelector" resource="i:#fragment-selector" typeof="oa:FragmentSelector"><dl class="conformsto"><dt>Fragment selector conforms to</dt><dd><a content="' + targetIRIFragment + '" lang="" property="rdf:value" rel="dcterms:conformsTo" resource="https://tools.ietf.org/html/rfc3987" xml:lang="">RFC 3987</a></dd></dl><dl rel="oa:refinedBy" resource="i:#text-quote-selector" typeof="oa:TextQuoteSelector"><dt>Refined by</dt><dd><span lang="en" property="oa:prefix" xml:lang="en">' + n.target.selector.prefix + '</span><mark lang="en" property="oa:exact" xml:lang="en">' + n.target.selector.exact + '</mark><span lang="en" property="oa:suffix" xml:lang="en">' + n.target.selector.suffix + '</span></dd></dl></div>';
+                annotationTextSelector = '<div rel="oa:hasSelector" resource="#fragment-selector" typeof="oa:FragmentSelector"><dl class="conformsto"><dt>Fragment selector conforms to</dt><dd><a content="' + targetIRIFragment + '" lang="" property="rdf:value" rel="dcterms:conformsTo" resource="https://tools.ietf.org/html/rfc3987" xml:lang="">RFC 3987</a></dd></dl><dl rel="oa:refinedBy" resource="#text-quote-selector" typeof="oa:TextQuoteSelector"><dt>Refined by</dt><dd><span lang="en" property="oa:prefix" xml:lang="en">' + n.target.selector.prefix + '</span><mark lang="en" property="oa:exact" xml:lang="en">' + n.target.selector.exact + '</mark><span lang="en" property="oa:suffix" xml:lang="en">' + n.target.selector.suffix + '</span></dd></dl></div>';
               }
             }
             else if(typeof n.inReplyTo !== 'undefined' && 'iri' in n.inReplyTo) {
@@ -4438,10 +4440,10 @@ WHERE {\n\
             target += '<dl class="renderedvia"><dt>Rendered via</dt><dd><a about="' + targetIRI + '" href="https://dokie.li/" rel="oa:renderedVia">dokieli</a></dd></dl>';
 
             var canonicalUUID = DO.U.generateUUID();
-            var canonical = '<dl class="canonical"><dt>Canonical</dt><dd about="i:" rel="oa:canonical" resource="urn:uuid:' + canonicalUUID + '">' + canonicalUUID + '</dd></dl>';
+            var canonical = '<dl class="canonical"><dt>Canonical</dt><dd rel="oa:canonical" resource="urn:uuid:' + canonicalUUID + '">' + canonicalUUID + '</dd></dl>';
 
             note = '\n\
-<article id="' + n.id + '" about="' + aAbout + '" typeof="oa:Annotation' + noteType + '"' + aPrefix + articleClass + '>'+buttonDelete+'\n\
+<article about="' + aAbout + '" id="' + n.id + '" typeof="oa:Annotation' + noteType + '"' + aPrefix + articleClass + '>'+buttonDelete+'\n\
   ' + heading + '\n\
   ' + authors + '\n\
   ' + published + '\n\
@@ -4449,8 +4451,7 @@ WHERE {\n\
   ' + canonical + '\n\
   ' + target + '\n\
   ' + body + '\n\
-</article>\n\
-';
+</article>';
           }
           break;
 
