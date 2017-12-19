@@ -950,16 +950,6 @@ function getResourceGraph (iri, headers, options = {}) {
       return response.text()
     })
     .then(data => {
-      // FIXME: This is a dirty filthy fugly but a *fix* to get around the baseURI not being passed to the DOM parser. This injects the `base` element into the document so that the RDFa parse fallsback to that. The actual fix should happen upstream. See related issues:
-      // https://github.com/linkeddata/dokieli/issues/132
-      // https://github.com/rdf-ext/rdf-parser-dom/issues/2
-      // https://github.com/rdf-ext/rdf-parser-rdfa/issues/3
-      // https://github.com/simplerdf/simplerdf/issues/19
-
-      if (options.contentType === 'text/html' || options.contentType === 'application/xhtml+xml') {
-        data = doc.setHTMLBase(data, options.subjectURI)
-      }
-
       return graph.getGraphFromData(data, options)
     })
     .then(g => {
@@ -1262,7 +1252,7 @@ module.exports = {
   getMatchFromData,
   serializeData,
   serializeGraph,
-  applyParserFixes
+  applyParserSerializerFixes
 }
 
 function getGraph (url) {
@@ -1273,8 +1263,18 @@ function getGraphFromData (data, options = {}) {
   if (!('contentType' in options)) {
     options['contentType'] = 'text/turtle'
   }
+
+  // FIXME: This is a dirty filthy fugly but a *fix* to get around the baseURI not being passed to the DOM parser. This injects the `base` element into the document so that the RDFa parse fallsback to that. The actual fix should happen upstream. See related issues:
+  // https://github.com/linkeddata/dokieli/issues/132
+  // https://github.com/rdf-ext/rdf-parser-dom/issues/2
+  // https://github.com/rdf-ext/rdf-parser-rdfa/issues/3
+  // https://github.com/simplerdf/simplerdf/issues/19
+
   if (!('subjectURI' in options)) {
-    options['subjectURI'] = '_:dokieli'
+    options['subjectURI'] = 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d'
+  }
+  if (options.contentType === 'text/html' || options.contentType === 'application/xhtml+xml') {
+    data = doc.setHTMLBase(data, options.subjectURI)
   }
 
   return SimpleRDF.parse(data, options['contentType'], options['subjectURI'])
@@ -1315,11 +1315,6 @@ function serializeData (data, fromContentType, toContentType, options) {
 
   options.contentType = fromContentType
 
-
-  if (fromContentType == 'text/html' || fromContentType == 'application/xhtml+xml') {
-    data = doc.setHTMLBase(data, options.subjectURI)
-  }
-
 // console.log(data)
 
   return getGraphFromData(data, options)
@@ -1331,10 +1326,6 @@ function serializeData (data, fromContentType, toContentType, options) {
         case 'application/ld+json':
 // console.log(g)
           return serializeGraph(g, options).then(subjectTriples => {
-            if (fromContentType == 'text/html' || fromContentType == 'application/xhtml+xml') {
-              subjectTriples = applyParserFixes(subjectTriples, fromContentType, toContentType)
-            }
-
             subjectTriples = JSON.parse(subjectTriples)
 
             var data = {}
@@ -1392,13 +1383,7 @@ function serializeData (data, fromContentType, toContentType, options) {
           })
 
         default:
-          return serializeGraph(g, options).then(data => {
-            if (fromContentType == 'text/html' || fromContentType == 'application/xhtml+xml') {
-              data = applyParserFixes(data, fromContentType, toContentType)
-            }
-
-            return data
-          })
+          return serializeGraph(g, options)
       }     
     })
     .then(data => {
@@ -1476,18 +1461,23 @@ function serializeGraph (g, options = {}) {
   }
 
   return ld.store.serializers[options.contentType].serialize(g._graph)
-    // XXX: .compact doesn't work as advertised
-    // .then((data) => {
-    //   if (options.contentType === 'application/ld+json' && '@context' in options) {
-    //     return jsonld.promises().compact(data, options['@context'], {'skipExpansion': true})
-    //   }
+    .then(data => {
+      data = applyParserSerializerFixes(data, options.contentType)
 
-    //   return data
-    // })
+      // XXX: .compact doesn't work as advertised
+      // if (options.contentType === 'application/ld+json' && '@context' in options) {
+      //   return jsonld.promises().compact(data, options['@context'], {'skipExpansion': true})
+      // }
+
+      return data
+    })
 }
 
-function applyParserFixes(data, fromContentType, toContentType) {
-  switch(toContentType) {
+function applyParserSerializerFixes(data, contentType) {
+  // FIXME: FUGLY because parser defaults to localhost. Using UUID to minimise conflict
+  data = data.replace(/http:\/\/localhost\/d79351f4-cdb8-4228-b24f-3e9ac74a840d/g, '');
+
+  switch(contentType) {
     case 'text/turtle':
       //XXX: Workaround for rdf-parser-rdfa bug that gives '@langauge' instead of @type when encountering datatype in HTML+RDFa . TODO: Link to bug here
       data = data.replace(/Z"@en;/, 'Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;');
@@ -2182,7 +2172,7 @@ var DO = {
                       "id": id,
                       "refId": refId,
                       "refLabel": refLabel,
-                      "iri": iri,
+                      // "iri": iri,
                       "creator": {},
                       "target": {
                         "iri": targetIRI
@@ -2463,15 +2453,6 @@ var DO = {
                     });
 
                     graph.serializeGraph(dataGraph, { 'contentType': 'text/turtle' })
-                      .then(function(data){
-                        //FIXME: FUGLY because parser defaults to localhost. Using UUID to minimise conflict
-                        data = data.replace(/http:\/\/localhost\/d79351f4-cdb8-4228-b24f-3e9ac74a840d/g, '');
-
-                        //XXX: Workaround for rdf-parser-rdfa bug that gives '@langauge' instead of @type when encountering datatype in HTML+RDFa . TODO: Link to bug here
-                        data = data.replace(/Z"@en;/, 'Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;');
-
-                        return data;
-                      })
                       .then(function(data){
                         options['contentType'] = 'text/turtle';
                         options['subjectURI'] = inboxURL;
@@ -4021,7 +4002,7 @@ var DO = {
           "mode": "write",
           "motivatedByIRI": motivatedBy,
           "id": attributeId,
-          "iri": noteIRI, //e.g., https://example.org/path/to/article
+          // "iri": noteIRI, //e.g., https://example.org/path/to/article
           "creator": {},
           "datetime": datetime,
           "target": {
@@ -4051,7 +4032,7 @@ var DO = {
 
         var note = DO.U.createNoteDataHTML(noteData)
 
-        var data = DO.U.createHTML(noteIRI, note)
+        var data = DO.U.createHTML('', note)
 
         fetcher.putResource(noteIRI, data)
 
@@ -5720,7 +5701,7 @@ WHERE {\n\
       containerNode = containerNode || document.body;
       var pIRI = uri.getProxyableIRI(noteIRI);
 
-      return graph.getGraph(pIRI)
+      return fetcher.getResourceGraph(pIRI)
         .then(
           function(i) {
             var note = i.child(noteIRI);
@@ -6051,6 +6032,7 @@ WHERE {\n\
     },
 
     createHTML: function(title, main, options) {
+      title = title || '';
       options = options || {};
       var prefix = ('prefixes' in options && Object.keys(options.prefixes).length > 0) ? ' prefix="' + DO.U.getRDFaPrefixHTML(options.prefixes) + '"' : '';
 
@@ -6082,7 +6064,7 @@ WHERE {\n\
       var note = '';
       var targetLabel = '';
       var articleClass = '';
-      var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: http://schema.org/ dcterms: http://purl.org/dc/terms/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# i: ' + n.iri + '"';
+      var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: http://schema.org/ dcterms: http://purl.org/dc/terms/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams#"';
 
       var motivatedByIRI = n.motivatedByIRI || '';
       var motivatedByLabel = '';
@@ -6091,13 +6073,13 @@ WHERE {\n\
           motivatedByIRI = 'oa:replying';
           motivatedByLabel = 'replies';
           targetLabel = 'In reply to';
-          aAbout = 'i:';
+          aAbout = '';
           aPrefix = prefixes;
           break;
         case 'oa:assessing':
           motivatedByLabel = 'reviews';
           targetLabel = 'Review of';
-          aAbout = 'i:';
+          aAbout = '';
           aPrefix = prefixes;
           break;
         case 'oa:describing':
@@ -6113,7 +6095,7 @@ WHERE {\n\
         case 'oa:bookmarking':
           motivatedByLabel = 'bookmarks';
           targetLabel = 'Bookmarked';
-          aAbout = 'i:';
+          aAbout = '';
           aPrefix = prefixes;
           break;
       }
@@ -6132,7 +6114,7 @@ WHERE {\n\
       }
 
       var creatorName = '';
-      var creatorIRI = 'i:#agent';
+      var creatorIRI = '#agent';
       if ('creator' in n) {
         if ('image' in n.creator) {
           creatorImage = '<img alt="" height="48" rel="schema:image" src="' + n.creator.image + '" width="48" /> ';
@@ -6158,7 +6140,9 @@ WHERE {\n\
       heading = '<' + hX + ' property="schema:name">' + creatorName + ' <span rel="oa:motivatedBy" resource="' + motivatedByIRI + '">' + motivatedByLabel + '</span></' + hX + '>';
 
       if ('datetime' in n){
-        published = '<dl class="published"><dt>Published</dt><dd><a href="' + n.iri + '"><time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="schema:datePublished" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time></a></dd></dl>';
+        var time = '<time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="schema:datePublished" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time>';
+        var timeLinked = ('iri' in n) ? '<a href="' + n.iri + '">' + time + '</a>' : time;
+        published = '<dl class="published"><dt>Published</dt><dd>' + timeLinked + '</dd></dl>';
       }
 
       if (n.license && 'iri' in n.license) {
@@ -6174,7 +6158,7 @@ WHERE {\n\
             if (typeof n.body !== 'undefined') {
               if(typeof n.body === 'object' && 'purpose' in n.body) {
                 if ('describing' in n.body.purpose && 'text' in n.body.purpose.describing) {
-                  body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="i:#note-' + n.id + '"><h2 property="schema:name" rel="oa:hasPurpose" resource="oa:describing">Note</h2><div datatype="rdf:HTML" property="rdf:value schema:description" resource="i:#note-' + n.id + '" typeof="oa:TextualBody">' + n.body.purpose.describing.text + '</div></section>';
+                  body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="#note-' + n.id + '"><h2 property="schema:name" rel="oa:hasPurpose" resource="oa:describing">Note</h2><div datatype="rdf:HTML" property="rdf:value schema:description" resource="#note-' + n.id + '" typeof="oa:TextualBody">' + n.body.purpose.describing.text + '</div></section>';
                 }
                 if ('tagging' in n.body.purpose && 'text' in n.body.purpose.tagging) {
                   var tagsArray = [];
@@ -6189,7 +6173,7 @@ WHERE {\n\
 
                     body += '<dl id="tags" class="tags"><dt>Tags</dt><dd><ul rel="oa:hasBody">';
                     tagsArray.forEach(function(i){
-                      body += '<li about="i:#tag-' + DO.U.generateAttributeId(null, i) + '" typeof="oa:TextualBody" property="rdf:value" rel="oa:hasPurpose" resource="oa:tagging" datatype="rdf:HTML">' + i + '</li>';
+                      body += '<li about="#tag-' + DO.U.generateAttributeId(null, i) + '" typeof="oa:TextualBody" property="rdf:value" rel="oa:hasPurpose" resource="oa:tagging" datatype="rdf:HTML">' + i + '</li>';
                     })
                     body += '</ul></dd></dl>';
                   }
@@ -6201,7 +6185,7 @@ WHERE {\n\
                   license = DO.U.createLicenseHTML(n.license, {rel:'dcterms:rights', label:'Rights'});
                 }
 
-                body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="i:#note-' + n.id + '"><h2 property="schema:name">Note</h2>' + license + '<div datatype="rdf:HTML" property="rdf:value schema:description" resource="i:#note-' + n.id + '" typeof="oa:TextualBody">' + n.body + '</div></section>';
+                body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="#note-' + n.id + '"><h2 property="schema:name">Note</h2>' + license + '<div datatype="rdf:HTML" property="rdf:value schema:description" resource="#note-' + n.id + '" typeof="oa:TextualBody">' + n.body + '</div></section>';
               }
             }
 
@@ -6212,7 +6196,7 @@ WHERE {\n\
               var targetIRIFragment = n.target.iri.substr(n.target.iri.lastIndexOf('#'));
               //TODO: Handle when there is no fragment
               if (typeof n.target.selector !== 'undefined') {
-                annotationTextSelector = '<div rel="oa:hasSelector" resource="i:#fragment-selector" typeof="oa:FragmentSelector"><dl class="conformsto"><dt>Fragment selector conforms to</dt><dd><a content="' + targetIRIFragment + '" lang="" property="rdf:value" rel="dcterms:conformsTo" resource="https://tools.ietf.org/html/rfc3987" xml:lang="">RFC 3987</a></dd></dl><dl rel="oa:refinedBy" resource="i:#text-quote-selector" typeof="oa:TextQuoteSelector"><dt>Refined by</dt><dd><span lang="en" property="oa:prefix" xml:lang="en">' + n.target.selector.prefix + '</span><mark lang="en" property="oa:exact" xml:lang="en">' + n.target.selector.exact + '</mark><span lang="en" property="oa:suffix" xml:lang="en">' + n.target.selector.suffix + '</span></dd></dl></div>';
+                annotationTextSelector = '<div rel="oa:hasSelector" resource="#fragment-selector" typeof="oa:FragmentSelector"><dl class="conformsto"><dt>Fragment selector conforms to</dt><dd><a content="' + targetIRIFragment + '" lang="" property="rdf:value" rel="dcterms:conformsTo" resource="https://tools.ietf.org/html/rfc3987" xml:lang="">RFC 3987</a></dd></dl><dl rel="oa:refinedBy" resource="#text-quote-selector" typeof="oa:TextQuoteSelector"><dt>Refined by</dt><dd><span lang="en" property="oa:prefix" xml:lang="en">' + n.target.selector.prefix + '</span><mark lang="en" property="oa:exact" xml:lang="en">' + n.target.selector.exact + '</mark><span lang="en" property="oa:suffix" xml:lang="en">' + n.target.selector.suffix + '</span></dd></dl></div>';
               }
             }
             else if(typeof n.inReplyTo !== 'undefined' && 'iri' in n.inReplyTo) {
@@ -6235,10 +6219,10 @@ WHERE {\n\
             target += '<dl class="renderedvia"><dt>Rendered via</dt><dd><a about="' + targetIRI + '" href="https://dokie.li/" rel="oa:renderedVia">dokieli</a></dd></dl>';
 
             var canonicalUUID = DO.U.generateUUID();
-            var canonical = '<dl class="canonical"><dt>Canonical</dt><dd about="i:" rel="oa:canonical" resource="urn:uuid:' + canonicalUUID + '">' + canonicalUUID + '</dd></dl>';
+            var canonical = '<dl class="canonical"><dt>Canonical</dt><dd rel="oa:canonical" resource="urn:uuid:' + canonicalUUID + '">' + canonicalUUID + '</dd></dl>';
 
             note = '\n\
-<article id="' + n.id + '" about="' + aAbout + '" typeof="oa:Annotation' + noteType + '"' + aPrefix + articleClass + '>'+buttonDelete+'\n\
+<article about="' + aAbout + '" id="' + n.id + '" typeof="oa:Annotation' + noteType + '"' + aPrefix + articleClass + '>'+buttonDelete+'\n\
   ' + heading + '\n\
   ' + authors + '\n\
   ' + published + '\n\
@@ -6246,8 +6230,7 @@ WHERE {\n\
   ' + canonical + '\n\
   ' + target + '\n\
   ' + body + '\n\
-</article>\n\
-';
+</article>';
           }
           break;
 
@@ -7810,7 +7793,7 @@ WHERE {\n\
               var annotationDistribution = [] , aLS = {};
 
               if(opts.annotationLocationPersonalStorage && DO.C.User.Outbox && DO.C.User.Outbox.length > 0) {
-                containerIRI = DO.U.forceTrailingSlash(DO.C.User.Outbox[0]);
+                containerIRI = DO.C.User.Outbox[0];
 
                 var fromContentType = 'text/html';
                 contentType = 'application/ld+json';
@@ -7821,10 +7804,10 @@ WHERE {\n\
                     'https://www.w3.org/ns/activitystreams',
                     { 'oa': 'http://www.w3.org/ns/oa#' }
                   ],
-                  'subjectURI': noteIRI,
+                  // 'subjectURI': noteIRI,
                   'profile': 'https://www.w3.org/ns/activitystreams'
                 };
-                aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'options': options };
+                aLS = { 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'options': options };
                 if (typeof DO.C.User.Storage === 'undefined') {
                   aLS['canonical'] = true;
                 }
@@ -7835,11 +7818,11 @@ WHERE {\n\
               //XXX: Use this as the canonical if available. Note how noteIRI is treated later
               if(opts.annotationLocationPersonalStorage && DO.C.User.Storage && DO.C.User.Storage.length > 0) {
                 if(DO.C.User.Storage && DO.C.User.Storage.length > 0) {
-                  containerIRI = DO.U.forceTrailingSlash(DO.C.User.Storage[0]);
+                  containerIRI = DO.C.User.Storage[0];
                 }
-                else {
-                  containerIRI = containerIRI.substr(0, containerIRI.lastIndexOf('/') + 1);
-                }
+                // else {
+                //   containerIRI = containerIRI.substr(0, containerIRI.lastIndexOf('/') + 1);
+                // }
 
                 //XXX: Remove. No longer used
                 if (typeof DO.C.User.masterWorkspace != 'undefined' && DO.C.User.masterWorkspace.length > 0) {
@@ -7857,8 +7840,10 @@ WHERE {\n\
                 var fromContentType = 'text/html';
                 contentType = 'text/html';
                 noteURL = noteIRI = containerIRI + id;
-                options = { 'subjectURI': noteIRI };
-                aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true, 'options': options };
+                options = {
+                  // 'subjectURI': noteIRI,
+                };
+                aLS = { 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true, 'options': options };
                 annotationDistribution.push(aLS);
               }
 
@@ -7871,21 +7856,21 @@ WHERE {\n\
                     'http://www.w3.org/ns/anno.jsonld',
                     { 'as': 'https://www.w3.org/ns/activitystreams#' }
                   ],
-                  'subjectURI': noteIRI,
+                  // 'subjectURI': noteIRI,
                   'profile': 'http://www.w3.org/ns/anno.jsonld'
                 };
 
                 if(!opts.annotationLocationPersonalStorage && opts.annotationLocationService) {
                   noteURL = noteIRI = containerIRI + id;
-                  aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true, 'options': options };
+                  aLS = { 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true, 'options': options };
                 }
                 else if(opts.annotationLocationPersonalStorage) {
                   noteURL = containerIRI + id;
-                  aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'options': options };
+                  aLS = { 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'options': options };
                 }
                 else {
                   noteURL = noteIRI = containerIRI + id;
-                  aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true, 'options': options };
+                  aLS = { 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true, 'options': options };
                 }
                 annotationDistribution.push(aLS);
               }
@@ -7938,7 +7923,7 @@ WHERE {\n\
                     "id": id,
                     "refId": refId,
                     "refLabel": refLabel,
-                    "iri": noteIRI, //e.g., https://example.org/path/to/article
+                    // "iri": noteIRI, //e.g., https://example.org/path/to/article
                     "creator": {},
                     "datetime": datetime,
                     "target": {
@@ -7985,7 +7970,7 @@ WHERE {\n\
                     "id": id,
                     "refId": refId,
                     "refLabel": refLabel,
-                    "iri": noteIRI, //e.g., https://example.org/path/to/article
+                    // "iri": noteIRI, //e.g., https://example.org/path/to/article
                     "creator": {},
                     "datetime": datetime,
                     "target": {
@@ -8043,7 +8028,7 @@ WHERE {\n\
                         "id": id,
                         "refId": refId,
                         "refLabel": refLabel,
-                        "iri": noteIRI,
+                        // "iri": noteIRI,
                         "datetime": datetime,
                         "body": opts.content,
                         "citationURL": opts.url
@@ -8093,7 +8078,7 @@ WHERE {\n\
                     "id": id,
                     "refId": refId,
                     "refLabel": refLabel,
-                    "iri": noteIRI, //e.g., https://example.org/path/to/article
+                    // "iri": noteIRI, //e.g., https://example.org/path/to/article
                     "creator": {},
                     "datetime": datetime,
                     "target": {
@@ -8149,7 +8134,7 @@ WHERE {\n\
     </dl>\n\
 ';
 
-                  var data = DO.U.createHTML(noteIRI, note);
+                  var data = DO.U.createHTML('', note);
 
                   var sendActivity = function(annotation) {
                     //Make this annotation refer to the canonical annotation
@@ -8158,7 +8143,7 @@ WHERE {\n\
                         case 'application/ld+json':
                           let x = JSON.parse(annotation['data'])
                           x[ "via" ] = x[ "@id" ]
-                          x[ "@id" ] = annotation[ 'noteURL' ]
+                          x[ "@id" ] = ""
                           annotation['data'] = JSON.stringify(x)
                           break
                         default:
@@ -8169,9 +8154,12 @@ WHERE {\n\
                     var contentType = (annotation.options['profile'])
                       ? annotation['contentType'] + ';profile="' + annotation.options['profile'] + '"'
                       : annotation['contentType']
-// console.log(annotation['data'])
 
-                    return fetcher.putResource(annotation[ 'noteURL' ], annotation['data'], contentType)
+// console.log(annotation)
+
+                    //TODO: If server has `Allow: PUT` or if not oa:annotationService/as:outbox, use PUT. Most likely for pim:storage -- This minor distinction helps to get around node-solid-server issue with not handling text/html for POST (hardcodes `.html` suffix to the resource), whereas PUT doesn't touch the URI
+
+                    return fetcher.postResource(annotation['containerIRI'], id, annotation['data'], contentType)
                       .catch(error => {
                         console.log('Error saving annotation:', error)
                         throw error // re-throw, break out of promise chain
@@ -8250,7 +8238,6 @@ WHERE {\n\
                   }
 
                   annotationDistribution.forEach(annotation => {
-// console.log(annotation)
                     graph.serializeData(data, annotation['fromContentType'], annotation['contentType'], annotation['options'])
                       .catch(error => {
                         console.log('Error serializing annotation:', error)
@@ -8263,7 +8250,18 @@ WHERE {\n\
 
                       .then(() => { return sendActivity(annotation) })
 
-                      .then(() => { return positionActivity(annotation) })
+
+                      .then(response => {
+                        var location = response.headers.get('Location')
+
+                        if (location) {
+                          location = uri.getAbsoluteIRI(annotation['containerIRI'], location)
+                          annotation['noteIRI'] = annotation['noteURL'] = location
+                        }
+
+// console.log(annotation)
+                        return positionActivity(annotation)
+                       })
 
                       .then(() => { return sendNotification(annotation) })
 
@@ -8382,7 +8380,7 @@ WHERE {\n\
                   break;
 
                 case 'bookmark':
-                  var data = DO.U.createHTML(noteIRI, note);
+                  var data = DO.U.createHTML('', note);
 
                   fetcher.putResource(noteIRI, data)
                     .then(() => {
@@ -8801,7 +8799,6 @@ function notifyInbox (o) {
 
   var options = {
     'contentType': 'text/html',
-    'subjectURI': 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d',
     'profile': 'https://www.w3.org/ns/activitystreams'
   }
 
@@ -8820,21 +8817,11 @@ function postActivity(url, slug, data, options) {
         case 'text/turtle':
           // FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
 
-          data = doc.setHTMLBase(data, options.subjectURI)
-
           return graph.getGraphFromData(data, options)
             .then(g => {
               return graph.serializeGraph(g, { 'contentType': 'text/turtle' })
             })
             .then(data => {
-              // FIXME: FUGLY because parser defaults to localhost. Using UUID to minimise conflict
-              data = data.replace(/http:\/\/localhost\/d79351f4-cdb8-4228-b24f-3e9ac74a840d/g, '')
-
-              // XXX: Workaround for rdf-parser-rdfa bug that gives
-              // '@language' instead of @type when encountering datatype in HTML+RDFa .
-              // TODO: Link to bug here
-              data = data.replace(/Z"@en;/, 'Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;')
-
               return fetcher.postResource(url, slug, data, 'text/turtle')
             })
 
@@ -8842,36 +8829,12 @@ function postActivity(url, slug, data, options) {
         case 'application/json':
         case '*/*':
         default:
-          data = doc.setHTMLBase(data, options.subjectURI)
-
           return graph.getGraphFromData(data, options)
             .then(g => {
               return graph.serializeGraph(g, { 'contentType': 'application/ld+json', 'context': { '@context': 'https://www.w3.org/ns/activitystreams' }})
             })
             .then(serialized => {
-              let parsedData = JSON.parse(serialized)
-
-              parsedData[0]["@context"] = [
-                "https://www.w3.org/ns/activitystreams",
-                {"oa": "http://www.w3.org/ns/anno.jsonld"}
-              ]
-              // If from is Turtle:
-              // x[0]["@id"] = (x[0]["@id"].slice(0,2) == '_:') ? '' : x[0]["@id"];
-              parsedData[0]["@id"] = (parsedData[0]["@id"] === 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d') ? '' : parsedData[0]["@id"];
-
-              // XXX: Workaround for rdf-parser-rdfa bug that gives
-              // '@language' instead of @type when encountering datatype in HTML+RDFa .
-              // TODO: Link to bug here
-              for (let i = 0; i < parsedData.length; i++) {
-                if ('https://www.w3.org/ns/activitystreams#updated' in parsedData[i]) {
-                  parsedData[i]['https://www.w3.org/ns/activitystreams#updated'] = {
-                    '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
-                    '@value': parsedData[i]['https://www.w3.org/ns/activitystreams#updated']['@value']
-                  }
-                }
-              }
-
-              let data = JSON.stringify(parsedData) + '\n'
+              let data = JSON.stringify(serialized) + '\n'
 
               var profile = ('profile' in options) ? '; profile="' + options.profile + '"' : ''
 

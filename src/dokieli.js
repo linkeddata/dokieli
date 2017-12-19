@@ -666,15 +666,6 @@ var DO = {
 
                     graph.serializeGraph(dataGraph, { 'contentType': 'text/turtle' })
                       .then(function(data){
-                        //FIXME: FUGLY because parser defaults to localhost. Using UUID to minimise conflict
-                        data = data.replace(/http:\/\/localhost\/d79351f4-cdb8-4228-b24f-3e9ac74a840d/g, '');
-
-                        //XXX: Workaround for rdf-parser-rdfa bug that gives '@langauge' instead of @type when encountering datatype in HTML+RDFa . TODO: Link to bug here
-                        data = data.replace(/Z"@en;/, 'Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;');
-
-                        return data;
-                      })
-                      .then(function(data){
                         options['contentType'] = 'text/turtle';
                         options['subjectURI'] = inboxURL;
 
@@ -6025,7 +6016,7 @@ WHERE {\n\
                     'https://www.w3.org/ns/activitystreams',
                     { 'oa': 'http://www.w3.org/ns/oa#' }
                   ],
-                  'subjectURI': noteIRI,
+                  // 'subjectURI': noteIRI,
                   'profile': 'https://www.w3.org/ns/activitystreams'
                 };
                 aLS = { 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'options': options };
@@ -6061,7 +6052,9 @@ WHERE {\n\
                 var fromContentType = 'text/html';
                 contentType = 'text/html';
                 noteURL = noteIRI = containerIRI + id;
-                options = { 'subjectURI': noteIRI };
+                options = {
+                  // 'subjectURI': noteIRI,
+                };
                 aLS = { 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true, 'options': options };
                 annotationDistribution.push(aLS);
               }
@@ -6075,7 +6068,7 @@ WHERE {\n\
                     'http://www.w3.org/ns/anno.jsonld',
                     { 'as': 'https://www.w3.org/ns/activitystreams#' }
                   ],
-                  'subjectURI': noteIRI,
+                  // 'subjectURI': noteIRI,
                   'profile': 'http://www.w3.org/ns/anno.jsonld'
                 };
 
@@ -6373,9 +6366,12 @@ WHERE {\n\
                     var contentType = (annotation.options['profile'])
                       ? annotation['contentType'] + ';profile="' + annotation.options['profile'] + '"'
                       : annotation['contentType']
-// console.log(annotation['data'])
 
-                    return fetcher.putResource(annotation[ 'noteURL' ], annotation['data'], contentType)
+// console.log(annotation)
+
+                    //TODO: If server has `Allow: PUT` or if not oa:annotationService/as:outbox, use PUT. Most likely for pim:storage -- This minor distinction helps to get around node-solid-server issue with not handling text/html for POST (hardcodes `.html` suffix to the resource), whereas PUT doesn't touch the URI
+
+                    return fetcher.postResource(annotation['containerIRI'], id, annotation['data'], contentType)
                       .catch(error => {
                         console.log('Error saving annotation:', error)
                         throw error // re-throw, break out of promise chain
@@ -6454,7 +6450,6 @@ WHERE {\n\
                   }
 
                   annotationDistribution.forEach(annotation => {
-// console.log(annotation)
                     graph.serializeData(data, annotation['fromContentType'], annotation['contentType'], annotation['options'])
                       .catch(error => {
                         console.log('Error serializing annotation:', error)
@@ -6467,7 +6462,18 @@ WHERE {\n\
 
                       .then(() => { return sendActivity(annotation) })
 
-                      .then(() => { return positionActivity(annotation) })
+
+                      .then(response => {
+                        var location = response.headers.get('Location')
+
+                        if (location) {
+                          location = uri.getAbsoluteIRI(annotation['containerIRI'], location)
+                          annotation['noteIRI'] = annotation['noteURL'] = location
+                        }
+
+// console.log(annotation)
+                        return positionActivity(annotation)
+                       })
 
                       .then(() => { return sendNotification(annotation) })
 

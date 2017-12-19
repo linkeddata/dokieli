@@ -212,7 +212,6 @@ function notifyInbox (o) {
 
   var options = {
     'contentType': 'text/html',
-    'subjectURI': 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d',
     'profile': 'https://www.w3.org/ns/activitystreams'
   }
 
@@ -231,21 +230,11 @@ function postActivity(url, slug, data, options) {
         case 'text/turtle':
           // FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
 
-          data = doc.setHTMLBase(data, options.subjectURI)
-
           return graph.getGraphFromData(data, options)
             .then(g => {
               return graph.serializeGraph(g, { 'contentType': 'text/turtle' })
             })
             .then(data => {
-              // FIXME: FUGLY because parser defaults to localhost. Using UUID to minimise conflict
-              data = data.replace(/http:\/\/localhost\/d79351f4-cdb8-4228-b24f-3e9ac74a840d/g, '')
-
-              // XXX: Workaround for rdf-parser-rdfa bug that gives
-              // '@language' instead of @type when encountering datatype in HTML+RDFa .
-              // TODO: Link to bug here
-              data = data.replace(/Z"@en;/, 'Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;')
-
               return fetcher.postResource(url, slug, data, 'text/turtle')
             })
 
@@ -253,36 +242,12 @@ function postActivity(url, slug, data, options) {
         case 'application/json':
         case '*/*':
         default:
-          data = doc.setHTMLBase(data, options.subjectURI)
-
           return graph.getGraphFromData(data, options)
             .then(g => {
               return graph.serializeGraph(g, { 'contentType': 'application/ld+json', 'context': { '@context': 'https://www.w3.org/ns/activitystreams' }})
             })
             .then(serialized => {
-              let parsedData = JSON.parse(serialized)
-
-              parsedData[0]["@context"] = [
-                "https://www.w3.org/ns/activitystreams",
-                {"oa": "http://www.w3.org/ns/anno.jsonld"}
-              ]
-              // If from is Turtle:
-              // x[0]["@id"] = (x[0]["@id"].slice(0,2) == '_:') ? '' : x[0]["@id"];
-              parsedData[0]["@id"] = (parsedData[0]["@id"] === 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d') ? '' : parsedData[0]["@id"];
-
-              // XXX: Workaround for rdf-parser-rdfa bug that gives
-              // '@language' instead of @type when encountering datatype in HTML+RDFa .
-              // TODO: Link to bug here
-              for (let i = 0; i < parsedData.length; i++) {
-                if ('https://www.w3.org/ns/activitystreams#updated' in parsedData[i]) {
-                  parsedData[i]['https://www.w3.org/ns/activitystreams#updated'] = {
-                    '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
-                    '@value': parsedData[i]['https://www.w3.org/ns/activitystreams#updated']['@value']
-                  }
-                }
-              }
-
-              let data = JSON.stringify(parsedData) + '\n'
+              let data = JSON.stringify(serialized) + '\n'
 
               var profile = ('profile' in options) ? '; profile="' + options.profile + '"' : ''
 

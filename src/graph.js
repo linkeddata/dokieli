@@ -11,7 +11,7 @@ module.exports = {
   getMatchFromData,
   serializeData,
   serializeGraph,
-  applyParserFixes
+  applyParserSerializerFixes
 }
 
 function getGraph (url) {
@@ -22,8 +22,18 @@ function getGraphFromData (data, options = {}) {
   if (!('contentType' in options)) {
     options['contentType'] = 'text/turtle'
   }
+
+  // FIXME: This is a dirty filthy fugly but a *fix* to get around the baseURI not being passed to the DOM parser. This injects the `base` element into the document so that the RDFa parse fallsback to that. The actual fix should happen upstream. See related issues:
+  // https://github.com/linkeddata/dokieli/issues/132
+  // https://github.com/rdf-ext/rdf-parser-dom/issues/2
+  // https://github.com/rdf-ext/rdf-parser-rdfa/issues/3
+  // https://github.com/simplerdf/simplerdf/issues/19
+
   if (!('subjectURI' in options)) {
-    options['subjectURI'] = '_:dokieli'
+    options['subjectURI'] = 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d'
+  }
+  if (options.contentType === 'text/html' || options.contentType === 'application/xhtml+xml') {
+    data = doc.setHTMLBase(data, options.subjectURI)
   }
 
   return SimpleRDF.parse(data, options['contentType'], options['subjectURI'])
@@ -64,11 +74,6 @@ function serializeData (data, fromContentType, toContentType, options) {
 
   options.contentType = fromContentType
 
-
-  if (fromContentType == 'text/html' || fromContentType == 'application/xhtml+xml') {
-    data = doc.setHTMLBase(data, options.subjectURI)
-  }
-
 // console.log(data)
 
   return getGraphFromData(data, options)
@@ -80,10 +85,6 @@ function serializeData (data, fromContentType, toContentType, options) {
         case 'application/ld+json':
 // console.log(g)
           return serializeGraph(g, options).then(subjectTriples => {
-            if (fromContentType == 'text/html' || fromContentType == 'application/xhtml+xml') {
-              subjectTriples = applyParserFixes(subjectTriples, fromContentType, toContentType)
-            }
-
             subjectTriples = JSON.parse(subjectTriples)
 
             var data = {}
@@ -141,13 +142,7 @@ function serializeData (data, fromContentType, toContentType, options) {
           })
 
         default:
-          return serializeGraph(g, options).then(data => {
-            if (fromContentType == 'text/html' || fromContentType == 'application/xhtml+xml') {
-              data = applyParserFixes(data, fromContentType, toContentType)
-            }
-
-            return data
-          })
+          return serializeGraph(g, options)
       }     
     })
     .then(data => {
@@ -225,18 +220,23 @@ function serializeGraph (g, options = {}) {
   }
 
   return ld.store.serializers[options.contentType].serialize(g._graph)
-    // XXX: .compact doesn't work as advertised
-    // .then((data) => {
-    //   if (options.contentType === 'application/ld+json' && '@context' in options) {
-    //     return jsonld.promises().compact(data, options['@context'], {'skipExpansion': true})
-    //   }
+    .then(data => {
+      data = applyParserSerializerFixes(data, options.contentType)
 
-    //   return data
-    // })
+      // XXX: .compact doesn't work as advertised
+      // if (options.contentType === 'application/ld+json' && '@context' in options) {
+      //   return jsonld.promises().compact(data, options['@context'], {'skipExpansion': true})
+      // }
+
+      return data
+    })
 }
 
-function applyParserFixes(data, fromContentType, toContentType) {
-  switch(toContentType) {
+function applyParserSerializerFixes(data, contentType) {
+  // FIXME: FUGLY because parser defaults to localhost. Using UUID to minimise conflict
+  data = data.replace(/http:\/\/localhost\/d79351f4-cdb8-4228-b24f-3e9ac74a840d/g, '');
+
+  switch(contentType) {
     case 'text/turtle':
       //XXX: Workaround for rdf-parser-rdfa bug that gives '@langauge' instead of @type when encountering datatype in HTML+RDFa . TODO: Link to bug here
       data = data.replace(/Z"@en;/, 'Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;');
