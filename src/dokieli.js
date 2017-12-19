@@ -2253,7 +2253,7 @@ var DO = {
 
         var note = DO.U.createNoteDataHTML(noteData)
 
-        var data = DO.U.createHTML(noteIRI, note)
+        var data = DO.U.createHTML('', note)
 
         fetcher.putResource(noteIRI, data)
 
@@ -4253,6 +4253,7 @@ WHERE {\n\
     },
 
     createHTML: function(title, main, options) {
+      title = title || '';
       options = options || {};
       var prefix = ('prefixes' in options && Object.keys(options.prefixes).length > 0) ? ' prefix="' + DO.U.getRDFaPrefixHTML(options.prefixes) + '"' : '';
 
@@ -6351,7 +6352,7 @@ WHERE {\n\
     </dl>\n\
 ';
 
-                  var data = DO.U.createHTML(noteIRI, note);
+                  var data = DO.U.createHTML('', note);
 
                   var sendActivity = function(annotation) {
                     //Make this annotation refer to the canonical annotation
@@ -6584,7 +6585,7 @@ WHERE {\n\
                   break;
 
                 case 'bookmark':
-                  var data = DO.U.createHTML(noteIRI, note);
+                  var data = DO.U.createHTML('', note);
 
                   fetcher.putResource(noteIRI, data)
                     .then(() => {
