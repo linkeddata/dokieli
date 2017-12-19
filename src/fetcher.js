@@ -251,16 +251,6 @@ function getResourceGraph (iri, headers, options = {}) {
       return response.text()
     })
     .then(data => {
-      // FIXME: This is a dirty filthy fugly but a *fix* to get around the baseURI not being passed to the DOM parser. This injects the `base` element into the document so that the RDFa parse fallsback to that. The actual fix should happen upstream. See related issues:
-      // https://github.com/linkeddata/dokieli/issues/132
-      // https://github.com/rdf-ext/rdf-parser-dom/issues/2
-      // https://github.com/rdf-ext/rdf-parser-rdfa/issues/3
-      // https://github.com/simplerdf/simplerdf/issues/19
-
-      if (options.contentType === 'text/html' || options.contentType === 'application/xhtml+xml') {
-        data = doc.setHTMLBase(data, options.subjectURI)
-      }
-
       return graph.getGraphFromData(data, options)
     })
     .then(g => {
