@@ -6028,7 +6028,7 @@ WHERE {\n\
                   'subjectURI': noteIRI,
                   'profile': 'https://www.w3.org/ns/activitystreams'
                 };
-                aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'options': options };
+                aLS = { 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'options': options };
                 if (typeof DO.C.User.Storage === 'undefined') {
                   aLS['canonical'] = true;
                 }
@@ -6062,7 +6062,7 @@ WHERE {\n\
                 contentType = 'text/html';
                 noteURL = noteIRI = containerIRI + id;
                 options = { 'subjectURI': noteIRI };
-                aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true, 'options': options };
+                aLS = { 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true, 'options': options };
                 annotationDistribution.push(aLS);
               }
 
@@ -6081,15 +6081,15 @@ WHERE {\n\
 
                 if(!opts.annotationLocationPersonalStorage && opts.annotationLocationService) {
                   noteURL = noteIRI = containerIRI + id;
-                  aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true, 'options': options };
+                  aLS = { 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true, 'options': options };
                 }
                 else if(opts.annotationLocationPersonalStorage) {
                   noteURL = containerIRI + id;
-                  aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'options': options };
+                  aLS = { 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'options': options };
                 }
                 else {
                   noteURL = noteIRI = containerIRI + id;
-                  aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true, 'options': options };
+                  aLS = { 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true, 'options': options };
                 }
                 annotationDistribution.push(aLS);
               }
