@@ -6014,7 +6014,7 @@ WHERE {\n\
               var annotationDistribution = [] , aLS = {};
 
               if(opts.annotationLocationPersonalStorage && DO.C.User.Outbox && DO.C.User.Outbox.length > 0) {
-                containerIRI = DO.U.forceTrailingSlash(DO.C.User.Outbox[0]);
+                containerIRI = DO.C.User.Outbox[0];
 
                 var fromContentType = 'text/html';
                 contentType = 'application/ld+json';
@@ -6039,11 +6039,11 @@ WHERE {\n\
               //XXX: Use this as the canonical if available. Note how noteIRI is treated later
               if(opts.annotationLocationPersonalStorage && DO.C.User.Storage && DO.C.User.Storage.length > 0) {
                 if(DO.C.User.Storage && DO.C.User.Storage.length > 0) {
-                  containerIRI = DO.U.forceTrailingSlash(DO.C.User.Storage[0]);
+                  containerIRI = DO.C.User.Storage[0];
                 }
-                else {
-                  containerIRI = containerIRI.substr(0, containerIRI.lastIndexOf('/') + 1);
-                }
+                // else {
+                //   containerIRI = containerIRI.substr(0, containerIRI.lastIndexOf('/') + 1);
+                // }
 
                 //XXX: Remove. No longer used
                 if (typeof DO.C.User.masterWorkspace != 'undefined' && DO.C.User.masterWorkspace.length > 0) {
