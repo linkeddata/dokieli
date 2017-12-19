@@ -3922,7 +3922,7 @@ WHERE {\n\
       containerNode = containerNode || document.body;
       var pIRI = uri.getProxyableIRI(noteIRI);
 
-      return graph.getGraph(pIRI)
+      return fetcher.getResourceGraph(pIRI)
         .then(
           function(i) {
             var note = i.child(noteIRI);
