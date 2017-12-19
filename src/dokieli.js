@@ -384,7 +384,7 @@ var DO = {
                       "id": id,
                       "refId": refId,
                       "refLabel": refLabel,
-                      "iri": iri,
+                      // "iri": iri,
                       "creator": {},
                       "target": {
                         "iri": targetIRI
@@ -2223,7 +2223,7 @@ var DO = {
           "mode": "write",
           "motivatedByIRI": motivatedBy,
           "id": attributeId,
-          "iri": noteIRI, //e.g., https://example.org/path/to/article
+          // "iri": noteIRI, //e.g., https://example.org/path/to/article
           "creator": {},
           "datetime": datetime,
           "target": {
@@ -6142,7 +6142,7 @@ WHERE {\n\
                     "id": id,
                     "refId": refId,
                     "refLabel": refLabel,
-                    "iri": noteIRI, //e.g., https://example.org/path/to/article
+                    // "iri": noteIRI, //e.g., https://example.org/path/to/article
                     "creator": {},
                     "datetime": datetime,
                     "target": {
@@ -6189,7 +6189,7 @@ WHERE {\n\
                     "id": id,
                     "refId": refId,
                     "refLabel": refLabel,
-                    "iri": noteIRI, //e.g., https://example.org/path/to/article
+                    // "iri": noteIRI, //e.g., https://example.org/path/to/article
                     "creator": {},
                     "datetime": datetime,
                     "target": {
@@ -6247,7 +6247,7 @@ WHERE {\n\
                         "id": id,
                         "refId": refId,
                         "refLabel": refLabel,
-                        "iri": noteIRI,
+                        // "iri": noteIRI,
                         "datetime": datetime,
                         "body": opts.content,
                         "citationURL": opts.url
@@ -6297,7 +6297,7 @@ WHERE {\n\
                     "id": id,
                     "refId": refId,
                     "refLabel": refLabel,
-                    "iri": noteIRI, //e.g., https://example.org/path/to/article
+                    // "iri": noteIRI, //e.g., https://example.org/path/to/article
                     "creator": {},
                     "datetime": datetime,
                     "target": {
