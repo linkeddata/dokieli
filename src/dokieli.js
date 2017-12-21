@@ -4837,14 +4837,13 @@ WHERE {\n\
       },
 
       enableEditor: function(editorMode, e, selector) {
-        selector = selector || 'main > article';
-
         if (typeof DO.U.Editor.MediumEditor !== 'undefined') {
           DO.U.Editor.disableEditor();
         }
 
         if (!document.getElementById('document-editor')) {
-          document.body.insertAdjacentHTML('beforeend', '<aside id="document-editor" class="do"></aside>');
+          document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="document-editor" class="do"></aside>'))
+          // document.body.insertAdjacentHTML('afterend', '<aside id="document-editor" class="do"></aside>');
         }
 
         var editorOptions = {
@@ -4931,7 +4930,7 @@ WHERE {\n\
           editorOptions.author.toolbar.buttons.splice(10, 0, 'table');
         }
 
-        var eNodes = document.querySelector(selector) || document.body;
+        var eNodes = selector || 'body';
         var eOptions = editorOptions[editorMode];
         DO.C.User.Role = editorMode;
 
