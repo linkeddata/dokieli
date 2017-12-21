@@ -1885,7 +1885,6 @@ var DO = {
 
       s += '<li><button class="resource-source"' + buttonDisabled +
         ' title="Edit article source code"><i class="fa fa-code fa-2x"></i>Source</button></li>';
-      s += '<li><button class="resource-print" title="Print article"><i class="fa fa-print fa-2x"></i>Print</button></li>';
       s += '</ul></section>';
 
       node.insertAdjacentHTML('beforeend', s);
@@ -1937,12 +1936,6 @@ var DO = {
 
         if (e.target.closest('.resource-memento')) {
           DO.U.mementoDocument(e);
-        }
-
-        if (e.target.closest('.resource-print')) {
-          DO.U.hideDocumentMenu(e);
-          window.print();
-          return false;
         }
       });
     },
