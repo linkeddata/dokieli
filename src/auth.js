@@ -298,12 +298,19 @@ function getAgentSupplementalInfo(iri) {
         Config.User.Image = Config.User.Image || getAgentImage(s);
 
         var storage = getAgentStorage(s) || [];
+        var outbox = getAgentOutbox(s) || [];
         var knows = getAgentKnows(s) || [];
 
         if (storage.length > 0) {
           Config.User.Storage = (Config.User.Storage)
             ? util.uniqueArray(Config.User.Storage.concat(storage))
             : storage;
+        }
+
+        if (outbox.length > 0) {
+          Config.User.Outbox = (Config.User.Outbox)
+            ? util.uniqueArray(Config.User.Outbox.concat(outbox))
+            : outbox;
         }
 
         if (knows.length > 0) {
