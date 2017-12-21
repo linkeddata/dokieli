@@ -129,6 +129,7 @@ module.exports = {
     'prologue'
   ],
 
+  CollectionItemsLimit: 20,
   ContextLength: 32,
   ProxyURL: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/proxy?uri=' : 'https://dokie.li/proxy?uri='),
   AuthEndpoint: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/' : 'https://dokie.li/'),
