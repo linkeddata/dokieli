@@ -209,6 +209,7 @@ module.exports = {
     'prologue'
   ],
 
+  CollectionItemsLimit: 20,
   ContextLength: 32,
   ProxyURL: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/proxy?uri=' : 'https://dokie.li/proxy?uri='),
   AuthEndpoint: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/' : 'https://dokie.li/'),
@@ -2072,9 +2073,9 @@ var DO = {
 
     showOutboxSources: function(url) {
       DO.U.getOutboxActivities(url).then(
-        function(i) {
-          i.forEach(function(item) {
-            var pIRI = uri.getProxyableIRI(item);
+        function(items) {
+          for (var i = 0; i < items.length && i < DO.C.CollectionItemsLimit; i++) {
+            var pIRI = uri.getProxyableIRI(items[i]);
 
             DO.U.positionInteraction(pIRI).then(
               function(iri){
@@ -2083,8 +2084,7 @@ var DO = {
               function(reason){
                 console.log(pIRI + ': is unreachable');
               });
-
-          });
+          }
         },
         function(reason) {
           console.log('No activities');
@@ -4233,7 +4233,6 @@ var DO = {
                     // console.log(i);
                     var s = i.child(url);
 
-
                     DO.U.addShareResourceContactInput(shareResourceContacts, s);
 
                     return Promise.resolve([]);
@@ -4277,8 +4276,6 @@ console.log(reason);
       img = (img && img.length > 0) ? '<img alt="" height="32" src="' + img + '" width="32" />' : '';
       var input = '<li><input id="share-resource-contact-' + id + '" type="checkbox" value="' + iri + '" /><label for="share-resource-contact-' + id + '">' + img + '<a href="' + iri + '" target="_blank">' + name + '</a></label></li>';
 
-
-      //TODO: This should update DO.C.User.Contacts.Inbox' Inbox value so that it is not checked again when #share-resource-contacts input:checked
       if (s.ldpinbox && s.ldpinbox._array.length > 0) {
         DO.C.User.Contacts.Inbox[iri] = s;
         node.insertAdjacentHTML('beforeend', input);
