@@ -8930,6 +8930,7 @@ module.exports = {
   getAgentURL,
   getAgentStorage,
   getAgentOutbox,
+  getAgentInbox,
   getAgentKnows,
   getAgentSupplementalInfo,
   getAgentSeeAlso,
@@ -9391,6 +9392,12 @@ function getAgentStorage (s) {
 function getAgentOutbox (s) {
   return (s.asoutbox && s.asoutbox._array.length > 0)
     ? s.asoutbox._array
+    : undefined
+}
+
+function getAgentInbox (s) {
+  return (s.ldpinbox && s.ldpinbox._array.length > 0)
+    ? s.ldpinbox._array
     : undefined
 }
 
