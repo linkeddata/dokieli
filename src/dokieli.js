@@ -2426,7 +2426,7 @@ var DO = {
         });
       }
       else {
-        auth.getContacts(url).then(
+        auth.getUserContacts(url).then(
           function(contacts) {
             if(contacts.length > 0) {
               var promises = [];

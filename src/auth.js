@@ -19,7 +19,7 @@ module.exports = {
   getAgentKnows,
   getAgentSupplementalInfo,
   getAgentSeeAlso,
-  getContacts,
+  getUserContacts,
   getUserHTML,
   getUserSignedInHTML,
   setUserInfo,
@@ -381,10 +381,10 @@ function getAgentSeeAlso(g, baseURI, subjectURI) {
   }
 }
 
-function getContacts(iri) {
+function getUserContacts(iri) {
   var fyn = function(iri){
     if ((iri == Config.User.IRI) && Config.User.Graph) {
-      return processSameAs(Config.User.Graph, getContacts);
+      return processSameAs(Config.User.Graph, getUserContacts);
     }
     else {
       return fetcher.getResourceGraph(iri).then(
@@ -403,7 +403,7 @@ function getContacts(iri) {
               : knows;
           }
 
-          return processSameAs(s, getContacts);
+          return processSameAs(s, getUserContacts);
         },
         function(reason){
           return Promise.resolve([]);
