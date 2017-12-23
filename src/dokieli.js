@@ -2419,6 +2419,7 @@ var DO = {
 
       DO.C.User.Contacts['Inbox'] = DO.C.User.Contacts.Inbox || {};
       DO.C.User.Contacts['Outbox'] = DO.C.User.Contacts.Outbox || {};
+      DO.C.User.Contacts['Graph'] = DO.C.User.Contacts.Graph || {};
 
       if(DO.C.User.Contacts.Inbox && Object.keys(DO.C.User.Contacts.Inbox).length > 0){
         Object.keys(DO.C.User.Contacts.Inbox).forEach(function(iri){
@@ -2436,6 +2437,8 @@ var DO = {
                   fetcher.getResourceGraph(url).then(i => {
                     // console.log(i);
                     var s = i.child(url);
+
+                    DO.C.User.Contacts.Graph[url] = s;
 
                     DO.U.addShareResourceContactInput(shareResourceContacts, s);
 
