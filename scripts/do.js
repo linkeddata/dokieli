@@ -4229,6 +4229,8 @@ var DO = {
 
                     DO.C.User.Contacts.Graph[url] = s;
 
+                    DO.U.updateContactsOutbox(s);
+
                     DO.U.addShareResourceContactInput(shareResourceContacts, s);
 
                     return Promise.resolve([]);
@@ -4290,14 +4292,14 @@ console.log(reason);
           }
         );
       }
-
-      DO.U.getContactsOutbox(s);
     },
 
-    getContactsOutbox: function(s) {
-      var iri = s.iri().toString();
+    updateContactsOutbox: function(s) {
+      var outbox = auth.getAgentOutbox(s);
 
-      if (s.asoutbox && s.asoutbox._array.length > 0) {
+      if (outbox) {
+        var iri = s.iri().toString();
+  
         DO.C.User.Contacts.Outbox[iri] = s;
       }
     },
