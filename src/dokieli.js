@@ -2415,63 +2415,70 @@ var DO = {
 
     selectContacts: function(node, url) {
       node.innerHTML = '<p>Select from contacts</p><ul id="share-resource-contacts"></ul>';
-      var shareResourceContacts = document.getElementById('share-resource-contacts');
+      var shareResourceNode = document.getElementById('share-resource-contacts');
 
       DO.C.User.Contacts['Inbox'] = DO.C.User.Contacts.Inbox || {};
-      DO.C.User.Contacts['Outbox'] = DO.C.User.Contacts.Outbox || {};
       DO.C.User.Contacts['Graph'] = DO.C.User.Contacts.Graph || {};
 
       if(DO.C.User.Contacts.Inbox && Object.keys(DO.C.User.Contacts.Inbox).length > 0){
         Object.keys(DO.C.User.Contacts.Inbox).forEach(function(iri){
-          DO.U.addShareResourceContactInput(shareResourceContacts, DO.C.User.Contacts.Inbox[iri]);
+          DO.U.addShareResourceContactInput(shareResourceNode, DO.C.User.Contacts.Inbox[iri]);
         });
       }
       else {
-        auth.getUserContacts(url).then(
-          function(contacts) {
-            if(contacts.length > 0) {
-              var promises = [];
-
-              var gC = function(url) {
-                return new Promise(function(resolve, reject) {
-                  fetcher.getResourceGraph(url).then(i => {
-                    // console.log(i);
-                    var s = i.child(url);
-
-                    DO.C.User.Contacts.Graph[url] = s;
-
-                    DO.U.updateContactsOutbox(s);
-
-                    DO.U.updateContactsInbox(s)
-                      .then(() => {
-                        DO.U.addShareResourceContactInput(shareResourceContacts, s);
-                      })
-
-                    // return Promise.resolve([]);
-                  }).catch(err => {
-// console.log(err)
-                    return Promise.resolve([]);
-                  });
-                });
-              }
-
-              contacts.forEach(function(url) {
-                promises.push(gC(url))
-              });
-
-              return Promise.all(promises)
-            }
-            else {
-              node.innerHTML = 'No contacts with <i class="fa fa-inbox"></i> inbox found in your profile, but you can enter contacts individually:';
-            }
-          },
-          function(reason) {
-console.log(reason);
-          }
-        ).then(() => {
-          storage.updateStorageProfile(DO.C.User)
-        });
+        DO.U.updateContactsInfo(url, {'shareResourceNode': shareResourceNode});
       }
+    },
+
+    updateContactsInfo: function(url, options) {
+      options = options || {};
+
+      auth.getUserContacts(url).then(
+        function(contacts) {
+          if(contacts.length > 0) {
+            var promises = [];
+
+            var gC = function(url) {
+              return new Promise(function(resolve, reject) {
+                fetcher.getResourceGraph(url).then(i => {
+                  // console.log(i);
+                  var s = i.child(url);
+
+                  DO.C.User.Contacts.Graph[url] = s;
+
+                  DO.U.updateContactsOutbox(s);
+
+                  DO.U.updateContactsInbox(s)
+                    .then(() => {
+                      if ('shareResourceNode' in options) {
+                        DO.U.addShareResourceContactInput(options.shareResourceNode, s);
+                      }
+                    })
+
+                  // return Promise.resolve([]);
+                }).catch(err => {
+// console.log(err)
+                  return Promise.resolve([]);
+                });
+              });
+            }
+
+            contacts.forEach(function(url) {
+              promises.push(gC(url))
+            });
+
+            return Promise.all(promises)
+          }
+          else {
+            node.innerHTML = 'No contacts with <i class="fa fa-inbox"></i> inbox found in your profile, but you can enter contacts individually:';
+          }
+        },
+        function(reason) {
+console.log(reason);
+        }
+      ).then(() => {
+        storage.updateStorageProfile(DO.C.User)
+      });
     },
 
     addShareResourceContactInput: function(node, s) {
