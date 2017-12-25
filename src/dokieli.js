@@ -2417,9 +2417,6 @@ var DO = {
       node.innerHTML = '<p>Select from contacts</p><ul id="share-resource-contacts"></ul>';
       var shareResourceNode = document.getElementById('share-resource-contacts');
 
-      DO.C.User.Contacts['Inbox'] = DO.C.User.Contacts.Inbox || {};
-      DO.C.User.Contacts['Graph'] = DO.C.User.Contacts.Graph || {};
-
       if(DO.C.User.Contacts.Inbox && Object.keys(DO.C.User.Contacts.Inbox).length > 0){
         Object.keys(DO.C.User.Contacts.Inbox).forEach(function(iri){
           DO.U.addShareResourceContactInput(shareResourceNode, DO.C.User.Contacts.Inbox[iri]);
@@ -2432,6 +2429,8 @@ var DO = {
 
     updateContactsInfo: function(url, options) {
       options = options || {};
+
+      DO.C.User.Contacts['Graph'] = DO.C.User.Contacts.Graph || {};
 
       auth.getUserContacts(url).then(
         function(contacts) {
@@ -2494,6 +2493,8 @@ console.log(reason);
     },
 
     updateContactsInbox: function(s) {
+      DO.C.User.Contacts['Inbox'] = DO.C.User.Contacts.Inbox || {};
+
       var iri = s.iri().toString();
 
       var checkInbox = function(s) {
@@ -2514,6 +2515,8 @@ console.log(reason);
     },
 
     updateContactsOutbox: function(s) {
+      DO.C.User.Contacts['Outbox'] = DO.C.User.Contacts.Outbox || {};
+
       var outbox = auth.getAgentOutbox(s);
 
       if (outbox) {
