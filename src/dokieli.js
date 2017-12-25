@@ -274,10 +274,12 @@ var DO = {
     },
 
     showContactsActivities: function() {
-      if (DO.C.User.Contacts.Outbox) {
-        Object.keys(DO.C.User.Contacts.Outbox).forEach(function(iri){
-          var o = DO.C.User.Contacts.Outbox[iri];
-          DO.U.showOutboxSources(o.asoutbox._array[0]);
+      if (DO.C.User.Contacts && Object.keys(DO.C.User.Contacts).length > 0){
+        Object.keys(DO.C.User.Contacts).forEach(function(iri){
+          var o = DO.C.User.Contacts[iri].Outbox;
+          if (o) {
+            DO.U.showOutboxSources(o[0]);
+          }
         })
       }
     },
@@ -2357,7 +2359,7 @@ var DO = {
 
       var li = document.getElementById('share-resource-address-book');
 
-      if (DO.C.User.Contacts.Inbox && Object.keys(DO.C.User.Contacts.Inbox).length > 0) {
+      if (DO.C.User.Contacts && Object.keys(DO.C.User.Contacts).length > 0) {
         DO.U.selectContacts(li, DO.C.User.IRI);
       }
       else {
@@ -2417,9 +2419,11 @@ var DO = {
       node.innerHTML = '<p>Select from contacts</p><ul id="share-resource-contacts"></ul>';
       var shareResourceNode = document.getElementById('share-resource-contacts');
 
-      if(DO.C.User.Contacts.Inbox && Object.keys(DO.C.User.Contacts.Inbox).length > 0){
-        Object.keys(DO.C.User.Contacts.Inbox).forEach(function(iri){
-          DO.U.addShareResourceContactInput(shareResourceNode, DO.C.User.Contacts.Inbox[iri]);
+      if (DO.C.User.Contacts && Object.keys(DO.C.User.Contacts).length > 0){
+        Object.keys(DO.C.User.Contacts).forEach(function(iri){
+          if (DO.C.User.Contacts[iri].Inbox) {
+            DO.U.addShareResourceContactInput(shareResourceNode, DO.C.User.Contacts[iri].Graph);
+          }
         });
       }
       else {
@@ -2429,8 +2433,6 @@ var DO = {
 
     updateContactsInfo: function(url, options) {
       options = options || {};
-
-      DO.C.User.Contacts['Graph'] = DO.C.User.Contacts.Graph || {};
 
       auth.getUserContacts(url).then(
         function(contacts) {
@@ -2443,11 +2445,12 @@ var DO = {
                   // console.log(i);
                   var s = i.child(url);
 
-                  DO.C.User.Contacts.Graph[url] = s;
+                  DO.C.User.Contacts[url] = {};
+                  DO.C.User.Contacts[url]['Graph'] = s;
 
-                  DO.U.updateContactsOutbox(s);
+                  DO.U.updateContactsOutbox(url, s);
 
-                  DO.U.updateContactsInbox(s)
+                  DO.U.updateContactsInbox(url, s)
                     .then(() => {
                       if ('shareResourceNode' in options) {
                         DO.U.addShareResourceContactInput(options.shareResourceNode, s);
@@ -2492,16 +2495,12 @@ console.log(reason);
       node.insertAdjacentHTML('beforeend', input);
     },
 
-    updateContactsInbox: function(s) {
-      DO.C.User.Contacts['Inbox'] = DO.C.User.Contacts.Inbox || {};
-
-      var iri = s.iri().toString();
-
+    updateContactsInbox: function(iri, s) {
       var checkInbox = function(s) {
         var aI = auth.getAgentInbox(s);
 
         if (aI) {
-          return Promise.resolve();
+          return Promise.resolve(aI);
         }
         else {
           return inbox.getEndpointFromHead(DO.C.Vocab['ldpinbox']['@id'], iri);
@@ -2509,20 +2508,16 @@ console.log(reason);
       }
 
       return checkInbox(s)
-        .then(() => {
-          DO.C.User.Contacts.Inbox[iri] = s;
+        .then(inboxes => {
+          DO.C.User.Contacts[iri]['Inbox'] = inboxes;
         })
     },
 
-    updateContactsOutbox: function(s) {
-      DO.C.User.Contacts['Outbox'] = DO.C.User.Contacts.Outbox || {};
-
+    updateContactsOutbox: function(iri, s) {
       var outbox = auth.getAgentOutbox(s);
 
       if (outbox) {
-        var iri = s.iri().toString();
-  
-        DO.C.User.Contacts.Outbox[iri] = s;
+        DO.C.User.Contacts[iri]['Outbox'] = outbox;
       }
     },
 
