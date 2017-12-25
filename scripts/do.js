@@ -4231,9 +4231,12 @@ var DO = {
 
                     DO.U.updateContactsOutbox(s);
 
-                    DO.U.addShareResourceContactInput(shareResourceContacts, s);
+                    DO.U.updateContactsInbox(s)
+                      .then(() => {
+                        DO.U.addShareResourceContactInput(shareResourceContacts, s);
+                      })
 
-                    return Promise.resolve([]);
+                    // return Promise.resolve([]);
                   }).catch(err => {
 // console.log(err)
                     return Promise.resolve([]);
@@ -4245,12 +4248,7 @@ var DO = {
                 promises.push(gC(url))
               });
 
-              return Promise.all(promises).then(r => {
-console.log(r)
-                return r;
-              }).catch(err => {
-console.log(err)
-              })
+              return Promise.all(promises)
             }
             else {
               node.innerHTML = 'No contacts with <i class="fa fa-inbox"></i> inbox found in your profile, but you can enter contacts individually:';
@@ -4274,24 +4272,27 @@ console.log(reason);
       img = (img && img.length > 0) ? '<img alt="" height="32" src="' + img + '" width="32" />' : '';
       var input = '<li><input id="share-resource-contact-' + id + '" type="checkbox" value="' + iri + '" /><label for="share-resource-contact-' + id + '">' + img + '<a href="' + iri + '" target="_blank">' + name + '</a></label></li>';
 
-      if (s.ldpinbox && s.ldpinbox._array.length > 0) {
-        DO.C.User.Contacts.Inbox[iri] = s;
-        node.insertAdjacentHTML('beforeend', input);
-      }
-      else {
-        inbox.getEndpointFromHead(DO.C.Vocab['ldpinbox']['@id'], iri).then(
-          function(i){
-            // console.log(iri + ' has Inbox: ' + i);
-            DO.C.User.Contacts.Inbox[iri] = s;
+      node.insertAdjacentHTML('beforeend', input);
+    },
 
-            node.insertAdjacentHTML('beforeend', input);
-          },
-          function(reason){
-            // console.log(reason);
-            // console.log(iri + ' has no Inbox.');
-          }
-        );
+    updateContactsInbox: function(s) {
+      var iri = s.iri().toString();
+
+      var checkInbox = function(s) {
+        var aI = auth.getAgentInbox(s);
+
+        if (aI) {
+          return Promise.resolve();
+        }
+        else {
+          return inbox.getEndpointFromHead(DO.C.Vocab['ldpinbox']['@id'], iri);
+        }
       }
+
+      return checkInbox(s)
+        .then(() => {
+          DO.C.User.Contacts.Inbox[iri] = s;
+        })
     },
 
     updateContactsOutbox: function(s) {
