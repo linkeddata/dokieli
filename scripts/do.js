@@ -2063,29 +2063,62 @@ var DO = {
     },
 
     showContactsActivities: function(e) {
-      if (e) {
+      var showProgress = function(e){
         var rA = e.target.closest('.resource-activities')
         var i = rA.querySelector('.fa-bolt')
+        rA.disabled = true;
 
         if (i) {
           i.classList.add('fa-circle-o-notch', 'fa-spin')
           i.classList.remove('fa-bolt')
         }
-
-        // DO.U.hideDocumentMenu(e);
       }
+
+      var removeProgress = function(e) {
+        var rA = e.target.closest('.resource-activities')
+        var i = rA.querySelector('.fa-spin')
+
+        if (i) {
+          i.classList.add('fa-circle-o')
+          i.classList.remove('fa-circle-o-notch', 'fa-spin')
+        }
+      }
+
+      if (e) {
+        showProgress(e)
+      }
+
+      var promises = []
 
       if (DO.C.User.Contacts && Object.keys(DO.C.User.Contacts).length > 0){
         Object.keys(DO.C.User.Contacts).forEach(function(iri){
           var o = DO.C.User.Contacts[iri].Outbox
 
           if (o) {
-            DO.U.showOutboxSources(o[0])
+            var sOS = function(outbox) {
+              return DO.U.showOutboxSources(outbox)
+                .catch(() => {
+                  return Promise.resolve()
+                })
+            }
+
+            promises.push(sOS(o[0]))
           }
         })
+
+        return Promise.all(promises)
+          .then(r => {
+            removeProgress(e)
+          });
       }
       else {
-        DO.U.updateContactsInfo(DO.C.User.IRI, { 'showOutboxSources': true })
+        return DO.U.updateContactsInfo(DO.C.User.IRI, { 'showOutboxSources': true })
+          .then(() => {
+            removeProgress(e)
+          })
+          .catch(() => {
+            removeProgress(e)
+          });
       }
     },
 
