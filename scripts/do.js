@@ -2062,14 +2062,30 @@ var DO = {
       );
     },
 
-    showContactsActivities: function() {
+    showContactsActivities: function(e) {
+      if (e) {
+        var rA = e.target.closest('.resource-activities')
+        var i = rA.querySelector('.fa-bolt')
+
+        if (i) {
+          i.classList.add('fa-circle-o-notch', 'fa-spin')
+          i.classList.remove('fa-bolt')
+        }
+
+        // DO.U.hideDocumentMenu(e);
+      }
+
       if (DO.C.User.Contacts && Object.keys(DO.C.User.Contacts).length > 0){
         Object.keys(DO.C.User.Contacts).forEach(function(iri){
-          var o = DO.C.User.Contacts[iri].Outbox;
+          var o = DO.C.User.Contacts[iri].Outbox
+
           if (o) {
-            DO.U.showOutboxSources(o[0]);
+            DO.U.showOutboxSources(o[0])
           }
         })
+      }
+      else {
+        DO.U.updateContactsInfo(DO.C.User.IRI, { 'showOutboxSources': true })
       }
     },
 
