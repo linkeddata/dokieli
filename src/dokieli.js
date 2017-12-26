@@ -1925,6 +1925,7 @@ var DO = {
         s += '<li>' + reviewArticle + '</li>';
       }
 
+      s += '<li><button class="resource-activities" title="Show activities"><i class="fa fa-bolt fa-2x"></i></i>Activities</button></li>';
       s += '<li><button class="resource-new" title="Create new article"><i class="fa fa-lightbulb-o fa-2x"></i></i>New</button></li>';
       s += '<li><button class="resource-open" title="Open article"><i class="fa fa-coffee fa-2x"></i></i>Open</button></li>';
       s += '<li><button class="resource-save-as" title="Save as article"><i class="fa fa-paper-plane-o fa-2x"></i>Save As</button></li>';
@@ -1970,6 +1971,10 @@ var DO = {
               DO.U.Editor.enableEditor('review', e);
             }
           }
+        }
+
+        if (e.target.closest('.resource-activities')) {
+          DO.U.showContactsActivities(e);
         }
 
         if (e.target.closest('.resource-new')) {
