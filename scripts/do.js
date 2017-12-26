@@ -4268,7 +4268,7 @@ var DO = {
         });
       }
       else {
-        DO.U.updateContactsInfo(url, {'shareResourceNode': shareResourceNode});
+        DO.U.updateContactsInfo(url, {'addShareResourceContactInput': shareResourceNode});
       }
     },
 
@@ -4288,23 +4288,38 @@ var DO = {
                 DO.C.User.Contacts[url] = {};
                 DO.C.User.Contacts[url]['Graph'] = s;
 
-                DO.U.updateContactsOutbox(url, s)
-                  .then(() => {
-                    if ('showOutboxSources' in options) {
-                      DO.U.showOutboxSources(DO.C.User.Contacts[url].Outbox[0])
-                    }
-                    return Promise.resolve();
-                  })
-                  .catch(() => {})
+                var uCO = function(url, s) {
+                  return DO.U.updateContactsOutbox(url, s)
+                    .then(() => {
+                      if ('showOutboxSources' in options) {
+                        return DO.U.showOutboxSources(DO.C.User.Contacts[url].Outbox[0])
+                      }
+                      return Promise.resolve();
+                    })
+                    .catch(() => {})
+                }
 
-                return DO.U.updateContactsInbox(url, s)
-                  .then(() => {
-                    if ('shareResourceNode' in options) {
-                      DO.U.addShareResourceContactInput(options.shareResourceNode, s);
-                    }
-                    return Promise.resolve();
-                  })
-                  .catch(() => {})
+                var uCI = function(url, s) {
+                  return DO.U.updateContactsInbox(url, s)
+                    .then(() => {
+                      if ('addShareResourceContactInput' in options) {
+                        DO.U.addShareResourceContactInput(options.addShareResourceContactInput, s);
+                      }
+                      return Promise.resolve();
+                    })
+                    .catch(() => {})
+                }
+
+                //XXX: Holy crap this is fugly.
+                if ('showOutboxSources' in options) {
+                  uCI(url, s);
+                  return uCO(url, s)
+                }
+                else if ('addShareResourceContactInput' in options) {
+                  uCO(url, s)
+                  return uCI(url, s)
+                }
+
               }).catch(err => {
 // console.log(err)
                 return Promise.resolve();
@@ -4318,8 +4333,8 @@ var DO = {
             return Promise.all(promises)
           }
           else {
-            if ('shareResourceNode' in options) {
-              options.shareResourceNode.innerHTML = 'No contacts with <i class="fa fa-inbox"></i> inbox found in your profile, but you can enter contacts individually:';
+            if ('addShareResourceContactInput' in options) {
+              options.addShareResourceContactInput.innerHTML = 'No contacts with <i class="fa fa-inbox"></i> inbox found in your profile, but you can enter contacts individually:';
             }
 
             return Promise.resolve()
