@@ -334,19 +334,22 @@ var DO = {
     },
 
     showOutboxSources: function(url) {
-      DO.U.getOutboxActivities(url).then(
+      return DO.U.getOutboxActivities(url).then(
         function(items) {
-          for (var i = 0; i < items.length && i < DO.C.CollectionItemsLimit; i++) {
-            var pIRI = uri.getProxyableIRI(items[i]);
+          var promises = [];
 
-            DO.U.positionInteraction(pIRI).then(
-              function(iri){
-                return iri;
-              },
-              function(reason){
-                console.log(pIRI + ': is unreachable');
-              });
+          for (var i = 0; i < items.length && i < DO.C.CollectionItemsLimit; i++) {
+            var pI = function(iri) {
+              return DO.U.positionInteraction(iri)
+                .catch(() => {
+                  return Promise.resolve()
+                })
+            }
+
+            promises.push(pI(items[i]));
           }
+
+          return Promise.all(promises);
         },
         function(reason) {
           console.log('No activities');
