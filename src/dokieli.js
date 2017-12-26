@@ -1910,9 +1910,6 @@ var DO = {
       if (document.getElementById('document-do')) { return; }
 
       var buttonDisabled = '';
-      if (document.location.protocol === 'file:') {
-        buttonDisabled = ' disabled="disabled"';
-      }
 
       var s = '<section id="document-do" class="do"><h2>Do</h2><ul>';
       s += '<li><button class="resource-share" title="Share resource"><i class="fa fa-bullhorn fa-2x"></i>Share</button></li>';
@@ -1925,7 +1922,10 @@ var DO = {
         s += '<li>' + reviewArticle + '</li>';
       }
 
-      s += '<li><button class="resource-activities" title="Show activities"><i class="fa fa-bolt fa-2x"></i></i>Activities</button></li>';
+      buttonDisabled = (DO.C.User.IRI) ? '' : ' disabled="disabled"';
+
+      s += '<li><button class="resource-activities"' + buttonDisabled +
+        ' title="Show activities"><i class="fa fa-bolt fa-2x"></i></i>Activities</button></li>';
       s += '<li><button class="resource-new" title="Create new article"><i class="fa fa-lightbulb-o fa-2x"></i></i>New</button></li>';
       s += '<li><button class="resource-open" title="Open article"><i class="fa fa-coffee fa-2x"></i></i>Open</button></li>';
       s += '<li><button class="resource-save-as" title="Save as article"><i class="fa fa-paper-plane-o fa-2x"></i>Save As</button></li>';
@@ -1937,6 +1937,8 @@ var DO = {
           : DO.C.Editor.EnableEditorButton;
         s += '<li>' + editFile + '</li>';
       }
+
+      buttonDisabled = (document.location.protocol === 'file:') ? ' disabled="disabled"' : '';
 
       s += '<li><button class="resource-source"' + buttonDisabled +
         ' title="Edit article source code"><i class="fa fa-code fa-2x"></i>Source</button></li>';

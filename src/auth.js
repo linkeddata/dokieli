@@ -103,6 +103,9 @@ function showUserSigninSignout (node) {
     if (su) {
       su.addEventListener('click', showUserIdentityInput)
     }
+
+    var rA = document.querySelector('#document-menu .resource-activities')
+    if(rA) { rA.setAttribute('disabled', 'disabled') }
   }
 }
 
@@ -256,6 +259,9 @@ function afterSignIn () {
     .catch(function(e) {
       return Promise.resolve();
     });
+
+  var rA = document.querySelector('#document-menu .resource-activities')
+  if(rA) { rA.removeAttribute('disabled') }
 
   var user = document.querySelectorAll('aside.do article *[rel~="schema:creator"] > *[about="' + Config.User.IRI + '"]')
   for (let i = 0; i < user.length; i++) {
