@@ -4223,34 +4223,39 @@ var DO = {
     updateContactsInfo: function(url, options) {
       options = options || {};
 
-      auth.getUserContacts(url).then(
+      return auth.getUserContacts(url).then(
         function(contacts) {
           if(contacts.length > 0) {
             var promises = [];
 
             var gC = function(url) {
-              return new Promise(function(resolve, reject) {
-                fetcher.getResourceGraph(url).then(i => {
-                  // console.log(i);
-                  var s = i.child(url);
+              return fetcher.getResourceGraph(url).then(i => {
+                // console.log(i);
+                var s = i.child(url);
 
-                  DO.C.User.Contacts[url] = {};
-                  DO.C.User.Contacts[url]['Graph'] = s;
+                DO.C.User.Contacts[url] = {};
+                DO.C.User.Contacts[url]['Graph'] = s;
 
-                  DO.U.updateContactsOutbox(url, s);
+                DO.U.updateContactsOutbox(url, s)
+                  .then(() => {
+                    if ('showOutboxSources' in options) {
+                      DO.U.showOutboxSources(DO.C.User.Contacts[url].Outbox[0])
+                    }
+                    return Promise.resolve();
+                  })
+                  .catch(() => {})
 
-                  DO.U.updateContactsInbox(url, s)
-                    .then(() => {
-                      if ('shareResourceNode' in options) {
-                        DO.U.addShareResourceContactInput(options.shareResourceNode, s);
-                      }
-                    })
-
-                  // return Promise.resolve([]);
-                }).catch(err => {
+                return DO.U.updateContactsInbox(url, s)
+                  .then(() => {
+                    if ('shareResourceNode' in options) {
+                      DO.U.addShareResourceContactInput(options.shareResourceNode, s);
+                    }
+                    return Promise.resolve();
+                  })
+                  .catch(() => {})
+              }).catch(err => {
 // console.log(err)
-                  return Promise.resolve([]);
-                });
+                return Promise.resolve();
               });
             }
 
@@ -4261,15 +4266,17 @@ var DO = {
             return Promise.all(promises)
           }
           else {
-            node.innerHTML = 'No contacts with <i class="fa fa-inbox"></i> inbox found in your profile, but you can enter contacts individually:';
+            if ('shareResourceNode' in options) {
+              options.shareResourceNode.innerHTML = 'No contacts with <i class="fa fa-inbox"></i> inbox found in your profile, but you can enter contacts individually:';
+            }
+
+            return Promise.resolve()
           }
         },
         function(reason) {
 console.log(reason);
         }
-      ).then(() => {
-        storage.updateStorageProfile(DO.C.User)
-      });
+      )
     },
 
     addShareResourceContactInput: function(node, s) {
@@ -4303,11 +4310,21 @@ console.log(reason);
     },
 
     updateContactsOutbox: function(iri, s) {
-      var outbox = auth.getAgentOutbox(s);
+      var checkOutbox = function(s) {
+        var outbox = auth.getAgentOutbox(s);
 
-      if (outbox) {
-        DO.C.User.Contacts[iri]['Outbox'] = outbox;
+        if (outbox) {
+          return Promise.resolve(outbox)
+        }
+        else {
+          return Promise.reject()
+        }
       }
+
+      return checkOutbox(s)
+        .then(outboxes => {
+          DO.C.User.Contacts[iri]['Outbox'] = outboxes;
+        })
     },
 
     nextLevelButton: function(button, url, id, action) {
