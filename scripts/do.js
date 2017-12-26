@@ -3717,8 +3717,15 @@ var DO = {
 
       buttonDisabled = (DO.C.User.IRI) ? '' : ' disabled="disabled"';
 
+      var activitiesIcon = 'fa-bolt';
+
+      if (DO.C.User['ContactsOutboxChecked']) {
+        activitiesIcon = 'fa-circle-o';
+        buttonDisabled = ' disabled="disabled"';
+      }
+
       s += '<li><button class="resource-activities"' + buttonDisabled +
-        ' title="Show activities"><i class="fa fa-bolt fa-2x"></i></i>Activities</button></li>';
+        ' title="Show activities"><i class="fa ' + activitiesIcon + ' fa-2x"></i></i>Activities</button></li>';
       s += '<li><button class="resource-new" title="Create new article"><i class="fa fa-lightbulb-o fa-2x"></i></i>New</button></li>';
       s += '<li><button class="resource-open" title="Open article"><i class="fa fa-coffee fa-2x"></i></i>Open</button></li>';
       s += '<li><button class="resource-save-as" title="Save as article"><i class="fa fa-paper-plane-o fa-2x"></i>Save As</button></li>';
@@ -4340,6 +4347,8 @@ var DO = {
             contacts.forEach(function(url) {
               promises.push(gC(url))
             });
+
+            DO.C.User['ContactsOutboxChecked'] = true;
 
             return Promise.all(promises)
           }
