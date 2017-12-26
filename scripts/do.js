@@ -2090,6 +2090,10 @@ var DO = {
 
       var promises = []
 
+      if (DO.C.User.Outbox && DO.C.User.Outbox.length > 0) {
+        DO.U.showOutboxSources(DO.C.User.Outbox[0])
+      }
+
       if (DO.C.User.Contacts && Object.keys(DO.C.User.Contacts).length > 0){
         Object.keys(DO.C.User.Contacts).forEach(function(iri){
           var o = DO.C.User.Contacts[iri].Outbox
