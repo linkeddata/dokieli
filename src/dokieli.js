@@ -4015,6 +4015,7 @@ WHERE {\n\
 
     positionInteraction: function(noteIRI, containerNode) {
       containerNode = containerNode || document.body;
+      var resourceIRI = uri.stripFragmentFromString(document.location.href);
       var pIRI = uri.getProxyableIRI(noteIRI);
 
       return fetcher.getResourceGraph(pIRI)
@@ -4072,6 +4073,12 @@ WHERE {\n\
 // console.log(bodyLicenseIRI);
               bodyText = body.rdfvalue;
 // console.log(bodyText);
+
+
+              if (!note.oahasTarget.startsWith(resourceIRI)) {
+                return Promise.reject();
+              }
+
               var target = i.child(note.oahasTarget);
 // console.log(target);
               var targetIRI = target.iri().toString();
@@ -4148,8 +4155,6 @@ WHERE {\n\
                     selectedParentNode.replaceChild(selectionUpdated, n);
                   }
                 }
-
-                var resourceIRI = uri.stripFragmentFromString(document.location.href);
 
                 var parentNodeWithId = selectedParentNode.closest('[id]');
                 var targetIRI = (parentNodeWithId) ? resourceIRI + '#' + parentNodeWithId.id : resourceIRI;
@@ -6487,7 +6492,9 @@ WHERE {\n\
                     }
 
                     return DO.U.positionInteraction(annotation[ 'noteIRI' ], document.body)
-                      .catch(console.log)
+                      .catch(() => {
+                        return Promise.resolve()
+                      })
                   }
 
                   var sendNotification = function(annotation) {
