@@ -195,7 +195,7 @@ function showStorage(node) {
       useStorage = Config.EnableStorageButtons;
     }
 
-    node.insertAdjacentHTML('beforeend', '<section id="local-storage" class="do"><h2>Local Storage</h2><p>' + useStorage + '</p></section>');
+    node.insertAdjacentHTML('beforeend', '<section id="local-storage" class="do"><h2>Local Storage</h2><ul><li>' + useStorage + '</li></ul></section>');
 
     var key = uri.stripFragmentFromString(document.location.href);
 
