@@ -398,6 +398,10 @@ vertical-align:middle;
 
 #document-menu > header {
 display:none;
+padding:0 !important;
+font-weight:normal !important;
+font-size:inherit !important;
+line-height:inherit !important;
 }
 #document-menu > footer {
 display:none;
@@ -455,6 +459,9 @@ padding:0;
 margin:0;
 padding:0;
 list-style-image:none;
+}
+#document-menu section {
+border:0 !important;
 }
 #document-menu section h2 {
 display:none;
@@ -536,6 +543,10 @@ margin:0;
 }
 
 #document-menu p {
+font-size:inherit !important;
+line-height:inherit !important;
+max-width:inherit !important;
+padding:inherit !important;
 text-indent:0;
 }
 #document-menu.do caption:before {
