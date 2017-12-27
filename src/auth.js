@@ -229,6 +229,7 @@ function setUserInfo (userIRI) {
 
       Config.User.Storage = getAgentStorage(s)
       Config.User.Outbox = getAgentOutbox(s)
+      Config.User.Inbox = getAgentInbox(s)
 
       if (s.preferencesFile && s.preferencesFile.length > 0) {
         Config.User.PreferencesFile = s.preferencesFile
