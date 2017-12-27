@@ -270,6 +270,10 @@ font-size: 0.9em;
 text-align: left;
 }
 
+#document-interactions article.do {
+position:relative;
+}
+
 #document-interactions article.do h2,
 #document-interactions article.do h3,
 #document-interactions article.do dt,
