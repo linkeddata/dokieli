@@ -231,6 +231,9 @@ function setUserInfo (userIRI) {
       Config.User.Outbox = getAgentOutbox(s)
       Config.User.Inbox = getAgentInbox(s)
 
+      var preferredProxy = getAgentPreferredProxy(s)
+      Config.ProxyURL = (preferredProxy) ? preferredProxy : Config.ProxyURL
+
       if (s.preferencesFile && s.preferencesFile.length > 0) {
         Config.User.PreferencesFile = s.preferencesFile
 
@@ -451,6 +454,10 @@ function processSameAs(s, callback) {
   else {
     return Promise.resolve([]);
   }
+}
+
+function getAgentPreferredProxy (s) {
+  return s.solidpreferredProxy || undefined
 }
 
 function getAgentImage (s) {
