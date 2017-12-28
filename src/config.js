@@ -264,6 +264,8 @@ module.exports = {
 
     "ldpinbox": { "@id": "http://www.w3.org/ns/ldp#inbox", "@type": "@id", "@array": true },
 
+    "solidpreferredProxy": "http://www.w3.org/ns/solid/terms#preferredProxy",
+
     "oaannotation": { "@id": "http://www.w3.org/ns/oa#Annotation", "@type": "@id" },
     "oahasBody": { "@id": "http://www.w3.org/ns/oa#hasBody", "@type": "@id" },
     "oahasTarget": { "@id": "http://www.w3.org/ns/oa#hasTarget", "@type": "@id" },
