@@ -398,6 +398,9 @@ vertical-align:middle;
 
 #document-menu > header {
 display:none;
+}
+#document-menu > header,
+#document-menu > footer {
 padding:0 !important;
 font-weight:normal !important;
 font-size:inherit !important;
