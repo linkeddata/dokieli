@@ -335,7 +335,9 @@ aside.note.do blockquote article > section {
 position:relative;
 top:-1.5em;
 }*/
-
+aside.note.do section {
+border:0 !important;
+}
 
 #document-editor {
 position:static;
