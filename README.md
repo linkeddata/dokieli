@@ -29,6 +29,7 @@ explains dokieli's principles, architectural and design patterns.
 * Uses author's information from their online profile (WebID)
 * Creation of new documents from any existing dokieli document - part of *self-replication*
 * Save document and its dependencies to a new location (anywhere on the Web given access) - part of *self-replication*
+* Implements versioning, has the notion of immutable resources, and [Memento](https://tools.ietf.org/html/rfc7089) based resource management
 * Open and edit (HTML+RDFa) URLs
 * Uses W3C [Web Annotation Model](https://www.w3.org/TR/annotation-model/) and [Activity Streams 2.0 vocabulary](https://www.w3.org/TR/activitystreams-vocabulary)
 * Annotations (e.g., replies, peer-reviews, liking, resharing, bookmarking)
