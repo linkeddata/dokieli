@@ -158,6 +158,10 @@ z-index:2147483647;
 .do.on p {
 text-indent:0;
 text-align:left;
+font-size:inherit !important;
+margin:0 0 1em 0 !important;
+padding:0 !important;
+max-width:inherit !important;
 }
 
 aside.do.on {
@@ -218,6 +222,10 @@ aside.do.on ul {
 margin:0;
 padding:0;
 list-style: none;
+}
+aside.do.on li {
+text-align:left !important;
+display:block !important;
 }
 aside.do.on section {
 margin-top:1em;
