@@ -1398,6 +1398,9 @@ function serializeData (data, fromContentType, toContentType, options) {
         delete data["@context"]
         data = JSON.stringify(data)
 
+        data = data.replace(new RegExp('"@id"', 'g'), '"id"')
+        data = data.replace(new RegExp('"@type"', 'g'), '"type"')
+
         context.forEach(function(c){
           var search = '';
           var replace = '';
