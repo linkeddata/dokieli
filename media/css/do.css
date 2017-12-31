@@ -225,8 +225,12 @@ list-style: none;
 }
 aside.do.on li {
 text-align:left !important;
-display:block !important;
+display:list-item !important;
 }
+aside.do.on.tabs nav ul li {
+display:inline-block !important;
+}
+
 aside.do.on section {
 margin-top:1em;
 }
