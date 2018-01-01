@@ -6522,6 +6522,10 @@ WHERE {\n\
                             notificationObject = targetIRI;
                             notificationContext = annotation['noteIRI'];
                             break;
+                          case 'bookmark':
+                            notificationType = ['as:Add'];
+                            notificationObject = annotation['noteIRI'];
+                            break;
                         }
 
                         var notificationData = {
