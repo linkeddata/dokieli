@@ -3668,7 +3668,7 @@ var DO = {
           if (!node) {
             node = document.getElementById(elementId);
             if(!node) {
-              document.body.insertAdjacentHTML('beforeend', '<aside id="' + elementId + '" class="do on"><h2>Memento</h2>' + DO.C.Button.Close + '</aside>');
+              document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="' + elementId + '" class="do on"><h2>Memento</h2>' + DO.C.Button.Close + '</aside>'));
               node = document.getElementById(elementId);
             }
           }
