@@ -151,6 +151,8 @@ aside.do {
 top:0;
 }
 .do.on {
+line-height:1.6;
+font-size:1em;
 padding:1em;
 overflow:auto;
 z-index:2147483647;
