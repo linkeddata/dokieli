@@ -140,7 +140,6 @@ position:fixed;
 z-index:2147483646;
 max-height:90%;
 background-color:#fff;
-font-size:0.8em;
 margin:0;
 }
 menu.do {
@@ -149,6 +148,7 @@ right:0;
 }
 aside.do {
 top:0;
+font-size:0.8em;
 }
 .do.on {
 line-height:1.6;
