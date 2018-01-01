@@ -6111,7 +6111,7 @@ WHERE {\n\
               var profile, options;
               var annotationDistribution = [] , aLS = {};
 
-              if(opts.annotationLocationPersonalStorage && DO.C.User.Outbox && DO.C.User.Outbox.length > 0) {
+              if(opts.annotationLocationPersonalStorage || (!opts.annotationLocationPersonalStorage && !opts.annotationLocationService && DO.C.User.Outbox && DO.C.User.Outbox.length > 0)) {
                 containerIRI = DO.C.User.Outbox[0];
 
                 var fromContentType = 'text/html';
@@ -6135,13 +6135,8 @@ WHERE {\n\
               }
 
               //XXX: Use this as the canonical if available. Note how noteIRI is treated later
-              if(opts.annotationLocationPersonalStorage && DO.C.User.Storage && DO.C.User.Storage.length > 0) {
-                if(DO.C.User.Storage && DO.C.User.Storage.length > 0) {
-                  containerIRI = DO.C.User.Storage[0];
-                }
-                // else {
-                //   containerIRI = containerIRI.substr(0, containerIRI.lastIndexOf('/') + 1);
-                // }
+              if(opts.annotationLocationPersonalStorage || (!opts.annotationLocationPersonalStorage && !opts.annotationLocationService && DO.C.User.Storage && DO.C.User.Storage.length > 0)) {
+                containerIRI = DO.C.User.Storage[0];
 
                 //XXX: Remove. No longer used
                 if (typeof DO.C.User.masterWorkspace != 'undefined' && DO.C.User.masterWorkspace.length > 0) {
@@ -6445,7 +6440,7 @@ WHERE {\n\
               MediumEditor.util.insertHTMLCommand(this.base.selectedDocument, selectionUpdated);
 
               switch(this.action) {
-                case 'article': case 'approve': case 'disapprove': case 'specificity':
+                case 'article': case 'approve': case 'disapprove': case 'specificity': case 'bookmark':
                   var notificationType, notificationObject, notificationContext, notificationTarget, notificationStatements;
                   notificationStatements = '    <dl about="' + noteIRI + '">\n\
       <dt>Object type</dt><dd><a about="' + noteIRI + '" typeof="oa:Annotation" href="' + DO.C.Vocab['oaannotation']['@id'] + '">Annotation</a></dd>\n\
@@ -6571,7 +6566,6 @@ WHERE {\n\
 
                       .then(() => { return sendActivity(annotation) })
 
-
                       .then(response => {
                         var location = response.headers.get('Location')
 
@@ -6584,7 +6578,11 @@ WHERE {\n\
                         return positionActivity(annotation)
                        })
 
-                      .then(() => { return sendNotification(annotation) })
+                      .then(() => {
+                        if (this.action != 'bookmark') {
+                          return sendNotification(annotation)
+                        }
+                      })
 
                       .catch(() => {  // catch-all
                         // suppress the error, it was already logged to the console above
@@ -6699,19 +6697,6 @@ WHERE {\n\
                       break;
                   }
                   break;
-
-                case 'bookmark':
-                  var data = DO.U.createHTML('', note);
-
-                  fetcher.putResource(noteIRI, data)
-                    .then(() => {
-                      // TODO: Let the user know that it was bookmarked
-                    })
-                    .catch(error => {
-                      console.log('Error saving bookmark:', error)
-                    })
-
-                  break
               }
 
               this.window.getSelection().removeAllRanges();
