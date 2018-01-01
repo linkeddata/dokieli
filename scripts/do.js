@@ -4913,7 +4913,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
     saveAsDocument: function saveAsDocument (e) {
       e.target.disabled = true;
-      document.body.insertAdjacentHTML('beforeend', '<aside id="save-as-document" class="do on">' + DO.C.Button.Close + '<h2>Save As Document</h2></aside>');
+      document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="save-as-document" class="do on">' + DO.C.Button.Close + '<h2>Save As Document</h2></aside>'));
 
       var saveAsDocument = document.getElementById('save-as-document');
       saveAsDocument.addEventListener('click', function(e) {
