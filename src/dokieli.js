@@ -4956,7 +4956,6 @@ WHERE {\n\
 
         if (!document.getElementById('document-editor')) {
           document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="document-editor" class="do"></aside>'))
-          // document.body.insertAdjacentHTML('afterend', '<aside id="document-editor" class="do"></aside>');
         }
 
         var editorOptions = {

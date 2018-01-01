@@ -6750,7 +6750,6 @@ WHERE {\n\
 
         if (!document.getElementById('document-editor')) {
           document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="document-editor" class="do"></aside>'))
-          // document.body.insertAdjacentHTML('afterend', '<aside id="document-editor" class="do"></aside>');
         }
 
         var editorOptions = {
@@ -9155,7 +9154,7 @@ function showUserIdentityInput (e) {
     e.target.disabled = true
   }
 
-  document.body.insertAdjacentHTML('beforeend', '<aside id="user-identity-input" class="do on">' + DO.C.Button.Close + '<h2>Sign in with WebID</h2><label>HTTP(S) IRI</label> <input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="signin">Sign in</button></aside>')
+  document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="user-identity-input" class="do on">' + DO.C.Button.Close + '<h2>Sign in with WebID</h2><label>HTTP(S) IRI</label> <input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="signin">Sign in</button></aside>'))
 
   var buttonSignIn = document.querySelector('#user-identity-input button.signin')
   buttonSignIn.setAttribute('disabled', 'disabled')
