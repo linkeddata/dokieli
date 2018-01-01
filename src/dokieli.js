@@ -1134,7 +1134,7 @@ var DO = {
         <div id="embed-data-trig"><textarea placeholder="Enter data in TriG" name="meta-trig" cols="80" rows="24">' + ((scriptCurrentData['meta-trig']) ? scriptCurrentData['meta-trig'].content : '') + '</textarea><button class="save">Save</button></div>\n\
         </aside>';
 
-        document.body.insertAdjacentHTML('beforeend', embedMenu);
+        document.documentElement.appendChild(DO.U.fragmentFromString(embedMenu));
         document.querySelector('#embed-data-turtle textarea').focus();
         var a = document.querySelectorAll('#embed-data-entry nav a');
         for(var i = 0; i < a.length; i++) {
