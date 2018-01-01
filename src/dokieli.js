@@ -2405,7 +2405,8 @@ var DO = {
     },
 
     showActionMessage: function(node, message) {
-      node.appendChild(DO.U.fragmentFromString('<aside id="document-action-message" class="do on"><p>' + message + '</p></aside>'));
+      var message = '<aside id="document-action-message" class="do on"><p>' + message + '</p></aside>';
+      node.appendChild(DO.U.fragmentFromString(message));
       window.setTimeout(function () {
         var dam = document.getElementById('document-action-message');
         dam.parentNode.removeChild(dam);
@@ -2855,7 +2856,7 @@ console.log(reason);
       action = action || 'write';
 
       var browserHTML = '<aside id="resource-browser-' + id + '" class="do on">' + DO.C.Button.Close + '<h2>Resource Browser</h2></aside>';
-      document.querySelector('body').insertAdjacentHTML('beforeend', browserHTML);
+      document.documentElement.appendChild(DO.U.fragmentFromString(browserHTML));
 
       DO.U.setupResourceBrowser(document.getElementById('resource-browser-' + id), id, action);
       document.getElementById('resource-browser-' + id).insertAdjacentHTML('beforeend', '<p><samp id="' + id + '-' + action + '"></samp></p>');
@@ -2879,7 +2880,7 @@ console.log(reason);
       if(typeof e !== 'undefined') {
         e.target.disabled = true;
       }
-      document.body.insertAdjacentHTML('beforeend', '<aside id="open-document" class="do on">' + DO.C.Button.Close + '<h2>Open Document</h2><p<label for="open-local-file">Open local file</label> <input type="file" id="open-local-file" name="open-local-file" /></p></aside>');
+      document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="open-document" class="do on">' + DO.C.Button.Close + '<h2>Open Document</h2><p<label for="open-local-file">Open local file</label> <input type="file" id="open-local-file" name="open-local-file" /></p></aside>'));
 
       var id = 'location-open-document';
       var action = 'read';
