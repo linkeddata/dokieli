@@ -2770,7 +2770,7 @@ var DO = {
               e.target.disabled = true;
             }
 
-            document.body.insertAdjacentHTML('beforeend', '<aside id="graph-view" class="do on">' + DO.C.Button.Close + '<h2>Graph view</h2></aside>');
+            document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="graph-view" class="do on">' + DO.C.Button.Close + '<h2>Graph view</h2></aside>'));
 
             var graphView = document.getElementById('graph-view');
             graphView.addEventListener('click', function(e) {
