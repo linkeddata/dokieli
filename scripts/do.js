@@ -3980,7 +3980,7 @@ var DO = {
 
       return request
         .then(response => {
-          DO.U.showActionMessage(document.body, 'Saved')
+          DO.U.showActionMessage(document.documentElement, 'Saved')
           return response
         })
         .catch(error => {
@@ -4003,7 +4003,7 @@ var DO = {
               break
           }
 
-          DO.U.showActionMessage(document.body, message)
+          DO.U.showActionMessage(document.documentElement, message)
         })
     },
 
@@ -4199,8 +4199,7 @@ var DO = {
     },
 
     showActionMessage: function(node, message) {
-      var message = '<aside id="document-action-message" class="do on"><p>' + message + '</p></aside>';
-      node.insertAdjacentHTML('beforeend', message);
+      node.appendChild(DO.U.fragmentFromString('<aside id="document-action-message" class="do on"><p>' + message + '</p></aside>'));
       window.setTimeout(function () {
         var dam = document.getElementById('document-action-message');
         dam.parentNode.removeChild(dam);
