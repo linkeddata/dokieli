@@ -4815,7 +4815,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
     createNewDocument: function createNewDocument (e) {
       e.target.disabled = true
-      document.body.insertAdjacentHTML('beforeend', '<aside id="create-new-document" class="do on">' + DO.C.Button.Close + '<h2>Create New Document</h2></aside>')
+      document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="create-new-document" class="do on">' + DO.C.Button.Close + '<h2>Create New Document</h2></aside>'))
 
       var newDocument = document.getElementById('create-new-document')
       newDocument.addEventListener('click', e => {
