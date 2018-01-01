@@ -3103,7 +3103,7 @@ var DO = {
       if (!node) {
         node = document.getElementById('document-items');
         if (!node) {
-          document.body.insertAdjacentHTML('beforeend', '<aside id="document-items" class="do on">' + DO.C.Button.Close + '</aside>');
+          document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="document-items" class="do on">' + DO.C.Button.Close + '</aside>'));
           node = document.getElementById('document-items');
         }
       }
