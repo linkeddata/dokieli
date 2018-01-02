@@ -4454,6 +4454,8 @@ WHERE {\n\
 '  </section>\n\
 </article>\n\
 '
+
+      return data
     },
 
     createNoteDataHTML: function(n) {

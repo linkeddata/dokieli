@@ -6248,6 +6248,8 @@ WHERE {\n\
 '  </section>\n\
 </article>\n\
 '
+
+      return data
     },
 
     createNoteDataHTML: function(n) {
@@ -8904,6 +8906,7 @@ function notifyInbox (o) {
     return Promise.reject(new Error('No inbox to send notification to'))
   }
 
+  var title = '';
   var data = DO.U.createActivityHTML(o)
 
   data = DO.U.createHTML(title, data, { 'prefixes': Config.Prefixes })
