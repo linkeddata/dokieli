@@ -4432,7 +4432,7 @@ WHERE {\n\
         case 'write':
           hX = 1;
           break;
-        case 'as:Create':
+        case 'object':
           hX = 2;
           break;
       }
