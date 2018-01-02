@@ -8897,6 +8897,8 @@ function notifyInbox (o) {
     <dl about="">\n\
 ' + dl +
     '    </dl>\n\
+  </section>\n\
+  <section>\n\
 ' + statements +
 '  </section>\n\
 </article>\n\
