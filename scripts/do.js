@@ -6217,14 +6217,14 @@ WHERE {\n\
 
       switch(n.mode) {
         default:
-          hX = 'h3';
+          hX = 3;
           if ('creator' in n && 'iri' in n.creator && DO.C.User.IRI) {
             buttonDelete = '<button class="delete"><i class="fa fa-trash"></i></button>' ;
           }
           articleClass = ' class="do"';
           break;
         case 'write':
-          hX = 'h1';
+          hX = 1;
           break;
       }
 
@@ -6252,7 +6252,7 @@ WHERE {\n\
         authors = '<dl class="author-name"><dt>Authors</dt><dd><span rel="schema:creator">' + creator + '</span></dd></dl>';
       }
 
-      heading = '<' + hX + ' property="schema:name">' + creatorName + ' <span rel="oa:motivatedBy" resource="' + motivatedByIRI + '">' + motivatedByLabel + '</span></' + hX + '>';
+      heading = '<h' + hX + ' property="schema:name">' + creatorName + ' <span rel="oa:motivatedBy" resource="' + motivatedByIRI + '">' + motivatedByLabel + '</span></h' + hX + '>';
 
       if ('datetime' in n){
         var time = '<time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="schema:datePublished" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time>';
@@ -6273,7 +6273,7 @@ WHERE {\n\
             if (typeof n.body !== 'undefined') {
               if(typeof n.body === 'object' && 'purpose' in n.body) {
                 if ('describing' in n.body.purpose && 'text' in n.body.purpose.describing) {
-                  body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="#note-' + n.id + '"><h2 property="schema:name" rel="oa:hasPurpose" resource="oa:describing">Note</h2><div datatype="rdf:HTML" property="rdf:value schema:description" resource="#note-' + n.id + '" typeof="oa:TextualBody">' + n.body.purpose.describing.text + '</div></section>';
+                  body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="#note-' + n.id + '"><h' + (hX+1) + ' property="schema:name" rel="oa:hasPurpose" resource="oa:describing">Note</h' + (hX+1) + '><div datatype="rdf:HTML" property="rdf:value schema:description" resource="#note-' + n.id + '" typeof="oa:TextualBody">' + n.body.purpose.describing.text + '</div></section>';
                 }
                 if ('tagging' in n.body.purpose && 'text' in n.body.purpose.tagging) {
                   var tagsArray = [];
