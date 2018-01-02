@@ -6544,8 +6544,8 @@ WHERE {\n\
                       switch (annotation[ 'contentType' ]) {
                         case 'application/ld+json':
                           let x = JSON.parse(annotation['data'])
-                          x[ "via" ] = x[ "@id" ]
-                          x[ "@id" ] = ""
+                          x[ "via" ] = x[ "id" ]
+                          x[ "id" ] = ""
                           annotation['data'] = JSON.stringify(x)
                           break
                         default:
