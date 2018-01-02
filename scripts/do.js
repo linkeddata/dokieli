@@ -6226,6 +6226,9 @@ WHERE {\n\
         case 'write':
           hX = 1;
           break;
+        case 'as:Create':
+          hX = 2;
+          break;
       }
 
       var creatorName = '';
