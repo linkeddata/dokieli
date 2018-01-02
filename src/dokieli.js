@@ -6677,9 +6677,7 @@ WHERE {\n\
 
                           var citedBy = location.href.split(location.search||location.hash||/[?#]/)[0] + '#' + options.refId;
 
-                          var notificationStatements = '<' + citedBy + '> <' + options.citationRelation + '> <' + options.url + '> .';
-
-                          notificationStatements = '    <dl about="' + citedBy + '">\n\
+                          var notificationStatements = '    <dl about="' + citedBy + '">\n\
       <dt>Action</dt><dd>Citation</dd>\n\
       <dt>Cited by</dt><dd><a href="' + citedBy + '">' + citedBy + '</a></dd>\n\
       <dt>Cites</dt><dd><a href="' + options.url + '" property="' + options.citationRelation + '">' + options.url + '</a></dd>\n\
