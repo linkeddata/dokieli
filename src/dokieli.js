@@ -6212,7 +6212,7 @@ WHERE {\n\
               var profile, options;
               var annotationDistribution = [] , aLS = {};
 
-              if(opts.annotationLocationPersonalStorage || (!opts.annotationLocationPersonalStorage && !opts.annotationLocationService && DO.C.User.Outbox && DO.C.User.Outbox.length > 0)) {
+              if((opts.annotationLocationPersonalStorage && DO.C.User.Outbox) || (!opts.annotationLocationPersonalStorage && !opts.annotationLocationService && DO.C.User.Outbox)) {
                 containerIRI = DO.C.User.Outbox[0];
 
                 var fromContentType = 'text/html';
@@ -6236,7 +6236,7 @@ WHERE {\n\
               }
 
               //XXX: Use this as the canonical if available. Note how noteIRI is treated later
-              if(opts.annotationLocationPersonalStorage || (!opts.annotationLocationPersonalStorage && !opts.annotationLocationService && DO.C.User.Storage && DO.C.User.Storage.length > 0)) {
+              if((opts.annotationLocationPersonalStorage && DO.C.User.Storage) || (!opts.annotationLocationPersonalStorage && !opts.annotationLocationService && DO.C.User.Storage)) {
                 containerIRI = DO.C.User.Storage[0];
 
                 //XXX: Remove. No longer used
