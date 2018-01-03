@@ -290,6 +290,7 @@ position:relative;
 
 #document-interactions article.do h2,
 #document-interactions article.do h3,
+#document-interactions article.do h4,
 #document-interactions article.do dt,
 #document-interactions article.do .target,
 #document-interactions article.do .renderedvia,
@@ -297,6 +298,7 @@ position:relative;
 #document-interactions article.do .canonical,
 aside.note.do h2,
 aside.note.do h3,
+aside.note.do h4,
 aside.note.do blockquote dt,
 aside.note.do blockquote .target,
 aside.note.do blockquote .renderedvia,
