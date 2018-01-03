@@ -179,10 +179,14 @@ function serializeData (data, fromContentType, toContentType, options) {
                 data = data.replace(new RegExp('http://www.w3.org/ns/oa#rtlDirection', 'g'), 'rtl')
                 data = data.replace(new RegExp('http://www.w3.org/ns/oa#styledBy', 'g'), 'stylesheet')
 
+                data = data.replace(new RegExp('"oa:', 'g'), '"')
+
                 search = 'http://www.w3.org/ns/oa#'
                 break
 
               case 'https://www.w3.org/ns/activitystreams':
+                data = data.replace(new RegExp('"as:', 'g'), '"')
+
                 search = 'https://www.w3.org/ns/activitystreams#'
                 break
 
