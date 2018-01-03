@@ -4,7 +4,7 @@
   "description": "dokieli is a clientside editor for decentralised article publishing, annotations and social interactions.",
   "author":"dokieli Team",
   "homepage_url": "https://dokie.li/",
-  "version": "0.3.3",
+  "version": "0.3.5",
   "manifest_version": 2,
   "minimum_chrome_version": "18",
   "offline_enabled": true,
