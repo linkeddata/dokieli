@@ -6317,9 +6317,11 @@ WHERE {\n\
               var motivatedBy = 'oa:replying';
 
               var createNoteData = function(annotation) {
+                var id = annotation.id;
                 var note = '';
-                var id = annotation.id
-                if ('profile' in annotation.options && annotation.options['profile'] == 'https://www.w3.org/ns/activitystreams') {
+                var mode = '';
+
+                if (annotation && annotation.options && 'profile' in annotation.options && annotation.options['profile'] == 'https://www.w3.org/ns/activitystreams') {
                   mode = 'object'
                 }
                 else {
@@ -6687,11 +6689,6 @@ WHERE {\n\
                   })
               }
 
-
-// console.log(note);
-// console.log(noteData);
-
-
               switch(this.action) {
                 case 'article': case 'approve': case 'disapprove': case 'specificity': case 'bookmark':
                   annotationDistribution.forEach(annotation => {
@@ -6751,6 +6748,8 @@ WHERE {\n\
                   break;
 
                 case 'note':
+                  var noteData = createNoteData({'id': id})
+                  var note = DO.U.createNoteDataHTML(noteData);
                   var nES = selectedParentElement.nextElementSibling;
                   var asideNote = '\n\
 <aside class="note">\n\
