@@ -4377,7 +4377,8 @@ WHERE {\n\
     <title>' + title + '</title>\n\
   </head>\n\
   <body' + prefix + '>\n\
-    <main>' + main + '\n\
+    <main>\n\
+' + main + '\n\
     </main>\n\
   </body>\n\
 </html>\n\
@@ -4454,8 +4455,7 @@ WHERE {\n\
         title += ': Disliked'
       }
 
-      var data = '\n\
-<article>\n\
+      var data = '<article>\n\
   <h1>' + title + '</h1>\n\
   <section>\n\
     <dl about="">\n\
@@ -4463,10 +4463,9 @@ WHERE {\n\
     '    </dl>\n\
   </section>\n\
   <section>\n\
-' + statements +
-'  </section>\n\
-</article>\n\
-'
+' + statements + '\n\
+  </section>\n\
+</article>'
 
       return data
     },
@@ -4645,8 +4644,7 @@ WHERE {\n\
             var canonicalUUID = DO.U.generateUUID();
             var canonical = '<dl class="canonical"><dt>Canonical</dt><dd rel="oa:canonical" resource="urn:uuid:' + canonicalUUID + '">' + canonicalUUID + '</dd></dl>';
 
-            note = '\n\
-<article about="' + aAbout + '" id="' + n.id + '" typeof="oa:Annotation' + noteType + '"' + aPrefix + articleClass + '>'+buttonDelete+'\n\
+            note = '<article about="' + aAbout + '" id="' + n.id + '" typeof="oa:Annotation' + noteType + '"' + aPrefix + articleClass + '>'+buttonDelete+'\n\
   ' + heading + '\n\
   ' + authors + '\n\
   ' + published + '\n\
