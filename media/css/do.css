@@ -215,7 +215,7 @@ display:inline-block;
 }
 
 aside.do textarea {
-width:94% !important;
+width:96% !important;
 max-width:44em !important;
 font-size:1em !important;
 }
@@ -617,7 +617,7 @@ z-index:2147483646;
 display:inline;
 margin-right:1em;*/{
 width:42%;
-display:inline-block;
+display:inline-block !important;
 }
 
 #document-menu #document-views {
@@ -731,6 +731,7 @@ display:block;
 padding:0.75em 1em;
 display:block;
 border:2px solid #cccccc;
+width:94% !important;
 }
 
 #table-of-stuff label {
