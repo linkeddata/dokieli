@@ -4608,7 +4608,7 @@ WHERE {\n\
                   license = DO.U.createLicenseHTML(n.license, {rel:'dcterms:rights', label:'Rights'});
                 }
 
-                body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="#note-' + n.id + '"><h2 property="schema:name">Note</h2>' + license + '<div datatype="rdf:HTML" property="rdf:value schema:description" resource="#note-' + n.id + '" typeof="oa:TextualBody">' + n.body + '</div></section>';
+                body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="#note-' + n.id + '"><h' + (hX+1) + ' property="schema:name">Note</h' + (hX+1) + '>' + license + '<div datatype="rdf:HTML" property="rdf:value schema:description" resource="#note-' + n.id + '" typeof="oa:TextualBody">' + n.body + '</div></section>';
               }
             }
 
