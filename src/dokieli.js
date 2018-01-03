@@ -6169,6 +6169,7 @@ WHERE {\n\
             },
 
             completeFormSave: function (opts) {
+              var _this = this;
 // console.log(opts);
 // console.log('completeFormSave() with this.action: ' + this.action);
               this.base.restoreSelection();
@@ -6313,352 +6314,401 @@ WHERE {\n\
               var licenseIRI = '';
               var motivatedBy = 'oa:replying';
 
-              switch(this.action) {
-                case 'sparkline':
-                  var figureIRI = DO.U.generateAttributeId(null, opts.selectionDataSet);
-                  ref = '<span rel="schema:hasPart" resource="#figure-' + figureIRI + '">\n\
-                  <a href="' + opts.select + '" property="schema:name" rel="prov:wasDerivedFrom" resource="' + opts.select + '" typeof="qb:DataSet">' + opts.selectionDataSet + '</a> [' + DO.U.htmlEntities(DO.C.RefAreas[opts.selectionRefArea]) + ']\n\
-                  <span class="sparkline" rel="schema:image" resource="#' + figureIRI + '">' + opts.sparkline + '</span></span>';
-                  break;
+              var createNoteData = function(annotation) {
+                var note = '';
+                var id = annotation.id
+                if ('profile' in annotation.options && annotation.options['profile'] == 'https://www.w3.org/ns/activitystreams') {
+                  mode = 'object'
+                }
+                else {
+                  mode = 'write'
+                }
 
-                //External Note
-                case 'article': case 'approve': case 'disapprove': case 'specificity':
-                  if (DO.U.Editor.MediumEditor.options.id === 'review') {
-                    motivatedBy = 'oa:assessing';
-                    refLabel = DO.U.getReferenceLabel(motivatedBy);
-                  }
+                switch(_this.action) {
+                  case 'sparkline':
+                    var figureIRI = DO.U.generateAttributeId(null, opts.selectionDataSet);
+                    ref = '<span rel="schema:hasPart" resource="#figure-' + figureIRI + '">\n\
+                    <a href="' + opts.select + '" property="schema:name" rel="prov:wasDerivedFrom" resource="' + opts.select + '" typeof="qb:DataSet">' + opts.selectionDataSet + '</a> [' + DO.U.htmlEntities(DO.C.RefAreas[opts.selectionRefArea]) + ']\n\
+                    <span class="sparkline" rel="schema:image" resource="#' + figureIRI + '">' + opts.sparkline + '</span></span>';
+                    break;
 
-                  ref = this.base.selection;
-                  licenseIRI = opts.license;
-
-                  noteData = {
-                    "type": this.action,
-                    "mode": "write",
-                    "motivatedByIRI": motivatedBy,
-                    "id": id,
-                    "refId": refId,
-                    "refLabel": refLabel,
-                    // "iri": noteIRI, //e.g., https://example.org/path/to/article
-                    "creator": {},
-                    "datetime": datetime,
-                    "target": {
-                      "iri": targetIRI,
-                      "source": resourceIRI,
-                      "selector": {
-                        "exact": exact,
-                        "prefix": prefix,
-                        "suffix": suffix
-                      }
-                      //TODO: state
-                    },
-                    "body": opts.content,
-                    "license": {}
-                  };
-                  if (DO.C.User.IRI) {
-                    noteData.creator["iri"] = DO.C.User.IRI;
-                  }
-                  if (DO.C.User.Name) {
-                    noteData.creator["name"] = DO.C.User.Name;
-                  }
-                  if (DO.C.User.Image) {
-                    noteData.creator["image"] = DO.C.User.Image;
-                  }
-                  if (DO.C.User.URL) {
-                    noteData.creator["url"] = DO.C.User.URL;
-                  }
-                  if (opts.license.length > 0) {
-                    noteData.license["iri"] = opts.license;
-                  }
-                  note = DO.U.createNoteDataHTML(noteData);
-                  break;
-
-                //Internal Note
-                case 'note':
-                  motivatedBy = "oa:commenting";
-                  refLabel = DO.U.getReferenceLabel(motivatedBy);
-                  docRefType = '<sup class="ref-comment"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup>';
-                  noteType = 'note';
-                  noteData = {
-                    "type": noteType,
-                    "mode": "read",
-                    "motivatedByIRI": motivatedBy,
-                    "id": id,
-                    "refId": refId,
-                    "refLabel": refLabel,
-                    // "iri": noteIRI, //e.g., https://example.org/path/to/article
-                    "creator": {},
-                    "datetime": datetime,
-                    "target": {
-                      "iri": targetIRI,
-                      "source": resourceIRI,
-                      "selector": {
-                        "exact": exact,
-                        "prefix": prefix,
-                        "suffix": suffix
-                      }
-                      //TODO: state
-                    },
-                    "body": {
-                      "purpose": {
-                        "describing": {
-                          "text": opts.content
-                        },
-                        "tagging": {
-                          "text": opts.tagging
-                        }
-                      }
-                    },
-                    "license": {}
-                  };
-                  if (DO.C.User.IRI) {
-                    noteData.creator["iri"] = DO.C.User.IRI;
-                  }
-                  if (DO.C.User.Name) {
-                    noteData.creator["name"] = DO.C.User.Name;
-                  }
-                  if (DO.C.User.Image) {
-                    noteData.creator["image"] = DO.C.User.Image;
-                  }
-                  if (DO.C.User.URL) {
-                    noteData.creator["url"] = DO.C.User.URL;
-                  }
-                  if (opts.license.length > 0) {
-                    noteData.license["iri"] = opts.license;
-                  }
-
-                  note = DO.U.createNoteDataHTML(noteData);
-                  ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="rdf:value">' + exact + '</mark>' + docRefType +'</span>';
-                  break;
-
-                case 'cite': //footnote reference
-                  switch(opts.citationType) {
-                    case 'ref-footnote': default:
-                      motivatedBy = "oa:describing";
+                  //External Note
+                  case 'article': case 'approve': case 'disapprove': case 'specificity':
+                    if (DO.U.Editor.MediumEditor.options.id === 'review') {
+                      motivatedBy = 'oa:assessing';
                       refLabel = DO.U.getReferenceLabel(motivatedBy);
-                      docRefType = '<sup class="' + opts.citationType + '"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup>';
-                      noteData = {
-                        "type": opts.citationType,
-                        "mode": "write",
-                        "motivatedByIRI": motivatedBy,
-                        "id": id,
-                        "refId": refId,
-                        "refLabel": refLabel,
-                        // "iri": noteIRI,
-                        "datetime": datetime,
-                        "body": opts.content,
-                        "citationURL": opts.url
-                      };
-// console.log(noteData);
-                      note = DO.U.createNoteDataHTML(noteData);
-                      break;
-
-                    case 'ref-reference':
-                      refLabel = DO.U.getReferenceLabel('oa:describing');
-                      docRefType = '<span class="' + opts.citationType + '">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span>';
-                      break;
-                  }
-
-                  ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="rdf:value">' + exact + '</mark>' + docRefType +'</span>';
-                  break;
-                // case 'reference':
-                //   ref = '<span class="ref" about="[this:#' + refId + ']" typeof="dctypes:Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span> <span class="ref-reference">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span></span>';
-//                  break;
-
-                case 'rdfa':
-                  //TODO: inlist, prefix
-                  //TODO: lang/xmlllang
-                  noteData = {
-                    about: opts.about,
-                    typeOf: opts.typeOf,
-                    rel: opts.rel,
-                    href: opts.href,
-                    resource: opts.resource,
-                    property: opts.property,
-                    content: opts.content,
-                    datatype: opts.datatype,
-                    textContent: this.base.selection
-                    // lang: '' and/or xmllang: ''
-                  };
-                  ref = DO.U.createRDFaHTML(noteData, 'expanded');
-                  break;
-
-                case 'bookmark':
-                  noteType = 'bookmark';
-                  motivatedBy = "oa:bookmarking";
-                  refLabel = DO.U.getReferenceLabel(motivatedBy);
-                  noteData = {
-                    "type": noteType,
-                    "mode": "write",
-                    "motivatedByIRI": motivatedBy,
-                    "id": id,
-                    "refId": refId,
-                    "refLabel": refLabel,
-                    // "iri": noteIRI, //e.g., https://example.org/path/to/article
-                    "creator": {},
-                    "datetime": datetime,
-                    "target": {
-                      "iri": targetIRI,
-                      "source": resourceIRI,
-                      "selector": {
-                        "exact": exact,
-                        "prefix": prefix,
-                        "suffix": suffix
-                      }
-                      //TODO: state
-                    },
-                    "body": {
-                      "purpose": {
-                        "describing": {
-                          "text": opts.content
-                        },
-                        "tagging": {
-                          "text": opts.tagging
-                        }
-                      }
-                    },
-                    "license": {}
-                  };
-                  if (DO.C.User.IRI) {
-                    noteData.creator["iri"] = DO.C.User.IRI;
-                  }
-                  if (DO.C.User.Name) {
-                    noteData.creator["name"] = DO.C.User.Name;
-                  }
-                  if (DO.C.User.Image) {
-                    noteData.creator["image"] = DO.C.User.Image;
-                  }
-                  if (DO.C.User.URL) {
-                    noteData.creator["url"] = DO.C.User.URL;
-                  }
-                  note = DO.U.createNoteDataHTML(noteData);
-                  ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark></span>';
-                  break;
-              }
-// console.log(note);
-// console.log(noteData);
-
-              var selectionUpdated = ref;
-              MediumEditor.util.insertHTMLCommand(this.base.selectedDocument, selectionUpdated);
-
-              switch(this.action) {
-                case 'article': case 'approve': case 'disapprove': case 'specificity': case 'bookmark':
-                  var notificationType, notificationObject, notificationContext, notificationTarget, notificationStatements;
-                  notificationStatements = '    <dl about="' + noteIRI + '">\n\
-      <dt>Object type</dt><dd><a about="' + noteIRI + '" typeof="oa:Annotation" href="' + DO.C.Vocab['oaannotation']['@id'] + '">Annotation</a></dd>\n\
-      <dt>Motivation</dt><dd><a href="' + DO.C.Prefixes[motivatedBy.split(':')[0]] + motivatedBy.split(':')[1] + '" property="oa:motivation">' + motivatedBy.split(':')[1] + '</a></dd>\n\
-    </dl>\n\
-';
-
-                  var data = DO.U.createHTML('', note);
-
-                  var sendActivity = function(annotation) {
-                    //Make this annotation refer to the canonical annotation
-                    if (!annotation['canonical']) {
-                      switch (annotation[ 'contentType' ]) {
-                        case 'application/ld+json':
-                          let x = JSON.parse(annotation['data'])
-                          x[ "via" ] = x[ "id" ]
-                          x[ "id" ] = ""
-                          annotation['data'] = JSON.stringify(x)
-                          break
-                        default:
-                          break
-                      }
                     }
 
-                    var contentType = (annotation.options['profile'])
-                      ? annotation['contentType'] + ';profile="' + annotation.options['profile'] + '"'
-                      : annotation['contentType']
+                    ref = _this.base.selection;
+                    licenseIRI = opts.license;
+
+                    noteData = {
+                      "type": _this.action,
+                      "mode": mode,
+                      "motivatedByIRI": motivatedBy,
+                      "id": id,
+                      "refId": refId,
+                      "refLabel": refLabel,
+                      // "iri": noteIRI, //e.g., https://example.org/path/to/article
+                      "creator": {},
+                      "datetime": datetime,
+                      "target": {
+                        "iri": targetIRI,
+                        "source": resourceIRI,
+                        "selector": {
+                          "exact": exact,
+                          "prefix": prefix,
+                          "suffix": suffix
+                        }
+                        //TODO: state
+                      },
+                      "body": opts.content,
+                      "license": {}
+                    };
+                    if (DO.C.User.IRI) {
+                      noteData.creator["iri"] = DO.C.User.IRI;
+                    }
+                    if (DO.C.User.Name) {
+                      noteData.creator["name"] = DO.C.User.Name;
+                    }
+                    if (DO.C.User.Image) {
+                      noteData.creator["image"] = DO.C.User.Image;
+                    }
+                    if (DO.C.User.URL) {
+                      noteData.creator["url"] = DO.C.User.URL;
+                    }
+                    if (opts.license.length > 0) {
+                      noteData.license["iri"] = opts.license;
+                    }
+                    // note = DO.U.createNoteDataHTML(noteData);
+                    break;
+
+                  //Internal Note
+                  case 'note':
+                    motivatedBy = "oa:commenting";
+                    refLabel = DO.U.getReferenceLabel(motivatedBy);
+                    docRefType = '<sup class="ref-comment"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup>';
+                    noteType = 'note';
+                    noteData = {
+                      "type": noteType,
+                      "mode": "read",
+                      "motivatedByIRI": motivatedBy,
+                      "id": id,
+                      "refId": refId,
+                      "refLabel": refLabel,
+                      // "iri": noteIRI, //e.g., https://example.org/path/to/article
+                      "creator": {},
+                      "datetime": datetime,
+                      "target": {
+                        "iri": targetIRI,
+                        "source": resourceIRI,
+                        "selector": {
+                          "exact": exact,
+                          "prefix": prefix,
+                          "suffix": suffix
+                        }
+                        //TODO: state
+                      },
+                      "body": {
+                        "purpose": {
+                          "describing": {
+                            "text": opts.content
+                          },
+                          "tagging": {
+                            "text": opts.tagging
+                          }
+                        }
+                      },
+                      "license": {}
+                    };
+                    if (DO.C.User.IRI) {
+                      noteData.creator["iri"] = DO.C.User.IRI;
+                    }
+                    if (DO.C.User.Name) {
+                      noteData.creator["name"] = DO.C.User.Name;
+                    }
+                    if (DO.C.User.Image) {
+                      noteData.creator["image"] = DO.C.User.Image;
+                    }
+                    if (DO.C.User.URL) {
+                      noteData.creator["url"] = DO.C.User.URL;
+                    }
+                    if (opts.license.length > 0) {
+                      noteData.license["iri"] = opts.license;
+                    }
+
+                    // note = DO.U.createNoteDataHTML(noteData);
+                    ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="rdf:value">' + exact + '</mark>' + docRefType +'</span>';
+                    break;
+
+                  case 'cite': //footnote reference
+                    switch(opts.citationType) {
+                      case 'ref-footnote': default:
+                        motivatedBy = "oa:describing";
+                        refLabel = DO.U.getReferenceLabel(motivatedBy);
+                        docRefType = '<sup class="' + opts.citationType + '"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup>';
+                        noteData = {
+                          "type": opts.citationType,
+                          "mode": mode,
+                          "motivatedByIRI": motivatedBy,
+                          "id": id,
+                          "refId": refId,
+                          "refLabel": refLabel,
+                          // "iri": noteIRI,
+                          "datetime": datetime,
+                          "body": opts.content,
+                          "citationURL": opts.url
+                        };
+
+                        // note = DO.U.createNoteDataHTML(noteData);
+                        break;
+
+                      case 'ref-reference':
+                        refLabel = DO.U.getReferenceLabel('oa:describing');
+                        docRefType = '<span class="' + opts.citationType + '">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span>';
+                        break;
+                    }
+
+                    ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="rdf:value">' + exact + '</mark>' + docRefType +'</span>';
+                    break;
+                  // case 'reference':
+                  //   ref = '<span class="ref" about="[this:#' + refId + ']" typeof="dctypes:Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span> <span class="ref-reference">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span></span>';
+  //                  break;
+
+                  case 'rdfa':
+                    //TODO: inlist, prefix
+                    //TODO: lang/xmlllang
+                    noteData = {
+                      about: opts.about,
+                      typeOf: opts.typeOf,
+                      rel: opts.rel,
+                      href: opts.href,
+                      resource: opts.resource,
+                      property: opts.property,
+                      content: opts.content,
+                      datatype: opts.datatype,
+                      textContent: _this.base.selection
+                      // lang: '' and/or xmllang: ''
+                    };
+                    ref = DO.U.createRDFaHTML(noteData, 'expanded');
+                    break;
+
+                  case 'bookmark':
+                    noteType = 'bookmark';
+                    motivatedBy = "oa:bookmarking";
+                    refLabel = DO.U.getReferenceLabel(motivatedBy);
+                    noteData = {
+                      "type": noteType,
+                      "mode": mode,
+                      "motivatedByIRI": motivatedBy,
+                      "id": id,
+                      "refId": refId,
+                      "refLabel": refLabel,
+                      // "iri": noteIRI, //e.g., https://example.org/path/to/article
+                      "creator": {},
+                      "datetime": datetime,
+                      "target": {
+                        "iri": targetIRI,
+                        "source": resourceIRI,
+                        "selector": {
+                          "exact": exact,
+                          "prefix": prefix,
+                          "suffix": suffix
+                        }
+                        //TODO: state
+                      },
+                      "body": {
+                        "purpose": {
+                          "describing": {
+                            "text": opts.content
+                          },
+                          "tagging": {
+                            "text": opts.tagging
+                          }
+                        }
+                      },
+                      "license": {}
+                    };
+                    if (DO.C.User.IRI) {
+                      noteData.creator["iri"] = DO.C.User.IRI;
+                    }
+                    if (DO.C.User.Name) {
+                      noteData.creator["name"] = DO.C.User.Name;
+                    }
+                    if (DO.C.User.Image) {
+                      noteData.creator["image"] = DO.C.User.Image;
+                    }
+                    if (DO.C.User.URL) {
+                      noteData.creator["url"] = DO.C.User.URL;
+                    }
+                    // note = DO.U.createNoteDataHTML(noteData);
+                    ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark></span>';
+                    break;
+                }
+
+                var selectionUpdated = ref;
+                MediumEditor.util.insertHTMLCommand(_this.base.selectedDocument, selectionUpdated);
+
+                return noteData;
+              }
+
+              var createNotificationData = function(annotation) {
+                var notificationType, notificationObject, notificationContext, notificationTarget, notificationStatements;
+
+                var noteIRI = ('profile' in annotation.options && annotation.options['profile'] == 'https://www.w3.org/ns/activitystreams') ? '#' + id : annotation['noteIRI'];
+
+                notificationStatements = '    <dl about="' + noteIRI + '">\n\
+  <dt>Object type</dt><dd><a about="' + noteIRI + '" typeof="oa:Annotation" href="' + DO.C.Vocab['oaannotation']['@id'] + '">Annotation</a></dd>\n\
+  <dt>Motivation</dt><dd><a href="' + DO.C.Prefixes[motivatedBy.split(':')[0]] + motivatedBy.split(':')[1] + '" property="oa:motivation">' + motivatedBy.split(':')[1] + '</a></dd>\n\
+</dl>\n\
+';
+
+                switch(_this.action) {
+                  default: case 'article': case 'specificity':
+                    notificationType = ['as:Announce'];
+                    notificationObject = noteIRI;
+                    notificationTarget = targetIRI;
+                    break;
+                  case 'approve':
+                    notificationType = ['as:Like'];
+                    notificationObject = targetIRI;
+                    notificationContext = noteIRI;
+                    break;
+                  case 'disapprove':
+                    notificationType = ['as:Dislike'];
+                    notificationObject = targetIRI;
+                    notificationContext = noteIRI;
+                    break;
+                  case 'bookmark':
+                    notificationType = ['as:Add'];
+                    notificationObject = noteIRI;
+                    break;
+                }
+
+                var notificationData = {
+                  "type": notificationType,
+                  "slug": id,
+                  "object": notificationObject,
+                  "license": opts.license
+                };
+
+                if(typeof notificationContext !== 'undefined') {
+                  notificationData['context'] = notificationContext;
+                }
+
+                if(typeof notificationTarget !== 'undefined') {
+                  notificationData['target'] = notificationTarget;
+                }
+
+                if ('profile' in annotation.options && annotation.options['profile'] == 'https://www.w3.org/ns/activitystreams') {
+                  notificationData['statements'] = annotation['note'];
+                }
+                else {
+                  notificationData['statements'] = notificationStatements;
+                }
+
+                return notificationData;
+              }
+
+              var sendActivity = function(annotation) {
+                //Make this annotation refer to the canonical annotation
+                if (!annotation['canonical']) {
+                  switch (annotation[ 'contentType' ]) {
+                    case 'application/ld+json':
+                      let x = JSON.parse(annotation['data'])
+                      x[ "via" ] = x[ "id" ]
+                      x[ "id" ] = ""
+                      annotation['data'] = JSON.stringify(x)
+                      break
+                    default:
+                      break
+                  }
+                }
+
+                var contentType = (annotation.options['profile'])
+                  ? annotation['contentType'] + ';profile="' + annotation.options['profile'] + '"'
+                  : annotation['contentType']
 
 // console.log(annotation)
 
-                    //TODO: If server has `Allow: PUT` or if not oa:annotationService/as:outbox, use PUT. Most likely for pim:storage -- This minor distinction helps to get around node-solid-server issue with not handling text/html for POST (hardcodes `.html` suffix to the resource), whereas PUT doesn't touch the URI
+                //TODO: If server has `Allow: PUT` or if not oa:annotationService/as:outbox, use PUT. Most likely for pim:storage -- This minor distinction helps to get around node-solid-server issue with not handling text/html for POST (hardcodes `.html` suffix to the resource), whereas PUT doesn't touch the URI
 
-                    return fetcher.postResource(annotation['containerIRI'], id, annotation['data'], contentType)
-                      .catch(error => {
-                        console.log('Error saving annotation:', error)
-                        throw error // re-throw, break out of promise chain
-                      })
-                  }
+                return fetcher.postResource(annotation['containerIRI'], id, annotation['data'], contentType)
+                  .catch(error => {
+                    console.log('Error saving annotation:', error)
+                    throw error // re-throw, break out of promise chain
+                  })
+              }
 
-                  var positionActivity = function(annotation) {
-                    if (!annotation['canonical']) {
-                      return Promise.resolve();
+              var positionActivity = function(annotation) {
+                if (!annotation['canonical']) {
+                  return Promise.resolve();
+                }
+
+                if ('profile' in annotation.options && annotation.options['profile'] == 'https://www.w3.org/ns/activitystreams') {
+                  DO.U.showActivities(annotation['noteIRI']);
+                  //FIXME .. showActivities should return
+                  return Promise.resolve();
+                }
+                else {
+                  return DO.U.positionInteraction(annotation[ 'noteIRI' ], document.body)
+                    .catch(() => {
+                      return Promise.resolve()
+                    })
+                }
+              }
+
+              var sendNotification = function(annotation) {
+                if (!annotation['canonical']) {
+                  return Promise.resolve();
+                }
+// console.log(annotation)
+
+                return inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id'])
+                  .catch(error => {
+                    console.log('Error fetching ldpinbox endpoint:', error)
+                    throw error
+                  })
+                  .then(inboxes => {
+                    // TODO: resourceIRI for getEndpoint should be the
+                    // closest IRI (not necessarily the document).
+
+                    if (inboxes.length > 0) {
+                      annotation.notificationData['inbox'] = inboxes[0];
+// console.log(annotation)
+                      return inbox.notifyInbox(annotation.notificationData)
+                        .catch(error => {
+                          console.log('Error notifying the inbox:', error)
+                        })
                     }
+                  })
+              }
 
-                    return DO.U.positionInteraction(annotation[ 'noteIRI' ], document.body)
-                      .catch(() => {
-                        return Promise.resolve()
-                      })
-                  }
 
-                  var sendNotification = function(annotation) {
-                    if (!annotation['canonical']) {
-                      return Promise.resolve();
-                    }
+// console.log(note);
+// console.log(noteData);
 
-                    return inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id'])
-                      .catch(error => {
-                        console.log('Error fetching ldpinbox endpoint:', error)
-                        throw error
-                      })
-                      .then(inboxes => {
-                        // TODO: resourceIRI for getEndpoint should be the
-                        // closest IRI (not necessarily the document).
-                        // Test resolve/reject better.
 
-                        switch(this.action) {
-                          default: case 'article': case 'specificity':
-                            notificationType = ['as:Announce'];
-                            notificationObject = annotation['noteIRI'];
-                            notificationTarget = targetIRI;
-                            break;
-                          case 'approve':
-                            notificationType = ['as:Like'];
-                            notificationObject = targetIRI;
-                            notificationContext = annotation['noteIRI'];
-                            break;
-                          case 'disapprove':
-                            notificationType = ['as:Dislike'];
-                            notificationObject = targetIRI;
-                            notificationContext = annotation['noteIRI'];
-                            break;
-                          case 'bookmark':
-                            notificationType = ['as:Add'];
-                            notificationObject = annotation['noteIRI'];
-                            break;
-                        }
-
-                        var notificationData = {
-                          "type": notificationType,
-                          "slug": id,
-                          "object": notificationObject,
-                          "license": opts.license
-                        };
-
-                        if(typeof notificationContext !== 'undefined') {
-                          notificationData['context'] = notificationContext;
-                        }
-
-                        if (inboxes.length > 0) {
-                          notificationData['inbox'] = inboxes[0];
-
-                          if(typeof notificationTarget !== 'undefined') {
-                            notificationData['target'] = notificationTarget;
-                          }
-                          if(typeof notificationStatements !== 'undefined') {
-                            notificationData['statements'] = notificationStatements;
-                          }
-
-                          return inbox.notifyInbox(notificationData)
-                            .catch(error => {
-                              console.log('Error notifying the inbox:', error)
-                            })
-                        }
-                      })
-                  }
-
+              switch(this.action) {
+                case 'article': case 'approve': case 'disapprove': case 'specificity': case 'bookmark':
                   annotationDistribution.forEach(annotation => {
+                    var data = '';
+                    annotation['notificationData'] = createNotificationData(annotation);
+
+                    var noteData = createNoteData(annotation)
+                    var note = ''
+
+                    if ('profile' in annotation.options && annotation.options['profile'] == 'https://www.w3.org/ns/activitystreams') {
+                      annotation.notificationData['statements'] = DO.U.createNoteDataHTML(noteData)
+                      note = DO.U.createActivityHTML(annotation['notificationData']);
+                    }
+                    else {
+                      note = DO.U.createNoteDataHTML(noteData);
+                    }
+
+                    data = DO.U.createHTML('', note);
+// console.log(data)
+// console.log(annotation)
                     graph.serializeData(data, annotation['fromContentType'], annotation['contentType'], annotation['options'])
                       .catch(error => {
                         console.log('Error serializing annotation:', error)
@@ -6726,6 +6776,7 @@ WHERE {\n\
 
                       DO.U.positionNote(refId, refLabel, id);
                       break;
+
                     case 'ref-reference':
                       var options = opts;
                       options['citationId'] = opts.url;
