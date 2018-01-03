@@ -507,6 +507,19 @@ var DO = {
                     });
                 }
               }
+              else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Add') > -1) {
+                if(s.asobject && s.asobject.at(0)) {
+                  var object = s.asobject.at(0);
+
+                  return DO.U.positionInteraction(object).then(
+                    function(iri){
+                      return iri;
+                    },
+                    function(reason){
+                      console.log(object + ': object is unreachable');
+                    });
+                }
+              }
               else {
                 // console.log(i + ' has unrecognised types: ' + resourceTypes);
                 // return Promise.reject({'message': 'Unrecognised types ' + resourceTypes});
