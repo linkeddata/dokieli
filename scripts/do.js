@@ -6270,7 +6270,7 @@ WHERE {\n\
   <section>\n\
     <dl about="">\n\
 ' + dl +
-    '    </dl>\n\
+'    </dl>\n\
   </section>\n\
   <section>\n\
 ' + statements + '\n\
