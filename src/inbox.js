@@ -127,6 +127,7 @@ function notifyInbox (o) {
     return Promise.reject(new Error('No inbox to send notification to'))
   }
 
+  //TODO title
   var title = '';
   var data = DO.U.createActivityHTML(o)
 
