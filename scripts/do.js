@@ -5784,11 +5784,11 @@ WHERE {\n\
 
       switch(motivatedBy) {
         default: break;
-        case 'oa:assessing':  s = '✪'; break;
-        case 'oa:commenting': s = '🗨'; break;
-        case 'oa:bookmark':   s = '🔖'; break;
-        case 'oa:replying':   s = '💬'; break;
-        case 'oa:describing': s = '※'; break;
+        case 'oa:assessing':   s = '✪'; break;
+        case 'oa:commenting':  s = '🗨'; break;
+        case 'oa:bookmarking': s = '🔖'; break;
+        case 'oa:replying':    s = '💬'; break;
+        case 'oa:describing':  s = '※'; break;
       }
 
       return s;
