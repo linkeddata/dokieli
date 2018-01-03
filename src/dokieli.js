@@ -6605,12 +6605,7 @@ WHERE {\n\
                   notificationData['target'] = notificationTarget;
                 }
 
-                if ('profile' in annotation.options && annotation.options['profile'] == 'https://www.w3.org/ns/activitystreams') {
-                  notificationData['statements'] = annotation['note'];
-                }
-                else {
-                  notificationData['statements'] = notificationStatements;
-                }
+                notificationData['statements'] = notificationStatements;
 
                 return notificationData;
               }
@@ -6651,9 +6646,10 @@ WHERE {\n\
                 }
 
                 if ('profile' in annotation.options && annotation.options['profile'] == 'https://www.w3.org/ns/activitystreams') {
-                  DO.U.showActivities(annotation['noteIRI']);
-                  //FIXME .. showActivities should return
-                  return Promise.resolve();
+                  return DO.U.showActivities(annotation['noteIRI'])
+                    .catch(() => {
+                      return Promise.resolve()
+                    })
                 }
                 else {
                   return DO.U.positionInteraction(annotation[ 'noteIRI' ], document.body)
@@ -6679,11 +6675,13 @@ WHERE {\n\
                     // closest IRI (not necessarily the document).
 
                     if (inboxes.length > 0) {
-                      annotation.notificationData['inbox'] = inboxes[0];
+                      var notificationData = createNotificationData(annotation);
 
-                      annotation.notificationData['type'] = ['as:Announce'];
+                      notificationData['inbox'] = inboxes[0];
+
+                      notificationData['type'] = ['as:Announce'];
 // console.log(annotation)
-                      return inbox.notifyInbox(annotation.notificationData)
+                      return inbox.notifyInbox(notificationData)
                         .catch(error => {
                           console.log('Error notifying the inbox:', error)
                         })
@@ -6695,13 +6693,13 @@ WHERE {\n\
                 case 'article': case 'approve': case 'disapprove': case 'specificity': case 'bookmark':
                   annotationDistribution.forEach(annotation => {
                     var data = '';
-                    annotation['notificationData'] = createNotificationData(annotation);
+                    var notificationData = createNotificationData(annotation);
 
                     var noteData = createNoteData(annotation)
 
                     if ('profile' in annotation.options && annotation.options['profile'] == 'https://www.w3.org/ns/activitystreams') {
-                      annotation.notificationData['statements'] = DO.U.createNoteDataHTML(noteData)
-                      note = DO.U.createActivityHTML(annotation['notificationData']);
+                      notificationData['statements'] = DO.U.createNoteDataHTML(noteData);
+                      note = DO.U.createActivityHTML(notificationData);
                     }
                     else {
                       note = DO.U.createNoteDataHTML(noteData);
