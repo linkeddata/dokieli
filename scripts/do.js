@@ -8392,6 +8392,7 @@ WHERE {\n\
                   case 'bookmark':
                     notificationType = ['as:Add'];
                     notificationObject = noteIRI;
+                    notificationTarget = targetIRI;
                     break;
                 }
 
