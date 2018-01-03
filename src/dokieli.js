@@ -4453,6 +4453,8 @@ WHERE {\n\
         title += ': Liked'
       } else if (types.indexOf('as:Disliked') > -1){
         title += ': Disliked'
+      } else if (types.indexOf('as:Add') > -1){
+        title += ': Added'
       }
 
       var data = '<article>\n\
