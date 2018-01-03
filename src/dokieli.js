@@ -6569,7 +6569,7 @@ WHERE {\n\
 
                 switch(_this.action) {
                   default: case 'article': case 'specificity':
-                    notificationType = ['as:Announce'];
+                    notificationType = ['as:Create'];
                     notificationObject = noteIRI;
                     notificationTarget = targetIRI;
                     break;
@@ -6680,6 +6680,8 @@ WHERE {\n\
 
                     if (inboxes.length > 0) {
                       annotation.notificationData['inbox'] = inboxes[0];
+
+                      annotation.notificationData['type'] = ['as:Announce'];
 // console.log(annotation)
                       return inbox.notifyInbox(annotation.notificationData)
                         .catch(error => {
