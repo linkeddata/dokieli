@@ -8504,7 +8504,6 @@ WHERE {\n\
                     annotation['notificationData'] = createNotificationData(annotation);
 
                     var noteData = createNoteData(annotation)
-                    var note = ''
 
                     if ('profile' in annotation.options && annotation.options['profile'] == 'https://www.w3.org/ns/activitystreams') {
                       annotation.notificationData['statements'] = DO.U.createNoteDataHTML(noteData)
@@ -8557,7 +8556,7 @@ WHERE {\n\
 
                 case 'note':
                   var noteData = createNoteData({'id': id})
-                  var note = DO.U.createNoteDataHTML(noteData);
+                  note = DO.U.createNoteDataHTML(noteData);
                   var nES = selectedParentElement.nextElementSibling;
                   var asideNote = '\n\
 <aside class="note">\n\
@@ -8572,6 +8571,9 @@ WHERE {\n\
 
                 case 'cite': //footnote reference
                   //TODO: Refactor this what's in positionInteraction
+
+                  var noteData = createNoteData({'id': id})
+                  note = DO.U.createNoteDataHTML(noteData);
 
                   switch(opts.citationType) {
                     case 'ref-footnote': default:
