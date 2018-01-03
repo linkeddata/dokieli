@@ -2302,7 +2302,7 @@ var DO = {
                     });
                 }
               }
-              else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Announce') > -1) {
+              else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Announce') > -1 || resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Create') > -1) {
                 if(s.asobject && s.asobject.at(0) && s.astarget && s.astarget.at(0) && DO.U.getPathURL(s.astarget.at(0)) == currentPathURL) {
                   var object = s.asobject.at(0);
 
