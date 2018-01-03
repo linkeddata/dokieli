@@ -180,11 +180,16 @@ function serializeData (data, fromContentType, toContentType, options) {
                 data = data.replace(new RegExp('http://www.w3.org/ns/oa#styledBy', 'g'), 'stylesheet')
 
                 search = 'http://www.w3.org/ns/oa#'
-
                 break
 
               case 'https://www.w3.org/ns/activitystreams':
                 search = 'https://www.w3.org/ns/activitystreams#'
+                break
+
+              case 'http://schema.org/':
+                data = data.replace(new RegExp('"schema:', 'g'), '"')
+
+                search = 'http:/schema.org/'
                 break
             }
           }
@@ -199,12 +204,17 @@ function serializeData (data, fromContentType, toContentType, options) {
               case 'as':
                 search = 'https://www.w3.org/ns/activitystreams#'
                 break
+
+              case 'schema':
+                search = 'http://schema.org/'
+                break
             }
 
             replace = replace + ':'
           }
 
           data = data.replace(new RegExp(search, 'g'), replace)
+
         })
 
         data = JSON.parse(data)
