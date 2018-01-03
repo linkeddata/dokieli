@@ -344,7 +344,7 @@ var DO = {
 
           for (var i = 0; i < items.length && i < DO.C.CollectionItemsLimit; i++) {
             var pI = function(iri) {
-              return DO.U.positionInteraction(iri)
+              return DO.U.showActivities(iri)
                 .catch(() => {
                   return Promise.resolve()
                 })
