@@ -392,7 +392,7 @@ var DO = {
     },
 
     showActivities: function(url) {
-      graph.getGraph(url).then(
+      return graph.getGraph(url).then(
         function(g) {
 // console.log(g);
           var subjects = [];
