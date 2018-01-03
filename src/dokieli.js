@@ -4493,13 +4493,13 @@ WHERE {\n\
           motivatedByIRI = 'oa:replying';
           motivatedByLabel = 'replies';
           targetLabel = 'In reply to';
-          aAbout = '';
+          aAbout = ('mode' in n && n.mode == 'object') ? '#' + n.id : '';
           aPrefix = prefixes;
           break;
         case 'oa:assessing':
           motivatedByLabel = 'reviews';
           targetLabel = 'Review of';
-          aAbout = '';
+          aAbout = ('mode' in n && n.mode == 'object') ? '#' + n.id : '';
           aPrefix = prefixes;
           break;
         case 'oa:describing':
@@ -4515,7 +4515,7 @@ WHERE {\n\
         case 'oa:bookmarking':
           motivatedByLabel = 'bookmarks';
           targetLabel = 'Bookmarked';
-          aAbout = '';
+          aAbout = ('mode' in n && n.mode == 'object') ? '#' + n.id : '';
           aPrefix = prefixes;
           break;
       }
