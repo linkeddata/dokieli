@@ -702,8 +702,8 @@
 
                 <li>Clone <a href="https://github.com/linkeddata/dokieli">https://github.com/linkeddata/dokieli</a> and import directory:
                   <ul>
-                    <li>Firefox: <q>Load Temporary Add-on</q> from Add-ons (or go to <code>about:debugging</code> from addressbar) and import by selecting a file from the directory (eg manifest.json). See also <a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Temporary_Installation_in_Firefox">temporary add-on installation</a>).</li>
-                    <li>Chrome/Chromium: make sure to check the <q>developer more</q> option, under <cite>Extensions</cite> (or go to <code>chrome://extensions/</code> from addressbar) and import the directory.</li>
+                    <li>Firefox: <q>Load Temporary Add-on</q> from Add-ons (or go to <code>about:debugging</code> from addressbar) and import by selecting a file from the directory (eg manifest.json). See also <a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Temporary_Installation_in_Firefox">temporary add-on installation</a>.</li>
+                    <li>Chrome/Chromium: Check the <q>developer more</q> option, under <cite>Extensions</cite> (or go to <code>chrome://extensions/</code> from addressbar) and import the directory.</li>
                   </ul>
                 </li>
               </ol>
