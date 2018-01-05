@@ -695,7 +695,7 @@
             <div datatype="rdf:HTML" property="schema:description">
               <p>The dokieli <cite><a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions">Web Extension</a></cite> is a minimal package of dokieli which contains the core CSS and JavaScript that works as a browser add-on. When user triggers it from their browser toolbar, it provides the same functionality as a <cite>single-page application</cite>, ie. initialised and rendered in the browser DOM.</p>
 
-              <p>Currently the extension works with Firefox and Chrome/Chromium browsers. Two ways to do this:
+              <p>Currently the extension works with Firefox and Chrome/Chromium browsers. Two ways to do this:</p>
 
               <ol>
                 <li>Extensions are available from <cite><a href="https://addons.mozilla.org/en-US/firefox/addon/dokieli/">Add-ons for Firefox</a></cite> and <cite><a href="https://chrome.google.com/webstore/detail/ddmhaonbhodhgkaljpjlglodncddalid">Chrome Web Store</a></cite>.</li>
