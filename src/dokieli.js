@@ -4028,321 +4028,321 @@ WHERE {\n\
 
     positionInteraction: function(noteIRI, containerNode) {
       containerNode = containerNode || document.body;
-      var resourceIRI = uri.stripFragmentFromString(document.location.href);
-      var pIRI = uri.getProxyableIRI(noteIRI);
 
-      return fetcher.getResourceGraph(pIRI)
-        .then(
-          function(i) {
-            var note = i.child(noteIRI);
-// console.log(note);
-            var id = String(Math.abs(DO.U.hashCode(noteIRI)));
-            var refId = 'r-' + id;
-            var refLabel = id;
+      return fetcher.getResourceGraph(noteIRI).then(
+        function(g){
+          DO.U.showAnnotation(noteIRI, g, containerNode);
+        });
+    },
 
-            var datetime = note.schemadatePublished || note.dctermscreated || note.aspublished;
+    showAnnotation: function(noteIRI, g, containerNode) {
+      containerNode = containerNode || document.body;
+
+      var documentURL = uri.stripFragmentFromString(document.location.href);
+
+      var note = g.child(noteIRI);
+
+      var id = String(Math.abs(DO.U.hashCode(noteIRI)));
+      var refId = 'r-' + id;
+      var refLabel = id;
+
+      var datetime = note.schemadatePublished || note.dctermscreated || note.aspublished;
 // console.log(datetime);
-            var annotatedBy = note.schemacreator || note.dctermscreator || note.asactor;
-            var annotatedByIRI;
+      var annotatedBy = note.schemacreator || note.dctermscreator || note.asactor;
+      var annotatedByIRI;
 // console.log(annotatedBy);
-            if (annotatedBy && annotatedBy.at(0)) {
-              annotatedByIRI = annotatedBy.at(0);
+      if (annotatedBy && annotatedBy.at(0)) {
+        annotatedByIRI = annotatedBy.at(0);
 // console.log(annotatedByIRI);
-              annotatedBy = i.child(annotatedByIRI);
+        annotatedBy = g.child(annotatedByIRI);
 // console.log(annotatedBy);
-            }
-            var annotatedByName = auth.getAgentName(annotatedBy);
+      }
+      var annotatedByName = auth.getAgentName(annotatedBy);
 // console.log(annotatedByName);
-            var annotatedByImage = auth.getAgentImage(annotatedBy);
+      var annotatedByImage = auth.getAgentImage(annotatedBy);
 // console.log(annotatedByImage);
-            var annotatedByURL = annotatedBy.schemaurl || '';
-            annotatedByURL = (annotatedByURL) ? annotatedByURL : undefined;
+      var annotatedByURL = annotatedBy.schemaurl || '';
+      annotatedByURL = (annotatedByURL) ? annotatedByURL : undefined;
 
-            var licenseIRI = note.schemalicense || note.dctermsrights || undefined;
+      var licenseIRI = note.schemalicense || note.dctermsrights || undefined;
 // console.log(licenseIRI);
 
-            var motivatedBy = 'oa:replying';
+      var motivatedBy = 'oa:replying';
 
-            var bodyText = note.schemadescription;
-            if(!bodyText) {
-              bodyText = note.dctermsdescription;
-              if(!bodyText)  {
-                bodyText = note.ascontent;
-              }
-            }
+      var bodyText = note.schemadescription;
+      if(!bodyText) {
+        bodyText = note.dctermsdescription;
+        if(!bodyText)  {
+          bodyText = note.ascontent;
+        }
+      }
 
-            var types = note.rdftype;
+      var types = note.rdftype;
 // console.log(types);
-            var resourceTypes = [];
-            types.forEach(function(type){
-              resourceTypes.push(type);
+      var resourceTypes = [];
+      types.forEach(function(type){
+        resourceTypes.push(type);
 // console.log(type);
-            });
+      });
 
-            if(resourceTypes.indexOf('http://www.w3.org/ns/oa#Annotation') > -1) {
-              var body = i.child(note.oahasBody);
+      if(resourceTypes.indexOf('http://www.w3.org/ns/oa#Annotation') > -1) {
+        var body = g.child(note.oahasBody);
 // console.log(body);
-              var bodyLicenseIRI = body.schemalicense || body.dctermsrights || undefined;
+        var bodyLicenseIRI = body.schemalicense || body.dctermsrights || undefined;
 // console.log(bodyLicenseIRI);
-              bodyText = body.rdfvalue;
+        bodyText = body.rdfvalue;
 // console.log(bodyText);
 
 
-              if (!note.oahasTarget.startsWith(resourceIRI)) {
-                return Promise.reject();
-              }
+        if (!note.oahasTarget.startsWith(documentURL)) {
+          return Promise.reject();
+        }
 
-              var target = i.child(note.oahasTarget);
+        var target = g.child(note.oahasTarget);
 // console.log(target);
-              var targetIRI = target.iri().toString();
+        var targetIRI = target.iri().toString();
 // console.log(targetIRI);
 
-              var source = target.oahasSource;
+        var source = target.oahasSource;
 // console.log(source);
 // console.log(note.oamotivatedBy);
 
-              if(note.oamotivatedBy) {
-                motivatedBy = note.oamotivatedBy;
-                refLabel = DO.U.getReferenceLabel(motivatedBy);
-              }
+        if(note.oamotivatedBy) {
+          motivatedBy = note.oamotivatedBy;
+          refLabel = DO.U.getReferenceLabel(motivatedBy);
+        }
 
-              var exact, prefix, suffix;
-              var selector = target.oahasSelector;
-              if(selector) {
-                selector = i.child(selector);
+        var exact, prefix, suffix;
+        var selector = target.oahasSelector;
+        if(selector) {
+          selector = g.child(selector);
 // console.log(selector);
 
 // console.log(selector.rdftype);
 // console.log(selector.rdftype._array);
-                //FIXME: This is taking the first rdf:type. There could be multiple.
-                var selectorTypes;
-                if (selector.rdftype && selector.rdftype.at(0)) {
-                  selectorTypes = selector.rdftype.at(0);
-                }
+          //FIXME: This is taking the first rdf:type. There could be multiple.
+          var selectorTypes;
+          if (selector.rdftype && selector.rdftype.at(0)) {
+            selectorTypes = selector.rdftype.at(0);
+          }
 // console.log(selectorTypes);
-                if(selectorTypes == 'http://www.w3.org/ns/oa#TextQuoteSelector') {
-                  exact = selector.oaexact;
-                  prefix = selector.oaprefix;
-                  suffix = selector.oasuffix;
-                }
-                else if (selectorTypes == 'http://www.w3.org/ns/oa#FragmentSelector') {
-                  var refinedBy = i.child(selector["http://www.w3.org/ns/oa#refinedBy"].iri());
-                  exact = refinedBy.oaexact;
-                  prefix = refinedBy.oaprefix;
-                  suffix = refinedBy.oasuffix;
-                }
-              }
+          if(selectorTypes == 'http://www.w3.org/ns/oa#TextQuoteSelector') {
+            exact = selector.oaexact;
+            prefix = selector.oaprefix;
+            suffix = selector.oasuffix;
+          }
+          else if (selectorTypes == 'http://www.w3.org/ns/oa#FragmentSelector') {
+            var refinedBy = g.child(selector["http://www.w3.org/ns/oa#refinedBy"].iri());
+            exact = refinedBy.oaexact;
+            prefix = refinedBy.oaprefix;
+            suffix = refinedBy.oasuffix;
+          }
+        }
 // console.log(exact);
 // console.log(prefix);
 // console.log(suffix);
 
-              var containerNodeTextContent = containerNode.textContent;
+        var containerNodeTextContent = containerNode.textContent;
 //console.log(containerNodeTextContent);
 // console.log(prefix + exact + suffix);
-              var selectorIndex = containerNodeTextContent.indexOf(prefix + exact + suffix);
+        var selectorIndex = containerNodeTextContent.indexOf(prefix + exact + suffix);
 // console.log(selectorIndex);
-              if (selectorIndex >= 0) {
-                var exactStart = selectorIndex + prefix.length
-                var exactEnd = selectorIndex + prefix.length + exact.length;
-                var selection = { start: exactStart, end: exactEnd };
+        if (selectorIndex >= 0) {
+          var exactStart = selectorIndex + prefix.length
+          var exactEnd = selectorIndex + prefix.length + exact.length;
+          var selection = { start: exactStart, end: exactEnd };
 
-                var ref = '<span class="ref do" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#' + id + '" resource="' + noteIRI + '">' + refLabel + '</a></sup></span>';
+          var ref = '<span class="ref do" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#' + id + '" resource="' + noteIRI + '">' + refLabel + '</a></sup></span>';
 
-                MediumEditor.selection.importSelection(selection, containerNode, document);
+          MediumEditor.selection.importSelection(selection, containerNode, document);
 
-                //XXX: Review
-                var selection = window.getSelection();
-                var r = selection.getRangeAt(0);
-                selection.removeAllRanges();
-                selection.addRange(r);
-                r.collapse(true);
-                var selectedParentNode = r.commonAncestorContainer.parentNode;
-                var selectedParentNodeValue = r.commonAncestorContainer.nodeValue;
+          //XXX: Review
+          var selection = window.getSelection();
+          var r = selection.getRangeAt(0);
+          selection.removeAllRanges();
+          selection.addRange(r);
+          r.collapse(true);
+          var selectedParentNode = r.commonAncestorContainer.parentNode;
+          var selectedParentNodeValue = r.commonAncestorContainer.nodeValue;
 
-                var selectionUpdated = DO.U.fragmentFromString(selectedParentNodeValue.substr(0, r.startOffset) + ref + selectedParentNodeValue.substr(r.startOffset + exact.length));
+          var selectionUpdated = DO.U.fragmentFromString(selectedParentNodeValue.substr(0, r.startOffset) + ref + selectedParentNodeValue.substr(r.startOffset + exact.length));
 
-                //XXX: Review. This feels a bit dirty
-                for(var i = 0; i < selectedParentNode.childNodes.length; i++) {
-                  var n = selectedParentNode.childNodes[i];
-                  if (n.nodeType === 3 && n.nodeValue === selectedParentNodeValue) {
-                    selectedParentNode.replaceChild(selectionUpdated, n);
-                  }
-                }
+          //XXX: Review. This feels a bit dirty
+          for(var i = 0; i < selectedParentNode.childNodes.length; i++) {
+            var n = selectedParentNode.childNodes[i];
+            if (n.nodeType === 3 && n.nodeValue === selectedParentNodeValue) {
+              selectedParentNode.replaceChild(selectionUpdated, n);
+            }
+          }
 
-                var parentNodeWithId = selectedParentNode.closest('[id]');
-                var targetIRI = (parentNodeWithId) ? resourceIRI + '#' + parentNodeWithId.id : resourceIRI;
+          var parentNodeWithId = selectedParentNode.closest('[id]');
+          var targetIRI = (parentNodeWithId) ? documentURL + '#' + parentNodeWithId.id : documentURL;
 
-                var noteData = {
-                  "type": 'article',
-                  "mode": "read",
-                  "motivatedByIRI": motivatedBy,
-                  "id": id,
-                  "refId": refId,
-                  "iri": noteIRI, //e.g., https://example.org/path/to/article
-                  "creator": {},
-                  "datetime": datetime,
-                  "target": {
-                    "iri": targetIRI,
-                    "source": source,
-                    "selector": {
-                      "exact": exact,
-                      "prefix": prefix,
-                      "suffix": suffix
-                    }
-                    //TODO: state
-                  },
-                  "body": bodyText,
-                  "license": {}
-                }
-                if (annotatedByIRI) {
-                  noteData.creator["iri"] = annotatedByIRI;
-                }
-                if (annotatedByName) {
-                  noteData.creator["name"] = annotatedByName;
-                }
-                if (annotatedByImage) {
-                  noteData.creator["image"] = annotatedByImage;
-                }
-                if (annotatedByURL) {
-                  noteData.creator["url"] = annotatedByURL;
-                }
+          var noteData = {
+            "type": 'article',
+            "mode": "read",
+            "motivatedByIRI": motivatedBy,
+            "id": id,
+            "refId": refId,
+            "iri": noteIRI, //e.g., https://example.org/path/to/article
+            "creator": {},
+            "datetime": datetime,
+            "target": {
+              "iri": targetIRI,
+              "source": source,
+              "selector": {
+                "exact": exact,
+                "prefix": prefix,
+                "suffix": suffix
+              }
+              //TODO: state
+            },
+            "body": bodyText,
+            "license": {}
+          }
+          if (annotatedByIRI) {
+            noteData.creator["iri"] = annotatedByIRI;
+          }
+          if (annotatedByName) {
+            noteData.creator["name"] = annotatedByName;
+          }
+          if (annotatedByImage) {
+            noteData.creator["image"] = annotatedByImage;
+          }
+          if (annotatedByURL) {
+            noteData.creator["url"] = annotatedByURL;
+          }
 
-                if (licenseIRI) {
-                  noteData.license["iri"] = licenseIRI;
-                }
+          if (licenseIRI) {
+            noteData.license["iri"] = licenseIRI;
+          }
 // console.log(noteData);
-                var note = DO.U.createNoteDataHTML(noteData);
-                var nES = selectedParentNode.nextElementSibling;
-                var asideNote = '\n\
+          var note = DO.U.createNoteDataHTML(noteData);
+          var nES = selectedParentNode.nextElementSibling;
+          var asideNote = '\n\
 <aside class="note do">\n\
 <blockquote cite="' + noteIRI + '">'+ note + '</blockquote>\n\
 </aside>\n\
 ';
-                var asideNode = DO.U.fragmentFromString(asideNote);
-                var parentSection = MediumEditor.util.getClosestTag(selectedParentNode, 'section')
-                || MediumEditor.util.getClosestTag(selectedParentNode, 'div') || MediumEditor.util.getClosestTag(selectedParentNode, 'article') || MediumEditor.util.getClosestTag(selectedParentNode, 'main') || MediumEditor.util.getClosestTag(selectedParentNode, 'body');
-                parentSection.appendChild(asideNode);
-                //XXX: Keeping this comment around for emergency
-  //                selectedParentNode.parentNode.insertBefore(asideNode, selectedParentNode.nextSibling);
+          var asideNode = DO.U.fragmentFromString(asideNote);
+          var parentSection = MediumEditor.util.getClosestTag(selectedParentNode, 'section')
+          || MediumEditor.util.getClosestTag(selectedParentNode, 'div') || MediumEditor.util.getClosestTag(selectedParentNode, 'article') || MediumEditor.util.getClosestTag(selectedParentNode, 'main') || MediumEditor.util.getClosestTag(selectedParentNode, 'body');
+          parentSection.appendChild(asideNode);
+          //XXX: Keeping this comment around for emergency
+//                selectedParentNode.parentNode.insertBefore(asideNode, selectedParentNode.nextSibling);
 
-                if(DO.C.User.IRI) {
-                  var noteDelete = document.querySelector('aside.do blockquote[cite="' + noteIRI + '"] article button.delete');
-                  if (noteDelete) {
-                    noteDelete.addEventListener('click', function(e) {
-                      e.preventDefault();
-                      e.stopPropagation();
+          if(DO.C.User.IRI) {
+            var noteDelete = document.querySelector('aside.do blockquote[cite="' + noteIRI + '"] article button.delete');
+            if (noteDelete) {
+              noteDelete.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
 
-                      fetcher.deleteResource(noteIRI)
-                        .then(() => {
-                          var aside = noteDelete.closest('aside.do')
-                          aside.parentNode.removeChild(aside)
-                          var span = document.querySelector('span[about="#' + refId + '"]')
-                          span.outerHTML = span.querySelector('mark').textContent
-                          // TODO: Delete notification or send delete activity
-                        })
-                    });
-                  }
-                }
-                DO.U.positionNote(refId, refLabel, id);
-
-                //Perhaps return something more useful?
-                return noteIRI;
-              }
-
-              //XXX: Annotation without a selection
-              else {
-                var noteData = {
-                  "type": 'article',
-                  "mode": "read",
-                  "motivatedByIRI": motivatedBy,
-                  "id": id,
-                  "refId": refId,
-                  "refLabel": refLabel,
-                  "iri": noteIRI,
-                  "creator": {},
-                  "datetime": datetime,
-                  "target": {
-                    "iri": targetIRI
-                  },
-                  "body": bodyText,
-                  "license": {}
-                };
-
-                if (annotatedByIRI) {
-                  noteData.creator["iri"] = annotatedByIRI;
-                }
-                if (annotatedByName) {
-                  noteData.creator["name"] = annotatedByName;
-                }
-                if (annotatedByImage) {
-                  noteData.creator["image"] = annotatedByImage;
-                }
-                if (licenseIRI) {
-                  noteData.license["iri"] = licenseIRI;
-                  noteData.license["name"] = DO.C.License[noteData.license["iri"]].name;
-                }
-                if (datetime) {
-                  noteData.datetime = datetime;
-                }
-// console.log(noteData)
-                DO.U.addInteraction(noteData);
-              }
+                fetcher.deleteResource(noteIRI)
+                  .then(() => {
+                    var aside = noteDelete.closest('aside.do')
+                    aside.parentNode.removeChild(aside)
+                    var span = document.querySelector('span[about="#' + refId + '"]')
+                    span.outerHTML = span.querySelector('mark').textContent
+                    // TODO: Delete notification or send delete activity
+                  })
+              });
             }
-            else {
-              var inReplyTo, inReplyToRel;
-              if (note.asinReplyTo && note.asinReplyTo.at(0)) {
-                inReplyTo = note.asinReplyTo.at(0);
-                inReplyToRel = 'as:inReplyTo';
-              }
-              else if(note.siocreplyof && note.siocreplyof.at(0)) {
-                inReplyTo = note.siocreplyof.at(0);
-                inReplyToRel = 'sioc:reply_of';
-              }
-
-              if(inReplyTo && inReplyTo.indexOf(window.location.origin + window.location.pathname) >= 0) {
-                var noteData = {
-                  "type": 'article',
-                  "mode": "read",
-                  "motivatedByIRI": motivatedBy,
-                  "id": id,
-                  "refId": refId,
-                  "refLabel": refLabel,
-                  "iri": noteIRI,
-                  "creator": {},
-                  "inReplyTo": {
-                    'iri': inReplyTo,
-                    'rel': inReplyToRel
-                  },
-                  "body": bodyText,
-                  "license": {}
-                };
-                if (annotatedByIRI) {
-                  noteData.creator["iri"] = annotatedByIRI;
-                }
-                if (annotatedByName) {
-                  noteData.creator["name"] = annotatedByName;
-                }
-                if (annotatedByImage) {
-                  noteData.creator["image"] = annotatedByImage;
-                }
-                if (licenseIRI) {
-                  noteData.license["iri"] = licenseIRI;
-                }
-                if (datetime) {
-                  noteData.datetime = datetime;
-                }
-                DO.U.addInteraction(noteData);
-              }
-              else {
-                console.log('Source is not an oa:Annotation and it is not a reply to');
-              }
-            }
-          },
-          function(reason) {
-// console.log(reason);
-            return reason;
           }
-        );
+          DO.U.positionNote(refId, refLabel, id);
+
+          //Perhaps return something more useful?
+          return noteIRI;
+        }
+
+        //XXX: Annotation without a selection
+        else {
+          var noteData = {
+            "type": 'article',
+            "mode": "read",
+            "motivatedByIRI": motivatedBy,
+            "id": id,
+            "refId": refId,
+            "refLabel": refLabel,
+            "iri": noteIRI,
+            "creator": {},
+            "datetime": datetime,
+            "target": {
+              "iri": targetIRI
+            },
+            "body": bodyText,
+            "license": {}
+          };
+
+          if (annotatedByIRI) {
+            noteData.creator["iri"] = annotatedByIRI;
+          }
+          if (annotatedByName) {
+            noteData.creator["name"] = annotatedByName;
+          }
+          if (annotatedByImage) {
+            noteData.creator["image"] = annotatedByImage;
+          }
+          if (licenseIRI) {
+            noteData.license["iri"] = licenseIRI;
+            noteData.license["name"] = DO.C.License[noteData.license["iri"]].name;
+          }
+          if (datetime) {
+            noteData.datetime = datetime;
+          }
+// console.log(noteData)
+          DO.U.addInteraction(noteData);
+        }
+      }
+      else {
+        var inReplyTo, inReplyToRel;
+        if (note.asinReplyTo && note.asinReplyTo.at(0)) {
+          inReplyTo = note.asinReplyTo.at(0);
+          inReplyToRel = 'as:inReplyTo';
+        }
+        else if(note.siocreplyof && note.siocreplyof.at(0)) {
+          inReplyTo = note.siocreplyof.at(0);
+          inReplyToRel = 'sioc:reply_of';
+        }
+
+        if(inReplyTo && inReplyTo.indexOf(window.location.origin + window.location.pathname) >= 0) {
+          var noteData = {
+            "type": 'article',
+            "mode": "read",
+            "motivatedByIRI": motivatedBy,
+            "id": id,
+            "refId": refId,
+            "refLabel": refLabel,
+            "iri": noteIRI,
+            "creator": {},
+            "inReplyTo": {
+              'iri': inReplyTo,
+              'rel': inReplyToRel
+            },
+            "body": bodyText,
+            "license": {}
+          };
+          if (annotatedByIRI) {
+            noteData.creator["iri"] = annotatedByIRI;
+          }
+          if (annotatedByName) {
+            noteData.creator["name"] = annotatedByName;
+          }
+          if (annotatedByImage) {
+            noteData.creator["image"] = annotatedByImage;
+          }
+          if (licenseIRI) {
+            noteData.license["iri"] = licenseIRI;
+          }
+          if (datetime) {
+            noteData.datetime = datetime;
+          }
+          DO.U.addInteraction(noteData);
+        }
+        else {
+          console.log('Source is not an oa:Annotation and it is not a reply to');
+        }
+      }
     },
 
     addInteraction: function(noteData) {
