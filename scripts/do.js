@@ -584,26 +584,36 @@ var DO = {
                 if(s.asobject && s.asobject.at(0) && s.astarget && s.astarget.at(0) && DO.U.getPathURL(s.astarget.at(0)) == currentPathURL) {
                   var object = s.asobject.at(0);
 
-                  return DO.U.positionInteraction(object).then(
-                    function(iri){
-                      return iri;
-                    },
-                    function(reason){
-                      console.log(object + ': object is unreachable');
-                    });
+                  if (object.startsWith(url)) {
+                    return DO.U.showAnnotation(object, s);
+                  }
+                  else {
+                    return DO.U.positionInteraction(object).then(
+                      function(iri){
+                        return iri;
+                      },
+                      function(reason){
+                        console.log(object + ': object is unreachable');
+                      });
+                  }
                 }
               }
               else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Add') > -1) {
                 if(s.asobject && s.asobject.at(0)) {
                   var object = s.asobject.at(0);
 
-                  return DO.U.positionInteraction(object).then(
-                    function(iri){
-                      return iri;
-                    },
-                    function(reason){
-                      console.log(object + ': object is unreachable');
-                    });
+                  if (object.startsWith(url)) {
+                    return DO.U.showAnnotation(object, s);
+                  }
+                  else {
+                    return DO.U.positionInteraction(object).then(
+                      function(iri){
+                        return iri;
+                      },
+                      function(reason){
+                        console.log(object + ': object is unreachable');
+                      });
+                  }
                 }
               }
               else {
