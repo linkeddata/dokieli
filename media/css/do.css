@@ -553,6 +553,7 @@ min-height: 5.5em;
 }
 #user-info img {
 display:block;
+float:none !important;
 }
 #user-info a {
 margin-top: 1em;
