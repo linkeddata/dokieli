@@ -274,8 +274,12 @@ position:static;
 margin-top:1em;
 }
 
+aside.note.do blockquote {
+position:static !important;
+}
+
 aside.note.do blockquote article {
-position: absolute;
+position: absolute !important;
 left: auto;
 right: -27%;
 z-index: 1;
