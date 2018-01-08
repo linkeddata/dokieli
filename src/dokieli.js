@@ -4552,7 +4552,8 @@ WHERE {\n\
       var creatorIRI = '#agent';
       if ('creator' in n) {
         if ('image' in n.creator) {
-          creatorImage = '<img alt="" height="48" rel="schema:image" src="' + n.creator.image + '" width="48" /> ';
+          var img = (n.mode == 'read') ? uri.getProxyableIRI(n.creator.image) : n.creator.image;
+          creatorImage = '<img alt="" height="48" rel="schema:image" src="' + img + '" width="48" /> ';
         }
         if('iri' in n.creator) {
           creatorIRI = n.creator.iri;
