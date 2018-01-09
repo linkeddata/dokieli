@@ -480,7 +480,7 @@ function getAgentName (s) {
 }
 
 function getAgentURL (s) {
-  return s.foafhomepage || s['http://xmlns.com/foaf/0.1/weblog'] || s.schemaurl || undefined
+  return s.foafhomepage || s.foafweblog || s.schemaurl || undefined
 }
 
 function getAgentStorage (s) {

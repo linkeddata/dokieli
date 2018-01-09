@@ -219,6 +219,7 @@ module.exports = {
     "foaffamilyName": "http://xmlns.com/foaf/0.1/familyName",
     "foafgivenName": "http://xmlns.com/foaf/0.1/givenName",
     "foafhomepage": { "@id": "http://xmlns.com/foaf/0.1/homepage", "@type": "@id" },
+    "foafweblog": { "@id": "http://xmlns.com/foaf/0.1/weblog", "@type": "@id" },
     "foafimg": { "@id": "http://xmlns.com/foaf/0.1/img", "@type": "@id" },
     "foafdepiction": { "@id": "http://xmlns.com/foaf/0.1/depiction", "@type": "@id" },
     "foafnick": "http://xmlns.com/foaf/0.1/nick",
