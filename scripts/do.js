@@ -6212,6 +6212,8 @@ WHERE {\n\
     },
 
     createActivityHTML: function(o) {
+      var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: http://schema.org/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams#"';
+
       var types = '<dt>Types</dt>'
 
       o.type.forEach(function (t) {
@@ -6283,7 +6285,7 @@ WHERE {\n\
         title += ': Added'
       }
 
-      var data = '<article>\n\
+      var data = '<article'+prefixes+'>\n\
   <h1>' + title + '</h1>\n\
   <section>\n\
     <dl about="">\n\
