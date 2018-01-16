@@ -4039,7 +4039,7 @@ WHERE {\n\
     positionInteraction: function(noteIRI, containerNode) {
       containerNode = containerNode || document.body;
 
-      return fetcher.getResourceGraph(noteIRI).then(
+      return fetcher.getResourceGraph(noteIRI).then(ty
         function(g){
           DO.U.showAnnotation(noteIRI, g, containerNode);
         });
@@ -6639,36 +6639,6 @@ WHERE {\n\
                 return notificationData;
               }
 
-              var sendActivity = function(annotation) {
-                //Make this annotation refer to the canonical annotation
-                if (!annotation['canonical']) {
-                  switch (annotation[ 'contentType' ]) {
-                    case 'application/ld+json':
-                      let x = JSON.parse(annotation['data'])
-                      x[ "via" ] = x[ "id" ]
-                      x[ "id" ] = ""
-                      annotation['data'] = JSON.stringify(x)
-                      break
-                    default:
-                      break
-                  }
-                }
-
-                var contentType = (annotation.profile)
-                  ? annotation['contentType'] + ';profile="' + annotation.profile + '"'
-                  : annotation['contentType']
-
-// console.log(annotation)
-
-                //TODO: If server has `Allow: PUT` or if not oa:annotationService/as:outbox, use PUT. Most likely for pim:storage -- This minor distinction helps to get around node-solid-server issue with not handling text/html for POST (hardcodes `.html` suffix to the resource), whereas PUT doesn't touch the URI
-
-                return fetcher.postResource(annotation['containerIRI'], id, annotation['data'], contentType)
-                  .catch(error => {
-                    console.log('Error saving annotation:', error)
-                    throw error // re-throw, break out of promise chain
-                  })
-              }
-
               var positionActivity = function(annotation) {
                 if (!annotation['canonical']) {
                   return Promise.resolve();
@@ -6737,8 +6707,6 @@ WHERE {\n\
                     data = DO.U.createHTML('', note);
 // console.log(data)
 // console.log(annotation)
-                    // graph.serializeData(data, annotation['fromContentType'], annotation['contentType'], annotation['options'])
-
 
                     inbox.postActivity(annotation['containerIRI'], id, data, annotation)
                       .catch(error => {
@@ -6746,12 +6714,6 @@ WHERE {\n\
                         console.log(error)
                         throw error  // re-throw, break out of promise chain
                       })
-                      // .then(data => {
-                      //   annotation['data'] = data
-                      //   return annotation
-                      // })
-
-                      // .then(() => { return sendActivity(annotation) })
 
                       .then(response => {
                         var location = response.headers.get('Location')
