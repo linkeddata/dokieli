@@ -4039,7 +4039,7 @@ WHERE {\n\
     positionInteraction: function(noteIRI, containerNode) {
       containerNode = containerNode || document.body;
 
-      return fetcher.getResourceGraph(noteIRI).then(ty
+      return fetcher.getResourceGraph(noteIRI).then(
         function(g){
           DO.U.showAnnotation(noteIRI, g, containerNode);
         });
