@@ -5920,7 +5920,7 @@ WHERE {\n\
 // console.log(bodyText);
 
 
-        if (!note.oahasTarget.startsWith(documentURL)) {
+        if (note.oahasTarget && !note.oahasTarget.startsWith(documentURL)) {
           return Promise.reject();
         }
 
