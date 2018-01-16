@@ -8883,7 +8883,8 @@ module.exports = {
   getEndpointFromHead,
   getEndpointFromRDF,
   notifyInbox,
-  sendNotifications
+  sendNotifications,
+  postActivity
 }
 
 function sendNotifications (tos, note, iri, shareResource) {
