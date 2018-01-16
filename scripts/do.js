@@ -9025,10 +9025,7 @@ function postActivity(url, slug, data, options) {
         case 'text/turtle':
           // FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
 
-          return graph.getGraphFromData(data, options)
-            .then(g => {
-              return graph.serializeGraph(g, { 'contentType': 'text/turtle' })
-            })
+          return graph.serializeData(data, options['contentType'], 'text/turtle', options)
             .then(data => {
               return fetcher.postResource(url, slug, data, 'text/turtle')
             })
@@ -9037,12 +9034,17 @@ function postActivity(url, slug, data, options) {
         case 'application/json':
         case '*/*':
         default:
-          return graph.getGraphFromData(data, options)
-            .then(g => {
-              return graph.serializeGraph(g, { 'contentType': 'application/ld+json', 'context': { '@context': 'https://www.w3.org/ns/activitystreams' }})
-            })
-            .then(serialized => {
-              let data = JSON.stringify(serialized) + '\n'
+console.log(options)
+          return graph.serializeData(data, options['contentType'], 'application/ld+json', options)
+            .then(data => {
+              if (!options['canonical']) {
+                let x = JSON.parse(data)
+                if ('id' in x) {
+                  x[ "via" ] = x[ "id" ]
+                  x[ "id" ] = ""
+                  data = JSON.stringify(x)
+                }
+              }
 
               var profile = ('profile' in options) ? '; profile="' + options.profile + '"' : ''
 
