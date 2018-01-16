@@ -1391,86 +1391,93 @@ function serializeData (data, fromContentType, toContentType, options) {
       }     
     })
     .then(data => {
-      //FIXME: Lazy person's JSON-LD compacting. Expect errors!
-      if (options["@context"]) {
-        var context = (typeof options["@context"] === 'string') ? [options["@context"]] : options['@context']
+      switch (toContentType) {
+        default:
+          break;
 
-        data = JSON.parse(data);
-        delete data["@context"]
-        data = JSON.stringify(data)
+        case 'application/ld+json':
+          //TODO: Lazy person's JSON-LD compacting. Expect errors!
+          if (options["@context"]) {
+            var context = (typeof options["@context"] === 'string') ? [options["@context"]] : options['@context']
 
-        data = data.replace(new RegExp('"@id"', 'g'), '"id"')
-        data = data.replace(new RegExp('"@type"', 'g'), '"type"')
+            data = JSON.parse(data);
+            delete data["@context"]
+            data = JSON.stringify(data)
 
-        context.forEach(function(c){
-          var search = '';
-          var replace = '';
+            data = data.replace(new RegExp('"@id"', 'g'), '"id"')
+            data = data.replace(new RegExp('"@type"', 'g'), '"type"')
 
-          if (typeof c === 'string') {
-            switch(c) {
-              case 'http://www.w3.org/ns/anno.jsonld':
-                data = data.replace(new RegExp('http://www.w3.org/ns/oa#autoDirection', 'g'), 'auto')
-                data = data.replace(new RegExp('http://www.w3.org/ns/oa#cachedSource', 'g'), 'cached')
-                data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasBody', 'g'), 'body')
-                data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasEndSelector', 'g'), 'endSelector')
-                data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasPurpose', 'g'), 'purpose')
-                data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasScope', 'g'), 'scope')
-                data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasSelector', 'g'), 'selector')
-                data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasSource', 'g'), 'source')
-                data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasStartSelector', 'g'), 'startSelector')
-                data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasTarget', 'g'), 'target')
-                data = data.replace(new RegExp('http://www.w3.org/ns/oa#ltrDirection', 'g'), 'ltr')
-                data = data.replace(new RegExp('http://www.w3.org/ns/oa#motivatedBy', 'g'), 'motivation')
-                data = data.replace(new RegExp('http://www.w3.org/ns/oa#rtlDirection', 'g'), 'rtl')
-                data = data.replace(new RegExp('http://www.w3.org/ns/oa#styledBy', 'g'), 'stylesheet')
+            context.forEach(function(c){
+              var search = '';
+              var replace = '';
 
-                data = data.replace(new RegExp('"oa:', 'g'), '"')
+              if (typeof c === 'string') {
+                switch(c) {
+                  case 'http://www.w3.org/ns/anno.jsonld':
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#autoDirection', 'g'), 'auto')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#cachedSource', 'g'), 'cached')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasBody', 'g'), 'body')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasEndSelector', 'g'), 'endSelector')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasPurpose', 'g'), 'purpose')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasScope', 'g'), 'scope')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasSelector', 'g'), 'selector')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasSource', 'g'), 'source')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasStartSelector', 'g'), 'startSelector')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasTarget', 'g'), 'target')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#ltrDirection', 'g'), 'ltr')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#motivatedBy', 'g'), 'motivation')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#rtlDirection', 'g'), 'rtl')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#styledBy', 'g'), 'stylesheet')
 
-                search = 'http://www.w3.org/ns/oa#'
-                break
+                    data = data.replace(new RegExp('"oa:', 'g'), '"')
 
-              case 'https://www.w3.org/ns/activitystreams':
-                data = data.replace(new RegExp('"as:', 'g'), '"')
+                    search = 'http://www.w3.org/ns/oa#'
+                    break
 
-                search = 'https://www.w3.org/ns/activitystreams#'
-                break
+                  case 'https://www.w3.org/ns/activitystreams':
+                    data = data.replace(new RegExp('"as:', 'g'), '"')
 
-              case 'http://schema.org/':
-                data = data.replace(new RegExp('"schema:', 'g'), '"')
+                    search = 'https://www.w3.org/ns/activitystreams#'
+                    break
 
-                search = 'http:/schema.org/'
-                break
-            }
+                  case 'http://schema.org/':
+                    data = data.replace(new RegExp('"schema:', 'g'), '"')
+
+                    search = 'http:/schema.org/'
+                    break
+                }
+              }
+              else {
+                replace = Object.keys(c)[0];
+
+                switch(replace) {
+                  case 'oa':
+                    search = 'http://www.w3.org/ns/oa#'
+                    break
+
+                  case 'as':
+                    search = 'https://www.w3.org/ns/activitystreams#'
+                    break
+
+                  case 'schema':
+                    search = 'http://schema.org/'
+                    break
+                }
+
+                replace = replace + ':'
+              }
+
+              data = data.replace(new RegExp(search, 'g'), replace)
+
+            })
+
+            data = JSON.parse(data)
+            data = Object.assign({"@context": options["@context"]}, data)
+            data = JSON.stringify(data)
           }
-          else {
-            replace = Object.keys(c)[0];
 
-            switch(replace) {
-              case 'oa':
-                search = 'http://www.w3.org/ns/oa#'
-                break
-
-              case 'as':
-                search = 'https://www.w3.org/ns/activitystreams#'
-                break
-
-              case 'schema':
-                search = 'http://schema.org/'
-                break
-            }
-
-            replace = replace + ':'
-          }
-
-          data = data.replace(new RegExp(search, 'g'), replace)
-
-        })
-
-        data = JSON.parse(data)
-        data = Object.assign({"@context": options["@context"]}, data)
-        data = JSON.stringify(data)
+          break;
       }
-
 // console.log(data)
       return data
     })
