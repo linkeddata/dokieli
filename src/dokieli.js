@@ -4577,7 +4577,7 @@ WHERE {\n\
 
       heading = '<h' + hX + ' property="schema:name">' + creatorName + ' <span rel="oa:motivatedBy" resource="' + motivatedByIRI + '">' + motivatedByLabel + '</span></h' + hX + '>';
 
-      if ('datetime' in n){
+      if ('datetime' in n && typeof n.datetime !== 'undefined'){
         var time = '<time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="schema:datePublished" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time>';
         var timeLinked = ('iri' in n) ? '<a href="' + n.iri + '">' + time + '</a>' : time;
         published = '<dl class="published"><dt>Published</dt><dd>' + timeLinked + '</dd></dl>';
