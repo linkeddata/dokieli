@@ -8048,10 +8048,11 @@ WHERE {\n\
                 containerIRI = DO.C.User.Outbox[0];
 
                 var fromContentType = 'text/html';
-                contentType = 'application/ld+json';
+                // contentType = 'application/ld+json';
+                contentType = fromContentType;
 
                 noteURL = noteIRI = containerIRI + id;
-                options = {
+                var contextProfile = {
                   '@context': [
                     'https://www.w3.org/ns/activitystreams',
                     { 'oa': 'http://www.w3.org/ns/oa#', 'schema': 'http://schema.org/' }
@@ -8059,10 +8060,12 @@ WHERE {\n\
                   // 'subjectURI': noteIRI,
                   'profile': 'https://www.w3.org/ns/activitystreams'
                 };
-                aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'options': options };
+                aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType };
                 if (typeof DO.C.User.Storage === 'undefined') {
                   aLS['canonical'] = true;
                 }
+
+                aLS = Object.assign(aLS, contextProfile)
 
                 annotationDistribution.push(aLS);
               }
@@ -8085,20 +8088,25 @@ WHERE {\n\
                 }
 
                 var fromContentType = 'text/html';
-                contentType = 'text/html';
+                // contentType = 'text/html';
+                contentType = fromContentType;
+
                 noteURL = noteIRI = containerIRI + id;
-                options = {
+                var contextProfile = {
                   // 'subjectURI': noteIRI,
                 };
-                aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true, 'options': options };
+                aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true };
+
                 annotationDistribution.push(aLS);
               }
 
               if(opts.annotationLocationService && typeof DO.C.AnnotationService !== 'undefined') {
                 containerIRI = DO.C.AnnotationService;
                 var fromContentType = 'text/html';
-                contentType = 'application/ld+json';
-                options = {
+                // contentType = 'application/ld+json';
+                contentType = fromContentType;
+
+                var contextProfile = {
                   '@context': [
                     'http://www.w3.org/ns/anno.jsonld',
                     { 'as': 'https://www.w3.org/ns/activitystreams#', 'schema': 'http://schema.org/' }
@@ -8109,16 +8117,19 @@ WHERE {\n\
 
                 if(!opts.annotationLocationPersonalStorage && opts.annotationLocationService) {
                   noteURL = noteIRI = containerIRI + id;
-                  aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true, 'options': options };
+                  aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true };
                 }
                 else if(opts.annotationLocationPersonalStorage) {
                   noteURL = containerIRI + id;
-                  aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'options': options };
+                  aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType };
                 }
                 else {
                   noteURL = noteIRI = containerIRI + id;
-                  aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true, 'options': options };
+                  aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true };
                 }
+
+                aLS = Object.assign(aLS, contextProfile)
+
                 annotationDistribution.push(aLS);
               }
 
@@ -8150,7 +8161,7 @@ WHERE {\n\
                 var note = '';
                 var mode = '';
 
-                if (annotation && annotation.options && 'profile' in annotation.options && annotation.options['profile'] == 'https://www.w3.org/ns/activitystreams') {
+                if (annotation && 'profile' in annotation && annotation.profile == 'https://www.w3.org/ns/activitystreams') {
                   mode = 'object'
                 }
                 else {
@@ -8385,10 +8396,11 @@ WHERE {\n\
                 return noteData;
               }
 
-              var createNotificationData = function(annotation) {
+              var createNotificationData = function(annotation, options) {
+                options = options || {};
                 var notificationType, notificationObject, notificationContext, notificationTarget, notificationStatements;
 
-                var noteIRI = ('profile' in annotation.options && annotation.options['profile'] == 'https://www.w3.org/ns/activitystreams') ? '#' + id : annotation['noteIRI'];
+                var noteIRI = (options.relativeObject) ? '#' + id : annotation['noteIRI'];
 
                 notificationStatements = '    <dl about="' + noteIRI + '">\n\
   <dt>Object type</dt><dd><a about="' + noteIRI + '" typeof="oa:Annotation" href="' + DO.C.Vocab['oaannotation']['@id'] + '">Annotation</a></dd>\n\
@@ -8454,8 +8466,8 @@ WHERE {\n\
                   }
                 }
 
-                var contentType = (annotation.options['profile'])
-                  ? annotation['contentType'] + ';profile="' + annotation.options['profile'] + '"'
+                var contentType = (annotation.profile)
+                  ? annotation['contentType'] + ';profile="' + annotation.profile + '"'
                   : annotation['contentType']
 
 // console.log(annotation)
@@ -8474,7 +8486,7 @@ WHERE {\n\
                   return Promise.resolve();
                 }
 
-                if ('profile' in annotation.options && annotation.options['profile'] == 'https://www.w3.org/ns/activitystreams') {
+                if ('profile' in annotation && annotation.profile == 'https://www.w3.org/ns/activitystreams') {
                   return DO.U.showActivities(annotation['noteIRI'])
                     .catch(() => {
                       return Promise.resolve()
@@ -8522,11 +8534,11 @@ WHERE {\n\
                 case 'article': case 'approve': case 'disapprove': case 'specificity': case 'bookmark':
                   annotationDistribution.forEach(annotation => {
                     var data = '';
-                    var notificationData = createNotificationData(annotation);
+                    var notificationData = createNotificationData(annotation, { 'relativeObject': true });
 
                     var noteData = createNoteData(annotation)
 
-                    if ('profile' in annotation.options && annotation.options['profile'] == 'https://www.w3.org/ns/activitystreams') {
+                    if ('profile' in annotation && annotation.profile == 'https://www.w3.org/ns/activitystreams') {
                       notificationData['statements'] = DO.U.createNoteDataHTML(noteData);
                       note = DO.U.createActivityHTML(notificationData);
                     }
@@ -8537,17 +8549,21 @@ WHERE {\n\
                     data = DO.U.createHTML('', note);
 // console.log(data)
 // console.log(annotation)
-                    graph.serializeData(data, annotation['fromContentType'], annotation['contentType'], annotation['options'])
+                    // graph.serializeData(data, annotation['fromContentType'], annotation['contentType'], annotation['options'])
+
+
+                    inbox.postActivity(annotation['containerIRI'], id, data, annotation)
                       .catch(error => {
-                        console.log('Error serializing annotation:', error)
+                        // console.log('Error serializing annotation:', error)
+                        console.log(error)
                         throw error  // re-throw, break out of promise chain
                       })
-                      .then(data => {
-                        annotation['data'] = data
-                        return annotation
-                      })
+                      // .then(data => {
+                      //   annotation['data'] = data
+                      //   return annotation
+                      // })
 
-                      .then(() => { return sendActivity(annotation) })
+                      // .then(() => { return sendActivity(annotation) })
 
                       .then(response => {
                         var location = response.headers.get('Location')
@@ -8572,7 +8588,7 @@ WHERE {\n\
                         // nothing else needs to be done, the loop will proceed
                         // to the next annotation
                       })
-                  })  // annotationDistribution.forEach
+                  })
                   break;
 
                 case 'note':
