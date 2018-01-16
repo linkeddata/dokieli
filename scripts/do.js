@@ -5868,6 +5868,10 @@ WHERE {\n\
 
       var note = g.child(noteIRI);
 
+      if (note.asobject && note.asobject.at(0)) {
+        note = g.child(note.asobject.at(0))
+      }
+
       var id = String(Math.abs(DO.U.hashCode(noteIRI)));
       var refId = 'r-' + id;
       var refLabel = id;
