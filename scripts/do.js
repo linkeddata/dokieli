@@ -6320,6 +6320,8 @@ WHERE {\n\
       var articleClass = '';
       var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: http://schema.org/ dcterms: http://purl.org/dc/terms/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams#"';
 
+      var canonicalId = n.canonical || 'urn:uuid:' + DO.U.generateUUID();
+
       var motivatedByIRI = n.motivatedByIRI || '';
       var motivatedByLabel = '';
       switch(motivatedByIRI) {
@@ -6476,8 +6478,7 @@ WHERE {\n\
 
             target += '<dl class="renderedvia"><dt>Rendered via</dt><dd><a about="' + targetIRI + '" href="https://dokie.li/" rel="oa:renderedVia">dokieli</a></dd></dl>';
 
-            var canonicalUUID = DO.U.generateUUID();
-            var canonical = '<dl class="canonical"><dt>Canonical</dt><dd rel="oa:canonical" resource="urn:uuid:' + canonicalUUID + '">' + canonicalUUID + '</dd></dl>';
+            var canonical = '<dl class="canonical"><dt>Canonical</dt><dd rel="oa:canonical" resource="' + canonicalId + '">' + canonicalId + '</dd></dl>';
 
             note = '<article about="' + aAbout + '" id="' + n.id + '" typeof="oa:Annotation' + noteType + '"' + aPrefix + articleClass + '>'+buttonDelete+'\n\
   ' + heading + '\n\
@@ -8195,6 +8196,7 @@ WHERE {\n\
                       "mode": mode,
                       "motivatedByIRI": motivatedBy,
                       "id": id,
+                      "canonical": 'urn:uuid:' + id,
                       "refId": refId,
                       "refLabel": refLabel,
                       // "iri": noteIRI, //e.g., https://example.org/path/to/article
@@ -8350,6 +8352,7 @@ WHERE {\n\
                       "mode": mode,
                       "motivatedByIRI": motivatedBy,
                       "id": id,
+                      "canonical": 'urn:uuid:' + id,
                       "refId": refId,
                       "refLabel": refLabel,
                       // "iri": noteIRI, //e.g., https://example.org/path/to/article
