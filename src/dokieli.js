@@ -6380,6 +6380,7 @@ WHERE {\n\
                       "mode": mode,
                       "motivatedByIRI": motivatedBy,
                       "id": id,
+                      "canonical": 'urn:uuid:' + id,
                       "refId": refId,
                       "refLabel": refLabel,
                       // "iri": noteIRI, //e.g., https://example.org/path/to/article
@@ -6535,6 +6536,7 @@ WHERE {\n\
                       "mode": mode,
                       "motivatedByIRI": motivatedBy,
                       "id": id,
+                      "canonical": 'urn:uuid:' + id,
                       "refId": refId,
                       "refLabel": refLabel,
                       // "iri": noteIRI, //e.g., https://example.org/path/to/article
