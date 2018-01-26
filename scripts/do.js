@@ -6281,9 +6281,9 @@ WHERE {\n\
         title += ': Announced'
       } else if (types.indexOf('as:Create') > -1){
         title += ': Created'
-      } else if (types.indexOf('as:Liked') > -1){
+      } else if (types.indexOf('as:Like') > -1){
         title += ': Liked'
-      } else if (types.indexOf('as:Disliked') > -1){
+      } else if (types.indexOf('as:Dislike') > -1){
         title += ': Disliked'
       } else if (types.indexOf('as:Add') > -1){
         title += ': Added'
