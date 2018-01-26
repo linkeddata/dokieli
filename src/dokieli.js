@@ -6681,7 +6681,7 @@ WHERE {\n\
 
                       notificationData['inbox'] = inboxes[0];
 
-                      notificationData['type'] = ['as:Announce'];
+                      // notificationData['type'] = ['as:Announce'];
 // console.log(annotation)
                       return inbox.notifyInbox(notificationData)
                         .catch(error => {
