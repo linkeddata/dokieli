@@ -6695,6 +6695,7 @@ WHERE {\n\
                 case 'article': case 'approve': case 'disapprove': case 'specificity': case 'bookmark':
                   annotationDistribution.forEach(annotation => {
                     var data = '';
+
                     var notificationData = createNotificationData(annotation, { 'relativeObject': true });
 
                     var noteData = createNoteData(annotation)
@@ -6711,7 +6712,7 @@ WHERE {\n\
 // console.log(data)
 // console.log(annotation)
 
-                    inbox.postActivity(annotation['containerIRI'], id, data, annotation)
+                    fetcher.postActivity(annotation['containerIRI'], id, data, annotation)
                       .catch(error => {
                         // console.log('Error serializing annotation:', error)
                         console.log(error)

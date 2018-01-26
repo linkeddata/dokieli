@@ -23,7 +23,8 @@ module.exports = {
   patchResource,
   postResource,
   putResource,
-  putResourceACL
+  putResourceACL,
+  postActivity
 }
 
 function setAcceptRDFTypes(options) {
@@ -532,4 +533,43 @@ function putResourceACL (accessToURL, aclURL, acl) {
     authorizations.join('\n') + '\n'
 
   return putResource(aclURL, data, 'text/turtle; charset=utf-8')
+}
+
+function postActivity(url, slug, data, options) {
+  return getAcceptPostPreference(url)
+    .then(preferredContentType => {
+      switch (preferredContentType) {
+        case 'text/html':
+        case 'application/xhtml+xml':
+          return postResource(url, slug, data, 'text/html; charset=utf-8')
+
+        case 'text/turtle':
+          // FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
+
+          return graph.serializeData(data, options['contentType'], 'text/turtle', options)
+            .then(data => {
+              return postResource(url, slug, data, 'text/turtle')
+            })
+
+        case 'application/ld+json':
+        case 'application/json':
+        case '*/*':
+        default:
+          return graph.serializeData(data, options['contentType'], 'application/ld+json', options)
+            .then(data => {
+              if (!options['canonical']) {
+                let x = JSON.parse(data)
+                if ('id' in x) {
+                  x[ "via" ] = x[ "id" ]
+                  x[ "id" ] = ""
+                  data = JSON.stringify(x)
+                }
+              }
+
+              var profile = ('profile' in options) ? '; profile="' + options.profile + '"' : ''
+
+              return postResource(url, slug, data, preferredContentType + profile)
+            })
+      }
+    })
 }

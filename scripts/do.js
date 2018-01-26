@@ -726,7 +726,8 @@ module.exports = {
   patchResource,
   postResource,
   putResource,
-  putResourceACL
+  putResourceACL,
+  postActivity
 }
 
 function setAcceptRDFTypes(options) {
@@ -1235,6 +1236,45 @@ function putResourceACL (accessToURL, aclURL, acl) {
     authorizations.join('\n') + '\n'
 
   return putResource(aclURL, data, 'text/turtle; charset=utf-8')
+}
+
+function postActivity(url, slug, data, options) {
+  return getAcceptPostPreference(url)
+    .then(preferredContentType => {
+      switch (preferredContentType) {
+        case 'text/html':
+        case 'application/xhtml+xml':
+          return postResource(url, slug, data, 'text/html; charset=utf-8')
+
+        case 'text/turtle':
+          // FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
+
+          return graph.serializeData(data, options['contentType'], 'text/turtle', options)
+            .then(data => {
+              return postResource(url, slug, data, 'text/turtle')
+            })
+
+        case 'application/ld+json':
+        case 'application/json':
+        case '*/*':
+        default:
+          return graph.serializeData(data, options['contentType'], 'application/ld+json', options)
+            .then(data => {
+              if (!options['canonical']) {
+                let x = JSON.parse(data)
+                if ('id' in x) {
+                  x[ "via" ] = x[ "id" ]
+                  x[ "id" ] = ""
+                  data = JSON.stringify(x)
+                }
+              }
+
+              var profile = ('profile' in options) ? '; profile="' + options.profile + '"' : ''
+
+              return postResource(url, slug, data, preferredContentType + profile)
+            })
+      }
+    })
 }
 
 
@@ -8511,6 +8551,7 @@ WHERE {\n\
                 case 'article': case 'approve': case 'disapprove': case 'specificity': case 'bookmark':
                   annotationDistribution.forEach(annotation => {
                     var data = '';
+
                     var notificationData = createNotificationData(annotation, { 'relativeObject': true });
 
                     var noteData = createNoteData(annotation)
@@ -8527,7 +8568,7 @@ WHERE {\n\
 // console.log(data)
 // console.log(annotation)
 
-                    inbox.postActivity(annotation['containerIRI'], id, data, annotation)
+                    fetcher.postActivity(annotation['containerIRI'], id, data, annotation)
                       .catch(error => {
                         // console.log('Error serializing annotation:', error)
                         console.log(error)
@@ -8877,8 +8918,7 @@ module.exports = {
   getEndpointFromHead,
   getEndpointFromRDF,
   notifyInbox,
-  sendNotifications,
-  postActivity
+  sendNotifications
 }
 
 function sendNotifications (tos, note, iri, shareResource) {
@@ -9005,47 +9045,7 @@ function notifyInbox (o) {
   }
 
   var pIRI = uri.getProxyableIRI(inboxURL)
-  return postActivity(pIRI, slug, data, options)
-}
-
-function postActivity(url, slug, data, options) {
-  return fetcher.getAcceptPostPreference(url)
-    .then(preferredContentType => {
-      switch (preferredContentType) {
-        case 'text/html':
-        case 'application/xhtml+xml':
-          return fetcher.postResource(url, slug, data, 'text/html; charset=utf-8')
-
-        case 'text/turtle':
-          // FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
-
-          return graph.serializeData(data, options['contentType'], 'text/turtle', options)
-            .then(data => {
-              return fetcher.postResource(url, slug, data, 'text/turtle')
-            })
-
-        case 'application/ld+json':
-        case 'application/json':
-        case '*/*':
-        default:
-console.log(options)
-          return graph.serializeData(data, options['contentType'], 'application/ld+json', options)
-            .then(data => {
-              if (!options['canonical']) {
-                let x = JSON.parse(data)
-                if ('id' in x) {
-                  x[ "via" ] = x[ "id" ]
-                  x[ "id" ] = ""
-                  data = JSON.stringify(x)
-                }
-              }
-
-              var profile = ('profile' in options) ? '; profile="' + options.profile + '"' : ''
-
-              return fetcher.postResource(url, slug, data, preferredContentType + profile)
-            })
-      }
-    })
+  return fetcher.postActivity(pIRI, slug, data, options)
 }
 
 function getEndpoint (property, url) {
