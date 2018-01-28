@@ -7028,7 +7028,7 @@ WHERE {\n\
           editorOptions.author.toolbar.buttons.splice(10, 0, 'table');
         }
 
-        var eNodes = selector || 'body';
+        var eNodes = selector || document.querySelector('main > article') || 'body';
         var eOptions = editorOptions[editorMode];
         DO.C.User.Role = editorMode;
 
