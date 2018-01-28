@@ -112,26 +112,25 @@ npm run watch
 
 
 ## Contributors
-* [Sarven Capadisli](https://github.com/csarven)
 * [Amy Guy](https://github.com/rhiaro)
-* [Chris Chapman](https://github.com/cdchapman)
-* [Renato Stauffer](https://github.com/reni99)
-* [Kingsley Idehen](https://github.com/kidehen) (and [OpenLink Software](https://github.com/openlink))
-* [Ruben Taelman](https://github.com/rubensworks)
-* [Dmitri Zagidulin](https://github.com/dmitrizagidulin)
-* [Sergey Malinin](https://github.com/smalinin)
-
-### Acknowledgements
-* [Nicola Greco](https://github.com/nicola)
-* [Tim Berners-Lee](https://github.com/timbl)
-* [Melvin Carvalho](https://github.com/melvincarvalho)
-* [Andrei Vlad Sambra](https://github.com/deiu)
-* [Sandro Hawke](https://github.com/sandhawke)
 * [Amy van der Hiel](https://github.com/amyvdh)
-* [Henry Story](https://github.com/bblfish)
+* [Andrei Vlad Sambra](https://github.com/deiu)
 * [Benjamin Young](https://github.com/bigbluehat)
+* [Chris Chapman](https://github.com/cdchapman)
+* [Dmitri Zagidulin](https://github.com/dmitrizagidulin)
 * [Gerben Treora](https://github.com/treora)
+* [Henry Story](https://github.com/bblfish)
 * [Herbert Van de Sompel](https://github.com/hvdsomp)
+* [Kingsley Idehen](https://github.com/kidehen)
+* [Melvin Carvalho](https://github.com/melvincarvalho)
+* [Nicola Greco](https://github.com/nicola)
+* [OpenLink Software](https://github.com/openlink)
+* [Renato Stauffer](https://github.com/reni99)
+* [Ruben Taelman](https://github.com/rubensworks)
+* [Sandro Hawke](https://github.com/sandhawke)
+* [Sarven Capadisli](https://github.com/csarven) (maintainer)
+* [Sergey Malinin](https://github.com/smalinin)
+* [Tim Berners-Lee](https://github.com/timbl)
 
 ## How to contribute
 * Use it. Break it. Report it. Fix it! See [issues](https://github.com/linkeddata/dokieli/issues/).
