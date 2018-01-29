@@ -591,7 +591,7 @@ content:"\00a0\00a0\00a0\00a0";
   text-align: center;
   font-size: 1.4em;
 }
-#dokieli-features, footer {
+#dokieli-features, body > footer {
   overflow: hidden;
   padding-top: 1em;
   padding-bottom: 1em;
