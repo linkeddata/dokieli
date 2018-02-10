@@ -6408,7 +6408,7 @@ WHERE {\n\
       switch(n.mode) {
         default:
           hX = 3;
-          if ('creator' in n && 'iri' in n.creator && DO.C.User.IRI) {
+          if ('creator' in n && 'iri' in n.creator && n.creator.iri == DO.C.User.IRI) {
             buttonDelete = '<button class="delete"><i class="fa fa-trash"></i></button>' ;
           }
           articleClass = ' class="do"';
