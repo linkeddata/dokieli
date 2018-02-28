@@ -171,9 +171,9 @@ content:"";
 }
 
 
-#authors dd, #authors li, {
-  display: inline;
-  text-align: left;
+#authors dd, #authors li {
+display: inline;
+text-align: left;
 }
 
 #authors {
