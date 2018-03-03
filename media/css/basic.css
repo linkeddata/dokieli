@@ -169,6 +169,9 @@ content:", ";
 dl[id^="document-"] dd:last-child:after {
 content:"";
 }
+dl[id^="document-"] ul {
+margin-bottom:0;
+}
 
 
 #authors dd, #authors li {
