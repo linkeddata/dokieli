@@ -359,8 +359,8 @@ display:block;
 margin-top:-1.6em;
 margin-right:-1em;
 }
-figure.listing pre code:nth-child(odd),
-figure.listing pre samp:nth-child(odd) {
+figure.listing pre code:nth-child(odd):not([class~="highlight"]),
+figure.listing pre samp:nth-child(odd):not([class~="highlight"]) {
 background-color:#f3f3f3;
 }
 figure.listing pre code:before,
