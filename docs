@@ -127,7 +127,7 @@
 <samp class="highlight-h3">      &lt;h3&gt;</samp>
 <code class="highlight-div">      &lt;div&gt;</code>
 <code class="highlight-div">      &lt;div&gt;</code>
-<code>      &lt;aside&gt;</code>
+<code class="highlight-aside">      &lt;aside&gt;</code>
 <code class="highlight-section">&lt;section&gt;</code>
 <samp class="highlight-h2">  &lt;h2&gt;</samp>
 <code class="highlight-section">  &lt;section&gt;</code>
@@ -147,9 +147,9 @@
 
                       <figure class="listing" id="html-figure-listing" rel="schema:hasPart" resource="#html-figure-listing">
                         <pre about="#html-figure-listing" lang="" property="schema:description" typeof="fabio:Script" xml:lang=""><code class="highlight-section">&lt;section&gt;</code>
-<samp>  &lt;h2&gt;</samp>
-<code>  &lt;div&gt;</code>
-<code>    &lt;section&gt;</code></pre>
+<samp class="highlight-h2">  &lt;h2&gt;</samp>
+<code class="highlight-div">  &lt;div&gt;</code>
+<code class="highlight-section">    &lt;section&gt;</code></pre>
                         <figcaption>Snippet of <a href="#html-section-source">section source</a> code</figcaption>
                       </figure>
 
