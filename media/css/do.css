@@ -965,11 +965,13 @@ outline:none;
 text-align:right;
 text-decoration:none;
 }
-.listing pre code {
+.listing pre code,
+.listing pre samp {
 margin-left:-2.25em;
 padding-left:2.25em;
 }
-.listing pre code .do.fragment a {
+.listing pre code .do.fragment a,
+.listing pre samp .do.fragment a {
 padding-right:0;
 line-height:1;
 vertical-align: middle;
