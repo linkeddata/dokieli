@@ -618,7 +618,7 @@
             <div datatype="rdf:HTML" property="schema:description">
               <p>dokieli conforms to <cite><a href="https://www.w3.org/TR/ldp/" rel="cito:citesAsAuthority">Linked Data Platform</a></cite> (LDP) protocol for create, update, and delete operations.</p>
 
-              <p id="http-put">Article operations like <cite>New</cite>, <cite>Save</cite>, <cite>Save As</cite>,  <cite>Reply</cite> and <cite>Review</cite> and other annotation operations use <code>HTTP PUT</code>.</p>
+              <p id="http-put">Article operations like <cite>New</cite>, <cite>Save</cite>, <cite>Save As</cite>,  <cite>Reply</cite> use <code>HTTP PUT</code>, <cite>Review</cite> and other annotation operations use <code>HTTP POST</code>.</p>
 
               <p id="http-post">Notifications are sent with <code>HTTP POST</code>. <cite>Save</cite> and <cite>Save As</cite> normalises the HTML before sending.</p>
 
@@ -633,8 +633,8 @@
                 </thead>
                 <tbody>
                   <tr><th>Article</th><td><code>PUT</code></td><td><code>text/html</code></td></tr>
-                  <tr><th>Annotation</th><td><code>PUT</code></td><td><code>text/html</code> or <code>application/ld+json</code></td></tr>
-                  <tr><th>Notification</th><td>1. <code>OPTIONS</code>, 2. <code>POST</code></td><td><code>text/html</code></td></tr>
+                  <tr><th>Annotation</th><td><code>OPTIONS</code>, <code>POST</code></td><td><code>text/html</code>, <code>application/ld+json</code>, <code>text/turtle</code></td></tr>
+                  <tr><th>Notification</th><td><code>OPTIONS</code>, <code>POST</code></td><td><code>text/html</code>, <code>application/ld+json</code>, <code>text/turtle</code></td></tr>
                 </tbody>
                 <tfoot>
                   <tr>
@@ -644,7 +644,7 @@
                         <dd>Articles typically use <code>text/html</code> with embedded RDFa. Where a server implements <code>GET</code> with <code>text/html</code>, and allows <code>PUT</code> for writing, the assumption is that it can allow <code>text/html</code>. In the future, dokieli can check for the <code>Accept-Put</code> header with <code>OPTIONS</code> to determine a suitable type. At this time, HTML+RDFa is an important default for articles.</dd>
 
                         <dt id="request-to-send-annotation">Annotation</dt>
-                        <dd>Annotations use the <code>PUT</code> method with <code>Content-Type</code> header value determined by type of location to write to: personal storage space eg. given a profile's <code>pim:storage</code>, or made to an annotation service eg. an article's <code>oa:annotationService</code>. The <cite><a href="https://www.w3.org/TR/annotation-protocol/">Web Annotation Protocol</a></cite> requires <code>application/ld+json</code> by default. In the future, dokieli can check for the <code>Accept-Put</code> header and send the payload in one of the available serializations.</dd>
+                        <dd>Annotations use the <code>POST</code> method with <code>Content-Type</code> header value determined by type of location to write to: personal storage space eg. given a profile's <code>pim:storage</code>; made to an annotation service eg. an article's <code>oa:annotationService</code>; sent to profile's outbox's outbox: <code>as:outbox</code>. The <cite><a href="https://www.w3.org/TR/annotation-protocol/">Web Annotation Protocol</a></cite> requires <code>application/ld+json</code> by default. dokieli sends an <code>OPTIONS</code> request to check for the <code>Accept-Post</code> header and sends the payload in one of the serializations that the server prefers. If it is not set, it will fallback to <code>application/ld+json</code> as preferred by Wen Annotation and ActivityPub.</dd>
 
                         <dt id="request-to-send-notification">Notification</dt>
                         <dd>Notifications use <code>OPTIONS</code> to check the response's <code>Accept-Post</code> HTTP header. If it is set and matches one of the acceptable RDF mediatypes that dokieli can parse, it will use that mediatype to serialize the payload before <code>POST</code>ing. <span rel="schema:hasPart" resource="#dokieli-notification-post-content-type-json-ld">If it is not set, it will fallback to <code>application/ld+json</code> as required by the <cite><a href="https://www.w3.org/TR/ldn/#test-sender-header-post-content-type-json-ld" rel="cito:citesAsAuthority">Linked Data Notifications</a></cite> specification.</span></dd>
