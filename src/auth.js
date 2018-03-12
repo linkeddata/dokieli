@@ -90,7 +90,8 @@ function showUserSigninSignout (node) {
 
         Config.User = {
           IRI: null,
-          Role: null
+          Role: null,
+          UI: {}
         }
 
         util.removeChildren(node);

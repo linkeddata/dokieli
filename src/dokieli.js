@@ -4792,11 +4792,25 @@ WHERE {\n\
     getAnnotationLocationHTML: function() {
       var s = '', inputs = [], checked = '';
       if(typeof DO.C.AnnotationService !== 'undefined') {
-        checked = (DO.C.User.Storage && DO.C.User.Storage.length > 0 || DO.C.User.Outbox && DO.C.User.Outbox.length > 0) ? '': ' checked="checked" disabled="disabled"';
+        if (DO.C.User.Storage && DO.C.User.Storage.length > 0 || DO.C.User.Outbox && DO.C.User.Outbox.length > 0) {
+          if (DO.C.User.UI && DO.C.User.UI['annotationLocationService'] && DO.C.User.UI.annotationLocationService['checked']) {
+            checked = ' checked="checked"';
+          }
+        }
+        else {
+          checked = ' checked="checked" disabled="disabled"';
+        }
+
         inputs.push('<input type="checkbox" id="annotation-location-service" name="annotation-location-service"' + checked + ' /><label for="annotation-location-service">Annotation service</label>');
       }
+
+      checked = ' checked="checked"';
       if(DO.C.User.Storage && DO.C.User.Storage.length > 0 || DO.C.User.Outbox && DO.C.User.Outbox.length > 0) {
-        inputs.push('<input type="checkbox" id="annotation-location-personal-storage" name="annotation-location-personal-storage" checked="checked" /><label for="annotation-location-personal-storage">Personal storage</label>');
+        if (DO.C.User.UI && DO.C.User.UI['annotationLocationPersonalStorage'] && !DO.C.User.UI.annotationLocationPersonalStorage['checked']) {
+            checked = '';
+        }
+
+        inputs.push('<input type="checkbox" id="annotation-location-personal-storage" name="annotation-location-personal-storage"' + checked + ' /><label for="annotation-location-personal-storage">Personal storage</label>');
       }
       s = 'Store at: ' + inputs.join('');
       return s;
@@ -6142,9 +6156,15 @@ WHERE {\n\
                 case 'article': case 'approve': case 'disapprove': case 'specificity':
                   opts.content = this.getInput().content.value;
                   var aLS = this.getInput().annotationLocationService;
-                  if(aLS) { opts.annotationLocationService = aLS.checked };
+                  if(aLS) {
+                    DO.C.User.UI['annotationLocationService'] = { checked: false }
+                    DO.C.User.UI.annotationLocationService.checked = opts.annotationLocationService = aLS.checked;
+                  }
                   var aLPS = this.getInput().annotationLocationPersonalStorage;
-                  if(aLPS) { opts.annotationLocationPersonalStorage = aLPS.checked };
+                  if(aLPS) {
+                    DO.C.User.UI['annotationLocationPersonalStorage'] = { checked: false }
+                    DO.C.User.UI.annotationLocationPersonalStorage.checked = opts.annotationLocationPersonalStorage = aLPS.checked;
+                  }
                   opts.license = this.getInput().license.value;
                   break;
                 case 'note':

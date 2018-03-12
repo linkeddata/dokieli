@@ -12,7 +12,8 @@ module.exports = {
   Stylesheets: [],
   User: {
     IRI: null,
-    Role: null
+    Role: null,
+    UI: {}
   },
   LocalDocument: (document.location.protocol == 'file:'),
   UseStorage: false,
