@@ -4848,6 +4848,9 @@ WHERE {\n\
           s += '<option selected="selected" value="">Choose a license</option>';
         }
       }
+      else if(typeof DO.C.User.UI.License !== 'undefined') {
+        selectedIRI = DO.C.User.UI.License;
+      }
       else {
         selectedIRI = 'https://creativecommons.org/licenses/by/4.0/';
       }
