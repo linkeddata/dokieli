@@ -8052,6 +8052,10 @@ WHERE {\n\
 
               }
 
+              if (typeof opts.license !== 'undefined') {
+                DO.C.User.UI['License'] = opts.license;
+              }
+
               storage.updateStorageProfile(DO.C.User);
 
               opts.target = '_self';
