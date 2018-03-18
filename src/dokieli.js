@@ -6156,13 +6156,13 @@ WHERE {\n\
                 case 'article': case 'approve': case 'disapprove': case 'specificity':
                   opts.content = this.getInput().content.value;
                   var aLS = this.getInput().annotationLocationService;
+                  DO.C.User.UI['annotationLocationService'] = { checked: false }
                   if(aLS) {
-                    DO.C.User.UI['annotationLocationService'] = { checked: false }
                     DO.C.User.UI.annotationLocationService.checked = opts.annotationLocationService = aLS.checked;
                   }
                   var aLPS = this.getInput().annotationLocationPersonalStorage;
+                  DO.C.User.UI['annotationLocationPersonalStorage'] = { checked: false }
                   if(aLPS) {
-                    DO.C.User.UI['annotationLocationPersonalStorage'] = { checked: false }
                     DO.C.User.UI.annotationLocationPersonalStorage.checked = opts.annotationLocationPersonalStorage = aLPS.checked;
                   }
                   opts.license = this.getInput().license.value;
@@ -6192,7 +6192,10 @@ WHERE {\n\
                 default:
                   opts.url = this.getInput().value;
                   break;
+
               }
+
+              storage.updateStorageProfile(DO.C.User);
 
               opts.target = '_self';
               if (targetCheckbox && targetCheckbox.checked) {
