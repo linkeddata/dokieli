@@ -462,26 +462,30 @@ function getAgentPreferredProxy (s) {
 }
 
 function getAgentImage (s) {
-  return s.foafimg || s.schemaimage || s.asimage || s.siocavatar ||
-    s.foafdepiction || undefined
+  return s.foafimg || s.schemaimage || s.vcardphoto || s.asimage ||
+    s.siocavatar || s.foafdepiction || undefined
 }
 
 function getAgentName (s) {
-  var name = s.foafname || s.schemaname || s.asname || s.rdfslabel || undefined
+  var name = s.foafname || s.schemaname || s.vcardfn || s.asname || s.rdfslabel || undefined
   if (typeof name === 'undefined') {
     if (s.schemafamilyName && s.schemafamilyName.length > 0 && s.schemagivenName && s.schemagivenName.length > 0) {
       name = s.schemagivenName + ' ' + s.schemafamilyName
     } else if (s.foaffamilyName && s.foaffamilyName.length > 0 && s.foafgivenName && s.foafgivenName.length > 0) {
       name = s.foafgivenName + ' ' + s.foaffamilyName
+    } else if (s.vcardfamilyname && s.vcardfamilyname.length > 0 && s.vcardgivenname && s.vcardgivenname.length > 0) {
+      name = s.vcardgivenname + ' ' + s.vcardfamilyname
     } else if (s.foafnick && s.foafnick.length > 0) {
       name = s.foafnick
+    } else if (s.vcardnickname && s.vcardnickname.length > 0) {
+      name = s.vcardnickname
     }
   }
   return name
 }
 
 function getAgentURL (s) {
-  return s.foafhomepage || s.foafweblog || s.schemaurl || undefined
+    return s.foafhomepage || s.foafweblog || s.schemaurl || s.vcardurl || undefined
 }
 
 function getAgentStorage (s) {

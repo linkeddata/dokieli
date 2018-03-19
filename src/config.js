@@ -227,6 +227,13 @@ module.exports = {
     "foafmaker": { "@id": "http://xmlns.com/foaf/0.1/maker", "@type": "@id" },
     "foafknows": { "@id": "http://xmlns.com/foaf/0.1/knows", "@type": "@id", "@array": true },
 
+    "vcardfn": "http://www.w3.org/2006/vcard/ns#fn",
+    "vcardfamilyname": "http://www.w3.org/2006/vcard/ns#family-name",
+    "vcardgivenname": "http://www.w3.org/2006/vcard/ns#given-name",
+    "vcardnickname": "http://www.w3.org/2006/vcard/ns#nickname",
+    "vcardurl": { "@id": "http://www.w3.org/2006/vcard/ns#url", "@type": "@id" },
+    "vcardphoto": { "@id": "http://www.w3.org/2006/vcard/ns#photo", "@type": "@id" },
+
     "schemaname": "http://schema.org/name",
     "schemafamilyName": "http://schema.org/familyName",
     "schemagivenName": "http://schema.org/givenName",
