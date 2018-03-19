@@ -99,7 +99,7 @@ git clone https://github.com/linkeddata/dokieli
 cd dokieli
 
 # Creates scripts/do.js.
-npm run build
+npm install; npm run build
 
 # Watch and update files
 npm run watch
