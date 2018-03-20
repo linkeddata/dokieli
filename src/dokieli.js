@@ -5272,7 +5272,7 @@ WHERE {\n\
                 dl.removeAttribute('class');
                 var dd = dLS.closest('dd');
                 dd.parentNode.removeChild(dd);
-                dd = '<dd rel="pso:holdsStatusInTime" resource="#' + DO.U.generateAttributeId() + '"><span rel="pso:withStatus" resource="' + statusIRI  + '" typeof="pso:PublicationStatus">' + DO.C.PublicationStatus[statusIRI].name + '</span></dd>';
+                dd = '<dd prefix="pso: http://purl.org/spar/pso/" rel="pso:holdsStatusInTime" resource="#' + DO.U.generateAttributeId() + '"><span rel="pso:withStatus" resource="' + statusIRI  + '" typeof="pso:PublicationStatus">' + DO.C.PublicationStatus[statusIRI].name + '</span></dd>';
 
                 dl.insertAdjacentHTML('beforeend', dd);
               }
