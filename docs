@@ -716,10 +716,13 @@
 <pre><code>git clone https://github.com/linkeddata/dokieli</code>
 <code>cd dokieli</code>
 <code></code>
-<code># Creates scripts/do.js.</code>
+<code># Install packages</code>
+<code>npm install</code>
+<code></code>
+<code># Build stuff eg. scripts/do.js</code>
 <code>npm run build</code>
 <code></code>
-<code># Watch and update files</code>
+<code># or automatically rebuild when files change</code>
 <code>npm run watch</code></pre>
             </div>
           </section>

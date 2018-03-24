@@ -98,12 +98,14 @@ These libraries *optional* when dokieli is used as single-page application:
 git clone https://github.com/linkeddata/dokieli
 cd dokieli
 
-# Creates scripts/do.js.
-npm install; npm run build
+# Install packages
+npm install
 
-# Watch and update files
+# Build stuff eg. scripts/do.js
+npm run build
+
+# or automatically rebuild when files change
 npm run watch
-
 ```
 
 
