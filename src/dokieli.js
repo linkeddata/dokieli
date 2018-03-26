@@ -1859,8 +1859,6 @@ var DO = {
       var iri = uri.stripFragmentFromString(document.location.href);
 
       var li = [];
-      li.push('<li><button class="resource-save"' + buttonDisabled +
-        ' title="Save article"><i class="fa fa-life-ring fa-2x"></i>Save</button></li>');
       li.push('<li><button class="create-version"' + buttonDisabled +
         ' title="Version this article"><i class="fa fa-code-fork fa-2x"></i>Version</button></li>');
       li.push('<li><button class="create-immutable"' + buttonDisabled +
@@ -1971,6 +1969,8 @@ var DO = {
         ' title="Show activities"><i class="fa ' + activitiesIcon + ' fa-2x"></i></i>Activities</button></li>';
       s += '<li><button class="resource-new" title="Create new article"><i class="fa fa-lightbulb-o fa-2x"></i></i>New</button></li>';
       s += '<li><button class="resource-open" title="Open article"><i class="fa fa-coffee fa-2x"></i></i>Open</button></li>';
+      s += '<li><button class="resource-save"' + buttonDisabled +
+        ' title="Save article"><i class="fa fa-life-ring fa-2x"></i>Save</button></li>';
       s += '<li><button class="resource-save-as" title="Save as article"><i class="fa fa-paper-plane-o fa-2x"></i>Save As</button></li>';
       s += '<li><button class="resource-memento" title="Memento article"><i class="fa fa-clock-o fa-2x"></i>Memento</button></li>';
 
@@ -2032,6 +2032,10 @@ var DO = {
 
         if (e.target.closest('.resource-source')) {
           DO.U.viewSource(e);
+        }
+
+        if (e.target.closest('.resource-save')){
+          DO.U.resourceSave(e);
         }
 
         if (e.target.closest('.resource-save-as')) {
