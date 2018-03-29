@@ -122,7 +122,7 @@ figure .progress { display:block; margin:0 auto; }
 main > article { position:relative; }
 
 .do:not(code):not(samp):not(pre):not(kbd):not(button):not([class~="highlight"]):not([class~="ref"]),
-.do:not([class~="ref"]) *:not([class~="fa"]) {
+.do:not([class~="highlight"]):not([class~="ref"]) *:not([class~="fa"]) {
 font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 }
 .do th,
