@@ -391,8 +391,8 @@ margin-top:0.5em;
 .warning { background-color:#FFFF00; color:#000000; font-weight:bold; }
 .error { background-color:#FF0000; color:#FFFFFF; font-weight:bold; }
 .highlight { background-color:#00FFFF; color:#000000; }
-.highlight .highlight { background-color:#1A35FF; color:#FFFFFF; }
-.highlight .highlight .highlight { background-color:#59FF00; color:#000000; }
+.highlight .highlight { background-color:#0099FF; color:#000000; }
+.highlight .highlight .highlight { background-color:#0000FF; color:#FFFFFF; }
 
 #document-menu {
 color:#000;
