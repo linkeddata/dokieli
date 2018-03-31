@@ -121,7 +121,7 @@ module.exports = {
     'table-of-contents',
     'table-of-figures',
     'table-of-tables',
-    'table-of-abbreviations',
+    'table-of-abbrs',
     'authors',
     'keywords',
     'categories-and-subject-descriptors',
