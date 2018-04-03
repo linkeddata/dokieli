@@ -176,8 +176,8 @@ dl[id^="document-"] ul {
 margin-bottom:0;
 }
 
-h5 + p,
-h5 + div > p,
+h5 + *,
+h5 + div > *:first-child,
 dd > *:first-child {
 margin-top:0;
 }
