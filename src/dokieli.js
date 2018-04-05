@@ -804,10 +804,10 @@ var DO = {
 
     showTextQuoteSelector: function(containerNode) {
       var selector = DO.U.getTextQuoteSelectorFromLocation(document.location);
-      if (selector) {
-        var prefix = selector.prefix;
-        var exact = selector.exact;
-        var suffix = selector.suffix;
+      if (selector && selector.exact && selector.exact.length > 0) {
+        var prefix = selector.prefix || '';
+        var exact = selector.exact || '';
+        var suffix = selector.suffix || '';
 
         //XXX: TODO: Copied from showAnnotation
 
