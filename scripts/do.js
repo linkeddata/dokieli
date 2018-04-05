@@ -2709,7 +2709,7 @@ var DO = {
           var exactEnd = selectorIndex + prefix.length + exact.length;
           var selection = { start: exactStart, end: exactEnd };
 
-          var ref = '<span class="ref do" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="rdf:value">' + exact + '</mark>' + docRefType + '</span>';
+          ref = DO.U.getTextQuoteHTML(refId, exact, docRefType, {'do': true });
 
           MediumEditor.selection.importSelection(selection, containerNode, document);
 
@@ -6000,6 +6000,14 @@ WHERE {\n\
       }
     },
 
+    getTextQuoteHTML: function(refId, exact, docRefType, options){
+      options = options || {};
+
+      var doMode = (options.do) ? ' do' : '';
+
+      return '<span class="ref' + doMode + '" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="rdf:value">' + exact + '</mark>' + docRefType + '</span>';
+    },
+
     positionNote: function(refId, refLabel, noteId) {
       var ref = document.getElementById(refId);
       var note = document.getElementById(noteId);
@@ -6147,7 +6155,7 @@ WHERE {\n\
           var exactEnd = selectorIndex + prefix.length + exact.length;
           var selection = { start: exactStart, end: exactEnd };
 
-          var ref = '<span class="ref do" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="rdf:value">' + exact + '</mark>' + docRefType + '</span>';
+          var ref = DO.U.getTextQuoteHTML(refId, exact, docRefType, {'do': true });
 
           MediumEditor.selection.importSelection(selection, containerNode, document);
 
@@ -8489,7 +8497,8 @@ WHERE {\n\
                     }
 
                     // note = DO.U.createNoteDataHTML(noteData);
-                    ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="rdf:value">' + exact + '</mark>' + docRefType + '</span>';
+
+                    ref = DO.U.getTextQuoteHTML(refId, exact, docRefType);
                     break;
 
                   case 'cite': //footnote reference
@@ -8520,7 +8529,7 @@ WHERE {\n\
                         break;
                     }
 
-                    ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="rdf:value">' + exact + '</mark>' + docRefType + '</span>';
+                    ref = DO.U.getTextQuoteHTML(refId, exact, docRefType);
                     break;
                   // case 'reference':
                   //   ref = '<span class="ref" about="[this:#' + refId + ']" typeof="dctypes:Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span> <span class="ref-reference">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span></span>';
@@ -8595,7 +8604,7 @@ WHERE {\n\
                       noteData.creator["url"] = DO.C.User.URL;
                     }
                     // note = DO.U.createNoteDataHTML(noteData);
-                    ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="rdf:value">' + exact + '</mark>' + docRefType + '</span>';
+                    ref = DO.U.getTextQuoteHTML(refId, exact, docRefType, { 'do': true });
                     break;
                 }
 
