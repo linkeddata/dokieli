@@ -811,7 +811,9 @@ var DO = {
 
         //XXX: TODO: Copied from showAnnotation
 
-        refId = String(Math.abs(DO.U.hashCode(document.location.href)));
+        // refId = String(Math.abs(DO.U.hashCode(document.location.href)));
+        var refId = document.location.hash.substring(1);
+        var refLabel = DO.U.getReferenceLabel('oa:highlighting');
 
         containerNode = containerNode || document.body;
 
@@ -825,7 +827,7 @@ var DO = {
           var exactEnd = selectorIndex + prefix.length + exact.length;
           var selection = { start: exactStart, end: exactEnd };
 
-          var ref = '<span class="ref do" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark></span>';
+          var ref = '<span class="ref do" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-highlighting">' + refLabel + '</sup></span>';
 
           MediumEditor.selection.importSelection(selection, containerNode, document);
 
@@ -4080,11 +4082,12 @@ WHERE {\n\
 
       switch(motivatedBy) {
         default: break;
-        case 'oa:assessing':   s = '✪'; break;
-        case 'oa:commenting':  s = '🗨'; break;
-        case 'oa:bookmarking': s = '🔖'; break;
-        case 'oa:replying':    s = '💬'; break;
-        case 'oa:describing':  s = '※'; break;
+        case 'oa:assessing':     s = '✪'; break;
+        case 'oa:bookmarking':   s = '🔖'; break;
+        case 'oa:commenting':    s = '🗨'; break;
+        case 'oa:describing':    s = '※'; break;
+        case 'oa:highlighting':  s = '#'; break;        
+        case 'oa:replying':      s = '💬'; break;
       }
 
       return s;

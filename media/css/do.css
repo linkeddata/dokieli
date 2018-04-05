@@ -1025,6 +1025,7 @@ padding:0;
 color:#000;
 }
 
+.ref-highlighting a,
 .ref-comment a,
 .ref-reference a,
 .ref-annotation a {
