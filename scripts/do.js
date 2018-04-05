@@ -7065,12 +7065,13 @@ WHERE {\n\
             elementsContainer: document.getElementById('document-editor'),
             buttonLabels: DO.C.Editor.ButtonLabelType,
             toolbar: {
-              buttons: ['share', 'approve', 'bookmark', 'note'],
+              buttons: ['selector', 'share', 'approve', 'bookmark', 'note'],
               allowMultiParagraphSelection: false
             },
             disableEditing: true,
             anchorPreview: false,
             extensions: {
+              'selector': new DO.U.Editor.Note({action:'selector', label:'selector'}),
               'note': new DO.U.Editor.Note({action:'article', label:'note'}),
               'bookmark': new DO.U.Editor.Note({action:'bookmark', label:'bookmark'}),
               'share': new DO.U.Editor.Note({action:'share', label:'share'}),
@@ -7557,6 +7558,9 @@ WHERE {\n\
                 case 'rdfa':
                   this.contentFA = '<i class="fa fa-rocket"></i>';
                   break;
+                case 'selector':
+                  this.contentFA = '<i class="fa fa-anchor"></i>';
+                  break;
                 case 'bookmark':
                   this.contentFA = '<i class="fa fa-bookmark"></i>';
                   this.signInRequired = true;
@@ -7605,7 +7609,7 @@ WHERE {\n\
                       return _this.execAction('unlink');
                     }
 
-                    if (_this.action == 'approve' && DO.U.Editor.MediumEditor.options.id == 'social'){
+                    if (DO.U.Editor.MediumEditor.options.id == 'social' && (_this.action == 'selector' || _this.action == 'approve')){
                       var opts = {
                         license: 'https://creativecommons.org/licenses/by/4.0/',
                         content: 'Liked'
@@ -8184,6 +8188,8 @@ WHERE {\n\
               var resourceIRI = uri.stripFragmentFromString(document.location.href);
               var containerIRI = window.location.href;
 
+              var selectorIRI = resourceIRI + '#selector(type=TextQuoteSelector,prefix=' + encodeURIComponent(prefix) + ',exact=' + encodeURIComponent(exact) + ',suffix=' + encodeURIComponent(suffix) +')';
+
               var contentType = 'text/html';
               var noteIRI, noteURL;
               var profile, options;
@@ -8714,6 +8720,12 @@ WHERE {\n\
                   parentSection.appendChild(asideNode);
 
                   DO.U.positionNote(refId, refLabel, id);
+                  break;
+
+                case 'selector':
+                  window.history.replaceState({}, null, selectorIRI);
+                  DO.U.showActionMessage(document.documentElement, 'Copy URL from address bar')
+                  // util.copyTextToClipboard(encodeURI(selectorIRI));
                   break;
 
                 case 'cite': //footnote reference
