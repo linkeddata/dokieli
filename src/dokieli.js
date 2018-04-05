@@ -771,6 +771,37 @@ var DO = {
       }
     },
 
+    getTextQuoteSelectorFromLocation: function(location) {
+      var regexp = /#selector\(type=TextQuoteSelector,(.*)\)/;
+      matches = location.hash.match(regexp);
+
+      if (matches) {
+        var selectorsArray = matches[1].split(',')
+        var selector = {};
+
+        selectorsArray.forEach(function(s){
+          var kv = s.split('=');
+
+          if (kv.length == 2) {
+            switch(kv[0]) {
+              case 'prefix':
+                selector['prefix'] = decodeURIComponent(kv[1]);
+                break;
+              case 'exact':
+                selector['exact'] = decodeURIComponent(kv[1]);
+                break;
+              case 'suffix':
+                selector['suffix'] = decodeURIComponent(kv[1]);
+                break;
+            }
+          }
+
+        })
+
+        return selector;
+      }
+    },
+
     initUser: function() {
       storage.getStorageProfile().then(user => {
         if (user && 'object' in user) {
