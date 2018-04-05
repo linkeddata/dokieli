@@ -2682,6 +2682,54 @@ var DO = {
       }
     },
 
+    showTextQuoteSelector: function(containerNode) {
+      var selector = DO.U.getTextQuoteSelectorFromLocation(document.location);
+      if (selector) {
+        var prefix = selector.prefix;
+        var exact = selector.exact;
+        var suffix = selector.suffix;
+
+        //XXX: TODO: Copied from showAnnotation
+
+        refId = String(Math.abs(DO.U.hashCode(document.location.href)));
+
+        containerNode = containerNode || document.body;
+
+        var containerNodeTextContent = containerNode.textContent;
+  // console.log(containerNodeTextContent);
+  // console.log(prefix + exact + suffix);
+        var selectorIndex = containerNodeTextContent.indexOf(prefix + exact + suffix);
+  // console.log(selectorIndex);
+        if (selectorIndex >= 0) {
+          var exactStart = selectorIndex + prefix.length
+          var exactEnd = selectorIndex + prefix.length + exact.length;
+          var selection = { start: exactStart, end: exactEnd };
+
+          var ref = '<span class="ref do" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark></span>';
+
+          MediumEditor.selection.importSelection(selection, containerNode, document);
+
+          var selection = window.getSelection();
+          var r = selection.getRangeAt(0);
+          selection.removeAllRanges();
+          selection.addRange(r);
+          r.collapse(true);
+          var selectedParentNode = r.commonAncestorContainer.parentNode;
+          var selectedParentNodeValue = r.commonAncestorContainer.nodeValue;
+
+          var selectionUpdated = DO.U.fragmentFromString(selectedParentNodeValue.substr(0, r.startOffset) + ref + selectedParentNodeValue.substr(r.startOffset + exact.length));
+
+          //XXX: Review. This feels a bit dirty
+          for(var i = 0; i < selectedParentNode.childNodes.length; i++) {
+            var n = selectedParentNode.childNodes[i];
+            if (n.nodeType === 3 && n.nodeValue === selectedParentNodeValue) {
+              selectedParentNode.replaceChild(selectionUpdated, n);
+            }
+          }
+        }
+      }
+    },
+
     initUser: function() {
       storage.getStorageProfile().then(user => {
         if (user && 'object' in user) {
@@ -8986,6 +9034,7 @@ WHERE {\n\
         DO.U.highlightItems();
         DO.U.initDocumentActions();
         DO.U.getResourceInfo();
+        DO.U.showTextQuoteSelector();
         DO.U.showDocumentInfo();
         DO.U.showFragment();
         DO.U.setDocumentMode();
