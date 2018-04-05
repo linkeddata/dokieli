@@ -4,7 +4,8 @@ module.exports = {
   uniqueArray,
   getHash,
   getDateTimeISO,
-  removeChildren
+  removeChildren,
+  copyTextToClipboard
 }
 
 /**
@@ -51,4 +52,20 @@ function removeChildren (node) {
   while (node.firstChild) {
     node.removeChild(node.firstChild);
   }
+}
+
+function copyTextToClipboard(text){
+console.log(text)
+  if (!navigator.clipboard) {
+    try {
+      var successful = document.execCommand('copy');
+    } catch (err) {}
+    return;
+  }
+
+  navigator.clipboard.writeText(text).then(function() {
+    // console.log('Async: Copying to clipboard was successful!');
+  }, function(err) {
+    // console.error('Async: Could not copy text: ', err);
+  });
 }
