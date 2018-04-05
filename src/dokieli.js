@@ -817,6 +817,8 @@ var DO = {
 
         containerNode = containerNode || document.body;
 
+        var docRefType = '<sup class="ref-highlighting">' + refLabel + '</sup>';
+
         var containerNodeTextContent = containerNode.textContent;
   // console.log(containerNodeTextContent);
   // console.log(prefix + exact + suffix);
@@ -827,7 +829,7 @@ var DO = {
           var exactEnd = selectorIndex + prefix.length + exact.length;
           var selection = { start: exactStart, end: exactEnd };
 
-          var ref = '<span class="ref do" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-highlighting">' + refLabel + '</sup></span>';
+          var ref = '<span class="ref do" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="schema:description">' + exact + '</mark>' + docRefType + '</span>';
 
           MediumEditor.selection.importSelection(selection, containerNode, document);
 
@@ -4253,6 +4255,8 @@ WHERE {\n\
 // console.log(prefix);
 // console.log(suffix);
 
+        var docRefType = '<sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#' + id + '" resource="' + noteIRI + '">' + refLabel + '</a></sup>';
+
         var containerNodeTextContent = containerNode.textContent;
 //console.log(containerNodeTextContent);
 // console.log(prefix + exact + suffix);
@@ -4263,7 +4267,7 @@ WHERE {\n\
           var exactEnd = selectorIndex + prefix.length + exact.length;
           var selection = { start: exactStart, end: exactEnd };
 
-          var ref = '<span class="ref do" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#' + id + '" resource="' + noteIRI + '">' + refLabel + '</a></sup></span>';
+          var ref = '<span class="ref do" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="schema:description">' + exact + '</mark>' + docRefType + '</span>';
 
           MediumEditor.selection.importSelection(selection, containerNode, document);
 
@@ -6664,6 +6668,7 @@ WHERE {\n\
                     noteType = 'bookmark';
                     motivatedBy = "oa:bookmarking";
                     refLabel = DO.U.getReferenceLabel(motivatedBy);
+                    docRefType = '';
                     noteData = {
                       "type": noteType,
                       "mode": mode,
@@ -6710,7 +6715,7 @@ WHERE {\n\
                       noteData.creator["url"] = DO.C.User.URL;
                     }
                     // note = DO.U.createNoteDataHTML(noteData);
-                    ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="schema:description">' + exact + '</mark></span>';
+                    ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="schema:description">' + exact + '</mark>' + docRefType + '</span>';
                     break;
                 }
 
