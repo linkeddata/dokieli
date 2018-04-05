@@ -2685,10 +2685,6 @@ var DO = {
     showTextQuoteSelector: function(containerNode) {
       var selector = DO.U.getTextQuoteSelectorFromLocation(document.location);
       if (selector && selector.exact && selector.exact.length > 0) {
-        var prefix = selector.prefix || '';
-        var exact = selector.exact || '';
-        var suffix = selector.suffix || '';
-
         //XXX: TODO: Copied from showAnnotation
 
         // refId = String(Math.abs(DO.U.hashCode(document.location.href)));
@@ -2699,38 +2695,52 @@ var DO = {
 
         var docRefType = '<sup class="ref-highlighting">' + refLabel + '</sup>';
 
-        var containerNodeTextContent = containerNode.textContent;
-  // console.log(containerNodeTextContent);
-  // console.log(prefix + exact + suffix);
-        var selectorIndex = containerNodeTextContent.indexOf(prefix + exact + suffix);
-  // console.log(selectorIndex);
-        if (selectorIndex >= 0) {
-          var exactStart = selectorIndex + prefix.length
-          var exactEnd = selectorIndex + prefix.length + exact.length;
-          var selection = { start: exactStart, end: exactEnd };
+        DO.U.importTextQuoteSelector(containerNode, selector, refId, docRefType, { 'do': true })
+      }
+    },
 
-          ref = DO.U.getTextQuoteHTML(refId, exact, docRefType, {'do': true });
+    importTextQuoteSelector: function(containerNode, selector, refId, docRefType, options) {
+      var containerNodeTextContent = containerNode.textContent;
+// console.log(containerNodeTextContent);
 
-          MediumEditor.selection.importSelection(selection, containerNode, document);
+      var prefix = selector.prefix || '';
+      var exact = selector.exact || '';
+      var suffix = selector.suffix || '';
 
-          var selection = window.getSelection();
-          var r = selection.getRangeAt(0);
-          selection.removeAllRanges();
-          selection.addRange(r);
-          r.collapse(true);
-          var selectedParentNode = r.commonAncestorContainer.parentNode;
-          var selectedParentNodeValue = r.commonAncestorContainer.nodeValue;
+      options = options || {};
 
-          var selectionUpdated = DO.U.fragmentFromString(selectedParentNodeValue.substr(0, r.startOffset) + ref + selectedParentNodeValue.substr(r.startOffset + exact.length));
+// console.log(prefix + exact + suffix);
+      var selectorIndex = containerNodeTextContent.indexOf(prefix + exact + suffix);
+// console.log(selectorIndex);
+      if (selectorIndex >= 0) {
+        var exactStart = selectorIndex + prefix.length
+        var exactEnd = selectorIndex + prefix.length + exact.length;
+        var selection = { start: exactStart, end: exactEnd };
 
-          //XXX: Review. This feels a bit dirty
-          for(var i = 0; i < selectedParentNode.childNodes.length; i++) {
-            var n = selectedParentNode.childNodes[i];
-            if (n.nodeType === 3 && n.nodeValue === selectedParentNodeValue) {
-              selectedParentNode.replaceChild(selectionUpdated, n);
-            }
+        var ref = DO.U.getTextQuoteHTML(refId, exact, docRefType, options);
+
+        MediumEditor.selection.importSelection(selection, containerNode, document);
+
+        //XXX: Review
+        var selection = window.getSelection();
+        var r = selection.getRangeAt(0);
+        selection.removeAllRanges();
+        selection.addRange(r);
+        r.collapse(true);
+        var selectedParentNode = r.commonAncestorContainer.parentNode;
+        var selectedParentNodeValue = r.commonAncestorContainer.nodeValue;
+
+        var selectionUpdated = DO.U.fragmentFromString(selectedParentNodeValue.substr(0, r.startOffset) + ref + selectedParentNodeValue.substr(r.startOffset + exact.length));
+
+        //XXX: Review. This feels a bit dirty
+        for(var i = 0; i < selectedParentNode.childNodes.length; i++) {
+          var n = selectedParentNode.childNodes[i];
+          if (n.nodeType === 3 && n.nodeValue === selectedParentNodeValue) {
+            selectedParentNode.replaceChild(selectionUpdated, n);
           }
         }
+
+        return selectedParentNode;
       }
     },
 
@@ -6151,32 +6161,13 @@ WHERE {\n\
         var selectorIndex = containerNodeTextContent.indexOf(prefix + exact + suffix);
 // console.log(selectorIndex);
         if (selectorIndex >= 0) {
-          var exactStart = selectorIndex + prefix.length
-          var exactEnd = selectorIndex + prefix.length + exact.length;
-          var selection = { start: exactStart, end: exactEnd };
+          var selector =  {
+            "prefix": prefix,
+            "exact": exact,
+            "suffix": suffix
+          };
 
-          var ref = DO.U.getTextQuoteHTML(refId, exact, docRefType, {'do': true });
-
-          MediumEditor.selection.importSelection(selection, containerNode, document);
-
-          //XXX: Review
-          var selection = window.getSelection();
-          var r = selection.getRangeAt(0);
-          selection.removeAllRanges();
-          selection.addRange(r);
-          r.collapse(true);
-          var selectedParentNode = r.commonAncestorContainer.parentNode;
-          var selectedParentNodeValue = r.commonAncestorContainer.nodeValue;
-
-          var selectionUpdated = DO.U.fragmentFromString(selectedParentNodeValue.substr(0, r.startOffset) + ref + selectedParentNodeValue.substr(r.startOffset + exact.length));
-
-          //XXX: Review. This feels a bit dirty
-          for(var i = 0; i < selectedParentNode.childNodes.length; i++) {
-            var n = selectedParentNode.childNodes[i];
-            if (n.nodeType === 3 && n.nodeValue === selectedParentNodeValue) {
-              selectedParentNode.replaceChild(selectionUpdated, n);
-            }
-          }
+          var selectedParentNode = DO.U.importTextQuoteSelector(containerNode, selector, refId, docRefType, { 'do': true });
 
           var parentNodeWithId = selectedParentNode.closest('[id]');
           var targetIRI = (parentNodeWithId) ? documentURL + '#' + parentNodeWithId.id : documentURL;
