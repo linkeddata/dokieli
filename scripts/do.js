@@ -2707,7 +2707,7 @@ var DO = {
           var exactEnd = selectorIndex + prefix.length + exact.length;
           var selection = { start: exactStart, end: exactEnd };
 
-          var ref = '<span class="ref do" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-highlighting">' + refLabel + '</sup></span>';
+          var ref = '<span class="ref do" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-highlighting">' + refLabel + '</sup></span>';
 
           MediumEditor.selection.importSelection(selection, containerNode, document);
 
@@ -6143,7 +6143,7 @@ WHERE {\n\
           var exactEnd = selectorIndex + prefix.length + exact.length;
           var selection = { start: exactStart, end: exactEnd };
 
-          var ref = '<span class="ref do" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#' + id + '" resource="' + noteIRI + '">' + refLabel + '</a></sup></span>';
+          var ref = '<span class="ref do" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#' + id + '" resource="' + noteIRI + '">' + refLabel + '</a></sup></span>';
 
           MediumEditor.selection.importSelection(selection, containerNode, document);
 
@@ -8590,7 +8590,7 @@ WHERE {\n\
                       noteData.creator["url"] = DO.C.User.URL;
                     }
                     // note = DO.U.createNoteDataHTML(noteData);
-                    ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark></span>';
+                    ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="schema:description">' + exact + '</mark></span>';
                     break;
                 }
 
