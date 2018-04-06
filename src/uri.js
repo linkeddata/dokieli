@@ -7,7 +7,8 @@ module.exports = {
   decodeString,
   getAbsoluteIRI,
   getProxyableIRI,
-  stripFragmentFromString
+  stripFragmentFromString,
+  getFragmentFromString
 }
 
 function encodeString (string) {
@@ -63,4 +64,13 @@ function stripFragmentFromString (string) {
     }
   }
   return string
+}
+
+function getFragmentFromString (string) {
+  if (typeof string === 'string') {
+    let match = string.split('#')[1]
+
+    string = (match) ? match : '';
+  }
+  return string 
 }
