@@ -4737,7 +4737,7 @@ WHERE {\n\
             var targetRelation = 'oa:hasTarget';
             if (typeof n.target !== 'undefined' && 'iri' in n.target) {
               targetIRI = n.target.iri;
-              var targetIRIFragment = n.target.iri.substr(n.target.iri.lastIndexOf('#'));
+              var targetIRIFragment = uri.getFragmentFromString(n.target.iri);
               //TODO: Handle when there is no fragment
               if (typeof n.target.selector !== 'undefined') {
                 annotationTextSelector = '<div rel="oa:hasSelector" resource="#fragment-selector" typeof="oa:FragmentSelector"><dl class="conformsto"><dt>Fragment selector conforms to</dt><dd><a content="' + targetIRIFragment + '" lang="" property="rdf:value" rel="dcterms:conformsTo" resource="https://tools.ietf.org/html/rfc3987" xml:lang="">RFC 3987</a></dd></dl><dl rel="oa:refinedBy" resource="#text-quote-selector" typeof="oa:TextQuoteSelector"><dt>Refined by</dt><dd><span lang="en" property="oa:prefix" xml:lang="en">' + n.target.selector.prefix + '</span><mark lang="en" property="oa:exact" xml:lang="en">' + n.target.selector.exact + '</mark><span lang="en" property="oa:suffix" xml:lang="en">' + n.target.selector.suffix + '</span></dd></dl></div>';
