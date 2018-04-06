@@ -404,7 +404,7 @@
 <code>              &lt;div rel="oa:hasSelector" resource="i:#fragment-selector" typeof="oa:FragmentSelector"&gt;</code>
 <code>                &lt;dl class="conformsto"&gt;</code>
 <code>                  &lt;dt&gt;Fragment selector conforms to&lt;/dt&gt;</code>
-<code>                  &lt;dd&gt;&lt;a property="rdf:value" content="#abstract" xml:lang="" lang="" rel="dcterms:conformsTo" href="https://tools.ietf.org/html/rfc3987"&gt;RFC3987&lt;/a&gt;&lt;/dd&gt;</code>
+<code>                  &lt;dd&gt;&lt;a property="rdf:value" content="abstract" xml:lang="" lang="" rel="dcterms:conformsTo" href="https://tools.ietf.org/html/rfc3987"&gt;RFC3987&lt;/a&gt;&lt;/dd&gt;</code>
 <code>                &lt;/dl&gt;</code>
 <code></code>
 <code>                &lt;dl class="refinedby" rel="oa:refinedBy" resource="i:#text-quote-selector" typeof="oa:TextQuoteSelector"&gt;</code>
