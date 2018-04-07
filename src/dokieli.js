@@ -822,17 +822,28 @@ var DO = {
     importTextQuoteSelector: function(containerNode, selector, refId, docRefType, options) {
       var containerNodeTextContent = containerNode.textContent;
 // console.log(containerNodeTextContent);
+      options = options || {};
 
+// console.log(selector)
       var prefix = selector.prefix || '';
       var exact = selector.exact || '';
       var suffix = selector.suffix || '';
 
-      options = options || {};
+      var phrase = prefix.toString() + exact.toString() + suffix.toString();
+// console.log(phrase);
 
-// console.log(prefix + exact + suffix);
-      var selectorIndex = containerNodeTextContent.indexOf(prefix + exact + suffix);
+      var selectedParentNode;
+
+      var textMatches = containerNodeTextContent.matchAll(new RegExp(phrase, 'g'));
+// console.log(textMatches)
+
+      textMatches.forEach(function(item) {
+// console.log(item)
+        var selectorIndex = item.index;
+
+      // var selectorIndex = containerNodeTextContent.indexOf(prefix + exact + suffix);
 // console.log(selectorIndex);
-      if (selectorIndex >= 0) {
+      // if (selectorIndex >= 0) {
         var exactStart = selectorIndex + prefix.length
         var exactEnd = selectorIndex + prefix.length + exact.length;
         var selection = { start: exactStart, end: exactEnd };
@@ -847,9 +858,9 @@ var DO = {
         selection.removeAllRanges();
         selection.addRange(r);
         r.collapse(true);
-        var selectedParentNode = r.commonAncestorContainer.parentNode;
+        selectedParentNode = r.commonAncestorContainer.parentNode;
         var selectedParentNodeValue = r.commonAncestorContainer.nodeValue;
-
+// console.log(selectedParentNode)
         var selectionUpdated = DO.U.fragmentFromString(selectedParentNodeValue.substr(0, r.startOffset) + ref + selectedParentNodeValue.substr(r.startOffset + exact.length));
 
         //XXX: Review. This feels a bit dirty
@@ -859,9 +870,9 @@ var DO = {
             selectedParentNode.replaceChild(selectionUpdated, n);
           }
         }
+      })
 
-        return selectedParentNode;
-      }
+      return selectedParentNode;
     },
 
     initUser: function() {
@@ -1021,16 +1032,37 @@ var DO = {
     },
 
     setPolyfill: function() {
-      if (!Element.prototype.matches) Element.prototype.matches = Element.prototype.msMatchesSelector;
-      if (!Element.prototype.closest) Element.prototype.closest = function (selector) {
-        var el = this;
-        while (el) {
-          if (el.matches(selector)) {
-            return el;
+      if (!Element.prototype.matches) {
+        Element.prototype.matches = Element.prototype.msMatchesSelector;
+      }
+
+      if (!Element.prototype.closest) {
+        Element.prototype.closest = function (selector) {
+          var el = this;
+          while (el) {
+            if (el.matches(selector)) {
+              return el;
+            }
+            el = el.parentElement;
           }
-          el = el.parentElement;
-        }
-      };
+        };
+      }
+
+
+      //From https://web.archive.org/web/20180407184826/http://cwestblog.com/2013/02/26/javascript-string-prototype-matchall/
+      if (!String.prototype.matchAll) {
+        String.prototype.matchAll = function(regexp) {
+          var matches = [];
+          this.replace(regexp, function() {
+            var arr = ([]).slice.call(arguments, 0);
+            var extras = arr.splice(-2);
+            arr.index = extras[0];
+            arr.input = extras[1];
+            matches.push(arr);
+          });
+          return matches.length ? matches : null;
+        };
+      }
     },
 
     showXHRProgressHTML: function(http, options) {
