@@ -3671,7 +3671,7 @@ var DO = {
           }
         }
 
-        return DO.C.SelectorSign[nodeName + nodeId] || DO.C.SelectorSign["*"];
+        return DO.C.SelectorSign[nodeName + nodeId] || DO.C.SelectorSign[nodeName] || DO.C.SelectorSign["*"];
       }
 
       return DO.C.SelectorSign["*"];
