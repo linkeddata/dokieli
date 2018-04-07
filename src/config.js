@@ -63,6 +63,7 @@ module.exports = {
     "aside": "†",
     "audio": "🔊",
     "code": "#",
+    "dl": "☝",
     "dl#document-annotation-service": "※",
     "dl#document-created": "📅",
     "dl#document-in-reply-to": "⮪",
