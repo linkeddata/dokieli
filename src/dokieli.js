@@ -1605,10 +1605,9 @@ var DO = {
           else {
             if (element == 'abbr') {
               if (e.length > 0) {
-                [].slice.call(e).sort(function(a, b) {
-                  var textA = a.textContent;
-                  var textB = b.textContent;
-                  return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+                e = [].slice.call(e);
+                e.sort(function(a, b) {
+                  return a.textContent.toLowerCase().localeCompare(b.textContent.toLowerCase());
                 });
               }
 
