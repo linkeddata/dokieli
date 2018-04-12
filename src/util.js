@@ -5,7 +5,8 @@ module.exports = {
   getHash,
   getDateTimeISO,
   removeChildren,
-  copyTextToClipboard
+  copyTextToClipboard,
+  escapeRegExp
 }
 
 /**
@@ -68,4 +69,9 @@ console.log(text)
   }, function(err) {
     // console.error('Async: Could not copy text: ', err);
   });
+}
+
+//From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions?redirectlocale=en-US&redirectslug=JavaScript%2FGuide%2FRegular_Expressions
+function escapeRegExp(string){
+  return string.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
 }
