@@ -259,6 +259,7 @@ module.exports = {
     "dctermsissued": "http://purl.org/dc/terms/issued",
     "dctermscreated": "http://purl.org/dc/terms/created",
     "dctermsrights": { "@id": "http://purl.org/dc/terms/rights", "@type": "@id" },
+    "dctermsconformsTo": { "@id": "http://purl.org/dc/terms/conformsTo", "@type": "@id" },
 
     "skosprefLabel": { "@id": "http://www.w3.org/2004/02/skos/core#prefLabel", "@type": "@id", "@array": true },
 
@@ -281,6 +282,7 @@ module.exports = {
     "oahasTarget": { "@id": "http://www.w3.org/ns/oa#hasTarget", "@type": "@id" },
     "oahasSource": { "@id": "http://www.w3.org/ns/oa#hasSource", "@type": "@id" },
     "oahasSelector": { "@id": "http://www.w3.org/ns/oa#hasSelector", "@type": "@id" },
+    "oarefinedBy": { "@id": "http://www.w3.org/ns/oa#refinedBy", "@type": "@id" },
     "oaexact": "http://www.w3.org/ns/oa#exact",
     "oaprefix": "http://www.w3.org/ns/oa#prefix",
     "oasuffix": "http://www.w3.org/ns/oa#suffix",
