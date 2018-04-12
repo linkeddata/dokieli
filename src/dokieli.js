@@ -815,12 +815,17 @@ var DO = {
 
         var docRefType = '<sup class="ref-highlighting">' + refLabel + '</sup>';
 
-        DO.U.importTextQuoteSelector(containerNode, selector, refId, docRefType, { 'do': true })
+        var options = {
+          'do': true,
+          'mode': '#selector'
+        };
+
+        DO.U.importTextQuoteSelector(containerNode, selector, refId, docRefType, options)
       }
     },
 
     importTextQuoteSelector: function(containerNode, selector, refId, docRefType, options) {
-      var containerNodeTextContent = containerNode.textContent;
+      var containerNodeTextContent = doc.getDocument(containerNode);
 // console.log(containerNodeTextContent);
       options = options || {};
 
