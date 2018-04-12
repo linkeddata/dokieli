@@ -825,7 +825,11 @@ var DO = {
     },
 
     importTextQuoteSelector: function(containerNode, selector, refId, docRefType, options) {
-      var containerNodeTextContent = doc.getDocument(containerNode);
+      var containerNodeTextContent = containerNode.textContent;
+      //XXX: Seems better?
+      // var containerNodeTextContent = DO.U.fragmentFromString(doc.getDocument(containerNode)).textContent.trim();
+
+
 // console.log(containerNodeTextContent);
       options = options || {};
 
@@ -834,7 +838,7 @@ var DO = {
       var exact = selector.exact || '';
       var suffix = selector.suffix || '';
 
-      var phrase = prefix.toString() + exact.toString() + suffix.toString();
+      var phrase = util.escapeRegExp(prefix.toString() + exact.toString() + suffix.toString());
 // console.log(phrase);
 
       var selectedParentNode;
@@ -843,30 +847,44 @@ var DO = {
 // console.log(textMatches)
 
       textMatches.forEach(function(item) {
+// console.log('phrase:')
+// console.log(phrase)
 // console.log(item)
         var selectorIndex = item.index;
-
+// console.log('selectorIndex:')
+// console.log(selectorIndex)
       // var selectorIndex = containerNodeTextContent.indexOf(prefix + exact + suffix);
 // console.log(selectorIndex);
       // if (selectorIndex >= 0) {
         var exactStart = selectorIndex + prefix.length
         var exactEnd = selectorIndex + prefix.length + exact.length;
         var selection = { start: exactStart, end: exactEnd };
-
+// console.log('selection:')
+// console.log(selection)
         var ref = DO.U.getTextQuoteHTML(refId, exact, docRefType, options);
-
+// console.log('containerNode:')
+// console.log(containerNode)
         MediumEditor.selection.importSelection(selection, containerNode, document);
 
         //XXX: Review
         var selection = window.getSelection();
+// console.log(selection)
         var r = selection.getRangeAt(0);
         selection.removeAllRanges();
         selection.addRange(r);
         r.collapse(true);
+// console.log(r)
+// console.log('r.commonAncestorContainer:')
+// console.log(r.commonAncestorContainer)
         selectedParentNode = r.commonAncestorContainer.parentNode;
-        var selectedParentNodeValue = r.commonAncestorContainer.nodeValue;
+// console.log('selectedParentNode:')
 // console.log(selectedParentNode)
+        var selectedParentNodeValue = r.commonAncestorContainer.nodeValue;
+// console.log(selectedParentNodeValue)
+
+// console.log(selectedParentNodeValue.substr(0, r.startOffset) + ref + selectedParentNodeValue.substr(r.startOffset + exact.length))
         var selectionUpdated = DO.U.fragmentFromString(selectedParentNodeValue.substr(0, r.startOffset) + ref + selectedParentNodeValue.substr(r.startOffset + exact.length));
+// console.log(selectionUpdated)
 
         //XXX: Review. This feels a bit dirty
         for(var i = 0; i < selectedParentNode.childNodes.length; i++) {
@@ -875,6 +893,7 @@ var DO = {
             selectedParentNode.replaceChild(selectionUpdated, n);
           }
         }
+// console.log('---')
       })
 
       return selectedParentNode;
@@ -4292,26 +4311,39 @@ WHERE {\n\
           if (selector.rdftype && selector.rdftype.at(0)) {
             selectorTypes = selector.rdftype.at(0);
           }
-// console.log(selectorTypes);
+// console.log(selectorTypes == 'http://www.w3.org/ns/oa#FragmentSelector');
           if(selectorTypes == 'http://www.w3.org/ns/oa#TextQuoteSelector') {
             exact = selector.oaexact;
             prefix = selector.oaprefix;
             suffix = selector.oasuffix;
           }
           else if (selectorTypes == 'http://www.w3.org/ns/oa#FragmentSelector') {
-            var refinedBy = g.child(selector["http://www.w3.org/ns/oa#refinedBy"].iri());
+            var refinedBy = g.child(selector.oarefinedBy);
+// console.log(refinedBy)
             exact = refinedBy.oaexact;
             prefix = refinedBy.oaprefix;
             suffix = refinedBy.oasuffix;
+// console.log(selector.rdfvalue)
+            if (selector.rdfvalue && selector.rdfvalue !== '' && selector.dctermsconformsTo && selector.dctermsconformsTo.endsWith('://tools.ietf.org/html/rfc3987')) {
+              var fragment = selector.rdfvalue;
+              fragment = (fragment.indexOf == 0) ? uri.getFragmentFromString(fragment) : fragment;
+// console.log(fragment)
+              if (fragment !== '') {
+                containerNode = document.querySelector('#' + selector.rdfvalue) || document;
+              }
+            }
           }
         }
 // console.log(exact);
 // console.log(prefix);
 // console.log(suffix);
-
+// console.log('----')
         var docRefType = '<sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#' + id + '" resource="' + noteIRI + '">' + refLabel + '</a></sup>';
 
         var containerNodeTextContent = containerNode.textContent;
+        //XXX: Seems better?
+        // var containerNodeTextContent = DO.U.fragmentFromString(doc.getDocument(containerNode)).textContent.trim();
+
 //console.log(containerNodeTextContent);
 // console.log(prefix + exact + suffix);
         var selectorIndex = containerNodeTextContent.indexOf(prefix + exact + suffix);
