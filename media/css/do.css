@@ -51,6 +51,10 @@ outline:none;
   animation-fill-mode: both;
 }
 
+.animated.infinite {
+  animation-iteration-count: infinite;
+}
+
 @keyframes zoomOut {
   from {
     opacity: 1;
@@ -102,6 +106,22 @@ outline:none;
 .pulse {
   animation-name: pulse;
 }
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fadeIn {
+  animation-name: fadeIn;
+}
+
+
 
 
 figure svg.graph {
