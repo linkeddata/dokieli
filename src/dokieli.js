@@ -924,7 +924,7 @@ var DO = {
         }
 
         if (mode !== 'author') {
-          var content = document.querySelector('main > article') || document.body;
+          var content = DO.U.selectArticleNode(document);
           content = DO.U.fragmentFromString(doc.domToString(content)).textContent.trim();
           if (content.length == 0) {
             mode = 'author';
@@ -1381,7 +1381,7 @@ var DO = {
     showDocumentMetadata: function(node) {
       if(document.querySelector('#document-metadata')) { return; }
 
-      var content = document.querySelector('main > article') || document.body;
+      var content = DO.U.selectArticleNode(document);
       var count = DO.U.contentCount(content);
       var authors = [], contributors = [], editors = [];
 
@@ -1757,7 +1757,7 @@ var DO = {
 
       var item = DO.C.DocumentItems.indexOf(options.id);
 
-      var article = rootNode.querySelector('main > article') || rootNode.querySelector('body');
+      var article = DO.U.selectArticleNode(rootNode);
 
       if(item > -1) {
         for(var i = item; i >= 0; i--) {
@@ -1778,6 +1778,18 @@ var DO = {
       }
 
       return rootNode;
+    },
+
+
+    selectArticleNode: function(node) {
+      var selectors = [
+        'main > article',
+        'main',
+        'body'
+      ];
+
+      var x = node.querySelectorAll(selectors.join(','));
+      return x[x.length - 1];
     },
 
     buttonClose: function() {
@@ -2127,7 +2139,7 @@ var DO = {
       s += '<li><button class="resource-memento" title="Memento article"><i class="fa fa-clock-o fa-2x"></i>Memento</button></li>';
 
       if (DO.C.EditorAvailable) {
-        var editFile = (DO.C.EditorEnabled && DO.C.User.Role === 'author')
+        var editFile = (DO.C.EditorEnabled && DO.C.User.Role == 'author')
           ? DO.C.Editor.DisableEditorButton
           : DO.C.Editor.EnableEditorButton;
         s += '<li>' + editFile + '</li>';
@@ -4532,7 +4544,7 @@ WHERE {\n\
       var interactions = document.getElementById('document-interactions');
 
       if(!interactions) {
-        interactions = document.querySelector('main > article') || document.body;
+        interactions = DO.U.selectArticleNode(document);
         var interactionsSection = '<section id="document-interactions"><h2>Interactions</h2><div>';
 // interactionsSection += '<p class="count"><data about="" datatype="xsd:nonNegativeInteger" property="sioc:num_replies" value="' + interactionsCount + '">' + interactionsCount + '</data> interactions</p>';
         interactionsSection += '</div></section>';
@@ -5349,7 +5361,7 @@ WHERE {\n\
           editorOptions.author.toolbar.buttons.splice(10, 0, 'table');
         }
 
-        var eNodes = selector || document.querySelector('main > article') || 'body';
+        var eNodes = selector || DO.U.selectArticleNode(document);
         var eOptions = editorOptions[editorMode];
         DO.C.User.Role = editorMode;
 
@@ -7021,7 +7033,7 @@ WHERE {\n\
 
                         var r = document.querySelector('#references ol');
                         if (!r) {
-                          var nodeInsertLocation = document.querySelector('main > article > div') || document.body;
+                          var nodeInsertLocation = document.querySelector('main > article > div') || DO.U.selectArticleNode(document);
                           var section = '<section id="references"><h2>References</h2><div><ol></ol></div></section>';
                           nodeInsertLocation.insertAdjacentHTML('beforeend', section);
                           r = document.querySelector('#references ol');
