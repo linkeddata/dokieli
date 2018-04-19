@@ -7033,7 +7033,7 @@ WHERE {\n\
 
                         var r = document.querySelector('#references ol');
                         if (!r) {
-                          var nodeInsertLocation = document.querySelector('main > article > div') || DO.U.selectArticleNode(document);
+                          var nodeInsertLocation = DO.U.selectArticleNode(document);
                           var section = '<section id="references"><h2>References</h2><div><ol></ol></div></section>';
                           nodeInsertLocation.insertAdjacentHTML('beforeend', section);
                           r = document.querySelector('#references ol');
