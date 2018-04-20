@@ -1786,6 +1786,8 @@ function getStorageProfile(key) {
 }
 
 function updateStorageProfile(User) {
+  if (!User.IRI) { return Promise.resolve({'message': 'User.IRI is not set'}); }
+
   var key = 'DO.C.User'
 
   var id = DO.U.generateUUID();
