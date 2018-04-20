@@ -108,7 +108,7 @@ content:counter(section)"." counter(sub-section) "." counter(sub-sub-section) "\
 
 article > article,
 section,
-dl[id^="document-"], #authors,
+dl[id^="document-"],
 *[id^=table-of-] {
   margin: 0 0.5em;
 }
@@ -171,33 +171,41 @@ margin:0;
 
 dl[id^="document-"] dt,
 dl[id^="document-"] dd,
+dl[id^="author-"] dt,
+dl[id^="author-"] dd,
 dl[class~="inbox"] dt,
 dl[class~="inbox"] dd {
 display:inline;
 }
 dl[id^="document-"] dt,
+dl[id^="author-"] dt,
 dl[class~="inbox"] dt {
 font-weight:bold;
 }
 dl[id^="document-"] dt:after,
+dl[id^="author-"] dt:after,
 dl[class~="inbox"] dt:after {
 content:": ";
 }
 dl[id^="document-"] dd,
+dl[id^="author-"] dd,
 dl[class~="inbox"] dd {
 margin:0;
 }
+dl[id^="author-"] dd + dt:before,
 dl[id^="document-"] dd + dt:before {
 content:"\A";
 white-space:pre;
 }
-
+dl[id^="author-"] dd:after,
 dl[id^="document-"] dd:after {
 content:", ";
 }
+dl[id^="author-"] dd:last-child:after,
 dl[id^="document-"] dd:last-child:after {
 content:"";
 }
+dl[id^="author-"] ul,
 dl[id^="document-"] ul {
 margin-bottom:0;
 }
@@ -209,25 +217,10 @@ margin-top:0;
 }
 
 
-#authors dd, #authors li {
-display: inline;
-text-align: left;
-}
-
-#authors {
-text-align:center;
-}
-
-#authors dl {
-line-height:1;
-}
-
-#authors dl,
-#authors ul {
-margin:0;
-text-align:center;
-}
-
+#author-name,
+#author-org,
+#author-email,
+#author-uri,
 .authors {
 margin:0;
 }
@@ -263,14 +256,6 @@ content:",";
 #authors sup:first-child:after {
 content:"" !important;
 }
-#authors dt,
-.authors dt {
-display:none;
-}
-
-#authors p {
-text-align:center;
-}
 
 #authors li {
 list-style-type:none;
@@ -291,7 +276,8 @@ ol ol {
 margin-left:1em;
 }
 
-#document-identifier {
+h1 + #authors,
+h1 + #document-identifier {
 margin-top:1em;
 }
 
