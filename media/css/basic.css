@@ -333,6 +333,14 @@ dd + dt { margin-top: 1em; }
 
 p + dl { margin-top:0; }
 
+hr {
+border:0;
+text-align:center;
+}
+hr:before {
+content:"\2042";
+}
+
 body > footer { margin-top:2em; }
 body > footer a, body > footer a:hover { color: inherit; }
 
