@@ -29,12 +29,14 @@ h1 { margin-top:0; }
 
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
-  font-size: 1.1em;
-  line-height: 1.3;
-  color:#333;
-  margin: 0; padding: 0;
-  width:100%;
+font-family: Arial, Helvetica, sans-serif;
+font-size: 1.1em;
+line-height: 1.3;
+color:#333;
+margin: 0 auto;
+padding: 0;
+/*width:100%;*/
+max-width: 50em;
 }
 
 body > header {
@@ -621,7 +623,24 @@ content:"\00a0\00a0\00a0\00a0";
   text-align: center;
   font-size: 1.4em;
 }
-#dokieli-features, body > footer {
+
+#dokieli-features,
+#read-write-web,
+#figure-dokieli-overview,
+body > footer {
+ max-width:99vw;
+ margin-left: calc(-50vw + 50%);
+ margin-right: calc(-50vw + 50%);
+}
+
+#dokieli-features,
+#read-write-web,
+#figure-dokieli-overview {
+  text-align: center;
+}
+
+#dokieli-features,
+body > footer {
   overflow: hidden;
   padding-top: 1em;
   padding-bottom: 1em;
@@ -629,23 +648,11 @@ content:"\00a0\00a0\00a0\00a0";
   color: #eee;
 }
 
-#help-and-shape {
-  width: 100%;
-  margin:0 auto;
-  max-width:initial;
-}
-
-#dokieli-features {
-  width:100%;
-  max-width:calc(100% - 1em);
-  padding-left:0.5em;
-  padding-right:0.5em;
-  margin:0;
-}
 
 #dokieli-features ul {
   list-style-type: none;
-  padding: 0; margin: 0;
+  margin: 0;
+  padding: 0;
   font-size: 0.6em;
   text-align: center;
 }
@@ -667,20 +674,23 @@ content:"\00a0\00a0\00a0\00a0";
 }
 #dokieli-features ul li a {
   display: inline-block;
-  color: inherit; text-decoration: none;
+  color: inherit;
+  text-decoration: none;
   width: 100%;
 }
 
-#dokieli-features ul li:hover, #dokieli-features ul li:hover span {
+#dokieli-features ul li:hover,
+#dokieli-features ul li:hover span {
   background-color: #444;
 }
 #dokieli-features ul i,
 #dokieli-features ul svg {
   width: 1em;
   height: 1em;
-  padding: 0.3em; margin: 0 0.2em;
-  /*border-radius: 50%;*/
+  margin: 0 0.2em;
+  padding: 0.3em;
   text-align: center;
+  /*border-radius: 50%;*/
 }
 #dokieli-features ul svg {
   font-size:3em;
@@ -692,11 +702,7 @@ content:"\00a0\00a0\00a0\00a0";
 
 #read-write-web,
 #figure-dokieli-overview {
-  text-align: center;
-  width: 100%;
   background-color: #ddd;
-  margin:0 auto;
-  max-width:initial;
 }
 #dokieli-features h2,
 #figure-dokieli-overview h2 {
@@ -706,11 +712,17 @@ content:"\00a0\00a0\00a0\00a0";
   text-align:center;
   font-size:2em;
   padding:1em 0;
-  margin:1em 0;
+  margin-top:1em;
 }
 #read-write-web:before {
 content:"";
 }
+
+
+#help-and-shape {
+max-width:50em;
+}
+
 
 ul#program-committee {
 column-count: 2;
@@ -728,21 +740,22 @@ column-count: 2;
   }
 
   article > article,
-  section,
-  dl[id^="document-"], #authors, hr {
-    max-width: 50em;
+  section {
+    margin: 1em auto;
   }
 
-  article > article,
-  section {
-    margin: 3em auto;
+  #dokieli-features,
+  #read-write-web,
+  #figure-dokieli-overview,
+  body > footer {
+    max-width:99.5vw;
   }
 
   dl[id^="document-"], #authors,
   *[id^=table-of-],
   #help-and-shape, hr,
   aside {
-    max-width: 50em;
+    /*max-width: 50em;*/
     margin: 0 auto;
   }
 
