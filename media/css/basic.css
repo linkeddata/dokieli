@@ -1,8 +1,8 @@
 @media print {
 @page {
-  @bottom-center {
-    content: counter(page);
-  }
+@bottom-center {
+content: counter(page);
+}
 }
 
 body {
@@ -43,7 +43,7 @@ body > header {
 text-align:center;
 }
 body > header {
-  margin-top:2em;
+margin-top:2em;
 }
 
 header nav ul {
@@ -61,10 +61,10 @@ content:"";
 }
 
 h1 {
-  font-size: 2em;
-  text-align: center;
-  margin:0.75em 0;
-  color:#000;
+font-size: 2em;
+text-align: center;
+margin:0.75em 0;
+color:#000;
 }
 h2 { font-size: 1.7em; line-height:1; margin-top: 2.5em; }
 h3 { font-size: 1.5em; line-height:0.8; margin-top: 2em; }
@@ -75,10 +75,10 @@ h6 { font-size: 1em; margin:1.5em auto 0 auto; }
 section article h1,
 section article h2,
 section article h3 {
-  margin:0;
-  font-size:1em;
-  font-weight:normal;
-  text-align:left;
+margin:0;
+font-size:1em;
+font-weight:normal;
+text-align:left;
 }
 #subtitle {
 text-align:center;
@@ -112,11 +112,11 @@ article > article,
 section,
 dl[id^="document-"],
 *[id^=table-of-] {
-  margin: 0 0.5em;
+margin: 0 0.5em;
 }
 section section {
-  padding:0;
-  margin:0;
+padding:0;
+margin:0;
 }
 
 main form {
@@ -620,99 +620,99 @@ content:"\00a0\00a0\00a0\00a0";
 
 /* dokieli homepage styles */
 [property~="doap:shortdesc"]:first-child {
-  text-align: center;
-  font-size: 1.4em;
+text-align: center;
+font-size: 1.4em;
 }
 
 #dokieli-features,
 #read-write-web,
 #figure-dokieli-overview,
 body > footer {
- max-width:99vw;
- margin-left: calc(-50vw + 50%);
- margin-right: calc(-50vw + 50%);
+max-width:99vw;
+margin-left: calc(-50vw + 50%);
+margin-right: calc(-50vw + 50%);
 }
 
 #dokieli-features,
 #read-write-web,
 #figure-dokieli-overview {
-  text-align: center;
+text-align: center;
 }
 
 #dokieli-features,
 body > footer {
-  overflow: hidden;
-  padding-top: 1em;
-  padding-bottom: 1em;
-  background-color: #333;
-  color: #eee;
+overflow: hidden;
+padding-top: 1em;
+padding-bottom: 1em;
+background-color: #333;
+color: #eee;
 }
 
 
 #dokieli-features ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  font-size: 0.6em;
-  text-align: center;
+list-style-type: none;
+margin: 0;
+padding: 0;
+font-size: 0.6em;
+text-align: center;
 }
 
 #dokieli-features ul li {
-  overflow: hidden;
+overflow: hidden;
 }
 #dokieli-features ul span {
-  display: block;
-  font-size: 2em;
-  margin: 0;
+display: block;
+font-size: 2em;
+margin: 0;
 }
 #dokieli-features li span:first-child {
-  display: inline-block;
+display: inline-block;
 }
 #dokieli-features li span:last-child {
-  display: inline-block;
-  color: #a8a8a8;
+display: inline-block;
+color: #a8a8a8;
 }
 #dokieli-features ul li a {
-  display: inline-block;
-  color: inherit;
-  text-decoration: none;
-  width: 100%;
+display: inline-block;
+color: inherit;
+text-decoration: none;
+width: 100%;
 }
 
 #dokieli-features ul li:hover,
 #dokieli-features ul li:hover span {
-  background-color: #444;
+background-color: #444;
 }
 #dokieli-features ul i,
 #dokieli-features ul svg {
-  width: 1em;
-  height: 1em;
-  margin: 0 0.2em;
-  padding: 0.3em;
-  text-align: center;
-  /*border-radius: 50%;*/
+width: 1em;
+height: 1em;
+margin: 0 0.2em;
+padding: 0.3em;
+text-align: center;
+/*border-radius: 50%;*/
 }
 #dokieli-features ul svg {
-  font-size:3em;
+font-size:3em;
 }
 
 #dokieli-features i img {
-  width: 100%; display: block;
+width: 100%; display: block;
 }
 
 #read-write-web,
 #figure-dokieli-overview {
-  background-color: #ddd;
+background-color: #ddd;
 }
 #dokieli-features h2,
 #figure-dokieli-overview h2 {
-  display:none;
+display:none;
 }
 #read-write-web {
-  text-align:center;
-  font-size:2em;
-  padding:1em 0;
-  margin-top:1em;
+text-align:center;
+font-size:2em;
+padding:1em 0;
+margin-top:1em;
 }
 #read-write-web:before {
 content:"";
@@ -721,6 +721,9 @@ content:"";
 
 #help-and-shape {
 max-width:50em;
+}
+body > footer h2 {
+margin-top:1em;
 }
 
 
@@ -731,70 +734,70 @@ column-count: 2;
 }
 
 @media screen and (min-width: 980px){
-  body {
-    font-size: 1.2em;
-    line-height: 1.6;
-  }
-  h1 {
-    font-size: 2em;
-  }
+body {
+font-size: 1.2em;
+line-height: 1.6;
+}
+h1 {
+font-size: 2em;
+}
 
-  article > article,
-  section {
-    margin: 1em auto;
-  }
+article > article,
+section {
+margin: 1em auto;
+}
 
-  #dokieli-features,
-  #read-write-web,
-  #figure-dokieli-overview,
-  body > footer {
-    max-width:99.5vw;
-  }
+#dokieli-features,
+#read-write-web,
+#figure-dokieli-overview,
+body > footer {
+max-width:99.5vw;
+}
 
-  dl[id^="document-"], #authors,
-  *[id^=table-of-],
-  #help-and-shape, hr,
-  aside {
-    /*max-width: 50em;*/
-    margin: 0 auto;
-  }
+dl[id^="document-"], #authors,
+*[id^=table-of-],
+#help-and-shape, hr,
+aside {
+/*max-width: 50em;*/
+margin: 0 auto;
+}
 
-  dd {
-    margin-left: 1em
-  }
+dd {
+margin-left: 1em
+}
 
-  #dokieli-features ul {
-    font-size: 1.2em;
-    float: left;
-    width: 100%;
-  }
-  #dokieli-features ul li {
-    float: left;
-    width: 50%;
-    padding: 0.6em 0;
-  }
-  #dokieli-features ul li:nth-child(odd) {
-    text-align:right;
-    clear:left;
-  }
-  #dokieli-features ul li:nth-child(even) {
-    text-align:left;
-  }
-  #dokieli-features ul li span {
-    font-size: 1em;
-  }
-  #dokieli-features ul li span:first-of-type {
-    padding-top: 1em;
-  }
-  #dokieli-features ul li:nth-child(odd) i,
-  #dokieli-features ul li:nth-child(odd) p,
-  #dokieli-features ul li:nth-child(even) svg {
-    float:right;
-  }
-  #dokieli-features ul li:nth-child(even) i,
-  #dokieli-features ul li:nth-child(even) p,
-  #dokieli-features ul li:nth-child(even) svg {
-    float: left;
-  }
+#dokieli-features ul {
+font-size: 1.2em;
+float: left;
+width: 100%;
+}
+#dokieli-features ul li {
+float: left;
+width: 50%;
+padding: 0.6em 0;
+}
+#dokieli-features ul li:nth-child(odd) {
+text-align:right;
+clear:left;
+}
+#dokieli-features ul li:nth-child(even) {
+text-align:left;
+}
+#dokieli-features ul li span {
+font-size: 1em;
+}
+#dokieli-features ul li span:first-of-type {
+padding-top: 1em;
+}
+#dokieli-features ul li:nth-child(odd) i,
+#dokieli-features ul li:nth-child(odd) p,
+#dokieli-features ul li:nth-child(even) svg {
+float:right;
+}
+#dokieli-features ul li:nth-child(even) i,
+#dokieli-features ul li:nth-child(even) p,
+#dokieli-features ul li:nth-child(even) svg {
+float: left;
+}
 }
 /* </dokieli homepage styles> */
