@@ -44,6 +44,14 @@ transition:opacity 1s ease-in-out;
 outline:none;
 }
 
+@keyframes target {
+  50% { background-color:#efe; box-shadow:inset 0px 0px 0px 3px #ccc;}
+}
+
+*:target {
+  animation:target 2s linear;
+}
+
 
 /*Animated adapted from https://github.com/daneden/animate.css using MIT license*/
 .animated {
