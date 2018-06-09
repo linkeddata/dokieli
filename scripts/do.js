@@ -384,13 +384,18 @@ module.exports = {
     "asoutbox": { "@id": "https://www.w3.org/ns/activitystreams#outbox", "@type": "@id", "@array": true },
     "asitems": { "@id": "https://www.w3.org/ns/activitystreams#items", "@type": "@id", "@array": true },
     "asorderedItems": { "@id": "https://www.w3.org/ns/activitystreams#orderedItems", "@type": "@id", "@array": true },
+    "astotalItems": "https://www.w3.org/ns/activitystreams#totalItems",
+    "asfirst": { "@id": "https://www.w3.org/ns/activitystreams#first", "@type": "@id" },
+    "asnext": { "@id": "https://www.w3.org/ns/activitystreams#next", "@type": "@id" },
+    "asCollection": { "@id": "https://www.w3.org/ns/activitystreams#Collection", "@type": "@id" },
+    "asOrderedCollection": { "@id": "https://www.w3.org/ns/activitystreams#OrderedCollection", "@type": "@id" },
 
     "siocreplyof": { "@id": "http://rdfs.org/sioc/ns#reply_of", "@type": "@id", "@array": true },
     "siocavatar": { "@id": "http://rdfs.org/sioc/ns#avatar", "@type": "@id" },
 
     "ldpcontains": { "@id": "http://www.w3.org/ns/ldp#contains", "@type": "@id", "@array": true },
-    "ldpResource": { "@id": "http://www.w3.org/ns/ldp#Resource", "@type": "@id", "@array": true },
-    "ldpContainer": { "@id": "http://www.w3.org/ns/ldp#Container", "@type": "@id", "@array": true },
+    "ldpResource": { "@id": "http://www.w3.org/ns/ldp#Resource", "@type": "@id" },
+    "ldpContainer": { "@id": "http://www.w3.org/ns/ldp#Container", "@type": "@id" },
     "ldpRDFSource": { "@id": "http://www.w3.org/ns/ldp#RDFSource", "@type": "@id" },
     "ldpImmutableResource": { "@id": "http://www.w3.org/ns/ldp#ImmutableResource", "@type": "@id" },
 
@@ -2110,6 +2115,73 @@ var DO = {
       );
     },
 
+
+    getItemsList: function(url, options) {
+      url = url || window.location.origin + window.location.pathname;
+      options = options || {};
+
+      DO.C['CollectionItems'] = ('CollectionItems' in DO.C && DO.C.CollectionItems.length > 0) ? DO.C.CollectionItems : [];
+      DO.C['CollectionPages'] = ('CollectionPages' in DO.C && DO.C.CollectionPages.length > 0) ? DO.C.CollectionPages : [];
+
+      var pIRI = uri.getProxyableIRI(url);
+
+      return fetcher.getResourceGraph(pIRI)
+        .then(
+          function(i) {
+            var s = i.child(url);
+
+            //XXX: First item is actually the Collection
+            DO.C.CollectionPages.push(url);
+
+            // s.ldpcontains.forEach(function(resource) {
+            //   var types = s.child(resource).rdftype;
+            //   if(types.indexOf(DO.C.Vocab['ldpContainer']["@id"]) < 0 && types.indexOf(DO.C.Vocab['asCollection']["@id"]) < 0) {
+            //     DO.C.CollectionItems.push(resource);
+            //   }
+            // });
+            // s.asitems.forEach(function(resource) {
+            //   var types = s.child(resource).rdftype;
+            //   if(types.indexOf(DO.C.Vocab['ldpContainer']["@id"]) < 0 && types.indexOf(DO.C.Vocab['asCollection']["@id"]) < 0) {
+            //     DO.C.CollectionItems.push(resource);
+            //   }
+            // });
+            // s.asorderedItems.forEach(function(resource) {
+            //   var types = s.child(resource).rdftype;
+            //   if(types.indexOf(DO.C.Vocab['ldpContainer']["@id"]) < 0 && types.indexOf(DO.C.Vocab['asCollection']["@id"]) < 0) {
+            //     DO.C.CollectionItems.push(resource);
+            //   }
+            // });
+
+            var items = [s.asitems, s.asorderedItems, s.ldpcontains];
+            Object.keys(items).forEach(function(i) {
+              items[i].forEach(function(resource){
+                var types = s.child(resource).rdftype;
+                if(types.indexOf(DO.C.Vocab['ldpContainer']["@id"]) < 0 &&
+                   types.indexOf(DO.C.Vocab['asCollection']["@id"]) < 0 &&
+                   types.indexOf(DO.C.Vocab['asOrderedCollection']["@id"]) < 0) {
+                  DO.C.CollectionItems.push(resource);
+                }                
+              });
+            });
+
+            if (s.asfirst && DO.C.CollectionPages.indexOf(s.asfirst) < 0) {
+              return DO.U.getItemsList(s.asfirst, options);
+            }
+            else if (s.asnext && DO.C.CollectionPages.indexOf(s.asnext) < 0) {
+              return DO.U.getItemsList(s.asnext, options);
+            }
+            else {
+              return util.uniqueArray(DO.C.CollectionItems);
+            }
+          },
+          function(reason) {
+            console.log(reason);
+            return reason;
+          }
+        );
+    },
+
+
     getNotifications: function(url) {
       url = url || window.location.origin + window.location.pathname;
       var notifications = [];
@@ -2350,7 +2422,7 @@ var DO = {
                       "license": {}
                     };
 
-                    if (s.asactor && s.asactor){
+                    if (s.asactor){
                       noteData['creator'] = {
                         'iri': s.asactor
                       }
