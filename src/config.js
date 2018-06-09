@@ -304,6 +304,11 @@ module.exports = {
     "asoutbox": { "@id": "https://www.w3.org/ns/activitystreams#outbox", "@type": "@id", "@array": true },
     "asitems": { "@id": "https://www.w3.org/ns/activitystreams#items", "@type": "@id", "@array": true },
     "asorderedItems": { "@id": "https://www.w3.org/ns/activitystreams#orderedItems", "@type": "@id", "@array": true },
+    "astotalItems": "https://www.w3.org/ns/activitystreams#totalItems",
+    "asfirst": { "@id": "https://www.w3.org/ns/activitystreams#first", "@type": "@id" },
+    "asnext": { "@id": "https://www.w3.org/ns/activitystreams#next", "@type": "@id" },
+    "asCollection": { "@id": "https://www.w3.org/ns/activitystreams#Collection", "@type": "@id" },
+    "asOrderedCollection": { "@id": "https://www.w3.org/ns/activitystreams#OrderedCollection", "@type": "@id" },
 
     "siocreplyof": { "@id": "http://rdfs.org/sioc/ns#reply_of", "@type": "@id", "@array": true },
     "siocavatar": { "@id": "http://rdfs.org/sioc/ns#avatar", "@type": "@id" },
