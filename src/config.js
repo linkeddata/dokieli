@@ -314,8 +314,8 @@ module.exports = {
     "siocavatar": { "@id": "http://rdfs.org/sioc/ns#avatar", "@type": "@id" },
 
     "ldpcontains": { "@id": "http://www.w3.org/ns/ldp#contains", "@type": "@id", "@array": true },
-    "ldpResource": { "@id": "http://www.w3.org/ns/ldp#Resource", "@type": "@id", "@array": true },
-    "ldpContainer": { "@id": "http://www.w3.org/ns/ldp#Container", "@type": "@id", "@array": true },
+    "ldpResource": { "@id": "http://www.w3.org/ns/ldp#Resource", "@type": "@id" },
+    "ldpContainer": { "@id": "http://www.w3.org/ns/ldp#Container", "@type": "@id" },
     "ldpRDFSource": { "@id": "http://www.w3.org/ns/ldp#RDFSource", "@type": "@id" },
     "ldpImmutableResource": { "@id": "http://www.w3.org/ns/ldp#ImmutableResource", "@type": "@id" },
 
