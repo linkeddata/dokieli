@@ -2710,10 +2710,25 @@ var DO = {
 
                 var dataGraph = SimpleRDF();
 
+                var filterPredicates = false;
+                if ('filter' in options && 'predicates' in options.filter && options.filter.predicates.length > 0) {
+                  filterPredicates = true;
+                }
+
                 Promise.all(promises)
                   .then(function(graphs) {
-                    graphs.forEach(function(g){
-                      dataGraph.graph().addAll(g.graph());
+                    graphs.forEach(function(graph){
+                      graph = graph.graph();
+
+                      if (filterPredicates) {
+                        graph = graph.filter(function(g) {
+                          if (options.filter.predicates.indexOf(g.predicate.nominalValue) >= 0) {
+                            return g;
+                          }
+                        });
+                      }
+
+                      dataGraph.graph().addAll(graph);
                     });
 
                     graph.serializeGraph(dataGraph, { 'contentType': 'text/turtle' })
