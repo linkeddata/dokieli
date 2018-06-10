@@ -2728,16 +2728,16 @@ var DO = {
                     graphs.forEach(function(graph){
                       graph = graph.graph();
 
-                      if (filterPredicates) {
-                        graph = graph.filter(function(g) {
-                          if (options.filter.predicates.indexOf(g.predicate.nominalValue) >= 0) {
-                            return g;
-                          }
-                        });
-                      }
-
                       dataGraph.graph().addAll(graph);
                     });
+
+                    if (filterPredicates) {
+                      dataGraph = dataGraph.graph().filter(function(g) {
+                        if (options.filter.predicates.indexOf(g.predicate.nominalValue) >= 0) {
+                          return g;
+                        }
+                      });
+                    }
 
                     graph.serializeGraph(dataGraph, { 'contentType': 'text/turtle' })
                       .then(function(data){
