@@ -794,13 +794,16 @@ var DO = {
       inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id'], iri).then(
         function(i) {
           i.forEach(function(inboxURL) {
-            DO.U.getNotifications(inboxURL).then(
+            DO.U.getItemsList(inboxURL).then(
               function(i) {
                 var promises = [];
 
                 i.forEach(function(notification) {
-                  var pIRI = uri.getProxyableIRI(notification);
-                  promises.push(graph.getGraph(pIRI));
+                  // console.log(notification);
+                  // window.setTimeout(function () {
+                    var pIRI = uri.getProxyableIRI(notification);
+                    promises.push(graph.getGraph(pIRI));
+                  // }, 1000)
                 });
 
                 var dataGraph = SimpleRDF();
