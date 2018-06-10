@@ -6,7 +6,8 @@ module.exports = {
   getDateTimeISO,
   removeChildren,
   copyTextToClipboard,
-  escapeRegExp
+  escapeRegExp,
+  sleep
 }
 
 /**
@@ -74,4 +75,8 @@ console.log(text)
 //From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
 function escapeRegExp(string){
   return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
