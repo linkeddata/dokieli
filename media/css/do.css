@@ -473,6 +473,7 @@ display:block;
 #document-menu > footer,
 #document-menu #document-views,
 #document-menu #document-metadata {
+position:static !important;
 clear:both;
 float:left;
 width:100%;
@@ -518,6 +519,7 @@ list-style-image:none;
 }
 #document-menu section {
 border:0 !important;
+float:none !important;
 }
 #document-menu section h2 {
 display:none;
