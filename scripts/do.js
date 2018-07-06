@@ -598,7 +598,7 @@ function dumpNode (node, options, skipAttributes, selfClosing, noEsc) {
       } else {
         out += '>'
         out += (ename === 'html') ? '\n  ' : ''
-        noEsc.push(ename === 'style' || ename === 'script')
+        noEsc.push(ename === 'style' || ename === 'script' || ename === 'pre')
         for (var i = 0; i < node.childNodes.length; i++) {
           out += dumpNode(node.childNodes[i], options, skipAttributes, selfClosing, noEsc)
         }
@@ -608,7 +608,8 @@ function dumpNode (node, options, skipAttributes, selfClosing, noEsc) {
     }
   } else if (node.nodeType === 8) {
     // FIXME: If comments are not tabbed in source, a new line is not prepended
-    out += '<!--' + node.nodeValue + '-->'
+    out += '\n\
+<!--' + node.nodeValue + '-->'
   } else if (node.nodeType === 3 || node.nodeType === 4) {
     // XXX: Remove new lines which were added after DOM ready
     let nl = node.nodeValue.replace(/\n+$/, '')
