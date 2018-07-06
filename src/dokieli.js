@@ -1844,6 +1844,9 @@ var DO = {
 
       var article = DO.U.selectArticleNode(rootNode);
 
+      h = '\n\
+' + h;
+
       if(item > -1) {
         for(var i = item; i >= 0; i--) {
           var node = rootNode.querySelector('#' + DO.C.DocumentItems[i]);
@@ -2455,6 +2458,7 @@ var DO = {
       if(!url) return;
 
       DO.U.setDate(document, { 'id': 'document-modified', 'property': 'schema:dateModified', 'title': 'Modified' } );
+      DO.U.setEditSelections();
 
       data = doc.getDocument();
       DO.U.processSave(url, null, data, options).then(() => {
@@ -5204,6 +5208,54 @@ WHERE {\n\
       return rootNode;
     },
 
+    setEditSelections: function(opions) {
+      var options = options || {};
+
+      var documentLicense = 'document-license';
+      var dLS = document.querySelector('#' + documentLicense + ' option:checked');
+
+      if (dLS) {
+        var licenseIRI = dLS.value;
+
+        var dl = dLS.closest('#' + documentLicense);
+        dl.removeAttribute('contenteditable');
+
+        if(licenseIRI == '') {
+          dl.parentNode.removeChild(dl);
+        }
+        else {
+          dl.removeAttribute('class');
+          var dd = dLS.closest('dd');
+          dd.parentNode.removeChild(dd);
+          dd = '<dd><a href="' + licenseIRI+ '" rel="schema:license" title="' + DO.C.License[licenseIRI].description + '">' + DO.C.License[licenseIRI].name + '</a></dd>';
+          dl.insertAdjacentHTML('beforeend', dd);
+        }
+      }
+
+
+      var documentStatus = 'document-status';
+      var dLS = document.querySelector('#' + documentStatus + ' option:checked');
+
+      if (dLS) {
+        var statusIRI = dLS.value;
+
+        var dl = dLS.closest('#' + documentStatus);
+        dl.removeAttribute('contenteditable');
+
+        if(statusIRI == '') {
+          dl.parentNode.removeChild(dl);
+        }
+        else {
+          dl.removeAttribute('class');
+          var dd = dLS.closest('dd');
+          dd.parentNode.removeChild(dd);
+          dd = '<dd prefix="pso: http://purl.org/spar/pso/" rel="pso:holdsStatusInTime" resource="#' + DO.U.generateAttributeId() + '"><span rel="pso:withStatus" resource="' + statusIRI  + '" typeof="pso:PublicationStatus">' + DO.C.PublicationStatus[statusIRI].name + '</span></dd>';
+
+          dl.insertAdjacentHTML('beforeend', dd);
+        }
+      }
+    },
+
     setDate: function(rootNode, options) {
       rootNode = rootNode || document;
       options = options || {};
@@ -5461,7 +5513,7 @@ WHERE {\n\
             var documentLicense = 'document-license';
             var license = document.getElementById(documentLicense);
             if(!license) {
-              var dl = '<dl class="do" id="' + documentLicense + '"><dt>License</dt><dd><select contenteditable="false" name="license">' + DO.U.getLicenseOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
+              var dl = '        <dl class="do" id="' + documentLicense + '"><dt>License</dt><dd><select contenteditable="false" name="license">' + DO.U.getLicenseOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
               DO.U.insertDocumentLevelHTML(document, dl, { 'id': documentLicense });
 
               var dLS = document.querySelector('#' + documentLicense + ' select');
@@ -5476,7 +5528,7 @@ WHERE {\n\
             var documentStatus = 'document-status';
             var status = document.getElementById(documentStatus);
             if(!status) {
-              var dl = '<dl class="do" id="' + documentStatus + '"><dt>Document Status</dt><dd><select contenteditable="false" name="status">' + DO.U.getPublicationStatusOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
+              var dl = '        <dl class="do" id="' + documentStatus + '"><dt>Document Status</dt><dd><select contenteditable="false" name="status">' + DO.U.getPublicationStatusOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
               DO.U.insertDocumentLevelHTML(document, dl, { 'id': documentStatus });
 
               var dSS = document.querySelector('#' + documentStatus + ' select');
@@ -5491,49 +5543,8 @@ WHERE {\n\
           }
           else if (e && (e.target.closest('button.editor-disable') || e.target.closest('button.review-enable'))) {
             DO.C.ContentEditable = false;
-            var documentLicense = 'document-license';
-            var dLS = document.querySelector('#' + documentLicense + ' option:checked');
 
-            if (dLS) {
-              var licenseIRI = dLS.value;
-
-              var dl = dLS.closest('#' + documentLicense);
-              dl.removeAttribute('contenteditable');
-
-              if(licenseIRI == '') {
-                dl.parentNode.removeChild(dl);
-              }
-              else {
-                dl.removeAttribute('class');
-                var dd = dLS.closest('dd');
-                dd.parentNode.removeChild(dd);
-                dd = '<dd><a href="' + licenseIRI+ '" rel="schema:license" title="' + DO.C.License[licenseIRI].description + '">' + DO.C.License[licenseIRI].name + '</a></dd>';
-                dl.insertAdjacentHTML('beforeend', dd);
-              }
-            }
-
-
-            var documentStatus = 'document-status';
-            var dLS = document.querySelector('#' + documentStatus + ' option:checked');
-
-            if (dLS) {
-              var statusIRI = dLS.value;
-
-              var dl = dLS.closest('#' + documentStatus);
-              dl.removeAttribute('contenteditable');
-
-              if(statusIRI == '') {
-                dl.parentNode.removeChild(dl);
-              }
-              else {
-                dl.removeAttribute('class');
-                var dd = dLS.closest('dd');
-                dd.parentNode.removeChild(dd);
-                dd = '<dd prefix="pso: http://purl.org/spar/pso/" rel="pso:holdsStatusInTime" resource="#' + DO.U.generateAttributeId() + '"><span rel="pso:withStatus" resource="' + statusIRI  + '" typeof="pso:PublicationStatus">' + DO.C.PublicationStatus[statusIRI].name + '</span></dd>';
-
-                dl.insertAdjacentHTML('beforeend', dd);
-              }
-            }
+            DO.U.setEditSelections();
           }
 
           document.querySelectorAll('.do').forEach(function(node){
