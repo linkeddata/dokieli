@@ -399,6 +399,9 @@ margin:0;
 width:20em;
 }
 
+.do .hide {
+visibility: initial !important;
+}
 
 #document-items {
 top:0;
