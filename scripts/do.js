@@ -603,7 +603,7 @@ function dumpNode (node, options, skipAttributes, selfClosing, noEsc) {
           out += dumpNode(node.childNodes[i], options, skipAttributes, selfClosing, noEsc)
         }
         noEsc.pop()
-        out += (ename === 'body') ? '</' + ename + '>' + '\n' : '</' + ename + '>'
+        out += (ename === 'body' || ename === 'html') ? '</' + ename + '>' + '\n' : '</' + ename + '>'
       }
     }
   } else if (node.nodeType === 8) {
