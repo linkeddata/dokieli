@@ -343,8 +343,22 @@ hr:before {
 content:"\2042";
 }
 
-body > footer { margin-top:2em; }
+
+body > footer {
+overflow: hidden;
+padding-top: 1em;
+padding-bottom: 1em;
+background-color: #333;
+color: #eee;
+margin-top:2em;
+}
+body > footer > * {
+max-width:50em;
+}
 body > footer a, body > footer a:hover { color: inherit; }
+body > footer h2 {
+margin-top:1em;
+}
 
 figure,
 audio,
@@ -639,15 +653,13 @@ margin-right: calc(-50vw + 50%);
 text-align: center;
 }
 
-#dokieli-features,
-body > footer {
+#dokieli-features {
 overflow: hidden;
 padding-top: 1em;
 padding-bottom: 1em;
 background-color: #333;
 color: #eee;
 }
-
 
 #dokieli-features ul {
 list-style-type: none;
@@ -718,15 +730,6 @@ margin-top:1em;
 content:"";
 }
 
-
-#help-and-shape {
-max-width:50em;
-}
-body > footer h2 {
-margin-top:1em;
-}
-
-
 ul#program-committee {
 column-count: 2;
 -moz-column-count: 2;
@@ -756,7 +759,8 @@ max-width:99.5vw;
 
 dl[id^="document-"], #authors,
 *[id^=table-of-],
-#help-and-shape, hr,
+body > footer > *,
+hr,
 aside {
 /*max-width: 50em;*/
 margin: 0 auto;
