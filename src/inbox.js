@@ -208,6 +208,11 @@ function getEndpointFromRDF (property, url, subjectIRI) {
               return [s.oaannotationService.at(0)]
             }
             break
+          default:
+            if (s[property]._array.length > 0) {
+              return [s[property].at(0)]
+            }
+            break
         }
 
         throw new Error(property + ' endpoint was not found in message body')
