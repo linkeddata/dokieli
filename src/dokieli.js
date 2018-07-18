@@ -794,8 +794,8 @@ var DO = {
         DO.U.showGraphResources(resources, selector, options);
       }
       else {
+        var property = (resources && 'filter' in options && 'predicates' in options.filter && options.filter.predicates.length > 0) ? options.filter.predicates[0] : DO.C.Vocab['ldpinbox']['@id'];
         var iri = (resources) ? resources : location.href.split(location.search||location.hash||/[?#]/)[0];
-        var property = ('filter' in options && 'predicates' in options.filter && options.filter.predicates.length > 0) ? options.filter.predicates[0] : DO.C.Vocab['ldpinbox']['@id'];
 
         inbox.getEndpoint(property, iri).then(
           function(resources) {
