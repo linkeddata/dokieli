@@ -785,65 +785,84 @@ var DO = {
       });
     },
 
-    showInboxGraph: function(url, selector, options){
-      var iri = url || location.href.split(location.search||location.hash||/[?#]/)[0];
+    showGraph: function(resources, selector, options){
       options = options || {};
       options['contentType'] = options.contentType || 'text/html';
-      options['subjectURI'] = options.subjectURI || iri;
+      options['subjectURI'] = location.href.split(location.search||location.hash||/[?#]/)[0];
 
-      inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id'], iri).then(
-        function(i) {
-          i.forEach(function(inboxURL) {
-            DO.U.getItemsList(inboxURL).then(
-              function(i) {
-                var promises = [];
+      if (Array.isArray(resources)) {
+        DO.U.showGraphResources(resources, selector, options);
+      }
+      else {
+        var iri = (resources) ? resources : location.href.split(location.search||location.hash||/[?#]/)[0];
+        var property = ('filter' in options && 'predicates' in options.filter && options.filter.predicates.length > 0) ? options.filter.predicates[0] : DO.C.Vocab['ldpinbox']['@id'];
 
-                i.forEach(function(notification) {
-                  // console.log(notification);
-                  // window.setTimeout(function () {
-                    var pIRI = uri.getProxyableIRI(notification);
-                    promises.push(graph.getGraph(pIRI));
-                  // }, 1000)
-                });
+        inbox.getEndpoint(property, iri).then(
+          function(resources) {
+            DO.U.showGraphResources(resources, selector, options);
+          },
+          function(reason) {
+            console.log(reason);
+          }
+        );
+      }
+    },
 
-                var dataGraph = SimpleRDF();
+    showGraphResources: function(resources, selector, options) {
+      selector = selector || document.body;
+      options = options || {};
 
-                var filterPredicates = false;
-                if ('filter' in options && 'predicates' in options.filter && options.filter.predicates.length > 0) {
-                  filterPredicates = true;
-                }
-
-                Promise.all(promises)
-                  .then(function(graphs) {
-                    graphs.forEach(function(graph){
-                      graph = graph.graph();
-
-                      dataGraph.graph().addAll(graph);
-                    });
-
-                    if (filterPredicates) {
-                      dataGraph = dataGraph.graph().filter(function(g) {
-                        if (options.filter.predicates.indexOf(g.predicate.nominalValue) >= 0) {
-                          return g;
-                        }
-                      });
-                    }
-
-                    graph.serializeGraph(dataGraph, { 'contentType': 'text/turtle' })
-                      .then(function(data){
-                        options['contentType'] = 'text/turtle';
-                        options['subjectURI'] = inboxURL;
-
-                        DO.U.showVisualisationGraph(inboxURL, data, selector, options);
-                      });
-                  });
-              });
-          });
-        },
-        function(reason) {
-          console.log(reason);
+      var processResources = function(resources, options) {
+        if (Array.isArray(resources)) {
+          return Promise.resolve(resources);
         }
-      );
+        else {
+          return DO.U.getItemsList(resources, options);
+        }
+      }
+
+      processResources(resources, options).then(
+        function(url) {
+          var promises = [];
+          url.forEach(function(u) {
+            // console.log(u);
+            // window.setTimeout(function () {
+              var pIRI = uri.getProxyableIRI(u);
+              promises.push(fetcher.getResourceGraph(pIRI));
+            // }, 1000)
+          });
+
+          var dataGraph = SimpleRDF();
+
+          var filterPredicates = false;
+          if ('filter' in options && 'predicates' in options.filter && options.filter.predicates.length > 0) {
+            filterPredicates = true;
+          }
+
+          Promise.all(promises)
+            .then(function(graphs) {
+              graphs.forEach(function(graph){
+                graph = graph.graph();
+
+                dataGraph.graph().addAll(graph);
+              });
+
+              if (filterPredicates) {
+                dataGraph = dataGraph.graph().filter(function(g) {
+                  if (options.filter.predicates.indexOf(g.predicate.nominalValue) >= 0) {
+                    return g;
+                  }
+                });
+              }
+
+              graph.serializeGraph(dataGraph, { 'contentType': 'text/turtle' })
+                .then(function(data){
+                  options['contentType'] = 'text/turtle';
+                  // options['subjectURI'] = url;
+                  DO.U.showVisualisationGraph(options.subjectURI, data, selector, options);
+                });
+            });
+        });
     },
 
     urlParam: function(name) {
