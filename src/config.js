@@ -251,6 +251,8 @@ module.exports = {
     "schemadateModified": "http://schema.org/dateModified",
     "schemadatePublished": "http://schema.org/datePublished",
     "schemadescription": "http://schema.org/description",
+    "schemahasPart": { "@id": "http://schema.org/hasPart", "@type": "@id", "@array": true }, 
+    "schemaisPartOf": { "@id": "http://schema.org/isPartOf", "@type": "@id", "@array": true },
 
     "dctermstitle": "http://purl.org/dc/terms/title",
     "dctermsdescription": "http://purl.org/dc/terms/description",
@@ -260,6 +262,8 @@ module.exports = {
     "dctermscreated": "http://purl.org/dc/terms/created",
     "dctermsrights": { "@id": "http://purl.org/dc/terms/rights", "@type": "@id" },
     "dctermsconformsTo": { "@id": "http://purl.org/dc/terms/conformsTo", "@type": "@id" },
+    "dctermshasPart": { "@id": "http://purl.org/dc/terms/hasPart", "@type": "@id", "@array": true },
+    "dctermsisPartOf": { "@id": "http://purl.org/dc/terms/isPartOf", "@type": "@id", "@array": true },
 
     "skosprefLabel": { "@id": "http://www.w3.org/2004/02/skos/core#prefLabel", "@type": "@id", "@array": true },
 
