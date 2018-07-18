@@ -799,7 +799,7 @@ var DO = {
 
         inbox.getEndpoint(property, iri).then(
           function(resources) {
-            DO.U.showGraphResources(resources, selector, options);
+            DO.U.showGraphResources(resources[0], selector, options);
           },
           function(reason) {
             console.log(reason);
