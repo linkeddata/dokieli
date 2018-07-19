@@ -2702,6 +2702,8 @@ var DO = {
     },
 
     showGraph: function(resources, selector, options){
+      if (!DO.C.GraphViewerAvailable) { return; }
+
       options = options || {};
       options['contentType'] = options.contentType || 'text/html';
       options['subjectURI'] = location.href.split(location.search||location.hash||/[?#]/)[0];
