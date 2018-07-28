@@ -265,6 +265,9 @@ display:inline-block !important;
 aside.do.on section {
 margin-top:1em;
 }
+aside.do.on > h2 {
+margin-top:0.5em;
+}
 
 #share-resource.do.on li {
 margin:0 0 0.5em 0;
