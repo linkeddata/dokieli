@@ -536,6 +536,7 @@ th, td {
 padding:0.25em;
 vertical-align:baseline;
 font-size:0.923em;
+word-wrap:normal;
 }
 table ul,
 table ol,
