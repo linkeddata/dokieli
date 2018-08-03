@@ -1,0 +1,1080 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>dokieli documentation dokieli文档中英文版</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <link href="media/css/basic.css" media="all" rel="stylesheet" title="Basic" />
+    <link href="https://dokie.li/media/css/lncs.css" media="all" rel="stylesheet alternate" title="LNCS" />
+    <link href="https://dokie.li/media/css/acm.css" media="all" rel="stylesheet alternate" title="ACM" />
+    <link href="https://www.w3.org/StyleSheets/TR/2016/W3C-ED" rel="stylesheet alternate" media="all" title="W3C-ED" />
+    <link href="media/css/do.css" media="all" rel="stylesheet" />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" rel="stylesheet" />
+    <script src="scripts/simplerdf.js"></script>
+    <script src="scripts/medium-editor.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="scripts/do.js"></script>
+    <script src="https://res.chenyaojun.com/js/translate.js"></script>
+    
+</head>
+
+<body about="" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ dctypes: http://purl.org/dc/dcmitype/ foaf: http://xmlns.com/foaf/0.1/ pimspace: http://www.w3.org/ns/pim/space# cc: https://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# qb: http://purl.org/linked-data/cube# schema: http://schema.org/ void: http://rdfs.org/ns/void# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# bibo: http://purl.org/ontology/bibo/ sioc: http://rdfs.org/sioc/ns# doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp# solid: http://www.w3.org/ns/solid/terms# acl: http://www.w3.org/ns/auth/acl# dio: https://w3id.org/dio#" typeof="schema:CreativeWork sioc:Post prov:Entity">
+    <button style="height:26px;width:80px;" onclick="showLang('en')">English</button> <button style="height:26px;width:80px;" onclick="showLang('zh')">中文</button>
+    <main>
+        <article about="" typeof="schema:Article">
+            <h1 property="schema:name">
+                <span lang="en">dokieli documentation</span>
+                <span lang="zh">dokieli 文档</span>
+            </h1>
+
+            <dl id="document-identifier">
+                <dt><span lang="en">Identifier</span><span lang="zh">标识地址</span></dt>
+                <dd><a href="https://dokie.li/docs" rel="owl:sameAs">https://dokie.li/docs</a></dd>
+            </dl>
+
+            <dl id="document-published">
+                <dt><span lang="en">Published</span><span lang="zh">发布时间</span></dt>
+                <dd><time content="2017-07-15T00:00:00Z" datatype="xsd:dateTime" datetime="2017-07-15T00:00:00Z" property="schema:datePublished">2017-07-15</time></dd>
+            </dl>
+
+            <dl id="document-modified">
+                <dt><span lang="en">Modified</span><span lang="zh">修改时间</span></dt>
+                <dd><time content="2017-08-14T00:00:00Z" datatype="xsd:dateTime" datetime="2017-08-14T00:00:00Z" property="schema:dateModified">2017-08-14</time></dd>
+            </dl>
+
+            <dl id="document-license">
+                <dt><span lang="en">License</span><span lang="zh">许可证</span></dt>
+                <dd><a href="https://creativecommons.org/licenses/by/4.0/" rel="schema:license" title="Creative Commons Attribution 4.0 Unported">CC BY 4.0</a></dd>
+            </dl>
+
+            <div id="content">
+                <section id="abstract">
+                    <h2>
+                        <span lang="en">Abstract</span>
+                        <span lang="zh">摘要</span>
+                    </h2>
+                    <div datatype="rdf:HTML" property="schema:abstract">
+                        <p lang="en">This documentation is intended to help brave developers and authors. It explains dokieli's principles, architectural and design patterns.</p>
+                        <p lang="zh">
+                            本文档旨在帮助勇敢的开发人员和作者。它解释了dokieli的原则，架构和设计模式。
+                        </p>
+                    </div>
+                </section>
+
+                <section id="document-status" rel="schema:hasPart" resource="#document-status">
+                    <h2 about="#document-status" property="schema:name" typeof="bibo:DocumentStatus">
+                        <span lang="en">Document Status</span>
+                        <span lang="zh">文档状态</span>
+                    </h2>
+                    <div datatype="rdf:HTML" property="schema:description">
+                        <p lang="en">Living document.</p>
+                        <p lang="zh">活文档</p>
+                    </div>
+                </section>
+
+                <nav id="table-of-contents">
+                    <h2>Table of Contents</h2>
+                    <div>
+                        <ol class="toc">
+                            <li data-id="abstract">
+                                <a href="#abstract"><span lang="en">Abstract</span><span lang="zh">摘要</span></a>
+                            </li>
+                            <li data-id="document-status"><a href="#document-status"><span lang="en">Document Status</span><span lang="zh">文档状态</span></a></li>
+                            <li data-id="principles"><a href="#principles"><span lang="en">Principles</span><span lang="zh">原则</span></a></li>
+                            <li data-id="structure-and-semantics"><a href="#structure-and-semantics"><span lang="en">Structure and Semantics</span><span lang="zh">结构和语义</span></a><ol><li data-id="dokieli-documents"><a href="#dokieli-documents"><span lang="en">dokieli documents</span><span lang="zh">dokieli文档</span></a></li><li data-id="html-patterns"><a href="#html-patterns"><span lang="en">HTML patterns</span><span lang="zh">HTML模式</span></a><ol><li data-id="html-article"><a href="#html-article"><span lang="en">Article</span><span lang="zh">文章</span></a></li><li data-id="html-annotation"><a href="#html-annotation"><span lang="en">Annotation</span><span lang="zh">标注</span></a></li><li data-id="html-notification"><a href="#html-notification"><span lang="en">Notification</span><span lang="zh">通知</span></a></li></ol></li></ol></li>
+                            <li data-id="user-interface"><a href="#user-interface"><span lang="en">User interface</span><span lang="zh">用户界面</span></a><ol><li data-id="document-modes"><a href="#document-modes"><span lang="en">Document modes</span><span lang="zh">文档模式</span></a></li><li data-id="dokieli-menu"><a href="#dokieli-menu"><span lang="en">dokieli menu</span><span lang="zh">dokieli菜单</span></a></li></ol></li>
+                            <li data-id="http-operations"><a href="#http-operations"><span lang="en">HTTP operations</span><span lang="zh">HTTP操作</span></a></li>
+                            <li data-id="authentication"><a href="#authentication"><span lang="en">Authentication</span><span lang="zh">认证</span></a></li>
+                            <li data-id="storage"><a href="#storage"><span lang="en">Storage</span><span lang="zh">存储</span></a></li>
+                            <li data-id="web-extension"><a href="#web-extension"><span lang="en">Web Extension</span><span lang="zh">WEB扩展</span></a></li>
+                            <li data-id="development"><a href="#development"><span lang="en">Development</span><span lang="zh">开发</span></a></li>
+                        </ol>
+                    </div>
+                </nav>
+
+                <section id="principles" inlist="" rel="schema:hasPart" resource="#principles">
+                    <h2 property="schema:name"><span lang="en">Principles</span><span lang="zh">原则</span></h2>
+                    <div datatype="rdf:HTML" property="schema:description">
+                        <p lang="en">Towards improving the <em>write</em> dimension of the <em>read-write</em> Web, dokieli's design subscribes to the following principles: freedom of expression, interoperability, decentralisation, evolvability, universal access, separation of concerns, <code>█ + █ > = █ █</code>.</p>
+                        <p lang="zh">
+                            为了提高<em>读-写</em>网络的<em>写入</em> dokieli 的设计提供了以下原则: 表达自由、互操作性、去中心化、可进化、普遍访问、关注分离, <code>█ + █ > = █ █</code>。
+                        </p>
+                    </div>
+                </section>
+
+                <section id="structure-and-semantics" inlist="" rel="schema:hasPart" resource="#structure-and-semantics">
+                    <h2 property="schema:name"><span lang="en">Structure and Semantics</span><span lang="zh">结构和语义</span></h2>
+                    <div datatype="rdf:HTML" property="schema:description">
+                        <p lang="en">This section describes dokieli's practices, and offers some guidelines for developers and authors that would like to maintain uniformity in what they create. Consumers of dokieli should not treat the information here as a <em>profile</em>, or as a yet another super or subset of HTML+RDFa when they author or build new functionality. Creating articles, annotations, and notifications in dokieli is intended to be done through its UI, where it takes care of majority of the semantic content generation. The information here however can be useful for authors that would like to combine hand coding with the functionality that dokieli's UI provides. Takeaway what you find useful, there is no proprietary lock-in here.</p>
+                        <p lang="zh">
+                            本节介绍 dokieli的实践, 并希望为在创建中保持一致性的开发人员和作者提供一些指导。dokieli 的使用者在创作或构建新的功能时不应该将这里的信息作为一个<em>配置文件</em>, 或者作为 HTML + RDFa 的另一个超级或子集。在 dokieli 中创建文章、注释和通知的目的是通过它的 UI 来完成, 它负责处理大部分语义内容生成。但是这里的信息对于希望将手工编码与 dokieli 的 UI 提供的功能结合起来的作者来说是有用的。将您发现有用的拿走，这里没有专利的枷锁锁。
+                        </p>
+
+                        <p id="separation-of-concerns">
+                            <span lang="en">
+                                dokieli adopts <cite>progressive enhancement</cite> strategy for the structural, presentational, and behavioural layers to allow content and base functionality to be accessible through different media and devices. The content in HTML+RDFa that dokieli produces <em>is</em> accessible (readable) without requiring any CSS or JavaScript, ie. text-browser safe. Breaking this "rule" in future development should be considered an anti-pattern (or a bug) in dokieli.
+                            </span>  <span lang="zh">
+                                dokieli 对结构、表述和行为层采用<cite>渐进式增强</cite>策略, 允许通过不同的媒体和设备访问内容和基本功能。dokieli 生成的 HTML + RDFa 中的内容<em>是</em>可以访问 (可读的), 而不需要任何 CSS 或 JavaScript。即文本浏览安全。打破这个 "规则" 在未来的dokieli开发中应被认为是反模式 (或错误)。
+                            </span>
+                        </p>
+
+
+                        <p id="serialisations">
+                            <span lang="en">dokieli can serialise articles, annotations, and notifications in HTML+RDFa, Turtle, and JSON-LD, depending on server content-negotiation. Articles are represented in HTML+RDFa so that information is usable by both humans and machine consumers while maintaining lowest requirements for publishing, eg. a single URL with full payload in HTML+RDFa can be accessible from any HTTP server. No additional requirements necessary from clients (eg. JavaScript support and enabled) or servers (eg. additional RDF based content-negotiation). For annotations and notifications, dokieli first meets interoperability requirements (for protocols and vocabularies), and remains flexible about the serialisation that servers prefer. Similarly for consuming content, it can work with any of the serialisations as mentioned.</span>
+                            <span lang="zh">
+                                dokieli 可以用HTML+RDFa、Turtle和 JSON-LD序列化文章、注释和通知, 具体取决于服务器内容协商。文章以 HTML+RDFa 的形式表示, 以便人类和机器消费者都能使用信息, 同时保持发布的最低要求。可以从任何 HTTP 服务器访问 HTML+RDFa 中具有完整有效负载的单个URL。对客户端(例如JavaScript 支持和启用) 或 服务器 (例如, 其他基于 RDF 的内容协商)来说不需要来额外要求。对于注释和通知, dokieli 首先满足互操作性要求 (针于协议和词汇表), 并且对服务器更喜欢的序列化保持灵活性。同样, 对于内容的使用, 它可以与前面提到的任何序列化形式一起使用。
+                            </span>
+                        </p>
+
+
+                        <p id="human-machine-readable">
+                            <span lang="en">dokieli takes the approach of having all human-visible content in HTML, and all structured statements be made in context of their content in RDFa. This is optimal in avoiding data duplication in the same document which happens to be the case with the other serialisations in RDF. The approach also helps to avoid the creation and usage of multiple data islands, ie. separately for humans and machines. It is efficient in that it has no dependency on JavaScript in order to make the hidden machine-readable content be consumable from a human user interface. One exception to this rule is allowing authors to use the <cite>Embed Data</cite> feature to include Turtle, JSON-LD, or TriG data blocks for alternative reasons.</span>
+                            <span lang="zh">
+                                dokieli 采用HTML中所有人可见内容的方法, 所有结构化的语句都是在 RDFa 的内容的上下文中进行的。这样最好的避免了使用RDF进行序列化时在同一文件中的数据重复。该方法还有助于避免创建和使用多个数据孤岛，即将人和机器分开。因为它不依赖 JavaScript, 所以，为了使隐藏的机器可读的内容在人类用户界面的使用是有效的。此规则的一个例外是，因其它原因允许作者使用 "嵌入数据" 功能将Turtle、JSON-LD 或 TriG数据块包含在其中。
+                            </span>
+                        </p>
+
+
+                        <section id="dokieli-documents" inlist="" rel="schema:hasPart" resource="#dokieli-documents">
+                            <h3 property="schema:name"><span lang="en">dokieli documents</span><span lang="zh">dokieli 文档</span> </h3>
+                            <div datatype="rdf:HTML" property="schema:description">
+                                <p lang="en">Is there such thing as a "dokieli" document? Must there be?</p>
+                                <p lang="zh">有这样的“dokieli”文档吗？肯定有吗？</p>
+
+                                <dl>
+                                    <dt><span lang="en">Article</span><span lang="zh">文章</span></dt>
+                                    <dd>
+                                        <span lang="en">An article may contain RDF classes like <samp>schema:CreativeWork sioc:Post prov:Entity schema:Article</samp>, otherwise, there is no unique data that would indicate that it is a "dokieli" document. If the HTML+RDFa representation includes do.js and the DOM is ready, the <code>DO</code>: <code>Object { C: {…}, U: {…} }</code> will be available.</span>
+                                        <span lang="zh">一篇文章可能包含象 <samp>schema:CreativeWork sioc:Post prov:Entity schema:Article</samp>这样的类，否则，没有独特的数据表明它是"dokieli" 文档。如果HTML+RDFa 表述包含do.js并且DOM已经准备好，则<code>DO</code>: <code>Object { C: {…}, U: {…} }</code> 将可用。</span>
+                                    </dd>
+
+                                    <dt><span lang="en">Annotation</span><span lang="zh">标注</span></dt>
+                                    <dd>
+                                        <span lang="en">An annotation has the <code>oa:Annotation</code> class. It is possible to know that the article was rendered by dokieli: <code>?s oa:renderedVia &lt;https://dokie.li/&gt;</code>, and we can assume that the annotation was created by it as well. This is not strictly true since that property could have been put there by something else. Annotations represented in HTML+RDFa do not include do.js.</span>
+                                        <span lang="zh">
+                                            一个标注有一个<code>oa:Annotation</code>类。有可能知道文章是由 dokieli生成的: <code>?s oa:renderedVia &lt;https://dokie.li/&gt;</code>, 并可以假设标注是由它创建的。 因为该属性可以被其它别的东西放在那儿，所以严格说也不一定正确。在HTML+RDFa表示的标注不包括do.js.
+                                        </span>
+                                    </dd>
+
+                                    <dt><span lang="en">Notification</span><span lang="zh">通知</span></dt>
+                                    <dd>
+                                        <span lang="en">A notification may have one of the following classes: <code>as:Announce</code>, <code>as:Like</code>, <code>as:Dislike</code>, <code>as:Relationship</code>. Notifications represented in HTML+RDFa do not include do.js.</span>
+                                        <span lang="zh">一个通知可能是下列类之一: <code>as:Announce</code>, <code>as:Like</code>, <code>as:Dislike</code>, <code>as:Relationship</code>. 在HTML+RDFa中表示的通知不包括do.js.</span>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </section>
+
+                        <section id="html-patterns" inlist="" rel="schema:hasPart" resource="#html-patterns">
+                            <h3 property="schema:name"><span lang="en">HTML patterns</span><span lang="zh">HTML 模式</span></h3>
+                            <div datatype="rdf:HTML" property="schema:description">
+                                <p lang="en">One of the goals of dokieli is not to impose arbitrary restrictions on type of nodes as well as the order they should be in HTML+RDFa. It has its own design patterns. It is an ongoing work to make dokieli as flexible as it can be on what it can consume. Ultimately, well-formed and valid HTML - along with accompanying RDFa, Turtle, JSON-LD, TriG etc - is the only requirement here. Take what you like:</p>
+                                <p lang="zh">
+                                    dokieli 的目标之一是不对节点的类型以及在HTML+RDFa中应具有的顺序施加任意限制。它有自己的设计模式。这是正在让dokieli在使用的时候尽可能的灵活，最终, 良好的格式和有效的 HTML——连同RDFa, Turtle，JSON-LD, TriG等——仅在这里是需要的。可以采用你喜欢的形式:
+                                </p>
+
+                                <dl>
+                                    <dt id="html-markup-syntax"><span lang="en">Markup syntax</span><span lang="zh">标记语法</span></dt>
+                                    <dd>
+                                        <span lang="en">HTML5 <cite><a href="https://www.w3.org/TR/html-polyglot/" rel="cito:citesAsAuthority">Polyglot Markup</a></cite> is used to ensure that when content is processed or served as HTML or XHTML (<code>text/html</code>, <code>application/xhtml+xml</code>), they can generally be used in both HTML and XML ecosystems without further intervention. See also <var>getDocument</var> (do.js) for details on DOM normalisation.</span>
+                                        <span lang="zh">
+                                            HTML5 <cite><a href="https://www.w3.org/TR/html-polyglot/" rel="cito:citesAsAuthority">多元标记</a></cite> 用于确保当内容被处理成或用作HTML工XHTML (<code>text/html</code>, <code>application/xhtml+xml</code>)时，它们通常可以在HTML和XML生态中使用，而无需进一步干预。对于DOM规范化的详细信息，参见 <var>getDocument</var> (do.js) 。
+                                        </span>
+                                    </dd>
+
+                                    <dt id="html-identifiers"><span lang="en">Identifiers</span><span lang="zh">标识符</span></dt>
+                                    <dd>
+                                        <span lang="en">Unique identifiers (<code>@id</code>) may be placed on any element. Identifiers are auto-generated by normalising some input eg. <code>section</code>s use their heading's text content as input, <code>table</code>s from <code>caption</code>. Anything of importance should have an identifier, and aimed to be included for common patterns out of the box. <code>@id</code> values are reused in RDFa. See also <var>generateAttributeId</var> (do.js) and its application in different places.</span>
+                                        <span lang="zh">可以将唯一标识符(<code>@id</code>) 放在任何元素上。标识符在规范化一些输入时自动生成，例如 <code>section</code>使用它们的标题文本作为输入，<code>table</code>则取自 <code>caption</code>。任何重要的东西都应该有一个标识符，并且目标是将常用模式包含在里面开箱可用。 <code>@id</code> 值在RDFa中重用。参见 <var>generateAttributeId</var> (do.js) 和它在不同地方的应用。</span>
+                                    </dd>
+
+                                    <dt id="html-outline"><span lang="en">Outline</span><span lang="zh">大纲</span></dt>
+                                    <dd>
+                                        <ul>
+                                            <li>
+                                                <span lang="en"><code>title</code> is used.</span>
+                                                <span lang="zh">使用<code>title</code>。</span>
+                                            </li>
+                                            <li>
+                                                <span lang="en"><code>main &gt; article</code> (querySelector) is considered to be the location of the primary content.</span>
+                                                <span lang="zh">
+                                                    我们认为<code>main &gt; article</code> (querySelector) 是主内容的定位。
+                                                </span>
+                                            </li>
+                                            <li>
+                                                <span lang="en"><code>h1</code> is typically the first element node after <code>main &gt; article</code></span>
+                                                <span lang="zh">
+                                                    <code>h1</code> 通常是<code>main &gt; article</code>之后的第一个元素节点。
+                                                </span>
+                                            </li>
+                                            <li>
+                                                <span lang="en">There is a resource type, eg. <code>schema:Article</code> that can be found in <code>main &gt; article</code> which is about the article. <code>body</code> may contain broad classes.</span>
+                                                <span lang="zh">
+                                                    有一种资源类型，例如<code>schema:Article</code>是关于文章，可以在<code>main &gt; article</code> 中找到。 <code>body</code> 可能包含更宽的类。
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </dd>
+
+                                    <dt id="html-section"><span lang="en">Section</span><span lang="zh">分节</span></dt>
+                                    <dd>
+                                        <span lang="en"> Sectioning is declared with <code>section</code> and typically have a heading, eg. <code>h2</code> as its first child. Subsections may appear as a child of parent <code>section</code>, or as a child of <code>div</code> (which is a child of parent <code>section</code>), ie. <code>section section</code> or <code>section div section</code>. The headings of subsections are enumerated eg. <code>section h2</code> would have a subsection with <code>section h3</code>. Sections <code>id</code>s and heading text are used to dynamically build the table of contents.</span>
+                                        <span lang="zh"> 分节是用<code>section</code>声明，通常有一个标题，例如 <code>h2</code> 作为它的第一个子元素。子节可以作为父<code>section</code>的子元素, 或者作为<code>div</code>（它是父<code>section</code>的子元素）的子元素）如<code>section section</code> 或 <code>section div section</code>. 子节的标题列举如下<code>section h2</code> 可以有个子分节<code>section h3</code>。分节<code>id</code>和标题文本用于动态生成目录。</span>
+                                        <figure class="listing" id="html-section-source" rel="schema:hasPart" resource="#html-section-source">
+                                            <pre about="#html-section-source" lang="" property="schema:description" typeof="fabio:Script" xml:lang=""><code class="highlight-section">&lt;section&gt;</code>
+<samp class="highlight-h2">  &lt;h2&gt;</samp>
+<code class="highlight-div">  &lt;div&gt;</code>
+<code class="highlight-section">    &lt;section&gt;</code>
+<samp class="highlight-h3">      &lt;h3&gt;</samp>
+<code class="highlight-div">      &lt;div&gt;</code>
+<code class="highlight-div">      &lt;div&gt;</code>
+<code class="highlight-aside">      &lt;aside&gt;</code>
+<code class="highlight-section">&lt;section&gt;</code>
+<samp class="highlight-h2">  &lt;h2&gt;</samp>
+<code class="highlight-section">  &lt;section&gt;</code>
+<samp class="highlight-h3">    &lt;h3&gt;</samp></pre>
+                                            <figcaption property="schema:name">
+                                                <span lang="en"><samp class="highlight-h2">h2</samp> and <samp class="highlight-h3">h3</samp> are used for <code class="highlight-section">section</code> titles, <code class="highlight-div">div</code> as a typical wrapper (eg. for <em>descriptions</em>), as well as to contain further sub-sectioned content.</span>
+                                                <span lang="zh"><samp class="highlight-h2">h2</samp>和 <samp class="highlight-h3">h3</samp> 用作 <code class="highlight-section">section</code> 标题，<code class="highlight-div">div</code> 作为典型的(eg.  <em>描述</em>)的包装器，以及包含更多的子分节内容。</span>
+                                            </figcaption>
+                                        </figure>
+                                    </dd>
+
+                                    <dt id="html-aside"><span lang="en">Aside</span><span lang="zh">侧边栏</span></dt>
+                                    <dd>
+                                        <span lang="en"><code>aside</code>s can technically appear anywhere, but tend to appear as the last element node in <code>section</code>, eg. for related content, footnotes. If the <code>aside</code> is introduced to the DOM via JavaScript for like annotations, they have a similar structure to <code>section</code>.</span>
+                                        <span lang="zh"><code>aside</code>在技术上可以出现在任何地方，但往往出现在最后一个<code>section</code>节点的元素中，例如相关内容，脚注等。如果<code>aside</code>通过JavaScript作为标注引入到DOM中，它们有一个跟<code>section</code>相似的结构。</span>
+                                    </dd>
+
+                                    <dt id="html-div"><span lang="en">Division</span><span lang="zh">分割</span></dt>
+                                    <dd>
+                                        <span lang="en"><code>div</code>s within <code>section</code> are used to wrap a block of arbitrary markup and content. See also RDFa below.</span>
+                                        <span lang="zh">在<code>section</code>中的<code>div</code>用来包装任意标记和内容。参见下面的RDFa。</span>
+                                    </dd>
+
+                                    <dt id="html-figure"><span lang="en">Figure</span><span lang="zh">图例</span></dt>
+                                    <dd>
+                                        <span lang="en">
+                                            <code>figure</code>s typically have <code>figcaptions</code> for things like <code>audio</code>, <code>canvas</code>, <code>iframe</code>, <code>img</code>, <code>object</code>, <code>pre</code>, <code>video</code>, <code>math</code>. For code scripts, <code>figure class="listing"</code> is used, and <code>pre</code> for the code itself with <code>code</code> The <code>listing</code> class is intended to have a collection of figures, which could also have a unique presentation, for example with line numbers or have its caption be prefixed with <q>Listing</q> and counter.
+                                        </span>
+                                        <span lang="zh">
+                                            <code>figure</code>能常用<code>figcaptions</code>表示事物，象 <code>audio</code>, <code>canvas</code>, <code>iframe</code>, <code>img</code>, <code>object</code>, <code>pre</code>, <code>video</code>, <code>math</code>。对于代码脚本，则使用<code>figure class="listing"</code>，而<code>pre</code> 为代码本身加上<code>code</code>，<code>listing</code>类会有一个图例集合，这些数据也可以有一个独立的表示，例如使用行号或带有<q>Listing</q>和计数器前缀的标题。
+                                        </span>
+
+                                        <figure class="listing" id="html-figure-listing" rel="schema:hasPart" resource="#html-figure-listing">
+                                            <pre about="#html-figure-listing" lang="" property="schema:description" typeof="fabio:Script" xml:lang=""><code class="highlight-section">&lt;section&gt;</code>
+<samp class="highlight-h2">  &lt;h2&gt;</samp>
+<code class="highlight-div">  &lt;div&gt;</code>
+<code class="highlight-section">    &lt;section&gt;</code></pre>
+                                            <figcaption>
+                                                <span lang="en">Snippet of <a href="#html-section-source">section source</a> code</span>
+                                                <span lang="zh"><a href="#html-section-source">分节源</a> 代码片段</span>
+                                            </figcaption>
+                                        </figure>
+
+                                        <table id="comparison-of-systems">
+                                            <caption><span lang="en">Comparison of systems</span><span lang="zh">系统比较</span></caption>
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th>d<sub>1</sub></th>
+                                                    <th>d<sub>2</sub></th>
+                                                    <th>d<sub>3</sub></th>
+                                                    <th>m<sub>1</sub></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr><th>Foo</th><td>m</td><td>o</td><td>n</td><td>1</td></tr>
+                                                <tr><th>Bar</th><td>k</td><td>e</td><td>y</td><td>2</td></tr>
+                                                <tr><th>Baz</th><td>!</td><td>@</td><td>#</td><td>3</td></tr>
+                                            </tbody>
+                                            <tfoot>
+                                                <tr><td colspan="4">Table columns list the dimensions: d<sub>1</sub>, d<sub>2</sub>, d<sub>3</sub>, and the measure: m<sub>1</sub>.</td></tr>
+                                            </tfoot>
+                                        </table>
+                                    </dd>
+
+                                    <dt id="html-math"><span lang="en">Math</span><span lang="zh">数学</span></dt>
+                                    <dd>
+                                        <span lang="en">For mathematical equations <code>figure class="equation"</code> can be used to hint at an equation display. <cite><a href="https://www.w3.org/TR/MathML/">MathML</a></cite> base equation with <code>&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;</code> root can be included here (see also source). Alternatively, if <cite><a href="https://www.mathjax.org/">MathJax</a></cite> JavaScript is available in the document, <cite><a href="https://en.wikibooks.org/wiki/LaTeX/Mathematics">(La)TeX</a></cite>, eg. <samp>\lim_{x \to \infty} \exp(-x) = 0</samp> and <cite><a href="http://asciimath.org/">ASCIIMath</a></cite>, eg. <samp>sum_(i=1)^n i^3=((n(n+1))/2)^2</samp>, syntaxes can be input within the authoring mode (via <cite>Edit</cite>).</span>
+                                        <span lang="zh">对数学等式<code>figure class="equation"</code>可以用来显示等式。基于<cite><a href="https://www.w3.org/TR/MathML/">MathML</a></cite> 的等式使用 <code>&lt;math xmlns="http://www.w3.org/1998/Math/MathML"&gt;</code> 根，可以包含在这里(参见源代码).，或者，如果在文档中存在 <cite><a href="https://www.mathjax.org/">MathJax</a></cite> JavaScript，则可以使用 <cite><a href="https://en.wikibooks.org/wiki/LaTeX/Mathematics">(La)TeX</a></cite>, 例如 <samp>\lim_{x \to \infty} \exp(-x) = 0</samp> 和 <cite><a href="http://asciimath.org/">ASCIIMath</a></cite>, 例如 <samp>sum_(i=1)^n i^3=((n(n+1))/2)^2</samp>, 语法可以在创作模式中输入 (通过<cite>Edit</cite>)。</span>
+                                        <figure class="equation" typeof="doco:FormulaBox">
+                                            <math xmlns="http://www.w3.org/1998/Math/MathML">
+                                                <mtable>
+                                                    <mtr>
+                                                        <mtd>
+                                                            <munder>
+                                                                <mi>lim</mi>
+                                                                <mrow>
+                                                                    <mi>n</mi>
+                                                                    <mo>→</mo>
+                                                                    <mo>∞</mo>
+                                                                </mrow>
+                                                            </munder>
+                                                            <mi>x</mi>
+                                                            <mo>=</mo>
+                                                            <mn>0</mn>
+                                                        </mtd>
+                                                    </mtr>
+                                                </mtable>
+                                            </math>
+                                        </figure>
+                                    </dd>
+
+                                    <dt id="html-embed-turtle-json-ld-trig"><span lang="en">Turtle, JSON-LD, and TriG syntaxes are placed within respective <code>script</code> blocks in <code>head</code> eg. <code>&lt;script id="meta-json-ld" type="application/ld+json" title="JSON-LD"&gt;&lt;/script&gt;</code>. Data is enclosed in <code>CDATA</code> sections. This pattern is detected, visible and editable from <cite>Embed Data</cite> in <i class="fa fa-bars"></i> <a href="#dokieli-menu">dokieli menu</a>. See also <var>showEmbedData</var> (do.js).</span><span lang="en">Embedding Turtle, JSON-LD, and TriG</span><span lang="zh">嵌入Turtle, JSON-LD和TriG</span></dt>
+                                    <dd>
+                                        <span lang="zh">Turtle, JSON-LD和TriG 语法被放置在<code>head</code>中相应的<code>script</code>块里，例如 <code>&lt;script id="meta-json-ld" type="application/ld+json" title="JSON-LD"&gt;&lt;/script&gt;</code>。数据则由<code>CDATA</code>节包围。如果探测到此模式，则可以在<i class="fa fa-bars"></i> <a href="#dokieli-menu">dokieli 菜单</a>的<cite>Embed Data</cite>中查看和编加。参见<var>showEmbedData</var> (do.js).</span>
+
+                                    </dd>
+
+                                    <dt id="html-css">CSS</dt>
+                                    <dd>
+                                        <span lang="en">Multiple stylesheets can be included with <code>@media</code>, and when accompanied with <code>@title</code>, some user-agents can provide options for the user to switch between them, as well as from the <i class="fa fa-bars"></i> <a href="#dokieli-menu">dokieli menu</a>, eg. </span>
+
+                                        <span lang="zh">可以用<code>@media</code>包含多个样式表，并且当附带<code>@title</code>时，一些用户代理可以为用户提供它们之间的切换选项，例如在<i class="fa fa-bars"></i> <a href="#dokieli-menu">dokieli 菜单</a>中：</span>
+
+                                        <pre>&lt;!-- Primary stylesheet --&gt;
+<code>&lt;link href="media/css/basic.css" media="all" rel="stylesheet" title="Basic" /&gt;</code>
+&lt;!-- Alternate stylesheet --&gt;
+<code>&lt;link href="media/css/acm.css" media="all" rel="stylesheet alternate" title="ACM" /&gt;</code>
+&lt;!-- Applied by default--&gt;
+<code>&lt;link href="https://dokie.li/media/css/do.css" media="all" rel="stylesheet" /&gt;</code></pre>
+
+                                        <span lang="en">See also <var>showViews</var> (do.js).</span>
+                                        <span lang="zh">参见<var>showViews</var> (do.js)。</span>
+                                    </dd>
+
+                                    <dt id="html-rdfa">RDFa</dt>
+                                    <dd>
+                                        <span lang="en">dokieli can consume and produce <cite><a href="https://www.w3.org/TR/rdfa-core/">RDFa Core 1.1</a></cite> syntax.</span>
+                                        <span lang="zh">dokieli可以使用和生成 <cite><a href="https://www.w3.org/TR/rdfa-core/">RDFa Core 1.1</a></cite> 语法。</span>
+                                    </dd>
+                                    <dd>
+                                        <span lang="en">To preserve the order of content, <code>@inlist</code> is used eg. <code>&lt;section inlist=""</code>, <code>&lt;dd id="Sarven-Capadisli" inlist="" rel="bibo:authorList" resource="http://csarven.ca/#i"&gt;</code>.</span>
+                                        <span lang="zh">为了保持内容的顺序，使用 <code>@inlist</code>，例如 <code>&lt;section inlist=""</code>, <code>&lt;dd id="Sarven-Capadisli" inlist="" rel="bibo:authorList" resource="http://csarven.ca/#i"&gt;</code>.</span>
+
+                                    </dd>
+                                    <dd>
+                                        <span lang="en">A <code>section</code>s <code>@id</code> value is used as part of <code>section</code>'s <code>@resource</code> as a fragment, eg. <code>&lt;section id="introduction" rel="schema:hasPart" resource="#introduction"&gt;</code>. This allows the same identifier to be used for humans and machines, the value is derived from normalising its heading value as mentioned earlier.</span>
+                                        <span lang="zh"><code>section</code>的<code>@id</code>值用作 <code>section</code>的 <code>@resource</code>的分片，例如 <code>&lt;section id="introduction" rel="schema:hasPart" resource="#introduction"&gt;</code>。这允许相同的标识符用于人和机器，该值是通过如前所述规范化其标题值而得到的。</span>
+                                    </dd>
+                                    <dd>
+                                        <span lang="en">Relating parts is done with <code>rel="schema:hasPart"</code>, eg. sections with subsection: </span>
+                                        <span lang="zh">关联部分通过<code>rel="schema:hasPart"</code>完成，例如在子节中的节：</span>
+                                        <pre><code>&lt;section id="structure-and-semantics" inlist="" rel="schema:hasPart" resource="#structure-and-semantics"&gt;</code>
+<code>  &lt;section id="html-patterns" inlist="" rel="schema:hasPart" resource="#html-patterns"&gt;</code></pre>
+                                    </dd>
+                                    <dd>
+                                        <span lang="en"><code>div</code>s are used to hold a block of HTML markup and types of content together eg. <code>&lt;div datatype="rdf:HTML" property="schema:description" resource="#introduction" typeof="deo:Introduction"&gt;</code> makes it possible to declare that it contains HTML markup, and describes an introductory text.</span>
+                                        <span lang="zh"><code>div</code>用将HTML标记块和内容保存在一起，例如 <code>&lt;div datatype="rdf:HTML" property="schema:description" resource="#introduction" typeof="deo:Introduction"&gt;</code>，这样可以声明它包含 HTML标记，并描述一个介绍性的文本。</span>
+                                    </dd>
+                                    <dd>
+                                        <span lang="en">Some of the prefixes (<code>@prefix</code>) on the <code>body</code> element are defined in the <cite><a href="https://www.w3.org/2011/rdfa-context/rdfa-1.1.html">RDFa Core Initial Context</a></cite>. These prefixes are defined in dokieli for the purpose of being compact, robust, and to minimise potential errors for consumers.</span>
+                                        <span lang="zh">在元素<code>body</code>上有一些前缀 (<code>@prefix</code>)定义在<cite><a href="https://www.w3.org/2011/rdfa-context/rdfa-1.1.html">RDFa 核心初始上下文</a></cite>中，这些前缀在dokieli中定义，为了更加加紧凑、健壮，并最大限度的减少使用者的潜在错误。</span>
+                                    </dd>
+                                </dl>
+
+                                <div class="note">
+                                    <h4><span lang="en">Note</span><span lang="zh">注意</span></h4>
+                                    <div>
+                                        <p lang="en">There is a <em>work in progress</em> to have a distribution version of dokeli, requiring only <samp>do.css</samp> and <samp>do.js</samp> in templates.</p>
+                                        <p lang="zh">我们有一项<em>进行中的工作</em> ，发行版本的dokeli仅需要在模板中包括<samp>do.css</samp> 和 <samp>do.js</samp> 。</p>
+                                    </div>
+                                </div>
+
+                                <p id="html-charset">
+                                    <span lang="en">Servers should use <code>UTF-8</code> character encoding in their HTTP responses to articles, annotations, and notifications. <code>&lt;meta charset="utf-8" /&gt;</code> is used in HTML.</span>
+                                    <span lang="zh">
+                                        服务器在它们对文章、评注和通知的HTTP响应应该使用<code>UTF-8</code>字符编码，在HTML中使用 <code>&lt;meta charset="utf-8" /&gt;</code>
+                                    </span>
+                                </p>
+
+                                <section id="html-article" inlist="" rel="schema:hasPart" resource="#html-article">
+                                    <h4 property="schema:name"><span lang="en">Article</span><span lang="zh">文章</span></h4>
+                                    <div property="schema:description">
+                                        <p lang="en">See also <var>createNoteDataHTML</var> (do.js)</p>
+                                        <p lang="zh">参见<var>createNoteDataHTML</var> (do.js)</p>
+
+                                        <figure class="listing" id="#html-article-source" rel="schema:hasPart" resource="#html-article-source">
+                                            <pre about="#html-article-source" lang="" property="schema:description" typeof="fabio:Script" xml:lang=""><code>&lt;!DOCTYPE html&gt;</code>
+<code>&lt;html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"&gt;</code>
+<code>  &lt;head&gt;</code>
+<code>    &lt;meta charset="utf-8" /&gt;</code>
+<code>    &lt;title&gt;&lt;/title&gt;</code>
+<code>    &lt;meta content="width=device-width, initial-scale=1" name="viewport" /&gt;</code>
+<code>    &lt;link href="https://dokie.li/media/css/basic.css" media="all" rel="stylesheet" title="Basic" /&gt;</code>
+<code>    &lt;link href="https://dokie.li/media/css/do.css" media="all" rel="stylesheet" /&gt;</code>
+<code>    &lt;link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" rel="stylesheet" /&gt;</code>
+<code>    &lt;script src="https://dokie.li/scripts/simplerdf.js"&gt;&lt;/script&gt;</code>
+<code>    &lt;script src="https://dokie.li/scripts/medium-editor.min.js"&gt;&lt;/script&gt;</code>
+<code>    &lt;script src="https://dokie.li/scripts/do.js"&gt;&lt;/script&gt;</code>
+<code>  &lt;/head&gt;</code>
+<code></code>
+<code>  &lt;body about="" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ dctypes: http://purl.org/dc/dcmitype/ foaf: http://xmlns.com/foaf/0.1/ pimspace: http://www.w3.org/ns/pim/space# cc: https://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# mem: http://mementoweb.org/ns# qb: http://purl.org/linked-data/cube# schema: http://schema.org/ void: http://rdfs.org/ns/void# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# bibo: http://purl.org/ontology/bibo/ sioc: http://rdfs.org/sioc/ns# doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp# solid: http://www.w3.org/ns/solid/terms# acl: http://www.w3.org/ns/auth/acl# dio: https://w3id.org/dio# rel: https://www.w3.org/ns/iana/link-relations/relation#" typeof="schema:CreativeWork sioc:Post prov:Entity"&gt;</code>
+<code>    &lt;main&gt;</code>
+<code>      &lt;article about="" typeof="schema:Article"&gt;</code>
+<code></code>
+<code>      &lt;/article&gt;</code>
+<code>    &lt;/main&gt;</code>
+<code>  &lt;/body&gt;</code>
+<code>&lt;/html&gt;</code></pre>
+                                            <figcaption property="schema:name"><span lang="en">Example article HTML</span><span lang="zh">HTML文章示例</span></figcaption>
+                                        </figure>
+
+                                        <p lang="en">The subject of the following statements may be anywhere in a document. They tend to give some provenance level information and intended to bring more context and attract reuse of the document in different ways.</p>
+                                        <p lang="zh">
+                                            以下陈述的主题可以在文档中的任何位置。他们倾向于提供一些源起级别的信息，旨在带来更多的上下文，并以不同的方式促使文档的重用。
+                                        </p>
+
+                                        <pre id="html-document-identifier"><code>&lt;dl id="document-identifier"&gt;</code>
+<code>  &lt;dt&gt;Identifier&lt;/dt&gt;</code>
+<code>  &lt;dd&gt;&lt;a href="http://csarven.ca/dokieli-rww" rel="owl:sameAs">http://csarven.ca/dokieli-rww&lt;/a&gt;&lt;/dd&gt;</code>
+<code>&lt;/dl&gt;</code></pre>
+
+                                        <p lang="en">The <code>owl:sameAs</code> indirectly gives this article, ie. any copy, an identifier. The identifier is typically where an article was originally made accessible from, so having this by default for copy distribution helps to keep its connection to source. </p>
+
+                                        <p lang="zh">
+                                            <code>owl:sameAs</code>间接地给出了这样的文章，即任何副本，一个标识符。标识符通常是最初可以从中访问文章的位置，因此默认情况下将其用于副本分发有助于保持其与源的连接。
+                                        </p>
+
+                                        <pre id="html-document-inbox"><code>&lt;dl id="document-inbox"&gt;</code>
+<code>  &lt;dt&gt;Notifications Inbox&lt;/dt&gt;</code>
+<code>  &lt;dd&gt;&lt;a href="https://linkedresearch.org/inbox/csarven.ca/dokieli-rww/" rel="ldp:inbox">inbox/&lt;/a&gt;&lt;/dd&gt;</code>
+<code>&lt;/dl&gt;</code></pre>
+
+                                        <p lang="en"><code>ldp:inbox</code> relation gives an article its own Inbox where it can receive notifications about eg. annotations or activities relevant to an article. The notifications can be consumed by applications to offer additional content and interactive possibilities. dokieli can both send and consume notifications by way of discovering an article's inbox. Notifications are created for activities like announcements, creating, (dis)liking, and consumed in order to be displayed in context of available content. The protocol to send and consume notifications in dokieli uses <cite><a href="https://www.w3.org/TR/ldn/">Linked Data Notifications</a></cite>.</p>
+                                        <p lang="zh"><code>ldp:inbox</code> 关系（rel）为文章提供了自己的收件箱，它可以接收文章标注或活动相关的通知。应用程序可以使用通知来提供其他内容和交互式可能性。dokieli可以通过发现文章的收件箱来发送和使用通知。为诸如公告，创建，（不）点赞，使用为了在可用内容中显示上下文创建通知。在dokieli中发送和使用通知的协议使用<cite><a href="https://www.w3.org/TR/ldn/">Linked Data Notifications</a></cite>.</p>
+
+                                        <pre id="html-document-in-reply-to"><code>&lt;dl id="document-in-reply-to"&gt;</code>
+<code>  &lt;dt&gt;In Reply To&lt;/dt&gt;</code>
+<code>  &lt;dd&gt;&lt;a href="https://linkedresearch.org/calls" rel="as:inReplyTo"&gt;Call for Linked Research&lt;/a&gt;&lt;/dd&gt;</code>
+<code>&lt;/dl&gt;</code></pre>
+
+                                        <p lang="en">If an article is a reply to objects(s), it can have a property like <code>as:inReplyTo</code>.</p>
+                                        <p lang="zh">如果文章是客体的回复，它可以具有类似<code>as:inReplyTo</code>的属性。</p>
+                                        <pre id="html-document-annotation-service"><code>&lt;dl id="document-annotation-service"&gt;</code>
+<code>  &lt;dt&gt;Annotation Service&lt;/dt&gt;</code>
+<code>  &lt;dd&gt;&lt;a href="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/" rel="oa:annotationService"&gt;annotation/&lt;/a&gt;&lt;/dd&gt;</code>
+<code>&lt;/dl&gt;</code></pre>
+
+                                        <p lang="en">An article may refer to an annotation service (<code>oa:annotationService</code>) that conforms to the <cite><a href="https://www.w3.org/TR/annotation-protocol/">Web Annotation Protocol</a></cite>. See also <var>DO.C.AnnotationService</var> in <code>do.js</code>.</p>
+
+                                        <p lang="zh">文章可以指代一个(<code>oa:annotationService</code>) 符合 <cite><a href="https://www.w3.org/TR/annotation-protocol/">Web Annotation Protocol</a></cite>的标注服务。 参见 <var>DO.C.AnnotationService</var> in <code>do.js</code>.</p>
+
+                                        <pre id="html-document-published-modified"><code>&lt;dl id="document-published"&gt;</code>
+<code>  &lt;dt&gt;Published&lt;/dt&gt;</code>
+<code>  &lt;dd&gt;&lt;time content="2017-02-27T00:00:00Z" datatype="xsd:dateTime" datetime="2017-02-27T00:00:00Z" property="schema:datePublished">2017-02-27&lt;/time&gt;&lt;/dd&gt;</code>
+<code>&lt;/dl&gt;</code>
+<code></code>
+<code>&lt;dl id="document-modified"&gt;</code>
+<code>  &lt;dt&gt;Modified&lt;/dt&gt;</code>
+<code>  &lt;dd&gt;&lt;time content="2017-03-12T00:00:00Z" datatype="xsd:dateTime" datetime="2017-03-12T00:00:00Z" property="schema:dateModified"&gt;2017-03-18&lt;/time&gt;&lt;/dd&gt;</code>
+<code>&lt;/dl&gt;</code></pre>
+
+                                        <p lang="en">Dates, you know.. kinda useful. The example above duplicates the ISO date in <code>@content</code> and <code>@datetime</code>, but only one needs to be there, given that there parsers for different RDFa versions.</p>
+
+                                        <p lang="zh">日期，你懂的，有点用的。上面的例子复制了在<code>@content</code>和<code>@datetime</code>中的ISO日期，但是因为有不同的RDFa版本的解析器，所以只需要其中一个就可以。</p>
+
+                                        <pre id="html-document-license-rights"><code>&lt;dl id="document-license"&gt;</code>
+<code>  &lt;dt&gt;License&lt;/dt&gt;</code>
+<code>  &lt;dd&gt;&lt;a href="https://creativecommons.org/licenses/by/4.0/" rel="schema:license" title="Creative Commons Attribution 4.0 Unported"&gt;CC BY 4.0&lt;/a&gt;&lt;/dd&gt;</code>
+<code>&lt;/dl&gt;</code></pre>
+
+                                        <p lang="en">Nice to declare a license or rights to signal under what conditions the document may be reused, reshared or remixed, eg. via <cite><a href="https://creativecommons.org/">Creative Commons</a></cite> license. Articles and notifications tend to use <code>schema:license</code> and annotations use <code>dcterms:rights</code> (given <cite><a href="https://www.w3.org/TR/annotation-vocab/">Web Annotation Vocabulary</a></cite>).</p>
+
+                                        <p lang="zh">很高兴在这里宣布许可和版权信息，在什么条件下可以重复使用、转发或者重混文件。例如通过<cite><a href="https://creativecommons.org/">创作共用</a></cite>许可。文章和通知倾向于使用 <code>schema:license</code> 而标注倾向于使用<code>dcterms:rights</code> (给定 <cite><a href="https://www.w3.org/TR/annotation-vocab/">Web标注词汇</a></cite>).</p>
+
+                                        <pre id="html-document-derived-from-on"><code>&lt;dl id="document-derived-from"&gt;</code>
+<code>  &lt;dt&gt;Derived From&lt;/dt&lt;</code>
+<code>  &lt;dd&gt;&lt;a href="https://dokie.li/" rel="prov:wasDerivedFrom">https://dokie.li/&lt;/a&gt;&lt;/dd&gt;</code>
+<code>&lt;/dl&gt;</code>
+<code></code>
+<code>&lt;dl id="document-derived-on"&gt;</code>
+<code>  &lt;dt&gt;Derived On&lt;/dt&gt;</code>
+<code>  &lt;dd&gt;&lt;time datetime="2017-08-06T00:29:45.342Z"&gt;2017-08-06T00:29:45.342Z&lt;/time&gt;&lt;/dd&gt;</code>
+<code>&lt;/dl&gt;</code></pre>
+
+                                        <p lang="en">If a document is derived from another using the <cite>Save As</cite> operation, derived from and derived on information is declared.</p>
+
+                                        <p lang="zh">如果使用“<cite>另存为</cite>”操作从另一个文档派生文档，则声明信息派生和被派生的文档。</p>
+
+                                        <p lang="en">The markup for an anonymous profile is like:</p>
+                                        <p lang="zh">匿名配置文件的标记如下</p>
+<pre id="html-profile-anonymous"><code>&lt;span typeof="schema:Person"&gt;Lunatic Scholar&lt;/span&gt;</code></pre>
+
+                                        <p lang="en">The markup for a WebID profile including their name:</p>
+                                        <p lang="zh">WebID配置文件包含他们名称的配置文件如下：</p>
+<pre id="html-profile-iri-name"><code>&lt;span about="http://csarven.ca/#i" property="schema:name"&gt;Sarven Capadisli&lt;/span&gt;</code></pre>
+
+                                        <p lang="en">If they have an image:</p>
+                                        <p lang="zh">如果他们有一张图片</p>
+<pre id="html-profile-image"><code>&lt;img alt="" height="48" rel="schema:image" src="http://csarven.ca/media/images/sarven-capadisli.jpg" width="48" /&gt;</code></pre>
+
+                                        <p lang="en">Progressively described name, image, and URL is useful in templates:</p>
+                                        <p lang="zh">渐进描述的名称，图像和URL在模板中很有用：</p>
+<pre id="html-profile-iri-name-image-enhanced"><code>&lt;span about="http://csarven.ca/#i" typeof="schema:Person"&gt;&lt;img alt="" height="48" rel="schema:image" src="http://csarven.ca/media/images/sarven-capadisli.jpg" width="48" /&gt; &lt;a href="http://csarven.ca/" rel="schema:url"&gt;&lt;span about="http://csarven.ca/#i" property="schema:name"&gt;Sarven Capadisli&lt;/span&gt;&lt;/a&gt;&lt;/span&gt;</code></pre>
+
+                                        <p lang="en">Alternatively applying the DRY principle:</p>
+                                        <p lang="zh">或者使用 DRY 原则:</p>
+<pre id="html-profile-iri-name-image-dry"><code>&lt;a about="http://csarven.ca/#i" href="http://csarven.ca/" property="schema:name" rel="schema:url" typeof="schema:Person"&gt;Sarven Capadisli&lt;/a&gt;</code></pre>
+
+                                        <p lang="en">If they are one of the authors of a document, the profile can be wrapped like:</p>
+                                        <p lang="zh">如果他们是文档的作者之一，则可以将配置文件包装为：</p>
+<pre id="html-profile-author"><code>&lt;dd id="Sarven-Capadisli" inlist="" rel="bibo:authorList" resource="http://csarven.ca/#i"&gt;&lt;span about="" rel="schema:creator schema:publisher schema:author"&gt;&lt;!-- profile --&gt;&lt;/span&gt;&lt;/dd&gt;</code></pre>
+
+                                        <p lang="en">See also <var>getUserHTML</var> (do.js)</p>
+                                        <p lang="zh">参见<var>getUserHTML</var> (do.js)</p>
+                                    </div>
+                                </section>
+
+                                <section id="html-annotation" inlist="" rel="schema:hasPart" resource="#html-annotation">
+                                    <h4 property="schema:name"><span lang="en">Annotation</span><span lang="zh">标注</span></h4>
+                                    <div property="schema:description">
+                                        <p lang="en">Annotations have their own URL, fetched, parsed, and then introduced into the DOM. They are normally appended at the bottom of a node (<code>section</code>) in which the annotation has a reference to. It is not required to introduce all of the annotation content into the DOM, nor all of it has to be human-visible. This is a run-time inclusion and typically included within <code>&lt;aside class="note do"&gt;&lt;/aside&gt;</code>. Write operations like <cite>Save</cite>, <cite>Save As</cite>, <cite>Export</cite> will exclude this (<code>class~="do"</code>) when it normalises the DOM to HTML.</p>
+
+                                        <p lang="zh">标注具有自己的URL，获取，解析，然后引入DOM。它们通常附加在 (<code>section</code>)节点底部，标注有一个到这里的引用。不需要将所有标注内容引入DOM，也不必将所有标注内容都引入到人类可视。这是一个运行时包含，通常包含在内<code>&lt;aside class="note do"&gt;&lt;/aside&gt;</code>。当将DOM规范化到HTML时，像<cite>Save</cite>, <cite>Save As</cite>, <cite>Export</cite> 这样的写操作会将它(<code>class~="do"</code>)排除在外。</p>
+
+                                        <p lang="en">Currently dokieli uses <cite><a href="https://www.w3.org/TR/annotation-vocab/#replying">oa:replying</a></cite>, <cite><a href="https://www.w3.org/TR/annotation-vocab/#commenting">oa:commenting</a></cite>, <cite><a href="https://www.w3.org/TR/annotation-vocab/#describing">oa:describing</a></cite>, <cite><a href="https://www.w3.org/TR/annotation-vocab/#assessing">oa:assessing</a></cite>, <cite><a href="https://www.w3.org/TR/annotation-vocab/#bookmarking">oa:bookmarking</a></cite> for <em>motivations</em>, and <cite><a href="https://www.w3.org/TR/annotation-vocab/#describing">oa:describing</a></cite> and <cite><a href="https://www.w3.org/TR/annotation-vocab/#tagging">oa:tagging</a></cite> for annotation <em>purpose</em>.</p>
+
+                                        <p lang="zh">当前dokieli使用 <cite><a href="https://www.w3.org/TR/annotation-vocab/#replying">oa:replying</a></cite>, <cite><a href="https://www.w3.org/TR/annotation-vocab/#commenting">oa:commenting</a></cite>, <cite><a href="https://www.w3.org/TR/annotation-vocab/#describing">oa:describing</a></cite>, <cite><a href="https://www.w3.org/TR/annotation-vocab/#assessing">oa:assessing</a></cite>, <cite><a href="https://www.w3.org/TR/annotation-vocab/#bookmarking">oa:bookmarking</a></cite>作为<em>动机</em>，而<cite><a href="https://www.w3.org/TR/annotation-vocab/#describing">oa:describing</a></cite> 和 <cite><a href="https://www.w3.org/TR/annotation-vocab/#tagging">oa:tagging</a></cite>作为标注的<em>目的</em>.</p>
+
+                                        <p lang="en">See also <var>createNoteDataHTML</var> (do.js)</p>
+                                        <p lang="zh">另请参见 <var>createNoteDataHTML</var> (do.js)</p>
+
+                                        <p lang="en">Here is an annotation resource at <a href="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f">https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f</a> with all information human-visible and machine-readable (HTML+RDFa):</p>
+                                        <p lang="zh">以下是<a href="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f">https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f</a>的标注资源，所有信息均为人类可见且机器可读(HTML+RDFa):</p>
+
+                                        <figure id="html-annotation-view">
+                                            <object data="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f" height="680" type="text/html" width="100%"></object>
+                                            <figcaption>
+                                                <span lang="en">A reply Web Annotation with replying motivation</span>
+                                                <span lang="zh">带有回复动机的回复Web标注</span>
+                                            </figcaption>
+                                        </figure>
+
+                                        <p lang="en">Its source:</p>
+                                        <p lang="zh">它的源为:</p>
+
+                                        <figure class="listing" id="html-annotation-source" rel="schema:hasPart" resource="#html-annotation-source">
+                                            <pre about="#html-annotation-source" lang="" property="schema:description" typeof="fabio:Script" xml:lang=""><code>&lt;!DOCTYPE html&gt;</code>
+<code>&lt;html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"&gt;</code>
+<code>  &lt;head&gt;</code>
+<code>    &lt;meta charset="utf-8" /&gt;</code>
+<code>    &lt;title&gt;https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f&lt;/title&gt;</code>
+<code>  &lt;/head&gt;</code>
+<code>  &lt;body&gt;</code>
+<code>    &lt;main&gt;</code>
+<code>      &lt;article id="b6738766-3ce5-4054-96a9-ced7f05b439f" about="i:" typeof="oa:Annotation" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: http://schema.org/ dcterms: http://purl.org/dc/terms/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# i: https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f"&gt;</code>
+<code>        &lt;h1 property="schema:name"&gt;Sarven Capadisli &lt;span rel="oa:motivatedBy" resource="oa:replying"&gt;replies&lt;/span&gt;&lt;/h1&gt;</code>
+<code></code>
+<code>        &lt;dl class="author-name"&gt;</code>
+<code>          &lt;dt&gt;Authors&lt;/dt&gt;</code>
+<code>          &lt;dd&gt;&lt;span rel="schema:creator"&gt;&lt;span about="http://csarven.ca/#i" typeof="schema:Person"&gt;&lt;img alt="" height="48" rel="schema:image" src="http://csarven.ca/media/images/sarven-capadisli.jpg" width="48" /&gt; &lt;a href="http://csarven.ca/" rel="schema:url"&gt;&lt;span about="http://csarven.ca/#i" property="schema:name"&gt;Sarven Capadisli&lt;/span&gt;&lt;/a&gt;&lt;/span&gt;&lt;/span&gt;&lt;/dd&gt;</code>
+<code>        &lt;/dl&gt;</code>
+<code></code>
+<code>        &lt;dl class="published"&gt;</code>
+<code>          &lt;dt&gt;Published&lt;/dt&gt;</code>
+<code>          &lt;dd&gt;&lt;a href="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f"&gt;&lt;time datetime="2017-04-15T21:24:58.293Z" datatype="xsd:dateTime" property="schema:datePublished" content="2017-04-15T21:24:58.293Z"&gt;2017-04-15 21:24:58&lt;/time&gt;&lt;/a&gt;</code>
+<code>          &lt;/dd&gt;</code>
+<code>        &lt;/dl&gt;</code>
+<code></code>
+<code>        &lt;dl class="rights"&gt;</code>
+<code>          &lt;dt&gt;Rights&lt;/dt&gt;</code>
+<code>          &lt;dd&gt;&lt;a href="https://creativecommons.org/licenses/by/4.0/" rel="dcterms:rights" title="Creative Commons Attribution"&gt;CC BY 4.0&lt;/a&gt;&lt;/dd&gt;</code>
+<code>        &lt;/dl&gt;</code>
+<code></code>
+<code>        &lt;dl class="canonical"&gt;</code>
+<code>          &lt;dt&gt;Canonical&lt;/dt&gt;</code>
+<code>          &lt;dd about="i:" rel="oa:canonical" resource="urn:uuid:48355bb0-0afd-4f73-9a18-f1e8b6fb415b"&gt;48355bb0-0afd-4f73-9a18-f1e8b6fb415b&lt;/dd&gt;</code>
+<code>        &lt;/dl&gt;</code>
+<code></code>
+<code>        &lt;dl class="target"&gt;</code>
+<code>          &lt;dt&gt;&lt;a href="http://csarven.ca/dokieli-rww#abstract" rel="oa:hasTarget"&gt;In reply to&lt;/a&gt; (&lt;a about="http://csarven.ca/dokieli-rww#abstract" href="http://csarven.ca/dokieli-rww" rel="oa:hasSource" typeof="oa:SpecificResource"&gt;part of&lt;/a&gt;)&lt;/dt&gt;</code>
+<code>          &lt;dd&gt;</code>
+<code>            &lt;blockquote about="http://csarven.ca/dokieli-rww#abstract" cite="http://csarven.ca/dokieli-rww#abstract"&gt;</code>
+<code>              &lt;div rel="oa:hasSelector" resource="i:#fragment-selector" typeof="oa:FragmentSelector"&gt;</code>
+<code>                &lt;dl class="conformsto"&gt;</code>
+<code>                  &lt;dt&gt;Fragment selector conforms to&lt;/dt&gt;</code>
+<code>                  &lt;dd&gt;&lt;a property="rdf:value" content="abstract" xml:lang="" lang="" rel="dcterms:conformsTo" href="https://tools.ietf.org/html/rfc3987"&gt;RFC3987&lt;/a&gt;&lt;/dd&gt;</code>
+<code>                &lt;/dl&gt;</code>
+<code></code>
+<code>                &lt;dl class="refinedby" rel="oa:refinedBy" resource="i:#text-quote-selector" typeof="oa:TextQuoteSelector"&gt;</code>
+<code>                  &lt;dt&gt;Refined by&lt;/dt&gt;</code>
+<code>                  &lt;dd&gt;&lt;span property="oa:prefix" xml:lang="en" lang="en"&gt;rchitecture and implementation, &lt;/span&gt;&lt;mark property="oa:exact" xml:lang="en" lang="en"&gt;demonstrating advanced document authoring and interaction without a single point of control&lt;/mark&gt;&lt;span property="oa:suffix" xml:lang="en" lang="en"&gt;. Such an environment provides t&lt;/span&gt;&lt;/dd&gt;</code>
+<code>                &lt;/dl&gt;</code>
+<code>              &lt;/div&gt;</code>
+<code>            &lt;/blockquote&gt;</code>
+<code>          &lt;/dd&gt;</code>
+<code>        &lt;/dl&gt;</code>
+<code></code>
+<code>        &lt;dl class="renderedvia"&gt;</code>
+<code>          &lt;dt&gt;Rendered via&lt;/dt&gt;</code>
+<code>          &lt;dd&gt;&lt;a about="http://csarven.ca/dokieli-rww#abstract" href="https://dokie.li/" rel="oa:renderedVia"&gt;dokieli&lt;/a&gt;&lt;/dd&gt;</code>
+<code>        &lt;/dl&gt;</code>
+<code></code>
+<code>        &lt;section id="note-b6738766-3ce5-4054-96a9-ced7f05b439f" rel="oa:hasBody" resource="i:#note-b6738766-3ce5-4054-96a9-ced7f05b439f"&gt;</code>
+<code>          &lt;h2 property="schema:name"&gt;Note&lt;/h2&gt;</code>
+<code></code>
+<code>          &lt;dl class="rights"&gt;</code>
+<code>            &lt;dt&gt;Rights&lt;/dt&gt;</code>
+<code>            &lt;dd&gt;&lt;a href="https://creativecommons.org/licenses/by/4.0/" rel="dcterms:rights" title="Creative Commons Attribution"&gt;CC BY 4.0&lt;/a&gt;&lt;/dd&gt;</code>
+<code>          &lt;/dl&gt;</code>
+<code></code>
+<code>          &lt;div datatype="rdf:HTML" property="rdf:value schema:description" resource="i:#note-b6738766-3ce5-4054-96a9-ced7f05b439f" typeof="oa:TextualBody"&gt;What are you trying to tell me? That I can dodge bullets?&lt;/div&gt;</code>
+<code>        &lt;/section&gt;</code>
+<code>      &lt;/article&gt;</code>
+<code>    &lt;/main&gt;</code>
+<code>  &lt;/body&gt;</code>
+<code>&lt;/html&gt;</code></pre>
+                                            <figcaption property="schema:name">
+                                                <span lang="en">Example annotation HTML</span>
+                                                <span lang="zh">标注HTML示例</span>
+                                            </figcaption>
+                                        </figure>
+
+                                        <pre id="html-canonical"><code>&lt;dl class="canonical"&gt;</code>
+<code>  &lt;dt&gt;Canonical&lt;/dt&gt;</code>
+<code>  &lt;dd rel="oa:canonical" resource="urn:uuid:48355bb0-0afd-4f73-9a18-f1e8b6fb415b">48355bb0-0afd-4f73-9a18-f1e8b6fb415b&lt;/dd&gt;</code>
+<code>&lt;/dl&gt;</code></pre>
+
+                                        <p lang="en"><code>oa:canonical</code> refers to a canonical IRI that can be used to deduplicate the annotation. If an user chooses to store their annotation at their personal Webspace as well as when an annotation service (if offered), dokieli treats the resource at personal space as the canonical, and the resource at the annotation service as the copy where it refers to the personal space (<code>oa:via</code>).</p>
+
+                                        <p lang="zh"><code>oa:canonical</code> 是指可用于对标注进行去重复的正式IRI。如果用户选择将其标注存储在其个人Web空间或者标注服务（如果有提供的话）时，dokieli将个人空间中的资源视为正式，并将标注服务中的资源视为其引用的副本(<code>oa:via</code>)。</p>
+
+                                        <p lang="en">If an annotation resource is introduced to the article's DOM as part of an <code>aside</code>, they have a structure similar to an <code>article</code>, and may be displayed in different ways, eg. in marginalia:</p>
+
+                                        <p lang="zh">如果标注资源作为<code>aside</code>的一部分引入到文章的DOM，则它们具有类似于<code>article</code>的结构，并且可以用不同的方式显示，例如在边缘部分:</p>
+
+                                        <pre id="html-aside-do"><code>&lt;aside class="note do"&gt;</code>
+<code>  &lt;blockquote cite="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f"&gt;</code>
+<code>    &lt;article about="i:" id="461819979" prefix="i: https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f" typeof="oa:Annotation"&gt;</code>
+<code>    &lt;!-- Reconstruction of the original annotation (from RDF) --&gt;</code>
+<code>    &lt;/article&gt;</code>
+<code>  &lt;/blockquote&gt;</code>
+<code>&lt;/aside&gt;</code></pre>
+
+                                        <p lang="en">An inline reference to that annotation as aside would have a structure like:</p>
+                                        <p lang="zh">
+                                            对该标注的内联引用作为边栏会有以下的结构：
+                                        </p>
+
+                                        <pre id="html-ref-do"><code>&lt;span class="ref do" rel="schema:hasPart" resource="#r-461819979" typeof="dctypes:Text"&gt;&lt;mark id="r-461819979" property="schema:description"&gt;demonstrating advanced document authoring and interaction without a single point of control&lt;/mark&gt;&lt;sup class="ref-annotation"&gt;&lt;a rel="cito:hasReplyFrom" href="#461819979" resource="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f"&gt;💬&lt;/a&gt;&lt;/sup&gt;&lt;/span&gt;</code></pre>
+
+                                        <p lang="en">Note that the human-visible anchor hyperlinks (<samp>#461819979</samp>) to the annotation <code>aside id="461819979"</code>.</p>
+                                        <p lang="zh">注意人类可读的到标注<code>aside id="461819979"</code>的超链接锚(<samp>#461819979</samp>)。</p>
+                                    </div>
+                                </section>
+
+                                <section id="html-notification" inlist="" rel="schema:hasPart" resource="#html-notification">
+                                    <h4 property="schema:name"><span lang="en">Notification</span><span lang="zh">通知</span></h4>
+                                    <div property="schema:description">
+                                        <p lang="en">Notifications are discovered from <cite><a href="https://www.w3.org/TR/ldn/">LDN</a></cite> Inboxes. An article (or a fragment within) may have an inbox relation (<code>ldp:inbox</code>) which helps dokieli to discover it, and then fetch the notifications.</p>
+                                        <p lang="zh">从 <cite><a href="https://www.w3.org/TR/ldn/">LDN</a></cite>收件箱中发现通知。文章 (或其中的片段) 可能会有一个(<code>ldp:inbox</code>)收件箱关系，这有助于dokieli发现它，然后获取该通知。</p>
+
+                                        <p lang="en">Notifications are intended to be brief, giving sufficient information for consumers to decide if they want use to them. If the notifications are generated by dokieli, eg. via an annotation activity, they typically include some provenance level data like generation date, actor that triggered it, license, where the annotation can be found, what it annotated, and the motivation for it. Notifications will not include the annotation body, but consumers can fetch their URLs (as mentioned in the <a href="#html-annotation">annotation section</a>).</p>
+                                        <p lang="zh">
+                                            通知旨在简短，为使用者提供足够的信息，以决定他们是否想要使用它们。如果通知是由dokieli生成的，例如，通过标注活动，它们通常包括一些源起层面的数据，如生成日期，触发它的角色，许可证，从这些地方可以找到标注的位置，标注内容以及动机。通知将不包括标注正文，但是使用者可以获取其URL（如标注部分中所述）。
+                                        </p>
+
+                                        <p lang="en">See also <var>createNoteDataHTML</var> (do.js)</p>
+                                        <p lang="zh">参见<var>createNoteDataHTML</var> (do.js)</p>
+
+                                        <p lang="en">Here is a notification resource at <a href="https://linkedresearch.org/inbox/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f">https://linkedresearch.org/inbox/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f</a> with all information human-visible and machine-readable (HTML+RDFa):</p>
+                                        <p lang="zh">以下是在<a href="https://linkedresearch.org/inbox/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f">https://linkedresearch.org/inbox/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f</a>的通知资源，所有信息均为人类可见且机器可读（HTML + RDFa）：</p>
+                                        <figure id="html-notification-view">
+                                            <object data="https://linkedresearch.org/inbox/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f" height="420" type="text/html" width="100%"></object>
+                                            <figcaption>
+                                                <span lang="en">A notification referring to an annotation</span>
+                                                <span lang="zh">一个通知引用一个标注</span>
+                                            </figcaption>
+                                        </figure>
+
+                                        <p lang="en">Its source:</p>
+                                        <p lang="zh">它的源为：</p>
+
+                                        <figure class="listing" id="html-notification-source" rel="schema:hasPart" resource="#html-notification-source">
+                                            <pre about="#html-notification-source" lang="" property="schema:description" typeof="fabio:Script" xml:lang=""><code>&lt;!DOCTYPE html&gt;</code>
+<code>&lt;html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"&gt;</code>
+<code>  &lt;head&gt;</code>
+<code>    &lt;meta charset="utf-8" /&gt;</code>
+<code>    &lt;title&gt;Notification: Announced&lt;/title&gt;</code>
+<code>  &lt;/head&gt;</code>
+<code>  &lt;body prefix="xsd: http://www.w3.org/2001/XMLSchema# rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# as: https://www.w3.org/ns/activitystreams# oa: http://www.w3.org/ns/oa# schema: http://schema.org/"&gt;</code>
+<code>    &lt;main&gt;</code>
+<code>      &lt;article&gt;</code>
+<code>        &lt;h1&gt;Notification: Announced&lt;/h1&gt;</code>
+<code>        &lt;section&gt;</code>
+<code>          &lt;dl about=""&gt;</code>
+<code>            &lt;dt&gt;Types&lt;/dt&gt;</code>
+<code>            &lt;dd&gt;&lt;a about="" href="https://www.w3.org/ns/activitystreams#Announce" typeof="as:Announce"&gt;Announce&lt;/a&gt;&lt;/dd&gt;</code>
+<code></code>
+<code>            &lt;dt&gt;Object&lt;/dt&gt;</code>
+<code>            &lt;dd&gt;&lt;a href="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f" property="as:object"&gt;https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f&lt;/a&gt;&lt;/dd&gt;</code>
+<code></code>
+<code>            &lt;dt&gt;Target&lt;/dt&gt;</code>
+<code>            &lt;dd&gt;&lt;a href="http://csarven.ca/dokieli-rww#abstract" property="as:target"&gt;http://csarven.ca/dokieli-rww#abstract&lt;/a&gt;&lt;/dd&gt;</code>
+<code></code>
+<code>            &lt;dt&gt;Updated&lt;/dt&gt;</code>
+<code>            &lt;dd&gt;&lt;time datetime="2017-04-15T21:31:45.711Z" datatype="xsd:dateTime" property="as:updated" content="2017-04-15T21:31:45.711Z"&gt;2017-04-15 21:31:45&lt;/time&gt;&lt;/dd&gt;</code>
+<code></code>
+<code>            &lt;dt&gt;Actor&lt;/dt&gt;</code>
+<code>            &lt;dd&gt;&lt;a href="http://csarven.ca/#i" property="as:actor"&gt;http://csarven.ca/#i&lt;/a&gt;&lt;/dd&gt;</code>
+<code></code>
+<code>            &lt;dt&gt;License&lt;/dt&gt;</code>
+<code>            &lt;dd&gt;&lt;a href="https://creativecommons.org/publicdomain/zero/1.0/" property="schema:license"&gt;https://creativecommons.org/publicdomain/zero/1.0/&lt;/a&gt;&lt;/dd&gt;</code>
+<code>          &lt;/dl&gt;</code>
+<code></code>
+<code>          &lt;dl about="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f"&gt;</code>
+<code>            &lt;dt&gt;Object type&lt;/dt&gt;</code>
+<code>            &lt;dd&gt;&lt;a about="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f" typeof="oa:Annotation" href="http://www.w3.org/ns/oa#Annotation"&gt;Annotation&lt;/a&gt;&lt;/dd&gt;</code>
+<code></code>
+<code>            &lt;dt&gt;Motivation&lt;/dt&gt;</code>
+<code>            &lt;dd&gt;&lt;a href="http://www.w3.org/ns/oa#replying" property="oa:motivation"&gt;replying&lt;/a&gt;&lt;/dd&gt;</code>
+<code>          &lt;/dl&gt;</code>
+<code>        &lt;/section&gt;</code>
+<code>      &lt;/article&gt;</code>
+<code>    &lt;/main&gt;</code>
+<code>  &lt;/body&gt;</code>
+<code>&lt;/html&gt;</code></pre>
+                                            <figcaption property="schema:name"><span lang="en">Example notification HTML</span><span lang="zh">
+                                                    通知HTML示例</span></figcaption>
+                                        </figure>
+                                    </div>
+                                </section>
+                            </div>
+                        </section>
+                    </div>
+                </section>
+
+                <section id="user-interface" inlist="" rel="schema:hasPart" resource="#user-interface">
+                    <h2 property="schema:name">
+                        <span lang="en">User interface</span>
+                        <span lang="zh">用户界面</span>
+                    </h2>
+                    <div datatype="rdf:HTML" property="schema:description">
+                        <section id="document-modes" inlist="" rel="schema:hasPart" resource="#document-modes">
+                            <h3 property="schema:name"><span lang="en">Document modes</span><span lang="zh">文档模式</span></h3>
+                            <div datatype="rdf:HTML" property="schema:description">
+                                <p lang="en">There UI adapts to the <em>document mode</em> the user is in: <cite>author</cite>, <cite>review</cite>, <cite>social</cite>. By default the <cite>social</cite> mode is engaged. The <i class="fa fa-bars"></i> <a href="#dokieli-menu">dokieli menu</a> allows the user to engage the author mode through the <i class="fa fa-i-cursor"></i> <a href="#editor-enable">Edit</a> operation, and the review mode with <i class="fa fa-balance-scale"></i> <a href="#review-enable">Review</a>. See also <var>setDocumentMode</var> (do.js).</p>
+
+                                <p lang="zh">UI适应用户所处的<em>文档模式</em> : <cite>创作</cite>, <cite>评论</cite>, <cite>社交l</cite>默认情况下，启用 <cite>社交</cite>模式。<i class="fa fa-bars"></i> <a href="#dokieli-menu">dokieli 菜单</a> 允许用户通过<i class="fa fa-i-cursor"></i> <a href="#editor-enable">编辑</a> 操作启用创作模式，通过<i class="fa fa-balance-scale"></i> <a href="#review-enable">评论</a>启用评论模式。参见<var>setDocumentMode</var> (do.js).</p>
+                            </div>
+                        </section>
+
+                        <section id="dokieli-menu" inlist="" rel="schema:hasPart" resource="#dokieli-menu">
+                            <h3 property="schema:name"><span lang="en">dokieli menu</span><span lang="zh">dokieli菜单</span></h3>
+                            <div datatype="rdf:HTML" property="schema:description">
+                                <dl>
+                                    <dt id="signin-user"><i class="fa fa-user-secret"></i><span lang="en">Sign in</span><span lang="zh">登录</span></dt>
+                                    <dd>
+                                        <span lang="en">This is where the user can enter their WebID to let dokieli know about who they are. dokieli fetches their WebID and related information to further help with dokieli's operations. Authentication is not done at this stage.</span>
+                                        <span lang="zh">这是用户可以输入他们的WebID以让dokieli知道他们是谁的地方。dokieli获取他们的WebID和相关信息，以进一步帮助dokieli的操作。在此阶段尚未进行身份验证。</span>
+                                    </dd>
+
+                                    <dt id="resource-share"><i class="fa fa-bullhorn"></i><span lang="en">Share</span><span lang="zh">分享</span></dt>
+                                    <dd>
+                                        <span lang="en">User can share the current article or a part of it with their contacts, automatically discovered via <samp>foaf:knows</samp> as well as traversing equivalent profiles (<code>owl:sameAs</code>). Notification can also be sent to specific targets by entering their IRIs. dokieli sends a notification to the selected targets with information like: who sent it, when, license, motivation.</span>
+                                        <span lang="zh">
+                                            用户可以通过其<samp>foaf:knows</samp> 自动发现的联系人共享当前文章或其中的一部分，以及遍历等效的配置文件(<code>owl:sameAs</code>)。通过输入IRI，也可以将通知发送到特定目标。dokieli向所选目标发送通知，其中包含以下信息：发送者，时间，许可证，动机。
+                                        </span>
+                                    </dd>
+
+                                    <dt id="resource-reply"><i class="fa fa-reply"></i><span lang="en">Reply</span><span lang="zh">回复</span></dt>
+                                    <dd>
+                                        <span lang="en">An article can be replied with a note and have its own <a href="#resource-license-method">license</a>. To choose the location of the reply, the <a href="#resource-browser-method">resource browser</a> can be used on <a href="#personal-storage">personal storage</a> or an annotation service.</span>
+                                        <span lang="zh">可以使用笔记回复文章并拥有自己的 <a href="#resource-license-method">许可证</a>。要选择回复的位置，<a href="#resource-browser-method">资源浏览器</a>可以用于<a href="#personal-storage">个人存储</a>或者一个评注服务。</span>
+                                    </dd>
+
+                                    <dt id="review-enable"><i class="fa fa-balance-scale"></i><span lang="en">Review</span><span lang="zh">评论</span></dt>
+                                    <dd>
+                                        <span lang="en"> This feature changes the <a href="#document-modes">document mode</a> to <cite>Review</cite> and gives different context for annotations. When a user selects a span of text, a toolbar provides the following options to motivations:</span>
+                                        <span lang="zh">此功能将 <a href="#document-modes">文档模式</a> 改为 <cite>评论</cite>并为评注提供不同的上下文。当用户选择文本范围时，工具栏会为动机提供以下选项：</span>
+                                        <dl>
+                                            <dt><i class="fa fa-thumbs-up"></i><span lang="en">Approve</span><span lang="zh">同意</span></dt>
+                                            <dd>
+                                                <span lang="en">General agreement with the selected text. Optional text should specify why it is a strong point or a convincing argument.</span>
+                                                <span lang="zh">与所选文本达成一般性同意。可选文本用来指明为什么同意它或一个令人信服的论点。</span>
+                                            </dd>
+                                            <dt><i class="fa fa-thumbs-down"></i><span lang="en">Disapprove</span><span lang="zh">不同意</span></dt>
+                                            <dd>
+                                                <span lang="en">General disagreement with the selected text. Optional text should specify why it is a weak point, an error, or inaccurate.</span>
+                                                <span lang="zh">与所选文本达成一般性不同意。可选文本用来指明为什么不同意，错误或不精确的地方。</span>
+                                            </dd>
+                                            <dt><i class="fa fa-crosshairs"></i><span lang="en">Specificity</span><span lang="zh">特异性</span></dt>
+                                            <dd>
+                                                <span lang="en">Request to increase specificity on selected text. Optional text should indicate that a citation or more specificity is needed.</span>
+                                                <span lang="zh">
+                                                    要求增加对所选文本的特异性。可选文本应表明需要引用或需要更多的特异性。
+                                                </span>
+                                            </dd>
+                                        </dl>
+                                    </dd>
+
+                                    <dt id="resource-new"><i class="fa fa-lightbulb-o"></i><span lang="en">New</span><span lang="zh">新建</span></dt>
+                                    <dd>
+                                        <span lang="en">This feature allows a new document to be created at specified location. The new document is constructed based on  If the user is signed in with their WebID and their personal storage location is identifier, the default location for the new resource will have the storage URL (<code>pim:storage</code>) as its base. If the user does not have a WebID and a storage, and if the article refers to an annotation service (<code>oa:annotationService</code>), it will use that URL instead. The URL can be input directly, and otherwise a name will be autogenerated for the resource. This feature uses the <cite><a href="#resource-browser-method">resource browser</a></cite> to navigate HTTP URLs. See also <var>generateAttributeId</var> (do.js). On create, the resulting hyperlink will be shown and a new tab in the browser will be prompted.</span>
+                                        <span lang="zh">此功能允许在指定位置创建新文档。新文档的构建基于（如果用户使用其WebID登录并且标注了其个人存储位置），则新资源的默认位置将以存储URL(<code>pim:storage</code>)为基础。如果用户没有WebID和存储，并且文章引用了标注服务(<code>oa:annotationService</code>)，则使用它的URL。可以直接输入URL，否则将为资源自动生成名称。此功能使用 <cite><a href="#resource-browser-method">资源浏览器</a></cite>导航HTTP URL。另请参见<var>generateAttributeId</var> (do.js)。 在创建时，将显示生成的超链接，并将在浏览器中提示新的选项卡。</span>
+                                    </dd>
+
+                                    <dt id="resource-open"><i class="fa fa-coffee"></i><span lang="en">Open</span><span lang="zh">打开</span></dt>
+                                    <dd>
+                                        <span lang="en">Documents can be opened from a local filesystem or by entering an HTTP URL. Both options read the resource's content, and if dokieli's CSS and JavaScript are not present, they are included before updating the DOM and initiating dokieli. This feature uses the <cite><a href="#resource-browser-method">resource browser</a></cite> to navigate HTTP URLs. See also <var>openDocument</var> (do.js).</span>
+                                        <span lang="zh">可以从本地文件系统或输入HTTP URL打开文档。这两个选项都读取了资源的内容，如果没有dokieli的CSS和JavaScript，则在更新DOM和启动dokieli之前会包含它们。此功能使用<cite><a href="#resource-browser-method">资源浏览器</a></cite>导航HTTP URL。另请参见openDocument（do.js）。 </span>
+                                    </dd>
+
+                                    <dt id="resource-save"><i class="fa fa-life-ring"></i><span lang="en">Save</span><span lang="zh">保存</span></dt>
+                                    <dd>
+                                        <span lang="en">This feature makes a <a href="#http-put">write operation</a> (<code>HTTP PUT</code>) request to the current location of the document (<var>window.location</var>). The document is normalised in that dokieli related items are removed from the DOM before making the request.</span>
+                                        <span lang="zh">此功能对文档的当前位置(<var>window.location</var>)进行<a href="#http-put">写操作</a>(<code>HTTP PUT</code>)请求。因为在发出请求之前，dokieli相关项目将从DOM中删除，所以该文档是规范化的。</span><
+                                    </dd>
+
+                                    <dt id="resource-save-as"><i class="fa fa-paper-plane-o"></i><span lang="en">Save As</span><span lang="zh">另存为</span></dt>
+                                    <dd>
+                                        <span lang="en">The <cite>Save As</cite> operation is similar to <cite>New</cite> for normalising some of the URLs and same as <cite>Save</cite> operation for normalising the DOM before making the request to specified location. If <cite>Derivation data</cite> is checked for inclusion, <a href="#html-document-derived-from-on">derived from and on</a> information is included in the created document. This feature uses the <cite><a href="#resource-browser-method">resource browser</a></cite> to navigate HTTP URLs.</span>
+                                        <span lang="zh"> <cite>另存为</cite> 操作用于规范化某些URL，类似于 <cite>新建</cite>，用于在向指定位置发出请求之前规范化DOM，则与“ <cite>保存</cite>”操作相同。如果检查是否包含<cite>派生数据</cite>，则从创建的文档中包含<a href="#html-document-derived-from-on">派生和被派生</a>的信息。该功能使用<cite><a href="#resource-browser-method">资源浏览器</a></cite>导航HTTP URL。</span>
+                                    </dd>
+
+                                    <dt id="resource-export"><i class="fa fa-external-link"></i><span lang="en">Export</span><span lang="zh">导出</span></dt>
+                                    <dd>
+                                        <span lang="en">Provides options to 1) exports the article as HTML and save to filesystem, 2) Makes a request to the Internet Archive to crawl all resources references in this article.</span>
+                                        <span lang="zh">提供以下选项：1）将文章导出为HTML并保存到文件系统; 2）向Internet Archive发出请求以抓取本文中的所有资源引用</span>
+                                    </dd>
+
+                                    <dt id="resource-print"><i class="fa fa-print"></i><span lang="en">Print</span><span lang="zh">打印</span></dt>
+                                    <dd>
+                                        <span lang="en">Requests to print the current document (<code>window.print()</code>).</span>
+                                        <span lang="zh">请求打印当前文档(<code>window.print()</code>)。</span>
+                                    </dd>
+
+                                    <dt id="editor-enable"><i class="fa fa-i-cursor"></i><span lang="en">Edit</span><span lang="zh">编辑</span></dt>
+                                    <dd>
+                                        <span lang="en"><cite>Editor</cite> is one of the document modes a user can be in. The available features reflect the edit operation. Edits reside in the DOM until a <cite>Save</cite> or <cite>Save As</cite> is triggered. There are several editor features in following categories: content formatting and structuring (<i class="fa fa-header">2</i>, <i class="fa fa-header">3</i>, <i class="fa fa-header">4</i>, <i class="fa fa-italic"></i>, <i class="fa fa-bold"></i>, <i class="fa fa-list-ol"></i>, <i class="fa fa-list-ul"></i>, <b>code</b>, <i class="fa fa-code fa-lg"></i>, <i class="fa fa-picture-o"></i>, <i class="fa fa-table"></i>, <i class="fa fa-link"></i>, <i class="fa fa-quote-right"></i>), including interactive and embeddable objects (<i class="fa fa-line-chart"></i>), inline semantic relations (<i class="fa fa-rocket"></i>), footnotes and citations (<i class="fa fa-hashtag"></i>), and annotations (<i class="fa fa-sticky-note"></i>).</span>
+                                        <span lang="zh"><cite>编辑器</cite> 是用户可以使用的文档模式之一，可能功能反映在编辑操作中。编辑驻留在DOM中直到 触发<cite>保存</cite> 或者 <cite>另存为</cite> 。有在以下几个类别的编辑器功能：内容格式化和结构(<i class="fa fa-header">2</i>, <i class="fa fa-header">3</i>, <i class="fa fa-header">4</i>, <i class="fa fa-italic"></i>, <i class="fa fa-bold"></i>, <i class="fa fa-list-ol"></i>, <i class="fa fa-list-ul"></i>, <b>code</b>, <i class="fa fa-code fa-lg"></i>, <i class="fa fa-picture-o"></i>, <i class="fa fa-table"></i>, <i class="fa fa-link"></i>, <i class="fa fa-quote-right"></i>), 包括交互式和可嵌入对象 (<i class="fa fa-line-chart"></i>), 内联语义关系(<i class="fa fa-rocket"></i>), 脚注和引文(<i class="fa fa-hashtag"></i>), 以及评注 (<i class="fa fa-sticky-note"></i>).</span>
+                                    </dd>
+
+                                    <dt id="resource-source"><i class="fa fa-code"></i><span lang="en">Source</span><span lang="zh">源</span></dt>
+                                    <dd>
+                                        <span lang="en">Users can edit the current state of the article. <em>Updating</em>, only updates the DOM, and leave the saving to <cite>Save</cite> or <cite>Save As</cite>.</span>
+                                        <span lang="zh">用户可以编辑文章的当前状态。 <em>更新</em>，仅更新DOM，并将保存留给<cite>保存</cite>或 <cite>另存为</cite>。</span>
+                                    </dd>
+
+                                    <dt id="embed-data-meta"><i class="fa fa-table"></i><span lang="en">Embed Data</span><span lang="zh">嵌入数据</span></dt>
+                                    <dd>
+                                        <span lang="en">This feature allows hidden RDF data to be stored with the document. Turtle, JSON-LD, and TriG can all be edited and stored independently.</span>
+                                        <span lang="zh">此功能允许将隐藏的RDF数据与文档一起存储。Turtle，JSON-LD和TriG都可以独立编辑和存储。</span>
+                                    </dd>
+                                </dl>
+
+                                <p id="base-url-selection-method">
+                                    <span lang="en">To determine the base URL, when new documents are created or saved as, media resources from <var>head link, [src], object[data]</var> (querySelector) will have their URLs normalised to use current document's base URL as its absolute URL (this is the <q>Use references as is</q> option). If <q>Copy to your storage</q> is selected, relative URLs will not be updated as the copy operation reuses the same file paths when resource are copied to destination. The <em>copy</em> operation does an <code>HTTP GET</code> for each source, then <code>HTTP PUT</code> to target.</span>
+                                    <span lang="zh">要确定基URL，当创建或保存新文档时，来自头链接的媒体资源，<var>head link, [src], object[data]</var> (querySelector) 将其URL标准化为使用当前文档的基URL作为其绝对URL（这是在<q>使用引用作为</q>选项）。如果选择“<q>复制到你的存储</q>”，则不会更新相对URL，因为复制操作会将资源复制到目标时重用相同的文件路径。该<em>复制</em>操作为每个源执行一次<code>HTTP GET</code>操作，然后<code>HTTP PUT</code>到目标。</span>
+                                </p>
+
+                                <p id="resource-browser-method">
+                                    <span lang="en">The <em>resource browser</em> eg. available for <cite>New</cite>, <cite>Open</cite>, <cite>Save As</cite> operations can be used to navigate through a Webspace. It does this by using the <cite><a href="https://www.w3.org/TR/ldp/">Linked Data Platform</a></cite>'s containment rules to retrieve and then display the container's index. If the user's personal storage location is known, it will be used as default location for the resource browser. Alternatively, if the article refers to an annotation service, it will be used as start location.</span>
+                                    <span lang="zh"> <em>资源浏览器</em>如，<cite>新建</cite>, <cite>打开</cite>, <cite>另存为</cite>操作可用于导航Webspace。它通过使用<cite><a href="https://www.w3.org/TR/ldp/">Linked Data Platform</a></cite>的包含规则来检索然后显示容器的索引来实现这一点。如果用户的个人存储位置已知，则它将用作资源浏览器的默认位置。或者，如果文章引用评注服务，则将它作为起始位置。 </span>
+                                </p>
+
+                                <p id="resource-license-method">
+                                    <span lang="en">Users are given a choice to specify the <em>rights and license</em> for their annotations from a list of <cite><a href="https://creativecommons.org/">Creative Commons</a></cite> licenses, eg. <span resource="#annotation-rights" typeof="schema:ChooseAction">CC BY 4.0</span>. If applicable, the notification payload will use the <cite><a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0 Universal</a></cite> license.</span>
+                                    <span lang="zh">
+                                        用户可以从<cite> <a href="https://creativecommons.org/">创作共用</a></cite> 许可列表中指定标注的<em>版权和许可证</em>例如 <span resource="#annotation-rights" typeof="schema:ChooseAction">CC BY 4.0</span>，如果适用的话，通知负载将使用 <cite><a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0 Universal</a></cite> 许可证。
+                                    </span>
+                                </p>
+
+                                <dl>
+                                    <dt id="dokieli-views"><i class="fa fa-magic"></i><span lang="en">Views</span><span lang="zh">视图</span></dt>
+                                    <dd>
+                                        <span lang="en">The dokieli menu will list primary and alternate stylesheets that are <a href="#html-css">detected in HTML</a>. <cite>Native</cite> is always available and it will essentially disable all other stylesheets, thereby user-agent's default stylesheets are gets applied. When a view is selected, eg. <cite>Basic</cite> (which happens to be the one that is used on this article as primary), it becomes the primary stylesheet, and the rest of the stylesheets become alternate and disabled.</span>
+                                        <span lang="zh">
+                                            dokieli菜单将列出在<a href="#html-css">HTML检测</a>到的主要和备用样式表。<cite>Native</cite>始终可用，它将基本上禁用所有其他样式表，从而应用用户代理的默认样式表。选择视图时，例如<cite>Basic</cite> （恰好是作为本文主要使用的那个）成为主要样式表，其余的样式表变为备用和禁用。
+                                        </span>
+                                    </dd>
+                                </dl>
+                            </div>
+                        </section>
+                    </div>
+                </section>
+
+                <section id="http-operations" inlist="" rel="schema:hasPart" resource="#http-operations">
+                    <h2 property="schema:name"><span lang="en">HTTP operations</span><span lang="zh">HTTP操作</span></h2>
+                    <div datatype="rdf:HTML" property="schema:description">
+                        <p lang="en">dokieli conforms to <cite><a href="https://www.w3.org/TR/ldp/" rel="cito:citesAsAuthority">Linked Data Platform</a></cite> (LDP) protocol for create, update, and delete operations.</p>
+                        <p lang="zh">dokieli 符合 <cite><a href="https://www.w3.org/TR/ldp/" rel="cito:citesAsAuthority">Linked Data Platform</a></cite> (LDP) 协议的创建，更新和删除操作。</p>
+
+                        <p id="http-put">
+                            <span lang="en">Article operations like <cite>New</cite>, <cite>Save</cite>, <cite>Save As</cite>,  <cite>Reply</cite> use <code>HTTP PUT</code>, <cite>Review</cite> and other annotation operations use <code>HTTP POST</code>.</span>
+
+                            <span lang="zh">文章操作象 <cite>New</cite>, <cite>Save</cite>, <cite>Save As</cite>,  <cite>Reply</cite> 使用 <code>HTTP PUT</code>, <cite>Review</cite> 和其它评注操作使用 <code>HTTP POST</code>.</span>
+                        </p>
+
+                        <p id="http-post">
+                            <span lang="en">Notifications are sent with <code>HTTP POST</code>. <cite>Save</cite> and <cite>Save As</cite> normalises the HTML before sending.</span>
+                            <span lang="zh">
+                                通知发送使用 <code>HTTP POST</code>. <cite>Save</cite> 和 <cite>Save As</cite>在发送前示范化HTML。
+                            </span>
+                        </p>
+
+                        <table id="http-request-to-send">
+                            <caption>Request to send</caption>
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>HTTP method(s)</th>
+                                    <th><code>Content-Type</code></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><th>Article</th><td><code>PUT</code></td><td><code>text/html</code></td></tr>
+                                <tr><th>Annotation</th><td><code>OPTIONS</code>, <code>POST</code></td><td><code>text/html</code>, <code>application/ld+json</code>, <code>text/turtle</code></td></tr>
+                                <tr><th>Notification</th><td><code>OPTIONS</code>, <code>POST</code></td><td><code>text/html</code>, <code>application/ld+json</code>, <code>text/turtle</code></td></tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3">
+                                        <dl>
+                                            <dt id="request-to-send-article"><span lang="en">Article</span><span lang="zh">文章</span></dt>
+                                            <dd>
+                                                <span lang="en">Articles typically use <code>text/html</code> with embedded RDFa. Where a server implements <code>GET</code> with <code>text/html</code>, and allows <code>PUT</code> for writing, the assumption is that it can allow <code>text/html</code>. In the future, dokieli can check for the <code>Accept-Put</code> header with <code>OPTIONS</code> to determine a suitable type. At this time, HTML+RDFa is an important default for articles.</span>
+                                                <span lang="zh">文章通常使用<code>text/html</code>并带有嵌入式RDFa。当一个服务器实现了<code>text/html</code>的<code>GET</code>，并且允许<code>PUT</code>写入，假设它能允许 <code>text/html</code>。将来，dokieli 可以检测<code>Accept-Put</code> 头部带有<code>OPTIONS</code>来确定合适的类型。目前，对文章来说HTML+RDFa是重要的默认值。</span>
+                                            </dd>
+
+                                            <dt id="request-to-send-annotation"><span lang="en">Annotation</span><span lang="zh">标注</span></dt>
+                                            <dd>
+                                                <span lang="en">Annotations use the <code>POST</code> method with <code>Content-Type</code> header value determined by type of location to write to: personal storage space eg. given a profile's <code>pim:storage</code>; made to an annotation service eg. an article's <code>oa:annotationService</code>; sent to profile's outbox's outbox: <code>as:outbox</code>. The <cite><a href="https://www.w3.org/TR/annotation-protocol/">Web Annotation Protocol</a></cite> requires <code>application/ld+json</code> by default. dokieli sends an <code>OPTIONS</code> request to check for the <code>Accept-Post</code> header and sends the payload in one of the serializations that the server prefers. If it is not set, it will fallback to <code>application/ld+json</code> as preferred by Wen Annotation and ActivityPub.</span>
+                                                <span lang="zh">标注使用 <code>POST</code> 方法具有 <code>Content-Type</code> 由位置类型确定标题值的方法来写入：个人存储空间，例如，给定个人配置文件的 <code>pim:storage</code>; 或作出一个到标注服务，例如一篇文章的 <code>oa:annotationService</code>; 发送个人配置文件的发件箱: <code>as:outbox</code>. 该 <cite><a href="https://www.w3.org/TR/annotation-protocol/">Web Annotation Protocol</a></cite> 缺省需要<code>application/ld+json</code> 。dokieli发送一个<code>OPTIONS</code>请求检查 <code>Accept-Post</code>标头的请求，并以服务器接受的序列化之一发送载荷。如果没有设置，它将回退到<code>application/ld+json</code> 作为Web Annotation 和 ActivityPub的首选项。</span>
+
+                                            </dd>
+
+                                            <dt id="request-to-send-notification"><span lang="en">Notification</span><span lang="zh">通知</span></dt>
+                                            <dd>
+                                                <span lang="en"> use <code>OPTIONS</code> to check the response's <code>Accept-Post</code> HTTP header. If it is set and matches one of the acceptable RDF mediatypes that dokieli can parse, it will use that mediatype to serialize the payload before <code>POST</code>ing. <span rel="schema:hasPart" resource="#dokieli-notification-post-content-type-json-ld">If it is not set, it will fallback to <code>application/ld+json</code> as required by the <cite><a href="https://www.w3.org/TR/ldn/#test-sender-header-post-content-type-json-ld" rel="cito:citesAsAuthority">Linked Data Notifications</a></cite> specification.</span></span>
+                                                <span lang="zh">
+                                                    通知使用<code>OPTIONS</code>检测中响应的<code>Accept-Post</code> HTTP 标头。如果设置并匹配dokieli可以解析的可接受的RDF媒体类型之一，它将使用该媒体类型在<code>POST</code>进行之前序列化有效载荷。<span rel="schema:hasPart" resource="#dokieli-notification-post-content-type-json-ld">如果没有设置，它会退回到<code>application/ld+json</code> 所要求的<cite> <a href="https://www.w3.org/TR/ldn/#test-sender-header-post-content-type-json-ld" rel="cito:citesAsAuthority">Linked Data Notifications</a></cite>规范。</span>
+                                                </span>
+                                            </dd>
+                                        </dl>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <aside id="http-patch">
+                            <p lang="en">Current reasons for using <code>HTTP POST</code> and <code>PUT</code> instead of <code>PATCH</code>:</p>
+                            <p lang="zh">当前使用<code>HTTP POST</code> 和 <code>PUT</code> 代替 <code>PATCH</code>的原因:</p>
+
+                            <ul>
+                                <li>
+                                    <span lang="en">Servers with <cite><a href="https://tools.ietf.org/html/rfc5261" rel="cito:citesAsAuthority">XML Patch</a></cite> and mediatype <code>application/xml-patch+xml</code> (<cite><a href="https://tools.ietf.org/html/rfc7351" rel="cito:citesAsAuthority">RFC 7351</a></cite>) capability in the Linked Data ecosystem are not well supported.</span>
+                                    <span lang="zh">在关联数据生态系统中没有很好的支持 <cite><a href="https://tools.ietf.org/html/rfc5261" rel="cito:citesAsAuthority">XML Patch</a></cite> 和媒体类型<code>application/xml-patch+xml</code> (<cite><a href="https://tools.ietf.org/html/rfc7351" rel="cito:citesAsAuthority">RFC 7351</a></cite>) 的服务器。</span>
+                                </li>
+
+                                <li>
+                                    <span lang="en"><code>HTTP PATCH</code> with <cite><a href="https://www.w3.org/TR/sparql11-update/" rel="cito:citesAsAuthority">SPARQL Update</a></cite> (using mediatype <code>application/sparql-update</code>) would not work for RDFa representations because it would require additional server-side knowledge: HTML+RDFa serializer. This also makes server implementations a dependency for dokieli which is an undesirable design pattern.</span>
+                                    <span lang="zh"><code>HTTP PATCH</code> 使用 <cite><a href="https://www.w3.org/TR/sparql11-update/" rel="cito:citesAsAuthority">SPARQL 更新</a></cite> (使用媒体类型 <code>application/sparql-update</code>) 不适用于RDFa表述，因为它还需要额外的服务器端知识: HTML+RDFa 序列化器。 也使得服务器实现成为dokieli的依赖，这是一种不合需要的设计模式。</span>
+                                </li>
+
+                                <li>
+                                    <span lang="en"><code>HTTP PATCH</code> can help to optimise HTTP requests provided that the server processes the SPARQL query and eventually publishes the final state of the article. dokieli's use of <code>HTTP POST</code> and <code>HTTP PUT</code> on the other hand does not expect or impose operations other than to store and serve the article. If servers would like to do versioning and how, dokieli leaves it to the servers to decide.</span>
+                                    <span lang="zh"><code>HTTP PATCH</code>可以帮助优化HTTP请求，前提是服务器处理SPARQL查询并最终发布文章的最终状态。dokieli使用<code>HTTP POST</code> 和 <code>HTTP PUT</code>在另一方面不希望施加存储和服务文章之外的操作。如果服务器想要进行版本控制以及如何进行版本控制，dokieli会将其留给服务器来决定。</span>
+                                </li>
+                            </ul>
+                        </aside>
+
+                        <p id="http-proxy">
+                            <span lang="en">Due to <cite><a href="https://www.w3.org/TR/mixed-content/">Mixed Content</a></cite> implementations in Web browsers, ie. <q>fetching of content over unencrypted or unauthenticated connections in the context of an encrypted and authenticated document</q>, is subject to being blocked by the Web browser. Hence, an https document (eg article at https) will not be able to use the contents of an http document (eg. an http WebID). As a workaround, dokieli uses a proxy endpoint by default in order to use the contents of an http resource. An https document fetching an https resource will not use the proxy.</span>
+                            <span lang="zh">由于Web浏览器中的<cite><a href="https://www.w3.org/TR/mixed-content/">混合内容</a></cite>实现，即，<q>在加密和经过身份验证的文档的上下文中通过未加密或未经身份验证的连接获取内容</q>，可能会被W​​eb浏览器阻止。因此，https文档（例如，https上的文章）将不能使用http文档的内容（例如，http WebID）。作为一种解决方法，dokieli默认使用代理端点来使用http资源的内容。获取https资源的https文档将不使用该代理。</span>
+                        </p>
+                    </div>
+                </section>
+
+                <section id="authentication" inlist="" rel="schema:hasPart" resource="#authentication">
+                    <h2 property="schema:name"><span lang="en">Authentication</span><span lang="zh">认证</span></h2>
+                    <div datatype="rdf:HTML" property="schema:description">
+                        <p lang="en">dokieli was originally intended to handle different authentication mechanisms. <a href="https://www.w3.org/2005/Incubator/webid/spec/tls/">WebID-TLS</a> is currently supported to authenticate with servers.</p>
+                        <p lang="zh">dokieli最初打算处理不同的身份验证机制。目前支持<a href="https://www.w3.org/2005/Incubator/webid/spec/tls/">WebID-TLS</a>对服务器进行身份验证。</p>
+                    </div>
+                </section>
+
+                <section id="storage" inlist="" rel="schema:hasPart" resource="#storage">
+                    <h2 property="schema:name"><span lang="en">Storage</span><span lang="zh">存储</span></h2>
+                    <div datatype="rdf:HTML" property="schema:description">
+                        <dl>
+                            <dt id="personal-storage"><span lang="en">Personal storage</span><span lang="zh">个人存储</span></dt>
+                            <dd>
+                                <span lang="en">WebID's with <code>pim:storage</code> can get to use their personal online data storage with dokieli's read-write operations, eg all annotations, <cite>Reply</cite>, <cite>Review</cite>, <cite>New</cite>, <cite>Save As</cite>.</span>
+                                <span lang="zh">WebID的 <code>pim:storage</code>可以使用dokieli的读写操作来使用他们的个人在线数据存储，例如所有的评注操作，<cite>回复</cite>, <cite>评论</cite>, <cite>新建</cite>, <cite>另存为</cite>。</span>
+                            </dd>
+
+                            <dt id="local-storage"><span lang="en">Local storage</span><span lang="zh">本地存储</span></dt>
+                            <dd>
+                                <span lang="en">There is a <cite>Local Storage</cite> feature which uses user-agent's <var>window.localStorage</var>, with default 1m autosave.</span>
+                                <span lang="zh">有一个 <cite>本地存储</cite>功能，使用用户代理的<var>window.localStorage</var>,默认1m自动保存。</span>
+
+                            </dd>
+                        </dl>
+                    </div>
+                </section>
+
+                <section id="web-extension" inlist="" rel="schema:hasPart" resource="#web-extension">
+                    <h2 property="schema:name"><span lang="en">Web Extension</span><span lang="zh">Web扩展</span></h2>
+                    <div datatype="rdf:HTML" property="schema:description">
+                        <p lang="en">The dokieli <cite><a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions">Web Extension</a></cite> is a minimal package of dokieli which contains the core CSS and JavaScript that works as a browser add-on. When user triggers it from their browser toolbar, it provides the same functionality as a <cite>single-page application</cite>, ie. initialised and rendered in the browser DOM.</p>
+                        <p lang="zh">dokieli <cite><a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions">Web扩展</a></cite> 是dokili的一个最小包，其中包括含用作浏览器插件的核心CSS和JavaScript。当用户从浏览器工具栏触发它时，它提供与<cite>单页应用程序</cite>相同的功能，即，在浏览器DOM中初始化并渲染。</p>
+
+                        <p lang="en">Currently the extension works with Firefox and Chrome/Chromium browsers. Two ways to do this:</p>
+                        <p lang="zh">目前，该扩展程序适用于Firefox和Chrome/Chromium浏览器，有两种方法可选：</p>
+
+                        <ol>
+                            <li>
+                                <span lang="en">Extensions are available from <cite><a href="https://addons.mozilla.org/en-US/firefox/addon/dokieli/">Add-ons for Firefox</a></cite> and <cite><a href="https://chrome.google.com/webstore/detail/ddmhaonbhodhgkaljpjlglodncddalid">Chrome Web Store</a></cite>.</span>
+                                <span lang="zh">
+                                    扩展程序可以从 <cite><a href="https://addons.mozilla.org/en-US/firefox/addon/dokieli/">Add-ons for Firefox</a></cite> 和 <cite><a href="https://chrome.google.com/webstore/detail/ddmhaonbhodhgkaljpjlglodncddalid">Chrome Web Store</a></cite>获得。
+                                </span>
+                            </li>
+
+                            <li>
+                                <span lang="en"> Clone <a href="https://github.com/linkeddata/dokieli">https://github.com/linkeddata/dokieli</a> and import directory:</span>
+                                <span lang="zh"> 克隆 <a href="https://github.com/linkeddata/dokieli">https://github.com/linkeddata/dokieli</a> 并导入目录:</span>
+                                <ul>
+                                    <li>
+                                        <span lang="en">Firefox: <q>Load Temporary Add-on</q> from Add-ons (or go to <code>about:debugging</code> from addressbar) and import by selecting a file from the directory (eg manifest.json). See also <a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Temporary_Installation_in_Firefox">temporary add-on installation</a>.</span>
+                                        <span lang="zh">Firefox: 从加载项<q>加载临时加载项</q> (或从地址栏转到 <code>about:debugging</code> ) 并从目录中选择一个文件(例如 manifest.json)。参见 <a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Temporary_Installation_in_Firefox">临时加载项安装</a>.</span>
+                                    </li>
+                                    <li>
+                                        <span lang="en">Chrome/Chromium: Check the <q>developer more</q> option, under <cite>Extensions</cite> (or go to <code>chrome://extensions/</code> from addressbar) and import the directory.</span>
+                                        <span lang="zh">Chrome/Chromium: 在<cite>扩展程序</cite> (或从地址栏 <code>chrome://extensions/</code> )查看 <q>更多开发者</q>选项,并导入目录。</span>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ol>
+                    </div>
+                </section>
+
+                <section id="development" inlist="" rel="schema:hasPart" resource="#development">
+                    <h2 property="schema:name"><span lang="en">Development</span><span lang="zh">开发</span></h2>
+                    <div datatype="rdf:HTML" property="schema:description">
+<pre><code>git clone https://github.com/linkeddata/dokieli</code>
+<code>cd dokieli</code>
+<code></code>
+<code># Install packages</code>
+<code>npm install</code>
+<code></code>
+<code># Build stuff eg. scripts/do.js</code>
+<code>npm run build</code>
+<code></code>
+<code># or automatically rebuild when files change</code>
+<code>npm run watch</code></pre>
+                    </div>
+                </section>
+
+            </div>
+        </article>
+    </main>
+    <script>
+        var lang = new URL(location.href).searchParams.get('lang');
+        if (lang.length > 1) showLang(lang);
+    </script>
+</body>
+</html>
