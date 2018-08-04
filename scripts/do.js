@@ -4393,9 +4393,14 @@ var DO = {
 
     updateMutableResource: function(url, data, options) {
       if(!url) return;
+      options = options || {};
 
-      DO.U.setDate(document, { 'id': 'document-modified', 'property': 'schema:dateModified', 'title': 'Modified' } );
-      DO.U.setEditSelections();
+      if (!('datetime' in options)) {
+        options['datetime'] = new Date();
+      }
+
+      DO.U.setDate(document, { 'id': 'document-modified', 'property': 'schema:dateModified', 'title': 'Modified', 'datetime': options.datetime } );
+      DO.U.setEditSelections(options);
 
       data = doc.getDocument();
       DO.U.processSave(url, null, data, options).then(() => {
@@ -4404,6 +4409,7 @@ var DO = {
     },
 
     processSave: function(url, slug, data, options) {
+      options = options || {};
       var request = (slug)
                     ? fetcher.postResource(url, slug, data)
                     : fetcher.putResource(url, data)
@@ -7145,8 +7151,12 @@ WHERE {\n\
       return rootNode;
     },
 
-    setEditSelections: function(opions) {
+    setEditSelections: function(options) {
       var options = options || {};
+
+      if (!('datetime' in options)) {
+        options['datetime'] = new Date();
+      }
 
       var documentLicense = 'document-license';
       var dLS = document.querySelector('#' + documentLicense + ' option:checked');
@@ -7189,6 +7199,10 @@ WHERE {\n\
           dd = '<dd prefix="pso: http://purl.org/spar/pso/" rel="pso:holdsStatusInTime" resource="#' + DO.U.generateAttributeId() + '"><span rel="pso:withStatus" resource="' + statusIRI  + '" typeof="pso:PublicationStatus">' + DO.C.PublicationStatus[statusIRI].name + '</span></dd>';
 
           dl.insertAdjacentHTML('beforeend', dd);
+
+          if (statusIRI == 'http://purl.org/spar/pso/published') {
+            DO.U.setDate(document, { 'id': 'document-published', 'property': 'schema:datePublished', 'title': 'Published', 'datetime': options.datetime });
+          }
         }
       }
     },
