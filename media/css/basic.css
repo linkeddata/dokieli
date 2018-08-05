@@ -640,7 +640,7 @@ font-size: 1.4em;
 }
 
 #dokieli-features,
-#read-write-web,
+#dokieli-read-write-web,
 #figure-dokieli-overview,
 body > footer {
 max-width:99vw;
@@ -649,7 +649,7 @@ margin-right: calc(-50vw + 50%);
 }
 
 #dokieli-features,
-#read-write-web,
+#dokieli-read-write-web,
 #figure-dokieli-overview {
 text-align: center;
 }
@@ -713,7 +713,7 @@ font-size:3em;
 width: 100%; display: block;
 }
 
-#read-write-web,
+#dokieli-read-write-web,
 #figure-dokieli-overview {
 background-color: #ddd;
 }
@@ -721,13 +721,13 @@ background-color: #ddd;
 #figure-dokieli-overview h2 {
 display:none;
 }
-#read-write-web {
+#dokieli-read-write-web {
 text-align:center;
 font-size:2em;
 padding:1em 0;
 margin-top:1em;
 }
-#read-write-web:before {
+#dokieli-read-write-web:before {
 content:"";
 }
 
@@ -752,7 +752,7 @@ margin: 1em auto;
 }
 
 #dokieli-features,
-#read-write-web,
+#dokieli-read-write-web,
 #figure-dokieli-overview,
 body > footer {
 max-width:99.5vw;
