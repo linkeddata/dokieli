@@ -403,7 +403,8 @@ margin-top:-1.6em;
 margin-right:-1em;
 }
 figure.listing pre code:nth-child(odd):not([class~="highlight"]),
-figure.listing pre samp:nth-child(odd):not([class~="highlight"]) {
+figure.listing pre samp:nth-child(odd):not([class~="highlight"]),
+table tbody tr:nth-child(odd) {
 background-color:#f3f3f3;
 }
 figure.listing pre code:before,
@@ -516,6 +517,7 @@ table {
 width:100%;
 margin-top:1em;
 text-align:left;
+border-collapse:collapse;
 }
 table + table {
 margin-top:2em;
@@ -526,8 +528,16 @@ font-size:0.923em;
 border-bottom:2pt solid #000;
 padding:0 0.25em 0.25em;
 }
-thead {
+thead,
+thead th[colspan] {
 border-bottom:1pt solid #000;
+}
+/*tbody th[scope="rowgroup"]:after {
+margin-left:1em;
+content:"\21F2";
+}*/
+tbody th[scope="rowgroup"] {
+border-bottom:3pt double #000;
 }
 tbody {
 border-bottom:2pt solid #000;
@@ -545,6 +555,9 @@ table p,
 table dd {
 margin:0;
 text-align:left;
+}
+tfoot td > * + * {
+margin-top:1em;
 }
 th {
 /*font-weight:normal;*/
