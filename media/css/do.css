@@ -460,6 +460,7 @@ display:none;
 }
 #document-menu > header,
 #document-menu > footer {
+margin:0 !important;
 padding:0 !important;
 font-weight:normal !important;
 font-size:inherit !important;
