@@ -264,21 +264,31 @@ function applyParserSerializerFixes(data, contentType) {
     case 'text/turtle':
       //XXX: Workaround for rdf-parser-rdfa bug that gives '@langauge' instead of @type when encountering datatype in HTML+RDFa . TODO: Link to bug here
       data = data.replace(/Z"@en;/, 'Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;');
+      data = data.replace(/start> "(\d+)"@en;/, 'start> "$1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger>;');
+      data = data.replace(/end> "(\d+)"@en;/, 'end> "$1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger>;');
       break;
 
     case 'application/ld+json':
       var x = JSON.parse(data);
 
       //XXX: Workaround for rdf-parser-rdfa bug that gives '@language' instead of @type when encountering datatype in HTML+RDFa . See also https://github.com/rdf-ext/rdf-parser-rdfa/issues/5
-      var properties = ['https://www.w3.org/ns/activitystreams#published', 'https://www.w3.org/ns/activitystreams#updated', 'http://schema.org/dateCreated', 'http://schema.org/datePublished', 'http://schema.org/dateModified']
+      var properties = ['https://www.w3.org/ns/activitystreams#published', 'https://www.w3.org/ns/activitystreams#updated', 'http://schema.org/dateCreated', 'http://schema.org/datePublished', 'http://schema.org/dateModified', 'http://www.w3.org/ns/oa#start', 'http://www.w3.org/ns/oa#end'];
 
       for(var i = 0; i < x.length; i++){
         for(var j = 0; j < properties.length; j++){
           if(properties[j] in x[i]) {
-            x[i][properties[j]] = {
-              '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
-              '@value': x[i][properties[j]]['@value']
-            };
+            if (properties[j] == 'http://www.w3.org/ns/oa#start' || properties[j] == 'http://www.w3.org/ns/oa#end') {
+              x[i][properties[j]] = {
+                '@type': 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger',
+                '@value': x[i][properties[j]]['@value']
+              };
+            }
+            else {
+              x[i][properties[j]] = {
+                '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
+                '@value': x[i][properties[j]]['@value']
+              };
+            }
           }
         }
       }
