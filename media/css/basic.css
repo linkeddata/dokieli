@@ -133,8 +133,14 @@ list-style-type:none;
 main form p {
 text-indent:0;
 }
+main form p { margin:1em 0 0 0; }
+main form p:first-child { margin-top:0; }
+
 main fieldset {
 padding:1em;
+}
+main fieldset + fieldset, main form ul + p:before  {
+margin-top:2em;
 }
 main legend { font-weight:bold; }
 main label {
@@ -311,6 +317,13 @@ font-size:0.95em;
 */
 }
 
+.rfc2119 {
+text-transform:lowercase;
+font-variant:small-caps;
+font-style:normal;
+}
+em.rfc2119 { color: #900; }
+
 ul { padding: 0; margin-bottom:1em; list-style-position: inside; }
 nav ul { list-style: none; }
 dt { font-weight: bold; }
@@ -450,44 +463,6 @@ margin-bottom:0;
 }
 
 
-
-tfoot dl.abbr dt,
-tfoot dl.abbr dd {
-display:inline;
-text-transform:none;
-}
-tfoot dl.abbr dd {
-margin-left:0;
-}
-tfoot dl.abbr dd:after {
-content:"\A";
-white-space:pre;
-}
-tfoot dl.abbr dt:after {
-content:": ";
-}
-tfoot dl.abbr {
--webkit-column-count:2;
--moz-column-count:2;
-column-count:2;
-}
-tfoot dl.abbr dt {
-font-weight:bold;
-}
-
-[class~="earl:passed"],[resource~="earl:passed"] { background-color: #0f0; color: #000; text-align:center; }
-[class~="earl:failed"],[resource~="earl:failed"] { background-color: #f00; color: #000; text-align:center; }
-[class~="earl:inapplicable"],[resource~="earl:inapplicable"] { background-color: #eee; color: #000; text-align:center; }
-[class~="earl:cantTell"],[resource~="earl:cantTell"] { background-color: #ff0; color: #000; text-align:center; }
-[class~="earl:untested"],[resource~="earl:untested"] { background-color: #0ff; color: #000; text-align:center; }
-
-dl [class~="earl:passed"], dl [class~="earl:failed"], dl [class~="earl:inapplicable"], dl [class~="earl:cantTell"], dl [class~="earl:untested"]{
-min-width:1em;
-display:inline-block;
-}
-
-tbody [property~="earl:outcome"] { display:block; }
-
 html {
 counter-reset:figcaption 0;
 }
@@ -537,7 +512,6 @@ margin-top:2em;
 }
 caption {
 text-align:left;
-font-size:0.923em;
 border-bottom:2pt solid #000;
 padding:0 0.25em 0.25em;
 }
@@ -549,6 +523,9 @@ border-bottom:1pt solid #000;
 margin-left:1em;
 content:"\21F2";
 }*/
+
+[rowspan] { vertical-align: bottom; }
+
 tbody th[scope="rowgroup"] {
 border-bottom:3pt double #000;
 }
@@ -572,9 +549,7 @@ text-align:left;
 tfoot td > * + * {
 margin-top:1em;
 }
-th {
-/*font-weight:normal;*/
-}
+
 tfoot dl.abbr dt,
 tfoot dl.abbr dd {
 display:inline;
@@ -595,6 +570,26 @@ tfoot dl.abbr {
 -moz-column-count:2;
 column-count:2;
 }
+tfoot dl.abbr dt {
+font-weight:bold;
+}
+tfoot dd:after { content: "\A"; white-space:pre; }
+tfoot dt, tfoot dd { display:inline; }
+tfoot dd { margin-left: 0.5em }
+
+
+[class~="earl:passed"],[resource~="earl:passed"] { background-color: #0f0; color: #000; text-align:center; }
+[class~="earl:failed"],[resource~="earl:failed"] { background-color: #f00; color: #000; text-align:center; }
+[class~="earl:inapplicable"],[resource~="earl:inapplicable"] { background-color: #eee; color: #000; text-align:center; }
+[class~="earl:cantTell"],[resource~="earl:cantTell"] { background-color: #ff0; color: #000; text-align:center; }
+[class~="earl:untested"],[resource~="earl:untested"] { background-color: #0ff; color: #000; text-align:center; }
+
+dl [class~="earl:passed"], dl [class~="earl:failed"], dl [class~="earl:inapplicable"], dl [class~="earl:cantTell"], dl [class~="earl:untested"]{
+min-width:1em;
+display:inline-block;
+}
+
+tbody [property~="earl:outcome"] { display:block; }
 
 
 
