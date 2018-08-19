@@ -475,6 +475,19 @@ tfoot dl.abbr dt {
 font-weight:bold;
 }
 
+[class~="earl:passed"],[resource~="earl:passed"] { background-color: #0f0; color: #000; text-align:center; }
+[class~="earl:failed"],[resource~="earl:failed"] { background-color: #f00; color: #000; text-align:center; }
+[class~="earl:inapplicable"],[resource~="earl:inapplicable"] { background-color: #eee; color: #000; text-align:center; }
+[class~="earl:cantTell"],[resource~="earl:cantTell"] { background-color: #ff0; color: #000; text-align:center; }
+[class~="earl:untested"],[resource~="earl:untested"] { background-color: #0ff; color: #000; text-align:center; }
+
+dl [class~="earl:passed"], dl [class~="earl:failed"], dl [class~="earl:inapplicable"], dl [class~="earl:cantTell"], dl [class~="earl:untested"]{
+min-width:1em;
+display:inline-block;
+}
+
+tbody [property~="earl:outcome"] { display:block; }
+
 html {
 counter-reset:figcaption 0;
 }
