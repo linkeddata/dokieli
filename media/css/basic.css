@@ -576,7 +576,7 @@ font-weight:bold;
 tfoot dd:after { content: "\A"; white-space:pre; }
 tfoot dt, tfoot dd { display:inline; }
 tfoot dd { margin-left: 0.5em }
-tfoot dd + tfoot dt { margin-top:0; }
+tfoot dd + dt { margin-top:0; }
 
 [class~="earl:passed"],[resource~="earl:passed"] { background-color: #0f0; color: #000; text-align:center; }
 [class~="earl:failed"],[resource~="earl:failed"] { background-color: #f00; color: #000; text-align:center; }
