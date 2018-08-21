@@ -2002,11 +2002,11 @@ var DO = {
 
     showRobustLinks: function() {
       document.querySelectorAll('[data-versionurl], [data-originalurl]').forEach(function(i){
-        var originalurl = i.getAttribute('data-originalurl');
+        var originalurl = i.getAttribute('data-originalurl').trim();
         originalurl = (originalurl) ? '<dt>Original</dt><dd><a href="' + originalurl + '" target="_blank">' + originalurl + '</a></dd>' : '';
 
-        var versionurl = i.getAttribute('data-versionurl');
-        var versiondate = i.getAttribute('data-versiondate') || versionurl;
+        var versionurl = i.getAttribute('data-versionurl').trim();
+        var versiondate = i.getAttribute('data-versiondate').trim() || versionurl;
         versionurl = (versionurl) ? '<dt>Version</dt><dd><a href="' + versionurl + '" target="_blank">' + versiondate + '</a></dd>' : '';
 
         i.insertAdjacentHTML('afterend', '<span class="do robustlinks"><button title="Robust Links">🔗<span></span></button><dl>' + originalurl + versionurl + '</dl></span>');
