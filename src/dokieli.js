@@ -2000,6 +2000,28 @@ var DO = {
       }
     },
 
+    showRobustLinks: function() {
+      document.querySelectorAll('[data-versionurl], [data-originalurl]').forEach(function(i){
+        var originalurl = i.getAttribute('data-originalurl');
+        originalurl = (originalurl) ? '<dt>Original</dt><dd><a href="' + originalurl + '" target="_blank">' + originalurl + '</a></dd>' : '';
+
+        var versionurl = i.getAttribute('data-versionurl');
+        var versiondate = i.getAttribute('data-versiondate') || versionurl;
+        versionurl = (versionurl) ? '<dt>Version</dt><dd><a href="' + versionurl + '" target="_blank">' + versiondate + '</a></dd>' : '';
+
+        i.insertAdjacentHTML('afterend', '<span class="do robustlinks"><button title="Robust Links">🔗<span></span></button><dl>' + originalurl + versionurl + '</dl></span>');
+      });
+
+      document.querySelectorAll('.do.robustlinks').forEach(function(i){
+        i.addEventListener('mouseenter', function(e){
+          e.target.classList.add('on');
+        });
+        i.addEventListener('mouseleave', function(e){
+          e.target.classList.remove('on');
+        });
+      });
+    },
+
     getOffset: function(el) {
       var box = el.getBoundingClientRect();
 
@@ -7377,6 +7399,7 @@ WHERE {\n\
         DO.U.showTextQuoteSelector();
         DO.U.showDocumentInfo();
         DO.U.showFragment();
+        DO.U.showRobustLinks();
         DO.U.setDocumentMode();
         DO.U.showInboxNotifications();
         DO.U.initMath();

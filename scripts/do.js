@@ -7,7 +7,7 @@
 		exports["DO"] = factory(require("fetch"));
 	else
 		root["DO"] = factory(root["fetch"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_10__) {
+})(typeof self !== 'undefined' ? self : this, function(__WEBPACK_EXTERNAL_MODULE_10__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -1606,21 +1606,31 @@ function applyParserSerializerFixes(data, contentType) {
     case 'text/turtle':
       //XXX: Workaround for rdf-parser-rdfa bug that gives '@langauge' instead of @type when encountering datatype in HTML+RDFa . TODO: Link to bug here
       data = data.replace(/Z"@en;/, 'Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;');
+      data = data.replace(/start> "(\d+)"@en;/, 'start> "$1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger>;');
+      data = data.replace(/end> "(\d+)"@en;/, 'end> "$1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger>;');
       break;
 
     case 'application/ld+json':
       var x = JSON.parse(data);
 
       //XXX: Workaround for rdf-parser-rdfa bug that gives '@language' instead of @type when encountering datatype in HTML+RDFa . See also https://github.com/rdf-ext/rdf-parser-rdfa/issues/5
-      var properties = ['https://www.w3.org/ns/activitystreams#published', 'https://www.w3.org/ns/activitystreams#updated', 'http://schema.org/dateCreated', 'http://schema.org/datePublished', 'http://schema.org/dateModified']
+      var properties = ['https://www.w3.org/ns/activitystreams#published', 'https://www.w3.org/ns/activitystreams#updated', 'http://schema.org/dateCreated', 'http://schema.org/datePublished', 'http://schema.org/dateModified', 'http://www.w3.org/ns/oa#start', 'http://www.w3.org/ns/oa#end'];
 
       for(var i = 0; i < x.length; i++){
         for(var j = 0; j < properties.length; j++){
           if(properties[j] in x[i]) {
-            x[i][properties[j]] = {
-              '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
-              '@value': x[i][properties[j]]['@value']
-            };
+            if (properties[j] == 'http://www.w3.org/ns/oa#start' || properties[j] == 'http://www.w3.org/ns/oa#end') {
+              x[i][properties[j]] = {
+                '@type': 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger',
+                '@value': x[i][properties[j]]['@value']
+              };
+            }
+            else {
+              x[i][properties[j]] = {
+                '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
+                '@value': x[i][properties[j]]['@value']
+              };
+            }
           }
         }
       }
@@ -3913,6 +3923,28 @@ var DO = {
           fragment.parentNode.removeChild(fragment);
         });
       }
+    },
+
+    showRobustLinks: function() {
+      document.querySelectorAll('[data-versionurl], [data-originalurl]').forEach(function(i){
+        var originalurl = i.getAttribute('data-originalurl');
+        originalurl = (originalurl) ? '<dt>Original</dt><dd><a href="' + originalurl + '" target="_blank">' + originalurl + '</a></dd>' : '';
+
+        var versionurl = i.getAttribute('data-versionurl');
+        var versiondate = i.getAttribute('data-versiondate') || versionurl;
+        versionurl = (versionurl) ? '<dt>Version</dt><dd><a href="' + versionurl + '" target="_blank">' + versiondate + '</a></dd>' : '';
+
+        i.insertAdjacentHTML('afterend', '<span class="do robustlinks"><button title="Robust Links">🔗<span></span></button><dl>' + originalurl + versionurl + '</dl></span>');
+      });
+
+      document.querySelectorAll('.do.robustlinks').forEach(function(i){
+        i.addEventListener('mouseenter', function(e){
+          e.target.classList.add('on');
+        });
+        i.addEventListener('mouseleave', function(e){
+          e.target.classList.remove('on');
+        });
+      });
     },
 
     getOffset: function(el) {
@@ -9292,6 +9324,7 @@ WHERE {\n\
         DO.U.showTextQuoteSelector();
         DO.U.showDocumentInfo();
         DO.U.showFragment();
+        DO.U.showRobustLinks();
         DO.U.setDocumentMode();
         DO.U.showInboxNotifications();
         DO.U.initMath();
