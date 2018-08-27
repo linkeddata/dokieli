@@ -3884,7 +3884,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       }
       title = title.replace(/ & /g, " &amp; ");
       title = (title.length > 0) ? '<cite>' + title + '</cite>, ' : '';
-      var datePublished = subject.schemadatePublished || subject.dctermsissued || subject.dctermsdate || subject.dctermscreated || '';
+      var datePublished = subject.schemadatePublished || subject.dctermsissued || subject.dctermsdate || subject.schemadateCreated || subject.dctermscreated || '';
       var dateVersion = subject.schemadateModified || datePublished;
       datePublished = (datePublished) ? datePublished.substr(0,4) + ', ' : '';
       var dateAccessed = 'Accessed: ' + util.getDateTimeISO();
