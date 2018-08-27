@@ -1006,6 +1006,8 @@ font-weight:normal;
 outline:none;
 text-align:right;
 text-decoration:none;
+border-bottom:0;
+background-color:transparent;
 }
 .listing pre code,
 .listing pre samp {
@@ -1222,6 +1224,10 @@ bottom:-8px;
 #citation-url {
 display:block;
 }
+.medium-editor-toolbar-form a {
+background-color:transparent;
+border:none;
+}
 .medium-editor-toolbar-form textarea {
 padding:0.5em;
 width:calc(100% - 1em - 2px);
@@ -1261,7 +1267,6 @@ margin-left:1.5em;
 /*body .medium-editor-element img {
 max-width:none;
 }*/
-
 
 
 /* XXX: MediumEditor below. This is automatically generated (using build.editor.sh) and inserted. Do not modify directly */

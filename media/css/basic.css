@@ -289,7 +289,30 @@ h1 + #document-identifier {
 margin-top:1em;
 }
 
-a { color: #009000; }
+a {
+color: #009000;
+text-decoration: none;
+border-bottom: 2px solid #333;
+}
+a:hover {
+background-color: #fdffdd;
+border-bottom-width: 3px;
+}
+a:focus,
+a:active {
+color: #c00;
+border-bottom:0;
+}
+[tabindex]:not([tabindex="-1"]), a, button, input, select, submit, textarea {
+outline: 2px solid transparent;
+outline-offset: 5px;
+transition: outline-offset .2s linear;
+}
+[tabindex]:not([tabindex="-1"]):focus, a:focus, button:focus, input:focus, select:focus, submit:focus, textarea:focus {
+outline-color: currentColor;
+outline-offset: 0;
+}
+
 code, samp { background-color:#f3f3f3; padding:0.1em 0; }
 code:before, code:after, samp:before, samp:after, kbd:before, kbd:after {
 content:"\00a0";
