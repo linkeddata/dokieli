@@ -710,7 +710,10 @@ padding-bottom: 1em;
 background-color: #333;
 color: #eee;
 }
-
+#dokieli-features a {
+background-color:inherit;
+border:0;
+}
 #dokieli-features ul {
 list-style-type: none;
 margin: 0;
