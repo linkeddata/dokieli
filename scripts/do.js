@@ -3927,6 +3927,10 @@ var DO = {
 
     showRobustLinks: function() {
       document.querySelectorAll('[data-versionurl], [data-originalurl]').forEach(function(i){
+        if (i.nextElementSibling && i.nextElementSibling.classList.contains('do') && i.nextElementSibling.classList.contains('robustlinks')) {
+          return;
+        }
+
         var originalurl = i.getAttribute('data-originalurl');
         originalurl = (originalurl) ? originalurl.trim() : undefined;
         originalurl = (originalurl) ? '<dt>Original</dt><dd><a href="' + originalurl + '" target="_blank">' + originalurl + '</a></dd>' : '';
@@ -9145,6 +9149,8 @@ WHERE {\n\
                         }
                         var citationHTML = '<li id="' + id + '">' + citation + '</li>';
                         r.insertAdjacentHTML('beforeend', citationHTML);
+
+                        DO.U.showRobustLinks();
 
 // console.log(options.url);
                         var s = citationGraph.child(citationURI);
