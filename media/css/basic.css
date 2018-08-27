@@ -171,6 +171,17 @@ font-weight:bold;
 width:auto;
 }
 
+[tabindex]:not([tabindex="-1"]), a, button, input, select, submit, textarea {
+outline: 2px solid transparent;
+outline-offset: 5px;
+transition: outline-offset .2s linear;
+}
+[tabindex]:not([tabindex="-1"]):focus, a:focus, button:focus, input:focus, select:focus, submit:focus, textarea:focus {
+outline-color: currentColor;
+outline-offset: 2px;
+}
+
+
 blockquote {
 padding-left:1em;
 border-left:0.25em solid #ccc;
@@ -289,7 +300,45 @@ h1 + #document-identifier {
 margin-top:1em;
 }
 
-a { color: #009000; }
+:root {
+--link-color: #0000ee;
+--link-hover-background-color:#fcffcc;
+--link-visited-color:#551A8B;
+--underline-color: #333;
+}
+a { /* color: #009000; color:#006600; color:#002fa7; */}
+*:not([class~="do"]) a {
+text-decoration: none;
+}
+*:not([class~="do"]) a[href] {
+border-bottom: 2px solid #333;
+/*padding: 0 1px 0;*/
+/*margin: 0 -1px 0;*/
+}
+*:not([class~="do"]) a[href]:focus,
+*:not([class~="do"]) a[href]:hover {
+background: rgba(75%, 75%, 75%, 0.2);
+background: #f8f8f8;
+background: #fcfcfc;
+background: #fcffcc;
+border-bottom-width: 3px;
+border-bottom-color:#0000ee;
+/*margin-bottom: -1px;*/
+}
+*:not([class~="do"]) a[href]:focus {
+border:0;
+}
+*:not([class~="do"]) a[href]:active {
+color: #c00;
+border-color: #c00;
+border-bottom:0;
+}
+/*.do a[href], .do a[href]:focus, .do a[href]:hover, .do a[href]:active {
+border-bottom:0;
+background:none;
+text-decoration:underline;
+}*/
+
 code, samp { background-color:#f3f3f3; padding:0.1em 0; }
 code:before, code:after, samp:before, samp:after, kbd:before, kbd:after {
 content:"\00a0";

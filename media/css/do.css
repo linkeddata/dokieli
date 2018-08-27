@@ -996,7 +996,8 @@ font-size:1em;
 }
 
 .do.fragment a {
-padding-right:10px;
+padding-left:0.5em;
+padding-right:0.5em;
 height:100%;
 display:block;
 font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
