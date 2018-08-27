@@ -3942,7 +3942,7 @@ var DO = {
           versiondate = versiondate.trim();
         }
         else if (versionurl) {
-          versiondate = versionalurl;
+          versiondate = versionurl;
         }
 
         versionurl = (versionurl) ? '<dt>Version</dt><dd><a href="' + versionurl + '" target="_blank">' + versiondate + '</a></dd>' : '';
