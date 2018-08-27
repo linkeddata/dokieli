@@ -436,6 +436,11 @@ background-color:#fbfbfb;
 border-left:0.5em solid #bbb;
 padding:1em;
 }
+blockquote pre {
+background-color:#fff;
+border-left:0;
+padding:0;
+}
 
 aside.note.do blockquote article section {
 margin:0;
