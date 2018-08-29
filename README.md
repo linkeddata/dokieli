@@ -33,7 +33,7 @@ explains dokieli's principles, architectural and design patterns.
 * Implements the [ActivityPub](https://www.w3.org/TR/activitypub/) client (read/write from/to profile's outbox)
 * Open and edit (HTML+RDFa) URLs
 * Uses W3C [Web Annotation Model](https://www.w3.org/TR/annotation-model/) and [Activity Streams 2.0 vocabulary](https://www.w3.org/TR/activitystreams-vocabulary)
-* Annotations (e.g., replies, peer-reviews, liking, resharing, bookmarking)
+* Annotations (e.g., replies, peer-reviews, liking, resharing, bookmarking) employing W3C [Web Annotation Vocabulary](https://www.w3.org/TR/annotation-vocab/), [Embedding Web Annotations in HTML](https://www.w3.org/TR/annotation-html), [Selectors and States](https://www.w3.org/TR/selectors-states/)
 * Inbox notifications for annotations and social sharing (implements W3C [Linked Data Notifications](https://www.w3.org/TR/ldn/))
 * Assign license (e.g., [Creative Commons](https://creativecommons.org/)) to the contributions/annotations
 * Uses [schema.org](http://schema.org/), [SPAR Ontologies](http://www.sparontologies.net/), [PROV-O](https://www.w3.org/TR/prov-o/)
