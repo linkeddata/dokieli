@@ -425,6 +425,7 @@ margin-top:0.5em;
 .success { background-color:#FFFFFF; color:#647819; font-weight:bold; }
 .warning { background-color:#FFFF00; color:#000000; font-weight:bold; }
 .error { background-color:#FF0000; color:#FFFFFF; font-weight:bold; }
+a.highlight,
 .highlight { background-color:#00FFFF; color:#000000; }
 .highlight .highlight { background-color:#0099FF; color:#000000; }
 .highlight .highlight .highlight { background-color:#0000FF; color:#FFFFFF; }
