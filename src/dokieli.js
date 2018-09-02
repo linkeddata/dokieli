@@ -7264,6 +7264,11 @@ WHERE {\n\
                       break;
                   }
                   break;
+
+                case 'rdfa':
+                  //This only updates the DOM. Nothing further. The 'id' is not used.
+                  var noteData = createNoteData({'id': id});
+                  break;
               }
 
               this.window.getSelection().removeAllRanges();
