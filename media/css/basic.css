@@ -299,7 +299,8 @@ background-color: #fdffdd;
 border-bottom-width: 3px;
 }
 a:focus,
-a:active {
+a:active,
+a:focus:visited {
 color: #c00;
 border-bottom:0;
 }
@@ -313,7 +314,7 @@ outline: 2px solid transparent;
 outline-offset: 5px;
 transition: outline-offset .2s linear;
 }
-[tabindex]:not([tabindex="-1"]):focus, a:focus, button:focus, input:focus, select:focus, submit:focus, textarea:focus {
+[tabindex]:not([tabindex="-1"]):focus, a:focus, a:focus:visited, button:focus, input:focus, select:focus, submit:focus, textarea:focus {
 outline-color: currentColor;
 outline-offset: 0;
 }
