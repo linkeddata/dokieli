@@ -3931,6 +3931,8 @@ var DO = {
           return;
         }
 
+        var href = i.getAttribute('href');
+
         var originalurl = i.getAttribute('data-originalurl');
         originalurl = (originalurl) ? originalurl.trim() : undefined;
         originalurl = (originalurl) ? '<dt>Original</dt><dd><a href="' + originalurl + '" target="_blank">' + originalurl + '</a></dd>' : '';
@@ -3938,8 +3940,12 @@ var DO = {
         var versionurl = i.getAttribute('data-versionurl');
         verionurl = (versionurl) ? versionurl.trim() : undefined;
         var versiondate = i.getAttribute('data-versiondate');
+        var nearlinkdateurl = '';
         if (versiondate) {
           versiondate = versiondate.trim();
+          versiondateNumeric = versiondate.replace(/\D/g, '');
+          nearlinkdateurl = 'http://timetravel.mementoweb.org/memento/' + versiondateNumeric + '/' + href;
+          nearlinkdateurl = '<dt>Near Link Date</dt><dd><a href="' + nearlinkdateurl + '" target="_blank">' + versiondate + '</a></dd>'
         }
         else if (versionurl) {
           versiondate = versionurl;
@@ -3947,7 +3953,7 @@ var DO = {
 
         versionurl = (versionurl) ? '<dt>Version</dt><dd><a href="' + versionurl + '" target="_blank">' + versiondate + '</a></dd>' : '';
 
-        i.insertAdjacentHTML('afterend', '<span class="do robustlinks"><button title="Robust Links">🔗<span></span></button><dl>' + originalurl + versionurl + '</dl></span>');
+        i.insertAdjacentHTML('afterend', '<span class="do robustlinks"><button title="Robust Links">🔗<span></span></button><dl>' + originalurl + versionurl + nearlinkdateurl + '</dl></span>');
       });
 
       document.querySelectorAll('.do.robustlinks').forEach(function(i){
