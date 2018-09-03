@@ -398,6 +398,12 @@ body > footer > * {
 max-width:50em;
 }
 body > footer a, body > footer a:hover { color: inherit; }
+body > footer a:hover {
+background-color:transparent;
+}
+body > footer a:visited {
+color:#fff;
+}
 body > footer h2 {
 margin-top:1em;
 }
