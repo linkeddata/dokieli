@@ -397,7 +397,10 @@ margin-top:2em;
 body > footer > * {
 max-width:50em;
 }
-body > footer a, body > footer a:hover { color: inherit; }
+body > footer a, body > footer a:hover {
+color: inherit;
+border-bottom-color: #009000;
+}
 body > footer a:hover {
 background-color:transparent;
 }
