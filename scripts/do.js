@@ -4042,12 +4042,19 @@ var DO = {
       //   noteData.annotation["message"] = note;
       // }
 
-      if (typeof e !== 'undefined' && e.target.closest('button')) {
-        var archiveNode = e.target.closest('button').parentNode;
-        archiveNode.insertAdjacentHTML('beforeend', ' <span class="progress"><i class="fa fa-circle-o-notch fa-spin fa-fw"></i></span>');
+      var button = e.target.closest('button');
+
+      if (typeof e !== 'undefined' && button) {
+        if (button.disabled) { return; }
+        else { button.disabled = true; }
+
+        var archiveNode = button.parentNode;
+        archiveNode.insertAdjacentHTML('beforeend', ' <span class="progress"><i class="fa fa-circle-o-notch fa-spin fa-fw"></i> Archiving in progress.</span>');
       }
 
       options.noCredentials = true
+
+      var progress = archiveNode.querySelector('.progress')
 
       return fetcher.postResource(endpoint, '', JSON.stringify(noteData), options.contentType, null, options)
 
@@ -4060,13 +4067,12 @@ var DO = {
               if (response['wayback_id']) {
                 let location = 'https://web.archive.org' + response.wayback_id
 
-                archiveNode
+                progress
                   .innerHTML = '<i class="fa fa-archive fa-fw"></i> Archived at <a target="_blank" href="' +
                   location + '">' + location + '</a>'
               } else {
-                archiveNode
-                  .querySelector('.progress')
-                  .innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to archive. Try later.'
+                progress
+                  .innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Archive unavailable. Please try later.'
               }
 
               break
@@ -4074,9 +4080,8 @@ var DO = {
         })
 
         .catch(() => {
-          archiveNode
-            .querySelector('.progress')
-            .innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to archive. Try later.'
+          progress
+            .innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Archive unavailable. Please try later.'
         })
     },
 

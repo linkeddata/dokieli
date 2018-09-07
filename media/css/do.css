@@ -146,6 +146,12 @@ display:block;
 
 progress { margin:0 1em; }
 figure .progress { display:block; margin:0 auto; }
+#document-do .progress {
+display:block;
+clear:both;
+padding:1em 0;
+text-align:center;
+}
 
 main,
 main > article { position:relative; }
