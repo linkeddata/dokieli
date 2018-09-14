@@ -475,7 +475,7 @@ line-height:inherit !important;
 }
 #document-menu > footer {
 display:none;
-margin-top:1em;
+margin-top:1em !important;
 }
 #document-menu.on > header,
 #document-menu.on > footer {
@@ -494,6 +494,11 @@ width:100%;
 background-color:#fff;
 background-image:none;
 }
+#document-menu #document-views,
+#document-menu #document-metadata {
+float:left !important;
+}
+
 #document-menu #document-metadata .people th {
 vertical-align:top;
 }
