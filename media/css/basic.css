@@ -25,6 +25,13 @@ h6 { font-size:9pt !important; }
 
 h1 { margin-top:0; }
 
+a, a:visited {
+border-bottom:none !important;
+text-decoration:none !important;
+color:#000 !important;
+}
+abbr { border-bottom:none; }
+
 } /* media print */
 
 
@@ -318,6 +325,8 @@ transition: outline-offset .2s linear;
 outline-color: currentColor;
 outline-offset: 0;
 }
+
+a abbr { cursor:pointer; border-bottom:0; }
 
 code, samp { background-color:#f3f3f3; padding:0.1em 0; }
 code:before, code:after, samp:before, samp:after, kbd:before, kbd:after {
