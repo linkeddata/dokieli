@@ -292,6 +292,14 @@ function getResourceOptions (url, options = {}) {
 
         throw error
       }
+      else if (options.header && !response.headers.get(options.header)){
+        let error = new Error('OPTIONS without ' + options.header + ' header: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
 
       if (options.header) {  // specific header requested
         return { headers: response.headers.get(options.header) }
