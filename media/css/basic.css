@@ -585,7 +585,6 @@ border-bottom:2pt solid #000;
 }
 th, td {
 padding:0.25em;
-vertical-align:baseline;
 font-size:0.923em;
 word-wrap:normal;
 }
@@ -642,7 +641,9 @@ display:inline-block;
 
 tbody [property~="earl:outcome"] { display:block; }
 
-
+table[typeof~="qb:DataSet"] tbody tr:not([typeof~="earl:Assertion"]) td {
+text-align:center;
+}
 
 .toc, .toc ol {
 list-style:none;
