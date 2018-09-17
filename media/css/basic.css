@@ -644,6 +644,12 @@ tbody [property~="earl:outcome"] { display:block; }
 table[typeof~="qb:DataSet"] tbody tr:not([typeof~="earl:Assertion"]) td {
 text-align:center;
 }
+table[typeof~="qb:DataSet"] tbody tr:not([typeof~="earl:Assertion"]) th,
+table[typeof~="qb:DataSet"] tbody tr:not([typeof~="earl:Assertion"]) td {
+border: 1px solid #ccc;
+border-left-color: #eee;
+border-right-color: #eee;
+}
 
 .toc, .toc ol {
 list-style:none;
