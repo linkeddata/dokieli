@@ -102,6 +102,15 @@ article[typeof*="ScholarlyArticle"] section[inlist]:not([id=abstract]):not([id=d
 counter-increment:sub-sub-section;
 counter-reset:sub-sub-sub-section;
 }
+article[typeof*="ScholarlyArticle"] section[inlist]:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]) section section section {
+counter-increment:sub-sub-sub-section;
+counter-reset:sub-sub-sub-sub-section;
+}
+article[typeof*="ScholarlyArticle"] section[inlist]:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]) section section section section {
+counter-increment:sub-sub-sub-sub-section;
+counter-reset:sub-sub-sub-sub-sub-section;
+}
+
 article[typeof*="ScholarlyArticle"] section[inlist]:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id^=table-of-]) > h2:before {
 content:counter(section) ".\00a0\00a0\00a0\00a0";
 }
@@ -111,8 +120,12 @@ content:counter(section) "." counter(sub-section) "\00a0\00a0\00a0";
 article[typeof*="ScholarlyArticle"] section[inlist] > h4:before {
 content:counter(section)"." counter(sub-section) "." counter(sub-sub-section) "\00a0\00a0\00a0";
 }
-
-
+article[typeof*="ScholarlyArticle"] section[inlist] > h5:before {
+content:counter(section)"." counter(sub-section) "." counter(sub-sub-section) "." counter(sub-sub-sub-section) "\00a0\00a0\00a0";
+}
+article[typeof*="ScholarlyArticle"] section[inlist] > h6:before {
+content:counter(section)"." counter(sub-section) "." counter(sub-sub-section) "." counter(sub-sub-sub-section) "." counter(sub-sub-sub-sub-section) "\00a0\00a0\00a0";
+}
 
 article > article,
 section,
@@ -692,6 +705,10 @@ counter-reset:sub-sub-sub-s;
 counter-increment:sub-sub-sub-s;
 counter-reset:sub-sub-sub-sub-s;
 }
+.toc li li li li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]) {
+counter-increment:sub-sub-sub-sub-s;
+counter-reset:sub-sub-sub-sub-sub-s;
+}
 .toc li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
 content:"\00a0" counter(s) "\00a0";
 }
@@ -703,6 +720,9 @@ content:"\00a0" counter(s) "." counter(sub-s) "." counter(sub-sub-s) "\00a0";
 }
 .toc li li li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
 content:"\00a0" counter(s) "." counter(sub-s) "." counter(sub-sub-s) "." counter(sub-sub-sub-s) "\00a0";
+}
+.toc li li li li li:not([data-id=abstract]):not([id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):before {
+content:"\00a0" counter(s) "." counter(sub-s) "." counter(sub-sub-s) "." counter(sub-sub-sub-s) "." counter(sub-sub-sub-sub-s) "\00a0";
 }
 
 .toc li[data-id=abstract]:before, .toc li[data-id=document-status]:before, .toc li[data-id=keywords]:before, .toc li[data-id=references]:before, .toc li[data-id=categories-and-subject-descriptors]:before, .toc li[data-id=general-terms]:before, .toc li[data-id=appendix]:before, .toc li[data-id=contact-us]:before {
