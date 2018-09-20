@@ -3544,8 +3544,13 @@ var DO = {
         var key = Object.keys(i)[0];
         var value = i[key];
         var checkedInput = '';
-        if(document.getElementById('table-of-'+ key +'s')) {
+
+        var tL = document.getElementById('table-of-'+ key +'s');
+
+        if(tL) {
           checkedInput = ' checked="checked"';
+
+          DO.U.buildTableOfStuff(key);
         }
 
         s.push('<li><input id="t-o-' + key +'" type="checkbox"' + disabledInput + checkedInput + '/><label for="t-o-' + key + '">' + value + '</label></li>');
@@ -3653,6 +3658,10 @@ var DO = {
           }
 
           elementId = 'table-of-' + element + 's';
+
+          //Refresh
+          var tId = document.getElementById(elementId);
+          if(tId) { tId.parentNode.removeChild(tId); }
 
           if (element == 'abbr') {
             s += '<section id="' + elementId + '">';
