@@ -3820,7 +3820,14 @@ var DO = {
             break;
           }
           else if (i == 0) {
-            article.insertAdjacentHTML('afterbegin', h);
+            var a = article.querySelector('h1');
+
+            if (a) {
+              a.insertAdjacentHTML('afterend', h);
+            }
+            else {
+              article.insertAdjacentHTML('afterbegin', h);
+            }
             break;
           }
         }
