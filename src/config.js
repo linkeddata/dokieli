@@ -119,16 +119,16 @@ module.exports = {
     'document-resource-state',
     'document-status',
     'document-see-also',
+    'authors',
+    'abstract',
+    'categories-and-subject-descriptors',
+    'keywords',
+    'general-terms',
     'table-of-contents',
     'table-of-figures',
     'table-of-tables',
     'table-of-abbrs',
-    'authors',
-    'keywords',
-    'categories-and-subject-descriptors',
-    'abstract',
-    'introduction',
-    'prologue'
+    'introduction'
   ],
 
   CollectionItemsLimit: 20,
