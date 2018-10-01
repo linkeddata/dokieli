@@ -199,16 +199,16 @@ module.exports = {
     'document-resource-state',
     'document-status',
     'document-see-also',
+    'authors',
+    'abstract',
+    'categories-and-subject-descriptors',
+    'keywords',
+    'general-terms',
     'table-of-contents',
     'table-of-figures',
     'table-of-tables',
     'table-of-abbrs',
-    'authors',
-    'keywords',
-    'categories-and-subject-descriptors',
-    'abstract',
-    'introduction',
-    'prologue'
+    'introduction'
   ],
 
   CollectionItemsLimit: 20,
@@ -1956,138 +1956,6 @@ var DO = {
   C: __webpack_require__(0),
 
   U: {
-    //Tries to authenticate with given URI. If authenticated, returns the 'User' header value.
-    authenticateUser: function(url) {
-      url = url || window.location.origin + window.location.pathname;
-      var reasons = [];
-      var response = '';
-
-      return new Promise(function(resolve, reject) {
-        var response = new Promise(function(resolve, reject) {
-          if (url.slice(0, 5).toLowerCase() == 'https') {
-            DO.U.getResourceHeadUser(url).then(
-              function(i) {
-                resolve(i);
-              },
-              function(reason) {
-                DO.U.authenticateUserFallback(url, reasons).then(
-                  function(i) {
-                    resolve(i);
-                  },
-                  function(reason) {
-                    reject(reasons);
-                  }
-                );
-              }
-            );
-          }
-          else {
-            if(url.slice(0, 5).toLowerCase() == 'http:') {
-              //TODO: First try document's proxy?
-              DO.U.authenticateUserFallback(url, reasons).then(
-                function(i) {
-                  resolve(i);
-                },
-                function(reason) {
-                  reject(reasons);
-                }
-              );
-            }
-          }
-        });
-
-        response.then(
-          function(userIRI) {
-            if (userIRI == url) {
-              return resolve(userIRI);
-            }
-            else {
-              console.log("--- WebID input (" + url +") did not match the one in the certificate (" + userIRI +").");
-              var reason = {"message": "WebID input did not match the one in the certificate."};
-              reasons.push(reason);
-              return reject(reasons);
-            }
-          },
-          function(reason) {
-            return reject(reasons);
-          }
-        );
-      });
-    },
-
-    authenticateUserFallback: function(url, reasons) {
-// console.log("Try to authenticating through WebID's storage, if not found, try through a known authentication endpoint");
-      url = url || window.location.origin + window.location.pathname;
-      var pIRI = uri.getProxyableIRI(url);
-
-      return graph.getGraph(pIRI)
-        .then(
-          function(i) {
-            var s = i.child(url);
-// console.log(s.pimstorage);
-            if (s.pimstorage && s.pimstorage._array.length > 0) {
-// console.log("Try through WebID's storage: " + s.pimstorage.at(0));
-              return DO.U.getResourceHeadUser(s.pimstorage.at(0));
-            }
-            else {
-              console.log("---1 WebID's storage NOT FOUND");
-              var reason = {"message": "WebID's storage was not found"};
-              reasons.push(reason);
-              return Promise.reject(reason);
-            }
-          },
-          function(reason) {
-            //XXX: Is this even hit?
-            console.log("---2 WebID's storage NOT FOUND");
-            reason["message"] = "WebID's storage was not found";
-            reasons.push(reason);
-            return Promise.reject(reason);
-          }
-        )
-        .then(
-          function(i) {
-            return i;
-          },
-          function(reason) {
-// console.log('Try through known authentication endpoint');
-            DO.U.getResourceHeadUser(DO.C.AuthEndpoint).then(
-              function(i) {
-                return i;
-              },
-              function(reason) {
-                console.log("--- Known authentication endpoint didn't work");
-                reason["message"] = "Known authentication endpoint didn't work";
-                reasons.push(reason);
-                return Promise.reject(reasons);
-              }
-            );
-          }
-        );
-    },
-
-    getResourceHeadUser: function(url, options) {
-      return new Promise(function(resolve, reject) {
-        var http = new XMLHttpRequest();
-        http.open('HEAD', url);
-        if (!options.noCredentials) {
-          http.withCredentials = true;
-        }
-        http.onreadystatechange = function() {
-          if (this.readyState == this.DONE) {
-            if (this.status === 200) {
-              var user = this.getResponseHeader('User');
-              if (user && user.length > 0 && user.slice(0, 4) == 'http') {
-// console.log('User: ' + user);
-                return resolve(user);
-              }
-            }
-            return reject({status: this.status, xhr: this});
-          }
-        };
-        http.send();
-      });
-    },
-
     getResourceLabel: function(s) {
       return s.dctermstitle || s['http://purl.org/dc/elements/1.1/title'] || auth.getAgentName(s) || undefined;
     },
