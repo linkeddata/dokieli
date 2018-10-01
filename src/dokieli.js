@@ -27,57 +27,6 @@ var DO = {
       return s.dctermstitle || s['http://purl.org/dc/elements/1.1/title'] || auth.getAgentName(s) || undefined;
     },
 
-    setUserWorkspaces: function(userPreferenceFile){
-      //XXX: Probably https so don't bother with proxy?
-      graph.getGraph(userPreferenceFile).then(
-        function(pf) {
-          DO.C.User.PreferencesFileGraph = pf;
-          var s = pf.child(DO.C.User.IRI);
-
-          if (s.masterWorkspace) {
-            DO.C.User.masterWorkspace = s.masterWorkspace;
-          }
-
-          if (s.workspace) {
-            DO.C.User.Workspace = { List: s.workspace };
-            s.workspace.forEach(function(wsGraph) {
-              var workspace = wsGraph;
-              var wstype = pf.child(workspace).rdftype || [];
-              wstype.forEach(function(wGraph) {
-                var w = wGraph;
-                switch(w) {
-                  case 'http://www.w3.org/ns/pim/space#PreferencesWorkspace':
-                    DO.C.User.Workspace.Preferences = workspace;
-                    break;
-                  case 'http://www.w3.org/ns/pim/space#MasterWorkspace':
-                    DO.C.User.Workspace.Master = workspace;
-                    break;
-                  case 'http://www.w3.org/ns/pim/space#PublicWorkspace':
-                    DO.C.User.Workspace.Public = workspace;
-                    break;
-                  case 'http://www.w3.org/ns/pim/space#PrivateWorkspace':
-                    DO.C.User.Workspace.Private = workspace;
-                    break;
-                  case 'http://www.w3.org/ns/pim/space#SharedWorkspace':
-                    DO.C.User.Workspace.Shared = workspace;
-                    break;
-                  case 'http://www.w3.org/ns/pim/space#ApplicationWorkspace':
-                    DO.C.User.Workspace.Application = workspace;
-                    break;
-                  case 'http://www.w3.org/ns/pim/space#Workspace':
-                    DO.C.User.Workspace.Work = workspace;
-                    break;
-                  case 'http://www.w3.org/ns/pim/space#FamilyWorkspace':
-                    DO.C.User.Workspace.Family = workspace;
-                    break;
-                }
-              });
-            });
-          }
-        }
-      );
-    },
-
 
     getItemsList: function(url, options) {
       url = url || window.location.origin + window.location.pathname;
@@ -6557,19 +6506,6 @@ WHERE {\n\
               //XXX: Use this as the canonical if available. Note how noteIRI is treated later
               if((opts.annotationLocationPersonalStorage && DO.C.User.Storage) || (!opts.annotationLocationPersonalStorage && !opts.annotationLocationService && DO.C.User.Storage)) {
                 containerIRI = DO.C.User.Storage[0];
-
-                //XXX: Remove. No longer used
-                if (typeof DO.C.User.masterWorkspace != 'undefined' && DO.C.User.masterWorkspace.length > 0) {
-                  containerIRI = DO.C.User.masterWorkspace;
-                }
-                else if(typeof DO.C.User.Workspace != 'undefined') {
-                  if (typeof DO.C.User.Workspace.Master != 'undefined' && DO.C.User.Workspace.Master.length > 0) {
-                    containerIRI = DO.C.User.Workspace.Master;
-                  }
-                  else if(typeof DO.C.User.Workspace.Public != 'undefined' && DO.C.User.Workspace.Public.length > 0) {
-                    containerIRI = DO.C.User.Workspace.Public;
-                  }
-                }
 
                 var fromContentType = 'text/html';
                 // contentType = 'text/html';
