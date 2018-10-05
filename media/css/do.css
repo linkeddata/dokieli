@@ -970,6 +970,12 @@ em.rfc2119 { color: #f00; }
 .todo, .outline, .fixme, .notes {
 border:1px dashed #333;
 }
+.todo:before, .outline:before, .fixme:before, .notes:before {
+font-weight: bold;
+margin-right: 1em;
+padding: 0 1em;
+}
+
 .todo {
 background-color:#d0ddff;
 }
@@ -984,16 +990,24 @@ font-style:italic;
 background-color:#ffffd0;
 }
 .todo:before {
-content:"TODO: ";
+content: "TODO";
+background-color:#0000ff;
+color:#fff;
 }
 .outline:before {
-content:"OUTLINE: ";
+content:"OUTLINE";
+background-color:#fff;
+color:#000;
 }
 .fixme:before {
-content:"FIXME: ";
+content:"FIXME";
+background-color: #ff0000;
+color:#fff;
 }
 .notes:before {
-content:"NOTES: ";
+content:"NOTES";
+background-color: #ffff00;
+color:#000;
 }
 
 .rtl {
