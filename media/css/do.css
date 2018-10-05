@@ -427,6 +427,12 @@ box-shadow: 0.25em 0.25em 0.25em rgba(0, 0, 0, 0.1);
 #document-items ol {
 margin-top:0.5em;
 }
+#document-items .toc ol {
+margin-top:0.25em;
+}
+#document-items .toc > li {
+margin-bottom:1em;
+}
 
 .success { background-color:#FFFFFF; color:#647819; font-weight:bold; }
 .warning { background-color:#FFFF00; color:#000000; font-weight:bold; }
