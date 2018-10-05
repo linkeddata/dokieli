@@ -970,12 +970,6 @@ em.rfc2119 { color: #f00; }
 .todo, .outline, .fixme, .notes {
 border:1px dashed #333;
 }
-.todo:before, .outline:before, .fixme:before, .notes:before {
-font-weight: bold;
-margin-right: 1em;
-padding: 0 1em;
-}
-
 .todo {
 background-color:#d0ddff;
 }
@@ -984,10 +978,15 @@ background-color:#ffd0d0;
 }
 .outline {
 background-color:#eee;
-font-style:italic;
 }
 .notes {
 background-color:#ffffd0;
+}
+.todo:before, .outline:before, .fixme:before, .notes:before {
+font-weight: bold;
+margin-right: 1em;
+padding: 0 1em;
+box-shadow: 0.25em 0.25em 0.25em rgba(0, 0, 0, 0.1);
 }
 .todo:before {
 content: "TODO";
@@ -1009,6 +1008,15 @@ content:"NOTES";
 background-color: #ffff00;
 color:#000;
 }
+div.todo:before, section.todo:before, p.todo:before,
+div.outline:before, section.outline:before, p.outline:before,
+div.fixme:before, section.fixme:before, p.fixme:before,
+div.notes:before, section.notes:before, p.notes:before {
+margin-left:-4.5em;
+border: 1px solid #000;
+}
+
+
 
 .rtl {
 unicode-bidi:bidi-override;
