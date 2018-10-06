@@ -237,6 +237,7 @@ module.exports = {
     "vcardnickname": "http://www.w3.org/2006/vcard/ns#nickname",
     "vcardurl": { "@id": "http://www.w3.org/2006/vcard/ns#url", "@type": "@id" },
     "vcardphoto": { "@id": "http://www.w3.org/2006/vcard/ns#photo", "@type": "@id" },
+    "vcardhasPhoto": { "@id": "http://www.w3.org/2006/vcard/ns#hasPhoto", "@type": "@id" },
 
     "schemaname": "http://schema.org/name",
     "schemafamilyName": "http://schema.org/familyName",

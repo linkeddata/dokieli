@@ -462,7 +462,7 @@ function getAgentPreferredProxy (s) {
 }
 
 function getAgentImage (s) {
-  return s.foafimg || s.schemaimage || s.vcardphoto || s.asimage ||
+  return s.foafimg || s.schemaimage || s.vcardphoto || s.vcardhasPhoto || s.asimage ||
     s.siocavatar || s.foafdepiction || undefined
 }
 
