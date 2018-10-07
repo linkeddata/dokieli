@@ -987,6 +987,7 @@ font-weight: bold;
 margin-right: 1em;
 padding: 0 1em;
 box-shadow: 0.25em 0.25em 0.25em rgba(0, 0, 0, 0.1);
+border: 1px solid #000;
 }
 .todo:before {
 content: "TODO";
@@ -1008,14 +1009,6 @@ content:"NOTES";
 background-color: #ffff00;
 color:#000;
 }
-div.todo:before, section.todo:before, p.todo:before,
-div.outline:before, section.outline:before, p.outline:before,
-div.fixme:before, section.fixme:before, p.fixme:before,
-div.notes:before, section.notes:before, p.notes:before {
-margin-left:-4.5em;
-border: 1px solid #000;
-}
-
 
 
 .rtl {
