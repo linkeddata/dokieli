@@ -257,6 +257,7 @@ module.exports = {
     "schemadescription": "http://schema.org/description",
     "schemahasPart": { "@id": "http://schema.org/hasPart", "@type": "@id", "@array": true }, 
     "schemaisPartOf": { "@id": "http://schema.org/isPartOf", "@type": "@id", "@array": true },
+    "schemaScholarlyArticle": { "@id": "http://schema.org/ScholarlyArticle" },
 
     "dctermstitle": "http://purl.org/dc/terms/title",
     "dctermsdescription": "http://purl.org/dc/terms/description",
