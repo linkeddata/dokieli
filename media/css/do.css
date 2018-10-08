@@ -146,6 +146,8 @@ display:block;
 
 progress { margin:0 1em; }
 figure .progress { display:block; margin:0 auto; }
+.progress { vertical-align: middle; margin: 0 0.5em; }
+.progress a { border-bottom:0; }
 #document-do .progress {
 display:block;
 clear:both;
