@@ -947,6 +947,7 @@ z-index:1;
 .slide {
 display:none;
 }
+body[typeof="bibo:Slideshow"] .slide,
 .do.slide {
 display:block;
 }
