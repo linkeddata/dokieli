@@ -314,6 +314,10 @@ position:static;
 margin-top:1em;
 }
 
+aside.note.do {
+background-color:inherit; 
+}
+
 aside.note.do blockquote {
 position:static !important;
 }
@@ -326,6 +330,15 @@ z-index: 1;
 width: 25%;
 font-size: 0.9em;
 text-align: left;
+}
+aside.note.do aside.note.do {
+position:static;
+margin-top:1em;
+}
+aside.note.do aside.note.do blockquote article {
+position:static !important;
+font-size: initial;
+width:100%;
 }
 
 #document-interactions article.do {
