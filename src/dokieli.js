@@ -832,6 +832,23 @@ var DO = {
     },
 
     setDocumentMode: function(mode) {
+      var style = DO.U.urlParam('style');
+
+      if (style) {
+        var title = style.lastIndexOf('/');
+        title = (title > -1) ? style.substr(title + 1) : style; 
+
+        if (style.startsWith('http')) {
+          var pIRI = uri.getProxyableIRI(style);
+          var link = '<link class="do" href="' + pIRI + '" media="all" rel="stylesheet" title="' + title + '" />'
+          document.querySelector('head').insertAdjacentHTML('beforeend', link);
+        }
+
+        window.history.replaceState({}, null, document.location.href.substr(0, document.location.href.lastIndexOf('?')));
+        var stylesheets = document.querySelectorAll('head link[rel~="stylesheet"][title]:not([href$="do.css"])');
+        DO.U.updateSelectedStylesheets(stylesheets, title);
+      }
+
       if (DO.C.EditorAvailable) {
         if (DO.U.urlParam('author') == 'true' || DO.U.urlParam('social') == 'true' || DO.U.urlParam('review') == 'true') {
           if (DO.U.urlParam('social') == 'true') {
@@ -1102,6 +1119,8 @@ var DO = {
     },
 
     updateSelectedStylesheets: function(stylesheets, selected) {
+      var selected = selected.toLowerCase();
+
       for (var j = 0; j < stylesheets.length; j++) {
         (function(stylesheet) {
           if (stylesheet.getAttribute('title').toLowerCase() != selected) {
