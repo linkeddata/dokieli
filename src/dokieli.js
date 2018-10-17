@@ -1101,12 +1101,7 @@ var DO = {
       }
     },
 
-    initCurrentStylesheet: function(e) {
-      var currentStylesheet = DO.U.getCurrentLinkStylesheet();
-      currentStylesheet = (currentStylesheet) ? currentStylesheet.getAttribute('title') : '';
-      var selected = (e && e.target) ? e.target.textContent.toLowerCase() : currentStylesheet.toLowerCase();
-      var stylesheets = document.querySelectorAll('head link[rel~="stylesheet"][title]:not([href$="do.css"])');
-
+    updateSelectedStylesheets: function(stylesheets, selected) {
       for (var j = 0; j < stylesheets.length; j++) {
         (function(stylesheet) {
           if (stylesheet.getAttribute('title').toLowerCase() != selected) {
@@ -1123,6 +1118,15 @@ var DO = {
           }
         })(stylesheets[j]);
       }
+    },
+
+    initCurrentStylesheet: function(e) {
+      var currentStylesheet = DO.U.getCurrentLinkStylesheet();
+      currentStylesheet = (currentStylesheet) ? currentStylesheet.getAttribute('title') : '';
+      var selected = (e && e.target) ? e.target.textContent.toLowerCase() : currentStylesheet.toLowerCase();
+      var stylesheets = document.querySelectorAll('head link[rel~="stylesheet"][title]:not([href$="do.css"])');
+
+      DO.U.updateSelectedStylesheets(stylesheets, selected);
 
       var bd = document.querySelectorAll('#document-views.do button');
       for(var j = 0; j < bd.length; j++) {
