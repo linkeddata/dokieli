@@ -3805,9 +3805,10 @@ var DO = {
         originalurl = (originalurl) ? '<dt>Original</dt><dd><a href="' + originalurl + '" target="_blank">' + originalurl + '</a></dd>' : '';
 
         var versionurl = i.getAttribute('data-versionurl');
-        verionurl = (versionurl) ? versionurl.trim() : undefined;
+        versionurl = (versionurl) ? versionurl.trim() : undefined;
         var versiondate = i.getAttribute('data-versiondate');
         var nearlinkdateurl = '';
+
         if (versiondate) {
           versiondate = versiondate.trim();
           versiondateNumeric = versiondate.replace(/\D/g, '');
@@ -5776,21 +5777,16 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       else if (subject.rellatestversion) {
         dataVersionURL = subject.rellatestversion;
       }
+      dataVersionURL = (dataVersionURL) ? ' data-versionurl="' + dataVersionURL + '"' : '';
 
-      if (dataVersionURL) {
-        dataVersionURL = ' data-versionurl="' + dataVersionURL + '"';
-      }
-      var dataVersionDate;
-      if (dateVersion) {
-        dataVersionDate = ' data-versiondate="' + dateVersion + '"';
-      }
+      var dataVersionDate = (dateVersion) ? ' data-versiondate="' + dateVersion + '"' : '';
 
       var content = ('content' in options && options.content.length > 0) ? options.content + ', ' : '';
 
       var citationReason = 'Reason: ' + DO.C.Citation[options.citationRelation];
 
-      var citationHTML = authors + title + datePublished + content + '<a about="#' + options.refId + '"' + dataVersionDate + dataVersionURL + ' href="' + options.citationId + '" rel="schema:citation ' + options.citationRelation  + '">' + options.citationId + '</a> [' + dateAccessed + ', ' + citationReason + ']';
-//console.log(citationHTML);
+      var citationHTML = authors + title + datePublished + content + '<a about="#' + options.refId + '"' + dataVersionDate + dataVersionURL + ' href="' + options.citationId + '" rel="schema:citation ' + options.citationRelation  + '" title="' + DO.C.Citation[options.citationRelation] + '">' + options.citationId + '</a> [' + dateAccessed + ', ' + citationReason + ']';
+// console.log(citationHTML);
       return citationHTML;
     },
 
