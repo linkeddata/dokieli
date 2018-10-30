@@ -436,88 +436,6 @@ module.exports = {
 const Config = __webpack_require__(0)
 
 module.exports = {
-  encodeString,
-  decodeString,
-  getAbsoluteIRI,
-  getProxyableIRI,
-  stripFragmentFromString,
-  getFragmentFromString
-}
-
-function encodeString (string) {
-  return encodeURIComponent(string).replace(/'/g, '%27').replace(/"/g, '%22')
-}
-
-/**
- * UNUSED
- *
- * @param string {string}
- *
- * @returns {string}
- */
-function decodeString (string) {
-  return decodeURIComponent(string.replace(/\+/g, ' '))
-}
-
-function getAbsoluteIRI (base, location) {
-  var iri = location
-
-  if (location.toLowerCase().slice(0, 4) !== 'http') {
-    if (location.startsWith('/')) {
-      var x = base.toLowerCase().trim().split('/')
-
-      iri = x[0] + '//' + x[2] + location
-    } else if (!base.endsWith('/')) {
-      iri = base.substr(0, base.lastIndexOf('/') + 1) + location
-    } else {
-      iri = base + location
-    }
-  }
-
-  return iri
-}
-
-function getProxyableIRI (url, options = {}) {
-  var pIRI = stripFragmentFromString(url)
-
-  if ((typeof document !== 'undefined' && document.location.protocol === 'https:' && pIRI.slice(0, 5).toLowerCase() === 'http:') || 'forceProxy' in options) {
-    var proxyURL = ('proxyURL' in options) ? options.proxyURL : Config.ProxyURL
-    pIRI = proxyURL + encodeString(pIRI)
-  }
-
-  return pIRI
-}
-
-function stripFragmentFromString (string) {
-  if (typeof string === 'string') {
-    let stringIndexFragment = string.indexOf('#')
-
-    if (stringIndexFragment >= 0) {
-      string = string.substring(0, stringIndexFragment)
-    }
-  }
-  return string
-}
-
-function getFragmentFromString (string) {
-  if (typeof string === 'string') {
-    let match = string.split('#')[1]
-
-    string = (match) ? match : '';
-  }
-  return string 
-}
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-const Config = __webpack_require__(0)
-
-module.exports = {
   domToString,
   dumpNode,
   getDoctype,
@@ -669,6 +587,88 @@ function setHTMLBase (data, baseURI) {
 
 
 /***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+const Config = __webpack_require__(0)
+
+module.exports = {
+  encodeString,
+  decodeString,
+  getAbsoluteIRI,
+  getProxyableIRI,
+  stripFragmentFromString,
+  getFragmentFromString
+}
+
+function encodeString (string) {
+  return encodeURIComponent(string).replace(/'/g, '%27').replace(/"/g, '%22')
+}
+
+/**
+ * UNUSED
+ *
+ * @param string {string}
+ *
+ * @returns {string}
+ */
+function decodeString (string) {
+  return decodeURIComponent(string.replace(/\+/g, ' '))
+}
+
+function getAbsoluteIRI (base, location) {
+  var iri = location
+
+  if (location.toLowerCase().slice(0, 4) !== 'http') {
+    if (location.startsWith('/')) {
+      var x = base.toLowerCase().trim().split('/')
+
+      iri = x[0] + '//' + x[2] + location
+    } else if (!base.endsWith('/')) {
+      iri = base.substr(0, base.lastIndexOf('/') + 1) + location
+    } else {
+      iri = base + location
+    }
+  }
+
+  return iri
+}
+
+function getProxyableIRI (url, options = {}) {
+  var pIRI = stripFragmentFromString(url)
+
+  if ((typeof document !== 'undefined' && document.location.protocol === 'https:' && pIRI.slice(0, 5).toLowerCase() === 'http:') || 'forceProxy' in options) {
+    var proxyURL = ('proxyURL' in options) ? options.proxyURL : Config.ProxyURL
+    pIRI = proxyURL + encodeString(pIRI)
+  }
+
+  return pIRI
+}
+
+function stripFragmentFromString (string) {
+  if (typeof string === 'string') {
+    let stringIndexFragment = string.indexOf('#')
+
+    if (stringIndexFragment >= 0) {
+      string = string.substring(0, stringIndexFragment)
+    }
+  }
+  return string
+}
+
+function getFragmentFromString (string) {
+  if (typeof string === 'string') {
+    let match = string.split('#')[1]
+
+    string = (match) ? match : '';
+  }
+  return string 
+}
+
+/***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -765,8 +765,8 @@ function sleep(ms) {
 
 const fetch = __webpack_require__(10)  // Uses native fetch() in the browser
 const Config = __webpack_require__(0)
-const doc = __webpack_require__(2)
-const uri = __webpack_require__(1)
+const doc = __webpack_require__(1)
+const uri = __webpack_require__(2)
 const graph = __webpack_require__(5)
 
 const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
@@ -1356,7 +1356,7 @@ function postActivity(url, slug, data, options) {
 global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined
 
 const Config = __webpack_require__(0)
-const doc = __webpack_require__(2)
+const doc = __webpack_require__(1)
 
 module.exports = {
   getGraph,
@@ -1691,7 +1691,8 @@ module.exports = g;
 
 const Config = __webpack_require__(0)
 const util = __webpack_require__(3)
-const uri = __webpack_require__(1)
+const uri = __webpack_require__(2)
+const doc = __webpack_require__(1)
 
 module.exports = {
   initStorage,
@@ -1721,6 +1722,7 @@ function enableStorage(key) {
   try {
     JSON.parse(o).object.Document;
     document.documentElement.innerHTML = JSON.parse(o).object.content;
+    DO.U.init();
   } catch(e){}
   console.log(util.getDateTimeISO() + ': ' + key + ' storage enabled.');
   enableAutoSave(key);
@@ -1943,8 +1945,8 @@ module.exports = __webpack_require__(9);
  */
 
 const fetcher = __webpack_require__(4)
-const doc = __webpack_require__(2)
-const uri = __webpack_require__(1)
+const doc = __webpack_require__(1)
+const uri = __webpack_require__(2)
 const graph = __webpack_require__(5)
 const inbox = __webpack_require__(11)
 const util = __webpack_require__(3)
@@ -5786,7 +5788,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       var citationReason = 'Reason: ' + DO.C.Citation[options.citationRelation];
 
       var citationHTML = authors + title + datePublished + content + '<a about="#' + options.refId + '"' + dataVersionDate + dataVersionURL + ' href="' + options.citationId + '" rel="schema:citation ' + options.citationRelation  + '" title="' + DO.C.Citation[options.citationRelation] + '">' + options.citationId + '</a> [' + dateAccessed + ', ' + citationReason + ']';
-// console.log(citationHTML);
+//console.log(citationHTML);
       return citationHTML;
     },
 
@@ -9264,8 +9266,8 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_10__;
 
 
 const util = __webpack_require__(3)
-const doc = __webpack_require__(2)
-const uri = __webpack_require__(1)
+const doc = __webpack_require__(1)
+const uri = __webpack_require__(2)
 const graph = __webpack_require__(5)
 const fetcher = __webpack_require__(4)
 const Config = __webpack_require__(0)
@@ -9494,7 +9496,7 @@ function getEndpointFromRDF (property, url, subjectIRI) {
 const Config = __webpack_require__(0)
 const fetcher = __webpack_require__(4)
 const util = __webpack_require__(3)
-const uri = __webpack_require__(1)
+const uri = __webpack_require__(2)
 const storage = __webpack_require__(7)
 
 // const { OIDCWebClient } = require('@trust/oidc-web')

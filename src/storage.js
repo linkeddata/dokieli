@@ -3,6 +3,7 @@
 const Config = require('./config')
 const util = require('./util')
 const uri = require('./uri')
+const doc = require('./doc')
 
 module.exports = {
   initStorage,
@@ -32,6 +33,7 @@ function enableStorage(key) {
   try {
     JSON.parse(o).object.Document;
     document.documentElement.innerHTML = JSON.parse(o).object.content;
+    DO.U.init();
   } catch(e){}
   console.log(util.getDateTimeISO() + ': ' + key + ' storage enabled.');
   enableAutoSave(key);
