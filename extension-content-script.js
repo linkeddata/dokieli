@@ -1,69 +1,97 @@
-WebExtension = (typeof browser !== 'undefined') ? browser : chrome;
 
-var C = {
-  'Loaded': false,
-  'WebID': null
-}
+(function () {
 
-WebExtension.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  var initialized = (DO !== undefined && DO.U !== undefined && C.Loaded);
+  WebExtension = (typeof browser !== 'undefined') ? browser : chrome;
 
-  try {
-    if (request.action == "dokieli.getUser") {
-      sendResponse(DO.C.User);
+  var C = {
+    'Loaded': false,
+    'WebID': null
+  }
+
+  //iteraction with YouID content script for get current WebId
+  window.addEventListener("message", recvMessage, false);
+
+  function recvMessage(event)
+  {
+    var ev_data;
+
+    if (String(event.data).lastIndexOf("youid_rc:",0)!==0)
+      return;
+
+    try {
+      ev_data = JSON.parse(event.data.substr(9));
+    } catch(e) {}
+
+
+    if (ev_data && ev_data.webid) {
+      var iri = ev_data.webid;
+
+      if (C.Loaded && (C.WebID==null || C.WebID!=iri)) 
+         DO.C.User.WebIdDelegate = iri; 
+
+      C.WebID = iri;
     }
-    if (request.action == "dokieli.generateUUID") {
-      sendResponse(DO.U.generateUUID());
-    }
-    else if (request.action == "dokieli.status") {
-      sendResponse({"dokieli": initialized});
-    }
-    else if (request.action == "dokieli.showDocumentMenu") {
-      var iri = null;
+  }
 
-      if (!C.Loaded && !document.querySelector('#document-menu')) {
-        var bodyAttributes = {
-          "about": "",
-          "prefix": "rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ dctypes: http://purl.org/dc/dcmitype/ foaf: http://xmlns.com/foaf/0.1/ pimspace: http://www.w3.org/ns/pim/space# cc: https://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# mem: http://mementoweb.org/ns# qb: http://purl.org/linked-data/cube# schema: http://schema.org/ void: http://rdfs.org/ns/void# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# bibo: http://purl.org/ontology/bibo/ sioc: http://rdfs.org/sioc/ns# doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp# solid: http://www.w3.org/ns/solid/terms# acl: http://www.w3.org/ns/auth/acl# dio: https://w3id.org/dio# rel: https://www.w3.org/ns/iana/link-relations/relation#",
-          "typeof": "schema:CreativeWork sioc:Post prov:Entity schema:Article"
-        }
 
-        Object.keys(bodyAttributes).forEach(function(attribute){
-          if(!document.body.getAttribute(attribute)){
-            document.body.setAttribute(attribute, bodyAttributes[attribute]);
+
+
+  WebExtension.runtime.onMessage.addListener(function(request, sender, sendResponse)
+  {
+    var initialized = (DO!==undefined && DO.U!==undefined && C.Loaded);
+    try {
+      if (request.action == "dokieli.getUser") {
+        sendResponse(DO.C.User);
+      }
+      else if (request.action == "dokieli.generateUUID") {
+        sendResponse(DO.U.generateUUID());
+      }
+      else if (request.action == "dokieli.status")
+      {
+        // request current WebId from YouID.extension content script
+        window.postMessage('youid:{"getWebId": true}', "*");
+        // send to Dokieli backgroud script
+        sendResponse({"dokieli":initialized}); 
+      }
+      else if (request.action == "dokieli.showDocumentMenu")
+      {
+        if (!C.Loaded) {
+          var bodyAttributes = {
+            "about": "",
+            "prefix": "rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ dctypes: http://purl.org/dc/dcmitype/ foaf: http://xmlns.com/foaf/0.1/ pimspace: http://www.w3.org/ns/pim/space# cc: https://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# mem: http://mementoweb.org/ns# qb: http://purl.org/linked-data/cube# schema: http://schema.org/ void: http://rdfs.org/ns/void# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# bibo: http://purl.org/ontology/bibo/ sioc: http://rdfs.org/sioc/ns# doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp# solid: http://www.w3.org/ns/solid/terms# acl: http://www.w3.org/ns/auth/acl# dio: https://w3id.org/dio# rel: https://www.w3.org/ns/iana/link-relations/relation#",
+            "typeof": "schema:CreativeWork sioc:Post prov:Entity schema:Article"
           }
-        });
 
-        DO.U.init();
+          Object.keys(bodyAttributes).forEach(function(attribute){
+            if(!document.body.getAttribute(attribute)){
+              document.body.setAttribute(attribute, bodyAttributes[attribute]);
+            }
+          });
 
-        C.Loaded = true;
-      }
+        document.body.innerHTML = '<main class="article" id="content" about="" typeof="schema:Article">' + document.body.innerHTML + '</main>';
 
-      if (request.webid) {
-        try {
-          var w = JSON.parse(request.webid);
-          iri = w.id;
+          DO.U.init();
+          C.Loaded = true;
         }
-        catch(e) {
-          console.log("dokieli: request.webid may be malformed: " + e);
-        }
+
+        sendResponse({}); /* stop */
+
+        DO.C.User.WebIdDelegate = C.WebID;
+
+        window.setTimeout(function () {
+          DO.U.showDocumentMenu();
+        }, 50);
       }
-
-      if (iri && (C.WebID == null || C.WebID != iri)) {
-        auth.submitSignIn(iri);
-
-        C.WebID = iri;
+      else
+      {
+        sendResponse({}); /* stop */
       }
+    } catch(e) {
+      console.log("dokieli: runtime.onMessage.addListener: " + e);
+    }
 
-      window.setTimeout(function () {
-        DO.U.showDocumentMenu();
-      }, 50);
-    }
-    else {
-      sendResponse({}); /* stop */
-    }
-  }
-  catch(e) {
-    console.log("dokieli: runtime.onMessage.addListener: " + e);
-  }
-});
+  });
+
+
+
+})();

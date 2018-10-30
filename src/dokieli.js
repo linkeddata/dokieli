@@ -928,6 +928,11 @@ var DO = {
         e.stopPropagation();
       }
 
+      var menu = document.querySelector('#document-menu');
+      if (menu && menu.classList && menu.classList.contains("on")) {
+        DO.U.hideDocumentMenu();
+      }
+
       DO.U.getResourceInfo().then(function(resourceInfo){
         var body = document.body;
         var dMenu = document.querySelector('#document-menu.do');
@@ -1219,8 +1224,8 @@ var DO = {
         var scriptType = {
           'meta-turtle': {
             scriptStart: '<script id="meta-turtle" title="Turtle" type="text/turtle">',
-            cdataStart: '# ' + DO.C.CDATAStart + '\n',
-            cdataEnd: '\n# ' + DO.C.CDATAEnd,
+            cdataStart: DO.C.CDATAStart + '\n',
+            cdataEnd: '\n' + DO.C.CDATAEnd,
             scriptEnd: '</script>'
           },
           'meta-json-ld': {
@@ -1231,8 +1236,8 @@ var DO = {
           },
           'meta-trig': {
             scriptStart: '<script id="meta-trig" title="TriG" type="application/trig">',
-            cdataStart: '# ' + DO.C.CDATAStart + '\n',
-            cdataEnd: '\n# ' + DO.C.CDATAEnd,
+            cdataStart: DO.C.CDATAStart + '\n',
+            cdataEnd: '\n' + DO.C.CDATAEnd,
             scriptEnd: '</script>'
           }
         }
@@ -1748,11 +1753,20 @@ var DO = {
 
 
     selectArticleNode: function(node) {
-      var selectors = [
-        'main > article',
-        'main',
-        'body'
-      ];
+      var selectors;
+
+      if (DO.C.WebExtension)
+        selectors = [
+          'main.article',
+          'main',
+          'body'
+        ];
+      else
+        selectors = [
+          'main > article',
+          'main',
+          'body'
+        ];
 
       var x = node.querySelectorAll(selectors.join(','));
       return x[x.length - 1];
@@ -3297,7 +3311,11 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType})
         }
 
-        html.querySelector('body').innerHTML = '<main><article about="" typeof="schema:Article"></article></main>'
+        if (DO.C.WebExtension)
+          html.querySelector('body').innerHTML = '<main class="article" id="content" about="" typeof="schema:Article"></main>';
+        else
+          html.querySelector('body').innerHTML = '<main><article about="" typeof="schema:Article"></article></main>';
+
         html.querySelector('head title').innerHTML = ''
         html = doc.getDocument(html)
 
@@ -7306,6 +7324,7 @@ WHERE {\n\
         DO.U.initMath();
       }
     }
+
   } //DO.U
 }; //DO
 

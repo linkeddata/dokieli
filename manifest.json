@@ -14,12 +14,12 @@
     }
   },
   "icons": {
-    "16": "media/images/logo.png",
-    "48": "media/images/logo.png",
-    "128": "media/images/logo.png"
-  },
+    "16": "media/images/logo16.png",
+    "48": "media/images/logo48.png",
+   "128": "media/images/logo128.png"
+   },
   "browser_action": {
-    "default_icon": "media/images/logo.png",
+    "default_icon": "media/images/logo16.png",
     "default_title": "Activate dokieli"
   },
   "background": {
@@ -33,6 +33,8 @@
       "js": [
         "scripts/simplerdf.js",
         "scripts/medium-editor.min.js",
+        "scripts/medium-editor-tables.min.js",
+        "scripts/solid-auth-client.bundle.js",
         "scripts/do.js",
         "extension-content-script.js"
       ],
@@ -40,11 +42,15 @@
     }
   ],
   "permissions": [
+    "tabs",
     "activeTab",
     "management",
     "storage",
     "<all_urls>"
   ],
+  "externally_connectable": {
+    "matches": ["https://*.solid.openlinksw.com:8444/*", "https://solid.openlinksw.com:8444/*"]
+  },
   "web_accessible_resources": [
     "media/css/*",
     "media/fonts/*"
