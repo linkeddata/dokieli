@@ -3,7 +3,6 @@
  * Configuration
  */
 module.exports = {
-  Extension: false,
   Lang: document.documentElement.lang,
   DocRefType: '',
   RefType: {
@@ -13,9 +12,10 @@ module.exports = {
   Stylesheets: [],
   User: {
     IRI: null,
-    Role: null
+    Role: null,
+    UI: {}
   },
-  LocalDocument: false,
+  LocalDocument: (document.location.protocol == 'file:'),
   UseStorage: false,
   AutoSaveId: '',
   AutoSaveTimer: 60000,
@@ -28,6 +28,8 @@ module.exports = {
   MathAvailable: (typeof MathJax !== 'undefined'),
   EditorAvailable: (typeof MediumEditor !== 'undefined'),
   EditorEnabled: false,
+  ContentEditable: false,
+  WebExtension: ((window.chrome && chrome.runtime && chrome.runtime.id) || (typeof browser !== 'undefined' && browser.runtime && browser.runtime.id)),
   Editor: {
     headings: ["h1", "h2", "h3", "h4", "h5", "h6"],
     regexEmptyHTMLTags: /<[^\/>][^>]*><\/[^>]+>/gim,
@@ -36,6 +38,9 @@ module.exports = {
     EnableReviewButton: '<button class="review-enable" title="Enable review"><i class="fa fa-balance-scale fa-2x"></i>Review</button>',
     DisableEditorButton: '<button class="editor-disable" title="Disable editor"><i class="fa fa-i-cursor fa-2x"></i>Edit</button>',
     EnableEditorButton: '<button class="editor-enable" title="Enable editor"><i class="fa fa-i-cursor fa-2x"></i>Edit</button>'
+  },
+  Button: {
+    Close: '<button class="close" title="Close"><i class="fa fa-close fa-2x"></i></button>'
   },
   DOMNormalisation: {
     'selfClosing': "area base basefont br col colgroup embed hr img input isindex link meta metadata param source wbr",
@@ -47,7 +52,7 @@ module.exports = {
       'element': 'mark'
     },
     'replaceClassItemWith': {
-      'source': "on-document-menu medium-editor-element",
+      'source': "on-document-menu medium-editor-element medium-editor-placeholder",
       'target': ''
     },
     'skipClassWithValue': ''
@@ -58,13 +63,24 @@ module.exports = {
     "aside": "†",
     "audio": "🔊",
     "code": "#",
+    "dl": "☝",
     "dl#document-annotation-service": "※",
-    "dl#document-license": "🌻",
+    "dl#document-created": "📅",
+    "dl#document-in-reply-to": "⮪",
     "dl#document-identifier": "🚩",
     "dl#document-inbox": "📥",
-    "dl#document-in-reply-to": "⮪",
+    "dl#document-latest-version": "∼",
+    "dl#document-license": "🌻",
+    "dl#document-memento": "⛰",
     "dl#document-modified": "📅",
+    "dl#document-original": "♁",
+    "dl#document-predecessor-version": "≺",
     "dl#document-published": "📅",
+    "dl#document-rights": "📜",
+    "dl#document-resource-state": "🙊",
+    "dl#document-see-also": "🙈",
+    "dl#document-status": "🎆",
+    "dl#document-timemap": "⌚",
     "dfn": "📇",
     "figure": "❦",
     "footer": "⸙",
@@ -83,13 +99,47 @@ module.exports = {
     "video": "🎞"
   },
 
+  DocumentItems: [
+    'authors',
+    'document-identifier',
+    'document-created',
+    'document-modified',
+    'document-published',
+    'document-original',
+    'document-memento',
+    'document-latest-version',
+    'document-predecessor-version',
+    'document-timegate',
+    'document-timemap',
+    'document-derived-from',
+    'document-derived-on',
+    'document-license',
+    'document-inbox',
+    'document-annotation-service',
+    'document-in-reply-to',
+    'document-rights',
+    'document-resource-state',
+    'document-status',
+    'document-see-also',
+    'table-of-contents',
+    'table-of-figures',
+    'table-of-tables',
+    'table-of-abbrs',
+    'authors',
+    'abstract',
+    'categories-and-subject-descriptors',
+    'keywords',
+    'general-terms',
+
+    'introduction'
+  ],
+
+  CollectionItemsLimit: 20,
   ContextLength: 32,
-  InteractionPath: 'i/',
   ProxyURL: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/proxy?uri=' : 'https://dokie.li/proxy?uri='),
   AuthEndpoint: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/' : 'https://dokie.li/'),
   NotificationLicense: 'https://creativecommons.org/publicdomain/zero/1.0/',
   License: {
-    "NoLicense": { 'name': 'No license', 'description': 'No license' },
     "https://creativecommons.org/publicdomain/zero/1.0/": {'name': 'CC0 1.0', 'description': 'Creative Commons Zero'},
     "https://creativecommons.org/licenses/by/4.0/": {'name': 'CC BY 4.0', 'description': 'Creative Commons Attribution'},
     "https://creativecommons.org/licenses/by-sa/4.0/": {'name': 'CC BY-SA 4.0', 'description': 'Creative Commons Attribution-ShareAlike'},
@@ -97,6 +147,10 @@ module.exports = {
     "https://creativecommons.org/licenses/by-nd/4.0/": {'name': 'CC BY-ND 4.0', 'description': 'Creative Commons Attribution-NoDerivatives'},
     "https://creativecommons.org/licenses/by-nc-sa/4.0/": {'name': 'CC BY-NC-SA 4.0', 'description': 'Creative Commons Attribution-NonCommercial-ShareAlike'},
     "https://creativecommons.org/licenses/by-nc-nd/4.0/": {'name': 'CC BY-NC-ND 4.0', 'description': 'Creative Commons Attribution-NonCommercial-NoDerivates'}
+  },
+  PublicationStatus: {
+    "http://purl.org/spar/pso/draft": { 'name': 'Draft', 'description': 'The status of a work (for example a document or a dataset) prior to completion and publication.' },
+    "http://purl.org/spar/pso/published": { 'name': 'Published', 'description': 'The status of material (for example a document or a dataset) that has been published, i.e. made available for people to access, read or use, either freely or for a purchase price or an access fee.' }
   },
   Citation: {
     'http://purl.org/spar/cito/agreesWith': 'agrees with',
@@ -125,6 +179,7 @@ module.exports = {
     'http://purl.org/spar/cito/extends': 'extends',
     'http://purl.org/spar/cito/includesExcerptFrom': 'includes excerpt from',
     'http://purl.org/spar/cito/includesQuotationFrom': 'includes quotation from',
+    'http://purl.org/spar/cito/linksTo': 'links to',
     'http://purl.org/spar/cito/obtainsBackgroundFrom': 'obtains background from',
     'http://purl.org/spar/cito/obtainsSupportFrom': 'obtains support from',
     'http://purl.org/spar/cito/parodies': 'parodies',
@@ -169,11 +224,20 @@ module.exports = {
     "foaffamilyName": "http://xmlns.com/foaf/0.1/familyName",
     "foafgivenName": "http://xmlns.com/foaf/0.1/givenName",
     "foafhomepage": { "@id": "http://xmlns.com/foaf/0.1/homepage", "@type": "@id" },
+    "foafweblog": { "@id": "http://xmlns.com/foaf/0.1/weblog", "@type": "@id" },
     "foafimg": { "@id": "http://xmlns.com/foaf/0.1/img", "@type": "@id" },
     "foafdepiction": { "@id": "http://xmlns.com/foaf/0.1/depiction", "@type": "@id" },
     "foafnick": "http://xmlns.com/foaf/0.1/nick",
     "foafmaker": { "@id": "http://xmlns.com/foaf/0.1/maker", "@type": "@id" },
     "foafknows": { "@id": "http://xmlns.com/foaf/0.1/knows", "@type": "@id", "@array": true },
+
+    "vcardfn": "http://www.w3.org/2006/vcard/ns#fn",
+    "vcardfamilyname": "http://www.w3.org/2006/vcard/ns#family-name",
+    "vcardgivenname": "http://www.w3.org/2006/vcard/ns#given-name",
+    "vcardnickname": "http://www.w3.org/2006/vcard/ns#nickname",
+    "vcardurl": { "@id": "http://www.w3.org/2006/vcard/ns#url", "@type": "@id" },
+    "vcardphoto": { "@id": "http://www.w3.org/2006/vcard/ns#photo", "@type": "@id" },
+    "vcardhasPhoto": { "@id": "http://www.w3.org/2006/vcard/ns#hasPhoto", "@type": "@id" },
 
     "schemaname": "http://schema.org/name",
     "schemafamilyName": "http://schema.org/familyName",
@@ -187,8 +251,13 @@ module.exports = {
     "schemalicense": { "@id": "http://schema.org/license", "@type": "@id" },
     "schemacitation": { "@id": "http://schema.org/citation", "@type": "@id", "@array": true },
     "schemaknows": { "@id": "http://schema.org/knows", "@type": "@id", "@array": true },
+    "schemadateCreated": "http://schema.org/dateCreated",
+    "schemadateModified": "http://schema.org/dateModified",
     "schemadatePublished": "http://schema.org/datePublished",
     "schemadescription": "http://schema.org/description",
+    "schemahasPart": { "@id": "http://schema.org/hasPart", "@type": "@id", "@array": true }, 
+    "schemaisPartOf": { "@id": "http://schema.org/isPartOf", "@type": "@id", "@array": true },
+    "schemaScholarlyArticle": { "@id": "http://schema.org/ScholarlyArticle" },
 
     "dctermstitle": "http://purl.org/dc/terms/title",
     "dctermsdescription": "http://purl.org/dc/terms/description",
@@ -197,6 +266,9 @@ module.exports = {
     "dctermsissued": "http://purl.org/dc/terms/issued",
     "dctermscreated": "http://purl.org/dc/terms/created",
     "dctermsrights": { "@id": "http://purl.org/dc/terms/rights", "@type": "@id" },
+    "dctermsconformsTo": { "@id": "http://purl.org/dc/terms/conformsTo", "@type": "@id" },
+    "dctermshasPart": { "@id": "http://purl.org/dc/terms/hasPart", "@type": "@id", "@array": true },
+    "dctermsisPartOf": { "@id": "http://purl.org/dc/terms/isPartOf", "@type": "@id", "@array": true },
 
     "skosprefLabel": { "@id": "http://www.w3.org/2004/02/skos/core#prefLabel", "@type": "@id", "@array": true },
 
@@ -205,18 +277,19 @@ module.exports = {
 
     "biboauthorList": { "@id": "http://purl.org/ontology/bibo/authorList", "@type": "@id" },
 
-    "storage": { "@id": "http://www.w3.org/ns/pim/space#storage", "@type": "@id", "@array": true },
+    "pimstorage": { "@id": "http://www.w3.org/ns/pim/space#storage", "@type": "@id", "@array": true },
     "preferencesFile": { "@id": "http://www.w3.org/ns/pim/space#preferencesFile", "@type": "@id" },
-    "workspace": { "@id": "http://www.w3.org/ns/pim/space#workspace", "@type": "@id", "@array": true },
-    "masterWorkspace": { "@id": "http://www.w3.org/ns/pim/space#masterWorkspace", "@type": "@id" },
 
     "ldpinbox": { "@id": "http://www.w3.org/ns/ldp#inbox", "@type": "@id", "@array": true },
+
+    "solidpreferredProxy": "http://www.w3.org/ns/solid/terms#preferredProxy",
 
     "oaannotation": { "@id": "http://www.w3.org/ns/oa#Annotation", "@type": "@id" },
     "oahasBody": { "@id": "http://www.w3.org/ns/oa#hasBody", "@type": "@id" },
     "oahasTarget": { "@id": "http://www.w3.org/ns/oa#hasTarget", "@type": "@id" },
     "oahasSource": { "@id": "http://www.w3.org/ns/oa#hasSource", "@type": "@id" },
     "oahasSelector": { "@id": "http://www.w3.org/ns/oa#hasSelector", "@type": "@id" },
+    "oarefinedBy": { "@id": "http://www.w3.org/ns/oa#refinedBy", "@type": "@id" },
     "oaexact": "http://www.w3.org/ns/oa#exact",
     "oaprefix": "http://www.w3.org/ns/oa#prefix",
     "oasuffix": "http://www.w3.org/ns/oa#suffix",
@@ -235,13 +308,36 @@ module.exports = {
     "ascontent": "https://www.w3.org/ns/activitystreams#content",
     "asname": "https://www.w3.org/ns/activitystreams#name",
     "asimage": { "@id": "https://www.w3.org/ns/activitystreams#image", "@type": "@id" },
+    "asoutbox": { "@id": "https://www.w3.org/ns/activitystreams#outbox", "@type": "@id", "@array": true },
+    "asitems": { "@id": "https://www.w3.org/ns/activitystreams#items", "@type": "@id", "@array": true },
+    "asorderedItems": { "@id": "https://www.w3.org/ns/activitystreams#orderedItems", "@type": "@id", "@array": true },
+    "astotalItems": "https://www.w3.org/ns/activitystreams#totalItems",
+    "asfirst": { "@id": "https://www.w3.org/ns/activitystreams#first", "@type": "@id" },
+    "asnext": { "@id": "https://www.w3.org/ns/activitystreams#next", "@type": "@id" },
+    "asCollection": { "@id": "https://www.w3.org/ns/activitystreams#Collection", "@type": "@id" },
+    "asOrderedCollection": { "@id": "https://www.w3.org/ns/activitystreams#OrderedCollection", "@type": "@id" },
 
     "siocreplyof": { "@id": "http://rdfs.org/sioc/ns#reply_of", "@type": "@id", "@array": true },
     "siocavatar": { "@id": "http://rdfs.org/sioc/ns#avatar", "@type": "@id" },
 
     "ldpcontains": { "@id": "http://www.w3.org/ns/ldp#contains", "@type": "@id", "@array": true },
-    "ldpresource": { "@id": "http://www.w3.org/ns/ldp#Resource", "@type": "@id", "@array": true  },
-    "ldpcontainer": { "@id": "http://www.w3.org/ns/ldp#Container", "@type": "@id", "@array": true  }
+    "ldpResource": { "@id": "http://www.w3.org/ns/ldp#Resource", "@type": "@id" },
+    "ldpContainer": { "@id": "http://www.w3.org/ns/ldp#Container", "@type": "@id" },
+    "ldpRDFSource": { "@id": "http://www.w3.org/ns/ldp#RDFSource", "@type": "@id" },
+    "ldpImmutableResource": { "@id": "http://www.w3.org/ns/ldp#ImmutableResource", "@type": "@id" },
+
+    "memOriginalResource": { "@id": "http://mementoweb.org/ns#OriginalResource", "@type": "@id" },
+    "memMemento": { "@id": "http://mementoweb.org/ns#Memento", "@type": "@id" },
+    "memoriginal": { "@id": "http://mementoweb.org/ns#original", "@type": "@id" },
+    "memmemento": { "@id": "http://mementoweb.org/ns#memento", "@type": "@id" },
+    "memtimegate": { "@id": "http://mementoweb.org/ns#timegate", "@type": "@id" },
+    "memtimemap": { "@id": "http://mementoweb.org/ns#timemap", "@type": "@id" },
+
+    "relpredecessorversion": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#predecessor-version", "@type": "@id" },
+    "rellatestversion": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#latest-version", "@type": "@id" },
+
+    "psodraft": { "@id": "http://purl.org/spar/pso/draft", "@type": "@id" },
+    "psopublished": { "@id": "http://purl.org/spar/pso/published", "@type": "@id" }
   },
 
   SecretAgentNames: ['Abraham Lincoln', 'Admiral Awesome', 'Anonymous Coward', 'Believe it or not', 'Creative Monkey', 'Senegoid', 'Dog from the Web', 'Ekrub', 'Elegant Banana', 'Foo Bar', 'Lbmit', 'Lunatic Scholar', 'NahuLcm', 'Noslen', 'Okie Dokie', 'Samurai Cat', 'Vegan Superstar'],

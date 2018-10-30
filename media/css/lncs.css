@@ -642,7 +642,7 @@ content:".";
 #document-appeared dt,
 #document-appeared dt + dd,
 #document-in-reply-to dt,
-#document-in-reply-to dt + dd,
+#document-in-reply-to dd,
 #document-annotation-service dt,
 #document-annotation-service dt + dd,
 #document-license dt,
@@ -785,7 +785,7 @@ counter-reset:listing 0;
 article {
 counter-reset:caption 0;
 }
-figcaption {
+figure:not([class~="listing"]):not([class~="equation"]) figcaption {
 counter-increment:figcaption;
 }
 figure.listing {
@@ -1067,13 +1067,15 @@ content:";\0020";
 #keywords li:before {
 content:"\2022\0020";
 }
-#document-format dd:after {
+#document-format dd:after,
+#document-in-reply-to dd:after {
 content:",\0020";
 }
 #general-terms li:first-child:before,
 #categories-and-subject-descriptors li:last-child:after,
 #keywords li:first-child:before,
-#document-format dd:last-child:after {
+#document-format dd:last-child:after,
+#document-in-reply-to dd:last-child:after {
 content:"";
 }
 

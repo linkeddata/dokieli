@@ -17,7 +17,7 @@
     <script src="scripts/do.js"></script>
   </head>
 
-  <body about="" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ dctypes: http://purl.org/dc/dcmitype/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# cc: https://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# qb: http://purl.org/linked-data/cube# schema: http://schema.org/ void: http://rdfs.org/ns/void# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# org: http://www.w3.org/ns/org# biblio: http://purl.org/net/biblio# bibo: http://purl.org/ontology/bibo/ book: http://purl.org/NET/book/vocab# ov: http://open.vocab.org/terms/ sioc: http://rdfs.org/sioc/ns# doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp# solid: http://www.w3.org/ns/solid/terms# acl: http://www.w3.org/ns/auth/acl# dio: https://w3id.org/dio#" typeof="schema:CreativeWork sioc:Post prov:Entity">
+  <body about="" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ dctypes: http://purl.org/dc/dcmitype/ foaf: http://xmlns.com/foaf/0.1/ pimspace: http://www.w3.org/ns/pim/space# cc: https://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# qb: http://purl.org/linked-data/cube# schema: http://schema.org/ void: http://rdfs.org/ns/void# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# bibo: http://purl.org/ontology/bibo/ sioc: http://rdfs.org/sioc/ns# doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp# solid: http://www.w3.org/ns/solid/terms# acl: http://www.w3.org/ns/auth/acl# dio: https://w3id.org/dio#" typeof="schema:CreativeWork sioc:Post prov:Entity">
     <main>
       <article about="" typeof="schema:Article">
         <h1 property="schema:name">dokieli documentation</h1>
@@ -120,14 +120,14 @@
                     <dt id="html-section">Section</dt>
                     <dd>Sectioning is declared with <code>section</code> and typically have a heading, eg. <code>h2</code> as its first child. Subsections may appear as a child of parent <code>section</code>, or as a child of <code>div</code> (which is a child of parent <code>section</code>), ie. <code>section section</code> or <code>section div section</code>. The headings of subsections are enumerated eg. <code>section h2</code> would have a subsection with <code>section h3</code>. Sections <code>id</code>s and heading text are used to dynamically build the table of contents.
                       <figure class="listing" id="html-section-source" rel="schema:hasPart" resource="#html-section-source">
-                        <pre about="#html-section-source" property="schema:description" typeof="fabio:Script"><code class="highlight-section">&lt;section&gt;</code>
+                        <pre about="#html-section-source" lang="" property="schema:description" typeof="fabio:Script" xml:lang=""><code class="highlight-section">&lt;section&gt;</code>
 <samp class="highlight-h2">  &lt;h2&gt;</samp>
 <code class="highlight-div">  &lt;div&gt;</code>
 <code class="highlight-section">    &lt;section&gt;</code>
 <samp class="highlight-h3">      &lt;h3&gt;</samp>
 <code class="highlight-div">      &lt;div&gt;</code>
 <code class="highlight-div">      &lt;div&gt;</code>
-<code>      &lt;aside&gt;</code>
+<code class="highlight-aside">      &lt;aside&gt;</code>
 <code class="highlight-section">&lt;section&gt;</code>
 <samp class="highlight-h2">  &lt;h2&gt;</samp>
 <code class="highlight-section">  &lt;section&gt;</code>
@@ -146,10 +146,10 @@
                     <dd><code>figure</code>s typically have <code>figcaptions</code> for things like <code>audio</code>, <code>canvas</code>, <code>iframe</code>, <code>img</code>, <code>object</code>, <code>pre</code>, <code>video</code>, <code>math</code>. For code scripts, <code>figure class="listing"</code> is used, and <code>pre</code> for the code itself with <code>code</code> The <code>listing</code> class is intended to have a collection of figures, which could also have a unique presentation, for example with line numbers or have its caption be prefixed with <q>Listing</q> and counter.
 
                       <figure class="listing" id="html-figure-listing" rel="schema:hasPart" resource="#html-figure-listing">
-                        <pre about="#html-figure-listing" property="schema:description" typeof="fabio:Script"><code class="highlight-section">&lt;section&gt;</code>
-<samp>  &lt;h2&gt;</samp>
-<code>  &lt;div&gt;</code>
-<code>    &lt;section&gt;</code></pre>
+                        <pre about="#html-figure-listing" lang="" property="schema:description" typeof="fabio:Script" xml:lang=""><code class="highlight-section">&lt;section&gt;</code>
+<samp class="highlight-h2">  &lt;h2&gt;</samp>
+<code class="highlight-div">  &lt;div&gt;</code>
+<code class="highlight-section">    &lt;section&gt;</code></pre>
                         <figcaption>Snippet of <a href="#html-section-source">section source</a> code</figcaption>
                       </figure>
 
@@ -238,7 +238,7 @@
                       <p>See also <var>createNoteDataHTML</var> (do.js)</p>
 
                       <figure class="listing" id="#html-article-source" rel="schema:hasPart" resource="#html-article-source">
-                        <pre about="#html-article-source" property="schema:description" typeof="fabio:Script"><code>&lt;!DOCTYPE html&gt;</code>
+                        <pre about="#html-article-source" lang="" property="schema:description" typeof="fabio:Script" xml:lang=""><code>&lt;!DOCTYPE html&gt;</code>
 <code>&lt;html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"&gt;</code>
 <code>  &lt;head&gt;</code>
 <code>    &lt;meta charset="utf-8" /&gt;</code>
@@ -252,7 +252,7 @@
 <code>    &lt;script src="https://dokie.li/scripts/do.js"&gt;&lt;/script&gt;</code>
 <code>  &lt;/head&gt;</code>
 <code></code>
-<code>  &lt;body about="" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ dctypes: http://purl.org/dc/dcmitype/ foaf: http://xmlns.com/foaf/0.1/ pimspace: http://www.w3.org/ns/pim/space# cc: https://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# qb: http://purl.org/linked-data/cube# schema: http://schema.org/ void: http://rdfs.org/ns/void# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# bibo: http://purl.org/ontology/bibo/ sioc: http://rdfs.org/sioc/ns# doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp# solid: http://www.w3.org/ns/solid/terms# acl: http://www.w3.org/ns/auth/acl# dio: https://w3id.org/dio#" typeof="schema:CreativeWork sioc:Post prov:Entity"&gt;</code>
+<code>  &lt;body about="" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ dctypes: http://purl.org/dc/dcmitype/ foaf: http://xmlns.com/foaf/0.1/ pimspace: http://www.w3.org/ns/pim/space# cc: https://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# mem: http://mementoweb.org/ns# qb: http://purl.org/linked-data/cube# schema: http://schema.org/ void: http://rdfs.org/ns/void# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# bibo: http://purl.org/ontology/bibo/ sioc: http://rdfs.org/sioc/ns# doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp# solid: http://www.w3.org/ns/solid/terms# acl: http://www.w3.org/ns/auth/acl# dio: https://w3id.org/dio# rel: https://www.w3.org/ns/iana/link-relations/relation#" typeof="schema:CreativeWork sioc:Post prov:Entity"&gt;</code>
 <code>    &lt;main&gt;</code>
 <code>      &lt;article about="" typeof="schema:Article"&gt;</code>
 <code></code>
@@ -279,19 +279,19 @@
 
                       <p><code>ldp:inbox</code> relation gives an article its own Inbox where it can receive notifications about eg. annotations or activities relevant to an article. The notifications can be consumed by applications to offer additional content and interactive possibilities. dokieli can both send and consume notifications by way of discovering an article's inbox. Notifications are created for activities like announcements, creating, (dis)liking, and consumed in order to be displayed in context of available content. The protocol to send and consume notifications in dokieli uses <cite><a href="https://www.w3.org/TR/ldn/">Linked Data Notifications</a></cite>.</p>
 
-                      <pre id="html-document-in-reply-to"><code>&lt;dl id="document-in-reply-to"&gt;</code>
-<code>  &lt;dt&gt;In Reply To&lt;/dt&gt;</code>
-<code>  &lt;dd&gt;&lt;a href="https://linkedresearch.org/calls" rel="as:inReplyTo"&gt;Call for Linked Research&lt;/a&gt;&lt;/dd&gt;</code>
-<code>&lt;/dl&gt;</code></pre>
-
-                      <p>If an article is a reply to objects(s), it can have a property like <code>as:inReplyTo</code>.</p>
-
                       <pre id="html-document-annotation-service"><code>&lt;dl id="document-annotation-service"&gt;</code>
 <code>  &lt;dt&gt;Annotation Service&lt;/dt&gt;</code>
 <code>  &lt;dd&gt;&lt;a href="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/" rel="oa:annotationService"&gt;annotation/&lt;/a&gt;&lt;/dd&gt;</code>
 <code>&lt;/dl&gt;</code></pre>
 
                       <p>An article may refer to an annotation service (<code>oa:annotationService</code>) that conforms to the <cite><a href="https://www.w3.org/TR/annotation-protocol/">Web Annotation Protocol</a></cite>. See also <var>DO.C.AnnotationService</var> in <code>do.js</code>.</p>
+
+                      <pre id="html-document-in-reply-to"><code>&lt;dl id="document-in-reply-to"&gt;</code>
+<code>  &lt;dt&gt;In Reply To&lt;/dt&gt;</code>
+<code>  &lt;dd&gt;&lt;a href="https://linkedresearch.org/calls" rel="as:inReplyTo"&gt;Call for Linked Research&lt;/a&gt;&lt;/dd&gt;</code>
+<code>&lt;/dl&gt;</code></pre>
+
+                      <p>If an article is a reply to objects(s), it can have a property like <code>as:inReplyTo</code>.</p>
 
                       <pre id="html-document-published-modified"><code>&lt;dl id="document-published"&gt;</code>
 <code>  &lt;dt&gt;Published&lt;/dt&gt;</code>
@@ -349,7 +349,7 @@
                   <section id="html-annotation" inlist="" rel="schema:hasPart" resource="#html-annotation">
                     <h4 property="schema:name">Annotation</h4>
                     <div property="schema:description">
-                      <p>Annotations have their own URL, fetched, parsed, and then introduced into the DOM. They are normally appended at the bottom of a node (<code>section</code>) in which the annotation has a reference to. It is not required to introduce all of the annotation content into the DOM, nor all of it has to be human-visible. This is a run-time inclusion and typically included within <code>&lt;aside class="note do"&gt;&lt;/aside&gt;</code>. Write operations like <cite>Save</cite>, <cite>Save As</cite>, <cite>Snapshot</cite> (export) will exclude this (<code>class~="do"</code>) when it normalises the DOM to HTML.</p>
+                      <p>Annotations have their own URL, fetched, parsed, and then introduced into the DOM. They are normally appended at the bottom of a node (<code>section</code>) in which the annotation has a reference to. It is not required to introduce all of the annotation content into the DOM, nor all of it has to be human-visible. This is a run-time inclusion and typically included within <code>&lt;aside class="note do"&gt;&lt;/aside&gt;</code>. Write operations like <cite>Save</cite>, <cite>Save As</cite>, <cite>Export</cite> will exclude this (<code>class~="do"</code>) when it normalises the DOM to HTML.</p>
 
                       <p>Currently dokieli uses <cite><a href="https://www.w3.org/TR/annotation-vocab/#replying">oa:replying</a></cite>, <cite><a href="https://www.w3.org/TR/annotation-vocab/#commenting">oa:commenting</a></cite>, <cite><a href="https://www.w3.org/TR/annotation-vocab/#describing">oa:describing</a></cite>, <cite><a href="https://www.w3.org/TR/annotation-vocab/#assessing">oa:assessing</a></cite>, <cite><a href="https://www.w3.org/TR/annotation-vocab/#bookmarking">oa:bookmarking</a></cite> for <em>motivations</em>, and <cite><a href="https://www.w3.org/TR/annotation-vocab/#describing">oa:describing</a></cite> and <cite><a href="https://www.w3.org/TR/annotation-vocab/#tagging">oa:tagging</a></cite> for annotation <em>purpose</em>.</p>
 
@@ -365,7 +365,7 @@
                       <p>Its source:</p>
 
                       <figure class="listing" id="html-annotation-source" rel="schema:hasPart" resource="#html-annotation-source">
-                        <pre about="#html-annotation-source" property="schema:description" typeof="fabio:Script"><code>&lt;!DOCTYPE html&gt;</code>
+                        <pre about="#html-annotation-source" lang="" property="schema:description" typeof="fabio:Script" xml:lang=""><code>&lt;!DOCTYPE html&gt;</code>
 <code>&lt;html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"&gt;</code>
 <code>  &lt;head&gt;</code>
 <code>    &lt;meta charset="utf-8" /&gt;</code>
@@ -404,7 +404,7 @@
 <code>              &lt;div rel="oa:hasSelector" resource="i:#fragment-selector" typeof="oa:FragmentSelector"&gt;</code>
 <code>                &lt;dl class="conformsto"&gt;</code>
 <code>                  &lt;dt&gt;Fragment selector conforms to&lt;/dt&gt;</code>
-<code>                  &lt;dd&gt;&lt;a property="rdf:value" content="#abstract" xml:lang="" lang="" rel="dcterms:conformsTo" href="https://tools.ietf.org/html/rfc3987"&gt;RFC3987&lt;/a&gt;&lt;/dd&gt;</code>
+<code>                  &lt;dd&gt;&lt;a property="rdf:value" content="abstract" xml:lang="" lang="" rel="dcterms:conformsTo" href="https://tools.ietf.org/html/rfc3987"&gt;RFC3987&lt;/a&gt;&lt;/dd&gt;</code>
 <code>                &lt;/dl&gt;</code>
 <code></code>
 <code>                &lt;dl class="refinedby" rel="oa:refinedBy" resource="i:#text-quote-selector" typeof="oa:TextQuoteSelector"&gt;</code>
@@ -482,7 +482,7 @@
                       <p>Its source:</p>
 
                       <figure class="listing" id="html-notification-source" rel="schema:hasPart" resource="#html-notification-source">
-                        <pre about="#html-notification-source" property="schema:description" typeof="fabio:Script"><code>&lt;!DOCTYPE html&gt;</code>
+                        <pre about="#html-notification-source" lang="" property="schema:description" typeof="fabio:Script" xml:lang=""><code>&lt;!DOCTYPE html&gt;</code>
 <code>&lt;html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"&gt;</code>
 <code>  &lt;head&gt;</code>
 <code>    &lt;meta charset="utf-8" /&gt;</code>
@@ -581,7 +581,7 @@
                     <dt id="resource-save-as"><i class="fa fa-paper-plane-o"></i>Save As</dt>
                     <dd>The <cite>Save As</cite> operation is similar to <cite>New</cite> for normalising some of the URLs and same as <cite>Save</cite> operation for normalising the DOM before making the request to specified location. If <cite>Derivation data</cite> is checked for inclusion, <a href="#html-document-derived-from-on">derived from and on</a> information is included in the created document. This feature uses the <cite><a href="#resource-browser-method">resource browser</a></cite> to navigate HTTP URLs.</dd>
 
-                    <dt id="resource-snapshot"><i class="fa fa-external-link"></i>Snapshot</dt>
+                    <dt id="resource-export"><i class="fa fa-external-link"></i>Export</dt>
                     <dd>Provides options to 1) exports the article as HTML and save to filesystem, 2) Makes a request to the Internet Archive to crawl all resources references in this article.</dd>
 
                     <dt id="resource-print"><i class="fa fa-print"></i>Print</dt>
@@ -618,7 +618,7 @@
             <div datatype="rdf:HTML" property="schema:description">
               <p>dokieli conforms to <cite><a href="https://www.w3.org/TR/ldp/" rel="cito:citesAsAuthority">Linked Data Platform</a></cite> (LDP) protocol for create, update, and delete operations.</p>
 
-              <p id="http-put">Article operations like <cite>New</cite>, <cite>Save</cite>, <cite>Save As</cite>,  <cite>Reply</cite> and <cite>Review</cite> and other annotation operations use <code>HTTP PUT</code>.</p>
+              <p id="http-put">Article operations like <cite>New</cite>, <cite>Save</cite>, <cite>Save As</cite>,  <cite>Reply</cite> use <code>HTTP PUT</code>, <cite>Review</cite> and other annotation operations use <code>HTTP POST</code>.</p>
 
               <p id="http-post">Notifications are sent with <code>HTTP POST</code>. <cite>Save</cite> and <cite>Save As</cite> normalises the HTML before sending.</p>
 
@@ -633,8 +633,8 @@
                 </thead>
                 <tbody>
                   <tr><th>Article</th><td><code>PUT</code></td><td><code>text/html</code></td></tr>
-                  <tr><th>Annotation</th><td><code>PUT</code></td><td><code>text/html</code> or <code>application/ld+json</code></td></tr>
-                  <tr><th>Notification</th><td>1. <code>OPTIONS</code>, 2. <code>POST</code></td><td><code>text/html</code></td></tr>
+                  <tr><th>Annotation</th><td><code>OPTIONS</code>, <code>POST</code></td><td><code>text/html</code>, <code>application/ld+json</code>, <code>text/turtle</code></td></tr>
+                  <tr><th>Notification</th><td><code>OPTIONS</code>, <code>POST</code></td><td><code>text/html</code>, <code>application/ld+json</code>, <code>text/turtle</code></td></tr>
                 </tbody>
                 <tfoot>
                   <tr>
@@ -644,7 +644,7 @@
                         <dd>Articles typically use <code>text/html</code> with embedded RDFa. Where a server implements <code>GET</code> with <code>text/html</code>, and allows <code>PUT</code> for writing, the assumption is that it can allow <code>text/html</code>. In the future, dokieli can check for the <code>Accept-Put</code> header with <code>OPTIONS</code> to determine a suitable type. At this time, HTML+RDFa is an important default for articles.</dd>
 
                         <dt id="request-to-send-annotation">Annotation</dt>
-                        <dd>Annotations use the <code>PUT</code> method with <code>Content-Type</code> header value determined by type of location to write to: personal storage space eg. given a profile's <code>pim:storage</code>, or made to an annotation service eg. an article's <code>oa:annotationService</code>. The <cite><a href="https://www.w3.org/TR/annotation-protocol/">Web Annotation Protocol</a></cite> requires <code>application/ld+json</code> by default. In the future, dokieli can check for the <code>Accept-Put</code> header and send the payload in one of the available serializations.</dd>
+                        <dd>Annotations use the <code>POST</code> method with <code>Content-Type</code> header value determined by type of location to write to: personal storage space eg. given a profile's <code>pim:storage</code>; made to an annotation service eg. an article's <code>oa:annotationService</code>; sent to profile's outbox's outbox: <code>as:outbox</code>. The <cite><a href="https://www.w3.org/TR/annotation-protocol/">Web Annotation Protocol</a></cite> requires <code>application/ld+json</code> by default. dokieli sends an <code>OPTIONS</code> request to check for the <code>Accept-Post</code> header and sends the payload in one of the serializations that the server prefers. If it is not set, it will fallback to <code>application/ld+json</code> as preferred by Wen Annotation and ActivityPub.</dd>
 
                         <dt id="request-to-send-notification">Notification</dt>
                         <dd>Notifications use <code>OPTIONS</code> to check the response's <code>Accept-Post</code> HTTP header. If it is set and matches one of the acceptable RDF mediatypes that dokieli can parse, it will use that mediatype to serialize the payload before <code>POST</code>ing. <span rel="schema:hasPart" resource="#dokieli-notification-post-content-type-json-ld">If it is not set, it will fallback to <code>application/ld+json</code> as required by the <cite><a href="https://www.w3.org/TR/ldn/#test-sender-header-post-content-type-json-ld" rel="cito:citesAsAuthority">Linked Data Notifications</a></cite> specification.</span></dd>
@@ -665,6 +665,8 @@
                   <li><code>HTTP PATCH</code> can help to optimise HTTP requests provided that the server processes the SPARQL query and eventually publishes the final state of the article. dokieli's use of <code>HTTP POST</code> and <code>HTTP PUT</code> on the other hand does not expect or impose operations other than to store and serve the article. If servers would like to do versioning and how, dokieli leaves it to the servers to decide.</li>
                 </ul>
               </aside>
+
+              <p id="http-proxy">Due to <cite><a href="https://www.w3.org/TR/mixed-content/">Mixed Content</a></cite> implementations in Web browsers, ie. <q>fetching of content over unencrypted or unauthenticated connections in the context of an encrypted and authenticated document</q>, is subject to being blocked by the Web browser. Hence, an https document (eg article at https) will not be able to use the contents of an http document (eg. an http WebID). As a workaround, dokieli uses a proxy endpoint by default in order to use the contents of an http resource. An https document fetching an https resource will not use the proxy.</p>
             </div>
           </section>
 
@@ -691,7 +693,20 @@
           <section id="web-extension" inlist="" rel="schema:hasPart" resource="#web-extension">
             <h2 property="schema:name">Web Extension</h2>
             <div datatype="rdf:HTML" property="schema:description">
-              <p>The dokieli <cite><a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions">Web Extension</a></cite> is a minimal package of dokieli which contains the core CSS and JavaScript that works as a browser add-on. When user triggers it from their browser toolbar, it provides the same functionality as a <cite>single-page application</cite>, ie. initialised and rendered in the browser DOM. Currently the extension works with Firefox and Chrome/Chromium browsers. For Firefox, the extension can be packaged with <samp>xpi-pack</samp> and imported from the <cite>Add-ons Manager</cite>. For Chrome/Chromium, the directory can be imported from <cite>Extensions</cite> (developer mode). Alternatively, the extensions are available from <cite><a href="https://addons.mozilla.org/en-US/firefox/addon/dokieli/">Add-ons for Firefox</a></cite> and <cite><a href="https://chrome.google.com/webstore/detail/ddmhaonbhodhgkaljpjlglodncddalid">Chrome Web Store</a></cite>.</p>
+              <p>The dokieli <cite><a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions">Web Extension</a></cite> is a minimal package of dokieli which contains the core CSS and JavaScript that works as a browser add-on. When user triggers it from their browser toolbar, it provides the same functionality as a <cite>single-page application</cite>, ie. initialised and rendered in the browser DOM.</p>
+
+              <p>Currently the extension works with Firefox and Chrome/Chromium browsers. Two ways to do this:</p>
+
+              <ol>
+                <li>Extensions are available from <cite><a href="https://addons.mozilla.org/en-US/firefox/addon/dokieli/">Add-ons for Firefox</a></cite> and <cite><a href="https://chrome.google.com/webstore/detail/ddmhaonbhodhgkaljpjlglodncddalid">Chrome Web Store</a></cite>.</li>
+
+                <li>Clone <a href="https://github.com/linkeddata/dokieli">https://github.com/linkeddata/dokieli</a> and import directory:
+                  <ul>
+                    <li>Firefox: <q>Load Temporary Add-on</q> from Add-ons (or go to <code>about:debugging</code> from addressbar) and import by selecting a file from the directory (eg manifest.json). See also <a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Temporary_Installation_in_Firefox">temporary add-on installation</a>.</li>
+                    <li>Chrome/Chromium: Check the <q>developer more</q> option, under <cite>Extensions</cite> (or go to <code>chrome://extensions/</code> from addressbar) and import the directory.</li>
+                  </ul>
+                </li>
+              </ol>
             </div>
           </section>
 
@@ -701,10 +716,13 @@
 <pre><code>git clone https://github.com/linkeddata/dokieli</code>
 <code>cd dokieli</code>
 <code></code>
-<code># Creates scripts/do.js.</code>
+<code># Install packages</code>
+<code>npm install</code>
+<code></code>
+<code># Build stuff eg. scripts/do.js</code>
 <code>npm run build</code>
 <code></code>
-<code># Watch and update files</code>
+<code># or automatically rebuild when files change</code>
 <code>npm run watch</code></pre>
             </div>
           </section>

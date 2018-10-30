@@ -7,7 +7,7 @@
 		exports["DO"] = factory(require("fetch"));
 	else
 		root["DO"] = factory(root["fetch"]);
-})(this, function(__WEBPACK_EXTERNAL_MODULE_4__) {
+})(typeof self !== 'undefined' ? self : this, function(__WEBPACK_EXTERNAL_MODULE_10__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -70,18 +70,1868 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 8);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(1);
+"use strict";
+
+/**
+ * Configuration
+ */
+module.exports = {
+  Lang: document.documentElement.lang,
+  DocRefType: '',
+  RefType: {
+    LNCS: { InlineOpen: '[', InlineClose: ']' },
+    ACM: { InlineOpen: '[', InlineClose: ']' }
+  },
+  Stylesheets: [],
+  User: {
+    IRI: null,
+    Role: null,
+    UI: {}
+  },
+  LocalDocument: (document.location.protocol == 'file:'),
+  UseStorage: false,
+  AutoSaveId: '',
+  AutoSaveTimer: 60000,
+  DisableStorageButtons: '<button class="local-storage-disable-html" title="Disable local storage (temporary) in the browser"><i class="fa fa-database fa-2x"></i>Local Storage</button>',
+  EnableStorageButtons: '<button class="local-storage-enable-html" title="Enable local storage (temporary) in the browser"><i class="fa fa-database fa-2x"></i>Local Storage</button>',
+  CDATAStart: '//<![CDATA[',
+  CDATAEnd: '//]]>',
+  SortableList: false,
+  GraphViewerAvailable: (typeof d3 !== 'undefined'),
+  MathAvailable: (typeof MathJax !== 'undefined'),
+  EditorAvailable: (typeof MediumEditor !== 'undefined'),
+  EditorEnabled: false,
+  ContentEditable: false,
+  WebExtension: ((window.chrome && chrome.runtime && chrome.runtime.id) || (typeof browser !== 'undefined' && browser.runtime && browser.runtime.id)),
+  Editor: {
+    headings: ["h1", "h2", "h3", "h4", "h5", "h6"],
+    regexEmptyHTMLTags: /<[^\/>][^>]*><\/[^>]+>/gim,
+    ButtonLabelType: (((window.chrome && chrome.runtime && chrome.runtime.id) || (typeof browser !== 'undefined' && browser.runtime && browser.runtime.id)) ? 'fontawesome' : (document.querySelector('head link[rel~="stylesheet"][href*="font-awesome"]') ? (!navigator.onLine && document.querySelector('head link[rel~="stylesheet"][href*="font-awesome"][href^="http"]') ? '': 'fontawesome') : '' )),
+    DisableReviewButton: '<button class="review-disable" title="Disable review"><i class="fa fa-balance-scale fa-2x"></i>Review</button>',
+    EnableReviewButton: '<button class="review-enable" title="Enable review"><i class="fa fa-balance-scale fa-2x"></i>Review</button>',
+    DisableEditorButton: '<button class="editor-disable" title="Disable editor"><i class="fa fa-i-cursor fa-2x"></i>Edit</button>',
+    EnableEditorButton: '<button class="editor-enable" title="Enable editor"><i class="fa fa-i-cursor fa-2x"></i>Edit</button>'
+  },
+  Button: {
+    Close: '<button class="close" title="Close"><i class="fa fa-close fa-2x"></i></button>'
+  },
+  DOMNormalisation: {
+    'selfClosing': "area base basefont br col colgroup embed hr img input isindex link meta metadata param source wbr",
+    'skipAttributes': "contenteditable spellcheck medium-editor-index data-medium-editor-element data-medium-editor-editor-index data-medium-focused data-placeholder role aria-multiline style",
+    'sortAttributes': true,
+    'skipNodeWithClass': 'do',
+    'classWithChildText': {
+      'class': '.do.ref',
+      'element': 'mark'
+    },
+    'replaceClassItemWith': {
+      'source': "on-document-menu medium-editor-element medium-editor-placeholder",
+      'target': ''
+    },
+    'skipClassWithValue': ''
+  },
+
+  SelectorSign: {
+    "*": "🔗",
+    "aside": "†",
+    "audio": "🔊",
+    "code": "#",
+    "dl": "☝",
+    "dl#document-annotation-service": "※",
+    "dl#document-created": "📅",
+    "dl#document-in-reply-to": "⮪",
+    "dl#document-identifier": "🚩",
+    "dl#document-inbox": "📥",
+    "dl#document-latest-version": "∼",
+    "dl#document-license": "🌻",
+    "dl#document-memento": "⛰",
+    "dl#document-modified": "📅",
+    "dl#document-original": "♁",
+    "dl#document-predecessor-version": "≺",
+    "dl#document-published": "📅",
+    "dl#document-rights": "📜",
+    "dl#document-resource-state": "🙊",
+    "dl#document-see-also": "🙈",
+    "dl#document-status": "🎆",
+    "dl#document-timemap": "⌚",
+    "dfn": "📇",
+    "figure": "❦",
+    "footer": "⸙",
+    "img": "🖼",
+    "nav": "☛",
+    "p": "¶",
+    "pre": "🖩",
+    "section": "§",
+    "section#acknowledgements": "☺",
+    "section#conclusions": "∴",
+    "section#keywords": "🏷",
+    "section#references": "☛",
+    "section#related-work": "⌘",
+    "section#results": "∞",
+    "table": "𝄜",
+    "video": "🎞"
+  },
+
+  DocumentItems: [
+    'authors',
+    'document-identifier',
+    'document-created',
+    'document-modified',
+    'document-published',
+    'document-original',
+    'document-memento',
+    'document-latest-version',
+    'document-predecessor-version',
+    'document-timegate',
+    'document-timemap',
+    'document-derived-from',
+    'document-derived-on',
+    'document-license',
+    'document-inbox',
+    'document-annotation-service',
+    'document-in-reply-to',
+    'document-rights',
+    'document-resource-state',
+    'document-status',
+    'document-see-also',
+    'table-of-contents',
+    'table-of-figures',
+    'table-of-tables',
+    'table-of-abbrs',
+    'authors',
+    'abstract',
+    'categories-and-subject-descriptors',
+    'keywords',
+    'general-terms',
+
+    'introduction'
+  ],
+
+  CollectionItemsLimit: 20,
+  ContextLength: 32,
+  ProxyURL: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/proxy?uri=' : 'https://dokie.li/proxy?uri='),
+  AuthEndpoint: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/' : 'https://dokie.li/'),
+  NotificationLicense: 'https://creativecommons.org/publicdomain/zero/1.0/',
+  License: {
+    "https://creativecommons.org/publicdomain/zero/1.0/": {'name': 'CC0 1.0', 'description': 'Creative Commons Zero'},
+    "https://creativecommons.org/licenses/by/4.0/": {'name': 'CC BY 4.0', 'description': 'Creative Commons Attribution'},
+    "https://creativecommons.org/licenses/by-sa/4.0/": {'name': 'CC BY-SA 4.0', 'description': 'Creative Commons Attribution-ShareAlike'},
+    "https://creativecommons.org/licenses/by-nc/4.0/": {'name': 'CC BY-NC 4.0', 'description': 'Creative Commons Attribution-NonCommercial'},
+    "https://creativecommons.org/licenses/by-nd/4.0/": {'name': 'CC BY-ND 4.0', 'description': 'Creative Commons Attribution-NoDerivatives'},
+    "https://creativecommons.org/licenses/by-nc-sa/4.0/": {'name': 'CC BY-NC-SA 4.0', 'description': 'Creative Commons Attribution-NonCommercial-ShareAlike'},
+    "https://creativecommons.org/licenses/by-nc-nd/4.0/": {'name': 'CC BY-NC-ND 4.0', 'description': 'Creative Commons Attribution-NonCommercial-NoDerivates'}
+  },
+  PublicationStatus: {
+    "http://purl.org/spar/pso/draft": { 'name': 'Draft', 'description': 'The status of a work (for example a document or a dataset) prior to completion and publication.' },
+    "http://purl.org/spar/pso/published": { 'name': 'Published', 'description': 'The status of material (for example a document or a dataset) that has been published, i.e. made available for people to access, read or use, either freely or for a purchase price or an access fee.' }
+  },
+  Citation: {
+    'http://purl.org/spar/cito/agreesWith': 'agrees with',
+    'http://purl.org/spar/cito/cites': 'cites',
+    'http://purl.org/spar/cito/citesAsAuthority': 'cites as authority',
+    'http://purl.org/spar/cito/citesAsDataSource': 'cites as data source',
+    'http://purl.org/spar/cito/citesAsEvidence': 'cites as evidence',
+    'http://purl.org/spar/cito/citesAsMetadataDocument': 'cites as metadata document',
+    'http://purl.org/spar/cito/citesAsPotentialSolution': 'cites as potential solution',
+    'http://purl.org/spar/cito/citesAsRecommendedReading': 'cites as potential reading',
+    'http://purl.org/spar/cito/citesAsRelated': 'cites as related',
+    'http://purl.org/spar/cito/citesAsSourceDocument': 'cites as source document',
+    'http://purl.org/spar/cito/citesForInformation': 'cites for information',
+    'http://purl.org/spar/cito/compiles': 'compiles',
+    'http://purl.org/spar/cito/confirms': 'confirms',
+    'http://purl.org/spar/cito/containsAssertionFrom': 'contains assertion from',
+    'http://purl.org/spar/cito/corrects': 'corrects',
+    'http://purl.org/spar/cito/credits': 'credits',
+    'http://purl.org/spar/cito/critiques': 'critiques',
+    'http://purl.org/spar/cito/derides': 'derides',
+    'http://purl.org/spar/cito/describes': 'describes',
+    'http://purl.org/spar/cito/disagreesWith': 'disagrees with',
+    'http://purl.org/spar/cito/discusses': 'discusses',
+    'http://purl.org/spar/cito/disputes': 'disputes',
+    'http://purl.org/spar/cito/documents': 'documents',
+    'http://purl.org/spar/cito/extends': 'extends',
+    'http://purl.org/spar/cito/includesExcerptFrom': 'includes excerpt from',
+    'http://purl.org/spar/cito/includesQuotationFrom': 'includes quotation from',
+    'http://purl.org/spar/cito/linksTo': 'links to',
+    'http://purl.org/spar/cito/obtainsBackgroundFrom': 'obtains background from',
+    'http://purl.org/spar/cito/obtainsSupportFrom': 'obtains support from',
+    'http://purl.org/spar/cito/parodies': 'parodies',
+    'http://purl.org/spar/cito/plagiarizes': 'plagiarizes',
+    'http://purl.org/spar/cito/qualifies': 'qualifies',
+    'http://purl.org/spar/cito/refutes': 'refutes',
+    'http://purl.org/spar/cito/repliesTo': 'replies to',
+    'http://purl.org/spar/cito/retracts': 'retracts',
+    'http://purl.org/spar/cito/reviews': 'reviews',
+    'http://purl.org/spar/cito/ridicules': 'ridicules',
+    'http://purl.org/spar/cito/speculatesOn': 'speculates on',
+    'http://purl.org/spar/cito/supports': 'supports',
+    'http://purl.org/spar/cito/updates': 'updates',
+    'http://purl.org/spar/cito/usesConclusionsFrom': 'uses conclusions from',
+    'http://purl.org/spar/cito/usesDataFrom': 'uses data from',
+    'http://purl.org/spar/cito/usesMethodIn': 'uses method in'
+  },
+
+  AvailableMediaTypes: ['text/turtle', 'application/ld+json', 'application/rdf+xml', 'application/xhtml+xml', 'text/html'],
+
+  AcceptBinaryTypes: ['image/png', 'image/jpeg', 'image/gif'],
+
+  Prefixes: {
+    'xsd': 'http://www.w3.org/2001/XMLSchema#',
+    'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+    'as': 'https://www.w3.org/ns/activitystreams#',
+    'oa': 'http://www.w3.org/ns/oa#',
+    'schema': 'http://schema.org/'
+  },
+
+  Vocab: {
+    "rdftype": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "@type": "@id", "@array": true },
+    "rdffirst": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#first", "@type": "@id" },
+    "rdfrest": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest", "@type": "@id" },
+    "rdfvalue": "http://www.w3.org/1999/02/22-rdf-syntax-ns#value",
+    "rdfslabel": { "@id": "http://www.w3.org/2000/01/rdf-schema#label" },
+    "rdfsseeAlso": { "@id": "http://www.w3.org/2000/01/rdf-schema#seeAlso", "@type": "@id", "@array": true },
+
+    "owlsameAs": { "@id": "http://www.w3.org/2002/07/owl#sameAs", "@type": "@id", "@array": true },
+
+    "foafname": "http://xmlns.com/foaf/0.1/name",
+    "foaffamilyName": "http://xmlns.com/foaf/0.1/familyName",
+    "foafgivenName": "http://xmlns.com/foaf/0.1/givenName",
+    "foafhomepage": { "@id": "http://xmlns.com/foaf/0.1/homepage", "@type": "@id" },
+    "foafweblog": { "@id": "http://xmlns.com/foaf/0.1/weblog", "@type": "@id" },
+    "foafimg": { "@id": "http://xmlns.com/foaf/0.1/img", "@type": "@id" },
+    "foafdepiction": { "@id": "http://xmlns.com/foaf/0.1/depiction", "@type": "@id" },
+    "foafnick": "http://xmlns.com/foaf/0.1/nick",
+    "foafmaker": { "@id": "http://xmlns.com/foaf/0.1/maker", "@type": "@id" },
+    "foafknows": { "@id": "http://xmlns.com/foaf/0.1/knows", "@type": "@id", "@array": true },
+
+    "vcardfn": "http://www.w3.org/2006/vcard/ns#fn",
+    "vcardfamilyname": "http://www.w3.org/2006/vcard/ns#family-name",
+    "vcardgivenname": "http://www.w3.org/2006/vcard/ns#given-name",
+    "vcardnickname": "http://www.w3.org/2006/vcard/ns#nickname",
+    "vcardurl": { "@id": "http://www.w3.org/2006/vcard/ns#url", "@type": "@id" },
+    "vcardphoto": { "@id": "http://www.w3.org/2006/vcard/ns#photo", "@type": "@id" },
+    "vcardhasPhoto": { "@id": "http://www.w3.org/2006/vcard/ns#hasPhoto", "@type": "@id" },
+
+    "schemaname": "http://schema.org/name",
+    "schemafamilyName": "http://schema.org/familyName",
+    "schemagivenName": "http://schema.org/givenName",
+    "schemaurl": { "@id": "http://schema.org/url", "@type": "@id" },
+    "schemaimage": { "@id": "http://schema.org/image", "@type": "@id" },
+    "schemacreator": { "@id": "http://schema.org/creator", "@type": "@id", "@array": true },
+    "schemaauthor": { "@id": "http://schema.org/author", "@type": "@id", "@array": true },
+    "schemacontributor": { "@id": "http://schema.org/contributor", "@type": "@id", "@array": true },
+    "schemaeditor": { "@id": "http://schema.org/editor", "@type": "@id", "@array": true },
+    "schemalicense": { "@id": "http://schema.org/license", "@type": "@id" },
+    "schemacitation": { "@id": "http://schema.org/citation", "@type": "@id", "@array": true },
+    "schemaknows": { "@id": "http://schema.org/knows", "@type": "@id", "@array": true },
+    "schemadateCreated": "http://schema.org/dateCreated",
+    "schemadateModified": "http://schema.org/dateModified",
+    "schemadatePublished": "http://schema.org/datePublished",
+    "schemadescription": "http://schema.org/description",
+    "schemahasPart": { "@id": "http://schema.org/hasPart", "@type": "@id", "@array": true }, 
+    "schemaisPartOf": { "@id": "http://schema.org/isPartOf", "@type": "@id", "@array": true },
+    "schemaScholarlyArticle": { "@id": "http://schema.org/ScholarlyArticle" },
+
+    "dctermstitle": "http://purl.org/dc/terms/title",
+    "dctermsdescription": "http://purl.org/dc/terms/description",
+    "dctermscreator": { "@id": "http://purl.org/dc/terms/creator", "@type": "@id", "@array": true },
+    "dctermsdate": "http://purl.org/dc/terms/date",
+    "dctermsissued": "http://purl.org/dc/terms/issued",
+    "dctermscreated": "http://purl.org/dc/terms/created",
+    "dctermsrights": { "@id": "http://purl.org/dc/terms/rights", "@type": "@id" },
+    "dctermsconformsTo": { "@id": "http://purl.org/dc/terms/conformsTo", "@type": "@id" },
+    "dctermshasPart": { "@id": "http://purl.org/dc/terms/hasPart", "@type": "@id", "@array": true },
+    "dctermsisPartOf": { "@id": "http://purl.org/dc/terms/isPartOf", "@type": "@id", "@array": true },
+
+    "skosprefLabel": { "@id": "http://www.w3.org/2004/02/skos/core#prefLabel", "@type": "@id", "@array": true },
+
+    "refPeriod": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod",
+    "obsValue": "http://purl.org/linked-data/sdmx/2009/measure#obsValue",
+
+    "biboauthorList": { "@id": "http://purl.org/ontology/bibo/authorList", "@type": "@id" },
+
+    "pimstorage": { "@id": "http://www.w3.org/ns/pim/space#storage", "@type": "@id", "@array": true },
+    "preferencesFile": { "@id": "http://www.w3.org/ns/pim/space#preferencesFile", "@type": "@id" },
+
+    "ldpinbox": { "@id": "http://www.w3.org/ns/ldp#inbox", "@type": "@id", "@array": true },
+
+    "solidpreferredProxy": "http://www.w3.org/ns/solid/terms#preferredProxy",
+
+    "oaannotation": { "@id": "http://www.w3.org/ns/oa#Annotation", "@type": "@id" },
+    "oahasBody": { "@id": "http://www.w3.org/ns/oa#hasBody", "@type": "@id" },
+    "oahasTarget": { "@id": "http://www.w3.org/ns/oa#hasTarget", "@type": "@id" },
+    "oahasSource": { "@id": "http://www.w3.org/ns/oa#hasSource", "@type": "@id" },
+    "oahasSelector": { "@id": "http://www.w3.org/ns/oa#hasSelector", "@type": "@id" },
+    "oarefinedBy": { "@id": "http://www.w3.org/ns/oa#refinedBy", "@type": "@id" },
+    "oaexact": "http://www.w3.org/ns/oa#exact",
+    "oaprefix": "http://www.w3.org/ns/oa#prefix",
+    "oasuffix": "http://www.w3.org/ns/oa#suffix",
+    "oamotivatedBy": { "@id": "http://www.w3.org/ns/oa#motivatedBy", "@type": "@id" },
+    "oaannotationService": { "@id": "http://www.w3.org/ns/oa#annotationService", "@type": "@id", "@array": true },
+
+    "assubject": { "@id": "https://www.w3.org/ns/activitystreams#subject", "@type": "@id", "@array": true },
+    "asobject": { "@id": "https://www.w3.org/ns/activitystreams#object", "@type": "@id", "@array": true },
+    "astarget": { "@id": "https://www.w3.org/ns/activitystreams#target", "@type": "@id", "@array": true },
+    "asrelationship": { "@id": "https://www.w3.org/ns/activitystreams#relationship", "@type": "@id", "@array": true },
+    "ascontext": { "@id": "https://www.w3.org/ns/activitystreams#context", "@type": "@id", "@array": true },
+    "asinReplyTo": { "@id": "https://www.w3.org/ns/activitystreams#inReplyTo", "@type": "@id", "@array": true },
+    "asactor": { "@id": "https://www.w3.org/ns/activitystreams#actor", "@type": "@id" },
+    "asupdated": "https://www.w3.org/ns/activitystreams#updated",
+    "aspublished": "https://www.w3.org/ns/activitystreams#published",
+    "ascontent": "https://www.w3.org/ns/activitystreams#content",
+    "asname": "https://www.w3.org/ns/activitystreams#name",
+    "asimage": { "@id": "https://www.w3.org/ns/activitystreams#image", "@type": "@id" },
+    "asoutbox": { "@id": "https://www.w3.org/ns/activitystreams#outbox", "@type": "@id", "@array": true },
+    "asitems": { "@id": "https://www.w3.org/ns/activitystreams#items", "@type": "@id", "@array": true },
+    "asorderedItems": { "@id": "https://www.w3.org/ns/activitystreams#orderedItems", "@type": "@id", "@array": true },
+    "astotalItems": "https://www.w3.org/ns/activitystreams#totalItems",
+    "asfirst": { "@id": "https://www.w3.org/ns/activitystreams#first", "@type": "@id" },
+    "asnext": { "@id": "https://www.w3.org/ns/activitystreams#next", "@type": "@id" },
+    "asCollection": { "@id": "https://www.w3.org/ns/activitystreams#Collection", "@type": "@id" },
+    "asOrderedCollection": { "@id": "https://www.w3.org/ns/activitystreams#OrderedCollection", "@type": "@id" },
+
+    "siocreplyof": { "@id": "http://rdfs.org/sioc/ns#reply_of", "@type": "@id", "@array": true },
+    "siocavatar": { "@id": "http://rdfs.org/sioc/ns#avatar", "@type": "@id" },
+
+    "ldpcontains": { "@id": "http://www.w3.org/ns/ldp#contains", "@type": "@id", "@array": true },
+    "ldpResource": { "@id": "http://www.w3.org/ns/ldp#Resource", "@type": "@id" },
+    "ldpContainer": { "@id": "http://www.w3.org/ns/ldp#Container", "@type": "@id" },
+    "ldpRDFSource": { "@id": "http://www.w3.org/ns/ldp#RDFSource", "@type": "@id" },
+    "ldpImmutableResource": { "@id": "http://www.w3.org/ns/ldp#ImmutableResource", "@type": "@id" },
+
+    "memOriginalResource": { "@id": "http://mementoweb.org/ns#OriginalResource", "@type": "@id" },
+    "memMemento": { "@id": "http://mementoweb.org/ns#Memento", "@type": "@id" },
+    "memoriginal": { "@id": "http://mementoweb.org/ns#original", "@type": "@id" },
+    "memmemento": { "@id": "http://mementoweb.org/ns#memento", "@type": "@id" },
+    "memtimegate": { "@id": "http://mementoweb.org/ns#timegate", "@type": "@id" },
+    "memtimemap": { "@id": "http://mementoweb.org/ns#timemap", "@type": "@id" },
+
+    "relpredecessorversion": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#predecessor-version", "@type": "@id" },
+    "rellatestversion": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#latest-version", "@type": "@id" },
+
+    "psodraft": { "@id": "http://purl.org/spar/pso/draft", "@type": "@id" },
+    "psopublished": { "@id": "http://purl.org/spar/pso/published", "@type": "@id" }
+  },
+
+  SecretAgentNames: ['Abraham Lincoln', 'Admiral Awesome', 'Anonymous Coward', 'Believe it or not', 'Creative Monkey', 'Senegoid', 'Dog from the Web', 'Ekrub', 'Elegant Banana', 'Foo Bar', 'Lbmit', 'Lunatic Scholar', 'NahuLcm', 'Noslen', 'Okie Dokie', 'Samurai Cat', 'Vegan Superstar'],
+
+  RefAreas: {"AF":"Afghanistan","A9":"Africa","AL":"Albania","DZ":"Algeria","AS":"American Samoa","L5":"Andean Region","AD":"Andorra","AO":"Angola","AG":"Antigua and Barbuda","1A":"Arab World","AR":"Argentina","AM":"Armenia","AW":"Aruba","AU":"Australia","AT":"Austria","AZ":"Azerbaijan","BS":"Bahamas, The","BH":"Bahrain","BD":"Bangladesh","BB":"Barbados","BY":"Belarus","BE":"Belgium","BZ":"Belize","BJ":"Benin","BM":"Bermuda","BT":"Bhutan","BO":"Bolivia","BA":"Bosnia and Herzegovina","BW":"Botswana","BR":"Brazil","BN":"Brunei Darussalam","BG":"Bulgaria","BF":"Burkina Faso","BI":"Burundi","CV":"Cabo Verde","KH":"Cambodia","CM":"Cameroon","CA":"Canada","S3":"Caribbean small states","KY":"Cayman Islands","CF":"Central African Republic","TD":"Chad","JG":"Channel Islands","CL":"Chile","CN":"China","CO":"Colombia","KM":"Comoros","CD":"Congo, Dem. Rep.","CG":"Congo, Rep.","CR":"Costa Rica","CI":"Cote d'Ivoire","HR":"Croatia","CU":"Cuba","CW":"Curacao","CY":"Cyprus","CZ":"Czech Republic","DK":"Denmark","DJ":"Djibouti","DM":"Dominica","DO":"Dominican Republic","Z4":"East Asia & Pacific (all income levels)","4E":"East Asia & Pacific (developing only)","C4":"East Asia and the Pacific (IFC classification)","EC":"Ecuador","EG":"Egypt, Arab Rep.","SV":"El Salvador","GQ":"Equatorial Guinea","ER":"Eritrea","EE":"Estonia","ET":"Ethiopia","XC":"Euro area","Z7":"Europe & Central Asia (all income levels)","7E":"Europe & Central Asia (developing only)","C5":"Europe and Central Asia (IFC classification)","EU":"European Union","FO":"Faeroe Islands","FJ":"Fiji","FI":"Finland","FR":"France","PF":"French Polynesia","GA":"Gabon","GM":"Gambia, The","GE":"Georgia","DE":"Germany","GH":"Ghana","GR":"Greece","GL":"Greenland","GD":"Grenada","GU":"Guam","GT":"Guatemala","GN":"Guinea","GW":"Guinea-Bissau","GY":"Guyana","HT":"Haiti","XE":"Heavily indebted poor countries (HIPC)","XD":"High income","XS":"High income: OECD","XR":"High income: nonOECD","HN":"Honduras","HK":"Hong Kong SAR, China","HU":"Hungary","IS":"Iceland","IN":"India","ID":"Indonesia","IR":"Iran, Islamic Rep.","IQ":"Iraq","IE":"Ireland","IM":"Isle of Man","IL":"Israel","IT":"Italy","JM":"Jamaica","JP":"Japan","JO":"Jordan","KZ":"Kazakhstan","KE":"Kenya","KI":"Kiribati","KP":"Korea, Dem. Rep.","KR":"Korea, Rep.","KV":"Kosovo","KW":"Kuwait","KG":"Kyrgyz Republic","LA":"Lao PDR","ZJ":"Latin America & Caribbean (all income levels)","XJ":"Latin America & Caribbean (developing only)","L4":"Latin America and the Caribbean","C6":"Latin America and the Caribbean (IFC classification)","LV":"Latvia","XL":"Least developed countries: UN classification","LB":"Lebanon","LS":"Lesotho","LR":"Liberia","LY":"Libya","LI":"Liechtenstein","LT":"Lithuania","XO":"Low & middle income","XM":"Low income","XN":"Lower middle income","LU":"Luxembourg","MO":"Macao SAR, China","MK":"Macedonia, FYR","MG":"Madagascar","MW":"Malawi","MY":"Malaysia","MV":"Maldives","ML":"Mali","MT":"Malta","MH":"Marshall Islands","MR":"Mauritania","MU":"Mauritius","MX":"Mexico","L6":"Mexico and Central America","FM":"Micronesia, Fed. Sts.","ZQ":"Middle East & North Africa (all income levels)","XQ":"Middle East & North Africa (developing only)","C7":"Middle East and North Africa (IFC classification)","XP":"Middle income","MD":"Moldova","MC":"Monaco","MN":"Mongolia","ME":"Montenegro","MA":"Morocco","MZ":"Mozambique","MM":"Myanmar","NA":"Namibia","NP":"Nepal","NL":"Netherlands","NC":"New Caledonia","NZ":"New Zealand","NI":"Nicaragua","NE":"Niger","NG":"Nigeria","M2":"North Africa","XU":"North America","MP":"Northern Mariana Islands","NO":"Norway","XY":"Not classified","OE":"OECD members","OM":"Oman","S4":"Other small states","S2":"Pacific island small states","PK":"Pakistan","PW":"Palau","PA":"Panama","PG":"Papua New Guinea","PY":"Paraguay","PE":"Peru","PH":"Philippines","PL":"Poland","PT":"Portugal","PR":"Puerto Rico","QA":"Qatar","RO":"Romania","RU":"Russian Federation","RW":"Rwanda","WS":"Samoa","SM":"San Marino","ST":"Sao Tome and Principe","SA":"Saudi Arabia","SN":"Senegal","RS":"Serbia","SC":"Seychelles","SL":"Sierra Leone","SG":"Singapore","SX":"Sint Maarten (Dutch part)","SK":"Slovak Republic","SI":"Slovenia","S1":"Small states","SB":"Solomon Islands","SO":"Somalia","ZA":"South Africa","8S":"South Asia","C8":"South Asia (IFC classification)","SS":"South Sudan","L7":"Southern Cone Extended","ES":"Spain","LK":"Sri Lanka","KN":"St. Kitts and Nevis","LC":"St. Lucia","MF":"St. Martin (French part)","VC":"St. Vincent and the Grenadines","C9":"Sub-Saharan Africa (IFC classification)","ZG":"Sub-Saharan Africa (all income levels)","ZF":"Sub-Saharan Africa (developing only)","A4":"Sub-Saharan Africa excluding South Africa","A5":"Sub-Saharan Africa excluding South Africa and Nigeria","SD":"Sudan","SR":"Suriname","SZ":"Swaziland","SE":"Sweden","CH":"Switzerland","SY":"Syrian Arab Republic","TJ":"Tajikistan","TZ":"Tanzania","TH":"Thailand","TL":"Timor-Leste","TG":"Togo","TO":"Tonga","TT":"Trinidad and Tobago","TN":"Tunisia","TR":"Turkey","TM":"Turkmenistan","TC":"Turks and Caicos Islands","TV":"Tuvalu","UG":"Uganda","UA":"Ukraine","AE":"United Arab Emirates","GB":"United Kingdom","US":"United States","XT":"Upper middle income","UY":"Uruguay","UZ":"Uzbekistan","VU":"Vanuatu","VE":"Venezuela, RB","VN":"Vietnam","VI":"Virgin Islands (U.S.)","PS":"West Bank and Gaza","1W":"World","YE":"Yemen, Rep.","ZM":"Zambia","ZW":"Zimbabwe"}
+}
 
 
 /***/ }),
 /* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+const Config = __webpack_require__(0)
+
+module.exports = {
+  encodeString,
+  decodeString,
+  getAbsoluteIRI,
+  getProxyableIRI,
+  stripFragmentFromString,
+  getFragmentFromString
+}
+
+function encodeString (string) {
+  return encodeURIComponent(string).replace(/'/g, '%27').replace(/"/g, '%22')
+}
+
+/**
+ * UNUSED
+ *
+ * @param string {string}
+ *
+ * @returns {string}
+ */
+function decodeString (string) {
+  return decodeURIComponent(string.replace(/\+/g, ' '))
+}
+
+function getAbsoluteIRI (base, location) {
+  var iri = location
+
+  if (location.toLowerCase().slice(0, 4) !== 'http') {
+    if (location.startsWith('/')) {
+      var x = base.toLowerCase().trim().split('/')
+
+      iri = x[0] + '//' + x[2] + location
+    } else if (!base.endsWith('/')) {
+      iri = base.substr(0, base.lastIndexOf('/') + 1) + location
+    } else {
+      iri = base + location
+    }
+  }
+
+  return iri
+}
+
+function getProxyableIRI (url, options = {}) {
+  var pIRI = stripFragmentFromString(url)
+
+  if ((typeof document !== 'undefined' && document.location.protocol === 'https:' && pIRI.slice(0, 5).toLowerCase() === 'http:') || 'forceProxy' in options) {
+    var proxyURL = ('proxyURL' in options) ? options.proxyURL : Config.ProxyURL
+    pIRI = proxyURL + encodeString(pIRI)
+  }
+
+  return pIRI
+}
+
+function stripFragmentFromString (string) {
+  if (typeof string === 'string') {
+    let stringIndexFragment = string.indexOf('#')
+
+    if (stringIndexFragment >= 0) {
+      string = string.substring(0, stringIndexFragment)
+    }
+  }
+  return string
+}
+
+function getFragmentFromString (string) {
+  if (typeof string === 'string') {
+    let match = string.split('#')[1]
+
+    string = (match) ? match : '';
+  }
+  return string 
+}
+
+/***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+const Config = __webpack_require__(0)
+
+module.exports = {
+  domToString,
+  dumpNode,
+  getDoctype,
+  getDocument,
+  setHTMLBase
+}
+
+function domToString (node, options = {}) {
+  var selfClosing = []
+
+  if (options.selfClosing) {
+    options.selfClosing.split(' ').forEach(function (n) {
+      selfClosing[n] = true
+    })
+  }
+
+  var skipAttributes = []
+
+  if (options.skipAttributes) {
+    options.skipAttributes.split(' ').forEach(function (n) {
+      skipAttributes[n] = true
+    })
+  }
+
+  var noEsc = [ false ]
+
+  return dumpNode(node, options, skipAttributes, selfClosing, noEsc)
+}
+
+function dumpNode (node, options, skipAttributes, selfClosing, noEsc) {
+  var out = ''
+
+  if (typeof node.nodeType === 'undefined') return out
+
+  if (node.nodeType === 1) {
+    if (node.hasAttribute('class') && 'classWithChildText' in options &&
+        node.matches(options.classWithChildText.class)) {
+      out += node.querySelector(options.classWithChildText.element).textContent
+    } else if (!(options.skipNodeWithClass && node.matches('.' + options.skipNodeWithClass))) {
+      var ename = node.nodeName.toLowerCase()
+      out += '<' + ename
+
+      var attrList = []
+
+      for (let i = node.attributes.length - 1; i >= 0; i--) {
+        var atn = node.attributes[i]
+
+        if (skipAttributes[atn.name]) continue
+
+        if (/^\d+$/.test(atn.name)) continue
+
+        if (atn.name === 'class' && 'replaceClassItemWith' in options) {
+          atn.value.split(' ').forEach(function (aValue) {
+            if (options.replaceClassItemWith.source.split(' ').indexOf(aValue) > -1) {
+              var re = new RegExp(aValue, 'g')
+              atn.value = atn.value.replace(re, options.replaceClassItemWith.target).trim()
+            }
+          })
+        }
+
+        if (!(atn.name === 'class' && 'skipClassWithValue' in options &&
+            options.skipClassWithValue === atn.value)) {
+          attrList.push(
+            atn.name + '="' +
+            atn.value
+              .replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;') +
+            '"')
+        }
+      }
+
+      if (attrList.length > 0) {
+        if ('sortAttributes' in options && options.sortAttributes) {
+          attrList.sort(function (a, b) {
+            return a.toLowerCase().localeCompare(b.toLowerCase())
+          })
+        }
+        out += ' ' + attrList.join(' ')
+      }
+
+      if (selfClosing[ename]) {
+        out += ' />'
+      } else {
+        out += '>'
+        out += (ename === 'html') ? '\n  ' : ''
+        noEsc.push(ename === 'style' || ename === 'script' || ename === 'pre')
+        for (var i = 0; i < node.childNodes.length; i++) {
+          out += dumpNode(node.childNodes[i], options, skipAttributes, selfClosing, noEsc)
+        }
+        noEsc.pop()
+        out += (ename === 'body' || ename === 'html') ? '</' + ename + '>' + '\n' : '</' + ename + '>'
+      }
+    }
+  } else if (node.nodeType === 8) {
+    // FIXME: If comments are not tabbed in source, a new line is not prepended
+    out += '\n\
+<!--' + node.nodeValue + '-->'
+  } else if (node.nodeType === 3 || node.nodeType === 4) {
+    // XXX: Remove new lines which were added after DOM ready
+    let nl = node.nodeValue.replace(/\n+$/, '')
+    out += noEsc[noEsc.length - 1]
+      ? nl
+      : nl.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  } else {
+    console.log('Warning; Cannot handle serialising nodes of type: ' + node.nodeType)
+  }
+
+  return out
+}
+
+function getDoctype () {
+  /* Get DOCTYPE from http://stackoverflow.com/a/10162353 */
+  var node = document.doctype
+  var doctype = ''
+
+  if (node !== null) {
+    doctype = '<!DOCTYPE ' +
+      node.name +
+      (node.publicId ? ' PUBLIC "' + node.publicId + '"' : '') +
+      (!node.publicId && node.systemId ? ' SYSTEM' : '') +
+      (node.systemId ? ' "' + node.systemId + '"' : '') +
+      '>'
+  }
+  return doctype
+}
+
+function getDocument (cn, options) {
+  let node = cn || document.documentElement.cloneNode(true)
+  options = options || Config.DOMNormalisation
+
+  let doctype = getDoctype()
+  let s = (doctype.length > 0) ? doctype + '\n' : ''
+  s += domToString(node, options)
+  return s
+}
+
+function setHTMLBase (data, baseURI) {
+  let template = document.implementation.createHTMLDocument()
+  template.documentElement.innerHTML = data
+  let base = template.querySelector('head base[href]')
+  if (!base) {
+    template.querySelector('head').insertAdjacentHTML('afterbegin', '<base href="' + baseURI + '" />')
+    data = template.documentElement.outerHTML
+  }
+  return data
+}
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = {
+  uniqueArray,
+  getHash,
+  getDateTimeISO,
+  removeChildren,
+  copyTextToClipboard,
+  escapeRegExp,
+  sleep
+}
+
+/**
+ * @param a {Array}
+ *
+ * @returns {Array}
+ */
+function uniqueArray (a) {
+  var n = {}
+  var r = []
+  for (var i = 0; i < a.length; i++) {
+    if (!n[a[i]]) {
+      n[a[i]] = true
+      r.push(a[i])
+    }
+  }
+  return r
+}
+
+// https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
+function getHash (message, algo = "SHA-256") {
+  var buffer = new TextEncoder("utf-8").encode(message);
+  return window.crypto.subtle.digest(algo, buffer).then(function (hash) {
+    var hexCodes = [];
+    var view = new DataView(hash);
+    for (var i = 0; i < view.byteLength; i += 4) {
+      var value = view.getUint32(i)
+      var stringValue = value.toString(16)
+      var padding = '00000000'
+      var paddedValue = (padding + stringValue).slice(-padding.length)
+      hexCodes.push(paddedValue);
+    }
+    return hexCodes.join("");
+  });
+}
+
+function getDateTimeISO() {
+  var date = new Date();
+  return date.toISOString();
+}
+
+
+function removeChildren (node) {
+  while (node.firstChild) {
+    node.removeChild(node.firstChild);
+  }
+}
+
+function copyTextToClipboard(text){
+console.log(text)
+  if (!navigator.clipboard) {
+    try {
+      var successful = document.execCommand('copy');
+    } catch (err) {}
+    return;
+  }
+
+  navigator.clipboard.writeText(text).then(function() {
+    // console.log('Async: Copying to clipboard was successful!');
+  }, function(err) {
+    // console.error('Async: Could not copy text: ', err);
+  });
+}
+
+//From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+function escapeRegExp(string){
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+const fetch = __webpack_require__(10)  // Uses native fetch() in the browser
+const Config = __webpack_require__(0)
+const doc = __webpack_require__(2)
+const uri = __webpack_require__(1)
+const graph = __webpack_require__(5)
+
+const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
+const LDP_RESOURCE = '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
+
+module.exports = {
+  setAcceptRDFTypes,
+  copyResource,
+  currentLocation,
+  deleteResource,
+  getAcceptPostPreference,
+  getResource,
+  getResourceHead,
+  getResourceGraph,
+  getResourceOptions,
+  parseLinkHeader,
+  patchResource,
+  postResource,
+  putResource,
+  putResourceACL,
+  postActivity
+}
+
+function setAcceptRDFTypes(options) {
+  options = options || {};
+
+  return Config.AvailableMediaTypes.map(i => {
+    if (i == 'application/xhtml+xml' || i == 'text/html') {
+      // q = Number(Math.round((q-0.1)+'e2')+'e-2');
+      return i + ';q=0.9';
+    }
+    return i;
+  }).join(',');
+}
+
+// I want HTTP COPY and I want it now!
+function copyResource (fromURL, toURL, options = {}) {
+  let headers = { 'Accept': '*/*' }
+  let contentType
+
+  if (!fromURL || !toURL) {
+    return Promise.reject(new Error('Missing fromURL or toURL in copyResource'))
+  }
+
+  return getResource(fromURL, headers, options)
+    .then(response => {
+      contentType = response.headers.get('Content-Type')
+
+      return (Config.AcceptBinaryTypes.indexOf(contentType))
+        ? response.arrayBuffer()
+        : response.text()
+    })
+    .then(contents => {
+      return putResource(toURL, contents, contentType, null, options)
+        .catch(error => {
+          if (error.status === 0) {
+            // Retry with no credentials
+            options.noCredentials = true
+            return putResource(toURL, contents, contentType, null, options)
+          }
+
+          throw error  // re-throw error
+        })
+    })
+}
+
+/**
+ * @returns {string}
+ */
+function currentLocation () {
+  return window.location.origin + window.location.pathname
+}
+
+/**
+ * deleteResource
+ *
+ * @param url {string}
+ * @param options {object}
+ *
+ * @returns {Promise<Response>}
+ */
+function deleteResource (url, options = {}) {
+  if (!url) {
+    return Promise.reject(new Error('Cannot DELETE resource - missing url'))
+  }
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  options.method = 'DELETE'
+
+  return fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error deleting resource: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      return response
+    })
+}
+
+function getAcceptPostPreference (url) {
+  const pIRI = uri.getProxyableIRI(url)
+
+  return getResourceOptions(pIRI, {'header': 'Accept-Post'})
+    .catch(error => {
+      console.error(error)
+
+      return {'headers': 'application/ld+json'}
+    })
+    .then(result => {
+      let header = result.headers.trim().split(/\s*,\s*/)
+
+      if (header.indexOf('text/html') > -1 || header.indexOf('application/xhtml+xml') > -1) {
+        return 'text/html'
+      } else if (header.indexOf('text/turtle') > -1 || header.indexOf('*/*') > -1) {
+        return 'text/turtle'
+      } else if (header.indexOf('application/ld+json') > -1 || header.indexOf('application/json') > -1) {
+        return 'application/ld+json'
+      } else {
+        console.log('Accept-Post contains unrecognised media-range; ' + result.headers)
+        return result.headers
+      }
+    })
+}
+
+/**
+ * getResource
+ *
+ * @param url {string}
+ *
+ * @param headers {object}
+ * @param [headers.accept='text/turtle'] {string}
+ *
+ * @param options {object}
+ *
+ * @returns {Promise<string>|Promise<ArrayBuffer>}
+ */
+function getResource (url, headers = {}, options = {}) {
+  url = url || currentLocation()
+
+  options.method = 'GET'
+
+  if (!headers['Accept']) {
+    headers['Accept'] = 'text/turtle'
+  }
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  options.headers = Object.assign({}, headers)
+
+  return fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error fetching resource: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      return response
+    })
+}
+
+/**
+ * getResourceHead
+ *
+ * @param [url] {string}
+ *
+ * @param options {object}
+ * @param options.header {string}
+ *
+ * @returns {Promise<string>} Resolves with contents of specified header
+ */
+function getResourceHead (url, options = {}) {
+  url = url || currentLocation()
+
+  if (!options.header) {
+    return Promise.reject(new Error('options.header not specified'))
+  }
+
+  options.method = 'HEAD'
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  return fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error fetching resource HEAD: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      let header = response.headers.get(options.header)
+
+      if (!header) {
+        throw new Error("'" + options.header + "' header not found")
+      }
+
+      return { 'headers': header }
+    })
+}
+
+function getResourceGraph (iri, headers, options = {}) {
+  let defaultHeaders = {'Accept': setAcceptRDFTypes()}
+  headers = headers || defaultHeaders
+  if (!('Accept' in headers)) {
+    Object.assign(headers, defaultHeaders)
+  }
+
+  if (iri.slice(0, 5).toLowerCase() === 'http:') {
+    options['noCredentials'] = true
+
+    if (document.domain !== iri.split('/')[2]) {
+      options['forceProxy'] = true
+    }
+  }
+
+  let pIRI = uri.getProxyableIRI(iri, options)
+
+  return getResource(pIRI, headers, options)
+    .then(response => {
+      let cT = response.headers.get('Content-Type')
+      options.contentType = (cT) ? cT.split(';')[ 0 ].trim() : 'text/turtle'
+
+      options.subjectURI = uri.stripFragmentFromString(iri)
+
+      return response.text()
+    })
+    .then(data => {
+      return graph.getGraphFromData(data, options)
+    })
+    .then(g => {
+      let fragment = (iri.lastIndexOf('#') >= 0) ? iri.substr(iri.lastIndexOf('#')) : ''
+
+      return SimpleRDF(Config.Vocab, options[ 'subjectURI' ], g, ld.store).child(pIRI + fragment)
+    })
+}
+
+/**
+ * getResourceOptions
+ *
+ * @param [url] {string} Defaults to current url
+ *
+ * @param [options={}] {object}
+ * @param [options.header] {string} Specific response header to return
+ * @param [options.noCredentials] {boolean}
+ *
+ * @returns {Promise} Resolves with `{ headers: ... }` object
+ */
+function getResourceOptions (url, options = {}) {
+  url = url || currentLocation()
+
+  options.method = 'OPTIONS'
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  return fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error fetching resource OPTIONS: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+      else if (options.header && !response.headers.get(options.header)){
+        let error = new Error('OPTIONS without ' + options.header + ' header: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      if (options.header) {  // specific header requested
+        return { headers: response.headers.get(options.header) }
+      }
+
+      return { headers: response.headers }  // Not currently used anywhere
+    })
+}
+
+function parseLinkHeader (link) {
+  if (!link) {
+    return {}
+  }
+  var linkexp = /<[^>]*>\s*(\s*;\s*[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*")))*(,|$)/g
+  var paramexp = /[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*"))/g;
+  var matches = link.match(linkexp)
+  var rels = {}
+  for (var i = 0; i < matches.length; i++) {
+    var split = matches[i].split('>')
+    var href = split[0].substring(1)
+    var ps = split[1]
+    var s = ps.match(paramexp)
+    for (var j = 0; j < s.length; j++) {
+      var p = s[j]
+      var paramsplit = p.split('=')
+      // var name = paramsplit[0]
+      var rel = paramsplit[1].replace(/["']/g, '')
+      if (!rels[rel]) {
+        rels[rel] = []
+      }
+      rels[rel].push(href)
+      if (rels[rel].length > 1) {
+        rels[rel].sort()
+      }
+    }
+  }
+  return rels
+}
+
+function patchResource (url, deleteBGP, insertBGP, options = {}) {
+  // insertBGP and deleteBGP are basic graph patterns.
+  deleteBGP = (deleteBGP) ? 'DELETE DATA {\n\
+' + deleteBGP + '\n\
+};\n\
+' : '';
+
+  insertBGP = (insertBGP) ? 'INSERT DATA {\n\
+' + insertBGP + '\n\
+};\n\
+' : '';
+
+
+  options.body = deleteBGP + insertBGP
+
+  options.method = 'PATCH'
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  options.headers = options.headers || {}
+
+  options.headers['Content-Type'] = 'application/sparql-update; charset=utf-8'
+
+  return fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error patching resource: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      return response
+    })
+}
+
+function postResource (url, slug, data, contentType, links, options = {}) {
+  if (!url) {
+    return Promise.reject(new Error('Cannot POST resource - missing url'))
+  }
+
+  options.method = 'POST'
+
+  options.body = data
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  options.headers = options.headers || {}
+
+  options.headers['Content-Type'] = contentType || DEFAULT_CONTENT_TYPE
+
+  links = links
+    ? LDP_RESOURCE + ', ' + links
+    : LDP_RESOURCE
+
+  options.headers['Link'] = links
+
+  if (slug) {
+    options.headers['Slug'] = slug
+  }
+
+  return fetch(url, options)
+
+    .catch(error => {
+      if (error.status === 0 && !options.noCredentials) {
+        // Possible CORS error, retry with no credentials
+        options.noCredentials = true
+        return postResource(url, slug, data, contentType, options)
+      }
+
+      throw error
+    })
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error creating resource: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      return response
+    })
+}
+
+/**
+ * putResource
+ *
+ * @param url {string}
+ *
+ * @param data {string|object}
+ *
+ * @param [contentType=DEFAULT_CONTENT_TYPE] {string}
+ *
+ * @param [links=LDP_RESOURCE] {string}
+ *
+ * @param [options={}] {object}
+ *
+ * @returns {Promise<Response>}
+ */
+function putResource (url, data, contentType, links, options = {}) {
+  if (!url) {
+    return Promise.reject(new Error('Cannot PUT resource - missing url'))
+  }
+
+  options.method = 'PUT'
+
+  options.body = data
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  options.headers = options.headers || {}
+
+  options.headers['Content-Type'] = contentType || DEFAULT_CONTENT_TYPE
+
+  links = links
+    ? LDP_RESOURCE + ', ' + links
+    : LDP_RESOURCE
+
+  options.headers['Link'] = links
+
+  return fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error writing resource: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      return response
+    })
+}
+
+/**
+ * putResourceACL
+ *
+ * TODO: This doesn't seem to be used anywhere...
+ *
+ * @param accessToURL
+ * @param aclURL
+ * @param acl
+ *
+ * @returns {Promise<Response|null>}
+ */
+function putResourceACL (accessToURL, aclURL, acl) {
+  if (!Config.User.IRI) {
+    console.log('Go through sign-in or do: DO.C.User.IRI = "https://example.org/#i";')
+    return Promise.resolve(null)
+  }
+
+  acl = acl || {
+    'u': { 'iri': [Config.User.IRI], 'mode': ['acl:Control', 'acl:Read', 'acl:Write'] },
+    'g': { 'iri': ['http://xmlns.com/foaf/0.1/Agent'], 'mode': ['acl:Read'] },
+    'o': { 'iri': [], 'mode': [] }
+  }
+
+  let agent, agentClass, mode
+
+  if ('u' in acl && 'iri' in acl.u && 'mode' in acl.u) {
+    agent = '<' + acl.u.iri.join('> , <') + '>'
+    mode = acl.u.mode.join(' , ')
+  } else {
+    agent = '<' + Config.User.IRI + '>'
+    mode = 'acl:Control , acl:Read , acl:Write'
+  }
+
+  let authorizations = []
+
+  authorizations.push(
+    '[ a acl:Authorization ; acl:accessTo <' +
+    accessToURL + '> ; acl:accessTo <' + aclURL + '> ; acl:mode ' + mode +
+    ' ; acl:agent ' + agent + ' ] .'
+  )
+
+  if ('g' in acl && 'iri' in acl.g && acl.g.iri.length >= 0) {
+    agentClass = '<' + acl.g.iri.join('> , <') + '>'
+    mode = acl.g.mode.join(' , ')
+    authorizations.push(
+      '[ a acl:Authorization ; acl:accessTo <' + accessToURL +
+      '> ; acl:mode ' + mode + ' ; acl:agentClass ' + agentClass + ' ] .'
+    )
+  }
+
+  let data = '@prefix acl: <http://www.w3.org/ns/auth/acl#> .\n' +
+    authorizations.join('\n') + '\n'
+
+  return putResource(aclURL, data, 'text/turtle; charset=utf-8')
+}
+
+function postActivity(url, slug, data, options) {
+  return getAcceptPostPreference(url)
+    .then(preferredContentType => {
+      switch (preferredContentType) {
+        case 'text/html':
+        case 'application/xhtml+xml':
+          return postResource(url, slug, data, 'text/html; charset=utf-8')
+
+        case 'text/turtle':
+          // FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
+
+          return graph.serializeData(data, options['contentType'], 'text/turtle', options)
+            .then(data => {
+              return postResource(url, slug, data, 'text/turtle')
+            })
+
+        case 'application/ld+json':
+        case 'application/json':
+        case '*/*':
+        default:
+          return graph.serializeData(data, options['contentType'], 'application/ld+json', options)
+            .then(data => {
+              if (!options['canonical']) {
+                let x = JSON.parse(data)
+                if ('id' in x) {
+                  x[ "via" ] = x[ "id" ]
+                  x[ "id" ] = ""
+                  data = JSON.stringify(x)
+                }
+              }
+
+              var profile = ('profile' in options) ? '; profile="' + options.profile + '"' : ''
+
+              return postResource(url, slug, data, preferredContentType + profile)
+            })
+      }
+    })
+}
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {
+
+global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined
+
+const Config = __webpack_require__(0)
+const doc = __webpack_require__(2)
+
+module.exports = {
+  getGraph,
+  getGraphFromData,
+  getMatchFromData,
+  serializeData,
+  serializeGraph,
+  applyParserSerializerFixes
+}
+
+function getGraph (url) {
+  return SimpleRDF(Config.Vocab, url, null, ld.store).get()
+}
+
+function getGraphFromData (data, options = {}) {
+  if (!('contentType' in options)) {
+    options['contentType'] = 'text/turtle'
+  }
+
+  // FIXME: This is a dirty filthy fugly but a *fix* to get around the baseURI not being passed to the DOM parser. This injects the `base` element into the document so that the RDFa parse fallsback to that. The actual fix should happen upstream. See related issues:
+  // https://github.com/linkeddata/dokieli/issues/132
+  // https://github.com/rdf-ext/rdf-parser-dom/issues/2
+  // https://github.com/rdf-ext/rdf-parser-rdfa/issues/3
+  // https://github.com/simplerdf/simplerdf/issues/19
+
+  if (!('subjectURI' in options)) {
+    options['subjectURI'] = 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d'
+  }
+  if (options.contentType === 'text/html' || options.contentType === 'application/xhtml+xml') {
+    data = doc.setHTMLBase(data, options.subjectURI)
+  }
+
+  return SimpleRDF.parse(data, options['contentType'], options['subjectURI'])
+}
+
+function getMatchFromData (data, spo = {}, options = {}) {
+  if (!data) { return Promise.resolve({}) }
+
+  spo['subject'] = spo.subject || window.location.origin + window.location.pathname
+  spo['predicate'] = spo.predicate || Config.Vocab['rdfslabel']
+
+  options['contentType'] = options.contentType || 'text/html'
+  options['subjectURI'] = options.subjectURI || spo.subject
+
+  return getGraphFromData(data, options)
+    .then(g => {
+      let s = SimpleRDF(Config.Vocab, spo.subject, g, ld.store).child(spo.subject)
+
+      return s[spo.predicate]
+    })
+    .catch(() => {
+      return undefined
+    })
+}
+
+/**
+ * @param data
+ * @param fromContentType
+ * @param toContentType
+ * @param options
+ *
+ * @returns {Promise}
+ */
+function serializeData (data, fromContentType, toContentType, options) {
+  if (fromContentType === toContentType) {
+    return Promise.resolve(data)
+  }
+
+  options.contentType = fromContentType
+
+// console.log(data)
+
+  return getGraphFromData(data, options)
+    .then(g => {
+
+      options.contentType = toContentType
+
+      switch (toContentType) {
+        case 'application/ld+json':
+// console.log(g)
+          return serializeGraph(g, options).then(subjectTriples => {
+            subjectTriples = JSON.parse(subjectTriples)
+
+            var data = {}
+            if (options["@context"]) {
+              data["@context"] = options["@context"]
+            }
+
+            var subjectsChecked = []
+            var subjectsList = []
+            var rootIndex = 0
+
+            for(var i = 0; i < subjectTriples.length; i++) {
+              subjectsList.push(subjectTriples[i]["@id"])
+
+              if ("@id" in subjectTriples[i] && subjectTriples[i]["@id"] == options.subjectURI) {
+                Object.assign(data, subjectTriples[i])
+
+                subjectsChecked.push(options.subjectURI)
+
+                rootIndex = i
+              }
+            }
+
+            var processObject = function(subject) {
+              var properties = Object.keys(subject)
+              properties.forEach(property => {
+                if (typeof subject[property] === 'object') {
+                  if ("@id" in subject[property]
+                    && subjectsChecked.indexOf(subject[property]["@id"]) < 0
+                    && subjectsList.indexOf(subject[property]["@id"]) > -1) {
+
+                    subjectTriples.forEach(o => {
+                      if (o["@id"] == subject[property]["@id"]) {
+                        subject[property] = o;
+
+                        subjectsChecked.push(subject[property]["@id"])
+                      }
+                    })
+                  }
+
+                  return Object.assign({}, processObject(subject[property]))
+                }
+              })
+
+              return subject
+            }
+
+            var subject = subjectTriples[rootIndex]
+
+            Object.assign(data, processObject(subject))
+
+// console.log(data)
+// console.log(JSON.stringify(data))
+            return JSON.stringify(data) + '\n'
+          })
+
+        default:
+          return serializeGraph(g, options)
+      }     
+    })
+    .then(data => {
+      switch (toContentType) {
+        default:
+          break;
+
+        case 'application/ld+json':
+          //TODO: Lazy person's JSON-LD compacting. Expect errors!
+          if (options["@context"]) {
+            var context = (typeof options["@context"] === 'string') ? [options["@context"]] : options['@context']
+
+            data = JSON.parse(data);
+            delete data["@context"]
+            data = JSON.stringify(data)
+
+            data = data.replace(new RegExp('"@id"', 'g'), '"id"')
+            data = data.replace(new RegExp('"@type"', 'g'), '"type"')
+
+            context.forEach(function(c){
+              var search = '';
+              var replace = '';
+
+              if (typeof c === 'string') {
+                switch(c) {
+                  case 'http://www.w3.org/ns/anno.jsonld':
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#autoDirection', 'g'), 'auto')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#cachedSource', 'g'), 'cached')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasBody', 'g'), 'body')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasEndSelector', 'g'), 'endSelector')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasPurpose', 'g'), 'purpose')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasScope', 'g'), 'scope')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasSelector', 'g'), 'selector')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasSource', 'g'), 'source')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasStartSelector', 'g'), 'startSelector')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasTarget', 'g'), 'target')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#ltrDirection', 'g'), 'ltr')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#motivatedBy', 'g'), 'motivation')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#rtlDirection', 'g'), 'rtl')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#styledBy', 'g'), 'stylesheet')
+
+                    data = data.replace(new RegExp('"oa:', 'g'), '"')
+
+                    search = 'http://www.w3.org/ns/oa#'
+                    break
+
+                  case 'https://www.w3.org/ns/activitystreams':
+                    data = data.replace(new RegExp('"as:', 'g'), '"')
+
+                    search = 'https://www.w3.org/ns/activitystreams#'
+                    break
+
+                  case 'http://schema.org/':
+                    data = data.replace(new RegExp('"schema:', 'g'), '"')
+
+                    search = 'http:/schema.org/'
+                    break
+                }
+              }
+              else {
+                replace = Object.keys(c)[0];
+
+                switch(replace) {
+                  case 'oa':
+                    search = 'http://www.w3.org/ns/oa#'
+                    break
+
+                  case 'as':
+                    search = 'https://www.w3.org/ns/activitystreams#'
+                    break
+
+                  case 'schema':
+                    search = 'http://schema.org/'
+                    break
+                }
+
+                replace = replace + ':'
+              }
+
+              data = data.replace(new RegExp(search, 'g'), replace)
+
+            })
+
+            data = JSON.parse(data)
+            data = Object.assign({"@context": options["@context"]}, data)
+            data = JSON.stringify(data)
+          }
+
+          break;
+      }
+// console.log(data)
+      return data
+    })
+}
+
+function serializeGraph (g, options = {}) {
+  if (!('contentType' in options)) {
+    options['contentType'] = 'text/turtle'
+  }
+
+  return ld.store.serializers[options.contentType].serialize(g._graph)
+    .then(data => {
+      data = applyParserSerializerFixes(data, options.contentType)
+
+      // XXX: .compact doesn't work as advertised
+      // if (options.contentType === 'application/ld+json' && '@context' in options) {
+      //   return jsonld.promises().compact(data, options['@context'], {'skipExpansion': true})
+      // }
+
+      return data
+    })
+}
+
+function applyParserSerializerFixes(data, contentType) {
+  // FIXME: FUGLY because parser defaults to localhost. Using UUID to minimise conflict
+  data = data.replace(/http:\/\/localhost\/d79351f4-cdb8-4228-b24f-3e9ac74a840d/g, '');
+
+  switch(contentType) {
+    case 'text/turtle':
+      //XXX: Workaround for rdf-parser-rdfa bug that gives '@langauge' instead of @type when encountering datatype in HTML+RDFa . TODO: Link to bug here
+      data = data.replace(/Z"@en;/, 'Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;');
+      data = data.replace(/start> "(\d+)"@en;/, 'start> "$1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger>;');
+      data = data.replace(/end> "(\d+)"@en;/, 'end> "$1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger>;');
+      break;
+
+    case 'application/ld+json':
+      var x = JSON.parse(data);
+
+      //XXX: Workaround for rdf-parser-rdfa bug that gives '@language' instead of @type when encountering datatype in HTML+RDFa . See also https://github.com/rdf-ext/rdf-parser-rdfa/issues/5
+      var properties = ['https://www.w3.org/ns/activitystreams#published', 'https://www.w3.org/ns/activitystreams#updated', 'http://schema.org/dateCreated', 'http://schema.org/datePublished', 'http://schema.org/dateModified', 'http://www.w3.org/ns/oa#start', 'http://www.w3.org/ns/oa#end'];
+
+      for(var i = 0; i < x.length; i++){
+        for(var j = 0; j < properties.length; j++){
+          if(properties[j] in x[i]) {
+            if (properties[j] == 'http://www.w3.org/ns/oa#start' || properties[j] == 'http://www.w3.org/ns/oa#end') {
+              x[i][properties[j]] = {
+                '@type': 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger',
+                '@value': x[i][properties[j]]['@value']
+              };
+            }
+            else {
+              x[i][properties[j]] = {
+                '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
+                '@value': x[i][properties[j]]['@value']
+              };
+            }
+          }
+        }
+      }
+
+      data = JSON.stringify(x);
+      break;
+  }        
+
+  return data;
+}
+
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports) {
+
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1,eval)("this");
+} catch(e) {
+	// This works if the window reference is available
+	if(typeof window === "object")
+		g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+const Config = __webpack_require__(0)
+const util = __webpack_require__(3)
+const uri = __webpack_require__(1)
+
+module.exports = {
+  initStorage,
+  enableStorage,
+  disableStorage,
+  updateStorageDocument,
+  enableAutoSave,
+  disableAutoSave,
+  removeStorageItem,
+  removeStorageProfile,
+  getStorageProfile,
+  updateStorageProfile,
+  showStorage,
+  hideStorage
+}
+
+
+function initStorage(key) {
+  if (typeof window.localStorage != 'undefined') {
+    enableStorage(key);
+  }
+}
+
+function enableStorage(key) {
+  Config.UseStorage = true;
+  var o = localStorage.getItem(key);
+  try {
+    JSON.parse(o).object.Document;
+    document.documentElement.innerHTML = JSON.parse(o).object.content;
+  } catch(e){}
+  console.log(util.getDateTimeISO() + ': ' + key + ' storage enabled.');
+  enableAutoSave(key);
+}
+
+function disableStorage(key) {
+  Config.UseStorage = false;
+  localStorage.removeItem(key);
+  disableAutoSave(key);
+  console.log(util.getDateTimeISO() + ': ' + key + ' storage disabled.');
+}
+
+function updateStorageDocument(key) {
+  var content = doc.getDocument();
+
+  var id = DO.U.generateUUID();
+  var o = localStorage.getItem(key);
+
+  var datetime = util.getDateTimeISO();
+
+  var object = {
+    "@context": "https://www.w3.org/ns/activitystreams",
+    "id": id,
+    "type": "Update",
+    "object": {
+      "id": key,
+      "type": "Document",
+      "updated": datetime,
+      "mediaType": "text/html",
+      "content": content
+    }
+  };
+
+  localStorage.setItem(key, JSON.stringify(object));
+  console.log(datetime + ': Document saved.');
+}
+
+function enableAutoSave(key) {
+  Config.AutoSaveId = setInterval(function() { updateStorageDocument(key) }, Config.AutoSaveTimer);
+  console.log(util.getDateTimeISO() + ': ' + key + ' autosave enabled.');
+}
+
+function disableAutoSave(key) {
+  clearInterval(Config.AutoSaveId);
+  Config.AutoSaveId = '';
+  console.log(util.getDateTimeISO() + ': ' + key + ' autosave disabled.');
+}
+
+function removeStorageItem(key) {
+  if (!key) { Promise.resolve(); }
+
+  console.log(util.getDateTimeISO() + ': ' + key + ' removed.')
+
+  if (Config.WebExtension) {
+    var browser = (typeof browser !== 'undefined') ? browser : chrome;
+
+    return browser.storage.sync.remove(key);
+  }
+  else if (window.localStorage) {
+    return Promise.resolve(localStorage.removeItem(key));
+  }
+  else {
+    return Promise.reject({'message': 'storage is unavailable'})
+  }
+}
+
+function removeStorageProfile(key) {
+  key = key || 'DO.C.User';
+
+  return removeStorageItem(key)
+}
+
+function getStorageProfile(key) {
+  key = key || 'DO.C.User'
+
+  if (Config.WebExtension) {
+    if (typeof browser !== 'undefined') {
+      return browser.storage.sync.get(key).then(function(o){ return o[key]; });
+    }
+    else {
+      var value = {};
+
+      chrome.storage.sync.get(key, function(o){ value = o[key]; })
+
+      return new Promise(function(resolve, reject){
+        window.setTimeout(function() {
+          return resolve(value)
+        }, 50);
+      });
+    }
+  }
+  else if (window.localStorage) {
+    var o = localStorage.getItem(key);
+    return Promise.resolve(JSON.parse(o));
+  }
+  else {
+    return Promise.reject({'message': 'storage is unavailable'})
+  }
+}
+
+function updateStorageProfile(User) {
+  if (!User.IRI) { return Promise.resolve({'message': 'User.IRI is not set'}); }
+
+  var key = 'DO.C.User'
+
+  var id = DO.U.generateUUID();
+  var datetime = util.getDateTimeISO();
+
+  //because.. cyclic
+  if (User.Graph) {
+    delete User.Graph
+  }
+
+  if (User.Contacts) {
+    User.Contacts = {}
+  }
+
+  var object = {
+    "@context": "https://www.w3.org/ns/activitystreams",
+    "id": id,
+    "type": "Update",
+    "object": {
+      "id": key,
+      "type": "Profile",
+      "describes": User
+    },
+    "datetime": datetime,
+    "actor": User.IRI
+  };
+
+  if (Config.WebExtension) {
+    if (typeof browser !== 'undefined') {
+      return browser.storage.sync.set({[key]: object});
+    }
+    else {
+      return Promise.resolve(chrome.storage.sync.set({[key]: object}));
+    }
+  }
+  else if (window.localStorage) {
+    console.log(datetime + ': User ' + User.IRI + ' saved.');
+    return Promise.resolve(localStorage.setItem(key, JSON.stringify(object)));
+  }
+  else {
+    return Promise.reject({'message': 'storage is unavailable'})
+  }
+}
+
+function showStorage(node) {
+  if (window.localStorage) {
+    if(document.querySelector('#local-storage')) { return; }
+
+    var useStorage, checked;
+
+    if (Config.UseStorage) {
+      // if (Config.AutoSaveId) {
+      //   checked = ' checked="checked"';
+      // }
+      // useStorage = Config.DisableStorageButtons + '<input id="local-storage-html-autosave" class="autosave" type="checkbox"' + checked +' /> <label for="local-storage-html-autosave"><i class="fa fa-clock-o"></i> 1m autosave</label>';
+      useStorage = Config.DisableStorageButtons;
+
+    }
+    else {
+      useStorage = Config.EnableStorageButtons;
+    }
+
+    node.insertAdjacentHTML('beforeend', '<section id="local-storage" class="do"><h2>Local Storage</h2><ul><li>' + useStorage + '</li></ul></section>');
+
+    var key = uri.stripFragmentFromString(document.location.href);
+
+    document.getElementById('local-storage').addEventListener('click', function(e) {
+      if (e.target.closest('button.local-storage-enable-html')) {
+        e.target.outerHTML = Config.DisableStorageButtons;
+        enableStorage(key);
+      }
+
+      if (e.target.closest('button.local-storage-disable-html')) {
+        e.target.outerHTML = Config.EnableStorageButtons;
+        disableStorage(key);
+      }
+
+      // if (e.target.closest('input.autosave')) {
+      //   if (e.target.getAttribute('checked')) {
+      //     e.target.removeAttribute('checked');
+      //     disableAutoSave(key);
+      //   }
+      //   else {
+      //     e.target.setAttribute('checked', 'checked');
+      //     enableAutoSave(key);
+      //   }
+      // }
+    });
+  }
+}
+
+function hideStorage() {
+  if (Config.UseStorage) {
+    var ls = document.getElementById('local-storage');
+    ls.parentNode.removeChild(ls);
+  }
+}
+
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(9);
+
+
+/***/ }),
+/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/** dokieli
@@ -92,402 +1942,85 @@ module.exports = __webpack_require__(1);
  * https://github.com/linkeddata/dokieli
  */
 
-const fetcher = __webpack_require__(3)
+const fetcher = __webpack_require__(4)
+const doc = __webpack_require__(2)
+const uri = __webpack_require__(1)
+const graph = __webpack_require__(5)
+const inbox = __webpack_require__(11)
+const util = __webpack_require__(3)
+const storage = __webpack_require__(7)
+global.auth = __webpack_require__(12)
 
 if(typeof DO === 'undefined'){
 global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined;
 var DO = {
-  C: __webpack_require__(5),
+  fetcher,
+
+  C: __webpack_require__(0),
 
   U: {
-    //Tries to authenticate with given URI. If authenticated, returns the 'User' header value.
-    authenticateUser: function(url) {
-      url = url || window.location.origin + window.location.pathname;
-      var reasons = [];
-      var response = '';
-
-      return new Promise(function(resolve, reject) {
-        var response = new Promise(function(resolve, reject) {
-          if (url.slice(0, 5).toLowerCase() == 'https') {
-            DO.U.getResourceHeadUser(url).then(
-              function(i) {
-                resolve(i);
-              },
-              function(reason) {
-                DO.U.authenticateUserFallback(url, reasons).then(
-                  function(i) {
-                    resolve(i);
-                  },
-                  function(reason) {
-                    reject(reasons);
-                  }
-                );
-              }
-            );
-          }
-          else {
-            if(url.slice(0, 5).toLowerCase() == 'http:') {
-              //TODO: First try document's proxy?
-              DO.U.authenticateUserFallback(url, reasons).then(
-                function(i) {
-                  resolve(i);
-                },
-                function(reason) {
-                  reject(reasons);
-                }
-              );
-            }
-          }
-        });
-
-        response.then(
-          function(userIRI) {
-            if (userIRI == url) {
-              return resolve(userIRI);
-            }
-            else {
-              console.log("--- WebID input (" + url +") did not match the one in the certificate (" + userIRI +").");
-              var reason = {"message": "WebID input did not match the one in the certificate."};
-              reasons.push(reason);
-              return reject(reasons);
-            }
-          },
-          function(reason) {
-            return reject(reasons);
-          }
-        );
-      });
+    getResourceLabel: function(s) {
+      return s.dctermstitle || s['http://purl.org/dc/elements/1.1/title'] || auth.getAgentName(s) || undefined;
     },
 
-    authenticateUserFallback: function(url, reasons) {
-// console.log("Try to authenticating through WebID's storage, if not found, try through a known authentication endpoint");
-      url = url || window.location.origin + window.location.pathname;
-      var pIRI = DO.U.getProxyableIRI(url);
 
-      return DO.U.getGraph(pIRI)
+    getItemsList: function(url, options) {
+      url = url || window.location.origin + window.location.pathname;
+      options = options || {};
+
+      DO.C['CollectionItems'] = ('CollectionItems' in DO.C && DO.C.CollectionItems.length > 0) ? DO.C.CollectionItems : [];
+      DO.C['CollectionPages'] = ('CollectionPages' in DO.C && DO.C.CollectionPages.length > 0) ? DO.C.CollectionPages : [];
+
+      var pIRI = uri.getProxyableIRI(url);
+
+      return fetcher.getResourceGraph(pIRI)
         .then(
           function(i) {
             var s = i.child(url);
-// console.log(s.storage);
-            if (s.storage && s.storage._array.length > 0) {
-// console.log("Try through WebID's storage: " + s.storage.at(0));
-              return DO.U.getResourceHeadUser(s.storage.at(0));
-            }
-            else {
-              console.log("---1 WebID's storage NOT FOUND");
-              var reason = {"message": "WebID's storage was not found"};
-              reasons.push(reason);
-              return Promise.reject(reason);
-            }
-          },
-          function(reason) {
-            //XXX: Is this even hit?
-            console.log("---2 WebID's storage NOT FOUND");
-            reason["message"] = "WebID's storage was not found";
-            reasons.push(reason);
-            return Promise.reject(reason);
-          }
-        )
-        .then(
-          function(i) {
-            return i;
-          },
-          function(reason) {
-// console.log('Try through known authentication endpoint');
-            DO.U.getResourceHeadUser(DO.C.AuthEndpoint).then(
-              function(i) {
-                return i;
-              },
-              function(reason) {
-                console.log("--- Known authentication endpoint didn't work");
-                reason["message"] = "Known authentication endpoint didn't work";
-                reasons.push(reason);
-                return Promise.reject(reasons);
-              }
-            );
-          }
-        );
-    },
 
-    getResourceHeadUser: function(url, options) {
-      return new Promise(function(resolve, reject) {
-        var http = new XMLHttpRequest();
-        http.open('HEAD', url);
-        if (!options.noCredentials) {
-          http.withCredentials = true;
-        }
-        http.onreadystatechange = function() {
-          if (this.readyState == this.DONE) {
-            if (this.status === 200) {
-              var user = this.getResponseHeader('User');
-              if (user && user.length > 0 && user.slice(0, 4) == 'http') {
-// console.log('User: ' + user);
-                return resolve(user);
-              }
-            }
-            return reject({status: this.status, xhr: this});
-          }
-        };
-        http.send();
-      });
-    },
+            //XXX: First item is actually the Collection
+            DO.C.CollectionPages.push(url);
 
-    getResourceLabel: function(s) {
-      return s.dctermstitle || s['http://purl.org/dc/elements/1.1/title'] || DO.U.getAgentName(s) || undefined;
-    },
+            // s.ldpcontains.forEach(function(resource) {
+            //   var types = s.child(resource).rdftype;
+            //   if(types.indexOf(DO.C.Vocab['ldpContainer']["@id"]) < 0 && types.indexOf(DO.C.Vocab['asCollection']["@id"]) < 0) {
+            //     DO.C.CollectionItems.push(resource);
+            //   }
+            // });
+            // s.asitems.forEach(function(resource) {
+            //   var types = s.child(resource).rdftype;
+            //   if(types.indexOf(DO.C.Vocab['ldpContainer']["@id"]) < 0 && types.indexOf(DO.C.Vocab['asCollection']["@id"]) < 0) {
+            //     DO.C.CollectionItems.push(resource);
+            //   }
+            // });
+            // s.asorderedItems.forEach(function(resource) {
+            //   var types = s.child(resource).rdftype;
+            //   if(types.indexOf(DO.C.Vocab['ldpContainer']["@id"]) < 0 && types.indexOf(DO.C.Vocab['asCollection']["@id"]) < 0) {
+            //     DO.C.CollectionItems.push(resource);
+            //   }
+            // });
 
-    getAgentName: function(s) {
-      var name = s.foafname || s.schemaname || s.asname || s.rdfslabel || undefined;
-      if (typeof name === 'undefined') {
-        if (s.schemafamilyName && s.schemafamilyName.length > 0 && s.schemagivenName && s.schemagivenName.length > 0) {
-          name = s.schemagivenName + ' ' + s.schemafamilyName;
-        }
-        else if (s.foaffamilyName && s.foaffamilyName.length > 0 && s.foafgivenName && s.foafgivenName.length > 0) {
-          name = s.foafgivenName + ' ' + s.foaffamilyName;
-        }
-        else if(s.foafnick && s.foafnick.length > 0){
-          name = s.foafnick;
-        }
-      }
-      return name;
-    },
-
-    getAgentImage: function(s) {
-      return s.foafimg || s.schemaimage || s.asimage || s.siocavatar || s.foafdepiction || undefined;
-    },
-
-    setUserInfo: function(userIRI) {
-// console.log("setUserInfo: " + userIRI);
-      if (userIRI) {
-        return DO.U.getResourceGraph(userIRI).then(
-          function(g){
-            var s = g.child(userIRI);
-// console.log(s);
-            DO.C.User.Graph = s;
-            DO.C.User.IRI = userIRI;
-            DO.C.User.Name = DO.U.getAgentName(s);
-            DO.C.User.Image = DO.U.getAgentImage(s);
-            DO.C.User.URL = s.foafhomepage || s["http://xmlns.com/foaf/0.1/weblog"] || s.schemaurl || undefined;
-            DO.C.User.Knows = (s.foafknows && s.foafknows._array.length > 0) ? DO.U.uniqueArray(s.foafknows._array) : [];
-            DO.C.User.Knows = (s.schemaknows && s.schemaknows._array.length > 0) ? DO.U.uniqueArray(DO.C.User.Knows.concat(s.schemaknows._array)) : DO.C.User.Knows;
-
-            DO.C.User.TempKnows = [];
-            DO.C.User.SameAs = [];
-            DO.C.User.Contacts = [];
-
-            if (s.storage) {
-              DO.C.User.Storage = s.storage._array;
-            }
-
-            if (s.preferencesFile && s.preferencesFile.length > 0) {
-              DO.C.User.PreferencesFile = s.preferencesFile;
-
-              //TODO: Reconsider if/where to use this.
-              // DO.U.setUserWorkspaces(DO.C.User.PreferencesFile);
-            }
-            return DO.C.User;
-          },
-          function(reason) { return reason; }
-        );
-      }
-      else {
-        console.log('No user IRI');
-        return Promise.reject();
-      }
-    },
-
-    setUserWorkspaces: function(userPreferenceFile){
-      //XXX: Probably https so don't bother with proxy?
-      DO.U.getGraph(userPreferenceFile).then(
-        function(pf) {
-          DO.C.User.PreferencesFileGraph = pf;
-          var s = pf.child(DO.C.User.IRI);
-
-          if (s.masterWorkspace) {
-            DO.C.User.masterWorkspace = s.masterWorkspace;
-          }
-
-          if (s.workspace) {
-            DO.C.User.Workspace = { List: s.workspace };
-            s.workspace.forEach(function(wsGraph) {
-              var workspace = wsGraph;
-              var wstype = pf.child(workspace).rdftype || [];
-              wstype.forEach(function(wGraph) {
-                var w = wGraph;
-                switch(w) {
-                  case 'http://www.w3.org/ns/pim/space#PreferencesWorkspace':
-                    DO.C.User.Workspace.Preferences = workspace;
-                    break;
-                  case 'http://www.w3.org/ns/pim/space#MasterWorkspace':
-                    DO.C.User.Workspace.Master = workspace;
-                    break;
-                  case 'http://www.w3.org/ns/pim/space#PublicWorkspace':
-                    DO.C.User.Workspace.Public = workspace;
-                    break;
-                  case 'http://www.w3.org/ns/pim/space#PrivateWorkspace':
-                    DO.C.User.Workspace.Private = workspace;
-                    break;
-                  case 'http://www.w3.org/ns/pim/space#SharedWorkspace':
-                    DO.C.User.Workspace.Shared = workspace;
-                    break;
-                  case 'http://www.w3.org/ns/pim/space#ApplicationWorkspace':
-                    DO.C.User.Workspace.Application = workspace;
-                    break;
-                  case 'http://www.w3.org/ns/pim/space#Workspace':
-                    DO.C.User.Workspace.Work = workspace;
-                    break;
-                  case 'http://www.w3.org/ns/pim/space#FamilyWorkspace':
-                    DO.C.User.Workspace.Family = workspace;
-                    break;
-                }
+            var items = [s.asitems, s.asorderedItems, s.ldpcontains];
+            Object.keys(items).forEach(function(i) {
+              items[i].forEach(function(resource){
+                var types = s.child(resource).rdftype;
+                if(types.indexOf(DO.C.Vocab['ldpContainer']["@id"]) < 0 &&
+                   types.indexOf(DO.C.Vocab['asCollection']["@id"]) < 0 &&
+                   types.indexOf(DO.C.Vocab['asOrderedCollection']["@id"]) < 0) {
+                  DO.C.CollectionItems.push(resource);
+                }                
               });
             });
-          }
-        }
-      );
-    },
 
-    getUserHTML: function() {
-      var userName = DO.C.SecretAgentNames[Math.floor(Math.random() * DO.C.SecretAgentNames.length)];
-      if (DO.C.User.Name) {
-        //XXX: We have the IRI already
-        userName = '<span about="' + DO.C.User.IRI + '" property="schema:name">' + DO.C.User.Name + '</span>';
-      }
-
-      var userImage = '';
-      if ('Image' in DO.C.User && typeof DO.C.User.Image !== 'undefined' && DO.C.User.Image.length > 0) {
-        userImage = '<img alt="" height="48" rel="schema:image" src="' + DO.C.User.Image + '" width="48" /> ';
-      }
-
-      var user = ''
-      if ('IRI' in DO.C.User && DO.C.User.IRI !== null && DO.C.User.IRI.length > 0) {
-        user = '<span about="' + DO.C.User.IRI + '" typeof="schema:Person">' + userImage + '<a rel="schema:url" href="' + DO.C.User.IRI + '"> ' + userName + '</a></span>';
-      }
-      else {
-        user = '<span typeof="schema:Person">' + userName + '</span>';
-      }
-
-      return user;
-    },
-
-    setLocalDocument: function() {
-      if (document.location.protocol == 'file:') {
-        DO.C.LocalDocument = true;
-      }
-    },
-
-    //https://github.com/solid/solid.js/blob/master/lib/util/web-util.js
-    parseLinkHeader: function(link) {
-      if (!link) {
-        return {}
-      }
-      var linkexp = /<[^>]*>\s*(\s*;\s*[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*")))*(,|$)/g;
-      var paramexp = /[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*"))/g;
-      var matches = link.match(linkexp);
-      var rels = {};
-      for (var i = 0; i < matches.length; i++) {
-        var split = matches[i].split('>');
-        var href = split[0].substring(1);
-        var ps = split[1];
-        var s = ps.match(paramexp);
-        for (var j = 0; j < s.length; j++) {
-          var p = s[j];
-          var paramsplit = p.split('=');
-          var name = paramsplit[0];
-          var rel = paramsplit[1].replace(/["']/g, '');
-          if (!rels[rel]) {
-            rels[rel] = []
-          }
-          rels[rel].push(href)
-          if (rels[rel].length > 1) {
-            rels[rel].sort()
-          }
-        }
-      }
-      return rels;
-    },
-
-    getEndpoint: function(property, url) {
-      if (url) {
-        return DO.U.getEndpointFromHead(property, url).then(
-          function(i){
-            return i;
-          },
-          function(x){
-            return DO.U.getEndpointFromRDF(property, url);
-          }
-        );
-      }
-      else {
-        var uri = location.href.split(location.search||location.hash||/[?#]/)[0];
-        var options = {
-          'contentType': 'text/html',
-          'subjectURI': uri
-        }
-        return DO.U.getGraphFromData(DO.U.getDocument(), options)
-          .then(
-            function(i){
-              //TODO: Should this get all of the inboxes or a given subject's?
-              var endpoints = i.match(uri, property).toArray();
-
-              if (endpoints.length > 0) {
-                return endpoints.map(function(t){ return t.object.nominalValue; });
-              }
-
-              console.log(property + ' endpoint was not found in message body');
-              return DO.U.getEndpointFromHead(property, uri);
-            },
-            function(reason){
-              return DO.U.getEndpointFromHead(property, uri);
+            if (s.asfirst && DO.C.CollectionPages.indexOf(s.asfirst) < 0) {
+              return DO.U.getItemsList(s.asfirst, options);
             }
-          );
-      }
-    },
-
-    getEndpointFromHead: function(property, url) {
-      var pIRI = DO.U.getProxyableIRI(url);
-
-      return fetcher.getResourceHead(pIRI, {'header': 'Link'}).then(
-        function(i){
-          var linkHeaders = DO.U.parseLinkHeader(i.headers);
-
-          if (property in linkHeaders) {
-            return linkHeaders[property];
-          }
-          return Promise.reject({'message': property + " endpoint was not found in 'Link' header"});
-        },
-        function(reason){
-          return Promise.reject({'message': "'Link' header not found"});
-        }
-      );
-    },
-
-    getEndpointFromRDF: function(property, url, subjectIRI) {
-      url = url || window.location.origin + window.location.pathname;
-      subjectIRI = subjectIRI || url;
-
-      return DO.U.getResourceGraph(subjectIRI)
-        .then(
-          function(i) {
-            var s = i.child(subjectIRI);
-
-            switch(property) {
-              case DO.C.Vocab['ldpinbox']['@id']:
-                if (s.ldpinbox._array.length > 0){
-// console.log(s.ldpinbox._array);
-                  return [s.ldpinbox.at(0)];
-                }
-                break;
-              case DO.C.Vocab['oaannotationService']['@id']:
-                if (s.oaannotationService._array.length > 0){
-// console.log(s.oaannotationService._array);
-                  return [s.oaannotationService.at(0)];
-                }
-                break;
+            else if (s.asnext && DO.C.CollectionPages.indexOf(s.asnext) < 0) {
+              return DO.U.getItemsList(s.asnext, options);
             }
-
-            var reason = {"message": property + " endpoint was not found in message body"};
-            return Promise.reject(reason);
+            else {
+              return util.uniqueArray(DO.C.CollectionItems);
+            }
           },
           function(reason) {
             console.log(reason);
@@ -496,12 +2029,13 @@ var DO = {
         );
     },
 
+
     getNotifications: function(url) {
       url = url || window.location.origin + window.location.pathname;
       var notifications = [];
-      var pIRI = DO.U.getProxyableIRI(url);
+      var pIRI = uri.getProxyableIRI(url);
 
-      return DO.U.getGraph(pIRI)
+      return graph.getGraph(pIRI)
         .then(
           function(i) {
             var s = i.child(url);
@@ -509,7 +2043,7 @@ var DO = {
 // console.log(resource);
               var types = s.child(resource).rdftype;
 // console.log(types);
-              if(types.indexOf(DO.C.Vocab.ldpcontainer["@id"]) < 0) {
+              if(types.indexOf(DO.C.Vocab['ldpContainer']["@id"]) < 0) {
                 notifications.push(resource);
               }
             });
@@ -531,14 +2065,14 @@ var DO = {
 
     showInboxNotifications: function() {
       if (typeof SimpleRDF !== 'undefined') {
-        DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id']).then(
+        inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id']).then(
           function(i) {
-            i.forEach(function(inbox) {
-              DO.U.showNotificationSources(inbox);
+            i.forEach(function(inboxURL) {
+              DO.U.showNotificationSources(inboxURL);
             });
           },
           function(reason) {
-            console.log(reason);
+// console.log(reason);
           }
         );
       }
@@ -548,138 +2082,8 @@ var DO = {
       DO.U.getNotifications(url).then(
         function(i) {
           i.forEach(function(notification) {
-            var pIRI = DO.U.getProxyableIRI(notification);
-            DO.U.getGraph(pIRI).then(
-              function(g) {
-// console.log(g);
-                var subjects = [];
-                g.graph().toArray().forEach(function(t){
-                  subjects.push(t.subject.nominalValue);
-                });
-                subjects = DO.U.uniqueArray(subjects);
-// console.log(subjects);
-                subjects.forEach(function(i){
-                  var s = g.child(i)
-                  var types = s.rdftype._array || [];
-
-                  var currentPathURL = window.location.origin + window.location.pathname;
-
-                  if (types.length > 0) {
-                    var resourceTypes = types;
-                    if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Like') > -1 ||
-                       resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Dislike') > -1){
-                      if(s.asobject && s.asobject.at(0)) {
-                        if(s.ascontext && s.ascontext.at(0)){
-                          if(DO.U.getPathURL(s.asobject.at(0)) == currentPathURL) {
-                            var context = s.ascontext.at(0);
-                            return DO.U.positionInteraction(context).then(
-                              function(notificationIRI){
-                                return notificationIRI;
-                              },
-                              function(reason){
-                                console.log('Notification source is unreachable');
-                              });
-                          }
-                        }
-                        else {
-                          var iri = s.iri().toString();
-                          var targetIRI = s.asobject.at(0);
-                          var motivatedBy = 'oa:assessing';
-                          var id = String(Math.abs(DO.U.hashCode(iri)));
-                          var refId = 'r-' + id;
-                          var refLabel = id;
-
-                          var bodyText = (resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Like') > -1) ? 'Liked' : 'Disliked';
-
-                          var noteData = {
-                            "type": 'article',
-                            "mode": "read",
-                            "motivatedByIRI": motivatedBy,
-                            "id": id,
-                            "refId": refId,
-                            "refLabel": refLabel,
-                            "iri": iri,
-                            "creator": {},
-                            "target": {
-                              "iri": targetIRI
-                            },
-                            "body": bodyText,
-                            "license": {}
-                          };
-
-                          if (s.asactor && s.asactor){
-                            noteData['creator'] = {
-                              'iri': s.asactor
-                            }
-                            var a = g.child(noteData['creator']['iri']);
-                            var actorName = DO.U.getAgentName(a);
-                            var actorImage = DO.U.getAgentImage(a);
-
-                            if(typeof actorName != 'undefined') {
-                              noteData['creator']['name'] = actorName;
-                            }
-                            if(typeof actorImage != 'undefined') {
-                              noteData['creator']['image'] = actorImage;
-                            }
-                          }
-                          else if(type == 'https://www.w3.org/ns/activitystreams#Dislike'){
-                            noteData['creator'] = {
-                              'name': 'Anonymous Coward'
-                            }
-                          }
-                          if (s.asupdated){
-                            noteData['datetime'] = s.asupdated;
-                          }
-                          if (s.schemalicense){
-                            noteData.license["iri"] = s.schemalicense;
-                            noteData.license["name"] = DO.C.License[noteData.license["iri"]].name;
-                          }
-
-                          DO.U.addInteraction(noteData);
-                        }
-                      }
-                    }
-                    else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Relationship') > -1){
-                      if(s.assubject && s.assubject.at(0) && s.asrelationship && s.asrelationship.at(0) && s.asobject && s.asobject.at(0) && DO.U.getPathURL(s.asobject.at(0)) == currentPathURL) {
-                        var subject = s.assubject.at(0);
-                        return DO.U.positionInteraction(subject).then(
-                          function(notificationIRI){
-                            return notificationIRI;
-                          },
-                          function(reason){
-                            console.log('Notification source is unreachable');
-                          });
-                      }
-                    }
-                    else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Announce') > -1) {
-                      if(s.asobject && s.asobject.at(0) && s.astarget && s.astarget.at(0) && DO.U.getPathURL(s.astarget.at(0)) == currentPathURL) {
-                        var object = s.asobject.at(0);
-
-                        return DO.U.positionInteraction(object).then(
-                          function(notificationIRI){
-                            return notificationIRI;
-                          },
-                          function(reason){
-                            console.log('Notification ' + notification + ' is unreachable');
-                          });
-                      }
-                    }
-                    else {
-                      // console.log(i + ' has unrecognised types: ' + resourceTypes);
-                      // return Promise.reject({'message': 'Unrecognised types ' + resourceTypes});
-                    }
-                  }
-                  else {
-                    // console.log('Skipping ' + i + ': No type.');
-                    // return Promise.reject({'message': 'Notification has no type. What to do?'});
-                  }
-                });
-              },
-              function(reason) {
-                console.log('Notification ' + notification + ' is unreachable. ' + reason);
-                return reason;
-              }
-            );
+            var pIRI = uri.getProxyableIRI(notification);
+            DO.U.showActivities(pIRI);
           });
         },
         function(reason) {
@@ -689,10 +2093,285 @@ var DO = {
       );
     },
 
+    showContactsActivities: function(e) {
+      var showProgress = function(e){
+        var rA = e.target.closest('.resource-activities')
+        var i = rA.querySelector('.fa-bolt')
+        rA.disabled = true;
+
+        if (i) {
+          i.classList.add('fa-circle-o-notch', 'fa-spin')
+          i.classList.remove('fa-bolt')
+        }
+      }
+
+      var removeProgress = function(e) {
+        var rA = e.target.closest('.resource-activities')
+        var i = rA.querySelector('.fa-spin')
+
+        if (i) {
+          i.classList.add('fa-circle-o')
+          i.classList.remove('fa-circle-o-notch', 'fa-spin')
+        }
+      }
+
+      if (e) {
+        showProgress(e)
+      }
+
+      var promises = []
+
+      if (DO.C.User.Outbox && DO.C.User.Outbox.length > 0) {
+        DO.U.showOutboxSources(DO.C.User.Outbox[0])
+      }
+
+      if (DO.C.User.Contacts && Object.keys(DO.C.User.Contacts).length > 0){
+        Object.keys(DO.C.User.Contacts).forEach(function(iri){
+          var o = DO.C.User.Contacts[iri].Outbox
+
+          if (o) {
+            var sOS = function(outbox) {
+              return DO.U.showOutboxSources(outbox)
+                .catch(() => {
+                  return Promise.resolve()
+                })
+            }
+
+            promises.push(sOS(o[0]))
+          }
+        })
+
+        return Promise.all(promises)
+          .then(r => {
+            removeProgress(e)
+          });
+      }
+      else {
+        return DO.U.updateContactsInfo(DO.C.User.IRI, { 'showOutboxSources': true })
+          .then(() => {
+            removeProgress(e)
+          })
+          .catch(() => {
+            removeProgress(e)
+          });
+      }
+    },
+
+    showOutboxSources: function(url) {
+      return DO.U.getOutboxActivities(url).then(
+        function(items) {
+          var promises = [];
+
+          for (var i = 0; i < items.length && i < DO.C.CollectionItemsLimit; i++) {
+            var pI = function(iri) {
+              return DO.U.showActivities(iri)
+                .catch(() => {
+                  return Promise.resolve()
+                })
+            }
+
+            promises.push(pI(items[i]));
+          }
+
+          return Promise.all(promises);
+        },
+        function(reason) {
+          console.log('No activities');
+          return reason;
+        }
+      );
+    },
+
+    getOutboxActivities: function(url) {
+      url = url || window.location.origin + window.location.pathname;
+      var pIRI = uri.getProxyableIRI(url);
+      var headers = { 'Accept': 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"'}
+
+      return fetcher.getResourceGraph(pIRI, headers)
+        .then(
+          function(i) {
+// console.log(i)
+            var s = i.child(url);
+            var items = Object.assign([], s.asitems._array);
+            items = Object.assign(items, s.asorderedItems._array);
+            items = util.uniqueArray(items);
+
+            if (items.length > 0) {
+              return items;
+            }
+            else {
+              var reason = {"message": "There are no activities."};
+              return Promise.reject(reason);
+            }
+          },
+          function(reason) {
+            console.log(reason);
+            return reason;
+          }
+        );
+    },
+
+    showActivities: function(url) {
+      return graph.getGraph(url).then(
+        function(g) {
+// console.log(g);
+          var subjects = [];
+          g.graph().toArray().forEach(function(t){
+            subjects.push(t.subject.nominalValue);
+          });
+          subjects = util.uniqueArray(subjects);
+// console.log(subjects);
+          subjects.forEach(function(i){
+            var s = g.child(i)
+            var types = s.rdftype._array || [];
+
+            var currentPathURL = window.location.origin + window.location.pathname;
+
+            if (types.length > 0) {
+              var resourceTypes = types;
+              if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Like') > -1 ||
+                 resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Dislike') > -1){
+                if(s.asobject && s.asobject.at(0)) {
+                  if(s.ascontext && s.ascontext.at(0)){
+                    if(DO.U.getPathURL(s.asobject.at(0)) == currentPathURL) {
+                      var context = s.ascontext.at(0);
+                      return DO.U.positionInteraction(context).then(
+                        function(iri){
+                          return iri;
+                        },
+                        function(reason){
+                          console.log(context + ': Context is unreachable');
+                        });
+                    }
+                  }
+                  else {
+                    var iri = s.iri().toString();
+                    var targetIRI = s.asobject.at(0);
+                    var motivatedBy = 'oa:assessing';
+                    var id = String(Math.abs(DO.U.hashCode(iri)));
+                    var refId = 'r-' + id;
+                    var refLabel = id;
+
+                    var bodyText = (resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Like') > -1) ? 'Liked' : 'Disliked';
+
+                    var noteData = {
+                      "type": 'article',
+                      "mode": "read",
+                      "motivatedByIRI": motivatedBy,
+                      "id": id,
+                      "refId": refId,
+                      "refLabel": refLabel,
+                      // "iri": iri,
+                      "creator": {},
+                      "target": {
+                        "iri": targetIRI
+                      },
+                      "body": bodyText,
+                      "license": {}
+                    };
+
+                    if (s.asactor){
+                      noteData['creator'] = {
+                        'iri': s.asactor
+                      }
+                      var a = g.child(noteData['creator']['iri']);
+                      var actorName = auth.getAgentName(a);
+                      var actorImage = auth.getAgentImage(a);
+
+                      if(typeof actorName != 'undefined') {
+                        noteData['creator']['name'] = actorName;
+                      }
+                      if(typeof actorImage != 'undefined') {
+                        noteData['creator']['image'] = actorImage;
+                      }
+                    }
+                    else if(type == 'https://www.w3.org/ns/activitystreams#Dislike'){
+                      noteData['creator'] = {
+                        'name': 'Anonymous Coward'
+                      }
+                    }
+                    if (s.asupdated){
+                      noteData['datetime'] = s.asupdated;
+                    }
+                    if (s.schemalicense){
+                      noteData.license["iri"] = s.schemalicense;
+                      noteData.license["name"] = DO.C.License[noteData.license["iri"]].name;
+                    }
+
+                    DO.U.addInteraction(noteData);
+                  }
+                }
+              }
+              else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Relationship') > -1){
+                if(s.assubject && s.assubject.at(0) && s.asrelationship && s.asrelationship.at(0) && s.asobject && s.asobject.at(0) && DO.U.getPathURL(s.asobject.at(0)) == currentPathURL) {
+                  var subject = s.assubject.at(0);
+                  return DO.U.positionInteraction(subject).then(
+                    function(iri){
+                      return iri;
+                    },
+                    function(reason){
+                      console.log(subject + ': subject is unreachable');
+                    });
+                }
+              }
+              else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Announce') > -1 || resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Create') > -1) {
+                if(s.asobject && s.asobject.at(0) && s.astarget && s.astarget.at(0) && DO.U.getPathURL(s.astarget.at(0)) == currentPathURL) {
+                  var object = s.asobject.at(0);
+
+                  if (object.startsWith(url)) {
+                    return DO.U.showAnnotation(object, s);
+                  }
+                  else {
+                    return DO.U.positionInteraction(object).then(
+                      function(iri){
+                        return iri;
+                      },
+                      function(reason){
+                        console.log(object + ': object is unreachable');
+                      });
+                  }
+                }
+              }
+              else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Add') > -1) {
+                if(s.asobject && s.asobject.at(0)) {
+                  var object = s.asobject.at(0);
+
+                  if (object.startsWith(url)) {
+                    return DO.U.showAnnotation(object, s);
+                  }
+                  else {
+                    return DO.U.positionInteraction(object).then(
+                      function(iri){
+                        return iri;
+                      },
+                      function(reason){
+                        console.log(object + ': object is unreachable');
+                      });
+                  }
+                }
+              }
+              else {
+                // console.log(i + ' has unrecognised types: ' + resourceTypes);
+                // return Promise.reject({'message': 'Unrecognised types ' + resourceTypes});
+              }
+            }
+            else {
+              // console.log('Skipping ' + i + ': No type.');
+              // return Promise.reject({'message': 'Activity has no type. What to do?'});
+            }
+          });
+        },
+        function(reason) {
+          console.log(url + ': is unreachable. ' + reason);
+          return reason;
+        }
+      );
+    },
+
     //Borrowed the d3 parts from https://bl.ocks.org/mbostock/4600693
     showVisualisationGraph: function(url, data, selector, options) {
       url = url || window.location.origin + window.location.pathname;
-      data = data || DO.U.getDocument();
+      data = data || doc.getDocument();
       selector = selector || 'body';
       options = options || {};
       options['contentType'] = options.contentType || 'text/html';
@@ -765,8 +2444,9 @@ var DO = {
       var color = d3.scaleOrdinal(d3.schemeCategory20);
 
       var simulation = d3.forceSimulation()
-          .force("link", d3.forceLink().distance(10).strength(0.5))
-          .force("charge", d3.forceManyBody())
+          .force("link", d3.forceLink().distance(10).strength(0.25))
+          .force('collide', d3.forceCollide().radius(5).strength(0.25))
+          // .force("charge", d3.forceManyBody())
           // .force("center", d3.forceCenter());
           .force("center", d3.forceCenter(width / 2, height / 2));
 
@@ -822,7 +2502,7 @@ var DO = {
 
     getVisualisationGraphData: function(url, data, options) {
       return new Promise(function(resolve, reject) {
-        DO.U.getGraphFromData(data, options).then(
+        graph.getGraphFromData(data, options).then(
           function(g){
 // console.log(g);
             var g = SimpleRDF(DO.C.Vocab, options['subjectURI'], g, ld.store).child(url);
@@ -859,509 +2539,85 @@ var DO = {
       });
     },
 
-    showInboxGraph: function(url, selector, options){
-      var uri = url || location.href.split(location.search||location.hash||/[?#]/)[0];
+    showGraph: function(resources, selector, options){
+      if (!DO.C.GraphViewerAvailable) { return; }
+
       options = options || {};
       options['contentType'] = options.contentType || 'text/html';
-      options['subjectURI'] = options.subjectURI || uri;
+      options['subjectURI'] = location.href.split(location.search||location.hash||/[?#]/)[0];
 
-      DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id'], uri).then(
-        function(i) {
-          i.forEach(function(inbox) {
-            DO.U.getNotifications(inbox).then(
-              function(i) {
-                var promises = [];
-
-                i.forEach(function(notification) {
-                  var pIRI = DO.U.getProxyableIRI(notification);
-                  promises.push(DO.U.getGraph(pIRI));
-                });
-
-                var dataGraph = SimpleRDF();
-
-                Promise.all(promises)
-                  .then(function(graphs) {
-                    graphs.forEach(function(g){
-                      dataGraph.graph().addAll(g.graph());
-                    });
-
-                    DO.U.serializeGraph(dataGraph, { 'contentType': 'text/turtle' })
-                      .then(function(data){
-                        //FIXME: FUGLY because parser defaults to localhost. Using UUID to minimise conflict
-                        data = data.replace(/http:\/\/localhost\/d79351f4-cdb8-4228-b24f-3e9ac74a840d/g, '');
-
-                        //XXX: Workaround for rdf-parser-rdfa bug that gives '@langauge' instead of @type when encountering datatype in HTML+RDFa . TODO: Link to bug here
-                        data = data.replace(/Z"@en;/, 'Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;');
-
-                        return data;
-                      })
-                      .then(function(data){
-                        options['contentType'] = 'text/turtle';
-                        options['subjectURI'] = inbox;
-
-                        DO.U.showVisualisationGraph(inbox, data, selector, options);
-                      });
-                  });
-              });
-          });
-        },
-        function(reason) {
-          console.log(reason);
-        }
-      );
-    },
-
-    getAbsoluteIRI: function(base, location){
-      var iri = location;
-
-      if(location.toLowerCase().slice(0,4) != 'http') {
-        if(location.startsWith('/')){
-          var x = base.toLowerCase().trim().split('/');
-
-          iri = x[0]+'//'+x[2]+location;
-        }
-        else if(!base.endsWith('/')){
-          iri = base.substr(0, base.lastIndexOf('/') + 1) + location;
-        }
-        else {
-          iri = base + location;
-        }
+      if (Array.isArray(resources)) {
+        DO.U.showGraphResources(resources, selector, options);
       }
+      else {
+        var property = (resources && 'filter' in options && 'predicates' in options.filter && options.filter.predicates.length > 0) ? options.filter.predicates[0] : DO.C.Vocab['ldpinbox']['@id'];
+        var iri = (resources) ? resources : location.href.split(location.search||location.hash||/[?#]/)[0];
 
-      return iri;
+        inbox.getEndpoint(property, iri).then(
+          function(resources) {
+            DO.U.showGraphResources(resources[0], selector, options);
+          },
+          function(reason) {
+            console.log(reason);
+          }
+        );
+      }
     },
 
-    getProxyableIRI: function(url, options) {
-      var pIRI = DO.U.stripFragmentFromString(url);
+    showGraphResources: function(resources, selector, options) {
+      selector = selector || document.body;
       options = options || {};
 
-      if ((typeof document !== 'undefined' && document.location.protocol == 'https:' && pIRI.slice(0, 5).toLowerCase() == 'http:') || 'forceProxy' in options) {
-        var proxyURL = ('proxyURL' in options) ? options.proxyURL : DO.C.ProxyURL;
-        pIRI = proxyURL + DO.U.encodeString(pIRI);
-      }
-// console.log('pIRI: ' + pIRI);
-      return pIRI;
-    },
-
-    putResource: function(url, data, contentType, links, options) {
-      if (url && url.length > 0) {
-        contentType = contentType || 'text/html; charset=utf-8';
-        var ldpResource = '<http://www.w3.org/ns/ldp#Resource>; rel="type"';
-        links = (links) ? ldpResource + ', ' + links : ldpResource;
-        options = options || {};
-
-        return new Promise(function(resolve, reject) {
-          var http = new XMLHttpRequest();
-          http.open('PUT', url);
-          http.setRequestHeader('Content-Type', contentType);
-          http.setRequestHeader('Link', links);
-          if (!options.noCredentials) {
-            http.withCredentials = true;
-          }
-          DO.U.showXHRProgressHTML(http, options);
-          http.onreadystatechange = function() {
-            if (this.readyState == this.DONE) {
-              if (this.status === 200 || this.status === 201 || this.status === 204) {
-                return resolve({xhr: this});
-              }
-              return reject({status: this.status, xhr: this});
-            }
-          };
-          http.send(data);
-        });
-      }
-      else {
-        return Promise.reject({'message': 'url parameter not valid'});
-      }
-    },
-
-    postResource: function(url, slug, data, contentType, links, options) {
-      if (url && url.length > 0) {
-        contentType = contentType || 'text/html; charset=utf-8';
-        var ldpResource = '<http://www.w3.org/ns/ldp#Resource>; rel="type"';
-        links = (links) ? ldpResource + ', ' + links : ldpResource;
-        options = options || {};
-
-        return new Promise(function(resolve, reject) {
-          var http = new XMLHttpRequest();
-          http.open('POST', url);
-          http.setRequestHeader('Content-Type', contentType);
-          http.setRequestHeader('Link', links);
-          if (slug && slug.length > 0) {
-            http.setRequestHeader('Slug', slug);
-          }
-          if (!options.noCredentials) {
-            http.withCredentials = true;
-          }
-          DO.U.showXHRProgressHTML(http, options);
-          http.onreadystatechange = function() {
-            if (this.readyState == this.DONE) {
-              if (this.status === 200 || this.status === 201 || this.status === 204) {
-                return resolve({xhr: this});
-              }
-              return reject({status: this.status, xhr: this});
-            }
-          };
-          http.send(data);
-        });
-      }
-      else {
-        return Promise.reject({'message': 'url parameter not valid'});
-      }
-    },
-
-    patchResource: function(url, deleteBGP, insertBGP, options) {
-      //insertBGP and deleteBGP are basic graph patterns.
-      if (deleteBGP) {
-        deleteBGP = 'DELETE DATA { ' + deleteBGP + ' };';
-      }
-
-      if (insertBGP) {
-        insertBGP = 'INSERT DATA { ' + insertBGP + ' };';
-      }
-
-      data = deleteBGP + insertBGP;
-
-      return new Promise(function(resolve, reject) {
-        var http = new XMLHttpRequest();
-        http.open('PATCH', url);
-        http.setRequestHeader('Content-Type', 'application/sparql-update; charset=utf-8');
-        if (!options.noCredentials) {
-          http.withCredentials = true;
-        }
-        DO.U.showXHRProgressHTML(http, options);
-        http.onreadystatechange = function() {
-          if (this.readyState == this.DONE) {
-            if (this.status === 200 || this.status === 201 || this.status === 204) {
-              return resolve({xhr: this});
-            }
-            return reject({status: this.status, xhr: this});
-          }
-        };
-        http.send(data);
-      });
-    },
-
-    deleteResource: function(url, options) {
-      if (url && url.length > 0) {
-        options = options || {};
-        return new Promise(function(resolve, reject) {
-          var http = new XMLHttpRequest();
-          http.open('DELETE', url);
-          if (!options.noCredentials) {
-            http.withCredentials = true;
-          }
-          http.onreadystatechange = function() {
-            if (this.readyState == this.DONE) {
-              if (this.status === 200 || this.status === 202 || this.status === 204) {
-                return resolve(true);
-              }
-              return reject({status: this.status, xhr: this});
-            }
-          };
-          http.send();
-        });
-      }
-      else {
-        return Promise.reject({'message': 'url parameter not valid'});
-      }
-    },
-
-    //I want HTTP COPY and I want it now!
-    copyResource: function copyResource (fromURL, toURL, options = {}) {
-      let headers = { 'Accept': '*/*' }
-      let contentType
-
-      if (!fromURL || !toURL) {
-        return Promise.reject(new Error('Missing fromURL or toURL in copyResource'))
-      }
-
-      return fetcher.getResource(fromURL, headers, options)
-        .then(response => {
-          contentType = response.headers.get('Content-Type')
-
-          return (DO.C.AcceptBinaryTypes.indexOf(contentType))
-            ? response.arrayBuffer()
-            : response.text()
-        })
-        .then(contents => {
-          return DO.U.putResource(toURL, contents, contentType, null, options)
-            .catch(error => {
-              if(error.status === 0){
-                options.noCredentials =  true;
-                return DO.U.putResource(toURL, contents, contentType, null, options);
-              }
-
-              throw error  // re-throw error
-            })
-        })
-    },
-
-    putResourceACL: function(accessToURL, aclURL, acl) {
-      if(DO.C.User.IRI) {
-        acl = acl || {
-          'u': { 'iri': [DO.C.User.IRI], 'mode': ['acl:Control', 'acl:Read', 'acl:Write'] },
-          'g': { 'iri': ['http://xmlns.com/foaf/0.1/Agent'], 'mode': ['acl:Read'] },
-          'o': { 'iri': [], 'mode': [] }
-        };
-
-        var agent, agentClass, mode;
-        if('u' in acl && 'iri' in acl.u && 'mode' in acl.u) {
-          agent = '<' + acl.u.iri.join('> , <') + '>';
-          mode = acl.u.mode.join(' , ');
+      var processResources = function(resources, options) {
+        if (Array.isArray(resources)) {
+          return Promise.resolve(resources);
         }
         else {
-          agent = '<' + DO.C.User.IRI + '>';
-          mode = 'acl:Control , acl:Read , acl:Write';
+          return DO.U.getItemsList(resources, options);
         }
-
-        var authorizations = [];
-
-        authorizations.push('[ a acl:Authorization ; acl:accessTo <' + accessToURL + '> ; acl:accessTo <' + aclURL + '> ; acl:mode ' + mode + ' ; acl:agent ' + agent + ' ] .');
-
-        if('g' in acl && 'iri' in acl.g && acl.g.iri.length >= 0) {
-          agentClass = '<' + acl.g.iri.join('> , <') + '>';
-          mode = acl.g.mode.join(' , ');
-          authorizations.push('[ a acl:Authorization ; acl:accessTo <' + accessToURL + '> ; acl:mode ' + mode + ' ; acl:agentClass ' + agentClass + ' ] .');
-        }
-
-        var data = '@prefix acl: <http://www.w3.org/ns/auth/acl#> .\n\
-'+ authorizations.join('\n') + '\n\
-';
-        return DO.U.putResource(aclURL, data, 'text/turtle; charset=utf-8');
-      }
-      else {
-        console.log('Go through sign-in or do: DO.C.User.IRI = "https://example.org/#i";');
-      }
-    },
-
-    notifyInbox: function(o) {
-      var slug, inbox;
-      if ('slug' in o) {
-        slug = o.slug;
-      }
-      if ('inbox' in o) {
-        inbox = o.inbox;
       }
 
-      var types = '<dt>Types</dt>';
-      o.type.forEach(function(t){
-        types += '<dd><a about="" href="' + DO.C.Prefixes[t.split(':')[0]] + t.split(':')[1] + '" typeof="'+ t +'">' + t.split(':')[1] + '</a></dd>';
-      });
+      processResources(resources, options).then(
+        function(url) {
+          var promises = [];
+          url.forEach(function(u) {
+            // console.log(u);
+            // window.setTimeout(function () {
+              var pIRI = uri.getProxyableIRI(u);
+              promises.push(fetcher.getResourceGraph(pIRI));
+            // }, 1000)
+          });
 
-      var asObjectTypes = '';
-      if ('object' in o && 'objectTypes' in o && o.objectTypes.length > 0) {
-        asObjectTypes = '<dl><dt>Types</dt>';
-        o.objectTypes.forEach(function(t){
-          asObjectTypes += '<dd><a about="' + o.object + '" href="' + t + '" typeof="'+ t +'">' + t + '</a></dd>';
-        });
-        asObjectTypes += '</dl>';
-      }
+          var dataGraph = SimpleRDF();
 
-      var asObjectLicense = '';
-      if ('object' in o && 'objectLicense' in o && o.objectLicense.length > 0) {
-        asObjectLicense = '<dl><dt>License</dt><dd><a about="' + o.object + '" href="' + o.objectLicense + '" property="schema:license">' + o.objectLicense + '</a></dd></dl>';
-      }
+          var filterPredicates = false;
+          if ('filter' in options && 'predicates' in options.filter && options.filter.predicates.length > 0) {
+            filterPredicates = true;
+          }
 
-      var asobject = ('object' in o) ? '<dt>Object</dt><dd><a href="' + o.object + '" property="as:object">' + o.object + '</a>' + asObjectTypes + asObjectLicense + '</dd>' : '';
+          Promise.all(promises)
+            .then(function(graphs) {
+              graphs.forEach(function(graph){
+                graph = graph.graph();
 
-      var asinReplyTo = ('inReplyTo' in o) ? '<dt>In reply to</dt><dd><a href="' + o.inReplyTo + '" property="as:inReplyTo">' + o.inReplyTo + '</a></dd>' : '';
+                dataGraph.graph().addAll(graph);
+              });
 
-      var ascontext = ('context' in o && o.context.length > 0) ? '<dt>Context</dt><dd><a href="' + o.context + '" property="as:context">' + o.context + '</a></dd>' : '';
-
-      var astarget = ('target' in o && o.target.length > 0) ? '<dt>Target</dt><dd><a href="' + o.target + '" property="as:target">' + o.target + '</a></dd>' : '';
-
-      var datetime = DO.U.getDateTimeISO();
-      var asupdated = '<dt>Updated</dt><dd><time datetime="' + datetime + '" datatype="xsd:dateTime" property="as:updated" content="' + datetime + '">' + datetime.substr(0,19).replace('T', ' ') + '</time></dd>';
-
-      var assummary = ('summary' in o && o.summary.length > 0) ? '<dt>Summary</dt><dd property="as:summary" datatype="rdf:HTML">' + o.summary + '</dd>' : '';
-
-      var ascontent = ('content' in o && o.content.length > 0) ? '<dt>Content</dt><dd property="as:content" datatype="rdf:HTML">' + o.content + '</dd>' : '';
-
-      var asactor = (DO.C.User.IRI) ? '<dt>Actor</dt><dd><a href="' + DO.C.User.IRI + '" property="as:actor">' + DO.C.User.IRI + '</a></dd>' : '';
-
-      var license = '<dt>License</dt><dd><a href="' + DO.C.NotificationLicense + '" property="schema:license">' + DO.C.NotificationLicense + '</a></dd>';
-
-      var asto = ('to' in o && o.to.length > 0 && !o.to.match(/\s/g) && o.to.match(/^https?:\/\//gi)) ? '<dt>To</dt><dd><a href="' + o.to + '" property="as:to">' + o.to + '</a></dd>' : '';
-
-      var statements = ('statements' in o) ? o.statements : '';
-
-      var dl = [
-                types,
-                asobject,
-                ascontext,
-                astarget,
-                asupdated,
-                assummary,
-                ascontent,
-                asactor,
-                license,
-                asto
-                ].map(function(n) { if (n != '') { return '      ' + n + '\n'; } }).join('');
-
-
-      //TODO: Come up with a better title. reuse `types` e.g., Activity Created, Announced..
-      var title = 'Notification';
-      if(types.indexOf('as:Announce') > -1){
-        title += ': Announced';
-      }
-      else if (types.indexOf('as:Created') > -1){
-        title += ': Created';
-      }
-      else if (types.indexOf('as:Liked') > -1){
-        title += ': Liked';
-      }
-      else if (types.indexOf('as:Disliked') > -1){
-        title += ': Disliked';
-      }
-
-      var data = '\n\
-<article>\n\
-  <h1>' + title + '</h1>\n\
-  <section>\n\
-    <dl about="">\n\
-' + dl +
-'    </dl>\n\
-' + statements +
-'  </section>\n\
-</article>\n\
-';
-
-      var options = {};
-      options.prefixes = DO.C.Prefixes;
-
-      data = DO.U.createHTML(title, data, options);
-// console.log(data);
-
-      if (inbox && inbox.length > 0) {
-        var pIRI = DO.U.getProxyableIRI(inbox);
-
-        return DO.U.getAcceptPostPreference(pIRI)
-          .catch(function(reason){
-            return reason;
-          })
-          .then(function(preferredContentType){
-// console.log(preferredContentType);
-            var options = {
-              'contentType': 'text/html',
-              'subjectURI': 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d'
-            };
-
-            switch(preferredContentType) {
-              case 'text/html': case 'application/xhtml+xml':
-                return DO.U.postResource(pIRI, slug, data, 'text/html; charset=utf-8').catch(function(reason){
-                  if(reason.xhr.status == 0){
-                    var options = {'noCredentials': true};
-                    DO.U.postResource(pIRI, slug, data, 'text/html; charset=utf-8');
+              if (filterPredicates) {
+                dataGraph = dataGraph.graph().filter(function(g) {
+                  if (options.filter.predicates.indexOf(g.predicate.nominalValue) >= 0) {
+                    return g;
                   }
                 });
-                break;
-              case 'text/turtle':
-                //FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
-                // return DO.U.postResource(pIRI, slug, data, 'text/turtle; charset=utf-8');
-                return DO.U.getGraphFromData(data, options).then(
-                  function(g) {
-// console.log(g);
-                    var options = {
-                      'contentType': 'text/turtle'
-                    };
-                    return DO.U.serializeGraph(g, options).then(
-                      function(data){
-// console.log(data);
+              }
 
-                        //FIXME: FUGLY because parser defaults to localhost. Using UUID to minimise conflict
-                        data = data.replace(/http:\/\/localhost\/d79351f4-cdb8-4228-b24f-3e9ac74a840d/g, '');
-
-                        //XXX: Workaround for rdf-parser-rdfa bug that gives '@langauge' instead of @type when encountering datatype in HTML+RDFa . TODO: Link to bug here
-                        data = data.replace(/Z"@en;/, 'Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;');
-
-                        return DO.U.postResource(pIRI, slug, data, 'text/turtle').catch(function(reason){
-                          if(reason.xhr.status == 0){
-                            var options = {'noCredentials': true};
-                            DO.U.postResource(pIRI, slug, data, 'text/turtle', null, options);
-                          }
-                        });
-                      }
-                    );
-                  },
-                  function(reason) {
-                    return reason;
-                  }
-                );
-
-                break;
-              case 'application/ld+json': case 'application/json':  case '*/*': default:
-                return DO.U.getGraphFromData(data, options).then(
-                  function(g) {
-// console.log(g);
-                    var options = {
-                      'contentType': 'application/ld+json'
-                    };
-                    return DO.U.serializeGraph(g, options).then(
-                      function(i){
-                        var x = JSON.parse(i);
-// console.log(x);
-                        x[0]["@context"] = ["https://www.w3.org/ns/activitystreams", {"oa": "http://www.w3.org/ns/anno.jsonld"}];
-                        // If from is Turtle:
-                        // x[0]["@id"] = (x[0]["@id"].slice(0,2) == '_:') ? '' : x[0]["@id"];
-                        x[0]["@id"] = (x[0]["@id"] == 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d') ? '' : x[0]["@id"];
-
-                        //XXX: Workaround for rdf-parser-rdfa bug that gives '@langauge' instead of @type when encountering datatype in HTML+RDFa . TODO: Link to bug here
-                        for(var i = 0; i < x.length; i++){
-                          if('https://www.w3.org/ns/activitystreams#updated' in x[i]) {
-                            x[i]['https://www.w3.org/ns/activitystreams#updated'] = {
-                              '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
-                              '@value': x[i]['https://www.w3.org/ns/activitystreams#updated']['@value']
-                            };
-                          }
-                        }
-
-                        var data = JSON.stringify(x) + '\n';
-// console.log(data);
-                        return DO.U.postResource(pIRI, slug, data, 'application/ld+json; profile="http://www.w3.org/ns/anno.jsonld"').catch(function(reason){
-                            if(reason.xhr.status == 0){
-                              var options = {'noCredentials': true};
-                              DO.U.postResource(pIRI, slug, data, 'application/ld+json; profile="http://www.w3.org/ns/anno.jsonld"', null, options);
-                            }
-                        });
-                      }
-                    );
-                  },
-                  function(reason) {
-                    return reason;
-                  }
-                );
-                break;
-            }
-          });
-      }
-      else {
-        return Promise.reject({'message': "No inbox to send notification to"});
-      }
-    },
-
-    getAcceptPostPreference: function getAcceptPostPreference (url) {
-      var pIRI = DO.U.getProxyableIRI(url);
-
-      return fetcher.getResourceOptions(pIRI, {'header': 'Accept-Post'})
-        .catch(function (error) {
-          console.error(error);
-
-          return {'headers': 'application/ld+json'};
-        })
-        .then(function (i) {
-          var header = i.headers.trim().split(/\s*,\s*/);
-
-          if (header.indexOf('text/html') > -1 || header.indexOf('application/xhtml+xml') > -1) {
-            return 'text/html';
-          } else if (header.indexOf('text/turtle') > -1 || header.indexOf('*/*') > -1) {
-            return 'text/turtle';
-          } else if (header.indexOf('application/ld+json') > -1 || header.indexOf('application/json') > -1) {
-            return 'application/ld+json';
-          } else {
-            console.log('Accept-Post contains unrecognised media-range; ' + i.headers);
-            return i.headers;
-          }
+              graph.serializeGraph(dataGraph, { 'contentType': 'text/turtle' })
+                .then(function(data){
+                  options['contentType'] = 'text/turtle';
+                  // options['subjectURI'] = url;
+                  DO.U.showVisualisationGraph(options.subjectURI, data, selector, options);
+                });
+            });
         });
     },
 
@@ -1375,7 +2631,160 @@ var DO = {
       }
     },
 
+    getTextQuoteSelectorFromLocation: function(location) {
+      var regexp = /#selector\(type=TextQuoteSelector,(.*)\)/;
+      matches = location.hash.match(regexp);
+
+      if (matches) {
+        var selectorsArray = matches[1].split(',')
+        var selector = {};
+
+        selectorsArray.forEach(function(s){
+          var kv = s.split('=');
+
+          if (kv.length == 2) {
+            switch(kv[0]) {
+              case 'prefix':
+                selector['prefix'] = decodeURIComponent(kv[1]);
+                break;
+              case 'exact':
+                selector['exact'] = decodeURIComponent(kv[1]);
+                break;
+              case 'suffix':
+                selector['suffix'] = decodeURIComponent(kv[1]);
+                break;
+            }
+          }
+
+        })
+
+        return selector;
+      }
+    },
+
+    showTextQuoteSelector: function(containerNode) {
+      var selector = DO.U.getTextQuoteSelectorFromLocation(document.location);
+      if (selector && selector.exact && selector.exact.length > 0) {
+        //XXX: TODO: Copied from showAnnotation
+
+        // refId = String(Math.abs(DO.U.hashCode(document.location.href)));
+        var refId = document.location.hash.substring(1);
+        var refLabel = DO.U.getReferenceLabel('oa:highlighting');
+
+        containerNode = containerNode || document.body;
+
+        var docRefType = '<sup class="ref-highlighting">' + refLabel + '</sup>';
+
+        var options = {
+          'do': true,
+          'mode': '#selector'
+        };
+
+        DO.U.importTextQuoteSelector(containerNode, selector, refId, docRefType, options)
+      }
+    },
+
+    importTextQuoteSelector: function(containerNode, selector, refId, docRefType, options) {
+      var containerNodeTextContent = containerNode.textContent;
+      //XXX: Seems better?
+      // var containerNodeTextContent = DO.U.fragmentFromString(doc.getDocument(containerNode)).textContent.trim();
+
+
+// console.log(containerNodeTextContent);
+      options = options || {};
+
+// console.log(selector)
+      var prefix = selector.prefix || '';
+      var exact = selector.exact || '';
+      var suffix = selector.suffix || '';
+
+      var phrase = util.escapeRegExp(prefix.toString() + exact.toString() + suffix.toString());
+// console.log(phrase);
+
+      var selectedParentNode;
+
+      var textMatches = containerNodeTextContent.matchAll(new RegExp(phrase, 'g'));
+// console.log(textMatches)
+
+      textMatches.forEach(function(item) {
+// console.log('phrase:')
+// console.log(phrase)
+// console.log(item)
+        var selectorIndex = item.index;
+// console.log('selectorIndex:')
+// console.log(selectorIndex)
+      // var selectorIndex = containerNodeTextContent.indexOf(prefix + exact + suffix);
+// console.log(selectorIndex);
+      // if (selectorIndex >= 0) {
+        var exactStart = selectorIndex + prefix.length
+        var exactEnd = selectorIndex + prefix.length + exact.length;
+        var selection = { start: exactStart, end: exactEnd };
+// console.log('selection:')
+// console.log(selection)
+        var ref = DO.U.getTextQuoteHTML(refId, exact, docRefType, options);
+// console.log('containerNode:')
+// console.log(containerNode)
+        MediumEditor.selection.importSelection(selection, containerNode, document);
+
+        //XXX: Review
+        var selection = window.getSelection();
+// console.log(selection)
+        var r = selection.getRangeAt(0);
+        selection.removeAllRanges();
+        selection.addRange(r);
+        r.collapse(true);
+// console.log(r)
+// console.log('r.commonAncestorContainer:')
+// console.log(r.commonAncestorContainer)
+        selectedParentNode = r.commonAncestorContainer.parentNode;
+// console.log('selectedParentNode:')
+// console.log(selectedParentNode)
+        var selectedParentNodeValue = r.commonAncestorContainer.nodeValue;
+// console.log(selectedParentNodeValue)
+
+// console.log(selectedParentNodeValue.substr(0, r.startOffset) + ref + selectedParentNodeValue.substr(r.startOffset + exact.length))
+        var selectionUpdated = DO.U.fragmentFromString(selectedParentNodeValue.substr(0, r.startOffset) + ref + selectedParentNodeValue.substr(r.startOffset + exact.length));
+// console.log(selectionUpdated)
+
+        //XXX: Review. This feels a bit dirty
+        for(var i = 0; i < selectedParentNode.childNodes.length; i++) {
+          var n = selectedParentNode.childNodes[i];
+          if (n.nodeType === 3 && n.nodeValue === selectedParentNodeValue) {
+            selectedParentNode.replaceChild(selectionUpdated, n);
+          }
+        }
+// console.log('---')
+      })
+
+      return selectedParentNode;
+    },
+
+    initUser: function() {
+      storage.getStorageProfile().then(user => {
+        if (user && 'object' in user) {
+          DO.C['User'] = user.object.describes;
+        }
+      })
+    },
+
     setDocumentMode: function(mode) {
+      var style = DO.U.urlParam('style');
+
+      if (style) {
+        var title = style.lastIndexOf('/');
+        title = (title > -1) ? style.substr(title + 1) : style; 
+
+        if (style.startsWith('http')) {
+          var pIRI = uri.getProxyableIRI(style);
+          var link = '<link class="do" href="' + pIRI + '" media="all" rel="stylesheet" title="' + title + '" />'
+          document.querySelector('head').insertAdjacentHTML('beforeend', link);
+        }
+
+        window.history.replaceState({}, null, document.location.href.substr(0, document.location.href.lastIndexOf('?')));
+        var stylesheets = document.querySelectorAll('head link[rel~="stylesheet"][title]:not([href$="do.css"])');
+        DO.U.updateSelectedStylesheets(stylesheets, title);
+      }
+
       if (DO.C.EditorAvailable) {
         if (DO.U.urlParam('author') == 'true' || DO.U.urlParam('social') == 'true' || DO.U.urlParam('review') == 'true') {
           if (DO.U.urlParam('social') == 'true') {
@@ -1391,6 +2800,14 @@ var DO = {
           window.history.replaceState({}, null, url.substr(0, url.lastIndexOf('?')));
         }
 
+        if (mode !== 'author') {
+          var content = DO.U.selectArticleNode(document);
+          content = DO.U.fragmentFromString(doc.domToString(content)).textContent.trim();
+          if (content.length == 0) {
+            mode = 'author';
+          }
+        }
+
         switch(mode || '') {
           case 'social': default:
             DO.U.Editor.enableEditor('social');
@@ -1402,142 +2819,6 @@ var DO = {
             DO.U.Editor.enableEditor('review');
             break;
         }
-      }
-    },
-
-    //TODO: Refactor
-    showUserSigninSignup: function(node) {
-      if (typeof SimpleRDF !== 'undefined' && !document.querySelector('#user-info')) {
-        var s = '<button class="signin-user" title="Sign in to authenticate"><i class="fa fa-user-secret fa-2x"></i>Sign in</button>';
-        if(DO.C.User.IRI) {
-          s = DO.U.getUserHTML();
-        }
-        node.insertAdjacentHTML('beforeend', '<section id="user-info">' + s + '</section>');
-
-        var su = document.querySelector('#document-menu button.signin-user');
-        if(su) {
-          su.addEventListener('click', DO.U.showUserIdentityInput);
-        }
-      }
-    },
-
-    //TODO: Refactor
-    showUserIdentityInput: function(e) {
-      if(typeof e !== 'undefined') {
-        e.target.disabled = true;
-      }
-      document.body.insertAdjacentHTML('beforeend', '<aside id="user-identity-input" class="do on"><button class="close" title="Close">❌</button><h2>Sign in with WebID</h2><label>HTTP(S) IRI</label> <input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="signin">Sign in</button></aside>');
-      var buttonSignIn = document.querySelector('#user-identity-input button.signin');
-      buttonSignIn.setAttribute('disabled', 'disabled');
-      document.querySelector('#user-identity-input').addEventListener('click', function(e) {
-        if (e.target.matches('button.close')) {
-          var signinUser = document.querySelector('#document-menu button.signin-user');
-          if(signinUser) {
-            signinUser.disabled = false;
-          }
-        }
-      });
-
-      var inputWebid = document.querySelector('#user-identity-input input#webid');
-      buttonSignIn.addEventListener('click', DO.U.submitSignIn);
-      ['keyup', 'cut', 'paste', 'input'].forEach(function(eventType) {
-        inputWebid.addEventListener(eventType, function(e){ DO.U.enableDisableButton(e, buttonSignIn); });
-      });
-      inputWebid.focus();
-    },
-
-    //TODO: Generalize this further so that it is not only for submitSignIn
-    enableDisableButton: function(e, button) {
-      var delay = (e.type == 'cut' || e.type == 'paste') ? 250 : 0;
-      var input;
-
-      window.setTimeout(function () {
-        input = e.target.value;
-        if (input.length > 10 && input.match(/^https?:\/\//g)) {
-          if (typeof e.which !== 'undefined' && e.which == 13) {
-            if(!button.getAttribute('disabled')) {
-              button.setAttribute('disabled', 'disabled');
-              e.preventDefault();
-              e.stopPropagation();
-              DO.U.submitSignIn();
-            }
-          }
-          else {
-            button.removeAttribute('disabled');
-          }
-        }
-        else {
-          if (!button.getAttribute('disabled')) {
-            button.setAttribute('disabled', 'disabled');
-          }
-        }
-      }, delay);
-    },
-
-    //FIXME: This parameter value can be an event or a string
-    submitSignIn: function(url) {
-      if(typeof url !== 'string') {
-        var userIdentityInput = document.getElementById('user-identity-input');
-        if(userIdentityInput) {
-          userIdentityInput.insertAdjacentHTML('beforeend', '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
-        }
-
-        url = userIdentityInput.querySelector('input#webid').value.trim();
-      }
-
-      if (url.length > 0) {
-        DO.U.setUserInfo(url).then(
-          function(i) {
-// console.log(i);
-            var uI = document.getElementById('user-info');
-            if(uI) {
-              uI.innerHTML = DO.U.getUserHTML();
-            }
-
-            if(userIdentityInput) {
-              userIdentityInput.parentNode.removeChild(userIdentityInput);
-            }
-
-            DO.U.afterSignIn();
-          },
-          function(reason) {
-            console.log("--- NO USER");
-            console.log(reason);
-          }
-        );
-      }
-    },
-
-    afterSignIn: function() {
-      var user = document.querySelectorAll('aside.do article *[rel~="schema:creator"] > *[about="' + DO.C.User.IRI + '"]');
-      for(var i = 0; i < user.length; i++) {
-        var article = user[i].closest('article');
-        article.insertAdjacentHTML('afterbegin', '<button class="delete"><i class="fa fa-trash"></i></button>');
-      }
-
-      var buttonDelete = document.querySelectorAll('aside.do blockquote[cite] article button.delete');
-      for(var i = 0; i < buttonDelete.length; i++) {
-        buttonDelete[i].addEventListener('click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-          var article = e.target.closest('article');
-          var refId = 'r-' + article.id;
-          var noteIRI = article.closest('blockquote[cite]');
-          noteIRI = noteIRI.getAttribute('cite');
-
-          DO.U.deleteResource(noteIRI).then(
-            function(i){
-              var aside = e.target.closest('aside.do');
-              aside.parentNode.removeChild(aside);
-              var span = document.querySelector('span[about="#' + refId + '"]');
-              span.outerHTML = span.querySelector('mark').textContent;
-              //TODO: Delete notification or send delete activity
-            },
-            function(reason){
-              console.log(reason);
-            }
-          );
-        });
       }
     },
 
@@ -1563,7 +2844,7 @@ var DO = {
     },
 
     showDocumentInfo: function() {
-      document.body.insertAdjacentHTML('beforeend', '<menu id="document-menu" class="do"><button class="show" title="Open Menu"><i class="fa fa-bars"></i></button><header></header><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><img alt="" height="16" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAn1BMVEUAAAAAjwAAkAAAjwAAjwAAjwAAjwAAjwAAkAAAdwAAjwAAjQAAcAAAjwAAjwAAiQAAjwAAjAAAjwAAjwAAjwAAjwAAkAAAjwAAjwAAjwAAjQAAjQAAhQAAhQAAkAAAkAAAkAAAjgAAjwAAiQAAhAAAkAAAjwAAjwAAkAAAjwAAjgAAjgAAjQAAjwAAjQAAjwAAkAAAjwAAjQAAiwAAkABp3EJyAAAANHRSTlMA+fH89enaabMF4iADxJ4SiSa+uXztyoNvQDcsDgvl3pRiXBcH1M+ppJlWUUpFMq6OdjwbMc1+ZgAABAhJREFUeNrt29nSmkAQBeAGZBMUxH3f993/vP+zJZVKVZKCRhibyc3/XVt6SimYPjPSt28Vmt5W/fu2T/9B9HIf7Tp+0RsgDC6DY6OLvzxJj8341DnsakgZUNUmo2XsORYYS6rOeugukhnyragiq56JIs5UEQ/FXKgidRTzompEKOhG1biioDFV44mCAqrGAQWtqRptA8VMqCpR6zpo9iy84VO1opWHPBZVb9QAzyQN/D1YNungJ+DMSYsbOFvSIwGjR3p0wGiQHkMw2qRHC4w76RGBcSA9NmAcSY8QjAdpYiFbTJoYyNYnTWrI1iFNusj2JE1sZBuQJtyE5pImc3Y21cRhZ1NNtsh2Ik127HCsSY8djjVpINuVhPnjVefobee2adXqu2S/6FyivABDEjQ9Lxo1pDlNd5wg24ikRK5ngKGhHhg1DSgZk4RrD6pa9LlRAnUBfWp6xCe+6EOvOT6yrmrigZaCZHPAp6b0gaiBFKvRd0/D1rr1OrvxDqiyoZmmPt9onib0t/VybyEXqdu0Cw16rUNVAfZFlzdjr5KOaoAUK6JsrgWGQapuBlIS4gy70gEmTrk1fuAgU40UxWXv6wvZAC2Dqfx0BfBK1z1H0aJ0WH7Ub4oG8JDlpBCgK1l5tSjHQSoAf0HVfMqxF+yqpzVk2ZGuAGdk8ijPHZlmpOCg0vh5cgE2JtN3qQSoU3lXpbKlLRegrzTpt+U2TNpKY2YiFiA0kS1Q6QccweZ/oinASm2B3RML0AGDNAU4qq3udmIXYVttD3YrFsBR24N1xG5EJpTeaiYWwILS5WRKBfChFsCSehpOwKi/yS0V4AsMWym3TWUFgMqIsRYL8AVOSDlaYgEitbZnDKll+UatchyJBSC1c3lDuQA2VHYAL3KneHpgLCjHSS7AHYyEciwh1g88wDB94rlyAVxwhsR7ygW4gRMTry8XwDdUDkXFgjVdD5wRsRaCAWJwPGI1Baval8Ie3Hqn8AjjhHbZr2DzrInumDTBGlCG8xy8QPY3MNLX4TiRP1q+BWs2pn9ECwu5+qTABc+80h++28UbTkjlTW3wrM6Ufrtu8d5J9Svg1Vch/RTcUYQdUHm+g1z1x2gSGyjGGVN5F7xjoTCjE0ndC3jJMzfCftmiciZ1lNGe3vCGufOWVMLIQHHehi3X1O8JJxR236SalUzninbu937BlwfV/I3k4KdGk2xm+MHuLa8Z0i9TC280qLRrF+8cw9RSjrOg8oIG8j2YgULsbGPomsgR0x9nsOzkOLh+kZr1owZGbfC2JJl78fIV0Wei/gxZDl85XWVtt++cxhuSEQ6bdfzLjlvM86PbaD4vQUjSglV8385My7CdXtO9+ZSyrLcf7nBN376V8gMpRztyq6RXYQAAAABJRU5ErkJggg==" width="16" /><a href="https://dokie.li/" target="_blank">dokieli</a> is an <i class="fa fa-github"></i> <a href="https://github.com/linkeddata/dokieli" target="_blank">open source</a> project. There is <i class="fa fa-flask"></i> <a href="https://dokie.li/docs" target="_blank">documentation</a> and public <i class="fa fa-comments-o"></i> <a href="https://gitter.im/linkeddata/dokieli" target="_blank">chat</a> available. Made with fun.</dd></dl></footer></menu>');
+      document.documentElement.appendChild(DO.U.fragmentFromString('<menu id="document-menu" class="do"><button class="show" title="Open Menu"><i class="fa fa-bars"></i></button><header></header><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><img alt="" height="16" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAn1BMVEUAAAAAjwAAkAAAjwAAjwAAjwAAjwAAjwAAkAAAdwAAjwAAjQAAcAAAjwAAjwAAiQAAjwAAjAAAjwAAjwAAjwAAjwAAkAAAjwAAjwAAjwAAjQAAjQAAhQAAhQAAkAAAkAAAkAAAjgAAjwAAiQAAhAAAkAAAjwAAjwAAkAAAjwAAjgAAjgAAjQAAjwAAjQAAjwAAkAAAjwAAjQAAiwAAkABp3EJyAAAANHRSTlMA+fH89enaabMF4iADxJ4SiSa+uXztyoNvQDcsDgvl3pRiXBcH1M+ppJlWUUpFMq6OdjwbMc1+ZgAABAhJREFUeNrt29nSmkAQBeAGZBMUxH3f993/vP+zJZVKVZKCRhibyc3/XVt6SimYPjPSt28Vmt5W/fu2T/9B9HIf7Tp+0RsgDC6DY6OLvzxJj8341DnsakgZUNUmo2XsORYYS6rOeugukhnyragiq56JIs5UEQ/FXKgidRTzompEKOhG1biioDFV44mCAqrGAQWtqRptA8VMqCpR6zpo9iy84VO1opWHPBZVb9QAzyQN/D1YNungJ+DMSYsbOFvSIwGjR3p0wGiQHkMw2qRHC4w76RGBcSA9NmAcSY8QjAdpYiFbTJoYyNYnTWrI1iFNusj2JE1sZBuQJtyE5pImc3Y21cRhZ1NNtsh2Ik127HCsSY8djjVpINuVhPnjVefobee2adXqu2S/6FyivABDEjQ9Lxo1pDlNd5wg24ikRK5ngKGhHhg1DSgZk4RrD6pa9LlRAnUBfWp6xCe+6EOvOT6yrmrigZaCZHPAp6b0gaiBFKvRd0/D1rr1OrvxDqiyoZmmPt9onib0t/VybyEXqdu0Cw16rUNVAfZFlzdjr5KOaoAUK6JsrgWGQapuBlIS4gy70gEmTrk1fuAgU40UxWXv6wvZAC2Dqfx0BfBK1z1H0aJ0WH7Ub4oG8JDlpBCgK1l5tSjHQSoAf0HVfMqxF+yqpzVk2ZGuAGdk8ijPHZlmpOCg0vh5cgE2JtN3qQSoU3lXpbKlLRegrzTpt+U2TNpKY2YiFiA0kS1Q6QccweZ/oinASm2B3RML0AGDNAU4qq3udmIXYVttD3YrFsBR24N1xG5EJpTeaiYWwILS5WRKBfChFsCSehpOwKi/yS0V4AsMWym3TWUFgMqIsRYL8AVOSDlaYgEitbZnDKll+UatchyJBSC1c3lDuQA2VHYAL3KneHpgLCjHSS7AHYyEciwh1g88wDB94rlyAVxwhsR7ygW4gRMTry8XwDdUDkXFgjVdD5wRsRaCAWJwPGI1Baval8Ie3Hqn8AjjhHbZr2DzrInumDTBGlCG8xy8QPY3MNLX4TiRP1q+BWs2pn9ECwu5+qTABc+80h++28UbTkjlTW3wrM6Ufrtu8d5J9Svg1Vch/RTcUYQdUHm+g1z1x2gSGyjGGVN5F7xjoTCjE0ndC3jJMzfCftmiciZ1lNGe3vCGufOWVMLIQHHehi3X1O8JJxR236SalUzninbu937BlwfV/I3k4KdGk2xm+MHuLa8Z0i9TC280qLRrF+8cw9RSjrOg8oIG8j2YgULsbGPomsgR0x9nsOzkOLh+kZr1owZGbfC2JJl78fIV0Wei/gxZDl85XWVtt++cxhuSEQ6bdfzLjlvM86PbaD4vQUjSglV8385My7CdXtO9+ZSyrLcf7nBN376V8gMpRztyq6RXYQAAAABJRU5ErkJggg==" width="16" /><a href="https://dokie.li/" target="_blank">dokieli</a> is an <i class="fa fa-github"></i> <a href="https://github.com/linkeddata/dokieli" target="_blank">open source</a> project. There is <i class="fa fa-flask"></i> <a href="https://dokie.li/docs" target="_blank">documentation</a> and public <i class="fa fa-comments-o"></i> <a href="https://gitter.im/linkeddata/dokieli" target="_blank">chat</a> available. Made with fun.</dd></dl></footer></menu>'));
       document.querySelector('#document-menu').addEventListener('click', function(e) {
         var button = e.target.closest('button');
         if(button){
@@ -1577,48 +2858,45 @@ var DO = {
       });
     },
 
-    showDocumentMenu: function(e) {
+    showDocumentMenu: function showDocumentMenu (e) {
       if (e) {
         e.preventDefault();
         e.stopPropagation();
       }
 
-      var menu = document.querySelector('#document-menu');
-      if (menu && menu.classList && menu.classList.contains("on")) {
-        DO.U.hideDocumentMenu();
-      }
+      DO.U.getResourceInfo().then(function(resourceInfo){
+        var body = document.body;
+        var dMenu = document.querySelector('#document-menu.do');
 
-      var body = document.body;
-      var dMenu = document.querySelector('#document-menu.do');
+        if(dMenu) {
+          var dMenuButton = dMenu.querySelector('button');
+          var dHead = dMenu.querySelector('header');
+          var dInfo = dMenu.querySelector('div');
 
-      if(dMenu) {
-        var dMenuButton = dMenu.querySelector('button');
-        var dHead = dMenu.querySelector('header');
-        var dInfo = dMenu.querySelector('div');
+          dMenuButton.classList.remove('show');
+          dMenuButton.classList.add('hide');
+          dMenuButton.setAttribute('title', 'Hide Menu');
+          dMenuButton.innerHTML = '<i class="fa fa-minus"></i>';
+          dMenu.classList.add('on');
+          body.classList.add('on-document-menu');
 
-        dMenuButton.classList.remove('show');
-        dMenuButton.classList.add('hide');
-        dMenuButton.setAttribute('title', 'Hide Menu');
-        dMenuButton.innerHTML = '<i class="fa fa-minus"></i>';
-        dMenu.classList.add('on');
-        body.classList.add('on-document-menu');
+          auth.showUserSigninSignout(dHead);
+          DO.U.showDocumentDo(dInfo);
+          DO.U.showEmbedData(dInfo);
+          storage.showStorage(dInfo);
+          DO.U.showViews(dInfo);
+          DO.U.showDocumentMetadata(dInfo);
+          if(!body.classList.contains('on-slideshow')) {
+            DO.U.showDocumentItems();
+          }
 
-        DO.U.showUserSigninSignup(dHead);
-        DO.U.showDocumentDo(dInfo);
-        DO.U.showEmbedData(dInfo);
-        DO.U.showStorage(dInfo);
-        DO.U.showViews(dInfo);
-        DO.U.showDocumentMetadata(dInfo);
-        if(!body.classList.contains('on-slideshow')) {
-          DO.U.showToC();
+          document.addEventListener('click', DO.U.eventLeaveDocumentMenu);
         }
-
-        document.addEventListener('click', DO.U.eventLeaveDocumentMenu);
-      }
-      else {
-        DO.U.showDocumentInfo();
-        DO.U.showDocumentMenu();
-      }
+        else {
+          DO.U.showDocumentInfo();
+          DO.U.showDocumentMenu();
+        }
+      });
     },
 
     hideDocumentMenu: function(e) {
@@ -1645,7 +2923,7 @@ var DO = {
       dMenuButton.setAttribute('title', 'Open Menu');
       dMenuButton.innerHTML = '<i class="fa fa-bars"></i>';
 
-      var removeElementsList = ['toc', 'embed-data-entry', 'create-new-document', 'open-document', 'source-view', 'save-as-document', 'user-identity-input', 'resource-browser', 'share-resource', 'reply-to-resource', 'snapshot-document', 'graph-view'];
+      var removeElementsList = ['document-items', 'embed-data-entry', 'create-new-document', 'open-document', 'source-view', 'save-as-document', 'user-identity-input', 'resource-browser', 'share-resource', 'reply-to-resource', 'memento-document', 'graph-view'];
       removeElementsList.forEach(function(id) {
         var element = document.getElementById(id);
         if(element) {
@@ -1655,16 +2933,37 @@ var DO = {
     },
 
     setPolyfill: function() {
-      if (!Element.prototype.matches) Element.prototype.matches = Element.prototype.msMatchesSelector;
-      if (!Element.prototype.closest) Element.prototype.closest = function (selector) {
-        var el = this;
-        while (el) {
-          if (el.matches(selector)) {
-            return el;
+      if (!Element.prototype.matches) {
+        Element.prototype.matches = Element.prototype.msMatchesSelector;
+      }
+
+      if (!Element.prototype.closest) {
+        Element.prototype.closest = function (selector) {
+          var el = this;
+          while (el) {
+            if (el.matches(selector)) {
+              return el;
+            }
+            el = el.parentElement;
           }
-          el = el.parentElement;
-        }
-      };
+        };
+      }
+
+
+      //From https://web.archive.org/web/20180407184826/http://cwestblog.com/2013/02/26/javascript-string-prototype-matchall/
+      if (!String.prototype.matchAll) {
+        String.prototype.matchAll = function(regexp) {
+          var matches = [];
+          this.replace(regexp, function() {
+            var arr = ([]).slice.call(arguments, 0);
+            var extras = arr.splice(-2);
+            arr.index = extras[0];
+            arr.input = extras[1];
+            matches.push(arr);
+          });
+          return matches.length ? matches : null;
+        };
+      }
     },
 
     showXHRProgressHTML: function(http, options) {
@@ -1707,7 +3006,7 @@ var DO = {
         for (var i = 0; i < stylesheets.length; i++) {
           var stylesheet = stylesheets[i];
           var view = stylesheet.getAttribute('title');
-          if(stylesheet.matches('[rel~="alternate"]')) {
+          if(stylesheet.closest('[rel~="alternate"]')) {
             s += '<li><button title="Change to ‘' + view + '’ view">' + view + '</button></li>';
           }
           else {
@@ -1734,11 +3033,11 @@ var DO = {
               e.target.disabled = true;
             }
 
-            document.body.insertAdjacentHTML('beforeend', '<aside id="graph-view" class="do on"><button class="close" title="Close">❌</button><h2>Graph view</h2></aside>');
+            document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="graph-view" class="do on">' + DO.C.Button.Close + '<h2>Graph view</h2></aside>'));
 
             var graphView = document.getElementById('graph-view');
             graphView.addEventListener('click', function(e) {
-              if (e.target.matches('button.close')) {
+              if (e.target.closest('button.close')) {
                 var rv = document.querySelector('#document-views .resource-visualise');
                 if (rv) {
                   rv.disabled = false;
@@ -1749,17 +3048,14 @@ var DO = {
             var optionsNormalisation = DO.C.DOMNormalisation;
             delete optionsNormalisation['skipNodeWithClass'];
 
-            DO.U.showVisualisationGraph(document.location.href, DO.U.getDocument(null, optionsNormalisation), '#graph-view');
+            DO.U.showVisualisationGraph(document.location.href, doc.getDocument(null, optionsNormalisation), '#graph-view');
           }
         });
       }
     },
 
-    initCurrentStylesheet: function(e) {
-      var currentStylesheet = DO.U.getCurrentLinkStylesheet();
-      currentStylesheet = (currentStylesheet) ? currentStylesheet.getAttribute('title') : '';
-      var selected = (e && e.target) ? e.target.textContent.toLowerCase() : currentStylesheet.toLowerCase();
-      var stylesheets = document.querySelectorAll('head link[rel~="stylesheet"][title]:not([href$="do.css"])');
+    updateSelectedStylesheets: function(stylesheets, selected) {
+      var selected = selected.toLowerCase();
 
       for (var j = 0; j < stylesheets.length; j++) {
         (function(stylesheet) {
@@ -1777,6 +3073,15 @@ var DO = {
           }
         })(stylesheets[j]);
       }
+    },
+
+    initCurrentStylesheet: function(e) {
+      var currentStylesheet = DO.U.getCurrentLinkStylesheet();
+      currentStylesheet = (currentStylesheet) ? currentStylesheet.getAttribute('title') : '';
+      var selected = (e && e.target) ? e.target.textContent.toLowerCase() : currentStylesheet.toLowerCase();
+      var stylesheets = document.querySelectorAll('head link[rel~="stylesheet"][title]:not([href$="do.css"])');
+
+      DO.U.updateSelectedStylesheets(stylesheets, selected);
 
       var bd = document.querySelectorAll('#document-views.do button');
       for(var j = 0; j < bd.length; j++) {
@@ -1818,7 +3123,7 @@ var DO = {
         var toc = document.getElementById('table-of-contents');
         toc = (toc) ? toc.parentNode.removeChild(toc) : false;
 
-        DO.U.hideStorage();
+        storage.hideStorage();
 
         shower.initRun();
       }
@@ -1850,8 +3155,8 @@ var DO = {
         var scriptType = {
           'meta-turtle': {
             scriptStart: '<script id="meta-turtle" title="Turtle" type="text/turtle">',
-            cdataStart: DO.C.CDATAStart + '\n',
-            cdataEnd: '\n' + DO.C.CDATAEnd,
+            cdataStart: '# ' + DO.C.CDATAStart + '\n',
+            cdataEnd: '\n# ' + DO.C.CDATAEnd,
             scriptEnd: '</script>'
           },
           'meta-json-ld': {
@@ -1862,8 +3167,8 @@ var DO = {
           },
           'meta-trig': {
             scriptStart: '<script id="meta-trig" title="TriG" type="application/trig">',
-            cdataStart: DO.C.CDATAStart + '\n',
-            cdataEnd: '\n' + DO.C.CDATAEnd,
+            cdataStart: '# ' + DO.C.CDATAStart + '\n',
+            cdataEnd: '\n# ' + DO.C.CDATAEnd,
             scriptEnd: '</script>'
           }
         }
@@ -1884,7 +3189,7 @@ var DO = {
           }
         }
 
-        var embedMenu = '<aside id="embed-data-entry" class="do on tabs"><button class="close" title="Close">❌</button>\n\
+        var embedMenu = '<aside id="embed-data-entry" class="do on tabs">' + DO.C.Button.Close + '\n\
         <h2>Embed Data</h2>\n\
         <nav><ul><li class="selected"><a href="#embed-data-turtle">Turtle</a></li><li><a href="#embed-data-json-ld">JSON-LD</a></li><li><a href="#embed-data-trig">TriG</a></li></ul></nav>\n\
         <div id="embed-data-turtle" class="selected"><textarea placeholder="Enter data in Turtle" name="meta-turtle" cols="80" rows="24">' + ((scriptCurrentData['meta-turtle']) ? scriptCurrentData['meta-turtle'].content : '') + '</textarea><button class="save">Save</button></div>\n\
@@ -1892,7 +3197,7 @@ var DO = {
         <div id="embed-data-trig"><textarea placeholder="Enter data in TriG" name="meta-trig" cols="80" rows="24">' + ((scriptCurrentData['meta-trig']) ? scriptCurrentData['meta-trig'].content : '') + '</textarea><button class="save">Save</button></div>\n\
         </aside>';
 
-        document.body.insertAdjacentHTML('beforeend', embedMenu);
+        document.documentElement.appendChild(DO.U.fragmentFromString(embedMenu));
         document.querySelector('#embed-data-turtle textarea').focus();
         var a = document.querySelectorAll('#embed-data-entry nav a');
         for(var i = 0; i < a.length; i++) {
@@ -1952,47 +3257,6 @@ var DO = {
       edih.addEventListener('click', eventEmbedData);
     },
 
-    showTableOfStuff: function(node) {
-      var disabledInput = '', s = '';
-      if (!DO.C.EditorEnabled) {
-        disabledInput = ' disabled="disabled"';
-      }
-
-      var tableList = [{'content': 'Contents'}, {'figure': 'Figures'}, {'table': 'Tables'}, {'abbr': 'Abbreviations'}];
-      tableList.forEach(function(i) {
-        var key = Object.keys(i)[0];
-        var value = i[key];
-        var checkedInput = '';
-        if(document.getElementById('table-of-'+ key +'s')) {
-          checkedInput = ' checked="checked"';
-        }
-
-        s+= '<li><input id="t-o-' + key +'" type="checkbox"' + disabledInput + checkedInput + '/><label for="t-o-' + key + '">' + value + '</label></li>';
-      });
-
-      node.insertAdjacentHTML('beforeend', '<section id="table-of-stuff" class="do"><h2>Table of Stuff</h2><ul>' + s + '</ul></section>');
-
-      if(DO.C.EditorEnabled) {
-        document.getElementById('table-of-stuff').addEventListener('click', function(e){
-          if (e.target.matches('input')) {
-            var id = e.target.id;
-            var listType = id.slice(4, id.length);
-            if(!e.target.getAttribute('checked')) {
-              DO.U.buildTableOfStuff(listType);
-              e.target.setAttribute('checked', 'checked');
-            }
-            else {
-              var tol = document.getElementById('table-of-'+listType+'s');
-              if(tol) {
-                tol.parentNode.removeChild(tol);
-              }
-              e.target.removeAttribute('checked');
-            }
-          }
-        });
-      }
-    },
-
     htmlEntities: function(s) {
       return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     },
@@ -2000,15 +3264,15 @@ var DO = {
     showDocumentMetadata: function(node) {
       if(document.querySelector('#document-metadata')) { return; }
 
-      var content = document.body;
+      var content = DO.U.selectArticleNode(document);
       var count = DO.U.contentCount(content);
       var authors = [], contributors = [], editors = [];
 
-      var data = DO.U.getDocument();
+      var data = doc.getDocument();
       var subjectURI = window.location.origin + window.location.pathname;
       var options = {'contentType': 'text/html', 'subjectURI': subjectURI };
 
-      DO.U.getGraphFromData(data, options).then(
+      graph.getGraphFromData(data, options).then(
         function(i){
           var g = SimpleRDF(DO.C.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
 
@@ -2069,8 +3333,8 @@ var DO = {
         });
     },
 
-    contentCount: function(c) {
-      var content = c.textContent.trim();
+    contentCount: function contentCount (c) {
+      var content = DO.U.fragmentFromString(doc.domToString(c)).textContent.trim();
       var contentCount = { readingTime:1, words:0, chars:0, lines:0, pages:{A4:1, USLetter:1}, bytes:0 };
       if (content.length > 0) {
         var lineHeight = c.ownerDocument.defaultView.getComputedStyle(c, null)["line-height"];
@@ -2087,36 +3351,98 @@ var DO = {
       return contentCount;
     },
 
-    showToC: function() {
-      if(document.querySelector('#toc')) { return; }
+    showDocumentItems: function() {
+      var documentItems = document.getElementById('document-items');
+
+      if(documentItems) { return; }
 
       var sections = document.querySelectorAll('h1 ~ div > section:not([class~="slide"]):not([id^=table-of])');
-
       if (sections.length > 0) {
-        var s = '';
-        var sortable = '';
+        DO.U.showTableOfStuff(documentItems);
 
-        if(DO.C.SortableList && DO.C.EditorEnabled) {
-          sortable = ' sortable';
-        }
-
-        s = '<aside id="toc" class="do on' + sortable + '"><button class="close" title="Close">❌</button></aside>';
-        document.body.insertAdjacentHTML('beforeend', s);
-
-        var toc = document.getElementById('toc');
-
-        DO.U.showTableOfStuff(toc);
-
-        s = '<section id="table-of-contents-i" class="do"><h2>Table of Contents</h2><ol class="toc' + sortable + '">';
-        s += DO.U.getListOfSections(sections, DO.C.SortableList);
-        s += '</ol></section>';
-        toc.insertAdjacentHTML('beforeend', s);
+        DO.U.showTableOfContents(documentItems, sections)
 
         if(DO.C.SortableList && DO.C.EditorEnabled) {
           DO.U.sortToC();
         }
       }
     },
+
+    showTableOfStuff: function(node) {
+      if (!node) {
+        node = document.getElementById('document-items');
+        if (!node) {
+          document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="document-items" class="do on">' + DO.C.Button.Close + '</aside>'));
+          node = document.getElementById('document-items');
+        }
+      }
+
+      var disabledInput = '', s = [];
+      if (!DO.C.EditorEnabled) {
+        disabledInput = ' disabled="disabled"';
+      }
+
+      var tableList = [{'content': 'Contents'}, {'figure': 'Figures'}, {'table': 'Tables'}, {'abbr': 'Abbreviations'}];
+      tableList.forEach(function(i) {
+        var key = Object.keys(i)[0];
+        var value = i[key];
+        var checkedInput = '';
+
+        var tL = document.getElementById('table-of-'+ key +'s');
+
+        if(tL) {
+          checkedInput = ' checked="checked"';
+
+          DO.U.buildTableOfStuff(key);
+        }
+
+        s.push('<li><input id="t-o-' + key +'" type="checkbox"' + disabledInput + checkedInput + '/><label for="t-o-' + key + '">' + value + '</label></li>');
+      });
+
+      if (s.length > 0) {
+        node.insertAdjacentHTML('beforeend', '<section id="table-of-stuff" class="do"><h2>Table of Stuff</h2><ul>' + s.join('') + '</ul></section>');
+
+        if(DO.C.EditorEnabled) {
+          document.getElementById('table-of-stuff').addEventListener('click', function(e){
+            if (e.target.closest('input')) {
+              var id = e.target.id;
+              var listType = id.slice(4, id.length);
+              if(!e.target.getAttribute('checked')) {
+                DO.U.buildTableOfStuff(listType);
+                e.target.setAttribute('checked', 'checked');
+              }
+              else {
+                var tol = document.getElementById('table-of-'+listType+'s');
+                if(tol) {
+                  tol.parentNode.removeChild(tol);
+                }
+                e.target.removeAttribute('checked');
+              }
+            }
+          });
+        }
+      }
+    },
+
+    showTableOfContents: function(node, sections, options) {
+      options = options || {}
+      var sortable = (DO.C.SortableList && DO.C.EditorEnabled) ? ' sortable' : '';
+
+      if (!node) {
+        node = document.getElementById('document-items');
+        if (!node) {
+          document.body.insertAdjacentHTML('beforeend', '<aside id="document-items" class="do on">' + DO.C.Button.Close + '</aside>');
+          node = document.getElementById('document-items');
+        }
+      }
+
+      var toc = '<section id="table-of-contents-i" class="do"' + sortable + '><h2>Table of Contents</h2><ol class="toc' + sortable + '">';
+      toc += DO.U.getListOfSections(sections, DO.C.SortableList);
+      toc += '</ol></section>';
+
+      node.insertAdjacentHTML('beforeend', toc);
+    },
+
 
     sortToC: function() {
     },
@@ -2174,11 +3500,17 @@ var DO = {
               break;
           }
 
+          elementId = 'table-of-' + element + 's';
+
+          //Refresh
+          var tId = document.getElementById(elementId);
+          if(tId) { tId.parentNode.removeChild(tId); }
+
           if (element == 'abbr') {
-            s += '<section id="table-of-'+ element +'s">';
+            s += '<section id="' + elementId + '">';
           }
           else {
-            s += '<nav id="table-of-'+ element +'s">';
+            s += '<nav id="' + elementId + '">';
           }
           s += '<h2>' + tableHeading + '</h2>';
           s += '<div><ol class="toc">';
@@ -2189,10 +3521,9 @@ var DO = {
           else {
             if (element == 'abbr') {
               if (e.length > 0) {
-                [].slice.call(e).sort(function(a, b) {
-                  var textA = a.textContent;
-                  var textB = b.textContent;
-                  return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+                e = [].slice.call(e);
+                e.sort(function(a, b) {
+                  return a.textContent.toLowerCase().localeCompare(b.textContent.toLowerCase());
                 });
               }
 
@@ -2226,38 +3557,148 @@ var DO = {
         }
       });
 
-      //XXX: Tries to find a suitable place to insert.
-      var i = document.getElementById('document-status');
-      if (i) { i.insertAdjacentHTML('afterend', s); }
-      else {
-        i = document.getElementById('introduction');
-        if (i) { i.insertAdjacentHTML('beforebegin', s); }
-        else {
-          i = document.getElementById('prologue');
-          if (i) { i.insertAdjacentHTML('beforebegin', s); }
-          else {
-            i = document.getElementById('keywords');
-            if (i) { i.insertAdjacentHTML('afterend', s); }
-            else {
-              i = document.getElementById('categories-and-subject-descriptors');
-              if (i) { i.insertAdjacentHTML('afterend', s); }
-              else {
-                i = document.getElementById('authors');
-                if (i) { i.insertAdjacentHTML('afterend', s); }
-                else {
-                  i = document.querySelector('article').insertAdjacentHTML('afterbegin', s);
-                }
-              }
+      DO.U.insertDocumentLevelHTML(document, s, { 'id': elementId });
+    },
+
+    setDocumentStatus: function(rootNode, options) {
+      rootNode = rootNode || document;
+      options = options || {};
+
+      var s = DO.U.getDocumentStatusHTML(rootNode, options);
+
+      rootNode = DO.U.insertDocumentLevelHTML(rootNode, s, options);
+
+      return rootNode;
+    },
+
+    getDocumentStatusHTML: function(rootNode, options) {
+      rootNode = rootNode || document;
+      options = options || {};
+      options['mode'] = ('mode' in options) ? options.mode : '';
+      options['id'] = ('id' in options) ? options.id : 'document-status';
+      var subjectURI = ('subjectURI' in options) ? ' about="' + options.subjectURI + '"' : '';
+      var typeLabel = '', typeOf = '';
+
+      switch(options.type) {
+        default:
+          definitionTitle = 'Document Status';
+          break;
+        case 'ldp:ImmutableResource':
+          definitionTitle = 'Resource State';
+          typeLabel = 'Immutable';
+          typeOf = ' typeof="' + options.type + '"';
+          break;
+      }
+
+      var id = ' id="' + options.id + '"';
+      var c = ('class' in options && options.class.length > 0) ? ' class="' + options.class + '"' : '';
+      // var datetime = ('datetime' in options) ? options.datetime : util.getDateTimeISO();
+
+      var dd = '<dd><span' + subjectURI + typeOf + '>' + typeLabel + '</span></dd>';
+
+      var s = '';
+      var dl = rootNode.querySelector('#' + options.id);
+
+      //FIXME: mode should be an array of operations.
+
+      //TODO: s/update/append
+      switch (options.mode) {
+        case 'create': default:
+          s = '<dl'+c+id+'><dt>' + definitionTitle + '</dt>' + dd + '</dl>';
+          break;
+
+        case 'update':
+          if(dl) {
+            var clone = dl.cloneNode(true);
+            dl.parentNode.removeChild(dl);
+            clone.insertAdjacentHTML('beforeend', dd);
+            s = clone.outerHTML;
+          }
+          else  {
+            s = '<dl'+c+id+'><dt>' + definitionTitle + '</dt>' + dd + '</dl>';
+          }
+          break;
+
+        case 'delete':
+          if(dl) {
+            var clone = dl.cloneNode(true);
+            dl.parentNode.removeChild(dl);
+
+            var t = clone.querySelector('[typeof="' + options.type + '"]');
+            if (t) {
+              t.closest('dl').removeChild(t.parentNode);
             }
+
+            var cloneDD = clone.querySelectorAll('#' + options.id + ' dd');
+            if (cloneDD.length > 0) {
+              s = clone.outerHTML;
+            }
+          }
+          break;
+      }
+
+// console.log(s);
+      return s;
+    },
+
+    insertDocumentLevelHTML: function(rootNode, h, options) {
+      rootNode = rootNode || document;
+      options = options || {};
+
+      options['id'] = ('id' in options) ? options.id : DO.C.DocumentItems[DO.C.DocumentItems.length-1];
+
+      var item = DO.C.DocumentItems.indexOf(options.id);
+
+      var article = DO.U.selectArticleNode(rootNode);
+
+      h = '\n\
+' + h;
+
+      if(item > -1) {
+        for(var i = item; i >= 0; i--) {
+          var node = rootNode.querySelector('#' + DO.C.DocumentItems[i]);
+
+          if (node) {
+            node.insertAdjacentHTML('afterend', h);
+            break;
+          }
+          else if (i == 0) {
+            var a = article.querySelector('h1');
+
+            if (a) {
+              a.insertAdjacentHTML('afterend', h);
+            }
+            else {
+              article.insertAdjacentHTML('afterbegin', h);
+            }
+            break;
           }
         }
       }
+      else {
+        article.insertAdjacentHTML('afterbegin', h);
+      }
+
+      return rootNode;
+    },
+
+
+    selectArticleNode: function(node) {
+      var selectors = [
+        'main > article',
+        'main',
+        'body'
+      ];
+
+      var x = node.querySelectorAll(selectors.join(','));
+      return x[x.length - 1];
     },
 
     buttonClose: function() {
       document.addEventListener('click', function(e) {
-        if (e.target.matches('button.close')) {
-          var parent = e.target.parentNode;
+        var button = e.target.closest('button.close')
+        if (button) {
+          var parent = button.parentNode;
           parent.parentNode.removeChild(parent);
         }
       });
@@ -2276,7 +3717,7 @@ var DO = {
     },
 
     updateDocumentTitle: function(e) {
-      if (!e.target.matches('h1')) {
+      if (!e.target.closest('h1')) {
         var h1 = document.querySelector('h1');
         if (h1) {
           document.title = h1.textContent.trim();
@@ -2290,36 +3731,6 @@ var DO = {
 
     b64Toutf8: function(s) {
       return unescape(decodeURIComponent(window.atob(s)));
-    },
-
-    encodeString: function(string) {
-      return encodeURIComponent(string).replace(/'/g,"%27").replace(/"/g,"%22");
-    },
-
-    decodeString: function(string) {
-      return decodeURIComponent(string.replace(/\+/g,  " "));
-    },
-
-    uniqueArray: function(a){
-      var n = {}, r = [];
-      for(var i = 0; i < a.length; i++) {
-        if (!n[a[i]]) {
-          n[a[i]] = true;
-          r.push(a[i]);
-        }
-      }
-      return r;
-    },
-
-    stripFragmentFromString: function(string) {
-      if (typeof string === "string") {
-        var stringIndexFragment = string.indexOf('#');
-
-        if (stringIndexFragment >= 0) {
-          string = string.substring(0, stringIndexFragment);
-        }
-      }
-      return string;
     },
 
     getSelectorSign: function(node) {
@@ -2340,7 +3751,7 @@ var DO = {
           }
         }
 
-        return DO.C.SelectorSign[nodeName + nodeId] || DO.C.SelectorSign["*"];
+        return DO.C.SelectorSign[nodeName + nodeId] || DO.C.SelectorSign[nodeName] || DO.C.SelectorSign["*"];
       }
 
       return DO.C.SelectorSign["*"];
@@ -2381,6 +3792,47 @@ var DO = {
       }
     },
 
+    showRobustLinks: function() {
+      document.querySelectorAll('[data-versionurl], [data-originalurl]').forEach(function(i){
+        if (i.nextElementSibling && i.nextElementSibling.classList.contains('do') && i.nextElementSibling.classList.contains('robustlinks')) {
+          return;
+        }
+
+        var href = i.getAttribute('href');
+
+        var originalurl = i.getAttribute('data-originalurl');
+        originalurl = (originalurl) ? originalurl.trim() : undefined;
+        originalurl = (originalurl) ? '<dt>Original</dt><dd><a href="' + originalurl + '" target="_blank">' + originalurl + '</a></dd>' : '';
+
+        var versionurl = i.getAttribute('data-versionurl');
+        verionurl = (versionurl) ? versionurl.trim() : undefined;
+        var versiondate = i.getAttribute('data-versiondate');
+        var nearlinkdateurl = '';
+        if (versiondate) {
+          versiondate = versiondate.trim();
+          versiondateNumeric = versiondate.replace(/\D/g, '');
+          nearlinkdateurl = 'http://timetravel.mementoweb.org/memento/' + versiondateNumeric + '/' + href;
+          nearlinkdateurl = '<dt>Near Link Date</dt><dd><a href="' + nearlinkdateurl + '" target="_blank">' + versiondate + '</a></dd>'
+        }
+        else if (versionurl) {
+          versiondate = versionurl;
+        }
+
+        versionurl = (versionurl) ? '<dt>Version</dt><dd><a href="' + versionurl + '" target="_blank">' + versiondate + '</a></dd>' : '';
+
+        i.insertAdjacentHTML('afterend', '<span class="do robustlinks"><button title="Robust Links">🔗<span></span></button><dl>' + originalurl + versionurl + nearlinkdateurl + '</dl></span>');
+      });
+
+      document.querySelectorAll('.do.robustlinks').forEach(function(i){
+        i.addEventListener('mouseenter', function(e){
+          e.target.classList.add('on');
+        });
+        i.addEventListener('mouseleave', function(e){
+          e.target.classList.remove('on');
+        });
+      });
+    },
+
     getOffset: function(el) {
       var box = el.getBoundingClientRect();
 
@@ -2399,182 +3851,14 @@ var DO = {
       return aString.split("/");
     },
 
-    getGraphFromData: function(data, options) {
-      options = options || {};
-      if (!('contentType' in options)) {
-        options['contentType'] = 'text/turtle';
-      }
-      if (!('subjectURI' in options)) {
-        options['subjectURI'] = '_:dokieli';
-      }
-
-      return SimpleRDF.parse(data, options['contentType'], options['subjectURI']);
-    },
-
-    getGraph: function(url) {
-      return SimpleRDF(DO.C.Vocab, url, null, ld.store).get();
-    },
-
-    serializeGraph: function(g, options) {
-      options = options || {};
-      if (!('contentType' in options)) {
-        options['contentType'] = 'text/turtle';
-      }
-
-      return ld.store.serializers[options.contentType].serialize(g._graph);
-    },
-
-    serializeData: function(data, fromContentType, toContentType, options) {
-      if (fromContentType == toContentType) {
-        return Promise.resolve(data);
-      }
-      else {
-        var o = {
-          'contentType': fromContentType,
-          'subjectURI': options.subjectURI
-        };
-        return DO.U.getGraphFromData(data, o).then(
-          function(g) {
-            var o = {
-              'contentType': toContentType
-            };
-            return DO.U.serializeGraph(g, o).then(
-              function(i){
-                switch(toContentType) {
-                  case 'application/ld+json':
-                    var x = JSON.parse(i);
-                    x[0]["@context"] = ["http://www.w3.org/ns/anno.jsonld", {"as": "https://www.w3.org/ns/activitystreams"}];
-                    x[0]["@id"] = (x[0]["@id"].slice(0,2) == '_:') ? '' : x[0]["@id"];
-                    return JSON.stringify(x) + '\n';
-                  default:
-                    return i;
-                }
-              }
-            );
-          },
-          function(reason) {
-            return reason;
-          }
-        );
-      }
-    },
-
-    getDoctype: function() {
-      /* Get DOCTYPE from http://stackoverflow.com/a/10162353 */
-      var node = document.doctype;
-      var doctype = '';
-      if (node !== null) {
-        doctype = "<!DOCTYPE "
-          + node.name
-          + (node.publicId ? ' PUBLIC "' + node.publicId + '"' : '')
-          + (!node.publicId && node.systemId ? ' SYSTEM' : '')
-          + (node.systemId ? ' "' + node.systemId + '"' : '')
-          + '>';
-      }
-      return doctype;
-    },
-
-    getDocument: function(cn, options) {
-      var node = cn || document.documentElement.cloneNode(true);
-      options = options || DO.C.DOMNormalisation;
-
-      var doctype = DO.U.getDoctype();
-      var s =  (doctype.length > 0) ? doctype + "\n" : '';
-      s += DO.U.domToString(node, options);
-      return s;
-    },
-
-    domToString: function(node, options) {
-      options = options || {};
-      var selfClosing = [];
-      if ('selfClosing' in options) {
-        options.selfClosing.split(' ').forEach(function (n) {
-          selfClosing[n] = true;
-        });
-      }
-      var skipAttributes = []
-      if ('skipAttributes' in options) {
-        options.skipAttributes.split(' ').forEach(function (n) {
-          skipAttributes[n] = true;
-        });
-      }
-
-      var noEsc = [false];
-
-      var dumpNode = function(node) {
-        var out = '';
-        if (typeof node.nodeType === 'undefined') return out
-        if (1 === node.nodeType) {
-          if (node.hasAttribute('class') && 'classWithChildText' in options && node.matches(options.classWithChildText.class)) {
-            out += node.querySelector(options.classWithChildText.element).textContent;
-          }
-          else if (!('skipNodeWithClass' in options && node.matches('.' + options.skipNodeWithClass))) {
-            var ename = node.nodeName.toLowerCase();
-            out += "<" + ename ;
-
-            var attrList = [];
-            for (var i = node.attributes.length - 1; i >= 0; i--) {
-              var atn = node.attributes[i];
-              if (skipAttributes[atn.name]) continue;
-              if (/^\d+$/.test(atn.name)) continue;
-              if (atn.name == 'class' && 'replaceClassItemWith' in options) {
-                atn.value.split(' ').forEach(function(aValue){
-                  if(options.replaceClassItemWith.source.split(' ').indexOf(aValue) > -1) {
-                    var re = new RegExp(aValue, 'g');
-                    atn.value = atn.value.replace(re, options.replaceClassItemWith.target).trim();
-                  }
-                });
-              }
-              if (!(atn.name == 'class' && 'skipClassWithValue' in options && options.skipClassWithValue == atn.value)) {
-                attrList.push(atn.name + "=\"" + atn.value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;') + "\"");
-              }
-            }
-
-            if (attrList.length > 0) {
-              if('sortAttributes' in options && options.sortAttributes) {
-                attrList.sort(function (a, b) {
-                  return a.toLowerCase().localeCompare(b.toLowerCase());
-                });
-              }
-              out += ' ' + attrList.join(' ');
-            }
-
-            if (selfClosing[ename]) { out += " />"; }
-            else {
-              out += '>';
-              out += (ename == 'html') ? "\n  " : '';
-              noEsc.push(ename === "style" || ename === "script");
-              for (var i = 0; i < node.childNodes.length; i++) out += dumpNode(node.childNodes[i]);
-              noEsc.pop();
-              out += (ename == 'body') ? '</' + ename + '>' + "\n" : '</' + ename + '>';
-            }
-          }
-        }
-        else if (8 === node.nodeType) {
-          //FIXME: If comments are not tabbed in source, a new line is not prepended
-          out += "<!--" + node.nodeValue + "-->";
-        }
-        else if (3 === node.nodeType || 4 === node.nodeType) {
-          //XXX: Remove new lines which were added after DOM ready
-          var nl = node.nodeValue.replace(/\n+$/, '');
-          out += noEsc[noEsc.length - 1] ? nl : nl.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-        }
-        else {
-          console.log("Warning; Cannot handle serialising nodes of type: " + node.nodeType);
-        }
-        return out;
-      };
-
-      return dumpNode(node);
-    },
-
     exportAsHTML: function() {
-      var data = DO.U.getDocument();
+      var data = doc.getDocument();
       //XXX: Encodes strings as UTF-8. Consider storing bytes instead?
       var blob = new Blob([data], {type:'text/html;charset=utf-8'});
       var pattern = /[^\w]+/ig;
-      var title = document.querySelector('h1').textContent.toLowerCase().replace(pattern, '-') || "index";
-      var timestamp = DO.U.getDateTimeISO().replace(pattern, '') || "now";
+      var h1 = document.querySelector('h1');
+      var title = (h1) ? h1.textContent.toLowerCase().replace(pattern, '-') : "index";
+      var timestamp = util.getDateTimeISO().replace(pattern, '') || "now";
 
       var fileName = title + '.' + timestamp + '.html';
 
@@ -2588,13 +3872,12 @@ var DO = {
       document.body.removeChild(a);
     },
 
-    snapshotAtEndpoint: function(e, iri, endpoint, noteData, options){
+    snapshotAtEndpoint: function snapshotAtEndpoint (e, iri, endpoint, noteData, options = {}) {
       iri = iri || window.location.origin + window.location.pathname;
       endpoint = endpoint || 'https://pragma.archivelab.org';
-      options = options || {};
 
       if(!('contentType' in options)){
-        options["contentType"] = 'application/json';
+        options['contentType'] = 'application/json';
       }
 
       noteData = noteData || {
@@ -2626,98 +3909,199 @@ var DO = {
       //   noteData.annotation["message"] = note;
       // }
 
-      if(typeof e !== 'undefined' && e.target.closest('button')){
-        var archiveNode = e.target.closest('button').parentNode;
-        archiveNode.insertAdjacentHTML('beforeend', ' <span class="progress"><i class="fa fa-circle-o-notch fa-spin fa-fw"></i></span>');
+      var button = e.target.closest('button');
+
+      if (typeof e !== 'undefined' && button) {
+        if (button.disabled) { return; }
+        else { button.disabled = true; }
+
+        var archiveNode = button.parentNode;
+        archiveNode.insertAdjacentHTML('beforeend', ' <span class="progress"><i class="fa fa-circle-o-notch fa-spin fa-fw"></i> Archiving in progress.</span>');
       }
 
-      DO.U.postResource(endpoint, '', JSON.stringify(noteData), options.contentType, '', {'noCredentials': true}).then(
-        function(i){
-          try {
-            var response = JSON.parse(i.xhr.responseText);
+      options.noCredentials = true
 
-            switch(endpoint) {
-              case 'https://pragma.archivelab.org': default:
-                if('wayback_id' in response && response.wayback_id.length > 0){
-                  var location = 'https://web.archive.org' + response.wayback_id;
-                  archiveNode.innerHTML = '<i class="fa fa-archive fa-fw"></i> Archived at <a target="_blank" href="' + location + '">' + location + '</a>';
-                }
-                else {
-                  archiveNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to archive. Try later.';
-                }
+      var progress = archiveNode.querySelector('.progress')
 
-                break;
-            }
+      return fetcher.postResource(endpoint, '', JSON.stringify(noteData), options.contentType, null, options)
 
-          }catch(e){
-            archiveNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to archive. Try later.';
+        .then(response => response.json())
+
+        .then(response => {
+          switch (endpoint) {
+            case 'https://pragma.archivelab.org':
+            default:
+              if (response['wayback_id']) {
+                let location = 'https://web.archive.org' + response.wayback_id
+
+                progress
+                  .innerHTML = '<i class="fa fa-archive fa-fw"></i> Archived at <a target="_blank" href="' +
+                  location + '">' + location + '</a>'
+              } else {
+                progress
+                  .innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Archive unavailable. Please try later.'
+              }
+
+              break
           }
-        },
-        function(reason){
-          archiveNode.querySelector('.progress').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to archive. Try later.';
-        }
-      );
+        })
+
+        .catch(() => {
+          progress
+            .innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Archive unavailable. Please try later.'
+        })
     },
 
-    snapshotDocument: function(e) {
+    mementoDocument: function(e) {
       if(typeof e !== 'undefined') {
-        e.target.disabled = true;
+        var b = e.target.closest('button');
+        if(b.disabled) { return; }
+        else { b.disabled = true; }
       }
 
-      var iri = DO.U.stripFragmentFromString(document.location.href);
+      var buttonDisabled = '';
+      if (document.location.protocol === 'file:') {
+        buttonDisabled = ' disabled="disabled"';
+      }
 
-      document.body.insertAdjacentHTML('beforeend', '<aside id="snapshot-document" class="do on"><button class="close" title="Close">❌</button><h2>Snapshot Document</h2><p><code>' + iri + '</code> will be snapshot. Note that behaviour differ for each action. See the links for more information.</p><ul><li><button class="export-as-html">Export</button> this article as HTML and save to file.</li><li><a href="http://web.archive.org/" target="_blank">Internet Archive</a>: <button class="snapshot-internet-archive">Capture</button> all crawlable resources referenced in this article.</li></ul></aside>');
+      var iri = uri.stripFragmentFromString(document.location.href);
 
-      var snapshotDocument = document.getElementById('snapshot-document');
-      snapshotDocument.addEventListener('click', function(e) {
-        if (e.target.matches('button.close')) {
-          document.querySelector('#document-do .resource-snapshot').disabled = false;
+      var li = [];
+      li.push('<li><button class="create-version"' + buttonDisabled +
+        ' title="Version this article"><i class="fa fa-code-fork fa-2x"></i>Version</button></li>');
+      li.push('<li><button class="create-immutable"' + buttonDisabled +
+        ' title="Make this article immutable and version it"><i class="fa fa-snowflake-o fa-2x"></i>Immutable</button></li>');
+      li.push('<li><button class="snapshot-internet-archive"' + buttonDisabled +
+        ' title="Capture with Internet Archive"><i class="fa fa-archive fa-2x"></i>Internet Archive</button></li>');
+      li.push('<li><button class="export-as-html" title="Export and save to file"><i class="fa fa-external-link fa-2x"></i>Export</button></li>');
+
+      e.target.closest('button').insertAdjacentHTML('afterend', '<ul id="memento-items" class="on">' + li.join('') + '</ul>');
+
+      var mementoItems = document.getElementById('memento-items');
+
+      DO.U.showTimeMap();
+
+      mementoItems.addEventListener('click', function(e) {
+        if (e.target.closest('button.resource-save') ||
+            e.target.closest('button.create-version') || 
+            e.target.closest('button.create-immutable')) {
+          DO.U.resourceSave(e);
         }
 
-        if (e.target.matches('button.export-as-html')) {
+        if (e.target.closest('button.export-as-html')) {
           DO.U.exportAsHTML(e);
         }
 
-        if(e.target.matches('button.snapshot-internet-archive')){
-          var options = {
-            "contentType": 'application/json'
-          };
-          DO.U.snapshotAtEndpoint(e, iri, 'https://pragma.archivelab.org', '', options);
+        if (e.target.closest('button.snapshot-internet-archive')){
+          DO.U.snapshotAtEndpoint(e, iri, 'https://pragma.archivelab.org', '', {'contentType': 'application/json'});
         }
       });
     },
 
-    showDocumentDo: function(node) {
-      if(document.querySelector('#document-do')) { return; }
+    showTimeMap: function(node, url) {
+      url = url || DO.C.OriginalResourceInfo['timemap']
+      if(!url) { return; }
+
+      var elementId = 'memento-document';
+
+      var displayMemento = '';
+
+      DO.U.getTriplesFromGraph(url)
+        .then(triples => {
+// console.log(triples)
+          if (!node) {
+            node = document.getElementById(elementId);
+            if(!node) {
+              document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="' + elementId + '" class="do on"><h2>Memento</h2>' + DO.C.Button.Close + '</aside>'));
+              node = document.getElementById(elementId);
+            }
+          }
+
+          var timemap = node.querySelector('.timemap');
+          if (timemap) {
+            node.removeChild(timemap);
+          }
+
+          triples = DO.U.sortTriples(triples, { sortBy: 'object' });
+
+          var items = [];
+          triples.forEach(function(t){
+            var s = t.subject.nominalValue;
+            var p = t.predicate.nominalValue;
+            var o = t.object.nominalValue;
+
+            if(p === DO.C.Vocab['schemadateCreated']) {
+              items.push('<li><a href="' + s + '" target="_blank">' + o + '</a></li>');
+            }
+          });
+
+          var html = '<dl class="timemap"><dt>TimeMap</dt><dd><ul>' + items.join('') + '</ul></dd></dl>';
+
+          node.insertAdjacentHTML('beforeend', html);
+        })
+        .catch(error => {
+// console.error(error)
+        });
+    },
+
+    updateTimeMap: function(url, insertBGP, options) {
+      return fetcher.patchResource(url, null, insertBGP);
+    },
+
+    showDocumentDo: function showDocumentDo (node) {
+      if (document.getElementById('document-do')) { return; }
 
       var buttonDisabled = '';
-      if (document.location.protocol == 'file:') {
-        buttonDisabled = ' disabled="disabled"';
-      }
 
       var s = '<section id="document-do" class="do"><h2>Do</h2><ul>';
       s += '<li><button class="resource-share" title="Share resource"><i class="fa fa-bullhorn fa-2x"></i>Share</button></li>';
       s += '<li><button class="resource-reply" title="Reply"><i class="fa fa-reply fa-2x"></i>Reply</button></li>';
+
       if (DO.C.EditorAvailable) {
-        var reviewArticle = (DO.C.EditorEnabled && DO.C.User.Role == 'review') ? DO.C.Editor.DisableReviewButton : DO.C.Editor.EnableReviewButton;
+        var reviewArticle = (DO.C.EditorEnabled && DO.C.User.Role == 'review')
+          ? DO.C.Editor.DisableReviewButton
+          : DO.C.Editor.EnableReviewButton;
         s += '<li>' + reviewArticle + '</li>';
       }
+
+      buttonDisabled = (DO.C.User.IRI) ? '' : ' disabled="disabled"';
+
+      var activitiesIcon = 'fa-bolt';
+
+      if (DO.C.User['ContactsOutboxChecked']) {
+        activitiesIcon = 'fa-circle-o';
+        buttonDisabled = ' disabled="disabled"';
+      }
+
+      s += '<li><button class="resource-activities"' + buttonDisabled +
+        ' title="Show activities"><i class="fa ' + activitiesIcon + ' fa-2x"></i></i>Activities</button></li>';
       s += '<li><button class="resource-new" title="Create new article"><i class="fa fa-lightbulb-o fa-2x"></i></i>New</button></li>';
       s += '<li><button class="resource-open" title="Open article"><i class="fa fa-coffee fa-2x"></i></i>Open</button></li>';
-      s += '<li><button class="resource-save"'+buttonDisabled+' title="Save article"><i class="fa fa-life-ring fa-2x"></i>Save</button></li>';
+
+      buttonDisabled = (document.location.protocol === 'file:') ? ' disabled="disabled"' : '';
+
+      s += '<li><button class="resource-save"' + buttonDisabled +
+        ' title="Save article"><i class="fa fa-life-ring fa-2x"></i>Save</button></li>';
+
       s += '<li><button class="resource-save-as" title="Save as article"><i class="fa fa-paper-plane-o fa-2x"></i>Save As</button></li>';
-      s += '<li><button class="resource-snapshot" title="Snapshot article"><i class="fa fa-external-link fa-2x"></i>Snapshot</button></li>';
-      s += '<li><button class="resource-print" title="Print article"><i class="fa fa-print fa-2x"></i>Print</button></li>';
+      s += '<li><button class="resource-memento" title="Memento article"><i class="fa fa-clock-o fa-2x"></i>Memento</button></li>';
+
       if (DO.C.EditorAvailable) {
-        var editFile = (DO.C.EditorEnabled && DO.C.User.Role == 'author') ? DO.C.Editor.DisableEditorButton : DO.C.Editor.EnableEditorButton;
+        var editFile = (DO.C.EditorEnabled && DO.C.User.Role == 'author')
+          ? DO.C.Editor.DisableEditorButton
+          : DO.C.Editor.EnableEditorButton;
         s += '<li>' + editFile + '</li>';
       }
-      s += '<li><button class="resource-source"'+buttonDisabled+' title="Edit article source code"><i class="fa fa-code fa-2x"></i>Source</button></li>';
+
+      s += '<li><button class="resource-source"' + buttonDisabled +
+        ' title="Edit article source code"><i class="fa fa-code fa-2x"></i>Source</button></li>';
       s += '</ul></section>';
+
       node.insertAdjacentHTML('beforeend', s);
 
       var dd = document.getElementById('document-do');
-      dd.addEventListener('click', function(e) {
+
+      dd.addEventListener('click', e => {
         if (e.target.closest('.resource-share')) {
           DO.U.shareResource(e);
         }
@@ -2744,6 +4128,10 @@ var DO = {
           }
         }
 
+        if (e.target.closest('.resource-activities')) {
+          DO.U.showContactsActivities(e);
+        }
+
         if (e.target.closest('.resource-new')) {
           DO.U.createNewDocument(e);
         }
@@ -2752,268 +4140,478 @@ var DO = {
           DO.U.openDocument(e);
         }
 
-        if (e.target.closest('.resource-save')) {
-          var url = window.location.origin + window.location.pathname;
-          var data = DO.U.getDocument();
-          DO.U.putResource(url, data).then(
-            function(i) {
-              DO.U.showActionMessage(document.getElementById('document-menu'), 'Saved');
-              DO.U.hideDocumentMenu(e);
-            },
-            function(reason) {
-              console.log(reason);
-              switch(reason.xhr.status) {
-                default: case 405:
-                  e.target.disabled = true;
-                  DO.U.showActionMessage(document.getElementById('document-menu'), "Server doesn't allow this resource to be rewritten.");
-                  break;
-                case 401:
-                  DO.U.showActionMessage(document.getElementById('document-menu'), "Need to authenticate before saving.");
-                  break;
-                case 403:
-                  DO.U.showActionMessage(document.getElementById('document-menu'), "You are not authorized to save.");
-                  break;
-              }
-            }
-          );
-        }
-
         if (e.target.closest('.resource-source')) {
           DO.U.viewSource(e);
+        }
+
+        if (e.target.closest('.resource-save')){
+          DO.U.resourceSave(e);
         }
 
         if (e.target.closest('.resource-save-as')) {
           DO.U.saveAsDocument(e);
         }
 
-        if (e.target.closest('.resource-snapshot')) {
-          DO.U.snapshotDocument(e);
-        }
-
-        if (e.target.closest('.resource-print')) {
-          DO.U.hideDocumentMenu(e);
-          window.print();
-          return false;
+        if (e.target.closest('.resource-memento')) {
+          DO.U.mementoDocument(e);
         }
       });
     },
 
-    replyToResource: function(e, iri){
-      iri = iri || window.location.origin + window.location.pathname;
-      e.target.disabled = true;
+    resourceSave: function(e, options) {
+      var url = window.location.origin + window.location.pathname;
+      var data = doc.getDocument();
+      options = options || {};
 
-      document.body.insertAdjacentHTML('beforeend', '<aside id="reply-to-resource" class="do on"><button class="close" title="Close">❌</button><h2>Reply to this</h2><div id="reply-to-resource-input"><p>Reply to <code>' + iri +'</code></p><ul><li><p><label for="reply-to-resource-note">Quick reply (plain text note)</label></p><p><textarea id="reply-to-resource-note" rows="10" cols="40" name="reply-to-resource-note" placeholder="Great article!"></textarea></p></li><li><label for="reply-to-resource-license">License</label> <select id="reply-to-resource-license" name="reply-to-resource-license">' + DO.U.getLicenseOptionsHTML() + '</select></li></ul></div>');
+      DO.U.getResourceInfo(data, options).then(function(i) {
+        if (e.target.closest('.create-version')) {
+          DO.U.createMutableResource(url);
+        }
+        else if (e.target.closest('.create-immutable')) {
+          DO.U.createImmutableResource(url);
+        }
+        else if (e.target.closest('.resource-save')) {
+          DO.U.updateMutableResource(url);
+        }
+      });
+    },
+
+    createImmutableResource: function(url, data, options) {
+      if(!url) return;
+
+      var uuid = DO.U.generateUUID();
+      var containerIRI = url.substr(0, url.lastIndexOf('/') + 1);
+      var immutableURL = containerIRI + uuid;
+
+      var rootNode = document.documentElement.cloneNode(true);
+
+      var date = new Date();
+      rootNode = DO.U.setDate(rootNode, { 'id': 'document-created', 'property': 'schema:dateCreated', 'title': 'Created', 'datetime': date });
+
+      var resourceState = rootNode.querySelector('#' + 'document-resource-state');
+      if(!resourceState){
+        var rSO = {
+          'id': 'document-resource-state',
+          'subjectURI': '',
+          'type': 'ldp:ImmutableResource',
+          'mode': 'create'
+        }
+
+        rootNode = DO.U.setDocumentStatus(rootNode, rSO);
+      }
+
+      var r, o;
+
+      o = { 'id': 'document-identifier', 'title': 'Identifier' };
+      r = { 'rel': 'owl:sameAs', 'href': immutableURL };
+      rootNode = DO.U.setDocumentRelation(rootNode, [r], o);
+
+      o = { 'id': 'document-original', 'title': 'Original resource' };
+      if (DO.C.OriginalResourceInfo['state'] == DO.C.Vocab['ldpImmutableResource']['@id']
+        && DO.C.OriginalResourceInfo['profile'] == DO.C.Vocab['memOriginalResource']['@id']) {
+        r = { 'rel': 'mem:original', 'href': immutableURL };
+      }
+      else {
+        r = { 'rel': 'mem:original', 'href': url };
+      }
+      rootNode = DO.U.setDocumentRelation(rootNode, [r], o);
+
+      //TODO document-timegate
+
+      var timeMapURL = DO.C.OriginalResourceInfo['timemap'] || url + '.timemap';
+      o = { 'id': 'document-timemap', 'title': 'TimeMap' };
+      r = { 'rel': 'mem:timemap', 'href': timeMapURL };
+      rootNode = DO.U.setDocumentRelation(rootNode, [r], o);
+
+      // Create URI-M
+      data = doc.getDocument(rootNode);
+      DO.U.processSave(containerIRI, uuid, data, options);
+
+
+      var timeMapURL = DO.C.OriginalResourceInfo['timemap'] || url + '.timemap';
+
+
+      //Update URI-R
+      if (DO.C.OriginalResourceInfo['state'] != DO.C.Vocab['ldpImmutableResource']['@id']) {
+        DO.U.setDate(document, { 'id': 'document-created', 'property': 'schema:dateCreated', 'title': 'Created', 'datetime': date });
+
+        o = { 'id': 'document-identifier', 'title': 'Identifier' };
+        r = { 'rel': 'owl:sameAs', 'href': url };
+        DO.U.setDocumentRelation(document, [r], o);
+
+        o = { 'id': 'document-latest-version', 'title': 'Latest Version' };
+        r = { 'rel': 'mem:memento rel:latest-version', 'href': immutableURL };
+        DO.U.setDocumentRelation(document, [r], o);
+
+        if(DO.C.OriginalResourceInfo['latest-version']) {
+          o = { 'id': 'document-predecessor-version', 'title': 'Predecessor Version' };
+          r = { 'rel': 'mem:memento rel:predecessor-version', 'href': DO.C.OriginalResourceInfo['latest-version'] };
+          DO.U.setDocumentRelation(document, [r], o);
+        }
+
+        //TODO document-timegate
+
+        o = { 'id': 'document-timemap', 'title': 'TimeMap' };
+        r = { 'rel': 'mem:timemap', 'href': timeMapURL };
+        DO.U.setDocumentRelation(document, [r], o);
+
+        // Create URI-R
+        data = doc.getDocument();
+        DO.U.processSave(url, null, data, options);
+      }
+
+
+      //Update URI-T
+      var insertBGP = '@prefix mem: <http://mementoweb.org/ns#> .\n\
+@prefix schema: <http://schema.org/> .\n\
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\
+<' + url + '> mem:memento <' + immutableURL + '> .\n\
+<' + immutableURL + '> schema:dateCreated "' + date.toISOString() + '"^^xsd:dateTime .';
+
+      DO.U.updateTimeMap(timeMapURL, insertBGP).then(() =>{
+        DO.U.showTimeMap(null, timeMapURL)
+      });
+
+      DO.U.getResourceInfo(null, { 'mode': 'update' });
+    },
+
+    createMutableResource: function(url, data, options) {
+      if(!url) return;
+
+      DO.U.setDate(document, { 'id': 'document-created', 'property': 'schema:dateCreated', 'title': 'Created' } );
+
+      var uuid = DO.U.generateUUID();
+      var containerIRI = url.substr(0, url.lastIndexOf('/') + 1);
+      var mutableURL = containerIRI + uuid;
+
+      var r, o;
+
+      o = { 'id': 'document-identifier', 'title': 'Identifier' };
+      r = { 'rel': 'owl:sameAs', 'href': mutableURL };
+      DO.U.setDocumentRelation(document, [r], o);
+
+      o = { 'id': 'document-latest-version', 'title': 'Latest Version' };
+      r = { 'rel': 'rel:latest-version', 'href': mutableURL };
+      DO.U.setDocumentRelation(document, [r], o);
+
+      if(DO.C.OriginalResourceInfo['latest-version']) {
+        o = { 'id': 'document-predecessor-version', 'title': 'Predecessor Version' };
+        r = { 'rel': 'rel:predecessor-version', 'href': DO.C.OriginalResourceInfo['latest-version'] };
+        DO.U.setDocumentRelation(document, [r], o);
+      }
+
+      data = doc.getDocument();
+      DO.U.processSave(containerIRI, uuid, data, options);
+
+
+      o = { 'id': 'document-identifier', 'title': 'Identifier' };
+      r = { 'rel': 'owl:sameAs', 'href': url };
+      DO.U.setDocumentRelation(document, [r], o);
+
+      data = doc.getDocument();
+      DO.U.processSave(url, null, data, options).then(() => {
+        DO.U.getResourceInfo(null, { 'mode': 'update' });
+      });
+    },
+
+    updateMutableResource: function(url, data, options) {
+      if(!url) return;
+      options = options || {};
+
+      if (!('datetime' in options)) {
+        options['datetime'] = new Date();
+      }
+
+      DO.U.setDate(document, { 'id': 'document-modified', 'property': 'schema:dateModified', 'title': 'Modified', 'datetime': options.datetime } );
+      DO.U.setEditSelections(options);
+
+      data = doc.getDocument();
+      DO.U.processSave(url, null, data, options).then(() => {
+        DO.U.getResourceInfo(null, { 'mode': 'update' });
+      });
+    },
+
+    processSave: function(url, slug, data, options) {
+      options = options || {};
+      var request = (slug)
+                    ? fetcher.postResource(url, slug, data)
+                    : fetcher.putResource(url, data)
+
+      return request
+        .then(response => {
+          DO.U.showActionMessage(document.documentElement, 'Saved')
+          return response
+        })
+        .catch(error => {
+          console.log(error)
+
+          let message
+
+          switch (error.status) {
+            case 401:
+              message = 'Need to authenticate before saving'
+              break
+
+            case 403:
+              message = 'You are not authorized to save'
+              break
+
+            case 405:
+            default:
+              message = 'Server doesn\'t allow this resource to be rewritten'
+              break
+          }
+
+          DO.U.showActionMessage(document.documentElement, message)
+        })
+    },
+
+    replyToResource: function replyToResource (e, iri) {
+      iri = iri || fetcher.currentLocation()
+
+      e.target.closest('button').disabled = true
+
+      document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="reply-to-resource" class="do on">' + DO.C.Button.Close + '<h2>Reply to this</h2><div id="reply-to-resource-input"><p>Reply to <code>' +
+        iri +'</code></p><ul><li><p><label for="reply-to-resource-note">Quick reply (plain text note)</label></p><p><textarea id="reply-to-resource-note" rows="10" cols="40" name="reply-to-resource-note" placeholder="Great article!"></textarea></p></li><li><label for="reply-to-resource-license">License</label> <select id="reply-to-resource-license" name="reply-to-resource-license">' +
+        DO.U.getLicenseOptionsHTML() + '</select></li></ul></div>'))
 
       // TODO: License
       // TODO: ACL - can choose whether to make this reply private (to self), visible only to article author(s), visible to own contacts, public
       // TODO: Show name and face of signed in user reply is from, or 'anon' if article can host replies
 
-      var replyToResource = document.getElementById('reply-to-resource');
+      var replyToResource = document.getElementById('reply-to-resource')
 
-      var id = 'location-reply-to';
-      var action = 'write';
+      var id = 'location-reply-to'
+      var action = 'write'
 
-      DO.U.setupResourceBrowser(replyToResource, id, action);
-      document.getElementById(id).insertAdjacentHTML('afterbegin', '<p>Choose a location to save your reply.</p>');
-      replyToResource.insertAdjacentHTML('beforeend', '<p>Your reply will be saved at <samp id="' + id +'-' + action + '">https://example.org/path/to/article</samp></p>');
-      var bli = document.getElementById(id + '-input');
-      bli.focus();
-      bli.placeholder = 'https://example.org/path/to/article';
-      replyToResource.insertAdjacentHTML('beforeend', '<button class="reply">Send now</button>');
-      // TODO: New in editor make this button do something.
-      //     Question: when should the notification be sent?
-      //replyToResource.insertAdjacentHTML('beforeend', 'or <button class="reply-new"><i class="fa fa-paper-plane-o"></i> Write reply in new window</button>');
-      replyToResource.insertAdjacentHTML('beforeend', '</aside>');
+      DO.U.setupResourceBrowser(replyToResource, id, action)
+      document.getElementById(id).insertAdjacentHTML('afterbegin', '<p>Choose a location to save your reply.</p>')
 
-      replyToResource.addEventListener('click', function(e) {
-        if (e.target.matches('button.close')) {
-          document.querySelector('#document-do .resource-reply').disabled = false;
+      replyToResource.insertAdjacentHTML('beforeend', '<p>Your reply will be saved at <samp id="' + id +'-' + action +
+        '">https://example.org/path/to/article</samp></p>')
+
+      var bli = document.getElementById(id + '-input')
+      bli.focus()
+      bli.placeholder = 'https://example.org/path/to/article'
+      replyToResource.insertAdjacentHTML('beforeend', '<button class="reply">Send now</button>')
+
+      // replyToResource.insertAdjacentHTML('beforeend', 'or <button class="reply-new"><i class="fa fa-paper-plane-o"></i> Write reply in new window</button>');
+
+      replyToResource.addEventListener('click', e => {
+        if (e.target.closest('button.close')) {
+          document.querySelector('#document-do .resource-reply').disabled = false
         }
 
-        if (e.target.matches('button.reply')) {
-          var note = document.querySelector('#reply-to-resource #reply-to-resource-note').value.trim();
+        if (e.target.closest('button.reply')) {
+          var note = document
+            .querySelector('#reply-to-resource #reply-to-resource-note')
+            .value.trim()
 
-          var rm = replyToResource.querySelector('.response-message');
+          var rm = replyToResource.querySelector('.response-message')
           if (rm) {
-            rm.parentNode.removeChild(rm);
-          }
-          replyToResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>');
-          if (iri.length > 0 && note.length > 0) {
-
-            var datetime = DO.U.getDateTimeISO();
-            var attributeId = DO.U.generateAttributeId();
-            var noteIRI = document.querySelector('#reply-to-resource #' + id + '-' + action).innerText.trim();
-            var motivatedBy = "oa:replying";
-            var noteData = {
-              "type": 'article',
-              "mode": "write",
-              "motivatedByIRI": motivatedBy,
-              "id": attributeId,
-              "iri": noteIRI, //e.g., https://example.org/path/to/article
-              "creator": {},
-              "datetime": datetime,
-              "target": {
-                "iri": iri
-              },
-              "body": note, // content
-              "license": {}
-            };
-            if (DO.C.User.IRI) {
-              noteData.creator["iri"] = DO.C.User.IRI;
-            }
-            if (DO.C.User.Name) {
-              noteData.creator["name"] = DO.C.User.Name;
-            }
-            if (DO.C.User.Image) {
-              noteData.creator["image"] = DO.C.User.Image;
-            }
-            if (DO.C.User.URL) {
-              noteData.creator["url"] = DO.C.User.URL;
-            }
-
-            var license = document.querySelector('#reply-to-resource-license');
-            if (license && license.length > 0) {
-              noteData.license["iri"] = license.value.trim();
-              noteData.license["name"] = DO.C.License[license.value.trim()].name;
-            }
-
-            var note = DO.U.createNoteDataHTML(noteData);
-
-            var data = DO.U.createHTML(noteIRI, note);
-
-            DO.U.putResource(noteIRI, data).then(
-              function(i){
-                replyToResource.querySelector('.response-message').innerHTML = '<p class="success"><a href="' + i.xhr.responseURL + '">Reply saved!</a></p>';
-                // Then send notification
-                DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id']).then(
-                  function(inbox) {
-console.log(inbox);
-                    if (inbox.length > 0) {
-                      inbox = inbox[0];
-
-                      var notificationStatements = '    <dl about="' + noteIRI + '">\n\
-      <dt>Object type</dt><dd><a about="' + noteIRI + '" typeof="oa:Annotation" href="' + DO.C.Vocab['oaannotation']['@id'] + '">Annotation</a></dd>\n\
-      <dt>Motivation</dt><dd><a href="' + DO.C.Prefixes[motivatedBy.split(':')[0]] + motivatedBy.split(':')[1] + '" property="oa:motivation">' + motivatedBy.split(':')[1] + '</a></dd>\n\
-    </dl>\n\
-';
-                      var notificationData = {
-                        "type": ['as:Announce'],
-                        "inbox": inbox,
-                        "object": noteIRI,
-                        "target": iri,
-                        "license": noteData.license["iri"],
-                        "statements": notificationStatements
-                      };
-
-                      DO.U.notifyInbox(notificationData).then(
-                        function(response) {
-    // console.log("Notification: " + response.xhr.getResponseHeader('Location'));
-                          replyToResource.querySelector('.response-message').innerHTML += '<p class="success">Notification sent.</p>';
-                        },
-                        function(reason) {
-                          console.log(reason);
-                          replyToResource.querySelector('.response-message').innerHTML += '<p class="error">We couldn\'t notify the author of your reply.</p>';
-                        }
-                      );
-                     }
-                  },
-                  function(reason) {
-                    // FIXME: this isn't getting thrown, gets stuck in getEndpoint
-                    console.log('No inbox, no notification sent');
-                    console.log(reason);
-                    replyToResource.querySelector('.response-message').innerHTML += '<p class="error">We couldn\'t notify the author of your reply.</p>';
-                  }
-                );
-              },
-              function(reason){
-                console.log(reason);
-                switch(reason.status){
-                  default:
-                    replyToResource.querySelector('.response-message').innerHTML = '<p class="error">Can\'t save your reply.</p>';
-                    break;
-                  case 0: case 405:
-                    replyToResource.querySelector('.response-message').innerHTML = '<p class="error">Can\'t save your reply: this location is not writeable.</p>';
-                    break;
-                  case 401: case 403:
-                    replyToResource.querySelector('.response-message').innerHTML = '<p class="error">Can\'t save your reply: you don\'t have permission to write here.</p>';
-                    break;
-                  case 406:
-                    replyToResource.querySelector('.response-message').innerHTML = '<p class="error">Can\'t save your reply: enter a name for your resource.</p>';
-                    break;
-                }
-              }
-            );
-          }else{
-            replyToResource.querySelector('.response-message').innerHTML = '<p class="error">Need a note and a location to save it.</p>';
+            rm.parentNode.removeChild(rm)
           }
         }
-      });
+
+        replyToResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>')
+
+        if (!iri || !note) {
+          document.querySelector('#reply-to-resource .response-message')
+            .innerHTML = '<p class="error">Need a note and a location to save it.</p>'
+          return
+        }
+
+        var datetime = util.getDateTimeISO()
+        var attributeId = DO.U.generateAttributeId()
+        var noteIRI = document.querySelector('#reply-to-resource #' + id +
+          '-' + action).innerText.trim()
+        var motivatedBy = "oa:replying"
+        var noteData = {
+          "type": 'article',
+          "mode": "write",
+          "motivatedByIRI": motivatedBy,
+          "id": attributeId,
+          // "iri": noteIRI, //e.g., https://example.org/path/to/article
+          "creator": {},
+          "datetime": datetime,
+          "target": {
+            "iri": iri
+          },
+          "body": note, // content
+          "license": {}
+        }
+        if (DO.C.User.IRI) {
+          noteData.creator["iri"] = DO.C.User.IRI
+        }
+        if (DO.C.User.Name) {
+          noteData.creator["name"] = DO.C.User.Name
+        }
+        if (DO.C.User.Image) {
+          noteData.creator["image"] = DO.C.User.Image
+        }
+        if (DO.C.User.URL) {
+          noteData.creator["url"] = DO.C.User.URL
+        }
+
+        var license = document.querySelector('#reply-to-resource-license')
+        if (license && license.length > 0) {
+          noteData.license["iri"] = license.value.trim()
+          noteData.license["name"] = DO.C.License[license.value.trim()].name
+        }
+
+        var note = DO.U.createNoteDataHTML(noteData)
+
+        var data = DO.U.createHTML('', note)
+
+        fetcher.putResource(noteIRI, data)
+
+          .catch(error => {
+            console.error('Could not save reply:', error)
+
+            let errorMessage
+
+            switch (error.status) {
+              case 0:
+              case 405:
+                errorMessage = 'this location is not writable'
+                break
+              case 401:
+              case 403:
+                errorMessage = 'you do not have permission to write here'
+                break
+              case 406:
+                errorMessage = 'enter a name for your resource'
+                break
+              default:
+                // some other reason
+                errorMessage = error.message
+                break
+            }
+
+            // re-throw, to break out of the promise chain
+            throw new Error('Cannot save your reply:', errorMessage)
+          })
+
+          .then(response => {
+            replyToResource
+              .querySelector('.response-message')
+              .innerHTML = '<p class="success"><a href="' + response.url + '">Reply saved!</a></p>'
+
+            // Determine the inbox endpoint, to send the notification to
+            return inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id'])
+              .catch(error => {
+                console.error('Could not fetch inbox endpoint:', error)
+
+                // re-throw
+                throw new Error('Could not determine the author inbox endpoint')
+              })
+          })
+
+          .then(inboxes => {
+            if (!inboxes) {
+              throw new Error('Author inbox endpoint is empty or missing')
+            }
+
+            var inboxURL = inboxes[0]
+
+            let notificationStatements = '    <dl about="' + noteIRI +
+              '">\n<dt>Object type</dt><dd><a about="' +
+              noteIRI + '" typeof="oa:Annotation" href="' +
+              DO.C.Vocab['oaannotation']['@id'] +
+              '">Annotation</a></dd>\n<dt>Motivation</dt><dd><a href="' +
+              DO.C.Prefixes[motivatedBy.split(':')[0]] +
+              motivatedBy.split(':')[1] + '" property="oa:motivation">' +
+              motivatedBy.split(':')[1] + '</a></dd>\n</dl>\n'
+
+            let notificationData = {
+              "type": ['as:Announce'],
+              "inbox": inboxURL,
+              "object": noteIRI,
+              "target": iri,
+              "license": noteData.license["iri"],
+              "statements": notificationStatements
+            }
+
+            inbox.notifyInbox(notificationData)
+              .catch(error => {
+                console.error('Failed sending notification to ' + inboxURL + ' :', error)
+
+                throw new Error('Failed sending notification to author inbox')
+              })
+          })
+
+          .then(() => {  // Success!
+            replyToResource
+              .querySelector('.response-message')
+              .innerHTML += '<p class="success">Notification sent</p>';
+          })
+
+          .catch(error => {
+            // Catch-all error, actually notify the user
+            replyToResource
+              .querySelector('.response-message')
+              .innerHTML += '<p class="error">' +
+                'We could not notify the author of your reply:' +
+                error.message + '</p>'
+          })
+      })
     },
 
     showActionMessage: function(node, message) {
       var message = '<aside id="document-action-message" class="do on"><p>' + message + '</p></aside>';
-      node.insertAdjacentHTML('afterend', message);
+      node.appendChild(DO.U.fragmentFromString(message));
       window.setTimeout(function () {
         var dam = document.getElementById('document-action-message');
         dam.parentNode.removeChild(dam);
       }, 1500);
     },
 
-
-    getMatchFromData: function(data, spo, options) {
-      if (data == "") { return Promise.reject({}); }
-
-      spo = spo || {};
-      spo["subject"] = spo.subject || window.location.origin + window.location.pathname;
-      spo["predicate"] = spo.predicate || DO.C.Vocab["rdfslabel"];
-
-      options = options || {};
-      options["contentType"] = options.contentType || 'text/html';
-      options["subjectURI"] = options.subjectURI || spo.subject;
-
-      return DO.U.getGraphFromData(data, options).then(
-        function(g) {
-          var s = SimpleRDF(DO.C.Vocab, spo.subject, g, ld.store).child(spo.subject);
-
-          return s[spo.predicate];
-        },
-        function(reason){
-          return Promise.resolve(undefined);
-        });
-    },
-
-    shareResource: function(e, iri) {
-      iri = iri || window.location.origin + window.location.pathname;
+    shareResource: function shareResource (e, iri) {
+      iri = iri || fetcher.currentLocation();
       if (e) {
         e.target.disabled = true;
       }
 
       var addContactsButtonDisable = '', noContactsText = '';
-      if(!(DO.C.User.Graph && ((DO.C.User.Knows && DO.C.User.Knows.length > 0) || (DO.C.User.Graph.owlsameAs && DO.C.User.Graph.owlsameAs._array.length > 0)))) {
+      if (!DO.C.User.IRI && !(DO.C.User.Graph && ((DO.C.User.Knows && DO.C.User.Knows.length > 0) || (DO.C.User.Graph.owlsameAs && DO.C.User.Graph.owlsameAs._array.length > 0)))) {
         addContactsButtonDisable = ' disabled="disabled"';
-        noContactsText = '<p>No contacts with an <i class="fa fa-inbox"></i> Inbox found. Acquire <i class="fa fa-thermometer-empty"></i> cool friends‽</p><p>Optionally enter targets individually:</p>';
+        noContactsText = '<p>Sign in to select from your list of contacts, alternatively, enter contacts individually:</p>';
       }
-      var addContactsButton = '<li id="share-resource-address-book"><button class="add"' + addContactsButtonDisable + '><i class="fa fa-address-book"></i> Add from contacts</button>' + noContactsText + '</li>';
 
-      document.body.insertAdjacentHTML('beforeend', '<aside id="share-resource" class="do on"><button class="close" title="Close">❌</button><h2>Share resource</h2><div id="share-resource-input"><p>Send a notification about <code>' + iri +'</code></p><ul>' + addContactsButton + '<li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share">Share</button></aside>');
+      var shareResourceLinkedResearch = '';
+      if (DO.C.User.IRI && DO.C.OriginalResourceInfo['rdftype'] && DO.C.OriginalResourceInfo.rdftype.indexOf(DO.C.Vocab['schemaScholarlyArticle']['@id']) > -1) {
+        shareResourceLinkedResearch = '<li><input id="share-resource-linked-research" type="checkbox" value="https://linkedresearch.org/cloud" /><label for="share-resource-linked-research">Notify <a href="https://linkedresearch.org/cloud">Linked Open Research Cloud</a></label></li>';
+      }
+
+      document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="share-resource" class="do on">' + DO.C.Button.Close + '<h2>Share resource</h2><div id="share-resource-input"><p>Send a notification about <code>' + iri +'</code></p><ul><li id="share-resource-address-book"></li>' + shareResourceLinkedResearch + '<li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share">Share</button></aside>'));
+
+      var li = document.getElementById('share-resource-address-book');
+
+      if (DO.C.User.Contacts && Object.keys(DO.C.User.Contacts).length > 0) {
+        DO.U.selectContacts(li, DO.C.User.IRI);
+      }
+      else {
+        li.insertAdjacentHTML('beforeend', '<button class="add"' + addContactsButtonDisable + '><i class="fa fa-address-book"></i> Add from contacts</button>' + noContactsText);
+      }
 
       var shareResource = document.getElementById('share-resource');
-      shareResource.addEventListener('click', function(e) {
-        if (e.target.matches('button.close')) {
+      shareResource.addEventListener('click', function (e) {
+        if (e.target.closest('button.close')) {
           var rs = document.querySelector('#document-do .resource-share');
           if (rs) {
             rs.disabled = false;
           }
         }
 
-        if (DO.C.User.IRI && e.target.matches('button.add')) {
+        if (DO.C.User.IRI && e.target.closest('button.add')) {
           e.preventDefault();
           e.stopPropagation();
-          e.target.parentNode.insertAdjacentHTML('beforeend', '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
-          DO.U.selectContacts(e, DO.C.User.IRI);
+          var li = e.target.closest('li');
+          li.insertAdjacentHTML('beforeend', '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
+          DO.U.selectContacts(li, DO.C.User.IRI);
         }
 
-        if (e.target.matches('button.share')) {
+        if (e.target.closest('button.share')) {
           var tos = document.querySelector('#share-resource #share-resource-to').value.trim();
           tos = (tos.length > 0) ? tos.split(/\r\n|\r|\n/) : [];
           var note = document.querySelector('#share-resource #share-resource-note').value.trim();
@@ -3023,6 +4621,11 @@ console.log(inbox);
             p.parentNode.removeChild(p);
           });
 
+          var srlr = document.querySelector('#share-resource-linked-research:checked');
+          if(srlr) {
+            tos.push(srlr.value);
+          }
+
           var srci = document.querySelectorAll('#share-resource-contacts input:checked');
           if (srci.length > 0) {
             for(var i = 0; i < srci.length; i++) {
@@ -3030,310 +4633,159 @@ console.log(inbox);
             }
           }
 
-          if (iri.length > 0) {
-            // var rm = shareResource.querySelector('.response-message');
-            // if (rm) {
-            //   rm.parentNode.removeChild(rm);
-            // }
-            // shareResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>');
-
-            var sendNotifications = function(tos){
-              return new Promise(function(resolve, reject){
-                var notificationData = {
-                  "type": ['as:Announce'],
-                  "object": iri,
-                  "summary": note,
-                  "license": "https://creativecommons.org/licenses/by/4.0/"
-                };
-
-                var data = DO.U.getDocument();
-                var options = {
-                  "contentType": "text/html",
-                  "subjectURI": iri
-                }
-                var spo = {
-                  "subject": iri,
-                  "predicate": DO.C.Vocab["rdftype"]["@id"]
-                };
-
-                DO.U.getMatchFromData(data, spo, options).then(function(supplementalData) {
-// console.log(supplementalData);
-                  if (typeof supplementalData !== 'undefined' && supplementalData._array.length > 0) {
-                    notificationData["objectTypes"] = supplementalData._array;
-                  }
-                  return Promise.resolve();
-                }).then(function(supplementalData){
-// console.log(supplementalData);
-
-                  var spo = {
-                    "subject": iri,
-                    "predicate": DO.C.Vocab["schemalicense"]["@id"]
-                  };
-
-                  return DO.U.getMatchFromData(data, spo, options).then(function(supplementalData) {
-// console.log(supplementalData);
-                    if (typeof supplementalData !== 'undefined' && supplementalData.length > 0) {
-                      notificationData["objectLicense"] = supplementalData;
-                    }
-                    return Promise.resolve();
-                  });
-                }).then(function(supplementalData){
-// console.log(notificationData);
-                  tos.forEach(function(to) {
-                    notificationData["to"] = to;
-
-                    var toInput = shareResource.querySelector('[value="' + to + '"]') || shareResource.querySelector('#share-resource-to');
-                    toInput.parentNode.insertAdjacentHTML('beforeend', '<span class="progress" data-to="' + to + '"><i class="fa fa-circle-o-notch fa-spin fa-fw"></i></span>');
-
-                    var inboxResponse = function() {
-                      return DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id'], to).then(
-                          function(inboxes){
-                            return inboxes[0];
-                          },
-                          function(reason){
-                            console.log(reason);
-                            return reason;
-                          }
-                        );
-                    };
-
-                    inboxResponse().then(
-                      function(inbox) {
-                        notificationData["inbox"] = inbox;
-// console.log(notificationData);
-
-                        DO.U.notifyInbox(notificationData).then(
-                          function(response) {
-                            if(typeof response !== 'undefined') {
-                              var location = response.xhr.getResponseHeader('Location');
-
-                              if(location) {
-                                location = DO.U.getAbsoluteIRI(inbox, location);
-
-                                toInput.parentNode.querySelector('.progress[data-to="' + to + '"]').innerHTML = '<a target="_blank" href="' + location + '"><i class="fa fa-check-circle fa-fw"></i></a>';
-
-                                // var rm = shareResource.querySelector('.response-message');
-                                // rm.insertAdjacentHTML('beforeend', '<p class="success">Notification sent: <a target="_blank" href="' + location + '">' + location + '</a></p>');
-                                // return location;
-                              }
-                            }
-                            else {
-                              toInput.parentNode.querySelector('.progress[data-to="' + to + '"]').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to notify. Try later.';
-                              // return Promise.reject(response);
-                            }
-                          },
-                          function(reason) {
-// console.log(reason);
-                            toInput.parentNode.querySelector('.progress[data-to="' + to + '"]').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to notify. Try later.';
-//                           return reason;
-                          }
-                        );
-                      },
-                      function(reason) {
-// console.log(reason);
-                           toInput.parentNode.querySelector('.progress[data-to="' + to + '"]').innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Inbox not responding. Try later.';
-//                       return reason;
-                      }
-                    );
-                  });
-                });
-              });
-            };
-
-            sendNotifications(tos);
+          if (!iri) {
+            return
           }
+
+          // var rm = shareResource.querySelector('.response-message');
+          // if (rm) {
+          //   rm.parentNode.removeChild(rm);
+          // }
+          // shareResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>');
+
+          return inbox.sendNotifications(tos, note, iri, shareResource)
         }
       });
     },
 
-    getResourceGraph: function getResourceGraph (iri, headers, options = {}) {
-      var defaultHeaders = {'Accept': DO.C.AvailableMediaTypes.join(',')};
-      headers = headers || defaultHeaders;
-      if (!('Accept' in headers)){
-        Object.assign(headers, defaultHeaders);
-      }
+    selectContacts: function(node, url) {
+      node.innerHTML = '<p>Select from contacts</p><ul id="share-resource-contacts"></ul>';
+      var shareResourceNode = document.getElementById('share-resource-contacts');
 
-/***
-      if (iri.slice(0, 5).toLowerCase() === 'http:') {
-        options['noCredentials'] = true;
-
-        if (document.domain !== iri.split('/')[2]) {
-          options['forceProxy'] = true;
-        }
-      }
-***/
-
-      var pIRI = DO.U.getProxyableIRI(iri, options);
-
-      return fetcher.getResource(pIRI, headers, options)
-        .then(response => {
-          let cT = response.headers.get('Content-Type');
-          let contentType = (cT) ? cT.split(';')[ 0 ].trim() : 'text/turtle';
-
-          options.contentType = contentType
-          options.subjectURI =  DO.U.stripFragmentFromString(iri)
-
-          return response.text()
-        })
-        .then(data => {
-          // FIXME: This is a dirty filthy fugly but a *fix* to get around the baseURI not being passed to the DOM parser. This injects the `base` element into the document so that the RDFa parse fallsback to that. The actual fix should happen upstream. See related issues:
-          // https://github.com/linkeddata/dokieli/issues/132
-          // https://github.com/rdf-ext/rdf-parser-dom/issues/2
-          // https://github.com/rdf-ext/rdf-parser-rdfa/issues/3
-          // https://github.com/simplerdf/simplerdf/issues/19
-
-          if (options.contentType === 'text/html' || options.contentType === 'application/xhtml+xml') {
-            let template = document.implementation.createHTMLDocument('template');
-            template.documentElement.innerHTML = data;
-            template.contentType = options.contentType;
-            let base = template.querySelector('head base[href]');
-            if (!base) {
-              template.querySelector('head').insertAdjacentHTML('afterbegin', '<base href="' + options.subjectURI + '" />');
-              data = template.documentElement.outerHTML;
-            }
+      if (DO.C.User.Contacts && Object.keys(DO.C.User.Contacts).length > 0){
+        Object.keys(DO.C.User.Contacts).forEach(function(iri){
+          if (DO.C.User.Contacts[iri].Inbox) {
+            DO.U.addShareResourceContactInput(shareResourceNode, DO.C.User.Contacts[iri].Graph);
           }
-
-          return DO.U.getGraphFromData(data, options)
-        })
-        .then(graph => {
-          let fragment = (iri.lastIndexOf('#') >= 0) ? iri.substr(iri.lastIndexOf('#')) : ''
-
-          return SimpleRDF(DO.C.Vocab, options[ 'subjectURI' ], graph, ld.store).child(pIRI + fragment)
-        })
-    },
-
-    getContacts: function(iri) {
-      var processSameAs = function(s) {
-        if (s.owlsameAs && s.owlsameAs._array.length > 0){
-          var iris = s.owlsameAs._array;
-          var promises = [];
-          iris.forEach(function(iri){
-// console.log(iri);
-            if(iri != DO.C.User.IRI && DO.C.User.SameAs.indexOf(iri) < 0) {
-              DO.C.User.SameAs.push(iri);
-              DO.C.User.SameAs = DO.U.uniqueArray(DO.C.User.SameAs);
-              promises.push(DO.U.getContacts(iri));
-            }
-          });
-
-          return Promise.all(promises)
-            .then(function(results) {
-// console.log(results);
-              return Promise.resolve(([].concat.apply([], results)));
-            })
-            .catch(function(e) {
-              console.log('--- catch ---');
-// console.trace();
-              //probably e.xhr.status == 0
-              console.log(e);
-              return Promise.resolve([]);
-            });
-        }
-        else {
-          return Promise.resolve([]);
-        }
-      };
-
-      var fyn = function(iri){
-        if (iri == DO.C.User.IRI && DO.C.User.SameAs.indexOf(iri) < 0) {
-          DO.C.User.TempKnows = DO.U.uniqueArray(DO.C.User.TempKnows.concat(DO.C.User.Knows));
-
-          return processSameAs(DO.C.User.Graph);
-        }
-        else {
-          return DO.U.getResourceGraph(iri).then(
-            function(g){
-// console.log(g);
-              if(typeof g._graph == 'undefined') {
-                return Promise.resolve([]);
-              }
-              var s = g.child(iri);
-              if(s.foafknows && s.foafknows._array.length > 0){
-                DO.C.User.TempKnows = DO.U.uniqueArray(DO.C.User.TempKnows.concat(s.foafknows._array));
-              }
-              if(s.schemaknows && s.schemaknows._array.length > 0){
-                DO.C.User.TempKnows = DO.U.uniqueArray(DO.C.User.TempKnows.concat(s.schemaknows._array));
-              }
-
-              return processSameAs(s);
-            },
-            function(reason){
-              return Promise.resolve([]);
-            });
-        }
-      }
-
-      return fyn(iri).then(function(i){ return DO.C.User.TempKnows; });
-    },
-
-    selectContacts: function(e, url) {
-      e.target.parentNode.innerHTML = '<p>Select from contacts</p><ul id="share-resource-contacts"></ul>';
-      var shareResourceContacts = document.getElementById('share-resource-contacts');
-
-      if(DO.C.User.Contacts.length > 0){
-        DO.C.User.Contacts.forEach(function(s){
-          // console.log(s);
-          DO.U.addShareResourceContactInput(shareResourceContacts, s);
         });
       }
       else {
-        DO.U.getContacts(url).then(
-          function(contacts) {
-            if(contacts.length > 0) {
-              contacts.forEach(function(url) {
-                DO.U.getResourceGraph(url).then(
-                  function(i) {
-                    // console.log(i);
-                    var s = i.child(url);
-                    DO.C.User.Contacts.push(s);
+        DO.U.updateContactsInfo(url, {'addShareResourceContactInput': shareResourceNode});
+      }
+    },
 
-                    DO.U.addShareResourceContactInput(shareResourceContacts, s);
-                  },
-                  function(reason){
-                    // console.log(reason);
-                    console.log('No profile: ' + url);
-                  }
-                );
+    updateContactsInfo: function(url, options) {
+      options = options || {};
+
+      return auth.getUserContacts(url).then(
+        function(contacts) {
+          if(contacts.length > 0) {
+            var promises = [];
+
+            var gC = function(url) {
+              return fetcher.getResourceGraph(url).then(i => {
+                // console.log(i);
+                var s = i.child(url);
+
+                DO.C.User.Contacts[url] = {};
+                DO.C.User.Contacts[url]['Graph'] = s;
+
+                var uCO = function(url, s) {
+                  return DO.U.updateContactsOutbox(url, s)
+                    .then(() => {
+                      if ('showOutboxSources' in options) {
+                        return DO.U.showOutboxSources(DO.C.User.Contacts[url].Outbox[0])
+                      }
+                      return Promise.resolve();
+                    })
+                    .catch(() => {})
+                }
+
+                var uCI = function(url, s) {
+                  return DO.U.updateContactsInbox(url, s)
+                    .then(() => {
+                      if ('addShareResourceContactInput' in options) {
+                        DO.U.addShareResourceContactInput(options.addShareResourceContactInput, s);
+                      }
+                      return Promise.resolve();
+                    })
+                    .catch(() => {})
+                }
+
+                //XXX: Holy crap this is fugly.
+                if ('showOutboxSources' in options) {
+                  uCI(url, s);
+                  return uCO(url, s)
+                }
+                else if ('addShareResourceContactInput' in options) {
+                  uCO(url, s)
+                  return uCI(url, s)
+                }
+
+              }).catch(err => {
+// console.log(err)
+                return Promise.resolve();
               });
             }
-            else {
-              e.target.parentNode.innerHTML = 'No contacts with <i class="fa fa-inbox"></i> Inboxes found. Acquire <i class="fa fa-thermometer-empty"></i> cool friends‽</p><p>Optionally enter targets individually:</p>';
-            }
-          },
-          function(reason) {
-             console.log(reason);
+
+            contacts.forEach(function(url) {
+              promises.push(gC(url))
+            });
+
+            DO.C.User['ContactsOutboxChecked'] = true;
+
+            return Promise.all(promises)
           }
-        );
-      }
+          else {
+            if ('addShareResourceContactInput' in options) {
+              options.addShareResourceContactInput.innerHTML = 'No contacts with <i class="fa fa-inbox"></i> inbox found in your profile, but you can enter contacts individually:';
+            }
+
+            return Promise.resolve()
+          }
+        },
+        function(reason) {
+console.log(reason);
+        }
+      )
     },
 
     addShareResourceContactInput: function(node, s) {
       var iri = s.iri().toString();
 // console.log(iri.toString());
       var id = encodeURIComponent(iri);
-      var name = DO.U.getAgentName(s) || iri;
-      var img = DO.U.getAgentImage(s);
+      var name = auth.getAgentName(s) || iri;
+      var img = auth.getAgentImage(s);
       img = (img && img.length > 0) ? '<img alt="" height="32" src="' + img + '" width="32" />' : '';
       var input = '<li><input id="share-resource-contact-' + id + '" type="checkbox" value="' + iri + '" /><label for="share-resource-contact-' + id + '">' + img + '<a href="' + iri + '" target="_blank">' + name + '</a></label></li>';
 
+      node.insertAdjacentHTML('beforeend', input);
+    },
 
-      //TODO: This should update DO.C.User.Contacts' Inbox value so that it is not checked again when #share-resource-contacts input:checked
-      if(s.ldpinbox && s.ldpinbox._array.length > 0){
-        node.insertAdjacentHTML('beforeend', input);
-      }
-      else {
-        DO.U.getEndpointFromHead(DO.C.Vocab['ldpinbox']['@id'], iri).then(
-          function(i){
-            // console.log(iri + ' has Inbox: ' + i);
+    updateContactsInbox: function(iri, s) {
+      var checkInbox = function(s) {
+        var aI = auth.getAgentInbox(s);
 
-            node.insertAdjacentHTML('beforeend', input);
-          },
-          function(reason){
-            // console.log(reason);
-            // console.log(iri + ' has no Inbox.');
-          }
-        );
+        if (aI) {
+          return Promise.resolve(aI);
+        }
+        else {
+          return inbox.getEndpointFromHead(DO.C.Vocab['ldpinbox']['@id'], iri);
+        }
       }
+
+      return checkInbox(s)
+        .then(inboxes => {
+          DO.C.User.Contacts[iri]['Inbox'] = inboxes;
+        })
+    },
+
+    updateContactsOutbox: function(iri, s) {
+      var checkOutbox = function(s) {
+        var outbox = auth.getAgentOutbox(s);
+
+        if (outbox) {
+          return Promise.resolve(outbox)
+        }
+        else {
+          return Promise.reject()
+        }
+      }
+
+      return checkOutbox(s)
+        .then(outboxes => {
+          DO.C.User.Contacts[iri]['Outbox'] = outboxes;
+        })
     },
 
     nextLevelButton: function(button, url, id, action) {
@@ -3341,7 +4793,7 @@ console.log(inbox);
 
       button.addEventListener('click', function(){
         if(button.parentNode.classList.contains('container')){
-          DO.U.getResourceGraph(url).then(
+          fetcher.getResourceGraph(url).then(
             function(g){
               actionNode.textContent = (action == 'write') ? url + DO.U.generateAttributeId() : url;
               return DO.U.generateBrowserList(g, url, id, action);
@@ -3454,7 +4906,7 @@ console.log(inbox);
 
     initBrowse: function(storageUrl, input, browseButton, id, action){
       input.value = storageUrl;
-      DO.U.getResourceGraph(storageUrl).then(function(g){
+      fetcher.getResourceGraph(storageUrl).then(function(g){
         DO.U.generateBrowserList(g, storageUrl, id, action);
       }).then(function(i){
         document.getElementById(id + '-' + action).textContent = (action == 'write') ? input.value + DO.U.generateAttributeId() : input.value;
@@ -3468,7 +4920,7 @@ console.log(inbox);
     triggerBrowse: function(url, id, action){
       var inputBox = document.getElementById(id);
       if (url.length > 10 && url.match(/^https?:\/\//g) && url.slice(-1) == "/"){
-        DO.U.getResourceGraph(url).then(function(g){
+        fetcher.getResourceGraph(url).then(function(g){
           DO.U.generateBrowserList(g, url, id, action).then(function(l){
             return l;
           },
@@ -3549,7 +5001,7 @@ console.log(inbox);
         DO.U.initBrowse(storageUrl, input, browseButton, id, action);
       }
       else {
-        DO.U.getEndpoint(DO.C.Vocab['oaannotationService']['@id']).then(
+        inbox.getEndpoint(DO.C.Vocab['oaannotationService']['@id']).then(
           function(storageUrl) {
             DO.U.initBrowse(storageUrl[0], input, browseButton, id, action);
           },
@@ -3566,8 +5018,8 @@ console.log(inbox);
       id = id || 'location-' + DO.U.generateAttributeId();
       action = action || 'write';
 
-      var browserHTML = '<aside id="resource-browser-' + id + '" class="do on"><button class="close" title="Close">❌</button><h2>Resource Browser</h2></aside>';
-      document.querySelector('body').insertAdjacentHTML('beforeend', browserHTML);
+      var browserHTML = '<aside id="resource-browser-' + id + '" class="do on">' + DO.C.Button.Close + '<h2>Resource Browser</h2></aside>';
+      document.documentElement.appendChild(DO.U.fragmentFromString(browserHTML));
 
       DO.U.setupResourceBrowser(document.getElementById('resource-browser-' + id), id, action);
       document.getElementById('resource-browser-' + id).insertAdjacentHTML('beforeend', '<p><samp id="' + id + '-' + action + '"></samp></p>');
@@ -3591,26 +5043,26 @@ console.log(inbox);
       if(typeof e !== 'undefined') {
         e.target.disabled = true;
       }
-      document.body.insertAdjacentHTML('beforeend', '<aside id="open-document" class="do on"><button class="close" title="Close">❌</button><h2>Open Document</h2><p<label for="open-local-file">Open local file</label> <input type="file" id="open-local-file" name="open-local-file" /></p></aside>');
+      document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="open-document" class="do on">' + DO.C.Button.Close + '<h2>Open Document</h2><p><label for="open-local-file">Open local file</label> <input type="file" id="open-local-file" name="open-local-file" /></p></aside>'));
 
       var id = 'location-open-document';
       var action = 'read';
 
       var openDocument = document.getElementById('open-document');
       DO.U.setupResourceBrowser(openDocument , id, action);
-      idSamp = (typeof DO.C.User.Storage == 'undefined') ? '' : '<p><samp id="' + id + '-' + action + '">https://example.org/path/to/article</samp></p>';
+      var idSamp = (typeof DO.C.User.Storage == 'undefined') ? '' : '<p><samp id="' + id + '-' + action + '">https://example.org/path/to/article</samp></p>';
       openDocument.insertAdjacentHTML('beforeend', idSamp + '<button class="open">Open</button>');
 
       openDocument.addEventListener('click', function (e) {
-        if (e.target.matches('button.close')) {
+        if (e.target.closest('button.close')) {
           document.querySelector('#document-do .resource-open').disabled = false;
         }
 
-        if (e.target.matches('#open-local-file')){
+        if (e.target.closest('#open-local-file')){
           e.target.addEventListener('change', DO.U.openInputFile, false);
         }
 
-        if (e.target.matches('button.open')) {
+        if (e.target.closest('button.open')) {
           var openDocument = document.getElementById('open-document');
           var rm = openDocument.querySelector('.response-message');
           if (rm) {
@@ -3619,9 +5071,9 @@ console.log(inbox);
 
           var bli = document.getElementById(id + '-input');
           var iri = bli.value;
-          var headers = { 'Accept': DO.C.AvailableMediaTypes.join(',') };
+          var headers = { 'Accept': fetcher.setAcceptRDFTypes() };
           var options = {};
-          var pIRI = DO.U.getProxyableIRI(iri);
+          var pIRI = uri.getProxyableIRI(iri);
           if (pIRI.slice(0, 5).toLowerCase() == 'http:') {
             options['noCredentials'] = true;
           }
@@ -3631,7 +5083,7 @@ console.log(inbox);
               .catch(error => {
                 if (error.status === 0) {
                   // retry with proxied uri
-                  var pIRI = DO.U.getProxyableIRI(iri, {'forceProxy': true});
+                  var pIRI = uri.getProxyableIRI(iri, {'forceProxy': true});
                   return handleResource(pIRI, headers, options);
                 }
 
@@ -3655,7 +5107,6 @@ console.log(inbox);
 
     spawnDokieli: function(data, contentType, iri){
       if(DO.C.AvailableMediaTypes.indexOf(contentType) > -1) {
-        // var fragment = DO.U.fragmentFromString(response.xhr.responseText);
         var template = document.implementation.createHTMLDocument('template');
 // console.log(template);
 
@@ -3731,91 +5182,111 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
     },
 
 
-    createNewDocument: function(e) {
-      e.target.disabled = true;
-      document.body.insertAdjacentHTML('beforeend', '<aside id="create-new-document" class="do on"><button class="close" title="Close">❌</button><h2>Create New Document</h2></aside>');
+    createNewDocument: function createNewDocument (e) {
+      e.target.disabled = true
+      document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="create-new-document" class="do on">' + DO.C.Button.Close + '<h2>Create New Document</h2></aside>'))
 
-      var newDocument = document.getElementById('create-new-document');
-      newDocument.addEventListener('click', function(e) {
-        if (e.target.matches('button.close')) {
-          document.querySelector('#document-do .resource-new').disabled = false;
+      var newDocument = document.getElementById('create-new-document')
+      newDocument.addEventListener('click', e => {
+        if (e.target.closest('button.close')) {
+          document.querySelector('#document-do .resource-new').disabled = false
         }
-      });
+      })
 
-      var id = 'location-new';
-      var action = 'write';
+      var id = 'location-new'
+      var action = 'write'
 
-      DO.U.setupResourceBrowser(newDocument, id, action);
-      document.getElementById(id).insertAdjacentHTML('afterbegin', '<p>Choose a location to save your new article.</p>');
-      var baseURLSelection = (document.location.protocol == 'file:') ? '' : DO.U.getBaseURLSelection();
-      newDocument.insertAdjacentHTML('beforeend', baseURLSelection + '<p>Your new document will be saved at <samp id="' + id + '-' + action + '">https://example.org/path/to/article</samp></p><button class="create">Create</button>');
-      var bli = document.getElementById(id + '-input');
-      bli.focus();
-      bli.placeholder = 'https://example.org/path/to/article';
+      DO.U.setupResourceBrowser(newDocument, id, action)
+      document.getElementById(id).insertAdjacentHTML('afterbegin', '<p>Choose a location to save your new article.</p>')
+      var baseURLSelection = (document.location.protocol == 'file:') ? '' : DO.U.getBaseURLSelection()
 
-      newDocument.addEventListener('click', function(e) {
-        if (e.target.matches('button.create')) {
-          var newDocument = document.getElementById('create-new-document');
-          var storageIRI = newDocument.querySelector('#' + id + '-' + action).innerText.trim();
-          var rm = newDocument.querySelector('.response-message');
-          if (rm) {
-            rm.parentNode.removeChild(rm);
-          }
+      newDocument.insertAdjacentHTML('beforeend', baseURLSelection +
+        '<p>Your new document will be saved at <samp id="' + id + '-' + action +
+        '">https://example.org/path/to/article</samp></p><button class="create">Create</button>')
 
-          var html = document.documentElement.cloneNode(true);
-          var baseURLSelectionChecked = newDocument.querySelector('select[name="base-url"]');
-// console.log(baseURLSelectionChecked);
-          if (baseURLSelectionChecked.length > 0) {
-            var baseURLType = baseURLSelectionChecked.value;
-            var nodes = html.querySelectorAll('head link, [src], object[data]');
-            if (baseURLType == 'base-url-relative') {
-              DO.U.copyRelativeResources(storageIRI, nodes);
-            }
-            nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType});
-          }
+      var bli = document.getElementById(id + '-input')
+      bli.focus()
+      bli.placeholder = 'https://example.org/path/to/article'
 
-          if (!DO.C.Extension)
-            html.querySelector('body').innerHTML = '<main><article about="" typeof="schema:Article"></article></main>';
-          else
-            html.querySelector('body').innerHTML = '<main class="article" id="content" about="" typeof="schema:Article"></main>';
-
-          html.querySelector('head title').innerHTML = '';
-          html = DO.U.getDocument(html);
-
-          DO.U.putResource(storageIRI, html).then(
-            function(i) {
-              newDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="success">New document created at <a href="' + storageIRI + '?author=true">' + storageIRI + '</a></p></div>');
-              window.open(storageIRI + '?author=true', '_blank');
-            },
-            function(reason) {
-              switch(reason.status) {
-                default:
-                  newDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to create new.</p>');
-                  break;
-                case 0: case 405:
-                  newDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to create new: this location is not writeable.</p></div>');
-                  break;
-                case 401: case 403:
-                  newDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to create new: you don\'t have permission to write here.</p></div>');
-                  break;
-                case 406:
-                  newDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to create new: enter a name for your resource.</p></div>');
-                  break;
-              }
-              console.log(reason);
-            }
-          );
+      newDocument.addEventListener('click', e => {
+        if (!e.target.closest('button.create')) {
+          return
         }
-      });
+
+        var newDocument = document.getElementById('create-new-document')
+        var storageIRI = newDocument.querySelector('#' + id + '-' + action).innerText.trim()
+        var rm = newDocument.querySelector('.response-message')
+        if (rm) {
+          rm.parentNode.removeChild(rm)
+        }
+
+        var html = document.documentElement.cloneNode(true)
+        var baseURLSelectionChecked = newDocument.querySelector('select[name="base-url"]')
+        // console.log(baseURLSelectionChecked);
+
+        if (baseURLSelectionChecked.length > 0) {
+          var baseURLType = baseURLSelectionChecked.value
+          var nodes = html.querySelectorAll('head link, [src], object[data]')
+          if (baseURLType == 'base-url-relative') {
+            DO.U.copyRelativeResources(storageIRI, nodes)
+          }
+          nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType})
+        }
+
+        html.querySelector('body').innerHTML = '<main><article about="" typeof="schema:Article"></article></main>'
+        html.querySelector('head title').innerHTML = ''
+        html = doc.getDocument(html)
+
+        fetcher.putResource(storageIRI, html)
+          .then(() => {
+            var documentMode = (DO.C.WebExtension) ? '' : '?author=true'
+
+            newDocument.insertAdjacentHTML('beforeend',
+              '<div class="response-message"><p class="success">' +
+              'New document created at <a href="' + storageIRI +
+              documentMode + '">' + storageIRI + '</a></p></div>'
+            )
+
+            window.open(storageIRI + documentMode, '_blank')
+          })
+
+          .catch(error => {
+            console.error('Error creating a new document:', error)
+
+            let message
+
+            switch (error.status) {
+              case 0:
+              case 405:
+                message = 'this location is not writable'
+                break
+              case 401:
+              case 403:
+                message = 'you do not have permission to write here'
+                break
+              case 406:
+                message = 'enter a name for your resource'
+                break
+              default:
+                message = error.message
+                break
+            }
+
+            newDocument.insertAdjacentHTML('beforeend',
+              '<div class="response-message"><p class="error">' +
+              'Could not create new document: ' + message + '</p>'
+            )
+          })
+      })
     },
 
-    saveAsDocument: function(e) {
+    saveAsDocument: function saveAsDocument (e) {
       e.target.disabled = true;
-      document.body.insertAdjacentHTML('beforeend', '<aside id="save-as-document" class="do on"><button class="close" title="Close">❌</button><h2>Save As Document</h2></aside>');
+      document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="save-as-document" class="do on">' + DO.C.Button.Close + '<h2>Save As Document</h2></aside>'));
 
       var saveAsDocument = document.getElementById('save-as-document');
       saveAsDocument.addEventListener('click', function(e) {
-        if (e.target.matches('button.close')) {
+        if (e.target.closest('button.close')) {
           document.querySelector('#document-do .resource-save-as').disabled = false;
         }
       });
@@ -3824,30 +5295,60 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
       locationInboxId = 'location-inbox';
       locationInboxAction = 'read';
-      saveAsDocument.insertAdjacentHTML('beforeend', '<fieldset id="' + locationInboxId + '-fieldset"><legend>Set Inbox</legend></fieldset>');
-      fieldset = saveAsDocument.querySelectorAll('fieldset')[0];
-      DO.U.setupResourceBrowser(fieldset, locationInboxId, locationInboxAction);
-      fieldset.insertAdjacentHTML('beforeend', '<p>Article\'s <em>inbox</em> will be set to: <samp id="' + locationInboxId + '-' + locationInboxAction + '"></samp></p>');
-      var lii = document.getElementById(locationInboxId + '-input');
-      lii.focus();
-      lii.placeholder = 'https://example.org/path/to/inbox/';
+      saveAsDocument.insertAdjacentHTML('beforeend', '<div><input id="' + locationInboxId + '-set" name="' + locationInboxId + '-set" type="checkbox" /> <label for="' + locationInboxId + '-set">Set Inbox</label></div>');
 
+      saveAsDocument.addEventListener('click', function(e) {
+        if (e.target.closest('input#' + locationInboxId + '-set')) {
+          if (e.target.getAttribute('checked')) {
+            e.target.removeAttribute('checked');
+
+            fieldset = saveAsDocument.querySelector('#' + locationInboxId + '-fieldset');
+            fieldset.parentNode.removeChild(fieldset);
+          }
+          else {
+            e.target.setAttribute('checked', 'checked');
+
+            e.target.nextElementSibling.insertAdjacentHTML('afterend', '<fieldset id="' + locationInboxId + '-fieldset"></fieldset>');
+            fieldset = saveAsDocument.querySelector('#' + locationInboxId + '-fieldset');
+            DO.U.setupResourceBrowser(fieldset, locationInboxId, locationInboxAction);
+            fieldset.insertAdjacentHTML('beforeend', '<p>Article\'s <em>inbox</em> will be set to: <samp id="' + locationInboxId + '-' + locationInboxAction + '"></samp></p>');
+            var lii = document.getElementById(locationInboxId + '-input');
+            lii.focus();
+            lii.placeholder = 'https://example.org/path/to/inbox/';
+          }
+        }
+      });
 
       locationAnnotationServiceId = 'location-annotation-service';
       locationAnnotationServiceAction = 'read';
-      saveAsDocument.insertAdjacentHTML('beforeend', '<fieldset id="' + locationAnnotationServiceId + '-fieldset"><legend>Set Annotation Service</legend></fieldset>');
-      fieldset = saveAsDocument.querySelectorAll('fieldset')[1];
-      DO.U.setupResourceBrowser(fieldset, locationAnnotationServiceId, locationAnnotationServiceAction);
-      fieldset.insertAdjacentHTML('beforeend', '<p>Article\'s <em>annotation service</em> will be set to: <samp id="' + locationAnnotationServiceId + '-' + locationAnnotationServiceAction + '"></samp></p>');
-      var lasi = document.getElementById(locationAnnotationServiceId + '-input');
-      lasi.focus();
-      lasi.placeholder = 'https://example.org/path/to/annotation/';
+      saveAsDocument.insertAdjacentHTML('beforeend', '<div><input id="' + locationAnnotationServiceId + '-set" name="' + locationAnnotationServiceId + '-set" type="checkbox" /> <label for="' + locationAnnotationServiceId + '-set">Set Annotation Service</label></div>');
 
+      saveAsDocument.addEventListener('click', function(e) {
+        if (e.target.closest('input#' + locationAnnotationServiceId + '-set')) {
+          if (e.target.getAttribute('checked')) {
+            e.target.removeAttribute('checked');
+
+            fieldset = saveAsDocument.querySelector('#' + locationAnnotationServiceId + '-fieldset');
+            fieldset.parentNode.removeChild(fieldset);
+          }
+          else {
+            e.target.setAttribute('checked', 'checked');
+
+            e.target.nextElementSibling.insertAdjacentHTML('afterend', '<fieldset id="' + locationAnnotationServiceId + '-fieldset"></fieldset>');
+            fieldset = saveAsDocument.querySelector('#' + locationAnnotationServiceId + '-fieldset');
+            DO.U.setupResourceBrowser(fieldset, locationAnnotationServiceId, locationAnnotationServiceAction);
+            fieldset.insertAdjacentHTML('beforeend', '<p>Article\'s <em>annotation service</em> will be set to: <samp id="' + locationAnnotationServiceId + '-' + locationAnnotationServiceAction + '"></samp></p>');
+            var lasi = document.getElementById(locationAnnotationServiceId + '-input');
+            lasi.focus();
+            lasi.placeholder = 'https://example.org/path/to/annotation/';
+          }
+        }
+      });
 
       var id = 'location-save-as';
       var action = 'write';
       saveAsDocument.insertAdjacentHTML('beforeend', '<fieldset id="' + id + '-fieldset"><legend>Save to</legend></fieldset>');
-      fieldset = saveAsDocument.querySelectorAll('fieldset')[2];
+      fieldset = saveAsDocument.querySelector('fieldset#' + id + '-fieldset');
       DO.U.setupResourceBrowser(fieldset, id, action);
       fieldset.insertAdjacentHTML('beforeend', '<p>Article will be saved at: <samp id="' + id + '-' + action + '"></samp></p>' + DO.U.getBaseURLSelection() + '<p><input type="checkbox" id="derivation-data" name="derivation-data" checked="checked" /><label for="derivation-data">Derivation data</label></p><button class="create">Save</button>');
       var bli = document.getElementById(id + '-input');
@@ -3855,101 +5356,136 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       bli.placeholder = 'https://example.org/path/to/article';
 
 
-      saveAsDocument.addEventListener('click', function(e) {
-        if (e.target.matches('button.create')) {
-          var currentDocumentURL = DO.U.stripFragmentFromString(document.location.href);
-          var saveAsDocument = document.getElementById('save-as-document');
-          var storageIRI = saveAsDocument.querySelector('#' + id + '-' + action).innerText.trim();
-
-          var rm = saveAsDocument.querySelector('.response-message');
-          if (rm) {
-            rm.parentNode.removeChild(rm);
-          }
-
-          if(storageIRI.length == 0) {
-            saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Specify the location to save the article to, and optionally set its <em>inbox</em> or <em>annotation service</em>.</p></div>');
-            return;
-          }
-
-          var html = document.documentElement.cloneNode(true);
-          var nodeInsertLocation;
-          if (!DO.C.Extension)
-            nodeInsertLocation = html.querySelector('main > article') || html.querySelector('body');
-          else
-            nodeInsertLocation = html.querySelector('main.article') || html.querySelector('body');
-
-          var wasDerived = document.querySelector('#derivation-data');
-          if (wasDerived.checked) {
-            var wasDerivedOn = DO.U.getDateTimeISO();
-            nodeInsertLocation.insertAdjacentHTML('beforebegin', '<dl id="document-derived-from"><dt>Derived From</dt><dd><a href="' + currentDocumentURL + '" rel="prov:wasDerivedFrom">' + currentDocumentURL + '</a></dd></dl><dl id="document-derived-on"><dt>Derived On</dt><dd><time datetime="' + wasDerivedOn + '">' + wasDerivedOn + '</time></dd></dl>' + "\n");
-          }
-
-          var inboxLocation = saveAsDocument.querySelector('#' + locationInboxId + '-' + locationInboxAction).innerText.trim();
-          if (inboxLocation.length > 0) {
-            nodeInsertLocation.insertAdjacentHTML('beforebegin', '<dl id="document-inbox"><dt>Notifications Inbox</dt><dd><a href="' + inboxLocation + '" rel="ldp:inbox">' + inboxLocation + '</a></dd></dl>' + "\n");
-          }
-
-          var annotationServiceLocation = saveAsDocument.querySelector('#' + locationAnnotationServiceId + '-' + locationAnnotationServiceAction).innerText.trim();
-          if (annotationServiceLocation.length > 0) {
-            nodeInsertLocation.insertAdjacentHTML('beforebegin', '<dl id="document-annotation-service"><dt>Annotation Service</dt><dd><a href="' + annotationServiceLocation + '" rel="oa:annotationService">' + annotationServiceLocation + '</a></dd></dl>' + "\n");
-          }
-
-          var baseURLSelectionChecked = saveAsDocument.querySelector('select[name="base-url"]');
-          if (baseURLSelectionChecked.length > 0) {
-            var baseURLType = baseURLSelectionChecked.value;
-            var nodes = html.querySelectorAll('head link, [src], object[data]');
-            if (baseURLType == 'base-url-relative') {
-              DO.U.copyRelativeResources(storageIRI, nodes);
-            }
-            nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType});
-          }
-          html = DO.U.getDocument(html);
-
-          var progress = saveAsDocument.querySelector('progress');
-          if(progress) {
-            progress.parentNode.removeChild(progress);
-          }
-          e.target.insertAdjacentHTML('afterend', '<progress min="0" max="100" value="0"></progress>');
-          progress = saveAsDocument.querySelector('progress');
-
-          DO.U.putResource(storageIRI, html, null, null, { 'progress': progress }).then(
-            function(i) {
-              progress.parentNode.removeChild(progress);
-              var url = ('xhr' in i && i.xhr.getResponseHeader('Location')) ? i.xhr.getResponseHeader('Location') : storageIRI;
-              saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="success">Document saved at <a href="' + url + '?author=true">' + url + '</a></p></div>');
-              window.open(url + '?author=true', '_blank');
-            },
-            function(reason) {
-              switch(reason.status) {
-                default:
-                  saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to save.</p></div>');
-                  break;
-                case 0: case 405:
-                  saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to save: this location is not writeable.</p></div>');
-                  break;
-                case 401: case 403:
-                  saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to save: you don\'t have permission to write here.</p></div>');
-                  break;
-                case 406:
-                  saveAsDocument.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to save: enter a name for your resource.</p></div>');
-                  break;
-              }
-              console.log(reason);
-            }
-          );
+      saveAsDocument.addEventListener('click', e => {
+        if (!e.target.closest('button.create')) {
+          return
         }
-      });
+
+        var currentDocumentURL = uri.stripFragmentFromString(document.location.href)
+        var saveAsDocument = document.getElementById('save-as-document')
+        var storageIRI = saveAsDocument.querySelector('#' + id + '-' + action).innerText.trim()
+
+        var rm = saveAsDocument.querySelector('.response-message')
+        if (rm) {
+          rm.parentNode.removeChild(rm)
+        }
+
+        if(!storageIRI.length) {
+          saveAsDocument.insertAdjacentHTML('beforeend',
+            '<div class="response-message"><p class="error">' +
+            'Specify the location to save the article to, and optionally set its <em>inbox</em> or <em>annotation service</em>.</p></div>'
+          )
+
+          return
+        }
+
+        var html = document.documentElement.cloneNode(true)
+        var o, r
+
+        var wasDerived = document.querySelector('#derivation-data')
+        if (wasDerived.checked) {
+          o = { 'id': 'document-derived-from', 'title': 'Derived From' };
+          r = { 'rel': 'prov:wasDerivedFrom', 'href': currentDocumentURL };
+          html = DO.U.setDocumentRelation(html, [r], o);
+
+          html = DO.U.setDate(html, { 'id': 'document-derived-on', 'property': 'prov:generatedAtTime', 'title': 'Derived On' });
+
+          o = { 'id': 'document-identifier', 'title': 'Identifier' };
+          r = { 'rel': 'owl:sameAs', 'href': storageIRI };
+          html = DO.U.setDocumentRelation(html, [r], o);
+        }
+
+        var inboxLocation = saveAsDocument.querySelector('#' + locationInboxId + '-' + locationInboxAction);
+        if (inboxLocation) {
+          inboxLocation = inboxLocation.innerText.trim();
+          o = { 'id': 'document-inbox', 'title': 'Notifications Inbox' };
+          r = { 'rel': 'ldp:inbox', 'href': inboxLocation };
+          html = DO.U.setDocumentRelation(html, [r], o);
+        }
+
+        var annotationServiceLocation = saveAsDocument.querySelector('#' + locationAnnotationServiceId + '-' + locationAnnotationServiceAction)
+        if (annotationServiceLocation) {
+          annotationServiceLocation = annotationServiceLocation.innerText.trim();
+          o = { 'id': 'document-annotation-service', 'title': 'Annotation Service' };
+          r = { 'rel': 'oa:annotationService', 'href': annotationServiceLocation };
+          html = DO.U.setDocumentRelation(html, [r], o);
+        }
+
+        var baseURLSelectionChecked = saveAsDocument.querySelector('select[name="base-url"]')
+        if (baseURLSelectionChecked.length > 0) {
+          var baseURLType = baseURLSelectionChecked.value
+          var nodes = html.querySelectorAll('head link, [src], object[data]')
+          if (baseURLType == 'base-url-relative') {
+            DO.U.copyRelativeResources(storageIRI, nodes)
+          }
+          nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType})
+        }
+
+        html = doc.getDocument(html)
+
+        var progress = saveAsDocument.querySelector('progress')
+        if(progress) {
+          progress.parentNode.removeChild(progress)
+        }
+        e.target.insertAdjacentHTML('afterend', '<progress min="0" max="100" value="0"></progress>')
+        progress = saveAsDocument.querySelector('progress')
+
+        fetcher.putResource(storageIRI, html, null, null, { 'progress': progress })
+
+          .then(response => {
+            progress.parentNode.removeChild(progress)
+
+            let url = response.url || storageIRI
+
+            var documentMode = (DO.C.WebExtension) ? '' : '?author=true'
+
+            saveAsDocument.insertAdjacentHTML('beforeend',
+              '<div class="response-message"><p class="success">' +
+              'Document saved at <a href="' + url + documentMode + '">' + url + '</a></p></div>'
+            )
+
+            window.open(url + documentMode, '_blank')
+          })
+
+          .catch(error => {
+            console.error('Error saving document', error)
+
+            let message
+
+            switch (error.status) {
+              case 0:
+              case 405:
+                message = 'this location is not writable'
+                break
+              case 401:
+              case 403:
+                message = 'you do not have permission to write here'
+                break
+              case 406:
+                message = 'enter a name for your resource'
+                break
+              default:
+                message = error.message
+                break
+            }
+
+            saveAsDocument.insertAdjacentHTML('beforeend',
+              '<div class="response-message"><p class="error">' +
+              'Unable to save:' + message + '</p></div>'
+            )
+          })
+      })
     },
 
     viewSource: function(e) {
       e.target.disabled = true;
-      document.body.insertAdjacentHTML('beforeend', '<aside id="source-view" class="do on"><button class="close" title="Close">❌</button><h2>Source</h2><textarea id="source-edit" rows="24" cols="80"></textarea><p><button class="create">Update</button></p></aside>');
+      document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="source-view" class="do on">' + DO.C.Button.Close + '<h2>Source</h2><textarea id="source-edit" rows="24" cols="80"></textarea><p><button class="create">Update</button></p></aside>'));
       var sourceBox = document.getElementById('source-view');
       var input = document.getElementById('source-edit');
-      input.value = DO.U.getDocument();
+      input.value = doc.getDocument();
 
       sourceBox.addEventListener('click', function(e) {
-        if (e.target.matches('button.create')) {
+        if (e.target.closest('button.create')) {
           var url = window.location.origin + window.location.pathname;
           var data = document.getElementById('source-edit').value;
           document.documentElement.innerHTML = data;
@@ -3959,7 +5495,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           document.querySelector('#document-do .resource-source').disabled = true;
         }
 
-        if (e.target.matches('button.close')) {
+        if (e.target.closest('button.close')) {
           document.querySelector('#document-do .resource-source').disabled = false;
         }
       });
@@ -3999,6 +5535,10 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           if (s != 'http' && s != 'https' && s != 'file' && s != 'data' && s != 'urn' && document.location.protocol != 'file:') {
             url = DO.U.setBaseURL(url, options);
           }
+          else if (url.startsWith('http:') && node.tagName.toLowerCase()) {
+            var proxyURL = ('proxyURL' in options) ? options.proxyURL : DO.C.ProxyURL
+            url = proxyURL + uri.encodeString(url)
+          }
           node.setAttribute(ref, url);
         };
       }
@@ -4022,7 +5562,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
               url = options.iri.split(':')[0] + ':' + url;
             }
             else {
-              href = ('iri' in options) ? DO.U.getProxyableIRI(options.iri) : document.location.href;
+              href = ('iri' in options) ? uri.getProxyableIRI(options.iri) : document.location.href;
               url = DO.U.getBaseURL(href) + matches[3].replace(/^\//g, '');
             }
             break;
@@ -4058,7 +5598,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       return url;
     },
 
-    copyRelativeResources: function(storageIRI, relativeNodes) {
+    copyRelativeResources: function copyRelativeResources (storageIRI, relativeNodes) {
       var ref = '';
       var baseURL = DO.U.getBaseURL(storageIRI);
 
@@ -4076,112 +5616,35 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
             break;
         }
 
-        var fromURL = node.getAttribute(ref);
+        var fromURL = x = node.getAttribute(ref).trim();
+        var pathToFile = '';
         var s = fromURL.split(':')[0];
+
         if (s != 'http' && s != 'https' && s != 'file' && s != 'data' && s != 'urn' && s != 'urn') {
-          var pathToFile = DO.U.setBaseURL(fromURL, {'baseURLType': 'base-url-relative'});
-          fromURL = DO.U.getBaseURL(document.location.href) + pathToFile.replace(/^\//g, '');
-          var toURL = baseURL + pathToFile.replace(/^\//g, '');
-          DO.U.copyResource(fromURL, toURL);
-         }
+          if (fromURL.startsWith('//')) {
+            fromURL = document.location.protocol + fromURL
+            toURL = baseURL + fromURL.substr(2)
+          }
+          else if (fromURL.startsWith('/')) {
+            pathToFile = DO.U.setBaseURL(fromURL, {'baseURLType': 'base-url-relative'});
+            fromURL = document.location.origin + fromURL
+            toURL = baseURL + pathToFile
+          }
+          else {
+            pathToFile = DO.U.setBaseURL(fromURL, {'baseURLType': 'base-url-relative'});
+            fromURL = DO.U.getBaseURL(document.location.href) + fromURL
+            toURL = baseURL + pathToFile
+          }
+
+          fetcher.copyResource(fromURL, toURL);
+        }
       };
-    },
-
-    initStorage: function(item) {
-      if (typeof window.localStorage != 'undefined') {
-        DO.U.enableStorage(item);
-      }
-    },
-    enableStorage: function(item) {
-      DO.C.UseStorage = true;
-      if(localStorage.getItem(item)) {
-        document.documentElement.innerHTML = localStorage.getItem(item);
-      }
-      console.log(DO.U.getDateTimeISO() + ': Storage enabled.');
-      DO.U.enableAutoSave(item);
-    },
-    disableStorage: function(item) {
-      DO.C.UseStorage = false;
-      localStorage.removeItem(item);
-      DO.U.disableAutoSave(item);
-      console.log(DO.U.getDateTimeISO() + ': Storage disabled.');
-    },
-    saveStorage: function(item) {
-      switch(item) {
-        case 'html': default:
-          var object = DO.U.getDocument();
-          break;
-      }
-      localStorage.setItem(item, object);
-      console.log(DO.U.getDateTimeISO() + ': Document saved.');
-    },
-    enableAutoSave: function(item) {
-      DO.C.AutoSaveId = setInterval(function() { DO.U.saveStorage(item) }, DO.C.AutoSaveTimer);
-      console.log(DO.U.getDateTimeISO() + ': Autosave enabled.');
-    },
-    disableAutoSave: function(item) {
-      clearInterval(DO.C.AutoSaveId);
-      DO.C.AutoSaveId = '';
-      console.log(DO.U.getDateTimeISO() + ': Autosave disabled.');
-    },
-    showStorage: function(node) {
-      if(document.querySelector('#local-storage')) { return; }
-
-      if (typeof window.localStorage != 'undefined') {
-        var useStorage, checked;
-
-        if (DO.C.UseStorage) {
-          if (DO.C.AutoSaveId) {
-            checked = ' checked="checked"';
-          }
-          useStorage = DO.C.DisableStorageButtons + '<input id="local-storage-html-autosave" class="autosave" type="checkbox"' + checked +' /> <label for="local-storage-html-autosave"><i class="fa fa-clock-o"></i> 1m autosave</label>';
-        }
-        else {
-          useStorage = DO.C.EnableStorageButtons;
-        }
-
-        node.insertAdjacentHTML('beforeend', '<section id="local-storage" class="do"><h2>Local Storage</h2><p>' + useStorage + '</p></section>');
-
-        document.getElementById('local-storage').addEventListener('click', function(e) {
-          if (e.target.closest('button.local-storage-enable-html')) {
-            e.target.outerHTML = DO.C.DisableStorageButtons;
-            DO.U.enableStorage('html');
-          }
-
-          if (e.target.closest('button.local-storage-disable-html')) {
-            e.target.outerHTML = DO.C.EnableStorageButtons;
-            DO.U.disableStorage('html');
-          }
-
-          if (e.target.matches('input.autosave')) {
-            if (e.target.getAttribute('checked')) {
-              e.target.removeAttribute('checked');
-              DO.U.disableAutoSave('html');
-            }
-            else {
-              e.target.setAttribute('checked', 'checked');
-              DO.U.enableAutoSave('html');
-            }
-          }
-        });
-      }
-    },
-    hideStorage: function() {
-      if (DO.C.UseStorage) {
-        var ls = document.getElementById('local-storage');
-        ls.parentNode.removeChild(ls);
-      }
-    },
-
-    getDateTimeISO: function() {
-      var date = new Date();
-      return date.toISOString();
     },
 
     createAttributeDateTime: function(element) {
       //Creates datetime attribute.
       //TODO: Include @data-author for the signed in user e.g., WebID or URL.
-      var a = DO.U.getDateTimeISO();
+      var a = util.getDateTimeISO();
 
       switch(element) {
         case 'mark': case 'article':
@@ -4215,7 +5678,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       }
 //console.log(iri);
 
-      return DO.U.getResourceGraph(iri);
+      return fetcher.getResourceGraph(iri);
     },
 
     getCitationHTML: function(citationGraph, citationURI, options) {
@@ -4238,9 +5701,10 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       }
       title = title.replace(/ & /g, " &amp; ");
       title = (title.length > 0) ? '<cite>' + title + '</cite>, ' : '';
-      var datePublished = subject.schemadatePublished || subject.dctermsissued || subject.dctermsdate || subject.dctermscreated || '';
+      var datePublished = subject.schemadatePublished || subject.dctermsissued || subject.dctermsdate || subject.schemadateCreated || subject.dctermscreated || '';
+      var dateVersion = subject.schemadateModified || datePublished;
       datePublished = (datePublished) ? datePublished.substr(0,4) + ', ' : '';
-      var dateAccessed = 'Accessed: ' + DO.U.getDateTimeISO();
+      var dateAccessed = 'Accessed: ' + util.getDateTimeISO();
       var authors = [], authorList = [];
 // console.log(subject);
 // console.log(subject.biboauthorList);
@@ -4286,7 +5750,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       if(authorList.length > 0) {
         authorList.forEach(function(authorIRI) {
           var s = subject.child(authorIRI);
-          var author = DO.U.getAgentName(s);
+          var author = auth.getAgentName(s);
 
           if (s.schemafamilyName && s.schemafamilyName.length > 0 && s.schemagivenName && s.schemagivenName.length > 0) {
             author = DO.U.createRefName(s.schemafamilyName, s.schemagivenName);
@@ -4305,11 +5769,27 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         authors = authors.join(', ') + ': ';
       }
 
+      var dataVersionURL;
+      if (subject.memmemento) {
+        dataVersionURL = subject.memmemento;
+      }
+      else if (subject.rellatestversion) {
+        dataVersionURL = subject.rellatestversion;
+      }
+
+      if (dataVersionURL) {
+        dataVersionURL = ' data-versionurl="' + dataVersionURL + '"';
+      }
+      var dataVersionDate;
+      if (dateVersion) {
+        dataVersionDate = ' data-versiondate="' + dateVersion + '"';
+      }
+
       var content = ('content' in options && options.content.length > 0) ? options.content + ', ' : '';
 
       var citationReason = 'Reason: ' + DO.C.Citation[options.citationRelation];
 
-      var citationHTML = authors + title + datePublished + content + '<a about="#' + options.refId + '" href="' + options.citationId + '" rel="schema:citation ' + options.citationRelation  + '">' + options.citationId + '</a> [' + dateAccessed + ', ' + citationReason + ']';
+      var citationHTML = authors + title + datePublished + content + '<a about="#' + options.refId + '"' + dataVersionDate + dataVersionURL + ' href="' + options.citationId + '" rel="schema:citation ' + options.citationRelation  + '">' + options.citationId + '</a> [' + dateAccessed + ', ' + citationReason + ']';
 //console.log(citationHTML);
       return citationHTML;
     },
@@ -4333,8 +5813,9 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       var highlights = document.body.querySelectorAll('*[class*="highlight-"]');
       for (var i = 0; i < highlights.length; i++) {
         highlights[i].addEventListener('mouseenter', function(e) {
-          var c = e.target.getAttribute('class');
-          var highlightsX = document.body.querySelectorAll('*[class*="'+ c +'"]');
+          var c = e.target.getAttribute('class').split(' ')
+                    .filter(function(s) { return s.startsWith('highlight-'); });
+          var highlightsX = document.body.querySelectorAll('*[class~="'+ c[0] +'"]');
           for (var j = 0; j < highlightsX.length; j++) {
             highlightsX[j].classList.add('do', 'highlight');
           }
@@ -4342,7 +5823,9 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
         highlights[i].addEventListener('mouseleave', function(e) {
           var c = e.target.getAttribute('class');
-          var highlightsX = document.body.querySelectorAll('*[class*="'+ c +'"]');
+          var c = e.target.getAttribute('class').split(' ')
+                    .filter(function(s) { return s.startsWith('highlight-'); });
+          var highlightsX = document.body.querySelectorAll('*[class~="'+ c[0] +'"]');
           for (var j = 0; j < highlightsX.length; j++) {
             highlightsX[j].classList.remove('do', 'highlight');
           }
@@ -4350,6 +5833,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       }
     },
 
+    //From http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
     hashCode: function(s){
       var hash = 0;
       if (s.length == 0) return hash;
@@ -4465,7 +5949,7 @@ WHERE {\n\
   FILTER (CONTAINS(LCASE(?prefLabel), '" + textInput + "') && (LANG(?prefLabel) = '' || LANGMATCHES(LANG(?prefLabel), '" + options.lang + "')))"
 + resourcePattern + "\n\
 }";
-       return sparqlEndpoint + "?query=" + DO.U.encodeString(query);
+       return sparqlEndpoint + "?query=" + uri.encodeString(query);
       },
 
       getObservationsWithDimension: function(sparqlEndpoint, dataset, paramDimension, options) {
@@ -4488,7 +5972,7 @@ WHERE {\n\
   ?observation ?propertyMeasure ?obsValue .\n\
 }";
 
-        return sparqlEndpoint + "?query=" + DO.U.encodeString(query);
+        return sparqlEndpoint + "?query=" + uri.encodeString(query);
       },
     },
 
@@ -4570,12 +6054,13 @@ WHERE {\n\
     },
 
     getTriplesFromGraph: function(url) {
-      return DO.U.getGraph(url)
+      return graph.getGraph(url)
         .then(function(i){
           return i.graph();
         })
         .catch(function(error){
-          console.log(error);
+          // console.log(error);
+          throw error;
         });
     },
 
@@ -4629,7 +6114,7 @@ WHERE {\n\
     showAsTabs: function(id) {
       document.querySelector('#' + id + ' nav').addEventListener('click', function(e) {
         var a = e.target;
-        if (a.matches('a')) {
+        if (a.closest('a')) {
           e.preventDefault();
           e.stopPropagation();
 
@@ -4658,11 +6143,12 @@ WHERE {\n\
 
       switch(motivatedBy) {
         default: break;
-        case 'oa:assessing':  s = '✪'; break;
-        case 'oa:commenting': s = '🗨'; break;
-        case 'oa:bookmark':   s = '🔖'; break;
-        case 'oa:replying':   s = '💬'; break;
-        case 'oa:describing': s = '※'; break;
+        case 'oa:assessing':     s = '✪'; break;
+        case 'oa:bookmarking':   s = '🔖'; break;
+        case 'oa:commenting':    s = '🗨'; break;
+        case 'oa:describing':    s = '※'; break;
+        case 'oa:highlighting':  s = '#'; break;        
+        case 'oa:replying':      s = '💬'; break;
       }
 
       return s;
@@ -4693,6 +6179,14 @@ WHERE {\n\
       }
     },
 
+    getTextQuoteHTML: function(refId, exact, docRefType, options){
+      options = options || {};
+
+      var doMode = (options.do) ? ' do' : '';
+
+      return '<span class="ref' + doMode + '" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="rdf:value">' + exact + '</mark>' + docRefType + '</span>';
+    },
+
     positionNote: function(refId, refLabel, noteId) {
       var ref = document.getElementById(refId);
       var note = document.getElementById(noteId);
@@ -4710,320 +6204,321 @@ WHERE {\n\
 
     positionInteraction: function(noteIRI, containerNode) {
       containerNode = containerNode || document.body;
-      var pIRI = DO.U.getProxyableIRI(noteIRI);
 
-      return DO.U.getGraph(pIRI)
-        .then(
-          function(i) {
-            var note = i.child(noteIRI);
-// console.log(note);
-            var id = String(Math.abs(DO.U.hashCode(noteIRI)));
-            var refId = 'r-' + id;
-            var refLabel = id;
+      return fetcher.getResourceGraph(noteIRI).then(
+        function(g){
+          DO.U.showAnnotation(noteIRI, g, containerNode);
+        });
+    },
 
-            var datetime = note.schemadatePublished || note.dctermscreated || note.aspublished;
+    showAnnotation: function(noteIRI, g, containerNode) {
+      containerNode = containerNode || document.body;
+
+      var documentURL = uri.stripFragmentFromString(document.location.href);
+
+      var note = g.child(noteIRI);
+
+      if (note.asobject && note.asobject.at(0)) {
+        note = g.child(note.asobject.at(0))
+      }
+
+      var id = String(Math.abs(DO.U.hashCode(noteIRI)));
+      var refId = 'r-' + id;
+      var refLabel = id;
+
+      var datetime = note.schemadatePublished || note.dctermscreated || note.aspublished;
 // console.log(datetime);
-            var annotatedBy = note.schemacreator || note.dctermscreator || note.asactor;
-            var annotatedByIRI;
+      var annotatedBy = note.schemacreator || note.dctermscreator || note.asactor;
+      var annotatedByIRI;
 // console.log(annotatedBy);
-            if (annotatedBy && annotatedBy.at(0)) {
-              annotatedByIRI = annotatedBy.at(0);
+      if (annotatedBy && annotatedBy.at(0)) {
+        annotatedByIRI = annotatedBy.at(0);
 // console.log(annotatedByIRI);
-              annotatedBy = i.child(annotatedByIRI);
+        annotatedBy = g.child(annotatedByIRI);
 // console.log(annotatedBy);
-            }
-            var annotatedByName = DO.U.getAgentName(annotatedBy);
+      }
+      var annotatedByName = auth.getAgentName(annotatedBy);
 // console.log(annotatedByName);
-            var annotatedByImage = DO.U.getAgentImage(annotatedBy);
+      var annotatedByImage = auth.getAgentImage(annotatedBy);
 // console.log(annotatedByImage);
-            var annotatedByURL = annotatedBy.schemaurl || '';
-            annotatedByURL = (annotatedByURL) ? annotatedByURL : undefined;
+      var annotatedByURL = annotatedBy.schemaurl || '';
+      annotatedByURL = (annotatedByURL) ? annotatedByURL : undefined;
 
-            var licenseIRI = note.schemalicense || note.dctermsrights || undefined;
+      var licenseIRI = note.schemalicense || note.dctermsrights || undefined;
 // console.log(licenseIRI);
 
-            var motivatedBy = 'oa:replying';
+      var motivatedBy = 'oa:replying';
 
-            var bodyText = note.schemadescription;
-            if(!bodyText) {
-              bodyText = note.dctermsdescription;
-              if(!bodyText)  {
-                bodyText = note.ascontent;
-              }
-            }
+      var bodyText = note.schemadescription;
+      if(!bodyText) {
+        bodyText = note.dctermsdescription;
+        if(!bodyText)  {
+          bodyText = note.ascontent;
+        }
+      }
 
-            var types = note.rdftype;
+      var types = note.rdftype;
 // console.log(types);
-            var resourceTypes = [];
-            types.forEach(function(type){
-              resourceTypes.push(type);
+      var resourceTypes = [];
+      types.forEach(function(type){
+        resourceTypes.push(type);
 // console.log(type);
-            });
+      });
 
-            if(resourceTypes.indexOf('http://www.w3.org/ns/oa#Annotation') > -1) {
-              var body = i.child(note.oahasBody);
+      if(resourceTypes.indexOf('http://www.w3.org/ns/oa#Annotation') > -1) {
+        var body = g.child(note.oahasBody);
 // console.log(body);
-              var bodyLicenseIRI = body.schemalicense || body.dctermsrights || undefined;
+        var bodyLicenseIRI = body.schemalicense || body.dctermsrights || undefined;
 // console.log(bodyLicenseIRI);
-              bodyText = body.rdfvalue;
+        bodyText = body.rdfvalue;
 // console.log(bodyText);
-              var target = i.child(note.oahasTarget);
+
+
+        if (note.oahasTarget && !note.oahasTarget.startsWith(documentURL)) {
+          return Promise.reject();
+        }
+
+        var target = g.child(note.oahasTarget);
 // console.log(target);
-              var targetIRI = target.iri().toString();
+        var targetIRI = target.iri().toString();
 // console.log(targetIRI);
 
-              var source = target.oahasSource;
+        var source = target.oahasSource;
 // console.log(source);
 // console.log(note.oamotivatedBy);
 
-              if(note.oamotivatedBy) {
-                motivatedBy = note.oamotivatedBy;
-                refLabel = DO.U.getReferenceLabel(motivatedBy);
-              }
+        if(note.oamotivatedBy) {
+          motivatedBy = note.oamotivatedBy;
+          refLabel = DO.U.getReferenceLabel(motivatedBy);
+        }
 
-              var exact, prefix, suffix;
-              var selector = target.oahasSelector;
-              if(selector) {
-                selector = i.child(selector);
+        var exact, prefix, suffix;
+        var selector = target.oahasSelector;
+        if(selector) {
+          selector = g.child(selector);
 // console.log(selector);
 
 // console.log(selector.rdftype);
 // console.log(selector.rdftype._array);
-                //FIXME: This is taking the first rdf:type. There could be multiple.
-                var selectorTypes;
-                if (selector.rdftype && selector.rdftype.at(0)) {
-                  selectorTypes = selector.rdftype.at(0);
-                }
-// console.log(selectorTypes);
-                if(selectorTypes == 'http://www.w3.org/ns/oa#TextQuoteSelector') {
-                  exact = selector.oaexact;
-                  prefix = selector.oaprefix;
-                  suffix = selector.oasuffix;
-                }
-                else if (selectorTypes == 'http://www.w3.org/ns/oa#FragmentSelector') {
-                  var refinedBy = i.child(selector["http://www.w3.org/ns/oa#refinedBy"].iri());
-                  exact = refinedBy.oaexact;
-                  prefix = refinedBy.oaprefix;
-                  suffix = refinedBy.oasuffix;
-                }
+          //FIXME: This is taking the first rdf:type. There could be multiple.
+          var selectorTypes;
+          if (selector.rdftype && selector.rdftype.at(0)) {
+            selectorTypes = selector.rdftype.at(0);
+          }
+// console.log(selectorTypes == 'http://www.w3.org/ns/oa#FragmentSelector');
+          if(selectorTypes == 'http://www.w3.org/ns/oa#TextQuoteSelector') {
+            exact = selector.oaexact;
+            prefix = selector.oaprefix;
+            suffix = selector.oasuffix;
+          }
+          else if (selectorTypes == 'http://www.w3.org/ns/oa#FragmentSelector') {
+            var refinedBy = g.child(selector.oarefinedBy);
+// console.log(refinedBy)
+            exact = refinedBy.oaexact;
+            prefix = refinedBy.oaprefix;
+            suffix = refinedBy.oasuffix;
+// console.log(selector.rdfvalue)
+            if (selector.rdfvalue && selector.rdfvalue !== '' && selector.dctermsconformsTo && selector.dctermsconformsTo.endsWith('://tools.ietf.org/html/rfc3987')) {
+              var fragment = selector.rdfvalue;
+              fragment = (fragment.indexOf == 0) ? uri.getFragmentFromString(fragment) : fragment;
+// console.log(fragment)
+              if (fragment !== '') {
+                containerNode = document.querySelector('#' + selector.rdfvalue) || document;
               }
+            }
+          }
+        }
 // console.log(exact);
 // console.log(prefix);
 // console.log(suffix);
+// console.log('----')
+        var docRefType = '<sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#' + id + '" resource="' + noteIRI + '">' + refLabel + '</a></sup>';
 
-              var containerNodeTextContent = containerNode.textContent;
+        var containerNodeTextContent = containerNode.textContent;
+        //XXX: Seems better?
+        // var containerNodeTextContent = DO.U.fragmentFromString(doc.getDocument(containerNode)).textContent.trim();
+
 //console.log(containerNodeTextContent);
 // console.log(prefix + exact + suffix);
-              var selectorIndex = containerNodeTextContent.indexOf(prefix + exact + suffix);
+        var selectorIndex = containerNodeTextContent.indexOf(prefix + exact + suffix);
 // console.log(selectorIndex);
-              if (selectorIndex >= 0) {
-                var exactStart = selectorIndex + prefix.length
-                var exactEnd = selectorIndex + prefix.length + exact.length;
-                var selection = { start: exactStart, end: exactEnd };
+        if (selectorIndex >= 0) {
+          var selector =  {
+            "prefix": prefix,
+            "exact": exact,
+            "suffix": suffix
+          };
 
-                var ref = '<span class="ref do" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark><sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#' + id + '" resource="' + noteIRI + '">' + refLabel + '</a></sup></span>';
+          var selectedParentNode = DO.U.importTextQuoteSelector(containerNode, selector, refId, docRefType, { 'do': true });
 
-                MediumEditor.selection.importSelection(selection, containerNode, document);
+          var parentNodeWithId = selectedParentNode.closest('[id]');
+          var targetIRI = (parentNodeWithId) ? documentURL + '#' + parentNodeWithId.id : documentURL;
 
-                //XXX: Review
-                var selection = window.getSelection();
-                var r = selection.getRangeAt(0);
-                selection.removeAllRanges();
-                selection.addRange(r);
-                r.collapse(true);
-                var selectedParentNode = r.commonAncestorContainer.parentNode;
-                var selectedParentNodeValue = r.commonAncestorContainer.nodeValue;
+          var noteData = {
+            "type": 'article',
+            "mode": "read",
+            "motivatedByIRI": motivatedBy,
+            "id": id,
+            "refId": refId,
+            "iri": noteIRI, //e.g., https://example.org/path/to/article
+            "creator": {},
+            "datetime": datetime,
+            "target": {
+              "iri": targetIRI,
+              "source": source,
+              "selector": {
+                "exact": exact,
+                "prefix": prefix,
+                "suffix": suffix
+              }
+              //TODO: state
+            },
+            "body": bodyText,
+            "license": {}
+          }
+          if (annotatedByIRI) {
+            noteData.creator["iri"] = annotatedByIRI;
+          }
+          if (annotatedByName) {
+            noteData.creator["name"] = annotatedByName;
+          }
+          if (annotatedByImage) {
+            noteData.creator["image"] = annotatedByImage;
+          }
+          if (annotatedByURL) {
+            noteData.creator["url"] = annotatedByURL;
+          }
 
-                var selectionUpdated = DO.U.fragmentFromString(selectedParentNodeValue.substr(0, r.startOffset) + ref + selectedParentNodeValue.substr(r.startOffset + exact.length));
-
-                //XXX: Review. This feels a bit dirty
-                for(var i = 0; i < selectedParentNode.childNodes.length; i++) {
-                  var n = selectedParentNode.childNodes[i];
-                  if (n.nodeType === 3 && n.nodeValue == selectedParentNodeValue) {
-                    selectedParentNode.replaceChild(selectionUpdated, n);
-                  }
-                }
-
-                var resourceIRI = DO.U.stripFragmentFromString(document.location.href);
-
-                var parentNodeWithId = selectedParentNode.closest('[id]');
-                var targetIRI = (parentNodeWithId) ? resourceIRI + '#' + parentNodeWithId.id : resourceIRI;
-
-                var noteData = {
-                  "type": 'article',
-                  "mode": "read",
-                  "motivatedByIRI": motivatedBy,
-                  "id": id,
-                  "refId": refId,
-                  "iri": noteIRI, //e.g., https://example.org/path/to/article
-                  "creator": {},
-                  "datetime": datetime,
-                  "target": {
-                    "iri": targetIRI,
-                    "source": source,
-                    "selector": {
-                      "exact": exact,
-                      "prefix": prefix,
-                      "suffix": suffix
-                    }
-                    //TODO: state
-                  },
-                  "body": bodyText,
-                  "license": {}
-                }
-                if (annotatedByIRI) {
-                  noteData.creator["iri"] = annotatedByIRI;
-                }
-                if (annotatedByName) {
-                  noteData.creator["name"] = annotatedByName;
-                }
-                if (annotatedByImage) {
-                  noteData.creator["image"] = annotatedByImage;
-                }
-                if (annotatedByURL) {
-                  noteData.creator["url"] = annotatedByURL;
-                }
-
-                if (licenseIRI) {
-                  noteData.license["iri"] = licenseIRI;
-                }
+          if (licenseIRI) {
+            noteData.license["iri"] = licenseIRI;
+          }
 // console.log(noteData);
-                var note = DO.U.createNoteDataHTML(noteData);
-                var nES = selectedParentNode.nextElementSibling;
-                var asideNote = '\n\
+          var note = DO.U.createNoteDataHTML(noteData);
+          var nES = selectedParentNode.nextElementSibling;
+          var asideNote = '\n\
 <aside class="note do">\n\
 <blockquote cite="' + noteIRI + '">'+ note + '</blockquote>\n\
 </aside>\n\
 ';
-                var asideNode = DO.U.fragmentFromString(asideNote);
-                var parentSection = MediumEditor.util.getClosestTag(selectedParentNode, 'section')
-                || MediumEditor.util.getClosestTag(selectedParentNode, 'div') || MediumEditor.util.getClosestTag(selectedParentNode, 'article');
-                parentSection.appendChild(asideNode);
-                //XXX: Keeping this comment around for emergency
-  //                selectedParentNode.parentNode.insertBefore(asideNode, selectedParentNode.nextSibling);
+          var asideNode = DO.U.fragmentFromString(asideNote);
+          var parentSection = MediumEditor.util.getClosestTag(selectedParentNode, 'section')
+          || MediumEditor.util.getClosestTag(selectedParentNode, 'div') || MediumEditor.util.getClosestTag(selectedParentNode, 'article') || MediumEditor.util.getClosestTag(selectedParentNode, 'main') || MediumEditor.util.getClosestTag(selectedParentNode, 'body');
+          parentSection.appendChild(asideNode);
+          //XXX: Keeping this comment around for emergency
+//                selectedParentNode.parentNode.insertBefore(asideNode, selectedParentNode.nextSibling);
 
-                if(DO.C.User.IRI) {
-                  var noteDelete = document.querySelector('aside.do blockquote[cite="' + noteIRI + '"] article button.delete');
-                  if (noteDelete) {
-                    noteDelete.addEventListener('click', function(e) {
-                      e.preventDefault();
-                      e.stopPropagation();
+          if(DO.C.User.IRI) {
+            var noteDelete = document.querySelector('aside.do blockquote[cite="' + noteIRI + '"] article button.delete');
+            if (noteDelete) {
+              noteDelete.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
 
-                      DO.U.deleteResource(noteIRI).then(
-                        function(i){
-                          var aside = noteDelete.closest('aside.do');
-                          aside.parentNode.removeChild(aside);
-                          var span = document.querySelector('span[about="#' + refId + '"]');
-                          span.outerHTML = span.querySelector('mark').textContent;
-                          //TODO: Delete notification or send delete activity
-                        },
-                        function(reason){
-                          console.log(reason);
-                        }
-                      );
-                    });
-                  }
-                }
-                DO.U.positionNote(refId, refLabel, id);
-
-                //Perhaps return something more useful?
-                return noteIRI;
-              }
-
-              //XXX: Annotation without a selection
-              else {
-                var noteData = {
-                  "type": 'article',
-                  "mode": "read",
-                  "motivatedByIRI": motivatedBy,
-                  "id": id,
-                  "refId": refId,
-                  "refLabel": refLabel,
-                  "iri": noteIRI,
-                  "creator": {},
-                  "datetime": datetime,
-                  "target": {
-                    "iri": targetIRI
-                  },
-                  "body": bodyText,
-                  "license": {}
-                };
-
-                if (annotatedByIRI) {
-                  noteData.creator["iri"] = annotatedByIRI;
-                }
-                if (annotatedByName) {
-                  noteData.creator["name"] = annotatedByName;
-                }
-                if (annotatedByImage) {
-                  noteData.creator["image"] = annotatedByImage;
-                }
-                if (licenseIRI) {
-                  noteData.license["iri"] = licenseIRI;
-                  noteData.license["name"] = DO.C.License[noteData.license["iri"]].name;
-                }
-                if (datetime) {
-                  noteData.datetime = datetime;
-                }
-// console.log(noteData)
-                DO.U.addInteraction(noteData);
-              }
+                fetcher.deleteResource(noteIRI)
+                  .then(() => {
+                    var aside = noteDelete.closest('aside.do')
+                    aside.parentNode.removeChild(aside)
+                    var span = document.querySelector('span[about="#' + refId + '"]')
+                    span.outerHTML = span.querySelector('mark').textContent
+                    // TODO: Delete notification or send delete activity
+                  })
+              });
             }
-            else {
-              var inReplyTo, inReplyToRel;
-              if (note.asinReplyTo && note.asinReplyTo.at(0)) {
-                inReplyTo = note.asinReplyTo.at(0);
-                inReplyToRel = 'as:inReplyTo';
-              }
-              else if(note.siocreplyof && note.siocreplyof.at(0)) {
-                inReplyTo = note.siocreplyof.at(0);
-                inReplyToRel = 'sioc:reply_of';
-              }
-
-              if(inReplyTo && inReplyTo.indexOf(window.location.origin + window.location.pathname) >= 0) {
-                var noteData = {
-                  "type": 'article',
-                  "mode": "read",
-                  "motivatedByIRI": motivatedBy,
-                  "id": id,
-                  "refId": refId,
-                  "refLabel": refLabel,
-                  "iri": noteIRI,
-                  "creator": {},
-                  "inReplyTo": {
-                    'iri': inReplyTo,
-                    'rel': inReplyToRel
-                  },
-                  "body": bodyText,
-                  "license": {}
-                };
-                if (annotatedByIRI) {
-                  noteData.creator["iri"] = annotatedByIRI;
-                }
-                if (annotatedByName) {
-                  noteData.creator["name"] = annotatedByName;
-                }
-                if (annotatedByImage) {
-                  noteData.creator["image"] = annotatedByImage;
-                }
-                if (licenseIRI) {
-                  noteData.license["iri"] = licenseIRI;
-                }
-                if (datetime) {
-                  noteData.datetime = datetime;
-                }
-                DO.U.addInteraction(noteData);
-              }
-              else {
-                console.log('Source is not an oa:Annotation and it is not a reply to');
-              }
-            }
-          },
-          function(reason) {
-// console.log(reason);
-            return reason;
           }
-        );
+          DO.U.positionNote(refId, refLabel, id);
+
+          //Perhaps return something more useful?
+          return noteIRI;
+        }
+
+        //XXX: Annotation without a selection
+        else {
+          var noteData = {
+            "type": 'article',
+            "mode": "read",
+            "motivatedByIRI": motivatedBy,
+            "id": id,
+            "refId": refId,
+            "refLabel": refLabel,
+            "iri": noteIRI,
+            "creator": {},
+            "datetime": datetime,
+            "target": {
+              "iri": targetIRI
+            },
+            "body": bodyText,
+            "license": {}
+          };
+
+          if (annotatedByIRI) {
+            noteData.creator["iri"] = annotatedByIRI;
+          }
+          if (annotatedByName) {
+            noteData.creator["name"] = annotatedByName;
+          }
+          if (annotatedByImage) {
+            noteData.creator["image"] = annotatedByImage;
+          }
+          if (licenseIRI) {
+            noteData.license["iri"] = licenseIRI;
+            noteData.license["name"] = DO.C.License[noteData.license["iri"]].name;
+          }
+          if (datetime) {
+            noteData.datetime = datetime;
+          }
+// console.log(noteData)
+          DO.U.addInteraction(noteData);
+        }
+      }
+      else {
+        var inReplyTo, inReplyToRel;
+        if (note.asinReplyTo && note.asinReplyTo.at(0)) {
+          inReplyTo = note.asinReplyTo.at(0);
+          inReplyToRel = 'as:inReplyTo';
+        }
+        else if(note.siocreplyof && note.siocreplyof.at(0)) {
+          inReplyTo = note.siocreplyof.at(0);
+          inReplyToRel = 'sioc:reply_of';
+        }
+
+        if(inReplyTo && inReplyTo.indexOf(window.location.origin + window.location.pathname) >= 0) {
+          var noteData = {
+            "type": 'article',
+            "mode": "read",
+            "motivatedByIRI": motivatedBy,
+            "id": id,
+            "refId": refId,
+            "refLabel": refLabel,
+            "iri": noteIRI,
+            "creator": {},
+            "inReplyTo": {
+              'iri': inReplyTo,
+              'rel': inReplyToRel
+            },
+            "body": bodyText,
+            "license": {}
+          };
+          if (annotatedByIRI) {
+            noteData.creator["iri"] = annotatedByIRI;
+          }
+          if (annotatedByName) {
+            noteData.creator["name"] = annotatedByName;
+          }
+          if (annotatedByImage) {
+            noteData.creator["image"] = annotatedByImage;
+          }
+          if (licenseIRI) {
+            noteData.license["iri"] = licenseIRI;
+          }
+          if (datetime) {
+            noteData.datetime = datetime;
+          }
+          DO.U.addInteraction(noteData);
+        }
+        else {
+          console.log('Source is not an oa:Annotation and it is not a reply to');
+        }
+      }
     },
 
     addInteraction: function(noteData) {
@@ -5031,11 +6526,7 @@ WHERE {\n\
       var interactions = document.getElementById('document-interactions');
 
       if(!interactions) {
-        if (!DO.C.Extension)
-          interactions = document.querySelector('main > article') || document.body;
-        else
-          interactions = document.querySelector('main.article') || document.body;
-
+        interactions = DO.U.selectArticleNode(document);
         var interactionsSection = '<section id="document-interactions"><h2>Interactions</h2><div>';
 // interactionsSection += '<p class="count"><data about="" datatype="xsd:nonNegativeInteger" property="sioc:num_replies" value="' + interactionsCount + '">' + interactionsCount + '</data> interactions</p>';
         interactionsSection += '</div></section>';
@@ -5051,6 +6542,7 @@ WHERE {\n\
     },
 
     createHTML: function(title, main, options) {
+      title = title || '';
       options = options || {};
       var prefix = ('prefixes' in options && Object.keys(options.prefixes).length > 0) ? ' prefix="' + DO.U.getRDFaPrefixHTML(options.prefixes) + '"' : '';
 
@@ -5061,11 +6553,101 @@ WHERE {\n\
     <title>' + title + '</title>\n\
   </head>\n\
   <body' + prefix + '>\n\
-    <main>' + main + '\n\
+    <main>\n\
+' + main + '\n\
     </main>\n\
   </body>\n\
 </html>\n\
 ';
+    },
+
+    createActivityHTML: function(o) {
+      var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: http://schema.org/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams#"';
+
+      var types = '<dt>Types</dt>'
+
+      o.type.forEach(function (t) {
+        types += '<dd><a about="" href="' + DO.C.Prefixes[t.split(':')[0]] + t.split(':')[1] + '" typeof="'+ t +'">' + t.split(':')[1] + '</a></dd>'
+      })
+
+      var asObjectTypes = ''
+      if ('object' in o && 'objectTypes' in o && o.objectTypes.length > 0) {
+        asObjectTypes = '<dl><dt>Types</dt>'
+        o.objectTypes.forEach(function(t){
+          asObjectTypes += '<dd><a about="' + o.object + '" href="' + t + '" typeof="'+ t +'">' + t + '</a></dd>'
+        })
+        asObjectTypes += '</dl>'
+      }
+
+      var asObjectLicense = ''
+      if ('object' in o && 'objectLicense' in o && o.objectLicense.length > 0) {
+        asObjectLicense = '<dl><dt>License</dt><dd><a about="' + o.object + '" href="' + o.objectLicense + '" property="schema:license">' + o.objectLicense + '</a></dd></dl>'
+      }
+
+      var asobject = ('object' in o) ? '<dt>Object</dt><dd><a href="' + o.object + '" property="as:object">' + o.object + '</a>' + asObjectTypes + asObjectLicense + '</dd>' : ''
+
+      var asinReplyTo = ('inReplyTo' in o) ? '<dt>In reply to</dt><dd><a href="' + o.inReplyTo + '" property="as:inReplyTo">' + o.inReplyTo + '</a></dd>' : ''
+
+      var ascontext = ('context' in o && o.context.length > 0) ? '<dt>Context</dt><dd><a href="' + o.context + '" property="as:context">' + o.context + '</a></dd>' : ''
+
+      var astarget = ('target' in o && o.target.length > 0) ? '<dt>Target</dt><dd><a href="' + o.target + '" property="as:target">' + o.target + '</a></dd>' : ''
+
+      var datetime = util.getDateTimeISO()
+      var asupdated = '<dt>Updated</dt><dd><time datetime="' + datetime + '" datatype="xsd:dateTime" property="as:updated" content="' + datetime + '">' + datetime.substr(0,19).replace('T', ' ') + '</time></dd>'
+
+      var assummary = ('summary' in o && o.summary.length > 0) ? '<dt>Summary</dt><dd property="as:summary" datatype="rdf:HTML">' + o.summary + '</dd>' : ''
+
+      var ascontent = ('content' in o && o.content.length > 0) ? '<dt>Content</dt><dd property="as:content" datatype="rdf:HTML">' + o.content + '</dd>' : ''
+
+      var asactor = (DO.C.User.IRI) ? '<dt>Actor</dt><dd><a href="' + DO.C.User.IRI + '" property="as:actor">' + DO.C.User.IRI + '</a></dd>' : ''
+
+      var license = '<dt>License</dt><dd><a href="' + DO.C.NotificationLicense + '" property="schema:license">' + DO.C.NotificationLicense + '</a></dd>'
+
+      var asto = ('to' in o && o.to.length > 0 && !o.to.match(/\s/g) && o.to.match(/^https?:\/\//gi)) ? '<dt>To</dt><dd><a href="' + o.to + '" property="as:to">' + o.to + '</a></dd>' : ''
+
+      var statements = ('statements' in o) ? o.statements : ''
+
+      var dl = [
+        types,
+        asobject,
+        ascontext,
+        astarget,
+        asupdated,
+        assummary,
+        ascontent,
+        asactor,
+        license,
+        asto
+      ].map(function (n) { if (n !== '') { return '      ' + n + '\n' } }).join('')
+
+
+      // TODO: Come up with a better title. reuse `types` e.g., Activity Created, Announced..
+      var title = 'Notification'
+      if(types.indexOf('as:Announce') > -1){
+        title += ': Announced'
+      } else if (types.indexOf('as:Create') > -1){
+        title += ': Created'
+      } else if (types.indexOf('as:Like') > -1){
+        title += ': Liked'
+      } else if (types.indexOf('as:Dislike') > -1){
+        title += ': Disliked'
+      } else if (types.indexOf('as:Add') > -1){
+        title += ': Added'
+      }
+
+      var data = '<article'+prefixes+'>\n\
+  <h1>' + title + '</h1>\n\
+  <section>\n\
+    <dl about="">\n\
+' + dl +
+'    </dl>\n\
+  </section>\n\
+  <section>\n\
+' + statements + '\n\
+  </section>\n\
+</article>'
+
+      return data
     },
 
     createNoteDataHTML: function(n) {
@@ -5082,7 +6664,9 @@ WHERE {\n\
       var note = '';
       var targetLabel = '';
       var articleClass = '';
-      var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: http://schema.org/ dcterms: http://purl.org/dc/terms/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# i: ' + n.iri + '"';
+      var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: http://schema.org/ dcterms: http://purl.org/dc/terms/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams#"';
+
+      var canonicalId = n.canonical || 'urn:uuid:' + DO.U.generateUUID();
 
       var motivatedByIRI = n.motivatedByIRI || '';
       var motivatedByLabel = '';
@@ -5091,13 +6675,13 @@ WHERE {\n\
           motivatedByIRI = 'oa:replying';
           motivatedByLabel = 'replies';
           targetLabel = 'In reply to';
-          aAbout = 'i:';
+          aAbout = ('mode' in n && n.mode == 'object') ? '#' + n.id : '';
           aPrefix = prefixes;
           break;
         case 'oa:assessing':
           motivatedByLabel = 'reviews';
           targetLabel = 'Review of';
-          aAbout = 'i:';
+          aAbout = ('mode' in n && n.mode == 'object') ? '#' + n.id : '';
           aPrefix = prefixes;
           break;
         case 'oa:describing':
@@ -5113,29 +6697,33 @@ WHERE {\n\
         case 'oa:bookmarking':
           motivatedByLabel = 'bookmarks';
           targetLabel = 'Bookmarked';
-          aAbout = 'i:';
+          aAbout = ('mode' in n && n.mode == 'object') ? '#' + n.id : '';
           aPrefix = prefixes;
           break;
       }
 
       switch(n.mode) {
         default:
-          hX = 'h3';
-          if ('creator' in n && 'iri' in n.creator && DO.C.User.IRI) {
+          hX = 3;
+          if ('creator' in n && 'iri' in n.creator && n.creator.iri == DO.C.User.IRI) {
             buttonDelete = '<button class="delete"><i class="fa fa-trash"></i></button>' ;
           }
           articleClass = ' class="do"';
           break;
         case 'write':
-          hX = 'h1';
+          hX = 1;
+          break;
+        case 'object':
+          hX = 2;
           break;
       }
 
       var creatorName = '';
-      var creatorIRI = 'i:#agent';
+      var creatorIRI = '#agent';
       if ('creator' in n) {
         if ('image' in n.creator) {
-          creatorImage = '<img alt="" height="48" rel="schema:image" src="' + n.creator.image + '" width="48" /> ';
+          var img = (n.mode == 'read') ? uri.getProxyableIRI(n.creator.image) : n.creator.image;
+          creatorImage = '<img alt="" height="48" rel="schema:image" src="' + img + '" width="48" /> ';
         }
         if('iri' in n.creator) {
           creatorIRI = n.creator.iri;
@@ -5155,10 +6743,12 @@ WHERE {\n\
         authors = '<dl class="author-name"><dt>Authors</dt><dd><span rel="schema:creator">' + creator + '</span></dd></dl>';
       }
 
-      heading = '<' + hX + ' property="schema:name">' + creatorName + ' <span rel="oa:motivatedBy" resource="' + motivatedByIRI + '">' + motivatedByLabel + '</span></' + hX + '>';
+      heading = '<h' + hX + ' property="schema:name">' + creatorName + ' <span rel="oa:motivatedBy" resource="' + motivatedByIRI + '">' + motivatedByLabel + '</span></h' + hX + '>';
 
-      if ('datetime' in n){
-        published = '<dl class="published"><dt>Published</dt><dd><a href="' + n.iri + '"><time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="schema:datePublished" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time></a></dd></dl>';
+      if ('datetime' in n && typeof n.datetime !== 'undefined'){
+        var time = '<time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="schema:datePublished" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time>';
+        var timeLinked = ('iri' in n) ? '<a href="' + n.iri + '">' + time + '</a>' : time;
+        published = '<dl class="published"><dt>Published</dt><dd>' + timeLinked + '</dd></dl>';
       }
 
       if (n.license && 'iri' in n.license) {
@@ -5174,7 +6764,7 @@ WHERE {\n\
             if (typeof n.body !== 'undefined') {
               if(typeof n.body === 'object' && 'purpose' in n.body) {
                 if ('describing' in n.body.purpose && 'text' in n.body.purpose.describing) {
-                  body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="i:#note-' + n.id + '"><h2 property="schema:name" rel="oa:hasPurpose" resource="oa:describing">Note</h2><div datatype="rdf:HTML" property="rdf:value schema:description" resource="i:#note-' + n.id + '" typeof="oa:TextualBody">' + n.body.purpose.describing.text + '</div></section>';
+                  body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="#note-' + n.id + '"><h' + (hX+1) + ' property="schema:name" rel="oa:hasPurpose" resource="oa:describing">Note</h' + (hX+1) + '><div datatype="rdf:HTML" property="rdf:value schema:description" resource="#note-' + n.id + '" typeof="oa:TextualBody">' + n.body.purpose.describing.text + '</div></section>';
                 }
                 if ('tagging' in n.body.purpose && 'text' in n.body.purpose.tagging) {
                   var tagsArray = [];
@@ -5185,11 +6775,11 @@ WHERE {\n\
                     }
                   });
                   if (tagsArray.length > 0){
-                    tagsArray = DO.U.uniqueArray(tagsArray);
+                    tagsArray = util.uniqueArray(tagsArray);
 
                     body += '<dl id="tags" class="tags"><dt>Tags</dt><dd><ul rel="oa:hasBody">';
                     tagsArray.forEach(function(i){
-                      body += '<li about="i:#tag-' + DO.U.generateAttributeId(null, i) + '" typeof="oa:TextualBody" property="rdf:value" rel="oa:hasPurpose" resource="oa:tagging" datatype="rdf:HTML">' + i + '</li>';
+                      body += '<li about="#tag-' + DO.U.generateAttributeId(null, i) + '" typeof="oa:TextualBody" property="rdf:value" rel="oa:hasPurpose" resource="oa:tagging" datatype="rdf:HTML">' + i + '</li>';
                     })
                     body += '</ul></dd></dl>';
                   }
@@ -5201,7 +6791,7 @@ WHERE {\n\
                   license = DO.U.createLicenseHTML(n.license, {rel:'dcterms:rights', label:'Rights'});
                 }
 
-                body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="i:#note-' + n.id + '"><h2 property="schema:name">Note</h2>' + license + '<div datatype="rdf:HTML" property="rdf:value schema:description" resource="i:#note-' + n.id + '" typeof="oa:TextualBody">' + n.body + '</div></section>';
+                body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="#note-' + n.id + '"><h' + (hX+1) + ' property="schema:name">Note</h' + (hX+1) + '>' + license + '<div datatype="rdf:HTML" property="rdf:value schema:description" resource="#note-' + n.id + '" typeof="oa:TextualBody">' + n.body + '</div></section>';
               }
             }
 
@@ -5209,10 +6799,10 @@ WHERE {\n\
             var targetRelation = 'oa:hasTarget';
             if (typeof n.target !== 'undefined' && 'iri' in n.target) {
               targetIRI = n.target.iri;
-              var targetIRIFragment = n.target.iri.substr(n.target.iri.lastIndexOf('#'));
+              var targetIRIFragment = uri.getFragmentFromString(n.target.iri);
               //TODO: Handle when there is no fragment
               if (typeof n.target.selector !== 'undefined') {
-                annotationTextSelector = '<div rel="oa:hasSelector" resource="i:#fragment-selector" typeof="oa:FragmentSelector"><dl class="conformsto"><dt>Fragment selector conforms to</dt><dd><a content="' + targetIRIFragment + '" lang="" property="rdf:value" rel="dcterms:conformsTo" resource="https://tools.ietf.org/html/rfc3987" xml:lang="">RFC 3987</a></dd></dl><dl rel="oa:refinedBy" resource="i:#text-quote-selector" typeof="oa:TextQuoteSelector"><dt>Refined by</dt><dd><span lang="en" property="oa:prefix" xml:lang="en">' + n.target.selector.prefix + '</span><mark lang="en" property="oa:exact" xml:lang="en">' + n.target.selector.exact + '</mark><span lang="en" property="oa:suffix" xml:lang="en">' + n.target.selector.suffix + '</span></dd></dl></div>';
+                annotationTextSelector = '<div rel="oa:hasSelector" resource="#fragment-selector" typeof="oa:FragmentSelector"><dl class="conformsto"><dt>Fragment selector conforms to</dt><dd><a content="' + targetIRIFragment + '" lang="" property="rdf:value" rel="dcterms:conformsTo" resource="https://tools.ietf.org/html/rfc3987" xml:lang="">RFC 3987</a></dd></dl><dl rel="oa:refinedBy" resource="#text-quote-selector" typeof="oa:TextQuoteSelector"><dt>Refined by</dt><dd><span lang="en" property="oa:prefix" xml:lang="en">' + n.target.selector.prefix + '</span><mark lang="en" property="oa:exact" xml:lang="en">' + n.target.selector.exact + '</mark><span lang="en" property="oa:suffix" xml:lang="en">' + n.target.selector.suffix + '</span></dd></dl></div>';
               }
             }
             else if(typeof n.inReplyTo !== 'undefined' && 'iri' in n.inReplyTo) {
@@ -5234,11 +6824,9 @@ WHERE {\n\
 
             target += '<dl class="renderedvia"><dt>Rendered via</dt><dd><a about="' + targetIRI + '" href="https://dokie.li/" rel="oa:renderedVia">dokieli</a></dd></dl>';
 
-            var canonicalUUID = DO.U.generateUUID();
-            var canonical = '<dl class="canonical"><dt>Canonical</dt><dd about="i:" rel="oa:canonical" resource="urn:uuid:' + canonicalUUID + '">' + canonicalUUID + '</dd></dl>';
+            var canonical = '<dl class="canonical"><dt>Canonical</dt><dd rel="oa:canonical" resource="' + canonicalId + '">' + canonicalId + '</dd></dl>';
 
-            note = '\n\
-<article id="' + n.id + '" about="' + aAbout + '" typeof="oa:Annotation' + noteType + '"' + aPrefix + articleClass + '>'+buttonDelete+'\n\
+            note = '<article about="' + aAbout + '" id="' + n.id + '" typeof="oa:Annotation' + noteType + '"' + aPrefix + articleClass + '>'+buttonDelete+'\n\
   ' + heading + '\n\
   ' + authors + '\n\
   ' + published + '\n\
@@ -5246,8 +6834,7 @@ WHERE {\n\
   ' + canonical + '\n\
   ' + target + '\n\
   ' + body + '\n\
-</article>\n\
-';
+</article>';
           }
           break;
 
@@ -5295,50 +6882,62 @@ WHERE {\n\
       return license;
     },
 
-    createRDFaHTML: function(r) {
-      var s = '', property = '', rel = '', resource = '', href = '', content = '', langDatatype = '', typeOf = '';
-      var idValue = DO.U.generateAttributeId();
-      var id = ' id="' + idValue + '"';
+    createRDFaHTML: function(r, mode) {
+      var s = '', about = '', property = '', rel = '', resource = '', href = '', content = '', langDatatype = '', typeOf = '', idValue = '', id = '';
 
-      if ('about' in r && r.about != '') {
-        about = ' about="' + r.about + '"';
-      }
-      else {
-        about = ' about="#' + idValue + '"';
-      }
       if ('rel' in r && r.rel != '') {
         rel = ' rel="' + r.rel + '"';
       }
-      if ('property' in r && r.property != '') {
-        property = ' property="' + r.property + '"';
-      }
-      else {
-        //TODO: Figure out how to use user's prefered vocabulary.
-        property = ' property="rdfs:label"';
-      }
-      if ('resource' in r && r.resource != '') {
-        resource = ' resource="' + r.resource + '"';
-      }
+
       if ('href' in r && r.href != '') {
         href = ' href="' + r.href + '"';
       }
-      if ('content' in r && r.content != '') {
-        content = ' content="' + r.content + '"';
-      }
-      if ('lang' in r && r.lang != '') {
-        langDatatype = ' xml:lang="' + r.lang + '" lang="' + r.lang + '"';
-      }
-      else {
-        if ('datatype' in r && r.datatype != '') {
-          langDatatype = ' datatype="' + r.datatype + '"';
+
+      if(mode == 'expanded') {
+        idValue = DO.U.generateAttributeId();
+        id = ' id="' + idValue + '"';
+
+        if ('about' in r && r.about != '') {
+          about = ' about="' + r.about + '"';
+        }
+        else {
+          about = ' about="#' + idValue + '"';
+        }
+
+        if ('property' in r && r.property != '') {
+          property = ' property="' + r.property + '"';
+        }
+        else {
+          //TODO: Figure out how to use user's preferred vocabulary.
+          property = ' property="rdfs:label"';
+        }
+
+        if ('resource' in r && r.resource != '') {
+          resource = ' resource="' + r.resource + '"';
+        }
+
+        if ('content' in r && r.content != '') {
+          content = ' content="' + r.content + '"';
+        }
+
+        if ('lang' in r && r.lang != '') {
+          langDatatype = ' xml:lang="' + r.lang + '" lang="' + r.lang + '"';
+        }
+        else {
+          if ('datatype' in r && r.datatype != '') {
+            langDatatype = ' datatype="' + r.datatype + '"';
+          }
+        }
+
+        if ('typeOf' in r && r.typeOf != '') {
+          typeOf = ' typeof="' + r.typeOf + '"';
         }
       }
-      if ('typeOf' in r && r.typeOf != '') {
-        typeOf = ' typeof="' + r.typeOf + '"';
-      }
 
-      var element = (href == '') ? 'span' : 'a';
-      s = '<' + element + about + content + href + id + langDatatype + property + rel + resource + typeOf + '>' + r.textContent + '</' + element + '>';
+      var element = ('datatype' in r && r.datatype == 'xsd:dateTime') ? 'time' : ((href == '') ? 'span' : 'a');
+      var textContent = r.textContent || r.href || '';
+
+      s = '<' + element + about + content + href + id + langDatatype + property + rel + resource + typeOf + '>' + textContent + '</' + element + '>';
 
       return s;
     },
@@ -5346,23 +6945,74 @@ WHERE {\n\
     getAnnotationLocationHTML: function() {
       var s = '', inputs = [], checked = '';
       if(typeof DO.C.AnnotationService !== 'undefined') {
-        checked = (DO.C.User.Storage && DO.C.User.Storage.length > 0) ? '': ' checked="checked" disabled="disabled"';
+        if (DO.C.User.Storage && DO.C.User.Storage.length > 0 || DO.C.User.Outbox && DO.C.User.Outbox.length > 0) {
+          if (DO.C.User.UI && DO.C.User.UI['annotationLocationService'] && DO.C.User.UI.annotationLocationService['checked']) {
+            checked = ' checked="checked"';
+          }
+        }
+        else {
+          checked = ' checked="checked" disabled="disabled"';
+        }
+
         inputs.push('<input type="checkbox" id="annotation-location-service" name="annotation-location-service"' + checked + ' /><label for="annotation-location-service">Annotation service</label>');
       }
-      if(DO.C.User.Storage && DO.C.User.Storage.length > 0) {
-        inputs.push('<input type="checkbox" id="annotation-location-personal-storage" name="annotation-location-personal-storage" checked="checked" /><label for="annotation-location-personal-storage">Personal storage</label>');
+
+      checked = ' checked="checked"';
+      if(DO.C.User.Storage && DO.C.User.Storage.length > 0 || DO.C.User.Outbox && DO.C.User.Outbox.length > 0) {
+        if (DO.C.User.UI && DO.C.User.UI['annotationLocationPersonalStorage'] && !DO.C.User.UI.annotationLocationPersonalStorage['checked']) {
+            checked = '';
+        }
+
+        inputs.push('<input type="checkbox" id="annotation-location-personal-storage" name="annotation-location-personal-storage"' + checked + ' /><label for="annotation-location-personal-storage">Personal storage</label>');
       }
       s = 'Store at: ' + inputs.join('');
       return s;
     },
 
-    getLicenseOptionsHTML: function(type) {
-      var type = type || 'cc';
+    getPublicationStatusOptionsHTML: function(options) {
+      options = options || {};
+      var s = '', selectedIRI = '';
 
-      var s = '', selected = '';
-      Object.keys(DO.C.License).forEach(function(uri){
-        selected = (DO.C.License[uri].name === 'CC BY 4.0') ? ' selected="selected"' : '';
-        s += '<option value="' + uri + '" title="' + DO.C.License[uri].description  + '"' + selected + '>' + DO.C.License[uri].name  + '</option>';
+      if ('selected' in options) {
+        selectedIRI = options.selected;
+        if (selectedIRI == '') {
+          s += '<option selected="selected" value="">Choose a publication status</option>';
+        }
+      }
+      else {
+        selectedIRI = DO.C.Vocab['psodraft']['@id'];
+      }
+
+      Object.keys(DO.C.PublicationStatus).forEach(function(iri){
+        var selected = (iri == selectedIRI) ? ' selected="selected"' : '';
+        s += '<option value="' + iri + '" title="' + DO.C.PublicationStatus[iri].description  + '"' + selected + '>' + DO.C.PublicationStatus[iri].name  + '</option>';
+      })
+
+      return s;
+    },
+
+    getLicenseOptionsHTML: function(options) {
+      options = options || {};
+      var s = '', selectedIRI = '';
+
+      if ('selected' in options) {
+        selectedIRI = options.selected;
+        if (selectedIRI == '') {
+          s += '<option selected="selected" value="">Choose a license</option>';
+        }
+      }
+      else if(typeof DO.C.User.UI.License !== 'undefined') {
+        selectedIRI = DO.C.User.UI.License;
+      }
+      else {
+        selectedIRI = 'https://creativecommons.org/licenses/by/4.0/';
+      }
+
+      Object.keys(DO.C.License).forEach(function(iri){
+        if(iri != 'NoLicense') {
+          var selected = (iri == selectedIRI) ? ' selected="selected"' : '';
+          s += '<option value="' + iri + '" title="' + DO.C.License[iri].description  + '"' + selected + '>' + DO.C.License[iri].name  + '</option>';
+        }
       })
 
       return s;
@@ -5372,8 +7022,8 @@ WHERE {\n\
       var type = type || 'cites';
 
       var s = '';
-      Object.keys(DO.C.Citation).forEach(function(uri){
-        s += '<option value="' + uri + '">' + DO.C.Citation[uri]  + '</option>';
+      Object.keys(DO.C.Citation).forEach(function(iri){
+        s += '<option value="' + iri + '">' + DO.C.Citation[iri]  + '</option>';
       })
 
       return s;
@@ -5408,7 +7058,243 @@ WHERE {\n\
 
         MathJax.Hub.setRenderer(jax);
       });
+    },
 
+    setDocumentRelation: function(rootNode, data, options) {
+      rootNode = rootNode || document;
+      if(!data || !options) { return; }
+
+      var h = [];
+
+      var dl = rootNode.querySelector('#' + options.id);
+
+      data.forEach(function(d){
+        var documentRelation = '<dd>' + DO.U.createRDFaHTML(d) + '</dd>';
+
+        if(dl) {
+          if (DO.C.DocumentItems.indexOf(options.id) > -1) {
+            dd = dl.querySelector('dd');
+            dl.removeChild(dd);
+          }
+          else {
+            var relation = dl.querySelector('[rel="' + d.rel +  '"][href="' + d.href  + '"]');
+
+            if(relation) {
+              dd = relation.closest('dd');
+              if(dd) {
+                dl.removeChild(dd);
+              }
+            }
+          }
+          dl.insertAdjacentHTML('beforeend', documentRelation);
+        }
+        else {
+          h.push(documentRelation);
+        }
+      });
+
+      if(h.length > 0) {
+        var html = '<dl id="' + options.id + '"><dt>' + options.title + '</dt>' + h.join('') + '</dl>';
+        rootNode = DO.U.insertDocumentLevelHTML(rootNode, html, { 'id': options.id });
+      }
+
+      return rootNode;
+    },
+
+    setEditSelections: function(options) {
+      var options = options || {};
+
+      if (!('datetime' in options)) {
+        options['datetime'] = new Date();
+      }
+
+      var documentLicense = 'document-license';
+      var dLS = document.querySelector('#' + documentLicense + ' option:checked');
+
+      if (dLS) {
+        var licenseIRI = dLS.value;
+
+        var dl = dLS.closest('#' + documentLicense);
+        dl.removeAttribute('contenteditable');
+
+        if(licenseIRI == '') {
+          dl.parentNode.removeChild(dl);
+        }
+        else {
+          dl.removeAttribute('class');
+          var dd = dLS.closest('dd');
+          dd.parentNode.removeChild(dd);
+          dd = '<dd><a href="' + licenseIRI+ '" rel="schema:license" title="' + DO.C.License[licenseIRI].description + '">' + DO.C.License[licenseIRI].name + '</a></dd>';
+          dl.insertAdjacentHTML('beforeend', dd);
+        }
+      }
+
+
+      var documentStatus = 'document-status';
+      var dLS = document.querySelector('#' + documentStatus + ' option:checked');
+
+      if (dLS) {
+        var statusIRI = dLS.value;
+
+        var dl = dLS.closest('#' + documentStatus);
+        dl.removeAttribute('contenteditable');
+
+        if(statusIRI == '') {
+          dl.parentNode.removeChild(dl);
+        }
+        else {
+          dl.removeAttribute('class');
+          var dd = dLS.closest('dd');
+          dd.parentNode.removeChild(dd);
+          dd = '<dd prefix="pso: http://purl.org/spar/pso/" rel="pso:holdsStatusInTime" resource="#' + DO.U.generateAttributeId() + '"><span rel="pso:withStatus" resource="' + statusIRI  + '" typeof="pso:PublicationStatus">' + DO.C.PublicationStatus[statusIRI].name + '</span></dd>';
+
+          dl.insertAdjacentHTML('beforeend', dd);
+
+          if (statusIRI == 'http://purl.org/spar/pso/published') {
+            DO.U.setDate(document, { 'id': 'document-published', 'property': 'schema:datePublished', 'title': 'Published', 'datetime': options.datetime });
+          }
+        }
+      }
+    },
+
+    setDate: function(rootNode, options) {
+      rootNode = rootNode || document;
+      options = options || {};
+
+      var title = ('title' in options) ? options.title : 'Created';
+
+      var id = (options.id) ? options.id : 'document-' + title.toLowerCase().replace(/\W/g, '-');
+
+      var node = ('property' in options) ? rootNode.querySelector('#' + id + ' [property="' + options.property + '"]') : rootNode.querySelector('#' + id + ' time');
+
+      if(node) {
+        var datetime = ('datetime' in options) ? options.datetime.toISOString() : util.getDateTimeISO();
+
+        if(node.getAttribute('datetime')) {
+          node.setAttribute('datetime', datetime);
+        }
+        if(node.getAttribute('content')) {
+          node.setAttribute('content', datetime);
+        }
+        node.textContent = datetime.substr(0, datetime.indexOf('T'));
+      }
+      else {
+        rootNode = DO.U.insertDocumentLevelHTML(rootNode, DO.U.createDateHTML(options), { 'id': id });
+      }
+
+      return rootNode;
+    },
+
+    createDateHTML: function(options) {
+      options = options || {};
+
+      var title = ('title' in options) ? options.title : 'Created';
+
+      var id = ('id' in options && options.id.length > 0) ? ' id="' + options.id + '"' : ' id="document-' + title.toLowerCase().replace(/\W/g, '-') + '"';
+
+      var c = ('class' in options && options.class.length > 0) ? ' class="' + options.class + '"' : '';
+
+      var datetime = ('datetime' in options) ? options.datetime.toISOString() : util.getDateTimeISO();
+      var datetimeLabel = datetime.substr(0, datetime.indexOf('T'));
+
+      var time = ('property' in options)
+        ? '<time content="' + datetime + '" datatype="xsd:dateTime" datetime="' + datetime + '" property="' + options.property + '">' + datetimeLabel + '</time>'
+        : '<time datetime="' + datetime + '">' + datetimeLabel + '</time>';
+
+      var date = '        <dl'+c+id+'>\n\
+          <dt>' + title + '</dt>\n\
+          <dd>' + time + '</dd>\n\
+        </dl>\n\
+';
+
+      return date;
+    },
+
+    getResourceInfo: function(data, options) {
+      data = data || doc.getDocument();
+
+      var info = {
+        'state': DO.C.Vocab['ldpRDFSource']['@id'],
+        'profile': DO.C.Vocab['ldpRDFSource']['@id']
+      };
+
+      options = options || {};
+
+      options['contentType'] = ('contentType' in options) ? options.contentType : 'text/html';
+      options['subjectURI'] = ('subjectURI' in options) ? options.subjectURI : uri.stripFragmentFromString(document.location.href);
+
+      return graph.getGraphFromData(data, options).then(
+        function(i){
+          var s = SimpleRDF(DO.C.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
+// console.log(s);
+
+          info['rdftype'] = s.rdftype._array;
+          info['profile'] = DO.C.Vocab['ldpRDFSource']['@id'];
+
+          //Check if the resource is immutable
+          s.rdftype.forEach(function(resource) {
+            if (resource == DO.C.Vocab['ldpImmutableResource']['@id']) {
+              info['state'] = DO.C.Vocab['ldpImmutableResource']['@id'];
+            }
+          });
+
+          if (s.reloriginal) {
+            info['state'] = DO.C.Vocab['ldpImmutableResource']['@id'];
+            info['original'] = s.memoriginal;
+
+            if (s.reloriginal == options['subjectURI']) {
+              //URI-R (The Original Resource is a Fixed Resource)
+
+              info['profile'] = DO.C.Vocab['memOriginalResource']['@id'];
+            }
+            else {
+              //URI-M
+  
+              info['profile'] = DO.C.Vocab['memMemento']['@id'];
+            }
+          }
+
+          if (s.memmemento) {
+            //URI-R
+
+            info['profile'] = DO.C.Vocab['memOriginalResource']['@id'];
+            info['memento'] = s.memmemento;
+          }
+
+          if(s.memoriginal && s.memmemento && s.memoriginal != s.memmemento) {
+            //URI-M (Memento without a TimeGate)
+
+            info['profile'] = DO.C.Vocab['memMemento']['@id'];
+            info['original'] = s.memoriginal;
+            info['memento'] = s.memmement;
+          }
+
+          if(s.rellatestversion) {
+            info['latest-version'] = s.rellatestversion;
+          }
+
+          if(s.relpredecessorversion) {
+            info['predecessor-version'] = s.relpredecessorversion;
+          }
+
+          if(s.memtimemap) {
+            info['timemap'] = s.memtimemap;
+          }
+
+          if(s.memtimegate) {
+            info['timegate'] = s.memtimegate;
+          }
+
+// console.log(info);
+
+          if(!DO.C.OriginalResourceInfo || ('mode' in options && options.mode == 'update' )) {
+            DO.C['OriginalResourceInfo'] = info;
+          }
+
+          DO.C['ResourceInfo'] = info;
+
+          return info;
+      });
     },
 
     Editor: {
@@ -5420,17 +7306,12 @@ WHERE {\n\
       },
 
       enableEditor: function(editorMode, e, selector) {
-        if (!DO.C.Extension)
-            selector = selector || 'main > article';
-        else
-            selector = selector || 'main.article';
-
         if (typeof DO.U.Editor.MediumEditor !== 'undefined') {
           DO.U.Editor.disableEditor();
         }
 
         if (!document.getElementById('document-editor')) {
-          document.body.insertAdjacentHTML('beforeend', '<aside id="document-editor" class="do"></aside>');
+          document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="document-editor" class="do"></aside>'))
         }
 
         var editorOptions = {
@@ -5476,12 +7357,13 @@ WHERE {\n\
             elementsContainer: document.getElementById('document-editor'),
             buttonLabels: DO.C.Editor.ButtonLabelType,
             toolbar: {
-              buttons: ['share', 'approve', 'bookmark', 'note'],
+              buttons: ['selector', 'share', 'approve', 'bookmark', 'note'],
               allowMultiParagraphSelection: false
             },
             disableEditing: true,
             anchorPreview: false,
             extensions: {
+              'selector': new DO.U.Editor.Note({action:'selector', label:'selector'}),
               'note': new DO.U.Editor.Note({action:'article', label:'note'}),
               'bookmark': new DO.U.Editor.Note({action:'bookmark', label:'bookmark'}),
               'share': new DO.U.Editor.Note({action:'share', label:'share'}),
@@ -5517,7 +7399,7 @@ WHERE {\n\
           editorOptions.author.toolbar.buttons.splice(10, 0, 'table');
         }
 
-        var eNodes = document.querySelector(selector) || document.body;
+        var eNodes = selector || DO.U.selectArticleNode(document);
         var eOptions = editorOptions[editorMode];
         DO.C.User.Role = editorMode;
 
@@ -5525,8 +7407,45 @@ WHERE {\n\
           DO.U.Editor.MediumEditor = new MediumEditor(eNodes, eOptions);
           DO.C.EditorEnabled = true;
 
-          if(editorMode == 'author') {
+          if (e && e.target.closest('button.editor-enable')) {
+            DO.C.ContentEditable = true;
             document.addEventListener('click', DO.U.updateDocumentTitle);
+
+            var documentLicense = 'document-license';
+            var license = document.getElementById(documentLicense);
+            if(!license) {
+              var dl = '        <dl class="do" id="' + documentLicense + '"><dt>License</dt><dd><select contenteditable="false" name="license">' + DO.U.getLicenseOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
+              DO.U.insertDocumentLevelHTML(document, dl, { 'id': documentLicense });
+
+              var dLS = document.querySelector('#' + documentLicense + ' select');
+              dLS.addEventListener('change', function(e){
+                dLS.querySelectorAll('option').forEach(function(o){
+                  o.removeAttribute('selected');
+                });
+                dLS.querySelector('option[value="' + e.target.value + '"]').setAttribute('selected', 'selected');
+              });
+            }
+
+            var documentStatus = 'document-status';
+            var status = document.getElementById(documentStatus);
+            if(!status) {
+              var dl = '        <dl class="do" id="' + documentStatus + '"><dt>Document Status</dt><dd><select contenteditable="false" name="status">' + DO.U.getPublicationStatusOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
+              DO.U.insertDocumentLevelHTML(document, dl, { 'id': documentStatus });
+
+              var dSS = document.querySelector('#' + documentStatus + ' select');
+              dSS.addEventListener('change', function(e){
+                dSS.querySelectorAll('option').forEach(function(o){
+                  o.removeAttribute('selected');
+                });
+                dSS.querySelector('option[value="' + e.target.value + '"]').setAttribute('selected', 'selected');
+              });
+            }
+
+          }
+          else if (e && (e.target.closest('button.editor-disable') || e.target.closest('button.review-enable'))) {
+            DO.C.ContentEditable = false;
+
+            DO.U.setEditSelections();
           }
 
           document.querySelectorAll('.do').forEach(function(node){
@@ -5890,6 +7809,9 @@ WHERE {\n\
                 case 'rdfa':
                   this.contentFA = '<i class="fa fa-rocket"></i>';
                   break;
+                case 'selector':
+                  this.contentFA = '<i class="fa fa-anchor"></i>';
+                  break;
                 case 'bookmark':
                   this.contentFA = '<i class="fa fa-bookmark"></i>';
                   this.signInRequired = true;
@@ -5938,7 +7860,7 @@ WHERE {\n\
                       return _this.execAction('unlink');
                     }
 
-                    if (_this.action == 'approve' && DO.U.Editor.MediumEditor.options.id == 'social'){
+                    if (DO.U.Editor.MediumEditor.options.id == 'social' && (_this.action == 'selector' || _this.action == 'approve')){
                       var opts = {
                         license: 'https://creativecommons.org/licenses/by/4.0/',
                         content: 'Liked'
@@ -5952,7 +7874,7 @@ WHERE {\n\
 
                   case 'share':
                     _this.base.restoreSelection();
-                    var resourceIRI = DO.U.stripFragmentFromString(document.location.href);
+                    var resourceIRI = uri.stripFragmentFromString(document.location.href);
                     var id = _this.base.getSelectedParentElement().closest('[id]').id;
                     resourceIRI = (id) ? resourceIRI + '#' + id : resourceIRI;
                     _this.window.getSelection().removeAllRanges();
@@ -5969,7 +7891,7 @@ WHERE {\n\
                 }
               };
 
-              return DO.U.getEndpoint(DO.C.Vocab['oaannotationService']['@id']).then(
+              return inbox.getEndpoint(DO.C.Vocab['oaannotationService']['@id']).then(
                 function(url) {
                   DO.C.AnnotationService = url[0];
                   updateAnnotationServiceForm();
@@ -5977,7 +7899,7 @@ WHERE {\n\
                 },
                 function(reason) {
                   if(_this.signInRequired && !DO.C.User.IRI) {
-                    DO.U.showUserIdentityInput();
+                    auth.showUserIdentityInput();
                   }
                   else {
                     updateAnnotationServiceForm();
@@ -6267,7 +8189,7 @@ WHERE {\n\
 
                   var queryURL = DO.U.SPARQLQueryURL.getResourcesOfTypeWithLabel(sparqlEndpoint, resourceType, textInputA.toLowerCase(), options);
 
-                  queryURL = DO.U.getProxyableIRI(queryURL);
+                  queryURL = uri.getProxyableIRI(queryURL);
 
                   form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', '<div id="' + sparklineGraphId + '"></div><i class="fa fa-circle-o-notch fa-spin fa-fw"></i>');
                   sG = document.getElementById(sparklineGraphId);
@@ -6308,7 +8230,7 @@ WHERE {\n\
 // console.log(refArea);
                         var queryURL = DO.U.SPARQLQueryURL.getObservationsWithDimension(sparqlEndpoint, dataset, paramDimension);
 // console.log(queryURL);
-                        queryURL = DO.U.getProxyableIRI(queryURL);
+                        queryURL = uri.getProxyableIRI(queryURL);
 
                         DO.U.getTriplesFromGraph(queryURL)
                           .then(function(triples){
@@ -6409,9 +8331,15 @@ WHERE {\n\
                 case 'article': case 'approve': case 'disapprove': case 'specificity':
                   opts.content = this.getInput().content.value;
                   var aLS = this.getInput().annotationLocationService;
-                  if(aLS) { opts.annotationLocationService = aLS.checked };
+                  DO.C.User.UI['annotationLocationService'] = { checked: false }
+                  if(aLS) {
+                    DO.C.User.UI.annotationLocationService.checked = opts.annotationLocationService = aLS.checked;
+                  }
                   var aLPS = this.getInput().annotationLocationPersonalStorage;
-                  if(aLPS) { opts.annotationLocationPersonalStorage = aLPS.checked };
+                  DO.C.User.UI['annotationLocationPersonalStorage'] = { checked: false }
+                  if(aLPS) {
+                    DO.C.User.UI.annotationLocationPersonalStorage.checked = opts.annotationLocationPersonalStorage = aLPS.checked;
+                  }
                   opts.license = this.getInput().license.value;
                   break;
                 case 'note':
@@ -6439,7 +8367,14 @@ WHERE {\n\
                 default:
                   opts.url = this.getInput().value;
                   break;
+
               }
+
+              if (typeof opts.license !== 'undefined') {
+                DO.C.User.UI['License'] = opts.license;
+              }
+
+              storage.updateStorageProfile(DO.C.User);
 
               opts.target = '_self';
               if (targetCheckbox && targetCheckbox.checked) {
@@ -6465,6 +8400,7 @@ WHERE {\n\
             },
 
             completeFormSave: function (opts) {
+              var _this = this;
 // console.log(opts);
 // console.log('completeFormSave() with this.action: ' + this.action);
               this.base.restoreSelection();
@@ -6495,62 +8431,99 @@ WHERE {\n\
 // console.log('-' + suffix + '-');
               suffix = DO.U.htmlEntities(suffix);
 
-              var datetime = DO.U.getDateTimeISO();
+              var datetime = util.getDateTimeISO();
               var id = DO.U.generateAttributeId();
               var refId = 'r-' + id;
               // var noteId = 'i-' + id;
 
-              var resourceIRI = DO.U.stripFragmentFromString(document.location.href);
+              var resourceIRI = uri.stripFragmentFromString(document.location.href);
               var containerIRI = window.location.href;
+
+              var selectorIRI = resourceIRI + '#selector(type=TextQuoteSelector,prefix=' + encodeURIComponent(prefix) + ',exact=' + encodeURIComponent(exact) + ',suffix=' + encodeURIComponent(suffix) +')';
 
               var contentType = 'text/html';
               var noteIRI, noteURL;
+              var profile, options;
               var annotationDistribution = [] , aLS = {};
 
-              if(opts.annotationLocationPersonalStorage || (!opts.annotationLocationPersonalStorage && !opts.annotationLocationService && DO.C.User.Storage && DO.C.User.Storage.length > 0)) {
-                if(DO.C.User.Storage && DO.C.User.Storage.length > 0) {
-                  containerIRI = DO.U.forceTrailingSlash(DO.C.User.Storage[0]);
-                }
-                else {
-                  containerIRI = containerIRI.substr(0, containerIRI.lastIndexOf('/') + 1);
-                }
+              if((opts.annotationLocationPersonalStorage && DO.C.User.Outbox) || (!opts.annotationLocationPersonalStorage && !opts.annotationLocationService && DO.C.User.Outbox)) {
+                containerIRI = DO.C.User.Outbox[0];
 
-                if (typeof DO.C.User.masterWorkspace != 'undefined' && DO.C.User.masterWorkspace.length > 0) {
-                  containerIRI = DO.C.User.masterWorkspace + DO.C.InteractionPath;
-                }
-                else if(typeof DO.C.User.Workspace != 'undefined') {
-                  if (typeof DO.C.User.Workspace.Master != 'undefined' && DO.C.User.Workspace.Master.length > 0) {
-                    containerIRI = DO.C.User.Workspace.Master + DO.C.InteractionPath;
-                  }
-                  else if(typeof DO.C.User.Workspace.Public != 'undefined' && DO.C.User.Workspace.Public.length > 0) {
-                    containerIRI = DO.C.User.Workspace.Public + DO.C.InteractionPath;
-                  }
-                }
+                var fromContentType = 'text/html';
+                // contentType = 'application/ld+json';
+                contentType = fromContentType;
 
-                contentType = 'text/html';
                 noteURL = noteIRI = containerIRI + id;
-                aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'contentType': contentType, 'canonical': true };
+                var contextProfile = {
+                  '@context': [
+                    'https://www.w3.org/ns/activitystreams',
+                    { 'oa': 'http://www.w3.org/ns/oa#', 'schema': 'http://schema.org/' }
+                  ],
+                  // 'subjectURI': noteIRI,
+                  'profile': 'https://www.w3.org/ns/activitystreams'
+                };
+                aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType };
+                if (typeof DO.C.User.Storage === 'undefined') {
+                  aLS['canonical'] = true;
+                }
+
+                aLS = Object.assign(aLS, contextProfile)
+
                 annotationDistribution.push(aLS);
               }
+
+              //XXX: Use this as the canonical if available. Note how noteIRI is treated later
+              if((opts.annotationLocationPersonalStorage && DO.C.User.Storage) || (!opts.annotationLocationPersonalStorage && !opts.annotationLocationService && DO.C.User.Storage)) {
+                containerIRI = DO.C.User.Storage[0];
+
+                var fromContentType = 'text/html';
+                // contentType = 'text/html';
+                contentType = fromContentType;
+
+                noteURL = noteIRI = containerIRI + id;
+                var contextProfile = {
+                  // 'subjectURI': noteIRI,
+                };
+                aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true };
+
+                annotationDistribution.push(aLS);
+              }
+
               if(opts.annotationLocationService && typeof DO.C.AnnotationService !== 'undefined') {
                 containerIRI = DO.C.AnnotationService;
-                contentType = 'application/ld+json';
+                var fromContentType = 'text/html';
+                // contentType = 'application/ld+json';
+                contentType = fromContentType;
+
+                var contextProfile = {
+                  '@context': [
+                    'http://www.w3.org/ns/anno.jsonld',
+                    { 'as': 'https://www.w3.org/ns/activitystreams#', 'schema': 'http://schema.org/' }
+                  ],
+                  // 'subjectURI': noteIRI,
+                  'profile': 'http://www.w3.org/ns/anno.jsonld'
+                };
+
                 if(!opts.annotationLocationPersonalStorage && opts.annotationLocationService) {
                   noteURL = noteIRI = containerIRI + id;
-                  aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'contentType': contentType, 'canonical': true };
+                  aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true };
                 }
                 else if(opts.annotationLocationPersonalStorage) {
                   noteURL = containerIRI + id;
-                  aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'contentType': contentType };
+                  aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType };
                 }
                 else {
                   noteURL = noteIRI = containerIRI + id;
-                  aLS = { 'noteURL': noteURL, 'noteIRI': noteIRI, 'contentType': contentType, 'canonical': true };
+                  aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true };
                 }
+
+                aLS = Object.assign(aLS, contextProfile)
+
                 annotationDistribution.push(aLS);
               }
 
 // console.log(annotationDistribution);
+
               //XXX: Defaulting to id but overwritten by motivation symbol
               var refLabel = id;
 
@@ -6572,339 +8545,411 @@ WHERE {\n\
               var licenseIRI = '';
               var motivatedBy = 'oa:replying';
 
-              switch(this.action) {
-                case 'sparkline':
-                  var figureIRI = DO.U.generateAttributeId(null, opts.selectionDataSet);
-                  ref = '<span rel="schema:hasPart" resource="#figure-' + figureIRI + '">\n\
-                  <a href="' + opts.select + '" property="schema:name" rel="prov:wasDerivedFrom" resource="' + opts.select + '" typeof="qb:DataSet">' + opts.selectionDataSet + '</a> [' + DO.U.htmlEntities(DO.C.RefAreas[opts.selectionRefArea]) + ']\n\
-                  <span class="sparkline" rel="schema:image" resource="#' + figureIRI + '">' + opts.sparkline + '</span></span>';
-                  break;
+              var createNoteData = function(annotation) {
+                var id = annotation.id;
+                var note = '';
+                var mode = '';
 
-                //External Note
-                case 'article': case 'approve': case 'disapprove': case 'specificity':
-                  if (DO.U.Editor.MediumEditor.options.id == 'review') {
-                    motivatedBy = 'oa:assessing';
-                    refLabel = DO.U.getReferenceLabel(motivatedBy);
-                  }
+                if (annotation && 'profile' in annotation && annotation.profile == 'https://www.w3.org/ns/activitystreams') {
+                  mode = 'object'
+                }
+                else {
+                  mode = 'write'
+                }
 
-                  ref = this.base.selection;
-                  licenseIRI = opts.license;
+                switch(_this.action) {
+                  case 'sparkline':
+                    var figureIRI = DO.U.generateAttributeId(null, opts.selectionDataSet);
+                    ref = '<span rel="schema:hasPart" resource="#figure-' + figureIRI + '">\n\
+                    <a href="' + opts.select + '" property="schema:name" rel="prov:wasDerivedFrom" resource="' + opts.select + '" typeof="qb:DataSet">' + opts.selectionDataSet + '</a> [' + DO.U.htmlEntities(DO.C.RefAreas[opts.selectionRefArea]) + ']\n\
+                    <span class="sparkline" rel="schema:image" resource="#' + figureIRI + '">' + opts.sparkline + '</span></span>';
+                    break;
 
-                  noteData = {
-                    "type": this.action,
-                    "mode": "write",
-                    "motivatedByIRI": motivatedBy,
-                    "id": id,
-                    "refId": refId,
-                    "refLabel": refLabel,
-                    "iri": noteIRI, //e.g., https://example.org/path/to/article
-                    "creator": {},
-                    "datetime": datetime,
-                    "target": {
-                      "iri": targetIRI,
-                      "source": resourceIRI,
-                      "selector": {
-                        "exact": exact,
-                        "prefix": prefix,
-                        "suffix": suffix
-                      }
-                      //TODO: state
-                    },
-                    "body": opts.content,
-                    "license": {}
-                  };
-                  if (DO.C.User.IRI) {
-                    noteData.creator["iri"] = DO.C.User.IRI;
-                  }
-                  if (DO.C.User.Name) {
-                    noteData.creator["name"] = DO.C.User.Name;
-                  }
-                  if (DO.C.User.Image) {
-                    noteData.creator["image"] = DO.C.User.Image;
-                  }
-                  if (DO.C.User.URL) {
-                    noteData.creator["url"] = DO.C.User.URL;
-                  }
-                  if (opts.license.length > 0) {
-                    noteData.license["iri"] = opts.license;
-                  }
-                  note = DO.U.createNoteDataHTML(noteData);
-                  break;
-
-                //Internal Note
-                case 'note':
-                  motivatedBy = "oa:commenting";
-                  refLabel = DO.U.getReferenceLabel(motivatedBy);
-                  docRefType = '<sup class="ref-comment"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup>';
-                  noteType = 'note';
-                  noteData = {
-                    "type": noteType,
-                    "mode": "read",
-                    "motivatedByIRI": motivatedBy,
-                    "id": id,
-                    "refId": refId,
-                    "refLabel": refLabel,
-                    "iri": noteIRI, //e.g., https://example.org/path/to/article
-                    "creator": {},
-                    "datetime": datetime,
-                    "target": {
-                      "iri": targetIRI,
-                      "source": resourceIRI,
-                      "selector": {
-                        "exact": exact,
-                        "prefix": prefix,
-                        "suffix": suffix
-                      }
-                      //TODO: state
-                    },
-                    "body": {
-                      "purpose": {
-                        "describing": {
-                          "text": opts.content
-                        },
-                        "tagging": {
-                          "text": opts.tagging
-                        }
-                      }
-                    },
-                    "license": {}
-                  };
-                  if (DO.C.User.IRI) {
-                    noteData.creator["iri"] = DO.C.User.IRI;
-                  }
-                  if (DO.C.User.Name) {
-                    noteData.creator["name"] = DO.C.User.Name;
-                  }
-                  if (DO.C.User.Image) {
-                    noteData.creator["image"] = DO.C.User.Image;
-                  }
-                  if (DO.C.User.URL) {
-                    noteData.creator["url"] = DO.C.User.URL;
-                  }
-                  if (opts.license.length > 0) {
-                    noteData.license["iri"] = opts.license;
-                  }
-
-                  note = DO.U.createNoteDataHTML(noteData);
-                  ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="rdf:value">' + exact + '</mark>' + docRefType +'</span>';
-                  break;
-
-                case 'cite': //footnote reference
-                  switch(opts.citationType) {
-                    case 'ref-footnote': default:
-                      motivatedBy = "oa:describing";
+                  //External Note
+                  case 'article': case 'approve': case 'disapprove': case 'specificity':
+                    if (DO.U.Editor.MediumEditor.options.id === 'review') {
+                      motivatedBy = 'oa:assessing';
                       refLabel = DO.U.getReferenceLabel(motivatedBy);
-                      docRefType = '<sup class="' + opts.citationType + '"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup>';
-                      noteData = {
-                        "type": opts.citationType,
-                        "mode": "write",
-                        "motivatedByIRI": motivatedBy,
-                        "id": id,
-                        "refId": refId,
-                        "refLabel": refLabel,
-                        "iri": noteIRI,
-                        "datetime": datetime,
-                        "body": opts.content,
-                        "citationURL": opts.url
-                      };
-// console.log(noteData);
-                      note = DO.U.createNoteDataHTML(noteData);
-                      break;
+                    }
 
-                    case 'ref-reference':
-                      refLabel = DO.U.getReferenceLabel('oa:describing');
-                      docRefType = '<span class="' + opts.citationType + '">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span>';
-                      break;
-                  }
+                    ref = _this.base.selection;
+                    licenseIRI = opts.license;
 
-                  ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="rdf:value">' + exact + '</mark>' + docRefType +'</span>';
-                  break;
-                // case 'reference':
-                //   ref = '<span class="ref" about="[this:#' + refId + ']" typeof="dctypes:Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span> <span class="ref-reference">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span></span>';
-//                  break;
-
-                case 'rdfa':
-                  //TODO: inlist, prefix
-                  //TODO: lang/xmlllang
-                  noteData = {
-                    about: opts.about,
-                    typeOf: opts.typeOf,
-                    rel: opts.rel,
-                    href: opts.href,
-                    resource: opts.resource,
-                    property: opts.property,
-                    content: opts.content,
-                    datatype: opts.datatype,
-                    textContent: this.base.selection
-                    // lang: '' and/or xmllang: ''
-                  };
-                  ref = DO.U.createRDFaHTML(noteData);
-                  break;
-
-                case 'bookmark':
-                  noteType = 'bookmark';
-                  motivatedBy = "oa:bookmarking";
-                  refLabel = DO.U.getReferenceLabel(motivatedBy);
-                  noteData = {
-                    "type": noteType,
-                    "mode": "write",
-                    "motivatedByIRI": motivatedBy,
-                    "id": id,
-                    "refId": refId,
-                    "refLabel": refLabel,
-                    "iri": noteIRI, //e.g., https://example.org/path/to/article
-                    "creator": {},
-                    "datetime": datetime,
-                    "target": {
-                      "iri": targetIRI,
-                      "source": resourceIRI,
-                      "selector": {
-                        "exact": exact,
-                        "prefix": prefix,
-                        "suffix": suffix
-                      }
-                      //TODO: state
-                    },
-                    "body": {
-                      "purpose": {
-                        "describing": {
-                          "text": opts.content
-                        },
-                        "tagging": {
-                          "text": opts.tagging
+                    noteData = {
+                      "type": _this.action,
+                      "mode": mode,
+                      "motivatedByIRI": motivatedBy,
+                      "id": id,
+                      "canonical": 'urn:uuid:' + id,
+                      "refId": refId,
+                      "refLabel": refLabel,
+                      // "iri": noteIRI, //e.g., https://example.org/path/to/article
+                      "creator": {},
+                      "datetime": datetime,
+                      "target": {
+                        "iri": targetIRI,
+                        "source": resourceIRI,
+                        "selector": {
+                          "exact": exact,
+                          "prefix": prefix,
+                          "suffix": suffix
                         }
-                      }
-                    },
-                    "license": {}
-                  };
-                  if (DO.C.User.IRI) {
-                    noteData.creator["iri"] = DO.C.User.IRI;
-                  }
-                  if (DO.C.User.Name) {
-                    noteData.creator["name"] = DO.C.User.Name;
-                  }
-                  if (DO.C.User.Image) {
-                    noteData.creator["image"] = DO.C.User.Image;
-                  }
-                  if (DO.C.User.URL) {
-                    noteData.creator["url"] = DO.C.User.URL;
-                  }
-                  note = DO.U.createNoteDataHTML(noteData);
-                  ref = '<span class="ref" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark id="'+ refId +'" property="schema:description">' + exact + '</mark></span>';
-                  break;
-              }
-// console.log(note);
-// console.log(noteData);
+                        //TODO: state
+                      },
+                      "body": opts.content,
+                      "license": {}
+                    };
+                    if (DO.C.User.IRI) {
+                      noteData.creator["iri"] = DO.C.User.IRI;
+                    }
+                    if (DO.C.User.Name) {
+                      noteData.creator["name"] = DO.C.User.Name;
+                    }
+                    if (DO.C.User.Image) {
+                      noteData.creator["image"] = DO.C.User.Image;
+                    }
+                    if (DO.C.User.URL) {
+                      noteData.creator["url"] = DO.C.User.URL;
+                    }
+                    if (opts.license.length > 0) {
+                      noteData.license["iri"] = opts.license;
+                    }
+                    // note = DO.U.createNoteDataHTML(noteData);
+                    break;
 
-              var selectionUpdated = ref;
-              MediumEditor.util.insertHTMLCommand(this.base.selectedDocument, selectionUpdated);
+                  //Internal Note
+                  case 'note':
+                    motivatedBy = "oa:commenting";
+                    refLabel = DO.U.getReferenceLabel(motivatedBy);
+                    docRefType = '<sup class="ref-comment"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup>';
+                    noteType = 'note';
+                    noteData = {
+                      "type": noteType,
+                      "mode": "read",
+                      "motivatedByIRI": motivatedBy,
+                      "id": id,
+                      "refId": refId,
+                      "refLabel": refLabel,
+                      // "iri": noteIRI, //e.g., https://example.org/path/to/article
+                      "creator": {},
+                      "datetime": datetime,
+                      "target": {
+                        "iri": targetIRI,
+                        "source": resourceIRI,
+                        "selector": {
+                          "exact": exact,
+                          "prefix": prefix,
+                          "suffix": suffix
+                        }
+                        //TODO: state
+                      },
+                      "body": {
+                        "purpose": {
+                          "describing": {
+                            "text": opts.content
+                          },
+                          "tagging": {
+                            "text": opts.tagging
+                          }
+                        }
+                      },
+                      "license": {}
+                    };
+                    if (DO.C.User.IRI) {
+                      noteData.creator["iri"] = DO.C.User.IRI;
+                    }
+                    if (DO.C.User.Name) {
+                      noteData.creator["name"] = DO.C.User.Name;
+                    }
+                    if (DO.C.User.Image) {
+                      noteData.creator["image"] = DO.C.User.Image;
+                    }
+                    if (DO.C.User.URL) {
+                      noteData.creator["url"] = DO.C.User.URL;
+                    }
+                    if (opts.license.length > 0) {
+                      noteData.license["iri"] = opts.license;
+                    }
+
+                    // note = DO.U.createNoteDataHTML(noteData);
+
+                    ref = DO.U.getTextQuoteHTML(refId, exact, docRefType);
+                    break;
+
+                  case 'cite': //footnote reference
+                    switch(opts.citationType) {
+                      case 'ref-footnote': default:
+                        motivatedBy = "oa:describing";
+                        refLabel = DO.U.getReferenceLabel(motivatedBy);
+                        docRefType = '<sup class="' + opts.citationType + '"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup>';
+                        noteData = {
+                          "type": opts.citationType,
+                          "mode": mode,
+                          "motivatedByIRI": motivatedBy,
+                          "id": id,
+                          "refId": refId,
+                          "refLabel": refLabel,
+                          // "iri": noteIRI,
+                          "datetime": datetime,
+                          "body": opts.content,
+                          "citationURL": opts.url
+                        };
+
+                        // note = DO.U.createNoteDataHTML(noteData);
+                        break;
+
+                      case 'ref-reference':
+                        refLabel = DO.U.getReferenceLabel('oa:describing');
+                        docRefType = '<span class="' + opts.citationType + '">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span>';
+                        break;
+                    }
+
+                    ref = DO.U.getTextQuoteHTML(refId, exact, docRefType);
+                    break;
+                  // case 'reference':
+                  //   ref = '<span class="ref" about="[this:#' + refId + ']" typeof="dctypes:Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span> <span class="ref-reference">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span></span>';
+  //                  break;
+
+                  case 'rdfa':
+                    //TODO: inlist, prefix
+                    //TODO: lang/xmlllang
+                    noteData = {
+                      about: opts.about,
+                      typeOf: opts.typeOf,
+                      rel: opts.rel,
+                      href: opts.href,
+                      resource: opts.resource,
+                      property: opts.property,
+                      content: opts.content,
+                      datatype: opts.datatype,
+                      textContent: _this.base.selection
+                      // lang: '' and/or xmllang: ''
+                    };
+                    ref = DO.U.createRDFaHTML(noteData, 'expanded');
+                    break;
+
+                  case 'bookmark':
+                    noteType = 'bookmark';
+                    motivatedBy = "oa:bookmarking";
+                    refLabel = DO.U.getReferenceLabel(motivatedBy);
+                    docRefType = '';
+                    noteData = {
+                      "type": noteType,
+                      "mode": mode,
+                      "motivatedByIRI": motivatedBy,
+                      "id": id,
+                      "canonical": 'urn:uuid:' + id,
+                      "refId": refId,
+                      "refLabel": refLabel,
+                      // "iri": noteIRI, //e.g., https://example.org/path/to/article
+                      "creator": {},
+                      "datetime": datetime,
+                      "target": {
+                        "iri": targetIRI,
+                        "source": resourceIRI,
+                        "selector": {
+                          "exact": exact,
+                          "prefix": prefix,
+                          "suffix": suffix
+                        }
+                        //TODO: state
+                      },
+                      "body": {
+                        "purpose": {
+                          "describing": {
+                            "text": opts.content
+                          },
+                          "tagging": {
+                            "text": opts.tagging
+                          }
+                        }
+                      },
+                      "license": {}
+                    };
+                    if (DO.C.User.IRI) {
+                      noteData.creator["iri"] = DO.C.User.IRI;
+                    }
+                    if (DO.C.User.Name) {
+                      noteData.creator["name"] = DO.C.User.Name;
+                    }
+                    if (DO.C.User.Image) {
+                      noteData.creator["image"] = DO.C.User.Image;
+                    }
+                    if (DO.C.User.URL) {
+                      noteData.creator["url"] = DO.C.User.URL;
+                    }
+                    // note = DO.U.createNoteDataHTML(noteData);
+                    ref = DO.U.getTextQuoteHTML(refId, exact, docRefType, { 'do': true });
+                    break;
+                }
+
+                var selectionUpdated = ref;
+                MediumEditor.util.insertHTMLCommand(_this.base.selectedDocument, selectionUpdated);
+
+                return noteData;
+              }
+
+              var createNotificationData = function(annotation, options) {
+                options = options || {};
+                var notificationType, notificationObject, notificationContext, notificationTarget, notificationStatements;
+
+                var noteIRI = (options.relativeObject) ? '#' + id : annotation['noteIRI'];
+
+                notificationStatements = '    <dl about="' + noteIRI + '">\n\
+  <dt>Object type</dt><dd><a about="' + noteIRI + '" typeof="oa:Annotation" href="' + DO.C.Vocab['oaannotation']['@id'] + '">Annotation</a></dd>\n\
+  <dt>Motivation</dt><dd><a href="' + DO.C.Prefixes[motivatedBy.split(':')[0]] + motivatedBy.split(':')[1] + '" property="oa:motivation">' + motivatedBy.split(':')[1] + '</a></dd>\n\
+</dl>\n\
+';
+
+                switch(_this.action) {
+                  default: case 'article': case 'specificity':
+                    notificationType = ['as:Create'];
+                    notificationObject = noteIRI;
+                    notificationTarget = targetIRI;
+                    break;
+                  case 'approve':
+                    notificationType = ['as:Like'];
+                    notificationObject = targetIRI;
+                    notificationContext = noteIRI;
+                    break;
+                  case 'disapprove':
+                    notificationType = ['as:Dislike'];
+                    notificationObject = targetIRI;
+                    notificationContext = noteIRI;
+                    break;
+                  case 'bookmark':
+                    notificationType = ['as:Add'];
+                    notificationObject = noteIRI;
+                    notificationTarget = annotation['containerIRI'];
+                    break;
+                }
+
+                var notificationData = {
+                  "type": notificationType,
+                  "slug": id,
+                  "object": notificationObject,
+                  "license": opts.license
+                };
+
+                if(typeof notificationContext !== 'undefined') {
+                  notificationData['context'] = notificationContext;
+                }
+
+                if(typeof notificationTarget !== 'undefined') {
+                  notificationData['target'] = notificationTarget;
+                }
+
+                notificationData['statements'] = notificationStatements;
+
+                return notificationData;
+              }
+
+              var positionActivity = function(annotation) {
+                if (!annotation['canonical']) {
+                  return Promise.resolve();
+                }
+
+                if ('profile' in annotation && annotation.profile == 'https://www.w3.org/ns/activitystreams') {
+                  return DO.U.showActivities(annotation['noteIRI'])
+                    .catch(() => {
+                      return Promise.resolve()
+                    })
+                }
+                else {
+                  return DO.U.positionInteraction(annotation[ 'noteIRI' ], document.body)
+                    .catch(() => {
+                      return Promise.resolve()
+                    })
+                }
+              }
+
+              var sendNotification = function(annotation) {
+                if (!annotation['canonical']) {
+                  return Promise.resolve();
+                }
+// console.log(annotation)
+
+                return inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id'])
+                  .catch(error => {
+                    console.log('Error fetching ldpinbox endpoint:', error)
+                    throw error
+                  })
+                  .then(inboxes => {
+                    // TODO: resourceIRI for getEndpoint should be the
+                    // closest IRI (not necessarily the document).
+
+                    if (inboxes.length > 0) {
+                      var notificationData = createNotificationData(annotation);
+
+                      notificationData['inbox'] = inboxes[0];
+
+                      // notificationData['type'] = ['as:Announce'];
+// console.log(annotation)
+                      return inbox.notifyInbox(notificationData)
+                        .catch(error => {
+                          console.log('Error notifying the inbox:', error)
+                        })
+                    }
+                  })
+              }
 
               switch(this.action) {
-                case 'article': case 'approve': case 'disapprove': case 'specificity':
-                  var notificationType, notificationObject, notificationContext, notificationTarget, notificationStatements;
-                  notificationStatements = '    <dl about="' + noteIRI + '">\n\
-      <dt>Object type</dt><dd><a about="' + noteIRI + '" typeof="oa:Annotation" href="' + DO.C.Vocab['oaannotation']['@id'] + '">Annotation</a></dd>\n\
-      <dt>Motivation</dt><dd><a href="' + DO.C.Prefixes[motivatedBy.split(':')[0]] + motivatedBy.split(':')[1] + '" property="oa:motivation">' + motivatedBy.split(':')[1] + '</a></dd>\n\
-    </dl>\n\
-';
-                  switch(this.action) {
-                    default: case 'article': case 'specificity':
-                      notificationType = ['as:Announce'];
-                      notificationObject = noteIRI;
-                      notificationTarget = targetIRI;
-                      break;
-                    case 'approve':
-                      notificationType = ['as:Like'];
-                      notificationObject = targetIRI;
-                      notificationContext = noteIRI;
-                      break;
-                    case 'disapprove':
-                      notificationType = ['as:Dislike'];
-                      notificationObject = targetIRI;
-                      notificationContext = noteIRI;
-                      break;
-                  }
+                case 'article': case 'approve': case 'disapprove': case 'specificity': case 'bookmark':
+                  annotationDistribution.forEach(annotation => {
+                    var data = '';
 
-                  var data = DO.U.createHTML(noteIRI, note);
+                    var notificationData = createNotificationData(annotation, { 'relativeObject': true });
 
-                  annotationDistribution.forEach(function(i){
-                    DO.U.serializeData(data, 'text/html', i['contentType'], { 'subjectURI': i['noteIRI'] }).then(
-                      function(data) {
-                        if(!('canonical' in i)) {
-                          switch(i['contentType']) {
-                            default: break;
-                            case 'application/ld+json':
-                              var x = JSON.parse(data);
-                              x[0]["via"] = x[0]["@id"];
-                              x[0]["@id"] = i['noteURL'];
-                              data = JSON.stringify(x);
-                              break;
-                          }
+                    var noteData = createNoteData(annotation)
+
+                    if ('profile' in annotation && annotation.profile == 'https://www.w3.org/ns/activitystreams') {
+                      notificationData['statements'] = DO.U.createNoteDataHTML(noteData);
+                      note = DO.U.createActivityHTML(notificationData);
+                    }
+                    else {
+                      note = DO.U.createNoteDataHTML(noteData);
+                    }
+
+                    data = DO.U.createHTML('', note);
+// console.log(data)
+// console.log(annotation)
+
+                    fetcher.postActivity(annotation['containerIRI'], id, data, annotation)
+                      .catch(error => {
+                        // console.log('Error serializing annotation:', error)
+                        console.log(error)
+                        throw error  // re-throw, break out of promise chain
+                      })
+
+                      .then(response => {
+                        var location = response.headers.get('Location')
+
+                        if (location) {
+                          location = uri.getAbsoluteIRI(annotation['containerIRI'], location)
+                          annotation['noteIRI'] = annotation['noteURL'] = location
                         }
 
-                        DO.U.putResource(i['noteURL'], data, i['contentType']).then(
-                          function(response) {
-                            if(i['canonical']) {
-                              DO.U.positionInteraction(i['noteIRI'], document.body).then(
-                                function(r) {
-// console.log(i);
-                                },
-                                function(reason) {
-                                  console.log(reason);
-                                }
-                              );
+// console.log(annotation)
+                        return positionActivity(annotation)
+                       })
 
-                              //TODO: resourceIRI for getEndpoint should be the closest IRI (not necessarily the document). Test resolve/reject better.
-                              DO.U.getEndpoint(DO.C.Vocab['ldpinbox']['@id']).then(
-                                function(inbox) {
-                                  if (inbox.length > 0) {
-                                    inbox = inbox[0];
-                                    var notificationData = {
-                                      "type": notificationType,
-                                      "inbox": inbox,
-                                      "slug": id,
-                                      "object": notificationObject,
-                                      "license": opts.license
-                                    };
+                      .then(() => {
+                        if (this.action != 'bookmark') {
+                          return sendNotification(annotation)
+                        }
+                      })
 
-                                    if(typeof notificationTarget !== 'undefined') {
-                                      notificationData['target'] = notificationTarget;
-                                    }
-                                    if(typeof notificationContext !== 'undefined') {
-                                      notificationData['context'] = notificationContext;
-                                    }
-                                    if(typeof notificationStatements !== 'undefined') {
-                                      notificationData['statements'] = notificationStatements;
-                                    }
-
-                                    DO.U.notifyInbox(notificationData).then(
-                                      function(response) {
-// console.log("Notification: " + response.xhr.getResponseHeader('Location'));
-                                      },
-                                      function(reason) {
-                                        console.log(reason);
-                                      }
-                                    );
-                                  }
-                                },
-                                function(reason) {
-                                  console.log('TODO: How can the interaction inform the target?');
-                                  console.log(reason);
-                                }
-                              );
-                            }
-                          },
-                          function(reason) {
-                            console.log('PUT failed');
-                            console.log(reason);
-                          }
-                        );
-                      }
-                    );
-                  });
+                      .catch(() => {  // catch-all
+                        // suppress the error, it was already logged to the console above
+                        // nothing else needs to be done, the loop will proceed
+                        // to the next annotation
+                      })
+                  })
                   break;
 
                 case 'note':
+                  var noteData = createNoteData({'id': id})
+                  note = DO.U.createNoteDataHTML(noteData);
                   var nES = selectedParentElement.nextElementSibling;
                   var asideNote = '\n\
 <aside class="note">\n\
@@ -6917,8 +8962,17 @@ WHERE {\n\
                   DO.U.positionNote(refId, refLabel, id);
                   break;
 
+                case 'selector':
+                  window.history.replaceState({}, null, selectorIRI);
+                  DO.U.showActionMessage(document.documentElement, 'Copy URL from address bar')
+                  // util.copyTextToClipboard(encodeURI(selectorIRI));
+                  break;
+
                 case 'cite': //footnote reference
                   //TODO: Refactor this what's in positionInteraction
+
+                  var noteData = createNoteData({'id': id})
+                  note = DO.U.createNoteDataHTML(noteData);
 
                   switch(opts.citationType) {
                     case 'ref-footnote': default:
@@ -6933,6 +8987,7 @@ WHERE {\n\
 
                       DO.U.positionNote(refId, refLabel, id);
                       break;
+
                     case 'ref-reference':
                       var options = opts;
                       options['citationId'] = opts.url;
@@ -6951,7 +9006,7 @@ WHERE {\n\
                             citationURI = opts.url.replace(/^https/, 'http');
                           }
                         }
-                        else if (DO.U.stripFragmentFromString(options.citationId) != DO.U.getProxyableIRI(options.citationId)) {
+                        else if (uri.stripFragmentFromString(options.citationId) !== uri.getProxyableIRI(options.citationId)) {
                           citationURI = window.location.origin + window.location.pathname;
                         }
                         else {
@@ -6962,18 +9017,15 @@ WHERE {\n\
 
                         var r = document.querySelector('#references ol');
                         if (!r) {
-                          var nodeInsertLocation;
-                          if (!DO.C.Extension)
-                            nodeInsertLocation = document.querySelector('main > article > div') || document.body;
-                          else
-                            nodeInsertLocation = document.querySelector('main.article > div') || document.body;
-
+                          var nodeInsertLocation = DO.U.selectArticleNode(document);
                           var section = '<section id="references"><h2>References</h2><div><ol></ol></div></section>';
                           nodeInsertLocation.insertAdjacentHTML('beforeend', section);
                           r = document.querySelector('#references ol');
                         }
                         var citationHTML = '<li id="' + id + '">' + citation + '</li>';
                         r.insertAdjacentHTML('beforeend', citationHTML);
+
+                        DO.U.showRobustLinks();
 
 // console.log(options.url);
                         var s = citationGraph.child(citationURI);
@@ -6982,14 +9034,12 @@ WHERE {\n\
                         }
 
                         if (s.ldpinbox._array.length > 0) {
-                          var inbox = s.ldpinbox.at(0);
-// console.log(inbox);
+                          var inboxURL = s.ldpinbox.at(0);
+// console.log(inboxURL);
 
                           var citedBy = location.href.split(location.search||location.hash||/[?#]/)[0] + '#' + options.refId;
 
-                          var notificationStatements = '<' + citedBy + '> <' + options.citationRelation + '> <' + options.url + '> .';
-
-                          notificationStatements = '    <dl about="' + citedBy + '">\n\
+                          var notificationStatements = '    <dl about="' + citedBy + '">\n\
       <dt>Action</dt><dd>Citation</dd>\n\
       <dt>Cited by</dt><dd><a href="' + citedBy + '">' + citedBy + '</a></dd>\n\
       <dt>Cites</dt><dd><a href="' + options.url + '" property="' + options.citationRelation + '">' + options.url + '</a></dd>\n\
@@ -6999,15 +9049,15 @@ WHERE {\n\
 
                           var notificationData = {
                             "type": ['as:Announce'],
-                            "inbox": inbox,
+                            "inbox": inboxURL,
                             "object": citedBy,
                             "target": options.url,
                             "statements": notificationStatements
                           };
 
-                          DO.U.notifyInbox(notificationData).then(
+                          inbox.notifyInbox(notificationData).then(
                             function(s){
-                              console.log('Sent Linked Data Notification to ' + inbox);
+                              console.log('Sent Linked Data Notification to ' + inboxURL);
                             });
                         }
                       });
@@ -7015,18 +9065,9 @@ WHERE {\n\
                   }
                   break;
 
-                case 'bookmark':
-                  var data = DO.U.createHTML(noteIRI, note);
-
-                  DO.U.putResource(noteIRI, data).then(
-                    function(i) {
-                      //TODO: Let the user know that it was bookmarked
-                    },
-                    function(reason) {
-                      console.log('PUT failed');
-                      console.log(reason);
-                    }
-                  );
+                case 'rdfa':
+                  //This only updates the DOM. Nothing further. The 'id' is not used.
+                  var noteData = createNoteData({'id': id});
                   break;
               }
 
@@ -7183,41 +9224,24 @@ WHERE {\n\
 
     init: function() {
       if(document.body) {
+        DO.U.initUser();
         DO.U.initCurrentStylesheet();
         DO.U.setPolyfill();
         DO.U.setDocRefType();
         DO.U.showRefs();
-        DO.U.setLocalDocument();
         DO.U.buttonClose();
         DO.U.highlightItems();
         DO.U.initDocumentActions();
+        DO.U.getResourceInfo();
+        DO.U.showTextQuoteSelector();
         DO.U.showDocumentInfo();
         DO.U.showFragment();
-        DO.U.setDocumentMode();
-        DO.U.showInboxNotifications();
-        DO.U.initMath();
-      }
-    },
-
-    initExtensionMode: function() {
-      if(document.body) {
-        DO.C.Extension = true;
-        DO.U.initCurrentStylesheet();
-        DO.U.setPolyfill();
-        DO.U.setDocRefType();
-        DO.U.showRefs();
-        DO.U.setLocalDocument();
-        DO.U.buttonClose();
-        DO.U.highlightItems();
-        DO.U.initDocumentActions();
-        DO.U.showDocumentInfo();
-        DO.U.showFragment();
+        DO.U.showRobustLinks();
         DO.U.setDocumentMode();
         DO.U.showInboxNotifications();
         DO.U.initMath();
       }
     }
-
   } //DO.U
 }; //DO
 
@@ -7228,447 +9252,768 @@ WHERE {\n\
 
 module.exports = DO
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)))
+/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ }),
-/* 2 */
+/* 10 */
 /***/ (function(module, exports) {
 
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
+module.exports = __WEBPACK_EXTERNAL_MODULE_10__;
 
 /***/ }),
-/* 3 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-const fetch = __webpack_require__(4)  // Uses native fetch() in the browser
+const util = __webpack_require__(3)
+const doc = __webpack_require__(2)
+const uri = __webpack_require__(1)
+const graph = __webpack_require__(5)
+const fetcher = __webpack_require__(4)
+const Config = __webpack_require__(0)
 
 module.exports = {
-  currentLocation,
-  getResource,
-  getResourceHead,
-  getResourceOptions
+  getEndpoint,
+  getEndpointFromHead,
+  getEndpointFromRDF,
+  notifyInbox,
+  sendNotifications
 }
 
-/**
- * @returns {string}
- */
-function currentLocation () {
-  return window.location.origin + window.location.pathname
+function sendNotifications (tos, note, iri, shareResource) {
+  return new Promise((resolve, reject) => {
+    var notificationData = {
+      'type': ['as:Announce'],
+      'object': iri,
+      'summary': note,
+      'license': 'https://creativecommons.org/licenses/by/4.0/'
+    }
+
+    let data = doc.getDocument()
+
+    let options = {
+      'contentType': 'text/html',
+      'subjectURI': iri
+    }
+    var spo = {
+      'subject': iri,
+      'predicate': Config.Vocab['rdftype']['@id']
+    }
+
+    graph.getMatchFromData(data, spo, options)
+      .then(supplementalData => {
+        if (typeof supplementalData !== 'undefined' && supplementalData._array.length > 0) {
+          notificationData['objectTypes'] = supplementalData._array
+        }
+
+        let spo = {
+          'subject': iri,
+          'predicate': Config.Vocab['schemalicense']['@id']
+        }
+
+        return graph.getMatchFromData(data, spo, options)
+          .then(data => {
+            if (typeof data !== 'undefined' && data.length > 0) {
+              notificationData['objectLicense'] = data
+            }
+          })
+      })
+      .then(() => {
+        tos.forEach(to => {
+          notificationData['to'] = to
+
+          var toInput = shareResource.querySelector('[value="' + to + '"]') ||
+            shareResource.querySelector('#share-resource-to')
+
+          toInput.parentNode.insertAdjacentHTML('beforeend',
+            '<span class="progress" data-to="' + to +
+            '"><i class="fa fa-circle-o-notch fa-spin fa-fw"></i></span>')
+
+          inboxResponse(to, toInput)
+
+            .then(inboxURL => {
+              notificationData['inbox'] = inboxURL
+
+              notifyInbox(notificationData)
+
+                .catch(error => {
+                  console.log('Error in notifyInbox:', error)
+                  toInput
+                    .parentNode
+                    .querySelector('.progress[data-to="' + to + '"]')
+                    .innerHTML = '<i class="fa fa-times-circle fa-fw "></i> Unable to notify. Try later.'
+                })
+
+                .then(response => {
+                    var location = response.headers.get('Location')
+
+                    if (location) {
+                      location = uri.getAbsoluteIRI(inboxURL, location)
+
+                      toInput
+                        .parentNode
+                        .querySelector('.progress[data-to="' + to + '"]')
+                        .innerHTML = '<a target="_blank" href="' +
+                        location + '"><i class="fa fa-check-circle fa-fw"></i></a>'
+                    }
+                  }
+                )
+            })
+        })
+      })
+  })
 }
 
-/**
- * getResource
- *
- * @param url {string}
- *
- * @param headers {object}
- * @param [headers.accept='text/turtle'] {string}
- *
- * @param options {object}
- *
- * @returns {Promise<string>|Promise<ArrayBuffer>}
- */
-function getResource (url, headers = {}, options = {}) {
-  url = url || currentLocation()
+function inboxResponse (to, toInput) {
+  return getEndpoint(Config.Vocab['ldpinbox']['@id'], to)
+    .then(inboxes => inboxes[0])
 
-  options.method = 'GET'
+    .catch(error => {
+      console.log('Error in inboxResponse:', error)
 
-  if (!headers['Accept']) {
-    headers['Accept'] = 'text/turtle'
-  }
-
-  if (!options.noCredentials) {
-    options.credentials = 'include'
-  }
-
-  options.headers = Object.assign({}, headers)
-
-  return fetch(url, options)
-
-    .then(response => {
-      if (!response.ok) {  // not a 200 level response
-        let error = new Error('Error fetching resource: ' +
-          response.status + ' ' + response.statusText)
-        error.status = response.status
-        error.response = response
-
-        throw error
-      }
-
-      return response
+      toInput
+        .parentNode
+        .querySelector('.progress[data-to="' + to + '"]')
+        .innerHTML = '<i class="fa fa-times-circle fa-fw"></i> Inbox not responding. Try later.'
     })
 }
 
-/**
- * getResourceHead
- *
- * @param [url] {string}
- *
- * @param options {object}
- * @param options.header {string}
- *
- * @returns {Promise<string>} Resolves with contents of specified header
- */
-function getResourceHead (url, options = {}) {
-  url = url || currentLocation()
+function notifyInbox (o) {
+  var slug, inboxURL
 
-  if (!options.header) {
-    return Promise.reject(new Error('options.header not specified'))
+  if ('slug' in o) {
+    slug = o.slug
+  }
+  if ('inbox' in o) {
+    inboxURL = o.inbox
   }
 
-  options.method = 'HEAD'
-
-  if (!options.noCredentials) {
-    options.credentials = 'include'
+  if (!inboxURL) {
+    return Promise.reject(new Error('No inbox to send notification to'))
   }
 
-  return fetch(url, options)
+  //TODO title
+  var title = '';
+  var data = DO.U.createActivityHTML(o)
 
-    .then(response => {
-      if (!response.ok) {  // not a 200 level response
-        let error = new Error('Error fetching resource HEAD: ' +
-          response.status + ' ' + response.statusText)
-        error.status = response.status
-        error.response = response
+  data = DO.U.createHTML(title, data, { 'prefixes': Config.Prefixes })
 
-        throw error
-      }
+  var options = {
+    'contentType': 'text/html',
+    'profile': 'https://www.w3.org/ns/activitystreams'
+  }
 
-      let header = response.headers.get(options.header)
-
-      if (!header) {
-        throw new Error({'message': "'" + options.header + "' header not found"})
-      }
-
-      return { 'headers': header }
-    })
+  var pIRI = uri.getProxyableIRI(inboxURL)
+  return fetcher.postActivity(pIRI, slug, data, options)
 }
 
-/**
- * getResourceOptions
- *
- * @param [url] {string} Defaults to current url
- *
- * @param [options={}] {object}
- * @param [options.header] {string} Specific response header to return
- * @param [options.noCredentials] {boolean}
- *
- * @returns {Promise} Resolves with `{ headers: ... }` object
- */
-function getResourceOptions (url, options = {}) {
-  url = url || currentLocation()
+function getEndpoint (property, url) {
+  if (url) {
+    return getEndpointFromHead(property, url)
+      .catch(() => getEndpointFromRDF(property, url))
+  } else {
+    var subjectURI = window.location.href.split(window.location.search || window.location.hash || /[?#]/)[0]
 
-  options.method = 'OPTIONS'
+    var options = {
+      'contentType': 'text/html',
+      'subjectURI': subjectURI
+    }
 
-  if (!options.noCredentials) {
-    options.credentials = 'include'
+    return graph.getGraphFromData(doc.getDocument(), options)
+      .then(function (result) {
+          // TODO: Should this get all of the inboxes or a given subject's?
+          var endpoints = result.match(subjectURI, property).toArray()
+          if (endpoints.length > 0) {
+            return endpoints.map(function(t){ return t.object.nominalValue })
+          }
+
+// console.log(property + ' endpoint was not found in message body')
+          return getEndpointFromHead(property, subjectURI)
+        })
+      .catch(() => getEndpointFromHead(property, subjectURI))
   }
+}
 
-  return fetch(url, options)
+function getEndpointFromHead (property, url) {
+  var pIRI = uri.getProxyableIRI(url);
 
-    .then(response => {
-      if (!response.ok) {  // not a 200 level response
-        let error = new Error('Error fetching resource OPTIONS: ' +
-          response.status + ' ' + response.statusText)
-        error.status = response.status
-        error.response = response
+  return fetcher.getResourceHead(pIRI, {'header': 'Link'}).then(
+    function (i) {
+      var linkHeaders = fetcher.parseLinkHeader(i.headers)
 
-        throw error
+      if (property in linkHeaders) {
+        return linkHeaders[property]
       }
+      return Promise.reject({'message': property + " endpoint was not found in 'Link' header"})
+    },
+    function (reason) {
+      return Promise.reject({'message': "'Link' header not found"})
+    }
+  );
+}
 
-      if (options.header) {  // specific header requested
-        return { headers: response.headers.get(options.header) }
+function getEndpointFromRDF (property, url, subjectIRI) {
+  url = url || window.location.origin + window.location.pathname
+  subjectIRI = subjectIRI || url
+
+  return fetcher.getResourceGraph(subjectIRI)
+    .then(function (i) {
+        var s = i.child(subjectIRI)
+
+        switch (property) {
+          case Config.Vocab['ldpinbox']['@id']:
+            if (s.ldpinbox._array.length > 0){
+// console.log(s.ldpinbox._array)
+              return [s.ldpinbox.at(0)]
+            }
+            break
+          case Config.Vocab['oaannotationService']['@id']:
+            if (s.oaannotationService._array.length > 0){
+// console.log(s.oaannotationService._array)
+              return [s.oaannotationService.at(0)]
+            }
+            break
+          default:
+            if (s[property]._array.length > 0) {
+              return [s[property].at(0)]
+            }
+            break
+        }
+
+        throw new Error(property + ' endpoint was not found in message body')
       }
-
-      return { headers: response.headers }  // Not currently used anywhere
-    })
+    )
 }
 
 
 /***/ }),
-/* 4 */
-/***/ (function(module, exports) {
-
-module.exports = __WEBPACK_EXTERNAL_MODULE_4__;
-
-/***/ }),
-/* 5 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-/**
- * Configuration
- */
+
+const Config = __webpack_require__(0)
+const fetcher = __webpack_require__(4)
+const util = __webpack_require__(3)
+const uri = __webpack_require__(1)
+const storage = __webpack_require__(7)
+
+// const { OIDCWebClient } = require('@trust/oidc-web')
+
 module.exports = {
-  Extension: false,
-  Lang: document.documentElement.lang,
-  DocRefType: '',
-  RefType: {
-    LNCS: { InlineOpen: '[', InlineClose: ']' },
-    ACM: { InlineOpen: '[', InlineClose: ']' }
-  },
-  Stylesheets: [],
-  User: {
-    IRI: null,
-    Role: null
-  },
-  LocalDocument: false,
-  UseStorage: false,
-  AutoSaveId: '',
-  AutoSaveTimer: 60000,
-  DisableStorageButtons: '<button class="local-storage-disable-html" title="Disable local storage (temporary) in the browser"><i class="fa fa-database fa-2x"></i>Local Storage</button>',
-  EnableStorageButtons: '<button class="local-storage-enable-html" title="Enable local storage (temporary) in the browser"><i class="fa fa-database fa-2x"></i>Local Storage</button>',
-  CDATAStart: '//<![CDATA[',
-  CDATAEnd: '//]]>',
-  SortableList: false,
-  GraphViewerAvailable: (typeof d3 !== 'undefined'),
-  MathAvailable: (typeof MathJax !== 'undefined'),
-  EditorAvailable: (typeof MediumEditor !== 'undefined'),
-  EditorEnabled: false,
-  Editor: {
-    headings: ["h1", "h2", "h3", "h4", "h5", "h6"],
-    regexEmptyHTMLTags: /<[^\/>][^>]*><\/[^>]+>/gim,
-    ButtonLabelType: (((window.chrome && chrome.runtime && chrome.runtime.id) || (typeof browser !== 'undefined' && browser.runtime && browser.runtime.id)) ? 'fontawesome' : (document.querySelector('head link[rel~="stylesheet"][href*="font-awesome"]') ? (!navigator.onLine && document.querySelector('head link[rel~="stylesheet"][href*="font-awesome"][href^="http"]') ? '': 'fontawesome') : '' )),
-    DisableReviewButton: '<button class="review-disable" title="Disable review"><i class="fa fa-balance-scale fa-2x"></i>Review</button>',
-    EnableReviewButton: '<button class="review-enable" title="Enable review"><i class="fa fa-balance-scale fa-2x"></i>Review</button>',
-    DisableEditorButton: '<button class="editor-disable" title="Disable editor"><i class="fa fa-i-cursor fa-2x"></i>Edit</button>',
-    EnableEditorButton: '<button class="editor-enable" title="Enable editor"><i class="fa fa-i-cursor fa-2x"></i>Edit</button>'
-  },
-  DOMNormalisation: {
-    'selfClosing': "area base basefont br col colgroup embed hr img input isindex link meta metadata param source wbr",
-    'skipAttributes': "contenteditable spellcheck medium-editor-index data-medium-editor-element data-medium-editor-editor-index data-medium-focused data-placeholder role aria-multiline style",
-    'sortAttributes': true,
-    'skipNodeWithClass': 'do',
-    'classWithChildText': {
-      'class': '.do.ref',
-      'element': 'mark'
-    },
-    'replaceClassItemWith': {
-      'source': "on-document-menu medium-editor-element",
-      'target': ''
-    },
-    'skipClassWithValue': ''
-  },
+  afterSignIn,
+  enableDisableButton,
+  getAgentImage,
+  getAgentName,
+  getAgentURL,
+  getAgentStorage,
+  getAgentOutbox,
+  getAgentInbox,
+  getAgentKnows,
+  getAgentSupplementalInfo,
+  getAgentSeeAlso,
+  getUserContacts,
+  getUserHTML,
+  getUserSignedInHTML,
+  setUserInfo,
+  showUserIdentityInput,
+  showUserSigninSignout,
+  submitSignIn,
+  processSameAs
+}
 
-  SelectorSign: {
-    "*": "🔗",
-    "aside": "†",
-    "audio": "🔊",
-    "code": "#",
-    "dl#document-annotation-service": "※",
-    "dl#document-license": "🌻",
-    "dl#document-identifier": "🚩",
-    "dl#document-inbox": "📥",
-    "dl#document-in-reply-to": "⮪",
-    "dl#document-modified": "📅",
-    "dl#document-published": "📅",
-    "dfn": "📇",
-    "figure": "❦",
-    "footer": "⸙",
-    "img": "🖼",
-    "nav": "☛",
-    "p": "¶",
-    "pre": "🖩",
-    "section": "§",
-    "section#acknowledgements": "☺",
-    "section#conclusions": "∴",
-    "section#keywords": "🏷",
-    "section#references": "☛",
-    "section#related-work": "⌘",
-    "section#results": "∞",
-    "table": "𝄜",
-    "video": "🎞"
-  },
 
-  ContextLength: 32,
-  InteractionPath: 'i/',
-  ProxyURL: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/proxy?uri=' : 'https://dokie.li/proxy?uri='),
-  AuthEndpoint: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/' : 'https://dokie.li/'),
-  NotificationLicense: 'https://creativecommons.org/publicdomain/zero/1.0/',
-  License: {
-    "NoLicense": { 'name': 'No license', 'description': 'No license' },
-    "https://creativecommons.org/publicdomain/zero/1.0/": {'name': 'CC0 1.0', 'description': 'Creative Commons Zero'},
-    "https://creativecommons.org/licenses/by/4.0/": {'name': 'CC BY 4.0', 'description': 'Creative Commons Attribution'},
-    "https://creativecommons.org/licenses/by-sa/4.0/": {'name': 'CC BY-SA 4.0', 'description': 'Creative Commons Attribution-ShareAlike'},
-    "https://creativecommons.org/licenses/by-nc/4.0/": {'name': 'CC BY-NC 4.0', 'description': 'Creative Commons Attribution-NonCommercial'},
-    "https://creativecommons.org/licenses/by-nd/4.0/": {'name': 'CC BY-ND 4.0', 'description': 'Creative Commons Attribution-NoDerivatives'},
-    "https://creativecommons.org/licenses/by-nc-sa/4.0/": {'name': 'CC BY-NC-SA 4.0', 'description': 'Creative Commons Attribution-NonCommercial-ShareAlike'},
-    "https://creativecommons.org/licenses/by-nc-nd/4.0/": {'name': 'CC BY-NC-ND 4.0', 'description': 'Creative Commons Attribution-NonCommercial-NoDerivates'}
-  },
-  Citation: {
-    'http://purl.org/spar/cito/agreesWith': 'agrees with',
-    'http://purl.org/spar/cito/cites': 'cites',
-    'http://purl.org/spar/cito/citesAsAuthority': 'cites as authority',
-    'http://purl.org/spar/cito/citesAsDataSource': 'cites as data source',
-    'http://purl.org/spar/cito/citesAsEvidence': 'cites as evidence',
-    'http://purl.org/spar/cito/citesAsMetadataDocument': 'cites as metadata document',
-    'http://purl.org/spar/cito/citesAsPotentialSolution': 'cites as potential solution',
-    'http://purl.org/spar/cito/citesAsRecommendedReading': 'cites as potential reading',
-    'http://purl.org/spar/cito/citesAsRelated': 'cites as related',
-    'http://purl.org/spar/cito/citesAsSourceDocument': 'cites as source document',
-    'http://purl.org/spar/cito/citesForInformation': 'cites for information',
-    'http://purl.org/spar/cito/compiles': 'compiles',
-    'http://purl.org/spar/cito/confirms': 'confirms',
-    'http://purl.org/spar/cito/containsAssertionFrom': 'contains assertion from',
-    'http://purl.org/spar/cito/corrects': 'corrects',
-    'http://purl.org/spar/cito/credits': 'credits',
-    'http://purl.org/spar/cito/critiques': 'critiques',
-    'http://purl.org/spar/cito/derides': 'derides',
-    'http://purl.org/spar/cito/describes': 'describes',
-    'http://purl.org/spar/cito/disagreesWith': 'disagrees with',
-    'http://purl.org/spar/cito/discusses': 'discusses',
-    'http://purl.org/spar/cito/disputes': 'disputes',
-    'http://purl.org/spar/cito/documents': 'documents',
-    'http://purl.org/spar/cito/extends': 'extends',
-    'http://purl.org/spar/cito/includesExcerptFrom': 'includes excerpt from',
-    'http://purl.org/spar/cito/includesQuotationFrom': 'includes quotation from',
-    'http://purl.org/spar/cito/obtainsBackgroundFrom': 'obtains background from',
-    'http://purl.org/spar/cito/obtainsSupportFrom': 'obtains support from',
-    'http://purl.org/spar/cito/parodies': 'parodies',
-    'http://purl.org/spar/cito/plagiarizes': 'plagiarizes',
-    'http://purl.org/spar/cito/qualifies': 'qualifies',
-    'http://purl.org/spar/cito/refutes': 'refutes',
-    'http://purl.org/spar/cito/repliesTo': 'replies to',
-    'http://purl.org/spar/cito/retracts': 'retracts',
-    'http://purl.org/spar/cito/reviews': 'reviews',
-    'http://purl.org/spar/cito/ridicules': 'ridicules',
-    'http://purl.org/spar/cito/speculatesOn': 'speculates on',
-    'http://purl.org/spar/cito/supports': 'supports',
-    'http://purl.org/spar/cito/updates': 'updates',
-    'http://purl.org/spar/cito/usesConclusionsFrom': 'uses conclusions from',
-    'http://purl.org/spar/cito/usesDataFrom': 'uses data from',
-    'http://purl.org/spar/cito/usesMethodIn': 'uses method in'
-  },
+function getUserHTML () {
+  let userName = Config.SecretAgentNames[Math.floor(Math.random() * Config.SecretAgentNames.length)]
 
-  AvailableMediaTypes: ['text/turtle', 'application/ld+json', 'application/rdf+xml', 'application/xhtml+xml', 'text/html'],
+  if (Config.User.Name) {
+    // XXX: We have the IRI already
+    userName = '<span about="' + Config.User.IRI + '" property="schema:name">' +
+      Config.User.Name + '</span>'
+  }
 
-  AcceptBinaryTypes: ['image/png', 'image/jpeg', 'image/gif'],
+  let userImage = ''
 
-  Prefixes: {
-    'xsd': 'http://www.w3.org/2001/XMLSchema#',
-    'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-    'as': 'https://www.w3.org/ns/activitystreams#',
-    'oa': 'http://www.w3.org/ns/oa#',
-    'schema': 'http://schema.org/'
-  },
+  if ('Image' in Config.User && typeof Config.User.Image !== 'undefined' && Config.User.Image.length > 0) {
+    userImage = '<img alt="" height="48" rel="schema:image" src="' +
+      Config.User.Image + '" width="48" /> '
+  }
 
-  Vocab: {
-    "rdftype": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "@type": "@id", "@array": true },
-    "rdffirst": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#first", "@type": "@id" },
-    "rdfrest": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest", "@type": "@id" },
-    "rdfvalue": "http://www.w3.org/1999/02/22-rdf-syntax-ns#value",
-    "rdfslabel": { "@id": "http://www.w3.org/2000/01/rdf-schema#label" },
-    "rdfsseeAlso": { "@id": "http://www.w3.org/2000/01/rdf-schema#seeAlso", "@type": "@id", "@array": true },
+  let user = ''
 
-    "owlsameAs": { "@id": "http://www.w3.org/2002/07/owl#sameAs", "@type": "@id", "@array": true },
+  if ('IRI' in Config.User && Config.User.IRI !== null && Config.User.IRI.length > 0) {
+    user = '<span about="' + Config.User.IRI + '" typeof="schema:Person">' +
+      userImage + '<a rel="schema:url" href="' + Config.User.IRI + '"> ' +
+      userName + '</a></span>'
+  } else {
+    user = '<span typeof="schema:Person">' + userName + '</span>'
+  }
 
-    "foafname": "http://xmlns.com/foaf/0.1/name",
-    "foaffamilyName": "http://xmlns.com/foaf/0.1/familyName",
-    "foafgivenName": "http://xmlns.com/foaf/0.1/givenName",
-    "foafhomepage": { "@id": "http://xmlns.com/foaf/0.1/homepage", "@type": "@id" },
-    "foafimg": { "@id": "http://xmlns.com/foaf/0.1/img", "@type": "@id" },
-    "foafdepiction": { "@id": "http://xmlns.com/foaf/0.1/depiction", "@type": "@id" },
-    "foafnick": "http://xmlns.com/foaf/0.1/nick",
-    "foafmaker": { "@id": "http://xmlns.com/foaf/0.1/maker", "@type": "@id" },
-    "foafknows": { "@id": "http://xmlns.com/foaf/0.1/knows", "@type": "@id", "@array": true },
+  return user
+}
 
-    "schemaname": "http://schema.org/name",
-    "schemafamilyName": "http://schema.org/familyName",
-    "schemagivenName": "http://schema.org/givenName",
-    "schemaurl": { "@id": "http://schema.org/url", "@type": "@id" },
-    "schemaimage": { "@id": "http://schema.org/image", "@type": "@id" },
-    "schemacreator": { "@id": "http://schema.org/creator", "@type": "@id", "@array": true },
-    "schemaauthor": { "@id": "http://schema.org/author", "@type": "@id", "@array": true },
-    "schemacontributor": { "@id": "http://schema.org/contributor", "@type": "@id", "@array": true },
-    "schemaeditor": { "@id": "http://schema.org/editor", "@type": "@id", "@array": true },
-    "schemalicense": { "@id": "http://schema.org/license", "@type": "@id" },
-    "schemacitation": { "@id": "http://schema.org/citation", "@type": "@id", "@array": true },
-    "schemaknows": { "@id": "http://schema.org/knows", "@type": "@id", "@array": true },
-    "schemadatePublished": "http://schema.org/datePublished",
-    "schemadescription": "http://schema.org/description",
+function getUserSignedInHTML() {
+  return getUserHTML() + '<button class="signout-user" title="Live long and prosper"><i class="fa fa-hand-spock-o"></i></button>'
+}
 
-    "dctermstitle": "http://purl.org/dc/terms/title",
-    "dctermsdescription": "http://purl.org/dc/terms/description",
-    "dctermscreator": { "@id": "http://purl.org/dc/terms/creator", "@type": "@id", "@array": true },
-    "dctermsdate": "http://purl.org/dc/terms/date",
-    "dctermsissued": "http://purl.org/dc/terms/issued",
-    "dctermscreated": "http://purl.org/dc/terms/created",
-    "dctermsrights": { "@id": "http://purl.org/dc/terms/rights", "@type": "@id" },
+function showUserSigninSignout (node) {
+  var userInfo = document.getElementById('user-info');
 
-    "skosprefLabel": { "@id": "http://www.w3.org/2004/02/skos/core#prefLabel", "@type": "@id", "@array": true },
+  if (!userInfo) {
+    var s = ''
 
-    "refPeriod": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod",
-    "obsValue": "http://purl.org/linked-data/sdmx/2009/measure#obsValue",
+    if (Config.User.IRI) {
+      s = getUserSignedInHTML()
+    }
+    else {
+      s = '<button class="signin-user" title="Sign in to authenticate"><i class="fa fa-user-secret fa-2x"></i>Sign in</button>'
+    }
 
-    "biboauthorList": { "@id": "http://purl.org/ontology/bibo/authorList", "@type": "@id" },
+    node.insertAdjacentHTML('beforeend', '<section id="user-info">' + s + '</section>')
 
-    "storage": { "@id": "http://www.w3.org/ns/pim/space#storage", "@type": "@id", "@array": true },
-    "preferencesFile": { "@id": "http://www.w3.org/ns/pim/space#preferencesFile", "@type": "@id" },
-    "workspace": { "@id": "http://www.w3.org/ns/pim/space#workspace", "@type": "@id", "@array": true },
-    "masterWorkspace": { "@id": "http://www.w3.org/ns/pim/space#masterWorkspace", "@type": "@id" },
+    userInfo = document.getElementById('user-info')
 
-    "ldpinbox": { "@id": "http://www.w3.org/ns/ldp#inbox", "@type": "@id", "@array": true },
+    userInfo.addEventListener('click', function(e) {
+      e.preventDefault()
+      e.stopPropagation()
 
-    "oaannotation": { "@id": "http://www.w3.org/ns/oa#Annotation", "@type": "@id" },
-    "oahasBody": { "@id": "http://www.w3.org/ns/oa#hasBody", "@type": "@id" },
-    "oahasTarget": { "@id": "http://www.w3.org/ns/oa#hasTarget", "@type": "@id" },
-    "oahasSource": { "@id": "http://www.w3.org/ns/oa#hasSource", "@type": "@id" },
-    "oahasSelector": { "@id": "http://www.w3.org/ns/oa#hasSelector", "@type": "@id" },
-    "oaexact": "http://www.w3.org/ns/oa#exact",
-    "oaprefix": "http://www.w3.org/ns/oa#prefix",
-    "oasuffix": "http://www.w3.org/ns/oa#suffix",
-    "oamotivatedBy": { "@id": "http://www.w3.org/ns/oa#motivatedBy", "@type": "@id" },
-    "oaannotationService": { "@id": "http://www.w3.org/ns/oa#annotationService", "@type": "@id", "@array": true },
+      if (e.target.closest('.signout-user')) {
+        storage.removeStorageProfile()
 
-    "assubject": { "@id": "https://www.w3.org/ns/activitystreams#subject", "@type": "@id", "@array": true },
-    "asobject": { "@id": "https://www.w3.org/ns/activitystreams#object", "@type": "@id", "@array": true },
-    "astarget": { "@id": "https://www.w3.org/ns/activitystreams#target", "@type": "@id", "@array": true },
-    "asrelationship": { "@id": "https://www.w3.org/ns/activitystreams#relationship", "@type": "@id", "@array": true },
-    "ascontext": { "@id": "https://www.w3.org/ns/activitystreams#context", "@type": "@id", "@array": true },
-    "asinReplyTo": { "@id": "https://www.w3.org/ns/activitystreams#inReplyTo", "@type": "@id", "@array": true },
-    "asactor": { "@id": "https://www.w3.org/ns/activitystreams#actor", "@type": "@id" },
-    "asupdated": "https://www.w3.org/ns/activitystreams#updated",
-    "aspublished": "https://www.w3.org/ns/activitystreams#published",
-    "ascontent": "https://www.w3.org/ns/activitystreams#content",
-    "asname": "https://www.w3.org/ns/activitystreams#name",
-    "asimage": { "@id": "https://www.w3.org/ns/activitystreams#image", "@type": "@id" },
+        Config.User = {
+          IRI: null,
+          Role: null,
+          UI: {}
+        }
 
-    "siocreplyof": { "@id": "http://rdfs.org/sioc/ns#reply_of", "@type": "@id", "@array": true },
-    "siocavatar": { "@id": "http://rdfs.org/sioc/ns#avatar", "@type": "@id" },
+        util.removeChildren(node);
 
-    "ldpcontains": { "@id": "http://www.w3.org/ns/ldp#contains", "@type": "@id", "@array": true },
-    "ldpresource": { "@id": "http://www.w3.org/ns/ldp#Resource", "@type": "@id", "@array": true  },
-    "ldpcontainer": { "@id": "http://www.w3.org/ns/ldp#Container", "@type": "@id", "@array": true  }
-  },
+        showUserSigninSignout(document.querySelector('#document-menu header'))
+      }
+    });
 
-  SecretAgentNames: ['Abraham Lincoln', 'Admiral Awesome', 'Anonymous Coward', 'Believe it or not', 'Creative Monkey', 'Senegoid', 'Dog from the Web', 'Ekrub', 'Elegant Banana', 'Foo Bar', 'Lbmit', 'Lunatic Scholar', 'NahuLcm', 'Noslen', 'Okie Dokie', 'Samurai Cat', 'Vegan Superstar'],
+    var su = document.querySelector('#document-menu button.signin-user')
+    if (su) {
+      su.addEventListener('click', showUserIdentityInput)
+    }
 
-  RefAreas: {"AF":"Afghanistan","A9":"Africa","AL":"Albania","DZ":"Algeria","AS":"American Samoa","L5":"Andean Region","AD":"Andorra","AO":"Angola","AG":"Antigua and Barbuda","1A":"Arab World","AR":"Argentina","AM":"Armenia","AW":"Aruba","AU":"Australia","AT":"Austria","AZ":"Azerbaijan","BS":"Bahamas, The","BH":"Bahrain","BD":"Bangladesh","BB":"Barbados","BY":"Belarus","BE":"Belgium","BZ":"Belize","BJ":"Benin","BM":"Bermuda","BT":"Bhutan","BO":"Bolivia","BA":"Bosnia and Herzegovina","BW":"Botswana","BR":"Brazil","BN":"Brunei Darussalam","BG":"Bulgaria","BF":"Burkina Faso","BI":"Burundi","CV":"Cabo Verde","KH":"Cambodia","CM":"Cameroon","CA":"Canada","S3":"Caribbean small states","KY":"Cayman Islands","CF":"Central African Republic","TD":"Chad","JG":"Channel Islands","CL":"Chile","CN":"China","CO":"Colombia","KM":"Comoros","CD":"Congo, Dem. Rep.","CG":"Congo, Rep.","CR":"Costa Rica","CI":"Cote d'Ivoire","HR":"Croatia","CU":"Cuba","CW":"Curacao","CY":"Cyprus","CZ":"Czech Republic","DK":"Denmark","DJ":"Djibouti","DM":"Dominica","DO":"Dominican Republic","Z4":"East Asia & Pacific (all income levels)","4E":"East Asia & Pacific (developing only)","C4":"East Asia and the Pacific (IFC classification)","EC":"Ecuador","EG":"Egypt, Arab Rep.","SV":"El Salvador","GQ":"Equatorial Guinea","ER":"Eritrea","EE":"Estonia","ET":"Ethiopia","XC":"Euro area","Z7":"Europe & Central Asia (all income levels)","7E":"Europe & Central Asia (developing only)","C5":"Europe and Central Asia (IFC classification)","EU":"European Union","FO":"Faeroe Islands","FJ":"Fiji","FI":"Finland","FR":"France","PF":"French Polynesia","GA":"Gabon","GM":"Gambia, The","GE":"Georgia","DE":"Germany","GH":"Ghana","GR":"Greece","GL":"Greenland","GD":"Grenada","GU":"Guam","GT":"Guatemala","GN":"Guinea","GW":"Guinea-Bissau","GY":"Guyana","HT":"Haiti","XE":"Heavily indebted poor countries (HIPC)","XD":"High income","XS":"High income: OECD","XR":"High income: nonOECD","HN":"Honduras","HK":"Hong Kong SAR, China","HU":"Hungary","IS":"Iceland","IN":"India","ID":"Indonesia","IR":"Iran, Islamic Rep.","IQ":"Iraq","IE":"Ireland","IM":"Isle of Man","IL":"Israel","IT":"Italy","JM":"Jamaica","JP":"Japan","JO":"Jordan","KZ":"Kazakhstan","KE":"Kenya","KI":"Kiribati","KP":"Korea, Dem. Rep.","KR":"Korea, Rep.","KV":"Kosovo","KW":"Kuwait","KG":"Kyrgyz Republic","LA":"Lao PDR","ZJ":"Latin America & Caribbean (all income levels)","XJ":"Latin America & Caribbean (developing only)","L4":"Latin America and the Caribbean","C6":"Latin America and the Caribbean (IFC classification)","LV":"Latvia","XL":"Least developed countries: UN classification","LB":"Lebanon","LS":"Lesotho","LR":"Liberia","LY":"Libya","LI":"Liechtenstein","LT":"Lithuania","XO":"Low & middle income","XM":"Low income","XN":"Lower middle income","LU":"Luxembourg","MO":"Macao SAR, China","MK":"Macedonia, FYR","MG":"Madagascar","MW":"Malawi","MY":"Malaysia","MV":"Maldives","ML":"Mali","MT":"Malta","MH":"Marshall Islands","MR":"Mauritania","MU":"Mauritius","MX":"Mexico","L6":"Mexico and Central America","FM":"Micronesia, Fed. Sts.","ZQ":"Middle East & North Africa (all income levels)","XQ":"Middle East & North Africa (developing only)","C7":"Middle East and North Africa (IFC classification)","XP":"Middle income","MD":"Moldova","MC":"Monaco","MN":"Mongolia","ME":"Montenegro","MA":"Morocco","MZ":"Mozambique","MM":"Myanmar","NA":"Namibia","NP":"Nepal","NL":"Netherlands","NC":"New Caledonia","NZ":"New Zealand","NI":"Nicaragua","NE":"Niger","NG":"Nigeria","M2":"North Africa","XU":"North America","MP":"Northern Mariana Islands","NO":"Norway","XY":"Not classified","OE":"OECD members","OM":"Oman","S4":"Other small states","S2":"Pacific island small states","PK":"Pakistan","PW":"Palau","PA":"Panama","PG":"Papua New Guinea","PY":"Paraguay","PE":"Peru","PH":"Philippines","PL":"Poland","PT":"Portugal","PR":"Puerto Rico","QA":"Qatar","RO":"Romania","RU":"Russian Federation","RW":"Rwanda","WS":"Samoa","SM":"San Marino","ST":"Sao Tome and Principe","SA":"Saudi Arabia","SN":"Senegal","RS":"Serbia","SC":"Seychelles","SL":"Sierra Leone","SG":"Singapore","SX":"Sint Maarten (Dutch part)","SK":"Slovak Republic","SI":"Slovenia","S1":"Small states","SB":"Solomon Islands","SO":"Somalia","ZA":"South Africa","8S":"South Asia","C8":"South Asia (IFC classification)","SS":"South Sudan","L7":"Southern Cone Extended","ES":"Spain","LK":"Sri Lanka","KN":"St. Kitts and Nevis","LC":"St. Lucia","MF":"St. Martin (French part)","VC":"St. Vincent and the Grenadines","C9":"Sub-Saharan Africa (IFC classification)","ZG":"Sub-Saharan Africa (all income levels)","ZF":"Sub-Saharan Africa (developing only)","A4":"Sub-Saharan Africa excluding South Africa","A5":"Sub-Saharan Africa excluding South Africa and Nigeria","SD":"Sudan","SR":"Suriname","SZ":"Swaziland","SE":"Sweden","CH":"Switzerland","SY":"Syrian Arab Republic","TJ":"Tajikistan","TZ":"Tanzania","TH":"Thailand","TL":"Timor-Leste","TG":"Togo","TO":"Tonga","TT":"Trinidad and Tobago","TN":"Tunisia","TR":"Turkey","TM":"Turkmenistan","TC":"Turks and Caicos Islands","TV":"Tuvalu","UG":"Uganda","UA":"Ukraine","AE":"United Arab Emirates","GB":"United Kingdom","US":"United States","XT":"Upper middle income","UY":"Uruguay","UZ":"Uzbekistan","VU":"Vanuatu","VE":"Venezuela, RB","VN":"Vietnam","VI":"Virgin Islands (U.S.)","PS":"West Bank and Gaza","1W":"World","YE":"Yemen, Rep.","ZM":"Zambia","ZW":"Zimbabwe"}
+    var rA = document.querySelector('#document-menu .resource-activities')
+    if(rA) { rA.setAttribute('disabled', 'disabled') }
+  }
+}
+
+function showUserIdentityInput (e) {
+  if (typeof e !== 'undefined') {
+    e.target.disabled = true
+  }
+
+  document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="user-identity-input" class="do on">' + DO.C.Button.Close + '<h2>Sign in with WebID</h2><label>HTTP(S) IRI</label> <input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="signin">Sign in</button></aside>'))
+
+  var buttonSignIn = document.querySelector('#user-identity-input button.signin')
+  buttonSignIn.setAttribute('disabled', 'disabled')
+
+  document.querySelector('#user-identity-input').addEventListener('click', e => {
+    if (e.target.closest('button.close')) {
+      var signinUser = document.querySelector('#document-menu button.signin-user')
+      if (signinUser) {
+        signinUser.disabled = false
+      }
+    }
+  })
+
+  var inputWebid = document.querySelector('#user-identity-input input#webid')
+
+  buttonSignIn.addEventListener('click', submitSignIn)
+
+  let events = ['keyup', 'cut', 'paste', 'input']
+
+  events.forEach(eventType => {
+    inputWebid.addEventListener(eventType, e => { enableDisableButton(e, buttonSignIn) })
+  })
+
+  inputWebid.focus()
+}
+
+
+// TODO: Generalize this further so that it is not only for submitSignIn
+function enableDisableButton (e, button) {
+  var delay = (e.type === 'cut' || e.type === 'paste') ? 250 : 0
+  var input
+
+  window.setTimeout(function () {
+    input = e.target.value
+    if (input.length > 10 && input.match(/^https?:\/\//g)) {
+      if (typeof e.which !== 'undefined' && e.which === 13) {
+        if (!button.getAttribute('disabled')) {
+          button.setAttribute('disabled', 'disabled')
+          e.preventDefault()
+          e.stopPropagation()
+          submitSignIn()
+        }
+      } else {
+        button.removeAttribute('disabled')
+      }
+    } else {
+      if (!button.getAttribute('disabled')) {
+        button.setAttribute('disabled', 'disabled')
+      }
+    }
+  }, delay)
+}
+
+// FIXME: This parameter value can be an event or a string
+function submitSignIn (url) {
+  var userIdentityInput = document.getElementById('user-identity-input')
+
+  if (typeof url !== 'string') {
+    if (userIdentityInput) {
+      userIdentityInput.insertAdjacentHTML('beforeend',
+        '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>')
+    }
+
+    url = userIdentityInput.querySelector('input#webid').value.trim()
+  }
+
+  if (!url) {
+    console.log('submitSignIn - no user url input')
+    return Promise.resolve()
+  }
+
+  return setUserInfo(url)
+    .then(() => {
+      var uI = document.getElementById('user-info')
+      if (uI) {
+        util.removeChildren(uI);
+        uI.insertAdjacentHTML('beforeend', getUserSignedInHTML());
+      }
+
+      if (userIdentityInput) {
+        userIdentityInput.parentNode.removeChild(userIdentityInput)
+      }
+
+      afterSignIn()
+    })
+}
+
+/**
+ * @param userIRI {string}
+ *
+ * @returns {Promise}
+ */
+function setUserInfo (userIRI) {
+  if (!userIRI) {
+    return Promise.reject(new Error('Could not set user info - no user IRI'))
+  }
+
+  return fetcher.getResourceGraph(userIRI)
+    .then(g => {
+      var s = g.child(userIRI)
+
+      Config.User.Graph = s
+      Config.User.IRI = userIRI
+      Config.User.Name = getAgentName(s)
+      Config.User.Image = getAgentImage(s)
+      Config.User.URL = getAgentURL(s)
+
+      Config.User.Contacts = {}
+      Config.User.Knows = getAgentKnows(s)
+      Config.User.SameAs = []
+      Config.User.SeeAlso = []
+
+      Config.User.Storage = getAgentStorage(s)
+      Config.User.Outbox = getAgentOutbox(s)
+      Config.User.Inbox = getAgentInbox(s)
+
+      var preferredProxy = getAgentPreferredProxy(s)
+      Config.ProxyURL = (preferredProxy) ? preferredProxy : Config.ProxyURL
+
+      if (s.preferencesFile && s.preferencesFile.length > 0) {
+        Config.User.PreferencesFile = s.preferencesFile
+
+        // TODO: Reconsider if/where to use this.
+        // setUserWorkspaces(Config.User.PreferencesFile)
+      }
+      return Config.User
+    })
+}
+
+function afterSignIn () {
+  var promises = [];
+
+  promises.push(getAgentSupplementalInfo(Config.User.IRI))
+
+  promises.push(getAgentSeeAlso(Config.User.Graph))
+
+  Promise.all(promises)
+    .then(function(results) {
+      var uI = document.getElementById('user-info')
+      if (uI) {
+        uI.innerHTML = getUserSignedInHTML()
+      }
+
+      return storage.updateStorageProfile(Config.User)
+    })
+    .catch(function(e) {
+      return Promise.resolve();
+    });
+
+  var rA = document.querySelector('#document-menu .resource-activities')
+  if(rA) { rA.removeAttribute('disabled') }
+
+  var user = document.querySelectorAll('aside.do article *[rel~="schema:creator"] > *[about="' + Config.User.IRI + '"]')
+  for (let i = 0; i < user.length; i++) {
+    var article = user[i].closest('article')
+    article.insertAdjacentHTML('afterbegin', '<button class="delete"><i class="fa fa-trash"></i></button>')
+  }
+
+  var buttonDelete = document.querySelectorAll('aside.do blockquote[cite] article button.delete')
+
+  for (let i = 0; i < buttonDelete.length; i++) {
+    buttonDelete[i].addEventListener('click', function (e) {
+      e.preventDefault()
+      e.stopPropagation()
+      var article = e.target.closest('article')
+      var refId = 'r-' + article.id
+      var noteIRI = article.closest('blockquote[cite]')
+      noteIRI = noteIRI.getAttribute('cite')
+
+      fetcher.deleteResource(noteIRI)
+        .then(() => {
+          var aside = e.target.closest('aside.do')
+          aside.parentNode.removeChild(aside)
+          var span = document.querySelector('span[resource="#' + refId + '"]')
+          span.outerHTML = span.querySelector('mark').textContent
+          // TODO: Delete notification or send delete activity
+        })
+    })
+  }
+}
+
+function getAgentSupplementalInfo(iri) {
+  if (iri == Config.User.IRI) {
+    return processSameAs(Config.User.Graph, getAgentSupplementalInfo);
+  }
+  else {
+    return fetcher.getResourceGraph(iri).then(
+      function(g){
+        if(typeof g._graph == 'undefined') {
+          return Promise.resolve([]);
+        }
+        var s = g.child(iri);
+
+        Config.User.Name = Config.User.Name || getAgentName(s);
+
+        Config.User.Image = Config.User.Image || getAgentImage(s);
+
+        var storage = getAgentStorage(s) || [];
+        var outbox = getAgentOutbox(s) || [];
+        var knows = getAgentKnows(s) || [];
+
+        if (storage.length > 0) {
+          Config.User.Storage = (Config.User.Storage)
+            ? util.uniqueArray(Config.User.Storage.concat(storage))
+            : storage;
+        }
+
+        if (outbox.length > 0) {
+          Config.User.Outbox = (Config.User.Outbox)
+            ? util.uniqueArray(Config.User.Outbox.concat(outbox))
+            : outbox;
+        }
+
+        if (knows.length > 0) {
+          Config.User.Knows = (Config.User.Knows)
+            ? util.uniqueArray(Config.User.Knows.concat(knows))
+            : knows;
+        }
+
+        return processSameAs(s, getAgentSupplementalInfo);
+      },
+      function(reason){
+        return Promise.resolve([]);
+      });
+  }
+}
+
+function getAgentSeeAlso(g, baseURI, subjectURI) {
+  if (!g) { return; }
+
+  subjectURI = baseURI = baseURI || g.iri().toString();
+
+  var seeAlso = g.child(baseURI).rdfsseeAlso;
+
+  if (seeAlso && seeAlso._array.length > 0) {
+    var iris = [];
+    var promises = [];
+
+    seeAlso._array.forEach(function(iri){
+      if (Config.User.SeeAlso.indexOf(iri) < 0) {
+        iris.push(iri)
+      }
+    });
+
+    iris.forEach(function(iri){
+      Config.User.SeeAlso = util.uniqueArray(Config.User.SeeAlso.concat(iri));
+
+      fetcher.getResourceGraph(iri)
+        .then(g => {
+
+          var s = g.child(subjectURI)
+
+          var knows = getAgentKnows(s) || [];
+
+          if (knows.length > 0) {
+            Config.User.Knows = (Config.User.Knows)
+              ? util.uniqueArray(Config.User.Knows.concat(knows))
+              : knows;
+          }
+
+          promises.push(getAgentSeeAlso(g, iri, subjectURI))
+        })
+    });
+
+    Promise.all(promises)
+      .then(function(results) {
+        return Promise.resolve([]);
+      })
+      .catch(function(e) {
+        return Promise.resolve([]);
+      });
+  }
+  else {
+    return Promise.resolve([])
+  }
+}
+
+function getUserContacts(iri) {
+  var fyn = function(iri){
+    if ((iri == Config.User.IRI) && Config.User.Graph) {
+      return processSameAs(Config.User.Graph, getUserContacts);
+    }
+    else {
+      return fetcher.getResourceGraph(iri).then(
+        function(g){
+          if(typeof g._graph == 'undefined') {
+            return Promise.resolve([]);
+          }
+
+          var s = g.child(iri);
+
+          var knows = getAgentKnows(s) || [];
+
+          if (knows.length > 0) {
+            Config.User.Knows = (Config.User.Knows)
+              ? util.uniqueArray(Config.User.Knows.concat(knows))
+              : knows;
+          }
+
+          return processSameAs(s, getUserContacts);
+        },
+        function(reason){
+          return Promise.resolve([]);
+        });
+    }
+  }
+
+  return fyn(iri).then(function(i){ return Config.User.Knows || []; });
+}
+
+function processSameAs(s, callback) {
+  if (s.owlsameAs && s.owlsameAs._array.length > 0){
+    var iris = s.owlsameAs._array;
+    var promises = [];
+    iris.forEach(function(iri){
+// console.log(iri);
+      if(iri != Config.User.IRI && Config.User.SameAs.indexOf(iri) < 0) {
+        Config.User.SameAs = util.uniqueArray(Config.User.SameAs.concat(iri));
+
+        if (typeof callback !== 'undefined') {
+          promises.push(callback(iri));
+        }
+        else {
+          promises.push(Promise.resolve(Config.User.SameAs));
+        }
+      }
+    });
+
+    return Promise.all(promises)
+      .then(function(results) {
+        return Promise.resolve([]);
+      })
+      .catch(function(e) {
+        return Promise.resolve([]);
+      });
+  }
+  else {
+    return Promise.resolve([]);
+  }
+}
+
+function getAgentPreferredProxy (s) {
+  return s.solidpreferredProxy || undefined
+}
+
+function getAgentImage (s) {
+  return s.foafimg || s.schemaimage || s.vcardphoto || s.vcardhasPhoto || s.asimage ||
+    s.siocavatar || s.foafdepiction || undefined
+}
+
+function getAgentName (s) {
+  var name = s.foafname || s.schemaname || s.vcardfn || s.asname || s.rdfslabel || undefined
+  if (typeof name === 'undefined') {
+    if (s.schemafamilyName && s.schemafamilyName.length > 0 && s.schemagivenName && s.schemagivenName.length > 0) {
+      name = s.schemagivenName + ' ' + s.schemafamilyName
+    } else if (s.foaffamilyName && s.foaffamilyName.length > 0 && s.foafgivenName && s.foafgivenName.length > 0) {
+      name = s.foafgivenName + ' ' + s.foaffamilyName
+    } else if (s.vcardfamilyname && s.vcardfamilyname.length > 0 && s.vcardgivenname && s.vcardgivenname.length > 0) {
+      name = s.vcardgivenname + ' ' + s.vcardfamilyname
+    } else if (s.foafnick && s.foafnick.length > 0) {
+      name = s.foafnick
+    } else if (s.vcardnickname && s.vcardnickname.length > 0) {
+      name = s.vcardnickname
+    }
+  }
+  return name
+}
+
+function getAgentURL (s) {
+    return s.foafhomepage || s.foafweblog || s.schemaurl || s.vcardurl || undefined
+}
+
+function getAgentStorage (s) {
+  return (s.pimstorage && s.pimstorage._array.length > 0)
+    ? s.pimstorage._array
+    : undefined
+}
+
+function getAgentOutbox (s) {
+  return (s.asoutbox && s.asoutbox._array.length > 0)
+    ? s.asoutbox._array
+    : undefined
+}
+
+function getAgentInbox (s) {
+  return (s.ldpinbox && s.ldpinbox._array.length > 0)
+    ? s.ldpinbox._array
+    : undefined
+}
+
+function getAgentKnows (s) {
+  var knows = [];
+
+  if(s.foafknows && s.foafknows._array.length > 0){
+    knows = knows.concat(s.foafknows._array);
+  }
+  if(s.schemaknows && s.schemaknows._array.length > 0){
+    knows = knows.concat(s.schemaknows._array);
+  }
+
+  knows = util.uniqueArray(knows);
+
+  return (knows.length > 0) ? knows : undefined;
 }
 
 

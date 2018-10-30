@@ -264,7 +264,7 @@ figure math {
 display:block;
 font-size:0.95em;
 }
-figcaption {
+figure:not([class~="listing"]):not([class~="equation"]) figcaption {
 counter-increment:figcaption;
 }
 figure.listing {

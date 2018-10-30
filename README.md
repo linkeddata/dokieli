@@ -29,9 +29,11 @@ explains dokieli's principles, architectural and design patterns.
 * Uses author's information from their online profile (WebID)
 * Creation of new documents from any existing dokieli document - part of *self-replication*
 * Save document and its dependencies to a new location (anywhere on the Web given access) - part of *self-replication*
+* Implements versioning, has the notion of immutable resources, and [Memento](https://tools.ietf.org/html/rfc7089) based resource management
+* Implements the [ActivityPub](https://www.w3.org/TR/activitypub/) client (read/write from/to profile's outbox)
 * Open and edit (HTML+RDFa) URLs
 * Uses W3C [Web Annotation Model](https://www.w3.org/TR/annotation-model/) and [Activity Streams 2.0 vocabulary](https://www.w3.org/TR/activitystreams-vocabulary)
-* Annotations (e.g., replies, peer-reviews, liking, resharing, bookmarking)
+* Annotations (e.g., replies, peer-reviews, liking, resharing, bookmarking) employing W3C [Web Annotation Vocabulary](https://www.w3.org/TR/annotation-vocab/), [Embedding Web Annotations in HTML](https://www.w3.org/TR/annotation-html), [Selectors and States](https://www.w3.org/TR/selectors-states/)
 * Inbox notifications for annotations and social sharing (implements W3C [Linked Data Notifications](https://www.w3.org/TR/ldn/))
 * Assign license (e.g., [Creative Commons](https://creativecommons.org/)) to the contributions/annotations
 * Uses [schema.org](http://schema.org/), [SPAR Ontologies](http://www.sparontologies.net/), [PROV-O](https://www.w3.org/TR/prov-o/)
@@ -96,12 +98,14 @@ These libraries *optional* when dokieli is used as single-page application:
 git clone https://github.com/linkeddata/dokieli
 cd dokieli
 
-# Creates scripts/do.js.
+# Install packages
+npm install
+
+# Build stuff eg. scripts/do.js
 npm run build
 
-# Watch and update files
+# or automatically rebuild when files change
 npm run watch
-
 ```
 
 
@@ -110,26 +114,25 @@ npm run watch
 
 
 ## Contributors
-* [Sarven Capadisli](https://github.com/csarven)
 * [Amy Guy](https://github.com/rhiaro)
-* [Chris Chapman](https://github.com/cdchapman)
-* [Renato Stauffer](https://github.com/reni99)
-* [Kingsley Idehen](https://github.com/kidehen) (and [OpenLink Software](https://github.com/openlink))
-* [Ruben Taelman](https://github.com/rubensworks)
-* [Dmitri Zagidulin](https://github.com/dmitrizagidulin)
-* [Sergey Malinin](https://github.com/smalinin)
-
-### Acknowledgements
-* [Nicola Greco](https://github.com/nicola)
-* [Tim Berners-Lee](https://github.com/timbl)
-* [Melvin Carvalho](https://github.com/melvincarvalho)
-* [Andrei Vlad Sambra](https://github.com/deiu)
-* [Sandro Hawke](https://github.com/sandhawke)
 * [Amy van der Hiel](https://github.com/amyvdh)
-* [Henry Story](https://github.com/bblfish)
+* [Andrei Vlad Sambra](https://github.com/deiu)
 * [Benjamin Young](https://github.com/bigbluehat)
+* [Chris Chapman](https://github.com/cdchapman)
+* [Dmitri Zagidulin](https://github.com/dmitrizagidulin)
 * [Gerben Treora](https://github.com/treora)
+* [Henry Story](https://github.com/bblfish)
 * [Herbert Van de Sompel](https://github.com/hvdsomp)
+* [Kingsley Idehen](https://github.com/kidehen)
+* [Melvin Carvalho](https://github.com/melvincarvalho)
+* [Nicola Greco](https://github.com/nicola)
+* [OpenLink Software](https://github.com/openlink)
+* [Renato Stauffer](https://github.com/reni99)
+* [Ruben Taelman](https://github.com/rubensworks)
+* [Sandro Hawke](https://github.com/sandhawke)
+* [Sarven Capadisli](https://github.com/csarven) (maintainer)
+* [Sergey Malinin](https://github.com/smalinin)
+* [Tim Berners-Lee](https://github.com/timbl)
 
 ## How to contribute
 * Use it. Break it. Report it. Fix it! See [issues](https://github.com/linkeddata/dokieli/issues/).
