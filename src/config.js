@@ -13,8 +13,11 @@ module.exports = {
   User: {
     IRI: null,
     Role: null,
-    UI: {}
+    UI: {},
+    OIDC: false,
+    WebIdDelegate: null
   },
+  OidcPopupUrl: 'https://solid.openlinksw.com:8444/common/popup.html',
   LocalDocument: (document.location.protocol == 'file:'),
   UseStorage: false,
   AutoSaveId: '',
