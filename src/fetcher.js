@@ -1,10 +1,10 @@
 'use strict'
 
-const fetch = require('node-fetch')  // Uses native fetch() in the browser
 const Config = require('./config')
 const doc = require('./doc')
 const uri = require('./uri')
 const graph = require('./graph')
+const fetch = require('node-fetch')  // Uses native fetch() in the browser
 
 const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
 const LDP_RESOURCE = '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
@@ -86,6 +86,8 @@ function currentLocation () {
  * @returns {Promise<Response>}
  */
 function deleteResource (url, options = {}) {
+  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
+
   if (!url) {
     return Promise.reject(new Error('Cannot DELETE resource - missing url'))
   }
@@ -96,7 +98,7 @@ function deleteResource (url, options = {}) {
 
   options.method = 'DELETE'
 
-  return fetch(url, options)
+  return _fetch(url, options)
 
     .then(response => {
       if (!response.ok) {  // not a 2xx level response
@@ -150,8 +152,9 @@ function getAcceptPostPreference (url) {
  * @returns {Promise<string>|Promise<ArrayBuffer>}
  */
 function getResource (url, headers = {}, options = {}) {
-  url = url || currentLocation()
+  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
 
+  url = url || currentLocation()
   options.method = 'GET'
 
   if (!headers['Accept']) {
@@ -164,7 +167,7 @@ function getResource (url, headers = {}, options = {}) {
 
   options.headers = Object.assign({}, headers)
 
-  return fetch(url, options)
+  return _fetch(url, options)
 
     .then(response => {
       if (!response.ok) {  // not a 2xx level response
@@ -191,6 +194,7 @@ function getResource (url, headers = {}, options = {}) {
  * @returns {Promise<string>} Resolves with contents of specified header
  */
 function getResourceHead (url, options = {}) {
+  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
   url = url || currentLocation()
 
   if (!options.header) {
@@ -203,7 +207,7 @@ function getResourceHead (url, options = {}) {
     options.credentials = 'include'
   }
 
-  return fetch(url, options)
+  return _fetch(url, options)
 
     .then(response => {
       if (!response.ok) {  // not a 2xx level response
@@ -273,6 +277,7 @@ function getResourceGraph (iri, headers, options = {}) {
  * @returns {Promise} Resolves with `{ headers: ... }` object
  */
 function getResourceOptions (url, options = {}) {
+  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
   url = url || currentLocation()
 
   options.method = 'OPTIONS'
@@ -281,7 +286,7 @@ function getResourceOptions (url, options = {}) {
     options.credentials = 'include'
   }
 
-  return fetch(url, options)
+  return _fetch(url, options)
 
     .then(response => {
       if (!response.ok) {  // not a 2xx level response
@@ -340,6 +345,7 @@ function parseLinkHeader (link) {
 }
 
 function patchResource (url, deleteBGP, insertBGP, options = {}) {
+  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
   // insertBGP and deleteBGP are basic graph patterns.
   deleteBGP = (deleteBGP) ? 'DELETE DATA {\n\
 ' + deleteBGP + '\n\
@@ -364,7 +370,7 @@ function patchResource (url, deleteBGP, insertBGP, options = {}) {
 
   options.headers['Content-Type'] = 'application/sparql-update; charset=utf-8'
 
-  return fetch(url, options)
+  return _fetch(url, options)
 
     .then(response => {
       if (!response.ok) {  // not a 2xx level response
@@ -381,6 +387,7 @@ function patchResource (url, deleteBGP, insertBGP, options = {}) {
 }
 
 function postResource (url, slug, data, contentType, links, options = {}) {
+  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
   if (!url) {
     return Promise.reject(new Error('Cannot POST resource - missing url'))
   }
@@ -407,7 +414,7 @@ function postResource (url, slug, data, contentType, links, options = {}) {
     options.headers['Slug'] = slug
   }
 
-  return fetch(url, options)
+  return _fetch(url, options)
 
     .catch(error => {
       if (error.status === 0 && !options.noCredentials) {
@@ -449,6 +456,7 @@ function postResource (url, slug, data, contentType, links, options = {}) {
  * @returns {Promise<Response>}
  */
 function putResource (url, data, contentType, links, options = {}) {
+  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
   if (!url) {
     return Promise.reject(new Error('Cannot PUT resource - missing url'))
   }
@@ -471,7 +479,7 @@ function putResource (url, data, contentType, links, options = {}) {
 
   options.headers['Link'] = links
 
-  return fetch(url, options)
+  return _fetch(url, options)
 
     .then(response => {
       if (!response.ok) {  // not a 2xx level response

@@ -93,8 +93,11 @@ module.exports = {
   User: {
     IRI: null,
     Role: null,
-    UI: {}
+    UI: {},
+    OIDC: false,
+    WebIdDelegate: null
   },
+  OidcPopupUrl: 'https://solid.openlinksw.com:8444/common/popup.html',
   LocalDocument: (document.location.protocol == 'file:'),
   UseStorage: false,
   AutoSaveId: '',
@@ -763,11 +766,11 @@ function sleep(ms) {
 "use strict";
 
 
-const fetch = __webpack_require__(10)  // Uses native fetch() in the browser
 const Config = __webpack_require__(0)
 const doc = __webpack_require__(1)
 const uri = __webpack_require__(2)
 const graph = __webpack_require__(5)
+const fetch = __webpack_require__(10)  // Uses native fetch() in the browser
 
 const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
 const LDP_RESOURCE = '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
@@ -849,6 +852,8 @@ function currentLocation () {
  * @returns {Promise<Response>}
  */
 function deleteResource (url, options = {}) {
+  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
+
   if (!url) {
     return Promise.reject(new Error('Cannot DELETE resource - missing url'))
   }
@@ -859,7 +864,7 @@ function deleteResource (url, options = {}) {
 
   options.method = 'DELETE'
 
-  return fetch(url, options)
+  return _fetch(url, options)
 
     .then(response => {
       if (!response.ok) {  // not a 2xx level response
@@ -913,8 +918,9 @@ function getAcceptPostPreference (url) {
  * @returns {Promise<string>|Promise<ArrayBuffer>}
  */
 function getResource (url, headers = {}, options = {}) {
-  url = url || currentLocation()
+  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
 
+  url = url || currentLocation()
   options.method = 'GET'
 
   if (!headers['Accept']) {
@@ -927,7 +933,7 @@ function getResource (url, headers = {}, options = {}) {
 
   options.headers = Object.assign({}, headers)
 
-  return fetch(url, options)
+  return _fetch(url, options)
 
     .then(response => {
       if (!response.ok) {  // not a 2xx level response
@@ -954,6 +960,7 @@ function getResource (url, headers = {}, options = {}) {
  * @returns {Promise<string>} Resolves with contents of specified header
  */
 function getResourceHead (url, options = {}) {
+  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
   url = url || currentLocation()
 
   if (!options.header) {
@@ -966,7 +973,7 @@ function getResourceHead (url, options = {}) {
     options.credentials = 'include'
   }
 
-  return fetch(url, options)
+  return _fetch(url, options)
 
     .then(response => {
       if (!response.ok) {  // not a 2xx level response
@@ -1036,6 +1043,7 @@ function getResourceGraph (iri, headers, options = {}) {
  * @returns {Promise} Resolves with `{ headers: ... }` object
  */
 function getResourceOptions (url, options = {}) {
+  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
   url = url || currentLocation()
 
   options.method = 'OPTIONS'
@@ -1044,7 +1052,7 @@ function getResourceOptions (url, options = {}) {
     options.credentials = 'include'
   }
 
-  return fetch(url, options)
+  return _fetch(url, options)
 
     .then(response => {
       if (!response.ok) {  // not a 2xx level response
@@ -1103,6 +1111,7 @@ function parseLinkHeader (link) {
 }
 
 function patchResource (url, deleteBGP, insertBGP, options = {}) {
+  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
   // insertBGP and deleteBGP are basic graph patterns.
   deleteBGP = (deleteBGP) ? 'DELETE DATA {\n\
 ' + deleteBGP + '\n\
@@ -1127,7 +1136,7 @@ function patchResource (url, deleteBGP, insertBGP, options = {}) {
 
   options.headers['Content-Type'] = 'application/sparql-update; charset=utf-8'
 
-  return fetch(url, options)
+  return _fetch(url, options)
 
     .then(response => {
       if (!response.ok) {  // not a 2xx level response
@@ -1144,6 +1153,7 @@ function patchResource (url, deleteBGP, insertBGP, options = {}) {
 }
 
 function postResource (url, slug, data, contentType, links, options = {}) {
+  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
   if (!url) {
     return Promise.reject(new Error('Cannot POST resource - missing url'))
   }
@@ -1170,7 +1180,7 @@ function postResource (url, slug, data, contentType, links, options = {}) {
     options.headers['Slug'] = slug
   }
 
-  return fetch(url, options)
+  return _fetch(url, options)
 
     .catch(error => {
       if (error.status === 0 && !options.noCredentials) {
@@ -1212,6 +1222,7 @@ function postResource (url, slug, data, contentType, links, options = {}) {
  * @returns {Promise<Response>}
  */
 function putResource (url, data, contentType, links, options = {}) {
+  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
   if (!url) {
     return Promise.reject(new Error('Cannot PUT resource - missing url'))
   }
@@ -1234,7 +1245,7 @@ function putResource (url, data, contentType, links, options = {}) {
 
   options.headers['Link'] = links
 
-  return fetch(url, options)
+  return _fetch(url, options)
 
     .then(response => {
       if (!response.ok) {  // not a 2xx level response
@@ -3807,10 +3818,9 @@ var DO = {
         originalurl = (originalurl) ? '<dt>Original</dt><dd><a href="' + originalurl + '" target="_blank">' + originalurl + '</a></dd>' : '';
 
         var versionurl = i.getAttribute('data-versionurl');
-        versionurl = (versionurl) ? versionurl.trim() : undefined;
+        verionurl = (versionurl) ? versionurl.trim() : undefined;
         var versiondate = i.getAttribute('data-versiondate');
         var nearlinkdateurl = '';
-
         if (versiondate) {
           versiondate = versiondate.trim();
           versiondateNumeric = versiondate.replace(/\D/g, '');
@@ -5779,15 +5789,20 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       else if (subject.rellatestversion) {
         dataVersionURL = subject.rellatestversion;
       }
-      dataVersionURL = (dataVersionURL) ? ' data-versionurl="' + dataVersionURL + '"' : '';
 
-      var dataVersionDate = (dateVersion) ? ' data-versiondate="' + dateVersion + '"' : '';
+      if (dataVersionURL) {
+        dataVersionURL = ' data-versionurl="' + dataVersionURL + '"';
+      }
+      var dataVersionDate;
+      if (dateVersion) {
+        dataVersionDate = ' data-versiondate="' + dateVersion + '"';
+      }
 
       var content = ('content' in options && options.content.length > 0) ? options.content + ', ' : '';
 
       var citationReason = 'Reason: ' + DO.C.Citation[options.citationRelation];
 
-      var citationHTML = authors + title + datePublished + content + '<a about="#' + options.refId + '"' + dataVersionDate + dataVersionURL + ' href="' + options.citationId + '" rel="schema:citation ' + options.citationRelation  + '" title="' + DO.C.Citation[options.citationRelation] + '">' + options.citationId + '</a> [' + dateAccessed + ', ' + citationReason + ']';
+      var citationHTML = authors + title + datePublished + content + '<a about="#' + options.refId + '"' + dataVersionDate + dataVersionURL + ' href="' + options.citationId + '" rel="schema:citation ' + options.citationRelation  + '">' + options.citationId + '</a> [' + dateAccessed + ', ' + citationReason + ']';
 //console.log(citationHTML);
       return citationHTML;
     },
@@ -9557,6 +9572,7 @@ function getUserSignedInHTML() {
   return getUserHTML() + '<button class="signout-user" title="Live long and prosper"><i class="fa fa-hand-spock-o"></i></button>'
 }
 
+
 function showUserSigninSignout (node) {
   var userInfo = document.getElementById('user-info');
 
@@ -9577,6 +9593,10 @@ function showUserSigninSignout (node) {
     userInfo.addEventListener('click', function(e) {
       e.preventDefault()
       e.stopPropagation()
+
+      if (Config.User.OIDC && solid && solid.auth) {
+        solid.auth.logout();
+      }
 
       if (e.target.closest('.signout-user')) {
         storage.removeStorageProfile()
@@ -9603,15 +9623,24 @@ function showUserSigninSignout (node) {
   }
 }
 
+
 function showUserIdentityInput (e) {
   if (typeof e !== 'undefined') {
     e.target.disabled = true
   }
 
-  document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="user-identity-input" class="do on">' + DO.C.Button.Close + '<h2>Sign in with WebID</h2><label>HTTP(S) IRI</label> <input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="signin">Sign in</button></aside>'))
+  var webid = Config.User.WebIdDelegate ? Config.User.WebIdDelegate : "";
+  var code = '<aside id="user-identity-input" class="do on">' + DO.C.Button.Close + '<h2>Sign in with WebID</h2><label>HTTP(S) IRI</label> <input id="webid" type="text" placeholder="http://csarven.ca/#i" value="'+webid+'" name="webid"/> <button class="signin">Sign in</button>';
+  if (window.location.protocol === "https:")
+    code += ' <h2>Sign in with OIDC</h2> <button class="signin_oidc">Sign in OIDC</button>';
+
+  code += ' </aside>';
+
+  document.documentElement.appendChild(DO.U.fragmentFromString(code))
 
   var buttonSignIn = document.querySelector('#user-identity-input button.signin')
-  buttonSignIn.setAttribute('disabled', 'disabled')
+  if (! Config.User.WebIdDelegate)
+    buttonSignIn.setAttribute('disabled', 'disabled')
 
   document.querySelector('#user-identity-input').addEventListener('click', e => {
     if (e.target.closest('button.close')) {
@@ -9631,6 +9660,9 @@ function showUserIdentityInput (e) {
   events.forEach(eventType => {
     inputWebid.addEventListener(eventType, e => { enableDisableButton(e, buttonSignIn) })
   })
+
+  var buttonSignInOIDC = document.querySelector('#user-identity-input button.signin_oidc')
+  buttonSignInOIDC.addEventListener('click', submitSignInOIDC)
 
   inputWebid.focus()
 }
@@ -9680,7 +9712,7 @@ function submitSignIn (url) {
     return Promise.resolve()
   }
 
-  return setUserInfo(url)
+  return setUserInfo(url, false)
     .then(() => {
       var uI = document.getElementById('user-info')
       if (uI) {
@@ -9696,12 +9728,46 @@ function submitSignIn (url) {
     })
 }
 
+
+function submitSignInOIDC (url) {
+  var userIdentityInput = document.getElementById('user-identity-input')
+
+  var popupUri = Config.OidcPopupUrl;
+
+  if (solid && solid.auth) {
+    solid.auth
+      .popupLogin({ popupUri })
+      .then((session) => {
+         if (session && session.webId) {
+           console.log("Connected:", session.webId);
+           setUserInfo(session.webId, true)
+            .then(() => {
+              var uI = document.getElementById('user-info')
+              if (uI) {
+                util.removeChildren(uI);
+                uI.insertAdjacentHTML('beforeend', getUserSignedInHTML());
+              }
+
+              if (userIdentityInput) {
+                userIdentityInput.parentNode.removeChild(userIdentityInput)
+              }
+
+              afterSignIn()
+            })
+         }
+      }).catch((err) => {
+        console.log('submitSignInOIDC - '+err);
+        return Promise.resolve();
+      });
+  }
+}
+
 /**
  * @param userIRI {string}
  *
  * @returns {Promise}
  */
-function setUserInfo (userIRI) {
+function setUserInfo (userIRI, oidc) {
   if (!userIRI) {
     return Promise.reject(new Error('Could not set user info - no user IRI'))
   }
@@ -9715,6 +9781,7 @@ function setUserInfo (userIRI) {
       Config.User.Name = getAgentName(s)
       Config.User.Image = getAgentImage(s)
       Config.User.URL = getAgentURL(s)
+      Config.User.OIDC = oidc ? true : false;
 
       Config.User.Contacts = {}
       Config.User.Knows = getAgentKnows(s)

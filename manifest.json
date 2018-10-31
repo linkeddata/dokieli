@@ -16,8 +16,8 @@
   "icons": {
     "16": "media/images/logo.png",
     "48": "media/images/logo.png",
-    "128": "media/images/logo.png"
-  },
+   "128": "media/images/logo.png"
+   },
   "browser_action": {
     "default_icon": "media/images/logo.png",
     "default_title": "Activate dokieli"
@@ -33,6 +33,7 @@
       "js": [
         "scripts/simplerdf.js",
         "scripts/medium-editor.min.js",
+        "scripts/solid-auth-client.bundle.js",
         "scripts/do.js",
         "extension-content-script.js"
       ],

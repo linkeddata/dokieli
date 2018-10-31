@@ -64,6 +64,7 @@ function getUserSignedInHTML() {
   return getUserHTML() + '<button class="signout-user" title="Live long and prosper"><i class="fa fa-hand-spock-o"></i></button>'
 }
 
+
 function showUserSigninSignout (node) {
   var userInfo = document.getElementById('user-info');
 
@@ -84,6 +85,10 @@ function showUserSigninSignout (node) {
     userInfo.addEventListener('click', function(e) {
       e.preventDefault()
       e.stopPropagation()
+
+      if (Config.User.OIDC && solid && solid.auth) {
+        solid.auth.logout();
+      }
 
       if (e.target.closest('.signout-user')) {
         storage.removeStorageProfile()
@@ -110,15 +115,24 @@ function showUserSigninSignout (node) {
   }
 }
 
+
 function showUserIdentityInput (e) {
   if (typeof e !== 'undefined') {
     e.target.disabled = true
   }
 
-  document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="user-identity-input" class="do on">' + DO.C.Button.Close + '<h2>Sign in with WebID</h2><label>HTTP(S) IRI</label> <input id="webid" type="text" placeholder="http://csarven.ca/#i" value="" name="webid"/> <button class="signin">Sign in</button></aside>'))
+  var webid = Config.User.WebIdDelegate ? Config.User.WebIdDelegate : "";
+  var code = '<aside id="user-identity-input" class="do on">' + DO.C.Button.Close + '<h2>Sign in with WebID</h2><label>HTTP(S) IRI</label> <input id="webid" type="text" placeholder="http://csarven.ca/#i" value="'+webid+'" name="webid"/> <button class="signin">Sign in</button>';
+  if (window.location.protocol === "https:")
+    code += ' <h2>Sign in with OIDC</h2> <button class="signin_oidc">Sign in OIDC</button>';
+
+  code += ' </aside>';
+
+  document.documentElement.appendChild(DO.U.fragmentFromString(code))
 
   var buttonSignIn = document.querySelector('#user-identity-input button.signin')
-  buttonSignIn.setAttribute('disabled', 'disabled')
+  if (! Config.User.WebIdDelegate)
+    buttonSignIn.setAttribute('disabled', 'disabled')
 
   document.querySelector('#user-identity-input').addEventListener('click', e => {
     if (e.target.closest('button.close')) {
@@ -138,6 +152,9 @@ function showUserIdentityInput (e) {
   events.forEach(eventType => {
     inputWebid.addEventListener(eventType, e => { enableDisableButton(e, buttonSignIn) })
   })
+
+  var buttonSignInOIDC = document.querySelector('#user-identity-input button.signin_oidc')
+  buttonSignInOIDC.addEventListener('click', submitSignInOIDC)
 
   inputWebid.focus()
 }
@@ -187,7 +204,7 @@ function submitSignIn (url) {
     return Promise.resolve()
   }
 
-  return setUserInfo(url)
+  return setUserInfo(url, false)
     .then(() => {
       var uI = document.getElementById('user-info')
       if (uI) {
@@ -203,12 +220,46 @@ function submitSignIn (url) {
     })
 }
 
+
+function submitSignInOIDC (url) {
+  var userIdentityInput = document.getElementById('user-identity-input')
+
+  var popupUri = Config.OidcPopupUrl;
+
+  if (solid && solid.auth) {
+    solid.auth
+      .popupLogin({ popupUri })
+      .then((session) => {
+         if (session && session.webId) {
+           console.log("Connected:", session.webId);
+           setUserInfo(session.webId, true)
+            .then(() => {
+              var uI = document.getElementById('user-info')
+              if (uI) {
+                util.removeChildren(uI);
+                uI.insertAdjacentHTML('beforeend', getUserSignedInHTML());
+              }
+
+              if (userIdentityInput) {
+                userIdentityInput.parentNode.removeChild(userIdentityInput)
+              }
+
+              afterSignIn()
+            })
+         }
+      }).catch((err) => {
+        console.log('submitSignInOIDC - '+err);
+        return Promise.resolve();
+      });
+  }
+}
+
 /**
  * @param userIRI {string}
  *
  * @returns {Promise}
  */
-function setUserInfo (userIRI) {
+function setUserInfo (userIRI, oidc) {
   if (!userIRI) {
     return Promise.reject(new Error('Could not set user info - no user IRI'))
   }
@@ -222,6 +273,7 @@ function setUserInfo (userIRI) {
       Config.User.Name = getAgentName(s)
       Config.User.Image = getAgentImage(s)
       Config.User.URL = getAgentURL(s)
+      Config.User.OIDC = oidc ? true : false;
 
       Config.User.Contacts = {}
       Config.User.Knows = getAgentKnows(s)
