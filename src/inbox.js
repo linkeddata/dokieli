@@ -129,9 +129,9 @@ function notifyInbox (o) {
 
   //TODO title
   var title = '';
-  var data = DO.U.createActivityHTML(o)
+  var data = doc.createActivityHTML(o)
 
-  data = DO.U.createHTML(title, data, { 'prefixes': Config.Prefixes })
+  data = doc.createHTML(title, data, { 'prefixes': Config.Prefixes })
 
   var options = {
     'contentType': 'text/html',

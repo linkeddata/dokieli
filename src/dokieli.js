@@ -751,7 +751,7 @@ var DO = {
     importTextQuoteSelector: function(containerNode, selector, refId, docRefType, options) {
       var containerNodeTextContent = containerNode.textContent;
       //XXX: Seems better?
-      // var containerNodeTextContent = DO.U.fragmentFromString(doc.getDocument(containerNode)).textContent.trim();
+      // var containerNodeTextContent = util.fragmentFromString(doc.getDocument(containerNode)).textContent.trim();
 
 
 // console.log(containerNodeTextContent);
@@ -807,7 +807,7 @@ var DO = {
 // console.log(selectedParentNodeValue)
 
 // console.log(selectedParentNodeValue.substr(0, r.startOffset) + ref + selectedParentNodeValue.substr(r.startOffset + exact.length))
-        var selectionUpdated = DO.U.fragmentFromString(selectedParentNodeValue.substr(0, r.startOffset) + ref + selectedParentNodeValue.substr(r.startOffset + exact.length));
+        var selectionUpdated = util.fragmentFromString(selectedParentNodeValue.substr(0, r.startOffset) + ref + selectedParentNodeValue.substr(r.startOffset + exact.length));
 // console.log(selectionUpdated)
 
         //XXX: Review. This feels a bit dirty
@@ -866,7 +866,7 @@ var DO = {
 
         if (mode !== 'author') {
           var content = DO.U.selectArticleNode(document);
-          content = DO.U.fragmentFromString(doc.domToString(content)).textContent.trim();
+          content = util.fragmentFromString(doc.domToString(content)).textContent.trim();
           if (content.length == 0) {
             mode = 'author';
           }
@@ -903,12 +903,12 @@ var DO = {
 
       var annotationRights = document.querySelectorAll('[about="#annotation-rights"][typeof="schema:ChooseAction"], [href="#annotation-rights"][typeof="schema:ChooseAction"], [resource="#annotation-rights"][typeof="schema:ChooseAction"]');
       for (var i = 0; i < annotationRights.length; i++){
-        annotationRights[i].parentNode.replaceChild(DO.U.fragmentFromString('<select>' + DO.U.getLicenseOptionsHTML() + '</select>'), annotationRights[i]);
+        annotationRights[i].parentNode.replaceChild(util.fragmentFromString('<select>' + DO.U.getLicenseOptionsHTML() + '</select>'), annotationRights[i]);
       }
     },
 
     showDocumentInfo: function() {
-      document.documentElement.appendChild(DO.U.fragmentFromString('<menu id="document-menu" class="do"><button class="show" title="Open Menu"><i class="fa fa-bars"></i></button><header></header><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><img alt="" height="16" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAn1BMVEUAAAAAjwAAkAAAjwAAjwAAjwAAjwAAjwAAkAAAdwAAjwAAjQAAcAAAjwAAjwAAiQAAjwAAjAAAjwAAjwAAjwAAjwAAkAAAjwAAjwAAjwAAjQAAjQAAhQAAhQAAkAAAkAAAkAAAjgAAjwAAiQAAhAAAkAAAjwAAjwAAkAAAjwAAjgAAjgAAjQAAjwAAjQAAjwAAkAAAjwAAjQAAiwAAkABp3EJyAAAANHRSTlMA+fH89enaabMF4iADxJ4SiSa+uXztyoNvQDcsDgvl3pRiXBcH1M+ppJlWUUpFMq6OdjwbMc1+ZgAABAhJREFUeNrt29nSmkAQBeAGZBMUxH3f993/vP+zJZVKVZKCRhibyc3/XVt6SimYPjPSt28Vmt5W/fu2T/9B9HIf7Tp+0RsgDC6DY6OLvzxJj8341DnsakgZUNUmo2XsORYYS6rOeugukhnyragiq56JIs5UEQ/FXKgidRTzompEKOhG1biioDFV44mCAqrGAQWtqRptA8VMqCpR6zpo9iy84VO1opWHPBZVb9QAzyQN/D1YNungJ+DMSYsbOFvSIwGjR3p0wGiQHkMw2qRHC4w76RGBcSA9NmAcSY8QjAdpYiFbTJoYyNYnTWrI1iFNusj2JE1sZBuQJtyE5pImc3Y21cRhZ1NNtsh2Ik127HCsSY8djjVpINuVhPnjVefobee2adXqu2S/6FyivABDEjQ9Lxo1pDlNd5wg24ikRK5ngKGhHhg1DSgZk4RrD6pa9LlRAnUBfWp6xCe+6EOvOT6yrmrigZaCZHPAp6b0gaiBFKvRd0/D1rr1OrvxDqiyoZmmPt9onib0t/VybyEXqdu0Cw16rUNVAfZFlzdjr5KOaoAUK6JsrgWGQapuBlIS4gy70gEmTrk1fuAgU40UxWXv6wvZAC2Dqfx0BfBK1z1H0aJ0WH7Ub4oG8JDlpBCgK1l5tSjHQSoAf0HVfMqxF+yqpzVk2ZGuAGdk8ijPHZlmpOCg0vh5cgE2JtN3qQSoU3lXpbKlLRegrzTpt+U2TNpKY2YiFiA0kS1Q6QccweZ/oinASm2B3RML0AGDNAU4qq3udmIXYVttD3YrFsBR24N1xG5EJpTeaiYWwILS5WRKBfChFsCSehpOwKi/yS0V4AsMWym3TWUFgMqIsRYL8AVOSDlaYgEitbZnDKll+UatchyJBSC1c3lDuQA2VHYAL3KneHpgLCjHSS7AHYyEciwh1g88wDB94rlyAVxwhsR7ygW4gRMTry8XwDdUDkXFgjVdD5wRsRaCAWJwPGI1Baval8Ie3Hqn8AjjhHbZr2DzrInumDTBGlCG8xy8QPY3MNLX4TiRP1q+BWs2pn9ECwu5+qTABc+80h++28UbTkjlTW3wrM6Ufrtu8d5J9Svg1Vch/RTcUYQdUHm+g1z1x2gSGyjGGVN5F7xjoTCjE0ndC3jJMzfCftmiciZ1lNGe3vCGufOWVMLIQHHehi3X1O8JJxR236SalUzninbu937BlwfV/I3k4KdGk2xm+MHuLa8Z0i9TC280qLRrF+8cw9RSjrOg8oIG8j2YgULsbGPomsgR0x9nsOzkOLh+kZr1owZGbfC2JJl78fIV0Wei/gxZDl85XWVtt++cxhuSEQ6bdfzLjlvM86PbaD4vQUjSglV8385My7CdXtO9+ZSyrLcf7nBN376V8gMpRztyq6RXYQAAAABJRU5ErkJggg==" width="16" /><a href="https://dokie.li/" target="_blank">dokieli</a> is an <i class="fa fa-github"></i> <a href="https://github.com/linkeddata/dokieli" target="_blank">open source</a> project. There is <i class="fa fa-flask"></i> <a href="https://dokie.li/docs" target="_blank">documentation</a> and public <i class="fa fa-comments-o"></i> <a href="https://gitter.im/linkeddata/dokieli" target="_blank">chat</a> available. Made with fun.</dd></dl></footer></menu>'));
+      document.documentElement.appendChild(util.fragmentFromString('<menu id="document-menu" class="do"><button class="show" title="Open Menu"><i class="fa fa-bars"></i></button><header></header><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><img alt="" height="16" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAn1BMVEUAAAAAjwAAkAAAjwAAjwAAjwAAjwAAjwAAkAAAdwAAjwAAjQAAcAAAjwAAjwAAiQAAjwAAjAAAjwAAjwAAjwAAjwAAkAAAjwAAjwAAjwAAjQAAjQAAhQAAhQAAkAAAkAAAkAAAjgAAjwAAiQAAhAAAkAAAjwAAjwAAkAAAjwAAjgAAjgAAjQAAjwAAjQAAjwAAkAAAjwAAjQAAiwAAkABp3EJyAAAANHRSTlMA+fH89enaabMF4iADxJ4SiSa+uXztyoNvQDcsDgvl3pRiXBcH1M+ppJlWUUpFMq6OdjwbMc1+ZgAABAhJREFUeNrt29nSmkAQBeAGZBMUxH3f993/vP+zJZVKVZKCRhibyc3/XVt6SimYPjPSt28Vmt5W/fu2T/9B9HIf7Tp+0RsgDC6DY6OLvzxJj8341DnsakgZUNUmo2XsORYYS6rOeugukhnyragiq56JIs5UEQ/FXKgidRTzompEKOhG1biioDFV44mCAqrGAQWtqRptA8VMqCpR6zpo9iy84VO1opWHPBZVb9QAzyQN/D1YNungJ+DMSYsbOFvSIwGjR3p0wGiQHkMw2qRHC4w76RGBcSA9NmAcSY8QjAdpYiFbTJoYyNYnTWrI1iFNusj2JE1sZBuQJtyE5pImc3Y21cRhZ1NNtsh2Ik127HCsSY8djjVpINuVhPnjVefobee2adXqu2S/6FyivABDEjQ9Lxo1pDlNd5wg24ikRK5ngKGhHhg1DSgZk4RrD6pa9LlRAnUBfWp6xCe+6EOvOT6yrmrigZaCZHPAp6b0gaiBFKvRd0/D1rr1OrvxDqiyoZmmPt9onib0t/VybyEXqdu0Cw16rUNVAfZFlzdjr5KOaoAUK6JsrgWGQapuBlIS4gy70gEmTrk1fuAgU40UxWXv6wvZAC2Dqfx0BfBK1z1H0aJ0WH7Ub4oG8JDlpBCgK1l5tSjHQSoAf0HVfMqxF+yqpzVk2ZGuAGdk8ijPHZlmpOCg0vh5cgE2JtN3qQSoU3lXpbKlLRegrzTpt+U2TNpKY2YiFiA0kS1Q6QccweZ/oinASm2B3RML0AGDNAU4qq3udmIXYVttD3YrFsBR24N1xG5EJpTeaiYWwILS5WRKBfChFsCSehpOwKi/yS0V4AsMWym3TWUFgMqIsRYL8AVOSDlaYgEitbZnDKll+UatchyJBSC1c3lDuQA2VHYAL3KneHpgLCjHSS7AHYyEciwh1g88wDB94rlyAVxwhsR7ygW4gRMTry8XwDdUDkXFgjVdD5wRsRaCAWJwPGI1Baval8Ie3Hqn8AjjhHbZr2DzrInumDTBGlCG8xy8QPY3MNLX4TiRP1q+BWs2pn9ECwu5+qTABc+80h++28UbTkjlTW3wrM6Ufrtu8d5J9Svg1Vch/RTcUYQdUHm+g1z1x2gSGyjGGVN5F7xjoTCjE0ndC3jJMzfCftmiciZ1lNGe3vCGufOWVMLIQHHehi3X1O8JJxR236SalUzninbu937BlwfV/I3k4KdGk2xm+MHuLa8Z0i9TC280qLRrF+8cw9RSjrOg8oIG8j2YgULsbGPomsgR0x9nsOzkOLh+kZr1owZGbfC2JJl78fIV0Wei/gxZDl85XWVtt++cxhuSEQ6bdfzLjlvM86PbaD4vQUjSglV8385My7CdXtO9+ZSyrLcf7nBN376V8gMpRztyq6RXYQAAAABJRU5ErkJggg==" width="16" /><a href="https://dokie.li/" target="_blank">dokieli</a> is an <i class="fa fa-github"></i> <a href="https://github.com/linkeddata/dokieli" target="_blank">open source</a> project. There is <i class="fa fa-flask"></i> <a href="https://dokie.li/docs" target="_blank">documentation</a> and public <i class="fa fa-comments-o"></i> <a href="https://gitter.im/linkeddata/dokieli" target="_blank">chat</a> available. Made with fun.</dd></dl></footer></menu>'));
       document.querySelector('#document-menu').addEventListener('click', function(e) {
         var button = e.target.closest('button');
         if(button){
@@ -1097,7 +1097,7 @@ var DO = {
               e.target.disabled = true;
             }
 
-            document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="graph-view" class="do on">' + DO.C.Button.Close + '<h2>Graph view</h2></aside>'));
+            document.documentElement.appendChild(util.fragmentFromString('<aside id="graph-view" class="do on">' + DO.C.Button.Close + '<h2>Graph view</h2></aside>'));
 
             var graphView = document.getElementById('graph-view');
             graphView.addEventListener('click', function(e) {
@@ -1261,7 +1261,7 @@ var DO = {
         <div id="embed-data-trig"><textarea placeholder="Enter data in TriG" name="meta-trig" cols="80" rows="24">' + ((scriptCurrentData['meta-trig']) ? scriptCurrentData['meta-trig'].content : '') + '</textarea><button class="save">Save</button></div>\n\
         </aside>';
 
-        document.documentElement.appendChild(DO.U.fragmentFromString(embedMenu));
+        document.documentElement.appendChild(util.fragmentFromString(embedMenu));
         document.querySelector('#embed-data-turtle textarea').focus();
         var a = document.querySelectorAll('#embed-data-entry nav a');
         for(var i = 0; i < a.length; i++) {
@@ -1398,7 +1398,7 @@ var DO = {
     },
 
     contentCount: function contentCount (c) {
-      var content = DO.U.fragmentFromString(doc.domToString(c)).textContent.trim();
+      var content = util.fragmentFromString(doc.domToString(c)).textContent.trim();
       var contentCount = { readingTime:1, words:0, chars:0, lines:0, pages:{A4:1, USLetter:1}, bytes:0 };
       if (content.length > 0) {
         var lineHeight = c.ownerDocument.defaultView.getComputedStyle(c, null)["line-height"];
@@ -1436,7 +1436,7 @@ var DO = {
       if (!node) {
         node = document.getElementById('document-items');
         if (!node) {
-          document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="document-items" class="do on">' + DO.C.Button.Close + '</aside>'));
+          document.documentElement.appendChild(util.fragmentFromString('<aside id="document-items" class="do on">' + DO.C.Button.Close + '</aside>'));
           node = document.getElementById('document-items');
         }
       }
@@ -2077,7 +2077,7 @@ var DO = {
           if (!node) {
             node = document.getElementById(elementId);
             if(!node) {
-              document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="' + elementId + '" class="do on"><h2>Memento</h2>' + DO.C.Button.Close + '</aside>'));
+              document.documentElement.appendChild(util.fragmentFromString('<aside id="' + elementId + '" class="do on"><h2>Memento</h2>' + DO.C.Button.Close + '</aside>'));
               node = document.getElementById(elementId);
             }
           }
@@ -2244,7 +2244,7 @@ var DO = {
     createImmutableResource: function(url, data, options) {
       if(!url) return;
 
-      var uuid = DO.U.generateUUID();
+      var uuid = util.generateUUID();
       var containerIRI = url.substr(0, url.lastIndexOf('/') + 1);
       var immutableURL = containerIRI + uuid;
 
@@ -2345,7 +2345,7 @@ var DO = {
 
       DO.U.setDate(document, { 'id': 'document-created', 'property': 'schema:dateCreated', 'title': 'Created' } );
 
-      var uuid = DO.U.generateUUID();
+      var uuid = util.generateUUID();
       var containerIRI = url.substr(0, url.lastIndexOf('/') + 1);
       var mutableURL = containerIRI + uuid;
 
@@ -2436,7 +2436,7 @@ var DO = {
 
       e.target.closest('button').disabled = true
 
-      document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="reply-to-resource" class="do on">' + DO.C.Button.Close + '<h2>Reply to this</h2><div id="reply-to-resource-input"><p>Reply to <code>' +
+      document.documentElement.appendChild(util.fragmentFromString('<aside id="reply-to-resource" class="do on">' + DO.C.Button.Close + '<h2>Reply to this</h2><div id="reply-to-resource-input"><p>Reply to <code>' +
         iri +'</code></p><ul><li><p><label for="reply-to-resource-note">Quick reply (plain text note)</label></p><p><textarea id="reply-to-resource-note" rows="10" cols="40" name="reply-to-resource-note" placeholder="Great article!"></textarea></p></li><li><label for="reply-to-resource-license">License</label> <select id="reply-to-resource-license" name="reply-to-resource-license">' +
         DO.U.getLicenseOptionsHTML() + '</select></li></ul></div>'))
 
@@ -2526,7 +2526,7 @@ var DO = {
 
         var note = DO.U.createNoteDataHTML(noteData)
 
-        var data = DO.U.createHTML('', note)
+        var data = doc.createHTML('', note)
 
         fetcher.putResource(noteIRI, data)
 
@@ -2624,7 +2624,7 @@ var DO = {
 
     showActionMessage: function(node, message) {
       var message = '<aside id="document-action-message" class="do on"><p>' + message + '</p></aside>';
-      node.appendChild(DO.U.fragmentFromString(message));
+      node.appendChild(util.fragmentFromString(message));
       window.setTimeout(function () {
         var dam = document.getElementById('document-action-message');
         dam.parentNode.removeChild(dam);
@@ -2648,7 +2648,7 @@ var DO = {
         shareResourceLinkedResearch = '<li><input id="share-resource-linked-research" type="checkbox" value="https://linkedresearch.org/cloud" /><label for="share-resource-linked-research">Notify <a href="https://linkedresearch.org/cloud">Linked Open Research Cloud</a></label></li>';
       }
 
-      document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="share-resource" class="do on">' + DO.C.Button.Close + '<h2>Share resource</h2><div id="share-resource-input"><p>Send a notification about <code>' + iri +'</code></p><ul><li id="share-resource-address-book"></li>' + shareResourceLinkedResearch + '<li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share">Share</button></aside>'));
+      document.documentElement.appendChild(util.fragmentFromString('<aside id="share-resource" class="do on">' + DO.C.Button.Close + '<h2>Share resource</h2><div id="share-resource-input"><p>Send a notification about <code>' + iri +'</code></p><ul><li id="share-resource-address-book"></li>' + shareResourceLinkedResearch + '<li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share">Share</button></aside>'));
 
       var li = document.getElementById('share-resource-address-book');
 
@@ -3084,7 +3084,7 @@ console.log(reason);
       action = action || 'write';
 
       var browserHTML = '<aside id="resource-browser-' + id + '" class="do on">' + DO.C.Button.Close + '<h2>Resource Browser</h2></aside>';
-      document.documentElement.appendChild(DO.U.fragmentFromString(browserHTML));
+      document.documentElement.appendChild(util.fragmentFromString(browserHTML));
 
       DO.U.setupResourceBrowser(document.getElementById('resource-browser-' + id), id, action);
       document.getElementById('resource-browser-' + id).insertAdjacentHTML('beforeend', '<p><samp id="' + id + '-' + action + '"></samp></p>');
@@ -3108,7 +3108,7 @@ console.log(reason);
       if(typeof e !== 'undefined') {
         e.target.disabled = true;
       }
-      document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="open-document" class="do on">' + DO.C.Button.Close + '<h2>Open Document</h2><p><label for="open-local-file">Open local file</label> <input type="file" id="open-local-file" name="open-local-file" /></p></aside>'));
+      document.documentElement.appendChild(util.fragmentFromString('<aside id="open-document" class="do on">' + DO.C.Button.Close + '<h2>Open Document</h2><p><label for="open-local-file">Open local file</label> <input type="file" id="open-local-file" name="open-local-file" /></p></aside>'));
 
       var id = 'location-open-document';
       var action = 'read';
@@ -3239,7 +3239,7 @@ console.log(reason);
             catch(e) { console.log('Cannot change pushState due to cross-origin.'); }
           }
         }
-        DO.U.init();
+        DO.C.init();
       }
       else {
 console.log('//TODO: Handle server returning wrong Response/Content-Type for the Request/Accept');
@@ -3249,7 +3249,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
     createNewDocument: function createNewDocument (e) {
       e.target.disabled = true
-      document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="create-new-document" class="do on">' + DO.C.Button.Close + '<h2>Create New Document</h2></aside>'))
+      document.documentElement.appendChild(util.fragmentFromString('<aside id="create-new-document" class="do on">' + DO.C.Button.Close + '<h2>Create New Document</h2></aside>'))
 
       var newDocument = document.getElementById('create-new-document')
       newDocument.addEventListener('click', e => {
@@ -3347,7 +3347,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
     saveAsDocument: function saveAsDocument (e) {
       e.target.disabled = true;
-      document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="save-as-document" class="do on">' + DO.C.Button.Close + '<h2>Save As Document</h2></aside>'));
+      document.documentElement.appendChild(util.fragmentFromString('<aside id="save-as-document" class="do on">' + DO.C.Button.Close + '<h2>Save As Document</h2></aside>'));
 
       var saveAsDocument = document.getElementById('save-as-document');
       saveAsDocument.addEventListener('click', function(e) {
@@ -3544,7 +3544,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
     viewSource: function(e) {
       e.target.disabled = true;
-      document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="source-view" class="do on">' + DO.C.Button.Close + '<h2>Source</h2><textarea id="source-edit" rows="24" cols="80"></textarea><p><button class="create">Update</button></p></aside>'));
+      document.documentElement.appendChild(util.fragmentFromString('<aside id="source-view" class="do on">' + DO.C.Button.Close + '<h2>Source</h2><textarea id="source-edit" rows="24" cols="80"></textarea><p><button class="create">Update</button></p></aside>'));
       var sourceBox = document.getElementById('source-view');
       var input = document.getElementById('source-edit');
       input.value = doc.getDocument();
@@ -3917,30 +3917,8 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         return (document.getElementById(string)) ? string + '-x' : string;
       }
       else {
-        return DO.U.generateUUID();
+        return util.generateUUID();
       }
-    },
-
-    // MIT license
-    // http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript/21963136#21963136
-    generateUUID: function() {
-      var lut = []; for (var i=0; i<256; i++) { lut[i] = (i<16?'0':'')+(i).toString(16); }
-      var s = function() {
-        var d0 = Math.random()*0xffffffff|0;
-        var d1 = Math.random()*0xffffffff|0;
-        var d2 = Math.random()*0xffffffff|0;
-        var d3 = Math.random()*0xffffffff|0;
-        return lut[d0&0xff]+lut[d0>>8&0xff]+lut[d0>>16&0xff]+lut[d0>>24&0xff]+'-'+
-        lut[d1&0xff]+lut[d1>>8&0xff]+'-'+lut[d1>>16&0x0f|0x40]+lut[d1>>24&0xff]+'-'+
-        lut[d2&0x3f|0x80]+lut[d2>>8&0xff]+'-'+lut[d2>>16&0xff]+lut[d2>>24&0xff]+
-        lut[d3&0xff]+lut[d3>>8&0xff]+lut[d3>>16&0xff]+lut[d3>>24&0xff];
-      };
-      return s();
-    },
-
-    //http://stackoverflow.com/a/25214113
-    fragmentFromString: function(strHTML) {
-      return document.createRange().createContextualFragment(strHTML);
     },
 
     SPARQLQueryURL: {
@@ -4396,7 +4374,7 @@ WHERE {\n\
 
         var containerNodeTextContent = containerNode.textContent;
         //XXX: Seems better?
-        // var containerNodeTextContent = DO.U.fragmentFromString(doc.getDocument(containerNode)).textContent.trim();
+        // var containerNodeTextContent = util.fragmentFromString(doc.getDocument(containerNode)).textContent.trim();
 
 //console.log(containerNodeTextContent);
 // console.log(prefix + exact + suffix);
@@ -4460,7 +4438,7 @@ WHERE {\n\
 <blockquote cite="' + noteIRI + '">'+ note + '</blockquote>\n\
 </aside>\n\
 ';
-          var asideNode = DO.U.fragmentFromString(asideNote);
+          var asideNode = util.fragmentFromString(asideNote);
           var parentSection = MediumEditor.util.getClosestTag(selectedParentNode, 'section')
           || MediumEditor.util.getClosestTag(selectedParentNode, 'div') || MediumEditor.util.getClosestTag(selectedParentNode, 'article') || MediumEditor.util.getClosestTag(selectedParentNode, 'main') || MediumEditor.util.getClosestTag(selectedParentNode, 'body');
           parentSection.appendChild(asideNode);
@@ -4601,115 +4579,6 @@ WHERE {\n\
       return Object.keys(prefixes).map(function(i){ return i + ': ' + prefixes[i]; }).join(' ');
     },
 
-    createHTML: function(title, main, options) {
-      title = title || '';
-      options = options || {};
-      var prefix = ('prefixes' in options && Object.keys(options.prefixes).length > 0) ? ' prefix="' + DO.U.getRDFaPrefixHTML(options.prefixes) + '"' : '';
-
-      return '<!DOCTYPE html>\n\
-<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">\n\
-  <head>\n\
-    <meta charset="utf-8" />\n\
-    <title>' + title + '</title>\n\
-  </head>\n\
-  <body' + prefix + '>\n\
-    <main>\n\
-' + main + '\n\
-    </main>\n\
-  </body>\n\
-</html>\n\
-';
-    },
-
-    createActivityHTML: function(o) {
-      var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: http://schema.org/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams#"';
-
-      var types = '<dt>Types</dt>'
-
-      o.type.forEach(function (t) {
-        types += '<dd><a about="" href="' + DO.C.Prefixes[t.split(':')[0]] + t.split(':')[1] + '" typeof="'+ t +'">' + t.split(':')[1] + '</a></dd>'
-      })
-
-      var asObjectTypes = ''
-      if ('object' in o && 'objectTypes' in o && o.objectTypes.length > 0) {
-        asObjectTypes = '<dl><dt>Types</dt>'
-        o.objectTypes.forEach(function(t){
-          asObjectTypes += '<dd><a about="' + o.object + '" href="' + t + '" typeof="'+ t +'">' + t + '</a></dd>'
-        })
-        asObjectTypes += '</dl>'
-      }
-
-      var asObjectLicense = ''
-      if ('object' in o && 'objectLicense' in o && o.objectLicense.length > 0) {
-        asObjectLicense = '<dl><dt>License</dt><dd><a about="' + o.object + '" href="' + o.objectLicense + '" property="schema:license">' + o.objectLicense + '</a></dd></dl>'
-      }
-
-      var asobject = ('object' in o) ? '<dt>Object</dt><dd><a href="' + o.object + '" property="as:object">' + o.object + '</a>' + asObjectTypes + asObjectLicense + '</dd>' : ''
-
-      var asinReplyTo = ('inReplyTo' in o) ? '<dt>In reply to</dt><dd><a href="' + o.inReplyTo + '" property="as:inReplyTo">' + o.inReplyTo + '</a></dd>' : ''
-
-      var ascontext = ('context' in o && o.context.length > 0) ? '<dt>Context</dt><dd><a href="' + o.context + '" property="as:context">' + o.context + '</a></dd>' : ''
-
-      var astarget = ('target' in o && o.target.length > 0) ? '<dt>Target</dt><dd><a href="' + o.target + '" property="as:target">' + o.target + '</a></dd>' : ''
-
-      var datetime = util.getDateTimeISO()
-      var asupdated = '<dt>Updated</dt><dd><time datetime="' + datetime + '" datatype="xsd:dateTime" property="as:updated" content="' + datetime + '">' + datetime.substr(0,19).replace('T', ' ') + '</time></dd>'
-
-      var assummary = ('summary' in o && o.summary.length > 0) ? '<dt>Summary</dt><dd property="as:summary" datatype="rdf:HTML">' + o.summary + '</dd>' : ''
-
-      var ascontent = ('content' in o && o.content.length > 0) ? '<dt>Content</dt><dd property="as:content" datatype="rdf:HTML">' + o.content + '</dd>' : ''
-
-      var asactor = (DO.C.User.IRI) ? '<dt>Actor</dt><dd><a href="' + DO.C.User.IRI + '" property="as:actor">' + DO.C.User.IRI + '</a></dd>' : ''
-
-      var license = '<dt>License</dt><dd><a href="' + DO.C.NotificationLicense + '" property="schema:license">' + DO.C.NotificationLicense + '</a></dd>'
-
-      var asto = ('to' in o && o.to.length > 0 && !o.to.match(/\s/g) && o.to.match(/^https?:\/\//gi)) ? '<dt>To</dt><dd><a href="' + o.to + '" property="as:to">' + o.to + '</a></dd>' : ''
-
-      var statements = ('statements' in o) ? o.statements : ''
-
-      var dl = [
-        types,
-        asobject,
-        ascontext,
-        astarget,
-        asupdated,
-        assummary,
-        ascontent,
-        asactor,
-        license,
-        asto
-      ].map(function (n) { if (n !== '') { return '      ' + n + '\n' } }).join('')
-
-
-      // TODO: Come up with a better title. reuse `types` e.g., Activity Created, Announced..
-      var title = 'Notification'
-      if(types.indexOf('as:Announce') > -1){
-        title += ': Announced'
-      } else if (types.indexOf('as:Create') > -1){
-        title += ': Created'
-      } else if (types.indexOf('as:Like') > -1){
-        title += ': Liked'
-      } else if (types.indexOf('as:Dislike') > -1){
-        title += ': Disliked'
-      } else if (types.indexOf('as:Add') > -1){
-        title += ': Added'
-      }
-
-      var data = '<article'+prefixes+'>\n\
-  <h1>' + title + '</h1>\n\
-  <section>\n\
-    <dl about="">\n\
-' + dl +
-'    </dl>\n\
-  </section>\n\
-  <section>\n\
-' + statements + '\n\
-  </section>\n\
-</article>'
-
-      return data
-    },
-
     createNoteDataHTML: function(n) {
 // console.log(n);
       var published = '';
@@ -4726,7 +4595,7 @@ WHERE {\n\
       var articleClass = '';
       var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: http://schema.org/ dcterms: http://purl.org/dc/terms/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams#"';
 
-      var canonicalId = n.canonical || 'urn:uuid:' + DO.U.generateUUID();
+      var canonicalId = n.canonical || 'urn:uuid:' + util.generateUUID();
 
       var motivatedByIRI = n.motivatedByIRI || '';
       var motivatedByLabel = '';
@@ -5371,7 +5240,7 @@ WHERE {\n\
         }
 
         if (!document.getElementById('document-editor')) {
-          document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="document-editor" class="do"></aside>'))
+          document.documentElement.appendChild(util.fragmentFromString('<aside id="document-editor" class="do"></aside>'))
         }
 
         var editorOptions = {
@@ -5678,7 +5547,7 @@ WHERE {\n\
                           case "p": default:
                             var xSPE = document.createElement(sPE);
                             xSPE.appendChild(fragment.cloneNode(true));
-                            fragment = DO.U.fragmentFromString(xSPE.outerHTML);
+                            fragment = util.fragmentFromString(xSPE.outerHTML);
                             break;
                           //TODO: Other cases?
                         }
@@ -6964,13 +6833,13 @@ WHERE {\n\
 
                     if ('profile' in annotation && annotation.profile == 'https://www.w3.org/ns/activitystreams') {
                       notificationData['statements'] = DO.U.createNoteDataHTML(noteData);
-                      note = DO.U.createActivityHTML(notificationData);
+                      note = doc.createActivityHTML(notificationData);
                     }
                     else {
                       note = DO.U.createNoteDataHTML(noteData);
                     }
 
-                    data = DO.U.createHTML('', note);
+                    data = doc.createHTML('', note);
 // console.log(data)
 // console.log(annotation)
 
@@ -7015,7 +6884,7 @@ WHERE {\n\
 <aside class="note">\n\
 '+ note + '\n\
 </aside>';
-                  var asideNode = DO.U.fragmentFromString(asideNote);
+                  var asideNode = util.fragmentFromString(asideNote);
                   var parentSection = MediumEditor.util.getClosestTag(selectedParentElement, 'section');
                   parentSection.appendChild(asideNode);
 
@@ -7041,7 +6910,7 @@ WHERE {\n\
 <aside class="note">\n\
 '+ note + '\n\
 </aside>';
-                      var asideNode = DO.U.fragmentFromString(asideNote);
+                      var asideNode = util.fragmentFromString(asideNote);
                       var parentSection = MediumEditor.util.getClosestTag(selectedParentElement, 'section');
                       parentSection.appendChild(asideNode);
 
@@ -7280,33 +7149,12 @@ WHERE {\n\
         }
       })()
 
-    }, //DO.U.Editor
-
-    init: function() {
-      if(document.body) {
-        DO.U.initUser();
-        DO.U.initCurrentStylesheet();
-        DO.U.setPolyfill();
-        DO.U.setDocRefType();
-        DO.U.showRefs();
-        DO.U.buttonClose();
-        DO.U.highlightItems();
-        DO.U.initDocumentActions();
-        DO.U.getResourceInfo();
-        DO.U.showTextQuoteSelector();
-        DO.U.showDocumentInfo();
-        DO.U.showFragment();
-        DO.U.showRobustLinks();
-        DO.U.setDocumentMode();
-        DO.U.showInboxNotifications();
-        DO.U.initMath();
-      }
-    }
+    } //DO.U.Editor
   } //DO.U
 }; //DO
 
   if (document.addEventListener) {
-    document.addEventListener('DOMContentLoaded', function(){ DO.U.init(); });
+    document.addEventListener('DOMContentLoaded', function(){ DO.C.init(); });
   }
 }
 

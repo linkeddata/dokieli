@@ -7,7 +7,9 @@ module.exports = {
   dumpNode,
   getDoctype,
   getDocument,
-  setHTMLBase
+  setHTMLBase,
+  createHTML,
+  createActivityHTML
 }
 
 function domToString (node, options = {}) {
@@ -149,5 +151,116 @@ function setHTMLBase (data, baseURI) {
     template.querySelector('head').insertAdjacentHTML('afterbegin', '<base href="' + baseURI + '" />')
     data = template.documentElement.outerHTML
   }
+  return data
+}
+
+
+function createHTML(title, main, options) {
+  title = title || '';
+  options = options || {};
+  var prefix = ('prefixes' in options && Object.keys(options.prefixes).length > 0) ? ' prefix="' + DO.U.getRDFaPrefixHTML(options.prefixes) + '"' : '';
+
+  return '<!DOCTYPE html>\n\
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">\n\
+  <head>\n\
+    <meta charset="utf-8" />\n\
+    <title>' + title + '</title>\n\
+  </head>\n\
+  <body' + prefix + '>\n\
+    <main>\n\
+' + main + '\n\
+    </main>\n\
+  </body>\n\
+</html>\n\
+';
+}
+
+
+function createActivityHTML(o) {
+  var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: http://schema.org/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams#"';
+
+  var types = '<dt>Types</dt>'
+
+  o.type.forEach(function (t) {
+    types += '<dd><a about="" href="' + Config.Prefixes[t.split(':')[0]] + t.split(':')[1] + '" typeof="'+ t +'">' + t.split(':')[1] + '</a></dd>'
+  })
+
+  var asObjectTypes = ''
+  if ('object' in o && 'objectTypes' in o && o.objectTypes.length > 0) {
+    asObjectTypes = '<dl><dt>Types</dt>'
+    o.objectTypes.forEach(function(t){
+      asObjectTypes += '<dd><a about="' + o.object + '" href="' + t + '" typeof="'+ t +'">' + t + '</a></dd>'
+    })
+    asObjectTypes += '</dl>'
+  }
+
+  var asObjectLicense = ''
+  if ('object' in o && 'objectLicense' in o && o.objectLicense.length > 0) {
+    asObjectLicense = '<dl><dt>License</dt><dd><a about="' + o.object + '" href="' + o.objectLicense + '" property="schema:license">' + o.objectLicense + '</a></dd></dl>'
+  }
+
+  var asobject = ('object' in o) ? '<dt>Object</dt><dd><a href="' + o.object + '" property="as:object">' + o.object + '</a>' + asObjectTypes + asObjectLicense + '</dd>' : ''
+
+  var asinReplyTo = ('inReplyTo' in o) ? '<dt>In reply to</dt><dd><a href="' + o.inReplyTo + '" property="as:inReplyTo">' + o.inReplyTo + '</a></dd>' : ''
+
+  var ascontext = ('context' in o && o.context.length > 0) ? '<dt>Context</dt><dd><a href="' + o.context + '" property="as:context">' + o.context + '</a></dd>' : ''
+
+  var astarget = ('target' in o && o.target.length > 0) ? '<dt>Target</dt><dd><a href="' + o.target + '" property="as:target">' + o.target + '</a></dd>' : ''
+
+  var datetime = util.getDateTimeISO()
+  var asupdated = '<dt>Updated</dt><dd><time datetime="' + datetime + '" datatype="xsd:dateTime" property="as:updated" content="' + datetime + '">' + datetime.substr(0,19).replace('T', ' ') + '</time></dd>'
+
+  var assummary = ('summary' in o && o.summary.length > 0) ? '<dt>Summary</dt><dd property="as:summary" datatype="rdf:HTML">' + o.summary + '</dd>' : ''
+
+  var ascontent = ('content' in o && o.content.length > 0) ? '<dt>Content</dt><dd property="as:content" datatype="rdf:HTML">' + o.content + '</dd>' : ''
+
+  var asactor = (Config.User.IRI) ? '<dt>Actor</dt><dd><a href="' + Config.User.IRI + '" property="as:actor">' + Config.User.IRI + '</a></dd>' : ''
+
+  var license = '<dt>License</dt><dd><a href="' + Config.NotificationLicense + '" property="schema:license">' + Config.NotificationLicense + '</a></dd>'
+
+  var asto = ('to' in o && o.to.length > 0 && !o.to.match(/\s/g) && o.to.match(/^https?:\/\//gi)) ? '<dt>To</dt><dd><a href="' + o.to + '" property="as:to">' + o.to + '</a></dd>' : ''
+
+  var statements = ('statements' in o) ? o.statements : ''
+
+  var dl = [
+    types,
+    asobject,
+    ascontext,
+    astarget,
+    asupdated,
+    assummary,
+    ascontent,
+    asactor,
+    license,
+    asto
+  ].map(function (n) { if (n !== '') { return '      ' + n + '\n' } }).join('')
+
+
+  // TODO: Come up with a better title. reuse `types` e.g., Activity Created, Announced..
+  var title = 'Notification'
+  if(types.indexOf('as:Announce') > -1){
+    title += ': Announced'
+  } else if (types.indexOf('as:Create') > -1){
+    title += ': Created'
+  } else if (types.indexOf('as:Like') > -1){
+    title += ': Liked'
+  } else if (types.indexOf('as:Dislike') > -1){
+    title += ': Disliked'
+  } else if (types.indexOf('as:Add') > -1){
+    title += ': Added'
+  }
+
+  var data = '<article'+prefixes+'>\n\
+  <h1>' + title + '</h1>\n\
+  <section>\n\
+    <dl about="">\n\
+' + dl +
+'    </dl>\n\
+  </section>\n\
+  <section>\n\
+' + statements + '\n\
+  </section>\n\
+</article>'
+
   return data
 }

@@ -3,6 +3,26 @@
  * Configuration
  */
 module.exports = {
+  init: function() {
+    if(document.body) {
+      DO.U.initUser();
+      DO.U.initCurrentStylesheet();
+      DO.U.setPolyfill();
+      DO.U.setDocRefType();
+      DO.U.showRefs();
+      DO.U.buttonClose();
+      DO.U.highlightItems();
+      DO.U.initDocumentActions();
+      DO.U.getResourceInfo();
+      DO.U.showTextQuoteSelector();
+      DO.U.showDocumentInfo();
+      DO.U.showFragment();
+      DO.U.showRobustLinks();
+      DO.U.setDocumentMode();
+      DO.U.showInboxNotifications();
+      DO.U.initMath();
+    }
+  },
   Lang: document.documentElement.lang,
   DocRefType: '',
   RefType: {

@@ -122,13 +122,13 @@ function showUserIdentityInput (e) {
   }
 
   var webid = Config.User.WebIdDelegate ? Config.User.WebIdDelegate : "";
-  var code = '<aside id="user-identity-input" class="do on">' + DO.C.Button.Close + '<h2>Sign in with WebID</h2><label>HTTP(S) IRI</label> <input id="webid" type="text" placeholder="http://csarven.ca/#i" value="'+webid+'" name="webid"/> <button class="signin">Sign in</button>';
+  var code = '<aside id="user-identity-input" class="do on">' + Config.Button.Close + '<h2>Sign in with WebID</h2><label>HTTP(S) IRI</label> <input id="webid" type="text" placeholder="http://csarven.ca/#i" value="'+webid+'" name="webid"/> <button class="signin">Sign in</button>';
   if (window.location.protocol === "https:")
     code += ' <h2>Sign in with OIDC</h2> <button class="signin_oidc">Sign in OIDC</button>';
 
   code += ' </aside>';
 
-  document.documentElement.appendChild(DO.U.fragmentFromString(code))
+  document.documentElement.appendChild(util.fragmentFromString(code))
 
   var buttonSignIn = document.querySelector('#user-identity-input button.signin')
   if (! Config.User.WebIdDelegate)

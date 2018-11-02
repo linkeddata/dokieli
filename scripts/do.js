@@ -7,7 +7,7 @@
 		exports["DO"] = factory(require("fetch"));
 	else
 		root["DO"] = factory(root["fetch"]);
-})(typeof self !== 'undefined' ? self : this, function(__WEBPACK_EXTERNAL_MODULE_10__) {
+})(window, function(__WEBPACK_EXTERNAL_MODULE__8__) {
 return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// The module cache
 /******/ 	var installedModules = {};
@@ -46,12 +46,32 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// define getter function for harmony exports
 /******/ 	__webpack_require__.d = function(exports, name, getter) {
 /******/ 		if(!__webpack_require__.o(exports, name)) {
-/******/ 			Object.defineProperty(exports, name, {
-/******/ 				configurable: false,
-/******/ 				enumerable: true,
-/******/ 				get: getter
-/******/ 			});
+/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
 /******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 		}
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// create a fake namespace object
+/******/ 	// mode & 1: value is a module id, require it
+/******/ 	// mode & 2: merge all properties of value into the ns
+/******/ 	// mode & 4: return value when already ns object
+/******/ 	// mode & 8|1: behave like require
+/******/ 	__webpack_require__.t = function(value, mode) {
+/******/ 		if(mode & 1) value = __webpack_require__(value);
+/******/ 		if(mode & 8) return value;
+/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
+/******/ 		var ns = Object.create(null);
+/******/ 		__webpack_require__.r(ns);
+/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
+/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
+/******/ 		return ns;
 /******/ 	};
 /******/
 /******/ 	// getDefaultExport function for compatibility with non-harmony modules
@@ -69,1882 +89,20 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/ 	// __webpack_public_path__
 /******/ 	__webpack_require__.p = "";
 /******/
+/******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 8);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-"use strict";
-
-/**
- * Configuration
- */
-module.exports = {
-  Lang: document.documentElement.lang,
-  DocRefType: '',
-  RefType: {
-    LNCS: { InlineOpen: '[', InlineClose: ']' },
-    ACM: { InlineOpen: '[', InlineClose: ']' }
-  },
-  Stylesheets: [],
-  User: {
-    IRI: null,
-    Role: null,
-    UI: {},
-    OIDC: false,
-    WebIdDelegate: null
-  },
-  OidcPopupUrl: 'https://solid.openlinksw.com:8444/common/popup.html',
-  LocalDocument: (document.location.protocol == 'file:'),
-  UseStorage: false,
-  AutoSaveId: '',
-  AutoSaveTimer: 60000,
-  DisableStorageButtons: '<button class="local-storage-disable-html" title="Disable local storage (temporary) in the browser"><i class="fa fa-database fa-2x"></i>Local Storage</button>',
-  EnableStorageButtons: '<button class="local-storage-enable-html" title="Enable local storage (temporary) in the browser"><i class="fa fa-database fa-2x"></i>Local Storage</button>',
-  CDATAStart: '//<![CDATA[',
-  CDATAEnd: '//]]>',
-  SortableList: false,
-  GraphViewerAvailable: (typeof d3 !== 'undefined'),
-  MathAvailable: (typeof MathJax !== 'undefined'),
-  EditorAvailable: (typeof MediumEditor !== 'undefined'),
-  EditorEnabled: false,
-  ContentEditable: false,
-  WebExtension: ((window.chrome && chrome.runtime && chrome.runtime.id) || (typeof browser !== 'undefined' && browser.runtime && browser.runtime.id)),
-  Editor: {
-    headings: ["h1", "h2", "h3", "h4", "h5", "h6"],
-    regexEmptyHTMLTags: /<[^\/>][^>]*><\/[^>]+>/gim,
-    ButtonLabelType: (((window.chrome && chrome.runtime && chrome.runtime.id) || (typeof browser !== 'undefined' && browser.runtime && browser.runtime.id)) ? 'fontawesome' : (document.querySelector('head link[rel~="stylesheet"][href*="font-awesome"]') ? (!navigator.onLine && document.querySelector('head link[rel~="stylesheet"][href*="font-awesome"][href^="http"]') ? '': 'fontawesome') : '' )),
-    DisableReviewButton: '<button class="review-disable" title="Disable review"><i class="fa fa-balance-scale fa-2x"></i>Review</button>',
-    EnableReviewButton: '<button class="review-enable" title="Enable review"><i class="fa fa-balance-scale fa-2x"></i>Review</button>',
-    DisableEditorButton: '<button class="editor-disable" title="Disable editor"><i class="fa fa-i-cursor fa-2x"></i>Edit</button>',
-    EnableEditorButton: '<button class="editor-enable" title="Enable editor"><i class="fa fa-i-cursor fa-2x"></i>Edit</button>'
-  },
-  Button: {
-    Close: '<button class="close" title="Close"><i class="fa fa-close fa-2x"></i></button>'
-  },
-  DOMNormalisation: {
-    'selfClosing': "area base basefont br col colgroup embed hr img input isindex link meta metadata param source wbr",
-    'skipAttributes': "contenteditable spellcheck medium-editor-index data-medium-editor-element data-medium-editor-editor-index data-medium-focused data-placeholder role aria-multiline style",
-    'sortAttributes': true,
-    'skipNodeWithClass': 'do',
-    'classWithChildText': {
-      'class': '.do.ref',
-      'element': 'mark'
-    },
-    'replaceClassItemWith': {
-      'source': "on-document-menu medium-editor-element medium-editor-placeholder",
-      'target': ''
-    },
-    'skipClassWithValue': ''
-  },
-
-  SelectorSign: {
-    "*": "🔗",
-    "aside": "†",
-    "audio": "🔊",
-    "code": "#",
-    "dl": "☝",
-    "dl#document-annotation-service": "※",
-    "dl#document-created": "📅",
-    "dl#document-in-reply-to": "⮪",
-    "dl#document-identifier": "🚩",
-    "dl#document-inbox": "📥",
-    "dl#document-latest-version": "∼",
-    "dl#document-license": "🌻",
-    "dl#document-memento": "⛰",
-    "dl#document-modified": "📅",
-    "dl#document-original": "♁",
-    "dl#document-predecessor-version": "≺",
-    "dl#document-published": "📅",
-    "dl#document-rights": "📜",
-    "dl#document-resource-state": "🙊",
-    "dl#document-see-also": "🙈",
-    "dl#document-status": "🎆",
-    "dl#document-timemap": "⌚",
-    "dfn": "📇",
-    "figure": "❦",
-    "footer": "⸙",
-    "img": "🖼",
-    "nav": "☛",
-    "p": "¶",
-    "pre": "🖩",
-    "section": "§",
-    "section#acknowledgements": "☺",
-    "section#conclusions": "∴",
-    "section#keywords": "🏷",
-    "section#references": "☛",
-    "section#related-work": "⌘",
-    "section#results": "∞",
-    "table": "𝄜",
-    "video": "🎞"
-  },
-
-  DocumentItems: [
-    'authors',
-    'document-identifier',
-    'document-created',
-    'document-modified',
-    'document-published',
-    'document-original',
-    'document-memento',
-    'document-latest-version',
-    'document-predecessor-version',
-    'document-timegate',
-    'document-timemap',
-    'document-derived-from',
-    'document-derived-on',
-    'document-license',
-    'document-inbox',
-    'document-annotation-service',
-    'document-in-reply-to',
-    'document-rights',
-    'document-resource-state',
-    'document-status',
-    'document-see-also',
-    'table-of-contents',
-    'table-of-figures',
-    'table-of-tables',
-    'table-of-abbrs',
-    'authors',
-    'abstract',
-    'categories-and-subject-descriptors',
-    'keywords',
-    'general-terms',
-
-    'introduction'
-  ],
-
-  CollectionItemsLimit: 20,
-  ContextLength: 32,
-  ProxyURL: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/proxy?uri=' : 'https://dokie.li/proxy?uri='),
-  AuthEndpoint: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/' : 'https://dokie.li/'),
-  NotificationLicense: 'https://creativecommons.org/publicdomain/zero/1.0/',
-  License: {
-    "https://creativecommons.org/publicdomain/zero/1.0/": {'name': 'CC0 1.0', 'description': 'Creative Commons Zero'},
-    "https://creativecommons.org/licenses/by/4.0/": {'name': 'CC BY 4.0', 'description': 'Creative Commons Attribution'},
-    "https://creativecommons.org/licenses/by-sa/4.0/": {'name': 'CC BY-SA 4.0', 'description': 'Creative Commons Attribution-ShareAlike'},
-    "https://creativecommons.org/licenses/by-nc/4.0/": {'name': 'CC BY-NC 4.0', 'description': 'Creative Commons Attribution-NonCommercial'},
-    "https://creativecommons.org/licenses/by-nd/4.0/": {'name': 'CC BY-ND 4.0', 'description': 'Creative Commons Attribution-NoDerivatives'},
-    "https://creativecommons.org/licenses/by-nc-sa/4.0/": {'name': 'CC BY-NC-SA 4.0', 'description': 'Creative Commons Attribution-NonCommercial-ShareAlike'},
-    "https://creativecommons.org/licenses/by-nc-nd/4.0/": {'name': 'CC BY-NC-ND 4.0', 'description': 'Creative Commons Attribution-NonCommercial-NoDerivates'}
-  },
-  PublicationStatus: {
-    "http://purl.org/spar/pso/draft": { 'name': 'Draft', 'description': 'The status of a work (for example a document or a dataset) prior to completion and publication.' },
-    "http://purl.org/spar/pso/published": { 'name': 'Published', 'description': 'The status of material (for example a document or a dataset) that has been published, i.e. made available for people to access, read or use, either freely or for a purchase price or an access fee.' }
-  },
-  Citation: {
-    'http://purl.org/spar/cito/agreesWith': 'agrees with',
-    'http://purl.org/spar/cito/cites': 'cites',
-    'http://purl.org/spar/cito/citesAsAuthority': 'cites as authority',
-    'http://purl.org/spar/cito/citesAsDataSource': 'cites as data source',
-    'http://purl.org/spar/cito/citesAsEvidence': 'cites as evidence',
-    'http://purl.org/spar/cito/citesAsMetadataDocument': 'cites as metadata document',
-    'http://purl.org/spar/cito/citesAsPotentialSolution': 'cites as potential solution',
-    'http://purl.org/spar/cito/citesAsRecommendedReading': 'cites as potential reading',
-    'http://purl.org/spar/cito/citesAsRelated': 'cites as related',
-    'http://purl.org/spar/cito/citesAsSourceDocument': 'cites as source document',
-    'http://purl.org/spar/cito/citesForInformation': 'cites for information',
-    'http://purl.org/spar/cito/compiles': 'compiles',
-    'http://purl.org/spar/cito/confirms': 'confirms',
-    'http://purl.org/spar/cito/containsAssertionFrom': 'contains assertion from',
-    'http://purl.org/spar/cito/corrects': 'corrects',
-    'http://purl.org/spar/cito/credits': 'credits',
-    'http://purl.org/spar/cito/critiques': 'critiques',
-    'http://purl.org/spar/cito/derides': 'derides',
-    'http://purl.org/spar/cito/describes': 'describes',
-    'http://purl.org/spar/cito/disagreesWith': 'disagrees with',
-    'http://purl.org/spar/cito/discusses': 'discusses',
-    'http://purl.org/spar/cito/disputes': 'disputes',
-    'http://purl.org/spar/cito/documents': 'documents',
-    'http://purl.org/spar/cito/extends': 'extends',
-    'http://purl.org/spar/cito/includesExcerptFrom': 'includes excerpt from',
-    'http://purl.org/spar/cito/includesQuotationFrom': 'includes quotation from',
-    'http://purl.org/spar/cito/linksTo': 'links to',
-    'http://purl.org/spar/cito/obtainsBackgroundFrom': 'obtains background from',
-    'http://purl.org/spar/cito/obtainsSupportFrom': 'obtains support from',
-    'http://purl.org/spar/cito/parodies': 'parodies',
-    'http://purl.org/spar/cito/plagiarizes': 'plagiarizes',
-    'http://purl.org/spar/cito/qualifies': 'qualifies',
-    'http://purl.org/spar/cito/refutes': 'refutes',
-    'http://purl.org/spar/cito/repliesTo': 'replies to',
-    'http://purl.org/spar/cito/retracts': 'retracts',
-    'http://purl.org/spar/cito/reviews': 'reviews',
-    'http://purl.org/spar/cito/ridicules': 'ridicules',
-    'http://purl.org/spar/cito/speculatesOn': 'speculates on',
-    'http://purl.org/spar/cito/supports': 'supports',
-    'http://purl.org/spar/cito/updates': 'updates',
-    'http://purl.org/spar/cito/usesConclusionsFrom': 'uses conclusions from',
-    'http://purl.org/spar/cito/usesDataFrom': 'uses data from',
-    'http://purl.org/spar/cito/usesMethodIn': 'uses method in'
-  },
-
-  AvailableMediaTypes: ['text/turtle', 'application/ld+json', 'application/rdf+xml', 'application/xhtml+xml', 'text/html'],
-
-  AcceptBinaryTypes: ['image/png', 'image/jpeg', 'image/gif'],
-
-  Prefixes: {
-    'xsd': 'http://www.w3.org/2001/XMLSchema#',
-    'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
-    'as': 'https://www.w3.org/ns/activitystreams#',
-    'oa': 'http://www.w3.org/ns/oa#',
-    'schema': 'http://schema.org/'
-  },
-
-  Vocab: {
-    "rdftype": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "@type": "@id", "@array": true },
-    "rdffirst": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#first", "@type": "@id" },
-    "rdfrest": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest", "@type": "@id" },
-    "rdfvalue": "http://www.w3.org/1999/02/22-rdf-syntax-ns#value",
-    "rdfslabel": { "@id": "http://www.w3.org/2000/01/rdf-schema#label" },
-    "rdfsseeAlso": { "@id": "http://www.w3.org/2000/01/rdf-schema#seeAlso", "@type": "@id", "@array": true },
-
-    "owlsameAs": { "@id": "http://www.w3.org/2002/07/owl#sameAs", "@type": "@id", "@array": true },
-
-    "foafname": "http://xmlns.com/foaf/0.1/name",
-    "foaffamilyName": "http://xmlns.com/foaf/0.1/familyName",
-    "foafgivenName": "http://xmlns.com/foaf/0.1/givenName",
-    "foafhomepage": { "@id": "http://xmlns.com/foaf/0.1/homepage", "@type": "@id" },
-    "foafweblog": { "@id": "http://xmlns.com/foaf/0.1/weblog", "@type": "@id" },
-    "foafimg": { "@id": "http://xmlns.com/foaf/0.1/img", "@type": "@id" },
-    "foafdepiction": { "@id": "http://xmlns.com/foaf/0.1/depiction", "@type": "@id" },
-    "foafnick": "http://xmlns.com/foaf/0.1/nick",
-    "foafmaker": { "@id": "http://xmlns.com/foaf/0.1/maker", "@type": "@id" },
-    "foafknows": { "@id": "http://xmlns.com/foaf/0.1/knows", "@type": "@id", "@array": true },
-
-    "vcardfn": "http://www.w3.org/2006/vcard/ns#fn",
-    "vcardfamilyname": "http://www.w3.org/2006/vcard/ns#family-name",
-    "vcardgivenname": "http://www.w3.org/2006/vcard/ns#given-name",
-    "vcardnickname": "http://www.w3.org/2006/vcard/ns#nickname",
-    "vcardurl": { "@id": "http://www.w3.org/2006/vcard/ns#url", "@type": "@id" },
-    "vcardphoto": { "@id": "http://www.w3.org/2006/vcard/ns#photo", "@type": "@id" },
-    "vcardhasPhoto": { "@id": "http://www.w3.org/2006/vcard/ns#hasPhoto", "@type": "@id" },
-
-    "schemaname": "http://schema.org/name",
-    "schemafamilyName": "http://schema.org/familyName",
-    "schemagivenName": "http://schema.org/givenName",
-    "schemaurl": { "@id": "http://schema.org/url", "@type": "@id" },
-    "schemaimage": { "@id": "http://schema.org/image", "@type": "@id" },
-    "schemacreator": { "@id": "http://schema.org/creator", "@type": "@id", "@array": true },
-    "schemaauthor": { "@id": "http://schema.org/author", "@type": "@id", "@array": true },
-    "schemacontributor": { "@id": "http://schema.org/contributor", "@type": "@id", "@array": true },
-    "schemaeditor": { "@id": "http://schema.org/editor", "@type": "@id", "@array": true },
-    "schemalicense": { "@id": "http://schema.org/license", "@type": "@id" },
-    "schemacitation": { "@id": "http://schema.org/citation", "@type": "@id", "@array": true },
-    "schemaknows": { "@id": "http://schema.org/knows", "@type": "@id", "@array": true },
-    "schemadateCreated": "http://schema.org/dateCreated",
-    "schemadateModified": "http://schema.org/dateModified",
-    "schemadatePublished": "http://schema.org/datePublished",
-    "schemadescription": "http://schema.org/description",
-    "schemahasPart": { "@id": "http://schema.org/hasPart", "@type": "@id", "@array": true }, 
-    "schemaisPartOf": { "@id": "http://schema.org/isPartOf", "@type": "@id", "@array": true },
-    "schemaScholarlyArticle": { "@id": "http://schema.org/ScholarlyArticle" },
-
-    "dctermstitle": "http://purl.org/dc/terms/title",
-    "dctermsdescription": "http://purl.org/dc/terms/description",
-    "dctermscreator": { "@id": "http://purl.org/dc/terms/creator", "@type": "@id", "@array": true },
-    "dctermsdate": "http://purl.org/dc/terms/date",
-    "dctermsissued": "http://purl.org/dc/terms/issued",
-    "dctermscreated": "http://purl.org/dc/terms/created",
-    "dctermsrights": { "@id": "http://purl.org/dc/terms/rights", "@type": "@id" },
-    "dctermsconformsTo": { "@id": "http://purl.org/dc/terms/conformsTo", "@type": "@id" },
-    "dctermshasPart": { "@id": "http://purl.org/dc/terms/hasPart", "@type": "@id", "@array": true },
-    "dctermsisPartOf": { "@id": "http://purl.org/dc/terms/isPartOf", "@type": "@id", "@array": true },
-
-    "skosprefLabel": { "@id": "http://www.w3.org/2004/02/skos/core#prefLabel", "@type": "@id", "@array": true },
-
-    "refPeriod": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod",
-    "obsValue": "http://purl.org/linked-data/sdmx/2009/measure#obsValue",
-
-    "biboauthorList": { "@id": "http://purl.org/ontology/bibo/authorList", "@type": "@id" },
-
-    "pimstorage": { "@id": "http://www.w3.org/ns/pim/space#storage", "@type": "@id", "@array": true },
-    "preferencesFile": { "@id": "http://www.w3.org/ns/pim/space#preferencesFile", "@type": "@id" },
-
-    "ldpinbox": { "@id": "http://www.w3.org/ns/ldp#inbox", "@type": "@id", "@array": true },
-
-    "solidpreferredProxy": "http://www.w3.org/ns/solid/terms#preferredProxy",
-
-    "oaannotation": { "@id": "http://www.w3.org/ns/oa#Annotation", "@type": "@id" },
-    "oahasBody": { "@id": "http://www.w3.org/ns/oa#hasBody", "@type": "@id" },
-    "oahasTarget": { "@id": "http://www.w3.org/ns/oa#hasTarget", "@type": "@id" },
-    "oahasSource": { "@id": "http://www.w3.org/ns/oa#hasSource", "@type": "@id" },
-    "oahasSelector": { "@id": "http://www.w3.org/ns/oa#hasSelector", "@type": "@id" },
-    "oarefinedBy": { "@id": "http://www.w3.org/ns/oa#refinedBy", "@type": "@id" },
-    "oaexact": "http://www.w3.org/ns/oa#exact",
-    "oaprefix": "http://www.w3.org/ns/oa#prefix",
-    "oasuffix": "http://www.w3.org/ns/oa#suffix",
-    "oamotivatedBy": { "@id": "http://www.w3.org/ns/oa#motivatedBy", "@type": "@id" },
-    "oaannotationService": { "@id": "http://www.w3.org/ns/oa#annotationService", "@type": "@id", "@array": true },
-
-    "assubject": { "@id": "https://www.w3.org/ns/activitystreams#subject", "@type": "@id", "@array": true },
-    "asobject": { "@id": "https://www.w3.org/ns/activitystreams#object", "@type": "@id", "@array": true },
-    "astarget": { "@id": "https://www.w3.org/ns/activitystreams#target", "@type": "@id", "@array": true },
-    "asrelationship": { "@id": "https://www.w3.org/ns/activitystreams#relationship", "@type": "@id", "@array": true },
-    "ascontext": { "@id": "https://www.w3.org/ns/activitystreams#context", "@type": "@id", "@array": true },
-    "asinReplyTo": { "@id": "https://www.w3.org/ns/activitystreams#inReplyTo", "@type": "@id", "@array": true },
-    "asactor": { "@id": "https://www.w3.org/ns/activitystreams#actor", "@type": "@id" },
-    "asupdated": "https://www.w3.org/ns/activitystreams#updated",
-    "aspublished": "https://www.w3.org/ns/activitystreams#published",
-    "ascontent": "https://www.w3.org/ns/activitystreams#content",
-    "asname": "https://www.w3.org/ns/activitystreams#name",
-    "asimage": { "@id": "https://www.w3.org/ns/activitystreams#image", "@type": "@id" },
-    "asoutbox": { "@id": "https://www.w3.org/ns/activitystreams#outbox", "@type": "@id", "@array": true },
-    "asitems": { "@id": "https://www.w3.org/ns/activitystreams#items", "@type": "@id", "@array": true },
-    "asorderedItems": { "@id": "https://www.w3.org/ns/activitystreams#orderedItems", "@type": "@id", "@array": true },
-    "astotalItems": "https://www.w3.org/ns/activitystreams#totalItems",
-    "asfirst": { "@id": "https://www.w3.org/ns/activitystreams#first", "@type": "@id" },
-    "asnext": { "@id": "https://www.w3.org/ns/activitystreams#next", "@type": "@id" },
-    "asCollection": { "@id": "https://www.w3.org/ns/activitystreams#Collection", "@type": "@id" },
-    "asOrderedCollection": { "@id": "https://www.w3.org/ns/activitystreams#OrderedCollection", "@type": "@id" },
-
-    "siocreplyof": { "@id": "http://rdfs.org/sioc/ns#reply_of", "@type": "@id", "@array": true },
-    "siocavatar": { "@id": "http://rdfs.org/sioc/ns#avatar", "@type": "@id" },
-
-    "ldpcontains": { "@id": "http://www.w3.org/ns/ldp#contains", "@type": "@id", "@array": true },
-    "ldpResource": { "@id": "http://www.w3.org/ns/ldp#Resource", "@type": "@id" },
-    "ldpContainer": { "@id": "http://www.w3.org/ns/ldp#Container", "@type": "@id" },
-    "ldpRDFSource": { "@id": "http://www.w3.org/ns/ldp#RDFSource", "@type": "@id" },
-    "ldpImmutableResource": { "@id": "http://www.w3.org/ns/ldp#ImmutableResource", "@type": "@id" },
-
-    "memOriginalResource": { "@id": "http://mementoweb.org/ns#OriginalResource", "@type": "@id" },
-    "memMemento": { "@id": "http://mementoweb.org/ns#Memento", "@type": "@id" },
-    "memoriginal": { "@id": "http://mementoweb.org/ns#original", "@type": "@id" },
-    "memmemento": { "@id": "http://mementoweb.org/ns#memento", "@type": "@id" },
-    "memtimegate": { "@id": "http://mementoweb.org/ns#timegate", "@type": "@id" },
-    "memtimemap": { "@id": "http://mementoweb.org/ns#timemap", "@type": "@id" },
-
-    "relpredecessorversion": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#predecessor-version", "@type": "@id" },
-    "rellatestversion": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#latest-version", "@type": "@id" },
-
-    "psodraft": { "@id": "http://purl.org/spar/pso/draft", "@type": "@id" },
-    "psopublished": { "@id": "http://purl.org/spar/pso/published", "@type": "@id" }
-  },
-
-  SecretAgentNames: ['Abraham Lincoln', 'Admiral Awesome', 'Anonymous Coward', 'Believe it or not', 'Creative Monkey', 'Senegoid', 'Dog from the Web', 'Ekrub', 'Elegant Banana', 'Foo Bar', 'Lbmit', 'Lunatic Scholar', 'NahuLcm', 'Noslen', 'Okie Dokie', 'Samurai Cat', 'Vegan Superstar'],
-
-  RefAreas: {"AF":"Afghanistan","A9":"Africa","AL":"Albania","DZ":"Algeria","AS":"American Samoa","L5":"Andean Region","AD":"Andorra","AO":"Angola","AG":"Antigua and Barbuda","1A":"Arab World","AR":"Argentina","AM":"Armenia","AW":"Aruba","AU":"Australia","AT":"Austria","AZ":"Azerbaijan","BS":"Bahamas, The","BH":"Bahrain","BD":"Bangladesh","BB":"Barbados","BY":"Belarus","BE":"Belgium","BZ":"Belize","BJ":"Benin","BM":"Bermuda","BT":"Bhutan","BO":"Bolivia","BA":"Bosnia and Herzegovina","BW":"Botswana","BR":"Brazil","BN":"Brunei Darussalam","BG":"Bulgaria","BF":"Burkina Faso","BI":"Burundi","CV":"Cabo Verde","KH":"Cambodia","CM":"Cameroon","CA":"Canada","S3":"Caribbean small states","KY":"Cayman Islands","CF":"Central African Republic","TD":"Chad","JG":"Channel Islands","CL":"Chile","CN":"China","CO":"Colombia","KM":"Comoros","CD":"Congo, Dem. Rep.","CG":"Congo, Rep.","CR":"Costa Rica","CI":"Cote d'Ivoire","HR":"Croatia","CU":"Cuba","CW":"Curacao","CY":"Cyprus","CZ":"Czech Republic","DK":"Denmark","DJ":"Djibouti","DM":"Dominica","DO":"Dominican Republic","Z4":"East Asia & Pacific (all income levels)","4E":"East Asia & Pacific (developing only)","C4":"East Asia and the Pacific (IFC classification)","EC":"Ecuador","EG":"Egypt, Arab Rep.","SV":"El Salvador","GQ":"Equatorial Guinea","ER":"Eritrea","EE":"Estonia","ET":"Ethiopia","XC":"Euro area","Z7":"Europe & Central Asia (all income levels)","7E":"Europe & Central Asia (developing only)","C5":"Europe and Central Asia (IFC classification)","EU":"European Union","FO":"Faeroe Islands","FJ":"Fiji","FI":"Finland","FR":"France","PF":"French Polynesia","GA":"Gabon","GM":"Gambia, The","GE":"Georgia","DE":"Germany","GH":"Ghana","GR":"Greece","GL":"Greenland","GD":"Grenada","GU":"Guam","GT":"Guatemala","GN":"Guinea","GW":"Guinea-Bissau","GY":"Guyana","HT":"Haiti","XE":"Heavily indebted poor countries (HIPC)","XD":"High income","XS":"High income: OECD","XR":"High income: nonOECD","HN":"Honduras","HK":"Hong Kong SAR, China","HU":"Hungary","IS":"Iceland","IN":"India","ID":"Indonesia","IR":"Iran, Islamic Rep.","IQ":"Iraq","IE":"Ireland","IM":"Isle of Man","IL":"Israel","IT":"Italy","JM":"Jamaica","JP":"Japan","JO":"Jordan","KZ":"Kazakhstan","KE":"Kenya","KI":"Kiribati","KP":"Korea, Dem. Rep.","KR":"Korea, Rep.","KV":"Kosovo","KW":"Kuwait","KG":"Kyrgyz Republic","LA":"Lao PDR","ZJ":"Latin America & Caribbean (all income levels)","XJ":"Latin America & Caribbean (developing only)","L4":"Latin America and the Caribbean","C6":"Latin America and the Caribbean (IFC classification)","LV":"Latvia","XL":"Least developed countries: UN classification","LB":"Lebanon","LS":"Lesotho","LR":"Liberia","LY":"Libya","LI":"Liechtenstein","LT":"Lithuania","XO":"Low & middle income","XM":"Low income","XN":"Lower middle income","LU":"Luxembourg","MO":"Macao SAR, China","MK":"Macedonia, FYR","MG":"Madagascar","MW":"Malawi","MY":"Malaysia","MV":"Maldives","ML":"Mali","MT":"Malta","MH":"Marshall Islands","MR":"Mauritania","MU":"Mauritius","MX":"Mexico","L6":"Mexico and Central America","FM":"Micronesia, Fed. Sts.","ZQ":"Middle East & North Africa (all income levels)","XQ":"Middle East & North Africa (developing only)","C7":"Middle East and North Africa (IFC classification)","XP":"Middle income","MD":"Moldova","MC":"Monaco","MN":"Mongolia","ME":"Montenegro","MA":"Morocco","MZ":"Mozambique","MM":"Myanmar","NA":"Namibia","NP":"Nepal","NL":"Netherlands","NC":"New Caledonia","NZ":"New Zealand","NI":"Nicaragua","NE":"Niger","NG":"Nigeria","M2":"North Africa","XU":"North America","MP":"Northern Mariana Islands","NO":"Norway","XY":"Not classified","OE":"OECD members","OM":"Oman","S4":"Other small states","S2":"Pacific island small states","PK":"Pakistan","PW":"Palau","PA":"Panama","PG":"Papua New Guinea","PY":"Paraguay","PE":"Peru","PH":"Philippines","PL":"Poland","PT":"Portugal","PR":"Puerto Rico","QA":"Qatar","RO":"Romania","RU":"Russian Federation","RW":"Rwanda","WS":"Samoa","SM":"San Marino","ST":"Sao Tome and Principe","SA":"Saudi Arabia","SN":"Senegal","RS":"Serbia","SC":"Seychelles","SL":"Sierra Leone","SG":"Singapore","SX":"Sint Maarten (Dutch part)","SK":"Slovak Republic","SI":"Slovenia","S1":"Small states","SB":"Solomon Islands","SO":"Somalia","ZA":"South Africa","8S":"South Asia","C8":"South Asia (IFC classification)","SS":"South Sudan","L7":"Southern Cone Extended","ES":"Spain","LK":"Sri Lanka","KN":"St. Kitts and Nevis","LC":"St. Lucia","MF":"St. Martin (French part)","VC":"St. Vincent and the Grenadines","C9":"Sub-Saharan Africa (IFC classification)","ZG":"Sub-Saharan Africa (all income levels)","ZF":"Sub-Saharan Africa (developing only)","A4":"Sub-Saharan Africa excluding South Africa","A5":"Sub-Saharan Africa excluding South Africa and Nigeria","SD":"Sudan","SR":"Suriname","SZ":"Swaziland","SE":"Sweden","CH":"Switzerland","SY":"Syrian Arab Republic","TJ":"Tajikistan","TZ":"Tanzania","TH":"Thailand","TL":"Timor-Leste","TG":"Togo","TO":"Tonga","TT":"Trinidad and Tobago","TN":"Tunisia","TR":"Turkey","TM":"Turkmenistan","TC":"Turks and Caicos Islands","TV":"Tuvalu","UG":"Uganda","UA":"Ukraine","AE":"United Arab Emirates","GB":"United Kingdom","US":"United States","XT":"Upper middle income","UY":"Uruguay","UZ":"Uzbekistan","VU":"Vanuatu","VE":"Venezuela, RB","VN":"Vietnam","VI":"Virgin Islands (U.S.)","PS":"West Bank and Gaza","1W":"World","YE":"Yemen, Rep.","ZM":"Zambia","ZW":"Zimbabwe"}
-}
+module.exports = __webpack_require__(1);
 
 
 /***/ }),
 /* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-const Config = __webpack_require__(0)
-
-module.exports = {
-  domToString,
-  dumpNode,
-  getDoctype,
-  getDocument,
-  setHTMLBase
-}
-
-function domToString (node, options = {}) {
-  var selfClosing = []
-
-  if (options.selfClosing) {
-    options.selfClosing.split(' ').forEach(function (n) {
-      selfClosing[n] = true
-    })
-  }
-
-  var skipAttributes = []
-
-  if (options.skipAttributes) {
-    options.skipAttributes.split(' ').forEach(function (n) {
-      skipAttributes[n] = true
-    })
-  }
-
-  var noEsc = [ false ]
-
-  return dumpNode(node, options, skipAttributes, selfClosing, noEsc)
-}
-
-function dumpNode (node, options, skipAttributes, selfClosing, noEsc) {
-  var out = ''
-
-  if (typeof node.nodeType === 'undefined') return out
-
-  if (node.nodeType === 1) {
-    if (node.hasAttribute('class') && 'classWithChildText' in options &&
-        node.matches(options.classWithChildText.class)) {
-      out += node.querySelector(options.classWithChildText.element).textContent
-    } else if (!(options.skipNodeWithClass && node.matches('.' + options.skipNodeWithClass))) {
-      var ename = node.nodeName.toLowerCase()
-      out += '<' + ename
-
-      var attrList = []
-
-      for (let i = node.attributes.length - 1; i >= 0; i--) {
-        var atn = node.attributes[i]
-
-        if (skipAttributes[atn.name]) continue
-
-        if (/^\d+$/.test(atn.name)) continue
-
-        if (atn.name === 'class' && 'replaceClassItemWith' in options) {
-          atn.value.split(' ').forEach(function (aValue) {
-            if (options.replaceClassItemWith.source.split(' ').indexOf(aValue) > -1) {
-              var re = new RegExp(aValue, 'g')
-              atn.value = atn.value.replace(re, options.replaceClassItemWith.target).trim()
-            }
-          })
-        }
-
-        if (!(atn.name === 'class' && 'skipClassWithValue' in options &&
-            options.skipClassWithValue === atn.value)) {
-          attrList.push(
-            atn.name + '="' +
-            atn.value
-              .replace(/&/g, '&amp;')
-              .replace(/</g, '&lt;')
-              .replace(/>/g, '&gt;')
-              .replace(/"/g, '&quot;') +
-            '"')
-        }
-      }
-
-      if (attrList.length > 0) {
-        if ('sortAttributes' in options && options.sortAttributes) {
-          attrList.sort(function (a, b) {
-            return a.toLowerCase().localeCompare(b.toLowerCase())
-          })
-        }
-        out += ' ' + attrList.join(' ')
-      }
-
-      if (selfClosing[ename]) {
-        out += ' />'
-      } else {
-        out += '>'
-        out += (ename === 'html') ? '\n  ' : ''
-        noEsc.push(ename === 'style' || ename === 'script' || ename === 'pre')
-        for (var i = 0; i < node.childNodes.length; i++) {
-          out += dumpNode(node.childNodes[i], options, skipAttributes, selfClosing, noEsc)
-        }
-        noEsc.pop()
-        out += (ename === 'body' || ename === 'html') ? '</' + ename + '>' + '\n' : '</' + ename + '>'
-      }
-    }
-  } else if (node.nodeType === 8) {
-    // FIXME: If comments are not tabbed in source, a new line is not prepended
-    out += '\n\
-<!--' + node.nodeValue + '-->'
-  } else if (node.nodeType === 3 || node.nodeType === 4) {
-    // XXX: Remove new lines which were added after DOM ready
-    let nl = node.nodeValue.replace(/\n+$/, '')
-    out += noEsc[noEsc.length - 1]
-      ? nl
-      : nl.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-  } else {
-    console.log('Warning; Cannot handle serialising nodes of type: ' + node.nodeType)
-  }
-
-  return out
-}
-
-function getDoctype () {
-  /* Get DOCTYPE from http://stackoverflow.com/a/10162353 */
-  var node = document.doctype
-  var doctype = ''
-
-  if (node !== null) {
-    doctype = '<!DOCTYPE ' +
-      node.name +
-      (node.publicId ? ' PUBLIC "' + node.publicId + '"' : '') +
-      (!node.publicId && node.systemId ? ' SYSTEM' : '') +
-      (node.systemId ? ' "' + node.systemId + '"' : '') +
-      '>'
-  }
-  return doctype
-}
-
-function getDocument (cn, options) {
-  let node = cn || document.documentElement.cloneNode(true)
-  options = options || Config.DOMNormalisation
-
-  let doctype = getDoctype()
-  let s = (doctype.length > 0) ? doctype + '\n' : ''
-  s += domToString(node, options)
-  return s
-}
-
-function setHTMLBase (data, baseURI) {
-  let template = document.implementation.createHTMLDocument()
-  template.documentElement.innerHTML = data
-  let base = template.querySelector('head base[href]')
-  if (!base) {
-    template.querySelector('head').insertAdjacentHTML('afterbegin', '<base href="' + baseURI + '" />')
-    data = template.documentElement.outerHTML
-  }
-  return data
-}
-
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-const Config = __webpack_require__(0)
-
-module.exports = {
-  encodeString,
-  decodeString,
-  getAbsoluteIRI,
-  getProxyableIRI,
-  stripFragmentFromString,
-  getFragmentFromString
-}
-
-function encodeString (string) {
-  return encodeURIComponent(string).replace(/'/g, '%27').replace(/"/g, '%22')
-}
-
-/**
- * UNUSED
- *
- * @param string {string}
- *
- * @returns {string}
- */
-function decodeString (string) {
-  return decodeURIComponent(string.replace(/\+/g, ' '))
-}
-
-function getAbsoluteIRI (base, location) {
-  var iri = location
-
-  if (location.toLowerCase().slice(0, 4) !== 'http') {
-    if (location.startsWith('/')) {
-      var x = base.toLowerCase().trim().split('/')
-
-      iri = x[0] + '//' + x[2] + location
-    } else if (!base.endsWith('/')) {
-      iri = base.substr(0, base.lastIndexOf('/') + 1) + location
-    } else {
-      iri = base + location
-    }
-  }
-
-  return iri
-}
-
-function getProxyableIRI (url, options = {}) {
-  var pIRI = stripFragmentFromString(url)
-
-  if ((typeof document !== 'undefined' && document.location.protocol === 'https:' && pIRI.slice(0, 5).toLowerCase() === 'http:') || 'forceProxy' in options) {
-    var proxyURL = ('proxyURL' in options) ? options.proxyURL : Config.ProxyURL
-    pIRI = proxyURL + encodeString(pIRI)
-  }
-
-  return pIRI
-}
-
-function stripFragmentFromString (string) {
-  if (typeof string === 'string') {
-    let stringIndexFragment = string.indexOf('#')
-
-    if (stringIndexFragment >= 0) {
-      string = string.substring(0, stringIndexFragment)
-    }
-  }
-  return string
-}
-
-function getFragmentFromString (string) {
-  if (typeof string === 'string') {
-    let match = string.split('#')[1]
-
-    string = (match) ? match : '';
-  }
-  return string 
-}
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = {
-  uniqueArray,
-  getHash,
-  getDateTimeISO,
-  removeChildren,
-  copyTextToClipboard,
-  escapeRegExp,
-  sleep
-}
-
-/**
- * @param a {Array}
- *
- * @returns {Array}
- */
-function uniqueArray (a) {
-  var n = {}
-  var r = []
-  for (var i = 0; i < a.length; i++) {
-    if (!n[a[i]]) {
-      n[a[i]] = true
-      r.push(a[i])
-    }
-  }
-  return r
-}
-
-// https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
-function getHash (message, algo = "SHA-256") {
-  var buffer = new TextEncoder("utf-8").encode(message);
-  return window.crypto.subtle.digest(algo, buffer).then(function (hash) {
-    var hexCodes = [];
-    var view = new DataView(hash);
-    for (var i = 0; i < view.byteLength; i += 4) {
-      var value = view.getUint32(i)
-      var stringValue = value.toString(16)
-      var padding = '00000000'
-      var paddedValue = (padding + stringValue).slice(-padding.length)
-      hexCodes.push(paddedValue);
-    }
-    return hexCodes.join("");
-  });
-}
-
-function getDateTimeISO() {
-  var date = new Date();
-  return date.toISOString();
-}
-
-
-function removeChildren (node) {
-  while (node.firstChild) {
-    node.removeChild(node.firstChild);
-  }
-}
-
-function copyTextToClipboard(text){
-console.log(text)
-  if (!navigator.clipboard) {
-    try {
-      var successful = document.execCommand('copy');
-    } catch (err) {}
-    return;
-  }
-
-  navigator.clipboard.writeText(text).then(function() {
-    // console.log('Async: Copying to clipboard was successful!');
-  }, function(err) {
-    // console.error('Async: Could not copy text: ', err);
-  });
-}
-
-//From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
-function escapeRegExp(string){
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-const Config = __webpack_require__(0)
-const doc = __webpack_require__(1)
-const uri = __webpack_require__(2)
-const graph = __webpack_require__(5)
-const fetch = __webpack_require__(10)  // Uses native fetch() in the browser
-
-const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
-const LDP_RESOURCE = '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
-
-module.exports = {
-  setAcceptRDFTypes,
-  copyResource,
-  currentLocation,
-  deleteResource,
-  getAcceptPostPreference,
-  getResource,
-  getResourceHead,
-  getResourceGraph,
-  getResourceOptions,
-  parseLinkHeader,
-  patchResource,
-  postResource,
-  putResource,
-  putResourceACL,
-  postActivity
-}
-
-function setAcceptRDFTypes(options) {
-  options = options || {};
-
-  return Config.AvailableMediaTypes.map(i => {
-    if (i == 'application/xhtml+xml' || i == 'text/html') {
-      // q = Number(Math.round((q-0.1)+'e2')+'e-2');
-      return i + ';q=0.9';
-    }
-    return i;
-  }).join(',');
-}
-
-// I want HTTP COPY and I want it now!
-function copyResource (fromURL, toURL, options = {}) {
-  let headers = { 'Accept': '*/*' }
-  let contentType
-
-  if (!fromURL || !toURL) {
-    return Promise.reject(new Error('Missing fromURL or toURL in copyResource'))
-  }
-
-  return getResource(fromURL, headers, options)
-    .then(response => {
-      contentType = response.headers.get('Content-Type')
-
-      return (Config.AcceptBinaryTypes.indexOf(contentType))
-        ? response.arrayBuffer()
-        : response.text()
-    })
-    .then(contents => {
-      return putResource(toURL, contents, contentType, null, options)
-        .catch(error => {
-          if (error.status === 0) {
-            // Retry with no credentials
-            options.noCredentials = true
-            return putResource(toURL, contents, contentType, null, options)
-          }
-
-          throw error  // re-throw error
-        })
-    })
-}
-
-/**
- * @returns {string}
- */
-function currentLocation () {
-  return window.location.origin + window.location.pathname
-}
-
-/**
- * deleteResource
- *
- * @param url {string}
- * @param options {object}
- *
- * @returns {Promise<Response>}
- */
-function deleteResource (url, options = {}) {
-  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
-
-  if (!url) {
-    return Promise.reject(new Error('Cannot DELETE resource - missing url'))
-  }
-
-  if (!options.noCredentials) {
-    options.credentials = 'include'
-  }
-
-  options.method = 'DELETE'
-
-  return _fetch(url, options)
-
-    .then(response => {
-      if (!response.ok) {  // not a 2xx level response
-        let error = new Error('Error deleting resource: ' +
-          response.status + ' ' + response.statusText)
-        error.status = response.status
-        error.response = response
-
-        throw error
-      }
-
-      return response
-    })
-}
-
-function getAcceptPostPreference (url) {
-  const pIRI = uri.getProxyableIRI(url)
-
-  return getResourceOptions(pIRI, {'header': 'Accept-Post'})
-    .catch(error => {
-      console.error(error)
-
-      return {'headers': 'application/ld+json'}
-    })
-    .then(result => {
-      let header = result.headers.trim().split(/\s*,\s*/)
-
-      if (header.indexOf('text/html') > -1 || header.indexOf('application/xhtml+xml') > -1) {
-        return 'text/html'
-      } else if (header.indexOf('text/turtle') > -1 || header.indexOf('*/*') > -1) {
-        return 'text/turtle'
-      } else if (header.indexOf('application/ld+json') > -1 || header.indexOf('application/json') > -1) {
-        return 'application/ld+json'
-      } else {
-        console.log('Accept-Post contains unrecognised media-range; ' + result.headers)
-        return result.headers
-      }
-    })
-}
-
-/**
- * getResource
- *
- * @param url {string}
- *
- * @param headers {object}
- * @param [headers.accept='text/turtle'] {string}
- *
- * @param options {object}
- *
- * @returns {Promise<string>|Promise<ArrayBuffer>}
- */
-function getResource (url, headers = {}, options = {}) {
-  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
-
-  url = url || currentLocation()
-  options.method = 'GET'
-
-  if (!headers['Accept']) {
-    headers['Accept'] = 'text/turtle'
-  }
-
-  if (!options.noCredentials) {
-    options.credentials = 'include'
-  }
-
-  options.headers = Object.assign({}, headers)
-
-  return _fetch(url, options)
-
-    .then(response => {
-      if (!response.ok) {  // not a 2xx level response
-        let error = new Error('Error fetching resource: ' +
-          response.status + ' ' + response.statusText)
-        error.status = response.status
-        error.response = response
-
-        throw error
-      }
-
-      return response
-    })
-}
-
-/**
- * getResourceHead
- *
- * @param [url] {string}
- *
- * @param options {object}
- * @param options.header {string}
- *
- * @returns {Promise<string>} Resolves with contents of specified header
- */
-function getResourceHead (url, options = {}) {
-  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
-  url = url || currentLocation()
-
-  if (!options.header) {
-    return Promise.reject(new Error('options.header not specified'))
-  }
-
-  options.method = 'HEAD'
-
-  if (!options.noCredentials) {
-    options.credentials = 'include'
-  }
-
-  return _fetch(url, options)
-
-    .then(response => {
-      if (!response.ok) {  // not a 2xx level response
-        let error = new Error('Error fetching resource HEAD: ' +
-          response.status + ' ' + response.statusText)
-        error.status = response.status
-        error.response = response
-
-        throw error
-      }
-
-      let header = response.headers.get(options.header)
-
-      if (!header) {
-        throw new Error("'" + options.header + "' header not found")
-      }
-
-      return { 'headers': header }
-    })
-}
-
-function getResourceGraph (iri, headers, options = {}) {
-  let defaultHeaders = {'Accept': setAcceptRDFTypes()}
-  headers = headers || defaultHeaders
-  if (!('Accept' in headers)) {
-    Object.assign(headers, defaultHeaders)
-  }
-
-  if (iri.slice(0, 5).toLowerCase() === 'http:') {
-    options['noCredentials'] = true
-
-    if (document.domain !== iri.split('/')[2]) {
-      options['forceProxy'] = true
-    }
-  }
-
-  let pIRI = uri.getProxyableIRI(iri, options)
-
-  return getResource(pIRI, headers, options)
-    .then(response => {
-      let cT = response.headers.get('Content-Type')
-      options.contentType = (cT) ? cT.split(';')[ 0 ].trim() : 'text/turtle'
-
-      options.subjectURI = uri.stripFragmentFromString(iri)
-
-      return response.text()
-    })
-    .then(data => {
-      return graph.getGraphFromData(data, options)
-    })
-    .then(g => {
-      let fragment = (iri.lastIndexOf('#') >= 0) ? iri.substr(iri.lastIndexOf('#')) : ''
-
-      return SimpleRDF(Config.Vocab, options[ 'subjectURI' ], g, ld.store).child(pIRI + fragment)
-    })
-}
-
-/**
- * getResourceOptions
- *
- * @param [url] {string} Defaults to current url
- *
- * @param [options={}] {object}
- * @param [options.header] {string} Specific response header to return
- * @param [options.noCredentials] {boolean}
- *
- * @returns {Promise} Resolves with `{ headers: ... }` object
- */
-function getResourceOptions (url, options = {}) {
-  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
-  url = url || currentLocation()
-
-  options.method = 'OPTIONS'
-
-  if (!options.noCredentials) {
-    options.credentials = 'include'
-  }
-
-  return _fetch(url, options)
-
-    .then(response => {
-      if (!response.ok) {  // not a 2xx level response
-        let error = new Error('Error fetching resource OPTIONS: ' +
-          response.status + ' ' + response.statusText)
-        error.status = response.status
-        error.response = response
-
-        throw error
-      }
-      else if (options.header && !response.headers.get(options.header)){
-        let error = new Error('OPTIONS without ' + options.header + ' header: ' +
-          response.status + ' ' + response.statusText)
-        error.status = response.status
-        error.response = response
-
-        throw error
-      }
-
-      if (options.header) {  // specific header requested
-        return { headers: response.headers.get(options.header) }
-      }
-
-      return { headers: response.headers }  // Not currently used anywhere
-    })
-}
-
-function parseLinkHeader (link) {
-  if (!link) {
-    return {}
-  }
-  var linkexp = /<[^>]*>\s*(\s*;\s*[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*")))*(,|$)/g
-  var paramexp = /[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*"))/g;
-  var matches = link.match(linkexp)
-  var rels = {}
-  for (var i = 0; i < matches.length; i++) {
-    var split = matches[i].split('>')
-    var href = split[0].substring(1)
-    var ps = split[1]
-    var s = ps.match(paramexp)
-    for (var j = 0; j < s.length; j++) {
-      var p = s[j]
-      var paramsplit = p.split('=')
-      // var name = paramsplit[0]
-      var rel = paramsplit[1].replace(/["']/g, '')
-      if (!rels[rel]) {
-        rels[rel] = []
-      }
-      rels[rel].push(href)
-      if (rels[rel].length > 1) {
-        rels[rel].sort()
-      }
-    }
-  }
-  return rels
-}
-
-function patchResource (url, deleteBGP, insertBGP, options = {}) {
-  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
-  // insertBGP and deleteBGP are basic graph patterns.
-  deleteBGP = (deleteBGP) ? 'DELETE DATA {\n\
-' + deleteBGP + '\n\
-};\n\
-' : '';
-
-  insertBGP = (insertBGP) ? 'INSERT DATA {\n\
-' + insertBGP + '\n\
-};\n\
-' : '';
-
-
-  options.body = deleteBGP + insertBGP
-
-  options.method = 'PATCH'
-
-  if (!options.noCredentials) {
-    options.credentials = 'include'
-  }
-
-  options.headers = options.headers || {}
-
-  options.headers['Content-Type'] = 'application/sparql-update; charset=utf-8'
-
-  return _fetch(url, options)
-
-    .then(response => {
-      if (!response.ok) {  // not a 2xx level response
-        let error = new Error('Error patching resource: ' +
-          response.status + ' ' + response.statusText)
-        error.status = response.status
-        error.response = response
-
-        throw error
-      }
-
-      return response
-    })
-}
-
-function postResource (url, slug, data, contentType, links, options = {}) {
-  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
-  if (!url) {
-    return Promise.reject(new Error('Cannot POST resource - missing url'))
-  }
-
-  options.method = 'POST'
-
-  options.body = data
-
-  if (!options.noCredentials) {
-    options.credentials = 'include'
-  }
-
-  options.headers = options.headers || {}
-
-  options.headers['Content-Type'] = contentType || DEFAULT_CONTENT_TYPE
-
-  links = links
-    ? LDP_RESOURCE + ', ' + links
-    : LDP_RESOURCE
-
-  options.headers['Link'] = links
-
-  if (slug) {
-    options.headers['Slug'] = slug
-  }
-
-  return _fetch(url, options)
-
-    .catch(error => {
-      if (error.status === 0 && !options.noCredentials) {
-        // Possible CORS error, retry with no credentials
-        options.noCredentials = true
-        return postResource(url, slug, data, contentType, options)
-      }
-
-      throw error
-    })
-
-    .then(response => {
-      if (!response.ok) {  // not a 2xx level response
-        let error = new Error('Error creating resource: ' +
-          response.status + ' ' + response.statusText)
-        error.status = response.status
-        error.response = response
-
-        throw error
-      }
-
-      return response
-    })
-}
-
-/**
- * putResource
- *
- * @param url {string}
- *
- * @param data {string|object}
- *
- * @param [contentType=DEFAULT_CONTENT_TYPE] {string}
- *
- * @param [links=LDP_RESOURCE] {string}
- *
- * @param [options={}] {object}
- *
- * @returns {Promise<Response>}
- */
-function putResource (url, data, contentType, links, options = {}) {
-  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
-  if (!url) {
-    return Promise.reject(new Error('Cannot PUT resource - missing url'))
-  }
-
-  options.method = 'PUT'
-
-  options.body = data
-
-  if (!options.noCredentials) {
-    options.credentials = 'include'
-  }
-
-  options.headers = options.headers || {}
-
-  options.headers['Content-Type'] = contentType || DEFAULT_CONTENT_TYPE
-
-  links = links
-    ? LDP_RESOURCE + ', ' + links
-    : LDP_RESOURCE
-
-  options.headers['Link'] = links
-
-  return _fetch(url, options)
-
-    .then(response => {
-      if (!response.ok) {  // not a 2xx level response
-        let error = new Error('Error writing resource: ' +
-          response.status + ' ' + response.statusText)
-        error.status = response.status
-        error.response = response
-
-        throw error
-      }
-
-      return response
-    })
-}
-
-/**
- * putResourceACL
- *
- * TODO: This doesn't seem to be used anywhere...
- *
- * @param accessToURL
- * @param aclURL
- * @param acl
- *
- * @returns {Promise<Response|null>}
- */
-function putResourceACL (accessToURL, aclURL, acl) {
-  if (!Config.User.IRI) {
-    console.log('Go through sign-in or do: DO.C.User.IRI = "https://example.org/#i";')
-    return Promise.resolve(null)
-  }
-
-  acl = acl || {
-    'u': { 'iri': [Config.User.IRI], 'mode': ['acl:Control', 'acl:Read', 'acl:Write'] },
-    'g': { 'iri': ['http://xmlns.com/foaf/0.1/Agent'], 'mode': ['acl:Read'] },
-    'o': { 'iri': [], 'mode': [] }
-  }
-
-  let agent, agentClass, mode
-
-  if ('u' in acl && 'iri' in acl.u && 'mode' in acl.u) {
-    agent = '<' + acl.u.iri.join('> , <') + '>'
-    mode = acl.u.mode.join(' , ')
-  } else {
-    agent = '<' + Config.User.IRI + '>'
-    mode = 'acl:Control , acl:Read , acl:Write'
-  }
-
-  let authorizations = []
-
-  authorizations.push(
-    '[ a acl:Authorization ; acl:accessTo <' +
-    accessToURL + '> ; acl:accessTo <' + aclURL + '> ; acl:mode ' + mode +
-    ' ; acl:agent ' + agent + ' ] .'
-  )
-
-  if ('g' in acl && 'iri' in acl.g && acl.g.iri.length >= 0) {
-    agentClass = '<' + acl.g.iri.join('> , <') + '>'
-    mode = acl.g.mode.join(' , ')
-    authorizations.push(
-      '[ a acl:Authorization ; acl:accessTo <' + accessToURL +
-      '> ; acl:mode ' + mode + ' ; acl:agentClass ' + agentClass + ' ] .'
-    )
-  }
-
-  let data = '@prefix acl: <http://www.w3.org/ns/auth/acl#> .\n' +
-    authorizations.join('\n') + '\n'
-
-  return putResource(aclURL, data, 'text/turtle; charset=utf-8')
-}
-
-function postActivity(url, slug, data, options) {
-  return getAcceptPostPreference(url)
-    .then(preferredContentType => {
-      switch (preferredContentType) {
-        case 'text/html':
-        case 'application/xhtml+xml':
-          return postResource(url, slug, data, 'text/html; charset=utf-8')
-
-        case 'text/turtle':
-          // FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
-
-          return graph.serializeData(data, options['contentType'], 'text/turtle', options)
-            .then(data => {
-              return postResource(url, slug, data, 'text/turtle')
-            })
-
-        case 'application/ld+json':
-        case 'application/json':
-        case '*/*':
-        default:
-          return graph.serializeData(data, options['contentType'], 'application/ld+json', options)
-            .then(data => {
-              if (!options['canonical']) {
-                let x = JSON.parse(data)
-                if ('id' in x) {
-                  x[ "via" ] = x[ "id" ]
-                  x[ "id" ] = ""
-                  data = JSON.stringify(x)
-                }
-              }
-
-              var profile = ('profile' in options) ? '; profile="' + options.profile + '"' : ''
-
-              return postResource(url, slug, data, preferredContentType + profile)
-            })
-      }
-    })
-}
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(global) {
-
-global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined
-
-const Config = __webpack_require__(0)
-const doc = __webpack_require__(1)
-
-module.exports = {
-  getGraph,
-  getGraphFromData,
-  getMatchFromData,
-  serializeData,
-  serializeGraph,
-  applyParserSerializerFixes
-}
-
-function getGraph (url) {
-  return SimpleRDF(Config.Vocab, url, null, ld.store).get()
-}
-
-function getGraphFromData (data, options = {}) {
-  if (!('contentType' in options)) {
-    options['contentType'] = 'text/turtle'
-  }
-
-  // FIXME: This is a dirty filthy fugly but a *fix* to get around the baseURI not being passed to the DOM parser. This injects the `base` element into the document so that the RDFa parse fallsback to that. The actual fix should happen upstream. See related issues:
-  // https://github.com/linkeddata/dokieli/issues/132
-  // https://github.com/rdf-ext/rdf-parser-dom/issues/2
-  // https://github.com/rdf-ext/rdf-parser-rdfa/issues/3
-  // https://github.com/simplerdf/simplerdf/issues/19
-
-  if (!('subjectURI' in options)) {
-    options['subjectURI'] = 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d'
-  }
-  if (options.contentType === 'text/html' || options.contentType === 'application/xhtml+xml') {
-    data = doc.setHTMLBase(data, options.subjectURI)
-  }
-
-  return SimpleRDF.parse(data, options['contentType'], options['subjectURI'])
-}
-
-function getMatchFromData (data, spo = {}, options = {}) {
-  if (!data) { return Promise.resolve({}) }
-
-  spo['subject'] = spo.subject || window.location.origin + window.location.pathname
-  spo['predicate'] = spo.predicate || Config.Vocab['rdfslabel']
-
-  options['contentType'] = options.contentType || 'text/html'
-  options['subjectURI'] = options.subjectURI || spo.subject
-
-  return getGraphFromData(data, options)
-    .then(g => {
-      let s = SimpleRDF(Config.Vocab, spo.subject, g, ld.store).child(spo.subject)
-
-      return s[spo.predicate]
-    })
-    .catch(() => {
-      return undefined
-    })
-}
-
-/**
- * @param data
- * @param fromContentType
- * @param toContentType
- * @param options
- *
- * @returns {Promise}
- */
-function serializeData (data, fromContentType, toContentType, options) {
-  if (fromContentType === toContentType) {
-    return Promise.resolve(data)
-  }
-
-  options.contentType = fromContentType
-
-// console.log(data)
-
-  return getGraphFromData(data, options)
-    .then(g => {
-
-      options.contentType = toContentType
-
-      switch (toContentType) {
-        case 'application/ld+json':
-// console.log(g)
-          return serializeGraph(g, options).then(subjectTriples => {
-            subjectTriples = JSON.parse(subjectTriples)
-
-            var data = {}
-            if (options["@context"]) {
-              data["@context"] = options["@context"]
-            }
-
-            var subjectsChecked = []
-            var subjectsList = []
-            var rootIndex = 0
-
-            for(var i = 0; i < subjectTriples.length; i++) {
-              subjectsList.push(subjectTriples[i]["@id"])
-
-              if ("@id" in subjectTriples[i] && subjectTriples[i]["@id"] == options.subjectURI) {
-                Object.assign(data, subjectTriples[i])
-
-                subjectsChecked.push(options.subjectURI)
-
-                rootIndex = i
-              }
-            }
-
-            var processObject = function(subject) {
-              var properties = Object.keys(subject)
-              properties.forEach(property => {
-                if (typeof subject[property] === 'object') {
-                  if ("@id" in subject[property]
-                    && subjectsChecked.indexOf(subject[property]["@id"]) < 0
-                    && subjectsList.indexOf(subject[property]["@id"]) > -1) {
-
-                    subjectTriples.forEach(o => {
-                      if (o["@id"] == subject[property]["@id"]) {
-                        subject[property] = o;
-
-                        subjectsChecked.push(subject[property]["@id"])
-                      }
-                    })
-                  }
-
-                  return Object.assign({}, processObject(subject[property]))
-                }
-              })
-
-              return subject
-            }
-
-            var subject = subjectTriples[rootIndex]
-
-            Object.assign(data, processObject(subject))
-
-// console.log(data)
-// console.log(JSON.stringify(data))
-            return JSON.stringify(data) + '\n'
-          })
-
-        default:
-          return serializeGraph(g, options)
-      }     
-    })
-    .then(data => {
-      switch (toContentType) {
-        default:
-          break;
-
-        case 'application/ld+json':
-          //TODO: Lazy person's JSON-LD compacting. Expect errors!
-          if (options["@context"]) {
-            var context = (typeof options["@context"] === 'string') ? [options["@context"]] : options['@context']
-
-            data = JSON.parse(data);
-            delete data["@context"]
-            data = JSON.stringify(data)
-
-            data = data.replace(new RegExp('"@id"', 'g'), '"id"')
-            data = data.replace(new RegExp('"@type"', 'g'), '"type"')
-
-            context.forEach(function(c){
-              var search = '';
-              var replace = '';
-
-              if (typeof c === 'string') {
-                switch(c) {
-                  case 'http://www.w3.org/ns/anno.jsonld':
-                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#autoDirection', 'g'), 'auto')
-                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#cachedSource', 'g'), 'cached')
-                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasBody', 'g'), 'body')
-                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasEndSelector', 'g'), 'endSelector')
-                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasPurpose', 'g'), 'purpose')
-                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasScope', 'g'), 'scope')
-                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasSelector', 'g'), 'selector')
-                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasSource', 'g'), 'source')
-                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasStartSelector', 'g'), 'startSelector')
-                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasTarget', 'g'), 'target')
-                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#ltrDirection', 'g'), 'ltr')
-                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#motivatedBy', 'g'), 'motivation')
-                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#rtlDirection', 'g'), 'rtl')
-                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#styledBy', 'g'), 'stylesheet')
-
-                    data = data.replace(new RegExp('"oa:', 'g'), '"')
-
-                    search = 'http://www.w3.org/ns/oa#'
-                    break
-
-                  case 'https://www.w3.org/ns/activitystreams':
-                    data = data.replace(new RegExp('"as:', 'g'), '"')
-
-                    search = 'https://www.w3.org/ns/activitystreams#'
-                    break
-
-                  case 'http://schema.org/':
-                    data = data.replace(new RegExp('"schema:', 'g'), '"')
-
-                    search = 'http:/schema.org/'
-                    break
-                }
-              }
-              else {
-                replace = Object.keys(c)[0];
-
-                switch(replace) {
-                  case 'oa':
-                    search = 'http://www.w3.org/ns/oa#'
-                    break
-
-                  case 'as':
-                    search = 'https://www.w3.org/ns/activitystreams#'
-                    break
-
-                  case 'schema':
-                    search = 'http://schema.org/'
-                    break
-                }
-
-                replace = replace + ':'
-              }
-
-              data = data.replace(new RegExp(search, 'g'), replace)
-
-            })
-
-            data = JSON.parse(data)
-            data = Object.assign({"@context": options["@context"]}, data)
-            data = JSON.stringify(data)
-          }
-
-          break;
-      }
-// console.log(data)
-      return data
-    })
-}
-
-function serializeGraph (g, options = {}) {
-  if (!('contentType' in options)) {
-    options['contentType'] = 'text/turtle'
-  }
-
-  return ld.store.serializers[options.contentType].serialize(g._graph)
-    .then(data => {
-      data = applyParserSerializerFixes(data, options.contentType)
-
-      // XXX: .compact doesn't work as advertised
-      // if (options.contentType === 'application/ld+json' && '@context' in options) {
-      //   return jsonld.promises().compact(data, options['@context'], {'skipExpansion': true})
-      // }
-
-      return data
-    })
-}
-
-function applyParserSerializerFixes(data, contentType) {
-  // FIXME: FUGLY because parser defaults to localhost. Using UUID to minimise conflict
-  data = data.replace(/http:\/\/localhost\/d79351f4-cdb8-4228-b24f-3e9ac74a840d/g, '');
-
-  switch(contentType) {
-    case 'text/turtle':
-      //XXX: Workaround for rdf-parser-rdfa bug that gives '@langauge' instead of @type when encountering datatype in HTML+RDFa . TODO: Link to bug here
-      data = data.replace(/Z"@en;/, 'Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;');
-      data = data.replace(/start> "(\d+)"@en;/, 'start> "$1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger>;');
-      data = data.replace(/end> "(\d+)"@en;/, 'end> "$1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger>;');
-      break;
-
-    case 'application/ld+json':
-      var x = JSON.parse(data);
-
-      //XXX: Workaround for rdf-parser-rdfa bug that gives '@language' instead of @type when encountering datatype in HTML+RDFa . See also https://github.com/rdf-ext/rdf-parser-rdfa/issues/5
-      var properties = ['https://www.w3.org/ns/activitystreams#published', 'https://www.w3.org/ns/activitystreams#updated', 'http://schema.org/dateCreated', 'http://schema.org/datePublished', 'http://schema.org/dateModified', 'http://www.w3.org/ns/oa#start', 'http://www.w3.org/ns/oa#end'];
-
-      for(var i = 0; i < x.length; i++){
-        for(var j = 0; j < properties.length; j++){
-          if(properties[j] in x[i]) {
-            if (properties[j] == 'http://www.w3.org/ns/oa#start' || properties[j] == 'http://www.w3.org/ns/oa#end') {
-              x[i][properties[j]] = {
-                '@type': 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger',
-                '@value': x[i][properties[j]]['@value']
-              };
-            }
-            else {
-              x[i][properties[j]] = {
-                '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
-                '@value': x[i][properties[j]]['@value']
-              };
-            }
-          }
-        }
-      }
-
-      data = JSON.stringify(x);
-      break;
-  }        
-
-  return data;
-}
-
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports) {
-
-var g;
-
-// This works in non-strict mode
-g = (function() {
-	return this;
-})();
-
-try {
-	// This works if eval is allowed (see CSP)
-	g = g || Function("return this")() || (1,eval)("this");
-} catch(e) {
-	// This works if the window reference is available
-	if(typeof window === "object")
-		g = window;
-}
-
-// g can still be undefined, but nothing to do about it...
-// We return undefined, instead of nothing here, so it's
-// easier to handle this case. if(!global) { ...}
-
-module.exports = g;
-
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-const Config = __webpack_require__(0)
-const util = __webpack_require__(3)
-const uri = __webpack_require__(2)
-const doc = __webpack_require__(1)
-
-module.exports = {
-  initStorage,
-  enableStorage,
-  disableStorage,
-  updateStorageDocument,
-  enableAutoSave,
-  disableAutoSave,
-  removeStorageItem,
-  removeStorageProfile,
-  getStorageProfile,
-  updateStorageProfile,
-  showStorage,
-  hideStorage
-}
-
-
-function initStorage(key) {
-  if (typeof window.localStorage != 'undefined') {
-    enableStorage(key);
-  }
-}
-
-function enableStorage(key) {
-  Config.UseStorage = true;
-  var o = localStorage.getItem(key);
-  try {
-    JSON.parse(o).object.Document;
-    document.documentElement.innerHTML = JSON.parse(o).object.content;
-    DO.U.init();
-  } catch(e){}
-  console.log(util.getDateTimeISO() + ': ' + key + ' storage enabled.');
-  enableAutoSave(key);
-}
-
-function disableStorage(key) {
-  Config.UseStorage = false;
-  localStorage.removeItem(key);
-  disableAutoSave(key);
-  console.log(util.getDateTimeISO() + ': ' + key + ' storage disabled.');
-}
-
-function updateStorageDocument(key) {
-  var content = doc.getDocument();
-
-  var id = DO.U.generateUUID();
-  var o = localStorage.getItem(key);
-
-  var datetime = util.getDateTimeISO();
-
-  var object = {
-    "@context": "https://www.w3.org/ns/activitystreams",
-    "id": id,
-    "type": "Update",
-    "object": {
-      "id": key,
-      "type": "Document",
-      "updated": datetime,
-      "mediaType": "text/html",
-      "content": content
-    }
-  };
-
-  localStorage.setItem(key, JSON.stringify(object));
-  console.log(datetime + ': Document saved.');
-}
-
-function enableAutoSave(key) {
-  Config.AutoSaveId = setInterval(function() { updateStorageDocument(key) }, Config.AutoSaveTimer);
-  console.log(util.getDateTimeISO() + ': ' + key + ' autosave enabled.');
-}
-
-function disableAutoSave(key) {
-  clearInterval(Config.AutoSaveId);
-  Config.AutoSaveId = '';
-  console.log(util.getDateTimeISO() + ': ' + key + ' autosave disabled.');
-}
-
-function removeStorageItem(key) {
-  if (!key) { Promise.resolve(); }
-
-  console.log(util.getDateTimeISO() + ': ' + key + ' removed.')
-
-  if (Config.WebExtension) {
-    var browser = (typeof browser !== 'undefined') ? browser : chrome;
-
-    return browser.storage.sync.remove(key);
-  }
-  else if (window.localStorage) {
-    return Promise.resolve(localStorage.removeItem(key));
-  }
-  else {
-    return Promise.reject({'message': 'storage is unavailable'})
-  }
-}
-
-function removeStorageProfile(key) {
-  key = key || 'DO.C.User';
-
-  return removeStorageItem(key)
-}
-
-function getStorageProfile(key) {
-  key = key || 'DO.C.User'
-
-  if (Config.WebExtension) {
-    if (typeof browser !== 'undefined') {
-      return browser.storage.sync.get(key).then(function(o){ return o[key]; });
-    }
-    else {
-      var value = {};
-
-      chrome.storage.sync.get(key, function(o){ value = o[key]; })
-
-      return new Promise(function(resolve, reject){
-        window.setTimeout(function() {
-          return resolve(value)
-        }, 50);
-      });
-    }
-  }
-  else if (window.localStorage) {
-    var o = localStorage.getItem(key);
-    return Promise.resolve(JSON.parse(o));
-  }
-  else {
-    return Promise.reject({'message': 'storage is unavailable'})
-  }
-}
-
-function updateStorageProfile(User) {
-  if (!User.IRI) { return Promise.resolve({'message': 'User.IRI is not set'}); }
-
-  var key = 'DO.C.User'
-
-  var id = DO.U.generateUUID();
-  var datetime = util.getDateTimeISO();
-
-  //because.. cyclic
-  if (User.Graph) {
-    delete User.Graph
-  }
-
-  if (User.Contacts) {
-    User.Contacts = {}
-  }
-
-  var object = {
-    "@context": "https://www.w3.org/ns/activitystreams",
-    "id": id,
-    "type": "Update",
-    "object": {
-      "id": key,
-      "type": "Profile",
-      "describes": User
-    },
-    "datetime": datetime,
-    "actor": User.IRI
-  };
-
-  if (Config.WebExtension) {
-    if (typeof browser !== 'undefined') {
-      return browser.storage.sync.set({[key]: object});
-    }
-    else {
-      return Promise.resolve(chrome.storage.sync.set({[key]: object}));
-    }
-  }
-  else if (window.localStorage) {
-    console.log(datetime + ': User ' + User.IRI + ' saved.');
-    return Promise.resolve(localStorage.setItem(key, JSON.stringify(object)));
-  }
-  else {
-    return Promise.reject({'message': 'storage is unavailable'})
-  }
-}
-
-function showStorage(node) {
-  if (window.localStorage) {
-    if(document.querySelector('#local-storage')) { return; }
-
-    var useStorage, checked;
-
-    if (Config.UseStorage) {
-      // if (Config.AutoSaveId) {
-      //   checked = ' checked="checked"';
-      // }
-      // useStorage = Config.DisableStorageButtons + '<input id="local-storage-html-autosave" class="autosave" type="checkbox"' + checked +' /> <label for="local-storage-html-autosave"><i class="fa fa-clock-o"></i> 1m autosave</label>';
-      useStorage = Config.DisableStorageButtons;
-
-    }
-    else {
-      useStorage = Config.EnableStorageButtons;
-    }
-
-    node.insertAdjacentHTML('beforeend', '<section id="local-storage" class="do"><h2>Local Storage</h2><ul><li>' + useStorage + '</li></ul></section>');
-
-    var key = uri.stripFragmentFromString(document.location.href);
-
-    document.getElementById('local-storage').addEventListener('click', function(e) {
-      if (e.target.closest('button.local-storage-enable-html')) {
-        e.target.outerHTML = Config.DisableStorageButtons;
-        enableStorage(key);
-      }
-
-      if (e.target.closest('button.local-storage-disable-html')) {
-        e.target.outerHTML = Config.EnableStorageButtons;
-        disableStorage(key);
-      }
-
-      // if (e.target.closest('input.autosave')) {
-      //   if (e.target.getAttribute('checked')) {
-      //     e.target.removeAttribute('checked');
-      //     disableAutoSave(key);
-      //   }
-      //   else {
-      //     e.target.setAttribute('checked', 'checked');
-      //     enableAutoSave(key);
-      //   }
-      // }
-    });
-  }
-}
-
-function hideStorage() {
-  if (Config.UseStorage) {
-    var ls = document.getElementById('local-storage');
-    ls.parentNode.removeChild(ls);
-  }
-}
-
-
-/***/ }),
-/* 8 */
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(9);
-
-
-/***/ }),
-/* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {/** dokieli
@@ -1955,13 +113,13 @@ module.exports = __webpack_require__(9);
  * https://github.com/linkeddata/dokieli
  */
 
-const fetcher = __webpack_require__(4)
-const doc = __webpack_require__(1)
-const uri = __webpack_require__(2)
-const graph = __webpack_require__(5)
-const inbox = __webpack_require__(11)
-const util = __webpack_require__(3)
-const storage = __webpack_require__(7)
+const fetcher = __webpack_require__(3)
+const doc = __webpack_require__(5)
+const uri = __webpack_require__(6)
+const graph = __webpack_require__(7)
+const inbox = __webpack_require__(9)
+const util = __webpack_require__(10)
+const storage = __webpack_require__(11)
 global.auth = __webpack_require__(12)
 
 if(typeof DO === 'undefined'){
@@ -1969,7 +127,7 @@ global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined;
 var DO = {
   fetcher,
 
-  C: __webpack_require__(0),
+  C: __webpack_require__(4),
 
   U: {
     getResourceLabel: function(s) {
@@ -2700,7 +858,7 @@ var DO = {
     importTextQuoteSelector: function(containerNode, selector, refId, docRefType, options) {
       var containerNodeTextContent = containerNode.textContent;
       //XXX: Seems better?
-      // var containerNodeTextContent = DO.U.fragmentFromString(doc.getDocument(containerNode)).textContent.trim();
+      // var containerNodeTextContent = util.fragmentFromString(doc.getDocument(containerNode)).textContent.trim();
 
 
 // console.log(containerNodeTextContent);
@@ -2756,7 +914,7 @@ var DO = {
 // console.log(selectedParentNodeValue)
 
 // console.log(selectedParentNodeValue.substr(0, r.startOffset) + ref + selectedParentNodeValue.substr(r.startOffset + exact.length))
-        var selectionUpdated = DO.U.fragmentFromString(selectedParentNodeValue.substr(0, r.startOffset) + ref + selectedParentNodeValue.substr(r.startOffset + exact.length));
+        var selectionUpdated = util.fragmentFromString(selectedParentNodeValue.substr(0, r.startOffset) + ref + selectedParentNodeValue.substr(r.startOffset + exact.length));
 // console.log(selectionUpdated)
 
         //XXX: Review. This feels a bit dirty
@@ -2815,7 +973,7 @@ var DO = {
 
         if (mode !== 'author') {
           var content = DO.U.selectArticleNode(document);
-          content = DO.U.fragmentFromString(doc.domToString(content)).textContent.trim();
+          content = util.fragmentFromString(doc.domToString(content)).textContent.trim();
           if (content.length == 0) {
             mode = 'author';
           }
@@ -2852,12 +1010,12 @@ var DO = {
 
       var annotationRights = document.querySelectorAll('[about="#annotation-rights"][typeof="schema:ChooseAction"], [href="#annotation-rights"][typeof="schema:ChooseAction"], [resource="#annotation-rights"][typeof="schema:ChooseAction"]');
       for (var i = 0; i < annotationRights.length; i++){
-        annotationRights[i].parentNode.replaceChild(DO.U.fragmentFromString('<select>' + DO.U.getLicenseOptionsHTML() + '</select>'), annotationRights[i]);
+        annotationRights[i].parentNode.replaceChild(util.fragmentFromString('<select>' + DO.U.getLicenseOptionsHTML() + '</select>'), annotationRights[i]);
       }
     },
 
     showDocumentInfo: function() {
-      document.documentElement.appendChild(DO.U.fragmentFromString('<menu id="document-menu" class="do"><button class="show" title="Open Menu"><i class="fa fa-bars"></i></button><header></header><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><img alt="" height="16" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAn1BMVEUAAAAAjwAAkAAAjwAAjwAAjwAAjwAAjwAAkAAAdwAAjwAAjQAAcAAAjwAAjwAAiQAAjwAAjAAAjwAAjwAAjwAAjwAAkAAAjwAAjwAAjwAAjQAAjQAAhQAAhQAAkAAAkAAAkAAAjgAAjwAAiQAAhAAAkAAAjwAAjwAAkAAAjwAAjgAAjgAAjQAAjwAAjQAAjwAAkAAAjwAAjQAAiwAAkABp3EJyAAAANHRSTlMA+fH89enaabMF4iADxJ4SiSa+uXztyoNvQDcsDgvl3pRiXBcH1M+ppJlWUUpFMq6OdjwbMc1+ZgAABAhJREFUeNrt29nSmkAQBeAGZBMUxH3f993/vP+zJZVKVZKCRhibyc3/XVt6SimYPjPSt28Vmt5W/fu2T/9B9HIf7Tp+0RsgDC6DY6OLvzxJj8341DnsakgZUNUmo2XsORYYS6rOeugukhnyragiq56JIs5UEQ/FXKgidRTzompEKOhG1biioDFV44mCAqrGAQWtqRptA8VMqCpR6zpo9iy84VO1opWHPBZVb9QAzyQN/D1YNungJ+DMSYsbOFvSIwGjR3p0wGiQHkMw2qRHC4w76RGBcSA9NmAcSY8QjAdpYiFbTJoYyNYnTWrI1iFNusj2JE1sZBuQJtyE5pImc3Y21cRhZ1NNtsh2Ik127HCsSY8djjVpINuVhPnjVefobee2adXqu2S/6FyivABDEjQ9Lxo1pDlNd5wg24ikRK5ngKGhHhg1DSgZk4RrD6pa9LlRAnUBfWp6xCe+6EOvOT6yrmrigZaCZHPAp6b0gaiBFKvRd0/D1rr1OrvxDqiyoZmmPt9onib0t/VybyEXqdu0Cw16rUNVAfZFlzdjr5KOaoAUK6JsrgWGQapuBlIS4gy70gEmTrk1fuAgU40UxWXv6wvZAC2Dqfx0BfBK1z1H0aJ0WH7Ub4oG8JDlpBCgK1l5tSjHQSoAf0HVfMqxF+yqpzVk2ZGuAGdk8ijPHZlmpOCg0vh5cgE2JtN3qQSoU3lXpbKlLRegrzTpt+U2TNpKY2YiFiA0kS1Q6QccweZ/oinASm2B3RML0AGDNAU4qq3udmIXYVttD3YrFsBR24N1xG5EJpTeaiYWwILS5WRKBfChFsCSehpOwKi/yS0V4AsMWym3TWUFgMqIsRYL8AVOSDlaYgEitbZnDKll+UatchyJBSC1c3lDuQA2VHYAL3KneHpgLCjHSS7AHYyEciwh1g88wDB94rlyAVxwhsR7ygW4gRMTry8XwDdUDkXFgjVdD5wRsRaCAWJwPGI1Baval8Ie3Hqn8AjjhHbZr2DzrInumDTBGlCG8xy8QPY3MNLX4TiRP1q+BWs2pn9ECwu5+qTABc+80h++28UbTkjlTW3wrM6Ufrtu8d5J9Svg1Vch/RTcUYQdUHm+g1z1x2gSGyjGGVN5F7xjoTCjE0ndC3jJMzfCftmiciZ1lNGe3vCGufOWVMLIQHHehi3X1O8JJxR236SalUzninbu937BlwfV/I3k4KdGk2xm+MHuLa8Z0i9TC280qLRrF+8cw9RSjrOg8oIG8j2YgULsbGPomsgR0x9nsOzkOLh+kZr1owZGbfC2JJl78fIV0Wei/gxZDl85XWVtt++cxhuSEQ6bdfzLjlvM86PbaD4vQUjSglV8385My7CdXtO9+ZSyrLcf7nBN376V8gMpRztyq6RXYQAAAABJRU5ErkJggg==" width="16" /><a href="https://dokie.li/" target="_blank">dokieli</a> is an <i class="fa fa-github"></i> <a href="https://github.com/linkeddata/dokieli" target="_blank">open source</a> project. There is <i class="fa fa-flask"></i> <a href="https://dokie.li/docs" target="_blank">documentation</a> and public <i class="fa fa-comments-o"></i> <a href="https://gitter.im/linkeddata/dokieli" target="_blank">chat</a> available. Made with fun.</dd></dl></footer></menu>'));
+      document.documentElement.appendChild(util.fragmentFromString('<menu id="document-menu" class="do"><button class="show" title="Open Menu"><i class="fa fa-bars"></i></button><header></header><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><img alt="" height="16" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAn1BMVEUAAAAAjwAAkAAAjwAAjwAAjwAAjwAAjwAAkAAAdwAAjwAAjQAAcAAAjwAAjwAAiQAAjwAAjAAAjwAAjwAAjwAAjwAAkAAAjwAAjwAAjwAAjQAAjQAAhQAAhQAAkAAAkAAAkAAAjgAAjwAAiQAAhAAAkAAAjwAAjwAAkAAAjwAAjgAAjgAAjQAAjwAAjQAAjwAAkAAAjwAAjQAAiwAAkABp3EJyAAAANHRSTlMA+fH89enaabMF4iADxJ4SiSa+uXztyoNvQDcsDgvl3pRiXBcH1M+ppJlWUUpFMq6OdjwbMc1+ZgAABAhJREFUeNrt29nSmkAQBeAGZBMUxH3f993/vP+zJZVKVZKCRhibyc3/XVt6SimYPjPSt28Vmt5W/fu2T/9B9HIf7Tp+0RsgDC6DY6OLvzxJj8341DnsakgZUNUmo2XsORYYS6rOeugukhnyragiq56JIs5UEQ/FXKgidRTzompEKOhG1biioDFV44mCAqrGAQWtqRptA8VMqCpR6zpo9iy84VO1opWHPBZVb9QAzyQN/D1YNungJ+DMSYsbOFvSIwGjR3p0wGiQHkMw2qRHC4w76RGBcSA9NmAcSY8QjAdpYiFbTJoYyNYnTWrI1iFNusj2JE1sZBuQJtyE5pImc3Y21cRhZ1NNtsh2Ik127HCsSY8djjVpINuVhPnjVefobee2adXqu2S/6FyivABDEjQ9Lxo1pDlNd5wg24ikRK5ngKGhHhg1DSgZk4RrD6pa9LlRAnUBfWp6xCe+6EOvOT6yrmrigZaCZHPAp6b0gaiBFKvRd0/D1rr1OrvxDqiyoZmmPt9onib0t/VybyEXqdu0Cw16rUNVAfZFlzdjr5KOaoAUK6JsrgWGQapuBlIS4gy70gEmTrk1fuAgU40UxWXv6wvZAC2Dqfx0BfBK1z1H0aJ0WH7Ub4oG8JDlpBCgK1l5tSjHQSoAf0HVfMqxF+yqpzVk2ZGuAGdk8ijPHZlmpOCg0vh5cgE2JtN3qQSoU3lXpbKlLRegrzTpt+U2TNpKY2YiFiA0kS1Q6QccweZ/oinASm2B3RML0AGDNAU4qq3udmIXYVttD3YrFsBR24N1xG5EJpTeaiYWwILS5WRKBfChFsCSehpOwKi/yS0V4AsMWym3TWUFgMqIsRYL8AVOSDlaYgEitbZnDKll+UatchyJBSC1c3lDuQA2VHYAL3KneHpgLCjHSS7AHYyEciwh1g88wDB94rlyAVxwhsR7ygW4gRMTry8XwDdUDkXFgjVdD5wRsRaCAWJwPGI1Baval8Ie3Hqn8AjjhHbZr2DzrInumDTBGlCG8xy8QPY3MNLX4TiRP1q+BWs2pn9ECwu5+qTABc+80h++28UbTkjlTW3wrM6Ufrtu8d5J9Svg1Vch/RTcUYQdUHm+g1z1x2gSGyjGGVN5F7xjoTCjE0ndC3jJMzfCftmiciZ1lNGe3vCGufOWVMLIQHHehi3X1O8JJxR236SalUzninbu937BlwfV/I3k4KdGk2xm+MHuLa8Z0i9TC280qLRrF+8cw9RSjrOg8oIG8j2YgULsbGPomsgR0x9nsOzkOLh+kZr1owZGbfC2JJl78fIV0Wei/gxZDl85XWVtt++cxhuSEQ6bdfzLjlvM86PbaD4vQUjSglV8385My7CdXtO9+ZSyrLcf7nBN376V8gMpRztyq6RXYQAAAABJRU5ErkJggg==" width="16" /><a href="https://dokie.li/" target="_blank">dokieli</a> is an <i class="fa fa-github"></i> <a href="https://github.com/linkeddata/dokieli" target="_blank">open source</a> project. There is <i class="fa fa-flask"></i> <a href="https://dokie.li/docs" target="_blank">documentation</a> and public <i class="fa fa-comments-o"></i> <a href="https://gitter.im/linkeddata/dokieli" target="_blank">chat</a> available. Made with fun.</dd></dl></footer></menu>'));
       document.querySelector('#document-menu').addEventListener('click', function(e) {
         var button = e.target.closest('button');
         if(button){
@@ -3046,7 +1204,7 @@ var DO = {
               e.target.disabled = true;
             }
 
-            document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="graph-view" class="do on">' + DO.C.Button.Close + '<h2>Graph view</h2></aside>'));
+            document.documentElement.appendChild(util.fragmentFromString('<aside id="graph-view" class="do on">' + DO.C.Button.Close + '<h2>Graph view</h2></aside>'));
 
             var graphView = document.getElementById('graph-view');
             graphView.addEventListener('click', function(e) {
@@ -3210,7 +1368,7 @@ var DO = {
         <div id="embed-data-trig"><textarea placeholder="Enter data in TriG" name="meta-trig" cols="80" rows="24">' + ((scriptCurrentData['meta-trig']) ? scriptCurrentData['meta-trig'].content : '') + '</textarea><button class="save">Save</button></div>\n\
         </aside>';
 
-        document.documentElement.appendChild(DO.U.fragmentFromString(embedMenu));
+        document.documentElement.appendChild(util.fragmentFromString(embedMenu));
         document.querySelector('#embed-data-turtle textarea').focus();
         var a = document.querySelectorAll('#embed-data-entry nav a');
         for(var i = 0; i < a.length; i++) {
@@ -3347,7 +1505,7 @@ var DO = {
     },
 
     contentCount: function contentCount (c) {
-      var content = DO.U.fragmentFromString(doc.domToString(c)).textContent.trim();
+      var content = util.fragmentFromString(doc.domToString(c)).textContent.trim();
       var contentCount = { readingTime:1, words:0, chars:0, lines:0, pages:{A4:1, USLetter:1}, bytes:0 };
       if (content.length > 0) {
         var lineHeight = c.ownerDocument.defaultView.getComputedStyle(c, null)["line-height"];
@@ -3385,7 +1543,7 @@ var DO = {
       if (!node) {
         node = document.getElementById('document-items');
         if (!node) {
-          document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="document-items" class="do on">' + DO.C.Button.Close + '</aside>'));
+          document.documentElement.appendChild(util.fragmentFromString('<aside id="document-items" class="do on">' + DO.C.Button.Close + '</aside>'));
           node = document.getElementById('document-items');
         }
       }
@@ -3818,9 +1976,10 @@ var DO = {
         originalurl = (originalurl) ? '<dt>Original</dt><dd><a href="' + originalurl + '" target="_blank">' + originalurl + '</a></dd>' : '';
 
         var versionurl = i.getAttribute('data-versionurl');
-        verionurl = (versionurl) ? versionurl.trim() : undefined;
+        versionurl = (versionurl) ? versionurl.trim() : undefined;
         var versiondate = i.getAttribute('data-versiondate');
         var nearlinkdateurl = '';
+
         if (versiondate) {
           versiondate = versiondate.trim();
           versiondateNumeric = versiondate.replace(/\D/g, '');
@@ -4025,7 +2184,7 @@ var DO = {
           if (!node) {
             node = document.getElementById(elementId);
             if(!node) {
-              document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="' + elementId + '" class="do on"><h2>Memento</h2>' + DO.C.Button.Close + '</aside>'));
+              document.documentElement.appendChild(util.fragmentFromString('<aside id="' + elementId + '" class="do on"><h2>Memento</h2>' + DO.C.Button.Close + '</aside>'));
               node = document.getElementById(elementId);
             }
           }
@@ -4192,7 +2351,7 @@ var DO = {
     createImmutableResource: function(url, data, options) {
       if(!url) return;
 
-      var uuid = DO.U.generateUUID();
+      var uuid = util.generateUUID();
       var containerIRI = url.substr(0, url.lastIndexOf('/') + 1);
       var immutableURL = containerIRI + uuid;
 
@@ -4293,7 +2452,7 @@ var DO = {
 
       DO.U.setDate(document, { 'id': 'document-created', 'property': 'schema:dateCreated', 'title': 'Created' } );
 
-      var uuid = DO.U.generateUUID();
+      var uuid = util.generateUUID();
       var containerIRI = url.substr(0, url.lastIndexOf('/') + 1);
       var mutableURL = containerIRI + uuid;
 
@@ -4384,7 +2543,7 @@ var DO = {
 
       e.target.closest('button').disabled = true
 
-      document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="reply-to-resource" class="do on">' + DO.C.Button.Close + '<h2>Reply to this</h2><div id="reply-to-resource-input"><p>Reply to <code>' +
+      document.documentElement.appendChild(util.fragmentFromString('<aside id="reply-to-resource" class="do on">' + DO.C.Button.Close + '<h2>Reply to this</h2><div id="reply-to-resource-input"><p>Reply to <code>' +
         iri +'</code></p><ul><li><p><label for="reply-to-resource-note">Quick reply (plain text note)</label></p><p><textarea id="reply-to-resource-note" rows="10" cols="40" name="reply-to-resource-note" placeholder="Great article!"></textarea></p></li><li><label for="reply-to-resource-license">License</label> <select id="reply-to-resource-license" name="reply-to-resource-license">' +
         DO.U.getLicenseOptionsHTML() + '</select></li></ul></div>'))
 
@@ -4474,7 +2633,7 @@ var DO = {
 
         var note = DO.U.createNoteDataHTML(noteData)
 
-        var data = DO.U.createHTML('', note)
+        var data = doc.createHTML('', note)
 
         fetcher.putResource(noteIRI, data)
 
@@ -4572,7 +2731,7 @@ var DO = {
 
     showActionMessage: function(node, message) {
       var message = '<aside id="document-action-message" class="do on"><p>' + message + '</p></aside>';
-      node.appendChild(DO.U.fragmentFromString(message));
+      node.appendChild(util.fragmentFromString(message));
       window.setTimeout(function () {
         var dam = document.getElementById('document-action-message');
         dam.parentNode.removeChild(dam);
@@ -4596,7 +2755,7 @@ var DO = {
         shareResourceLinkedResearch = '<li><input id="share-resource-linked-research" type="checkbox" value="https://linkedresearch.org/cloud" /><label for="share-resource-linked-research">Notify <a href="https://linkedresearch.org/cloud">Linked Open Research Cloud</a></label></li>';
       }
 
-      document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="share-resource" class="do on">' + DO.C.Button.Close + '<h2>Share resource</h2><div id="share-resource-input"><p>Send a notification about <code>' + iri +'</code></p><ul><li id="share-resource-address-book"></li>' + shareResourceLinkedResearch + '<li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share">Share</button></aside>'));
+      document.documentElement.appendChild(util.fragmentFromString('<aside id="share-resource" class="do on">' + DO.C.Button.Close + '<h2>Share resource</h2><div id="share-resource-input"><p>Send a notification about <code>' + iri +'</code></p><ul><li id="share-resource-address-book"></li>' + shareResourceLinkedResearch + '<li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share">Share</button></aside>'));
 
       var li = document.getElementById('share-resource-address-book');
 
@@ -5032,7 +3191,7 @@ console.log(reason);
       action = action || 'write';
 
       var browserHTML = '<aside id="resource-browser-' + id + '" class="do on">' + DO.C.Button.Close + '<h2>Resource Browser</h2></aside>';
-      document.documentElement.appendChild(DO.U.fragmentFromString(browserHTML));
+      document.documentElement.appendChild(util.fragmentFromString(browserHTML));
 
       DO.U.setupResourceBrowser(document.getElementById('resource-browser-' + id), id, action);
       document.getElementById('resource-browser-' + id).insertAdjacentHTML('beforeend', '<p><samp id="' + id + '-' + action + '"></samp></p>');
@@ -5056,7 +3215,7 @@ console.log(reason);
       if(typeof e !== 'undefined') {
         e.target.disabled = true;
       }
-      document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="open-document" class="do on">' + DO.C.Button.Close + '<h2>Open Document</h2><p><label for="open-local-file">Open local file</label> <input type="file" id="open-local-file" name="open-local-file" /></p></aside>'));
+      document.documentElement.appendChild(util.fragmentFromString('<aside id="open-document" class="do on">' + DO.C.Button.Close + '<h2>Open Document</h2><p><label for="open-local-file">Open local file</label> <input type="file" id="open-local-file" name="open-local-file" /></p></aside>'));
 
       var id = 'location-open-document';
       var action = 'read';
@@ -5187,7 +3346,7 @@ console.log(reason);
             catch(e) { console.log('Cannot change pushState due to cross-origin.'); }
           }
         }
-        DO.U.init();
+        DO.C.init();
       }
       else {
 console.log('//TODO: Handle server returning wrong Response/Content-Type for the Request/Accept');
@@ -5197,7 +3356,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
     createNewDocument: function createNewDocument (e) {
       e.target.disabled = true
-      document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="create-new-document" class="do on">' + DO.C.Button.Close + '<h2>Create New Document</h2></aside>'))
+      document.documentElement.appendChild(util.fragmentFromString('<aside id="create-new-document" class="do on">' + DO.C.Button.Close + '<h2>Create New Document</h2></aside>'))
 
       var newDocument = document.getElementById('create-new-document')
       newDocument.addEventListener('click', e => {
@@ -5295,7 +3454,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
     saveAsDocument: function saveAsDocument (e) {
       e.target.disabled = true;
-      document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="save-as-document" class="do on">' + DO.C.Button.Close + '<h2>Save As Document</h2></aside>'));
+      document.documentElement.appendChild(util.fragmentFromString('<aside id="save-as-document" class="do on">' + DO.C.Button.Close + '<h2>Save As Document</h2></aside>'));
 
       var saveAsDocument = document.getElementById('save-as-document');
       saveAsDocument.addEventListener('click', function(e) {
@@ -5492,7 +3651,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
     viewSource: function(e) {
       e.target.disabled = true;
-      document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="source-view" class="do on">' + DO.C.Button.Close + '<h2>Source</h2><textarea id="source-edit" rows="24" cols="80"></textarea><p><button class="create">Update</button></p></aside>'));
+      document.documentElement.appendChild(util.fragmentFromString('<aside id="source-view" class="do on">' + DO.C.Button.Close + '<h2>Source</h2><textarea id="source-edit" rows="24" cols="80"></textarea><p><button class="create">Update</button></p></aside>'));
       var sourceBox = document.getElementById('source-view');
       var input = document.getElementById('source-edit');
       input.value = doc.getDocument();
@@ -5789,20 +3948,15 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       else if (subject.rellatestversion) {
         dataVersionURL = subject.rellatestversion;
       }
+      dataVersionURL = (dataVersionURL) ? ' data-versionurl="' + dataVersionURL + '"' : '';
 
-      if (dataVersionURL) {
-        dataVersionURL = ' data-versionurl="' + dataVersionURL + '"';
-      }
-      var dataVersionDate;
-      if (dateVersion) {
-        dataVersionDate = ' data-versiondate="' + dateVersion + '"';
-      }
+      var dataVersionDate = (dateVersion) ? ' data-versiondate="' + dateVersion + '"' : '';
 
       var content = ('content' in options && options.content.length > 0) ? options.content + ', ' : '';
 
       var citationReason = 'Reason: ' + DO.C.Citation[options.citationRelation];
 
-      var citationHTML = authors + title + datePublished + content + '<a about="#' + options.refId + '"' + dataVersionDate + dataVersionURL + ' href="' + options.citationId + '" rel="schema:citation ' + options.citationRelation  + '">' + options.citationId + '</a> [' + dateAccessed + ', ' + citationReason + ']';
+      var citationHTML = authors + title + datePublished + content + '<a about="#' + options.refId + '"' + dataVersionDate + dataVersionURL + ' href="' + options.citationId + '" rel="schema:citation ' + options.citationRelation  + '" title="' + DO.C.Citation[options.citationRelation] + '">' + options.citationId + '</a> [' + dateAccessed + ', ' + citationReason + ']';
 //console.log(citationHTML);
       return citationHTML;
     },
@@ -5870,30 +4024,8 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         return (document.getElementById(string)) ? string + '-x' : string;
       }
       else {
-        return DO.U.generateUUID();
+        return util.generateUUID();
       }
-    },
-
-    // MIT license
-    // http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript/21963136#21963136
-    generateUUID: function() {
-      var lut = []; for (var i=0; i<256; i++) { lut[i] = (i<16?'0':'')+(i).toString(16); }
-      var s = function() {
-        var d0 = Math.random()*0xffffffff|0;
-        var d1 = Math.random()*0xffffffff|0;
-        var d2 = Math.random()*0xffffffff|0;
-        var d3 = Math.random()*0xffffffff|0;
-        return lut[d0&0xff]+lut[d0>>8&0xff]+lut[d0>>16&0xff]+lut[d0>>24&0xff]+'-'+
-        lut[d1&0xff]+lut[d1>>8&0xff]+'-'+lut[d1>>16&0x0f|0x40]+lut[d1>>24&0xff]+'-'+
-        lut[d2&0x3f|0x80]+lut[d2>>8&0xff]+'-'+lut[d2>>16&0xff]+lut[d2>>24&0xff]+
-        lut[d3&0xff]+lut[d3>>8&0xff]+lut[d3>>16&0xff]+lut[d3>>24&0xff];
-      };
-      return s();
-    },
-
-    //http://stackoverflow.com/a/25214113
-    fragmentFromString: function(strHTML) {
-      return document.createRange().createContextualFragment(strHTML);
     },
 
     SPARQLQueryURL: {
@@ -6349,7 +4481,7 @@ WHERE {\n\
 
         var containerNodeTextContent = containerNode.textContent;
         //XXX: Seems better?
-        // var containerNodeTextContent = DO.U.fragmentFromString(doc.getDocument(containerNode)).textContent.trim();
+        // var containerNodeTextContent = util.fragmentFromString(doc.getDocument(containerNode)).textContent.trim();
 
 //console.log(containerNodeTextContent);
 // console.log(prefix + exact + suffix);
@@ -6413,7 +4545,7 @@ WHERE {\n\
 <blockquote cite="' + noteIRI + '">'+ note + '</blockquote>\n\
 </aside>\n\
 ';
-          var asideNode = DO.U.fragmentFromString(asideNote);
+          var asideNode = util.fragmentFromString(asideNote);
           var parentSection = MediumEditor.util.getClosestTag(selectedParentNode, 'section')
           || MediumEditor.util.getClosestTag(selectedParentNode, 'div') || MediumEditor.util.getClosestTag(selectedParentNode, 'article') || MediumEditor.util.getClosestTag(selectedParentNode, 'main') || MediumEditor.util.getClosestTag(selectedParentNode, 'body');
           parentSection.appendChild(asideNode);
@@ -6554,115 +4686,6 @@ WHERE {\n\
       return Object.keys(prefixes).map(function(i){ return i + ': ' + prefixes[i]; }).join(' ');
     },
 
-    createHTML: function(title, main, options) {
-      title = title || '';
-      options = options || {};
-      var prefix = ('prefixes' in options && Object.keys(options.prefixes).length > 0) ? ' prefix="' + DO.U.getRDFaPrefixHTML(options.prefixes) + '"' : '';
-
-      return '<!DOCTYPE html>\n\
-<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">\n\
-  <head>\n\
-    <meta charset="utf-8" />\n\
-    <title>' + title + '</title>\n\
-  </head>\n\
-  <body' + prefix + '>\n\
-    <main>\n\
-' + main + '\n\
-    </main>\n\
-  </body>\n\
-</html>\n\
-';
-    },
-
-    createActivityHTML: function(o) {
-      var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: http://schema.org/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams#"';
-
-      var types = '<dt>Types</dt>'
-
-      o.type.forEach(function (t) {
-        types += '<dd><a about="" href="' + DO.C.Prefixes[t.split(':')[0]] + t.split(':')[1] + '" typeof="'+ t +'">' + t.split(':')[1] + '</a></dd>'
-      })
-
-      var asObjectTypes = ''
-      if ('object' in o && 'objectTypes' in o && o.objectTypes.length > 0) {
-        asObjectTypes = '<dl><dt>Types</dt>'
-        o.objectTypes.forEach(function(t){
-          asObjectTypes += '<dd><a about="' + o.object + '" href="' + t + '" typeof="'+ t +'">' + t + '</a></dd>'
-        })
-        asObjectTypes += '</dl>'
-      }
-
-      var asObjectLicense = ''
-      if ('object' in o && 'objectLicense' in o && o.objectLicense.length > 0) {
-        asObjectLicense = '<dl><dt>License</dt><dd><a about="' + o.object + '" href="' + o.objectLicense + '" property="schema:license">' + o.objectLicense + '</a></dd></dl>'
-      }
-
-      var asobject = ('object' in o) ? '<dt>Object</dt><dd><a href="' + o.object + '" property="as:object">' + o.object + '</a>' + asObjectTypes + asObjectLicense + '</dd>' : ''
-
-      var asinReplyTo = ('inReplyTo' in o) ? '<dt>In reply to</dt><dd><a href="' + o.inReplyTo + '" property="as:inReplyTo">' + o.inReplyTo + '</a></dd>' : ''
-
-      var ascontext = ('context' in o && o.context.length > 0) ? '<dt>Context</dt><dd><a href="' + o.context + '" property="as:context">' + o.context + '</a></dd>' : ''
-
-      var astarget = ('target' in o && o.target.length > 0) ? '<dt>Target</dt><dd><a href="' + o.target + '" property="as:target">' + o.target + '</a></dd>' : ''
-
-      var datetime = util.getDateTimeISO()
-      var asupdated = '<dt>Updated</dt><dd><time datetime="' + datetime + '" datatype="xsd:dateTime" property="as:updated" content="' + datetime + '">' + datetime.substr(0,19).replace('T', ' ') + '</time></dd>'
-
-      var assummary = ('summary' in o && o.summary.length > 0) ? '<dt>Summary</dt><dd property="as:summary" datatype="rdf:HTML">' + o.summary + '</dd>' : ''
-
-      var ascontent = ('content' in o && o.content.length > 0) ? '<dt>Content</dt><dd property="as:content" datatype="rdf:HTML">' + o.content + '</dd>' : ''
-
-      var asactor = (DO.C.User.IRI) ? '<dt>Actor</dt><dd><a href="' + DO.C.User.IRI + '" property="as:actor">' + DO.C.User.IRI + '</a></dd>' : ''
-
-      var license = '<dt>License</dt><dd><a href="' + DO.C.NotificationLicense + '" property="schema:license">' + DO.C.NotificationLicense + '</a></dd>'
-
-      var asto = ('to' in o && o.to.length > 0 && !o.to.match(/\s/g) && o.to.match(/^https?:\/\//gi)) ? '<dt>To</dt><dd><a href="' + o.to + '" property="as:to">' + o.to + '</a></dd>' : ''
-
-      var statements = ('statements' in o) ? o.statements : ''
-
-      var dl = [
-        types,
-        asobject,
-        ascontext,
-        astarget,
-        asupdated,
-        assummary,
-        ascontent,
-        asactor,
-        license,
-        asto
-      ].map(function (n) { if (n !== '') { return '      ' + n + '\n' } }).join('')
-
-
-      // TODO: Come up with a better title. reuse `types` e.g., Activity Created, Announced..
-      var title = 'Notification'
-      if(types.indexOf('as:Announce') > -1){
-        title += ': Announced'
-      } else if (types.indexOf('as:Create') > -1){
-        title += ': Created'
-      } else if (types.indexOf('as:Like') > -1){
-        title += ': Liked'
-      } else if (types.indexOf('as:Dislike') > -1){
-        title += ': Disliked'
-      } else if (types.indexOf('as:Add') > -1){
-        title += ': Added'
-      }
-
-      var data = '<article'+prefixes+'>\n\
-  <h1>' + title + '</h1>\n\
-  <section>\n\
-    <dl about="">\n\
-' + dl +
-'    </dl>\n\
-  </section>\n\
-  <section>\n\
-' + statements + '\n\
-  </section>\n\
-</article>'
-
-      return data
-    },
-
     createNoteDataHTML: function(n) {
 // console.log(n);
       var published = '';
@@ -6679,7 +4702,7 @@ WHERE {\n\
       var articleClass = '';
       var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: http://schema.org/ dcterms: http://purl.org/dc/terms/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams#"';
 
-      var canonicalId = n.canonical || 'urn:uuid:' + DO.U.generateUUID();
+      var canonicalId = n.canonical || 'urn:uuid:' + util.generateUUID();
 
       var motivatedByIRI = n.motivatedByIRI || '';
       var motivatedByLabel = '';
@@ -7324,7 +5347,7 @@ WHERE {\n\
         }
 
         if (!document.getElementById('document-editor')) {
-          document.documentElement.appendChild(DO.U.fragmentFromString('<aside id="document-editor" class="do"></aside>'))
+          document.documentElement.appendChild(util.fragmentFromString('<aside id="document-editor" class="do"></aside>'))
         }
 
         var editorOptions = {
@@ -7631,7 +5654,7 @@ WHERE {\n\
                           case "p": default:
                             var xSPE = document.createElement(sPE);
                             xSPE.appendChild(fragment.cloneNode(true));
-                            fragment = DO.U.fragmentFromString(xSPE.outerHTML);
+                            fragment = util.fragmentFromString(xSPE.outerHTML);
                             break;
                           //TODO: Other cases?
                         }
@@ -8917,13 +6940,13 @@ WHERE {\n\
 
                     if ('profile' in annotation && annotation.profile == 'https://www.w3.org/ns/activitystreams') {
                       notificationData['statements'] = DO.U.createNoteDataHTML(noteData);
-                      note = DO.U.createActivityHTML(notificationData);
+                      note = doc.createActivityHTML(notificationData);
                     }
                     else {
                       note = DO.U.createNoteDataHTML(noteData);
                     }
 
-                    data = DO.U.createHTML('', note);
+                    data = doc.createHTML('', note);
 // console.log(data)
 // console.log(annotation)
 
@@ -8968,7 +6991,7 @@ WHERE {\n\
 <aside class="note">\n\
 '+ note + '\n\
 </aside>';
-                  var asideNode = DO.U.fragmentFromString(asideNote);
+                  var asideNode = util.fragmentFromString(asideNote);
                   var parentSection = MediumEditor.util.getClosestTag(selectedParentElement, 'section');
                   parentSection.appendChild(asideNode);
 
@@ -8994,7 +7017,7 @@ WHERE {\n\
 <aside class="note">\n\
 '+ note + '\n\
 </aside>';
-                      var asideNode = DO.U.fragmentFromString(asideNote);
+                      var asideNode = util.fragmentFromString(asideNote);
                       var parentSection = MediumEditor.util.getClosestTag(selectedParentElement, 'section');
                       parentSection.appendChild(asideNode);
 
@@ -9233,59 +7256,1702 @@ WHERE {\n\
         }
       })()
 
-    }, //DO.U.Editor
-
-    init: function() {
-      if(document.body) {
-        DO.U.initUser();
-        DO.U.initCurrentStylesheet();
-        DO.U.setPolyfill();
-        DO.U.setDocRefType();
-        DO.U.showRefs();
-        DO.U.buttonClose();
-        DO.U.highlightItems();
-        DO.U.initDocumentActions();
-        DO.U.getResourceInfo();
-        DO.U.showTextQuoteSelector();
-        DO.U.showDocumentInfo();
-        DO.U.showFragment();
-        DO.U.showRobustLinks();
-        DO.U.setDocumentMode();
-        DO.U.showInboxNotifications();
-        DO.U.initMath();
-      }
-    }
+    } //DO.U.Editor
   } //DO.U
 }; //DO
 
   if (document.addEventListener) {
-    document.addEventListener('DOMContentLoaded', function(){ DO.U.init(); });
+    document.addEventListener('DOMContentLoaded', function(){ DO.C.init(); });
   }
 }
 
 module.exports = DO
 
-/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(2)))
 
 /***/ }),
-/* 10 */
+/* 2 */
 /***/ (function(module, exports) {
 
-module.exports = __WEBPACK_EXTERNAL_MODULE_10__;
+var g;
+
+// This works in non-strict mode
+g = (function() {
+	return this;
+})();
+
+try {
+	// This works if eval is allowed (see CSP)
+	g = g || Function("return this")() || (1, eval)("this");
+} catch (e) {
+	// This works if the window reference is available
+	if (typeof window === "object") g = window;
+}
+
+// g can still be undefined, but nothing to do about it...
+// We return undefined, instead of nothing here, so it's
+// easier to handle this case. if(!global) { ...}
+
+module.exports = g;
+
 
 /***/ }),
-/* 11 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-const util = __webpack_require__(3)
-const doc = __webpack_require__(1)
-const uri = __webpack_require__(2)
-const graph = __webpack_require__(5)
-const fetcher = __webpack_require__(4)
-const Config = __webpack_require__(0)
+const Config = __webpack_require__(4)
+const doc = __webpack_require__(5)
+const uri = __webpack_require__(6)
+const graph = __webpack_require__(7)
+const fetch = __webpack_require__(8)  // Uses native fetch() in the browser
+
+const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
+const LDP_RESOURCE = '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
+
+module.exports = {
+  setAcceptRDFTypes,
+  copyResource,
+  currentLocation,
+  deleteResource,
+  getAcceptPostPreference,
+  getResource,
+  getResourceHead,
+  getResourceGraph,
+  getResourceOptions,
+  parseLinkHeader,
+  patchResource,
+  postResource,
+  putResource,
+  putResourceACL,
+  postActivity
+}
+
+function setAcceptRDFTypes(options) {
+  options = options || {};
+
+  return Config.AvailableMediaTypes.map(i => {
+    if (i == 'application/xhtml+xml' || i == 'text/html') {
+      // q = Number(Math.round((q-0.1)+'e2')+'e-2');
+      return i + ';q=0.9';
+    }
+    return i;
+  }).join(',');
+}
+
+// I want HTTP COPY and I want it now!
+function copyResource (fromURL, toURL, options = {}) {
+  let headers = { 'Accept': '*/*' }
+  let contentType
+
+  if (!fromURL || !toURL) {
+    return Promise.reject(new Error('Missing fromURL or toURL in copyResource'))
+  }
+
+  return getResource(fromURL, headers, options)
+    .then(response => {
+      contentType = response.headers.get('Content-Type')
+
+      return (Config.AcceptBinaryTypes.indexOf(contentType))
+        ? response.arrayBuffer()
+        : response.text()
+    })
+    .then(contents => {
+      return putResource(toURL, contents, contentType, null, options)
+        .catch(error => {
+          if (error.status === 0) {
+            // Retry with no credentials
+            options.noCredentials = true
+            return putResource(toURL, contents, contentType, null, options)
+          }
+
+          throw error  // re-throw error
+        })
+    })
+}
+
+/**
+ * @returns {string}
+ */
+function currentLocation () {
+  return window.location.origin + window.location.pathname
+}
+
+/**
+ * deleteResource
+ *
+ * @param url {string}
+ * @param options {object}
+ *
+ * @returns {Promise<Response>}
+ */
+function deleteResource (url, options = {}) {
+  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
+
+  if (!url) {
+    return Promise.reject(new Error('Cannot DELETE resource - missing url'))
+  }
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  options.method = 'DELETE'
+
+  return _fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error deleting resource: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      return response
+    })
+}
+
+function getAcceptPostPreference (url) {
+  const pIRI = uri.getProxyableIRI(url)
+
+  return getResourceOptions(pIRI, {'header': 'Accept-Post'})
+    .catch(error => {
+      console.error(error)
+
+      return {'headers': 'application/ld+json'}
+    })
+    .then(result => {
+      let header = result.headers.trim().split(/\s*,\s*/)
+
+      if (header.indexOf('text/html') > -1 || header.indexOf('application/xhtml+xml') > -1) {
+        return 'text/html'
+      } else if (header.indexOf('text/turtle') > -1 || header.indexOf('*/*') > -1) {
+        return 'text/turtle'
+      } else if (header.indexOf('application/ld+json') > -1 || header.indexOf('application/json') > -1) {
+        return 'application/ld+json'
+      } else {
+        console.log('Accept-Post contains unrecognised media-range; ' + result.headers)
+        return result.headers
+      }
+    })
+}
+
+/**
+ * getResource
+ *
+ * @param url {string}
+ *
+ * @param headers {object}
+ * @param [headers.accept='text/turtle'] {string}
+ *
+ * @param options {object}
+ *
+ * @returns {Promise<string>|Promise<ArrayBuffer>}
+ */
+function getResource (url, headers = {}, options = {}) {
+  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
+
+  url = url || currentLocation()
+  options.method = 'GET'
+
+  if (!headers['Accept']) {
+    headers['Accept'] = 'text/turtle'
+  }
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  options.headers = Object.assign({}, headers)
+
+  return _fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error fetching resource: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      return response
+    })
+}
+
+/**
+ * getResourceHead
+ *
+ * @param [url] {string}
+ *
+ * @param options {object}
+ * @param options.header {string}
+ *
+ * @returns {Promise<string>} Resolves with contents of specified header
+ */
+function getResourceHead (url, options = {}) {
+  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
+  url = url || currentLocation()
+
+  if (!options.header) {
+    return Promise.reject(new Error('options.header not specified'))
+  }
+
+  options.method = 'HEAD'
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  return _fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error fetching resource HEAD: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      let header = response.headers.get(options.header)
+
+      if (!header) {
+        throw new Error("'" + options.header + "' header not found")
+      }
+
+      return { 'headers': header }
+    })
+}
+
+function getResourceGraph (iri, headers, options = {}) {
+  let defaultHeaders = {'Accept': setAcceptRDFTypes()}
+  headers = headers || defaultHeaders
+  if (!('Accept' in headers)) {
+    Object.assign(headers, defaultHeaders)
+  }
+
+  if (iri.slice(0, 5).toLowerCase() === 'http:') {
+    options['noCredentials'] = true
+
+    if (document.domain !== iri.split('/')[2]) {
+      options['forceProxy'] = true
+    }
+  }
+
+  let pIRI = uri.getProxyableIRI(iri, options)
+
+  return getResource(pIRI, headers, options)
+    .then(response => {
+      let cT = response.headers.get('Content-Type')
+      options.contentType = (cT) ? cT.split(';')[ 0 ].trim() : 'text/turtle'
+
+      options.subjectURI = uri.stripFragmentFromString(iri)
+
+      return response.text()
+    })
+    .then(data => {
+      return graph.getGraphFromData(data, options)
+    })
+    .then(g => {
+      let fragment = (iri.lastIndexOf('#') >= 0) ? iri.substr(iri.lastIndexOf('#')) : ''
+
+      return SimpleRDF(Config.Vocab, options[ 'subjectURI' ], g, ld.store).child(pIRI + fragment)
+    })
+}
+
+/**
+ * getResourceOptions
+ *
+ * @param [url] {string} Defaults to current url
+ *
+ * @param [options={}] {object}
+ * @param [options.header] {string} Specific response header to return
+ * @param [options.noCredentials] {boolean}
+ *
+ * @returns {Promise} Resolves with `{ headers: ... }` object
+ */
+function getResourceOptions (url, options = {}) {
+  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
+  url = url || currentLocation()
+
+  options.method = 'OPTIONS'
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  return _fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error fetching resource OPTIONS: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+      else if (options.header && !response.headers.get(options.header)){
+        let error = new Error('OPTIONS without ' + options.header + ' header: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      if (options.header) {  // specific header requested
+        return { headers: response.headers.get(options.header) }
+      }
+
+      return { headers: response.headers }  // Not currently used anywhere
+    })
+}
+
+function parseLinkHeader (link) {
+  if (!link) {
+    return {}
+  }
+  var linkexp = /<[^>]*>\s*(\s*;\s*[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*")))*(,|$)/g
+  var paramexp = /[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*"))/g;
+  var matches = link.match(linkexp)
+  var rels = {}
+  for (var i = 0; i < matches.length; i++) {
+    var split = matches[i].split('>')
+    var href = split[0].substring(1)
+    var ps = split[1]
+    var s = ps.match(paramexp)
+    for (var j = 0; j < s.length; j++) {
+      var p = s[j]
+      var paramsplit = p.split('=')
+      // var name = paramsplit[0]
+      var rel = paramsplit[1].replace(/["']/g, '')
+      if (!rels[rel]) {
+        rels[rel] = []
+      }
+      rels[rel].push(href)
+      if (rels[rel].length > 1) {
+        rels[rel].sort()
+      }
+    }
+  }
+  return rels
+}
+
+function patchResource (url, deleteBGP, insertBGP, options = {}) {
+  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
+  // insertBGP and deleteBGP are basic graph patterns.
+  deleteBGP = (deleteBGP) ? 'DELETE DATA {\n\
+' + deleteBGP + '\n\
+};\n\
+' : '';
+
+  insertBGP = (insertBGP) ? 'INSERT DATA {\n\
+' + insertBGP + '\n\
+};\n\
+' : '';
+
+
+  options.body = deleteBGP + insertBGP
+
+  options.method = 'PATCH'
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  options.headers = options.headers || {}
+
+  options.headers['Content-Type'] = 'application/sparql-update; charset=utf-8'
+
+  return _fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error patching resource: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      return response
+    })
+}
+
+function postResource (url, slug, data, contentType, links, options = {}) {
+  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
+  if (!url) {
+    return Promise.reject(new Error('Cannot POST resource - missing url'))
+  }
+
+  options.method = 'POST'
+
+  options.body = data
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  options.headers = options.headers || {}
+
+  options.headers['Content-Type'] = contentType || DEFAULT_CONTENT_TYPE
+
+  links = links
+    ? LDP_RESOURCE + ', ' + links
+    : LDP_RESOURCE
+
+  options.headers['Link'] = links
+
+  if (slug) {
+    options.headers['Slug'] = slug
+  }
+
+  return _fetch(url, options)
+
+    .catch(error => {
+      if (error.status === 0 && !options.noCredentials) {
+        // Possible CORS error, retry with no credentials
+        options.noCredentials = true
+        return postResource(url, slug, data, contentType, options)
+      }
+
+      throw error
+    })
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error creating resource: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      return response
+    })
+}
+
+/**
+ * putResource
+ *
+ * @param url {string}
+ *
+ * @param data {string|object}
+ *
+ * @param [contentType=DEFAULT_CONTENT_TYPE] {string}
+ *
+ * @param [links=LDP_RESOURCE] {string}
+ *
+ * @param [options={}] {object}
+ *
+ * @returns {Promise<Response>}
+ */
+function putResource (url, data, contentType, links, options = {}) {
+  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
+  if (!url) {
+    return Promise.reject(new Error('Cannot PUT resource - missing url'))
+  }
+
+  options.method = 'PUT'
+
+  options.body = data
+
+  if (!options.noCredentials) {
+    options.credentials = 'include'
+  }
+
+  options.headers = options.headers || {}
+
+  options.headers['Content-Type'] = contentType || DEFAULT_CONTENT_TYPE
+
+  links = links
+    ? LDP_RESOURCE + ', ' + links
+    : LDP_RESOURCE
+
+  options.headers['Link'] = links
+
+  return _fetch(url, options)
+
+    .then(response => {
+      if (!response.ok) {  // not a 2xx level response
+        let error = new Error('Error writing resource: ' +
+          response.status + ' ' + response.statusText)
+        error.status = response.status
+        error.response = response
+
+        throw error
+      }
+
+      return response
+    })
+}
+
+/**
+ * putResourceACL
+ *
+ * TODO: This doesn't seem to be used anywhere...
+ *
+ * @param accessToURL
+ * @param aclURL
+ * @param acl
+ *
+ * @returns {Promise<Response|null>}
+ */
+function putResourceACL (accessToURL, aclURL, acl) {
+  if (!Config.User.IRI) {
+    console.log('Go through sign-in or do: DO.C.User.IRI = "https://example.org/#i";')
+    return Promise.resolve(null)
+  }
+
+  acl = acl || {
+    'u': { 'iri': [Config.User.IRI], 'mode': ['acl:Control', 'acl:Read', 'acl:Write'] },
+    'g': { 'iri': ['http://xmlns.com/foaf/0.1/Agent'], 'mode': ['acl:Read'] },
+    'o': { 'iri': [], 'mode': [] }
+  }
+
+  let agent, agentClass, mode
+
+  if ('u' in acl && 'iri' in acl.u && 'mode' in acl.u) {
+    agent = '<' + acl.u.iri.join('> , <') + '>'
+    mode = acl.u.mode.join(' , ')
+  } else {
+    agent = '<' + Config.User.IRI + '>'
+    mode = 'acl:Control , acl:Read , acl:Write'
+  }
+
+  let authorizations = []
+
+  authorizations.push(
+    '[ a acl:Authorization ; acl:accessTo <' +
+    accessToURL + '> ; acl:accessTo <' + aclURL + '> ; acl:mode ' + mode +
+    ' ; acl:agent ' + agent + ' ] .'
+  )
+
+  if ('g' in acl && 'iri' in acl.g && acl.g.iri.length >= 0) {
+    agentClass = '<' + acl.g.iri.join('> , <') + '>'
+    mode = acl.g.mode.join(' , ')
+    authorizations.push(
+      '[ a acl:Authorization ; acl:accessTo <' + accessToURL +
+      '> ; acl:mode ' + mode + ' ; acl:agentClass ' + agentClass + ' ] .'
+    )
+  }
+
+  let data = '@prefix acl: <http://www.w3.org/ns/auth/acl#> .\n' +
+    authorizations.join('\n') + '\n'
+
+  return putResource(aclURL, data, 'text/turtle; charset=utf-8')
+}
+
+function postActivity(url, slug, data, options) {
+  return getAcceptPostPreference(url)
+    .then(preferredContentType => {
+      switch (preferredContentType) {
+        case 'text/html':
+        case 'application/xhtml+xml':
+          return postResource(url, slug, data, 'text/html; charset=utf-8')
+
+        case 'text/turtle':
+          // FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
+
+          return graph.serializeData(data, options['contentType'], 'text/turtle', options)
+            .then(data => {
+              return postResource(url, slug, data, 'text/turtle')
+            })
+
+        case 'application/ld+json':
+        case 'application/json':
+        case '*/*':
+        default:
+          return graph.serializeData(data, options['contentType'], 'application/ld+json', options)
+            .then(data => {
+              if (!options['canonical']) {
+                let x = JSON.parse(data)
+                if ('id' in x) {
+                  x[ "via" ] = x[ "id" ]
+                  x[ "id" ] = ""
+                  data = JSON.stringify(x)
+                }
+              }
+
+              var profile = ('profile' in options) ? '; profile="' + options.profile + '"' : ''
+
+              return postResource(url, slug, data, preferredContentType + profile)
+            })
+      }
+    })
+}
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+/**
+ * Configuration
+ */
+module.exports = {
+  init: function() {
+    if(document.body) {
+      DO.U.initUser();
+      DO.U.initCurrentStylesheet();
+      DO.U.setPolyfill();
+      DO.U.setDocRefType();
+      DO.U.showRefs();
+      DO.U.buttonClose();
+      DO.U.highlightItems();
+      DO.U.initDocumentActions();
+      DO.U.getResourceInfo();
+      DO.U.showTextQuoteSelector();
+      DO.U.showDocumentInfo();
+      DO.U.showFragment();
+      DO.U.showRobustLinks();
+      DO.U.setDocumentMode();
+      DO.U.showInboxNotifications();
+      DO.U.initMath();
+    }
+  },
+  Lang: document.documentElement.lang,
+  DocRefType: '',
+  RefType: {
+    LNCS: { InlineOpen: '[', InlineClose: ']' },
+    ACM: { InlineOpen: '[', InlineClose: ']' }
+  },
+  Stylesheets: [],
+  User: {
+    IRI: null,
+    Role: null,
+    UI: {},
+    OIDC: false,
+    WebIdDelegate: null
+  },
+  OidcPopupUrl: 'https://solid.openlinksw.com:8444/common/popup.html',
+  LocalDocument: (document.location.protocol == 'file:'),
+  UseStorage: false,
+  AutoSaveId: '',
+  AutoSaveTimer: 60000,
+  DisableStorageButtons: '<button class="local-storage-disable-html" title="Disable local storage (temporary) in the browser"><i class="fa fa-database fa-2x"></i>Local Storage</button>',
+  EnableStorageButtons: '<button class="local-storage-enable-html" title="Enable local storage (temporary) in the browser"><i class="fa fa-database fa-2x"></i>Local Storage</button>',
+  CDATAStart: '//<![CDATA[',
+  CDATAEnd: '//]]>',
+  SortableList: false,
+  GraphViewerAvailable: (typeof d3 !== 'undefined'),
+  MathAvailable: (typeof MathJax !== 'undefined'),
+  EditorAvailable: (typeof MediumEditor !== 'undefined'),
+  EditorEnabled: false,
+  ContentEditable: false,
+  WebExtension: ((window.chrome && chrome.runtime && chrome.runtime.id) || (typeof browser !== 'undefined' && browser.runtime && browser.runtime.id)),
+  Editor: {
+    headings: ["h1", "h2", "h3", "h4", "h5", "h6"],
+    regexEmptyHTMLTags: /<[^\/>][^>]*><\/[^>]+>/gim,
+    ButtonLabelType: (((window.chrome && chrome.runtime && chrome.runtime.id) || (typeof browser !== 'undefined' && browser.runtime && browser.runtime.id)) ? 'fontawesome' : (document.querySelector('head link[rel~="stylesheet"][href*="font-awesome"]') ? (!navigator.onLine && document.querySelector('head link[rel~="stylesheet"][href*="font-awesome"][href^="http"]') ? '': 'fontawesome') : '' )),
+    DisableReviewButton: '<button class="review-disable" title="Disable review"><i class="fa fa-balance-scale fa-2x"></i>Review</button>',
+    EnableReviewButton: '<button class="review-enable" title="Enable review"><i class="fa fa-balance-scale fa-2x"></i>Review</button>',
+    DisableEditorButton: '<button class="editor-disable" title="Disable editor"><i class="fa fa-i-cursor fa-2x"></i>Edit</button>',
+    EnableEditorButton: '<button class="editor-enable" title="Enable editor"><i class="fa fa-i-cursor fa-2x"></i>Edit</button>'
+  },
+  Button: {
+    Close: '<button class="close" title="Close"><i class="fa fa-close fa-2x"></i></button>'
+  },
+  DOMNormalisation: {
+    'selfClosing': "area base basefont br col colgroup embed hr img input isindex link meta metadata param source wbr",
+    'skipAttributes': "contenteditable spellcheck medium-editor-index data-medium-editor-element data-medium-editor-editor-index data-medium-focused data-placeholder role aria-multiline style",
+    'sortAttributes': true,
+    'skipNodeWithClass': 'do',
+    'classWithChildText': {
+      'class': '.do.ref',
+      'element': 'mark'
+    },
+    'replaceClassItemWith': {
+      'source': "on-document-menu medium-editor-element medium-editor-placeholder",
+      'target': ''
+    },
+    'skipClassWithValue': ''
+  },
+
+  SelectorSign: {
+    "*": "🔗",
+    "aside": "†",
+    "audio": "🔊",
+    "code": "#",
+    "dl": "☝",
+    "dl#document-annotation-service": "※",
+    "dl#document-created": "📅",
+    "dl#document-in-reply-to": "⮪",
+    "dl#document-identifier": "🚩",
+    "dl#document-inbox": "📥",
+    "dl#document-latest-version": "∼",
+    "dl#document-license": "🌻",
+    "dl#document-memento": "⛰",
+    "dl#document-modified": "📅",
+    "dl#document-original": "♁",
+    "dl#document-predecessor-version": "≺",
+    "dl#document-published": "📅",
+    "dl#document-rights": "📜",
+    "dl#document-resource-state": "🙊",
+    "dl#document-see-also": "🙈",
+    "dl#document-status": "🎆",
+    "dl#document-timemap": "⌚",
+    "dfn": "📇",
+    "figure": "❦",
+    "footer": "⸙",
+    "img": "🖼",
+    "nav": "☛",
+    "p": "¶",
+    "pre": "🖩",
+    "section": "§",
+    "section#acknowledgements": "☺",
+    "section#conclusions": "∴",
+    "section#keywords": "🏷",
+    "section#references": "☛",
+    "section#related-work": "⌘",
+    "section#results": "∞",
+    "table": "𝄜",
+    "video": "🎞"
+  },
+
+  DocumentItems: [
+    'authors',
+    'document-identifier',
+    'document-created',
+    'document-modified',
+    'document-published',
+    'document-original',
+    'document-memento',
+    'document-latest-version',
+    'document-predecessor-version',
+    'document-timegate',
+    'document-timemap',
+    'document-derived-from',
+    'document-derived-on',
+    'document-license',
+    'document-inbox',
+    'document-annotation-service',
+    'document-in-reply-to',
+    'document-rights',
+    'document-resource-state',
+    'document-status',
+    'document-see-also',
+    'table-of-contents',
+    'table-of-figures',
+    'table-of-tables',
+    'table-of-abbrs',
+    'authors',
+    'abstract',
+    'categories-and-subject-descriptors',
+    'keywords',
+    'general-terms',
+
+    'introduction'
+  ],
+
+  CollectionItemsLimit: 20,
+  ContextLength: 32,
+  ProxyURL: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/proxy?uri=' : 'https://dokie.li/proxy?uri='),
+  AuthEndpoint: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/' : 'https://dokie.li/'),
+  NotificationLicense: 'https://creativecommons.org/publicdomain/zero/1.0/',
+  License: {
+    "https://creativecommons.org/publicdomain/zero/1.0/": {'name': 'CC0 1.0', 'description': 'Creative Commons Zero'},
+    "https://creativecommons.org/licenses/by/4.0/": {'name': 'CC BY 4.0', 'description': 'Creative Commons Attribution'},
+    "https://creativecommons.org/licenses/by-sa/4.0/": {'name': 'CC BY-SA 4.0', 'description': 'Creative Commons Attribution-ShareAlike'},
+    "https://creativecommons.org/licenses/by-nc/4.0/": {'name': 'CC BY-NC 4.0', 'description': 'Creative Commons Attribution-NonCommercial'},
+    "https://creativecommons.org/licenses/by-nd/4.0/": {'name': 'CC BY-ND 4.0', 'description': 'Creative Commons Attribution-NoDerivatives'},
+    "https://creativecommons.org/licenses/by-nc-sa/4.0/": {'name': 'CC BY-NC-SA 4.0', 'description': 'Creative Commons Attribution-NonCommercial-ShareAlike'},
+    "https://creativecommons.org/licenses/by-nc-nd/4.0/": {'name': 'CC BY-NC-ND 4.0', 'description': 'Creative Commons Attribution-NonCommercial-NoDerivates'}
+  },
+  PublicationStatus: {
+    "http://purl.org/spar/pso/draft": { 'name': 'Draft', 'description': 'The status of a work (for example a document or a dataset) prior to completion and publication.' },
+    "http://purl.org/spar/pso/published": { 'name': 'Published', 'description': 'The status of material (for example a document or a dataset) that has been published, i.e. made available for people to access, read or use, either freely or for a purchase price or an access fee.' }
+  },
+  Citation: {
+    'http://purl.org/spar/cito/agreesWith': 'agrees with',
+    'http://purl.org/spar/cito/cites': 'cites',
+    'http://purl.org/spar/cito/citesAsAuthority': 'cites as authority',
+    'http://purl.org/spar/cito/citesAsDataSource': 'cites as data source',
+    'http://purl.org/spar/cito/citesAsEvidence': 'cites as evidence',
+    'http://purl.org/spar/cito/citesAsMetadataDocument': 'cites as metadata document',
+    'http://purl.org/spar/cito/citesAsPotentialSolution': 'cites as potential solution',
+    'http://purl.org/spar/cito/citesAsRecommendedReading': 'cites as potential reading',
+    'http://purl.org/spar/cito/citesAsRelated': 'cites as related',
+    'http://purl.org/spar/cito/citesAsSourceDocument': 'cites as source document',
+    'http://purl.org/spar/cito/citesForInformation': 'cites for information',
+    'http://purl.org/spar/cito/compiles': 'compiles',
+    'http://purl.org/spar/cito/confirms': 'confirms',
+    'http://purl.org/spar/cito/containsAssertionFrom': 'contains assertion from',
+    'http://purl.org/spar/cito/corrects': 'corrects',
+    'http://purl.org/spar/cito/credits': 'credits',
+    'http://purl.org/spar/cito/critiques': 'critiques',
+    'http://purl.org/spar/cito/derides': 'derides',
+    'http://purl.org/spar/cito/describes': 'describes',
+    'http://purl.org/spar/cito/disagreesWith': 'disagrees with',
+    'http://purl.org/spar/cito/discusses': 'discusses',
+    'http://purl.org/spar/cito/disputes': 'disputes',
+    'http://purl.org/spar/cito/documents': 'documents',
+    'http://purl.org/spar/cito/extends': 'extends',
+    'http://purl.org/spar/cito/includesExcerptFrom': 'includes excerpt from',
+    'http://purl.org/spar/cito/includesQuotationFrom': 'includes quotation from',
+    'http://purl.org/spar/cito/linksTo': 'links to',
+    'http://purl.org/spar/cito/obtainsBackgroundFrom': 'obtains background from',
+    'http://purl.org/spar/cito/obtainsSupportFrom': 'obtains support from',
+    'http://purl.org/spar/cito/parodies': 'parodies',
+    'http://purl.org/spar/cito/plagiarizes': 'plagiarizes',
+    'http://purl.org/spar/cito/qualifies': 'qualifies',
+    'http://purl.org/spar/cito/refutes': 'refutes',
+    'http://purl.org/spar/cito/repliesTo': 'replies to',
+    'http://purl.org/spar/cito/retracts': 'retracts',
+    'http://purl.org/spar/cito/reviews': 'reviews',
+    'http://purl.org/spar/cito/ridicules': 'ridicules',
+    'http://purl.org/spar/cito/speculatesOn': 'speculates on',
+    'http://purl.org/spar/cito/supports': 'supports',
+    'http://purl.org/spar/cito/updates': 'updates',
+    'http://purl.org/spar/cito/usesConclusionsFrom': 'uses conclusions from',
+    'http://purl.org/spar/cito/usesDataFrom': 'uses data from',
+    'http://purl.org/spar/cito/usesMethodIn': 'uses method in'
+  },
+
+  AvailableMediaTypes: ['text/turtle', 'application/ld+json', 'application/rdf+xml', 'application/xhtml+xml', 'text/html'],
+
+  AcceptBinaryTypes: ['image/png', 'image/jpeg', 'image/gif'],
+
+  Prefixes: {
+    'xsd': 'http://www.w3.org/2001/XMLSchema#',
+    'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
+    'as': 'https://www.w3.org/ns/activitystreams#',
+    'oa': 'http://www.w3.org/ns/oa#',
+    'schema': 'http://schema.org/'
+  },
+
+  Vocab: {
+    "rdftype": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", "@type": "@id", "@array": true },
+    "rdffirst": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#first", "@type": "@id" },
+    "rdfrest": { "@id": "http://www.w3.org/1999/02/22-rdf-syntax-ns#rest", "@type": "@id" },
+    "rdfvalue": "http://www.w3.org/1999/02/22-rdf-syntax-ns#value",
+    "rdfslabel": { "@id": "http://www.w3.org/2000/01/rdf-schema#label" },
+    "rdfsseeAlso": { "@id": "http://www.w3.org/2000/01/rdf-schema#seeAlso", "@type": "@id", "@array": true },
+
+    "owlsameAs": { "@id": "http://www.w3.org/2002/07/owl#sameAs", "@type": "@id", "@array": true },
+
+    "foafname": "http://xmlns.com/foaf/0.1/name",
+    "foaffamilyName": "http://xmlns.com/foaf/0.1/familyName",
+    "foafgivenName": "http://xmlns.com/foaf/0.1/givenName",
+    "foafhomepage": { "@id": "http://xmlns.com/foaf/0.1/homepage", "@type": "@id" },
+    "foafweblog": { "@id": "http://xmlns.com/foaf/0.1/weblog", "@type": "@id" },
+    "foafimg": { "@id": "http://xmlns.com/foaf/0.1/img", "@type": "@id" },
+    "foafdepiction": { "@id": "http://xmlns.com/foaf/0.1/depiction", "@type": "@id" },
+    "foafnick": "http://xmlns.com/foaf/0.1/nick",
+    "foafmaker": { "@id": "http://xmlns.com/foaf/0.1/maker", "@type": "@id" },
+    "foafknows": { "@id": "http://xmlns.com/foaf/0.1/knows", "@type": "@id", "@array": true },
+
+    "vcardfn": "http://www.w3.org/2006/vcard/ns#fn",
+    "vcardfamilyname": "http://www.w3.org/2006/vcard/ns#family-name",
+    "vcardgivenname": "http://www.w3.org/2006/vcard/ns#given-name",
+    "vcardnickname": "http://www.w3.org/2006/vcard/ns#nickname",
+    "vcardurl": { "@id": "http://www.w3.org/2006/vcard/ns#url", "@type": "@id" },
+    "vcardphoto": { "@id": "http://www.w3.org/2006/vcard/ns#photo", "@type": "@id" },
+    "vcardhasPhoto": { "@id": "http://www.w3.org/2006/vcard/ns#hasPhoto", "@type": "@id" },
+
+    "schemaname": "http://schema.org/name",
+    "schemafamilyName": "http://schema.org/familyName",
+    "schemagivenName": "http://schema.org/givenName",
+    "schemaurl": { "@id": "http://schema.org/url", "@type": "@id" },
+    "schemaimage": { "@id": "http://schema.org/image", "@type": "@id" },
+    "schemacreator": { "@id": "http://schema.org/creator", "@type": "@id", "@array": true },
+    "schemaauthor": { "@id": "http://schema.org/author", "@type": "@id", "@array": true },
+    "schemacontributor": { "@id": "http://schema.org/contributor", "@type": "@id", "@array": true },
+    "schemaeditor": { "@id": "http://schema.org/editor", "@type": "@id", "@array": true },
+    "schemalicense": { "@id": "http://schema.org/license", "@type": "@id" },
+    "schemacitation": { "@id": "http://schema.org/citation", "@type": "@id", "@array": true },
+    "schemaknows": { "@id": "http://schema.org/knows", "@type": "@id", "@array": true },
+    "schemadateCreated": "http://schema.org/dateCreated",
+    "schemadateModified": "http://schema.org/dateModified",
+    "schemadatePublished": "http://schema.org/datePublished",
+    "schemadescription": "http://schema.org/description",
+    "schemahasPart": { "@id": "http://schema.org/hasPart", "@type": "@id", "@array": true }, 
+    "schemaisPartOf": { "@id": "http://schema.org/isPartOf", "@type": "@id", "@array": true },
+    "schemaScholarlyArticle": { "@id": "http://schema.org/ScholarlyArticle" },
+
+    "dctermstitle": "http://purl.org/dc/terms/title",
+    "dctermsdescription": "http://purl.org/dc/terms/description",
+    "dctermscreator": { "@id": "http://purl.org/dc/terms/creator", "@type": "@id", "@array": true },
+    "dctermsdate": "http://purl.org/dc/terms/date",
+    "dctermsissued": "http://purl.org/dc/terms/issued",
+    "dctermscreated": "http://purl.org/dc/terms/created",
+    "dctermsrights": { "@id": "http://purl.org/dc/terms/rights", "@type": "@id" },
+    "dctermsconformsTo": { "@id": "http://purl.org/dc/terms/conformsTo", "@type": "@id" },
+    "dctermshasPart": { "@id": "http://purl.org/dc/terms/hasPart", "@type": "@id", "@array": true },
+    "dctermsisPartOf": { "@id": "http://purl.org/dc/terms/isPartOf", "@type": "@id", "@array": true },
+
+    "skosprefLabel": { "@id": "http://www.w3.org/2004/02/skos/core#prefLabel", "@type": "@id", "@array": true },
+
+    "refPeriod": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod",
+    "obsValue": "http://purl.org/linked-data/sdmx/2009/measure#obsValue",
+
+    "biboauthorList": { "@id": "http://purl.org/ontology/bibo/authorList", "@type": "@id" },
+
+    "pimstorage": { "@id": "http://www.w3.org/ns/pim/space#storage", "@type": "@id", "@array": true },
+    "preferencesFile": { "@id": "http://www.w3.org/ns/pim/space#preferencesFile", "@type": "@id" },
+
+    "ldpinbox": { "@id": "http://www.w3.org/ns/ldp#inbox", "@type": "@id", "@array": true },
+
+    "solidpreferredProxy": "http://www.w3.org/ns/solid/terms#preferredProxy",
+
+    "oaannotation": { "@id": "http://www.w3.org/ns/oa#Annotation", "@type": "@id" },
+    "oahasBody": { "@id": "http://www.w3.org/ns/oa#hasBody", "@type": "@id" },
+    "oahasTarget": { "@id": "http://www.w3.org/ns/oa#hasTarget", "@type": "@id" },
+    "oahasSource": { "@id": "http://www.w3.org/ns/oa#hasSource", "@type": "@id" },
+    "oahasSelector": { "@id": "http://www.w3.org/ns/oa#hasSelector", "@type": "@id" },
+    "oarefinedBy": { "@id": "http://www.w3.org/ns/oa#refinedBy", "@type": "@id" },
+    "oaexact": "http://www.w3.org/ns/oa#exact",
+    "oaprefix": "http://www.w3.org/ns/oa#prefix",
+    "oasuffix": "http://www.w3.org/ns/oa#suffix",
+    "oamotivatedBy": { "@id": "http://www.w3.org/ns/oa#motivatedBy", "@type": "@id" },
+    "oaannotationService": { "@id": "http://www.w3.org/ns/oa#annotationService", "@type": "@id", "@array": true },
+
+    "assubject": { "@id": "https://www.w3.org/ns/activitystreams#subject", "@type": "@id", "@array": true },
+    "asobject": { "@id": "https://www.w3.org/ns/activitystreams#object", "@type": "@id", "@array": true },
+    "astarget": { "@id": "https://www.w3.org/ns/activitystreams#target", "@type": "@id", "@array": true },
+    "asrelationship": { "@id": "https://www.w3.org/ns/activitystreams#relationship", "@type": "@id", "@array": true },
+    "ascontext": { "@id": "https://www.w3.org/ns/activitystreams#context", "@type": "@id", "@array": true },
+    "asinReplyTo": { "@id": "https://www.w3.org/ns/activitystreams#inReplyTo", "@type": "@id", "@array": true },
+    "asactor": { "@id": "https://www.w3.org/ns/activitystreams#actor", "@type": "@id" },
+    "asupdated": "https://www.w3.org/ns/activitystreams#updated",
+    "aspublished": "https://www.w3.org/ns/activitystreams#published",
+    "ascontent": "https://www.w3.org/ns/activitystreams#content",
+    "asname": "https://www.w3.org/ns/activitystreams#name",
+    "asimage": { "@id": "https://www.w3.org/ns/activitystreams#image", "@type": "@id" },
+    "asoutbox": { "@id": "https://www.w3.org/ns/activitystreams#outbox", "@type": "@id", "@array": true },
+    "asitems": { "@id": "https://www.w3.org/ns/activitystreams#items", "@type": "@id", "@array": true },
+    "asorderedItems": { "@id": "https://www.w3.org/ns/activitystreams#orderedItems", "@type": "@id", "@array": true },
+    "astotalItems": "https://www.w3.org/ns/activitystreams#totalItems",
+    "asfirst": { "@id": "https://www.w3.org/ns/activitystreams#first", "@type": "@id" },
+    "asnext": { "@id": "https://www.w3.org/ns/activitystreams#next", "@type": "@id" },
+    "asCollection": { "@id": "https://www.w3.org/ns/activitystreams#Collection", "@type": "@id" },
+    "asOrderedCollection": { "@id": "https://www.w3.org/ns/activitystreams#OrderedCollection", "@type": "@id" },
+
+    "siocreplyof": { "@id": "http://rdfs.org/sioc/ns#reply_of", "@type": "@id", "@array": true },
+    "siocavatar": { "@id": "http://rdfs.org/sioc/ns#avatar", "@type": "@id" },
+
+    "ldpcontains": { "@id": "http://www.w3.org/ns/ldp#contains", "@type": "@id", "@array": true },
+    "ldpResource": { "@id": "http://www.w3.org/ns/ldp#Resource", "@type": "@id" },
+    "ldpContainer": { "@id": "http://www.w3.org/ns/ldp#Container", "@type": "@id" },
+    "ldpRDFSource": { "@id": "http://www.w3.org/ns/ldp#RDFSource", "@type": "@id" },
+    "ldpImmutableResource": { "@id": "http://www.w3.org/ns/ldp#ImmutableResource", "@type": "@id" },
+
+    "memOriginalResource": { "@id": "http://mementoweb.org/ns#OriginalResource", "@type": "@id" },
+    "memMemento": { "@id": "http://mementoweb.org/ns#Memento", "@type": "@id" },
+    "memoriginal": { "@id": "http://mementoweb.org/ns#original", "@type": "@id" },
+    "memmemento": { "@id": "http://mementoweb.org/ns#memento", "@type": "@id" },
+    "memtimegate": { "@id": "http://mementoweb.org/ns#timegate", "@type": "@id" },
+    "memtimemap": { "@id": "http://mementoweb.org/ns#timemap", "@type": "@id" },
+
+    "relpredecessorversion": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#predecessor-version", "@type": "@id" },
+    "rellatestversion": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#latest-version", "@type": "@id" },
+
+    "psodraft": { "@id": "http://purl.org/spar/pso/draft", "@type": "@id" },
+    "psopublished": { "@id": "http://purl.org/spar/pso/published", "@type": "@id" }
+  },
+
+  SecretAgentNames: ['Abraham Lincoln', 'Admiral Awesome', 'Anonymous Coward', 'Believe it or not', 'Creative Monkey', 'Senegoid', 'Dog from the Web', 'Ekrub', 'Elegant Banana', 'Foo Bar', 'Lbmit', 'Lunatic Scholar', 'NahuLcm', 'Noslen', 'Okie Dokie', 'Samurai Cat', 'Vegan Superstar'],
+
+  RefAreas: {"AF":"Afghanistan","A9":"Africa","AL":"Albania","DZ":"Algeria","AS":"American Samoa","L5":"Andean Region","AD":"Andorra","AO":"Angola","AG":"Antigua and Barbuda","1A":"Arab World","AR":"Argentina","AM":"Armenia","AW":"Aruba","AU":"Australia","AT":"Austria","AZ":"Azerbaijan","BS":"Bahamas, The","BH":"Bahrain","BD":"Bangladesh","BB":"Barbados","BY":"Belarus","BE":"Belgium","BZ":"Belize","BJ":"Benin","BM":"Bermuda","BT":"Bhutan","BO":"Bolivia","BA":"Bosnia and Herzegovina","BW":"Botswana","BR":"Brazil","BN":"Brunei Darussalam","BG":"Bulgaria","BF":"Burkina Faso","BI":"Burundi","CV":"Cabo Verde","KH":"Cambodia","CM":"Cameroon","CA":"Canada","S3":"Caribbean small states","KY":"Cayman Islands","CF":"Central African Republic","TD":"Chad","JG":"Channel Islands","CL":"Chile","CN":"China","CO":"Colombia","KM":"Comoros","CD":"Congo, Dem. Rep.","CG":"Congo, Rep.","CR":"Costa Rica","CI":"Cote d'Ivoire","HR":"Croatia","CU":"Cuba","CW":"Curacao","CY":"Cyprus","CZ":"Czech Republic","DK":"Denmark","DJ":"Djibouti","DM":"Dominica","DO":"Dominican Republic","Z4":"East Asia & Pacific (all income levels)","4E":"East Asia & Pacific (developing only)","C4":"East Asia and the Pacific (IFC classification)","EC":"Ecuador","EG":"Egypt, Arab Rep.","SV":"El Salvador","GQ":"Equatorial Guinea","ER":"Eritrea","EE":"Estonia","ET":"Ethiopia","XC":"Euro area","Z7":"Europe & Central Asia (all income levels)","7E":"Europe & Central Asia (developing only)","C5":"Europe and Central Asia (IFC classification)","EU":"European Union","FO":"Faeroe Islands","FJ":"Fiji","FI":"Finland","FR":"France","PF":"French Polynesia","GA":"Gabon","GM":"Gambia, The","GE":"Georgia","DE":"Germany","GH":"Ghana","GR":"Greece","GL":"Greenland","GD":"Grenada","GU":"Guam","GT":"Guatemala","GN":"Guinea","GW":"Guinea-Bissau","GY":"Guyana","HT":"Haiti","XE":"Heavily indebted poor countries (HIPC)","XD":"High income","XS":"High income: OECD","XR":"High income: nonOECD","HN":"Honduras","HK":"Hong Kong SAR, China","HU":"Hungary","IS":"Iceland","IN":"India","ID":"Indonesia","IR":"Iran, Islamic Rep.","IQ":"Iraq","IE":"Ireland","IM":"Isle of Man","IL":"Israel","IT":"Italy","JM":"Jamaica","JP":"Japan","JO":"Jordan","KZ":"Kazakhstan","KE":"Kenya","KI":"Kiribati","KP":"Korea, Dem. Rep.","KR":"Korea, Rep.","KV":"Kosovo","KW":"Kuwait","KG":"Kyrgyz Republic","LA":"Lao PDR","ZJ":"Latin America & Caribbean (all income levels)","XJ":"Latin America & Caribbean (developing only)","L4":"Latin America and the Caribbean","C6":"Latin America and the Caribbean (IFC classification)","LV":"Latvia","XL":"Least developed countries: UN classification","LB":"Lebanon","LS":"Lesotho","LR":"Liberia","LY":"Libya","LI":"Liechtenstein","LT":"Lithuania","XO":"Low & middle income","XM":"Low income","XN":"Lower middle income","LU":"Luxembourg","MO":"Macao SAR, China","MK":"Macedonia, FYR","MG":"Madagascar","MW":"Malawi","MY":"Malaysia","MV":"Maldives","ML":"Mali","MT":"Malta","MH":"Marshall Islands","MR":"Mauritania","MU":"Mauritius","MX":"Mexico","L6":"Mexico and Central America","FM":"Micronesia, Fed. Sts.","ZQ":"Middle East & North Africa (all income levels)","XQ":"Middle East & North Africa (developing only)","C7":"Middle East and North Africa (IFC classification)","XP":"Middle income","MD":"Moldova","MC":"Monaco","MN":"Mongolia","ME":"Montenegro","MA":"Morocco","MZ":"Mozambique","MM":"Myanmar","NA":"Namibia","NP":"Nepal","NL":"Netherlands","NC":"New Caledonia","NZ":"New Zealand","NI":"Nicaragua","NE":"Niger","NG":"Nigeria","M2":"North Africa","XU":"North America","MP":"Northern Mariana Islands","NO":"Norway","XY":"Not classified","OE":"OECD members","OM":"Oman","S4":"Other small states","S2":"Pacific island small states","PK":"Pakistan","PW":"Palau","PA":"Panama","PG":"Papua New Guinea","PY":"Paraguay","PE":"Peru","PH":"Philippines","PL":"Poland","PT":"Portugal","PR":"Puerto Rico","QA":"Qatar","RO":"Romania","RU":"Russian Federation","RW":"Rwanda","WS":"Samoa","SM":"San Marino","ST":"Sao Tome and Principe","SA":"Saudi Arabia","SN":"Senegal","RS":"Serbia","SC":"Seychelles","SL":"Sierra Leone","SG":"Singapore","SX":"Sint Maarten (Dutch part)","SK":"Slovak Republic","SI":"Slovenia","S1":"Small states","SB":"Solomon Islands","SO":"Somalia","ZA":"South Africa","8S":"South Asia","C8":"South Asia (IFC classification)","SS":"South Sudan","L7":"Southern Cone Extended","ES":"Spain","LK":"Sri Lanka","KN":"St. Kitts and Nevis","LC":"St. Lucia","MF":"St. Martin (French part)","VC":"St. Vincent and the Grenadines","C9":"Sub-Saharan Africa (IFC classification)","ZG":"Sub-Saharan Africa (all income levels)","ZF":"Sub-Saharan Africa (developing only)","A4":"Sub-Saharan Africa excluding South Africa","A5":"Sub-Saharan Africa excluding South Africa and Nigeria","SD":"Sudan","SR":"Suriname","SZ":"Swaziland","SE":"Sweden","CH":"Switzerland","SY":"Syrian Arab Republic","TJ":"Tajikistan","TZ":"Tanzania","TH":"Thailand","TL":"Timor-Leste","TG":"Togo","TO":"Tonga","TT":"Trinidad and Tobago","TN":"Tunisia","TR":"Turkey","TM":"Turkmenistan","TC":"Turks and Caicos Islands","TV":"Tuvalu","UG":"Uganda","UA":"Ukraine","AE":"United Arab Emirates","GB":"United Kingdom","US":"United States","XT":"Upper middle income","UY":"Uruguay","UZ":"Uzbekistan","VU":"Vanuatu","VE":"Venezuela, RB","VN":"Vietnam","VI":"Virgin Islands (U.S.)","PS":"West Bank and Gaza","1W":"World","YE":"Yemen, Rep.","ZM":"Zambia","ZW":"Zimbabwe"}
+}
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+const Config = __webpack_require__(4)
+
+module.exports = {
+  domToString,
+  dumpNode,
+  getDoctype,
+  getDocument,
+  setHTMLBase,
+  createHTML,
+  createActivityHTML
+}
+
+function domToString (node, options = {}) {
+  var selfClosing = []
+
+  if (options.selfClosing) {
+    options.selfClosing.split(' ').forEach(function (n) {
+      selfClosing[n] = true
+    })
+  }
+
+  var skipAttributes = []
+
+  if (options.skipAttributes) {
+    options.skipAttributes.split(' ').forEach(function (n) {
+      skipAttributes[n] = true
+    })
+  }
+
+  var noEsc = [ false ]
+
+  return dumpNode(node, options, skipAttributes, selfClosing, noEsc)
+}
+
+function dumpNode (node, options, skipAttributes, selfClosing, noEsc) {
+  var out = ''
+
+  if (typeof node.nodeType === 'undefined') return out
+
+  if (node.nodeType === 1) {
+    if (node.hasAttribute('class') && 'classWithChildText' in options &&
+        node.matches(options.classWithChildText.class)) {
+      out += node.querySelector(options.classWithChildText.element).textContent
+    } else if (!(options.skipNodeWithClass && node.matches('.' + options.skipNodeWithClass))) {
+      var ename = node.nodeName.toLowerCase()
+      out += '<' + ename
+
+      var attrList = []
+
+      for (let i = node.attributes.length - 1; i >= 0; i--) {
+        var atn = node.attributes[i]
+
+        if (skipAttributes[atn.name]) continue
+
+        if (/^\d+$/.test(atn.name)) continue
+
+        if (atn.name === 'class' && 'replaceClassItemWith' in options) {
+          atn.value.split(' ').forEach(function (aValue) {
+            if (options.replaceClassItemWith.source.split(' ').indexOf(aValue) > -1) {
+              var re = new RegExp(aValue, 'g')
+              atn.value = atn.value.replace(re, options.replaceClassItemWith.target).trim()
+            }
+          })
+        }
+
+        if (!(atn.name === 'class' && 'skipClassWithValue' in options &&
+            options.skipClassWithValue === atn.value)) {
+          attrList.push(
+            atn.name + '="' +
+            atn.value
+              .replace(/&/g, '&amp;')
+              .replace(/</g, '&lt;')
+              .replace(/>/g, '&gt;')
+              .replace(/"/g, '&quot;') +
+            '"')
+        }
+      }
+
+      if (attrList.length > 0) {
+        if ('sortAttributes' in options && options.sortAttributes) {
+          attrList.sort(function (a, b) {
+            return a.toLowerCase().localeCompare(b.toLowerCase())
+          })
+        }
+        out += ' ' + attrList.join(' ')
+      }
+
+      if (selfClosing[ename]) {
+        out += ' />'
+      } else {
+        out += '>'
+        out += (ename === 'html') ? '\n  ' : ''
+        noEsc.push(ename === 'style' || ename === 'script' || ename === 'pre')
+        for (var i = 0; i < node.childNodes.length; i++) {
+          out += dumpNode(node.childNodes[i], options, skipAttributes, selfClosing, noEsc)
+        }
+        noEsc.pop()
+        out += (ename === 'body' || ename === 'html') ? '</' + ename + '>' + '\n' : '</' + ename + '>'
+      }
+    }
+  } else if (node.nodeType === 8) {
+    // FIXME: If comments are not tabbed in source, a new line is not prepended
+    out += '\n\
+<!--' + node.nodeValue + '-->'
+  } else if (node.nodeType === 3 || node.nodeType === 4) {
+    // XXX: Remove new lines which were added after DOM ready
+    let nl = node.nodeValue.replace(/\n+$/, '')
+    out += noEsc[noEsc.length - 1]
+      ? nl
+      : nl.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+  } else {
+    console.log('Warning; Cannot handle serialising nodes of type: ' + node.nodeType)
+  }
+
+  return out
+}
+
+function getDoctype () {
+  /* Get DOCTYPE from http://stackoverflow.com/a/10162353 */
+  var node = document.doctype
+  var doctype = ''
+
+  if (node !== null) {
+    doctype = '<!DOCTYPE ' +
+      node.name +
+      (node.publicId ? ' PUBLIC "' + node.publicId + '"' : '') +
+      (!node.publicId && node.systemId ? ' SYSTEM' : '') +
+      (node.systemId ? ' "' + node.systemId + '"' : '') +
+      '>'
+  }
+  return doctype
+}
+
+function getDocument (cn, options) {
+  let node = cn || document.documentElement.cloneNode(true)
+  options = options || Config.DOMNormalisation
+
+  let doctype = getDoctype()
+  let s = (doctype.length > 0) ? doctype + '\n' : ''
+  s += domToString(node, options)
+  return s
+}
+
+function setHTMLBase (data, baseURI) {
+  let template = document.implementation.createHTMLDocument()
+  template.documentElement.innerHTML = data
+  let base = template.querySelector('head base[href]')
+  if (!base) {
+    template.querySelector('head').insertAdjacentHTML('afterbegin', '<base href="' + baseURI + '" />')
+    data = template.documentElement.outerHTML
+  }
+  return data
+}
+
+
+function createHTML(title, main, options) {
+  title = title || '';
+  options = options || {};
+  var prefix = ('prefixes' in options && Object.keys(options.prefixes).length > 0) ? ' prefix="' + DO.U.getRDFaPrefixHTML(options.prefixes) + '"' : '';
+
+  return '<!DOCTYPE html>\n\
+<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">\n\
+  <head>\n\
+    <meta charset="utf-8" />\n\
+    <title>' + title + '</title>\n\
+  </head>\n\
+  <body' + prefix + '>\n\
+    <main>\n\
+' + main + '\n\
+    </main>\n\
+  </body>\n\
+</html>\n\
+';
+}
+
+
+function createActivityHTML(o) {
+  var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: http://schema.org/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams#"';
+
+  var types = '<dt>Types</dt>'
+
+  o.type.forEach(function (t) {
+    types += '<dd><a about="" href="' + Config.Prefixes[t.split(':')[0]] + t.split(':')[1] + '" typeof="'+ t +'">' + t.split(':')[1] + '</a></dd>'
+  })
+
+  var asObjectTypes = ''
+  if ('object' in o && 'objectTypes' in o && o.objectTypes.length > 0) {
+    asObjectTypes = '<dl><dt>Types</dt>'
+    o.objectTypes.forEach(function(t){
+      asObjectTypes += '<dd><a about="' + o.object + '" href="' + t + '" typeof="'+ t +'">' + t + '</a></dd>'
+    })
+    asObjectTypes += '</dl>'
+  }
+
+  var asObjectLicense = ''
+  if ('object' in o && 'objectLicense' in o && o.objectLicense.length > 0) {
+    asObjectLicense = '<dl><dt>License</dt><dd><a about="' + o.object + '" href="' + o.objectLicense + '" property="schema:license">' + o.objectLicense + '</a></dd></dl>'
+  }
+
+  var asobject = ('object' in o) ? '<dt>Object</dt><dd><a href="' + o.object + '" property="as:object">' + o.object + '</a>' + asObjectTypes + asObjectLicense + '</dd>' : ''
+
+  var asinReplyTo = ('inReplyTo' in o) ? '<dt>In reply to</dt><dd><a href="' + o.inReplyTo + '" property="as:inReplyTo">' + o.inReplyTo + '</a></dd>' : ''
+
+  var ascontext = ('context' in o && o.context.length > 0) ? '<dt>Context</dt><dd><a href="' + o.context + '" property="as:context">' + o.context + '</a></dd>' : ''
+
+  var astarget = ('target' in o && o.target.length > 0) ? '<dt>Target</dt><dd><a href="' + o.target + '" property="as:target">' + o.target + '</a></dd>' : ''
+
+  var datetime = util.getDateTimeISO()
+  var asupdated = '<dt>Updated</dt><dd><time datetime="' + datetime + '" datatype="xsd:dateTime" property="as:updated" content="' + datetime + '">' + datetime.substr(0,19).replace('T', ' ') + '</time></dd>'
+
+  var assummary = ('summary' in o && o.summary.length > 0) ? '<dt>Summary</dt><dd property="as:summary" datatype="rdf:HTML">' + o.summary + '</dd>' : ''
+
+  var ascontent = ('content' in o && o.content.length > 0) ? '<dt>Content</dt><dd property="as:content" datatype="rdf:HTML">' + o.content + '</dd>' : ''
+
+  var asactor = (Config.User.IRI) ? '<dt>Actor</dt><dd><a href="' + Config.User.IRI + '" property="as:actor">' + Config.User.IRI + '</a></dd>' : ''
+
+  var license = '<dt>License</dt><dd><a href="' + Config.NotificationLicense + '" property="schema:license">' + Config.NotificationLicense + '</a></dd>'
+
+  var asto = ('to' in o && o.to.length > 0 && !o.to.match(/\s/g) && o.to.match(/^https?:\/\//gi)) ? '<dt>To</dt><dd><a href="' + o.to + '" property="as:to">' + o.to + '</a></dd>' : ''
+
+  var statements = ('statements' in o) ? o.statements : ''
+
+  var dl = [
+    types,
+    asobject,
+    ascontext,
+    astarget,
+    asupdated,
+    assummary,
+    ascontent,
+    asactor,
+    license,
+    asto
+  ].map(function (n) { if (n !== '') { return '      ' + n + '\n' } }).join('')
+
+
+  // TODO: Come up with a better title. reuse `types` e.g., Activity Created, Announced..
+  var title = 'Notification'
+  if(types.indexOf('as:Announce') > -1){
+    title += ': Announced'
+  } else if (types.indexOf('as:Create') > -1){
+    title += ': Created'
+  } else if (types.indexOf('as:Like') > -1){
+    title += ': Liked'
+  } else if (types.indexOf('as:Dislike') > -1){
+    title += ': Disliked'
+  } else if (types.indexOf('as:Add') > -1){
+    title += ': Added'
+  }
+
+  var data = '<article'+prefixes+'>\n\
+  <h1>' + title + '</h1>\n\
+  <section>\n\
+    <dl about="">\n\
+' + dl +
+'    </dl>\n\
+  </section>\n\
+  <section>\n\
+' + statements + '\n\
+  </section>\n\
+</article>'
+
+  return data
+}
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+const Config = __webpack_require__(4)
+
+module.exports = {
+  encodeString,
+  decodeString,
+  getAbsoluteIRI,
+  getProxyableIRI,
+  stripFragmentFromString,
+  getFragmentFromString
+}
+
+function encodeString (string) {
+  return encodeURIComponent(string).replace(/'/g, '%27').replace(/"/g, '%22')
+}
+
+/**
+ * UNUSED
+ *
+ * @param string {string}
+ *
+ * @returns {string}
+ */
+function decodeString (string) {
+  return decodeURIComponent(string.replace(/\+/g, ' '))
+}
+
+function getAbsoluteIRI (base, location) {
+  var iri = location
+
+  if (location.toLowerCase().slice(0, 4) !== 'http') {
+    if (location.startsWith('/')) {
+      var x = base.toLowerCase().trim().split('/')
+
+      iri = x[0] + '//' + x[2] + location
+    } else if (!base.endsWith('/')) {
+      iri = base.substr(0, base.lastIndexOf('/') + 1) + location
+    } else {
+      iri = base + location
+    }
+  }
+
+  return iri
+}
+
+function getProxyableIRI (url, options = {}) {
+  var pIRI = stripFragmentFromString(url)
+
+  if ((typeof document !== 'undefined' && document.location.protocol === 'https:' && pIRI.slice(0, 5).toLowerCase() === 'http:') || 'forceProxy' in options) {
+    var proxyURL = ('proxyURL' in options) ? options.proxyURL : Config.ProxyURL
+    pIRI = proxyURL + encodeString(pIRI)
+  }
+
+  return pIRI
+}
+
+function stripFragmentFromString (string) {
+  if (typeof string === 'string') {
+    let stringIndexFragment = string.indexOf('#')
+
+    if (stringIndexFragment >= 0) {
+      string = string.substring(0, stringIndexFragment)
+    }
+  }
+  return string
+}
+
+function getFragmentFromString (string) {
+  if (typeof string === 'string') {
+    let match = string.split('#')[1]
+
+    string = (match) ? match : '';
+  }
+  return string 
+}
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(global) {
+
+global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined
+
+const Config = __webpack_require__(4)
+const doc = __webpack_require__(5)
+
+module.exports = {
+  getGraph,
+  getGraphFromData,
+  getMatchFromData,
+  serializeData,
+  serializeGraph,
+  applyParserSerializerFixes
+}
+
+function getGraph (url) {
+  return SimpleRDF(Config.Vocab, url, null, ld.store).get()
+}
+
+function getGraphFromData (data, options = {}) {
+  if (!('contentType' in options)) {
+    options['contentType'] = 'text/turtle'
+  }
+
+  // FIXME: This is a dirty filthy fugly but a *fix* to get around the baseURI not being passed to the DOM parser. This injects the `base` element into the document so that the RDFa parse fallsback to that. The actual fix should happen upstream. See related issues:
+  // https://github.com/linkeddata/dokieli/issues/132
+  // https://github.com/rdf-ext/rdf-parser-dom/issues/2
+  // https://github.com/rdf-ext/rdf-parser-rdfa/issues/3
+  // https://github.com/simplerdf/simplerdf/issues/19
+
+  if (!('subjectURI' in options)) {
+    options['subjectURI'] = 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d'
+  }
+  if (options.contentType === 'text/html' || options.contentType === 'application/xhtml+xml') {
+    data = doc.setHTMLBase(data, options.subjectURI)
+  }
+
+  return SimpleRDF.parse(data, options['contentType'], options['subjectURI'])
+}
+
+function getMatchFromData (data, spo = {}, options = {}) {
+  if (!data) { return Promise.resolve({}) }
+
+  spo['subject'] = spo.subject || window.location.origin + window.location.pathname
+  spo['predicate'] = spo.predicate || Config.Vocab['rdfslabel']
+
+  options['contentType'] = options.contentType || 'text/html'
+  options['subjectURI'] = options.subjectURI || spo.subject
+
+  return getGraphFromData(data, options)
+    .then(g => {
+      let s = SimpleRDF(Config.Vocab, spo.subject, g, ld.store).child(spo.subject)
+
+      return s[spo.predicate]
+    })
+    .catch(() => {
+      return undefined
+    })
+}
+
+/**
+ * @param data
+ * @param fromContentType
+ * @param toContentType
+ * @param options
+ *
+ * @returns {Promise}
+ */
+function serializeData (data, fromContentType, toContentType, options) {
+  if (fromContentType === toContentType) {
+    return Promise.resolve(data)
+  }
+
+  options.contentType = fromContentType
+
+// console.log(data)
+
+  return getGraphFromData(data, options)
+    .then(g => {
+
+      options.contentType = toContentType
+
+      switch (toContentType) {
+        case 'application/ld+json':
+// console.log(g)
+          return serializeGraph(g, options).then(subjectTriples => {
+            subjectTriples = JSON.parse(subjectTriples)
+
+            var data = {}
+            if (options["@context"]) {
+              data["@context"] = options["@context"]
+            }
+
+            var subjectsChecked = []
+            var subjectsList = []
+            var rootIndex = 0
+
+            for(var i = 0; i < subjectTriples.length; i++) {
+              subjectsList.push(subjectTriples[i]["@id"])
+
+              if ("@id" in subjectTriples[i] && subjectTriples[i]["@id"] == options.subjectURI) {
+                Object.assign(data, subjectTriples[i])
+
+                subjectsChecked.push(options.subjectURI)
+
+                rootIndex = i
+              }
+            }
+
+            var processObject = function(subject) {
+              var properties = Object.keys(subject)
+              properties.forEach(property => {
+                if (typeof subject[property] === 'object') {
+                  if ("@id" in subject[property]
+                    && subjectsChecked.indexOf(subject[property]["@id"]) < 0
+                    && subjectsList.indexOf(subject[property]["@id"]) > -1) {
+
+                    subjectTriples.forEach(o => {
+                      if (o["@id"] == subject[property]["@id"]) {
+                        subject[property] = o;
+
+                        subjectsChecked.push(subject[property]["@id"])
+                      }
+                    })
+                  }
+
+                  return Object.assign({}, processObject(subject[property]))
+                }
+              })
+
+              return subject
+            }
+
+            var subject = subjectTriples[rootIndex]
+
+            Object.assign(data, processObject(subject))
+
+// console.log(data)
+// console.log(JSON.stringify(data))
+            return JSON.stringify(data) + '\n'
+          })
+
+        default:
+          return serializeGraph(g, options)
+      }     
+    })
+    .then(data => {
+      switch (toContentType) {
+        default:
+          break;
+
+        case 'application/ld+json':
+          //TODO: Lazy person's JSON-LD compacting. Expect errors!
+          if (options["@context"]) {
+            var context = (typeof options["@context"] === 'string') ? [options["@context"]] : options['@context']
+
+            data = JSON.parse(data);
+            delete data["@context"]
+            data = JSON.stringify(data)
+
+            data = data.replace(new RegExp('"@id"', 'g'), '"id"')
+            data = data.replace(new RegExp('"@type"', 'g'), '"type"')
+
+            context.forEach(function(c){
+              var search = '';
+              var replace = '';
+
+              if (typeof c === 'string') {
+                switch(c) {
+                  case 'http://www.w3.org/ns/anno.jsonld':
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#autoDirection', 'g'), 'auto')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#cachedSource', 'g'), 'cached')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasBody', 'g'), 'body')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasEndSelector', 'g'), 'endSelector')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasPurpose', 'g'), 'purpose')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasScope', 'g'), 'scope')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasSelector', 'g'), 'selector')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasSource', 'g'), 'source')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasStartSelector', 'g'), 'startSelector')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#hasTarget', 'g'), 'target')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#ltrDirection', 'g'), 'ltr')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#motivatedBy', 'g'), 'motivation')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#rtlDirection', 'g'), 'rtl')
+                    data = data.replace(new RegExp('http://www.w3.org/ns/oa#styledBy', 'g'), 'stylesheet')
+
+                    data = data.replace(new RegExp('"oa:', 'g'), '"')
+
+                    search = 'http://www.w3.org/ns/oa#'
+                    break
+
+                  case 'https://www.w3.org/ns/activitystreams':
+                    data = data.replace(new RegExp('"as:', 'g'), '"')
+
+                    search = 'https://www.w3.org/ns/activitystreams#'
+                    break
+
+                  case 'http://schema.org/':
+                    data = data.replace(new RegExp('"schema:', 'g'), '"')
+
+                    search = 'http:/schema.org/'
+                    break
+                }
+              }
+              else {
+                replace = Object.keys(c)[0];
+
+                switch(replace) {
+                  case 'oa':
+                    search = 'http://www.w3.org/ns/oa#'
+                    break
+
+                  case 'as':
+                    search = 'https://www.w3.org/ns/activitystreams#'
+                    break
+
+                  case 'schema':
+                    search = 'http://schema.org/'
+                    break
+                }
+
+                replace = replace + ':'
+              }
+
+              data = data.replace(new RegExp(search, 'g'), replace)
+
+            })
+
+            data = JSON.parse(data)
+            data = Object.assign({"@context": options["@context"]}, data)
+            data = JSON.stringify(data)
+          }
+
+          break;
+      }
+// console.log(data)
+      return data
+    })
+}
+
+function serializeGraph (g, options = {}) {
+  if (!('contentType' in options)) {
+    options['contentType'] = 'text/turtle'
+  }
+
+  return ld.store.serializers[options.contentType].serialize(g._graph)
+    .then(data => {
+      data = applyParserSerializerFixes(data, options.contentType)
+
+      // XXX: .compact doesn't work as advertised
+      // if (options.contentType === 'application/ld+json' && '@context' in options) {
+      //   return jsonld.promises().compact(data, options['@context'], {'skipExpansion': true})
+      // }
+
+      return data
+    })
+}
+
+function applyParserSerializerFixes(data, contentType) {
+  // FIXME: FUGLY because parser defaults to localhost. Using UUID to minimise conflict
+  data = data.replace(/http:\/\/localhost\/d79351f4-cdb8-4228-b24f-3e9ac74a840d/g, '');
+
+  switch(contentType) {
+    case 'text/turtle':
+      //XXX: Workaround for rdf-parser-rdfa bug that gives '@langauge' instead of @type when encountering datatype in HTML+RDFa . TODO: Link to bug here
+      data = data.replace(/Z"@en;/, 'Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;');
+      data = data.replace(/start> "(\d+)"@en;/, 'start> "$1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger>;');
+      data = data.replace(/end> "(\d+)"@en;/, 'end> "$1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger>;');
+      break;
+
+    case 'application/ld+json':
+      var x = JSON.parse(data);
+
+      //XXX: Workaround for rdf-parser-rdfa bug that gives '@language' instead of @type when encountering datatype in HTML+RDFa . See also https://github.com/rdf-ext/rdf-parser-rdfa/issues/5
+      var properties = ['https://www.w3.org/ns/activitystreams#published', 'https://www.w3.org/ns/activitystreams#updated', 'http://schema.org/dateCreated', 'http://schema.org/datePublished', 'http://schema.org/dateModified', 'http://www.w3.org/ns/oa#start', 'http://www.w3.org/ns/oa#end'];
+
+      for(var i = 0; i < x.length; i++){
+        for(var j = 0; j < properties.length; j++){
+          if(properties[j] in x[i]) {
+            if (properties[j] == 'http://www.w3.org/ns/oa#start' || properties[j] == 'http://www.w3.org/ns/oa#end') {
+              x[i][properties[j]] = {
+                '@type': 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger',
+                '@value': x[i][properties[j]]['@value']
+              };
+            }
+            else {
+              x[i][properties[j]] = {
+                '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
+                '@value': x[i][properties[j]]['@value']
+              };
+            }
+          }
+        }
+      }
+
+      data = JSON.stringify(x);
+      break;
+  }        
+
+  return data;
+}
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(2)))
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+module.exports = __WEBPACK_EXTERNAL_MODULE__8__;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+const util = __webpack_require__(10)
+const doc = __webpack_require__(5)
+const uri = __webpack_require__(6)
+const graph = __webpack_require__(7)
+const fetcher = __webpack_require__(3)
+const Config = __webpack_require__(4)
 
 module.exports = {
   getEndpoint,
@@ -9409,9 +9075,9 @@ function notifyInbox (o) {
 
   //TODO title
   var title = '';
-  var data = DO.U.createActivityHTML(o)
+  var data = doc.createActivityHTML(o)
 
-  data = DO.U.createHTML(title, data, { 'prefixes': Config.Prefixes })
+  data = doc.createHTML(title, data, { 'prefixes': Config.Prefixes })
 
   var options = {
     'contentType': 'text/html',
@@ -9502,17 +9168,373 @@ function getEndpointFromRDF (property, url, subjectIRI) {
 
 
 /***/ }),
+/* 10 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+module.exports = {
+  uniqueArray,
+  getHash,
+  getDateTimeISO,
+  removeChildren,
+  copyTextToClipboard,
+  escapeRegExp,
+  sleep,
+  fragmentFromString,
+  generateUUID
+}
+
+/**
+ * @param a {Array}
+ *
+ * @returns {Array}
+ */
+function uniqueArray (a) {
+  var n = {}
+  var r = []
+  for (var i = 0; i < a.length; i++) {
+    if (!n[a[i]]) {
+      n[a[i]] = true
+      r.push(a[i])
+    }
+  }
+  return r
+}
+
+// https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
+function getHash (message, algo = "SHA-256") {
+  var buffer = new TextEncoder("utf-8").encode(message);
+  return window.crypto.subtle.digest(algo, buffer).then(function (hash) {
+    var hexCodes = [];
+    var view = new DataView(hash);
+    for (var i = 0; i < view.byteLength; i += 4) {
+      var value = view.getUint32(i)
+      var stringValue = value.toString(16)
+      var padding = '00000000'
+      var paddedValue = (padding + stringValue).slice(-padding.length)
+      hexCodes.push(paddedValue);
+    }
+    return hexCodes.join("");
+  });
+}
+
+function getDateTimeISO() {
+  var date = new Date();
+  return date.toISOString();
+}
+
+
+function removeChildren (node) {
+  while (node.firstChild) {
+    node.removeChild(node.firstChild);
+  }
+}
+
+function copyTextToClipboard(text){
+console.log(text)
+  if (!navigator.clipboard) {
+    try {
+      var successful = document.execCommand('copy');
+    } catch (err) {}
+    return;
+  }
+
+  navigator.clipboard.writeText(text).then(function() {
+    // console.log('Async: Copying to clipboard was successful!');
+  }, function(err) {
+    // console.error('Async: Could not copy text: ', err);
+  });
+}
+
+//From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+function escapeRegExp(string){
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+//http://stackoverflow.com/a/25214113
+function fragmentFromString(strHTML) {
+  return document.createRange().createContextualFragment(strHTML);
+}
+
+// MIT license
+// http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript/21963136#21963136
+function generateUUID() {
+  var lut = []; for (var i=0; i<256; i++) { lut[i] = (i<16?'0':'')+(i).toString(16); }
+  var s = function() {
+    var d0 = Math.random()*0xffffffff|0;
+    var d1 = Math.random()*0xffffffff|0;
+    var d2 = Math.random()*0xffffffff|0;
+    var d3 = Math.random()*0xffffffff|0;
+    return lut[d0&0xff]+lut[d0>>8&0xff]+lut[d0>>16&0xff]+lut[d0>>24&0xff]+'-'+
+    lut[d1&0xff]+lut[d1>>8&0xff]+'-'+lut[d1>>16&0x0f|0x40]+lut[d1>>24&0xff]+'-'+
+    lut[d2&0x3f|0x80]+lut[d2>>8&0xff]+'-'+lut[d2>>16&0xff]+lut[d2>>24&0xff]+
+    lut[d3&0xff]+lut[d3>>8&0xff]+lut[d3>>16&0xff]+lut[d3>>24&0xff];
+  };
+  return s();
+}
+
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+const Config = __webpack_require__(4)
+const util = __webpack_require__(10)
+const uri = __webpack_require__(6)
+const doc = __webpack_require__(5)
+
+module.exports = {
+  initStorage,
+  enableStorage,
+  disableStorage,
+  updateStorageDocument,
+  enableAutoSave,
+  disableAutoSave,
+  removeStorageItem,
+  removeStorageProfile,
+  getStorageProfile,
+  updateStorageProfile,
+  showStorage,
+  hideStorage
+}
+
+
+function initStorage(key) {
+  if (typeof window.localStorage != 'undefined') {
+    enableStorage(key);
+  }
+}
+
+function enableStorage(key) {
+  Config.UseStorage = true;
+  var o = localStorage.getItem(key);
+  try {
+    JSON.parse(o).object.Document;
+    document.documentElement.innerHTML = JSON.parse(o).object.content;
+    Config.init();
+  } catch(e){}
+  console.log(util.getDateTimeISO() + ': ' + key + ' storage enabled.');
+  enableAutoSave(key);
+}
+
+function disableStorage(key) {
+  Config.UseStorage = false;
+  localStorage.removeItem(key);
+  disableAutoSave(key);
+  console.log(util.getDateTimeISO() + ': ' + key + ' storage disabled.');
+}
+
+function updateStorageDocument(key) {
+  var content = doc.getDocument();
+
+  var id = util.generateUUID();
+  var o = localStorage.getItem(key);
+
+  var datetime = util.getDateTimeISO();
+
+  var object = {
+    "@context": "https://www.w3.org/ns/activitystreams",
+    "id": id,
+    "type": "Update",
+    "object": {
+      "id": key,
+      "type": "Document",
+      "updated": datetime,
+      "mediaType": "text/html",
+      "content": content
+    }
+  };
+
+  localStorage.setItem(key, JSON.stringify(object));
+  console.log(datetime + ': Document saved.');
+}
+
+function enableAutoSave(key) {
+  Config.AutoSaveId = setInterval(function() { updateStorageDocument(key) }, Config.AutoSaveTimer);
+  console.log(util.getDateTimeISO() + ': ' + key + ' autosave enabled.');
+}
+
+function disableAutoSave(key) {
+  clearInterval(Config.AutoSaveId);
+  Config.AutoSaveId = '';
+  console.log(util.getDateTimeISO() + ': ' + key + ' autosave disabled.');
+}
+
+function removeStorageItem(key) {
+  if (!key) { Promise.resolve(); }
+
+  console.log(util.getDateTimeISO() + ': ' + key + ' removed.')
+
+  if (Config.WebExtension) {
+    var browser = (typeof browser !== 'undefined') ? browser : chrome;
+
+    return browser.storage.sync.remove(key);
+  }
+  else if (window.localStorage) {
+    return Promise.resolve(localStorage.removeItem(key));
+  }
+  else {
+    return Promise.reject({'message': 'storage is unavailable'})
+  }
+}
+
+function removeStorageProfile(key) {
+  key = key || 'DO.C.User';
+
+  return removeStorageItem(key)
+}
+
+function getStorageProfile(key) {
+  key = key || 'DO.C.User'
+
+  if (Config.WebExtension) {
+    if (typeof browser !== 'undefined') {
+      return browser.storage.sync.get(key).then(function(o){ return o[key]; });
+    }
+    else {
+      var value = {};
+
+      chrome.storage.sync.get(key, function(o){ value = o[key]; })
+
+      return new Promise(function(resolve, reject){
+        window.setTimeout(function() {
+          return resolve(value)
+        }, 50);
+      });
+    }
+  }
+  else if (window.localStorage) {
+    var o = localStorage.getItem(key);
+    return Promise.resolve(JSON.parse(o));
+  }
+  else {
+    return Promise.reject({'message': 'storage is unavailable'})
+  }
+}
+
+function updateStorageProfile(User) {
+  if (!User.IRI) { return Promise.resolve({'message': 'User.IRI is not set'}); }
+
+  var key = 'DO.C.User'
+
+  var id = util.generateUUID();
+  var datetime = util.getDateTimeISO();
+
+  //because.. cyclic
+  if (User.Graph) {
+    delete User.Graph
+  }
+
+  if (User.Contacts) {
+    User.Contacts = {}
+  }
+
+  var object = {
+    "@context": "https://www.w3.org/ns/activitystreams",
+    "id": id,
+    "type": "Update",
+    "object": {
+      "id": key,
+      "type": "Profile",
+      "describes": User
+    },
+    "datetime": datetime,
+    "actor": User.IRI
+  };
+
+  if (Config.WebExtension) {
+    if (typeof browser !== 'undefined') {
+      return browser.storage.sync.set({[key]: object});
+    }
+    else {
+      return Promise.resolve(chrome.storage.sync.set({[key]: object}));
+    }
+  }
+  else if (window.localStorage) {
+    console.log(datetime + ': User ' + User.IRI + ' saved.');
+    return Promise.resolve(localStorage.setItem(key, JSON.stringify(object)));
+  }
+  else {
+    return Promise.reject({'message': 'storage is unavailable'})
+  }
+}
+
+function showStorage(node) {
+  if (window.localStorage) {
+    if(document.querySelector('#local-storage')) { return; }
+
+    var useStorage, checked;
+
+    if (Config.UseStorage) {
+      // if (Config.AutoSaveId) {
+      //   checked = ' checked="checked"';
+      // }
+      // useStorage = Config.DisableStorageButtons + '<input id="local-storage-html-autosave" class="autosave" type="checkbox"' + checked +' /> <label for="local-storage-html-autosave"><i class="fa fa-clock-o"></i> 1m autosave</label>';
+      useStorage = Config.DisableStorageButtons;
+
+    }
+    else {
+      useStorage = Config.EnableStorageButtons;
+    }
+
+    node.insertAdjacentHTML('beforeend', '<section id="local-storage" class="do"><h2>Local Storage</h2><ul><li>' + useStorage + '</li></ul></section>');
+
+    var key = uri.stripFragmentFromString(document.location.href);
+
+    document.getElementById('local-storage').addEventListener('click', function(e) {
+      if (e.target.closest('button.local-storage-enable-html')) {
+        e.target.outerHTML = Config.DisableStorageButtons;
+        enableStorage(key);
+      }
+
+      if (e.target.closest('button.local-storage-disable-html')) {
+        e.target.outerHTML = Config.EnableStorageButtons;
+        disableStorage(key);
+      }
+
+      // if (e.target.closest('input.autosave')) {
+      //   if (e.target.getAttribute('checked')) {
+      //     e.target.removeAttribute('checked');
+      //     disableAutoSave(key);
+      //   }
+      //   else {
+      //     e.target.setAttribute('checked', 'checked');
+      //     enableAutoSave(key);
+      //   }
+      // }
+    });
+  }
+}
+
+function hideStorage() {
+  if (Config.UseStorage) {
+    var ls = document.getElementById('local-storage');
+    ls.parentNode.removeChild(ls);
+  }
+}
+
+
+/***/ }),
 /* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-const Config = __webpack_require__(0)
-const fetcher = __webpack_require__(4)
-const util = __webpack_require__(3)
-const uri = __webpack_require__(2)
-const storage = __webpack_require__(7)
+const Config = __webpack_require__(4)
+const fetcher = __webpack_require__(3)
+const util = __webpack_require__(10)
+const uri = __webpack_require__(6)
+const storage = __webpack_require__(11)
 
 // const { OIDCWebClient } = require('@trust/oidc-web')
 
@@ -9630,13 +9652,13 @@ function showUserIdentityInput (e) {
   }
 
   var webid = Config.User.WebIdDelegate ? Config.User.WebIdDelegate : "";
-  var code = '<aside id="user-identity-input" class="do on">' + DO.C.Button.Close + '<h2>Sign in with WebID</h2><label>HTTP(S) IRI</label> <input id="webid" type="text" placeholder="http://csarven.ca/#i" value="'+webid+'" name="webid"/> <button class="signin">Sign in</button>';
+  var code = '<aside id="user-identity-input" class="do on">' + Config.Button.Close + '<h2>Sign in with WebID</h2><label>HTTP(S) IRI</label> <input id="webid" type="text" placeholder="http://csarven.ca/#i" value="'+webid+'" name="webid"/> <button class="signin">Sign in</button>';
   if (window.location.protocol === "https:")
     code += ' <h2>Sign in with OIDC</h2> <button class="signin_oidc">Sign in OIDC</button>';
 
   code += ' </aside>';
 
-  document.documentElement.appendChild(DO.U.fragmentFromString(code))
+  document.documentElement.appendChild(util.fragmentFromString(code))
 
   var buttonSignIn = document.querySelector('#user-identity-input button.signin')
   if (! Config.User.WebIdDelegate)

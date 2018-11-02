@@ -33,7 +33,7 @@ function enableStorage(key) {
   try {
     JSON.parse(o).object.Document;
     document.documentElement.innerHTML = JSON.parse(o).object.content;
-    DO.U.init();
+    Config.init();
   } catch(e){}
   console.log(util.getDateTimeISO() + ': ' + key + ' storage enabled.');
   enableAutoSave(key);
@@ -49,7 +49,7 @@ function disableStorage(key) {
 function updateStorageDocument(key) {
   var content = doc.getDocument();
 
-  var id = DO.U.generateUUID();
+  var id = util.generateUUID();
   var o = localStorage.getItem(key);
 
   var datetime = util.getDateTimeISO();
@@ -139,7 +139,7 @@ function updateStorageProfile(User) {
 
   var key = 'DO.C.User'
 
-  var id = DO.U.generateUUID();
+  var id = util.generateUUID();
   var datetime = util.getDateTimeISO();
 
   //because.. cyclic
