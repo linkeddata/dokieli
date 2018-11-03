@@ -1,6 +1,6 @@
 {
   "name": "dokieli",
-  "version": "0.3.18",
+  "version": "0.3.20",
   "description": "dokieli is a client-side editor for decentralised article publishing, annotations and social interactions",
   "main": "./src/dokieli.js",
   "scripts": {
@@ -32,7 +32,7 @@
     "fs": "0.0.1-security",
     "node-fetch": "^1.7.3",
     "npm": "^5.5.1",
-    "solid-auth-client": "^2.2.10",
+    "solid-auth-client": "^2.2.11",
     "trackjs": "^2.13.0",
     "webpack-core": "^0.6.9",
     "wrapper-webpack-plugin": "^2.0.0"
