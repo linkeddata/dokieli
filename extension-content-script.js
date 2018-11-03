@@ -34,7 +34,7 @@ WebExtension.runtime.onMessage.addListener(function(request, sender, sendRespons
           }
         });
 
-        DO.U.init();
+        DO.C.init();
 
         C.Loaded = true;
       }
