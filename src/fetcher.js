@@ -5,6 +5,7 @@ const doc = require('./doc')
 const uri = require('./uri')
 const graph = require('./graph')
 const fetch = require('node-fetch')  // Uses native fetch() in the browser
+const solidAuth = require('solid-auth-client')
 
 const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
 const LDP_RESOURCE = '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
@@ -86,7 +87,7 @@ function currentLocation () {
  * @returns {Promise<Response>}
  */
 function deleteResource (url, options = {}) {
-  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
+  var _fetch = Config.User.OIDC? solidAuth.fetch : fetch;
 
   if (!url) {
     return Promise.reject(new Error('Cannot DELETE resource - missing url'))
@@ -152,7 +153,7 @@ function getAcceptPostPreference (url) {
  * @returns {Promise<string>|Promise<ArrayBuffer>}
  */
 function getResource (url, headers = {}, options = {}) {
-  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
+  var _fetch = Config.User.OIDC? solidAuth.fetch : fetch;
 
   url = url || currentLocation()
   options.method = 'GET'
@@ -194,7 +195,7 @@ function getResource (url, headers = {}, options = {}) {
  * @returns {Promise<string>} Resolves with contents of specified header
  */
 function getResourceHead (url, options = {}) {
-  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
+  var _fetch = Config.User.OIDC? solidAuth.fetch : fetch;
   url = url || currentLocation()
 
   if (!options.header) {
@@ -277,7 +278,7 @@ function getResourceGraph (iri, headers, options = {}) {
  * @returns {Promise} Resolves with `{ headers: ... }` object
  */
 function getResourceOptions (url, options = {}) {
-  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
+  var _fetch = Config.User.OIDC? solidAuth.fetch : fetch;
   url = url || currentLocation()
 
   options.method = 'OPTIONS'
@@ -345,7 +346,7 @@ function parseLinkHeader (link) {
 }
 
 function patchResource (url, deleteBGP, insertBGP, options = {}) {
-  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
+  var _fetch = Config.User.OIDC? solidAuth.fetch : fetch;
   // insertBGP and deleteBGP are basic graph patterns.
   deleteBGP = (deleteBGP) ? 'DELETE DATA {\n\
 ' + deleteBGP + '\n\
@@ -387,7 +388,7 @@ function patchResource (url, deleteBGP, insertBGP, options = {}) {
 }
 
 function postResource (url, slug, data, contentType, links, options = {}) {
-  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
+  var _fetch = Config.User.OIDC? solidAuth.fetch : fetch;
   if (!url) {
     return Promise.reject(new Error('Cannot POST resource - missing url'))
   }
@@ -456,7 +457,7 @@ function postResource (url, slug, data, contentType, links, options = {}) {
  * @returns {Promise<Response>}
  */
 function putResource (url, data, contentType, links, options = {}) {
-  var _fetch = Config.User.OIDC? solid.auth.fetch : fetch;
+  var _fetch = Config.User.OIDC? solidAuth.fetch : fetch;
   if (!url) {
     return Promise.reject(new Error('Cannot PUT resource - missing url'))
   }

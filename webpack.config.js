@@ -1,7 +1,10 @@
 const path = require('path')
+const fs = require('fs')
+const WrapperPlugin = require('wrapper-webpack-plugin')
+const headerDoc = fs.readFileSync(require.resolve('solid-auth-client/dist-lib/solid-auth-client.bundle.js'), 'utf8') + '\n';
 
 module.exports = {
-  "mode": "none",
+  mode: "none",
   entry: [
     './src/dokieli.js'
   ],
@@ -9,7 +12,7 @@ module.exports = {
     path: path.join(__dirname, '/scripts/'),
     filename: 'do.js',
     library: 'DO',
-    libraryTarget: 'umd'
+    libraryTarget: 'window'
   },
   module: {
     rules: [
@@ -21,7 +24,18 @@ module.exports = {
     ]
   },
   externals: {
-    'node-fetch': 'fetch'
+    'node-fetch': 'fetch',
+    'text-encoding': 'TextEncoder',
+    'whatwg-url': 'window',
+    'isomorphic-fetch': 'fetch',
+    '@trust/webcrypto': 'crypto',
+    'solid-auth-client': ['solid', 'auth']
   },
-  devtool: 'source-map'
+  devtool: 'source-map',
+
+  plugins: [
+    new WrapperPlugin({
+      header: headerDoc
+    })
+  ]
 }

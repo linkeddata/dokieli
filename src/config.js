@@ -37,7 +37,7 @@ module.exports = {
     OIDC: false,
     WebIdDelegate: null
   },
-  OidcPopupUrl: 'https://solid.openlinksw.com:8444/common/popup.html',
+  OidcPopupUrl: 'https://dokie.li/popup.html',
   LocalDocument: (document.location.protocol == 'file:'),
   UseStorage: false,
   AutoSaveId: '',

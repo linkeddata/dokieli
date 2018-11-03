@@ -29,12 +29,18 @@
   },
   "homepage": "https://dokie.li/",
   "dependencies": {
+    "fs": "0.0.1-security",
     "node-fetch": "^1.7.3",
-    "npm": "^5.5.1"
+    "npm": "^5.5.1",
+    "solid-auth-client": "^2.2.10",
+    "trackjs": "^2.13.0",
+    "webpack-core": "^0.6.9",
+    "wrapper-webpack-plugin": "^2.0.0"
   },
   "devDependencies": {
     "standard": "^10.0.3",
-    "webpack": "^3.5.5"
+    "webpack": "^4.24.0",
+    "webpack-cli": "^3.1.2"
   },
   "standard": {
     "globals": [

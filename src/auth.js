@@ -5,6 +5,7 @@ const fetcher = require('./fetcher')
 const util = require('./util')
 const uri = require('./uri')
 const storage = require('./storage')
+const solidAuth = require('solid-auth-client')
 
 // const { OIDCWebClient } = require('@trust/oidc-web')
 
@@ -86,8 +87,8 @@ function showUserSigninSignout (node) {
       e.preventDefault()
       e.stopPropagation()
 
-      if (Config.User.OIDC && solid && solid.auth) {
-        solid.auth.logout();
+      if (Config.User.OIDC && solidAuth) {
+        solidAuth.logout();
       }
 
       if (e.target.closest('.signout-user')) {
@@ -122,11 +123,11 @@ function showUserIdentityInput (e) {
   }
 
   var webid = Config.User.WebIdDelegate ? Config.User.WebIdDelegate : "";
-  var code = '<aside id="user-identity-input" class="do on">' + Config.Button.Close + '<h2>Sign in with WebID</h2><label>HTTP(S) IRI</label> <input id="webid" type="text" placeholder="http://csarven.ca/#i" value="'+webid+'" name="webid"/> <button class="signin">Sign in</button>';
-  if (window.location.protocol === "https:")
-    code += ' <h2>Sign in with OIDC</h2> <button class="signin_oidc">Sign in OIDC</button>';
-
-  code += ' </aside>';
+  var code = '<aside id="user-identity-input" class="do on">' + Config.Button.Close + '<h2>Sign in</h2><p id="user-identity-input-webid"><label>WebID</label> <input id="webid" type="text" placeholder="http://csarven.ca/#i" value="'+webid+'" name="webid"/> <button class="signin">Sign in</button></p>';
+  if (window.location.protocol === "https:") {
+    code += '<p id="user-identity-input-oidc">or with <label>OpenID Connect</label> <button class="signin-oidc">Sign in</button></p>';
+  }
+  code += '</aside>';
 
   document.documentElement.appendChild(util.fragmentFromString(code))
 
@@ -153,7 +154,7 @@ function showUserIdentityInput (e) {
     inputWebid.addEventListener(eventType, e => { enableDisableButton(e, buttonSignIn) })
   })
 
-  var buttonSignInOIDC = document.querySelector('#user-identity-input button.signin_oidc')
+  var buttonSignInOIDC = document.querySelector('#user-identity-input button.signin-oidc')
   buttonSignInOIDC.addEventListener('click', submitSignInOIDC)
 
   inputWebid.focus()
@@ -192,7 +193,7 @@ function submitSignIn (url) {
 
   if (typeof url !== 'string') {
     if (userIdentityInput) {
-      userIdentityInput.insertAdjacentHTML('beforeend',
+      userIdentityInput.querySelector('#user-identity-input-webid').insertAdjacentHTML('beforeend',
         '<i class="fa fa-circle-o-notch fa-spin fa-fw"></i>')
     }
 
@@ -226,8 +227,8 @@ function submitSignInOIDC (url) {
 
   var popupUri = Config.OidcPopupUrl;
 
-  if (solid && solid.auth) {
-    solid.auth
+  if (solidAuth) {
+    solidAuth
       .popupLogin({ popupUri })
       .then((session) => {
          if (session && session.webId) {
