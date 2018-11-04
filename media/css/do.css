@@ -952,6 +952,10 @@ right:0;
 z-index:2147483647;
 }
 
+dd.do button {
+margin-left:0.25em;
+}
+
 .do.position-relative {
 position:relative;
 z-index:1;

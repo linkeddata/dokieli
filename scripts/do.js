@@ -5168,6 +5168,17 @@ WHERE {\n\
         authorNameSelected.removeAttribute('contenteditable');
       });
 
+      var dANE = document.querySelectorAll('#' + documentAuthorName + ' .do');
+      dANE.forEach(function(i){
+        i.parentNode.removeChild(i);
+      });
+
+      var dd = document.querySelectorAll('#' + documentAuthorName + ' dd');
+      if(dd.length == 0) {
+        dA = document.getElementById(documentAuthor);
+        dA.parentNode.removeChild(dA);
+      }
+
 
       var documentLicense = 'document-license';
       var dLS = document.querySelector('#' + documentLicense + ' option:checked');
@@ -5482,29 +5493,35 @@ WHERE {\n\
               authors = document.getElementById(documentAuthors);
             }
 
+            var authorName = 'author-name';
+            var documentAuthorName = document.getElementById(authorName);
+
             var sa = DO.C['ResourceInfo'].graph.schemaauthor;
 
             //If not one of the authors, offer to add self
             if(DO.C.User.IRI && sa.indexOf(DO.C.User.IRI) < 0){
-              var authorName = 'author-name';
-              var documentAuthorName = document.getElementById(authorName);
               var userHTML = auth.getUserHTML();
               var authorId = (DO.C.User.Name) ? ' id="' + DO.U.generateAttributeId(null, DO.C.User.Name) + '"' : '';
 
-              documentAuthorName.insertAdjacentHTML('beforeend', '<dd class="do"' + authorId + ' inlist="" rel="bibo:authorList"><span about="" rel="schema:author">' + userHTML + '</span> <button class="add-author-name" contenteditable="false"><i class="fa fa-plus"></i></button></dd>');
-              authors = document.getElementById(documentAuthors);
-
-              authors.addEventListener('click', function(e){
-                var button = e.target.closest('button.add-author-name');
-                if(button){
-                  e.target.closest('dd').classList.add('selected');
-                  button.parentNode.removeChild(button);
-                }
-              });
+              documentAuthorName.insertAdjacentHTML('beforeend', '<dd class="do"' + authorId + ' inlist="" rel="bibo:authorList"><span about="" rel="schema:author">' + userHTML + '</span><button class="add-author-name" contenteditable="false"><i class="fa fa-plus"></i></button></dd>');
             }
 
-            //Offer to add new author and also ask if you want to send a notification them to author
+            //Invite other other authors
+            documentAuthorName.insertAdjacentHTML('beforeend', '<dd class="do"><button class="invite-author" contenteditable="false"><i class="fa fa-bullhorn"></i></button></dd>');
+            authors = document.getElementById(documentAuthors);
 
+            authors.addEventListener('click', function(e){
+              var button = e.target.closest('button.add-author-name');
+              if(button){
+                e.target.closest('dd').classList.add('selected');
+                button.parentNode.removeChild(button);
+              }
+
+              if (e.target.closest('button.invite-author')) {
+                DO.U.shareResource(e);
+                e.target.removeAttribute('disabled');
+              }
+            });
 
             var documentLicense = 'document-license';
             var license = document.getElementById(documentLicense);
