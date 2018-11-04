@@ -1138,16 +1138,17 @@ right: -20em;
 img[width="32"][height="32"],
 img[width="48"][height="48"] {
 border-radius:0.5em;
-margin-right:0.5em;
 vertical-align:middle;
 }
 img[width="32"][height="32"] {
 max-height:32px;
 max-width:32px;
+margin-right:0.25em;
 }
 img[width="48"][height="48"] {
 max-height:48px;
 max-width:48px;
+margin-right:0.5em;
 }
 
 span.ref[typeof~="dctypes:Text"] {
