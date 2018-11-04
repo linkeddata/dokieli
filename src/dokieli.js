@@ -6964,7 +6964,8 @@ WHERE {\n\
                   parentSection.appendChild(asideNode);
 
                   if(DO.C.User.IRI) {
-                    var noteDelete = document.querySelector("aside.note article#" + id + " button.delete");
+                    var idEscape = (id.match(/^\d/)) ? "\\\\" : '';
+                    var noteDelete = document.querySelector('aside.note article#' + idEscape + id + ' button.delete');
 
                     if (noteDelete) {
                       noteDelete.addEventListener('click', function(e) {
