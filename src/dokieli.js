@@ -6963,6 +6963,22 @@ WHERE {\n\
                   var parentSection = doc.getClosestSectionNode(selectedParentElement);
                   parentSection.appendChild(asideNode);
 
+                  if(DO.C.User.IRI) {
+                    var noteDelete = document.querySelector("aside.note article#" + id + " button.delete");
+
+                    if (noteDelete) {
+                      noteDelete.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        var aside = noteDelete.closest('aside.note')
+                        aside.parentNode.removeChild(aside)
+                        var span = document.querySelector('span[resource="#' + refId + '"]')
+                        span.outerHTML = span.querySelector('mark').textContent
+                      });
+                    }
+                  }
+
                   DO.U.positionNote(refId, refLabel, id);
                   break;
 
