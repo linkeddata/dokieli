@@ -158,10 +158,13 @@ text-align:center;
 main,
 main > article { position:relative; }
 
-.do:not(code):not(samp):not(pre):not(kbd):not(button):not([class~="highlight"]):not([class~="ref"]),
-.do:not([class~="highlight"]):not([class~="ref"]) *:not([class~="fa"]) {
+/*XXX: Can we stick to "sans-serif" and omit this stuff?*/
+.do:not(code):not(samp):not(pre):not(kbd):not(button):not([class~="highlight"]):not([class~="ref"]):not([contenteditable="false"]),
+.do:not([class~="highlight"]):not([class~="ref"]):not([contenteditable="false"]) *:not([class~="fa"]) {
 font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 }
+
+
 .do th,
 .do legend {
 font-weight:bold !important;
@@ -694,7 +697,7 @@ z-index:2147483646;
 #document-do li 
 display:inline;
 margin-right:1em;*/{
-width:42%;
+width:44%;
 display:inline-block !important;
 }
 
