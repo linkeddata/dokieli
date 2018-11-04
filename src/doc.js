@@ -1,6 +1,7 @@
 'use strict'
 
 const Config = require('./config')
+const util = require('./util')
 
 module.exports = {
   domToString,
