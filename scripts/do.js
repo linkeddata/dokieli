@@ -4755,7 +4755,9 @@ WHERE {\n\
 
         case 'read':
           hX = 3;
+          if ('creator' in n && 'iri' in n.creator && n.creator.iri == DO.C.User.IRI) {
             buttonDelete = '<button class="delete"><i class="fa fa-trash"></i></button>' ;
+          }
           break;
         case 'write':
           hX = 1;
