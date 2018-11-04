@@ -10,7 +10,8 @@ module.exports = {
   getDocument,
   setHTMLBase,
   createHTML,
-  createActivityHTML
+  createActivityHTML,
+  getClosestSectionNode
 }
 
 function domToString (node, options = {}) {
@@ -264,4 +265,8 @@ function createActivityHTML(o) {
 </article>'
 
   return data
+}
+
+function getClosestSectionNode(node) {
+  return MediumEditor.util.getClosestTag(node, 'section') || MediumEditor.util.getClosestTag(node, 'div') || MediumEditor.util.getClosestTag(node, 'article') || MediumEditor.util.getClosestTag(node, 'main') || MediumEditor.util.getClosestTag(node, 'body');
 }

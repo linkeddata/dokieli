@@ -4553,8 +4553,7 @@ WHERE {\n\
 </aside>\n\
 ';
           var asideNode = util.fragmentFromString(asideNote);
-          var parentSection = MediumEditor.util.getClosestTag(selectedParentNode, 'section')
-          || MediumEditor.util.getClosestTag(selectedParentNode, 'div') || MediumEditor.util.getClosestTag(selectedParentNode, 'article') || MediumEditor.util.getClosestTag(selectedParentNode, 'main') || MediumEditor.util.getClosestTag(selectedParentNode, 'body');
+          var parentSection = doc.getClosestSectionNode(selectedParentNode);
           parentSection.appendChild(asideNode);
           //XXX: Keeping this comment around for emergency
 //                selectedParentNode.parentNode.insertBefore(asideNode, selectedParentNode.nextSibling);
@@ -7062,13 +7061,13 @@ WHERE {\n\
                 case 'note':
                   var noteData = createNoteData({'id': id})
                   note = DO.U.createNoteDataHTML(noteData);
-                  var nES = selectedParentElement.nextElementSibling;
+                  // var nES = selectedParentElement.nextElementSibling;
                   var asideNote = '\n\
 <aside class="note">\n\
 '+ note + '\n\
 </aside>';
                   var asideNode = util.fragmentFromString(asideNote);
-                  var parentSection = MediumEditor.util.getClosestTag(selectedParentElement, 'section');
+                  var parentSection = doc.getClosestSectionNode(selectedParentElement);
                   parentSection.appendChild(asideNode);
 
                   DO.U.positionNote(refId, refLabel, id);
@@ -7094,7 +7093,7 @@ WHERE {\n\
 '+ note + '\n\
 </aside>';
                       var asideNode = util.fragmentFromString(asideNote);
-                      var parentSection = MediumEditor.util.getClosestTag(selectedParentElement, 'section');
+                      var parentSection = doc.getClosestSectionNode(selectedParentElement);
                       parentSection.appendChild(asideNode);
 
                       DO.U.positionNote(refId, refLabel, id);
@@ -8363,7 +8362,8 @@ module.exports = {
   getDocument,
   setHTMLBase,
   createHTML,
-  createActivityHTML
+  createActivityHTML,
+  getClosestSectionNode
 }
 
 function domToString (node, options = {}) {
@@ -8617,6 +8617,10 @@ function createActivityHTML(o) {
 </article>'
 
   return data
+}
+
+function getClosestSectionNode(node) {
+  return MediumEditor.util.getClosestTag(node, 'section') || MediumEditor.util.getClosestTag(node, 'div') || MediumEditor.util.getClosestTag(node, 'article') || MediumEditor.util.getClosestTag(node, 'main') || MediumEditor.util.getClosestTag(node, 'body');
 }
 
 
