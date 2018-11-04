@@ -5060,7 +5060,7 @@ WHERE {\n\
       });
 
       var dd = document.querySelectorAll('#' + documentAuthorName + ' dd');
-      if(dd.length == 0) {
+      if(dA && dd.length == 0) {
         dA = document.getElementById(documentAuthor);
         dA.parentNode.removeChild(dA);
       }
