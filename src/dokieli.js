@@ -5386,7 +5386,7 @@ WHERE {\n\
 
             //If not one of the authors, offer to add self
             if(DO.C.User.IRI && sa.indexOf(DO.C.User.IRI) < 0){
-              var userHTML = auth.getUserHTML();
+              var userHTML = auth.getUserHTML({'avatarSize': 32});
               var authorId = (DO.C.User.Name) ? ' id="' + DO.U.generateAttributeId(null, DO.C.User.Name) + '"' : '';
 
               documentAuthorName.insertAdjacentHTML('beforeend', '<dd class="do"' + authorId + ' inlist="" rel="bibo:authorList"><span about="" rel="schema:author">' + userHTML + '</span><button class="add-author-name" contenteditable="false"><i class="fa fa-plus"></i></button></dd>');

@@ -5500,7 +5500,7 @@ WHERE {\n\
 
             //If not one of the authors, offer to add self
             if(DO.C.User.IRI && sa.indexOf(DO.C.User.IRI) < 0){
-              var userHTML = auth.getUserHTML();
+              var userHTML = auth.getUserHTML({'avatarSize': 32});
               var authorId = (DO.C.User.Name) ? ' id="' + DO.U.generateAttributeId(null, DO.C.User.Name) + '"' : '';
 
               documentAuthorName.insertAdjacentHTML('beforeend', '<dd class="do"' + authorId + ' inlist="" rel="bibo:authorList"><span about="" rel="schema:author">' + userHTML + '</span><button class="add-author-name" contenteditable="false"><i class="fa fa-plus"></i></button></dd>');
@@ -8019,6 +8019,7 @@ module.exports = {
   UseStorage: false,
   AutoSaveId: '',
   AutoSaveTimer: 60000,
+  AvatarSize: 48,
   DisableStorageButtons: '<button class="local-storage-disable-html" title="Disable local storage (temporary) in the browser"><i class="fa fa-database fa-2x"></i>Local Storage</button>',
   EnableStorageButtons: '<button class="local-storage-enable-html" title="Enable local storage (temporary) in the browser"><i class="fa fa-database fa-2x"></i>Local Storage</button>',
   CDATAStart: '//<![CDATA[',
@@ -9644,7 +9645,10 @@ module.exports = {
 }
 
 
-function getUserHTML () {
+function getUserHTML (options) {
+  options = options || {};
+  var avatarSize = ('avatarSize' in options) ? options.avatarSize : Config['AvatarSize'];
+
   let userName = Config.SecretAgentNames[Math.floor(Math.random() * Config.SecretAgentNames.length)]
 
   if (Config.User.Name) {
@@ -9656,8 +9660,8 @@ function getUserHTML () {
   let userImage = ''
 
   if ('Image' in Config.User && typeof Config.User.Image !== 'undefined' && Config.User.Image.length > 0) {
-    userImage = '<img alt="" height="48" rel="schema:image" src="' +
-      Config.User.Image + '" width="48" /> '
+    userImage = '<img alt="" height="' + avatarSize + '" rel="schema:image" src="' +
+      Config.User.Image + '" width="' + avatarSize + '" /> '
   }
 
   let user = ''

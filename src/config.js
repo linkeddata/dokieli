@@ -42,6 +42,7 @@ module.exports = {
   UseStorage: false,
   AutoSaveId: '',
   AutoSaveTimer: 60000,
+  AvatarSize: 48,
   DisableStorageButtons: '<button class="local-storage-disable-html" title="Disable local storage (temporary) in the browser"><i class="fa fa-database fa-2x"></i>Local Storage</button>',
   EnableStorageButtons: '<button class="local-storage-enable-html" title="Enable local storage (temporary) in the browser"><i class="fa fa-database fa-2x"></i>Local Storage</button>',
   CDATAStart: '//<![CDATA[',

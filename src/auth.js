@@ -32,7 +32,10 @@ module.exports = {
 }
 
 
-function getUserHTML () {
+function getUserHTML (options) {
+  options = options || {};
+  var avatarSize = ('avatarSize' in options) ? options.avatarSize : Config['AvatarSize'];
+
   let userName = Config.SecretAgentNames[Math.floor(Math.random() * Config.SecretAgentNames.length)]
 
   if (Config.User.Name) {
@@ -44,8 +47,8 @@ function getUserHTML () {
   let userImage = ''
 
   if ('Image' in Config.User && typeof Config.User.Image !== 'undefined' && Config.User.Image.length > 0) {
-    userImage = '<img alt="" height="48" rel="schema:image" src="' +
-      Config.User.Image + '" width="48" /> '
+    userImage = '<img alt="" height="' + avatarSize + '" rel="schema:image" src="' +
+      Config.User.Image + '" width="' + avatarSize + '" /> '
   }
 
   let user = ''
