@@ -148,7 +148,6 @@ module.exports = {
     'table-of-figures',
     'table-of-tables',
     'table-of-abbrs',
-    'authors',
     'abstract',
     'categories-and-subject-descriptors',
     'keywords',

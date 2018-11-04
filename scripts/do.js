@@ -5151,6 +5151,24 @@ WHERE {\n\
         options['datetime'] = new Date();
       }
 
+      var documentAuthor = 'authors';
+      var documentAuthorName = 'author-name';
+      var dA = document.getElementById(documentAuthor);
+
+      if(dA) {
+        if (dA.classList && dA.classList.contains('do') > -1) {
+          dA.removeAttribute('class');
+        }
+        dA.removeAttribute('contenteditable');
+      }
+
+      var dANS = document.querySelectorAll('#' + documentAuthorName + ' .selected');
+      dANS.forEach(function(authorNameSelected) {
+        authorNameSelected.removeAttribute('class');
+        authorNameSelected.removeAttribute('contenteditable');
+      });
+
+
       var documentLicense = 'document-license';
       var dLS = document.querySelector('#' + documentLicense + ' option:checked');
 
@@ -5271,6 +5289,7 @@ WHERE {\n\
           var s = SimpleRDF(DO.C.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
 // console.log(s);
 
+          info['graph'] = s;
           info['rdftype'] = s.rdftype._array;
           info['profile'] = DO.C.Vocab['ldpRDFSource']['@id'];
 
@@ -5453,6 +5472,39 @@ WHERE {\n\
           if (e && e.target.closest('button.editor-enable')) {
             DO.C.ContentEditable = true;
             document.addEventListener('click', DO.U.updateDocumentTitle);
+
+            var documentAuthors = 'authors';
+            var authors = document.getElementById(documentAuthors);
+
+            if (!authors) {
+              var authors = '<div class="do" id="' + documentAuthors + '"><dl id="author-name"><dt>Authors</dt></dl></div>';
+              DO.U.insertDocumentLevelHTML(document, authors, { 'id': documentAuthors });
+              authors = document.getElementById(documentAuthors);
+            }
+
+            var sa = DO.C['ResourceInfo'].graph.schemaauthor;
+
+            //If not one of the authors, offer to add self
+            if(DO.C.User.IRI && sa.indexOf(DO.C.User.IRI) < 0){
+              var authorName = 'author-name';
+              var documentAuthorName = document.getElementById(authorName);
+              var userHTML = auth.getUserHTML();
+              var authorId = (DO.C.User.Name) ? ' id="' + DO.U.generateAttributeId(null, DO.C.User.Name) + '"' : '';
+
+              documentAuthorName.insertAdjacentHTML('beforeend', '<dd class="do"' + authorId + ' inlist="" rel="bibo:authorList"><span about="" rel="schema:author">' + userHTML + '</span> <button class="add-author-name" contenteditable="false"><i class="fa fa-plus"></i></button></dd>');
+              authors = document.getElementById(documentAuthors);
+
+              authors.addEventListener('click', function(e){
+                var button = e.target.closest('button.add-author-name');
+                if(button){
+                  e.target.closest('dd').classList.add('selected');
+                  button.parentNode.removeChild(button);
+                }
+              });
+            }
+
+            //Offer to add new author and also ask if you want to send a notification them to author
+
 
             var documentLicense = 'document-license';
             var license = document.getElementById(documentLicense);
@@ -8056,7 +8108,6 @@ module.exports = {
     'table-of-figures',
     'table-of-tables',
     'table-of-abbrs',
-    'authors',
     'abstract',
     'categories-and-subject-descriptors',
     'keywords',
