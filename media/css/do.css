@@ -189,9 +189,6 @@ right:0;
 aside.do {
 top:0;
 }
-aside.do:not([class~="note"]) {
-font-size:0.8em;
-}
 .do.on {
 line-height:1.6;
 font-size:1em;
@@ -333,7 +330,7 @@ left: auto;
 right: -27%;
 z-index: 1;
 width: 25%;
-font-size: 0.9em;
+font-size: 0.8em;
 text-align: left;
 }
 aside.note aside.note {
