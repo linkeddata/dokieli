@@ -188,6 +188,8 @@ right:0;
 }
 aside.do {
 top:0;
+}
+aside.do:not([class~="note"]) {
 font-size:0.8em;
 }
 .do.on {
