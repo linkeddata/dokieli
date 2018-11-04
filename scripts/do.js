@@ -4752,6 +4752,11 @@ WHERE {\n\
           }
           articleClass = ' class="do"';
           break;
+
+        case 'read':
+          hX = 3;
+            buttonDelete = '<button class="delete"><i class="fa fa-trash"></i></button>' ;
+          break;
         case 'write':
           hX = 1;
           break;
