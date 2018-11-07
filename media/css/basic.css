@@ -400,11 +400,11 @@ dd + dt { margin-top: 1em; }
 
 p + dl { margin-top:0; }
 
-hr {
+section + hr, blockquote + hr, p + hr, ul + hr, ol + hr {
 border:0;
 text-align:center;
 }
-hr:before {
+section + hr:before, blockquote + hr:before, p + hr:before, ul + hr:before, ol + hr:before {
 content:"\2042";
 }
 
