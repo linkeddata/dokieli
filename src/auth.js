@@ -90,11 +90,11 @@ function showUserSigninSignout (node) {
       e.preventDefault()
       e.stopPropagation()
 
-      if (Config.User.OIDC && solidAuth) {
-        solidAuth.logout();
-      }
-
       if (e.target.closest('.signout-user')) {
+        if (Config.User.OIDC && solidAuth) {
+          solidAuth.logout();
+        }
+
         storage.removeStorageProfile()
 
         Config.User = {
