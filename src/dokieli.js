@@ -826,6 +826,8 @@ var DO = {
     initUser: function() {
       storage.getStorageProfile().then(user => {
         if (user && 'object' in user) {
+          user.object.describes.Role = (DO.C.User.IRI && user.object.describes.Role) ? user.object.describes.Role : 'social';
+
           DO.C['User'] = user.object.describes;
         }
       })
