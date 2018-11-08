@@ -9792,20 +9792,23 @@ function showUserIdentityInput (e) {
     }
   })
 
-  var inputWebid = document.querySelector('#user-identity-input input#webid')
+  var inputWebID = document.querySelector('#user-identity-input input#webid')
+  if(inputWebID) {
+    buttonSignIn.addEventListener('click', submitSignIn)
 
-  buttonSignIn.addEventListener('click', submitSignIn)
+    let events = ['keyup', 'cut', 'paste', 'input']
 
-  let events = ['keyup', 'cut', 'paste', 'input']
-
-  events.forEach(eventType => {
-    inputWebid.addEventListener(eventType, e => { enableDisableButton(e, buttonSignIn) })
-  })
+    events.forEach(eventType => {
+      inputWebID.addEventListener(eventType, e => { enableDisableButton(e, buttonSignIn) })
+    })
+  }
 
   var buttonSignInOIDC = document.querySelector('#user-identity-input button.signin-oidc')
-  buttonSignInOIDC.addEventListener('click', submitSignInOIDC)
+  if (buttonSignInOIDC) {
+    buttonSignInOIDC.addEventListener('click', submitSignInOIDC)
+  }
 
-  inputWebid.focus()
+  inputWebID.focus()
 }
 
 
