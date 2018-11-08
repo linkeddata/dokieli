@@ -99,7 +99,7 @@ function showUserSigninSignout (node) {
 
         Config.User = {
           IRI: null,
-          Role: null,
+          Role: 'social',
           UI: {}
         }
 

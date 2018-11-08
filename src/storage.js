@@ -111,10 +111,19 @@ function getStorageProfile(key) {
 
   if (Config.WebExtension) {
     if (typeof browser !== 'undefined') {
+      if (o[key]) {
+        o[key].object.describes.Role = Config.User.Role || 'social';
+        //XXX: updateStorageProfile(Config.User); should update but User.IRI is null on page load
+      }
+
       return browser.storage.sync.get(key).then(function(o){ return o[key]; });
     }
     else {
       var value = {};
+      if (o[key]) {
+        o[key].object.describes.Role = Config.User.Role || 'social';
+        //XXX: updateStorageProfile(Config.User); should update but User.IRI is null on page load
+      }
 
       chrome.storage.sync.get(key, function(o){ value = o[key]; })
 
@@ -127,7 +136,13 @@ function getStorageProfile(key) {
   }
   else if (window.localStorage) {
     var o = localStorage.getItem(key);
-    return Promise.resolve(JSON.parse(o));
+    o = JSON.parse(o);
+    if (o) {
+      o.object.describes.Role = Config.User.Role || 'social';
+      //XXX: updateStorageProfile(Config.User); should update but User.IRI is null on page load
+    }
+
+    return Promise.resolve(o);
   }
   else {
     return Promise.reject({'message': 'storage is unavailable'})
@@ -173,7 +188,7 @@ function updateStorageProfile(User) {
     }
   }
   else if (window.localStorage) {
-    console.log(datetime + ': User ' + User.IRI + ' saved.');
+    // console.log(datetime + ': User ' + User.IRI + ' saved.');
     return Promise.resolve(localStorage.setItem(key, JSON.stringify(object)));
   }
   else {

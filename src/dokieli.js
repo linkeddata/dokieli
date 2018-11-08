@@ -4455,7 +4455,7 @@ WHERE {\n\
                   .then(() => {
                     var aside = noteDelete.closest('aside.do')
                     aside.parentNode.removeChild(aside)
-                    var span = document.querySelector('span[about="#' + refId + '"]')
+                    var span = document.querySelector('span[resource="#' + refId + '"]')
                     span.outerHTML = span.querySelector('mark').textContent
                     // TODO: Delete notification or send delete activity
                   })
@@ -5266,6 +5266,7 @@ WHERE {\n\
       disableEditor: function(e) {
     //    _mediumEditors[1].destroy();
         DO.C.EditorEnabled = false;
+        DO.C.User.Role = 'social';
         document.removeEventListener('click', DO.U.updateDocumentTitle);
         return DO.U.Editor.MediumEditor.destroy();
       },
@@ -5367,6 +5368,7 @@ WHERE {\n\
         var eNodes = selector || DO.U.selectArticleNode(document);
         var eOptions = editorOptions[editorMode];
         DO.C.User.Role = editorMode;
+        storage.updateStorageProfile(DO.C.User);
 
         if (typeof MediumEditor !== 'undefined') {
           DO.U.Editor.MediumEditor = new MediumEditor(eNodes, eOptions);

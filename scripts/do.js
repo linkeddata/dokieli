@@ -122,10 +122,10 @@ module.exports = __webpack_require__(1);
 
 const fetcher = __webpack_require__(3)
 const doc = __webpack_require__(5)
-const uri = __webpack_require__(6)
-const graph = __webpack_require__(7)
-const inbox = __webpack_require__(10)
-const util = __webpack_require__(11)
+const uri = __webpack_require__(7)
+const graph = __webpack_require__(8)
+const inbox = __webpack_require__(11)
+const util = __webpack_require__(6)
 const storage = __webpack_require__(12)
 global.auth = __webpack_require__(13)
 
@@ -4569,7 +4569,7 @@ WHERE {\n\
                   .then(() => {
                     var aside = noteDelete.closest('aside.do')
                     aside.parentNode.removeChild(aside)
-                    var span = document.querySelector('span[about="#' + refId + '"]')
+                    var span = document.querySelector('span[resource="#' + refId + '"]')
                     span.outerHTML = span.querySelector('mark').textContent
                     // TODO: Delete notification or send delete activity
                   })
@@ -5380,6 +5380,7 @@ WHERE {\n\
       disableEditor: function(e) {
     //    _mediumEditors[1].destroy();
         DO.C.EditorEnabled = false;
+        DO.C.User.Role = 'social';
         document.removeEventListener('click', DO.U.updateDocumentTitle);
         return DO.U.Editor.MediumEditor.destroy();
       },
@@ -5481,6 +5482,7 @@ WHERE {\n\
         var eNodes = selector || DO.U.selectArticleNode(document);
         var eOptions = editorOptions[editorMode];
         DO.C.User.Role = editorMode;
+        storage.updateStorageProfile(DO.C.User);
 
         if (typeof MediumEditor !== 'undefined') {
           DO.U.Editor.MediumEditor = new MediumEditor(eNodes, eOptions);
@@ -7403,10 +7405,10 @@ module.exports = g;
 
 const Config = __webpack_require__(4)
 const doc = __webpack_require__(5)
-const uri = __webpack_require__(6)
-const graph = __webpack_require__(7)
-const fetch = __webpack_require__(8)  // Uses native fetch() in the browser
-const solidAuth = __webpack_require__(9)
+const uri = __webpack_require__(7)
+const graph = __webpack_require__(8)
+const fetch = __webpack_require__(9)  // Uses native fetch() in the browser
+const solidAuth = __webpack_require__(10)
 
 const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
 const LDP_RESOURCE = '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
@@ -8377,7 +8379,7 @@ module.exports = {
 
 
 const Config = __webpack_require__(4)
-const util = __webpack_require__(11)
+const util = __webpack_require__(6)
 
 module.exports = {
   domToString,
@@ -8655,6 +8657,119 @@ function getClosestSectionNode(node) {
 "use strict";
 
 
+module.exports = {
+  uniqueArray,
+  getHash,
+  getDateTimeISO,
+  removeChildren,
+  copyTextToClipboard,
+  escapeRegExp,
+  sleep,
+  fragmentFromString,
+  generateUUID
+}
+
+/**
+ * @param a {Array}
+ *
+ * @returns {Array}
+ */
+function uniqueArray (a) {
+  var n = {}
+  var r = []
+  for (var i = 0; i < a.length; i++) {
+    if (!n[a[i]]) {
+      n[a[i]] = true
+      r.push(a[i])
+    }
+  }
+  return r
+}
+
+// https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
+function getHash (message, algo = "SHA-256") {
+  var buffer = new TextEncoder("utf-8").encode(message);
+  return window.crypto.subtle.digest(algo, buffer).then(function (hash) {
+    var hexCodes = [];
+    var view = new DataView(hash);
+    for (var i = 0; i < view.byteLength; i += 4) {
+      var value = view.getUint32(i)
+      var stringValue = value.toString(16)
+      var padding = '00000000'
+      var paddedValue = (padding + stringValue).slice(-padding.length)
+      hexCodes.push(paddedValue);
+    }
+    return hexCodes.join("");
+  });
+}
+
+function getDateTimeISO() {
+  var date = new Date();
+  return date.toISOString();
+}
+
+
+function removeChildren (node) {
+  while (node.firstChild) {
+    node.removeChild(node.firstChild);
+  }
+}
+
+function copyTextToClipboard(text){
+console.log(text)
+  if (!navigator.clipboard) {
+    try {
+      var successful = document.execCommand('copy');
+    } catch (err) {}
+    return;
+  }
+
+  navigator.clipboard.writeText(text).then(function() {
+    // console.log('Async: Copying to clipboard was successful!');
+  }, function(err) {
+    // console.error('Async: Could not copy text: ', err);
+  });
+}
+
+//From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+function escapeRegExp(string){
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+//http://stackoverflow.com/a/25214113
+function fragmentFromString(strHTML) {
+  return document.createRange().createContextualFragment(strHTML);
+}
+
+// MIT license
+// http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript/21963136#21963136
+function generateUUID() {
+  var lut = []; for (var i=0; i<256; i++) { lut[i] = (i<16?'0':'')+(i).toString(16); }
+  var s = function() {
+    var d0 = Math.random()*0xffffffff|0;
+    var d1 = Math.random()*0xffffffff|0;
+    var d2 = Math.random()*0xffffffff|0;
+    var d3 = Math.random()*0xffffffff|0;
+    return lut[d0&0xff]+lut[d0>>8&0xff]+lut[d0>>16&0xff]+lut[d0>>24&0xff]+'-'+
+    lut[d1&0xff]+lut[d1>>8&0xff]+'-'+lut[d1>>16&0x0f|0x40]+lut[d1>>24&0xff]+'-'+
+    lut[d2&0x3f|0x80]+lut[d2>>8&0xff]+'-'+lut[d2>>16&0xff]+lut[d2>>24&0xff]+
+    lut[d3&0xff]+lut[d3>>8&0xff]+lut[d3>>16&0xff]+lut[d3>>24&0xff];
+  };
+  return s();
+}
+
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
 const Config = __webpack_require__(4)
 
 module.exports = {
@@ -8731,7 +8846,7 @@ function getFragmentFromString (string) {
 }
 
 /***/ }),
-/* 7 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9040,28 +9155,28 @@ function applyParserSerializerFixes(data, contentType) {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(2)))
 
 /***/ }),
-/* 8 */
+/* 9 */
 /***/ (function(module, exports) {
 
 (function() { module.exports = window["fetch"]; }());
 
 /***/ }),
-/* 9 */
+/* 10 */
 /***/ (function(module, exports) {
 
 (function() { module.exports = window["solid"]["auth"]; }());
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-const util = __webpack_require__(11)
+const util = __webpack_require__(6)
 const doc = __webpack_require__(5)
-const uri = __webpack_require__(6)
-const graph = __webpack_require__(7)
+const uri = __webpack_require__(7)
+const graph = __webpack_require__(8)
 const fetcher = __webpack_require__(3)
 const Config = __webpack_require__(4)
 
@@ -9280,119 +9395,6 @@ function getEndpointFromRDF (property, url, subjectIRI) {
 
 
 /***/ }),
-/* 11 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-module.exports = {
-  uniqueArray,
-  getHash,
-  getDateTimeISO,
-  removeChildren,
-  copyTextToClipboard,
-  escapeRegExp,
-  sleep,
-  fragmentFromString,
-  generateUUID
-}
-
-/**
- * @param a {Array}
- *
- * @returns {Array}
- */
-function uniqueArray (a) {
-  var n = {}
-  var r = []
-  for (var i = 0; i < a.length; i++) {
-    if (!n[a[i]]) {
-      n[a[i]] = true
-      r.push(a[i])
-    }
-  }
-  return r
-}
-
-// https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
-function getHash (message, algo = "SHA-256") {
-  var buffer = new TextEncoder("utf-8").encode(message);
-  return window.crypto.subtle.digest(algo, buffer).then(function (hash) {
-    var hexCodes = [];
-    var view = new DataView(hash);
-    for (var i = 0; i < view.byteLength; i += 4) {
-      var value = view.getUint32(i)
-      var stringValue = value.toString(16)
-      var padding = '00000000'
-      var paddedValue = (padding + stringValue).slice(-padding.length)
-      hexCodes.push(paddedValue);
-    }
-    return hexCodes.join("");
-  });
-}
-
-function getDateTimeISO() {
-  var date = new Date();
-  return date.toISOString();
-}
-
-
-function removeChildren (node) {
-  while (node.firstChild) {
-    node.removeChild(node.firstChild);
-  }
-}
-
-function copyTextToClipboard(text){
-console.log(text)
-  if (!navigator.clipboard) {
-    try {
-      var successful = document.execCommand('copy');
-    } catch (err) {}
-    return;
-  }
-
-  navigator.clipboard.writeText(text).then(function() {
-    // console.log('Async: Copying to clipboard was successful!');
-  }, function(err) {
-    // console.error('Async: Could not copy text: ', err);
-  });
-}
-
-//From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
-function escapeRegExp(string){
-  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-}
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-//http://stackoverflow.com/a/25214113
-function fragmentFromString(strHTML) {
-  return document.createRange().createContextualFragment(strHTML);
-}
-
-// MIT license
-// http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript/21963136#21963136
-function generateUUID() {
-  var lut = []; for (var i=0; i<256; i++) { lut[i] = (i<16?'0':'')+(i).toString(16); }
-  var s = function() {
-    var d0 = Math.random()*0xffffffff|0;
-    var d1 = Math.random()*0xffffffff|0;
-    var d2 = Math.random()*0xffffffff|0;
-    var d3 = Math.random()*0xffffffff|0;
-    return lut[d0&0xff]+lut[d0>>8&0xff]+lut[d0>>16&0xff]+lut[d0>>24&0xff]+'-'+
-    lut[d1&0xff]+lut[d1>>8&0xff]+'-'+lut[d1>>16&0x0f|0x40]+lut[d1>>24&0xff]+'-'+
-    lut[d2&0x3f|0x80]+lut[d2>>8&0xff]+'-'+lut[d2>>16&0xff]+lut[d2>>24&0xff]+
-    lut[d3&0xff]+lut[d3>>8&0xff]+lut[d3>>16&0xff]+lut[d3>>24&0xff];
-  };
-  return s();
-}
-
-
-/***/ }),
 /* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -9400,8 +9402,8 @@ function generateUUID() {
 
 
 const Config = __webpack_require__(4)
-const util = __webpack_require__(11)
-const uri = __webpack_require__(6)
+const util = __webpack_require__(6)
+const uri = __webpack_require__(7)
 const doc = __webpack_require__(5)
 
 module.exports = {
@@ -9510,10 +9512,19 @@ function getStorageProfile(key) {
 
   if (Config.WebExtension) {
     if (typeof browser !== 'undefined') {
+      if (o[key]) {
+        o[key].object.describes.Role = Config.User.Role || 'social';
+        //XXX: updateStorageProfile(Config.User); should update but User.IRI is null on page load
+      }
+
       return browser.storage.sync.get(key).then(function(o){ return o[key]; });
     }
     else {
       var value = {};
+      if (o[key]) {
+        o[key].object.describes.Role = Config.User.Role || 'social';
+        //XXX: updateStorageProfile(Config.User); should update but User.IRI is null on page load
+      }
 
       chrome.storage.sync.get(key, function(o){ value = o[key]; })
 
@@ -9526,7 +9537,13 @@ function getStorageProfile(key) {
   }
   else if (window.localStorage) {
     var o = localStorage.getItem(key);
-    return Promise.resolve(JSON.parse(o));
+    o = JSON.parse(o);
+    if (o) {
+      o.object.describes.Role = Config.User.Role || 'social';
+      //XXX: updateStorageProfile(Config.User); should update but User.IRI is null on page load
+    }
+
+    return Promise.resolve(o);
   }
   else {
     return Promise.reject({'message': 'storage is unavailable'})
@@ -9572,7 +9589,7 @@ function updateStorageProfile(User) {
     }
   }
   else if (window.localStorage) {
-    console.log(datetime + ': User ' + User.IRI + ' saved.');
+    // console.log(datetime + ': User ' + User.IRI + ' saved.');
     return Promise.resolve(localStorage.setItem(key, JSON.stringify(object)));
   }
   else {
@@ -9644,10 +9661,10 @@ function hideStorage() {
 
 const Config = __webpack_require__(4)
 const fetcher = __webpack_require__(3)
-const util = __webpack_require__(11)
-const uri = __webpack_require__(6)
+const util = __webpack_require__(6)
+const uri = __webpack_require__(7)
 const storage = __webpack_require__(12)
-const solidAuth = __webpack_require__(9)
+const solidAuth = __webpack_require__(10)
 
 // const { OIDCWebClient } = require('@trust/oidc-web')
 
@@ -9732,16 +9749,16 @@ function showUserSigninSignout (node) {
       e.preventDefault()
       e.stopPropagation()
 
-      if (Config.User.OIDC && solidAuth) {
-        solidAuth.logout();
-      }
-
       if (e.target.closest('.signout-user')) {
+        if (Config.User.OIDC && solidAuth) {
+          solidAuth.logout();
+        }
+
         storage.removeStorageProfile()
 
         Config.User = {
           IRI: null,
-          Role: null,
+          Role: 'social',
           UI: {}
         }
 
