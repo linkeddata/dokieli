@@ -11,7 +11,6 @@
     <link href="media/css/do.css" media="all" rel="stylesheet" />
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" rel="stylesheet" />
     <script src="scripts/simplerdf.js"></script>
-    <script src="scripts/medium-editor.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="scripts/do.js"></script>
@@ -248,7 +247,6 @@
 <code>    &lt;link href="https://dokie.li/media/css/do.css" media="all" rel="stylesheet" /&gt;</code>
 <code>    &lt;link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" rel="stylesheet" /&gt;</code>
 <code>    &lt;script src="https://dokie.li/scripts/simplerdf.js"&gt;&lt;/script&gt;</code>
-<code>    &lt;script src="https://dokie.li/scripts/medium-editor.min.js"&gt;&lt;/script&gt;</code>
 <code>    &lt;script src="https://dokie.li/scripts/do.js"&gt;&lt;/script&gt;</code>
 <code>  &lt;/head&gt;</code>
 <code></code>

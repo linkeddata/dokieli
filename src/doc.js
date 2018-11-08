@@ -268,5 +268,5 @@ function createActivityHTML(o) {
 }
 
 function getClosestSectionNode(node) {
-  return MediumEditor.util.getClosestTag(node, 'section') || MediumEditor.util.getClosestTag(node, 'div') || MediumEditor.util.getClosestTag(node, 'article') || MediumEditor.util.getClosestTag(node, 'main') || MediumEditor.util.getClosestTag(node, 'body');
+  return node.closest('section') || node.closest('div') || node.closest('article') || node.closest('main') || node.closest('body');
 }

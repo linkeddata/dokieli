@@ -1,6 +1,6 @@
 {
   "name": "dokieli",
-  "version": "0.3.22",
+  "version": "0.3.23",
   "description": "dokieli is a client-side editor for decentralised article publishing, annotations and social interactions",
   "main": "./src/dokieli.js",
   "scripts": {
@@ -30,6 +30,8 @@
   "homepage": "https://dokie.li/",
   "dependencies": {
     "fs": "0.0.1-security",
+    "medium-editor": "^5.23.3",
+    "medium-editor-tables": "^0.6.1",
     "node-fetch": "^1.7.3",
     "npm": "^5.5.1",
     "solid-auth-client": "^2.2.11",
@@ -39,7 +41,7 @@
   },
   "devDependencies": {
     "standard": "^10.0.3",
-    "webpack": "^4.24.0",
+    "webpack": "^4.25.1",
     "webpack-cli": "^3.1.2"
   },
   "standard": {

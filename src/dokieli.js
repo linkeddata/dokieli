@@ -12,6 +12,8 @@ const uri = require('./uri')
 const graph = require('./graph')
 const inbox = require('./inbox')
 const util = require('./util')
+window.MediumEditor = require('medium-editor')
+window.MediumEditorTable = require('medium-editor-tables')
 const storage = require('./storage')
 global.auth = require('./auth')
 
@@ -3193,7 +3195,7 @@ console.log(reason);
 // console.log(documentHasDokieli);
 // console.log(documentHasDokieli.length)
         if(documentHasDokieli.length == 0) {
-          var doFiles = ['font-awesome.min.css', 'do.css', 'simplerdf.js', 'medium-editor.min.js', 'do.js'];
+          var doFiles = ['font-awesome.min.css', 'do.css', 'simplerdf.js', 'do.js'];
           doFiles.forEach(function(i){
 // console.log(i);
             var media = i.endsWith('.css') ? template.querySelectorAll('head link[rel~="stylesheet"][href$="/' + i + '"]') : template.querySelectorAll('head script[src$="/' + i + '"]');
@@ -3207,7 +3209,7 @@ console.log(reason);
                 case 'do.css':
                   template.querySelector('head').insertAdjacentHTML('beforeend', '<link href="https://dokie.li/media/css/' + i + '" media="all" rel="stylesheet" />');
                   break;
-                case 'simplerdf.js': case 'medium-editor.min.js': case 'do.js':
+                case 'simplerdf.js': case 'do.js':
                   template.querySelector('head').insertAdjacentHTML('beforeend', '<script src="https://dokie.li/scripts/' + i + '"></script>')
                   break;
               }
