@@ -394,6 +394,7 @@ var DO = {
                         return iri;
                       },
                       function(reason){
+                        console.log(reason);
                         console.log(object + ': object is unreachable');
                       });
                   }

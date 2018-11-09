@@ -155,10 +155,16 @@ function setDocumentBase (data, baseURI, contentType) {
         template.querySelector('head').insertAdjacentHTML('afterbegin', '<base href="' + baseURI + '" />')
         data = template.documentElement.outerHTML
       }
-    break;
+      break;
 
     case 'text/turtle':
       data = `@base <` + baseURI + `> .\n` + data;
+      break;
+
+    case 'application/json': case 'application/ld+json':
+      data = JSON.parse(data);
+      data['@base'] = baseURI;
+      data = JSON.stringify(data);
       break;
 
     default:

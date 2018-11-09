@@ -23,7 +23,7 @@ function getGraphFromData (data, options = {}) {
     options['contentType'] = 'text/turtle'
   }
 
-  // FIXME: This is a dirty filthy fugly but a *fix* to get around the baseURI not being passed to the DOM parser. This injects the `base` element into the document so that the RDFa parse fallsback to that. The actual fix should happen upstream. See related issues:
+  // FIXME: These are fugly but a temporary fix to get around the baseURI not being passed to the DOM parser. This injects the `base` element into the document so that the parsers fallsback to that. The actual fix should happen upstream. See related issues:
   // https://github.com/linkeddata/dokieli/issues/132
   // https://github.com/rdf-ext/rdf-parser-dom/issues/2
   // https://github.com/rdf-ext/rdf-parser-rdfa/issues/3
@@ -33,12 +33,8 @@ function getGraphFromData (data, options = {}) {
     options['subjectURI'] = 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d'
   }
 
-  switch(options.contentType) {
-    case 'text/html': case 'application/xhtml+xml': case 'text/turtle':
+  if (options.contentType == 'text/html' || options.contentType == 'application/xhtml+xml' || options.contentType == 'text/turtle' || options.contentType == 'application/ld+json') {
       data = doc.setDocumentBase(data, options.subjectURI, options.contentType)
-      break;
-    default:
-      break;
   }
 
   return SimpleRDF.parse(data, options['contentType'], options['subjectURI'])
