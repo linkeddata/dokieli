@@ -130,6 +130,7 @@ npm run watch
 * [OpenLink Software](https://github.com/openlink)
 * [Renato Stauffer](https://github.com/reni99)
 * [Ruben Taelman](https://github.com/rubensworks)
+* [Ruben Verborgh](https://github.com/RubenVerborgh)
 * [Sandro Hawke](https://github.com/sandhawke)
 * [Sarven Capadisli](https://github.com/csarven) (maintainer)
 * [Sergey Malinin](https://github.com/smalinin)
