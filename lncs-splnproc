@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="media/css/do.css" media="all" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />
     <script src="https://d3js.org/d3.v4.min.js"></script>
-    <script src="scripts/simplerdf.js"></script>
     <script src="scripts/do.js"></script>
   </head>
 
