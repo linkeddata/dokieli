@@ -1,6 +1,6 @@
 {
   "name": "dokieli",
-  "version": "0.3.24",
+  "version": "0.3.25",
   "description": "dokieli is a client-side editor for decentralised article publishing, annotations and social interactions",
   "main": "./src/dokieli.js",
   "scripts": {
@@ -8,7 +8,8 @@
     "build": "npm run build-dist",
     "standard": "standard src/auth.js src/doc.js src/fetcher.js src/graph.js src/inbox.js src/simplerdf.js src/uri.js src/util.js ",
     "test": "npm run standard",
-    "watch": "webpack --progress --colors --watch"
+    "watch": "webpack --progress --colors --watch",
+    "minify": "webpack --progress --colors -p"
   },
   "repository": {
     "type": "git",
