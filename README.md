@@ -117,6 +117,7 @@ npm run watch
 * [Amy Guy](https://github.com/rhiaro)
 * [Amy van der Hiel](https://github.com/amyvdh)
 * [Andrei Vlad Sambra](https://github.com/deiu)
+* [Ben Companjen](https://github.com/bencomp)
 * [Benjamin Young](https://github.com/bigbluehat)
 * [Chris Chapman](https://github.com/cdchapman)
 * [Dmitri Zagidulin](https://github.com/dmitrizagidulin)

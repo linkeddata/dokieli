@@ -85,7 +85,7 @@ function disableAutoSave(key) {
 function removeStorageItem(key) {
   if (!key) { Promise.resolve(); }
 
-  console.log(util.getDateTimeISO() + ': ' + key + ' removed.')
+  // console.log(util.getDateTimeISO() + ': ' + key + ' removed.')
 
   if (Config.WebExtension) {
     var browser = (typeof browser !== 'undefined') ? browser : chrome;

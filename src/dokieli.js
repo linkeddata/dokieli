@@ -18,7 +18,8 @@ const storage = require('./storage')
 global.auth = require('./auth')
 
 if(typeof DO === 'undefined'){
-global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined;
+const ld = require('./simplerdf')
+global.SimpleRDF = ld.SimpleRDF
 var DO = {
   fetcher,
 
@@ -3195,7 +3196,7 @@ console.log(reason);
 // console.log(documentHasDokieli);
 // console.log(documentHasDokieli.length)
         if(documentHasDokieli.length == 0) {
-          var doFiles = ['font-awesome.min.css', 'do.css', 'simplerdf.js', 'do.js'];
+          var doFiles = ['font-awesome.min.css', 'do.css', 'do.js'];
           doFiles.forEach(function(i){
 // console.log(i);
             var media = i.endsWith('.css') ? template.querySelectorAll('head link[rel~="stylesheet"][href$="/' + i + '"]') : template.querySelectorAll('head script[src$="/' + i + '"]');
@@ -3209,7 +3210,7 @@ console.log(reason);
                 case 'do.css':
                   template.querySelector('head').insertAdjacentHTML('beforeend', '<link href="https://dokie.li/media/css/' + i + '" media="all" rel="stylesheet" />');
                   break;
-                case 'simplerdf.js': case 'do.js':
+                case 'do.js':
                   template.querySelector('head').insertAdjacentHTML('beforeend', '<script src="https://dokie.li/scripts/' + i + '"></script>')
                   break;
               }
