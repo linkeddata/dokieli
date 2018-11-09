@@ -32,8 +32,13 @@ function getGraphFromData (data, options = {}) {
   if (!('subjectURI' in options)) {
     options['subjectURI'] = 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d'
   }
-  if (options.contentType === 'text/html' || options.contentType === 'application/xhtml+xml') {
-    data = doc.setHTMLBase(data, options.subjectURI)
+
+  switch(options.contentType) {
+    case 'text/html': case 'application/xhtml+xml': case 'text/turtle':
+      data = doc.setDocumentBase(data, options.subjectURI, options.contentType)
+      break;
+    default:
+      break;
   }
 
   return SimpleRDF.parse(data, options['contentType'], options['subjectURI'])
