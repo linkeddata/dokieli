@@ -2830,7 +2830,7 @@ console.log(reason);
         if (aI) {
           return Promise.resolve(aI);
         }
-        else {
+        else if (iri.indexOf('#') < 0) {
           return inbox.getEndpointFromHead(DO.C.Vocab['ldpinbox']['@id'], iri);
         }
       }
