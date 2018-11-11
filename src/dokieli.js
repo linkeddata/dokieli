@@ -2540,28 +2540,33 @@ var DO = {
             console.log('Could not save reply:')
             console.error(error)
 
-            let errorMessage
+            let message
 
             switch (error.status) {
               case 0:
               case 405:
-                errorMessage = 'this location is not writable'
+                message = 'this location is not writable.'
                 break
               case 401:
+                message = 'you are not authorized.'
+                if(!DO.C.User.IRI){
+                  message += ' Try signing in.';
+                }
+                break;
               case 403:
-                errorMessage = 'you do not have permission to write here'
+                message = 'you do not have permission to write here.'
                 break
               case 406:
-                errorMessage = 'enter a name for your resource'
+                message = 'enter a name for your resource.'
                 break
               default:
                 // some other reason
-                errorMessage = error.message
+                message = error.message
                 break
             }
 
             // re-throw, to break out of the promise chain
-            throw new Error('Cannot save your reply: ', errorMessage)
+            throw new Error('Cannot save your reply: ', message)
           })
 
           .then(response => {
@@ -2865,29 +2870,37 @@ console.log(reason);
 
       button.addEventListener('click', function(){
         if(button.parentNode.classList.contains('container')){
-          fetcher.getResourceGraph(url).then(
-            function(g){
+          fetcher.getResourceGraph(url).then(function(g){
               actionNode.textContent = (action == 'write') ? url + DO.U.generateAttributeId() : url;
               return DO.U.generateBrowserList(g, url, id, action);
             },
             function(reason){
+              var inputBox = document.getElementById(id);
               var statusCode = ('status' in reason) ? reason.status : 0;
               statusCode = (typeof statusCode === 'string') ? parseInt(reason.slice(-3)) : statusCode;
+// console.log(statusCode)
 
-              var inputBox = document.getElementById(id);
+              var msgs = inputBox.querySelectorAll('.response-message');
+              for(var i = 0; i < msgs.length; i++){
+                msgs[i].parentNode.removeChild(msgs[i]);
+              }
 
-              switch(statusCode) { //FIXME: SimpleRDF needs to pass status codes better than a string.
+              switch(statusCode) {
                 default:
-                  inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to access ('+ reason +').</p>');
+                  inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to access ('+ reason.statusText +').</p>');
                   break;
                 case 404:
                   inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Not found.</p></div>');
                   break;
-                case 401: case 403:
-                  var msg = 'You don\'t have permission to access this location.';
+                case 401:
+                  var msg = 'You are not authorized.';
                   if(!DO.C.User.IRI){
-                    msg += ' Try signing in to access your datastore.';
+                    msg += ' Try signing in.';
                   }
+                  inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">' + msg + '</p></div>');
+                  break;
+                case 403:
+                  var msg = 'You don\'t have permission to access this location.';
                   inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">' + msg + '</p></div>');
                   break;
               }
@@ -2919,7 +2932,6 @@ console.log(reason);
         document.getElementById(id + '-input').value = url;
 
         var msgs = document.getElementById(id).querySelectorAll('.response-message');
-console.log(msgs)
         for(var i = 0; i < msgs.length; i++){
           msgs[i].parentNode.removeChild(msgs[i]);
         }
@@ -2997,6 +3009,7 @@ console.log(msgs)
     triggerBrowse: function(url, id, action){
       var inputBox = document.getElementById(id);
       if (url.length > 10 && url.match(/^https?:\/\//g) && url.slice(-1) == "/"){
+console.log(url)
         fetcher.getResourceGraph(url).then(function(g){
           DO.U.generateBrowserList(g, url, id, action).then(function(l){
             return l;
@@ -3009,21 +3022,32 @@ console.log(msgs)
           var list = document.getElementById(id + '-ul');
           var statusCode = ('status' in reason) ? reason.status : 0;
           statusCode = (typeof statusCode === 'string') ? parseInt(reason.slice(-3)) : statusCode;
+// console.log(statusCode)
+
+          var msgs = inputBox.querySelectorAll('.response-message');
+          for(var i = 0; i < msgs.length; i++){
+            msgs[i].parentNode.removeChild(msgs[i]);
+          }
 
           switch(statusCode) {
             default:
-              inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to access ('+ reason +').</p>');
+              inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to access ('+ reason.statusText +').</p>');
               break;
             case 404:
               inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Not found.</p></div>');
               break;
-            case 401: case 403:
-              var msg = 'You don\'t have permission to access this location.';
+            case 401:
+              var msg = 'You are not authorized.';
               if(!DO.C.User.IRI){
-                msg += ' Try signing in to access your datastore.';
+                msg += ' Try signing in.';
               }
               inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">' + msg + '</p></div>');
               break;
+            case 403:
+              var msg = 'You don\'t have permission to access this location.';
+              inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">' + msg + '</p></div>');
+              break;
+
           }
         });
       }
@@ -3344,14 +3368,19 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
             switch (error.status) {
               case 0:
               case 405:
-                message = 'this location is not writable'
+                message = 'this location is not writable.'
                 break
               case 401:
+                message = 'you are not authorized.'
+                if(!DO.C.User.IRI){
+                  message += ' Try signing in.';
+                }
+                break
               case 403:
-                message = 'you do not have permission to write here'
+                message = 'you do not have permission to write here.'
                 break
               case 406:
-                message = 'enter a name for your resource'
+                message = 'enter a name for your resource.'
                 break
               default:
                 message = error.message
@@ -3517,7 +3546,6 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         progress = saveAsDocument.querySelector('progress')
 
         fetcher.putResource(storageIRI, html, null, null, { 'progress': progress })
-
           .then(response => {
             progress.parentNode.removeChild(progress)
 
@@ -3537,19 +3565,26 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
             console.log('Error saving document:')
             console.error(error)
 
+            progress.parentNode.removeChild(progress)
+
             let message
 
             switch (error.status) {
               case 0:
               case 405:
-                message = 'this location is not writable'
+                message = 'this location is not writable.'
                 break
               case 401:
+                message = 'you are not authorized.'
+                if(!DO.C.User.IRI){
+                  message += ' Try signing in.';
+                }
+                break
               case 403:
-                message = 'you do not have permission to write here'
+                message = 'you do not have permission to write here.'
                 break
               case 406:
-                message = 'enter a name for your resource'
+                message = 'enter a name for your resource.'
                 break
               default:
                 message = error.message
