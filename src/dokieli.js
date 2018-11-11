@@ -914,7 +914,7 @@ var DO = {
     },
 
     showDocumentInfo: function() {
-      document.documentElement.appendChild(util.fragmentFromString('<menu id="document-menu" class="do"><button class="show" title="Open Menu"><i class="fa fa-bars"></i></button><header></header><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><img alt="" height="16" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAn1BMVEUAAAAAjwAAkAAAjwAAjwAAjwAAjwAAjwAAkAAAdwAAjwAAjQAAcAAAjwAAjwAAiQAAjwAAjAAAjwAAjwAAjwAAjwAAkAAAjwAAjwAAjwAAjQAAjQAAhQAAhQAAkAAAkAAAkAAAjgAAjwAAiQAAhAAAkAAAjwAAjwAAkAAAjwAAjgAAjgAAjQAAjwAAjQAAjwAAkAAAjwAAjQAAiwAAkABp3EJyAAAANHRSTlMA+fH89enaabMF4iADxJ4SiSa+uXztyoNvQDcsDgvl3pRiXBcH1M+ppJlWUUpFMq6OdjwbMc1+ZgAABAhJREFUeNrt29nSmkAQBeAGZBMUxH3f993/vP+zJZVKVZKCRhibyc3/XVt6SimYPjPSt28Vmt5W/fu2T/9B9HIf7Tp+0RsgDC6DY6OLvzxJj8341DnsakgZUNUmo2XsORYYS6rOeugukhnyragiq56JIs5UEQ/FXKgidRTzompEKOhG1biioDFV44mCAqrGAQWtqRptA8VMqCpR6zpo9iy84VO1opWHPBZVb9QAzyQN/D1YNungJ+DMSYsbOFvSIwGjR3p0wGiQHkMw2qRHC4w76RGBcSA9NmAcSY8QjAdpYiFbTJoYyNYnTWrI1iFNusj2JE1sZBuQJtyE5pImc3Y21cRhZ1NNtsh2Ik127HCsSY8djjVpINuVhPnjVefobee2adXqu2S/6FyivABDEjQ9Lxo1pDlNd5wg24ikRK5ngKGhHhg1DSgZk4RrD6pa9LlRAnUBfWp6xCe+6EOvOT6yrmrigZaCZHPAp6b0gaiBFKvRd0/D1rr1OrvxDqiyoZmmPt9onib0t/VybyEXqdu0Cw16rUNVAfZFlzdjr5KOaoAUK6JsrgWGQapuBlIS4gy70gEmTrk1fuAgU40UxWXv6wvZAC2Dqfx0BfBK1z1H0aJ0WH7Ub4oG8JDlpBCgK1l5tSjHQSoAf0HVfMqxF+yqpzVk2ZGuAGdk8ijPHZlmpOCg0vh5cgE2JtN3qQSoU3lXpbKlLRegrzTpt+U2TNpKY2YiFiA0kS1Q6QccweZ/oinASm2B3RML0AGDNAU4qq3udmIXYVttD3YrFsBR24N1xG5EJpTeaiYWwILS5WRKBfChFsCSehpOwKi/yS0V4AsMWym3TWUFgMqIsRYL8AVOSDlaYgEitbZnDKll+UatchyJBSC1c3lDuQA2VHYAL3KneHpgLCjHSS7AHYyEciwh1g88wDB94rlyAVxwhsR7ygW4gRMTry8XwDdUDkXFgjVdD5wRsRaCAWJwPGI1Baval8Ie3Hqn8AjjhHbZr2DzrInumDTBGlCG8xy8QPY3MNLX4TiRP1q+BWs2pn9ECwu5+qTABc+80h++28UbTkjlTW3wrM6Ufrtu8d5J9Svg1Vch/RTcUYQdUHm+g1z1x2gSGyjGGVN5F7xjoTCjE0ndC3jJMzfCftmiciZ1lNGe3vCGufOWVMLIQHHehi3X1O8JJxR236SalUzninbu937BlwfV/I3k4KdGk2xm+MHuLa8Z0i9TC280qLRrF+8cw9RSjrOg8oIG8j2YgULsbGPomsgR0x9nsOzkOLh+kZr1owZGbfC2JJl78fIV0Wei/gxZDl85XWVtt++cxhuSEQ6bdfzLjlvM86PbaD4vQUjSglV8385My7CdXtO9+ZSyrLcf7nBN376V8gMpRztyq6RXYQAAAABJRU5ErkJggg==" width="16" /><a href="https://dokie.li/" target="_blank">dokieli</a> is an <i class="fa fa-github"></i> <a href="https://github.com/linkeddata/dokieli" target="_blank">open source</a> project. There is <i class="fa fa-flask"></i> <a href="https://dokie.li/docs" target="_blank">documentation</a> and public <i class="fa fa-comments-o"></i> <a href="https://gitter.im/linkeddata/dokieli" target="_blank">chat</a> available. Made with fun.</dd></dl></footer></menu>'));
+      document.documentElement.appendChild(util.fragmentFromString('<menu id="document-menu" class="do"><button class="show" title="Open menu"><i class="fa fa-bars"></i></button><header></header><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><img alt="" height="16" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAn1BMVEUAAAAAjwAAkAAAjwAAjwAAjwAAjwAAjwAAkAAAdwAAjwAAjQAAcAAAjwAAjwAAiQAAjwAAjAAAjwAAjwAAjwAAjwAAkAAAjwAAjwAAjwAAjQAAjQAAhQAAhQAAkAAAkAAAkAAAjgAAjwAAiQAAhAAAkAAAjwAAjwAAkAAAjwAAjgAAjgAAjQAAjwAAjQAAjwAAkAAAjwAAjQAAiwAAkABp3EJyAAAANHRSTlMA+fH89enaabMF4iADxJ4SiSa+uXztyoNvQDcsDgvl3pRiXBcH1M+ppJlWUUpFMq6OdjwbMc1+ZgAABAhJREFUeNrt29nSmkAQBeAGZBMUxH3f993/vP+zJZVKVZKCRhibyc3/XVt6SimYPjPSt28Vmt5W/fu2T/9B9HIf7Tp+0RsgDC6DY6OLvzxJj8341DnsakgZUNUmo2XsORYYS6rOeugukhnyragiq56JIs5UEQ/FXKgidRTzompEKOhG1biioDFV44mCAqrGAQWtqRptA8VMqCpR6zpo9iy84VO1opWHPBZVb9QAzyQN/D1YNungJ+DMSYsbOFvSIwGjR3p0wGiQHkMw2qRHC4w76RGBcSA9NmAcSY8QjAdpYiFbTJoYyNYnTWrI1iFNusj2JE1sZBuQJtyE5pImc3Y21cRhZ1NNtsh2Ik127HCsSY8djjVpINuVhPnjVefobee2adXqu2S/6FyivABDEjQ9Lxo1pDlNd5wg24ikRK5ngKGhHhg1DSgZk4RrD6pa9LlRAnUBfWp6xCe+6EOvOT6yrmrigZaCZHPAp6b0gaiBFKvRd0/D1rr1OrvxDqiyoZmmPt9onib0t/VybyEXqdu0Cw16rUNVAfZFlzdjr5KOaoAUK6JsrgWGQapuBlIS4gy70gEmTrk1fuAgU40UxWXv6wvZAC2Dqfx0BfBK1z1H0aJ0WH7Ub4oG8JDlpBCgK1l5tSjHQSoAf0HVfMqxF+yqpzVk2ZGuAGdk8ijPHZlmpOCg0vh5cgE2JtN3qQSoU3lXpbKlLRegrzTpt+U2TNpKY2YiFiA0kS1Q6QccweZ/oinASm2B3RML0AGDNAU4qq3udmIXYVttD3YrFsBR24N1xG5EJpTeaiYWwILS5WRKBfChFsCSehpOwKi/yS0V4AsMWym3TWUFgMqIsRYL8AVOSDlaYgEitbZnDKll+UatchyJBSC1c3lDuQA2VHYAL3KneHpgLCjHSS7AHYyEciwh1g88wDB94rlyAVxwhsR7ygW4gRMTry8XwDdUDkXFgjVdD5wRsRaCAWJwPGI1Baval8Ie3Hqn8AjjhHbZr2DzrInumDTBGlCG8xy8QPY3MNLX4TiRP1q+BWs2pn9ECwu5+qTABc+80h++28UbTkjlTW3wrM6Ufrtu8d5J9Svg1Vch/RTcUYQdUHm+g1z1x2gSGyjGGVN5F7xjoTCjE0ndC3jJMzfCftmiciZ1lNGe3vCGufOWVMLIQHHehi3X1O8JJxR236SalUzninbu937BlwfV/I3k4KdGk2xm+MHuLa8Z0i9TC280qLRrF+8cw9RSjrOg8oIG8j2YgULsbGPomsgR0x9nsOzkOLh+kZr1owZGbfC2JJl78fIV0Wei/gxZDl85XWVtt++cxhuSEQ6bdfzLjlvM86PbaD4vQUjSglV8385My7CdXtO9+ZSyrLcf7nBN376V8gMpRztyq6RXYQAAAABJRU5ErkJggg==" width="16" /><a href="https://dokie.li/" target="_blank">dokieli</a> is an <i class="fa fa-github"></i> <a href="https://github.com/linkeddata/dokieli" target="_blank">open source</a> project. There is <i class="fa fa-flask"></i> <a href="https://dokie.li/docs" target="_blank">documentation</a> and public <i class="fa fa-comments-o"></i> <a href="https://gitter.im/linkeddata/dokieli" target="_blank">chat</a> available. Made with fun.</dd></dl></footer></menu>'));
       document.querySelector('#document-menu').addEventListener('click', function(e) {
         var button = e.target.closest('button');
         if(button){
@@ -1080,7 +1080,7 @@ var DO = {
             s += '<li><button title="Change to ‘' + view + '’ view">' + view + '</button></li>';
           }
           else {
-            s += '<li><button disabled="disabled">' + view + '</button></li>';
+            s += '<li><button disabled="disabled" title="Current style">' + view + '</button></li>';
           }
         }
       }
@@ -1262,9 +1262,9 @@ var DO = {
         var embedMenu = '<aside id="embed-data-entry" class="do on tabs">' + DO.C.Button.Close + '\n\
         <h2>Embed Data</h2>\n\
         <nav><ul><li class="selected"><a href="#embed-data-turtle">Turtle</a></li><li><a href="#embed-data-json-ld">JSON-LD</a></li><li><a href="#embed-data-trig">TriG</a></li></ul></nav>\n\
-        <div id="embed-data-turtle" class="selected"><textarea placeholder="Enter data in Turtle" name="meta-turtle" cols="80" rows="24">' + ((scriptCurrentData['meta-turtle']) ? scriptCurrentData['meta-turtle'].content : '') + '</textarea><button class="save">Save</button></div>\n\
-        <div id="embed-data-json-ld"><textarea placeholder="Enter data in JSON-LD" name="meta-json-ld" cols="80" rows="24">' + ((scriptCurrentData['meta-json-ld']) ? scriptCurrentData['meta-json-ld'].content : '') + '</textarea><button class="save">Save</button></div>\n\
-        <div id="embed-data-trig"><textarea placeholder="Enter data in TriG" name="meta-trig" cols="80" rows="24">' + ((scriptCurrentData['meta-trig']) ? scriptCurrentData['meta-trig'].content : '') + '</textarea><button class="save">Save</button></div>\n\
+        <div id="embed-data-turtle" class="selected"><textarea placeholder="Enter data in Turtle" name="meta-turtle" cols="80" rows="24">' + ((scriptCurrentData['meta-turtle']) ? scriptCurrentData['meta-turtle'].content : '') + '</textarea><button class="save" title="Embed data into document">Save</button></div>\n\
+        <div id="embed-data-json-ld"><textarea placeholder="Enter data in JSON-LD" name="meta-json-ld" cols="80" rows="24">' + ((scriptCurrentData['meta-json-ld']) ? scriptCurrentData['meta-json-ld'].content : '') + '</textarea><button class="save" title="Embed data into document">Save</button></div>\n\
+        <div id="embed-data-trig"><textarea placeholder="Enter data in TriG" name="meta-trig" cols="80" rows="24">' + ((scriptCurrentData['meta-trig']) ? scriptCurrentData['meta-trig'].content : '') + '</textarea><button class="save" title="Embed data into document">Save</button></div>\n\
         </aside>';
 
         document.documentElement.appendChild(util.fragmentFromString(embedMenu));
@@ -1891,7 +1891,7 @@ var DO = {
 
         versionurl = (versionurl) ? '<dt>Version</dt><dd><a href="' + versionurl + '" target="_blank">' + versiondate + '</a></dd>' : '';
 
-        i.insertAdjacentHTML('afterend', '<span class="do robustlinks"><button title="Robust Links">🔗<span></span></button><dl>' + originalurl + versionurl + nearlinkdateurl + '</dl></span>');
+        i.insertAdjacentHTML('afterend', '<span class="do robustlinks"><button title="Show Robust Links">🔗<span></span></button><dl>' + originalurl + versionurl + nearlinkdateurl + '</dl></span>');
       });
 
       document.querySelectorAll('.do.robustlinks').forEach(function(i){
@@ -2464,7 +2464,7 @@ var DO = {
       var bli = document.getElementById(id + '-input')
       bli.focus()
       bli.placeholder = 'https://example.org/path/to/article'
-      replyToResource.insertAdjacentHTML('beforeend', '<button class="reply">Send now</button>')
+      replyToResource.insertAdjacentHTML('beforeend', '<button class="reply" title="Send your reply">Send now</button>')
 
       // replyToResource.insertAdjacentHTML('beforeend', 'or <button class="reply-new"><i class="fa fa-paper-plane-o"></i> Write reply in new window</button>');
 
@@ -2654,7 +2654,7 @@ var DO = {
         shareResourceLinkedResearch = '<li><input id="share-resource-linked-research" type="checkbox" value="https://linkedresearch.org/cloud" /><label for="share-resource-linked-research">Notify <a href="https://linkedresearch.org/cloud">Linked Open Research Cloud</a></label></li>';
       }
 
-      document.documentElement.appendChild(util.fragmentFromString('<aside id="share-resource" class="do on">' + DO.C.Button.Close + '<h2>Share resource</h2><div id="share-resource-input"><p>Send a notification about <code>' + iri +'</code></p><ul><li id="share-resource-address-book"></li>' + shareResourceLinkedResearch + '<li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share">Share</button></aside>'));
+      document.documentElement.appendChild(util.fragmentFromString('<aside id="share-resource" class="do on">' + DO.C.Button.Close + '<h2>Share resource</h2><div id="share-resource-input"><p>Send a notification about <code>' + iri +'</code></p><ul><li id="share-resource-address-book"></li>' + shareResourceLinkedResearch + '<li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share" title="Share resource">Share</button></aside>'));
 
       var li = document.getElementById('share-resource-address-book');
 
@@ -2662,7 +2662,7 @@ var DO = {
         DO.U.selectContacts(li, DO.C.User.IRI);
       }
       else {
-        li.insertAdjacentHTML('beforeend', '<button class="add"' + addContactsButtonDisable + '><i class="fa fa-address-book"></i> Add from contacts</button>' + noContactsText);
+        li.insertAdjacentHTML('beforeend', '<button class="add"' + addContactsButtonDisable + ' title="Add and select contacts from your profile"><i class="fa fa-address-book"></i> Add from contacts</button>' + noContactsText);
       }
 
       var shareResource = document.getElementById('share-resource');
@@ -3027,7 +3027,7 @@ console.log(reason);
       id = id || 'browser-location';
       action = action || 'write';
 
-      parent.insertAdjacentHTML('beforeend', '<div id="' + id + '"><label for="' + id +'-input">URL</label> <input type="text" id="' + id +'-input" name="' + id + '-input" placeholder="https://example.org/path/to/" /><button id="' + id +'-update" disabled="disabled">Browse</button></div>\n\
+      parent.insertAdjacentHTML('beforeend', '<div id="' + id + '"><label for="' + id +'-input">URL</label> <input type="text" id="' + id +'-input" name="' + id + '-input" placeholder="https://example.org/path/to/" /><button id="' + id +'-update" disabled="disabled" title="Browse location">Browse</button></div>\n\
       <div id="' + id +'-contents"></div>');
 
       var inputBox = document.getElementById(id);
@@ -3122,7 +3122,7 @@ console.log(reason);
       var openDocument = document.getElementById('open-document');
       DO.U.setupResourceBrowser(openDocument , id, action);
       var idSamp = (typeof DO.C.User.Storage == 'undefined') ? '' : '<p><samp id="' + id + '-' + action + '">https://example.org/path/to/article</samp></p>';
-      openDocument.insertAdjacentHTML('beforeend', idSamp + '<button class="open">Open</button>');
+      openDocument.insertAdjacentHTML('beforeend', idSamp + '<button class="open" title="Open document">Open</button>');
 
       openDocument.addEventListener('click', function (e) {
         if (e.target.closest('button.close')) {
@@ -3273,7 +3273,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
       newDocument.insertAdjacentHTML('beforeend', baseURLSelection +
         '<p>Your new document will be saved at <samp id="' + id + '-' + action +
-        '">https://example.org/path/to/article</samp></p><button class="create">Create</button>')
+        '">https://example.org/path/to/article</samp></p><button class="create" title="Create new document">Create</button>')
 
       var bli = document.getElementById(id + '-input')
       bli.focus()
@@ -3421,7 +3421,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       saveAsDocument.insertAdjacentHTML('beforeend', '<fieldset id="' + id + '-fieldset"><legend>Save to</legend></fieldset>');
       fieldset = saveAsDocument.querySelector('fieldset#' + id + '-fieldset');
       DO.U.setupResourceBrowser(fieldset, id, action);
-      fieldset.insertAdjacentHTML('beforeend', '<p>Article will be saved at: <samp id="' + id + '-' + action + '"></samp></p>' + DO.U.getBaseURLSelection() + '<p><input type="checkbox" id="derivation-data" name="derivation-data" checked="checked" /><label for="derivation-data">Derivation data</label></p><button class="create">Save</button>');
+      fieldset.insertAdjacentHTML('beforeend', '<p>Article will be saved at: <samp id="' + id + '-' + action + '"></samp></p>' + DO.U.getBaseURLSelection() + '<p><input type="checkbox" id="derivation-data" name="derivation-data" checked="checked" /><label for="derivation-data">Derivation data</label></p><button class="create" title="Save to destination">Save</button>');
       var bli = document.getElementById(id + '-input');
       bli.focus();
       bli.placeholder = 'https://example.org/path/to/article';
@@ -3550,7 +3550,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
     viewSource: function(e) {
       e.target.disabled = true;
-      document.documentElement.appendChild(util.fragmentFromString('<aside id="source-view" class="do on">' + DO.C.Button.Close + '<h2>Source</h2><textarea id="source-edit" rows="24" cols="80"></textarea><p><button class="create">Update</button></p></aside>'));
+      document.documentElement.appendChild(util.fragmentFromString('<aside id="source-view" class="do on">' + DO.C.Button.Close + '<h2>Source</h2><textarea id="source-edit" rows="24" cols="80"></textarea><p><button class="create" title="Update source">Update</button></p></aside>'));
       var sourceBox = document.getElementById('source-view');
       var input = document.getElementById('source-edit');
       input.value = doc.getDocument();
@@ -4640,7 +4640,7 @@ WHERE {\n\
         default:
           hX = 3;
           if ('creator' in n && 'iri' in n.creator && n.creator.iri == DO.C.User.IRI) {
-            buttonDelete = '<button class="delete"><i class="fa fa-trash"></i></button>' ;
+            buttonDelete = '<button class="delete" title="Delete item"><i class="fa fa-trash"></i></button>' ;
           }
           articleClass = ' class="do"';
           break;
@@ -4648,7 +4648,7 @@ WHERE {\n\
         case 'read':
           hX = 3;
           if ('creator' in n && 'iri' in n.creator && n.creator.iri == DO.C.User.IRI) {
-            buttonDelete = '<button class="delete"><i class="fa fa-trash"></i></button>' ;
+            buttonDelete = '<button class="delete" title="Delete item"><i class="fa fa-trash"></i></button>' ;
           }
           break;
         case 'write':
@@ -5403,11 +5403,11 @@ WHERE {\n\
               var userHTML = auth.getUserHTML({'avatarSize': 32});
               var authorId = (DO.C.User.Name) ? ' id="' + DO.U.generateAttributeId(null, DO.C.User.Name) + '"' : '';
 
-              documentAuthorName.insertAdjacentHTML('beforeend', '<dd class="do"' + authorId + ' inlist="" rel="bibo:authorList"><span about="" rel="schema:author">' + userHTML + '</span><button class="add-author-name" contenteditable="false"><i class="fa fa-plus"></i></button></dd>');
+              documentAuthorName.insertAdjacentHTML('beforeend', '<dd class="do"' + authorId + ' inlist="" rel="bibo:authorList"><span about="" rel="schema:author">' + userHTML + '</span><button class="add-author-name" contenteditable="false" title="Add author"><i class="fa fa-plus"></i></button></dd>');
             }
 
             //Invite other other authors
-            documentAuthorName.insertAdjacentHTML('beforeend', '<dd class="do"><button class="invite-author" contenteditable="false"><i class="fa fa-bullhorn"></i></button></dd>');
+            documentAuthorName.insertAdjacentHTML('beforeend', '<dd class="do"><button class="invite-author" contenteditable="false" title="Invite people to author"><i class="fa fa-bullhorn"></i></button></dd>');
             authors = document.getElementById(documentAuthors);
 
             authors.addEventListener('click', function(e){
