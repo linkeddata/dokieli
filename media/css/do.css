@@ -902,6 +902,10 @@ aside.do.on fieldset *:not(legend) {
 /*display:none;*/
 }
 
+aside.do.on .response-message {
+margin-top:1em;
+}
+
 
 .do.sortable .sortable-placeholder {
 outline:1px dashed #777;

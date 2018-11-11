@@ -2537,7 +2537,8 @@ var DO = {
         fetcher.putResource(noteIRI, data)
 
           .catch(error => {
-            console.error('Could not save reply:', error)
+            console.log('Could not save reply:')
+            console.error(error)
 
             let errorMessage
 
@@ -2560,7 +2561,7 @@ var DO = {
             }
 
             // re-throw, to break out of the promise chain
-            throw new Error('Cannot save your reply:', errorMessage)
+            throw new Error('Cannot save your reply: ', errorMessage)
           })
 
           .then(response => {
@@ -2870,18 +2871,22 @@ console.log(reason);
               return DO.U.generateBrowserList(g, url, id, action);
             },
             function(reason){
+              var statusCode = ('status' in reason) ? reason.status : 0;
+              statusCode = (typeof statusCode === 'string') ? parseInt(reason.slice(-3)) : statusCode;
+
               var inputBox = document.getElementById(id);
-              switch(reason.slice(-3)) { // TODO: simplerdf needs to pass status codes better than in a string.
+
+              switch(statusCode) { //FIXME: SimpleRDF needs to pass status codes better than a string.
                 default:
                   inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to access ('+ reason +').</p>');
                   break;
-                case '404':
+                case 404:
                   inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Not found.</p></div>');
                   break;
-                case '401': case '403':
+                case 401: case 403:
                   var msg = 'You don\'t have permission to access this location.';
                   if(!DO.C.User.IRI){
-                    msg += '</p><p>Try signing in to access your datastore.';
+                    msg += ' Try signing in to access your datastore.';
                   }
                   inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">' + msg + '</p></div>');
                   break;
@@ -2914,6 +2919,7 @@ console.log(reason);
         document.getElementById(id + '-input').value = url;
 
         var msgs = document.getElementById(id).querySelectorAll('.response-message');
+console.log(msgs)
         for(var i = 0; i < msgs.length; i++){
           msgs[i].parentNode.removeChild(msgs[i]);
         }
@@ -3001,17 +3007,20 @@ console.log(reason);
         },
         function(reason){
           var list = document.getElementById(id + '-ul');
-          switch(reason.slice(-3)) { // TODO: simplerdf needs to pass status codes better than in a string.
+          var statusCode = ('status' in reason) ? reason.status : 0;
+          statusCode = (typeof statusCode === 'string') ? parseInt(reason.slice(-3)) : statusCode;
+
+          switch(statusCode) {
             default:
               inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to access ('+ reason +').</p>');
               break;
-            case '404':
+            case 404:
               inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Not found.</p></div>');
               break;
-            case '401': case '403':
+            case 401: case 403:
               var msg = 'You don\'t have permission to access this location.';
               if(!DO.C.User.IRI){
-                msg += '</p><p>Try signing in to access your datastore.';
+                msg += ' Try signing in to access your datastore.';
               }
               inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">' + msg + '</p></div>');
               break;
@@ -3036,6 +3045,11 @@ console.log(reason);
       var browseButton = document.getElementById(id + '-update');
 
       input.addEventListener('keyup', function(e){
+        var msgs = document.getElementById(id).querySelectorAll('.response-message');
+        for(var i = 0; i < msgs.length; i++){
+          msgs[i].parentNode.removeChild(msgs[i]);
+        }
+
         var actionNode = document.getElementById(id + '-' + action);
         if (input.value.length > 10 && input.value.match(/^https?:\/\//g) && input.value.slice(-1) == "/") {
           browseButton.removeAttribute('disabled');
@@ -3322,7 +3336,8 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           })
 
           .catch(error => {
-            console.error('Error creating a new document:', error)
+            console.log('Error creating a new document:')
+            console.error(error)
 
             let message
 
@@ -3519,7 +3534,8 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           })
 
           .catch(error => {
-            console.error('Error saving document', error)
+            console.log('Error saving document:')
+            console.error(error)
 
             let message
 
@@ -3542,7 +3558,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
             saveAsDocument.insertAdjacentHTML('beforeend',
               '<div class="response-message"><p class="error">' +
-              'Unable to save:' + message + '</p></div>'
+              'Unable to save: ' + message + '</p></div>'
             )
           })
       })
