@@ -1507,7 +1507,7 @@ var DO = {
       }
 
       var toc = '<section id="table-of-contents-i" class="do"' + sortable + '><h2>Table of Contents</h2><ol class="toc' + sortable + '">';
-      toc += DO.U.getListOfSections(sections, DO.C.SortableList);
+      toc += DO.U.getListOfSections(sections, {'sortable': DO.C.SortableList});
       toc += '</ol></section>';
 
       node.insertAdjacentHTML('beforeend', toc);
@@ -1517,23 +1517,31 @@ var DO = {
     sortToC: function() {
     },
 
-    getListOfSections: function(sections, sortable) {
+    getListOfSections: function(sections, options) {
+      options = options || {};
       var s = '', attributeClass = '';
-      if (sortable == true) { attributeClass = ' class="sortable"'; }
+      if (options.sortable == true) { attributeClass = ' class="sortable"'; }
 
       for (var i = 0; i < sections.length; i++) {
         var section = sections[i];
         if(section.id) {
           var heading = section.querySelector('h1, h2, h3, h4, h5, h6, header h1, header h2, header h3, header h4, header h5, header h6') || { 'textContent': section.id };
-          var currentHash = (document.location.hash == '#' + section.id) ? ' class="selected"' : '';
+          var currentHash = '';
+          var dataId = '';
+
+          if (!options.raw) {
+            currentHash = (document.location.hash == '#' + section.id) ? ' class="selected"' : '';
+            dataId = ' data-id="' + section.id +'"';
+            attributeClass = '';
+          }
 
           if (heading) {
-            s += '<li' + currentHash + ' data-id="' + section.id +'"><a href="#' + section.id + '">' + heading.textContent + '</a>';
+            s += '<li' + currentHash + dataId + '><a href="#' + section.id + '">' + heading.textContent + '</a>';
             var subsections = section.parentNode.querySelectorAll('[id="' + section.id + '"] > div > section[rel*="hasPart"]:not([class~="slide"]), [id="' + section.id + '"] > section[rel*="hasPart"]:not([class~="slide"])');
 
             if (subsections.length > 0) {
               s += '<ol'+ attributeClass +'>';
-              s += DO.U.getListOfSections(subsections, sortable);
+              s += DO.U.getListOfSections(subsections, options);
               s += '</ol>';
             }
             s += '</li>';
@@ -1588,7 +1596,7 @@ var DO = {
           s += '<div><ol class="toc">';
 
           if (element == 'content') {
-            s += DO.U.getListOfSections(document.querySelectorAll('h1 ~ div > section:not([class~="slide"])'), false);
+            s += DO.U.getListOfSections(document.querySelectorAll('h1 ~ div > section:not([class~="slide"])'), {'raw': true});
           }
           else {
             if (element == 'abbr') {
@@ -2056,7 +2064,7 @@ var DO = {
 
       mementoItems.addEventListener('click', function(e) {
         if (e.target.closest('button.resource-save') ||
-            e.target.closest('button.create-version') || 
+            e.target.closest('button.create-version') ||
             e.target.closest('button.create-immutable')) {
           DO.U.resourceSave(e);
         }
@@ -5273,7 +5281,7 @@ WHERE {\n\
             }
             else {
               //URI-M
-  
+
               info['profile'] = DO.C.Vocab['memMemento']['@id'];
             }
           }
