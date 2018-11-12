@@ -1525,8 +1525,10 @@ var DO = {
         var section = sections[i];
         if(section.id) {
           var heading = section.querySelector('h1, h2, h3, h4, h5, h6, header h1, header h2, header h3, header h4, header h5, header h6') || { 'textContent': section.id };
+          var currentHash = (document.location.hash == '#' + section.id) ? ' class="selected"' : '';
+
           if (heading) {
-            s += '<li data-id="' + section.id +'"><a href="#' + section.id + '">' + heading.textContent + '</a>';
+            s += '<li' + currentHash + ' data-id="' + section.id +'"><a href="#' + section.id + '">' + heading.textContent + '</a>';
             var subsections = section.parentNode.querySelectorAll('[id="' + section.id + '"] > div > section[rel*="hasPart"]:not([class~="slide"]), [id="' + section.id + '"] > section[rel*="hasPart"]:not([class~="slide"])');
 
             if (subsections.length > 0) {
