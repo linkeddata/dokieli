@@ -92,40 +92,40 @@ text-align:left;
 text-align:center;
 }
 
-article[typeof*="ScholarlyArticle"] section[inlist]:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id=declaration]):not([id=acknowledgements]) {
+*[typeof*="ScholarlyArticle"] section[inlist]:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id=declaration]):not([id=acknowledgements]) {
 counter-increment:section;
 counter-reset:sub-section;
 }
-article[typeof*="ScholarlyArticle"] section[inlist]:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id=declaration]):not([id=acknowledgements]) section {
+*[typeof*="ScholarlyArticle"] section[inlist]:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id=declaration]):not([id=acknowledgements]) section {
 counter-increment:sub-section;
 counter-reset:sub-sub-section;
 }
-article[typeof*="ScholarlyArticle"] section[inlist]:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id=declaration]):not([id=acknowledgements]) section section {
+*[typeof*="ScholarlyArticle"] section[inlist]:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id=declaration]):not([id=acknowledgements]) section section {
 counter-increment:sub-sub-section;
 counter-reset:sub-sub-sub-section;
 }
-article[typeof*="ScholarlyArticle"] section[inlist]:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id=declaration]):not([id=acknowledgements]) section section section {
+*[typeof*="ScholarlyArticle"] section[inlist]:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id=declaration]):not([id=acknowledgements]) section section section {
 counter-increment:sub-sub-sub-section;
 counter-reset:sub-sub-sub-sub-section;
 }
-article[typeof*="ScholarlyArticle"] section[inlist]:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id=declaration]):not([id=acknowledgements]) section section section section {
+*[typeof*="ScholarlyArticle"] section[inlist]:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id=declaration]):not([id=acknowledgements]) section section section section {
 counter-increment:sub-sub-sub-sub-section;
 counter-reset:sub-sub-sub-sub-sub-section;
 }
 
-article[typeof*="ScholarlyArticle"] section[inlist]:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id=declaration]):not([id=acknowledgements]):not([id^=table-of-]) > h2:before {
+*[typeof*="ScholarlyArticle"] section[inlist]:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id=declaration]):not([id=acknowledgements]):not([id^=table-of-]) > h2:before {
 content:counter(section) ".\00a0\00a0\00a0\00a0";
 }
-article[typeof*="ScholarlyArticle"] section[inlist] > h3:before {
+*[typeof*="ScholarlyArticle"] section[inlist] > h3:before {
 content:counter(section) "." counter(sub-section) "\00a0\00a0\00a0";
 }
-article[typeof*="ScholarlyArticle"] section[inlist] > h4:before {
+*[typeof*="ScholarlyArticle"] section[inlist] > h4:before {
 content:counter(section)"." counter(sub-section) "." counter(sub-sub-section) "\00a0\00a0\00a0";
 }
-article[typeof*="ScholarlyArticle"] section[inlist] > h5:before {
+*[typeof*="ScholarlyArticle"] section[inlist] > h5:before {
 content:counter(section)"." counter(sub-section) "." counter(sub-sub-section) "." counter(sub-sub-sub-section) "\00a0\00a0\00a0";
 }
-article[typeof*="ScholarlyArticle"] section[inlist] > h6:before {
+*[typeof*="ScholarlyArticle"] section[inlist] > h6:before {
 content:counter(section)"." counter(sub-section) "." counter(sub-sub-section) "." counter(sub-sub-sub-section) "." counter(sub-sub-sub-sub-section) "\00a0\00a0\00a0";
 }
 
