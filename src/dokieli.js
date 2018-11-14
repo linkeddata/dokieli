@@ -5948,8 +5948,8 @@ WHERE {\n\
                   case 'share':
                     _this.base.restoreSelection();
                     var resourceIRI = uri.stripFragmentFromString(document.location.href);
-                    var id = _this.base.getSelectedParentElement().closest('[id]').id;
-                    resourceIRI = (id) ? resourceIRI + '#' + id : resourceIRI;
+                    var node = _this.base.getSelectedParentElement().closest('[id]');
+                    resourceIRI = (node && node.id) ? resourceIRI + '#' + node.id : resourceIRI;
                     _this.window.getSelection().removeAllRanges();
                     _this.base.checkSelection();
                     DO.U.shareResource(null, resourceIRI);
