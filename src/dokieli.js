@@ -600,7 +600,7 @@ var DO = {
               graph.links.push({"source": t.subject.nominalValue, "target": t.object.nominalValue, "value": t.predicate.nominalValue});
             });
 
-            delete graphNodes;
+            // delete graphNodes;
             return resolve(graph);
           }
         );
@@ -856,15 +856,12 @@ var DO = {
       }
 
       if (DO.C.EditorAvailable) {
-        if (DO.U.urlParam('author') == 'true' || DO.U.urlParam('social') == 'true' || DO.U.urlParam('review') == 'true') {
+        if (DO.U.urlParam('author') == 'true' || DO.U.urlParam('social') == 'true') {
           if (DO.U.urlParam('social') == 'true') {
             mode = 'social';
           }
           else if (DO.U.urlParam('author') == 'true') {
             mode = 'author';
-          }
-          else if (DO.U.urlParam('review') == 'true') {
-            mode = 'review';
           }
           var url = document.location.href;
           window.history.replaceState({}, null, url.substr(0, url.lastIndexOf('?')));
@@ -884,9 +881,6 @@ var DO = {
             break;
           case 'author':
             DO.U.Editor.enableEditor('author');
-            break;
-          case 'review':
-            DO.U.Editor.enableEditor('review');
             break;
         }
       }
@@ -2138,13 +2132,6 @@ var DO = {
       s += '<li><button class="resource-share" title="Share resource"><i class="fa fa-bullhorn fa-2x"></i>Share</button></li>';
       s += '<li><button class="resource-reply" title="Reply"><i class="fa fa-reply fa-2x"></i>Reply</button></li>';
 
-      if (DO.C.EditorAvailable) {
-        var reviewArticle = (DO.C.EditorEnabled && DO.C.User.Role == 'review')
-          ? DO.C.Editor.DisableReviewButton
-          : DO.C.Editor.EnableReviewButton;
-        s += '<li>' + reviewArticle + '</li>';
-      }
-
       buttonDisabled = (DO.C.User.IRI) ? '' : ' disabled="disabled"';
 
       var activitiesIcon = 'fa-bolt';
@@ -2192,20 +2179,13 @@ var DO = {
         }
 
         if (DO.C.EditorAvailable) {
-          if (e.target.closest('button.editor-disable') ||
-            e.target.closest('button.review-disable')) {
+          if (e.target.closest('button.editor-disable')) {
             e.target.parentNode.innerHTML = DO.C.Editor.EnableEditorButton;
             DO.U.Editor.enableEditor('social', e);
           }
-          else {
-            if (e.target.closest('button.editor-enable')) {
-              e.target.parentNode.innerHTML = DO.C.Editor.DisableEditorButton;
-              DO.U.Editor.enableEditor('author', e);
-            }
-            else if (e.target.closest('button.review-enable')) {
-              e.target.parentNode.innerHTML = DO.C.Editor.DisableEditorButton;
-              DO.U.Editor.enableEditor('review', e);
-            }
+          else if (e.target.closest('button.editor-enable')) {
+            e.target.parentNode.innerHTML = DO.C.Editor.DisableEditorButton;
+            DO.U.Editor.enableEditor('author', e);
           }
         }
 
@@ -5390,34 +5370,19 @@ WHERE {\n\
             elementsContainer: document.getElementById('document-editor'),
             buttonLabels: DO.C.Editor.ButtonLabelType,
             toolbar: {
-              buttons: ['selector', 'share', 'approve', 'bookmark', 'note'],
+              buttons: ['selector', 'share', 'approve', 'disapprove', 'specificity', 'bookmark', 'note'],
               allowMultiParagraphSelection: false
             },
             disableEditing: true,
             anchorPreview: false,
             extensions: {
               'selector': new DO.U.Editor.Note({action:'selector', label:'selector'}),
-              'note': new DO.U.Editor.Note({action:'article', label:'note'}),
-              'bookmark': new DO.U.Editor.Note({action:'bookmark', label:'bookmark'}),
               'share': new DO.U.Editor.Note({action:'share', label:'share'}),
-              'approve': new DO.U.Editor.Note({action:'approve', label:'approve'})
-            }
-          },
-
-          review: {
-            id: 'review',
-            elementsContainer: document.getElementById('document-editor'),
-            buttonLabels: DO.C.Editor.ButtonLabelType,
-            toolbar: {
-              buttons: ['approve', 'disapprove', 'specificity'],
-              allowMultiParagraphSelection: false
-            },
-            disableEditing: true,
-            anchorPreview: false,
-            extensions: {
+              'bookmark': new DO.U.Editor.Note({action:'bookmark', label:'bookmark'}),
               'approve': new DO.U.Editor.Note({action:'approve', label:'approve'}),
               'disapprove': new DO.U.Editor.Note({action:'disapprove', label:'disapprove'}),
-              'specificity': new DO.U.Editor.Note({action:'specificity', label:'specificity'})
+              'specificity': new DO.U.Editor.Note({action:'specificity', label:'specificity'}),
+              'note': new DO.U.Editor.Note({action:'article', label:'note'})
             }
           }
         };
@@ -5514,11 +5479,6 @@ WHERE {\n\
               });
             }
 
-          }
-          else if (e && (e.target.closest('button.editor-disable') || e.target.closest('button.review-enable'))) {
-            DO.C.ContentEditable = false;
-
-            DO.U.setEditSelections();
           }
 
           document.querySelectorAll('.do').forEach(function(node){
@@ -5933,7 +5893,7 @@ WHERE {\n\
                       return _this.execAction('unlink');
                     }
 
-                    if (DO.U.Editor.MediumEditor.options.id == 'social' && (_this.action == 'selector' || _this.action == 'approve')){
+                    if (DO.U.Editor.MediumEditor.options.id == 'social' && _this.action == 'selector'){
                       var opts = {
                         license: 'https://creativecommons.org/licenses/by/4.0/',
                         content: 'Liked'
@@ -6640,7 +6600,7 @@ WHERE {\n\
 
                   //External Note
                   case 'article': case 'approve': case 'disapprove': case 'specificity':
-                    if (DO.U.Editor.MediumEditor.options.id === 'review') {
+                    if (_this.action === 'approve' || _this.action === 'disapprove' || _this.action === 'specificity') {
                       motivatedBy = 'oa:assessing';
                       refLabel = DO.U.getReferenceLabel(motivatedBy);
                     }
