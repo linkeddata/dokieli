@@ -947,7 +947,6 @@ var DO = {
           auth.showUserSigninSignout(dHead);
           DO.U.showDocumentDo(dInfo);
           DO.U.showEmbedData(dInfo);
-          storage.showStorage(dInfo);
           DO.U.showViews(dInfo);
           DO.U.showDocumentMetadata(dInfo);
           if(!body.classList.contains('on-slideshow')) {
