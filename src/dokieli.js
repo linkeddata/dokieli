@@ -1385,6 +1385,9 @@ var DO = {
           return authors + contributors;
         }).then(
         function(people){
+              // <tr><th>Lines</th><td>' + count.lines + '</td></tr>\n\
+              // <tr><th>A4 Pages</th><td>' + count.pages.A4 + '</td></tr>\n\
+              // <tr><th>US Letter</th><td>' + count.pages.USLetter + '</td></tr>\n\
           var s = '<section id="document-metadata" class="do"><table>\n\
             <caption>Document Metadata</caption>\n\
             <tbody>\n\
@@ -1392,9 +1395,6 @@ var DO = {
               <tr><th>Reading time</th><td>' + count.readingTime + ' minutes</td></tr>\n\
               <tr><th>Characters</th><td>' + count.chars + '</td></tr>\n\
               <tr><th>Words</th><td>' + count.words + '</td></tr>\n\
-              <tr><th>Lines</th><td>' + count.lines + '</td></tr>\n\
-              <tr><th>A4 Pages</th><td>' + count.pages.A4 + '</td></tr>\n\
-              <tr><th>US Letter</th><td>' + count.pages.USLetter + '</td></tr>\n\
               <tr><th>Bytes</th><td>' + count.bytes + '</td></tr>\n\
             </tbody>\n\
           </table></section>';
