@@ -122,8 +122,7 @@ function getAcceptPostPreference (url) {
 
   return getResourceOptions(pIRI, {'header': 'Accept-Post'})
     .catch(error => {
-      console.error(error)
-
+//      console.log(error)
       return {'headers': 'application/ld+json'}
     })
     .then(result => {
