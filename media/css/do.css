@@ -554,7 +554,10 @@ background-image:none;
 #document-menu #document-metadata {
 float:left !important;
 }
-
+#document-menu > div {
+padding:0 !important;
+margin:0 !important;
+}
 #document-menu #document-metadata .people th {
 vertical-align:top;
 }
