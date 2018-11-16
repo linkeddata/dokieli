@@ -105,7 +105,13 @@ function showUserSigninSignout (node) {
 
         util.removeChildren(node);
 
-        showUserSigninSignout(document.querySelector('#document-menu header'))
+        var documentMenu = document.querySelector('#document-menu')
+
+        showUserSigninSignout(documentMenu.querySelector('header'))
+
+        var ra = documentMenu.querySelector('.resource-activities');
+        ra.disabled = true;
+        ra.innerHTML = '<i class="fa fa-bolt fa-2x"></i>Activities';
       }
     });
 
