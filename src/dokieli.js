@@ -2142,9 +2142,9 @@ var DO = {
       }
 
       s += '<li><button class="resource-activities"' + buttonDisabled +
-        ' title="Show activities"><i class="fa ' + activitiesIcon + ' fa-2x"></i></i>Activities</button></li>';
-      s += '<li><button class="resource-new" title="Create new article"><i class="fa fa-lightbulb-o fa-2x"></i></i>New</button></li>';
-      s += '<li><button class="resource-open" title="Open article"><i class="fa fa-coffee fa-2x"></i></i>Open</button></li>';
+        ' title="Show activities"><i class="fa ' + activitiesIcon + ' fa-2x"></i>Activities</button></li>';
+      s += '<li><button class="resource-new" title="Create new article"><i class="fa fa-lightbulb-o fa-2x"></i>New</button></li>';
+      s += '<li><button class="resource-open" title="Open article"><i class="fa fa-coffee fa-2x"></i>Open</button></li>';
 
       buttonDisabled = (document.location.protocol === 'file:') ? ' disabled="disabled"' : '';
 
