@@ -947,7 +947,6 @@ var DO = {
 
           auth.showUserSigninSignout(dHead);
           DO.U.showDocumentDo(dInfo);
-          DO.U.showEmbedData(dInfo);
           DO.U.showViews(dInfo);
           DO.U.showDocumentMetadata(dInfo);
           if(!body.classList.contains('on-slideshow')) {
@@ -1207,12 +1206,10 @@ var DO = {
       }
     },
 
-    showEmbedData: function(node) {
+    showEmbedData: function(e) {
       if(document.querySelector('#embed-data-in-html')) { return; }
 
-      node.insertAdjacentHTML('beforeend', '<section id="embed-data-in-html" class="do"><h2>Data</h2><ul><li><button class="embed-data-meta" title="Embed structured data (Turtle, JSON-LD, TriG)"><i class="fa fa-table fa-2x"></i>Embed Data</button></li></ul></section>');
-
-      var eventEmbedData = function(e) {
+      // var eventEmbedData = function(e) {
         e.target.setAttribute('disabled', 'disabled');
         var scriptCurrent = document.querySelectorAll('head script[id^="meta-"]');
 
@@ -1282,7 +1279,7 @@ var DO = {
         }
 
         document.querySelector('#embed-data-entry button.close').addEventListener('click', function(e) {
-          document.querySelector('#embed-data-in-html .embed-data-meta').removeAttribute('disabled');
+          document.querySelector('button.embed-data-meta').removeAttribute('disabled');
         });
 
         var buttonSave = document.querySelectorAll('#embed-data-entry button.save');
@@ -1311,14 +1308,14 @@ var DO = {
 
             var ede = document.getElementById('embed-data-entry');
             ede.parentNode.removeChild(ede);
-            document.querySelector('#embed-data-in-html .embed-data-meta').removeAttribute('disabled');
+            document.querySelector('.embed-data-meta').removeAttribute('disabled');
           });
         };
-      };
+      // };
 
-      var edih = document.querySelector('#embed-data-in-html button');
-      edih.removeEventListener('click', eventEmbedData);
-      edih.addEventListener('click', eventEmbedData);
+      // var edih = document.querySelector('button.embed-data-meta');
+      // edih.removeEventListener('click', eventEmbedData);
+      // edih.addEventListener('click', eventEmbedData);
     },
 
     htmlEntities: function(s) {
@@ -2163,6 +2160,9 @@ var DO = {
 
       s += '<li><button class="resource-source"' + buttonDisabled +
         ' title="Edit article source code"><i class="fa fa-code fa-2x"></i>Source</button></li>';
+
+      s += '<li><button class="embed-data-meta" title="Embed structured data (Turtle, JSON-LD, TriG)"><i class="fa fa-table fa-2x"></i>Embed Data</button></li>';
+
       s += '</ul></section>';
 
       node.insertAdjacentHTML('beforeend', s);
@@ -2203,6 +2203,10 @@ var DO = {
 
         if (e.target.closest('.resource-source')) {
           DO.U.viewSource(e);
+        }
+
+        if (e.target.closest('.embed-data-meta')) {
+          DO.U.showEmbedData(e);
         }
 
         if (e.target.closest('.resource-save')){
