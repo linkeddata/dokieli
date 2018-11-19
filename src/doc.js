@@ -163,14 +163,30 @@ function setDocumentBase (data, baseURI, contentType) {
 
     case 'application/json': case 'application/ld+json':
       data = JSON.parse(data);
-      data['@base'] = baseURI;
+      data['@context'] = (data['@context']) ? data['@context'] : {'@base': baseURI};
+
+      if (Array.isArray(data['@context'])) {
+        var found = false;
+        data['@context'].forEach(function(a){
+          if (typeof a === 'object' && '@base' in a) {
+            found = true;
+          }
+        })
+        if (!found) {
+          data['@context'].push({'@base': baseURI});
+        }
+      }
+      else if (typeof data['@context'] === 'object' && !('@base' in data['@context'])) {
+        data['@context']['@base'] = baseURI;
+      }
+
       data = JSON.stringify(data);
       break;
 
     default:
       break;
   }
-
+// console.log(data)
   return data
 }
 
