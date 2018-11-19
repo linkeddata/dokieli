@@ -251,9 +251,9 @@ function getResourceGraph (iri, headers, options = {}) {
   return getResource(pIRI, headers, options)
     .then(response => {
       let cT = response.headers.get('Content-Type')
-      options.contentType = (cT) ? cT.split(';')[ 0 ].trim() : 'text/turtle'
+      options['contentType'] = (cT) ? cT.split(';')[ 0 ].trim() : 'text/turtle'
 
-      options.subjectURI = uri.stripFragmentFromString(iri)
+      options['subjectURI'] = uri.stripFragmentFromString(iri)
 
       return response.text()
     })
@@ -263,7 +263,7 @@ function getResourceGraph (iri, headers, options = {}) {
     .then(g => {
       let fragment = (iri.lastIndexOf('#') >= 0) ? iri.substr(iri.lastIndexOf('#')) : ''
 
-      return SimpleRDF(Config.Vocab, options[ 'subjectURI' ], g, ld.store).child(pIRI + fragment)
+      return SimpleRDF(Config.Vocab, options['subjectURI'], g, ld.store).child(pIRI + fragment)
     })
 }
 
