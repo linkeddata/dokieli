@@ -404,7 +404,7 @@ aside.note dl.author-name img[width="48"][height="48"][rel$="image"] {
 #document-interactions section,
 #document-interactions article.do dl,
 #document-interactions article.do dl *,
-#document-interactions article.do div,
+.do div,  
 aside.note dl,
 aside.note dl * {
 padding:0;
@@ -419,10 +419,8 @@ margin-block-end:0;
 -webkit-margin-end:0;
 margin-inline-start:0;
 margin-inline-end:0;
-border:0;
-border-radius:unset;
+width:auto;
 }
-
 
 /*aside.note dl.published,
 aside.note dl.license,
