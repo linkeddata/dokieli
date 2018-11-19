@@ -34,47 +34,31 @@ var DO = {
     getItemsList: function(url, options) {
       url = url || window.location.origin + window.location.pathname;
       options = options || {};
+      options['resourceItems'] = options.resourceItems || [];
+      options['headers'] = options.headers || {};
 
-      DO.C['CollectionItems'] = ('CollectionItems' in DO.C && DO.C.CollectionItems.length > 0) ? DO.C.CollectionItems : [];
+      DO.C['CollectionItems'] = DO.C['CollectionItems'] || {};
       DO.C['CollectionPages'] = ('CollectionPages' in DO.C && DO.C.CollectionPages.length > 0) ? DO.C.CollectionPages : [];
 
       var pIRI = uri.getProxyableIRI(url);
 
-      return fetcher.getResourceGraph(pIRI)
+      return fetcher.getResourceGraph(pIRI, options.headers, options)
         .then(
           function(i) {
             var s = i.child(url);
-
             //XXX: First item is actually the Collection
             DO.C.CollectionPages.push(url);
-
-            // s.ldpcontains.forEach(function(resource) {
-            //   var types = s.child(resource).rdftype;
-            //   if(types.indexOf(DO.C.Vocab['ldpContainer']["@id"]) < 0 && types.indexOf(DO.C.Vocab['asCollection']["@id"]) < 0) {
-            //     DO.C.CollectionItems.push(resource);
-            //   }
-            // });
-            // s.asitems.forEach(function(resource) {
-            //   var types = s.child(resource).rdftype;
-            //   if(types.indexOf(DO.C.Vocab['ldpContainer']["@id"]) < 0 && types.indexOf(DO.C.Vocab['asCollection']["@id"]) < 0) {
-            //     DO.C.CollectionItems.push(resource);
-            //   }
-            // });
-            // s.asorderedItems.forEach(function(resource) {
-            //   var types = s.child(resource).rdftype;
-            //   if(types.indexOf(DO.C.Vocab['ldpContainer']["@id"]) < 0 && types.indexOf(DO.C.Vocab['asCollection']["@id"]) < 0) {
-            //     DO.C.CollectionItems.push(resource);
-            //   }
-            // });
 
             var items = [s.asitems, s.asorderedItems, s.ldpcontains];
             Object.keys(items).forEach(function(i) {
               items[i].forEach(function(resource){
                 var types = s.child(resource).rdftype;
+                //Include only non-container/collection
                 if(types.indexOf(DO.C.Vocab['ldpContainer']["@id"]) < 0 &&
                    types.indexOf(DO.C.Vocab['asCollection']["@id"]) < 0 &&
                    types.indexOf(DO.C.Vocab['asOrderedCollection']["@id"]) < 0) {
-                  DO.C.CollectionItems.push(resource);
+                  DO.C.CollectionItems[resource] = s;
+                  options.resourceItems.push(resource);
                 }                
               });
             });
@@ -86,7 +70,7 @@ var DO = {
               return DO.U.getItemsList(s.asnext, options);
             }
             else {
-              return util.uniqueArray(DO.C.CollectionItems);
+              return util.uniqueArray(options.resourceItems);
             }
           },
           function(reason) {
@@ -188,23 +172,41 @@ var DO = {
 
       var promises = []
 
-      if (DO.C.User.Outbox && DO.C.User.Outbox.length > 0) {
-        DO.U.showOutboxSources(DO.C.User.Outbox[0])
+      if (DO.C.User.Storage && DO.C.User.Storage.length > 0) {
+        if(DO.C.User.Outbox && DO.C.User.Outbox.length > 0) {
+          if(DO.C.User.Storage[0] == DO.C.User.Outbox[0]) {
+            DO.U.showActivitiesSources(DO.C.User.Outbox[0])
+          }
+          else {
+            DO.U.showActivitiesSources(DO.C.User.Storage[0])
+            DO.U.showActivitiesSources(DO.C.User.Outbox[0])
+          }
+        }
+        else {
+          DO.U.showActivitiesSources(DO.C.User.Storage[0])
+        }
+      }
+      else if (DO.C.User.Outbox && DO.C.User.Outbox.length > 0) {
+        DO.U.showActivitiesSources(DO.C.User.Outbox[0])
       }
 
       if (DO.C.User.Contacts && Object.keys(DO.C.User.Contacts).length > 0){
+        var sAS = function(iri) {
+          return DO.U.showActivitiesSources(iri)
+            .catch(() => {
+              return Promise.resolve()
+            })
+        }
+
         Object.keys(DO.C.User.Contacts).forEach(function(iri){
           var o = DO.C.User.Contacts[iri].Outbox
-
           if (o) {
-            var sOS = function(outbox) {
-              return DO.U.showOutboxSources(outbox)
-                .catch(() => {
-                  return Promise.resolve()
-                })
-            }
+            promises.push(sAS(o[0]))
+          }
 
-            promises.push(sOS(o[0]))
+          var s = DO.C.User.Contacts[iri].Storage
+          if (s) {
+            promises.push(sAS(s[0]))
           }
         })
 
@@ -214,7 +216,7 @@ var DO = {
           });
       }
       else {
-        return DO.U.updateContactsInfo(DO.C.User.IRI, { 'showOutboxSources': true })
+        return DO.U.updateContactsInfo(DO.C.User.IRI, { 'showActivitiesSources': true })
           .then(() => {
             removeProgress(e)
           })
@@ -224,8 +226,8 @@ var DO = {
       }
     },
 
-    showOutboxSources: function(url) {
-      return DO.U.getOutboxActivities(url).then(
+    showActivitiesSources: function(url) {
+      return DO.U.getActivities(url).then(
         function(items) {
           var promises = [];
 
@@ -249,37 +251,16 @@ var DO = {
       );
     },
 
-    getOutboxActivities: function(url) {
+    getActivities: function(url, options) {
       url = url || window.location.origin + window.location.pathname;
       var pIRI = uri.getProxyableIRI(url);
-      var headers = { 'Accept': 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"'}
 
-      return fetcher.getResourceGraph(pIRI, headers)
-        .then(
-          function(i) {
-// console.log(i)
-            var s = i.child(url);
-            var items = Object.assign([], s.asitems._array);
-            items = Object.assign(items, s.asorderedItems._array);
-            items = util.uniqueArray(items);
-
-            if (items.length > 0) {
-              return items;
-            }
-            else {
-              var reason = {"message": "There are no activities."};
-              return Promise.reject(reason);
-            }
-          },
-          function(reason) {
-            console.log(reason);
-            return reason;
-          }
-        );
+      options = options || {};
+      return DO.U.getItemsList(pIRI, options);
     },
 
     showActivities: function(url) {
-      return graph.getGraph(url).then(
+      return fetcher.getResourceGraph(url).then(
         function(g) {
 // console.log(g);
           var subjects = [];
@@ -417,6 +398,10 @@ var DO = {
                       });
                   }
                 }
+              }
+              else if(resourceTypes.indexOf('http://www.w3.org/ns/oa#Annotation') > -1 && DO.U.getPathURL(s.oahasTarget) == currentPathURL) {
+
+                return DO.U.showAnnotation(i, s);
               }
               else {
                 // console.log(i + ' has unrecognised types: ' + resourceTypes);
@@ -2743,23 +2728,39 @@ var DO = {
           if(contacts.length > 0) {
             var promises = [];
 
+            //Get Contacts' profile
             var gC = function(url) {
               return fetcher.getResourceGraph(url).then(i => {
                 // console.log(i);
                 var s = i.child(url);
 
+                //Keep a local copy
                 DO.C.User.Contacts[url] = {};
                 DO.C.User.Contacts[url]['Graph'] = s;
 
-                var uCO = function(url, s) {
-                  return DO.U.updateContactsOutbox(url, s)
-                    .then(() => {
-                      if ('showOutboxSources' in options) {
-                        return DO.U.showOutboxSources(DO.C.User.Contacts[url].Outbox[0])
+                var uCA = function(url, s) {
+                  var outbox = DO.C.User.Contacts[url]['Outbox'] = auth.getAgentOutbox(s);
+                  var storage = DO.C.User.Contacts[url]['Storage'] = auth.getAgentStorage(s);
+                  if ('showActivitiesSources' in options) {
+                    if (storage && storage.length > 0) {
+                      if(outbox && outbox.length > 0) {
+                        if(storage[0] == outbox[0]) {
+                          DO.U.showActivitiesSources(outbox[0])
+                        }
+                        else {
+                          DO.U.showActivitiesSources(storage[0])
+                          DO.U.showActivitiesSources(outbox[0])
+                        }
                       }
-                      return Promise.resolve();
-                    })
-                    .catch(() => {})
+                      else {
+                        DO.U.showActivitiesSources(storage[0])
+                      }
+                    }
+                    else if (outbox && outbox.length > 0) {
+                      DO.U.showActivitiesSources(outbox[0])
+                    }
+                  }
+                  return Promise.resolve();
                 }
 
                 var uCI = function(url, s) {
@@ -2774,12 +2775,12 @@ var DO = {
                 }
 
                 //XXX: Holy crap this is fugly.
-                if ('showOutboxSources' in options) {
+                if ('showActivitiesSources' in options) {
                   uCI(url, s);
-                  return uCO(url, s)
+                  return uCA(url, s)
                 }
                 else if ('addShareResourceContactInput' in options) {
-                  uCO(url, s)
+                  uCA(url, s)
                   return uCI(url, s)
                 }
 
@@ -2838,24 +2839,6 @@ console.log(reason);
       return checkInbox(s)
         .then(inboxes => {
           DO.C.User.Contacts[iri]['Inbox'] = inboxes;
-        })
-    },
-
-    updateContactsOutbox: function(iri, s) {
-      var checkOutbox = function(s) {
-        var outbox = auth.getAgentOutbox(s);
-
-        if (outbox) {
-          return Promise.resolve(outbox)
-        }
-        else {
-          return Promise.reject()
-        }
-      }
-
-      return checkOutbox(s)
-        .then(outboxes => {
-          DO.C.User.Contacts[iri]['Outbox'] = outboxes;
         })
     },
 
@@ -4306,10 +4289,12 @@ WHERE {\n\
       var documentURL = uri.stripFragmentFromString(document.location.href);
 
       var note = g.child(noteIRI);
-
       if (note.asobject && note.asobject.at(0)) {
         note = g.child(note.asobject.at(0))
       }
+// console.log(noteIRI)
+// console.log(note.toString())
+// console.log(note)
 
       var id = String(Math.abs(DO.U.hashCode(noteIRI)));
       var refId = 'r-' + id;
@@ -4362,9 +4347,10 @@ WHERE {\n\
         bodyText = body.rdfvalue;
 // console.log(bodyText);
 
-
+// console.log(documentURL)
         if (note.oahasTarget && !note.oahasTarget.startsWith(documentURL)) {
-          return Promise.reject();
+          // return Promise.reject();
+          return;
         }
 
         var target = g.child(note.oahasTarget);
@@ -4682,19 +4668,12 @@ WHERE {\n\
       }
 
       switch(n.mode) {
-        default:
+        default: case 'read':
           hX = 3;
           if ('creator' in n && 'iri' in n.creator && n.creator.iri == DO.C.User.IRI) {
             buttonDelete = '<button class="delete" title="Delete item"><i class="fa fa-trash"></i></button>' ;
           }
           articleClass = ' class="do"';
-          break;
-
-        case 'read':
-          hX = 3;
-          if ('creator' in n && 'iri' in n.creator && n.creator.iri == DO.C.User.IRI) {
-            buttonDelete = '<button class="delete" title="Delete item"><i class="fa fa-trash"></i></button>' ;
-          }
           break;
         case 'write':
           hX = 1;
