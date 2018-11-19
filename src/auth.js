@@ -90,22 +90,28 @@ function showUserSigninSignout (node) {
       e.preventDefault()
       e.stopPropagation()
 
-      if (Config.User.OIDC && solidAuth) {
-        solidAuth.logout();
-      }
-
       if (e.target.closest('.signout-user')) {
+        if (Config.User.OIDC && solidAuth) {
+          solidAuth.logout();
+        }
+
         storage.removeStorageProfile()
 
         Config.User = {
           IRI: null,
-          Role: null,
+          Role: 'social',
           UI: {}
         }
 
         util.removeChildren(node);
 
-        showUserSigninSignout(document.querySelector('#document-menu header'))
+        var documentMenu = document.querySelector('#document-menu')
+
+        showUserSigninSignout(documentMenu.querySelector('header'))
+
+        var ra = documentMenu.querySelector('.resource-activities');
+        ra.disabled = true;
+        ra.innerHTML = '<i class="fa fa-bolt fa-2x"></i>Activities';
       }
     });
 
@@ -147,20 +153,23 @@ function showUserIdentityInput (e) {
     }
   })
 
-  var inputWebid = document.querySelector('#user-identity-input input#webid')
+  var inputWebID = document.querySelector('#user-identity-input input#webid')
+  if(inputWebID) {
+    buttonSignIn.addEventListener('click', submitSignIn)
 
-  buttonSignIn.addEventListener('click', submitSignIn)
+    let events = ['keyup', 'cut', 'paste', 'input']
 
-  let events = ['keyup', 'cut', 'paste', 'input']
-
-  events.forEach(eventType => {
-    inputWebid.addEventListener(eventType, e => { enableDisableButton(e, buttonSignIn) })
-  })
+    events.forEach(eventType => {
+      inputWebID.addEventListener(eventType, e => { enableDisableButton(e, buttonSignIn) })
+    })
+  }
 
   var buttonSignInOIDC = document.querySelector('#user-identity-input button.signin-oidc')
-  buttonSignInOIDC.addEventListener('click', submitSignInOIDC)
+  if (buttonSignInOIDC) {
+    buttonSignInOIDC.addEventListener('click', submitSignInOIDC)
+  }
 
-  inputWebid.focus()
+  inputWebID.focus()
 }
 
 

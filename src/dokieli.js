@@ -12,11 +12,14 @@ const uri = require('./uri')
 const graph = require('./graph')
 const inbox = require('./inbox')
 const util = require('./util')
+window.MediumEditor = require('medium-editor')
+window.MediumEditorTable = require('medium-editor-tables')
 const storage = require('./storage')
 global.auth = require('./auth')
 
 if(typeof DO === 'undefined'){
-global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined;
+const ld = require('./simplerdf')
+global.SimpleRDF = ld.SimpleRDF
 var DO = {
   fetcher,
 
@@ -31,47 +34,31 @@ var DO = {
     getItemsList: function(url, options) {
       url = url || window.location.origin + window.location.pathname;
       options = options || {};
+      options['resourceItems'] = options.resourceItems || [];
+      options['headers'] = options.headers || {};
 
-      DO.C['CollectionItems'] = ('CollectionItems' in DO.C && DO.C.CollectionItems.length > 0) ? DO.C.CollectionItems : [];
+      DO.C['CollectionItems'] = DO.C['CollectionItems'] || {};
       DO.C['CollectionPages'] = ('CollectionPages' in DO.C && DO.C.CollectionPages.length > 0) ? DO.C.CollectionPages : [];
 
       var pIRI = uri.getProxyableIRI(url);
 
-      return fetcher.getResourceGraph(pIRI)
+      return fetcher.getResourceGraph(pIRI, options.headers, options)
         .then(
           function(i) {
             var s = i.child(url);
-
             //XXX: First item is actually the Collection
             DO.C.CollectionPages.push(url);
-
-            // s.ldpcontains.forEach(function(resource) {
-            //   var types = s.child(resource).rdftype;
-            //   if(types.indexOf(DO.C.Vocab['ldpContainer']["@id"]) < 0 && types.indexOf(DO.C.Vocab['asCollection']["@id"]) < 0) {
-            //     DO.C.CollectionItems.push(resource);
-            //   }
-            // });
-            // s.asitems.forEach(function(resource) {
-            //   var types = s.child(resource).rdftype;
-            //   if(types.indexOf(DO.C.Vocab['ldpContainer']["@id"]) < 0 && types.indexOf(DO.C.Vocab['asCollection']["@id"]) < 0) {
-            //     DO.C.CollectionItems.push(resource);
-            //   }
-            // });
-            // s.asorderedItems.forEach(function(resource) {
-            //   var types = s.child(resource).rdftype;
-            //   if(types.indexOf(DO.C.Vocab['ldpContainer']["@id"]) < 0 && types.indexOf(DO.C.Vocab['asCollection']["@id"]) < 0) {
-            //     DO.C.CollectionItems.push(resource);
-            //   }
-            // });
 
             var items = [s.asitems, s.asorderedItems, s.ldpcontains];
             Object.keys(items).forEach(function(i) {
               items[i].forEach(function(resource){
                 var types = s.child(resource).rdftype;
+                //Include only non-container/collection
                 if(types.indexOf(DO.C.Vocab['ldpContainer']["@id"]) < 0 &&
                    types.indexOf(DO.C.Vocab['asCollection']["@id"]) < 0 &&
                    types.indexOf(DO.C.Vocab['asOrderedCollection']["@id"]) < 0) {
-                  DO.C.CollectionItems.push(resource);
+                  DO.C.CollectionItems[resource] = s;
+                  options.resourceItems.push(resource);
                 }                
               });
             });
@@ -83,7 +70,7 @@ var DO = {
               return DO.U.getItemsList(s.asnext, options);
             }
             else {
-              return util.uniqueArray(DO.C.CollectionItems);
+              return util.uniqueArray(options.resourceItems);
             }
           },
           function(reason) {
@@ -185,23 +172,41 @@ var DO = {
 
       var promises = []
 
-      if (DO.C.User.Outbox && DO.C.User.Outbox.length > 0) {
-        DO.U.showOutboxSources(DO.C.User.Outbox[0])
+      if (DO.C.User.Storage && DO.C.User.Storage.length > 0) {
+        if(DO.C.User.Outbox && DO.C.User.Outbox.length > 0) {
+          if(DO.C.User.Storage[0] == DO.C.User.Outbox[0]) {
+            DO.U.showActivitiesSources(DO.C.User.Outbox[0])
+          }
+          else {
+            DO.U.showActivitiesSources(DO.C.User.Storage[0])
+            DO.U.showActivitiesSources(DO.C.User.Outbox[0])
+          }
+        }
+        else {
+          DO.U.showActivitiesSources(DO.C.User.Storage[0])
+        }
+      }
+      else if (DO.C.User.Outbox && DO.C.User.Outbox.length > 0) {
+        DO.U.showActivitiesSources(DO.C.User.Outbox[0])
       }
 
       if (DO.C.User.Contacts && Object.keys(DO.C.User.Contacts).length > 0){
+        var sAS = function(iri) {
+          return DO.U.showActivitiesSources(iri)
+            .catch(() => {
+              return Promise.resolve()
+            })
+        }
+
         Object.keys(DO.C.User.Contacts).forEach(function(iri){
           var o = DO.C.User.Contacts[iri].Outbox
-
           if (o) {
-            var sOS = function(outbox) {
-              return DO.U.showOutboxSources(outbox)
-                .catch(() => {
-                  return Promise.resolve()
-                })
-            }
+            promises.push(sAS(o[0]))
+          }
 
-            promises.push(sOS(o[0]))
+          var s = DO.C.User.Contacts[iri].Storage
+          if (s) {
+            promises.push(sAS(s[0]))
           }
         })
 
@@ -211,7 +216,7 @@ var DO = {
           });
       }
       else {
-        return DO.U.updateContactsInfo(DO.C.User.IRI, { 'showOutboxSources': true })
+        return DO.U.updateContactsInfo(DO.C.User.IRI, { 'showActivitiesSources': true })
           .then(() => {
             removeProgress(e)
           })
@@ -221,8 +226,8 @@ var DO = {
       }
     },
 
-    showOutboxSources: function(url) {
-      return DO.U.getOutboxActivities(url).then(
+    showActivitiesSources: function(url) {
+      return DO.U.getActivities(url).then(
         function(items) {
           var promises = [];
 
@@ -246,37 +251,16 @@ var DO = {
       );
     },
 
-    getOutboxActivities: function(url) {
+    getActivities: function(url, options) {
       url = url || window.location.origin + window.location.pathname;
       var pIRI = uri.getProxyableIRI(url);
-      var headers = { 'Accept': 'application/ld+json; profile="https://www.w3.org/ns/activitystreams"'}
 
-      return fetcher.getResourceGraph(pIRI, headers)
-        .then(
-          function(i) {
-// console.log(i)
-            var s = i.child(url);
-            var items = Object.assign([], s.asitems._array);
-            items = Object.assign(items, s.asorderedItems._array);
-            items = util.uniqueArray(items);
-
-            if (items.length > 0) {
-              return items;
-            }
-            else {
-              var reason = {"message": "There are no activities."};
-              return Promise.reject(reason);
-            }
-          },
-          function(reason) {
-            console.log(reason);
-            return reason;
-          }
-        );
+      options = options || {};
+      return DO.U.getItemsList(pIRI, options);
     },
 
     showActivities: function(url) {
-      return graph.getGraph(url).then(
+      return fetcher.getResourceGraph(url).then(
         function(g) {
 // console.log(g);
           var subjects = [];
@@ -391,6 +375,7 @@ var DO = {
                         return iri;
                       },
                       function(reason){
+                        console.log(reason);
                         console.log(object + ': object is unreachable');
                       });
                   }
@@ -413,6 +398,10 @@ var DO = {
                       });
                   }
                 }
+              }
+              else if(resourceTypes.indexOf('http://www.w3.org/ns/oa#Annotation') > -1 && DO.U.getPathURL(s.oahasTarget) == currentPathURL) {
+
+                return DO.U.showAnnotation(i, s);
               }
               else {
                 // console.log(i + ' has unrecognised types: ' + resourceTypes);
@@ -596,7 +585,7 @@ var DO = {
               graph.links.push({"source": t.subject.nominalValue, "target": t.object.nominalValue, "value": t.predicate.nominalValue});
             });
 
-            delete graphNodes;
+            // delete graphNodes;
             return resolve(graph);
           }
         );
@@ -826,6 +815,9 @@ var DO = {
     initUser: function() {
       storage.getStorageProfile().then(user => {
         if (user && 'object' in user) {
+          user.object.describes.Role = (DO.C.User.IRI && user.object.describes.Role) ? user.object.describes.Role : 'social';
+          user.object.describes.ContactsOutboxChecked = (DO.C.User.IRI && user.object.describes.ContactsOutboxChecked);
+
           DO.C['User'] = user.object.describes;
         }
       })
@@ -850,15 +842,12 @@ var DO = {
       }
 
       if (DO.C.EditorAvailable) {
-        if (DO.U.urlParam('author') == 'true' || DO.U.urlParam('social') == 'true' || DO.U.urlParam('review') == 'true') {
+        if (DO.U.urlParam('author') == 'true' || DO.U.urlParam('social') == 'true') {
           if (DO.U.urlParam('social') == 'true') {
             mode = 'social';
           }
           else if (DO.U.urlParam('author') == 'true') {
             mode = 'author';
-          }
-          else if (DO.U.urlParam('review') == 'true') {
-            mode = 'review';
           }
           var url = document.location.href;
           window.history.replaceState({}, null, url.substr(0, url.lastIndexOf('?')));
@@ -878,9 +867,6 @@ var DO = {
             break;
           case 'author':
             DO.U.Editor.enableEditor('author');
-            break;
-          case 'review':
-            DO.U.Editor.enableEditor('review');
             break;
         }
       }
@@ -908,7 +894,7 @@ var DO = {
     },
 
     showDocumentInfo: function() {
-      document.documentElement.appendChild(util.fragmentFromString('<menu id="document-menu" class="do"><button class="show" title="Open Menu"><i class="fa fa-bars"></i></button><header></header><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><img alt="" height="16" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAn1BMVEUAAAAAjwAAkAAAjwAAjwAAjwAAjwAAjwAAkAAAdwAAjwAAjQAAcAAAjwAAjwAAiQAAjwAAjAAAjwAAjwAAjwAAjwAAkAAAjwAAjwAAjwAAjQAAjQAAhQAAhQAAkAAAkAAAkAAAjgAAjwAAiQAAhAAAkAAAjwAAjwAAkAAAjwAAjgAAjgAAjQAAjwAAjQAAjwAAkAAAjwAAjQAAiwAAkABp3EJyAAAANHRSTlMA+fH89enaabMF4iADxJ4SiSa+uXztyoNvQDcsDgvl3pRiXBcH1M+ppJlWUUpFMq6OdjwbMc1+ZgAABAhJREFUeNrt29nSmkAQBeAGZBMUxH3f993/vP+zJZVKVZKCRhibyc3/XVt6SimYPjPSt28Vmt5W/fu2T/9B9HIf7Tp+0RsgDC6DY6OLvzxJj8341DnsakgZUNUmo2XsORYYS6rOeugukhnyragiq56JIs5UEQ/FXKgidRTzompEKOhG1biioDFV44mCAqrGAQWtqRptA8VMqCpR6zpo9iy84VO1opWHPBZVb9QAzyQN/D1YNungJ+DMSYsbOFvSIwGjR3p0wGiQHkMw2qRHC4w76RGBcSA9NmAcSY8QjAdpYiFbTJoYyNYnTWrI1iFNusj2JE1sZBuQJtyE5pImc3Y21cRhZ1NNtsh2Ik127HCsSY8djjVpINuVhPnjVefobee2adXqu2S/6FyivABDEjQ9Lxo1pDlNd5wg24ikRK5ngKGhHhg1DSgZk4RrD6pa9LlRAnUBfWp6xCe+6EOvOT6yrmrigZaCZHPAp6b0gaiBFKvRd0/D1rr1OrvxDqiyoZmmPt9onib0t/VybyEXqdu0Cw16rUNVAfZFlzdjr5KOaoAUK6JsrgWGQapuBlIS4gy70gEmTrk1fuAgU40UxWXv6wvZAC2Dqfx0BfBK1z1H0aJ0WH7Ub4oG8JDlpBCgK1l5tSjHQSoAf0HVfMqxF+yqpzVk2ZGuAGdk8ijPHZlmpOCg0vh5cgE2JtN3qQSoU3lXpbKlLRegrzTpt+U2TNpKY2YiFiA0kS1Q6QccweZ/oinASm2B3RML0AGDNAU4qq3udmIXYVttD3YrFsBR24N1xG5EJpTeaiYWwILS5WRKBfChFsCSehpOwKi/yS0V4AsMWym3TWUFgMqIsRYL8AVOSDlaYgEitbZnDKll+UatchyJBSC1c3lDuQA2VHYAL3KneHpgLCjHSS7AHYyEciwh1g88wDB94rlyAVxwhsR7ygW4gRMTry8XwDdUDkXFgjVdD5wRsRaCAWJwPGI1Baval8Ie3Hqn8AjjhHbZr2DzrInumDTBGlCG8xy8QPY3MNLX4TiRP1q+BWs2pn9ECwu5+qTABc+80h++28UbTkjlTW3wrM6Ufrtu8d5J9Svg1Vch/RTcUYQdUHm+g1z1x2gSGyjGGVN5F7xjoTCjE0ndC3jJMzfCftmiciZ1lNGe3vCGufOWVMLIQHHehi3X1O8JJxR236SalUzninbu937BlwfV/I3k4KdGk2xm+MHuLa8Z0i9TC280qLRrF+8cw9RSjrOg8oIG8j2YgULsbGPomsgR0x9nsOzkOLh+kZr1owZGbfC2JJl78fIV0Wei/gxZDl85XWVtt++cxhuSEQ6bdfzLjlvM86PbaD4vQUjSglV8385My7CdXtO9+ZSyrLcf7nBN376V8gMpRztyq6RXYQAAAABJRU5ErkJggg==" width="16" /><a href="https://dokie.li/" target="_blank">dokieli</a> is an <i class="fa fa-github"></i> <a href="https://github.com/linkeddata/dokieli" target="_blank">open source</a> project. There is <i class="fa fa-flask"></i> <a href="https://dokie.li/docs" target="_blank">documentation</a> and public <i class="fa fa-comments-o"></i> <a href="https://gitter.im/linkeddata/dokieli" target="_blank">chat</a> available. Made with fun.</dd></dl></footer></menu>'));
+      document.documentElement.appendChild(util.fragmentFromString('<menu id="document-menu" class="do"><button class="show" title="Open menu"><i class="fa fa-bars"></i></button><header></header><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><img alt="" height="16" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAn1BMVEUAAAAAjwAAkAAAjwAAjwAAjwAAjwAAjwAAkAAAdwAAjwAAjQAAcAAAjwAAjwAAiQAAjwAAjAAAjwAAjwAAjwAAjwAAkAAAjwAAjwAAjwAAjQAAjQAAhQAAhQAAkAAAkAAAkAAAjgAAjwAAiQAAhAAAkAAAjwAAjwAAkAAAjwAAjgAAjgAAjQAAjwAAjQAAjwAAkAAAjwAAjQAAiwAAkABp3EJyAAAANHRSTlMA+fH89enaabMF4iADxJ4SiSa+uXztyoNvQDcsDgvl3pRiXBcH1M+ppJlWUUpFMq6OdjwbMc1+ZgAABAhJREFUeNrt29nSmkAQBeAGZBMUxH3f993/vP+zJZVKVZKCRhibyc3/XVt6SimYPjPSt28Vmt5W/fu2T/9B9HIf7Tp+0RsgDC6DY6OLvzxJj8341DnsakgZUNUmo2XsORYYS6rOeugukhnyragiq56JIs5UEQ/FXKgidRTzompEKOhG1biioDFV44mCAqrGAQWtqRptA8VMqCpR6zpo9iy84VO1opWHPBZVb9QAzyQN/D1YNungJ+DMSYsbOFvSIwGjR3p0wGiQHkMw2qRHC4w76RGBcSA9NmAcSY8QjAdpYiFbTJoYyNYnTWrI1iFNusj2JE1sZBuQJtyE5pImc3Y21cRhZ1NNtsh2Ik127HCsSY8djjVpINuVhPnjVefobee2adXqu2S/6FyivABDEjQ9Lxo1pDlNd5wg24ikRK5ngKGhHhg1DSgZk4RrD6pa9LlRAnUBfWp6xCe+6EOvOT6yrmrigZaCZHPAp6b0gaiBFKvRd0/D1rr1OrvxDqiyoZmmPt9onib0t/VybyEXqdu0Cw16rUNVAfZFlzdjr5KOaoAUK6JsrgWGQapuBlIS4gy70gEmTrk1fuAgU40UxWXv6wvZAC2Dqfx0BfBK1z1H0aJ0WH7Ub4oG8JDlpBCgK1l5tSjHQSoAf0HVfMqxF+yqpzVk2ZGuAGdk8ijPHZlmpOCg0vh5cgE2JtN3qQSoU3lXpbKlLRegrzTpt+U2TNpKY2YiFiA0kS1Q6QccweZ/oinASm2B3RML0AGDNAU4qq3udmIXYVttD3YrFsBR24N1xG5EJpTeaiYWwILS5WRKBfChFsCSehpOwKi/yS0V4AsMWym3TWUFgMqIsRYL8AVOSDlaYgEitbZnDKll+UatchyJBSC1c3lDuQA2VHYAL3KneHpgLCjHSS7AHYyEciwh1g88wDB94rlyAVxwhsR7ygW4gRMTry8XwDdUDkXFgjVdD5wRsRaCAWJwPGI1Baval8Ie3Hqn8AjjhHbZr2DzrInumDTBGlCG8xy8QPY3MNLX4TiRP1q+BWs2pn9ECwu5+qTABc+80h++28UbTkjlTW3wrM6Ufrtu8d5J9Svg1Vch/RTcUYQdUHm+g1z1x2gSGyjGGVN5F7xjoTCjE0ndC3jJMzfCftmiciZ1lNGe3vCGufOWVMLIQHHehi3X1O8JJxR236SalUzninbu937BlwfV/I3k4KdGk2xm+MHuLa8Z0i9TC280qLRrF+8cw9RSjrOg8oIG8j2YgULsbGPomsgR0x9nsOzkOLh+kZr1owZGbfC2JJl78fIV0Wei/gxZDl85XWVtt++cxhuSEQ6bdfzLjlvM86PbaD4vQUjSglV8385My7CdXtO9+ZSyrLcf7nBN376V8gMpRztyq6RXYQAAAABJRU5ErkJggg==" width="16" /><a href="https://dokie.li/" target="_blank">dokieli</a> is an <i class="fa fa-github"></i> <a href="https://github.com/linkeddata/dokieli" target="_blank">open source</a> project. There is <i class="fa fa-flask"></i> <a href="https://dokie.li/docs" target="_blank">documentation</a> and public <i class="fa fa-comments-o"></i> <a href="https://gitter.im/linkeddata/dokieli" target="_blank">chat</a> available. Made with fun.</dd></dl></footer></menu>'));
       document.querySelector('#document-menu').addEventListener('click', function(e) {
         var button = e.target.closest('button');
         if(button){
@@ -946,8 +932,6 @@ var DO = {
 
           auth.showUserSigninSignout(dHead);
           DO.U.showDocumentDo(dInfo);
-          DO.U.showEmbedData(dInfo);
-          storage.showStorage(dInfo);
           DO.U.showViews(dInfo);
           DO.U.showDocumentMetadata(dInfo);
           if(!body.classList.contains('on-slideshow')) {
@@ -1074,7 +1058,7 @@ var DO = {
             s += '<li><button title="Change to ‘' + view + '’ view">' + view + '</button></li>';
           }
           else {
-            s += '<li><button disabled="disabled">' + view + '</button></li>';
+            s += '<li><button disabled="disabled" title="Current style">' + view + '</button></li>';
           }
         }
       }
@@ -1207,12 +1191,10 @@ var DO = {
       }
     },
 
-    showEmbedData: function(node) {
+    showEmbedData: function(e) {
       if(document.querySelector('#embed-data-in-html')) { return; }
 
-      node.insertAdjacentHTML('beforeend', '<section id="embed-data-in-html" class="do"><h2>Data</h2><ul><li><button class="embed-data-meta" title="Embed structured data (Turtle, JSON-LD, TriG)"><i class="fa fa-table fa-2x"></i>Embed Data</button></li></ul></section>');
-
-      var eventEmbedData = function(e) {
+      // var eventEmbedData = function(e) {
         e.target.setAttribute('disabled', 'disabled');
         var scriptCurrent = document.querySelectorAll('head script[id^="meta-"]');
 
@@ -1256,9 +1238,9 @@ var DO = {
         var embedMenu = '<aside id="embed-data-entry" class="do on tabs">' + DO.C.Button.Close + '\n\
         <h2>Embed Data</h2>\n\
         <nav><ul><li class="selected"><a href="#embed-data-turtle">Turtle</a></li><li><a href="#embed-data-json-ld">JSON-LD</a></li><li><a href="#embed-data-trig">TriG</a></li></ul></nav>\n\
-        <div id="embed-data-turtle" class="selected"><textarea placeholder="Enter data in Turtle" name="meta-turtle" cols="80" rows="24">' + ((scriptCurrentData['meta-turtle']) ? scriptCurrentData['meta-turtle'].content : '') + '</textarea><button class="save">Save</button></div>\n\
-        <div id="embed-data-json-ld"><textarea placeholder="Enter data in JSON-LD" name="meta-json-ld" cols="80" rows="24">' + ((scriptCurrentData['meta-json-ld']) ? scriptCurrentData['meta-json-ld'].content : '') + '</textarea><button class="save">Save</button></div>\n\
-        <div id="embed-data-trig"><textarea placeholder="Enter data in TriG" name="meta-trig" cols="80" rows="24">' + ((scriptCurrentData['meta-trig']) ? scriptCurrentData['meta-trig'].content : '') + '</textarea><button class="save">Save</button></div>\n\
+        <div id="embed-data-turtle" class="selected"><textarea placeholder="Enter data in Turtle" name="meta-turtle" cols="80" rows="24">' + ((scriptCurrentData['meta-turtle']) ? scriptCurrentData['meta-turtle'].content : '') + '</textarea><button class="save" title="Embed data into document">Save</button></div>\n\
+        <div id="embed-data-json-ld"><textarea placeholder="Enter data in JSON-LD" name="meta-json-ld" cols="80" rows="24">' + ((scriptCurrentData['meta-json-ld']) ? scriptCurrentData['meta-json-ld'].content : '') + '</textarea><button class="save" title="Embed data into document">Save</button></div>\n\
+        <div id="embed-data-trig"><textarea placeholder="Enter data in TriG" name="meta-trig" cols="80" rows="24">' + ((scriptCurrentData['meta-trig']) ? scriptCurrentData['meta-trig'].content : '') + '</textarea><button class="save" title="Embed data into document">Save</button></div>\n\
         </aside>';
 
         document.documentElement.appendChild(util.fragmentFromString(embedMenu));
@@ -1282,7 +1264,7 @@ var DO = {
         }
 
         document.querySelector('#embed-data-entry button.close').addEventListener('click', function(e) {
-          document.querySelector('#embed-data-in-html .embed-data-meta').removeAttribute('disabled');
+          document.querySelector('button.embed-data-meta').removeAttribute('disabled');
         });
 
         var buttonSave = document.querySelectorAll('#embed-data-entry button.save');
@@ -1311,14 +1293,14 @@ var DO = {
 
             var ede = document.getElementById('embed-data-entry');
             ede.parentNode.removeChild(ede);
-            document.querySelector('#embed-data-in-html .embed-data-meta').removeAttribute('disabled');
+            document.querySelector('.embed-data-meta').removeAttribute('disabled');
           });
         };
-      };
+      // };
 
-      var edih = document.querySelector('#embed-data-in-html button');
-      edih.removeEventListener('click', eventEmbedData);
-      edih.addEventListener('click', eventEmbedData);
+      // var edih = document.querySelector('button.embed-data-meta');
+      // edih.removeEventListener('click', eventEmbedData);
+      // edih.addEventListener('click', eventEmbedData);
     },
 
     htmlEntities: function(s) {
@@ -1379,6 +1361,9 @@ var DO = {
           return authors + contributors;
         }).then(
         function(people){
+              // <tr><th>Lines</th><td>' + count.lines + '</td></tr>\n\
+              // <tr><th>A4 Pages</th><td>' + count.pages.A4 + '</td></tr>\n\
+              // <tr><th>US Letter</th><td>' + count.pages.USLetter + '</td></tr>\n\
           var s = '<section id="document-metadata" class="do"><table>\n\
             <caption>Document Metadata</caption>\n\
             <tbody>\n\
@@ -1386,9 +1371,6 @@ var DO = {
               <tr><th>Reading time</th><td>' + count.readingTime + ' minutes</td></tr>\n\
               <tr><th>Characters</th><td>' + count.chars + '</td></tr>\n\
               <tr><th>Words</th><td>' + count.words + '</td></tr>\n\
-              <tr><th>Lines</th><td>' + count.lines + '</td></tr>\n\
-              <tr><th>A4 Pages</th><td>' + count.pages.A4 + '</td></tr>\n\
-              <tr><th>US Letter</th><td>' + count.pages.USLetter + '</td></tr>\n\
               <tr><th>Bytes</th><td>' + count.bytes + '</td></tr>\n\
             </tbody>\n\
           </table></section>';
@@ -1501,7 +1483,7 @@ var DO = {
       }
 
       var toc = '<section id="table-of-contents-i" class="do"' + sortable + '><h2>Table of Contents</h2><ol class="toc' + sortable + '">';
-      toc += DO.U.getListOfSections(sections, DO.C.SortableList);
+      toc += DO.U.getListOfSections(sections, {'sortable': DO.C.SortableList});
       toc += '</ol></section>';
 
       node.insertAdjacentHTML('beforeend', toc);
@@ -1511,21 +1493,31 @@ var DO = {
     sortToC: function() {
     },
 
-    getListOfSections: function(sections, sortable) {
+    getListOfSections: function(sections, options) {
+      options = options || {};
       var s = '', attributeClass = '';
-      if (sortable == true) { attributeClass = ' class="sortable"'; }
+      if (options.sortable == true) { attributeClass = ' class="sortable"'; }
 
       for (var i = 0; i < sections.length; i++) {
         var section = sections[i];
         if(section.id) {
           var heading = section.querySelector('h1, h2, h3, h4, h5, h6, header h1, header h2, header h3, header h4, header h5, header h6') || { 'textContent': section.id };
+          var currentHash = '';
+          var dataId = '';
+
+          if (!options.raw) {
+            currentHash = (document.location.hash == '#' + section.id) ? ' class="selected"' : '';
+            dataId = ' data-id="' + section.id +'"';
+            attributeClass = '';
+          }
+
           if (heading) {
-            s += '<li data-id="' + section.id +'"><a href="#' + section.id + '">' + heading.textContent + '</a>';
+            s += '<li' + currentHash + dataId + '><a href="#' + section.id + '">' + heading.textContent + '</a>';
             var subsections = section.parentNode.querySelectorAll('[id="' + section.id + '"] > div > section[rel*="hasPart"]:not([class~="slide"]), [id="' + section.id + '"] > section[rel*="hasPart"]:not([class~="slide"])');
 
             if (subsections.length > 0) {
               s += '<ol'+ attributeClass +'>';
-              s += DO.U.getListOfSections(subsections, sortable);
+              s += DO.U.getListOfSections(subsections, options);
               s += '</ol>';
             }
             s += '</li>';
@@ -1580,7 +1572,7 @@ var DO = {
           s += '<div><ol class="toc">';
 
           if (element == 'content') {
-            s += DO.U.getListOfSections(document.querySelectorAll('h1 ~ div > section:not([class~="slide"])'), false);
+            s += DO.U.getListOfSections(document.querySelectorAll('h1 ~ div > section:not([class~="slide"])'), {'raw': true});
           }
           else {
             if (element == 'abbr') {
@@ -1885,7 +1877,7 @@ var DO = {
 
         versionurl = (versionurl) ? '<dt>Version</dt><dd><a href="' + versionurl + '" target="_blank">' + versiondate + '</a></dd>' : '';
 
-        i.insertAdjacentHTML('afterend', '<span class="do robustlinks"><button title="Robust Links">🔗<span></span></button><dl>' + originalurl + versionurl + nearlinkdateurl + '</dl></span>');
+        i.insertAdjacentHTML('afterend', '<span class="do robustlinks"><button title="Show Robust Links">🔗<span></span></button><dl>' + originalurl + versionurl + nearlinkdateurl + '</dl></span>');
       });
 
       document.querySelectorAll('.do.robustlinks').forEach(function(i){
@@ -2048,7 +2040,7 @@ var DO = {
 
       mementoItems.addEventListener('click', function(e) {
         if (e.target.closest('button.resource-save') ||
-            e.target.closest('button.create-version') || 
+            e.target.closest('button.create-version') ||
             e.target.closest('button.create-immutable')) {
           DO.U.resourceSave(e);
         }
@@ -2122,13 +2114,6 @@ var DO = {
       s += '<li><button class="resource-share" title="Share resource"><i class="fa fa-bullhorn fa-2x"></i>Share</button></li>';
       s += '<li><button class="resource-reply" title="Reply"><i class="fa fa-reply fa-2x"></i>Reply</button></li>';
 
-      if (DO.C.EditorAvailable) {
-        var reviewArticle = (DO.C.EditorEnabled && DO.C.User.Role == 'review')
-          ? DO.C.Editor.DisableReviewButton
-          : DO.C.Editor.EnableReviewButton;
-        s += '<li>' + reviewArticle + '</li>';
-      }
-
       buttonDisabled = (DO.C.User.IRI) ? '' : ' disabled="disabled"';
 
       var activitiesIcon = 'fa-bolt';
@@ -2139,9 +2124,9 @@ var DO = {
       }
 
       s += '<li><button class="resource-activities"' + buttonDisabled +
-        ' title="Show activities"><i class="fa ' + activitiesIcon + ' fa-2x"></i></i>Activities</button></li>';
-      s += '<li><button class="resource-new" title="Create new article"><i class="fa fa-lightbulb-o fa-2x"></i></i>New</button></li>';
-      s += '<li><button class="resource-open" title="Open article"><i class="fa fa-coffee fa-2x"></i></i>Open</button></li>';
+        ' title="Show activities"><i class="fa ' + activitiesIcon + ' fa-2x"></i>Activities</button></li>';
+      s += '<li><button class="resource-new" title="Create new article"><i class="fa fa-lightbulb-o fa-2x"></i>New</button></li>';
+      s += '<li><button class="resource-open" title="Open article"><i class="fa fa-coffee fa-2x"></i>Open</button></li>';
 
       buttonDisabled = (document.location.protocol === 'file:') ? ' disabled="disabled"' : '';
 
@@ -2160,6 +2145,9 @@ var DO = {
 
       s += '<li><button class="resource-source"' + buttonDisabled +
         ' title="Edit article source code"><i class="fa fa-code fa-2x"></i>Source</button></li>';
+
+      s += '<li><button class="embed-data-meta" title="Embed structured data (Turtle, JSON-LD, TriG)"><i class="fa fa-table fa-2x"></i>Embed Data</button></li>';
+
       s += '</ul></section>';
 
       node.insertAdjacentHTML('beforeend', s);
@@ -2176,20 +2164,13 @@ var DO = {
         }
 
         if (DO.C.EditorAvailable) {
-          if (e.target.closest('button.editor-disable') ||
-            e.target.closest('button.review-disable')) {
+          if (e.target.closest('button.editor-disable')) {
             e.target.parentNode.innerHTML = DO.C.Editor.EnableEditorButton;
             DO.U.Editor.enableEditor('social', e);
           }
-          else {
-            if (e.target.closest('button.editor-enable')) {
-              e.target.parentNode.innerHTML = DO.C.Editor.DisableEditorButton;
-              DO.U.Editor.enableEditor('author', e);
-            }
-            else if (e.target.closest('button.review-enable')) {
-              e.target.parentNode.innerHTML = DO.C.Editor.DisableEditorButton;
-              DO.U.Editor.enableEditor('review', e);
-            }
+          else if (e.target.closest('button.editor-enable')) {
+            e.target.parentNode.innerHTML = DO.C.Editor.DisableEditorButton;
+            DO.U.Editor.enableEditor('author', e);
           }
         }
 
@@ -2207,6 +2188,10 @@ var DO = {
 
         if (e.target.closest('.resource-source')) {
           DO.U.viewSource(e);
+        }
+
+        if (e.target.closest('.embed-data-meta')) {
+          DO.U.showEmbedData(e);
         }
 
         if (e.target.closest('.resource-save')){
@@ -2458,7 +2443,7 @@ var DO = {
       var bli = document.getElementById(id + '-input')
       bli.focus()
       bli.placeholder = 'https://example.org/path/to/article'
-      replyToResource.insertAdjacentHTML('beforeend', '<button class="reply">Send now</button>')
+      replyToResource.insertAdjacentHTML('beforeend', '<button class="reply" title="Send your reply">Send</button>')
 
       // replyToResource.insertAdjacentHTML('beforeend', 'or <button class="reply-new"><i class="fa fa-paper-plane-o"></i> Write reply in new window</button>');
 
@@ -2531,30 +2516,36 @@ var DO = {
         fetcher.putResource(noteIRI, data)
 
           .catch(error => {
-            console.error('Could not save reply:', error)
+            console.log('Could not save reply:')
+            console.error(error)
 
-            let errorMessage
+            let message
 
             switch (error.status) {
               case 0:
               case 405:
-                errorMessage = 'this location is not writable'
+                message = 'this location is not writable.'
                 break
               case 401:
+                message = 'you are not authorized.'
+                if(!DO.C.User.IRI){
+                  message += ' Try signing in.';
+                }
+                break;
               case 403:
-                errorMessage = 'you do not have permission to write here'
+                message = 'you do not have permission to write here.'
                 break
               case 406:
-                errorMessage = 'enter a name for your resource'
+                message = 'enter a name for your resource.'
                 break
               default:
                 // some other reason
-                errorMessage = error.message
+                message = error.message
                 break
             }
 
             // re-throw, to break out of the promise chain
-            throw new Error('Cannot save your reply:', errorMessage)
+            throw new Error('Cannot save your reply: ', message)
           })
 
           .then(response => {
@@ -2648,7 +2639,7 @@ var DO = {
         shareResourceLinkedResearch = '<li><input id="share-resource-linked-research" type="checkbox" value="https://linkedresearch.org/cloud" /><label for="share-resource-linked-research">Notify <a href="https://linkedresearch.org/cloud">Linked Open Research Cloud</a></label></li>';
       }
 
-      document.documentElement.appendChild(util.fragmentFromString('<aside id="share-resource" class="do on">' + DO.C.Button.Close + '<h2>Share resource</h2><div id="share-resource-input"><p>Send a notification about <code>' + iri +'</code></p><ul><li id="share-resource-address-book"></li>' + shareResourceLinkedResearch + '<li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share">Share</button></aside>'));
+      document.documentElement.appendChild(util.fragmentFromString('<aside id="share-resource" class="do on">' + DO.C.Button.Close + '<h2>Share resource</h2><div id="share-resource-input"><p>Send a notification about <code>' + iri +'</code></p><ul><li id="share-resource-address-book"></li>' + shareResourceLinkedResearch + '<li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share" title="Share resource">Share</button></aside>'));
 
       var li = document.getElementById('share-resource-address-book');
 
@@ -2656,7 +2647,7 @@ var DO = {
         DO.U.selectContacts(li, DO.C.User.IRI);
       }
       else {
-        li.insertAdjacentHTML('beforeend', '<button class="add"' + addContactsButtonDisable + '><i class="fa fa-address-book"></i> Add from contacts</button>' + noContactsText);
+        li.insertAdjacentHTML('beforeend', '<button class="add"' + addContactsButtonDisable + ' title="Add and select contacts from your profile"><i class="fa fa-address-book"></i> Add from contacts</button>' + noContactsText);
       }
 
       var shareResource = document.getElementById('share-resource');
@@ -2737,23 +2728,39 @@ var DO = {
           if(contacts.length > 0) {
             var promises = [];
 
+            //Get Contacts' profile
             var gC = function(url) {
               return fetcher.getResourceGraph(url).then(i => {
                 // console.log(i);
                 var s = i.child(url);
 
+                //Keep a local copy
                 DO.C.User.Contacts[url] = {};
                 DO.C.User.Contacts[url]['Graph'] = s;
 
-                var uCO = function(url, s) {
-                  return DO.U.updateContactsOutbox(url, s)
-                    .then(() => {
-                      if ('showOutboxSources' in options) {
-                        return DO.U.showOutboxSources(DO.C.User.Contacts[url].Outbox[0])
+                var uCA = function(url, s) {
+                  var outbox = DO.C.User.Contacts[url]['Outbox'] = auth.getAgentOutbox(s);
+                  var storage = DO.C.User.Contacts[url]['Storage'] = auth.getAgentStorage(s);
+                  if ('showActivitiesSources' in options) {
+                    if (storage && storage.length > 0) {
+                      if(outbox && outbox.length > 0) {
+                        if(storage[0] == outbox[0]) {
+                          DO.U.showActivitiesSources(outbox[0])
+                        }
+                        else {
+                          DO.U.showActivitiesSources(storage[0])
+                          DO.U.showActivitiesSources(outbox[0])
+                        }
                       }
-                      return Promise.resolve();
-                    })
-                    .catch(() => {})
+                      else {
+                        DO.U.showActivitiesSources(storage[0])
+                      }
+                    }
+                    else if (outbox && outbox.length > 0) {
+                      DO.U.showActivitiesSources(outbox[0])
+                    }
+                  }
+                  return Promise.resolve();
                 }
 
                 var uCI = function(url, s) {
@@ -2768,12 +2775,12 @@ var DO = {
                 }
 
                 //XXX: Holy crap this is fugly.
-                if ('showOutboxSources' in options) {
+                if ('showActivitiesSources' in options) {
                   uCI(url, s);
-                  return uCO(url, s)
+                  return uCA(url, s)
                 }
                 else if ('addShareResourceContactInput' in options) {
-                  uCO(url, s)
+                  uCA(url, s)
                   return uCI(url, s)
                 }
 
@@ -2824,7 +2831,7 @@ console.log(reason);
         if (aI) {
           return Promise.resolve(aI);
         }
-        else {
+        else if (iri.indexOf('#') < 0) {
           return inbox.getEndpointFromHead(DO.C.Vocab['ldpinbox']['@id'], iri);
         }
       }
@@ -2835,48 +2842,42 @@ console.log(reason);
         })
     },
 
-    updateContactsOutbox: function(iri, s) {
-      var checkOutbox = function(s) {
-        var outbox = auth.getAgentOutbox(s);
-
-        if (outbox) {
-          return Promise.resolve(outbox)
-        }
-        else {
-          return Promise.reject()
-        }
-      }
-
-      return checkOutbox(s)
-        .then(outboxes => {
-          DO.C.User.Contacts[iri]['Outbox'] = outboxes;
-        })
-    },
-
     nextLevelButton: function(button, url, id, action) {
       var actionNode = document.getElementById(id + '-' + action);
 
       button.addEventListener('click', function(){
         if(button.parentNode.classList.contains('container')){
-          fetcher.getResourceGraph(url).then(
-            function(g){
+          fetcher.getResourceGraph(url).then(function(g){
               actionNode.textContent = (action == 'write') ? url + DO.U.generateAttributeId() : url;
               return DO.U.generateBrowserList(g, url, id, action);
             },
             function(reason){
               var inputBox = document.getElementById(id);
-              switch(reason.slice(-3)) { // TODO: simplerdf needs to pass status codes better than in a string.
+              var statusCode = ('status' in reason) ? reason.status : 0;
+              statusCode = (typeof statusCode === 'string') ? parseInt(reason.slice(-3)) : statusCode;
+// console.log(statusCode)
+
+              var msgs = inputBox.querySelectorAll('.response-message');
+              for(var i = 0; i < msgs.length; i++){
+                msgs[i].parentNode.removeChild(msgs[i]);
+              }
+
+              switch(statusCode) {
                 default:
-                  inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to access ('+ reason +').</p>');
+                  inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to access ('+ reason.statusText +').</p>');
                   break;
-                case '404':
+                case 404:
                   inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Not found.</p></div>');
                   break;
-                case '401': case '403':
-                  var msg = 'You don\'t have permission to access this location.';
+                case 401:
+                  var msg = 'You are not authorized.';
                   if(!DO.C.User.IRI){
-                    msg += '</p><p>Try signing in to access your datastore.';
+                    msg += ' Try signing in.';
                   }
+                  inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">' + msg + '</p></div>');
+                  break;
+                case 403:
+                  var msg = 'You don\'t have permission to access this location.';
                   inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">' + msg + '</p></div>');
                   break;
               }
@@ -2985,6 +2986,7 @@ console.log(reason);
     triggerBrowse: function(url, id, action){
       var inputBox = document.getElementById(id);
       if (url.length > 10 && url.match(/^https?:\/\//g) && url.slice(-1) == "/"){
+console.log(url)
         fetcher.getResourceGraph(url).then(function(g){
           DO.U.generateBrowserList(g, url, id, action).then(function(l){
             return l;
@@ -2995,20 +2997,34 @@ console.log(reason);
         },
         function(reason){
           var list = document.getElementById(id + '-ul');
-          switch(reason.slice(-3)) { // TODO: simplerdf needs to pass status codes better than in a string.
+          var statusCode = ('status' in reason) ? reason.status : 0;
+          statusCode = (typeof statusCode === 'string') ? parseInt(reason.slice(-3)) : statusCode;
+// console.log(statusCode)
+
+          var msgs = inputBox.querySelectorAll('.response-message');
+          for(var i = 0; i < msgs.length; i++){
+            msgs[i].parentNode.removeChild(msgs[i]);
+          }
+
+          switch(statusCode) {
             default:
-              inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to access ('+ reason +').</p>');
+              inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to access ('+ reason.statusText +').</p>');
               break;
-            case '404':
+            case 404:
               inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Not found.</p></div>');
               break;
-            case '401': case '403':
-              var msg = 'You don\'t have permission to access this location.';
+            case 401:
+              var msg = 'You are not authorized.';
               if(!DO.C.User.IRI){
-                msg += '</p><p>Try signing in to access your datastore.';
+                msg += ' Try signing in.';
               }
               inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">' + msg + '</p></div>');
               break;
+            case 403:
+              var msg = 'You don\'t have permission to access this location.';
+              inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">' + msg + '</p></div>');
+              break;
+
           }
         });
       }
@@ -3021,7 +3037,7 @@ console.log(reason);
       id = id || 'browser-location';
       action = action || 'write';
 
-      parent.insertAdjacentHTML('beforeend', '<div id="' + id + '"><label for="' + id +'-input">URL</label> <input type="text" id="' + id +'-input" name="' + id + '-input" placeholder="https://example.org/path/to/" /><button id="' + id +'-update" disabled="disabled">Browse</button></div>\n\
+      parent.insertAdjacentHTML('beforeend', '<div id="' + id + '"><label for="' + id +'-input">URL</label> <input type="text" id="' + id +'-input" name="' + id + '-input" placeholder="https://example.org/path/to/" /><button id="' + id +'-update" disabled="disabled" title="Browse location">Browse</button></div>\n\
       <div id="' + id +'-contents"></div>');
 
       var inputBox = document.getElementById(id);
@@ -3030,6 +3046,11 @@ console.log(reason);
       var browseButton = document.getElementById(id + '-update');
 
       input.addEventListener('keyup', function(e){
+        var msgs = document.getElementById(id).querySelectorAll('.response-message');
+        for(var i = 0; i < msgs.length; i++){
+          msgs[i].parentNode.removeChild(msgs[i]);
+        }
+
         var actionNode = document.getElementById(id + '-' + action);
         if (input.value.length > 10 && input.value.match(/^https?:\/\//g) && input.value.slice(-1) == "/") {
           browseButton.removeAttribute('disabled');
@@ -3116,7 +3137,7 @@ console.log(reason);
       var openDocument = document.getElementById('open-document');
       DO.U.setupResourceBrowser(openDocument , id, action);
       var idSamp = (typeof DO.C.User.Storage == 'undefined') ? '' : '<p><samp id="' + id + '-' + action + '">https://example.org/path/to/article</samp></p>';
-      openDocument.insertAdjacentHTML('beforeend', idSamp + '<button class="open">Open</button>');
+      openDocument.insertAdjacentHTML('beforeend', idSamp + '<button class="open" title="Open document">Open</button>');
 
       openDocument.addEventListener('click', function (e) {
         if (e.target.closest('button.close')) {
@@ -3191,7 +3212,7 @@ console.log(reason);
 // console.log(documentHasDokieli);
 // console.log(documentHasDokieli.length)
         if(documentHasDokieli.length == 0) {
-          var doFiles = ['font-awesome.min.css', 'do.css', 'simplerdf.js', 'medium-editor.min.js', 'do.js'];
+          var doFiles = ['font-awesome.min.css', 'do.css', 'do.js'];
           doFiles.forEach(function(i){
 // console.log(i);
             var media = i.endsWith('.css') ? template.querySelectorAll('head link[rel~="stylesheet"][href$="/' + i + '"]') : template.querySelectorAll('head script[src$="/' + i + '"]');
@@ -3205,7 +3226,7 @@ console.log(reason);
                 case 'do.css':
                   template.querySelector('head').insertAdjacentHTML('beforeend', '<link href="https://dokie.li/media/css/' + i + '" media="all" rel="stylesheet" />');
                   break;
-                case 'simplerdf.js': case 'medium-editor.min.js': case 'do.js':
+                case 'do.js':
                   template.querySelector('head').insertAdjacentHTML('beforeend', '<script src="https://dokie.li/scripts/' + i + '"></script>')
                   break;
               }
@@ -3267,7 +3288,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
       newDocument.insertAdjacentHTML('beforeend', baseURLSelection +
         '<p>Your new document will be saved at <samp id="' + id + '-' + action +
-        '">https://example.org/path/to/article</samp></p><button class="create">Create</button>')
+        '">https://example.org/path/to/article</samp></p><button class="create" title="Create new document">Create</button>')
 
       var bli = document.getElementById(id + '-input')
       bli.focus()
@@ -3316,21 +3337,27 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           })
 
           .catch(error => {
-            console.error('Error creating a new document:', error)
+            console.log('Error creating a new document:')
+            console.error(error)
 
             let message
 
             switch (error.status) {
               case 0:
               case 405:
-                message = 'this location is not writable'
+                message = 'this location is not writable.'
                 break
               case 401:
+                message = 'you are not authorized.'
+                if(!DO.C.User.IRI){
+                  message += ' Try signing in.';
+                }
+                break
               case 403:
-                message = 'you do not have permission to write here'
+                message = 'you do not have permission to write here.'
                 break
               case 406:
-                message = 'enter a name for your resource'
+                message = 'enter a name for your resource.'
                 break
               default:
                 message = error.message
@@ -3415,7 +3442,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       saveAsDocument.insertAdjacentHTML('beforeend', '<fieldset id="' + id + '-fieldset"><legend>Save to</legend></fieldset>');
       fieldset = saveAsDocument.querySelector('fieldset#' + id + '-fieldset');
       DO.U.setupResourceBrowser(fieldset, id, action);
-      fieldset.insertAdjacentHTML('beforeend', '<p>Article will be saved at: <samp id="' + id + '-' + action + '"></samp></p>' + DO.U.getBaseURLSelection() + '<p><input type="checkbox" id="derivation-data" name="derivation-data" checked="checked" /><label for="derivation-data">Derivation data</label></p><button class="create">Save</button>');
+      fieldset.insertAdjacentHTML('beforeend', '<p>Article will be saved at: <samp id="' + id + '-' + action + '"></samp></p>' + DO.U.getBaseURLSelection() + '<p><input type="checkbox" id="derivation-data" name="derivation-data" checked="checked" /><label for="derivation-data">Derivation data</label></p><button class="create" title="Save to destination">Save</button>');
       var bli = document.getElementById(id + '-input');
       bli.focus();
       bli.placeholder = 'https://example.org/path/to/article';
@@ -3496,7 +3523,6 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         progress = saveAsDocument.querySelector('progress')
 
         fetcher.putResource(storageIRI, html, null, null, { 'progress': progress })
-
           .then(response => {
             progress.parentNode.removeChild(progress)
 
@@ -3513,21 +3539,29 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           })
 
           .catch(error => {
-            console.error('Error saving document', error)
+            console.log('Error saving document:')
+            console.error(error)
+
+            progress.parentNode.removeChild(progress)
 
             let message
 
             switch (error.status) {
               case 0:
               case 405:
-                message = 'this location is not writable'
+                message = 'this location is not writable.'
                 break
               case 401:
+                message = 'you are not authorized.'
+                if(!DO.C.User.IRI){
+                  message += ' Try signing in.';
+                }
+                break
               case 403:
-                message = 'you do not have permission to write here'
+                message = 'you do not have permission to write here.'
                 break
               case 406:
-                message = 'enter a name for your resource'
+                message = 'enter a name for your resource.'
                 break
               default:
                 message = error.message
@@ -3536,7 +3570,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
             saveAsDocument.insertAdjacentHTML('beforeend',
               '<div class="response-message"><p class="error">' +
-              'Unable to save:' + message + '</p></div>'
+              'Unable to save: ' + message + '</p></div>'
             )
           })
       })
@@ -3544,7 +3578,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
     viewSource: function(e) {
       e.target.disabled = true;
-      document.documentElement.appendChild(util.fragmentFromString('<aside id="source-view" class="do on">' + DO.C.Button.Close + '<h2>Source</h2><textarea id="source-edit" rows="24" cols="80"></textarea><p><button class="create">Update</button></p></aside>'));
+      document.documentElement.appendChild(util.fragmentFromString('<aside id="source-view" class="do on">' + DO.C.Button.Close + '<h2>Source</h2><textarea id="source-edit" rows="24" cols="80"></textarea><p><button class="create" title="Update source">Update</button></p></aside>'));
       var sourceBox = document.getElementById('source-view');
       var input = document.getElementById('source-edit');
       input.value = doc.getDocument();
@@ -4255,10 +4289,12 @@ WHERE {\n\
       var documentURL = uri.stripFragmentFromString(document.location.href);
 
       var note = g.child(noteIRI);
-
       if (note.asobject && note.asobject.at(0)) {
         note = g.child(note.asobject.at(0))
       }
+// console.log(noteIRI)
+// console.log(note.toString())
+// console.log(note)
 
       var id = String(Math.abs(DO.U.hashCode(noteIRI)));
       var refId = 'r-' + id;
@@ -4311,9 +4347,10 @@ WHERE {\n\
         bodyText = body.rdfvalue;
 // console.log(bodyText);
 
-
+// console.log(documentURL)
         if (note.oahasTarget && !note.oahasTarget.startsWith(documentURL)) {
-          return Promise.reject();
+          // return Promise.reject();
+          return;
         }
 
         var target = g.child(note.oahasTarget);
@@ -4455,7 +4492,7 @@ WHERE {\n\
                   .then(() => {
                     var aside = noteDelete.closest('aside.do')
                     aside.parentNode.removeChild(aside)
-                    var span = document.querySelector('span[about="#' + refId + '"]')
+                    var span = document.querySelector('span[resource="#' + refId + '"]')
                     span.outerHTML = span.querySelector('mark').textContent
                     // TODO: Delete notification or send delete activity
                   })
@@ -4631,19 +4668,12 @@ WHERE {\n\
       }
 
       switch(n.mode) {
-        default:
+        default: case 'read':
           hX = 3;
           if ('creator' in n && 'iri' in n.creator && n.creator.iri == DO.C.User.IRI) {
-            buttonDelete = '<button class="delete"><i class="fa fa-trash"></i></button>' ;
+            buttonDelete = '<button class="delete" title="Delete item"><i class="fa fa-trash"></i></button>' ;
           }
           articleClass = ' class="do"';
-          break;
-
-        case 'read':
-          hX = 3;
-          if ('creator' in n && 'iri' in n.creator && n.creator.iri == DO.C.User.IRI) {
-            buttonDelete = '<button class="delete"><i class="fa fa-trash"></i></button>' ;
-          }
           break;
         case 'write':
           hX = 1;
@@ -5214,7 +5244,7 @@ WHERE {\n\
             }
             else {
               //URI-M
-  
+
               info['profile'] = DO.C.Vocab['memMemento']['@id'];
             }
           }
@@ -5266,6 +5296,7 @@ WHERE {\n\
       disableEditor: function(e) {
     //    _mediumEditors[1].destroy();
         DO.C.EditorEnabled = false;
+        DO.C.User.Role = 'social';
         document.removeEventListener('click', DO.U.updateDocumentTitle);
         return DO.U.Editor.MediumEditor.destroy();
       },
@@ -5322,34 +5353,19 @@ WHERE {\n\
             elementsContainer: document.getElementById('document-editor'),
             buttonLabels: DO.C.Editor.ButtonLabelType,
             toolbar: {
-              buttons: ['selector', 'share', 'approve', 'bookmark', 'note'],
+              buttons: ['selector', 'share', 'approve', 'disapprove', 'specificity', 'bookmark', 'note'],
               allowMultiParagraphSelection: false
             },
             disableEditing: true,
             anchorPreview: false,
             extensions: {
               'selector': new DO.U.Editor.Note({action:'selector', label:'selector'}),
-              'note': new DO.U.Editor.Note({action:'article', label:'note'}),
-              'bookmark': new DO.U.Editor.Note({action:'bookmark', label:'bookmark'}),
               'share': new DO.U.Editor.Note({action:'share', label:'share'}),
-              'approve': new DO.U.Editor.Note({action:'approve', label:'approve'})
-            }
-          },
-
-          review: {
-            id: 'review',
-            elementsContainer: document.getElementById('document-editor'),
-            buttonLabels: DO.C.Editor.ButtonLabelType,
-            toolbar: {
-              buttons: ['approve', 'disapprove', 'specificity'],
-              allowMultiParagraphSelection: false
-            },
-            disableEditing: true,
-            anchorPreview: false,
-            extensions: {
+              'bookmark': new DO.U.Editor.Note({action:'bookmark', label:'bookmark'}),
               'approve': new DO.U.Editor.Note({action:'approve', label:'approve'}),
               'disapprove': new DO.U.Editor.Note({action:'disapprove', label:'disapprove'}),
-              'specificity': new DO.U.Editor.Note({action:'specificity', label:'specificity'})
+              'specificity': new DO.U.Editor.Note({action:'specificity', label:'specificity'}),
+              'note': new DO.U.Editor.Note({action:'article', label:'note'})
             }
           }
         };
@@ -5367,6 +5383,7 @@ WHERE {\n\
         var eNodes = selector || DO.U.selectArticleNode(document);
         var eOptions = editorOptions[editorMode];
         DO.C.User.Role = editorMode;
+        storage.updateStorageProfile(DO.C.User);
 
         if (typeof MediumEditor !== 'undefined') {
           DO.U.Editor.MediumEditor = new MediumEditor(eNodes, eOptions);
@@ -5395,11 +5412,11 @@ WHERE {\n\
               var userHTML = auth.getUserHTML({'avatarSize': 32});
               var authorId = (DO.C.User.Name) ? ' id="' + DO.U.generateAttributeId(null, DO.C.User.Name) + '"' : '';
 
-              documentAuthorName.insertAdjacentHTML('beforeend', '<dd class="do"' + authorId + ' inlist="" rel="bibo:authorList"><span about="" rel="schema:author">' + userHTML + '</span><button class="add-author-name" contenteditable="false"><i class="fa fa-plus"></i></button></dd>');
+              documentAuthorName.insertAdjacentHTML('beforeend', '<dd class="do"' + authorId + ' inlist="" rel="bibo:authorList"><span about="" rel="schema:author">' + userHTML + '</span><button class="add-author-name" contenteditable="false" title="Add author"><i class="fa fa-plus"></i></button></dd>');
             }
 
             //Invite other other authors
-            documentAuthorName.insertAdjacentHTML('beforeend', '<dd class="do"><button class="invite-author" contenteditable="false"><i class="fa fa-bullhorn"></i></button></dd>');
+            documentAuthorName.insertAdjacentHTML('beforeend', '<dd class="do"><button class="invite-author" contenteditable="false" title="Invite people to author"><i class="fa fa-bullhorn"></i></button></dd>');
             authors = document.getElementById(documentAuthors);
 
             authors.addEventListener('click', function(e){
@@ -5445,11 +5462,6 @@ WHERE {\n\
               });
             }
 
-          }
-          else if (e && (e.target.closest('button.editor-disable') || e.target.closest('button.review-enable'))) {
-            DO.C.ContentEditable = false;
-
-            DO.U.setEditSelections();
           }
 
           document.querySelectorAll('.do').forEach(function(node){
@@ -5864,7 +5876,7 @@ WHERE {\n\
                       return _this.execAction('unlink');
                     }
 
-                    if (DO.U.Editor.MediumEditor.options.id == 'social' && (_this.action == 'selector' || _this.action == 'approve')){
+                    if (DO.U.Editor.MediumEditor.options.id == 'social' && _this.action == 'selector'){
                       var opts = {
                         license: 'https://creativecommons.org/licenses/by/4.0/',
                         content: 'Liked'
@@ -5879,8 +5891,8 @@ WHERE {\n\
                   case 'share':
                     _this.base.restoreSelection();
                     var resourceIRI = uri.stripFragmentFromString(document.location.href);
-                    var id = _this.base.getSelectedParentElement().closest('[id]').id;
-                    resourceIRI = (id) ? resourceIRI + '#' + id : resourceIRI;
+                    var node = _this.base.getSelectedParentElement().closest('[id]');
+                    resourceIRI = (node && node.id) ? resourceIRI + '#' + node.id : resourceIRI;
                     _this.window.getSelection().removeAllRanges();
                     _this.base.checkSelection();
                     DO.U.shareResource(null, resourceIRI);
@@ -6571,7 +6583,7 @@ WHERE {\n\
 
                   //External Note
                   case 'article': case 'approve': case 'disapprove': case 'specificity':
-                    if (DO.U.Editor.MediumEditor.options.id === 'review') {
+                    if (_this.action === 'approve' || _this.action === 'disapprove' || _this.action === 'specificity') {
                       motivatedBy = 'oa:assessing';
                       refLabel = DO.U.getReferenceLabel(motivatedBy);
                     }

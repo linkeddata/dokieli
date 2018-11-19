@@ -8,7 +8,7 @@ module.exports = {
   dumpNode,
   getDoctype,
   getDocument,
-  setHTMLBase,
+  setDocumentBase,
   createHTML,
   createActivityHTML,
   getClosestSectionNode
@@ -145,14 +145,48 @@ function getDocument (cn, options) {
   return s
 }
 
-function setHTMLBase (data, baseURI) {
-  let template = document.implementation.createHTMLDocument()
-  template.documentElement.innerHTML = data
-  let base = template.querySelector('head base[href]')
-  if (!base) {
-    template.querySelector('head').insertAdjacentHTML('afterbegin', '<base href="' + baseURI + '" />')
-    data = template.documentElement.outerHTML
+function setDocumentBase (data, baseURI, contentType) {
+  switch(contentType) {
+    case 'text/html': case 'application/xhtml+xml':
+      let template = document.implementation.createHTMLDocument()
+      template.documentElement.innerHTML = data
+      let base = template.querySelector('head base[href]')
+      if (!base) {
+        template.querySelector('head').insertAdjacentHTML('afterbegin', '<base href="' + baseURI + '" />')
+        data = template.documentElement.outerHTML
+      }
+      break;
+
+    case 'text/turtle':
+      data = `@base <` + baseURI + `> .\n` + data;
+      break;
+
+    case 'application/json': case 'application/ld+json':
+      data = JSON.parse(data);
+      data['@context'] = (data['@context']) ? data['@context'] : {'@base': baseURI};
+
+      if (Array.isArray(data['@context'])) {
+        var found = false;
+        data['@context'].forEach(function(a){
+          if (typeof a === 'object' && '@base' in a) {
+            found = true;
+          }
+        })
+        if (!found) {
+          data['@context'].push({'@base': baseURI});
+        }
+      }
+      else if (typeof data['@context'] === 'object' && !('@base' in data['@context'])) {
+        data['@context']['@base'] = baseURI;
+      }
+
+      data = JSON.stringify(data);
+      break;
+
+    default:
+      break;
   }
+// console.log(data)
   return data
 }
 
@@ -268,5 +302,5 @@ function createActivityHTML(o) {
 }
 
 function getClosestSectionNode(node) {
-  return MediumEditor.util.getClosestTag(node, 'section') || MediumEditor.util.getClosestTag(node, 'div') || MediumEditor.util.getClosestTag(node, 'article') || MediumEditor.util.getClosestTag(node, 'main') || MediumEditor.util.getClosestTag(node, 'body');
+  return node.closest('section') || node.closest('div') || node.closest('article') || node.closest('main') || node.closest('body');
 }

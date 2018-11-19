@@ -85,7 +85,7 @@ function disableAutoSave(key) {
 function removeStorageItem(key) {
   if (!key) { Promise.resolve(); }
 
-  console.log(util.getDateTimeISO() + ': ' + key + ' removed.')
+  // console.log(util.getDateTimeISO() + ': ' + key + ' removed.')
 
   if (Config.WebExtension) {
     var browser = (typeof browser !== 'undefined') ? browser : chrome;
@@ -115,7 +115,6 @@ function getStorageProfile(key) {
     }
     else {
       var value = {};
-
       chrome.storage.sync.get(key, function(o){ value = o[key]; })
 
       return new Promise(function(resolve, reject){
@@ -173,7 +172,7 @@ function updateStorageProfile(User) {
     }
   }
   else if (window.localStorage) {
-    console.log(datetime + ': User ' + User.IRI + ' saved.');
+    // console.log(datetime + ': User ' + User.IRI + ' saved.');
     return Promise.resolve(localStorage.setItem(key, JSON.stringify(object)));
   }
   else {

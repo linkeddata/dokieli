@@ -1,5 +1,7 @@
 'use strict'
 
+const ld = require('./simplerdf')
+const SimpleRDF = ld.SimpleRDF
 const Config = require('./config')
 const doc = require('./doc')
 const uri = require('./uri')
@@ -120,8 +122,7 @@ function getAcceptPostPreference (url) {
 
   return getResourceOptions(pIRI, {'header': 'Accept-Post'})
     .catch(error => {
-      console.error(error)
-
+//      console.log(error)
       return {'headers': 'application/ld+json'}
     })
     .then(result => {
@@ -250,9 +251,9 @@ function getResourceGraph (iri, headers, options = {}) {
   return getResource(pIRI, headers, options)
     .then(response => {
       let cT = response.headers.get('Content-Type')
-      options.contentType = (cT) ? cT.split(';')[ 0 ].trim() : 'text/turtle'
+      options['contentType'] = (cT) ? cT.split(';')[ 0 ].trim() : 'text/turtle'
 
-      options.subjectURI = uri.stripFragmentFromString(iri)
+      options['subjectURI'] = uri.stripFragmentFromString(iri)
 
       return response.text()
     })
@@ -262,7 +263,7 @@ function getResourceGraph (iri, headers, options = {}) {
     .then(g => {
       let fragment = (iri.lastIndexOf('#') >= 0) ? iri.substr(iri.lastIndexOf('#')) : ''
 
-      return SimpleRDF(Config.Vocab, options[ 'subjectURI' ], g, ld.store).child(pIRI + fragment)
+      return SimpleRDF(Config.Vocab, options['subjectURI'], g, ld.store).child(pIRI + fragment)
     })
 }
 

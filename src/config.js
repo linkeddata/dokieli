@@ -50,7 +50,7 @@ module.exports = {
   SortableList: false,
   GraphViewerAvailable: (typeof d3 !== 'undefined'),
   MathAvailable: (typeof MathJax !== 'undefined'),
-  EditorAvailable: (typeof MediumEditor !== 'undefined'),
+  EditorAvailable: true,
   EditorEnabled: false,
   ContentEditable: false,
   WebExtension: ((window.chrome && chrome.runtime && chrome.runtime.id) || (typeof browser !== 'undefined' && browser.runtime && browser.runtime.id)),

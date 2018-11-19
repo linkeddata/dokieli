@@ -342,10 +342,10 @@ position:relative;
 left:1.5em;
 width:calc(100% - 1.5em);
 }
-aside.note blockquote article {
+/*aside.note blockquote article {
 left:0;
 width:100%;
-}
+}*/
 aside.note blockquote blockquote {
 padding-left:0.5em;
 }

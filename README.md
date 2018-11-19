@@ -25,7 +25,7 @@ explains dokieli's principles, architectural and design patterns.
 * In-browser document authoring and formatting, and semantic enrichments (RDFa annotations)
 * Content negotiation is possible for RDFa, Turtle, JSON-LD, RDF/XML.
 * Information is represented and retrieved following the Linked Data design principles
-* Employs [WebID](https://www.w3.org/2005/Incubator/webid/spec/identity/), [WebID+TLS](https://www.w3.org/2005/Incubator/webid/spec/tls/), [Web Access Control](https://www.w3.org/wiki/WebAccessControl)/ACL and personal online datastore where applicable (compliant with [Linked Data Platform](http://www.w3.org/TR/ldp/) and [Solid](https://github.com/solid/solid-spec) servers)
+* Employs [WebID](https://www.w3.org/2005/Incubator/webid/spec/identity/), [WebID-TLS](https://www.w3.org/2005/Incubator/webid/spec/tls/) and [WebID-OIDC](https://github.com/solid/webid-oidc-spec) for authentication, [Web Access Control](https://www.w3.org/wiki/WebAccessControl)/ACL and personal online datastore where applicable (compliant with [Linked Data Platform](http://www.w3.org/TR/ldp/) and [Solid](https://github.com/solid/solid-spec)-like servers)
 * Uses author's information from their online profile (WebID)
 * Creation of new documents from any existing dokieli document - part of *self-replication*
 * Save document and its dependencies to a new location (anywhere on the Web given access) - part of *self-replication*
@@ -117,6 +117,7 @@ npm run watch
 * [Amy Guy](https://github.com/rhiaro)
 * [Amy van der Hiel](https://github.com/amyvdh)
 * [Andrei Vlad Sambra](https://github.com/deiu)
+* [Ben Companjen](https://github.com/bencomp)
 * [Benjamin Young](https://github.com/bigbluehat)
 * [Chris Chapman](https://github.com/cdchapman)
 * [Dmitri Zagidulin](https://github.com/dmitrizagidulin)
@@ -129,6 +130,7 @@ npm run watch
 * [OpenLink Software](https://github.com/openlink)
 * [Renato Stauffer](https://github.com/reni99)
 * [Ruben Taelman](https://github.com/rubensworks)
+* [Ruben Verborgh](https://github.com/RubenVerborgh)
 * [Sandro Hawke](https://github.com/sandhawke)
 * [Sarven Capadisli](https://github.com/csarven) (maintainer)
 * [Sergey Malinin](https://github.com/smalinin)
