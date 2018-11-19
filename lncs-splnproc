@@ -5,10 +5,9 @@
     <title>Author Guidelines for the Preparation of Contributions to Springer Computer Science Proceedings</title>
     <link rel="stylesheet" href="media/css/lncs.css" media="all" title="LNCS" />
     <link rel="stylesheet alternate" href="media/css/acm.css" media="all" title="ACM" />
-    <link rel="stylesheet alternate" href="https://www.w3.org/StyleSheets/TR/W3C-ED.css" media="all" title="W3C-ED"/>
     <link rel="stylesheet" href="media/css/do.css" media="all" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />
-    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="scripts/do.js"></script>
   </head>
 
