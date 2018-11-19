@@ -262,32 +262,30 @@ function submitSignInOIDC (url) {
 
   var popupUri = Config.OidcPopupUrl;
 
-  if (solidAuth) {
-    solidAuth
-      .popupLogin({ popupUri })
-      .then((session) => {
-         if (session && session.webId) {
-           console.log("Connected:", session.webId);
-           setUserInfo(session.webId, true)
-            .then(() => {
-              var uI = document.getElementById('user-info')
-              if (uI) {
-                util.removeChildren(uI);
-                uI.insertAdjacentHTML('beforeend', getUserSignedInHTML());
-              }
+  solidAuth
+    .popupLogin({ popupUri })
+    .then((session) => {
+       if (session && session.webId) {
+         console.log("Connected:", session.webId);
+         setUserInfo(session.webId, true)
+          .then(() => {
+            var uI = document.getElementById('user-info')
+            if (uI) {
+              util.removeChildren(uI);
+              uI.insertAdjacentHTML('beforeend', getUserSignedInHTML());
+            }
 
-              if (userIdentityInput) {
-                userIdentityInput.parentNode.removeChild(userIdentityInput)
-              }
+            if (userIdentityInput) {
+              userIdentityInput.parentNode.removeChild(userIdentityInput)
+            }
 
-              afterSignIn()
-            })
-         }
-      }).catch((err) => {
-        console.log('submitSignInOIDC - '+err);
-        return Promise.resolve();
-      });
-  }
+            afterSignIn()
+          })
+       }
+    }).catch((err) => {
+      console.log('submitSignInOIDC - '+err);
+      return Promise.resolve();
+    });
 }
 
 /**
