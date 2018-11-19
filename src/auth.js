@@ -69,59 +69,82 @@ function getUserSignedInHTML() {
 }
 
 
+function showUserSigninSignoutEnd (node) {
+  var s = ''
+
+  if (Config.User.IRI) {
+    s = getUserSignedInHTML()
+  }
+  else {
+    s = '<button class="signin-user" title="Sign in to authenticate"><i class="fa fa-user-secret fa-2x"></i>Sign in</button>'
+  }
+
+  node.insertAdjacentHTML('beforeend', '<section id="user-info">' + s + '</section>')
+
+  var userInfo = document.getElementById('user-info')
+
+  userInfo.addEventListener('click', function(e) {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (e.target.closest('.signout-user')) {
+      if (Config.User.OIDC) {
+        solidAuth.logout();
+      }
+
+      storage.removeStorageProfile()
+
+      Config.User = {
+        IRI: null,
+        Role: 'social',
+        UI: {}
+      }
+
+      util.removeChildren(node);
+
+      var documentMenu = document.querySelector('#document-menu')
+
+      showUserSigninSignout(documentMenu.querySelector('header'))
+
+      var ra = documentMenu.querySelector('.resource-activities');
+      ra.disabled = true;
+      ra.innerHTML = '<i class="fa fa-bolt fa-2x"></i>Activities';
+    }
+  });
+
+  var su = document.querySelector('#document-menu button.signin-user')
+  if (su) {
+    su.addEventListener('click', showUserIdentityInput)
+  }
+
+  var rA = document.querySelector('#document-menu .resource-activities')
+  if(rA) { rA.setAttribute('disabled', 'disabled') }
+
+}
+
+
 function showUserSigninSignout (node) {
   var userInfo = document.getElementById('user-info');
 
   if (!userInfo) {
     var s = ''
 
-    if (Config.User.IRI) {
-      s = getUserSignedInHTML()
-    }
-    else {
-      s = '<button class="signin-user" title="Sign in to authenticate"><i class="fa fa-user-secret fa-2x"></i>Sign in</button>'
-    }
+    solidAuth.trackSession(session => {
+      var webId = session ? session.webId : null;
 
-    node.insertAdjacentHTML('beforeend', '<section id="user-info">' + s + '</section>')
-
-    userInfo = document.getElementById('user-info')
-
-    userInfo.addEventListener('click', function(e) {
-      e.preventDefault()
-      e.stopPropagation()
-
-      if (e.target.closest('.signout-user')) {
-        if (Config.User.OIDC && solidAuth) {
-          solidAuth.logout();
-        }
-
-        storage.removeStorageProfile()
-
-        Config.User = {
-          IRI: null,
-          Role: 'social',
-          UI: {}
-        }
-
-        util.removeChildren(node);
-
-        var documentMenu = document.querySelector('#document-menu')
-
-        showUserSigninSignout(documentMenu.querySelector('header'))
-
-        var ra = documentMenu.querySelector('.resource-activities');
-        ra.disabled = true;
-        ra.innerHTML = '<i class="fa fa-bolt fa-2x"></i>Activities';
+      if (webId && webId != Config.User.IRI) {
+        setUserInfo(webId, true)
+          .then(() => {
+            userInfo = document.getElementById('user-info');
+            if (!userInfo)
+              showUserSigninSignoutEnd(node);
+          })
+      } else {
+         userInfo = document.getElementById('user-info');
+         if (!userInfo)
+           showUserSigninSignoutEnd(node);
       }
-    });
-
-    var su = document.querySelector('#document-menu button.signin-user')
-    if (su) {
-      su.addEventListener('click', showUserIdentityInput)
-    }
-
-    var rA = document.querySelector('#document-menu .resource-activities')
-    if(rA) { rA.setAttribute('disabled', 'disabled') }
+    })
   }
 }
 
@@ -239,32 +262,30 @@ function submitSignInOIDC (url) {
 
   var popupUri = Config.OidcPopupUrl;
 
-  if (solidAuth) {
-    solidAuth
-      .popupLogin({ popupUri })
-      .then((session) => {
-         if (session && session.webId) {
-           console.log("Connected:", session.webId);
-           setUserInfo(session.webId, true)
-            .then(() => {
-              var uI = document.getElementById('user-info')
-              if (uI) {
-                util.removeChildren(uI);
-                uI.insertAdjacentHTML('beforeend', getUserSignedInHTML());
-              }
+  solidAuth
+    .popupLogin({ popupUri })
+    .then((session) => {
+       if (session && session.webId) {
+         console.log("Connected:", session.webId);
+         setUserInfo(session.webId, true)
+          .then(() => {
+            var uI = document.getElementById('user-info')
+            if (uI) {
+              util.removeChildren(uI);
+              uI.insertAdjacentHTML('beforeend', getUserSignedInHTML());
+            }
 
-              if (userIdentityInput) {
-                userIdentityInput.parentNode.removeChild(userIdentityInput)
-              }
+            if (userIdentityInput) {
+              userIdentityInput.parentNode.removeChild(userIdentityInput)
+            }
 
-              afterSignIn()
-            })
-         }
-      }).catch((err) => {
-        console.log('submitSignInOIDC - '+err);
-        return Promise.resolve();
-      });
-  }
+            afterSignIn()
+          })
+       }
+    }).catch((err) => {
+      console.log('submitSignInOIDC - '+err);
+      return Promise.resolve();
+    });
 }
 
 /**
