@@ -9,7 +9,6 @@
     <link href="media/css/acm.css" media="all" rel="stylesheet alternate" title="ACM" />
     <link href="https://www.w3.org/StyleSheets/TR/2016/W3C-ED" rel="stylesheet alternate" media="all" title="W3C-ED"/>
     <link href="media/css/do.css" media="all" rel="stylesheet" />
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="scripts/do.js"></script>
