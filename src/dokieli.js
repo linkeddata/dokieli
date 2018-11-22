@@ -3210,7 +3210,7 @@ console.log(url)
 // console.log(documentHasDokieli);
 // console.log(documentHasDokieli.length)
         if(documentHasDokieli.length == 0) {
-          var doFiles = ['font-awesome.min.css', 'do.css', 'do.js'];
+          var doFiles = ['do.css', 'do.js'];
           doFiles.forEach(function(i){
 // console.log(i);
             var media = i.endsWith('.css') ? template.querySelectorAll('head link[rel~="stylesheet"][href$="/' + i + '"]') : template.querySelectorAll('head script[src$="/' + i + '"]');
@@ -3218,9 +3218,6 @@ console.log(url)
 // console.log(media.length)
             if (media.length == 0) {
               switch(i) {
-                case 'font-awesome.min.css':
-                  template.querySelector('head').insertAdjacentHTML('beforeend', '<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" rel="stylesheet" />');
-                  break;
                 case 'do.css':
                   template.querySelector('head').insertAdjacentHTML('beforeend', '<link href="https://dokie.li/media/css/' + i + '" media="all" rel="stylesheet" />');
                   break;
