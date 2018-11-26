@@ -72,7 +72,7 @@ function sendNotifications (tos, note, iri, shareResource) {
               notifyInbox(notificationData)
 
                 .catch(error => {
-                  console.log('Error in notifyInbox:', error)
+                  // console.log('Error in notifyInbox:', error)
                   toInput
                     .parentNode
                     .querySelector('.progress[data-to="' + to + '"]')
@@ -104,7 +104,7 @@ function inboxResponse (to, toInput) {
     .then(inboxes => inboxes[0])
 
     .catch(error => {
-      console.log('Error in inboxResponse:', error)
+      // console.log('Error in inboxResponse:', error)
 
       toInput
         .parentNode

@@ -5471,7 +5471,9 @@ WHERE {\n\
                 dSS.querySelector('option[value="' + e.target.value + '"]').setAttribute('selected', 'selected');
               });
             }
-
+          }
+          else if (e && e.target.closest('button.editor-disable')) {
+            DO.U.setEditSelections();
           }
 
           document.querySelectorAll('.do').forEach(function(node){
