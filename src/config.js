@@ -65,8 +65,8 @@ module.exports = {
     Close: '<button class="close" title="Close"><svg class="fas fa-times fa-2x" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"/></svg></button>'
   },
   DOMNormalisation: {
-    'selfClosing': "area base basefont br col colgroup embed hr img input isindex link meta metadata param source wbr",
-    'skipAttributes': "contenteditable spellcheck medium-editor-index data-medium-editor-element data-medium-editor-editor-index data-medium-focused data-placeholder role aria-multiline style",
+    'selfClosing': ['area', 'base', 'basefont', 'br', 'col', 'colgroup', 'embed', 'hr', 'img', 'input', 'isindex', 'link', 'meta', 'param', 'source', 'wbr'],
+    'skipAttributes': ['aria-multiline', 'contenteditable', 'data-medium-editor-editor-index', 'data-medium-editor-element', 'data-medium-focused', 'data-placeholder', 'medium-editor-index', 'role', 'spellcheck', 'style'],
     'sortAttributes': true,
     'skipNodeWithClass': 'do',
     'classWithChildText': {
@@ -74,7 +74,7 @@ module.exports = {
       'element': 'mark'
     },
     'replaceClassItemWith': {
-      'source': "on-document-menu medium-editor-element medium-editor-placeholder",
+      'source': ['medium-editor-element', 'medium-editor-placeholder', 'on-document-menu'],
       'target': ''
     },
     'skipClassWithValue': ''

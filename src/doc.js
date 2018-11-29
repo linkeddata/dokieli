@@ -15,21 +15,9 @@ module.exports = {
 }
 
 function domToString (node, options = {}) {
-  var selfClosing = []
+  var selfClosing = options.selfClosing || []
 
-  if (options.selfClosing) {
-    options.selfClosing.split(' ').forEach(function (n) {
-      selfClosing[n] = true
-    })
-  }
-
-  var skipAttributes = []
-
-  if (options.skipAttributes) {
-    options.skipAttributes.split(' ').forEach(function (n) {
-      skipAttributes[n] = true
-    })
-  }
+  var skipAttributes = options.skipAttributes || []
 
   var noEsc = [ false ]
 
@@ -54,13 +42,13 @@ function dumpNode (node, options, skipAttributes, selfClosing, noEsc) {
       for (let i = node.attributes.length - 1; i >= 0; i--) {
         var atn = node.attributes[i]
 
-        if (skipAttributes[atn.name]) continue
+        if (skipAttributes.indexOf(atn.name) > -1) continue
 
         if (/^\d+$/.test(atn.name)) continue
 
         if (atn.name === 'class' && 'replaceClassItemWith' in options) {
           atn.value.split(' ').forEach(function (aValue) {
-            if (options.replaceClassItemWith.source.split(' ').indexOf(aValue) > -1) {
+            if (options.replaceClassItemWith.source.indexOf(aValue) > -1) {
               var re = new RegExp(aValue, 'g')
               atn.value = atn.value.replace(re, options.replaceClassItemWith.target).trim()
             }
@@ -89,7 +77,7 @@ function dumpNode (node, options, skipAttributes, selfClosing, noEsc) {
         out += ' ' + attrList.join(' ')
       }
 
-      if (selfClosing[ename]) {
+      if (selfClosing.indexOf(ename) > -1) {
         out += ' />'
       } else {
         out += '>'
