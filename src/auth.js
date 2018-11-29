@@ -69,7 +69,31 @@ function getUserSignedInHTML() {
 }
 
 
-function showUserSigninSignout (node) {
+async function showUserSigninSignout (node) {
+
+  const session = await solid.auth.currentSession();
+  var webId = session ? session.webId : null;
+  // was LoggedId with new OIDC WebID
+  if (webId && (webId != Config.User.IRI || !Config.User.IRI)) {
+     await setUserInfo(webId, true)
+          .then(() => {
+            afterSignIn()
+          })
+  }
+  // was LoggedOut as OIDC
+  if (!webId && Config.User.IRI && Config.User.OIDC) {
+    storage.removeStorageProfile()
+
+    Config.User = {
+      IRI: null,
+      Role: 'social',
+      UI: {}
+    }
+
+    util.removeChildren(node);
+  }
+
+
   var userInfo = document.getElementById('user-info');
 
   if (!userInfo) {
@@ -86,13 +110,13 @@ function showUserSigninSignout (node) {
 
     userInfo = document.getElementById('user-info')
 
-    userInfo.addEventListener('click', function(e) {
+    userInfo.addEventListener('click', async function(e) {
       e.preventDefault()
       e.stopPropagation()
 
       if (e.target.closest('.signout-user')) {
-        if (Config.User.OIDC && solidAuth) {
-          solidAuth.logout();
+        if (Config.User.OIDC) {
+          await solidAuth.logout();
         }
 
         storage.removeStorageProfile()
