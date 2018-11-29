@@ -10,10 +10,16 @@ following principles in mind: freedom of expression, decentralisation,
 interoperability.
 
 It can be used as a:
-* single-page application - open any dokieli article
+* single-page application - open any dokieli embedded article
 * browser extension - import this repository in your Web browser or install Web
 Extension from [Add-ons for Firefox](https://addons.mozilla.org/en-US/firefox/addon/dokieli/)
 or [Chrome Web Store](https://chrome.google.com/webstore/detail/ddmhaonbhodhgkaljpjlglodncddalid)
+
+
+## License
+* Code: [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
+* Content: [Creative Commons Attribution 4.0 Unported](https://creativecommons.org/licenses/by/4.0/)
+
 
 ## Documentation
 * For brave developers and authors: the canonical [documentation](https://dokie.li/docs)
@@ -92,8 +98,16 @@ These libraries are part of the dokieli distribution:
 * [MediumEditor](https://github.com/yabwe/medium-editor) (MIT License)
 
 
+## How to contribute
+* Use it. Break it. Report it. Fix it! See [issues](https://github.com/linkeddata/dokieli/issues/).
+* Improve documentation (for the website or repository)
+* Publish articles with it.
+* Join the [dokieli chat](https://gitter.im/linkeddata/dokieli) for help and discussion.
+* Encourage the ideas/movement and however else you want to contribute.
+
+
 ## Development
-* General backgorund in [dokieli documentation](https://dokie.li/docs).
+* General background in [dokieli documentation](https://dokie.li/docs).
 * See [fork a repo](https://help.github.com/articles/fork-a-repo/) to setup
 your own development repository and stay
 [synchronised](https://help.github.com/articles/syncing-a-fork). Useful later
@@ -132,7 +146,9 @@ npm run minify
 
 # Test your changes, if all okay:
 
-# Note: The add/commit below can be combined with `commit -am`
+# Note: The add/commit lines below can be combined with `commit -am`
+# If including scripts/do.js, make sure that it is the minified version
+
 # Add the changes you've made to staging
 git add PATH/TO/FILE
 
@@ -149,10 +165,6 @@ merges or reverts in the commit history. See GitHub's [pull
 requests](https://help.github.com/articles/about-pull-requests/) for the
 remaining steps on how to propose your changes to be brought into dokieli's
 repository.
-
-
-## License
-[Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 
 
 ## Contributors
@@ -177,10 +189,3 @@ repository.
 * [Sarven Capadisli](https://github.com/csarven) (maintainer)
 * [Sergey Malinin](https://github.com/smalinin)
 * [Tim Berners-Lee](https://github.com/timbl)
-
-## How to contribute
-* Use it. Break it. Report it. Fix it! See [issues](https://github.com/linkeddata/dokieli/issues/).
-* Improve documentation (for the website or repository)
-* Publish articles with it.
-* Join the [dokieli chat](https://gitter.im/linkeddata/dokieli) for help and discussion.
-* Encourage the ideas/movement and however else you want to contribute.
