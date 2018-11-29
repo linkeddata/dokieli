@@ -93,20 +93,62 @@ These libraries are part of the dokieli distribution:
 
 
 ## Development
-* See the [dokieli documentation](https://dokie.li/docs). Quick dev:
+* General backgorund in [dokieli documentation](https://dokie.li/docs).
+* See [fork a repo](https://help.github.com/articles/fork-a-repo/) to setup
+your own development repository and stay
+[synchronised](https://help.github.com/articles/syncing-a-fork). Useful later
+to make pull requests. For example, using your fork at `https://github.com
+/YOUR-USERNAME/dokieli` :
+
 ```
-git clone https://github.com/linkeddata/dokieli
+# Clone your work repository, for example:
+git clone git@github.com:YOUR-USERNAME/dokieli
 cd dokieli
+
+# Add the main repository to sync with
+git remote add upstream https://github.com/linkeddata/dokieli
+
+# Make sure to work off your master and synchronised
+git checkout master
+git fetch upstream
+git merge upstream/master
 
 # Install packages
 npm install
 
-# Build stuff eg. scripts/do.js
+# Check out a branch for your changes
+git checkout -b YOUR-WORK-BRANCHNAME
+
+# Make your code updates at src/ , media/ etc.
+
+# Build eg. to create scripts/do.js
 npm run build
 
 # or automatically rebuild when files change
 npm run watch
+
+# or create a minified scripts/do.js
+npm run minify
+
+# Test your changes, if all okay:
+
+# Note: The add/commit below can be combined with `commit -am`
+# Add the changes you've made to staging
+git add PATH/TO/FILE
+
+# Commit staged changes with a useful message
+git commit -m "Add x to do y"
+
+# Push changes to your work repository
+git push
 ```
+
+Pull requests should be a single commit. It keeps the commit log concise and
+helps a lot towards the review process. There should not be any commits about
+merges or reverts in the commit history. See GitHub's [pull
+requests](https://help.github.com/articles/about-pull-requests/) for the
+remaining steps on how to propose your changes to be brought into dokieli's
+repository.
 
 
 ## License
