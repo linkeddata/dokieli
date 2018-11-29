@@ -85,10 +85,10 @@ the host sends HTML etc. All content is accessible at minimum from a text-browse
 * Local write: Web browser with JavaScript enabled (use export or local storage)
 * Remote write and access control: above plus WebID and personal online storage
 
-These libraries *optional* when dokieli is used as single-page application:
+These libraries are part of the dokieli distribution:
 
 * [SimpleRDF](https://github.com/nicola/simplerdf) (MIT License) used for RDF
-* [Font Awesome](https://github.com/FortAwesome/Font-Awesome) (SIL OFL 1.1 / MIT License)
+* [Font Awesome](https://github.com/FortAwesome/Font-Awesome) (CC BY 4.0 License / MIT License) icons
 * [MediumEditor](https://github.com/yabwe/medium-editor) (MIT License)
 
 

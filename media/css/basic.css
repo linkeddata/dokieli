@@ -379,7 +379,6 @@ em.rfc2119 { color: #900; }
 ul { padding: 0; margin-bottom:1em; list-style-position: inside; }
 nav ul { list-style: none; }
 dt { font-weight: bold; }
-dt i.fa { margin-right:0.5em;}
 
 /*h3 + div section:before,*/
 section + p:before,
@@ -773,8 +772,7 @@ text-align: center;
 overflow: hidden;
 padding-top: 1em;
 padding-bottom: 1em;
-background-color: #333;
-color: #eee;
+background-color: #eee;
 }
 #dokieli-features a {
 background-color:inherit;
@@ -799,9 +797,13 @@ margin: 0;
 #dokieli-features li span:first-child {
 display: inline-block;
 }
+#dokieli-features ul li span:first-of-type {
+font-weight:bold;
+}
+
 #dokieli-features li span:last-child {
 display: inline-block;
-color: #a8a8a8;
+color: #333;
 }
 #dokieli-features ul li a {
 display: inline-block;
@@ -812,19 +814,21 @@ width: 100%;
 
 #dokieli-features ul li:hover,
 #dokieli-features ul li:hover span {
-background-color: #444;
+background-color: #ddd;
 }
 #dokieli-features ul i,
 #dokieli-features ul svg {
+/*
 width: 1em;
 height: 1em;
-margin: 0 0.2em;
-padding: 0.3em;
+*/
+margin: 1em;
+/*padding: 0.3em;*/
 text-align: center;
 /*border-radius: 50%;*/
 }
 #dokieli-features ul svg {
-font-size:3em;
+/*font-size:3em;*/
 }
 
 #dokieli-features i img {
@@ -897,7 +901,7 @@ width: 100%;
 #dokieli-features ul li {
 float: left;
 width: 50%;
-padding: 0.6em 0;
+padding: 0.5em 0;
 }
 #dokieli-features ul li:nth-child(odd) {
 text-align:right;
@@ -910,7 +914,7 @@ text-align:left;
 font-size: 1em;
 }
 #dokieli-features ul li span:first-of-type {
-padding-top: 1em;
+margin-top: 0.5em;
 }
 #dokieli-features ul li:nth-child(odd) i,
 #dokieli-features ul li:nth-child(odd) p,
