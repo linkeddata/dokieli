@@ -717,15 +717,6 @@ margin-left:1em;
 margin-top:1.25em;
 }
 
-button[class~="signin-user"] .fas,
-button[class|="resource"] .fa,
-button[class|="review"] .fa,
-button[class~="editor-enable"] .fa,
-button[class~="embed-data-meta"] .fa {
-margin-right:0.25em;
-vertical-align: middle;
-}
-
 #document-menu section button .fa,
 #document-menu section button svg.fas,
 #document-menu section button svg.far {
