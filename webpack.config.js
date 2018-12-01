@@ -10,7 +10,7 @@ module.exports = {
   ],
   output: {
     path: path.join(__dirname, '/scripts/'),
-    filename: 'do.js',
+    filename: 'dokieli.js',
     library: 'DO',
     libraryTarget: 'window'
   },

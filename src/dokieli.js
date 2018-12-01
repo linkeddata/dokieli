@@ -834,7 +834,7 @@ var DO = {
         }
 
         window.history.replaceState({}, null, document.location.href.substr(0, document.location.href.lastIndexOf('?')));
-        var stylesheets = document.querySelectorAll('head link[rel~="stylesheet"][title]:not([href$="do.css"])');
+        var stylesheets = document.querySelectorAll('head link[rel~="stylesheet"][title]:not([href$="dokieli.css"])');
         DO.U.updateSelectedStylesheets(stylesheets, title);
       }
 
@@ -1033,13 +1033,13 @@ var DO = {
     },
 
     getCurrentLinkStylesheet: function() {
-      return document.querySelector('head link[rel="stylesheet"][title]:not([href$="do.css"]):not([disabled])');
+      return document.querySelector('head link[rel="stylesheet"][title]:not([href$="dokieli.css"]):not([disabled])');
     },
 
     showViews: function(node) {
       if(document.querySelector('#document-views')) { return; }
 
-      var stylesheets = document.querySelectorAll('head link[rel~="stylesheet"][title]:not([href$="do.css"])');
+      var stylesheets = document.querySelectorAll('head link[rel~="stylesheet"][title]:not([href$="dokieli.css"])');
 
       var s = '<section id="document-views" class="do"><h2>Views</h2><svg class="fas fa-magic" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M224 96l16-32 32-16-32-16-16-32-16 32-32 16 32 16 16 32zM80 160l26.66-53.33L160 80l-53.34-26.67L80 0 53.34 53.33 0 80l53.34 26.67L80 160zm352 128l-26.66 53.33L352 368l53.34 26.67L432 448l26.66-53.33L512 368l-53.34-26.67L432 288zm70.62-193.77L417.77 9.38C411.53 3.12 403.34 0 395.15 0c-8.19 0-16.38 3.12-22.63 9.38L9.38 372.52c-12.5 12.5-12.5 32.76 0 45.25l84.85 84.85c6.25 6.25 14.44 9.37 22.62 9.37 8.19 0 16.38-3.12 22.63-9.37l363.14-363.15c12.5-12.48 12.5-32.75 0-45.24zM359.45 203.46l-50.91-50.91 86.6-86.6 50.91 50.91-86.6 86.6z"/></svg><ul>';
       if (DO.C.GraphViewerAvailable) {
@@ -1124,7 +1124,7 @@ var DO = {
       var currentStylesheet = DO.U.getCurrentLinkStylesheet();
       currentStylesheet = (currentStylesheet) ? currentStylesheet.getAttribute('title') : '';
       var selected = (e && e.target) ? e.target.textContent.toLowerCase() : currentStylesheet.toLowerCase();
-      var stylesheets = document.querySelectorAll('head link[rel~="stylesheet"][title]:not([href$="do.css"])');
+      var stylesheets = document.querySelectorAll('head link[rel~="stylesheet"][title]:not([href$="dokieli.css"])');
 
       DO.U.updateSelectedStylesheets(stylesheets, selected);
 
@@ -3206,11 +3206,11 @@ console.log(url)
 
 // console.log(template);
 
-        var documentHasDokieli = template.querySelectorAll('head script[src$="/do.js"]');
+        var documentHasDokieli = template.querySelectorAll('head script[src$="/dokieli.js"]');
 // console.log(documentHasDokieli);
 // console.log(documentHasDokieli.length)
         if(documentHasDokieli.length == 0) {
-          var doFiles = ['do.css', 'do.js'];
+          var doFiles = ['dokieli.css', 'dokieli.js'];
           doFiles.forEach(function(i){
 // console.log(i);
             var media = i.endsWith('.css') ? template.querySelectorAll('head link[rel~="stylesheet"][href$="/' + i + '"]') : template.querySelectorAll('head script[src$="/' + i + '"]');
@@ -3218,10 +3218,10 @@ console.log(url)
 // console.log(media.length)
             if (media.length == 0) {
               switch(i) {
-                case 'do.css':
+                case 'dokieli.css':
                   template.querySelector('head').insertAdjacentHTML('beforeend', '<link href="https://dokie.li/media/css/' + i + '" media="all" rel="stylesheet" />');
                   break;
-                case 'do.js':
+                case 'dokieli.js':
                   template.querySelector('head').insertAdjacentHTML('beforeend', '<script src="https://dokie.li/scripts/' + i + '"></script>')
                   break;
               }

@@ -135,19 +135,19 @@ git checkout -b YOUR-WORK-BRANCHNAME
 
 # Make your code updates at src/ , media/ etc.
 
-# Build eg. to create scripts/do.js
+# Build eg. to create scripts/dokieli.js
 npm run build
 
 # or automatically rebuild when files change
 npm run watch
 
-# or create a minified scripts/do.js
+# or create a minified scripts/dokieli.js
 npm run minify
 
 # Test your changes, if all okay:
 
 # Note: The add/commit lines below can be combined with `commit -am`
-# If including scripts/do.js, make sure that it is the minified version
+# If including scripts/dokieli.js, make sure that it is the minified version
 
 # Add the changes you've made to staging
 git add PATH/TO/FILE
