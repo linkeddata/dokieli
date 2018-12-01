@@ -164,10 +164,12 @@ fill:#aaa;
 .fa-2x {
 width:2em;
 height:2em;
+font-size:1em;
 }
 .fa-3x {
 width:3em;
 height:3em;
+font-size:1em;
 }
 #document-editor svg.fas,
 #document-editor svg.far {
