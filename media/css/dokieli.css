@@ -246,13 +246,6 @@ text-align:center;
 main,
 main > article { position:relative; }
 
-/*XXX: Can we stick to "sans-serif" and omit this stuff?*/
-.do:not(code):not(samp):not(pre):not(kbd):not(button):not([class~="highlight"]):not([class~="ref"]):not([contenteditable="false"]),
-.do:not([class~="highlight"]):not([class~="ref"]):not([contenteditable="false"]) *:not([class~="fa"]) {
-font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-}
-
-
 .do th,
 .do legend {
 font-weight:bold !important;
@@ -783,7 +776,7 @@ list-style-type:none;
 margin-left:0;
 }
 #document-views ul {
-max-width:88%;
+max-width:75%;
 float:left;
 }
 #document-views ul li {
@@ -870,7 +863,7 @@ float:none;
 
 #document-menu #document-views > svg.fas {
 float:left;
-margin:0.5em 1em 0 0;
+margin:0.5em 1em 0 2.75em;
 }
 
 #document-menu .editor-disable,
