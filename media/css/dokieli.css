@@ -782,6 +782,14 @@ list-style: disc none inside;
 list-style-type:none;
 margin-left:0;
 }
+#document-views ul {
+max-width:85%;
+float:left;
+}
+#document-views ul li {
+display:inline-block;
+}
+
 #document-metadata * {
 text-align:left;
 margin:0;
@@ -857,12 +865,12 @@ height:auto;
 padding:0.5em;
 border:1px solid #eee;
 vertical-align:middle;
+float:none;
 }
 
 #document-menu #document-views > svg.fas {
 float:left;
-margin:0 1em;
-font-size:1.4em;
+margin:0.5em 1em 0 0.5em;
 }
 
 #document-menu .editor-disable,
