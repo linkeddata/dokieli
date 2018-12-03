@@ -17,17 +17,17 @@
         <div id="authors">
           <dl id="author-name">
             <dt>Authors</dt>
-            <dd id="author-1"><span about="" rel="schema:creator schema:publisher schema:author"><a about="#Alfred-Hofmann" typeof="schema:Person" rel="schema:url" property="schema:name" href="http://www.springer.com/">Alfred Hofmann</a></span><span about="#Alfred-Hofmann" rel="schema:memberOf" resource="#Springer-Verlag-Computer-Science-Editorial"></span><sup><a href="#author-org-1">1</a></sup><sup><a href="#author-email-a">a</a></sup></dd>
-            <dd id="author-2"><span about="" rel="schema:author"><a about="#Ralf-Gerstner" typeof="schema:Person" rel="schema:url" property="schema:name" href="http://www.springer.com/">Ralf Gerstner</a></span><span about="#Ralf-Gerstner" rel="schema:memberOf" resource="#Springer-Verlag-Computer-Science-Editorial"></span><sup><a href="#author-org-1">1</a></sup><sup><a href="#author-email-b">b</a></sup></dd>
-            <dd id="author-3"><span about="" rel="schema:author"><a about="#Anna-Kramer" typeof="schema:Person" rel="schema:url" property="schema:name" href="http://www.springer.com/">Anna Kramer</a></span><span about="#Anna-Kramer" rel="schema:memberOf" resource="#Springer-Verlag-Computer-Science-Editorial"></span><sup><a href="#author-org-1">1</a></sup><sup><a href="#author-email-c">c</a></sup></dd>
-            <dd id="author-4"><span about="" rel="schema:author"><a about="#Frank-Holzwarth" typeof="schema:Person" rel="schema:url" property="schema:name" href="http://www.springer.com/">Frank Holzwarth</a></span><span about="#Frank-Holzwarth" rel="schema:memberOf" resource="#Springer-Verlag-Technical-Support"></span><sup><a href="#author-org-1">1</a></sup><sup><a href="#author-email-d">d</a></sup></dd>
+            <dd id="author-Alfred-Hofmann"><span about="" rel="schema:creator schema:publisher schema:author"><a about="#Alfred-Hofmann" typeof="schema:Person" rel="schema:url" property="schema:name" href="http://www.springer.com/">Alfred Hofmann</a></span><span about="#Alfred-Hofmann" rel="schema:memberOf" resource="#Springer-Verlag-Computer-Science-Editorial"></span><sup><a href="#Springer-Verlag-Computer-Science-Editorial">1</a></sup><sup><a href="#author-email-a">a</a></sup></dd>
+            <dd id="author-Ralf-Gerstner"><span about="" rel="schema:author"><a about="#Ralf-Gerstner" typeof="schema:Person" rel="schema:url" property="schema:name" href="http://www.springer.com/">Ralf Gerstner</a></span><span about="#Ralf-Gerstner" rel="schema:memberOf" resource="#Springer-Verlag-Computer-Science-Editorial"></span><sup><a href="#Springer-Verlag-Computer-Science-Editorial">1</a></sup><sup><a href="#author-email-b">b</a></sup></dd>
+            <dd id="author-Anna-Kramer"><span about="" rel="schema:author"><a about="#Anna-Kramer" typeof="schema:Person" rel="schema:url" property="schema:name" href="http://www.springer.com/">Anna Kramer</a></span><span about="#Anna-Kramer" rel="schema:memberOf" resource="#Springer-Verlag-Computer-Science-Editorial"></span><sup><a href="#Springer-Verlag-Computer-Science-Editorial">1</a></sup><sup><a href="#author-email-c">c</a></sup></dd>
+            <dd id="author-Frank-Holzwarth"><span about="" rel="schema:author"><a about="#Frank-Holzwarth" typeof="schema:Person" rel="schema:url" property="schema:name" href="http://www.springer.com/">Frank Holzwarth</a></span><span about="#Frank-Holzwarth" rel="schema:memberOf" resource="#Springer-Verlag-Technical-Support"></span><sup><a href="#Springer-Verlag-Computer-Science-Editorial">1</a></sup><sup><a href="#author-email-d">d</a></sup></dd>
           </dl>
 
           <ul id="author-org">
-            <li id="author-org-1"><sup>1</sup><a about="#Springer-Verlag-Computer-Science-Editorial" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.springer.com/de/">Springer-Verlag, Computer Science Editorial</a>, <span class="adr"><span class="region">Heidelberg</span>, <span class="country-name">Germany</span></span></li>
-            <li id="author-org-1"><sup>1</sup><a about="#Springer-Verlag-Computer-Science-Editorial" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.springer.com/de/">Springer-Verlag, Computer Science Editorial</a>, <span class="adr"><span class="region">Heidelberg</span>, <span class="country-name">Germany</span></span></li>
-            <li id="author-org-1"><sup>1</sup><a about="#Springer-Verlag-Computer-Science-Editorial" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.springer.com/de/">Springer-Verlag, Computer Science Editorial</a>, <span class="adr"><span class="region">Heidelberg</span>, <span class="country-name">Germany</span></span></li>
-            <li id="author-org-2"><sup>2</sup><a about="#Springer-Verlag-Technical-Support" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.springer.com/de/">Springer-Verlag, Technical Support</a>, <span class="adr"><span class="region">Heidelberg</span>, <span class="country-name">Germany</span></span></li>
+            <li id="Springer-Verlag-Computer-Science-Editorial"><sup>1</sup><a about="#Springer-Verlag-Computer-Science-Editorial" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.springer.com/de/">Springer-Verlag, Computer Science Editorial</a>, Heidelberg, Germany</li>
+            <li><sup>1</sup><a about="#Springer-Verlag-Computer-Science-Editorial" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.springer.com/de/">Springer-Verlag, Computer Science Editorial</a>, Heidelberg, Germany</li>
+            <li><sup>1</sup><a about="#Springer-Verlag-Computer-Science-Editorial" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.springer.com/de/">Springer-Verlag, Computer Science Editorial</a>, Heidelberg, Germany</li>
+            <li id="Springer-Verlag-Technical-Support"><sup>2</sup><a about="#Springer-Verlag-Technical-Support" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.springer.com/de/">Springer-Verlag, Technical Support</a>, Heidelberg, Germany</li>
           </ul>
 
           <ul id="author-email">
@@ -139,7 +139,7 @@
                 </div>
               </section>
 
-              <section id="figures-and-tables" rel="schema:hasPart" resource="#length-of-paper">
+              <section id="figures-and-tables" rel="schema:hasPart" resource="#figures-and-tables">
                 <h3 property="schema:name">Figures and Tables</h3>
                 <div datatype="rdf:HTML" property="schema:description">
                   <p>It is essential that all illustrations are clear and legible. Vector graphics (rather than rasterized images) should be used for diagrams and schemas whenever possible. Please check that the lines in line drawings are not interrupted and have a constant width. Grids and details within the figures must be clearly legible and may not be written one on top of the other. Line drawings are to have a resolution of at least 800 dpi (preferably 1200 dpi). The lettering in figures should not use font sizes</p>
@@ -358,12 +358,12 @@
               <p>If you have any further questions regarding the preparation of your paper, then please do not hesitate to get in touch with us.</p>
 
               <ul>
-                <li>For all questions related to our LaTeX style files, your contact person is:<br/>Mr. Frank Holzwarth, e-mail: <code>frank.holzwarth@springer.com</code>.</li>
-                <li>For overall technical questions concerning the preparation of LNCS/LNAI/LNBI papers, please contact Ms. Anna Kramer, e-mail:<br/><code>lncs@springer.com</code>.</li>
-                <li>For the LNBIP series, please contact Ms. Viktoria Meyer, e-mail:<br/><code>lnbip@springer.com</code>.</li>
-                <li>For the CCIS series, please contact Ms. Leonie Kunz, e-mail:<br/><code>ccis@springer.com</code>.</li>
-                <li>For the LNICST series, please contact Mr. Peter Strasser, e-mail:<br/><code>lnicst@springer.com</code>.</li>
-                <li>For the IFIP AICT series, please contact Ms. Erika Siebert-Cole, e-mail:<br/> <code>ifip@springer.com</code>.</li>
+                <li>For all questions related to our LaTeX style files, your contact person is: Mr. Frank Holzwarth, e-mail: <code>frank.holzwarth@springer.com</code>.</li>
+                <li>For overall technical questions concerning the preparation of LNCS/LNAI/LNBI papers, please contact Ms. Anna Kramer, e-mail: <code>lncs@springer.com</code>.</li>
+                <li>For the LNBIP series, please contact Ms. Viktoria Meyer, e-mail: <code>lnbip@springer.com</code>.</li>
+                <li>For the CCIS series, please contact Ms. Leonie Kunz, e-mail: <code>ccis@springer.com</code>.</li>
+                <li>For the LNICST series, please contact Mr. Peter Strasser, e-mail: <code>lnicst@springer.com</code>.</li>
+                <li>For the IFIP AICT series, please contact Ms. Erika Siebert-Cole, e-mail: <code>ifip@springer.com</code>.</li>
               </ul>
             </div>
           </section>
