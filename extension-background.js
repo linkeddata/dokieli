@@ -36,7 +36,7 @@ function injectResources(tabId, files) {
 function dokieliInit(tab) {
 // console.log(tab);
 
-  injectResources(tab.id, ["media/css/do.css"]).then(() => {
+  injectResources(tab.id, ["media/css/dokieli.css"]).then(() => {
   }).catch(err => {
      // console.log('Error occurred: '+err);
   });
