@@ -663,6 +663,7 @@ padding:0;
 margin:0;
 font-size:1em;
 font-weight:normal;
+text-transform: inherit !important;
 }
 
 .do.on section {
