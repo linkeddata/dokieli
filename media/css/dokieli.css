@@ -246,6 +246,10 @@ text-align:center;
 main,
 main > article { position:relative; }
 
+html > .do {
+font-family:sans-serif;
+}
+
 .do th,
 .do legend {
 font-weight:bold !important;
