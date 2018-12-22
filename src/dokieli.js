@@ -3279,7 +3279,8 @@ console.log(url)
       name = DO.U.getResourceLabel(graph) || graph.iri().toString();
       name = '<a href="' + graph.iri().toString() + '">' + name + '</a>';
 
-      var datePublished = graph.schemadatePublished || graph.dctermsissued || graph.dctermsdate || graph.schemadateCreated || graph.dctermscreated || graph.aspublished;
+      var datePublished = graph.schemadatePublished || graph.dctermsissued || graph.dctermsdate || graph.aspublished || graph.schemadateCreated || graph.dctermscreated || graph.provgeneratedAtTime || graph.dctermsmodified || graph.asupdated || '';
+
       if (datePublished) {
         published = ', <time datetime="' + datePublished + '">' + datePublished.substr(0,10) + '</time>';
       }
@@ -3290,7 +3291,7 @@ console.log(url)
         summary = graph.child(graph.oahasBody).rdfvalue;
       }
       else {
-        summary = graph.schemaabstract || graph.dctermsdescription || graph.rdfvalue || graph.assummary || graph.schemadescription || graph.ascontent;
+        summary = graph.schemaabstract || graph.dctermsdescription || graph.rdfvalue || graph.assummary || graph.schemadescription || graph.ascontent || '';
       }
 
       if (summary) {

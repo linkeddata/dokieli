@@ -294,6 +294,8 @@ module.exports = {
 
     "skosprefLabel": { "@id": "http://www.w3.org/2004/02/skos/core#prefLabel", "@type": "@id", "@array": true },
 
+    "provgeneratedAtTime": "http://www.w3.org/ns/prov#generatedAtTime",
+
     "refPeriod": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod",
     "obsValue": "http://purl.org/linked-data/sdmx/2009/measure#obsValue",
 
