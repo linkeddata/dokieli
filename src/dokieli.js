@@ -3273,9 +3273,9 @@ console.log(url)
       options = options || {};
       var name = '';
       var published = ''
-      if (graph.schemaname) {
-        name = '<a href="' + graph.iri().toString() + '">' + graph.schemaname + '</a>';
-      }
+
+      name = DO.U.getResourceLabel(graph) || graph.iri().toString();
+      name = '<a href="' + graph.iri().toString() + '">' + name + '</a>';
 
       var datePublished = graph.schemadatePublished || graph.dctermsissued || graph.dctermsdate || graph.schemadateCreated || graph.dctermscreated || graph.aspublished;
       if (datePublished) {
