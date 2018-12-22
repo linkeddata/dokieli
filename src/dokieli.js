@@ -59,7 +59,7 @@ var DO = {
                    types.indexOf(DO.C.Vocab['asOrderedCollection']["@id"]) < 0) {
                   DO.C.CollectionItems[resource] = s;
                   options.resourceItems.push(resource);
-                }                
+                }
               });
             });
 
@@ -618,16 +618,7 @@ var DO = {
       selector = selector || document.body;
       options = options || {};
 
-      var processResources = function(resources, options) {
-        if (Array.isArray(resources)) {
-          return Promise.resolve(resources);
-        }
-        else {
-          return DO.U.getItemsList(resources, options);
-        }
-      }
-
-      processResources(resources, options).then(
+      DO.U.processResources(resources, options).then(
         function(url) {
           var promises = [];
           url.forEach(function(u) {
@@ -669,6 +660,15 @@ var DO = {
                 });
             });
         });
+    },
+
+    processResources: function(resources, options) {
+      if (Array.isArray(resources)) {
+        return Promise.resolve(resources);
+      }
+      else {
+        return DO.U.getItemsList(resources, options);
+      }
     },
 
     urlParam: function(name) {
@@ -3174,11 +3174,20 @@ console.log(url)
               })
               .then(response => {
                 var cT = response.headers.get('Content-Type');
-                var contentType = (cT) ? cT.split(';')[0].trim() : 'text/turtle';
+                var options = {};
+                options['contentType'] = (cT) ? cT.split(';')[0].trim() : 'text/turtle';
+                options['subjectURI'] = iri;
 
                 return response.text()
-                  .then(responseText => {
-                    DO.U.spawnDokieli(responseText, contentType, iri);
+                  .then(data => {
+                    DO.U.buildResourceView(data, options)
+                      .then(o => {
+// console.log(o)
+                        var spawnOptions = {};
+                        spawnOptions['defaultStylesheet'] = ('defaultStylesheet' in o) ? o.defaultStylesheet : false;
+
+                        DO.U.spawnDokieli(o.data, o.options['contentType'], o.options['subjectURI'], spawnOptions);                        
+                      })
                   })
               })
           }
@@ -3188,7 +3197,110 @@ console.log(url)
       });
     },
 
-    spawnDokieli: function(data, contentType, iri){
+    buildResourceView: function(data, options) {
+      return graph.getGraphFromData(data, options).then(
+        function(i){
+          var s = SimpleRDF(DO.C.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
+// console.log(s)
+          var types = s.rdftype._array;
+// console.log(types)
+          if(types.indexOf(DO.C.Vocab['ldpContainer']["@id"]) >= 0 ||
+             types.indexOf(DO.C.Vocab['asCollection']["@id"]) >= 0 ||
+             types.indexOf(DO.C.Vocab['asOrderedCollection']["@id"]) >= 0) {
+
+            return DO.U.processResources(options['subjectURI'], options).then(
+              function(url) {
+
+                var promises = [];
+                url.forEach(function(u) {
+                  // console.log(u);
+                  // window.setTimeout(function () {
+                    var pIRI = uri.getProxyableIRI(u);
+                    promises.push(fetcher.getResourceGraph(pIRI));
+                  // }, 1000)
+                });
+
+                return Promise.all(promises)
+                  .then(function(graphs) {
+                    var items = [];
+
+
+                    graphs.forEach(function(graph){
+                      //TODO: order by date
+                      items.push(DO.U.generateIndexItemHTML(graph));
+                    })
+
+                    //TODO: Show createNewDocument button.
+                    var createNewDocument = '';
+
+                    var listItems = '';
+
+                    if (items.length > 0) {
+                      listItems = `
+            <ul>
+              <li>` + items.join('</li>\n<li>') + `</li>
+            </ul>`;
+                    }
+
+                    var html = `      <article about="" typeof="as:Collection">
+        <h1 property="schema:name">Collection: ` + options.subjectURI + `</h1>
+        <div datatype="rdf:HTML" property="schema:description">
+          <section>` + createNewDocument + listItems + `
+          </section>
+        </div>
+      </article>`;
+
+                    return {
+                      'data': doc.createHTML('Collection: ' + options.subjectURI, html),
+                      'options': {
+                        'subjectURI': options.subjectURI,
+                        'contentType': 'text/html'
+                      },
+                      'defaultStylesheet': true
+                    };
+                  });
+              });
+          }
+          else {
+            return {"data": data, "options": options};
+          }
+
+        });
+    },
+
+    generateIndexItemHTML: function(graph, options) {
+// console.log(graph);
+      options = options || {};
+      var name = '';
+      var published = ''
+      if (graph.schemaname) {
+        name = '<a href="' + graph.iri().toString() + '">' + graph.schemaname + '</a>';
+      }
+
+      var datePublished = graph.schemadatePublished || graph.dctermsissued || graph.dctermsdate || graph.schemadateCreated || graph.dctermscreated || graph.aspublished;
+      if (datePublished) {
+        published = ', <time datetime="' + datePublished + '">' + datePublished.substr(0,10) + '</time>';
+      }
+
+      var summary = '';
+
+      if (graph.oahasBody) {
+        summary = graph.child(graph.oahasBody).rdfvalue;
+      }
+      else {
+        summary = graph.schemaabstract || graph.dctermsdescription || graph.rdfvalue || graph.assummary || graph.schemadescription || graph.ascontent;
+      }
+
+      if (summary) {
+        summary = '<div>' + summary + '</div>';
+      }
+
+      return name + published + summary;
+    },
+
+    spawnDokieli: function(data, contentType, iri, options){
+      options =  options || {};
+
       if(DO.C.AvailableMediaTypes.indexOf(contentType) > -1) {
         var template = document.implementation.createHTMLDocument('template');
 // console.log(template);
@@ -3210,6 +3322,11 @@ console.log(url)
 // console.log(documentHasDokieli.length)
         if(documentHasDokieli.length == 0) {
           var doFiles = ['dokieli.css', 'dokieli.js'];
+
+          if (options.defaultStylesheet) {
+            doFiles.push('basic.css');
+          }
+
           doFiles.forEach(function(i){
 // console.log(i);
             var media = i.endsWith('.css') ? template.querySelectorAll('head link[rel~="stylesheet"][href$="/' + i + '"]') : template.querySelectorAll('head script[src$="/' + i + '"]');
@@ -3220,6 +3337,8 @@ console.log(url)
                 case 'dokieli.css':
                   template.querySelector('head').insertAdjacentHTML('beforeend', '<link href="https://dokie.li/media/css/' + i + '" media="all" rel="stylesheet" />');
                   break;
+                case 'basic.css':
+                  template.querySelector('head').insertAdjacentHTML('beforeend', '<link href="https://dokie.li/media/css/' + i + '" media="all" rel="stylesheet" />');
                 case 'dokieli.js':
                   template.querySelector('head').insertAdjacentHTML('beforeend', '<script src="https://dokie.li/scripts/' + i + '"></script>')
                   break;
