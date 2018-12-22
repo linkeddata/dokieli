@@ -3202,6 +3202,8 @@ console.log(url)
         function(i){
           var s = SimpleRDF(DO.C.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
 // console.log(s)
+          var title = DO.U.getResourceLabel(s) || 'Collection: ' + options.subjectURI;
+
           var types = s.rdftype._array;
 // console.log(types)
           if(types.indexOf(DO.C.Vocab['ldpContainer']["@id"]) >= 0 ||
@@ -3243,7 +3245,7 @@ console.log(url)
                     }
 
                     var html = `      <article about="" typeof="as:Collection">
-        <h1 property="schema:name">Collection: ` + options.subjectURI + `</h1>
+        <h1 property="schema:name">` + title + `</h1>
         <div datatype="rdf:HTML" property="schema:description">
           <section>` + createNewDocument + listItems + `
           </section>
