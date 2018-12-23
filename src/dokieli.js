@@ -838,6 +838,13 @@ var DO = {
         DO.U.updateSelectedStylesheets(stylesheets, title);
       }
 
+      var open = DO.U.urlParam('open');
+      if (open) {
+        DO.U.openResource(open);
+
+        window.history.replaceState({}, null, document.location.href.substr(0, document.location.href.lastIndexOf('?')));
+      }
+
       if (DO.C.EditorAvailable) {
         if (DO.U.urlParam('author') == 'true' || DO.U.urlParam('social') == 'true') {
           if (DO.U.urlParam('social') == 'true') {
@@ -3154,47 +3161,54 @@ console.log(url)
 
           var bli = document.getElementById(id + '-input');
           var iri = bli.value;
-          var headers = { 'Accept': fetcher.setAcceptRDFTypes() };
+
           var options = {};
-          var pIRI = uri.getProxyableIRI(iri);
-          if (pIRI.slice(0, 5).toLowerCase() == 'http:') {
-            options['noCredentials'] = true;
-          }
 
-          var handleResource = function handleResource (pIRI, headers, options) {
-            return fetcher.getResource(pIRI, headers, options)
-              .catch(error => {
-                if (error.status === 0) {
-                  // retry with proxied uri
-                  var pIRI = uri.getProxyableIRI(iri, {'forceProxy': true});
-                  return handleResource(pIRI, headers, options);
-                }
-
-                throw error  // else, re-throw the error
-              })
-              .then(response => {
-                var cT = response.headers.get('Content-Type');
-                var options = {};
-                options['contentType'] = (cT) ? cT.split(';')[0].trim() : 'text/turtle';
-                options['subjectURI'] = iri;
-
-                return response.text()
-                  .then(data => {
-                    DO.U.buildResourceView(data, options)
-                      .then(o => {
-// console.log(o)
-                        var spawnOptions = {};
-                        spawnOptions['defaultStylesheet'] = ('defaultStylesheet' in o) ? o.defaultStylesheet : false;
-
-                        DO.U.spawnDokieli(o.data, o.options['contentType'], o.options['subjectURI'], spawnOptions);                        
-                      })
-                  })
-              })
-          }
-
-          handleResource(pIRI, headers, options);
+          DO.U.openResource(iri, options);
         }
       });
+    },
+
+    openResource: function(iri, options) {
+      options = options || {};
+      var headers = { 'Accept': fetcher.setAcceptRDFTypes() };
+      var pIRI = uri.getProxyableIRI(iri);
+      if (pIRI.slice(0, 5).toLowerCase() == 'http:') {
+        options['noCredentials'] = true;
+      }
+
+      var handleResource = function handleResource (pIRI, headers, options) {
+        return fetcher.getResource(pIRI, headers, options)
+          .catch(error => {
+            if (error.status === 0) {
+              // retry with proxied uri
+              var pIRI = uri.getProxyableIRI(iri, {'forceProxy': true});
+              return handleResource(pIRI, headers, options);
+            }
+
+            throw error  // else, re-throw the error
+          })
+          .then(response => {
+            var cT = response.headers.get('Content-Type');
+            var options = {};
+            options['contentType'] = (cT) ? cT.split(';')[0].trim() : 'text/turtle';
+            options['subjectURI'] = iri;
+
+            return response.text()
+              .then(data => {
+                DO.U.buildResourceView(data, options)
+                  .then(o => {
+// console.log(o)
+                    var spawnOptions = {};
+                    spawnOptions['defaultStylesheet'] = ('defaultStylesheet' in o) ? o.defaultStylesheet : false;
+
+                    DO.U.spawnDokieli(o.data, o.options['contentType'], o.options['subjectURI'], spawnOptions);                        
+                  })
+              })
+          })
+      }
+
+      handleResource(pIRI, headers, options);
     },
 
     buildResourceView: function(data, options) {
