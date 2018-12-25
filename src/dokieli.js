@@ -4536,7 +4536,7 @@ WHERE {\n\
 // console.log(selector.rdfvalue)
             if (selector.rdfvalue && selector.rdfvalue !== '' && selector.dctermsconformsTo && selector.dctermsconformsTo.endsWith('://tools.ietf.org/html/rfc3987')) {
               var fragment = selector.rdfvalue;
-              fragment = (fragment.indexOf == 0) ? uri.getFragmentFromString(fragment) : fragment;
+              fragment = (fragment.indexOf('#') == 0) ? uri.getFragmentFromString(fragment) : fragment;
 // console.log(fragment)
               if (fragment !== '') {
                 containerNode = document.querySelector('#' + selector.rdfvalue) || document;
