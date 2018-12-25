@@ -753,7 +753,7 @@ var DO = {
 
       var selectedParentNode;
 
-      var textMatches = containerNodeTextContent.matchAll(new RegExp(phrase, 'g'));
+      var textMatches = DO.U.matchAllIndex(containerNodeTextContent, new RegExp(phrase, 'g'));
 // console.log(textMatches)
 
       textMatches.forEach(function(item) {
@@ -1002,13 +1002,16 @@ var DO = {
           }
         };
       }
+    },
 
+    matchAllIndex: function(string, regexp) {
+      //XXX: This used to be String.protocol.matchAll from https://web.archive.org/web/20180407184826/http://cwestblog.com/2013/02/26/javascript-string-prototype-matchall/ and returns an Array, but it is being repurposed. Firefox Nightly 66.0a1 (around 2018-12-24) started to support String.prototype.matchAll and returns an RegExp String Iterator. Changing it to matchAllIndex to not conflict
 
-      //From https://web.archive.org/web/20180407184826/http://cwestblog.com/2013/02/26/javascript-string-prototype-matchall/
-      if (!String.prototype.matchAll) {
-        String.prototype.matchAll = function(regexp) {
+      // if (!String.prototype.matchAll) {
+        // String.prototype.matchAll = function(regexp) {
           var matches = [];
-          this.replace(regexp, function() {
+          // this.replace(regexp, function() {
+          string.replace(regexp, function() {
             var arr = ([]).slice.call(arguments, 0);
             var extras = arr.splice(-2);
             arr.index = extras[0];
@@ -1016,8 +1019,8 @@ var DO = {
             matches.push(arr);
           });
           return matches.length ? matches : null;
-        };
-      }
+        // };
+      // }
     },
 
     showXHRProgressHTML: function(http, options) {
