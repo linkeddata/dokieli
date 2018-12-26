@@ -111,9 +111,6 @@ async function showUserSigninSignout (node) {
     userInfo = document.getElementById('user-info')
 
     userInfo.addEventListener('click', async function(e) {
-      e.preventDefault()
-      e.stopPropagation()
-
       if (e.target.closest('.signout-user')) {
         if (Config.User.OIDC) {
           await solidAuth.logout();
