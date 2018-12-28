@@ -3245,14 +3245,17 @@ console.log(url)
                   // }, 1000)
                 });
 
-                return Promise.all(promises)
+                return Promise.all(promises.map(p => p.catch(e => e)))
                   .then(function(graphs) {
                     var items = [];
 
+                    graphs.filter(result => !(result instanceof Error));
 
                     graphs.forEach(function(graph){
-                      //TODO: order by date
-                      items.push(DO.U.generateIndexItemHTML(graph));
+                      var html = DO.U.generateIndexItemHTML(graph);
+                      if (typeof html === 'string' && html != '') {
+                        items.push(html);
+                      }
                     })
 
                     //TODO: Show createNewDocument button.
@@ -3283,6 +3286,9 @@ console.log(url)
                       },
                       'defaultStylesheet': true
                     };
+                  })
+                  .catch(e => {
+                    // console.log(e)
                   });
               });
           }
@@ -3294,6 +3300,8 @@ console.log(url)
     },
 
     generateIndexItemHTML: function(graph, options) {
+      if (typeof graph.iri === 'undefined') return;
+
 // console.log(graph);
       options = options || {};
       var name = '';
