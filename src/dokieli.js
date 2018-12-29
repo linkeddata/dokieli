@@ -3225,7 +3225,8 @@ console.log(url)
         function(i){
           var s = SimpleRDF(DO.C.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
 // console.log(s)
-          var title = DO.U.getResourceLabel(s) || 'Collection: ' + options.subjectURI;
+          var title = DO.U.getResourceLabel(s) || options.subjectURI;
+          var h1 = '<a href="' +  options.subjectURI + '">' + title + '</a>';
 
           var types = s.rdftype._array;
 // console.log(types)
@@ -3271,7 +3272,7 @@ console.log(url)
                     }
 
                     var html = `      <article about="" typeof="as:Collection">
-        <h1 property="schema:name">` + title + `</h1>
+        <h1 property="schema:name">` + h1 + `</h1>
         <div datatype="rdf:HTML" property="schema:description">
           <section>` + createNewDocument + listItems + `
           </section>
