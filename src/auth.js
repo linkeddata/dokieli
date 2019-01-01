@@ -317,16 +317,21 @@ function setUserInfo (userIRI, oidc) {
       Config.User.Storage = getAgentStorage(s)
       Config.User.Outbox = getAgentOutbox(s)
       Config.User.Inbox = getAgentInbox(s)
+      Config.User.TypeIndex = {}
 
       var preferredProxy = getAgentPreferredProxy(s)
       Config.ProxyURL = (preferredProxy) ? preferredProxy : Config.ProxyURL
 
-      if (s.preferencesFile && s.preferencesFile.length > 0) {
-        Config.User.PreferencesFile = s.preferencesFile
-
-        // TODO: Reconsider if/where to use this.
-        // setUserWorkspaces(Config.User.PreferencesFile)
+      if (s.pimpreferencesFile && s.pimpreferencesFile.length > 0) {
+        Config.User.PreferencesFile = s.pimpreferencesFile
       }
+      if (s.solidpublicTypeIndex && s.solidpublicTypeIndex.length > 0) {
+        Config.User.PublicTypeIndex = s.solidpublicTypeIndex
+      }
+      if (s.solidprivateTypeIndex && s.privateTypeIndex.length > 0) {
+        Config.User.PrivateTypeIndex = s.solidprivateTypeIndex
+      }
+
       return Config.User
     })
 }

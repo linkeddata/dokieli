@@ -302,11 +302,13 @@ module.exports = {
     "biboauthorList": { "@id": "http://purl.org/ontology/bibo/authorList", "@type": "@id" },
 
     "pimstorage": { "@id": "http://www.w3.org/ns/pim/space#storage", "@type": "@id", "@array": true },
-    "preferencesFile": { "@id": "http://www.w3.org/ns/pim/space#preferencesFile", "@type": "@id" },
+    "pimpreferencesFile": { "@id": "http://www.w3.org/ns/pim/space#preferencesFile", "@type": "@id" },
 
     "ldpinbox": { "@id": "http://www.w3.org/ns/ldp#inbox", "@type": "@id", "@array": true },
 
     "solidpreferredProxy": "http://www.w3.org/ns/solid/terms#preferredProxy",
+    "solidpublicTypeIndex": { "@id": "http://www.w3.org/ns/solid/terms#publicTypeIndex", "@type": "@id" },
+    "solidprivateTypeIndex": { "@id": "http://www.w3.org/ns/solid/terms#privateTypeIndex", "@type": "@id" },
 
     "oaannotation": { "@id": "http://www.w3.org/ns/oa#Annotation", "@type": "@id" },
     "oahasBody": { "@id": "http://www.w3.org/ns/oa#hasBody", "@type": "@id" },
