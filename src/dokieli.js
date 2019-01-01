@@ -4777,7 +4777,7 @@ WHERE {\n\
       var note = '';
       var targetLabel = '';
       var articleClass = '';
-      var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: http://schema.org/ dcterms: http://purl.org/dc/terms/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams#"';
+      var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: http://schema.org/ dcterms: http://purl.org/dc/terms/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp#"';
 
       var canonicalId = n.canonical || 'urn:uuid:' + util.generateUUID();
 
@@ -4859,7 +4859,7 @@ WHERE {\n\
       heading = '<h' + hX + ' property="schema:name">' + creatorName + ' <span rel="oa:motivatedBy" resource="' + motivatedByIRI + '">' + motivatedByLabel + '</span></h' + hX + '>';
 
       if ('inbox' in n && typeof n.inbox !== 'undefined') {
-        inbox = '<dl class="inbox"><dt>Notifications Inbox</dt><dd><a href="' + n.inbox + '" rel="http://www.w3.org/ns/ldp#inbox">' + n.inbox + '</a></dd></dl>';
+        inbox = '<dl class="inbox"><dt>Notifications Inbox</dt><dd><a href="' + n.inbox + '" rel="ldp:inbox">' + n.inbox + '</a></dd></dl>';
       }
 
       if ('datetime' in n && typeof n.datetime !== 'undefined'){
