@@ -4440,6 +4440,8 @@ WHERE {\n\
       var refId = 'r-' + id;
       var refLabel = id;
 
+      var inboxIRI = (note.ldpinbox && note.ldpinbox.at(0)) ? note.ldpinbox.at(0) : undefined;
+
       var datetime = note.schemadatePublished || note.dctermscreated || note.aspublished;
 // console.log(datetime);
       var annotatedBy = note.schemacreator || note.dctermscreator || note.asactor;
@@ -4608,6 +4610,10 @@ WHERE {\n\
           if (licenseIRI) {
             noteData.license["iri"] = licenseIRI;
           }
+
+          if (inboxIRI) {
+            noteData.inbox = inboxIRI;
+          }
 // console.log(noteData);
           var note = DO.U.createNoteDataHTML(noteData);
           var nES = selectedParentNode.nextElementSibling;
@@ -4762,6 +4768,7 @@ WHERE {\n\
       var license = '';
       var creator = '', authors = '', creatorImage = '', creatorNameIRI = '', creatorURLNameIRI = '';
       var hasTarget = '', annotationTextSelector = '', target = '';
+      var inbox = '';
       var heading, hX;
       var aAbout = '', aPrefix = '';
       var noteType = '';
@@ -4851,6 +4858,10 @@ WHERE {\n\
 
       heading = '<h' + hX + ' property="schema:name">' + creatorName + ' <span rel="oa:motivatedBy" resource="' + motivatedByIRI + '">' + motivatedByLabel + '</span></h' + hX + '>';
 
+      if ('inbox' in n && typeof n.inbox !== 'undefined') {
+        inbox = '<dl class="inbox"><dt>Notifications Inbox</dt><dd><a href="' + n.inbox + '" rel="http://www.w3.org/ns/ldp#inbox">' + n.inbox + '</a></dd></dl>';
+      }
+
       if ('datetime' in n && typeof n.datetime !== 'undefined'){
         var time = '<time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="schema:datePublished" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time>';
         var timeLinked = ('iri' in n) ? '<a href="' + n.iri + '">' + time + '</a>' : time;
@@ -4937,6 +4948,7 @@ WHERE {\n\
   ' + authors + '\n\
   ' + published + '\n\
   ' + license + '\n\
+  ' + inbox + '\n\
   ' + canonical + '\n\
   ' + target + '\n\
   ' + body + '\n\
@@ -5044,6 +5056,18 @@ WHERE {\n\
       var textContent = r.textContent || r.href || '';
 
       s = '<' + element + about + content + href + id + langDatatype + property + rel + resource + typeOf + '>' + textContent + '</' + element + '>';
+
+      return s;
+    },
+
+    getAnnotationInboxLocationHTML: function() {
+      var s = '', inputs = [], checked = '';
+      if (DO.C.User.TypeIndex && DO.C.User.TypeIndex[DO.C.Vocab['asAnnounce']['@id']]) {
+        if (DO.C.User.UI && DO.C.User.UI['annotationInboxLocation'] && DO.C.User.UI.annotationInboxLocation['checked']) {
+          checked = ' checked="checked"';
+        }
+        s = '<input type="checkbox" id="annotation-inbox" name="annotation-inbox"' + checked + ' /><label for="annotation-inbox">Inbox</label>';
+      }
 
       return s;
     },
@@ -6078,10 +6102,18 @@ WHERE {\n\
                 }
               };
 
+              var updateAnnotationInboxForm = function() {
+                var annotationInbox = document.querySelectorAll('.annotation-inbox');
+                for (var i = 0; i < annotationInbox.length; i++) {
+                  annotationInbox[i].innerHTML = DO.U.getAnnotationInboxLocationHTML();
+                }
+              };
+
               return inbox.getEndpoint(DO.C.Vocab['oaannotationService']['@id']).then(
                 function(url) {
                   DO.C.AnnotationService = url[0];
                   updateAnnotationServiceForm();
+                  updateAnnotationInboxForm();
                   showAction();
                 },
                 function(reason) {
@@ -6090,6 +6122,7 @@ WHERE {\n\
                   }
                   else {
                     updateAnnotationServiceForm();
+                    updateAnnotationInboxForm();
                     showAction();
                   }
                 }
@@ -6132,7 +6165,8 @@ WHERE {\n\
                   '<select id="article-license" name="license" class="medium-editor-toolbar-select">',
                   DO.U.getLicenseOptionsHTML(),
                   '</select>',
-                  '<span class="annotation-location-selection">' + DO.U.getAnnotationLocationHTML() + '</span>'
+                  '<span class="annotation-location-selection">' + DO.U.getAnnotationLocationHTML() + '</span>',
+                  '<span class="annotation-inbox">' + DO.U.getAnnotationInboxLocationHTML() + '</span>'
                   ];
                   break;
                 case 'note':
@@ -6150,7 +6184,8 @@ WHERE {\n\
                   '<select id="approve-license" name="license" class="medium-editor-toolbar-select">',
                   DO.U.getLicenseOptionsHTML(),
                   '</select>',
-                  '<span class="annotation-location-selection">' + DO.U.getAnnotationLocationHTML() + '</span>'
+                  '<span class="annotation-location-selection">' + DO.U.getAnnotationLocationHTML() + '</span>',
+                  '<span class="annotation-inbox">' + DO.U.getAnnotationInboxLocationHTML() + '</span>'
                   ];
                   break;
                 case 'disapprove':
@@ -6159,7 +6194,8 @@ WHERE {\n\
                   '<select id="disapprove-license" name="license" class="medium-editor-toolbar-select">',
                   DO.U.getLicenseOptionsHTML(),
                   '</select>',
-                  '<span class="annotation-location-selection">' + DO.U.getAnnotationLocationHTML() + '</span>'
+                  '<span class="annotation-location-selection">' + DO.U.getAnnotationLocationHTML() + '</span>',
+                  '<span class="annotation-inbox">' + DO.U.getAnnotationInboxLocationHTML() + '</span>'
                   ];
                   break;
                 case 'specificity':
@@ -6168,7 +6204,8 @@ WHERE {\n\
                   '<select id="specificity-license" name="license" class="medium-editor-toolbar-select">',
                   DO.U.getLicenseOptionsHTML(),
                   '</select>',
-                  '<span class="annotation-location-selection">' + DO.U.getAnnotationLocationHTML() + '</span>'
+                  '<span class="annotation-location-selection">' + DO.U.getAnnotationLocationHTML() + '</span>',
+                  '<span class="annotation-inbox">' + DO.U.getAnnotationInboxLocationHTML() + '</span>'
                   ];
                   break;
                 case 'cite':
@@ -6527,6 +6564,11 @@ WHERE {\n\
                   if(aLPS) {
                     DO.C.User.UI.annotationLocationPersonalStorage.checked = opts.annotationLocationPersonalStorage = aLPS.checked;
                   }
+                  var aIL = this.getInput().annotationInboxLocation;
+                  DO.C.User.UI['annotationInboxLocation'] = { checked: false }
+                  if(aIL) {
+                    DO.C.User.UI.annotationInboxLocation.checked = opts.annotationInboxLocation = aIL.checked;
+                  }
                   opts.license = this.getInput().license.value;
                   break;
                 case 'note':
@@ -6660,8 +6702,8 @@ WHERE {\n\
               }
 
               //XXX: Use this as the canonical if available. Note how noteIRI is treated later
-              if(((opts.annotationLocationPersonalStorage && DO.C.User.Storage) || ((opts.annotationLocationPersonalStorage && DO.C.User.TypeIndex[DO.C.Vocab['oaAnnotation']['@id']]))) || (!opts.annotationLocationPersonalStorage && !opts.annotationLocationService && DO.C.User.Storage && DO.C.User.TypeIndex[DO.C.Vocab['oaAnnotation']['@id']])) {
-                containerIRI = DO.C.User.TypeIndex[DO.C.Vocab['oaAnnotation']['@id']] || DO.C.User.Storage[0];
+              if((opts.annotationLocationPersonalStorage && DO.C.User.Storage) || (!opts.annotationLocationPersonalStorage && !opts.annotationLocationService && DO.C.User.Storage)) {
+                containerIRI = DO.C.User.Storage[0];
 
                 var fromContentType = 'text/html';
                 // contentType = 'text/html';
@@ -6801,6 +6843,10 @@ WHERE {\n\
                     if (opts.license.length > 0) {
                       noteData.license["iri"] = opts.license;
                     }
+                    if (opts.annotationInboxLocation && DO.C.User.TypeIndex && DO.C.User.TypeIndex[DO.C.Vocab['asAnnounce']['@id']]) {
+                      noteData.inbox = DO.C.User.TypeIndex[DO.C.Vocab['asAnnounce']['@id']];
+                    }
+
                     // note = DO.U.createNoteDataHTML(noteData);
                     break;
 
@@ -6965,6 +7011,7 @@ WHERE {\n\
                     if (DO.C.User.URL) {
                       noteData.creator["url"] = DO.C.User.URL;
                     }
+
                     // note = DO.U.createNoteDataHTML(noteData);
                     ref = DO.U.getTextQuoteHTML(refId, exact, docRefType, { 'do': true });
                     break;
@@ -7058,7 +7105,7 @@ WHERE {\n\
 
                 return inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id'])
                   .catch(error => {
-                    console.log('Error fetching ldpinbox endpoint:', error)
+                    console.log('Error fetching ldp:inbox endpoint:', error)
                     throw error
                   })
                   .then(inboxes => {
@@ -7104,7 +7151,7 @@ WHERE {\n\
                     fetcher.postActivity(annotation['containerIRI'], id, data, annotation)
                       .catch(error => {
                         // console.log('Error serializing annotation:', error)
-                        console.log(error)
+                        // console.log(error)
                         throw error  // re-throw, break out of promise chain
                       })
 
@@ -7330,6 +7377,7 @@ WHERE {\n\
                   r.content = this.getForm().querySelector('#article-content.medium-editor-toolbar-textarea');
                   r.annotationLocationService = this.getForm().querySelector('#annotation-location-service');
                   r.annotationLocationPersonalStorage = this.getForm().querySelector('#annotation-location-personal-storage');
+                  r.annotationInboxLocation = this.getForm().querySelector('#annotation-inbox');
                   r.license = this.getForm().querySelector('#article-license.medium-editor-toolbar-select');
                   break;
                 case 'note':
@@ -7341,18 +7389,21 @@ WHERE {\n\
                   r.content = this.getForm().querySelector('#approve-content.medium-editor-toolbar-textarea');
                   r.annotationLocationService = this.getForm().querySelector('#annotation-location-service');
                   r.annotationLocationPersonalStorage = this.getForm().querySelector('#annotation-location-personal-storage');
+                  r.annotationInboxLocation = this.getForm().querySelector('#annotation-inbox');
                   r.license = this.getForm().querySelector('#approve-license.medium-editor-toolbar-select');
                   break;
                 case 'disapprove':
                   r.content = this.getForm().querySelector('#disapprove-content.medium-editor-toolbar-textarea');
                   r.annotationLocationService = this.getForm().querySelector('#annotation-location-service');
                   r.annotationLocationPersonalStorage = this.getForm().querySelector('#annotation-location-personal-storage');
+                  r.annotationInboxLocation = this.getForm().querySelector('#annotation-inbox');
                   r.license = this.getForm().querySelector('#disapprove-license.medium-editor-toolbar-select');
                   break;
                 case 'specificity':
                   r.content = this.getForm().querySelector('#specificity-content.medium-editor-toolbar-textarea');
                   r.annotationLocationService = this.getForm().querySelector('#annotation-location-service');
                   r.annotationLocationPersonalStorage = this.getForm().querySelector('#annotation-location-personal-storage');
+                  r.annotationInboxLocation = this.getForm().querySelector('#annotation-inbox');
                   r.license = this.getForm().querySelector('#specificity-license.medium-editor-toolbar-select');
                   break;
                 case 'cite':
