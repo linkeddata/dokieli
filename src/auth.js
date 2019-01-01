@@ -21,6 +21,10 @@ module.exports = {
   getAgentKnows,
   getAgentSupplementalInfo,
   getAgentSeeAlso,
+  getAgentTypeIndex,
+  getAgentPreferencesFile,
+  getAgentPublicTypeIndex,
+  getAgentPrivateTypeIndex,
   getUserContacts,
   getUserHTML,
   getUserSignedInHTML,
@@ -333,6 +337,8 @@ function setUserInfo (userIRI, oidc) {
 function afterSignIn () {
   var promises = [];
 
+  promises.push(getAgentTypeIndex(Config.User))
+
   promises.push(getAgentSupplementalInfo(Config.User.IRI))
 
   promises.push(getAgentSeeAlso(Config.User.Graph))
@@ -401,6 +407,7 @@ function getAgentSupplementalInfo(iri) {
         var storage = getAgentStorage(s) || [];
         var outbox = getAgentOutbox(s) || [];
         var knows = getAgentKnows(s) || [];
+        //TODO publicTypeIndex privateTypeIndex ??
 
         if (storage.length > 0) {
           Config.User.Storage = (Config.User.Storage)
@@ -509,6 +516,65 @@ function getUserContacts(iri) {
   }
 
   return fyn(iri).then(function(i){ return Config.User.Knows || []; });
+}
+
+function getAgentTypeIndex(iri) {
+  const TypeRegistrationClasses = [DO.C.Vocab['oaannotation']['@id']];
+
+  var fetchTypeRegistration = function(iri) {
+    var pIRI = uri.getProxyableIRI(iri);
+
+    fetcher.getTriplesFromGraph(pIRI)
+      .then(function(triples){
+// console.log(triples);
+        if(triples.length > 0) {
+          var indexes = {};
+          triples.forEach(function(t){
+            var s = t.subject.nominalValue;
+            var p = t.predicate.nominalValue;
+            var o = t.object.nominalValue;
+
+            //Check if class is of interest (that we can handle)
+            if (p == Config.Vocab['solidforClass']['@id'] && TypeRegistrationClasses.indexOf(o) > -1) {
+              //Keep track of subjects of interest
+              indexes[s] = {}
+              indexes[s][Config.Vocab['solidforClass']['@id']] = o;
+            }
+          });
+// console.log(indexes)
+          triples.forEach(function(t){
+            var s = t.subject.nominalValue;
+            var p = t.predicate.nominalValue;
+            var o = t.object.nominalValue;
+
+            if(indexes[s] && p == Config.Vocab['solidinstanceContainer']['@id']) {
+              var forClass = indexes[s][Config.Vocab['solidforClass']['@id']]
+              Config.User.TypeIndex[forClass] = o;
+            }
+          });
+
+          return Config.User.TypeIndex
+        }
+      })
+  }
+
+  var promises = []
+
+  if (Config.User.PublicTypeIndex) {
+    promises.push(fetchTypeRegistration(Config.User.PublicTypeIndex))
+  }
+  if (Config.User.PrivateTypeIndex) {
+    promises.push(fetchTypeRegistration(Config.User.PrivateTypeIndex))
+  }
+
+  return Promise.all(promises)
+    .then(function(results) {
+      results.filter(result => !(result instanceof Error));
+
+      // results.forEach(function(result) {
+      //   console.log(result)
+      // });
+    });
 }
 
 function processSameAs(s, callback) {
