@@ -6660,8 +6660,8 @@ WHERE {\n\
               }
 
               //XXX: Use this as the canonical if available. Note how noteIRI is treated later
-              if((opts.annotationLocationPersonalStorage && DO.C.User.Storage) || (!opts.annotationLocationPersonalStorage && !opts.annotationLocationService && DO.C.User.Storage)) {
-                containerIRI = DO.C.User.Storage[0];
+              if(((opts.annotationLocationPersonalStorage && DO.C.User.Storage) || ((opts.annotationLocationPersonalStorage && DO.C.User.TypeIndex[DO.C.Vocab['oaAnnotation']['@id']]))) || (!opts.annotationLocationPersonalStorage && !opts.annotationLocationService && DO.C.User.Storage && DO.C.User.TypeIndex[DO.C.Vocab['oaAnnotation']['@id']])) {
+                containerIRI = DO.C.User.TypeIndex[DO.C.Vocab['oaAnnotation']['@id']] || DO.C.User.Storage[0];
 
                 var fromContentType = 'text/html';
                 // contentType = 'text/html';
