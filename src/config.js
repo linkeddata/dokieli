@@ -307,6 +307,8 @@ module.exports = {
     "ldpinbox": { "@id": "http://www.w3.org/ns/ldp#inbox", "@type": "@id", "@array": true },
 
     "solidpreferredProxy": "http://www.w3.org/ns/solid/terms#preferredProxy",
+    "solidforClass": { "@id": "http://www.w3.org/ns/solid/terms#forClass", "@type": "@id" },
+    "solidinstanceContainer": { "@id": "http://www.w3.org/ns/solid/terms#instanceContainer", "@type": "@id" },
     "solidpublicTypeIndex": { "@id": "http://www.w3.org/ns/solid/terms#publicTypeIndex", "@type": "@id" },
     "solidprivateTypeIndex": { "@id": "http://www.w3.org/ns/solid/terms#privateTypeIndex", "@type": "@id" },
 
