@@ -319,18 +319,12 @@ function setUserInfo (userIRI, oidc) {
       Config.User.Inbox = getAgentInbox(s)
       Config.User.TypeIndex = {}
 
+      Config.User.PreferencesFile = getAgentPreferencesFile(s)
+      Config.User.PublicTypeIndex = getAgentPublicTypeIndex(s)
+      Config.User.PrivateTypeIndex = getAgentPrivateTypeIndex(s)
+
       var preferredProxy = getAgentPreferredProxy(s)
       Config.ProxyURL = (preferredProxy) ? preferredProxy : Config.ProxyURL
-
-      if (s.pimpreferencesFile && s.pimpreferencesFile.length > 0) {
-        Config.User.PreferencesFile = s.pimpreferencesFile
-      }
-      if (s.solidpublicTypeIndex && s.solidpublicTypeIndex.length > 0) {
-        Config.User.PublicTypeIndex = s.solidpublicTypeIndex
-      }
-      if (s.solidprivateTypeIndex && s.privateTypeIndex.length > 0) {
-        Config.User.PrivateTypeIndex = s.solidprivateTypeIndex
-      }
 
       return Config.User
     })
@@ -610,4 +604,22 @@ function getAgentKnows (s) {
   knows = util.uniqueArray(knows);
 
   return (knows.length > 0) ? knows : undefined;
+}
+
+function getAgentPublicTypeIndex (s) {
+  return (s.solidpublicTypeIndex && s.solidpublicTypeIndex.length > 0)
+    ? s.solidpublicTypeIndex
+    : undefined
+}
+
+function getAgentPrivateTypeIndex (s) {
+  return (s.solidprivateTypeIndex && s.solidprivateTypeIndex.length > 0)
+    ? s.solidprivateTypeIndex
+    : undefined
+}
+
+function getAgentPreferencesFile (s) {
+  return (s.pimpreferencesFile && s.pimpreferencesFile.length > 0)
+    ? s.pimpreferencesFile
+    : undefined
 }
