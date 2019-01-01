@@ -6109,11 +6109,12 @@ WHERE {\n\
                 }
               };
 
+              updateAnnotationServiceForm();
+              updateAnnotationInboxForm();
+
               return inbox.getEndpoint(DO.C.Vocab['oaannotationService']['@id']).then(
                 function(url) {
                   DO.C.AnnotationService = url[0];
-                  updateAnnotationServiceForm();
-                  updateAnnotationInboxForm();
                   showAction();
                 },
                 function(reason) {
@@ -6121,8 +6122,6 @@ WHERE {\n\
                     auth.showUserIdentityInput();
                   }
                   else {
-                    updateAnnotationServiceForm();
-                    updateAnnotationInboxForm();
                     showAction();
                   }
                 }
