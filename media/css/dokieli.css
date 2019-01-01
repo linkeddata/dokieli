@@ -1427,15 +1427,20 @@ vertical-align:top;
 
 .medium-editor-toolbar-form label[for^="ref-"],
 .medium-editor-toolbar-form label[for^="annotation-location-"],
+.medium-editor-toolbar-form label[for^="annotation-inbox"],
 .medium-editor-toolbar-form label[for^="bookmark-"] {
 width:auto;
 font-size:1em;
 line-height:1;
 }
+.medium-editor-toolbar-form .annotation-inbox,
 .medium-editor-toolbar-form .annotation-location-selection {
 margin: 0 1em;
 display:inline-block;
 vertical-align: top;
+}
+.medium-editor-toolbar-form .annotation-inbox {
+margin-left:0;
 }
 .medium-editor-toolbar-form input:nth-of-type(2):before {
 margin-left: 68px;
