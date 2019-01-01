@@ -2583,7 +2583,7 @@ var DO = {
             let notificationStatements = '    <dl about="' + noteIRI +
               '">\n<dt>Object type</dt><dd><a about="' +
               noteIRI + '" typeof="oa:Annotation" href="' +
-              DO.C.Vocab['oaannotation']['@id'] +
+              DO.C.Vocab['oaAnnotation']['@id'] +
               '">Annotation</a></dd>\n<dt>Motivation</dt><dd><a href="' +
               DO.C.Prefixes[motivatedBy.split(':')[0]] +
               motivatedBy.split(':')[1] + '" property="oa:motivation">' +
@@ -6983,7 +6983,7 @@ WHERE {\n\
                 var noteIRI = (options.relativeObject) ? '#' + id : annotation['noteIRI'];
 
                 notificationStatements = '    <dl about="' + noteIRI + '">\n\
-  <dt>Object type</dt><dd><a about="' + noteIRI + '" typeof="oa:Annotation" href="' + DO.C.Vocab['oaannotation']['@id'] + '">Annotation</a></dd>\n\
+  <dt>Object type</dt><dd><a about="' + noteIRI + '" typeof="oa:Annotation" href="' + DO.C.Vocab['oaAnnotation']['@id'] + '">Annotation</a></dd>\n\
   <dt>Motivation</dt><dd><a href="' + DO.C.Prefixes[motivatedBy.split(':')[0]] + motivatedBy.split(':')[1] + '" property="oa:motivation">' + motivatedBy.split(':')[1] + '</a></dd>\n\
 </dl>\n\
 ';
