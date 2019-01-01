@@ -519,7 +519,7 @@ function getUserContacts(iri) {
 }
 
 function getAgentTypeIndex(iri) {
-  const TypeRegistrationClasses = [DO.C.Vocab['oaannotation']['@id']];
+  const TypeRegistrationClasses = [DO.C.Vocab['oaAnnotation']['@id']];
 
   var fetchTypeRegistration = function(iri) {
     var pIRI = uri.getProxyableIRI(iri);
