@@ -86,9 +86,14 @@ var DO = {
       var notifications = [];
       var pIRI = uri.getProxyableIRI(url);
 
+      DO.C.Inbox[url] = {};
+      DO.C.Inbox[url]['Notifications'] = [];
+
       return graph.getGraph(pIRI)
         .then(
           function(i) {
+            DO.C.Inbox[url]['Graph'] = i;
+
             var s = i.child(url);
             s.ldpcontains.forEach(function(resource) {
 // console.log(resource);
@@ -100,6 +105,7 @@ var DO = {
             });
 // console.log(notifications);
             if (notifications.length > 0) {
+              DO.C.Inbox[url]['Notifications'] = notifications;
               return notifications;
             }
             else {
@@ -119,7 +125,9 @@ var DO = {
         inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id']).then(
           function(i) {
             i.forEach(function(inboxURL) {
-              DO.U.showNotificationSources(inboxURL);
+              if (!DO.C.Inbox[inboxURL]) {
+                DO.U.showNotificationSources(inboxURL);              
+              }
             });
           },
           function(reason) {
@@ -133,8 +141,9 @@ var DO = {
       DO.U.getNotifications(url).then(
         function(i) {
           i.forEach(function(notification) {
-            var pIRI = uri.getProxyableIRI(notification);
-            DO.U.showActivities(pIRI);
+            if (!DO.C.Notification[notification]) {
+              DO.U.showActivities(notification);
+            }
           });
         },
         function(reason) {
@@ -257,8 +266,15 @@ var DO = {
     },
 
     showActivities: function(url) {
-      return fetcher.getResourceGraph(url).then(
+      DO.C.Notification[url] = {};
+      DO.C.Notification[url]['Activities'] = [];
+
+      var pIRI = uri.getProxyableIRI(url);
+
+      return fetcher.getResourceGraph(pIRI).then(
         function(g) {
+          DO.C.Notification[url]['Graph'] = g;
+
 // console.log(g);
           var subjects = [];
           g.graph().toArray().forEach(function(t){
@@ -266,8 +282,10 @@ var DO = {
           });
           subjects = util.uniqueArray(subjects);
 // console.log(subjects);
+
           subjects.forEach(function(i){
             var s = g.child(i)
+
             var types = s.rdftype._array || [];
 
             var currentPathURL = window.location.origin + window.location.pathname;
@@ -362,6 +380,10 @@ var DO = {
               else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Announce') > -1 || resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Create') > -1) {
                 if(s.asobject && s.asobject.at(0) && s.astarget && s.astarget.at(0) && DO.U.getPathURL(s.astarget.at(0)) == currentPathURL) {
                   var object = s.asobject.at(0);
+
+                  DO.C.Notification[url]['Activities'].push(i);
+                  DO.C.Activity[object] = {};
+                  DO.C.Activity[object]['Graph'] = s;
 
                   if (object.startsWith(url)) {
                     return DO.U.showAnnotation(object, s);
@@ -4441,6 +4463,32 @@ WHERE {\n\
       var refLabel = id;
 
       var inboxIRI = (note.ldpinbox && note.ldpinbox.at(0)) ? note.ldpinbox.at(0) : undefined;
+      if (inboxIRI) {
+        // console.log('inboxIRI:')
+        // console.log(inboxIRI)
+        // console.log('DO.C.Inbox:')
+        // console.log(DO.C.Inbox)
+        // console.log('DO.C.Notification:')
+        // console.log(DO.C.Notification)
+        // console.log('DO.C.Activity:')
+        // console.log(DO.C.Activity)
+        if (DO.C.Inbox[inboxIRI]) {
+          DO.C.Inbox[inboxIRI]['Notifications'].forEach(function(notification) {
+// console.log(notification)
+            if (DO.C.Notification[notification] && DO.C.Notification[notification]['Activities']) {
+              DO.C.Notification[notification]['Activities'].forEach(function(activity){
+// console.log('   ' + activity)
+                if (!document.querySelector('[about="' + activity + '"]') && DO.C.Activity[activity] && DO.C.Activity[activity]) {
+                  DO.U.showAnnotation(activity, DO.C.Activity[activity]['Graph']);
+                }
+              })
+            }
+          });
+        }
+        else {
+          DO.U.showNotificationSources(inboxIRI);
+        }
+      }
 
       var datetime = note.schemadatePublished || note.dctermscreated || note.aspublished;
 // console.log(datetime);
@@ -4628,6 +4676,7 @@ WHERE {\n\
           //XXX: Keeping this comment around for emergency
 //                selectedParentNode.parentNode.insertBefore(asideNode, selectedParentNode.nextSibling);
 
+
           if(DO.C.User.IRI) {
             var noteDelete = document.querySelector('aside.do blockquote[cite="' + noteIRI + '"] article button.delete');
             if (noteDelete) {
@@ -4647,6 +4696,8 @@ WHERE {\n\
             }
           }
           DO.U.positionNote(refId, refLabel, id);
+
+          DO.C.Activity[noteIRI]['Graph'] = g;
 
           //Perhaps return something more useful?
           return noteIRI;
@@ -4689,6 +4740,8 @@ WHERE {\n\
           }
 // console.log(noteData)
           DO.U.addInteraction(noteData);
+
+          DO.C.Activity[noteIRI]['Graph'] = g;
         }
       }
       else {
@@ -4735,6 +4788,8 @@ WHERE {\n\
             noteData.datetime = datetime;
           }
           DO.U.addInteraction(noteData);
+
+          DO.C.Activity[noteIRI]['Graph'] = g;
         }
         else {
           console.log('Source is not an oa:Annotation and it is not a reply to');
@@ -6636,7 +6691,7 @@ WHERE {\n\
               var range = MediumEditor.selection.getSelectionRange(this.document);
               var selectedParentElement = this.base.getSelectedParentElement();
 // console.log('getSelectedParentElement:');
-console.log(selectedParentElement);
+// console.log(selectedParentElement);
 
               //Mark the text which the note was left for (with reference to the note?)
               this.base.selectedDocument = this.document;
