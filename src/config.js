@@ -23,6 +23,9 @@ module.exports = {
       DO.U.initMath();
     }
   },
+  Inbox: {},
+  Notification: {},
+  Activity: {},
   Lang: document.documentElement.lang,
   DocRefType: '',
   RefType: {
