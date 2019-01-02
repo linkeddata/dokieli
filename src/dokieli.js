@@ -4822,6 +4822,7 @@ WHERE {\n\
             buttonDelete = '<button class="delete" title="Delete item"><svg class="fas fa-trash-alt" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M0 84V56c0-13.3 10.7-24 24-24h112l9.4-18.7c4-8.2 12.3-13.3 21.4-13.3h114.3c9.1 0 17.4 5.1 21.5 13.3L312 32h112c13.3 0 24 10.7 24 24v28c0 6.6-5.4 12-12 12H12C5.4 96 0 90.6 0 84zm416 56v324c0 26.5-21.5 48-48 48H80c-26.5 0-48-21.5-48-48V140c0-6.6 5.4-12 12-12h360c6.6 0 12 5.4 12 12zm-272 68c0-8.8-7.2-16-16-16s-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208zm96 0c0-8.8-7.2-16-16-16s-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208zm96 0c0-8.8-7.2-16-16-16s-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208z"/></svg></button>' ;
           }
           articleClass = ' class="do"';
+          aAbout = ('iri' in n) ? n.iri : '';
           break;
         case 'write':
           hX = 1;
@@ -6635,7 +6636,7 @@ WHERE {\n\
               var range = MediumEditor.selection.getSelectionRange(this.document);
               var selectedParentElement = this.base.getSelectedParentElement();
 // console.log('getSelectedParentElement:');
-// console.log(selectedParentElement);
+console.log(selectedParentElement);
 
               //Mark the text which the note was left for (with reference to the note?)
               this.base.selectedDocument = this.document;
@@ -6658,6 +6659,17 @@ WHERE {\n\
               var suffix = selectedParentElement.textContent.substr(end, suffixEnd - end);
 // console.log('-' + suffix + '-');
               suffix = DO.U.htmlEntities(suffix);
+
+              //Annotating an annotation
+              //FIXME: A bit hacky - should use RDF
+              var annotationInbox = selectedParentElement.closest('.do[typeof="oa:Annotation"]');
+              if (annotationInbox) {
+                annotationInbox = annotationInbox.querySelector('[rel="ldp:inbox"]');
+                if (annotationInbox) {
+                  annotationInbox = annotationInbox.href || annotationInbox.getAttribute('resource')
+                  annotationInbox = decodeURIComponent(annotationInbox);
+                }
+              }
 
               var datetime = util.getDateTimeISO();
               var id = DO.U.generateAttributeId();
@@ -6690,7 +6702,7 @@ WHERE {\n\
                   // 'subjectURI': noteIRI,
                   'profile': 'https://www.w3.org/ns/activitystreams'
                 };
-                aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType };
+                aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'annotationInbox': annotationInbox };
                 if (typeof DO.C.User.Storage === 'undefined') {
                   aLS['canonical'] = true;
                 }
@@ -6712,7 +6724,7 @@ WHERE {\n\
                 var contextProfile = {
                   // 'subjectURI': noteIRI,
                 };
-                aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true };
+                aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true, 'annotationInbox': annotationInbox };
 
                 annotationDistribution.push(aLS);
               }
@@ -6734,15 +6746,15 @@ WHERE {\n\
 
                 if(!opts.annotationLocationPersonalStorage && opts.annotationLocationService) {
                   noteURL = noteIRI = containerIRI + id;
-                  aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true };
+                  aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true,'annotationInbox': annotationInbox };
                 }
                 else if(opts.annotationLocationPersonalStorage) {
                   noteURL = containerIRI + id;
-                  aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType };
+                  aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'annotationInbox': annotationInbox };
                 }
                 else {
                   noteURL = noteIRI = containerIRI + id;
-                  aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true };
+                  aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true, 'annotationInbox': annotationInbox };
                 }
 
                 aLS = Object.assign(aLS, contextProfile)
@@ -7100,9 +7112,15 @@ WHERE {\n\
                 if (!annotation['canonical']) {
                   return Promise.resolve();
                 }
-// console.log(annotation)
 
-                return inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id'])
+                if (annotation.annotationInbox) {
+                  inboxPromise = Promise.resolve([annotation.annotationInbox])
+                }
+                else {
+                  inboxPromise = inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id']);
+                }
+
+                return inboxPromise
                   .catch(error => {
                     console.log('Error fetching ldp:inbox endpoint:', error)
                     throw error
