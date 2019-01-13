@@ -307,6 +307,8 @@ module.exports = {
     "pimstorage": { "@id": "http://www.w3.org/ns/pim/space#storage", "@type": "@id", "@array": true },
     "pimpreferencesFile": { "@id": "http://www.w3.org/ns/pim/space#preferencesFile", "@type": "@id" },
 
+    "acldelegates" : { "@id": "http://www.w3.org/ns/auth/acl#delegates", "@type": "@id" },
+
     "ldpinbox": { "@id": "http://www.w3.org/ns/ldp#inbox", "@type": "@id", "@array": true },
 
     "solidpreferredProxy": "http://www.w3.org/ns/solid/terms#preferredProxy",

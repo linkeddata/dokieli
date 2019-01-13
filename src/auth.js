@@ -313,6 +313,8 @@ function setUserInfo (userIRI, oidc) {
       Config.User.URL = getAgentURL(s)
       Config.User.OIDC = oidc ? true : false;
 
+      Config.User.Delegates = getAgentDelegates(s)
+
       Config.User.Contacts = {}
       Config.User.Knows = getAgentKnows(s)
       Config.User.SameAs = []
@@ -636,7 +638,11 @@ function getAgentName (s) {
 }
 
 function getAgentURL (s) {
-    return s.foafhomepage || s.foafweblog || s.schemaurl || s.vcardurl || undefined
+  return s.foafhomepage || s.foafweblog || s.schemaurl || s.vcardurl || undefined
+}
+
+function getAgentDelegates (s) {
+  return s.acldelegates || undefined
 }
 
 function getAgentStorage (s) {
