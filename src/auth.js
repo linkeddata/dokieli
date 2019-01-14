@@ -660,7 +660,9 @@ function getAgentOutbox (s) {
 function getAgentInbox (s) {
   return (s.ldpinbox && s.ldpinbox._array.length > 0)
     ? s.ldpinbox._array
-    : undefined
+    : (s.asinbox && s.asinbox._array.length > 0)
+      ? s.asinbox._array
+      : undefined
 }
 
 function getAgentKnows (s) {

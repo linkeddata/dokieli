@@ -2866,8 +2866,16 @@ console.log(reason);
         if (aI) {
           return Promise.resolve(aI);
         }
-        else if (iri.indexOf('#') < 0) {
-          return inbox.getEndpointFromHead(DO.C.Vocab['ldpinbox']['@id'], iri);
+        // else if (iri.indexOf('#') < 0) {
+        else {
+          return inbox.getEndpointFromHead(DO.C.Vocab['ldpinbox']['@id'], iri).then(
+            function(i) {
+              return i;
+            },
+            function(reason){
+              //XXX: This should be optimised so that we don't have to HEAD again
+              return inbox.getEndpointFromHead(DO.C.Vocab['asinbox']['@id'], iri)
+            });
         }
       }
 

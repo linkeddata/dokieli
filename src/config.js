@@ -309,8 +309,6 @@ module.exports = {
 
     "acldelegates" : { "@id": "http://www.w3.org/ns/auth/acl#delegates", "@type": "@id" },
 
-    "ldpinbox": { "@id": "http://www.w3.org/ns/ldp#inbox", "@type": "@id", "@array": true },
-
     "solidpreferredProxy": "http://www.w3.org/ns/solid/terms#preferredProxy",
     "solidforClass": { "@id": "http://www.w3.org/ns/solid/terms#forClass", "@type": "@id" },
     "solidinstanceContainer": { "@id": "http://www.w3.org/ns/solid/terms#instanceContainer", "@type": "@id" },
@@ -329,6 +327,7 @@ module.exports = {
     "oamotivatedBy": { "@id": "http://www.w3.org/ns/oa#motivatedBy", "@type": "@id" },
     "oaannotationService": { "@id": "http://www.w3.org/ns/oa#annotationService", "@type": "@id", "@array": true },
 
+    "asinbox": { "@id": "https://www.w3.org/ns/activitystreams#inbox", "@type": "@id", "@array": true },
     "assubject": { "@id": "https://www.w3.org/ns/activitystreams#subject", "@type": "@id", "@array": true },
     "asobject": { "@id": "https://www.w3.org/ns/activitystreams#object", "@type": "@id", "@array": true },
     "astarget": { "@id": "https://www.w3.org/ns/activitystreams#target", "@type": "@id", "@array": true },
@@ -355,6 +354,7 @@ module.exports = {
     "siocreplyof": { "@id": "http://rdfs.org/sioc/ns#reply_of", "@type": "@id", "@array": true },
     "siocavatar": { "@id": "http://rdfs.org/sioc/ns#avatar", "@type": "@id" },
 
+    "ldpinbox": { "@id": "http://www.w3.org/ns/ldp#inbox", "@type": "@id", "@array": true },
     "ldpcontains": { "@id": "http://www.w3.org/ns/ldp#contains", "@type": "@id", "@array": true },
     "ldpResource": { "@id": "http://www.w3.org/ns/ldp#Resource", "@type": "@id" },
     "ldpContainer": { "@id": "http://www.w3.org/ns/ldp#Container", "@type": "@id" },
