@@ -5535,6 +5535,10 @@ WHERE {\n\
           DO.U.Editor.disableEditor();
         }
 
+        if (e || (typeof e === 'undefined' && editorMode == 'author')) {
+          DO.U.showActionMessage(document.documentElement, 'Activated <strong>' + editorMode + '</strong> mode.');
+        }
+
         if (!document.getElementById('document-editor')) {
           document.documentElement.appendChild(util.fragmentFromString('<aside id="document-editor" class="do"></aside>'))
         }
