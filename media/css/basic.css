@@ -192,10 +192,14 @@ font-weight:bold;
 width:auto;
 }
 
+aside:not([class="do"]),
 blockquote {
 padding-left:1em;
 border-left:0.25em solid #ccc;
 margin:0 0 1em 0;
+}
+aside:not([class="do"]) {
+border-color:#000;
 }
 
 dl[id^="document-"] dt,
@@ -508,8 +512,8 @@ margin:0;
 
 div.issue, div.note {
 background-color:#fbfffb;
-border-left:0.5em solid #009000;
-padding: 1em 1.2em;
+border-left:0.25em solid #009000;
+padding: 1em;
 }
 div.issue > *, div.note > * {
 /*text-transform: uppercase;*/

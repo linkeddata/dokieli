@@ -85,7 +85,7 @@ module.exports = {
 
   SelectorSign: {
     "*": "🔗",
-    "aside": "†",
+    "aside": "|",
     "audio": "🔊",
     "code": "#",
     "dl": "☝",
