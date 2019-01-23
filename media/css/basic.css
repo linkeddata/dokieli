@@ -642,9 +642,16 @@ column-count:2;
 tfoot dl.abbr dt {
 font-weight:bold;
 }
+dl [class^="earl:"] + dd:after,
 tfoot dd:after { content: "\A"; white-space:pre; }
+
+dl [class^="earl:"], dl [class^="earl:"] + dd,
 tfoot dt, tfoot dd { display:inline; }
+
+dl [class^="earl:"] + dd,
 tfoot dd { margin-left: 0.5em }
+
+dl [class^="earl:"] + dd + dt,
 tfoot dd + dt { margin-top:0; }
 
 [class~="earl:passed"],[resource~="earl:passed"] { background-color: #0f0; color: #000; text-align:center; vertical-align:middle; }
