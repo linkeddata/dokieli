@@ -126,7 +126,7 @@ var DO = {
           function(i) {
             i.forEach(function(inboxURL) {
               if (!DO.C.Inbox[inboxURL]) {
-                DO.U.showNotificationSources(inboxURL);              
+                DO.U.showNotificationSources(inboxURL);
               }
             });
           },
@@ -4389,7 +4389,8 @@ WHERE {\n\
         case 'oa:bookmarking':   s = '🔖'; break;
         case 'oa:commenting':    s = '🗨'; break;
         case 'oa:describing':    s = '※'; break;
-        case 'oa:highlighting':  s = '#'; break;        
+        case 'oa:highlighting':  s = '#'; break;
+        case 'oa:questioning':   s = '?'; break;
         case 'oa:replying':      s = '💬'; break;
       }
 
@@ -4857,6 +4858,12 @@ WHERE {\n\
         case 'oa:assessing':
           motivatedByLabel = 'reviews';
           targetLabel = 'Review of';
+          aAbout = ('mode' in n && n.mode == 'object') ? '#' + n.id : '';
+          aPrefix = prefixes;
+          break;
+        case 'oa:questioning':
+          motivatedByLabel = 'questions';
+          targetLabel = 'Questions';
           aAbout = ('mode' in n && n.mode == 'object') ? '#' + n.id : '';
           aPrefix = prefixes;
           break;
@@ -6874,8 +6881,13 @@ WHERE {\n\
 
                   //External Note
                   case 'article': case 'approve': case 'disapprove': case 'specificity':
-                    if (_this.action === 'approve' || _this.action === 'disapprove' || _this.action === 'specificity') {
+                    if (_this.action === 'approve' || _this.action === 'disapprove') {
                       motivatedBy = 'oa:assessing';
+                    }
+                    if (_this.action === 'specificity') {
+                      motivatedBy = 'oa:questioning';
+                    }
+                    if (_this.action !== 'article') {
                       refLabel = DO.U.getReferenceLabel(motivatedBy);
                     }
 
