@@ -2584,7 +2584,7 @@ var DO = {
           .then(response => {
             replyToResource
               .querySelector('.response-message')
-              .innerHTML = '<p class="success"><a href="' + response.url + '">Reply saved!</a></p>'
+              .innerHTML = '<p class="success"><a target="_blank" href="' + response.url + '">Reply saved!</a></p>'
 
             // Determine the inbox endpoint, to send the notification to
             return inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id'])
@@ -2621,7 +2621,7 @@ var DO = {
               "statements": notificationStatements
             }
 
-            inbox.notifyInbox(notificationData)
+            return inbox.notifyInbox(notificationData)
               .catch(error => {
                 console.error('Failed sending notification to ' + inboxURL + ' :', error)
 
@@ -2629,10 +2629,20 @@ var DO = {
               })
           })
 
-          .then(() => {  // Success!
+          .then(response => {  // Success!
+            var notificationSent = 'Notification sent'
+            var location = response.headers.get('Location')
+
+            if (location) {
+              notificationSent = '<a target="_blank" href="' + location.trim() + '">' + notificationSent + '</a>!'
+            }
+            else {
+              notificationSent = notificationSent + ", but location unknown."
+            }
+
             replyToResource
               .querySelector('.response-message')
-              .innerHTML += '<p class="success">Notification sent</p>';
+              .innerHTML += '<p class="success">' + notificationSent + '</p>'
           })
 
           .catch(error => {
