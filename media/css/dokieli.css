@@ -1283,7 +1283,7 @@ span.ref[typeof~="dctypes:Text"] mark + sup[class^="ref-"] {
 color:#000;
 text-shadow: 1px 1px 1px #000;
 }
-span.do.ref[typeof~="dctypes:Text"] mark + sup[class^="ref-"] {
+span.ref[typeof~="dctypes:Text"] mark + sup[class^="ref-"] {
 position:absolute;
 top:initial;
 bottom:1em;
