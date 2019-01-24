@@ -735,28 +735,29 @@ var DO = {
     },
 
     showTextQuoteSelector: function(containerNode) {
+      var motivatedBy = 'oa:highlighting';
       var selector = DO.U.getTextQuoteSelectorFromLocation(document.location);
       if (selector && selector.exact && selector.exact.length > 0) {
         //XXX: TODO: Copied from showAnnotation
 
         // refId = String(Math.abs(DO.U.hashCode(document.location.href)));
         var refId = document.location.hash.substring(1);
-        var refLabel = DO.U.getReferenceLabel('oa:highlighting');
+        var refLabel = DO.U.getReferenceLabel(motivatedBy);
 
         containerNode = containerNode || document.body;
 
-        var docRefType = '<sup class="ref-highlighting">' + refLabel + '</sup>';
+        var docRefType = '<sup class="ref-highlighting"><a rel="oa:hasTarget" href="#' + refId + '">' + refLabel + '</a></sup>';
 
         var options = {
           'do': true,
           'mode': '#selector'
         };
 
-        DO.U.importTextQuoteSelector(containerNode, selector, refId, docRefType, options)
+        DO.U.importTextQuoteSelector(containerNode, selector, refId, motivatedBy, docRefType, options)
       }
     },
 
-    importTextQuoteSelector: function(containerNode, selector, refId, docRefType, options) {
+    importTextQuoteSelector: function(containerNode, selector, refId, motivatedBy, docRefType, options) {
       var containerNodeTextContent = containerNode.textContent;
       //XXX: Seems better?
       // var containerNodeTextContent = util.fragmentFromString(doc.getDocument(containerNode)).textContent.trim();
@@ -793,7 +794,7 @@ var DO = {
         var selection = { start: exactStart, end: exactEnd };
 // console.log('selection:')
 // console.log(selection)
-        var ref = DO.U.getTextQuoteHTML(refId, exact, docRefType, options);
+        var ref = DO.U.getTextQuoteHTML(refId, motivatedBy, exact, docRefType, options);
 // console.log('containerNode:')
 // console.log(containerNode)
         MediumEditor.selection.importSelection(selection, containerNode, document);
@@ -4378,7 +4379,7 @@ WHERE {\n\
     },
 
     getReferenceLabel: function(motivatedBy) {
-      var s = '🗨';
+      var s = '#';
       motivatedBy = motivatedBy || '';
       //TODO: uriToPrefix
       motivatedBy = (motivatedBy.length > 0 && motivatedBy.slice(0, 4) == 'http' && motivatedBy.indexOf('#') > -1) ? 'oa:' + motivatedBy.substr(motivatedBy.lastIndexOf('#') + 1) : motivatedBy;
@@ -4390,6 +4391,7 @@ WHERE {\n\
         case 'oa:commenting':    s = '🗨'; break;
         case 'oa:describing':    s = '※'; break;
         case 'oa:highlighting':  s = '#'; break;
+        case 'oa:linking':       s = '※'; break;
         case 'oa:questioning':   s = '?'; break;
         case 'oa:replying':      s = '💬'; break;
       }
@@ -4422,12 +4424,20 @@ WHERE {\n\
       }
     },
 
-    getTextQuoteHTML: function(refId, exact, docRefType, options){
+    getTextQuoteHTML: function(refId, motivatedBy, exact, docRefType, options){
       options = options || {};
 
       var doMode = (options.do) ? ' do' : '';
 
-      return '<span class="ref' + doMode + '" rel="schema:hasPart" resource="#' + refId + '" typeof="dctypes:Text"><mark datatype="rdf:HTML" id="'+ refId +'" property="rdf:value">' + exact + '</mark>' + docRefType + '</span>';
+      var refOpen = '<span class="ref' + doMode + '" rel="schema:hasPart" resource="#' + refId + '" typeof="dcterms:Text">';
+      var refClose = '</span>';
+      if (motivatedBy = 'oa:highlighting') {
+        refOpen = '<span class="ref' + doMode + '" rel="schema:hasPart" resource="#h-' + refId + '" typeof="oa:Annotation"><span rel="oa:motivatedBy" resource="oa:highlighting"></span><span rel="oa:hasTarget" resource="#' + refId + '" typeof="dcterms:Text">';
+        refClose = '</span></span>';
+      }
+      var mark = '<mark datatype="rdf:HTML" id="'+ refId +'" property="rdf:value">' + exact + '</mark>';
+
+      return refOpen + mark + docRefType + refClose;
     },
 
     positionNote: function(refId, refLabel, noteId) {
@@ -6996,7 +7006,7 @@ WHERE {\n\
 
                     // note = DO.U.createNoteDataHTML(noteData);
 
-                    ref = DO.U.getTextQuoteHTML(refId, exact, docRefType);
+                    ref = DO.U.getTextQuoteHTML(refId, motivatedBy, exact, docRefType);
                     break;
 
                   case 'cite': //footnote reference
@@ -7022,12 +7032,13 @@ WHERE {\n\
                         break;
 
                       case 'ref-reference':
-                        refLabel = DO.U.getReferenceLabel('oa:describing');
+                        motivatedBy = 'oa:linking';
+                        refLabel = DO.U.getReferenceLabel('oa:linking');
                         docRefType = '<span class="' + opts.citationType + '">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span>';
                         break;
                     }
 
-                    ref = DO.U.getTextQuoteHTML(refId, exact, docRefType);
+                    ref = DO.U.getTextQuoteHTML(refId, motivatedBy, exact, docRefType);
                     break;
                   // case 'reference':
                   //   ref = '<span class="ref" about="[this:#' + refId + ']" typeof="dctypes:Text"><span id="'+ refId +'" property="schema:description">' + this.base.selection + '</span> <span class="ref-reference">' + DO.C.RefType[DO.C.DocRefType].InlineOpen + '<a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a>' + DO.C.RefType[DO.C.DocRefType].InlineClose + '</span></span>';
@@ -7103,7 +7114,7 @@ WHERE {\n\
                     }
 
                     // note = DO.U.createNoteDataHTML(noteData);
-                    ref = DO.U.getTextQuoteHTML(refId, exact, docRefType, { 'do': true });
+                    ref = DO.U.getTextQuoteHTML(refId, motivatedBy, exact, docRefType, { 'do': true });
                     break;
                 }
 
