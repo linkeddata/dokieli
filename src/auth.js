@@ -329,8 +329,7 @@ function setUserInfo (userIRI, oidc) {
       Config.User.PublicTypeIndex = getAgentPublicTypeIndex(s)
       Config.User.PrivateTypeIndex = getAgentPrivateTypeIndex(s)
 
-      var preferredProxy = getAgentPreferredProxy(s)
-      Config.ProxyURL = (preferredProxy) ? preferredProxy : Config.ProxyURL
+      Config.User.ProxyURL = getAgentPreferredProxy(s)
 
       return Config.User
     })
