@@ -4441,7 +4441,7 @@ WHERE {\n\
 
       var refOpen = '<span class="ref' + doMode + '" rel="schema:hasPart" resource="#' + refId + '" typeof="dcterms:Text">';
       var refClose = '</span>';
-      if (motivatedBy = 'oa:highlighting') {
+      if (motivatedBy == 'oa:highlighting') {
         refOpen = '<span class="ref' + doMode + '" rel="schema:hasPart" resource="#h-' + refId + '" typeof="oa:Annotation"><span rel="oa:motivatedBy" resource="oa:highlighting"></span><span rel="oa:hasTarget" resource="#' + refId + '" typeof="dcterms:Text">';
         refClose = '</span></span>';
       }
@@ -4644,7 +4644,7 @@ WHERE {\n\
             "suffix": suffix
           };
 
-          var selectedParentNode = DO.U.importTextQuoteSelector(containerNode, selector, refId, docRefType, { 'do': true });
+          var selectedParentNode = DO.U.importTextQuoteSelector(containerNode, selector, refId, motivatedBy, docRefType, { 'do': true });
 
           var parentNodeWithId = selectedParentNode.closest('[id]');
           var targetIRI = (parentNodeWithId) ? documentURL + '#' + parentNodeWithId.id : documentURL;
