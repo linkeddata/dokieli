@@ -484,6 +484,10 @@ figure.listing pre samp:nth-child(odd):not([class~="highlight"]),
 table tbody tr:nth-child(odd) {
 background-color:#f3f3f3;
 }
+table tbody tr:nth-child(odd) th {
+background-color:#fff;
+}
+
 figure.listing pre code:before,
 figure.listing pre samp:before {
 position:absolute;
@@ -595,6 +599,7 @@ content:"\21F2";
 }*/
 
 [rowspan] { vertical-align: bottom; }
+tbody [rowspan] { vertical-align: middle; }
 
 tbody th[scope="rowgroup"] {
 border-bottom:3pt double #000;
