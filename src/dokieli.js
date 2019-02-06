@@ -513,7 +513,7 @@ var DO = {
 
       svg.append('style').text('.node { stroke: #fff; stroke-width: 1px; } .link { fill: none; stroke: #bbb; }');
 
-      var color = d3.scaleOrdinal(d3.schemeCategory20);
+      var color = d3.scaleOrdinal(d3.schemeCategory10);
 
       var simulation = d3.forceSimulation()
           .force("link", d3.forceLink().distance(10).strength(0.25))
