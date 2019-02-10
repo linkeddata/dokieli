@@ -586,8 +586,10 @@ margin-top:2em;
 }
 caption {
 text-align:left;
-border-bottom:2pt solid #000;
 padding:0 0.25em 0.25em;
+}
+caption, tbody, tfoot {
+border-bottom:2pt solid #000;
 }
 thead,
 thead th[colspan] {
@@ -604,9 +606,7 @@ tbody [rowspan] { vertical-align: middle; }
 tbody th[scope="rowgroup"] {
 border-bottom:3pt double #000;
 }
-tbody {
-border-bottom:2pt solid #000;
-}
+
 th, td {
 padding:0.25em;
 font-size:0.923em;
