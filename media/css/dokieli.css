@@ -242,6 +242,9 @@ clear:both;
 padding:1em 0;
 text-align:center;
 }
+#document-do .snapshot-internet-archive + .progress {
+text-align:left;
+}
 
 main,
 main > article { position:relative; }

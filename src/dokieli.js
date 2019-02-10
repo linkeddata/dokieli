@@ -1964,36 +1964,7 @@ var DO = {
 
     snapshotAtEndpoint: function snapshotAtEndpoint (e, iri, endpoint, noteData, options = {}) {
       iri = iri || window.location.origin + window.location.pathname;
-      endpoint = endpoint || 'https://pragma.archivelab.org';
-
-      if(!('contentType' in options)){
-        options['contentType'] = 'application/json';
-      }
-
-      noteData = noteData || {
-        "url": iri,
-        "annotation": {
-          "@context": "http://www.w3.org/ns/anno.jsonld",
-          "@type": "Annotation",
-          "motivation": "linking",
-          "target": iri,
-          "rights": "https://creativecommons.org/publicdomain/zero/1.0/"
-        }
-      };
-
-      if (DO.C.User.IRI) {
-        noteData.annotation['creator'] = {};
-        noteData.annotation.creator["@id"] = DO.C.User.IRI;
-      }
-      if (DO.C.User.Name) {
-        noteData.annotation.creator["http://schema.org/name"] = DO.C.User.Name;
-      }
-      if (DO.C.User.Image) {
-        noteData.annotation.creator["http://schema.org/image"] = DO.C.User.Image;
-      }
-      if (DO.C.User.URL) {
-        noteData.annotation.creator["http://schema.org/url"] = DO.C.User.URL;
-      }
+      endpoint = endpoint || 'https://pragma.archivelab.org/';
 
       // if(note.length > 0) {
       //   noteData.annotation["message"] = note;
@@ -2009,37 +1980,90 @@ var DO = {
         archiveNode.insertAdjacentHTML('beforeend', ' <span class="progress"><svg class="fas fa-circle-notch fa-spin fa-fw" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M288 39.056v16.659c0 10.804 7.281 20.159 17.686 23.066C383.204 100.434 440 171.518 440 256c0 101.689-82.295 184-184 184-101.689 0-184-82.295-184-184 0-84.47 56.786-155.564 134.312-177.219C216.719 75.874 224 66.517 224 55.712V39.064c0-15.709-14.834-27.153-30.046-23.234C86.603 43.482 7.394 141.206 8.003 257.332c.72 137.052 111.477 246.956 248.531 246.667C393.255 503.711 504 392.788 504 256c0-115.633-79.14-212.779-186.211-240.236C302.678 11.889 288 23.456 288 39.056z"/></svg> Archiving in progress.</span>');
       }
 
-      options.noCredentials = true
-
       var progress = archiveNode.querySelector('.progress')
 
-      return fetcher.postResource(endpoint, '', JSON.stringify(noteData), options.contentType, null, options)
+      options.noCredentials = true
 
-        .then(response => response.json())
+      var messageArchiveUnavailable = '<svg class="fas fa-times-circle fa-fw" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm121.6 313.1c4.7 4.7 4.7 12.3 0 17L338 377.6c-4.7 4.7-12.3 4.7-17 0L256 312l-65.1 65.6c-4.7 4.7-12.3 4.7-17 0L134.4 338c-4.7-4.7-4.7-12.3 0-17l65.6-65-65.6-65.1c-4.7-4.7-4.7-12.3 0-17l39.6-39.6c4.7-4.7 12.3-4.7 17 0l65 65.7 65.1-65.6c4.7-4.7 12.3-4.7 17 0l39.6 39.6c4.7 4.7 4.7 12.3 0 17L312 256l65.6 65.1z"/></svg> Archive unavailable. Please try later.';
 
-        .then(response => {
-          switch (endpoint) {
-            case 'https://pragma.archivelab.org':
-            default:
-              if (response['wayback_id']) {
-                let location = 'https://web.archive.org' + response.wayback_id
+      var messageArchivedAt = '<svg class="fas fa-archive" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M32 448c0 17.7 14.3 32 32 32h384c17.7 0 32-14.3 32-32V160H32v288zm160-212c0-6.6 5.4-12 12-12h104c6.6 0 12 5.4 12 12v8c0 6.6-5.4 12-12 12H204c-6.6 0-12-5.4-12-12v-8zM480 32H32C14.3 32 0 46.3 0 64v48c0 8.8 7.2 16 16 16h480c8.8 0 16-7.2 16-16V64c0-17.7-14.3-32-32-32z"/></svg> Archived at ';
 
-                progress
-                  .innerHTML = '<svg class="fas fa-archive" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M32 448c0 17.7 14.3 32 32 32h384c17.7 0 32-14.3 32-32V160H32v288zm160-212c0-6.6 5.4-12 12-12h104c6.6 0 12 5.4 12 12v8c0 6.6-5.4 12-12 12H204c-6.6 0-12-5.4-12-12v-8zM480 32H32C14.3 32 0 46.3 0 64v48c0 8.8 7.2 16 16 16h480c8.8 0 16-7.2 16-16V64c0-17.7-14.3-32-32-32z"/></svg> Archived at <a target="_blank" href="' +
-                  location + '">' + location + '</a>'
-              } else {
-                progress
-                  .innerHTML = '<svg class="fas fa-times-circle fa-fw" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm121.6 313.1c4.7 4.7 4.7 12.3 0 17L338 377.6c-4.7 4.7-12.3 4.7-17 0L256 312l-65.1 65.6c-4.7 4.7-12.3 4.7-17 0L134.4 338c-4.7-4.7-4.7-12.3 0-17l65.6-65-65.6-65.1c-4.7-4.7-4.7-12.3 0-17l39.6-39.6c4.7-4.7 12.3-4.7 17 0l65 65.7 65.1-65.6c4.7-4.7 12.3-4.7 17 0l39.6 39.6c4.7 4.7 4.7 12.3 0 17L312 256l65.6 65.1z"/></svg> Archive unavailable. Please try later.'
+      switch (endpoint) {
+        case 'https://web.archive.org/save/':
+          var headers = { 'Accept': '*/*' };
+// options['mode'] = 'no-cors';
+          var i = endpoint + iri;
+          // i = 'https://web.archive.org/save/https://example.org/';
+          var pIRI =  uri.getProxyableIRI(i, {'forceProxy': true});
+
+          return fetcher.getResource(pIRI, headers, options)
+            .then(response => {
+              let location = response.headers.get('Content-Location');
+
+              if (location) {
+                location = 'https://web.archive.org' + location
+
+                progress.innerHTML = messageArchivedAt + '<a target="_blank" href="' +
+                location + '">' + location + '</a>'
               }
+              else {
+                progress.innerHTML = messageArchiveUnavailable;
+              }
+            })
+            .catch(error => {
+              console.log(error)
+            })
 
-              break
+        case 'https://pragma.archivelab.org/':
+        default:
+          noteData = noteData || {
+            "url": iri,
+            "annotation": {
+              "@context": "http://www.w3.org/ns/anno.jsonld",
+              "@type": "Annotation",
+              "motivation": "linking",
+              "target": iri,
+              "rights": "https://creativecommons.org/publicdomain/zero/1.0/"
+            }
+          };
+
+          if (DO.C.User.IRI) {
+            noteData.annotation['creator'] = {};
+            noteData.annotation.creator["@id"] = DO.C.User.IRI;
           }
-        })
+          if (DO.C.User.Name) {
+            noteData.annotation.creator["http://schema.org/name"] = DO.C.User.Name;
+          }
+          if (DO.C.User.Image) {
+            noteData.annotation.creator["http://schema.org/image"] = DO.C.User.Image;
+          }
+          if (DO.C.User.URL) {
+            noteData.annotation.creator["http://schema.org/url"] = DO.C.User.URL;
+          }
 
-        .catch(() => {
-          progress
-            .innerHTML = '<svg class="fas fa-times-circle fa-fw" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm121.6 313.1c4.7 4.7 4.7 12.3 0 17L338 377.6c-4.7 4.7-12.3 4.7-17 0L256 312l-65.1 65.6c-4.7 4.7-12.3 4.7-17 0L134.4 338c-4.7-4.7-4.7-12.3 0-17l65.6-65-65.6-65.1c-4.7-4.7-4.7-12.3 0-17l39.6-39.6c4.7-4.7 12.3-4.7 17 0l65 65.7 65.1-65.6c4.7-4.7 12.3-4.7 17 0l39.6 39.6c4.7 4.7 4.7 12.3 0 17L312 256l65.6 65.1z"/></svg> Archive unavailable. Please try later.'
-        })
+          if(!('contentType' in options)){
+            options['contentType'] = 'application/json';
+          }
+
+          return fetcher.postResource(endpoint, '', JSON.stringify(noteData), options.contentType, null, options)
+
+          .then(response => response.json())
+
+          .then(response => {
+            if (response['wayback_id']) {
+              let location = 'https://web.archive.org' + response.wayback_id
+
+              progress.innerHTML = messageArchivedAt + '<a target="_blank" href="' + location + '">' + location + '</a>'
+            } else {
+              progress.innerHTML = messageArchiveUnavailable
+            }
+          })
+
+          .catch(() => {
+            progress
+              .innerHTML = messageArchiveUnavailable
+          })
+      }
     },
 
     mementoDocument: function(e) {
@@ -2083,7 +2107,8 @@ var DO = {
         }
 
         if (e.target.closest('button.snapshot-internet-archive')){
-          DO.U.snapshotAtEndpoint(e, iri, 'https://pragma.archivelab.org', '', {'contentType': 'application/json'});
+          // DO.U.snapshotAtEndpoint(e, iri, 'https://pragma.archivelab.org/', '', {'contentType': 'application/json'});
+          DO.U.snapshotAtEndpoint(e, iri, 'https://web.archive.org/save/', '', {'Accept': '*/*'});
         }
       });
     },
