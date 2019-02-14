@@ -1984,34 +1984,48 @@ var DO = {
 
       options.noCredentials = true
 
-      var messageArchiveUnavailable = '<svg class="fas fa-times-circle fa-fw" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm121.6 313.1c4.7 4.7 4.7 12.3 0 17L338 377.6c-4.7 4.7-12.3 4.7-17 0L256 312l-65.1 65.6c-4.7 4.7-12.3 4.7-17 0L134.4 338c-4.7-4.7-4.7-12.3 0-17l65.6-65-65.6-65.1c-4.7-4.7-4.7-12.3 0-17l39.6-39.6c4.7-4.7 12.3-4.7 17 0l65 65.7 65.1-65.6c4.7-4.7 12.3-4.7 17 0l39.6 39.6c4.7 4.7 4.7 12.3 0 17L312 256l65.6 65.1z"/></svg> Archive unavailable. Please try later.';
+      var svgFail = '<svg class="fas fa-times-circle fa-fw" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm121.6 313.1c4.7 4.7 4.7 12.3 0 17L338 377.6c-4.7 4.7-12.3 4.7-17 0L256 312l-65.1 65.6c-4.7 4.7-12.3 4.7-17 0L134.4 338c-4.7-4.7-4.7-12.3 0-17l65.6-65-65.6-65.1c-4.7-4.7-4.7-12.3 0-17l39.6-39.6c4.7-4.7 12.3-4.7 17 0l65 65.7 65.1-65.6c4.7-4.7 12.3-4.7 17 0l39.6 39.6c4.7 4.7 4.7 12.3 0 17L312 256l65.6 65.1z"/></svg>';
 
       var messageArchivedAt = '<svg class="fas fa-archive" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M32 448c0 17.7 14.3 32 32 32h384c17.7 0 32-14.3 32-32V160H32v288zm160-212c0-6.6 5.4-12 12-12h104c6.6 0 12 5.4 12 12v8c0 6.6-5.4 12-12 12H204c-6.6 0-12-5.4-12-12v-8zM480 32H32C14.3 32 0 46.3 0 64v48c0 8.8 7.2 16 16 16h480c8.8 0 16-7.2 16-16V64c0-17.7-14.3-32-32-32z"/></svg> Archived at ';
+
+      var proxyResponseMessages = {
+        "403": svgFail + ' Archive unavailable. Please try later.',
+        "504": svgFail + ' Archive timeout. Please try later.'
+      }      
 
       switch (endpoint) {
         case 'https://web.archive.org/save/':
           var headers = { 'Accept': '*/*' };
 // options['mode'] = 'no-cors';
-          var i = endpoint + iri;
+          var pIRI = endpoint + iri;
           // i = 'https://web.archive.org/save/https://example.org/';
-          var pIRI =  uri.getProxyableIRI(i, {'forceProxy': true});
 
+
+          pIRI = (DO.C.WebExtension) ? pIRI : uri.getProxyableIRI(pIRI, {'forceProxy': true});
+          // pIRI = uri.getProxyableIRI(pIRI, {'forceProxy': true})
+// console.log(pIRI)
           return fetcher.getResource(pIRI, headers, options)
             .then(response => {
+// console.log(response)
+// for(var key of response.headers.keys()) {
+//    console.log(key); 
+// }
               let location = response.headers.get('Content-Location');
 
-              if (location) {
+              if (location && location.length > 0) {
+                location = (!location.startsWith('http:') && !location.startsWith('https:') && !location.startsWith('/')) ? '/' + location : location;
                 location = 'https://web.archive.org' + location
 
-                progress.innerHTML = messageArchivedAt + '<a target="_blank" href="' +
-                location + '">' + location + '</a>'
+                progress.innerHTML = messageArchivedAt + '<a target="_blank" href="' + location + '">' + location + '</a>'
               }
               else {
-                progress.innerHTML = messageArchiveUnavailable;
+                progress.innerHTML = proxyResponseMessages[response.status];
               }
             })
             .catch(error => {
               console.log(error)
+
+              progress.innerHTML = proxyResponseMessages[error.status];
             })
 
         case 'https://pragma.archivelab.org/':
