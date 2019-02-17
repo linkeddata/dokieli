@@ -362,6 +362,7 @@ display:inline-block !important;
 
 aside.do.on section {
 margin-top:1em;
+margin-bottom:2em;
 }
 aside.do.on > h2 {
 margin-top:0.5em;
@@ -624,7 +625,7 @@ line-height:inherit !important;
 }
 #document-menu > footer {
 display:none;
-margin-top:1em !important;
+margin:1em 0 1em 0 !important;
 }
 #document-menu.on > header,
 #document-menu.on > footer {
@@ -826,7 +827,7 @@ display:inline-block !important;
 }
 
 #document-menu #document-views {
-margin:2em 0;
+margin:2em 0 1em 0;
 }
 
 #document-menu li {

@@ -6,7 +6,7 @@
  * https://github.com/linkeddata/dokieli
  */
 
-const fetcher = require('./fetcher')
+global.fetcher = require('./fetcher')
 const doc = require('./doc')
 const uri = require('./uri')
 const graph = require('./graph')
@@ -963,7 +963,7 @@ var DO = {
           auth.showUserSigninSignout(dHead);
           DO.U.showDocumentDo(dInfo);
           DO.U.showViews(dInfo);
-          DO.U.showDocumentMetadata(dInfo);
+
           if(!body.classList.contains('on-slideshow')) {
             DO.U.showDocumentItems();
           }
@@ -1432,8 +1432,10 @@ var DO = {
 
     showDocumentItems: function() {
       var documentItems = document.getElementById('document-items');
-
-      if(documentItems) { return; }
+      if (!documentItems) {
+        document.documentElement.appendChild(util.fragmentFromString('<aside id="document-items" class="do on">' + DO.C.Button.Close + '</aside>'));
+        documentItems = document.getElementById('document-items');
+      }
 
       var sections = document.querySelectorAll('h1 ~ div > section:not([class~="slide"]):not([id^=table-of])');
       if (sections.length > 0) {
@@ -1445,16 +1447,12 @@ var DO = {
           DO.U.sortToC();
         }
       }
+
+      DO.U.showDocumentMetadata(documentItems);
     },
 
     showTableOfStuff: function(node) {
-      if (!node) {
-        node = document.getElementById('document-items');
-        if (!node) {
-          document.documentElement.appendChild(util.fragmentFromString('<aside id="document-items" class="do on">' + DO.C.Button.Close + '</aside>'));
-          node = document.getElementById('document-items');
-        }
-      }
+      if (!node) { return; }
 
       var disabledInput = '', s = [];
       if (!DO.C.EditorEnabled) {
@@ -1507,13 +1505,7 @@ var DO = {
       options = options || {}
       var sortable = (DO.C.SortableList && DO.C.EditorEnabled) ? ' sortable' : '';
 
-      if (!node) {
-        node = document.getElementById('document-items');
-        if (!node) {
-          document.body.insertAdjacentHTML('beforeend', '<aside id="document-items" class="do on">' + DO.C.Button.Close + '</aside>');
-          node = document.getElementById('document-items');
-        }
-      }
+      if (!node) { return; }
 
       var toc = '<section id="table-of-contents-i" class="do"' + sortable + '><h2>Table of Contents</h2><ol class="toc' + sortable + '">';
       toc += DO.U.getListOfSections(sections, {'sortable': DO.C.SortableList});
