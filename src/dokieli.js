@@ -616,7 +616,7 @@ var DO = {
 
       options = options || {};
       options['contentType'] = options.contentType || 'text/html';
-      options['subjectURI'] = location.href.split(location.search||location.hash||/[?#]/)[0];
+      options['subjectURI'] = options.subjectURI || location.href.split(location.search||location.hash||/[?#]/)[0];
 
       if (Array.isArray(resources)) {
         DO.U.showGraphResources(resources, selector, options);
@@ -653,11 +653,6 @@ var DO = {
 
           var dataGraph = SimpleRDF();
 
-          var filterPredicates = false;
-          if ('filter' in options && 'predicates' in options.filter && options.filter.predicates.length > 0) {
-            filterPredicates = true;
-          }
-
           Promise.all(promises)
             .then(function(graphs) {
               graphs.forEach(function(graph){
@@ -666,9 +661,12 @@ var DO = {
                 dataGraph.graph().addAll(graph);
               });
 
-              if (filterPredicates) {
+              if ('filter' in options) {
                 dataGraph = dataGraph.graph().filter(function(g) {
-                  if (options.filter.predicates.indexOf(g.predicate.nominalValue) >= 0) {
+                  if ('subjects' in options.filter && options.filter.subjects.length > 0 && options.filter.subjects.indexOf(g.subject.nominalValue) >= 0) {
+                    return g;
+                  }
+                  if ('oredicates' in options.filter && options.filter.predicates.length > 0 && options.filter.predicates.indexOf(g.predicate.nominalValue) >= 0) {
                     return g;
                   }
                 });
