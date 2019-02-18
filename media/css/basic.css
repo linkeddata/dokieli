@@ -446,6 +446,9 @@ margin:1em auto;
 text-align:center;
 display:block;
 }
+figure article {
+text-align:left;
+}
 video {
 max-width: 100%;
 height: auto;
