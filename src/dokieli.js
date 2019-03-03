@@ -1981,11 +1981,13 @@ var DO = {
 
         var messageArchivedAt = '<svg class="fas fa-archive" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M32 448c0 17.7 14.3 32 32 32h384c17.7 0 32-14.3 32-32V160H32v288zm160-212c0-6.6 5.4-12 12-12h104c6.6 0 12 5.4 12 12v8c0 6.6-5.4 12-12 12H204c-6.6 0-12-5.4-12-12v-8zM480 32H32C14.3 32 0 46.3 0 64v48c0 8.8 7.2 16 16 16h480c8.8 0 16-7.2 16-16V64c0-17.7-14.3-32-32-32z"/></svg> Archived at ';
 
-        var proxyResponseMessages = {
+        var responseMessages = {
           "403": svgFail + ' Archive unavailable. Please try later.',
           "504": svgFail + ' Archive timeout. Please try later.'
         }
       }
+
+      //TODO: See also https://archive.org/help/wayback_api.php
 
       switch (endpoint) {
         case 'https://web.archive.org/save/':
@@ -2012,17 +2014,21 @@ var DO = {
                 if (options.showActionMessage) {
                   progress.innerHTML = messageArchivedAt + '<a target="_blank" href="' + location + '">' + location + '</a>'
                 }
+
+                return { "response": response, "location": location };
               }
               else {
                 if (options.showActionMessage) {
-                  progress.innerHTML = proxyResponseMessages[response.status];
+                  progress.innerHTML = responseMessages[response.status];
                 }
+
+                return Promise.reject(responseMessages[response.status])
               }
             })
             .catch(error => {
               console.log(error)
               if (options.showActionMessage) {
-                progress.innerHTML = proxyResponseMessages[error.status];
+                progress.innerHTML = responseMessages[error.status];
               }
             })
 
@@ -2068,10 +2074,15 @@ var DO = {
               if (options.showActionMessage) {
                 progress.innerHTML = messageArchivedAt + '<a target="_blank" href="' + location + '">' + location + '</a>'
               }
-            } else {
+
+              return { "response": response, "location": location };
+            }
+            else {
               if (options.showActionMessage) {
                 progress.innerHTML = messageArchiveUnavailable
               }
+
+              return Promise.reject(messageArchiveUnavailable)
             }
           })
 
@@ -7405,6 +7416,10 @@ WHERE {\n\
 
                       DO.U.getCitation(opts.url, options).then(function(citationGraph) {
                         var citationURI = '';
+// console.log(citationGraph)
+// console.log(citationGraph.toString())
+// console.log(options.citationId)
+// console.log(uri.getProxyableIRI(options.citationId))
                         if(opts.url.match(/^10\.\d+\//)) {
                           citationURI = 'http://dx.doi.org/' + opts.url;
                           options.citationId = citationURI;
@@ -7416,9 +7431,9 @@ WHERE {\n\
                             citationURI = opts.url.replace(/^https/, 'http');
                           }
                         }
-                        else if (uri.stripFragmentFromString(options.citationId) !== uri.getProxyableIRI(options.citationId)) {
-                          citationURI = window.location.origin + window.location.pathname;
-                        }
+                        // else if (uri.stripFragmentFromString(options.citationId) !== uri.getProxyableIRI(options.citationId)) {
+                        //   citationURI = window.location.origin + window.location.pathname;
+                        // }
                         else {
                           citationURI = options.citationId;
                         }
@@ -7435,7 +7450,20 @@ WHERE {\n\
                         var citationHTML = '<li id="' + id + '">' + citation + '</li>';
                         r.insertAdjacentHTML('beforeend', citationHTML);
 
-                        DO.U.showRobustLinks();
+                        DO.U.snapshotAtEndpoint(undefined, citationURI, 'https://web.archive.org/save/', '', {'Accept': '*/*', 'showActionMessage': false })
+                          .then(function(r){
+                            var versionURL = r.location;
+                            if (typeof versionURL === 'string') {
+                              var vD = versionURL.split('/')[4];
+                              versionDate = vD.substr(0,4) + '-' + vD.substr(4,2) + '-' + vD.substr(6,2) + 'T' + vD.substr(8,2) + ':' + vD.substr(10,2) + ':' + vD.substr(12,2) + 'Z';
+
+                              var a = document.querySelector('[id="' + id + '"] a[about]');
+                              a.setAttribute('data-versionurl', versionURL);
+                              a.setAttribute('data-versiondate', versionDate);
+                            }
+
+                            DO.U.showActionMessage(document.documentElement, '<p>Archived <a href="' + citationURI + '">' + citationURI + '</a> at <a href="' + versionURL + '">' + versionURL + '</a> and created RobustLink.</p>');
+                          }).then(DO.U.showRobustLinks);
 
 // console.log(options.url);
                         var s = citationGraph.child(citationURI);
