@@ -15,12 +15,16 @@ display:inline !important;
 span.do.ref sup {
 display:none;
 }
-.tabs nav {
-display:none !important;
-}
+
 .tabs .selected {
 border:0 !important;
 padding:0 !important;
+}
+
+.tabs > div,
+.tabs > figure {
+display:block !important;
+margin-top:0 !important;
 }
 }
 
