@@ -3564,7 +3564,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType})
         }
 
-        html.querySelector('body').innerHTML = '<main><article about="" typeof="schema:Article"></article></main>'
+        html.querySelector('body').innerHTML = '<main><article about="" typeof="schema:Article"><h1 property="schema:name">' + title + '</h1></article></main>'
         html.querySelector('head title').innerHTML = title
         html = doc.getDocument(html)
 
