@@ -3543,6 +3543,9 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
         var newDocument = document.getElementById('create-new-document')
         var storageIRI = newDocument.querySelector('#' + id + '-' + action).innerText.trim()
+        var title = (storageIRI.length > 0) ? DO.U.getURLLastPath(storageIRI) : ''
+        title = DO.U.generateLabelFromString(title);
+
         var rm = newDocument.querySelector('.response-message')
         if (rm) {
           rm.parentNode.removeChild(rm)
@@ -3562,7 +3565,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         }
 
         html.querySelector('body').innerHTML = '<main><article about="" typeof="schema:Article"></article></main>'
-        html.querySelector('head title').innerHTML = ''
+        html.querySelector('head title').innerHTML = title
         html = doc.getDocument(html)
 
         fetcher.putResource(storageIRI, html)
@@ -3940,6 +3943,27 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       }
 
       return url;
+    },
+
+    getURLLastPath: function(url) {
+      if(typeof url === 'string') {
+        url = DO.U.getPathURL(url);
+        url = url.substr(url.lastIndexOf('/') + 1);
+      }
+
+      return url;
+    },
+
+    generateLabelFromString: function(s) {
+      if (typeof s === 'string' && s.length > 0) {
+        s = s.replace(/-/g, ' ');
+        s = (s !== '.html' && s.endsWith('.html')) ? s.substr(0, s.lastIndexOf('.html')) : s;
+        s = (s !== '.' && s.endsWith('.')) ? s.substr(0, s.lastIndexOf('.')) : s;
+
+        s = s.charAt(0).toUpperCase() + s.slice(1);
+      }
+
+      return s;
     },
 
     copyRelativeResources: function copyRelativeResources (storageIRI, relativeNodes) {
