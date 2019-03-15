@@ -1902,11 +1902,16 @@ var DO = {
       });
 
       document.querySelectorAll('.do.robustlinks').forEach(function(i){
-        i.addEventListener('mouseenter', function(e){
-          e.target.classList.add('on');
-        });
-        i.addEventListener('mouseleave', function(e){
-          e.target.classList.remove('on');
+        i.addEventListener('click', function(e){
+          if (e.target.closest('button')) {
+            var pN = e.target.parentNode;
+            if (pN.classList.contains('on')){
+              pN.classList.remove('on');
+            }
+            else {
+              pN.classList.add('on');
+            }
+          }
         });
       });
     },
