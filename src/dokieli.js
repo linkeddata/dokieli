@@ -1796,11 +1796,9 @@ var DO = {
     },
 
     updateDocumentTitle: function(e) {
-      if (!e.target.closest('h1')) {
-        var h1 = document.querySelector('h1');
-        if (h1) {
-          document.title = h1.textContent.trim();
-        }
+      var h1 = document.querySelector('h1');
+      if (h1) {
+        document.title = h1.textContent.trim();
       }
     },
 
@@ -5630,7 +5628,8 @@ WHERE {\n\
     //    _mediumEditors[1].destroy();
         DO.C.EditorEnabled = false;
         DO.C.User.Role = 'social';
-        document.removeEventListener('click', DO.U.updateDocumentTitle);
+        DO.U.updateDocumentTitle();
+        // document.removeEventListener('click', DO.U.updateDocumentTitle);
         return DO.U.Editor.MediumEditor.destroy();
       },
 
@@ -5728,7 +5727,7 @@ WHERE {\n\
 
           if (e && e.target.closest('button.editor-enable')) {
             DO.C.ContentEditable = true;
-            document.addEventListener('click', DO.U.updateDocumentTitle);
+            // document.addEventListener('click', DO.U.updateDocumentTitle);
 
             //FIXME: This is a horrible way of hacking MediumEditorTable
             document.querySelectorAll('i.fa-table').forEach(function(i){
