@@ -5728,6 +5728,7 @@ WHERE {\n\
           if (e && e.target.closest('button.editor-enable')) {
             DO.C.ContentEditable = true;
             // document.addEventListener('click', DO.U.updateDocumentTitle);
+            DO.U.updateDocumentTitle();
 
             //FIXME: This is a horrible way of hacking MediumEditorTable
             document.querySelectorAll('i.fa-table').forEach(function(i){
