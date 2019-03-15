@@ -1879,7 +1879,7 @@ var DO = {
 
         var originalurl = i.getAttribute('data-originalurl');
         originalurl = (originalurl) ? originalurl.trim() : undefined;
-        originalurl = (originalurl) ? '<dt>Original</dt><dd><a href="' + originalurl + '" target="_blank">' + originalurl + '</a></dd>' : '';
+        originalurl = (originalurl) ? '<span>Original</span><span><a href="' + originalurl + '" target="_blank">' + originalurl + '</a></span>' : '';
 
         var versionurl = i.getAttribute('data-versionurl');
         versionurl = (versionurl) ? versionurl.trim() : undefined;
@@ -1890,15 +1890,15 @@ var DO = {
           versiondate = versiondate.trim();
           versiondateNumeric = versiondate.replace(/\D/g, '');
           nearlinkdateurl = 'http://timetravel.mementoweb.org/memento/' + versiondateNumeric + '/' + href;
-          nearlinkdateurl = '<dt>Near Link Date</dt><dd><a href="' + nearlinkdateurl + '" target="_blank">' + versiondate + '</a></dd>'
+          nearlinkdateurl = '<span>Near Link Date</span><span><a href="' + nearlinkdateurl + '" target="_blank">' + versiondate + '</a></span>'
         }
         else if (versionurl) {
           versiondate = versionurl;
         }
 
-        versionurl = (versionurl) ? '<dt>Version</dt><dd><a href="' + versionurl + '" target="_blank">' + versiondate + '</a></dd>' : '';
+        versionurl = (versionurl) ? '<span>Version</span><span><a href="' + versionurl + '" target="_blank">' + versiondate + '</a></span>' : '';
 
-        i.insertAdjacentHTML('afterend', '<span class="do robustlinks"><button title="Show Robust Links">🔗<span></span></button><dl>' + originalurl + versionurl + nearlinkdateurl + '</dl></span>');
+        i.insertAdjacentHTML('afterend', '<span class="do robustlinks"><button title="Show Robust Links">🔗<span></span></button><span>' + originalurl + versionurl + nearlinkdateurl + '</span></span>');
       });
 
       document.querySelectorAll('.do.robustlinks').forEach(function(i){

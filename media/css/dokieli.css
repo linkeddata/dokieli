@@ -1246,7 +1246,7 @@ position:absolute;
 bottom:-0.2em;
 right:0;
 }
-.do.robustlinks dl {
+.do.robustlinks > span {
 display:none;
 width:19em;
 margin:0;
@@ -1256,13 +1256,17 @@ box-shadow:0.25em 0.25em 0.25em rgba(0,0,0,0.1);
 border-radius: 0.5em;
 background-color:#fff;
 }
-.do.robustlinks dl * {
+.do.robustlinks > span * {
 margin:0;
 }
-.do.robustlinks dd + dt {
+.do.robustlinks > span span:nth-child(odd) {
+font-weight:bold;
+display:block;
+}
+.do.robustlinks > span span + span {
 margin-top:0.5em;
 }
-.do.robustlinks.on dl {
+.do.robustlinks.on > span {
 display: inline-block;
 position: absolute;
 top: 0;
