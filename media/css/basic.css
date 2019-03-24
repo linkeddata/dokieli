@@ -320,7 +320,7 @@ margin-top:1em;
 }
 
 a {
-color: #009000;
+color: #080;
 text-decoration: none;
 border-bottom: 2px solid #333;
 }
@@ -430,7 +430,7 @@ max-width:50em;
 }
 body > footer a, body > footer a:hover {
 color: inherit;
-border-bottom-color: #009000;
+border-bottom-color: #080;
 }
 body > footer a:hover {
 background-color:transparent;
@@ -524,7 +524,7 @@ margin:0;
 
 div.issue, div.note {
 background-color:#fbfffb;
-border-left:0.25em solid #009000;
+border-left:0.25em solid #080;
 padding: 1em;
 }
 div.issue > *, div.note > * {
@@ -536,7 +536,7 @@ div.issue h4 {
 color:#ae1e1e;
 }
 div.note h4 {
-color:#009000;
+color:#080;
 }
 div.issue *:last-child,
 div.note *:last-child {
