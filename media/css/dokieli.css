@@ -180,6 +180,8 @@ font-size:1em !important;
 fill:#fff;
 vertical-align: bottom;
 }
+#document-editor .medium-editor-toolbar-form svg.fas,
+#document-editor .medium-editor-toolbar-form svg.far,
 dl svg.fas,
 dl svg.far {
 vertical-align: middle;
@@ -1435,7 +1437,8 @@ font-size:1em;
 display:inline-block;
 font-size:1em;
 }
-.medium-editor-toolbar-form select#article-license {
+.medium-editor-toolbar-form select[id$="-language"],
+.medium-editor-toolbar-form select[id$="-license"] {
 margin-top:0.1em;
 vertical-align:top;
 }
@@ -1450,7 +1453,7 @@ line-height:1;
 }
 .medium-editor-toolbar-form .annotation-inbox,
 .medium-editor-toolbar-form .annotation-location-selection {
-margin: 0 1em;
+margin: 0.3em 1em 0 1em;
 display:inline-block;
 vertical-align: top;
 }

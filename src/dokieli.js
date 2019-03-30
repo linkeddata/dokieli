@@ -2513,7 +2513,8 @@ var DO = {
       e.target.closest('button').disabled = true
 
       document.documentElement.appendChild(util.fragmentFromString('<aside id="reply-to-resource" class="do on">' + DO.C.Button.Close + '<h2>Reply to this</h2><div id="reply-to-resource-input"><p>Reply to <code>' +
-        iri +'</code></p><ul><li><p><label for="reply-to-resource-note">Quick reply (plain text note)</label></p><p><textarea id="reply-to-resource-note" rows="10" cols="40" name="reply-to-resource-note" placeholder="Great article!"></textarea></p></li><li><label for="reply-to-resource-license">License</label> <select id="reply-to-resource-license" name="reply-to-resource-license">' +
+        iri +'</code></p><ul><li><p><label for="reply-to-resource-note">Quick reply (plain text note)</label></p><p><textarea id="reply-to-resource-note" rows="10" cols="40" name="reply-to-resource-note" placeholder="Great article!"></textarea></p></li><li><label for="reply-to-resource-language">Language</label> <select id="reply-to-resource-language" name="reply-to-resource-language">' +
+        DO.U.getLanguageOptionsHTML() + '</select></li><li><label for="reply-to-resource-license">License</label> <select id="reply-to-resource-license" name="reply-to-resource-license">' +
         DO.U.getLicenseOptionsHTML() + '</select></li></ul></div>'))
 
       // TODO: License
@@ -2577,6 +2578,7 @@ var DO = {
             "iri": iri
           },
           "body": note, // content
+          "language": {},
           "license": {}
         }
         if (DO.C.User.IRI) {
@@ -2590,6 +2592,11 @@ var DO = {
         }
         if (DO.C.User.URL) {
           noteData.creator["url"] = DO.C.User.URL
+        }
+
+        var language = document.querySelector('#reply-to-resource-language')
+        if (language && language.length > 0) {
+          noteData.language["code"] = language.value.trim()
         }
 
         var license = document.querySelector('#reply-to-resource-license')
@@ -4617,6 +4624,7 @@ WHERE {\n\
       var annotatedByURL = annotatedBy.schemaurl || '';
       annotatedByURL = (annotatedByURL) ? annotatedByURL : undefined;
 
+      var lang = note.dctermslanguage || undefined;
       var licenseIRI = note.schemalicense || note.dctermsrights || undefined;
 // console.log(licenseIRI);
 
@@ -4641,6 +4649,7 @@ WHERE {\n\
       if(resourceTypes.indexOf('http://www.w3.org/ns/oa#Annotation') > -1) {
         var body = g.child(note.oahasBody);
 // console.log(body);
+        var bodyLanguage = body.schemainLanguage || body.dctermslanguage || undefined;
         var bodyLicenseIRI = body.schemalicense || body.dctermsrights || undefined;
 // console.log(bodyLicenseIRI);
         bodyText = body.rdfvalue;
@@ -4749,6 +4758,7 @@ WHERE {\n\
               //TODO: state
             },
             "body": bodyText,
+            "language": {},
             "license": {}
           }
           if (annotatedByIRI) {
@@ -4763,7 +4773,9 @@ WHERE {\n\
           if (annotatedByURL) {
             noteData.creator["url"] = annotatedByURL;
           }
-
+          if (langauge) {
+            noteData.language["code"] = bodyLanguage;
+          }
           if (licenseIRI) {
             noteData.license["iri"] = licenseIRI;
           }
@@ -4828,6 +4840,7 @@ WHERE {\n\
               "iri": targetIRI
             },
             "body": bodyText,
+            "language": {},
             "license": {}
           };
 
@@ -4839,6 +4852,9 @@ WHERE {\n\
           }
           if (annotatedByImage) {
             noteData.creator["image"] = annotatedByImage;
+          }
+          if (bodyLanguage) {
+            noteData.language["code"] = bodyLanguage;
           }
           if (licenseIRI) {
             noteData.license["iri"] = licenseIRI;
@@ -4879,6 +4895,7 @@ WHERE {\n\
               'rel': inReplyToRel
             },
             "body": bodyText,
+            "language": {},
             "license": {}
           };
           if (annotatedByIRI) {
@@ -4889,6 +4906,9 @@ WHERE {\n\
           }
           if (annotatedByImage) {
             noteData.creator["image"] = annotatedByImage;
+          }
+          if (bodyLanguage) {
+            noteData.language["code"] = bodyLanguage;
           }
           if (licenseIRI) {
             noteData.license["iri"] = licenseIRI;
@@ -4929,6 +4949,7 @@ WHERE {\n\
     createNoteDataHTML: function(n) {
 // console.log(n);
       var published = '';
+      var lang = '', xmlLang = '', language = '';
       var license = '';
       var creator = '', authors = '', creatorImage = '', creatorNameIRI = '', creatorURLNameIRI = '';
       var hasTarget = '', annotationTextSelector = '', target = '';
@@ -5039,8 +5060,14 @@ WHERE {\n\
         published = '<dl class="published"><dt>Published</dt><dd>' + timeLinked + '</dd></dl>';
       }
 
+      if (n.language && 'code' in n.language) {
+        language = DO.U.createLanguageHTML(n.language, {property:'dcterms:language', label:'Language'});
+        lang = 'lang="' +  n.language.code + '"';
+        xmlLang = ' xml:' + lang;
+        lang = ' ' + lang;
+      }
       if (n.license && 'iri' in n.license) {
-        license = DO.U.createLicenseHTML(n.license);
+        license = DO.U.createLicenseHTML(n.license, {rel:'dcterms:rights', label:'Rights'});
       }
 
       switch(n.type) {
@@ -5052,7 +5079,7 @@ WHERE {\n\
             if (typeof n.body !== 'undefined') {
               if(typeof n.body === 'object' && 'purpose' in n.body) {
                 if ('describing' in n.body.purpose && 'text' in n.body.purpose.describing) {
-                  body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="#note-' + n.id + '"><h' + (hX+1) + ' property="schema:name" rel="oa:hasPurpose" resource="oa:describing">Note</h' + (hX+1) + '><div datatype="rdf:HTML" property="rdf:value schema:description" resource="#note-' + n.id + '" typeof="oa:TextualBody">' + n.body.purpose.describing.text + '</div></section>';
+                  body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="#note-' + n.id + '"><h' + (hX+1) + ' property="schema:name" rel="oa:hasPurpose" resource="oa:describing">Note</h' + (hX+1) + '>' + language + '<div datatype="rdf:HTML"' + lang + ' property="rdf:value schema:description" resource="#note-' + n.id + '" typeof="oa:TextualBody"' + xmlLang + '>' + n.body.purpose.describing.text + '</div></section>';
                 }
                 if ('tagging' in n.body.purpose && 'text' in n.body.purpose.tagging) {
                   var tagsArray = [];
@@ -5072,14 +5099,9 @@ WHERE {\n\
                     body += '</ul></dd></dl>';
                   }
                 }
-
               }
               else if (n.body.length > 0) {
-                if (n.license && 'iri' in n.license) {
-                  license = DO.U.createLicenseHTML(n.license, {rel:'dcterms:rights', label:'Rights'});
-                }
-
-                body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="#note-' + n.id + '"><h' + (hX+1) + ' property="schema:name">Note</h' + (hX+1) + '>' + license + '<div datatype="rdf:HTML" property="rdf:value schema:description" resource="#note-' + n.id + '" typeof="oa:TextualBody">' + n.body + '</div></section>';
+                body += '<section id="note-' + n.id + '" rel="oa:hasBody" resource="#note-' + n.id + '"><h' + (hX+1) + ' property="schema:name">Note</h' + (hX+1) + '>' + language + license + '<div datatype="rdf:HTML"' + lang + ' property="rdf:value schema:description" resource="#note-' + n.id + '" typeof="oa:TextualBody"' + xmlLang + '>' + n.body + '</div></section>';
               }
             }
 
@@ -5089,6 +5111,7 @@ WHERE {\n\
               targetIRI = n.target.iri;
               var targetIRIFragment = uri.getFragmentFromString(n.target.iri);
               //TODO: Handle when there is no fragment
+              //TODO: Languages should be whatever is target's (not necessarily 'en')
               if (typeof n.target.selector !== 'undefined') {
                 annotationTextSelector = '<div rel="oa:hasSelector" resource="#fragment-selector" typeof="oa:FragmentSelector"><dl class="conformsto"><dt>Fragment selector conforms to</dt><dd><a content="' + targetIRIFragment + '" lang="" property="rdf:value" rel="dcterms:conformsTo" href="https://tools.ietf.org/html/rfc3987" xml:lang="">RFC 3987</a></dd></dl><dl rel="oa:refinedBy" resource="#text-quote-selector" typeof="oa:TextQuoteSelector"><dt>Refined by</dt><dd><span lang="en" property="oa:prefix" xml:lang="en">' + n.target.selector.prefix + '</span><mark lang="en" property="oa:exact" xml:lang="en">' + n.target.selector.exact + '</mark><span lang="en" property="oa:suffix" xml:lang="en">' + n.target.selector.suffix + '</span></dd></dl></div>';
               }
@@ -5171,6 +5194,21 @@ WHERE {\n\
       return license;
     },
 
+    createLanguageHTML: function(n, options) {
+      var language = '';
+      var property = (options && options.language) ? options.language : 'dcterms:language';
+      var label = (options && options.label) ? options.label : 'Language';
+
+      if (typeof n.code !== 'undefined') {
+        n['name'] = n.name || DO.C.Languages[n.code] || n.code;
+        language = '<dl class="' + label.toLowerCase() + '"><dt>' + label + '</dt><dd>';
+          language += '<span content="' + n.code + '" lang="" property="' + property + '" xml:lang="">' + n.name + '</span>';
+        language += '</dd></dl>';
+      }
+
+      return language;
+    },
+
     createRDFaHTML: function(r, mode) {
       var s = '', about = '', property = '', rel = '', resource = '', href = '', content = '', langDatatype = '', typeOf = '', idValue = '', id = '';
 
@@ -5210,7 +5248,7 @@ WHERE {\n\
         }
 
         if ('lang' in r && r.lang != '') {
-          langDatatype = ' xml:lang="' + r.lang + '" lang="' + r.lang + '"';
+          langDatatype = ' lang="' + r.lang + '" xml:lang="' + r.lang + '"';
         }
         else {
           if ('datatype' in r && r.datatype != '') {
@@ -5288,6 +5326,32 @@ WHERE {\n\
         var selected = (iri == selectedIRI) ? ' selected="selected"' : '';
         s += '<option value="' + iri + '" title="' + DO.C.PublicationStatus[iri].description  + '"' + selected + '>' + DO.C.PublicationStatus[iri].name  + '</option>';
       })
+
+      return s;
+    },
+
+
+    getLanguageOptionsHTML: function(options) {
+      options = options || {};
+      var s = '', selectedLang = '';
+
+      if ('selected' in options) {
+        selectedLang = options.selected;
+        if (selectedLang == '') {
+          s += '<option selected="selected" value="">Choose a language</option>';
+        }
+      }
+      else if(typeof DO.C.User.UI.Language !== 'undefined') {
+        selectedLang = DO.C.User.UI.Language;
+      }
+      else {
+        selectedLang = 'en';
+      }
+
+      Object.keys(DO.C.Languages).forEach(function(lang){
+        selected = (lang == selectedLang) ? ' selected="selected"' : '';
+        s += '<option' + selected + ' value="' + lang + '">' + DO.C.Languages[lang] + '</option>';
+      });
 
       return s;
     },
@@ -6332,12 +6396,14 @@ WHERE {\n\
                   '<label for="rdfa-property">property</label><input id="rdfa-property" class="medium-editor-toolbar-input" placeholder="schema:name" /><br/>',
                   '<label for="rdfa-href">href</label><input id="rdfa-href" class="medium-editor-toolbar-input" placeholder="https://example.net/baz" /><br/>',
                   '<label for="rdfa-content">content</label><input id="rdfa-content" class="medium-editor-toolbar-input" placeholder="Baz" /><br/>',
+                  '<label for="rdfa-language">language</label><input id="rdfa-language" class="medium-editor-toolbar-input" placeholder="en" /><br/>',
                   '<label for="rdfa-datatype">datatype</label><input id="rdfa-datatype" class="medium-editor-toolbar-input" placeholder="https://example.net/baz" /><br/>'
                   ];
                   break;
                 case 'article':
                   template = [
                   '<textarea id="article-content" name="content" cols="20" rows="5" class="medium-editor-toolbar-textarea" placeholder="', this.placeholderText, '"></textarea>',
+                  '<select id="article-language" name="language" class="medium-editor-toolbar-select">', DO.U.getLanguageOptionsHTML(), '</select>',
                   '<select id="article-license" name="license" class="medium-editor-toolbar-select">',
                   DO.U.getLicenseOptionsHTML(),
                   '</select>',
@@ -6349,6 +6415,7 @@ WHERE {\n\
                   template = [
                   '<label for="bookmark-tagging">Tags</label> <input id="bookmark-tagging" class="medium-editor-toolbar-input" placeholder="Separate tags with commas" /><br/>',
                   '<textarea id="article-content" name="content" cols="20" rows="1" class="medium-editor-toolbar-textarea" placeholder="', this.placeholderText, '"></textarea>',
+                  '<select id="article-language" name="language" class="medium-editor-toolbar-select">', DO.U.getLanguageOptionsHTML(), '</select>',
                   '<select id="article-license" name="license" class="medium-editor-toolbar-select">',
                   DO.U.getLicenseOptionsHTML(),
                   '</select>'
@@ -6357,6 +6424,7 @@ WHERE {\n\
                 case 'approve':
                   template = [
                   '<textarea id="approve-content" name="content" cols="20" rows="2" class="medium-editor-toolbar-textarea" placeholder="Strong point? Convincing argument?"></textarea>',
+                  '<select id="article-language" name="language" class="medium-editor-toolbar-select">', DO.U.getLanguageOptionsHTML(), '</select>',
                   '<select id="approve-license" name="license" class="medium-editor-toolbar-select">',
                   DO.U.getLicenseOptionsHTML(),
                   '</select>',
@@ -6367,6 +6435,7 @@ WHERE {\n\
                 case 'disapprove':
                   template = [
                   '<textarea id="disapprove-content" name="content" cols="20" rows="2" class="medium-editor-toolbar-textarea" placeholder="Weak point? Error? Inaccurate?"></textarea>',
+                  '<select id="article-language" name="language" class="medium-editor-toolbar-select">', DO.U.getLanguageOptionsHTML(), '</select>',
                   '<select id="disapprove-license" name="license" class="medium-editor-toolbar-select">',
                   DO.U.getLicenseOptionsHTML(),
                   '</select>',
@@ -6377,6 +6446,7 @@ WHERE {\n\
                 case 'specificity':
                   template = [
                   '<textarea id="specificity-content" name="content" cols="20" rows="2" class="medium-editor-toolbar-textarea" placeholder="Citation or specificity needed?"></textarea>',
+                  '<select id="article-language" name="language" class="medium-editor-toolbar-select">', DO.U.getLanguageOptionsHTML(), '</select>',
                   '<select id="specificity-license" name="license" class="medium-editor-toolbar-select">',
                   DO.U.getLicenseOptionsHTML(),
                   '</select>',
@@ -6392,13 +6462,15 @@ WHERE {\n\
                   DO.U.getCitationOptionsHTML(),
                   '</select>',
                   '<input type="text" name="citation-url" value="" id="citation-url" class="medium-editor-toolbar-input" placeholder="http://example.org/article#results" />',
-                  '<textarea id="citation-content" cols="20" rows="1" class="medium-editor-toolbar-textarea" placeholder="', this.placeholderText, '"></textarea>'
+                  '<textarea id="citation-content" cols="20" rows="1" class="medium-editor-toolbar-textarea" placeholder="', this.placeholderText, '"></textarea>',
+                  '<select id="article-language" name="language" class="medium-editor-toolbar-select">', DO.U.getLanguageOptionsHTML(), '</select>',
                   ];
                   break;
                 case 'bookmark':
                   template = [
                   '<label for="bookmark-tagging">Tags</label> <input id="bookmark-tagging" class="medium-editor-toolbar-input" placeholder="Separate tags with commas" /><br/>',
-                  '<textarea id="bookmark-content" name="content" cols="20" rows="2" class="medium-editor-toolbar-textarea" placeholder="Description"></textarea>'
+                  '<textarea id="bookmark-content" name="content" cols="20" rows="2" class="medium-editor-toolbar-textarea" placeholder="Description"></textarea>',
+                  '<select id="article-language" name="language" class="medium-editor-toolbar-select">', DO.U.getLanguageOptionsHTML(), '</select>',
                   ];
                   break;
                 case 'sparkline':
@@ -6727,6 +6799,7 @@ WHERE {\n\
                   opts.property = this.getInput().property.value;
                   opts.content = this.getInput().content.value;
                   opts.datatype = this.getInput().datatype.value;
+                  opts.language = this.getInput().language.value;
                   break;
                 case 'article': case 'approve': case 'disapprove': case 'specificity':
                   opts.content = this.getInput().content.value;
@@ -6745,11 +6818,13 @@ WHERE {\n\
                   if(aIL) {
                     DO.C.User.UI.annotationInboxLocation.checked = opts.annotationInboxLocation = aIL.checked;
                   }
+                  opts.language = this.getInput().language.value;
                   opts.license = this.getInput().license.value;
                   break;
                 case 'note':
                   opts.content = this.getInput().content.value;
                   opts.tagging = this.getInput().tagging.value;
+                  opts.language = this.getInput().language.value;
                   opts.license = this.getInput().license.value;
                   break;
                 case 'cite':
@@ -6757,10 +6832,12 @@ WHERE {\n\
                   opts.citationRelation = this.getInput().citationRelation.value;
                   opts.url = this.getInput().url.value;
                   opts.content = this.getInput().content.value;
+                  opts.language = this.getInput().language.value;
                   break;
                 case 'bookmark':
                   opts.content = this.getInput().content.value;
                   opts.tagging = this.getInput().tagging.value;
+                  opts.language = this.getInput().language.value;
                   break;
                 case 'sparkline':
                   opts.search = this.getInput().search.value;
@@ -6775,6 +6852,9 @@ WHERE {\n\
 
               }
 
+              if (typeof opts.language !== 'undefined') {
+                DO.C.User.UI['Language'] = opts.language;
+              }
               if (typeof opts.license !== 'undefined') {
                 DO.C.User.UI['License'] = opts.license;
               }
@@ -6958,6 +7038,7 @@ WHERE {\n\
 
               var noteData = {};
               var note = '';
+              var language = '';
               var licenseIRI = '';
               var motivatedBy = 'oa:replying';
 
@@ -6994,6 +7075,7 @@ WHERE {\n\
                     }
 
                     ref = _this.base.selection;
+                    language = opts.language;
                     licenseIRI = opts.license;
 
                     noteData = {
@@ -7018,6 +7100,7 @@ WHERE {\n\
                         //TODO: state
                       },
                       "body": opts.content,
+                      "language": {},
                       "license": {}
                     };
                     if (DO.C.User.IRI) {
@@ -7031,6 +7114,9 @@ WHERE {\n\
                     }
                     if (DO.C.User.URL) {
                       noteData.creator["url"] = DO.C.User.URL;
+                    }
+                    if (opts.language.length > 0) {
+                      noteData.language["code"] = opts.language;
                     }
                     if (opts.license.length > 0) {
                       noteData.license["iri"] = opts.license;
@@ -7078,6 +7164,7 @@ WHERE {\n\
                           }
                         }
                       },
+                      "language": {},
                       "license": {}
                     };
                     if (DO.C.User.IRI) {
@@ -7091,6 +7178,9 @@ WHERE {\n\
                     }
                     if (DO.C.User.URL) {
                       noteData.creator["url"] = DO.C.User.URL;
+                    }
+                    if (opts.language.length > 0) {
+                      noteData.language["code"] = opts.language;
                     }
                     if (opts.license.length > 0) {
                       noteData.license["iri"] = opts.license;
@@ -7117,8 +7207,13 @@ WHERE {\n\
                           // "iri": noteIRI,
                           "datetime": datetime,
                           "body": opts.content,
-                          "citationURL": opts.url
+                          "citationURL": opts.url,
+                          "language": {}
                         };
+
+                        if (opts.language.length > 0) {
+                          noteData.language["code"] = opts.language;
+                        }
 
                         // note = DO.U.createNoteDataHTML(noteData);
                         break;
@@ -7148,8 +7243,8 @@ WHERE {\n\
                       property: opts.property,
                       content: opts.content,
                       datatype: opts.datatype,
+                      lang: opts.language,
                       textContent: _this.base.selection
-                      // lang: '' and/or xmllang: ''
                     };
                     ref = DO.U.createRDFaHTML(noteData, 'expanded');
                     break;
@@ -7190,6 +7285,7 @@ WHERE {\n\
                           }
                         }
                       },
+                      "language": {},
                       "license": {}
                     };
                     if (DO.C.User.IRI) {
@@ -7204,7 +7300,9 @@ WHERE {\n\
                     if (DO.C.User.URL) {
                       noteData.creator["url"] = DO.C.User.URL;
                     }
-
+                    if (opts.language.length > 0) {
+                      noteData.language["code"] = opts.language;
+                    }
                     // note = DO.U.createNoteDataHTML(noteData);
                     ref = DO.U.getTextQuoteHTML(refId, motivatedBy, exact, docRefType, { 'do': true });
                     break;
@@ -7588,17 +7686,20 @@ WHERE {\n\
                   r.property = this.getForm().querySelector('#rdfa-property.medium-editor-toolbar-input');
                   r.content = this.getForm().querySelector('#rdfa-content.medium-editor-toolbar-input');
                   r.datatype = this.getForm().querySelector('#rdfa-datatype.medium-editor-toolbar-input');
+                  r.language = this.getForm().querySelector('#rdfa-language.medium-editor-toolbar-input');
                   break;
                 case 'article':
                   r.content = this.getForm().querySelector('#article-content.medium-editor-toolbar-textarea');
                   r.annotationLocationService = this.getForm().querySelector('#annotation-location-service');
                   r.annotationLocationPersonalStorage = this.getForm().querySelector('#annotation-location-personal-storage');
                   r.annotationInboxLocation = this.getForm().querySelector('#annotation-inbox');
+                  r.language = this.getForm().querySelector('#article-language.medium-editor-toolbar-select');
                   r.license = this.getForm().querySelector('#article-license.medium-editor-toolbar-select');
                   break;
                 case 'note':
                   r.content = this.getForm().querySelector('#article-content.medium-editor-toolbar-textarea');
                   r.tagging = this.getForm().querySelector('#bookmark-tagging.medium-editor-toolbar-input');
+                  r.language = this.getForm().querySelector('#article-language.medium-editor-toolbar-select');
                   r.license = this.getForm().querySelector('#article-license.medium-editor-toolbar-select');
                   break;
                 case 'approve':
@@ -7606,6 +7707,7 @@ WHERE {\n\
                   r.annotationLocationService = this.getForm().querySelector('#annotation-location-service');
                   r.annotationLocationPersonalStorage = this.getForm().querySelector('#annotation-location-personal-storage');
                   r.annotationInboxLocation = this.getForm().querySelector('#annotation-inbox');
+                  r.language = this.getForm().querySelector('#article-language.medium-editor-toolbar-select');
                   r.license = this.getForm().querySelector('#approve-license.medium-editor-toolbar-select');
                   break;
                 case 'disapprove':
@@ -7613,6 +7715,7 @@ WHERE {\n\
                   r.annotationLocationService = this.getForm().querySelector('#annotation-location-service');
                   r.annotationLocationPersonalStorage = this.getForm().querySelector('#annotation-location-personal-storage');
                   r.annotationInboxLocation = this.getForm().querySelector('#annotation-inbox');
+                  r.language = this.getForm().querySelector('#article-language.medium-editor-toolbar-select');
                   r.license = this.getForm().querySelector('#disapprove-license.medium-editor-toolbar-select');
                   break;
                 case 'specificity':
@@ -7620,6 +7723,7 @@ WHERE {\n\
                   r.annotationLocationService = this.getForm().querySelector('#annotation-location-service');
                   r.annotationLocationPersonalStorage = this.getForm().querySelector('#annotation-location-personal-storage');
                   r.annotationInboxLocation = this.getForm().querySelector('#annotation-inbox');
+                  r.language = this.getForm().querySelector('#article-language.medium-editor-toolbar-select');
                   r.license = this.getForm().querySelector('#specificity-license.medium-editor-toolbar-select');
                   break;
                 case 'cite':
@@ -7627,10 +7731,12 @@ WHERE {\n\
                   r.citationRelation = this.getForm().querySelector('#citation-relation.medium-editor-toolbar-select');
                   r.url = this.getForm().querySelector('#citation-url.medium-editor-toolbar-input');
                   r.content = this.getForm().querySelector('#citation-content.medium-editor-toolbar-textarea');
+                  r.language = this.getForm().querySelector('#article-language.medium-editor-toolbar-select');
                   break;
                 case 'bookmark':
                   r.content = this.getForm().querySelector('#bookmark-content.medium-editor-toolbar-textarea');
                   r.tagging = this.getForm().querySelector('#bookmark-tagging.medium-editor-toolbar-input');
+                  r.language = this.getForm().querySelector('#article-language.medium-editor-toolbar-select');
                   break;
                 case 'sparkline':
                   r.search = this.getForm().querySelector('#sparkline-search.medium-editor-toolbar-input');
