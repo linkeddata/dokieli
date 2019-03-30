@@ -4773,7 +4773,7 @@ WHERE {\n\
           if (annotatedByURL) {
             noteData.creator["url"] = annotatedByURL;
           }
-          if (langauge) {
+          if (bodyLanguage) {
             noteData.language["code"] = bodyLanguage;
           }
           if (licenseIRI) {
