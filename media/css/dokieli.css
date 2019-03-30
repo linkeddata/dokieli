@@ -485,6 +485,7 @@ position:relative;
 #document-interactions article.do .inbox,
 #document-interactions article.do .target,
 #document-interactions article.do .renderedvia,
+#document-interactions article.do .language,
 #document-interactions article.do .rights,
 #document-interactions article.do .canonical,
 aside.note h2,
@@ -493,6 +494,7 @@ aside.note h4,
 aside.note dt,
 aside.note .inbox,
 aside.note .target,
+aside.note .language,
 aside.note .renderedvia,
 aside.note .rights,
 aside.note .canonical {
@@ -531,12 +533,14 @@ left:3.75em;
 }*/
 aside.note dl.published a,
 aside.note dl.license a,
+aside.note dl.language a,
 aside.note dl.rights a {
 color:#333;
 /*text-decoration:none;*/
 }
 aside.note dl.published a:hover,
 aside.note dl.license a:hover,
+aside.note dl.language a:hover,
 aside.note dl.rights a:hover {
 color:#000;
 text-decoration:underline;
