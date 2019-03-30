@@ -5502,6 +5502,28 @@ WHERE {\n\
       }
 
 
+      var documentLanguage = 'document-language';
+      var dLangS = document.querySelector('#' + documentLanguage + ' option:checked');
+
+      if (dLangS) {
+        var languageValue = dLangS.value;
+
+        var dl = dLangS.closest('#' + documentLanguage);
+        dl.removeAttribute('contenteditable');
+
+        if(languageValue == '') {
+          dl.parentNode.removeChild(dl);
+        }
+        else {
+          dl.removeAttribute('class');
+          var dd = dLangS.closest('dd');
+          dd.parentNode.removeChild(dd);
+          dd = '<dd><span content="' + languageValue + '" lang="" property="dcterms:language" xml:lang="">' + DO.C.Languages[languageValue] + '</a></dd>';
+          dl.insertAdjacentHTML('beforeend', dd);
+        }
+      }
+
+
       var documentLicense = 'document-license';
       var dLS = document.querySelector('#' + documentLicense + ' option:checked');
 
@@ -5836,7 +5858,7 @@ WHERE {\n\
               documentAuthorName.insertAdjacentHTML('beforeend', '<dd class="do"' + authorId + ' inlist="" rel="bibo:authorList" resource="' + DO.C.User.IRI + '"><span about="" rel="schema:author">' + userHTML + '</span><button class="add-author-name" contenteditable="false" title="Add author"><svg class="fas fa-plus" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z"/></svg></button></dd>');
             }
 
-            //Invite other other authors
+            //Invite other authors
             documentAuthorName.insertAdjacentHTML('beforeend', '<dd class="do"><button class="invite-author" contenteditable="false" title="Invite people to author"><svg class="fas fa-bullhorn" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M576 240c0-23.63-12.95-44.04-32-55.12V32.01C544 23.26 537.02 0 512 0c-7.12 0-14.19 2.38-19.98 7.02l-85.03 68.03C364.28 109.19 310.66 128 256 128H64c-35.35 0-64 28.65-64 64v96c0 35.35 28.65 64 64 64h33.7c-1.39 10.48-2.18 21.14-2.18 32 0 39.77 9.26 77.35 25.56 110.94 5.19 10.69 16.52 17.06 28.4 17.06h74.28c26.05 0 41.69-29.84 25.9-50.56-16.4-21.52-26.15-48.36-26.15-77.44 0-11.11 1.62-21.79 4.41-32H256c54.66 0 108.28 18.81 150.98 52.95l85.03 68.03a32.023 32.023 0 0 0 19.98 7.02c24.92 0 32-22.78 32-32V295.13C563.05 284.04 576 263.63 576 240zm-96 141.42l-33.05-26.44C392.95 311.78 325.12 288 256 288v-96c69.12 0 136.95-23.78 190.95-66.98L480 98.58v282.84z"/></svg></button></dd>');
             authors = document.getElementById(documentAuthors);
 
@@ -5852,6 +5874,21 @@ WHERE {\n\
                 e.target.removeAttribute('disabled');
               }
             });
+
+            var documentLanguage = 'document-language';
+            var language = document.getElementById(documentLanguage);
+            if(!language) {
+              var dl = '        <dl class="do" id="' + documentLanguage + '"><dt>Language</dt><dd><select contenteditable="false" name="language">' + DO.U.getLanguageOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
+              DO.U.insertDocumentLevelHTML(document, dl, { 'id': documentLanguage });
+
+              var dLangS = document.querySelector('#' + documentLanguage + ' select');
+              dLangS.addEventListener('change', function(e){
+                dLangS.querySelectorAll('option').forEach(function(o){
+                  o.removeAttribute('selected');
+                });
+                dLangS.querySelector('option[value="' + e.target.value + '"]').setAttribute('selected', 'selected');
+              });
+            }
 
             var documentLicense = 'document-license';
             var license = document.getElementById(documentLicense);
