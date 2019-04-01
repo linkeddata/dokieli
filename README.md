@@ -44,7 +44,7 @@ explains dokieli's principles, architectural and design patterns.
 * Assign license (e.g., [Creative Commons](https://creativecommons.org/)) to the contributions/annotations
 * Uses [schema.org](http://schema.org/), [SPAR Ontologies](http://www.sparontologies.net/), [PROV-O](https://www.w3.org/TR/prov-o/)
 * Assignment of URI fragments (to any unit of significance) so that other resources on the Web can link to it
-* Use [Robust Links](http://robustlinks.mementoweb.org/) for hyperlinks eg. citations
+* Use [Robust Links](http://robustlinks.mementoweb.org/) for hyperlinks eg. citations, and show Link Decoration
 * Embedding data blocks, e.g., Turtle, N-Triples, JSON-LD, TriG (Nanopublications)
 * Embedding of media objects, tables, and interactions
 * Automated references and citations (retrieves and reuses structured information)
