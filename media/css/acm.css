@@ -41,6 +41,10 @@ color:#000;
 }
 audio { display:none; }
 iframe { display:none !important; }
+svg {
+width:auto !important;
+height:auto !important;
+}
 
 #references ol {
 font-family:"Times New Roman", serif;
