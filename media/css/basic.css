@@ -923,6 +923,10 @@ aside {
 margin: 0 auto;
 }
 
+#table-of-contents {
+margin-bottom:4em;
+}
+
 dd {
 margin-left: 1em
 }
