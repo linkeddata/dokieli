@@ -4443,10 +4443,10 @@ WHERE {\n\
     getSparkline: function(data, options) {
       options = options || {};
       if(!('cssStroke' in options)) {
-        options['cssStroke'] = '#333';
+        options['cssStroke'] = '#000';
       }
 
-      var svg = '<svg height="100%" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# xsd: http://www.w3.org/2001/XMLSchema# qb: http://purl.org/linked-data/cube# prov: http://www.w3.org/ns/prov# schema: http://schema.org/" version="1.1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink"><style type="text/css">/*<![CDATA[*/line { stroke:' + options.cssStroke + '; stroke-width:1px; } circle { stroke:#f00; fill:#f00; }/*]]>*/</style>';
+      var svg = '<svg height="100%" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# xsd: http://www.w3.org/2001/XMLSchema# qb: http://purl.org/linked-data/cube# prov: http://www.w3.org/ns/prov# schema: http://schema.org/" version="1.1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink">';
 
       svg += DO.U.drawSparklineGraph(data, options);
       svg += '</svg>';
@@ -4457,7 +4457,7 @@ WHERE {\n\
     drawSparklineGraph: function(data, options) {
       options = options || {};
       if(!('cssStroke' in options)) {
-        options['cssStroke'] = '#333';
+        options['cssStroke'] = '#000';
       }
       var svg= '';
 
@@ -4491,6 +4491,7 @@ WHERE {\n\
           ' x2="' + x2 + '%"' +
           ' y1="' + y1 + '%"' +
           ' y2="' + y2 + '%"' +
+          ' stroke="' + options.cssStroke + '"' +
           ' /></a>';
 
         //Last data item
@@ -4499,6 +4500,8 @@ WHERE {\n\
             ' cx="' + x2 + '%"' +
             ' cy="' + y2 + '%"' +
             ' r="' + dotSize + '"' +
+            ' stroke="#f00"' +
+            ' fill:#f00' +
             ' /></a>';
         }
       }
@@ -6881,8 +6884,7 @@ WHERE {\n\
 // console.log(list);
                               var options = {
                                 url: dataset,
-                                title: title ,
-                                cssStroke: '#000'
+                                title: title
                               };
                               var sparkline = DO.U.getSparkline(list, options);
                               sG.insertAdjacentHTML('beforeend', '<span class="sparkline">' + sparkline + '</span> <span class="sparkline-info">' + triples.length + ' observations</span>');
