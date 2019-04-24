@@ -1526,11 +1526,10 @@ var DO = {
         if(section.id) {
           var heading = section.querySelector('h1, h2, h3, h4, h5, h6, header h1, header h2, header h3, header h4, header h5, header h6') || { 'textContent': section.id };
           var currentHash = '';
-          var dataId = '';
+          var dataId = ' data-id="' + section.id +'"';
 
           if (!options.raw) {
             currentHash = (document.location.hash == '#' + section.id) ? ' class="selected"' : '';
-            dataId = ' data-id="' + section.id +'"';
             attributeClass = '';
           }
 
