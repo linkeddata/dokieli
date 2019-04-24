@@ -36,6 +36,10 @@ code:before, code:after, samp:before, samp:after, kbd:before, kbd:after {
 content:"" !important;
 letter-spacing:0 !important;
 }
+
+a[about][typeof~="schema:Person"]:after {
+content: ' <' attr(about) '>';
+}
 } /* media print */
 
 html {
