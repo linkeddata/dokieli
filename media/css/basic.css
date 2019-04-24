@@ -729,24 +729,24 @@ margin-bottom:1em;
 }
 
 
-.toc li:not([data-id=abstract]):not([data-id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):not([data-id=audience]):not([data-id=declaration]):not([data-id=acknowledgements]) {
+.toc > li:not([data-id=abstract]):not([data-id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):not([data-id=audience]):not([data-id=declaration]):not([data-id=acknowledgements]) {
 counter-increment:s;
 counter-reset:sub-s;
 }
 
-.toc li li:not([data-id=abstract]):not([data-id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):not([data-id=audience]):not([data-id=declaration]):not([data-id=acknowledgements]) {
+.toc > li:not([data-id=abstract]):not([data-id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):not([data-id=audience]):not([data-id=declaration]):not([data-id=acknowledgements]) li {
 counter-increment:sub-s;
 counter-reset:sub-sub-s;
 }
-.toc li li li:not([data-id=abstract]):not([data-id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):not([data-id=audience]):not([data-id=declaration]):not([data-id=acknowledgements]) {
+.toc > li:not([data-id=abstract]):not([data-id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):not([data-id=audience]):not([data-id=declaration]):not([data-id=acknowledgements]) li li {
 counter-increment:sub-sub-s;
 counter-reset:sub-sub-sub-s;
 }
-.toc li li li li:not([data-id=abstract]):not([data-id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):not([data-id=audience]):not([data-id=declaration]):not([data-id=acknowledgements]) {
+.toc > li:not([data-id=abstract]):not([data-id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):not([data-id=audience]):not([data-id=declaration]):not([data-id=acknowledgements]) li li li {
 counter-increment:sub-sub-sub-s;
 counter-reset:sub-sub-sub-sub-s;
 }
-.toc li li li li li:not([data-id=abstract]):not([data-id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):not([data-id=audience]):not([data-id=declaration]):not([data-id=acknowledgements]){
+.toc > li:not([data-id=abstract]):not([data-id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):not([data-id=audience]):not([data-id=declaration]):not([data-id=acknowledgements]) li li li li {
 counter-increment:sub-sub-sub-sub-s;
 counter-reset:sub-sub-sub-sub-sub-s;
 }
@@ -754,23 +754,23 @@ counter-reset:sub-sub-sub-sub-sub-s;
 content:counter(s);
 margin-right:0.5em;
 }
-.toc li li:not([data-id=abstract]):not([data-id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):not([data-id=audience]):not([data-id=declaration]):not([data-id=acknowledgements]):before {
+.toc > li:not([data-id=abstract]):not([data-id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):not([data-id=audience]):not([data-id=declaration]):not([data-id=acknowledgements]) li:before {
 content:counter(s) "." counter(sub-s);
 }
-.toc li li li:not([data-id=abstract]):not([data-id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):not([data-id=audience]):not([data-id=declaration]):not([data-id=acknowledgements]):before {
+.toc > li:not([data-id=abstract]):not([data-id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):not([data-id=audience]):not([data-id=declaration]):not([data-id=acknowledgements]) li li:before {
 content:counter(s) "." counter(sub-s) "." counter(sub-sub-s);
 }
-.toc li li li li:not([data-id=abstract]):not([data-id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):not([data-id=audience]):not([data-id=declaration]):not([data-id=acknowledgements]):before {
+.toc > li:not([data-id=abstract]):not([data-id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):not([data-id=audience]):not([data-id=declaration]):not([data-id=acknowledgements]) li li li:before {
 content:counter(s) "." counter(sub-s) "." counter(sub-sub-s) "." counter(sub-sub-sub-s);
 }
-#document-items .toc li li li li li:not([data-id=abstract]):not([data-id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):not([data-id=audience]):not([data-id=declaration]):not([data-id=acknowledgements]):before {
+#document-items .toc > li:not([data-id=abstract]):not([data-id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):not([data-id=audience]):not([data-id=declaration]):not([data-id=acknowledgements]) li li li li:before {
 content:counter(s) "." counter(sub-s) "." counter(sub-sub-s) "." counter(sub-sub-sub-s) "." counter(sub-sub-sub-sub-s);
 }
-.toc li li li li li:not([data-id=abstract]):not([data-id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):not([data-id=audience]):not([data-id=declaration]):not([data-id=acknowledgements]):before {
+.toc > li:not([data-id=abstract]):not([data-id=document-status]):not([data-id=keywords]):not([data-id=references]):not([data-id=categories-and-subject-descriptors]):not([data-id=general-terms]):not([data-id=appendix]):not([data-id=contact-us]):not([data-id=audience]):not([data-id=declaration]):not([data-id=acknowledgements]) li li li li:before {
 content:counter(s) "." counter(sub-s) "." counter(sub-sub-s) "." counter(sub-sub-sub-s) "." counter(sub-sub-sub-sub-s);
 }
 
-.toc li[data-id=abstract]:before, .toc li[data-id=document-status]:before, .toc li[data-id=keywords]:before, .toc li[data-id=references]:before, .toc li[data-id=categories-and-subject-descriptors]:before, .toc li[data-id=general-terms]:before, .toc li[data-id=appendix]:before, .toc li[data-id=contact-us]:before, .toc li[data-id=audience]:before, .toc li[data-id=declaration]:before, .toc li[data-id=acknowledgements]:before {
+.toc > li[data-id=abstract]:before, .toc > li[data-id=document-status]:before, .toc > li[data-id=keywords]:before, .toc > li[data-id=references]:before, .toc > li[data-id=categories-and-subject-descriptors]:before, .toc > li[data-id=general-terms]:before, .toc > li[data-id=appendix]:before, .toc > li[data-id=contact-us]:before, .toc > li[data-id=audience]:before, .toc > li[data-id=declaration]:before, .toc > li[data-id=acknowledgements]:before {
 content:"\00a0\00a0\00a0\00a0";
 }
 
