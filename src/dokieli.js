@@ -511,8 +511,6 @@ var DO = {
           .text(options.title);
       }
 
-      svg.append('style').text('.node { stroke: #fff; stroke-width: 1px; } .link { fill: none; stroke: #bbb; }');
-
       var color = d3.scaleOrdinal(d3.schemeCategory10);
 
       var simulation = d3.forceSimulation()
@@ -542,12 +540,14 @@ var DO = {
           var link = svg.selectAll(".link")
             .data(bilinks)
             .enter().append("path")
-              .attr("class", "link");
+              // .attr("class", "link")
+              .attr('fill', 'none')
+              .attr('stroke', '#333');
 
           var node = svg.selectAll(".node")
             .data(nodes.filter(function(d) { return d.id; }))
             .enter().append("circle")
-              .attr("class", "node")
+              // .attr("class", "node")
               .attr("r", 5)
               .attr("fill", function(d) { return color(d.group); })
               .call(d3.drag()
