@@ -1605,21 +1605,29 @@ var DO = {
                 });
               }
 
+              var processed = [];
               for (var i = 0; i < e.length; i++) {
-                s += '<dt>' + e[i].textContent + '</dt>';
-                s += '<dd>' + e[i].getAttribute(titleType) + '</dd>';
+                if (processed.indexOf(e[i].textContent) < 0) {
+                  s += '<dt>' + e[i].textContent + '</dt>';
+                  s += '<dd>' + e[i].getAttribute(titleType) + '</dd>';
+                  processed.push(e[i].textContent);
+                }
               };
             }
             else {
+              var processed = [];
               for (var i = 0; i < e.length; i++) {
-                var title = e[i].querySelector(titleType);
-                if(title) {
-                  if(e[i].id){
-                    s += '<li><a href="#' + e[i].id +'">' + title.textContent +'</a></li>';
+                if (processed.indexOf(e[i].textContent) < 0) {
+                  var title = e[i].querySelector(titleType);
+                  if(title) {
+                    if(e[i].id){
+                      s += '<li><a href="#' + e[i].id +'">' + title.textContent +'</a></li>';
+                    }
+                    else {
+                      s += '<li>' + title.textContent +'</li>';
+                    }
                   }
-                  else {
-                    s += '<li>' + title.textContent +'</li>';
-                  }
+                  processed.push(e[i].textContent);
                 }
               };
             }
