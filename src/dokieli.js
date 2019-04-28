@@ -451,6 +451,7 @@ var DO = {
       options['license'] = options.license || 'https://creativecommons.org/licenses/by/4.0/';
       var width = options.width || '100%';
       var height = options.height || '100%';
+      var nodeRadius = 5;
 
       var id = DO.U.generateAttributeId();
 
@@ -511,12 +512,17 @@ var DO = {
           .text(options.title);
       }
 
-      var color = d3.scaleOrdinal(d3.schemeCategory10);
+      // var color = d3.scaleOrdinal(d3.schemeCategory10);
+      var color = function(group) { return d3.schemeCategory10[group-1] || "#000"; }
+// console.log(d3.schemeCategory10)
+// for (var i=0; i<d3.schemeCategory10.length; i++) {
+//   document.body.insertAdjacentHTML('beforeend', '<span style="display:inline-block; width:1em; height:1em; background-color:'+ color(i) + '"></span>')
+// }
 
       var simulation = d3.forceSimulation()
-          .force("link", d3.forceLink().distance(10).strength(0.25))
-          .force('collide', d3.forceCollide().radius(5).strength(0.25))
-          // .force("charge", d3.forceManyBody())
+          .force("link", d3.forceLink().distance(nodeRadius * 4).strength(0.25))
+          .force('collide', d3.forceCollide().radius(nodeRadius).strength(0.25))
+          // .force("charge", d3.forceManyBody().strength(0))
           // .force("center", d3.forceCenter());
           .force("center", d3.forceCenter(width / 2, height / 2));
 
@@ -548,8 +554,9 @@ var DO = {
             .data(nodes.filter(function(d) { return d.id; }))
             .enter().append("circle")
               // .attr("class", "node")
-              .attr("r", 5)
+              .attr("r", nodeRadius)
               .attr("fill", function(d) { return color(d.group); })
+              .attr('stroke', '#ccc')
               .call(d3.drag()
                   .on("start", dragstarted)
                   .on("drag", dragged)
@@ -582,28 +589,57 @@ var DO = {
             var graphNodes = [];
 
             g.graph().toArray().forEach(function(t){
-              var group = 1;
-              switch(t.predicate.nominalValue){
-                default:
-                  group = 1;
+              var sGroup = 3;
+              var pGroup = 3;
+              var oGroup = 3;
+
+              switch(t.subject.interfaceName) {
+                default: case 'NamedNode':
+                  sGroup = 3;
+                  if (t.subject.nominalValue.split('/')[2] !== window.location.origin.split('/')[2]) {
+                    sGroup = 1;
+                  }
                   break;
-                // case DO.C.Vocab['rdftype']['@id']:
-                //   group = 2;
+                // case 'BlankNode':
+                //   sGroup = 3;
                 //   break;
               }
 
-              if(graphNodes.indexOf(t.subject.nominalValue + ' ' + group) == -1) {
-                graphNodes.push(t.subject.nominalValue + ' ' + group);
-                graph.nodes.push({"id": t.subject.nominalValue, "group": group});
+              switch(t.object.interfaceName) {
+                default: case 'NamedNode':
+                  oGroup = 3;
+                  if (t.object.nominalValue.split('/')[2] !== window.location.origin.split('/')[2]) {
+                    oGroup = 1;
+                  }
+                  break;
+                // case 'BlankNode':
+                //   oGroup = 3;
+                //   break;
+                case 'Literal':
+                  oGroup = 8;
+                  break;
               }
-              if(graphNodes.indexOf(t.object.nominalValue + ' ' + group) == -1) {
-                graphNodes.push(t.object.nominalValue + ' ' + group);
-                graph.nodes.push({"id": t.object.nominalValue, "group": group});
+
+              switch(t.predicate.nominalValue){
+                default:
+                  break;
+                case DO.C.Vocab['rdftype']['@id']:
+                  oGroup = 4;
+                  break;
+              }
+
+              if(graphNodes.indexOf(t.subject.nominalValue + ' ' + sGroup) == -1) {
+                graphNodes.push(t.subject.nominalValue + ' ' + sGroup);
+                graph.nodes.push({"id": t.subject.nominalValue, "group": sGroup});
+              }
+              if(graphNodes.indexOf(t.object.nominalValue + ' ' + oGroup) == -1) {
+                graphNodes.push(t.object.nominalValue + ' ' + oGroup);
+                graph.nodes.push({"id": t.object.nominalValue, "group": oGroup});
               }
 
               graph.links.push({"source": t.subject.nominalValue, "target": t.object.nominalValue, "value": t.predicate.nominalValue});
             });
-
+// console.log(graphNodes)
             // delete graphNodes;
             return resolve(graph);
           }
