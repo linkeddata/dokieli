@@ -440,7 +440,7 @@ var DO = {
       );
     },
 
-    //Borrowed the d3 parts from https://bl.ocks.org/mbostock/4600693
+    //Borrowed some of the d3 parts from https://bl.ocks.org/mbostock/4600693
     showVisualisationGraph: function(url, data, selector, options) {
       url = url || window.location.origin + window.location.pathname;
       data = data || doc.getDocument();
@@ -520,10 +520,9 @@ var DO = {
 // }
 
       var simulation = d3.forceSimulation()
-          .force("link", d3.forceLink().distance(nodeRadius * 4).strength(0.25))
-          .force('collide', d3.forceCollide().radius(nodeRadius).strength(0.25))
-          // .force("charge", d3.forceManyBody().strength(0))
-          // .force("center", d3.forceCenter());
+          .force("link", d3.forceLink().distance(nodeRadius).strength(0.25))
+          .force('collide', d3.forceCollide().radius(nodeRadius * 2).strength(0.25))
+          // .force("charge", d3.forceManyBody())
           .force("center", d3.forceCenter(width / 2, height / 2));
 
       DO.U.getVisualisationGraphData(url, data, options).then(
@@ -534,15 +533,35 @@ var DO = {
               links = graph.links,
               bilinks = [];
 
+          var uniqueNodes = {};
+
           links.forEach(function(link) {
             var s = link.source = nodeById.get(link.source),
                 t = link.target = nodeById.get(link.target),
                 i = {}; // intermediate node
+                // linkValue = link.value
             nodes.push(i);
+
+            if (uniqueNodes[s.id] > -1) {
+              s = uniqueNodes[s.id];
+            }
+            else {
+              uniqueNodes[s.id] = s;
+            }
+
+            if (uniqueNodes[t.id] > -1) {
+              t = uniqueNodes[t.id];
+            }
+            else {
+              uniqueNodes[t.id] = t;
+            }
+
             links.push({source: s, target: i}, {source: i, target: t});
             bilinks.push([s, i, t]);
           });
 
+// console.log(links)
+// console.log(uniqueNodes)
           var link = svg.selectAll(".link")
             .data(bilinks)
             .enter().append("path")
@@ -551,12 +570,16 @@ var DO = {
               .attr('stroke', '#333');
 
           var node = svg.selectAll(".node")
-            .data(nodes.filter(function(d) { return d.id; }))
+            .data(nodes.filter(function(d) {
+              if (uniqueNodes[d.id] && uniqueNodes[d.id].index == d.index) {
+                return d.id;
+              }
+            }))
             .enter().append("circle")
               // .attr("class", "node")
               .attr("r", nodeRadius)
               .attr("fill", function(d) { return color(d.group); })
-              .attr('stroke', '#ccc')
+              .attr('stroke', '#999')
               .call(d3.drag()
                   .on("start", dragstarted)
                   .on("drag", dragged)
