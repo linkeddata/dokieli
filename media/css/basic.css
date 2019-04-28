@@ -324,7 +324,7 @@ margin-top:1em;
 }
 
 a {
-color: #080;
+/*color: #080;*/
 text-decoration: none;
 border-bottom: 2px solid #333;
 }
@@ -340,8 +340,12 @@ border-bottom:0;
 }
 a:visited {
 /*color:#551A8B;*/
-color:#000;
+/*color:#000;*/
 }
+a[href^="#"]:not(:focus):not(:visited) {
+color: #080;
+}
+
 
 [tabindex]:not([tabindex="-1"]), a, button, input, select, submit, textarea {
 outline: 2px solid transparent;
