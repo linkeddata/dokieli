@@ -233,8 +233,9 @@ min-height:640px;
 
 #graph-view {
 width:50%;
-height:80%;
+height:90%;
 max-width:initial;
+max-height:inherit;
 }
 
 #graph-view svg.graph {
