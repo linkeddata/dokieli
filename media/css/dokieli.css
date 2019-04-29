@@ -231,9 +231,16 @@ min-width:640px;
 min-height:640px;
 }
 
+#graph-view {
+width:50%;
+height:80%;
+max-width:initial;
+}
+
 #graph-view svg.graph {
-width:480px;
-height:480px;
+/*width:480px;
+height:480px;*/
+max-height:90%;
 margin:0 auto;
 display:block;
 }

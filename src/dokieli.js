@@ -451,7 +451,7 @@ var DO = {
       options['license'] = options.license || 'https://creativecommons.org/licenses/by/4.0/';
       var width = options.width || '100%';
       var height = options.height || '100%';
-      var nodeRadius = 5;
+      var nodeRadius = 6;
 
       var id = DO.U.generateAttributeId();
 
@@ -512,12 +512,26 @@ var DO = {
           .text(options.title);
       }
 
+
+
       // var color = d3.scaleOrdinal(d3.schemeCategory10);
-      var color = function(group) { return d3.schemeCategory10[group-1] || "#000"; }
-// console.log(d3.schemeCategory10)
-// for (var i=0; i<d3.schemeCategory10.length; i++) {
-//   document.body.insertAdjacentHTML('beforeend', '<span style="display:inline-block; width:1em; height:1em; background-color:'+ color(i) + '"></span>')
-// }
+
+      //Move this to config perhaps with terms eg. anchor, anchorInternal, warning
+      var color = function(group) { 
+        switch(group) {
+          case 0: return '#fff';
+          default:
+          case 1: return '#000';
+          case 3: return '#333';
+          case 4: return '#ccc';
+          case 5: return '#f00';
+          case 7: return '#002af7';
+          case 8: return '#080';
+          case 9: return '#dbccff';
+        }
+
+        // return d3.schemeCategory10[group-1] || "#000"; 
+      }
 
       var simulation = d3.forceSimulation()
           .force("link", d3.forceLink().distance(nodeRadius).strength(0.25))
@@ -567,7 +581,7 @@ var DO = {
             .enter().append("path")
               // .attr("class", "link")
               .attr('fill', 'none')
-              .attr('stroke', '#333');
+              .attr('stroke', color(4));
 
           var node = svg.selectAll(".node")
             .data(nodes.filter(function(d) {
@@ -579,7 +593,7 @@ var DO = {
               // .attr("class", "node")
               .attr("r", nodeRadius)
               .attr("fill", function(d) { return color(d.group); })
-              .attr('stroke', '#999')
+              .attr('stroke', color(3))
               .call(d3.drag()
                   .on("start", dragstarted)
                   .on("drag", dragged)
@@ -612,15 +626,14 @@ var DO = {
             var graphNodes = [];
 
             g.graph().toArray().forEach(function(t){
-              var sGroup = 3;
-              var pGroup = 3;
-              var oGroup = 3;
+              var sGroup = 8;
+              var pGroup = 8;
+              var oGroup = 8;
 
               switch(t.subject.interfaceName) {
                 default: case 'NamedNode':
-                  sGroup = 3;
                   if (t.subject.nominalValue.split('/')[2] !== window.location.origin.split('/')[2]) {
-                    sGroup = 1;
+                    sGroup = 7;
                   }
                   break;
                 // case 'BlankNode':
@@ -630,25 +643,23 @@ var DO = {
 
               switch(t.object.interfaceName) {
                 default: case 'NamedNode':
-                  oGroup = 3;
                   if (t.object.nominalValue.split('/')[2] !== window.location.origin.split('/')[2]) {
-                    oGroup = 1;
+                    oGroup = 7;
                   }
                   break;
                 // case 'BlankNode':
                 //   oGroup = 3;
                 //   break;
                 case 'Literal':
-                  oGroup = 8;
+                  oGroup = 4;
                   break;
               }
 
-              switch(t.predicate.nominalValue){
-                default:
-                  break;
-                case DO.C.Vocab['rdftype']['@id']:
-                  oGroup = 4;
-                  break;
+              if (t.predicate.nominalValue == DO.C.Vocab['rdftype']['@id']){
+                oGroup = 5;
+              }
+              else if (t.predicate.nominalValue.startsWith('http://purl.org/spar/cito/')) {
+                oGroup = 9;
               }
 
               if(graphNodes.indexOf(t.subject.nominalValue + ' ' + sGroup) == -1) {
