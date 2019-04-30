@@ -525,6 +525,7 @@ var DO = {
           case 3: return '#333';
           case 4: return '#ccc';
           case 5: return '#f00';
+          case 6: return '#0f0';
           case 7: return '#002af7';
           case 8: return '#080';
           case 9: return '#dbccff';
@@ -662,19 +663,21 @@ var DO = {
                 oGroup = 9;
               }
 
-              if(graphNodes.indexOf(t.subject.nominalValue + ' ' + sGroup) == -1) {
-                graphNodes.push(t.subject.nominalValue + ' ' + sGroup);
+              if(graphNodes.indexOf(t.subject.nominalValue) == -1) {
+                graphNodes.push(t.subject.nominalValue);
                 graph.nodes.push({"id": t.subject.nominalValue, "group": sGroup});
               }
-              if(graphNodes.indexOf(t.object.nominalValue + ' ' + oGroup) == -1) {
-                graphNodes.push(t.object.nominalValue + ' ' + oGroup);
+              if(graphNodes.indexOf(t.object.nominalValue) == -1) {
+                graphNodes.push(t.object.nominalValue);
                 graph.nodes.push({"id": t.object.nominalValue, "group": oGroup});
               }
 
               graph.links.push({"source": t.subject.nominalValue, "target": t.object.nominalValue, "value": t.predicate.nominalValue});
             });
 // console.log(graphNodes)
-            // delete graphNodes;
+// console.log(graph)
+
+            delete graphNodes;
             return resolve(graph);
           }
         );
