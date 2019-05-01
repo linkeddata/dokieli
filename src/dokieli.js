@@ -480,6 +480,24 @@ var DO = {
         d.fx = null, d.fy = null;
       }
 
+      // var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+      //Move this to config perhaps with terms eg. anchor, anchorInternal, warning
+      var color = function(group) { 
+        switch(group) {
+          case 0: return '#fff';
+          default:
+          case 1: return '#000';
+          case 2: return '#333';
+          case 3: return '#777';
+          case 4: return '#ccc';
+          case 6: return '#f00';
+          case 7: return '#002af7';
+          case 8: return '#080';
+          case 9: return '#dbccff';
+        }
+      }
+
       var svg = d3.select(selector).append('svg')
         .attr('width', width)
         .attr('height', height)
@@ -512,27 +530,19 @@ var DO = {
           .text(options.title);
       }
 
-
-
-      // var color = d3.scaleOrdinal(d3.schemeCategory10);
-
-      //Move this to config perhaps with terms eg. anchor, anchorInternal, warning
-      var color = function(group) { 
-        switch(group) {
-          case 0: return '#fff';
-          default:
-          case 1: return '#000';
-          case 3: return '#333';
-          case 4: return '#ccc';
-          case 5: return '#f00';
-          case 6: return '#0f0';
-          case 7: return '#002af7';
-          case 8: return '#080';
-          case 9: return '#dbccff';
-        }
-
-        // return d3.schemeCategory10[group-1] || "#000"; 
-      }
+      svg.append("defs").selectAll("marker")
+          .data(["end"])
+        .enter().append("marker")
+          .attr("id", String)
+          .attr("viewBox", "0 -5 10 10")
+          .attr("refX", 20)
+          .attr("refY", -1)
+          .attr("markerWidth", 6)
+          .attr("markerHeight", 6)
+          .attr("orient", "auto")
+          .attr("fill", color(3))
+        .append("path")
+          .attr("d", "M0,-5L10,0L0,5");
 
       var simulation = d3.forceSimulation()
           .force("link", d3.forceLink().distance(nodeRadius).strength(0.25))
@@ -582,7 +592,8 @@ var DO = {
             .enter().append("path")
               // .attr("class", "link")
               .attr('fill', 'none')
-              .attr('stroke', color(4));
+              .attr('stroke', color(4))
+              .attr("marker-end", "url(#end)");
 
           var node = svg.selectAll(".node")
             .data(nodes.filter(function(d) {
@@ -594,7 +605,7 @@ var DO = {
               // .attr("class", "node")
               .attr("r", nodeRadius)
               .attr("fill", function(d) { return color(d.group); })
-              .attr('stroke', color(3))
+              .attr('stroke', color(2))
               .call(d3.drag()
                   .on("start", dragstarted)
                   .on("drag", dragged)
@@ -627,6 +638,14 @@ var DO = {
             var graphNodes = [];
 
             g.graph().toArray().forEach(function(t){
+              if(
+                // t.predicate.nominalValue == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first' ||
+                // t.predicate.nominalValue == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest' ||
+                t.predicate.nominalValue == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil'
+                ) {
+                return;
+              }
+
               var sGroup = 8;
               var pGroup = 8;
               var oGroup = 8;
@@ -637,9 +656,9 @@ var DO = {
                     sGroup = 7;
                   }
                   break;
-                // case 'BlankNode':
-                //   sGroup = 3;
-                //   break;
+                case 'BlankNode':
+                  sGroup = 8;
+                  break;
               }
 
               switch(t.object.interfaceName) {
@@ -648,16 +667,16 @@ var DO = {
                     oGroup = 7;
                   }
                   break;
-                // case 'BlankNode':
-                //   oGroup = 3;
-                //   break;
+                case 'BlankNode':
+                  oGroup = 8;
+                  break;
                 case 'Literal':
                   oGroup = 4;
                   break;
               }
 
               if (t.predicate.nominalValue == DO.C.Vocab['rdftype']['@id']){
-                oGroup = 5;
+                oGroup = 6;
               }
               else if (t.predicate.nominalValue.startsWith('http://purl.org/spar/cito/')) {
                 oGroup = 9;
