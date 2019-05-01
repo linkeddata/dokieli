@@ -491,6 +491,7 @@ var DO = {
           case 2: return '#333';
           case 3: return '#777';
           case 4: return '#ccc';
+          case 5: return '#ff0';
           case 6: return '#ff2900';
           case 7: return '#002af7';
           case 8: return '#00cc00';
@@ -652,7 +653,11 @@ var DO = {
 
               switch(t.subject.interfaceName) {
                 default: case 'NamedNode':
-                  if (!t.subject.nominalValue.startsWith(uri.stripFragmentFromString(document.location.href))) {
+                  var documentURL = uri.stripFragmentFromString(document.location.href);
+                  if (t.subject.nominalValue == documentURL) {
+                    sGroup = 5;
+                  }
+                  else if (!t.subject.nominalValue.startsWith(documentURL)) {
                     sGroup = 7;
                   }
                   break;
