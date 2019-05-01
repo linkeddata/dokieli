@@ -491,9 +491,9 @@ var DO = {
           case 2: return '#333';
           case 3: return '#777';
           case 4: return '#ccc';
-          case 6: return '#f00';
+          case 6: return '#ff2900';
           case 7: return '#002af7';
-          case 8: return '#080';
+          case 8: return '#00cc00';
           case 9: return '#dbccff';
         }
       }
@@ -641,7 +641,7 @@ var DO = {
               if(
                 // t.predicate.nominalValue == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first' ||
                 // t.predicate.nominalValue == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest' ||
-                t.predicate.nominalValue == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil'
+                t.object.nominalValue == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil'
                 ) {
                 return;
               }
@@ -652,7 +652,7 @@ var DO = {
 
               switch(t.subject.interfaceName) {
                 default: case 'NamedNode':
-                  if (t.subject.nominalValue.split('/')[2] !== window.location.origin.split('/')[2]) {
+                  if (!t.subject.nominalValue.startsWith(uri.stripFragmentFromString(document.location.href))) {
                     sGroup = 7;
                   }
                   break;
@@ -663,7 +663,7 @@ var DO = {
 
               switch(t.object.interfaceName) {
                 default: case 'NamedNode':
-                  if (t.object.nominalValue.split('/')[2] !== window.location.origin.split('/')[2]) {
+                  if (!t.object.nominalValue.startsWith(uri.stripFragmentFromString(document.location.href))) {
                     oGroup = 7;
                   }
                   break;
