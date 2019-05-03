@@ -1441,6 +1441,7 @@ var DO = {
       var content = DO.U.selectArticleNode(document);
       var count = DO.U.contentCount(content);
       var authors = [], contributors = [], editors = [];
+      var citationsTo = [];
 
       var data = doc.getDocument();
       var subjectURI = window.location.origin + window.location.pathname;
@@ -1448,7 +1449,26 @@ var DO = {
 
       graph.getGraphFromData(data, options).then(
         function(i){
-          var g = SimpleRDF(DO.C.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
+          var s = SimpleRDF(DO.C.Vocab, options['subjectURI'], i, ld.store);
+// console.log(s)
+
+          var triples = s._graph;
+          var citations = Object.keys(DO.C.Citation).concat(DO.C.Vocab["schemacitation"]["@id"]);
+// console.log(citations)
+          triples.forEach(function(t){
+            var s = t.subject.nominalValue;
+            var p = t.predicate.nominalValue;
+            var o = t.object.nominalValue;
+
+            if(citations.indexOf(p) > -1) {
+              citationsTo.push(t); 
+            }
+          });
+// console.log(citationsTo)
+          citations = '<tr class="citations"><th>Citations</th><td>' + citationsTo.length + '</td></tr>';
+
+          var g = s.child(options['subjectURI']);
+// console.log(g)
 
           if(g.schemaeditor._array.length > 0) {
             g.schemaeditor.forEach(function(s){
@@ -1486,16 +1506,16 @@ var DO = {
             }
           }
 
-          return authors + contributors;
+          return authors + editors + contributors + citations;
         }).then(
-        function(people){
+        function(data){
               // <tr><th>Lines</th><td>' + count.lines + '</td></tr>\n\
               // <tr><th>A4 Pages</th><td>' + count.pages.A4 + '</td></tr>\n\
               // <tr><th>US Letter</th><td>' + count.pages.USLetter + '</td></tr>\n\
           var s = '<section id="document-metadata" class="do"><table>\n\
             <caption>Document Metadata</caption>\n\
             <tbody>\n\
-              ' + people + '\n\
+              ' + data + '\n\
               <tr><th>Reading time</th><td>' + count.readingTime + ' minutes</td></tr>\n\
               <tr><th>Characters</th><td>' + count.chars + '</td></tr>\n\
               <tr><th>Words</th><td>' + count.words + '</td></tr>\n\
