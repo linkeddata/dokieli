@@ -1,5 +1,7 @@
 'use strict'
 
+const Config = require('./config')
+
 module.exports = {
   uniqueArray,
   getHash,
@@ -9,7 +11,8 @@ module.exports = {
   escapeRegExp,
   sleep,
   fragmentFromString,
-  generateUUID
+  generateUUID,
+  isActor
 }
 
 /**
@@ -103,4 +106,22 @@ function generateUUID() {
     lut[d3&0xff]+lut[d3>>8&0xff]+lut[d3>>16&0xff]+lut[d3>>24&0xff];
   };
   return s();
+}
+
+function isActor (s) {
+  var actorTypes = [
+    'foafAgent', 'foafPerson', 'foafGroup', 'foafOrganization',
+    'vcardVCard', 'vcardIndividual', 'vcardGroup', 'vcardOrganization',
+    'schemaPerson', 'schemaOrganization',
+    'dctermsAgent',
+    'asApplication', 'asGroup', 'asOrganization', 'asPerson', 'asService'
+  ];
+
+  actorTypes = actorTypes.map(a => { if (Config.Vocab[a]["@id"]) return Config.Vocab[a]["@id"]; });
+
+  if (actorTypes.indexOf(s) > -1) {
+    return true;
+  }
+
+  return false;
 }
