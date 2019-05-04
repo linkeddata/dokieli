@@ -655,7 +655,7 @@ var DO = {
 
               switch(t.subject.interfaceName) {
                 default: case 'NamedNode':
-                  var documentURL = uri.stripFragmentFromString(document.location.href);
+                  var documentURL = uri.stripFragmentFromString(url);
                   if (t.subject.nominalValue == documentURL) {
                     sGroup = 5;
                   }
@@ -783,6 +783,7 @@ var DO = {
                 .then(function(data){
                   options['contentType'] = 'text/turtle';
                   // options['subjectURI'] = url;
+                  //FIXME: For multiple graphs (fetched resources), options.subjectURI is the last item, so it is inaccurate
                   DO.U.showVisualisationGraph(options.subjectURI, data, selector, options);
                 });
             });
