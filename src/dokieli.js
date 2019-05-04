@@ -496,6 +496,8 @@ var DO = {
           case 7: return '#002af7';
           case 8: return '#00cc00';
           case 9: return '#dbccff';
+
+          case 10: return '#800080';
         }
       }
 
@@ -682,6 +684,14 @@ var DO = {
 
               if (t.predicate.nominalValue == DO.C.Vocab['rdftype']['@id']){
                 oGroup = 6;
+
+                if (util.isActor(t.object.nominalValue)) {
+                  sGroup = 10;
+                }
+              }
+              if (t.predicate.nominalValue == DO.C.Vocab['foafknows']['@id']){
+                sGroup = 10;
+                oGroup = 10;
               }
               else if (t.predicate.nominalValue.startsWith('http://purl.org/spar/cito/')) {
                 oGroup = 9;
