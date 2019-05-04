@@ -246,6 +246,10 @@ module.exports = {
 
     "owlsameAs": { "@id": "http://www.w3.org/2002/07/owl#sameAs", "@type": "@id", "@array": true },
 
+    "foafAgent": { "@id": "http://xmlns.com/foaf/0.1/Agent", "@type": "@id" },
+    "foafPerson": { "@id": "http://xmlns.com/foaf/0.1/Person", "@type": "@id" },
+    "foafGroup": { "@id": "http://xmlns.com/foaf/0.1/Group", "@type": "@id" },
+    "foafOrganization": { "@id": "http://xmlns.com/foaf/0.1/Organization", "@type": "@id" },
     "foafname": "http://xmlns.com/foaf/0.1/name",
     "foaffamilyName": "http://xmlns.com/foaf/0.1/familyName",
     "foafgivenName": "http://xmlns.com/foaf/0.1/givenName",
@@ -257,6 +261,10 @@ module.exports = {
     "foafmaker": { "@id": "http://xmlns.com/foaf/0.1/maker", "@type": "@id" },
     "foafknows": { "@id": "http://xmlns.com/foaf/0.1/knows", "@type": "@id", "@array": true },
 
+    "vcardVCard": { "@id": "http://www.w3.org/2006/vcard/ns#VCard", "@type": "@id" },
+    "vcardIndividual": { "@id": "http://www.w3.org/2006/vcard/ns#Individual", "@type": "@id" },
+    "vcardGroup": { "@id": "http://www.w3.org/2006/vcard/ns#Group", "@type": "@id" },
+    "vcardOrganization": { "@id": "http://www.w3.org/2006/vcard/ns#Organization", "@type": "@id" },
     "vcardfn": "http://www.w3.org/2006/vcard/ns#fn",
     "vcardfamilyname": "http://www.w3.org/2006/vcard/ns#family-name",
     "vcardgivenname": "http://www.w3.org/2006/vcard/ns#given-name",
@@ -265,6 +273,8 @@ module.exports = {
     "vcardphoto": { "@id": "http://www.w3.org/2006/vcard/ns#photo", "@type": "@id" },
     "vcardhasPhoto": { "@id": "http://www.w3.org/2006/vcard/ns#hasPhoto", "@type": "@id" },
 
+    "schemaPerson": { "@id": "http://schema.org/Person", "@type": "@id" },
+    "schemaOrganization": { "@id": "http://schema.org/Person", "@type": "@id" },
     "schemaname": "http://schema.org/name",
     "schemafamilyName": "http://schema.org/familyName",
     "schemagivenName": "http://schema.org/givenName",
@@ -287,6 +297,7 @@ module.exports = {
     "schemaisPartOf": { "@id": "http://schema.org/isPartOf", "@type": "@id", "@array": true },
     "schemaScholarlyArticle": { "@id": "http://schema.org/ScholarlyArticle" },
 
+    "dctermsAgent": { "@id": "http://purl.org/dc/terms/Agent", "@type": "@id" },
     "dctermstitle": "http://purl.org/dc/terms/title",
     "dctermsdescription": "http://purl.org/dc/terms/description",
     "dctermscreator": { "@id": "http://purl.org/dc/terms/creator", "@type": "@id", "@array": true },
@@ -331,6 +342,11 @@ module.exports = {
     "oamotivatedBy": { "@id": "http://www.w3.org/ns/oa#motivatedBy", "@type": "@id" },
     "oaannotationService": { "@id": "http://www.w3.org/ns/oa#annotationService", "@type": "@id", "@array": true },
 
+    "asApplication": { "@id": "https://www.w3.org/ns/activitystreams#Application", "@type": "@id" },
+    "asGroup": { "@id": "https://www.w3.org/ns/activitystreams#Group", "@type": "@id" },
+    "asOrganization": { "@id": "https://www.w3.org/ns/activitystreams#Organization", "@type": "@id" },
+    "asPerson": { "@id": "https://www.w3.org/ns/activitystreams#Person", "@type": "@id" },
+    "asService": { "@id": "https://www.w3.org/ns/activitystreams#Service", "@type": "@id" },
     "asinbox": { "@id": "https://www.w3.org/ns/activitystreams#inbox", "@type": "@id", "@array": true },
     "assubject": { "@id": "https://www.w3.org/ns/activitystreams#subject", "@type": "@id", "@array": true },
     "asobject": { "@id": "https://www.w3.org/ns/activitystreams#object", "@type": "@id", "@array": true },
