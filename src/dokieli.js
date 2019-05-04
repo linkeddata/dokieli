@@ -2033,7 +2033,39 @@ var DO = {
 
         versionurl = (versionurl) ? '<span>Version</span><span><a href="' + versionurl + '" target="_blank">' + versiondate + '</a></span>' : '';
 
-        i.insertAdjacentHTML('afterend', '<span class="do robustlinks"><button title="Show Robust Links">🔗<span></span></button><span>' + originalurl + versionurl + nearlinkdateurl + '</span></span>');
+
+        var citations = Object.keys(DO.C.Citation).concat(DO.C.Vocab["schemacitation"]["@id"]);
+        //FIXME: This is ultimately inaccurate because it should be obtained through RDF parser
+        var citation = '';
+        var citationLabels = [];
+        var iri;
+        var citationType;
+        var rel = i.getAttribute('rel');
+
+        if (rel) {
+          rel.split(' ').forEach(term=>{
+            if (DO.C.Citation[term]){
+              citationLabels.push(DO.C.Citation[term]);
+            }
+            else {
+              var s = term.split(':');
+              if (s.length == 2) {
+                citations.forEach(c=>{
+                  if (s[1] == DO.U.getURLLastPath(c)) {
+                    citationLabels.push(DO.C.Citation[c])
+                  }
+                });
+              }
+            }
+          });
+
+          if(citationLabels.length > 0) {
+            var citationType = citationLabels.join(', ');
+            citation = '<span>Citation Reason</span><span>' + citationType + '</span>';
+          }
+        }
+
+        i.insertAdjacentHTML('afterend', '<span class="do robustlinks"><button title="Show Robust Links">🔗</button><span>' + citation + originalurl + versionurl + nearlinkdateurl + '</span></span>');
       });
 
       document.querySelectorAll('.do.robustlinks').forEach(function(i){
