@@ -455,11 +455,11 @@ video,
 iframe,
 canvas {
 margin:1em auto;
-text-align:center;
 display:block;
 }
-figure article {
-text-align:left;
+figure object, figure iframe, figure video, figure audio, figure svg, figure img {
+margin:0 auto;
+display:block;
 }
 video {
 max-width: 100%;
