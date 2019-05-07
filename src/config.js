@@ -12,8 +12,8 @@ module.exports = {
       DO.U.showRefs();
       DO.U.buttonClose();
       DO.U.highlightItems();
-      DO.U.initDocumentActions();
       DO.U.getResourceInfo();
+      DO.U.initDocumentActions();
       DO.U.showTextQuoteSelector();
       DO.U.showDocumentInfo();
       DO.U.showFragment();
@@ -296,6 +296,10 @@ module.exports = {
     "schemahasPart": { "@id": "http://schema.org/hasPart", "@type": "@id", "@array": true }, 
     "schemaisPartOf": { "@id": "http://schema.org/isPartOf", "@type": "@id", "@array": true },
     "schemaScholarlyArticle": { "@id": "http://schema.org/ScholarlyArticle" },
+    "schemapotentialAction": { "@id": "http://schema.org/potentialAction", "@type": "@id", "@array": true },
+    "schemaViewAction": { "@id": "http://schema.org/ViewAction" },
+    "schematarget": { "@id": "http://schema.org/target" },
+    "schemaobject": { "@id": "http://schema.org/object" },
 
     "dctermsAgent": { "@id": "http://purl.org/dc/terms/Agent", "@type": "@id" },
     "dctermstitle": "http://purl.org/dc/terms/title",
