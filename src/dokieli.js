@@ -548,10 +548,12 @@ var DO = {
           .attr("d", "M0,-5L10,0L0,5");
 
       var simulation = d3.forceSimulation()
-          .force("link", d3.forceLink().distance(nodeRadius).strength(0.25))
-          .force('collide', d3.forceCollide().radius(nodeRadius * 2).strength(0.25))
-          // .force("charge", d3.forceManyBody())
-          .force("center", d3.forceCenter(width / 2, height / 2));
+        .alphaDecay(0.025)
+        // .velocityDecay(0.1)
+        .force("link", d3.forceLink().distance(nodeRadius).strength(0.25))
+        .force('collide', d3.forceCollide().radius(nodeRadius * 2).strength(0.25))
+        // .force("charge", d3.forceManyBody())
+        .force("center", d3.forceCenter(width / 2, height / 2));
 
       DO.U.getVisualisationGraphData(url, data, options).then(
         function(graph){
@@ -1008,7 +1010,73 @@ var DO = {
       }
     },
 
+    //TODO: Refactor
     initDocumentActions: function() {
+      //Fugly
+      function checkResourceInfo() {
+        if (DO.C.ResourceInfo) {
+          processPotentialAction(DO.C.ResourceInfo);
+        }
+        else {
+          window.setTimeout(checkResourceInfo, 100);
+        }
+      }
+
+      function processPotentialAction(resourceInfo) {
+        var g = resourceInfo.graph;
+        var triples = g._graph;
+        triples.forEach(function(t){
+          var s = t.subject.nominalValue;
+          var p = t.predicate.nominalValue;
+          var o = t.object.nominalValue;
+
+          if(p == DO.C.Vocab['schemapotentialAction']['@id']) {
+            var subject = g.child(s);
+            var potentialActions = subject.schemapotentialAction;
+// console.log(potentialActions)
+            potentialActions.forEach(function(action){
+// console.log(action);
+              var originPathname = document.location.origin + document.location.pathname;
+// console.log(originPathname)
+// console.log(action.startsWith(originPathname + '#'))
+              if (action.startsWith(originPathname)) {
+                document.addEventListener('click', function(e) {
+                  var fragment = action.substr(action.lastIndexOf('#'));
+// console.log(fragment)
+                  if (fragment) {
+                    var selector = '[about="' + fragment  + '"][typeof="schema:ViewAction"], [href="' + fragment  + '"][typeof="schema:ViewAction"], [resource="' + fragment  + '"][typeof="schema:ViewAction"]';
+// console.log(selector)
+                    // var element = document.querySelectorAll(selector);
+                    var element = e.target.closest(selector);
+// console.log(element)
+                    if (element) {
+                      e.preventDefault();
+                      e.stopPropagation();
+
+                      var so = g.child(action).schemaobject;
+                      if (typeof so !== 'undefined') {
+                        so = so.iri().toString();
+                        selector = '#' + element.closest('[id]').id;
+// console.log(selector)
+                        graph.serializeGraph(g, { 'contentType': 'text/turtle' })
+                          .then(function(data){
+                            var options = {};
+                            options['subjectURI'] = so;
+                            options['contentType'] = 'text/turtle';
+                            DO.U.showVisualisationGraph(options.subjectURI, data, selector, options);
+                          });
+                      }
+                    }
+                  }
+                });
+              }
+            });
+          }
+        });
+      }
+
+      var resourceInfo = checkResourceInfo();
+
       document.addEventListener('click', function(e) {
         if (e.target.closest('[about="#document-menu"][typeof="schema:ActivateAction"], [href="#document-menu"][typeof="schema:ActivateAction"], [resource="#document-menu"][typeof="schema:ActivateAction"]')) {
           e.preventDefault();
