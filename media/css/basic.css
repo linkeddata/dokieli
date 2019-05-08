@@ -457,9 +457,10 @@ canvas {
 margin:1em auto;
 display:block;
 }
-figure object, figure iframe, figure video, figure audio, figure svg, figure img {
+figure > object, figure > iframe, figure > video, figure > audio, figure > svg, figure > img, figure > math {
 margin:0 auto;
 display:block;
+text-align: center;
 }
 video {
 max-width: 100%;
