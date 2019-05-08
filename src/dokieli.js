@@ -4417,6 +4417,53 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       }
     },
 
+    buildReferences: function(node, id, citation) {
+      if (!node) {
+        var nodeInsertLocation = DO.U.selectArticleNode(document);
+        var section = '<section id="references"><h2>References</h2><div><ol></ol></div></section>';
+        nodeInsertLocation.insertAdjacentHTML('beforeend', section);
+      }
+
+      DO.U.updateReferences();
+      node = document.querySelector('#references ol');
+
+      var citationItem = '<li id="' + id + '">' + citation + '</li>';
+      node.insertAdjacentHTML('beforeend', citationItem);
+    },
+
+    updateReferences: function(options){
+      options = options || {};
+      options['external'] = options.external || true;
+      options['internal'] = options.internal || false;
+
+      var references = document.querySelector('#references');
+      var referencesOl = references.querySelector('ol');
+      var citeA = document.querySelectorAll('body *:not([id="references"]) cite > a');
+      var uniqueCitations = [];
+      var lis = [];
+
+      var docURL = document.location.origin + document.location.pathname;
+
+      citeA.forEach(function(a){
+        if (uniqueCitations.indexOf(a.outerHTML) < 0) {
+          uniqueCitations.push(a.outerHTML);
+
+          // var versionDate = a.getAttribute('data-versiondate');
+          // var versionURL = a.getAttribute('data-versionurl');
+          // var rel = a.getAttribute('rel');
+          // var property = a.getAttribute('property');
+
+          if ((options.external && !a.href.startsWith(docURL + '#')) ||
+              (options.internal && a.href.startsWith(docURL + '#'))) {
+            lis.push('<li><cite>' + a.textContent + '</cite>, <a href="' + a.href + '">' + a.href + '</a></li>');
+          }
+        }
+      })
+
+      var updatedList = util.fragmentFromString('<ol>' + lis.join('') + '</ol>');
+      referencesOl.parentNode.replaceChild(updatedList, referencesOl);
+    },
+
     highlightItems: function() {
       var highlights = document.body.querySelectorAll('*[class*="highlight-"]');
       for (var i = 0; i < highlights.length; i++) {
@@ -7841,29 +7888,25 @@ WHERE {\n\
 
                         var citation = DO.U.getCitationHTML(citationGraph, citationURI, options);
 
-                        var r = document.querySelector('#references ol');
-                        if (!r) {
-                          var nodeInsertLocation = DO.U.selectArticleNode(document);
-                          var section = '<section id="references"><h2>References</h2><div><ol></ol></div></section>';
-                          nodeInsertLocation.insertAdjacentHTML('beforeend', section);
-                          r = document.querySelector('#references ol');
-                        }
-                        var citationHTML = '<li id="' + id + '">' + citation + '</li>';
-                        r.insertAdjacentHTML('beforeend', citationHTML);
+                        var node = document.querySelector('#references ol');
+
+                        DO.U.buildReferences(node, id, citation);
 
                         DO.U.snapshotAtEndpoint(undefined, citationURI, 'https://web.archive.org/save/', '', {'Accept': '*/*', 'showActionMessage': false })
                           .then(function(r){
-                            var versionURL = r.location;
-                            if (typeof versionURL === 'string') {
-                              var vD = versionURL.split('/')[4];
-                              versionDate = vD.substr(0,4) + '-' + vD.substr(4,2) + '-' + vD.substr(6,2) + 'T' + vD.substr(8,2) + ':' + vD.substr(10,2) + ':' + vD.substr(12,2) + 'Z';
+                            if (r) {
+                              var versionURL = r.location;
+                              if (typeof versionURL === 'string') {
+                                var vD = versionURL.split('/')[4];
+                                versionDate = vD.substr(0,4) + '-' + vD.substr(4,2) + '-' + vD.substr(6,2) + 'T' + vD.substr(8,2) + ':' + vD.substr(10,2) + ':' + vD.substr(12,2) + 'Z';
 
-                              var a = document.querySelector('[id="' + id + '"] a[about]');
-                              a.setAttribute('data-versionurl', versionURL);
-                              a.setAttribute('data-versiondate', versionDate);
+                                var a = document.querySelector('[id="' + id + '"] a[about]');
+                                a.setAttribute('data-versionurl', versionURL);
+                                a.setAttribute('data-versiondate', versionDate);
+                              }
+
+                              DO.U.showActionMessage(document.documentElement, '<p>Archived <a href="' + citationURI + '">' + citationURI + '</a> at <a href="' + versionURL + '">' + versionURL + '</a> and created RobustLink.</p>');
                             }
-
-                            DO.U.showActionMessage(document.documentElement, '<p>Archived <a href="' + citationURI + '">' + citationURI + '</a> at <a href="' + versionURL + '">' + versionURL + '</a> and created RobustLink.</p>');
                           }).then(DO.U.showRobustLinks);
 
 // console.log(options.url);
