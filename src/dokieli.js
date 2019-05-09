@@ -2181,6 +2181,16 @@ var DO = {
       var progress, svgFail, messageArchivedAt;
       options['showActionMessage'] = ('showActionMessage' in options) ? options.showActionMessage : true;
 
+      //TODO: Move to Config?
+      var svgFail = '<svg class="fas fa-times-circle fa-fw" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm121.6 313.1c4.7 4.7 4.7 12.3 0 17L338 377.6c-4.7 4.7-12.3 4.7-17 0L256 312l-65.1 65.6c-4.7 4.7-12.3 4.7-17 0L134.4 338c-4.7-4.7-4.7-12.3 0-17l65.6-65-65.6-65.1c-4.7-4.7-4.7-12.3 0-17l39.6-39.6c4.7-4.7 12.3-4.7 17 0l65 65.7 65.1-65.6c4.7-4.7 12.3-4.7 17 0l39.6 39.6c4.7 4.7 4.7 12.3 0 17L312 256l65.6 65.1z"/></svg>';
+
+      var messageArchivedAt = '<svg class="fas fa-archive" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M32 448c0 17.7 14.3 32 32 32h384c17.7 0 32-14.3 32-32V160H32v288zm160-212c0-6.6 5.4-12 12-12h104c6.6 0 12 5.4 12 12v8c0 6.6-5.4 12-12 12H204c-6.6 0-12-5.4-12-12v-8zM480 32H32C14.3 32 0 46.3 0 64v48c0 8.8 7.2 16 16 16h480c8.8 0 16-7.2 16-16V64c0-17.7-14.3-32-32-32z"/></svg> Archived at ';
+
+      var responseMessages = {
+        "403": svgFail + ' Archive unavailable. Please try later.',
+        "504": svgFail + ' Archive timeout. Please try later.'
+      }
+
       // if(note.length > 0) {
       //   noteData.annotation["message"] = note;
       // }
@@ -2196,16 +2206,7 @@ var DO = {
           archiveNode.insertAdjacentHTML('beforeend', ' <span class="progress"><svg class="fas fa-circle-notch fa-spin fa-fw" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M288 39.056v16.659c0 10.804 7.281 20.159 17.686 23.066C383.204 100.434 440 171.518 440 256c0 101.689-82.295 184-184 184-101.689 0-184-82.295-184-184 0-84.47 56.786-155.564 134.312-177.219C216.719 75.874 224 66.517 224 55.712V39.064c0-15.709-14.834-27.153-30.046-23.234C86.603 43.482 7.394 141.206 8.003 257.332c.72 137.052 111.477 246.956 248.531 246.667C393.255 503.711 504 392.788 504 256c0-115.633-79.14-212.779-186.211-240.236C302.678 11.889 288 23.456 288 39.056z"/></svg> Archiving in progress.</span>');
         }
 
-        progress = archiveNode.querySelector('.progress')
-
-        var svgFail = '<svg class="fas fa-times-circle fa-fw" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm121.6 313.1c4.7 4.7 4.7 12.3 0 17L338 377.6c-4.7 4.7-12.3 4.7-17 0L256 312l-65.1 65.6c-4.7 4.7-12.3 4.7-17 0L134.4 338c-4.7-4.7-4.7-12.3 0-17l65.6-65-65.6-65.1c-4.7-4.7-4.7-12.3 0-17l39.6-39.6c4.7-4.7 12.3-4.7 17 0l65 65.7 65.1-65.6c4.7-4.7 12.3-4.7 17 0l39.6 39.6c4.7 4.7 4.7 12.3 0 17L312 256l65.6 65.1z"/></svg>';
-
-        var messageArchivedAt = '<svg class="fas fa-archive" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M32 448c0 17.7 14.3 32 32 32h384c17.7 0 32-14.3 32-32V160H32v288zm160-212c0-6.6 5.4-12 12-12h104c6.6 0 12 5.4 12 12v8c0 6.6-5.4 12-12 12H204c-6.6 0-12-5.4-12-12v-8zM480 32H32C14.3 32 0 46.3 0 64v48c0 8.8 7.2 16 16 16h480c8.8 0 16-7.2 16-16V64c0-17.7-14.3-32-32-32z"/></svg> Archived at ';
-
-        var responseMessages = {
-          "403": svgFail + ' Archive unavailable. Please try later.',
-          "504": svgFail + ' Archive timeout. Please try later.'
-        }
+        progress = archiveNode.querySelector('.progress');
       }
 
       //TODO: See also https://archive.org/help/wayback_api.php
@@ -2300,16 +2301,16 @@ var DO = {
             }
             else {
               if (options.showActionMessage) {
-                progress.innerHTML = messageArchiveUnavailable
+                progress.innerHTML = responseMessages[response.status]
               }
 
-              return Promise.reject(messageArchiveUnavailable)
+              return Promise.reject(responseMessages[response.status])
             }
           })
 
           .catch(() => {
             if (options.showActionMessage) {
-              progress.innerHTML = messageArchiveUnavailable
+              progress.innerHTML = responseMessages[response.status]
             }
           })
       }
