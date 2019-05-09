@@ -1764,12 +1764,19 @@ var DO = {
 
           if (id == 'list-of-abbreviations') {
             s += '<section id="' + id + '">';
+            s += '<h2>' + label + '</h2>';
+            s += '<div><dl>';
+          }
+          else if(id == 'list-of-quotations') {
+            s += '<section id="' + id + '">';
+            s += '<h2>' + label + '</h2>';
+            s += '<div><ul>';
           }
           else {
             s += '<nav id="' + id + '">';
+            s += '<h2>' + label + '</h2>';
+            s += '<div><ol class="toc">';
           }
-          s += '<h2>' + label + '</h2>';
-          s += '<div><ol class="toc">';
 
           if (id == 'table-of-contents') {
             s += DO.U.getListOfSections(document.querySelectorAll('h1 ~ div > section:not([class~="slide"])'), {'raw': true});
@@ -1792,27 +1799,40 @@ var DO = {
                 }
               };
             }
-            //figure, table
+            //list-of-figures, list-of-tables, list-of-quotations
             else {
               var processed = [];
               for (var i = 0; i < nodes.length; i++) {
-                if (processed.indexOf(nodes[i].textContent) < 0) {
-                  var title = nodes[i].querySelector(titleSelector);
-                  if(title) {
-                    if(nodes[i].id){
-                      s += '<li><a href="#' + nodes[i].id +'">' + title.textContent +'</a></li>';
-                    }
-                    else {
-                      s += '<li>' + title.textContent +'</li>';
-                    }
-                  }
-                  processed.push(nodes[i].textContent);
+                var title;
+                if (id == 'list-of-quotations') {
+                  title = nodes[i].getAttribute(titleSelector);
                 }
-              };
+                else {
+                  title = nodes[i].querySelector(titleSelector);
+                }
+
+                if (title && processed.indexOf(nodes[i].textContent + ' ' + title) < 0) {
+                  if (id == 'list-of-quotations') {
+                    s += '<li><q>' + nodes[i].textContent + '</q>, <a href="' + title + '">' + title + '</a></li>';
+                  }
+                  else if(nodes[i].id){
+                    s += '<li><a href="#' + nodes[i].id +'">' + title.textContent +'</a></li>';
+                  }
+                  else {
+                    s += '<li>' + title +'</li>';
+                  }
+
+                  processed.push(nodes[i].textContent + ' ' + title);
+                }
+              }
             }
           }
 
-          if (selector == 'abbr'){
+          if (id == 'list-of-quotations'){
+            s += '</ul></div>';
+            s += '</section>';
+          }
+          else if (id == 'list-of-abbreviations'){
             s += '</dl></div>';
             s += '</section>';
           } else {

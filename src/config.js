@@ -152,6 +152,7 @@ module.exports = {
     'list-of-figures',
     'list-of-tables',
     'list-of-abbreviations',
+    'list-of-quotations',
     'abstract',
     'categories-and-subject-descriptors',
     'keywords',
@@ -164,6 +165,7 @@ module.exports = {
     'list-of-figures': { 'label': 'Figures', 'selector': 'figure', 'titleSelector': 'figcaption' },
     'list-of-tables': { 'label': 'Tables', 'selector': 'table', 'titleSelector': 'caption' },
     'list-of-abbreviations': { 'label': 'Abbreviations', 'selector': 'abbr', 'titleSelector': 'title'},
+    'list-of-quotations': {'label': 'Quotations', 'selector': 'q', 'titleSelector': 'cite'},
     'references': { 'label': 'References', 'selector':'cite a', 'titleSelector': 'h2' }
   },
   CollectionItemsLimit: 20,
