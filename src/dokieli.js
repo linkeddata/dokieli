@@ -1819,7 +1819,7 @@ var DO = {
                     s += '<li><a href="#' + nodes[i].id +'">' + title.textContent +'</a></li>';
                   }
                   else {
-                    s += '<li>' + title +'</li>';
+                    s += '<li>' + title.textContent +'</li>';
                   }
 
                   processed.push(nodes[i].textContent + ' ' + title);
