@@ -122,7 +122,7 @@ counter-increment:sub-sub-sub-sub-section;
 counter-reset:sub-sub-sub-sub-sub-section;
 }
 
-*[typeof*="ScholarlyArticle"] section[inlist]:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id=declaration]):not([id=acknowledgements]):not([id^=table-of-]) > h2:before {
+*[typeof*="ScholarlyArticle"] section[inlist]:not([id=abstract]):not([id=document-status]):not([id=keywords]):not([id=references]):not([id=categories-and-subject-descriptors]):not([id=general-terms]):not([id=appendix]):not([id=contact-us]):not([id=declaration]):not([id=acknowledgements]):not([id^=table-of-]):not([id^=list-of-]) > h2:before {
 content:counter(section) ".\00a0\00a0\00a0\00a0";
 }
 *[typeof*="ScholarlyArticle"] section[inlist] > h3:before {
@@ -141,7 +141,8 @@ content:counter(section)"." counter(sub-section) "." counter(sub-sub-section) ".
 article > article,
 section,
 dl[id^="document-"],
-*[id^=table-of-] {
+*[id^=table-of-],
+*[id^=list-of-] {
 margin: 0 0.5em;
 }
 section section {
@@ -921,6 +922,7 @@ max-width:99.5vw;
 
 dl[id^="document-"], #authors,
 *[id^=table-of-],
+*[id^=list-of-],
 body > footer > *,
 hr,
 aside {
@@ -928,7 +930,8 @@ aside {
 margin: 0 auto;
 }
 
-*[id^=table-of-] + div {
+*[id^=table-of-] + div,
+*[id^=list-of-] + div {
 margin-top:4em;
 }
 

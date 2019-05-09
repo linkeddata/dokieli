@@ -1631,9 +1631,10 @@ var DO = {
         documentItems = document.getElementById('document-items');
       }
 
-      var sections = document.querySelectorAll('h1 ~ div > section:not([class~="slide"]):not([id^=table-of])');
+      var sections = document.querySelectorAll('h1 ~ div > section:not([class~="slide"]):not([id^=table-of]):not([id^=list-of])');
+
       if (sections.length > 0) {
-        DO.U.showTableOfStuff(documentItems);
+        DO.U.showListOfStuff(documentItems);
 
         DO.U.showTableOfContents(documentItems, sections)
 
@@ -1645,7 +1646,7 @@ var DO = {
       DO.U.showDocumentMetadata(documentItems);
     },
 
-    showTableOfStuff: function(node) {
+    showListOfStuff: function(node) {
       if (!node) { return; }
 
       var disabledInput = '', s = [];
@@ -1653,37 +1654,35 @@ var DO = {
         disabledInput = ' disabled="disabled"';
       }
 
-      var tableList = [{'content': 'Contents'}, {'figure': 'Figures'}, {'table': 'Tables'}, {'abbr': 'Abbreviations'}];
-      tableList.forEach(function(i) {
-        var key = Object.keys(i)[0];
-        var value = i[key];
+      Object.keys(DO.C.ListOfStuff).forEach(function(id) {
         var checkedInput = '';
+        var label = DO.C.ListOfStuff[id].label;
+        var selector = DO.C.ListOfStuff[id].selector;
 
-        var tL = document.getElementById('table-of-'+ key +'s');
+        var item = document.getElementById(id);
 
-        if(tL) {
+        if(item) {
           checkedInput = ' checked="checked"';
 
-          DO.U.buildTableOfStuff(key);
+          // DO.U.buildListOfStuff(id);
         }
 
-        s.push('<li><input id="t-o-' + key +'" type="checkbox"' + disabledInput + checkedInput + '/><label for="t-o-' + key + '">' + value + '</label></li>');
+        s.push('<li><input id="l-o-s-' + id +'" type="checkbox"' + disabledInput + checkedInput + '/><label for="l-o-s-' + id + '">' + label + '</label></li>');
       });
 
       if (s.length > 0) {
-        node.insertAdjacentHTML('beforeend', '<section id="table-of-stuff" class="do"><h2>Table of Stuff</h2><ul>' + s.join('') + '</ul></section>');
+        node.insertAdjacentHTML('beforeend', '<section id="list-of-stuff" class="do"><h2>List of Stuff</h2><ul>' + s.join('') + '</ul></section>');
 
         if(DO.C.EditorEnabled) {
-          document.getElementById('table-of-stuff').addEventListener('click', function(e){
+          document.getElementById('list-of-stuff').addEventListener('click', function(e){
             if (e.target.closest('input')) {
-              var id = e.target.id;
-              var listType = id.slice(4, id.length);
+              var id = e.target.id.slice(6);
               if(!e.target.getAttribute('checked')) {
-                DO.U.buildTableOfStuff(listType);
+                DO.U.buildListOfStuff(id);
                 e.target.setAttribute('checked', 'checked');
               }
               else {
-                var tol = document.getElementById('table-of-'+listType+'s');
+                var tol = document.getElementById(id);
                 if(tol) {
                   tol.parentNode.removeChild(tol);
                 }
@@ -1701,7 +1700,7 @@ var DO = {
 
       if (!node) { return; }
 
-      var toc = '<section id="table-of-contents-i" class="do"' + sortable + '><h2>Table of Contents</h2><ol class="toc' + sortable + '">';
+      var toc = '<section id="table-of-contents-i" class="do"' + sortable + '><h2>' + DO.C.ListOfStuff['table-of-contents'].label + '</h2><ol class="toc' + sortable + '">';
       toc += DO.U.getListOfSections(sections, {'sortable': DO.C.SortableList});
       toc += '</ol></section>';
 
@@ -1746,90 +1745,74 @@ var DO = {
       return s;
     },
 
-    buildTableOfStuff: function(listType) {
-      var s = elementId = elementTitle = titleType = tableHeading = '';
-      var tableList = [];
+    buildListOfStuff: function(id) {
+      var s = '';
 
-      tableList = (listType) ? [listType] : ['content', 'figure', 'table', 'abbr'];
+      if(id == 'references'){
+        DO.U.buildReferences();
+      }
+      else {
+        var label = DO.C.ListOfStuff[id].label;
+        var selector = DO.C.ListOfStuff[id].selector;
+        var titleSelector = DO.C.ListOfStuff[id].titleSelector;
 
-      tableList.forEach(function(element) {
-        var e = document.querySelectorAll('section:not([class~="do"]) ' + element);
-        if (element == 'content' || e.length > 0) {
-          switch(element) {
-            case 'figure':
-              titleType = 'figcaption';
-              tableHeading = 'Table of Figures';
-              break;
-            case 'table':
-              titleType = 'caption';
-              tableHeading = 'Table of Tables';
-              break;
-            case 'abbr':
-              titleType = 'title';
-              tableHeading = 'Table of Abbreviations';
-              break;
-            case 'content': default:
-              titleType = '';
-              tableHeading = 'Table of Contents';
-              break;
-          }
+        var nodes = document.querySelectorAll('section:not([class~="do"]) ' + selector);
 
-          elementId = 'table-of-' + element + 's';
-
-          //Refresh
-          var tId = document.getElementById(elementId);
+        if (id == 'table-of-contents' || nodes.length > 0) {
+          var tId = document.getElementById(id);
           if(tId) { tId.parentNode.removeChild(tId); }
 
-          if (element == 'abbr') {
-            s += '<section id="' + elementId + '">';
+          if (id == 'list-of-abbreviations') {
+            s += '<section id="' + id + '">';
           }
           else {
-            s += '<nav id="' + elementId + '">';
+            s += '<nav id="' + id + '">';
           }
-          s += '<h2>' + tableHeading + '</h2>';
+          s += '<h2>' + label + '</h2>';
           s += '<div><ol class="toc">';
 
-          if (element == 'content') {
+          if (id == 'table-of-contents') {
             s += DO.U.getListOfSections(document.querySelectorAll('h1 ~ div > section:not([class~="slide"])'), {'raw': true});
           }
           else {
-            if (element == 'abbr') {
-              if (e.length > 0) {
-                e = [].slice.call(e);
-                e.sort(function(a, b) {
+            if (id == 'list-of-abbreviations') {
+              if (nodes.length > 0) {
+                nodes = [].slice.call(nodes);
+                nodes.sort(function(a, b) {
                   return a.textContent.toLowerCase().localeCompare(b.textContent.toLowerCase());
                 });
               }
 
               var processed = [];
-              for (var i = 0; i < e.length; i++) {
-                if (processed.indexOf(e[i].textContent) < 0) {
-                  s += '<dt>' + e[i].textContent + '</dt>';
-                  s += '<dd>' + e[i].getAttribute(titleType) + '</dd>';
-                  processed.push(e[i].textContent);
+              for (var i = 0; i < nodes.length; i++) {
+                if (processed.indexOf(nodes[i].textContent) < 0) {
+                  s += '<dt>' + nodes[i].textContent + '</dt>';
+                  s += '<dd>' + nodes[i].getAttribute(titleSelector) + '</dd>';
+                  processed.push(nodes[i].textContent);
                 }
               };
             }
+            //figure, table
             else {
               var processed = [];
-              for (var i = 0; i < e.length; i++) {
-                if (processed.indexOf(e[i].textContent) < 0) {
-                  var title = e[i].querySelector(titleType);
+              for (var i = 0; i < nodes.length; i++) {
+                if (processed.indexOf(nodes[i].textContent) < 0) {
+                  var title = nodes[i].querySelector(titleSelector);
                   if(title) {
-                    if(e[i].id){
-                      s += '<li><a href="#' + e[i].id +'">' + title.textContent +'</a></li>';
+                    if(nodes[i].id){
+                      s += '<li><a href="#' + nodes[i].id +'">' + title.textContent +'</a></li>';
                     }
                     else {
                       s += '<li>' + title.textContent +'</li>';
                     }
                   }
-                  processed.push(e[i].textContent);
+                  processed.push(nodes[i].textContent);
                 }
               };
             }
           }
 
-          if (element == 'abbr'){
+          if (selector == 'abbr'){
             s += '</dl></div>';
             s += '</section>';
           } else {
@@ -1837,9 +1820,9 @@ var DO = {
             s += '</nav>';
           }
         }
-      });
+      }
 
-      DO.U.insertDocumentLevelHTML(document, s, { 'id': elementId });
+      DO.U.insertDocumentLevelHTML(document, s, { 'id': id });
     },
 
     setDocumentStatus: function(rootNode, options) {
@@ -3390,10 +3373,10 @@ console.log(url)
       action = action || 'write';
 
       parent.insertAdjacentHTML('beforeend', '<div id="' + id + '"><label for="' + id +'-input">URL</label> <input type="text" id="' + id +'-input" name="' + id + '-input" placeholder="https://example.org/path/to/" /><button id="' + id +'-update" disabled="disabled" title="Browse location">Browse</button></div>\n\
-      <div id="' + id +'-contents"></div>');
+      <div id="' + id +'-listing"></div>');
 
       var inputBox = document.getElementById(id);
-      var storageBox = document.getElementById(id + '-contents');
+      var storageBox = document.getElementById(id + '-listing');
       var input = document.getElementById(id + '-input');
       var browseButton = document.getElementById(id + '-update');
 
@@ -4427,8 +4410,10 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       DO.U.updateReferences();
       node = document.querySelector('#references ol');
 
-      var citationItem = '<li id="' + id + '">' + citation + '</li>';
-      node.insertAdjacentHTML('beforeend', citationItem);
+      if(citation) {
+        var citationItem = '<li id="' + id + '">' + citation + '</li>';
+        node.insertAdjacentHTML('beforeend', citationItem);
+      }
     },
 
     updateReferences: function(options){

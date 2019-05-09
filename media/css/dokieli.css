@@ -801,7 +801,7 @@ list-style: disc none inside;
 #document-metadata ul,
 #embed-data-in-html ul,
 #share-resource ul,
-#table-of-stuff ul {
+#list-of-stuff ul {
 list-style-type:none;
 margin-left:0;
 }
@@ -831,11 +831,11 @@ width:100%;
 display:none;
 }
 
-#table-of-stuff {
+#list-of-stuff {
 z-index:2147483646;
 }
 
-#table-of-stuff li/*,
+#list-of-stuff li/*,
 #document-views li,
 #embed-data-in-html li,
 #document-do li 
@@ -959,55 +959,55 @@ border:2px solid #cccccc;
 width:94% !important;
 }
 
-#table-of-stuff label {
+#list-of-stuff label {
 font-weight:normal;
 }
 
-aside.do.on [id$="-contents"] {
+aside.do.on [id$="-listing"] {
 overflow-x:hidden;
 overflow-y:auto;
 min-width:25%;
 max-height:16em;
 }
-aside.do.on [id$="-contents"] ul {
+aside.do.on [id$="-listing"] ul {
 margin:0;
 }
-aside.do.on [id$="-contents"] ul input[type="radio"] {
+aside.do.on [id$="-listing"] ul input[type="radio"] {
 display:none;
 }
-aside.do.on [id$="-contents"] ul label {
+aside.do.on [id$="-listing"] ul label {
 display:block;
 padding:0.4em;
 cursor:pointer;
 }
-aside.do.on [id$="-contents"] li {
+aside.do.on [id$="-listing"] li {
 list-style-type:none;
 }
-aside.do.on [id$="-contents"] ul li:first-child:before {
+aside.do.on [id$="-listing"] ul li:first-child:before {
 /*margin-top:0.5em;*/
 }
-aside.do.on [id$="-contents"] ul li {
+aside.do.on [id$="-listing"] ul li {
 border-left:1px dotted #ccc;
 border-right:1px dotted #ccc;
 }
-aside.do.on [id$="-contents"] ul li:first-child {
+aside.do.on [id$="-listing"] ul li:first-child {
 border-top:1px dotted #ccc;
 margin-top:0.25em;
 }
-aside.do.on [id$="-contents"] ul li:last-child {
+aside.do.on [id$="-listing"] ul li:last-child {
 border-bottom:1px dotted #ccc;
 }
 
-aside.do.on [id$="-contents"] .container {
+aside.do.on [id$="-listing"] .container {
 background-color:#f2f2f2;
 }
-aside.do.on [id$="-contents"] .container:hover {
+aside.do.on [id$="-listing"] .container:hover {
 background-color:#ccc;
 }
-aside.do.on [id$="-contents"] .container label {
+aside.do.on [id$="-listing"] .container label {
 display:block;
 }
-aside.do.on [id$="-contents"] input[checked="true"] + label {
+aside.do.on [id$="-listing"] input[checked="true"] + label {
 font-weight:bold;
 }
 aside.do.on [id$="-write"], [id$="-read"] {

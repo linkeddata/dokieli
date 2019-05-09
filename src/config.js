@@ -149,9 +149,9 @@ module.exports = {
     'document-status',
     'document-see-also',
     'table-of-contents',
-    'table-of-figures',
-    'table-of-tables',
-    'table-of-abbrs',
+    'list-of-figures',
+    'list-of-tables',
+    'list-of-abbreviations',
     'abstract',
     'categories-and-subject-descriptors',
     'keywords',
@@ -159,7 +159,13 @@ module.exports = {
 
     'introduction'
   ],
-
+  ListOfStuff: {
+    'table-of-contents': { 'label': 'Contents', 'selector': 'content', 'titleSelector': 'h1' },
+    'list-of-figures': { 'label': 'Figures', 'selector': 'figure', 'titleSelector': 'figcaption' },
+    'list-of-tables': { 'label': 'Tables', 'selector': 'table', 'titleSelector': 'caption' },
+    'list-of-abbreviations': { 'label': 'Abbreviations', 'selector': 'abbr', 'titleSelector': 'title'},
+    'references': { 'label': 'References', 'selector':'cite a', 'titleSelector': 'h2' }
+  },
   CollectionItemsLimit: 20,
   ContextLength: 32,
   ProxyURL: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/proxy?uri=' : 'https://dokie.li/proxy?uri='),
