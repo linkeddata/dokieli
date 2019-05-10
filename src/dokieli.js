@@ -802,6 +802,7 @@ var DO = {
     },
 
     urlParam: function(name) {
+      //FIXME
       var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
       if (results===null){
          return null;
@@ -1680,6 +1681,7 @@ var DO = {
               if(!e.target.getAttribute('checked')) {
                 DO.U.buildListOfStuff(id);
                 e.target.setAttribute('checked', 'checked');
+                window.location.hash = '#' + id;
               }
               else {
                 var tol = document.getElementById(id);
@@ -1687,6 +1689,7 @@ var DO = {
                   tol.parentNode.removeChild(tol);
                 }
                 e.target.removeAttribute('checked');
+                window.history.replaceState(null, null, window.location.pathname);
               }
             }
           });
