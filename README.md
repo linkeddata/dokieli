@@ -1,3 +1,4 @@
+
 # dokieli
 
 [![Join the chat at https://gitter.im/linkeddata/dokieli](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/linkeddata/dokieli)
@@ -26,36 +27,43 @@ explains dokieli's principles, architectural and design patterns.
 * For academics: [Decentralised Authoring, Annotations and Notifications for a Read-Write-Web with dokieli](http://csarven.ca/dokieli-rww)
 
 
-## Features
-* In-browser document authoring and formatting, and semantic enrichments (RDFa annotations)
-* Content negotiation is possible for RDFa, Turtle, JSON-LD, RDF/XML.
-* Information is represented and retrieved following the Linked Data design principles
-* Employs [WebID](https://www.w3.org/2005/Incubator/webid/spec/identity/), [WebID-TLS](https://www.w3.org/2005/Incubator/webid/spec/tls/) and [WebID-OIDC](https://github.com/solid/webid-oidc-spec) for authentication, [Web Access Control](https://www.w3.org/wiki/WebAccessControl)/ACL and personal online datastore where applicable (compliant with [Linked Data Platform](http://www.w3.org/TR/ldp/) and [Solid](https://github.com/solid/solid-spec)-like servers)
-* Uses author's information from their online profile (WebID)
-* Creation of new documents from any existing dokieli document - part of *self-replication*
-* Save document and its dependencies to a new location (anywhere on the Web given access) - part of *self-replication*
-* Implements versioning, has the notion of immutable resources, and [Memento](https://tools.ietf.org/html/rfc7089) based resource management
-* Implements the [ActivityPub](https://www.w3.org/TR/activitypub/) client (read/write from/to profile's outbox)
-* Open and edit (HTML+RDFa) URLs
-* Uses W3C [Web Annotation Model](https://www.w3.org/TR/annotation-model/) and [Activity Streams 2.0 vocabulary](https://www.w3.org/TR/activitystreams-vocabulary)
-* Annotations (e.g., replies, peer-reviews, liking, resharing, bookmarking) employing W3C [Web Annotation Vocabulary](https://www.w3.org/TR/annotation-vocab/), [Embedding Web Annotations in HTML](https://www.w3.org/TR/annotation-html), [Selectors and States](https://www.w3.org/TR/selectors-states/)
-* Inbox notifications for annotations and social sharing (implements W3C [Linked Data Notifications](https://www.w3.org/TR/ldn/))
-* Individually assign the language of articles and annotations and parts within
-* Assign license (e.g., [Creative Commons](https://creativecommons.org/)) to the contributions/annotations
-* Uses [schema.org](http://schema.org/), [SPAR Ontologies](http://www.sparontologies.net/), [PROV-O](https://www.w3.org/TR/prov-o/)
-* Assignment of URI fragments (to any unit of significance) so that other resources on the Web can link to it
-* Use [Robust Links](http://robustlinks.mementoweb.org/) for hyperlinks eg. citations, and show Link Decoration
-* Embedding data blocks, e.g., Turtle, N-Triples, JSON-LD, TriG (Nanopublications)
-* Embedding of media objects, tables, and interactions
-* Automated references and citations (retrieves and reuses structured information)
-* Insertion of table of contents, figures, tables, abbreviations
-* Drag and drop to reorganize the document's sections and table of contents
-* In-browser local storage, and document exporting
-* Document metadata
-* Views for screen and print (e.g., ACM, LNCS) - yes, you can output to a *paper user interface*: PDF
-* .. and [many more on the way](https://github.com/linkeddata/dokieli/issues/)
+## Specifications
+* Information is represented and retrieved following the [Linked Data](https://www.w3.org/DesignIssues/LinkedData) design principles.
+* [WebID](https://www.w3.org/2005/Incubator/webid/spec/identity/) for personal/agent identities.
+* [WebID-TLS](https://www.w3.org/2005/Incubator/webid/spec/tls/) and [WebID-OIDC](https://github.com/solid/webid-oidc-spec) for authentication.
+* [Web Access Control](https://www.w3.org/wiki/WebAccessControl)/ACL to set permissions on Web resources.
+* W3C [Linked Data Platform](http://www.w3.org/TR/ldp/) and [Solid](https://github.com/solid/solid-spec)-like servers to read and write Web resources.
+* W3C [Linked Data Notifications](https://www.w3.org/TR/ldn/) for inbox notifications for annotations and social sharing.
+* W3C [ActivityPub](https://www.w3.org/TR/activitypub/) client to read/write from/to profile's outbox.
+* W3C [Web Annotation Model](https://www.w3.org/TR/annotation-model/), W3C [Web Annotation Vocabulary](https://www.w3.org/TR/annotation-vocab/), W3C [Embedding Web Annotations in HTML](https://www.w3.org/TR/annotation-html), and W3C [Selectors and States](https://www.w3.org/TR/selectors-states/) to model and identify annotations (eg. replies, peer-reviews, liking, resharing, bookmarking)
+* W3C [Activity Streams 2.0 vocabulary](https://www.w3.org/TR/activitystreams-vocabulary) for social activities.
+* [Memento](https://tools.ietf.org/html/rfc7089) for resource management eg. TimeMap.
+* [Creative Commons](https://creativecommons.org/) to assign license to individual contributions and annotations.
+* [Robust Links](http://robustlinks.mementoweb.org/) for hyperlinks eg. citations, and to show Link Decoration.
+* [schema.org](http://schema.org/), [SPAR Ontologies](http://www.sparontologies.net/), [PROV-O](https://www.w3.org/TR/prov-o/), and various other vocabularies.
 
-"Yea, okay, whatever, it doesn't do x, y, z!" You are welcome to create [issues](https://github.com/linkeddata/dokieli/issues/), [discuss](https://gitter.im/linkeddata/dokieli), or pull requests. Make it so!
+
+## Features
+* In-browser document authoring and formatting, and semantic enrichments (RDFa annotations).
+* Content negotiation is possible for RDFa, Turtle, JSON-LD, RDF/XML.
+* Uses author's information from their online profile (WebID).
+* Creation of new documents from any existing dokieli document - part of *self-replication*.
+* Save document and its dependencies to a new location (anywhere on the Web given access) - part of *self-replication*.
+* Open and edit (HTML+RDFa) URLs.
+* Individually assign the language of articles and annotations and parts within.
+* Assignment of URI fragments (to any unit of significance) so that other resources on the Web can link to it.
+* Implements versioning and has the notion of immutable resources.
+* Embedding data blocks, e.g., Turtle, N-Triples, JSON-LD, TriG (Nanopublications).
+* Embedding of media objects, tables, and interactions.
+* Automated references and citations (retrieves and reuses structured information).
+* Insertion of table of contents, figures, tables, abbreviations.
+* Drag and drop to reorganize the document's sections and table of contents.
+* In-browser local storage, and document exporting.
+* Document metadata.
+* Views for screen and print (e.g., ACM, LNCS) - yes, you can output to a *paper user interface*: PDF
+* .. and [many more on the way](https://github.com/linkeddata/dokieli/issues/).
+
+"Yea, okay, whatever, it doesn't do *x*, *y*, *z*!" You are welcome to create [issues](https://github.com/linkeddata/dokieli/issues/), [discuss](https://gitter.im/linkeddata/dokieli), or pull requests. Make it so!
 
 
 ## Screencasts
