@@ -1059,13 +1059,20 @@ var DO = {
                         so = so.iri().toString();
                         selector = '#' + element.closest('[id]').id;
 // console.log(selector)
-                        graph.serializeGraph(g, { 'contentType': 'text/turtle' })
-                          .then(function(data){
-                            var options = {};
-                            options['subjectURI'] = so;
-                            options['contentType'] = 'text/turtle';
-                            DO.U.showVisualisationGraph(options.subjectURI, data, selector, options);
-                          });
+
+                        var svgGraph = document.querySelector(selector + ' svg.graph');
+                        if (svgGraph) {
+                          svgGraph.parentNode.removeChild(svgGraph);
+                        }
+                        else {
+                          graph.serializeGraph(g, { 'contentType': 'text/turtle' })
+                            .then(function(data){
+                              var options = {};
+                              options['subjectURI'] = so;
+                              options['contentType'] = 'text/turtle';
+                              DO.U.showVisualisationGraph(options.subjectURI, data, selector, options);
+                            });
+                        }
                       }
                     }
                   }
