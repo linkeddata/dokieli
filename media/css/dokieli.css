@@ -246,6 +246,20 @@ margin:0 auto;
 display:block;
 }
 
+article [about^="#"][typeof="schema:ViewAction"]:before,
+article [href^="#"][typeof="schema:ViewAction"]:before,
+article [resource^="#"][typeof="schema:ViewAction"]:before{
+content:"#";
+-webkit-appearance: button;
+-moz-appearance: button;
+appearance: button;
+margin-right:0.25em;
+width:1.5em;
+text-align: center;
+color:#000;
+font-weight:bold;
+}
+
 progress { margin:0 1em; }
 figure .progress { display:block; margin:0 auto; }
 .progress { vertical-align: middle; margin: 0 0.5em; }
