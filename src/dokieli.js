@@ -2203,6 +2203,28 @@ var DO = {
       document.body.removeChild(a);
     },
 
+    createRobustLink: function(citationURI, node, options){
+      DO.U.snapshotAtEndpoint(undefined, citationURI, 'https://web.archive.org/save/', '', {'Accept': '*/*', 'showActionMessage': false })
+        .then(function(r){
+          if (r) {
+            var versionURL = r.location;
+            if (typeof versionURL === 'string') {
+              var vD = versionURL.split('/')[4];
+              var versionDate = vD.substr(0,4) + '-' + vD.substr(4,2) + '-' + vD.substr(6,2) + 'T' + vD.substr(8,2) + ':' + vD.substr(10,2) + ':' + vD.substr(12,2) + 'Z';
+
+              node.setAttribute('data-versionurl', versionURL);
+              node.setAttribute('data-versiondate', versionDate);
+            }
+
+            DO.U.showActionMessage(document.documentElement, '<p>Archived <a href="' + citationURI + '">' + citationURI + '</a> at <a href="' + versionURL + '">' + versionURL + '</a> and created RobustLink.</p>');
+
+            if (options.showRobustLinks) {
+              DO.U.showRobustLinks();
+            }
+          }
+        });
+    },
+
     snapshotAtEndpoint: function snapshotAtEndpoint (e, iri, endpoint, noteData, options = {}) {
       iri = iri || window.location.origin + window.location.pathname;
       endpoint = endpoint || 'https://pragma.archivelab.org/';
@@ -4464,13 +4486,29 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         if (uniqueCitations.indexOf(a.outerHTML) < 0) {
           uniqueCitations.push(a.outerHTML);
 
-          // var versionDate = a.getAttribute('data-versiondate');
-          // var versionURL = a.getAttribute('data-versionurl');
           // var rel = a.getAttribute('rel');
           // var property = a.getAttribute('property');
 
           if ((options.external && !a.href.startsWith(docURL + '#')) ||
               (options.internal && a.href.startsWith(docURL + '#'))) {
+
+            var versionDate = a.getAttribute('data-versiondate');
+            var versionURL = a.getAttribute('data-versionurl');
+
+            //Create Robust Link
+            if(!versionDate && !versionURL
+               && (a.href.startsWith('http:') || a.href.startsWith('https:'))) {
+              // console.log(a);
+
+              // var aVersionDateURL = document.querySelector('a[href="' + a.href + '"][data-versiondate][data-versionurl]');
+              // if (aVersionDateURL){
+              //   a.setAttribute('data-versiondate', aVersionDateURL.getAttribute('data-versiondate'));
+              //   a.setAttribute('data-versionurl', aVersionDateURL.getAttribute('data-versionurl'));
+              // }
+
+              //DO.U.createRobustLink(a.href, a);
+            }
+
             lis.push('<li><cite>' + a.textContent + '</cite>, <a href="' + a.href + '">' + a.href + '</a></li>');
           }
         }
@@ -7908,22 +7946,10 @@ WHERE {\n\
 
                         DO.U.buildReferences(node, id, citation);
 
-                        DO.U.snapshotAtEndpoint(undefined, citationURI, 'https://web.archive.org/save/', '', {'Accept': '*/*', 'showActionMessage': false })
-                          .then(function(r){
-                            if (r) {
-                              var versionURL = r.location;
-                              if (typeof versionURL === 'string') {
-                                var vD = versionURL.split('/')[4];
-                                versionDate = vD.substr(0,4) + '-' + vD.substr(4,2) + '-' + vD.substr(6,2) + 'T' + vD.substr(8,2) + ':' + vD.substr(10,2) + ':' + vD.substr(12,2) + 'Z';
+                        options['showRobustLinks'] = true;
+                        var node = document.querySelector('[id="' + id + '"] a[about]');
 
-                                var a = document.querySelector('[id="' + id + '"] a[about]');
-                                a.setAttribute('data-versionurl', versionURL);
-                                a.setAttribute('data-versiondate', versionDate);
-                              }
-
-                              DO.U.showActionMessage(document.documentElement, '<p>Archived <a href="' + citationURI + '">' + citationURI + '</a> at <a href="' + versionURL + '">' + versionURL + '</a> and created RobustLink.</p>');
-                            }
-                          }).then(DO.U.showRobustLinks);
+                        DO.U.createRobustLink(citationURI, id, options);
 
 // console.log(options.url);
                         var s = citationGraph.child(citationURI);
