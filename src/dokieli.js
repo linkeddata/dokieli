@@ -495,7 +495,7 @@ var DO = {
           case 6: return '#ff2900';
           case 7: return '#002af7';
           case 8: return '#00cc00';
-          case 9: return '#dbccff';
+          case 9: return '#00ffff';
 
           case 10: return '#800080';
         }
