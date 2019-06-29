@@ -175,6 +175,9 @@ width:3em;
 height:3em;
 font-size:1em !important;
 }
+#document-editor .medium-editor-toolbar {
+z-index:2147483647;
+}
 #document-editor svg.fas,
 #document-editor svg.far {
 fill:#fff;
