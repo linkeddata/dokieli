@@ -72,7 +72,7 @@ module.exports = {
   },
 
   DOMNormalisation: {
-    'selfClosing': ['area', 'base', 'basefont', 'br', 'col', 'colgroup', 'embed', 'hr', 'img', 'input', 'isindex', 'link', 'meta', 'param', 'source', 'wbr'],
+    'selfClosing': ['area', 'base', 'basefont', 'br', 'circle', 'col', 'colgroup', 'ellipse', 'embed', 'hr', 'img', 'input', 'isindex', 'line', 'link', 'meta', 'metadata', 'param', 'path', 'polygon', 'polyline', 'rect', 'source', 'use', 'wbr'],
     'skipAttributes': ['aria-multiline', 'contenteditable', 'data-medium-editor-editor-index', 'data-medium-editor-element', 'data-medium-focused', 'data-placeholder', 'medium-editor-index', 'role', 'spellcheck', 'style'],
     'sortAttributes': true,
     'skipNodeWithClass': 'do',
