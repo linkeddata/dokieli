@@ -20,7 +20,7 @@ module.exports = {
       DO.U.showTextQuoteSelector();
       DO.U.showDocumentInfo();
       DO.U.showFragment();
-      DO.U.showRobustLinks();
+      DO.U.showRobustLinksDecoration();
       DO.U.setDocumentMode();
       DO.U.showInboxNotifications();
       DO.U.initMath();

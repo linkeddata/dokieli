@@ -23,6 +23,8 @@ global.SimpleRDF = ld.SimpleRDF
 var DO = {
   fetcher,
 
+  T: require('./template'),
+
   C: require('./config'),
 
   U: {
@@ -1183,7 +1185,7 @@ var DO = {
       dMenuButton.setAttribute('title', 'Open Menu');
       dMenuButton.innerHTML = '<svg class="fas fa-bars" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"/></svg>';
 
-      var removeElementsList = ['document-items', 'embed-data-entry', 'create-new-document', 'open-document', 'source-view', 'save-as-document', 'user-identity-input', 'resource-browser', 'share-resource', 'reply-to-resource', 'memento-document', 'graph-view'];
+      var removeElementsList = ['document-items', 'embed-data-entry', 'create-new-document', 'open-document', 'source-view', 'save-as-document', 'user-identity-input', 'resource-browser', 'share-resource', 'reply-to-resource', 'memento-document', 'graph-view', 'robustify-links'];
       removeElementsList.forEach(function(id) {
         var element = document.getElementById(id);
         if(element) {
@@ -2085,8 +2087,12 @@ var DO = {
       }
     },
 
-    showRobustLinks: function() {
-      document.querySelectorAll('[data-versionurl], [data-originalurl]').forEach(function(i){
+    showRobustLinksDecoration: function(node) {
+      node = node || document;
+// console.log(node)
+      var nodes = node.querySelectorAll('[data-versionurl], [data-originalurl]');
+// console.log(nodes)
+      nodes.forEach(function(i){
         if (i.nextElementSibling && i.nextElementSibling.classList.contains('do') && i.nextElementSibling.classList.contains('robustlinks')) {
           return;
         }
@@ -2203,24 +2209,173 @@ var DO = {
       document.body.removeChild(a);
     },
 
-    createRobustLink: function(citationURI, node, options){
-      DO.U.snapshotAtEndpoint(undefined, citationURI, 'https://web.archive.org/save/', '', {'Accept': '*/*', 'showActionMessage': false })
+    showRobustLinks: function(e, selector) {
+      if (e) {
+        e.target.closest('button').disabled = true;
+      }
+
+      var robustLinks = selector || document.querySelectorAll('cite > a[href^="http"][data-versionurl][data-versiondate]');
+
+      document.documentElement.appendChild(util.fragmentFromString('<aside id="robustify-links" class="do on">' + DO.C.Button.Close + '<h2>Robustify Links</h2><div id="robustify-links-input"><p><input id="robustify-links-select-all" type="checkbox" value="true"/><label for="robustify-links-select-all">Select all</label></p><ul id="robustify-links-list"></ul></div><button class="robustify" title="Robustify Links">Robustify</button></aside>'));
+
+      //TODO: Move unique list of existing RL's to ResourceInfo?
+      var robustLinksUnique = {};
+      robustLinks.forEach(function(i){
+        if (!robustLinksUnique[i.href]) {
+          robustLinksUnique[i.href] = {
+            "data-versionurl": i.getAttribute("data-versionurl"),
+            "data-versiondate": i.getAttribute("data-versiondate")
+          };
+        }
+        else {
+          // console.log(i);
+        }
+      });
+
+// console.log('robustLinks: ' + robustLinks.length);
+// console.log('robustLinksUnique: ' + Object.keys(robustLinksUnique).length);
+// console.log(robustLinksUnique)
+
+      var rlCandidates = document.querySelectorAll('cite > a[href^="http"]:not([data-versionurl]):not([data-versiondate])');
+// console.log(rlCandidates)
+      var rlInput = document.querySelector('#robustify-links-input');
+
+      rlInput.insertAdjacentHTML('afterbegin', '<p class="count"><data>' + rlCandidates.length + '</data> candidates.</p>');
+
+      var rlUL = document.querySelector('#robustify-links-list');
+      rlCandidates.forEach(function(i){
+        var html = '<li><input id="' + i.href + '" type="checkbox" value="' + i.href + '" /> <label for="' + i.href + '"><a href="' + i.href + '" target="_blank" title="' + i.textContent + '">' + i.href + '</a></label>';
+
+          //TODO: addEventListener
+//         if(robustLinksUnique[i.href]) {
+//           //Reuse RL
+// // console.log('Reuse Robust Link? ' + robustLinksUnique[i.href]["data-versionurl"]);
+//           html += '<button class="robustlinks-reuse" title="' + robustLinksUnique[i.href]["data-versionurl"] + '">' + DO.T.Icon[".fas.fa-recycle"] + '</button>';
+//         }
+
+        html += '</li>';
+        rlUL.insertAdjacentHTML('beforeend', html);
+      });
+
+
+      var robustifyLinks = document.getElementById('robustify-links');
+      robustifyLinks.addEventListener('click', function (e) {
+        if (e.target.closest('button.close')) {
+          var rs = document.querySelector('#document-do .robustify-links');
+          if (rs) {
+            rs.disabled = false;
+          }
+        }
+
+        if (e.target.closest('button.robustify')) {
+          e.target.disabled = true;
+
+          var rlChecked = document.querySelectorAll('#robustify-links-list input:checked');
+
+          var promises = [];
+
+          rlChecked.forEach(function(i){
+// console.log('Robustifying: ' + i.value)
+// console.log(i);
+
+            var options = {};
+            options['showRobustLinksDecoration'] = false;
+            options['showActionMessage'] = false;
+            var node = document.querySelector('cite > a[href="' + i.value + '"]:not([data-versionurl]):not([data-versiondate])');
+
+// console.log(node);
+
+            i.parentNode.insertAdjacentHTML('beforeend', '<span class="progress" data-to="' + i.value + '"><svg class="fas fa-circle-notch fa-spin fa-fw" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M288 39.056v16.659c0 10.804 7.281 20.159 17.686 23.066C383.204 100.434 440 171.518 440 256c0 101.689-82.295 184-184 184-101.689 0-184-82.295-184-184 0-84.47 56.786-155.564 134.312-177.219C216.719 75.874 224 66.517 224 55.712V39.064c0-15.709-14.834-27.153-30.046-23.234C86.603 43.482 7.394 141.206 8.003 257.332c.72 137.052 111.477 246.956 248.531 246.667C393.255 503.711 504 392.788 504 256c0-115.633-79.14-212.779-186.211-240.236C302.678 11.889 288 23.456 288 39.056z"/></svg></span>')
+
+            // window.setTimeout(function () {
+// console.log(i.value);
+
+              var progress = document.querySelector('#robustify-links-list .progress[data-to="' + i.value + '"]');
+              DO.U.createRobustLink(i.value, node, options).then(
+                function(rl){
+                  var versionURL = ("data-versionurl" in rl) ? rl["data-versionurl"]: rl.href;
+
+                  progress.innerHTML = '<a href="' + versionURL + '" target="_blank"><svg class="fas fa-archive" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M32 448c0 17.7 14.3 32 32 32h384c17.7 0 32-14.3 32-32V160H32v288zm160-212c0-6.6 5.4-12 12-12h104c6.6 0 12 5.4 12 12v8c0 6.6-5.4 12-12 12H204c-6.6 0-12-5.4-12-12v-8zM480 32H32C14.3 32 0 46.3 0 64v48c0 8.8 7.2 16 16 16h480c8.8 0 16-7.2 16-16V64c0-17.7-14.3-32-32-32z"/></svg></a>';
+
+                  DO.U.showRobustLinksDecoration(node.closest('cite'));
+                })
+                .catch(function(r){
+                  progress.innerHTML = '<svg class="fas fa-times-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm121.6 313.1c4.7 4.7 4.7 12.3 0 17L338 377.6c-4.7 4.7-12.3 4.7-17 0L256 312l-65.1 65.6c-4.7 4.7-12.3 4.7-17 0L134.4 338c-4.7-4.7-4.7-12.3 0-17l65.6-65-65.6-65.1c-4.7-4.7-4.7-12.3 0-17l39.6-39.6c4.7-4.7 12.3-4.7 17 0l65 65.7 65.1-65.6c4.7-4.7 12.3-4.7 17 0l39.6 39.6c4.7 4.7 4.7 12.3 0 17L312 256l65.6 65.1z"/></svg> Unable to archive. Try later.';
+                });
+            // }, 1000);
+
+            e.target.disabled = false;
+          });
+        }
+
+        if (e.target.closest('#robustify-links-select-all')) {
+          var rlInput = document.querySelectorAll('#robustify-links-list input');
+          // console.log(rlInput.value)
+          // console.log(e.target.checked)
+          if (e.target.checked) {
+            rlInput.forEach(function(i) {
+              i.setAttribute('checked', 'checked');
+              i.checked = true;
+            });
+          }
+          else {
+            rlInput.forEach(function(i) {
+              i.removeAttribute('checked');
+              i.checked = false;
+            });
+          }
+        }
+
+        if (e.target.closest('#robustify-links-list input')) {
+          // console.log(e.target)
+          if(e.target.getAttribute('checked')) {
+            e.target.removeAttribute('checked');
+          }
+          else {
+            e.target.setAttribute('checked', 'checked');
+          }
+          // console.log(e.target);
+        }
+      });
+    },
+
+    createRobustLink: function(uri, node, options){
+      return DO.U.snapshotAtEndpoint(undefined, uri, 'https://web.archive.org/save/', '', {'Accept': '*/*', 'showActionMessage': false })
         .then(function(r){
+// console.log(r)
+          //FIXME TODO: Doesn't handle relative URLs in Content-Location from w3.org or something. Getting Overview.html but base is lost.
           if (r) {
+            var o = {
+              "href": uri
+            };
             var versionURL = r.location;
+
             if (typeof versionURL === 'string') {
               var vD = versionURL.split('/')[4];
-              var versionDate = vD.substr(0,4) + '-' + vD.substr(4,2) + '-' + vD.substr(6,2) + 'T' + vD.substr(8,2) + ':' + vD.substr(10,2) + ':' + vD.substr(12,2) + 'Z';
+              if (vD) {
+                var versionDate = vD.substr(0,4) + '-' + vD.substr(4,2) + '-' + vD.substr(6,2) + 'T' + vD.substr(8,2) + ':' + vD.substr(10,2) + ':' + vD.substr(12,2) + 'Z';
 
-              node.setAttribute('data-versionurl', versionURL);
-              node.setAttribute('data-versiondate', versionDate);
+                node.setAttribute('data-versionurl', versionURL);
+                node.setAttribute('data-versiondate', versionDate);
+
+                o["data-versionurl"] = versionURL;
+                o["data-versiondate"] = versionDate;
+              }
             }
 
-            DO.U.showActionMessage(document.documentElement, '<p>Archived <a href="' + citationURI + '">' + citationURI + '</a> at <a href="' + versionURL + '">' + versionURL + '</a> and created RobustLink.</p>');
-
-            if (options.showRobustLinks) {
-              DO.U.showRobustLinks();
+            options['showActionMessage'] = ('showActionMessage' in options) ? options.showActionMessage : true;
+            if (options.showActionMessage) {
+              DO.U.showActionMessage(document.documentElement, '<p>Archived <a href="' + uri + '">' + uri + '</a> at <a href="' + versionURL + '">' + versionURL + '</a> and created RobustLink.</p>');
             }
+
+            if (options.showRobustLinksDecoration) {
+              DO.U.showRobustLinksDecoration();
+            }
+
+            return o;
+          }
+          else {
+            return Promise.reject();
           }
         });
     },
@@ -2280,7 +2435,7 @@ var DO = {
 //    console.log(key); 
 // }
               let location = response.headers.get('Content-Location');
-
+// console.log(location)
               if (location && location.length > 0) {
                 location = (!location.startsWith('http:') && !location.startsWith('https:') && !location.startsWith('/')) ? '/' + location : location;
                 location = 'https://web.archive.org' + location
@@ -2387,6 +2542,8 @@ var DO = {
         ' title="Version this article"><svg class="fas fa-code-branch fa-2x" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path d="M384 144c0-44.2-35.8-80-80-80s-80 35.8-80 80c0 36.4 24.3 67.1 57.5 76.8-.6 16.1-4.2 28.5-11 36.9-15.4 19.2-49.3 22.4-85.2 25.7-28.2 2.6-57.4 5.4-81.3 16.9v-144c32.5-10.2 56-40.5 56-76.3 0-44.2-35.8-80-80-80S0 35.8 0 80c0 35.8 23.5 66.1 56 76.3v199.3C23.5 365.9 0 396.2 0 432c0 44.2 35.8 80 80 80s80-35.8 80-80c0-34-21.2-63.1-51.2-74.6 3.1-5.2 7.8-9.8 14.9-13.4 16.2-8.2 40.4-10.4 66.1-12.8 42.2-3.9 90-8.4 118.2-43.4 14-17.4 21.1-39.8 21.6-67.9 31.6-10.8 54.4-40.7 54.4-75.9zM80 64c8.8 0 16 7.2 16 16s-7.2 16-16 16-16-7.2-16-16 7.2-16 16-16zm0 384c-8.8 0-16-7.2-16-16s7.2-16 16-16 16 7.2 16 16-7.2 16-16 16zm224-320c8.8 0 16 7.2 16 16s-7.2 16-16 16-16-7.2-16-16 7.2-16 16-16z"/></svg>Version</button></li>');
       li.push('<li><button class="create-immutable"' + buttonDisabled +
         ' title="Make this article immutable and version it"><svg class="far fa-snowflake fa-2x" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M440.1 355.2l-39.2-23 34.1-9.3c8.4-2.3 13.4-11.1 11.1-19.6l-4.1-15.5c-2.2-8.5-10.9-13.6-19.3-11.3L343 298.2 271.2 256l71.9-42.2 79.7 21.7c8.4 2.3 17-2.8 19.3-11.3l4.1-15.5c2.2-8.5-2.7-17.3-11.1-19.6l-34.1-9.3 39.2-23c7.5-4.4 10.1-14.2 5.8-21.9l-7.9-13.9c-4.3-7.7-14-10.3-21.5-5.9l-39.2 23 9.1-34.7c2.2-8.5-2.7-17.3-11.1-19.6l-15.2-4.1c-8.4-2.3-17 2.8-19.3 11.3l-21.3 81-71.9 42.2v-84.5L306 70.4c6.1-6.2 6.1-16.4 0-22.6l-11.1-11.3c-6.1-6.2-16.1-6.2-22.2 0l-24.9 25.4V16c0-8.8-7-16-15.7-16h-15.7c-8.7 0-15.7 7.2-15.7 16v46.1l-24.9-25.4c-6.1-6.2-16.1-6.2-22.2 0L142.1 48c-6.1 6.2-6.1 16.4 0 22.6l58.3 59.3v84.5l-71.9-42.2-21.3-81c-2.2-8.5-10.9-13.6-19.3-11.3L72.7 84c-8.4 2.3-13.4 11.1-11.1 19.6l9.1 34.7-39.2-23c-7.5-4.4-17.1-1.8-21.5 5.9l-7.9 13.9c-4.3 7.7-1.8 17.4 5.8 21.9l39.2 23-34.1 9.1c-8.4 2.3-13.4 11.1-11.1 19.6L6 224.2c2.2 8.5 10.9 13.6 19.3 11.3l79.7-21.7 71.9 42.2-71.9 42.2-79.7-21.7c-8.4-2.3-17 2.8-19.3 11.3l-4.1 15.5c-2.2 8.5 2.7 17.3 11.1 19.6l34.1 9.3-39.2 23c-7.5 4.4-10.1 14.2-5.8 21.9L10 391c4.3 7.7 14 10.3 21.5 5.9l39.2-23-9.1 34.7c-2.2 8.5 2.7 17.3 11.1 19.6l15.2 4.1c8.4 2.3 17-2.8 19.3-11.3l21.3-81 71.9-42.2v84.5l-58.3 59.3c-6.1 6.2-6.1 16.4 0 22.6l11.1 11.3c6.1 6.2 16.1 6.2 22.2 0l24.9-25.4V496c0 8.8 7 16 15.7 16h15.7c8.7 0 15.7-7.2 15.7-16v-46.1l24.9 25.4c6.1 6.2 16.1 6.2 22.2 0l11.1-11.3c6.1-6.2 6.1-16.4 0-22.6l-58.3-59.3v-84.5l71.9 42.2 21.3 81c2.2 8.5 10.9 13.6 19.3 11.3L375 428c8.4-2.3 13.4-11.1 11.1-19.6l-9.1-34.7 39.2 23c7.5 4.4 17.1 1.8 21.5-5.9l7.9-13.9c4.6-7.5 2.1-17.3-5.5-21.7z"/></svg>Immutable</button></li>');
+      li.push('<li><button class="robustify-links"' + buttonDisabled +
+        ' title="Robustify Links"><svg class="fas fa-link fa-2x" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M326.612 185.391c59.747 59.809 58.927 155.698.36 214.59-.11.12-.24.25-.36.37l-67.2 67.2c-59.27 59.27-155.699 59.262-214.96 0-59.27-59.26-59.27-155.7 0-214.96l37.106-37.106c9.84-9.84 26.786-3.3 27.294 10.606.648 17.722 3.826 35.527 9.69 52.721 1.986 5.822.567 12.262-3.783 16.612l-13.087 13.087c-28.026 28.026-28.905 73.66-1.155 101.96 28.024 28.579 74.086 28.749 102.325.51l67.2-67.19c28.191-28.191 28.073-73.757 0-101.83-3.701-3.694-7.429-6.564-10.341-8.569a16.037 16.037 0 0 1-6.947-12.606c-.396-10.567 3.348-21.456 11.698-29.806l21.054-21.055c5.521-5.521 14.182-6.199 20.584-1.731a152.482 152.482 0 0 1 20.522 17.197zM467.547 44.449c-59.261-59.262-155.69-59.27-214.96 0l-67.2 67.2c-.12.12-.25.25-.36.37-58.566 58.892-59.387 154.781.36 214.59a152.454 152.454 0 0 0 20.521 17.196c6.402 4.468 15.064 3.789 20.584-1.731l21.054-21.055c8.35-8.35 12.094-19.239 11.698-29.806a16.037 16.037 0 0 0-6.947-12.606c-2.912-2.005-6.64-4.875-10.341-8.569-28.073-28.073-28.191-73.639 0-101.83l67.2-67.19c28.239-28.239 74.3-28.069 102.325.51 27.75 28.3 26.872 73.934-1.155 101.96l-13.087 13.087c-4.35 4.35-5.769 10.79-3.783 16.612 5.864 17.194 9.042 34.999 9.69 52.721.509 13.906 17.454 20.446 27.294 10.606l37.106-37.106c59.271-59.259 59.271-155.699.001-214.959z"></path></svg>Robustify Links</button></li>');
       li.push('<li><button class="snapshot-internet-archive"' + buttonDisabled +
         ' title="Capture with Internet Archive"><svg class="fas fa-archive fa-2x" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M32 448c0 17.7 14.3 32 32 32h384c17.7 0 32-14.3 32-32V160H32v288zm160-212c0-6.6 5.4-12 12-12h104c6.6 0 12 5.4 12 12v8c0 6.6-5.4 12-12 12H204c-6.6 0-12-5.4-12-12v-8zM480 32H32C14.3 32 0 46.3 0 64v48c0 8.8 7.2 16 16 16h480c8.8 0 16-7.2 16-16V64c0-17.7-14.3-32-32-32z"/></svg>Internet Archive</button></li>');
       li.push('<li><button class="export-as-html" title="Export and save to file"><svg class="fas fa-external-link-alt fa-2x" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><path d="M576 24v127.984c0 21.461-25.96 31.98-40.971 16.971l-35.707-35.709-243.523 243.523c-9.373 9.373-24.568 9.373-33.941 0l-22.627-22.627c-9.373-9.373-9.373-24.569 0-33.941L442.756 76.676l-35.703-35.705C391.982 25.9 402.656 0 424.024 0H552c13.255 0 24 10.745 24 24zM407.029 270.794l-16 16A23.999 23.999 0 0 0 384 303.765V448H64V128h264a24.003 24.003 0 0 0 16.97-7.029l16-16C376.089 89.851 365.381 64 344 64H48C21.49 64 0 85.49 0 112v352c0 26.51 21.49 48 48 48h352c26.51 0 48-21.49 48-48V287.764c0-21.382-25.852-32.09-40.971-16.97z"/></svg>Export</button></li>');
@@ -2408,9 +2565,13 @@ var DO = {
           DO.U.exportAsHTML(e);
         }
 
+        if (e.target.closest('button.robustify-links')){
+          DO.U.showRobustLinks(e);
+        }
+
         if (e.target.closest('button.snapshot-internet-archive')){
           // DO.U.snapshotAtEndpoint(e, iri, 'https://pragma.archivelab.org/', '', {'contentType': 'application/json'});
-          DO.U.snapshotAtEndpoint(e, iri, 'https://web.archive.org/save/', '', {'Accept': '*/*', 'showActionMessage': true });
+          var location = DO.U.snapshotAtEndpoint(e, iri, 'https://web.archive.org/save/', '', {'Accept': '*/*', 'showActionMessage': true });
         }
       });
     },
@@ -7946,10 +8107,10 @@ WHERE {\n\
 
                         DO.U.buildReferences(node, id, citation);
 
-                        options['showRobustLinks'] = true;
+                        options['showRobustLinksDecoration'] = true;
                         var node = document.querySelector('[id="' + id + '"] a[about]');
 
-                        DO.U.createRobustLink(citationURI, id, options);
+                        var robustLink = DO.U.createRobustLink(citationURI, node, options);
 
 // console.log(options.url);
                         var s = citationGraph.child(citationURI);

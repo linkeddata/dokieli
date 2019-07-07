@@ -149,10 +149,11 @@ outline:none;
     transform: rotate(359deg);
   }
 }
-svg.fa-fw {
-  text-align: center;
-  width: 1.25em; }
 
+svg.fa-fw {
+text-align: center;
+width: 1.25em;
+}
 
 .fas, .far, .fab {
 font-size:1em;
@@ -186,7 +187,10 @@ vertical-align: bottom;
 #document-editor .medium-editor-toolbar-form svg.fas,
 #document-editor .medium-editor-toolbar-form svg.far,
 dl svg.fas,
-dl svg.far {
+dl svg.far,
+.progress svg.fas,
+.progress svg.far,
+.progress svg.fab {
 vertical-align: middle;
 }
 dl svg.fas.fa-2x,
@@ -201,6 +205,7 @@ display:inline-block;
 font-size:1em;
 vertical-align: middle;
 }
+
 
 #dokieli-features ul li a i {
 /*font-size:2em;*/
@@ -700,7 +705,8 @@ button[class|="resource"],
 button[class~="editor-enable"],
 button[class|="review"],
 button[class~="embed-data-meta"],
-aside button.delete {
+aside button.delete,
+button[class~="robustlinks-reuse"] {
 display:inline-block;
 border:0;
 background-color:#fff !important;
@@ -1303,6 +1309,11 @@ position: absolute;
 top: 0;
 right: -20em;
 }
+
+aside.do.on button.robustify {
+margin:1em 0;
+}
+
 
 img[width="32"][height="32"],
 img[width="48"][height="48"] {
