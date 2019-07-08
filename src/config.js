@@ -1,6 +1,6 @@
 'use strict'
 
-const Template = require('./template')
+const template = require('./template')
 
 /**
  * Configuration
@@ -49,8 +49,8 @@ module.exports = {
   AutoSaveId: '',
   AutoSaveTimer: 60000,
   AvatarSize: 48,
-  DisableStorageButtons: '<button class="local-storage-disable-html" title="Disable local storage (temporary) in the browser">' + Template.Icon["fas.fa-database.fa-2x"] + 'Local Storage</button>',
-  EnableStorageButtons: '<button class="local-storage-enable-html" title="Enable local storage (temporary) in the browser">' + Template.Icon["fas.fa-database.fa-2x"] + 'Local Storage</button>',
+  DisableStorageButtons: '<button class="local-storage-disable-html" title="Disable local storage (temporary) in the browser">' + template.Icon["fas.fa-database.fa-2x"] + 'Local Storage</button>',
+  EnableStorageButtons: '<button class="local-storage-enable-html" title="Enable local storage (temporary) in the browser">' + template.Icon["fas.fa-database.fa-2x"] + 'Local Storage</button>',
   CDATAStart: '//<![CDATA[',
   CDATAEnd: '//]]>',
   SortableList: false,
@@ -64,11 +64,11 @@ module.exports = {
     headings: ["h1", "h2", "h3", "h4", "h5", "h6"],
     regexEmptyHTMLTags: /<[^\/>][^>]*><\/[^>]+>/gim,
     ButtonLabelType: 'fontawesome',
-    DisableEditorButton: '<button class="editor-disable" title="Disable editor">' + Template.Icon[".fas.fa-i-cursor.fa-2x"] + 'Edit</button>',
-    EnableEditorButton: '<button class="editor-enable" title="Enable editor">' + Template.Icon[".fas.fa-i-cursor.fa-2x"] + 'Edit</button>'
+    DisableEditorButton: '<button class="editor-disable" title="Disable editor">' + template.Icon[".fas.fa-i-cursor.fa-2x"] + 'Edit</button>',
+    EnableEditorButton: '<button class="editor-enable" title="Enable editor">' + template.Icon[".fas.fa-i-cursor.fa-2x"] + 'Edit</button>'
   },
   Button: {
-    Close: '<button class="close" title="Close">' + Template.Icon[".fas.fa-times.fa-2x"] + '</button>'
+    Close: '<button class="close" title="Close">' + template.Icon[".fas.fa-times.fa-2x"] + '</button>'
   },
 
   DOMNormalisation: {
