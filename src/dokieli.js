@@ -2414,6 +2414,23 @@ var DO = {
         progress = archiveNode.querySelector('.progress');
       }
 
+      var handleError = function(response) {
+        if (options.showActionMessage) {
+          progress.innerHTML = responseMessages[response.status];
+        }
+
+        return Promise.reject(responseMessages[response.status]);
+      }
+
+      var handleSuccess = function(o) {
+// console.log(o)
+        if (options.showActionMessage) {
+          progress.innerHTML = messageArchivedAt + '<a target="_blank" href="' + o.location + '">' + o.location + '</a>'
+        }
+
+        return Promise.resolve(o);
+      }
+
       //TODO: See also https://archive.org/help/wayback_api.php
 
       switch (endpoint) {
@@ -2432,31 +2449,45 @@ var DO = {
 // for(var key of response.headers.keys()) {
 //    console.log(key); 
 // }
+
               let location = response.headers.get('Content-Location');
 // console.log(location)
               if (location && location.length > 0) {
-                location = (!location.startsWith('http:') && !location.startsWith('https:') && !location.startsWith('/')) ? '/' + location : location;
-                location = 'https://web.archive.org' + location
-
-                if (options.showActionMessage) {
-                  progress.innerHTML = messageArchivedAt + '<a target="_blank" href="' + location + '">' + location + '</a>'
+                //XXX: Scrape Internet Archive's HTML
+                if (location.startsWith('/web/')) {
+                  var o = {
+                    "response": response,
+                    "location": 'https://web.archive.org' + location
+                  }
+                  return handleSuccess(o);
                 }
-
-                return { "response": response, "location": location };
+                else {
+                  return response.text()
+                    .then(data => {
+// console.log(data)
+                      var regexp = /var redirUrl = "([^"]*)";/;
+                      var match = data.match(regexp);
+// console.log(match)
+                      if (match && match[1].startsWith('/web/')) {
+                        var o = {
+                          "response": response,
+                          "location": 'https://web.archive.org' + match[1]
+                        }
+                        return handleSuccess(o);
+                      }
+                      else {
+                        return handleError(response);
+                      }
+                    })
+                }
               }
               else {
-                if (options.showActionMessage) {
-                  progress.innerHTML = responseMessages[response.status];
-                }
-
-                return Promise.reject(responseMessages[response.status])
+                return handleError(response);
               }
             })
-            .catch(error => {
-              console.log(error)
-              if (options.showActionMessage) {
-                progress.innerHTML = responseMessages[error.status];
-              }
+            .catch(response => {
+// console.log(response)
+              return handleError(response);
             })
 
         case 'https://pragma.archivelab.org/':
@@ -2569,7 +2600,7 @@ var DO = {
 
         if (e.target.closest('button.snapshot-internet-archive')){
           // DO.U.snapshotAtEndpoint(e, iri, 'https://pragma.archivelab.org/', '', {'contentType': 'application/json'});
-          var location = DO.U.snapshotAtEndpoint(e, iri, 'https://web.archive.org/save/', '', {'Accept': '*/*', 'showActionMessage': true });
+          DO.U.snapshotAtEndpoint(e, iri, 'https://web.archive.org/save/', '', {'Accept': '*/*', 'showActionMessage': true });
         }
       });
     },
