@@ -2214,13 +2214,14 @@ var DO = {
 
       var robustLinks = selector || document.querySelectorAll('cite > a[href^="http"][data-versionurl][data-versiondate]');
 
-      document.documentElement.appendChild(util.fragmentFromString('<aside id="robustify-links" class="do on">' + DO.C.Button.Close + '<h2>Robustify Links</h2><div id="robustify-links-input"><p><input id="robustify-links-select-all" type="checkbox" value="true"/><label for="robustify-links-select-all">Select all</label></p><ul id="robustify-links-list"></ul></div><button class="robustify" title="Robustify Links">Robustify</button></aside>'));
+      document.documentElement.appendChild(util.fragmentFromString('<aside id="robustify-links" class="do on">' + DO.C.Button.Close + '<h2>Robustify Links</h2><div id="robustify-links-input"><p><input id="robustify-links-select-all" type="checkbox" value="true"/><label for="robustify-links-select-all">Select all</label></p><p><input id="robustify-links-reuse" type="checkbox" value="true" checked="checked"/><label for="robustify-links-reuse">Reuse Robustifed</label></p><ul id="robustify-links-list"></ul></div><button class="robustify" title="Robustify Links">Robustify</button></aside>'));
 
       //TODO: Move unique list of existing RL's to ResourceInfo?
       var robustLinksUnique = {};
       robustLinks.forEach(function(i){
         if (!robustLinksUnique[i.href]) {
           robustLinksUnique[i.href] = {
+            "node": i,
             "data-versionurl": i.getAttribute("data-versionurl"),
             "data-versiondate": i.getAttribute("data-versiondate")
           };
@@ -2231,8 +2232,8 @@ var DO = {
       });
 
 // console.log('robustLinks: ' + robustLinks.length);
-// console.log('robustLinksUnique: ' + Object.keys(robustLinksUnique).length);
 // console.log(robustLinksUnique)
+// console.log('<robustLinksUnique:  ' + Object.keys(robustLinksUnique).length);
 
       var rlCandidates = document.querySelectorAll('cite > a[href^="http"]:not([data-versionurl]):not([data-versiondate])');
 // console.log(rlCandidates)
@@ -2288,10 +2289,40 @@ var DO = {
             // window.setTimeout(function () {
 // console.log(i.value);
 
-              var progress = document.querySelector('#robustify-links-list .progress[data-to="' + i.value + '"]');
+            var progress = document.querySelector('#robustify-links-list .progress[data-to="' + i.value + '"]');
+
+            var robustLinkFound = false;
+
+            var robustifyLinksReuse = document.querySelector('#robustify-links-reuse');
+            if (robustifyLinksReuse.checked) {
+              Object.keys(robustLinksUnique).forEach(function(url){
+                if (i.value == url) {
+// console.log(robustLinksUnique[url])
+                  progress.innerHTML = '<a href="' + robustLinksUnique[url]["data-versionurl"] + '" target="_blank">' + template.Icon[".fas.fa-archive"] + '</a>';
+// console.log(node)
+                  node.setAttribute("data-versionurl", robustLinksUnique[url]["data-versionurl"]);
+                  node.setAttribute("data-versiondate", robustLinksUnique[url]["data-versiondate"]);
+
+                  DO.U.showRobustLinksDecoration(node.closest('cite'));
+
+                  robustLinkFound = true;
+                }
+              });
+            }
+            
+            if (!robustLinkFound) {
               DO.U.createRobustLink(i.value, node, options).then(
                 function(rl){
-                  var versionURL = ("data-versionurl" in rl) ? rl["data-versionurl"]: rl.href;
+                  var versionURL = ("data-versionurl" in rl) ? rl["data-versionurl"] : rl.href;
+
+                  if ("data-versionurl" in rl && "data-versiondate" in rl) {
+                    robustLinksUnique[i.value] = {
+                      "node": node,
+                      "data-versionurl": rl["data-versionurl"],
+                      "data-versiondate": rl["data-versiondate"]
+                    }
+// console.log('Add    robustLinksUnique: ' + Object.keys(robustLinksUnique).length);
+                  }
 
                   progress.innerHTML = '<a href="' + versionURL + '" target="_blank">' + template.Icon[".fas.fa-archive"] + '</a>';
 
@@ -2300,8 +2331,8 @@ var DO = {
                 .catch(function(r){
                   progress.innerHTML = template.Icon[".fas.fa-times-circle"] + ' Unable to archive. Try later.';
                 });
-            // }, 1000);
-
+            }
+// console.log('</robustLinksUnique: ' + Object.keys(robustLinksUnique).length);
             e.target.disabled = false;
           });
         }
@@ -2447,7 +2478,7 @@ var DO = {
             .then(response => {
 // console.log(response)
 // for(var key of response.headers.keys()) {
-//    console.log(key); 
+//   console.log(key + ': ' + response.headers.get(key))
 // }
 
               let location = response.headers.get('Content-Location');
@@ -2482,6 +2513,20 @@ var DO = {
                 }
               }
               else {
+// response.text().then(data => { console.log(data) })
+                var link = response.headers.get('Link');
+
+                if (link && link.length > 0) {
+                  var rels = fetcher.parseLinkHeader(link);
+                  if ('memento' in rels && rels.memento.length > 0) {
+                    var o = {
+                      "response": response,
+                      "location": rels.memento[0]
+                    }
+                    return handleSuccess(o);
+                  }
+                }
+
                 return handleError(response);
               }
             })
