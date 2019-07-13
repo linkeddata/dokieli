@@ -197,4 +197,5 @@ repository.
 * [Sandro Hawke](https://github.com/sandhawke)
 * [Sarven Capadisli](https://github.com/csarven) (maintainer)
 * [Sergey Malinin](https://github.com/smalinin)
+* [Thomas Bergwinkl](https://github.com/bergos)
 * [Tim Berners-Lee](https://github.com/timbl)
