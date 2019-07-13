@@ -2462,6 +2462,24 @@ var DO = {
         return Promise.resolve(o);
       }
 
+      var checkLinkHeader = function(response) {
+        var link = response.headers.get('Link');
+
+        if (link && link.length > 0) {
+          var rels = fetcher.parseLinkHeader(link);
+          if ('memento' in rels && rels.memento.length > 0) {
+            var o = {
+              "response": response,
+              "location": rels.memento[0]
+            }
+            return handleSuccess(o);
+          }
+        }
+
+        return handleError(response);
+      }
+
+
       //TODO: See also https://archive.org/help/wayback_api.php
 
       switch (endpoint) {
@@ -2507,27 +2525,15 @@ var DO = {
                         return handleSuccess(o);
                       }
                       else {
-                        return handleError(response);
+                        return checkLinkHeader(response);
                       }
                     })
                 }
               }
               else {
 // response.text().then(data => { console.log(data) })
-                var link = response.headers.get('Link');
 
-                if (link && link.length > 0) {
-                  var rels = fetcher.parseLinkHeader(link);
-                  if ('memento' in rels && rels.memento.length > 0) {
-                    var o = {
-                      "response": response,
-                      "location": rels.memento[0]
-                    }
-                    return handleSuccess(o);
-                  }
-                }
-
-                return handleError(response);
+                return checkLinkHeader(response);
               }
             })
             .catch(response => {
