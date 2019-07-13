@@ -190,7 +190,7 @@ repository.
 * [Kingsley Idehen](https://github.com/kidehen)
 * [Melvin Carvalho](https://github.com/melvincarvalho)
 * [Nicola Greco](https://github.com/nicola)
-* [OpenLink Software](https://github.com/openlink)
+* [Pascal Christoph](https://github.com/dr0i)
 * [Renato Stauffer](https://github.com/reni99)
 * [Ruben Taelman](https://github.com/rubensworks)
 * [Ruben Verborgh](https://github.com/RubenVerborgh)
