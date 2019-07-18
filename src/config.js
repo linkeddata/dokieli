@@ -15,6 +15,7 @@ module.exports = {
       DO.U.showRefs();
       DO.U.buttonClose();
       DO.U.highlightItems();
+      DO.U.showAsTabs();
       DO.U.getResourceInfo();
       DO.U.initDocumentActions();
       DO.U.showTextQuoteSelector();

@@ -5031,36 +5031,42 @@ WHERE {\n\
       }
     },
 
-    showAsTabs: function(id) {
-      var li = document.querySelectorAll(id + ' nav li.selected');
-      var figure = document.querySelectorAll(id + ' > figure.selected');
+    showAsTabs: function(selector) {
+      selector = selector || '.tabs';
+      var nodes = document.querySelectorAll(selector);
 
-      if (li.length == 0 && figure.length == 0) {
-        document.querySelector(id + ' nav li').classList.add('selected');
-        document.querySelector(id + ' > figure').classList.add('selected');
-      }
+      nodes.forEach(function(node){
+        var li = node.querySelectorAll('nav li.selected');
+        var figure = node.querySelectorAll('figure.selected');
 
-      document.querySelector(id + ' nav').addEventListener('click', function(e) {
-        var a = e.target;
-        if (a.closest('a')) {
-          e.preventDefault();
-          e.stopPropagation();
-
-          var li = a.parentNode;
-          if(!li.classList.contains('class')) {
-            var navLi = document.querySelectorAll(id + ' nav li');
-            for (var i = 0; i < navLi.length; i++) {
-              navLi[i].classList.remove('selected');
-            }
-            li.classList.add('selected');
-            var figures = document.querySelectorAll(id + ' > figure');
-            for (var i = 0; i < figures.length; i++) {
-              figures[i].classList.remove('selected');
-            }
-            document.querySelector(id + ' > figure' + a.hash).classList.add('selected');
-          }
+        if (li.length == 0 && figure.length == 0) {
+          node.querySelector('nav li').classList.add('selected');
+          node.querySelector('figure').classList.add('selected');
         }
-      });
+
+        node.querySelector('nav').addEventListener('click', function(e) {
+          var a = e.target;
+          if (a.closest('a')) {
+            e.preventDefault();
+            e.stopPropagation();
+
+            var li = a.parentNode;
+            if(!li.classList.contains('class')) {
+              var navLi = node.querySelectorAll('nav li');
+              for (var i = 0; i < navLi.length; i++) {
+                navLi[i].classList.remove('selected');
+              }
+              li.classList.add('selected');
+              var figures = node.querySelectorAll('figure');
+              for (var i = 0; i < figures.length; i++) {
+                figures[i].classList.remove('selected');
+              }
+              node.querySelector('figure' + a.hash).classList.add('selected');
+            }
+          }
+        });
+
+      })
     },
 
     getReferenceLabel: function(motivatedBy) {
