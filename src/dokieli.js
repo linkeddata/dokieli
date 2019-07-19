@@ -6410,25 +6410,21 @@ WHERE {\n\
           DO.U.Editor.MediumEditor = new MediumEditor(eNodes, eOptions);
           DO.C.EditorEnabled = true;
 
-          if (e && e.target.closest('button.editor-enable')) {
+          if (e && (e.target.closest('path') || e.target.closest('button.editor-enable') || e.target.closest('li'))) {
             DO.C.ContentEditable = true;
             // document.addEventListener('click', DO.U.updateDocumentTitle);
             DO.U.updateDocumentTitle();
 
             //FIXME: This is a horrible way of hacking MediumEditorTable
-            document.querySelectorAll('i.fa-table').forEach(function(i){
+            document.querySelectorAll('i.fa-table, i.fa-link').forEach(function(i){
               var icon = template.Icon[".fas.fa-table.fa-2x"].replace(/ fa\-2x/, '');
 
-              i.parentNode.replaceChild(icon, i);
-            });
-
-            //FIXME: This is a horrible way of hacking MediumEditor
-            document.querySelectorAll('i.fa-link').forEach(function(i){
-              var icon = template.Icon[".fas.fa-link"];
+              if (i.classList.contains('fa-link') > 0) {
+                icon = template.Icon[".fas.fa-link"];
+              }
 
               i.parentNode.replaceChild(util.fragmentFromString(icon), i);
             });
-
 
             var documentAuthors = 'authors';
             var authors = document.getElementById(documentAuthors);
