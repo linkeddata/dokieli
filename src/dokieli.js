@@ -6348,7 +6348,7 @@ WHERE {\n\
             },
             buttonLabels: DO.C.Editor.ButtonLabelType,
             toolbar: {
-              buttons: ['h2', 'h3', 'h4', 'em', 'strong', 'orderedlist', 'unorderedlist', 'code', 'pre', 'anchor', 'q', 'sparkline', 'rdfa', 'cite', 'note'],
+              buttons: ['h2', 'h3', 'h4', 'em', 'strong', 'orderedlist', 'unorderedlist', 'code', 'pre', 'anchor', 'q', 'image', 'sparkline', 'rdfa', 'cite', 'note'],
               diffLeft: 0,
               diffTop: -10,
               allowMultiParagraphSelection: false
@@ -6362,6 +6362,7 @@ WHERE {\n\
               'strong': new DO.U.Editor.Button({action:'strong', label:'strong'}),
               'code': new DO.U.Editor.Button({action:'code', label:'code'}),
               'q': new DO.U.Editor.Button({action:'q', label:'q'}),
+              'image': new DO.U.Editor.Button({action:'image', label:'image'}),
               'sparkline': new DO.U.Editor.Note({action:'sparkline', label:'sparkline'}),
               'rdfa': new DO.U.Editor.Note({action:'rdfa', label:'rdfa'}),
               'cite': new DO.U.Editor.Note({action:'cite', label:'cite'}),
@@ -6416,11 +6417,14 @@ WHERE {\n\
             DO.U.updateDocumentTitle();
 
             //FIXME: This is a horrible way of hacking MediumEditorTable
-            document.querySelectorAll('i.fa-table, i.fa-link').forEach(function(i){
+            document.querySelectorAll('i.fa-table, i.fa-link, i.fa-picture-o').forEach(function(i){
               var icon = template.Icon[".fas.fa-table.fa-2x"].replace(/ fa\-2x/, '');
 
               if (i.classList.contains('fa-link') > 0) {
                 icon = template.Icon[".fas.fa-link"];
+              }
+              else if (i.classList.contains('fa-image') > 0) {
+                icon = template.Icon[".fas.fa-image"];
               }
 
               i.parentNode.replaceChild(util.fragmentFromString(icon), i);
@@ -6547,6 +6551,8 @@ WHERE {\n\
                 case 'em': this.contentFA = template.Icon[".fas.fa-italic"]; break;
 
                 case 'strong': this.contentFA = template.Icon[".fas.fa-bold"]; break;
+
+                case 'image': this.contentFA = template.Icon[".fas.fa-image"]; break;
 
                 case 'q': this.contentFA = template.Icon[".fas.fa-quote-right"]; break;
 
@@ -6804,6 +6810,59 @@ WHERE {\n\
                   //XXX: This is used for non-built-in buttons
                   default:
                     var selectionUpdated = '<' + tagNames[0] + datetime + '>' + this.base.selection + '</' + tagNames[0] + '>';
+
+                    if (this.action == 'image') {
+                      var imgOptions = this.base.selection.split("|");
+
+                      var src = imgOptions[0];
+                      var alt = '';
+                      var width = '';
+                      var height = '';
+
+                      //https://example/foo.jpg|figure|480x320|Hello world
+                      switch (imgOptions.length) {
+                        case 1: default:
+                          src = imgOptions[0];
+                          break;
+
+                        case 2:
+                          alt = imgOptions[1];
+                          break;
+
+                        case 3:
+                          width = ' width="' + imgOptions[1] + '"';
+                          var widthHeight = imgOptions[1].split('x');
+
+                          if (widthHeight.length == 2) {
+                            width = ' width="' + widthHeight[0] + '"';
+                            height = ' height="' + widthHeight[1] + '"';
+                          }
+
+                          alt = imgOptions[2];
+                          break;
+
+                        case 4:
+                          var figure = imgOptions[1];
+                          //if imgOptions[1] == 'figure'
+
+                          width = ' width="' + imgOptions[2] + '"';
+                          var widthHeight = imgOptions[2].split('x');
+
+                          if (widthHeight.length == 2) {
+                            width = ' width="' + widthHeight[0] + '"';
+                            height = ' height="' + widthHeight[1] + '"';
+                          }
+
+                          alt = imgOptions[3];
+                          break;
+                      }
+
+                      selectionUpdated = '<img alt="'+ alt +'"' + height + ' src="' + src + '"' + width + ' />';
+                      if (imgOptions.length == 4) {
+                        selectionUpdated = '<figure>' + selectionUpdated + '<figcaption>' + alt + '</figcaption></figure>';
+                      }
+                    }
+
                     MediumEditor.util.insertHTMLCommand(this.base.selectedDocument, selectionUpdated);
                     this.base.restoreSelection();
                     this.base.checkSelection();
