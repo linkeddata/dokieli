@@ -513,6 +513,11 @@ text-align:right;
 content:counter(precode);
 counter-increment:precode;
 }
+
+.hierarchical-outline > * { border: 3px solid #f00; padding: 1em; text-decoration: none; }
+.hierarchical-outline > * * { border: 3px dashed #00f; padding: 0.5em; text-decoration: none; }
+.hierarchical-outline > * * * { border: 3px dotted #000; padding: 0.15em; text-decoration: none; }
+
 pre {
 overflow:auto;
 page-break-inside: avoid;
