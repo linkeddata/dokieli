@@ -378,25 +378,36 @@ var DO = {
                 }
               }
               else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Announce') > -1 || resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Create') > -1) {
-                if(s.asobject && s.asobject.at(0) && s.astarget && s.astarget.at(0) && DO.U.getPathURL(s.astarget.at(0)) == currentPathURL) {
-                  var object = s.asobject.at(0);
+                if(s.asobject && s.asobject.at(0) && s.astarget && s.astarget.at(0)) {
+                  var options = {};
 
-                  DO.C.Notification[url]['Activities'].push(i);
-                  DO.C.Activity[object] = {};
-                  DO.C.Activity[object]['Graph'] = s;
-
-                  if (object.startsWith(url)) {
-                    return DO.U.showAnnotation(object, s);
+                  if (DO.U.getPathURL(s.astarget.at(0)) == currentPathURL) {
+                    options['targetInOriginalResource'] = true;
                   }
-                  else {
-                    return DO.U.positionInteraction(object).then(
-                      function(iri){
-                        return iri;
-                      },
-                      function(reason){
-                        console.log(reason);
-                        console.log(object + ': object is unreachable');
-                      });
+                  else if (DO.C.ResourceInfo.graph.rellatestversion && DO.U.getPathURL(s.astarget.at(0)) == DO.U.getPathURL(DO.C.ResourceInfo.graph.rellatestversion)) {
+                    options['targetInMemento'] = true;
+                  }
+
+                  if (options['targetInOriginalResource'] || options['targetInMemento']){
+                    var object = s.asobject.at(0);
+
+                    DO.C.Notification[url]['Activities'].push(i);
+                    DO.C.Activity[object] = {};
+                    DO.C.Activity[object]['Graph'] = s;
+
+                    if (object.startsWith(url)) {
+                      return DO.U.showAnnotation(object, s);
+                    }
+                    else {
+                      return DO.U.positionInteraction(object, document.body, options).then(
+                        function(iri){
+                          return iri;
+                        },
+                        function(reason){
+                          console.log(reason);
+                          console.log(object + ': object is unreachable');
+                        });
+                    }
                   }
                 }
               }
@@ -5146,17 +5157,18 @@ WHERE {\n\
       note.setAttribute('style', style);
     },
 
-    positionInteraction: function(noteIRI, containerNode) {
+    positionInteraction: function(noteIRI, containerNode, options) {
       containerNode = containerNode || document.body;
 
       return fetcher.getResourceGraph(noteIRI).then(
         function(g){
-          DO.U.showAnnotation(noteIRI, g, containerNode);
+          DO.U.showAnnotation(noteIRI, g, containerNode, options);
         });
     },
 
-    showAnnotation: function(noteIRI, g, containerNode) {
+    showAnnotation: function(noteIRI, g, containerNode, options) {
       containerNode = containerNode || document.body;
+      options = options || {};
 
       var documentURL = uri.stripFragmentFromString(document.location.href);
 
@@ -5250,7 +5262,7 @@ WHERE {\n\
 // console.log(bodyText);
 
 // console.log(documentURL)
-        if (note.oahasTarget && !note.oahasTarget.startsWith(documentURL)) {
+        if (note.oahasTarget && !(note.oahasTarget.startsWith(documentURL) || 'targetInMemento' in options)){
           // return Promise.reject();
           return;
         }
