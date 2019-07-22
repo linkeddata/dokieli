@@ -381,10 +381,14 @@ var DO = {
                 if(s.asobject && s.asobject.at(0) && s.astarget && s.astarget.at(0)) {
                   var options = {};
 
-                  if (DO.U.getPathURL(s.astarget.at(0)) == currentPathURL) {
+                  var targePathURL = DO.U.getPathURL(s.astarget.at(0));
+
+                  if (targePathURL == currentPathURL) {
                     options['targetInOriginalResource'] = true;
                   }
-                  else if (DO.C.ResourceInfo.graph.rellatestversion && DO.U.getPathURL(s.astarget.at(0)) == DO.U.getPathURL(DO.C.ResourceInfo.graph.rellatestversion)) {
+                  else if ((DO.C.ResourceInfo.graph.rellatestversion && targePathURL == DO.U.getPathURL(DO.C.ResourceInfo.graph.rellatestversion)) ||
+                    (DO.C.ResourceInfo.graph.memmemento && targePathURL == DO.U.getPathURL(DO.C.ResourceInfo.graph.memmemento))
+                    ) {
                     options['targetInMemento'] = true;
                   }
 
