@@ -381,14 +381,12 @@ var DO = {
                 if(s.asobject && s.asobject.at(0) && s.astarget && s.astarget.at(0)) {
                   var options = {};
 
-                  var targePathURL = DO.U.getPathURL(s.astarget.at(0));
+                  var targetPathURL = DO.U.getPathURL(s.astarget.at(0));
 
-                  if (targePathURL == currentPathURL) {
+                  if (targetPathURL == currentPathURL) {
                     options['targetInOriginalResource'] = true;
                   }
-                  else if ((DO.C.ResourceInfo.graph.rellatestversion && targePathURL == DO.U.getPathURL(DO.C.ResourceInfo.graph.rellatestversion)) ||
-                    (DO.C.ResourceInfo.graph.memmemento && targePathURL == DO.U.getPathURL(DO.C.ResourceInfo.graph.memmemento))
-                    ) {
+                  else if (DO.C.ResourceInfo.graph.rellatestversion && targetPathURL == DO.U.getPathURL(DO.C.ResourceInfo.graph.rellatestversion)) {
                     options['targetInMemento'] = true;
                   }
 
