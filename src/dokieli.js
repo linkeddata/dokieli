@@ -1826,7 +1826,8 @@ var DO = {
             else {
               var processed = [];
               for (var i = 0; i < nodes.length; i++) {
-                var title;
+                var title, textContent;
+
                 if (id == 'list-of-quotations') {
                   title = nodes[i].getAttribute(titleSelector);
                 }
@@ -1834,18 +1835,27 @@ var DO = {
                   title = nodes[i].querySelector(titleSelector);
                 }
 
-                if (title && processed.indexOf(nodes[i].textContent + ' ' + title) < 0) {
+                if (title) {
                   if (id == 'list-of-quotations') {
-                    s += '<li><q>' + nodes[i].textContent + '</q>, <a href="' + title + '">' + title + '</a></li>';
-                  }
-                  else if(nodes[i].id){
-                    s += '<li><a href="#' + nodes[i].id +'">' + title.textContent +'</a></li>';
+                    textContent = doc.removeSelectorFromNode(nodes[i], '.do').textContent;
                   }
                   else {
-                    s += '<li>' + title.textContent +'</li>';
+                    textContent = doc.removeSelectorFromNode(title, '.do').textContent;
                   }
 
-                  processed.push(nodes[i].textContent + ' ' + title);
+                  if (processed.indexOf(textContent) < 0) {
+                    if (id == 'list-of-quotations') {
+                      s += '<li><q>' + textContent + '</q>, <a href="' + title + '">' + title + '</a></li>';
+                    }
+                    else if(nodes[i].id){
+                      s += '<li><a href="#' + nodes[i].id +'">' + textContent +'</a></li>';
+                    }
+                    else {
+                      s += '<li>' + textContent +'</li>';
+                    }
+
+                    processed.push(textContent);
+                  }
                 }
               }
             }
