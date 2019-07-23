@@ -7638,7 +7638,8 @@ WHERE {\n\
 
               var contentType = 'text/html';
               var noteIRI, noteURL;
-              var profile, options;
+              var profile;
+              var options = {};
               var annotationDistribution = [] , aLS = {};
 
               if((opts.annotationLocationPersonalStorage && DO.C.User.Outbox) || (!opts.annotationLocationPersonalStorage && !opts.annotationLocationService && DO.C.User.Outbox)) {
@@ -7723,7 +7724,17 @@ WHERE {\n\
               var refLabel = id;
 
               var parentNodeWithId = selectedParentElement.closest('[id]');
+
               var targetIRI = (parentNodeWithId) ? resourceIRI + '#' + parentNodeWithId.id : resourceIRI;
+              var latestVersion = DO.C.ResourceInfo.graph.rellatestversion;
+              if (latestVersion) {
+                resourceIRI = latestVersion;
+                targetIRI = (parentNodeWithId) ? latestVersion + '#' + parentNodeWithId.id : latestVersion;
+                options['targetInMemento'] = true;
+              }
+// console.log(latestVersion)
+// console.log(resourceIRI)
+// console.log(targetIRI)
 
               //Role/Capability for Authors/Editors
               var ref = '', refType = ''; //TODO: reference types. UI needs input
@@ -8068,7 +8079,7 @@ WHERE {\n\
                 return notificationData;
               }
 
-              var positionActivity = function(annotation) {
+              var positionActivity = function(annotation, options) {
                 if (!annotation['canonical']) {
                   return Promise.resolve();
                 }
@@ -8080,14 +8091,14 @@ WHERE {\n\
                     })
                 }
                 else {
-                  return DO.U.positionInteraction(annotation[ 'noteIRI' ], document.body)
+                  return DO.U.positionInteraction(annotation[ 'noteIRI' ], document.body, options)
                     .catch(() => {
                       return Promise.resolve()
                     })
                 }
               }
 
-              var sendNotification = function(annotation) {
+              var sendNotification = function(annotation, options) {
                 if (!annotation['canonical']) {
                   return Promise.resolve();
                 }
@@ -8115,6 +8126,7 @@ WHERE {\n\
 
                       // notificationData['type'] = ['as:Announce'];
 // console.log(annotation)
+// console.log(notificationData)
                       return inbox.notifyInbox(notificationData)
                         .catch(error => {
                           console.log('Error notifying the inbox:', error)
@@ -8131,7 +8143,6 @@ WHERE {\n\
                     var notificationData = createNotificationData(annotation, { 'relativeObject': true });
 
                     var noteData = createNoteData(annotation)
-
                     if ('profile' in annotation && annotation.profile == 'https://www.w3.org/ns/activitystreams') {
                       notificationData['statements'] = DO.U.createNoteDataHTML(noteData);
                       note = doc.createActivityHTML(notificationData);
@@ -8139,8 +8150,9 @@ WHERE {\n\
                     else {
                       note = DO.U.createNoteDataHTML(noteData);
                     }
-
                     data = doc.createHTML('', note);
+// console.log(noteData)
+// console.log(note)
 // console.log(data)
 // console.log(annotation)
 
@@ -8160,12 +8172,12 @@ WHERE {\n\
                         }
 
 // console.log(annotation)
-                        return positionActivity(annotation)
+                        return positionActivity(annotation, options)
                        })
 
                       .then(() => {
                         if (this.action != 'bookmark') {
-                          return sendNotification(annotation)
+                          return sendNotification(annotation, options)
                         }
                       })
 
