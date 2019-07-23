@@ -5680,9 +5680,8 @@ WHERE {\n\
 
       if (n.language && 'code' in n.language) {
         language = DO.U.createLanguageHTML(n.language, {property:'dcterms:language', label:'Language'});
-        lang = 'lang="' +  n.language.code + '"';
-        xmlLang = ' xml:' + lang;
-        lang = ' ' + lang;
+        lang = ' lang="' +  n.language.code + '"';
+        xmlLang = ' xml:lang="' +  n.language.code + '"';
       }
       if (n.license && 'iri' in n.license) {
         license = DO.U.createLicenseHTML(n.license, {rel:'dcterms:rights', label:'Rights'});
@@ -5820,7 +5819,7 @@ WHERE {\n\
       if (typeof n.code !== 'undefined') {
         n['name'] = n.name || DO.C.Languages[n.code] || n.code;
         language = '<dl class="' + label.toLowerCase() + '"><dt>' + label + '</dt><dd>';
-          language += '<span content="' + n.code + '" lang="" property="' + property + '" xml:lang="">' + n.name + '</span>';
+        language += '<span content="' + n.code + '" lang="" property="' + property + '" xml:lang="">' + n.name + '</span>';
         language += '</dd></dl>';
       }
 
@@ -6136,7 +6135,8 @@ WHERE {\n\
           dl.removeAttribute('class');
           var dd = dLangS.closest('dd');
           dd.parentNode.removeChild(dd);
-          dd = '<dd><span content="' + languageValue + '" lang="" property="dcterms:language" xml:lang="">' + DO.C.Languages[languageValue] + '</a></dd>';
+          dd = '<dd><span content="' + languageValue + '" lang="" property="dcterms:language" xml:lang="">' + DO.C.Languages[languageValue] + '</span></dd>';
+console.log(dd)
           dl.insertAdjacentHTML('beforeend', dd);
         }
       }
