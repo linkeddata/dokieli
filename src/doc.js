@@ -11,7 +11,8 @@ module.exports = {
   setDocumentBase,
   createHTML,
   createActivityHTML,
-  getClosestSectionNode
+  getClosestSectionNode,
+  removeSelectorFromNode,
 }
 
 function domToString (node, options = {}) {
@@ -291,4 +292,15 @@ function createActivityHTML(o) {
 
 function getClosestSectionNode(node) {
   return node.closest('section') || node.closest('div') || node.closest('article') || node.closest('main') || node.closest('body');
+}
+
+function removeSelectorFromNode(node, selector) {
+  var clone = node.cloneNode(true);
+  var x = clone.querySelectorAll(selector);
+
+  x.forEach(function(i){
+    i.parentNode.removeChild(i);
+  })
+
+  return clone;
 }
