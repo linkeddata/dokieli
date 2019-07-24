@@ -13,6 +13,7 @@ module.exports = {
   createActivityHTML,
   getClosestSectionNode,
   removeSelectorFromNode,
+  getNodeLanguage
 }
 
 function domToString (node, options = {}) {
@@ -303,4 +304,20 @@ function removeSelectorFromNode(node, selector) {
   })
 
   return clone;
+}
+
+function getNodeLanguage(node) {
+  var lang = '';
+  var closestLang = node.closest('[lang]');
+  if (closestLang) {
+    lang = closestLang.getAttribute('lang');
+  }
+  else {
+    closestLang = node.closest('[xml\\:lang]');
+    if (closestLang) {
+      lang = closestLang.getAttributeNS('', 'xml:lang');
+    }
+  }
+
+  return lang;
 }
