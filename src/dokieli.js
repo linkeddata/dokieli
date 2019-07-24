@@ -5730,7 +5730,9 @@ WHERE {\n\
               //TODO: Handle when there is no fragment
               //TODO: Languages should be whatever is target's (not necessarily 'en')
               if (typeof n.target.selector !== 'undefined') {
-                annotationTextSelector = '<div rel="oa:hasSelector" resource="#fragment-selector" typeof="oa:FragmentSelector"><dl class="conformsto"><dt>Fragment selector conforms to</dt><dd><a content="' + targetIRIFragment + '" lang="" property="rdf:value" rel="dcterms:conformsTo" href="https://tools.ietf.org/html/rfc3987" xml:lang="">RFC 3987</a></dd></dl><dl rel="oa:refinedBy" resource="#text-quote-selector" typeof="oa:TextQuoteSelector"><dt>Refined by</dt><dd><span lang="en" property="oa:prefix" xml:lang="en">' + n.target.selector.prefix + '</span><mark lang="en" property="oa:exact" xml:lang="en">' + n.target.selector.exact + '</mark><span lang="en" property="oa:suffix" xml:lang="en">' + n.target.selector.suffix + '</span></dd></dl></div>';
+                var selectionLanguage = ('language' in n.target.selector && n.target.selector.language) ? n.target.selector.language : '';
+
+                annotationTextSelector = '<div rel="oa:hasSelector" resource="#fragment-selector" typeof="oa:FragmentSelector"><dl class="conformsto"><dt>Fragment selector conforms to</dt><dd><a content="' + targetIRIFragment + '" lang="" property="rdf:value" rel="dcterms:conformsTo" href="https://tools.ietf.org/html/rfc3987" xml:lang="">RFC 3987</a></dd></dl><dl rel="oa:refinedBy" resource="#text-quote-selector" typeof="oa:TextQuoteSelector"><dt>Refined by</dt><dd><span lang="' + selectionLanguage + '" property="oa:prefix" xml:lang="' + selectionLanguage + '">' + n.target.selector.prefix + '</span><mark lang="' + selectionLanguage + '" property="oa:exact" xml:lang="' + selectionLanguage + '">' + n.target.selector.exact + '</mark><span lang="' + selectionLanguage + '" property="oa:suffix" xml:lang="' + selectionLanguage + '">' + n.target.selector.suffix + '</span></dd></dl></div>';
               }
             }
             else if(typeof n.inReplyTo !== 'undefined' && 'iri' in n.inReplyTo) {
@@ -5744,9 +5746,11 @@ WHERE {\n\
               hasTarget += ' (<a about="' + n.target.iri + '" href="' + n.target.source +'" rel="oa:hasSource" typeof="oa:SpecificResource">part of</a>)';
             }
 
+            var targetLanguage = ('language' in n.target && n.target) ? '<dl><dt>Language</dt><dd><span lang="" property="dcterms:language" xml:lang="">' + n.target.language + '</span></dd></dl>': '';
+
             target ='<dl class="target"><dt>' + hasTarget + '</dt>';
             if (typeof n.target !== 'undefined' && typeof n.target.selector !== 'undefined') {
-              target += '<dd><blockquote about="' + targetIRI + '" cite="' + targetIRI + '">' + annotationTextSelector + '</blockquote></dd>';
+              target += '<dd><blockquote about="' + targetIRI + '" cite="' + targetIRI + '">' + targetLanguage + annotationTextSelector + '</blockquote></dd>';
             }
             target += '</dl>';
 
@@ -6136,7 +6140,6 @@ WHERE {\n\
           var dd = dLangS.closest('dd');
           dd.parentNode.removeChild(dd);
           dd = '<dd><span content="' + languageValue + '" lang="" property="dcterms:language" xml:lang="">' + DO.C.Languages[languageValue] + '</span></dd>';
-console.log(dd)
           dl.insertAdjacentHTML('beforeend', dd);
         }
       }
@@ -7595,6 +7598,7 @@ console.log(dd)
 
             completeFormSave: function (opts) {
               var _this = this;
+// console.log(this.base)
 // console.log(opts);
 // console.log('completeFormSave() with this.action: ' + this.action);
               this.base.restoreSelection();
@@ -7608,7 +7612,7 @@ console.log(dd)
               this.base.selection = MediumEditor.selection.getSelectionHtml(this.base.selectedDocument); //.replace(DO.C.Editor.regexEmptyHTMLTags, '');
 // console.log('this.base.selection:');
 // console.log(this.base.selection);
-
+ 
               var exact = this.base.selection;
               var selectionState = MediumEditor.selection.exportSelection(selectedParentElement, this.document);
               var start = selectionState.start;
@@ -7746,6 +7750,11 @@ console.log(dd)
 // console.log(resourceIRI)
 // console.log(targetIRI)
 
+              var targetLanguage = doc.getNodeLanguage(parentNodeWithId);
+              var selectionLanguage = doc.getNodeLanguage(selectedParentElement);
+// console.log(targetLanguage)
+// console.log(selectionLanguage)
+
               //Role/Capability for Authors/Editors
               var ref = '', refType = ''; //TODO: reference types. UI needs input
               //TODO: replace refId and noteIRI IRIs
@@ -7815,8 +7824,10 @@ console.log(dd)
                         "selector": {
                           "exact": exact,
                           "prefix": prefix,
-                          "suffix": suffix
-                        }
+                          "suffix": suffix,
+                          "language": selectionLanguage
+                        },
+                        "language": targetLanguage
                         //TODO: state
                       },
                       "body": opts.content,
@@ -7870,8 +7881,10 @@ console.log(dd)
                         "selector": {
                           "exact": exact,
                           "prefix": prefix,
-                          "suffix": suffix
-                        }
+                          "suffix": suffix,
+                          "language": selectionLanguage
+                        },
+                        "language": targetLanguage
                         //TODO: state
                       },
                       "body": {
@@ -7991,8 +8004,10 @@ console.log(dd)
                         "selector": {
                           "exact": exact,
                           "prefix": prefix,
-                          "suffix": suffix
-                        }
+                          "suffix": suffix,
+                          "language": selectionLanguage
+                        },
+                        "language": targetLanguage
                         //TODO: state
                       },
                       "body": {
