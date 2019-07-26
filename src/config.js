@@ -396,7 +396,7 @@ module.exports = {
     "ldpResource": { "@id": "http://www.w3.org/ns/ldp#Resource", "@type": "@id" },
     "ldpContainer": { "@id": "http://www.w3.org/ns/ldp#Container", "@type": "@id" },
     "ldpRDFSource": { "@id": "http://www.w3.org/ns/ldp#RDFSource", "@type": "@id" },
-    "ldpImmutableResource": { "@id": "http://www.w3.org/ns/ldp#ImmutableResource", "@type": "@id" },
+    "ldpNonRDFSource": { "@id": "http://www.w3.org/ns/ldp#NonRDFSource", "@type": "@id" },
 
     "memOriginalResource": { "@id": "http://mementoweb.org/ns#OriginalResource", "@type": "@id" },
     "memMemento": { "@id": "http://mementoweb.org/ns#Memento", "@type": "@id" },

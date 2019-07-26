@@ -1901,9 +1901,9 @@ var DO = {
         default:
           definitionTitle = 'Document Status';
           break;
-        case 'ldp:ImmutableResource':
+        case 'mem:Memento':
           definitionTitle = 'Resource State';
-          typeLabel = 'Immutable';
+          typeLabel = 'Memento';
           typeOf = ' typeof="' + options.type + '"';
           break;
       }
@@ -2869,7 +2869,7 @@ var DO = {
         var rSO = {
           'id': 'document-resource-state',
           'subjectURI': '',
-          'type': 'ldp:ImmutableResource',
+          'type': 'mem:Memento',
           'mode': 'create'
         }
 
@@ -2883,7 +2883,7 @@ var DO = {
       rootNode = DO.U.setDocumentRelation(rootNode, [r], o);
 
       o = { 'id': 'document-original', 'title': 'Original resource' };
-      if (DO.C.OriginalResourceInfo['state'] == DO.C.Vocab['ldpImmutableResource']['@id']
+      if (DO.C.OriginalResourceInfo['state'] == DO.C.Vocab['memMemento']['@id']
         && DO.C.OriginalResourceInfo['profile'] == DO.C.Vocab['memOriginalResource']['@id']) {
         r = { 'rel': 'mem:original', 'href': immutableURL };
       }
@@ -2908,7 +2908,7 @@ var DO = {
 
 
       //Update URI-R
-      if (DO.C.OriginalResourceInfo['state'] != DO.C.Vocab['ldpImmutableResource']['@id']) {
+      if (DO.C.OriginalResourceInfo['state'] != DO.C.Vocab['memMemento']['@id']) {
         DO.U.setDate(document, { 'id': 'document-created', 'property': 'schema:dateCreated', 'title': 'Created', 'datetime': date });
 
         o = { 'id': 'document-identifier', 'title': 'Identifier' };
@@ -6271,13 +6271,13 @@ WHERE {\n\
 
           //Check if the resource is immutable
           s.rdftype.forEach(function(resource) {
-            if (resource == DO.C.Vocab['ldpImmutableResource']['@id']) {
-              info['state'] = DO.C.Vocab['ldpImmutableResource']['@id'];
+            if (resource == DO.C.Vocab['memMemento']['@id']) {
+              info['state'] = DO.C.Vocab['memMemento']['@id'];
             }
           });
 
           if (s.reloriginal) {
-            info['state'] = DO.C.Vocab['ldpImmutableResource']['@id'];
+            info['state'] = DO.C.Vocab['memMemento']['@id'];
             info['original'] = s.memoriginal;
 
             if (s.reloriginal == options['subjectURI']) {
@@ -6304,7 +6304,7 @@ WHERE {\n\
 
             info['profile'] = DO.C.Vocab['memMemento']['@id'];
             info['original'] = s.memoriginal;
-            info['memento'] = s.memmement;
+            info['memento'] = s.memmemento;
           }
 
           if(s.rellatestversion) {
