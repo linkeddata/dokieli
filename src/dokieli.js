@@ -1163,7 +1163,7 @@ var DO = {
             DO.U.showDocumentItems();
           }
 
-          document.addEventListener('click', DO.U.eventLeaveDocumentMenu);
+          // document.addEventListener('click', DO.U.eventLeaveDocumentMenu);
         }
         else {
           DO.U.showDocumentInfo();
@@ -1173,7 +1173,7 @@ var DO = {
     },
 
     hideDocumentMenu: function(e) {
-      document.removeEventListener('click', DO.U.eventLeaveDocumentMenu);
+      // document.removeEventListener('click', DO.U.eventLeaveDocumentMenu);
 
       var body = document.body;
       var dMenu = document.querySelector('#document-menu.do');
