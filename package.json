@@ -30,6 +30,8 @@
   },
   "homepage": "https://dokie.li/",
   "dependencies": {
+    "d3-force": "^2.0.1",
+    "d3-selection": "^1.4.0",
     "fs": "0.0.1-security",
     "medium-editor": "^5.23.3",
     "medium-editor-tables": "^0.6.1",

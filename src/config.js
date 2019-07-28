@@ -55,7 +55,7 @@ module.exports = {
   CDATAStart: '//<![CDATA[',
   CDATAEnd: '//]]>',
   SortableList: false,
-  GraphViewerAvailable: (typeof d3 !== 'undefined'),
+  GraphViewerAvailable: true,
   MathAvailable: (typeof MathJax !== 'undefined'),
   EditorAvailable: true,
   EditorEnabled: false,

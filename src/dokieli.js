@@ -17,6 +17,7 @@ window.MediumEditorTable = require('medium-editor-tables')
 const storage = require('./storage')
 global.auth = require('./auth')
 global.template = require('./template')
+const d3 = Object.assign({}, require("d3-selection"), require("d3-force"));
 
 if(typeof DO === 'undefined'){
 const ld = require('./simplerdf')
@@ -571,11 +572,16 @@ var DO = {
       DO.U.getVisualisationGraphData(url, data, options).then(
         function(graph){
 // console.log(graph);
-          var nodes = graph.nodes,
-              nodeById = d3.map(nodes, function(d) { return d.id; }),
-              links = graph.links,
-              bilinks = [];
+          var nodes = graph.nodes;
+          var nodeById = new Map();
+          nodes.forEach(function(n){
+            nodeById.set(n.id, n);
+          })
+          var links = graph.links;
+          var bilinks = [];
 
+// var foo = new Map(nodes);
+// console.log(foo)
           var uniqueNodes = {};
 
           links.forEach(function(link) {
@@ -624,10 +630,10 @@ var DO = {
               .attr("r", nodeRadius)
               .attr("fill", function(d) { return color(d.group); })
               .attr('stroke', color(2))
-              .call(d3.drag()
-                  .on("start", dragstarted)
-                  .on("drag", dragged)
-                  .on("end", dragended));
+              // .call(d3.drag()
+              //     .on("start", dragstarted)
+              //     .on("drag", dragged)
+              //     .on("end", dragended));
 
           node.append("title")
               .text(function(d) { return d.id; });
