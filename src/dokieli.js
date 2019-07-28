@@ -1573,6 +1573,8 @@ var DO = {
 // console.log(citationsTo)
           citations = '<tr class="citations"><th>Citations</th><td>' + citationsTo.length + '</td></tr>';
 
+          var statements = '<tr class="statements"><th>Statements</th><td>' + triples.length + '</td></tr>';
+
           var g = s.child(options['subjectURI']);
 // console.log(g)
 
@@ -1612,7 +1614,7 @@ var DO = {
             }
           }
 
-          return authors + editors + contributors + citations;
+          return authors + editors + contributors + citations + statements;
         }).then(
         function(data){
               // <tr><th>Lines</th><td>' + count.lines + '</td></tr>\n\
