@@ -10,7 +10,6 @@
     <link href="https://www.w3.org/StyleSheets/TR/2016/W3C-ED" rel="stylesheet alternate" media="all" title="W3C-ED"/>
     <link href="media/css/dokieli.css" media="all" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
-    <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="scripts/dokieli.js"></script>
   </head>
 
