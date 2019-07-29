@@ -693,8 +693,11 @@ float:left !important;
 padding:0 !important;
 margin:0 !important;
 }
-#document-metadata .people th {
+#document-metadata th {
 vertical-align:top;
+}
+#document-metadata ul {
+margin-top:0;
 }
 
 #document-menu header button,
