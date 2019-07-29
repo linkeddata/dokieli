@@ -102,9 +102,10 @@ the host sends HTML etc. All content is accessible at minimum from a text-browse
 
 These libraries are part of the dokieli distribution:
 
-* [SimpleRDF](https://github.com/nicola/simplerdf) (MIT License) used for RDF
-* [Font Awesome](https://github.com/FortAwesome/Font-Awesome) (CC BY 4.0 License / MIT License) icons
-* [MediumEditor](https://github.com/yabwe/medium-editor) (MIT License)
+* [SimpleRDF](https://github.com/nicola/simplerdf) (MIT License) used for RDF.
+* [Font Awesome](https://github.com/FortAwesome/Font-Awesome) (CC BY 4.0 License / MIT License) for icons.
+* [MediumEditor](https://github.com/yabwe/medium-editor) (MIT License) for document editing.
+* [d3](https://github.com/d3/d3) (BSD 3-Clause) used for visualisations.
 
 
 ## How to contribute
