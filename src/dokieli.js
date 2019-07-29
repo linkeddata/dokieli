@@ -2701,7 +2701,7 @@ var DO = {
           if (!node) {
             node = document.getElementById(elementId);
             if(!node) {
-              document.documentElement.appendChild(util.fragmentFromString('<aside id="' + elementId + '" class="do on"><h2>Memento</h2>' + DO.C.Button.Close + '</aside>'));
+              document.documentElement.appendChild(util.fragmentFromString('<aside id="' + elementId + '" class="do on"><h2>Memento</h2>' + DO.C.Button.Close + '<dl><dt>TimeMap</dt><dd><a href="' + url + '">' + url + '</a></dd></dl></aside>'));
               node = document.getElementById(elementId);
             }
           }
@@ -2724,7 +2724,7 @@ var DO = {
             }
           });
 
-          var html = '<dl class="timemap"><dt>TimeMap</dt><dd><ul>' + items.join('') + '</ul></dd></dl>';
+          var html = '<dl class="memento"><dt>Memento</dt><dd><ul>' + items.join('') + '</ul></dd></dl>';
 
           node.insertAdjacentHTML('beforeend', html);
         })
