@@ -307,16 +307,13 @@ function removeSelectorFromNode(node, selector) {
 }
 
 function getNodeLanguage(node) {
+  node = node || document.body;
+console.log(node)
   var lang = '';
-  var closestLang = node.closest('[lang]');
+  var closestLang = node.closest('[lang], [xml\\:lang]');
+
   if (closestLang) {
-    lang = closestLang.getAttribute('lang');
-  }
-  else {
-    closestLang = node.closest('[xml\\:lang]');
-    if (closestLang) {
-      lang = closestLang.getAttributeNS('', 'xml:lang');
-    }
+    lang = closestLang.getAttribute('lang') || closestLang.getAttributeNS('', 'xml:lang');
   }
 
   return lang;
