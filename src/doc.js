@@ -308,7 +308,7 @@ function removeSelectorFromNode(node, selector) {
 
 function getNodeLanguage(node) {
   node = node || document.body;
-console.log(node)
+
   var lang = '';
   var closestLang = node.closest('[lang], [xml\\:lang]');
 
