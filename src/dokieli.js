@@ -1553,9 +1553,10 @@ var DO = {
       var subjectURI = window.location.origin + window.location.pathname;
       var options = {'contentType': 'text/html', 'subjectURI': subjectURI };
 
-      graph.getGraphFromData(data, options).then(
-        function(i){
-          var s = SimpleRDF(DO.C.Vocab, options['subjectURI'], i, ld.store);
+      // graph.getGraphFromData(data, options).then(
+      //   function(i){
+      //     var s = SimpleRDF(DO.C.Vocab, options['subjectURI'], i, ld.store);
+          var s = DO.C.ResourceInfo.graph;
 // console.log(s)
 
           var triples = s._graph;
@@ -1614,9 +1615,11 @@ var DO = {
             }
           }
 
-          return authors + editors + contributors + citations + statements;
-        }).then(
-        function(data){
+          var data = authors + editors + contributors + citations + statements;
+
+          // return authors + editors + contributors + citations + statements;
+        // }).then(
+        // function(data){
               // <tr><th>Lines</th><td>' + count.lines + '</td></tr>\n\
               // <tr><th>A4 Pages</th><td>' + count.pages.A4 + '</td></tr>\n\
               // <tr><th>US Letter</th><td>' + count.pages.USLetter + '</td></tr>\n\
@@ -1632,7 +1635,7 @@ var DO = {
           </table></section>';
 
           node.insertAdjacentHTML('beforeend', s);
-        });
+        // });
     },
 
     contentCount: function contentCount (c) {
