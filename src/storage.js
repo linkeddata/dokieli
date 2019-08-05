@@ -203,14 +203,17 @@ function showStorage(node) {
     var key = uri.stripFragmentFromString(document.location.href);
 
     document.getElementById('local-storage').addEventListener('click', function(e) {
-      if (e.target.closest('button.local-storage-enable-html')) {
-        e.target.outerHTML = Config.DisableStorageButtons;
-        enableStorage(key);
-      }
-
-      if (e.target.closest('button.local-storage-disable-html')) {
-        e.target.outerHTML = Config.EnableStorageButtons;
+      var b = e.target.closest('button.local-storage-disable-html');
+      if (b) {
+        b.outerHTML = Config.EnableStorageButtons;
         disableStorage(key);
+      }
+      else {
+        b = e.target.closest('button.local-storage-enable-html');
+        if (b) {
+          b.outerHTML = Config.DisableStorageButtons;
+          enableStorage(key);
+        }
       }
 
       // if (e.target.closest('input.autosave')) {
