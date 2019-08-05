@@ -6454,7 +6454,7 @@ WHERE {\n\
           DO.U.Editor.MediumEditor = new MediumEditor(eNodes, eOptions);
           DO.C.EditorEnabled = true;
 
-          if (e && e.target.closest('path, button.editor-enable, li')) {
+          if (e && e.target.closest('button.editor-enable')) {
             DO.C.ContentEditable = true;
             // document.addEventListener('click', DO.U.updateDocumentTitle);
             DO.U.updateDocumentTitle();
