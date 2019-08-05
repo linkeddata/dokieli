@@ -2800,14 +2800,19 @@ var DO = {
           DO.U.replyToResource(e);
         }
 
+        var b;
         if (DO.C.EditorAvailable) {
-          if (e.target.closest('button.editor-disable')) {
-            e.target.parentNode.innerHTML = DO.C.Editor.EnableEditorButton;
+          b = e.target.closest('button.editor-disable');
+          if (b) {
+            b.outerHTML = DO.C.Editor.EnableEditorButton;
             DO.U.Editor.enableEditor('social', e);
           }
-          else if (e.target.closest('button.editor-enable')) {
-            e.target.parentNode.innerHTML = DO.C.Editor.DisableEditorButton;
-            DO.U.Editor.enableEditor('author', e);
+          else {
+            b = e.target.closest('button.editor-enable');
+            if (b) {
+              b.outerHTML = DO.C.Editor.DisableEditorButton;
+              DO.U.Editor.enableEditor('author', e);
+            }
           }
         }
 
@@ -6449,7 +6454,7 @@ WHERE {\n\
           DO.U.Editor.MediumEditor = new MediumEditor(eNodes, eOptions);
           DO.C.EditorEnabled = true;
 
-          if (e && (e.target.closest('path') || e.target.closest('button.editor-enable') || e.target.closest('li'))) {
+          if (e && e.target.closest('path, button.editor-enable, li')) {
             DO.C.ContentEditable = true;
             // document.addEventListener('click', DO.U.updateDocumentTitle);
             DO.U.updateDocumentTitle();
