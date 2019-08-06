@@ -927,11 +927,12 @@ margin:0.5em 1em 0 2.75em;
 #document-menu .local-storage-disable-html {
 background-color:#eee !important;
 }
-#document-menu .local-storage-disable-html {
-margin-right:0.25em;
+#document-menu #autosave-items {
+margin-left:1em;
 }
-#local-storage-html-autosave {
+#document-menu #autosave-items li {
 margin-top:1em;
+display:inline-block;
 }
 
 

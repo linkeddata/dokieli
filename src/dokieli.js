@@ -961,7 +961,7 @@ var DO = {
     },
 
     initUser: function() {
-      storage.getStorageProfile().then(user => {
+      storage.getLocalStorageProfile().then(user => {
         if (user && 'object' in user) {
           user.object.describes.Role = (DO.C.User.IRI && user.object.describes.Role) ? user.object.describes.Role : 'social';
           user.object.describes.ContactsOutboxChecked = (DO.C.User.IRI && user.object.describes.ContactsOutboxChecked);
@@ -1404,8 +1404,6 @@ var DO = {
 
         var toc = document.getElementById('table-of-contents');
         toc = (toc) ? toc.parentNode.removeChild(toc) : false;
-
-        storage.hideStorage();
 
         shower.initRun();
       }
@@ -2772,7 +2770,7 @@ var DO = {
 
       s += '<li><button class="resource-save-as" title="Save as article">' + template.Icon[".far.fa-paper-plane.fa-2x"] + 'Save As</button></li>';
 
-      s += '<li><button class="resource-memento" title="Memento article">' + template.Icon[".far.fa-paper-clock.fa-2x"] + 'Memento</button></li>';
+      s += '<li><button class="resource-memento" title="Memento article">' + template.Icon[".far.fa-clock.fa-2x"] + 'Memento</button></li>';
 
       if (DO.C.EditorAvailable) {
         var editFile = (DO.C.EditorEnabled && DO.C.User.Role == 'author')
@@ -2789,6 +2787,11 @@ var DO = {
 
       node.insertAdjacentHTML('beforeend', s);
 
+      var eD = node.querySelector('.editor-disable');
+      if (eD) {
+        storage.showAutoSaveStorage(eD.closest('li'));
+      }
+
       var dd = document.getElementById('document-do');
 
       dd.addEventListener('click', e => {
@@ -2803,15 +2806,20 @@ var DO = {
         var b;
         if (DO.C.EditorAvailable) {
           b = e.target.closest('button.editor-disable');
+          var documentURL = uri.stripFragmentFromString(document.location.href);
           if (b) {
+            var node = b.closest('li');
             b.outerHTML = DO.C.Editor.EnableEditorButton;
             DO.U.Editor.enableEditor('social', e);
+            storage.hideAutoSaveStorage(node.querySelector('#autosave-items'), documentURL);
           }
           else {
             b = e.target.closest('button.editor-enable');
             if (b) {
+              var node = b.closest('li');
               b.outerHTML = DO.C.Editor.DisableEditorButton;
               DO.U.Editor.enableEditor('author', e);
+              storage.showAutoSaveStorage(node, documentURL);
             }
           }
         }
@@ -6448,7 +6456,7 @@ WHERE {\n\
         var eNodes = selector || DO.U.selectArticleNode(document);
         var eOptions = editorOptions[editorMode];
         DO.C.User.Role = editorMode;
-        storage.updateStorageProfile(DO.C.User);
+        storage.updateLocalStorageProfile(DO.C.User);
 
         if (typeof MediumEditor !== 'undefined') {
           DO.U.Editor.MediumEditor = new MediumEditor(eNodes, eOptions);
@@ -6475,14 +6483,14 @@ WHERE {\n\
 
             var documentAuthors = 'authors';
             var authors = document.getElementById(documentAuthors);
+            var authorName = 'author-name';
 
             if (!authors) {
-              var authors = '<div class="do" id="' + documentAuthors + '"><dl id="author-name"><dt>Authors</dt></dl></div>';
+              var authors = '<div class="do" id="' + documentAuthors + '"><dl id="' + authorName + '"><dt>Authors</dt></dl></div>';
               DO.U.insertDocumentLevelHTML(document, authors, { 'id': documentAuthors });
               authors = document.getElementById(documentAuthors);
             }
 
-            var authorName = 'author-name';
             var documentAuthorName = document.getElementById(authorName);
 
             var sa = DO.C['ResourceInfo'].graph.schemaauthor;
@@ -7587,7 +7595,7 @@ WHERE {\n\
                 DO.C.User.UI['License'] = opts.license;
               }
 
-              storage.updateStorageProfile(DO.C.User);
+              storage.updateLocalStorageProfile(DO.C.User);
 
               opts.target = '_self';
               if (targetCheckbox && targetCheckbox.checked) {

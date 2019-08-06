@@ -6,47 +6,47 @@ const uri = require('./uri')
 const doc = require('./doc')
 
 module.exports = {
-  initStorage,
-  enableStorage,
-  disableStorage,
-  updateStorageDocument,
+  initLocalStorage,
+  enableLocalStorage,
+  disableLocalStorage,
+  updateLocalStorageDocument,
   enableAutoSave,
   disableAutoSave,
-  removeStorageItem,
-  removeStorageProfile,
-  getStorageProfile,
-  updateStorageProfile,
-  showStorage,
-  hideStorage
+  removeLocalStorageItem,
+  removeLocalStorageProfile,
+  getLocalStorageProfile,
+  updateLocalStorageProfile,
+  showAutoSaveStorage,
+  hideAutoSaveStorage
 }
 
 
-function initStorage(key) {
+function initLocalStorage(key) {
   if (typeof window.localStorage != 'undefined') {
-    enableStorage(key);
+    enableLocalStorage(key);
   }
 }
 
-function enableStorage(key) {
-  Config.UseStorage = true;
+function enableLocalStorage(key) {
+  Config.UseLocalStorage = true;
   var o = localStorage.getItem(key);
   try {
-    JSON.parse(o).object.Document;
     document.documentElement.innerHTML = JSON.parse(o).object.content;
     Config.init();
   } catch(e){}
   console.log(util.getDateTimeISO() + ': ' + key + ' storage enabled.');
-  enableAutoSave(key);
+  enableAutoSave(key, {'method': 'localStorage'});
 }
 
-function disableStorage(key) {
-  Config.UseStorage = false;
+function disableLocalStorage(key) {
+  Config.UseLocalStorage = false;
   localStorage.removeItem(key);
-  disableAutoSave(key);
+  disableAutoSave(key, {'method': 'localStorage'});
   console.log(util.getDateTimeISO() + ': ' + key + ' storage disabled.');
 }
 
-function updateStorageDocument(key) {
+function updateLocalStorageDocument(key, options) {
+  options = options || {};
   var content = doc.getDocument();
 
   var id = util.generateUUID();
@@ -68,21 +68,57 @@ function updateStorageDocument(key) {
   };
 
   localStorage.setItem(key, JSON.stringify(object));
+
+  if (options.autosave) {
+    Config.AutoSave.Items[key]['localStorage']['updated'] = object.object.updated;
+  }
+
   console.log(datetime + ': Document saved.');
 }
 
-function enableAutoSave(key) {
-  Config.AutoSaveId = setInterval(function() { updateStorageDocument(key) }, Config.AutoSaveTimer);
-  console.log(util.getDateTimeISO() + ': ' + key + ' autosave enabled.');
+function enableAutoSave(key, options) {
+  options = options || {};
+  options['method'] = ('method' in options) ? options.method : 'localStorage';
+  Config.AutoSave.Items[key] = (Config.AutoSave.Items[key]) ? Config.AutoSave.Items[key] : {};
+  Config.AutoSave.Items[key][options.method] = (Config.AutoSave.Items[key][options.method]) ? Config.AutoSave.Items[key][options.method] : {};
+
+  var id;
+
+  switch (options.method) {
+    default:
+    case 'localStorage':
+      id = setInterval(function() { updateLocalStorageDocument(key, {'autosave': true}) }, Config.AutoSave.Timer);
+      break;
+
+    case 'http':
+      id = setInterval(function() { updateHTTPStorageDocument(key) }, Config.AutoSave.Timer);
+      break;
+  }
+
+  Config.AutoSave.Items[key][options.method]['id'] = id;
+
+  console.log(util.getDateTimeISO() + ': ' + key + ' ' + options.method + ' autosave enabled.');
 }
 
-function disableAutoSave(key) {
-  clearInterval(Config.AutoSaveId);
-  Config.AutoSaveId = '';
-  console.log(util.getDateTimeISO() + ': ' + key + ' autosave disabled.');
+function disableAutoSave(key, options) {
+  options = options || {};
+  var methods;
+  if(!Config.AutoSave.Items[key]) { return; }
+
+  if('method' in options) {
+    methods = (Array.isArray(options.method)) ? options.method : [options.method];
+
+    methods.forEach(method => {
+      if (Config.AutoSave.Items[key][method]) {
+        clearInterval(Config.AutoSave.Items[key][method].id);
+        Config.AutoSave.Items[key][method] = undefined;
+        console.log(util.getDateTimeISO() + ': ' + key + ' ' + options.method + ' autosave disabled.');
+      }
+    })
+  }
 }
 
-function removeStorageItem(key) {
+function removeLocalStorageItem(key) {
   if (!key) { Promise.resolve(); }
 
   // console.log(util.getDateTimeISO() + ': ' + key + ' removed.')
@@ -100,13 +136,13 @@ function removeStorageItem(key) {
   }
 }
 
-function removeStorageProfile(key) {
+function removeLocalStorageProfile(key) {
   key = key || 'DO.C.User';
 
-  return removeStorageItem(key)
+  return removeLocalStorageItem(key)
 }
 
-function getStorageProfile(key) {
+function getLocalStorageProfile(key) {
   key = key || 'DO.C.User'
 
   if (Config.WebExtension) {
@@ -133,7 +169,7 @@ function getStorageProfile(key) {
   }
 }
 
-function updateStorageProfile(User) {
+function updateLocalStorageProfile(User) {
   if (!User.IRI) { return Promise.resolve({'message': 'User.IRI is not set'}); }
 
   var key = 'DO.C.User'
@@ -180,59 +216,53 @@ function updateStorageProfile(User) {
   }
 }
 
-function showStorage(node) {
+function showAutoSaveStorage(node, iri) {
+  iri = iri || uri.stripFragmentFromString(document.location.href);
+
+  if(document.querySelector('#autosave-items')) { return; }
+
+  var checked;
   if (window.localStorage) {
-    if(document.querySelector('#local-storage')) { return; }
+    checked = (Config.AutoSave.Items[iri] && Config.AutoSave.Items[iri]['localStorage'] && Config.AutoSave.Items[iri]['localStorage']) ? ' checked="checked"' : '';
 
-    var useStorage, checked;
+    var useLocalStorage = '<li class="local-storage-html-autosave"><input id="local-storage-html-autosave" class="autosave" type="checkbox"' + checked +' /> <label for="local-storage-html-autosave">' + (Config.AutoSave.Timer / 60000) + 'm autosave (local storage)</label></li>';
+  }
 
-    if (Config.UseStorage) {
-      // if (Config.AutoSaveId) {
-      //   checked = ' checked="checked"';
-      // }
-      // useStorage = Config.DisableStorageButtons + '<input id="local-storage-html-autosave" class="autosave" type="checkbox"' + checked +' /> <label for="local-storage-html-autosave"><i class="fa fa-clock-o"></i> 1m autosave</label>';
-      useStorage = Config.DisableStorageButtons;
+  checked = (Config.AutoSave.Items[iri] && Config.AutoSave.Items[iri]['http'] && Config.AutoSave.Items[iri]['localStorage']) ? ' checked="checked"' : '';
 
-    }
-    else {
-      useStorage = Config.EnableStorageButtons;
-    }
+  var useHTTPStorage = '<li class="http-storage-html-autosave"><input id="http-storage-html-autosave" class="autosave" type="checkbox"' + checked +' /> <label for="http-storage-html-autosave">' + (Config.AutoSave.Timer / 60000) + 'm autosave</label></li>';
+  var useHTTPStorage = '';
 
-    node.insertAdjacentHTML('beforeend', '<section id="local-storage" class="do"><h2>Local Storage</h2><ul><li>' + useStorage + '</li></ul></section>');
+  node.insertAdjacentHTML('beforeend', '<ul id="autosave-items" class="on">' + useLocalStorage + useHTTPStorage + '</ul>');
 
-    var key = uri.stripFragmentFromString(document.location.href);
+  node.querySelector('#autosave-items').addEventListener('click', function(e) {
+    if (e.target.closest('input.autosave')) {
+      var method;
+      switch (e.target.id){
+        default:
+        case 'local-storage-html-autosave':
+          method = 'localStorage';
+          break;
+        case 'http-storage-html-autosave':
+          method = 'http';
+          break;
+      }
 
-    document.getElementById('local-storage').addEventListener('click', function(e) {
-      var b = e.target.closest('button.local-storage-disable-html');
-      if (b) {
-        b.outerHTML = Config.EnableStorageButtons;
-        disableStorage(key);
+      if (e.target.getAttribute('checked')) {
+        e.target.removeAttribute('checked');
+        disableAutoSave(iri, {'method': method});
       }
       else {
-        b = e.target.closest('button.local-storage-enable-html');
-        if (b) {
-          b.outerHTML = Config.DisableStorageButtons;
-          enableStorage(key);
-        }
+        e.target.setAttribute('checked', 'checked');
+        enableAutoSave(iri, {'method': method});
       }
-
-      // if (e.target.closest('input.autosave')) {
-      //   if (e.target.getAttribute('checked')) {
-      //     e.target.removeAttribute('checked');
-      //     disableAutoSave(key);
-      //   }
-      //   else {
-      //     e.target.setAttribute('checked', 'checked');
-      //     enableAutoSave(key);
-      //   }
-      // }
-    });
-  }
+    }
+  });
 }
 
-function hideStorage() {
-  if (Config.UseStorage) {
-    var ls = document.getElementById('local-storage');
-    ls.parentNode.removeChild(ls);
-  }
+function hideAutoSaveStorage(node, iri) {
+  node = node || document.getElementById('autosave-items');
+  iri = iri || uri.stripFragmentFromString(document.location.href);
+  node.parentNode.removeChild(node);
+  disableAutoSave(iri);
 }
