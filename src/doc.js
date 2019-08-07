@@ -16,7 +16,9 @@ module.exports = {
   getNodeLanguage,
   showActionMessage,
   selectArticleNode,
-  insertDocumentLevelHTML
+  insertDocumentLevelHTML,
+  setDate,
+  createDateHTML
 }
 
 function domToString (node, options = {}) {
@@ -378,4 +380,57 @@ function insertDocumentLevelHTML(rootNode, h, options) {
   }
 
   return rootNode;
+}
+
+function setDate(rootNode, options) {
+  rootNode = rootNode || document;
+  options = options || {};
+
+  var title = ('title' in options) ? options.title : 'Created';
+
+  var id = (options.id) ? options.id : 'document-' + title.toLowerCase().replace(/\W/g, '-');
+
+  var node = ('property' in options) ? rootNode.querySelector('#' + id + ' [property="' + options.property + '"]') : rootNode.querySelector('#' + id + ' time');
+
+  if(node) {
+    var datetime = ('datetime' in options) ? options.datetime.toISOString() : util.getDateTimeISO();
+
+    if(node.getAttribute('datetime')) {
+      node.setAttribute('datetime', datetime);
+    }
+    if(node.getAttribute('content')) {
+      node.setAttribute('content', datetime);
+    }
+    node.textContent = datetime.substr(0, datetime.indexOf('T'));
+  }
+  else {
+    rootNode = insertDocumentLevelHTML(rootNode, createDateHTML(options), { 'id': id });
+  }
+
+  return rootNode;
+}
+
+function createDateHTML(options) {
+  options = options || {};
+
+  var title = ('title' in options) ? options.title : 'Created';
+
+  var id = ('id' in options && options.id.length > 0) ? ' id="' + options.id + '"' : ' id="document-' + title.toLowerCase().replace(/\W/g, '-') + '"';
+
+  var c = ('class' in options && options.class.length > 0) ? ' class="' + options.class + '"' : '';
+
+  var datetime = ('datetime' in options) ? options.datetime.toISOString() : util.getDateTimeISO();
+  var datetimeLabel = datetime.substr(0, datetime.indexOf('T'));
+
+  var time = ('property' in options)
+    ? '<time content="' + datetime + '" datatype="xsd:dateTime" datetime="' + datetime + '" property="' + options.property + '">' + datetimeLabel + '</time>'
+    : '<time datetime="' + datetime + '">' + datetimeLabel + '</time>';
+
+  var date = '        <dl'+c+id+'>\n\
+      <dt>' + title + '</dt>\n\
+      <dd>' + time + '</dd>\n\
+    </dl>\n\
+';
+
+  return date;
 }

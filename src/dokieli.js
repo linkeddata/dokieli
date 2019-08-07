@@ -2833,7 +2833,7 @@ var DO = {
       var rootNode = document.documentElement.cloneNode(true);
 
       var date = new Date();
-      rootNode = DO.U.setDate(rootNode, { 'id': 'document-created', 'property': 'schema:dateCreated', 'title': 'Created', 'datetime': date });
+      rootNode = doc.setDate(rootNode, { 'id': 'document-created', 'property': 'schema:dateCreated', 'title': 'Created', 'datetime': date });
 
       var resourceState = rootNode.querySelector('#' + 'document-resource-state');
       if(!resourceState){
@@ -2880,7 +2880,7 @@ var DO = {
 
       //Update URI-R
       if (DO.C.OriginalResourceInfo['state'] != DO.C.Vocab['memMemento']['@id']) {
-        DO.U.setDate(document, { 'id': 'document-created', 'property': 'schema:dateCreated', 'title': 'Created', 'datetime': date });
+        doc.setDate(document, { 'id': 'document-created', 'property': 'schema:dateCreated', 'title': 'Created', 'datetime': date });
 
         o = { 'id': 'document-identifier', 'title': 'Identifier' };
         r = { 'rel': 'owl:sameAs', 'href': url };
@@ -2925,7 +2925,7 @@ var DO = {
     createMutableResource: function(url, data, options) {
       if(!url) return;
 
-      DO.U.setDate(document, { 'id': 'document-created', 'property': 'schema:dateCreated', 'title': 'Created' } );
+      doc.setDate(document, { 'id': 'document-created', 'property': 'schema:dateCreated', 'title': 'Created' } );
 
       var uuid = util.generateUUID();
       var containerIRI = url.substr(0, url.lastIndexOf('/') + 1);
@@ -2969,7 +2969,7 @@ var DO = {
         options['datetime'] = new Date();
       }
 
-      DO.U.setDate(document, { 'id': 'document-modified', 'property': 'schema:dateModified', 'title': 'Modified', 'datetime': options.datetime } );
+      doc.setDate(document, { 'id': 'document-modified', 'property': 'schema:dateModified', 'title': 'Modified', 'datetime': options.datetime } );
       DO.U.setEditSelections(options);
 
       data = doc.getDocument();
@@ -4229,7 +4229,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           r = { 'rel': 'prov:wasDerivedFrom', 'href': currentDocumentURL };
           html = DO.U.setDocumentRelation(html, [r], o);
 
-          html = DO.U.setDate(html, { 'id': 'document-derived-on', 'property': 'prov:generatedAtTime', 'title': 'Derived On' });
+          html = doc.setDate(html, { 'id': 'document-derived-on', 'property': 'prov:generatedAtTime', 'title': 'Derived On' });
 
           o = { 'id': 'document-identifier', 'title': 'Identifier' };
           r = { 'rel': 'owl:sameAs', 'href': storageIRI };
@@ -6147,63 +6147,10 @@ WHERE {\n\
           dl.insertAdjacentHTML('beforeend', dd);
 
           if (statusIRI == 'http://purl.org/spar/pso/published') {
-            DO.U.setDate(document, { 'id': 'document-published', 'property': 'schema:datePublished', 'title': 'Published', 'datetime': options.datetime });
+            doc.setDate(document, { 'id': 'document-published', 'property': 'schema:datePublished', 'title': 'Published', 'datetime': options.datetime });
           }
         }
       }
-    },
-
-    setDate: function(rootNode, options) {
-      rootNode = rootNode || document;
-      options = options || {};
-
-      var title = ('title' in options) ? options.title : 'Created';
-
-      var id = (options.id) ? options.id : 'document-' + title.toLowerCase().replace(/\W/g, '-');
-
-      var node = ('property' in options) ? rootNode.querySelector('#' + id + ' [property="' + options.property + '"]') : rootNode.querySelector('#' + id + ' time');
-
-      if(node) {
-        var datetime = ('datetime' in options) ? options.datetime.toISOString() : util.getDateTimeISO();
-
-        if(node.getAttribute('datetime')) {
-          node.setAttribute('datetime', datetime);
-        }
-        if(node.getAttribute('content')) {
-          node.setAttribute('content', datetime);
-        }
-        node.textContent = datetime.substr(0, datetime.indexOf('T'));
-      }
-      else {
-        rootNode = doc.insertDocumentLevelHTML(rootNode, DO.U.createDateHTML(options), { 'id': id });
-      }
-
-      return rootNode;
-    },
-
-    createDateHTML: function(options) {
-      options = options || {};
-
-      var title = ('title' in options) ? options.title : 'Created';
-
-      var id = ('id' in options && options.id.length > 0) ? ' id="' + options.id + '"' : ' id="document-' + title.toLowerCase().replace(/\W/g, '-') + '"';
-
-      var c = ('class' in options && options.class.length > 0) ? ' class="' + options.class + '"' : '';
-
-      var datetime = ('datetime' in options) ? options.datetime.toISOString() : util.getDateTimeISO();
-      var datetimeLabel = datetime.substr(0, datetime.indexOf('T'));
-
-      var time = ('property' in options)
-        ? '<time content="' + datetime + '" datatype="xsd:dateTime" datetime="' + datetime + '" property="' + options.property + '">' + datetimeLabel + '</time>'
-        : '<time datetime="' + datetime + '">' + datetimeLabel + '</time>';
-
-      var date = '        <dl'+c+id+'>\n\
-          <dt>' + title + '</dt>\n\
-          <dd>' + time + '</dd>\n\
-        </dl>\n\
-';
-
-      return date;
     },
 
     getResourceInfo: function(data, options) {
