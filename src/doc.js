@@ -18,7 +18,9 @@ module.exports = {
   selectArticleNode,
   insertDocumentLevelHTML,
   setDate,
-  createDateHTML
+  createDateHTML,
+  setEditSelections,
+  getRDFaPrefixHTML
 }
 
 function domToString (node, options = {}) {
@@ -189,7 +191,7 @@ function setDocumentBase (data, baseURI, contentType) {
 function createHTML(title, main, options) {
   title = title || '';
   options = options || {};
-  var prefix = ('prefixes' in options && Object.keys(options.prefixes).length > 0) ? ' prefix="' + DO.U.getRDFaPrefixHTML(options.prefixes) + '"' : '';
+  var prefix = ('prefixes' in options && Object.keys(options.prefixes).length > 0) ? ' prefix="' + getRDFaPrefixHTML(options.prefixes) + '"' : '';
 
   return '<!DOCTYPE html>\n\
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">\n\
@@ -433,4 +435,115 @@ function createDateHTML(options) {
 ';
 
   return date;
+}
+
+function setEditSelections(options) {
+  var options = options || {};
+
+  if (!('datetime' in options)) {
+    options['datetime'] = new Date();
+  }
+
+  var documentAuthor = 'authors';
+  var documentAuthorName = 'author-name';
+  var dA = document.getElementById(documentAuthor);
+
+  if(dA) {
+    if (dA.classList && dA.classList.contains('do') > -1) {
+      dA.removeAttribute('class');
+    }
+    dA.removeAttribute('contenteditable');
+  }
+
+  var dANS = document.querySelectorAll('#' + documentAuthorName + ' .selected');
+  dANS.forEach(function(authorNameSelected) {
+    authorNameSelected.removeAttribute('class');
+    authorNameSelected.removeAttribute('contenteditable');
+  });
+
+  var dANE = document.querySelectorAll('#' + documentAuthorName + ' .do');
+  dANE.forEach(function(i){
+    i.parentNode.removeChild(i);
+  });
+
+  var dd = document.querySelectorAll('#' + documentAuthorName + ' dd');
+  if(dA && dd.length == 0) {
+    dA = document.getElementById(documentAuthor);
+    dA.parentNode.removeChild(dA);
+  }
+
+
+  var documentLanguage = 'document-language';
+  var dLangS = document.querySelector('#' + documentLanguage + ' option:checked');
+
+  if (dLangS) {
+    var languageValue = dLangS.value;
+
+    var dl = dLangS.closest('#' + documentLanguage);
+    dl.removeAttribute('contenteditable');
+
+    if(languageValue == '') {
+      dl.parentNode.removeChild(dl);
+    }
+    else {
+      dl.removeAttribute('class');
+      var dd = dLangS.closest('dd');
+      dd.parentNode.removeChild(dd);
+      dd = '<dd><span content="' + languageValue + '" lang="" property="dcterms:language" xml:lang="">' + Config.Languages[languageValue] + '</span></dd>';
+      dl.insertAdjacentHTML('beforeend', dd);
+    }
+  }
+
+
+  var documentLicense = 'document-license';
+  var dLS = document.querySelector('#' + documentLicense + ' option:checked');
+
+  if (dLS) {
+    var licenseIRI = dLS.value;
+
+    var dl = dLS.closest('#' + documentLicense);
+    dl.removeAttribute('contenteditable');
+
+    if(licenseIRI == '') {
+      dl.parentNode.removeChild(dl);
+    }
+    else {
+      dl.removeAttribute('class');
+      var dd = dLS.closest('dd');
+      dd.parentNode.removeChild(dd);
+      dd = '<dd><a href="' + licenseIRI+ '" rel="schema:license" title="' + Config.License[licenseIRI].description + '">' + Config.License[licenseIRI].name + '</a></dd>';
+      dl.insertAdjacentHTML('beforeend', dd);
+    }
+  }
+
+
+  var documentStatus = 'document-status';
+  var dLS = document.querySelector('#' + documentStatus + ' option:checked');
+
+  if (dLS) {
+    var statusIRI = dLS.value;
+
+    var dl = dLS.closest('#' + documentStatus);
+    dl.removeAttribute('contenteditable');
+
+    if(statusIRI == '') {
+      dl.parentNode.removeChild(dl);
+    }
+    else {
+      dl.removeAttribute('class');
+      var dd = dLS.closest('dd');
+      dd.parentNode.removeChild(dd);
+      dd = '<dd prefix="pso: http://purl.org/spar/pso/" rel="pso:holdsStatusInTime" resource="#' + util.generateAttributeId() + '"><span rel="pso:withStatus" resource="' + statusIRI  + '" typeof="pso:PublicationStatus">' + Config.PublicationStatus[statusIRI].name + '</span></dd>';
+
+      dl.insertAdjacentHTML('beforeend', dd);
+
+      if (statusIRI == 'http://purl.org/spar/pso/published') {
+        doc.setDate(document, { 'id': 'document-published', 'property': 'schema:datePublished', 'title': 'Published', 'datetime': options.datetime });
+      }
+    }
+  }
+}
+
+function getRDFaPrefixHTML(prefixes){
+  return Object.keys(prefixes).map(function(i){ return i + ': ' + prefixes[i]; }).join(' ');
 }

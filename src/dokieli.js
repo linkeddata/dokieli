@@ -2970,7 +2970,7 @@ var DO = {
       }
 
       doc.setDate(document, { 'id': 'document-modified', 'property': 'schema:dateModified', 'title': 'Modified', 'datetime': options.datetime } );
-      DO.U.setEditSelections(options);
+      doc.setEditSelections(options);
 
       data = doc.getDocument();
       DO.U.processSave(url, null, data, options).then(() => {
@@ -5503,10 +5503,6 @@ WHERE {\n\
       interactions.insertAdjacentHTML('beforeend', interaction);
     },
 
-    getRDFaPrefixHTML: function(prefixes){
-      return Object.keys(prefixes).map(function(i){ return i + ': ' + prefixes[i]; }).join(' ');
-    },
-
     createNoteDataHTML: function(n) {
 // console.log(n);
       var published = '';
@@ -6030,113 +6026,6 @@ WHERE {\n\
       return rootNode;
     },
 
-    setEditSelections: function(options) {
-      var options = options || {};
-
-      if (!('datetime' in options)) {
-        options['datetime'] = new Date();
-      }
-
-      var documentAuthor = 'authors';
-      var documentAuthorName = 'author-name';
-      var dA = document.getElementById(documentAuthor);
-
-      if(dA) {
-        if (dA.classList && dA.classList.contains('do') > -1) {
-          dA.removeAttribute('class');
-        }
-        dA.removeAttribute('contenteditable');
-      }
-
-      var dANS = document.querySelectorAll('#' + documentAuthorName + ' .selected');
-      dANS.forEach(function(authorNameSelected) {
-        authorNameSelected.removeAttribute('class');
-        authorNameSelected.removeAttribute('contenteditable');
-      });
-
-      var dANE = document.querySelectorAll('#' + documentAuthorName + ' .do');
-      dANE.forEach(function(i){
-        i.parentNode.removeChild(i);
-      });
-
-      var dd = document.querySelectorAll('#' + documentAuthorName + ' dd');
-      if(dA && dd.length == 0) {
-        dA = document.getElementById(documentAuthor);
-        dA.parentNode.removeChild(dA);
-      }
-
-
-      var documentLanguage = 'document-language';
-      var dLangS = document.querySelector('#' + documentLanguage + ' option:checked');
-
-      if (dLangS) {
-        var languageValue = dLangS.value;
-
-        var dl = dLangS.closest('#' + documentLanguage);
-        dl.removeAttribute('contenteditable');
-
-        if(languageValue == '') {
-          dl.parentNode.removeChild(dl);
-        }
-        else {
-          dl.removeAttribute('class');
-          var dd = dLangS.closest('dd');
-          dd.parentNode.removeChild(dd);
-          dd = '<dd><span content="' + languageValue + '" lang="" property="dcterms:language" xml:lang="">' + DO.C.Languages[languageValue] + '</span></dd>';
-          dl.insertAdjacentHTML('beforeend', dd);
-        }
-      }
-
-
-      var documentLicense = 'document-license';
-      var dLS = document.querySelector('#' + documentLicense + ' option:checked');
-
-      if (dLS) {
-        var licenseIRI = dLS.value;
-
-        var dl = dLS.closest('#' + documentLicense);
-        dl.removeAttribute('contenteditable');
-
-        if(licenseIRI == '') {
-          dl.parentNode.removeChild(dl);
-        }
-        else {
-          dl.removeAttribute('class');
-          var dd = dLS.closest('dd');
-          dd.parentNode.removeChild(dd);
-          dd = '<dd><a href="' + licenseIRI+ '" rel="schema:license" title="' + DO.C.License[licenseIRI].description + '">' + DO.C.License[licenseIRI].name + '</a></dd>';
-          dl.insertAdjacentHTML('beforeend', dd);
-        }
-      }
-
-
-      var documentStatus = 'document-status';
-      var dLS = document.querySelector('#' + documentStatus + ' option:checked');
-
-      if (dLS) {
-        var statusIRI = dLS.value;
-
-        var dl = dLS.closest('#' + documentStatus);
-        dl.removeAttribute('contenteditable');
-
-        if(statusIRI == '') {
-          dl.parentNode.removeChild(dl);
-        }
-        else {
-          dl.removeAttribute('class');
-          var dd = dLS.closest('dd');
-          dd.parentNode.removeChild(dd);
-          dd = '<dd prefix="pso: http://purl.org/spar/pso/" rel="pso:holdsStatusInTime" resource="#' + util.generateAttributeId() + '"><span rel="pso:withStatus" resource="' + statusIRI  + '" typeof="pso:PublicationStatus">' + DO.C.PublicationStatus[statusIRI].name + '</span></dd>';
-
-          dl.insertAdjacentHTML('beforeend', dd);
-
-          if (statusIRI == 'http://purl.org/spar/pso/published') {
-            doc.setDate(document, { 'id': 'document-published', 'property': 'schema:datePublished', 'title': 'Published', 'datetime': options.datetime });
-          }
-        }
-      }
-    },
-
     getResourceInfo: function(data, options) {
       data = data || doc.getDocument();
 
@@ -6432,7 +6321,7 @@ WHERE {\n\
             }
           }
           else if (e && e.target.closest('button.editor-disable')) {
-            DO.U.setEditSelections();
+            doc.setEditSelections();
           }
 
           document.querySelectorAll('.do').forEach(function(node){

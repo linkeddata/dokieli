@@ -581,7 +581,7 @@ var DO = {
       var height = options.height || '100%';
       var nodeRadius = 6;
 
-      var id = DO.U.generateAttributeId();
+      var id = util.generateAttributeId();
 
 
       function positionLink(d) {
@@ -3084,7 +3084,7 @@ var DO = {
       }
 
       doc.setDate(document, { 'id': 'document-modified', 'property': 'schema:dateModified', 'title': 'Modified', 'datetime': options.datetime } );
-      DO.U.setEditSelections(options);
+      doc.setEditSelections(options);
 
       data = doc.getDocument();
       DO.U.processSave(url, null, data, options).then(() => {
@@ -3182,7 +3182,7 @@ var DO = {
         }
 
         var datetime = util.getDateTimeISO()
-        var attributeId = DO.U.generateAttributeId()
+        var attributeId = util.generateAttributeId()
         var noteIRI = document.querySelector('#reply-to-resource #' + id +
           '-' + action).innerText.trim()
         var motivatedBy = "oa:replying"
@@ -3573,7 +3573,7 @@ console.log(reason);
       button.addEventListener('click', function(){
         if(button.parentNode.classList.contains('container')){
           fetcher.getResourceGraph(url).then(function(g){
-              actionNode.textContent = (action == 'write') ? url + DO.U.generateAttributeId() : url;
+              actionNode.textContent = (action == 'write') ? url + util.generateAttributeId() : url;
               return DO.U.generateBrowserList(g, url, id, action);
             },
             function(reason){
@@ -3700,7 +3700,7 @@ console.log(reason);
       fetcher.getResourceGraph(storageUrl).then(function(g){
         DO.U.generateBrowserList(g, storageUrl, id, action);
       }).then(function(i){
-        document.getElementById(id + '-' + action).textContent = (action == 'write') ? input.value + DO.U.generateAttributeId() : input.value;
+        document.getElementById(id + '-' + action).textContent = (action == 'write') ? input.value + util.generateAttributeId() : input.value;
       });
 
       browseButton.addEventListener('click', function(){
@@ -3783,7 +3783,7 @@ console.log(url)
             DO.U.triggerBrowse(input.value, id, action);
           }
           if(action){
-            action.textContent = input.value + DO.U.generateAttributeId();
+            action.textContent = input.value + util.generateAttributeId();
           }
         }
         else {
@@ -3826,7 +3826,7 @@ console.log(url)
     },
 
     showResourceBrowser: function(id, action) {
-      id = id || 'location-' + DO.U.generateAttributeId();
+      id = id || 'location-' + util.generateAttributeId();
       action = action || 'write';
 
       var browserHTML = '<aside id="resource-browser-' + id + '" class="do on">' + DO.C.Button.Close + '<h2>Resource Browser</h2></aside>';
@@ -4891,22 +4891,6 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       return hash;
     },
 
-    generateAttributeId: function(prefix, string) {
-      prefix = prefix || '';
-
-      if (string) {
-        //XXX: I think we want to trim.
-        string = string.trim();
-        string = string.replace(/\W/g,'-');
-        s1 = string.substr(0, 1);
-        string = (prefix === '' && s1 == parseInt(s1)) ? 'x-' + string : prefix + string;
-        return (document.getElementById(string)) ? string + '-x' : string;
-      }
-      else {
-        return util.generateUUID();
-      }
-    },
-
     SPARQLQueryURL: {
       getResourcesOfTypeWithLabel: function(sparqlEndpoint, resourceType, textInput, options) {
         options = options || {};
@@ -5633,10 +5617,6 @@ WHERE {\n\
       interactions.insertAdjacentHTML('beforeend', interaction);
     },
 
-    getRDFaPrefixHTML: function(prefixes){
-      return Object.keys(prefixes).map(function(i){ return i + ': ' + prefixes[i]; }).join(' ');
-    },
-
     createNoteDataHTML: function(n) {
 // console.log(n);
       var published = '';
@@ -5784,7 +5764,7 @@ WHERE {\n\
 
                     body += '<dl id="tags" class="tags"><dt>Tags</dt><dd><ul rel="oa:hasBody">';
                     tagsArray.forEach(function(i){
-                      body += '<li about="#tag-' + DO.U.generateAttributeId(null, i) + '" typeof="oa:TextualBody" property="rdf:value" rel="oa:hasPurpose" resource="oa:tagging" datatype="rdf:HTML">' + i + '</li>';
+                      body += '<li about="#tag-' + util.generateAttributeId(null, i) + '" typeof="oa:TextualBody" property="rdf:value" rel="oa:hasPurpose" resource="oa:tagging" datatype="rdf:HTML">' + i + '</li>';
                     })
                     body += '</ul></dd></dl>';
                   }
@@ -5915,7 +5895,7 @@ WHERE {\n\
       }
 
       if(mode == 'expanded') {
-        idValue = DO.U.generateAttributeId();
+        idValue = util.generateAttributeId();
         id = ' id="' + idValue + '"';
 
         if ('about' in r && r.about != '') {
@@ -6160,113 +6140,6 @@ WHERE {\n\
       return rootNode;
     },
 
-    setEditSelections: function(options) {
-      var options = options || {};
-
-      if (!('datetime' in options)) {
-        options['datetime'] = new Date();
-      }
-
-      var documentAuthor = 'authors';
-      var documentAuthorName = 'author-name';
-      var dA = document.getElementById(documentAuthor);
-
-      if(dA) {
-        if (dA.classList && dA.classList.contains('do') > -1) {
-          dA.removeAttribute('class');
-        }
-        dA.removeAttribute('contenteditable');
-      }
-
-      var dANS = document.querySelectorAll('#' + documentAuthorName + ' .selected');
-      dANS.forEach(function(authorNameSelected) {
-        authorNameSelected.removeAttribute('class');
-        authorNameSelected.removeAttribute('contenteditable');
-      });
-
-      var dANE = document.querySelectorAll('#' + documentAuthorName + ' .do');
-      dANE.forEach(function(i){
-        i.parentNode.removeChild(i);
-      });
-
-      var dd = document.querySelectorAll('#' + documentAuthorName + ' dd');
-      if(dA && dd.length == 0) {
-        dA = document.getElementById(documentAuthor);
-        dA.parentNode.removeChild(dA);
-      }
-
-
-      var documentLanguage = 'document-language';
-      var dLangS = document.querySelector('#' + documentLanguage + ' option:checked');
-
-      if (dLangS) {
-        var languageValue = dLangS.value;
-
-        var dl = dLangS.closest('#' + documentLanguage);
-        dl.removeAttribute('contenteditable');
-
-        if(languageValue == '') {
-          dl.parentNode.removeChild(dl);
-        }
-        else {
-          dl.removeAttribute('class');
-          var dd = dLangS.closest('dd');
-          dd.parentNode.removeChild(dd);
-          dd = '<dd><span content="' + languageValue + '" lang="" property="dcterms:language" xml:lang="">' + DO.C.Languages[languageValue] + '</span></dd>';
-          dl.insertAdjacentHTML('beforeend', dd);
-        }
-      }
-
-
-      var documentLicense = 'document-license';
-      var dLS = document.querySelector('#' + documentLicense + ' option:checked');
-
-      if (dLS) {
-        var licenseIRI = dLS.value;
-
-        var dl = dLS.closest('#' + documentLicense);
-        dl.removeAttribute('contenteditable');
-
-        if(licenseIRI == '') {
-          dl.parentNode.removeChild(dl);
-        }
-        else {
-          dl.removeAttribute('class');
-          var dd = dLS.closest('dd');
-          dd.parentNode.removeChild(dd);
-          dd = '<dd><a href="' + licenseIRI+ '" rel="schema:license" title="' + DO.C.License[licenseIRI].description + '">' + DO.C.License[licenseIRI].name + '</a></dd>';
-          dl.insertAdjacentHTML('beforeend', dd);
-        }
-      }
-
-
-      var documentStatus = 'document-status';
-      var dLS = document.querySelector('#' + documentStatus + ' option:checked');
-
-      if (dLS) {
-        var statusIRI = dLS.value;
-
-        var dl = dLS.closest('#' + documentStatus);
-        dl.removeAttribute('contenteditable');
-
-        if(statusIRI == '') {
-          dl.parentNode.removeChild(dl);
-        }
-        else {
-          dl.removeAttribute('class');
-          var dd = dLS.closest('dd');
-          dd.parentNode.removeChild(dd);
-          dd = '<dd prefix="pso: http://purl.org/spar/pso/" rel="pso:holdsStatusInTime" resource="#' + DO.U.generateAttributeId() + '"><span rel="pso:withStatus" resource="' + statusIRI  + '" typeof="pso:PublicationStatus">' + DO.C.PublicationStatus[statusIRI].name + '</span></dd>';
-
-          dl.insertAdjacentHTML('beforeend', dd);
-
-          if (statusIRI == 'http://purl.org/spar/pso/published') {
-            doc.setDate(document, { 'id': 'document-published', 'property': 'schema:datePublished', 'title': 'Published', 'datetime': options.datetime });
-          }
-        }
-      }
-    },
-
     getResourceInfo: function(data, options) {
       data = data || doc.getDocument();
 
@@ -6494,7 +6367,7 @@ WHERE {\n\
             //If not one of the authors, offer to add self
             if(DO.C.User.IRI && sa.indexOf(DO.C.User.IRI) < 0){
               var userHTML = auth.getUserHTML({'avatarSize': 32});
-              var authorId = (DO.C.User.Name) ? ' id="' + DO.U.generateAttributeId(null, DO.C.User.Name) + '"' : '';
+              var authorId = (DO.C.User.Name) ? ' id="' + util.generateAttributeId(null, DO.C.User.Name) + '"' : '';
 
               documentAuthorName.insertAdjacentHTML('beforeend', '<dd class="do"' + authorId + ' inlist="" rel="bibo:authorList" resource="' + DO.C.User.IRI + '"><span about="" rel="schema:author">' + userHTML + '</span><button class="add-author-name" contenteditable="false" title="Add author">' + template.Icon[".fas.fa-plus"] + '</button></dd>');
             }
@@ -6562,7 +6435,7 @@ WHERE {\n\
             }
           }
           else if (e && e.target.closest('button.editor-disable')) {
-            DO.U.setEditSelections();
+            doc.setEditSelections();
           }
 
           document.querySelectorAll('.do').forEach(function(node){
@@ -6687,7 +6560,7 @@ WHERE {\n\
 
 // console.log(range);
                       //Section
-                      var sectionId = DO.U.generateAttributeId(null, this.base.selection);
+                      var sectionId = util.generateAttributeId(null, this.base.selection);
                       var section = document.createElement('section');
                       section.id = sectionId;
                       section.setAttribute('rel', 'schema:hasPart');
@@ -6841,7 +6714,7 @@ WHERE {\n\
 
                     var selection = this.base.selection;
 
-                    var selectionId = DO.U.generateAttributeId();
+                    var selectionId = util.generateAttributeId();
 
                     var selectionUpdated = '<span id="' + selectionId + '">$$</span>';
 
@@ -7661,7 +7534,7 @@ WHERE {\n\
               }
 
               var datetime = util.getDateTimeISO();
-              var id = DO.U.generateAttributeId();
+              var id = util.generateAttributeId();
               var refId = 'r-' + id;
               // var noteId = 'i-' + id;
 
@@ -7805,7 +7678,7 @@ WHERE {\n\
 
                 switch(_this.action) {
                   case 'sparkline':
-                    var figureIRI = DO.U.generateAttributeId(null, opts.selectionDataSet);
+                    var figureIRI = util.generateAttributeId(null, opts.selectionDataSet);
                     ref = '<span rel="schema:hasPart" resource="#figure-' + figureIRI + '">\n\
                     <a href="' + opts.select + '" property="schema:name" rel="prov:wasDerivedFrom" resource="' + opts.select + '" typeof="qb:DataSet">' + opts.selectionDataSet + '</a> [' + DO.U.htmlEntities(DO.C.RefAreas[opts.selectionRefArea]) + ']\n\
                     <span class="sparkline" rel="schema:image" resource="#' + figureIRI + '">' + opts.sparkline + '</span></span>';
@@ -56075,7 +55948,9 @@ module.exports = {
   selectArticleNode,
   insertDocumentLevelHTML,
   setDate,
-  createDateHTML
+  createDateHTML,
+  setEditSelections,
+  getRDFaPrefixHTML
 }
 
 function domToString (node, options = {}) {
@@ -56246,7 +56121,7 @@ function setDocumentBase (data, baseURI, contentType) {
 function createHTML(title, main, options) {
   title = title || '';
   options = options || {};
-  var prefix = ('prefixes' in options && Object.keys(options.prefixes).length > 0) ? ' prefix="' + DO.U.getRDFaPrefixHTML(options.prefixes) + '"' : '';
+  var prefix = ('prefixes' in options && Object.keys(options.prefixes).length > 0) ? ' prefix="' + getRDFaPrefixHTML(options.prefixes) + '"' : '';
 
   return '<!DOCTYPE html>\n\
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">\n\
@@ -56492,6 +56367,118 @@ function createDateHTML(options) {
   return date;
 }
 
+function setEditSelections(options) {
+  var options = options || {};
+
+  if (!('datetime' in options)) {
+    options['datetime'] = new Date();
+  }
+
+  var documentAuthor = 'authors';
+  var documentAuthorName = 'author-name';
+  var dA = document.getElementById(documentAuthor);
+
+  if(dA) {
+    if (dA.classList && dA.classList.contains('do') > -1) {
+      dA.removeAttribute('class');
+    }
+    dA.removeAttribute('contenteditable');
+  }
+
+  var dANS = document.querySelectorAll('#' + documentAuthorName + ' .selected');
+  dANS.forEach(function(authorNameSelected) {
+    authorNameSelected.removeAttribute('class');
+    authorNameSelected.removeAttribute('contenteditable');
+  });
+
+  var dANE = document.querySelectorAll('#' + documentAuthorName + ' .do');
+  dANE.forEach(function(i){
+    i.parentNode.removeChild(i);
+  });
+
+  var dd = document.querySelectorAll('#' + documentAuthorName + ' dd');
+  if(dA && dd.length == 0) {
+    dA = document.getElementById(documentAuthor);
+    dA.parentNode.removeChild(dA);
+  }
+
+
+  var documentLanguage = 'document-language';
+  var dLangS = document.querySelector('#' + documentLanguage + ' option:checked');
+
+  if (dLangS) {
+    var languageValue = dLangS.value;
+
+    var dl = dLangS.closest('#' + documentLanguage);
+    dl.removeAttribute('contenteditable');
+
+    if(languageValue == '') {
+      dl.parentNode.removeChild(dl);
+    }
+    else {
+      dl.removeAttribute('class');
+      var dd = dLangS.closest('dd');
+      dd.parentNode.removeChild(dd);
+      dd = '<dd><span content="' + languageValue + '" lang="" property="dcterms:language" xml:lang="">' + Config.Languages[languageValue] + '</span></dd>';
+      dl.insertAdjacentHTML('beforeend', dd);
+    }
+  }
+
+
+  var documentLicense = 'document-license';
+  var dLS = document.querySelector('#' + documentLicense + ' option:checked');
+
+  if (dLS) {
+    var licenseIRI = dLS.value;
+
+    var dl = dLS.closest('#' + documentLicense);
+    dl.removeAttribute('contenteditable');
+
+    if(licenseIRI == '') {
+      dl.parentNode.removeChild(dl);
+    }
+    else {
+      dl.removeAttribute('class');
+      var dd = dLS.closest('dd');
+      dd.parentNode.removeChild(dd);
+      dd = '<dd><a href="' + licenseIRI+ '" rel="schema:license" title="' + Config.License[licenseIRI].description + '">' + Config.License[licenseIRI].name + '</a></dd>';
+      dl.insertAdjacentHTML('beforeend', dd);
+    }
+  }
+
+
+  var documentStatus = 'document-status';
+  var dLS = document.querySelector('#' + documentStatus + ' option:checked');
+
+  if (dLS) {
+    var statusIRI = dLS.value;
+
+    var dl = dLS.closest('#' + documentStatus);
+    dl.removeAttribute('contenteditable');
+
+    if(statusIRI == '') {
+      dl.parentNode.removeChild(dl);
+    }
+    else {
+      dl.removeAttribute('class');
+      var dd = dLS.closest('dd');
+      dd.parentNode.removeChild(dd);
+      dd = '<dd prefix="pso: http://purl.org/spar/pso/" rel="pso:holdsStatusInTime" resource="#' + util.generateAttributeId() + '"><span rel="pso:withStatus" resource="' + statusIRI  + '" typeof="pso:PublicationStatus">' + Config.PublicationStatus[statusIRI].name + '</span></dd>';
+
+      dl.insertAdjacentHTML('beforeend', dd);
+
+      if (statusIRI == 'http://purl.org/spar/pso/published') {
+        doc.setDate(document, { 'id': 'document-published', 'property': 'schema:datePublished', 'title': 'Published', 'datetime': options.datetime });
+      }
+    }
+  }
+}
+
+function getRDFaPrefixHTML(prefixes){
+  return Object.keys(prefixes).map(function(i){ return i + ': ' + prefixes[i]; }).join(' ');
+}
+
+
 /***/ }),
 /* 241 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -56511,6 +56498,7 @@ module.exports = {
   sleep,
   fragmentFromString,
   generateUUID,
+  generateAttributeId,
   isActor
 }
 
@@ -56605,6 +56593,22 @@ function generateUUID() {
     lut[d3&0xff]+lut[d3>>8&0xff]+lut[d3>>16&0xff]+lut[d3>>24&0xff];
   };
   return s();
+}
+
+function generateAttributeId(prefix, string) {
+  prefix = prefix || '';
+
+  if (string) {
+    //XXX: I think we want to trim.
+    string = string.trim();
+    string = string.replace(/\W/g,'-');
+    var s1 = string.substr(0, 1);
+    string = (prefix === '' && s1 == parseInt(s1)) ? 'x-' + string : prefix + string;
+    return (document.getElementById(string)) ? string + '-x' : string;
+  }
+  else {
+    return generateUUID();
+  }
 }
 
 function isActor (s) {
