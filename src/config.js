@@ -13,7 +13,6 @@ module.exports = {
       DO.U.setPolyfill();
       DO.U.setDocRefType();
       DO.U.showRefs();
-      DO.U.buttonClose();
       DO.U.highlightItems();
       DO.U.showAsTabs();
       DO.U.initDocumentActions();

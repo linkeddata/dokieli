@@ -26,6 +26,9 @@ module.exports = {
   setEditSelections,
   getRDFaPrefixHTML,
   setDocumentRelation,
+  setDocumentStatus,
+  getDocumentStatusHTML,
+  buttonClose,
   showTimeMap,
   getResourceInfo
 }
@@ -594,6 +597,97 @@ function showTimeMap(node, url) {
     .catch(error => {
 // console.error(error)
     });
+}
+
+function setDocumentStatus(rootNode, options) {
+  rootNode = rootNode || document;
+  options = options || {};
+
+  var s = getDocumentStatusHTML(rootNode, options);
+
+  rootNode = insertDocumentLevelHTML(rootNode, s, options);
+
+  return rootNode;
+}
+
+function getDocumentStatusHTML(rootNode, options) {
+  rootNode = rootNode || document;
+  options = options || {};
+  options['mode'] = ('mode' in options) ? options.mode : '';
+  options['id'] = ('id' in options) ? options.id : 'document-status';
+  var subjectURI = ('subjectURI' in options) ? ' about="' + options.subjectURI + '"' : '';
+  var typeLabel = '', typeOf = '';
+
+  switch(options.type) {
+    default:
+      definitionTitle = 'Document Status';
+      break;
+    case 'mem:Memento':
+      definitionTitle = 'Resource State';
+      typeLabel = 'Memento';
+      typeOf = ' typeof="' + options.type + '"';
+      break;
+  }
+
+  var id = ' id="' + options.id + '"';
+  var c = ('class' in options && options.class.length > 0) ? ' class="' + options.class + '"' : '';
+  // var datetime = ('datetime' in options) ? options.datetime : util.getDateTimeISO();
+
+  var dd = '<dd><span' + subjectURI + typeOf + '>' + typeLabel + '</span></dd>';
+
+  var s = '';
+  var dl = rootNode.querySelector('#' + options.id);
+
+  //FIXME: mode should be an array of operations.
+
+  //TODO: s/update/append
+  switch (options.mode) {
+    case 'create': default:
+      s = '<dl'+c+id+'><dt>' + definitionTitle + '</dt>' + dd + '</dl>';
+      break;
+
+    case 'update':
+      if(dl) {
+        var clone = dl.cloneNode(true);
+        dl.parentNode.removeChild(dl);
+        clone.insertAdjacentHTML('beforeend', dd);
+        s = clone.outerHTML;
+      }
+      else  {
+        s = '<dl'+c+id+'><dt>' + definitionTitle + '</dt>' + dd + '</dl>';
+      }
+      break;
+
+    case 'delete':
+      if(dl) {
+        var clone = dl.cloneNode(true);
+        dl.parentNode.removeChild(dl);
+
+        var t = clone.querySelector('[typeof="' + options.type + '"]');
+        if (t) {
+          t.closest('dl').removeChild(t.parentNode);
+        }
+
+        var cloneDD = clone.querySelectorAll('#' + options.id + ' dd');
+        if (cloneDD.length > 0) {
+          s = clone.outerHTML;
+        }
+      }
+      break;
+  }
+
+// console.log(s);
+  return s;
+}
+
+function buttonClose() {
+  document.addEventListener('click', function(e) {
+    var button = e.target.closest('button.close')
+    if (button) {
+      var parent = button.parentNode;
+      parent.parentNode.removeChild(parent);
+    }
+  });
 }
 
 function getResourceInfo(data, options) {
