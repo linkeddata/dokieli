@@ -93,6 +93,12 @@ module.exports = {
     'skipClassWithValue': ''
   },
 
+  ArticleNodeSelectors: [
+    'main > article',
+    'main',
+    'body'
+  ],
+
   SelectorSign: {
     "*": "🔗",
     "aside": "|",

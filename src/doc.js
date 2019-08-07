@@ -14,7 +14,8 @@ module.exports = {
   getClosestSectionNode,
   removeSelectorFromNode,
   getNodeLanguage,
-  showActionMessage
+  showActionMessage,
+  selectArticleNode
 }
 
 function domToString (node, options = {}) {
@@ -330,4 +331,9 @@ function showActionMessage(node, message, options) {
     var dam = document.getElementById('document-action-message');
     dam.parentNode.removeChild(dam);
   }, options.timer);
+}
+
+function selectArticleNode(node) {
+  var x = node.querySelectorAll(Config.ArticleNodeSelectors.join(','));
+  return x[x.length - 1];
 }

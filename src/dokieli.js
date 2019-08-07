@@ -1012,7 +1012,7 @@ var DO = {
         }
 
         if (mode !== 'author') {
-          var content = DO.U.selectArticleNode(document);
+          var content = doc.selectArticleNode(document);
           content = util.fragmentFromString(doc.domToString(content)).textContent.trim();
           if (content.length == 0) {
             mode = 'author';
@@ -1542,7 +1542,7 @@ var DO = {
     showDocumentMetadata: function(node) {
       if(document.querySelector('#document-metadata')) { return; }
 
-      var content = DO.U.selectArticleNode(document);
+      var content = doc.selectArticleNode(document);
       var count = DO.U.contentCount(content);
       var authors = [], contributors = [], editors = [];
       var citationsTo = [];
@@ -1976,7 +1976,7 @@ var DO = {
 
       var item = DO.C.DocumentItems.indexOf(options.id);
 
-      var article = DO.U.selectArticleNode(rootNode);
+      var article = doc.selectArticleNode(rootNode);
 
       h = '\n\
 ' + h;
@@ -2007,18 +2007,6 @@ var DO = {
       }
 
       return rootNode;
-    },
-
-
-    selectArticleNode: function(node) {
-      var selectors = [
-        'main > article',
-        'main',
-        'body'
-      ];
-
-      var x = node.querySelectorAll(selectors.join(','));
-      return x[x.length - 1];
     },
 
     buttonClose: function() {
@@ -4731,7 +4719,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
     buildReferences: function(node, id, citation) {
       if (!node) {
-        var nodeInsertLocation = DO.U.selectArticleNode(document);
+        var nodeInsertLocation = doc.selectArticleNode(document);
         var section = '<section id="references"><h2>References</h2><div><ol></ol></div></section>';
         nodeInsertLocation.insertAdjacentHTML('beforeend', section);
       }
@@ -5561,7 +5549,7 @@ WHERE {\n\
       var interactions = document.getElementById('document-interactions');
 
       if(!interactions) {
-        interactions = DO.U.selectArticleNode(document);
+        interactions = doc.selectArticleNode(document);
         var interactionsSection = '<section id="document-interactions"><h2>Interactions</h2><div>';
 // interactionsSection += '<p class="count"><data about="" datatype="xsd:nonNegativeInteger" property="sioc:num_replies" value="' + interactionsCount + '">' + interactionsCount + '</data> interactions</p>';
         interactionsSection += '</div></section>';
@@ -6441,7 +6429,7 @@ WHERE {\n\
           editorOptions.author.toolbar.buttons.splice(10, 0, 'table');
         }
 
-        var eNodes = selector || DO.U.selectArticleNode(document);
+        var eNodes = selector || doc.selectArticleNode(document);
         var eOptions = editorOptions[editorMode];
         DO.C.User.Role = editorMode;
         storage.updateLocalStorageProfile(DO.C.User);
