@@ -1884,7 +1884,7 @@ var DO = {
         }
       }
 
-      DO.U.insertDocumentLevelHTML(document, s, { 'id': id });
+      doc.insertDocumentLevelHTML(document, s, { 'id': id });
     },
 
     setDocumentStatus: function(rootNode, options) {
@@ -1893,7 +1893,7 @@ var DO = {
 
       var s = DO.U.getDocumentStatusHTML(rootNode, options);
 
-      rootNode = DO.U.insertDocumentLevelHTML(rootNode, s, options);
+      rootNode = doc.insertDocumentLevelHTML(rootNode, s, options);
 
       return rootNode;
     },
@@ -1966,47 +1966,6 @@ var DO = {
 
 // console.log(s);
       return s;
-    },
-
-    insertDocumentLevelHTML: function(rootNode, h, options) {
-      rootNode = rootNode || document;
-      options = options || {};
-
-      options['id'] = ('id' in options) ? options.id : DO.C.DocumentItems[DO.C.DocumentItems.length-1];
-
-      var item = DO.C.DocumentItems.indexOf(options.id);
-
-      var article = doc.selectArticleNode(rootNode);
-
-      h = '\n\
-' + h;
-
-      if(item > -1) {
-        for(var i = item; i >= 0; i--) {
-          var node = rootNode.querySelector('#' + DO.C.DocumentItems[i]);
-
-          if (node) {
-            node.insertAdjacentHTML('afterend', h);
-            break;
-          }
-          else if (i == 0) {
-            var a = article.querySelector('h1');
-
-            if (a) {
-              a.insertAdjacentHTML('afterend', h);
-            }
-            else {
-              article.insertAdjacentHTML('afterbegin', h);
-            }
-            break;
-          }
-        }
-      }
-      else {
-        article.insertAdjacentHTML('afterbegin', h);
-      }
-
-      return rootNode;
     },
 
     buttonClose: function() {
@@ -6081,7 +6040,7 @@ WHERE {\n\
 
       if(h.length > 0) {
         var html = '<dl id="' + options.id + '"><dt>' + options.title + '</dt>' + h.join('') + '</dl>';
-        rootNode = DO.U.insertDocumentLevelHTML(rootNode, html, { 'id': options.id });
+        rootNode = doc.insertDocumentLevelHTML(rootNode, html, { 'id': options.id });
       }
 
       return rootNode;
@@ -6216,7 +6175,7 @@ WHERE {\n\
         node.textContent = datetime.substr(0, datetime.indexOf('T'));
       }
       else {
-        rootNode = DO.U.insertDocumentLevelHTML(rootNode, DO.U.createDateHTML(options), { 'id': id });
+        rootNode = doc.insertDocumentLevelHTML(rootNode, DO.U.createDateHTML(options), { 'id': id });
       }
 
       return rootNode;
@@ -6463,7 +6422,7 @@ WHERE {\n\
 
             if (!authors) {
               var authors = '<div class="do" id="' + documentAuthors + '"><dl id="' + authorName + '"><dt>Authors</dt></dl></div>';
-              DO.U.insertDocumentLevelHTML(document, authors, { 'id': documentAuthors });
+              doc.insertDocumentLevelHTML(document, authors, { 'id': documentAuthors });
               authors = document.getElementById(documentAuthors);
             }
 
@@ -6500,7 +6459,7 @@ WHERE {\n\
             var language = document.getElementById(documentLanguage);
             if(!language) {
               var dl = '        <dl class="do" id="' + documentLanguage + '"><dt>Language</dt><dd><select contenteditable="false" name="language">' + DO.U.getLanguageOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
-              DO.U.insertDocumentLevelHTML(document, dl, { 'id': documentLanguage });
+              doc.insertDocumentLevelHTML(document, dl, { 'id': documentLanguage });
 
               var dLangS = document.querySelector('#' + documentLanguage + ' select');
               dLangS.addEventListener('change', function(e){
@@ -6515,7 +6474,7 @@ WHERE {\n\
             var license = document.getElementById(documentLicense);
             if(!license) {
               var dl = '        <dl class="do" id="' + documentLicense + '"><dt>License</dt><dd><select contenteditable="false" name="license">' + DO.U.getLicenseOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
-              DO.U.insertDocumentLevelHTML(document, dl, { 'id': documentLicense });
+              doc.insertDocumentLevelHTML(document, dl, { 'id': documentLicense });
 
               var dLS = document.querySelector('#' + documentLicense + ' select');
               dLS.addEventListener('change', function(e){
@@ -6530,7 +6489,7 @@ WHERE {\n\
             var status = document.getElementById(documentStatus);
             if(!status) {
               var dl = '        <dl class="do" id="' + documentStatus + '"><dt>Document Status</dt><dd><select contenteditable="false" name="status">' + DO.U.getPublicationStatusOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
-              DO.U.insertDocumentLevelHTML(document, dl, { 'id': documentStatus });
+              doc.insertDocumentLevelHTML(document, dl, { 'id': documentStatus });
 
               var dSS = document.querySelector('#' + documentStatus + ' select');
               dSS.addEventListener('change', function(e){

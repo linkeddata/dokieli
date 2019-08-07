@@ -15,7 +15,8 @@ module.exports = {
   removeSelectorFromNode,
   getNodeLanguage,
   showActionMessage,
-  selectArticleNode
+  selectArticleNode,
+  insertDocumentLevelHTML
 }
 
 function domToString (node, options = {}) {
@@ -336,4 +337,45 @@ function showActionMessage(node, message, options) {
 function selectArticleNode(node) {
   var x = node.querySelectorAll(Config.ArticleNodeSelectors.join(','));
   return x[x.length - 1];
+}
+
+function insertDocumentLevelHTML(rootNode, h, options) {
+  rootNode = rootNode || document;
+  options = options || {};
+
+  options['id'] = ('id' in options) ? options.id : Config.DocumentItems[Config.DocumentItems.length-1];
+
+  var item = Config.DocumentItems.indexOf(options.id);
+
+  var article = selectArticleNode(rootNode);
+
+  h = '\n\
+' + h;
+
+  if(item > -1) {
+    for(var i = item; i >= 0; i--) {
+      var node = rootNode.querySelector('#' + Config.DocumentItems[i]);
+
+      if (node) {
+        node.insertAdjacentHTML('afterend', h);
+        break;
+      }
+      else if (i == 0) {
+        var a = article.querySelector('h1');
+
+        if (a) {
+          a.insertAdjacentHTML('afterend', h);
+        }
+        else {
+          article.insertAdjacentHTML('afterbegin', h);
+        }
+        break;
+      }
+    }
+  }
+  else {
+    article.insertAdjacentHTML('afterbegin', h);
+  }
+
+  return rootNode;
 }
