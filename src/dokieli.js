@@ -2659,7 +2659,7 @@ var DO = {
             node.removeChild(timemap);
           }
 
-          triples = DO.U.sortTriples(triples, { sortBy: 'object' });
+          triples = util.sortTriples(triples, { sortBy: 'object' });
 
           var items = [];
           triples.forEach(function(t){
@@ -4915,19 +4915,6 @@ WHERE {\n\
       return svg;
     },
 
-    sortTriples: function(triples, options) {
-      options = options || {};
-      if(!('sortBy' in options)) {
-        options['sortBy'] = 'object';
-      }
-
-      triples._graph.sort(function (a, b) {
-        return a[options.sortBy].nominalValue.toLowerCase().localeCompare(b[options.sortBy].nominalValue.toLowerCase());
-      });
-
-      return triples;
-    },
-
     getListHTMLFromTriples: function(triples, options) {
       options = options || {element: 'ul'};
       var elementId = ('elementId' in options) ? ' id="' + options.elementId + '"' : '';
@@ -7025,7 +7012,7 @@ WHERE {\n\
                   fetcher.getTriplesFromGraph(queryURL)
                     .then(function(triples){
                       sG.removeAttribute('class');
-                      triples = DO.U.sortTriples(triples, { sortBy: 'object' });
+                      triples = util.sortTriples(triples, { sortBy: 'object' });
                       return DO.U.getListHTMLFromTriples(triples, {element: 'select', elementId: resultContainerId});
                     })
                     .then(function(listHTML){

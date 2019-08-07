@@ -2773,7 +2773,7 @@ var DO = {
             node.removeChild(timemap);
           }
 
-          triples = DO.U.sortTriples(triples, { sortBy: 'object' });
+          triples = util.sortTriples(triples, { sortBy: 'object' });
 
           var items = [];
           triples.forEach(function(t){
@@ -2965,7 +2965,7 @@ var DO = {
 
       o = { 'id': 'document-identifier', 'title': 'Identifier' };
       r = { 'rel': 'owl:sameAs', 'href': immutableURL };
-      rootNode = DO.U.setDocumentRelation(rootNode, [r], o);
+      rootNode = doc.setDocumentRelation(rootNode, [r], o);
 
       o = { 'id': 'document-original', 'title': 'Original resource' };
       if (DO.C.OriginalResourceInfo['state'] == DO.C.Vocab['memMemento']['@id']
@@ -2975,14 +2975,14 @@ var DO = {
       else {
         r = { 'rel': 'mem:original', 'href': url };
       }
-      rootNode = DO.U.setDocumentRelation(rootNode, [r], o);
+      rootNode = doc.setDocumentRelation(rootNode, [r], o);
 
       //TODO document-timegate
 
       var timeMapURL = DO.C.OriginalResourceInfo['timemap'] || url + '.timemap';
       o = { 'id': 'document-timemap', 'title': 'TimeMap' };
       r = { 'rel': 'mem:timemap', 'href': timeMapURL };
-      rootNode = DO.U.setDocumentRelation(rootNode, [r], o);
+      rootNode = doc.setDocumentRelation(rootNode, [r], o);
 
       // Create URI-M
       data = doc.getDocument(rootNode);
@@ -2998,23 +2998,23 @@ var DO = {
 
         o = { 'id': 'document-identifier', 'title': 'Identifier' };
         r = { 'rel': 'owl:sameAs', 'href': url };
-        DO.U.setDocumentRelation(document, [r], o);
+        doc.setDocumentRelation(document, [r], o);
 
         o = { 'id': 'document-latest-version', 'title': 'Latest Version' };
         r = { 'rel': 'mem:memento rel:latest-version', 'href': immutableURL };
-        DO.U.setDocumentRelation(document, [r], o);
+        doc.setDocumentRelation(document, [r], o);
 
         if(DO.C.OriginalResourceInfo['latest-version']) {
           o = { 'id': 'document-predecessor-version', 'title': 'Predecessor Version' };
           r = { 'rel': 'mem:memento rel:predecessor-version', 'href': DO.C.OriginalResourceInfo['latest-version'] };
-          DO.U.setDocumentRelation(document, [r], o);
+          doc.setDocumentRelation(document, [r], o);
         }
 
         //TODO document-timegate
 
         o = { 'id': 'document-timemap', 'title': 'TimeMap' };
         r = { 'rel': 'mem:timemap', 'href': timeMapURL };
-        DO.U.setDocumentRelation(document, [r], o);
+        doc.setDocumentRelation(document, [r], o);
 
         // Create URI-R
         data = doc.getDocument();
@@ -3049,16 +3049,16 @@ var DO = {
 
       o = { 'id': 'document-identifier', 'title': 'Identifier' };
       r = { 'rel': 'owl:sameAs', 'href': mutableURL };
-      DO.U.setDocumentRelation(document, [r], o);
+      doc.setDocumentRelation(document, [r], o);
 
       o = { 'id': 'document-latest-version', 'title': 'Latest Version' };
       r = { 'rel': 'rel:latest-version', 'href': mutableURL };
-      DO.U.setDocumentRelation(document, [r], o);
+      doc.setDocumentRelation(document, [r], o);
 
       if(DO.C.OriginalResourceInfo['latest-version']) {
         o = { 'id': 'document-predecessor-version', 'title': 'Predecessor Version' };
         r = { 'rel': 'rel:predecessor-version', 'href': DO.C.OriginalResourceInfo['latest-version'] };
-        DO.U.setDocumentRelation(document, [r], o);
+        doc.setDocumentRelation(document, [r], o);
       }
 
       data = doc.getDocument();
@@ -3067,7 +3067,7 @@ var DO = {
 
       o = { 'id': 'document-identifier', 'title': 'Identifier' };
       r = { 'rel': 'owl:sameAs', 'href': url };
-      DO.U.setDocumentRelation(document, [r], o);
+      doc.setDocumentRelation(document, [r], o);
 
       data = doc.getDocument();
       fetcher.processSave(url, null, data, options).then(() => {
@@ -4306,13 +4306,13 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         if (wasDerived.checked) {
           o = { 'id': 'document-derived-from', 'title': 'Derived From' };
           r = { 'rel': 'prov:wasDerivedFrom', 'href': currentDocumentURL };
-          html = DO.U.setDocumentRelation(html, [r], o);
+          html = doc.setDocumentRelation(html, [r], o);
 
           html = doc.setDate(html, { 'id': 'document-derived-on', 'property': 'prov:generatedAtTime', 'title': 'Derived On' });
 
           o = { 'id': 'document-identifier', 'title': 'Identifier' };
           r = { 'rel': 'owl:sameAs', 'href': storageIRI };
-          html = DO.U.setDocumentRelation(html, [r], o);
+          html = doc.setDocumentRelation(html, [r], o);
         }
 
         var inboxLocation = saveAsDocument.querySelector('#' + locationInboxId + '-' + locationInboxAction);
@@ -4320,7 +4320,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           inboxLocation = inboxLocation.innerText.trim();
           o = { 'id': 'document-inbox', 'title': 'Notifications Inbox' };
           r = { 'rel': 'ldp:inbox', 'href': inboxLocation };
-          html = DO.U.setDocumentRelation(html, [r], o);
+          html = doc.setDocumentRelation(html, [r], o);
         }
 
         var annotationServiceLocation = saveAsDocument.querySelector('#' + locationAnnotationServiceId + '-' + locationAnnotationServiceAction)
@@ -4328,7 +4328,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           annotationServiceLocation = annotationServiceLocation.innerText.trim();
           o = { 'id': 'document-annotation-service', 'title': 'Annotation Service' };
           r = { 'rel': 'oa:annotationService', 'href': annotationServiceLocation };
-          html = DO.U.setDocumentRelation(html, [r], o);
+          html = doc.setDocumentRelation(html, [r], o);
         }
 
         var baseURLSelectionChecked = saveAsDocument.querySelector('select[name="base-url"]')
@@ -5027,19 +5027,6 @@ WHERE {\n\
       svg += lines + '</g>';
 
       return svg;
-    },
-
-    sortTriples: function(triples, options) {
-      options = options || {};
-      if(!('sortBy' in options)) {
-        options['sortBy'] = 'object';
-      }
-
-      triples._graph.sort(function (a, b) {
-        return a[options.sortBy].nominalValue.toLowerCase().localeCompare(b[options.sortBy].nominalValue.toLowerCase());
-      });
-
-      return triples;
     },
 
     getListHTMLFromTriples: function(triples, options) {
@@ -7139,7 +7126,7 @@ WHERE {\n\
                   fetcher.getTriplesFromGraph(queryURL)
                     .then(function(triples){
                       sG.removeAttribute('class');
-                      triples = DO.U.sortTriples(triples, { sortBy: 'object' });
+                      triples = util.sortTriples(triples, { sortBy: 'object' });
                       return DO.U.getListHTMLFromTriples(triples, {element: 'select', elementId: resultContainerId});
                     })
                     .then(function(listHTML){
@@ -56482,6 +56469,7 @@ function setDocumentRelation(rootNode, data, options) {
   return rootNode;
 }
 
+
 /***/ }),
 /* 241 */
 /***/ (function(module, exports, __webpack_require__) {
@@ -56502,7 +56490,8 @@ module.exports = {
   fragmentFromString,
   generateUUID,
   generateAttributeId,
-  isActor
+  isActor,
+  sortTriples
 }
 
 /**
@@ -56630,6 +56619,19 @@ function isActor (s) {
   }
 
   return false;
+}
+
+function sortTriples(triples, options) {
+  options = options || {};
+  if(!('sortBy' in options)) {
+    options['sortBy'] = 'object';
+  }
+
+  triples._graph.sort(function (a, b) {
+    return a[options.sortBy].nominalValue.toLowerCase().localeCompare(b[options.sortBy].nominalValue.toLowerCase());
+  });
+
+  return triples;
 }
 
 
