@@ -29,7 +29,8 @@ module.exports = {
   putResource,
   putResourceACL,
   postActivity,
-  processSave
+  processSave,
+  updateTimeMap
 }
 
 function setAcceptRDFTypes(options) {
@@ -639,4 +640,8 @@ function processSave(url, slug, data, options) {
 
       doc.showActionMessage(document.documentElement, message)
     })
+}
+
+function updateTimeMap(url, insertBGP, options) {
+  return patchResource(url, null, insertBGP);
 }

@@ -2681,10 +2681,6 @@ var DO = {
         });
     },
 
-    updateTimeMap: function(url, insertBGP, options) {
-      return fetcher.patchResource(url, null, insertBGP);
-    },
-
     showDocumentDo: function showDocumentDo (node) {
       if (document.getElementById('document-do')) { return; }
 
@@ -2915,7 +2911,7 @@ var DO = {
 <' + url + '> mem:memento <' + immutableURL + '> .\n\
 <' + immutableURL + '> schema:dateCreated "' + date.toISOString() + '"^^xsd:dateTime .';
 
-      DO.U.updateTimeMap(timeMapURL, insertBGP).then(() =>{
+      fetcher.updateTimeMap(timeMapURL, insertBGP).then(() =>{
         DO.U.showTimeMap(null, timeMapURL)
       });
 
