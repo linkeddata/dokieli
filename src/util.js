@@ -116,7 +116,7 @@ function generateAttributeId(prefix, string) {
     //XXX: I think we want to trim.
     string = string.trim();
     string = string.replace(/\W/g,'-');
-    s1 = string.substr(0, 1);
+    var s1 = string.substr(0, 1);
     string = (prefix === '' && s1 == parseInt(s1)) ? 'x-' + string : prefix + string;
     return (document.getElementById(string)) ? string + '-x' : string;
   }
