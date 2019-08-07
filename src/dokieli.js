@@ -467,7 +467,7 @@ var DO = {
       var height = options.height || '100%';
       var nodeRadius = 6;
 
-      var id = DO.U.generateAttributeId();
+      var id = util.generateAttributeId();
 
 
       function positionLink(d) {
@@ -3068,7 +3068,7 @@ var DO = {
         }
 
         var datetime = util.getDateTimeISO()
-        var attributeId = DO.U.generateAttributeId()
+        var attributeId = util.generateAttributeId()
         var noteIRI = document.querySelector('#reply-to-resource #' + id +
           '-' + action).innerText.trim()
         var motivatedBy = "oa:replying"
@@ -3459,7 +3459,7 @@ console.log(reason);
       button.addEventListener('click', function(){
         if(button.parentNode.classList.contains('container')){
           fetcher.getResourceGraph(url).then(function(g){
-              actionNode.textContent = (action == 'write') ? url + DO.U.generateAttributeId() : url;
+              actionNode.textContent = (action == 'write') ? url + util.generateAttributeId() : url;
               return DO.U.generateBrowserList(g, url, id, action);
             },
             function(reason){
@@ -3586,7 +3586,7 @@ console.log(reason);
       fetcher.getResourceGraph(storageUrl).then(function(g){
         DO.U.generateBrowserList(g, storageUrl, id, action);
       }).then(function(i){
-        document.getElementById(id + '-' + action).textContent = (action == 'write') ? input.value + DO.U.generateAttributeId() : input.value;
+        document.getElementById(id + '-' + action).textContent = (action == 'write') ? input.value + util.generateAttributeId() : input.value;
       });
 
       browseButton.addEventListener('click', function(){
@@ -3669,7 +3669,7 @@ console.log(url)
             DO.U.triggerBrowse(input.value, id, action);
           }
           if(action){
-            action.textContent = input.value + DO.U.generateAttributeId();
+            action.textContent = input.value + util.generateAttributeId();
           }
         }
         else {
@@ -3712,7 +3712,7 @@ console.log(url)
     },
 
     showResourceBrowser: function(id, action) {
-      id = id || 'location-' + DO.U.generateAttributeId();
+      id = id || 'location-' + util.generateAttributeId();
       action = action || 'write';
 
       var browserHTML = '<aside id="resource-browser-' + id + '" class="do on">' + DO.C.Button.Close + '<h2>Resource Browser</h2></aside>';
@@ -4777,22 +4777,6 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       return hash;
     },
 
-    generateAttributeId: function(prefix, string) {
-      prefix = prefix || '';
-
-      if (string) {
-        //XXX: I think we want to trim.
-        string = string.trim();
-        string = string.replace(/\W/g,'-');
-        s1 = string.substr(0, 1);
-        string = (prefix === '' && s1 == parseInt(s1)) ? 'x-' + string : prefix + string;
-        return (document.getElementById(string)) ? string + '-x' : string;
-      }
-      else {
-        return util.generateUUID();
-      }
-    },
-
     SPARQLQueryURL: {
       getResourcesOfTypeWithLabel: function(sparqlEndpoint, resourceType, textInput, options) {
         options = options || {};
@@ -5670,7 +5654,7 @@ WHERE {\n\
 
                     body += '<dl id="tags" class="tags"><dt>Tags</dt><dd><ul rel="oa:hasBody">';
                     tagsArray.forEach(function(i){
-                      body += '<li about="#tag-' + DO.U.generateAttributeId(null, i) + '" typeof="oa:TextualBody" property="rdf:value" rel="oa:hasPurpose" resource="oa:tagging" datatype="rdf:HTML">' + i + '</li>';
+                      body += '<li about="#tag-' + util.generateAttributeId(null, i) + '" typeof="oa:TextualBody" property="rdf:value" rel="oa:hasPurpose" resource="oa:tagging" datatype="rdf:HTML">' + i + '</li>';
                     })
                     body += '</ul></dd></dl>';
                   }
@@ -5801,7 +5785,7 @@ WHERE {\n\
       }
 
       if(mode == 'expanded') {
-        idValue = DO.U.generateAttributeId();
+        idValue = util.generateAttributeId();
         id = ' id="' + idValue + '"';
 
         if ('about' in r && r.about != '') {
@@ -6142,7 +6126,7 @@ WHERE {\n\
           dl.removeAttribute('class');
           var dd = dLS.closest('dd');
           dd.parentNode.removeChild(dd);
-          dd = '<dd prefix="pso: http://purl.org/spar/pso/" rel="pso:holdsStatusInTime" resource="#' + DO.U.generateAttributeId() + '"><span rel="pso:withStatus" resource="' + statusIRI  + '" typeof="pso:PublicationStatus">' + DO.C.PublicationStatus[statusIRI].name + '</span></dd>';
+          dd = '<dd prefix="pso: http://purl.org/spar/pso/" rel="pso:holdsStatusInTime" resource="#' + util.generateAttributeId() + '"><span rel="pso:withStatus" resource="' + statusIRI  + '" typeof="pso:PublicationStatus">' + DO.C.PublicationStatus[statusIRI].name + '</span></dd>';
 
           dl.insertAdjacentHTML('beforeend', dd);
 
@@ -6380,7 +6364,7 @@ WHERE {\n\
             //If not one of the authors, offer to add self
             if(DO.C.User.IRI && sa.indexOf(DO.C.User.IRI) < 0){
               var userHTML = auth.getUserHTML({'avatarSize': 32});
-              var authorId = (DO.C.User.Name) ? ' id="' + DO.U.generateAttributeId(null, DO.C.User.Name) + '"' : '';
+              var authorId = (DO.C.User.Name) ? ' id="' + util.generateAttributeId(null, DO.C.User.Name) + '"' : '';
 
               documentAuthorName.insertAdjacentHTML('beforeend', '<dd class="do"' + authorId + ' inlist="" rel="bibo:authorList" resource="' + DO.C.User.IRI + '"><span about="" rel="schema:author">' + userHTML + '</span><button class="add-author-name" contenteditable="false" title="Add author">' + template.Icon[".fas.fa-plus"] + '</button></dd>');
             }
@@ -6573,7 +6557,7 @@ WHERE {\n\
 
 // console.log(range);
                       //Section
-                      var sectionId = DO.U.generateAttributeId(null, this.base.selection);
+                      var sectionId = util.generateAttributeId(null, this.base.selection);
                       var section = document.createElement('section');
                       section.id = sectionId;
                       section.setAttribute('rel', 'schema:hasPart');
@@ -6727,7 +6711,7 @@ WHERE {\n\
 
                     var selection = this.base.selection;
 
-                    var selectionId = DO.U.generateAttributeId();
+                    var selectionId = util.generateAttributeId();
 
                     var selectionUpdated = '<span id="' + selectionId + '">$$</span>';
 
@@ -7547,7 +7531,7 @@ WHERE {\n\
               }
 
               var datetime = util.getDateTimeISO();
-              var id = DO.U.generateAttributeId();
+              var id = util.generateAttributeId();
               var refId = 'r-' + id;
               // var noteId = 'i-' + id;
 
@@ -7691,7 +7675,7 @@ WHERE {\n\
 
                 switch(_this.action) {
                   case 'sparkline':
-                    var figureIRI = DO.U.generateAttributeId(null, opts.selectionDataSet);
+                    var figureIRI = util.generateAttributeId(null, opts.selectionDataSet);
                     ref = '<span rel="schema:hasPart" resource="#figure-' + figureIRI + '">\n\
                     <a href="' + opts.select + '" property="schema:name" rel="prov:wasDerivedFrom" resource="' + opts.select + '" typeof="qb:DataSet">' + opts.selectionDataSet + '</a> [' + DO.U.htmlEntities(DO.C.RefAreas[opts.selectionRefArea]) + ']\n\
                     <span class="sparkline" rel="schema:image" resource="#' + figureIRI + '">' + opts.sparkline + '</span></span>';

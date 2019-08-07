@@ -12,6 +12,7 @@ module.exports = {
   sleep,
   fragmentFromString,
   generateUUID,
+  generateAttributeId,
   isActor
 }
 
@@ -106,6 +107,22 @@ function generateUUID() {
     lut[d3&0xff]+lut[d3>>8&0xff]+lut[d3>>16&0xff]+lut[d3>>24&0xff];
   };
   return s();
+}
+
+function generateAttributeId(prefix, string) {
+  prefix = prefix || '';
+
+  if (string) {
+    //XXX: I think we want to trim.
+    string = string.trim();
+    string = string.replace(/\W/g,'-');
+    s1 = string.substr(0, 1);
+    string = (prefix === '' && s1 == parseInt(s1)) ? 'x-' + string : prefix + string;
+    return (document.getElementById(string)) ? string + '-x' : string;
+  }
+  else {
+    return generateUUID();
+  }
 }
 
 function isActor (s) {
