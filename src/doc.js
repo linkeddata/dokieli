@@ -26,6 +26,7 @@ module.exports = {
   setEditSelections,
   getRDFaPrefixHTML,
   setDocumentRelation,
+  showTimeMap,
   getResourceInfo
 }
 
@@ -547,6 +548,52 @@ function setDocumentRelation(rootNode, data, options) {
   }
 
   return rootNode;
+}
+
+function showTimeMap(node, url) {
+  url = url || Config.OriginalResourceInfo['timemap']
+  if(!url) { return; }
+
+  var elementId = 'memento-document';
+
+  var displayMemento = '';
+
+  fetcher.getTriplesFromGraph(url)
+    .then(triples => {
+// console.log(triples)
+      if (!node) {
+        node = document.getElementById(elementId);
+        if(!node) {
+          document.documentElement.appendChild(util.fragmentFromString('<aside id="' + elementId + '" class="do on"><h2>Memento</h2>' + Config.Button.Close + '<dl><dt>TimeMap</dt><dd><a href="' + url + '">' + url + '</a></dd></dl></aside>'));
+          node = document.getElementById(elementId);
+        }
+      }
+
+      var timemap = node.querySelector('.timemap');
+      if (timemap) {
+        node.removeChild(timemap);
+      }
+
+      triples = util.sortTriples(triples, { sortBy: 'object' });
+
+      var items = [];
+      triples.forEach(function(t){
+        var s = t.subject.nominalValue;
+        var p = t.predicate.nominalValue;
+        var o = t.object.nominalValue;
+
+        if(p === Config.Vocab['schemadateCreated']) {
+          items.push('<li><a href="' + s + '" target="_blank">' + o + '</a></li>');
+        }
+      });
+
+      var html = '<dl class="memento"><dt>Memento</dt><dd><ul>' + items.join('') + '</ul></dd></dl>';
+
+      node.insertAdjacentHTML('beforeend', html);
+    })
+    .catch(error => {
+// console.error(error)
+    });
 }
 
 function getResourceInfo(data, options) {

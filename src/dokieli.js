@@ -2614,7 +2614,7 @@ var DO = {
 
       var mementoItems = document.getElementById('memento-items');
 
-      DO.U.showTimeMap();
+      doc.showTimeMap();
 
       mementoItems.addEventListener('click', function(e) {
         if (e.target.closest('button.resource-save') ||
@@ -2636,52 +2636,6 @@ var DO = {
           DO.U.snapshotAtEndpoint(e, iri, 'https://web.archive.org/save/', '', {'Accept': '*/*', 'showActionMessage': true });
         }
       });
-    },
-
-    showTimeMap: function(node, url) {
-      url = url || DO.C.OriginalResourceInfo['timemap']
-      if(!url) { return; }
-
-      var elementId = 'memento-document';
-
-      var displayMemento = '';
-
-      fetcher.getTriplesFromGraph(url)
-        .then(triples => {
-// console.log(triples)
-          if (!node) {
-            node = document.getElementById(elementId);
-            if(!node) {
-              document.documentElement.appendChild(util.fragmentFromString('<aside id="' + elementId + '" class="do on"><h2>Memento</h2>' + DO.C.Button.Close + '<dl><dt>TimeMap</dt><dd><a href="' + url + '">' + url + '</a></dd></dl></aside>'));
-              node = document.getElementById(elementId);
-            }
-          }
-
-          var timemap = node.querySelector('.timemap');
-          if (timemap) {
-            node.removeChild(timemap);
-          }
-
-          triples = util.sortTriples(triples, { sortBy: 'object' });
-
-          var items = [];
-          triples.forEach(function(t){
-            var s = t.subject.nominalValue;
-            var p = t.predicate.nominalValue;
-            var o = t.object.nominalValue;
-
-            if(p === DO.C.Vocab['schemadateCreated']) {
-              items.push('<li><a href="' + s + '" target="_blank">' + o + '</a></li>');
-            }
-          });
-
-          var html = '<dl class="memento"><dt>Memento</dt><dd><ul>' + items.join('') + '</ul></dd></dl>';
-
-          node.insertAdjacentHTML('beforeend', html);
-        })
-        .catch(error => {
-// console.error(error)
-        });
     },
 
     showDocumentDo: function showDocumentDo (node) {
@@ -2915,7 +2869,7 @@ var DO = {
 <' + immutableURL + '> schema:dateCreated "' + date.toISOString() + '"^^xsd:dateTime .';
 
       fetcher.updateTimeMap(timeMapURL, insertBGP).then(() =>{
-        DO.U.showTimeMap(null, timeMapURL)
+        doc.showTimeMap(null, timeMapURL)
       });
 
       doc.getResourceInfo(null, { 'mode': 'update' });
