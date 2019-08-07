@@ -1038,7 +1038,10 @@ var DO = {
           processPotentialAction(DO.C.ResourceInfo);
         }
         else {
-          window.setTimeout(checkResourceInfo, 100);
+          doc.getResourceInfo().then(function(resourceInfo){
+            processPotentialAction(resourceInfo);
+          });
+          // window.setTimeout(checkResourceInfo, 100);
         }
       }
 
@@ -1145,7 +1148,7 @@ var DO = {
         e.stopPropagation();
       }
 
-      DO.U.getResourceInfo().then(function(resourceInfo){
+      doc.getResourceInfo().then(function(resourceInfo){
         var body = document.body;
         var dMenu = document.querySelector('#document-menu.do');
 
@@ -2806,7 +2809,7 @@ var DO = {
       var data = doc.getDocument();
       options = options || {};
 
-      DO.U.getResourceInfo(data, options).then(function(i) {
+      doc.getResourceInfo(data, options).then(function(i) {
         if (e.target.closest('.create-version')) {
           DO.U.createMutableResource(url);
         }
@@ -2915,7 +2918,7 @@ var DO = {
         DO.U.showTimeMap(null, timeMapURL)
       });
 
-      DO.U.getResourceInfo(null, { 'mode': 'update' });
+      doc.getResourceInfo(null, { 'mode': 'update' });
     },
 
     createMutableResource: function(url, data, options) {
@@ -2953,7 +2956,7 @@ var DO = {
 
       data = doc.getDocument();
       fetcher.processSave(url, null, data, options).then(() => {
-        DO.U.getResourceInfo(null, { 'mode': 'update' });
+        doc.getResourceInfo(null, { 'mode': 'update' });
       });
     },
 
@@ -2970,7 +2973,7 @@ var DO = {
 
       data = doc.getDocument();
       fetcher.processSave(url, null, data, options).then(() => {
-        DO.U.getResourceInfo(null, { 'mode': 'update' });
+        doc.getResourceInfo(null, { 'mode': 'update' });
       });
     },
 
@@ -5870,94 +5873,6 @@ WHERE {\n\
         if (BROWSER.isSafari && BROWSER.versionAtLeast("5.0")) jax = "NativeMML";
 
         MathJax.Hub.setRenderer(jax);
-      });
-    },
-
-    getResourceInfo: function(data, options) {
-      data = data || doc.getDocument();
-
-      var info = {
-        'state': DO.C.Vocab['ldpRDFSource']['@id'],
-        'profile': DO.C.Vocab['ldpRDFSource']['@id']
-      };
-
-      options = options || {};
-
-      options['contentType'] = ('contentType' in options) ? options.contentType : 'text/html';
-      options['subjectURI'] = ('subjectURI' in options) ? options.subjectURI : uri.stripFragmentFromString(document.location.href);
-
-      return graph.getGraphFromData(data, options).then(
-        function(i){
-          var s = SimpleRDF(DO.C.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
-// console.log(s);
-
-          info['graph'] = s;
-          info['rdftype'] = s.rdftype._array;
-          info['profile'] = DO.C.Vocab['ldpRDFSource']['@id'];
-
-          //Check if the resource is immutable
-          s.rdftype.forEach(function(resource) {
-            if (resource == DO.C.Vocab['memMemento']['@id']) {
-              info['state'] = DO.C.Vocab['memMemento']['@id'];
-            }
-          });
-
-          if (s.reloriginal) {
-            info['state'] = DO.C.Vocab['memMemento']['@id'];
-            info['original'] = s.memoriginal;
-
-            if (s.reloriginal == options['subjectURI']) {
-              //URI-R (The Original Resource is a Fixed Resource)
-
-              info['profile'] = DO.C.Vocab['memOriginalResource']['@id'];
-            }
-            else {
-              //URI-M
-
-              info['profile'] = DO.C.Vocab['memMemento']['@id'];
-            }
-          }
-
-          if (s.memmemento) {
-            //URI-R
-
-            info['profile'] = DO.C.Vocab['memOriginalResource']['@id'];
-            info['memento'] = s.memmemento;
-          }
-
-          if(s.memoriginal && s.memmemento && s.memoriginal != s.memmemento) {
-            //URI-M (Memento without a TimeGate)
-
-            info['profile'] = DO.C.Vocab['memMemento']['@id'];
-            info['original'] = s.memoriginal;
-            info['memento'] = s.memmemento;
-          }
-
-          if(s.rellatestversion) {
-            info['latest-version'] = s.rellatestversion;
-          }
-
-          if(s.relpredecessorversion) {
-            info['predecessor-version'] = s.relpredecessorversion;
-          }
-
-          if(s.memtimemap) {
-            info['timemap'] = s.memtimemap;
-          }
-
-          if(s.memtimegate) {
-            info['timegate'] = s.memtimegate;
-          }
-
-// console.log(info);
-
-          if(!DO.C.OriginalResourceInfo || ('mode' in options && options.mode == 'update' )) {
-            DO.C['OriginalResourceInfo'] = info;
-          }
-
-          DO.C['ResourceInfo'] = info;
-
-          return info;
       });
     },
 

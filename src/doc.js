@@ -2,6 +2,10 @@
 
 const Config = require('./config')
 const util = require('./util')
+const uri = require('./uri')
+const ld = require('./simplerdf')
+const SimpleRDF = ld.SimpleRDF
+const graph = require('./graph')
 const template = require('./template')
 
 module.exports = {
@@ -9,7 +13,6 @@ module.exports = {
   dumpNode,
   getDoctype,
   getDocument,
-  setDocumentBase,
   createHTML,
   createActivityHTML,
   getClosestSectionNode,
@@ -22,7 +25,8 @@ module.exports = {
   createDateHTML,
   setEditSelections,
   getRDFaPrefixHTML,
-  setDocumentRelation
+  setDocumentRelation,
+  getResourceInfo
 }
 
 function domToString (node, options = {}) {
@@ -143,52 +147,6 @@ function getDocument (cn, options) {
   s += domToString(node, options)
   return s
 }
-
-function setDocumentBase (data, baseURI, contentType) {
-  switch(contentType) {
-    case 'text/html': case 'application/xhtml+xml':
-      let template = document.implementation.createHTMLDocument()
-      template.documentElement.innerHTML = data
-      let base = template.querySelector('head base[href]')
-      if (!base) {
-        template.querySelector('head').insertAdjacentHTML('afterbegin', '<base href="' + baseURI + '" />')
-        data = template.documentElement.outerHTML
-      }
-      break;
-
-    case 'text/turtle':
-      data = `@base <` + baseURI + `> .\n` + data;
-      break;
-
-    case 'application/json': case 'application/ld+json':
-      data = JSON.parse(data);
-      data['@context'] = (data['@context']) ? data['@context'] : {'@base': baseURI};
-
-      if (Array.isArray(data['@context'])) {
-        var found = false;
-        data['@context'].forEach(function(a){
-          if (typeof a === 'object' && '@base' in a) {
-            found = true;
-          }
-        })
-        if (!found) {
-          data['@context'].push({'@base': baseURI});
-        }
-      }
-      else if (typeof data['@context'] === 'object' && !('@base' in data['@context'])) {
-        data['@context']['@base'] = baseURI;
-      }
-
-      data = JSON.stringify(data);
-      break;
-
-    default:
-      break;
-  }
-// console.log(data)
-  return data
-}
-
 
 function createHTML(title, main, options) {
   title = title || '';
@@ -589,4 +547,92 @@ function setDocumentRelation(rootNode, data, options) {
   }
 
   return rootNode;
+}
+
+function getResourceInfo(data, options) {
+  data = data || getDocument();
+
+  var info = {
+    'state': Config.Vocab['ldpRDFSource']['@id'],
+    'profile': Config.Vocab['ldpRDFSource']['@id']
+  };
+
+  options = options || {};
+
+  options['contentType'] = ('contentType' in options) ? options.contentType : 'text/html';
+  options['subjectURI'] = ('subjectURI' in options) ? options.subjectURI : uri.stripFragmentFromString(document.location.href);
+
+  return graph.getGraphFromData(data, options).then(
+    function(i){
+      var s = SimpleRDF(Config.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
+// console.log(s);
+
+      info['graph'] = s;
+      info['rdftype'] = s.rdftype._array;
+      info['profile'] = Config.Vocab['ldpRDFSource']['@id'];
+
+      //Check if the resource is immutable
+      s.rdftype.forEach(function(resource) {
+        if (resource == Config.Vocab['memMemento']['@id']) {
+          info['state'] = Config.Vocab['memMemento']['@id'];
+        }
+      });
+
+      if (s.reloriginal) {
+        info['state'] = Config.Vocab['memMemento']['@id'];
+        info['original'] = s.memoriginal;
+
+        if (s.reloriginal == options['subjectURI']) {
+          //URI-R (The Original Resource is a Fixed Resource)
+
+          info['profile'] = Config.Vocab['memOriginalResource']['@id'];
+        }
+        else {
+          //URI-M
+
+          info['profile'] = Config.Vocab['memMemento']['@id'];
+        }
+      }
+
+      if (s.memmemento) {
+        //URI-R
+
+        info['profile'] = Config.Vocab['memOriginalResource']['@id'];
+        info['memento'] = s.memmemento;
+      }
+
+      if(s.memoriginal && s.memmemento && s.memoriginal != s.memmemento) {
+        //URI-M (Memento without a TimeGate)
+
+        info['profile'] = Config.Vocab['memMemento']['@id'];
+        info['original'] = s.memoriginal;
+        info['memento'] = s.memmemento;
+      }
+
+      if(s.rellatestversion) {
+        info['latest-version'] = s.rellatestversion;
+      }
+
+      if(s.relpredecessorversion) {
+        info['predecessor-version'] = s.relpredecessorversion;
+      }
+
+      if(s.memtimemap) {
+        info['timemap'] = s.memtimemap;
+      }
+
+      if(s.memtimegate) {
+        info['timegate'] = s.memtimegate;
+      }
+
+// console.log(info);
+
+      if(!Config.OriginalResourceInfo || ('mode' in options && options.mode == 'update' )) {
+        Config['OriginalResourceInfo'] = info;
+      }
+
+      Config['ResourceInfo'] = info;
+
+      return info;
+  });
 }

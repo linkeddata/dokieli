@@ -11,7 +11,8 @@ module.exports = {
   getMatchFromData,
   serializeData,
   serializeGraph,
-  applyParserSerializerFixes
+  applyParserSerializerFixes,
+  setDocumentBase
 }
 
 function getGraph (url) {
@@ -34,7 +35,7 @@ function getGraphFromData (data, options = {}) {
   }
 
   if (options.contentType == 'text/html' || options.contentType == 'application/xhtml+xml' || options.contentType == 'text/turtle' || options.contentType == 'application/ld+json') {
-      data = doc.setDocumentBase(data, options.subjectURI, options.contentType)
+      data = setDocumentBase(data, options.subjectURI, options.contentType)
   }
 
   return SimpleRDF.parse(data, options['contentType'], options['subjectURI'])
@@ -300,4 +301,49 @@ function applyParserSerializerFixes(data, contentType) {
   }        
 
   return data;
+}
+
+function setDocumentBase (data, baseURI, contentType) {
+  switch(contentType) {
+    case 'text/html': case 'application/xhtml+xml':
+      let template = document.implementation.createHTMLDocument()
+      template.documentElement.innerHTML = data
+      let base = template.querySelector('head base[href]')
+      if (!base) {
+        template.querySelector('head').insertAdjacentHTML('afterbegin', '<base href="' + baseURI + '" />')
+        data = template.documentElement.outerHTML
+      }
+      break;
+
+    case 'text/turtle':
+      data = `@base <` + baseURI + `> .\n` + data;
+      break;
+
+    case 'application/json': case 'application/ld+json':
+      data = JSON.parse(data);
+      data['@context'] = (data['@context']) ? data['@context'] : {'@base': baseURI};
+
+      if (Array.isArray(data['@context'])) {
+        var found = false;
+        data['@context'].forEach(function(a){
+          if (typeof a === 'object' && '@base' in a) {
+            found = true;
+          }
+        })
+        if (!found) {
+          data['@context'].push({'@base': baseURI});
+        }
+      }
+      else if (typeof data['@context'] === 'object' && !('@base' in data['@context'])) {
+        data['@context']['@base'] = baseURI;
+      }
+
+      data = JSON.stringify(data);
+      break;
+
+    default:
+      break;
+  }
+// console.log(data)
+  return data
 }
