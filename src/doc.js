@@ -2,6 +2,7 @@
 
 const Config = require('./config')
 const util = require('./util')
+const template = require('./template')
 
 module.exports = {
   domToString,
@@ -20,7 +21,8 @@ module.exports = {
   setDate,
   createDateHTML,
   setEditSelections,
-  getRDFaPrefixHTML
+  getRDFaPrefixHTML,
+  setDocumentRelation
 }
 
 function domToString (node, options = {}) {
@@ -538,7 +540,7 @@ function setEditSelections(options) {
       dl.insertAdjacentHTML('beforeend', dd);
 
       if (statusIRI == 'http://purl.org/spar/pso/published') {
-        doc.setDate(document, { 'id': 'document-published', 'property': 'schema:datePublished', 'title': 'Published', 'datetime': options.datetime });
+        setDate(document, { 'id': 'document-published', 'property': 'schema:datePublished', 'title': 'Published', 'datetime': options.datetime });
       }
     }
   }
@@ -546,4 +548,45 @@ function setEditSelections(options) {
 
 function getRDFaPrefixHTML(prefixes){
   return Object.keys(prefixes).map(function(i){ return i + ': ' + prefixes[i]; }).join(' ');
+}
+
+function setDocumentRelation(rootNode, data, options) {
+  rootNode = rootNode || document;
+  if(!data || !options) { return; }
+
+  var h = [];
+
+  var dl = rootNode.querySelector('#' + options.id);
+
+  data.forEach(function(d){
+    var documentRelation = '<dd>' + template.createRDFaHTML(d) + '</dd>';
+
+    if(dl) {
+      if (Config.DocumentItems.indexOf(options.id) > -1) {
+        dd = dl.querySelector('dd');
+        dl.removeChild(dd);
+      }
+      else {
+        var relation = dl.querySelector('[rel="' + d.rel +  '"][href="' + d.href  + '"]');
+
+        if(relation) {
+          dd = relation.closest('dd');
+          if(dd) {
+            dl.removeChild(dd);
+          }
+        }
+      }
+      dl.insertAdjacentHTML('beforeend', documentRelation);
+    }
+    else {
+      h.push(documentRelation);
+    }
+  });
+
+  if(h.length > 0) {
+    var html = '<dl id="' + options.id + '"><dt>' + options.title + '</dt>' + h.join('') + '</dl>';
+    rootNode = insertDocumentLevelHTML(rootNode, html, { 'id': options.id });
+  }
+
+  return rootNode;
 }

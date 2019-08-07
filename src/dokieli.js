@@ -2851,7 +2851,7 @@ var DO = {
 
       o = { 'id': 'document-identifier', 'title': 'Identifier' };
       r = { 'rel': 'owl:sameAs', 'href': immutableURL };
-      rootNode = DO.U.setDocumentRelation(rootNode, [r], o);
+      rootNode = doc.setDocumentRelation(rootNode, [r], o);
 
       o = { 'id': 'document-original', 'title': 'Original resource' };
       if (DO.C.OriginalResourceInfo['state'] == DO.C.Vocab['memMemento']['@id']
@@ -2861,14 +2861,14 @@ var DO = {
       else {
         r = { 'rel': 'mem:original', 'href': url };
       }
-      rootNode = DO.U.setDocumentRelation(rootNode, [r], o);
+      rootNode = doc.setDocumentRelation(rootNode, [r], o);
 
       //TODO document-timegate
 
       var timeMapURL = DO.C.OriginalResourceInfo['timemap'] || url + '.timemap';
       o = { 'id': 'document-timemap', 'title': 'TimeMap' };
       r = { 'rel': 'mem:timemap', 'href': timeMapURL };
-      rootNode = DO.U.setDocumentRelation(rootNode, [r], o);
+      rootNode = doc.setDocumentRelation(rootNode, [r], o);
 
       // Create URI-M
       data = doc.getDocument(rootNode);
@@ -2884,23 +2884,23 @@ var DO = {
 
         o = { 'id': 'document-identifier', 'title': 'Identifier' };
         r = { 'rel': 'owl:sameAs', 'href': url };
-        DO.U.setDocumentRelation(document, [r], o);
+        doc.setDocumentRelation(document, [r], o);
 
         o = { 'id': 'document-latest-version', 'title': 'Latest Version' };
         r = { 'rel': 'mem:memento rel:latest-version', 'href': immutableURL };
-        DO.U.setDocumentRelation(document, [r], o);
+        doc.setDocumentRelation(document, [r], o);
 
         if(DO.C.OriginalResourceInfo['latest-version']) {
           o = { 'id': 'document-predecessor-version', 'title': 'Predecessor Version' };
           r = { 'rel': 'mem:memento rel:predecessor-version', 'href': DO.C.OriginalResourceInfo['latest-version'] };
-          DO.U.setDocumentRelation(document, [r], o);
+          doc.setDocumentRelation(document, [r], o);
         }
 
         //TODO document-timegate
 
         o = { 'id': 'document-timemap', 'title': 'TimeMap' };
         r = { 'rel': 'mem:timemap', 'href': timeMapURL };
-        DO.U.setDocumentRelation(document, [r], o);
+        doc.setDocumentRelation(document, [r], o);
 
         // Create URI-R
         data = doc.getDocument();
@@ -2935,16 +2935,16 @@ var DO = {
 
       o = { 'id': 'document-identifier', 'title': 'Identifier' };
       r = { 'rel': 'owl:sameAs', 'href': mutableURL };
-      DO.U.setDocumentRelation(document, [r], o);
+      doc.setDocumentRelation(document, [r], o);
 
       o = { 'id': 'document-latest-version', 'title': 'Latest Version' };
       r = { 'rel': 'rel:latest-version', 'href': mutableURL };
-      DO.U.setDocumentRelation(document, [r], o);
+      doc.setDocumentRelation(document, [r], o);
 
       if(DO.C.OriginalResourceInfo['latest-version']) {
         o = { 'id': 'document-predecessor-version', 'title': 'Predecessor Version' };
         r = { 'rel': 'rel:predecessor-version', 'href': DO.C.OriginalResourceInfo['latest-version'] };
-        DO.U.setDocumentRelation(document, [r], o);
+        doc.setDocumentRelation(document, [r], o);
       }
 
       data = doc.getDocument();
@@ -2953,7 +2953,7 @@ var DO = {
 
       o = { 'id': 'document-identifier', 'title': 'Identifier' };
       r = { 'rel': 'owl:sameAs', 'href': url };
-      DO.U.setDocumentRelation(document, [r], o);
+      doc.setDocumentRelation(document, [r], o);
 
       data = doc.getDocument();
       fetcher.processSave(url, null, data, options).then(() => {
@@ -4192,13 +4192,13 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         if (wasDerived.checked) {
           o = { 'id': 'document-derived-from', 'title': 'Derived From' };
           r = { 'rel': 'prov:wasDerivedFrom', 'href': currentDocumentURL };
-          html = DO.U.setDocumentRelation(html, [r], o);
+          html = doc.setDocumentRelation(html, [r], o);
 
           html = doc.setDate(html, { 'id': 'document-derived-on', 'property': 'prov:generatedAtTime', 'title': 'Derived On' });
 
           o = { 'id': 'document-identifier', 'title': 'Identifier' };
           r = { 'rel': 'owl:sameAs', 'href': storageIRI };
-          html = DO.U.setDocumentRelation(html, [r], o);
+          html = doc.setDocumentRelation(html, [r], o);
         }
 
         var inboxLocation = saveAsDocument.querySelector('#' + locationInboxId + '-' + locationInboxAction);
@@ -4206,7 +4206,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           inboxLocation = inboxLocation.innerText.trim();
           o = { 'id': 'document-inbox', 'title': 'Notifications Inbox' };
           r = { 'rel': 'ldp:inbox', 'href': inboxLocation };
-          html = DO.U.setDocumentRelation(html, [r], o);
+          html = doc.setDocumentRelation(html, [r], o);
         }
 
         var annotationServiceLocation = saveAsDocument.querySelector('#' + locationAnnotationServiceId + '-' + locationAnnotationServiceAction)
@@ -4214,7 +4214,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           annotationServiceLocation = annotationServiceLocation.innerText.trim();
           o = { 'id': 'document-annotation-service', 'title': 'Annotation Service' };
           r = { 'rel': 'oa:annotationService', 'href': annotationServiceLocation };
-          html = DO.U.setDocumentRelation(html, [r], o);
+          html = doc.setDocumentRelation(html, [r], o);
         }
 
         var baseURLSelectionChecked = saveAsDocument.querySelector('select[name="base-url"]')
@@ -5734,66 +5734,6 @@ WHERE {\n\
       return language;
     },
 
-    createRDFaHTML: function(r, mode) {
-      var s = '', about = '', property = '', rel = '', resource = '', href = '', content = '', langDatatype = '', typeOf = '', idValue = '', id = '';
-
-      if ('rel' in r && r.rel != '') {
-        rel = ' rel="' + r.rel + '"';
-      }
-
-      if ('href' in r && r.href != '') {
-        href = ' href="' + r.href + '"';
-      }
-
-      if(mode == 'expanded') {
-        idValue = util.generateAttributeId();
-        id = ' id="' + idValue + '"';
-
-        if ('about' in r && r.about != '') {
-          about = ' about="' + r.about + '"';
-        }
-        else {
-          about = ' about="#' + idValue + '"';
-        }
-
-        if ('property' in r && r.property != '') {
-          property = ' property="' + r.property + '"';
-        }
-        else {
-          //TODO: Figure out how to use user's preferred vocabulary.
-          property = ' property="rdfs:label"';
-        }
-
-        if ('resource' in r && r.resource != '') {
-          resource = ' resource="' + r.resource + '"';
-        }
-
-        if ('content' in r && r.content != '') {
-          content = ' content="' + r.content + '"';
-        }
-
-        if ('lang' in r && r.lang != '') {
-          langDatatype = ' lang="' + r.lang + '" xml:lang="' + r.lang + '"';
-        }
-        else {
-          if ('datatype' in r && r.datatype != '') {
-            langDatatype = ' datatype="' + r.datatype + '"';
-          }
-        }
-
-        if ('typeOf' in r && r.typeOf != '') {
-          typeOf = ' typeof="' + r.typeOf + '"';
-        }
-      }
-
-      var element = ('datatype' in r && r.datatype == 'xsd:dateTime') ? 'time' : ((href == '') ? 'span' : 'a');
-      var textContent = r.textContent || r.href || '';
-
-      s = '<' + element + about + content + href + id + langDatatype + property + rel + resource + typeOf + '>' + textContent + '</' + element + '>';
-
-      return s;
-    },
-
     getAnnotationInboxLocationHTML: function() {
       var s = '', inputs = [], checked = '';
       if (DO.C.User.TypeIndex && DO.C.User.TypeIndex[DO.C.Vocab['asAnnounce']['@id']]) {
@@ -5948,47 +5888,6 @@ WHERE {\n\
 
         MathJax.Hub.setRenderer(jax);
       });
-    },
-
-    setDocumentRelation: function(rootNode, data, options) {
-      rootNode = rootNode || document;
-      if(!data || !options) { return; }
-
-      var h = [];
-
-      var dl = rootNode.querySelector('#' + options.id);
-
-      data.forEach(function(d){
-        var documentRelation = '<dd>' + DO.U.createRDFaHTML(d) + '</dd>';
-
-        if(dl) {
-          if (DO.C.DocumentItems.indexOf(options.id) > -1) {
-            dd = dl.querySelector('dd');
-            dl.removeChild(dd);
-          }
-          else {
-            var relation = dl.querySelector('[rel="' + d.rel +  '"][href="' + d.href  + '"]');
-
-            if(relation) {
-              dd = relation.closest('dd');
-              if(dd) {
-                dl.removeChild(dd);
-              }
-            }
-          }
-          dl.insertAdjacentHTML('beforeend', documentRelation);
-        }
-        else {
-          h.push(documentRelation);
-        }
-      });
-
-      if(h.length > 0) {
-        var html = '<dl id="' + options.id + '"><dt>' + options.title + '</dt>' + h.join('') + '</dl>';
-        rootNode = doc.insertDocumentLevelHTML(rootNode, html, { 'id': options.id });
-      }
-
-      return rootNode;
     },
 
     getResourceInfo: function(data, options) {
@@ -7723,7 +7622,7 @@ WHERE {\n\
                       lang: opts.language,
                       textContent: _this.base.selection
                     };
-                    ref = DO.U.createRDFaHTML(noteData, 'expanded');
+                    ref = template.createRDFaHTML(noteData, 'expanded');
                     break;
 
                   case 'bookmark':

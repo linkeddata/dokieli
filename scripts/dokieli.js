@@ -2986,7 +2986,7 @@ var DO = {
 
       // Create URI-M
       data = doc.getDocument(rootNode);
-      DO.U.processSave(containerIRI, uuid, data, options);
+      fetcher.processSave(containerIRI, uuid, data, options);
 
 
       var timeMapURL = DO.C.OriginalResourceInfo['timemap'] || url + '.timemap';
@@ -3018,7 +3018,7 @@ var DO = {
 
         // Create URI-R
         data = doc.getDocument();
-        DO.U.processSave(url, null, data, options);
+        fetcher.processSave(url, null, data, options);
       }
 
 
@@ -3062,7 +3062,7 @@ var DO = {
       }
 
       data = doc.getDocument();
-      DO.U.processSave(containerIRI, uuid, data, options);
+      fetcher.processSave(containerIRI, uuid, data, options);
 
 
       o = { 'id': 'document-identifier', 'title': 'Identifier' };
@@ -3070,7 +3070,7 @@ var DO = {
       DO.U.setDocumentRelation(document, [r], o);
 
       data = doc.getDocument();
-      DO.U.processSave(url, null, data, options).then(() => {
+      fetcher.processSave(url, null, data, options).then(() => {
         DO.U.getResourceInfo(null, { 'mode': 'update' });
       });
     },
@@ -3087,44 +3087,9 @@ var DO = {
       doc.setEditSelections(options);
 
       data = doc.getDocument();
-      DO.U.processSave(url, null, data, options).then(() => {
+      fetcher.processSave(url, null, data, options).then(() => {
         DO.U.getResourceInfo(null, { 'mode': 'update' });
       });
-    },
-
-    processSave: function(url, slug, data, options) {
-      options = options || {};
-      var request = (slug)
-                    ? fetcher.postResource(url, slug, data)
-                    : fetcher.putResource(url, data)
-
-      return request
-        .then(response => {
-          doc.showActionMessage(document.documentElement, 'Saved')
-          return response
-        })
-        .catch(error => {
-          console.log(error)
-
-          let message
-
-          switch (error.status) {
-            case 401:
-              message = 'Need to authenticate before saving'
-              break
-
-            case 403:
-              message = 'You are not authorized to save'
-              break
-
-            case 405:
-            default:
-              message = 'Server doesn\'t allow this resource to be rewritten'
-              break
-          }
-
-          doc.showActionMessage(document.documentElement, message)
-        })
     },
 
     replyToResource: function replyToResource (e, iri) {
@@ -5883,66 +5848,6 @@ WHERE {\n\
       return language;
     },
 
-    createRDFaHTML: function(r, mode) {
-      var s = '', about = '', property = '', rel = '', resource = '', href = '', content = '', langDatatype = '', typeOf = '', idValue = '', id = '';
-
-      if ('rel' in r && r.rel != '') {
-        rel = ' rel="' + r.rel + '"';
-      }
-
-      if ('href' in r && r.href != '') {
-        href = ' href="' + r.href + '"';
-      }
-
-      if(mode == 'expanded') {
-        idValue = util.generateAttributeId();
-        id = ' id="' + idValue + '"';
-
-        if ('about' in r && r.about != '') {
-          about = ' about="' + r.about + '"';
-        }
-        else {
-          about = ' about="#' + idValue + '"';
-        }
-
-        if ('property' in r && r.property != '') {
-          property = ' property="' + r.property + '"';
-        }
-        else {
-          //TODO: Figure out how to use user's preferred vocabulary.
-          property = ' property="rdfs:label"';
-        }
-
-        if ('resource' in r && r.resource != '') {
-          resource = ' resource="' + r.resource + '"';
-        }
-
-        if ('content' in r && r.content != '') {
-          content = ' content="' + r.content + '"';
-        }
-
-        if ('lang' in r && r.lang != '') {
-          langDatatype = ' lang="' + r.lang + '" xml:lang="' + r.lang + '"';
-        }
-        else {
-          if ('datatype' in r && r.datatype != '') {
-            langDatatype = ' datatype="' + r.datatype + '"';
-          }
-        }
-
-        if ('typeOf' in r && r.typeOf != '') {
-          typeOf = ' typeof="' + r.typeOf + '"';
-        }
-      }
-
-      var element = ('datatype' in r && r.datatype == 'xsd:dateTime') ? 'time' : ((href == '') ? 'span' : 'a');
-      var textContent = r.textContent || r.href || '';
-
-      s = '<' + element + about + content + href + id + langDatatype + property + rel + resource + typeOf + '>' + textContent + '</' + element + '>';
-
-      return s;
-    },
-
     getAnnotationInboxLocationHTML: function() {
       var s = '', inputs = [], checked = '';
       if (DO.C.User.TypeIndex && DO.C.User.TypeIndex[DO.C.Vocab['asAnnounce']['@id']]) {
@@ -6097,47 +6002,6 @@ WHERE {\n\
 
         MathJax.Hub.setRenderer(jax);
       });
-    },
-
-    setDocumentRelation: function(rootNode, data, options) {
-      rootNode = rootNode || document;
-      if(!data || !options) { return; }
-
-      var h = [];
-
-      var dl = rootNode.querySelector('#' + options.id);
-
-      data.forEach(function(d){
-        var documentRelation = '<dd>' + DO.U.createRDFaHTML(d) + '</dd>';
-
-        if(dl) {
-          if (DO.C.DocumentItems.indexOf(options.id) > -1) {
-            dd = dl.querySelector('dd');
-            dl.removeChild(dd);
-          }
-          else {
-            var relation = dl.querySelector('[rel="' + d.rel +  '"][href="' + d.href  + '"]');
-
-            if(relation) {
-              dd = relation.closest('dd');
-              if(dd) {
-                dl.removeChild(dd);
-              }
-            }
-          }
-          dl.insertAdjacentHTML('beforeend', documentRelation);
-        }
-        else {
-          h.push(documentRelation);
-        }
-      });
-
-      if(h.length > 0) {
-        var html = '<dl id="' + options.id + '"><dt>' + options.title + '</dt>' + h.join('') + '</dl>';
-        rootNode = doc.insertDocumentLevelHTML(rootNode, html, { 'id': options.id });
-      }
-
-      return rootNode;
     },
 
     getResourceInfo: function(data, options) {
@@ -7872,7 +7736,7 @@ WHERE {\n\
                       lang: opts.language,
                       textContent: _this.base.selection
                     };
-                    ref = DO.U.createRDFaHTML(noteData, 'expanded');
+                    ref = template.createRDFaHTML(noteData, 'expanded');
                     break;
 
                   case 'bookmark':
@@ -8484,7 +8348,8 @@ module.exports = {
   postResource,
   putResource,
   putResourceACL,
-  postActivity
+  postActivity,
+  processSave
 }
 
 function setAcceptRDFTypes(options) {
@@ -9058,6 +8923,41 @@ function postActivity(url, slug, data, options) {
               return postResource(url, slug, data, preferredContentType + profile)
             })
       }
+    })
+}
+
+function processSave(url, slug, data, options) {
+  options = options || {};
+  var request = (slug)
+                ? postResource(url, slug, data)
+                : putResource(url, data)
+
+  return request
+    .then(response => {
+      doc.showActionMessage(document.documentElement, 'Saved')
+      return response
+    })
+    .catch(error => {
+      console.log(error)
+
+      let message
+
+      switch (error.status) {
+        case 401:
+          message = 'Need to authenticate before saving'
+          break
+
+        case 403:
+          message = 'You are not authorized to save'
+          break
+
+        case 405:
+        default:
+          message = 'Server doesn\'t allow this resource to be rewritten'
+          break
+      }
+
+      doc.showActionMessage(document.documentElement, message)
     })
 }
 
@@ -55920,7 +55820,68 @@ module.exports = {
     ".fas.fa-times.fa-2x": '<svg class="fas fa-times fa-2x" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"/></svg>',
 
     ".fas.fa-trash-alt": '<svg class="fas fa-trash-alt" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M0 84V56c0-13.3 10.7-24 24-24h112l9.4-18.7c4-8.2 12.3-13.3 21.4-13.3h114.3c9.1 0 17.4 5.1 21.5 13.3L312 32h112c13.3 0 24 10.7 24 24v28c0 6.6-5.4 12-12 12H12C5.4 96 0 90.6 0 84zm416 56v324c0 26.5-21.5 48-48 48H80c-26.5 0-48-21.5-48-48V140c0-6.6 5.4-12 12-12h360c6.6 0 12 5.4 12 12zm-272 68c0-8.8-7.2-16-16-16s-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208zm96 0c0-8.8-7.2-16-16-16s-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208zm96 0c0-8.8-7.2-16-16-16s-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208z"/></svg>'
+  },
+  createRDFaHTML
+}
+
+function createRDFaHTML(r, mode) {
+  var s = '', about = '', property = '', rel = '', resource = '', href = '', content = '', langDatatype = '', typeOf = '', idValue = '', id = '';
+
+  if ('rel' in r && r.rel != '') {
+    rel = ' rel="' + r.rel + '"';
   }
+
+  if ('href' in r && r.href != '') {
+    href = ' href="' + r.href + '"';
+  }
+
+  if(mode == 'expanded') {
+    idValue = util.generateAttributeId();
+    id = ' id="' + idValue + '"';
+
+    if ('about' in r && r.about != '') {
+      about = ' about="' + r.about + '"';
+    }
+    else {
+      about = ' about="#' + idValue + '"';
+    }
+
+    if ('property' in r && r.property != '') {
+      property = ' property="' + r.property + '"';
+    }
+    else {
+      //TODO: Figure out how to use user's preferred vocabulary.
+      property = ' property="rdfs:label"';
+    }
+
+    if ('resource' in r && r.resource != '') {
+      resource = ' resource="' + r.resource + '"';
+    }
+
+    if ('content' in r && r.content != '') {
+      content = ' content="' + r.content + '"';
+    }
+
+    if ('lang' in r && r.lang != '') {
+      langDatatype = ' lang="' + r.lang + '" xml:lang="' + r.lang + '"';
+    }
+    else {
+      if ('datatype' in r && r.datatype != '') {
+        langDatatype = ' datatype="' + r.datatype + '"';
+      }
+    }
+
+    if ('typeOf' in r && r.typeOf != '') {
+      typeOf = ' typeof="' + r.typeOf + '"';
+    }
+  }
+
+  var element = ('datatype' in r && r.datatype == 'xsd:dateTime') ? 'time' : ((href == '') ? 'span' : 'a');
+  var textContent = r.textContent || r.href || '';
+
+  s = '<' + element + about + content + href + id + langDatatype + property + rel + resource + typeOf + '>' + textContent + '</' + element + '>';
+
+  return s;
 }
 
 /***/ }),
@@ -55932,6 +55893,7 @@ module.exports = {
 
 const Config = __webpack_require__(238)
 const util = __webpack_require__(241)
+const template = __webpack_require__(239)
 
 module.exports = {
   domToString,
@@ -55950,7 +55912,8 @@ module.exports = {
   setDate,
   createDateHTML,
   setEditSelections,
-  getRDFaPrefixHTML
+  getRDFaPrefixHTML,
+  setDocumentRelation
 }
 
 function domToString (node, options = {}) {
@@ -56468,7 +56431,7 @@ function setEditSelections(options) {
       dl.insertAdjacentHTML('beforeend', dd);
 
       if (statusIRI == 'http://purl.org/spar/pso/published') {
-        doc.setDate(document, { 'id': 'document-published', 'property': 'schema:datePublished', 'title': 'Published', 'datetime': options.datetime });
+        setDate(document, { 'id': 'document-published', 'property': 'schema:datePublished', 'title': 'Published', 'datetime': options.datetime });
       }
     }
   }
@@ -56478,6 +56441,46 @@ function getRDFaPrefixHTML(prefixes){
   return Object.keys(prefixes).map(function(i){ return i + ': ' + prefixes[i]; }).join(' ');
 }
 
+function setDocumentRelation(rootNode, data, options) {
+  rootNode = rootNode || document;
+  if(!data || !options) { return; }
+
+  var h = [];
+
+  var dl = rootNode.querySelector('#' + options.id);
+
+  data.forEach(function(d){
+    var documentRelation = '<dd>' + template.createRDFaHTML(d) + '</dd>';
+
+    if(dl) {
+      if (Config.DocumentItems.indexOf(options.id) > -1) {
+        dd = dl.querySelector('dd');
+        dl.removeChild(dd);
+      }
+      else {
+        var relation = dl.querySelector('[rel="' + d.rel +  '"][href="' + d.href  + '"]');
+
+        if(relation) {
+          dd = relation.closest('dd');
+          if(dd) {
+            dl.removeChild(dd);
+          }
+        }
+      }
+      dl.insertAdjacentHTML('beforeend', documentRelation);
+    }
+    else {
+      h.push(documentRelation);
+    }
+  });
+
+  if(h.length > 0) {
+    var html = '<dl id="' + options.id + '"><dt>' + options.title + '</dt>' + h.join('') + '</dl>';
+    rootNode = insertDocumentLevelHTML(rootNode, html, { 'id': options.id });
+  }
+
+  return rootNode;
+}
 
 /***/ }),
 /* 241 */

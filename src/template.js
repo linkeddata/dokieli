@@ -112,5 +112,66 @@ module.exports = {
     ".fas.fa-times.fa-2x": '<svg class="fas fa-times fa-2x" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 352 512"><path d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"/></svg>',
 
     ".fas.fa-trash-alt": '<svg class="fas fa-trash-alt" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M0 84V56c0-13.3 10.7-24 24-24h112l9.4-18.7c4-8.2 12.3-13.3 21.4-13.3h114.3c9.1 0 17.4 5.1 21.5 13.3L312 32h112c13.3 0 24 10.7 24 24v28c0 6.6-5.4 12-12 12H12C5.4 96 0 90.6 0 84zm416 56v324c0 26.5-21.5 48-48 48H80c-26.5 0-48-21.5-48-48V140c0-6.6 5.4-12 12-12h360c6.6 0 12 5.4 12 12zm-272 68c0-8.8-7.2-16-16-16s-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208zm96 0c0-8.8-7.2-16-16-16s-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208zm96 0c0-8.8-7.2-16-16-16s-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208z"/></svg>'
+  },
+  createRDFaHTML
+}
+
+function createRDFaHTML(r, mode) {
+  var s = '', about = '', property = '', rel = '', resource = '', href = '', content = '', langDatatype = '', typeOf = '', idValue = '', id = '';
+
+  if ('rel' in r && r.rel != '') {
+    rel = ' rel="' + r.rel + '"';
   }
+
+  if ('href' in r && r.href != '') {
+    href = ' href="' + r.href + '"';
+  }
+
+  if(mode == 'expanded') {
+    idValue = util.generateAttributeId();
+    id = ' id="' + idValue + '"';
+
+    if ('about' in r && r.about != '') {
+      about = ' about="' + r.about + '"';
+    }
+    else {
+      about = ' about="#' + idValue + '"';
+    }
+
+    if ('property' in r && r.property != '') {
+      property = ' property="' + r.property + '"';
+    }
+    else {
+      //TODO: Figure out how to use user's preferred vocabulary.
+      property = ' property="rdfs:label"';
+    }
+
+    if ('resource' in r && r.resource != '') {
+      resource = ' resource="' + r.resource + '"';
+    }
+
+    if ('content' in r && r.content != '') {
+      content = ' content="' + r.content + '"';
+    }
+
+    if ('lang' in r && r.lang != '') {
+      langDatatype = ' lang="' + r.lang + '" xml:lang="' + r.lang + '"';
+    }
+    else {
+      if ('datatype' in r && r.datatype != '') {
+        langDatatype = ' datatype="' + r.datatype + '"';
+      }
+    }
+
+    if ('typeOf' in r && r.typeOf != '') {
+      typeOf = ' typeof="' + r.typeOf + '"';
+    }
+  }
+
+  var element = ('datatype' in r && r.datatype == 'xsd:dateTime') ? 'time' : ((href == '') ? 'span' : 'a');
+  var textContent = r.textContent || r.href || '';
+
+  s = '<' + element + about + content + href + id + langDatatype + property + rel + resource + typeOf + '>' + textContent + '</' + element + '>';
+
+  return s;
 }
