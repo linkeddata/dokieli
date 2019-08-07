@@ -4,7 +4,6 @@ const Config = require('./config')
 
 module.exports = {
   uniqueArray,
-  getHash,
   getDateTimeISO,
   removeChildren,
   copyTextToClipboard,
@@ -13,6 +12,8 @@ module.exports = {
   fragmentFromString,
   generateUUID,
   generateAttributeId,
+  getHash,
+  hashCode,
   isActor,
   sortTriples
 }
@@ -32,23 +33,6 @@ function uniqueArray (a) {
     }
   }
   return r
-}
-
-// https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
-function getHash (message, algo = "SHA-256") {
-  var buffer = new TextEncoder("utf-8").encode(message);
-  return window.crypto.subtle.digest(algo, buffer).then(function (hash) {
-    var hexCodes = [];
-    var view = new DataView(hash);
-    for (var i = 0; i < view.byteLength; i += 4) {
-      var value = view.getUint32(i)
-      var stringValue = value.toString(16)
-      var padding = '00000000'
-      var paddedValue = (padding + stringValue).slice(-padding.length)
-      hexCodes.push(paddedValue);
-    }
-    return hexCodes.join("");
-  });
 }
 
 function getDateTimeISO() {
@@ -124,6 +108,35 @@ function generateAttributeId(prefix, string) {
   else {
     return generateUUID();
   }
+}
+
+// https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
+function getHash (message, algo = "SHA-256") {
+  var buffer = new TextEncoder("utf-8").encode(message);
+  return window.crypto.subtle.digest(algo, buffer).then(function (hash) {
+    var hexCodes = [];
+    var view = new DataView(hash);
+    for (var i = 0; i < view.byteLength; i += 4) {
+      var value = view.getUint32(i)
+      var stringValue = value.toString(16)
+      var padding = '00000000'
+      var paddedValue = (padding + stringValue).slice(-padding.length)
+      hexCodes.push(paddedValue);
+    }
+    return hexCodes.join("");
+  });
+}
+
+//From http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
+function hashCode(s){
+  var hash = 0;
+  if (s.length == 0) return hash;
+  for (var i = 0; i < s.length; i++) {
+    var char = s.charCodeAt(i);
+    hash = ((hash<<5)-hash)+char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return hash;
 }
 
 function isActor (s) {

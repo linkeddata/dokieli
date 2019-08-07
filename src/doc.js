@@ -924,11 +924,13 @@ function updateMutableResource(url, data, options) {
   if(!url) return;
   options = options || {};
 
+  var rootNode = (data) ? util.fragmentFromString(data).cloneNode(true) : document;
+
   if (!('datetime' in options)) {
     options['datetime'] = new Date();
   }
 
-  setDate(document, { 'id': 'document-modified', 'property': 'schema:dateModified', 'title': 'Modified', 'datetime': options.datetime } );
+  setDate(rootNode, { 'id': 'document-modified', 'property': 'schema:dateModified', 'title': 'Modified', 'datetime': options.datetime } );
   setEditSelections(options);
 
   data = getDocument();

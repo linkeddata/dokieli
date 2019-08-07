@@ -312,7 +312,7 @@ var DO = {
                     var iri = s.iri().toString();
                     var targetIRI = s.asobject.at(0);
                     var motivatedBy = 'oa:assessing';
-                    var id = String(Math.abs(DO.U.hashCode(iri)));
+                    var id = String(Math.abs(util.hashCode(iri)));
                     var refId = 'r-' + id;
                     var refLabel = id;
 
@@ -868,7 +868,7 @@ var DO = {
       if (selector && selector.exact && selector.exact.length > 0) {
         //XXX: TODO: Copied from showAnnotation
 
-        // refId = String(Math.abs(DO.U.hashCode(document.location.href)));
+        // refId = String(Math.abs(util.hashCode(document.location.href)));
         var refId = document.location.hash.substring(1);
         var refLabel = DO.U.getReferenceLabel(motivatedBy);
 
@@ -4439,18 +4439,6 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       }
     },
 
-    //From http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
-    hashCode: function(s){
-      var hash = 0;
-      if (s.length == 0) return hash;
-      for (i = 0; i < s.length; i++) {
-        var char = s.charCodeAt(i);
-        hash = ((hash<<5)-hash)+char;
-        hash = hash & hash; // Convert to 32bit integer
-      }
-      return hash;
-    },
-
     SPARQLQueryURL: {
       getResourcesOfTypeWithLabel: function(sparqlEndpoint, resourceType, textInput, options) {
         options = options || {};
@@ -4796,7 +4784,7 @@ WHERE {\n\
 // console.log(note.toString())
 // console.log(note)
 
-      var id = String(Math.abs(DO.U.hashCode(noteIRI)));
+      var id = String(Math.abs(util.hashCode(noteIRI)));
       var refId = 'r-' + id;
       var refLabel = id;
 

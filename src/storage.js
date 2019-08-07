@@ -46,9 +46,9 @@ function disableLocalStorage(key) {
   console.log(util.getDateTimeISO() + ': ' + key + ' storage disabled.');
 }
 
-function updateLocalStorageDocument(key, options) {
+function updateLocalStorageDocument(key, data, options) {
+  data = data || doc.getDocument();
   options = options || {};
-  var content = doc.getDocument();
 
   var id = util.generateUUID();
   var o = localStorage.getItem(key);
@@ -64,29 +64,38 @@ function updateLocalStorageDocument(key, options) {
       "type": "Document",
       "updated": datetime,
       "mediaType": "text/html",
-      "content": content
+      "content": data
     }
   };
 
   localStorage.setItem(key, JSON.stringify(object));
 
-  if (options.autosave) {
+  if (options.autoSave) {
     Config.AutoSave.Items[key]['localStorage']['updated'] = object.object.updated;
   }
 
   console.log(datetime + ': Document saved.');
 }
 
-function updateHTTPStorageDocument(url) {
-  doc.updateMutableResource(url);
+function updateHTTPStorageDocument(url, data, options) {
+  data = data || doc.getDocument();
+  options = options || {};
 
   var datetime = util.getDateTimeISO();
+
+  doc.updateMutableResource(url);
+
+  if (options.autoSave) {
+    Config.AutoSave.Items[url]['http']['updated'] = datetime;
+  }
+
   console.log(datetime + ': Document saved.');
 }
 
 function enableAutoSave(key, options) {
   options = options || {};
   options['method'] = ('method' in options) ? options.method : 'localStorage';
+  options['autoSave'] = true;
   Config.AutoSave.Items[key] = (Config.AutoSave.Items[key]) ? Config.AutoSave.Items[key] : {};
   Config.AutoSave.Items[key][options.method] = (Config.AutoSave.Items[key][options.method]) ? Config.AutoSave.Items[key][options.method] : {};
 
@@ -95,11 +104,27 @@ function enableAutoSave(key, options) {
   switch (options.method) {
     default:
     case 'localStorage':
-      id = setInterval(function() { updateLocalStorageDocument(key, {'autosave': true}) }, Config.AutoSave.Timer);
+      id = setInterval(function() {
+        var data = doc.getDocument();
+        util.getHash(data).then(hash => {
+          if (!('hash' in Config.AutoSave.Items[key][options.method] && Config.AutoSave.Items[key][options.method].hash == hash)) {
+            updateLocalStorageDocument(key, data, options);
+            Config.AutoSave.Items[key][options.method]['hash'] = hash;
+          }
+        });
+      }, Config.AutoSave.Timer);
       break;
 
     case 'http':
-      id = setInterval(function() { updateHTTPStorageDocument(key) }, Config.AutoSave.Timer);
+      id = setInterval(function() {
+        var data = doc.getDocument();
+        util.getHash(data).then(hash => {
+          if (!('hash' in Config.AutoSave.Items[key][options.method] && Config.AutoSave.Items[key][options.method].hash == hash)) {
+            updateHTTPStorageDocument(key, data, options);
+            Config.AutoSave.Items[key][options.method]['hash'] = hash;
+          }
+        });
+      }, Config.AutoSave.Timer);
       break;
   }
 
