@@ -520,7 +520,6 @@ function setDocumentRelation(rootNode, data, options) {
   if(!data || !options) { return; }
 
   var h = [];
-
   var dl = rootNode.querySelector('#' + options.id);
   var dd;
 

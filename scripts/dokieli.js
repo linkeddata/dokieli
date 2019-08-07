@@ -56022,7 +56022,6 @@ function setDocumentRelation(rootNode, data, options) {
   if(!data || !options) { return; }
 
   var h = [];
-
   var dl = rootNode.querySelector('#' + options.id);
   var dd;
 
@@ -65818,6 +65817,7 @@ module.exports = {
   enableLocalStorage,
   disableLocalStorage,
   updateLocalStorageDocument,
+  updateHTTPStorageDocument,
   enableAutoSave,
   disableAutoSave,
   removeLocalStorageItem,
@@ -65881,6 +65881,13 @@ function updateLocalStorageDocument(key, options) {
     Config.AutoSave.Items[key]['localStorage']['updated'] = object.object.updated;
   }
 
+  console.log(datetime + ': Document saved.');
+}
+
+function updateHTTPStorageDocument(url) {
+  doc.updateMutableResource(url);
+
+  var datetime = util.getDateTimeISO();
   console.log(datetime + ': Document saved.');
 }
 
@@ -66038,8 +66045,8 @@ function showAutoSaveStorage(node, iri) {
 
   checked = (Config.AutoSave.Items[iri] && Config.AutoSave.Items[iri]['http'] && Config.AutoSave.Items[iri]['localStorage']) ? ' checked="checked"' : '';
 
-  var useHTTPStorage = '<li class="http-storage-html-autosave"><input id="http-storage-html-autosave" class="autosave" type="checkbox"' + checked +' /> <label for="http-storage-html-autosave">' + (Config.AutoSave.Timer / 60000) + 'm autosave</label></li>';
-  var useHTTPStorage = '';
+  var useHTTPStorage = '<li class="http-storage-html-autosave"><input id="http-storage-html-autosave" class="autosave" type="checkbox"' + checked +' /> <label for="http-storage-html-autosave">' + (Config.AutoSave.Timer / 60000) + 'm autosave (http)</label></li>';
+  // var useHTTPStorage = '';
 
   node.insertAdjacentHTML('beforeend', '<ul id="autosave-items" class="on">' + useLocalStorage + useHTTPStorage + '</ul>');
 
