@@ -13,7 +13,8 @@ module.exports = {
   createActivityHTML,
   getClosestSectionNode,
   removeSelectorFromNode,
-  getNodeLanguage
+  getNodeLanguage,
+  showActionMessage
 }
 
 function domToString (node, options = {}) {
@@ -317,4 +318,16 @@ function getNodeLanguage(node) {
   }
 
   return lang;
+}
+
+function showActionMessage(node, message, options) {
+  options = options || {};
+  options['timer'] = ('timer' in options) ? options.timer : Config.ActionMessage.Timer;
+
+  var message = '<aside id="document-action-message" class="do on"><p>' + message + '</p></aside>';
+  node.appendChild(util.fragmentFromString(message));
+  window.setTimeout(function () {
+    var dam = document.getElementById('document-action-message');
+    dam.parentNode.removeChild(dam);
+  }, options.timer);
 }

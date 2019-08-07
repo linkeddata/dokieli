@@ -992,7 +992,7 @@ var DO = {
       var open = DO.U.urlParam('open');
       if (open) {
         open = decodeURIComponent(open);
-        DO.U.showActionMessage(document.documentElement, '<span class="progress">' + template.Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + ' Opening <a href="' + open + '" target="_blank">' + open + '</a></span>', {'timer': 10000});
+        doc.showActionMessage(document.documentElement, '<span class="progress">' + template.Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + ' Opening <a href="' + open + '" target="_blank">' + open + '</a></span>', {'timer': 10000});
 
         DO.U.openResource(open);
 
@@ -2426,7 +2426,7 @@ var DO = {
 
             options['showActionMessage'] = ('showActionMessage' in options) ? options.showActionMessage : true;
             if (options.showActionMessage) {
-              DO.U.showActionMessage(document.documentElement, '<p>Archived <a href="' + uri + '">' + uri + '</a> at <a href="' + versionURL + '">' + versionURL + '</a> and created RobustLink.</p>');
+              doc.showActionMessage(document.documentElement, '<p>Archived <a href="' + uri + '">' + uri + '</a> at <a href="' + versionURL + '">' + versionURL + '</a> and created RobustLink.</p>');
             }
 
             if (options.showRobustLinksDecoration) {
@@ -3039,7 +3039,7 @@ var DO = {
 
       return request
         .then(response => {
-          DO.U.showActionMessage(document.documentElement, 'Saved')
+          doc.showActionMessage(document.documentElement, 'Saved')
           return response
         })
         .catch(error => {
@@ -3062,7 +3062,7 @@ var DO = {
               break
           }
 
-          DO.U.showActionMessage(document.documentElement, message)
+          doc.showActionMessage(document.documentElement, message)
         })
     },
 
@@ -3276,18 +3276,6 @@ var DO = {
                 error.message + '</p>'
           })
       })
-    },
-
-    showActionMessage: function(node, message, options) {
-      options = options || {};
-      options['timer'] = ('timer' in options) ? options.timer : 1500;
-
-      var message = '<aside id="document-action-message" class="do on"><p>' + message + '</p></aside>';
-      node.appendChild(util.fragmentFromString(message));
-      window.setTimeout(function () {
-        var dam = document.getElementById('document-action-message');
-        dam.parentNode.removeChild(dam);
-      }, options.timer);
     },
 
     shareResource: function shareResource (e, iri) {
@@ -6375,7 +6363,7 @@ WHERE {\n\
         }
 
         if (e || (typeof e === 'undefined' && editorMode == 'author')) {
-          DO.U.showActionMessage(document.documentElement, 'Activated <strong>' + editorMode + '</strong> mode.');
+          doc.showActionMessage(document.documentElement, 'Activated <strong>' + editorMode + '</strong> mode.');
         }
 
         if (!document.getElementById('document-editor')) {
@@ -8272,7 +8260,7 @@ WHERE {\n\
 
                 case 'selector':
                   window.history.replaceState({}, null, selectorIRI);
-                  DO.U.showActionMessage(document.documentElement, 'Copy URL from address bar')
+                  doc.showActionMessage(document.documentElement, 'Copy URL from address bar')
                   // util.copyTextToClipboard(encodeURI(selectorIRI));
                   break;
 
