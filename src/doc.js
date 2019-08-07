@@ -30,7 +30,10 @@ module.exports = {
   getDocumentStatusHTML,
   buttonClose,
   showTimeMap,
-  getResourceInfo
+  getResourceInfo,
+  createImmutableResource,
+  createMutableResource,
+  updateMutableResource
 }
 
 function domToString (node, options = {}) {
@@ -519,6 +522,7 @@ function setDocumentRelation(rootNode, data, options) {
   var h = [];
 
   var dl = rootNode.querySelector('#' + options.id);
+  var dd;
 
   data.forEach(function(d){
     var documentRelation = '<dd>' + template.createRDFaHTML(d) + '</dd>';
@@ -617,6 +621,7 @@ function getDocumentStatusHTML(rootNode, options) {
   options['id'] = ('id' in options) ? options.id : 'document-status';
   var subjectURI = ('subjectURI' in options) ? ' about="' + options.subjectURI + '"' : '';
   var typeLabel = '', typeOf = '';
+  var definitionTitle;
 
   switch(options.type) {
     default:
@@ -775,5 +780,160 @@ function getResourceInfo(data, options) {
       Config['ResourceInfo'] = info;
 
       return info;
+  });
+}
+
+function createImmutableResource(url, data, options) {
+  if(!url) return;
+
+  var uuid = util.generateUUID();
+  var containerIRI = url.substr(0, url.lastIndexOf('/') + 1);
+  var immutableURL = containerIRI + uuid;
+
+  var rootNode = document.documentElement.cloneNode(true);
+
+  var date = new Date();
+  rootNode = setDate(rootNode, { 'id': 'document-created', 'property': 'schema:dateCreated', 'title': 'Created', 'datetime': date });
+
+  var resourceState = rootNode.querySelector('#' + 'document-resource-state');
+  if(!resourceState){
+    var rSO = {
+      'id': 'document-resource-state',
+      'subjectURI': '',
+      'type': 'mem:Memento',
+      'mode': 'create'
+    }
+
+    rootNode = setDocumentStatus(rootNode, rSO);
+  }
+
+  var r, o;
+
+  o = { 'id': 'document-identifier', 'title': 'Identifier' };
+  r = { 'rel': 'owl:sameAs', 'href': immutableURL };
+  rootNode = setDocumentRelation(rootNode, [r], o);
+
+  o = { 'id': 'document-original', 'title': 'Original resource' };
+  if (Config.OriginalResourceInfo['state'] == Config.Vocab['memMemento']['@id']
+    && Config.OriginalResourceInfo['profile'] == Config.Vocab['memOriginalResource']['@id']) {
+    r = { 'rel': 'mem:original', 'href': immutableURL };
+  }
+  else {
+    r = { 'rel': 'mem:original', 'href': url };
+  }
+  rootNode = setDocumentRelation(rootNode, [r], o);
+
+  //TODO document-timegate
+
+  var timeMapURL = Config.OriginalResourceInfo['timemap'] || url + '.timemap';
+  o = { 'id': 'document-timemap', 'title': 'TimeMap' };
+  r = { 'rel': 'mem:timemap', 'href': timeMapURL };
+  rootNode = setDocumentRelation(rootNode, [r], o);
+
+  // Create URI-M
+  data = getDocument(rootNode);
+  fetcher.processSave(containerIRI, uuid, data, options);
+
+
+  var timeMapURL = Config.OriginalResourceInfo['timemap'] || url + '.timemap';
+
+
+  //Update URI-R
+  if (Config.OriginalResourceInfo['state'] != Config.Vocab['memMemento']['@id']) {
+    setDate(document, { 'id': 'document-created', 'property': 'schema:dateCreated', 'title': 'Created', 'datetime': date });
+
+    o = { 'id': 'document-identifier', 'title': 'Identifier' };
+    r = { 'rel': 'owl:sameAs', 'href': url };
+    setDocumentRelation(document, [r], o);
+
+    o = { 'id': 'document-latest-version', 'title': 'Latest Version' };
+    r = { 'rel': 'mem:memento rel:latest-version', 'href': immutableURL };
+    setDocumentRelation(document, [r], o);
+
+    if(Config.OriginalResourceInfo['latest-version']) {
+      o = { 'id': 'document-predecessor-version', 'title': 'Predecessor Version' };
+      r = { 'rel': 'mem:memento rel:predecessor-version', 'href': Config.OriginalResourceInfo['latest-version'] };
+      setDocumentRelation(document, [r], o);
+    }
+
+    //TODO document-timegate
+
+    o = { 'id': 'document-timemap', 'title': 'TimeMap' };
+    r = { 'rel': 'mem:timemap', 'href': timeMapURL };
+    setDocumentRelation(document, [r], o);
+
+    // Create URI-R
+    data = getDocument();
+    fetcher.processSave(url, null, data, options);
+  }
+
+
+  //Update URI-T
+  var insertBGP = '@prefix mem: <http://mementoweb.org/ns#> .\n\
+@prefix schema: <http://schema.org/> .\n\
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\
+<' + url + '> mem:memento <' + immutableURL + '> .\n\
+<' + immutableURL + '> schema:dateCreated "' + date.toISOString() + '"^^xsd:dateTime .';
+
+  fetcher.updateTimeMap(timeMapURL, insertBGP).then(() =>{
+    showTimeMap(null, timeMapURL)
+  });
+
+  getResourceInfo(null, { 'mode': 'update' });
+}
+
+function createMutableResource(url, data, options) {
+  if(!url) return;
+
+  setDate(document, { 'id': 'document-created', 'property': 'schema:dateCreated', 'title': 'Created' } );
+
+  var uuid = util.generateUUID();
+  var containerIRI = url.substr(0, url.lastIndexOf('/') + 1);
+  var mutableURL = containerIRI + uuid;
+
+  var r, o;
+
+  o = { 'id': 'document-identifier', 'title': 'Identifier' };
+  r = { 'rel': 'owl:sameAs', 'href': mutableURL };
+  setDocumentRelation(document, [r], o);
+
+  o = { 'id': 'document-latest-version', 'title': 'Latest Version' };
+  r = { 'rel': 'rel:latest-version', 'href': mutableURL };
+  setDocumentRelation(document, [r], o);
+
+  if(Config.OriginalResourceInfo['latest-version']) {
+    o = { 'id': 'document-predecessor-version', 'title': 'Predecessor Version' };
+    r = { 'rel': 'rel:predecessor-version', 'href': Config.OriginalResourceInfo['latest-version'] };
+    setDocumentRelation(document, [r], o);
+  }
+
+  data = getDocument();
+  fetcher.processSave(containerIRI, uuid, data, options);
+
+
+  o = { 'id': 'document-identifier', 'title': 'Identifier' };
+  r = { 'rel': 'owl:sameAs', 'href': url };
+  setDocumentRelation(document, [r], o);
+
+  data = getDocument();
+  fetcher.processSave(url, null, data, options).then(() => {
+    getResourceInfo(null, { 'mode': 'update' });
+  });
+}
+
+function updateMutableResource(url, data, options) {
+  if(!url) return;
+  options = options || {};
+
+  if (!('datetime' in options)) {
+    options['datetime'] = new Date();
+  }
+
+  setDate(document, { 'id': 'document-modified', 'property': 'schema:dateModified', 'title': 'Modified', 'datetime': options.datetime } );
+  setEditSelections(options);
+
+  data = getDocument();
+  fetcher.processSave(url, null, data, options).then(() => {
+    getResourceInfo(null, { 'mode': 'update' });
   });
 }
