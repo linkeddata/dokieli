@@ -2872,7 +2872,7 @@ var DO = {
 
       // Create URI-M
       data = doc.getDocument(rootNode);
-      DO.U.processSave(containerIRI, uuid, data, options);
+      fetcher.processSave(containerIRI, uuid, data, options);
 
 
       var timeMapURL = DO.C.OriginalResourceInfo['timemap'] || url + '.timemap';
@@ -2904,7 +2904,7 @@ var DO = {
 
         // Create URI-R
         data = doc.getDocument();
-        DO.U.processSave(url, null, data, options);
+        fetcher.processSave(url, null, data, options);
       }
 
 
@@ -2948,7 +2948,7 @@ var DO = {
       }
 
       data = doc.getDocument();
-      DO.U.processSave(containerIRI, uuid, data, options);
+      fetcher.processSave(containerIRI, uuid, data, options);
 
 
       o = { 'id': 'document-identifier', 'title': 'Identifier' };
@@ -2956,7 +2956,7 @@ var DO = {
       DO.U.setDocumentRelation(document, [r], o);
 
       data = doc.getDocument();
-      DO.U.processSave(url, null, data, options).then(() => {
+      fetcher.processSave(url, null, data, options).then(() => {
         DO.U.getResourceInfo(null, { 'mode': 'update' });
       });
     },
@@ -2973,44 +2973,9 @@ var DO = {
       doc.setEditSelections(options);
 
       data = doc.getDocument();
-      DO.U.processSave(url, null, data, options).then(() => {
+      fetcher.processSave(url, null, data, options).then(() => {
         DO.U.getResourceInfo(null, { 'mode': 'update' });
       });
-    },
-
-    processSave: function(url, slug, data, options) {
-      options = options || {};
-      var request = (slug)
-                    ? fetcher.postResource(url, slug, data)
-                    : fetcher.putResource(url, data)
-
-      return request
-        .then(response => {
-          doc.showActionMessage(document.documentElement, 'Saved')
-          return response
-        })
-        .catch(error => {
-          console.log(error)
-
-          let message
-
-          switch (error.status) {
-            case 401:
-              message = 'Need to authenticate before saving'
-              break
-
-            case 403:
-              message = 'You are not authorized to save'
-              break
-
-            case 405:
-            default:
-              message = 'Server doesn\'t allow this resource to be rewritten'
-              break
-          }
-
-          doc.showActionMessage(document.documentElement, message)
-        })
     },
 
     replyToResource: function replyToResource (e, iri) {

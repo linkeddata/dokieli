@@ -28,7 +28,8 @@ module.exports = {
   postResource,
   putResource,
   putResourceACL,
-  postActivity
+  postActivity,
+  processSave
 }
 
 function setAcceptRDFTypes(options) {
@@ -602,5 +603,40 @@ function postActivity(url, slug, data, options) {
               return postResource(url, slug, data, preferredContentType + profile)
             })
       }
+    })
+}
+
+function processSave(url, slug, data, options) {
+  options = options || {};
+  var request = (slug)
+                ? postResource(url, slug, data)
+                : putResource(url, data)
+
+  return request
+    .then(response => {
+      doc.showActionMessage(document.documentElement, 'Saved')
+      return response
+    })
+    .catch(error => {
+      console.log(error)
+
+      let message
+
+      switch (error.status) {
+        case 401:
+          message = 'Need to authenticate before saving'
+          break
+
+        case 403:
+          message = 'You are not authorized to save'
+          break
+
+        case 405:
+        default:
+          message = 'Server doesn\'t allow this resource to be rewritten'
+          break
+      }
+
+      doc.showActionMessage(document.documentElement, message)
     })
 }
