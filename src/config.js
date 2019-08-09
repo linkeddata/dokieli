@@ -46,6 +46,7 @@ module.exports = {
   LocalDocument: (document.location.protocol == 'file:'),
   UseLocalStorage: false,
   AutoSave: {
+    Methods: ['localStorage', 'http'],
     Timer: 60000,
     Items: {}
   },
