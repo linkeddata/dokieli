@@ -11,7 +11,6 @@ module.exports = {
       DO.U.initUser();
       DO.U.initCurrentStylesheet();
       DO.U.setPolyfill();
-      DO.U.setDocRefType();
       DO.U.showRefs();
       DO.U.highlightItems();
       DO.U.showAsTabs();
@@ -139,6 +138,22 @@ module.exports = {
     "table": "𝄜",
     "video": "🎞"
   },
+
+  DocumentDoItems: [
+    'document-items',
+    'embed-data-entry',
+    'create-new-document',
+    'open-document',
+    'source-view',
+    'save-as-document',
+    'user-identity-input',
+    'resource-browser',
+    'share-resource',
+    'reply-to-resource',
+    'memento-document',
+    'graph-view',
+    'robustify-links'
+  ],
 
   DocumentItems: [
     'authors',
