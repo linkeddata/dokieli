@@ -28,9 +28,13 @@ margin-top:0 !important;
 }
 }
 
-@media screen and (max-width: 840px){
+@media screen and (min-width: 75em){
 aside.note article {
-position: static !important;
+position: absolute !important;
+left: auto;
+right: -27%;
+z-index: 1;
+width: 25%;
 }
 }
 
@@ -486,14 +490,12 @@ position:static !important;
 }
 
 aside.note article {
-position: absolute !important;
-left: auto;
-right: -27%;
-z-index: 1;
-width: 25%;
+position:static;
+width:auto;
 font-size: 0.8em;
 text-align: left;
 }
+
 aside.note aside.note {
 position:static;
 margin-top:1em;
