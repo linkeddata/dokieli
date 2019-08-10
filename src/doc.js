@@ -938,3 +938,17 @@ function updateMutableResource(url, data, options) {
     getResourceInfo(null, { 'mode': 'update' });
   });
 }
+
+function removeNodesWithIds(ids) {
+  if (typeof ids === 'undefined') { return }
+
+  ids = (Array.isArray(ids)) ? ids : [ids];
+
+  ids.forEach(function(id) {
+console.log(id)
+    var node = document.getElementById(id);
+    if(node) {
+      node.parentNode.removeChild(node);
+    }
+  });
+}
