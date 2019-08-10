@@ -407,7 +407,7 @@ var DO = {
                           return iri;
                         },
                         function(reason){
-                          console.log(reason);
+                          // console.log(reason);
                           console.log(object + ': object is unreachable');
                         });
                     }
@@ -1144,7 +1144,7 @@ var DO = {
       });
     },
 
-    showDocumentMenu: function showDocumentMenu (e) {
+    showDocumentMenu: function (e) {
       if (e) {
         e.preventDefault();
         e.stopPropagation();
@@ -1164,7 +1164,7 @@ var DO = {
           dMenuButton.setAttribute('title', 'Hide Menu');
           dMenuButton.innerHTML = template.Icon[".fas.fa-minus"];
           dMenu.classList.add('on');
-          body.classList.add('on-document-menu');
+          // body.classList.add('on-document-menu');
 
           auth.showUserSigninSignout(dHead);
           DO.U.showDocumentDo(dInfo);
@@ -1191,29 +1191,23 @@ var DO = {
       var dMenuButton = dMenu.querySelector('button');
 
       dMenu.classList.remove('on');
-      var sections = dMenu.querySelectorAll('section');
-      for (var i = 0; i < sections.length; i++) {
-        if(sections[i].id != 'user-info' && !sections[i].querySelector('button.signin-user')) {
-          sections[i].parentNode.removeChild(sections[i]);
-        }
-      };
+      // var sections = dMenu.querySelectorAll('section');
+      // for (var i = 0; i < sections.length; i++) {
+      //   if(sections[i].id != 'user-info' && !sections[i].querySelector('button.signin-user')) {
+      //     sections[i].parentNode.removeChild(sections[i]);
+      //   }
+      // };
       var buttonSigninUser = dMenu.querySelector('button.signin-user');
       if(buttonSigninUser) {
         dMenu.querySelector('button.signin-user').disabled = false;
       }
-      body.classList.remove('on-document-menu');
+      // body.classList.remove('on-document-menu');
       dMenuButton.classList.remove('hide');
       dMenuButton.classList.add('show');
       dMenuButton.setAttribute('title', 'Open Menu');
       dMenuButton.innerHTML = template.Icon[".fas.fa-bars"];
 
-      var removeElementsList = ['document-items', 'embed-data-entry', 'create-new-document', 'open-document', 'source-view', 'save-as-document', 'user-identity-input', 'resource-browser', 'share-resource', 'reply-to-resource', 'memento-document', 'graph-view', 'robustify-links'];
-      removeElementsList.forEach(function(id) {
-        var element = document.getElementById(id);
-        if(element) {
-          element.parentNode.removeChild(element);
-        }
-      });
+      //doc.removeNodesWithIds(Config.DocumentDoItems);
     },
 
     setPolyfill: function() {
@@ -1661,10 +1655,12 @@ var DO = {
 
     showDocumentItems: function() {
       var documentItems = document.getElementById('document-items');
-      if (!documentItems) {
-        document.documentElement.appendChild(util.fragmentFromString('<aside id="document-items" class="do on">' + DO.C.Button.Close + '</aside>'));
-        documentItems = document.getElementById('document-items');
+      if (documentItems) {
+        documentItems.parentNode.removeChild(documentItems);
       }
+
+      document.documentElement.appendChild(util.fragmentFromString('<aside id="document-items" class="do on">' + DO.C.Button.Close + '</aside>'));
+      documentItems = document.getElementById('document-items');
 
       var sections = document.querySelectorAll('h1 ~ div > section:not([class~="slide"]):not([id^=table-of]):not([id^=list-of])');
 

@@ -655,8 +655,15 @@ height:1.5em;
 vertical-align:middle;
 }
 
-#document-menu > header {
+#document-menu:not([class~=on]) > header,
+#document-menu:not([class~=on]) > div,
+#document-menu:not([class~=on]) > footer {
 display:none;
+}
+#document-menu.on > header,
+#document-menu.on > div,
+#document-menu.on > footer {
+display:block;
 }
 #document-menu > header,
 #document-menu > footer {
@@ -667,13 +674,9 @@ font-size:inherit !important;
 line-height:inherit !important;
 }
 #document-menu > footer {
-display:none;
 margin:1em 0 1em 0 !important;
 }
-#document-menu.on > header,
-#document-menu.on > footer {
-display:block;
-}
+
 
 #document-menu > header,
 #document-menu > div,
