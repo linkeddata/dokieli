@@ -86,7 +86,7 @@ async function showUserSigninSignout (node) {
   }
   // was LoggedOut as OIDC
   if (!webId && Config.User.IRI && Config.User.OIDC) {
-    storage.removeStorageProfile()
+    storage.removeLocalStorageProfile()
 
     Config.User = {
       IRI: null,
@@ -120,7 +120,7 @@ async function showUserSigninSignout (node) {
           await solidAuth.logout();
         }
 
-        storage.removeStorageProfile()
+        storage.removeLocalStorageProfile()
 
         Config.User = {
           IRI: null,
@@ -351,7 +351,7 @@ function afterSignIn () {
         uI.innerHTML = getUserSignedInHTML()
       }
 
-      return storage.updateStorageProfile(Config.User)
+      return storage.updateLocalStorageProfile(Config.User)
     })
     .catch(function(e) {
       return Promise.resolve();
