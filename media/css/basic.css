@@ -77,6 +77,10 @@ header nav li:first-child:before {
 content:"";
 }
 
+article {
+padding:0.5em;
+}
+
 h1 {
 font-size: 2em;
 text-align: center;
@@ -136,18 +140,6 @@ content:counter(section)"." counter(sub-section) "." counter(sub-sub-section) ".
 }
 *[typeof*="ScholarlyArticle"] section[inlist] > h6:before {
 content:counter(section)"." counter(sub-section) "." counter(sub-sub-section) "." counter(sub-sub-sub-section) "." counter(sub-sub-sub-sub-section) "\00a0\00a0\00a0";
-}
-
-article > article,
-section,
-dl[id^="document-"],
-*[id^=table-of-],
-*[id^=list-of-] {
-margin: 0 0.5em;
-}
-section section {
-padding:0;
-margin:0;
 }
 
 main form {
@@ -974,26 +966,11 @@ h1 {
 font-size: 2em;
 }
 
-article > article,
-section {
-margin: 1em auto;
-}
-
 #dokieli-features,
 #dokieli-read-write-web,
 #figure-dokieli-overview,
 body > footer {
 max-width:99.5vw;
-}
-
-dl[id^="document-"], #authors,
-*[id^=table-of-],
-*[id^=list-of-],
-body > footer > *,
-hr,
-aside {
-/*max-width: 50em;*/
-margin: 0 auto;
 }
 
 *[id^=table-of-] + div,
