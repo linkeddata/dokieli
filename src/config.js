@@ -11,6 +11,7 @@ module.exports = {
       DO.U.initUser();
       DO.U.initCurrentStylesheet();
       DO.U.setPolyfill();
+      DO.U.setDocRefType();
       DO.U.showRefs();
       DO.U.highlightItems();
       DO.U.showAsTabs();
