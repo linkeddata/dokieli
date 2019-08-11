@@ -5723,8 +5723,13 @@ WHERE {\n\
             authors.addEventListener('click', function(e){
               var button = e.target.closest('button.add-author-name');
               if(button){
-                e.target.closest('dd').classList.add('selected');
+                e.target.closest('dd').removeAttribute('class');
+                var n = e.target.closest('.do');
+                if (n) {
+                  n.removeAttribute('class')
+                }
                 button.parentNode.removeChild(button);
+
                 //XXX This is only used to update the graph. Cheaper to add author triple.
                 doc.getResourceInfo();
               }
