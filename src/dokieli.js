@@ -5702,9 +5702,11 @@ WHERE {\n\
               authors = document.getElementById(documentAuthors);
             }
 
-            var documentAuthorName = document.getElementById(authorName);
+            var documentURL = uri.stripFragmentFromString(document.location.href);
 
-            var sa = DO.C['ResourceInfo'].graph.schemaauthor;
+            var documentAuthorName = document.getElementById(authorName);
+            var s = DO.C['ResourceInfo'].graph.child(documentURL);
+            var sa = s.schemaauthor;
 
             //If not one of the authors, offer to add self
             if(DO.C.User.IRI && sa.indexOf(DO.C.User.IRI) < 0){
@@ -5723,6 +5725,8 @@ WHERE {\n\
               if(button){
                 e.target.closest('dd').classList.add('selected');
                 button.parentNode.removeChild(button);
+                //XXX This is only used to update the graph. Cheaper to add author triple.
+                doc.getResourceInfo();
               }
 
               if (e.target.closest('button.invite-author')) {
