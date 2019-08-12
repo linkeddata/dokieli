@@ -390,8 +390,11 @@ var DO = {
                   else if (DO.C.ResourceInfo.graph.rellatestversion && targetPathURL == DO.U.getPathURL(DO.C.ResourceInfo.graph.rellatestversion)) {
                     options['targetInMemento'] = true;
                   }
+                  else if (DO.C.ResourceInfo.graph.owlsameAs && DO.C.ResourceInfo.graph.owlsameAs.at(0) == targetPathURL) {
+                    options['targetInSameAs'] = true;
+                  }
 
-                  if (options['targetInOriginalResource'] || options['targetInMemento']){
+                  if (options['targetInOriginalResource'] || options['targetInMemento'] || options['targetInSameAs']){
                     var object = s.asobject.at(0);
 
                     DO.C.Notification[url]['Activities'].push(i);
@@ -4862,7 +4865,7 @@ WHERE {\n\
 // console.log(bodyText);
 
 // console.log(documentURL)
-        if (note.oahasTarget && !(note.oahasTarget.startsWith(documentURL) || 'targetInMemento' in options)){
+        if (note.oahasTarget && !(note.oahasTarget.startsWith(documentURL) || 'targetInMemento' in options || 'targetInSameAs' in options)){
           // return Promise.reject();
           return;
         }
