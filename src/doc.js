@@ -33,7 +33,9 @@ module.exports = {
   getResourceInfo,
   createImmutableResource,
   createMutableResource,
-  updateMutableResource
+  updateMutableResource,
+  buildReferences,
+  updateReferences
 }
 
 function domToString (node, options = {}) {
@@ -952,3 +954,69 @@ console.log(id)
     }
   });
 }
+
+function buildReferences(node, id, citation) {
+  if (!node) {
+    var nodeInsertLocation = selectArticleNode(document);
+    var section = '<section id="references"><h2>References</h2><div><ol></ol></div></section>';
+    nodeInsertLocation.insertAdjacentHTML('beforeend', section);
+  }
+
+  updateReferences();
+  node = document.querySelector('#references ol');
+
+  if(citation) {
+    var citationItem = '<li id="' + id + '">' + citation + '</li>';
+    node.insertAdjacentHTML('beforeend', citationItem);
+  }
+}
+
+function updateReferences(options){
+  options = options || {};
+  options['external'] = options.external || true;
+  options['internal'] = options.internal || false;
+
+  var references = document.querySelector('#references');
+  var referencesOl = references.querySelector('ol');
+  var citeA = document.querySelectorAll('body *:not([id="references"]) cite > a');
+  var uniqueCitations = [];
+  var lis = [];
+
+  var docURL = document.location.origin + document.location.pathname;
+
+  citeA.forEach(function(a){
+    if (uniqueCitations.indexOf(a.outerHTML) < 0) {
+      uniqueCitations.push(a.outerHTML);
+
+      // var rel = a.getAttribute('rel');
+      // var property = a.getAttribute('property');
+
+      if ((options.external && !a.href.startsWith(docURL + '#')) ||
+          (options.internal && a.href.startsWith(docURL + '#'))) {
+
+        var versionDate = a.getAttribute('data-versiondate');
+        var versionURL = a.getAttribute('data-versionurl');
+
+        //Create Robust Link
+        if(!versionDate && !versionURL
+           && (a.href.startsWith('http:') || a.href.startsWith('https:'))) {
+          // console.log(a);
+
+          // var aVersionDateURL = document.querySelector('a[href="' + a.href + '"][data-versiondate][data-versionurl]');
+          // if (aVersionDateURL){
+          //   a.setAttribute('data-versiondate', aVersionDateURL.getAttribute('data-versiondate'));
+          //   a.setAttribute('data-versionurl', aVersionDateURL.getAttribute('data-versionurl'));
+          // }
+
+          //DO.U.createRobustLink(a.href, a);
+        }
+
+        lis.push('<li><cite>' + a.textContent + '</cite>, <a href="' + a.href + '">' + a.href + '</a></li>');
+      }
+    }
+  })
+
+  var updatedList = util.fragmentFromString('<ol>' + lis.join('') + '</ol>');
+  referencesOl.parentNode.replaceChild(updatedList, referencesOl);
+}
+
