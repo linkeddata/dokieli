@@ -34,8 +34,10 @@ module.exports = {
   createImmutableResource,
   createMutableResource,
   updateMutableResource,
+  removeReferences,
   buildReferences,
-  updateReferences
+  updateReferences,
+  showRobustLinksDecoration
 }
 
 function domToString (node, options = {}) {
@@ -947,11 +949,18 @@ function removeNodesWithIds(ids) {
   ids = (Array.isArray(ids)) ? ids : [ids];
 
   ids.forEach(function(id) {
-console.log(id)
     var node = document.getElementById(id);
     if(node) {
       node.parentNode.removeChild(node);
     }
+  });
+}
+
+function removeReferences() {
+  var refs = document.querySelectorAll('body *:not([id="references"]) cite + .ref:not(.do)');
+
+  refs.forEach(r => {
+    r.parentNode.removeChild(r);
   });
 }
 
@@ -979,44 +988,181 @@ function updateReferences(options){
   var references = document.querySelector('#references');
   var referencesOl = references.querySelector('ol');
   var citeA = document.querySelectorAll('body *:not([id="references"]) cite > a');
-  var uniqueCitations = [];
+  var uniqueCitations = {};
   var lis = [];
 
   var docURL = document.location.origin + document.location.pathname;
 
+  var insertRef = function(cite, rId, refId, refLabel) {
+// console.log(cite);
+// console.log(rId);
+// console.log(refId);
+// console.log(refLabel)
+    var ref = '<span class="ref"> <span id="' + rId + '" class="ref-reference">' + Config.RefType[Config.DocRefType].InlineOpen + '<a href="#' + refId + '">' + refLabel + '</a>' + Config.RefType[Config.DocRefType].InlineClose + '</span></span>';
+    cite.insertAdjacentHTML('afterend', ref);
+  }
+
   citeA.forEach(function(a){
-    if (uniqueCitations.indexOf(a.outerHTML) < 0) {
-      uniqueCitations.push(a.outerHTML);
+    var ref, refId, refLabel, rId;
+    var cite = a.parentNode;
+    var jumpLink;
 
-      // var rel = a.getAttribute('rel');
-      // var property = a.getAttribute('property');
+    if ((options.external && !a.href.startsWith(docURL + '#')) ||
+        (options.internal && a.href.startsWith(docURL + '#'))) {
 
-      if ((options.external && !a.href.startsWith(docURL + '#')) ||
-          (options.internal && a.href.startsWith(docURL + '#'))) {
+      refId = uniqueCitations[a.outerHTML];
+      rId = 'r-' + util.generateAttributeId();
 
-        var versionDate = a.getAttribute('data-versiondate');
-        var versionURL = a.getAttribute('data-versionurl');
+      if (refId) {
+        refLabel = refId;
+        refId = 'ref-' + refId;
+// console.log(refId)
+// console.log(rId)
 
-        //Create Robust Link
-        if(!versionDate && !versionURL
-           && (a.href.startsWith('http:') || a.href.startsWith('https:'))) {
+        jumpLink = document.querySelector('#' + refId + ' .jumplink');
+// console.log(jumpLink)
+        if (jumpLink) {
+          var supAs = jumpLink.querySelectorAll('sup a');
+
+          var newJumpLink = [];
+          supAs.forEach((a, key) => {
+            newJumpLink.push(' <sup><a href="#' + uri.getFragmentFromString(a.href) + '">' + String.fromCharCode(key + 97) + '</a></sup>');
+          });
+          newJumpLink.push(' <sup><a href="#' + rId + '">' + String.fromCharCode(supAs.length + 97) + '</a></sup>');
+
+          newJumpLink = util.fragmentFromString('<span class="jumplink"><sup>^</sup>' + newJumpLink.join(' ') + '</span>');
+
+          jumpLink.parentNode.replaceChild(newJumpLink, jumpLink);
+
+          insertRef(cite, rId, refId, refLabel);
+        }
+      }
+      else {
+        var length = Object.keys(uniqueCitations).length;
+
+        uniqueCitations[a.outerHTML] = length + 1;
+
+        refLabel = (length + 1);
+        refId = 'ref-' + (length + 1);
+
+        var rel = a.getAttribute('rel');
+        // var property = a.getAttribute('property');
+        var versionDate = a.getAttribute('data-versiondate') || '';
+        var versionURL = a.getAttribute('data-versionurl') || '';
+        var title = a.getAttribute('title');
+        title = title ? ' title="' + title + '"' : '';
+
+        if(versionDate && versionURL) {
+           // && (a.href.startsWith('http:') || a.href.startsWith('https:'))) {
           // console.log(a);
 
-          // var aVersionDateURL = document.querySelector('a[href="' + a.href + '"][data-versiondate][data-versionurl]');
-          // if (aVersionDateURL){
-          //   a.setAttribute('data-versiondate', aVersionDateURL.getAttribute('data-versiondate'));
-          //   a.setAttribute('data-versionurl', aVersionDateURL.getAttribute('data-versionurl'));
-          // }
-
-          //DO.U.createRobustLink(a.href, a);
+          versionDate = ' data-versiondate="' + versionDate + '"';
+          versionURL = ' data-versionurl="' + versionURL + '"';
         }
 
-        lis.push('<li><cite>' + a.textContent + '</cite>, <a href="' + a.href + '">' + a.href + '</a></li>');
+        var anchor = '<a ' + versionDate + versionURL + ' href="' + a.href + '"' + title + '>' + a.href + '</a>';
+
+        var jumpLink = '<span class="jumplink"><sup><a href="#' + rId + '">^</a></sup></span>';
+
+        //FIXME: Better to add to an array and then insert but need to update the DOM before.
+        var li = '<li id="' + refId + '">' + jumpLink + ' <cite>' + a.textContent + '</cite>, <cite>' + anchor + '</cite></li>'
+        referencesOl.insertAdjacentHTML('beforeend', li);
+
+        insertRef(cite, rId, refId, refLabel);
       }
+
+      // cite.insertAdjacentHTML('afterend', ref);
     }
   })
+// console.log(uniqueCitations);
 
-  var updatedList = util.fragmentFromString('<ol>' + lis.join('') + '</ol>');
-  referencesOl.parentNode.replaceChild(updatedList, referencesOl);
+  // if (lis.length > 0) {
+  //   var updatedList = util.fragmentFromString('<ol>' + lis.join('') + '</ol>');
+  //   referencesOl.parentNode.replaceChild(updatedList, referencesOl);
+
+    // XXX: Expensive!
+    // document.querySelectorAll('#references cite > a[data-versionurl][data-originalurl').forEach(a => {
+    //   showRobustLinksDecoration(a.parentNode);
+    // })
 }
 
+function showRobustLinksDecoration(node) {
+  node = node || document;
+// console.log(node)
+  var nodes = node.querySelectorAll('[data-versionurl], [data-originalurl]');
+// console.log(nodes)
+  nodes.forEach(function(i){
+    if (i.nextElementSibling && i.nextElementSibling.classList.contains('do') && i.nextElementSibling.classList.contains('robustlinks')) {
+      return;
+    }
+
+    var href = i.getAttribute('href');
+
+    var originalurl = i.getAttribute('data-originalurl');
+    originalurl = (originalurl) ? originalurl.trim() : undefined;
+    originalurl = (originalurl) ? '<span>Original</span><span><a href="' + originalurl + '" target="_blank">' + originalurl + '</a></span>' : '';
+
+    var versionurl = i.getAttribute('data-versionurl');
+    versionurl = (versionurl) ? versionurl.trim() : undefined;
+    var versiondate = i.getAttribute('data-versiondate');
+    var nearlinkdateurl = '';
+
+    if (versiondate) {
+      versiondate = versiondate.trim();
+      nearlinkdateurl = 'http://timetravel.mementoweb.org/memento/' + versiondate.replace(/\D/g, '') + '/' + href;
+      nearlinkdateurl = '<span>Near Link Date</span><span><a href="' + nearlinkdateurl + '" target="_blank">' + versiondate + '</a></span>'
+    }
+    else if (versionurl) {
+      versiondate = versionurl;
+    }
+
+    versionurl = (versionurl) ? '<span>Version</span><span><a href="' + versionurl + '" target="_blank">' + versiondate + '</a></span>' : '';
+
+    var citations = Object.keys(Config.Citation).concat(Config.Vocab["schemacitation"]["@id"]);
+    //FIXME: This is ultimately inaccurate because it should be obtained through RDF parser
+    var citation = '';
+    var citationLabels = [];
+    var iri;
+    var citationType;
+    var rel = i.getAttribute('rel');
+
+    if (rel) {
+      rel.split(' ').forEach(term=>{
+        if (Config.Citation[term]){
+          citationLabels.push(Config.Citation[term]);
+        }
+        else {
+          var s = term.split(':');
+          if (s.length == 2) {
+            citations.forEach(c=>{
+              if (s[1] == uri.getURLLastPath(c)) {
+                citationLabels.push(Config.Citation[c])
+              }
+            });
+          }
+        }
+      });
+
+      if(citationLabels.length > 0) {
+        var citationType = citationLabels.join(', ');
+        citation = '<span>Citation Reason</span><span>' + citationType + '</span>';
+      }
+    }
+
+    i.insertAdjacentHTML('afterend', '<span class="do robustlinks"><button title="Show Robust Links">🔗</button><span>' + citation + originalurl + versionurl + nearlinkdateurl + '</span></span>');
+  });
+
+  document.querySelectorAll('.do.robustlinks').forEach(function(i){
+    i.addEventListener('click', function(e){
+      if (e.target.closest('button')) {
+        var pN = e.target.parentNode;
+        if (pN.classList.contains('on')){
+          pN.classList.remove('on');
+        }
+        else {
+          pN.classList.add('on');
+        }
+      }
+    });
+  });
+}

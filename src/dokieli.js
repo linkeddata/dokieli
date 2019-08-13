@@ -297,7 +297,7 @@ var DO = {
                  resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Dislike') > -1){
                 if(s.asobject && s.asobject.at(0)) {
                   if(s.ascontext && s.ascontext.at(0)){
-                    if(DO.U.getPathURL(s.asobject.at(0)) == currentPathURL) {
+                    if(uri.getPathURL(s.asobject.at(0)) == currentPathURL) {
                       var context = s.ascontext.at(0);
                       return DO.U.positionInteraction(context).then(
                         function(iri){
@@ -367,7 +367,7 @@ var DO = {
                 }
               }
               else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Relationship') > -1){
-                if(s.assubject && s.assubject.at(0) && s.asrelationship && s.asrelationship.at(0) && s.asobject && s.asobject.at(0) && DO.U.getPathURL(s.asobject.at(0)) == currentPathURL) {
+                if(s.assubject && s.assubject.at(0) && s.asrelationship && s.asrelationship.at(0) && s.asobject && s.asobject.at(0) && uri.getPathURL(s.asobject.at(0)) == currentPathURL) {
                   var subject = s.assubject.at(0);
                   return DO.U.positionInteraction(subject).then(
                     function(iri){
@@ -382,12 +382,12 @@ var DO = {
                 if(s.asobject && s.asobject.at(0) && s.astarget && s.astarget.at(0)) {
                   var options = {};
 
-                  var targetPathURL = DO.U.getPathURL(s.astarget.at(0));
+                  var targetPathURL = uri.getPathURL(s.astarget.at(0));
 
                   if (targetPathURL == currentPathURL) {
                     options['targetInOriginalResource'] = true;
                   }
-                  else if (DO.C.ResourceInfo.graph.rellatestversion && targetPathURL == DO.U.getPathURL(DO.C.ResourceInfo.graph.rellatestversion)) {
+                  else if (DO.C.ResourceInfo.graph.rellatestversion && targetPathURL == uri.getPathURL(DO.C.ResourceInfo.graph.rellatestversion)) {
                     options['targetInMemento'] = true;
                   }
                   else if (DO.C.ResourceInfo.graph.owlsameAs && DO.C.ResourceInfo.graph.owlsameAs.at(0) == targetPathURL) {
@@ -435,7 +435,7 @@ var DO = {
                   }
                 }
               }
-              else if(resourceTypes.indexOf('http://www.w3.org/ns/oa#Annotation') > -1 && DO.U.getPathURL(s.oahasTarget) == currentPathURL) {
+              else if(resourceTypes.indexOf('http://www.w3.org/ns/oa#Annotation') > -1 && uri.getPathURL(s.oahasTarget) == currentPathURL) {
 
                 return DO.U.showAnnotation(i, s);
               }
@@ -1036,6 +1036,7 @@ var DO = {
     //TODO: Refactor
     initDocumentActions: function() {
       doc.buttonClose();
+      doc.showRobustLinksDecoration();
 
       //Fugly
       function checkResourceInfo() {
@@ -1720,6 +1721,8 @@ var DO = {
                 var tol = document.getElementById(id);
                 if(tol) {
                   tol.parentNode.removeChild(tol);
+
+                  doc.removeReferences();
                 }
                 e.target.removeAttribute('checked');
                 window.history.replaceState(null, null, window.location.pathname);
@@ -1977,89 +1980,6 @@ var DO = {
       }
     },
 
-    showRobustLinksDecoration: function(node) {
-      node = node || document;
-// console.log(node)
-      var nodes = node.querySelectorAll('[data-versionurl], [data-originalurl]');
-// console.log(nodes)
-      nodes.forEach(function(i){
-        if (i.nextElementSibling && i.nextElementSibling.classList.contains('do') && i.nextElementSibling.classList.contains('robustlinks')) {
-          return;
-        }
-
-        var href = i.getAttribute('href');
-
-        var originalurl = i.getAttribute('data-originalurl');
-        originalurl = (originalurl) ? originalurl.trim() : undefined;
-        originalurl = (originalurl) ? '<span>Original</span><span><a href="' + originalurl + '" target="_blank">' + originalurl + '</a></span>' : '';
-
-        var versionurl = i.getAttribute('data-versionurl');
-        versionurl = (versionurl) ? versionurl.trim() : undefined;
-        var versiondate = i.getAttribute('data-versiondate');
-        var nearlinkdateurl = '';
-
-        if (versiondate) {
-          versiondate = versiondate.trim();
-          versiondateNumeric = versiondate.replace(/\D/g, '');
-          nearlinkdateurl = 'http://timetravel.mementoweb.org/memento/' + versiondateNumeric + '/' + href;
-          nearlinkdateurl = '<span>Near Link Date</span><span><a href="' + nearlinkdateurl + '" target="_blank">' + versiondate + '</a></span>'
-        }
-        else if (versionurl) {
-          versiondate = versionurl;
-        }
-
-        versionurl = (versionurl) ? '<span>Version</span><span><a href="' + versionurl + '" target="_blank">' + versiondate + '</a></span>' : '';
-
-
-        var citations = Object.keys(DO.C.Citation).concat(DO.C.Vocab["schemacitation"]["@id"]);
-        //FIXME: This is ultimately inaccurate because it should be obtained through RDF parser
-        var citation = '';
-        var citationLabels = [];
-        var iri;
-        var citationType;
-        var rel = i.getAttribute('rel');
-
-        if (rel) {
-          rel.split(' ').forEach(term=>{
-            if (DO.C.Citation[term]){
-              citationLabels.push(DO.C.Citation[term]);
-            }
-            else {
-              var s = term.split(':');
-              if (s.length == 2) {
-                citations.forEach(c=>{
-                  if (s[1] == DO.U.getURLLastPath(c)) {
-                    citationLabels.push(DO.C.Citation[c])
-                  }
-                });
-              }
-            }
-          });
-
-          if(citationLabels.length > 0) {
-            var citationType = citationLabels.join(', ');
-            citation = '<span>Citation Reason</span><span>' + citationType + '</span>';
-          }
-        }
-
-        i.insertAdjacentHTML('afterend', '<span class="do robustlinks"><button title="Show Robust Links">🔗</button><span>' + citation + originalurl + versionurl + nearlinkdateurl + '</span></span>');
-      });
-
-      document.querySelectorAll('.do.robustlinks').forEach(function(i){
-        i.addEventListener('click', function(e){
-          if (e.target.closest('button')) {
-            var pN = e.target.parentNode;
-            if (pN.classList.contains('on')){
-              pN.classList.remove('on');
-            }
-            else {
-              pN.classList.add('on');
-            }
-          }
-        });
-      });
-    },
-
     getOffset: function(el) {
       var box = el.getBoundingClientRect();
 
@@ -2072,10 +1992,6 @@ var DO = {
     forceTrailingSlash: function(aString) {
       if (aString.slice(-1) == "/") return aString;
       return aString + "/";
-    },
-
-    getUrlPath: function(aString) {
-      return aString.split("/");
     },
 
     exportAsHTML: function() {
@@ -2195,7 +2111,7 @@ var DO = {
                   node.setAttribute("data-versionurl", robustLinksUnique[url]["data-versionurl"]);
                   node.setAttribute("data-versiondate", robustLinksUnique[url]["data-versiondate"]);
 
-                  DO.U.showRobustLinksDecoration(node.closest('cite'));
+                  doc.showRobustLinksDecoration(node.closest('cite'));
 
                   robustLinkFound = true;
                 }
@@ -2218,7 +2134,7 @@ var DO = {
 
                   progress.innerHTML = '<a href="' + versionURL + '" target="_blank">' + template.Icon[".fas.fa-archive"] + '</a>';
 
-                  DO.U.showRobustLinksDecoration(node.closest('cite'));
+                  doc.showRobustLinksDecoration(node.closest('cite'));
                 })
                 .catch(function(r){
                   progress.innerHTML = template.Icon[".fas.fa-times-circle"] + ' Unable to archive. Try later.';
@@ -2290,7 +2206,7 @@ var DO = {
             }
 
             if (options.showRobustLinksDecoration) {
-              DO.U.showRobustLinksDecoration();
+              doc.showRobustLinksDecoration();
             }
 
             return o;
@@ -3200,7 +3116,7 @@ console.log(reason);
         var list = document.getElementById(id + '-ul');
         list.innerHTML = '';
 
-        var urlPath = DO.U.getUrlPath(url);
+        var urlPath = url.split("/");
         if(urlPath.length > 4){ // This means it's not the base URL
           urlPath.splice(-2,2);
           var prevUrl = DO.U.forceTrailingSlash(urlPath.join("/"));
@@ -3220,7 +3136,7 @@ console.log(reason);
             resourceTypes.push(type);
           });
 
-          var path = DO.U.getUrlPath(c);
+          var path = c.split("/");
           if(resourceTypes.indexOf('http://www.w3.org/ns/ldp#Container') > -1){
             var slug = path[path.length-2];
             containersLi.push('<li class="container"><input type="radio" name="resources" value="' + c + '" id="' + slug + '"/><label for="' + slug + '">' + slug + '</label></li>');
@@ -3720,7 +3636,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
         var newDocument = document.getElementById('create-new-document')
         var storageIRI = newDocument.querySelector('#' + id + '-' + action).innerText.trim()
-        var title = (storageIRI.length > 0) ? DO.U.getURLLastPath(storageIRI) : ''
+        var title = (storageIRI.length > 0) ? uri.getURLLastPath(storageIRI) : ''
         title = DO.U.generateLabelFromString(title);
 
         var rm = newDocument.querySelector('.response-message')
@@ -4087,45 +4003,13 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
             }
             else {
               href = ('iri' in options) ? uri.getProxyableIRI(options.iri) : document.location.href;
-              url = DO.U.getBaseURL(href) + matches[3].replace(/^\//g, '');
+              url = uri.getBaseURL(href) + matches[3].replace(/^\//g, '');
             }
             break;
           case 'base-url-relative':
             url = matches[3].replace(/^\//g, '');
             break;
         }
-      }
-
-      return url;
-    },
-
-    getBaseURL: function(url) {
-      if(typeof url === 'string') {
-        url = url.substr(0, url.lastIndexOf('/') + 1);
-      }
-
-      return url;
-    },
-
-    getPathURL: function(url) {
-      if(typeof url === 'string') {
-        var i  = url.indexOf('?');
-        if(i > -1) {
-          url = url.substr(0, i);
-        }
-        i = url.indexOf('#');
-        if(i > -1) {
-          url = url.substr(0, i);
-        }
-      }
-
-      return url;
-    },
-
-    getURLLastPath: function(url) {
-      if(typeof url === 'string') {
-        url = DO.U.getPathURL(url);
-        url = url.substr(url.lastIndexOf('/') + 1);
       }
 
       return url;
@@ -4145,7 +4029,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
     copyRelativeResources: function copyRelativeResources (storageIRI, relativeNodes) {
       var ref = '';
-      var baseURL = DO.U.getBaseURL(storageIRI);
+      var baseURL = uri.getBaseURL(storageIRI);
 
       for (var i = 0; i < relativeNodes.length; i++) {
         var node = relativeNodes[i];
@@ -4177,7 +4061,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           }
           else {
             pathToFile = DO.U.setBaseURL(fromURL, {'baseURLType': 'base-url-relative'});
-            fromURL = DO.U.getBaseURL(document.location.href) + fromURL
+            fromURL = uri.getBaseURL(document.location.href) + fromURL
             toURL = baseURL + pathToFile
           }
 
@@ -4227,6 +4111,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
     },
 
     getCitationHTML: function(citationGraph, citationURI, options) {
+      if (!citationGraph) { return; }
       options = options || {};
       // var citationId = ('citationId' in options) ? options.citationId : citationURI;
       var subject = citationGraph.child(citationURI);
@@ -7459,6 +7344,7 @@ WHERE {\n\
                       options['citationId'] = opts.url;
                       options['refId'] = refId;
 
+                      //TODO: offline mode
                       DO.U.getCitation(opts.url, options).then(function(citationGraph) {
                         var citationURI = '';
 // console.log(citationGraph)

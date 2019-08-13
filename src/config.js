@@ -19,7 +19,6 @@ module.exports = {
       DO.U.showTextQuoteSelector();
       DO.U.showDocumentInfo();
       DO.U.showFragment();
-      DO.U.showRobustLinksDecoration();
       DO.U.setDocumentMode();
       DO.U.showInboxNotifications();
       DO.U.initMath();
@@ -272,7 +271,8 @@ module.exports = {
     'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
     'as': 'https://www.w3.org/ns/activitystreams#',
     'oa': 'http://www.w3.org/ns/oa#',
-    'schema': 'http://schema.org/'
+    'schema': 'http://schema.org/',
+    'cito': 'http://purl.org/spar/cito/'
   },
 
   Vocab: {
