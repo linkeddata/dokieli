@@ -998,7 +998,7 @@ function updateReferences(options){
 // console.log(rId);
 // console.log(refId);
 // console.log(refLabel)
-    var ref = '<span class="ref"> <span id="' + rId + '" class="ref-reference">' + Config.RefType[Config.DocRefType].InlineOpen + '<a href="#' + refId + '">' + refLabel + '</a>' + Config.RefType[Config.DocRefType].InlineClose + '</span></span>';
+    var ref = '<span class="ref"> <span class="ref-reference" id="' + rId + '">' + Config.RefType[Config.DocRefType].InlineOpen + '<a href="#' + refId + '">' + refLabel + '</a>' + Config.RefType[Config.DocRefType].InlineClose + '</span></span>';
     cite.insertAdjacentHTML('afterend', ref);
   }
 
