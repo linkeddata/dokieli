@@ -72,7 +72,8 @@ module.exports = {
     EnableEditorButton: '<button class="editor-enable" title="Enable editor">' + template.Icon[".fas.fa-i-cursor.fa-2x"] + 'Edit</button>'
   },
   Button: {
-    Close: '<button class="close" title="Close">' + template.Icon[".fas.fa-times.fa-2x"] + '</button>'
+    Close: '<button class="close" title="Close">' + template.Icon[".fas.fa-times.fa-2x"] + '</button>',
+    Delete: '<button class="delete" title="Delete">' + template.Icon[".fas.fa-trash-alt"] + '</button>'
   },
 
   DOMNormalisation: {
