@@ -105,6 +105,7 @@ module.exports = {
     "code": "#",
     "dl": "☝",
     "dl#document-annotation-service": "※",
+    "dl#document-cited-by": "※",
     "dl#document-created": "📅",
     "dl#document-in-reply-to": "⮪",
     "dl#document-identifier": "🚩",
@@ -133,11 +134,22 @@ module.exports = {
     "section#acknowledgements": "☺",
     "section#conclusions": "∴",
     "section#keywords": "🏷",
-    "section#references": "☛",
+    "section#references": "※",
     "section#related-work": "⌘",
     "section#results": "∞",
     "table": "𝄜",
     "video": "🎞"
+  },
+
+  MotivationSigns: {
+    "oa:assessing": "✪",
+    "oa:bookmarking": "🔖",
+    "oa:commenting": "🗨",
+    "oa:describing": "※",
+    "oa:highlighting": "#",
+    "oa:linking": "※",
+    "oa:questioning": "?",
+    "oa:replying": "💬"
   },
 
   DocumentDoItems: [
