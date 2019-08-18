@@ -276,20 +276,19 @@ var DO = {
         function(g) {
           DO.C.Notification[url]['Graph'] = g;
 
+          var currentPathURL = window.location.origin + window.location.pathname;
+
 // console.log(g);
           var subjects = [];
           g.graph().toArray().forEach(function(t){
             subjects.push(t.subject.nominalValue);
           });
           subjects = util.uniqueArray(subjects);
-// console.log(subjects);
 
           subjects.forEach(function(i){
             var s = g.child(i)
-
+// console.log(s)
             var types = s.rdftype._array || [];
-
-            var currentPathURL = window.location.origin + window.location.pathname;
 
             if (types.length > 0) {
               var resourceTypes = types;
@@ -396,7 +395,6 @@ var DO = {
 
                   if (options['targetInOriginalResource'] || options['targetInMemento'] || options['targetInSameAs']){
                     var object = s.asobject.at(0);
-
                     DO.C.Notification[url]['Activities'].push(i);
                     DO.C.Activity[object] = {};
                     DO.C.Activity[object]['Graph'] = s;
@@ -405,18 +403,36 @@ var DO = {
                       return DO.U.showAnnotation(object, s);
                     }
                     else {
-                      return DO.U.positionInteraction(object, document.body, options).then(
-                        function(iri){
-                          return iri;
-                        },
-                        function(reason){
-                          // console.log(reason);
-                          console.log(object + ': object is unreachable');
-                        });
+                      s = s.child(object);
+
+                      Object.keys(DO.C.Citation).forEach(function(citationCharacterization){
+                        if(s[citationCharacterization]) {
+                          options['objectCitingEntity'] = true;
+                        }
+                      })
+
+                      if (options['objectCitingEntity']) {
+                        return DO.U.showCitations(object, s);
+                      }
+                      else {
+                        return DO.U.positionInteraction(object, document.body, options).then(
+                          function(iri){
+                            return iri;
+                          },
+                          function(reason){
+                            // console.log(reason);
+                            console.log(object + ': object is unreachable');
+                          });
+                      }
                     }
                   }
                 }
               }
+              // else if (resourceTypes.indexOf('http://purl.org/spar/cito/Citation')) {
+                //TODO:
+                // var iri = s.iri().toString();
+                // return DO.U.showCitations(iri, s)
+              // }
               else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Add') > -1) {
                 if(s.asobject && s.asobject.at(0)) {
                   var object = s.asobject.at(0);
@@ -1975,7 +1991,9 @@ var DO = {
 
         ids[i].addEventListener('mouseleave', function(e){
           var fragment = document.querySelector('[id="' + e.target.id + '"] > .do.fragment');
-          fragment.parentNode.removeChild(fragment);
+          if (fragment && fragment.parentNode) {
+            fragment.parentNode.removeChild(fragment);
+          }
         });
       }
     },
@@ -4566,8 +4584,9 @@ WHERE {\n\
     },
 
     positionNote: function(refId, refLabel, noteId) {
-      var ref = document.getElementById(refId);
-      var note = document.getElementById(noteId);
+      var ref =  document.querySelector('[id="' + refId + '"]');
+      var note = document.querySelector('[id="' + noteId + '"]');
+      ref = (ref) ? ref : doc.selectArticleNode(note);
 
       if (note.hasAttribute('style')) {
         note.removeAttribute('style');
@@ -4745,7 +4764,7 @@ WHERE {\n\
 // console.log(prefix);
 // console.log(suffix);
 // console.log('----')
-        var docRefType = '<sup class="ref-annotation"><a rel="cito:hasReplyFrom" href="#' + id + '" resource="' + noteIRI + '">' + refLabel + '</a></sup>';
+        var docRefType = '<sup class="ref-annotation"><a href="#' + id + '" rel="cito:hasReplyFrom" resource="' + noteIRI + '">' + refLabel + '</a></sup>';
 
         var containerNodeTextContent = containerNode.textContent;
         //XXX: Seems better?
@@ -4898,13 +4917,14 @@ WHERE {\n\
           DO.C.Activity[noteIRI]['Graph'] = g;
         }
       }
-      else {
+      //TODO: Refactor
+      else if ((note.asinReplyTo && note.asinReplyTo.at(0)) || (note.siocreplyof && note.siocreplyof.at(0))) {
         var inReplyTo, inReplyToRel;
-        if (note.asinReplyTo && note.asinReplyTo.at(0)) {
+        if (note.asinReplyTo.at(0)) {
           inReplyTo = note.asinReplyTo.at(0);
           inReplyToRel = 'as:inReplyTo';
         }
-        else if(note.siocreplyof && note.siocreplyof.at(0)) {
+        else if(note.siocreplyof.at(0)) {
           inReplyTo = note.siocreplyof.at(0);
           inReplyToRel = 'sioc:reply_of';
         }
@@ -4950,9 +4970,116 @@ WHERE {\n\
           DO.C.Activity[noteIRI]['Graph'] = g;
         }
         else {
-          console.log('Source is not an oa:Annotation and it is not a reply to');
+          console.log(noteIRI + ' is not an oa:Annotation, as:inReplyTo, sioc:reply_of');
         }
       }
+    },
+
+    showCitations: function(noteIRI, g, containerNode, options) {
+      // containerNode = containerNode || document.body;
+      options = options || {};
+
+      var documentURL = uri.stripFragmentFromString(document.location.href);
+
+      var citationGraph;
+
+      if (g.asobject && g.asobject.at(0)) {
+        citationGraph = g.child(g.asobject.at(0))
+        noteIRI = g.asobject.at(0);
+      }
+      else {
+        citationGraph = g.child(noteIRI);
+      }
+
+      DO.C.Activity[noteIRI]['Graph'] = g.child(noteIRI);
+
+// console.log(noteIRI)
+// console.log(note.toString())
+// console.log(note)
+
+      var id = String(Math.abs(util.hashCode(noteIRI)));
+      var refId;
+      var refLabel = id;
+
+      //TODO: cito:Citation
+      // note.citocitingEntity && note.citocitationCharacterization && note.citocitedEntity){
+
+      //XXX: Check for individual relation
+      var citationCharacterizations = [];
+
+      Object.keys(DO.C.Citation).forEach(function(citationCharacterization){
+        var citingEntity = noteIRI;
+        var citedEntity = citationGraph[citationCharacterization];
+        var citationCharacterizationLabel = DO.C.Citation[citationCharacterization] || citationCharacterization;
+
+        if(citedEntity) {
+          citationCharacterizations.push(citedEntity);
+
+          var noteData = {
+            'id': id,
+            'iri': noteIRI,
+            'type': 'ref-citation',
+            'mode': 'read',
+            'citingEntity': citingEntity,
+            'citationCharacterization': citationCharacterization,
+            'citedEntity': citedEntity
+          }
+// console.log(noteData)
+          var noteDataHTML = DO.U.createNoteDataHTML(noteData);
+
+          var asideNote = '\n\
+<aside class="note do">\n\
+<blockquote cite="' + citingEntity + '">'+ noteDataHTML + '</blockquote>\n\
+</aside>\n\
+';
+// console.log(asideNote)
+          var asideNode = util.fragmentFromString(asideNote);
+
+          //TODO: if document level citation, perhaps add dl to top inside of positionNote's aside?
+
+          var fragment, fragmentNode;
+
+          if (containerNode) {
+            refId = containerNode.closest('[id]');
+            refId = (refId) ? refId.id : undefined;
+
+            containerNode.appendChild(asideNode);
+            DO.U.positionNote(refId, refLabel, id);
+          }
+          else {
+            fragment = uri.getFragmentFromString(citedEntity);
+            fragmentNode = document.querySelector('[id="' + fragment + '"]');
+            if (fragmentNode) {
+              containerNode = fragmentNode;
+              refId = fragment;
+// console.log(fragment);
+// console.log(fragmentNode);
+              containerNode.appendChild(asideNode);
+              DO.U.positionNote(refId, refLabel, id);
+            }
+            else {
+              var dl;
+              var citingItem = '<li><a about="' + citingEntity + '" href="' + citingEntity + '" rel="' + citationCharacterization + '" resource="' + citedEntity + '">' + citingEntity + '</a> (' + citationCharacterizationLabel + ')</li>';
+
+              var documentCitedBy = 'document-cited-by';
+              var citedBy = document.getElementById(documentCitedBy);
+
+              if(citedBy) {
+                var ul = citedBy.querySelector('ul');
+                var spo = ul.querySelector('[about="' + citingEntity + '"][rel="' + citationCharacterization + '"][resource="' + citedEntity + '"]');
+                if (!spo) {
+                  ul.appendChild(util.fragmentFromString(citingItem));
+                }
+              }
+              else {
+                dl = '        <dl class="do" id="' + documentCitedBy + '"><dt>Cited By</dt><dd><ul>' + citingItem + '</ul></dl>';
+                doc.insertDocumentLevelHTML(document, dl, { 'id': documentCitedBy });
+              }
+            }
+          }
+        }
+      });
+
     },
 
     addInteraction: function(noteData) {
@@ -5183,11 +5310,32 @@ WHERE {\n\
           var body = (typeof n.body !== 'undefined' && n.body != '') ? ((citationURL) ? ', ' + n.body : n.body) : '';
 
           note = '\n\
-<dl about="#' + n.id +'" id="' + n.id +'" typeof="oa:Annotation">\n\
-  <dt><a href="#' + n.refId + '" rel="oa:hasTarget">' + n.refLabel + '</a><meta rel="oa:motivation" resource="' + motivatedByIRI + '" /></dt>\n\
-  <dd rel="oa:hasBody" resource="#n-' + n.id + '"><div datatype="rdf:HTML" property="rdf:value" resource="#n-' + n.id + '" typeof="oa:TextualBody">' + citationURL + body + '</div></dd>\n\
-</dl>\n\
+  <dl about="#' + n.id +'" id="' + n.id +'" typeof="oa:Annotation">\n\
+    <dt><a href="#' + n.refId + '" rel="oa:hasTarget">' + n.refLabel + '</a><meta rel="oa:motivation" resource="' + motivatedByIRI + '" /></dt>\n\
+    <dd rel="oa:hasBody" resource="#n-' + n.id + '"><div datatype="rdf:HTML" property="rdf:value" resource="#n-' + n.id + '" typeof="oa:TextualBody">' + citationURL + body + '</div></dd>\n\
+  </dl>\n\
 ';
+          break;
+
+        case 'ref-citation':
+          heading = '<h' + hX + '>Citation</h' + hX + '>';
+
+          var citingEntityLabel = ('citingEntityLabel' in n) ? n.citingEntityLabel : n.citingEntity;
+
+          var citationCharacterizationLabel = DO.C.Citation[n.citationCharacterization] || n.citationCharacterization;
+
+          var citation = '\n\
+  <dl about="' + n.citingEntity + '">\n\
+    <dt>Cited by</dt><dd><a href="' + n.citingEntity + '">' + citingEntityLabel + '</a></dd>\n\
+    <dt>Citation type</dt><dd><a href="' + n.citationCharacterization + '">' + citationCharacterizationLabel+ '</a></dd>\n\
+    <dt>Cites</dt><dd><a href="' + n.citedEntity + '" property="' + n.citationCharacterization + '">' + n.citedEntity + '</a></dd>\n\
+  </dl>\n\
+';
+
+          note = '<article about="' + aAbout + '" id="' + n.id + '" prefixes="cito: http://purl.org/spart/cito/"' + articleClass + '>\n\
+  ' + heading + '\n\
+  ' + citation + '\n\
+</article>';
           break;
 
         default:
@@ -7395,8 +7543,8 @@ WHERE {\n\
                           var notificationStatements = '    <dl about="' + citedBy + '">\n\
       <dt>Action</dt><dd>Citation</dd>\n\
       <dt>Cited by</dt><dd><a href="' + citedBy + '">' + citedBy + '</a></dd>\n\
-      <dt>Cites</dt><dd><a href="' + options.url + '" property="' + options.citationRelation + '">' + options.url + '</a></dd>\n\
       <dt>Citation type</dt><dd><a href="' + options.url + '">' + DO.C.Citation[options.citationRelation] + '</a></dd>\n\
+      <dt>Cites</dt><dd><a href="' + options.url + '" property="' + options.citationRelation + '">' + options.url + '</a></dd>\n\
     </dl>\n\
 ';
 
