@@ -311,7 +311,7 @@ function showActionMessage(node, message, options) {
 
 function selectArticleNode(node) {
   var x = node.querySelectorAll(Config.ArticleNodeSelectors.join(','));
-  return x[x.length - 1];
+  return (x && x.length > 0) ? x[x.length - 1] : document.body;
 }
 
 function insertDocumentLevelHTML(rootNode, h, options) {
