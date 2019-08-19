@@ -8,9 +8,9 @@ const template = require('./template')
 module.exports = {
   init: function() {
     if(document.body) {
+      DO.U.setPolyfill();
       DO.U.initUser();
       DO.U.initCurrentStylesheet();
-      DO.U.setPolyfill();
       DO.U.setDocRefType();
       DO.U.showRefs();
       DO.U.highlightItems();
@@ -33,6 +33,7 @@ module.exports = {
     LNCS: { InlineOpen: '[', InlineClose: ']' },
     ACM: { InlineOpen: '[', InlineClose: ']' }
   },
+  VerifyCitation: true,
   Stylesheets: [],
   User: {
     IRI: null,
@@ -141,7 +142,7 @@ module.exports = {
     "video": "🎞"
   },
 
-  MotivationSigns: {
+  MotivationSign: {
     "oa:assessing": "✪",
     "oa:bookmarking": "🔖",
     "oa:commenting": "🗨",
