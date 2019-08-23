@@ -260,16 +260,19 @@ display:block;
 
 article [about^="#"][typeof="schema:ViewAction"]:before,
 article [href^="#"][typeof="schema:ViewAction"]:before,
-article [resource^="#"][typeof="schema:ViewAction"]:before{
-content:"#";
+article [resource^="#"][typeof="schema:ViewAction"]:before {
 -webkit-appearance: button;
 -moz-appearance: button;
 appearance: button;
-margin-right:0.25em;
 width:1.5em;
 text-align: center;
 color:#000;
 font-weight:bold;
+}
+
+article [typeof="schema:ViewAction"]:before {
+margin-right:0.25em;
+content:"#";
 }
 
 progress { margin:0 1em; }
@@ -1304,8 +1307,9 @@ margin-top:0.5em;
 .do.robustlinks.on > span {
 display: inline-block;
 position: absolute;
-top: 0;
+top: 1.2em;
 right: -20em;
+z-index:2147483647;
 }
 
 aside.do.on button.robustify {
