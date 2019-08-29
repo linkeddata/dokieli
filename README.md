@@ -69,11 +69,11 @@ explains dokieli's principles, architectural and design patterns.
 ## Screencasts
 Also available on https://dokie.li/ (with captions):
 
-* Overview: http://dokie.li/media/video/dokieli.webm (a little old, see shorter/newer Annotation below)
-* Annotation: http://dokie.li/media/video/dokieli-annotation.webm
-* Share: http://dokie.li/media/video/dokieli-share.webm
-* Citation: http://dokie.li/media/video/dokieli-citation.webm
-* Sparqlines: http://dokie.li/media/video/dokieli.webm (see also [article](http://csarven.ca/sparqlines))
+* Overview: https://dokie.li/media/video/dokieli.webm (a little old, see shorter/newer Annotation below)
+* Annotation: https://dokie.li/media/video/dokieli-annotation.webm
+* Share: https://dokie.li/media/video/dokieli-share.webm
+* Citation: https://dokie.li/media/video/dokieli-citation.webm
+* Sparqlines: https://dokie.li/media/video/dokieli.webm (see also [article](http://csarven.ca/sparqlines))
 
 
 ## Examples
