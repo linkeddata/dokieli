@@ -37,7 +37,8 @@ module.exports = {
   removeReferences,
   buildReferences,
   updateReferences,
-  showRobustLinksDecoration
+  showRobustLinksDecoration,
+  getCitationLabelsFromTerms
 }
 
 function domToString (node, options = {}) {
@@ -1047,10 +1048,12 @@ function updateReferences(options){
 
         var rel = a.getAttribute('rel');
         // var property = a.getAttribute('property');
+
         var versionDate = a.getAttribute('data-versiondate') || '';
         var versionURL = a.getAttribute('data-versionurl') || '';
         var title = a.getAttribute('title');
         title = title ? ' title="' + title + '"' : '';
+
 
         if(versionDate && versionURL) {
            // && (a.href.startsWith('http:') || a.href.startsWith('https:'))) {
@@ -1118,7 +1121,8 @@ function showRobustLinksDecoration(node) {
 
     versionurl = (versionurl) ? '<span>Version</span><span><a href="' + versionurl + '" target="_blank">' + versiondate + '</a></span>' : '';
 
-    var citations = Object.keys(Config.Citation).concat(Config.Vocab["schemacitation"]["@id"]);
+    // var citations = Object.keys(Config.Citation).concat(Config.Vocab["schemacitation"]["@id"]);
+
     //FIXME: This is ultimately inaccurate because it should be obtained through RDF parser
     var citation = '';
     var citationLabels = [];
@@ -1127,21 +1131,7 @@ function showRobustLinksDecoration(node) {
     var rel = i.getAttribute('rel');
 
     if (rel) {
-      rel.split(' ').forEach(term=>{
-        if (Config.Citation[term]){
-          citationLabels.push(Config.Citation[term]);
-        }
-        else {
-          var s = term.split(':');
-          if (s.length == 2) {
-            citations.forEach(c=>{
-              if (s[1] == uri.getURLLastPath(c)) {
-                citationLabels.push(Config.Citation[c])
-              }
-            });
-          }
-        }
-      });
+      citationLabels = getCitationLabelsFromTerms(rel);
 
       if(citationLabels.length > 0) {
         var citationType = citationLabels.join(', ');
@@ -1165,4 +1155,28 @@ function showRobustLinksDecoration(node) {
       }
     });
   });
+}
+
+function getCitationLabelsFromTerms(rel, citations) {
+  citations = citations || Object.keys(Config.Citation);
+
+  var citationLabels = [];
+
+  rel.split(' ').forEach(term => {
+    if (Config.Citation[term]){
+      citationLabels.push(Config.Citation[term]);
+    }
+    else {
+      var s = term.split(':');
+      if (s.length == 2) {
+        citations.forEach(c=>{
+          if (s[1] == uri.getFragmentFromString(c) || s[1] == uri.getURLLastPath(c)) {
+            citationLabels.push(Config.Citation[c])
+          }
+        });
+      }
+    }
+  });
+
+  return citationLabels
 }
