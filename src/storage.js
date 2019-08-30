@@ -255,10 +255,15 @@ function showAutoSaveStorage(node, iri) {
   if(document.querySelector('#autosave-items')) { return; }
 
   var checked;
+  var useLocalStorage = '';
   if (window.localStorage) {
     checked = (Config.AutoSave.Items[iri] && Config.AutoSave.Items[iri]['localStorage']) ? ' checked="checked"' : '';
 
-    var useLocalStorage = '<li class="local-storage-html-autosave"><input id="local-storage-html-autosave" class="autosave" type="checkbox"' + checked +' /> <label for="local-storage-html-autosave">' + (Config.AutoSave.Timer / 60000) + 'm autosave (local storage)</label></li>';
+    //XXX: May bring this back somewhere else.
+    // useLocalStorage = '<li class="local-storage-html-autosave"><input id="local-storage-html-autosave" class="autosave" type="checkbox"' + checked +' /> <label for="local-storage-html-autosave">' + (Config.AutoSave.Timer / 60000) + 'm autosave (local storage)</label></li>';
+
+    //XXX: Enabling autoSave for localStorage
+    enableAutoSave(iri, {'method': 'localStorage'});
   }
 
   checked = (Config.AutoSave.Items[iri] && Config.AutoSave.Items[iri]['http']) ? ' checked="checked"' : '';
@@ -298,4 +303,8 @@ function hideAutoSaveStorage(node, iri) {
   iri = iri || uri.stripFragmentFromString(document.location.href);
   node.parentNode.removeChild(node);
   disableAutoSave(iri);
+  //XXX: Disabling autoSave for localStorage (as it was enabled by default)
+  if (Config.AutoSave.Items[iri] && Config.AutoSave.Items[iri]['localStorage']) {
+    disableAutoSave(iri, {'method': 'localStorage'});
+  }
 }
