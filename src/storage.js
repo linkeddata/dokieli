@@ -256,12 +256,12 @@ function showAutoSaveStorage(node, iri) {
 
   var checked;
   if (window.localStorage) {
-    checked = (Config.AutoSave.Items[iri] && Config.AutoSave.Items[iri]['localStorage'] && Config.AutoSave.Items[iri]['localStorage']) ? ' checked="checked"' : '';
+    checked = (Config.AutoSave.Items[iri] && Config.AutoSave.Items[iri]['localStorage']) ? ' checked="checked"' : '';
 
     var useLocalStorage = '<li class="local-storage-html-autosave"><input id="local-storage-html-autosave" class="autosave" type="checkbox"' + checked +' /> <label for="local-storage-html-autosave">' + (Config.AutoSave.Timer / 60000) + 'm autosave (local storage)</label></li>';
   }
 
-  checked = (Config.AutoSave.Items[iri] && Config.AutoSave.Items[iri]['http'] && Config.AutoSave.Items[iri]['localStorage']) ? ' checked="checked"' : '';
+  checked = (Config.AutoSave.Items[iri] && Config.AutoSave.Items[iri]['http']) ? ' checked="checked"' : '';
 
   var useHTTPStorage = '<li class="http-storage-html-autosave"><input id="http-storage-html-autosave" class="autosave" type="checkbox"' + checked +' /> <label for="http-storage-html-autosave">' + (Config.AutoSave.Timer / 60000) + 'm autosave (http)</label></li>';
   // var useHTTPStorage = '';
