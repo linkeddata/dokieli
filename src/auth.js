@@ -50,7 +50,7 @@ function getUserHTML (options) {
 
   let userImage = ''
 
-  if ('Image' in Config.User && typeof Config.User.Image !== 'undefined' && Config.User.Image.length > 0) {
+  if (!('omitImage' in options && options.omitImage) && 'Image' in Config.User && typeof Config.User.Image !== 'undefined' && Config.User.Image.length > 0) {
     userImage = '<img alt="" height="' + avatarSize + '" rel="schema:image" src="' +
       Config.User.Image + '" width="' + avatarSize + '" /> '
   }
