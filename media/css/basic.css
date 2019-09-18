@@ -2,6 +2,8 @@
 @page {
 @bottom-center {
 content: counter(page);
+font-size:10pt;
+font-family:sans-serif;
 }
 }
 
@@ -39,6 +41,10 @@ letter-spacing:0 !important;
 
 a[about][typeof~="schema:Person"]:after {
 content: ' <' attr(about) '>';
+}
+
+.tabs nav {
+display:none;
 }
 } /* media print */
 
