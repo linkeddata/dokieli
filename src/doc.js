@@ -110,9 +110,11 @@ function dumpNode (node, options, skipAttributes, selfClosing, noEsc) {
         out += '>'
         out += (ename === 'html') ? '\n  ' : ''
         noEsc.push(ename === 'style' || ename === 'script' || ename === 'pre')
+
         for (var i = 0; i < node.childNodes.length; i++) {
           out += dumpNode(node.childNodes[i], options, skipAttributes, selfClosing, noEsc)
         }
+
         noEsc.pop()
         out += (ename === 'body' || ename === 'html') ? '</' + ename + '>' + '\n' : '</' + ename + '>'
       }
@@ -123,10 +125,11 @@ function dumpNode (node, options, skipAttributes, selfClosing, noEsc) {
 <!--' + node.nodeValue + '-->'
   } else if (node.nodeType === 3 || node.nodeType === 4) {
     // XXX: Remove new lines which were added after DOM ready
-    let nl = node.nodeValue.replace(/\n+$/, '')
-    out += noEsc[noEsc.length - 1]
-      ? nl
-      : nl.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    let nl = node.nodeValue
+    // .replace(/\n+$/, '')
+    out += (noEsc.indexOf(true) > -1)
+      ? nl.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      : nl
   } else {
     console.log('Warning; Cannot handle serialising nodes of type: ' + node.nodeType)
   }
@@ -837,7 +840,7 @@ function createImmutableResource(url, data, options) {
   // Create URI-M
   data = getDocument(rootNode);
   fetcher.processSave(containerIRI, uuid, data, options);
-
+  getResourceInfo(null, { 'mode': 'update' });
 
   var timeMapURL = Config.OriginalResourceInfo['timemap'] || url + '.timemap';
 
@@ -882,8 +885,6 @@ function createImmutableResource(url, data, options) {
   fetcher.updateTimeMap(timeMapURL, insertBGP).then(() =>{
     showTimeMap(null, timeMapURL)
   });
-
-  getResourceInfo(null, { 'mode': 'update' });
 }
 
 function createMutableResource(url, data, options) {
@@ -921,7 +922,7 @@ function createMutableResource(url, data, options) {
 
   data = getDocument();
   fetcher.processSave(url, null, data, options).then(() => {
-    getResourceInfo(null, { 'mode': 'update' });
+    getResourceInfo(data, { 'mode': 'update' });
   });
 }
 
@@ -940,7 +941,7 @@ function updateMutableResource(url, data, options) {
 
   data = getDocument();
   fetcher.processSave(url, null, data, options).then(() => {
-    getResourceInfo(null, { 'mode': 'update' });
+    getResourceInfo(data, { 'mode': 'update' });
   });
 }
 
