@@ -14,7 +14,6 @@ module.exports = {
   generateAttributeId,
   getHash,
   hashCode,
-  isActor,
   sortTriples
 }
 
@@ -139,23 +138,6 @@ function hashCode(s){
   return hash;
 }
 
-function isActor (s) {
-  var actorTypes = [
-    'foafAgent', 'foafPerson', 'foafGroup', 'foafOrganization',
-    'vcardVCard', 'vcardIndividual', 'vcardGroup', 'vcardOrganization',
-    'schemaPerson', 'schemaOrganization',
-    'dctermsAgent',
-    'asApplication', 'asGroup', 'asOrganization', 'asPerson', 'asService'
-  ];
-
-  actorTypes = actorTypes.map(a => { if (Config.Vocab[a]["@id"]) return Config.Vocab[a]["@id"]; });
-
-  if (actorTypes.indexOf(s) > -1) {
-    return true;
-  }
-
-  return false;
-}
 
 function sortTriples(triples, options) {
   options = options || {};

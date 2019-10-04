@@ -736,7 +736,7 @@ var DO = {
               if (t.predicate.nominalValue == DO.C.Vocab['rdftype']['@id']){
                 oGroup = 6;
 
-                if (util.isActor(t.object.nominalValue)) {
+                if (auth.isActor(t.object.nominalValue)) {
                   sGroup = 10;
                 }
               }
