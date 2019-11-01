@@ -28,6 +28,7 @@ module.exports = {
   setDocumentRelation,
   setDocumentStatus,
   getDocumentStatusHTML,
+  buttonRemoveAside,
   buttonClose,
   showTimeMap,
   getResourceInfo,
@@ -690,6 +691,30 @@ function getDocumentStatusHTML(rootNode, options) {
 
 // console.log(s);
   return s;
+}
+
+function buttonRemoveAside() {
+  var ids = document.querySelectorAll('aside.note article[id]');
+  for(var i = 0; i < ids.length; i++){
+    if(!ids[i].querySelector('button.delete')) {
+      var buttonDelete = '<button class="delete do" title="Delete item">' + template.Icon[".fas.fa-trash-alt"] + '</button>';
+      ids[i].insertAdjacentHTML('afterbegin', buttonDelete);
+    }
+  }
+
+  document.addEventListener('click', function(e) {
+    var button = e.target.closest('button.delete')
+    if (button) {
+      var noteArticle = button.closest('article[id]');
+      if (noteArticle) {
+        var refId = 'r-' + noteArticle.id;
+        var aside = noteArticle.closest('aside.note');
+        aside.parentNode.removeChild(aside);
+        var span = document.querySelector('span[resource="#' + refId + '"]');
+        span.outerHTML = span.querySelector('mark').textContent;
+      }
+    }
+  });
 }
 
 function buttonClose() {

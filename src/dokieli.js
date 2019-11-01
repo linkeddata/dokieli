@@ -1063,6 +1063,7 @@ var DO = {
     //TODO: Refactor
     initDocumentActions: function() {
       doc.buttonClose();
+      doc.buttonRemoveAside();
       doc.showRobustLinksDecoration();
 
       //Fugly
@@ -5184,7 +5185,7 @@ WHERE {\n\
         default: case 'read':
           hX = 3;
           if ('creator' in n && 'iri' in n.creator && n.creator.iri == DO.C.User.IRI) {
-            buttonDelete = '<button class="delete" title="Delete item">' + template.Icon[".fas.fa-trash-alt"] + '</button>' ;
+            buttonDelete = '<button class="delete do" title="Delete item">' + template.Icon[".fas.fa-trash-alt"] + '</button>' ;
           }
           articleClass = (motivatedByIRI == 'oa:commenting') ? '': ' class="do"';
           aAbout = ('iri' in n) ? n.iri : '';
@@ -7462,23 +7463,6 @@ WHERE {\n\
                   var asideNode = util.fragmentFromString(asideNote);
                   var parentSection = doc.getClosestSectionNode(selectedParentElement);
                   parentSection.appendChild(asideNode);
-
-                  if(DO.C.User.IRI) {
-                    var idEscape = (id.match(/^\d/)) ? "\\\\" : '';
-                    var noteDelete = document.querySelector('aside.note article#' + idEscape + id + ' button.delete');
-
-                    if (noteDelete) {
-                      noteDelete.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-
-                        var aside = noteDelete.closest('aside.note')
-                        aside.parentNode.removeChild(aside)
-                        var span = document.querySelector('span[resource="#' + refId + '"]')
-                        span.outerHTML = span.querySelector('mark').textContent
-                      });
-                    }
-                  }
 
                   DO.U.positionNote(refId, id);
                   break;
