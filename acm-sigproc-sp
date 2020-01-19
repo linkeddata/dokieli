@@ -3,19 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <title>A Sample ACM SIG Proceedings Paper in LaTeX Format</title>
-    <link rel="stylesheet alternate" href="media/css/lncs.css" media="all" title="LNCS" />
-    <link rel="stylesheet" href="media/css/acm.css" media="all" title="ACM" />
-    <link rel="stylesheet alternate" href="https://www.w3.org/StyleSheets/TR/W3C-ED.css" media="all" title="W3C-ED"/>
-    <link rel="stylesheet" href="media/css/do.css" media="all" />
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" />
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-    <script src="scripts/simplerdf.js"></script>
-    <script src="scripts/medium-editor.min.js"></script>
-    <script src="scripts/medium-editor-tables.min.js"></script>
-    <script src="scripts/do.js"></script>
+    <link href="media/css/lncs.css" media="all" rel="stylesheet alternate" title="LNCS" />
+    <link href="media/css/acm.css" media="all" rel="stylesheet" title="ACM" />
+    <link href="media/css/dokieli.css" rel="stylesheet" media="all" />
+    <script src="scripts/dokieli.js"></script>
   </head>
 
-  <body about="" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ dctypes: http://purl.org/dc/dcmitype/ foaf: http://xmlns.com/foaf/0.1/ pimspace: http://www.w3.org/ns/pim/space# cc: https://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# mem: http://mementoweb.org/ns# qb: http://purl.org/linked-data/cube# schema: http://schema.org/ void: http://rdfs.org/ns/void# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# bibo: http://purl.org/ontology/bibo/ sioc: http://rdfs.org/sioc/ns# doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp# solid: http://www.w3.org/ns/solid/terms# acl: http://www.w3.org/ns/auth/acl# dio: https://w3id.org/dio# rel: https://www.w3.org/ns/iana/link-relations/relation#" typeof="schema:CreativeWork sioc:Post prov:Entity">
+  <body about="" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ dctypes: http://purl.org/dc/dcmitype/ foaf: http://xmlns.com/foaf/0.1/ pimspace: http://www.w3.org/ns/pim/space# cc: https://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# mem: http://mementoweb.org/ns# qb: http://purl.org/linked-data/cube# schema: http://schema.org/ void: http://rdfs.org/ns/void# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# bibo: http://purl.org/ontology/bibo/ sioc: http://rdfs.org/sioc/ns# doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp# solid: http://www.w3.org/ns/solid/terms# acl: http://www.w3.org/ns/auth/acl# dio: https://w3id.org/dio# rel: https://www.w3.org/ns/iana/link-relations/relation#" typeof="schema:CreativeWork prov:Entity">
     <main>
       <article about="" typeof="schema:ScholarlyArticle">
         <h1 property="schema:name">A Sample <em>ACM</em> SIG Proceedings Paper in LaTeX Format<sup>∗</sup></h1>
@@ -24,21 +18,21 @@
         <div id="authors">
           <dl id="author-name">
             <dt>Authors</dt>
-            <dd id="author-1"><span about="" rel="schema:creator schema:publisher schema:author"><a about="#Ben-Trovato" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Ben Trovato</a></span><span about="#Ben-Trovato" rel="schema:memberOf" resource="#Institute-for-Clarity-in-Documentation"></span><sup><a href="#author-org-1">1</a></sup><sup><a href="#author-email-1">‡</a></sup></dd>
-            <dd id="author-2"><span about="" rel="schema:author"><a about="#G-K-M-Tobin" typeof="schema:Person" rel="schema:url" property="schema:name" href="">G.K.M. Tobin</a></span><span about="#G-K-M-Tobin" rel="schema:memberOf" resource="#Institute-for-Clarity-in-Documentation"></span><sup><a href="#author-org-2">2</a></sup><sup><a href="#author-email-2">§</a></sup></dd>
-            <dd id="author-3"><span about="" rel="schema:author"><a about="#Lars-Thørväld" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Lars Thørväld</a></span><span about="#Lars-Thørväld" rel="schema:memberOf" resource="#The-Thørväld-Group"></span><sup><a href="#author-org-3">3</a></sup><sup><a href="#author-email-3">¶</a></sup></dd>
-            <dd id="author-4"><span about="" rel="schema:author"><a about="#Lawrence-P-Leipuner" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Lawrence P. Leipuner</a></span><span about="#Lawrence-P-Leipuner" rel="schema:memberOf" resource="#Brookhaven-Laboratories"></span><sup><a href="#author-org-4">4</a></sup><sup><a href="#author-email-4">x</a></sup></dd>
-            <dd id="author-5"><span about="" rel="schema:author"><a about="#Sean-Fogarty" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Sean Fogarty</a></span><span about="#Sean-Fogarty" rel="schema:memberOf" resource="#NASA-Ames-Research-Center"></span><sup><a href="#author-org-5">5</a></sup><sup><a href="#author-email-5">y</a></sup></dd>
-            <dd id="author-6"><span about="" rel="schema:author"><a about="#Charles-Palmer" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Charles Palmer</a></span><span about="#Charles-Palmer" rel="schema:memberOf" resource="#Palmer-Research-Laboratories"></span><sup><a href="#author-org-6">6</a></sup><sup><a href="#author-email-6">z</a></sup></dd>
+            <dd id="Ben-Trovato"><span about="" rel="schema:creator schema:publisher schema:author"><a about="#Ben-Trovato" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Ben Trovato</a></span><span about="#Ben-Trovato" rel="schema:memberOf" resource="#Institute-for-Clarity-in-Documentation-1"></span><sup><a href="#Institute-for-Clarity-in-Documentation-1">1</a></sup><sup><a href="#author-email-1">‡</a></sup></dd>
+            <dd id="G-K-M-Tobin"><span about="" rel="schema:author"><a about="#G-K-M-Tobin" typeof="schema:Person" rel="schema:url" property="schema:name" href="">G.K.M. Tobin</a></span><span about="#G-K-M-Tobin" rel="schema:memberOf" resource="#Institute-for-Clarity-in-Documentation-2"></span><sup><a href="#Institute-for-Clarity-in-Documentation-2">2</a></sup><sup><a href="#author-email-2">§</a></sup></dd>
+            <dd id="Lars-Thørväld"><span about="" rel="schema:author"><a about="#Lars-Thørväld" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Lars Thørväld</a></span><span about="#Lars-Thørväld" rel="schema:memberOf" resource="#The-Thørväld-Group"></span><sup><a href="#The-Thørväld-Group">3</a></sup><sup><a href="#author-email-3">¶</a></sup></dd>
+            <dd id="Lawrence-P-Leipuner"><span about="" rel="schema:author"><a about="#Lawrence-P-Leipuner" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Lawrence P. Leipuner</a></span><span about="#Lawrence-P-Leipuner" rel="schema:memberOf" resource="#Brookhaven-Laboratories"></span><sup><a href="#Brookhaven-Laboratories">4</a></sup><sup><a href="#author-email-4">x</a></sup></dd>
+            <dd id="Sean-Fogarty"><span about="" rel="schema:author"><a about="#Sean-Fogarty" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Sean Fogarty</a></span><span about="#Sean-Fogarty" rel="schema:memberOf" resource="#NASA-Ames-Research-Center"></span><sup><a href="#NASA-Ames-Research-Center">5</a></sup><sup><a href="#author-email-5">y</a></sup></dd>
+            <dd id="Charles-Palmer"><span about="" rel="schema:author"><a about="#Charles-Palmer" typeof="schema:Person" rel="schema:url" property="schema:name" href="">Charles Palmer</a></span><span about="#Charles-Palmer" rel="schema:memberOf" resource="#Palmer-Research-Laboratories"></span><sup><a href="#Palmer-Research-Laboratories">6</a></sup><sup><a href="#author-email-6">z</a></sup></dd>
           </dl>
 
           <ul id="author-org">
-            <li id="author-org-1"><sup>1</sup><a about="#Institute-for-Clarity-in-Documentation" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.acm.org/">Institute for Clarity in Documentation</a>, <span class="adr"><span class="street-address">1932 Wallamaloo Lane</span>, <span class="region">Wallamaloo</span>, <span class="country-name">New Zealand</span></span></li>
-            <li id="author-org-2"><sup>2</sup><a about="#Institute-for-Clarity-in-Documentation" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.acm.org/">Institute for Clarity in Documentation</a>, <span class="adr"><span class="post-office-box">P.O. Box 1212</span>, <span class="locality">Dublin</span>, <span class="region">Ohio</span> <span clss="postal-code">43017-6221</span></span></li>
-            <li id="author-org-3"><sup>3</sup><a about="#The-Thørväld-Group" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.acm.org/">The Thørväld Group</a>, <span class="adr"><span class="locality">Hekla</span>, <span class="country-name">Iceland</span></span></li>
-            <li id="author-org-4"><sup>4</sup><a about="#Brookhaven-Laboratories" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.bnl.gov/">Brookhaven Laboratories</a>, <span class="adr"><span class="street-address">Brookhaven National Lab</span>, <span class="post-office-box">P.O. Box 5000</span></span></li>
-            <li id="author-org-5"><sup>5</sup><a about="#NASA-Ames-Research-Center" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.nasa.gov/centers/ames">NASA Ames Research Center</a>, <span class="adr"><span class="locality">Moffett Field</span>, <span class="region">California</span> <span class="postal-code">94035</span></span></li>
-            <li id="author-org-6"><sup>6</sup><a about="#Palmer-Research-Laboratories" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.palmerlab.umd.edu/">Palmer Research Laboratories</a>, <span class="adr"><span class="street-address">8600 Datapoint Drive</span>, <span class="locality">San Antonio</span>, <span class="region">Texas</span> <span class="postal-code">78229</span></span></li>
+            <li id="Institute-for-Clarity-in-Documentation-1"><sup>1</sup><a about="#Institute-for-Clarity-in-Documentation-1" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.acm.org/">Institute for Clarity in Documentation</a>, 1932 Wallamaloo Lane, Wallamaloo, New Zealand</li>
+            <li id="Institute-for-Clarity-in-Documentation-2"><sup>2</sup><a about="#Institute-for-Clarity-in-Documentation-2" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.acm.org/">Institute for Clarity in Documentation</a>, P.O. Box 1212, Dublin, Ohio 43017-6221</li>
+            <li id="The-Thørväld-Group"><sup>3</sup><a about="#The-Thørväld-Group" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.acm.org/">The Thørväld Group</a>, Hekla, Iceland</li>
+            <li id="Brookhaven-Laboratories"><sup>4</sup><a about="#Brookhaven-Laboratories" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.bnl.gov/">Brookhaven Laboratories</a>, Brookhaven National Lab, P.O. Box 5000</li>
+            <li id="NASA-Ames-Research-Center"><sup>5</sup><a about="#NASA-Ames-Research-Center" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.nasa.gov/centers/ames">NASA Ames Research Center</a>, Moffett Field, California 94035</li>
+            <li id="Palmer-Research-Laboratories"><sup>6</sup><a about="#Palmer-Research-Laboratories" typeof="schema:Organization" property="schema:name" rel="schema:url" href="http://www.palmerlab.umd.edu/">Palmer Research Laboratories</a>, 8600 Datapoint Drive, San Antonio, Texas 78229</li>
           </ul>
 
           <ul id="author-email">
@@ -709,7 +703,6 @@
             </dl>
           </section>
         </div>
-
       </article>
     </main>
   </body>

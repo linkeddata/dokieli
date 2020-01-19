@@ -5,19 +5,15 @@
     <title>dokieli documentation</title>
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <link href="media/css/basic.css" media="all" rel="stylesheet" title="Basic" />
-    <link href="https://dokie.li/media/css/lncs.css" media="all" rel="stylesheet alternate" title="LNCS" />
-    <link href="https://dokie.li/media/css/acm.css" media="all" rel="stylesheet alternate" title="ACM" />
+    <link href="media/css/lncs.css" media="all" rel="stylesheet alternate" title="LNCS" />
+    <link href="media/css/acm.css" media="all" rel="stylesheet alternate" title="ACM" />
     <link href="https://www.w3.org/StyleSheets/TR/2016/W3C-ED" rel="stylesheet alternate" media="all" title="W3C-ED"/>
-    <link href="media/css/do.css" media="all" rel="stylesheet" />
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" rel="stylesheet" />
-    <script src="scripts/simplerdf.js"></script>
-    <script src="scripts/medium-editor.min.js"></script>
+    <link href="media/css/dokieli.css" media="all" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-    <script src="scripts/do.js"></script>
+    <script src="scripts/dokieli.js"></script>
   </head>
 
-  <body about="" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ dctypes: http://purl.org/dc/dcmitype/ foaf: http://xmlns.com/foaf/0.1/ pimspace: http://www.w3.org/ns/pim/space# cc: https://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# qb: http://purl.org/linked-data/cube# schema: http://schema.org/ void: http://rdfs.org/ns/void# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# bibo: http://purl.org/ontology/bibo/ sioc: http://rdfs.org/sioc/ns# doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp# solid: http://www.w3.org/ns/solid/terms# acl: http://www.w3.org/ns/auth/acl# dio: https://w3id.org/dio#" typeof="schema:CreativeWork sioc:Post prov:Entity">
+  <body about="" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ dctypes: http://purl.org/dc/dcmitype/ foaf: http://xmlns.com/foaf/0.1/ pimspace: http://www.w3.org/ns/pim/space# cc: https://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# mem: http://mementoweb.org/ns# qb: http://purl.org/linked-data/cube# schema: http://schema.org/ void: http://rdfs.org/ns/void# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# bibo: http://purl.org/ontology/bibo/ sioc: http://rdfs.org/sioc/ns# doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp# solid: http://www.w3.org/ns/solid/terms# acl: http://www.w3.org/ns/auth/acl# dio: https://w3id.org/dio# rel: https://www.w3.org/ns/iana/link-relations/relation#" typeof="schema:CreativeWork sioc:Post prov:Entity">
     <main>
       <article about="" typeof="schema:Article">
         <h1 property="schema:name">dokieli documentation</h1>
@@ -84,13 +80,13 @@
 
                   <dl>
                     <dt>Article</dt>
-                    <dd>An article may contain RDF classes like <samp>schema:CreativeWork sioc:Post prov:Entity schema:Article</samp>, otherwise, there is no unique data that would indicate that it is a "dokieli" document. If the HTML+RDFa representation includes do.js and the DOM is ready, the <code>DO</code>: <code>Object { C: {…}, U: {…} }</code> will be available.</dd>
+                    <dd>An article may contain RDF classes like <samp>schema:CreativeWork sioc:Post prov:Entity schema:Article</samp>, otherwise, there is no unique data that would indicate that it is a "dokieli" document. If the HTML+RDFa representation includes dokieli.js and the DOM is ready, the <code>DO</code>: <code>Object { C: {…}, U: {…} }</code> will be available.</dd>
 
                     <dt>Annotation</dt>
-                    <dd>An annotation has the <code>oa:Annotation</code> class. It is possible to know that the article was rendered by dokieli: <code>?s oa:renderedVia &lt;https://dokie.li/&gt;</code>, and we can assume that the annotation was created by it as well. This is not strictly true since that property could have been put there by something else. Annotations represented in HTML+RDFa do not include do.js.</dd>
+                    <dd>An annotation has the <code>oa:Annotation</code> class. It is possible to know that the article was rendered by dokieli: <code>?s oa:renderedVia &lt;https://dokie.li/&gt;</code>, and we can assume that the annotation was created by it as well. This is not strictly true since that property could have been put there by something else. Annotations represented in HTML+RDFa do not include dokieli.js.</dd>
 
                     <dt>Notification</dt>
-                    <dd>A notification may have one of the following classes: <code>as:Announce</code>, <code>as:Like</code>, <code>as:Dislike</code>, <code>as:Relationship</code>. Notifications represented in HTML+RDFa do not include do.js.</dd>
+                    <dd>A notification may have one of the following classes: <code>as:Announce</code>, <code>as:Like</code>, <code>as:Dislike</code>, <code>as:Relationship</code>. Notifications represented in HTML+RDFa do not include dokieli.js.</dd>
                   </dl>
                 </div>
               </section>
@@ -102,10 +98,10 @@
 
                   <dl>
                     <dt id="html-markup-syntax">Markup syntax</dt>
-                    <dd>HTML5 <cite><a href="https://www.w3.org/TR/html-polyglot/" rel="cito:citesAsAuthority">Polyglot Markup</a></cite> is used to ensure that when content is processed or served as HTML or XHTML (<code>text/html</code>, <code>application/xhtml+xml</code>), they can generally be used in both HTML and XML ecosystems without further intervention. See also <var>getDocument</var> (do.js) for details on DOM normalisation.</dd>
+                    <dd>HTML5 <cite><a href="https://www.w3.org/TR/html-polyglot/" rel="cito:citesAsAuthority">Polyglot Markup</a></cite> is used to ensure that when content is processed or served as HTML or XHTML (<code>text/html</code>, <code>application/xhtml+xml</code>), they can generally be used in both HTML and XML ecosystems without further intervention. See also <var>getDocument</var> (dokieli.js) for details on DOM normalisation.</dd>
 
                     <dt id="html-identifiers">Identifiers</dt>
-                    <dd>Unique identifiers (<code>@id</code>) may be placed on any element. Identifiers are auto-generated by normalising some input eg. <code>section</code>s use their heading's text content as input, <code>table</code>s from <code>caption</code>. Anything of importance should have an identifier, and aimed to be included for common patterns out of the box. <code>@id</code> values are reused in RDFa. See also <var>generateAttributeId</var> (do.js) and its application in different places.</dd>
+                    <dd>Unique identifiers (<code>@id</code>) may be placed on any element. Identifiers are auto-generated by normalising some input eg. <code>section</code>s use their heading's text content as input, <code>table</code>s from <code>caption</code>. Anything of importance should have an identifier, and aimed to be included for common patterns out of the box. <code>@id</code> values are reused in RDFa. See also <var>generateAttributeId</var> (dokieli.js) and its application in different places.</dd>
 
                     <dt id="html-outline">Outline</dt>
                     <dd>
@@ -202,7 +198,7 @@
                     </dd>
 
                     <dt id="html-embed-turtle-json-ld-trig">Embedding Turtle, JSON-LD, and TriG</dt>
-                    <dd>Turtle, JSON-LD, and TriG syntaxes are placed within respective <code>script</code> blocks in <code>head</code> eg. <code>&lt;script id="meta-json-ld" type="application/ld+json" title="JSON-LD"&gt;&lt;/script&gt;</code>. Data is enclosed in <code>CDATA</code> sections. This pattern is detected, visible and editable from <cite>Embed Data</cite> in <i class="fa fa-bars"></i> <a href="#dokieli-menu">dokieli menu</a>. See also <var>showEmbedData</var> (do.js).</dd>
+                    <dd>Turtle, JSON-LD, and TriG syntaxes are placed within respective <code>script</code> blocks in <code>head</code> eg. <code>&lt;script id="meta-json-ld" type="application/ld+json" title="JSON-LD"&gt;&lt;/script&gt;</code>. Data is enclosed in <code>CDATA</code> sections. This pattern is detected, visible and editable from <cite>Embed Data</cite> in <i class="fa fa-bars"></i> <a href="#dokieli-menu">dokieli menu</a>. See also <var>showEmbedData</var> (dokieli.js).</dd>
 
                     <dt id="html-css">CSS</dt>
                     <dd>Multiple stylesheets can be included with <code>@media</code>, and when accompanied with <code>@title</code>, some user-agents can provide options for the user to switch between them, as well as from the <i class="fa fa-bars"></i> <a href="#dokieli-menu">dokieli menu</a>, eg. <pre>&lt;!-- Primary stylesheet --&gt;
@@ -210,7 +206,7 @@
 &lt;!-- Alternate stylesheet --&gt;
 <code>&lt;link href="media/css/acm.css" media="all" rel="stylesheet alternate" title="ACM" /&gt;</code>
 &lt;!-- Applied by default--&gt;
-<code>&lt;link href="https://dokie.li/media/css/do.css" media="all" rel="stylesheet" /&gt;</code></pre> See also <var>showViews</var> (do.js).</dd>
+<code>&lt;link href="https://dokie.li/media/css/dokieli.css" media="all" rel="stylesheet" /&gt;</code></pre> See also <var>showViews</var> (dokieli.js).</dd>
 
                     <dt id="html-rdfa">RDFa</dt>
                     <dd>dokieli can consume and produce <cite><a href="https://www.w3.org/TR/rdfa-core/">RDFa Core 1.1</a></cite> syntax.</dd>
@@ -226,7 +222,7 @@
                   <div class="note">
                     <h4>Note</h4>
                     <div>
-                      <p>There is a <em>work in progress</em> to have a distribution version of dokeli, requiring only <samp>do.css</samp> and <samp>do.js</samp> in templates.</p>
+                      <p>There is a <em>work in progress</em> to have a distribution version of dokeli, requiring only <samp>dokieli.css</samp> and <samp>dokieli.js</samp> in templates.</p>
                     </div>
                   </div>
 
@@ -235,7 +231,7 @@
                   <section id="html-article" inlist="" rel="schema:hasPart" resource="#html-article">
                     <h4 property="schema:name">Article</h4>
                     <div property="schema:description">
-                      <p>See also <var>createNoteDataHTML</var> (do.js)</p>
+                      <p>See also <var>createNoteDataHTML</var> (dokieli.js)</p>
 
                       <figure class="listing" id="#html-article-source" rel="schema:hasPart" resource="#html-article-source">
                         <pre about="#html-article-source" lang="" property="schema:description" typeof="fabio:Script" xml:lang=""><code>&lt;!DOCTYPE html&gt;</code>
@@ -245,14 +241,11 @@
 <code>    &lt;title&gt;&lt;/title&gt;</code>
 <code>    &lt;meta content="width=device-width, initial-scale=1" name="viewport" /&gt;</code>
 <code>    &lt;link href="https://dokie.li/media/css/basic.css" media="all" rel="stylesheet" title="Basic" /&gt;</code>
-<code>    &lt;link href="https://dokie.li/media/css/do.css" media="all" rel="stylesheet" /&gt;</code>
-<code>    &lt;link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" rel="stylesheet" /&gt;</code>
-<code>    &lt;script src="https://dokie.li/scripts/simplerdf.js"&gt;&lt;/script&gt;</code>
-<code>    &lt;script src="https://dokie.li/scripts/medium-editor.min.js"&gt;&lt;/script&gt;</code>
-<code>    &lt;script src="https://dokie.li/scripts/do.js"&gt;&lt;/script&gt;</code>
+<code>    &lt;link href="https://dokie.li/media/css/dokieli.css" media="all" rel="stylesheet" /&gt;</code>
+<code>    &lt;script src="https://dokie.li/scripts/dokieli.js"&gt;&lt;/script&gt;</code>
 <code>  &lt;/head&gt;</code>
 <code></code>
-<code>  &lt;body about="" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ dctypes: http://purl.org/dc/dcmitype/ foaf: http://xmlns.com/foaf/0.1/ pimspace: http://www.w3.org/ns/pim/space# cc: https://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# mem: http://mementoweb.org/ns# qb: http://purl.org/linked-data/cube# schema: http://schema.org/ void: http://rdfs.org/ns/void# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# bibo: http://purl.org/ontology/bibo/ sioc: http://rdfs.org/sioc/ns# doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp# solid: http://www.w3.org/ns/solid/terms# acl: http://www.w3.org/ns/auth/acl# dio: https://w3id.org/dio# rel: https://www.w3.org/ns/iana/link-relations/relation#" typeof="schema:CreativeWork sioc:Post prov:Entity"&gt;</code>
+<code>  &lt;body about="" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ dctypes: http://purl.org/dc/dcmitype/ foaf: http://xmlns.com/foaf/0.1/ pimspace: http://www.w3.org/ns/pim/space# cc: https://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# mem: http://mementoweb.org/ns# qb: http://purl.org/linked-data/cube# schema: http://schema.org/ void: http://rdfs.org/ns/void# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# bibo: http://purl.org/ontology/bibo/ sioc: http://rdfs.org/sioc/ns# doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp# solid: http://www.w3.org/ns/solid/terms# acl: http://www.w3.org/ns/auth/acl# dio: https://w3id.org/dio# rel: https://www.w3.org/ns/iana/link-relations/relation#" typeof="schema:CreativeWork prov:Entity"&gt;</code>
 <code>    &lt;main&gt;</code>
 <code>      &lt;article about="" typeof="schema:Article"&gt;</code>
 <code></code>
@@ -279,19 +272,19 @@
 
                       <p><code>ldp:inbox</code> relation gives an article its own Inbox where it can receive notifications about eg. annotations or activities relevant to an article. The notifications can be consumed by applications to offer additional content and interactive possibilities. dokieli can both send and consume notifications by way of discovering an article's inbox. Notifications are created for activities like announcements, creating, (dis)liking, and consumed in order to be displayed in context of available content. The protocol to send and consume notifications in dokieli uses <cite><a href="https://www.w3.org/TR/ldn/">Linked Data Notifications</a></cite>.</p>
 
+                      <pre id="html-document-annotation-service"><code>&lt;dl id="document-annotation-service"&gt;</code>
+<code>  &lt;dt&gt;Annotation Service&lt;/dt&gt;</code>
+<code>  &lt;dd&gt;&lt;a href="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/" rel="oa:annotationService"&gt;annotation/&lt;/a&gt;&lt;/dd&gt;</code>
+<code>&lt;/dl&gt;</code></pre>
+
+                      <p>An article may refer to an annotation service (<code>oa:annotationService</code>) that conforms to the <cite><a href="https://www.w3.org/TR/annotation-protocol/">Web Annotation Protocol</a></cite>. See also <var>DO.C.AnnotationService</var> in <code>dokieli.js</code>.</p>
+
                       <pre id="html-document-in-reply-to"><code>&lt;dl id="document-in-reply-to"&gt;</code>
 <code>  &lt;dt&gt;In Reply To&lt;/dt&gt;</code>
 <code>  &lt;dd&gt;&lt;a href="https://linkedresearch.org/calls" rel="as:inReplyTo"&gt;Call for Linked Research&lt;/a&gt;&lt;/dd&gt;</code>
 <code>&lt;/dl&gt;</code></pre>
 
                       <p>If an article is a reply to objects(s), it can have a property like <code>as:inReplyTo</code>.</p>
-
-                      <pre id="html-document-annotation-service"><code>&lt;dl id="document-annotation-service"&gt;</code>
-<code>  &lt;dt&gt;Annotation Service&lt;/dt&gt;</code>
-<code>  &lt;dd&gt;&lt;a href="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/" rel="oa:annotationService"&gt;annotation/&lt;/a&gt;&lt;/dd&gt;</code>
-<code>&lt;/dl&gt;</code></pre>
-
-                      <p>An article may refer to an annotation service (<code>oa:annotationService</code>) that conforms to the <cite><a href="https://www.w3.org/TR/annotation-protocol/">Web Annotation Protocol</a></cite>. See also <var>DO.C.AnnotationService</var> in <code>do.js</code>.</p>
 
                       <pre id="html-document-published-modified"><code>&lt;dl id="document-published"&gt;</code>
 <code>  &lt;dt&gt;Published&lt;/dt&gt;</code>
@@ -342,7 +335,7 @@
                       <p>If they are one of the authors of a document, the profile can be wrapped like:</p>
 <pre id="html-profile-author"><code>&lt;dd id="Sarven-Capadisli" inlist="" rel="bibo:authorList" resource="http://csarven.ca/#i"&gt;&lt;span about="" rel="schema:creator schema:publisher schema:author"&gt;&lt;!-- profile --&gt;&lt;/span&gt;&lt;/dd&gt;</code></pre>
 
-                      <p>See also <var>getUserHTML</var> (do.js)</p>
+                      <p>See also <var>getUserHTML</var> (dokieli.js)</p>
                     </div>
                   </section>
 
@@ -353,7 +346,7 @@
 
                       <p>Currently dokieli uses <cite><a href="https://www.w3.org/TR/annotation-vocab/#replying">oa:replying</a></cite>, <cite><a href="https://www.w3.org/TR/annotation-vocab/#commenting">oa:commenting</a></cite>, <cite><a href="https://www.w3.org/TR/annotation-vocab/#describing">oa:describing</a></cite>, <cite><a href="https://www.w3.org/TR/annotation-vocab/#assessing">oa:assessing</a></cite>, <cite><a href="https://www.w3.org/TR/annotation-vocab/#bookmarking">oa:bookmarking</a></cite> for <em>motivations</em>, and <cite><a href="https://www.w3.org/TR/annotation-vocab/#describing">oa:describing</a></cite> and <cite><a href="https://www.w3.org/TR/annotation-vocab/#tagging">oa:tagging</a></cite> for annotation <em>purpose</em>.</p>
 
-                      <p>See also <var>createNoteDataHTML</var> (do.js)</p>
+                      <p>See also <var>createNoteDataHTML</var> (dokieli.js)</p>
 
                       <p>Here is an annotation resource at <a href="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f">https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f</a> with all information human-visible and machine-readable (HTML+RDFa):</p>
 
@@ -470,7 +463,7 @@
 
                       <p>Notifications are intended to be brief, giving sufficient information for consumers to decide if they want use to them. If the notifications are generated by dokieli, eg. via an annotation activity, they typically include some provenance level data like generation date, actor that triggered it, license, where the annotation can be found, what it annotated, and the motivation for it. Notifications will not include the annotation body, but consumers can fetch their URLs (as mentioned in the <a href="#html-annotation">annotation section</a>).</p>
 
-                      <p>See also <var>createNoteDataHTML</var> (do.js)</p>
+                      <p>See also <var>createNoteDataHTML</var> (dokieli.js)</p>
 
                       <p>Here is a notification resource at <a href="https://linkedresearch.org/inbox/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f">https://linkedresearch.org/inbox/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f</a> with all information human-visible and machine-readable (HTML+RDFa):</p>
 
@@ -540,7 +533,7 @@
               <section id="document-modes" inlist="" rel="schema:hasPart" resource="#document-modes">
                 <h3 property="schema:name">Document modes</h3>
                 <div datatype="rdf:HTML" property="schema:description">
-                  <p>There UI adapts to the <em>document mode</em> the user is in: <cite>author</cite>, <cite>review</cite>, <cite>social</cite>. By default the <cite>social</cite> mode is engaged. The <i class="fa fa-bars"></i> <a href="#dokieli-menu">dokieli menu</a> allows the user to engage the author mode through the <i class="fa fa-i-cursor"></i> <a href="#editor-enable">Edit</a> operation, and the review mode with <i class="fa fa-balance-scale"></i> <a href="#review-enable">Review</a>. See also <var>setDocumentMode</var> (do.js).</p>
+                  <p>There UI adapts to the <em>document mode</em> the user is in: <cite>author</cite>, <cite>review</cite>, <cite>social</cite>. By default the <cite>social</cite> mode is engaged. The <i class="fa fa-bars"></i> <a href="#dokieli-menu">dokieli menu</a> allows the user to engage the author mode through the <i class="fa fa-i-cursor"></i> <a href="#editor-enable">Edit</a> operation, and the review mode with <i class="fa fa-balance-scale"></i> <a href="#review-enable">Review</a>. See also <var>setDocumentMode</var> (dokieli.js).</p>
                 </div>
               </section>
 
@@ -570,10 +563,10 @@
                     </dd>
 
                     <dt id="resource-new"><i class="fa fa-lightbulb-o"></i>New</dt>
-                    <dd>This feature allows a new document to be created at specified location. The new document is constructed based on  If the user is signed in with their WebID and their personal storage location is identifier, the default location for the new resource will have the storage URL (<code>pim:storage</code>) as its base. If the user does not have a WebID and a storage, and if the article refers to an annotation service (<code>oa:annotationService</code>), it will use that URL instead. The URL can be input directly, and otherwise a name will be autogenerated for the resource. This feature uses the <cite><a href="#resource-browser-method">resource browser</a></cite> to navigate HTTP URLs. See also <var>generateAttributeId</var> (do.js). On create, the resulting hyperlink will be shown and a new tab in the browser will be prompted.</dd>
+                    <dd>This feature allows a new document to be created at specified location. The new document is constructed based on  If the user is signed in with their WebID and their personal storage location is identifier, the default location for the new resource will have the storage URL (<code>pim:storage</code>) as its base. If the user does not have a WebID and a storage, and if the article refers to an annotation service (<code>oa:annotationService</code>), it will use that URL instead. The URL can be input directly, and otherwise a name will be autogenerated for the resource. This feature uses the <cite><a href="#resource-browser-method">resource browser</a></cite> to navigate HTTP URLs. See also <var>generateAttributeId</var> (dokieli.js). On create, the resulting hyperlink will be shown and a new tab in the browser will be prompted.</dd>
 
                     <dt id="resource-open"><i class="fa fa-coffee"></i>Open</dt>
-                    <dd>Documents can be opened from a local filesystem or by entering an HTTP URL. Both options read the resource's content, and if dokieli's CSS and JavaScript are not present, they are included before updating the DOM and initiating dokieli. This feature uses the <cite><a href="#resource-browser-method">resource browser</a></cite> to navigate HTTP URLs. See also <var>openDocument</var> (do.js).</dd>
+                    <dd>Documents can be opened from a local filesystem or by entering an HTTP URL. Both options read the resource's content, and if dokieli's CSS and JavaScript are not present, they are included before updating the DOM and initiating dokieli. This feature uses the <cite><a href="#resource-browser-method">resource browser</a></cite> to navigate HTTP URLs. See also <var>openDocument</var> (dokieli.js).</dd>
 
                     <dt id="resource-save"><i class="fa fa-life-ring"></i>Save</dt>
                     <dd>This feature makes a <a href="#http-put">write operation</a> (<code>HTTP PUT</code>) request to the current location of the document (<var>window.location</var>). The document is normalised in that dokieli related items are removed from the DOM before making the request.</dd>
@@ -719,7 +712,7 @@
 <code># Install packages</code>
 <code>npm install</code>
 <code></code>
-<code># Build stuff eg. scripts/do.js</code>
+<code># Build stuff eg. scripts/dokieli.js</code>
 <code>npm run build</code>
 <code></code>
 <code># or automatically rebuild when files change</code>

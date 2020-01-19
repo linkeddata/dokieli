@@ -5,17 +5,11 @@
     <title>dokieli</title>
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <link href="media/css/basic.css" media="all" rel="stylesheet" title="Basic" />
-    <link href="media/css/lncs.css" media="all" rel="stylesheet alternate" title="LNCS" />
-    <link href="media/css/acm.css" media="all" rel="stylesheet alternate" title="ACM" />
-    <link href="media/css/do.css" media="all" rel="stylesheet" />
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" media="all" rel="stylesheet" />
-    <script src="https://d3js.org/d3.v5.min.js"></script>
-    <script src="scripts/simplerdf.js"></script>
-    <script src="scripts/medium-editor.min.js"></script>
-    <script src="scripts/do.js"></script>
+    <link href="media/css/dokieli.css" media="all" rel="stylesheet" />
+    <script src="scripts/dokieli.js"></script>
   </head>
 
-  <body about="" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ dctypes: http://purl.org/dc/dcmitype/ foaf: http://xmlns.com/foaf/0.1/ pimspace: http://www.w3.org/ns/pim/space# cc: https://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# mem: http://mementoweb.org/ns# qb: http://purl.org/linked-data/cube# schema: http://schema.org/ void: http://rdfs.org/ns/void# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# bibo: http://purl.org/ontology/bibo/ sioc: http://rdfs.org/sioc/ns# doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp# solid: http://www.w3.org/ns/solid/terms# acl: http://www.w3.org/ns/auth/acl# dio: https://w3id.org/dio# rel: https://www.w3.org/ns/iana/link-relations/relation#" typeof="schema:CreativeWork sioc:Post prov:Entity">
+  <body about="" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ dctypes: http://purl.org/dc/dcmitype/ foaf: http://xmlns.com/foaf/0.1/ pimspace: http://www.w3.org/ns/pim/space# cc: https://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# mem: http://mementoweb.org/ns# qb: http://purl.org/linked-data/cube# schema: http://schema.org/ void: http://rdfs.org/ns/void# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# bibo: http://purl.org/ontology/bibo/ sioc: http://rdfs.org/sioc/ns# doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp# solid: http://www.w3.org/ns/solid/terms# acl: http://www.w3.org/ns/auth/acl# dio: https://w3id.org/dio# rel: https://www.w3.org/ns/iana/link-relations/relation#" typeof="schema:CreativeWork prov:Entity">
     <main>
       <article about="" typeof="schema:Article doap:Project">
         <h1 property="schema:name doap:name">dokieli</h1>
@@ -27,16 +21,16 @@
             <h2 property="schema:name">Features</h2>
             <div datatype="rdf:HTML" property="schema:description">
               <ul>
-                <li><a href="#publish"><i class="fa fa-3x fa-i-cursor"></i><span>Write and publish articles in a space you control</span><span>including locally, offline and static hosting.</span></a></li>
-                <li><a href="#personal-storage"><i class="fa fa-3x fa-asterisk"></i><span>Save articles to your personal datastore and edit in place </span><span>(supports Solid / Linked Data Platform).</span></a></li>
-                <li><a href="#annotate"><i class="fa fa-3x fa-comments"></i><span>Annotate, reply to and share articles.</span><span>Let your readers choose where to store their comments and notes.</span></a></li>
-                <li><a href="#notifications"><i class="fa fa-3x fa-bell"></i><span>Get notifications</span><span>when someone interacts with your article.</span></a></li>
-                <li><a href="#embed"><i class="fa fa-3x fa-table"></i><span>Embed live data, scripts, stats and multimedia.</span><span>Great for tutorials and experimental results.</span></a></li>
-                <li><a href="#semantics"><i class="fa fa-3x fa-link"></i><span>Add identifiers and semantic markup to any concept</span><span>to put your prose in the Linked Open Data cloud.</span></a></li>
-                <li><a href="#save-as"><i class="fa fa-3x fa-paper-plane"></i><span>Anyone can tweak, clone and remix your articles.</span><span>Spread your ideas, facilitate open knowledge access and reuse.</span></a></li>
-                <li><a href="#views"><i class="fa fa-3x fa-magic"></i><span>Let your readers choose a view that suits them.</span><span>Design your own or use preset themes.</span></a></li>
-                <li><a href="https://github.com/linkeddata/dokieli"><i class="fa fa-3x fa-flask"></i><span>Open source and under ongoing development...</span><span>dogfooding, feedback and contributions welcome.</span></a></li>
-                <li about="" rel="schema:object"><a href="#document-menu" typeof="schema:ActivateAction"><i class="fa fa-3x fa-bars"></i><span>Try it now!</span><span>This webpage is a dokieli article.</span></a></li>
+                <li><a href="#publish"><i class="fas fa-i-cursor fa-2x"></i><span>Write and publish articles in a space you control</span><span>including locally, offline and static hosting.</span></a></li>
+                <li><a href="#personal-storage"><i class="fas fa-asterisk fa-2x"></i><span>Save articles to your personal datastore and edit </span><span>(supports Solid / Linked Data Platform).</span></a></li>
+                <li><a href="#annotate"><i class="fas fa-comments fa-2x"></i><span>Annotate, reply to and share articles.</span><span>Let your readers choose where to store their annotations.</span></a></li>
+                <li><a href="#notifications"><i class="fas fa-bell fa-2x"></i><span>Get notifications</span><span>when someone interacts with your article.</span></a></li>
+                <li><a href="#embed"><i class="fas fa-table fa-2x"></i><span>Embed live data, scripts, stats and multimedia.</span><span>Great for tutorials and experimental results.</span></a></li>
+                <li><a href="#semantics"><i class="fas fa-link fa-2x"></i><span>Add identifiers and semantic markup to any concept</span><span>to put your prose in the Linked Open Data cloud.</span></a></li>
+                <li><a href="#save-as"><i class="fas fa-paper-plane fa-2x"></i><span>Anyone can tweak, clone and remix your articles.</span><span>Spread your ideas, facilitate knowledge access and reuse.</span></a></li>
+                <li><a href="#views"><i class="fas fa-magic fa-2x"></i><span>Let your readers choose a view that suits them.</span><span>Design your own or use preset themes.</span></a></li>
+                <li><a href="https://github.com/linkeddata/dokieli"><i class="fas fa-2x fa-flask"></i><span>Open source and under ongoing development...</span><span>dogfooding, feedback and contributions welcome.</span></a></li>
+                <li about="" rel="schema:potentialAction"><a href="#document-menu" typeof="schema:ActivateAction"><i class="fas fa-bars fa-2x"></i><span>Try it now!</span><span>This webpage is a dokieli article.</span></a></li>
               </ul>
             </div>
           </section>
@@ -53,18 +47,16 @@
           <section id="personal-storage" inlist="" rel="schema:hasPart" resource="#personal-storage">
             <h2 property="schema:name">Personal storage</h2>
             <div datatype="rdf:HTML" property="schema:description">
-              <p>In order to edit articles in the browser and save directly to server storage, as well as grant access to collaborators to edit, dokieli complies with the <a href="https://solid.mit.edu/">Solid</a> protocol, based on the <a href="https://www.w3.org/TR/ldp-primer/">Linked Data Platform</a> W3C standard. This is essentially a REST API for reading and writing Linked Data. Solid includes identity through WebID, access control through Web Access Control, and other enhancements for decentralised personal data management.</p>
-
-              <p>You can sign up for a demo personal datastore at <a href="https://databox.me/">databox</a>, install an existing <a href="https://github.com/solid/solid-platform">server implementation</a>, or even make your own server implementation from the <a href="https://github.com/solid/solid-spec">spec</a>. Once you have this, you can store dokieli articles there, privately or publicly (or limited access to others with WebIDs), as well as use this space for replies and notifications (and data generated by other Solid apps).</p>
+              <p>In order to edit articles in the browser and save directly to server storage, as well as grant access to collaborators to edit, dokieli can communicate with <a href="https://solid.mit.edu/">Solid</a>-like platforms, based on the <a href="https://www.w3.org/TR/ldp-primer/">Linked Data Platform</a> W3C standard. This is essentially a REST API for reading and writing Linked Data. Solid includes identity through WebID, access control through Web Access Control, and other enhancements for decentralised personal data management. You can store dokieli articles in a personal online data store, privately or publicly (or limited access to others with WebIDs), as well as use this space for annotations and notifications (and data generated by other applications).</p>
             </div>
           </section>
 
-          <p id="read-write-web">dokieli enables the <em>Write</em> dimension of the Read-Write Web</p>
+          <p id="dokieli-read-write-web">dokieli enables the <em>Write</em> dimension of the Read-Write Web</p>
 
           <section id="annotate" inlist="" rel="schema:hasPart" resource="#annotate">
             <h2 property="schema:name">Annotations and replies</h2>
             <div datatype="rdf:HTML" property="schema:description">
-              <p>dokieli implements the W3C <a about="" href="https://www.w3.org/TR/annotation-model/" rel="doap:implements">Web Annotation</a> specifications Wherever your article is published, readers can leave annotations and replies if they have their own personal datastore to save them to. If your article is published on a personal storage space, you can offer to store annotations and replies on their behalf, and enable anonymous responses too. All annotations and replies can be saved with a <i class="fa fa-creative-commons"></i> Creative Commons license. dokieli also able to send and consume information profile's outbox as per W3C <a about="" href="https://www.w3.org/TR/activitypub/" rel="doap:implements">ActivityPub</a>.</p>
+              <p>dokieli implements the W3C <a about="" href="https://www.w3.org/TR/annotation-model/" rel="doap:implements">Web Annotation</a> specifications Wherever your article is published, readers can leave annotations and replies if they have their own personal datastore to save them to. If your article is published on a personal storage space, you can offer to store annotations and replies on their behalf, and enable anonymous responses too. All annotations and replies can be saved with a <i class="fab fa-creative-commons"></i> Creative Commons license. dokieli is also able to send and consume information from a profile's outbox as per W3C <a about="" href="https://www.w3.org/TR/activitypub/" rel="doap:implements">ActivityPub</a>.</p>
 
               <figure id="figure-dokieli-annotation" rel="schema:video" resource="#figure-dokieli-annotation">
                 <video controls="controls" poster="https://dokie.li/media/images/dokieli-annotation.jpg" preload="none" resource="#figure-dokieli-annotation" typeof="schema:VideoObject" width="800">
@@ -78,7 +70,7 @@
           <section id="notifications" inlist="" rel="schema:hasPart" resource="#notifications">
             <h2 property="schema:name">Notifications</h2>
             <div datatype="rdf:HTML" property="schema:description">
-              <p>dokieli implements <a about="" href="https://www.w3.org/TR/ldn/" rel="doap:implements">Linked Data Notifications</a> W3C Recommendation for notifications for annotations and social activities. Whenever someone interacts with your article through dokieli, you will receive a notification in the appropriate <a about="" href="inbox/" rel="ldp:inbox">inbox</a> <i class="fa fa-inbox"></i>. Right now you get notifications for annotations, replies, shares, reviews, citations/links, bookmarks and likes. dokieli also implements the W3C <a about="" href="https://www.w3.org/TR/activitystreams-vocabulary/" rel="doap:implements">Activity Vocabulary</a>.</p>
+              <p>dokieli implements <a about="" href="https://www.w3.org/TR/ldn/" rel="doap:implements">Linked Data Notifications</a> W3C Recommendation for notifications for annotations and social activities. Whenever someone interacts with your article through dokieli, you will receive a notification in the appropriate <a about="" href="inbox/" rel="ldp:inbox">inbox</a> <i class="fas fa-inbox"></i>. Right now you get notifications for annotations, replies, shares, reviews, citations/links, bookmarks and likes. dokieli also implements the W3C <a about="" href="https://www.w3.org/TR/activitystreams-vocabulary/" rel="doap:implements">Activity Vocabulary</a>.</p>
 
               <figure id="figure-dokieli-share" rel="schema:video" resource="#figure-dokieli-share">
                 <video controls="controls" poster="https://dokie.li/media/images/dokieli-share.jpg" preload="none" resource="#figure-dokieli-share" typeof="schema:VideoObject" width="800">
@@ -92,28 +84,28 @@
           <section id="embed" inlist="" rel="schema:hasPart" resource="#embed">
             <h2 property="schema:name">Rich embedding</h2>
             <div datatype="rdf:HTML" property="schema:description">
-              <p>A dokieli article is simply an <a about="" href="https://www.w3.org/TR/html/" rel="doap:implements">HTML</a> <i class="fa fa-html5"></i> document, so anything you can include in an HTML page you can include in your article. We’re adding new features to the UI to help with this all the time. You can directly embed raw data; in <a about="" property="doap:programming-language" href="https://www.w3.org/TR/turtle/" rel="doap:implements">Turtle</a>, <a about="" property="doap:programming-language" href="https://www.w3.org/TR/json-ld/" rel="doap:implements">JSON-LD</a>, or <a about="" property="doap:programming-language" href="https://www.w3.org/TR/trig/" rel="doap:implements">TriG</a> (used in Nanopublications).</p>
+              <p>A dokieli article is simply an <a about="" href="https://www.w3.org/TR/html/" rel="doap:implements">HTML</a> <i class="fab fa-html5"></i> document, so anything you can include in an HTML page you can include in your article. We’re adding new features to the UI to help with this all the time. You can directly embed raw data; in <a about="" property="doap:programming-language" href="https://www.w3.org/TR/turtle/" rel="doap:implements">Turtle</a>, <a about="" property="doap:programming-language" href="https://www.w3.org/TR/json-ld/" rel="doap:implements">JSON-LD</a>, or <a about="" property="doap:programming-language" href="https://www.w3.org/TR/trig/" rel="doap:implements">TriG</a> (used in Nanopublications).</p>
             </div>
           </section>
 
           <section id="semantics" inlist="" rel="schema:hasPart" resource="#semantics">
             <h2 property="schema:name">Identifiers and semantics</h2>
             <div datatype="rdf:HTML" property="schema:description">
-              <p>Unique identifiers (URIs) are automatically generated for every section of your article to make it easy for others to link and refer to them. You can add identifiers to any concepts you think are important at any level of granularity. Additionally, you can add descriptive markup to any concept or snippet of prose which has an identifier; dokieli generates <i class="fa fa-rocket"></i> <a about="" property="doap:programming-language" href="https://www.w3.org/TR/rdfa-core/" rel="doap:implements">RDFa</a> markup under the hood so your ideas are exposed as <a about="" href="https://www.w3.org/DesignIssues/LinkedData.html" rel="doap:implements">Linked Data</a> for others to query, reuse and visualise.</p>
+              <p>Unique identifiers (URIs) are automatically generated for every section of your article to make it easy for others to link and refer to them. You can add identifiers to any concepts you think are important at any level of granularity. Additionally, you can add descriptive markup to any concept or snippet of prose which has an identifier; dokieli generates <i class="fas fa-rocket"></i> <a about="" property="doap:programming-language" href="https://www.w3.org/TR/rdfa-core/" rel="doap:implements">RDFa</a> markup under the hood so your ideas are exposed as <a about="" href="https://www.w3.org/DesignIssues/LinkedData.html" rel="doap:implements">Linked Data</a> for others to query, reuse and visualise.</p>
             </div>
           </section>
 
           <section id="save-as" inlist="" rel="schema:hasPart" resource="#save-as">
             <h2 property="schema:name">Remixing and replication</h2>
             <div datatype="rdf:HTML" property="schema:description">
-              <p>Readers can click <i class="fa fa-paper-plane-o"></i> <em>save as</em> on any of your articles to create a copy in their own datastore. This copy retains a link back to yours as a derivative work. This feature means that dokieli is a self-replicating application, spreading itself around the Web as ideas and discussions are spread.</p>
+              <p>Readers can click <i class="fas fa-paper-plane"></i> <em>save as</em> on any of your articles to create a copy in their own datastore. This copy retains a link back to yours as a derivative work. This feature means that dokieli is a self-replicating application, spreading itself around the Web as ideas and discussions are spread.</p>
             </div>
           </section>
 
           <section id="views" inlist="" rel="schema:hasPart" resource="#views">
             <h2 property="schema:name">Views</h2>
             <div datatype="rdf:HTML" property="schema:description">
-              <p>Views are just stylesheets, so if you know CSS <i class="fa fa-css3"></i> it is easy to make your own or customise our presets. You choose which to include with any of your articles according to what you think is useful for your audience, whether that is your personal website style or an academic paper layout. Every so often we add a new view, so keep an eye out.</p>
+              <p>Views are just stylesheets, so if you know CSS <i class="fab fa-css3"></i> it is easy to make your own or customise our presets. You choose which to include with any of your articles according to what you think is useful for your audience, whether that is your personal website style or an academic paper layout. Every so often we add a new view, so keep an eye out.</p>
             </div>
           </section>
 
@@ -139,7 +131,7 @@
                 <figcaption property="schema:name"><a href="https://dokie.li/media/video/dokieli-citation.webm">Video</a> of semantic inline citations and notification in dokieli [<time datetime="PT43S" property="schema:duration" datatype="xsd:duration">43s</time>, <span lang="" property="schema:encodingFormat" xml:lang="">WebM</span>]</figcaption>
               </figure>
 
-              <p id="linked-research">This is in line with the goals of the <i class="fa fa-mortar-board"></i> <a href="https://linkedresearch.org/">Linked Research</a> initiative. As an increasing number of conferences are accepting HTML submissions, you can write your paper <i class="fa fa-newspaper-o"></i> with dokieli and export to HTML or PDF for submission; we provide stylesheets for <a href="https://dokie.li/lncs-splnproc">LNCS</a> and <a href="https://dokie.li/acm-sigproc-sp">ACM</a> publication layouts out of the box. Here is <a href="http://csarven.ca/dokieli">one article, about dokieli</a>, and <a href="https://github.com/linkeddata/dokieli/wiki#examples-in-the-wild">others in the wild</a>.</p>
+              <p id="linked-research">This is in line with the goals of the <i class="fas fa-graduation-cap"></i> <a href="https://linkedresearch.org/">Linked Research</a> initiative. As an increasing number of conferences are accepting HTML submissions, you can write your paper <i class="fas fa-newspaper"></i> with dokieli and export to HTML or PDF for submission; we provide stylesheets for <a href="https://dokie.li/lncs-splnproc">LNCS</a> and <a href="https://dokie.li/acm-sigproc-sp">ACM</a> publication layouts out of the box. Here is <a href="http://csarven.ca/dokieli">one article, about dokieli</a>, and <a href="https://github.com/linkeddata/dokieli/wiki#examples-in-the-wild">others in the wild</a>.</p>
 
               <figure id="figure-dokieli-sparqlines" rel="schema:video" resource="#figure-dokieli-sparqlines">
                 <video controls="controls" id="video-dokieli-sparqlines" poster="https://dokie.li/media/images/GDP-per-capita-growth--annual---.svg" preload="none" resource="#figure-dokieli-sparqlines" typeof="schema:VideoObject" width="800">
@@ -153,18 +145,18 @@
           <section id="developers" inlist="" rel="schema:hasPart" resource="#developers">
             <h2 property="schema:name">Developers</h2>
             <div datatype="rdf:HTML" property="schema:description">
-              <p>dokieli is open source; <span about="" property="doap:audience">developers</span> can find the code at <i class="fa fa-github"></i> <a href="https://github.com/linkeddata/dokieli">github.com/linkeddata/dokieli</a>. This is very much a work in progress, so contributions, issues, bug reports and feature requests are welcome. You can also <strong>join the chat</strong> on <a href="https://gitter.im/linkeddata/dokieli">Gitter</a>.</p>
+              <p>dokieli is open source; <span about="" property="doap:audience">developers</span> can find the code at <i class="fab fa-osi"></i> <a href="https://github.com/linkeddata/dokieli">github.com/linkeddata/dokieli</a>. This is very much a work in progress, so contributions, issues, bug reports and feature requests are welcome. You can also <strong>join the chat</strong> on <a href="https://gitter.im/linkeddata/dokieli">Gitter</a>.</p>
 
-              <p>We’re building dokieli to be something we want to use, so we encourage dogfooding! Check out <a href="https://github.com/linkeddata/dokieli/wiki#examples-in-the-wild">examples in the wild</a>.<meta about="" rel="doap:maintainer" resource="http://csarven.ca/#i" /></p>
+              <p>We’re building dokieli to be something we want to use, so we encourage dogfooding! Check out <a href="https://github.com/linkeddata/dokieli/wiki#examples-in-the-wild">examples in the wild</a>.<span about="" rel="doap:maintainer" resource="http://csarven.ca/#i"></span></p>
             </div>
           </section>
 
           <section id="dive-in" inlist="" rel="schema:hasPart" resource="#dive-in">
             <h2 property="schema:name">Dive in</h2>
             <div datatype="rdf:HTML" property="schema:description">
-              <p>This page itself is a dokieli document, so to get started, open the menu in the top right and click <em>edit</em>. You can change this page to your heart’s content, try out different <i class="fa fa-magic"></i> <em>views</em>, then <i class="fa fa-external-link"></i> <em>export</em> the HTML and upload it somewhere you control.</p>
+              <p>This page itself is a dokieli document, so to get started, open the menu in the top right and click <em>edit</em>. You can change this page to your heart’s content, try out different <i class="fas fa-magic"></i> <em>views</em>, then <i class="fas fa-external-link"></i> <em>export</em> the HTML and upload it somewhere you control.</p>
 
-              <p>If you have a personal storage space, you can click <i class="fa fa-lightbulb-o"></i> <em>new</em> (for a blank document) or <i class="fa fa-paper-plane-o"></i> <em>save as</em> (for a copy of this one) and choose where you would like to save it. You will be redirected to your new document, where you can edit away and have changes automatically saved to your Webspace. Of course, you’ll also be able to interact with your new document using other applications!</p>
+              <p>If you have a personal storage space, you can click <i class="fas fa-lightbulb"></i> <em>new</em> (for a blank document) or <i class="fas fa-paper-plane"></i> <em>save as</em> (for a copy of this one) and choose where you would like to save it. You will be redirected to your new document, where you can edit away and have changes automatically saved to your Webspace. Of course, you’ll also be able to interact with your new document using other applications!</p>
             </div>
           </section>
         </div>

@@ -1,7 +1,7 @@
 'use strict'
 
-global.SimpleRDF = (typeof ld !== 'undefined') ? ld.SimpleRDF : undefined
-
+const ld = require('./simplerdf')
+const SimpleRDF = ld.SimpleRDF
 const Config = require('./config')
 const doc = require('./doc')
 
@@ -11,7 +11,8 @@ module.exports = {
   getMatchFromData,
   serializeData,
   serializeGraph,
-  applyParserSerializerFixes
+  applyParserSerializerFixes,
+  setDocumentBase
 }
 
 function getGraph (url) {
@@ -23,7 +24,7 @@ function getGraphFromData (data, options = {}) {
     options['contentType'] = 'text/turtle'
   }
 
-  // FIXME: This is a dirty filthy fugly but a *fix* to get around the baseURI not being passed to the DOM parser. This injects the `base` element into the document so that the RDFa parse fallsback to that. The actual fix should happen upstream. See related issues:
+  // FIXME: These are fugly but a temporary fix to get around the baseURI not being passed to the DOM parser. This injects the `base` element into the document so that the parsers fallsback to that. The actual fix should happen upstream. See related issues:
   // https://github.com/linkeddata/dokieli/issues/132
   // https://github.com/rdf-ext/rdf-parser-dom/issues/2
   // https://github.com/rdf-ext/rdf-parser-rdfa/issues/3
@@ -32,8 +33,9 @@ function getGraphFromData (data, options = {}) {
   if (!('subjectURI' in options)) {
     options['subjectURI'] = 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d'
   }
-  if (options.contentType === 'text/html' || options.contentType === 'application/xhtml+xml') {
-    data = doc.setHTMLBase(data, options.subjectURI)
+
+  if (options.contentType == 'text/html' || options.contentType == 'application/xhtml+xml' || options.contentType == 'text/turtle' || options.contentType == 'application/ld+json') {
+      data = setDocumentBase(data, options.subjectURI, options.contentType)
   }
 
   return SimpleRDF.parse(data, options['contentType'], options['subjectURI'])
@@ -264,21 +266,32 @@ function applyParserSerializerFixes(data, contentType) {
     case 'text/turtle':
       //XXX: Workaround for rdf-parser-rdfa bug that gives '@langauge' instead of @type when encountering datatype in HTML+RDFa . TODO: Link to bug here
       data = data.replace(/Z"@en;/, 'Z"^^<http://www.w3.org/2001/XMLSchema#dateTime>;');
+      data = data.replace(/start> "(\d+)"@en;/, 'start> "$1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger>;');
+      data = data.replace(/end> "(\d+)"@en;/, 'end> "$1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger>;');
+      data = data.replace(/\%2523/, '%23');
       break;
 
     case 'application/ld+json':
       var x = JSON.parse(data);
 
       //XXX: Workaround for rdf-parser-rdfa bug that gives '@language' instead of @type when encountering datatype in HTML+RDFa . See also https://github.com/rdf-ext/rdf-parser-rdfa/issues/5
-      var properties = ['https://www.w3.org/ns/activitystreams#published', 'https://www.w3.org/ns/activitystreams#updated', 'http://schema.org/dateCreated', 'http://schema.org/datePublished', 'http://schema.org/dateModified']
+      var properties = ['https://www.w3.org/ns/activitystreams#published', 'https://www.w3.org/ns/activitystreams#updated', 'http://schema.org/dateCreated', 'http://schema.org/datePublished', 'http://schema.org/dateModified', 'http://www.w3.org/ns/oa#start', 'http://www.w3.org/ns/oa#end'];
 
       for(var i = 0; i < x.length; i++){
         for(var j = 0; j < properties.length; j++){
           if(properties[j] in x[i]) {
-            x[i][properties[j]] = {
-              '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
-              '@value': x[i][properties[j]]['@value']
-            };
+            if (properties[j] == 'http://www.w3.org/ns/oa#start' || properties[j] == 'http://www.w3.org/ns/oa#end') {
+              x[i][properties[j]] = {
+                '@type': 'http://www.w3.org/2001/XMLSchema#nonNegativeInteger',
+                '@value': x[i][properties[j]]['@value']
+              };
+            }
+            else {
+              x[i][properties[j]] = {
+                '@type': 'http://www.w3.org/2001/XMLSchema#dateTime',
+                '@value': x[i][properties[j]]['@value']
+              };
+            }
           }
         }
       }
@@ -288,4 +301,49 @@ function applyParserSerializerFixes(data, contentType) {
   }        
 
   return data;
+}
+
+function setDocumentBase (data, baseURI, contentType) {
+  switch(contentType) {
+    case 'text/html': case 'application/xhtml+xml':
+      let template = document.implementation.createHTMLDocument()
+      template.documentElement.innerHTML = data
+      let base = template.querySelector('head base[href]')
+      if (!base) {
+        template.querySelector('head').insertAdjacentHTML('afterbegin', '<base href="' + baseURI + '" />')
+        data = template.documentElement.outerHTML
+      }
+      break;
+
+    case 'text/turtle':
+      data = `@base <` + baseURI + `> .\n` + data;
+      break;
+
+    case 'application/json': case 'application/ld+json':
+      data = JSON.parse(data);
+      data['@context'] = (data['@context']) ? data['@context'] : {'@base': baseURI};
+
+      if (Array.isArray(data['@context'])) {
+        var found = false;
+        data['@context'].forEach(function(a){
+          if (typeof a === 'object' && '@base' in a) {
+            found = true;
+          }
+        })
+        if (!found) {
+          data['@context'].push({'@base': baseURI});
+        }
+      }
+      else if (typeof data['@context'] === 'object' && !('@base' in data['@context'])) {
+        data['@context']['@base'] = baseURI;
+      }
+
+      data = JSON.stringify(data);
+      break;
+
+    default:
+      break;
+  }
+// console.log(data)
+  return data
 }

@@ -8,7 +8,10 @@ module.exports = {
   getAbsoluteIRI,
   getProxyableIRI,
   stripFragmentFromString,
-  getFragmentFromString
+  getFragmentFromString,
+  getBaseURL,
+  getPathURL,
+  getURLLastPath
 }
 
 function encodeString (string) {
@@ -48,7 +51,11 @@ function getProxyableIRI (url, options = {}) {
   var pIRI = stripFragmentFromString(url)
 
   if ((typeof document !== 'undefined' && document.location.protocol === 'https:' && pIRI.slice(0, 5).toLowerCase() === 'http:') || 'forceProxy' in options) {
-    var proxyURL = ('proxyURL' in options) ? options.proxyURL : Config.ProxyURL
+    var proxyURL = ('proxyURL' in options)
+      ? options.proxyURL
+      : (Config.User.ProxyURL)
+        ? Config.User.ProxyURL
+        : Config.ProxyURL
     pIRI = proxyURL + encodeString(pIRI)
   }
 
@@ -74,3 +81,37 @@ function getFragmentFromString (string) {
   }
   return string 
 }
+
+
+function getBaseURL(url) {
+  if(typeof url === 'string') {
+    url = url.substr(0, url.lastIndexOf('/') + 1);
+  }
+
+  return url;
+}
+
+function getPathURL(url) {
+  if(typeof url === 'string') {
+    var i  = url.indexOf('?');
+    if(i > -1) {
+      url = url.substr(0, i);
+    }
+    i = url.indexOf('#');
+    if(i > -1) {
+      url = url.substr(0, i);
+    }
+  }
+
+  return url;
+}
+
+function getURLLastPath(url) {
+  if(typeof url === 'string') {
+    url = getPathURL(url);
+    url = url.substr(url.lastIndexOf('/') + 1);
+  }
+
+  return url;
+}
+
