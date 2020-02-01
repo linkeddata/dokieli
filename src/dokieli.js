@@ -1030,15 +1030,15 @@ var DO = {
       }
 
       if (DO.C.GraphViewerAvailable) {
-        var graph = DO.U.urlParam('graph');
-        if (graph) {
-          var url = decodeURIComponent(graph);
+        var g = DO.U.urlParam('graph');
+        if (g) {
+          var resource = decodeURIComponent(g);
           document.documentElement.appendChild(util.fragmentFromString('<aside id="graph-view" class="do on">' + DO.C.Button.Close + '<h2>Graph view</h2></aside>'));
 
           var optionsNormalisation = DO.C.DOMNormalisation;
           delete optionsNormalisation['skipNodeWithClass'];
 
-          DO.U.showVisualisationGraph(url, doc.getDocument(null, optionsNormalisation), '#graph-view');
+          DO.U.showVisualisationGraph(resource, doc.getDocument(null, optionsNormalisation), '#graph-view');
 
           window.history.replaceState({}, null, document.location.href.substr(0, document.location.href.lastIndexOf('?')));
         }
