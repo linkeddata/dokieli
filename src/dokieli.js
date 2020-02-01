@@ -1032,15 +1032,47 @@ var DO = {
       if (DO.C.GraphViewerAvailable) {
         var g = DO.U.urlParam('graph');
         if (g) {
-          var resource = decodeURIComponent(g);
-          document.documentElement.appendChild(util.fragmentFromString('<aside id="graph-view" class="do on">' + DO.C.Button.Close + '<h2>Graph view</h2></aside>'));
+          var iri = decodeURIComponent(g);
 
-          var optionsNormalisation = DO.C.DOMNormalisation;
-          delete optionsNormalisation['skipNodeWithClass'];
+          var options = options || {};
+          var headers = { 'Accept': fetcher.setAcceptRDFTypes() };
+          var pIRI = uri.getProxyableIRI(iri);
+          if (pIRI.slice(0, 5).toLowerCase() == 'http:') {
+            options['noCredentials'] = true;
+          }
 
-          DO.U.showVisualisationGraph(resource, doc.getDocument(null, optionsNormalisation), '#graph-view');
+          var handleResource = function handleResource (pIRI, headers, options) {
+            return fetcher.getResource(pIRI, headers, options)
+              .catch(error => {
+                if (error.status === 0) {
+                  // retry with proxied uri
+                  var pIRI = uri.getProxyableIRI(iri, {'forceProxy': true});
+                  return handleResource(pIRI, headers, options);
+                }
 
-          window.history.replaceState({}, null, document.location.href.substr(0, document.location.href.lastIndexOf('?')));
+                throw error  // else, re-throw the error
+              })
+              .then(response => {
+                var cT = response.headers.get('Content-Type');
+                var options = {};
+                options['contentType'] = (cT) ? cT.split(';')[0].trim() : 'text/turtle';
+                options['subjectURI'] = iri;
+
+                return response.text()
+                  .then(data => {
+                    document.documentElement.appendChild(util.fragmentFromString('<aside id="graph-view" class="do on">' + DO.C.Button.Close + '<h2>Graph view</h2></aside>'));
+
+                    // var optionsNormalisation = DO.C.DOMNormalisation;
+                    // delete optionsNormalisation['skipNodeWithClass'];
+
+                    DO.U.showVisualisationGraph(iri, data, '#graph-view');
+
+                    window.history.replaceState({}, null, document.location.href.substr(0, document.location.href.lastIndexOf('?')));
+                  })
+              })
+          }
+
+          handleResource(pIRI, headers, options);
         }
       }
 
