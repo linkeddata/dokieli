@@ -1065,7 +1065,7 @@ var DO = {
                     // var optionsNormalisation = DO.C.DOMNormalisation;
                     // delete optionsNormalisation['skipNodeWithClass'];
 
-                    DO.U.showVisualisationGraph(iri, data, '#graph-view');
+                    DO.U.showVisualisationGraph(iri, data, '#graph-view', options);
 
                     window.history.replaceState({}, null, document.location.href.substr(0, document.location.href.lastIndexOf('?')));
                   })
