@@ -7,7 +7,7 @@
  */
 
 global.fetcher = require('./fetcher')
-const doc = require('./doc')
+global.doc = require('./doc')
 const uri = require('./uri')
 const graph = require('./graph')
 const inbox = require('./inbox')
@@ -1027,6 +1027,21 @@ var DO = {
         DO.U.openResource(open);
 
         window.history.replaceState({}, null, document.location.href.substr(0, document.location.href.lastIndexOf('?')));
+      }
+
+      if (DO.C.GraphViewerAvailable) {
+        var graph = DO.U.urlParam('graph');
+        if (graph) {
+          var url = decodeURIComponent(graph);
+          document.documentElement.appendChild(util.fragmentFromString('<aside id="graph-view" class="do on">' + DO.C.Button.Close + '<h2>Graph view</h2></aside>'));
+
+          var optionsNormalisation = DO.C.DOMNormalisation;
+          delete optionsNormalisation['skipNodeWithClass'];
+
+          DO.U.showVisualisationGraph(url, doc.getDocument(null, optionsNormalisation), '#graph-view');
+
+          window.history.replaceState({}, null, document.location.href.substr(0, document.location.href.lastIndexOf('?')));
+        }
       }
 
       if (DO.C.EditorAvailable) {
