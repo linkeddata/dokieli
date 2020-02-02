@@ -545,6 +545,10 @@ var DO = {
         }
       }
 
+      if (selector == '#graph-view' && !document.getElementById('graph-view')) {
+        document.documentElement.appendChild(util.fragmentFromString('<aside id="graph-view" class="do on">' + DO.C.Button.Close + '<h2>Graph view</h2></aside>'));
+      }
+
       var svg = d3.select(selector).append('svg')
         .attr('width', width)
         .attr('height', height)
@@ -1030,49 +1034,19 @@ var DO = {
       }
 
       if (DO.C.GraphViewerAvailable) {
-        var g = DO.U.urlParam('graph');
+        var searchParams = new URLSearchParams(document.location.search);
+        var g = searchParams.get('graph');
         if (g) {
           var iri = decodeURIComponent(g);
 
-          var options = options || {};
-          var headers = { 'Accept': fetcher.setAcceptRDFTypes() };
-          var pIRI = uri.getProxyableIRI(iri);
-          if (pIRI.slice(0, 5).toLowerCase() == 'http:') {
-            options['noCredentials'] = true;
-          }
+          var docURI = iri.split(/[?#]/)[0];
 
-          var handleResource = function handleResource (pIRI, headers, options) {
-            return fetcher.getResource(pIRI, headers, options)
-              .catch(error => {
-                if (error.status === 0) {
-                  // retry with proxied uri
-                  var pIRI = uri.getProxyableIRI(iri, {'forceProxy': true});
-                  return handleResource(pIRI, headers, options);
-                }
+          var options = {'license': 'https://creativecommons.org/publicdomain/zero/1.0/', 'filter': { 'subjects': [docURI, iri] } };
 
-                throw error  // else, re-throw the error
-              })
-              .then(response => {
-                var cT = response.headers.get('Content-Type');
-                var options = {};
-                options['contentType'] = (cT) ? cT.split(';')[0].trim() : 'text/turtle';
-                options['subjectURI'] = iri;
+          // DO.U.showGraphResources([docURI], '#graph-view', options);
+          DO.U.showGraph([docURI], '#graph-view', options);
 
-                return response.text()
-                  .then(data => {
-                    document.documentElement.appendChild(util.fragmentFromString('<aside id="graph-view" class="do on">' + DO.C.Button.Close + '<h2>Graph view</h2></aside>'));
-
-                    // var optionsNormalisation = DO.C.DOMNormalisation;
-                    // delete optionsNormalisation['skipNodeWithClass'];
-
-                    DO.U.showVisualisationGraph(iri, data, '#graph-view', options);
-
-                    window.history.replaceState({}, null, document.location.href.substr(0, document.location.href.lastIndexOf('?')));
-                  })
-              })
-          }
-
-          handleResource(pIRI, headers, options);
+          // window.history.replaceState({}, null, document.location.href.substr(0, document.location.href.lastIndexOf('?')));
         }
       }
 
