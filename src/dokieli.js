@@ -1046,7 +1046,7 @@ var DO = {
           // DO.U.showGraphResources([docURI], '#graph-view', options);
           DO.U.showGraph([docURI], '#graph-view', options);
 
-          // window.history.replaceState({}, null, document.location.href.substr(0, document.location.href.lastIndexOf('?')));
+          window.history.replaceState({}, null, document.location.href.substr(0, document.location.href.lastIndexOf('?')));
         }
       }
 
