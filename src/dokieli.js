@@ -545,6 +545,20 @@ var DO = {
         }
       }
 
+      var group = {
+        "0": { color: '#fff', label: '' },
+        "1": { color: '#000', label: '' },
+        "2": { color: '#333', label: '' },
+        "3": { color: '#777', label: '' },
+        "4": { color: '#ccc', label: 'Literal' },
+        "5": { color: '#ff0', label: 'Root' },
+        "6": { color: '#ff2900', label: 'Type' },
+        "7": { color: '#002af7', label: 'External' },
+        "8": { color: '#00cc00', label: 'Internal' },
+        "9": { color: '#00ffff', label: 'Citation' },
+        "10": { color: '#800080', label: 'Social' }
+      }
+
       if (selector == '#graph-view' && !document.getElementById('graph-view')) {
         document.documentElement.appendChild(util.fragmentFromString('<aside id="graph-view" class="do on">' + DO.C.Button.Close + '<h2>Graph view</h2></aside>'));
       }
@@ -591,7 +605,7 @@ var DO = {
           .attr("markerWidth", 6)
           .attr("markerHeight", 6)
           .attr("orient", "auto")
-          .attr("fill", color(3))
+          .attr("fill", group[3].color)
         .append("path")
           .attr("d", "M0,-5L10,0L0,5");
 
@@ -650,7 +664,7 @@ var DO = {
             .enter().append("path")
               // .attr("class", "link")
               .attr('fill', 'none')
-              .attr('stroke', color(4))
+              .attr('stroke', group[4].color)
               .attr("marker-end", "url(#end)");
 
           var node = svg.selectAll(".node")
@@ -662,8 +676,8 @@ var DO = {
             .enter().append("circle")
               // .attr("class", "node")
               .attr("r", nodeRadius)
-              .attr("fill", function(d) { return color(d.group); })
-              .attr('stroke', color(2))
+              .attr("fill", function(d) { return group[d.group].color; })
+              .attr('stroke', group[2].color)
               // .call(d3.drag()
               //     .on("start", dragstarted)
               //     .on("drag", dragged)
