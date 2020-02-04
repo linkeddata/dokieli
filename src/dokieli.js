@@ -1039,14 +1039,20 @@ var DO = {
         if (g) {
           var iri = decodeURIComponent(g);
 
-          var docURI = iri.split(/[?#]/)[0];
+          //TODO: Need a way to handle potential proxy use eg. https://dokie.li/?graph=https://dokie.li/proxy?uri=https://example.org/
+          //XXX: if iri startsWith https://dokie.li/proxy? then the rest gets chopped.
+          // var docURI = iri.split(/[?#]/)[0];
 
-          var options = {'license': 'https://creativecommons.org/publicdomain/zero/1.0/', 'filter': { 'subjects': [docURI, iri] } };
+          //XXX: fugly
+          var docURI = iri.split(/[#]/)[0];
+          iri = iri.split('=').pop();
+
+          var options = {'license': 'https://creativecommons.org/publicdomain/zero/1.0/', 'filter': { 'subjects': [docURI, iri] }, 'title': iri };
 
           // DO.U.showGraphResources([docURI], '#graph-view', options);
           DO.U.showGraph([docURI], '#graph-view', options);
 
-          window.history.replaceState({}, null, document.location.href.substr(0, document.location.href.lastIndexOf('?')));
+          window.history.replaceState({}, null, document.location.href.substr(0, document.location.href.lastIndexOf('?graph')));
         }
       }
 
