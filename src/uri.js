@@ -7,6 +7,7 @@ module.exports = {
   decodeString,
   getAbsoluteIRI,
   getProxyableIRI,
+  getProxyURL,
   stripFragmentFromString,
   getFragmentFromString,
   getBaseURL,
@@ -51,15 +52,19 @@ function getProxyableIRI (url, options = {}) {
   var pIRI = stripFragmentFromString(url)
 
   if ((typeof document !== 'undefined' && document.location.protocol === 'https:' && pIRI.slice(0, 5).toLowerCase() === 'http:') || 'forceProxy' in options) {
-    var proxyURL = ('proxyURL' in options)
-      ? options.proxyURL
-      : (Config.User.ProxyURL)
-        ? Config.User.ProxyURL
-        : Config.ProxyURL
+    var proxyURL = getProxyURL(options)
     pIRI = proxyURL + encodeString(pIRI)
   }
 
   return pIRI
+}
+
+function getProxyURL(options) {
+ return (typeof options !== 'undefined' && 'proxyURL' in options)
+      ? options.proxyURL
+      : (Config.User.ProxyURL)
+        ? Config.User.ProxyURL
+        : Config.ProxyURL
 }
 
 function stripFragmentFromString (string) {
