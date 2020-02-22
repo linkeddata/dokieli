@@ -1450,7 +1450,7 @@ var DO = {
           slides[j].classList.add('do');
         }
         document.body.classList.add('on-slideshow', 'list');
-        document.querySelector('head').insertAdjacentHTML('beforeend', '<meta name="viewport" content="width=792, user-scalable=no" />');
+        document.querySelector('head').insertAdjacentHTML('beforeend', '<meta content="width=792, user-scalable=no" name="viewport" />');
 
 
         var body = document.body;
