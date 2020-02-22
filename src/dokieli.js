@@ -1470,7 +1470,7 @@ var DO = {
 
           var dMenuSections = dMenu.querySelectorAll('section');
           for (var j = 0; j < dMenuSections.length; j++) {
-            dMenuSections[j].parentNode.removeChild(dMSections[j]);
+            dMenuSections[j].parentNode.removeChild(dMenuSections[j]);
           }
         }
 
