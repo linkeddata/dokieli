@@ -1134,7 +1134,8 @@ var DO = {
 // console.log(potentialActions)
             potentialActions.forEach(function(action){
 // console.log(action);
-              var originPathname = document.location.origin + document.location.pathname;
+              var documentOrigin = (document.location.origin === "null") ? "file://" : document.location.origin;
+              var originPathname = documentOrigin + document.location.pathname;
 // console.log(originPathname)
 // console.log(action.startsWith(originPathname + '#'))
               if (action.startsWith(originPathname)) {
