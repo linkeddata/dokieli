@@ -31,25 +31,25 @@
   "homepage": "https://dokie.li/",
   "dependencies": {
     "d3-force": "^2.0.1",
-    "d3-selection": "^1.4.0",
+    "d3-selection": "^1.4.1",
     "fs": "0.0.1-security",
     "medium-editor": "^5.23.3",
     "medium-editor-tables": "^0.6.1",
-    "node-fetch": "^1.7.3",
-    "npm": "^6.13.4",
+    "node-fetch": "^2.6.0",
+    "npm": "^6.14.2",
     "rdf-parser-rdfa": "git://github.com/rdf-ext/rdf-parser-rdfa.git#master",
     "rdf-store-ldp": "^0.3.1",
     "simplerdf": "^0.2.14",
     "simplerdf-parse": "^0.1.3",
-    "solid-auth-client": "^2.2.11",
-    "trackjs": "^2.13.0",
+    "solid-auth-client": "^2.4.1",
+    "trackjs": "^3.7.3",
     "webpack-core": "^0.6.9",
-    "wrapper-webpack-plugin": "^2.0.0"
+    "wrapper-webpack-plugin": "^2.1.0"
   },
   "devDependencies": {
-    "standard": "^10.0.3",
-    "webpack": "^4.25.1",
-    "webpack-cli": "^3.1.2"
+    "standard": "^14.3.3",
+    "webpack": "^4.42.0",
+    "webpack-cli": "^3.3.11"
   },
   "standard": {
     "globals": [
