@@ -1281,8 +1281,7 @@ var DO = {
       dMenuButton.classList.add('show');
       dMenuButton.setAttribute('title', 'Open Menu');
       dMenuButton.innerHTML = template.Icon[".fas.fa-bars"];
-
-      //doc.removeNodesWithIds(Config.DocumentDoItems);
+      doc.removeNodesWithIds(DO.C.DocumentDoItems);
     },
 
     setPolyfill: function() {

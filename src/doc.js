@@ -17,6 +17,7 @@ module.exports = {
   createActivityHTML,
   getClosestSectionNode,
   removeSelectorFromNode,
+  removeNodesWithIds,
   getNodeLanguage,
   showActionMessage,
   selectArticleNode,
