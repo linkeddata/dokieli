@@ -17,7 +17,8 @@ window.MediumEditorTable = require('medium-editor-tables')
 const storage = require('./storage')
 global.auth = require('./auth')
 global.template = require('./template')
-const d3 = Object.assign({}, require("d3-selection"), require("d3-force"));
+const d3 = Object.assign({}, require("d3-selection"), require("d3-force"))
+const shower = require('shower').default
 
 if(typeof DO === 'undefined'){
 const ld = require('./simplerdf')
@@ -5604,6 +5605,26 @@ WHERE {\n\
 
         MathJax.Hub.setRenderer(jax);
       });
+    },
+
+    initSlideshow: function(options) {
+      options = options || {};
+      options.progress = options.progress || true;
+
+      //TODO: .shower can be anywhere?
+      //TODO: check for rdf:type bibo:Slideshow or schema:PresentationDigitalDocument
+      if (document.body.classList.contains('shower')) {
+        //TODO: Check if .shower.list or .shower.full. pick a default in a dokieli or leave default to shower (list)?
+
+        //TODO: Check if .bibo:Slide, and if there is no .slide, add .slide
+
+        if (!document.body.querySelector('.progress') && options.progress) {
+          document.body.appendChild(util.fragmentFromString('<div class="progress"></progress>'));
+        }
+
+        shwr = new shower();
+        shwr.start();
+      }
     },
 
     Editor: {

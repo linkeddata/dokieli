@@ -22,6 +22,7 @@ module.exports = {
       DO.U.setDocumentMode();
       DO.U.showInboxNotifications();
       DO.U.initMath();
+      DO.U.initSlideshow();
     }
   },
   Inbox: {},
