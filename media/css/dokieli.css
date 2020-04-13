@@ -2028,6 +2028,7 @@ background: #080 linear-gradient(135deg, #080 50%, #070 50%) no-repeat;
 }
 .shower .caption h1 {
 padding: 0;
+text-align:left;
 }
 .shower .slide footer {
 padding: 1em 2.5em;
