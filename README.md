@@ -106,6 +106,7 @@ These libraries are part of the dokieli distribution:
 * [Font Awesome](https://github.com/FortAwesome/Font-Awesome) (CC BY 4.0 License / MIT License) for icons.
 * [MediumEditor](https://github.com/yabwe/medium-editor) (MIT License) for document editing.
 * [d3](https://github.com/d3/d3) (BSD 3-Clause) used for visualisations.
+* [Shower](https://github.com/shower/core) (MIT License) used for slideshows.
 
 
 ## How to contribute
