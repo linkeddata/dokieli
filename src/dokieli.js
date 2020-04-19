@@ -497,6 +497,7 @@ var DO = {
       var width = options.width || '100%';
       var height = options.height || '100%';
       var nodeRadius = 6;
+      var simulation;
 
       var id = util.generateAttributeId();
 
@@ -525,26 +526,23 @@ var DO = {
         d.fx = null, d.fy = null;
       }
 
-      // var color = d3.scaleOrdinal(d3.schemeCategory10);
+      function runSimulation(graph, svgObject) {
+// console.log(graph)
+// console.log(svgObject)
+        simulation
+            .nodes(graph.nodes)
+            .on("tick", ticked);
 
-      //Move this to config perhaps with terms eg. anchor, anchorInternal, warning
-      var color = function(group) { 
-        switch(group) {
-          case 0: return '#fff';
-          default:
-          case 1: return '#000';
-          case 2: return '#333';
-          case 3: return '#777';
-          case 4: return '#ccc';
-          case 5: return '#ff0';
-          case 6: return '#ff2900';
-          case 7: return '#002af7';
-          case 8: return '#00cc00';
-          case 9: return '#00ffff';
+        simulation.force("link")
+            .links(graph.links);
 
-          case 10: return '#800080';
+        function ticked() {
+          svgObject.link.attr("d", positionLink);
+          svgObject.node.attr("transform", positionNode);
         }
       }
+
+      // var color = d3.scaleOrdinal(d3.schemeCategory10);
 
       var group = {
         "0": { color: '#fff', label: '' },
@@ -596,109 +594,186 @@ var DO = {
           .text(options.title);
       }
 
-      svg.append("defs").selectAll("marker")
-          .data(["end"])
-        .enter().append("marker")
-          .attr("id", String)
-          .attr("viewBox", "0 -5 10 10")
-          .attr("refX", 20)
-          .attr("refY", -1)
-          .attr("markerWidth", 6)
-          .attr("markerHeight", 6)
-          .attr("orient", "auto")
-          .attr("fill", group[3].color)
-        .append("path")
-          .attr("d", "M0,-5L10,0L0,5");
+      function handleResource (pIRI, headers, options) {
+        return fetcher.getResource(pIRI, headers, options)
+          .catch(error => {
+// console.log(error)
+            // if (error.status === 0) {
+              // retry with proxied uri
+              var pIRI = uri.getProxyableIRI(options['subjectURI'], {'forceProxy': true});
+              return handleResource(pIRI, headers, options);
+            // }
 
-      var simulation = d3.forceSimulation()
-        .alphaDecay(0.025)
-        // .velocityDecay(0.1)
-        .force("link", d3.forceLink().distance(nodeRadius).strength(0.25))
-        .force('collide', d3.forceCollide().radius(nodeRadius * 2).strength(0.25))
-        // .force("charge", d3.forceManyBody())
-        .force("center", d3.forceCenter(width / 2, height / 2));
-
-      DO.U.getVisualisationGraphData(url, data, options).then(
-        function(graph){
-// console.log(graph);
-          var nodes = graph.nodes;
-          var nodeById = new Map();
-          nodes.forEach(function(n){
-            nodeById.set(n.id, n);
+            // throw error  // else, re-throw the error
           })
-          var links = graph.links;
-          var bilinks = [];
+          .then(response => {
+// console.log(response)
+            var cT = response.headers.get('Content-Type');
+            var options = {};
+            options['contentType'] = (cT) ? cT.split(';')[0].trim() : 'text/turtle';
 
-// var foo = new Map(nodes);
-// console.log(foo)
-          var uniqueNodes = {};
+            return response.text().then(data => {
+              options['mergeGraph'] = true;
+              initiateVisualisation(options['subjectURI'], data, options);
+            });
+          })
+      }
 
-          links.forEach(function(link) {
-            var s = link.source = nodeById.get(link.source),
-                t = link.target = nodeById.get(link.target),
-                i = {}; // intermediate node
-                // linkValue = link.value
-            nodes.push(i);
+      function createSVGMarker() {
+        svg.append("defs").selectAll("marker")
+          .data(["end"])
+          .enter().append("marker")
+            .attr("id", String)
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 20)
+            .attr("refY", -1)
+            .attr("markerWidth", 6)
+            .attr("markerHeight", 6)
+            .attr("orient", "auto")
+            .attr("fill", group[3].color)
+          .append("path")
+            .attr("d", "M0,-5L10,0L0,5");
+      }
 
-            if (uniqueNodes[s.id] > -1) {
-              s = uniqueNodes[s.id];
-            }
-            else {
-              uniqueNodes[s.id] = s;
-            }
+      createSVGMarker();
 
-            if (uniqueNodes[t.id] > -1) {
-              t = uniqueNodes[t.id];
-            }
-            else {
-              uniqueNodes[t.id] = t;
-            }
+      function buildGraphObject(graph) {
+        var graphObject = {};
 
-            links.push({source: s, target: i}, {source: i, target: t});
-            bilinks.push([s, i, t]);
-          });
+        var nodes = graph.nodes;
+        var nodeById = new Map();
+        nodes.forEach(function(n){
+          nodeById.set(n.id, n);
+        })
+        var links = graph.links;
+        var bilinks = [];
 
-// console.log(links)
-// console.log(uniqueNodes)
-          var link = svg.selectAll(".link")
-            .data(bilinks)
-            .enter().append("path")
-              // .attr("class", "link")
-              .attr('fill', 'none')
-              .attr('stroke', group[4].color)
-              .attr("marker-end", "url(#end)");
+// console.log(graph)
+// console.log(nodeById)
+        var uniqueNodes = {};
 
-          var node = svg.selectAll(".node")
-            .data(nodes.filter(function(d) {
-              if (uniqueNodes[d.id] && uniqueNodes[d.id].index == d.index) {
-                return d.id;
-              }
-            }))
-            .enter().append("circle")
-              // .attr("class", "node")
-              .attr("r", nodeRadius)
-              .attr("fill", function(d) { return group[d.group].color; })
-              .attr('stroke', group[2].color)
-              // .call(d3.drag()
-              //     .on("start", dragstarted)
-              //     .on("drag", dragged)
-              //     .on("end", dragended));
+        links.forEach(function(link) {
+          var s = link.source = nodeById.get(link.source),
+              t = link.target = nodeById.get(link.target),
+              i = {}; // intermediate node
+              // linkValue = link.value
+          nodes.push(i);
 
-          node.append("title")
-              .text(function(d) { return d.id; });
-
-          simulation
-              .nodes(nodes)
-              .on("tick", ticked);
-
-          simulation.force("link")
-              .links(links);
-
-          function ticked() {
-            link.attr("d", positionLink);
-            node.attr("transform", positionNode);
+          if (uniqueNodes[s.id] > -1) {
+            s = uniqueNodes[s.id];
           }
+          else {
+            uniqueNodes[s.id] = s;
+          }
+
+          if (uniqueNodes[t.id] > -1) {
+            t = uniqueNodes[t.id];
+          }
+          else {
+            uniqueNodes[t.id] = t;
+          }
+
+          links.push({source: s, target: i}, {source: i, target: t});
+          bilinks.push([s, i, t]);
         });
+
+        graphObject = {
+          'nodes': nodes,
+          'links': links,
+          'bilinks': bilinks,
+          'uniqueNodes': uniqueNodes
+        };
+// console.log(graphObject)
+
+        return graphObject;
+      }
+
+      function buildSVGObject(go) {
+        var svgObject = {};
+
+        createSVGMarker();
+
+        var link = svg.selectAll("path")
+          .data(go.bilinks)
+          .enter().append("path")
+            // .attr("class", "link")
+            .attr('fill', 'none')
+            .attr('stroke', group[4].color)
+            .attr("marker-end", "url(#end)");
+
+        // link.transition();
+
+        var node = svg.selectAll("circle")
+          .data(go.nodes.filter(function(d) {
+            if (go.uniqueNodes[d.id] && go.uniqueNodes[d.id].index == d.index) {
+              return d.id;
+            }
+          }))
+          .enter().append("circle")
+            // .attr("class", "node")
+            .attr("r", nodeRadius)
+            .attr("fill", function(d) { return group[d.group].color; })
+            .attr('stroke', group[2].color)
+            // .call(d3.drag()
+            //     .on("start", dragstarted)
+            //     .on("drag", dragged)
+            //     .on("end", dragended));
+            .on('click', function(graph) {
+              //assuming group != 4 (literal) and is http for now
+              if (graph.group !== 4) {
+                var iri = graph.id;
+
+                options = options || {};
+                options['subjectURI'] = iri;
+                var headers = { 'Accept': fetcher.setAcceptRDFTypes() };
+                var pIRI = uri.getProxyableIRI(iri);
+                if (pIRI.slice(0, 5).toLowerCase() == 'http:') {
+                  options['noCredentials'] = true;
+                }
+
+                handleResource(pIRI, headers, options);
+              }
+            })
+        node.append("title")
+            .text(function(d) { return d.id; });
+
+        svgObject = {
+          'link': link,
+          'node': node
+        }
+
+// console.log(svgObject)
+        return svgObject;
+      }
+
+      function initiateVisualisation(url, data, options) {
+        return DO.U.getVisualisationGraphData(url, data, options).then(
+          function(graph){
+// console.log(graph);
+            var graphObject = buildGraphObject(graph);
+
+            simulation = d3.forceSimulation().nodes(graph.nodes)
+              .alphaDecay(0.025)
+              // .velocityDecay(0.1)
+              .force("link", d3.forceLink().distance(nodeRadius).strength(0.25))
+              .force('collide', d3.forceCollide().radius(nodeRadius * 2).strength(0.25))
+              // .force("charge", d3.forceManyBody().stength(-5))
+              .force("center", d3.forceCenter(width / 2, height / 2));
+
+            if ('mergeGraph' in options && options.mergeGraph) {
+              svg.selectAll("marker").remove();
+              svg.selectAll("path").remove();
+              svg.selectAll("circle").remove();
+              simulation.restart();
+            }
+
+            var svgObject = buildSVGObject(graphObject);
+
+            runSimulation(graph, svgObject);
+          });
+      }
+
+      initiateVisualisation(url, data, options);
     },
 
     getVisualisationGraphData: function(url, data, options) {
@@ -706,11 +781,29 @@ var DO = {
         graph.getGraphFromData(data, options).then(
           function(g){
 // console.log(g);
+            DO.C['Graphs'] = DO.C['Graphs'] || {};
             var g = SimpleRDF(DO.C.Vocab, options['subjectURI'], g, ld.store).child(url);
+
+            var dataGraph = SimpleRDF();
+            var graphs = {};
+            graphs[options['subjectURI']] = g;
+
+            if ('mergeGraph' in options && options.mergeGraph) {
+              graphs = Object.assign(DO.C.Graphs, graphs);
+            }
+
+            DO.C['Graphs'][options['subjectURI']] = g;
+
+            Object.keys(graphs).forEach(function(i){
+              var graph = graphs[i].graph();
+
+              dataGraph.graph().addAll(graph);
+            });
+
             var graph = {"nodes":[], "links": []};
             var graphNodes = [];
 
-            g.graph().toArray().forEach(function(t){
+            dataGraph.graph().toArray().forEach(function(t){
               if(
                 // t.predicate.nominalValue == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first' ||
                 // t.predicate.nominalValue == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest' ||
@@ -725,12 +818,11 @@ var DO = {
 
               switch(t.subject.interfaceName) {
                 default: case 'NamedNode':
-                  var documentURL = uri.stripFragmentFromString(url);
-                  if (t.subject.nominalValue == documentURL) {
-                    sGroup = 5;
-                  }
-                  else if (!t.subject.nominalValue.startsWith(documentURL)) {
+                  if (!t.subject.nominalValue.startsWith(uri.stripFragmentFromString(url))) {
                     sGroup = 7;
+                  }
+                  if (DO.C.Graphs[t.subject.nominalValue]) {
+                    sGroup = 1;
                   }
                   break;
                 case 'BlankNode':
@@ -743,6 +835,9 @@ var DO = {
                   if (!t.object.nominalValue.startsWith(uri.stripFragmentFromString(document.location.href))) {
                     oGroup = 7;
                   }
+                  if (DO.C.Graphs[t.object.nominalValue]) {
+                    oGroup = 1;
+                  }
                   break;
                 case 'BlankNode':
                   oGroup = 8;
@@ -750,6 +845,11 @@ var DO = {
                 case 'Literal':
                   oGroup = 4;
                   break;
+              }
+
+              //Initial root node
+              if (t.subject.nominalValue == uri.stripFragmentFromString(document.location.href)) {
+                sGroup = 5;
               }
 
               if (t.predicate.nominalValue == DO.C.Vocab['rdftype']['@id']){
@@ -3470,7 +3570,7 @@ console.log(url)
                     var spawnOptions = {};
                     spawnOptions['defaultStylesheet'] = ('defaultStylesheet' in o) ? o.defaultStylesheet : false;
 
-                    DO.U.spawnDokieli(o.data, o.options['contentType'], o.options['subjectURI'], spawnOptions);                        
+                    DO.U.spawnDokieli(o.data, o.options['contentType'], o.options['subjectURI'], spawnOptions);
                   })
               })
           })

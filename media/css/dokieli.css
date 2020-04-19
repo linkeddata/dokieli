@@ -257,6 +257,11 @@ max-height:90%;
 margin:0 auto;
 display:block;
 }
+#graph-view svg.graph circle:hover {
+stroke:#002af7;
+stroke-width:3px;
+}
+
 
 article [about^="#"][typeof="schema:ViewAction"]:before,
 article [href^="#"][typeof="schema:ViewAction"]:before,
