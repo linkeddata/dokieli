@@ -546,16 +546,16 @@ var DO = {
 
       var group = {
         "0": { color: '#fff', label: '' },
-        "1": { color: '#000', label: '' },
+        "1": { color: '#000', label: '', type: 'rdf:Resource' },
         "2": { color: '#333', label: '' },
         "3": { color: '#777', label: '' },
         "4": { color: '#ccc', label: 'Literal' },
-        "5": { color: '#ff0', label: 'Root' },
+        "5": { color: '#ff0', label: 'Root', type: 'rdf:Resource' },
         "6": { color: '#ff2900', label: 'Type' },
-        "7": { color: '#002af7', label: 'External' },
-        "8": { color: '#00cc00', label: 'Internal' },
-        "9": { color: '#00ffff', label: 'Citation' },
-        "10": { color: '#800080', label: 'Social' }
+        "7": { color: '#002af7', label: 'External', type: 'rdf:Resource' },
+        "8": { color: '#00cc00', label: 'Internal', type: 'rdf:Resource' },
+        "9": { color: '#00ffff', label: 'Citation', type: 'rdf:Resource' },
+        "10": { color: '#800080', label: 'Social', type: 'rdf:Resource' }
       }
 
       if (selector == '#graph-view' && !document.getElementById('graph-view')) {
@@ -609,7 +609,6 @@ var DO = {
           .then(response => {
 // console.log(response)
             var cT = response.headers.get('Content-Type');
-            var options = {};
             options['contentType'] = (cT) ? cT.split(';')[0].trim() : 'text/turtle';
 
             return response.text().then(data => {
@@ -718,11 +717,9 @@ var DO = {
             //     .on("start", dragstarted)
             //     .on("drag", dragged)
             //     .on("end", dragended));
-            .on('click', function(graph) {
-              //assuming group != 4 (literal) and is http for now
-              if (graph.group !== 4) {
-                var iri = graph.id;
-
+            .on('click', function(d) {
+              var iri = d.id;
+              if ('type' in group[d.group] && group[d.group].type == 'rdf:Resource' && !(d.id in DO.C.Graphs)) {
                 options = options || {};
                 options['subjectURI'] = iri;
                 var headers = { 'Accept': fetcher.setAcceptRDFTypes() };
