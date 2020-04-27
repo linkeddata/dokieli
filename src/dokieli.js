@@ -856,6 +856,9 @@ var DO = {
                   sGroup = 10;
                 }
               }
+              if (auth.isActorProperty(t.predicate.nominalValue)) {
+                oGroup = 10;
+              }
               if (t.predicate.nominalValue == DO.C.Vocab['foafknows']['@id']){
                 sGroup = 10;
                 oGroup = 10;

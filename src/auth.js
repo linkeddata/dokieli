@@ -11,6 +11,7 @@ const solidAuth = require('solid-auth-client')
 
 module.exports = {
   isActorType,
+  isActorProperty,
   afterSignIn,
   enableDisableButton,
   getAgentImage,
@@ -44,6 +45,23 @@ function isActorType (s) {
     'schemaPerson', 'schemaOrganization',
     'dctermsAgent',
     'asApplication', 'asGroup', 'asOrganization', 'asPerson', 'asService'
+  ];
+
+  actorTypes = actorTypes.map(a => { if (Config.Vocab[a]["@id"]) return Config.Vocab[a]["@id"]; });
+
+  if (actorTypes.indexOf(s) > -1) {
+    return true;
+  }
+
+  return false;
+}
+
+function isActorProperty (s) {
+  var actorTypes = [
+    'foafknows',
+    'asactor',
+    'schemacreator', 'schemaauthor', 'schemacontributor', 'schemaeditor',
+    'dctermscreator'
   ];
 
   actorTypes = actorTypes.map(a => { if (Config.Vocab[a]["@id"]) return Config.Vocab[a]["@id"]; });
