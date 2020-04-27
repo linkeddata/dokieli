@@ -260,6 +260,7 @@ display:block;
 #graph-view svg.graph circle:hover {
 stroke:#002af7;
 stroke-width:3px;
+cursor:pointer;
 }
 
 
