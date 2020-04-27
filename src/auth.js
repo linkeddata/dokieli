@@ -10,7 +10,7 @@ const solidAuth = require('solid-auth-client')
 // const { OIDCWebClient } = require('@trust/oidc-web')
 
 module.exports = {
-  isActor,
+  isActorType,
   afterSignIn,
   enableDisableButton,
   getAgentImage,
@@ -37,7 +37,7 @@ module.exports = {
 }
 
 
-function isActor (s) {
+function isActorType (s) {
   var actorTypes = [
     'foafAgent', 'foafPerson', 'foafGroup', 'foafOrganization',
     'vcardVCard', 'vcardIndividual', 'vcardGroup', 'vcardOrganization',
