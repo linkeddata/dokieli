@@ -305,7 +305,7 @@ function applyParserSerializerFixes(data, contentType) {
 }
 
 function setDocumentBase (data, baseURI, contentType) {
-  baseURI = uri.getBaseURL(baseURI)
+  baseURI = uri.stripFragmentFromString(baseURI)
 
   switch(contentType) {
     case 'text/html': case 'application/xhtml+xml':
