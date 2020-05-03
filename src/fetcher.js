@@ -173,7 +173,16 @@ function getResource (url, headers = {}, options = {}) {
   options.headers = Object.assign({}, headers)
 
   return _fetch(url, options)
+    .catch(error => {
+      if (!options.noCredentials) {
+        // Possible CORS error, retry with no credentials
+        options.noCredentials = true
+        options.credentials = 'omit'
+        return getResource(url, headers, options)
+      }
 
+      throw error
+    })
     .then(response => {
       if (!response.ok) {  // not a 2xx level response
         let error = new Error('Error fetching resource: ' +
