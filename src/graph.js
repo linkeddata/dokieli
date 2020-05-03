@@ -4,6 +4,7 @@ const ld = require('./simplerdf')
 const SimpleRDF = ld.SimpleRDF
 const Config = require('./config')
 const doc = require('./doc')
+const uri = require('./uri')
 
 module.exports = {
   getGraph,
@@ -23,7 +24,6 @@ function getGraphFromData (data, options = {}) {
   if (!('contentType' in options)) {
     options['contentType'] = 'text/turtle'
   }
-
   // FIXME: These are fugly but a temporary fix to get around the baseURI not being passed to the DOM parser. This injects the `base` element into the document so that the parsers fallsback to that. The actual fix should happen upstream. See related issues:
   // https://github.com/linkeddata/dokieli/issues/132
   // https://github.com/rdf-ext/rdf-parser-dom/issues/2
@@ -305,6 +305,8 @@ function applyParserSerializerFixes(data, contentType) {
 }
 
 function setDocumentBase (data, baseURI, contentType) {
+  baseURI = uri.getBaseURL(baseURI)
+
   switch(contentType) {
     case 'text/html': case 'application/xhtml+xml':
       let template = document.implementation.createHTMLDocument()
