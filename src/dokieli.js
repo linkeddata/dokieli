@@ -598,11 +598,11 @@ var DO = {
         return fetcher.getResource(pIRI, headers, options)
           .catch(error => {
 // console.log(error)
-            // if (error.status === 0) {
+            if (error.status === 0) {
               // retry with proxied uri
               var pIRI = uri.getProxyableIRI(options['subjectURI'], {'forceProxy': true});
               return handleResource(pIRI, headers, options);
-            // }
+            }
 
             // throw error  // else, re-throw the error
           })
@@ -866,6 +866,8 @@ var DO = {
               else if (t.predicate.nominalValue.startsWith('http://purl.org/spar/cito/')) {
                 oGroup = 9;
               }
+
+              //FIXME: groups are set once - not updated.
 
               if(graphNodes.indexOf(t.subject.nominalValue) == -1) {
                 graphNodes.push(t.subject.nominalValue);
