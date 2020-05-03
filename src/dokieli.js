@@ -598,11 +598,11 @@ var DO = {
         return fetcher.getResource(pIRI, headers, options)
           .catch(error => {
 // console.log(error)
-            if (error.status === 0) {
+            // if (error.status === 0) {
               // retry with proxied uri
               var pIRI = uri.getProxyableIRI(options['subjectURI'], {'forceProxy': true});
               return handleResource(pIRI, headers, options);
-            }
+            // }
 
             // throw error  // else, re-throw the error
           })
@@ -3550,11 +3550,11 @@ console.log(url)
       var handleResource = function handleResource (pIRI, headers, options) {
         return fetcher.getResource(pIRI, headers, options)
           .catch(error => {
-            if (error.status === 0) {
+            // if (error.status === 0) {
               // retry with proxied uri
               var pIRI = uri.getProxyableIRI(iri, {'forceProxy': true});
               return handleResource(pIRI, headers, options);
-            }
+            // }
 
             throw error  // else, re-throw the error
           })
