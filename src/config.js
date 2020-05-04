@@ -446,6 +446,7 @@ module.exports = {
     "memmemento": { "@id": "http://mementoweb.org/ns#memento", "@type": "@id" },
     "memtimegate": { "@id": "http://mementoweb.org/ns#timegate", "@type": "@id" },
     "memtimemap": { "@id": "http://mementoweb.org/ns#timemap", "@type": "@id" },
+    "memmementoDateTime": "http://mementoweb.org/ns#mementoDateTime",
 
     "relpredecessorversion": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#predecessor-version", "@type": "@id" },
     "rellatestversion": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#latest-version", "@type": "@id" },
