@@ -598,7 +598,7 @@ function showTimeMap(node, url) {
         var p = t.predicate.nominalValue;
         var o = t.object.nominalValue;
 
-        if(p === Config.Vocab['schemadateCreated']) {
+        if(p === Config.Vocab['memmementoDateTime']) {
           items.push('<li><a href="' + s + '" target="_blank">' + o + '</a></li>');
         }
       });
