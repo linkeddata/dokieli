@@ -903,10 +903,9 @@ function createImmutableResource(url, data, options) {
 
   //Update URI-T
   var insertBGP = '@prefix mem: <http://mementoweb.org/ns#> .\n\
-@prefix schema: <http://schema.org/> .\n\
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\
 <' + url + '> mem:memento <' + immutableURL + '> .\n\
-<' + immutableURL + '> schema:dateCreated "' + date.toISOString() + '"^^xsd:dateTime .';
+<' + immutableURL + '> mem:mementoDateTime "' + date.toISOString() + '"^^xsd:dateTime .';
 
   fetcher.updateTimeMap(timeMapURL, insertBGP).then(() =>{
     showTimeMap(null, timeMapURL)
