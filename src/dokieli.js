@@ -547,11 +547,11 @@ var DO = {
       var group = {
         "0": { color: '#fff', label: '' },
         "1": { color: '#000', label: '', type: 'rdf:Resource' },
-        "2": { color: '#333', label: '' },
-        "3": { color: '#777', label: '' },
-        "4": { color: '#ccc', label: 'Literal' },
+        "2": { color: '#777', label: '' },
+        "3": { color: '#ccc', label: 'Literal' },
+        "4": { color: '#551a8b', label: 'Visited', type: 'rdf:Resource' },
         "5": { color: '#ff0', label: 'Root', type: 'rdf:Resource' },
-        "6": { color: '#ff2900', label: 'Type' },
+        "6": { color: '#ff2900', label: 'Type', type: 'rdf:Resource' },
         "7": { color: '#002af7', label: 'External', type: 'rdf:Resource' },
         "8": { color: '#00cc00', label: 'Internal', type: 'rdf:Resource' },
         "9": { color: '#00ffff', label: 'Citation', type: 'rdf:Resource' },
@@ -629,12 +629,12 @@ var DO = {
             .attr("markerWidth", 6)
             .attr("markerHeight", 6)
             .attr("orient", "auto")
-            .attr("fill", group[3].color)
+            .attr("fill", group[2].color)
           .append("path")
             .attr("d", "M0,-5L10,0L0,5");
       }
 
-      createSVGMarker();
+      // createSVGMarker();
 
       function buildGraphObject(graph) {
         var graphObject = {};
@@ -697,7 +697,7 @@ var DO = {
           .enter().append("path")
             // .attr("class", "link")
             .attr('fill', 'none')
-            .attr('stroke', group[4].color)
+            .attr('stroke', group[3].color)
             .attr("marker-end", "url(#end)");
 
         // link.transition();
@@ -712,7 +712,10 @@ var DO = {
             // .attr("class", "node")
             .attr("r", nodeRadius)
             .attr("fill", function(d) { return group[d.group].color; })
-            .attr('stroke', group[2].color)
+            .attr('stroke', function (d) {
+              if (d.visited) { return group[4].color }
+              else if (d.group == 3) { return group[2].color }
+              else { return group[7].color }})
             // .call(d3.drag()
             //     .on("start", dragstarted)
             //     .on("drag", dragged)
@@ -744,6 +747,8 @@ var DO = {
       }
 
       function initiateVisualisation(url, data, options) {
+        url = uri.stripFragmentFromString(url);
+
         return DO.U.getVisualisationGraphData(url, data, options).then(
           function(graph){
 // console.log(graph);
@@ -774,13 +779,16 @@ var DO = {
     },
 
     getVisualisationGraphData: function(url, data, options) {
+      var requestURL = uri.stripFragmentFromString(url);
+      var documentURL = uri.stripFragmentFromString(document.location.href);
+
       return new Promise(function(resolve, reject) {
         graph.getGraphFromData(data, options).then(
           function(g){
 // console.log(g);
             DO.C['Graphs'] = DO.C['Graphs'] || {};
-            var g = SimpleRDF(DO.C.Vocab, options['subjectURI'], g, ld.store).child(url);
-
+            var g = SimpleRDF(DO.C.Vocab, options['subjectURI'], g, ld.store).child(requestURL);
+// console.log(g.toString())
             var dataGraph = SimpleRDF();
             var graphs = {};
             graphs[options['subjectURI']] = g;
@@ -812,14 +820,13 @@ var DO = {
               var sGroup = 8;
               var pGroup = 8;
               var oGroup = 8;
+              var sVisited = false;
+              var oVisited = false;
 
               switch(t.subject.interfaceName) {
                 default: case 'NamedNode':
-                  if (!t.subject.nominalValue.startsWith(uri.stripFragmentFromString(url))) {
+                  if (!t.subject.nominalValue.startsWith(requestURL)) {
                     sGroup = 7;
-                  }
-                  if (DO.C.Graphs[t.subject.nominalValue]) {
-                    sGroup = 1;
                   }
                   break;
                 case 'BlankNode':
@@ -829,24 +836,16 @@ var DO = {
 
               switch(t.object.interfaceName) {
                 default: case 'NamedNode':
-                  if (!t.object.nominalValue.startsWith(uri.stripFragmentFromString(document.location.href))) {
+                  if (!t.object.nominalValue.startsWith(documentURL)) {
                     oGroup = 7;
-                  }
-                  if (DO.C.Graphs[t.object.nominalValue]) {
-                    oGroup = 1;
                   }
                   break;
                 case 'BlankNode':
                   oGroup = 8;
                   break;
                 case 'Literal':
-                  oGroup = 4;
+                  oGroup = 3;
                   break;
-              }
-
-              //Initial root node
-              if (t.subject.nominalValue == uri.stripFragmentFromString(document.location.href)) {
-                sGroup = 5;
               }
 
               if (t.predicate.nominalValue == DO.C.Vocab['rdftype']['@id']){
@@ -867,15 +866,30 @@ var DO = {
                 oGroup = 9;
               }
 
+              if (DO.C.Graphs[t.subject.nominalValue]) {
+                // sGroup = 1;
+                sVisited = true;
+              }
+              if (DO.C.Graphs[t.object.nominalValue]) {
+                // oGroup = 1;
+                oVisited = true;
+              }
+
+              //Initial root node
+              if (t.subject.nominalValue == documentURL) {
+                sGroup = 5;
+                sVisited = true;
+              }
+
               //FIXME: groups are set once - not updated.
 
               if(graphNodes.indexOf(t.subject.nominalValue) == -1) {
                 graphNodes.push(t.subject.nominalValue);
-                graph.nodes.push({"id": t.subject.nominalValue, "group": sGroup});
+                graph.nodes.push({"id": t.subject.nominalValue, "group": sGroup, "visited": sVisited });
               }
               if(graphNodes.indexOf(t.object.nominalValue) == -1) {
                 graphNodes.push(t.object.nominalValue);
-                graph.nodes.push({"id": t.object.nominalValue, "group": oGroup});
+                graph.nodes.push({"id": t.object.nominalValue, "group": oGroup, "visited": oVisited });
               }
 
               graph.links.push({"source": t.subject.nominalValue, "target": t.object.nominalValue, "value": t.predicate.nominalValue});

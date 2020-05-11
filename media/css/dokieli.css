@@ -257,12 +257,13 @@ max-height:90%;
 margin:0 auto;
 display:block;
 }
-#graph-view svg.graph circle:hover {
-stroke:#002af7;
+#graph-view svg.graph circle[stroke="#551a8b"] {
+stroke-width:3px;
+}
+#graph-view svg.graph circle:not([stroke="#551a8b"]):not([stroke="#777"]):hover {
 stroke-width:3px;
 cursor:pointer;
 }
-
 
 article [about^="#"][typeof="schema:ViewAction"]:before,
 article [href^="#"][typeof="schema:ViewAction"]:before,
