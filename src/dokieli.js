@@ -555,7 +555,8 @@ var DO = {
         "7": { color: '#002af7', label: 'External', type: 'rdf:Resource' },
         "8": { color: '#00cc00', label: 'Internal', type: 'rdf:Resource' },
         "9": { color: '#00ffff', label: 'Citation', type: 'rdf:Resource' },
-        "10": { color: '#800080', label: 'Social', type: 'rdf:Resource' }
+        "10": { color: '#800080', label: 'Social', type: 'rdf:Resource' },
+        "11": { color: '#ff7f00', label: 'DataSet', type: 'rdf:Resource' }
       }
 
       if (selector == '#graph-view' && !document.getElementById('graph-view')) {
@@ -853,6 +854,9 @@ var DO = {
 
                 if (auth.isActorType(t.object.nominalValue)) {
                   sGroup = 10;
+                }
+                if (t.object.nominalValue == DO.C.Vocab['qbDataSet']['@id']) {
+                  oGroup = 11;
                 }
               }
               if (auth.isActorProperty(t.predicate.nominalValue)) {
