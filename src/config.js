@@ -330,6 +330,7 @@ module.exports = {
 
     "schemaPerson": { "@id": "http://schema.org/Person", "@type": "@id" },
     "schemaOrganization": { "@id": "http://schema.org/Person", "@type": "@id" },
+    "schemaDataset": { "@id": "http://schema.org/Dataset", "@type": "@id"},
     "schemaname": "http://schema.org/name",
     "schemafamilyName": "http://schema.org/familyName",
     "schemagivenName": "http://schema.org/givenName",
@@ -450,6 +451,10 @@ module.exports = {
 
     "relpredecessorversion": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#predecessor-version", "@type": "@id" },
     "rellatestversion": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#latest-version", "@type": "@id" },
+
+    "qbDataSet": { "@id": "http://purl.org/linked-data/cube#DataSet", "@type": "@id"},
+    "dcatDataset": { "@id": "http://www.w3.org/ns/dcat#Dataset", "@type": "@id"},
+    "voidDataset": { "@id": "http://rdfs.org/ns/void#Dataset", "@type": "@id"},
 
     "psodraft": { "@id": "http://purl.org/spar/pso/draft", "@type": "@id" },
     "psopublished": { "@id": "http://purl.org/spar/pso/published", "@type": "@id" },
