@@ -111,7 +111,7 @@ function dumpNode (node, options, skipAttributes, selfClosing, noEsc) {
       } else {
         out += '>'
         out += (ename === 'html') ? '\n  ' : ''
-        noEsc.push(ename === 'style' || ename === 'script' || ename === 'pre')
+        noEsc.push(ename === 'style' || ename === 'script' || ename === 'pre' || ename === 'code' || ename === 'samp')
 
         for (var i = 0; i < node.childNodes.length; i++) {
           out += dumpNode(node.childNodes[i], options, skipAttributes, selfClosing, noEsc)
