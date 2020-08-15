@@ -568,19 +568,19 @@
                     <dt id="resource-open"><i class="fa fa-coffee"></i>Open</dt>
                     <dd>Documents can be opened from a local filesystem or by entering an HTTP URL. Both options read the resource's content, and if dokieli's CSS and JavaScript are not present, they are included before updating the DOM and initiating dokieli. This feature uses the <cite><a href="#resource-browser-method">resource browser</a></cite> to navigate HTTP URLs. See also <var>openDocument</var> (dokieli.js).</dd>
 
-                    <dt id="resource-save"><i class="fa fa-life-ring"></i>Save</dt>
+                    <dt id="resource-save"><i class="fas fa-life-ring"></i>Save</dt>
                     <dd>This feature makes a <a href="#http-put">write operation</a> (<code>HTTP PUT</code>) request to the current location of the document (<var>window.location</var>). The document is normalised in that dokieli related items are removed from the DOM before making the request.</dd>
 
-                    <dt id="resource-save-as"><i class="fa fa-paper-plane-o"></i>Save As</dt>
+                    <dt id="resource-save-as"><i class="fas fa-paper-plane-o"></i>Save As</dt>
                     <dd>The <cite>Save As</cite> operation is similar to <cite>New</cite> for normalising some of the URLs and same as <cite>Save</cite> operation for normalising the DOM before making the request to specified location. If <cite>Derivation data</cite> is checked for inclusion, <a href="#html-document-derived-from-on">derived from and on</a> information is included in the created document. This feature uses the <cite><a href="#resource-browser-method">resource browser</a></cite> to navigate HTTP URLs.</dd>
 
-                    <dt id="resource-export"><i class="fa fa-external-link"></i>Export</dt>
+                    <dt id="resource-export"><i class="fas fa-external-link"></i>Export</dt>
                     <dd>Provides options to 1) exports the article as HTML and save to filesystem, 2) Makes a request to the Internet Archive to crawl all resources references in this article.</dd>
 
                     <dt id="resource-print"><i class="fa fa-print"></i>Print</dt>
                     <dd>Requests to print the current document (<code>window.print()</code>).</dd>
 
-                    <dt id="editor-enable"><i class="fa fa-i-cursor"></i>Edit</dt>
+                    <dt id="editor-enable"><i class="fas fa-i-cursor"></i>Edit</dt>
                     <dd><cite>Editor</cite> is one of the document modes a user can be in. The available features reflect the edit operation. Edits reside in the DOM until a <cite>Save</cite> or <cite>Save As</cite> is triggered. There are several editor features in following categories: content formatting and structuring (<i class="fa fa-header">2</i>, <i class="fa fa-header">3</i>, <i class="fa fa-header">4</i>, <i class="fa fa-italic"></i>, <i class="fa fa-bold"></i>, <i class="fa fa-list-ol"></i>, <i class="fa fa-list-ul"></i>, <b>code</b>, <i class="fa fa-code fa-lg"></i>, <i class="fa fa-picture-o"></i>, <i class="fa fa-table"></i>, <i class="fa fa-link"></i>, <i class="fa fa-quote-right"></i>), including interactive and embeddable objects (<i class="fa fa-line-chart"></i>), inline semantic relations (<i class="fa fa-rocket"></i>), footnotes and citations (<i class="fa fa-hashtag"></i>), and annotations (<i class="fa fa-sticky-note"></i>).
                     </dd>
 
