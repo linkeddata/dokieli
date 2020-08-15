@@ -7,7 +7,7 @@
     <link href="media/css/basic.css" media="all" rel="stylesheet" title="Basic" />
     <link href="media/css/lncs.css" media="all" rel="stylesheet alternate" title="LNCS" />
     <link href="media/css/acm.css" media="all" rel="stylesheet alternate" title="ACM" />
-    <link href="https://www.w3.org/StyleSheets/TR/2016/W3C-ED" rel="stylesheet alternate" media="all" titfa-coffeele="W3C-ED"/>
+    <link href="https://www.w3.org/StyleSheets/TR/2016/W3C-ED" rel="stylesheet alternate" media="all" title="W3C-ED"/>
     <link href="media/css/dokieli.css" media="all" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
     <script src="scripts/dokieli.js"></script>
