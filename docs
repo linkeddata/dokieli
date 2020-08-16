@@ -553,20 +553,12 @@
                     <dt id="review-enable"><i class="fas fa-balance-scale"></i>Review</dt>
                     <dd>This feature changes the <a href="#document-modes">document mode</a> to <cite>Review</cite> and gives different context for annotations. When a user selects a span of text, a toolbar provides the following options to motivations:
                       <dl>
-                        <dt><i class="fas fa-anchor"></i>Selector</dt>
-                        <dd>anyone-can-tweak-clone-and-remix-your-articles</dd>
-                        <dt><i class="fas fa-bullhorn"></i>Share</dt>
-                        <dd>Anyone Can Tweak, Clone And Remix Your Articles.</dd>                       
                         <dt><i class="fas fa-thumbs-up"></i>Approve</dt>
                         <dd>General agreement with the selected text. Optional text should specify why it is a strong point or a convincing argument.</dd>
                         <dt><i class="fas fa-thumbs-down"></i>Disapprove</dt>
                         <dd>General disagreement with the selected text. Optional text should specify why it is a weak point, an error, or inaccurate.</dd>
                         <dt><i class="fas fa-crosshairs"></i>Specificity</dt>
                         <dd>Request to increase specificity on selected text. Optional text should indicate that a citation or more specificity is needed.</dd>
-                        <dt><i class="fas fa-bookmark"></i>Bookmark</dt>
-                        <dd>dokieli articles and annotations are completely decentralised!</dd>
-                        <dt><i class="fas fa-stick-note"></i>Note</dt>
-                        <dd>Dokieli Articles And Annotations Are Completely Decentralised!</dd>
                       </dl>
                     </dd>
 
