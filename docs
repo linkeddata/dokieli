@@ -541,23 +541,23 @@
                 <h3 property="schema:name">dokieli menu</h3>
                 <div datatype="rdf:HTML" property="schema:description">
                   <dl>
-                    <dt id="signin-user"><i class="fa fa-user-secret"></i>Sign in</dt>
+                    <dt id="signin-user"><i class="fas fa-user-secret"></i>Sign in</dt>
                     <dd>This is where the user can enter their WebID to let dokieli know about who they are. dokieli fetches their WebID and related information to further help with dokieli's operations. Authentication is not done at this stage.</dd>
 
-                    <dt id="resource-share"><i class="fa fa-bullhorn"></i>Share</dt>
+                    <dt id="resource-share"><i class="fas fa-bullhorn"></i>Share</dt>
                     <dd>User can share the current article or a part of it with their contacts, automatically discovered via <samp>foaf:knows</samp> as well as traversing equivalent profiles (<code>owl:sameAs</code>). Notification can also be sent to specific targets by entering their IRIs. dokieli sends a notification to the selected targets with information like: who sent it, when, license, motivation.</dd>
 
-                    <dt id="resource-reply"><i class="fa fa-reply"></i>Reply</dt>
+                    <dt id="resource-reply"><i class="fas fa-reply"></i>Reply</dt>
                     <dd>An article can be replied with a note and have its own <a href="#resource-license-method">license</a>. To choose the location of the reply, the <a href="#resource-browser-method">resource browser</a> can be used on <a href="#personal-storage">personal storage</a> or an annotation service.</dd>
 
-                    <dt id="review-enable"><i class="fa fa-balance-scale"></i>Review</dt>
+                    <dt id="review-enable"><i class="fas fa-balance-scale"></i>Review</dt>
                     <dd>This feature changes the <a href="#document-modes">document mode</a> to <cite>Review</cite> and gives different context for annotations. When a user selects a span of text, a toolbar provides the following options to motivations:
                       <dl>
-                        <dt><i class="fa fa-thumbs-up"></i>Approve</dt>
+                        <dt><i class="fas fa-thumbs-up"></i>Approve</dt>
                         <dd>General agreement with the selected text. Optional text should specify why it is a strong point or a convincing argument.</dd>
-                        <dt><i class="fa fa-thumbs-down"></i>Disapprove</dt>
+                        <dt><i class="fas fa-thumbs-down"></i>Disapprove</dt>
                         <dd>General disagreement with the selected text. Optional text should specify why it is a weak point, an error, or inaccurate.</dd>
-                        <dt><i class="fa fa-crosshairs"></i>Specificity</dt>
+                        <dt><i class="fas fa-crosshairs"></i>Specificity</dt>
                         <dd>Request to increase specificity on selected text. Optional text should indicate that a citation or more specificity is needed.</dd>
                       </dl>
                     </dd>
