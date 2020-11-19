@@ -1,6 +1,6 @@
 {
   "name": "dokieli",
-  "version": "0.3.51",
+  "version": "0.3.52",
   "description": "dokieli is a client-side editor for decentralised article publishing, annotations and social interactions",
   "main": "./src/dokieli.js",
   "scripts": {
