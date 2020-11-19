@@ -3239,7 +3239,9 @@ console.log(reason);
 
       button.addEventListener('click', function(){
         if(button.parentNode.classList.contains('container')){
-          fetcher.getResourceGraph(url).then(function(g){
+          var headers;
+          headers = {'Accept': 'text/turtle, application/ld+json'};
+          fetcher.getResourceGraph(url, headers).then(function(g){
               actionNode.textContent = (action == 'write') ? url + util.generateAttributeId() : url;
               return DO.U.generateBrowserList(g, url, id, action);
             },
@@ -3362,10 +3364,49 @@ console.log(reason);
       });
     },
 
+    getPersistencePolicy: function(s) {
+      return (s.pimpersistencePolicy && s.pimpersistencePolicy._array.length > 0)
+        ? s.pimpersistencePolicy._array
+        : undefined
+    },
+
+    //FIXME: Shouldn't be fixed to -samp
+    showPersistencePolicy: function(s, id, url, checkAgain) {
+      var samp = document.getElementById(id + '-samp');
+      var pP = document.getElementById(id + '-persistence-policy');
+// console.log(pP)
+      if (samp && !pP) {
+        var persistencePolicy = DO.U.getPersistencePolicy(s);
+        if (persistencePolicy) {
+          //TODO: Handle multiple policies?
+          persistencePolicy = persistencePolicy[0];
+          DO.C.Storages = DO.C.Storages || {};
+          DO.C.Storages[s.iri.toString()] = {
+            "persistencePolicy": persistencePolicy
+          };
+          if (pP) {
+            pP.innerHTML = '';
+          }
+          samp.insertAdjacentHTML('afterend', '<p id="' + id + '-persistence-policy">URI persistence policy: <a href="' + persistencePolicy +'" target="_blank">' + persistencePolicy + '</a></p>');
+        }
+        else {
+          if (!checkAgain) {
+            fetcher.getResourceGraph(url).then(function(g){
+              DO.U.showPersistencePolicy(g, id, url, true);
+            });
+          }
+        }
+      }
+    },
+
     initBrowse: function(storageUrl, input, browseButton, id, action){
       input.value = storageUrl;
-      fetcher.getResourceGraph(storageUrl).then(function(g){
-        DO.U.generateBrowserList(g, storageUrl, id, action);
+      var headers;
+      headers = {'Accept': 'text/turtle, application/ld+json'};
+      fetcher.getResourceGraph(storageUrl, headers).then(function(g){
+        DO.U.generateBrowserList(g, storageUrl, id, action).then(function(i){
+          DO.U.showPersistencePolicy(g, id, storageUrl);
+        });
       }).then(function(i){
         document.getElementById(id + '-' + action).textContent = (action == 'write') ? input.value + util.generateAttributeId() : input.value;
       });
@@ -3378,9 +3419,12 @@ console.log(reason);
     triggerBrowse: function(url, id, action){
       var inputBox = document.getElementById(id);
       if (url.length > 10 && url.match(/^https?:\/\//g) && url.slice(-1) == "/"){
-console.log(url)
-        fetcher.getResourceGraph(url).then(function(g){
+// console.log(url)
+        var headers;
+        headers = {'Accept': 'text/turtle, application/ld+json'};
+        fetcher.getResourceGraph(url, headers).then(function(g){
           DO.U.generateBrowserList(g, url, id, action).then(function(l){
+            DO.U.showPersistencePolicy(g, id, url);
             return l;
           },
           function(reason){
@@ -3972,7 +4016,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       saveAsDocument.insertAdjacentHTML('beforeend', '<fieldset id="' + id + '-fieldset"><legend>Save to</legend></fieldset>');
       fieldset = saveAsDocument.querySelector('fieldset#' + id + '-fieldset');
       DO.U.setupResourceBrowser(fieldset, id, action);
-      fieldset.insertAdjacentHTML('beforeend', '<p>Article will be saved at: <samp id="' + id + '-' + action + '"></samp></p>' + DO.U.getBaseURLSelection() + '<p><input type="checkbox" id="derivation-data" name="derivation-data" checked="checked" /><label for="derivation-data">Derivation data</label></p><button class="create" title="Save to destination">Save</button>');
+      fieldset.insertAdjacentHTML('beforeend', '<p id="' + id + '-samp' + '">Article will be saved at: <samp id="' + id + '-' + action + '"></samp></p>' + DO.U.getBaseURLSelection() + '<p><input type="checkbox" id="derivation-data" name="derivation-data" checked="checked" /><label for="derivation-data">Derivation data</label></p><button class="create" title="Save to destination">Save</button>');
       var bli = document.getElementById(id + '-input');
       bli.focus();
       bli.placeholder = 'https://example.org/path/to/article';
