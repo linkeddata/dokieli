@@ -382,6 +382,8 @@ module.exports = {
     "pimstorage": { "@id": "http://www.w3.org/ns/pim/space#storage", "@type": "@id", "@array": true },
     "pimpreferencesFile": { "@id": "http://www.w3.org/ns/pim/space#preferencesFile", "@type": "@id" },
 
+    "pimpersistencePolicy": { "@id": "http://www.w3.org/2000/10/swap/pim/doc#persistencePolicy", "@type": "@id", "@array": true },
+
     "acldelegates" : { "@id": "http://www.w3.org/ns/auth/acl#delegates", "@type": "@id" },
 
     "solidpreferredProxy": "http://www.w3.org/ns/solid/terms#preferredProxy",
