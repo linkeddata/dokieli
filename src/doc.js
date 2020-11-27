@@ -842,9 +842,6 @@ function getResourceInfo(data, options) {
         else if ('headers' in promise && 'header' in options) {
           // promise.headers = 'foo=bar ,user=" READ wriTeAppend control ", public=" read append" ,other="read " , baz= write, group=" ",,'; 
           var headers = promise.headers;
-          for(var key of headers.keys()) {
-            console.log(key); 
-          }
 
           info['headers'] = headers;
           Config['ResourceInfo']['headers'] = {};
