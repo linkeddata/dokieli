@@ -744,68 +744,68 @@ function getResourceInfo(data, options) {
   options['subjectURI'] = ('subjectURI' in options) ? options.subjectURI : documentURL;
 
   var getResourceData = function(data, options) {
-  return graph.getGraphFromData(data, options).then(
-    function(i){
-      var s = SimpleRDF(Config.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
-// console.log(s);
+    return graph.getGraphFromData(data, options).then(
+      function(i){
+        var s = SimpleRDF(Config.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
+  // console.log(s);
 
-      info['graph'] = s;
-      info['rdftype'] = s.rdftype._array;
-      info['profile'] = Config.Vocab['ldpRDFSource']['@id'];
+        info['graph'] = s;
+        info['rdftype'] = s.rdftype._array;
+        info['profile'] = Config.Vocab['ldpRDFSource']['@id'];
 
-      //Check if the resource is immutable
-      s.rdftype.forEach(function(resource) {
-        if (resource == Config.Vocab['memMemento']['@id']) {
+        //Check if the resource is immutable
+        s.rdftype.forEach(function(resource) {
+          if (resource == Config.Vocab['memMemento']['@id']) {
+            info['state'] = Config.Vocab['memMemento']['@id'];
+          }
+        });
+
+        if (s.reloriginal) {
           info['state'] = Config.Vocab['memMemento']['@id'];
+          info['original'] = s.memoriginal;
+
+          if (s.reloriginal == options['subjectURI']) {
+            //URI-R (The Original Resource is a Fixed Resource)
+
+            info['profile'] = Config.Vocab['memOriginalResource']['@id'];
+          }
+          else {
+            //URI-M
+
+            info['profile'] = Config.Vocab['memMemento']['@id'];
+          }
         }
-      });
 
-      if (s.reloriginal) {
-        info['state'] = Config.Vocab['memMemento']['@id'];
-        info['original'] = s.memoriginal;
-
-        if (s.reloriginal == options['subjectURI']) {
-          //URI-R (The Original Resource is a Fixed Resource)
+        if (s.memmemento) {
+          //URI-R
 
           info['profile'] = Config.Vocab['memOriginalResource']['@id'];
+          info['memento'] = s.memmemento;
         }
-        else {
-          //URI-M
+
+        if(s.memoriginal && s.memmemento && s.memoriginal != s.memmemento) {
+          //URI-M (Memento without a TimeGate)
 
           info['profile'] = Config.Vocab['memMemento']['@id'];
+          info['original'] = s.memoriginal;
+          info['memento'] = s.memmemento;
         }
-      }
 
-      if (s.memmemento) {
-        //URI-R
+        if(s.rellatestversion) {
+          info['latest-version'] = s.rellatestversion;
+        }
 
-        info['profile'] = Config.Vocab['memOriginalResource']['@id'];
-        info['memento'] = s.memmemento;
-      }
+        if(s.relpredecessorversion) {
+          info['predecessor-version'] = s.relpredecessorversion;
+        }
 
-      if(s.memoriginal && s.memmemento && s.memoriginal != s.memmemento) {
-        //URI-M (Memento without a TimeGate)
+        if(s.memtimemap) {
+          info['timemap'] = s.memtimemap;
+        }
 
-        info['profile'] = Config.Vocab['memMemento']['@id'];
-        info['original'] = s.memoriginal;
-        info['memento'] = s.memmemento;
-      }
-
-      if(s.rellatestversion) {
-        info['latest-version'] = s.rellatestversion;
-      }
-
-      if(s.relpredecessorversion) {
-        info['predecessor-version'] = s.relpredecessorversion;
-      }
-
-      if(s.memtimemap) {
-        info['timemap'] = s.memtimemap;
-      }
-
-      if(s.memtimegate) {
-        info['timegate'] = s.memtimegate;
-      }
+        if(s.memtimegate) {
+          info['timegate'] = s.memtimegate;
+        }
 
   // console.log(info);
 
@@ -821,8 +821,8 @@ function getResourceInfo(data, options) {
         }
 
 // console.log(info)
-    return info;
-  });
+      return info;
+    });
   }
 
   var promises = [];
@@ -841,28 +841,36 @@ function getResourceInfo(data, options) {
         }
         else if ('headers' in promise && 'header' in options) {
           // promise.headers = 'foo=bar ,user=" READ wriTeAppend control ", public=" read append" ,other="read " , baz= write, group=" ",,'; 
+          var headers = promise.headers;
+          for(var key of headers.keys()) {
+            console.log(key); 
+          }
 
-          info['headers'] = {};
-          info['headers'][options.header] = promise.headers;
-
+          info['headers'] = headers;
           Config['ResourceInfo']['headers'] = {};
-          Config['ResourceInfo']['headers'][options.header] = { "field-value" : promise.headers };
+          Config['ResourceInfo']['headers']['response'] = headers;
+
+          var optionsHeader = promise.headers.get(options.header);
+
+          if (optionsHeader) {
+            Config['ResourceInfo']['headers'][options.header] = { "field-value" : optionsHeader };
 
 // console.log('WAC-Allow: ' + promise.headers);
-          if (options.header.toLowerCase() == 'wac-allow') {
-            var permissionGroups = DO.C.ResourceInfo['headers']['wac-allow']["field-value"];
-            var wacAllowRegex = new RegExp(/(\w+)\s*=\s*"?\s*((?:\s*[^",\s]+)*)\s*"?/, 'ig');
-            var wacAllowMatches = DO.U.matchAllIndex(permissionGroups, wacAllowRegex);
+            if (options.header.toLowerCase() == 'wac-allow') {
+              var permissionGroups = DO.C.ResourceInfo['headers']['wac-allow']["field-value"];
+              var wacAllowRegex = new RegExp(/(\w+)\s*=\s*"?\s*((?:\s*[^",\s]+)*)\s*"?/, 'ig');
+              var wacAllowMatches = DO.U.matchAllIndex(permissionGroups, wacAllowRegex);
 // console.log(wacAllowMatches)
 
-            DO.C.ResourceInfo['headers']['wac-allow']['permissionGroup'] = {};
+              Config['ResourceInfo']['headers']['wac-allow']['permissionGroup'] = {};
 
-            wacAllowMatches.forEach(function(match){
-              var modesString = match[2] || '';
-              var accessModes = util.uniqueArray(modesString.toLowerCase().split(/\s+/));
+              wacAllowMatches.forEach(function(match){
+                var modesString = match[2] || '';
+                var accessModes = util.uniqueArray(modesString.toLowerCase().split(/\s+/));
 
-              DO.C.ResourceInfo['headers']['wac-allow']['permissionGroup'][match[1]] = accessModes;
-            });
+                Config['ResourceInfo']['headers']['wac-allow']['permissionGroup'][match[1]] = accessModes;
+              });
+            }
           }
         }
       })
