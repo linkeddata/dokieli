@@ -1345,8 +1345,8 @@ var DO = {
         e.stopPropagation();
       }
 
-      var data = {};
-      var options = {}
+      var data;
+      var options = {};
 
       if (document.location.protocol !== 'file:') {
        options['header'] = 'wac-allow';
