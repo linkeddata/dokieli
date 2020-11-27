@@ -840,7 +840,6 @@ function getResourceInfo(data, options) {
           info = Object.assign(info, promise);
         }
         else if ('headers' in promise && 'header' in options) {
-          // promise.headers = 'foo=bar ,user=" READ wriTeAppend control ", public=" read append" ,other="read " , baz= write, group=" ",,'; 
           var headers = promise.headers;
 
           info['headers'] = headers;
@@ -848,6 +847,7 @@ function getResourceInfo(data, options) {
           Config['ResourceInfo']['headers']['response'] = headers;
 
           var optionsHeader = promise.headers.get(options.header);
+// optionsHeader = 'foo=bar ,user=" READ wriTe Append control ", public=" read append" ,other="read " , baz= write, group=" ",,'; 
 
           if (optionsHeader) {
             Config['ResourceInfo']['headers'][options.header] = { "field-value" : optionsHeader };
