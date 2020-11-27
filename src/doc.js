@@ -747,7 +747,7 @@ function getResourceInfo(data, options) {
     return graph.getGraphFromData(data, options).then(
       function(i){
         var s = SimpleRDF(Config.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
-  // console.log(s);
+// console.log(s);
 
         info['graph'] = s;
         info['rdftype'] = s.rdftype._array;
@@ -807,7 +807,7 @@ function getResourceInfo(data, options) {
           info['timegate'] = s.memtimegate;
         }
 
-  // console.log(info);
+// console.log(info);
 
         if(!Config.OriginalResourceInfo || ('mode' in options && options.mode == 'update' )) {
           Config['OriginalResourceInfo'] = info;
@@ -847,7 +847,7 @@ function getResourceInfo(data, options) {
           Config['ResourceInfo']['headers']['response'] = headers;
 
           var optionsHeader = promise.headers.get(options.header);
-// optionsHeader = 'foo=bar ,user=" READ wriTe Append control ", public=" read append" ,other="read " , baz= write, group=" ",,'; 
+// optionsHeader = 'foo=bar ,user=" READ wriTe Append control ", public=" read append" ,other="read " , baz= write, group=" ",,';
 
           if (optionsHeader) {
             Config['ResourceInfo']['headers'][options.header] = { "field-value" : optionsHeader };
