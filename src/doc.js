@@ -730,6 +730,8 @@ function buttonClose() {
 
 function getResourceInfo(data, options) {
   data = data || getDocument();
+  Config['ResourceInfo'] = Config['ResourceInfo'] || {};
+  var documentURL = uri.stripFragmentFromString(document.location.href);
 
   var info = {
     'state': Config.Vocab['ldpRDFSource']['@id'],
@@ -739,8 +741,9 @@ function getResourceInfo(data, options) {
   options = options || {};
 
   options['contentType'] = ('contentType' in options) ? options.contentType : 'text/html';
-  options['subjectURI'] = ('subjectURI' in options) ? options.subjectURI : uri.stripFragmentFromString(document.location.href);
+  options['subjectURI'] = ('subjectURI' in options) ? options.subjectURI : documentURL;
 
+  var getResourceData = function(data, options) {
   return graph.getGraphFromData(data, options).then(
     function(i){
       var s = SimpleRDF(Config.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
@@ -804,16 +807,68 @@ function getResourceInfo(data, options) {
         info['timegate'] = s.memtimegate;
       }
 
-// console.log(info);
+  // console.log(info);
 
-      if(!Config.OriginalResourceInfo || ('mode' in options && options.mode == 'update' )) {
-        Config['OriginalResourceInfo'] = info;
-      }
+        if(!Config.OriginalResourceInfo || ('mode' in options && options.mode == 'update' )) {
+          Config['OriginalResourceInfo'] = info;
+        }
 
-      Config['ResourceInfo'] = info;
+        if ('headers' in Config['ResourceInfo']){
+          Config['ResourceInfo'] = Object.assign(info, Config['ResourceInfo']['headers']);
+        }
+        else {
+          Config['ResourceInfo'] = info;
+        }
+
+// console.log(info)
+    return info;
+  });
+  }
+
+  var promises = [];
+  if ('header' in options) {
+    promises.push(fetcher.getResourceHead(documentURL, options))
+  }
+  promises.push(getResourceData(data, options));
+
+  return Promise.all(promises)
+    .then(function(resolvedPromises){
+      var info = {};
+
+      resolvedPromises.forEach(function(promise){
+        if ('state' in promise) {
+          info = Object.assign(info, promise);
+        }
+        else if ('headers' in promise && 'header' in options) {
+          // promise.headers = 'foo=bar ,user=" READ wriTeAppend control ", public=" read append" ,other="read " , baz= write, group=" ",,'; 
+
+          info['headers'] = {};
+          info['headers'][options.header] = promise.headers;
+
+          Config['ResourceInfo']['headers'] = {};
+          Config['ResourceInfo']['headers'][options.header] = { "field-value" : promise.headers };
+
+// console.log('WAC-Allow: ' + promise.headers);
+          if (options.header.toLowerCase() == 'wac-allow') {
+            var permissionGroups = DO.C.ResourceInfo['headers']['wac-allow']["field-value"];
+            var wacAllowRegex = new RegExp(/(\w+)\s*=\s*"?\s*((?:\s*[^",\s]+)*)\s*"?/, 'ig');
+            var wacAllowMatches = DO.U.matchAllIndex(permissionGroups, wacAllowRegex);
+// console.log(wacAllowMatches)
+
+            DO.C.ResourceInfo['headers']['wac-allow']['permissionGroup'] = {};
+
+            wacAllowMatches.forEach(function(match){
+              var modesString = match[2] || '';
+              var accessModes = util.uniqueArray(modesString.toLowerCase().split(/\s+/));
+
+              DO.C.ResourceInfo['headers']['wac-allow']['permissionGroup'][match[1]] = accessModes;
+            });
+          }
+        }
+      })
 
       return info;
-  });
+    });
 }
 
 function createImmutableResource(url, data, options) {
