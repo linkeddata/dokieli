@@ -1345,7 +1345,14 @@ var DO = {
         e.stopPropagation();
       }
 
-      doc.getResourceInfo().then(function(resourceInfo){
+      var data = {};
+      var options = {}
+
+      if (document.location.protocol !== 'file:') {
+       options['header'] = 'wac-allow';
+      }
+
+      doc.getResourceInfo(data, options).then(function(resourceInfo){
         var body = document.body;
         var dMenu = document.querySelector('#document-menu.do');
 
@@ -2681,7 +2688,16 @@ var DO = {
 
       s += '<li><button class="resource-open" title="Open article">' + template.Icon[".fas.fa-coffee.fa-2x"] + 'Open</button></li>';
 
-      buttonDisabled = (document.location.protocol === 'file:') ? ' disabled="disabled"' : '';
+      var allowedWrite = false;
+      if ('headers' in DO.C.ResourceInfo && 'wac-allow' in DO.C.ResourceInfo['headers'] && 'permissionGroup' in DO.C.ResourceInfo['headers']['wac-allow']) {
+        if (('user' in DO.C.ResourceInfo['headers']['wac-allow']['permissionGroup'] && DO.C.ResourceInfo['headers']['wac-allow']['permissionGroup']['user'].indexOf('write') > -1)
+          || ('public' in DO.C.ResourceInfo['headers']['wac-allow']['permissionGroup'] && DO.C.ResourceInfo['headers']['wac-allow']['permissionGroup']['public'].indexOf('write') > -1)) {
+          allowedWrite = true;
+        }
+      }
+      buttonDisabled = (allowedWrite) ? '' : ' disabled="disabled"';
+
+      buttonDisabled = (document.location.protocol === 'file:') ? ' disabled="disabled"' : buttonDisabled;
 
       s += '<li><button class="resource-save"' + buttonDisabled +
         ' title="Save article">' + template.Icon[".fas.fa-life-ring.fa-2x"] + 'Save</button></li>';
