@@ -233,13 +233,13 @@ function getResourceHead (url, options = {}) {
         throw error
       }
 
-      let header = response.headers.get(options.header)
+      // let header = response.headers.get(options.header)
 
-      if (!header) {
-        throw new Error("'" + options.header + "' header not found")
-      }
+      // if (!header) {
+      //   throw new Error("'" + options.header + "' header not found")
+      // }
 
-      return { 'headers': header }
+      return response
     })
 }
 
