@@ -172,9 +172,9 @@ function getEndpoint (property, url) {
 function getEndpointFromHead (property, url) {
   var pIRI = uri.getProxyableIRI(url);
 
-  return fetcher.getResourceHead(pIRI, {'header': 'Link'}).then(
+  return fetcher.getResourceHead(pIRI).then(
     function (i) {
-      var linkHeaders = fetcher.parseLinkHeader(i.headers)
+      var linkHeaders = fetcher.parseLinkHeader(i.headers.get('Link'))
 
       if (property in linkHeaders) {
         return linkHeaders[property]
