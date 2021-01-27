@@ -33,6 +33,7 @@ module.exports = {
   buttonClose,
   showTimeMap,
   getResourceInfo,
+  getResourceInfoODRLPolicies,
   createImmutableResource,
   createMutableResource,
   updateMutableResource,
@@ -807,10 +808,14 @@ function getResourceInfo(data, options) {
           info['timegate'] = s.memtimegate;
         }
 
-// console.log(info);
-
         if(!Config.OriginalResourceInfo || ('mode' in options && options.mode == 'update' )) {
           Config['OriginalResourceInfo'] = info;
+        }
+
+        //TODO: Refactor
+        //FIXME: permissionsActions is assumed to be from document's policies
+        if(s.odrlhasPolicy && s.odrlhasPolicy.at(0) && s.iri().toString() == documentURL) {
+          info['odrl'] = getResourceInfoODRLPolicies(s);
         }
 
         if ('headers' in Config['ResourceInfo']){
@@ -874,6 +879,60 @@ function getResourceInfo(data, options) {
 
       return info;
     });
+}
+
+function getResourceInfoODRLPolicies(s) {
+  var info = {}
+  info['odrl'] = {};
+
+  s.odrlhasPolicy.forEach(function(policyIRI) {
+    info['odrl'][policyIRI] = {};
+
+    var policyGraph = s.child(policyIRI);
+    var policyTypes = policyGraph.rdftype;
+
+    info['odrl'][policyIRI]['rdftype'] = policyTypes._array;
+
+    policyTypes.forEach(function(pT) {
+      if(pT == DO.C.Vocab['odrlOffer']["@id"]){
+        var permissions = policyGraph.odrlpermission;
+
+        permissions.forEach(function(permissionIRI){
+          info['odrl'][policyIRI]['permission'] = {};
+          info['odrl'][policyIRI]['permission'][permissionIRI] = {};
+
+          var permissionGraph = s.child(permissionIRI);
+          var permissionAssigner = permissionGraph.odrlassigner;
+          info['odrl'][policyIRI]['permission'][permissionIRI]['action'] = info['odrl']['permissionAssigner'] = permissionAssigner;
+
+          var permissionActions = permissionGraph.odrlaction;
+          info['odrl'][policyIRI]['permission'][permissionIRI]['action'] = info['odrl']['permissionActions'] = permissionActions._array;
+        });
+
+      }
+      if(pT == DO.C.Vocab['odrlAgreement']["@id"]){
+        var prohibition = policyGraph.odrlprohibition;
+
+        prohibition.forEach(function(prohibitionIRI){
+          info['odrl'][policyIRI]['prohibition'] = {};
+          info['odrl'][policyIRI]['prohibition'][prohibitionIRI] = {};
+
+          var prohibitionGraph = s.child(prohibitionIRI);
+          var prohibitionAssigner = prohibitionGraph.odrlassigner;
+          info['odrl'][policyIRI]['prohibition'][prohibitionIRI]['action'] = info['odrl']['prohibitionAssigner'] = prohibitionAssigner;
+
+          var prohibitionAssignee = prohibitionGraph.odrlassignee;
+          info['odrl'][policyIRI]['prohibition'][prohibitionIRI]['action'] = info['odrl']['prohibitionAssignee'] = prohibitionAssignee;
+
+          var prohibitionActions = prohibitionGraph.odrlaction;
+          info['odrl'][policyIRI]['prohibition'][prohibitionIRI]['action'] = info['odrl']['prohibitionActions'] = prohibitionActions._array;
+        });
+
+      }
+    });
+  });
+
+  return info['odrl'];
 }
 
 function createImmutableResource(url, data, options) {
