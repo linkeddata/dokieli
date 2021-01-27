@@ -1,6 +1,6 @@
 {
   "name": "dokieli",
-  "version": "0.3.55",
+  "version": "0.3.56",
   "description": "dokieli is a client-side editor for decentralised article publishing, annotations and social interactions",
   "main": "./src/dokieli.js",
   "scripts": {
@@ -35,8 +35,8 @@
     "fs": "0.0.1-security",
     "medium-editor": "^5.23.3",
     "medium-editor-tables": "^0.6.1",
-    "node-fetch": "^2.6.0",
-    "npm": "^6.14.2",
+    "node-fetch": "^2.6.1",
+    "npm": "^6.14.11",
     "rdf-parser-rdfa": "git://github.com/rdf-ext/rdf-parser-rdfa.git#master",
     "rdf-store-ldp": "^0.3.1",
     "shower": "git://github.com/shower/core.git#master",
