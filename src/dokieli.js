@@ -2631,8 +2631,13 @@ var DO = {
         ' title="Make this article immutable and version it">' + template.Icon[".far.fa-snowflake.fa-2x"] + 'Immutable</button></li>');
       li.push('<li><button class="robustify-links"' + buttonDisabled +
         ' title="Robustify Links">' + template.Icon[".fas.fa-link.fa-2x"] + 'Robustify Links</button></li>');
+
+      if (DO.C.ResourceInfo['odrl'] && DO.C.ResourceInfo['odrl']['prohibitionActions'] && DO.C.ResourceInfo['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/archive') > -1 && DO.C.ResourceInfo['odrl']['prohibitionAssignee'] == DO.C.User.IRI) {
+        buttonDisabled = ' disabled="disabled"';
+      }
       li.push('<li><button class="snapshot-internet-archive"' + buttonDisabled +
         ' title="Capture with Internet Archive">' + template.Icon[".fas.fa-archive.fa-2x"] + 'Internet Archive</button></li>');
+
       li.push('<li><button class="export-as-html" title="Export and save to file">' + template.Icon[".fas.fa-external-link-alt.fa-2x"] + 'Export</button></li>');
 
       e.target.closest('button').insertAdjacentHTML('afterend', '<ul id="memento-items" class="on">' + li.join('') + '</ul>');
@@ -2665,6 +2670,8 @@ var DO = {
 
     showDocumentDo: function showDocumentDo (node) {
       if (document.getElementById('document-do')) { return; }
+
+      var documentURL = uri.stripFragmentFromString(document.location.href);
 
       var buttonDisabled = '';
 
@@ -2716,6 +2723,13 @@ var DO = {
       s += '<li><button class="resource-source" title="Edit article source code">' + template.Icon[".fas.fa-code.fa-2x"] + 'Source</button></li>';
 
       s += '<li><button class="embed-data-meta" title="Embed structured data (Turtle, JSON-LD, TriG)">' + template.Icon [".fas.fa-table.fa-2x"] + 'Embed Data</button></li>';
+
+      if (DO.C.ResourceInfo['odrl'] && DO.C.ResourceInfo['odrl']['prohibitionActions'] && DO.C.ResourceInfo['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/print') > -1 && DO.C.ResourceInfo['odrl']['prohibitionAssignee'] == DO.C.User.IRI) {
+        s += '<li><button class="resource-print" disabled="disabled" title="Print document">' + template.Icon[".fas.fa-print.fa-2x"] + 'Print</button></li>';
+      }
+      else if (DO.C.ResourceInfo['odrl'] && DO.C.ResourceInfo['odrl']['permissionActions'] && DO.C.ResourceInfo['odrl']['permissionActions'].indexOf('http://www.w3.org/ns/odrl/2/print') > -1) {
+        s += '<li><button class="resource-print" title="Print document">' + template.Icon[".fas.fa-print.fa-2x"] + 'Print</button></li>';
+      }
 
       s += '</ul></section>';
 
@@ -2788,6 +2802,11 @@ var DO = {
 
         if (e.target.closest('.resource-memento')) {
           DO.U.mementoDocument(e);
+        }
+
+        if (e.target.closest('.resource-print')) {
+          window.print();
+          return false;
         }
       });
     },

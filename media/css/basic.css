@@ -236,18 +236,35 @@ dl[id^="document-"] dd + dt:before {
 content:"\A";
 white-space:pre;
 }
-dl[id^="author-"] dd:after,
-dl[id^="document-"] dd:after {
+dl[id^="author-"] dd:after {
 content:", ";
 }
-dl[id^="author-"] dd:last-child:after,
-dl[id^="document-"] dd:last-child:after {
+dl[id^="author-"] dd:last-child:after {
 content:"";
 }
 dl[id^="author-"] ul,
 dl[id^="document-"] ul {
 margin-bottom:0;
 }
+
+dd + dd dl[typeof~="odrl:Policy"]:before {
+content:"\A";
+white-space:pre;
+}
+
+dl [rel~="odrl:action"] {
+display:inline;
+}
+dl [rel~="odrl:action"] li {
+display:inline;
+}
+dl [rel~="odrl:action"] li:after {
+content:",";
+}
+dl [rel~="odrl:action"] li:last-child:after {
+content:"";
+}
+
 
 h5 + *,
 h5 + div > *:first-child,
@@ -311,7 +328,8 @@ content:"";
 }
 
 ul ul,
-ol ol {
+ol ol,
+dl dl {
 margin-left:1em;
 }
 
