@@ -451,6 +451,17 @@ module.exports = {
     "memtimemap": { "@id": "http://mementoweb.org/ns#timemap", "@type": "@id" },
     "memmementoDateTime": "http://mementoweb.org/ns#mementoDateTime",
 
+    "odrlAgreement": { "@id": "http://www.w3.org/ns/odrl/2/Agreement", "@type": "@id" },
+    "odrlOffer": { "@id": "http://www.w3.org/ns/odrl/2/Offer", "@type": "@id" },
+    "odrlPolicy": { "@id": "http://www.w3.org/ns/odrl/2/Policy", "@type": "@id" },
+    "odrlaction": { "@id": "http://www.w3.org/ns/odrl/2/action", "@type": "@id", "@array": true },
+    "odrlassignee": { "@id": "http://www.w3.org/ns/odrl/2/assignee", "@type": "@id" },
+    "odrlassigner": { "@id": "http://www.w3.org/ns/odrl/2/assigner", "@type": "@id" },
+    "odrlhasPolicy": { "@id": "http://www.w3.org/ns/odrl/2/hasPolicy", "@type": "@id", "@array": true },
+    "odrlpermission": { "@id": "http://www.w3.org/ns/odrl/2/permission", "@type": "@id", "@array": true },
+    "odrlprohibition": { "@id": "http://www.w3.org/ns/odrl/2/prohibition", "@type": "@id", "@array": true },
+    "odrltarget": { "@id": "http://www.w3.org/ns/odrl/2/target", "@type": "@id" },
+
     "relpredecessorversion": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#predecessor-version", "@type": "@id" },
     "rellatestversion": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#latest-version", "@type": "@id" },
 
