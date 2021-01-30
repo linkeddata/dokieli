@@ -37,6 +37,7 @@ explains dokieli's principles, architectural and design patterns.
 * W3C [ActivityPub](https://www.w3.org/TR/activitypub/) client to read/write from/to profile's outbox.
 * W3C [Web Annotation Model](https://www.w3.org/TR/annotation-model/), W3C [Web Annotation Vocabulary](https://www.w3.org/TR/annotation-vocab/), W3C [Embedding Web Annotations in HTML](https://www.w3.org/TR/annotation-html), and W3C [Selectors and States](https://www.w3.org/TR/selectors-states/) to model and identify annotations (eg. replies, peer-reviews, liking, resharing, bookmarking)
 * W3C [Activity Streams 2.0 vocabulary](https://www.w3.org/TR/activitystreams-vocabulary) for social activities.
+* W3C [ODRL Information Model](https://www.w3.org/TR/odrl-model/) and W3C [ODRL Vocabulary & Expression](https://www.w3.org/TR/odrl-vocab/) to represent statements about the usage of content and services.
 * [Memento](https://tools.ietf.org/html/rfc7089) for resource management eg. TimeMap.
 * [Creative Commons](https://creativecommons.org/) to assign license to individual contributions and annotations.
 * [Robust Links](http://robustlinks.mementoweb.org/) for hyperlinks eg. citations, and to show Link Decoration.
