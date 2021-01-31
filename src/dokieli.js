@@ -2735,7 +2735,11 @@ var DO = {
 
       s += '<li><button class="embed-data-meta" title="Embed structured data (Turtle, JSON-LD, TriG)">' + template.Icon [".fas.fa-table.fa-2x"] + 'Embed Data</button></li>';
 
-      s += '<li><button class="resource-print"' + doc.getButtonDisabledHTML('resource-print') + ' title="Print document">' + template.Icon[".fas.fa-print.fa-2x"] + 'Print</button></li>';
+      if (DO.C.ResourceInfo['odrl'] && DO.C.ResourceInfo['odrl']['prohibitionAssignee'] == DO.C.User.IRI &&
+        ((DO.C.ResourceInfo['odrl']['prohibitionActions'] && DO.C.ResourceInfo['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/print') > -1) ||
+        (DO.C.ResourceInfo['odrl']['permissionActions'] && DO.C.ResourceInfo['odrl']['permissionActions'].indexOf('http://www.w3.org/ns/odrl/2/print') > -1))) {
+        s += '<li><button class="resource-print"' + doc.getButtonDisabledHTML('resource-print') + ' title="Print document">' + template.Icon[".fas.fa-print.fa-2x"] + 'Print</button></li>';
+      }
 
       s += '</ul></section>';
 
