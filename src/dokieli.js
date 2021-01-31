@@ -2617,31 +2617,64 @@ var DO = {
         else { b.disabled = true; }
       }
 
-      var buttonDisabled = '';
-      if (document.location.protocol === 'file:') {
-        buttonDisabled = ' disabled="disabled"';
+      var schemeFile = document.location.protocol === 'file:';
+
+      //false is disabled
+      var buttonState = {
+        'create-version': true,
+        'create-immutable': true,
+        'robustify-links': true,
+        'snapshot-internet-archive': true,
+        'export-as-html': true
       }
+
+      if (DO.C.ResourceInfo['odrl'] && DO.C.ResourceInfo['odrl']['prohibitionActions'] && DO.C.ResourceInfo['odrl']['prohibitionAssignee'] == DO.C.User.IRI) {
+        console.log(DO.C.ResourceInfo['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/reproduce'))
+        if (DO.C.ResourceInfo['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/reproduce') > -1) {
+          buttonState['create-version'] = false;
+          buttonState['create-immutable'] = false;
+          buttonState['robustify-links'] = false;
+          buttonState['snapshot-internet-archive'] = false;
+          buttonState['export-as-html'] = false;
+        }
+
+        if (DO.C.ResourceInfo['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/archive') > -1) {
+          buttonState['snapshot-internet-archive'] = false;
+        }
+
+        if (DO.C.ResourceInfo['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/transform') > -1) {
+          buttonState['export-as-html'] = false;
+        }
+      }
+
+      var getButtonDisabledHTML = function(id) {
+        var html = '';
+
+        if (schemeFile || !buttonState[id]) {
+          html = ' disabled="disabled';  
+        }
+        if (id == 'export-as-html' && buttonState[id]) {
+          html = '';
+        }
+
+        return html;
+      }
+
+// console.log(buttonState)
 
       var iri = uri.stripFragmentFromString(document.location.href);
 
       var li = [];
-      li.push('<li><button class="create-version"' + buttonDisabled +
+      li.push('<li><button class="create-version"' + getButtonDisabledHTML('create-version') +
         ' title="Version this article">' + template.Icon[".fas.fa-code-branch.fa-2x"] + 'Version</button></li>');
-      li.push('<li><button class="create-immutable"' + buttonDisabled +
+      li.push('<li><button class="create-immutable"' + getButtonDisabledHTML('create-immutable') +
         ' title="Make this article immutable and version it">' + template.Icon[".far.fa-snowflake.fa-2x"] + 'Immutable</button></li>');
-      li.push('<li><button class="robustify-links"' + buttonDisabled +
+      li.push('<li><button class="robustify-links"' + getButtonDisabledHTML('robustify-links') +
         ' title="Robustify Links">' + template.Icon[".fas.fa-link.fa-2x"] + 'Robustify Links</button></li>');
-
-      if (DO.C.ResourceInfo['odrl'] && DO.C.ResourceInfo['odrl']['prohibitionActions'] && DO.C.ResourceInfo['odrl']['prohibitionAssignee'] == DO.C.User.IRI &&
-        (DO.C.ResourceInfo['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/archive') > -1 || 
-         DO.C.ResourceInfo['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/reproduce') > -1
-          )) {
-        buttonDisabled = ' disabled="disabled"';
-      }
-      li.push('<li><button class="snapshot-internet-archive"' + buttonDisabled +
+      li.push('<li><button class="snapshot-internet-archive"' + getButtonDisabledHTML('snapshot-internet-archive') +
         ' title="Capture with Internet Archive">' + template.Icon[".fas.fa-archive.fa-2x"] + 'Internet Archive</button></li>');
-
-      li.push('<li><button class="export-as-html" title="Export and save to file">' + template.Icon[".fas.fa-external-link-alt.fa-2x"] + 'Export</button></li>');
+      li.push('<li><button class="export-as-html"' + getButtonDisabledHTML('export-as-html') +
+        ' title="Export and save to file">' + template.Icon[".fas.fa-external-link-alt.fa-2x"] + 'Export</button></li>');
 
       e.target.closest('button').insertAdjacentHTML('afterend', '<ul id="memento-items" class="on">' + li.join('') + '</ul>');
 
