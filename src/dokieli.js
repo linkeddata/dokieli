@@ -2632,7 +2632,10 @@ var DO = {
       li.push('<li><button class="robustify-links"' + buttonDisabled +
         ' title="Robustify Links">' + template.Icon[".fas.fa-link.fa-2x"] + 'Robustify Links</button></li>');
 
-      if (DO.C.ResourceInfo['odrl'] && DO.C.ResourceInfo['odrl']['prohibitionActions'] && DO.C.ResourceInfo['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/archive') > -1 && DO.C.ResourceInfo['odrl']['prohibitionAssignee'] == DO.C.User.IRI) {
+      if (DO.C.ResourceInfo['odrl'] && DO.C.ResourceInfo['odrl']['prohibitionActions'] && DO.C.ResourceInfo['odrl']['prohibitionAssignee'] == DO.C.User.IRI &&
+        (DO.C.ResourceInfo['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/archive') > -1 || 
+         DO.C.ResourceInfo['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/reproduce') > -1
+          )) {
         buttonDisabled = ' disabled="disabled"';
       }
       li.push('<li><button class="snapshot-internet-archive"' + buttonDisabled +
