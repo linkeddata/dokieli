@@ -2709,7 +2709,14 @@ var DO = {
       s += '<li><button class="resource-save"' + buttonDisabled +
         ' title="Save article">' + template.Icon[".fas.fa-life-ring.fa-2x"] + 'Save</button></li>';
 
-      s += '<li><button class="resource-save-as" title="Save as article">' + template.Icon[".far.fa-paper-plane.fa-2x"] + 'Save As</button></li>';
+      var buttonDisabledSaveAs = '';
+      if (DO.C.ResourceInfo['odrl'] && DO.C.ResourceInfo['odrl']['prohibitionActions'] && DO.C.ResourceInfo['odrl']['prohibitionAssignee'] == DO.C.User.IRI &&
+        (DO.C.ResourceInfo['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/derive') > -1 || 
+         DO.C.ResourceInfo['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/reproduce') > -1
+          )) {
+        buttonDisabledSaveAs = ' disabled="disabled"';
+      }
+      s += '<li><button class="resource-save-as"' + buttonDisabledSaveAs + ' title="Save as article">' + template.Icon[".far.fa-paper-plane.fa-2x"] + 'Save As</button></li>';
 
       s += '<li><button class="resource-memento" title="Memento article">' + template.Icon[".far.fa-clock.fa-2x"] + 'Memento</button></li>';
 
