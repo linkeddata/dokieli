@@ -957,11 +957,13 @@ function getResourceInfoODRLPolicies(s) {
 function setFeatureStatesOfResourceInfo(info) {
   //false is disabled
   var buttonState = {
-    'create-version': true,
     'create-immutable': true,
+    'create-version': true,
+    'export-as-html': true,
+    'resource-print': true,
+    'resource-save-as': true,
     'robustify-links': true,
-    'snapshot-internet-archive': true,
-    'export-as-html': true
+    'snapshot-internet-archive': true
   }
 
   if (info['odrl'] && info['odrl']['prohibitionActions'] && info['odrl']['prohibitionAssignee'] == DO.C.User.IRI) {
@@ -969,17 +971,21 @@ function setFeatureStatesOfResourceInfo(info) {
       buttonState['snapshot-internet-archive'] = false;
     }
 
-    if (['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/derive') > -1) {
+    if (info['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/derive') > -1) {
       buttonState['resource-save-as'] = false;
     }
 
+    if (info['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/print') > -1) {
+      buttonState['resource-print'] = false;
+    }
+
     if (info['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/reproduce') > -1) {
-      buttonState['create-version'] = false;
       buttonState['create-immutable'] = false;
-      buttonState['robustify-links'] = false;
-      buttonState['snapshot-internet-archive'] = false;
+      buttonState['create-version'] = false;
       buttonState['export-as-html'] = false;
       buttonState['resource-save-as'] = false;
+      buttonState['robustify-links'] = false;
+      buttonState['snapshot-internet-archive'] = false;
     }
 
     if (info['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/transform') > -1) {
