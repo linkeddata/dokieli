@@ -2616,51 +2616,19 @@ var DO = {
         if(b.disabled) { return; }
         else { b.disabled = true; }
       }
-
-      var schemeFile = document.location.protocol === 'file:';
-
-      //false is disabled
-      var buttonState = {
-        'create-version': true,
-        'create-immutable': true,
-        'robustify-links': true,
-        'snapshot-internet-archive': true,
-        'export-as-html': true
-      }
-
-      if (DO.C.ResourceInfo['odrl'] && DO.C.ResourceInfo['odrl']['prohibitionActions'] && DO.C.ResourceInfo['odrl']['prohibitionAssignee'] == DO.C.User.IRI) {
-        console.log(DO.C.ResourceInfo['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/reproduce'))
-        if (DO.C.ResourceInfo['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/reproduce') > -1) {
-          buttonState['create-version'] = false;
-          buttonState['create-immutable'] = false;
-          buttonState['robustify-links'] = false;
-          buttonState['snapshot-internet-archive'] = false;
-          buttonState['export-as-html'] = false;
-        }
-
-        if (DO.C.ResourceInfo['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/archive') > -1) {
-          buttonState['snapshot-internet-archive'] = false;
-        }
-
-        if (DO.C.ResourceInfo['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/transform') > -1) {
-          buttonState['export-as-html'] = false;
-        }
-      }
-
+console.log(DO.C.ResourceInfo)
       var getButtonDisabledHTML = function(id) {
         var html = '';
 
-        if (schemeFile || !buttonState[id]) {
-          html = ' disabled="disabled';  
+        if (document.location.protocol === 'file:' || !DO.C.ResourceInfo.buttonStates[id]) {
+          html = ' disabled="disabled"';  
         }
-        if (id == 'export-as-html' && buttonState[id]) {
+        if (id == 'export-as-html' && DO.C.ResourceInfo.buttonStates[id]) {
           html = '';
         }
 
         return html;
       }
-
-// console.log(buttonState)
 
       var iri = uri.stripFragmentFromString(document.location.href);
 
@@ -2705,7 +2673,26 @@ var DO = {
     },
 
     showDocumentDo: function showDocumentDo (node) {
-      if (document.getElementById('document-do')) { return; }
+      var documentDo = document.getElementById('document-do');
+console.log(documentDo)
+console.log(DO.C.ResourceInfo)
+      if (documentDo) {
+        Object.keys(DO.C.ResourceInfo.buttonStates).forEach(function(id){
+// console.log(id);
+// console.log(DO.C.ResourceInfo.buttonStates[id]);
+          var s = documentDo.querySelector('.' + id);
+console.log(s)
+          if (s) {
+            if (DO.C.ResourceInfo.buttonStates[id]) {
+              s.removeAttribute('disabled');
+            }
+            else {
+              s.setAttribute('disabled', 'disabled');
+            }
+          }
+        });
+        return;
+      }
 
       var documentURL = uri.stripFragmentFromString(document.location.href);
 

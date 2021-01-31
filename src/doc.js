@@ -34,6 +34,7 @@ module.exports = {
   showTimeMap,
   getResourceInfo,
   getResourceInfoODRLPolicies,
+  setFeatureStatesOfResourceInfo,
   createImmutableResource,
   createMutableResource,
   updateMutableResource,
@@ -818,6 +819,8 @@ function getResourceInfo(data, options) {
           info['odrl'] = getResourceInfoODRLPolicies(s);
         }
 
+        info['buttonStates'] = setFeatureStatesOfResourceInfo(info);
+
         if ('headers' in Config['ResourceInfo']){
           Config['ResourceInfo'] = Object.assign(info, Config['ResourceInfo']['headers']);
         }
@@ -826,6 +829,7 @@ function getResourceInfo(data, options) {
         }
 
 // console.log(info)
+
       return info;
     });
   }
@@ -934,6 +938,39 @@ function getResourceInfoODRLPolicies(s) {
 
   return info['odrl'];
 }
+
+//TODO: This should be triggered after sign-in
+function setFeatureStatesOfResourceInfo(info) {
+  //false is disabled
+  var buttonState = {
+    'create-version': true,
+    'create-immutable': true,
+    'robustify-links': true,
+    'snapshot-internet-archive': true,
+    'export-as-html': true
+  }
+
+  if (info['odrl'] && info['odrl']['prohibitionActions'] && info['odrl']['prohibitionAssignee'] == DO.C.User.IRI) {
+    if (info['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/reproduce') > -1) {
+      buttonState['create-version'] = false;
+      buttonState['create-immutable'] = false;
+      buttonState['robustify-links'] = false;
+      buttonState['snapshot-internet-archive'] = false;
+      buttonState['export-as-html'] = false;
+    }
+
+    if (info['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/archive') > -1) {
+      buttonState['snapshot-internet-archive'] = false;
+    }
+
+    if (info['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/transform') > -1) {
+      buttonState['export-as-html'] = false;
+    }
+  }
+// console.log(buttonState)
+  return buttonState;
+}
+
 
 function createImmutableResource(url, data, options) {
   if(!url) return;
