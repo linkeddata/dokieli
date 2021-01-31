@@ -31,6 +31,7 @@ module.exports = {
   getDocumentStatusHTML,
   buttonRemoveAside,
   buttonClose,
+  getButtonDisabledHTML,
   showTimeMap,
   getResourceInfo,
   getResourceInfoODRLPolicies,
@@ -730,6 +731,19 @@ function buttonClose() {
   });
 }
 
+function getButtonDisabledHTML(id) {
+  var html = '';
+
+  if (document.location.protocol === 'file:' || !Config.ResourceInfo.buttonStates[id]) {
+    html = ' disabled="disabled"';  
+  }
+  if (id == 'export-as-html' && Config.ResourceInfo.buttonStates[id]) {
+    html = '';
+  }
+
+  return html;
+}
+
 function getResourceInfo(data, options) {
   data = data || getDocument();
   Config['ResourceInfo'] = Config['ResourceInfo'] || {};
@@ -951,16 +965,21 @@ function setFeatureStatesOfResourceInfo(info) {
   }
 
   if (info['odrl'] && info['odrl']['prohibitionActions'] && info['odrl']['prohibitionAssignee'] == DO.C.User.IRI) {
+    if (info['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/archive') > -1) {
+      buttonState['snapshot-internet-archive'] = false;
+    }
+
+    if (['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/derive') > -1) {
+      buttonState['resource-save-as'] = false;
+    }
+
     if (info['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/reproduce') > -1) {
       buttonState['create-version'] = false;
       buttonState['create-immutable'] = false;
       buttonState['robustify-links'] = false;
       buttonState['snapshot-internet-archive'] = false;
       buttonState['export-as-html'] = false;
-    }
-
-    if (info['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/archive') > -1) {
-      buttonState['snapshot-internet-archive'] = false;
+      buttonState['resource-save-as'] = false;
     }
 
     if (info['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/transform') > -1) {

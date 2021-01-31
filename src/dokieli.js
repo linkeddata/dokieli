@@ -2616,32 +2616,20 @@ var DO = {
         if(b.disabled) { return; }
         else { b.disabled = true; }
       }
-console.log(DO.C.ResourceInfo)
-      var getButtonDisabledHTML = function(id) {
-        var html = '';
-
-        if (document.location.protocol === 'file:' || !DO.C.ResourceInfo.buttonStates[id]) {
-          html = ' disabled="disabled"';  
-        }
-        if (id == 'export-as-html' && DO.C.ResourceInfo.buttonStates[id]) {
-          html = '';
-        }
-
-        return html;
-      }
+// console.log(DO.C.ResourceInfo)
 
       var iri = uri.stripFragmentFromString(document.location.href);
 
       var li = [];
-      li.push('<li><button class="create-version"' + getButtonDisabledHTML('create-version') +
+      li.push('<li><button class="create-version"' + doc.getButtonDisabledHTML('create-version') +
         ' title="Version this article">' + template.Icon[".fas.fa-code-branch.fa-2x"] + 'Version</button></li>');
-      li.push('<li><button class="create-immutable"' + getButtonDisabledHTML('create-immutable') +
+      li.push('<li><button class="create-immutable"' + doc.getButtonDisabledHTML('create-immutable') +
         ' title="Make this article immutable and version it">' + template.Icon[".far.fa-snowflake.fa-2x"] + 'Immutable</button></li>');
-      li.push('<li><button class="robustify-links"' + getButtonDisabledHTML('robustify-links') +
+      li.push('<li><button class="robustify-links"' + doc.getButtonDisabledHTML('robustify-links') +
         ' title="Robustify Links">' + template.Icon[".fas.fa-link.fa-2x"] + 'Robustify Links</button></li>');
-      li.push('<li><button class="snapshot-internet-archive"' + getButtonDisabledHTML('snapshot-internet-archive') +
+      li.push('<li><button class="snapshot-internet-archive"' + doc.getButtonDisabledHTML('snapshot-internet-archive') +
         ' title="Capture with Internet Archive">' + template.Icon[".fas.fa-archive.fa-2x"] + 'Internet Archive</button></li>');
-      li.push('<li><button class="export-as-html"' + getButtonDisabledHTML('export-as-html') +
+      li.push('<li><button class="export-as-html"' + doc.getButtonDisabledHTML('export-as-html') +
         ' title="Export and save to file">' + template.Icon[".fas.fa-external-link-alt.fa-2x"] + 'Export</button></li>');
 
       e.target.closest('button').insertAdjacentHTML('afterend', '<ul id="memento-items" class="on">' + li.join('') + '</ul>');
@@ -2674,14 +2662,14 @@ console.log(DO.C.ResourceInfo)
 
     showDocumentDo: function showDocumentDo (node) {
       var documentDo = document.getElementById('document-do');
-console.log(documentDo)
-console.log(DO.C.ResourceInfo)
+// console.log(documentDo)
+// console.log(DO.C.ResourceInfo)
       if (documentDo) {
         Object.keys(DO.C.ResourceInfo.buttonStates).forEach(function(id){
 // console.log(id);
 // console.log(DO.C.ResourceInfo.buttonStates[id]);
           var s = documentDo.querySelector('.' + id);
-console.log(s)
+// console.log(s)
           if (s) {
             if (DO.C.ResourceInfo.buttonStates[id]) {
               s.removeAttribute('disabled');
@@ -2732,14 +2720,7 @@ console.log(s)
       s += '<li><button class="resource-save"' + buttonDisabled +
         ' title="Save article">' + template.Icon[".fas.fa-life-ring.fa-2x"] + 'Save</button></li>';
 
-      var buttonDisabledSaveAs = '';
-      if (DO.C.ResourceInfo['odrl'] && DO.C.ResourceInfo['odrl']['prohibitionActions'] && DO.C.ResourceInfo['odrl']['prohibitionAssignee'] == DO.C.User.IRI &&
-        (DO.C.ResourceInfo['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/derive') > -1 || 
-         DO.C.ResourceInfo['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/reproduce') > -1
-          )) {
-        buttonDisabledSaveAs = ' disabled="disabled"';
-      }
-      s += '<li><button class="resource-save-as"' + buttonDisabledSaveAs + ' title="Save as article">' + template.Icon[".far.fa-paper-plane.fa-2x"] + 'Save As</button></li>';
+      s += '<li><button class="resource-save-as"' + doc.getButtonDisabledHTML('resource-save-as') + ' title="Save as article">' + template.Icon[".far.fa-paper-plane.fa-2x"] + 'Save As</button></li>';
 
       s += '<li><button class="resource-memento" title="Memento article">' + template.Icon[".far.fa-clock.fa-2x"] + 'Memento</button></li>';
 
