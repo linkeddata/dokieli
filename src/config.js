@@ -384,6 +384,10 @@ module.exports = {
 
     "pimpersistencePolicy": { "@id": "http://www.w3.org/2000/10/swap/pim/doc#persistencePolicy", "@type": "@id", "@array": true },
 
+    "aclAuthorization" : { "@id": "http://www.w3.org/ns/auth/acl#Authorization", "@type": "@id" },
+    "aclRead" : { "@id": "http://www.w3.org/ns/auth/acl#Read", "@type": "@id" },
+    "aclWrite" : { "@id": "http://www.w3.org/ns/auth/acl#Write", "@type": "@id" },
+    "aclAppend" : { "@id": "http://www.w3.org/ns/auth/acl#Append", "@type": "@id" },
     "acldelegates" : { "@id": "http://www.w3.org/ns/auth/acl#delegates", "@type": "@id" },
 
     "solidpreferredProxy": "http://www.w3.org/ns/solid/terms#preferredProxy",
