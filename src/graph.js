@@ -31,7 +31,7 @@ function getGraphFromData (data, options = {}) {
   // https://github.com/simplerdf/simplerdf/issues/19
 
   if (!('subjectURI' in options)) {
-    console.log(options)
+    // console.log(options)
     options['subjectURI'] = 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d'
   }
 

@@ -4165,10 +4165,15 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
             let message
 
             var requestAccess = '';
-            var linkHeaders = fetcher.parseLinkHeader(error.response.headers.get('Link'))
+            var linkHeaders;
+            var inboxURL;
+            var link = error.response.headers.get('Link');
+            if (link && link.length > 0) {
+              linkHeaders = fetcher.parseLinkHeader(link);
+            }
 
-            if (DO.C.User.IRI && DO.C.Vocab['ldpinbox']['@id'] in linkHeaders){
-              var inboxURL = linkHeaders[DO.C.Vocab['ldpinbox']['@id']][0];
+            if (DO.C.User.IRI && linkHeaders && DO.C.Vocab['ldpinbox']['@id'] in linkHeaders){
+              inboxURL = linkHeaders[DO.C.Vocab['ldpinbox']['@id']][0];
               requestAccess = '<p><button class="request-access" data-inbox="' + inboxURL +'" data-target="' + storageIRI + '" title="Send an access request to resource inbox.">Request Access</button></p>'
             }
 
