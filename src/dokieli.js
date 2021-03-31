@@ -16,6 +16,7 @@ window.MediumEditor = require('medium-editor')
 window.MediumEditorTable = require('medium-editor-tables')
 const storage = require('./storage')
 global.auth = require('./auth')
+const { handleIncomingRedirect, getDefaultSession } = require("@inrupt/solid-client-authn-browser");
 global.template = require('./template')
 const d3 = Object.assign({}, require("d3-selection"), require("d3-force"))
 const shower = require('shower').default
@@ -8083,6 +8084,13 @@ WHERE {\n\
     } //DO.U.Editor
   } //DO.U
 }; //DO
+
+  handleIncomingRedirect({
+    url: window.location.href,
+    restorePreviousSession: true
+  }).then(() => {
+    console.log(`Logged in as ${getDefaultSession().info.webId}`)
+  });
 
   if (document.addEventListener) {
     document.addEventListener('DOMContentLoaded', function(){ DO.C.init(); });
