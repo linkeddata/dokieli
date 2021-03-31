@@ -6,6 +6,7 @@ const util = require('./util')
 const uri = require('./uri')
 const storage = require('./storage')
 const solidAuth = require('solid-auth-client')
+const {login, handleIncomingRedirect} = require("@inrupt/solid-client-authn-browser");
 
 // const { OIDCWebClient } = require('@trust/oidc-web')
 
@@ -196,7 +197,7 @@ function showUserIdentityInput (e) {
 
   var webid = Config.User.WebIdDelegate ? Config.User.WebIdDelegate : "";
   var code = '<aside id="user-identity-input" class="do on">' + Config.Button.Close + '<h2>Sign in</h2><p id="user-identity-input-webid"><label>WebID</label> <input id="webid" type="text" placeholder="https://csarven.ca/#i" value="'+webid+'" name="webid"/> <button class="signin">Sign in</button></p>';
-  if (window.location.protocol === "https:") {
+  if (window.location.protocol === "https:" || window.location.origin.includes("localhost")) {
     code += '<p id="user-identity-input-oidc">or with <label>OpenID Connect</label> <button class="signin-oidc">Sign in</button></p>';
   }
   code += '</aside>';
@@ -300,34 +301,39 @@ function submitSignIn (url) {
 function submitSignInOIDC (url) {
   var userIdentityInput = document.getElementById('user-identity-input')
 
-  var popupUri = Config.OidcPopupUrl;
+  // var popupUri = Config.OidcPopupUrl;
 
-  if (solidAuth) {
-    solidAuth
-      .popupLogin({ popupUri })
-      .then((session) => {
-         if (session && session.webId) {
-           console.log("Connected:", session.webId);
-           setUserInfo(session.webId, true)
-            .then(() => {
-              var uI = document.getElementById('user-info')
-              if (uI) {
-                util.removeChildren(uI);
-                uI.insertAdjacentHTML('beforeend', getUserSignedInHTML());
-              }
+  // if (solidAuth) {
+  //   solidAuth
+  //     .popupLogin({ popupUri })
+  //     .then((session) => {
+  //        if (session && session.webId) {
+  //          console.log("Connected:", session.webId);
+  //          setUserInfo(session.webId, true)
+  //           .then(() => {
+  //             var uI = document.getElementById('user-info')
+  //             if (uI) {
+  //               util.removeChildren(uI);
+  //               uI.insertAdjacentHTML('beforeend', getUserSignedInHTML());
+  //             }
 
-              if (userIdentityInput) {
-                userIdentityInput.parentNode.removeChild(userIdentityInput)
-              }
+  //             if (userIdentityInput) {
+  //               userIdentityInput.parentNode.removeChild(userIdentityInput)
+  //             }
 
-              afterSignIn()
-            })
-         }
-      }).catch((err) => {
-        console.log('submitSignInOIDC - '+err);
-        return Promise.resolve();
-      });
-  }
+  //             afterSignIn()
+  //           })
+  //        }
+  //     }).catch((err) => {
+  //       console.log('submitSignInOIDC - '+err);
+  //       return Promise.resolve();
+  //     });
+  // }
+  login({
+    clientName: "dokieli",
+    // TODO: use whatever the user provides
+    oidcIssuer: "https://broker.pod.inrupt.com",
+  })
 }
 
 /**

@@ -30,6 +30,7 @@
   },
   "homepage": "https://dokie.li/",
   "dependencies": {
+    "@inrupt/solid-client-authn-browser": "^1.7.2",
     "d3-force": "^2.0.1",
     "d3-selection": "^1.4.1",
     "fs": "0.0.1-security",
