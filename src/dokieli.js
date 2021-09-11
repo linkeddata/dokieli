@@ -555,8 +555,9 @@ var DO = {
         "7": { color: '#002af7', label: 'External', type: 'rdf:Resource' },
         "8": { color: '#00cc00', label: 'Internal', type: 'rdf:Resource' },
         "9": { color: '#00ffff', label: 'Citation', type: 'rdf:Resource' },
-        "10": { color: '#800080', label: 'Social', type: 'rdf:Resource' },
-        "11": { color: '#ff7f00', label: 'DataSet', type: 'rdf:Resource' }
+        "10": { color: '#900090', label: 'Social', type: 'rdf:Resource' },
+        "11": { color: '#ff7f00', label: 'DataSet', type: 'rdf:Resource' },
+        "12": { color: '#9a3a00', label: 'Requirement', type: 'rdf:Resource' }
       }
 
       if (selector == '#graph-view' && !document.getElementById('graph-view')) {
@@ -862,12 +863,17 @@ var DO = {
               if (auth.isActorProperty(t.predicate.nominalValue)) {
                 oGroup = 10;
               }
-              if (t.predicate.nominalValue == DO.C.Vocab['foafknows']['@id']){
-                sGroup = 10;
-                oGroup = 10;
-              }
-              else if (t.predicate.nominalValue.startsWith('http://purl.org/spar/cito/')) {
+              if (t.predicate.nominalValue.startsWith('http://purl.org/spar/cito/')) {
                 oGroup = 9;
+              }
+              switch(t.predicate.nominalValue) {
+                case DO.C.Vocab['foafknows']['@id']:
+                  sGroup = 10;
+                  oGroup = 10;
+                  break;
+                case DO.C.Vocab['specrequirement']['@id']:
+                  oGroup = 12;
+                  break;
               }
 
               if (DO.C.Graphs[t.subject.nominalValue]) {

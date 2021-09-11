@@ -518,8 +518,9 @@ module.exports = {
     "citoupdates": { "@id": "http://purl.org/spar/cito/updates", "@type": "@id"},
     "citousesConclusionsFrom": { "@id": "http://purl.org/spar/cito/usesConclusionsFrom", "@type": "@id"},
     "citousesDataFrom": { "@id": "http://purl.org/spar/cito/usesDataFrom", "@type": "@id"},
-    "citousesMethodIn": { "@id": "http://purl.org/spar/cito/usesMethodIn", "@type": "@id"}
+    "citousesMethodIn": { "@id": "http://purl.org/spar/cito/usesMethodIn", "@type": "@id"},
 
+    "specrequirement": { "@id": "http://www.w3.org/ns/spec#requirement", "@type": "@id"}
   },
 
   SecretAgentNames: ['Abraham Lincoln', 'Admiral Awesome', 'Anonymous Coward', 'Believe it or not', 'Creative Monkey', 'Senegoid', 'Dog from the Web', 'Ekrub', 'Elegant Banana', 'Foo Bar', 'Lbmit', 'Lunatic Scholar', 'NahuLcm', 'Noslen', 'Okie Dokie', 'Samurai Cat', 'Vegan Superstar'],
