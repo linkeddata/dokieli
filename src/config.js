@@ -456,8 +456,13 @@ module.exports = {
     "memmementoDateTime": "http://mementoweb.org/ns#mementoDateTime",
 
     "odrlAgreement": { "@id": "http://www.w3.org/ns/odrl/2/Agreement", "@type": "@id" },
+    "odrlAssertion": { "@id": "http://www.w3.org/ns/odrl/2/Assertion", "@type": "@id" },
     "odrlOffer": { "@id": "http://www.w3.org/ns/odrl/2/Offer", "@type": "@id" },
     "odrlPolicy": { "@id": "http://www.w3.org/ns/odrl/2/Policy", "@type": "@id" },
+    "odrlPrivacy": { "@id": "http://www.w3.org/ns/odrl/2/Privacy", "@type": "@id" },
+    "odrlRequest": { "@id": "http://www.w3.org/ns/odrl/2/Request", "@type": "@id" },
+    "odrlSet": { "@id": "http://www.w3.org/ns/odrl/2/Set", "@type": "@id" },
+    "odrlTicket": { "@id": "http://www.w3.org/ns/odrl/2/Ticket", "@type": "@id" },
     "odrlaction": { "@id": "http://www.w3.org/ns/odrl/2/action", "@type": "@id", "@array": true },
     "odrlassignee": { "@id": "http://www.w3.org/ns/odrl/2/assignee", "@type": "@id" },
     "odrlassigner": { "@id": "http://www.w3.org/ns/odrl/2/assigner", "@type": "@id" },
