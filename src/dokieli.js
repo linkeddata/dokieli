@@ -557,7 +557,8 @@ var DO = {
         "9": { color: '#00ffff', label: 'Citation', type: 'rdf:Resource' },
         "10": { color: '#900090', label: 'Social', type: 'rdf:Resource' },
         "11": { color: '#ff7f00', label: 'DataSet', type: 'rdf:Resource' },
-        "12": { color: '#9a3a00', label: 'Requirement', type: 'rdf:Resource' }
+        "12": { color: '#9a3a00', label: 'Requirement', type: 'rdf:Resource' },
+        "13": { color: '#0088ee', label: 'Policy', type: 'rdf:Resource' }
       }
 
       if (selector == '#graph-view' && !document.getElementById('graph-view')) {
@@ -856,8 +857,20 @@ var DO = {
                 if (auth.isActorType(t.object.nominalValue)) {
                   sGroup = 10;
                 }
-                if (t.object.nominalValue == DO.C.Vocab['qbDataSet']['@id']) {
-                  oGroup = 11;
+                switch (t.object.nominalValue) {
+                  case DO.C.Vocab['qbDataSet']['@id']:
+                    oGroup = 11;
+                    break;
+                  case DO.C.Vocab['odrlAgreement']['@id']:
+                  case DO.C.Vocab['odrlAssertion']['@id']:
+                  case DO.C.Vocab['odrlOffer']['@id']:
+                  case DO.C.Vocab['odrlPolicy']['@id']:
+                  case DO.C.Vocab['odrlPrivacy']['@id']:
+                  case DO.C.Vocab['odrlRequest']['@id']:
+                  case DO.C.Vocab['odrlSet']['@id']:
+                  case DO.C.Vocab['odrlTicket']['@id']:
+                    sGroup = 13;
+                    break;
                 }
               }
               if (auth.isActorProperty(t.predicate.nominalValue)) {
@@ -873,6 +886,9 @@ var DO = {
                   break;
                 case DO.C.Vocab['specrequirement']['@id']:
                   oGroup = 12;
+                  break;
+                case DO.C.Vocab['odrlhasPolicy']['@id']:
+                  oGroup = 13;
                   break;
               }
 
