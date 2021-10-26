@@ -3398,7 +3398,7 @@ console.log(reason);
           });
 
           var path = c.split("/");
-          if(resourceTypes.indexOf('http://www.w3.org/ns/ldp#Container') > -1){
+          if(resourceTypes.indexOf('http://www.w3.org/ns/ldp#Container') > -1 || resourceTypes.indexOf('http://www.w3.org/ns/ldp#BasicContainer') > -1){
             var slug = path[path.length-2];
             containersLi.push('<li class="container"><input type="radio" name="resources" value="' + c + '" id="' + slug + '"/><label for="' + slug + '">' + slug + '</label></li>');
           }
