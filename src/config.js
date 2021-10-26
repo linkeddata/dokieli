@@ -444,6 +444,7 @@ module.exports = {
     "ldpcontains": { "@id": "http://www.w3.org/ns/ldp#contains", "@type": "@id", "@array": true },
     "ldpResource": { "@id": "http://www.w3.org/ns/ldp#Resource", "@type": "@id" },
     "ldpContainer": { "@id": "http://www.w3.org/ns/ldp#Container", "@type": "@id" },
+    "ldpBasicContainer": { "@id": "http://www.w3.org/ns/ldp#BasicContainer", "@type": "@id" },
     "ldpRDFSource": { "@id": "http://www.w3.org/ns/ldp#RDFSource", "@type": "@id" },
     "ldpNonRDFSource": { "@id": "http://www.w3.org/ns/ldp#NonRDFSource", "@type": "@id" },
 
