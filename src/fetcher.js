@@ -400,31 +400,58 @@ function parseLinkHeader (link) {
   return rels
 }
 
-function patchResource (url, deleteBGP, insertBGP, options = {}) {
+function patchResource (url, patch = {}, options = {}) {
   var _fetch = Config.User.OIDC? solidAuth.fetch : fetch;
-  // insertBGP and deleteBGP are basic graph patterns.
-  deleteBGP = (deleteBGP) ? 'DELETE DATA {\n\
-' + deleteBGP + '\n\
+
+  options.headers = options.headers || {}
+
+  options.headers['Content-Type'] = options.headers['Content-Type'] || 'text/n3'
+
+  var body = '@prefix solid: <http://www.w3.org/ns/solid/terms#> .\n\
+'
+
+  switch (options.headers['Content-Type']) {
+    case 'application/sparql-update':
+      body += (patch.delete) ? 'DELETE DATA {\n\
+' + patch.delete + '\n\
 };\n\
-' : '';
-
-  insertBGP = (insertBGP) ? 'INSERT DATA {\n\
-' + insertBGP + '\n\
+' : ''
+      body += (patch.insert) ? 'INSERT DATA {\n\
+' + patch.insert + '\n\
 };\n\
-' : '';
+' : ''
+      body += (patch.where) ? 'WHERE {\n\
+' + patch.where + '\n\
+};\n\
+' : ''
+      break
 
+//XXX: solid:patches can be removed when servers implement https://solidproject.org/protocol#n3-patch
+    case 'text/n3':
+    default :
+      body += '_:patch solid:patches <' + url + '> .\n\
+_:patch a solid:Patch .\n\
+_:patch a solid:InsertSolidPatch .\n\
+'
+      if (patch.delete) {
+        body += '_:patch solid:deletes { ' + patch.delete + ' } .'
+      }
+      if (patch.insert) {
+        body += '_:patch solid:inserts { ' + patch.insert + ' } .'
+      }
+      if (patch.where) {
+        body += '_:patch solid:where { ' + patch.where + ' } .'
+      }
+      break
+  }
 
-  options.body = deleteBGP + insertBGP
+  options.body = body
 
   options.method = 'PATCH'
 
   if (!options.noCredentials) {
     options.credentials = 'include'
   }
-
-  options.headers = options.headers || {}
-
-  options.headers['Content-Type'] = 'application/sparql-update; charset=utf-8'
 
   return _fetch(url, options)
 
@@ -682,5 +709,12 @@ function processSave(url, slug, data, options) {
 }
 
 function updateTimeMap(url, patch, options) {
-  return patchResource(url, null, patch, optoins);
+  return getAcceptPatchPreference(url)
+    .then(preferredContentType => {
+      options = options || {}
+      options['headers'] = options['headers'] || {}
+      options.headers['Content-Type'] = options.headers['Content-Type'] || preferredContentType
+
+      return patchResource(url, patch, options)
+    })
 }

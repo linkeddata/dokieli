@@ -1087,7 +1087,7 @@ function createImmutableResource(url, data, options) {
   var insertG = '<' + url + '> <http://mementoweb.org/ns#memento> <' + immutableURL + '> .\n\
 <' + immutableURL + '> <http://mementoweb.org/ns#mementoDateTime> "' + date.toISOString() + '"^^<http://www.w3.org/2001/XMLSchema#dateTime> .';
 
-  var patch = insertG;
+  var patch = { 'insert': insertG };
 
   fetcher.updateTimeMap(timeMapURL, patch).then(() =>{
     showTimeMap(null, timeMapURL)
