@@ -681,6 +681,6 @@ function processSave(url, slug, data, options) {
     })
 }
 
-function updateTimeMap(url, insertBGP, options) {
-  return patchResource(url, null, insertBGP);
+function updateTimeMap(url, patch, options) {
+  return patchResource(url, null, patch, optoins);
 }
