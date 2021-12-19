@@ -134,10 +134,10 @@ cd dokieli
 # Add the main repository to sync with
 git remote add upstream https://github.com/linkeddata/dokieli
 
-# Make sure to work off your master and synchronised
-git checkout master
+# Make sure to work off your main and synchronised
+git checkout main
 git fetch upstream
-git merge upstream/master
+git merge upstream/main
 
 # Install packages
 npm install
@@ -177,6 +177,10 @@ merges or reverts in the commit history. See GitHub's [pull
 requests](https://help.github.com/articles/about-pull-requests/) for the
 remaining steps on how to propose your changes to be brought into dokieli's
 repository.
+
+## Supported By
+* [Crosscloud](http://crosscloud.org/) (2015-10 — 2016-09)
+* [MIT CSAIL](https://www.csail.mit.edu/) (2015-10 — 2016-09)
 
 
 ## Contributors
