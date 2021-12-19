@@ -588,7 +588,8 @@ function showTimeMap(node, url) {
         }
       }
 
-      var timemap = node.querySelector('.timemap');
+      var timemap = node.querySelector('.memento');
+
       if (timemap) {
         node.removeChild(timemap);
       }
@@ -1083,12 +1084,12 @@ function createImmutableResource(url, data, options) {
 
 
   //Update URI-T
-  var insertBGP = '@prefix mem: <http://mementoweb.org/ns#> .\n\
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .\n\
-<' + url + '> mem:memento <' + immutableURL + '> .\n\
-<' + immutableURL + '> mem:mementoDateTime "' + date.toISOString() + '"^^xsd:dateTime .';
+  var insertG = '<' + url + '> <http://mementoweb.org/ns#memento> <' + immutableURL + '> .\n\
+<' + immutableURL + '> <http://mementoweb.org/ns#mementoDateTime> "' + date.toISOString() + '"^^<http://www.w3.org/2001/XMLSchema#dateTime> .';
 
-  fetcher.updateTimeMap(timeMapURL, insertBGP).then(() =>{
+  var patch = insertG;
+
+  fetcher.updateTimeMap(timeMapURL, patch).then(() =>{
     showTimeMap(null, timeMapURL)
   });
 }
