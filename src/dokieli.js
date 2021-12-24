@@ -828,7 +828,7 @@ var DO = {
 
               switch(t.subject.interfaceName) {
                 default: case 'NamedNode':
-                  if (!t.subject.nominalValue.startsWith(requestURL)) {
+                  if (uri.stripFragmentFromString(t.subject.nominalValue) != requestURL) {
                     sGroup = 7;
                   }
                   break;
@@ -839,7 +839,7 @@ var DO = {
 
               switch(t.object.interfaceName) {
                 default: case 'NamedNode':
-                  if (!t.object.nominalValue.startsWith(documentURL)) {
+                  if (uri.stripFragmentFromString(t.object.nominalValue) != requestURL) {
                     oGroup = 7;
                   }
                   break;
@@ -902,9 +902,14 @@ var DO = {
               }
 
               //Initial root node
-              if (t.subject.nominalValue == documentURL) {
+              if (t.subject.nominalValue == requestURL) {
                 sGroup = 5;
                 sVisited = true;
+              }
+
+              if (t.object.nominalValue == requestURL) {
+                oGroup = 5;
+                oVisited = true;
               }
 
               //FIXME: groups are set once - not updated.
@@ -958,6 +963,7 @@ var DO = {
     showGraphResources: function(resources, selector, options) {
       selector = selector || document.body;
       options = options || {};
+      resources = util.uniqueArray(resources);
 
       DO.U.processResources(resources, options).then(
         function(url) {
@@ -1204,7 +1210,8 @@ var DO = {
           var docURI = iri.split(/[#]/)[0];
           iri = iri.split('=').pop();
 
-          var options = {'license': 'https://creativecommons.org/publicdomain/zero/1.0/', 'filter': { 'subjects': [docURI, iri] }, 'title': iri };
+          // var options = {'license': 'https://creativecommons.org/publicdomain/zero/1.0/', 'filter': { 'subjects': [docURI, iri] }, 'title': iri };
+          var options = {'subjectURI': iri, 'license': 'https://creativecommons.org/publicdomain/zero/1.0/', 'title': iri };
 
           // DO.U.showGraphResources([docURI], '#graph-view', options);
           DO.U.showGraph([docURI], '#graph-view', options);
