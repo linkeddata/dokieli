@@ -31,8 +31,8 @@ explains dokieli's principles, architectural and design patterns.
 * Information is represented and retrieved following the [Linked Data](https://www.w3.org/DesignIssues/LinkedData) design principles.
 * [WebID](https://www.w3.org/2005/Incubator/webid/spec/identity/) for personal/agent identities.
 * [WebID-TLS](https://www.w3.org/2005/Incubator/webid/spec/tls/) and [WebID-OIDC](https://github.com/solid/webid-oidc-spec) for authentication.
-* [Web Access Control](https://www.w3.org/wiki/WebAccessControl)/ACL to set permissions on Web resources.
-* W3C [Linked Data Platform](http://www.w3.org/TR/ldp/) and [Solid](https://github.com/solid/solid-spec)-like servers to read and write Web resources.
+* [Web Access Control](https://solidproject.org/TR/wac)/ACL to set permissions on Web resources.
+* W3C [Linked Data Platform](http://www.w3.org/TR/ldp/) and [Solid Protocol](https://solidproject.org/TR/protocol) servers to read and write Web resources.
 * W3C [Linked Data Notifications](https://www.w3.org/TR/ldn/) for inbox notifications for annotations and social sharing.
 * W3C [ActivityPub](https://www.w3.org/TR/activitypub/) client to read/write from/to profile's outbox.
 * W3C [Web Annotation Model](https://www.w3.org/TR/annotation-model/), W3C [Web Annotation Vocabulary](https://www.w3.org/TR/annotation-vocab/), W3C [Embedding Web Annotations in HTML](https://www.w3.org/TR/annotation-html), and W3C [Selectors and States](https://www.w3.org/TR/selectors-states/) to model and identify annotations (eg. replies, peer-reviews, liking, resharing, bookmarking)
