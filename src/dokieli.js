@@ -2735,14 +2735,7 @@ var DO = {
 
       s += '<li><button class="resource-open" title="Open article">' + template.Icon[".fas.fa-coffee.fa-2x"] + 'Open</button></li>';
 
-      var allowedWrite = false;
-      if ('headers' in DO.C.ResourceInfo && 'wac-allow' in DO.C.ResourceInfo['headers'] && 'permissionGroup' in DO.C.ResourceInfo['headers']['wac-allow']) {
-        if (('user' in DO.C.ResourceInfo['headers']['wac-allow']['permissionGroup'] && DO.C.ResourceInfo['headers']['wac-allow']['permissionGroup']['user'].indexOf('write') > -1)
-          || ('public' in DO.C.ResourceInfo['headers']['wac-allow']['permissionGroup'] && DO.C.ResourceInfo['headers']['wac-allow']['permissionGroup']['public'].indexOf('write') > -1)) {
-          allowedWrite = true;
-        }
-      }
-      buttonDisabled = (allowedWrite) ? '' : ' disabled="disabled"';
+      buttonDisabled = (DO.U.accessModeAllowed('write')) ? '' : ' disabled="disabled"';
 
       buttonDisabled = (document.location.protocol === 'file:') ? ' disabled="disabled"' : buttonDisabled;
 
@@ -3436,6 +3429,18 @@ console.log(reason);
 
         return resolve(list);
       });
+    },
+
+    accessModeAllowed: function(mode) {
+      var allowedMode = false;
+      if ('headers' in DO.C.ResourceInfo && 'wac-allow' in DO.C.ResourceInfo['headers'] && 'permissionGroup' in DO.C.ResourceInfo['headers']['wac-allow']) {
+        if (('user' in DO.C.ResourceInfo['headers']['wac-allow']['permissionGroup'] && DO.C.ResourceInfo['headers']['wac-allow']['permissionGroup']['user'].indexOf(mode) > -1)
+          || ('public' in DO.C.ResourceInfo['headers']['wac-allow']['permissionGroup'] && DO.C.ResourceInfo['headers']['wac-allow']['permissionGroup']['public'].indexOf(mode) > -1)) {
+          allowedMode = true;
+        }
+      }
+
+      return allowedMode;
     },
 
     getPersistencePolicy: function(s) {
