@@ -12,7 +12,8 @@ module.exports = {
   getFragmentFromString,
   getBaseURL,
   getPathURL,
-  getURLLastPath
+  getURLLastPath,
+  forceTrailingSlash
 }
 
 function encodeString (string) {
@@ -118,5 +119,10 @@ function getURLLastPath(url) {
   }
 
   return url;
+}
+
+function forceTrailingSlash(string) {
+  if (string.slice(-1) == "/") return string;
+  return string + "/";
 }
 

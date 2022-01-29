@@ -2217,11 +2217,6 @@ var DO = {
       }
     },
 
-    forceTrailingSlash: function(aString) {
-      if (aString.slice(-1) == "/") return aString;
-      return aString + "/";
-    },
-
     exportAsHTML: function() {
       var data = doc.getDocument();
       //XXX: Encodes strings as UTF-8. Consider storing bytes instead?
@@ -3380,7 +3375,7 @@ console.log(reason);
         var urlPath = url.split("/");
         if(urlPath.length > 4){ // This means it's not the base URL
           urlPath.splice(-2,2);
-          var prevUrl = DO.U.forceTrailingSlash(urlPath.join("/"));
+          var prevUrl = uri.forceTrailingSlash(urlPath.join("/"));
           var upBtn = '<li class="container"><input type="radio" name="containers" value="' + prevUrl + '" id="' + prevUrl + '" /><label for="' + prevUrl + '" id="browser-up">..</label></li>';
           list.insertAdjacentHTML('afterbegin', upBtn);
         }
@@ -3595,7 +3590,7 @@ console.log(reason);
       var storageUrl;
 
       if(DO.C.User.Storage && DO.C.User.Storage.length > 0) {
-        storageUrl = DO.U.forceTrailingSlash(DO.C.User.Storage[0]); // TODO: options for multiple storage
+        storageUrl = uri.forceTrailingSlash(DO.C.User.Storage[0]); // TODO: options for multiple storage
       }
 
       if(storageUrl){
