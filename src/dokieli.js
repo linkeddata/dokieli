@@ -125,7 +125,7 @@ var DO = {
 
     showInboxNotifications: function() {
       if (typeof SimpleRDF !== 'undefined') {
-        inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id']).then(
+        fetcher.getLinkRelation(DO.C.Vocab['ldpinbox']['@id']).then(
           function(i) {
             i.forEach(function(inboxURL) {
               if (!DO.C.Inbox[inboxURL]) {
@@ -949,7 +949,7 @@ var DO = {
         var property = (resources && 'filter' in options && 'predicates' in options.filter && options.filter.predicates.length > 0) ? options.filter.predicates[0] : DO.C.Vocab['ldpinbox']['@id'];
         var iri = (resources) ? resources : location.href.split(location.search||location.hash||/[?#]/)[0];
 
-        inbox.getEndpoint(property, iri).then(
+        fetcher.getLinkRelation(property, iri).then(
           function(resources) {
             DO.U.showGraphResources(resources[0], selector, options);
           },
@@ -2999,7 +2999,7 @@ var DO = {
               .innerHTML = '<p class="success"><a target="_blank" href="' + response.url + '">Reply saved!</a></p>'
 
             // Determine the inbox endpoint, to send the notification to
-            return inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id'])
+            return fetcher.getLinkRelation(DO.C.Vocab['ldpinbox']['@id'])
               .catch(error => {
                 console.error('Could not fetch inbox endpoint:', error)
 
@@ -3279,13 +3279,13 @@ console.log(reason);
         }
         // else if (iri.indexOf('#') < 0) {
         else {
-          return inbox.getEndpointFromHead(DO.C.Vocab['ldpinbox']['@id'], iri).then(
+          return fetcher.getLinkRelationFromHead(DO.C.Vocab['ldpinbox']['@id'], iri).then(
             function(i) {
               return i;
             },
             function(reason){
               //XXX: This should be optimised so that we don't have to HEAD again
-              return inbox.getEndpointFromHead(DO.C.Vocab['asinbox']['@id'], iri)
+              return fetcher.getLinkRelationFromHead(DO.C.Vocab['asinbox']['@id'], iri)
             });
         }
       }
@@ -3597,7 +3597,7 @@ console.log(reason);
         DO.U.initBrowse(storageUrl, input, browseButton, id, action);
       }
       else {
-        inbox.getEndpoint(DO.C.Vocab['oaannotationService']['@id']).then(
+        fetcher.getLinkRelation(DO.C.Vocab['oaannotationService']['@id']).then(
           function(storageUrl) {
             DO.U.initBrowse(storageUrl[0], input, browseButton, id, action);
           },
@@ -6674,7 +6674,7 @@ WHERE {\n\
               updateAnnotationServiceForm();
               updateAnnotationInboxForm();
 
-              return inbox.getEndpoint(DO.C.Vocab['oaannotationService']['@id']).then(
+              return fetcher.getLinkRelation(DO.C.Vocab['oaannotationService']['@id']).then(
                 function(url) {
                   DO.C.AnnotationService = url[0];
                   showAction();
@@ -7736,11 +7736,13 @@ WHERE {\n\
                   return Promise.resolve();
                 }
 
+                var inboxPromise;
+
                 if (annotation.annotationInbox) {
                   inboxPromise = Promise.resolve([annotation.annotationInbox])
                 }
                 else {
-                  inboxPromise = inbox.getEndpoint(DO.C.Vocab['ldpinbox']['@id']);
+                  inboxPromise = fetcher.getLinkRelation(DO.C.Vocab['ldpinbox']['@id']);
                 }
 
                 return inboxPromise
@@ -7749,7 +7751,7 @@ WHERE {\n\
                     throw error
                   })
                   .then(inboxes => {
-                    // TODO: resourceIRI for getEndpoint should be the
+                    // TODO: resourceIRI for getLinkRelation should be the
                     // closest IRI (not necessarily the document).
 
                     if (inboxes.length > 0) {

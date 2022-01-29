@@ -8,11 +8,9 @@ const fetcher = require('./fetcher')
 const Config = require('./config')
 
 module.exports = {
-  getEndpoint,
-  getEndpointFromHead,
-  getEndpointFromRDF,
-  notifyInbox,
-  sendNotifications
+  sendNotifications,
+  inboxResponse,
+  notifyInbox
 }
 
 function sendNotifications (tos, note, iri, shareResource) {
@@ -100,7 +98,7 @@ function sendNotifications (tos, note, iri, shareResource) {
 }
 
 function inboxResponse (to, toInput) {
-  return getEndpoint(Config.Vocab['ldpinbox']['@id'], to)
+  return fetcher.getLinkRelation(Config.Vocab['ldpinbox']['@id'], to)
     .then(inboxes => inboxes[0])
 
     .catch(error => {
@@ -142,80 +140,3 @@ function notifyInbox (o) {
   return fetcher.postActivity(pIRI, slug, data, options)
 }
 
-function getEndpoint (property, url) {
-  if (url) {
-    return getEndpointFromHead(property, url)
-      .catch(() => getEndpointFromRDF(property, url))
-  } else {
-    var subjectURI = window.location.href.split(window.location.search || window.location.hash || /[?#]/)[0]
-
-    var options = {
-      'contentType': 'text/html',
-      'subjectURI': subjectURI
-    }
-
-    return graph.getGraphFromData(doc.getDocument(), options)
-      .then(function (result) {
-          // TODO: Should this get all of the inboxes or a given subject's?
-          var endpoints = result.match(subjectURI, property).toArray()
-          if (endpoints.length > 0) {
-            return endpoints.map(function(t){ return t.object.nominalValue })
-          }
-
-// console.log(property + ' endpoint was not found in message body')
-          return getEndpointFromHead(property, subjectURI)
-        })
-      .catch(() => getEndpointFromHead(property, subjectURI))
-  }
-}
-
-function getEndpointFromHead (property, url) {
-  var pIRI = uri.getProxyableIRI(url);
-
-  return fetcher.getResourceHead(pIRI).then(
-    function (i) {
-      var linkHeaders = fetcher.parseLinkHeader(i.headers.get('Link'))
-
-      if (property in linkHeaders) {
-        return linkHeaders[property]
-      }
-      return Promise.reject({'message': property + " endpoint was not found in 'Link' header"})
-    },
-    function (reason) {
-      return Promise.reject({'message': "'Link' header not found"})
-    }
-  );
-}
-
-function getEndpointFromRDF (property, url, subjectIRI) {
-  url = url || window.location.origin + window.location.pathname
-  subjectIRI = subjectIRI || url
-
-  return fetcher.getResourceGraph(subjectIRI)
-    .then(function (i) {
-        var s = i.child(subjectIRI)
-
-        switch (property) {
-          case Config.Vocab['ldpinbox']['@id']:
-            if (s.ldpinbox._array.length > 0){
-// console.log(s.ldpinbox._array)
-              return [s.ldpinbox.at(0)]
-            }
-            break
-          case Config.Vocab['oaannotationService']['@id']:
-            if (s.oaannotationService._array.length > 0){
-// console.log(s.oaannotationService._array)
-              return [s.oaannotationService.at(0)]
-            }
-            break
-          default:
-            if (s[property]._array.length > 0) {
-              return [s[property].at(0)]
-            }
-            break
-        }
-
-        throw new Error(property + ' endpoint was not found in message body')
-      }
-    )
-}

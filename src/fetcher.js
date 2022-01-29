@@ -14,6 +14,9 @@ const LDP_RESOURCE = '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
 
 module.exports = {
   setAcceptRDFTypes,
+  getLinkRelation,
+  getLinkRelationFromHead,
+  getLinkRelationFromRDF,
   copyResource,
   currentLocation,
   deleteResource,
@@ -44,6 +47,86 @@ function setAcceptRDFTypes(options) {
     }
     return i;
   }).join(',');
+}
+
+function getLinkRelation (property, url) {
+  if (url) {
+    return getLinkRelationFromHead(property, url)
+      .catch(() => getLinkRelationFromRDF(property, url))
+  } else {
+    var subjectURI = window.location.href.split(window.location.search || window.location.hash || /[?#]/)[0]
+
+    var options = {
+      'contentType': 'text/html',
+      'subjectURI': subjectURI
+    }
+
+    return graph.getGraphFromData(doc.getDocument(), options)
+      .then(function (result) {
+          // TODO: Should this get all of the inboxes or a given subject's?
+          var endpoints = result.match(subjectURI, property).toArray()
+          if (endpoints.length > 0) {
+            return endpoints.map(function(t){ return t.object.nominalValue })
+          }
+
+// console.log(property + ' endpoint was not found in message body')
+          return getLinkRelationFromHead(property, subjectURI)
+        })
+      .catch(() => getLinkRelationFromHead(property, subjectURI))
+  }
+}
+
+function getLinkRelationFromHead (property, url) {
+  var pIRI = uri.getProxyableIRI(url);
+
+  return getResourceHead(pIRI).then(
+    function (i) {
+      var linkHeaders = parseLinkHeader(i.headers.get('Link'))
+console.log(property)
+console.log(linkHeaders)
+      if (property in linkHeaders) {
+        return linkHeaders[property]
+      }
+      return Promise.reject({'message': property + " endpoint was not found in 'Link' header"})
+    },
+    function (reason) {
+      return Promise.reject({'message': "'Link' header not found"})
+    }
+  );
+}
+
+function getLinkRelationFromRDF (property, url, subjectIRI) {
+  url = url || window.location.origin + window.location.pathname
+  subjectIRI = subjectIRI || url
+
+  return getResourceGraph(subjectIRI)
+    .then(function (i) {
+        var s = i.child(subjectIRI)
+
+//XXX: Why is this switch needed? Use default?
+        switch (property) {
+          case Config.Vocab['ldpinbox']['@id']:
+            if (s.ldpinbox._array.length > 0){
+// console.log(s.ldpinbox._array)
+              return [s.ldpinbox.at(0)]
+            }
+            break
+          case Config.Vocab['oaannotationService']['@id']:
+            if (s.oaannotationService._array.length > 0){
+// console.log(s.oaannotationService._array)
+              return [s.oaannotationService.at(0)]
+            }
+            break
+          default:
+            if (s[property]._array.length > 0) {
+              return [s[property].at(0)]
+            }
+            break
+        }
+
+        throw new Error(property + ' endpoint was not found in message body')
+      }
+    )
 }
 
 // I want HTTP COPY and I want it now!
