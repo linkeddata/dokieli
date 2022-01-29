@@ -388,7 +388,12 @@ module.exports = {
     "aclRead" : { "@id": "http://www.w3.org/ns/auth/acl#Read", "@type": "@id" },
     "aclWrite" : { "@id": "http://www.w3.org/ns/auth/acl#Write", "@type": "@id" },
     "aclAppend" : { "@id": "http://www.w3.org/ns/auth/acl#Append", "@type": "@id" },
-    "acldelegates" : { "@id": "http://www.w3.org/ns/auth/acl#delegates", "@type": "@id" },
+    "aclControl" : { "@id": "http://www.w3.org/ns/auth/acl#Control", "@type": "@id" },
+    "aclaccessTo": {"@id": "http://www.w3.org/ns/auth/acl#accessTo", "@type": "@id", "@array": true },
+    "acldefault": {"@id": "http://www.w3.org/ns/auth/acl#default", "@type": "@id", "@array": true },
+    "aclagent": {"@id": "http://www.w3.org/ns/auth/acl#agent", "@type": "@id", "@array": true },
+    "aclmode": {"@id": "http://www.w3.org/ns/auth/acl#mode", "@type": "@id", "@array": true },
+    "acldelegates" : { "@id": "http://www.w3.org/ns/auth/acl#delegates", "@type": "@id", "@array": true },
 
     "solidpreferredProxy": "http://www.w3.org/ns/solid/terms#preferredProxy",
     "solidforClass": { "@id": "http://www.w3.org/ns/solid/terms#forClass", "@type": "@id" },
