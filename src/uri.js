@@ -13,6 +13,7 @@ module.exports = {
   getBaseURL,
   getPathURL,
   getURLLastPath,
+  getParentURLPath,
   forceTrailingSlash
 }
 
@@ -116,6 +117,25 @@ function getURLLastPath(url) {
   if(typeof url === 'string') {
     url = getPathURL(url);
     url = url.substr(url.lastIndexOf('/') + 1);
+  }
+
+  return url;
+}
+
+function getParentURLPath(url) {
+  if(typeof url === 'string') {
+    var u = new URL(url)
+    var pathname = u.pathname
+
+    if (pathname == '/') {
+      return undefined
+    }
+    else {
+      var p = pathname.split('/')
+      p.splice(-2)
+      var parentPath = forceTrailingSlash(p.join('/'))
+      url = u.origin + parentPath
+    }
   }
 
   return url;
