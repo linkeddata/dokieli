@@ -3,6 +3,7 @@
 const ld = require('./simplerdf')
 const SimpleRDF = ld.SimpleRDF
 const Config = require('./config')
+const util = require('./util')
 const doc = require('./doc')
 const uri = require('./uri')
 const graph = require('./graph')
@@ -29,6 +30,7 @@ module.exports = {
   getResourceOptions,
   parseLinkHeader,
   patchResource,
+  patchResourceGraph,
   postResource,
   putResource,
   putResourceACL,
@@ -483,52 +485,71 @@ function parseLinkHeader (link) {
   return rels
 }
 
-function patchResource (url, patch = {}, options = {}) {
+function patchResourceGraph (url, patches, options = {}) {
+  options.headers = options.headers || {}
+  options.headers['Content-Type'] = options.headers['Content-Type'] || 'text/n3'
+  patches = (Array.isArray(patches)) ? patches : [patches]
+
+  var data = '@prefix solid: <http://www.w3.org/ns/solid/terms#> .\n\
+@prefix acl: <http://www.w3.org/ns/auth/acl#> .\n\
+'
+
+  switch (options.headers['Content-Type']) {
+    case 'application/sparql-update':
+      if (patches[0].delete) {
+        data += 'DELETE DATA { ' + patches[0].delete + ' };\n\
+'
+      }
+
+      if (patches[0].insert) {
+        data += 'INSERT DATA { ' + patches[0].insert + ' };\n\
+'
+      }
+
+      if (patches[0].where) {
+        data += 'WHERE { ' + patches[0].where + ' };\n\
+'
+      }
+      break
+
+    case 'text/n3':
+    default :
+      patches.forEach(function(patch){
+        var patchId = '_:' + util.generateUUID();
+
+        data += '\n\
+' + patchId + ' a solid:Patch, solid:InsertDeletePatch .\n\
+'
+// ' + patchId + ' solid:patches <' + patchesResource + '> .\n\
+
+        if (patch.delete) {
+          data += patchId + ' solid:deletes { ' + patch.delete + ' } .\n\
+'
+        }
+        if (patch.insert) {
+          data += patchId + ' solid:inserts { ' + patch.insert + ' } .\n\
+'
+        }
+        if (patch.where) {
+          data += patchId + ' solid:where { ' + patch.where + ' } .\n\
+'
+        }
+      });
+
+      break
+  }
+
+  return patchResource (url, data, options);
+}
+
+function patchResource (url, data, options = {}) {
   var _fetch = Config.User.OIDC? solidAuth.fetch : fetch;
 
   options.headers = options.headers || {}
 
   options.headers['Content-Type'] = options.headers['Content-Type'] || 'text/n3'
 
-  var body = '@prefix solid: <http://www.w3.org/ns/solid/terms#> .\n\
-'
-
-  switch (options.headers['Content-Type']) {
-    case 'application/sparql-update':
-      body += (patch.delete) ? 'DELETE DATA {\n\
-' + patch.delete + '\n\
-};\n\
-' : ''
-      body += (patch.insert) ? 'INSERT DATA {\n\
-' + patch.insert + '\n\
-};\n\
-' : ''
-      body += (patch.where) ? 'WHERE {\n\
-' + patch.where + '\n\
-};\n\
-' : ''
-      break
-
-//XXX: solid:patches can be removed when servers implement https://solidproject.org/protocol#n3-patch
-    case 'text/n3':
-    default :
-      body += '_:patch solid:patches <' + url + '> .\n\
-_:patch a solid:Patch .\n\
-_:patch a solid:InsertSolidPatch .\n\
-'
-      if (patch.delete) {
-        body += '_:patch solid:deletes { ' + patch.delete + ' } .'
-      }
-      if (patch.insert) {
-        body += '_:patch solid:inserts { ' + patch.insert + ' } .'
-      }
-      if (patch.where) {
-        body += '_:patch solid:where { ' + patch.where + ' } .'
-      }
-      break
-  }
-
-  options.body = body
+  options.body = data
 
   options.method = 'PATCH'
 
@@ -798,6 +819,6 @@ function updateTimeMap(url, patch, options) {
       options['headers'] = options['headers'] || {}
       options.headers['Content-Type'] = options.headers['Content-Type'] || preferredContentType
 
-      return patchResource(url, patch, options)
+      return patchResourceGraph(url, patch, options)
     })
 }
