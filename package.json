@@ -30,6 +30,10 @@
     "url": "https://github.com/linkeddata/dokieli/issues"
   },
   "homepage": "https://dokie.li/",
+  "engines" : { 
+    "npm" : ">=8.0.0",
+    "node" : ">=16.0.0"
+  },
   "dependencies": {
     "buffer": "^6.0.3",
     "d3-force": "^2.0.1",
