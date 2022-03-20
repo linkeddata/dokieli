@@ -206,3 +206,4 @@ repository.
 * [Sergey Malinin](https://github.com/smalinin)
 * [Thomas Bergwinkl](https://github.com/bergos)
 * [Tim Berners-Lee](https://github.com/timbl)
+* [Virginia Balseiro](https://github.com/VirginiaBalseiro)
