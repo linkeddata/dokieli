@@ -1,4 +1,4 @@
-const webpack = require('webpack')
+const webpack = require("webpack");
 const path = require("path");
 const fs = require("fs");
 const WrapperPlugin = require("wrapper-webpack-plugin");
@@ -24,9 +24,9 @@ module.exports = {
       stream: false,
       "stream-browserify": false,
       crypto: false,
-      buffer: require.resolve("buffer/"),
+      buffer: require.resolve("buffer/")
     },
-    extensions: [".ts", ".js", ".mjs"],
+    extensions: [".ts", ".js", ".mjs"]
   },
   mode: "none",
   entry: ["./src/dokieli.js"],
@@ -34,16 +34,16 @@ module.exports = {
     path: path.join(__dirname, "/scripts/"),
     filename: "dokieli.js",
     library: "DO",
-    libraryTarget: "window",
+    libraryTarget: "window"
   },
   module: {
     rules: [
       {
         test: /\.js$/,
         // loader: 'babel-loader',
-        exclude: /node_modules/,
-      },
-    ],
+        exclude: /node_modules/
+      }
+    ]
   },
   externals: {
     "node-fetch": "fetch",
@@ -51,19 +51,19 @@ module.exports = {
     "whatwg-url": "window",
     "isomorphic-fetch": "fetch",
     "@trust/webcrypto": "crypto",
-    "solid-auth-client": ["solid", "auth"],
+    "solid-auth-client": ["solid", "auth"]
   },
   devtool: "source-map",
 
   plugins: [
     new WrapperPlugin({
-      header: headerDoc,
+      header: headerDoc
     }),
     new webpack.ProvidePlugin({
-      process: 'process/browser',
+      process: "process/browser"
     }),
     new webpack.ProvidePlugin({
-      Buffer: ['buffer', 'Buffer'],
-  }),
-  ],
+      Buffer: ["buffer", "Buffer"]
+    })
+  ]
 };
