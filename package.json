@@ -1,6 +1,6 @@
 {
   "name": "dokieli",
-  "version": "0.3.60",
+  "version": "0.3.70",
   "description": "dokieli is a client-side editor for decentralised article publishing, annotations and social interactions",
   "main": "./src/dokieli.js",
   "scripts": {
@@ -30,7 +30,7 @@
     "url": "https://github.com/linkeddata/dokieli/issues"
   },
   "homepage": "https://dokie.li/",
-  "engines" : { 
+  "engines" : {
     "npm" : ">=8.0.0",
     "node" : ">=16.0.0"
   },
