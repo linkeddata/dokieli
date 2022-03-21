@@ -64,7 +64,7 @@
     "node-fetch": "^3.2.3",
     "ansi-regex": "^5.0.0",
     "xmldom": "https://github.com/xmldom/xmldom.git#master",
-    "green-turtle": "https://github.com/VirginiaBalseiro/green-turtle#master"
+    "green-turtle": "https://github.com/csarven/green-turtle#master"
   },
   "standard": {
     "globals": [
