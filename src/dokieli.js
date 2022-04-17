@@ -8115,9 +8115,12 @@ WHERE {\n\
   } //DO.U
 }; //DO
 
-  if (document.addEventListener) {
-    document.addEventListener('DOMContentLoaded', function(){ DO.C.init(); });
-  }
+if (document.readyState === "loading") {
+  document.addEventListener('DOMContentLoaded', function(){ DO.C.init(); });
+}
+else {
+  window.addEventListener("load", function(){ DO.C.init(); });
 }
 
+}
 module.exports = DO
