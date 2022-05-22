@@ -316,15 +316,11 @@ function getResource (url, headers = {}, options = {}) {
  * @param options {object}
  * @param options.header {string}
  *
- * @returns {Promise<string>} Resolves with contents of specified header
+ * @returns {Promise<Response>}
  */
 function getResourceHead (url, options = {}) {
   var _fetch = Config.User.OIDC? solidAuth.fetch : fetch;
   url = url || currentLocation()
-
-  if (!options.header) {
-    return Promise.reject(new Error('options.header not specified'))
-  }
 
   options.method = 'HEAD'
 
