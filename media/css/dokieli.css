@@ -420,6 +420,21 @@ margin-bottom:1em;
 aside.do.on > h2 {
 margin-top:0.5em;
 }
+aside.do.on details {
+margin-bottom:1em;
+}
+details summary {
+cursor: pointer;
+}
+aside.do.on dl [rel] li {
+display:inline-block !important;
+}
+aside.do.on dl [rel] li:after {
+margin-right:0.25em;
+}
+aside.do.on dl [rel] li:last-child:after {
+margin-right: 0;
+}
 
 #share-resource.do.on li {
 margin:0 0 0.5em 0;
