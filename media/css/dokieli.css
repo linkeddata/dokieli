@@ -426,14 +426,16 @@ margin-bottom:1em;
 details summary {
 cursor: pointer;
 }
-aside.do.on dl [rel] li {
+aside.do.on details li {
 display:inline-block !important;
 }
-aside.do.on dl [rel] li:after {
+aside.do.on details li:after {
 margin-right:0.25em;
+content:",";
 }
-aside.do.on dl [rel] li:last-child:after {
+aside.do.on details li:last-child:after {
 margin-right: 0;
+content:"";
 }
 
 #share-resource.do.on li {
