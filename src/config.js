@@ -463,6 +463,15 @@ module.exports = {
     "memtimemap": { "@id": "http://mementoweb.org/ns#timemap", "@type": "@id" },
     "memmementoDateTime": "http://mementoweb.org/ns#mementoDateTime",
 
+    "notifyWebSocketSubscription2021": { "@id": "http://www.w3.org/ns/solid/notifications#WebSocketSubscription2021", "@type": "@id" },
+    "notifynotificationChannel": { "@id": "http://www.w3.org/ns/solid/notifications#notificationChannel", "@type": "@id", "@array": true },
+    "notifysubscription": { "@id": "http://www.w3.org/ns/solid/notifications#subscription", "@type": "@id" },
+    "notifyfeature": { "@id": "http://www.w3.org/ns/solid/notifications#feature", "@type": "@id", "@array": true },
+    "notifyaccept": { "@id": "http://www.w3.org/ns/solid/notifications#accept", "@type": "@id" },
+    "notifyexpiration": { "@id": "http://www.w3.org/ns/solid/notifications#expiration", "@type": "@id" },
+    "notifyrate": { "@id": "http://www.w3.org/ns/solid/notifications#rate", "@type": "@id" },
+    "notifystate": { "@id": "http://www.w3.org/ns/solid/notifications#state", "@type": "@id" },
+
     "odrlAgreement": { "@id": "http://www.w3.org/ns/odrl/2/Agreement", "@type": "@id" },
     "odrlAssertion": { "@id": "http://www.w3.org/ns/odrl/2/Assertion", "@type": "@id" },
     "odrlOffer": { "@id": "http://www.w3.org/ns/odrl/2/Offer", "@type": "@id" },
