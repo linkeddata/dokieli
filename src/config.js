@@ -315,6 +315,7 @@ module.exports = {
     "foafnick": "http://xmlns.com/foaf/0.1/nick",
     "foafmaker": { "@id": "http://xmlns.com/foaf/0.1/maker", "@type": "@id" },
     "foafknows": { "@id": "http://xmlns.com/foaf/0.1/knows", "@type": "@id", "@array": true },
+    "foafprimaryTopic": { "@id": "http://xmlns.com/foaf/0.1/primaryTopic", "@type": "@id" },
 
     "vcardVCard": { "@id": "http://www.w3.org/2006/vcard/ns#VCard", "@type": "@id" },
     "vcardIndividual": { "@id": "http://www.w3.org/2006/vcard/ns#Individual", "@type": "@id" },
