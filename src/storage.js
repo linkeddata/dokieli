@@ -205,18 +205,19 @@ function getLocalStorageProfile(key) {
 function updateLocalStorageProfile(User) {
   if (!User.IRI) { return Promise.resolve({'message': 'User.IRI is not set'}); }
 
+  var U = {...User};
   var key = 'DO.C.User'
 
   var id = util.generateUUID();
   var datetime = util.getDateTimeISO();
 
   //because.. cyclic
-  if (User.Graph) {
-    delete User.Graph
+  if (U.Graph) {
+    delete U.Graph
   }
 
-  if (User.Contacts) {
-    User.Contacts = {}
+  if (U.Contacts) {
+    U.Contacts = {}
   }
 
   var object = {
@@ -226,10 +227,10 @@ function updateLocalStorageProfile(User) {
     "object": {
       "id": key,
       "type": "Profile",
-      "describes": User
+      "describes": U
     },
     "datetime": datetime,
-    "actor": User.IRI
+    "actor": U.IRI
   };
 
   if (Config.WebExtension) {
