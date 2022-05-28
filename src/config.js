@@ -477,6 +477,7 @@ module.exports = {
     "odrlpermission": { "@id": "http://www.w3.org/ns/odrl/2/permission", "@type": "@id", "@array": true },
     "odrlprohibition": { "@id": "http://www.w3.org/ns/odrl/2/prohibition", "@type": "@id", "@array": true },
     "odrltarget": { "@id": "http://www.w3.org/ns/odrl/2/target", "@type": "@id" },
+    "odrluid": { "@id": "http://www.w3.org/ns/odrl/2/uid", "@type": "@id" },
 
     "relpredecessorversion": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#predecessor-version", "@type": "@id" },
     "rellatestversion": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#latest-version", "@type": "@id" },
