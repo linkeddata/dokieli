@@ -84,8 +84,8 @@ function getLinkRelationFromHead (property, url) {
   return getResourceHead(pIRI).then(
     function (i) {
       var linkHeaders = parseLinkHeader(i.headers.get('Link'))
-console.log(property)
-console.log(linkHeaders)
+// console.log(property)
+// console.log(linkHeaders)
       if (property in linkHeaders) {
         return linkHeaders[property]
       }
