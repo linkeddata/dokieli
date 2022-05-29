@@ -3586,6 +3586,36 @@ console.log(reason);
       }
     },
 
+    getODRLRuleAssigners: function(g) {
+      var s = '';
+      var a = [];
+
+      if (g.odrlassigner && g.odrlassigner._array.length > 0) {
+        g.odrlassigner._array.forEach(function(iri){
+          a.push('<dd><a href="' + iri + '" target="_blank">' + iri + '</a></dd>');
+        });
+
+        s = '<dt>Assigners</dt>' + a.join('');
+      }
+
+      return s;
+    },
+
+    getODRLRuleAssignees: function(g) {
+      var s = '';
+      var a = [];
+
+      if (g.odrlassignee && g.odrlassignee._array.length > 0) {
+        g.odrlassignee._array.forEach(function(iri){
+          a.push('<dd><a href="' + iri + '" target="_blank">' + iri + '</a></dd>');
+        });
+
+        s = '<dt>Assignees</dt>' + a.join('');
+      }
+
+      return s;
+    },
+
     getContactInformation: function(g) {
       var s = '';
       var resourceOwners = [];
