@@ -3531,6 +3531,61 @@ console.log(reason);
       return s;
     },
 
+    getODRLRuleActions: function(r) {
+// console.log(r.odrlaction)
+      var actions = '';
+
+      var uPPActions = [];
+
+      if (DO.C.User.PreferencesGraph && DO.C.User.PreferredPolicy) {
+        var uPG = DO.C.User.PreferencesGraph.child(DO.C.User.PreferredPolicy);
+
+        //Get user's actions from preferred policy (prohibition) to check for conflicts with storage's policy (permission)
+        if (uPG && uPG.odrlprohibition && uPG.odrlprohibition.at(0)) {
+          var pG = uPG.child(uPG.odrlprohibition.at(0));
+
+          if (pG.odrlaction && pG.odrlaction._array.length > 0) {
+            uPPActions = pG.odrlaction._array;
+          }
+        }
+      }
+
+      if (r.odrlaction && r.odrlaction._array.length > 0) {
+        var actions = [];
+        r.odrlaction._array.forEach(function(iri){
+
+          //FIXME: Label derived from URI.
+          var label = iri;
+          var href = iri;
+
+          if (iri.startsWith('http://www.w3.org/ns/odrl/2/')) {
+            label = iri.substr(iri.lastIndexOf('/') + 1);
+            href = 'https://www.w3.org/TR/odrl-vocab/#term-' + label;
+          }
+          else if (iri.lastIndexOf('#')) {
+            label = iri.substr(iri.lastIndexOf('#') + 1);
+          }
+          else if (iri.lastIndexOf('/')) {
+            label = iri.substr(iri.lastIndexOf('/') + 1);
+          }
+
+          var caution = '';
+          var htmlClass = '';
+
+          if (uPPActions.indexOf(iri) > -1) {
+            caution = template.Icon["fas.fa-circle-exclamation"] + ' ';
+            htmlClass = ' class="warning"';
+          }
+
+          actions.push('<li>' + caution + '<a' + htmlClass + ' href="' + href + '" resource="' + iri + '">' + label + '</a></li>')
+        });
+
+        actions = '<dt>Actions</dt><dd><ul rel="odrl:action">' + actions.join('') + '</ul></dd>';
+
+        return actions;
+      }
+    },
+
     getContactInformation: function(g) {
       var s = '';
       var resourceOwners = [];
