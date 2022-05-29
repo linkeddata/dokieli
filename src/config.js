@@ -397,6 +397,7 @@ module.exports = {
     "acldelegates" : { "@id": "http://www.w3.org/ns/auth/acl#delegates", "@type": "@id", "@array": true },
 
     "solidpreferredProxy": "http://www.w3.org/ns/solid/terms#preferredProxy",
+    "solidpreferredPolicy": { "@id": "http://www.w3.org/ns/solid/terms#preferredPolicy", "@type": "@id" },
     "solidforClass": { "@id": "http://www.w3.org/ns/solid/terms#forClass", "@type": "@id" },
     "solidinstanceContainer": { "@id": "http://www.w3.org/ns/solid/terms#instanceContainer", "@type": "@id" },
     "solidpublicTypeIndex": { "@id": "http://www.w3.org/ns/solid/terms#publicTypeIndex", "@type": "@id" },
