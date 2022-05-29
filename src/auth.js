@@ -25,6 +25,7 @@ module.exports = {
   getAgentSeeAlso,
   getAgentTypeIndex,
   getAgentPreferencesFile,
+  getAgentPreferencesInfo,
   getAgentPreferredProxy,
   getAgentPreferredPolicy,
   getAgentPublicTypeIndex,
@@ -365,6 +366,7 @@ function setUserInfo (userIRI, oidc) {
       Config.User.Inbox = getAgentInbox(s)
       Config.User.TypeIndex = {}
 
+      Config.User.PreferencesGraph = undefined
       Config.User.PreferencesFile = getAgentPreferencesFile(s)
       Config.User.PublicTypeIndex = getAgentPublicTypeIndex(s)
       Config.User.PrivateTypeIndex = getAgentPrivateTypeIndex(s)
@@ -384,6 +386,8 @@ function afterSignIn () {
   promises.push(getAgentSupplementalInfo(Config.User.IRI))
 
   promises.push(getAgentSeeAlso(Config.User.Graph))
+
+  promises.push(getAgentPreferencesInfo(Config.User.Graph))
 
   Promise.all(promises)
     .then(function(results) {
@@ -429,6 +433,38 @@ function afterSignIn () {
     })
   }
 }
+
+function getAgentPreferencesInfo(g) {
+  if (!g) { return; }
+
+  var preferencesFile = (Config.User.PreferencesFile) ? Config.User.PreferencesFile : getAgentPreferencesFile(g);
+
+  var getPreferredPolicy = function(s) {
+    var preferredPolicy = getAgentPreferredPolicy(s);
+
+    if (preferredPolicy && preferredPolicy.at(0)) {
+      Config.User.PreferredPolicy = preferredPolicy;
+    }
+  }
+
+  if (preferencesFile) {
+    var promises = [];
+
+    return fetcher.getResourceGraph(preferencesFile)
+      .then(g => {
+        Config.User['PreferencesGraph'] = g;
+
+        getPreferredPolicy(g.child(Config.User.IRI));
+      })
+  }
+  else {
+    Config.User['PreferencesGraph'] = Config.User.Graph.child(Config.User.IRI);
+    getPreferredPolicy(Config.User['PreferencesGraph']);
+
+    return Promise.resolve();
+  }
+}
+
 
 function getAgentSupplementalInfo(iri) {
   if (iri == Config.User.IRI) {
