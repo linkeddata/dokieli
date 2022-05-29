@@ -3438,6 +3438,64 @@ console.log(reason);
       return allowedMode;
     },
 
+    showStorageDescription: function(s, id, storageUrl, checkAgain) {
+      var samp = document.getElementById(id + '-samp');
+      var sD = document.getElementById(id + '-storage-description');
+
+      if (samp && !sD) {
+        var sDPromise = fetcher.getLinkRelation(DO.C.Vocab['solidstorageDescription']['@id'], storageUrl);
+
+        return sDPromise
+          .catch(error => {
+            console.log('Error fetching solid:storageDescription endpoint:', error)
+            throw error
+          })
+          .then(sDURLs => {
+            // TODO: resourceIRI for getLinkRelation should be the
+            // closest IRI (not necessarily the document).
+
+            if (sDURLs.length > 0) {
+              ///TODO: Handle multiple storage descriptions?
+              var sDURL = sDURLs[0];
+              DO.C.Storages = DO.C.Storages || {};
+              DO.C.Storages[s.iri().toString()] = {
+                "storageDescription": sDURL
+              };
+            }
+            if (sD) {
+              sD.innerHTML = '';
+            }
+            samp.insertAdjacentHTML('afterend', '<details id="' + id + '-storage-description-details"><summary>Storage details</summary></details>');
+
+            sD = document.getElementById(id + '-storage-description-details');
+
+            sD.addEventListener('click', function(e){
+              if (!sD.open) {
+                var storageDescriptionNode = document.getElementById(id + '-storage-description');
+
+                if (!storageDescriptionNode) {
+                  var storageLocation = '<dl id="storage-location"><dt>Storage location</dt><dd><a href="' + storageUrl +'" target="_blank">' + storageUrl + '</a></dd></dl>';
+
+                  fetcher.getResourceGraph(sDURL).then(function(g){
+                    g = (g.foafprimaryTopic) ? g.child(g.foafprimaryTopic) : g.child(storageUrl);
+
+                    var selfDescription = DO.U.getStorageSelfDescription(g);
+                    var contactInformation = DO.U.getContactInformation(g);
+                    var persistencePolicy = DO.U.getPersistencePolicy(g);
+                    var odrlPolicies = DO.U.getODRLPolicies(g);
+                    var communicationOptions = DO.U.getCommunicationOptions(g);
+
+                    sD.insertAdjacentHTML('beforeend', '<div id="' + id + '-storage-description">' + storageLocation + selfDescription + contactInformation + persistencePolicy + odrlPolicies + communicationOptions + '</div>');
+                  });
+                }
+              }
+            });
+
+// console.log(DO.C.Storages);
+          });
+      }
+    },
+
     getStorageSelfDescription: function(g) {
       var s = '';
 
