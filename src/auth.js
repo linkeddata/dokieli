@@ -26,6 +26,7 @@ module.exports = {
   getAgentTypeIndex,
   getAgentPreferencesFile,
   getAgentPreferredProxy,
+  getAgentPreferredPolicy,
   getAgentPublicTypeIndex,
   getAgentPrivateTypeIndex,
   getUserContacts,
@@ -369,6 +370,7 @@ function setUserInfo (userIRI, oidc) {
       Config.User.PrivateTypeIndex = getAgentPrivateTypeIndex(s)
 
       Config.User.ProxyURL = getAgentPreferredProxy(s)
+      Config.User.PreferredPolicy = getAgentPreferredPolicy(s)
 
       return Config.User
     })
@@ -650,6 +652,10 @@ function processSameAs(s, callback) {
 
 function getAgentPreferredProxy (s) {
   return s.solidpreferredProxy || undefined
+}
+
+function getAgentPreferredPolicy (s) {
+  return s.solidpreferredPolicy || undefined
 }
 
 function getAgentImage (s) {
