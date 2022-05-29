@@ -3473,6 +3473,28 @@ console.log(reason);
       }
     },
 
+    getContactInformation: function(g) {
+      var s = '';
+      var resourceOwners = [];
+
+
+      if (g.solidowner && g.solidowner._array.length > 0) {
+        DO.C.Storages = DO.C.Storages || {};
+        DO.C.Storages[g.iri().toString()] = DO.C.Storages[g.iri().toString()] || {};
+        DO.C.Storages[g.iri().toString()]['owner'] = [];
+
+        g.solidowner._array.forEach(function(iri){
+          DO.C.Storages[g.iri().toString()]['owner'].push(iri);
+
+          resourceOwners.push('<dd><a href="' + iri + '" target="_blank">' + iri + '</a></dd>');
+        });
+
+        s = '<dl id="resource-owners"><dt>Owners</dt>' + resourceOwners.join('') + '</dl>';
+      }
+
+      return s;
+    },
+
     //XXX: This need not be limited to storage's communication options.
     getCommunicationOptions: function(g) {
       var s = '';
