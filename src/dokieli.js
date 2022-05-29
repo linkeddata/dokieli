@@ -3473,6 +3473,13 @@ console.log(reason);
       }
     },
 
+    //https://solidproject.org/TR/notifications-protocol#discovery
+    getNotificationChannels: function(s) {
+      return (s.notifynotificationChannel && s.notifynotificationChannel._array.length > 0)
+        ? s.notifynotificationChannel._array
+        : undefined
+    },
+
     initBrowse: function(storageUrl, input, browseButton, id, action){
       input.value = storageUrl;
       var headers;
