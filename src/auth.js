@@ -25,6 +25,7 @@ module.exports = {
   getAgentSeeAlso,
   getAgentTypeIndex,
   getAgentPreferencesFile,
+  getAgentPreferredProxy,
   getAgentPublicTypeIndex,
   getAgentPrivateTypeIndex,
   getUserContacts,
