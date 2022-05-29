@@ -3438,6 +3438,27 @@ console.log(reason);
       return allowedMode;
     },
 
+    getStorageSelfDescription: function(g) {
+      var s = '';
+
+      var storageName = DO.U.getResourceLabel(g);
+      var storageURL = g.iri().toString();
+
+      storageName = (typeof storageName !== 'undefined') ? storageName : storageURL;
+
+      DO.C.Storages = DO.C.Storages || {};
+      DO.C.Storages[g.iri().toString()] = DO.C.Storages[g.iri().toString()] || {};
+      DO.C.Storages[g.iri().toString()]['title'] = storageName;
+      DO.C.Storages[g.iri().toString()]['description'] = g.schemaabstract || g.dctermsdescription || g.rdfvalue || g.assummary || g.schemadescription || g.ascontent || undefined;
+
+      var storageTitle = '<dt>Storage name</dt><dd><a href="' + storageURL + '">' + storageName + '</a></dd>';
+      var storageDescription = (DO.C.Storages[g.iri().toString()]['description']) ? '<dt>Storage description</dt><dd>' + DO.C.Storages[g.iri().toString()]['description'] + '</dd>' : '';
+
+      s = '<dl id="storage-self-description">' + storageTitle + storageDescription + '</dl>';
+
+      return s;
+    },
+
     getPersistencePolicy: function(s) {
       return (s.pimpersistencePolicy && s.pimpersistencePolicy._array.length > 0)
         ? s.pimpersistencePolicy._array
