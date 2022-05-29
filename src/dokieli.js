@@ -3489,6 +3489,35 @@ console.log(reason);
       }
     },
 
+    subscribeToWebSocketSubscription: function(url, type) {
+      function connect() {
+        var ws = new WebSocket(url, type);
+
+        ws.onopen = function() {
+          // ws.send(JSON.stringify({
+          // }));
+        };
+
+        ws.onmessage = function(e) {
+          console.log('Message: ', e.data);
+        };
+
+        ws.onclose = function(e) {
+          console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
+          setTimeout(function() { connect(); }, 1000);
+          // var timeout = 250;
+          // setTimeout(connect, Math.min(10000,timeout+=timeout));
+        };
+
+        ws.onerror = function(err) {
+          console.error('Socket encountered error: ', err.message, 'Closing socket');
+          ws.close();
+        };
+      }
+
+      connect();
+    },
+
     initBrowse: function(storageUrl, input, browseButton, id, action){
       input.value = storageUrl;
       var headers;
