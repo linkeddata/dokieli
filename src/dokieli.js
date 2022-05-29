@@ -3480,6 +3480,15 @@ console.log(reason);
         : undefined
     },
 
+    subscribeToNotificationChannel: function(subscription, subscriptionType) {
+      switch(subscriptionType){
+        //https://solidproject.org/TR/websocket-subscription-2021
+        case DO.C.Vocab['notifyWebSocketSubscription2021']['@id']:
+          DO.C.subscribeToWebSocketSubscription(subscription, 'WebSocketSubscription2021');
+          break;
+      }
+    },
+
     initBrowse: function(storageUrl, input, browseButton, id, action){
       input.value = storageUrl;
       var headers;
