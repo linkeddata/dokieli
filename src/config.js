@@ -403,6 +403,7 @@ module.exports = {
     "solidpublicTypeIndex": { "@id": "http://www.w3.org/ns/solid/terms#publicTypeIndex", "@type": "@id" },
     "solidprivateTypeIndex": { "@id": "http://www.w3.org/ns/solid/terms#privateTypeIndex", "@type": "@id" },
     "solidowner": { "@id": "http://www.w3.org/ns/solid/terms#owner", "@type": "@id", "@array": true },
+    "solidstorageDescription": { "@id": "http://www.w3.org/ns/solid/terms#storageDescription", "@type": "@id", "@array": true },
 
     "oaAnnotation": { "@id": "http://www.w3.org/ns/oa#Annotation", "@type": "@id" },
     "oahasBody": { "@id": "http://www.w3.org/ns/oa#hasBody", "@type": "@id" },
