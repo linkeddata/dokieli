@@ -3459,39 +3459,26 @@ console.log(reason);
       return s;
     },
 
-    getPersistencePolicy: function(s) {
-      return (s.pimpersistencePolicy && s.pimpersistencePolicy._array.length > 0)
-        ? s.pimpersistencePolicy._array
-        : undefined
-    },
+    getPersistencePolicy: function(g) {
+      var s = '';
 
-    //FIXME: Shouldn't be fixed to -samp
-    showPersistencePolicy: function(s, id, url, checkAgain) {
-      var samp = document.getElementById(id + '-samp');
-      var pP = document.getElementById(id + '-persistence-policy');
-// console.log(pP)
-      if (samp && !pP) {
-        var persistencePolicy = DO.U.getPersistencePolicy(s);
-        if (persistencePolicy) {
-          //TODO: Handle multiple policies?
-          persistencePolicy = persistencePolicy[0];
-          DO.C.Storages = DO.C.Storages || {};
-          DO.C.Storages[s.iri.toString()] = {
-            "persistencePolicy": persistencePolicy
-          };
-          if (pP) {
-            pP.innerHTML = '';
-          }
-          samp.insertAdjacentHTML('afterend', '<p id="' + id + '-persistence-policy">URI persistence policy: <a href="' + persistencePolicy +'" target="_blank">' + persistencePolicy + '</a></p>');
-        }
-        else {
-          if (!checkAgain) {
-            fetcher.getResourceGraph(url).then(function(g){
-              DO.U.showPersistencePolicy(g, id, url, true);
-            });
-          }
-        }
+      if (g.pimpersistencePolicy && g.pimpersistencePolicy._array.length > 0) {
+        var pp = [];
+
+        DO.C.Storages = DO.C.Storages || {};
+        DO.C.Storages[g.iri().toString()] = DO.C.Storages[g.iri().toString()] || {};
+        DO.C.Storages[g.iri().toString()]['persistencePolicy'] = [];
+
+        g.pimpersistencePolicy.forEach(function(iri){
+          DO.C.Storages[g.iri().toString()]['persistencePolicy'].push(iri);
+
+          pp.push('<dd><a href="' + iri  + '" target="_blank">' + iri + '</a></dd>');
+        });
+
+        s = '<dl id="storage-persistence-policy"><dt>URI persistence policy</dt>' + pp.join('') + '</dl>'
       }
+
+      return s;
     },
 
     getODRLPolicies: function(g) {
