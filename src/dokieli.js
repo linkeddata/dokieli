@@ -3473,6 +3473,81 @@ console.log(reason);
       }
     },
 
+    //XXX: This need not be limited to storage's communication options.
+    getCommunicationOptions: function(g) {
+      var s = '';
+      var resourceOwners = [];
+
+      var notificationChannels = DO.U.getNotificationChannels(g);
+
+      DO.C.Storages = DO.C.Storages || {};
+      DO.C.Storages[g.iri().toString()] = DO.C.Storages[g.iri().toString()] || {};
+
+      if (notificationChannels) {
+        DO.C.Storages[g.iri().toString()]['notificationChannels'] = DO.C.Storages[g.iri().toString()]['notificationChannels'] || {};
+        var notificationChannelDetails = [];
+
+        notificationChannels.forEach(function(notificationChannel){
+          var notificationSubscriptionType = '';
+          var notificationSubscription = '';
+          var notificationFeatures = '';
+
+          DO.C.Storages[g.iri().toString()]['notificationChannels'][notificationChannel] = DO.C.Storages[g.iri().toString()]['notificationChannels'][notificationChannel] || {};
+
+          var nC = g.child(notificationChannel);
+
+          var types = nC.rdftype._array;
+
+          if(types.indexOf(DO.C.Vocab['notifyWebSocketSubscription2021']["@id"]) >= 0) {
+            DO.C.Storages[g.iri().toString()]['notificationChannels'][notificationChannel]['type'] = 'WebSocketSubscription2021';
+
+            notificationSubscriptionType = '<dt>Subscription Type</dt><dd><a about="' + notificationChannel + '" href="https://solidproject.org/TR/websocket-subscription-2021" target="_blank" typeof="notify:WebSocketSubscription2021">WebSocketSubscription2021</a></dd>';
+          }
+
+          if (nC.notifysubscription) {
+            DO.C.Storages[g.iri().toString()]['notificationChannels'][notificationChannel]['subscription'] = nC.notifysubscription;
+
+            notificationSubscription = '<dt>Subscription</dt><dd><a href="' + nC.notifysubscription + '" rel="notify:subscription" target="_blank">' + nC.notifysubscription + '</a></dd>';
+          }
+
+          if (nC.notifyfeature && nC.notifyfeature._array.length > 0) {
+            var nF = [];
+
+            DO.C.Storages[g.iri().toString()]['notificationChannels'][notificationChannel]['feature'] = [];
+
+            nC.notifyfeature._array.forEach(function(iri){
+              var label = href = iri;
+
+              DO.C.Storages[g.iri().toString()]['notificationChannels'][notificationChannel]['feature'].push(iri);
+
+              switch (iri) {
+                case DO.C.Vocab['notifyexpiration']['@id']:
+                case DO.C.Vocab['notifystate']['@id']:
+                case DO.C.Vocab['notifyrate']['@id']:
+                case DO.C.Vocab['notifyaccept']['@id']:
+                  label = uri.getFragmentFromString(iri);
+                  href = 'https://solidproject.org/TR/notifications-protocol#feature-' + label;
+                  break;
+
+                default:
+                  break;
+              }
+
+              nF.push('<li><a href="' + href + '" resource="' + iri + '" target="_blank">' + label + '</a></li>');
+            });
+
+            notificationFeatures = '<dt>Features</dt><dd><ul rel="notify:feature">' + nF.join('') + '</ul></dd>';
+          }
+
+          notificationChannelDetails.push('<dd><details><summary><a href="' + notificationChannel + '" target="_blank">' + notificationChannel + '</a></summary><dl>' + notificationSubscriptionType + notificationSubscription + notificationFeatures + '</dl></details></dd>');
+        })
+
+        s = '<dl id="notification-channels"><dt>Notification channels</dt>' + notificationChannelDetails.join('') + '</dl>';
+      }
+
+      return s;
+    },
+
     //https://solidproject.org/TR/notifications-protocol#discovery
     getNotificationChannels: function(s) {
       return (s.notifynotificationChannel && s.notifynotificationChannel._array.length > 0)
