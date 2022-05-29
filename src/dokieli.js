@@ -3473,6 +3473,64 @@ console.log(reason);
       }
     },
 
+    getODRLPolicies: function(g) {
+      var s = '';
+      var odrlPolicies = [];
+
+      if (g.odrlhasPolicy && g.odrlhasPolicy._array.length > 0) {
+        g.odrlhasPolicy._array.forEach(function(iri){
+          var policy = g.child(iri);
+          var policyDetails = [];
+
+          var target, ruleType, assigner, peAction, assignee, assigner, actions;
+
+          var types = policy.rdftype._array;
+          var indexPolicy = types.indexOf(DO.C.Vocab['odrlOffer']["@id"]) || types.indexOf(DO.C.Vocab['odrlAgreement']["@id"]);
+          if (indexPolicy >= 0) {
+            var rule = types[indexPolicy];
+            //XXX: Label derived from URI.
+            var ruleLabel = rule.substr(rule.lastIndexOf('/') + 1);
+
+            policyDetails.push('<dt>Rule<dt><dd><a href="' + rule + '" target="_blank">' + ruleLabel + '</a></dd>');
+          }
+
+          //TODO: odrl:Set
+
+          if (policy.odrluid && policy.odrluid.at(0)) {
+            policyDetails.push('<dt>Unique identifier<dt><dd><a href="' + policy.odrluid + '" target="_blank">' + policy.odrluid + '</a></dd>');
+          }
+
+          if (policy.odrtarget && policy.odrltarget.at(0)) {
+            policyDetails.push('<dt>Target<dt><dd><a href="' + policy.odrltarget + '" target="_blank">' + policy.odrltarget + '</a></dd>');
+          }
+
+          if (policy.odrlpermission && policy.odrlpermission.at(0)) {
+            var ruleG = g.child(policy.odrlpermission.at(0));
+
+            policyDetails.push(DO.U.getODRLRuleActions(ruleG));
+            policyDetails.push(DO.U.getODRLRuleAssigners(ruleG));
+            policyDetails.push(DO.U.getODRLRuleAssignees(ruleG));
+          }
+
+          if (policy.odrlprohibition && policy.odrlprohibition.at(0)) {
+            var ruleG = g.child(policy.odrlprohibition.at(0));
+
+            policyDetails.push(DO.U.getODRLRuleActions(ruleG));
+            policyDetails.push(DO.U.getODRLRuleAssigners(ruleG));
+            policyDetails.push(DO.U.getODRLRuleAssignees(ruleG));
+          }
+
+          var detail = '<dl>' + policyDetails.join('') + '</dl>';
+
+          odrlPolicies.push('<dd><details><summary><a href="' + iri + '" target="_blank">' + iri + '</a></summary>' + detail + '</details></dd>');
+        });
+
+        s = '<dl id="odrl-policies"><dt>Policies</dt>' + odrlPolicies.join('') + '</dl>';
+      }
+
+      return s;
+    },
+
     getContactInformation: function(g) {
       var s = '';
       var resourceOwners = [];
