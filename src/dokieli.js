@@ -3830,7 +3830,7 @@ console.log(reason);
       headers = {'Accept': 'text/turtle, application/ld+json'};
       fetcher.getResourceGraph(storageUrl, headers).then(function(g){
         DO.U.generateBrowserList(g, storageUrl, id, action).then(function(i){
-          DO.U.showPersistencePolicy(g, id, storageUrl);
+          DO.U.showStorageDescription(g, id, storageUrl);
         });
       }).then(function(i){
         document.getElementById(id + '-' + action).textContent = (action == 'write') ? input.value + util.generateAttributeId() : input.value;
@@ -3849,7 +3849,7 @@ console.log(reason);
         headers = {'Accept': 'text/turtle, application/ld+json'};
         fetcher.getResourceGraph(url, headers).then(function(g){
           DO.U.generateBrowserList(g, url, id, action).then(function(l){
-            DO.U.showPersistencePolicy(g, id, url);
+            DO.U.showStorageDescription(g, id, url);
             return l;
           },
           function(reason){
