@@ -3795,11 +3795,54 @@ console.log(reason);
       }
     },
 
-    subscribeToWebSocketSubscription: function(subscription, subscriptionType, topic) {
-      var data = {
-        "@context": ["https://www.w3.org/ns/solid/notification/v1"],
-        "type": "WebSocketSubscription2021",
-        "topic": topic
+    processNotificationSubscriptionResponse: function(response) {
+      var cT = response.headers.get('Content-Type');
+      cT = cT.split(';')[0].trim();
+
+      var rD = (cT == 'application/ld+json') ? response.json() : response.text();
+
+      return rD.then(data => {
+        switch (cT) {
+          case 'text/turtle':
+            return Promise.reject({'message': 'TODO text/turtle', 'data': data});
+            break;
+
+          case 'application/ld+json':
+            if (data["@context"] && data.type && data.source) {
+              return Promise.resolve(data);
+            }
+            else {
+              return Promise.reject({'message': 'Missing @context, type, source', 'data': data})
+            }
+            break;
+
+          case 'text/plain':
+            return Promise.reject({'message': 'TODO text/plain?', 'data': data});
+            break;
+        }
+      });
+    },
+
+    subscribeToWebSocketSubscription: function(subscription, subscriptionType, topic, feature, options = {}) {
+      if (!subscription || !subscriptionType || !topic) { return Promise.reject(); }
+
+      options['contentType'] = options.contentType || 'application/ld+json';
+
+      var data;
+
+      switch (options['contentType']) {
+        case 'text/turtle':
+          data = '<> a <http://www.w3.org/ns/solid/notifications#WebSocketSubscription2021> ;\n\
+  <http://www.w3.org/ns/solid/notifications#topic> <' + topic + '> .';
+          break;
+        case 'applicat/ld+json':
+          data = {
+            "@context": ["https://www.w3.org/ns/solid/notification/v1"],
+            "type": "WebSocketSubscription2021",
+            "topic": topic
+          }
+          data = JSON.stringify(data);
+          break;
       }
     },
 
