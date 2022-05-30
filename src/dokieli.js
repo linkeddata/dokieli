@@ -3790,7 +3790,7 @@ console.log(reason);
       switch(subscriptionType){
         //https://solidproject.org/TR/websocket-subscription-2021
         case DO.C.Vocab['notifyWebSocketSubscription2021']['@id']:
-          DO.C.subscribeToWebSocketSubscription(subscription, 'WebSocketSubscription2021', topic);
+          return DO.C.subscribeToWebSocketSubscription(subscription, subscriptionType, topic, feature);
           break;
       }
     },
