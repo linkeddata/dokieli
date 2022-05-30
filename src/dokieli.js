@@ -3786,16 +3786,24 @@ console.log(reason);
         : undefined
     },
 
-    subscribeToNotificationChannel: function(subscription, subscriptionType) {
+    subscribeToNotificationChannel: function(subscription, subscriptionType, topic) {
       switch(subscriptionType){
         //https://solidproject.org/TR/websocket-subscription-2021
         case DO.C.Vocab['notifyWebSocketSubscription2021']['@id']:
-          DO.C.subscribeToWebSocketSubscription(subscription, 'WebSocketSubscription2021');
+          DO.C.subscribeToWebSocketSubscription(subscription, 'WebSocketSubscription2021', topic);
           break;
       }
     },
 
-    subscribeToWebSocketSubscription: function(url, type) {
+    subscribeToWebSocketSubscription: function(subscription, subscriptionType, topic) {
+      var data = {
+        "@context": ["https://www.w3.org/ns/solid/notification/v1"],
+        "type": "WebSocketSubscription2021",
+        "topic": topic
+      }
+    },
+
+    connectToWebSocket: function(url, type) {
       function connect() {
         var ws = new WebSocket(url, type);
 
