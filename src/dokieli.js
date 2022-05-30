@@ -3805,31 +3805,39 @@ console.log(reason);
 
     connectToWebSocket: function(url, type) {
       function connect() {
-        var ws = new WebSocket(url, type);
+        return new Promise(function(resolve, reject) {
+          var ws = new WebSocket(url, type);
+          var message;
 
-        ws.onopen = function() {
-          // ws.send(JSON.stringify({
-          // }));
-        };
+          ws.onopen = function() {
+            message = {'message': 'Connected to ' + url + ' (' + type + ').'};
+            console.log(message);
+            // ws.send(JSON.stringify({
+            // }));
+            resolve(ws);
+          };
 
-        ws.onmessage = function(e) {
-          console.log('Message: ', e.data);
-        };
+          ws.onclose = function(e) {
+            message = {'message': 'Socket is closed. Reconnect will be attempted in 1 second.'};
+            setTimeout(function() { connect(); }, 1000);
+            // var timeout = 250;
+            // setTimeout(connect, Math.min(10000,timeout+=timeout));
 
-        ws.onclose = function(e) {
-          console.log('Socket is closed. Reconnect will be attempted in 1 second.', e.reason);
-          setTimeout(function() { connect(); }, 1000);
-          // var timeout = 250;
-          // setTimeout(connect, Math.min(10000,timeout+=timeout));
-        };
+            console.log(message, e.reason);
+          };
 
-        ws.onerror = function(err) {
-          console.error('Socket encountered error: ', err.message, 'Closing socket');
-          ws.close();
-        };
+          ws.onerror = function(err) {
+            console.error('Socket encountered error: ', err.message, 'Closing socket');
+            ws.close();
+
+            reject(err);
+          };
+        });
       }
 
-      connect();
+      return connect().then().catch(function(err) {
+        console.log(err)
+      });
     },
 
     initBrowse: function(storageUrl, input, browseButton, id, action){
