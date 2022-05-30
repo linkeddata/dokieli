@@ -3844,6 +3844,17 @@ console.log(reason);
           data = JSON.stringify(data);
           break;
       }
+
+      return fetcher.postResource(subscription, '', data, options.contentType, null, options)
+        .then(DO.U.processNotificationSubscriptionResponse)
+        .catch(error => { throw error })
+        .then(data => {
+          switch (data.type) {
+            case DO.C.Vocab['notifyWebSocketSubscription2021']['@id']:
+              return DO.U.connectToWebSocket(data.source, data.type);
+              break;
+          }
+        });
     },
 
     connectToWebSocket: function(url, type) {
