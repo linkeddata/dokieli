@@ -74,7 +74,6 @@ function getLinkRelation (property, url) {
 // console.log(property + ' endpoint was not found in message body')
           return getLinkRelationFromHead(property, subjectURI)
         })
-      .catch(() => getLinkRelationFromHead(property, subjectURI))
   }
 }
 
