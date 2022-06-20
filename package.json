@@ -9,7 +9,7 @@
     "standard": "standard src/auth.js src/doc.js src/fetcher.js src/graph.js src/inbox.js src/simplerdf.js src/uri.js src/util.js ",
     "test": "npm run standard",
     "watch": "webpack --progress --color --watch",
-    "minify": "webpack --progress --color && uglifyjs scripts/dokieli.js --output scripts/dokieli.js",
+    "minify": "webpack --progress --color && uglifyjs --source-map url=dokieli.js.map,content=scripts/dokieli.js.map --output scripts/dokieli.js scripts/dokieli.js",
     "postinstall": "patch-package"
   },
   "repository": {
