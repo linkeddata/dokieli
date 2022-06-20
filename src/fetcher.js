@@ -125,7 +125,7 @@ function getLinkRelationFromRDF (property, url, subjectIRI) {
             break
         }
 
-        throw new Error(property + ' endpoint was not found in message body')
+        return Promise.reject({'message': property + " endpoint was not found in message body"})
       }
     )
 }

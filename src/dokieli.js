@@ -3446,10 +3446,6 @@ console.log(reason);
         var sDPromise = fetcher.getLinkRelation(DO.C.Vocab['solidstorageDescription']['@id'], storageUrl);
 
         return sDPromise
-          .catch(error => {
-            console.log('Error fetching solid:storageDescription endpoint:', error)
-            throw error
-          })
           .then(sDURLs => {
             // TODO: resourceIRI for getLinkRelation should be the
             // closest IRI (not necessarily the document).
@@ -3492,6 +3488,10 @@ console.log(reason);
             });
 
 // console.log(DO.C.Storages);
+          })
+          .catch(error => {
+            // console.log('Error fetching solid:storageDescription endpoint:', error)
+            // throw error
           });
       }
     },
