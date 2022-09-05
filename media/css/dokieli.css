@@ -343,6 +343,10 @@ padding:0 !important;
 max-width:inherit !important;
 }
 
+.do.on a {
+  color: revert;
+}
+
 aside.do.on {
 border:1px solid #ccc;
 border-top:0;
