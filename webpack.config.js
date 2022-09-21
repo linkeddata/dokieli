@@ -43,7 +43,10 @@ module.exports = (env) => {
         {
           test: /\.js$/,
           // loader: 'babel-loader',
-          exclude: /node_modules/
+          exclude: [
+            "/src/__tests__/",
+            "/node_modules/"
+          ]
         }
       ]
     },
