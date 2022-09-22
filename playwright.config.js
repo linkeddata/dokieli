@@ -9,7 +9,7 @@ const config = {
   fullyParallel: true,
   retries: 0,
   workers: 3,
-  reporter: "list",
+  reporter: "html",
   webServer: {
     command: "node __testUtils__/testServer.js",
     port: 3000,
@@ -19,6 +19,7 @@ const config = {
     actionTimeout: 0,
     baseURL: "http://localhost:3000",
     trace: "on-first-retry",
+    video: "on-first-retry",
   },
   projects: [
     {
