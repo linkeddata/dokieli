@@ -2,7 +2,7 @@ const webpack = require("webpack");
 const path = require("path");
 const fs = require("fs");
 const WrapperPlugin = require("wrapper-webpack-plugin");
-const TerserPlugin = require('terser-webpack-plugin');
+const TerserPlugin = require("terser-webpack-plugin");
 const headerDoc =
   fs.readFileSync(
     require.resolve("solid-auth-client/dist-lib/solid-auth-client.bundle.js"),
@@ -26,9 +26,9 @@ module.exports = (env) => {
         stream: false,
         "stream-browserify": false,
         crypto: false,
-        buffer: require.resolve("buffer/")
+        buffer: require.resolve("buffer/"),
       },
-      extensions: [".ts", ".js", ".mjs"]
+      extensions: [".ts", ".js", ".mjs"],
     },
     mode: "none",
     entry: ["./src/dokieli.js"],
@@ -36,19 +36,16 @@ module.exports = (env) => {
       path: path.join(__dirname, "/scripts/"),
       filename: "dokieli.js",
       library: "DO",
-      libraryTarget: "window"
+      libraryTarget: "window",
     },
     module: {
       rules: [
         {
           test: /\.js$/,
           // loader: 'babel-loader',
-          exclude: [
-            "/src/__tests__/",
-            "/node_modules/"
-          ]
-        }
-      ]
+          exclude: ["/src/__tests__/", "/node_modules/", /__testUtils__/],
+        },
+      ],
     },
     externals: {
       "node-fetch": "fetch",
@@ -56,31 +53,33 @@ module.exports = (env) => {
       "whatwg-url": "window",
       "isomorphic-fetch": "fetch",
       "@trust/webcrypto": "crypto",
-      "solid-auth-client": ["solid", "auth"]
+      "solid-auth-client": ["solid", "auth"],
     },
     devtool: "source-map",
     optimization: {
       minimize: env.minimize,
-      minimizer: [new TerserPlugin({
-        terserOptions: {
-          format: {
-            comments: false,
+      minimizer: [
+        new TerserPlugin({
+          terserOptions: {
+            format: {
+              comments: false,
+            },
           },
-        },
-        extractComments: false,
-      })],
+          extractComments: false,
+        }),
+      ],
     },
 
     plugins: [
       new WrapperPlugin({
-        header: headerDoc
+        header: headerDoc,
       }),
       new webpack.ProvidePlugin({
-        process: "process/browser"
+        process: "process/browser",
       }),
       new webpack.ProvidePlugin({
-        Buffer: ["buffer", "Buffer"]
-      })
-    ]
-  }
+        Buffer: ["buffer", "Buffer"],
+      }),
+    ],
+  };
 };
