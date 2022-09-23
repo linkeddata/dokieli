@@ -7,7 +7,7 @@
     "build-dist": "webpack --progress --color",
     "build": "npm run build-dist",
     "standard": "standard src/auth.js src/doc.js src/fetcher.js src/graph.js src/inbox.js src/simplerdf.js src/uri.js src/util.js ",
-    "test": "npm run standard",
+    "test": "jest",
     "watch": "webpack --progress --color --watch",
     "minify": "webpack --progress --color --env minimize"
   },
@@ -54,6 +54,8 @@
     "wrapper-webpack-plugin": "^2.2.2"
   },
   "devDependencies": {
+    "jest": "^29.0.3",
+    "jest-environment-jsdom": "^29.0.3",
     "standard": "^16.0.4",
     "webpack": "^5.70.0",
     "webpack-cli": "^4.9.2"
