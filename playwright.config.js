@@ -1,7 +1,7 @@
 const { devices } = require("@playwright/test");
 
 const config = {
-  testDir: "./e2e/browser",
+  testDir: "./tests/e2e/browser",
   timeout: 30 * 1000,
   expect: {
     timeout: 5000,
@@ -11,7 +11,7 @@ const config = {
   workers: 3,
   reporter: "html",
   webServer: {
-    command: "node __testUtils__/testServer.js",
+    command: "node tests/__testUtils__/testServer.js",
     port: 3000,
     reuseExistingServer: true,
   },
