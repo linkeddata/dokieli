@@ -187,7 +187,7 @@ dokieli uses [Jest](https://jestjs.io/) for unit tests.
 
 To run unit tests, run `npm test`.
 
-Coverage is collected in `tests/coverage`.
+Coverage reports are collected in `tests/coverage`.
 
 ### End-to-end tests
 
