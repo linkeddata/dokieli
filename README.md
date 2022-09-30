@@ -11,23 +11,24 @@ following principles in mind: freedom of expression, decentralisation,
 interoperability, and accessibility.
 
 It can be used as a:
+
 * single-page application - open any dokieli embedded article
 * browser extension - import this repository in your Web browser or install
 Web Extension from [Chrome Web Store](https://chrome.google.com/webstore/detail/ddmhaonbhodhgkaljpjlglodncddalid) or [Add-ons for Firefox](https://dokie.li/docs#web-extension)
 
-
 ## License
+
 * Code: [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0)
 * Content: [Creative Commons Attribution 4.0 Unported](https://creativecommons.org/licenses/by/4.0/)
 
-
 ## Documentation
+
 * For brave developers and authors: the canonical [documentation](https://dokie.li/docs)
 explains dokieli's principles, architectural and design patterns.
 * For academics: [Decentralised Authoring, Annotations and Notifications for a Read-Write-Web with dokieli](http://csarven.ca/dokieli-rww)
 
-
 ## Specifications
+
 * Information is represented and retrieved following the [Linked Data](https://www.w3.org/DesignIssues/LinkedData) design principles.
 * [WebID](https://www.w3.org/2005/Incubator/webid/spec/identity/) for personal/agent identities.
 * [WebID-TLS](https://www.w3.org/2005/Incubator/webid/spec/tls/) and [WebID-OIDC](https://github.com/solid/webid-oidc-spec) for authentication.
@@ -43,8 +44,8 @@ explains dokieli's principles, architectural and design patterns.
 * [Robust Links](http://robustlinks.mementoweb.org/) for hyperlinks eg. citations, and to show Link Decoration.
 * [schema.org](http://schema.org/), [SPAR Ontologies](http://www.sparontologies.net/), [PROV-O](https://www.w3.org/TR/prov-o/), and various other vocabularies.
 
-
 ## Features
+
 * In-browser document authoring and formatting, and semantic enrichments (RDFa annotations).
 * Content negotiation is possible for RDFa, Turtle, JSON-LD, RDF/XML.
 * Uses author's information from their online profile (WebID).
@@ -66,16 +67,15 @@ explains dokieli's principles, architectural and design patterns.
 
 "Yea, okay, whatever, it doesn't do *x*, *y*, *z*!" You are welcome to create [issues](https://github.com/linkeddata/dokieli/issues/), [discuss](https://gitter.im/linkeddata/dokieli), or pull requests. Make it so!
 
-
 ## Screencasts
-Also available on https://dokie.li/ (with captions):
 
-* Overview: https://dokie.li/media/video/dokieli.webm (a little old, see shorter/newer Annotation below)
-* Annotation: https://dokie.li/media/video/dokieli-annotation.webm
-* Share: https://dokie.li/media/video/dokieli-share.webm
-* Citation: https://dokie.li/media/video/dokieli-citation.webm
-* Sparqlines: https://dokie.li/media/video/dokieli.webm (see also [article](http://csarven.ca/sparqlines))
+Also available on <https://dokie.li/> (with captions):
 
+* Overview: <https://dokie.li/media/video/dokieli.webm> (a little old, see shorter/newer Annotation below)
+* Annotation: <https://dokie.li/media/video/dokieli-annotation.webm>
+* Share: <https://dokie.li/media/video/dokieli-share.webm>
+* Citation: <https://dokie.li/media/video/dokieli-citation.webm>
+* Sparqlines: <https://dokie.li/media/video/dokieli.webm> (see also [article](http://csarven.ca/sparqlines))
 
 ## Examples
 
@@ -91,11 +91,12 @@ document.
 
 For the scholars among us, see the authoring guidelines below. View the ACM
 guidelines using the LNCS typographical rules, and vice versa (see the menu) ;)
+
 * [ACM SIG Proceedings Paper](https://dokie.li/acm-sigproc-sp)
 * [LNCS Author Guidelines](https://dokie.li/lncs-splnproc)
 
-
 ## Dependencies
+
 * Read: client either loads local HTML files or fetches remote URLs, in that case
 the host sends HTML etc. All content is accessible at minimum from a text-browser
 * Local write: Web browser with JavaScript enabled (use export or local storage)
@@ -109,16 +110,16 @@ These libraries are part of the dokieli distribution:
 * [d3](https://github.com/d3/d3) (BSD 3-Clause) used for visualisations.
 * [Shower](https://github.com/shower/core) (MIT License) used for slideshows.
 
-
 ## How to contribute
+
 * Use it. Break it. Report it. Fix it! See [issues](https://github.com/linkeddata/dokieli/issues/).
 * Improve documentation (for the website or repository)
 * Publish articles with it.
 * Join the [dokieli chat](https://gitter.im/linkeddata/dokieli) for help and discussion.
 * Encourage the ideas/movement and however else you want to contribute.
 
-
 ## Development
+
 * General background in [dokieli documentation](https://dokie.li/docs).
 * See [fork a repo](https://help.github.com/articles/fork-a-repo/) to setup
 your own development repository and stay
@@ -126,7 +127,7 @@ your own development repository and stay
 to make pull requests. For example, using your fork at `https://github.com
 /YOUR-USERNAME/dokieli` :
 
-```
+```text
 # Clone your work repository, for example:
 git clone git@github.com:YOUR-USERNAME/dokieli
 cd dokieli
@@ -178,12 +179,25 @@ requests](https://help.github.com/articles/about-pull-requests/) for the
 remaining steps on how to propose your changes to be brought into dokieli's
 repository.
 
+## Tests
+
+### Unit tests
+
+dokieli uses [Jest](https://jestjs.io/) for unit tests. To run unit tests, run `npm test`.
+
+Coverage is collected in `tests/coverage`.
+
+### End-to-end tests
+
+dokieli uses [Playwright](https://playwright.dev/) for end-to-end tests. To run end to end tests, run `npm run test:e2e`. Reports are collected in `playwright-report`.
+
 ## Supported By
+
 * [Crosscloud](http://crosscloud.org/) (2015-10 — 2016-09)
 * [MIT CSAIL](https://www.csail.mit.edu/) (2015-10 — 2016-09)
 
-
 ## Contributors
+
 * [Amy Guy](https://github.com/rhiaro)
 * [Amy van der Hiel](https://github.com/amyvdh)
 * [Andrei Vlad Sambra](https://github.com/deiu)
