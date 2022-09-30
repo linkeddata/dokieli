@@ -183,13 +183,19 @@ repository.
 
 ### Unit tests
 
-dokieli uses [Jest](https://jestjs.io/) for unit tests. To run unit tests, run `npm test`.
+dokieli uses [Jest](https://jestjs.io/) for unit tests. 
+
+To run unit tests, run `npm test`.
 
 Coverage is collected in `tests/coverage`.
 
 ### End-to-end tests
 
-dokieli uses [Playwright](https://playwright.dev/) for end-to-end tests. To run end to end tests, run `npm run test:e2e`. Reports are collected in `playwright-report`.
+dokieli uses [Playwright](https://playwright.dev/) for end-to-end tests. 
+
+To run end to end tests, run `npm run test:e2e`. 
+
+Reports are collected in `playwright-report`.
 
 ## Supported By
 
