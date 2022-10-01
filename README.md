@@ -141,7 +141,7 @@ git fetch upstream
 git merge upstream/main
 
 # Install packages
-npm install
+npm ci
 
 # Check out a branch for your changes
 git checkout -b YOUR-WORK-BRANCHNAME
