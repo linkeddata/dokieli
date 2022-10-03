@@ -130,8 +130,7 @@ For answers to common questions about this code of conduct, see the FAQ at
 [https://www.contributor-covenant.org/translations][translations].
 
 For guidelines on how to give constructive and positive feedback, please see
-[How to give better
-feedback](https://www.virginiabalseiro.com/blog/feedback.html).
+[How to give better feedback](https://www.virginiabalseiro.com/blog/feedback.html).
 
 [homepage]: https://www.contributor-covenant.org
 [v2.1]: https://www.contributor-covenant.org/version/2/1/code_of_conduct.html
