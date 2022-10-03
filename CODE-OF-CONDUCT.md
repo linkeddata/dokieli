@@ -23,7 +23,7 @@ community include:
 
 - Demonstrating empathy and kindness toward other people
 - Being respectful of differing opinions, viewpoints, and experiences
-- Giving and gracefully accepting [constructive feedback](https://www.virginiabalseiro.com/blog/feedback.html)
+- Giving and gracefully accepting constructive feedback
 - Accepting responsibility and apologizing to those affected by our mistakes,
   and learning from the experience
 - Focusing on what is best not just for us as individuals, but for the overall
@@ -128,6 +128,10 @@ Community Impact Guidelines were inspired by
 For answers to common questions about this code of conduct, see the FAQ at
 [https://www.contributor-covenant.org/faq][faq]. Translations are available at
 [https://www.contributor-covenant.org/translations][translations].
+
+For guidelines on how to give constructive and positive feedback, please see
+[How to give better
+feedback](https://www.virginiabalseiro.com/blog/feedback.html).
 
 [homepage]: https://www.contributor-covenant.org
 [v2.1]: https://www.contributor-covenant.org/version/2/1/code_of_conduct.html
