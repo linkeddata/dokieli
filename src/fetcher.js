@@ -37,7 +37,8 @@ module.exports = {
   putResourceACL,
   postActivity,
   processSave,
-  updateTimeMap
+  updateTimeMap,
+  putResourceWithAcceptPut
 }
 
 function setAcceptRDFTypes(options) {
@@ -842,3 +843,15 @@ function updateTimeMap(url, patch, options) {
       return patchResourceGraph(url, patch, options)
     })
 }
+
+function putResourceWithAcceptPut(url, html, options) {
+  return getAcceptPutPreference(url)
+    .then(preferredContentType => {
+      options = options || {}
+      options['headers'] = options['headers'] || {}
+      options.headers['Content-Type'] = options.headers['Content-Type'] || preferredContentType
+
+      return putResource(url, html, null, null, options)
+    })
+}
+
