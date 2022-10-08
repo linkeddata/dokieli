@@ -3835,7 +3835,8 @@ console.log(reason);
           data = '<> a <http://www.w3.org/ns/solid/notifications#WebSocketSubscription2021> ;\n\
   <http://www.w3.org/ns/solid/notifications#topic> <' + topic + '> .';
           break;
-        case 'applicat/ld+json':
+        default:
+        case 'application/ld+json':
           data = {
             "@context": ["https://www.w3.org/ns/solid/notification/v1"],
             "type": "WebSocketSubscription2021",
