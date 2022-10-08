@@ -384,7 +384,7 @@ function getResourceGraph (iri, headers, options = {}) {
   if (iri.slice(0, 5).toLowerCase() === 'http:') {
     options['noCredentials'] = true
 
-    if (document.domain !== iri.split('/')[2]) {
+    if (document.location.host !== iri.split('/')[2]) {
       options['forceProxy'] = true
     }
   }
