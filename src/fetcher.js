@@ -36,6 +36,8 @@ module.exports = {
   putResource,
   putResourceACL,
   postActivity,
+  fetchPreferredMethod,
+  fetchPreferredMethodContentType,
   processSave,
   patchResourceWithAcceptPatch,
   putResourceWithAcceptPut
@@ -762,40 +764,65 @@ function putResourceACL (accessToURL, aclURL, acl) {
 function postActivity(url, slug, data, options) {
   return getAcceptPostPreference(url)
     .then(preferredContentType => {
-      switch (preferredContentType) {
-        case 'text/html':
-        case 'application/xhtml+xml':
-          return postResource(url, slug, data, 'text/html; charset=utf-8')
-
-        case 'text/turtle':
-          // FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
-
-          return graph.serializeData(data, options['contentType'], 'text/turtle', options)
-            .then(data => {
-              return postResource(url, slug, data, 'text/turtle')
-            })
-
-        case 'application/ld+json':
-        case 'application/json':
-        case '*/*':
-        default:
-          return graph.serializeData(data, options['contentType'], 'application/ld+json', options)
-            .then(data => {
-              if (!options['canonical']) {
-                let x = JSON.parse(data)
-                if ('id' in x) {
-                  x[ "via" ] = x[ "id" ]
-                  x[ "id" ] = ""
-                  data = JSON.stringify(x)
-                }
-              }
-
-              var profile = ('profile' in options) ? '; profile="' + options.profile + '"' : ''
-
-              return postResource(url, slug, data, preferredContentType + profile)
-            })
-      }
+      options = options || {};
+      options['preferredContentType'] = preferredContentType;
+      options['method'] = 'POST';
+      return fetchPreferredMethodContentType(url, slug, data, options);
     })
+}
+
+//FIXME: May be better to have fetchPreferredMethod call fetchPreferredMethodContentType
+
+function fetchPreferredMethod(url, slug, data, options) {
+  var contentType = options['preferredContentType'] + '; charset=utf-8';
+
+  switch(options['method'].toLowerCase()) {
+    case 'post':
+      return postResource(url, slug, data, contentType);
+      break;
+    case 'put':
+      return putResource(url, data, contentType);
+      break;
+  }
+}
+
+function fetchPreferredMethodContentType(url, slug, data, options) {
+  switch (options['preferredContentType']) {
+    case 'text/html':
+    case 'application/xhtml+xml':
+      return fetchPreferredMethod(url, slug, data, options);
+      break;
+
+    case 'text/turtle':
+      // FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
+
+      return graph.serializeData(data, options['contentType'], 'text/turtle', options)
+        .then(data => {
+          return fetchPreferredMethod(url, slug, data, options);
+        })
+      break;
+
+    case 'application/ld+json':
+    case 'application/json':
+    case '*/*':
+    default:
+      return graph.serializeData(data, options['contentType'], 'application/ld+json', options)
+        .then(data => {
+          if (!options['canonical']) {
+            let x = JSON.parse(data)
+            if ('id' in x) {
+              x[ "via" ] = x[ "id" ]
+              x[ "id" ] = ""
+              data = JSON.stringify(x)
+            }
+          }
+
+          var profile = ('profile' in options) ? '; profile="' + options.profile + '"' : ''
+
+          return fetchPreferredMethod(url, slug, data, options['preferredContentType'] + profile)
+        })
+      break;
+  }
 }
 
 function processSave(url, slug, data, options) {
