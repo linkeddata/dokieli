@@ -3308,35 +3308,9 @@ console.log(reason);
               return DO.U.generateBrowserList(g, url, id, action);
             },
             function(reason){
-              var inputBox = document.getElementById(id);
-              var statusCode = ('status' in reason) ? reason.status : 0;
-              statusCode = (typeof statusCode === 'string') ? parseInt(reason.slice(-3)) : statusCode;
-// console.log(statusCode)
+              var node = document.getElementById(id);
 
-              var msgs = inputBox.querySelectorAll('.response-message');
-              for(var i = 0; i < msgs.length; i++){
-                msgs[i].parentNode.removeChild(msgs[i]);
-              }
-
-              switch(statusCode) {
-                default:
-                  inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to access ('+ reason.statusText +').</p>');
-                  break;
-                case 404:
-                  inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Not found.</p></div>');
-                  break;
-                case 401:
-                  var msg = 'You are not authorized.';
-                  if(!DO.C.User.IRI){
-                    msg += ' Try signing in.';
-                  }
-                  inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">' + msg + '</p></div>');
-                  break;
-                case 403:
-                  var msg = 'You don\'t have permission to access this location.';
-                  inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">' + msg + '</p></div>');
-                  break;
-              }
+              DO.U.showErrorResponseMessage(node, reason.response);
             }
           );
         }
@@ -3928,36 +3902,9 @@ console.log(reason);
           });
         },
         function(reason){
-          var list = document.getElementById(id + '-ul');
-          var statusCode = ('status' in reason) ? reason.status : 0;
-          statusCode = (typeof statusCode === 'string') ? parseInt(reason.slice(-3)) : statusCode;
-// console.log(statusCode)
+          var node = document.getElementById(id + '-ul');
 
-          var msgs = inputBox.querySelectorAll('.response-message');
-          for(var i = 0; i < msgs.length; i++){
-            msgs[i].parentNode.removeChild(msgs[i]);
-          }
-
-          switch(statusCode) {
-            default:
-              inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Unable to access ('+ reason.statusText +').</p>');
-              break;
-            case 404:
-              inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">Not found.</p></div>');
-              break;
-            case 401:
-              var msg = 'You are not authorized.';
-              if(!DO.C.User.IRI){
-                msg += ' Try signing in.';
-              }
-              inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">' + msg + '</p></div>');
-              break;
-            case 403:
-              var msg = 'You don\'t have permission to access this location.';
-              inputBox.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">' + msg + '</p></div>');
-              break;
-
-          }
+          DO.U.showErrorResponseMessage(node, reason.response);
         });
       }
       else{
