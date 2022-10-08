@@ -3965,6 +3965,61 @@ console.log(reason);
       }
     },
 
+    showErrorResponseMessage(node, response, context) {
+      var statusCode = ('status' in response) ? response.status : 0;
+      statusCode = (typeof statusCode === 'string') ? parseInt(response.slice(-3)) : statusCode;
+// console.log(statusCode)
+console.log(response)
+      var msgs = node.querySelectorAll('.response-message');
+      for(var i = 0; i < msgs.length; i++){
+        msgs[i].parentNode.removeChild(msgs[i]);
+      }
+
+      var statusText = response.statusText || '';
+      //TODO: use Sanitizer API?
+      statusText = statusText
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+
+      var msg = '';
+
+      switch(statusCode) {
+        default:
+          msg = 'Request unsuccessful ('+ statusText + ').';
+          break;
+        case 401:
+          var msg = 'You are not authenticated with valid credentials.';
+          msg = (!DO.C.User.IRI) ? msg + ' . Try signing in.' : msg;
+          break;
+        case 403:
+          var msg = 'This request is forbidden.';
+          break;
+        case 404:
+          msg = 'Not found.';
+          break;
+        case 405:
+          msg = 'Request not supported on the target resource.';
+          break;
+        case 409:
+          msg = 'Conflict with the current state of the target resource.';
+          break;
+        case 412:
+          msg = 'Precondition failed.';
+          switch (context) {
+            default:
+              break;
+            case 'createContainer':
+              msg += ' Use a different Container Name.';
+              break;
+          }
+          break;
+      }
+
+      node.insertAdjacentHTML('beforeend', '<div class="response-message"><p class="error">' + msg + '</p></div>');
+    },
+
     setupResourceBrowser: function(parent, id, action){
       id = id || 'browser-location';
       action = action || 'write';
