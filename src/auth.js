@@ -199,9 +199,10 @@ function showUserIdentityInput (e) {
 
   var webid = Config.User.WebIdDelegate ? Config.User.WebIdDelegate : "";
   var code = '<aside id="user-identity-input" class="do on">' + Config.Button.Close + '<h2>Sign in</h2><p id="user-identity-input-webid"><label>WebID</label> <input id="webid" type="text" placeholder="https://csarven.ca/#i" value="'+webid+'" name="webid"/> <button class="signin">Sign in</button></p>';
-  if (window.location.protocol === "https:") {
+  //XXX: This limitation may not be necessary.
+  // if (window.location.protocol === "https:") {
     code += '<p id="user-identity-input-oidc">or with <label>OpenID Connect</label> <button class="signin-oidc">Sign in</button></p>';
-  }
+  // }
   code += '</aside>';
 
   document.documentElement.appendChild(util.fragmentFromString(code))
