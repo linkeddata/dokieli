@@ -3892,11 +3892,9 @@ console.log(reason);
         DO.U.triggerBrowse(input.value, id, action);
       }, false);
 
-      if (action == 'write') {
-        createButton.addEventListener('click', function(e){
-          DO.U.showCreateContainer(input.value, id, action, e);
-        }, false);
-      }
+      createButton.addEventListener('click', function(e){
+        DO.U.showCreateContainer(input.value, id, action, e);
+      }, false);
     },
 
     triggerBrowse: function(url, id, action){
