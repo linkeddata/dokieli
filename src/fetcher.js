@@ -23,6 +23,7 @@ module.exports = {
   deleteResource,
   getAcceptPostPreference,
   getAcceptPatchPreference,
+  getAcceptPutPreference,
   getResource,
   getResourceHead,
   getResourceGraph,
@@ -246,6 +247,30 @@ function getAcceptPatchPreference (url) {
         return 'text/n3'
       } else if (header.indexOf('application/sparql-update') > -1) {
         return 'application/sparql-update'
+      } else {
+        console.log('Accept-Patch contains unrecognised media-range; ' + result.headers)
+        return result.headers
+      }
+    })
+}
+
+function getAcceptPutPreference (url) {
+  const pIRI = url || uri.getProxyableIRI(url)
+
+  return getResourceOptions(pIRI, {'header': 'Accept-Put'})
+    .catch(error => {
+//      console.log(error)
+      return {'headers': 'text/html'}
+    })
+    .then(result => {
+      let header = result.headers.trim().split(/\s*,\s*/)
+
+      if (header.indexOf('text/html') > -1 || header.indexOf('application/xhtml+xml') > -1) {
+        return 'text/html'
+      } else if (header.indexOf('text/turtle') > -1 || header.indexOf('*/*') > -1) {
+        return 'text/turtle'
+      } else if (header.indexOf('application/ld+json') > -1 || header.indexOf('application/json') > -1) {
+        return 'application/ld+json'
       } else {
         console.log('Accept-Patch contains unrecognised media-range; ' + result.headers)
         return result.headers
