@@ -3343,6 +3343,12 @@ console.log(reason);
           msgs[i].parentNode.removeChild(msgs[i]);
         }
 
+        //TODO: Perhaps this should be handled outside of generateBrowserList?
+        var createContainer = document.getElementById(id + '-create-container');
+        if (createContainer) {
+          createContainer.innerHTML = '';
+        }
+
         var list = document.getElementById(id + '-ul');
         list.innerHTML = '';
 
@@ -3869,21 +3875,28 @@ console.log(reason);
       });
     },
 
-    initBrowse: function(storageUrl, input, browseButton, id, action){
-      input.value = storageUrl;
+    //TODO: Refactor, especially buttons.
+    initBrowse: function(baseUrl, input, browseButton, createButton, id, action){
+      input.value = baseUrl;
       var headers;
       headers = {'Accept': 'text/turtle, application/ld+json'};
-      fetcher.getResourceGraph(storageUrl, headers).then(function(g){
-        DO.U.generateBrowserList(g, storageUrl, id, action).then(function(i){
-          DO.U.showStorageDescription(g, id, storageUrl);
+      fetcher.getResourceGraph(baseUrl, headers).then(function(g){
+        DO.U.generateBrowserList(g, baseUrl, id, action).then(function(i){
+          DO.U.showStorageDescription(g, id, baseUrl);
         });
       }).then(function(i){
         document.getElementById(id + '-' + action).textContent = (action == 'write') ? input.value + util.generateAttributeId() : input.value;
       });
 
-      browseButton.addEventListener('click', function(){
+      browseButton.addEventListener('click', function(e){
         DO.U.triggerBrowse(input.value, id, action);
       }, false);
+
+      if (action == 'write') {
+        createButton.addEventListener('click', function(e){
+          DO.U.showCreateContainer(input.value, id, action, e);
+        }, false);
+      }
     },
 
     triggerBrowse: function(url, id, action){
@@ -4043,10 +4056,12 @@ console.log(response)
       id = id || 'browser-location';
       action = action || 'write';
 
-      parent.insertAdjacentHTML('beforeend', '<div id="' + id + '"><label for="' + id +'-input">URL</label> <input type="text" id="' + id +'-input" name="' + id + '-input" placeholder="https://example.org/path/to/" /><button id="' + id +'-update" disabled="disabled" title="Browse location">Browse</button></div>\n\
-      <div id="' + id +'-listing"></div>');
+      parent.insertAdjacentHTML('beforeend', '<div id="' + id + '"><label for="' + id +'-input">URL</label> <input type="text" id="' + id +'-input" name="' + id + '-input" placeholder="https://example.org/path/to/" /><button id="' + id +'-update" disabled="disabled" title="Browse location">Browse</button> <button id="' + id + '-create-container-button' + '" title="Create container (folder)">Create container</button></div>\n\
+      <div id="' + id + '-create-container"></div><div id="' + id + '-listing"></div>');
 
       var inputBox = document.getElementById(id);
+      var createContainer = document.getElementById(id + '-create-container');
+      var createButton = document.getElementById(id + '-create-container-button');
       var storageBox = document.getElementById(id + '-listing');
       var input = document.getElementById(id + '-input');
       var browseButton = document.getElementById(id + '-update');
@@ -4060,6 +4075,9 @@ console.log(response)
         var actionNode = document.getElementById(id + '-' + action);
         if (input.value.length > 10 && input.value.match(/^https?:\/\//g) && input.value.slice(-1) == "/") {
           browseButton.removeAttribute('disabled');
+          //TODO: enable button if only agent has write permission?
+          // createButton.removeAttribute('disabled');
+
           if(e.which == 13){
             DO.U.triggerBrowse(input.value, id, action);
           }
@@ -4069,6 +4087,8 @@ console.log(response)
         }
         else {
           browseButton.disabled = 'disabled';
+          //TODO: disable button if only agent has write permission?
+          // createButton.disabled = 'disabled';
           if(actionNode) {
             actionNode.textContent = input.value;
           }
@@ -4083,23 +4103,29 @@ console.log(response)
         storageBox.appendChild(browserul);
       }
 
-      var storageUrl;
+      var baseUrl;
 
       if(DO.C.User.Storage && DO.C.User.Storage.length > 0) {
-        storageUrl = uri.forceTrailingSlash(DO.C.User.Storage[0]); // TODO: options for multiple storage
+        baseUrl = uri.forceTrailingSlash(DO.C.User.Storage[0]); // TODO: options for multiple storage
       }
 
-      if(storageUrl){
-        DO.U.initBrowse(storageUrl, input, browseButton, id, action);
+      if(baseUrl){
+        DO.U.initBrowse(baseUrl, input, browseButton, createButton, id, action);
       }
       else {
         fetcher.getLinkRelation(DO.C.Vocab['oaannotationService']['@id']).then(
           function(storageUrl) {
-            DO.U.initBrowse(storageUrl[0], input, browseButton, id, action);
+            DO.U.initBrowse(storageUrl[0], input, browseButton, createButton, id, action);
           },
           function(){
+            var input = document.getElementById(id + '-input');
+
             browseButton.addEventListener('click', function(){
+              createContainer.innerHTML = '';
               DO.U.triggerBrowse(input.value, id, action);
+            }, false);
+            createButton.addEventListener('click', function(e){
+              DO.U.showCreateContainer(input.value, id, action, e);
             }, false);
           }
         )
