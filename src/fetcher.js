@@ -37,7 +37,7 @@ module.exports = {
   putResourceACL,
   postActivity,
   processSave,
-  updateTimeMap,
+  patchResourceWithAcceptPatch,
   putResourceWithAcceptPut
 }
 
@@ -833,7 +833,9 @@ function processSave(url, slug, data, options) {
     })
 }
 
-function updateTimeMap(url, patch, options) {
+//TODO: Use OPTIONS (getResourceOptions). Check/use Allow: PATCH and Accept-Patch. Check/use Allow: PUT using Accept-Put. Fallback to PUT.
+
+function patchResourceWithAcceptPatch(url, patch, options) {
   return getAcceptPatchPreference(url)
     .then(preferredContentType => {
       options = options || {}

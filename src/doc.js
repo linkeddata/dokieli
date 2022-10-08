@@ -1091,7 +1091,7 @@ function createImmutableResource(url, data, options) {
 
   var patch = { 'insert': insertG };
 
-  fetcher.updateTimeMap(timeMapURL, patch).then(() =>{
+  fetcher.patchResourceWithAcceptPatch(timeMapURL, patch).then(() =>{
     showTimeMap(null, timeMapURL)
   });
 }
