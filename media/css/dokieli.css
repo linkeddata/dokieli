@@ -60,6 +60,14 @@ outline:none;
   animation:target 2s linear;
 }
 
+@keyframes response {
+  50% { background-color:currentColor; box-shadow:inset 0px 0px 0px 3px #ccc;}
+}
+
+.success, .error, .warning {
+  animation:response 2s linear;
+}
+
 
 /*Animated adapted from https://github.com/daneden/animate.css using MIT license*/
 .animated {
