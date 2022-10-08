@@ -3912,6 +3912,78 @@ console.log(reason);
       }
     },
 
+    showCreateContainer: function(baseURL, id, action, e) {
+      //FIXME: Do these checks for now until showCreateContainer is refactored
+      if (!e) {
+        return;
+      }
+      id = id || util.generateUUID();
+
+      var div = document.getElementById(id + '-create-container');
+      if (div) {
+        div.innerHTML = '';
+      }
+
+      div.insertAdjacentHTML('beforeend', '<label for="' + id + '-create-container-name">Container Name</label> <input id="' + id + '-create-container-name" name="' + id + '-create-container-name" type="text" placeholder="My Secret Stuff" /> <button class="insert" disabled="disabled">Create</button>');
+
+      var label = div.querySelector('label');
+      var input = div.querySelector('input');
+
+      var createButton = document.querySelector('#' + id + '-create-container button.insert');
+
+      input.addEventListener('keyup', function(e){
+        var containerLabel = input.value.trim();
+
+        if (containerLabel.length > 0) {
+          createButton.removeAttribute('disabled');
+        }
+        else {
+          createButton.disabled = 'disabled';
+        }
+      });
+
+      createButton.addEventListener('click', function(e){
+        //FIXME: Escaping containerLabel and containerURL (request-target) can be better.
+
+        var patch = {};
+        var containerLabel = input.value.trim();
+        var insertG = '<> <' + DO.C.Vocab['dctermstitle'] +  '> """' + containerLabel.replace(/"/g, '\"') + '""" .';
+        patch = { 'insert': insertG };
+
+        containerLabel = containerLabel.endsWith('/') ? containerLabel.slice(0, -1) : containerLabel;
+
+        var containerURL = baseURL + encodeURIComponent(containerLabel) + '/';
+
+        var options = { 'headers': { 'If-None-Match': '*' } };
+
+        fetcher.patchResourceWithAcceptPatch(containerURL, patch, options).then(
+          function(response){
+            DO.U.triggerBrowse(containerURL, id, action);
+          },
+          function(reason) {
+            var main = '<article about=""><dl id="document-title"><dt>Title</dt><dd property="dcterms:title">' + containerLabel + '</dd></dl></article>';
+            var o = {
+              'omitLang': true,
+              'prefixes': {
+                'dcterms': 'http://purl.org/dc/terms/'
+              }
+            }
+            var data = doc.createHTML(containerLabel, main, o);
+// console.log(data);
+
+            fetcher.putResourceWithAcceptPut(containerURL, data, options).then(
+              function(response){
+                DO.U.triggerBrowse(containerURL, id, action);
+              },
+              function(reason){
+// console.log(reason);
+                var node = document.getElementById(id + '-create-container');
+                DO.U.showErrorResponseMessage(node, reason.response, 'createContainer');
+              });
+          });
+      });
+    },
+
     showErrorResponseMessage(node, response, context) {
       var statusCode = ('status' in response) ? response.status : 0;
       statusCode = (typeof statusCode === 'string') ? parseInt(response.slice(-3)) : statusCode;
