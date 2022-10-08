@@ -172,9 +172,11 @@ function createHTML(title, main, options) {
   title = title || '';
   options = options || {};
   var prefix = ('prefixes' in options && Object.keys(options.prefixes).length > 0) ? ' prefix="' + getRDFaPrefixHTML(options.prefixes) + '"' : '';
+  var lang = ('lang' in options) ? ' lang="' + options.lang + '" xml:lang="' + options.lang + '"' : 'en';
+  lang = ('omitLang' in options) ? '' : lang;
 
   return '<!DOCTYPE html>\n\
-<html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml">\n\
+<html' + lang + ' xmlns="http://www.w3.org/1999/xhtml">\n\
   <head>\n\
     <meta charset="utf-8" />\n\
     <title>' + title + '</title>\n\
