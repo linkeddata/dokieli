@@ -545,7 +545,10 @@ module.exports = {
     "citousesDataFrom": { "@id": "http://purl.org/spar/cito/usesDataFrom", "@type": "@id"},
     "citousesMethodIn": { "@id": "http://purl.org/spar/cito/usesMethodIn", "@type": "@id"},
 
-    "specrequirement": { "@id": "http://www.w3.org/ns/spec#requirement", "@type": "@id"}
+    "specrequirement": { "@id": "http://www.w3.org/ns/spec#requirement", "@type": "@id", "@array": true},
+    "specstatement": { "@id": "http://www.w3.org/ns/spec#statement"},
+    "specrequirementSubject": { "@id": "http://www.w3.org/ns/spec#requirementSubject", "@type": "@id"},
+    "specrequirementLevel": { "@id": "http://www.w3.org/ns/spec#requirementLevel", "@type": "@id"}
   },
 
   SecretAgentNames: ['Abraham Lincoln', 'Admiral Awesome', 'Anonymous Coward', 'Believe it or not', 'Creative Monkey', 'Senegoid', 'Dog from the Web', 'Ekrub', 'Elegant Banana', 'Foo Bar', 'Lbmit', 'Lunatic Scholar', 'NahuLcm', 'Noslen', 'Okie Dokie', 'Samurai Cat', 'Vegan Superstar'],
