@@ -976,6 +976,12 @@ function getResourceInfoSpecRequirements(s) {
     info['spec'][requirementIRI][DO.C.Vocab['specstatement']["@id"]] = statement;
     info['spec'][requirementIRI][DO.C.Vocab['specrequirementSubject']["@id"]] = requirementSubject;
     info['spec'][requirementIRI][DO.C.Vocab['specrequirementLevel']["@id"]] = requirementLevel;
+
+    Object.keys(DO.C.Citation).forEach(function(citationIRI){
+      if (requirementGraph[citationIRI] && requirementGraph[citationIRI].at(0)) {
+        info['spec'][requirementIRI][citationIRI] = requirementGraph[citationIRI]._array;
+      }
+    });
   });
 
 // console.log(info['spec'])
