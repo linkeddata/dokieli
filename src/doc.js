@@ -35,6 +35,7 @@ module.exports = {
   showTimeMap,
   getResourceInfo,
   getResourceInfoODRLPolicies,
+  getResourceInfoSpecRequirements,
   setFeatureStatesOfResourceInfo,
   createImmutableResource,
   createMutableResource,
@@ -836,6 +837,10 @@ function getResourceInfo(data, options) {
           info['odrl'] = getResourceInfoODRLPolicies(s);
         }
 
+        if(s.specrequirement && s.specrequirement.at(0) && s.iri().toString() == documentURL) {
+          info['spec'] = getResourceInfoSpecRequirements(s);
+        }
+
         info['buttonStates'] = setFeatureStatesOfResourceInfo(info);
 
         if ('headers' in Config['ResourceInfo']){
@@ -955,6 +960,31 @@ function getResourceInfoODRLPolicies(s) {
 
   return info['odrl'];
 }
+
+function getResourceInfoSpecRequirements(s) {
+  var info = {}
+  info['spec'] = {};
+
+  s.specrequirement.forEach(function(requirementIRI) {
+    info['spec'][requirementIRI] = {};
+
+    var requirementGraph = s.child(requirementIRI);
+    var statement = requirementGraph.specstatement;
+    var requirementSubject = requirementGraph.specrequirementSubject;
+    var requirementLevel = requirementGraph.specrequirementLevel;
+
+    info['spec'][requirementIRI] = {
+      'statement': statement,
+      'requirementSubject': requirementSubject,
+      'requirementLevel': requirementLevel
+    }
+  });
+
+// console.log(info['spec'])
+
+  return info['spec'];
+}
+
 
 //TODO: This should be triggered after sign-in
 function setFeatureStatesOfResourceInfo(info) {
