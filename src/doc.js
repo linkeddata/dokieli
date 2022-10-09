@@ -982,6 +982,11 @@ function getResourceInfoSpecRequirements(s) {
         info['spec'][requirementIRI][citationIRI] = requirementGraph[citationIRI]._array;
       }
     });
+
+    var seeAlso = requirementGraph[DO.C.Vocab['rdfsseeAlso']["@id"]];
+    if (seeAlso && seeAlso.at(0)) {
+      info['spec'][requirementIRI][DO.C.Vocab['rdfsseeAlso']["@id"]] = seeAlso._array;
+    }
   });
 
 // console.log(info['spec'])
