@@ -2045,13 +2045,51 @@ var DO = {
               s += '<h2>' + label + '</h2>';
               s += '<div><ul>';
               break;
+
+            case 'table-of-requirements':
+              s += '<section id="' + id + '">';
+              s += '<h2>' + label + '</h2>';
+              s += '<div><table>';
+              break;
           }
 
           if (id == 'table-of-contents') {
             s += DO.U.getListOfSections(document.querySelectorAll('h1 ~ div > section:not([class~="slide"])'), {'raw': true});
           }
           else {
-            if (id == 'list-of-abbreviations') {
+            if (id == 'table-of-requirements') {
+//Sort by requirementSubject then requirementLevel
+
+              s += '<thead><tr><th>Subject</th><th>Level</th><th>Statement</th></tr></thead>';
+              s += '<tbody>';
+              Object.keys(DO.C.ResourceInfo['spec']).forEach(function(i) {
+// console.log(DO.C.ResourceInfo['spec'][i])
+                var statement = DO.C.ResourceInfo['spec'][i][DO.C.Vocab['specstatement']['@id']] || i;
+                statement = '<a href="' + i + '">' + statement + '</a>';
+
+                var requirementSubjectIRI = DO.C.ResourceInfo['spec'][i][DO.C.Vocab['specrequirementSubject']['@id']];
+                var requirementSubjectLabel = requirementSubjectIRI || '<span class="warning">?</span>';
+                if (requirementSubjectLabel.startsWith('http')) {
+                  requirementSubjectLabel = uri.getFragmentFromString(requirementSubjectIRI) || uri.getURLLastPath(requirementSubjectIRI) || requirementSubjectLabel;
+                }
+                var requirementSubject = '<a href="' + requirementSubjectIRI + '">' + requirementSubjectLabel + '</a>';
+
+                var requirementLevelIRI = DO.C.ResourceInfo['spec'][i][DO.C.Vocab['specrequirementLevel']['@id']];
+                var requirementLevelLabel = requirementLevelIRI || '<span class="warning">?</span>';
+                if (requirementLevelLabel.startsWith('http')) {
+                  requirementLevelLabel = uri.getFragmentFromString(requirementLevelIRI) || uri.getURLLastPath(requirementLevelIRI) || requirementLevelLabel;
+                }
+                var requirementLevel = '<a href="' + requirementLevelIRI + '">' + requirementLevelLabel + '</a>';
+
+                s += '<tr>';
+                s += '<td>' + requirementSubject + '</td>';
+                s += '<td>' + requirementLevel + '</td>';
+                s += '<td>' + statement + '</td>';
+                s += '</tr>'
+              });
+              s += '</tbody>';
+            }
+            else if (id == 'list-of-abbreviations') {
               if (nodes.length > 0) {
                 nodes = [].slice.call(nodes);
                 nodes.sort(function(a, b) {
@@ -2068,7 +2106,7 @@ var DO = {
                 }
               };
             }
-            //list-of-figures, list-of-tables, list-of-quotations, list-of-requirements
+            //list-of-figures, list-of-tables, list-of-quotations, table-of-requirements
             else {
               var processed = [];
               for (var i = 0; i < nodes.length; i++) {
@@ -2120,6 +2158,11 @@ var DO = {
 
             case 'list-of-quotations':
               s += '</ul></div>';
+              s += '</section>';
+              break;
+
+            case 'table-of-requirements':
+              s += '</table></div>';
               s += '</section>';
               break;
           }
