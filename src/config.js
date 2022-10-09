@@ -199,6 +199,7 @@ module.exports = {
     'list-of-tables',
     'list-of-abbreviations',
     'list-of-quotations',
+    'table-of-requirements',
     'abstract',
     'categories-and-subject-descriptors',
     'keywords',
@@ -212,7 +213,7 @@ module.exports = {
     'list-of-tables': { 'label': 'Tables', 'selector': 'table', 'titleSelector': 'caption' },
     'list-of-abbreviations': { 'label': 'Abbreviations', 'selector': 'abbr', 'titleSelector': 'title'},
     'list-of-quotations': {'label': 'Quotations', 'selector': 'q', 'titleSelector': 'cite'},
-    'list-of-requirements': {'label': 'Requirements', 'selector': 'http://www.w3.org/ns/spec#requirement', 'titleSelector': 'http://www.w3.org/ns/spec#statement'},
+    'table-of-requirements': {'label': 'Requirements', 'selector': '[rel~="spec:requirement"]', 'titleSelector': '[property~="spec:statement"]'},
     'references': { 'label': 'References', 'selector':'cite a', 'titleSelector': 'h2' }
   },
   CollectionItemsLimit: 20,
