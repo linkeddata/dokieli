@@ -973,11 +973,9 @@ function getResourceInfoSpecRequirements(s) {
     var requirementSubject = requirementGraph.specrequirementSubject;
     var requirementLevel = requirementGraph.specrequirementLevel;
 
-    info['spec'][requirementIRI] = {
-      'statement': statement,
-      'requirementSubject': requirementSubject,
-      'requirementLevel': requirementLevel
-    }
+    info['spec'][requirementIRI][DO.C.Vocab['specstatement']["@id"]] = statement;
+    info['spec'][requirementIRI][DO.C.Vocab['specrequirementSubject']["@id"]] = requirementSubject;
+    info['spec'][requirementIRI][DO.C.Vocab['specrequirementLevel']["@id"]] = requirementLevel;
   });
 
 // console.log(info['spec'])
