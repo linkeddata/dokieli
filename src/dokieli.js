@@ -2027,20 +2027,24 @@ var DO = {
           var tId = document.getElementById(id);
           if(tId) { tId.parentNode.removeChild(tId); }
 
-          if (id == 'list-of-abbreviations') {
-            s += '<section id="' + id + '">';
-            s += '<h2>' + label + '</h2>';
-            s += '<div><dl>';
-          }
-          else if(id == 'list-of-quotations') {
-            s += '<section id="' + id + '">';
-            s += '<h2>' + label + '</h2>';
-            s += '<div><ul>';
-          }
-          else {
-            s += '<nav id="' + id + '">';
-            s += '<h2>' + label + '</h2>';
-            s += '<div><ol class="toc">';
+          switch(id) {
+            default:
+              s += '<nav id="' + id + '">';
+              s += '<h2>' + label + '</h2>';
+              s += '<div><ol class="toc">';
+              break;
+
+            case 'list-of-abbreviations':
+              s += '<section id="' + id + '">';
+              s += '<h2>' + label + '</h2>';
+              s += '<div><dl>';
+              break;
+
+            case 'list-of-quotations':
+              s += '<section id="' + id + '">';
+              s += '<h2>' + label + '</h2>';
+              s += '<div><ul>';
+              break;
           }
 
           if (id == 'table-of-contents') {
@@ -2064,7 +2068,7 @@ var DO = {
                 }
               };
             }
-            //list-of-figures, list-of-tables, list-of-quotations
+            //list-of-figures, list-of-tables, list-of-quotations, list-of-requirements
             else {
               var processed = [];
               for (var i = 0; i < nodes.length; i++) {
@@ -2103,16 +2107,21 @@ var DO = {
             }
           }
 
-          if (id == 'list-of-quotations'){
-            s += '</ul></div>';
-            s += '</section>';
-          }
-          else if (id == 'list-of-abbreviations'){
-            s += '</dl></div>';
-            s += '</section>';
-          } else {
-            s += '</ol></div>';
-            s += '</nav>';
+          switch(id) {
+            default:
+              s += '</ol></div>';
+              s += '</nav>';
+              break;
+
+            case 'list-of-abbreviations':
+              s += '</dl></div>';
+              s += '</section>';
+              break;
+
+            case 'list-of-quotations':
+              s += '</ul></div>';
+              s += '</section>';
+              break;
           }
         }
       }
