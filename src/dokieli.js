@@ -412,14 +412,18 @@ var DO = {
                       // if (target.startsWith(currentPathURL)) {
                         Object.keys(DO.C.Citation).forEach(function(citationCharacterization){
                           var citedEntity = s[citationCharacterization];
-                          if(citedEntity && citedEntity.startsWith(currentPathURL)) {
-                            options['objectCitingEntity'] = true;
-                            citation = {
-                              'citingEntity': object,
-                              'citationCharacterization': citationCharacterization,
-                              'citedEntity': target
-                            }
-                          }
+                          // if(citedEntity) {
+                            citedEntity.forEach(function(cE) {
+                              if(cE.startsWith(currentPathURL)) {
+                                options['objectCitingEntity'] = true;
+                                citation = {
+                                  'citingEntity': object,
+                                  'citationCharacterization': citationCharacterization,
+                                  'citedEntity': target
+                                }
+                              }
+                            })
+                          // }
                         })
                       // }
 
