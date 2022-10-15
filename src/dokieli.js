@@ -2064,12 +2064,19 @@ var DO = {
             if (id == 'table-of-requirements') {
 //Sort by requirementSubject then requirementLevel
 
+              s += '<caption>Conformance and Test Coverage</caption>'
               s += '<thead><tr><th>Subject</th><th>Level</th><th>Statement</th></tr></thead>';
               s += '<tbody>';
               Object.keys(DO.C.ResourceInfo['spec']).forEach(function(i) {
 // console.log(DO.C.ResourceInfo['spec'][i])
                 var statement = DO.C.ResourceInfo['spec'][i][DO.C.Vocab['specstatement']['@id']] || i;
-                statement = '<a href="' + i + '">' + statement + '</a>';
+                //FIXME: This selector is brittle.
+                // var requirementIRI = document.querySelector('#document-identifier [rel="owl:sameAs"]');
+                var requirementIRI = document.querySelector('#document-latest-published-version [rel="rdfs:seeAlso"]');
+                requirementIRI = requirementIRI.href || i;
+
+                requirementIRI = i.replace(uri.stripFragmentFromString(i), requirementIRI);
+                statement = '<a href="' + requirementIRI + '">' + statement + '</a>';
 
                 var requirementSubjectIRI = DO.C.ResourceInfo['spec'][i][DO.C.Vocab['specrequirementSubject']['@id']];
                 var requirementSubjectLabel = requirementSubjectIRI || '<span class="warning">?</span>';
@@ -2174,6 +2181,26 @@ var DO = {
       }
 
       doc.insertDocumentLevelHTML(document, s, { 'id': id });
+
+      if (id == 'table-of-requirements') {
+        var testSuites = DO.C.ResourceInfo.graph.spectestSuite;
+        if (testSuites && testSuites.at(0)) {
+          //TODO: Process all spec:testSuites
+          var url = testSuites.at(0);
+
+          fetcher.getResourceGraph(url).then(
+            function(g){
+// console.log(g)
+
+              DO.U.insertTestCoverageToTable(id, g);
+            },
+            function(reason){
+console.log(reason);
+            }
+          );
+
+        }
+      }
     },
 
     // ?spec spec:requirement ?requirement .
