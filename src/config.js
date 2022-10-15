@@ -547,10 +547,15 @@ module.exports = {
     "citousesDataFrom": { "@id": "http://purl.org/spar/cito/usesDataFrom", "@type": "@id", "@array": true },
     "citousesMethodIn": { "@id": "http://purl.org/spar/cito/usesMethodIn", "@type": "@id", "@array": true },
 
-    "specrequirement": { "@id": "http://www.w3.org/ns/spec#requirement", "@type": "@id", "@array": true},
-    "specstatement": { "@id": "http://www.w3.org/ns/spec#statement"},
-    "specrequirementSubject": { "@id": "http://www.w3.org/ns/spec#requirementSubject", "@type": "@id"},
-    "specrequirementLevel": { "@id": "http://www.w3.org/ns/spec#requirementLevel", "@type": "@id"}
+    "specrequirement": { "@id": "http://www.w3.org/ns/spec#requirement", "@type": "@id", "@array": true },
+    "specstatement": { "@id": "http://www.w3.org/ns/spec#statement" },
+    "specrequirementSubject": { "@id": "http://www.w3.org/ns/spec#requirementSubject", "@type": "@id" },
+    "specrequirementLevel": { "@id": "http://www.w3.org/ns/spec#requirementLevel", "@type": "@id" },
+    "spectestSuite": { "@id": "http://www.w3.org/ns/spec#testSuite", "@type": "@id", "@array": true },
+    "specimplementationReports": { "@id": "http://www.w3.org/ns/spec#implementationReports", "@type": "@id", "@array": true },
+    "specrequirementReference": { "@id": "http://www.w3.org/ns/spec#requirementReference", "@type": "@id" },
+    "testdescriptionTestCase": { "@id": "http://www.w3.org/2006/03/test-description#TestCase", "@type": "@id" },
+    "testdescriptionreviewStatus": { "@id": "http://www.w3.org/2006/03/test-description#reviewStatus", "@type": "@id" }
   },
 
   SecretAgentNames: ['Abraham Lincoln', 'Admiral Awesome', 'Anonymous Coward', 'Believe it or not', 'Creative Monkey', 'Senegoid', 'Dog from the Web', 'Ekrub', 'Elegant Banana', 'Foo Bar', 'Lbmit', 'Lunatic Scholar', 'NahuLcm', 'Noslen', 'Okie Dokie', 'Samurai Cat', 'Vegan Superstar'],
