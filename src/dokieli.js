@@ -2176,6 +2176,85 @@ var DO = {
       doc.insertDocumentLevelHTML(document, s, { 'id': id });
     },
 
+    // ?spec spec:requirement ?requirement .
+    // ?spec spec:implementationReport ?implementationReport .
+    // ?spec spec:testSuite ?testSuite .
+    // ?testSuite ldp:contains ?testCase .
+    // ?testCase spec:requirementReference ?requirement .
+    insertTestCoverageToTable(id, testSuiteGraph) {
+      var table = document.getElementById(id);
+      var theadth = '<th>Test Case</th><th>Review Status</th>'
+      table.querySelector('thead > tr').insertAdjacentHTML('beforeend', theadth);
+
+      var subjects = [];
+      testSuiteGraph.graph().toArray().forEach(function(t){
+        subjects.push(t.subject.nominalValue);
+      });
+      subjects = util.uniqueArray(subjects);
+
+      var testCases = [];
+
+      //FIXME: Brittle selector
+      var specificationReferenceBase = document.querySelector('#document-latest-published-version [rel="rdfs:seeAlso"]').href;
+// console.log(specificationReferenceBase)
+
+      subjects.forEach(function(i){
+        var s = testSuiteGraph.child(i)
+        var testCaseIRI = s.iri().toString();
+// console.log(s)
+        var types = s.rdftype._array || [];
+
+        if (types.length > 0) {
+          var resourceTypes = types;
+          if (resourceTypes.indexOf('http://www.w3.org/2006/03/test-description#TestCase') > -1){
+            if (s.specrequirementReference && s.specrequirementReference.startsWith(specificationReferenceBase)) {
+              testCases[testCaseIRI] = {};
+              testCases[testCaseIRI][DO.C.Vocab['specrequirementReference']['@id']] = s.specrequirementReference;
+              testCases[testCaseIRI][DO.C.Vocab['testdescriptionreviewStatus']['@id']] = s.testdescriptionreviewStatus;
+              testCases[testCaseIRI][DO.C.Vocab['dctermstitle']] = s.dctermstitle;
+            }
+          }
+        }
+      });
+
+// console.log(testCases);
+
+      table.querySelectorAll('tbody tr').forEach(function(tr){
+        var requirement = tr.querySelector('td:nth-child(3) a').href;
+
+        Object.keys(testCases).forEach(testCaseIRI => {
+          if (testCases[testCaseIRI][DO.C.Vocab['specrequirementReference']['@id']] == requirement) {
+            var testCaseLabel = testCases[testCaseIRI][DO.C.Vocab['dctermstitle']] || testCaseIRI;
+
+            var tdTestCase = tr.querySelector('td:nth-child(4)');
+
+            var testCaseHTML = '<a href="'+ testCaseIRI + '">' + testCaseLabel + '</a>';
+            if (tdTestCase) {
+              tdTestCase.insertAdjacentHTML('beforeend', ', ' + testCaseHTML);
+            }
+            else {
+              tr.insertAdjacentHTML('beforeend', '<td>' + testCaseHTML + '</td>');
+            }
+
+            if (testCases[testCaseIRI][DO.C.Vocab['testdescriptionreviewStatus']['@id']]) {
+              var reviewStatusIRI = testCases[testCaseIRI][DO.C.Vocab['testdescriptionreviewStatus']['@id']];
+              var reviewStatusLabel = uri.getFragmentFromString(reviewStatusIRI) || uri.getURLLastPath(reviewStatusIRI) || reviewStatusIRI;
+
+              var tdReviewStatus = tr.querySelector('td:nth-child(5)');
+
+              var reviewStatusHTML = '<a href="'+ reviewStatusIRI + '">' + reviewStatusLabel + '</a>';
+              if (tdReviewStatus) {
+                tdReviewStatus.insertAdjacentHTML('beforeend', ', ' + reviewStatusHTML);
+              }
+              else {
+                tr.insertAdjacentHTML('beforeend', '<td>' + reviewStatusHTML + '</td>');
+              }
+            }
+          }
+        })
+      });
+    },
+
     eventEscapeDocumentMenu: function(e) {
       if (e.keyCode == 27) { // Escape
         DO.U.hideDocumentMenu(e);
