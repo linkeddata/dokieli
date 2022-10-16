@@ -2073,7 +2073,7 @@ var DO = {
                 //FIXME: This selector is brittle.
                 // var requirementIRI = document.querySelector('#document-identifier [rel="owl:sameAs"]');
                 var requirementIRI = document.querySelector('#document-latest-published-version [rel="rdfs:seeAlso"]');
-                requirementIRI = requirementIRI.href || i;
+                requirementIRI = (requirementIRI) ? requirementIRI.href : i;
 
                 requirementIRI = i.replace(uri.stripFragmentFromString(i), requirementIRI);
                 statement = '<a href="' + requirementIRI + '">' + statement + '</a>';
