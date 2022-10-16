@@ -2064,8 +2064,8 @@ var DO = {
             if (id == 'table-of-requirements') {
 //Sort by requirementSubject then requirementLevel
 
-              s += '<caption>Conformance and Test Coverage</caption>'
-              s += '<thead><tr><th>Subject</th><th>Level</th><th>Statement</th></tr></thead>';
+              s += '<caption>Conformance Requirements and Test Coverage</caption>'
+              s += '<thead><tr><th colspan="3">Requirement</th></tr><tr><th>Subject</th><th>Level</th><th>Statement</th></tr></thead>';
               s += '<tbody>';
               Object.keys(DO.C.ResourceInfo['spec']).forEach(function(i) {
 // console.log(DO.C.ResourceInfo['spec'][i])
@@ -2191,8 +2191,9 @@ var DO = {
           fetcher.getResourceGraph(url).then(
             function(g){
 // console.log(g)
-
-              DO.U.insertTestCoverageToTable(id, g);
+              if (g) {
+                DO.U.insertTestCoverageToTable(id, g);
+              }
             },
             function(reason){
 console.log(reason);
@@ -2210,8 +2211,9 @@ console.log(reason);
     // ?testCase spec:requirementReference ?requirement .
     insertTestCoverageToTable(id, testSuiteGraph) {
       var table = document.getElementById(id);
-      var theadth = '<th>Test Case</th><th>Review Status</th>'
-      table.querySelector('thead > tr').insertAdjacentHTML('beforeend', theadth);
+      var thead = table.querySelector('thead');
+      thead.querySelector('tr:first-child').insertAdjacentHTML('beforeend', '<th colspan="2">Coverage</th>');
+      thead.querySelector('tr:nth-child(2)').insertAdjacentHTML('beforeend', '<th>Test Case (Review Status)</th>');
 
       var subjects = [];
       testSuiteGraph.graph().toArray().forEach(function(t){
@@ -2253,32 +2255,34 @@ console.log(reason);
           if (testCases[testCaseIRI][DO.C.Vocab['specrequirementReference']['@id']] == requirement) {
             var testCaseLabel = testCases[testCaseIRI][DO.C.Vocab['dctermstitle']] || testCaseIRI;
 
-            var tdTestCase = tr.querySelector('td:nth-child(4)');
-
             var testCaseHTML = '<a href="'+ testCaseIRI + '">' + testCaseLabel + '</a>';
-            if (tdTestCase) {
-              tdTestCase.insertAdjacentHTML('beforeend', ', ' + testCaseHTML);
-            }
-            else {
-              tr.insertAdjacentHTML('beforeend', '<td>' + testCaseHTML + '</td>');
-            }
 
             if (testCases[testCaseIRI][DO.C.Vocab['testdescriptionreviewStatus']['@id']]) {
               var reviewStatusIRI = testCases[testCaseIRI][DO.C.Vocab['testdescriptionreviewStatus']['@id']];
               var reviewStatusLabel = uri.getFragmentFromString(reviewStatusIRI) || uri.getURLLastPath(reviewStatusIRI) || reviewStatusIRI;
 
-              var tdReviewStatus = tr.querySelector('td:nth-child(5)');
+              var reviewStatusHTML = ' (<a href="'+ reviewStatusIRI + '">' + reviewStatusLabel + '</a>)';
 
-              var reviewStatusHTML = '<a href="'+ reviewStatusIRI + '">' + reviewStatusLabel + '</a>';
-              if (tdReviewStatus) {
-                tdReviewStatus.insertAdjacentHTML('beforeend', ', ' + reviewStatusHTML);
-              }
-              else {
-                tr.insertAdjacentHTML('beforeend', '<td>' + reviewStatusHTML + '</td>');
-              }
+              testCaseHTML = testCaseHTML + reviewStatusHTML;
+            }
+
+            testCaseHTML = '<li>' + testCaseHTML + '</li>';
+
+            var tdTestCase = tr.querySelector('td:nth-child(4)');
+
+            if (tdTestCase) {
+              tdTestCase.querySelector('ul').insertAdjacentHTML('beforeend', testCaseHTML);
+            }
+            else {
+              tr.insertAdjacentHTML('beforeend', '<td><ul>' + testCaseHTML + '</ul></td>');
             }
           }
         })
+
+        var tC = tr.querySelector('td:nth-child(4)');
+        if (!tC) {
+          tr.insertAdjacentHTML('beforeend', '<td><span class="warning">?</span></td>');
+        }
       });
     },
 
