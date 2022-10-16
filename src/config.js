@@ -194,6 +194,7 @@ module.exports = {
     'document-status',
     'document-see-also',
     'document-cited-by',
+    'document-policy',
     'table-of-contents',
     'list-of-figures',
     'list-of-tables',
