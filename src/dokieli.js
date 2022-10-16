@@ -2284,6 +2284,8 @@ console.log(reason);
           tr.insertAdjacentHTML('beforeend', '<td><span class="warning">?</span></td>');
         }
       });
+
+      table.insertAdjacentHTML('beforeend', '<tfoot><tr>' + doc.getTestDescriptionReviewStatusHTML() + '</tr></tfoot>')
     },
 
     eventEscapeDocumentMenu: function(e) {
