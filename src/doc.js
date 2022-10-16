@@ -44,7 +44,8 @@ module.exports = {
   buildReferences,
   updateReferences,
   showRobustLinksDecoration,
-  getCitationLabelsFromTerms
+  getCitationLabelsFromTerms,
+  getTestDescriptionReviewStatusHTML
 }
 
 function domToString (node, options = {}) {
@@ -1428,4 +1429,19 @@ function getCitationLabelsFromTerms(rel, citations) {
   });
 
   return citationLabels
+}
+
+function getTestDescriptionReviewStatusHTML() {
+  var reviewStatusHTML = [];
+
+  reviewStatusHTML.push('<dl id="test-description-review-statuses">');
+
+  Object.keys(Config.TestDescriptionReviewStatus).forEach(function(i){
+    reviewStatusHTML.push('<dt>' + uri.getFragmentFromString(i) + '</dt>');
+    reviewStatusHTML.push('<dd>' + Config.TestDescriptionReviewStatus[i] + '</dd>');
+  })
+
+  reviewStatusHTML.push('</dl>');
+
+  return reviewStatusHTML.join('');
 }
