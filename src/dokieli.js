@@ -4567,8 +4567,10 @@ console.log(response)
 // console.log(tmpl)
           });
 
-          var nodes = tmpl.querySelectorAll('head link, [src], object[data]');
-          nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': 'base-url-absolute', 'iri': iri});
+          tmpl.querySelector('head').insertAdjacentHTML('afterbegin', '<base href="' + iri + '" />');
+          //TODO: Setting the base URL with `base` seems to work correctly, i.e., link base is opened document's URL, and simpler than updating some of the elements' href/src/data attributes. Which approach may be better depends on actions afterwards, e.g., Save As (perhaps other features as well) may need to remove the base and go with the user selection.
+          // var nodes = tmpl.querySelectorAll('head link, [src], object[data]');
+          // nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': 'base-url-absolute', 'iri': iri});
 
           document.documentElement.removeAttribute('id');
           document.documentElement.removeAttribute('class');
