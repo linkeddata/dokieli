@@ -15,7 +15,9 @@ test("clicking on the menu button displays menu", async ({ page }) => {
   await expect(menu).toBeVisible();
 });
 
-test("clicking on the sign in button displays sign in modal", async ({ page }) => {
+test("clicking on the sign in button displays sign in modal", async ({
+  page,
+}) => {
   await page.goto("/");
   await expect(page.locator("[id=document-menu]")).not.toBeVisible();
 
@@ -25,6 +27,6 @@ test("clicking on the sign in button displays sign in modal", async ({ page }) =
 
   const signinbtn = page.locator("[class=signin-user]");
   await signinbtn.click();
-  const signinmodal =  page.locator("[id=user-identity-input]");
+  const signinmodal = page.locator("[id=user-identity-input]");
   await expect(signinmodal).toBeVisible();
 });
