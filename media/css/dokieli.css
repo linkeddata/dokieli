@@ -28,14 +28,23 @@ margin-top:0 !important;
 }
 }
 
-@media screen and (min-width: 75em){
-aside.note article {
-position: absolute !important;
-left: auto;
-right: -27%;
-z-index: 1;
-width: 25%;
+@media screen and (max-width: 700px){
+  #document-menu {
+    z-index: 1 !important;
+  }
+  #document-items {
+    z-index: 0 !important;
+  }
 }
+
+@media screen and (min-width: 75em){
+  aside.note article {
+  position: absolute !important;
+  left: auto;
+  right: -27%;
+  z-index: 1;
+  width: 25%;
+  }
 }
 
 @media screen {
