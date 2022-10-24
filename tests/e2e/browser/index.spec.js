@@ -107,3 +107,30 @@ test("clicking on the save-as button displays save-as modal", async ({
   const saveAsModal = page.locator("[id=save-as-document]");
   await expect(saveAsModal).toBeVisible();
 });
+
+test("clicking on the memento button displays additional buttons", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("[id=document-menu]")).not.toBeVisible();
+
+  await page.locator("#document-menu button").click();
+  const menu = page.locator("[id=document-menu]");
+  await expect(menu).toBeVisible();
+
+  const closeBtn = page.locator("[class=close]");
+  await closeBtn.click();
+
+  const mementoBtw = page.locator("[class=resource-memento]");
+  await mementoBtw.click();
+  const versionBtn = page.locator("[class=create-version]");
+  await expect(versionBtn).toBeVisible();
+  const immutableBtn = page.locator("[class=create-immutable]");
+  await expect(immutableBtn).toBeVisible();
+  const robustifyBtn = page.locator("[class=robustify-links]");
+  await expect(robustifyBtn).toBeVisible();
+  const snapshotBtn = page.locator("[class=snapshot-internet-archive]");
+  await expect(snapshotBtn).toBeVisible();
+  const exportBtn = page.locator("[class=export-as-html]");
+  await expect(exportBtn).toBeVisible();
+});
