@@ -134,3 +134,58 @@ test("clicking on the memento button displays additional buttons", async ({
   const exportBtn = page.locator("[class=export-as-html]");
   await expect(exportBtn).toBeVisible();
 });
+
+test("clicking on the edit button button enables author mode", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("[id=document-menu]")).not.toBeVisible();
+
+  await page.locator("#document-menu button").click();
+  const menu = page.locator("[id=document-menu]");
+  await expect(menu).toBeVisible();
+
+  const closeBtn = page.locator("[class=close]");
+  await closeBtn.click();
+
+  const editBtw = page.locator("[class=editor-enable]");
+  await editBtw.click();
+  const documentEditor = page.locator("[class=medium-editor-element]");
+  await expect(documentEditor).toHaveAttribute("contenteditable", "true");
+});
+
+test("clicking on the source button displays source modal", async ({
+  page,
+}) => {
+  await page.goto("/");
+  await expect(page.locator("[id=document-menu]")).not.toBeVisible();
+
+  await page.locator("#document-menu button").click();
+  const menu = page.locator("[id=document-menu]");
+  await expect(menu).toBeVisible();
+
+  const closeBtn = page.locator("[class=close]");
+  await closeBtn.click();
+
+  const sourceBtn = page.locator("[class=resource-source]");
+  await sourceBtn.click();
+  const sourceModal = page.locator("[id=source-view]");
+  await expect(sourceModal).toBeVisible();
+});
+
+test("clicking on the embed button embed data modal", async ({ page }) => {
+  await page.goto("/");
+  await expect(page.locator("[id=document-menu]")).not.toBeVisible();
+
+  await page.locator("#document-menu button").click();
+  const menu = page.locator("[id=document-menu]");
+  await expect(menu).toBeVisible();
+
+  const closeBtn = page.locator("[class=close]");
+  await closeBtn.click();
+
+  const embedBtn = page.locator("[class=embed-data-meta]");
+  await embedBtn.click();
+  const embedModal = page.locator("[id=embed-data-entry]");
+  await expect(embedModal).toBeVisible();
+});
