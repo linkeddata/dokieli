@@ -89,7 +89,12 @@
               <li data-id="authentication"><a href="#authentication">Authentication</a></li>
               <li data-id="storage"><a href="#storage">Storage</a></li>
               <li data-id="web-extension"><a href="#web-extension">Web Extension</a></li>
-              <li data-id="development"><a href="#development">Development</a></li>
+              <li data-id="development"><a href="#development">Development</a>
+                <ol>
+                  <li data-id="local-development"><a href="#local-documents">Local Development</a></li>
+                  <li data-id="testing"><a href="#testing">Testing</a></li>
+                </ol>
+              </li>
             </ol>
           </div>
         </nav>
@@ -149,7 +154,8 @@
                   <dd>An article may contain RDF classes like <samp>schema:CreativeWork sioc:Post prov:Entity
                       schema:Article</samp>, otherwise, there is no unique data that would indicate that it is a
                     "dokieli" document. If the HTML+RDFa representation includes dokieli.js and the DOM is ready, the
-                    <code>DO</code>: <code>Object { C: {…}, U: {…} }</code> will be available.</dd>
+                    <code>DO</code>: <code>Object { C: {…}, U: {…} }</code> will be available.
+                  </dd>
 
                   <dt>Annotation</dt>
                   <dd>An annotation has the <code>oa:Annotation</code> class. It is possible to know that the article
@@ -161,7 +167,8 @@
                   <dt>Notification</dt>
                   <dd>A notification may have one of the following classes: <code>as:Announce</code>,
                     <code>as:Like</code>, <code>as:Dislike</code>, <code>as:Relationship</code>. Notifications
-                    represented in HTML+RDFa do not include dokieli.js.</dd>
+                    represented in HTML+RDFa do not include dokieli.js.
+                  </dd>
                 </dl>
               </div>
             </section>
@@ -188,7 +195,8 @@
                     by normalising some input eg. <code>section</code>s use their heading's text content as input,
                     <code>table</code>s from <code>caption</code>. Anything of importance should have an identifier, and
                     aimed to be included for common patterns out of the box. <code>@id</code> values are reused in RDFa.
-                    See also <var>generateAttributeId</var> (dokieli.js) and its application in different places.</dd>
+                    See also <var>generateAttributeId</var> (dokieli.js) and its application in different places.
+                  </dd>
 
                   <dt id="html-outline">Outline</dt>
                   <dd>
@@ -199,7 +207,8 @@
                       <li><code>h1</code> is typically the first element node after <code>main &gt; article</code></li>
                       <li>There is a resource type, eg. <code>schema:Article</code> that can be found in
                         <code>main &gt; article</code> which is about the article. <code>body</code> may contain broad
-                        classes.</li>
+                        classes.
+                      </li>
                     </ul>
                   </dd>
 
@@ -228,7 +237,8 @@
                       <figcaption property="schema:name"><samp class="highlight-h2">h2</samp> and <samp
                           class="highlight-h3">h3</samp> are used for <code class="highlight-section">section</code>
                         titles, <code class="highlight-div">div</code> as a typical wrapper (eg. for
-                        <em>descriptions</em>), as well as to contain further sub-sectioned content.</figcaption>
+                        <em>descriptions</em>), as well as to contain further sub-sectioned content.
+                      </figcaption>
                     </figure>
                   </dd>
 
@@ -236,7 +246,8 @@
                   <dd><code>aside</code>s can technically appear anywhere, but tend to appear as the last element node
                     in <code>section</code>, eg. for related content, footnotes. If the <code>aside</code> is introduced
                     to the DOM via JavaScript for like annotations, they have a similar structure to
-                    <code>section</code>.</dd>
+                    <code>section</code>.
+                  </dd>
 
                   <dt id="html-div">Division</dt>
                   <dd><code>div</code>s within <code>section</code> are used to wrap a block of arbitrary markup and
@@ -343,7 +354,8 @@
                     <code>&lt;script id="meta-json-ld" type="application/ld+json" title="JSON-LD"&gt;&lt;/script&gt;</code>.
                     Data is enclosed in <code>CDATA</code> sections. This pattern is detected, visible and editable from
                     <cite>Embed Data</cite> in <i class="fa fa-bars"></i> <a href="#dokieli-menu">dokieli menu</a>. See
-                    also <var>showEmbedData</var> (dokieli.js).</dd>
+                    also <var>showEmbedData</var> (dokieli.js).
+                  </dd>
 
                   <dt id="html-css">CSS</dt>
                   <dd>Multiple stylesheets can be included with <code>@media</code>, and when accompanied with
@@ -369,25 +381,29 @@
                     <code>@resource</code> as a fragment, eg.
                     <code>&lt;section id="introduction" rel="schema:hasPart" resource="#introduction"&gt;</code>. This
                     allows the same identifier to be used for humans and machines, the value is derived from normalising
-                    its heading value as mentioned earlier.</dd>
+                    its heading value as mentioned earlier.
+                  </dd>
                   <dd>Relating parts is done with <code>rel="schema:hasPart"</code>, eg. sections with subsection:
                     <pre><code>&lt;section id="structure-and-semantics" inlist="" rel="schema:hasPart" resource="#structure-and-semantics"&gt;</code>
 <code>  &lt;section id="html-patterns" inlist="" rel="schema:hasPart" resource="#html-patterns"&gt;</code></pre>
                   </dd>
                   <dd><code>div</code>s are used to hold a block of HTML markup and types of content together eg.
                     <code>&lt;div datatype="rdf:HTML" property="schema:description" resource="#introduction" typeof="deo:Introduction"&gt;</code>
-                    makes it possible to declare that it contains HTML markup, and describes an introductory text.</dd>
+                    makes it possible to declare that it contains HTML markup, and describes an introductory text.
+                  </dd>
                   <dd>Some of the prefixes (<code>@prefix</code>) on the <code>body</code> element are defined in the
                     <cite><a href="https://www.w3.org/2011/rdfa-context/rdfa-1.1.html">RDFa Core Initial
                         Context</a></cite>. These prefixes are defined in dokieli for the purpose of being compact,
-                    robust, and to minimise potential errors for consumers.</dd>
+                    robust, and to minimise potential errors for consumers.
+                  </dd>
                 </dl>
 
                 <div class="note">
                   <h4>Note</h4>
                   <div>
                     <p>There is a <em>work in progress</em> to have a distribution version of dokeli, requiring only
-                      <samp>dokieli.css</samp> and <samp>dokieli.js</samp> in templates.</p>
+                      <samp>dokieli.css</samp> and <samp>dokieli.js</samp> in templates.
+                    </p>
                   </div>
                 </div>
 
@@ -449,7 +465,8 @@
                       consume notifications by way of discovering an article's inbox. Notifications are created for
                       activities like announcements, creating, (dis)liking, and consumed in order to be displayed in
                       context of available content. The protocol to send and consume notifications in dokieli uses
-                      <cite><a href="https://www.w3.org/TR/ldn/">Linked Data Notifications</a></cite>.</p>
+                      <cite><a href="https://www.w3.org/TR/ldn/">Linked Data Notifications</a></cite>.
+                    </p>
 
                     <pre id="html-document-annotation-service"><code>&lt;dl id="document-annotation-service"&gt;</code>
 <code>  &lt;dt&gt;Annotation Service&lt;/dt&gt;</code>
@@ -481,7 +498,8 @@
 
                     <p>Dates, you know.. kinda useful. The example above duplicates the ISO date in
                       <code>@content</code> and <code>@datetime</code>, but only one needs to be there, given that there
-                      parsers for different RDFa versions.</p>
+                      parsers for different RDFa versions.
+                    </p>
 
                     <pre id="html-document-license-rights"><code>&lt;dl id="document-license"&gt;</code>
 <code>  &lt;dt&gt;License&lt;/dt&gt;</code>
@@ -544,7 +562,8 @@
                       of it has to be human-visible. This is a run-time inclusion and typically included within
                       <code>&lt;aside class="note do"&gt;&lt;/aside&gt;</code>. Write operations like <cite>Save</cite>,
                       <cite>Save As</cite>, <cite>Export</cite> will exclude this (<code>class~="do"</code>) when it
-                      normalises the DOM to HTML.</p>
+                      normalises the DOM to HTML.
+                    </p>
 
                     <p>Currently dokieli uses <cite><a
                           href="https://www.w3.org/TR/annotation-vocab/#replying">oa:replying</a></cite>, <cite><a
@@ -555,7 +574,8 @@
                       <em>motivations</em>, and <cite><a
                           href="https://www.w3.org/TR/annotation-vocab/#describing">oa:describing</a></cite> and
                       <cite><a href="https://www.w3.org/TR/annotation-vocab/#tagging">oa:tagging</a></cite> for
-                      annotation <em>purpose</em>.</p>
+                      annotation <em>purpose</em>.
+                    </p>
 
                     <p>See also <var>createNoteDataHTML</var> (dokieli.js)</p>
 
@@ -677,7 +697,8 @@
                       id="html-ref-do"><code>&lt;span class="ref do" rel="schema:hasPart" resource="#r-461819979" typeof="dctypes:Text"&gt;&lt;mark id="r-461819979" property="schema:description"&gt;demonstrating advanced document authoring and interaction without a single point of control&lt;/mark&gt;&lt;sup class="ref-annotation"&gt;&lt;a rel="cito:hasReplyFrom" href="#461819979" resource="https://linkedresearch.org/annotation/csarven.ca/dokieli-rww/b6738766-3ce5-4054-96a9-ced7f05b439f"&gt;💬&lt;/a&gt;&lt;/sup&gt;&lt;/span&gt;</code></pre>
 
                     <p>Note that the human-visible anchor hyperlinks (<samp>#461819979</samp>) to the annotation
-                      <code>aside id="461819979"</code>.</p>
+                      <code>aside id="461819979"</code>.
+                    </p>
                   </div>
                 </section>
 
@@ -776,7 +797,8 @@
                     class="fa fa-bars"></i> <a href="#dokieli-menu">dokieli menu</a> allows the user to engage the
                   author mode through the <i class="fa fa-i-cursor"></i> <a href="#editor-enable">Edit</a> operation,
                   and the review mode with <i class="fa fa-balance-scale"></i> <a href="#review-enable">Review</a>. See
-                  also <var>setDocumentMode</var> (dokieli.js).</p>
+                  also <var>setDocumentMode</var> (dokieli.js).
+                </p>
               </div>
             </section>
 
@@ -835,7 +857,8 @@
                     resource's content, and if dokieli's CSS and JavaScript are not present, they are included before
                     updating the DOM and initiating dokieli. This feature uses the <cite><a
                         href="#resource-browser-method">resource browser</a></cite> to navigate HTTP URLs. See also
-                    <var>openDocument</var> (dokieli.js).</dd>
+                    <var>openDocument</var> (dokieli.js).
+                  </dd>
 
                   <dt id="resource-save"><i class="fa fa-life-ring"></i>Save</dt>
                   <dd>This feature makes a <a href="#http-put">write operation</a> (<code>HTTP PUT</code>) request to
@@ -892,14 +915,16 @@
                   this by using the <cite><a href="https://www.w3.org/TR/ldp/">Linked Data Platform</a></cite>'s
                   containment rules to retrieve and then display the container's index. If the user's personal storage
                   location is known, it will be used as default location for the resource browser. Alternatively, if the
-                  article refers to an annotation service, it will be used as start location.</p>
+                  article refers to an annotation service, it will be used as start location.
+                </p>
 
                 <p id="resource-license-method">Users are given a choice to specify the <em>rights and license</em> for
                   their annotations from a list of <cite><a href="https://creativecommons.org/">Creative
                       Commons</a></cite> licenses, eg. <span resource="#annotation-rights"
                     typeof="schema:ChooseAction">CC BY 4.0</span>. If applicable, the notification payload will use the
                   <cite><a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0 Universal</a></cite>
-                  license.</p>
+                  license.
+                </p>
 
                 <dl>
                   <dt id="dokieli-views"><i class="fa fa-magic"></i>Views</dt>
@@ -907,7 +932,8 @@
                       in HTML</a>. <cite>Native</cite> is always available and it will essentially disable all other
                     stylesheets, thereby user-agent's default stylesheets are gets applied. When a view is selected, eg.
                     <cite>Basic</cite> (which happens to be the one that is used on this article as primary), it becomes
-                    the primary stylesheet, and the rest of the stylesheets become alternate and disabled.</dd>
+                    the primary stylesheet, and the rest of the stylesheets become alternate and disabled.
+                  </dd>
                 </dl>
               </div>
             </section>
@@ -922,7 +948,8 @@
 
             <p id="http-put">Article operations like <cite>New</cite>, <cite>Save</cite>, <cite>Save As</cite>,
               <cite>Reply</cite> use <code>HTTP PUT</code>, <cite>Review</cite> and other annotation operations use
-              <code>HTTP POST</code>.</p>
+              <code>HTTP POST</code>.
+            </p>
 
             <p id="http-post">Notifications are sent with <code>HTTP POST</code>. <cite>Save</cite> and <cite>Save
                 As</cite> normalises the HTML before sending.</p>
@@ -962,7 +989,8 @@
                         <code>GET</code> with <code>text/html</code>, and allows <code>PUT</code> for writing, the
                         assumption is that it can allow <code>text/html</code>. In the future, dokieli can check for the
                         <code>Accept-Put</code> header with <code>OPTIONS</code> to determine a suitable type. At this
-                        time, HTML+RDFa is an important default for articles.</dd>
+                        time, HTML+RDFa is an important default for articles.
+                      </dd>
 
                       <dt id="request-to-send-annotation">Annotation</dt>
                       <dd>Annotations use the <code>POST</code> method with <code>Content-Type</code> header value
@@ -973,7 +1001,8 @@
                             Protocol</a></cite> requires <code>application/ld+json</code> by default. dokieli sends an
                         <code>OPTIONS</code> request to check for the <code>Accept-Post</code> header and sends the
                         payload in one of the serializations that the server prefers. If it is not set, it will fallback
-                        to <code>application/ld+json</code> as preferred by Wen Annotation and ActivityPub.</dd>
+                        to <code>application/ld+json</code> as preferred by Wen Annotation and ActivityPub.
+                      </dd>
 
                       <dt id="request-to-send-notification">Notification</dt>
                       <dd>Notifications use <code>OPTIONS</code> to check the response's <code>Accept-Post</code> HTTP
@@ -1004,13 +1033,15 @@
                       rel="cito:citesAsAuthority">SPARQL Update</a></cite> (using mediatype
                   <code>application/sparql-update</code>) would not work for RDFa representations because it would
                   require additional server-side knowledge: HTML+RDFa serializer. This also makes server implementations
-                  a dependency for dokieli which is an undesirable design pattern.</li>
+                  a dependency for dokieli which is an undesirable design pattern.
+                </li>
 
                 <li><code>HTTP PATCH</code> can help to optimise HTTP requests provided that the server processes the
                   SPARQL query and eventually publishes the final state of the article. dokieli's use of
                   <code>HTTP POST</code> and <code>HTTP PUT</code> on the other hand does not expect or impose
                   operations other than to store and serve the article. If servers would like to do versioning and how,
-                  dokieli leaves it to the servers to decide.</li>
+                  dokieli leaves it to the servers to decide.
+                </li>
               </ul>
             </aside>
 
@@ -1040,7 +1071,8 @@
               <dt id="personal-storage">Personal storage</dt>
               <dd>WebID's with <code>pim:storage</code> can get to use their personal online data storage with dokieli's
                 read-write operations, eg all annotations, <cite>Reply</cite>, <cite>Review</cite>, <cite>New</cite>,
-                <cite>Save As</cite>.</dd>
+                <cite>Save As</cite>.
+              </dd>
 
               <dt id="local-storage">Local storage</dt>
               <dd>There is a <cite>Local Storage</cite> feature which uses user-agent's <var>window.localStorage</var>,
@@ -1064,7 +1096,8 @@
               <li>Extensions are available from <cite><a
                     href="https://addons.mozilla.org/en-US/firefox/addon/dokieli/">Add-ons for Firefox</a></cite> and
                 <cite><a href="https://chrome.google.com/webstore/detail/ddmhaonbhodhgkaljpjlglodncddalid">Chrome Web
-                    Store</a></cite>.</li>
+                    Store</a></cite>.
+              </li>
 
               <li>Clone <a href="https://github.com/linkeddata/dokieli">https://github.com/linkeddata/dokieli</a> and
                 import directory:
@@ -1074,30 +1107,41 @@
                       href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Temporary_Installation_in_Firefox">temporary
                       add-on installation</a>.</li>
                   <li>Chrome/Chromium: Check the <q>developer more</q> option, under <cite>Extensions</cite> (or go to
-                    <code>chrome://extensions/</code> from addressbar) and import the directory.</li>
+                    <code>chrome://extensions/</code> from addressbar) and import the directory.
+                  </li>
                 </ul>
               </li>
             </ol>
           </div>
         </section>
-
         <section id="development" inlist="" rel="schema:hasPart" resource="#development">
           <h2 property="schema:name">Development</h2>
-          <div datatype="rdf:HTML" property="schema:description">
+          <section id="local-development" resource="#local-development">
+            <h3 property="schema:name">Local development</h3>
             <pre><code>git clone https://github.com/linkeddata/dokieli</code>
 <code>cd dokieli</code>
 <code></code>
 <code># Install packages</code>
-<code>npm install</code>
+<code>npm ci</code>
 <code></code>
 <code># Build stuff eg. scripts/dokieli.js</code>
 <code>npm run build</code>
 <code></code>
 <code># or automatically rebuild when files change</code>
 <code>npm run watch</code></pre>
-          </div>
+          </section>
+          <section id="testing" resource="#testing">
+            <h3 property="schema:name">Testing</h3>
+            <ul>
+              <li>To run unit test
+                <pre><code>npm run tests</code></pre>
+              </li>
+              <li>To run end-to-end tests:
+                <pre><code>npm run test:e2e</code></pre>
+              </li>
+            </ul>
+          </section>
         </section>
-
       </div>
     </article>
   </main>
