@@ -124,20 +124,18 @@ var DO = {
     },
 
     showInboxNotifications: function() {
-      if (typeof SimpleRDF !== 'undefined') {
-        fetcher.getLinkRelation(DO.C.Vocab['ldpinbox']['@id']).then(
-          function(i) {
-            i.forEach(function(inboxURL) {
-              if (!DO.C.Inbox[inboxURL]) {
-                DO.U.showNotificationSources(inboxURL);
-              }
-            });
-          },
-          function(reason) {
+      fetcher.getLinkRelation(DO.C.Vocab['ldpinbox']['@id']).then(
+        function(i) {
+          i.forEach(function(inboxURL) {
+            if (!DO.C.Inbox[inboxURL]) {
+              DO.U.showNotificationSources(inboxURL);
+            }
+          });
+        },
+        function(reason) {
 // console.log(reason);
-          }
-        );
-      }
+        }
+      );
     },
 
     showNotificationSources: function(url) {
@@ -1784,89 +1782,85 @@ var DO = {
       var subjectURI = window.location.origin + window.location.pathname;
       var options = {'contentType': 'text/html', 'subjectURI': subjectURI };
 
-      // graph.getGraphFromData(data, options).then(
-      //   function(i){
-      //     var s = SimpleRDF(DO.C.Vocab, options['subjectURI'], i, ld.store);
-          var s = DO.C.ResourceInfo.graph;
+      var s = DO.C.ResourceInfo.graph;
 // console.log(s)
 
-          var triples = s._graph;
-          var citations = Object.keys(DO.C.Citation).concat(DO.C.Vocab["schemacitation"]["@id"]);
+      var triples = s._graph;
+      var citations = Object.keys(DO.C.Citation).concat(DO.C.Vocab["schemacitation"]["@id"]);
 // console.log(citations)
-          triples.forEach(function(t){
-            var s = t.subject.nominalValue;
-            var p = t.predicate.nominalValue;
-            var o = t.object.nominalValue;
+      triples.forEach(function(t){
+        var s = t.subject.nominalValue;
+        var p = t.predicate.nominalValue;
+        var o = t.object.nominalValue;
 
-            if(citations.indexOf(p) > -1) {
-              citationsTo.push(t); 
-            }
-          });
+        if(citations.indexOf(p) > -1) {
+          citationsTo.push(t);
+        }
+      });
 // console.log(citationsTo)
-          citations = '<tr class="citations"><th>Citations</th><td>' + citationsTo.length + '</td></tr>';
+      citations = '<tr class="citations"><th>Citations</th><td>' + citationsTo.length + '</td></tr>';
 
-          var statements = '<tr class="statements"><th>Statements</th><td>' + triples.length + '</td></tr>';
+      var statements = '<tr class="statements"><th>Statements</th><td>' + triples.length + '</td></tr>';
 
-          var g = s.child(options['subjectURI']);
+      var g = s.child(options['subjectURI']);
 // console.log(g)
 
-          if(g.schemaeditor._array.length > 0) {
-            g.schemaeditor.forEach(function(s){
-              var label = DO.U.getResourceLabel(g.child(s));
-              if(typeof label !== 'undefined'){
-                editors.push('<li>' + label + '</li>');
-              }
-            });
-            if(editors.length > 0){
-              editors = '<tr class="people"><th>Editors</th><td><ul class="editors">' + editors.join('') + '</ul></td></tr>';
-            }
+      if(g.schemaeditor._array.length > 0) {
+        g.schemaeditor.forEach(function(s){
+          var label = DO.U.getResourceLabel(g.child(s));
+          if(typeof label !== 'undefined'){
+            editors.push('<li>' + label + '</li>');
           }
+        });
+        if(editors.length > 0){
+          editors = '<tr class="people"><th>Editors</th><td><ul class="editors">' + editors.join('') + '</ul></td></tr>';
+        }
+      }
 
-          if(g.schemaauthor._array.length > 0) {
-            g.schemaauthor.forEach(function(s){
-              var label = DO.U.getResourceLabel(g.child(s));
-              if(typeof label !== 'undefined'){
-                authors.push('<li>' + label + '</li>');
-              }
-            });
-            if(authors.length > 0){
-              authors = '<tr class="people"><th>Authors</th><td><ul class="authors">' + authors.join('') + '</ul></td></tr>';
-            }
+      if(g.schemaauthor._array.length > 0) {
+        g.schemaauthor.forEach(function(s){
+          var label = DO.U.getResourceLabel(g.child(s));
+          if(typeof label !== 'undefined'){
+            authors.push('<li>' + label + '</li>');
           }
+        });
+        if(authors.length > 0){
+          authors = '<tr class="people"><th>Authors</th><td><ul class="authors">' + authors.join('') + '</ul></td></tr>';
+        }
+      }
 
-          if(g.schemacontributor._array.length > 0) {
-            g.schemacontributor.forEach(function(s){
-              var label = DO.U.getResourceLabel(g.child(s));
-              if(typeof label !== 'undefined'){
-                contributors.push('<li>' + label + '</li>');
-              }
-            });
-            if(contributors.length > 0){
-              contributors = '<tr class="people"><th>Contributors</th><td><ul class="contributors">' + contributors.join('') + '</ul></td></tr>';
-            }
+      if(g.schemacontributor._array.length > 0) {
+        g.schemacontributor.forEach(function(s){
+          var label = DO.U.getResourceLabel(g.child(s));
+          if(typeof label !== 'undefined'){
+            contributors.push('<li>' + label + '</li>');
           }
+        });
+        if(contributors.length > 0){
+          contributors = '<tr class="people"><th>Contributors</th><td><ul class="contributors">' + contributors.join('') + '</ul></td></tr>';
+        }
+      }
 
-          var data = authors + editors + contributors + citations + statements;
+      var data = authors + editors + contributors + citations + statements;
 
-          // return authors + editors + contributors + citations + statements;
-        // }).then(
-        // function(data){
-              // <tr><th>Lines</th><td>' + count.lines + '</td></tr>\n\
-              // <tr><th>A4 Pages</th><td>' + count.pages.A4 + '</td></tr>\n\
-              // <tr><th>US Letter</th><td>' + count.pages.USLetter + '</td></tr>\n\
-          var s = '<section id="document-metadata" class="do"><table>\n\
-            <caption>Document Metadata</caption>\n\
-            <tbody>\n\
-              ' + data + '\n\
-              <tr><th>Reading time</th><td>' + count.readingTime + ' minutes</td></tr>\n\
-              <tr><th>Characters</th><td>' + count.chars + '</td></tr>\n\
-              <tr><th>Words</th><td>' + count.words + '</td></tr>\n\
-              <tr><th>Bytes</th><td>' + count.bytes + '</td></tr>\n\
-            </tbody>\n\
-          </table></section>';
+      // return authors + editors + contributors + citations + statements;
+    // }).then(
+    // function(data){
+          // <tr><th>Lines</th><td>' + count.lines + '</td></tr>\n\
+          // <tr><th>A4 Pages</th><td>' + count.pages.A4 + '</td></tr>\n\
+          // <tr><th>US Letter</th><td>' + count.pages.USLetter + '</td></tr>\n\
+      var s = '<section id="document-metadata" class="do"><table>\n\
+        <caption>Document Metadata</caption>\n\
+        <tbody>\n\
+          ' + data + '\n\
+          <tr><th>Reading time</th><td>' + count.readingTime + ' minutes</td></tr>\n\
+          <tr><th>Characters</th><td>' + count.chars + '</td></tr>\n\
+          <tr><th>Words</th><td>' + count.words + '</td></tr>\n\
+          <tr><th>Bytes</th><td>' + count.bytes + '</td></tr>\n\
+        </tbody>\n\
+      </table></section>';
 
-          node.insertAdjacentHTML('beforeend', s);
-        // });
+      node.insertAdjacentHTML('beforeend', s);
     },
 
     contentCount: function contentCount (c) {
