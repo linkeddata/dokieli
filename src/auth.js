@@ -723,7 +723,9 @@ function getAgentURL (s) {
 }
 
 function getAgentDelegates (s) {
-  return s.acldelegates || undefined
+  return (s.acldelegates && s.acldelegates._array.length > 0)
+    ? s.acldelegates._array
+    : undefined
 }
 
 function getAgentStorage (s) {
