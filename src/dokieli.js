@@ -1777,17 +1777,17 @@ var DO = {
       var count = DO.U.contentCount(content);
       var authors = [], contributors = [], editors = [];
       var citationsTo = [];
+      var requirements = [];
 
       var data = doc.getDocument();
       var subjectURI = window.location.origin + window.location.pathname;
       var options = {'contentType': 'text/html', 'subjectURI': subjectURI };
 
       var s = DO.C.ResourceInfo.graph;
-// console.log(s)
+ // console.log(s)
 
       var triples = s._graph;
       var citations = Object.keys(DO.C.Citation).concat(DO.C.Vocab["schemacitation"]["@id"]);
-// console.log(citations)
       triples.forEach(function(t){
         var s = t.subject.nominalValue;
         var p = t.predicate.nominalValue;
@@ -1797,9 +1797,11 @@ var DO = {
           citationsTo.push(t);
         }
       });
-// console.log(citationsTo)
-      citations = '<tr class="citations"><th>Citations</th><td>' + citationsTo.length + '</td></tr>';
 
+      requirements = (DO.C.ResourceInfo.spec) ? Object.keys(DO.C.ResourceInfo.spec) : [];
+
+      citations = '<tr class="citations"><th>Citations</th><td>' + citationsTo.length + '</td></tr>';
+      requirements = '<tr class="requirements"><th>Requirements</th><td>' + requirements.length + '</td></tr>';
       var statements = '<tr class="statements"><th>Statements</th><td>' + triples.length + '</td></tr>';
 
       var g = s.child(options['subjectURI']);
@@ -1841,9 +1843,9 @@ var DO = {
         }
       }
 
-      var data = authors + editors + contributors + citations + statements;
+      var data = authors + editors + contributors + citations + requirements + statements;
 
-      // return authors + editors + contributors + citations + statements;
+      // return authors + editors + contributors + citations + requirements + statements;
     // }).then(
     // function(data){
           // <tr><th>Lines</th><td>' + count.lines + '</td></tr>\n\
