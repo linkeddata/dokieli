@@ -28,6 +28,7 @@ module.exports = {
   getAgentPreferencesInfo,
   getAgentPreferredProxy,
   getAgentPreferredPolicy,
+  getAgentPreferredPolicyRule,
   getAgentPublicTypeIndex,
   getAgentPrivateTypeIndex,
   getUserContacts,
@@ -367,7 +368,6 @@ function setUserInfo (userIRI, oidc) {
       Config.User.Inbox = getAgentInbox(s)
       Config.User.TypeIndex = {}
 
-      Config.User.PreferencesGraph = undefined
       Config.User.PreferencesFile = getAgentPreferencesFile(s)
       Config.User.PublicTypeIndex = getAgentPublicTypeIndex(s)
       Config.User.PrivateTypeIndex = getAgentPrivateTypeIndex(s)
@@ -440,30 +440,45 @@ function getAgentPreferencesInfo(g) {
 
   var preferencesFile = (Config.User.PreferencesFile) ? Config.User.PreferencesFile : getAgentPreferencesFile(g);
 
-  var getPreferredPolicy = function(s) {
-    var preferredPolicy = getAgentPreferredPolicy(s);
-
-    if (preferredPolicy && preferredPolicy.at(0)) {
-      Config.User.PreferredPolicy = preferredPolicy;
-    }
-  }
-
   if (preferencesFile) {
-    var promises = [];
-
-    return fetcher.getResourceGraph(preferencesFile)
-      .then(g => {
-        Config.User['PreferencesGraph'] = g;
-
-        getPreferredPolicy(g.child(Config.User.IRI));
+    return fetcher.getResourceGraph(preferencesFile).then(g => {
+        return getAgentPreferredPolicyRule(g.child(Config.User.IRI));
+      })
+      .catch(function(e) {
+        return getAgentPreferredPolicyRule(Config.User.Graph.child(Config.User.IRI));
       })
   }
   else {
-    Config.User['PreferencesGraph'] = Config.User.Graph.child(Config.User.IRI);
-    getPreferredPolicy(Config.User['PreferencesGraph']);
-
-    return Promise.resolve();
+    return getAgentPreferredPolicyRule(Config.User.Graph.child(Config.User.IRI));
   }
+}
+
+
+function getAgentPreferredPolicyRule(g) {
+  Config.User['PreferredPolicy'] = getAgentPreferredPolicy(g);
+  var s = g.child(Config.User.PreferredPolicy);
+
+  Config.User['PreferredPolicyRule'] = Config.User.PreferredPolicyRule || {};
+
+  if (s && s.odrlprohibition && s.odrlprohibition.at(0)) {
+    var prohibitionG = s.child(s.odrlprohibition.at(0));
+
+    if (prohibitionG.odrlaction && prohibitionG.odrlaction._array.length > 0) {
+      Config.User.PreferredPolicyRule['Prohibition'] = {}
+      Config.User.PreferredPolicyRule['Prohibition']['Actions'] = prohibitionG.odrlaction._array;
+    }
+  }
+
+  if (s && s.odrlpermission && s.odrlpermission.at(0)) {
+    var permissionG = s.child(s.odrlpermission.at(0));
+
+    if (permissionG.odrlaction && permissionG.odrlaction._array.length > 0) {
+      Config.User.PreferredPolicyRule['Permission'] = {}
+      Config.User.PreferredPolicyRule['Permission']['Actions'] = permissionG.odrlaction._array;
+    }
+  }
+
+  return Config.User.PreferredPolicyRule
 }
 
 

@@ -3743,21 +3743,6 @@ console.log(reason);
 // console.log(r.odrlaction)
       var actions = '';
 
-      var uPPActions = [];
-
-      if (DO.C.User.PreferencesGraph && DO.C.User.PreferredPolicy) {
-        var uPG = DO.C.User.PreferencesGraph.child(DO.C.User.PreferredPolicy);
-
-        //Get user's actions from preferred policy (prohibition) to check for conflicts with storage's policy (permission)
-        if (uPG && uPG.odrlprohibition && uPG.odrlprohibition.at(0)) {
-          var pG = uPG.child(uPG.odrlprohibition.at(0));
-
-          if (pG.odrlaction && pG.odrlaction._array.length > 0) {
-            uPPActions = pG.odrlaction._array;
-          }
-        }
-      }
-
       if (r.odrlaction && r.odrlaction._array.length > 0) {
         var actions = [];
         r.odrlaction._array.forEach(function(iri){
@@ -3780,7 +3765,8 @@ console.log(reason);
           var caution = '';
           var htmlClass = '';
 
-          if (uPPActions.indexOf(iri) > -1) {
+          //Get user's actions from preferred policy (prohibition) to check for conflicts with storage's policy (permission)
+          if (Config.User.PreferredPolicyRule && Config.User.PreferredPolicyRule.Prohibition && Config.User.PreferredPolicyRule.Prohibition.Actions.indexOf(iri) > -1) {
             caution = template.Icon["fas.fa-circle-exclamation"] + ' ';
             htmlClass = ' class="warning"';
           }
