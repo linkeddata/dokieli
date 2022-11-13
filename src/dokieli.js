@@ -3755,6 +3755,10 @@ console.log(reason);
             label = iri.substr(iri.lastIndexOf('/') + 1);
             href = 'https://www.w3.org/TR/odrl-vocab/#term-' + label;
           }
+          else if (iri.startsWith('http://creativecommons.org/ns#')) {
+            label = iri.substr(iri.lastIndexOf('#') + 1);
+            href = 'https://www.w3.org/TR/odrl-vocab/#term-' + label;
+          }
           else if (iri.lastIndexOf('#')) {
             label = iri.substr(iri.lastIndexOf('#') + 1);
           }
@@ -3762,16 +3766,18 @@ console.log(reason);
             label = iri.substr(iri.lastIndexOf('/') + 1);
           }
 
-          var caution = '';
-          var htmlClass = '';
+          var warning = '';
+          var attributeClass = '';
+          var attributeTitle = '';
 
           //Get user's actions from preferred policy (prohibition) to check for conflicts with storage's policy (permission)
-          if (Config.User.PreferredPolicyRule && Config.User.PreferredPolicyRule.Prohibition && Config.User.PreferredPolicyRule.Prohibition.Actions.indexOf(iri) > -1) {
-            caution = template.Icon["fas.fa-circle-exclamation"] + ' ';
-            htmlClass = ' class="warning"';
+          if (DO.C.User.PreferredPolicyRule && DO.C.User.PreferredPolicyRule.Prohibition && DO.C.User.PreferredPolicyRule.Prohibition.Actions.indexOf(iri) > -1) {
+            warning = template.Icon[".fas.fa-circle-exclamation"] + ' ';
+            attributeClass = ' class="warning"';
+            attributeTitle = ' title="The action (' + label + ') is prohibited by preferred policy."';
           }
 
-          actions.push('<li>' + caution + '<a' + htmlClass + ' href="' + href + '" resource="' + iri + '">' + label + '</a></li>')
+          actions.push('<li' + attributeTitle + '>' + warning + '<a' + attributeClass + ' href="' + href + '" resource="' + iri + '">' + label + '</a></li>')
         });
 
         actions = '<dt>Actions</dt><dd><ul rel="odrl:action">' + actions.join('') + '</ul></dd>';
