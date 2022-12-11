@@ -64,8 +64,7 @@ function dumpNode (node, options, skipAttributes, selfClosing, noEsc) {
   if (typeof node.nodeType === 'undefined') return out
 
   if (node.nodeType === 1) {
-    if (node.hasAttribute('class') && 'classWithChildText' in options &&
-        node.matches(options.classWithChildText.class)) {
+    if (node.hasAttribute('class') && 'classWithChildText' in options && node.matches(options.classWithChildText.class)) {
       out += node.querySelector(options.classWithChildText.element).textContent
     } else if (!(options.skipNodeWithClass && node.matches('.' + options.skipNodeWithClass))) {
       var ename = node.nodeName.toLowerCase()
@@ -88,6 +87,8 @@ function dumpNode (node, options, skipAttributes, selfClosing, noEsc) {
             }
           })
         }
+
+        // if ((atn.name === 'class' || atn.name === 'id') && atn.value.length == 0) continue
 
         if (!(atn.name === 'class' && 'skipClassWithValue' in options &&
             options.skipClassWithValue === atn.value)) {
@@ -123,7 +124,7 @@ function dumpNode (node, options, skipAttributes, selfClosing, noEsc) {
         }
 
         noEsc.pop()
-        out += (ename === 'body' || ename === 'html') ? '</' + ename + '>' + '\n' : '</' + ename + '>'
+        out += (ename === 'body') ? '  </' + ename + '>\n' : (ename === 'html') ? '</' + ename + '>\n' : '</' + ename + '>'
       }
     }
   } else if (node.nodeType === 8) {
@@ -131,12 +132,18 @@ function dumpNode (node, options, skipAttributes, selfClosing, noEsc) {
     out += '\n\
 <!--' + node.nodeValue + '-->'
   } else if (node.nodeType === 3 || node.nodeType === 4) {
-    // XXX: Remove new lines which were added after DOM ready
     let nl = node.nodeValue
+    // XXX: Remove new lines which were added after DOM ready
     // .replace(/\n+$/, '')
-    out += (noEsc.indexOf(true) > -1)
-      ? nl.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      : nl
+
+    nl = nl.replace(/&/g, '&amp;').replace(/&amp;amp;/g, '&amp;')
+    if (node.parentNode.nodeName.toLowerCase() !== 'style') {
+      nl = nl.replace(/>/g, '&gt;')
+    }
+    if (noEsc.indexOf(true) > -1) {
+      nl = nl.replace(/</g, '&lt;')
+    }
+    out += nl
   } else {
     console.log('Warning; Cannot handle serialising nodes of type: ' + node.nodeType)
   }
