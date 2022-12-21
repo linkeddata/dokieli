@@ -1,4 +1,27 @@
 const { test, expect } = require("@playwright/test");
+const AxeBuilder = require("@axe-core/playwright").default;
+
+test("should not have any automatically detectable accessibility issues", async ({
+  page,
+}) => {
+  await page.goto("https://your-site.com/"); // 3
+
+  const accessibilityScanResults = await new AxeBuilder({ page }).analyze(); // 4
+
+  expect(accessibilityScanResults.violations).toEqual([]); // 5
+});
+
+test("should not have any automatically detectable WCAG A or AA violations", async ({
+  page,
+}) => {
+  await page.goto("https://your-site.com/");
+
+  const accessibilityScanResults = await new AxeBuilder({ page })
+    .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
+    .analyze();
+
+  expect(accessibilityScanResults.violations).toEqual([]);
+});
 
 test("homepage has dokieli in the title", async ({ page }) => {
   await page.goto("/");
