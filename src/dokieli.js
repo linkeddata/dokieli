@@ -4763,12 +4763,101 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         }
       });
 
+
+      //https://www.w3.org/TR/ATAG20/#gl_b31
+      //TODO: Better tracking of fails so that author can correct.
+      var img = document.querySelectorAll('img');
+      var imgFailed = [];
+      var imgPassed = [];
+      var imgCantTell = [];
+      var imgTestResult;
+      if (img.length == 0) {
+        imgTestResult = 'earl:inapplicable';
+      }
+      else {
+        img.forEach(function(i){
+          if (i.hasAttribute('alt')) {
+            if(i.alt.trim() === '') {
+              imgCantTell.push(i);
+            }
+            imgPassed.push(i);
+          }
+          else {
+            imgFailed.push(i);
+          }
+        });
+      }
+      var imgAccessibilityReport = '';
+      if (imgFailed.length > 0 || imgCantTell.length > 0) {
+        imgAccessibilityReport += (imgFailed.length > 0) ? '<li>Fail: Images (<code>img</code>) without alternative text (<code>alt</code>).</li>' : '';
+        imgAccessibilityReport += (imgCantTell.length > 0) ? '<li>Can\'t Tell: Images (<code>img</code>) without a non-empty alternative text (<code>alt</code>).</li>' : '';
+      }
+
+      var video = document.querySelectorAll('video');
+      var videoFailed = [];
+      var videoPassed = [];
+      var videoCantTell = [];
+      var videoTestResult = 'earl:untested';
+      if (video.length == 0) {
+        videoTestResult = 'earl:inapplicable';
+      }
+      else {
+        video.forEach(function(i){
+          if (i.querySelector('track') && i.hasAttribute('kind')) {
+            videoPassed.push(i);
+          }
+          else {
+            videoFailed.push(i);
+          }
+        });
+      }
+      var videoAccessibilityReport = '';
+      if (videoFailed.length > 0) {
+        videoAccessibilityReport += '<li>Fail: Videos (<code>video</code>) without external timed text tracks (<code>track</code> or <code>track</code> with <code>kind</code> of text track.)</li>';
+      }
+
+
+      var audio = document.querySelectorAll('audio');
+      var audioFailed = [];
+      var audioPassed = [];
+      var audioCantTell = [];
+      var audioTestResult = 'earl:untested';
+      if (audio.length == 0) {
+        audioTestResult = 'earl:inapplicable';
+      }
+      else {
+        audio.forEach(function(i){
+          if (i.querySelector('track') && i.hasAttribute('kind')) {
+            audioPassed.push(i);
+          }
+          else {
+            audioFailed.push(i);
+          }
+        });
+      }
+      var audioAccessibilityReport = '';
+      if (audioFailed.length > 0) {
+        audioAccessibilityReport += '<li>Fail: Audios (<code>audio</code>) without external timed text tracks (<code>track</code> or <code>track</code> with <code>kind</code> of text track.)</li>';
+      }
+
+      var aRWarning = '<p>This document contains some content, e.g., images, videos, audio, that is not accompanied with alternative text or an alternative text field without information. End users with disabilities will likely experience difficulty accessing the content. Please consider adding alternative text before continuing:</p>';
+      var aRSuccess = '<p>All content in this document includes alternative text. End users with disabilities will likely have a good experience with this document.</p>';
+      var accessibilityReport = '';
+      if (imgAccessibilityReport.length > 0 || audioAccessibilityReport.length > 0 || videoAccessibilityReport.length > 0) {
+        accessibilityReport += aRWarning + '<ul>' + imgAccessibilityReport + audioAccessibilityReport + videoAccessibilityReport + '</ul>';
+      }
+      else {
+        accessibilityReport += aRSuccess;
+      }
+      accessibilityReport = '<details id="accessibility-report-save-as"><summary>Accessibility Report</summary>' + accessibilityReport + '</details>';
+
+
       var id = 'location-save-as';
       var action = 'write';
       saveAsDocument.insertAdjacentHTML('beforeend', '<fieldset id="' + id + '-fieldset"><legend>Save to</legend></fieldset>');
       fieldset = saveAsDocument.querySelector('fieldset#' + id + '-fieldset');
       DO.U.setupResourceBrowser(fieldset, id, action);
-      fieldset.insertAdjacentHTML('beforeend', '<p id="' + id + '-samp' + '">Article will be saved at: <samp id="' + id + '-' + action + '"></samp></p>' + DO.U.getBaseURLSelection() + '<p><input type="checkbox" id="derivation-data" name="derivation-data" checked="checked" /><label for="derivation-data">Derivation data</label></p><button class="create" title="Save to destination">Save</button>');
+      fieldset.insertAdjacentHTML('beforeend', '<p id="' + id + '-samp' + '">Article will be saved at: <samp id="' + id + '-' + action + '"></samp></p>' + DO.U.getBaseURLSelection() + '<p><input type="checkbox" id="derivation-data" name="derivation-data" checked="checked" /><label for="derivation-data">Derivation data</label></p>' + accessibilityReport + '<button class="create" title="Save to destination">Save</button>');
       var bli = document.getElementById(id + '-input');
       bli.focus();
       bli.placeholder = 'https://example.org/path/to/article';
