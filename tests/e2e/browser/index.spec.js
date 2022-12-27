@@ -4,17 +4,17 @@ const AxeBuilder = require("@axe-core/playwright").default;
 test("should not have any automatically detectable accessibility issues", async ({
   page,
 }) => {
-  await page.goto("https://your-site.com/"); // 3
+  await page.goto("/");
 
-  const accessibilityScanResults = await new AxeBuilder({ page }).analyze(); // 4
+  const accessibilityScanResults = await new AxeBuilder({ page }).analyze(); 
 
-  expect(accessibilityScanResults.violations).toEqual([]); // 5
+  expect(accessibilityScanResults.violations).toEqual([]); 
 });
 
 test("should not have any automatically detectable WCAG A or AA violations", async ({
   page,
 }) => {
-  await page.goto("https://your-site.com/");
+  await page.goto("/");
 
   const accessibilityScanResults = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
