@@ -216,6 +216,7 @@ module.exports = {
     'list-of-tables': { 'label': 'Tables', 'selector': 'table', 'titleSelector': 'caption' },
     'list-of-abbreviations': { 'label': 'Abbreviations', 'selector': 'abbr', 'titleSelector': 'title'},
     'list-of-quotations': {'label': 'Quotations', 'selector': 'q', 'titleSelector': 'cite'},
+    'list-of-concepts': {'label': 'Concepts', 'selector': '[typeof~="skos:Concept"]', 'titleSelector': '[property~="skos:prefLabel"]'},
     'table-of-requirements': {'label': 'Requirements', 'selector': '[rel~="spec:requirement"]', 'titleSelector': '[property~="spec:statement"]'},
     'references': { 'label': 'References', 'selector':'cite a', 'titleSelector': 'h2' }
   },
