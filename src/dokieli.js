@@ -1778,6 +1778,7 @@ var DO = {
       var authors = [], contributors = [], editors = [];
       var citationsTo = [];
       var requirements = [];
+      var skos = [];
 
       var data = doc.getDocument();
       var subjectURI = window.location.origin + window.location.pathname;
@@ -1799,9 +1800,19 @@ var DO = {
       });
 
       requirements = (DO.C.ResourceInfo.spec) ? Object.keys(DO.C.ResourceInfo.spec) : [];
+      skos = (DO.C.ResourceInfo.skos) ? DO.C.ResourceInfo.skos : [];
 
       citations = '<tr class="citations"><th>Citations</th><td>' + citationsTo.length + '</td></tr>';
       requirements = '<tr class="requirements"><th>Requirements</th><td>' + requirements.length + '</td></tr>';
+      var conceptsList = [];
+      Object.keys(skos).forEach(function(c){
+        var rdftype = skos[c][DO.C.Vocab['rdftype']['@id']];
+        if (rdftype && rdftype.indexOf(DO.C.Vocab['skosConcept']['@id']) > -1) {
+         conceptsList.push(c);
+        }
+      });
+
+      var concepts = '<tr class="concepts"><th>Concepts</th><td>' + conceptsList.length + '</td></tr>';
       var statements = '<tr class="statements"><th>Statements</th><td>' + triples.length + '</td></tr>';
 
       var g = s.child(options['subjectURI']);
@@ -1843,7 +1854,7 @@ var DO = {
         }
       }
 
-      var data = authors + editors + contributors + citations + requirements + statements;
+      var data = authors + editors + contributors + citations + requirements + concepts + statements;
 
       // return authors + editors + contributors + citations + requirements + statements;
     // }).then(
