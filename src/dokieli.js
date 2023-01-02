@@ -2057,6 +2057,12 @@ var DO = {
               s += '<div><ul>';
               break;
 
+            case 'list-of-concepts':
+              s += '<section id="' + id + '">';
+              s += '<h2>' + label + '</h2>';
+              s += '<div><dl>';
+              break;
+
             case 'table-of-requirements':
               s += '<section id="' + id + '">';
               s += '<h2>' + label + '</h2>';
@@ -2124,6 +2130,55 @@ var DO = {
                 }
               };
             }
+            else if (id == 'list-of-concepts') {
+              function getConceptLabel(s) {
+                return s.skosprefLabel || s.skosaltLabel || s.skosnotation || undefined;
+              }
+              function getConceptDefinition(s) {
+                return s.skosdefinition || s.skosnote || undefined;
+              }
+
+// console.log(DO.C.ResourceInfo['skos'])
+
+              var graph;
+              Object.keys(DO.C.ResourceInfo['skos']).forEach(function(i) {
+// console.log(i)
+                var skosType = DO.C.ResourceInfo['skos'][i][DO.C.Vocab['rdftype']['@id']];
+// console.log(skosType)
+                // var skosPrefLabel = DO.C.ResourceInfo['skos'][i][DO.C.Vocab['skosprefLabel']['@id']] || DO.C.ResourceInfo['skos'][i][DO.C.Vocab['skosaltLabel']['@id']] || DO.C.ResourceInfo['skos'][i][DO.C.Vocab['skosnotation']['@id']] || i;
+                // skosPrefLabel = '<a href="' + i + '">' + skosPrefLabel + '</a>';
+                // var skosDefinition = DO.C.ResourceInfo['skos'][i][DO.C.Vocab['skosdefinition']['@id']] || DO.C.ResourceInfo['skos'][i][DO.C.Vocab['skosnote']['@id']] || i;
+                // skosDefinition = '<a href="' + i + '">' + skosDefinition + '</a>';
+
+                if (skosType && skosType.length > 0 && skosType.indexOf(DO.C.Vocab['skosConceptScheme']['@id']) > -1) {
+                  graph = DO.C.ResourceInfo['graph'].child(i);
+// console.log(graph)
+                  var conceptLabel = getConceptLabel(graph);
+                  if (conceptLabel && conceptLabel._array.length > 0) {
+                    conceptLabel = conceptLabel._array.join(', ');
+                  }
+                  conceptLabel = conceptLabel || i;
+// console.log(conceptLabel)
+                  conceptLabel = '<a href="' + i + '">' + conceptLabel + '</a>';
+
+                  s += '<dt>' + conceptLabel + '</dt>';
+
+                  var topConcept = DO.C.ResourceInfo['skos'][i][DO.C.Vocab['skoshasTopConcept']['@id']];
+// console.log(topConcept)
+                  if (topConcept && topConcept.length > 0) {
+                    topConcept.forEach(function(tC) {
+                      var conceptGraph = DO.C.ResourceInfo['graph'].child(tC);
+                      var cLabel = getConceptLabel(conceptGraph);
+                      if (cLabel && cLabel._array.length > 0) {
+                        cLabel._array.forEach(function(cL) {
+                          s += '<dd><a href="' + tC + '">' + cL + '</a></dd>';
+                        });
+                      }
+                    });
+                  }
+                }
+              });
+            }
             //list-of-figures, list-of-tables, list-of-quotations, table-of-requirements
             else {
               var processed = [];
@@ -2176,6 +2231,11 @@ var DO = {
 
             case 'list-of-quotations':
               s += '</ul></div>';
+              s += '</section>';
+              break;
+
+            case 'list-of-concepts':
+              s += '</dl></div>';
               s += '</section>';
               break;
 
