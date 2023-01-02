@@ -36,6 +36,7 @@ module.exports = {
   getResourceInfo,
   getResourceInfoODRLPolicies,
   getResourceInfoSpecRequirements,
+  getResourceInfoSKOS,
   setFeatureStatesOfResourceInfo,
   createImmutableResource,
   createMutableResource,
@@ -840,7 +841,8 @@ function getResourceInfo(data, options) {
         }
 
         //TODO: Refactor
-        //FIXME: permissionsActions is assumed to be from document's policies
+        //FIXME: permissionsActions, specrequirement, skosConceptSchemes are assumed to be from document's policies
+
         if(s.odrlhasPolicy && s.odrlhasPolicy.at(0) && s.iri().toString() == documentURL) {
           info['odrl'] = getResourceInfoODRLPolicies(s);
         }
@@ -848,6 +850,8 @@ function getResourceInfo(data, options) {
         if(s.specrequirement && s.specrequirement.at(0) && s.iri().toString() == documentURL) {
           info['spec'] = getResourceInfoSpecRequirements(s);
         }
+
+        info['skos'] = getResourceInfoSKOS(i);
 
         info['buttonStates'] = setFeatureStatesOfResourceInfo(info);
 
@@ -1000,6 +1004,33 @@ function getResourceInfoSpecRequirements(s) {
 // console.log(info['spec'])
 
   return info['spec'];
+}
+
+function getResourceInfoSKOS(g) {
+  var info = {};
+  info['skos'] = {};
+  // info['skos']['skosConceptScheme'][s] = {};
+// console.log(g)
+  var items = [];
+  var skosTypes = [DO.C.Vocab['skosConcept']['@id'], DO.C.Vocab['skosConceptScheme']['@id'], DO.C.Vocab['skosCollection']['@id'], DO.C.Vocab['skosOrderedCollection']['@id']];
+
+// console.log(g)
+  g._graph.forEach(function(t){
+    var s = t.subject.nominalValue;
+    var p = t.predicate.nominalValue;
+    var o = t.object.nominalValue;
+// console.log(p)
+// console.log(skosTypes)
+
+    if (p.startsWith('http://www.w3.org/2004/02/skos/core#') || (p == DO.C.Vocab['rdftype']['@id'] && o.startsWith('http://www.w3.org/2004/02/skos/core#'))) {
+      info['skos'][s] = info['skos'][s] || {};
+      info['skos'][s][p] = info['skos'][s][p] || [];
+      info['skos'][s][p].push(o);
+    }
+  });
+
+// console.log(info['skos'])
+  return info['skos'];
 }
 
 
