@@ -2147,8 +2147,7 @@ var DO = {
               var graph;
               Object.keys(DO.C.ResourceInfo['skos']['type']).forEach(function(rdftype) {
 // console.log(i)
-                s += '<dt>' + DO.C.SKOSClasses[rdftype] + '</dt>';
-                s += '<dd>';
+                s += '<dt>' + DO.C.SKOSClasses[rdftype] + 's</dt>';
 
                 DO.C.ResourceInfo['skos']['type'][rdftype].forEach(function(subject) {
 // console.log(subject)
@@ -2156,33 +2155,40 @@ var DO = {
 
                   graph = DO.C.ResourceInfo['graph'].child(subject);
 // console.log(graph)
-
-                  s += '<dl>';
                   var conceptLabel = getConceptLabel(graph);
                   conceptLabel = (conceptLabel.length > 0) ? conceptLabel.join(' / ') : subject;
                   conceptLabel = '<a href="' + subject + '">' + conceptLabel + '</a>';
-                  s += '<dt>' + conceptLabel + '</dt>';
 
-                  var hasConcepts = [DO.C.Vocab['skoshasTopConcept']['@id'], DO.C.Vocab['skosmember']['@id']];
+                  if (rdftype == DO.C.Vocab['skosConcept']['@id']) {
+                    s += '<dd>' + conceptLabel + '</dd>';
+                  }
+                  else {
+                    s += '<dd>';
+                    s += '<dl>';
+                    s += '<dt>' + conceptLabel + '</dt>';
 
-                  hasConcepts.forEach(function(hasConcept) {
-                    var concept = DO.C.ResourceInfo['skos']['data'][subject][hasConcept];
+                    var hasConcepts = [DO.C.Vocab['skoshasTopConcept']['@id'], DO.C.Vocab['skosmember']['@id']];
 
-                    if (concept && concept.length > 0) {
-                      concept.forEach(function(c) {
-                        var conceptGraph = DO.C.ResourceInfo['graph'].child(c);
-                        var cLabel = getConceptLabel(conceptGraph);
-                        cLabel = (cLabel.length > 0) ? cLabel : [c];
-                        cLabel.forEach(function(cL) {
-                          s += '<dd><a href="' + c + '">' + cL + '</a></dd>';
+                    hasConcepts.forEach(function(hasConcept) {
+                      var concept = DO.C.ResourceInfo['skos']['data'][subject][hasConcept];
+
+                      if (concept && concept.length > 0) {
+                        concept.forEach(function(c) {
+                          var conceptGraph = DO.C.ResourceInfo['graph'].child(c);
+                          var cLabel = getConceptLabel(conceptGraph);
+                          cLabel = (cLabel.length > 0) ? cLabel : [c];
+                          cLabel.forEach(function(cL) {
+                            s += '<dd><a href="' + c + '">' + cL + '</a></dd>';
+                          });
                         });
-                      });
-                    }
-                  });
-                  s += '</dl>';
+                      }
+                    });
+                    s += '</dl>';
+                    s += '</dd>';
+                  }
                 })
 
-                s += '</dd>';
+
               });
             }
             //list-of-figures, list-of-tables, list-of-quotations, table-of-requirements
