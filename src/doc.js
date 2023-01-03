@@ -1008,24 +1008,30 @@ function getResourceInfoSpecRequirements(s) {
 
 function getResourceInfoSKOS(g) {
   var info = {};
-  info['skos'] = {};
+  info['skos'] = {'data': {}, 'type': {}};
   // info['skos']['skosConceptScheme'][s] = {};
 // console.log(g)
   var items = [];
-  var skosTypes = [DO.C.Vocab['skosConcept']['@id'], DO.C.Vocab['skosConceptScheme']['@id'], DO.C.Vocab['skosCollection']['@id'], DO.C.Vocab['skosOrderedCollection']['@id']];
 
 // console.log(g)
   g._graph.forEach(function(t){
     var s = t.subject.nominalValue;
     var p = t.predicate.nominalValue;
     var o = t.object.nominalValue;
-// console.log(p)
-// console.log(skosTypes)
 
-    if (p.startsWith('http://www.w3.org/2004/02/skos/core#') || (p == DO.C.Vocab['rdftype']['@id'] && o.startsWith('http://www.w3.org/2004/02/skos/core#'))) {
-      info['skos'][s] = info['skos'][s] || {};
-      info['skos'][s][p] = info['skos'][s][p] || [];
-      info['skos'][s][p].push(o);
+    var isRDFType = (p == DO.C.Vocab['rdftype']['@id']) ? true : false;
+    var isSKOSProperty = p.startsWith('http://www.w3.org/2004/02/skos/core#');
+    var isSKOSObject = o.startsWith('http://www.w3.org/2004/02/skos/core#');
+
+    if (isRDFType && isSKOSObject) {
+      info['skos']['type'][o] = info['skos']['type'][o] || [];
+      info['skos']['type'][o].push(s);
+    }
+
+    if (isSKOSProperty || (isRDFType && isSKOSObject)) {
+      info['skos']['data'][s] = info['skos']['data'][s] || {};
+      info['skos']['data'][s][p] = info['skos']['data'][s][p] || [];
+      info['skos']['data'][s][p].push(o);
     }
   });
 

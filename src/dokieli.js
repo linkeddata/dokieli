@@ -2132,50 +2132,49 @@ var DO = {
             }
             else if (id == 'list-of-concepts') {
               function getConceptLabel(s) {
-                return s.skosprefLabel || s.skosaltLabel || s.skosnotation || undefined;
-              }
-              function getConceptDefinition(s) {
-                return s.skosdefinition || s.skosnote || undefined;
+                var labels = [];
+
+                //XXX Is there a better way? Simple if skosprefLabel is single in DO.C.Vocab
+                if (s.skosprefLabel._array.length > 0) { labels = labels.concat(s.skosprefLabel._array); }
+                if (s.skosaltLabel._array.length > 0) { labels = labels.concat(s.skosaltLabel._array); }
+                if (s.skosnotation._array.length > 0) { labels = labels.concat(s.skosnotation._array); }
+
+                return labels;
               }
 
 // console.log(DO.C.ResourceInfo['skos'])
 
               var graph;
-              Object.keys(DO.C.ResourceInfo['skos']).forEach(function(i) {
+              Object.keys(DO.C.ResourceInfo['skos']['data']).forEach(function(i) {
 // console.log(i)
-                var skosType = DO.C.ResourceInfo['skos'][i][DO.C.Vocab['rdftype']['@id']];
+                var skosType = DO.C.ResourceInfo['skos']['data'][i][DO.C.Vocab['rdftype']['@id']];
 // console.log(skosType)
-                // var skosPrefLabel = DO.C.ResourceInfo['skos'][i][DO.C.Vocab['skosprefLabel']['@id']] || DO.C.ResourceInfo['skos'][i][DO.C.Vocab['skosaltLabel']['@id']] || DO.C.ResourceInfo['skos'][i][DO.C.Vocab['skosnotation']['@id']] || i;
-                // skosPrefLabel = '<a href="' + i + '">' + skosPrefLabel + '</a>';
-                // var skosDefinition = DO.C.ResourceInfo['skos'][i][DO.C.Vocab['skosdefinition']['@id']] || DO.C.ResourceInfo['skos'][i][DO.C.Vocab['skosnote']['@id']] || i;
-                // skosDefinition = '<a href="' + i + '">' + skosDefinition + '</a>';
 
-                if (skosType && skosType.length > 0 && skosType.indexOf(DO.C.Vocab['skosConceptScheme']['@id']) > -1) {
+                if (skosType && skosType.length > 0 && (skosType.indexOf(DO.C.Vocab['skosConceptScheme']['@id']) > -1 || skosType.indexOf(DO.C.Vocab['skosCollection']['@id']) > -1)) {
                   graph = DO.C.ResourceInfo['graph'].child(i);
 // console.log(graph)
-                  var conceptLabel = getConceptLabel(graph);
-                  if (conceptLabel && conceptLabel._array.length > 0) {
-                    conceptLabel = conceptLabel._array.join(', ');
-                  }
-                  conceptLabel = conceptLabel || i;
-// console.log(conceptLabel)
-                  conceptLabel = '<a href="' + i + '">' + conceptLabel + '</a>';
 
+                  var conceptLabel = getConceptLabel(graph);
+                  conceptLabel = (conceptLabel.length > 0) ? conceptLabel.join(' / ') : i;
+                  conceptLabel = '<a href="' + i + '">' + conceptLabel + '</a>';
                   s += '<dt>' + conceptLabel + '</dt>';
 
-                  var topConcept = DO.C.ResourceInfo['skos'][i][DO.C.Vocab['skoshasTopConcept']['@id']];
-// console.log(topConcept)
-                  if (topConcept && topConcept.length > 0) {
-                    topConcept.forEach(function(tC) {
-                      var conceptGraph = DO.C.ResourceInfo['graph'].child(tC);
-                      var cLabel = getConceptLabel(conceptGraph);
-                      if (cLabel && cLabel._array.length > 0) {
-                        cLabel._array.forEach(function(cL) {
-                          s += '<dd><a href="' + tC + '">' + cL + '</a></dd>';
+                  var hasConcepts = [DO.C.Vocab['skoshasTopConcept']['@id'], DO.C.Vocab['skosmember']['@id']];
+
+                  hasConcepts.forEach(function(hasConcept) {
+                    var concept = DO.C.ResourceInfo['skos']['data'][i][hasConcept];
+  // console.log(topConcept)
+                    if (concept && concept.length > 0) {
+                      concept.forEach(function(c) {
+                        var conceptGraph = DO.C.ResourceInfo['graph'].child(c);
+                        var cLabel = getConceptLabel(conceptGraph);
+                        cLabel = (cLabel.length > 0) ? cLabel : [c];
+                        cLabel.forEach(function(cL) {
+                          s += '<dd><a href="' + c + '">' + cL + '</a></dd>';
                         });
-                      }
-                    });
-                  }
+                      });
+                    }
+                  });
                 }
               });
             }
