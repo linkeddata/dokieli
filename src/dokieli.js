@@ -2145,25 +2145,29 @@ var DO = {
 // console.log(DO.C.ResourceInfo['skos'])
 
               var graph;
-              Object.keys(DO.C.ResourceInfo['skos']['data']).forEach(function(i) {
+              Object.keys(DO.C.ResourceInfo['skos']['type']).forEach(function(rdftype) {
 // console.log(i)
-                var skosType = DO.C.ResourceInfo['skos']['data'][i][DO.C.Vocab['rdftype']['@id']];
-// console.log(skosType)
+                s += '<dt>' + DO.C.SKOSClasses[rdftype] + '</dt>';
+                s += '<dd>';
 
-                if (skosType && skosType.length > 0 && (skosType.indexOf(DO.C.Vocab['skosConceptScheme']['@id']) > -1 || skosType.indexOf(DO.C.Vocab['skosCollection']['@id']) > -1)) {
-                  graph = DO.C.ResourceInfo['graph'].child(i);
+                DO.C.ResourceInfo['skos']['type'][rdftype].forEach(function(subject) {
+// console.log(subject)
+                  // DO.C.ResourceInfo['skos']['data'][subject]
+
+                  graph = DO.C.ResourceInfo['graph'].child(subject);
 // console.log(graph)
 
+                  s += '<dl>';
                   var conceptLabel = getConceptLabel(graph);
-                  conceptLabel = (conceptLabel.length > 0) ? conceptLabel.join(' / ') : i;
-                  conceptLabel = '<a href="' + i + '">' + conceptLabel + '</a>';
+                  conceptLabel = (conceptLabel.length > 0) ? conceptLabel.join(' / ') : subject;
+                  conceptLabel = '<a href="' + subject + '">' + conceptLabel + '</a>';
                   s += '<dt>' + conceptLabel + '</dt>';
 
                   var hasConcepts = [DO.C.Vocab['skoshasTopConcept']['@id'], DO.C.Vocab['skosmember']['@id']];
 
                   hasConcepts.forEach(function(hasConcept) {
-                    var concept = DO.C.ResourceInfo['skos']['data'][i][hasConcept];
-  // console.log(topConcept)
+                    var concept = DO.C.ResourceInfo['skos']['data'][subject][hasConcept];
+
                     if (concept && concept.length > 0) {
                       concept.forEach(function(c) {
                         var conceptGraph = DO.C.ResourceInfo['graph'].child(c);
@@ -2175,7 +2179,10 @@ var DO = {
                       });
                     }
                   });
-                }
+                  s += '</dl>';
+                })
+
+                s += '</dd>';
               });
             }
             //list-of-figures, list-of-tables, list-of-quotations, table-of-requirements
