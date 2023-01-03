@@ -284,6 +284,13 @@ module.exports = {
     'http://purl.org/spar/cito/usesMethodIn': 'uses method in'
   },
 
+  SKOSClasses: {
+    'http://www.w3.org/2004/02/skos/core#ConceptScheme': 'Concept Scheme',
+    'http://www.w3.org/2004/02/skos/core#Collection': 'Collection',
+    'http://www.w3.org/2004/02/skos/core#OrderedCollection': 'Ordered Collection',
+    'http://www.w3.org/2004/02/skos/core#Concept': 'Concept'
+  },
+
   TestDescriptionReviewStatus: {
     'http://www.w3.org/2006/03/test-description#accepted': "the item has gone through a first review, which shows it as valid for further processing",
     'http://www.w3.org/2006/03/test-description#approved': "the item has gone through the review process and was approved",
