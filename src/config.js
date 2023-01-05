@@ -179,6 +179,7 @@ module.exports = {
     'document-original',
     'document-memento',
     'document-latest-version',
+    'document-latest-published-version',
     'document-predecessor-version',
     'document-timegate',
     'document-timemap',
@@ -199,6 +200,7 @@ module.exports = {
     'list-of-figures',
     'list-of-tables',
     'list-of-abbreviations',
+    'list-of-concepts',
     'list-of-quotations',
     'table-of-requirements',
     'abstract',
@@ -214,6 +216,7 @@ module.exports = {
     'list-of-tables': { 'label': 'Tables', 'selector': 'table', 'titleSelector': 'caption' },
     'list-of-abbreviations': { 'label': 'Abbreviations', 'selector': 'abbr', 'titleSelector': 'title'},
     'list-of-quotations': {'label': 'Quotations', 'selector': 'q', 'titleSelector': 'cite'},
+    'list-of-concepts': {'label': 'Concepts', 'selector': '[typeof~="skos:Concept"]', 'titleSelector': '[property~="skos:prefLabel"]'},
     'table-of-requirements': {'label': 'Requirements', 'selector': '[rel~="spec:requirement"]', 'titleSelector': '[property~="spec:statement"]'},
     'references': { 'label': 'References', 'selector':'cite a', 'titleSelector': 'h2' }
   },
@@ -279,6 +282,13 @@ module.exports = {
     'http://purl.org/spar/cito/usesConclusionsFrom': 'uses conclusions from',
     'http://purl.org/spar/cito/usesDataFrom': 'uses data from',
     'http://purl.org/spar/cito/usesMethodIn': 'uses method in'
+  },
+
+  SKOSClasses: {
+    'http://www.w3.org/2004/02/skos/core#ConceptScheme': 'Concept Scheme',
+    'http://www.w3.org/2004/02/skos/core#Collection': 'Collection',
+    'http://www.w3.org/2004/02/skos/core#OrderedCollection': 'Ordered Collection',
+    'http://www.w3.org/2004/02/skos/core#Concept': 'Concept'
   },
 
   TestDescriptionReviewStatus: {
@@ -383,7 +393,23 @@ module.exports = {
     "dctermshasPart": { "@id": "http://purl.org/dc/terms/hasPart", "@type": "@id", "@array": true },
     "dctermsisPartOf": { "@id": "http://purl.org/dc/terms/isPartOf", "@type": "@id", "@array": true },
 
+    "skosConceptScheme": { "@id": "http://www.w3.org/2004/02/skos/core#ConceptScheme", "@type": "@id" },
+    "skosCollection": { "@id": "http://www.w3.org/2004/02/skos/core#Collection", "@type": "@id" },
+    "skosOrderedCollection": { "@id": "http://www.w3.org/2004/02/skos/core#OrderedCollection", "@type": "@id" },
+    "skosConcept": { "@id": "http://www.w3.org/2004/02/skos/core#Concept", "@type": "@id" },
+    "skosdefinition": { "@id": "http://www.w3.org/2004/02/skos/core#definition", "@type": "@id", "@array": true },
+    "skosaltLabel": { "@id": "http://www.w3.org/2004/02/skos/core#altLabel", "@type": "@id", "@array": true },
     "skosprefLabel": { "@id": "http://www.w3.org/2004/02/skos/core#prefLabel", "@type": "@id", "@array": true },
+    "skosmember": { "@id": "http://www.w3.org/2004/02/skos/core#member", "@type": "@id", "@array": true },
+    "skosnotation": { "@id": "http://www.w3.org/2004/02/skos/core#notation", "@type": "@id", "@array": true },
+    "skosnote": { "@id": "http://www.w3.org/2004/02/skos/core#note", "@type": "@id", "@array": true },
+    "skoshasTopConcept": { "@id": "http://www.w3.org/2004/02/skos/core#hasTopConcept", "@type": "@id", "@array": true },
+    "skostopConceptOf": { "@id": "http://www.w3.org/2004/02/skos/core#topConceptOf", "@type": "@id", "@array": true },
+    "skosbroadMatch": { "@id": "http://www.w3.org/2004/02/skos/core#broadMatch", "@type": "@id", "@array": true },
+    "skoscloseMatch": { "@id": "http://www.w3.org/2004/02/skos/core#closeMatch", "@type": "@id", "@array": true },
+    "skosexactMatch": { "@id": "http://www.w3.org/2004/02/skos/core#exactMatch", "@type": "@id", "@array": true },
+    "skosnarrowMatch": { "@id": "http://www.w3.org/2004/02/skos/core#narrowMatch", "@type": "@id", "@array": true },
+    "skosrelatedMatch": { "@id": "http://www.w3.org/2004/02/skos/core#relatedMatch", "@type": "@id", "@array": true },
 
     "provgeneratedAtTime": "http://www.w3.org/ns/prov#generatedAtTime",
 

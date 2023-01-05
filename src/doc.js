@@ -36,6 +36,7 @@ module.exports = {
   getResourceInfo,
   getResourceInfoODRLPolicies,
   getResourceInfoSpecRequirements,
+  getResourceInfoSKOS,
   setFeatureStatesOfResourceInfo,
   createImmutableResource,
   createMutableResource,
@@ -64,8 +65,7 @@ function dumpNode (node, options, skipAttributes, selfClosing, noEsc) {
   if (typeof node.nodeType === 'undefined') return out
 
   if (node.nodeType === 1) {
-    if (node.hasAttribute('class') && 'classWithChildText' in options &&
-        node.matches(options.classWithChildText.class)) {
+    if (node.hasAttribute('class') && 'classWithChildText' in options && node.matches(options.classWithChildText.class)) {
       out += node.querySelector(options.classWithChildText.element).textContent
     } else if (!(options.skipNodeWithClass && node.matches('.' + options.skipNodeWithClass))) {
       var ename = node.nodeName.toLowerCase()
@@ -88,6 +88,8 @@ function dumpNode (node, options, skipAttributes, selfClosing, noEsc) {
             }
           })
         }
+
+        // if ((atn.name === 'class' || atn.name === 'id') && atn.value.length == 0) continue
 
         if (!(atn.name === 'class' && 'skipClassWithValue' in options &&
             options.skipClassWithValue === atn.value)) {
@@ -123,7 +125,7 @@ function dumpNode (node, options, skipAttributes, selfClosing, noEsc) {
         }
 
         noEsc.pop()
-        out += (ename === 'body' || ename === 'html') ? '</' + ename + '>' + '\n' : '</' + ename + '>'
+        out += (ename === 'body') ? '  </' + ename + '>\n' : (ename === 'html') ? '</' + ename + '>\n' : '</' + ename + '>'
       }
     }
   } else if (node.nodeType === 8) {
@@ -131,12 +133,18 @@ function dumpNode (node, options, skipAttributes, selfClosing, noEsc) {
     out += '\n\
 <!--' + node.nodeValue + '-->'
   } else if (node.nodeType === 3 || node.nodeType === 4) {
-    // XXX: Remove new lines which were added after DOM ready
     let nl = node.nodeValue
+    // XXX: Remove new lines which were added after DOM ready
     // .replace(/\n+$/, '')
-    out += (noEsc.indexOf(true) > -1)
-      ? nl.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      : nl
+
+    nl = nl.replace(/&/g, '&amp;').replace(/&amp;amp;/g, '&amp;')
+    if (node.parentNode.nodeName.toLowerCase() !== 'style') {
+      nl = nl.replace(/>/g, '&gt;')
+    }
+    if (noEsc.indexOf(true) > -1) {
+      nl = nl.replace(/</g, '&lt;')
+    }
+    out += nl
   } else {
     console.log('Warning; Cannot handle serialising nodes of type: ' + node.nodeType)
   }
@@ -833,7 +841,8 @@ function getResourceInfo(data, options) {
         }
 
         //TODO: Refactor
-        //FIXME: permissionsActions is assumed to be from document's policies
+        //FIXME: permissionsActions, specrequirement, skosConceptSchemes are assumed to be from document's policies
+
         if(s.odrlhasPolicy && s.odrlhasPolicy.at(0) && s.iri().toString() == documentURL) {
           info['odrl'] = getResourceInfoODRLPolicies(s);
         }
@@ -841,6 +850,8 @@ function getResourceInfo(data, options) {
         if(s.specrequirement && s.specrequirement.at(0) && s.iri().toString() == documentURL) {
           info['spec'] = getResourceInfoSpecRequirements(s);
         }
+
+        info['skos'] = getResourceInfoSKOS(i);
 
         info['buttonStates'] = setFeatureStatesOfResourceInfo(info);
 
@@ -993,6 +1004,39 @@ function getResourceInfoSpecRequirements(s) {
 // console.log(info['spec'])
 
   return info['spec'];
+}
+
+function getResourceInfoSKOS(g) {
+  var info = {};
+  info['skos'] = {'data': {}, 'type': {}};
+  // info['skos']['skosConceptScheme'][s] = {};
+// console.log(g)
+  var items = [];
+
+// console.log(g)
+  g._graph.forEach(function(t){
+    var s = t.subject.nominalValue;
+    var p = t.predicate.nominalValue;
+    var o = t.object.nominalValue;
+
+    var isRDFType = (p == DO.C.Vocab['rdftype']['@id']) ? true : false;
+    var isSKOSProperty = p.startsWith('http://www.w3.org/2004/02/skos/core#');
+    var isSKOSObject = o.startsWith('http://www.w3.org/2004/02/skos/core#');
+
+    if (isRDFType && isSKOSObject) {
+      info['skos']['type'][o] = info['skos']['type'][o] || [];
+      info['skos']['type'][o].push(s);
+    }
+
+    if (isSKOSProperty || (isRDFType && isSKOSObject)) {
+      info['skos']['data'][s] = info['skos']['data'][s] || {};
+      info['skos']['data'][s][p] = info['skos']['data'][s][p] || [];
+      info['skos']['data'][s][p].push(o);
+    }
+  });
+
+// console.log(info['skos'])
+  return info['skos'];
 }
 
 

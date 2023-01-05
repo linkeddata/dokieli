@@ -48,14 +48,15 @@ transition:opacity 1s ease-in-out;
 }*/
 }
 
-[contenteditable=true]:focus {
-outline:none;
+[contenteditable=true] {
+outline-color:#080;
 }
 
 @keyframes target {
   50% { background-color:#efe; box-shadow:inset 0px 0px 0px 3px #ccc;}
 }
 
+[contenteditable=true]:focus-visible,
 *:target {
   animation:target 2s linear;
 }
