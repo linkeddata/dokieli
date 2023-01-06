@@ -3923,115 +3923,183 @@ console.log(reason);
       return s;
     },
 
-    //XXX: This need not be limited to storage's communication options.
     getCommunicationOptions: function(g) {
-      var s = '';
-      var resourceOwners = [];
-
+      var subjectURI = g.iri().toString();
+      var notificationSubscriptions = DO.U.getNotificationSubscriptions(g);
       var notificationChannels = DO.U.getNotificationChannels(g);
 
       DO.C.Storages = DO.C.Storages || {};
-      DO.C.Storages[g.iri().toString()] = DO.C.Storages[g.iri().toString()] || {};
+      DO.C.Storages[subjectURI] = DO.C.Storages[subjectURI] || {};
+
+      if (notificationSubscriptions) {
+        DO.C.Storages[subjectURI]['subscription'] = DO.C.Storages[subjectURI]['subscription'] || {};
+      }
 
       if (notificationChannels) {
-        DO.C.Storages[g.iri().toString()]['notificationChannels'] = DO.C.Storages[g.iri().toString()]['notificationChannels'] || {};
-        var notificationChannelDetails = [];
+        DO.C.Storages[subjectURI]['channel'] = DO.C.Storages[subjectURI]['channel'] || {};
+      }
 
-        notificationChannels.forEach(function(notificationChannel){
-          var notificationSubscriptionType = '';
-          var notificationSubscription = '';
-          var notificationFeatures = '';
+      var nSHTML = [];
 
-          DO.C.Storages[g.iri().toString()]['notificationChannels'][notificationChannel] = DO.C.Storages[g.iri().toString()]['notificationChannels'][notificationChannel] || {};
+      if (notificationSubscriptions) {
+        nSHTML.push('<dl id="notification-subscriptions"><dt>Notification Subscriptions</dt>');
 
-          var nC = g.child(notificationChannel);
+        notificationSubscriptions.forEach(function(subscription){
+          var nSChannelType = '';
+          var nSSubscription = '';
+          var nSFeatures = '';
 
-          var types = nC.rdftype._array;
+          var nS = g.child(subscription);
+          var channelType = DO.U.getNotificationChannelTypes(nS);
+          var features = DO.U.getNotificationFeatures(nS);
 
-          if(types.indexOf(DO.C.Vocab['notifyWebSocketSubscription2021']["@id"]) >= 0) {
-            DO.C.Storages[g.iri().toString()]['notificationChannels'][notificationChannel]['type'] = 'WebSocketSubscription2021';
+          DO.C.Storages[subjectURI]['subscription'][subscription] = {};
+          DO.C.Storages[subjectURI]['subscription'][subscription]['channelType'] = channelType;
+          DO.C.Storages[subjectURI]['subscription'][subscription]['feature'] = features;
 
-            notificationSubscriptionType = '<dt>Subscription Type</dt><dd><a about="' + notificationChannel + '" href="https://solidproject.org/TR/websocket-subscription-2021" target="_blank" typeof="notify:WebSocketSubscription2021">WebSocketSubscription2021</a></dd>';
+          nSHTML.push('<dd><details><summary><a href="' + subscription + '" target="_blank">' + subscription + '</a></summary>');
+          nSHTML.push('<dl id="notification-subscription-' + subscription + '" rel="notify:subscription" resource="' + subscription + '">');
+          // nSHTML.push('<dt>Subscription</dt><dd><a href="' + subscription + '" target="_blank">' + subscription + '</a></dd>');
+
+          if (channelType) {
+            nSHTML.push('<dt>Channel Type</dt><dd><a href="' + channelType + '" rel="notify:channelType" target="_blank">' + channelType + '</a></dd>');
           }
 
-          if (nC.notifysubscription) {
-            DO.C.Storages[g.iri().toString()]['notificationChannels'][notificationChannel]['subscription'] = nC.notifysubscription;
+          if (features) {
+            nSHTML.push('<dt>Features</dt><dd><ul rel="notify:feature">');
 
-            notificationSubscription = '<dt>Subscription</dt><dd><a href="' + nC.notifysubscription + '" rel="notify:subscription" target="_blank">' + nC.notifysubscription + '</a></dd>';
-          }
-
-          if (nC.notifyfeature && nC.notifyfeature._array.length > 0) {
             var nF = [];
 
-            DO.C.Storages[g.iri().toString()]['notificationChannels'][notificationChannel]['feature'] = [];
-
-            nC.notifyfeature._array.forEach(function(iri){
+            features.forEach(function(iri){
               var label = href = iri;
 
-              DO.C.Storages[g.iri().toString()]['notificationChannels'][notificationChannel]['feature'].push(iri);
-
               switch (iri) {
-                case DO.C.Vocab['notifyexpiration']['@id']:
+                case DO.C.Vocab['notifystartAt']['@id']:
+                case DO.C.Vocab['notifyendAt']['@id']:
                 case DO.C.Vocab['notifystate']['@id']:
                 case DO.C.Vocab['notifyrate']['@id']:
                 case DO.C.Vocab['notifyaccept']['@id']:
                   label = uri.getFragmentFromString(iri);
-                  href = 'https://solidproject.org/TR/notifications-protocol#feature-' + label;
+                  href = 'https://solidproject.org/TR/2022/notifications-protocol-20221231#notify-' + label;
                   break;
 
                 default:
                   break;
               }
 
-              nF.push('<li><a href="' + href + '" resource="' + iri + '" target="_blank">' + label + '</a></li>');
+              nSHTML.push('<li><a href="' + href + '" resource="' + iri + '" target="_blank">' + label + '</a></li>');
             });
 
-            notificationFeatures = '<dt>Features</dt><dd><ul rel="notify:feature">' + nF.join('') + '</ul></dd>';
+            nSHTML.push('</ul></dd>');
           }
 
-          notificationChannelDetails.push('<dd><details><summary><a href="' + notificationChannel + '" target="_blank">' + notificationChannel + '</a></summary><dl>' + notificationSubscriptionType + notificationSubscription + notificationFeatures + '</dl></details></dd>');
+          nSHTML.push('</dl></details></dd>');
         })
 
-        s = '<dl id="notification-channels"><dt>Notification channels</dt>' + notificationChannelDetails.join('') + '</dl>';
+        nSHTML.push('</dl>');
       }
 
-      return s;
+      return nSHTML.join('');
     },
 
     //https://solidproject.org/TR/notifications-protocol#discovery
-    getNotificationChannels: function(s) {
-      return (s.notifynotificationChannel && s.notifynotificationChannel._array.length > 0)
-        ? s.notifynotificationChannel._array
+    getNotificationSubscriptions: function(s) {
+      return (s.notifysubscription && s.notifysubscription._array.length > 0)
+        ? s.notifysubscription._array
         : undefined
     },
 
-    subscribeToNotificationChannel: function(subscription, subscriptionType, topic) {
-      switch(subscriptionType){
-        //https://solidproject.org/TR/websocket-subscription-2021
-        case DO.C.Vocab['notifyWebSocketSubscription2021']['@id']:
-          return DO.C.subscribeToWebSocketSubscription(subscription, subscriptionType, topic, feature);
+    getNotificationChannels: function(s) {
+      return (s.notifychannel && s.notifychannel._array.length > 0)
+        ? s.notifychannel._array
+        : undefined
+    },
+
+    getNotificationChannelTypes: function(s) {
+      return (s.notifychannelType)
+        ? s.notifychannelType
+        : undefined
+    },
+
+    getNotificationFeatures: function(s) {
+      return (s.notifyfeature && s.notifyfeature._array.length > 0)
+        ? s.notifyfeature._array
+        : undefined
+    },
+
+    //doap:implements <https://solidproject.org/TR/2022/notification-protocol-20221231#subscription-client-subscription-request>
+    subscribeToNotificationChannel: function(data) {
+      switch(data.type){
+        //doap:implements <https://solidproject.org/TR/websocket-channel-2023>
+        case 'WebSocketChannel2023':
+          return DO.C.subscribeToWebSocketChannel(data, options);
           break;
       }
     },
 
-    processNotificationSubscriptionResponse: function(response) {
-      var cT = response.headers.get('Content-Type');
-      cT = cT.split(';')[0].trim();
+    //doap:implements <http://localhost:3000/notifications/p.html#notification-channel-data-model>
+    subscribeToWebSocketChannel: function(url, d, options = {}) {
+      if (!url || !d.type || !d.topic) { return Promise.reject(); }
 
-      var rD = (cT == 'application/ld+json') ? response.json() : response.text();
+      options['contentType'] = options.contentType || 'application/ld+json';
+
+      var data;
+
+      switch (options.contentType) {
+        case 'text/turtle':
+          var notifyChannelType = 'notify' + d.type;
+          data = '<> a <' + DO.C.Vocab[notifyChannelType]['@id']  + '> ;\n\
+  <http://www.w3.org/ns/solid/notifications#topic> <' + d.topic + '> .';
+          break;
+
+        default:
+        case 'application/ld+json':
+          data['@context']  = "https://www.w3.org/ns/solid/notification/v1";
+          data['@id'] = '';
+          // data['feature'] = '';
+          data = JSON.stringify(data);
+          break;
+      }
+
+      return fetcher.postResource(url, '', data, options.contentType, null, options)
+        .then(response => {
+          return DO.U.processNotificationSubscriptionResponse(response, d.type);
+        })
+        .catch(error => { throw error })
+        .then(data => {
+          DO.C.Subscription[data.topic] = DO.C.Subscription[data.topic] || {};
+          DO.C.Subscription[data.topic]['type'] = data.type;
+
+          switch (data.type) {
+            case 'WebSocketChannel2023':
+              DO.C.Subscription[data.topic]['connect'] = DO.U.connectToWebSocket(data);
+              break;
+          }
+        });
+    },
+
+    processNotificationSubscriptionResponse: function(response, d) {
+      var cT = response.headers.get('Content-Type');
+      var contentType = cT.split(';')[0].trim();
+
+      var rD = (contentType == 'application/ld+json') ? response.json() : response.text();
 
       return rD.then(data => {
-        switch (cT) {
+        switch (options.contentType) {
           case 'text/turtle':
             return Promise.reject({'message': 'TODO text/turtle', 'data': data});
             break;
 
           case 'application/ld+json':
-            if (data["@context"] && data.type && data.source) {
-              return Promise.resolve(data);
+            // return graph.getGraphFromData(data, options).then
+            if (data['@context'] && data.type && data.topic) {
+              //|| d.type == 'LDNChannel2023' && data.sender
+              if (d.type == 'WebSocketChannel2023' && data.receiveFrom) {
+                return Promise.resolve(data);
+              }
             }
             else {
-              return Promise.reject({'message': 'Missing @context, type, source', 'data': data})
+              return Promise.reject({'message': 'Missing @context, type, topic(, receiveFrom)', 'data': data})
             }
             break;
 
@@ -4042,49 +4110,14 @@ console.log(reason);
       });
     },
 
-    subscribeToWebSocketSubscription: function(subscription, subscriptionType, topic, feature, options = {}) {
-      if (!subscription || !subscriptionType || !topic) { return Promise.reject(); }
-
-      options['contentType'] = options.contentType || 'application/ld+json';
-
-      var data;
-
-      switch (options['contentType']) {
-        case 'text/turtle':
-          data = '<> a <http://www.w3.org/ns/solid/notifications#WebSocketSubscription2021> ;\n\
-  <http://www.w3.org/ns/solid/notifications#topic> <' + topic + '> .';
-          break;
-        default:
-        case 'application/ld+json':
-          data = {
-            "@context": ["https://www.w3.org/ns/solid/notification/v1"],
-            "type": "WebSocketSubscription2021",
-            "topic": topic
-          }
-          data = JSON.stringify(data);
-          break;
-      }
-
-      return fetcher.postResource(subscription, '', data, options.contentType, null, options)
-        .then(DO.U.processNotificationSubscriptionResponse)
-        .catch(error => { throw error })
-        .then(data => {
-          switch (data.type) {
-            case DO.C.Vocab['notifyWebSocketSubscription2021']['@id']:
-              return DO.U.connectToWebSocket(data.source, data.type);
-              break;
-          }
-        });
-    },
-
-    connectToWebSocket: function(url, type) {
+    connectToWebSocket: function(url, data) {
       function connect() {
         return new Promise(function(resolve, reject) {
-          var ws = new WebSocket(url, type);
+          var ws = new WebSocket(url, data.type);
           var message;
 
           ws.onopen = function() {
-            message = {'message': 'Connected to ' + url + ' (' + type + ').'};
+            message = {'message': 'Connected to ' + url + ' (' + data.type + ').'};
             console.log(message);
             // ws.send(JSON.stringify({
             // }));
