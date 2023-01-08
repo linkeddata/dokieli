@@ -3709,6 +3709,49 @@ console.log(reason);
                     var communicationOptions = DO.U.getCommunicationOptions(g);
 
                     sD.insertAdjacentHTML('beforeend', '<div id="' + id + '-storage-description">' + storageLocation + selfDescription + contactInformation + persistencePolicy + odrlPolicies + communicationOptions + '</div>');
+
+                    var subscriptionsId = id + '-storage-description-details';
+                    document.querySelectorAll('#' + subscriptionsId).forEach(function(subNode){
+                      subNode.addEventListener('click', function(e) {
+                        var button = e.target.closest('button');
+
+                        if (button){
+                          var subscription = subNode.querySelector('[rel="notify:subscription"]').getAttribute('resource');
+// console.log(DO.C.Storages[s.iri().toString()].subscription);
+                          var channelType = DO.C.Storages[s.iri().toString()]['subscription'][subscription]['channelType'];
+
+                          var data = {
+                            "type": channelType,
+                            "topic": s.iri().toString()
+                          };
+
+                          var features = DO.C.Storages[s.iri().toString()]['subscription'][subscription]['feature'];
+
+                          if (features && features.length > 0) {
+                            var d = new Date();
+                            var startAt = new Date(d.getTime() + 1000);
+                            var endAt = new Date(startAt.getTime() + 3600000);
+
+                            if (features.indexOf(DO.C.Vocab['notifystartAt']) > -1) {
+                              data['startAt'] = startAt.toISOString();
+                            }
+                            if (features.indexOf(DO.C.Vocab['notifyendAt']) > -1) {
+                              data['endAt'] = endAt.toISOString();
+                            }
+                            if (features.indexOf(DO.C.Vocab['notifyrate']) > -1) {
+                              data['rate'] = "P1M";
+                            }
+                          }
+
+                          DO.U.subscribeToNotificationChannel(subscription, data)
+                          // .then(function(i){
+                          //   button.textContent = (subscriptionIsActive) ? 'Unsubscribe' : 'Subscribe';
+                          // }).catch(e => {
+
+                          // });
+                        }
+                      });
+                    });
                   });
                 }
               }
@@ -3957,9 +4000,18 @@ console.log(reason);
           DO.C.Storages[subjectURI]['subscription'][subscription]['channelType'] = channelType;
           DO.C.Storages[subjectURI]['subscription'][subscription]['feature'] = features;
 
-          nSHTML.push('<dd><details><summary><a href="' + subscription + '" target="_blank">' + subscription + '</a></summary>');
-          nSHTML.push('<dl id="notification-subscription-' + subscription + '" rel="notify:subscription" resource="' + subscription + '">');
+          var subscriptionIsActive = false;
+          var buttonSubscribe = (subscriptionIsActive) ? 'Unsubscribe' : 'Subscribe';
+
+          nSHTML.push('<dd id="notification-subscription-' + subscription + '"><details><summary><a href="' + subscription + '" target="_blank">' + subscription + '</a></summary>');
+          nSHTML.push('<dl rel="notify:subscription" resource="' + subscription + '">');
           // nSHTML.push('<dt>Subscription</dt><dd><a href="' + subscription + '" target="_blank">' + subscription + '</a></dd>');
+
+          var topic = subjectURI;
+
+          if (topic) {
+            nSHTML.push('<dt>Topic</dt><dd><a href="' + topic + '" rel="notify:topic" target="_blank">' + topic + '</a> <button id="notification-subscription-' + subscription + '-button"' + '>' + buttonSubscribe + '</button></dd>');
+          }
 
           if (channelType) {
             nSHTML.push('<dt>Channel Type</dt><dd><a href="' + channelType + '" rel="notify:channelType" target="_blank">' + channelType + '</a></dd>');
@@ -4028,11 +4080,11 @@ console.log(reason);
     },
 
     //doap:implements <https://solidproject.org/TR/2022/notification-protocol-20221231#subscription-client-subscription-request>
-    subscribeToNotificationChannel: function(data) {
+    subscribeToNotificationChannel: function(url, data) {
       switch(data.type){
         //doap:implements <https://solidproject.org/TR/websocket-channel-2023>
-        case 'WebSocketChannel2023':
-          return DO.C.subscribeToWebSocketChannel(data, options);
+        case DO.C.Vocab['notifyWebSocketChannel2023']['@id']:
+          return DO.U.subscribeToWebSocketChannel(url, data);
           break;
       }
     },
@@ -4054,25 +4106,59 @@ console.log(reason);
 
         default:
         case 'application/ld+json':
-          data['@context']  = "https://www.w3.org/ns/solid/notification/v1";
-          data['@id'] = '';
+          d['@context'] = d['@context'] || ["https://www.w3.org/ns/solid/notification/v1"];
+          // d['id'] = d['id'] || '';
           // data['feature'] = '';
-          data = JSON.stringify(data);
+          data = JSON.stringify(d);
           break;
       }
 
       return fetcher.postResource(url, '', data, options.contentType, null, options)
         .then(response => {
-          return DO.U.processNotificationSubscriptionResponse(response, d.type);
+          return DO.U.processNotificationSubscriptionResponse(response, d);
         })
-        .catch(error => { throw error })
+        .catch(error => {
+            console.error(error);
+
+            let message;
+
+            switch (error.status) {
+              case 0:
+              case 405:
+                message = 'subscription request not allowed.';
+                break;
+              case 401:
+                message = 'you are not authorized.'
+                if(!DO.C.User.IRI){
+                  message += ' Try signing in.';
+                }
+                break;
+              case 403:
+                message = 'you do not have permission to request a subscription.';
+                break;
+              case 406:
+                message = 'representation not acceptable to the user agent.';
+                break;
+              default:
+                // some other reason
+                message = error.message;
+                break;
+            }
+
+            // re-throw, to break out of the promise chain
+            throw new Error('Cannot subscribe: ', message);
+        })
         .then(data => {
-          DO.C.Subscription[data.topic] = DO.C.Subscription[data.topic] || {};
-          DO.C.Subscription[data.topic]['type'] = data.type;
+// console.log(data);
+          DO.C.Subscription[data.topic] = data;
 
           switch (data.type) {
-            case 'WebSocketChannel2023':
-              DO.C.Subscription[data.topic]['connect'] = DO.U.connectToWebSocket(data);
+            case 'WebSocketChannel2023': case DO.C.Vocab['notifyWebSocketChannel2023']['@id']:
+              data.type = DO.C.Vocab['notifyWebSocketChannel2023']['@id'];
+              return DO.U.connectToWebSocket(data.receiveFrom, data).then(function(i){
+                DO.C.Subscription[data.topic]['connection'] = i;
+                // return Promise.resolve();
+              });
               break;
           }
         });
@@ -4089,12 +4175,15 @@ console.log(reason);
           case 'text/turtle':
             return Promise.reject({'message': 'TODO text/turtle', 'data': data});
             break;
-
           case 'application/ld+json':
             // return graph.getGraphFromData(data, options).then
             if (data['@context'] && data.type && data.topic) {
-              //|| d.type == 'LDNChannel2023' && data.sender
-              if (d.type == 'WebSocketChannel2023' && data.receiveFrom) {
+              if (d.topic != data.topic) {
+                console.log('TODO: topic requested != response');
+              }
+
+              //TODO d.type == 'LDNChannel2023' && data.sender
+              if ((d.type == 'WebSocketChannel2023' || d.type == DO.C.Vocab['notifyWebSocketChannel2023']['@id']) && data.receiveFrom) {
                 return Promise.resolve(data);
               }
             }
@@ -4113,12 +4202,18 @@ console.log(reason);
     connectToWebSocket: function(url, data) {
       function connect() {
         return new Promise(function(resolve, reject) {
-          var ws = new WebSocket(url, data.type);
+// console.log(data)
+          var protocols = [data.type];
+// protocols = ['solid-0.1'];
+
+          var ws = new WebSocket(url, protocols);
           var message;
 
           ws.onopen = function() {
             message = {'message': 'Connected to ' + url + ' (' + data.type + ').'};
             console.log(message);
+// ws.send('sub ' + data.topic);
+
             // ws.send(JSON.stringify({
             // }));
             resolve(ws);
@@ -4138,6 +4233,12 @@ console.log(reason);
             ws.close();
 
             reject(err);
+          };
+
+          ws.onmessage = function(msg) {
+// console.log(msg)
+            console.log(msg.data);
+//TODO processNotificationChannelMessage(data, msg)
           };
         });
       }
