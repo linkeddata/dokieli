@@ -3711,44 +3711,58 @@ console.log(reason);
                     sD.insertAdjacentHTML('beforeend', '<div id="' + id + '-storage-description">' + storageLocation + selfDescription + contactInformation + persistencePolicy + odrlPolicies + communicationOptions + '</div>');
 
                     var subscriptionsId = id + '-storage-description-details';
+                    var topicResource = s.iri().toString();
+// topicResource = 'https://csarven.localhost:8443/foo.html';
+
                     document.querySelectorAll('#' + subscriptionsId).forEach(function(subNode){
                       subNode.addEventListener('click', function(e) {
                         var button = e.target.closest('button');
 
                         if (button){
-                          var subscription = subNode.querySelector('[rel="notify:subscription"]').getAttribute('resource');
+                          if (!(topicResource in DO.C.Subscription && 'Connection' in DO.C.Subscription[topicResource]) && button.classList.contains('subscribe')) {
+                            var subscription = subNode.querySelector('[rel="notify:subscription"]').getAttribute('resource');
 // console.log(DO.C.Storages[s.iri().toString()].subscription);
-                          var channelType = DO.C.Storages[s.iri().toString()]['subscription'][subscription]['channelType'];
+                            var channelType = DO.C.Storages[s.iri().toString()]['subscription'][subscription]['channelType'];
 
-                          var data = {
-                            "type": channelType,
-                            "topic": s.iri().toString()
-                          };
+                            var data = {
+                              "type": channelType,
+                              "topic": topicResource
+                            };
 
-                          var features = DO.C.Storages[s.iri().toString()]['subscription'][subscription]['feature'];
+                            var features = DO.C.Storages[s.iri().toString()]['subscription'][subscription]['feature'];
 
-                          if (features && features.length > 0) {
-                            var d = new Date();
-                            var startAt = new Date(d.getTime() + 1000);
-                            var endAt = new Date(startAt.getTime() + 3600000);
+                            if (features && features.length > 0) {
+                              var d = new Date();
+                              var startAt = new Date(d.getTime() + 1000);
+                              var endAt = new Date(startAt.getTime() + 3600000);
 
-                            if (features.indexOf(DO.C.Vocab['notifystartAt']) > -1) {
-                              data['startAt'] = startAt.toISOString();
+                              if (features.indexOf(DO.C.Vocab['notifystartAt']) > -1) {
+                                data['startAt'] = startAt.toISOString();
+                              }
+                              if (features.indexOf(DO.C.Vocab['notifyendAt']) > -1) {
+                                data['endAt'] = endAt.toISOString();
+                              }
+                              if (features.indexOf(DO.C.Vocab['notifyrate']) > -1) {
+                                data['rate'] = "P1M";
+                              }
                             }
-                            if (features.indexOf(DO.C.Vocab['notifyendAt']) > -1) {
-                              data['endAt'] = endAt.toISOString();
-                            }
-                            if (features.indexOf(DO.C.Vocab['notifyrate']) > -1) {
-                              data['rate'] = "P1M";
-                            }
+
+                            DO.U.subscribeToNotificationChannel(subscription, data)
+                            .then(function(i){
+                              if (DO.C.Subscription[data.topic] && 'Connection' in DO.C.Subscription[data.topic]) {
+                                button.textContent = 'Unsubscribe';
+                                button.setAttribute('class', 'unsubscribe');
+                              }
+                            }).catch(e => {
+                              console.log(e);
+                            });
                           }
-
-                          DO.U.subscribeToNotificationChannel(subscription, data)
-                          // .then(function(i){
-                          //   button.textContent = (subscriptionIsActive) ? 'Unsubscribe' : 'Subscribe';
-                          // }).catch(e => {
-
-                          // });
+                          else {
+                            DO.C.Subscription[topicResource].Connection.close();
+                            DO.C.Subscription[topicResource] = {};
+                            button.textContent = 'Subscribe';
+                            button.setAttribute('class', 'subscribe');
+                          }
                         }
                       });
                     });
@@ -4000,8 +4014,15 @@ console.log(reason);
           DO.C.Storages[subjectURI]['subscription'][subscription]['channelType'] = channelType;
           DO.C.Storages[subjectURI]['subscription'][subscription]['feature'] = features;
 
-          var subscriptionIsActive = false;
-          var buttonSubscribe = (subscriptionIsActive) ? 'Unsubscribe' : 'Subscribe';
+          var buttonSubscribe = 'Subscribe';
+          var buttonSubscribeClass = 'subscribe';
+
+          var topicResource = subjectURI;
+// topicResource = 'https://csarven.localhost:8443/foo.html';
+          if (DO.C.Subscription[topicResource] && DO.C.Subscription[topicResource].Connection) {
+            buttonSubscribe = 'Unsubscribe';
+            buttonSubscribeClass = 'unsubscribe';
+          }
 
           nSHTML.push('<dd id="notification-subscription-' + subscription + '"><details><summary><a href="' + subscription + '" target="_blank">' + subscription + '</a></summary>');
           nSHTML.push('<dl rel="notify:subscription" resource="' + subscription + '">');
@@ -4010,7 +4031,7 @@ console.log(reason);
           var topic = subjectURI;
 
           if (topic) {
-            nSHTML.push('<dt>Topic</dt><dd><a href="' + topic + '" rel="notify:topic" target="_blank">' + topic + '</a> <button id="notification-subscription-' + subscription + '-button"' + '>' + buttonSubscribe + '</button></dd>');
+            nSHTML.push('<dt>Topic</dt><dd><a href="' + topic + '" rel="notify:topic" target="_blank">' + topic + '</a> <button id="notification-subscription-' + subscription + '-button"' + ' class="' + buttonSubscribeClass + '">' + buttonSubscribe + '</button></dd>');
           }
 
           if (channelType) {
