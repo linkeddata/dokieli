@@ -4113,6 +4113,16 @@ console.log(reason);
           break;
       }
 
+// d.topic = 'https://csarven.localhost:8443/foo.html';
+      if (DO.C.Subscription[d.topic] && DO.C.Subscription[d.topic]['Connection']) {
+        DO.C.Subscription[d.topic]['Connection'].close();
+      }
+
+      DO.C.Subscription[d.topic] = {};
+      DO.C.Subscription[d.topic]['Request'] = d;
+
+// console.log(DO.C.Subscription)
+
       return fetcher.postResource(url, '', data, options.contentType, null, options)
         .then(response => {
           return DO.U.processNotificationSubscriptionResponse(response, d);
@@ -4150,13 +4160,23 @@ console.log(reason);
         })
         .then(data => {
 // console.log(data);
-          DO.C.Subscription[data.topic] = data;
+// data = {
+//   '@context': ['https://www.w3.org/ns/solid/notifications/v1'],
+//   'type': 'WebSocketChannel2023',
+//   'topic': 'https://csarven.localhost:8443/foo.html',
+//   'receiveFrom': 'wss://csarven.localhost:8443/'
+// }
+
+          if (!(data.topic in DO.C.Subscription)) {
+            console.log('DO.C.Subscription[' + data.topic + '] undefined.');
+          }
+          DO.C.Subscription[data.topic]['Response'] = data;
 
           switch (data.type) {
             case 'WebSocketChannel2023': case DO.C.Vocab['notifyWebSocketChannel2023']['@id']:
               data.type = DO.C.Vocab['notifyWebSocketChannel2023']['@id'];
               return DO.U.connectToWebSocket(data.receiveFrom, data).then(function(i){
-                DO.C.Subscription[data.topic]['connection'] = i;
+                DO.C.Subscription[data.topic]['Connection'] = i;
                 // return Promise.resolve();
               });
               break;
@@ -4171,12 +4191,13 @@ console.log(reason);
       var rD = (contentType == 'application/ld+json') ? response.json() : response.text();
 
       return rD.then(data => {
-        switch (options.contentType) {
+        // return graph.getGraphFromData(data, options).then
+        switch (contentType) {
           case 'text/turtle':
             return Promise.reject({'message': 'TODO text/turtle', 'data': data});
             break;
+
           case 'application/ld+json':
-            // return graph.getGraphFromData(data, options).then
             if (data['@context'] && data.type && data.topic) {
               if (d.topic != data.topic) {
                 console.log('TODO: topic requested != response');
@@ -4192,6 +4213,7 @@ console.log(reason);
             }
             break;
 
+          default:
           case 'text/plain':
             return Promise.reject({'message': 'TODO text/plain?', 'data': data});
             break;
@@ -4278,8 +4300,9 @@ console.log(reason);
           };
 
           ws.onclose = function(e) {
-            message = {'message': 'Socket is closed. Reconnect will be attempted in 1 second.'};
-            setTimeout(function() { connect(); }, 1000);
+            message = {'message': 'Socket to ' + url + ' is closed.'};
+            //TODO: Separate reconnect on connection dropping from intentional close.
+            // setTimeout(function() { connect(); }, 1000);
             // var timeout = 250;
             // setTimeout(connect, Math.min(10000,timeout+=timeout));
 
