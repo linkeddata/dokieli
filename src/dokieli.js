@@ -4199,6 +4199,64 @@ console.log(reason);
       });
     },
 
+    processNotificationChannelMessage: function(data, options) {
+// console.log(data);
+// console.log(options);
+// data = {
+//   "@context": [
+//     "https://www.w3.org/ns/activitystreams",
+//     "https://www.w3.org/ns/solid/notification/v1"
+//   ],
+//   "id": "urn:uuid:" + util.generateUUID(),
+//   "type": "Update",
+//   "object": "https://csarven.localhost:8443/foo.html",
+//   "state": "128f-MtYev",
+//   "published": "2021-08-05T01:01:49.550Z"
+// }
+
+      //TODO: Only process ns/solid/notifications/v1 JSON-LD context.
+      // return graph.getGraphFromData(data, options).then(
+
+      if (data['@context'] && data.id && data.type && data.object && data.published) {
+        if (options.subjectURI != data.object) {
+          console.log('TODO: topic requested != message object ');
+        }
+
+        // if (data.type.startsWith('https://www.w3.org/ns/activitystreams#')) {
+          //TODO: Move this UI somewhere else
+
+          //TODO: See if doc.createActivityHTML can be generalised/reusable.
+
+
+          DO.C.Subscription[data.object]['Notifications'] = DO.C.Subscription[data.object]['Notifications'] || {};
+          //TODO: Max notifications to store. FIFO
+          DO.C.Subscription[data.object]['Notifications'][data.id] = data;
+          // DO.C.Subscription[data.object]['Notifications'][data.id] = g;
+// console.log(DO.C.Subscription[data.object]['Notifications'])
+
+          var nTypes = (Array.isArray(data.type)) ? data.type : [data.type];
+          var types = '';
+          nTypes.forEach(function(t){
+            types += types + '<dd><a href="' + t + '">' + t + '</a></dd>';
+          })
+
+          var message = [];
+          message.push('<h2>Notification Received</h2>');
+          message.push('<dl>');
+          message.push('<dt>Identifier</dt><dd><a href="' + data.id  + '">' + data.id + '</a></dd>');
+          message.push('<dt>Types</dt>' + types);
+          message.push('<dt>Object</dt><dd><a href="' + data.object  + '">' + data.object + '</a></dd>');
+          message.push('<dt>Published</dt><dd><time>' + data.published + '</time></dd>');
+          message.push('</dl>');
+          message = message.join('');
+
+          doc.showActionMessage(document.documentElement, message, {'timer': 3000});
+
+          // return Promise.resolve(data);
+        // }
+      }
+    },
+
     connectToWebSocket: function(url, data) {
       function connect() {
         return new Promise(function(resolve, reject) {
@@ -4237,8 +4295,8 @@ console.log(reason);
 
           ws.onmessage = function(msg) {
 // console.log(msg)
-            console.log(msg.data);
-//TODO processNotificationChannelMessage(data, msg)
+            var options = { 'subjectURI': data.topic }
+            DO.U.processNotificationChannelMessage(msg.data, options);
           };
         });
       }
