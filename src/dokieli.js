@@ -1191,7 +1191,7 @@ var DO = {
       var open = DO.U.urlParam('open');
       if (open) {
         open = decodeURIComponent(open);
-        doc.showActionMessage(document.documentElement, '<span class="progress">' + template.Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + ' Opening <a href="' + open + '" target="_blank">' + open + '</a></span>', {'timer': 10000});
+        doc.showActionMessage(document.documentElement, '<p><span class="progress">' + template.Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + ' Opening <a href="' + open + '" target="_blank">' + open + '</a></span></p>', {'timer': 10000});
 
         DO.U.openResource(open);
 
@@ -6934,7 +6934,7 @@ WHERE {\n\
         }
 
         if (e || (typeof e === 'undefined' && editorMode == 'author')) {
-          doc.showActionMessage(document.documentElement, 'Activated <strong>' + editorMode + '</strong> mode.');
+          doc.showActionMessage(document.documentElement, '<p>Activated <strong>' + editorMode + '</strong> mode.</p>');
         }
 
         if (!document.getElementById('document-editor')) {
@@ -8825,7 +8825,7 @@ WHERE {\n\
 
                 case 'selector':
                   window.history.replaceState({}, null, selectorIRI);
-                  doc.showActionMessage(document.documentElement, 'Copy URL from address bar')
+                  doc.showActionMessage(document.documentElement, '<p>Copy URL from address bar.</p>')
                   // util.copyTextToClipboard(encodeURI(selectorIRI));
                   break;
 

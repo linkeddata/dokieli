@@ -322,7 +322,7 @@ function showActionMessage(node, message, options) {
   options = options || {};
   options['timer'] = ('timer' in options) ? options.timer : Config.ActionMessage.Timer;
 
-  var message = '<aside id="document-action-message" class="do on"><p>' + message + '</p></aside>';
+  var message = '<aside id="document-action-message" class="do on">' + message + '</aside>';
   node.appendChild(util.fragmentFromString(message));
   window.setTimeout(function () {
     var dam = document.getElementById('document-action-message');
