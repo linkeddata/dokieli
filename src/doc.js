@@ -916,6 +916,33 @@ function getResourceInfo(data, options) {
                   Config['Resource'][documentURL]['headers']['wac-allow']['permissionGroup'][match[1]] = accessModes;
                 });
               }
+
+              if (oHeader.toLowerCase() == 'link') {
+                var linkHeaders = fetcher.parseLinkHeader(oHeaderValue);
+
+                Config['Resource'][documentURL]['headers']['linkHeaders'] = linkHeaders;
+
+                if ('describedby' in linkHeaders) {
+                  var p = [];
+
+                  Config['Resource'][documentURL]['describedby'] = {};
+
+                  linkHeaders.describedby.forEach(function(describedbyURL) {
+                    p.push(fetcher.getResourceGraph(describedbyURL));
+                  });
+
+                  return Promise.all(p)
+                    .then(function(graphs) {
+                      graphs.forEach(function(graph){
+                        var s = graph.iri().toString();
+                        Config['Resource'][documentURL]['describedby'][s] = {};
+                        Config['Resource'][s] = {};
+                        Config['Resource'][s]['graph'] = graph;
+                      });
+                    });
+
+                }
+              }
             }
           })
         }
