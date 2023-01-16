@@ -2936,13 +2936,13 @@ console.log(reason);
 // console.log(documentDo)
 // console.log(DO.C.ResourceInfo)
       if (documentDo) {
-        Object.keys(DO.C.ResourceInfo.buttonStates).forEach(function(id){
+        Object.keys(DO.C.ButtonStates).forEach(function(id){
 // console.log(id);
-// console.log(DO.C.ResourceInfo.buttonStates[id]);
+// console.log(DO.C.ButtonStates[id]);
           var s = documentDo.querySelector('.' + id);
 // console.log(s)
           if (s) {
-            if (DO.C.ResourceInfo.buttonStates[id]) {
+            if (DO.C.ButtonStates[id]) {
               s.removeAttribute('disabled');
             }
             else {
