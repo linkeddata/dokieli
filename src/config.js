@@ -25,6 +25,7 @@ module.exports = {
       DO.U.initSlideshow();
     }
   },
+  Resource: {},
   Inbox: {},
   Notification: {},
   Subscription: {},
