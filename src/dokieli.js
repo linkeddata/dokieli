@@ -1382,8 +1382,11 @@ var DO = {
       var data;
       var options = {};
 
+      options['storeHeaders'] = [];
+      options['storeHeaders'].push('link');
+
       if (document.location.protocol !== 'file:') {
-       options['header'] = 'wac-allow';
+       options['storeHeaders'].push('wac-allow');
       }
 
       doc.getResourceInfo(data, options).then(function(resourceInfo){
@@ -1867,7 +1870,7 @@ var DO = {
           // <tr><th>Lines</th><td>' + count.lines + '</td></tr>\n\
           // <tr><th>A4 Pages</th><td>' + count.pages.A4 + '</td></tr>\n\
           // <tr><th>US Letter</th><td>' + count.pages.USLetter + '</td></tr>\n\
-      var s = '<section id="document-metadata" class="do"><table>\n\
+      var html = '<section id="document-metadata" class="do"><table>\n\
         <caption>Document Metadata</caption>\n\
         <tbody>\n\
           ' + data + '\n\
@@ -1878,7 +1881,7 @@ var DO = {
         </tbody>\n\
       </table></section>';
 
-      node.insertAdjacentHTML('beforeend', s);
+      node.insertAdjacentHTML('beforeend', html);
     },
 
     contentCount: function contentCount (c) {
@@ -3724,7 +3727,8 @@ console.log(reason);
                     var topicResource = s.iri().toString();
 // topicResource = 'https://csarven.localhost:8443/foo.html';
 
-                    document.querySelectorAll('#' + subscriptionsId).forEach(function(subNode){
+                    //TODO: Consider using typeof selector instead and make sure it is in the markup
+                    document.querySelectorAll('[id^="notification-subscriptions-"]').forEach(function(subNode){
                       subNode.addEventListener('click', function(e) {
                         var button = e.target.closest('button');
 

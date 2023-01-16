@@ -871,8 +871,10 @@ function getResourceInfo(data, options) {
   }
 
   var promises = [];
-  if ('header' in options) {
-    promises.push(fetcher.getResourceHead(documentURL, options))
+  if ('storeHeaders' in options) {
+    var o = Object.assign({}, options);
+    delete o.storeHeaders;
+    promises.push(fetcher.getResourceHead(documentURL, o))
   }
   promises.push(getResourceData(data, options));
 
@@ -884,21 +886,22 @@ function getResourceInfo(data, options) {
         if ('state' in promise) {
           info = Object.assign(info, promise);
         }
-        else if ('headers' in promise && 'header' in options) {
+        else if ('headers' in promise && 'storeHeaders' in options) {
           var headers = promise.headers;
 
           info['headers'] = headers;
           Config['Resource'][documentURL]['headers'] = {};
           Config['Resource'][documentURL]['headers']['response'] = headers;
 
-          var optionsHeader = promise.headers.get(options.header);
-// optionsHeader = 'foo=bar ,user=" READ wriTe Append control ", public=" read append" ,other="read " , baz= write, group=" ",,';
+          options.storeHeaders.forEach(function(oHeader){
+            var oHeaderValue = promise.headers.get(oHeader);
+// oHeaderValue = 'foo=bar ,user=" READ wriTe Append control ", public=" read append" ,other="read " , baz= write, group=" ",,';
 
-          if (optionsHeader) {
-            Config['Resource'][documentURL]['headers'][options.header] = { "field-value" : optionsHeader };
+            if (oHeaderValue) {
+              Config['Resource'][documentURL]['headers'][oHeader] = { "field-value" : oHeaderValue };
 
 // console.log('WAC-Allow: ' + promise.headers);
-              if (options.header.toLowerCase() == 'wac-allow') {
+              if (oHeader.toLowerCase() == 'wac-allow') {
                 var permissionGroups = Config['Resource'][documentURL]['headers']['wac-allow']["field-value"];
                 var wacAllowRegex = new RegExp(/(\w+)\s*=\s*"?\s*((?:\s*[^",\s]+)*)\s*"?/, 'ig');
                 var wacAllowMatches = DO.U.matchAllIndex(permissionGroups, wacAllowRegex);
@@ -906,14 +909,15 @@ function getResourceInfo(data, options) {
 
                 Config['Resource'][documentURL]['headers']['wac-allow']['permissionGroup'] = {};
 
-              wacAllowMatches.forEach(function(match){
-                var modesString = match[2] || '';
-                var accessModes = util.uniqueArray(modesString.toLowerCase().split(/\s+/));
+                wacAllowMatches.forEach(function(match){
+                  var modesString = match[2] || '';
+                  var accessModes = util.uniqueArray(modesString.toLowerCase().split(/\s+/));
 
-                Config['Resource'][documentURL]['headers']['wac-allow']['permissionGroup'][match[1]] = accessModes;
-              });
+                  Config['Resource'][documentURL]['headers']['wac-allow']['permissionGroup'][match[1]] = accessModes;
+                });
+              }
             }
-          }
+          })
         }
       })
 
