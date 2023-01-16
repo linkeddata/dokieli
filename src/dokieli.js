@@ -270,6 +270,7 @@ var DO = {
       DO.C.Notification[url]['Activities'] = [];
 
       var pIRI = uri.getProxyableIRI(url);
+      var documentURL = uri.stripFragmentFromString(document.location.href);
 
       return fetcher.getResourceGraph(pIRI).then(
         function(g) {
@@ -385,10 +386,10 @@ var DO = {
                   if (targetPathURL == currentPathURL) {
                     options['targetInOriginalResource'] = true;
                   }
-                  else if (DO.C.ResourceInfo.graph.rellatestversion && targetPathURL == uri.getPathURL(DO.C.ResourceInfo.graph.rellatestversion)) {
+                  else if (DO.C.Resource[documentURL].graph.rellatestversion && targetPathURL == uri.getPathURL(DO.C.Resource[documentURL].graph.rellatestversion)) {
                     options['targetInMemento'] = true;
                   }
-                  else if (DO.C.ResourceInfo.graph.owlsameAs && DO.C.ResourceInfo.graph.owlsameAs.at(0) == targetPathURL) {
+                  else if (DO.C.Resource[documentURL].graph.owlsameAs && DO.C.Resource[documentURL].graph.owlsameAs.at(0) == targetPathURL) {
                     options['targetInSameAs'] = true;
                   }
 
@@ -1259,10 +1260,12 @@ var DO = {
       doc.buttonRemoveAside();
       doc.showRobustLinksDecoration();
 
+      var documentURL = uri.stripFragmentFromString(document.location.href);
+
       //Fugly
       function checkResourceInfo() {
-        if (DO.C.ResourceInfo) {
-          processPotentialAction(DO.C.ResourceInfo);
+        if (documentURL in DO.C.Resource) {
+          processPotentialAction(DO.C.Resource[documentURL]);
         }
         else {
           doc.getResourceInfo().then(function(resourceInfo){
@@ -1773,6 +1776,8 @@ var DO = {
     showDocumentMetadata: function(node) {
       if(document.querySelector('#document-metadata')) { return; }
 
+      var documentURL = uri.stripFragmentFromString(document.location.href);
+
       var content = doc.selectArticleNode(document);
       var count = DO.U.contentCount(content);
       var authors = [], contributors = [], editors = [];
@@ -1784,7 +1789,7 @@ var DO = {
       var subjectURI = window.location.origin + window.location.pathname;
       var options = {'contentType': 'text/html', 'subjectURI': subjectURI };
 
-      var s = DO.C.ResourceInfo.graph;
+      var s = DO.C.Resource[documentURL].graph;
  // console.log(s)
 
       var triples = s._graph;
@@ -1799,8 +1804,8 @@ var DO = {
         }
       });
 
-      requirements = (DO.C.ResourceInfo.spec) ? Object.keys(DO.C.ResourceInfo.spec) : [];
-      skos = (DO.C.ResourceInfo.skos) ? DO.C.ResourceInfo.skos : [];
+      requirements = (DO.C.Resource[documentURL].spec) ? Object.keys(DO.C.Resource[documentURL].spec) : [];
+      skos = (DO.C.Resource[documentURL].skos) ? DO.C.Resource[documentURL].skos : [];
 
       citations = '<tr class="citations"><th>Citations</th><td>' + citationsTo.length + '</td></tr>';
       requirements = '<tr class="requirements"><th>Requirements</th><td>' + requirements.length + '</td></tr>';
@@ -2024,6 +2029,8 @@ var DO = {
     buildListOfStuff: function(id) {
       var s = '';
 
+      var documentURL = uri.stripFragmentFromString(document.location.href);
+
       if(id == 'references'){
         doc.buildReferences();
       }
@@ -2080,9 +2087,9 @@ var DO = {
               s += '<caption>Conformance Requirements and Test Coverage</caption>'
               s += '<thead><tr><th colspan="3">Requirement</th></tr><tr><th>Subject</th><th>Level</th><th>Statement</th></tr></thead>';
               s += '<tbody>';
-              Object.keys(DO.C.ResourceInfo['spec']).forEach(function(i) {
-// console.log(DO.C.ResourceInfo['spec'][i])
-                var statement = DO.C.ResourceInfo['spec'][i][DO.C.Vocab['specstatement']['@id']] || i;
+              Object.keys(DO.C.Resource[documentURL]['spec']).forEach(function(i) {
+// console.log(DO.C.Resource[documentURL]['spec'][i])
+                var statement = DO.C.Resource[documentURL]['spec'][i][DO.C.Vocab['specstatement']['@id']] || i;
                 //FIXME: This selector is brittle.
                 // var requirementIRI = document.querySelector('#document-identifier [rel="owl:sameAs"]');
                 var requirementIRI = document.querySelector('#document-latest-published-version [rel="rdfs:seeAlso"]');
@@ -2091,14 +2098,14 @@ var DO = {
                 requirementIRI = i.replace(uri.stripFragmentFromString(i), requirementIRI);
                 statement = '<a href="' + requirementIRI + '">' + statement + '</a>';
 
-                var requirementSubjectIRI = DO.C.ResourceInfo['spec'][i][DO.C.Vocab['specrequirementSubject']['@id']];
+                var requirementSubjectIRI = DO.C.Resource[documentURL]['spec'][i][DO.C.Vocab['specrequirementSubject']['@id']];
                 var requirementSubjectLabel = requirementSubjectIRI || '<span class="warning">?</span>';
                 if (requirementSubjectLabel.startsWith('http')) {
                   requirementSubjectLabel = uri.getFragmentFromString(requirementSubjectIRI) || uri.getURLLastPath(requirementSubjectIRI) || requirementSubjectLabel;
                 }
                 var requirementSubject = '<a href="' + requirementSubjectIRI + '">' + requirementSubjectLabel + '</a>';
 
-                var requirementLevelIRI = DO.C.ResourceInfo['spec'][i][DO.C.Vocab['specrequirementLevel']['@id']];
+                var requirementLevelIRI = DO.C.Resource[documentURL]['spec'][i][DO.C.Vocab['specrequirementLevel']['@id']];
                 var requirementLevelLabel = requirementLevelIRI || '<span class="warning">?</span>';
                 if (requirementLevelLabel.startsWith('http')) {
                   requirementLevelLabel = uri.getFragmentFromString(requirementLevelIRI) || uri.getURLLastPath(requirementLevelIRI) || requirementLevelLabel;
@@ -2142,18 +2149,18 @@ var DO = {
                 return labels;
               }
 
-// console.log(DO.C.ResourceInfo['skos'])
+// console.log(DO.C.Resource[documentURL]['skos'])
 
               var graph;
-              Object.keys(DO.C.ResourceInfo['skos']['type']).forEach(function(rdftype) {
+              Object.keys(DO.C.Resource[documentURL]['skos']['type']).forEach(function(rdftype) {
 // console.log(i)
                 s += '<dt>' + DO.C.SKOSClasses[rdftype] + 's</dt>';
 
-                DO.C.ResourceInfo['skos']['type'][rdftype].forEach(function(subject) {
+                DO.C.Resource[documentURL]['skos']['type'][rdftype].forEach(function(subject) {
 // console.log(subject)
-                  // DO.C.ResourceInfo['skos']['data'][subject]
+                  // DO.C.Resource[documentURL]['skos']['data'][subject]
 
-                  graph = DO.C.ResourceInfo['graph'].child(subject);
+                  graph = DO.C.Resource[documentURL]['graph'].child(subject);
 // console.log(graph)
                   var conceptLabel = getConceptLabel(graph);
                   conceptLabel = (conceptLabel.length > 0) ? conceptLabel.join(' / ') : subject;
@@ -2170,11 +2177,11 @@ var DO = {
                     var hasConcepts = [DO.C.Vocab['skoshasTopConcept']['@id'], DO.C.Vocab['skosmember']['@id']];
 
                     hasConcepts.forEach(function(hasConcept) {
-                      var concept = DO.C.ResourceInfo['skos']['data'][subject][hasConcept];
+                      var concept = DO.C.Resource[documentURL]['skos']['data'][subject][hasConcept];
 
                       if (concept && concept.length > 0) {
                         concept.forEach(function(c) {
-                          var conceptGraph = DO.C.ResourceInfo['graph'].child(c);
+                          var conceptGraph = DO.C.Resource[documentURL]['graph'].child(c);
                           var cLabel = getConceptLabel(conceptGraph);
                           cLabel = (cLabel.length > 0) ? cLabel : [c];
                           cLabel.forEach(function(cL) {
@@ -2262,7 +2269,7 @@ var DO = {
       doc.insertDocumentLevelHTML(document, s, { 'id': id });
 
       if (id == 'table-of-requirements') {
-        var testSuites = DO.C.ResourceInfo.graph.spectestSuite;
+        var testSuites = DO.C.Resource[documentURL].graph.spectestSuite;
         if (testSuites && testSuites.at(0)) {
           //TODO: Process all spec:testSuites
           var url = testSuites.at(0);
@@ -2494,7 +2501,7 @@ console.log(reason);
 
       document.documentElement.appendChild(util.fragmentFromString('<aside id="robustify-links" class="do on">' + DO.C.Button.Close + '<h2>Robustify Links</h2><div id="robustify-links-input"><p><input id="robustify-links-select-all" type="checkbox" value="true"/><label for="robustify-links-select-all">Select all</label></p><p><input id="robustify-links-reuse" type="checkbox" value="true" checked="checked"/><label for="robustify-links-reuse">Reuse Robustifed</label></p><ul id="robustify-links-list"></ul></div><button class="robustify" title="Robustify Links">Robustify</button></aside>'));
 
-      //TODO: Move unique list of existing RL's to ResourceInfo?
+      //TODO: Move unique list of existing RL's to DO.C.Resource?
       var robustLinksUnique = {};
       robustLinks.forEach(function(i){
         if (!robustLinksUnique[i.href]) {
@@ -2887,7 +2894,7 @@ console.log(reason);
         if(b.disabled) { return; }
         else { b.disabled = true; }
       }
-// console.log(DO.C.ResourceInfo)
+// console.log(DO.C.Resource)
 
       var iri = uri.stripFragmentFromString(document.location.href);
 
@@ -2934,7 +2941,7 @@ console.log(reason);
     showDocumentDo: function showDocumentDo (node) {
       var documentDo = document.getElementById('document-do');
 // console.log(documentDo)
-// console.log(DO.C.ResourceInfo)
+// console.log(DO.C.Resource)
       if (documentDo) {
         Object.keys(DO.C.ButtonStates).forEach(function(id){
 // console.log(id);
@@ -2999,9 +3006,9 @@ console.log(reason);
 
       s += '<li><button class="embed-data-meta" title="Embed structured data (Turtle, JSON-LD, TriG)">' + template.Icon [".fas.fa-table.fa-2x"] + 'Embed Data</button></li>';
 
-      if (DO.C.ResourceInfo['odrl'] && DO.C.ResourceInfo['odrl']['prohibitionAssignee'] == DO.C.User.IRI &&
-        ((DO.C.ResourceInfo['odrl']['prohibitionActions'] && DO.C.ResourceInfo['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/print') > -1) ||
-        (DO.C.ResourceInfo['odrl']['permissionActions'] && DO.C.ResourceInfo['odrl']['permissionActions'].indexOf('http://www.w3.org/ns/odrl/2/print') > -1))) {
+      if (DO.C.Resource[documentURL]['odrl'] && DO.C.Resource[documentURL]['odrl']['prohibitionAssignee'] == DO.C.User.IRI &&
+        ((DO.C.Resource[documentURL]['odrl']['prohibitionActions'] && DO.C.Resource[documentURL]['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/print') > -1) ||
+        (DO.C.Resource[documentURL]['odrl']['permissionActions'] && DO.C.Resource[documentURL]['odrl']['permissionActions'].indexOf('http://www.w3.org/ns/odrl/2/print') > -1))) {
         s += '<li><button class="resource-print"' + doc.getButtonDisabledHTML('resource-print') + ' title="Print document">' + template.Icon[".fas.fa-print.fa-2x"] + 'Print</button></li>';
       }
 
@@ -3655,9 +3662,12 @@ console.log(reason);
 
     accessModeAllowed: function(mode) {
       var allowedMode = false;
-      if ('headers' in DO.C.ResourceInfo && 'wac-allow' in DO.C.ResourceInfo['headers'] && 'permissionGroup' in DO.C.ResourceInfo['headers']['wac-allow']) {
-        if (('user' in DO.C.ResourceInfo['headers']['wac-allow']['permissionGroup'] && DO.C.ResourceInfo['headers']['wac-allow']['permissionGroup']['user'].indexOf(mode) > -1)
-          || ('public' in DO.C.ResourceInfo['headers']['wac-allow']['permissionGroup'] && DO.C.ResourceInfo['headers']['wac-allow']['permissionGroup']['public'].indexOf(mode) > -1)) {
+
+      var documentURL = uri.stripFragmentFromString(document.location.href);
+
+      if ('headers' in DO.C.Resource[documentURL] && 'wac-allow' in DO.C.Resource[documentURL]['headers'] && 'permissionGroup' in DO.C.Resource[documentURL]['headers']['wac-allow']) {
+        if (('user' in DO.C.Resource[documentURL]['headers']['wac-allow']['permissionGroup'] && DO.C.Resource[documentURL]['headers']['wac-allow']['permissionGroup']['user'].indexOf(mode) > -1)
+          || ('public' in DO.C.Resource[documentURL]['headers']['wac-allow']['permissionGroup'] && DO.C.Resource[documentURL]['headers']['wac-allow']['permissionGroup']['public'].indexOf(mode) > -1)) {
           allowedMode = true;
         }
       }
@@ -3721,15 +3731,15 @@ console.log(reason);
                         if (button){
                           if (!(topicResource in DO.C.Subscription && 'Connection' in DO.C.Subscription[topicResource]) && button.classList.contains('subscribe')) {
                             var subscription = subNode.querySelector('[rel="notify:subscription"]').getAttribute('resource');
-// console.log(DO.C.Storages[s.iri().toString()].subscription);
-                            var channelType = DO.C.Storages[s.iri().toString()]['subscription'][subscription]['channelType'];
+// console.log(DO.C.Resource[s.iri().toString()].subscription);
+                            var channelType = DO.C.Resource[s.iri().toString()]['subscription'][subscription]['channelType'];
 
                             var data = {
                               "type": channelType,
                               "topic": topicResource
                             };
 
-                            var features = DO.C.Storages[s.iri().toString()]['subscription'][subscription]['feature'];
+                            var features = DO.C.Resource[s.iri().toString()]['subscription'][subscription]['feature'];
 
                             if (features && features.length > 0) {
                               var d = new Date();
@@ -3771,7 +3781,7 @@ console.log(reason);
               }
             });
 
-// console.log(DO.C.Storages);
+// console.log(DO.C.Resource);
           })
           .catch(error => {
             // console.log('Error fetching solid:storageDescription endpoint:', error)
@@ -3788,13 +3798,12 @@ console.log(reason);
 
       storageName = (typeof storageName !== 'undefined') ? storageName : storageURL;
 
-      DO.C.Storages = DO.C.Storages || {};
-      DO.C.Storages[g.iri().toString()] = DO.C.Storages[g.iri().toString()] || {};
-      DO.C.Storages[g.iri().toString()]['title'] = storageName;
-      DO.C.Storages[g.iri().toString()]['description'] = g.schemaabstract || g.dctermsdescription || g.rdfvalue || g.assummary || g.schemadescription || g.ascontent || undefined;
+      DO.C.Resource[g.iri().toString()] = DO.C.Resource[g.iri().toString()] || {};
+      DO.C.Resource[g.iri().toString()]['title'] = storageName;
+      DO.C.Resource[g.iri().toString()]['description'] = g.schemaabstract || g.dctermsdescription || g.rdfvalue || g.assummary || g.schemadescription || g.ascontent || undefined;
 
       var storageTitle = '<dt>Storage name</dt><dd><a href="' + storageURL + '">' + storageName + '</a></dd>';
-      var storageDescription = (DO.C.Storages[g.iri().toString()]['description']) ? '<dt>Storage description</dt><dd>' + DO.C.Storages[g.iri().toString()]['description'] + '</dd>' : '';
+      var storageDescription = (DO.C.Resource[g.iri().toString()]['description']) ? '<dt>Storage description</dt><dd>' + DO.C.Resource[g.iri().toString()]['description'] + '</dd>' : '';
 
       s = '<dl id="storage-self-description">' + storageTitle + storageDescription + '</dl>';
 
@@ -3807,12 +3816,11 @@ console.log(reason);
       if (g.pimpersistencePolicy && g.pimpersistencePolicy._array.length > 0) {
         var pp = [];
 
-        DO.C.Storages = DO.C.Storages || {};
-        DO.C.Storages[g.iri().toString()] = DO.C.Storages[g.iri().toString()] || {};
-        DO.C.Storages[g.iri().toString()]['persistencePolicy'] = [];
+        DO.C.Resource[g.iri().toString()] = DO.C.Resource[g.iri().toString()] || {};
+        DO.C.Resource[g.iri().toString()]['persistencePolicy'] = [];
 
         g.pimpersistencePolicy.forEach(function(iri){
-          DO.C.Storages[g.iri().toString()]['persistencePolicy'].push(iri);
+          DO.C.Resource[g.iri().toString()]['persistencePolicy'].push(iri);
 
           pp.push('<dd><a href="' + iri  + '" target="_blank">' + iri + '</a></dd>');
         });
@@ -3964,12 +3972,11 @@ console.log(reason);
 
 
       if (g.solidowner && g.solidowner._array.length > 0) {
-        DO.C.Storages = DO.C.Storages || {};
-        DO.C.Storages[g.iri().toString()] = DO.C.Storages[g.iri().toString()] || {};
-        DO.C.Storages[g.iri().toString()]['owner'] = [];
+        DO.C.Resource[g.iri().toString()] = DO.C.Resource[g.iri().toString()] || {};
+        DO.C.Resource[g.iri().toString()]['owner'] = [];
 
         g.solidowner._array.forEach(function(iri){
-          DO.C.Storages[g.iri().toString()]['owner'].push(iri);
+          DO.C.Resource[g.iri().toString()]['owner'].push(iri);
 
           resourceOwners.push('<dd><a href="' + iri + '" target="_blank">' + iri + '</a></dd>');
         });
@@ -3980,26 +3987,27 @@ console.log(reason);
       return s;
     },
 
-    getCommunicationOptions: function(g) {
-      var subjectURI = g.iri().toString();
+    getCommunicationOptions: function(graph, options = {}) {
+      var subjectURI = options.subjectURI || graph.iri().toString();
+      var g = graph.child(subjectURI);
+
       var notificationSubscriptions = DO.U.getNotificationSubscriptions(g);
       var notificationChannels = DO.U.getNotificationChannels(g);
 
-      DO.C.Storages = DO.C.Storages || {};
-      DO.C.Storages[subjectURI] = DO.C.Storages[subjectURI] || {};
+      DO.C.Resource[subjectURI] = DO.C.Resource[subjectURI] || {};
 
       if (notificationSubscriptions) {
-        DO.C.Storages[subjectURI]['subscription'] = DO.C.Storages[subjectURI]['subscription'] || {};
+        DO.C.Resource[subjectURI]['subscription'] = DO.C.Resource[subjectURI]['subscription'] || {};
       }
 
       if (notificationChannels) {
-        DO.C.Storages[subjectURI]['channel'] = DO.C.Storages[subjectURI]['channel'] || {};
+        DO.C.Resource[subjectURI]['channel'] = DO.C.Resource[subjectURI]['channel'] || {};
       }
 
       var nSHTML = [];
 
       if (notificationSubscriptions) {
-        nSHTML.push('<dl id="notification-subscriptions"><dt>Notification Subscriptions</dt>');
+        nSHTML.push('<dl id="notification-subscriptions-' + subjectURI + '"><dt>Notification Subscriptions</dt>');
 
         notificationSubscriptions.forEach(function(subscription){
           var nSChannelType = '';
@@ -4010,9 +4018,9 @@ console.log(reason);
           var channelType = DO.U.getNotificationChannelTypes(nS);
           var features = DO.U.getNotificationFeatures(nS);
 
-          DO.C.Storages[subjectURI]['subscription'][subscription] = {};
-          DO.C.Storages[subjectURI]['subscription'][subscription]['channelType'] = channelType;
-          DO.C.Storages[subjectURI]['subscription'][subscription]['feature'] = features;
+          DO.C.Resource[subjectURI]['subscription'][subscription] = {};
+          DO.C.Resource[subjectURI]['subscription'][subscription]['channelType'] = channelType;
+          DO.C.Resource[subjectURI]['subscription'][subscription]['feature'] = features;
 
           var buttonSubscribe = 'Subscribe';
           var buttonSubscribeClass = 'subscribe';
@@ -6477,9 +6485,9 @@ WHERE {\n\
     }
     citation['citingEntityLabel'] = citingEntityLabel;
 
-    var citedEntityLabel = DO.U.getResourceLabel(DO.C.ResourceInfo.graph.child(citedEntity))
+    var citedEntityLabel = DO.U.getResourceLabel(DO.C.Resource[documentURL].graph.child(citedEntity))
     if (!citedEntityLabel) {
-      var cEL = DO.C.ResourceInfo.graph(DO.C.ResourceInfo.graph.child(uri.stripFragmentFromString(citedEntity)))
+      var cEL = DO.C.Resource[documentURL].graph(DO.C.Resource[documentURL].graph.child(uri.stripFragmentFromString(citedEntity)))
       citedEntityLabel = cEL ? cEL : citedEntity;
     }
     citation['citedEntityLabel'] = citedEntityLabel;
@@ -7155,7 +7163,7 @@ WHERE {\n\
             var documentURL = uri.stripFragmentFromString(document.location.href);
 
             var documentAuthorName = document.getElementById(authorName);
-            var s = DO.C['ResourceInfo'].graph.child(documentURL);
+            var s = DO.C.Resource[documentURL].graph.child(documentURL);
             var sa = s.schemaauthor;
 
             //If not one of the authors, offer to add self
@@ -8434,7 +8442,8 @@ WHERE {\n\
               var parentNodeWithId = selectedParentElement.closest('[id]');
 
               var targetIRI = (parentNodeWithId) ? resourceIRI + '#' + parentNodeWithId.id : resourceIRI;
-              var latestVersion = DO.C.ResourceInfo.graph.rellatestversion;
+              var documentURL = resourceIRI;
+              var latestVersion = DO.C.Resource[documentURL].graph.rellatestversion;
               if (latestVersion) {
                 resourceIRI = latestVersion;
                 targetIRI = (parentNodeWithId) ? latestVersion + '#' + parentNodeWithId.id : latestVersion;

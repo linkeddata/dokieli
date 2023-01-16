@@ -747,10 +747,10 @@ function buttonClose() {
 function getButtonDisabledHTML(id) {
   var html = '';
 
-  if (document.location.protocol === 'file:' || !Config.ResourceInfo.buttonStates[id]) {
+  if (document.location.protocol === 'file:' || !Config.ButtonStates[id]) {
     html = ' disabled="disabled"';  
   }
-  if (id == 'export-as-html' && Config.ResourceInfo.buttonStates[id]) {
+  if (id == 'export-as-html' && Config.ButtonStates[id]) {
     html = '';
   }
 
@@ -759,8 +759,10 @@ function getButtonDisabledHTML(id) {
 
 function getResourceInfo(data, options) {
   data = data || getDocument();
-  Config['ResourceInfo'] = Config['ResourceInfo'] || {};
   var documentURL = uri.stripFragmentFromString(document.location.href);
+
+  Config['Resource'] = Config['Resource'] || {};
+  Config['Resource'][documentURL] = Config['Resource'][documentURL] || {};
 
   var info = {
     'state': Config.Vocab['ldpRDFSource']['@id'],
@@ -853,13 +855,13 @@ function getResourceInfo(data, options) {
 
         info['skos'] = getResourceInfoSKOS(i);
 
-        info['buttonStates'] = setFeatureStatesOfResourceInfo(info);
+        Config['ButtonStates'] = setFeatureStatesOfResourceInfo(info);
 
-        if ('headers' in Config['ResourceInfo']){
-          Config['ResourceInfo'] = Object.assign(info, Config['ResourceInfo']['headers']);
+        if ('headers' in Config['Resource'][documentURL]){
+          Config['Resource'][documentURL] = Object.assign(info, Config['Resource'][documentURL]['headers']);
         }
         else {
-          Config['ResourceInfo'] = info;
+          Config['Resource'][documentURL] = info;
         }
 
 // console.log(info)
@@ -886,29 +888,29 @@ function getResourceInfo(data, options) {
           var headers = promise.headers;
 
           info['headers'] = headers;
-          Config['ResourceInfo']['headers'] = {};
-          Config['ResourceInfo']['headers']['response'] = headers;
+          Config['Resource'][documentURL]['headers'] = {};
+          Config['Resource'][documentURL]['headers']['response'] = headers;
 
           var optionsHeader = promise.headers.get(options.header);
 // optionsHeader = 'foo=bar ,user=" READ wriTe Append control ", public=" read append" ,other="read " , baz= write, group=" ",,';
 
           if (optionsHeader) {
-            Config['ResourceInfo']['headers'][options.header] = { "field-value" : optionsHeader };
+            Config['Resource'][documentURL]['headers'][options.header] = { "field-value" : optionsHeader };
 
 // console.log('WAC-Allow: ' + promise.headers);
-            if (options.header.toLowerCase() == 'wac-allow') {
-              var permissionGroups = DO.C.ResourceInfo['headers']['wac-allow']["field-value"];
-              var wacAllowRegex = new RegExp(/(\w+)\s*=\s*"?\s*((?:\s*[^",\s]+)*)\s*"?/, 'ig');
-              var wacAllowMatches = DO.U.matchAllIndex(permissionGroups, wacAllowRegex);
+              if (options.header.toLowerCase() == 'wac-allow') {
+                var permissionGroups = Config['Resource'][documentURL]['headers']['wac-allow']["field-value"];
+                var wacAllowRegex = new RegExp(/(\w+)\s*=\s*"?\s*((?:\s*[^",\s]+)*)\s*"?/, 'ig');
+                var wacAllowMatches = DO.U.matchAllIndex(permissionGroups, wacAllowRegex);
 // console.log(wacAllowMatches)
 
-              Config['ResourceInfo']['headers']['wac-allow']['permissionGroup'] = {};
+                Config['Resource'][documentURL]['headers']['wac-allow']['permissionGroup'] = {};
 
               wacAllowMatches.forEach(function(match){
                 var modesString = match[2] || '';
                 var accessModes = util.uniqueArray(modesString.toLowerCase().split(/\s+/));
 
-                Config['ResourceInfo']['headers']['wac-allow']['permissionGroup'][match[1]] = accessModes;
+                Config['Resource'][documentURL]['headers']['wac-allow']['permissionGroup'][match[1]] = accessModes;
               });
             }
           }
