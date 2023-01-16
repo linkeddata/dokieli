@@ -1902,6 +1902,29 @@ var DO = {
       return contentCount;
     },
 
+    showDocumentCommunicationOptions: function(node) {
+      var html = [];
+
+      var documentURL = uri.stripFragmentFromString(document.location.href);
+
+      function waitUntil() {
+        if (!('describedby' in DO.C.Resource[documentURL]) || Object.keys(DO.C.Resource[documentURL]['describedby']).length == 0) {
+          window.setTimeout(waitUntil, 250);
+        }
+        else {
+          if (document.querySelector('#document-items')) {
+            Object.keys(DO.C.Resource[documentURL]['describedby']).forEach(function(d) {
+              html.push(DO.U.getCommunicationOptions(DO.C.Resource[d].graph));
+            });
+
+            node.insertAdjacentHTML('beforeend', html);
+          }
+        }
+      }
+
+      waitUntil();
+    },
+
     showDocumentItems: function() {
       var documentItems = document.getElementById('document-items');
       if (documentItems) {
@@ -1924,6 +1947,8 @@ var DO = {
       }
 
       DO.U.showDocumentMetadata(documentItems);
+
+      DO.U.showDocumentCommunicationOptions(documentItems);
     },
 
     showListOfStuff: function(node) {
