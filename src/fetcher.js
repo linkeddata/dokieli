@@ -496,6 +496,7 @@ function parseLinkHeader (link) {
       var paramsplit = p.split('=')
       // var name = paramsplit[0]
       var rel = paramsplit[1].replace(/["']/g, '')
+      rel = (!rel.toLowerCase().startsWith('http:') && !rel.toLowerCase().startsWith('https:')) ? rel.toLowerCase() : rel
       if (!rels[rel]) {
         rels[rel] = []
       }
