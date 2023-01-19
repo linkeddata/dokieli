@@ -3703,6 +3703,62 @@ console.log(reason);
       return allowedMode;
     },
 
+    buttonSubscribeToNotificationChannel: function(nodes, topicResource) {
+      //TODO: Consider using typeof selector instead and make sure it is in the markup
+      nodes.forEach(function(subNode){
+        subNode.addEventListener('click', function(e) {
+          var button = e.target.closest('button');
+
+          if (button){
+            if (!(topicResource in DO.C.Subscription && 'Connection' in DO.C.Subscription[topicResource]) && button.classList.contains('subscribe')) {
+              var subscription = subNode.querySelector('[rel="notify:subscription"]').getAttribute('resource');
+// console.log(DO.C.Resource[s.iri().toString()].subscription);
+              var channelType = DO.C.Resource[topicResource]['subscription'][subscription]['channelType'];
+
+              var data = {
+                "type": channelType,
+                "topic": topicResource
+              };
+
+              var features = DO.C.Resource[topicResource]['subscription'][subscription]['feature'];
+
+              if (features && features.length > 0) {
+                var d = new Date();
+                var startAt = new Date(d.getTime() + 1000);
+                var endAt = new Date(startAt.getTime() + 3600000);
+
+                if (features.indexOf(DO.C.Vocab['notifystartAt']) > -1) {
+                  data['startAt'] = startAt.toISOString();
+                }
+                if (features.indexOf(DO.C.Vocab['notifyendAt']) > -1) {
+                  data['endAt'] = endAt.toISOString();
+                }
+                if (features.indexOf(DO.C.Vocab['notifyrate']) > -1) {
+                  data['rate'] = "PT10S";
+                }
+              }
+
+              DO.U.subscribeToNotificationChannel(subscription, data)
+              .then(function(i){
+                if (DO.C.Subscription[data.topic] && 'Connection' in DO.C.Subscription[data.topic]) {
+                  button.textContent = 'Unsubscribe';
+                  button.setAttribute('class', 'unsubscribe');
+                }
+              }).catch(e => {
+                console.log(e);
+              });
+            }
+            else {
+              DO.C.Subscription[topicResource].Connection.close();
+              DO.C.Subscription[topicResource] = {};
+              button.textContent = 'Subscribe';
+              button.setAttribute('class', 'subscribe');
+            }
+          }
+        });
+      });
+    },
+
     showStorageDescription: function(s, id, storageUrl, checkAgain) {
       var samp = document.getElementById(id + '-samp');
       var sD = document.getElementById(id + '-storage-description');
@@ -3752,59 +3808,8 @@ console.log(reason);
                     var topicResource = s.iri().toString();
 // topicResource = 'https://csarven.localhost:8443/foo.html';
 
-                    //TODO: Consider using typeof selector instead and make sure it is in the markup
-                    document.querySelectorAll('[id^="notification-subscriptions-"]').forEach(function(subNode){
-                      subNode.addEventListener('click', function(e) {
-                        var button = e.target.closest('button');
-
-                        if (button){
-                          if (!(topicResource in DO.C.Subscription && 'Connection' in DO.C.Subscription[topicResource]) && button.classList.contains('subscribe')) {
-                            var subscription = subNode.querySelector('[rel="notify:subscription"]').getAttribute('resource');
-// console.log(DO.C.Resource[s.iri().toString()].subscription);
-                            var channelType = DO.C.Resource[s.iri().toString()]['subscription'][subscription]['channelType'];
-
-                            var data = {
-                              "type": channelType,
-                              "topic": topicResource
-                            };
-
-                            var features = DO.C.Resource[s.iri().toString()]['subscription'][subscription]['feature'];
-
-                            if (features && features.length > 0) {
-                              var d = new Date();
-                              var startAt = new Date(d.getTime() + 1000);
-                              var endAt = new Date(startAt.getTime() + 3600000);
-
-                              if (features.indexOf(DO.C.Vocab['notifystartAt']) > -1) {
-                                data['startAt'] = startAt.toISOString();
-                              }
-                              if (features.indexOf(DO.C.Vocab['notifyendAt']) > -1) {
-                                data['endAt'] = endAt.toISOString();
-                              }
-                              if (features.indexOf(DO.C.Vocab['notifyrate']) > -1) {
-                                data['rate'] = "P1M";
-                              }
-                            }
-
-                            DO.U.subscribeToNotificationChannel(subscription, data)
-                            .then(function(i){
-                              if (DO.C.Subscription[data.topic] && 'Connection' in DO.C.Subscription[data.topic]) {
-                                button.textContent = 'Unsubscribe';
-                                button.setAttribute('class', 'unsubscribe');
-                              }
-                            }).catch(e => {
-                              console.log(e);
-                            });
-                          }
-                          else {
-                            DO.C.Subscription[topicResource].Connection.close();
-                            DO.C.Subscription[topicResource] = {};
-                            button.textContent = 'Subscribe';
-                            button.setAttribute('class', 'subscribe');
-                          }
-                        }
-                      });
-                    });
+                    var nodes = document.querySelectorAll('[id^="notification-subscriptions-"]');
+                    DO.U.buttonSubscribeToNotificationChannel(nodes, topicResource);
                   });
                 }
               }
