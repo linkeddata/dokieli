@@ -1914,10 +1914,14 @@ var DO = {
         else {
           if (document.querySelector('#document-items')) {
             Object.keys(DO.C.Resource[documentURL]['describedby']).forEach(function(d) {
-              html.push(DO.U.getCommunicationOptions(DO.C.Resource[d].graph));
+// console.log(d)
+              html.push(DO.U.getCommunicationOptions(DO.C.Resource[d].graph, { 'subjectURI': documentURL }));
             });
 
             node.insertAdjacentHTML('beforeend', html);
+
+            var nodes = document.querySelectorAll('#' + node.id + ' [id^="notification-subscriptions-"]');
+            DO.U.buttonSubscribeNotificationChannel(nodes, documentURL);
           }
         }
       }
@@ -3703,7 +3707,7 @@ console.log(reason);
       return allowedMode;
     },
 
-    buttonSubscribeToNotificationChannel: function(nodes, topicResource) {
+    buttonSubscribeNotificationChannel: function(nodes, topicResource) {
       //TODO: Consider using typeof selector instead and make sure it is in the markup
       nodes.forEach(function(subNode){
         subNode.addEventListener('click', function(e) {
@@ -3806,10 +3810,9 @@ console.log(reason);
 
                     var subscriptionsId = id + '-storage-description-details';
                     var topicResource = s.iri().toString();
-// topicResource = 'https://csarven.localhost:8443/foo.html';
 
-                    var nodes = document.querySelectorAll('[id^="notification-subscriptions-"]');
-                    DO.U.buttonSubscribeToNotificationChannel(nodes, topicResource);
+                    var nodes = document.querySelectorAll('[id="' + id + '-storage-description"] [id^="notification-subscriptions-"]');
+                    DO.U.buttonSubscribeNotificationChannel(nodes, topicResource);
                   });
                 }
               }
@@ -4024,7 +4027,7 @@ console.log(reason);
     getCommunicationOptions: function(graph, options = {}) {
       var subjectURI = options.subjectURI || graph.iri().toString();
       var g = graph.child(subjectURI);
-
+// console.log(subjectURI)
       var notificationSubscriptions = DO.U.getNotificationSubscriptions(g);
       var notificationChannels = DO.U.getNotificationChannels(g);
 
@@ -4060,7 +4063,7 @@ console.log(reason);
           var buttonSubscribeClass = 'subscribe';
 
           var topicResource = subjectURI;
-// topicResource = 'https://csarven.localhost:8443/foo.html';
+
           if (DO.C.Subscription[topicResource] && DO.C.Subscription[topicResource].Connection) {
             buttonSubscribe = 'Unsubscribe';
             buttonSubscribeClass = 'unsubscribe';
@@ -4152,7 +4155,7 @@ console.log(reason);
       }
     },
 
-    //doap:implements <http://localhost:3000/notifications/p.html#notification-channel-data-model>
+    //doap:implements <https://solidproject.org/TR/2022/notification-protocol-20221231#notification-channel-data-model>
     subscribeToWebSocketChannel: function(url, d, options = {}) {
       if (!url || !d.type || !d.topic) { return Promise.reject(); }
 
