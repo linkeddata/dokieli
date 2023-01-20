@@ -419,6 +419,10 @@ aside.do.on li {
 text-align:left !important;
 display:list-item !important;
 }
+aside.do.on li li {
+margin-left:1em;
+font-size:inherit;
+}
 aside.do.on.tabs nav ul li {
 display:inline-block !important;
 }
@@ -644,6 +648,7 @@ box-shadow: 0.25em 0.25em 0.25em rgba(0, 0, 0, 0.1);
 #document-items ul,
 #document-items ol {
 margin-top:0.5em;
+margin-left:0;
 }
 #document-items .toc ol {
 margin-top:0.25em;
