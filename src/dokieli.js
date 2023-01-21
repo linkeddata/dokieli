@@ -4892,12 +4892,12 @@ console.log(response)
         var documentHasDokieli = tmpl.querySelectorAll('head script[src$="/dokieli.js"]');
 // console.log(documentHasDokieli);
 // console.log(documentHasDokieli.length)
-        if(documentHasDokieli.length == 0) {
-          var doFiles = ['dokieli.css', 'dokieli.js'];
-
+        if (documentHasDokieli.length == 0) {
+          var doFiles = [];
           if (options.defaultStylesheet) {
             doFiles.push('basic.css');
           }
+          doFiles = doFiles.concat(['dokieli.css', 'dokieli.js']);
 
           doFiles.forEach(function(i){
 // console.log(i);
@@ -4906,10 +4906,7 @@ console.log(response)
 // console.log(media.length)
             if (media.length == 0) {
               switch(i) {
-                case 'dokieli.css':
-                  tmpl.querySelector('head').insertAdjacentHTML('beforeend', '<link href="https://dokie.li/media/css/' + i + '" media="all" rel="stylesheet" />');
-                  break;
-                case 'basic.css':
+                case 'dokieli.css': case 'basic.css':
                   tmpl.querySelector('head').insertAdjacentHTML('beforeend', '<link href="https://dokie.li/media/css/' + i + '" media="all" rel="stylesheet" />');
                   break;
                 case 'dokieli.js':
