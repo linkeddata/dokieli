@@ -4911,6 +4911,7 @@ console.log(response)
                   break;
                 case 'basic.css':
                   tmpl.querySelector('head').insertAdjacentHTML('beforeend', '<link href="https://dokie.li/media/css/' + i + '" media="all" rel="stylesheet" />');
+                  break;
                 case 'dokieli.js':
                   tmpl.querySelector('head').insertAdjacentHTML('beforeend', '<script src="https://dokie.li/scripts/' + i + '"></script>')
                   break;
