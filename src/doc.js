@@ -182,7 +182,8 @@ function createHTML(title, main, options) {
   title = title || '';
   options = options || {};
   var prefix = ('prefixes' in options && Object.keys(options.prefixes).length > 0) ? ' prefix="' + getRDFaPrefixHTML(options.prefixes) + '"' : '';
-  var lang = ('lang' in options) ? ' lang="' + options.lang + '" xml:lang="' + options.lang + '"' : 'en';
+  var lang = options.lang || 'en';
+  lang = ' lang="' + lang + '" xml:lang="' + lang + '"';
   lang = ('omitLang' in options) ? '' : lang;
 
   return '<!DOCTYPE html>\n\
