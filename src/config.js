@@ -479,6 +479,7 @@ module.exports = {
     "asoutbox": { "@id": "https://www.w3.org/ns/activitystreams#outbox", "@type": "@id", "@array": true },
     "asitems": { "@id": "https://www.w3.org/ns/activitystreams#items", "@type": "@id", "@array": true },
     "asorderedItems": { "@id": "https://www.w3.org/ns/activitystreams#orderedItems", "@type": "@id", "@array": true },
+    "astag": { "@id": "https://www.w3.org/ns/activitystreams#tag", "@type": "@id", "@array": true },
     "astotalItems": "https://www.w3.org/ns/activitystreams#totalItems",
     "asfirst": { "@id": "https://www.w3.org/ns/activitystreams#first", "@type": "@id" },
     "asnext": { "@id": "https://www.w3.org/ns/activitystreams#next", "@type": "@id" },
