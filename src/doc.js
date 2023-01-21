@@ -327,7 +327,7 @@ function showActionMessage(node, message, options) {
   node.appendChild(util.fragmentFromString(message));
   window.setTimeout(function () {
     var dam = document.getElementById('document-action-message');
-    dam.parentNode.removeChild(dam);
+    if (dam) { dam.parentNode.removeChild(dam); }
   }, options.timer);
 }
 
