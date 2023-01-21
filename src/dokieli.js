@@ -4843,7 +4843,8 @@ console.log(response)
 // console.log(graph);
       options = options || {};
       var name = '';
-      var published = ''
+      var published = '';
+      var tags = [];
 
       name = DO.U.getResourceLabel(graph) || graph.iri().toString();
       name = '<a href="' + graph.iri().toString() + '">' + name + '</a>';
@@ -4867,7 +4868,14 @@ console.log(response)
         summary = '<div>' + summary + '</div>';
       }
 
-      return name + published + summary;
+      if (graph.astag && graph.astag._array.length > 0) {
+        graph.astag.forEach(function(tag){
+          tags.push('<li><a href="' + tag + '">' + uri.getFragmentOrLastPath(tag) + '</a></li>');
+        })
+        tags = '<ul>' + tags.join('') + '</ul>';
+      }
+
+      return name + published + summary + tags;
     },
 
     spawnDokieli: function(data, contentType, iri, options){
