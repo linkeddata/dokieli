@@ -1902,6 +1902,25 @@ var DO = {
       return contentCount;
     },
 
+    getDocumentCitationsList: function() {
+      var documentURL = uri.stripFragmentFromString(document.location.href);
+      var s = DO.C.Resource[documentURL].graph;
+      var citationsList = [];
+      var citationProperties = Object.keys(DO.C.Citation).concat([DO.C.Vocab["dctermsreferences"]["@id"]]);
+      var triples = s._graph;
+      triples.forEach(function(t){
+        var s = t.subject.nominalValue;
+        var p = t.predicate.nominalValue;
+        var o = t.object.nominalValue;
+
+        if(citationProperties.indexOf(p) > -1) {
+          citationsList.push(o);
+        }
+      });
+
+      return citationsList;
+    },
+
     showDocumentCommunicationOptions: function(node) {
       var html = [];
 
