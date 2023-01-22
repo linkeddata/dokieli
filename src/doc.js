@@ -883,25 +883,25 @@ function getResourceInfo(data, options) {
     .then(function(resolvedPromises){
       var info = {};
 
-      resolvedPromises.forEach(function(promise){
-        if ('state' in promise) {
-          info = Object.assign(info, promise);
+      resolvedPromises.forEach(function(response){
+        if ('state' in response) {
+          info = Object.assign(info, response);
         }
-        else if ('headers' in promise && 'storeHeaders' in options) {
-          var headers = promise.headers;
+        else if ('headers' in response && 'storeHeaders' in options) {
+          var headers = response.headers;
 
           info['headers'] = headers;
           Config['Resource'][documentURL]['headers'] = {};
           Config['Resource'][documentURL]['headers']['response'] = headers;
 
           options.storeHeaders.forEach(function(oHeader){
-            var oHeaderValue = promise.headers.get(oHeader);
+            var oHeaderValue = response.headers.get(oHeader);
 // oHeaderValue = 'foo=bar ,user=" READ wriTe Append control ", public=" read append" ,other="read " , baz= write, group=" ",,';
 
             if (oHeaderValue) {
               Config['Resource'][documentURL]['headers'][oHeader] = { "field-value" : oHeaderValue };
 
-// console.log('WAC-Allow: ' + promise.headers);
+// console.log('WAC-Allow: ' + response.headers);
               if (oHeader.toLowerCase() == 'wac-allow') {
                 var permissionGroups = Config['Resource'][documentURL]['headers']['wac-allow']["field-value"];
                 var wacAllowRegex = new RegExp(/(\w+)\s*=\s*"?\s*((?:\s*[^",\s]+)*)\s*"?/, 'ig');
@@ -929,6 +929,9 @@ function getResourceInfo(data, options) {
                   Config['Resource'][documentURL]['describedby'] = {};
 
                   linkHeaders.describedby.forEach(function(describedbyURL) {
+                    if (!describedbyURL.startsWith('http:') || !describedbyURL.startsWith('https:')) {
+                      describedbyURL = uri.getAbsoluteIRI(uri.getBaseURL(response.url), describedbyURL);
+                    }
                     p.push(fetcher.getResourceGraph(describedbyURL));
                   });
 
