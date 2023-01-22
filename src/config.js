@@ -394,6 +394,7 @@ module.exports = {
     "dctermsconformsTo": { "@id": "http://purl.org/dc/terms/conformsTo", "@type": "@id" },
     "dctermshasPart": { "@id": "http://purl.org/dc/terms/hasPart", "@type": "@id", "@array": true },
     "dctermsisPartOf": { "@id": "http://purl.org/dc/terms/isPartOf", "@type": "@id", "@array": true },
+    "dctermsreferences": { "@id": "http://purl.org/dc/terms/references", "@type": "@id", "@array": true },
 
     "skosConceptScheme": { "@id": "http://www.w3.org/2004/02/skos/core#ConceptScheme", "@type": "@id" },
     "skosCollection": { "@id": "http://www.w3.org/2004/02/skos/core#Collection", "@type": "@id" },
