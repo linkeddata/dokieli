@@ -1047,12 +1047,8 @@ function getResourceInfoSpecRequirements(s) {
 function getResourceInfoSKOS(g) {
   var info = {};
   info['skos'] = {'data': {}, 'type': {}};
-  // info['skos']['skosConceptScheme'][s] = {};
-// console.log(g)
-  var items = [];
 
-// console.log(g)
-  g._graph.forEach(function(t){
+  info['skos']['graph'] = g._graph.filter(function(t) {
     var s = t.subject.nominalValue;
     var p = t.predicate.nominalValue;
     var o = t.object.nominalValue;
@@ -1070,6 +1066,7 @@ function getResourceInfoSKOS(g) {
       info['skos']['data'][s] = info['skos']['data'][s] || {};
       info['skos']['data'][s][p] = info['skos']['data'][s][p] || [];
       info['skos']['data'][s][p].push(o);
+      return t;
     }
   });
 
