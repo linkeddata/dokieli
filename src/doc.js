@@ -929,7 +929,7 @@ function getResourceInfo(data, options) {
                   Config['Resource'][documentURL]['describedby'] = {};
 
                   linkHeaders.describedby.forEach(function(describedbyURL) {
-                    if (!describedbyURL.startsWith('http:') || !describedbyURL.startsWith('https:')) {
+                    if (!describedbyURL.startsWith('http:') && !describedbyURL.startsWith('https:')) {
                       describedbyURL = uri.getAbsoluteIRI(uri.getBaseURL(response.url), describedbyURL);
                     }
                     p.push(fetcher.getResourceGraph(describedbyURL));
@@ -938,13 +938,14 @@ function getResourceInfo(data, options) {
                   return Promise.all(p)
                     .then(function(graphs) {
                       graphs.forEach(function(graph){
-                        var s = graph.iri().toString();
-                        Config['Resource'][documentURL]['describedby'][s] = {};
-                        Config['Resource'][s] = {};
-                        Config['Resource'][s]['graph'] = graph;
+                        if (graph) {
+                          var s = graph.iri().toString();
+                          Config['Resource'][documentURL]['describedby'][s] = {};
+                          Config['Resource'][s] = {};
+                          Config['Resource'][s]['graph'] = graph;
+                        }
                       });
-                    });
-
+                  });
                 }
               }
             }

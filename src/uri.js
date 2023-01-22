@@ -36,7 +36,7 @@ function decodeString (string) {
 function getAbsoluteIRI (base, location) {
   var iri = location
 
-  if (!location.toLowerCase().startsWith('http:') || !location.toLowerCase().startsWith('https:')) {
+  if (!location.toLowerCase().startsWith('http:') && !location.toLowerCase().startsWith('https:')) {
     var x = base.toLowerCase().trim().split('/')
     if (location.startsWith('/')) {
       iri = x[0] + '//' + x[2] + location
