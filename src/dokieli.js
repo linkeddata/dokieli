@@ -2008,12 +2008,10 @@ var DO = {
 
         DO.C.Resource[documentURL]['skos']['type'][rdftype].forEach(function(subject) {
 // console.log(subject)
-          // DO.C.Resource[documentURL]['skos']['data'][subject]
-
           graph = DO.C.Resource[documentURL]['graph'].child(subject);
-// console.log(graph)
+
           var conceptLabel = DO.U.getConceptLabel(graph);
-          conceptLabel = (conceptLabel.length > 0) ? conceptLabel.join(' / ') : subject;
+          conceptLabel = (conceptLabel.length > 0) ? conceptLabel.join(' / ') : uri.getFragmentOrLastPath(subject);
           conceptLabel = '<a href="' + subject + '">' + conceptLabel + '</a>';
 
           if (rdftype == DO.C.Vocab['skosConcept']['@id']) {
@@ -2033,7 +2031,7 @@ var DO = {
                 concept.forEach(function(c) {
                   var conceptGraph = DO.C.Resource[documentURL]['graph'].child(c);
                   var cLabel = DO.U.getConceptLabel(conceptGraph);
-                  cLabel = (cLabel.length > 0) ? cLabel : [c];
+                  cLabel = (cLabel.length > 0) ? cLabel : [uri.getFragmentOrLastPath(c)];
                   cLabel.forEach(function(cL) {
                     s += '<dd><a href="' + c + '">' + cL + '</a></dd>';
                   });
