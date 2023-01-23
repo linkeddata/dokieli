@@ -1932,6 +1932,17 @@ var DO = {
       return citationsList;
     },
 
+    getConceptLabel: function(s) {
+      var labels = [];
+
+      //XXX Is there a better way? Simple if skosprefLabel is single in DO.C.Vocab
+      if (s.skosprefLabel._array.length > 0) { labels = labels.concat(s.skosprefLabel._array); }
+      if (s.skosaltLabel._array.length > 0) { labels = labels.concat(s.skosaltLabel._array); }
+      if (s.skosnotation._array.length > 0) { labels = labels.concat(s.skosnotation._array); }
+
+      return labels;
+    },
+
     showDocumentCommunicationOptions: function(node) {
       var html = [];
 
@@ -2200,17 +2211,6 @@ var DO = {
               };
             }
             else if (id == 'list-of-concepts') {
-              function getConceptLabel(s) {
-                var labels = [];
-
-                //XXX Is there a better way? Simple if skosprefLabel is single in DO.C.Vocab
-                if (s.skosprefLabel._array.length > 0) { labels = labels.concat(s.skosprefLabel._array); }
-                if (s.skosaltLabel._array.length > 0) { labels = labels.concat(s.skosaltLabel._array); }
-                if (s.skosnotation._array.length > 0) { labels = labels.concat(s.skosnotation._array); }
-
-                return labels;
-              }
-
 // console.log(DO.C.Resource[documentURL]['skos'])
 
               var graph;
@@ -2224,7 +2224,7 @@ var DO = {
 
                   graph = DO.C.Resource[documentURL]['graph'].child(subject);
 // console.log(graph)
-                  var conceptLabel = getConceptLabel(graph);
+                  var conceptLabel = DO.U.getConceptLabel(graph);
                   conceptLabel = (conceptLabel.length > 0) ? conceptLabel.join(' / ') : subject;
                   conceptLabel = '<a href="' + subject + '">' + conceptLabel + '</a>';
 
@@ -2244,7 +2244,7 @@ var DO = {
                       if (concept && concept.length > 0) {
                         concept.forEach(function(c) {
                           var conceptGraph = DO.C.Resource[documentURL]['graph'].child(c);
-                          var cLabel = getConceptLabel(conceptGraph);
+                          var cLabel = DO.U.getConceptLabel(conceptGraph);
                           cLabel = (cLabel.length > 0) ? cLabel : [c];
                           cLabel.forEach(function(cL) {
                             s += '<dd><a href="' + c + '">' + cL + '</a></dd>';
