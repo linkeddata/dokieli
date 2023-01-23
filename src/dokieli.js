@@ -806,9 +806,9 @@ var DO = {
             DO.C['Graphs'][options['subjectURI']] = g;
 
             Object.keys(graphs).forEach(function(i){
-              var graph = graphs[i].graph();
+              g = graphs[i].graph();
 
-              dataGraph.graph().addAll(graph);
+              dataGraph.graph().addAll(g);
             });
 
             var graph = {"nodes":[], "links": []};
@@ -983,10 +983,10 @@ var DO = {
 
           Promise.all(promises)
             .then(function(graphs) {
-              graphs.forEach(function(graph){
-                graph = graph.graph();
+              graphs.forEach(function(g){
+                g = graph.graph();
 
-                dataGraph.graph().addAll(graph);
+                dataGraph.graph().addAll(g);
               });
 
               if ('filter' in options) {
