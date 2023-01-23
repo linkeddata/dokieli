@@ -1973,22 +1973,41 @@ var DO = {
             }
           });
 
-          var id = 'list-of-extended-concepts';
-          html = '<section id="' + id + '"><h2>Extended Concepts</h2><div><dl>' + html.join('') + '</dl><figure></figure></div></section>';
+          var id = 'list-of-additional-concepts';
+          html = '<section id="' + id + '"><h3>Additional Concepts</h3><div><button class="graph">View Graph</button><figure></figure><dl>' + html.join('') + '</dl></div></section>';
 
-          doc.insertDocumentLevelHTML(document, html, { 'id': id });
+          var aC = document.getElementById(id);
+          if (aC) {
+            aC.parentNode.removeChild(aC);
+          }
 
-          var selector = '#' + id + ' figure';
+          document.querySelector('#list-of-concepts > div').insertAdjacentHTML('beforeend', html);
+
+          // doc.insertDocumentLevelHTML(document, html, { 'id': id });
+
+          aC = document.getElementById(id);
+          window.history.replaceState(null, null, '#' + id);
+          aC.scrollIntoView();
+
+          var selector = aC.querySelector('figure');
+
+          aC.addEventListener('click', function(e){
+            var button = e.target.closest('button.graph');
+            if (button) {
+              button.parentNode.removeChild(button);
+
+              graph.serializeGraph(dataGraph, { 'contentType': 'text/turtle' })
+                .then(function(data){
+                  var options = {};
+                  options['subjectURI'] = uri.stripFragmentFromString(document.location.href);
+                  options['contentType'] = 'text/turtle';
+                  DO.U.showVisualisationGraph(options.subjectURI, data, selector, options);
+                });
+            }
+          })
 
 // console.log(dataGraph)
 
-          // graph.serializeGraph(dataGraph, { 'contentType': 'text/turtle' })
-          //   .then(function(data){
-          //     var options = {};
-          //     options['subjectURI'] = uri.stripFragmentFromString(document.location.href);
-          //     options['contentType'] = 'text/turtle';
-          //     DO.U.showVisualisationGraph(options.subjectURI, data, selector, options);
-          //   });
 
 // console.log(DO.C.Resource)
           return dataGraph;
@@ -2215,7 +2234,7 @@ var DO = {
 
         var nodes = document.querySelectorAll('section:not([class~="do"]) ' + selector);
 
-        if (id == 'table-of-contents' || nodes.length > 0) {
+        if (id == 'table-of-contents' || id == 'list-of-concepts' || nodes.length > 0) {
           var tId = document.getElementById(id);
           if(tId) { tId.parentNode.removeChild(tId); }
 
@@ -2241,7 +2260,7 @@ var DO = {
             case 'list-of-concepts':
               s += '<section id="' + id + '">';
               s += '<h2>' + label + '</h2>';
-              s += '<div><dl>';
+              s += '<div><p id="include-concepts"><button class="add">Include concepts</button> from external references.</p><dl>';
               break;
 
             case 'table-of-requirements':
@@ -2404,6 +2423,17 @@ console.log(reason);
           );
 
         }
+      }
+
+      if (id == 'list-of-concepts') {
+        document.getElementById(id).addEventListener('click', function(e) {
+          var button = e.target.closest('button.add');
+          if (button) {
+            button.parentNode.parentNode.removeChild(button.parentNode);
+
+            DO.U.showExtendedConcepts();
+          }
+        })
       }
     },
 
