@@ -1943,6 +1943,61 @@ var DO = {
       return labels;
     },
 
+    showExtendedConcepts: function() {
+      var citationsList = DO.U.getDocumentCitationsList();
+
+      var promises = [];
+      citationsList.forEach(function(u) {
+        // console.log(u);
+        // window.setTimeout(function () {
+          var pIRI = uri.getProxyableIRI(u);
+          promises.push(fetcher.getResourceGraph(pIRI));
+        // }, 1000)
+      });
+
+      var dataGraph = SimpleRDF();
+      var html = [];
+
+      return Promise.all(promises.map(p => p.catch(e => e)))
+        .then(function(graphs) {
+          graphs.forEach(function(g){
+// console.log(g)
+            if (g && g._graph.length > 0){
+              var documentURL = g.iri().toString();
+// console.log(documentURL)
+// console.log(g)
+              DO.C.Resource[documentURL] = DO.C.Resource[documentURL] || {};
+              DO.C.Resource[documentURL]['graph'] = g;
+              DO.C.Resource[documentURL]['skos'] = doc.getResourceInfoSKOS(g)
+
+              html.push(DO.U.getDocumentConceptDefinitionsHTML(documentURL));
+
+              dataGraph.graph().addAll(DO.C.Resource[documentURL]['skos']['graph']);
+            }
+          });
+
+          var id = 'list-of-extended-concepts';
+          html = '<section id="' + id + '"><h2>Extended Concepts</h2><div><dl>' + html.join('') + '</dl><figure></figure></div></section>';
+
+          doc.insertDocumentLevelHTML(document, html, { 'id': id });
+
+          var selector = '#' + id + ' figure';
+
+// console.log(dataGraph)
+
+          // graph.serializeGraph(dataGraph, { 'contentType': 'text/turtle' })
+          //   .then(function(data){
+          //     var options = {};
+          //     options['subjectURI'] = uri.stripFragmentFromString(document.location.href);
+          //     options['contentType'] = 'text/turtle';
+          //     DO.U.showVisualisationGraph(options.subjectURI, data, selector, options);
+          //   });
+
+// console.log(DO.C.Resource)
+          return dataGraph;
+        });
+    },
+
     getDocumentConceptDefinitionsHTML: function(documentURL) {
 // console.log(documentURL)
       var graph;
