@@ -910,6 +910,20 @@ width:44%;
 display:inline-block !important;
 }
 
+#list-of-concepts ul {
+padding-left:0;
+}
+#list-of-concepts dl,
+#list-of-concepts dl li {
+display: inline;
+}
+#list-of-concepts dl li:after {
+content: ", ";
+}
+#list-of-concepts dl li:last-child:after {
+content: "";
+}
+
 #document-menu #document-views {
 margin:2em 0 1em 0;
 }
