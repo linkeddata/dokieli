@@ -13,6 +13,7 @@ module.exports = {
   getHash,
   hashCode,
   sortTriples,
+  sortToLower
 };
 
 /**
@@ -170,4 +171,10 @@ function sortTriples(triples, options) {
   });
 
   return triples;
+}
+
+function sortToLower(array) {
+  return array.sort(function(a, b) {
+    return a.toLowerCase().localeCompare(b.toLowerCase());
+  });
 }
