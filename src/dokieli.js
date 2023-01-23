@@ -30,7 +30,7 @@ var DO = {
 
   U: {
     getResourceLabel: function(s) {
-      return s.dctermstitle || s['http://purl.org/dc/elements/1.1/title'] || auth.getAgentName(s) || undefined;
+      return s.dctermstitle || s['http://purl.org/dc/elements/1.1/title'] || auth.getAgentName(s) || s.assummary || undefined;
     },
 
 
@@ -1965,23 +1965,31 @@ var DO = {
 // console.log(g)
               DO.C.Resource[documentURL] = DO.C.Resource[documentURL] || {};
               DO.C.Resource[documentURL]['graph'] = g;
-              DO.C.Resource[documentURL]['skos'] = doc.getResourceInfoSKOS(g)
+              DO.C.Resource[documentURL]['skos'] = doc.getResourceInfoSKOS(g);
+              DO.C.Resource[documentURL]['title'] = DO.U.getResourceLabel(g) || documentURL;
 
-              html.push(DO.U.getDocumentConceptDefinitionsHTML(documentURL));
+              if (DO.C.Resource[documentURL]['skos']['graph']._graph.length > 0) {
+                html.push('<section><h4><a href="' + documentURL + '">' + DO.C.Resource[documentURL]['title'] + '</a></h4><div><dl>' + DO.U.getDocumentConceptDefinitionsHTML(documentURL) + '</dl></div></section>');
 
-              dataGraph.graph().addAll(DO.C.Resource[documentURL]['skos']['graph']);
+                dataGraph.graph().addAll(DO.C.Resource[documentURL]['skos']['graph']);
+              }
             }
           });
 
           var id = 'list-of-additional-concepts';
-          html = '<section id="' + id + '"><h3>Additional Concepts</h3><div><button class="graph">View Graph</button><figure></figure><dl>' + html.join('') + '</dl></div></section>';
+          html = '<section id="' + id + '"><h3>Additional Concepts</h3><div><button class="graph">View Graph</button><figure></figure>' + html.join('') + '</div></section>';
 
           var aC = document.getElementById(id);
           if (aC) {
             aC.parentNode.removeChild(aC);
           }
 
-          document.querySelector('#list-of-concepts > div').insertAdjacentHTML('beforeend', html);
+          var loC = document.getElementById('list-of-concepts');
+
+          var ic = loC.querySelector('#include-concepts');
+          if (ic) { ic.parentNode.removeChild(ic); }
+
+          loC.querySelector('div').insertAdjacentHTML('beforeend', html);
 
           // doc.insertDocumentLevelHTML(document, html, { 'id': id });
 
@@ -2022,21 +2030,26 @@ var DO = {
 // console.log(rdftype)
         s += '<dt>' + DO.C.SKOSClasses[rdftype] + 's</dt>';
 
+        if (rdftype == DO.C.Vocab['skosConcept']['@id']) {
+          s += '<dd><ul>';
+        }
+
         util.sortToLower(DO.C.Resource[documentURL]['skos']['type'][rdftype]).forEach(function(subject) {
 // console.log(subject)
           g = DO.C.Resource[documentURL]['graph'].child(subject);
 
           var conceptLabel = util.sortToLower(DO.U.getConceptLabel(g));
           conceptLabel = (conceptLabel.length > 0) ? conceptLabel.join(' / ') : uri.getFragmentOrLastPath(subject);
+          conceptLabel = conceptLabel.trim();
           conceptLabel = '<a href="' + subject + '">' + conceptLabel + '</a>';
 
           if (rdftype == DO.C.Vocab['skosConcept']['@id']) {
-            s += '<dd>' + conceptLabel + '</dd>';
+            s += '<li>' + conceptLabel + '</li>';
           }
           else {
             s += '<dd>';
             s += '<dl>';
-            s += '<dt>' + conceptLabel + '</dt>';
+            s += '<dt>' + conceptLabel + '</dt><dd><ul>';
 
             var hasConcepts = [DO.C.Vocab['skoshasTopConcept']['@id'], DO.C.Vocab['skosmember']['@id']];
 
@@ -2049,15 +2062,20 @@ var DO = {
                   var cLabel = DO.U.getConceptLabel(conceptGraph);
                   cLabel = (cLabel.length > 0) ? cLabel : [uri.getFragmentOrLastPath(c)];
                   cLabel.forEach(function(cL) {
-                    s += '<dd><a href="' + c + '">' + cL + '</a></dd>';
+                    cL = cL.trim();
+                    s += '<li><a href="' + c + '">' + cL + '</a></li>';
                   });
                 });
               }
             });
-            s += '</dl>';
+            s += '</ul></dd></dl>';
             s += '</dd>';
           }
         })
+
+        if (rdftype == DO.C.Vocab['skosConcept']['@id']) {
+          s += '</ul></dd>';
+        }
       });
 
       return s;
@@ -2429,7 +2447,8 @@ console.log(reason);
         document.getElementById(id).addEventListener('click', function(e) {
           var button = e.target.closest('button.add');
           if (button) {
-            button.parentNode.parentNode.removeChild(button.parentNode);
+            button.disabled = true;
+            button.insertAdjacentHTML('beforeend', template.Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]);
 
             DO.U.showExtendedConcepts();
           }
