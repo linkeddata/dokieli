@@ -1943,6 +1943,57 @@ var DO = {
       return labels;
     },
 
+    getDocumentConceptDefinitionsHTML: function(documentURL) {
+// console.log(documentURL)
+      var graph;
+      var s = '';
+      Object.keys(DO.C.Resource[documentURL]['skos']['type']).forEach(function(rdftype) {
+// console.log(rdftype)
+        s += '<dt>' + DO.C.SKOSClasses[rdftype] + 's</dt>';
+
+        DO.C.Resource[documentURL]['skos']['type'][rdftype].forEach(function(subject) {
+// console.log(subject)
+          // DO.C.Resource[documentURL]['skos']['data'][subject]
+
+          graph = DO.C.Resource[documentURL]['graph'].child(subject);
+// console.log(graph)
+          var conceptLabel = DO.U.getConceptLabel(graph);
+          conceptLabel = (conceptLabel.length > 0) ? conceptLabel.join(' / ') : subject;
+          conceptLabel = '<a href="' + subject + '">' + conceptLabel + '</a>';
+
+          if (rdftype == DO.C.Vocab['skosConcept']['@id']) {
+            s += '<dd>' + conceptLabel + '</dd>';
+          }
+          else {
+            s += '<dd>';
+            s += '<dl>';
+            s += '<dt>' + conceptLabel + '</dt>';
+
+            var hasConcepts = [DO.C.Vocab['skoshasTopConcept']['@id'], DO.C.Vocab['skosmember']['@id']];
+
+            hasConcepts.forEach(function(hasConcept) {
+              var concept = DO.C.Resource[documentURL]['skos']['data'][subject][hasConcept];
+
+              if (concept && concept.length > 0) {
+                concept.forEach(function(c) {
+                  var conceptGraph = DO.C.Resource[documentURL]['graph'].child(c);
+                  var cLabel = DO.U.getConceptLabel(conceptGraph);
+                  cLabel = (cLabel.length > 0) ? cLabel : [c];
+                  cLabel.forEach(function(cL) {
+                    s += '<dd><a href="' + c + '">' + cL + '</a></dd>';
+                  });
+                });
+              }
+            });
+            s += '</dl>';
+            s += '</dd>';
+          }
+        })
+      });
+
+      return s;
+    },
+
     showDocumentCommunicationOptions: function(node) {
       var html = [];
 
@@ -2212,53 +2263,7 @@ var DO = {
             }
             else if (id == 'list-of-concepts') {
 // console.log(DO.C.Resource[documentURL]['skos'])
-
-              var graph;
-              Object.keys(DO.C.Resource[documentURL]['skos']['type']).forEach(function(rdftype) {
-// console.log(i)
-                s += '<dt>' + DO.C.SKOSClasses[rdftype] + 's</dt>';
-
-                DO.C.Resource[documentURL]['skos']['type'][rdftype].forEach(function(subject) {
-// console.log(subject)
-                  // DO.C.Resource[documentURL]['skos']['data'][subject]
-
-                  graph = DO.C.Resource[documentURL]['graph'].child(subject);
-// console.log(graph)
-                  var conceptLabel = DO.U.getConceptLabel(graph);
-                  conceptLabel = (conceptLabel.length > 0) ? conceptLabel.join(' / ') : subject;
-                  conceptLabel = '<a href="' + subject + '">' + conceptLabel + '</a>';
-
-                  if (rdftype == DO.C.Vocab['skosConcept']['@id']) {
-                    s += '<dd>' + conceptLabel + '</dd>';
-                  }
-                  else {
-                    s += '<dd>';
-                    s += '<dl>';
-                    s += '<dt>' + conceptLabel + '</dt>';
-
-                    var hasConcepts = [DO.C.Vocab['skoshasTopConcept']['@id'], DO.C.Vocab['skosmember']['@id']];
-
-                    hasConcepts.forEach(function(hasConcept) {
-                      var concept = DO.C.Resource[documentURL]['skos']['data'][subject][hasConcept];
-
-                      if (concept && concept.length > 0) {
-                        concept.forEach(function(c) {
-                          var conceptGraph = DO.C.Resource[documentURL]['graph'].child(c);
-                          var cLabel = DO.U.getConceptLabel(conceptGraph);
-                          cLabel = (cLabel.length > 0) ? cLabel : [c];
-                          cLabel.forEach(function(cL) {
-                            s += '<dd><a href="' + c + '">' + cL + '</a></dd>';
-                          });
-                        });
-                      }
-                    });
-                    s += '</dl>';
-                    s += '</dd>';
-                  }
-                })
-
-
-              });
+              s += DO.U.getDocumentConceptDefinitionsHTML(documentURL);
             }
             //list-of-figures, list-of-tables, list-of-quotations, table-of-requirements
             else {
