@@ -1924,10 +1924,7 @@ var DO = {
           externals.push(uri.stripFragmentFromString(i))
         }
       });
-      citationsList = util.uniqueArray(externals);
-      citationsList.sort(function(a, b) {
-        return a.localeCompare(b);
-      });
+      citationsList = util.uniqueArray(externals).sort();
 
       return citationsList;
     },
@@ -2000,17 +1997,17 @@ var DO = {
 
     getDocumentConceptDefinitionsHTML: function(documentURL) {
 // console.log(documentURL)
-      var graph;
+      var g;
       var s = '';
       Object.keys(DO.C.Resource[documentURL]['skos']['type']).forEach(function(rdftype) {
 // console.log(rdftype)
         s += '<dt>' + DO.C.SKOSClasses[rdftype] + 's</dt>';
 
-        DO.C.Resource[documentURL]['skos']['type'][rdftype].forEach(function(subject) {
+        util.sortToLower(DO.C.Resource[documentURL]['skos']['type'][rdftype]).forEach(function(subject) {
 // console.log(subject)
-          graph = DO.C.Resource[documentURL]['graph'].child(subject);
+          g = DO.C.Resource[documentURL]['graph'].child(subject);
 
-          var conceptLabel = DO.U.getConceptLabel(graph);
+          var conceptLabel = util.sortToLower(DO.U.getConceptLabel(g));
           conceptLabel = (conceptLabel.length > 0) ? conceptLabel.join(' / ') : uri.getFragmentOrLastPath(subject);
           conceptLabel = '<a href="' + subject + '">' + conceptLabel + '</a>';
 
@@ -2028,7 +2025,7 @@ var DO = {
               var concept = DO.C.Resource[documentURL]['skos']['data'][subject][hasConcept];
 
               if (concept && concept.length > 0) {
-                concept.forEach(function(c) {
+                util.sortToLower(concept).forEach(function(c) {
                   var conceptGraph = DO.C.Resource[documentURL]['graph'].child(c);
                   var cLabel = DO.U.getConceptLabel(conceptGraph);
                   cLabel = (cLabel.length > 0) ? cLabel : [uri.getFragmentOrLastPath(c)];
