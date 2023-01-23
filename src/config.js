@@ -209,6 +209,7 @@ module.exports = {
     'categories-and-subject-descriptors',
     'keywords',
     'general-terms',
+    'list-of-extended-concepts',
 
     'introduction'
   ],
