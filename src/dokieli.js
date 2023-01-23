@@ -1918,6 +1918,17 @@ var DO = {
         }
       });
 
+      var externals = [];
+      citationsList.forEach(function(i){
+        if (!i.startsWith(documentURL)){
+          externals.push(uri.stripFragmentFromString(i))
+        }
+      });
+      citationsList = util.uniqueArray(externals);
+      citationsList.sort(function(a, b) {
+        return a.localeCompare(b);
+      });
+
       return citationsList;
     },
 
