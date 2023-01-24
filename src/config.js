@@ -178,6 +178,7 @@ module.exports = {
     'document-created',
     'document-modified',
     'document-published',
+    'document-repository',
     'document-original',
     'document-memento',
     'document-latest-version',
