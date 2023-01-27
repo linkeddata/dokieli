@@ -1902,33 +1902,6 @@ var DO = {
       return contentCount;
     },
 
-    getDocumentCitationsList: function() {
-      var documentURL = uri.stripFragmentFromString(document.location.href);
-      var s = DO.C.Resource[documentURL].graph;
-      var citationsList = [];
-      var citationProperties = Object.keys(DO.C.Citation).concat([DO.C.Vocab["dctermsreferences"]["@id"]]);
-      var triples = s._graph;
-      triples.forEach(function(t){
-        var s = t.subject.nominalValue;
-        var p = t.predicate.nominalValue;
-        var o = t.object.nominalValue;
-
-        if(citationProperties.indexOf(p) > -1) {
-          citationsList.push(o);
-        }
-      });
-
-      var externals = [];
-      citationsList.forEach(function(i){
-        if (!i.startsWith(documentURL)){
-          externals.push(uri.stripFragmentFromString(i))
-        }
-      });
-      citationsList = util.uniqueArray(externals).sort();
-
-      return citationsList;
-    },
-
     getConceptLabel: function(s) {
       var labels = [];
 
@@ -1941,7 +1914,8 @@ var DO = {
     },
 
     showExtendedConcepts: function() {
-      var citationsList = DO.U.getDocumentCitationsList();
+      var documentURL = uri.stripFragmentFromString(document.location.href);
+      var citationsList = DO.C.Resource[documentURL].citations;
 
       var promises = [];
       citationsList.forEach(function(u) {
@@ -2278,7 +2252,11 @@ var DO = {
             case 'list-of-concepts':
               s += '<section id="' + id + '">';
               s += '<h2>' + label + '</h2>';
-              s += '<div><p id="include-concepts"><button class="add">Include concepts</button> from external references.</p><dl>';
+              var d = DO.C.Resource[documentURL].citations || [];
+              if (d.length > 0) {
+                s += '<div><p id="include-concepts"><button class="add">Include concepts</button> from <data value="' + d.length + '">' + d.length + '</data> external references.</p>';
+              }
+              s += '<dl>';
               break;
 
             case 'table-of-requirements':

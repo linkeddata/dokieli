@@ -37,6 +37,7 @@ module.exports = {
   getResourceInfoODRLPolicies,
   getResourceInfoSpecRequirements,
   getResourceInfoSKOS,
+  getResourceInfoCitations,
   setFeatureStatesOfResourceInfo,
   createImmutableResource,
   createMutableResource,
@@ -855,6 +856,7 @@ function getResourceInfo(data, options) {
         }
 
         info['skos'] = getResourceInfoSKOS(i);
+        info['citations'] = getResourceInfoCitations(i);
 
         Config['ButtonStates'] = setFeatureStatesOfResourceInfo(info);
 
@@ -955,6 +957,33 @@ function getResourceInfo(data, options) {
 
       return info;
     });
+}
+
+function getResourceInfoCitations(g) {
+  var documentURL = uri.stripFragmentFromString(document.location.href);
+  var citationsList = [];
+  var citationProperties = Object.keys(Config.Citation).concat([Config.Vocab["dctermsreferences"]["@id"]]);
+
+  var triples = g._graph;
+  triples.forEach(function(t){
+    var s = t.subject.nominalValue;
+    var p = t.predicate.nominalValue;
+    var o = t.object.nominalValue;
+
+    if(citationProperties.indexOf(p) > -1) {
+      citationsList.push(o);
+    }
+  });
+
+  var externals = [];
+  citationsList.forEach(function(i){
+    if (!i.startsWith(documentURL)){
+      externals.push(uri.stripFragmentFromString(i))
+    }
+  });
+  citationsList = util.uniqueArray(externals).sort();
+
+  return citationsList;
 }
 
 function getResourceInfoODRLPolicies(s) {
