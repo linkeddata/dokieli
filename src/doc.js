@@ -977,8 +977,9 @@ function getResourceInfoCitations(g) {
 
   var externals = [];
   citationsList.forEach(function(i){
-    if (!i.startsWith(documentURL)){
-      externals.push(uri.stripFragmentFromString(i))
+    var iAbsolute = uri.stripFragmentFromString(i);
+    if (iAbsolute !== documentURL){
+      externals.push(iAbsolute)
     }
   });
   citationsList = util.uniqueArray(externals).sort();
