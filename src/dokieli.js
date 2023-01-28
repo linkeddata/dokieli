@@ -561,7 +561,8 @@ var DO = {
         "10": { color: '#900090', label: 'Social', type: 'rdf:Resource' },
         "11": { color: '#ff7f00', label: 'DataSet', type: 'rdf:Resource' },
         "12": { color: '#9a3a00', label: 'Requirement', type: 'rdf:Resource' },
-        "13": { color: '#0088ee', label: 'Policy', type: 'rdf:Resource' }
+        "13": { color: '#0088ee', label: 'Policy', type: 'rdf:Resource' },
+        "14": { color: '#ff00ff', label: 'Specification', type: 'rdf:Resource' }
       }
 
       if (selector == '#graph-view' && !document.getElementById('graph-view')) {
@@ -860,6 +861,7 @@ var DO = {
                 if (auth.isActorType(t.object.nominalValue)) {
                   sGroup = 10;
                 }
+
                 switch (t.object.nominalValue) {
                   case DO.C.Vocab['qbDataSet']['@id']:
                     oGroup = 11;
@@ -873,6 +875,9 @@ var DO = {
                   case DO.C.Vocab['odrlSet']['@id']:
                   case DO.C.Vocab['odrlTicket']['@id']:
                     sGroup = 13;
+                    break;
+                  case DO.C.Vocab['doapSpecification']['@id']:
+                    sGroup = 14;
                     break;
                 }
               }

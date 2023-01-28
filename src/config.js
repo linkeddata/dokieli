@@ -594,6 +594,7 @@ module.exports = {
     "citousesDataFrom": { "@id": "http://purl.org/spar/cito/usesDataFrom", "@type": "@id", "@array": true },
     "citousesMethodIn": { "@id": "http://purl.org/spar/cito/usesMethodIn", "@type": "@id", "@array": true },
 
+    "doapSpecification": { "@id": "http://usefulinc.com/ns/doap#Specification", "@type": "@id" },
     "specrequirement": { "@id": "http://www.w3.org/ns/spec#requirement", "@type": "@id", "@array": true },
     "specstatement": { "@id": "http://www.w3.org/ns/spec#statement" },
     "specrequirementSubject": { "@id": "http://www.w3.org/ns/spec#requirementSubject", "@type": "@id" },
