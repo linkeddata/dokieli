@@ -547,23 +547,34 @@ var DO = {
 
       // var color = d3.scaleOrdinal(d3.schemeCategory10);
 
+      //TODO: Structure of these objects should change to use the label as key, and move to config.js
       var group = {
         "0": { color: '#fff', label: '' },
         "1": { color: '#000', label: '', type: 'rdf:Resource' },
         "2": { color: '#777', label: '' },
-        "3": { color: '#ccc', label: 'Literal' },
-        "4": { color: '#551a8b', label: 'Visited', type: 'rdf:Resource' },
+        "3": { color: '#551a8b', label: 'Visited', type: 'rdf:Resource' }
+      }
+      var legendCategories = {
+        "4": { color: '#ccc', label: 'Literal' },
         "5": { color: '#ff0', label: 'Root', type: 'rdf:Resource' },
         "6": { color: '#ff2900', label: 'Type', type: 'rdf:Resource' },
-        "7": { color: '#002af7', label: 'External', type: 'rdf:Resource' },
-        "8": { color: '#00cc00', label: 'Internal', type: 'rdf:Resource' },
+        "7": { color: '#002af7', label: 'External reference', type: 'rdf:Resource' },
+        "8": { color: '#00cc00', label: 'Internal reference', type: 'rdf:Resource' },
         "9": { color: '#00ffff', label: 'Citation', type: 'rdf:Resource' },
         "10": { color: '#900090', label: 'Social', type: 'rdf:Resource' },
-        "11": { color: '#ff7f00', label: 'DataSet', type: 'rdf:Resource' },
+        "11": { color: '#ff7f00', label: 'Dataset', type: 'rdf:Resource' },
         "12": { color: '#9a3a00', label: 'Requirement', type: 'rdf:Resource' },
-        "13": { color: '#0088ee', label: 'Policy', type: 'rdf:Resource' },
-        "14": { color: '#ff00ff', label: 'Specification', type: 'rdf:Resource' }
+        "13": { color: '#ff00ff', label: 'Specification', type: 'rdf:Resource' },
+        "14": { color: '#0088ee', label: 'Policy', type: 'rdf:Resource' }
       }
+      group = Object.assign(group, legendCategories);
+
+      // var a = [];
+      // Object.keys(group).forEach(function(i){
+      //   a.push('<div style="background-color:' + group[i].color + '; width:5em; height:5em;">' + group[i].label + '</div>');
+      // });
+      // document.body.insertAdjacentHTML('beforeend', a.join(''));
+
 
       if (selector == '#graph-view' && !document.getElementById('graph-view')) {
         document.documentElement.appendChild(util.fragmentFromString('<aside id="graph-view" class="do on">' + DO.C.Button.Close + '<h2>Graph view</h2></aside>'));
@@ -599,6 +610,36 @@ var DO = {
         svg.append('title')
           .attr('property', 'schema:name')
           .text(options.title);
+      }
+
+      function addLegend() {
+        var legendInfo = {};
+        var keys = Object.keys(legendCategories);
+        keys.forEach(function(i){
+          legendInfo[legendCategories[i].label] = legendCategories[i].color;
+        });
+        keys = Object.keys(legendInfo);
+
+        // svg.append('g')
+        //   .attr('class', 'graph-legend');
+        //FIXME: Why doesn't select or selectAll("g.graph-legend") work? g.graph-legend is in the svg.
+        svg.selectAll("foobarbazqux")
+          .data(keys)
+          .enter()
+          .append("circle")
+            .attr("cx", 10)
+            .attr("cy", function(d,i){ return 10 + i*25 })
+            .attr("r", nodeRadius)
+            .style("fill", function(d){ return legendInfo[d] })
+
+        svg.selectAll("foobarbazqux")
+          .data(keys)
+          .enter()
+          .append("text")
+            .attr("x", 25)
+            .attr("y", function(d,i){ return 15 + i*25 })
+            .style("fill", function(d){ return legendInfo[d] })
+            .text(function(d){ return d})
       }
 
       function handleResource (pIRI, headers, options) {
@@ -704,7 +745,7 @@ var DO = {
           .enter().append("path")
             // .attr("class", "link")
             .attr('fill', 'none')
-            .attr('stroke', group[3].color)
+            .attr('stroke', group[4].color)
             .attr("marker-end", "url(#end)");
 
         // link.transition();
@@ -720,8 +761,8 @@ var DO = {
             .attr("r", nodeRadius)
             .attr("fill", function(d) { return group[d.group].color; })
             .attr('stroke', function (d) {
-              if (d.visited) { return group[4].color }
-              else if (d.group == 3) { return group[2].color }
+              if (d.visited) { return group[3].color }
+              else if (d.group == 4) { return group[2].color }
               else { return group[7].color }})
             // .call(d3.drag()
             //     .on("start", dragstarted)
@@ -748,6 +789,9 @@ var DO = {
           'link': link,
           'node': node
         }
+
+        //Adding this now so that it is not selected with circles above.
+        addLegend();
 
 // console.log(svgObject)
         return svgObject;
@@ -851,7 +895,7 @@ var DO = {
                   oGroup = 8;
                   break;
                 case 'Literal':
-                  oGroup = 3;
+                  oGroup = 4;
                   break;
               }
 
@@ -866,6 +910,9 @@ var DO = {
                   case DO.C.Vocab['qbDataSet']['@id']:
                     oGroup = 11;
                     break;
+                  case DO.C.Vocab['doapSpecification']['@id']:
+                    sGroup = 13;
+                    break;
                   case DO.C.Vocab['odrlAgreement']['@id']:
                   case DO.C.Vocab['odrlAssertion']['@id']:
                   case DO.C.Vocab['odrlOffer']['@id']:
@@ -874,9 +921,6 @@ var DO = {
                   case DO.C.Vocab['odrlRequest']['@id']:
                   case DO.C.Vocab['odrlSet']['@id']:
                   case DO.C.Vocab['odrlTicket']['@id']:
-                    sGroup = 13;
-                    break;
-                  case DO.C.Vocab['doapSpecification']['@id']:
                     sGroup = 14;
                     break;
                 }

@@ -1,6 +1,6 @@
 {
   "name": "dokieli",
-  "version": "0.3.92",
+  "version": "0.3.93",
   "description": "dokieli is a client-side editor for decentralised article publishing, annotations and social interactions",
   "main": "./src/dokieli.js",
   "scripts": {
@@ -55,8 +55,8 @@
     "wrapper-webpack-plugin": "^2.2.2"
   },
   "devDependencies": {
-    "@playwright/test": "^1.29.0",
     "@axe-core/playwright": "^4.5.2",
+    "@playwright/test": "^1.29.0",
     "jest": "^29.0.3",
     "jest-environment-jsdom": "^29.0.3",
     "standard": "^16.0.4",
