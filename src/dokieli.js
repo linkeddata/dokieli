@@ -1033,7 +1033,7 @@ var DO = {
           Promise.all(promises)
             .then(function(graphs) {
               graphs.forEach(function(g){
-                g = graph.graph();
+                g = g.graph();
 
                 dataGraph.graph().addAll(g);
               });
