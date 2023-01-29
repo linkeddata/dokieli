@@ -60,7 +60,7 @@ function getProxyableIRI (url, options = {}) {
 
   if ((typeof document !== 'undefined' && document.location.protocol === 'https:' && pIRI.slice(0, 5).toLowerCase() === 'http:') || 'forceProxy' in options) {
     var proxyURL = getProxyURL(options)
-    pIRI = proxyURL + encodeString(pIRI)
+    pIRI = (proxyURL) ? proxyURL + encodeString(pIRI) : pIRI
   }
 
   return pIRI
@@ -71,7 +71,7 @@ function getProxyURL(options) {
       ? options.proxyURL
       : (Config.User.ProxyURL)
         ? Config.User.ProxyURL
-        : Config.ProxyURL
+        : undefined
 }
 
 function stripFragmentFromString (string) {

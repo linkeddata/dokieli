@@ -5654,8 +5654,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
             url = DO.U.setBaseURL(url, options);
           }
           else if (url.startsWith('http:') && node.tagName.toLowerCase()) {
-            var proxyURL = ('proxyURL' in options) ? options.proxyURL : DO.C.ProxyURL
-            url = proxyURL + uri.encodeString(url)
+            url = uri.getProxyableIRI(url)
           }
           node.setAttribute(ref, url);
         };
