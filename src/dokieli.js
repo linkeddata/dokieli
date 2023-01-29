@@ -644,16 +644,16 @@ var DO = {
 
       function handleResource (pIRI, headers, options) {
         return fetcher.getResource(pIRI, headers, options)
-          .catch(error => {
-// console.log(error)
-            // if (error.status === 0) {
-              // retry with proxied uri
-              var pIRI = uri.getProxyableIRI(options['subjectURI'], {'forceProxy': true});
-              return handleResource(pIRI, headers, options);
-            // }
+//           .catch(error => {
+// // console.log(error)
+//             // if (error.status === 0) {
+//               // retry with proxied uri
+//               var pIRI = uri.getProxyableIRI(options['subjectURI'], {'forceProxy': true});
+//               return handleResource(pIRI, headers, options);
+//             // }
 
-            // throw error  // else, re-throw the error
-          })
+//             // throw error  // else, re-throw the error
+//           })
           .then(response => {
 // console.log(response)
             var cT = response.headers.get('Content-Type');

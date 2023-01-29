@@ -312,7 +312,8 @@ function getResource (url, headers = {}, options = {}) {
 
   return _fetch(url, options)
     .catch(error => {
-      if (!options.noCredentials) {
+// console.log(options)
+      if (!options.noCredentials && options.credentials !== 'omit') {
         // Possible CORS error, retry with no credentials
         options.noCredentials = true
         options.credentials = 'omit'
