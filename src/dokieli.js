@@ -1250,23 +1250,30 @@ var DO = {
 
       if (DO.C.GraphViewerAvailable) {
         var searchParams = new URLSearchParams(document.location.search);
-        var g = searchParams.get('graph');
-        if (g) {
-          var iri = decodeURIComponent(g);
+        var graphs = searchParams.getAll('graph');
+
+        var urls = graphs.map(url => {
+          // var iri = decodeURIComponent(g);
 
           //TODO: Need a way to handle potential proxy use eg. https://dokie.li/?graph=https://dokie.li/proxy?uri=https://example.org/
           //XXX: if iri startsWith https://dokie.li/proxy? then the rest gets chopped.
           // var docURI = iri.split(/[?#]/)[0];
 
           //XXX: fugly
-          var docURI = iri.split(/[#]/)[0];
-          iri = iri.split('=').pop();
+          // var docURI = iri.split(/[#]/)[0];
+          // iri = iri.split('=').pop();
 
+          return uri.stripFragmentFromString(url);
+        });
+// console.log(urls);
+
+        if (urls.length > 0) {
           // var options = {'license': 'https://creativecommons.org/publicdomain/zero/1.0/', 'filter': { 'subjects': [docURI, iri] }, 'title': iri };
-          var options = {'subjectURI': iri, 'license': 'https://creativecommons.org/publicdomain/zero/1.0/', 'title': iri };
+          var options = {'subjectURI': urls[0], 'license': 'https://creativecommons.org/publicdomain/zero/1.0/', 'title': urls[0] };
 
           // DO.U.showGraphResources([docURI], '#graph-view', options);
-          DO.U.showGraph([docURI], '#graph-view', options);
+// console.log(options);
+          DO.U.showGraph(urls, '#graph-view', options);
 
           window.history.replaceState({}, null, document.location.href.substr(0, document.location.href.lastIndexOf('?graph')));
         }
