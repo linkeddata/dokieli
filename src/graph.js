@@ -204,7 +204,7 @@ function serializeData (data, fromContentType, toContentType, options) {
                   case 'http://schema.org/':
                     data = data.replace(new RegExp('"schema:', 'g'), '"')
 
-                    search = 'http:/schema.org/'
+                    search = 'http://schema.org/'
                     break
                 }
               }
