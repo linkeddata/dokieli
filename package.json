@@ -42,7 +42,7 @@
     "medium-editor": "^5.23.3",
     "medium-editor-tables": "^0.6.1",
     "node-fetch": "^3.2.3",
-    "npm": "^8.19.3",
+    "npm": "^9.2.4",
     "process": "^0.11.10",
     "rdf-parser-rdfa": "https://github.com/rdf-ext/rdf-parser-rdfa.git#master",
     "rdf-store-ldp": "^0.3.1",
@@ -68,7 +68,8 @@
     "ansi-regex": "^5.0.0",
     "xmldom": "https://github.com/xmldom/xmldom.git#master",
     "green-turtle": "https://github.com/csarven/green-turtle#master",
-    "json5": "^1.0.2"
+    "json5": "^1.0.2",
+    "http-cache-semantics": "^4.1.1"
   },
   "standard": {
     "globals": [
