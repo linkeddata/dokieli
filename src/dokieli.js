@@ -1015,7 +1015,9 @@ var DO = {
     showGraphResources: function(resources, selector, options) {
       selector = selector || document.body;
       options = options || {};
-      resources = util.uniqueArray(resources);
+      if (Array.isArray(resources)) {
+        resources = util.uniqueArray(resources);
+      }
 
       DO.U.processResources(resources, options).then(
         function(url) {
