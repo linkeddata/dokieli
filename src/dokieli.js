@@ -1,6 +1,6 @@
 /** dokieli
  *
- * Sarven Capadisli <info@csarven.ca> http://csarven.ca/#i
+ * Sarven Capadisli <info@csarven.ca> https://csarven.ca/#i
  * http://www.apache.org/licenses/LICENSE-2.0.html Apache License, Version 2.0
  * https://dokie.li/
  * https://github.com/linkeddata/dokieli
