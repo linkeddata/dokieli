@@ -70,7 +70,8 @@
     "green-turtle": "https://github.com/csarven/green-turtle#master",
     "json5": "^1.0.2",
     "http-cache-semantics": "^4.1.1",
-    "jsonld": "^5.0.0"
+    "jsonld": "^5.0.0",
+    "xml2js": "^5.0.0"
   },
   "standard": {
     "globals": [
