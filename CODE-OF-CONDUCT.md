@@ -1,4 +1,4 @@
-# Contributor Covenant Code of Conduct
+# dokieli Code of Conduct
 
 ## Our Pledge
 
