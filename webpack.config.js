@@ -27,6 +27,7 @@ module.exports = (env) => {
         "stream-browserify": false,
         crypto: false,
         buffer: require.resolve("buffer/"),
+        os: false
       },
       extensions: [".ts", ".js", ".mjs"],
     },

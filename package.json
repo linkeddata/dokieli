@@ -1,6 +1,6 @@
 {
   "name": "dokieli",
-  "version": "0.3.96",
+  "version": "0.3.97",
   "description": "dokieli is a client-side editor for decentralised article publishing, annotations and social interactions",
   "main": "./src/dokieli.js",
   "scripts": {
@@ -38,6 +38,7 @@
     "buffer": "^6.0.3",
     "d3-force": "^2.0.1",
     "d3-selection": "^1.4.1",
+    "diff": "^5.1.0",
     "fs": "0.0.1-security",
     "medium-editor": "^5.23.3",
     "medium-editor-tables": "^0.6.1",
