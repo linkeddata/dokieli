@@ -2476,7 +2476,74 @@ var DO = {
 console.log(reason);
             }
           );
+        }
 
+        var predecessorVersion = DO.C.Resource[documentURL].graph.relpredecessorversion;
+        if (predecessorVersion) {
+          var url = predecessorVersion;
+
+          var sourceGraph = DO.C.Resource[documentURL].graph;
+          var sourceGraphURI = sourceGraph.iri().toString();
+
+          var buttonTextDiffRequirements = 'Diff requirements with the predecessor version';
+
+          var table = document.getElementById(id);
+          var thead = table.querySelector('thead');
+          thead.querySelector('tr > th').insertAdjacentHTML('beforeend', '<button id="include-diff-requirements" class="do add" disabled="disabled" title="' + buttonTextDiffRequirements + '">' + template.Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + '</button>');
+
+          fetcher.getResourceGraph(url).then(
+            function(targetGraph){
+              if (targetGraph) {
+                var targetGraphURI = targetGraph.iri().toString();
+
+                var buttonRD = document.getElementById('include-diff-requirements');
+                buttonRD.innerHTML = template.Icon[".fas.fa-plus-minus"];
+                buttonRD.disabled = false;
+
+                buttonRD.addEventListener('click', function(e) {
+                  var button = e.target.closest('button');
+                  if (button){
+                    if (button.classList.contains('add')) {
+                      button.classList.remove('add');
+                      button.classList.add('remove');
+                      button.setAttribute('title', "Show requirements");
+                      button.innerHTML = template.Icon[".fas.fa-list-check"];
+
+                      if (!button.classList.contains('checked')) {
+                        DO.U.diffRequirements(sourceGraph, targetGraph);
+                        button.classList.add('checked');
+                      }
+
+                      table.querySelectorAll('tbody tr').forEach(tr => {
+                        var sR = tr.getAttribute('about');
+                        var td = tr.querySelector('td:nth-child(3)');
+                        sR = sR.replace(uri.stripFragmentFromString(sR), sourceGraphURI);
+                        var tR = targetGraphURI + '#' + uri.getFragmentFromString(sR);
+                        td.innerHTML = DO.C.Resource[sourceGraphURI].spec[sR]['diff'][tR]['statement'] || '';
+                      });
+                    }
+                    else if (button.classList.contains('remove')) {
+                      button.classList.remove('remove');
+                      button.classList.add('add');
+                      button.setAttribute('title', buttonTextDiffRequirements);
+                      button.innerHTML = template.Icon[".fas.fa-plus-minus"];
+
+                      table.querySelectorAll('tbody tr').forEach(tr => {
+                        var sR = tr.getAttribute('about');
+                        var td = tr.querySelector('td:nth-child(3)');
+                        var sourceRequirementURI = sourceGraphURI + '#' + uri.getFragmentFromString(sR);
+                        var statement = DO.C.Resource[sourceGraphURI].spec[sourceRequirementURI][DO.C.Vocab['specstatement']['@id']] || sR;
+                        td.innerHTML = '<a href="' + sR + '">' + statement + '</a>';
+                      });
+                    }
+                  }
+                });
+              }
+            },
+            function(reason){
+console.log(reason);
+            }
+          );
         }
       }
 
