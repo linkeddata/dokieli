@@ -19,6 +19,7 @@ global.auth = require('./auth')
 global.template = require('./template')
 const d3 = Object.assign({}, require("d3-selection"), require("d3-force"))
 const shower = require('shower').default
+const Diff = require('diff');
 
 if(typeof DO === 'undefined'){
 const ld = require('./simplerdf')
@@ -2490,6 +2491,45 @@ console.log(reason);
           }
         })
       }
+    },
+
+    diffRequirements: function(sourceGraph, targetGraph) {
+      var sourceGraphURI = sourceGraph.iri().toString();
+      var targetGraphURI = targetGraph.iri().toString();
+      var sourceRequirements = doc.getResourceInfoSpecRequirements(sourceGraph);
+      var targetRequirements = doc.getResourceInfoSpecRequirements(targetGraph);
+
+      Object.keys(sourceRequirements).forEach(sR => {
+        DO.C.Resource[sourceGraphURI].spec[sR]['diff'] = {};
+
+        var sRStatement = sourceRequirements[sR][DO.C.Vocab['specstatement']['@id']] || '';
+        var tR = targetGraphURI + '#' + uri.getFragmentFromString(sR);
+
+        DO.C.Resource[sourceGraphURI].spec[sR]['diff'][tR] = {};
+
+        var tRStatement = '';
+
+        if (targetRequirements[tR]) {
+          tRStatement = targetRequirements[tR][DO.C.Vocab['specstatement']['@id']] || '';
+        }
+
+        var diff = Diff.diffChars(tRStatement, sRStatement);
+        var diffHTML = [];
+        diff.forEach((part) => {
+          var eName = 'span';
+
+          if (part.added) {
+            eName = 'ins';
+          }
+          else if (part.removed) {
+            eName = 'del';
+          }
+
+          diffHTML.push('<' + eName + '>' + part.value + '</' + eName + '>');
+        });
+
+        DO.C.Resource[sourceGraphURI].spec[sR]['diff'][tR]['statement'] = diffHTML.join('');
+      });
     },
 
     // ?spec spec:requirement ?requirement .
