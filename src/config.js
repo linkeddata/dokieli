@@ -417,6 +417,7 @@ module.exports = {
     "skosrelatedMatch": { "@id": "http://www.w3.org/2004/02/skos/core#relatedMatch", "@type": "@id", "@array": true },
 
     "provgeneratedAtTime": "http://www.w3.org/ns/prov#generatedAtTime",
+    "provwasRevisionOf": { "@id": "http://www.w3.org/ns/prov#wasRevisionOf", "@type": "@id" },
 
     "refPeriod": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod",
     "obsValue": "http://purl.org/linked-data/sdmx/2009/measure#obsValue",
