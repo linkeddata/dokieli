@@ -347,6 +347,9 @@ function insertDocumentLevelHTML(rootNode, h, options) {
 
   var article = selectArticleNode(rootNode);
 
+  var sectioningElements = ['article', 'aside', 'nav', 'section'];
+  var skipElements = ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'];
+
   h = '\n\
 ' + h;
 
@@ -355,6 +358,9 @@ function insertDocumentLevelHTML(rootNode, h, options) {
       var node = rootNode.querySelector('#' + Config.DocumentItems[i]);
 
       if (node) {
+        if (skipElements.indexOf(node.nodeName.toLowerCase()) > -1) {
+          node = node.closest(sectioningElements.join(',')) || article;
+        }
         node.insertAdjacentHTML('afterend', h);
         break;
       }
