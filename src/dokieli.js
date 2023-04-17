@@ -2339,7 +2339,7 @@ var DO = {
                 var statement = DO.C.Resource[documentURL]['spec'][i][DO.C.Vocab['specstatement']['@id']] || i;
                 //FIXME: This selector is brittle.
                 // var requirementIRI = document.querySelector('#document-identifier [rel="owl:sameAs"]');
-                var requirementIRI = document.querySelector('#document-latest-published-version [rel="rdfs:seeAlso"]');
+                var requirementIRI = document.querySelector('#document-latest-published-version [rel~="rel:latest-version"]');
                 requirementIRI = (requirementIRI) ? requirementIRI.href : i;
 
                 requirementIRI = i.replace(uri.stripFragmentFromString(i), requirementIRI);
@@ -2359,7 +2359,7 @@ var DO = {
                 }
                 var requirementLevel = '<a href="' + requirementLevelIRI + '">' + requirementLevelLabel + '</a>';
 
-                s += '<tr>';
+                s += '<tr about="' + requirementIRI + '">';
                 s += '<td>' + requirementSubject + '</td>';
                 s += '<td>' + requirementLevel + '</td>';
                 s += '<td>' + statement + '</td>';
@@ -2512,7 +2512,7 @@ console.log(reason);
       var testCases = [];
 
       //FIXME: Brittle selector
-      var specificationReferenceBase = document.querySelector('#document-latest-published-version [rel="rdfs:seeAlso"]').href;
+      var specificationReferenceBase = document.querySelector('#document-latest-published-version [rel~="rel:latest-version"]').href;
 // console.log(specificationReferenceBase)
 
       subjects.forEach(function(i){
