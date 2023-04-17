@@ -1187,6 +1187,10 @@ dd.do button {
 margin-left:0.25em;
 }
 
+thead button {
+margin:0 1em;
+}
+
 .do.position-relative {
 position:relative;
 z-index:1;
