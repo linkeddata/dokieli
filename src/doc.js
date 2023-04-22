@@ -769,7 +769,11 @@ function getButtonDisabledHTML(id) {
 
 function getResourceInfo(data, options) {
   data = data || getDocument();
-  var documentURL = uri.stripFragmentFromString(document.location.href);
+  options = options || {};
+  options['contentType'] = ('contentType' in options) ? options.contentType : 'text/html';
+  options['subjectURI'] = ('subjectURI' in options) ? options.subjectURI : uri.stripFragmentFromString(document.location.href);
+
+  var documentURL = options['subjectURI'];
 
   Config['Resource'] = Config['Resource'] || {};
   Config['Resource'][documentURL] = Config['Resource'][documentURL] || {};
@@ -779,10 +783,6 @@ function getResourceInfo(data, options) {
     'profile': Config.Vocab['ldpRDFSource']['@id']
   };
 
-  options = options || {};
-
-  options['contentType'] = ('contentType' in options) ? options.contentType : 'text/html';
-  options['subjectURI'] = ('subjectURI' in options) ? options.subjectURI : documentURL;
 
   var getResourceData = function(data, options) {
     return graph.getGraphFromData(data, options).then(
