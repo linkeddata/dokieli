@@ -85,6 +85,7 @@ module.exports = {
     'skipAttributes': ['aria-multiline', 'contenteditable', 'data-medium-editor-editor-index', 'data-medium-editor-element', 'data-medium-focused', 'data-placeholder', 'medium-editor-index', 'role', 'spellcheck', 'style'],
     'sortAttributes': true,
     'skipNodeWithClass': 'do',
+    'skipNodeWithId': ['toc-nav'],
     'classWithChildText': {
       'class': '.do.ref',
       'element': 'mark'

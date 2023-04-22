@@ -66,9 +66,11 @@ function dumpNode (node, options, skipAttributes, selfClosing, noEsc) {
   if (typeof node.nodeType === 'undefined') return out
 
   if (node.nodeType === 1) {
-    if (node.hasAttribute('class') && 'classWithChildText' in options && node.matches(options.classWithChildText.class)) {
+    if (options.skipNodeWithId && node.hasAttribute('id') && options.skipNodeWithId.indexOf(node.id) > -1) { return out
+    }
+    else if (node.hasAttribute('class') && 'classWithChildText' in options && node.matches(options.classWithChildText.class)) {
       out += node.querySelector(options.classWithChildText.element).textContent
-    } else if (!(options.skipNodeWithClass && node.matches('.' + options.skipNodeWithClass))) {
+    }else if (!(options.skipNodeWithClass && node.matches('.' + options.skipNodeWithClass))) {
       var ename = node.nodeName.toLowerCase()
       out += '<' + ename
 
