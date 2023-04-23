@@ -357,7 +357,17 @@ function getResourceHead (url, options = {}) {
   }
 
   return _fetch(url, options)
+    .catch(error => {
+// console.log(options)
+      if (!options.noCredentials && options.credentials !== 'omit') {
+        // Possible CORS error, retry with no credentials
+        options.noCredentials = true
+        options.credentials = 'omit'
+        return getResourceHead(url, options)
+      }
 
+      throw error
+    })
     .then(response => {
       if (!response.ok) {  // not a 2xx level response
         let error = new Error('Error fetching resource HEAD: ' +
