@@ -271,7 +271,7 @@ var DO = {
       DO.C.Notification[url]['Activities'] = [];
 
       var pIRI = uri.getProxyableIRI(url);
-      var documentURL = uri.stripFragmentFromString(document.location.href);
+      var documentURL = DO.C.DocumentURL;
 
       return fetcher.getResourceGraph(pIRI).then(
         function(g) {
@@ -832,7 +832,7 @@ var DO = {
 
     getVisualisationGraphData: function(url, data, options) {
       var requestURL = uri.stripFragmentFromString(url);
-      var documentURL = uri.stripFragmentFromString(document.location.href);
+      var documentURL = DO.C.DocumentURL;
 
       return new Promise(function(resolve, reject) {
         graph.getGraphFromData(data, options).then(
@@ -1323,7 +1323,7 @@ var DO = {
       doc.buttonRemoveAside();
       doc.showRobustLinksDecoration();
 
-      var documentURL = uri.stripFragmentFromString(document.location.href);
+      var documentURL = DO.C.DocumentURL;
 
       //Fugly
       function checkResourceInfo() {
@@ -1842,7 +1842,7 @@ var DO = {
     showDocumentMetadata: function(node) {
       if(document.querySelector('#document-metadata')) { return; }
 
-      var documentURL = uri.stripFragmentFromString(document.location.href);
+      var documentURL = DO.C.DocumentURL;
 
       var content = doc.selectArticleNode(document);
       var count = DO.U.contentCount(content);
@@ -1977,7 +1977,7 @@ var DO = {
     },
 
     showExtendedConcepts: function() {
-      var documentURL = uri.stripFragmentFromString(document.location.href);
+      var documentURL = DO.C.DocumentURL;
       var citationsList = DO.C.Resource[documentURL].citations;
 
       var promises = [];
@@ -2044,7 +2044,7 @@ var DO = {
               graph.serializeGraph(dataGraph, { 'contentType': 'text/turtle' })
                 .then(function(data){
                   var options = {};
-                  options['subjectURI'] = uri.stripFragmentFromString(document.location.href);
+                  options['subjectURI'] = DO.C.DocumentURL;
                   options['contentType'] = 'text/turtle';
                   DO.U.showVisualisationGraph(options.subjectURI, data, selector, options);
                 });
@@ -2121,7 +2121,7 @@ var DO = {
     showDocumentCommunicationOptions: function(node) {
       var html = [];
 
-      var documentURL = uri.stripFragmentFromString(document.location.href);
+      var documentURL = DO.C.DocumentURL;
 
       function waitUntil() {
         if (!('describedby' in DO.C.Resource[documentURL]) || Object.keys(DO.C.Resource[documentURL]['describedby']).length == 0) {
@@ -3209,7 +3209,7 @@ console.log(reason);
       }
 // console.log(DO.C.Resource)
 
-      var iri = uri.stripFragmentFromString(document.location.href);
+      var iri = DO.C.DocumentURL;
 
       var li = [];
       li.push('<li><button class="create-version"' + doc.getButtonDisabledHTML('create-version') +
@@ -3273,7 +3273,7 @@ console.log(reason);
         return;
       }
 
-      var documentURL = uri.stripFragmentFromString(document.location.href);
+      var documentURL = DO.C.DocumentURL;
 
       var buttonDisabled = '';
 
@@ -3348,7 +3348,7 @@ console.log(reason);
         var b;
         if (DO.C.EditorAvailable) {
           b = e.target.closest('button.editor-disable');
-          var documentURL = uri.stripFragmentFromString(document.location.href);
+          var documentURL = DO.C.DocumentURL;
           if (b) {
             var node = b.closest('li');
             b.outerHTML = DO.C.Editor.EnableEditorButton;
@@ -3976,7 +3976,7 @@ console.log(reason);
     accessModeAllowed: function(mode) {
       var allowedMode = false;
 
-      var documentURL = uri.stripFragmentFromString(document.location.href);
+      var documentURL = DO.C.DocumentURL;
 
       if ('headers' in DO.C.Resource[documentURL] && 'wac-allow' in DO.C.Resource[documentURL]['headers'] && 'permissionGroup' in DO.C.Resource[documentURL]['headers']['wac-allow']) {
         if (('user' in DO.C.Resource[documentURL]['headers']['wac-allow']['permissionGroup'] && DO.C.Resource[documentURL]['headers']['wac-allow']['permissionGroup']['user'].indexOf(mode) > -1)
@@ -5521,7 +5521,6 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           return
         }
 
-        var currentDocumentURL = uri.stripFragmentFromString(document.location.href)
         var saveAsDocument = document.getElementById('save-as-document')
         var storageIRI = saveAsDocument.querySelector('#' + id + '-' + action).innerText.trim()
 
@@ -5545,7 +5544,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         var wasDerived = document.querySelector('#derivation-data')
         if (wasDerived.checked) {
           o = { 'id': 'document-derived-from', 'title': 'Derived From' };
-          r = { 'rel': 'prov:wasDerivedFrom', 'href': currentDocumentURL };
+          r = { 'rel': 'prov:wasDerivedFrom', 'href': DO.C.DocumentURL };
           html = doc.setDocumentRelation(html, [r], o);
 
           html = doc.setDate(html, { 'id': 'document-derived-on', 'property': 'prov:generatedAtTime', 'title': 'Derived On' });
@@ -6380,7 +6379,7 @@ WHERE {\n\
       containerNode = containerNode || document.body;
       options = options || {};
 
-      var documentURL = uri.stripFragmentFromString(document.location.href);
+      var documentURL = DO.C.DocumentURL;
 
       var note = g.child(noteIRI);
       if (note.asobject && note.asobject.at(0)) {
@@ -6785,7 +6784,7 @@ WHERE {\n\
       var citationCharacterization = citation.citationCharacterization;
       var citedEntity = citation.citedEntity;
 
-      var documentURL = uri.stripFragmentFromString(document.location.href);
+      var documentURL = DO.C.DocumentURL;
 
       //XXX: Important
       s = s.child(citingEntity);
@@ -7485,7 +7484,7 @@ WHERE {\n\
               authors = document.getElementById(documentAuthors);
             }
 
-            var documentURL = uri.stripFragmentFromString(document.location.href);
+            var documentURL = DO.C.DocumentURL;
 
             var documentAuthorName = document.getElementById(authorName);
             var s = DO.C.Resource[documentURL].graph.child(documentURL);
@@ -8066,7 +8065,7 @@ WHERE {\n\
 
                   case 'share':
                     _this.base.restoreSelection();
-                    var resourceIRI = uri.stripFragmentFromString(document.location.href);
+                    var resourceIRI = DO.C.DocumentURL;
                     var node = _this.base.getSelectedParentElement().closest('[id]');
                     resourceIRI = (node && node.id) ? resourceIRI + '#' + node.id : resourceIRI;
                     _this.window.getSelection().removeAllRanges();
@@ -8672,7 +8671,7 @@ WHERE {\n\
               var refId = 'r-' + id;
               // var noteId = 'i-' + id;
 
-              var resourceIRI = uri.stripFragmentFromString(document.location.href);
+              var resourceIRI = DO.C.DocumentURL;
               var containerIRI = window.location.href;
 
               var selectorIRI = resourceIRI + '#selector(type=TextQuoteSelector,prefix=' + encodeURIComponent(prefix) + ',exact=' + encodeURIComponent(exact) + ',suffix=' + encodeURIComponent(suffix) +')';

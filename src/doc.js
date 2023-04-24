@@ -968,7 +968,7 @@ function getResourceInfo(data, options) {
 }
 
 function getResourceInfoCitations(g) {
-  var documentURL = uri.stripFragmentFromString(document.location.href);
+  var documentURL = DO.C.DocumentURL;
   var citationsList = [];
   var citationProperties = Object.keys(Config.Citation).concat([Config.Vocab["dctermsreferences"]["@id"]]);
 

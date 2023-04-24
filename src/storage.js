@@ -251,7 +251,7 @@ function updateLocalStorageProfile(User) {
 }
 
 function showAutoSaveStorage(node, iri) {
-  iri = iri || uri.stripFragmentFromString(document.location.href);
+  iri = iri || DO.C.DocumentURL;
 
   if(document.querySelector('#autosave-items')) { return; }
 
@@ -301,7 +301,7 @@ function showAutoSaveStorage(node, iri) {
 
 function hideAutoSaveStorage(node, iri) {
   node = node || document.getElementById('autosave-items');
-  iri = iri || uri.stripFragmentFromString(document.location.href);
+  iri = iri || DO.C.DocumentURL;
   node.parentNode.removeChild(node);
   disableAutoSave(iri);
   //XXX: Disabling autoSave for localStorage (as it was enabled by default)
