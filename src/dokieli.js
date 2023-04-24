@@ -5234,7 +5234,7 @@ console.log(response)
             catch(e) { console.log('Cannot change pushState due to cross-origin.'); }
           }
         }
-        DO.C.init();
+        DO.C.init(iri);
       }
       else {
 console.log('//TODO: Handle server returning wrong Response/Content-Type for the Request/Accept');

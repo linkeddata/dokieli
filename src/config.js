@@ -6,8 +6,9 @@ const template = require('./template')
  * Configuration
  */
 module.exports = {
-  init: function() {
+  init: function(url) {
     if(document.body) {
+      DO.U.setDocumentURL(url);
       DO.U.setPolyfill();
       DO.U.initUser();
       DO.U.initCurrentStylesheet();
@@ -25,6 +26,7 @@ module.exports = {
       DO.U.initSlideshow();
     }
   },
+  DocumentURL: '',
   Resource: {},
   Inbox: {},
   Notification: {},
