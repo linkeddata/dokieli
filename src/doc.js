@@ -771,7 +771,7 @@ function getResourceInfo(data, options) {
   data = data || getDocument();
   options = options || {};
   options['contentType'] = ('contentType' in options) ? options.contentType : 'text/html';
-  options['subjectURI'] = ('subjectURI' in options) ? options.subjectURI : uri.stripFragmentFromString(document.location.href);
+  options['subjectURI'] = ('subjectURI' in options) ? options.subjectURI : DO.C.DocumentURL;
 
   var documentURL = options['subjectURI'];
 

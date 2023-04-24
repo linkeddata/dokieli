@@ -2277,7 +2277,7 @@ var DO = {
     buildListOfStuff: function(id) {
       var s = '';
 
-      var documentURL = uri.stripFragmentFromString(document.location.href);
+      var documentURL = DO.C.DocumentURL;
 
       if(id == 'references'){
         doc.buildReferences();
@@ -5023,6 +5023,8 @@ console.log(response)
 
             return response.text()
               .then(data => {
+                DO.U.setDocumentURL(iri);
+                doc.getResourceInfo(data, options);
                 DO.U.buildResourceView(data, options)
                   .then(o => {
 // console.log(o)
