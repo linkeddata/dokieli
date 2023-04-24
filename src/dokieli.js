@@ -1223,6 +1223,10 @@ var DO = {
       })
     },
 
+    setDocumentURL: function(url) {
+      DO.C.DocumentURL = url || uri.stripFragmentFromString(document.location.href);
+    },
+
     setDocumentMode: function(mode) {
       var style = DO.U.urlParam('style');
 
