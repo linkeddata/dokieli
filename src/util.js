@@ -113,7 +113,7 @@ function generateUUID() {
   return s();
 }
 
-function generateAttributeId(prefix, string) {
+function generateAttributeId(prefix, string, suffix) {
   prefix = prefix || "";
 
   if (string) {
@@ -123,7 +123,7 @@ function generateAttributeId(prefix, string) {
     var s1 = string.substr(0, 1);
     string =
       prefix === "" && s1 == parseInt(s1) ? "x-" + string : prefix + string;
-    return document.getElementById(string) ? string + "-x" : string;
+    return document.getElementById(string) ? string + "-" + (suffix || generateUUID()) : string;
   } else {
     return generateUUID();
   }
