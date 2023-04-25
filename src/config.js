@@ -47,6 +47,7 @@ module.exports = {
     OIDC: false,
     WebIdDelegate: null
   },
+  ContributorRoles: ['author', 'editor'],
   OidcPopupUrl: 'https://dokie.li/popup.html',
   LocalDocument: (document.location.protocol == 'file:'),
   UseLocalStorage: false,
