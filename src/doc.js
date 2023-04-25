@@ -446,33 +446,34 @@ function setEditSelections(options) {
     options['datetime'] = new Date();
   }
 
-  var documentAuthor = 'authors';
-  var documentAuthorName = 'author-name';
-  var dA = document.getElementById(documentAuthor);
+  DO.C.ContributorRoles.forEach(contributorRole => {
+// console.log(contributorRole)
+    var contributorNodeId = 'document-' + contributorRole + 's';
+    var contributorNode = document.getElementById(contributorNodeId);
+    if (contributorNode) {
+      if (contributorNode.classList.contains('do')) {
+        contributorNode.removeAttribute('class');
+      }
+      contributorNode.removeAttribute('contenteditable');
 
-  if(dA) {
-    if (dA.classList && dA.classList.contains('do') > -1) {
-      dA.removeAttribute('class');
+      var contributorSelected = document.querySelectorAll('#' + contributorNodeId + ' .do.selected');
+      contributorSelected.forEach(selected => {
+        selected.removeAttribute('class');
+        selected.removeAttribute('contenteditable');
+      });
+
+      var remaining = document.querySelectorAll('#' + contributorNodeId + ' .do');
+      remaining.forEach(i => {
+        i.parentNode.removeChild(i);
+      });
+
+      var dd = document.querySelectorAll('#' + contributorNodeId + ' dd');
+      if (contributorNode && dd.length == 0) {
+        contributorNode = document.getElementById(contributorNodeId);
+        contributorNode.parentNode.removeChild(contributorNode);
+      }
     }
-    dA.removeAttribute('contenteditable');
-  }
-
-  var dANS = document.querySelectorAll('#' + documentAuthorName + ' .selected');
-  dANS.forEach(function(authorNameSelected) {
-    authorNameSelected.removeAttribute('class');
-    authorNameSelected.removeAttribute('contenteditable');
   });
-
-  var dANE = document.querySelectorAll('#' + documentAuthorName + ' .do');
-  dANE.forEach(function(i){
-    i.parentNode.removeChild(i);
-  });
-
-  var dd = document.querySelectorAll('#' + documentAuthorName + ' dd');
-  if(dA && dd.length == 0) {
-    dA = document.getElementById(documentAuthor);
-    dA.parentNode.removeChild(dA);
-  }
 
 
   var documentLanguage = 'document-language';
@@ -544,6 +545,8 @@ function setEditSelections(options) {
       }
     }
   }
+
+  doc.getResourceInfo();
 }
 
 function getRDFaPrefixHTML(prefixes){

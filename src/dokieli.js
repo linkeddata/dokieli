@@ -7459,6 +7459,7 @@ WHERE {\n\
             DO.C.ContentEditable = true;
             // document.addEventListener('click', DO.U.updateDocumentTitle);
             DO.U.updateDocumentTitle();
+            var documentURL = DO.C.DocumentURL;
 
             //FIXME: This is a horrible way of hacking MediumEditorTable
             document.querySelectorAll('i.fa-table, i.fa-link, i.fa-picture-o').forEach(function(i){
@@ -7474,53 +7475,74 @@ WHERE {\n\
               i.parentNode.replaceChild(util.fragmentFromString(icon), i);
             });
 
-            var documentAuthors = 'authors';
-            var authors = document.getElementById(documentAuthors);
-            var authorName = 'author-name';
+            //XXX: Reconsider bringing this code back for primarily ScholarlyArticles?
+            // var documentAuthors = 'authors';
+            // var authors = document.getElementById(documentAuthors);
+            // var authorName = 'author-name';
+            // if (!authors) {
+            //   var authors = '<div class="do" id="' + documentAuthors + '"><dl id="' + authorName + '"><dt>Authors</dt></dl></div>';
+            //   doc.insertDocumentLevelHTML(document, authors, { 'id': documentAuthors });
+            //   authors = document.getElementById(documentAuthors);
+            // }
 
-            if (!authors) {
-              var authors = '<div class="do" id="' + documentAuthors + '"><dl id="' + authorName + '"><dt>Authors</dt></dl></div>';
-              doc.insertDocumentLevelHTML(document, authors, { 'id': documentAuthors });
-              authors = document.getElementById(documentAuthors);
-            }
-
-            var documentURL = DO.C.DocumentURL;
-
-            var documentAuthorName = document.getElementById(authorName);
             var s = DO.C.Resource[documentURL].graph.child(documentURL);
-            var sa = s.schemaauthor;
 
-            //If not one of the authors, offer to add self
-            if(DO.C.User.IRI && sa.indexOf(DO.C.User.IRI) < 0){
-              var userHTML = auth.getUserHTML({'avatarSize': 32});
-              var authorId = (DO.C.User.Name) ? ' id="' + util.generateAttributeId(null, DO.C.User.Name) + '"' : '';
+            DO.C.ContributorRoles.forEach(contributorRole => {
+// console.log(contributorRole)
+              var contributorNodeId = 'document-' + contributorRole + 's';
+              var contributorNode = document.getElementById(contributorNodeId);
+              if (!contributorNode) {
+                var contributorTitle = contributorRole[0].toUpperCase() + contributorRole.slice(1) + 's';
+                var contributorNode = '<dl id="' + contributorNodeId + '"><dt>' + contributorTitle + '</dt></dl>';
+                doc.insertDocumentLevelHTML(document, contributorNode, { 'id': contributorNodeId })
+                contributorNode = document.getElementById(contributorNodeId);
+              }
 
-              documentAuthorName.insertAdjacentHTML('beforeend', '<dd class="do"' + authorId + ' inlist="" rel="bibo:authorList" resource="' + DO.C.User.IRI + '"><span about="" rel="schema:author">' + userHTML + '</span><button class="add-author-name" contenteditable="false" title="Add author">' + template.Icon[".fas.fa-plus"] + '</button></dd>');
-            }
-
-            //Invite other authors
-            documentAuthorName.insertAdjacentHTML('beforeend', '<dd class="do"><button class="invite-author" contenteditable="false" title="Invite people to author">' + template.Icon[".fas.fa-bullhorn"] + '</button></dd>');
-            authors = document.getElementById(documentAuthors);
-
-            authors.addEventListener('click', function(e){
-              var button = e.target.closest('button.add-author-name');
-              if(button){
-                e.target.closest('dd').removeAttribute('class');
-                var n = e.target.closest('.do');
-                if (n) {
-                  n.removeAttribute('class')
+              //If not one of the contributors, offer to add self
+              if (DO.C.User.IRI && s['schema' + contributorRole].indexOf(DO.C.User.IRI) < 0){
+                var contributorId;
+                if (DO.C.User.Name) {
+                  contributorId = util.generateAttributeId(null, DO.C.User.Name);
+                  if (document.getElementById(contributorId)) {
+                    contributorId = util.generateAttributeId(null, DO.C.User.Name, contributorRole);
+                  }
                 }
-                button.parentNode.removeChild(button);
+                else {
+                  contributorId = util.generateAttributeId(null, DO.C.User.IRI);
+                }
+                contributorId = ' id="' + contributorId + '"';
 
-                //XXX This is only used to update the graph. Cheaper to add author triple.
-                doc.getResourceInfo();
+                var contributorInList = (DO.C.Resource[documentURL].rdftype.indexOf(DO.C.Vocab['schemaScholarlyArticle']['@id']) > -1) ?
+                  ' inlist="" rel="bibo:' + contributorRole + 'List" resource="' + DO.C.User.IRI + '"' : '';
+
+                var userHTML = '<dd class="do"' + contributorId + contributorInList + '><span about="" rel="schema:' + contributorRole + '">' + auth.getUserHTML({'avatarSize': 32}) + '</span><button class="add-' + contributorRole + '-name" contenteditable="false" title="Add ' + contributorRole + '">' + template.Icon[".fas.fa-plus"] + '</button></dd>';
+
+                contributorNode.insertAdjacentHTML('beforeend', userHTML);
               }
 
-              if (e.target.closest('button.invite-author')) {
-                DO.U.shareResource(e);
-                e.target.removeAttribute('disabled');
-              }
-            });
+              //Invite contributor
+              contributorNode.insertAdjacentHTML('beforeend', '<dd class="do"><button class="invite-' + contributorRole + '" contenteditable="false" title="Invite ' + contributorRole +'">' + template.Icon[".fas.fa-bullhorn"] + '</button></dd>');
+              contributorNode = document.getElementById(contributorNodeId);
+
+              contributorNode.addEventListener('click', function(e){
+                var button = e.target.closest('button.add-' + contributorRole + '-name');
+                if (button){
+                  var n = e.target.closest('.do');
+                  if (n) {
+                    n.classList.add('selected');
+                  }
+                  button.parentNode.removeChild(button);
+
+                  //TODO: Update doc.getResourceInfo() so that DO.C.Resource[documentURL] can be used to check other contributors while still in edit.
+                }
+
+                if (e.target.closest('button.invite-' + contributorRole)) {
+                  DO.U.shareResource(e);
+                  e.target.removeAttribute('disabled');
+                }
+              });
+            })
+
 
             var documentLanguage = 'document-language';
             var language = document.getElementById(documentLanguage);
