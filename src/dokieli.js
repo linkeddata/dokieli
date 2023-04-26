@@ -5184,6 +5184,11 @@ console.log(response)
 // console.log(documentHasDokieli);
 // console.log(documentHasDokieli.length)
         if (documentHasDokieli.length == 0) {
+          tmpl.querySelectorAll('head link[rel~="stylesheet"]').forEach(e => {
+            e.setAttribute('disabled', 'disabled');
+            e.classList.add('do');
+          })
+
           var doFiles = [];
           if (options.defaultStylesheet) {
             doFiles.push('basic.css');
@@ -5222,6 +5227,11 @@ console.log(response)
         }
 
         document.documentElement.innerHTML = tmpl.documentElement.innerHTML;
+        document.documentElement.querySelectorAll('head link[rel~="stylesheet"][disabled][class~="do"]').forEach(e => {
+          e.removeAttribute('disabled');
+          e.classList.remove('do');
+          if (e.classList.length == 0) { e.removeAttribute('class'); }
+        });
 
 // console.log(document.location.protocol);
         if(!iri.startsWith('file:')){
