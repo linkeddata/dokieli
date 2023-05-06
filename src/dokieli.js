@@ -7606,6 +7606,21 @@ WHERE {\n\
               });
             }
 
+            var documentType = 'document-type';
+            var type = document.getElementById(documentType);
+            if(!type) {
+              var dl = '        <dl class="do" id="' + documentType + '"><dt>Document Type</dt><dd><select contenteditable="false" name="document-type">' + DO.U.getResourceTypeOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
+              doc.insertDocumentLevelHTML(document, dl, { 'id': documentType });
+
+              var dTypeS = document.querySelector('#' + documentType + ' select');
+              dTypeS.addEventListener('change', function(e){
+                dTypeS.querySelectorAll('option').forEach(function(o){
+                  o.removeAttribute('selected');
+                });
+                dTypeS.querySelector('option[value="' + e.target.value + '"]').setAttribute('selected', 'selected');
+              });
+            }
+
             var documentStatus = 'document-status';
             var status = document.getElementById(documentStatus);
             if(!status) {

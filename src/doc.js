@@ -520,6 +520,28 @@ function setEditSelections(options) {
   }
 
 
+  var documentType = 'document-type';
+  var dTS = document.querySelector('#' + documentType + ' option:checked');
+
+  if (dTS) {
+    var typeIRI = dTS.value;
+
+    var dl = dTS.closest('#' + documentType);
+    dl.removeAttribute('contenteditable');
+
+    if(typeIRI == '') {
+      dl.parentNode.removeChild(dl);
+    }
+    else {
+      dl.removeAttribute('class');
+      var dd = dTS.closest('dd');
+      dd.parentNode.removeChild(dd);
+      dd = '<dd><a href="' + typeIRI+ '" rel="rdf:type">' + Config.ResourceType[typeIRI].name + '</a></dd>';
+      dl.insertAdjacentHTML('beforeend', dd);
+    }
+  }
+
+
   var documentStatus = 'document-status';
   var dLS = document.querySelector('#' + documentStatus + ' option:checked');
 
