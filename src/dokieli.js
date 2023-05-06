@@ -7225,6 +7225,28 @@ WHERE {\n\
       return s;
     },
 
+    getResourceTypeOptionsHTML: function(options) {
+      options = options || {};
+      var s = '', selectedType = '';
+
+      if ('selected' in options) {
+        selectedType = options.selected;
+        if (selectedType == '') {
+          s += '<option selected="selected" value="">Choose a document type</option>';
+        }
+      }
+      else {
+        selectedType = 'http://schema.org/Article';
+      }
+
+      Object.keys(DO.C.ResourceType).forEach(function(iri){
+        selected = (iri == selectedType) ? ' selected="selected"' : '';
+        s += '<option value="' + iri + '" title="' + DO.C.ResourceType[iri].description  + '"' + selected + '>' + DO.C.ResourceType[iri].name  + '</option>';
+      });
+
+      return s;
+    },
+
     getPublicationStatusOptionsHTML: function(options) {
       options = options || {};
       var s = '', selectedIRI = '';
