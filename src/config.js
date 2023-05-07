@@ -253,6 +253,7 @@ module.exports = {
     "http://schema.org/Guide": {'name': 'Guide', 'description': 'Guide is a page or article that recommends specific products or services, or aspects of a thing for a user to consider.'},
     "http://schema.org/NewsArticle": {'name': 'NewsArticle', 'description': 'A NewsArticle is an article whose content reports news, or provides background context and supporting materials for understanding the news.'},
     "http://schema.org/Recipe": {'name': 'Recipe', 'description': 'A recipe.'},
+    "http://schema.org/Review": {'name': 'Review', 'description': 'A review of an item - for example, of a restaurant, movie, or store.'},
     "http://schema.org/ScholarlyArticle": {'name': 'ScholarlyArticle', 'description': 'A scholarly article.'},
     "http://purl.org/ontology/bibo/Slideshow": {'name': 'Slideshow', 'description': 'A presentation of a series of slides, usually presented in front of an audience with written text and images.'},
     "http://usefulinc.com/ns/doap#Specification": {'name': 'Specification', 'description': 'A specification of a system\'s aspects, technical or otherwise.'},
