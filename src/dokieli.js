@@ -7417,7 +7417,7 @@ WHERE {\n\
             disableDoubleReturn: true,
             paste: {
               forcePlainText: false,
-              cleanPastedHTML: true,
+              cleanPastedHTML: false,
               cleanReplacements: [],
               cleanAttrs: ['class', 'style', 'dir'],
               cleanTags: ['area', 'basefont', 'br', 'font', 'hr', 'isindex', 'link', 'script', 'style', 'wbr']
