@@ -7487,6 +7487,10 @@ WHERE {\n\
           DO.U.Editor.MediumEditor = new MediumEditor(eNodes, eOptions);
           DO.C.EditorEnabled = true;
 
+          //XXX: MediumEditor is adding these and we don't really want them.
+          eNodes.removeAttribute('role');
+          eNodes.removeAttribute('aria-multiline');
+
           if (e && e.target.closest('button.editor-enable')) {
             DO.C.ContentEditable = true;
             // document.addEventListener('click', DO.U.updateDocumentTitle);
