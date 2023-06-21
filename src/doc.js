@@ -36,6 +36,7 @@ module.exports = {
   getResourceInfo,
   getResourceInfoODRLPolicies,
   getResourceInfoSpecRequirements,
+  getResourceInfoSpecChanges,
   getResourceInfoSKOS,
   getResourceInfoCitations,
   setFeatureStatesOfResourceInfo,
@@ -888,6 +889,13 @@ function getResourceInfo(data, options) {
           info['spec'] = getResourceInfoSpecRequirements(s);
         }
 
+        if(s.specchangelog && s.specchangelog.at(0) && s.iri().toString() == documentURL) {
+          var changelog = s.child(s.specchangelog.at(0))
+          if (changelog.specchange && changelog.specchange.at(0)) {
+            info['change'] = getResourceInfoSpecChanges(changelog);
+          }
+        }
+
         info['skos'] = getResourceInfoSKOS(i);
         info['citations'] = getResourceInfoCitations(i);
 
@@ -1105,6 +1113,28 @@ function getResourceInfoSpecRequirements(s) {
 // console.log(info['spec'])
 
   return info['spec'];
+}
+
+function getResourceInfoSpecChanges(s) {
+  var info = {}
+  info['change'] = {};
+
+  s.specchange.forEach(function(changeIRI) {
+    info['change'][changeIRI] = {};
+
+    var changeGraph = s.child(changeIRI);
+    var statement = changeGraph.specstatement;
+    var changeSubject = changeGraph.specchangeSubject;
+    var changeClass = changeGraph.specchangeClass;
+
+    info['change'][changeIRI][DO.C.Vocab['specstatement']["@id"]] = statement;
+    info['change'][changeIRI][DO.C.Vocab['specchangeSubject']["@id"]] = changeSubject;
+    info['change'][changeIRI][DO.C.Vocab['specchangeClass']["@id"]] = changeClass;
+  });
+
+// console.log(info['change'])
+
+  return info['change'];
 }
 
 function getResourceInfoSKOS(g) {
