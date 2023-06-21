@@ -2565,10 +2565,13 @@ console.log(reason);
     },
 
     diffRequirements: function(sourceGraph, targetGraph) {
+      var documentURL = DO.C.DocumentURL;
       var sourceGraphURI = sourceGraph.iri().toString();
       var targetGraphURI = targetGraph.iri().toString();
       var sourceRequirements = doc.getResourceInfoSpecRequirements(sourceGraph);
       var targetRequirements = doc.getResourceInfoSpecRequirements(targetGraph);
+
+      var changes = Object.values(DO.C.Resource[sourceGraphURI].change);
 
       Object.keys(sourceRequirements).forEach(sR => {
         DO.C.Resource[sourceGraphURI].spec[sR]['diff'] = {};
@@ -2582,6 +2585,20 @@ console.log(reason);
 
         if (targetRequirements[tR]) {
           tRStatement = targetRequirements[tR][DO.C.Vocab['specstatement']['@id']] || '';
+        }
+
+        var change = changes.filter(change => change[DO.C.Vocab['specchangeSubject']['@id']] == sR)[0];
+        var changeHTML = '';
+        if (change) {
+          var changeClass = change[DO.C.Vocab['specchangeClass']['@id']];
+          var changeDescription = change[DO.C.Vocab['specstatement']['@id']];
+          if (changeClass) {
+            var changeClassValue = DO.C.ChangeClasses[changeClass] || changeClass;
+            if (changeDescription) {
+              changeDescription = '<dt>Change Description</dt><dd>' + changeDescription + '</dd>';
+            }
+            changeHTML = '<details><summary>Changelog</summary><dl><dt>Change Class</dt><dd><a href="' + changeClass + '">' + changeClassValue + '</a></dd>' + changeDescription + '</dl></details>';
+          }
         }
 
         var diff = Diff.diffChars(tRStatement, sRStatement);
@@ -2599,7 +2616,7 @@ console.log(reason);
           diffHTML.push('<' + eName + '>' + part.value + '</' + eName + '>');
         });
 
-        DO.C.Resource[sourceGraphURI].spec[sR]['diff'][tR]['statement'] = diffHTML.join('');
+        DO.C.Resource[sourceGraphURI].spec[sR]['diff'][tR]['statement'] = diffHTML.join('') + changeHTML;
       });
     },
 
