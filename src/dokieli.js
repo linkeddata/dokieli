@@ -20,6 +20,9 @@ global.template = require('./template')
 const d3 = Object.assign({}, require("d3-selection"), require("d3-force"))
 const shower = require('shower').default
 const Diff = require('diff');
+const { micromark: marked } = require('micromark')
+const { gfm, gfmHtml } =  require('micromark-extension-gfm')
+const { gfmTagfilterHtml } = require('micromark-extension-gfm-tagfilter')
 
 if(typeof DO === 'undefined'){
 const ld = require('./simplerdf')
@@ -5055,6 +5058,20 @@ console.log(response)
       }
 
       handleResource(pIRI, headers, options);
+    },
+
+    parseMarkdown: function(data, options) {
+// console.log(data)
+      var extensions = {
+        extensions: [gfm()],
+        allowDangerousHtml: true,
+        htmlExtensions: [gfmHtml(), gfmTagfilterHtml()]
+      };
+      var parsed = marked(data, extensions);
+// console.log(parsed)
+      var html = doc.createHTML('', '<article>' + parsed + '</article>');
+// console.log(html);
+      return html;
     },
 
     buildResourceView: function(data, options) {
