@@ -38,10 +38,21 @@ function getGraphFromData (data, options = {}) {
     options['subjectURI'] = 'http://localhost/d79351f4-cdb8-4228-b24f-3e9ac74a840d'
   }
 
-  if (options.contentType == 'text/html' || options.contentType == 'application/xhtml+xml' || options.contentType == 'text/turtle' || options.contentType == 'application/ld+json') {
+  if (options.contentType == 'text/html' || options.contentType == 'application/xhtml+xml' || options.contentType == 'text/turtle' || options.contentType == 'application/ld+json' || options.contentType == 'application/activity+json') {
+
       data = setDocumentBase(data, options.subjectURI, options.contentType)
   }
 
+  switch (options.contentType) {
+    case 'application/activity+json':
+      options.contentType = 'application/ld+json';
+      break;
+    default:
+      break;
+  }
+
+// console.log(data)
+// console.log(options)
   return SimpleRDF.parse(data, options['contentType'], options['subjectURI'])
 }
 
@@ -302,7 +313,7 @@ function applyParserSerializerFixes(data, contentType) {
 
       data = JSON.stringify(x);
       break;
-  }        
+  }
 
   return data;
 }
@@ -325,7 +336,7 @@ function setDocumentBase (data, baseURI, contentType) {
       data = `@base <` + baseURI + `> .\n` + data;
       break;
 
-    case 'application/json': case 'application/ld+json':
+    case 'application/json': case 'application/ld+json': case 'application/activity+json':
       data = JSON.parse(data);
       data['@context'] = (data['@context']) ? data['@context'] : {'@base': baseURI};
 
