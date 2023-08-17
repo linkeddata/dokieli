@@ -5038,18 +5038,27 @@ console.log(response)
           .then(response => {
             var cT = response.headers.get('Content-Type');
             var options = {};
-            options['contentType'] = (cT) ? cT.split(';')[0].trim() : 'text/turtle';
+            options['contentType'] = (cT) ? cT.split(';')[0].toLowerCase().trim() : 'text/turtle';
             options['subjectURI'] = iri;
 
             return response.text()
               .then(data => {
+                var spawnOptions = {};
+
+                var checkMarkdownInMediaTypes = ['text/markdown', 'text/plain'];
+                if  (checkMarkdownInMediaTypes.indexOf(options['contentType']) > -1) {
+                  data = DO.U.parseMarkdown(data);
+                  spawnOptions['defaultStylesheet'] = true;
+                  //XXX: Perhaps okay for text/markdown but not text/plain?
+                  options.contentType = 'text/html';
+                }
+
                 DO.U.setDocumentURL(iri);
                 doc.getResourceInfo(data, options);
                 DO.U.buildResourceView(data, options)
                   .then(o => {
 // console.log(o)
-                    var spawnOptions = {};
-                    spawnOptions['defaultStylesheet'] = ('defaultStylesheet' in o) ? o.defaultStylesheet : false;
+                    spawnOptions['defaultStylesheet'] = ('defaultStylesheet' in o) ? o.defaultStylesheet : (('defaultStylesheet' in spawnOptions) ? spawnOptions['defaultStylesheet'] : false);
 
                     DO.U.spawnDokieli(o.data, o.options['contentType'], o.options['subjectURI'], spawnOptions);
                   })
