@@ -5020,9 +5020,9 @@ console.log(response)
       options = options || {};
       var headers = { 'Accept': fetcher.setAcceptRDFTypes() };
       var pIRI = uri.getProxyableIRI(iri);
-      if (pIRI.slice(0, 5).toLowerCase() == 'http:') {
+      // if (pIRI.slice(0, 5).toLowerCase() == 'http:') {
         options['noCredentials'] = true;
-      }
+      // }
 
       var handleResource = function handleResource (pIRI, headers, options) {
         return fetcher.getResource(pIRI, headers, options)
