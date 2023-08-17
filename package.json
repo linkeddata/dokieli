@@ -1,6 +1,6 @@
 {
   "name": "dokieli",
-  "version": "0.3.104",
+  "version": "0.3.105",
   "description": "dokieli is a client-side editor for decentralised article publishing, annotations and social interactions",
   "main": "./src/dokieli.js",
   "scripts": {
@@ -42,6 +42,9 @@
     "fs": "0.0.1-security",
     "medium-editor": "^5.23.3",
     "medium-editor-tables": "^0.6.1",
+    "micromark": "^4.0.0",
+    "micromark-extension-gfm": "^3.0.0",
+    "micromark-extension-gfm-tagfilter": "^2.0.0",
     "node-fetch": "^3.2.3",
     "npm": "^9.2.4",
     "process": "^0.11.10",
