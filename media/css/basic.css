@@ -188,7 +188,7 @@ main textarea,
 main select {
 display:inline-block;
 }
-main input,
+main input[type=text],
 main textarea {
 width:65%;
 padding:0.25em;
