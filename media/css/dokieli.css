@@ -1550,6 +1550,23 @@ display:block;
 background-color:transparent;
 border:none;
 }
+div.specref-search-results {
+border-bottom:1px solid #ccc;
+margin-bottom:0.25em;
+}
+div.specref-search-results ul {
+padding-bottom:0.25em;
+}
+div.specref-search-results li {
+float:none;
+}
+.medium-editor-toolbar-form label a {
+font-size:1em;
+font-weight:normal;
+margin:0;
+text-decoration:underline;
+}
+
 .medium-editor-toolbar-form textarea {
 padding:0.5em;
 width:calc(100% - 1em - 2px);

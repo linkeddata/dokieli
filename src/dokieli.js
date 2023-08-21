@@ -8692,6 +8692,9 @@ WHERE {\n\
                   break;
                 case 'cite':
                   tmpl = [
+                  '<input type="text" name="specref-search" value="" id="specref-search" class="medium-editor-toolbar-input" placeholder="Enter terms to search for specifications" />',
+                  '<input type="submit" name="specref-search-submit" value="Search" id="specref-search-submit" />',
+                  '<div class="specref-search-results"></div>',
                   '<input type="radio" name="citation-type" value="ref-footnote" id="ref-footnote" /> <label for="ref-footnote">Footnote</label>',
                   '<input type="radio" name="citation-type" value="ref-reference" id="ref-reference" /> <label for="ref-reference">Reference</label>',
                   '<select id="citation-relation" name="citation-relation" class="medium-editor-toolbar-select">',
@@ -8817,6 +8820,90 @@ WHERE {\n\
                   input.content.focus();
                   break;
                 case 'cite':
+                  input.search.focus();
+                  input.search.value = selection;
+
+                  var specrefSearchResults = document.querySelector('.specref-search-results');
+                  if(specrefSearchResults) {
+                    specrefSearchResults.innerHTML = '';
+                  }
+
+                  var specref = document.querySelector('#specref-search-submit');
+                  specref.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+// console.log(e);
+
+                    var keyword = input.search.value.trim();
+                    var url = 'https://api.specref.org/search-refs?q=' + keyword;
+                    var headers = {'Accept': 'application/json'};
+                    var options = {'noCredentials': true};
+
+                    fetcher.getResource(url, headers, options).then(response => {
+                      // console.log(response);
+                      return response.text();
+                    }).then(data => {
+                      data = JSON.parse(data);
+// console.log(data);
+
+                      var searchResultsHTML = '';
+                      var searchResultsItems = [];
+
+                      var href, title, publisher, date, status;
+
+                      //TODO: Clean input data
+
+                      Object.keys(data).forEach(function(key) {
+// console.log(data[key])
+                        if ('href' in data[key] &&
+                            !('aliasOf' in data[key]) && !('versionOf' in data[key]) &&
+
+                          //fugly WG21
+                            (!('publisher' in data[key]) || ((data[key].publisher.toLowerCase() != 'wg21') || ((data[key].href.startsWith('https://wg21.link/n') || data[key].href.startsWith('https://wg21.link/p') || data[key].href.startsWith('https://wg21.link/std')) && !data[key].href.endsWith('.yaml') && !data[key].href.endsWith('/issue') && !data[key].href.endsWith('/github') && !data[key].href.endsWith('/paper'))))
+
+                            ) {
+
+                          href = data[key].href;
+                          title = data[key].title || href;
+                          publisher = data[key].publisher || '';
+                          date = data[key].date || '';
+                          status = data[key].status || '';
+
+                          if (publisher) {
+                            publisher = '. ' + publisher;
+                          }
+                          if (date) {
+                            date = '. ' + date;
+                          }
+                          if (status) {
+                            status = '. ' + status;
+                          }
+
+                          searchResultsItems.push('<li><input type="radio" name="specref-item" value="' + key + '" id="ref-' + key + '" /> <label for="ref-' + key + '"><a href="' + href + '" target="_blank">' + title + '</a>' + publisher + date + status + '</label></li>');
+                        }
+                      });
+
+                      var searchResultsHTML = '<ul>' + searchResultsItems.join('') + '</ul>';
+
+                      if (searchResultsItems) {
+                        specrefSearchResults = document.querySelector('.specref-search-results');
+                        if(specrefSearchResults) {
+                          specrefSearchResults.innerHTML = searchResultsHTML;
+                        }
+
+                        //XXX: Assigning 'change' action to ul because it gets removed when there is a new search result / replaced. Perhaps it'd be nicer (but more expensive?) to destroy/create .specref-search-results node?
+                        specrefSearchResults.querySelector('ul').addEventListener('change', function(e){
+                          var checkedCheckbox = e.target.closest('input');
+                          if (checkedCheckbox) {
+// console.log(e.target);
+                            document.querySelector('#citation-url').value = data[checkedCheckbox.value].href;
+                          }
+                        });
+                      }
+                    });
+
+                  });
+
                   input.url.focus();
                   document.querySelector('.medium-editor-toolbar-form input[name="citation-type"]').checked = true;
                   break;
@@ -9066,6 +9153,7 @@ WHERE {\n\
                   opts.license = this.getInput().license.value;
                   break;
                 case 'cite':
+                  opts.search = this.getInput().search.value;
                   opts.citationType = this.getInput().citationType.value;
                   opts.citationRelation = this.getInput().citationRelation.value;
                   opts.url = this.getInput().url.value;
@@ -9964,6 +10052,8 @@ WHERE {\n\
                   r.license = this.getForm().querySelector('#specificity-license.medium-editor-toolbar-select');
                   break;
                 case 'cite':
+                  r.search = this.getForm().querySelector('#specref-search.medium-editor-toolbar-input');
+                  r.select = this.getForm().querySelector('input[name="specref-item"]:checked');
                   r.citationType = this.getForm().querySelector('input[name="citation-type"]:checked');
                   r.citationRelation = this.getForm().querySelector('#citation-relation.medium-editor-toolbar-select');
                   r.url = this.getForm().querySelector('#citation-url.medium-editor-toolbar-input');
