@@ -711,29 +711,23 @@ function getAgentPreferredPolicy (s) {
 }
 
 function getAgentImage (s) {
-// console.log(s)
   if (s.asicon || s.asimage) {
-    var images = []
-    var icons = []
 
-    s._graph.forEach(function(t){
+    var image = undefined;
+    s._graph.some(function(t){
       if(t.predicate.nominalValue == Config.Vocab['asurl']['@id']) {
         if (t.subject.nominalValue == s.asicon || "_:" + t.subject.nominalValue == s.asicon) {
-          icons.push(t.object.nominalValue)
+          image = t.object.nominalValue;
+          return true;
         }
-        if (t.subject.nominalValue == s.asimage || "_:" + t.subject.nominalValue == s.asimage) {
-          images.push(t.object.nominalValue)
+        else if (t.subject.nominalValue == s.asimage || "_:" + t.subject.nominalValue == s.asimage) {
+          image = t.object.nominalValue;
+          return true;
         }
+        return false;
       }
-    })
-
-    if (icons.length > 0) {
-      return icons[0]
-    }
-    else if (images.length > 0) {
-      return images[0]
-    }
-    return undefined
+    });
+    return image;
   }
   else {
     return s.foafimg || s.schemaimage || s.vcardphoto || s.vcardhasPhoto || s.siocavatar || s.foafdepiction || undefined
