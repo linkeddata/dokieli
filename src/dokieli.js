@@ -4927,6 +4927,10 @@ console.log(response)
       if(DO.C.User.Storage && DO.C.User.Storage.length > 0) {
         baseUrl = uri.forceTrailingSlash(DO.C.User.Storage[0]); // TODO: options for multiple storage
       }
+      else if(DO.C.User.Outbox && DO.C.User.Outbox[0]) {
+        baseUrl = uri.forceTrailingSlash(DO.C.User.Outbox[0]);
+      }
+
 
       if(baseUrl){
         DO.U.initBrowse(baseUrl, input, browseButton, createButton, id, action);
