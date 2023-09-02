@@ -504,6 +504,7 @@ module.exports = {
     "ascontent": "https://www.w3.org/ns/activitystreams#content",
     "asname": "https://www.w3.org/ns/activitystreams#name",
     "asimage": { "@id": "https://www.w3.org/ns/activitystreams#image", "@type": "@id" },
+    "asurl": { "@id": "https://www.w3.org/ns/activitystreams#url", "@type": "@id" },
     "asoutbox": { "@id": "https://www.w3.org/ns/activitystreams#outbox", "@type": "@id", "@array": true },
     "asitems": { "@id": "https://www.w3.org/ns/activitystreams#items", "@type": "@id", "@array": true },
     "asorderedItems": { "@id": "https://www.w3.org/ns/activitystreams#orderedItems", "@type": "@id", "@array": true },
