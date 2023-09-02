@@ -711,8 +711,32 @@ function getAgentPreferredPolicy (s) {
 }
 
 function getAgentImage (s) {
-  return s.foafimg || s.schemaimage || s.vcardphoto || s.vcardhasPhoto || s.asimage ||
-    s.siocavatar || s.foafdepiction || undefined
+  if (s.asicon || s.asimage) {
+// console.log(s)
+    var images = [];
+    var icons = [];
+
+    s._graph.forEach(function(t){
+      if(t.predicate.nominalValue == Config.Vocab['asurl']['@id']) {
+        if (t.subject.nominalValue == s.asicon || "_:" + t.subject.nominalValue == s.asicon) {
+          icons.push(t.object.nominalValue);
+        }
+        if (t.subject.nominalValue == s.asimage || "_:" + t.subject.nominalValue == s.asimage) {
+          images.push(t.object.nominalValue);
+        }
+      }
+    });
+    if (icons.length > 0) {
+      return icons[0];
+    }
+    else if (images.length > 0) {
+      return images[0];
+    }
+    else undefined;
+  }
+  else {
+    return s.foafimg || s.schemaimage || s.vcardphoto || s.vcardhasPhoto || s.siocavatar || s.foafdepiction || undefined
+  }
 }
 
 function getAgentName (s) {
