@@ -503,6 +503,7 @@ module.exports = {
     "assummary": "https://www.w3.org/ns/activitystreams#summary",
     "ascontent": "https://www.w3.org/ns/activitystreams#content",
     "asname": "https://www.w3.org/ns/activitystreams#name",
+    "asicon": { "@id": "https://www.w3.org/ns/activitystreams#icon", "@type": "@id" },
     "asimage": { "@id": "https://www.w3.org/ns/activitystreams#image", "@type": "@id" },
     "asurl": { "@id": "https://www.w3.org/ns/activitystreams#url", "@type": "@id" },
     "asoutbox": { "@id": "https://www.w3.org/ns/activitystreams#outbox", "@type": "@id", "@array": true },
