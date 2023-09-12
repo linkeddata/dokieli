@@ -406,7 +406,9 @@ text-transform:lowercase;
 font-variant:small-caps;
 font-style:normal;
 }
-em.rfc2119 { color: #900; }
+em.rfc2119, del { color: #900; }
+
+ins { color: #080; }
 
 ul { padding: 0; margin-bottom:1em; list-style-position: inside; }
 dt { font-weight: bold; }
