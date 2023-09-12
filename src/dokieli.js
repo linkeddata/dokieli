@@ -5051,7 +5051,7 @@ console.log(response)
 
                 var checkMarkdownInMediaTypes = ['text/markdown', 'text/plain'];
                 if  (checkMarkdownInMediaTypes.indexOf(options['contentType']) > -1) {
-                  data = DO.U.parseMarkdown(data);
+                  data = DO.U.parseMarkdown(data, {createDocument: true});
                   spawnOptions['defaultStylesheet'] = true;
                   //XXX: Perhaps okay for text/markdown but not text/plain?
                   options.contentType = 'text/html';
@@ -5074,15 +5074,18 @@ console.log(response)
     },
 
     parseMarkdown: function(data, options) {
+      options = options || {};
 // console.log(data)
       var extensions = {
         extensions: [gfm()],
         allowDangerousHtml: true,
         htmlExtensions: [gfmHtml(), gfmTagfilterHtml()]
       };
-      var parsed = marked(data, extensions);
+      var html = marked(data, extensions);
 // console.log(parsed)
-      var html = doc.createHTML('', '<article>' + parsed + '</article>');
+      if (options.createDocument) {
+        html = doc.createHTML('', '<article>' + html+ '</article>');
+      }
 // console.log(html);
       return html;
     },
