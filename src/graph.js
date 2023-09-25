@@ -45,7 +45,7 @@ function getGraphFromData (data, options = {}) {
   }
 
   switch (options.contentType) {
-    case 'application/activity+json':
+    case 'application/activity+json': case 'application/json':
       options.contentType = 'application/ld+json';
       break;
     case 'text/markdown':
