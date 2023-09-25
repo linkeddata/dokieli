@@ -356,6 +356,9 @@ function setUserInfo (userIRI, oidc) {
       Config.User.URL = getAgentURL(s)
       Config.User.OIDC = oidc ? true : false;
 
+      Config.User.ProxyURL = getAgentPreferredProxy(s)
+      Config.User.PreferredPolicy = getAgentPreferredPolicy(s)
+
       Config.User.Delegates = getAgentDelegates(s)
 
       Config.User.Contacts = {}
@@ -371,9 +374,6 @@ function setUserInfo (userIRI, oidc) {
       Config.User.PreferencesFile = getAgentPreferencesFile(s)
       Config.User.PublicTypeIndex = getAgentPublicTypeIndex(s)
       Config.User.PrivateTypeIndex = getAgentPrivateTypeIndex(s)
-
-      Config.User.ProxyURL = getAgentPreferredProxy(s)
-      Config.User.PreferredPolicy = getAgentPreferredPolicy(s)
 
       return Config.User
     })
