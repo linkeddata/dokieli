@@ -58,6 +58,14 @@ function getGraphFromData (data, options = {}) {
 // console.log(data)
 // console.log(options)
   return SimpleRDF.parse(data, options['contentType'], options['subjectURI'])
+    .then(function(g){
+      // var o = { 'contentType': 'application/n-triples' };
+      var o = { 'contentType': 'text/turtle' };
+      return serializeGraph(g, o).then(function(d){
+        d = skolem(d, o);
+// console.log(d)
+        return SimpleRDF.parse(d, o['contentType'], options['subjectURI']);
+      })});
 }
 
 function getMatchFromData (data, spo = {}, options = {}) {
