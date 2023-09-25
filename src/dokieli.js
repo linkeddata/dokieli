@@ -46,6 +46,7 @@ var DO = {
 
       DO.C['CollectionItems'] = DO.C['CollectionItems'] || {};
       DO.C['CollectionPages'] = ('CollectionPages' in DO.C && DO.C.CollectionPages.length > 0) ? DO.C.CollectionPages : [];
+      DO.C['Collections'] = ('Collections' in DO.C && DO.C.Collections.length > 0) ? DO.C.Collections : [];
 
       var pIRI = uri.getProxyableIRI(url);
 
@@ -53,20 +54,59 @@ var DO = {
         .then(
           function(i) {
             var s = i.child(url);
-            //XXX: First item is actually the Collection
-            DO.C.CollectionPages.push(url);
+// console.log(s.toString());
+
+            var types = s.rdftype;
+            if (types.indexOf(DO.C.Vocab['ldpContainer']["@id"]) > -1 ||
+               types.indexOf(DO.C.Vocab['asCollection']["@id"]) > -1 ||
+               types.indexOf(DO.C.Vocab['asOrderedCollection']["@id"]) > -1) {
+              DO.C.Collections.push(url);
+            }
+
+            if (types.indexOf(DO.C.Vocab['ldpContainer']["@id"]) < 0 &&
+               types.indexOf(DO.C.Vocab['asCollection']["@id"]) < 0 &&
+               types.indexOf(DO.C.Vocab['asOrderedCollection']["@id"]) < 0) {
+              DO.C.CollectionPages.push(url);
+            }
+
+            var traverseRDFList = function(resource) {
+              var b = s.child(resource);
+
+              if (b.rdffirst) {
+                options.resourceItems.push(b.rdffirst);
+              }
+              if (b.rdfrest && b.rdfrest !== 'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil') {
+                traverseRDFList(b.rdfrest);
+              }
+            }
+
 
             var items = [s.asitems, s.asorderedItems, s.ldpcontains];
             Object.keys(items).forEach(function(i) {
+// console.log(items)
               items[i].forEach(function(resource){
-                var types = s.child(resource).rdftype;
-                //Include only non-container/collection
-                if(types.indexOf(DO.C.Vocab['ldpContainer']["@id"]) < 0 &&
-                   types.indexOf(DO.C.Vocab['asCollection']["@id"]) < 0 &&
-                   types.indexOf(DO.C.Vocab['asOrderedCollection']["@id"]) < 0) {
-                  DO.C.CollectionItems[resource] = s;
-                  options.resourceItems.push(resource);
+// console.log(resource)
+
+                var r = s.child(resource);
+
+                if (r.rdffirst || r.rdfrest) {
+                  traverseRDFList(resource);
                 }
+                else {
+                  //FIXME: This may need to be processed outside of items? See also comment above about processing Collection and CollectionPages.
+                  var types = r.rdftype;
+                  //Include only non-container/collection and items that's not from an RDFList
+                  if (types.indexOf(DO.C.Vocab['ldpContainer']["@id"]) < 0 &&
+                     types.indexOf(DO.C.Vocab['asCollection']["@id"]) < 0 &&
+                     types.indexOf(DO.C.Vocab['asCollectionPage']["@id"]) < 0 &&
+                     types.indexOf(DO.C.Vocab['asOrderedCollection']["@id"]) < 0 &&
+                     types.indexOf(DO.C.Vocab['asOrderedCollectionPage']["@id"]) < 0) {
+                    //XXX: The following is not used at the moment:
+                    // DO.C.CollectionItems[resource] = s;
+                    options.resourceItems.push(resource);
+                  }
+                }
+
               });
             });
 
