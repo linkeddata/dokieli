@@ -515,7 +515,9 @@ module.exports = {
     "asfirst": { "@id": "https://www.w3.org/ns/activitystreams#first", "@type": "@id" },
     "asnext": { "@id": "https://www.w3.org/ns/activitystreams#next", "@type": "@id" },
     "asCollection": { "@id": "https://www.w3.org/ns/activitystreams#Collection", "@type": "@id" },
+    "asCollectionPage": { "@id": "https://www.w3.org/ns/activitystreams#CollectionPage", "@type": "@id" },
     "asOrderedCollection": { "@id": "https://www.w3.org/ns/activitystreams#OrderedCollection", "@type": "@id" },
+    "asOrderedCollectionPage": { "@id": "https://www.w3.org/ns/activitystreams#OrderedCollectionPage", "@type": "@id" },
     "asAnnounce": { "@id": "https://www.w3.org/ns/activitystreams#Announce", "@type": "@id" },
 
     "siocreplyof": { "@id": "http://rdfs.org/sioc/ns#reply_of", "@type": "@id", "@array": true },
