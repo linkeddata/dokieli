@@ -13,6 +13,7 @@ module.exports = {
   serializeData,
   serializeGraph,
   applyParserSerializerFixes,
+  skolem,
   setDocumentBase
 }
 
@@ -318,6 +319,19 @@ function applyParserSerializerFixes(data, contentType) {
       break;
   }
 
+  return data;
+}
+
+function skolem(data, options) {
+  //XXX: Perhaps this should just be part of applyParserSerializerFixes or an option of it
+  //TODO: Reuse an existing function/library for this (from parsers?) instead of the hack here. Proper skolem for different options.contentType needed?
+
+  //XXX: Perhaps for Turtle
+  data = data.replace(new RegExp('_:([^ \.\,\;]*)([ \.\,\;]+)', 'g'), "<http://example.com/.well-known/genid/$1>$2");
+  //XXX: Simpler for N-Triples https://www.w3.org/TR/n-triples/#BNodes but not actually conforming:
+  // data = data.replace(new RegExp('_:([^ \.]*)([ \.]+)', 'g'), "<http://example.com/.well-known/genid/$1>$2");
+
+// console.log(data)
   return data;
 }
 
