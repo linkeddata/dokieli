@@ -47,7 +47,7 @@
     "micromark-extension-gfm": "^3.0.0",
     "micromark-extension-gfm-tagfilter": "^2.0.0",
     "node-fetch": "^3.2.3",
-    "npm": "^9.2.4",
+    "npm": "^10.2.0",
     "patch-package": "^8.0.0",
     "process": "^0.11.10",
     "rdf-parser-rdfa": "https://github.com/rdf-ext/rdf-parser-rdfa.git#master",
