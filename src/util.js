@@ -173,8 +173,12 @@ function sortTriples(triples, options) {
   return triples;
 }
 
-function sortToLower(array) {
-  return array.sort(function(a, b) {
+function sortToLower(array, key) {
+  return array.sort(function (a, b) {
+    if (key) {
+      a = a[key];
+      b = b[key];
+    }
     return a.toLowerCase().localeCompare(b.toLowerCase());
   });
 }
