@@ -53,7 +53,7 @@
             </div>
           </section>
 
-          <nav id="table-of-contents"><h2>Contents</h2><div><ol class="toc"><li data-id="abstract"><a href="#abstract">Abstract</a></li><li data-id="document-status"><a href="#document-status">Document Status</a></li><li data-id="principles"><a href="#principles">Principles</a></li><li data-id="structure-and-semantics"><a href="#structure-and-semantics">Structure and Semantics</a><ol><li data-id="dokieli-documents"><a href="#dokieli-documents">dokieli documents</a></li><li data-id="html-patterns"><a href="#html-patterns">HTML patterns</a><ol><li data-id="html-article"><a href="#html-article">Article</a></li><li data-id="html-annotation"><a href="#html-annotation">Annotation</a></li><li data-id="html-notification"><a href="#html-notification">Notification</a></li></ol></li></ol></li><li data-id="user-interface"><a href="#user-interface">User interface</a><ol><li data-id="document-modes"><a href="#document-modes">Document modes</a></li><li data-id="dokieli-menu"><a href="#dokieli-menu">dokieli menu</a></li></ol></li><li data-id="accessibility-statement"><a href="#accessibility-statement">Accessibility Statement</a><ol><li data-id="accessibility-measures-to-support-accessibility"><a href="#accessibility-measures-to-support-accessibility">Measures to support accessibility</a></li><li data-id="accessibility-conformance-status"><a href="#accessibility-conformance-status">Conformance status</a></li><li data-id="accessibility-feedback"><a href="#accessibility-feedback">Feedback</a></li><li data-id="accessibility-technical-specifications"><a href="#accessibility-technical-specifications">Technical specifications</a></li><li data-id="accessibility-assessment-approach"><a href="#accessibility-assessment-approach">Assessment approach</a></li></ol></li><li data-id="http-operations"><a href="#http-operations">HTTP operations</a></li><li data-id="authentication"><a href="#authentication">Authentication</a></li><li data-id="storage"><a href="#storage">Storage</a></li><li data-id="web-extension"><a href="#web-extension">Web Extension</a></li><li data-id="development"><a href="#development">Development</a></li></ol></div></nav>
+          <nav id="table-of-contents"><h2>Contents</h2><div><ol class="toc"><li data-id="abstract"><a href="#abstract">Abstract</a></li><li data-id="document-status"><a href="#document-status">Document Status</a></li><li data-id="principles"><a href="#principles">Principles</a></li><li data-id="structure-and-semantics"><a href="#structure-and-semantics">Structure and Semantics</a><ol><li data-id="dokieli-documents"><a href="#dokieli-documents">dokieli documents</a></li><li data-id="html-patterns"><a href="#html-patterns">HTML patterns</a><ol><li data-id="html-article"><a href="#html-article">Article</a></li><li data-id="html-annotation"><a href="#html-annotation">Annotation</a></li><li data-id="html-notification"><a href="#html-notification">Notification</a></li></ol></li></ol></li><li data-id="user-interface"><a href="#user-interface">User interface</a><ol><li data-id="document-modes"><a href="#document-modes">Document modes</a></li><li data-id="dokieli-menu"><a href="#dokieli-menu">dokieli menu</a></li></ol></li><li data-id="accessibility-statement"><a href="#accessibility-statement">Accessibility Statement</a><ol><li data-id="accessibility-measures-to-support-accessibility"><a href="#accessibility-measures-to-support-accessibility">Measures to support accessibility</a></li><li data-id="accessibility-conformance-status"><a href="#accessibility-conformance-status">Conformance status</a></li><li data-id="accessibility-feedback"><a href="#accessibility-feedback">Feedback</a></li><li data-id="accessibility-technical-specifications"><a href="#accessibility-technical-specifications">Technical specifications</a></li><li data-id="accessibility-assessment-approach"><a href="#accessibility-assessment-approach">Assessment approach</a></li><li data-id="accessibility-authoring-accessibility"><a href="#accessibility-authoring-accessibility">Authoring accessibility</a><ol><li data-id="accessibility-authoring-tool-user-interface-accessibility"><a href="#accessibility-authoring-tool-user-interface-accessibility">Authoring tool user interface accessibility</a></li><li data-id="accessibility-support-for-producing-accessible-content"><a href="#accessibility-support-for-producing-accessible-content">Support for producing accessible content</a></li></ol></li></ol></li><li data-id="http-operations"><a href="#http-operations">HTTP operations</a></li><li data-id="authentication"><a href="#authentication">Authentication</a></li><li data-id="storage"><a href="#storage">Storage</a></li><li data-id="web-extension"><a href="#web-extension">Web Extension</a></li><li data-id="development"><a href="#development">Development</a></li></ol></div></nav>
 
           <section id="principles" inlist="" rel="schema:hasPart" resource="#principles">
             <h2 property="schema:name">Principles</h2>
@@ -653,6 +653,54 @@
                   <ul>
                     <li>Self-evaluation</li>
                   </ul>
+                </div>
+              </section>
+
+              <section id="accessibility-authoring-accessibility" inlist="" rel="schema:hasPart" resource="#accessibility-authoring-accessibility">
+                <h3 property="schema:name">Authoring accessibility</h3>
+                <div datatype="rdf:HTML" property="schema:description">
+                  <section id="accessibility-authoring-tool-user-interface-accessibility" inlist="" rel="schema:hasPart" resource="#accessibility-authoring-tool-user-interface-accessibility">
+                    <h4 property="schema:name">Authoring tool user interface accessibility</h4>
+                    <div datatype="rdf:HTML" property="schema:description">
+                      <dl>
+                        <dt>Web-based functionality is accessible</dt><dd>partially</dd>
+                        <dt>Non web-based functionality is accessible</dt><dd>not applicable</dd>
+                        <dt>Alternative content available to editors</dt><dd>partially</dd>
+                        <dt>Description</dt><dd>Possible to add alternative content through dokieli's source editor feature. Improvements in the UI will be available in a future version.</dd>
+                        <dt>Editing-view presentation can be programmatically determined</dt><dd>yes</dd>
+                        <dt>Works with keyboard</dt><dd>partially</dd>
+                        <dt>Description</dt><dd>There are some WAI-ARIA landmarks.</dd>
+                        <dt>Enough time</dt><dd>yes</dd>
+                        <dt>Flashing content optional</dt><dd>yes</dd>
+                        <dt>Content can be navigated by structure</dt><dd>yes</dd>
+                        <dt>Content searchable</dt><dd>no</dd>
+                        <dt>Supports display preferences</dt><dd>yes</dd>
+                        <dt>Previews are accessible</dt><dd>not applicable</dd>
+                        <dt>Helps editor prevent and correct mistakes</dt><dd>yes</dd>
+                        <dt>(Accessibility) features documented</dt><dd>partially</dd>
+                      </dl>
+                    </div>
+                  </section>
+
+                  <section id="accessibility-support-for-producing-accessible-content" inlist="" rel="schema:hasPart" resource="#accessibility-support-for-producing-accessible-content">
+                    <h4 property="schema:name">Support for producing accessible content</h4>
+                    <div datatype="rdf:HTML" property="schema:description">
+                      <dl>
+                        <dt>Generates accessible markup</dt><dd>yes</dd>
+                        <dt>Preserves accessibility information</dt><dd>yes</dd>
+                        <dt>Accessible content production is possible</dt><dd>yes</dd>
+                        <dt>Editors guided</dt><dd>partially</dd>
+                        <dt>Text alternatives can be managed</dt><dd>partially</dd>
+                        <dt>Accessible templates available</dt><dd>yes</dd>
+                        <dt>Accessible components/plug-ins available</dt><dd>no</dd>
+                        <dt>Checks accessibility automatically</dt><dd>yes</dd>
+                        <dt>Provides suggestions to content editor about accessibility problems</dt><dd>partially</dd>
+                        <dt>Description</dt><dd>There is an accessibility report provided on 'save as' feature including a list of issues that can be corrected by the content editor.</dd>
+                        <dt>Accessibility features prominent</dt><dd>no</dd>
+                        <dt>Documentation promotes accessibility</dt><dd>not provided</dd>
+                      </dl>
+                    </div>
+                  </section>
                 </div>
               </section>
             </div>
