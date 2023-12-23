@@ -1919,12 +1919,7 @@ var DO = {
       citations = '<tr class="citations"><th>Citations</th><td>' + citationsTo.length + '</td></tr>';
       requirements = '<tr class="requirements"><th>Requirements</th><td>' + requirements.length + '</td></tr>';
       var conceptsList = [];
-      Object.keys(skos).forEach(function(c){
-        var rdftype = skos[c][DO.C.Vocab['rdftype']['@id']];
-        if (rdftype && rdftype.indexOf(DO.C.Vocab['skosConcept']['@id']) > -1) {
-         conceptsList.push(c);
-        }
-      });
+      conceptsList = (skos.type && skos.type[DO.C.Vocab['skosConcept']['@id']]) ? skos.type[DO.C.Vocab['skosConcept']['@id']] : conceptsList;
 
       var concepts = '<tr class="concepts"><th>Concepts</th><td>' + conceptsList.length + '</td></tr>';
       var statements = '<tr class="statements"><th>Statements</th><td>' + triples.length + '</td></tr>';
