@@ -49,6 +49,7 @@ function getGraphFromData (data, options = {}) {
       options.contentType = 'application/ld+json';
       break;
     case 'text/markdown':
+    case 'image/svg+xml':
       options.contentType = 'text/html';
       break;
     default:
