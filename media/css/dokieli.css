@@ -1047,7 +1047,8 @@ aside.do.on [id$="-listing"] {
 overflow-x:hidden;
 overflow-y:auto;
 min-width:25%;
-max-height:16em;
+/*max-height:16em;*/
+max-height:90%;
 }
 aside.do.on [id$="-listing"] ul {
 margin:0;
