@@ -288,7 +288,7 @@ function createFeedXML(feed, options) {
 
     switch (options.contentType) {
       case 'application/atom+xml':
-        if ('author' in feed.items[i]) {
+        if ('author' in feed.items[i] && typeof feed.items[i].author !== 'undefined') {
           feed.items[i].author.forEach(function(author){
             var a = `    <author>
       <uri>${author.uri}</uri>${'name' in author ? `
@@ -322,7 +322,7 @@ function createFeedXML(feed, options) {
         break;
 
       case 'application/rss+xml':
-        if ('author' in feed.items[i]) {
+        if ('author' in feed.items[i] && typeof feed.items[i].author !== 'undefined') {
           var author = feed.items[i].author.find(item => item.uri === feed.author.uri) || feed.items[i].author[0];
 
           if ('email' in author) {
@@ -1049,27 +1049,40 @@ function getGraphAuthorData(g) {
   var authors = getGraphAuthor(g);
   // var editors = getGraphEditor(g);
 
+  if (!authors || authors.length === 0) {
+    return undefined;
+  }
+
   var authorData = [];
 
-  if (authors) {
-    authors.forEach(function(s){
-      var aUN = {};
-      aUN['uri'] = s;
-      //XXX: Only checks within the same document.
-      var label = doc.getGraphLabel(g.child(s));
-      if (label) {
-        aUN['name'] = label;
-      }
+  authors.forEach(function(s){
+    var aUN = {};
+    aUN['uri'] = s;
+    //XXX: Only checks within the same document.
+    var label = doc.getGraphLabel(g.child(s));
+    if (label) {
+      aUN['name'] = label;
+    }
 
-      var email = getGraphEmail(g.child(s));
-      if (email) {
-        email = (typeof email === 'string') ? email : email.iri().toString();
-        aUN['email'] = email.startsWith('mailto:') ? email.slice(7) : email;
-      }
+    var email = getGraphEmail(g.child(s));
+    if (email) {
+      email = (typeof email === 'string') ? email : email.iri().toString();
+      aUN['email'] = email.startsWith('mailto:') ? email.slice(7) : email;
+    }
 
-      authorData.push(aUN)
-    });
-  }
+    authorData.push(aUN)
+  });
+
+  authorData.sort(function (a, b) {
+    // Sort by name if available, otherwise by uri, and then by email
+    return a.name
+      ? b.name
+        ? a.name.localeCompare(b.name)
+        : -1
+      : b.name
+      ? 1
+      : a.uri.localeCompare(b.uri);
+  });
 
   return authorData;
 }
