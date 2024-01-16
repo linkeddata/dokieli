@@ -10,6 +10,7 @@ const template = require('./template')
 
 module.exports = {
   xmlHtmlEscape,
+  fixBrokenHTML,
   domToString,
   dumpNode,
   getDoctype,
@@ -69,6 +70,14 @@ function xmlHtmlEscape(string) {
         return match;
     }
   });
+}
+
+function fixBrokenHTML(html) {
+  var pattern = new RegExp('<(' + Config.DOMNormalisation.selfClosing.join('|') + ')([^>]*)></\\1>|<(' + Config.DOMNormalisation.selfClosing.join('|') + ')([^>]*)/>', 'g');
+
+  var fixedHtml = html.replace(pattern, '<$1$2/>');
+
+  return fixedHtml;
 }
 
 function domToString (node, options = {}) {
