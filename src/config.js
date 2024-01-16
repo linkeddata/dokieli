@@ -331,6 +331,8 @@ module.exports = {
 
   AcceptBinaryTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/x-icon'],
 
+  FeedMediaTypes: ['application/atom+xml', 'application/rss+xml'],
+
   Prefixes: {
     'xsd': 'http://www.w3.org/2001/XMLSchema#',
     'rdf': 'http://www.w3.org/1999/02/22-rdf-syntax-ns#',
