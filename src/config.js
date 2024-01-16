@@ -329,7 +329,7 @@ module.exports = {
 
   AvailableMediaTypes: ['text/turtle', 'application/ld+json', 'application/rdf+xml', 'application/xhtml+xml', 'text/html', 'image/svg+xml', 'text/markdown'],
 
-  AcceptBinaryTypes: ['image/png', 'image/jpeg', 'image/gif'],
+  AcceptBinaryTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/x-icon'],
 
   Prefixes: {
     'xsd': 'http://www.w3.org/2001/XMLSchema#',
