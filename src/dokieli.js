@@ -3389,7 +3389,7 @@ console.log(reason);
             e.target.insertAdjacentHTML('afterend', '<progress min="0" max="100" value="0"></progress>')
             progress = generateFeed.querySelector('progress')
 
-console.log(feedData)
+// console.log(feedData)
 // console.log(storageIRI)
 // console.log(options);
             fetcher.putResource(storageIRI, feedData, options.contentType, null, { 'progress': progress })
