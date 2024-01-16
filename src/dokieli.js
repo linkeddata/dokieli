@@ -5830,6 +5830,15 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       });
     },
 
+    getFeedFormatSelection: function() {
+      return '<div id="feed-format-selection"><label>Format:</label>\n\
+      <select name="feed-format">\n\
+      <option id="feed-format-atom" value="application/atom+xml">Atom</option>\n\
+      <option id="feed-format-rss" value="application/rss+xml" selected="selected">RSS</option>\n\
+      </select>\n\
+      </div>';
+    },
+
     getBaseURLSelection: function() {
       return '<div id="base-url-selection"><label>Location of media resources:</label>\n\
       <select name="base-url">\n\
