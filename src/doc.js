@@ -1029,7 +1029,7 @@ function getButtonDisabledHTML(id) {
   var html = '';
 
   if (document.location.protocol === 'file:' || !Config.ButtonStates[id]) {
-    html = ' disabled="disabled"';
+    html = ' disabled="disabled"';  
   }
   if (id == 'export-as-html' && Config.ButtonStates[id]) {
     html = '';
@@ -1528,7 +1528,8 @@ function setFeatureStatesOfResourceInfo(info) {
     'resource-print': true,
     'resource-save-as': true,
     'robustify-links': true,
-    'snapshot-internet-archive': true
+    'snapshot-internet-archive': true,
+    'generate-feed': true
   }
 
   if (info['odrl'] && info['odrl']['prohibitionActions'] && info['odrl']['prohibitionAssignee'] == DO.C.User.IRI) {
@@ -1551,6 +1552,7 @@ function setFeatureStatesOfResourceInfo(info) {
       buttonState['resource-save-as'] = false;
       buttonState['robustify-links'] = false;
       buttonState['snapshot-internet-archive'] = false;
+      buttonState['generate-feed'] = false;
     }
 
     if (info['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/transform') > -1) {

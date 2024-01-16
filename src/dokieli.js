@@ -3251,6 +3251,171 @@ console.log(reason);
       }
     },
 
+    //Derived from saveAsDocument
+    generateFeed: function generateFeed (e) {
+      e.target.disabled = true;
+      document.documentElement.appendChild(util.fragmentFromString('<aside id="generate-feed" class="do on">' + DO.C.Button.Close + '<h2>Generate Feed</h2></aside>'));
+
+      var generateFeed = document.getElementById('generate-feed');
+      generateFeed.addEventListener('click', function(e) {
+        if (e.target.closest('button.close')) {
+          document.querySelector('#document-do .generate-feed').disabled = false;
+        }
+      });
+
+      var fieldset = '';
+
+      var id = 'location-generate-feed';
+      var action = 'write';
+      generateFeed.insertAdjacentHTML('beforeend', '<fieldset id="' + id + '-fieldset"><legend>Save to</legend></fieldset>');
+      fieldset = generateFeed.querySelector('fieldset#' + id + '-fieldset');
+      DO.U.setupResourceBrowser(fieldset, id, action);
+      var feedTitlePlaceholder = (DO.C.User.IRI && DO.C.User.Name) ? DO.C.User.Name + "'s" : "Example's";
+      fieldset.insertAdjacentHTML('beforeend', '<p id="' + id + '-samp' + '">Feed will be generated at: <samp id="' + id + '-' + action + '"></samp></p><ul><li><label for="' + id + '-title">Title</label> <input type="text" placeholder="' + feedTitlePlaceholder + ' Web Feed" name="' + id + '-title" value=""></li><li><label for="' + id + '-language">Language</label> <select id="' + id + '-language" name="' + id + '-language">' + DO.U.getLanguageOptionsHTML() + '</select></li><li><label for="' + id + '-license">License</label> <select id="' + id + '-license" name="' + id + '-license">' + DO.U.getLicenseOptionsHTML() + '</select></li><li>' + DO.U.getFeedFormatSelection() + '</li></ul><button class="create" title="Save to destination">Generate</button>');
+      var bli = document.getElementById(id + '-input');
+      bli.focus();
+      bli.placeholder = 'https://example.org/path/to/feed.xml';
+
+      generateFeed.addEventListener('click', e => {
+        if (!e.target.closest('button.create')) {
+          return
+        }
+
+        var generateFeed = document.getElementById('generate-feed')
+        var storageIRI = generateFeed.querySelector('#' + id + '-' + action).innerText.trim()
+// console.log('storageIRI: ' + storageIRI)
+        var rm = generateFeed.querySelector('.response-message')
+        if (rm) {
+          rm.parentNode.removeChild(rm)
+        }
+
+        if (!storageIRI.length) {
+          generateFeed.insertAdjacentHTML('beforeend',
+            '<div class="response-message"><p class="error">' +
+            'Specify the location to generate the feed to.</p></div>'
+          )
+
+          return
+        }
+
+        var options = {};
+        var feedFormat = DO.C.FeedMediaTypes[0];
+        var feedFormatSelectionChecked = generateFeed.querySelector('select[name="feed-format"]')
+        if (feedFormatSelectionChecked.length > 0) {
+          feedFormat = (DO.C.FeedMediaTypes.indexOf(feedFormatSelectionChecked.value) > -1) ? feedFormatSelectionChecked.value : feedFormat;
+
+          options['contentType'] = feedFormat;
+        }
+
+        var feedTitle = generateFeed.querySelector('input[name="' + id + '-title"]').value || storageIRI
+
+        var feedLanguageSelected = generateFeed.querySelector('select[name="' + id + '-language"]').value
+        var feedLicenseSelected = generateFeed.querySelector('select[name="' + id + '-license"]').value
+
+
+        var feedURLSelection = [];
+
+        var checkedInput = generateFeed.querySelectorAll('#' + id + '-ul' + ' input[type="checkbox"]:checked')
+        checkedInput = Array.from(checkedInput)
+        if (checkedInput.length > 0) {
+          feedURLSelection = checkedInput.map((el) => el.value);
+        }
+// console.log(feedURLSelection)
+
+        function getFeedData(urls) {
+          var promises = [];
+          var resourceData = {};
+
+          urls.forEach(function (u) {
+            var pIRI = uri.getProxyableIRI(u);
+            promises.push(
+              fetcher.getResource(pIRI)
+                .then(function (response) {
+                  var cT = response.headers.get('Content-Type');
+                  var options = {};
+                  options['contentType'] = (cT) ? cT.split(';')[0].toLowerCase().trim() : 'text/turtle';
+                  options['subjectURI'] = response.url;
+
+                  return response.text()
+                    .then(data => doc.getResourceInfo(data, options))
+                    .catch(function (error) {
+                      console.error(`Error fetching ${u}:`, error.message);
+                      return Promise.resolve(); // or handle the error accordingly
+                    });
+                })
+                .then((result) => {
+                  resourceData[u] = result; // Directly store the result in resourceData
+                })
+            );
+          });
+
+          return Promise.all(promises).then(() => resourceData);
+        }
+
+        getFeedData(feedURLSelection)
+          .then(resourceData => {
+            var feed = {
+              self: storageIRI,
+              title: feedTitle,
+              // description: 'TODO: User Input',
+              language: feedLanguageSelected,
+              license: feedLicenseSelected,
+              // copyright: 'TODO: User Input',
+              // rights: 'TODO: User Input',
+              author: {},
+              origin: new URL(storageIRI).origin,
+              items: resourceData
+            };
+
+            if (DO.C.User.IRI) {
+              feed['author']['uri'] = DO.C.User.IRI;
+              if (DO.C.User.Name) {
+                feed['author']['name'] = DO.C.User.Name;
+              }
+            }
+
+// console.log(feed)
+// console.log(options)
+
+            feed = doc.createFeedXML(feed, options);
+// console.log(feed);
+            return feed;
+          })
+          .then(feedData => {
+            var progress = generateFeed.querySelector('progress')
+            if(progress) {
+              progress.parentNode.removeChild(progress)
+            }
+            e.target.insertAdjacentHTML('afterend', '<progress min="0" max="100" value="0"></progress>')
+            progress = generateFeed.querySelector('progress')
+
+console.log(feedData)
+// console.log(storageIRI)
+// console.log(options);
+            fetcher.putResource(storageIRI, feedData, options.contentType, null, { 'progress': progress })
+              .then(response => {
+                progress.parentNode.removeChild(progress)
+
+                let url = response.url || storageIRI
+
+                var documentMode = (DO.C.WebExtension) ? '' : ''
+
+                generateFeed.insertAdjacentHTML('beforeend',
+                  '<div class="response-message"><p class="success">' +
+                  'Document saved at <a href="' + url + documentMode + '">' + url + '</a></p></div>'
+                )
+
+                window.open(url + documentMode, '_blank')
+              })
+
+              //TODO: Reuse saveAsDocument's catch
+              .catch(error => {
+                console.log('Error saving document. Status: ' + error.status)
+              })
+          })
+      })
+    },
+
     mementoDocument: function(e) {
       if(typeof e !== 'undefined') {
         var b = e.target.closest('button');
@@ -3270,6 +3435,8 @@ console.log(reason);
         ' title="Robustify Links">' + template.Icon[".fas.fa-link.fa-2x"] + 'Robustify Links</button></li>');
       li.push('<li><button class="snapshot-internet-archive"' + doc.getButtonDisabledHTML('snapshot-internet-archive') +
         ' title="Capture with Internet Archive">' + template.Icon[".fas.fa-archive.fa-2x"] + 'Internet Archive</button></li>');
+      li.push('<li><button class="generate-feed"' + doc.getButtonDisabledHTML('generate-feed') +
+        ' title="Generate Web feed">' + template.Icon[".fas.fa-rss.fa-2x"] + 'Feed</button></li>');
       li.push('<li><button class="export-as-html"' + doc.getButtonDisabledHTML('export-as-html') +
         ' title="Export and save to file">' + template.Icon[".fas.fa-external-link-alt.fa-2x"] + 'Export</button></li>');
 
@@ -3297,6 +3464,10 @@ console.log(reason);
         if (e.target.closest('button.snapshot-internet-archive')){
           // DO.U.snapshotAtEndpoint(e, iri, 'https://pragma.archivelab.org/', '', {'contentType': 'application/json'});
           DO.U.snapshotAtEndpoint(e, iri, 'https://web.archive.org/save/', '', {'Accept': '*/*', 'showActionMessage': true });
+        }
+
+        if (e.target.closest('button.generate-feed')) {
+          DO.U.generateFeed(e);
         }
       });
     },
@@ -3915,6 +4086,8 @@ console.log(reason);
 
     nextLevelButton: function(button, url, id, action) {
       var actionNode = document.getElementById(id + '-' + action);
+      //TODO: Some refactoring needed because it is radio only. For now this function is not called for inputType=checkbox
+      var inputType = (id == 'location-generate-feed') ? 'checkbox' : 'radio';
 
       button.addEventListener('click', function(){
         if(button.parentNode.classList.contains('container')){
@@ -3952,6 +4125,9 @@ console.log(reason);
     },
 
     generateBrowserList: function(g, url, id, action) {
+      //TODO: This should be part of refactoring.
+      var inputType = (id == 'location-generate-feed') ? 'checkbox' : 'radio';
+
       return new Promise(function(resolve, reject){
         document.getElementById(id + '-input').value = url;
 
@@ -3996,7 +4172,7 @@ console.log(reason);
           }
           else {
             var slug = path[path.length-1];
-            resourcesLi.push('<li><input type="radio" name="resources" value="' + c + '" id="' + slug + '"/><label for="' + slug + '">' + decodeURIComponent(slug) + '</label></li>');
+            resourcesLi.push('<li><input type="' + inputType + '" name="resources" value="' + c + '" id="' + slug + '"/><label for="' + slug + '">' + decodeURIComponent(slug) + '</label></li>');
           }
 
         });
@@ -4015,8 +4191,13 @@ console.log(reason);
         }
 
         for(var i = 0; i < buttons.length; i++) {
-          var nextUrl = buttons[i].parentNode.querySelector('input').value;
-          DO.U.nextLevelButton(buttons[i], nextUrl, id, action);
+          var buttonParent = buttons[i].parentNode;
+          var buttonInput = buttonParent.querySelector('input');
+
+          if (buttonParent.classList.contains('container')) {
+            var nextUrl = buttonInput.value;
+            DO.U.nextLevelButton(buttons[i], nextUrl, id, action);
+          }
         }
 
         return resolve(list);
