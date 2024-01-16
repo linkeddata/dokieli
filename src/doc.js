@@ -9,6 +9,7 @@ const graph = require('./graph')
 const template = require('./template')
 
 module.exports = {
+  xmlHtmlEscape,
   domToString,
   dumpNode,
   getDoctype,
@@ -49,6 +50,25 @@ module.exports = {
   showRobustLinksDecoration,
   getCitationLabelsFromTerms,
   getTestDescriptionReviewStatusHTML
+}
+
+function xmlHtmlEscape(string) {
+  return String(string).replace(/[&<>"']/g, function (match) {
+    switch (match) {
+      case '&':
+        return '&amp;';
+      case '<':
+        return '&lt;';
+      case '>':
+        return '&gt;';
+      case '"':
+        return '&quot;';
+      case "'":
+        return '&apos;';
+      default:
+        return match;
+    }
+  });
 }
 
 function domToString (node, options = {}) {
