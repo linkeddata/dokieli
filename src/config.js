@@ -367,6 +367,7 @@ module.exports = {
     "foafmaker": { "@id": "http://xmlns.com/foaf/0.1/maker", "@type": "@id" },
     "foafknows": { "@id": "http://xmlns.com/foaf/0.1/knows", "@type": "@id", "@array": true },
     "foafprimaryTopic": { "@id": "http://xmlns.com/foaf/0.1/primaryTopic", "@type": "@id" },
+    "foafmbox": "http://xmlns.com/foaf/0.1/mbox",
 
     "vcardVCard": { "@id": "http://www.w3.org/2006/vcard/ns#VCard", "@type": "@id" },
     "vcardIndividual": { "@id": "http://www.w3.org/2006/vcard/ns#Individual", "@type": "@id" },
@@ -392,6 +393,7 @@ module.exports = {
     "schemaauthor": { "@id": "http://schema.org/author", "@type": "@id", "@array": true },
     "schemacontributor": { "@id": "http://schema.org/contributor", "@type": "@id", "@array": true },
     "schemaeditor": { "@id": "http://schema.org/editor", "@type": "@id", "@array": true },
+    "schemaemail": "http://schema.org/email",
     "schemainLanguage": "http://schema.org/inLanguage",
     "schemalicense": { "@id": "http://schema.org/license", "@type": "@id" },
     "schemacitation": { "@id": "http://schema.org/citation", "@type": "@id", "@array": true },
@@ -410,6 +412,9 @@ module.exports = {
     "schematarget": { "@id": "http://schema.org/target" },
     "schemaobject": { "@id": "http://schema.org/object" },
 
+    "dcelementstitle": "http://purl.org/dc/elements/1.1/title",
+    "dcelementsdescription": "http://purl.org/dc/elements/1.1/description",
+
     "dctermsAgent": { "@id": "http://purl.org/dc/terms/Agent", "@type": "@id" },
     "dctermstitle": "http://purl.org/dc/terms/title",
     "dctermsdescription": "http://purl.org/dc/terms/description",
@@ -418,11 +423,15 @@ module.exports = {
     "dctermsissued": "http://purl.org/dc/terms/issued",
     "dctermscreated": "http://purl.org/dc/terms/created",
     "dctermslanguage": "http://purl.org/dc/terms/language",
+    "dctermslicense": { "@id": "http://purl.org/dc/terms/license", "@type": "@id" },
     "dctermsrights": { "@id": "http://purl.org/dc/terms/rights", "@type": "@id" },
     "dctermsconformsTo": { "@id": "http://purl.org/dc/terms/conformsTo", "@type": "@id" },
     "dctermshasPart": { "@id": "http://purl.org/dc/terms/hasPart", "@type": "@id", "@array": true },
     "dctermsisPartOf": { "@id": "http://purl.org/dc/terms/isPartOf", "@type": "@id", "@array": true },
     "dctermsreferences": { "@id": "http://purl.org/dc/terms/references", "@type": "@id", "@array": true },
+
+    "cclicense": { "@id": "http://creativecommons.org/ns#license", "@type": "@id" },
+    "xhvlicense": { "@id": "http://www.w3.org/1999/xhtml/vocab#license", "@type": "@id" },
 
     "skosConceptScheme": { "@id": "http://www.w3.org/2004/02/skos/core#ConceptScheme", "@type": "@id" },
     "skosCollection": { "@id": "http://www.w3.org/2004/02/skos/core#Collection", "@type": "@id" },
