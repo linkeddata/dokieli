@@ -25,8 +25,6 @@ function getGraphFromData (data, options = {}) {
   if (!('contentType' in options)) {
     options['contentType'] = 'text/turtle'
   }
-  //Attempt to handle text/plain as text/html (for RDFa)
-  options.contentType = (options.contentType == 'text/plain') ? 'text/html' : options.contentType
 
   // FIXME: These are fugly but a temporary fix to get around the baseURI not being passed to the DOM parser. This injects the `base` element into the document so that the parsers fallsback to that. The actual fix should happen upstream. See related issues:
   // https://github.com/linkeddata/dokieli/issues/132
@@ -48,6 +46,7 @@ function getGraphFromData (data, options = {}) {
     case 'application/activity+json': case 'application/json':
       options.contentType = 'application/ld+json';
       break;
+    case 'text/plain':
     case 'text/markdown':
     case 'image/svg+xml':
       options.contentType = 'text/html';
