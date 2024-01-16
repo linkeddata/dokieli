@@ -1060,6 +1060,10 @@ display:block;
 padding:0.4em;
 cursor:pointer;
 }
+aside.do.on [id$="-listing"] ul input[type="checkbox"] + label {
+display:inline-block;
+width:90%;
+}
 aside.do.on [id$="-listing"] li {
 list-style-type:none;
 }
