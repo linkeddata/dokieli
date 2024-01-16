@@ -508,7 +508,7 @@ module.exports = {
     "asrelationship": { "@id": "https://www.w3.org/ns/activitystreams#relationship", "@type": "@id", "@array": true },
     "ascontext": { "@id": "https://www.w3.org/ns/activitystreams#context", "@type": "@id", "@array": true },
     "asinReplyTo": { "@id": "https://www.w3.org/ns/activitystreams#inReplyTo", "@type": "@id", "@array": true },
-    "asactor": { "@id": "https://www.w3.org/ns/activitystreams#actor", "@type": "@id" },
+    "asactor": { "@id": "https://www.w3.org/ns/activitystreams#actor", "@type": "@id", "@array": true },
     "asupdated": "https://www.w3.org/ns/activitystreams#updated",
     "aspublished": "https://www.w3.org/ns/activitystreams#published",
     "assummary": "https://www.w3.org/ns/activitystreams#summary",
