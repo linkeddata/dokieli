@@ -1029,7 +1029,7 @@ function getButtonDisabledHTML(id) {
   var html = '';
 
   if (document.location.protocol === 'file:' || !Config.ButtonStates[id]) {
-    html = ' disabled="disabled"';  
+    html = ' disabled="disabled"';
   }
   if (id == 'export-as-html' && Config.ButtonStates[id]) {
     html = '';
@@ -1122,31 +1122,28 @@ function getGraphRights(s) {
   return s.schemalicense || s.cclicense || s.dctermsrights || undefined;
 }
 
-function getResourceInfo(data, options) {
-  data = data || getDocument();
-  options = options || {};
-  options['contentType'] = ('contentType' in options) ? options.contentType : 'text/html';
-  options['subjectURI'] = ('subjectURI' in options) ? options.subjectURI : DO.C.DocumentURL;
-
+function getGraphData(s, options) {
   var documentURL = options['subjectURI'];
-
-  Config['Resource'] = Config['Resource'] || {};
-  Config['Resource'][documentURL] = Config['Resource'][documentURL] || {};
 
   var info = {
     'state': Config.Vocab['ldpRDFSource']['@id'],
     'profile': Config.Vocab['ldpRDFSource']['@id']
   };
 
-
-  var getResourceData = function(data, options) {
-    return graph.getGraphFromData(data, options).then(
-      function(i){
-        var s = SimpleRDF(Config.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
-// console.log(s);
-
-        info['graph'] = s;
+       info['graph'] = s;
         info['rdftype'] = s.rdftype._array;
+
+        info['title'] = getGraphTitle(s);
+        // info['label'] = getGraphLabel(s);
+        info['published'] = getGraphPublished(s);
+        info['updated'] = getGraphUpdated(s);
+        info['description'] = getGraphDescription(s);
+        info['license'] = getGraphLicense(s);
+        info['rights'] = getGraphRights(s);
+        // info['summary'] = getGraphSummary(s);
+        // info['creator'] = getGraphCreators(s);
+        info['author'] = getGraphAuthorData(s);
+
         info['profile'] = Config.Vocab['ldpRDFSource']['@id'];
 
         //Check if the resource is immutable
@@ -1225,10 +1222,36 @@ function getResourceInfo(data, options) {
           }
         }
 
-        info['skos'] = getResourceInfoSKOS(i);
-        info['citations'] = getResourceInfoCitations(i);
+        //XXX: change i to s. testing. should be same as subjectURI?
+        info['skos'] = getResourceInfoSKOS(s);
+        info['citations'] = getResourceInfoCitations(s);
 
-        Config['ButtonStates'] = setFeatureStatesOfResourceInfo(info);
+    return info;
+  }
+
+function getResourceInfo(data, options) {
+  data = data || getDocument();
+  options = options || {};
+  options['contentType'] = ('contentType' in options) ? options.contentType : 'text/html';
+  options['subjectURI'] = ('subjectURI' in options) ? options.subjectURI : DO.C.DocumentURL;
+
+  var documentURL = options['subjectURI'];
+
+  Config['Resource'] = Config['Resource'] || {};
+  Config['Resource'][documentURL] = Config['Resource'][documentURL] || {};
+
+  var getResourceData = function(data, options) {
+    return graph.getGraphFromData(data, options).then(
+      function(i){
+        var s = SimpleRDF(Config.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
+// console.log(s);
+        var info = getGraphData(s, options);
+// console.log(info)
+
+        //TODO: Move this somewhere else.
+        if (documentURL == DO.C.DocumentURL) {
+          Config['ButtonStates'] = setFeatureStatesOfResourceInfo(info);
+        }
 
         if ('headers' in Config['Resource'][documentURL]){
           Config['Resource'][documentURL] = Object.assign(info, Config['Resource'][documentURL]['headers']);
@@ -1237,9 +1260,7 @@ function getResourceInfo(data, options) {
           Config['Resource'][documentURL] = info;
         }
 
-// console.log(info)
-
-      return info;
+        return info;
     });
   }
 

@@ -33,11 +33,6 @@ var DO = {
   C: require('./config'),
 
   U: {
-    getResourceLabel: function(s) {
-      return s.dctermstitle || s['http://purl.org/dc/elements/1.1/title'] || auth.getAgentName(s) || s.assummary || undefined;
-    },
-
-
     getItemsList: function(url, options) {
       url = url || window.location.origin + window.location.pathname;
       options = options || {};
@@ -1929,7 +1924,7 @@ var DO = {
 
       if(g.schemaeditor._array.length > 0) {
         g.schemaeditor.forEach(function(s){
-          var label = DO.U.getResourceLabel(g.child(s));
+          var label = doc.getGraphLabel(g.child(s));
           if(typeof label !== 'undefined'){
             editors.push('<li>' + label + '</li>');
           }
@@ -1941,7 +1936,7 @@ var DO = {
 
       if(g.schemaauthor._array.length > 0) {
         g.schemaauthor.forEach(function(s){
-          var label = DO.U.getResourceLabel(g.child(s));
+          var label = doc.getGraphLabel(g.child(s));
           if(typeof label !== 'undefined'){
             authors.push('<li>' + label + '</li>');
           }
@@ -1953,7 +1948,7 @@ var DO = {
 
       if(g.schemacontributor._array.length > 0) {
         g.schemacontributor.forEach(function(s){
-          var label = DO.U.getResourceLabel(g.child(s));
+          var label = doc.getGraphLabel(g.child(s));
           if(typeof label !== 'undefined'){
             contributors.push('<li>' + label + '</li>');
           }
@@ -2041,7 +2036,7 @@ var DO = {
               DO.C.Resource[documentURL] = DO.C.Resource[documentURL] || {};
               DO.C.Resource[documentURL]['graph'] = g;
               DO.C.Resource[documentURL]['skos'] = doc.getResourceInfoSKOS(g);
-              DO.C.Resource[documentURL]['title'] = DO.U.getResourceLabel(g) || documentURL;
+              DO.C.Resource[documentURL]['title'] = doc.getGraphLabel(g) || documentURL;
 
               if (DO.C.Resource[documentURL]['skos']['graph']._graph.length > 0) {
                 html.push('<section><h4><a href="' + documentURL + '">' + DO.C.Resource[documentURL]['title'] + '</a></h4><div><dl>' + DO.U.getDocumentConceptDefinitionsHTML(documentURL) + '</dl></div></section>');
@@ -4166,7 +4161,7 @@ console.log(reason);
     getStorageSelfDescription: function(g) {
       var s = '';
 
-      var storageName = DO.U.getResourceLabel(g);
+      var storageName = doc.getGraphLabel(g);
       var storageURL = g.iri().toString();
 
       storageName = (typeof storageName !== 'undefined') ? storageName : storageURL;
@@ -5130,7 +5125,7 @@ console.log(response)
         function(i){
           var s = SimpleRDF(DO.C.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
 // console.log(s)
-          var title = DO.U.getResourceLabel(s) || options.subjectURI;
+          var title = doc.getGraphLabel(s) || options.subjectURI;
           var h1 = '<a href="' +  options.subjectURI + '">' + title + '</a>';
 
           var types = s.rdftype._array;
@@ -5214,7 +5209,7 @@ console.log(response)
       var published = '';
       var tags = [];
 
-      name = DO.U.getResourceLabel(graph) || graph.iri().toString();
+      name = doc.getGraphLabel(graph) || graph.iri().toString();
       name = '<a href="' + graph.iri().toString() + '">' + name + '</a>';
 
       var datePublished = graph.schemadatePublished || graph.dctermsissued || graph.dctermsdate || graph.aspublished || graph.schemadateCreated || graph.dctermscreated || graph.provgeneratedAtTime || graph.dctermsmodified || graph.asupdated || '';
@@ -6015,12 +6010,12 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 // console.log('citationURI: ' + citationURI);
 // console.log('subject.iri().toString(): ' + subject.iri().toString());
 
-      var title = DO.U.getResourceLabel(subject);
+      var title = doc.getGraphLabel(subject);
       //FIXME: This is a stupid hack because RDFa parser is not setting the base properly.
       if(typeof title == 'undefined') {
         subject = citationGraph.child(options.citationId);
 
-        title = DO.U.getResourceLabel(subject) || '';
+        title = doc.getGraphLabel(subject) || '';
       }
       title = title.replace(/ & /g, " &amp; ");
       title = (title.length > 0) ? '<cite>' + title + '</cite>, ' : '';
@@ -6897,14 +6892,14 @@ WHERE {\n\
     var refId;
 
     var cEURL = uri.stripFragmentFromString(citingEntity);
-    var citingEntityLabel = DO.U.getResourceLabel(s);
+    var citingEntityLabel = doc.getGraphLabel(s);
     if (!citingEntityLabel) {
-      var cEL = DO.U.getResourceLabel(s.child(cEURL));
+      var cEL = doc.getGraphLabel(s.child(cEURL));
       citingEntityLabel = cEL ? cEL : citingEntity;
     }
     citation['citingEntityLabel'] = citingEntityLabel;
 
-    var citedEntityLabel = DO.U.getResourceLabel(DO.C.Resource[documentURL].graph.child(citedEntity))
+    var citedEntityLabel = doc.getGraphLabel(DO.C.Resource[documentURL].graph.child(citedEntity))
     if (!citedEntityLabel) {
       var cEL = DO.C.Resource[documentURL].graph(DO.C.Resource[documentURL].graph.child(uri.stripFragmentFromString(citedEntity)))
       citedEntityLabel = cEL ? cEL : citedEntity;
