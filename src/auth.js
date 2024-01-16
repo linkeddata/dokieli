@@ -14,6 +14,7 @@ module.exports = {
   isActorProperty,
   afterSignIn,
   enableDisableButton,
+  getAgentEmail,
   getAgentImage,
   getAgentName,
   getAgentURL,
@@ -754,6 +755,10 @@ function getAgentName (s) {
 
 function getAgentURL (s) {
   return s.foafhomepage || s.foafweblog || s.schemaurl || s.vcardurl || undefined
+}
+
+function getAgentEmail (s) {
+  return s.schemaemail || s.foafmbox || undefined
 }
 
 function getAgentDelegates (s) {
