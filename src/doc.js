@@ -47,7 +47,7 @@ module.exports = {
   getGraphUpdated,
   getGraphCreated,
   getGraphLicense,
-  getGraphRights
+  getGraphRights,
   getResourceInfo,
   getResourceInfoODRLPolicies,
   getResourceInfoSpecRequirements,
@@ -273,10 +273,6 @@ function createFeedXML(feed, options) {
     var title = ('title' in feed.items[i]) ? '<title>' + feed.items[i].title + '</title>' : '';
 
     //TODO: This would normally only work for input content is using a markup language.
-    // var description = feed.items[i].description.replace(/(data|src|href)=(['"])([^'"]+)(['"])/ig, function(match, p1, p2, p3, p4) {
-    //   var replacedValue = p3.startsWith('/') ? origin + p3 : p3.startsWith('#') ? url + p3 : p3;
-    //   return p1 + '="' + replacedValue.replace(/"/g, '\\"') + '"';
-    // });
     var description = feed.items[i].description.replace(/(data|src|href)=(['"])([^'"]+)(['"])/ig, function(match, p1, p2, p3, p4) {
       var isAbsolute = /^[a-zA-Z][a-zA-Z0-9+.-]*:/.test(p3); // Check if the value is an absolute URL
       return `${p1}="${isAbsolute ? p3 : (p3.startsWith('/') ? origin : url) + '/' + p3}"`;
@@ -329,15 +325,13 @@ function createFeedXML(feed, options) {
         if ('author' in feed.items[i]) {
           var author = feed.items[i].author.find(item => item.uri === feed.author.uri) || feed.items[i].author[0];
 
-          // feed.items[i].author.forEach(function(author){
-            if ('email' in author) {
-              author = author.name ? `${author.email} (${author.name})` : author.email;
-              authorData.push('<author>' + author + '</author>');
-            }
-            else if ('uri' in author) {
-              authorData.push('<dc:creator>' + (author.name ? author.name : author.uri) + '</dc:creator>');
-            }
-          // })
+          if ('email' in author) {
+            author = author.name ? `${author.email} (${author.name})` : author.email;
+            authorData.push('<author>' + author + '</author>');
+          }
+          else if ('uri' in author) {
+            authorData.push('<dc:creator>' + (author.name ? author.name : author.uri) + '</dc:creator>');
+          }
         }
 
         published = 'updated' in feed.items[i] && typeof feed.items[i].updated !== 'undefined'
@@ -814,7 +808,7 @@ function setEditSelections(options) {
     }
   }
 
-  doc.getResourceInfo();
+  getResourceInfo();
 }
 
 function getRDFaPrefixHTML(prefixes){
