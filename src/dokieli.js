@@ -4195,7 +4195,7 @@ console.log(reason);
           var buttonInput = buttonParent.querySelector('input');
 
           //TODO: Find a better way than checking specific ids.
-          if (!(id == 'location-generate-feed' && buttonParent.classList.contains('container'))) {
+          if (!(id == 'location-generate-feed' && !buttonParent.classList.contains('container'))) {
             var nextUrl = buttonInput.value;
             DO.U.nextLevelButton(buttons[i], nextUrl, id, action);
           }
