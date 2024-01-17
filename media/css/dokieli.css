@@ -1047,8 +1047,8 @@ aside.do.on [id$="-listing"] {
 overflow-x:hidden;
 overflow-y:auto;
 min-width:25%;
-/*max-height:16em;*/
-max-height:90%;
+max-height:16em;
+/*max-height:90%;*/
 }
 aside.do.on [id$="-listing"] ul {
 margin:0;
@@ -1074,6 +1074,9 @@ aside.do.on [id$="-listing"] ul li:first-child:before {
 aside.do.on [id$="-listing"] ul li {
 border-left:1px dotted #ccc;
 border-right:1px dotted #ccc;
+outline: 2px solid transparent;
+outline-offset: 5px;
+transition: outline-offset .2s linear;
 }
 aside.do.on [id$="-listing"] ul li:first-child {
 border-top:1px dotted #ccc;
@@ -1086,9 +1089,15 @@ border-bottom:1px dotted #ccc;
 aside.do.on [id$="-listing"] .container {
 background-color:#f2f2f2;
 }
-aside.do.on [id$="-listing"] .container:hover {
+aside.do.on [id$="-listing"] li:hover {
 background-color:#ccc;
 }
+aside.do.on [id$="-listing"] li:active {
+background-color:#ccc;
+outline-color: currentColor;
+outline-offset: 0;
+}
+
 aside.do.on [id$="-listing"] .container label {
 display:block;
 }
