@@ -1275,7 +1275,11 @@ function getResourceInfo(data, options) {
   if ('storeHeaders' in options) {
     var o = Object.assign({}, options);
     delete o.storeHeaders;
-    promises.push(fetcher.getResourceHead(documentURL, o))
+
+    var pIRI = uri.getProxyableIRI(documentURL);
+    options['noCredentials'] = true;
+
+    promises.push(fetcher.getResourceHead(pIRI, o))
   }
   promises.push(getResourceData(data, options));
 
