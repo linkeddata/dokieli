@@ -3299,10 +3299,10 @@ console.log(reason);
         }
 
         var options = {};
-        var feedFormat = DO.C.FeedMediaTypes[0];
+        var feedFormat = DO.C.MediaTypes.Feed[0];
         var feedFormatSelectionChecked = generateFeed.querySelector('select[name="feed-format"]')
         if (feedFormatSelectionChecked.length > 0) {
-          feedFormat = (DO.C.FeedMediaTypes.indexOf(feedFormatSelectionChecked.value) > -1) ? feedFormatSelectionChecked.value : feedFormat;
+          feedFormat = (DO.C.MediaTypes.Feed.indexOf(feedFormatSelectionChecked.value) > -1) ? feedFormatSelectionChecked.value : feedFormat;
 
           options['contentType'] = feedFormat;
         }
@@ -5426,7 +5426,7 @@ console.log(response)
     spawnDokieli: function(data, contentType, iri, options){
       options =  options || {};
 
-      if(DO.C.AvailableMediaTypes.indexOf(contentType) > -1) {
+      if (DO.C.MediaTypes.RDF.indexOf(contentType) > -1) {
         var tmpl = document.implementation.createHTMLDocument('template');
 // console.log(tmpl);
 

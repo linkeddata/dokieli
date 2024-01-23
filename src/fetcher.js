@@ -46,8 +46,8 @@ module.exports = {
 function setAcceptRDFTypes(options) {
   options = options || {};
 
-  return Config.AvailableMediaTypes.map(i => {
-    if (i == 'application/xhtml+xml' || i == 'text/html') {
+  return Config.MediaTypes.RDF.map(i => {
+    if (Config.MediaTypes.Markup.indexOf(i) > -1) {
       // q = Number(Math.round((q-0.1)+'e2')+'e-2');
       return i + ';q=0.9';
     }
@@ -147,7 +147,7 @@ function copyResource (fromURL, toURL, options = {}) {
     .then(response => {
       contentType = response.headers.get('Content-Type')
 
-      return (Config.AcceptBinaryTypes.indexOf(contentType))
+      return (Config.MediaTypes.Binary.indexOf(contentType))
         ? response.arrayBuffer()
         : response.text()
     })

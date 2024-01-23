@@ -327,11 +327,13 @@ module.exports = {
     'http://www.w3.org/2006/03/test-description#unreviewed': "the item has been proposed, but hasn't been reviewed (e.g. for completeness) yet"
   },
 
-  AvailableMediaTypes: ['text/turtle', 'application/ld+json', 'application/rdf+xml', 'application/xhtml+xml', 'text/html', 'image/svg+xml', 'text/markdown'],
+  MediaTypes: {
+    RDF: ['text/turtle', 'application/ld+json', 'application/rdf+xml', 'application/xhtml+xml', 'text/html', 'image/svg+xml', 'text/markdown'],
 
-  AcceptBinaryTypes: ['image/png', 'image/jpeg', 'image/gif', 'image/x-icon'],
+    Binary: ['image/png', 'image/jpeg', 'image/gif', 'image/x-icon'],
 
-  FeedMediaTypes: ['application/atom+xml', 'application/rss+xml'],
+    Feed: ['application/atom+xml', 'application/rss+xml']
+  },
 
   Prefixes: {
     'xsd': 'http://www.w3.org/2001/XMLSchema#',
