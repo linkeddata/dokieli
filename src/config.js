@@ -332,7 +332,9 @@ module.exports = {
 
     Binary: ['image/png', 'image/jpeg', 'image/gif', 'image/x-icon'],
 
-    Feed: ['application/atom+xml', 'application/rss+xml']
+    Feed: ['application/atom+xml', 'application/rss+xml'],
+
+    Markup: ['application/xhtml+xml', 'text/html', 'image/svg+xml', 'text/markdown']
   },
 
   Prefixes: {
