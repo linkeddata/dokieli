@@ -5389,7 +5389,8 @@ console.log(response)
       options = options || {};
       var name = '';
       var published = '';
-      var tags = [];
+      var summary = '';
+      var tags = '';
 
       name = doc.getGraphLabel(graph) || graph.iri().toString();
       name = '<a href="' + graph.iri().toString() + '">' + name + '</a>';
@@ -5399,8 +5400,6 @@ console.log(response)
       if (datePublished) {
         published = ', <time datetime="' + datePublished + '">' + datePublished.substr(0,10) + '</time>';
       }
-
-      var summary = '';
 
       if (graph.oahasBody) {
         summary = graph.child(graph.oahasBody).rdfvalue;
@@ -5414,6 +5413,7 @@ console.log(response)
       }
 
       if (graph.astag && graph.astag._array.length > 0) {
+        tags = [];
         graph.astag.forEach(function(tag){
           tags.push('<li><a href="' + tag + '">' + uri.getFragmentOrLastPath(tag) + '</a></li>');
         })
