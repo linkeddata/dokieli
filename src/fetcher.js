@@ -7,7 +7,6 @@ const util = require('./util')
 const doc = require('./doc')
 const uri = require('./uri')
 const graph = require('./graph')
-const fetch = require('node-fetch')  // Uses native fetch() in the browser
 const solidAuth = require('solid-auth-client')
 
 const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
