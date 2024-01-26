@@ -49,7 +49,6 @@ module.exports = (env) => {
       ],
     },
     externals: {
-      "node-fetch": "fetch",
       "text-encoding": "TextEncoder",
       "whatwg-url": "window",
       "isomorphic-fetch": "fetch",
