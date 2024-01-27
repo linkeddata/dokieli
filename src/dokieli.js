@@ -5323,21 +5323,38 @@ console.log(response)
                 url.forEach(function(u) {
                   // console.log(u);
                   // window.setTimeout(function () {
-                    var pIRI = uri.getProxyableIRI(u);
-                    promises.push(fetcher.getResourceGraph(pIRI));
+
+                    // var pIRI = uri.getProxyableIRI(u);
+                    promises.push(fetcher.getResourceGraph(u));
                   // }, 1000)
                 });
 
-                return Promise.all(promises.map(p => p.catch(e => e)))
-                  .then(function(graphs) {
+                // return Promise.all(promises.map(p => p.catch(e => e)))
+                return Promise.allSettled(promises)
+                  .then(function(results) {
                     var items = [];
+                    // graphs.filter(result => !(result instanceof Error));
 
-                    graphs.filter(result => !(result instanceof Error));
+                    //TODO: Refactor if/else based on getResourceGraph
+                    results.forEach(function(result){
+// console.log(result.value)
 
-                    graphs.forEach(function(graph){
-                      var html = DO.U.generateIndexItemHTML(graph);
-                      if (typeof html === 'string' && html != '') {
-                        items.push(html);
+                      //XXX: Not sure about htis.
+                      if (result.value instanceof Error) {
+
+                      }
+                      //FIXME: This is not actually useful yet. getResourceGraph should return the iri in which its content had no triples or failed to parse perhaps.
+                      else if (typeof result.value === 'undefined') {
+                        //   items.push('<a href="' + result.value + '">' + result.value + '</a>');
+                      }
+                      else if ('resource' in result.value) {
+                        items.push('<a href="' + result.value.resource + '">' + result.value.resource + '</a>');
+                      }
+                      else {
+                        var html = DO.U.generateIndexItemHTML(result.value);
+                        if (typeof html === 'string' && html !== '') {
+                          items.push(html);
+                        }
                       }
                     })
 
