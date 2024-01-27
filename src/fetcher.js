@@ -388,7 +388,7 @@ function getResourceHead (url, options = {}) {
 }
 
 function getResourceGraph (iri, headers, options = {}) {
-  let defaultHeaders = {'Accept': setAcceptRDFTypes()}
+  let defaultHeaders = {'Accept': setAcceptRDFTypes() + ',*/*;q=0.1'}
   headers = headers || defaultHeaders
   if (!('Accept' in headers)) {
     Object.assign(headers, defaultHeaders)
