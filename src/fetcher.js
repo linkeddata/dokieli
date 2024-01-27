@@ -410,6 +410,10 @@ function getResourceGraph (iri, headers, options = {}) {
       let cT = response.headers.get('Content-Type')
       options['contentType'] = (cT) ? cT.split(';')[ 0 ].trim() : 'text/turtle'
 
+      if (!Config.MediaTypes.RDF.includes(options['contentType'])) {
+        return Promise.reject({ resource: iri, response: response, message: 'Unsupported media type for RDF parsing: ' + options['contentType'] })
+      }
+
       options['subjectURI'] = uri.stripFragmentFromString(iri)
 
       return response.text()
@@ -423,6 +427,9 @@ function getResourceGraph (iri, headers, options = {}) {
       return SimpleRDF(Config.Vocab, options['subjectURI'], g, ld.store).child(pIRI + fragment)
     })
     .catch(e => {
+      if ('resource' in e) {
+        return e;
+      }
       console.log(e)
     })
 }
