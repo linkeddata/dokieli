@@ -63,6 +63,7 @@ function getGraphFromData (data, options = {}) {
       var o = { 'contentType': 'text/turtle' };
       return serializeGraph(g, o).then(function(d){
         d = skolem(d, o);
+        d = setDocumentBase(d, options.subjectURI, o.contentType);
 // console.log(d)
         return SimpleRDF.parse(d, o['contentType'], options['subjectURI']);
       })});
