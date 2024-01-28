@@ -836,8 +836,9 @@ function fetchPreferredMethodContentType(url, slug, data, options) {
           }
 
           var profile = ('profile' in options) ? '; profile="' + options.profile + '"' : ''
+          options['preferredContentType'] = options['preferredContentType'] + profile;
 
-          return fetchPreferredMethod(url, slug, data, options['preferredContentType'] + profile)
+          return fetchPreferredMethod(url, slug, data, options)
         })
       break;
   }
