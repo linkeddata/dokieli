@@ -5237,21 +5237,32 @@ console.log(response)
       var headers = { 'Accept': fetcher.setAcceptRDFTypes() };
       var pIRI = uri.getProxyableIRI(iri);
       // if (pIRI.slice(0, 5).toLowerCase() == 'http:') {
-        options['noCredentials'] = true;
       // }
+
+      // options['noCredentials'] = true;
 
       var handleResource = function handleResource (pIRI, headers, options) {
         return fetcher.getResource(pIRI, headers, options)
           .catch(error => {
-            // if (error.status === 0) {
-              // retry with proxied uri
-              var pIRI = uri.getProxyableIRI(iri, {'forceProxy': true});
-              return handleResource(pIRI, headers, options);
-            // }
+            console.log(error)
+            // console.log(error.status)
+            // console.log(error.response)
+            
+            if (!error?.status) {
+              pIRI = uri.getProxyableIRI(iri, {'forceProxy': true});
+              if (pIRI !== iri) {
+console.log('forceProxy: ' + pIRI);
+                return handleResource(pIRI, headers, options);
+              }
+            }
 
-            throw error  // else, re-throw the error
+            //XXX: It was either a CORS related issue or 4xx/5xx.
+            doc.showActionMessage(document.documentElement, '<p><span class="progress">' + template.Icon[".fas.fa-times-circle.fa-fw"] + '  Unable to open <a href="' + iri + '" target="_blank">' + iri + '</a></span></p>', {'timer': 5000});
+
+            throw error
           })
           .then(response => {
+console.log(response)
             var cT = response.headers.get('Content-Type');
             var options = {};
             options['contentType'] = (cT) ? cT.split(';')[0].toLowerCase().trim() : 'text/turtle';

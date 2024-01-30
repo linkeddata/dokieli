@@ -311,9 +311,23 @@ function getResource (url, headers = {}, options = {}) {
 
   return _fetch(url, options)
     .catch(error => {
+      //XXX: When CORS preflight request returns 405, error is an object but neither an instance of Error nor Response.
+
 // console.log(options)
-      if (!options.noCredentials && options.credentials !== 'omit') {
-        // Possible CORS error, retry with no credentials
+// console.log(error)
+
+      if (error?.status == 405) {
+console.log('status: 405')
+        throw error
+      }
+      else if (error?.status == 401) {
+        options.noCredentials = false
+        options.credentials = 'include'
+console.log('status: 401')
+        return getResource(url, headers, options)
+      }
+      else if (!options.noCredentials && options.credentials !== 'omit') {
+console.log('Possible CORS error, retry with no credentials')
         options.noCredentials = true
         options.credentials = 'omit'
         return getResource(url, headers, options)
