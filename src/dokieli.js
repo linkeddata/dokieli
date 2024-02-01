@@ -6732,7 +6732,10 @@ WHERE {\n\
 
       var datetime = note.schemadatePublished || note.dctermscreated || note.aspublished;
 // console.log(datetime);
-      var annotatedBy = note.schemacreator || note.dctermscreator || note.asactor;
+      var annotatedBy = (note.schemacreator && note.schemacreator.at(0) !== undefined) ? note.schemacreator : 
+      (note.dctermscreator && note.dctermscreator.at(0) !== undefined) ? note.dctermscreator :
+      (note.asactor && note.asactor.at(0) !== undefined) ? note.asactor :
+      undefined;
       var annotatedByIRI;
 // console.log(annotatedBy);
       if (annotatedBy && annotatedBy.at(0)) {
