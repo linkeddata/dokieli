@@ -7398,7 +7398,7 @@ WHERE {\n\
             note = '<article about="' + aAbout + '" id="' + n.id + '" typeof="oa:Annotation' + noteType + '"' + aPrefix + articleClass + '>'+buttonDelete+'\n\
   ' + heading + '\n\
   ' + authors + '\n\
-  ' + published + '\n\
+  ' + created + '\n\
   ' + license + '\n\
   ' + inbox + '\n\
   ' + canonical + '\n\
@@ -8585,6 +8585,9 @@ WHERE {\n\
                   '<label for="bookmark-tagging">Tags</label> <input id="bookmark-tagging" class="medium-editor-toolbar-input" placeholder="Separate tags with commas" /><br/>',
                   '<textarea id="bookmark-content" name="content" cols="20" rows="2" class="medium-editor-toolbar-textarea" placeholder="Description"></textarea>',
                   '<select id="article-language" name="language" class="medium-editor-toolbar-select">', DO.U.getLanguageOptionsHTML(), '</select>',
+                  '<select id="bookmark-license" name="license" class="medium-editor-toolbar-select">',
+                  DO.U.getLicenseOptionsHTML(),
+                  '</select>'
                   ];
                   break;
                 case 'sparkline':
@@ -8951,6 +8954,7 @@ WHERE {\n\
                   opts.content = this.getInput().content.value;
                   opts.tagging = this.getInput().tagging.value;
                   opts.language = this.getInput().language.value;
+                  opts.license = this.getInput().license.value;
                   break;
                 case 'sparkline':
                   opts.search = this.getInput().search.value;
@@ -9440,6 +9444,9 @@ WHERE {\n\
                     if (opts.language.length > 0) {
                       noteData.language["code"] = opts.language;
                     }
+                    if (opts.license.length > 0) {
+                      noteData.license["iri"] = opts.license;
+                    }
                     // note = DO.U.createNoteDataHTML(noteData);
                     ref = DO.U.getTextQuoteHTML(refId, motivatedBy, exact, docRefType, { 'do': true });
                     break;
@@ -9845,6 +9852,7 @@ WHERE {\n\
                   r.content = this.getForm().querySelector('#bookmark-content.medium-editor-toolbar-textarea');
                   r.tagging = this.getForm().querySelector('#bookmark-tagging.medium-editor-toolbar-input');
                   r.language = this.getForm().querySelector('#article-language.medium-editor-toolbar-select');
+                  r.license = this.getForm().querySelector('#bookmark-license.medium-editor-toolbar-select');
                   break;
                 case 'sparkline':
                   r.search = this.getForm().querySelector('#sparkline-search.medium-editor-toolbar-input');
