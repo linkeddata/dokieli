@@ -7203,7 +7203,7 @@ WHERE {\n\
 
     createNoteDataHTML: function(n) {
 // console.log(n);
-      var published = '';
+      var created = '';
       var lang = '', xmlLang = '', language = '';
       var license = '';
       var creator = '', authors = '', creatorImage = '', creatorNameIRI = '', creatorURLNameIRI = '';
@@ -7310,9 +7310,9 @@ WHERE {\n\
       }
 
       if ('datetime' in n && typeof n.datetime !== 'undefined'){
-        var time = '<time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="schema:datePublished" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time>';
+        var time = '<time datetime="' + n.datetime + '" datatype="xsd:dateTime" property="dcterms:created" content="' + n.datetime + '">' + n.datetime.substr(0,19).replace('T', ' ') + '</time>';
         var timeLinked = ('iri' in n) ? '<a href="' + n.iri + '">' + time + '</a>' : time;
-        published = '<dl class="published"><dt>Published</dt><dd>' + timeLinked + '</dd></dl>';
+        created = '<dl class="created"><dt>Created</dt><dd>' + timeLinked + '</dd></dl>';
       }
 
       if (n.language && 'code' in n.language) {
