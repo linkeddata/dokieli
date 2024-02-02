@@ -328,13 +328,13 @@ module.exports = {
   },
 
   MediaTypes: {
-    RDF: ['text/turtle', 'application/ld+json', 'application/xhtml+xml', 'text/html', 'image/svg+xml', 'text/markdown'],
+    RDF: ['text/turtle', 'application/ld+json', 'text/html', 'image/svg+xml', 'text/markdown'],
 
     Binary: ['image/png', 'image/jpeg', 'image/gif', 'image/x-icon'],
 
     Feed: ['application/atom+xml', 'application/rss+xml'],
 
-    Markup: ['application/xhtml+xml', 'text/html', 'image/svg+xml', 'text/markdown']
+    Markup: ['text/html', 'image/svg+xml', 'text/markdown']
   },
 
   Prefixes: {
