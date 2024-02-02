@@ -714,7 +714,7 @@ function getAgentPreferredPolicy (s) {
 function getAgentImage (s) {
   if (s.asicon || s.asimage) {
 
-    var image = undefined;
+    var image = s.asimage;
     s._graph.some(function(t){
       if(t.predicate.nominalValue == Config.Vocab['asurl']['@id']) {
         if (t.subject.nominalValue == s.asicon || "_:" + t.subject.nominalValue == s.asicon) {
