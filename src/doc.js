@@ -15,6 +15,7 @@ module.exports = {
   dumpNode,
   getDoctype,
   getDocument,
+  getDocumentContentNode,
   createHTML,
   createFeedXML,
   createActivityHTML,
@@ -222,6 +223,20 @@ function getDocument (cn, options) {
   let s = (doctype.length > 0) ? doctype + '\n' : ''
   s += domToString(node, options)
   return s
+}
+
+function getDocumentContentNode(node) {
+  if (node instanceof HTMLDocument) {
+    return node.body || undefined; // For HTML documents
+  } else if (node instanceof XMLDocument) {
+    return node.documentElement || undefined; // For XML documents
+  } else if (node instanceof DocumentFragment) {
+    return node.firstChild || undefined; // For DocumentFragment
+  } else if (node instanceof ShadowRoot) {
+    return getDocumentContentNode(node.host); // Recursively check the host element's content
+  } else {
+    return undefined; // Unknown document type
+  }
 }
 
 function createHTML(title, main, options) {
