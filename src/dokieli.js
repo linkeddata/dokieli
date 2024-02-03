@@ -1261,6 +1261,10 @@ var DO = {
       })
     },
 
+    getContentNode: function(node) {
+      return doc.getDocumentContentNode(node);
+    },
+
     setDocumentURL: function(url) {
       DO.C.DocumentURL = url || uri.stripFragmentFromString(document.location.href);
     },

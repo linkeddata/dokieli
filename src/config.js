@@ -7,7 +7,8 @@ const template = require('./template')
  */
 module.exports = {
   init: function(url) {
-    if(document.body) {
+    var contentNode = DO.U.getContentNode(document);
+    if (contentNode) {
       DO.U.setDocumentURL(url);
       DO.U.setPolyfill();
       DO.U.initUser();
