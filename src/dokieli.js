@@ -469,7 +469,7 @@ var DO = {
                         return DO.U.showCitations(citation, s);
                       }
                       else {
-                        return DO.U.positionInteraction(object, document.body, options).then(
+                        return DO.U.positionInteraction(object, doc.getDocumentContentNode(document), options).then(
                           function(iri){
                             return iri;
                           },
@@ -612,7 +612,7 @@ var DO = {
       // Object.keys(group).forEach(function(i){
       //   a.push('<div style="background-color:' + group[i].color + '; width:5em; height:5em;">' + group[i].label + '</div>');
       // });
-      // document.body.insertAdjacentHTML('beforeend', a.join(''));
+      // doc.getDocumentContentNode(document).insertAdjacentHTML('beforeend', a.join(''));
 
 
       if (selector == '#graph-view' && !document.getElementById('graph-view')) {
@@ -1052,7 +1052,7 @@ var DO = {
     },
 
     showGraphResources: function(resources, selector, options) {
-      selector = selector || document.body;
+      selector = selector || doc.getDocumentContentNode(document);
       options = options || {};
       if (Array.isArray(resources)) {
         resources = util.uniqueArray(resources);
@@ -1162,7 +1162,7 @@ var DO = {
         var refId = document.location.hash.substring(1);
         var refLabel = DO.U.getReferenceLabel(motivatedBy);
 
-        containerNode = containerNode || document.body;
+        containerNode = containerNode || doc.getDocumentContentNode(document);
 
         var docRefType = '<sup class="ref-highlighting"><a rel="oa:hasTarget" href="#' + refId + '">' + refLabel + '</a></sup>';
 
@@ -1262,7 +1262,7 @@ var DO = {
     },
 
     getContentNode: function(node) {
-      return doc.getDocumentContentNode(node);
+      return doc.getDocumentContentNode(document);
     },
 
     setDocumentURL: function(url) {
@@ -1448,7 +1448,7 @@ var DO = {
           e.preventDefault();
           e.stopPropagation();
 
-          if (document.body.classList.contains('on-document-menu')) {
+          if (doc.getDocumentContentNode(document).classList.contains('on-document-menu')) {
             DO.U.hideDocumentMenu(e);
           }
           else {
@@ -1495,7 +1495,7 @@ var DO = {
       }
 
       doc.getResourceInfo(data, options).then(function(resourceInfo){
-        var body = document.body;
+        var body = doc.getDocumentContentNode(document);
         var dMenu = document.querySelector('#document-menu.do');
 
         if(dMenu) {
@@ -1530,7 +1530,7 @@ var DO = {
     hideDocumentMenu: function(e) {
       // document.removeEventListener('click', DO.U.eventLeaveDocumentMenu);
 
-      var body = document.body;
+      var body = doc.getDocumentContentNode(document);
       var dMenu = document.querySelector('#document-menu.do');
       var dMenuButton = dMenu.querySelector('button');
 
@@ -1719,11 +1719,11 @@ var DO = {
         for(var j = 0; j < slides.length; j++) {
           slides[j].classList.add('do');
         }
-        document.body.classList.add('on-slideshow', 'list');
+        doc.getDocumentContentNode(document).classList.add('on-slideshow', 'list');
         document.querySelector('head').insertAdjacentHTML('beforeend', '<meta content="width=792, user-scalable=no" name="viewport" />');
 
 
-        var body = document.body;
+        var body = doc.getDocumentContentNode(document);
         var dMenu = document.querySelector('#document-menu.do');
 
         if(dMenu) {
@@ -1754,8 +1754,8 @@ var DO = {
         for (var c = 0; c < slides.length; c++){
           slides[c].classList.remove('do');
         }
-        document.body.classList.remove('on-slideshow', 'list', 'full');
-        document.body.removeAttribute('style');
+        doc.getDocumentContentNode(document).classList.remove('on-slideshow', 'list', 'full');
+        doc.getDocumentContentNode(document).removeAttribute('style');
         var mV = document.querySelector('head meta[name="viewport"][content="width=792, user-scalable=no"]');
         mV = (mV) ? mV.parentNode.removeChild(mV) : false;
 
@@ -2806,7 +2806,7 @@ console.log(reason);
             var fragmentClientWidth = fragment.clientWidth;
 
             var fragmentOffsetLeft = DO.U.getOffset(e.target).left;
-            var bodyOffsetLeft = DO.U.getOffset(document.body).left;
+            var bodyOffsetLeft = DO.U.getOffset(doc.getDocumentContentNode(document)).left;
 
             var offsetLeft = 0;
             if ((fragmentOffsetLeft - bodyOffsetLeft) > 200) {
@@ -2854,9 +2854,9 @@ console.log(reason);
 
       a.href = window.URL.createObjectURL(blob);
       a.style.display = "none";
-      document.body.appendChild(a);
+      doc.getDocumentContentNode(document).appendChild(a);
       a.click();
-      document.body.removeChild(a);
+      doc.getDocumentContentNode(document).removeChild(a);
     },
 
     showRobustLinks: function(e, selector) {
@@ -6346,12 +6346,12 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
     },
 
     highlightItems: function() {
-      var highlights = document.body.querySelectorAll('*[class*="highlight-"]');
+      var highlights = doc.getDocumentContentNode(document).querySelectorAll('*[class*="highlight-"]');
       for (var i = 0; i < highlights.length; i++) {
         highlights[i].addEventListener('mouseenter', function(e) {
           var c = e.target.getAttribute('class').split(' ')
                     .filter(function(s) { return s.startsWith('highlight-'); });
-          var highlightsX = document.body.querySelectorAll('*[class~="'+ c[0] +'"]');
+          var highlightsX = doc.getDocumentContentNode(document).querySelectorAll('*[class~="'+ c[0] +'"]');
           for (var j = 0; j < highlightsX.length; j++) {
             highlightsX[j].classList.add('do', 'highlight');
           }
@@ -6361,7 +6361,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           var c = e.target.getAttribute('class');
           var c = e.target.getAttribute('class').split(' ')
                     .filter(function(s) { return s.startsWith('highlight-'); });
-          var highlightsX = document.body.querySelectorAll('*[class~="'+ c[0] +'"]');
+          var highlightsX = doc.getDocumentContentNode(document).querySelectorAll('*[class~="'+ c[0] +'"]');
           for (var j = 0; j < highlightsX.length; j++) {
             highlightsX[j].classList.remove('do', 'highlight');
           }
@@ -6680,7 +6680,7 @@ WHERE {\n\
     },
 
     positionInteraction: function(noteIRI, containerNode, options) {
-      containerNode = containerNode || document.body;
+      containerNode = containerNode || doc.getDocumentContentNode(document);
 
       return fetcher.getResourceGraph(noteIRI).then(
         function(g){
@@ -6689,7 +6689,7 @@ WHERE {\n\
     },
 
     showAnnotation: function(noteIRI, g, containerNode, options) {
-      containerNode = containerNode || document.body;
+      containerNode = containerNode || doc.getDocumentContentNode(document);
       options = options || {};
 
       var documentURL = DO.C.DocumentURL;
@@ -6838,7 +6838,7 @@ WHERE {\n\
               fragment = (fragment.indexOf('#') == 0) ? uri.getFragmentFromString(fragment) : fragment;
 
               if (fragment !== '') {
-                containerNode = document.getElementById(fragment) || document.body;
+                containerNode = document.getElementById(fragment) || doc.getDocumentContentNode(document);
               }
             }
           }
@@ -7676,13 +7676,13 @@ WHERE {\n\
 
       //TODO: .shower can be anywhere?
       //TODO: check for rdf:type bibo:Slideshow or schema:PresentationDigitalDocument
-      if (document.body.classList.contains('shower')) {
+      if (doc.getDocumentContentNode(document).classList.contains('shower')) {
         //TODO: Check if .shower.list or .shower.full. pick a default in a dokieli or leave default to shower (list)?
 
         //TODO: Check if .bibo:Slide, and if there is no .slide, add .slide
 
-        if (!document.body.querySelector('.progress') && options.progress) {
-          document.body.appendChild(util.fragmentFromString('<div class="progress"></progress>'));
+        if (!doc.getDocumentContentNode(document).querySelector('.progress') && options.progress) {
+          doc.getDocumentContentNode(document).appendChild(util.fragmentFromString('<div class="progress"></progress>'));
         }
 
         shwr = new shower();
@@ -9529,7 +9529,7 @@ WHERE {\n\
                     })
                 }
                 else {
-                  return DO.U.positionInteraction(annotation[ 'noteIRI' ], document.body, options)
+                  return DO.U.positionInteraction(annotation[ 'noteIRI' ], doc.getDocumentContentNode(document), options)
                     .catch(() => {
                       return Promise.resolve()
                     })

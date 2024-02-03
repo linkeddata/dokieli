@@ -565,7 +565,7 @@ function removeSelectorFromNode(node, selector) {
 }
 
 function getNodeLanguage(node) {
-  node = node || document.body;
+  node = node || getDocumentContentNode(document);
 
   var lang = '';
   var closestLang = node.closest('[lang], [xml\\:lang]');
@@ -591,7 +591,7 @@ function showActionMessage(node, message, options) {
 
 function selectArticleNode(node) {
   var x = node.querySelectorAll(Config.ArticleNodeSelectors.join(','));
-  return (x && x.length > 0) ? x[x.length - 1] : document.body;
+  return (x && x.length > 0) ? x[x.length - 1] : getDocumentContentNode(document);
 }
 
 function insertDocumentLevelHTML(rootNode, h, options) {
