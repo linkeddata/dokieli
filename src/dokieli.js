@@ -194,19 +194,17 @@ var DO = {
     },
 
     showContactsActivities: function(e) {
-      var showProgress = function(e){
-        var rA = e.target.closest('.resource-activities')
-        var i = rA.querySelector('.fa-bolt')
-        rA.disabled = true;
+      e = e.target.closest('.resource-activities');
 
+      var showProgress = function(node){
+        var i = node.querySelector('.fa-bolt')
+        node.disabled = true;
         var icon = util.fragmentFromString(template.Icon[".fas.fa-circle-notch.fa-spin.fa-fw"].replace(/ fa\-fw/, ' fa-fw fa-2x'));
         i.parentNode.replaceChild(icon, i);
       }
 
-      var removeProgress = function(e) {
-        var rA = e.target.closest('.resource-activities')
-        var i = rA.querySelector('.fa-spin')
-
+      var removeProgress = function(node) {
+        var i = node.querySelector('.fa-spin')
         var icon = util.fragmentFromString(template.Icon[".fas.fa-circle.fa-2x"]);
         i.parentNode.replaceChild(icon, i);
       }
