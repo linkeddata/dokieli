@@ -346,7 +346,9 @@ function setUserInfo (userIRI, oidc) {
     return Promise.reject(new Error('Could not set user info - no user IRI'))
   }
 
-  return fetcher.getResourceGraph(userIRI)
+  var options = { 'noCredentials': true }
+
+  return fetcher.getResourceGraph(userIRI, {}, options)
     .then(g => {
       var s = g.child(userIRI)
 
