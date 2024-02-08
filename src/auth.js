@@ -22,6 +22,7 @@ module.exports = {
   getAgentOutbox,
   getAgentInbox,
   getAgentKnows,
+  getAgentFollowing,
   getAgentSupplementalInfo,
   getAgentSeeAlso,
   getAgentTypeIndex,
@@ -366,6 +367,7 @@ function setUserInfo (userIRI, oidc) {
 
       Config.User.Contacts = {}
       Config.User.Knows = getAgentKnows(s)
+      Config.User.Following = getAgentFollowing(s)
       Config.User.SameAs = []
       Config.User.SeeAlso = []
 
@@ -802,6 +804,22 @@ function getAgentKnows (s) {
   knows = util.uniqueArray(knows);
 
   return (knows.length > 0) ? knows : undefined;
+}
+
+function getAgentFollowing (s) {
+  var following = [];
+// console.log(s.asfollowing)
+  if (s.asfollowing) {
+    var options = {
+      headers: {'Accept': 'application/ld+json; profile="https://www.w3.org/ns/activitystreams", application/activity+json, text/turtle'},
+      noCredentials: true
+    };
+    return DO.U.getItemsList(s.asfollowing, options).then(following => {
+      following = util.uniqueArray(following);
+// console.log(following);
+      return (following.length > 0) ? following : undefined;
+    });
+  }
 }
 
 function getAgentPublicTypeIndex (s) {
