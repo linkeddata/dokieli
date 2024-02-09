@@ -5184,12 +5184,13 @@ console.log(response)
       var file = e.target.files[0];
 // console.log(file);
       var contentType = file.type;
+      var options = { 'init': true };
 
       var reader = new FileReader();
       reader.onload = function(){
 // console.log(reader);
 
-        DO.U.spawnDokieli(reader.result, contentType, 'file:' + file.name);
+        var html = DO.U.spawnDokieli(document, reader.result, contentType, 'file:' + file.name, options);
       };
       reader.readAsText(file);
     },
@@ -5288,8 +5289,9 @@ console.log(response)
                   .then(o => {
 // console.log(o)
                     spawnOptions['defaultStylesheet'] = ('defaultStylesheet' in o) ? o.defaultStylesheet : (('defaultStylesheet' in spawnOptions) ? spawnOptions['defaultStylesheet'] : false);
+                    spawnOptions['init'] = true;
 
-                    DO.U.spawnDokieli(o.data, o.options['contentType'], o.options['subjectURI'], spawnOptions);
+                    var html = DO.U.spawnDokieli(document, o.data, o.options['contentType'], o.options['subjectURI'], spawnOptions);
                   })
               })
           })
@@ -5453,7 +5455,7 @@ console.log(response)
       return name + published + summary + tags;
     },
 
-    spawnDokieli: function(data, contentType, iri, options){
+    spawnDokieli: function(documentNode, data, contentType, iri, options){
       options =  options || {};
 
       if (DO.C.MediaTypes.RDF.indexOf(contentType) > -1) {
@@ -5476,10 +5478,12 @@ console.log(response)
 // console.log(documentHasDokieli);
 // console.log(documentHasDokieli.length)
         if (documentHasDokieli.length == 0) {
-          tmpl.querySelectorAll('head link[rel~="stylesheet"]').forEach(e => {
-            e.setAttribute('disabled', 'disabled');
-            e.classList.add('do');
-          })
+          if (!DO.C.WebExtension) {
+            tmpl.querySelectorAll('head link[rel~="stylesheet"]').forEach(e => {
+              e.setAttribute('disabled', 'disabled');
+              e.classList.add('do');
+            })
+          }
 
           var doFiles = [];
           if (options.defaultStylesheet) {
@@ -5505,40 +5509,52 @@ console.log(response)
 // console.log(tmpl)
           });
 
-          tmpl.querySelector('head').insertAdjacentHTML('afterbegin', '<base href="' + iri + '" />');
-          //TODO: Setting the base URL with `base` seems to work correctly, i.e., link base is opened document's URL, and simpler than updating some of the elements' href/src/data attributes. Which approach may be better depends on actions afterwards, e.g., Save As (perhaps other features as well) may need to remove the base and go with the user selection.
-          // var nodes = tmpl.querySelectorAll('head link, [src], object[data]');
-          // nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': 'base-url-absolute', 'iri': iri});
-
-          document.documentElement.removeAttribute('id');
-          document.documentElement.removeAttribute('class');
+          if (options.init === true) {
+            tmpl.querySelector('head').insertAdjacentHTML('afterbegin', '<base href="' + iri + '" />');
+            //TODO: Setting the base URL with `base` seems to work correctly, i.e., link base is opened document's URL, and simpler than updating some of the elements' href/src/data attributes. Which approach may be better depends on actions afterwards, e.g., Save As (perhaps other features as well) may need to remove the base and go with the user selection.
+            // var nodes = tmpl.querySelectorAll('head link, [src], object[data]');
+            // nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': 'base-url-absolute', 'iri': iri});
+            documentNode.documentElement.removeAttribute('id');
+            documentNode.documentElement.removeAttribute('class');
+          }
+          else {
+            var baseElements = tmpl.querySelectorAll('head base');
+            baseElements.forEach(function(baseElement) {
+              baseElement.remove();
+            });
+          }
         }
         else if(!iri.startsWith('file:')) {
           window.open(iri, '_blank');
           return;
         }
 
-        document.documentElement.innerHTML = tmpl.documentElement.innerHTML;
-        document.documentElement.querySelectorAll('head link[rel~="stylesheet"][disabled][class~="do"]').forEach(e => {
-          e.removeAttribute('disabled');
-          e.classList.remove('do');
-          if (e.classList.length == 0) { e.removeAttribute('class'); }
-        });
-
+        if (options.init === true) {
+          documentNode.documentElement.innerHTML = tmpl.documentElement.innerHTML;
+          documentNode.documentElement.querySelectorAll('head link[rel~="stylesheet"][disabled][class~="do"]').forEach(e => {
+            e.removeAttribute('disabled');
+            e.classList.remove('do');
+            if (e.classList.length == 0) { e.removeAttribute('class'); }
+          });
+  
 // console.log(document.location.protocol);
-        if(!iri.startsWith('file:')){
-          var iriHost = iri.split('//')[1].split('/')[0];
-          var iriProtocol = iri.split('//')[0];
+          if (!iri.startsWith('file:')){
+            var iriHost = iri.split('//')[1].split('/')[0];
+            var iriProtocol = iri.split('//')[0];
 // console.log(iriHost);
 // console.log(iriProtocol);
-          if(document.location.protocol == iriProtocol && document.location.host == iriHost) {
-            try {
-              history.pushState(null, null, iri);
+            if (documentNode.location.protocol == iriProtocol && documentNode.location.host == iriHost) {
+              try {
+                history.pushState(null, null, iri);
+              }
+              catch(e) { console.log('Cannot change pushState due to cross-origin.'); }
             }
-            catch(e) { console.log('Cannot change pushState due to cross-origin.'); }
           }
+
+          DO.C.init(iri);
         }
-        DO.C.init(iri);
+
+        return tmpl.documentElement.cloneNode(true);
       }
       else {
 console.log('//TODO: Handle server returning wrong Response/Content-Type for the Request/Accept');
@@ -5807,12 +5823,15 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       accessibilityReport = '<details id="accessibility-report-save-as"><summary>Accessibility Report</summary>' + accessibilityReport + '</details>';
 
 
+      var dokielizeResource = '<li><input type="checkbox" id="dokielize-resource" name="dokielize-resource" /><label for="dokielize-resource">dokielize</label></li>';
+      var derivationData = '<li><input type="checkbox" id="derivation-data" name="derivation-data" checked="checked" /><label for="derivation-data">Derivation data</label></li>'
+
       var id = 'location-save-as';
       var action = 'write';
       saveAsDocument.insertAdjacentHTML('beforeend', '<fieldset id="' + id + '-fieldset"><legend>Save to</legend></fieldset>');
       fieldset = saveAsDocument.querySelector('fieldset#' + id + '-fieldset');
       DO.U.setupResourceBrowser(fieldset, id, action);
-      fieldset.insertAdjacentHTML('beforeend', '<p id="' + id + '-samp' + '">Article will be saved at: <samp id="' + id + '-' + action + '"></samp></p>' + DO.U.getBaseURLSelection() + '<p><input type="checkbox" id="derivation-data" name="derivation-data" checked="checked" /><label for="derivation-data">Derivation data</label></p>' + accessibilityReport + '<button class="create" title="Save to destination">Save</button>');
+      fieldset.insertAdjacentHTML('beforeend', '<p id="' + id + '-samp' + '">Article will be saved at: <samp id="' + id + '-' + action + '"></samp></p>' + DO.U.getBaseURLSelection() + '<ul>' + dokielizeResource + derivationData + '</ul>' + accessibilityReport + '<button class="create" title="Save to destination">Save</button>');
       var bli = document.getElementById(id + '-input');
       bli.focus();
       bli.placeholder = 'https://example.org/path/to/article';
@@ -5842,6 +5861,14 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
         var html = document.documentElement.cloneNode(true)
         var o, r
+
+        var dokielize = document.querySelector('#dokielize-resource')
+        if (dokielize.checked) {
+          html = doc.getDocument(html)
+// console.log(html)
+          html = DO.U.spawnDokieli(document, html, 'text/html', storageIRI, {'init': false})
+// console.log(html)
+        }
 
         var wasDerived = document.querySelector('#derivation-data')
         if (wasDerived.checked) {
@@ -5876,10 +5903,15 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         if (baseURLSelectionChecked.length > 0) {
           var baseURLType = baseURLSelectionChecked.value
           var nodes = html.querySelectorAll('head link, [src], object[data]')
+          var base = html.querySelector('head base[href]');
           if (baseURLType == 'base-url-relative') {
             DO.U.copyRelativeResources(storageIRI, nodes)
           }
-          nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType})
+          var baseOptions = {'baseURLType': baseURLType};
+          if (base) {
+            baseOptions['iri'] = base.href;
+          }
+          nodes = DO.U.rewriteBaseURL(nodes, baseOptions)
         }
 
         html = doc.getDocument(html)
@@ -6098,7 +6130,9 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
     setBaseURL: function(url, options) {
       options = options || {};
       var urlType = ('baseURLType' in options) ? options.baseURLType : 'base-url-absolute';
-
+// console.log(url)
+// console.log(options)
+// console.log(urlType)
       var matches = [];
       var regexp = /(https?:\/\/([^\/]*)\/|file:\/\/\/|data:|urn:|\/\/)?(.*)/;
 
@@ -6112,11 +6146,27 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
             }
             else {
               href = ('iri' in options) ? uri.getProxyableIRI(options.iri) : document.location.href;
-              url = uri.getBaseURL(href) + matches[3].replace(/^\//g, '');
+              url = uri.getBaseURL(href);
+// console.log(url)
+              //TODO: Move/Refactor in uri.js
+              //TODO: "./"
+              if (matches[3].startsWith('../')) {
+                var parts = matches[3].split('../');
+                for (var i = 0; i < parts.length - 1; i++) {
+                  url = uri.getParentURLPath(url) || url;
+                }
+                url += parts[parts.length - 1];
+              }
+              else {
+                url += matches[3].replace(/^\//g, '');
+              }
+// console.log(href)
+// console.log(url)
             }
             break;
           case 'base-url-relative':
             url = matches[3].replace(/^\//g, '');
+// console.log(url)
             break;
         }
       }
