@@ -7,7 +7,7 @@
     "build-dist": "webpack --progress --color",
     "build": "npm run build-dist",
     "standard": "standard src/auth.js src/doc.js src/fetcher.js src/graph.js src/inbox.js src/simplerdf.js src/uri.js src/util.js ",
-    "test": "TZ=UTC jest",
+    "test": "TZ=UTC jest --silent",
     "test:e2e": "playwright test",
     "watch": "webpack --progress --color --watch",
     "minify": "webpack --progress --color --env minimize",
