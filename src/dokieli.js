@@ -5524,7 +5524,7 @@ console.log(response)
             });
           }
         }
-        else if(!iri.startsWith('file:')) {
+        else if (!iri.startsWith('file:') && options.init) {
           window.open(iri, '_blank');
           return;
         }
