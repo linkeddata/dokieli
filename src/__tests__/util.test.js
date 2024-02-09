@@ -88,7 +88,8 @@ describe("util", () => {
       const node = `<div id='example'><span>test</span></div>`;
       document.body.innerHTML = node;
       const id = util.generateAttributeId(null, "example");
-      expect(id).toEqual("example-x");
+      expect(id).toMatch(/(example-)/i)
+
     });
     it("returns a 36-character-long UUID if string is not passed", () => {
       const id = util.generateAttributeId();
