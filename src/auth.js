@@ -526,7 +526,10 @@ function getAgentSupplementalInfo(iri) {
             : knows;
         }
 
-        return processSameAs(s, getAgentSupplementalInfo);
+        return processSameAs(s, getAgentSupplementalInfo)
+                .then(function(){
+                  return getAgentSeeAlso(s)
+                });
       },
       function(reason){
         return Promise.resolve([]);
