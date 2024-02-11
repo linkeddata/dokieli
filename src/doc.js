@@ -823,6 +823,27 @@ function setEditSelections(options) {
     }
   }
 
+  var documentTestSuite = 'document-test-suite';
+  var dTS = document.querySelector('#' + documentTestSuite + ' input');
+
+  if (dTS) {
+    var testSuiteIRI = dTS.value;
+
+    var dl = dTS.closest('#' + documentTestSuite);
+    dl.removeAttribute('contenteditable');
+
+    if(testSuiteIRI == '') {
+      dl.parentNode.removeChild(dl);
+    }
+    else {
+      dl.removeAttribute('class');
+      var dd = dTS.closest('dd');
+      dd.parentNode.removeChild(dd);
+      dd = '<dd><a href="' + testSuiteIRI+ '" rel="spec:testSuite">' + testSuiteIRI + '</a></dd>';
+      dl.insertAdjacentHTML('beforeend', dd);
+    }
+  }
+
   getResourceInfo();
 }
 

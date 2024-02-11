@@ -976,6 +976,9 @@ var DO = {
                 case DO.C.Vocab['specrequirement']['@id']:
                   oGroup = 12;
                   break;
+                case DO.C.Vocab['spectestSuite']['@id']:
+                  oGroup = 11;
+                  break;
                 case DO.C.Vocab['odrlhasPolicy']['@id']:
                   oGroup = 13;
                   break;
@@ -7992,6 +7995,23 @@ WHERE {\n\
                 });
                 dSS.querySelector('option[value="' + e.target.value + '"]').setAttribute('selected', 'selected');
               });
+            }
+
+            //TODO: Show only if document is a doap:Specification?
+            if (DO.C.Resource[documentURL] && DO.C.Resource[documentURL].graph.spectestSuite) {
+              var documentTestSuite = 'document-test-suite';
+              var testSuite = document.getElementById(documentTestSuite);
+              if (!testSuite) {
+                // <!--<button class="add-test-suite" contenteditable="false" title="Add test suite">' + template.Icon[".fas.fa-plus"] + '</button>-->
+                var dl = '        <dl class="do" id="' + documentTestSuite + '"><dt>Test Suite</dt><dd><input contenteditable="false" name="test-suite" placeholder="https://example.net/test-suite" type="text" value="" /></dd></dl>';
+                doc.insertDocumentLevelHTML(document, dl, { 'id': documentTestSuite });
+
+                //XXX: This is a workaround until we understand why the input value is not available in doc.js's setEditSelections() where it is using `document.querySelector` to get the value fresh. The following catches the blur event and sets the input value back to itself, and that seems to be available setEditSelections().
+                var dTS = document.querySelector('#' + documentTestSuite + ' input');
+                dTS.addEventListener('blur', function(e){
+                  dTS.setAttribute('value', dTS.value)
+                });
+              }
             }
           }
           else if (e && e.target.closest('button.editor-disable')) {
