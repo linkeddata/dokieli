@@ -7885,15 +7885,16 @@ WHERE {\n\
               var contributorNodeId = 'document-' + contributorRole + 's';
               var contributorNode = document.getElementById(contributorNodeId);
               if (!contributorNode) {
-                var contributorTitle = contributorRole[0].toUpperCase() + contributorRole.slice(1) + 's';
-                var contributorNode = '<dl id="' + contributorNodeId + '"><dt>' + contributorTitle + '</dt></dl>';
+                var contributorTitle = contributorRole.charAt(0).toUpperCase() + contributorRole.slice(1) + 's';
+                contributorNode = '        <dl id="' + contributorNodeId + '"><dt>' + contributorTitle + '</dt></dl>';
                 doc.insertDocumentLevelHTML(document, contributorNode, { 'id': contributorNodeId })
                 contributorNode = document.getElementById(contributorNodeId);
               }
 
-              //If not one of the contributors, offer to add self
+              //User can add themselves as a contributor
               if (DO.C.User.IRI && s['schema' + contributorRole].indexOf(DO.C.User.IRI) < 0){
                 var contributorId;
+                var contributorName = DO.C.User.Name || DO.C.User.IRI;
                 if (DO.C.User.Name) {
                   contributorId = util.generateAttributeId(null, DO.C.User.Name);
                   if (document.getElementById(contributorId)) {
@@ -7908,25 +7909,69 @@ WHERE {\n\
                 var contributorInList = (DO.C.Resource[documentURL].rdftype.indexOf(DO.C.Vocab['schemaScholarlyArticle']['@id']) > -1) ?
                   ' inlist="" rel="bibo:' + contributorRole + 'List" resource="' + DO.C.User.IRI + '"' : '';
 
-                var userHTML = '<dd class="do"' + contributorId + contributorInList + '><span about="" rel="schema:' + contributorRole + '">' + auth.getUserHTML({'avatarSize': 32}) + '</span><button class="add-' + contributorRole + '-name" contenteditable="false" title="Add ' + contributorRole + '">' + template.Icon[".fas.fa-plus"] + '</button></dd>';
+                var userHTML = '<dd class="do"' + contributorId + contributorInList + '><span about="" rel="schema:' + contributorRole + '">' + auth.getUserHTML({'avatarSize': 32}) + '</span><button class="add-' + contributorRole + '" contenteditable="false" title="Add ' + contributorName + ' as ' + contributorRole + '">' + template.Icon[".fas.fa-plus"] + '</button></dd>';
 
                 contributorNode.insertAdjacentHTML('beforeend', userHTML);
               }
 
-              //Invite contributor
-              contributorNode.insertAdjacentHTML('beforeend', '<dd class="do"><button class="invite-' + contributorRole + '" contenteditable="false" title="Invite ' + contributorRole +'">' + template.Icon[".fas.fa-bullhorn"] + '</button></dd>');
-              contributorNode = document.getElementById(contributorNodeId);
+              //User can enter a contributor's WebID
+              contributorNode.insertAdjacentHTML('beforeend', '<dd class="do"><button class="enter-' + contributorRole + '" contenteditable="false" title="Enter ' + contributorRole +'">' + template.Icon[".fas.fa-user-plus"] + '</button></dd>');
 
+              //User can invite a contributor from their contacts
+              contributorNode.insertAdjacentHTML('beforeend', '<dd class="do"><button class="invite-' + contributorRole + '" contenteditable="false" title="Invite ' + contributorRole +'">' + template.Icon[".fas.fa-bullhorn"] + '</button></dd>');
+
+              contributorNode = document.getElementById(contributorNodeId);
               contributorNode.addEventListener('click', function(e){
-                var button = e.target.closest('button.add-' + contributorRole + '-name');
+                var button = e.target.closest('button.add-' + contributorRole);
                 if (button){
                   var n = e.target.closest('.do');
                   if (n) {
                     n.classList.add('selected');
                   }
                   button.parentNode.removeChild(button);
+                }
 
-                  //TODO: Update doc.getResourceInfo() so that DO.C.Resource[documentURL] can be used to check other contributors while still in edit.
+                button = e.target.closest('button.enter-' + contributorRole);
+                //TODO: This input field can behave like the one in doc.js showUserIdentityInput for enableDisableButton to button.commit
+                if (button){
+                  var n = e.target.closest('.do');
+                  n.insertAdjacentHTML('beforebegin', '<dd class="do" contenteditable="false"><input contenteditable="false" name="enter-' + contributorRole + '" placeholder="https://csarven.ca/#i" type="text" value="" /> <button class="commit-' + contributorRole + '" contenteditable="false" title="Commit ' + contributorRole + '">' + template.Icon[".fas.fa-plus"] + '</button></dd>');
+                }
+
+                button = e.target.closest('button.commit-' + contributorRole);
+                if (button){
+                  var n = e.target.closest('.do');
+                  if (n) {
+                    n.classList.add('selected');
+
+                    var input = n.querySelector('input');
+                    var iri = input.value.trim();
+
+                    //TODO:
+                    // button.disabled = true;
+                    // button.parentNode.disabled = true;
+                    // button.querySelector('svg').classList.add('fa-spin');
+
+                    if (iri.startsWith('http')) {
+                      //TODO: Refactor. There is overlap with addShareResourceContactInput and doc.getUserHTML
+                      fetcher.getResourceGraph(iri).then(function(s){
+                        // var iri = s.iri().toString();
+                        // var id = encodeURIComponent(iri);
+
+                        var name = auth.getAgentName(s) || iri;
+                        var img = auth.getAgentImage(s);
+
+                        img = (img && img.length > 0) ? '<img alt="" height="32" rel="schema:image" src="' + img + '" width="32" /> ' : '';
+                        var userHTML = util.fragmentFromString('<span about="" rel="schema:' + contributorRole + '"><span about="' + iri + '" typeof="schema:Person">' + img + '<a href="' + iri + '" rel="schema:url">' + name + '</a></span></span>');
+
+                        n.replaceChild(userHTML, input);
+                        button.parentNode.removeChild(button);
+                      });
+                    }
+                    else {
+                      input.focus();
+                    }
+                  }
                 }
 
                 if (e.target.closest('button.invite-' + contributorRole)) {
@@ -7934,6 +7979,10 @@ WHERE {\n\
                   e.target.removeAttribute('disabled');
                 }
               });
+
+              //TODO: Show 'Remove' button for selected contributor (before exiting edit mode).
+
+              //TODO: Update doc.getResourceInfo() so that DO.C.Resource[documentURL] can be used to check other contributors while still in edit.
             })
 
 
@@ -8018,6 +8067,7 @@ WHERE {\n\
             doc.setEditSelections();
           }
 
+          //XXX: This should be perhaps limited to certain nodes?
           document.querySelectorAll('.do').forEach(function(node){
             node.setAttribute('contenteditable', 'false');
           })
