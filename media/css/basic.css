@@ -231,6 +231,9 @@ dl[id^="author-"] dd,
 dl[class~="inbox"] dd {
 margin:0;
 }
+dl[id^="document-"] dd + dd {
+margin-left:0.5em;
+}
 dl[id^="author-"] dd + dt:before,
 dl[id^="document-"] dd + dt:before {
 content:"\A";

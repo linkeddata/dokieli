@@ -455,6 +455,10 @@ margin-right: 0;
 content:"";
 }
 
+.do input[type="text"][contenteditable="false"] {
+width:35%;
+}
+
 #share-resource.do.on li {
 margin:0 0 0.5em 0;
 line-height: 1;
