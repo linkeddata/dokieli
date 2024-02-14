@@ -36,3 +36,5 @@ scripts/dokieli.js.map
 /test-results/
 /playwright-report/
 /playwright/.cache/
+
+.acl
