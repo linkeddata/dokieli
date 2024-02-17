@@ -297,9 +297,9 @@ function getResource (url, headers = {}, options = {}) {
   var _fetch = Config.User.OIDC? solidAuth.fetch : fetch;
 
   url = url || currentLocation()
-  options.method = 'GET'
+  options.method = ('method' in options && options.method == 'HEAD') ? 'HEAD' : 'GET'
 
-  if (!headers['Accept']) {
+  if (!headers['Accept'] && options.method !== 'HEAD') {
     headers['Accept'] = 'text/turtle'
   }
 
@@ -352,53 +352,16 @@ console.log('Possible CORS error, retry with no credentials')
 /**
  * getResourceHead
  *
- * @param [url] {string}
- *
+ * @param url {string}
+ * @param headers {object}
  * @param options {object}
- * @param options.header {string}
  *
  * @returns {Promise<Response>}
  */
-function getResourceHead (url, options = {}) {
-  var _fetch = Config.User.OIDC? solidAuth.fetch : fetch;
-  url = url || currentLocation()
+function getResourceHead (url, headers = {}, options = {}) {
+  options['method'] = 'HEAD'
 
-  options.method = 'HEAD'
-
-  if (!options.noCredentials) {
-    options.credentials = 'include'
-  }
-
-  return _fetch(url, options)
-    .catch(error => {
-// console.log(options)
-      if (!options.noCredentials && options.credentials !== 'omit') {
-        // Possible CORS error, retry with no credentials
-        options.noCredentials = true
-        options.credentials = 'omit'
-        return getResourceHead(url, options)
-      }
-
-      throw error
-    })
-    .then(response => {
-      if (!response.ok) {  // not a 2xx level response
-        let error = new Error('Error fetching resource HEAD: ' +
-          response.status + ' ' + response.statusText)
-        error.status = response.status
-        error.response = response
-
-        throw error
-      }
-
-      // let header = response.headers.get(options.header)
-
-      // if (!header) {
-      //   throw new Error("'" + options.header + "' header not found")
-      // }
-
-      return response
-    })
+  return getResource (url, headers, options)
 }
 
 function getResourceGraph (iri, headers, options = {}) {
