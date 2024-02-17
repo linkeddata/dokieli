@@ -462,7 +462,10 @@ module.exports = {
     "refPeriod": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod",
     "obsValue": "http://purl.org/linked-data/sdmx/2009/measure#obsValue",
 
+    "biboeditor": { "@id": "http://purl.org/ontology/bibo/editor", "@type": "@id", "@array": true },
     "biboauthorList": { "@id": "http://purl.org/ontology/bibo/authorList", "@type": "@id" },
+    "bibocontributorList": { "@id": "http://purl.org/ontology/bibo/contributorList", "@type": "@id" },
+    "biboeditorList": { "@id": "http://purl.org/ontology/bibo/editorList", "@type": "@id" },
 
     "pimstorage": { "@id": "http://www.w3.org/ns/pim/space#storage", "@type": "@id", "@array": true },
     "pimpreferencesFile": { "@id": "http://www.w3.org/ns/pim/space#preferencesFile", "@type": "@id" },
