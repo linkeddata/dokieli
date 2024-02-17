@@ -5253,14 +5253,6 @@ console.log(response)
             console.log(error)
             // console.log(error.status)
             // console.log(error.response)
-            
-            if (!error?.status) {
-              pIRI = uri.getProxyableIRI(iri, {'forceProxy': true});
-              if (pIRI !== iri) {
-console.log('forceProxy: ' + pIRI);
-                return handleResource(pIRI, headers, options);
-              }
-            }
 
             //XXX: It was either a CORS related issue or 4xx/5xx.
             doc.showActionMessage(document.documentElement, '<p><span class="progress">' + template.Icon[".fas.fa-times-circle.fa-fw"] + '  Unable to open <a href="' + iri + '" target="_blank">' + iri + '</a></span></p>', {'timer': 5000});

@@ -332,6 +332,13 @@ console.log('Possible CORS error, retry with no credentials')
         options.credentials = 'omit'
         return getResource(url, headers, options)
       }
+      else if (!error?.status) {
+        var pIRI = uri.getProxyableIRI(url, {'forceProxy': true});
+        if (pIRI !== url) {
+console.log('forceProxy: ' + pIRI);
+          return getResource(pIRI, headers, options);
+        }
+      }
 
       throw error
     })
