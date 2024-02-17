@@ -131,7 +131,7 @@ var DO = {
       DO.C.Inbox[url] = {};
       DO.C.Inbox[url]['Notifications'] = [];
 
-      return graph.getGraph(pIRI)
+      return fetcher.getResourceGraph(pIRI)
         .then(
           function(i) {
             DO.C.Inbox[url]['Graph'] = i;
@@ -156,7 +156,7 @@ var DO = {
             }
           },
           function(reason) {
-            console.log(reason);
+// console.log(reason);
             return reason;
           }
         );
