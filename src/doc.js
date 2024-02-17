@@ -1309,13 +1309,9 @@ function getResourceInfo(data, options) {
 
   var promises = [];
   if ('storeHeaders' in options) {
-    var o = Object.assign({}, options);
-    delete o.storeHeaders;
-
-    var pIRI = uri.getProxyableIRI(documentURL);
-    options['noCredentials'] = true;
-
-    promises.push(fetcher.getResourceHead(pIRI, o))
+    //TODO: This may need refactoring any way to avoid deleting contentType and subjectURI. It leaks the options to getResource/fetcher.
+    var { storeHeaders, contentType, subjectURI, ...o } = options;
+    promises.push(fetcher.getResourceHead(documentURL, {}, o))
   }
   promises.push(getResourceData(data, options));
 
