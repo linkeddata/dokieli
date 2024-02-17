@@ -8,6 +8,7 @@ const doc = require('./doc')
 const uri = require('./uri')
 const graph = require('./graph')
 const solidAuth = require('solid-auth-client')
+const { fetch, getDefaultSession } = require('@inrupt/solid-client-authn-browser');
 
 const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
 const LDP_RESOURCE = '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
@@ -54,7 +55,7 @@ function setAcceptRDFTypes(options) {
   }).join(',');
 }
 
-function getLinkRelation (property, url) {
+function getLinkRelation(property, url) {
   if (url) {
     return getLinkRelationFromHead(property, url)
       .catch(() => getLinkRelationFromRDF(property, url))
@@ -68,73 +69,73 @@ function getLinkRelation (property, url) {
 
     return graph.getGraphFromData(doc.getDocument(), options)
       .then(function (result) {
-          // TODO: Should this get all of the inboxes or a given subject's?
-          var endpoints = result.match(subjectURI, property).toArray()
-          if (endpoints.length > 0) {
-            return endpoints.map(function(t){ return t.object.nominalValue })
-          }
+        // TODO: Should this get all of the inboxes or a given subject's?
+        var endpoints = result.match(subjectURI, property).toArray()
+        if (endpoints.length > 0) {
+          return endpoints.map(function (t) { return t.object.nominalValue })
+        }
 
-// console.log(property + ' endpoint was not found in message body')
-          return getLinkRelationFromHead(property, subjectURI)
-        })
+        // console.log(property + ' endpoint was not found in message body')
+        return getLinkRelationFromHead(property, subjectURI)
+      })
   }
 }
 
-function getLinkRelationFromHead (property, url) {
+function getLinkRelationFromHead(property, url) {
   var pIRI = uri.getProxyableIRI(url);
 
   return getResourceHead(pIRI).then(
     function (i) {
       var linkHeaders = parseLinkHeader(i.headers.get('Link'))
-// console.log(property)
-// console.log(linkHeaders)
+      // console.log(property)
+      // console.log(linkHeaders)
       if (property in linkHeaders) {
         return linkHeaders[property]
       }
-      return Promise.reject({'message': property + " endpoint was not found in 'Link' header"})
+      return Promise.reject({ 'message': property + " endpoint was not found in 'Link' header" })
     },
     function (reason) {
-      return Promise.reject({'message': "'Link' header not found"})
+      return Promise.reject({ 'message': "'Link' header not found" })
     }
   );
 }
 
-function getLinkRelationFromRDF (property, url, subjectIRI) {
+function getLinkRelationFromRDF(property, url, subjectIRI) {
   url = url || window.location.origin + window.location.pathname
   subjectIRI = subjectIRI || url
 
   return getResourceGraph(subjectIRI)
     .then(function (i) {
-        var s = i.child(subjectIRI)
+      var s = i.child(subjectIRI)
 
-//XXX: Why is this switch needed? Use default?
-        switch (property) {
-          case Config.Vocab['ldpinbox']['@id']:
-            if (s.ldpinbox._array.length > 0){
-// console.log(s.ldpinbox._array)
-              return [s.ldpinbox.at(0)]
-            }
-            break
-          case Config.Vocab['oaannotationService']['@id']:
-            if (s.oaannotationService._array.length > 0){
-// console.log(s.oaannotationService._array)
-              return [s.oaannotationService.at(0)]
-            }
-            break
-          default:
-            if (s[property]._array.length > 0) {
-              return [s[property].at(0)]
-            }
-            break
-        }
-
-        return Promise.reject({'message': property + " endpoint was not found in message body"})
+      //XXX: Why is this switch needed? Use default?
+      switch (property) {
+        case Config.Vocab['ldpinbox']['@id']:
+          if (s.ldpinbox._array.length > 0) {
+            // console.log(s.ldpinbox._array)
+            return [s.ldpinbox.at(0)]
+          }
+          break
+        case Config.Vocab['oaannotationService']['@id']:
+          if (s.oaannotationService._array.length > 0) {
+            // console.log(s.oaannotationService._array)
+            return [s.oaannotationService.at(0)]
+          }
+          break
+        default:
+          if (s[property]._array.length > 0) {
+            return [s[property].at(0)]
+          }
+          break
       }
+
+      return Promise.reject({ 'message': property + " endpoint was not found in message body" })
+    }
     )
 }
 
 // I want HTTP COPY and I want it now!
-function copyResource (fromURL, toURL, options = {}) {
+function copyResource(fromURL, toURL, options = {}) {
   let headers = { 'Accept': '*/*' }
   let contentType
 
@@ -167,7 +168,7 @@ function copyResource (fromURL, toURL, options = {}) {
 /**
  * @returns {string}
  */
-function currentLocation () {
+function currentLocation() {
   return window.location.origin + window.location.pathname
 }
 
@@ -179,8 +180,9 @@ function currentLocation () {
  *
  * @returns {Promise<Response>}
  */
-function deleteResource (url, options = {}) {
-  var _fetch = Config.User.OIDC? solidAuth.fetch : fetch;
+function deleteResource(url, options = {}) {
+  //var _fetch = Config.User.OIDC ? solidAuth.fetch : fetch;
+  var _fetch = fetch;
 
   if (!url) {
     return Promise.reject(new Error('Cannot DELETE resource - missing url'))
@@ -208,13 +210,13 @@ function deleteResource (url, options = {}) {
     })
 }
 
-function getAcceptPostPreference (url) {
+function getAcceptPostPreference(url) {
   const pIRI = uri.getProxyableIRI(url)
 
-  return getResourceOptions(pIRI, {'header': 'Accept-Post'})
+  return getResourceOptions(pIRI, { 'header': 'Accept-Post' })
     .catch(error => {
-//      console.log(error)
-      return {'headers': 'application/ld+json'}
+      //      console.log(error)
+      return { 'headers': 'application/ld+json' }
     })
     .then(result => {
       let header = result.headers.trim().split(/\s*,\s*/)
@@ -232,13 +234,13 @@ function getAcceptPostPreference (url) {
     })
 }
 
-function getAcceptPatchPreference (url) {
+function getAcceptPatchPreference(url) {
   const pIRI = url || uri.getProxyableIRI(url)
 
-  return getResourceOptions(pIRI, {'header': 'Accept-Patch'})
+  return getResourceOptions(pIRI, { 'header': 'Accept-Patch' })
     .catch(error => {
-//      console.log(error)
-      return {'headers': 'text/n3'}
+      //      console.log(error)
+      return { 'headers': 'text/n3' }
     })
     .then(result => {
       let header = result.headers.trim().split(/\s*,\s*/)
@@ -256,13 +258,13 @@ function getAcceptPatchPreference (url) {
     })
 }
 
-function getAcceptPutPreference (url) {
+function getAcceptPutPreference(url) {
   const pIRI = url || uri.getProxyableIRI(url)
 
-  return getResourceOptions(pIRI, {'header': 'Accept-Put'})
+  return getResourceOptions(pIRI, { 'header': 'Accept-Put' })
     .catch(error => {
-//      console.log(error)
-      return {'headers': 'text/html'}
+      //      console.log(error)
+      return { 'headers': 'text/html' }
     })
     .then(result => {
       let header = result.headers.trim().split(/\s*,\s*/)
@@ -293,8 +295,11 @@ function getAcceptPutPreference (url) {
  *
  * @returns {Promise<string>|Promise<ArrayBuffer>}
  */
-function getResource (url, headers = {}, options = {}) {
-  var _fetch = Config.User.OIDC? solidAuth.fetch : fetch;
+function getResource(url, headers = {}, options = {}) {
+  //var _fetch = Config.User.OIDC ? solidAuth.fetch : fetch;
+  var _fetch = fetch;
+
+
 
   url = url || currentLocation()
   options.method = 'GET'
@@ -313,21 +318,21 @@ function getResource (url, headers = {}, options = {}) {
     .catch(error => {
       //XXX: When CORS preflight request returns 405, error is an object but neither an instance of Error nor Response.
 
-// console.log(options)
-// console.log(error)
+      // console.log(options)
+      // console.log(error)
 
       if (error?.status == 405) {
-console.log('status: 405')
+        console.log('status: 405')
         throw error
       }
       else if (error?.status == 401) {
         options.noCredentials = false
         options.credentials = 'include'
-console.log('status: 401')
+        console.log('status: 401')
         return getResource(url, headers, options)
       }
       else if (!options.noCredentials && options.credentials !== 'omit') {
-console.log('Possible CORS error, retry with no credentials')
+        console.log('Possible CORS error, retry with no credentials')
         options.noCredentials = true
         options.credentials = 'omit'
         return getResource(url, headers, options)
@@ -359,8 +364,9 @@ console.log('Possible CORS error, retry with no credentials')
  *
  * @returns {Promise<Response>}
  */
-function getResourceHead (url, options = {}) {
-  var _fetch = Config.User.OIDC? solidAuth.fetch : fetch;
+function getResourceHead(url, options = {}) {
+  //var _fetch = Config.User.OIDC ? solidAuth.fetch : fetch;
+  var _fetch = fetch;
   url = url || currentLocation()
 
   options.method = 'HEAD'
@@ -371,7 +377,7 @@ function getResourceHead (url, options = {}) {
 
   return _fetch(url, options)
     .catch(error => {
-// console.log(options)
+      // console.log(options)
       if (!options.noCredentials && options.credentials !== 'omit') {
         // Possible CORS error, retry with no credentials
         options.noCredentials = true
@@ -401,8 +407,8 @@ function getResourceHead (url, options = {}) {
     })
 }
 
-function getResourceGraph (iri, headers, options = {}) {
-  let defaultHeaders = {'Accept': setAcceptRDFTypes() + ',*/*;q=0.1'}
+function getResourceGraph(iri, headers, options = {}) {
+  let defaultHeaders = { 'Accept': setAcceptRDFTypes() + ',*/*;q=0.1' }
   headers = headers || defaultHeaders
   if (!('Accept' in headers)) {
     Object.assign(headers, defaultHeaders)
@@ -422,7 +428,7 @@ function getResourceGraph (iri, headers, options = {}) {
     .then(response => {
 
       let cT = response.headers.get('Content-Type')
-      options['contentType'] = (cT) ? cT.split(';')[ 0 ].trim() : 'text/turtle'
+      options['contentType'] = (cT) ? cT.split(';')[0].trim() : 'text/turtle'
 
       if (!Config.MediaTypes.RDF.includes(options['contentType'])) {
         return Promise.reject({ resource: iri, response: response, message: 'Unsupported media type for RDF parsing: ' + options['contentType'] })
@@ -449,12 +455,12 @@ function getResourceGraph (iri, headers, options = {}) {
 }
 
 
-function getTriplesFromGraph (url) {
+function getTriplesFromGraph(url) {
   return getResourceGraph(url)
-    .then(function(i){
+    .then(function (i) {
       return i.graph();
     })
-    .catch(function(error){
+    .catch(function (error) {
       // console.log(error);
       throw error;
     });
@@ -471,8 +477,9 @@ function getTriplesFromGraph (url) {
  *
  * @returns {Promise} Resolves with `{ headers: ... }` object
  */
-function getResourceOptions (url, options = {}) {
-  var _fetch = Config.User.OIDC? solidAuth.fetch : fetch;
+function getResourceOptions(url, options = {}) {
+  //var _fetch = Config.User.OIDC ? solidAuth.fetch : fetch;
+  var _fetch = fetch;
   url = url || currentLocation()
 
   options.method = 'OPTIONS'
@@ -492,7 +499,7 @@ function getResourceOptions (url, options = {}) {
 
         throw error
       }
-      else if (options.header && !response.headers.get(options.header)){
+      else if (options.header && !response.headers.get(options.header)) {
         let error = new Error('OPTIONS without ' + options.header + ' header: ' +
           response.status + ' ' + response.statusText)
         error.status = response.status
@@ -509,7 +516,7 @@ function getResourceOptions (url, options = {}) {
     })
 }
 
-function parseLinkHeader (link) {
+function parseLinkHeader(link) {
   if (!link) {
     return {}
   }
@@ -540,7 +547,7 @@ function parseLinkHeader (link) {
   return rels
 }
 
-function patchResourceGraph (url, patches, options = {}) {
+function patchResourceGraph(url, patches, options = {}) {
   options.headers = options.headers || {}
   options.headers['Content-Type'] = options.headers['Content-Type'] || 'text/n3'
   patches = (Array.isArray(patches)) ? patches : [patches]
@@ -568,14 +575,14 @@ function patchResourceGraph (url, patches, options = {}) {
       break
 
     case 'text/n3':
-    default :
-      patches.forEach(function(patch){
+    default:
+      patches.forEach(function (patch) {
         var patchId = '_:' + util.generateUUID();
 
         data += '\n\
 ' + patchId + ' a solid:Patch, solid:InsertDeletePatch .\n\
 '
-// ' + patchId + ' solid:patches <' + patchesResource + '> .\n\
+        // ' + patchId + ' solid:patches <' + patchesResource + '> .\n\
 
         if (patch.delete) {
           data += patchId + ' solid:deletes { ' + patch.delete + ' } .\n\
@@ -594,12 +601,12 @@ function patchResourceGraph (url, patches, options = {}) {
       break
   }
 
-  return patchResource (url, data, options);
+  return patchResource(url, data, options);
 }
 
-function patchResource (url, data, options = {}) {
-  var _fetch = Config.User.OIDC? solidAuth.fetch : fetch;
-
+function patchResource(url, data, options = {}) {
+  //var _fetch = Config.User.OIDC ? solidAuth.fetch : fetch;
+  var _fetch = fetch;
   options.headers = options.headers || {}
 
   options.headers['Content-Type'] = options.headers['Content-Type'] || 'text/n3'
@@ -628,8 +635,9 @@ function patchResource (url, data, options = {}) {
     })
 }
 
-function postResource (url, slug, data, contentType, links, options = {}) {
-  var _fetch = Config.User.OIDC? solidAuth.fetch : fetch;
+function postResource(url, slug, data, contentType, links, options = {}) {
+  //var _fetch = Config.User.OIDC ? solidAuth.fetch : fetch;
+  var _fetch = fetch;
   if (!url) {
     return Promise.reject(new Error('Cannot POST resource - missing url'))
   }
@@ -697,8 +705,10 @@ function postResource (url, slug, data, contentType, links, options = {}) {
  *
  * @returns {Promise<Response>}
  */
-function putResource (url, data, contentType, links, options = {}) {
-  var _fetch = Config.User.OIDC? solidAuth.fetch : fetch;
+function putResource(url, data, contentType, links, options = {}) {
+  //var _fetch = Config.User.OIDC ? solidAuth.fetch : fetch;
+  var _fetch = fetch;
+  
   if (!url) {
     return Promise.reject(new Error('Cannot PUT resource - missing url'))
   }
@@ -748,7 +758,7 @@ function putResource (url, data, contentType, links, options = {}) {
  *
  * @returns {Promise<Response|null>}
  */
-function putResourceACL (accessToURL, aclURL, acl) {
+function putResourceACL(accessToURL, aclURL, acl) {
   if (!Config.User.IRI) {
     console.log('Go through sign-in or do: DO.C.User.IRI = "https://example.org/#i";')
     return Promise.resolve(null)
@@ -808,7 +818,7 @@ function postActivity(url, slug, data, options) {
 function fetchPreferredMethod(url, slug, data, options) {
   var contentType = options['preferredContentType'] + '; charset=utf-8';
 
-  switch(options['method'].toLowerCase()) {
+  switch (options['method'].toLowerCase()) {
     case 'post':
       return postResource(url, slug, data, contentType);
       break;
@@ -843,8 +853,8 @@ function fetchPreferredMethodContentType(url, slug, data, options) {
           if (!options['canonical']) {
             let x = JSON.parse(data)
             if ('id' in x) {
-              x[ "via" ] = x[ "id" ]
-              x[ "id" ] = ""
+              x["via"] = x["id"]
+              x["id"] = ""
               data = JSON.stringify(x)
             }
           }
@@ -861,8 +871,8 @@ function fetchPreferredMethodContentType(url, slug, data, options) {
 function processSave(url, slug, data, options) {
   options = options || {};
   var request = (slug)
-                ? postResource(url, slug, data)
-                : putResource(url, data)
+    ? postResource(url, slug, data)
+    : putResource(url, data)
 
   return request
     .then(response => {

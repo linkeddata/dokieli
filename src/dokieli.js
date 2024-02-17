@@ -23,6 +23,7 @@ const Diff = require('diff');
 const { micromark: marked } = require('micromark')
 const { gfm, gfmHtml } =  require('micromark-extension-gfm')
 const { gfmTagfilterHtml } = require('micromark-extension-gfm-tagfilter')
+const { getDefaultSession } = require('@inrupt/solid-client-authn-browser');
 
 if(typeof DO === 'undefined'){
 const ld = require('./simplerdf')
@@ -1253,7 +1254,7 @@ var DO = {
 
     initUser: function() {
       storage.getLocalStorageProfile().then(user => {
-        if (user && 'object' in user) {
+        if (getDefaultSession().info.isLoggedIn) {
           user.object.describes.Role = (DO.C.User.IRI && user.object.describes.Role) ? user.object.describes.Role : 'social';
           user.object.describes.ContactsOutboxChecked = (DO.C.User.IRI && user.object.describes.ContactsOutboxChecked);
 

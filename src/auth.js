@@ -6,6 +6,8 @@ const util = require('./util')
 const uri = require('./uri')
 const storage = require('./storage')
 const solidAuth = require('solid-auth-client')
+const { logout, login, getDefaultSession, handleIncomingRedirect  } = require('@inrupt/solid-client-authn-browser');
+
 
 // const { OIDCWebClient } = require('@trust/oidc-web')
 
@@ -43,8 +45,9 @@ module.exports = {
   processSameAs
 }
 
+handleIncomingRedirect({ restorePreviousSession : true })
 
-function isActorType (s) {
+function isActorType(s) {
   var actorTypes = [
     'foafAgent', 'foafPerson', 'foafGroup', 'foafOrganization',
     'vcardVCard', 'vcardIndividual', 'vcardGroup', 'vcardOrganization',
@@ -62,7 +65,7 @@ function isActorType (s) {
   return false;
 }
 
-function isActorProperty (s) {
+function isActorProperty(s) {
   var actorTypes = [
     'foafknows',
     'asactor',
@@ -80,7 +83,7 @@ function isActorProperty (s) {
 }
 
 
-function getUserHTML (options) {
+function getUserHTML(options) {
   options = options || {};
   var avatarSize = ('avatarSize' in options) ? options.avatarSize : Config['AvatarSize'];
 
@@ -117,16 +120,17 @@ function getUserSignedInHTML() {
 }
 
 
-async function showUserSigninSignout (node) {
+async function showUserSigninSignout(node) {
 
-  const session = await solid.auth.currentSession();
-  var webId = session ? session.webId : null;
+  //const session = await solid.auth.currentSession();
+  const session = getDefaultSession();
+  var webId = session ? session.info.webId : null;
   // was LoggedId with new OIDC WebID
   if (webId && (webId != Config.User.IRI || !Config.User.IRI)) {
-     await setUserInfo(webId, true)
-          .then(() => {
-            afterSignIn()
-          })
+    await setUserInfo(webId, true)
+      .then(() => {
+        afterSignIn()
+      })
   }
   // was LoggedOut as OIDC
   if (!webId && Config.User.IRI && Config.User.OIDC) {
@@ -147,6 +151,7 @@ async function showUserSigninSignout (node) {
   if (!userInfo) {
     var s = ''
 
+
     if (Config.User.IRI) {
       s = getUserSignedInHTML()
     }
@@ -158,10 +163,11 @@ async function showUserSigninSignout (node) {
 
     userInfo = document.getElementById('user-info')
 
-    userInfo.addEventListener('click', async function(e) {
+    userInfo.addEventListener('click', async function (e) {
       if (e.target.closest('.signout-user')) {
         if (Config.User.OIDC) {
-          await solidAuth.logout();
+          //await solidAuth.logout();
+          await logout();
         }
 
         storage.removeLocalStorageProfile()
@@ -190,28 +196,28 @@ async function showUserSigninSignout (node) {
     }
 
     var rA = document.querySelector('#document-menu .resource-activities')
-    if(rA) { rA.setAttribute('disabled', 'disabled') }
+    if (rA) { rA.setAttribute('disabled', 'disabled') }
   }
 }
 
 
-function showUserIdentityInput (e) {
+function showUserIdentityInput(e) {
   if (typeof e !== 'undefined') {
     e.target.disabled = true
   }
 
   var webid = Config.User.WebIdDelegate ? Config.User.WebIdDelegate : "";
-  var code = '<aside id="user-identity-input" class="do on">' + Config.Button.Close + '<h2>Sign in</h2><p id="user-identity-input-webid"><label>WebID</label> <input id="webid" type="text" placeholder="https://csarven.ca/#i" value="'+webid+'" name="webid"/> <button class="signin">Sign in</button></p>';
+  var code = '<aside id="user-identity-input" class="do on">' + Config.Button.Close + '<h2>Sign in</h2><p id="user-identity-input-webid"><label>WebID</label> <input id="webid" type="text" placeholder="https://csarven.ca/#i" value="' + webid + '" name="webid"/> <button class="signin">Sign in</button></p>';
   //XXX: This limitation may not be necessary.
   // if (window.location.protocol === "https:") {
-    code += '<p id="user-identity-input-oidc">or with <label>OpenID Connect</label> <button class="signin-oidc">Sign in</button></p>';
+  code += '<p id="user-identity-input-oidc">or with <label>OpenID Connect</label> <button class="signin-oidc">Sign in</button></p>';
   // }
   code += '</aside>';
 
   document.documentElement.appendChild(util.fragmentFromString(code))
 
   var buttonSignIn = document.querySelector('#user-identity-input button.signin')
-  if (! Config.User.WebIdDelegate)
+  if (!Config.User.WebIdDelegate)
     buttonSignIn.setAttribute('disabled', 'disabled')
 
   document.querySelector('#user-identity-input').addEventListener('click', e => {
@@ -224,7 +230,7 @@ function showUserIdentityInput (e) {
   })
 
   var inputWebID = document.querySelector('#user-identity-input input#webid')
-  if(inputWebID) {
+  if (inputWebID) {
     buttonSignIn.addEventListener('click', submitSignIn)
 
     let events = ['keyup', 'cut', 'paste', 'input']
@@ -244,7 +250,7 @@ function showUserIdentityInput (e) {
 
 
 // TODO: Generalize this further so that it is not only for submitSignIn
-function enableDisableButton (e, button) {
+function enableDisableButton(e, button) {
   var delay = (e.type === 'cut' || e.type === 'paste') ? 250 : 0
   var input
 
@@ -270,41 +276,58 @@ function enableDisableButton (e, button) {
 }
 
 // FIXME: This parameter value can be an event or a string
-function submitSignIn (url) {
+function submitSignIn(url) {
   var userIdentityInput = document.getElementById('user-identity-input')
 
-  if (typeof url !== 'string') {
-    if (userIdentityInput) {
-      userIdentityInput.querySelector('#user-identity-input-webid').insertAdjacentHTML('beforeend',
-        '<svg class="fas fa-circle-notch fa-spin fa-fw" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M288 39.056v16.659c0 10.804 7.281 20.159 17.686 23.066C383.204 100.434 440 171.518 440 256c0 101.689-82.295 184-184 184-101.689 0-184-82.295-184-184 0-84.47 56.786-155.564 134.312-177.219C216.719 75.874 224 66.517 224 55.712V39.064c0-15.709-14.834-27.153-30.046-23.234C86.603 43.482 7.394 141.206 8.003 257.332c.72 137.052 111.477 246.956 248.531 246.667C393.255 503.711 504 392.788 504 256c0-115.633-79.14-212.779-186.211-240.236C302.678 11.889 288 23.456 288 39.056z"/></svg>')
-    }
+  if (!getDefaultSession().info.isLoggedIn) {
+    login({
+      oidcIssuer: "https://wiser-solid-delta.interactions.ics.unisg.ch",
+      redirectUrl: new URL("/", window.location.href).toString(),
+      clientName: "Dokieli"
+    }).then(() => {
+      console.log("Logged in!");
+      console.log(getDefaultSession().info.webId);
+      if (typeof url !== 'string') {
+        if (userIdentityInput) {
+          userIdentityInput.querySelector('#user-identity-input-webid').insertAdjacentHTML('beforeend',
+            '<svg class="fas fa-circle-notch fa-spin fa-fw" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M288 39.056v16.659c0 10.804 7.281 20.159 17.686 23.066C383.204 100.434 440 171.518 440 256c0 101.689-82.295 184-184 184-101.689 0-184-82.295-184-184 0-84.47 56.786-155.564 134.312-177.219C216.719 75.874 224 66.517 224 55.712V39.064c0-15.709-14.834-27.153-30.046-23.234C86.603 43.482 7.394 141.206 8.003 257.332c.72 137.052 111.477 246.956 248.531 246.667C393.255 503.711 504 392.788 504 256c0-115.633-79.14-212.779-186.211-240.236C302.678 11.889 288 23.456 288 39.056z"/></svg>')
+        }
 
-    url = userIdentityInput.querySelector('input#webid').value.trim()
-  }
-
-  if (!url) {
-    console.log('submitSignIn - no user url input')
-    return Promise.resolve()
-  }
-
-  return setUserInfo(url, false)
-    .then(() => {
-      var uI = document.getElementById('user-info')
-      if (uI) {
-        util.removeChildren(uI);
-        uI.insertAdjacentHTML('beforeend', getUserSignedInHTML());
+        url = userIdentityInput.querySelector('input#webid').value.trim()
       }
 
-      if (userIdentityInput) {
-        userIdentityInput.parentNode.removeChild(userIdentityInput)
+      if (!url) {
+        console.log('submitSignIn - no user url input')
+        return Promise.resolve()
       }
 
-      afterSignIn()
+      return setUserInfo(url, false)
+        .then(() => {
+          var uI = document.getElementById('user-info')
+          if (uI) {
+            util.removeChildren(uI);
+            uI.insertAdjacentHTML('beforeend', getUserSignedInHTML());
+          }
+
+          if (userIdentityInput) {
+            userIdentityInput.parentNode.removeChild(userIdentityInput)
+          }
+
+          afterSignIn()
+        })
+
     })
+      .catch((error) => {
+        console.error(`Error: ${error}`);
+      });
+  }
+
+
+
 }
 
 
-function submitSignInOIDC (url) {
+function submitSignInOIDC(url) {
   var userIdentityInput = document.getElementById('user-identity-input')
 
   var popupUri = Config.OidcPopupUrl;
@@ -313,9 +336,9 @@ function submitSignInOIDC (url) {
     solidAuth
       .popupLogin({ popupUri })
       .then((session) => {
-         if (session && session.webId) {
-           console.log("Connected:", session.webId);
-           setUserInfo(session.webId, true)
+        if (session && session.webId) {
+          console.log("Connected:", session.webId);
+          setUserInfo(session.webId, true)
             .then(() => {
               var uI = document.getElementById('user-info')
               if (uI) {
@@ -329,9 +352,9 @@ function submitSignInOIDC (url) {
 
               afterSignIn()
             })
-         }
+        }
       }).catch((err) => {
-        console.log('submitSignInOIDC - '+err);
+        console.log('submitSignInOIDC - ' + err);
         return Promise.resolve();
       });
   }
@@ -342,7 +365,7 @@ function submitSignInOIDC (url) {
  *
  * @returns {Promise}
  */
-function setUserInfo (userIRI, oidc) {
+function setUserInfo(userIRI, oidc) {
   if (!userIRI) {
     return Promise.reject(new Error('Could not set user info - no user IRI'))
   }
@@ -384,8 +407,9 @@ function setUserInfo (userIRI, oidc) {
     })
 }
 
-function afterSignIn () {
+function afterSignIn() {
   var promises = [];
+
 
   promises.push(getAgentTypeIndex(Config.User))
 
@@ -396,7 +420,7 @@ function afterSignIn () {
   promises.push(getAgentPreferencesInfo(Config.User.Graph))
 
   Promise.all(promises)
-    .then(function(results) {
+    .then(function (results) {
       var uI = document.getElementById('user-info')
       if (uI) {
         uI.innerHTML = getUserSignedInHTML()
@@ -404,12 +428,12 @@ function afterSignIn () {
 
       return storage.updateLocalStorageProfile(Config.User)
     })
-    .catch(function(e) {
+    .catch(function (e) {
       return Promise.resolve();
     });
 
   var rA = document.querySelector('#document-menu .resource-activities')
-  if(rA) { rA.removeAttribute('disabled') }
+  if (rA) { rA.removeAttribute('disabled') }
 
   var user = document.querySelectorAll('aside.do article *[rel~="schema:creator"] > *[about="' + Config.User.IRI + '"]')
   for (let i = 0; i < user.length; i++) {
@@ -447,9 +471,9 @@ function getAgentPreferencesInfo(g) {
 
   if (preferencesFile) {
     return fetcher.getResourceGraph(preferencesFile).then(g => {
-        return getAgentPreferredPolicyRule(g.child(Config.User.IRI));
-      })
-      .catch(function(e) {
+      return getAgentPreferredPolicyRule(g.child(Config.User.IRI));
+    })
+      .catch(function (e) {
         return getAgentPreferredPolicyRule(Config.User.Graph.child(Config.User.IRI));
       })
   }
@@ -493,8 +517,8 @@ function getAgentSupplementalInfo(iri) {
   }
   else {
     return fetcher.getResourceGraph(iri).then(
-      function(g){
-        if(typeof g._graph == 'undefined') {
+      function (g) {
+        if (typeof g._graph == 'undefined') {
           return Promise.resolve([]);
         }
         var s = g.child(iri);
@@ -527,11 +551,11 @@ function getAgentSupplementalInfo(iri) {
         }
 
         return processSameAs(s, getAgentSupplementalInfo)
-                .then(function(){
-                  return getAgentSeeAlso(s)
-                });
+          .then(function () {
+            return getAgentSeeAlso(s)
+          });
       },
-      function(reason){
+      function (reason) {
         return Promise.resolve([]);
       });
   }
@@ -548,13 +572,13 @@ function getAgentSeeAlso(g, baseURI, subjectURI) {
     var iris = [];
     var promises = [];
 
-    seeAlso._array.forEach(function(iri){
+    seeAlso._array.forEach(function (iri) {
       if (Config.User.SeeAlso.indexOf(iri) < 0) {
         iris.push(iri)
       }
     });
 
-    iris.forEach(function(iri){
+    iris.forEach(function (iri) {
       Config.User.SeeAlso = util.uniqueArray(Config.User.SeeAlso.concat(iri));
 
       fetcher.getResourceGraph(iri)
@@ -575,10 +599,10 @@ function getAgentSeeAlso(g, baseURI, subjectURI) {
     });
 
     Promise.all(promises)
-      .then(function(results) {
+      .then(function (results) {
         return Promise.resolve([]);
       })
-      .catch(function(e) {
+      .catch(function (e) {
         return Promise.resolve([]);
       });
   }
@@ -588,14 +612,14 @@ function getAgentSeeAlso(g, baseURI, subjectURI) {
 }
 
 function getUserContacts(iri) {
-  var fyn = function(iri){
+  var fyn = function (iri) {
     if ((iri == Config.User.IRI) && Config.User.Graph) {
       return processSameAs(Config.User.Graph, getUserContacts);
     }
     else {
       return fetcher.getResourceGraph(iri).then(
-        function(g){
-          if(typeof g._graph == 'undefined') {
+        function (g) {
+          if (typeof g._graph == 'undefined') {
             return Promise.resolve([]);
           }
 
@@ -611,27 +635,27 @@ function getUserContacts(iri) {
 
           return processSameAs(s, getUserContacts);
         },
-        function(reason){
+        function (reason) {
           return Promise.resolve([]);
         });
     }
   }
 
-  return fyn(iri).then(function(i){ return Config.User.Knows || []; });
+  return fyn(iri).then(function (i) { return Config.User.Knows || []; });
 }
 
 function getAgentTypeIndex(iri) {
   const TypeRegistrationClasses = [DO.C.Vocab['oaAnnotation']['@id'], DO.C.Vocab['asAnnounce']['@id']];
 
-  var fetchTypeRegistration = function(iri) {
+  var fetchTypeRegistration = function (iri) {
     var pIRI = uri.getProxyableIRI(iri);
 
     fetcher.getTriplesFromGraph(pIRI)
-      .then(function(triples){
-// console.log(triples);
-        if(triples.length > 0) {
+      .then(function (triples) {
+        // console.log(triples);
+        if (triples.length > 0) {
           var indexes = {};
-          triples.forEach(function(t){
+          triples.forEach(function (t) {
             var s = t.subject.nominalValue;
             var p = t.predicate.nominalValue;
             var o = t.object.nominalValue;
@@ -643,13 +667,13 @@ function getAgentTypeIndex(iri) {
               indexes[s][Config.Vocab['solidforClass']['@id']] = o;
             }
           });
-// console.log(indexes)
-          triples.forEach(function(t){
+          // console.log(indexes)
+          triples.forEach(function (t) {
             var s = t.subject.nominalValue;
             var p = t.predicate.nominalValue;
             var o = t.object.nominalValue;
 
-            if(indexes[s] && p == Config.Vocab['solidinstanceContainer']['@id']) {
+            if (indexes[s] && p == Config.Vocab['solidinstanceContainer']['@id']) {
               var forClass = indexes[s][Config.Vocab['solidforClass']['@id']]
               Config.User.TypeIndex[forClass] = o;
             }
@@ -670,7 +694,7 @@ function getAgentTypeIndex(iri) {
   }
 
   return Promise.all(promises)
-    .then(function(results) {
+    .then(function (results) {
       results.filter(result => !(result instanceof Error));
 
       // results.forEach(function(result) {
@@ -680,12 +704,12 @@ function getAgentTypeIndex(iri) {
 }
 
 function processSameAs(s, callback) {
-  if (s.owlsameAs && s.owlsameAs._array.length > 0){
+  if (s.owlsameAs && s.owlsameAs._array.length > 0) {
     var iris = s.owlsameAs._array;
     var promises = [];
-    iris.forEach(function(iri){
-// console.log(iri);
-      if(iri != Config.User.IRI && Config.User.SameAs.indexOf(iri) < 0) {
+    iris.forEach(function (iri) {
+      // console.log(iri);
+      if (iri != Config.User.IRI && Config.User.SameAs.indexOf(iri) < 0) {
         Config.User.SameAs = util.uniqueArray(Config.User.SameAs.concat(iri));
 
         if (typeof callback !== 'undefined') {
@@ -698,10 +722,10 @@ function processSameAs(s, callback) {
     });
 
     return Promise.all(promises)
-      .then(function(results) {
+      .then(function (results) {
         return Promise.resolve([]);
       })
-      .catch(function(e) {
+      .catch(function (e) {
         return Promise.resolve([]);
       });
   }
@@ -710,20 +734,20 @@ function processSameAs(s, callback) {
   }
 }
 
-function getAgentPreferredProxy (s) {
+function getAgentPreferredProxy(s) {
   return s.solidpreferredProxy || undefined
 }
 
-function getAgentPreferredPolicy (s) {
+function getAgentPreferredPolicy(s) {
   return s.solidpreferredPolicy || undefined
 }
 
-function getAgentImage (s) {
+function getAgentImage(s) {
   if (s.asicon || s.asimage) {
 
     var image = s.asimage;
-    s._graph.some(function(t){
-      if(t.predicate.nominalValue == Config.Vocab['asurl']['@id']) {
+    s._graph.some(function (t) {
+      if (t.predicate.nominalValue == Config.Vocab['asurl']['@id']) {
         if (t.subject.nominalValue == s.asicon || "_:" + t.subject.nominalValue == s.asicon) {
           image = t.object.nominalValue;
           return true;
@@ -742,7 +766,7 @@ function getAgentImage (s) {
   }
 }
 
-function getAgentName (s) {
+function getAgentName(s) {
   var name = s.foafname || s.schemaname || s.vcardfn || s.asname || s.rdfslabel || undefined
   if (typeof name === 'undefined') {
     if (s.schemafamilyName && s.schemafamilyName.length > 0 && s.schemagivenName && s.schemagivenName.length > 0) {
@@ -760,33 +784,33 @@ function getAgentName (s) {
   return name
 }
 
-function getAgentURL (s) {
+function getAgentURL(s) {
   return s.foafhomepage || s.foafweblog || s.schemaurl || s.vcardurl || undefined
 }
 
-function getAgentEmail (s) {
+function getAgentEmail(s) {
   return s.schemaemail || s.foafmbox || undefined
 }
 
-function getAgentDelegates (s) {
+function getAgentDelegates(s) {
   return (s.acldelegates && s.acldelegates._array.length > 0)
     ? s.acldelegates._array
     : undefined
 }
 
-function getAgentStorage (s) {
+function getAgentStorage(s) {
   return (s.pimstorage && s.pimstorage._array.length > 0)
     ? s.pimstorage._array
     : undefined
 }
 
-function getAgentOutbox (s) {
+function getAgentOutbox(s) {
   return (s.asoutbox && s.asoutbox._array.length > 0)
     ? s.asoutbox._array
     : undefined
 }
 
-function getAgentInbox (s) {
+function getAgentInbox(s) {
   return (s.ldpinbox && s.ldpinbox._array.length > 0)
     ? s.ldpinbox._array
     : (s.asinbox && s.asinbox._array.length > 0)
@@ -794,13 +818,13 @@ function getAgentInbox (s) {
       : undefined
 }
 
-function getAgentKnows (s) {
+function getAgentKnows(s) {
   var knows = [];
 
-  if(s.foafknows && s.foafknows._array.length > 0){
+  if (s.foafknows && s.foafknows._array.length > 0) {
     knows = knows.concat(s.foafknows._array);
   }
-  if(s.schemaknows && s.schemaknows._array.length > 0){
+  if (s.schemaknows && s.schemaknows._array.length > 0) {
     knows = knows.concat(s.schemaknows._array);
   }
 
@@ -809,35 +833,35 @@ function getAgentKnows (s) {
   return (knows.length > 0) ? knows : undefined;
 }
 
-function getAgentFollowing (s) {
+function getAgentFollowing(s) {
   var following = [];
-// console.log(s.asfollowing)
+  // console.log(s.asfollowing)
   if (s.asfollowing) {
     var options = {
-      headers: {'Accept': 'application/ld+json; profile="https://www.w3.org/ns/activitystreams", application/activity+json, text/turtle'},
+      headers: { 'Accept': 'application/ld+json; profile="https://www.w3.org/ns/activitystreams", application/activity+json, text/turtle' },
       noCredentials: true
     };
     return DO.U.getItemsList(s.asfollowing, options).then(following => {
       following = util.uniqueArray(following);
-// console.log(following);
+      // console.log(following);
       return (following.length > 0) ? following : undefined;
     });
   }
 }
 
-function getAgentPublicTypeIndex (s) {
+function getAgentPublicTypeIndex(s) {
   return (s.solidpublicTypeIndex && s.solidpublicTypeIndex.length > 0)
     ? s.solidpublicTypeIndex
     : undefined
 }
 
-function getAgentPrivateTypeIndex (s) {
+function getAgentPrivateTypeIndex(s) {
   return (s.solidprivateTypeIndex && s.solidprivateTypeIndex.length > 0)
     ? s.solidprivateTypeIndex
     : undefined
 }
 
-function getAgentPreferencesFile (s) {
+function getAgentPreferencesFile(s) {
   return (s.pimpreferencesFile && s.pimpreferencesFile.length > 0)
     ? s.pimpreferencesFile
     : undefined
