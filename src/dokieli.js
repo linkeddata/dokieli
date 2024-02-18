@@ -649,7 +649,7 @@ var DO = {
           .text(options.title);
       }
 
-      function addLegend() {
+      function addLegend(go) {
         var legendInfo = {};
         var keys = Object.keys(legendCategories);
         keys.forEach(function(i){
@@ -657,15 +657,55 @@ var DO = {
         });
         keys = Object.keys(legendInfo);
 
-        // svg.append('g')
-        //   .attr('class', 'graph-legend');
-        //FIXME: Why doesn't select or selectAll("g.graph-legend") work? g.graph-legend is in the svg.
+        svg.append('g')
+          .attr('class', 'graph-legend');
+
+        var graphLegend = svg.select('g.graph-legend');
+
+        graphLegend
+          .append("text")
+          .attr('class', 'graph-resources')
+          .attr("x", 0)
+          .attr("y", 20)
+          .text("Resources: ");
+
+        var graphResources = graphLegend.select('g.graph-legend .graph-resources');
+
+        go.resources.forEach(function(i, index){
+          graphResources
+            .append('a')
+              .attr('href', i)
+              .style('fill', legendCategories[7].color)
+              .text(i)
+
+          if (index < go.resources.length - 1) {
+            graphResources
+              .append('tspan')
+              .text(', ');
+          }
+        })
+
+        graphLegend
+          .append("text")
+          .attr("x", 0)
+          .attr("y", 45)
+          .text("Statements: " + go.bilinks.length);
+
+        graphLegend
+          .append("text")
+          .attr("x", 0)
+          .attr("y", 70)
+          .text("Nodes: " + Object.keys(go.uniqueNodes).length + " (unique)");
+ 
+        //TODO: Move foobarbazqux into graphLegend
+        //FIXME: Why doesn't select or selectAll("g.graph-legend") work? g.graph-legend is in the svg. foobarbazqux is a hack IIRC.
+
         svg.selectAll("foobarbazqux")
           .data(keys)
           .enter()
           .append("circle")
             .attr("cx", 10)
-            .attr("cy", function(d,i){ return 10 + i*25 })
+            .attr("cy", function(d,i){ return 100 + i*25 })
             .attr("r", nodeRadius)
             .style("fill", function(d){ return legendInfo[d] })
 
@@ -674,7 +714,7 @@ var DO = {
           .enter()
           .append("text")
             .attr("x", 25)
-            .attr("y", function(d,i){ return 15 + i*25 })
+            .attr("y", function(d,i){ return 105 + i*25 })
             .style("fill", function(d){ return legendInfo[d] })
             .text(function(d){ return d})
       }
@@ -721,7 +761,7 @@ var DO = {
 
       // createSVGMarker();
 
-      function buildGraphObject(graph) {
+      function buildGraphObject(graph, options) {
         var graphObject = {};
 
         var nodes = graph.nodes;
@@ -765,7 +805,8 @@ var DO = {
           'nodes': nodes,
           'links': links,
           'bilinks': bilinks,
-          'uniqueNodes': uniqueNodes
+          'uniqueNodes': uniqueNodes,
+          'resources': options.resources
         };
 // console.log(graphObject)
 
@@ -828,7 +869,7 @@ var DO = {
         }
 
         //Adding this now so that it is not selected with circles above.
-        addLegend();
+        addLegend(go);
 
 // console.log(svgObject)
         return svgObject;
@@ -836,11 +877,12 @@ var DO = {
 
       function initiateVisualisation(url, data, options) {
         url = uri.stripFragmentFromString(url);
+        options.resources = ('resources' in options) ? util.uniqueArray(options.resources.concat(url)) : [url];
 
         return DO.U.getVisualisationGraphData(url, data, options).then(
           function(graph){
 // console.log(graph);
-            var graphObject = buildGraphObject(graph);
+            var graphObject = buildGraphObject(graph, options);
 
             simulation = d3.forceSimulation().nodes(graph.nodes)
               .alphaDecay(0.025)
@@ -851,9 +893,11 @@ var DO = {
               .force("center", d3.forceCenter(width / 2, height / 2));
 
             if ('mergeGraph' in options && options.mergeGraph) {
+              svg.selectAll("g").remove();
               svg.selectAll("marker").remove();
               svg.selectAll("path").remove();
               svg.selectAll("circle").remove();
+              svg.selectAll("text").remove();
               simulation.restart();
             }
 
@@ -893,7 +937,7 @@ var DO = {
               dataGraph.graph().addAll(g);
             });
 
-            var graph = {"nodes":[], "links": []};
+            var graph = {"nodes":[], "links": [], "resources": options.resources };
             var graphNodes = [];
 
             dataGraph.graph().toArray().forEach(function(t){
@@ -1094,6 +1138,7 @@ var DO = {
               graph.serializeGraph(dataGraph, { 'contentType': 'text/turtle' })
                 .then(function(data){
                   options['contentType'] = 'text/turtle';
+                  options['resources'] = resources;
                   // options['subjectURI'] = url;
                   //FIXME: For multiple graphs (fetched resources), options.subjectURI is the last item, so it is inaccurate
                   DO.U.showVisualisationGraph(options.subjectURI, data, selector, options);
