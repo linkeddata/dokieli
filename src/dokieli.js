@@ -3994,7 +3994,7 @@ console.log(reason);
 
       if (DO.C.User.Contacts && Object.keys(DO.C.User.Contacts).length > 0){
         Object.keys(DO.C.User.Contacts).forEach(function(iri){
-          if (DO.C.User.Contacts[iri].Inbox) {
+          if (DO.C.User.Contacts[iri].Inbox && DO.C.User.IRI !== iri) {
             DO.U.addShareResourceContactInput(shareResourceNode, DO.C.User.Contacts[iri].Graph);
           }
         });
@@ -4063,7 +4063,7 @@ console.log(reason);
                   uCI(url, s);
                   return uCA(url, s)
                 }
-                else if ('addShareResourceContactInput' in options) {
+                else if ('addShareResourceContactInput' in options && DO.C.User.IRI !== url) {
                   uCA(url, s)
                   return uCI(url, s)
                 }
