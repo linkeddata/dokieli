@@ -5473,8 +5473,17 @@ console.log(response)
 
       if (graph.astag && graph.astag._array.length > 0) {
         tags = [];
-        graph.astag.forEach(function(tag){
-          tags.push('<li><a href="' + tag + '">' + uri.getFragmentOrLastPath(tag) + '</a></li>');
+        graph.astag.forEach(function(tagURL){
+          var t = graph.child(tagURL);
+          var tagName = uri.getFragmentOrLastPath(tagURL);
+
+          if (t.ashref && t.asname.length > 0) {
+            tagURL = t.ashref;
+          }
+          if (t.asname && t.asname.length > 0) {
+            tagName = t.asname;
+          }
+          tags.push('<li><a href="' + tagURL + '">' + tagName + '</a></li>');
         })
         tags = '<ul>' + tags.join('') + '</ul>';
       }
