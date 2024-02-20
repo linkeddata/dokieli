@@ -5441,8 +5441,8 @@ console.log(response)
         });
     },
 
-    generateIndexItemHTML: function(graph, options) {
-      if (typeof graph.iri === 'undefined') return;
+    generateIndexItemHTML: function(g, options) {
+      if (typeof g.iri === 'undefined') return;
 
 // console.log(graph);
       options = options || {};
@@ -5451,30 +5451,30 @@ console.log(response)
       var summary = '';
       var tags = '';
 
-      name = doc.getGraphLabel(graph) || graph.iri().toString();
-      name = '<a href="' + graph.iri().toString() + '">' + name + '</a>';
+      name = doc.getGraphLabel(g) || g.iri().toString();
+      name = '<a href="' + g.iri().toString() + '">' + name + '</a>';
 
-      var datePublished = graph.schemadatePublished || graph.dctermsissued || graph.dctermsdate || graph.aspublished || graph.schemadateCreated || graph.dctermscreated || graph.provgeneratedAtTime || graph.dctermsmodified || graph.asupdated || '';
+      var datePublished = g.schemadatePublished || g.dctermsissued || g.dctermsdate || g.aspublished || g.schemadateCreated || g.dctermscreated || g.provgeneratedAtTime || g.dctermsmodified || g.asupdated || '';
 
       if (datePublished) {
         published = ', <time datetime="' + datePublished + '">' + datePublished.substr(0,10) + '</time>';
       }
 
-      if (graph.oahasBody) {
-        summary = graph.child(graph.oahasBody).rdfvalue;
+      if (g.oahasBody) {
+        summary = g.child(g.oahasBody).rdfvalue;
       }
       else {
-        summary = graph.schemaabstract || graph.dctermsdescription || graph.rdfvalue || graph.assummary || graph.schemadescription || graph.ascontent || '';
+        summary = g.schemaabstract || g.dctermsdescription || g.rdfvalue || g.assummary || g.schemadescription || g.ascontent || '';
       }
 
       if (summary) {
         summary = '<div>' + summary + '</div>';
       }
 
-      if (graph.astag && graph.astag._array.length > 0) {
+      if (g.astag && g.astag._array.length > 0) {
         tags = [];
-        graph.astag.forEach(function(tagURL){
-          var t = graph.child(tagURL);
+        g.astag.forEach(function(tagURL){
+          var t = g.child(tagURL);
           var tagName = uri.getFragmentOrLastPath(tagURL);
 
           if (t.ashref && t.asname.length > 0) {
