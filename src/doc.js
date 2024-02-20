@@ -64,7 +64,8 @@ module.exports = {
   updateReferences,
   showRobustLinksDecoration,
   getCitationLabelsFromTerms,
-  getTestDescriptionReviewStatusHTML
+  getTestDescriptionReviewStatusHTML,
+  getAgentHTML
 }
 
 function xmlHtmlEscape(string) {
@@ -2011,4 +2012,36 @@ function getTestDescriptionReviewStatusHTML() {
   reviewStatusHTML.push('</dl>');
 
   return reviewStatusHTML.join('');
+}
+
+function getAgentHTML(options = {}) {
+  options = options || {};
+  var avatarSize = ('avatarSize' in options) ? options.avatarSize : Config['AvatarSize'];
+
+  let userName = Config.SecretAgentNames[Math.floor(Math.random() * Config.SecretAgentNames.length)]
+  
+  if (Config.User.Name) {
+    // XXX: We have the IRI already
+    userName = '<span about="' + Config.User.IRI + '" property="schema:name">' +
+      Config.User.Name + '</span>'
+  }
+
+  let userImage = ''
+  
+  if (!('omitImage' in options && options.omitImage) && 'Image' in Config.User && typeof Config.User.Image !== 'undefined' && Config.User.Image.length > 0) {
+    userImage = '<img alt="" height="' + avatarSize + '" rel="schema:image" src="' +
+      Config.User.Image + '" width="' + avatarSize + '" /> '
+  }
+  
+  let user = ''
+  
+  if ('IRI' in Config.User && Config.User.IRI !== null && Config.User.IRI.length > 0) {
+    user = '<span about="' + Config.User.IRI + '" typeof="schema:Person">' +
+    userImage + '<a rel="schema:url" href="' + Config.User.IRI + '"> ' +
+    userName + '</a></span>'
+  } else {
+    user = '<span typeof="schema:Person">' + userName + '</span>'
+  }
+  
+  return user
 }
