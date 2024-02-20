@@ -363,7 +363,7 @@ var DO = {
                       }
                       var a = g.child(noteData['creator']['iri']);
                       var actorName = auth.getAgentName(a);
-                      var actorImage = auth.getAgentImage(a);
+                      var actorImage = graph.getAgentImage(a);
 
                       if(typeof actorName != 'undefined') {
                         noteData['creator']['name'] = actorName;
@@ -4088,7 +4088,7 @@ console.log(reason);
 // console.log(iri.toString());
       var id = encodeURIComponent(iri);
       var name = auth.getAgentName(s) || iri;
-      var img = auth.getAgentImage(s);
+      var img = graph.getAgentImage(s);
       img = (img && img.length > 0) ? '<img alt="" height="32" src="' + img + '" width="32" />' : '';
       var input = '<li><input id="share-resource-contact-' + id + '" type="checkbox" value="' + iri + '" /><label for="share-resource-contact-' + id + '">' + img + '<a href="' + iri + '" target="_blank">' + name + '</a></label></li>';
 
@@ -5446,10 +5446,16 @@ console.log(response)
 
 // console.log(graph);
       options = options || {};
+      var image = '';
       var name = '';
       var published = '';
       var summary = '';
       var tags = '';
+
+      image = graph.getAgentImage(g) || '';
+      if (image) {
+        image = doc.getResourceImageHTML(image) + ' ';
+      }
 
       name = doc.getGraphLabel(g) || g.iri().toString();
       name = '<a href="' + g.iri().toString() + '">' + name + '</a>';
@@ -5488,7 +5494,7 @@ console.log(response)
         tags = '<ul>' + tags.join('') + '</ul>';
       }
 
-      return name + published + summary + tags;
+      return image + name + published + summary + tags;
     },
 
     spawnDokieli: function(documentNode, data, contentType, iri, options){
@@ -6820,7 +6826,7 @@ WHERE {\n\
       }
       var annotatedByName = auth.getAgentName(annotatedBy);
 // console.log(annotatedByName);
-      var annotatedByImage = auth.getAgentImage(annotatedBy);
+      var annotatedByImage = graph.getAgentImage(annotatedBy);
 // console.log(annotatedByImage);
       var annotatedByURL = annotatedBy.schemaurl || '';
       annotatedByURL = (annotatedByURL) ? annotatedByURL : undefined;
@@ -7928,7 +7934,7 @@ WHERE {\n\
                 var contributorInList = (DO.C.Resource[documentURL].rdftype.indexOf(DO.C.Vocab['schemaScholarlyArticle']['@id']) > -1) ?
                   ' inlist="" rel="bibo:' + contributorRole + 'List" resource="' + DO.C.User.IRI + '"' : '';
 
-                var userHTML = '<dd class="do"' + contributorId + contributorInList + '><span about="" rel="schema:' + contributorRole + '">' + auth.getUserHTML({'avatarSize': 32}) + '</span><button class="add-' + contributorRole + '" contenteditable="false" title="Add ' + contributorName + ' as ' + contributorRole + '">' + template.Icon[".fas.fa-plus"] + '</button></dd>';
+                var userHTML = '<dd class="do"' + contributorId + contributorInList + '><span about="" rel="schema:' + contributorRole + '">' + doc.getAgentHTML({'avatarSize': 32}) + '</span><button class="add-' + contributorRole + '" contenteditable="false" title="Add ' + contributorName + ' as ' + contributorRole + '">' + template.Icon[".fas.fa-plus"] + '</button></dd>';
 
                 contributorNode.insertAdjacentHTML('beforeend', userHTML);
               }
@@ -7978,7 +7984,7 @@ WHERE {\n\
                         // var id = encodeURIComponent(iri);
 
                         var name = auth.getAgentName(s) || iri;
-                        var img = auth.getAgentImage(s);
+                        var img = graph.getAgentImage(s);
 
                         img = (img && img.length > 0) ? '<img alt="" height="32" rel="schema:image" src="' + img + '" width="32" /> ' : '';
                         var userHTML = util.fragmentFromString('<span about="" rel="schema:' + contributorRole + '"><span about="' + iri + '" typeof="schema:Person">' + img + '<a href="' + iri + '" rel="schema:url">' + name + '</a></span></span>');
