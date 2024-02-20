@@ -65,7 +65,8 @@ module.exports = {
   showRobustLinksDecoration,
   getCitationLabelsFromTerms,
   getTestDescriptionReviewStatusHTML,
-  getAgentHTML
+  getAgentHTML,
+  getResourceImageHTML
 }
 
 function xmlHtmlEscape(string) {
@@ -2015,9 +2016,6 @@ function getTestDescriptionReviewStatusHTML() {
 }
 
 function getAgentHTML(options = {}) {
-  options = options || {};
-  var avatarSize = ('avatarSize' in options) ? options.avatarSize : Config['AvatarSize'];
-
   let userName = Config.SecretAgentNames[Math.floor(Math.random() * Config.SecretAgentNames.length)]
   
   if (Config.User.Name) {
@@ -2029,8 +2027,7 @@ function getAgentHTML(options = {}) {
   let userImage = ''
   
   if (!('omitImage' in options && options.omitImage) && 'Image' in Config.User && typeof Config.User.Image !== 'undefined' && Config.User.Image.length > 0) {
-    userImage = '<img alt="" height="' + avatarSize + '" rel="schema:image" src="' +
-      Config.User.Image + '" width="' + avatarSize + '" /> '
+    userImage = getResourceImageHTML(Config.User.Image, options) + ' '
   }
   
   let user = ''
@@ -2044,4 +2041,10 @@ function getAgentHTML(options = {}) {
   }
   
   return user
+}
+
+function getResourceImageHTML(resource, options = {}) {
+  var avatarSize = ('avatarSize' in options) ? options.avatarSize : Config['AvatarSize'];
+
+  return '<img alt="" height="' + avatarSize + '" rel="schema:image" src="' + resource + '" width="' + avatarSize + '" />';
 }
