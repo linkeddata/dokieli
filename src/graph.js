@@ -15,7 +15,8 @@ module.exports = {
   applyParserSerializerFixes,
   skolem,
   setDocumentBase,
-  traverseRDFList
+  traverseRDFList,
+  getAgentImage
 }
 
 function getGraph (url) {
@@ -404,4 +405,27 @@ function traverseRDFList(g, resource) {
   }
 
   return result;
+}
+
+function getAgentImage (s) {
+  if (s.asimage || s.asicon) {
+    var image = s.asimage || s.asicon;
+    s._graph.some(function(t){
+      if(t.predicate.nominalValue == Config.Vocab['asurl']['@id'] || t.predicate.nominalValue == Config.Vocab['ashref']['@id']) {
+        if (t.subject.nominalValue == s.asicon || "_:" + t.subject.nominalValue == s.asicon) {
+          image = t.object.nominalValue;
+          return true;
+        }
+        else if (t.subject.nominalValue == s.asimage || "_:" + t.subject.nominalValue == s.asimage) {
+          image = t.object.nominalValue;
+          return true;
+        }
+        return false;
+      }
+    });
+    return image;
+  }
+  else {
+    return s.foafimg || s.schemaimage || s.vcardphoto || s.vcardhasPhoto || s.siocavatar || s.foafdepiction || undefined
+  }
 }

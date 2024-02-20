@@ -4,6 +4,7 @@ const Config = require('./config')
 const fetcher = require('./fetcher')
 const util = require('./util')
 const uri = require('./uri')
+const graph = require('./graph')
 const storage = require('./storage')
 const solidAuth = require('solid-auth-client')
 
@@ -15,7 +16,6 @@ module.exports = {
   afterSignIn,
   enableDisableButton,
   getAgentEmail,
-  getAgentImage,
   getAgentName,
   getAgentURL,
   getAgentStorage,
@@ -356,7 +356,7 @@ function setUserInfo (userIRI, oidc) {
       Config.User.Graph = s
       Config.User.IRI = userIRI
       Config.User.Name = getAgentName(s)
-      Config.User.Image = getAgentImage(s)
+      Config.User.Image = graph.getAgentImage(s)
       Config.User.URL = getAgentURL(s)
       Config.User.OIDC = oidc ? true : false;
 
@@ -501,7 +501,7 @@ function getAgentSupplementalInfo(iri) {
 
         Config.User.Name = Config.User.Name || getAgentName(s);
 
-        Config.User.Image = Config.User.Image || getAgentImage(s);
+        Config.User.Image = Config.User.Image || graph.getAgentImage(s);
 
         var storage = getAgentStorage(s) || [];
         var outbox = getAgentOutbox(s) || [];
@@ -716,30 +716,6 @@ function getAgentPreferredProxy (s) {
 
 function getAgentPreferredPolicy (s) {
   return s.solidpreferredPolicy || undefined
-}
-
-function getAgentImage (s) {
-  if (s.asicon || s.asimage) {
-
-    var image = s.asimage;
-    s._graph.some(function(t){
-      if(t.predicate.nominalValue == Config.Vocab['asurl']['@id']) {
-        if (t.subject.nominalValue == s.asicon || "_:" + t.subject.nominalValue == s.asicon) {
-          image = t.object.nominalValue;
-          return true;
-        }
-        else if (t.subject.nominalValue == s.asimage || "_:" + t.subject.nominalValue == s.asimage) {
-          image = t.object.nominalValue;
-          return true;
-        }
-        return false;
-      }
-    });
-    return image;
-  }
-  else {
-    return s.foafimg || s.schemaimage || s.vcardphoto || s.vcardhasPhoto || s.siocavatar || s.foafdepiction || undefined
-  }
 }
 
 function getAgentName (s) {
