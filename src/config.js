@@ -335,7 +335,9 @@ module.exports = {
 
     Feed: ['application/atom+xml', 'application/rss+xml'],
 
-    Markup: ['text/html', 'image/svg+xml', 'text/markdown']
+    Markup: ['text/html', 'image/svg+xml', 'text/markdown'],
+
+    MultiMediaType: ['audio', 'image', 'video']
   },
 
   Prefixes: {
@@ -538,6 +540,9 @@ module.exports = {
     "asOrderedCollection": { "@id": "https://www.w3.org/ns/activitystreams#OrderedCollection", "@type": "@id" },
     "asOrderedCollectionPage": { "@id": "https://www.w3.org/ns/activitystreams#OrderedCollectionPage", "@type": "@id" },
     "asAnnounce": { "@id": "https://www.w3.org/ns/activitystreams#Announce", "@type": "@id" },
+    "asAudio": { "@id": "https://www.w3.org/ns/activitystreams#Audio", "@type": "@id" },
+    "asImage": { "@id": "https://www.w3.org/ns/activitystreams#Image", "@type": "@id" },
+    "asVideo": { "@id": "https://www.w3.org/ns/activitystreams#Video", "@type": "@id" },
 
     "siocreplyof": { "@id": "http://rdfs.org/sioc/ns#reply_of", "@type": "@id", "@array": true },
     "siocavatar": { "@id": "http://rdfs.org/sioc/ns#avatar", "@type": "@id" },
