@@ -64,18 +64,6 @@ var DO = {
               DO.C.CollectionPages.push(url);
             }
 
-            var traverseRDFList = function(resource) {
-              var b = s.child(resource);
-
-              if (b.rdffirst) {
-                options.resourceItems.push(b.rdffirst);
-              }
-              if (b.rdfrest && b.rdfrest !== 'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil') {
-                traverseRDFList(b.rdfrest);
-              }
-            }
-
-
             var items = [s.asitems, s.asorderedItems, s.ldpcontains];
             Object.keys(items).forEach(function(i) {
 // console.log(items)
@@ -85,7 +73,7 @@ var DO = {
                 var r = s.child(resource);
 
                 if (r.rdffirst || r.rdfrest) {
-                  traverseRDFList(resource);
+                  options.resourceItems = options.resourceItems.concat(graph.traverseRDFList(s, resource));
                 }
                 else {
                   //FIXME: This may need to be processed outside of items? See also comment above about processing Collection and CollectionPages.
@@ -101,7 +89,6 @@ var DO = {
                     options.resourceItems.push(resource);
                   }
                 }
-
               });
             });
 
@@ -6342,21 +6329,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
       //XXX: FIXME: Putting this off for now because SimpleRDF is not finding the bnode for some reason in citationGraph.child(item), or at least authorItem.rdffirst (undefined)
 //       if (subject.biboauthorList) {
-//         var traverseRDFList = function(item) {
-//           var authorItem = citationGraph.child(item);
-// // console.log(authorItem);
-// // console.log(authorItem.iri().toString());
-// // console.log(authorItem.rdffirst);
-// // console.log(authorItem.rdfrest);
-//           if (authorItem.rdffirst) {
-//             authorList.push(authorItem.rdffirst);
-//           }
-//           if (authorItem.rdfrest && authorItem.rdfrest !== 'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil') {
-//             traverseRDFList(authorItem.rdfrest);
-//           }
-//         };
-
-//         traverseRDFList(subject.biboauthorList);
+//TODO: Just use/test something like: authorList = authorList.concat(graph.traverseRDFList(citationGraph, subject.biboauthorList));
 //       }
 //       else
       if (subject.schemaauthor && subject.schemaauthor._array.length > 0) {
