@@ -14,7 +14,8 @@ module.exports = {
   serializeGraph,
   applyParserSerializerFixes,
   skolem,
-  setDocumentBase
+  setDocumentBase,
+  traverseRDFList
 }
 
 function getGraph (url) {
@@ -389,4 +390,18 @@ function setDocumentBase (data, baseURI, contentType) {
   }
 // console.log(data)
   return data
+}
+
+function traverseRDFList(g, resource) {
+  var b = g.child(resource);
+  var result = [];
+
+  if (b.rdffirst) {
+    result.push(b.rdffirst);
+  }
+  if (b.rdfrest && b.rdfrest !== 'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil') {
+    result = result.concat(traverseRDFList(g, b.rdfrest));
+  }
+
+  return result;
 }
