@@ -5292,7 +5292,7 @@ console.log(response)
             throw error
           })
           .then(response => {
-console.log(response)
+// console.log(response)
             var cT = response.headers.get('Content-Type');
             var options = {};
             options['contentType'] = (cT) ? cT.split(';')[0].toLowerCase().trim() : 'text/turtle';

@@ -317,17 +317,17 @@ function getResource (url, headers = {}, options = {}) {
 // console.log(error)
 
       if (error?.status == 405) {
-console.log('status: 405')
+// console.log('status: 405')
         throw error
       }
       else if (error?.status == 401) {
         options.noCredentials = false
         options.credentials = 'include'
-console.log('status: 401')
+// console.log('status: 401')
         return getResource(url, headers, options)
       }
       else if (!options.noCredentials && options.credentials !== 'omit') {
-console.log('Possible CORS error, retry with no credentials')
+// console.log('Possible CORS error, retry with no credentials')
         options.noCredentials = true
         options.credentials = 'omit'
         return getResource(url, headers, options)
@@ -335,7 +335,7 @@ console.log('Possible CORS error, retry with no credentials')
       else if (!error?.status) {
         var pIRI = uri.getProxyableIRI(url, {'forceProxy': true});
         if (pIRI !== url) {
-console.log('forceProxy: ' + pIRI);
+// console.log('forceProxy: ' + pIRI);
           return getResource(pIRI, headers, options);
         }
       }
