@@ -5390,12 +5390,12 @@ console.log(response)
                         //   items.push('<a href="' + result.value + '">' + result.value + '</a>');
                       }
                       else if ('resource' in result.value) {
-                        items.push('<a href="' + result.value.resource + '">' + result.value.resource + '</a>');
+                        items.push('<li rel="schema:hasPart" resource="' + result.value.iri().toString() + '"><a href="' + result.value.resource + '">' + result.value.resource + '</a></li>');
                       }
                       else {
                         var html = DO.U.generateIndexItemHTML(result.value);
                         if (typeof html === 'string' && html !== '') {
-                          items.push(html);
+                          items.push('<li rel="schema:hasPart" resource="' + result.value.iri().toString() + '">' + html + '</li>');
                         }
                       }
                     })
@@ -5406,10 +5406,7 @@ console.log(response)
                     var listItems = '';
 
                     if (items.length > 0) {
-                      listItems = `
-            <ul>
-              <li>` + items.join('</li>\n<li>') + `</li>
-            </ul>`;
+                      listItems = "<ul>" + items.join('') + "</ul>";
                     }
 
                     var html = `      <article about="" typeof="as:Collection">
@@ -5458,12 +5455,12 @@ console.log(response)
       }
 
       name = doc.getGraphLabel(g) || g.iri().toString();
-      name = '<a href="' + g.iri().toString() + '">' + name + '</a>';
+      name = '<a href="' + g.iri().toString() + '" property="schema:name" rel="schema:url">' + name + '</a>';
 
       var datePublished = g.schemadatePublished || g.dctermsissued || g.dctermsdate || g.aspublished || g.schemadateCreated || g.dctermscreated || g.provgeneratedAtTime || g.dctermsmodified || g.asupdated || '';
 
       if (datePublished) {
-        published = ', <time datetime="' + datePublished + '">' + datePublished.substr(0,10) + '</time>';
+        published = ', <time content="' + datePublished + '" datetime="' + datePublished + '" property="schema:dataPublished">' + datePublished.substr(0,10) + '</time>';
       }
 
       if (g.oahasBody) {
@@ -5474,7 +5471,7 @@ console.log(response)
       }
 
       if (summary) {
-        summary = '<div>' + summary + '</div>';
+        summary = '<div datatype="rdf:HTML" property="schema:description">' + summary + '</div>';
       }
 
       if (g.astag && g.astag._array.length > 0) {
@@ -5489,7 +5486,7 @@ console.log(response)
           if (t.asname && t.asname.length > 0) {
             tagName = t.asname;
           }
-          tags.push('<li><a href="' + tagURL + '">' + tagName + '</a></li>');
+          tags.push('<li><a href="' + tagURL + '" rel="schema:about">' + tagName + '</a></li>');
         })
         tags = '<ul>' + tags.join('') + '</ul>';
       }
@@ -7978,7 +7975,7 @@ WHERE {\n\
                     // button.querySelector('svg').classList.add('fa-spin');
 
                     if (iri.startsWith('http')) {
-                      //TODO: Refactor. There is overlap with addShareResourceContactInput and doc.getUserHTML
+                      //TODO: Refactor. There is overlap with addShareResourceContactInput and doc.getAgentHTML
                       fetcher.getResourceGraph(iri).then(function(s){
                         // var iri = s.iri().toString();
                         // var id = encodeURIComponent(iri);
