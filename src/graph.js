@@ -16,7 +16,9 @@ module.exports = {
   skolem,
   setDocumentBase,
   traverseRDFList,
-  getAgentImage
+  getAgentImage,
+  isActorType,
+  isActorProperty
 }
 
 function getGraph (url) {
@@ -428,4 +430,12 @@ function getAgentImage (s) {
   else {
     return s.foafimg || s.schemaimage || s.vcardphoto || s.vcardhasPhoto || s.siocavatar || s.foafdepiction || undefined
   }
+}
+
+function isActorType (s) {
+  return Config.Actor.Type.hasOwnProperty(s)
+}
+
+function isActorProperty (s) {
+  return Config.Actor.Property.hasOwnProperty(s)
 }

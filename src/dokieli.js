@@ -970,7 +970,7 @@ var DO = {
               if (t.predicate.nominalValue == DO.C.Vocab['rdftype']['@id']){
                 oGroup = 6;
 
-                if (auth.isActorType(t.object.nominalValue)) {
+                if (graph.isActorType(t.object.nominalValue)) {
                   sGroup = 10;
                 }
 
@@ -993,7 +993,7 @@ var DO = {
                     break;
                 }
               }
-              if (auth.isActorProperty(t.predicate.nominalValue)) {
+              if (graph.isActorProperty(t.predicate.nominalValue)) {
                 oGroup = 10;
               }
               if (t.predicate.nominalValue.startsWith('http://purl.org/spar/cito/')) {
