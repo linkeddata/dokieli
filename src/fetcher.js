@@ -6,6 +6,7 @@ const Config = require('./config')
 const util = require('./util')
 const doc = require('./doc')
 const uri = require('./uri')
+const LinkHeader = require('http-link-header')
 const graph = require('./graph')
 const solidAuth = require('solid-auth-client')
 
@@ -28,7 +29,7 @@ module.exports = {
   getResourceGraph,
   getTriplesFromGraph,
   getResourceOptions,
-  parseLinkHeader,
+  LinkHeader,
   patchResource,
   patchResourceGraph,
   postResource,
@@ -81,17 +82,25 @@ function getLinkRelation (property, url) {
 }
 
 function getLinkRelationFromHead (property, url) {
-  var pIRI = uri.getProxyableIRI(url);
+  var properties = (Array.isArray(property)) ? property : [property];
 
-  return getResourceHead(pIRI).then(
+  return getResourceHead(url).then(
     function (i) {
-      var linkHeaders = parseLinkHeader(i.headers.get('Link'))
-// console.log(property)
-// console.log(linkHeaders)
-      if (property in linkHeaders) {
-        return linkHeaders[property]
+      var link = i.headers.get('Link')
+      if (link) {
+        var linkHeaders = LinkHeader.parse(link)
+  // console.log(property)
+  // console.log(linkHeaders)
+        var uris = [];
+        properties.forEach(function(property){
+          if (linkHeaders.has('rel', property)) {
+            uris.push(linkHeaders.rel(property)[0].uri);
+          }
+        });
+
+        return uris;
       }
-      return Promise.reject({'message': property + " endpoint was not found in 'Link' header"})
+      return Promise.reject({'message': properties.join(', ') + " endpoint(s) was not found in 'Link' header"})
     },
     function (reason) {
       return Promise.reject({'message': "'Link' header not found"})
@@ -477,37 +486,6 @@ function getResourceOptions (url, options = {}) {
 
       return { headers: response.headers }  // Not currently used anywhere
     })
-}
-
-function parseLinkHeader (link) {
-  if (!link) {
-    return {}
-  }
-  var linkexp = /<[^>]*>\s*(\s*;\s*[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*")))*(,|$)/g
-  var paramexp = /[^\(\)<>@,;:"\/\[\]\?={} \t]+=(([^\(\)<>@,;:"\/\[\]\?={} \t]+)|("[^"]*"))/g;
-  var matches = link.match(linkexp)
-  var rels = {}
-  for (var i = 0; i < matches.length; i++) {
-    var split = matches[i].split('>')
-    var href = split[0].substring(1)
-    var ps = split[1]
-    var s = ps.match(paramexp)
-    for (var j = 0; j < s.length; j++) {
-      var p = s[j]
-      var paramsplit = p.split('=')
-      // var name = paramsplit[0]
-      var rel = paramsplit[1].replace(/["']/g, '')
-      rel = (!rel.toLowerCase().startsWith('http:') && !rel.toLowerCase().startsWith('https:')) ? rel.toLowerCase() : rel
-      if (!rels[rel]) {
-        rels[rel] = []
-      }
-      rels[rel].push(href)
-      if (rels[rel].length > 1) {
-        rels[rel].sort()
-      }
-    }
-  }
-  return rels
 }
 
 function patchResourceGraph (url, patches, options = {}) {

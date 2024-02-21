@@ -3151,11 +3151,11 @@ console.log(reason);
         var link = response.headers.get('Link');
 
         if (link && link.length > 0) {
-          var rels = fetcher.parseLinkHeader(link);
-          if ('memento' in rels && rels.memento.length > 0) {
+          var rels = fetcher.LinkHeader.parse(link);
+          if (rels.has('rel', 'memento')) {
             var o = {
               "response": response,
-              "location": rels.memento[0]
+              "location": rels.rel('memento')[0].uri
             }
             return handleSuccess(o);
           }
@@ -4102,22 +4102,16 @@ console.log(reason);
         if (aI) {
           return Promise.resolve(aI);
         }
-        // else if (iri.indexOf('#') < 0) {
         else {
-          return fetcher.getLinkRelationFromHead(DO.C.Vocab['ldpinbox']['@id'], iri).then(
-            function(i) {
-              return i;
-            },
-            function(reason){
-              //XXX: This should be optimised so that we don't have to HEAD again
-              return fetcher.getLinkRelationFromHead(DO.C.Vocab['asinbox']['@id'], iri)
-            });
+          return fetcher.getLinkRelationFromHead(DO.C.Vocab['ldpinbox']['@id'], iri);
         }
       }
 
       return checkInbox(s)
         .then(inboxes => {
-          DO.C.User.Contacts[iri]['Inbox'] = inboxes;
+          if (inboxes && inboxes.length > 0) {
+            DO.C.User.Contacts[iri]['Inbox'] = inboxes;
+          }
         })
     },
 
@@ -5989,12 +5983,12 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
             var linkHeaders;
             var inboxURL;
             var link = error.response.headers.get('Link');
-            if (link && link.length > 0) {
-              linkHeaders = fetcher.parseLinkHeader(link);
+            if (link) {
+              linkHeaders = fetcher.LinkHeader.parse(link);
             }
 
-            if (DO.C.User.IRI && linkHeaders && DO.C.Vocab['ldpinbox']['@id'] in linkHeaders){
-              inboxURL = linkHeaders[DO.C.Vocab['ldpinbox']['@id']][0];
+            if (DO.C.User.IRI && linkHeaders && linkHeaders.has('rel', DO.C.Vocab['ldpinbox']['@id'])){
+              inboxURL = linkHeaders.rel(DO.C.Vocab['ldpinbox']['@id'])[0].uri;
               requestAccess = '<p><button class="request-access" data-inbox="' + inboxURL +'" data-target="' + storageIRI + '" title="Send an access request to resource inbox.">Request Access</button></p>'
             }
 

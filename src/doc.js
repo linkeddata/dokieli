@@ -1357,16 +1357,17 @@ function getResourceInfo(data, options) {
               }
 
               if (oHeader.toLowerCase() == 'link') {
-                var linkHeaders = fetcher.parseLinkHeader(oHeaderValue);
+                var linkHeaders = fetcher.LinkHeader.parse(oHeaderValue);
 
                 Config['Resource'][documentURL]['headers']['linkHeaders'] = linkHeaders;
 
-                if ('describedby' in linkHeaders) {
+                if (linkHeaders.has('rel', 'describedby')) {
                   var p = [];
 
                   Config['Resource'][documentURL]['describedby'] = {};
 
-                  linkHeaders.describedby.forEach(function(describedbyURL) {
+                  linkHeaders.rel('describedby').forEach(function(describedbyItem) {
+                    var describedbyURL = describedbyItem.uri;
                     if (!describedbyURL.startsWith('http:') && !describedbyURL.startsWith('https:')) {
                       describedbyURL = uri.getAbsoluteIRI(uri.getBaseURL(response.url), describedbyURL);
                     }
