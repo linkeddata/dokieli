@@ -924,7 +924,7 @@ var DO = {
               dataGraph.graph().addAll(g);
             });
 
-            var graph = {"nodes":[], "links": [], "resources": options.resources };
+            var graphData = {"nodes":[], "links": [], "resources": options.resources };
             var graphNodes = [];
 
             dataGraph.graph().toArray().forEach(function(t){
@@ -1039,20 +1039,20 @@ var DO = {
 
               if(graphNodes.indexOf(t.subject.nominalValue) == -1) {
                 graphNodes.push(t.subject.nominalValue);
-                graph.nodes.push({"id": t.subject.nominalValue, "group": sGroup, "visited": sVisited });
+                graphData.nodes.push({"id": t.subject.nominalValue, "group": sGroup, "visited": sVisited });
               }
               if(graphNodes.indexOf(t.object.nominalValue) == -1) {
                 graphNodes.push(t.object.nominalValue);
-                graph.nodes.push({"id": t.object.nominalValue, "group": oGroup, "visited": oVisited });
+                graphData.nodes.push({"id": t.object.nominalValue, "group": oGroup, "visited": oVisited });
               }
 
-              graph.links.push({"source": t.subject.nominalValue, "target": t.object.nominalValue, "value": t.predicate.nominalValue});
+              graphData.links.push({"source": t.subject.nominalValue, "target": t.object.nominalValue, "value": t.predicate.nominalValue});
             });
 // console.log(graphNodes)
 // console.log(graph)
 
             delete graphNodes;
-            return resolve(graph);
+            return resolve(graphData);
           }
         );
       });
