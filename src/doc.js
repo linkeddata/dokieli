@@ -37,18 +37,7 @@ module.exports = {
   buttonClose,
   getButtonDisabledHTML,
   showTimeMap,
-  getGraphLabel,
-  getGraphTitle,
-  getGraphDescription,
   getGraphAuthorData,
-  getGraphEditor,
-  getGraphAuthor,
-  getGraphEmail,
-  getGraphPublished,
-  getGraphUpdated,
-  getGraphCreated,
-  getGraphLicense,
-  getGraphRights,
   getResourceInfo,
   getResourceInfoODRLPolicies,
   getResourceInfoSpecRequirements,
@@ -1070,22 +1059,9 @@ function getButtonDisabledHTML(id) {
   return html;
 }
 
-
-function getGraphLabel(s) {
-  return s.schemaname || s.dctermstitle || s.dcelementstitle || graph.getAgentName(s) || s.assummary || undefined;
-}
-
-function getGraphTitle(s) {
-  return s.schemaname || s.dctermstitle || s.dcelementstitle || s.asname || undefined;
-}
-
-function getGraphDescription(s) {
-  return s.schemadescription || s.dctermsdescription || s.dcelementsdescription || s.schemaname || s.asname || undefined;
-}
-
 function getGraphAuthorData(g) {
-  var authors = getGraphAuthor(g);
-  // var editors = getGraphEditor(g);
+  var authors = graph.getGraphAuthor(g);
+  // var editors = graph.getGraphEditor(g);
 
   if (!authors || authors.length === 0) {
     return undefined;
@@ -1097,12 +1073,12 @@ function getGraphAuthorData(g) {
     var aUN = {};
     aUN['uri'] = s;
     //XXX: Only checks within the same document.
-    var label = doc.getGraphLabel(g.child(s));
+    var label = graph.getGraphLabel(g.child(s));
     if (label) {
       aUN['name'] = label;
     }
 
-    var email = getGraphEmail(g.child(s));
+    var email = graph.getGraphEmail(g.child(s));
     if (email) {
       email = (typeof email === 'string') ? email : email.iri().toString();
       aUN['email'] = email.startsWith('mailto:') ? email.slice(7) : email;
@@ -1125,48 +1101,7 @@ function getGraphAuthorData(g) {
   return authorData;
 }
 
-function getGraphEditor(s) {
-  return (
-    s.schemaeditor?._array?.length > 0 ? s.schemaeditor._array :
-    undefined
-  )
-}
-
-function getGraphAuthor(s) {
-  return (
-    s.schemaauthor?._array?.length > 0 ? s.schemaauthor._array :
-    s.schemacreator?._array?.length > 0 ? s.schemacreator._array :
-    s.asactor?._array?.length > 0 ? s.asactor._array :
-    s.dctermscreator?._array?.length > 0 ? s.dctermscreator._array :
-    undefined
-  );
-}
-
-//XXX: Duplicates `auth.getAgentEmail`
-function getGraphEmail(s) {
-  return s.schemaemail || s.foafmbox || undefined ;
-}
-
-function getGraphPublished(s) {
-  return s.schemadatePublished || s.aspublished || s.dctermsissued || s.dctermsdate || s.provgeneratedAtTime || undefined;
-}
-
-function getGraphUpdated(s) {
-  return s.schemadateModified || s.asupdated || s.dctermsmodified || s.dctermsdate || s.provgeneratedAtTime || undefined;
-}
-
-function getGraphCreated(s) {
-  return s.schemadateCreated || s.dctermscreated || s.dctermsdate || s.provgeneratedAtTime || undefined;
-}
-
-function getGraphLicense(s) {
-  return s.schemalicense || s.cclicense || s.dctermslicense || s.xhvlicense || undefined;
-}
-
-function getGraphRights(s) {
-  return s.schemalicense || s.cclicense || s.dctermsrights || undefined;
-}
-
+//TODO: Rename this to avoid confusion with graph.getGraphFromData
 function getGraphData(s, options) {
   var documentURL = options['subjectURI'];
 
@@ -1178,15 +1113,15 @@ function getGraphData(s, options) {
        info['graph'] = s;
         info['rdftype'] = s.rdftype._array;
 
-        info['title'] = getGraphTitle(s);
-        // info['label'] = getGraphLabel(s);
-        info['published'] = getGraphPublished(s);
-        info['updated'] = getGraphUpdated(s);
-        info['description'] = getGraphDescription(s);
-        info['license'] = getGraphLicense(s);
-        info['rights'] = getGraphRights(s);
-        // info['summary'] = getGraphSummary(s);
-        // info['creator'] = getGraphCreators(s);
+        info['title'] = graph.getGraphTitle(s);
+        // info['label'] = graph.getGraphLabel(s);
+        info['published'] = graph.getGraphPublished(s);
+        info['updated'] = graph.getGraphUpdated(s);
+        info['description'] = graph.getGraphDescription(s);
+        info['license'] = graph.getGraphLicense(s);
+        info['rights'] = graph.getGraphRights(s);
+        // info['summary'] = graph.getGraphSummary(s);
+        // info['creator'] = graph.getGraphCreators(s);
         info['author'] = getGraphAuthorData(s);
 
         info['profile'] = Config.Vocab['ldpRDFSource']['@id'];

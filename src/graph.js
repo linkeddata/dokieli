@@ -31,7 +31,6 @@ module.exports = {
   getAgentPreferredPolicy,
   getAgentName,
   getAgentURL,
-  getAgentEmail,
   getAgentDelegates,
   getAgentStorage,
   getAgentOutbox,
@@ -40,7 +39,18 @@ module.exports = {
   getAgentFollowing,
   getAgentPublicTypeIndex,
   getAgentPrivateTypeIndex,
-  getAgentPreferencesFile
+  getAgentPreferencesFile,
+  getGraphEmail,
+  getGraphEditor,
+  getGraphAuthor,
+  getGraphPublished,
+  getGraphUpdated,
+  getGraphCreated,
+  getGraphLicense,
+  getGraphRights,
+  getGraphLabel,
+  getGraphTitle,
+  getGraphDescription
 }
 
 function getGraph (url) {
@@ -762,10 +772,6 @@ function getAgentURL (s) {
   return s.foafhomepage || s.foafweblog || s.schemaurl || s.vcardurl || undefined
 }
 
-function getAgentEmail (s) {
-  return s.schemaemail || s.foafmbox || undefined
-}
-
 function getAgentDelegates (s) {
   return (s.acldelegates && s.acldelegates._array.length > 0)
     ? s.acldelegates._array
@@ -839,4 +845,57 @@ function getAgentPreferencesFile (s) {
   return (s.pimpreferencesFile && s.pimpreferencesFile.length > 0)
     ? s.pimpreferencesFile
     : undefined
+}
+
+function getGraphEmail(s) {
+  return s.schemaemail || s.foafmbox || undefined ;
+}
+
+function getGraphEditor(s) {
+  return (
+    s.schemaeditor?._array?.length > 0 ? s.schemaeditor._array :
+    undefined
+  )
+}
+
+function getGraphAuthor(s) {
+  return (
+    s.schemaauthor?._array?.length > 0 ? s.schemaauthor._array :
+    s.schemacreator?._array?.length > 0 ? s.schemacreator._array :
+    s.asactor?._array?.length > 0 ? s.asactor._array :
+    s.dctermscreator?._array?.length > 0 ? s.dctermscreator._array :
+    undefined
+  );
+}
+
+function getGraphPublished(s) {
+  return s.schemadatePublished || s.aspublished || s.dctermsissued || s.dctermsdate || s.provgeneratedAtTime || undefined;
+}
+
+function getGraphUpdated(s) {
+  return s.schemadateModified || s.asupdated || s.dctermsmodified || s.dctermsdate || s.provgeneratedAtTime || undefined;
+}
+
+function getGraphCreated(s) {
+  return s.schemadateCreated || s.dctermscreated || s.dctermsdate || s.provgeneratedAtTime || undefined;
+}
+
+function getGraphLicense(s) {
+  return s.schemalicense || s.cclicense || s.dctermslicense || s.xhvlicense || undefined;
+}
+
+function getGraphRights(s) {
+  return s.dctermsrights || s.schemalicense || s.cclicense || undefined;
+}
+
+function getGraphLabel(s) {
+  return s.schemaname || s.dctermstitle || s.dcelementstitle || getAgentName(s) || s.assummary || undefined;
+}
+
+function getGraphTitle(s) {
+  return s.schemaname || s.dctermstitle || s.dcelementstitle || s.asname || undefined;
+}
+
+function getGraphDescription(s) {
+  return s.schemadescription || s.dctermsdescription || s.dcelementsdescription || s.schemaname || s.asname || undefined;
 }
