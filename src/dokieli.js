@@ -1961,7 +1961,7 @@ var DO = {
 
       if(g.schemaeditor._array.length > 0) {
         g.schemaeditor.forEach(function(s){
-          var label = doc.getGraphLabel(g.child(s));
+          var label = graph.getGraphLabel(g.child(s));
           if(typeof label !== 'undefined'){
             editors.push('<li>' + label + '</li>');
           }
@@ -1973,7 +1973,7 @@ var DO = {
 
       if(g.schemaauthor._array.length > 0) {
         g.schemaauthor.forEach(function(s){
-          var label = doc.getGraphLabel(g.child(s));
+          var label = graph.getGraphLabel(g.child(s));
           if(typeof label !== 'undefined'){
             authors.push('<li>' + label + '</li>');
           }
@@ -1985,7 +1985,7 @@ var DO = {
 
       if(g.schemacontributor._array.length > 0) {
         g.schemacontributor.forEach(function(s){
-          var label = doc.getGraphLabel(g.child(s));
+          var label = graph.getGraphLabel(g.child(s));
           if(typeof label !== 'undefined'){
             contributors.push('<li>' + label + '</li>');
           }
@@ -2073,7 +2073,7 @@ var DO = {
               DO.C.Resource[documentURL] = DO.C.Resource[documentURL] || {};
               DO.C.Resource[documentURL]['graph'] = g;
               DO.C.Resource[documentURL]['skos'] = doc.getResourceInfoSKOS(g);
-              DO.C.Resource[documentURL]['title'] = doc.getGraphLabel(g) || documentURL;
+              DO.C.Resource[documentURL]['title'] = graph.getGraphLabel(g) || documentURL;
 
               if (DO.C.Resource[documentURL]['skos']['graph']._graph.length > 0) {
                 html.push('<section><h4><a href="' + documentURL + '">' + DO.C.Resource[documentURL]['title'] + '</a></h4><div><dl>' + DO.U.getDocumentConceptDefinitionsHTML(documentURL) + '</dl></div></section>');
@@ -4378,7 +4378,7 @@ console.log(reason);
     getStorageSelfDescription: function(g) {
       var s = '';
 
-      var storageName = doc.getGraphLabel(g);
+      var storageName = graph.getGraphLabel(g);
       var storageURL = g.iri().toString();
 
       storageName = (typeof storageName !== 'undefined') ? storageName : storageURL;
@@ -5347,7 +5347,7 @@ console.log(response)
         function(i){
           var s = SimpleRDF(DO.C.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
 // console.log(s)
-          var title = doc.getGraphLabel(s) || options.subjectURI;
+          var title = graph.getGraphLabel(s) || options.subjectURI;
           var h1 = '<a href="' +  options.subjectURI + '">' + title + '</a>';
 
           var types = s.rdftype._array;
@@ -5452,7 +5452,7 @@ console.log(response)
         image = doc.getResourceImageHTML(image) + ' ';
       }
 
-      name = doc.getGraphLabel(g) || g.iri().toString();
+      name = graph.getGraphLabel(g) || g.iri().toString();
       name = '<a href="' + g.iri().toString() + '" property="schema:name" rel="schema:url">' + name + '</a>';
 
       var datePublished = g.schemadatePublished || g.dctermsissued || g.dctermsdate || g.aspublished || g.schemadateCreated || g.dctermscreated || g.provgeneratedAtTime || g.dctermsmodified || g.asupdated || '';
@@ -6318,12 +6318,12 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 // console.log('citationURI: ' + citationURI);
 // console.log('subject.iri().toString(): ' + subject.iri().toString());
 
-      var title = doc.getGraphLabel(subject);
+      var title = graph.getGraphLabel(subject);
       //FIXME: This is a stupid hack because RDFa parser is not setting the base properly.
       if(typeof title == 'undefined') {
         subject = citationGraph.child(options.citationId);
 
-        title = doc.getGraphLabel(subject) || '';
+        title = graph.getGraphLabel(subject) || '';
       }
       title = title.replace(/ & /g, " &amp; ");
       title = (title.length > 0) ? '<cite>' + title + '</cite>, ' : '';
@@ -7189,14 +7189,14 @@ WHERE {\n\
     var refId;
 
     var cEURL = uri.stripFragmentFromString(citingEntity);
-    var citingEntityLabel = doc.getGraphLabel(s);
+    var citingEntityLabel = graph.getGraphLabel(s);
     if (!citingEntityLabel) {
-      var cEL = doc.getGraphLabel(s.child(cEURL));
+      var cEL = graph.getGraphLabel(s.child(cEURL));
       citingEntityLabel = cEL ? cEL : citingEntity;
     }
     citation['citingEntityLabel'] = citingEntityLabel;
 
-    var citedEntityLabel = doc.getGraphLabel(DO.C.Resource[documentURL].graph.child(citedEntity))
+    var citedEntityLabel = graph.getGraphLabel(DO.C.Resource[documentURL].graph.child(citedEntity))
     if (!citedEntityLabel) {
       var cEL = DO.C.Resource[documentURL].graph(DO.C.Resource[documentURL].graph.child(uri.stripFragmentFromString(citedEntity)))
       citedEntityLabel = cEL ? cEL : citedEntity;
