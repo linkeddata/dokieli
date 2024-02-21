@@ -17,7 +17,6 @@ module.exports = {
   skolem,
   setDocumentBase,
   traverseRDFList,
-  getAgentImage,
   isActorType,
   isActorProperty,
   getAgentPreferencesInfo,
@@ -40,6 +39,7 @@ module.exports = {
   getAgentPublicTypeIndex,
   getAgentPrivateTypeIndex,
   getAgentPreferencesFile,
+  getGraphImage,
   getGraphEmail,
   getGraphEditor,
   getGraphAuthor,
@@ -441,29 +441,6 @@ function traverseRDFList(g, resource) {
   return result;
 }
 
-function getAgentImage (s) {
-  if (s.asimage || s.asicon) {
-    var image = s.asimage || s.asicon;
-    s._graph.some(function(t){
-      if(t.predicate.nominalValue == Config.Vocab['asurl']['@id'] || t.predicate.nominalValue == Config.Vocab['ashref']['@id']) {
-        if (t.subject.nominalValue == s.asicon || "_:" + t.subject.nominalValue == s.asicon) {
-          image = t.object.nominalValue;
-          return true;
-        }
-        else if (t.subject.nominalValue == s.asimage || "_:" + t.subject.nominalValue == s.asimage) {
-          image = t.object.nominalValue;
-          return true;
-        }
-        return false;
-      }
-    });
-    return image;
-  }
-  else {
-    return s.foafimg || s.schemaimage || s.vcardphoto || s.vcardhasPhoto || s.siocavatar || s.foafdepiction || undefined
-  }
-}
-
 function isActorType (s) {
   return Config.Actor.Type.hasOwnProperty(s)
 }
@@ -533,7 +510,7 @@ function getAgentSupplementalInfo(iri) {
 
         Config.User.Name = Config.User.Name || getAgentName(s);
 
-        Config.User.Image = Config.User.Image || graph.getAgentImage(s);
+        Config.User.Image = Config.User.Image || graph.getGraphImage(s);
 
         var storage = getAgentStorage(s) || [];
         var outbox = getAgentOutbox(s) || [];
@@ -845,6 +822,29 @@ function getAgentPreferencesFile (s) {
   return (s.pimpreferencesFile && s.pimpreferencesFile.length > 0)
     ? s.pimpreferencesFile
     : undefined
+}
+
+function getGraphImage (s) {
+  if (s.asimage || s.asicon) {
+    var image = s.asimage || s.asicon;
+    s._graph.some(function(t){
+      if(t.predicate.nominalValue == Config.Vocab['asurl']['@id'] || t.predicate.nominalValue == Config.Vocab['ashref']['@id']) {
+        if (t.subject.nominalValue == s.asicon || "_:" + t.subject.nominalValue == s.asicon) {
+          image = t.object.nominalValue;
+          return true;
+        }
+        else if (t.subject.nominalValue == s.asimage || "_:" + t.subject.nominalValue == s.asimage) {
+          image = t.object.nominalValue;
+          return true;
+        }
+        return false;
+      }
+    });
+    return image;
+  }
+  else {
+    return s.foafimg || s.schemaimage || s.vcardphoto || s.vcardhasPhoto || s.siocavatar || s.foafdepiction || undefined
+  }
 }
 
 function getGraphEmail(s) {

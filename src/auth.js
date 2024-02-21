@@ -267,7 +267,7 @@ function setUserInfo (userIRI, oidc) {
       Config.User.Graph = s
       Config.User.IRI = userIRI
       Config.User.Name = graph.getAgentName(s)
-      Config.User.Image = graph.getAgentImage(s)
+      Config.User.Image = graph.getGraphImage(s)
       Config.User.URL = graph.getAgentURL(s)
       Config.User.OIDC = oidc ? true : false;
 

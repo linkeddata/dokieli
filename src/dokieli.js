@@ -363,7 +363,7 @@ var DO = {
                       }
                       var a = g.child(noteData['creator']['iri']);
                       var actorName = graph.getAgentName(a);
-                      var actorImage = graph.getAgentImage(a);
+                      var actorImage = graph.getGraphImage(a);
 
                       if(typeof actorName != 'undefined') {
                         noteData['creator']['name'] = actorName;
@@ -4091,7 +4091,7 @@ console.log(reason);
       if (inbox && inbox.length > 0) {
         var id = encodeURIComponent(iri);
         var name = graph.getAgentName(s) || iri;
-        var img = graph.getAgentImage(s);
+        var img = graph.getGraphImage(s);
         img = (img && img.length > 0) ? '<img alt="" height="32" src="' + img + '" width="32" />' : '';
         var input = '<li><input id="share-resource-contact-' + id + '" type="checkbox" value="' + iri + '" /><label for="share-resource-contact-' + id + '">' + img + '<a href="' + iri + '" target="_blank">' + name + '</a></label></li>';
 
@@ -5447,7 +5447,7 @@ console.log(response)
       var summary = '';
       var tags = '';
 
-      image = graph.getAgentImage(g) || '';
+      image = graph.getGraphImage(g) || '';
       if (image) {
         image = doc.getResourceImageHTML(image) + ' ';
       }
@@ -6821,7 +6821,7 @@ WHERE {\n\
       }
       var annotatedByName = graph.getAgentName(annotatedBy);
 // console.log(annotatedByName);
-      var annotatedByImage = graph.getAgentImage(annotatedBy);
+      var annotatedByImage = graph.getGraphImage(annotatedBy);
 // console.log(annotatedByImage);
       var annotatedByURL = annotatedBy.schemaurl || '';
       annotatedByURL = (annotatedByURL) ? annotatedByURL : undefined;
@@ -7979,7 +7979,7 @@ WHERE {\n\
                         // var id = encodeURIComponent(iri);
 
                         var name = graph.getAgentName(s) || iri;
-                        var img = graph.getAgentImage(s);
+                        var img = graph.getGraphImage(s);
 
                         img = (img && img.length > 0) ? '<img alt="" height="32" rel="schema:image" src="' + img + '" width="32" /> ' : '';
                         var userHTML = util.fragmentFromString('<span about="" rel="schema:' + contributorRole + '"><span about="' + iri + '" typeof="schema:Person">' + img + '<a href="' + iri + '" rel="schema:url">' + name + '</a></span></span>');
