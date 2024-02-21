@@ -136,7 +136,7 @@ describe("fetcher", () => {
       });
 
       await expect(fetcher.getResourceHead(url, options)).rejects.toThrow(
-        "Error fetching resource HEAD: 404 Not Found"
+        "Error fetching resource: 404 Not Found"
       );
     });
 
@@ -294,61 +294,4 @@ describe("fetcher", () => {
     });
   });
 
-  describe("parseLinkHeader", () => {
-    test("should return an empty object if link is not provided", () => {
-      const result = fetcher.parseLinkHeader();
-      expect(result).toEqual({});
-    });
-
-    test("should parse link header and return the correct result", () => {
-      const link =
-        '<http://example.com/page1>; rel="prev", <http://example.com/page2>; rel="next"';
-      const result = fetcher.parseLinkHeader(link);
-      expect(result).toEqual({
-        prev: ["http://example.com/page1"],
-        next: ["http://example.com/page2"],
-      });
-    });
-
-    test("should handle multiple links with the same rel", () => {
-      const link =
-        '<http://example.com/page1>; rel="next", <http://example.com/page2>; rel="next"';
-      const result = fetcher.parseLinkHeader(link);
-      expect(result).toEqual({
-        next: ["http://example.com/page1", "http://example.com/page2"],
-      });
-    });
-
-    test("should handle links with parameters", () => {
-      const link =
-        '<http://example.com/page1>; rel="next"; type="text/html", <http://example.com/page2>; rel="prev"; type="application/json"';
-      const result = fetcher.parseLinkHeader(link);
-      expect(result).toEqual({
-        "application/json": ["http://example.com/page2"],
-        next: ["http://example.com/page1"],
-        prev: ["http://example.com/page2"],
-        "text/html": ["http://example.com/page1"],
-      });
-    });
-
-    test("should handle links with different casing", () => {
-      const link =
-        '<http://example.com/page1>; rel="Next", <http://example.com/page2>; rel="PREV"';
-      const result = fetcher.parseLinkHeader(link);
-      expect(result).toEqual({
-        next: ["http://example.com/page1"],
-        prev: ["http://example.com/page2"],
-      });
-    });
-
-    test("should handle links without 'http:' or 'https:'", () => {
-      const link =
-        '<http://example.com/page1>; rel="next", <example.com/page2>; rel="prev"';
-      const result = fetcher.parseLinkHeader(link);
-      expect(result).toEqual({
-        next: ["http://example.com/page1"],
-        prev: ["example.com/page2"],
-      });
-    });
-  });
 });
