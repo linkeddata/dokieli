@@ -328,6 +328,36 @@ module.exports = {
     'http://www.w3.org/2006/03/test-description#unreviewed': "the item has been proposed, but hasn't been reviewed (e.g. for completeness) yet"
   },
 
+  Actor: {
+    Type: {
+      "http://purl.org/dc/terms/Agent":"Agent",
+      "http://schema.org/Person":"Person",
+      "http://www.w3.org/2006/vcard/ns#Group":"Group",
+      "http://www.w3.org/2006/vcard/ns#Individual":"Individual",
+      "http://www.w3.org/2006/vcard/ns#Organization":"Organization",
+      "http://www.w3.org/2006/vcard/ns#VCard":"VCard",
+      "http://xmlns.com/foaf/0.1/Agent":"Agent",
+      "http://xmlns.com/foaf/0.1/Group":"Group",
+      "http://xmlns.com/foaf/0.1/Organization":"Organization",
+      "http://xmlns.com/foaf/0.1/Person":"Person",
+      "https://www.w3.org/ns/activitystreams#Application":"Application",
+      "https://www.w3.org/ns/activitystreams#Group":"Group",
+      "https://www.w3.org/ns/activitystreams#Organization":"Organization",
+      "https://www.w3.org/ns/activitystreams#Person":"Person",
+      "https://www.w3.org/ns/activitystreams#Service":"Service"
+    },
+
+    Property: {
+      "http://purl.org/dc/terms/creator":"creator",
+      "http://schema.org/author":"author",
+      "http://schema.org/contributor":"contributor",
+      "http://schema.org/creator":"creator",
+      "http://schema.org/editor":"editor",
+      "http://xmlns.com/foaf/0.1/knows":"knows",
+      "https://www.w3.org/ns/activitystreams#actor":"actor"
+    }
+  },
+
   MediaTypes: {
     RDF: ['text/turtle', 'application/ld+json', 'application/activity+json', 'text/html', 'image/svg+xml', 'text/markdown'],
 
