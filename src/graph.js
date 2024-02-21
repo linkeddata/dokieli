@@ -5,6 +5,7 @@ const SimpleRDF = ld.SimpleRDF
 const Config = require('./config')
 const doc = require('./doc')
 const uri = require('./uri')
+const util = require('./util')
 
 module.exports = {
   getGraph,
@@ -18,7 +19,28 @@ module.exports = {
   traverseRDFList,
   getAgentImage,
   isActorType,
-  isActorProperty
+  isActorProperty,
+  getAgentPreferencesInfo,
+  getAgentPreferredPolicyRule,
+  getAgentSeeAlso,
+  getAgentSupplementalInfo,
+  getUserContacts,
+  getAgentTypeIndex,
+  processSameAs,
+  getAgentPreferredProxy,
+  getAgentPreferredPolicy,
+  getAgentName,
+  getAgentURL,
+  getAgentEmail,
+  getAgentDelegates,
+  getAgentStorage,
+  getAgentOutbox,
+  getAgentInbox,
+  getAgentKnows,
+  getAgentFollowing,
+  getAgentPublicTypeIndex,
+  getAgentPrivateTypeIndex,
+  getAgentPreferencesFile
 }
 
 function getGraph (url) {
@@ -438,4 +460,383 @@ function isActorType (s) {
 
 function isActorProperty (s) {
   return Config.Actor.Property.hasOwnProperty(s)
+}
+
+function getAgentPreferencesInfo(g) {
+  if (!g) { return; }
+
+  var preferencesFile = (Config.User.PreferencesFile) ? Config.User.PreferencesFile : getAgentPreferencesFile(g);
+
+  if (preferencesFile) {
+    return fetcher.getResourceGraph(preferencesFile).then(g => {
+        return getAgentPreferredPolicyRule(g.child(Config.User.IRI));
+      })
+      .catch(function(e) {
+        return getAgentPreferredPolicyRule(Config.User.Graph.child(Config.User.IRI));
+      })
+  }
+  else {
+    return getAgentPreferredPolicyRule(Config.User.Graph.child(Config.User.IRI));
+  }
+}
+
+
+function getAgentPreferredPolicyRule(g) {
+  Config.User['PreferredPolicy'] = getAgentPreferredPolicy(g);
+  var s = g.child(Config.User.PreferredPolicy);
+
+  Config.User['PreferredPolicyRule'] = Config.User.PreferredPolicyRule || {};
+
+  if (s && s.odrlprohibition && s.odrlprohibition.at(0)) {
+    var prohibitionG = s.child(s.odrlprohibition.at(0));
+
+    if (prohibitionG.odrlaction && prohibitionG.odrlaction._array.length > 0) {
+      Config.User.PreferredPolicyRule['Prohibition'] = {}
+      Config.User.PreferredPolicyRule['Prohibition']['Actions'] = prohibitionG.odrlaction._array;
+    }
+  }
+
+  if (s && s.odrlpermission && s.odrlpermission.at(0)) {
+    var permissionG = s.child(s.odrlpermission.at(0));
+
+    if (permissionG.odrlaction && permissionG.odrlaction._array.length > 0) {
+      Config.User.PreferredPolicyRule['Permission'] = {}
+      Config.User.PreferredPolicyRule['Permission']['Actions'] = permissionG.odrlaction._array;
+    }
+  }
+
+  return Config.User.PreferredPolicyRule
+}
+
+
+function getAgentSupplementalInfo(iri) {
+  if (iri == Config.User.IRI) {
+    return processSameAs(Config.User.Graph, getAgentSupplementalInfo);
+  }
+  else {
+    return fetcher.getResourceGraph(iri).then(
+      function(g){
+        if(typeof g._graph == 'undefined') {
+          return Promise.resolve([]);
+        }
+        var s = g.child(iri);
+
+        Config.User.Name = Config.User.Name || getAgentName(s);
+
+        Config.User.Image = Config.User.Image || graph.getAgentImage(s);
+
+        var storage = getAgentStorage(s) || [];
+        var outbox = getAgentOutbox(s) || [];
+        var knows = getAgentKnows(s) || [];
+        //TODO publicTypeIndex privateTypeIndex ??
+
+        if (storage.length > 0) {
+          Config.User.Storage = (Config.User.Storage)
+            ? util.uniqueArray(Config.User.Storage.concat(storage))
+            : storage;
+        }
+
+        if (outbox.length > 0) {
+          Config.User.Outbox = (Config.User.Outbox)
+            ? util.uniqueArray(Config.User.Outbox.concat(outbox))
+            : outbox;
+        }
+
+        if (knows.length > 0) {
+          Config.User.Knows = (Config.User.Knows)
+            ? util.uniqueArray(Config.User.Knows.concat(knows))
+            : knows;
+        }
+
+        return processSameAs(s, getAgentSupplementalInfo)
+                .then(function(){
+                  return getAgentSeeAlso(s)
+                });
+      },
+      function(reason){
+        return Promise.resolve([]);
+      });
+  }
+}
+
+function getAgentSeeAlso(g, baseURI, subjectURI) {
+  if (!g) { return; }
+
+  subjectURI = baseURI = baseURI || g.iri().toString();
+
+  var seeAlso = g.child(baseURI).rdfsseeAlso;
+
+  if (seeAlso && seeAlso._array.length > 0) {
+    var iris = [];
+    var promises = [];
+
+    seeAlso._array.forEach(function(iri){
+      if (Config.User.SeeAlso.indexOf(iri) < 0) {
+        iris.push(iri)
+      }
+    });
+
+    iris.forEach(function(iri){
+      Config.User.SeeAlso = util.uniqueArray(Config.User.SeeAlso.concat(iri));
+
+      fetcher.getResourceGraph(iri)
+        .then(g => {
+
+          var s = g.child(subjectURI)
+
+          var knows = getAgentKnows(s) || [];
+
+          if (knows.length > 0) {
+            Config.User.Knows = (Config.User.Knows)
+              ? util.uniqueArray(Config.User.Knows.concat(knows))
+              : knows;
+          }
+
+          promises.push(getAgentSeeAlso(g, iri, subjectURI))
+        })
+    });
+
+    Promise.all(promises)
+      .then(function(results) {
+        return Promise.resolve([]);
+      })
+      .catch(function(e) {
+        return Promise.resolve([]);
+      });
+  }
+  else {
+    return Promise.resolve([])
+  }
+}
+
+function getUserContacts(iri) {
+  var fyn = function(iri){
+    if ((iri == Config.User.IRI) && Config.User.Graph) {
+      return processSameAs(Config.User.Graph, getUserContacts);
+    }
+    else {
+      return fetcher.getResourceGraph(iri).then(
+        function(g){
+          if(typeof g._graph == 'undefined') {
+            return Promise.resolve([]);
+          }
+
+          var s = g.child(iri);
+
+          var knows = getAgentKnows(s) || [];
+
+          if (knows.length > 0) {
+            Config.User.Knows = (Config.User.Knows)
+              ? util.uniqueArray(Config.User.Knows.concat(knows))
+              : knows;
+          }
+
+          return processSameAs(s, getUserContacts);
+        },
+        function(reason){
+          return Promise.resolve([]);
+        });
+    }
+  }
+
+  return fyn(iri).then(function(i){ return Config.User.Knows || []; });
+}
+
+function getAgentTypeIndex(iri) {
+  const TypeRegistrationClasses = [DO.C.Vocab['oaAnnotation']['@id'], DO.C.Vocab['asAnnounce']['@id']];
+
+  var fetchTypeRegistration = function(iri) {
+    var pIRI = uri.getProxyableIRI(iri);
+
+    fetcher.getTriplesFromGraph(pIRI)
+      .then(function(triples){
+// console.log(triples);
+        if(triples.length > 0) {
+          var indexes = {};
+          triples.forEach(function(t){
+            var s = t.subject.nominalValue;
+            var p = t.predicate.nominalValue;
+            var o = t.object.nominalValue;
+
+            //Check if class is of interest (that we can handle)
+            if (p == Config.Vocab['solidforClass']['@id'] && TypeRegistrationClasses.indexOf(o) > -1) {
+              //Keep track of subjects of interest
+              indexes[s] = {}
+              indexes[s][Config.Vocab['solidforClass']['@id']] = o;
+            }
+          });
+// console.log(indexes)
+          triples.forEach(function(t){
+            var s = t.subject.nominalValue;
+            var p = t.predicate.nominalValue;
+            var o = t.object.nominalValue;
+
+            if(indexes[s] && p == Config.Vocab['solidinstanceContainer']['@id']) {
+              var forClass = indexes[s][Config.Vocab['solidforClass']['@id']]
+              Config.User.TypeIndex[forClass] = o;
+            }
+          });
+
+          return Config.User.TypeIndex
+        }
+      })
+  }
+
+  var promises = []
+
+  if (Config.User.PublicTypeIndex) {
+    promises.push(fetchTypeRegistration(Config.User.PublicTypeIndex))
+  }
+  if (Config.User.PrivateTypeIndex) {
+    promises.push(fetchTypeRegistration(Config.User.PrivateTypeIndex))
+  }
+
+  return Promise.all(promises)
+    .then(function(results) {
+      results.filter(result => !(result instanceof Error));
+
+      // results.forEach(function(result) {
+      //   console.log(result)
+      // });
+    });
+}
+
+function processSameAs(s, callback) {
+  if (s.owlsameAs && s.owlsameAs._array.length > 0){
+    var iris = s.owlsameAs._array;
+    var promises = [];
+    iris.forEach(function(iri){
+// console.log(iri);
+      if(iri != Config.User.IRI && Config.User.SameAs.indexOf(iri) < 0) {
+        Config.User.SameAs = util.uniqueArray(Config.User.SameAs.concat(iri));
+
+        if (typeof callback !== 'undefined') {
+          promises.push(callback(iri));
+        }
+        else {
+          promises.push(Promise.resolve(Config.User.SameAs));
+        }
+      }
+    });
+
+    return Promise.all(promises)
+      .then(function(results) {
+        return Promise.resolve([]);
+      })
+      .catch(function(e) {
+        return Promise.resolve([]);
+      });
+  }
+  else {
+    return Promise.resolve([]);
+  }
+}
+
+function getAgentPreferredProxy (s) {
+  return s.solidpreferredProxy || undefined
+}
+
+function getAgentPreferredPolicy (s) {
+  return s.solidpreferredPolicy || undefined
+}
+
+function getAgentName (s) {
+  var name = s.foafname || s.schemaname || s.vcardfn || s.asname || s.rdfslabel || undefined
+  if (typeof name === 'undefined') {
+    if (s.schemafamilyName && s.schemafamilyName.length > 0 && s.schemagivenName && s.schemagivenName.length > 0) {
+      name = s.schemagivenName + ' ' + s.schemafamilyName
+    } else if (s.foaffamilyName && s.foaffamilyName.length > 0 && s.foafgivenName && s.foafgivenName.length > 0) {
+      name = s.foafgivenName + ' ' + s.foaffamilyName
+    } else if (s.vcardfamilyname && s.vcardfamilyname.length > 0 && s.vcardgivenname && s.vcardgivenname.length > 0) {
+      name = s.vcardgivenname + ' ' + s.vcardfamilyname
+    } else if (s.foafnick && s.foafnick.length > 0) {
+      name = s.foafnick
+    } else if (s.vcardnickname && s.vcardnickname.length > 0) {
+      name = s.vcardnickname
+    }
+  }
+  return name
+}
+
+function getAgentURL (s) {
+  return s.foafhomepage || s.foafweblog || s.schemaurl || s.vcardurl || undefined
+}
+
+function getAgentEmail (s) {
+  return s.schemaemail || s.foafmbox || undefined
+}
+
+function getAgentDelegates (s) {
+  return (s.acldelegates && s.acldelegates._array.length > 0)
+    ? s.acldelegates._array
+    : undefined
+}
+
+function getAgentStorage (s) {
+  return (s.pimstorage && s.pimstorage._array.length > 0)
+    ? s.pimstorage._array
+    : undefined
+}
+
+function getAgentOutbox (s) {
+  return (s.asoutbox && s.asoutbox._array.length > 0)
+    ? s.asoutbox._array
+    : undefined
+}
+
+function getAgentInbox (s) {
+  return (s.ldpinbox && s.ldpinbox._array.length > 0)
+    ? s.ldpinbox._array
+    : (s.asinbox && s.asinbox._array.length > 0)
+      ? s.asinbox._array
+      : undefined
+}
+
+function getAgentKnows (s) {
+  var knows = [];
+
+  if(s.foafknows && s.foafknows._array.length > 0){
+    knows = knows.concat(s.foafknows._array);
+  }
+  if(s.schemaknows && s.schemaknows._array.length > 0){
+    knows = knows.concat(s.schemaknows._array);
+  }
+
+  knows = util.uniqueArray(knows);
+
+  return (knows.length > 0) ? knows : undefined;
+}
+
+function getAgentFollowing (s) {
+  var following = [];
+// console.log(s.asfollowing)
+  if (s.asfollowing) {
+    var options = {
+      headers: {'Accept': 'application/ld+json; profile="https://www.w3.org/ns/activitystreams", application/activity+json, text/turtle'},
+      noCredentials: true
+    };
+    return DO.U.getItemsList(s.asfollowing, options).then(following => {
+      following = util.uniqueArray(following);
+// console.log(following);
+      return (following.length > 0) ? following : undefined;
+    });
+  }
+}
+
+function getAgentPublicTypeIndex (s) {
+  return (s.solidpublicTypeIndex && s.solidpublicTypeIndex.length > 0)
+    ? s.solidpublicTypeIndex
+    : undefined
+}
+
+function getAgentPrivateTypeIndex (s) {
+  return (s.solidprivateTypeIndex && s.solidprivateTypeIndex.length > 0)
+    ? s.solidprivateTypeIndex
+    : undefined
+}
+
+function getAgentPreferencesFile (s) {
+  return (s.pimpreferencesFile && s.pimpreferencesFile.length > 0)
+    ? s.pimpreferencesFile
+    : undefined
 }

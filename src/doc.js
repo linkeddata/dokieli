@@ -1072,7 +1072,7 @@ function getButtonDisabledHTML(id) {
 
 
 function getGraphLabel(s) {
-  return s.schemaname || s.dctermstitle || s.dcelementstitle || auth.getAgentName(s) || s.assummary || undefined;
+  return s.schemaname || s.dctermstitle || s.dcelementstitle || graph.getAgentName(s) || s.assummary || undefined;
 }
 
 function getGraphTitle(s) {

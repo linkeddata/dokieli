@@ -362,7 +362,7 @@ var DO = {
                         'iri': s.asactor
                       }
                       var a = g.child(noteData['creator']['iri']);
-                      var actorName = auth.getAgentName(a);
+                      var actorName = graph.getAgentName(a);
                       var actorImage = graph.getAgentImage(a);
 
                       if(typeof actorName != 'undefined') {
@@ -3994,7 +3994,7 @@ console.log(reason);
     updateContactsInfo: function(url, options) {
       options = options || {};
 
-      return auth.getUserContacts(url).then(
+      return graph.getUserContacts(url).then(
         function(contacts) {
           if(contacts.length > 0) {
             var promises = [];
@@ -4010,8 +4010,8 @@ console.log(reason);
                 DO.C.User.Contacts[url]['Graph'] = s;
 
                 var uCA = function(url, s) {
-                  var outbox = DO.C.User.Contacts[url]['Outbox'] = auth.getAgentOutbox(s);
-                  var storage = DO.C.User.Contacts[url]['Storage'] = auth.getAgentStorage(s);
+                  var outbox = DO.C.User.Contacts[url]['Outbox'] = graph.getAgentOutbox(s);
+                  var storage = DO.C.User.Contacts[url]['Storage'] = graph.getAgentStorage(s);
                   if ('showActivitiesSources' in options) {
                     if (storage && storage.length > 0) {
                       if(outbox && outbox.length > 0) {
@@ -4090,7 +4090,7 @@ console.log(reason);
 
       if (inbox && inbox.length > 0) {
         var id = encodeURIComponent(iri);
-        var name = auth.getAgentName(s) || iri;
+        var name = graph.getAgentName(s) || iri;
         var img = graph.getAgentImage(s);
         img = (img && img.length > 0) ? '<img alt="" height="32" src="' + img + '" width="32" />' : '';
         var input = '<li><input id="share-resource-contact-' + id + '" type="checkbox" value="' + iri + '" /><label for="share-resource-contact-' + id + '">' + img + '<a href="' + iri + '" target="_blank">' + name + '</a></label></li>';
@@ -4101,7 +4101,7 @@ console.log(reason);
 
     updateContactsInbox: function(iri, s) {
       var checkInbox = function(s) {
-        var aI = auth.getAgentInbox(s);
+        var aI = graph.getAgentInbox(s);
 
         if (aI) {
           return Promise.resolve(aI);
@@ -6362,7 +6362,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       if(authorList.length > 0) {
         authorList.forEach(function(authorIRI) {
           var s = subject.child(authorIRI);
-          var author = auth.getAgentName(s);
+          var author = graph.getAgentName(s);
 
           if (s.schemafamilyName && s.schemafamilyName.length > 0 && s.schemagivenName && s.schemagivenName.length > 0) {
             author = DO.U.createRefName(s.schemafamilyName, s.schemagivenName);
@@ -6819,7 +6819,7 @@ WHERE {\n\
         annotatedBy = g.child(annotatedByIRI);
 // console.log(annotatedBy);
       }
-      var annotatedByName = auth.getAgentName(annotatedBy);
+      var annotatedByName = graph.getAgentName(annotatedBy);
 // console.log(annotatedByName);
       var annotatedByImage = graph.getAgentImage(annotatedBy);
 // console.log(annotatedByImage);
@@ -7978,7 +7978,7 @@ WHERE {\n\
                         // var iri = s.iri().toString();
                         // var id = encodeURIComponent(iri);
 
-                        var name = auth.getAgentName(s) || iri;
+                        var name = graph.getAgentName(s) || iri;
                         var img = graph.getAgentImage(s);
 
                         img = (img && img.length > 0) ? '<img alt="" height="32" rel="schema:image" src="' + img + '" width="32" /> ' : '';
