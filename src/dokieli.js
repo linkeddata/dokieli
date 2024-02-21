@@ -4086,13 +4086,17 @@ console.log(reason);
     addShareResourceContactInput: function(node, s) {
       var iri = s.iri().toString();
 // console.log(iri.toString());
-      var id = encodeURIComponent(iri);
-      var name = auth.getAgentName(s) || iri;
-      var img = graph.getAgentImage(s);
-      img = (img && img.length > 0) ? '<img alt="" height="32" src="' + img + '" width="32" />' : '';
-      var input = '<li><input id="share-resource-contact-' + id + '" type="checkbox" value="' + iri + '" /><label for="share-resource-contact-' + id + '">' + img + '<a href="' + iri + '" target="_blank">' + name + '</a></label></li>';
+      var inbox = DO.C.User.Contacts[iri]['Inbox'];
 
-      node.insertAdjacentHTML('beforeend', input);
+      if (inbox && inbox.length > 0) {
+        var id = encodeURIComponent(iri);
+        var name = auth.getAgentName(s) || iri;
+        var img = graph.getAgentImage(s);
+        img = (img && img.length > 0) ? '<img alt="" height="32" src="' + img + '" width="32" />' : '';
+        var input = '<li><input id="share-resource-contact-' + id + '" type="checkbox" value="' + iri + '" /><label for="share-resource-contact-' + id + '">' + img + '<a href="' + iri + '" target="_blank">' + name + '</a></label></li>';
+
+        node.insertAdjacentHTML('beforeend', input);
+      }
     },
 
     updateContactsInbox: function(iri, s) {
