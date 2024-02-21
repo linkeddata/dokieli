@@ -5388,7 +5388,7 @@ console.log(response)
                         //   items.push('<a href="' + result.value + '">' + result.value + '</a>');
                       }
                       else if ('resource' in result.value) {
-                        items.push('<li rel="schema:hasPart" resource="' + result.value.iri().toString() + '"><a href="' + result.value.resource + '">' + result.value.resource + '</a></li>');
+                        items.push('<li rel="schema:hasPart" resource="' + result.value.resource + '"><a href="' + result.value.resource + '">' + result.value.resource + '</a></li>');
                       }
                       else {
                         var html = DO.U.generateIndexItemHTML(result.value);
