@@ -2910,25 +2910,23 @@ console.log(reason);
       return fileName;
     },
 
-    exportAsHTML: function() {
-      var data = doc.getDocument();
-      //XXX: Encodes strings as UTF-8. Consider storing bytes instead?
-      var blob = new Blob([data], {type:'text/html;charset=utf-8'});
-      var pattern = /[^\w]+/ig;
-      var h1 = document.querySelector('h1');
-      var title = (h1) ? h1.textContent.toLowerCase().replace(pattern, '-') : "index";
-      var timestamp = util.getDateTimeISO().replace(pattern, '') || "now";
+    exportAsDocument: function(data, options = {}) {
+      data = data || doc.getDocument();
+      var mediaType = options.mediaType || 'text/html';
+      url = options.subjectURI || DO.C.DocumentURL;
 
-      var fileName = title + '.' + timestamp + '.html';
+      //XXX: Encodes strings as UTF-8. Consider storing bytes instead?
+      var blob = new Blob([data], {type: mediaType + ';charset=utf-8'});
 
       var a = document.createElement("a");
-      a.download = fileName;
+      a.download = DO.U.generateFilename(url, options);
 
       a.href = window.URL.createObjectURL(blob);
       a.style.display = "none";
       doc.getDocumentContentNode(document).appendChild(a);
       a.click();
       doc.getDocumentContentNode(document).removeChild(a);
+      window.URL.revokeObjectURL(a.href);
     },
 
     showRobustLinks: function(e, selector) {
@@ -3530,7 +3528,11 @@ console.log(reason);
         }
 
         if (e.target.closest('button.export-as-html')) {
-          DO.U.exportAsHTML(e);
+          var options = {
+            subjectURI: DO.C.DocumentURL,
+            mediaType: 'text/html'
+          }
+          DO.U.exportAsDocument(doc.getDocument(), options);
         }
 
         if (e.target.closest('button.robustify-links')){
