@@ -2898,6 +2898,18 @@ console.log(reason);
       }
     },
 
+    generateFilename: function(url, options) {
+      url = url || DO.C.DocumentURL;
+      var fileName = uri.getURLLastPath(url);
+      fileName = uri.getLastPathSegment(url)
+
+      var timestamp = util.getDateTimeISO().replace(/[^\w]+/ig, '') || "now";
+      var subTypes = options.mediaType.split('/');
+      var extension = subTypes[subTypes.length - 1] || 'html';
+      fileName = fileName + "." + timestamp + "." + extension;
+      return fileName;
+    },
+
     exportAsHTML: function() {
       var data = doc.getDocument();
       //XXX: Encodes strings as UTF-8. Consider storing bytes instead?
