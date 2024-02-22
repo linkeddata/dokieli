@@ -10,6 +10,7 @@ module.exports = {
   fragmentFromString,
   generateUUID,
   generateAttributeId,
+  generateId,
   getHash,
   hashCode,
   sortTriples,
@@ -113,7 +114,7 @@ function generateUUID() {
   return s();
 }
 
-function generateAttributeId(prefix, string, suffix) {
+function generateId(prefix, string, suffix) {
   prefix = prefix || "";
 
   if (string) {
@@ -127,6 +128,14 @@ function generateAttributeId(prefix, string, suffix) {
   } else {
     return generateUUID();
   }
+}
+
+function generateAttributeId(prefix, string, suffix) {
+  const id = generateId(prefix, string, suffix);
+  if (/^\d/.test(id)) {
+    return generateAttributeId(prefix, string, suffix);
+  }
+  return id;
 }
 
 // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
