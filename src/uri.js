@@ -15,7 +15,8 @@ module.exports = {
   getURLLastPath,
   getParentURLPath,
   forceTrailingSlash,
-  getFragmentOrLastPath
+  getFragmentOrLastPath,
+  getLastPathSegment
 }
 
 function encodeString (string) {
@@ -157,4 +158,14 @@ function getFragmentOrLastPath(string) {
     s = getURLLastPath(string)
   }
   return s;
+}
+
+function getLastPathSegment(url) {
+  var parsedUrl = new URL(url);
+  var pathname = parsedUrl.pathname;
+  var segments = pathname.split('/');
+  segments = segments.filter(function(segment) {
+    return segment !== '';
+  });
+  return segments.pop() || parsedUrl.hostname;
 }
