@@ -2909,13 +2909,10 @@ console.log(reason);
 
     generateFilename: function(url, options) {
       url = url || DO.C.DocumentURL;
-      var fileName = uri.getURLLastPath(url);
-      fileName = uri.getLastPathSegment(url)
-
+      var fileName = uri.getLastPathSegment(url);
       var timestamp = util.getDateTimeISO().replace(/[^\w]+/ig, '') || "now";
-      var subTypes = options.mediaType.split('/');
-      var extension = subTypes[subTypes.length - 1] || 'html';
-      fileName = fileName + "." + timestamp + "." + extension;
+      var extension = options.filenameExtension || '.txt';
+      fileName = fileName + "." + timestamp + extension;
       return fileName;
     },
 
@@ -3539,7 +3536,8 @@ console.log(reason);
         if (e.target.closest('button.export-as-html')) {
           var options = {
             subjectURI: DO.C.DocumentURL,
-            mediaType: 'text/html'
+            mediaType: 'text/html',
+            filenameExtension: '.html'
           }
           DO.U.exportAsDocument(doc.getDocument(), options);
         }
