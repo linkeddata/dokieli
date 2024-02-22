@@ -210,7 +210,7 @@ function getDocument (cn, options) {
   let node = cn || document.documentElement.cloneNode(true)
   options = options || Config.DOMNormalisation
 
-  let doctype = getDoctype()
+  let doctype = (node.constructor.name === 'SVGSVGElement') ? '<?xml version="1.0" encoding="utf-8"?>' : getDoctype();
   let s = (doctype.length > 0) ? doctype + '\n' : ''
   s += domToString(node, options)
   return s
