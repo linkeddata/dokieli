@@ -996,6 +996,13 @@ var DO = {
                   break;
               }
 
+              if (t.subject.nominalValue.startsWith('http://example.com/.well-known/genid/')) {
+                sGroup = 8;
+              }
+              else if (t.object.nominalValue.startsWith('http://example.com/.well-known/genid/')) {
+                oGroup = 8;
+              }
+
               if (t.predicate.nominalValue == DO.C.Vocab['rdftype']['@id']){
                 oGroup = 6;
 
