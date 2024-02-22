@@ -521,6 +521,8 @@ var DO = {
       options['contentType'] = options.contentType || 'text/html';
       options['subjectURI'] = options.subjectURI || url;
       options['license'] = options.license || 'https://creativecommons.org/licenses/by/4.0/';
+      options['language'] = options.language || 'en';
+      options['creator'] = options.creator || 'https://dokie.li/';
       var width = options.width || '100%';
       var height = options.height || '100%';
       var nodeRadius = 6;
@@ -611,28 +613,16 @@ var DO = {
         .attr('class', 'graph')
         .attr('xmlns', 'http://www.w3.org/2000/svg')
         .attr('version', '1.1')
-        .attr('xml:lang', 'en')
-        .attr('prefix', 'rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# xsd: http://www.w3.org/2001/XMLSchema# schema: http://schema.org/');
+        .attr('xml:lang', options.language)
+        .attr('prefix', 'rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/');
 
       var s = document.getElementById(id);
       width = options.width || parseInt(s.ownerDocument.defaultView.getComputedStyle(s, null)["width"]);
       height = options.height || parseInt(s.ownerDocument.defaultView.getComputedStyle(s, null)["height"]);
 
-      svg.append('metadata')
-        .append('tspan')
-          .attr('rel', 'schema:creator')
-          .attr('resource', 'https://dokie.li/');
-
-      if('license' in options) {
-        svg.select('metadata')
-          .append('tspan')
-            .attr('rel', 'schema:license')
-            .attr('resource', options.license);
-      }
-
       if('title' in options) {
         svg.append('title')
-          .attr('property', 'schema:name')
+          .attr('property', 'dcterms:title')
           .text(options.title);
       }
 
@@ -655,19 +645,18 @@ var DO = {
           .attr("x", 0)
           .attr("y", 20)
           .text("Resources: ");
-
         var graphResources = graphLegend.select('g.graph-legend .graph-resources');
-
         go.resources.forEach(function(i, index){
           graphResources
             .append('a')
-              .attr('href', i)
               .style('fill', legendCategories[7].color)
+              .attr('href', i)
+              .attr('rel', 'dcterms:source')
               .text(i)
 
           if (index < go.resources.length - 1) {
             graphResources
-              .append('tspan')
+              // .append('text')
               .text(', ');
           }
         })
@@ -683,25 +672,63 @@ var DO = {
           .attr("x", 0)
           .attr("y", 70)
           .text("Nodes: " + Object.keys(go.uniqueNodes).length + " (unique)");
- 
+
+        graphLegend
+          .append("text")
+          .attr('class', 'graph-creator')
+          .attr("x", 0)
+          .attr("y", 95)
+          .text("Creator: ");
+        var graphCreator = graphLegend.select('g.graph-legend .graph-creator');
+        graphCreator
+          .append('a')
+          .style('fill', legendCategories[7].color)
+          .attr('href', options.creator)
+          .attr('rel', 'dcterms:creator')
+          .text(options.creator)
+
+        graphLegend
+          .append("text")
+          .attr('class', 'graph-license')
+          .attr("x", 0)
+          .attr("y", 120)
+          .text("License: ");
+        var graphLicense = graphLegend.select('g.graph-legend .graph-license');
+        graphLicense
+          .append('a')
+          .attr('href', options.license)
+          .attr('rel', 'dcterms:license')
+          .text(DO.C.License[options.license].name)
+          .style('fill', legendCategories[7].color)
+        // var selectLicense = '<select id="graph-license" name="graph-license">' + DO.U.getLicenseOptionsHTML() + '</select>';
+        // graphLegend.append('License: <a href="' + options.license + '">' + DO.C.License[options.license].name  + '</a>' + selectLicense);
+
+        // graphLegend
+        //   .append("text")
+        //   .attr("x", 0)
+        //   .attr("y", 45)
+        //   .text('Language: <a href="' + options.language + '">' + DO.C.Languages[options.language].name  + '');
+        // var selectLanguages = '<select id="graph-view-language" name="graph-view-language">' + DO.U.getLanguageOptionsHTML() + '</select>';
+
+
         //TODO: Move foobarbazqux into graphLegend
         //FIXME: Why doesn't select or selectAll("g.graph-legend") work? g.graph-legend is in the svg. foobarbazqux is a hack IIRC.
-
-        svg.selectAll("foobarbazqux")
+        //Why is graphLegend.selectAll('foobarbazqux') necessary?
+        graphLegend.selectAll("foobarbazqux")
           .data(keys)
           .enter()
           .append("circle")
             .attr("cx", 10)
-            .attr("cy", function(d,i){ return 100 + i*25 })
+            .attr("cy", function(d,i){ return 150 + i*25 })
             .attr("r", nodeRadius)
             .style("fill", function(d){ return legendInfo[d] })
 
-        svg.selectAll("foobarbazqux")
+        graphLegend.selectAll("foobarbazqux")
           .data(keys)
           .enter()
           .append("text")
             .attr("x", 25)
-            .attr("y", function(d,i){ return 105 + i*25 })
+            .attr("y", function(d,i){ return 155 + i*25 })
             .style("fill", function(d){ return legendInfo[d] })
             .text(function(d){ return d})
       }
