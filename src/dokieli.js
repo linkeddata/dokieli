@@ -610,9 +610,9 @@ var DO = {
         .attr('width', width)
         .attr('height', height)
         .attr('id', id)
+        .attr('about', '#' + id)
         .attr('class', 'graph')
         .attr('xmlns', 'http://www.w3.org/2000/svg')
-        .attr('version', '1.1')
         .attr('xml:lang', options.language)
         .attr('prefix', 'rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/');
 
