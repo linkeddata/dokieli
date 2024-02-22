@@ -640,16 +640,16 @@ var DO = {
         var graphLegend = svg.select('g.graph-legend');
 
         graphLegend
-          .append("text")
+        .append("text")
           .attr('class', 'graph-resources')
           .attr("x", 0)
           .attr("y", 20)
-          .text("Resources: ");
+          .text("Resources: ")
         var graphResources = graphLegend.select('g.graph-legend .graph-resources');
         go.resources.forEach(function(i, index){
           graphResources
             .append('a')
-              .style('fill', legendCategories[7].color)
+              .attr('fill', legendCategories[7].color)
               .attr('href', i)
               .attr('rel', 'dcterms:source')
               .text(i)
@@ -682,7 +682,7 @@ var DO = {
         var graphCreator = graphLegend.select('g.graph-legend .graph-creator');
         graphCreator
           .append('a')
-          .style('fill', legendCategories[7].color)
+          .attr('fill', legendCategories[7].color)
           .attr('href', options.creator)
           .attr('rel', 'dcterms:creator')
           .text(options.creator)
@@ -698,8 +698,8 @@ var DO = {
           .append('a')
           .attr('href', options.license)
           .attr('rel', 'dcterms:license')
+          .attr('fill', legendCategories[7].color)
           .text(DO.C.License[options.license].name)
-          .style('fill', legendCategories[7].color)
         // var selectLicense = '<select id="graph-license" name="graph-license">' + DO.U.getLicenseOptionsHTML() + '</select>';
         // graphLegend.append('License: <a href="' + options.license + '">' + DO.C.License[options.license].name  + '</a>' + selectLicense);
 
@@ -721,7 +721,7 @@ var DO = {
             .attr("cx", 10)
             .attr("cy", function(d,i){ return 150 + i*25 })
             .attr("r", nodeRadius)
-            .style("fill", function(d){ return legendInfo[d] })
+            .attr("fill", function(d){ return legendInfo[d] })
 
         graphLegend.selectAll("foobarbazqux")
           .data(keys)
@@ -729,7 +729,7 @@ var DO = {
           .append("text")
             .attr("x", 25)
             .attr("y", function(d,i){ return 155 + i*25 })
-            .style("fill", function(d){ return legendInfo[d] })
+            .attr("fill", function(d){ return legendInfo[d] })
             .text(function(d){ return d})
       }
 
