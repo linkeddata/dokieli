@@ -854,7 +854,6 @@ var DO = {
             }
           }))
           .enter().append("circle")
-            // .attr("class", "node")
             .attr("r", nodeRadius)
             .attr("fill", function(d) { return group[d.group].color; })
             .attr('stroke', function (d) {
@@ -870,6 +869,7 @@ var DO = {
               if ('type' in group[d.group] && group[d.group].type == 'rdf:Resource' && !(d.id in DO.C.Graphs)) {
                 options = options || {};
                 options['subjectURI'] = iri;
+                //TODO: These values need not be set here. getResource(Graph) should take care of it. Refactor handleResource
                 var headers = { 'Accept': fetcher.setAcceptRDFTypes() };
                 var pIRI = uri.getProxyableIRI(iri);
                 if (pIRI.slice(0, 5).toLowerCase() == 'http:') {
@@ -6588,7 +6588,7 @@ WHERE {\n\
         options['cssStroke'] = '#000';
       }
 
-      var svg = '<svg height="100%" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# xsd: http://www.w3.org/2001/XMLSchema# qb: http://purl.org/linked-data/cube# prov: http://www.w3.org/ns/prov# schema: http://schema.org/" version="1.1" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink">';
+      var svg = '<svg height="100%" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# xsd: http://www.w3.org/2001/XMLSchema# qb: http://purl.org/linked-data/cube# prov: http://www.w3.org/ns/prov# schema: http://schema.org/" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink">';
 
       svg += DO.U.drawSparklineGraph(data, options);
       svg += '</svg>';
