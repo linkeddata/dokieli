@@ -1016,7 +1016,7 @@ var DO = {
               if (t.subject.nominalValue.startsWith('http://example.com/.well-known/genid/')) {
                 sGroup = 8;
               }
-              else if (t.object.nominalValue.startsWith('http://example.com/.well-known/genid/')) {
+              if (t.object.nominalValue.startsWith('http://example.com/.well-known/genid/')) {
                 oGroup = 8;
               }
 
