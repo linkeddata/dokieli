@@ -860,6 +860,10 @@ var DO = {
               }
               return null
             })
+            .attr('rel', function(d) {
+              if (this.getAttribute('href') === null) { return null }
+              return 'dcterms:references'
+            })
           .append('circle')
             .attr('r', nodeRadius)
             .attr('fill', function(d) { return group[d.group].color; })
