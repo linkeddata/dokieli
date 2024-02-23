@@ -1090,16 +1090,22 @@ var DO = {
 
               //FIXME: groups are set once - not updated.
 
+              var objectValue = t.object.nominalValue;
+              if (t.object.interfaceName == 'Literal') {
+                //XXX: Revisit
+                objectValue = doc.xmlHtmlEscape(objectValue);
+              }
+
               if(graphNodes.indexOf(t.subject.nominalValue) == -1) {
                 graphNodes.push(t.subject.nominalValue);
                 graphData.nodes.push({"id": t.subject.nominalValue, "group": sGroup, "visited": sVisited });
               }
               if(graphNodes.indexOf(t.object.nominalValue) == -1) {
-                graphNodes.push(t.object.nominalValue);
-                graphData.nodes.push({"id": t.object.nominalValue, "group": oGroup, "visited": oVisited });
+                graphNodes.push(objectValue);
+                graphData.nodes.push({"id": objectValue, "group": oGroup, "visited": oVisited });
               }
 
-              graphData.links.push({"source": t.subject.nominalValue, "target": t.object.nominalValue, "value": t.predicate.nominalValue});
+              graphData.links.push({"source": t.subject.nominalValue, "target": objectValue, "value": t.predicate.nominalValue});
             });
 // console.log(graphNodes)
 // console.log(graph)
