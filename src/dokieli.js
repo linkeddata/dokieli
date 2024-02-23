@@ -760,10 +760,9 @@ var DO = {
       }
 
       function createSVGMarker() {
-        svg.append("defs").selectAll("marker")
-          .data(["end"])
-          .enter().append("marker")
-            .attr("id", String)
+        svg.append("defs")
+          .append("marker")
+            .attr("id", "end")
             .attr("viewBox", "0 -5 10 10")
             .attr("refX", 20)
             .attr("refY", -1)
@@ -774,8 +773,6 @@ var DO = {
           .append("path")
             .attr("d", "M0,-5L10,0L0,5");
       }
-
-      // createSVGMarker();
 
       function buildGraphObject(graph, options) {
         var graphObject = {};
