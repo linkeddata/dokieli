@@ -613,7 +613,6 @@ var DO = {
         // .attr('about', '#' + id)
         // .attr('class', 'graph')
         .attr('xmlns', 'http://www.w3.org/2000/svg')
-        .attr('xmlns:xlink', 'http://www.w3.org/1999/xlink')
         .attr('xml:lang', options.language)
         .attr('prefix', 'rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/')
         .attr('typeof', 'http://purl.org/dc/dcmitype/Image')
@@ -651,7 +650,7 @@ var DO = {
           graphResources
             .append('a')
               .attr('fill', legendCategories[7].color)
-              .attr('xlink:href', i)
+              .attr('href', i)
               .attr('rel', 'dcterms:source')
               .text(i)
 
@@ -6588,7 +6587,7 @@ WHERE {\n\
         options['cssStroke'] = '#000';
       }
 
-      var svg = '<svg height="100%" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# xsd: http://www.w3.org/2001/XMLSchema# qb: http://purl.org/linked-data/cube# prov: http://www.w3.org/ns/prov# schema: http://schema.org/" width="100%" xmlns="http://www.w3.org/2000/svg" xmlns:ev="http://www.w3.org/2001/xml-events" xmlns:xlink="http://www.w3.org/1999/xlink">';
+      var svg = '<svg height="100%" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# xsd: http://www.w3.org/2001/XMLSchema# qb: http://purl.org/linked-data/cube# prov: http://www.w3.org/ns/prov# schema: http://schema.org/" width="100%" xmlns="http://www.w3.org/2000/svg">';
 
       svg += DO.U.drawSparklineGraph(data, options);
       svg += '</svg>';
@@ -6628,7 +6627,7 @@ WHERE {\n\
         x2 = range * (i / parts.length) + (div / 2);
         y2 = range - parts[i];
 
-        lines += '<a rel="rdfs:seeAlso" resource="' + data[i][observation] + '" target="_blank" xlink:href="' + data[i][observation] + '"><line' +
+        lines += '<a rel="rdfs:seeAlso" resource="' + data[i][observation] + '" target="_blank" href="' + data[i][observation] + '"><line' +
           ' x1="' + x1 + '%"' +
           ' x2="' + x2 + '%"' +
           ' y1="' + y1 + '%"' +
@@ -6638,7 +6637,7 @@ WHERE {\n\
 
         //Last data item
         if(i+1 === parts.length) {
-          lines += '<a target="_blank" xlink:href="' + data[i][observation] + '"><circle' +
+          lines += '<a target="_blank" href="' + data[i][observation] + '"><circle' +
             ' cx="' + x2 + '%"' +
             ' cy="' + y2 + '%"' +
             ' r="' + dotSize + '"' +
