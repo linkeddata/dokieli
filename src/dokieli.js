@@ -636,18 +636,17 @@ var DO = {
         });
         keys = Object.keys(legendInfo);
 
-        svg.append('g')
+
+        var graphLegend = svg.append('g')
           .attr('class', 'graph-legend');
 
-        var graphLegend = svg.select('g.graph-legend');
+        var graphResources = graphLegend
+          .append("text")
+            .attr('class', 'graph-resources')
+            .attr("x", 0)
+            .attr("y", 20)
+            .text("Resources: ")
 
-        graphLegend
-        .append("text")
-          .attr('class', 'graph-resources')
-          .attr("x", 0)
-          .attr("y", 20)
-          .text("Resources: ")
-        var graphResources = graphLegend.select('g.graph-legend .graph-resources');
         go.resources.forEach(function(i, index){
           graphResources
             .append('a')
@@ -658,19 +657,21 @@ var DO = {
 
           if (index < go.resources.length - 1) {
             graphResources
-              // .append('text')
+              .append('tspan')
               .text(', ');
           }
         })
 
         graphLegend
           .append("text")
+          .attr('class', 'graph-statements')
           .attr("x", 0)
           .attr("y", 45)
           .text("Statements: " + go.bilinks.length);
 
         graphLegend
           .append("text")
+          .attr('class', 'graph-nodes-unique')
           .attr("x", 0)
           .attr("y", 70)
           .text("Nodes: " + Object.keys(go.uniqueNodes).length + " (unique)");
@@ -831,7 +832,12 @@ var DO = {
 
         createSVGMarker();
 
-        var link = svg.selectAll("path")
+        svg.append('g')
+          .attr('class', 'graph-objects');
+
+        var graphObjects = svg.select('g.graph-objects');
+
+        var link = graphObjects.selectAll("path")
           .data(go.bilinks)
           .enter().append("path")
             // .attr("class", "link")
@@ -841,7 +847,7 @@ var DO = {
 
         // link.transition();
 
-        var node = svg.selectAll("circle")
+        var node = graphObjects.selectAll("circle")
           .data(go.nodes.filter(function(d) {
             if (go.uniqueNodes[d.id] && go.uniqueNodes[d.id].index == d.index) {
               return d.id;
@@ -906,11 +912,9 @@ var DO = {
               .force("center", d3.forceCenter(width / 2, height / 2));
 
             if ('mergeGraph' in options && options.mergeGraph) {
-              svg.selectAll("g").remove();
-              svg.selectAll("marker").remove();
-              svg.selectAll("path").remove();
-              svg.selectAll("circle").remove();
-              svg.selectAll("text").remove();
+              svg.selectAll("defs").remove();
+              svg.selectAll("g.graph-legend").remove();
+              svg.selectAll("g.graph-objects").remove();
               simulation.restart();
             }
 
