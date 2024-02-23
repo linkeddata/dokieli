@@ -69,7 +69,7 @@ function getLinkRelation (property, url) {
 
     return graph.getGraphFromData(doc.getDocument(), options)
       .then(function (result) {
-          // TODO: Should this get all of the inboxes or a given subject's?
+          // TODO: Should this get all or a given subject's?
           var endpoints = result.match(subjectURI, property).toArray()
           if (endpoints.length > 0) {
             return endpoints.map(function(t){ return t.object.nominalValue })
@@ -87,7 +87,7 @@ function getLinkRelationFromHead (property, url) {
   return getResourceHead(url).then(
     function (i) {
       var link = i.headers.get('Link')
-      if (link) {
+      if (link && link.length > 0) {
         var linkHeaders = LinkHeader.parse(link)
   // console.log(property)
   // console.log(linkHeaders)
@@ -98,7 +98,11 @@ function getLinkRelationFromHead (property, url) {
           }
         });
 
-        return uris;
+        if (uris.length > 0) {
+          return uris;
+        }
+
+       return Promise.reject({'message': properties.join(', ') + " endpoint(s) was not found in 'Link' header"})
       }
       return Promise.reject({'message': properties.join(', ') + " endpoint(s) was not found in 'Link' header"})
     },
