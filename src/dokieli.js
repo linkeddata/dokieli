@@ -581,7 +581,7 @@ var DO = {
         "3": { color: '#551a8b', label: 'Visited', type: 'rdf:Resource' }
       }
       var legendCategories = {
-        "4": { color: '#ccc', label: 'Literal' },
+        "4": { color: '#ccc', label: 'Literal', type: 'rdfs:Literal' },
         "5": { color: '#ff0', label: 'Root', type: 'rdf:Resource' },
         "6": { color: '#ff2900', label: 'Type', type: 'rdf:Resource' },
         "7": { color: '#002af7', label: 'External reference', type: 'rdf:Resource' },
