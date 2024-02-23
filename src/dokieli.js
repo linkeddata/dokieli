@@ -617,6 +617,24 @@ var DO = {
         .attr('prefix', 'rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/')
         .attr('typeof', 'http://purl.org/dc/dcmitype/Image')
 
+      var graphView = document.querySelector(selector);
+      graphView.insertAdjacentHTML('beforeend', '<button class="export" title="Export graph as SVG">Export</button>');
+      graphView.addEventListener('click', function(e) {
+        if (e.target.closest('button.export')) {
+          var svgNode = graphView.querySelector('svg[typeof="http://purl.org/dc/dcmitype/Image"]');
+
+          var options = {
+            subjectURI: 'http://example.org/' + svgNode.id,
+            mediaType: 'image/svg+xml',
+            filenameExtension: '.svg'
+          }
+
+          svgNode = doc.getDocument(svgNode.cloneNode(true));
+
+          DO.U.exportAsDocument(svgNode, options);
+        }
+      });
+
       var s = document.getElementById(id);
       width = options.width || parseInt(s.ownerDocument.defaultView.getComputedStyle(s, null)["width"]);
       height = options.height || parseInt(s.ownerDocument.defaultView.getComputedStyle(s, null)["height"]);
