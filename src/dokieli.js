@@ -855,7 +855,7 @@ var DO = {
           .enter()
           .append('a')
             .attr('href', function(d) {
-              if ('type' in group[d.group] && group[d.group].type == 'rdf:Resource' && !d.id.startsWith('http://example.com/.well-known/genid/')) {
+              if ('type' in group[d.group] && group[d.group].type !== 'rdfs:Literal' && !d.id.startsWith('http://example.com/.well-known/genid/')) {
                 return d.id
               }
               return null
@@ -872,7 +872,7 @@ var DO = {
               e.stopPropagation();
   
               var iri = d.id;
-              if ('type' in group[d.group] && group[d.group].type == 'rdf:Resource' && !(d.id in DO.C.Graphs)) {
+              if ('type' in group[d.group] && group[d.group].type !== 'rdf:Literal' && !(d.id in DO.C.Graphs)) {
                 options = options || {};
                 options['subjectURI'] = iri;
                 //TODO: These values need not be set here. getResource(Graph) should take care of it. Refactor handleResource
