@@ -541,14 +541,14 @@ var DO = {
         return "translate(" + d.x + "," + d.y + ")";
       }
 
-      function dragstarted(d) {
-        if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-        d.fx = d.x, d.fy = d.y;
-      }
+      // function dragstarted(d) {
+      //   if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+      //   d.fx = d.x, d.fy = d.y;
+      // }
 
-      function dragged(d) {
-        d.fx = d3.event.x, d.fy = d3.event.y;
-      }
+      // function dragged(d) {
+      //   d.fx = d3.event.x, d.fy = d3.event.y;
+      // }
 
       function dragended(d) {
         if (!d3.event.active) simulation.alphaTarget(0);
@@ -852,18 +852,25 @@ var DO = {
               return d.id;
             }
           }))
-          .enter().append("circle")
-            .attr("r", nodeRadius)
-            .attr("fill", function(d) { return group[d.group].color; })
+          .enter()
+          .append('a')
+            .attr('href', function(d) {
+              if ('type' in group[d.group] && group[d.group].type == 'rdf:Resource' && !d.id.startsWith('http://example.com/.well-known/genid/')) {
+                return d.id
+              }
+              return null
+            })
+          .append('circle')
+            .attr('r', nodeRadius)
+            .attr('fill', function(d) { return group[d.group].color; })
             .attr('stroke', function (d) {
               if (d.visited) { return group[3].color }
               else if (d.group == 4) { return group[2].color }
               else { return group[7].color }})
-            // .call(d3.drag()
-            //     .on("start", dragstarted)
-            //     .on("drag", dragged)
-            //     .on("end", dragended));
-            .on('click', function(d) {
+            .on('click', function(e, d) {
+              e.preventDefault();
+              e.stopPropagation();
+  
               var iri = d.id;
               if ('type' in group[d.group] && group[d.group].type == 'rdf:Resource' && !(d.id in DO.C.Graphs)) {
                 options = options || {};
@@ -878,8 +885,14 @@ var DO = {
                 handleResource(pIRI, headers, options);
               }
             })
-        node.append("title")
-            .text(function(d) { return d.id; });
+
+        node.append('title')
+          .text(function(d) { return d.id; });
+
+            // .call(d3.drag()
+            //     .on("start", dragstarted)
+            //     .on("drag", dragged)
+            //     .on("end", dragended));
 
         svgObject = {
           'link': link,
