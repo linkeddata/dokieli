@@ -78,7 +78,7 @@ function xmlHtmlEscape(string) {
 }
 
 function fixBrokenHTML(html) {
-  var pattern = new RegExp('<(' + Config.DOMNormalisation.selfClosing.join('|') + ')([^>]*)></\\1>|<(' + Config.DOMNormalisation.selfClosing.join('|') + ')([^>]*)/>', 'g');
+  var pattern = new RegExp('<(' + Config.DOMNormalisation.voidElements.join('|') + ')([^>]*)></\\1>|<(' + Config.DOMNormalisation.voidElements.join('|') + ')([^>]*)/>', 'g');
 
   var fixedHtml = html.replace(pattern, '<$1$2/>');
 
@@ -86,16 +86,16 @@ function fixBrokenHTML(html) {
 }
 
 function domToString (node, options = {}) {
-  var selfClosing = options.selfClosing || []
+  var voidElements = options.voidElements || []
 
   var skipAttributes = options.skipAttributes || []
 
   var noEsc = [ false ]
 
-  return dumpNode(node, options, skipAttributes, selfClosing, noEsc)
+  return dumpNode(node, options, skipAttributes, voidElements, noEsc)
 }
 
-function dumpNode (node, options, skipAttributes, selfClosing, noEsc) {
+function dumpNode (node, options, skipAttributes, voidElements, noEsc) {
   var out = ''
 
   if (typeof node.nodeType === 'undefined') return out
@@ -151,7 +151,7 @@ function dumpNode (node, options, skipAttributes, selfClosing, noEsc) {
         out += ' ' + attrList.join(' ')
       }
 
-      if (selfClosing.indexOf(ename) > -1) {
+      if (voidElements.indexOf(ename) > -1) {
         out += ' />'
       } else {
         out += '>'
@@ -159,7 +159,7 @@ function dumpNode (node, options, skipAttributes, selfClosing, noEsc) {
         noEsc.push(ename === 'style' || ename === 'script' || ename === 'pre' || ename === 'code' || ename === 'samp')
 
         for (var i = 0; i < node.childNodes.length; i++) {
-          out += dumpNode(node.childNodes[i], options, skipAttributes, selfClosing, noEsc)
+          out += dumpNode(node.childNodes[i], options, skipAttributes, voidElements, noEsc)
         }
 
         noEsc.pop()
