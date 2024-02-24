@@ -6,8 +6,8 @@
  * https://github.com/linkeddata/dokieli
  */
 
-global.fetcher = require('./fetcher')
-global.doc = require('./doc')
+const fetcher = require('./fetcher')
+const doc = require('./doc')
 const uri = require('./uri')
 const graph = require('./graph')
 const inbox = require('./inbox')
@@ -15,8 +15,8 @@ const util = require('./util')
 window.MediumEditor = require('medium-editor')
 window.MediumEditorTable = require('medium-editor-tables')
 const storage = require('./storage')
-global.auth = require('./auth')
-global.template = require('./template')
+const auth = require('./auth')
+const template = require('./template')
 const d3 = Object.assign({}, require("d3-selection"), require("d3-force"))
 const shower = require('shower').default
 const Diff = require('diff');
@@ -26,7 +26,7 @@ const { gfmTagfilterHtml } = require('micromark-extension-gfm-tagfilter')
 
 if(typeof DO === 'undefined'){
 const ld = require('./simplerdf')
-global.SimpleRDF = ld.SimpleRDF
+const SimpleRDF = ld.SimpleRDF
 var DO = {
   fetcher,
 
@@ -150,7 +150,7 @@ var DO = {
     },
 
     showInboxNotifications: function() {
-      fetcher.getLinkRelation(DO.C.Vocab['ldpinbox']['@id']).then(
+      fetcher.getLinkRelation(DO.C.Vocab['ldpinbox']['@id'], null, doc.getDocument()).then(
         function(i) {
           i.forEach(function(inboxURL) {
             if (!DO.C.Inbox[inboxURL]) {
@@ -1119,6 +1119,16 @@ var DO = {
                 graphData.nodes.push({"id": t.subject.nominalValue, "group": sGroup, "visited": sVisited });
               }
               if(graphNodes.indexOf(t.object.nominalValue) == -1) {
+                if (t.object.nominalValue in DO.C.Resource) {
+                  // console.log(t.object.nominalValue)
+                  DO.C.Resource[t.object.nominalValue].rdftype.forEach(function(type){
+                    if (graph.isActorType(type)) {
+                      // console.log(type)
+                      oGroup = 10
+                    }
+                  })
+                }
+
                 graphNodes.push(objectValue);
                 graphData.nodes.push({"id": objectValue, "group": oGroup, "visited": oVisited });
               }
@@ -3913,7 +3923,7 @@ console.log(reason);
               .innerHTML = '<p class="success"><a target="_blank" href="' + response.url + '">Reply saved!</a></p>'
 
             // Determine the inbox endpoint, to send the notification to
-            return fetcher.getLinkRelation(DO.C.Vocab['ldpinbox']['@id'])
+            return fetcher.getLinkRelation(DO.C.Vocab['ldpinbox']['@id'], null, doc.getDocument())
               .catch(error => {
                 console.error('Could not fetch inbox endpoint:', error)
 
@@ -5260,8 +5270,10 @@ console.log(response)
 
       var baseUrl;
 
+      // TODO: Show and use storage, outbox, annotationService as opposed to first available.
+
       if(DO.C.User.Storage && DO.C.User.Storage.length > 0) {
-        baseUrl = uri.forceTrailingSlash(DO.C.User.Storage[0]); // TODO: options for multiple storage
+        baseUrl = uri.forceTrailingSlash(DO.C.User.Storage[0]);
       }
       else if(DO.C.User.Outbox && DO.C.User.Outbox[0]) {
         baseUrl = uri.forceTrailingSlash(DO.C.User.Outbox[0]);
@@ -5272,7 +5284,7 @@ console.log(response)
         DO.U.initBrowse(baseUrl, input, browseButton, createButton, id, action);
       }
       else {
-        fetcher.getLinkRelation(DO.C.Vocab['oaannotationService']['@id']).then(
+        fetcher.getLinkRelation(DO.C.Vocab['oaannotationService']['@id'], null, doc.getDocument()).then(
           function(storageUrl) {
             DO.U.initBrowse(storageUrl[0], input, browseButton, createButton, id, action);
           },
@@ -8695,12 +8707,12 @@ WHERE {\n\
                 }
               };
 
-              updateAnnotationServiceForm();
               updateAnnotationInboxForm();
 
-              return fetcher.getLinkRelation(DO.C.Vocab['oaannotationService']['@id']).then(
+              return fetcher.getLinkRelation(DO.C.Vocab['oaannotationService']['@id'], null, doc.getDocument()).then(
                 function(url) {
                   DO.C.AnnotationService = url[0];
+                  updateAnnotationServiceForm();
                   showAction();
                 },
                 function(reason) {
@@ -8708,6 +8720,7 @@ WHERE {\n\
                     auth.showUserIdentityInput();
                   }
                   else {
+                    updateAnnotationServiceForm();
                     showAction();
                   }
                 }
@@ -9862,7 +9875,12 @@ WHERE {\n\
                   inboxPromise = Promise.resolve([annotation.annotationInbox])
                 }
                 else {
-                  inboxPromise = fetcher.getLinkRelation(DO.C.Vocab['ldpinbox']['@id']);
+                  if ('inbox' in DO.C.Resource[documentURL] && DO.C.Resource[documentURL].inbox.length > 0) {
+                    inboxPromise = Promise.resolve(DO.C.Resource[documentURL].inbox)
+                  }
+                  else {
+                    inboxPromise = fetcher.getLinkRelation(DO.C.Vocab['ldpinbox']['@id'], documentURL);
+                  }
                 }
 
                 return inboxPromise
