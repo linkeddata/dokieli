@@ -3,6 +3,7 @@
 const Config = require('./config')
 const util = require('./util')
 const uri = require('./uri')
+const fetcher = require('./fetcher')
 const ld = require('./simplerdf')
 const SimpleRDF = ld.SimpleRDF
 const graph = require('./graph')
