@@ -24,6 +24,7 @@ module.exports = {
   removeNodesWithIds,
   getNodeLanguage,
   showActionMessage,
+  handleActionMessage,
   selectArticleNode,
   insertDocumentLevelHTML,
   setDate,
@@ -566,6 +567,16 @@ function getNodeLanguage(node) {
   }
 
   return lang;
+}
+
+function handleActionMessage(resolved, rejected) {
+  if (resolved) {
+    const { response, message } = resolved;
+    showActionMessage(document.documentElement, message);
+  } else if (rejected) {
+    const { error, message } = rejected;
+    showActionMessage(document.documentElement, message);
+  }
 }
 
 function showActionMessage(node, message, options) {
