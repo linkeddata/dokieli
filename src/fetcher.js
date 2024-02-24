@@ -818,8 +818,7 @@ function processSave(url, slug, data, options) {
 
   return request
     .then(response => {
-      doc.showActionMessage(document.documentElement, 'Saved')
-      return response
+      return Promise.resolve({'response': response, 'message': 'Saved'})
     })
     .catch(error => {
       console.log(error)
@@ -841,7 +840,7 @@ function processSave(url, slug, data, options) {
           break
       }
 
-      doc.showActionMessage(document.documentElement, message)
+      return Promise.reject({'error': error, 'message': message})
     })
 }
 
