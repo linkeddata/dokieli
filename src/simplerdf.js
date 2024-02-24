@@ -1,9 +1,9 @@
-var LdpStore = require('rdf-store-ldp/lite')
-var SimpleRDF = require('simplerdf')
-var N3Parser = require('rdf-parser-n3')
-var JsonLdParser = require('rdf-parser-jsonld')
-var RdfaParser = require('rdf-parser-rdfa')
-var SimpleRDFParse = require('simplerdf-parse')
+const LdpStore = require('rdf-store-ldp/lite')
+const SimpleRDF = require('simplerdf')
+const N3Parser = require('rdf-parser-n3')
+const JsonLdParser = require('rdf-parser-jsonld')
+const RdfaParser = require('rdf-parser-rdfa')
+const SimpleRDFParse = require('simplerdf-parse')
 
 var formats = {parsers: {}}
 formats.parsers['text/turtle'] = N3Parser
