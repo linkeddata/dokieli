@@ -1608,8 +1608,12 @@ function createImmutableResource(url, data, options) {
 
   // Create URI-M
   data = getDocument(rootNode);
-  fetcher.processSave(containerIRI, uuid, data, options);
-  getResourceInfo(null, { 'mode': 'update' });
+  fetcher.processSave(containerIRI, uuid, data, options)
+    .then((resolved) => handleActionMessage(resolved))
+    .catch((rejected) => handleActionMessage(null, rejected))
+    .finally(() => {
+      getResourceInfo(data, { 'mode': 'update' });
+    });
 
   var timeMapURL = Config.OriginalResourceInfo['timemap'] || url + '.timemap';
 
@@ -1640,7 +1644,9 @@ function createImmutableResource(url, data, options) {
 
     // Create URI-R
     data = getDocument();
-    fetcher.processSave(url, null, data, options);
+    fetcher.processSave(url, null, data, options)
+      .then((resolved) => handleActionMessage(resolved))
+      .catch((rejected) => handleActionMessage(null, rejected))
   }
 
 
@@ -1681,17 +1687,21 @@ function createMutableResource(url, data, options) {
   }
 
   data = getDocument();
-  fetcher.processSave(containerIRI, uuid, data, options);
-
+  fetcher.processSave(containerIRI, uuid, data, options)
+    .then((resolved) => handleActionMessage(resolved))
+    .catch((rejected) => handleActionMessage(null, rejected))
 
   o = { 'id': 'document-identifier', 'title': 'Identifier' };
   r = { 'rel': 'owl:sameAs', 'href': url };
   setDocumentRelation(document, [r], o);
 
   data = getDocument();
-  fetcher.processSave(url, null, data, options).then(() => {
-    getResourceInfo(data, { 'mode': 'update' });
-  });
+  fetcher.processSave(url, null, data, options)
+    .then((resolved) => handleActionMessage(resolved))
+    .catch((rejected) => handleActionMessage(null, rejected))
+    .finally(() => {
+      getResourceInfo(data, { 'mode': 'update' });
+    });
 }
 
 function updateMutableResource(url, data, options) {
@@ -1708,9 +1718,12 @@ function updateMutableResource(url, data, options) {
   setEditSelections(options);
 
   data = getDocument();
-  fetcher.processSave(url, null, data, options).then(() => {
-    getResourceInfo(data, { 'mode': 'update' });
-  });
+  fetcher.processSave(url, null, data, options)
+    .then((resolved) => handleActionMessage(resolved))
+    .catch((rejected) => handleActionMessage(null, rejected))
+    .finally(() => {
+      getResourceInfo(data, { 'mode': 'update' });
+    });
 }
 
 function removeNodesWithIds(ids) {
