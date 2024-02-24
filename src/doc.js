@@ -1326,12 +1326,12 @@ function getResourceInfo(data, options) {
 
                   return Promise.all(p)
                     .then(function(graphs) {
-                      graphs.forEach(function(graph){
-                        if (graph) {
-                          var s = graph.iri().toString();
+                      graphs.forEach(function(g){
+                        if (g) {
+                          var s = g.iri().toString();
                           Config['Resource'][documentURL]['describedby'][s] = {};
                           Config['Resource'][s] = {};
-                          Config['Resource'][s]['graph'] = graph;
+                          Config['Resource'][s]['graph'] = g;
                         }
                       });
                   });
