@@ -4,7 +4,6 @@ const ld = require('./simplerdf')
 const SimpleRDF = ld.SimpleRDF
 const Config = require('./config')
 const util = require('./util')
-const doc = require('./doc')
 const uri = require('./uri')
 const LinkHeader = require('http-link-header')
 const graph = require('./graph')
