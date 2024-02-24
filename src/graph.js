@@ -5,6 +5,7 @@ const SimpleRDF = ld.SimpleRDF
 const Config = require('./config')
 const uri = require('./uri')
 const util = require('./util')
+const fetcher = require('./fetcher')
 
 module.exports = {
   getGraph,
