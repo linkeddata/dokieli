@@ -1184,6 +1184,9 @@ function getGraphData(s, options) {
           Config['OriginalResourceInfo'] = info;
         }
 
+        info['inbox'] = s.ldpinbox._array;
+        info['annotationService'] = s.oaannotationService._array;
+
         //TODO: Refactor
         //FIXME: permissionsActions, specrequirement, skosConceptSchemes are assumed to be from document's policies
 
