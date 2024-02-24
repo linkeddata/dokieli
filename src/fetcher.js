@@ -55,7 +55,7 @@ function setAcceptRDFTypes(options) {
   }).join(',');
 }
 
-function getLinkRelation (property, url) {
+function getLinkRelation (property, url, data) {
   if (url) {
     return getLinkRelationFromHead(property, url)
       .catch(() => getLinkRelationFromRDF(property, url))
@@ -67,7 +67,7 @@ function getLinkRelation (property, url) {
       'subjectURI': subjectURI
     }
 
-    return graph.getGraphFromData(doc.getDocument(), options)
+    return graph.getGraphFromData(data, options)
       .then(function (result) {
           // TODO: Should this get all or a given subject's?
           var endpoints = result.match(subjectURI, property).toArray()
