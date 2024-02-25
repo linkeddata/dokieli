@@ -26,7 +26,6 @@ module.exports = {
   getResource,
   getResourceHead,
   getResourceGraph,
-  getTriplesFromGraph,
   getResourceOptions,
   LinkHeader,
   patchResource,
@@ -430,17 +429,6 @@ function getResourceGraph (iri, headers, options = {}) {
     })
 }
 
-
-function getTriplesFromGraph (url) {
-  return getResourceGraph(url)
-    .then(function(i){
-      return i.graph();
-    })
-    .catch(function(error){
-      // console.log(error);
-      throw error;
-    });
-}
 
 /**
  * getResourceOptions
