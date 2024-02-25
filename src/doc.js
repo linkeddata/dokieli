@@ -901,12 +901,9 @@ function showTimeMap(node, url) {
 
   var elementId = 'memento-document';
 
-  var displayMemento = '';
-
   fetcher.getResourceGraph(url)
     .then(g => {
-      var triples = g.graph().toArray();
-// console.log(triples)
+// console.log(g)
       if (!node) {
         node = document.getElementById(elementId);
         if(!node) {
@@ -921,7 +918,7 @@ function showTimeMap(node, url) {
         node.removeChild(timemap);
       }
 
-      triples = util.sortTriples(triples, { sortBy: 'object' });
+      var triples = util.sortTriples(g.graph(), { sortBy: 'object' });
 
       var items = [];
       triples.forEach(function(t){
