@@ -50,7 +50,8 @@ module.exports = {
   getGraphRights,
   getGraphLabel,
   getGraphTitle,
-  getGraphDescription
+  getGraphDescription,
+  sortGraphTriples
 }
 
 function getGraph (url) {
@@ -899,4 +900,19 @@ function getGraphTitle(s) {
 
 function getGraphDescription(s) {
   return s.schemadescription || s.dctermsdescription || s.dcelementsdescription || s.schemaname || s.asname || undefined;
+}
+
+function sortGraphTriples(g, options) {
+  options = options || {};
+  if (!("sortBy" in options)) {
+    options["sortBy"] = "object";
+  }
+
+  g.toArray().sort(function (a, b) {
+    return a[options.sortBy].nominalValue
+      .toLowerCase()
+      .localeCompare(b[options.sortBy].nominalValue.toLowerCase());
+  });
+
+  return g;
 }

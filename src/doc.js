@@ -918,7 +918,7 @@ function showTimeMap(node, url) {
         node.removeChild(timemap);
       }
 
-      var triples = util.sortTriples(g.graph(), { sortBy: 'object' });
+      var triples = graph.sortGraphTriples(g.graph(), { sortBy: 'object' });
 
       var items = [];
       triples.forEach(function(t){

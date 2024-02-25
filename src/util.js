@@ -13,7 +13,6 @@ module.exports = {
   generateId,
   getHash,
   hashCode,
-  sortTriples,
   sortToLower
 };
 
@@ -165,22 +164,6 @@ function hashCode(s) {
     hash = hash & hash; // Convert to 32bit integer
   }
   return hash;
-}
-
-// g is a SimpleRDF graph object
-function sortTriples(g, options) {
-  options = options || {};
-  if (!("sortBy" in options)) {
-    options["sortBy"] = "object";
-  }
-
-  g.toArray().sort(function (a, b) {
-    return a[options.sortBy].nominalValue
-      .toLowerCase()
-      .localeCompare(b[options.sortBy].nominalValue.toLowerCase());
-  });
-
-  return g;
 }
 
 function sortToLower(array, key) {
