@@ -9116,9 +9116,8 @@ WHERE {\n\
 
                   fetcher.getResourceGraph(queryURL)
                     .then(function(g){
-                      var g = g.graph().toArray();
                       sG.removeAttribute('class');
-                      triples = util.sortTriples(triples, { sortBy: 'object' });
+                      var triples = util.sortTriples(g.graph(), { sortBy: 'object' });
                       return DO.U.getListHTMLFromTriples(triples, {element: 'select', elementId: resultContainerId});
                     })
                     .then(function(listHTML){
