@@ -1,6 +1,5 @@
 'use strict'
 
-const util = require('./util')
 const doc = require('./doc')
 const uri = require('./uri')
 const graph = require('./graph')
