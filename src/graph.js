@@ -17,6 +17,9 @@ module.exports = {
   skolem,
   setDocumentBase,
   traverseRDFList,
+  getLinkRelation,
+  getLinkRelationFromHead,
+  getLinkRelationFromRDF,
   isActorType,
   isActorProperty,
   getAgentPreferencesInfo,
@@ -440,6 +443,144 @@ function traverseRDFList(g, resource) {
   }
 
   return result;
+}
+
+function getResourceGraph (iri, headers, options = {}) {
+  let defaultHeaders = {'Accept': fetcher.setAcceptRDFTypes() + ',*/*;q=0.1'}
+  headers = headers || defaultHeaders
+  if (!('Accept' in headers)) {
+    Object.assign(headers, defaultHeaders)
+  }
+
+  if (iri.slice(0, 5).toLowerCase() === 'http:') {
+    options['noCredentials'] = true
+
+    if (document.location.host !== iri.split('/')[2]) {
+      options['forceProxy'] = true
+    }
+  }
+
+  let pIRI = uri.getProxyableIRI(iri, options)
+
+  return fetcher.getResource(pIRI, headers, options)
+    .then(response => {
+
+      let cT = response.headers.get('Content-Type')
+      options['contentType'] = (cT) ? cT.split(';')[ 0 ].trim() : 'text/turtle'
+
+      if (!Config.MediaTypes.RDF.includes(options['contentType'])) {
+        return Promise.reject({ resource: iri, response: response, message: 'Unsupported media type for RDF parsing: ' + options['contentType'] })
+      }
+
+      options['subjectURI'] = uri.stripFragmentFromString(iri)
+
+      return response.text()
+    })
+    .then(data => {
+      return getGraphFromData(data, options)
+    })
+    .then(g => {
+      let fragment = (iri.lastIndexOf('#') >= 0) ? iri.substr(iri.lastIndexOf('#')) : ''
+
+      return SimpleRDF(Config.Vocab, options['subjectURI'], g, ld.store).child(pIRI + fragment)
+    })
+    .catch(e => {
+      if ('resource' in e) {
+        return e;
+      }
+      console.log(e)
+    })
+}
+
+function getLinkRelation (property, url, data) {
+  if (url) {
+    return getLinkRelationFromHead(property, url)
+      .catch(() => getLinkRelationFromRDF(property, url))
+  } else {
+    var subjectURI = window.location.href.split(window.location.search || window.location.hash || /[?#]/)[0]
+
+    var options = {
+      'contentType': 'text/html',
+      'subjectURI': subjectURI
+    }
+
+    return getGraphFromData(data, options)
+      .then(function (result) {
+          // TODO: Should this get all or a given subject's?
+          var endpoints = result.match(subjectURI, property).toArray()
+          if (endpoints.length > 0) {
+            return endpoints.map(function(t){ return t.object.nominalValue })
+          }
+
+// console.log(property + ' endpoint was not found in message body')
+          return getLinkRelationFromHead(property, subjectURI)
+        })
+  }
+}
+
+function getLinkRelationFromHead (property, url) {
+  var properties = (Array.isArray(property)) ? property : [property];
+
+  return getResourceHead(url).then(
+    function (i) {
+      var link = i.headers.get('Link')
+      if (link && link.length > 0) {
+        var linkHeaders = LinkHeader.parse(link)
+  // console.log(property)
+  // console.log(linkHeaders)
+        var uris = [];
+        properties.forEach(function(property){
+          if (linkHeaders.has('rel', property)) {
+            uris.push(linkHeaders.rel(property)[0].uri);
+          }
+        });
+
+        if (uris.length > 0) {
+          return uris;
+        }
+
+       return Promise.reject({'message': properties.join(', ') + " endpoint(s) was not found in 'Link' header"})
+      }
+      return Promise.reject({'message': properties.join(', ') + " endpoint(s) was not found in 'Link' header"})
+    },
+    function (reason) {
+      return Promise.reject({'message': "'Link' header not found"})
+    }
+  );
+}
+
+function getLinkRelationFromRDF (property, url, subjectIRI) {
+  url = url || window.location.origin + window.location.pathname
+  subjectIRI = subjectIRI || url
+
+  return getResourceGraph(subjectIRI)
+    .then(function (i) {
+        var s = i.child(subjectIRI)
+
+//XXX: Why is this switch needed? Use default?
+        switch (property) {
+          case Config.Vocab['ldpinbox']['@id']:
+            if (s.ldpinbox._array.length > 0){
+// console.log(s.ldpinbox._array)
+              return [s.ldpinbox.at(0)]
+            }
+            break
+          case Config.Vocab['oaannotationService']['@id']:
+            if (s.oaannotationService._array.length > 0){
+// console.log(s.oaannotationService._array)
+              return [s.oaannotationService.at(0)]
+            }
+            break
+          default:
+            if (s[property]._array.length > 0) {
+              return [s[property].at(0)]
+            }
+            break
+        }
+
+        return Promise.reject({'message': property + " endpoint was not found in message body"})
+      }
+    )
 }
 
 function isActorType (s) {

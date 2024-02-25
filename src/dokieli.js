@@ -150,7 +150,7 @@ var DO = {
     },
 
     showInboxNotifications: function() {
-      fetcher.getLinkRelation(DO.C.Vocab['ldpinbox']['@id'], null, doc.getDocument()).then(
+      graph.getLinkRelation(DO.C.Vocab['ldpinbox']['@id'], null, doc.getDocument()).then(
         function(i) {
           i.forEach(function(inboxURL) {
             if (!DO.C.Inbox[inboxURL]) {
@@ -1159,7 +1159,7 @@ var DO = {
         var property = (resources && 'filter' in options && 'predicates' in options.filter && options.filter.predicates.length > 0) ? options.filter.predicates[0] : DO.C.Vocab['ldpinbox']['@id'];
         var iri = (resources) ? resources : location.href.split(location.search||location.hash||/[?#]/)[0];
 
-        fetcher.getLinkRelation(property, iri).then(
+        graph.getLinkRelation(property, iri).then(
           function(resources) {
             DO.U.showGraphResources(resources[0], selector, options);
           },
@@ -3923,7 +3923,7 @@ console.log(reason);
               .innerHTML = '<p class="success"><a target="_blank" href="' + response.url + '">Reply saved!</a></p>'
 
             // Determine the inbox endpoint, to send the notification to
-            return fetcher.getLinkRelation(DO.C.Vocab['ldpinbox']['@id'], null, doc.getDocument())
+            return graph.getLinkRelation(DO.C.Vocab['ldpinbox']['@id'], null, doc.getDocument())
               .catch(error => {
                 console.error('Could not fetch inbox endpoint:', error)
 
@@ -4206,7 +4206,7 @@ console.log(reason);
           return Promise.resolve(aI);
         }
         else {
-          return fetcher.getLinkRelationFromHead(DO.C.Vocab['ldpinbox']['@id'], iri);
+          return graph.getLinkRelationFromHead(DO.C.Vocab['ldpinbox']['@id'], iri);
         }
       }
 
@@ -4415,7 +4415,7 @@ console.log(reason);
       var sD = document.getElementById(id + '-storage-description');
 
       if (samp && !sD) {
-        var sDPromise = fetcher.getLinkRelation(DO.C.Vocab['solidstorageDescription']['@id'], storageUrl);
+        var sDPromise = graph.getLinkRelation(DO.C.Vocab['solidstorageDescription']['@id'], storageUrl);
 
         return sDPromise
           .then(sDURLs => {
@@ -5284,7 +5284,7 @@ console.log(response)
         DO.U.initBrowse(baseUrl, input, browseButton, createButton, id, action);
       }
       else {
-        fetcher.getLinkRelation(DO.C.Vocab['oaannotationService']['@id'], null, doc.getDocument()).then(
+        graph.getLinkRelation(DO.C.Vocab['oaannotationService']['@id'], null, doc.getDocument()).then(
           function(storageUrl) {
             DO.U.initBrowse(storageUrl[0], input, browseButton, createButton, id, action);
           },
@@ -8709,7 +8709,7 @@ WHERE {\n\
 
               updateAnnotationInboxForm();
 
-              return fetcher.getLinkRelation(DO.C.Vocab['oaannotationService']['@id'], null, doc.getDocument()).then(
+              return graph.getLinkRelation(DO.C.Vocab['oaannotationService']['@id'], null, doc.getDocument()).then(
                 function(url) {
                   DO.C.AnnotationService = url[0];
                   updateAnnotationServiceForm();
@@ -9880,7 +9880,7 @@ WHERE {\n\
                     inboxPromise = Promise.resolve(DO.C.Resource[documentURL].inbox)
                   }
                   else {
-                    inboxPromise = fetcher.getLinkRelation(DO.C.Vocab['ldpinbox']['@id'], documentURL);
+                    inboxPromise = graph.getLinkRelation(DO.C.Vocab['ldpinbox']['@id'], documentURL);
                   }
                 }
 

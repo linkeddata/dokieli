@@ -95,7 +95,7 @@ function sendNotifications (tos, note, iri, shareResource) {
 }
 
 function inboxResponse (to, toInput) {
-  return fetcher.getLinkRelation(Config.Vocab['ldpinbox']['@id'], to)
+  return graph.getLinkRelation(Config.Vocab['ldpinbox']['@id'], to)
     .then(inboxes => inboxes[0])
 
     .catch(error => {
