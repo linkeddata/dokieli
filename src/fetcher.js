@@ -1,7 +1,5 @@
 'use strict'
 
-const ld = require('./simplerdf')
-const SimpleRDF = ld.SimpleRDF
 const Config = require('./config')
 const util = require('./util')
 const uri = require('./uri')

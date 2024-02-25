@@ -652,7 +652,7 @@ function getAgentSupplementalInfo(iri) {
 
         Config.User.Name = Config.User.Name || getAgentName(s);
 
-        Config.User.Image = Config.User.Image || graph.getGraphImage(s);
+        Config.User.Image = Config.User.Image || getGraphImage(s);
 
         var storage = getAgentStorage(s) || [];
         var outbox = getAgentOutbox(s) || [];
