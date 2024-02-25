@@ -903,8 +903,9 @@ function showTimeMap(node, url) {
 
   var displayMemento = '';
 
-  fetcher.getTriplesFromGraph(url)
-    .then(triples => {
+  fetcher.getResourceGraph(url)
+    .then(g => {
+      var triples = g.graph().toArray();
 // console.log(triples)
       if (!node) {
         node = document.getElementById(elementId);

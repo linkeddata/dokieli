@@ -635,8 +635,9 @@ function getAgentTypeIndex(iri) {
   var fetchTypeRegistration = function(iri) {
     var pIRI = uri.getProxyableIRI(iri);
 
-    fetcher.getTriplesFromGraph(pIRI)
-      .then(function(triples){
+    fetcher.getResourceGraph(pIRI)
+      .then(function(g){
+        var triples = g.graph().toArray();
 // console.log(triples);
         if(triples.length > 0) {
           var indexes = {};

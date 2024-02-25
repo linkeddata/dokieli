@@ -9114,8 +9114,9 @@ WHERE {\n\
                   form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', '<div id="' + sparklineGraphId + '"></div>' + template.Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]);
                   sG = document.getElementById(sparklineGraphId);
 
-                  fetcher.getTriplesFromGraph(queryURL)
-                    .then(function(triples){
+                  fetcher.getResourceGraph(queryURL)
+                    .then(function(g){
+                      var g = g.graph().toArray();
                       sG.removeAttribute('class');
                       triples = util.sortTriples(triples, { sortBy: 'object' });
                       return DO.U.getListHTMLFromTriples(triples, {element: 'select', elementId: resultContainerId});
@@ -9152,8 +9153,9 @@ WHERE {\n\
 // console.log(queryURL);
                         queryURL = uri.getProxyableIRI(queryURL);
 
-                        fetcher.getTriplesFromGraph(queryURL)
-                          .then(function(triples){
+                        fetcher.getResourceGraph(queryURL)
+                          .then(function(g){
+                            var g = g.graph().toArray();
 // console.log(triples);
                             if(triples.length > 0) {
                               var observations = {};
