@@ -3,7 +3,6 @@
 const Config = require('./config')
 const fetcher = require('./fetcher')
 const util = require('./util')
-const uri = require('./uri')
 const doc = require('./doc')
 const graph = require('./graph')
 const storage = require('./storage')

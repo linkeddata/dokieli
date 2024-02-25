@@ -2,7 +2,6 @@
 
 const Config = require('./config')
 const util = require('./util')
-const uri = require('./uri')
 const doc = require('./doc')
 
 module.exports = {
