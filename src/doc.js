@@ -901,7 +901,7 @@ function showTimeMap(node, url) {
 
   var elementId = 'memento-document';
 
-  fetcher.getResourceGraph(url)
+  graph.getResourceGraph(url)
     .then(g => {
 // console.log(g)
       if (!node) {
@@ -1319,7 +1319,7 @@ function getResourceInfo(data, options) {
                     if (!describedbyURL.startsWith('http:') && !describedbyURL.startsWith('https:')) {
                       describedbyURL = uri.getAbsoluteIRI(uri.getBaseURL(response.url), describedbyURL);
                     }
-                    p.push(fetcher.getResourceGraph(describedbyURL));
+                    p.push(graph.getResourceGraph(describedbyURL));
                   });
 
                   return Promise.all(p)

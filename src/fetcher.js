@@ -20,7 +20,6 @@ module.exports = {
   getAcceptPutPreference,
   getResource,
   getResourceHead,
-  getResourceGraph,
   getResourceOptions,
   LinkHeader,
   patchResource,
@@ -285,54 +284,6 @@ function getResourceHead (url, headers = {}, options = {}) {
 
   return getResource (url, headers, options)
 }
-
-function getResourceGraph (iri, headers, options = {}) {
-  let defaultHeaders = {'Accept': setAcceptRDFTypes() + ',*/*;q=0.1'}
-  headers = headers || defaultHeaders
-  if (!('Accept' in headers)) {
-    Object.assign(headers, defaultHeaders)
-  }
-
-  if (iri.slice(0, 5).toLowerCase() === 'http:') {
-    options['noCredentials'] = true
-
-    if (document.location.host !== iri.split('/')[2]) {
-      options['forceProxy'] = true
-    }
-  }
-
-  let pIRI = uri.getProxyableIRI(iri, options)
-
-  return getResource(pIRI, headers, options)
-    .then(response => {
-
-      let cT = response.headers.get('Content-Type')
-      options['contentType'] = (cT) ? cT.split(';')[ 0 ].trim() : 'text/turtle'
-
-      if (!Config.MediaTypes.RDF.includes(options['contentType'])) {
-        return Promise.reject({ resource: iri, response: response, message: 'Unsupported media type for RDF parsing: ' + options['contentType'] })
-      }
-
-      options['subjectURI'] = uri.stripFragmentFromString(iri)
-
-      return response.text()
-    })
-    .then(data => {
-      return graph.getGraphFromData(data, options)
-    })
-    .then(g => {
-      let fragment = (iri.lastIndexOf('#') >= 0) ? iri.substr(iri.lastIndexOf('#')) : ''
-
-      return SimpleRDF(Config.Vocab, options['subjectURI'], g, ld.store).child(pIRI + fragment)
-    })
-    .catch(e => {
-      if ('resource' in e) {
-        return e;
-      }
-      console.log(e)
-    })
-}
-
 
 /**
  * getResourceOptions

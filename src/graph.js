@@ -17,6 +17,7 @@ module.exports = {
   skolem,
   setDocumentBase,
   traverseRDFList,
+  getResourceGraph,
   getLinkRelation,
   getLinkRelationFromHead,
   getLinkRelationFromRDF,
@@ -597,7 +598,7 @@ function getAgentPreferencesInfo(g) {
   var preferencesFile = (Config.User.PreferencesFile) ? Config.User.PreferencesFile : getAgentPreferencesFile(g);
 
   if (preferencesFile) {
-    return fetcher.getResourceGraph(preferencesFile).then(g => {
+    return getResourceGraph(preferencesFile).then(g => {
         return getAgentPreferredPolicyRule(g.child(Config.User.IRI));
       })
       .catch(function(e) {
@@ -643,7 +644,7 @@ function getAgentSupplementalInfo(iri) {
     return processSameAs(Config.User.Graph, getAgentSupplementalInfo);
   }
   else {
-    return fetcher.getResourceGraph(iri).then(
+    return getResourceGraph(iri).then(
       function(g){
         if(typeof g._graph == 'undefined') {
           return Promise.resolve([]);
@@ -708,7 +709,7 @@ function getAgentSeeAlso(g, baseURI, subjectURI) {
     iris.forEach(function(iri){
       Config.User.SeeAlso = util.uniqueArray(Config.User.SeeAlso.concat(iri));
 
-      fetcher.getResourceGraph(iri)
+      getResourceGraph(iri)
         .then(g => {
 
           var s = g.child(subjectURI)
@@ -744,7 +745,7 @@ function getUserContacts(iri) {
       return processSameAs(Config.User.Graph, getUserContacts);
     }
     else {
-      return fetcher.getResourceGraph(iri).then(
+      return getResourceGraph(iri).then(
         function(g){
           if(typeof g._graph == 'undefined') {
             return Promise.resolve([]);
@@ -777,7 +778,7 @@ function getAgentTypeIndex(iri) {
   var fetchTypeRegistration = function(iri) {
     var pIRI = uri.getProxyableIRI(iri);
 
-    fetcher.getResourceGraph(pIRI)
+    getResourceGraph(pIRI)
       .then(function(g){
         var triples = g.graph().toArray();
 // console.log(triples);

@@ -45,7 +45,7 @@ var DO = {
 
       var pIRI = uri.getProxyableIRI(url);
 
-      return fetcher.getResourceGraph(pIRI, options.headers, options)
+      return graph.getResourceGraph(pIRI, options.headers, options)
         .then(
           function(i) {
             var s = i.child(url);
@@ -118,7 +118,7 @@ var DO = {
       DO.C.Inbox[url] = {};
       DO.C.Inbox[url]['Notifications'] = [];
 
-      return fetcher.getResourceGraph(pIRI)
+      return graph.getResourceGraph(pIRI)
         .then(
           function(i) {
             DO.C.Inbox[url]['Graph'] = i;
@@ -296,7 +296,7 @@ var DO = {
       var pIRI = uri.getProxyableIRI(url);
       var documentURL = DO.C.DocumentURL;
 
-      return fetcher.getResourceGraph(pIRI).then(
+      return graph.getResourceGraph(pIRI).then(
         function(g) {
           DO.C.Notification[url]['Graph'] = g;
 
@@ -1184,7 +1184,7 @@ var DO = {
             // console.log(u);
             // window.setTimeout(function () {
               var pIRI = uri.getProxyableIRI(u);
-              promises.push(fetcher.getResourceGraph(pIRI));
+              promises.push(graph.getResourceGraph(pIRI));
             // }, 1000)
           });
 
@@ -2142,7 +2142,7 @@ var DO = {
         // console.log(u);
         // window.setTimeout(function () {
           var pIRI = uri.getProxyableIRI(u);
-          promises.push(fetcher.getResourceGraph(pIRI));
+          promises.push(graph.getResourceGraph(pIRI));
         // }, 1000)
       });
 
@@ -2626,7 +2626,7 @@ var DO = {
           //TODO: Process all spec:testSuites
           var url = testSuites.at(0);
 
-          fetcher.getResourceGraph(url).then(
+          graph.getResourceGraph(url).then(
             function(g){
 // console.log(g)
               if (g) {
@@ -2652,7 +2652,7 @@ console.log(reason);
           var thead = table.querySelector('thead');
           thead.querySelector('tr > th').insertAdjacentHTML('beforeend', '<button id="include-diff-requirements" class="do add" disabled="disabled" title="' + buttonTextDiffRequirements + '">' + template.Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + '</button>');
 
-          fetcher.getResourceGraph(url).then(
+          graph.getResourceGraph(url).then(
             function(targetGraph){
               if (targetGraph) {
                 var targetGraphURI = targetGraph.iri().toString();
@@ -4100,7 +4100,7 @@ console.log(reason);
 
             //Get Contacts' profile
             var gC = function(url) {
-              return fetcher.getResourceGraph(url).then(i => {
+              return graph.getResourceGraph(url).then(i => {
                 // console.log(i);
                 var s = i.child(url);
 
@@ -4227,7 +4227,7 @@ console.log(reason);
         if(button.parentNode.classList.contains('container')){
           var headers;
           headers = {'Accept': 'text/turtle, application/ld+json'};
-          fetcher.getResourceGraph(url, headers).then(function(g){
+          graph.getResourceGraph(url, headers).then(function(g){
               actionNode.textContent = (action == 'write') ? url + util.generateAttributeId() : url;
               return DO.U.generateBrowserList(g, url, id, action);
             },
@@ -4444,7 +4444,7 @@ console.log(reason);
                 if (!storageDescriptionNode) {
                   var storageLocation = '<dl id="storage-location"><dt>Storage location</dt><dd><a href="' + storageUrl +'" target="_blank">' + storageUrl + '</a></dd></dl>';
 
-                  fetcher.getResourceGraph(sDURL).then(function(g){
+                  graph.getResourceGraph(sDURL).then(function(g){
                     g = (g.foafprimaryTopic) ? g.child(g.foafprimaryTopic) : g.child(storageUrl);
 
                     var selfDescription = DO.U.getStorageSelfDescription(g);
@@ -5047,7 +5047,7 @@ console.log(reason);
       input.value = baseUrl;
       var headers;
       headers = {'Accept': 'text/turtle, application/ld+json'};
-      fetcher.getResourceGraph(baseUrl, headers).then(function(g){
+      graph.getResourceGraph(baseUrl, headers).then(function(g){
         DO.U.generateBrowserList(g, baseUrl, id, action).then(function(i){
           DO.U.showStorageDescription(g, id, baseUrl);
         });
@@ -5070,7 +5070,7 @@ console.log(reason);
 // console.log(url)
         var headers;
         headers = {'Accept': 'text/turtle, application/ld+json'};
-        fetcher.getResourceGraph(url, headers).then(function(g){
+        graph.getResourceGraph(url, headers).then(function(g){
           DO.U.generateBrowserList(g, url, id, action).then(function(l){
             DO.U.showStorageDescription(g, id, url);
             return l;
@@ -5466,7 +5466,7 @@ console.log(response)
                   // window.setTimeout(function () {
 
                     // var pIRI = uri.getProxyableIRI(u);
-                    promises.push(fetcher.getResourceGraph(u));
+                    promises.push(graph.getResourceGraph(u));
                   // }, 1000)
                 });
 
@@ -5476,7 +5476,7 @@ console.log(response)
                     var items = [];
                     // graphs.filter(result => !(result instanceof Error));
 
-                    //TODO: Refactor if/else based on getResourceGraph
+                    //TODO: Refactor if/else based on graph.getResourceGraph
                     results.forEach(function(result){
 // console.log(result.value)
 
@@ -5484,7 +5484,7 @@ console.log(response)
                       if (result.value instanceof Error) {
 
                       }
-                      //FIXME: This is not actually useful yet. getResourceGraph should return the iri in which its content had no triples or failed to parse perhaps.
+                      //FIXME: This is not actually useful yet. graph.getResourceGraph should return the iri in which its content had no triples or failed to parse perhaps.
                       else if (typeof result.value === 'undefined') {
                         //   items.push('<a href="' + result.value + '">' + result.value + '</a>');
                       }
@@ -6404,7 +6404,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       }
 //console.log(iri);
 
-      return fetcher.getResourceGraph(iri);
+      return graph.getResourceGraph(iri);
     },
 
     getCitationHTML: function(citationGraph, citationURI, options) {
@@ -6854,7 +6854,7 @@ WHERE {\n\
     positionInteraction: function(noteIRI, containerNode, options) {
       containerNode = containerNode || doc.getDocumentContentNode(document);
 
-      return fetcher.getResourceGraph(noteIRI).then(
+      return graph.getResourceGraph(noteIRI).then(
         function(g){
           DO.U.showAnnotation(noteIRI, g, containerNode, options);
         });
@@ -7256,7 +7256,7 @@ WHERE {\n\
     processCitationClaim: function(citation) {
 // console.log('  processCitationClaim(' + citation.citingEntity + ')')
       var pIRI = uri.getProxyableIRI(citation.citingEntity);
-      return fetcher.getResourceGraph(pIRI).then(
+      return graph.getResourceGraph(pIRI).then(
         function(i) {
           var cEURL = uri.stripFragmentFromString(citation.citingEntity);
           DO.C.Activity[cEURL]['Graph'] = i;
@@ -8075,7 +8075,7 @@ WHERE {\n\
 
                     if (iri.startsWith('http')) {
                       //TODO: Refactor. There is overlap with addShareResourceContactInput and doc.getAgentHTML
-                      fetcher.getResourceGraph(iri).then(function(s){
+                      graph.getResourceGraph(iri).then(function(s){
                         // var iri = s.iri().toString();
                         // var id = encodeURIComponent(iri);
 
@@ -9114,7 +9114,7 @@ WHERE {\n\
                   form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', '<div id="' + sparklineGraphId + '"></div>' + template.Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]);
                   sG = document.getElementById(sparklineGraphId);
 
-                  fetcher.getResourceGraph(queryURL)
+                  graph.getResourceGraph(queryURL)
                     .then(function(g){
                       sG.removeAttribute('class');
                       var triples = graph.sortGraphTriples(g.graph(), { sortBy: 'object' });
@@ -9152,7 +9152,7 @@ WHERE {\n\
 // console.log(queryURL);
                         queryURL = uri.getProxyableIRI(queryURL);
 
-                        fetcher.getResourceGraph(queryURL)
+                        graph.getResourceGraph(queryURL)
                           .then(function(g){
                             var g = g.graph().toArray();
 // console.log(triples);

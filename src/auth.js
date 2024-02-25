@@ -259,7 +259,7 @@ function setUserInfo (userIRI, oidc) {
 
   var options = { 'noCredentials': true }
 
-  return fetcher.getResourceGraph(userIRI, {}, options)
+  return graph.getResourceGraph(userIRI, {}, options)
     .then(g => {
       var s = g.child(userIRI)
 
