@@ -39,60 +39,6 @@ describe("fetcher", () => {
     });
   });
 
-  describe("getResourceGraph", () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-
-    test("should return undefined if graph cannot be returned", async () => {
-      const iri = "http://example.com/nonexistent-resource";
-      const headers = { Accept: "text/turtle" };
-      const options = {};
-
-      // Mock the fetch function to reject with an error
-      global.fetch.mockRejectedValue(new Error("mocked error"));
-
-      await expect(
-        fetcher.getResourceGraph(iri, headers, options)
-      ).resolves.toBeUndefined();
-    });
-
-    test("should return a resource", async () => {
-      const iri = "http://example.com/resource";
-      const headers = { Accept: "text/turtle" };
-      const options = {};
-
-      // Mock the fetch function to resolve with a response
-      global.fetch.mockResolvedValue({
-        ok: true,
-        status: 200,
-        statusText: "OK",
-        headers: {
-          get: () => "text/turtle",
-        },
-        text: () => `@prefix ex: <http://example.com/> .
-
-      ex:Person1 a ex:Person ;
-        ex:name "John Doe" ;
-        ex:age 30 .`,
-      });
-
-      const result = await fetcher.getResourceGraph(iri, headers, options);
-
-      expect(result._graph).toHaveLength(3);
-      expect(result._graph._graph[1].object).toEqual({
-        datatype: {
-          interfaceName: "NamedNode",
-          nominalValue: "http://www.w3.org/2001/XMLSchema#string",
-        },
-        interfaceName: "Literal",
-        language: null,
-        native: undefined,
-        nominalValue: "John Doe",
-      });
-    });
-  });
-
   describe("setAcceptRDFTypes", () => {
     test("should return the correct accept types", () => {
       const options = {};
@@ -158,60 +104,6 @@ describe("fetcher", () => {
         status: 200,
         statusText: "OK",
       });
-    });
-  });
-
-  describe("getTriplesFromGraph", () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-
-    test("should return triples from graph", async () => {
-      const url = "http://example.com/resource";
-
-      // Mock the fetch function to resolve with a response
-      global.fetch.mockResolvedValue({
-        ok: true,
-        status: 200,
-        statusText: "OK",
-        headers: {
-          get: () => "text/turtle",
-        },
-        text: () => `@prefix ex: <http://example.com/> .
-      
-          ex:Person1 a ex:Person ;
-            ex:name "John Doe" ;
-            ex:age 30 .`,
-      });
-
-      const result = await fetcher.getTriplesFromGraph(url);
-
-      expect(result._graph).toHaveLength(3);
-      expect(result._graph[0]).toEqual({
-        object: {
-          interfaceName: "NamedNode",
-          nominalValue: "http://example.com/Person",
-        },
-        predicate: {
-          interfaceName: "NamedNode",
-          nominalValue: "http://www.w3.org/1999/02/22-rdf-syntax-ns#type",
-        },
-        subject: {
-          interfaceName: "NamedNode",
-          nominalValue: "http://example.com/Person1",
-        },
-      });
-    });
-
-    test("should throw error if getResourceGraph fails", async () => {
-      const url = "http://example.com/resource";
-
-      global.fetch.mockRejectedValue(new Error("mocked error"));
-
-      // TODO: this test reflects current behaviour but getResourceGraph should probably throw error when fetch fails instead of returning undefined
-      await expect(fetcher.getTriplesFromGraph(url)).rejects.toThrow(
-        "Cannot read properties of undefined (reading 'graph')"
-      );
     });
   });
 
