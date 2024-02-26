@@ -11,6 +11,7 @@ module.exports = {
   getGraph,
   getGraphFromData,
   getMatchFromData,
+  serializeDataToPreferredContentType,
   serializeData,
   serializeGraph,
   applyParserSerializerFixes,
@@ -128,6 +129,26 @@ function getMatchFromData (data, spo = {}, options = {}) {
     .catch(() => {
       return undefined
     })
+}
+
+function serializeDataToPreferredContentType(data, options) {
+  switch (options['preferredContentType']) {
+    case 'text/html':
+    case 'application/xhtml+xml':
+      return Promise.resolve(data);
+      break;
+
+    case 'text/turtle':
+      return serializeData(data, options['contentType'], 'text/turtle', options);
+      break;
+
+    case 'application/ld+json':
+    case 'application/json':
+    case '*/*':
+    default:
+      return serializeData(data, options['contentType'], 'application/ld+json', options);
+      break;
+  }
 }
 
 /**
