@@ -9933,7 +9933,7 @@ WHERE {\n\
 // console.log(data)
 // console.log(annotation)
 
-                    fetcher.postActivity(annotation['containerIRI'], id, data, annotation)
+                    inbox.postActivity(annotation['containerIRI'], id, data, annotation)
                       .catch(error => {
                         // console.log('Error serializing annotation:', error)
                         // console.log(error)

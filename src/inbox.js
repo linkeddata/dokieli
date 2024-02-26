@@ -9,7 +9,8 @@ const Config = require('./config')
 module.exports = {
   sendNotifications,
   inboxResponse,
-  notifyInbox
+  notifyInbox,
+  postActivity
 }
 
 function sendNotifications (tos, note, iri, shareResource) {
@@ -134,6 +135,22 @@ function notifyInbox (o) {
   }
 
   var pIRI = uri.getProxyableIRI(inboxURL)
-  return fetcher.postActivity(pIRI, slug, data, options)
+
+  return postActivity(pIRI, slug, data, options)
 }
 
+function postActivity(url, slug, data, options) {
+  return fetcher.getAcceptPostPreference(url)
+    .then(preferredContentType => {
+      options = options || {};
+      options['preferredContentType'] = preferredContentType;
+
+      return graph.serializeDataToPreferredContentType(data, options)
+        .then(serializedData => {
+          var profile = ('profile' in options) ? '; profile="' + options.profile + '"' : ''
+          var contentType = options['preferredContentType'] + profile + '; charset=utf-8';
+
+          return fetcher.postResource(url, slug, serializedData, contentType);
+        })
+    })
+}

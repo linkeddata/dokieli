@@ -4,7 +4,6 @@ const Config = require('./config')
 const util = require('./util')
 const uri = require('./uri')
 const LinkHeader = require('http-link-header')
-const graph = require('./graph')
 const solidAuth = require('solid-auth-client')
 
 const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
@@ -27,9 +26,6 @@ module.exports = {
   postResource,
   putResource,
   putResourceACL,
-  postActivity,
-  fetchPreferredMethod,
-  fetchPreferredMethodContentType,
   processSave,
   patchResourceWithAcceptPatch,
   putResourceWithAcceptPut
@@ -124,13 +120,14 @@ function deleteResource (url, options = {}) {
 
 function getAcceptPostPreference (url) {
   const pIRI = uri.getProxyableIRI(url)
-
+console.log(pIRI)
   return getResourceOptions(pIRI, {'header': 'Accept-Post'})
     .catch(error => {
 //      console.log(error)
       return {'headers': 'application/ld+json'}
     })
     .then(result => {
+console.log(result)
       let header = result.headers.trim().split(/\s*,\s*/)
 
       if (header.indexOf('text/html') > -1 || header.indexOf('application/xhtml+xml') > -1) {
@@ -585,71 +582,6 @@ function putResourceACL (accessToURL, aclURL, acl) {
     authorizations.join('\n') + '\n'
 
   return putResource(aclURL, data, 'text/turtle; charset=utf-8')
-}
-
-function postActivity(url, slug, data, options) {
-  return getAcceptPostPreference(url)
-    .then(preferredContentType => {
-      options = options || {};
-      options['preferredContentType'] = preferredContentType;
-      options['method'] = 'POST';
-      return fetchPreferredMethodContentType(url, slug, data, options);
-    })
-}
-
-//FIXME: May be better to have fetchPreferredMethod call fetchPreferredMethodContentType
-
-function fetchPreferredMethod(url, slug, data, options) {
-  var contentType = options['preferredContentType'] + '; charset=utf-8';
-
-  switch(options['method'].toLowerCase()) {
-    case 'post':
-      return postResource(url, slug, data, contentType);
-      break;
-    case 'put':
-      return putResource(url, data, contentType);
-      break;
-  }
-}
-
-function fetchPreferredMethodContentType(url, slug, data, options) {
-  switch (options['preferredContentType']) {
-    case 'text/html':
-    case 'application/xhtml+xml':
-      return fetchPreferredMethod(url, slug, data, options);
-      break;
-
-    case 'text/turtle':
-      // FIXME: proxyURL + http URL doesn't work. https://github.com/solid/node-solid-server/issues/351
-
-      return graph.serializeData(data, options['contentType'], 'text/turtle', options)
-        .then(data => {
-          return fetchPreferredMethod(url, slug, data, options);
-        })
-      break;
-
-    case 'application/ld+json':
-    case 'application/json':
-    case '*/*':
-    default:
-      return graph.serializeData(data, options['contentType'], 'application/ld+json', options)
-        .then(data => {
-          if (!options['canonical']) {
-            let x = JSON.parse(data)
-            if ('id' in x) {
-              x[ "via" ] = x[ "id" ]
-              x[ "id" ] = ""
-              data = JSON.stringify(x)
-            }
-          }
-
-          var profile = ('profile' in options) ? '; profile="' + options.profile + '"' : ''
-          options['preferredContentType'] = options['preferredContentType'] + profile;
-
-          return fetchPreferredMethod(url, slug, data, options)
-        })
-      break;
-  }
 }
 
 function processSave(url, slug, data, options) {
