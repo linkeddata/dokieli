@@ -7121,6 +7121,7 @@ WHERE {\n\
           }
           DO.U.positionNote(refId, id);
 
+          DO.C.Activity[noteIRI] = {};
           DO.C.Activity[noteIRI]['Graph'] = g;
 
           //Perhaps return something more useful?
@@ -7169,6 +7170,7 @@ WHERE {\n\
 // console.log(noteData)
           DO.U.addInteraction(noteData);
 
+          DO.C.Activity[noteIRI] = {};
           DO.C.Activity[noteIRI]['Graph'] = g;
         }
       }
@@ -7222,6 +7224,7 @@ WHERE {\n\
           }
           DO.U.addInteraction(noteData);
 
+          DO.C.Activity[noteIRI] = {};
           DO.C.Activity[noteIRI]['Graph'] = g;
         }
         else {
