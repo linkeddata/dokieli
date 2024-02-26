@@ -298,6 +298,12 @@ function serializeData (data, fromContentType, toContentType, options) {
             })
 
             data = JSON.parse(data)
+            //XXX: Is it ever possible that via could already exist and this mistakenly overwrites it?
+            //Why is this specific to JSON-LD?
+            if (!options['canonical'] && 'id' in data) {
+              data[ "via" ] = data[ "id" ]
+              data[ "id" ] = ""
+            }
             data = Object.assign({"@context": options["@context"]}, data)
             data = JSON.stringify(data)
           }
