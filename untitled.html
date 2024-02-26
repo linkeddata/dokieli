@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Untitled</title>
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <link href="https://dokie.li/media/css/basic.css" media="all" rel="stylesheet" title="Basic" />
+    <link href="https://dokie.li/media/css/dokieli.css" media="all" rel="stylesheet" />
+    <script src="https://dokie.li/scripts/dokieli.js"></script>
+</head>
+
+<body>
+    <script>
+        var savedDocument = localStorage.getItem('savedDocument');
+console.log(savedDocument);
+        if (savedDocument) {
+            document.documentElement.innerHTML = savedDocument;
+        } else {
+            document.body.innerHTML = "<h1>Error: Document not found</h1>";
+        }
+    </script>
+</body>
+
+</html>

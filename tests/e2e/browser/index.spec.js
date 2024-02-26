@@ -74,7 +74,7 @@ test("clicking on the reply button displays reply modal", async ({ page }) => {
   await expect(replyModal).toBeVisible();
 });
 
-test("clicking on the new button displays create new document modal", async ({
+test("clicking on the new button open a new untitled document", async ({
   page,
 }) => {
   await page.goto("/");
@@ -89,8 +89,8 @@ test("clicking on the new button displays create new document modal", async ({
 
   const newBtn = page.locator("[class=resource-new]");
   await newBtn.click();
-  const newModal = page.locator("[id=create-new-document]");
-  await expect(newModal).toBeVisible();
+  const untitledDocTitle = page.getByText("Untitled")
+  expect(untitledDocTitle).toBeDefined();
 });
 
 test("clicking on the open button displays open document modal", async ({

@@ -3634,6 +3634,9 @@ console.log(reason);
 
       var buttonDisabled = '';
 
+      // FIXME: need a better way to check document is new/unsaved
+      var saveButtonDisabled = (window.location.href.includes('untitled') ? '' : ' disabled="disabled')
+
       var s = '<section id="document-do" class="do"><h2>Do</h2><ul>';
       s += '<li><button class="resource-share" title="Share resource">' + template.Icon[".fas.fa-bullhorn.fa-2x"] + 'Share</button></li>';
       s += '<li><button class="resource-reply" title="Reply">' + template.Icon[".fas.fa-reply.fa-2x"] + 'Reply</button></li>';
@@ -3658,7 +3661,7 @@ console.log(reason);
 
       buttonDisabled = (document.location.protocol === 'file:') ? ' disabled="disabled"' : buttonDisabled;
 
-      s += '<li><button class="resource-save"' + buttonDisabled +
+      s += '<li><button class="resource-save"' + saveButtonDisabled +
         ' title="Save article">' + template.Icon[".fas.fa-life-ring.fa-2x"] + 'Save</button></li>';
 
       s += '<li><button class="resource-save-as"' + doc.getButtonDisabledHTML('resource-save-as') + ' title="Save as article">' + template.Icon[".far.fa-paper-plane.fa-2x"] + 'Save As</button></li>';
@@ -3744,6 +3747,9 @@ console.log(reason);
         }
 
         if (e.target.closest('.resource-save')){
+          if (window.location.href.includes('untitled')) { // FIXME: need a better way to check if the document is unsaved
+            DO.U.saveAsDocument(e); // FIXME: maybe modified somehow.. to not open in new window.. and different title ("Save As Document" > "Save Document")?
+          }
           DO.U.resourceSave(e);
         }
 
@@ -3763,7 +3769,6 @@ console.log(reason);
     },
 
     resourceSave: function(e, options) {
-      var url = window.location.origin + window.location.pathname;
       var data = doc.getDocument();
       options = options || {};
 
@@ -5701,115 +5706,25 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
 
     createNewDocument: function createNewDocument (e) {
-      e.target.disabled = true
-      document.documentElement.appendChild(util.fragmentFromString('<aside id="create-new-document" class="do on">' + DO.C.Button.Close + '<h2>Create New Document</h2></aside>'))
-
-      var newDocument = document.getElementById('create-new-document')
-      newDocument.addEventListener('click', e => {
-        if (e.target.closest('button.close')) {
-          document.querySelector('#document-do .resource-new').disabled = false
-        }
-      })
-
-      var id = 'location-new'
-      var action = 'write'
-
-      DO.U.setupResourceBrowser(newDocument, id, action)
-      document.getElementById(id).insertAdjacentHTML('afterbegin', '<p>Choose a location to save your new article.</p>')
-      var baseURLSelection = (document.location.protocol == 'file:') ? '' : DO.U.getBaseURLSelection()
-
-      newDocument.insertAdjacentHTML('beforeend', baseURLSelection +
-        '<p>Your new document will be saved at <samp id="' + id + '-' + action +
-        '">https://example.org/path/to/article</samp></p><button class="create" title="Create new document">Create</button>')
-
-      var bli = document.getElementById(id + '-input')
-      bli.focus()
-      bli.placeholder = 'https://example.org/path/to/article'
-
-      newDocument.addEventListener('click', e => {
-        if (!e.target.closest('button.create')) {
-          return
-        }
-
-        var newDocument = document.getElementById('create-new-document')
-        var storageIRI = newDocument.querySelector('#' + id + '-' + action).innerText.trim()
-        var title = (storageIRI.length > 0) ? uri.getURLLastPath(storageIRI) : ''
-        title = DO.U.generateLabelFromString(title);
-
-        var rm = newDocument.querySelector('.response-message')
-        if (rm) {
-          rm.parentNode.removeChild(rm)
-        }
-
         var html = document.documentElement.cloneNode(true)
-        var baseURLSelectionChecked = newDocument.querySelector('select[name="base-url"]')
-        // console.log(baseURLSelectionChecked);
 
-        if (baseURLSelectionChecked.length > 0) {
-          var baseURLType = baseURLSelectionChecked.value
-          var nodes = html.querySelectorAll('head link, [src], object[data]')
-          if (baseURLType == 'base-url-relative') {
-            DO.U.copyRelativeResources(storageIRI, nodes)
-          }
-          nodes = DO.U.rewriteBaseURL(nodes, {'baseURLType': baseURLType})
-        }
-
+        const title = 'Untitled'
         html.querySelector('body').innerHTML = '<main><article about="" typeof="schema:Article"><h1 property="schema:name">' + title + '</h1></article></main>'
         html.querySelector('head title').innerHTML = title
         html = doc.getDocument(html)
+        var documentMode = (DO.C.WebExtension) ? '' : '?author=true'
 
-        fetcher.putResource(storageIRI, html)
-          .then(() => {
-            var documentMode = (DO.C.WebExtension) ? '' : '?author=true'
-
-            newDocument.insertAdjacentHTML('beforeend',
-              '<div class="response-message"><p class="success">' +
-              'New document created at <a href="' + storageIRI +
-              documentMode + '">' + storageIRI + '</a></p></div>'
-            )
-
-            window.open(storageIRI + documentMode, '_blank')
-          })
-
-          .catch(error => {
-            console.log('Error creating a new document:')
-            console.error(error)
-
-            let message
-
-            switch (error.status) {
-              case 0:
-              case 405:
-                message = 'this location is not writable.'
-                break
-              case 401:
-                message = 'you are not authorized.'
-                if(!DO.C.User.IRI){
-                  message += ' Try signing in.';
-                }
-                break
-              case 403:
-                message = 'you do not have permission to write here.'
-                break
-              case 406:
-                message = 'enter a name for your resource.'
-                break
-              default:
-                message = error.message
-                break
-            }
-
-            newDocument.insertAdjacentHTML('beforeend',
-              '<div class="response-message"><p class="error">' +
-              'Could not create new document: ' + message + '</p>'
-            )
-          })
-      })
+        // Save document to local storage
+        localStorage.setItem('savedDocument', html);
+      
+        window.open(window.location.href + 'untitled' + documentMode, '_blank')
     },
 
     saveAsDocument: function saveAsDocument (e) {
+      // FIXME: need a better way of checking if doc is new/unsaved
+      const isNewDocument = window.location.href.includes('untitled')
       e.target.disabled = true;
-      document.documentElement.appendChild(util.fragmentFromString('<aside id="save-as-document" class="do on">' + DO.C.Button.Close + '<h2>Save As Document</h2></aside>'));
+      document.documentElement.appendChild(util.fragmentFromString('<aside id="save-as-document" class="do on">' + DO.C.Button.Close + `<h2>${isNewDocument ? 'Save Document' : 'Save As Document'}</h2></aside>`));
 
       var saveAsDocument = document.getElementById('save-as-document');
       saveAsDocument.addEventListener('click', function(e) {
@@ -6073,6 +5988,10 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
               '<div class="response-message"><p class="success">' +
               'Document saved at <a href="' + url + documentMode + '">' + url + '</a></p></div>'
             )
+
+            if (isNewDocument) {
+              window.open(url + documentMode, '_self')
+            }
 
             window.open(url + documentMode, '_blank')
           })
