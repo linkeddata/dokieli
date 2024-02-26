@@ -120,14 +120,13 @@ function deleteResource (url, options = {}) {
 
 function getAcceptPostPreference (url) {
   const pIRI = uri.getProxyableIRI(url)
-console.log(pIRI)
+
   return getResourceOptions(pIRI, {'header': 'Accept-Post'})
     .catch(error => {
 //      console.log(error)
       return {'headers': 'application/ld+json'}
     })
     .then(result => {
-console.log(result)
       let header = result.headers.trim().split(/\s*,\s*/)
 
       if (header.indexOf('text/html') > -1 || header.indexOf('application/xhtml+xml') > -1) {
