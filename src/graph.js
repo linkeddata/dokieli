@@ -549,7 +549,7 @@ function getLinkRelation (property, url, data) {
 function getLinkRelationFromHead (property, url) {
   var properties = (Array.isArray(property)) ? property : [property];
 
-  return getResourceHead(url).then(
+  return fetcher.getResourceHead(url).then(
     function (i) {
       var link = i.headers.get('Link')
       if (link && link.length > 0) {
