@@ -178,10 +178,10 @@ function dumpNode (node, options, skipAttributes, voidElements, noEsc) {
     // .replace(/\n+$/, '')
 
     nl = nl.replace(/&/g, '&amp;').replace(/&amp;amp;/g, '&amp;')
-    if (node.parentNode.nodeName.toLowerCase() !== 'style') {
+    if (node.parentNode.nodeName.toLowerCase() !== 'style' && (node.parentNode.nodeName.toLowerCase() == 'script' && !options.skipEscapingDataBlockTypes.includes(node.parentNode.type.trim()))) {
       nl = nl.replace(/>/g, '&gt;')
     }
-    if (noEsc.indexOf(true) > -1) {
+    if (noEsc.indexOf(true) > -1 && (node.parentNode.nodeName.toLowerCase() == 'script' && !options.skipEscapingDataBlockTypes.includes(node.parentNode.type.trim()))) {
       nl = nl.replace(/</g, '&lt;')
     }
     out += nl
