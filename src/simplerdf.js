@@ -7,6 +7,7 @@ const SimpleRDFParse = require('simplerdf-parse')
 
 var formats = {parsers: {}}
 formats.parsers['text/turtle'] = N3Parser
+formats.parsers['application/trig'] = N3Parser
 formats.parsers['application/ld+json'] = JsonLdParser
 formats.parsers['application/activity+json'] = JsonLdParser
 formats.parsers['application/xhtml+xml'] = RdfaParser
@@ -17,6 +18,7 @@ SimpleRDF.parse = parser.parse.bind(parser)
 
 var storeFormats = {parsers:{}}
 storeFormats.parsers['text/turtle'] = N3Parser
+storeFormats.parsers['application/trig'] = N3Parser
 storeFormats.parsers['application/ld+json'] = JsonLdParser
 storeFormats.parsers['application/activity+json'] = JsonLdParser
 storeFormats.parsers['application/xhtml+xml'] = RdfaParser
