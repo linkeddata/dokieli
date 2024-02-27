@@ -99,7 +99,8 @@ module.exports = {
       'source': ['medium-editor-element', 'medium-editor-placeholder', 'on-document-menu'],
       'target': ''
     },
-    'skipClassWithValue': ''
+    'skipClassWithValue': '',
+    'skipEscapingDataBlockTypes': ['text/turtle', 'application/ld+json', 'application/activity+json', 'application/n-triples', 'application/trig', 'text/n3']
   },
 
   ArticleNodeSelectors: [
