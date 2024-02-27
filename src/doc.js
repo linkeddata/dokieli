@@ -1243,6 +1243,68 @@ function getResourceInfo(data, options) {
   Config['Resource'] = Config['Resource'] || {};
   Config['Resource'][documentURL] = Config['Resource'][documentURL] || {};
 
+  var getResourceDataBlock = function(data, options) {
+    if (Config.MediaTypes.Markup.includes(options.contentType)) {
+      var node = getDocumentNodeFromString(data, options);
+
+      var selectors = Config.MediaTypes.RDF
+        .filter(function(mediaType) {
+          return !Config.MediaTypes.Markup.includes(mediaType);
+        })
+        .map(function(mediaType) {
+          return 'script[type="' + mediaType + '"]';
+        });
+
+      var promises = [];
+
+      var scripts = node.querySelectorAll(selectors.join(', '));
+      scripts.forEach(function(script){
+        var scriptType = script.getAttribute('type').trim();
+        var scriptData = script.textContent;
+
+        var matches = Array.from(scriptData.matchAll(/<!\[CDATA\[(.*?)\]\]>/gs));
+        scriptData = matches.map(match => match[1].trim()).join('\n');
+
+        //Cleans up the data block from comments at the beginning and end of the script.
+        var lines = scriptData.split(/\r\n|\r|\n/);
+        lines = lines.filter(function(line, index) {
+          if (index === 0 || index === lines.length - 1) {
+            line = line.trim();
+            return !line.startsWith('#') && !line.startsWith('//');
+          }
+          return true;
+        });
+        scriptData = lines.join('\n');
+
+console.log(scriptData)
+
+        var o = {
+          'subjectURI': documentURL,
+          'contentType': scriptType
+        }
+
+        promises.push(graph.getGraphFromData(scriptData, o).then(
+          function(i){
+            var s = SimpleRDF(Config.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
+console.log(s.toString())
+            var info = getGraphData(s, options);
+
+            return info;
+          }
+        ));
+
+        return promises;
+      });
+    }
+    else {
+      return Promise.resolve();
+    }
+  }
+
+  //TODO: getResourceDataBlock and getResourceData should run asynchronously and probably only need to call getGraphData once. Their calls to getGraphFromData differ so the functions should probably return a response right after, and then do getGraphData once. The response from getResourceDataBlock below is not currently put to use.
+  getResourceDataBlock(data, options);
+
+
   var getResourceData = function(data, options) {
     return graph.getGraphFromData(data, options).then(
       function(i){
