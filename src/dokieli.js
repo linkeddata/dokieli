@@ -5392,6 +5392,7 @@ console.log(response)
           })
           .then(response => {
 // console.log(response)
+            iri = encodeURI(iri)
             var cT = response.headers.get('Content-Type');
             var options = {};
             options['contentType'] = (cT) ? cT.split(';')[0].toLowerCase().trim() : 'text/turtle';
