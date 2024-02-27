@@ -1972,12 +1972,12 @@ var DO = {
             if (scriptEntry.length > 0) {
               //If there was a script already
               if (script) {
-                var scriptContent = scriptType[name].cdataStart + scriptEntry + scriptType[name].cdataEnd;
-                script.innerHTML = scriptContent;
+                script.textContent = scriptType[name].cdataStart + scriptEntry + scriptType[name].cdataEnd;
               }
               else {
-                var scriptContent = '  ' + scriptType[name].scriptStart + scriptType[name].cdataStart + scriptEntry + scriptType[name].cdataEnd + scriptType[name].scriptEnd;
-                document.querySelector('head').insertAdjacentHTML('beforeend', scriptContent);
+                document.querySelector('head').appendChild(util.fragmentFromString(scriptType[name].scriptStart + scriptType[name].scriptEnd));
+                var textNode = document.createTextNode(scriptType[name].cdataStart + scriptEntry + scriptType[name].cdataEnd);
+                document.getElementById(name).appendChild(textNode);
               }
             }
             else {
