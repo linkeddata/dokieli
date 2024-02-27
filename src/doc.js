@@ -16,6 +16,7 @@ module.exports = {
   dumpNode,
   getDoctype,
   getDocument,
+  getDocumentNodeFromString,
   getDocumentContentNode,
   createHTML,
   createFeedXML,
@@ -216,6 +217,15 @@ function getDocument (cn, options) {
   let s = (doctype.length > 0) ? doctype + '\n' : ''
   s += domToString(node, options)
   return s
+}
+
+function getDocumentNodeFromString(s, options) {
+  options = options || {};
+  options['contentType'] = options.contentType || 'text/html';
+
+  var parser = new DOMParser();
+  var parsedDoc = parser.parseFromString(s, options.contentType);
+  return parsedDoc.documentElement;
 }
 
 function getDocumentContentNode(node) {
