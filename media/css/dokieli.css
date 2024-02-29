@@ -472,6 +472,13 @@ overflow:auto;
 vertical-align:middle;
 }
 
+#source-view {
+max-width:60%;
+}
+#source-view textarea {
+max-width: unset !important;
+}
+
 #source-view textarea {
 font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace !important;
 }
