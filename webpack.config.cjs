@@ -3,6 +3,8 @@ const path = require("path");
 const fs = require("fs");
 const WrapperPlugin = require("wrapper-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+
 const headerDoc =
   fs.readFileSync(
     require.resolve("solid-auth-client/dist-lib/solid-auth-client.bundle.js"),
@@ -12,7 +14,7 @@ const headerDoc =
 module.exports = (env) => {
   return {
     resolve: {
-      modules: [path.join(__dirname, "node_modules")],
+      modules: ["node_modules", "src/"],
       fallback: {
         fs: false,
         tls: false,
@@ -31,19 +33,18 @@ module.exports = (env) => {
       },
       extensions: [".ts", ".js", ".mjs"],
     },
-    mode: "none",
+    mode: "production",
     entry: ["./src/dokieli.js"],
     output: {
       path: path.join(__dirname, "/scripts/"),
       filename: "dokieli.js",
-      library: "DO",
-      libraryTarget: "window",
+      library: undefined, 
+      libraryExport: 'default', 
     },
     module: {
       rules: [
         {
           test: /\.js$/,
-          // loader: 'babel-loader',
           exclude: ["/src/__tests__/", "/node_modules/", "/__testUtils__/"],
         },
       ],
@@ -54,10 +55,13 @@ module.exports = (env) => {
       "isomorphic-fetch": "fetch",
       "@trust/webcrypto": "crypto",
       "solid-auth-client": ["solid", "auth"],
+      "medium-editor": "MediumEditor",
+      "medium-editor-tables": "MediumEditorTable",
     },
     devtool: "source-map",
     optimization: {
-      minimize: env.minimize,
+      usedExports: true,
+      minimize: true,
       minimizer: [
         new TerserPlugin({
           terserOptions: {
@@ -80,6 +84,7 @@ module.exports = (env) => {
       new webpack.ProvidePlugin({
         Buffer: ["buffer", "Buffer"],
       }),
+      new BundleAnalyzerPlugin({ analyzerMode: 'disabled' }),
     ],
   };
 };

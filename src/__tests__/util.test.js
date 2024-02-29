@@ -1,12 +1,12 @@
-const util = require("../util");
-const { TextEncoder } = require("util");
-const crypto = require("crypto");
+import { uniqueArray, getDateTimeISO, removeChildren, copyTextToClipboard, escapeRegExp, generateUUID, generateAttributeId, hashCode, fragmentFromString, getHash } from "../util";
+import { TextEncoder } from "util";
+import { webcrypto } from "crypto";
 
 global.TextEncoder = TextEncoder;
 
 Object.defineProperty(global.self, "crypto", {
   value: {
-    subtle: crypto.webcrypto.subtle,
+    subtle: webcrypto.subtle,
   },
 });
 
@@ -14,7 +14,7 @@ describe("util", () => {
   describe("uniqueArray", () => {
     it("returns an array with unique values", () => {
       const nonUniqueArray = [1, 2, 2, 2, 6, 9];
-      const result = util.uniqueArray(nonUniqueArray);
+      const result = uniqueArray(nonUniqueArray);
       expect(result).toHaveLength(4);
       expect(result).toEqual([1, 2, 6, 9]);
     });
@@ -23,7 +23,7 @@ describe("util", () => {
   describe("getDateTimeISO", () => {
     jest.useFakeTimers().setSystemTime(new Date("April 25, 2022 02:00:00"));
     it("returns a date string", () => {
-      const result = util.getDateTimeISO();
+      const result = getDateTimeISO();
       expect(result).toBe("2022-04-25T02:00:00.000Z");
     });
   });
@@ -32,7 +32,7 @@ describe("util", () => {
     it("removes first child", () => {
       const node = `<div id='wrapper'><span>test</span></div>`;
       document.body.innerHTML = node;
-      util.removeChildren(document.getElementById("wrapper"));
+      removeChildren(document.getElementById("wrapper"));
       expect(document.body.innerHTML.toString()).toMatchInlineSnapshot(
         `"<div id="wrapper"></div>"`
       );
@@ -46,7 +46,7 @@ describe("util", () => {
           writeText: jest.fn().mockImplementation(() => Promise.resolve()),
         },
       });
-      util.copyTextToClipboard("example");
+      copyTextToClipboard("example");
       expect(navigator.clipboard.writeText).toHaveBeenCalledWith("example");
     });
     it("calls the document execCommand function with copy with the correct argument if navigator clipboard is unavailable", () => {
@@ -56,57 +56,57 @@ describe("util", () => {
       Object.assign(document, {
         execCommand: jest.fn(),
       });
-      util.copyTextToClipboard("example");
+      copyTextToClipboard("example");
       expect(document.execCommand).toHaveBeenCalledWith("copy");
     });
   });
 
   describe("escapeRegExp", () => {
     it("escape characters in a given string", () => {
-      const resultString = util.escapeRegExp("example (test)");
+      const resultString = escapeRegExp("example (test)");
       expect(resultString).toEqual("example \\(test\\)");
     });
   });
 
   describe("generateUUID", () => {
     it("returns a 36-character-long UUID", () => {
-      const result = util.generateUUID();
+      const result = generateUUID();
       expect(result).toHaveLength(36);
     });
   });
 
   describe("generateAttributeId", () => {
     it("returns an attribute id given a prefix and a string", () => {
-      const id = util.generateAttributeId("a", "example");
+      const id = generateAttributeId("a", "example");
       expect(id).toEqual("aexample");
     });
     it("returns an attribute id given a string and no prefix", () => {
-      const id = util.generateAttributeId(null, "example");
+      const id = generateAttributeId(null, "example");
       expect(id).toEqual("example");
     });
     it("returns an attribute id with a suffix if id already in use", () => {
       const node = `<div id='example'><span>test</span></div>`;
       document.body.innerHTML = node;
-      const id = util.generateAttributeId(null, "example");
+      const id = generateAttributeId(null, "example");
       expect(id).toMatch(/(example-)/i)
 
     });
     it("returns a 36-character-long UUID if string is not passed", () => {
-      const id = util.generateAttributeId();
+      const id = generateAttributeId();
       expect(id).toHaveLength(36);
     });
   });
 
   describe("hashCode", () => {
     it("retuns a number for a given string", () => {
-      const result = util.hashCode("example string");
+      const result = hashCode("example string");
       expect(result).toEqual(168766343);
     });
   });
 
   describe("fragmentFromString", () => {
     it("creates a document fragment from a string", () => {
-      const result = util.fragmentFromString(
+      const result = fragmentFromString(
         '<div id="wrapper"><span>test</span></div>'
       );
       expect(result).toMatchInlineSnapshot(`
@@ -125,13 +125,13 @@ describe("util", () => {
 
   describe("getHash", () => {
     it("returns a hash for a given message and default algorithm", async () => {
-      const hash = await util.getHash("example");
+      const hash = await getHash("example");
       expect(hash).toEqual(
         "50d858e0985ecc7f60418aaf0cc5ab587f42c2570a884095a9e8ccacd0f6545c"
       );
     });
     it("returns a hash for a given message and algorithm", async () => {
-      const hash = await util.getHash("example", "SHA-512");
+      const hash = await getHash("example", "SHA-512");
       expect(hash).toEqual(
         "3bb12eda3c298db5de25597f54d924f2e17e78a26ad8953ed8218ee682f0bbbe9021e2f3009d152c911bf1f25ec683a902714166767afbd8e5bd0fb0124ecb8a"
       );

@@ -1,5 +1,5 @@
-const { test, expect } = require("@playwright/test");
-const AxeBuilder = require("@axe-core/playwright").default;
+import { test, expect } from "@playwright/test";
+import AxeBuilder from "@axe-core/playwright";
 
 test("should not have any automatically detectable accessibility issues", async ({
   page,

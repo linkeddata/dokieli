@@ -1,29 +1,18 @@
 'use strict'
 
-const Config = require('./config')
-const fetcher = require('./fetcher')
-const util = require('./util')
-const doc = require('./doc')
-const graph = require('./graph')
-const storage = require('./storage')
-const solidAuth = require('solid-auth-client')
+import { User, Button, OidcPopupUrl } from './config.js'
+import { deleteResource } from './fetcher.js'
+import { removeChildren, fragmentFromString } from './util.js'
+import { getAgentHTML } from './doc.js'
+import { getResourceGraph, getAgentName, getGraphImage, getAgentURL, getAgentPreferredProxy, getAgentPreferredPolicy, getAgentDelegates, getAgentKnows, getAgentFollowing, getAgentStorage, getAgentOutbox, getAgentInbox, getAgentPreferencesFile, getAgentPublicTypeIndex, getAgentPrivateTypeIndex, getAgentTypeIndex, getAgentSupplementalInfo, getAgentSeeAlso, getAgentPreferencesInfo } from './graph.js'
+import { removeLocalStorageProfile, updateLocalStorageProfile } from './storage.js'
+import solidAuth, { logout, popupLogin } from 'solid-auth-client'
 
 // const { OIDCWebClient } = require('@trust/oidc-web')
 
-module.exports = {
-  afterSignIn,
-  enableDisableButton,
-  getUserSignedInHTML,
-  setUserInfo,
-  showUserIdentityInput,
-  showUserSigninSignout,
-  submitSignIn,
-  submitSignInOIDC
-}
-
 
 function getUserSignedInHTML() {
-  return doc.getAgentHTML() + '<button class="signout-user" title="Live long and prosper"><svg class="far fa-hand-spock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M21.096 381.79l129.092 121.513a32 32 0 0 0 21.932 8.698h237.6c14.17 0 26.653-9.319 30.68-22.904l31.815-107.313A115.955 115.955 0 0 0 477 348.811v-36.839c0-4.051.476-8.104 1.414-12.045l31.73-133.41c10.099-42.412-22.316-82.738-65.544-82.525-4.144-24.856-22.543-47.165-49.85-53.992-35.803-8.952-72.227 12.655-81.25 48.75L296.599 184 274.924 52.01c-8.286-36.07-44.303-58.572-80.304-50.296-29.616 6.804-50.138 32.389-51.882 61.295-42.637.831-73.455 40.563-64.071 81.844l31.04 136.508c-27.194-22.515-67.284-19.992-91.482 5.722-25.376 26.961-24.098 69.325 2.871 94.707zm32.068-61.811l.002-.001c7.219-7.672 19.241-7.98 26.856-.813l53.012 49.894C143.225 378.649 160 371.4 160 357.406v-69.479c0-1.193-.134-2.383-.397-3.546l-34.13-150.172c-5.596-24.617 31.502-32.86 37.054-8.421l30.399 133.757a16 16 0 0 0 15.603 12.454h8.604c10.276 0 17.894-9.567 15.594-19.583l-41.62-181.153c-5.623-24.469 31.39-33.076 37.035-8.508l45.22 196.828A16 16 0 0 0 288.956 272h13.217a16 16 0 0 0 15.522-12.119l42.372-169.49c6.104-24.422 42.962-15.159 36.865 9.217L358.805 252.12c-2.521 10.088 5.115 19.88 15.522 19.88h9.694a16 16 0 0 0 15.565-12.295L426.509 146.6c5.821-24.448 42.797-15.687 36.966 8.802L431.72 288.81a100.094 100.094 0 0 0-2.72 23.162v36.839c0 6.548-.943 13.051-2.805 19.328L397.775 464h-219.31L53.978 346.836c-7.629-7.18-7.994-19.229-.814-26.857z"/></svg></button>'
+  return getAgentHTML() + '<button class="signout-user" title="Live long and prosper"><svg class="far fa-hand-spock" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M21.096 381.79l129.092 121.513a32 32 0 0 0 21.932 8.698h237.6c14.17 0 26.653-9.319 30.68-22.904l31.815-107.313A115.955 115.955 0 0 0 477 348.811v-36.839c0-4.051.476-8.104 1.414-12.045l31.73-133.41c10.099-42.412-22.316-82.738-65.544-82.525-4.144-24.856-22.543-47.165-49.85-53.992-35.803-8.952-72.227 12.655-81.25 48.75L296.599 184 274.924 52.01c-8.286-36.07-44.303-58.572-80.304-50.296-29.616 6.804-50.138 32.389-51.882 61.295-42.637.831-73.455 40.563-64.071 81.844l31.04 136.508c-27.194-22.515-67.284-19.992-91.482 5.722-25.376 26.961-24.098 69.325 2.871 94.707zm32.068-61.811l.002-.001c7.219-7.672 19.241-7.98 26.856-.813l53.012 49.894C143.225 378.649 160 371.4 160 357.406v-69.479c0-1.193-.134-2.383-.397-3.546l-34.13-150.172c-5.596-24.617 31.502-32.86 37.054-8.421l30.399 133.757a16 16 0 0 0 15.603 12.454h8.604c10.276 0 17.894-9.567 15.594-19.583l-41.62-181.153c-5.623-24.469 31.39-33.076 37.035-8.508l45.22 196.828A16 16 0 0 0 288.956 272h13.217a16 16 0 0 0 15.522-12.119l42.372-169.49c6.104-24.422 42.962-15.159 36.865 9.217L358.805 252.12c-2.521 10.088 5.115 19.88 15.522 19.88h9.694a16 16 0 0 0 15.565-12.295L426.509 146.6c5.821-24.448 42.797-15.687 36.966 8.802L431.72 288.81a100.094 100.094 0 0 0-2.72 23.162v36.839c0 6.548-.943 13.051-2.805 19.328L397.775 464h-219.31L53.978 346.836c-7.629-7.18-7.994-19.229-.814-26.857z"/></svg></button>'
 }
 
 
@@ -32,23 +21,23 @@ async function showUserSigninSignout (node) {
   const session = await solid.auth.currentSession();
   var webId = session ? session.webId : null;
   // was LoggedId with new OIDC WebID
-  if (webId && (webId != Config.User.IRI || !Config.User.IRI)) {
+  if (webId && (webId != User.IRI || !User.IRI)) {
      await setUserInfo(webId, true)
           .then(() => {
             afterSignIn()
           })
   }
   // was LoggedOut as OIDC
-  if (!webId && Config.User.IRI && Config.User.OIDC) {
-    storage.removeLocalStorageProfile()
+  if (!webId && User.IRI && User.OIDC) {
+    removeLocalStorageProfile()
 
-    Config.User = {
+    User = {
       IRI: null,
       Role: 'social',
       UI: {}
     }
 
-    util.removeChildren(node);
+    removeChildren(node);
   }
 
 
@@ -57,7 +46,7 @@ async function showUserSigninSignout (node) {
   if (!userInfo) {
     var s = ''
 
-    if (Config.User.IRI) {
+    if (User.IRI) {
       s = getUserSignedInHTML()
     }
     else {
@@ -70,19 +59,19 @@ async function showUserSigninSignout (node) {
 
     userInfo.addEventListener('click', async function(e) {
       if (e.target.closest('.signout-user')) {
-        if (Config.User.OIDC) {
-          await solidAuth.logout();
+        if (User.OIDC) {
+          await logout();
         }
 
-        storage.removeLocalStorageProfile()
+        removeLocalStorageProfile()
 
-        Config.User = {
+        User = {
           IRI: null,
           Role: 'social',
           UI: {}
         }
 
-        util.removeChildren(node);
+        removeChildren(node);
 
         var documentMenu = document.querySelector('#document-menu')
 
@@ -110,18 +99,18 @@ function showUserIdentityInput (e) {
     e.target.disabled = true
   }
 
-  var webid = Config.User.WebIdDelegate ? Config.User.WebIdDelegate : "";
-  var code = '<aside id="user-identity-input" class="do on">' + Config.Button.Close + '<h2>Sign in</h2><p id="user-identity-input-webid"><label>WebID</label> <input id="webid" type="text" placeholder="https://csarven.ca/#i" value="'+webid+'" name="webid"/> <button class="signin">Sign in</button></p>';
+  var webid = User.WebIdDelegate ? User.WebIdDelegate : "";
+  var code = '<aside id="user-identity-input" class="do on">' + Button.Close + '<h2>Sign in</h2><p id="user-identity-input-webid"><label>WebID</label> <input id="webid" type="text" placeholder="https://csarven.ca/#i" value="'+webid+'" name="webid"/> <button class="signin">Sign in</button></p>';
   //XXX: This limitation may not be necessary.
   // if (window.location.protocol === "https:") {
     code += '<p id="user-identity-input-oidc">or with <label>OpenID Connect</label> <button class="signin-oidc">Sign in</button></p>';
   // }
   code += '</aside>';
 
-  document.documentElement.appendChild(util.fragmentFromString(code))
+  document.documentElement.appendChild(fragmentFromString(code))
 
   var buttonSignIn = document.querySelector('#user-identity-input button.signin')
-  if (! Config.User.WebIdDelegate)
+  if (! User.WebIdDelegate)
     buttonSignIn.setAttribute('disabled', 'disabled')
 
   document.querySelector('#user-identity-input').addEventListener('click', e => {
@@ -201,7 +190,7 @@ function submitSignIn (url) {
     .then(() => {
       var uI = document.getElementById('user-info')
       if (uI) {
-        util.removeChildren(uI);
+        removeChildren(uI);
         uI.insertAdjacentHTML('beforeend', getUserSignedInHTML());
       }
 
@@ -217,11 +206,10 @@ function submitSignIn (url) {
 function submitSignInOIDC (url) {
   var userIdentityInput = document.getElementById('user-identity-input')
 
-  var popupUri = Config.OidcPopupUrl;
+  var popupUri = OidcPopupUrl;
 
   if (solidAuth) {
-    solidAuth
-      .popupLogin({ popupUri })
+    popupLogin({ popupUri })
       .then((session) => {
          if (session && session.webId) {
            console.log("Connected:", session.webId);
@@ -229,7 +217,7 @@ function submitSignInOIDC (url) {
             .then(() => {
               var uI = document.getElementById('user-info')
               if (uI) {
-                util.removeChildren(uI);
+                removeChildren(uI);
                 uI.insertAdjacentHTML('beforeend', getUserSignedInHTML());
               }
 
@@ -259,51 +247,51 @@ function setUserInfo (userIRI, oidc) {
 
   var options = { 'noCredentials': true }
 
-  return graph.getResourceGraph(userIRI, {}, options)
+  return getResourceGraph(userIRI, {}, options)
     .then(g => {
       var s = g.child(userIRI)
 
-      Config.User.Graph = s
-      Config.User.IRI = userIRI
-      Config.User.Name = graph.getAgentName(s)
-      Config.User.Image = graph.getGraphImage(s)
-      Config.User.URL = graph.getAgentURL(s)
-      Config.User.OIDC = oidc ? true : false;
+      User.Graph = s
+      User.IRI = userIRI
+      User.Name = getAgentName(s)
+      User.Image = getGraphImage(s)
+      User.URL = getAgentURL(s)
+      User.OIDC = oidc ? true : false;
 
-      Config.User.ProxyURL = graph.getAgentPreferredProxy(s)
-      Config.User.PreferredPolicy = graph.getAgentPreferredPolicy(s)
+      User.ProxyURL = getAgentPreferredProxy(s)
+      User.PreferredPolicy = getAgentPreferredPolicy(s)
 
-      Config.User.Delegates = graph.getAgentDelegates(s)
+      User.Delegates = getAgentDelegates(s)
 
-      Config.User.Contacts = {}
-      Config.User.Knows = graph.getAgentKnows(s)
-      Config.User.Following = graph.getAgentFollowing(s)
-      Config.User.SameAs = []
-      Config.User.SeeAlso = []
+      User.Contacts = {}
+      User.Knows = getAgentKnows(s)
+      User.Following = getAgentFollowing(s)
+      User.SameAs = []
+      User.SeeAlso = []
 
-      Config.User.Storage = graph.getAgentStorage(s)
-      Config.User.Outbox = graph.getAgentOutbox(s)
-      Config.User.Inbox = graph.getAgentInbox(s)
-      Config.User.TypeIndex = {}
+      User.Storage = getAgentStorage(s)
+      User.Outbox = getAgentOutbox(s)
+      User.Inbox = getAgentInbox(s)
+      User.TypeIndex = {}
 
-      Config.User.PreferencesFile = graph.getAgentPreferencesFile(s)
-      Config.User.PublicTypeIndex = graph.getAgentPublicTypeIndex(s)
-      Config.User.PrivateTypeIndex = graph.getAgentPrivateTypeIndex(s)
+      User.PreferencesFile = getAgentPreferencesFile(s)
+      User.PublicTypeIndex = getAgentPublicTypeIndex(s)
+      User.PrivateTypeIndex = getAgentPrivateTypeIndex(s)
 
-      return Config.User
+      return User
     })
 }
 
 function afterSignIn () {
   var promises = [];
 
-  promises.push(graph.getAgentTypeIndex(Config.User))
+  promises.push(getAgentTypeIndex(User))
 
-  promises.push(graph.getAgentSupplementalInfo(Config.User.IRI))
+  promises.push(getAgentSupplementalInfo(User.IRI))
 
-  promises.push(graph.getAgentSeeAlso(Config.User.Graph))
+  promises.push(getAgentSeeAlso(User.Graph))
 
-  promises.push(graph.getAgentPreferencesInfo(Config.User.Graph))
+  promises.push(getAgentPreferencesInfo(User.Graph))
 
   Promise.all(promises)
     .then(function(results) {
@@ -312,7 +300,7 @@ function afterSignIn () {
         uI.innerHTML = getUserSignedInHTML()
       }
 
-      return storage.updateLocalStorageProfile(Config.User)
+      return updateLocalStorageProfile(User)
     })
     .catch(function(e) {
       return Promise.resolve();
@@ -321,7 +309,7 @@ function afterSignIn () {
   var rA = document.querySelector('#document-menu .resource-activities')
   if(rA) { rA.removeAttribute('disabled') }
 
-  var user = document.querySelectorAll('aside.do article *[rel~="schema:creator"] > *[about="' + Config.User.IRI + '"]')
+  var user = document.querySelectorAll('aside.do article *[rel~="schema:creator"] > *[about="' + User.IRI + '"]')
   for (let i = 0; i < user.length; i++) {
     var article = user[i].closest('article')
     article.insertAdjacentHTML('afterbegin', '<button class="delete"><svg class="fas fa-trash-alt" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M0 84V56c0-13.3 10.7-24 24-24h112l9.4-18.7c4-8.2 12.3-13.3 21.4-13.3h114.3c9.1 0 17.4 5.1 21.5 13.3L312 32h112c13.3 0 24 10.7 24 24v28c0 6.6-5.4 12-12 12H12C5.4 96 0 90.6 0 84zm416 56v324c0 26.5-21.5 48-48 48H80c-26.5 0-48-21.5-48-48V140c0-6.6 5.4-12 12-12h360c6.6 0 12 5.4 12 12zm-272 68c0-8.8-7.2-16-16-16s-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208zm96 0c0-8.8-7.2-16-16-16s-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208zm96 0c0-8.8-7.2-16-16-16s-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208z"/></svg></button>')
@@ -338,7 +326,7 @@ function afterSignIn () {
       var noteIRI = article.closest('blockquote[cite]')
       noteIRI = noteIRI.getAttribute('cite')
 
-      fetcher.deleteResource(noteIRI)
+      deleteResource(noteIRI)
         .then(() => {
           var aside = e.target.closest('aside.do')
           aside.parentNode.removeChild(aside)
@@ -348,4 +336,15 @@ function afterSignIn () {
         })
     })
   }
+}
+
+export {
+  afterSignIn,
+  enableDisableButton,
+  getUserSignedInHTML,
+  setUserInfo,
+  showUserIdentityInput,
+  showUserSigninSignout,
+  submitSignIn,
+  submitSignInOIDC
 }

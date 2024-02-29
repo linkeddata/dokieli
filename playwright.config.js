@@ -1,4 +1,4 @@
-const { devices } = require("@playwright/test");
+import { devices } from "@playwright/test";
 
 const config = {
   testDir: "./tests/e2e/browser",
@@ -11,7 +11,7 @@ const config = {
   workers: 3,
   reporter: "html",
   webServer: {
-    command: "node tests/__testUtils__/testServer.js",
+    command: "node tests/__testUtils__/testServer.cjs",
     port: 3000,
     reuseExistingServer: true,
   },
@@ -69,4 +69,4 @@ const config = {
   outputDir: "test-results/",
 };
 
-module.exports = config;
+export default config;

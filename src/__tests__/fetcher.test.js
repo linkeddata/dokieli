@@ -1,4 +1,4 @@
-const fetcher = require("../fetcher");
+import { getResource, setAcceptRDFTypes, getResourceHead, getResourceOptions } from "../fetcher.js";
 
 global.fetch = jest.fn();
 
@@ -16,7 +16,7 @@ describe("fetcher", () => {
       // Mock the fetch function to reject with an error
       global.fetch.mockRejectedValue(new Error("mocked error"));
 
-      await expect(fetcher.getResource(iri, headers, options)).rejects.toThrow(
+      await expect(getResource(iri, headers, options)).rejects.toThrow(
         "mocked error"
       );
     });
@@ -33,7 +33,7 @@ describe("fetcher", () => {
         statusText: "OK",
       });
 
-      const result = await fetcher.getResource(iri, headers, options);
+      const result = await getResource(iri, headers, options);
 
       expect(result).toEqual({ ok: true, status: 200, statusText: "OK" });
     });
@@ -43,7 +43,7 @@ describe("fetcher", () => {
     test("should return the correct accept types", () => {
       const options = {};
 
-      const result = fetcher.setAcceptRDFTypes(options);
+      const result = setAcceptRDFTypes(options);
 
       expect(result).toEqual(
         "text/turtle,application/ld+json,application/activity+json,text/html;q=0.9,image/svg+xml;q=0.9,text/markdown;q=0.9"
@@ -57,7 +57,7 @@ describe("fetcher", () => {
         },
       };
 
-      const result = fetcher.setAcceptRDFTypes(options);
+      const result = setAcceptRDFTypes(options);
 
       expect(result).toEqual(
         "text/turtle,application/ld+json,application/activity+json,text/html;q=0.9,image/svg+xml;q=0.9,text/markdown;q=0.9"
@@ -81,7 +81,7 @@ describe("fetcher", () => {
         statusText: "Not Found",
       });
 
-      await expect(fetcher.getResourceHead(url, options)).rejects.toThrow(
+      await expect(getResourceHead(url, options)).rejects.toThrow(
         "Error fetching resource: 404 Not Found"
       );
     });
@@ -97,7 +97,7 @@ describe("fetcher", () => {
         statusText: "OK",
       });
 
-      const result = await fetcher.getResourceHead(url, options);
+      const result = await getResourceHead(url, options);
 
       expect(result).toEqual({
         ok: true,
@@ -126,7 +126,7 @@ describe("fetcher", () => {
         },
       });
 
-      const result = await fetcher.getResourceOptions(url, options);
+      const result = await getResourceOptions(url, options);
 
       expect(result.headers.get()).toEqual("text/turtle");
     });
@@ -142,7 +142,7 @@ describe("fetcher", () => {
         statusText: "Not Found",
       });
 
-      await expect(fetcher.getResourceOptions(url, options)).rejects.toThrow(
+      await expect(getResourceOptions(url, options)).rejects.toThrow(
         "Error fetching resource OPTIONS: 404 Not Found"
       );
     });
@@ -161,7 +161,7 @@ describe("fetcher", () => {
         },
       });
 
-      await expect(fetcher.getResourceOptions(url, options)).rejects.toThrow(
+      await expect(getResourceOptions(url, options)).rejects.toThrow(
         "OPTIONS without X-Custom-Header header: 200 OK"
       );
     });
@@ -180,7 +180,7 @@ describe("fetcher", () => {
         },
       });
 
-      const result = await fetcher.getResourceOptions(url, options);
+      const result = await getResourceOptions(url, options);
 
       expect(result).toEqual({ headers: "custom-value" });
     });

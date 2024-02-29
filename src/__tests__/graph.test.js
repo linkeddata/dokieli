@@ -1,4 +1,4 @@
-const graph = require("../graph");
+import { getResourceGraph } from "../graph";
 
 global.fetch = jest.fn();
 
@@ -17,7 +17,7 @@ describe("graph", () => {
       global.fetch.mockRejectedValue(new Error("mocked error"));
 
       await expect(
-        graph.getResourceGraph(iri, headers, options)
+        getResourceGraph(iri, headers, options)
       ).resolves.toBeUndefined();
     });
 
@@ -41,7 +41,7 @@ describe("graph", () => {
         ex:age 30 .`,
       });
 
-      const result = await graph.getResourceGraph(iri, headers, options);
+      const result = await getResourceGraph(iri, headers, options);
 
       expect(result._graph).toHaveLength(3);
       expect(result._graph._graph[1].object).toEqual({

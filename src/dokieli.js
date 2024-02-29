@@ -6,31 +6,43 @@
  * https://github.com/linkeddata/dokieli
  */
 
-const fetcher = require('./fetcher')
-const doc = require('./doc')
-const uri = require('./uri')
-const graph = require('./graph')
-const inbox = require('./inbox')
-const util = require('./util')
-window.MediumEditor = require('medium-editor')
-window.MediumEditorTable = require('medium-editor-tables')
-const storage = require('./storage')
-const auth = require('./auth')
-const template = require('./template')
-const d3 = Object.assign({}, require("d3-selection"), require("d3-force"))
-const shower = require('shower').default
-const Diff = require('diff');
-const { micromark: marked } = require('micromark')
-const { gfm, gfmHtml } =  require('micromark-extension-gfm')
-const { gfmTagfilterHtml } = require('micromark-extension-gfm-tagfilter')
+import { getResource, setAcceptRDFTypes, LinkHeader, postResource, putResource, currentLocation, patchResourceWithAcceptPatch, putResourceWithAcceptPut, copyResource, deleteResource } from './fetcher.js'
+const fetcher = { getResource, setAcceptRDFTypes, LinkHeader, postResource, putResource, currentLocation, patchResourceWithAcceptPatch, putResourceWithAcceptPut, copyResource, deleteResource };
 
-if(typeof DO === 'undefined'){
-const ld = require('./simplerdf')
+import { getDocument, getDocumentContentNode, xmlHtmlEscape, showActionMessage, selectArticleNode, domToString, buttonClose, buttonRemoveAside, showRobustLinksDecoration, getResourceInfo, removeNodesWithIds, getResourceInfoSKOS, removeReferences, buildReferences, removeSelectorFromNode, insertDocumentLevelHTML, getResourceInfoSpecRequirements, getTestDescriptionReviewStatusHTML, createFeedXML, getButtonDisabledHTML, showTimeMap, createMutableResource, createImmutableResource, updateMutableResource, createHTML, getResourceImageHTML, setDocumentRelation, setDate, getClosestSectionNode, getAgentHTML, setEditSelections, getNodeLanguage, createActivityHTML } from './doc.js'
+import { getProxyableIRI, getPathURL, stripFragmentFromString, getFragmentOrLastPath, getFragmentFromString, getURLLastPath, getLastPathSegment, forceTrailingSlash, getBaseURL, getParentURLPath, encodeString, getAbsoluteIRI } from './uri.js'
+import { getResourceGraph, traverseRDFList, getLinkRelation, getAgentName, getGraphImage, getGraphFromData, isActorType, isActorProperty, serializeGraph, getGraphLabel, getUserContacts, getAgentOutbox, getAgentStorage, getAgentInbox, getLinkRelationFromHead, sortGraphTriples } from './graph.js'
+import { notifyInbox, sendNotifications, postActivity } from './inbox.js'
+import { uniqueArray, fragmentFromString, hashCode, generateAttributeId, escapeRegExp, sortToLower, getDateTimeISO, generateUUID } from './util.js'
+// import * as MediumEditor from "medium-editor";
+// import * as MediumEditorTable from "medium-editor-tables";
+import { getLocalStorageProfile, showAutoSaveStorage, hideAutoSaveStorage, updateLocalStorageProfile } from './storage.js'
+import { showUserSigninSignout, showUserIdentityInput } from './auth.js'
+import { Icon, createRDFaHTML } from './template.js'
+import * as d3Selection from 'd3-selection';
+import * as d3Force from 'd3-force';
+
+const d3 = {
+  ...d3Selection,
+  ...d3Force
+};
+import shower from 'shower'
+import { diffChars } from 'diff'
+import { micromark as marked } from 'micromark'
+import { gfm, gfmHtml } from 'micromark-extension-gfm'
+import { gfmTagfilterHtml } from 'micromark-extension-gfm-tagfilter'
+import * as ld from './simplerdf.cjs'
+import { Config }from './config.js';
+
+console.log("ME", window.MediumEditor)
+let DO;
+
+if(typeof window.DO === 'undefined'){
 const SimpleRDF = ld.SimpleRDF
-var DO = {
+DO = {
   fetcher,
 
-  C: require('./config'),
+  C: Config,
 
   U: {
     getItemsList: function(url, options) {
@@ -43,9 +55,9 @@ var DO = {
       DO.C['CollectionPages'] = ('CollectionPages' in DO.C && DO.C.CollectionPages.length > 0) ? DO.C.CollectionPages : [];
       DO.C['Collections'] = ('Collections' in DO.C && DO.C.Collections.length > 0) ? DO.C.Collections : [];
 
-      var pIRI = uri.getProxyableIRI(url);
+      var pIRI = getProxyableIRI(url);
 
-      return graph.getResourceGraph(pIRI, options.headers, options)
+      return getResourceGraph(pIRI, options.headers, options)
         .then(
           function(i) {
             var s = i.child(url);
@@ -73,7 +85,7 @@ var DO = {
                 var r = s.child(resource);
 
                 if (r.rdffirst || r.rdfrest) {
-                  options.resourceItems = options.resourceItems.concat(graph.traverseRDFList(s, resource));
+                  options.resourceItems = options.resourceItems.concat(traverseRDFList(s, resource));
                 }
                 else {
                   //FIXME: This may need to be processed outside of items? See also comment above about processing Collection and CollectionPages.
@@ -99,7 +111,7 @@ var DO = {
               return DO.U.getItemsList(s.asnext, options);
             }
             else {
-              return util.uniqueArray(options.resourceItems);
+              return uniqueArray(options.resourceItems);
             }
           },
           function(reason) {
@@ -113,12 +125,12 @@ var DO = {
     getNotifications: function(url) {
       url = url || window.location.origin + window.location.pathname;
       var notifications = [];
-      var pIRI = uri.getProxyableIRI(url);
+      var pIRI = getProxyableIRI(url);
 
       DO.C.Inbox[url] = {};
       DO.C.Inbox[url]['Notifications'] = [];
 
-      return graph.getResourceGraph(pIRI)
+      return getResourceGraph(pIRI)
         .then(
           function(i) {
             DO.C.Inbox[url]['Graph'] = i;
@@ -150,7 +162,7 @@ var DO = {
     },
 
     showInboxNotifications: function() {
-      graph.getLinkRelation(DO.C.Vocab['ldpinbox']['@id'], null, doc.getDocument()).then(
+      getLinkRelation(DO.C.Vocab['ldpinbox']['@id'], null, getDocument()).then(
         function(i) {
           i.forEach(function(inboxURL) {
             if (!DO.C.Inbox[inboxURL]) {
@@ -186,13 +198,13 @@ var DO = {
       var showProgress = function(node){
         var i = node.querySelector('.fa-bolt')
         node.disabled = true;
-        var icon = util.fragmentFromString(template.Icon[".fas.fa-circle-notch.fa-spin.fa-fw"].replace(/ fa\-fw/, ' fa-fw fa-2x'));
+        var icon = fragmentFromString(Icon[".fas.fa-circle-notch.fa-spin.fa-fw"].replace(/ fa\-fw/, ' fa-fw fa-2x'));
         i.parentNode.replaceChild(icon, i);
       }
 
       var removeProgress = function(node) {
         var i = node.querySelector('.fa-spin')
-        var icon = util.fragmentFromString(template.Icon[".fas.fa-circle.fa-2x"]);
+        var icon = fragmentFromString(Icon[".fas.fa-circle.fa-2x"]);
         i.parentNode.replaceChild(icon, i);
       }
 
@@ -283,7 +295,7 @@ var DO = {
 
     getActivities: function(url, options) {
       url = url || window.location.origin + window.location.pathname;
-      var pIRI = uri.getProxyableIRI(url);
+      var pIRI = getProxyableIRI(url);
 
       options = options || {};
       return DO.U.getItemsList(pIRI, options);
@@ -293,10 +305,10 @@ var DO = {
       DO.C.Notification[url] = {};
       DO.C.Notification[url]['Activities'] = [];
 
-      var pIRI = uri.getProxyableIRI(url);
+      var pIRI = getProxyableIRI(url);
       var documentURL = DO.C.DocumentURL;
 
-      return graph.getResourceGraph(pIRI).then(
+      return getResourceGraph(pIRI).then(
         function(g) {
           DO.C.Notification[url]['Graph'] = g;
 
@@ -307,7 +319,7 @@ var DO = {
           g.graph().toArray().forEach(function(t){
             subjects.push(t.subject.nominalValue);
           });
-          subjects = util.uniqueArray(subjects);
+          subjects = uniqueArray(subjects);
 
           subjects.forEach(function(i){
             var s = g.child(i)
@@ -320,7 +332,7 @@ var DO = {
                  resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Dislike') > -1){
                 if(s.asobject && s.asobject.at(0)) {
                   if(s.ascontext && s.ascontext.at(0)){
-                    if(uri.getPathURL(s.asobject.at(0)) == currentPathURL) {
+                    if(getPathURL(s.asobject.at(0)) == currentPathURL) {
                       var context = s.ascontext.at(0);
                       return DO.U.positionInteraction(context).then(
                         function(iri){
@@ -335,7 +347,7 @@ var DO = {
                     var iri = s.iri().toString();
                     var targetIRI = s.asobject.at(0);
                     var motivatedBy = 'oa:assessing';
-                    var id = String(Math.abs(util.hashCode(iri)));
+                    var id = String(Math.abs(hashCode(iri)));
                     var refId = 'r-' + id;
                     var refLabel = id;
 
@@ -362,8 +374,8 @@ var DO = {
                         'iri': s.asactor
                       }
                       var a = g.child(noteData['creator']['iri']);
-                      var actorName = graph.getAgentName(a);
-                      var actorImage = graph.getGraphImage(a);
+                      var actorName = getAgentName(a);
+                      var actorImage = getGraphImage(a);
 
                       if(typeof actorName != 'undefined') {
                         noteData['creator']['name'] = actorName;
@@ -390,7 +402,7 @@ var DO = {
                 }
               }
               else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Relationship') > -1){
-                if(s.assubject && s.assubject.at(0) && s.asrelationship && s.asrelationship.at(0) && s.asobject && s.asobject.at(0) && uri.getPathURL(s.asobject.at(0)) == currentPathURL) {
+                if(s.assubject && s.assubject.at(0) && s.asrelationship && s.asrelationship.at(0) && s.asobject && s.asobject.at(0) && getPathURL(s.asobject.at(0)) == currentPathURL) {
                   var subject = s.assubject.at(0);
                   return DO.U.positionInteraction(subject).then(
                     function(iri){
@@ -405,12 +417,12 @@ var DO = {
                 if(s.asobject && s.asobject.at(0) && s.astarget && s.astarget.at(0)) {
                   var options = {};
 
-                  var targetPathURL = uri.getPathURL(s.astarget.at(0));
+                  var targetPathURL = getPathURL(s.astarget.at(0));
 
                   if (targetPathURL == currentPathURL) {
                     options['targetInOriginalResource'] = true;
                   }
-                  else if (DO.C.Resource[documentURL].graph.rellatestversion && targetPathURL == uri.getPathURL(DO.C.Resource[documentURL].graph.rellatestversion)) {
+                  else if (DO.C.Resource[documentURL].graph.rellatestversion && targetPathURL == getPathURL(DO.C.Resource[documentURL].graph.rellatestversion)) {
                     options['targetInMemento'] = true;
                   }
                   else if (DO.C.Resource[documentURL].graph.owlsameAs && DO.C.Resource[documentURL].graph.owlsameAs.at(0) == targetPathURL) {
@@ -454,7 +466,7 @@ var DO = {
                         return DO.U.showCitations(citation, s);
                       }
                       else {
-                        return DO.U.positionInteraction(object, doc.getDocumentContentNode(document), options).then(
+                        return DO.U.positionInteraction(object, getDocumentContentNode(document), options).then(
                           function(iri){
                             return iri;
                           },
@@ -490,7 +502,7 @@ var DO = {
                   }
                 }
               }
-              else if(resourceTypes.indexOf('http://www.w3.org/ns/oa#Annotation') > -1 && uri.getPathURL(s.oahasTarget) == currentPathURL) {
+              else if(resourceTypes.indexOf('http://www.w3.org/ns/oa#Annotation') > -1 && getPathURL(s.oahasTarget) == currentPathURL) {
 
                 return DO.U.showAnnotation(i, s);
               }
@@ -515,7 +527,7 @@ var DO = {
     //Borrowed some of the d3 parts from https://bl.ocks.org/mbostock/4600693
     showVisualisationGraph: function(url, data, selector, options) {
       url = url || window.location.origin + window.location.pathname;
-      data = data || doc.getDocument();
+      data = data || getDocument();
       selector = selector || 'body';
       options = options || {};
       options['contentType'] = options.contentType || 'text/html';
@@ -528,7 +540,7 @@ var DO = {
       var nodeRadius = 6;
       var simulation;
 
-      var id = util.generateAttributeId();
+      var id = generateAttributeId();
 
 
       function positionLink(d) {
@@ -603,7 +615,7 @@ var DO = {
 
 
       if (selector == '#graph-view' && !document.getElementById('graph-view')) {
-        document.documentElement.appendChild(util.fragmentFromString('<aside id="graph-view" class="do on">' + DO.C.Button.Close + '<h2>Graph view</h2></aside>'));
+        document.documentElement.appendChild(fragmentFromString('<aside id="graph-view" class="do on">' + DO.C.Button.Close + '<h2>Graph view</h2></aside>'));
       }
 
       var svg = d3.select(selector).append('svg')
@@ -629,7 +641,7 @@ var DO = {
             filenameExtension: '.svg'
           }
 
-          svgNode = doc.getDocument(svgNode.cloneNode(true));
+          svgNode = getDocument(svgNode.cloneNode(true));
 
           DO.U.exportAsDocument(svgNode, options);
         }
@@ -754,7 +766,7 @@ var DO = {
       }
 
       function handleResource (pIRI, headers, options) {
-        return fetcher.getResource(pIRI, headers, options)
+        return getResource(pIRI, headers, options)
 //           .catch(error => {
 // // console.log(error)
 //             // if (error.status === 0) {
@@ -898,8 +910,8 @@ var DO = {
                 options = options || {};
                 options['subjectURI'] = iri;
                 //TODO: These values need not be set here. getResource(Graph) should take care of it. Refactor handleResource
-                var headers = { 'Accept': fetcher.setAcceptRDFTypes() };
-                var pIRI = uri.getProxyableIRI(iri);
+                var headers = { 'Accept': setAcceptRDFTypes() };
+                var pIRI = getProxyableIRI(iri);
                 if (pIRI.slice(0, 5).toLowerCase() == 'http:') {
                   options['noCredentials'] = true;
                 }
@@ -929,8 +941,8 @@ var DO = {
       }
 
       function initiateVisualisation(url, data, options) {
-        url = uri.stripFragmentFromString(url);
-        options.resources = ('resources' in options) ? util.uniqueArray(options.resources.concat(url)) : [url];
+        url = stripFragmentFromString(url);
+        options.resources = ('resources' in options) ? uniqueArray(options.resources.concat(url)) : [url];
 
         return DO.U.getVisualisationGraphData(url, data, options).then(
           function(graph){
@@ -962,11 +974,11 @@ var DO = {
     },
 
     getVisualisationGraphData: function(url, data, options) {
-      var requestURL = uri.stripFragmentFromString(url);
+      var requestURL = stripFragmentFromString(url);
       var documentURL = DO.C.DocumentURL;
 
       return new Promise(function(resolve, reject) {
-        graph.getGraphFromData(data, options).then(
+        getGraphFromData(data, options).then(
           function(g){
 // console.log(g);
             DO.C['Graphs'] = DO.C['Graphs'] || {};
@@ -1008,7 +1020,7 @@ var DO = {
 
               switch(t.subject.interfaceName) {
                 default: case 'NamedNode':
-                  if (uri.stripFragmentFromString(t.subject.nominalValue) != requestURL) {
+                  if (stripFragmentFromString(t.subject.nominalValue) != requestURL) {
                     sGroup = 7;
                   }
                   break;
@@ -1019,7 +1031,7 @@ var DO = {
 
               switch(t.object.interfaceName) {
                 default: case 'NamedNode':
-                  if (uri.stripFragmentFromString(t.object.nominalValue) != requestURL) {
+                  if (stripFragmentFromString(t.object.nominalValue) != requestURL) {
                     oGroup = 7;
                   }
                   break;
@@ -1041,7 +1053,7 @@ var DO = {
               if (t.predicate.nominalValue == DO.C.Vocab['rdftype']['@id']){
                 oGroup = 6;
 
-                if (graph.isActorType(t.object.nominalValue)) {
+                if (isActorType(t.object.nominalValue)) {
                   sGroup = 10;
                 }
 
@@ -1064,7 +1076,7 @@ var DO = {
                     break;
                 }
               }
-              if (graph.isActorProperty(t.predicate.nominalValue)) {
+              if (isActorProperty(t.predicate.nominalValue)) {
                 oGroup = 10;
               }
               if (t.predicate.nominalValue.startsWith('http://purl.org/spar/cito/')) {
@@ -1111,7 +1123,7 @@ var DO = {
               var objectValue = t.object.nominalValue;
               if (t.object.interfaceName == 'Literal') {
                 //XXX: Revisit
-                objectValue = doc.xmlHtmlEscape(objectValue);
+                objectValue = xmlHtmlEscape(objectValue);
               }
 
               if(graphNodes.indexOf(t.subject.nominalValue) == -1) {
@@ -1122,7 +1134,7 @@ var DO = {
                 if (t.object.nominalValue in DO.C.Resource) {
                   // console.log(t.object.nominalValue)
                   DO.C.Resource[t.object.nominalValue].rdftype.forEach(function(type){
-                    if (graph.isActorType(type)) {
+                    if (isActorType(type)) {
                       // console.log(type)
                       oGroup = 10
                     }
@@ -1138,7 +1150,7 @@ var DO = {
 // console.log(graphNodes)
 // console.log(graph)
 
-            delete graphNodes;
+            graphNodes = undefined;
             return resolve(graphData);
           }
         );
@@ -1159,7 +1171,7 @@ var DO = {
         var property = (resources && 'filter' in options && 'predicates' in options.filter && options.filter.predicates.length > 0) ? options.filter.predicates[0] : DO.C.Vocab['ldpinbox']['@id'];
         var iri = (resources) ? resources : location.href.split(location.search||location.hash||/[?#]/)[0];
 
-        graph.getLinkRelation(property, iri).then(
+        getLinkRelation(property, iri).then(
           function(resources) {
             DO.U.showGraphResources(resources[0], selector, options);
           },
@@ -1171,10 +1183,10 @@ var DO = {
     },
 
     showGraphResources: function(resources, selector, options) {
-      selector = selector || doc.getDocumentContentNode(document);
+      selector = selector || getDocumentContentNode(document);
       options = options || {};
       if (Array.isArray(resources)) {
-        resources = util.uniqueArray(resources);
+        resources = uniqueArray(resources);
       }
 
       DO.U.processResources(resources, options).then(
@@ -1183,8 +1195,8 @@ var DO = {
           url.forEach(function(u) {
             // console.log(u);
             // window.setTimeout(function () {
-              var pIRI = uri.getProxyableIRI(u);
-              promises.push(graph.getResourceGraph(pIRI));
+              var pIRI = getProxyableIRI(u);
+              promises.push(getResourceGraph(pIRI));
             // }, 1000)
           });
 
@@ -1209,7 +1221,7 @@ var DO = {
                 });
               }
 
-              graph.serializeGraph(dataGraph, { 'contentType': 'text/turtle' })
+              serializeGraph(dataGraph, { 'contentType': 'text/turtle' })
                 .then(function(data){
                   options['contentType'] = 'text/turtle';
                   options['resources'] = resources;
@@ -1243,7 +1255,7 @@ var DO = {
 
     getTextQuoteSelectorFromLocation: function(location) {
       var regexp = /#selector\(type=TextQuoteSelector,(.*)\)/;
-      matches = location.hash.match(regexp);
+      const matches = location.hash.match(regexp);
 
       if (matches) {
         var selectorsArray = matches[1].split(',')
@@ -1282,7 +1294,7 @@ var DO = {
         var refId = document.location.hash.substring(1);
         var refLabel = DO.U.getReferenceLabel(motivatedBy);
 
-        containerNode = containerNode || doc.getDocumentContentNode(document);
+        containerNode = containerNode || getDocumentContentNode(document);
 
         var docRefType = '<sup class="ref-highlighting"><a rel="oa:hasTarget" href="#' + refId + '">' + refLabel + '</a></sup>';
 
@@ -1309,7 +1321,7 @@ var DO = {
       var exact = selector.exact || '';
       var suffix = selector.suffix || '';
 
-      var phrase = util.escapeRegExp(prefix.toString() + exact.toString() + suffix.toString());
+      var phrase = escapeRegExp(prefix.toString() + exact.toString() + suffix.toString());
 // console.log(phrase);
 
       var selectedParentNode;
@@ -1354,7 +1366,7 @@ var DO = {
 // console.log(selectedParentNodeValue)
 
 // console.log(selectedParentNodeValue.substr(0, r.startOffset) + ref + selectedParentNodeValue.substr(r.startOffset + exact.length))
-        var selectionUpdated = util.fragmentFromString(selectedParentNodeValue.substr(0, r.startOffset) + ref + selectedParentNodeValue.substr(r.startOffset + exact.length));
+        var selectionUpdated = fragmentFromString(selectedParentNodeValue.substr(0, r.startOffset) + ref + selectedParentNodeValue.substr(r.startOffset + exact.length));
 // console.log(selectionUpdated)
 
         //XXX: Review. This feels a bit dirty
@@ -1371,7 +1383,7 @@ var DO = {
     },
 
     initUser: function() {
-      storage.getLocalStorageProfile().then(user => {
+      getLocalStorageProfile().then(user => {
         if (user && 'object' in user) {
           user.object.describes.Role = (DO.C.User.IRI && user.object.describes.Role) ? user.object.describes.Role : 'social';
           user.object.describes.ContactsOutboxChecked = (DO.C.User.IRI && user.object.describes.ContactsOutboxChecked);
@@ -1382,11 +1394,11 @@ var DO = {
     },
 
     getContentNode: function(node) {
-      return doc.getDocumentContentNode(document);
+      return getDocumentContentNode(document);
     },
 
     setDocumentURL: function(url) {
-      DO.C.DocumentURL = url || uri.stripFragmentFromString(document.location.href);
+      DO.C.DocumentURL = url || stripFragmentFromString(document.location.href);
     },
 
     setDocumentMode: function(mode) {
@@ -1397,7 +1409,7 @@ var DO = {
         title = (title > -1) ? style.substr(title + 1) : style; 
 
         if (style.startsWith('http')) {
-          var pIRI = uri.getProxyableIRI(style);
+          var pIRI = getProxyableIRI(style);
           var link = '<link class="do" href="' + pIRI + '" media="all" rel="stylesheet" title="' + title + '" />'
           document.querySelector('head').insertAdjacentHTML('beforeend', link);
         }
@@ -1410,7 +1422,7 @@ var DO = {
       var open = DO.U.urlParam('open');
       if (open) {
         open = decodeURIComponent(open);
-        doc.showActionMessage(document.documentElement, '<p><span class="progress">' + template.Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + ' Opening <a href="' + open + '" target="_blank">' + open + '</a></span></p>', {'timer': 10000});
+        showActionMessage(document.documentElement, '<p><span class="progress">' + Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + ' Opening <a href="' + open + '" target="_blank">' + open + '</a></span></p>', {'timer': 10000});
 
         DO.U.openResource(open);
 
@@ -1432,7 +1444,7 @@ var DO = {
           // var docURI = iri.split(/[#]/)[0];
           // iri = iri.split('=').pop();
 
-          return uri.stripFragmentFromString(url);
+          return stripFragmentFromString(url);
         });
 // console.log(urls);
 
@@ -1461,8 +1473,8 @@ var DO = {
         }
 
         if (mode !== 'author') {
-          var content = doc.selectArticleNode(document);
-          content = util.fragmentFromString(doc.domToString(content)).textContent.trim();
+          var content = selectArticleNode(document);
+          content = fragmentFromString(domToString(content)).textContent.trim();
           if (content.length == 0) {
             mode = 'author';
           }
@@ -1481,9 +1493,9 @@ var DO = {
 
     //TODO: Refactor
     initDocumentActions: function() {
-      doc.buttonClose();
-      doc.buttonRemoveAside();
-      doc.showRobustLinksDecoration();
+      buttonClose();
+      buttonRemoveAside();
+      showRobustLinksDecoration();
 
       var documentURL = DO.C.DocumentURL;
 
@@ -1493,7 +1505,7 @@ var DO = {
           processPotentialAction(DO.C.Resource[documentURL]);
         }
         else {
-          doc.getResourceInfo().then(function(resourceInfo){
+          getResourceInfo().then(function(resourceInfo){
             processPotentialAction(resourceInfo);
           });
           // window.setTimeout(checkResourceInfo, 100);
@@ -1543,7 +1555,7 @@ var DO = {
                           svgGraph.parentNode.removeChild(svgGraph);
                         }
                         else {
-                          graph.serializeGraph(g, { 'contentType': 'text/turtle' })
+                          serializeGraph(g, { 'contentType': 'text/turtle' })
                             .then(function(data){
                               var options = {};
                               options['subjectURI'] = so;
@@ -1568,7 +1580,7 @@ var DO = {
           e.preventDefault();
           e.stopPropagation();
 
-          if (doc.getDocumentContentNode(document).classList.contains('on-document-menu')) {
+          if (getDocumentContentNode(document).classList.contains('on-document-menu')) {
             DO.U.hideDocumentMenu(e);
           }
           else {
@@ -1579,12 +1591,12 @@ var DO = {
 
       var annotationRights = document.querySelectorAll('[about="#annotation-rights"][typeof="schema:ChooseAction"], [href="#annotation-rights"][typeof="schema:ChooseAction"], [resource="#annotation-rights"][typeof="schema:ChooseAction"]');
       for (var i = 0; i < annotationRights.length; i++){
-        annotationRights[i].parentNode.replaceChild(util.fragmentFromString('<select>' + DO.U.getLicenseOptionsHTML() + '</select>'), annotationRights[i]);
+        annotationRights[i].parentNode.replaceChild(fragmentFromString('<select>' + DO.U.getLicenseOptionsHTML() + '</select>'), annotationRights[i]);
       }
     },
 
     showDocumentInfo: function() {
-      document.documentElement.appendChild(util.fragmentFromString('<menu id="document-menu" class="do"><button class="show" title="Open menu">' + template.Icon[".fas.fa-bars"] + '</button><header></header><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><img alt="" height="16" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAn1BMVEUAAAAAjwAAkAAAjwAAjwAAjwAAjwAAjwAAkAAAdwAAjwAAjQAAcAAAjwAAjwAAiQAAjwAAjAAAjwAAjwAAjwAAjwAAkAAAjwAAjwAAjwAAjQAAjQAAhQAAhQAAkAAAkAAAkAAAjgAAjwAAiQAAhAAAkAAAjwAAjwAAkAAAjwAAjgAAjgAAjQAAjwAAjQAAjwAAkAAAjwAAjQAAiwAAkABp3EJyAAAANHRSTlMA+fH89enaabMF4iADxJ4SiSa+uXztyoNvQDcsDgvl3pRiXBcH1M+ppJlWUUpFMq6OdjwbMc1+ZgAABAhJREFUeNrt29nSmkAQBeAGZBMUxH3f993/vP+zJZVKVZKCRhibyc3/XVt6SimYPjPSt28Vmt5W/fu2T/9B9HIf7Tp+0RsgDC6DY6OLvzxJj8341DnsakgZUNUmo2XsORYYS6rOeugukhnyragiq56JIs5UEQ/FXKgidRTzompEKOhG1biioDFV44mCAqrGAQWtqRptA8VMqCpR6zpo9iy84VO1opWHPBZVb9QAzyQN/D1YNungJ+DMSYsbOFvSIwGjR3p0wGiQHkMw2qRHC4w76RGBcSA9NmAcSY8QjAdpYiFbTJoYyNYnTWrI1iFNusj2JE1sZBuQJtyE5pImc3Y21cRhZ1NNtsh2Ik127HCsSY8djjVpINuVhPnjVefobee2adXqu2S/6FyivABDEjQ9Lxo1pDlNd5wg24ikRK5ngKGhHhg1DSgZk4RrD6pa9LlRAnUBfWp6xCe+6EOvOT6yrmrigZaCZHPAp6b0gaiBFKvRd0/D1rr1OrvxDqiyoZmmPt9onib0t/VybyEXqdu0Cw16rUNVAfZFlzdjr5KOaoAUK6JsrgWGQapuBlIS4gy70gEmTrk1fuAgU40UxWXv6wvZAC2Dqfx0BfBK1z1H0aJ0WH7Ub4oG8JDlpBCgK1l5tSjHQSoAf0HVfMqxF+yqpzVk2ZGuAGdk8ijPHZlmpOCg0vh5cgE2JtN3qQSoU3lXpbKlLRegrzTpt+U2TNpKY2YiFiA0kS1Q6QccweZ/oinASm2B3RML0AGDNAU4qq3udmIXYVttD3YrFsBR24N1xG5EJpTeaiYWwILS5WRKBfChFsCSehpOwKi/yS0V4AsMWym3TWUFgMqIsRYL8AVOSDlaYgEitbZnDKll+UatchyJBSC1c3lDuQA2VHYAL3KneHpgLCjHSS7AHYyEciwh1g88wDB94rlyAVxwhsR7ygW4gRMTry8XwDdUDkXFgjVdD5wRsRaCAWJwPGI1Baval8Ie3Hqn8AjjhHbZr2DzrInumDTBGlCG8xy8QPY3MNLX4TiRP1q+BWs2pn9ECwu5+qTABc+80h++28UbTkjlTW3wrM6Ufrtu8d5J9Svg1Vch/RTcUYQdUHm+g1z1x2gSGyjGGVN5F7xjoTCjE0ndC3jJMzfCftmiciZ1lNGe3vCGufOWVMLIQHHehi3X1O8JJxR236SalUzninbu937BlwfV/I3k4KdGk2xm+MHuLa8Z0i9TC280qLRrF+8cw9RSjrOg8oIG8j2YgULsbGPomsgR0x9nsOzkOLh+kZr1owZGbfC2JJl78fIV0Wei/gxZDl85XWVtt++cxhuSEQ6bdfzLjlvM86PbaD4vQUjSglV8385My7CdXtO9+ZSyrLcf7nBN376V8gMpRztyq6RXYQAAAABJRU5ErkJggg==" width="16" /><a href="https://dokie.li/" target="_blank">dokieli</a> is an ' + template.Icon[".fab.fa-osi"] + ' <a href="https://github.com/linkeddata/dokieli" target="_blank">open source</a> project. There is ' + template.Icon[".fas.fa-flask"] + ' <a href="https://dokie.li/docs" target="_blank">documentation</a> and public ' + template.Icon[".fas.fa-comments"] + ' <a href="https://gitter.im/linkeddata/dokieli" target="_blank">chat</a>. Made with fun.</dd></dl></footer></menu>'));
+      document.documentElement.appendChild(fragmentFromString('<menu id="document-menu" class="do"><button class="show" title="Open menu">' + Icon[".fas.fa-bars"] + '</button><header></header><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><img alt="" height="16" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAn1BMVEUAAAAAjwAAkAAAjwAAjwAAjwAAjwAAjwAAkAAAdwAAjwAAjQAAcAAAjwAAjwAAiQAAjwAAjAAAjwAAjwAAjwAAjwAAkAAAjwAAjwAAjwAAjQAAjQAAhQAAhQAAkAAAkAAAkAAAjgAAjwAAiQAAhAAAkAAAjwAAjwAAkAAAjwAAjgAAjgAAjQAAjwAAjQAAjwAAkAAAjwAAjQAAiwAAkABp3EJyAAAANHRSTlMA+fH89enaabMF4iADxJ4SiSa+uXztyoNvQDcsDgvl3pRiXBcH1M+ppJlWUUpFMq6OdjwbMc1+ZgAABAhJREFUeNrt29nSmkAQBeAGZBMUxH3f993/vP+zJZVKVZKCRhibyc3/XVt6SimYPjPSt28Vmt5W/fu2T/9B9HIf7Tp+0RsgDC6DY6OLvzxJj8341DnsakgZUNUmo2XsORYYS6rOeugukhnyragiq56JIs5UEQ/FXKgidRTzompEKOhG1biioDFV44mCAqrGAQWtqRptA8VMqCpR6zpo9iy84VO1opWHPBZVb9QAzyQN/D1YNungJ+DMSYsbOFvSIwGjR3p0wGiQHkMw2qRHC4w76RGBcSA9NmAcSY8QjAdpYiFbTJoYyNYnTWrI1iFNusj2JE1sZBuQJtyE5pImc3Y21cRhZ1NNtsh2Ik127HCsSY8djjVpINuVhPnjVefobee2adXqu2S/6FyivABDEjQ9Lxo1pDlNd5wg24ikRK5ngKGhHhg1DSgZk4RrD6pa9LlRAnUBfWp6xCe+6EOvOT6yrmrigZaCZHPAp6b0gaiBFKvRd0/D1rr1OrvxDqiyoZmmPt9onib0t/VybyEXqdu0Cw16rUNVAfZFlzdjr5KOaoAUK6JsrgWGQapuBlIS4gy70gEmTrk1fuAgU40UxWXv6wvZAC2Dqfx0BfBK1z1H0aJ0WH7Ub4oG8JDlpBCgK1l5tSjHQSoAf0HVfMqxF+yqpzVk2ZGuAGdk8ijPHZlmpOCg0vh5cgE2JtN3qQSoU3lXpbKlLRegrzTpt+U2TNpKY2YiFiA0kS1Q6QccweZ/oinASm2B3RML0AGDNAU4qq3udmIXYVttD3YrFsBR24N1xG5EJpTeaiYWwILS5WRKBfChFsCSehpOwKi/yS0V4AsMWym3TWUFgMqIsRYL8AVOSDlaYgEitbZnDKll+UatchyJBSC1c3lDuQA2VHYAL3KneHpgLCjHSS7AHYyEciwh1g88wDB94rlyAVxwhsR7ygW4gRMTry8XwDdUDkXFgjVdD5wRsRaCAWJwPGI1Baval8Ie3Hqn8AjjhHbZr2DzrInumDTBGlCG8xy8QPY3MNLX4TiRP1q+BWs2pn9ECwu5+qTABc+80h++28UbTkjlTW3wrM6Ufrtu8d5J9Svg1Vch/RTcUYQdUHm+g1z1x2gSGyjGGVN5F7xjoTCjE0ndC3jJMzfCftmiciZ1lNGe3vCGufOWVMLIQHHehi3X1O8JJxR236SalUzninbu937BlwfV/I3k4KdGk2xm+MHuLa8Z0i9TC280qLRrF+8cw9RSjrOg8oIG8j2YgULsbGPomsgR0x9nsOzkOLh+kZr1owZGbfC2JJl78fIV0Wei/gxZDl85XWVtt++cxhuSEQ6bdfzLjlvM86PbaD4vQUjSglV8385My7CdXtO9+ZSyrLcf7nBN376V8gMpRztyq6RXYQAAAABJRU5ErkJggg==" width="16" /><a href="https://dokie.li/" target="_blank">dokieli</a> is an ' + Icon[".fab.fa-osi"] + ' <a href="https://github.com/linkeddata/dokieli" target="_blank">open source</a> project. There is ' + Icon[".fas.fa-flask"] + ' <a href="https://dokie.li/docs" target="_blank">documentation</a> and public ' + Icon[".fas.fa-comments"] + ' <a href="https://gitter.im/linkeddata/dokieli" target="_blank">chat</a>. Made with fun.</dd></dl></footer></menu>'));
       document.querySelector('#document-menu').addEventListener('click', function(e) {
         var button = e.target.closest('button');
         if(button){
@@ -1614,8 +1626,8 @@ var DO = {
        options['storeHeaders'].push('wac-allow');
       }
 
-      doc.getResourceInfo(data, options).then(function(resourceInfo){
-        var body = doc.getDocumentContentNode(document);
+      getResourceInfo(data, options).then(function(resourceInfo){
+        var body = getDocumentContentNode(document);
         var dMenu = document.querySelector('#document-menu.do');
 
         if(dMenu) {
@@ -1626,11 +1638,11 @@ var DO = {
           dMenuButton.classList.remove('show');
           dMenuButton.classList.add('hide');
           dMenuButton.setAttribute('title', 'Hide Menu');
-          dMenuButton.innerHTML = template.Icon[".fas.fa-minus"];
+          dMenuButton.innerHTML = Icon[".fas.fa-minus"];
           dMenu.classList.add('on');
           // body.classList.add('on-document-menu');
 
-          auth.showUserSigninSignout(dHead);
+          showUserSigninSignout(dHead);
           DO.U.showDocumentDo(dInfo);
           DO.U.showViews(dInfo);
 
@@ -1650,7 +1662,7 @@ var DO = {
     hideDocumentMenu: function(e) {
       // document.removeEventListener('click', DO.U.eventLeaveDocumentMenu);
 
-      var body = doc.getDocumentContentNode(document);
+      var body = getDocumentContentNode(document);
       var dMenu = document.querySelector('#document-menu.do');
       var dMenuButton = dMenu.querySelector('button');
 
@@ -1669,8 +1681,8 @@ var DO = {
       dMenuButton.classList.remove('hide');
       dMenuButton.classList.add('show');
       dMenuButton.setAttribute('title', 'Open Menu');
-      dMenuButton.innerHTML = template.Icon[".fas.fa-bars"];
-      doc.removeNodesWithIds(DO.C.DocumentDoItems);
+      dMenuButton.innerHTML = Icon[".fas.fa-bars"];
+      removeNodesWithIds(DO.C.DocumentDoItems);
     },
 
     setPolyfill: function() {
@@ -1740,7 +1752,7 @@ var DO = {
 
       var stylesheets = document.querySelectorAll('head link[rel~="stylesheet"][title]:not([href$="dokieli.css"])');
 
-      var s = '<section id="document-views" class="do"><h2>Views</h2>' + template.Icon[".fas.fa-magic"] + '<ul>';
+      var s = '<section id="document-views" class="do"><h2>Views</h2>' + Icon[".fas.fa-magic"] + '<ul>';
       if (DO.C.GraphViewerAvailable) {
         s += '<li><button class="resource-visualise" title="Change to graph view">Graph</button></li>';
       }
@@ -1777,7 +1789,7 @@ var DO = {
               e.target.disabled = true;
             }
 
-            document.documentElement.appendChild(util.fragmentFromString('<aside id="graph-view" class="do on">' + DO.C.Button.Close + '<h2>Graph view</h2></aside>'));
+            document.documentElement.appendChild(fragmentFromString('<aside id="graph-view" class="do on">' + DO.C.Button.Close + '<h2>Graph view</h2></aside>'));
 
             var graphView = document.getElementById('graph-view');
             graphView.addEventListener('click', function(e) {
@@ -1792,7 +1804,7 @@ var DO = {
             var optionsNormalisation = DO.C.DOMNormalisation;
             delete optionsNormalisation['skipNodeWithClass'];
 
-            DO.U.showVisualisationGraph(document.location.href, doc.getDocument(null, optionsNormalisation), '#graph-view');
+            DO.U.showVisualisationGraph(document.location.href, getDocument(null, optionsNormalisation), '#graph-view');
           }
         });
       }
@@ -1839,11 +1851,11 @@ var DO = {
         for(var j = 0; j < slides.length; j++) {
           slides[j].classList.add('do');
         }
-        doc.getDocumentContentNode(document).classList.add('on-slideshow', 'list');
+        getDocumentContentNode(document).classList.add('on-slideshow', 'list');
         document.querySelector('head').insertAdjacentHTML('beforeend', '<meta content="width=792, user-scalable=no" name="viewport" />');
 
 
-        var body = doc.getDocumentContentNode(document);
+        var body = getDocumentContentNode(document);
         var dMenu = document.querySelector('#document-menu.do');
 
         if(dMenu) {
@@ -1854,7 +1866,7 @@ var DO = {
           dMenuButton.classList.remove('show');
           dMenuButton.classList.add('hide');
           dMenuButton.setAttribute('title', 'Open Menu');
-          dMenuButton.innerHTML = template.Icon[".fas.fa-minus"];
+          dMenuButton.innerHTML = Icon[".fas.fa-minus"];
           dMenu.classList.remove('on');
           body.classList.remove('on-document-menu');
 
@@ -1874,8 +1886,8 @@ var DO = {
         for (var c = 0; c < slides.length; c++){
           slides[c].classList.remove('do');
         }
-        doc.getDocumentContentNode(document).classList.remove('on-slideshow', 'list', 'full');
-        doc.getDocumentContentNode(document).removeAttribute('style');
+        getDocumentContentNode(document).classList.remove('on-slideshow', 'list', 'full');
+        getDocumentContentNode(document).removeAttribute('style');
         var mV = document.querySelector('head meta[name="viewport"][content="width=792, user-scalable=no"]');
         mV = (mV) ? mV.parentNode.removeChild(mV) : false;
 
@@ -1937,7 +1949,7 @@ var DO = {
         <div id="embed-data-trig"><textarea placeholder="Enter data in TriG" name="meta-trig" cols="80" rows="24">' + ((scriptCurrentData['meta-trig']) ? scriptCurrentData['meta-trig'].content : '') + '</textarea><button class="save" title="Embed data into document">Save</button></div>\n\
         </aside>';
 
-        document.documentElement.appendChild(util.fragmentFromString(embedMenu));
+        document.documentElement.appendChild(fragmentFromString(embedMenu));
         document.querySelector('#embed-data-turtle textarea').focus();
         var a = document.querySelectorAll('#embed-data-entry nav a');
         for(var i = 0; i < a.length; i++) {
@@ -1975,7 +1987,7 @@ var DO = {
                 script.textContent = scriptType[name].cdataStart + scriptEntry + scriptType[name].cdataEnd;
               }
               else {
-                document.querySelector('head').appendChild(util.fragmentFromString(scriptType[name].scriptStart + scriptType[name].scriptEnd));
+                document.querySelector('head').appendChild(fragmentFromString(scriptType[name].scriptStart + scriptType[name].scriptEnd));
                 var textNode = document.createTextNode(scriptType[name].cdataStart + scriptEntry + scriptType[name].cdataEnd);
                 document.getElementById(name).appendChild(textNode);
               }
@@ -2006,14 +2018,14 @@ var DO = {
 
       var documentURL = DO.C.DocumentURL;
 
-      var content = doc.selectArticleNode(document);
+      var content = selectArticleNode(document);
       var count = DO.U.contentCount(content);
       var authors = [], contributors = [], editors = [];
       var citationsTo = [];
       var requirements = [];
       var skos = [];
 
-      var data = doc.getDocument();
+      var data = getDocument();
       var subjectURI = window.location.origin + window.location.pathname;
       var options = {'contentType': 'text/html', 'subjectURI': subjectURI };
 
@@ -2048,7 +2060,7 @@ var DO = {
 
       if(g.schemaeditor._array.length > 0) {
         g.schemaeditor.forEach(function(s){
-          var label = graph.getGraphLabel(g.child(s));
+          var label = getGraphLabel(g.child(s));
           if(typeof label !== 'undefined'){
             editors.push('<li>' + label + '</li>');
           }
@@ -2060,7 +2072,7 @@ var DO = {
 
       if(g.schemaauthor._array.length > 0) {
         g.schemaauthor.forEach(function(s){
-          var label = graph.getGraphLabel(g.child(s));
+          var label = getGraphLabel(g.child(s));
           if(typeof label !== 'undefined'){
             authors.push('<li>' + label + '</li>');
           }
@@ -2072,7 +2084,7 @@ var DO = {
 
       if(g.schemacontributor._array.length > 0) {
         g.schemacontributor.forEach(function(s){
-          var label = graph.getGraphLabel(g.child(s));
+          var label = getGraphLabel(g.child(s));
           if(typeof label !== 'undefined'){
             contributors.push('<li>' + label + '</li>');
           }
@@ -2105,7 +2117,7 @@ var DO = {
     },
 
     contentCount: function contentCount (c) {
-      var content = util.fragmentFromString(doc.domToString(c)).textContent.trim();
+      var content = fragmentFromString(domToString(c)).textContent.trim();
       var contentCount = { readingTime:1, words:0, chars:0, lines:0, pages:{A4:1, USLetter:1}, bytes:0 };
       if (content.length > 0) {
         var lineHeight = c.ownerDocument.defaultView.getComputedStyle(c, null)["line-height"];
@@ -2141,8 +2153,8 @@ var DO = {
       citationsList.forEach(function(u) {
         // console.log(u);
         // window.setTimeout(function () {
-          var pIRI = uri.getProxyableIRI(u);
-          promises.push(graph.getResourceGraph(pIRI));
+          var pIRI = getProxyableIRI(u);
+          promises.push(getResourceGraph(pIRI));
         // }, 1000)
       });
 
@@ -2159,8 +2171,8 @@ var DO = {
 // console.log(g)
               DO.C.Resource[documentURL] = DO.C.Resource[documentURL] || {};
               DO.C.Resource[documentURL]['graph'] = g;
-              DO.C.Resource[documentURL]['skos'] = doc.getResourceInfoSKOS(g);
-              DO.C.Resource[documentURL]['title'] = graph.getGraphLabel(g) || documentURL;
+              DO.C.Resource[documentURL]['skos'] = getResourceInfoSKOS(g);
+              DO.C.Resource[documentURL]['title'] = getGraphLabel(g) || documentURL;
 
               if (DO.C.Resource[documentURL]['skos']['graph']._graph.length > 0) {
                 html.push('<section><h4><a href="' + documentURL + '">' + DO.C.Resource[documentURL]['title'] + '</a></h4><div><dl>' + DO.U.getDocumentConceptDefinitionsHTML(documentURL) + '</dl></div></section>');
@@ -2198,7 +2210,7 @@ var DO = {
             if (button) {
               button.parentNode.removeChild(button);
 
-              graph.serializeGraph(dataGraph, { 'contentType': 'text/turtle' })
+              serializeGraph(dataGraph, { 'contentType': 'text/turtle' })
                 .then(function(data){
                   var options = {};
                   options['subjectURI'] = DO.C.DocumentURL;
@@ -2228,12 +2240,12 @@ var DO = {
           s += '<dd><ul>';
         }
 
-        util.sortToLower(DO.C.Resource[documentURL]['skos']['type'][rdftype]).forEach(function(subject) {
+        sortToLower(DO.C.Resource[documentURL]['skos']['type'][rdftype]).forEach(function(subject) {
 // console.log(subject)
           g = DO.C.Resource[documentURL]['graph'].child(subject);
 
-          var conceptLabel = util.sortToLower(DO.U.getConceptLabel(g));
-          conceptLabel = (conceptLabel.length > 0) ? conceptLabel.join(' / ') : uri.getFragmentOrLastPath(subject);
+          var conceptLabel = sortToLower(DO.U.getConceptLabel(g));
+          conceptLabel = (conceptLabel.length > 0) ? conceptLabel.join(' / ') : getFragmentOrLastPath(subject);
           conceptLabel = conceptLabel.trim();
           conceptLabel = '<a href="' + subject + '">' + conceptLabel + '</a>';
 
@@ -2251,10 +2263,10 @@ var DO = {
               var concept = DO.C.Resource[documentURL]['skos']['data'][subject][hasConcept];
 
               if (concept && concept.length > 0) {
-                util.sortToLower(concept).forEach(function(c) {
+                sortToLower(concept).forEach(function(c) {
                   var conceptGraph = DO.C.Resource[documentURL]['graph'].child(c);
                   var cLabel = DO.U.getConceptLabel(conceptGraph);
-                  cLabel = (cLabel.length > 0) ? cLabel : [uri.getFragmentOrLastPath(c)];
+                  cLabel = (cLabel.length > 0) ? cLabel : [getFragmentOrLastPath(c)];
                   cLabel.forEach(function(cL) {
                     cL = cL.trim();
                     s += '<li><a href="' + c + '">' + cL + '</a></li>';
@@ -2308,7 +2320,7 @@ var DO = {
         documentItems.parentNode.removeChild(documentItems);
       }
 
-      document.documentElement.appendChild(util.fragmentFromString('<aside id="document-items" class="do on">' + DO.C.Button.Close + '</aside>'));
+      document.documentElement.appendChild(fragmentFromString('<aside id="document-items" class="do on">' + DO.C.Button.Close + '</aside>'));
       documentItems = document.getElementById('document-items');
 
       var sections = document.querySelectorAll('h1 ~ div > section:not([class~="slide"]):not([id^=table-of]):not([id^=list-of])');
@@ -2369,7 +2381,7 @@ var DO = {
                 if(tol) {
                   tol.parentNode.removeChild(tol);
 
-                  doc.removeReferences();
+                  removeReferences();
                 }
                 e.target.removeAttribute('checked');
                 window.history.replaceState(null, null, window.location.pathname);
@@ -2437,7 +2449,7 @@ var DO = {
       var documentURL = DO.C.DocumentURL;
 
       if(id == 'references'){
-        doc.buildReferences();
+        buildReferences();
       }
       else {
         var label = DO.C.ListOfStuff[id].label;
@@ -2504,20 +2516,20 @@ var DO = {
                 var requirementIRI = document.querySelector('#document-latest-published-version [rel~="rel:latest-version"]');
                 requirementIRI = (requirementIRI) ? requirementIRI.href : i;
 
-                requirementIRI = i.replace(uri.stripFragmentFromString(i), requirementIRI);
+                requirementIRI = i.replace(stripFragmentFromString(i), requirementIRI);
                 statement = '<a href="' + requirementIRI + '">' + statement + '</a>';
 
                 var requirementSubjectIRI = DO.C.Resource[documentURL]['spec'][i][DO.C.Vocab['specrequirementSubject']['@id']];
                 var requirementSubjectLabel = requirementSubjectIRI || '<span class="warning">?</span>';
                 if (requirementSubjectLabel.startsWith('http')) {
-                  requirementSubjectLabel = uri.getFragmentFromString(requirementSubjectIRI) || uri.getURLLastPath(requirementSubjectIRI) || requirementSubjectLabel;
+                  requirementSubjectLabel = getFragmentFromString(requirementSubjectIRI) || getURLLastPath(requirementSubjectIRI) || requirementSubjectLabel;
                 }
                 var requirementSubject = '<a href="' + requirementSubjectIRI + '">' + requirementSubjectLabel + '</a>';
 
                 var requirementLevelIRI = DO.C.Resource[documentURL]['spec'][i][DO.C.Vocab['specrequirementLevel']['@id']];
                 var requirementLevelLabel = requirementLevelIRI || '<span class="warning">?</span>';
                 if (requirementLevelLabel.startsWith('http')) {
-                  requirementLevelLabel = uri.getFragmentFromString(requirementLevelIRI) || uri.getURLLastPath(requirementLevelIRI) || requirementLevelLabel;
+                  requirementLevelLabel = getFragmentFromString(requirementLevelIRI) || getURLLastPath(requirementLevelIRI) || requirementLevelLabel;
                 }
                 var requirementLevel = '<a href="' + requirementLevelIRI + '">' + requirementLevelLabel + '</a>';
 
@@ -2565,10 +2577,10 @@ var DO = {
 
                 if (title) {
                   if (id == 'list-of-quotations') {
-                    textContent = doc.removeSelectorFromNode(nodes[i], '.do').textContent;
+                    textContent = removeSelectorFromNode(nodes[i], '.do').textContent;
                   }
                   else {
-                    textContent = doc.removeSelectorFromNode(title, '.do').textContent;
+                    textContent = removeSelectorFromNode(title, '.do').textContent;
                   }
 
                   if (processed.indexOf(textContent) < 0) {
@@ -2618,7 +2630,7 @@ var DO = {
         }
       }
 
-      doc.insertDocumentLevelHTML(document, s, { 'id': id });
+      insertDocumentLevelHTML(document, s, { 'id': id });
 
       if (id == 'table-of-requirements') {
         var testSuites = DO.C.Resource[documentURL].graph.spectestSuite;
@@ -2626,7 +2638,7 @@ var DO = {
           //TODO: Process all spec:testSuites
           var url = testSuites.at(0);
 
-          graph.getResourceGraph(url).then(
+          getResourceGraph(url).then(
             function(g){
 // console.log(g)
               if (g) {
@@ -2650,15 +2662,15 @@ console.log(reason);
 
           var table = document.getElementById(id);
           var thead = table.querySelector('thead');
-          thead.querySelector('tr > th').insertAdjacentHTML('beforeend', '<button id="include-diff-requirements" class="do add" disabled="disabled" title="' + buttonTextDiffRequirements + '">' + template.Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + '</button>');
+          thead.querySelector('tr > th').insertAdjacentHTML('beforeend', '<button id="include-diff-requirements" class="do add" disabled="disabled" title="' + buttonTextDiffRequirements + '">' + Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + '</button>');
 
-          graph.getResourceGraph(url).then(
+          getResourceGraph(url).then(
             function(targetGraph){
               if (targetGraph) {
                 var targetGraphURI = targetGraph.iri().toString();
 
                 var buttonRD = document.getElementById('include-diff-requirements');
-                buttonRD.innerHTML = template.Icon[".fas.fa-plus-minus"];
+                buttonRD.innerHTML = Icon[".fas.fa-plus-minus"];
                 buttonRD.disabled = false;
 
                 buttonRD.addEventListener('click', function(e) {
@@ -2668,7 +2680,7 @@ console.log(reason);
                       button.classList.remove('add');
                       button.classList.add('remove');
                       button.setAttribute('title', "Show requirements");
-                      button.innerHTML = template.Icon[".fas.fa-list-check"];
+                      button.innerHTML = Icon[".fas.fa-list-check"];
 
                       if (!button.classList.contains('checked')) {
                         DO.U.diffRequirements(sourceGraph, targetGraph);
@@ -2678,8 +2690,8 @@ console.log(reason);
                       table.querySelectorAll('tbody tr').forEach(tr => {
                         var sR = tr.getAttribute('about');
                         var td = tr.querySelector('td:nth-child(3)');
-                        sR = sR.replace(uri.stripFragmentFromString(sR), sourceGraphURI);
-                        var tR = targetGraphURI + '#' + uri.getFragmentFromString(sR);
+                        sR = sR.replace(stripFragmentFromString(sR), sourceGraphURI);
+                        var tR = targetGraphURI + '#' + getFragmentFromString(sR);
                         td.innerHTML = DO.C.Resource[sourceGraphURI].spec[sR]['diff'][tR]['statement'] || '';
                       });
                     }
@@ -2687,12 +2699,12 @@ console.log(reason);
                       button.classList.remove('remove');
                       button.classList.add('add');
                       button.setAttribute('title', buttonTextDiffRequirements);
-                      button.innerHTML = template.Icon[".fas.fa-plus-minus"];
+                      button.innerHTML = Icon[".fas.fa-plus-minus"];
 
                       table.querySelectorAll('tbody tr').forEach(tr => {
                         var sR = tr.getAttribute('about');
                         var td = tr.querySelector('td:nth-child(3)');
-                        var sourceRequirementURI = sourceGraphURI + '#' + uri.getFragmentFromString(sR);
+                        var sourceRequirementURI = sourceGraphURI + '#' + getFragmentFromString(sR);
                         var statement = DO.C.Resource[sourceGraphURI].spec[sourceRequirementURI][DO.C.Vocab['specstatement']['@id']] || sR;
                         td.innerHTML = '<a href="' + sR + '">' + statement + '</a>';
                       });
@@ -2713,7 +2725,7 @@ console.log(reason);
           var button = e.target.closest('button.add');
           if (button) {
             button.disabled = true;
-            button.insertAdjacentHTML('beforeend', template.Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]);
+            button.insertAdjacentHTML('beforeend', Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]);
 
             DO.U.showExtendedConcepts();
           }
@@ -2725,8 +2737,8 @@ console.log(reason);
       var documentURL = DO.C.DocumentURL;
       var sourceGraphURI = sourceGraph.iri().toString();
       var targetGraphURI = targetGraph.iri().toString();
-      var sourceRequirements = doc.getResourceInfoSpecRequirements(sourceGraph);
-      var targetRequirements = doc.getResourceInfoSpecRequirements(targetGraph);
+      var sourceRequirements = getResourceInfoSpecRequirements(sourceGraph);
+      var targetRequirements = getResourceInfoSpecRequirements(targetGraph);
 
       var changes = Object.values(DO.C.Resource[sourceGraphURI].change);
 
@@ -2734,7 +2746,7 @@ console.log(reason);
         DO.C.Resource[sourceGraphURI].spec[sR]['diff'] = {};
 
         var sRStatement = sourceRequirements[sR][DO.C.Vocab['specstatement']['@id']] || '';
-        var tR = targetGraphURI + '#' + uri.getFragmentFromString(sR);
+        var tR = targetGraphURI + '#' + getFragmentFromString(sR);
 
         DO.C.Resource[sourceGraphURI].spec[sR]['diff'][tR] = {};
 
@@ -2758,7 +2770,7 @@ console.log(reason);
           }
         }
 
-        var diff = Diff.diffChars(tRStatement, sRStatement);
+        var diff = diffChars(tRStatement, sRStatement);
         var diffHTML = [];
         diff.forEach((part) => {
           var eName = 'span';
@@ -2792,7 +2804,7 @@ console.log(reason);
       testSuiteGraph.graph().toArray().forEach(function(t){
         subjects.push(t.subject.nominalValue);
       });
-      subjects = util.uniqueArray(subjects);
+      subjects = uniqueArray(subjects);
 
       var testCases = [];
 
@@ -2832,7 +2844,7 @@ console.log(reason);
 
             if (testCases[testCaseIRI][DO.C.Vocab['testdescriptionreviewStatus']['@id']]) {
               var reviewStatusIRI = testCases[testCaseIRI][DO.C.Vocab['testdescriptionreviewStatus']['@id']];
-              var reviewStatusLabel = uri.getFragmentFromString(reviewStatusIRI) || uri.getURLLastPath(reviewStatusIRI) || reviewStatusIRI;
+              var reviewStatusLabel = getFragmentFromString(reviewStatusIRI) || getURLLastPath(reviewStatusIRI) || reviewStatusIRI;
 
               var reviewStatusHTML = ' (<a href="'+ reviewStatusIRI + '">' + reviewStatusLabel + '</a>)';
 
@@ -2858,7 +2870,7 @@ console.log(reason);
         }
       });
 
-      table.insertAdjacentHTML('beforeend', '<tfoot><tr>' + doc.getTestDescriptionReviewStatusHTML() + '</tr></tfoot>')
+      table.insertAdjacentHTML('beforeend', '<tfoot><tr>' + getTestDescriptionReviewStatusHTML() + '</tr></tfoot>')
     },
 
     eventEscapeDocumentMenu: function(e) {
@@ -2919,14 +2931,14 @@ console.log(reason);
         ids[i].addEventListener('mouseenter', function(e){
           var fragment = document.querySelector('*[id="' + e.target.id + '"] > .do.fragment');
           if (!fragment && e.target.parentNode.nodeName.toLowerCase() != 'aside'){
-            sign = DO.U.getSelectorSign(e.target);
+            const sign = DO.U.getSelectorSign(e.target);
 
             e.target.insertAdjacentHTML('afterbegin', '<span class="do fragment"><a href="#' + e.target.id + '">' + sign + '</a></span>');
             fragment = document.querySelector('[id="' + e.target.id + '"] > .do.fragment');
             var fragmentClientWidth = fragment.clientWidth;
 
             var fragmentOffsetLeft = DO.U.getOffset(e.target).left;
-            var bodyOffsetLeft = DO.U.getOffset(doc.getDocumentContentNode(document)).left;
+            var bodyOffsetLeft = DO.U.getOffset(getDocumentContentNode(document)).left;
 
             var offsetLeft = 0;
             if ((fragmentOffsetLeft - bodyOffsetLeft) > 200) {
@@ -2960,15 +2972,15 @@ console.log(reason);
 
     generateFilename: function(url, options) {
       url = url || DO.C.DocumentURL;
-      var fileName = uri.getLastPathSegment(url);
-      var timestamp = util.getDateTimeISO().replace(/[^\w]+/ig, '') || "now";
+      var fileName = getLastPathSegment(url);
+      var timestamp = getDateTimeISO().replace(/[^\w]+/ig, '') || "now";
       var extension = options.filenameExtension || '.txt';
       fileName = fileName + "." + timestamp + extension;
       return fileName;
     },
 
     exportAsDocument: function(data, options = {}) {
-      data = data || doc.getDocument();
+      data = data || getDocument();
       var mediaType = options.mediaType || 'text/html';
       url = options.subjectURI || DO.C.DocumentURL;
 
@@ -2980,9 +2992,9 @@ console.log(reason);
 
       a.href = window.URL.createObjectURL(blob);
       a.style.display = "none";
-      doc.getDocumentContentNode(document).appendChild(a);
+      getDocumentContentNode(document).appendChild(a);
       a.click();
-      doc.getDocumentContentNode(document).removeChild(a);
+      getDocumentContentNode(document).removeChild(a);
       window.URL.revokeObjectURL(a.href);
     },
 
@@ -2993,7 +3005,7 @@ console.log(reason);
 
       var robustLinks = selector || document.querySelectorAll('cite > a[href^="http"][data-versionurl][data-versiondate]');
 
-      document.documentElement.appendChild(util.fragmentFromString('<aside id="robustify-links" class="do on">' + DO.C.Button.Close + '<h2>Robustify Links</h2><div id="robustify-links-input"><p><input id="robustify-links-select-all" type="checkbox" value="true"/><label for="robustify-links-select-all">Select all</label></p><p><input id="robustify-links-reuse" type="checkbox" value="true" checked="checked"/><label for="robustify-links-reuse">Reuse Robustifed</label></p><ul id="robustify-links-list"></ul></div><button class="robustify" title="Robustify Links">Robustify</button></aside>'));
+      document.documentElement.appendChild(fragmentFromString('<aside id="robustify-links" class="do on">' + DO.C.Button.Close + '<h2>Robustify Links</h2><div id="robustify-links-input"><p><input id="robustify-links-select-all" type="checkbox" value="true"/><label for="robustify-links-select-all">Select all</label></p><p><input id="robustify-links-reuse" type="checkbox" value="true" checked="checked"/><label for="robustify-links-reuse">Reuse Robustifed</label></p><ul id="robustify-links-list"></ul></div><button class="robustify" title="Robustify Links">Robustify</button></aside>'));
 
       //TODO: Move unique list of existing RL's to DO.C.Resource?
       var robustLinksUnique = {};
@@ -3063,7 +3075,7 @@ console.log(reason);
 
 // console.log(node);
 
-            i.parentNode.insertAdjacentHTML('beforeend', '<span class="progress" data-to="' + i.value + '">' + template.Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + '</span>')
+            i.parentNode.insertAdjacentHTML('beforeend', '<span class="progress" data-to="' + i.value + '">' + Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + '</span>')
 
             // window.setTimeout(function () {
 // console.log(i.value);
@@ -3077,12 +3089,12 @@ console.log(reason);
               Object.keys(robustLinksUnique).forEach(function(url){
                 if (i.value == url) {
 // console.log(robustLinksUnique[url])
-                  progress.innerHTML = '<a href="' + robustLinksUnique[url]["data-versionurl"] + '" target="_blank">' + template.Icon[".fas.fa-archive"] + '</a>';
+                  progress.innerHTML = '<a href="' + robustLinksUnique[url]["data-versionurl"] + '" target="_blank">' + Icon[".fas.fa-archive"] + '</a>';
 // console.log(node)
                   node.setAttribute("data-versionurl", robustLinksUnique[url]["data-versionurl"]);
                   node.setAttribute("data-versiondate", robustLinksUnique[url]["data-versiondate"]);
 
-                  doc.showRobustLinksDecoration(node.closest('cite'));
+                  showRobustLinksDecoration(node.closest('cite'));
 
                   robustLinkFound = true;
                 }
@@ -3103,12 +3115,12 @@ console.log(reason);
 // console.log('Add    robustLinksUnique: ' + Object.keys(robustLinksUnique).length);
                   }
 
-                  progress.innerHTML = '<a href="' + versionURL + '" target="_blank">' + template.Icon[".fas.fa-archive"] + '</a>';
+                  progress.innerHTML = '<a href="' + versionURL + '" target="_blank">' + Icon[".fas.fa-archive"] + '</a>';
 
-                  doc.showRobustLinksDecoration(node.closest('cite'));
+                  showRobustLinksDecoration(node.closest('cite'));
                 })
                 .catch(function(r){
-                  progress.innerHTML = template.Icon[".fas.fa-times-circle"] + ' Unable to archive. Try later.';
+                  progress.innerHTML = Icon[".fas.fa-times-circle"] + ' Unable to archive. Try later.';
                 });
             }
 // console.log('</robustLinksUnique: ' + Object.keys(robustLinksUnique).length);
@@ -3173,11 +3185,11 @@ console.log(reason);
 
             options['showActionMessage'] = ('showActionMessage' in options) ? options.showActionMessage : true;
             if (options.showActionMessage) {
-              doc.showActionMessage(document.documentElement, '<p>Archived <a href="' + uri + '">' + uri + '</a> at <a href="' + versionURL + '">' + versionURL + '</a> and created RobustLink.</p>');
+              showActionMessage(document.documentElement, '<p>Archived <a href="' + uri + '">' + uri + '</a> at <a href="' + versionURL + '">' + versionURL + '</a> and created RobustLink.</p>');
             }
 
             if (options.showRobustLinksDecoration) {
-              doc.showRobustLinksDecoration();
+              showRobustLinksDecoration();
             }
 
             return o;
@@ -3197,9 +3209,9 @@ console.log(reason);
       options['showActionMessage'] = ('showActionMessage' in options) ? options.showActionMessage : true;
 
       //TODO: Move to Config?
-      var svgFail = template.Icon[".fas.fa-times-circle.fa-fw"];
+      var svgFail = Icon[".fas.fa-times-circle.fa-fw"];
 
-      var messageArchivedAt = template.Icon[".fas.fa-archive"] + ' Archived at ';
+      var messageArchivedAt = Icon[".fas.fa-archive"] + ' Archived at ';
 
       var responseMessages = {
         "403": svgFail + ' Archive unavailable. Please try later.',
@@ -3218,7 +3230,7 @@ console.log(reason);
           else { button.disabled = true; }
 
           var archiveNode = button.parentNode;
-          archiveNode.insertAdjacentHTML('beforeend', ' <span class="progress">' + template.Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + ' Archiving in progress.</span>');
+          archiveNode.insertAdjacentHTML('beforeend', ' <span class="progress">' + Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + ' Archiving in progress.</span>');
         }
 
         progress = archiveNode.querySelector('.progress');
@@ -3245,7 +3257,7 @@ console.log(reason);
         var link = response.headers.get('Link');
 
         if (link && link.length > 0) {
-          var rels = fetcher.LinkHeader.parse(link);
+          var rels = LinkHeader.parse(link);
           if (rels.has('rel', 'memento')) {
             var o = {
               "response": response,
@@ -3268,10 +3280,10 @@ console.log(reason);
           var pIRI = endpoint + iri;
           // i = 'https://web.archive.org/save/https://example.org/';
 
-          pIRI = (DO.C.WebExtension) ? pIRI : uri.getProxyableIRI(pIRI, {'forceProxy': true});
+          pIRI = (DO.C.WebExtension) ? pIRI : getProxyableIRI(pIRI, {'forceProxy': true});
           // pIRI = uri.getProxyableIRI(pIRI, {'forceProxy': true})
 // console.log(pIRI)
-          return fetcher.getResource(pIRI, headers, options)
+          return getResource(pIRI, headers, options)
             .then(response => {
 // console.log(response)
 // for(var key of response.headers.keys()) {
@@ -3351,7 +3363,7 @@ console.log(reason);
             options['contentType'] = 'application/json';
           }
 
-          return fetcher.postResource(endpoint, '', JSON.stringify(noteData), options.contentType, null, options)
+          return postResource(endpoint, '', JSON.stringify(noteData), options.contentType, null, options)
 
           .then(response => response.json())
 
@@ -3385,7 +3397,7 @@ console.log(reason);
     //Derived from saveAsDocument
     generateFeed: function generateFeed (e) {
       e.target.disabled = true;
-      document.documentElement.appendChild(util.fragmentFromString('<aside id="generate-feed" class="do on">' + DO.C.Button.Close + '<h2>Generate Feed</h2></aside>'));
+      document.documentElement.appendChild(fragmentFromString('<aside id="generate-feed" class="do on">' + DO.C.Button.Close + '<h2>Generate Feed</h2></aside>'));
 
       var generateFeed = document.getElementById('generate-feed');
       generateFeed.addEventListener('click', function(e) {
@@ -3458,9 +3470,9 @@ console.log(reason);
           var resourceData = {};
 
           urls.forEach(function (u) {
-            var pIRI = uri.getProxyableIRI(u);
+            var pIRI = getProxyableIRI(u);
             promises.push(
-              fetcher.getResource(pIRI)
+              getResource(pIRI)
                 .then(function (response) {
                   var cT = response.headers.get('Content-Type');
                   var options = {};
@@ -3468,7 +3480,7 @@ console.log(reason);
                   options['subjectURI'] = response.url;
 
                   return response.text()
-                    .then(data => doc.getResourceInfo(data, options))
+                    .then(data => getResourceInfo(data, options))
                     .catch(function (error) {
                       console.error(`Error fetching ${u}:`, error.message);
                       return Promise.resolve(); // or handle the error accordingly
@@ -3508,7 +3520,7 @@ console.log(reason);
 // console.log(feed)
 // console.log(options)
 
-            feed = doc.createFeedXML(feed, options);
+            feed = createFeedXML(feed, options);
 // console.log(feed);
             return feed;
           })
@@ -3523,7 +3535,7 @@ console.log(reason);
 // console.log(feedData)
 // console.log(storageIRI)
 // console.log(options);
-            fetcher.putResource(storageIRI, feedData, options.contentType, null, { 'progress': progress })
+            putResource(storageIRI, feedData, options.contentType, null, { 'progress': progress })
               .then(response => {
                 progress.parentNode.removeChild(progress)
 
@@ -3558,24 +3570,24 @@ console.log(reason);
       var iri = DO.C.DocumentURL;
 
       var li = [];
-      li.push('<li><button class="create-version"' + doc.getButtonDisabledHTML('create-version') +
-        ' title="Version this article">' + template.Icon[".fas.fa-code-branch.fa-2x"] + 'Version</button></li>');
-      li.push('<li><button class="create-immutable"' + doc.getButtonDisabledHTML('create-immutable') +
-        ' title="Make this article immutable and version it">' + template.Icon[".far.fa-snowflake.fa-2x"] + 'Immutable</button></li>');
-      li.push('<li><button class="robustify-links"' + doc.getButtonDisabledHTML('robustify-links') +
-        ' title="Robustify Links">' + template.Icon[".fas.fa-link.fa-2x"] + 'Robustify Links</button></li>');
-      li.push('<li><button class="snapshot-internet-archive"' + doc.getButtonDisabledHTML('snapshot-internet-archive') +
-        ' title="Capture with Internet Archive">' + template.Icon[".fas.fa-archive.fa-2x"] + 'Internet Archive</button></li>');
-      li.push('<li><button class="generate-feed"' + doc.getButtonDisabledHTML('generate-feed') +
-        ' title="Generate Web feed">' + template.Icon[".fas.fa-rss.fa-2x"] + 'Feed</button></li>');
-      li.push('<li><button class="export-as-html"' + doc.getButtonDisabledHTML('export-as-html') +
-        ' title="Export and save to file">' + template.Icon[".fas.fa-external-link-alt.fa-2x"] + 'Export</button></li>');
+      li.push('<li><button class="create-version"' + getButtonDisabledHTML('create-version') +
+        ' title="Version this article">' + Icon[".fas.fa-code-branch.fa-2x"] + 'Version</button></li>');
+      li.push('<li><button class="create-immutable"' + getButtonDisabledHTML('create-immutable') +
+        ' title="Make this article immutable and version it">' + Icon[".far.fa-snowflake.fa-2x"] + 'Immutable</button></li>');
+      li.push('<li><button class="robustify-links"' + getButtonDisabledHTML('robustify-links') +
+        ' title="Robustify Links">' + Icon[".fas.fa-link.fa-2x"] + 'Robustify Links</button></li>');
+      li.push('<li><button class="snapshot-internet-archive"' + getButtonDisabledHTML('snapshot-internet-archive') +
+        ' title="Capture with Internet Archive">' + Icon[".fas.fa-archive.fa-2x"] + 'Internet Archive</button></li>');
+      li.push('<li><button class="generate-feed"' + getButtonDisabledHTML('generate-feed') +
+        ' title="Generate Web feed">' + Icon[".fas.fa-rss.fa-2x"] + 'Feed</button></li>');
+      li.push('<li><button class="export-as-html"' + getButtonDisabledHTML('export-as-html') +
+        ' title="Export and save to file">' + Icon[".fas.fa-external-link-alt.fa-2x"] + 'Export</button></li>');
 
       e.target.closest('button').insertAdjacentHTML('afterend', '<ul id="memento-items" class="on">' + li.join('') + '</ul>');
 
       var mementoItems = document.getElementById('memento-items');
 
-      doc.showTimeMap();
+      showTimeMap();
 
       mementoItems.addEventListener('click', function(e) {
         if (e.target.closest('button.resource-save') ||
@@ -3590,7 +3602,7 @@ console.log(reason);
             mediaType: 'text/html',
             filenameExtension: '.html'
           }
-          DO.U.exportAsDocument(doc.getDocument(), options);
+          DO.U.exportAsDocument(getDocument(), options);
         }
 
         if (e.target.closest('button.robustify-links')){
@@ -3635,35 +3647,35 @@ console.log(reason);
       var buttonDisabled = '';
 
       var s = '<section id="document-do" class="do"><h2>Do</h2><ul>';
-      s += '<li><button class="resource-share" title="Share resource">' + template.Icon[".fas.fa-bullhorn.fa-2x"] + 'Share</button></li>';
-      s += '<li><button class="resource-reply" title="Reply">' + template.Icon[".fas.fa-reply.fa-2x"] + 'Reply</button></li>';
+      s += '<li><button class="resource-share" title="Share resource">' + Icon[".fas.fa-bullhorn.fa-2x"] + 'Share</button></li>';
+      s += '<li><button class="resource-reply" title="Reply">' + Icon[".fas.fa-reply.fa-2x"] + 'Reply</button></li>';
 
       buttonDisabled = (DO.C.User.IRI) ? '' : ' disabled="disabled"';
 
-      var activitiesIcon = template.Icon[".fas.fa-bolt.fa-2x"];
+      var activitiesIcon = Icon[".fas.fa-bolt.fa-2x"];
 
       if (DO.C.User['ContactsOutboxChecked']) {
-        activitiesIcon = template.Icon[".fas.fa-circle.fa-2x"];
+        activitiesIcon = Icon[".fas.fa-circle.fa-2x"];
         buttonDisabled = ' disabled="disabled"';
       }
 
       s += '<li><button class="resource-activities"' + buttonDisabled +
         ' title="Show activities">' + activitiesIcon + 'Activities</button></li>';
 
-      s += '<li><button class="resource-new" title="Create new article">' + template.Icon[".far.fa-lightbulb.fa-2x"] + 'New</button></li>';
+      s += '<li><button class="resource-new" title="Create new article">' + Icon[".far.fa-lightbulb.fa-2x"] + 'New</button></li>';
 
-      s += '<li><button class="resource-open" title="Open article">' + template.Icon[".fas.fa-coffee.fa-2x"] + 'Open</button></li>';
+      s += '<li><button class="resource-open" title="Open article">' + Icon[".fas.fa-coffee.fa-2x"] + 'Open</button></li>';
 
       buttonDisabled = (DO.U.accessModeAllowed('write')) ? '' : ' disabled="disabled"';
 
       buttonDisabled = (document.location.protocol === 'file:') ? ' disabled="disabled"' : buttonDisabled;
 
       s += '<li><button class="resource-save"' + buttonDisabled +
-        ' title="Save article">' + template.Icon[".fas.fa-life-ring.fa-2x"] + 'Save</button></li>';
+        ' title="Save article">' + Icon[".fas.fa-life-ring.fa-2x"] + 'Save</button></li>';
 
-      s += '<li><button class="resource-save-as"' + doc.getButtonDisabledHTML('resource-save-as') + ' title="Save as article">' + template.Icon[".far.fa-paper-plane.fa-2x"] + 'Save As</button></li>';
+      s += '<li><button class="resource-save-as"' + getButtonDisabledHTML('resource-save-as') + ' title="Save as article">' + Icon[".far.fa-paper-plane.fa-2x"] + 'Save As</button></li>';
 
-      s += '<li><button class="resource-memento" title="Memento article">' + template.Icon[".far.fa-clock.fa-2x"] + 'Memento</button></li>';
+      s += '<li><button class="resource-memento" title="Memento article">' + Icon[".far.fa-clock.fa-2x"] + 'Memento</button></li>';
 
       if (DO.C.EditorAvailable) {
         var editFile = (DO.C.EditorEnabled && DO.C.User.Role == 'author')
@@ -3672,14 +3684,14 @@ console.log(reason);
         s += '<li>' + editFile + '</li>';
       }
 
-      s += '<li><button class="resource-source" title="Edit article source code">' + template.Icon[".fas.fa-code.fa-2x"] + 'Source</button></li>';
+      s += '<li><button class="resource-source" title="Edit article source code">' + Icon[".fas.fa-code.fa-2x"] + 'Source</button></li>';
 
-      s += '<li><button class="embed-data-meta" title="Embed structured data (Turtle, JSON-LD, TriG)">' + template.Icon [".fas.fa-table.fa-2x"] + 'Embed Data</button></li>';
+      s += '<li><button class="embed-data-meta" title="Embed structured data (Turtle, JSON-LD, TriG)">' + Icon [".fas.fa-table.fa-2x"] + 'Embed Data</button></li>';
 
       if (DO.C.Resource[documentURL]['odrl'] && DO.C.Resource[documentURL]['odrl']['prohibitionAssignee'] == DO.C.User.IRI &&
         ((DO.C.Resource[documentURL]['odrl']['prohibitionActions'] && DO.C.Resource[documentURL]['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/print') > -1) ||
         (DO.C.Resource[documentURL]['odrl']['permissionActions'] && DO.C.Resource[documentURL]['odrl']['permissionActions'].indexOf('http://www.w3.org/ns/odrl/2/print') > -1))) {
-        s += '<li><button class="resource-print"' + doc.getButtonDisabledHTML('resource-print') + ' title="Print document">' + template.Icon[".fas.fa-print.fa-2x"] + 'Print</button></li>';
+        s += '<li><button class="resource-print"' + getButtonDisabledHTML('resource-print') + ' title="Print document">' + Icon[".fas.fa-print.fa-2x"] + 'Print</button></li>';
       }
 
       s += '</ul></section>';
@@ -3688,7 +3700,7 @@ console.log(reason);
 
       var eD = node.querySelector('.editor-disable');
       if (eD) {
-        storage.showAutoSaveStorage(eD.closest('li'));
+        showAutoSaveStorage(eD.closest('li'));
       }
 
       var dd = document.getElementById('document-do');
@@ -3710,7 +3722,7 @@ console.log(reason);
             var node = b.closest('li');
             b.outerHTML = DO.C.Editor.EnableEditorButton;
             DO.U.Editor.enableEditor('social', e);
-            storage.hideAutoSaveStorage(node.querySelector('#autosave-items'), documentURL);
+            hideAutoSaveStorage(node.querySelector('#autosave-items'), documentURL);
           }
           else {
             b = e.target.closest('button.editor-enable');
@@ -3718,7 +3730,7 @@ console.log(reason);
               var node = b.closest('li');
               b.outerHTML = DO.C.Editor.DisableEditorButton;
               DO.U.Editor.enableEditor('author', e);
-              storage.showAutoSaveStorage(node, documentURL);
+              showAutoSaveStorage(node, documentURL);
             }
           }
         }
@@ -3764,28 +3776,28 @@ console.log(reason);
 
     resourceSave: function(e, options) {
       var url = window.location.origin + window.location.pathname;
-      var data = doc.getDocument();
+      var data = getDocument();
       options = options || {};
 
-      doc.getResourceInfo(data, options).then(function(i) {
+      getResourceInfo(data, options).then(function(i) {
         if (e.target.closest('.create-version')) {
-          doc.createMutableResource(url);
+          createMutableResource(url);
         }
         else if (e.target.closest('.create-immutable')) {
-          doc.createImmutableResource(url);
+          createImmutableResource(url);
         }
         else if (e.target.closest('.resource-save')) {
-          doc.updateMutableResource(url);
+          updateMutableResource(url);
         }
       });
     },
 
     replyToResource: function replyToResource (e, iri) {
-      iri = iri || fetcher.currentLocation()
+      iri = iri || currentLocation()
 
       e.target.closest('button').disabled = true
 
-      document.documentElement.appendChild(util.fragmentFromString('<aside id="reply-to-resource" class="do on">' + DO.C.Button.Close + '<h2>Reply to this</h2><div id="reply-to-resource-input"><p>Reply to <code>' +
+      document.documentElement.appendChild(fragmentFromString('<aside id="reply-to-resource" class="do on">' + DO.C.Button.Close + '<h2>Reply to this</h2><div id="reply-to-resource-input"><p>Reply to <code>' +
         iri +'</code></p><ul><li><p><label for="reply-to-resource-note">Quick reply (plain text note)</label></p><p><textarea id="reply-to-resource-note" rows="10" cols="40" name="reply-to-resource-note" placeholder="Great article!"></textarea></p></li><li><label for="reply-to-resource-language">Language</label> <select id="reply-to-resource-language" name="reply-to-resource-language">' +
         DO.U.getLanguageOptionsHTML() + '</select></li><li><label for="reply-to-resource-license">License</label> <select id="reply-to-resource-license" name="reply-to-resource-license">' +
         DO.U.getLicenseOptionsHTML() + '</select></li></ul></div>'))
@@ -3834,8 +3846,8 @@ console.log(reason);
           return
         }
 
-        var datetime = util.getDateTimeISO()
-        var attributeId = util.generateAttributeId()
+        var datetime = getDateTimeISO()
+        var attributeId = generateAttributeId()
         var noteIRI = document.querySelector('#reply-to-resource #' + id +
           '-' + action).innerText.trim()
         var motivatedBy = "oa:replying"
@@ -3880,9 +3892,9 @@ console.log(reason);
 
         var note = DO.U.createNoteDataHTML(noteData)
 
-        var data = doc.createHTML('', note)
+        var data = createHTML('', note)
 
-        fetcher.putResource(noteIRI, data)
+        putResource(noteIRI, data)
 
           .catch(error => {
             console.log('Could not save reply:')
@@ -3923,7 +3935,7 @@ console.log(reason);
               .innerHTML = '<p class="success"><a target="_blank" href="' + response.url + '">Reply saved!</a></p>'
 
             // Determine the inbox endpoint, to send the notification to
-            return graph.getLinkRelation(DO.C.Vocab['ldpinbox']['@id'], null, doc.getDocument())
+            return getLinkRelation(DO.C.Vocab['ldpinbox']['@id'], null, getDocument())
               .catch(error => {
                 console.error('Could not fetch inbox endpoint:', error)
 
@@ -3957,7 +3969,7 @@ console.log(reason);
               "statements": notificationStatements
             }
 
-            return inbox.notifyInbox(notificationData)
+            return notifyInbox(notificationData)
               .catch(error => {
                 console.error('Failed sending notification to ' + inboxURL + ' :', error)
 
@@ -3993,7 +4005,7 @@ console.log(reason);
     },
 
     shareResource: function shareResource (e, iri) {
-      iri = iri || fetcher.currentLocation();
+      iri = iri || currentLocation();
       if (e) {
         e.target.disabled = true;
       }
@@ -4009,7 +4021,7 @@ console.log(reason);
         shareResourceLinkedResearch = '<li><input id="share-resource-linked-research" type="checkbox" value="https://linkedresearch.org/cloud" /><label for="share-resource-linked-research">Notify <a href="https://linkedresearch.org/cloud">Linked Open Research Cloud</a></label></li>';
       }
 
-      document.documentElement.appendChild(util.fragmentFromString('<aside id="share-resource" class="do on">' + DO.C.Button.Close + '<h2>Share resource</h2><div id="share-resource-input"><p>Send a notification about <code>' + iri +'</code></p><ul><li id="share-resource-address-book"></li>' + shareResourceLinkedResearch + '<li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share" title="Share resource">Share</button></aside>'));
+      document.documentElement.appendChild(fragmentFromString('<aside id="share-resource" class="do on">' + DO.C.Button.Close + '<h2>Share resource</h2><div id="share-resource-input"><p>Send a notification about <code>' + iri +'</code></p><ul><li id="share-resource-address-book"></li>' + shareResourceLinkedResearch + '<li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share" title="Share resource">Share</button></aside>'));
 
       var li = document.getElementById('share-resource-address-book');
 
@@ -4017,7 +4029,7 @@ console.log(reason);
         DO.U.selectContacts(li, DO.C.User.IRI);
       }
       else {
-        li.insertAdjacentHTML('beforeend', '<button class="add"' + addContactsButtonDisable + ' title="Add and select contacts from your profile">' + template.Icon[".far.fa-address-book"] + ' Add from contacts</button>' + noContactsText);
+        li.insertAdjacentHTML('beforeend', '<button class="add"' + addContactsButtonDisable + ' title="Add and select contacts from your profile">' + Icon[".far.fa-address-book"] + ' Add from contacts</button>' + noContactsText);
       }
 
       var shareResource = document.getElementById('share-resource');
@@ -4033,7 +4045,7 @@ console.log(reason);
           e.preventDefault();
           e.stopPropagation();
           var li = e.target.closest('li');
-          li.insertAdjacentHTML('beforeend', template.Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]);
+          li.insertAdjacentHTML('beforeend', Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]);
           DO.U.selectContacts(li, DO.C.User.IRI);
         }
 
@@ -4069,7 +4081,7 @@ console.log(reason);
           // }
           // shareResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>');
 
-          return inbox.sendNotifications(tos, note, iri, shareResource)
+          return sendNotifications(tos, note, iri, shareResource)
         }
       });
     },
@@ -4093,14 +4105,14 @@ console.log(reason);
     updateContactsInfo: function(url, options) {
       options = options || {};
 
-      return graph.getUserContacts(url).then(
+      return getUserContacts(url).then(
         function(contacts) {
           if(contacts.length > 0) {
             var promises = [];
 
             //Get Contacts' profile
             var gC = function(url) {
-              return graph.getResourceGraph(url).then(i => {
+              return getResourceGraph(url).then(i => {
                 // console.log(i);
                 var s = i.child(url);
 
@@ -4109,8 +4121,8 @@ console.log(reason);
                 DO.C.User.Contacts[url]['Graph'] = s;
 
                 var uCA = function(url, s) {
-                  var outbox = DO.C.User.Contacts[url]['Outbox'] = graph.getAgentOutbox(s);
-                  var storage = DO.C.User.Contacts[url]['Storage'] = graph.getAgentStorage(s);
+                  var outbox = DO.C.User.Contacts[url]['Outbox'] = getAgentOutbox(s);
+                  var storage = DO.C.User.Contacts[url]['Storage'] = getAgentStorage(s);
                   if ('showActivitiesSources' in options) {
                     if (storage && storage.length > 0) {
                       if(outbox && outbox.length > 0) {
@@ -4170,7 +4182,7 @@ console.log(reason);
           }
           else {
             if ('addShareResourceContactInput' in options) {
-              options.addShareResourceContactInput.innerHTML = 'No contacts with ' + template.Icon[".fas.fa-inbox"] + ' inbox found in your profile, but you can enter contacts individually:';
+              options.addShareResourceContactInput.innerHTML = 'No contacts with ' + Icon[".fas.fa-inbox"] + ' inbox found in your profile, but you can enter contacts individually:';
             }
 
             return Promise.resolve()
@@ -4189,8 +4201,8 @@ console.log(reason);
 
       if (inbox && inbox.length > 0) {
         var id = encodeURIComponent(iri);
-        var name = graph.getAgentName(s) || iri;
-        var img = graph.getGraphImage(s);
+        var name = getAgentName(s) || iri;
+        var img = getGraphImage(s);
         img = (img && img.length > 0) ? '<img alt="" height="32" src="' + img + '" width="32" />' : '';
         var input = '<li><input id="share-resource-contact-' + id + '" type="checkbox" value="' + iri + '" /><label for="share-resource-contact-' + id + '">' + img + '<a href="' + iri + '" target="_blank">' + name + '</a></label></li>';
 
@@ -4200,13 +4212,13 @@ console.log(reason);
 
     updateContactsInbox: function(iri, s) {
       var checkInbox = function(s) {
-        var aI = graph.getAgentInbox(s);
+        var aI = getAgentInbox(s);
 
         if (aI) {
           return Promise.resolve(aI);
         }
         else {
-          return graph.getLinkRelationFromHead(DO.C.Vocab['ldpinbox']['@id'], iri);
+          return getLinkRelationFromHead(DO.C.Vocab['ldpinbox']['@id'], iri);
         }
       }
 
@@ -4227,8 +4239,8 @@ console.log(reason);
         if(button.parentNode.classList.contains('container')){
           var headers;
           headers = {'Accept': 'text/turtle, application/ld+json'};
-          graph.getResourceGraph(url, headers).then(function(g){
-              actionNode.textContent = (action == 'write') ? url + util.generateAttributeId() : url;
+          getResourceGraph(url, headers).then(function(g){
+              actionNode.textContent = (action == 'write') ? url + generateAttributeId() : url;
               return DO.U.generateBrowserList(g, url, id, action);
             },
             function(reason){
@@ -4282,7 +4294,7 @@ console.log(reason);
         var urlPath = url.split("/");
         if(urlPath.length > 4){ // This means it's not the base URL
           urlPath.splice(-2,2);
-          var prevUrl = uri.forceTrailingSlash(urlPath.join("/"));
+          var prevUrl = forceTrailingSlash(urlPath.join("/"));
           var upBtn = '<li class="container"><input type="radio" name="containers" value="' + prevUrl + '" id="' + prevUrl + '" /><label for="' + prevUrl + '" id="browser-up">..</label></li>';
           list.insertAdjacentHTML('afterbegin', upBtn);
         }
@@ -4415,7 +4427,7 @@ console.log(reason);
       var sD = document.getElementById(id + '-storage-description');
 
       if (samp && !sD) {
-        var sDPromise = graph.getLinkRelation(DO.C.Vocab['solidstorageDescription']['@id'], storageUrl);
+        var sDPromise = getLinkRelation(DO.C.Vocab['solidstorageDescription']['@id'], storageUrl);
 
         return sDPromise
           .then(sDURLs => {
@@ -4444,7 +4456,7 @@ console.log(reason);
                 if (!storageDescriptionNode) {
                   var storageLocation = '<dl id="storage-location"><dt>Storage location</dt><dd><a href="' + storageUrl +'" target="_blank">' + storageUrl + '</a></dd></dl>';
 
-                  graph.getResourceGraph(sDURL).then(function(g){
+                  getResourceGraph(sDURL).then(function(g){
                     g = (g.foafprimaryTopic) ? g.child(g.foafprimaryTopic) : g.child(storageUrl);
 
                     var selfDescription = DO.U.getStorageSelfDescription(g);
@@ -4477,7 +4489,7 @@ console.log(reason);
     getStorageSelfDescription: function(g) {
       var s = '';
 
-      var storageName = graph.getGraphLabel(g);
+      var storageName = getGraphLabel(g);
       var storageURL = g.iri().toString();
 
       storageName = (typeof storageName !== 'undefined') ? storageName : storageURL;
@@ -4606,7 +4618,7 @@ console.log(reason);
 
           //Get user's actions from preferred policy (prohibition) to check for conflicts with storage's policy (permission)
           if (DO.C.User.PreferredPolicyRule && DO.C.User.PreferredPolicyRule.Prohibition && DO.C.User.PreferredPolicyRule.Prohibition.Actions.indexOf(iri) > -1) {
-            warning = template.Icon[".fas.fa-circle-exclamation"] + ' ';
+            warning = Icon[".fas.fa-circle-exclamation"] + ' ';
             attributeClass = ' class="warning"';
             attributeTitle = ' title="The action (' + label + ') is prohibited by preferred policy."';
           }
@@ -4744,7 +4756,7 @@ console.log(reason);
                 case DO.C.Vocab['notifystate']['@id']:
                 case DO.C.Vocab['notifyrate']['@id']:
                 case DO.C.Vocab['notifyaccept']['@id']:
-                  label = uri.getFragmentFromString(iri);
+                  label = getFragmentFromString(iri);
                   href = 'https://solidproject.org/TR/2022/notifications-protocol-20221231#notify-' + label;
                   break;
 
@@ -4836,7 +4848,7 @@ console.log(reason);
 
 // console.log(DO.C.Subscription)
 
-      return fetcher.postResource(url, '', data, options.contentType, null, options)
+      return postResource(url, '', data, options.contentType, null, options)
         .then(response => {
           return DO.U.processNotificationSubscriptionResponse(response, d);
         })
@@ -4985,7 +4997,7 @@ console.log(reason);
           message.push('</dl>');
           message = message.join('');
 
-          doc.showActionMessage(document.documentElement, message, {'timer': 3000});
+          showActionMessage(document.documentElement, message, {'timer': 3000});
 
           // return Promise.resolve(data);
         // }
@@ -5047,12 +5059,12 @@ console.log(reason);
       input.value = baseUrl;
       var headers;
       headers = {'Accept': 'text/turtle, application/ld+json'};
-      graph.getResourceGraph(baseUrl, headers).then(function(g){
+      getResourceGraph(baseUrl, headers).then(function(g){
         DO.U.generateBrowserList(g, baseUrl, id, action).then(function(i){
           DO.U.showStorageDescription(g, id, baseUrl);
         });
       }).then(function(i){
-        document.getElementById(id + '-' + action).textContent = (action == 'write') ? input.value + util.generateAttributeId() : input.value;
+        document.getElementById(id + '-' + action).textContent = (action == 'write') ? input.value + generateAttributeId() : input.value;
       });
 
       browseButton.addEventListener('click', function(e){
@@ -5070,7 +5082,7 @@ console.log(reason);
 // console.log(url)
         var headers;
         headers = {'Accept': 'text/turtle, application/ld+json'};
-        graph.getResourceGraph(url, headers).then(function(g){
+        getResourceGraph(url, headers).then(function(g){
           DO.U.generateBrowserList(g, url, id, action).then(function(l){
             DO.U.showStorageDescription(g, id, url);
             return l;
@@ -5095,7 +5107,7 @@ console.log(reason);
       if (!e) {
         return;
       }
-      id = id || util.generateUUID();
+      id = id || generateUUID();
 
       var div = document.getElementById(id + '-create-container');
       if (div) {
@@ -5134,7 +5146,7 @@ console.log(reason);
 
         var options = { 'headers': { 'If-None-Match': '*' } };
 
-        fetcher.patchResourceWithAcceptPatch(containerURL, patch, options).then(
+        patchResourceWithAcceptPatch(containerURL, patch, options).then(
           function(response){
             DO.U.triggerBrowse(containerURL, id, action);
           },
@@ -5146,10 +5158,10 @@ console.log(reason);
                 'dcterms': 'http://purl.org/dc/terms/'
               }
             }
-            var data = doc.createHTML(containerLabel, main, o);
+            var data = createHTML(containerLabel, main, o);
 // console.log(data);
 
-            fetcher.putResourceWithAcceptPut(containerURL, data, options).then(
+            putResourceWithAcceptPut(containerURL, data, options).then(
               function(response){
                 DO.U.triggerBrowse(containerURL, id, action);
               },
@@ -5246,8 +5258,8 @@ console.log(response)
           if(e.which == 13){
             DO.U.triggerBrowse(input.value, id, action);
           }
-          if(action){
-            action.textContent = input.value + util.generateAttributeId();
+          if(actionNode){
+            actionNode.textContent = input.value + generateAttributeId();
           }
         }
         else {
@@ -5273,10 +5285,10 @@ console.log(response)
       // TODO: Show and use storage, outbox, annotationService as opposed to first available.
 
       if(DO.C.User.Storage && DO.C.User.Storage.length > 0) {
-        baseUrl = uri.forceTrailingSlash(DO.C.User.Storage[0]);
+        baseUrl = forceTrailingSlash(DO.C.User.Storage[0]);
       }
       else if(DO.C.User.Outbox && DO.C.User.Outbox[0]) {
-        baseUrl = uri.forceTrailingSlash(DO.C.User.Outbox[0]);
+        baseUrl = forceTrailingSlash(DO.C.User.Outbox[0]);
       }
 
 
@@ -5284,7 +5296,7 @@ console.log(response)
         DO.U.initBrowse(baseUrl, input, browseButton, createButton, id, action);
       }
       else {
-        graph.getLinkRelation(DO.C.Vocab['oaannotationService']['@id'], null, doc.getDocument()).then(
+        getLinkRelation(DO.C.Vocab['oaannotationService']['@id'], null, getDocument()).then(
           function(storageUrl) {
             DO.U.initBrowse(storageUrl[0], input, browseButton, createButton, id, action);
           },
@@ -5304,11 +5316,11 @@ console.log(response)
     },
 
     showResourceBrowser: function(id, action) {
-      id = id || 'location-' + util.generateAttributeId();
+      id = id || 'location-' + generateAttributeId();
       action = action || 'write';
 
       var browserHTML = '<aside id="resource-browser-' + id + '" class="do on">' + DO.C.Button.Close + '<h2>Resource Browser</h2></aside>';
-      document.documentElement.appendChild(util.fragmentFromString(browserHTML));
+      document.documentElement.appendChild(fragmentFromString(browserHTML));
 
       DO.U.setupResourceBrowser(document.getElementById('resource-browser-' + id), id, action);
       document.getElementById('resource-browser-' + id).insertAdjacentHTML('beforeend', '<p><samp id="' + id + '-' + action + '"></samp></p>');
@@ -5333,7 +5345,7 @@ console.log(response)
       if(typeof e !== 'undefined') {
         e.target.disabled = true;
       }
-      document.documentElement.appendChild(util.fragmentFromString('<aside id="open-document" class="do on">' + DO.C.Button.Close + '<h2>Open Document</h2><p><label for="open-local-file">Open local file</label> <input type="file" id="open-local-file" name="open-local-file" /></p></aside>'));
+      document.documentElement.appendChild(fragmentFromString('<aside id="open-document" class="do on">' + DO.C.Button.Close + '<h2>Open Document</h2><p><label for="open-local-file">Open local file</label> <input type="file" id="open-local-file" name="open-local-file" /></p></aside>'));
 
       var id = 'location-open-document';
       var action = 'read';
@@ -5371,22 +5383,22 @@ console.log(response)
 
     openResource: function(iri, options) {
       options = options || {};
-      var headers = { 'Accept': fetcher.setAcceptRDFTypes() };
-      var pIRI = uri.getProxyableIRI(iri);
+      var headers = { 'Accept': setAcceptRDFTypes() };
+      var pIRI = getProxyableIRI(iri);
       // if (pIRI.slice(0, 5).toLowerCase() == 'http:') {
       // }
 
       // options['noCredentials'] = true;
 
       var handleResource = function handleResource (pIRI, headers, options) {
-        return fetcher.getResource(pIRI, headers, options)
+        return getResource(pIRI, headers, options)
           .catch(error => {
             console.log(error)
             // console.log(error.status)
             // console.log(error.response)
 
             //XXX: It was either a CORS related issue or 4xx/5xx.
-            doc.showActionMessage(document.documentElement, '<p><span class="progress">' + template.Icon[".fas.fa-times-circle.fa-fw"] + '  Unable to open <a href="' + iri + '" target="_blank">' + iri + '</a></span></p>', {'timer': 5000});
+            showActionMessage(document.documentElement, '<p><span class="progress">' + Icon[".fas.fa-times-circle.fa-fw"] + '  Unable to open <a href="' + iri + '" target="_blank">' + iri + '</a></span></p>', {'timer': 5000});
 
             throw error
           })
@@ -5411,7 +5423,7 @@ console.log(response)
                 }
 
                 DO.U.setDocumentURL(iri);
-                doc.getResourceInfo(data, options);
+                getResourceInfo(data, options);
                 DO.U.buildResourceView(data, options)
                   .then(o => {
 // console.log(o)
@@ -5438,18 +5450,18 @@ console.log(response)
       var html = marked(data, extensions);
 // console.log(parsed)
       if (options.createDocument) {
-        html = doc.createHTML('', '<article>' + html+ '</article>');
+        html = createHTML('', '<article>' + html+ '</article>');
       }
 // console.log(html);
       return html;
     },
 
     buildResourceView: function(data, options) {
-      return graph.getGraphFromData(data, options).then(
+      return getGraphFromData(data, options).then(
         function(i){
           var s = SimpleRDF(DO.C.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
 // console.log(s)
-          var title = graph.getGraphLabel(s) || options.subjectURI;
+          var title = getGraphLabel(s) || options.subjectURI;
           var h1 = '<a href="' +  options.subjectURI + '">' + title + '</a>';
 
           var types = s.rdftype._array;
@@ -5467,7 +5479,7 @@ console.log(response)
                   // window.setTimeout(function () {
 
                     // var pIRI = uri.getProxyableIRI(u);
-                    promises.push(graph.getResourceGraph(u));
+                    promises.push(getResourceGraph(u));
                   // }, 1000)
                 });
 
@@ -5518,7 +5530,7 @@ console.log(response)
       </article>`;
 
                     return {
-                      'data': doc.createHTML('Collection: ' + options.subjectURI, html),
+                      'data': createHTML('Collection: ' + options.subjectURI, html),
                       'options': {
                         'subjectURI': options.subjectURI,
                         'contentType': 'text/html'
@@ -5549,12 +5561,12 @@ console.log(response)
       var summary = '';
       var tags = '';
 
-      image = graph.getGraphImage(g) || '';
+      image = getGraphImage(g) || '';
       if (image) {
-        image = doc.getResourceImageHTML(image) + ' ';
+        image = getResourceImageHTML(image) + ' ';
       }
 
-      name = graph.getGraphLabel(g) || g.iri().toString();
+      name = getGraphLabel(g) || g.iri().toString();
       name = '<a href="' + g.iri().toString() + '" property="schema:name" rel="schema:url">' + name + '</a>';
 
       var datePublished = g.schemadatePublished || g.dctermsissued || g.dctermsdate || g.aspublished || g.schemadateCreated || g.dctermscreated || g.provgeneratedAtTime || g.dctermsmodified || g.asupdated || '';
@@ -5578,7 +5590,7 @@ console.log(response)
         tags = [];
         g.astag.forEach(function(tagURL){
           var t = g.child(tagURL);
-          var tagName = uri.getFragmentOrLastPath(tagURL);
+          var tagName = getFragmentOrLastPath(tagURL);
 
           if (t.ashref && t.asname.length > 0) {
             tagURL = t.ashref;
@@ -5703,7 +5715,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
     createNewDocument: function createNewDocument (e) {
       e.target.disabled = true
-      document.documentElement.appendChild(util.fragmentFromString('<aside id="create-new-document" class="do on">' + DO.C.Button.Close + '<h2>Create New Document</h2></aside>'))
+      document.documentElement.appendChild(fragmentFromString('<aside id="create-new-document" class="do on">' + DO.C.Button.Close + '<h2>Create New Document</h2></aside>'))
 
       var newDocument = document.getElementById('create-new-document')
       newDocument.addEventListener('click', e => {
@@ -5734,7 +5746,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
         var newDocument = document.getElementById('create-new-document')
         var storageIRI = newDocument.querySelector('#' + id + '-' + action).innerText.trim()
-        var title = (storageIRI.length > 0) ? uri.getURLLastPath(storageIRI) : ''
+        var title = (storageIRI.length > 0) ? getURLLastPath(storageIRI) : ''
         title = DO.U.generateLabelFromString(title);
 
         var rm = newDocument.querySelector('.response-message')
@@ -5757,9 +5769,9 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
         html.querySelector('body').innerHTML = '<main><article about="" typeof="schema:Article"><h1 property="schema:name">' + title + '</h1></article></main>'
         html.querySelector('head title').innerHTML = title
-        html = doc.getDocument(html)
+        html = getDocument(html)
 
-        fetcher.putResource(storageIRI, html)
+        putResource(storageIRI, html)
           .then(() => {
             var documentMode = (DO.C.WebExtension) ? '' : '?author=true'
 
@@ -5810,7 +5822,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
     saveAsDocument: function saveAsDocument (e) {
       e.target.disabled = true;
-      document.documentElement.appendChild(util.fragmentFromString('<aside id="save-as-document" class="do on">' + DO.C.Button.Close + '<h2>Save As Document</h2></aside>'));
+      document.documentElement.appendChild(fragmentFromString('<aside id="save-as-document" class="do on">' + DO.C.Button.Close + '<h2>Save As Document</h2></aside>'));
 
       var saveAsDocument = document.getElementById('save-as-document');
       saveAsDocument.addEventListener('click', function(e) {
@@ -6003,7 +6015,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
         var dokielize = document.querySelector('#dokielize-resource')
         if (dokielize.checked) {
-          html = doc.getDocument(html)
+          html = getDocument(html)
 // console.log(html)
           html = DO.U.spawnDokieli(document, html, 'text/html', storageIRI, {'init': false})
 // console.log(html)
@@ -6013,13 +6025,13 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         if (wasDerived.checked) {
           o = { 'id': 'document-derived-from', 'title': 'Derived From' };
           r = { 'rel': 'prov:wasDerivedFrom', 'href': DO.C.DocumentURL };
-          html = doc.setDocumentRelation(html, [r], o);
+          html = setDocumentRelation(html, [r], o);
 
-          html = doc.setDate(html, { 'id': 'document-derived-on', 'property': 'prov:generatedAtTime', 'title': 'Derived On' });
+          html = setDate(html, { 'id': 'document-derived-on', 'property': 'prov:generatedAtTime', 'title': 'Derived On' });
 
           o = { 'id': 'document-identifier', 'title': 'Identifier' };
           r = { 'rel': 'owl:sameAs', 'href': storageIRI };
-          html = doc.setDocumentRelation(html, [r], o);
+          html = setDocumentRelation(html, [r], o);
         }
 
         var inboxLocation = saveAsDocument.querySelector('#' + locationInboxId + '-' + locationInboxAction);
@@ -6027,7 +6039,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           inboxLocation = inboxLocation.innerText.trim();
           o = { 'id': 'document-inbox', 'title': 'Notifications Inbox' };
           r = { 'rel': 'ldp:inbox', 'href': inboxLocation };
-          html = doc.setDocumentRelation(html, [r], o);
+          html = setDocumentRelation(html, [r], o);
         }
 
         var annotationServiceLocation = saveAsDocument.querySelector('#' + locationAnnotationServiceId + '-' + locationAnnotationServiceAction)
@@ -6035,7 +6047,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           annotationServiceLocation = annotationServiceLocation.innerText.trim();
           o = { 'id': 'document-annotation-service', 'title': 'Annotation Service' };
           r = { 'rel': 'oa:annotationService', 'href': annotationServiceLocation };
-          html = doc.setDocumentRelation(html, [r], o);
+          html = setDocumentRelation(html, [r], o);
         }
 
         var baseURLSelectionChecked = saveAsDocument.querySelector('select[name="base-url"]')
@@ -6053,7 +6065,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           nodes = DO.U.rewriteBaseURL(nodes, baseOptions)
         }
 
-        html = doc.getDocument(html)
+        html = getDocument(html)
 
         var progress = saveAsDocument.querySelector('progress')
         if(progress) {
@@ -6062,7 +6074,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         e.target.insertAdjacentHTML('afterend', '<progress min="0" max="100" value="0"></progress>')
         progress = saveAsDocument.querySelector('progress')
 
-        fetcher.putResource(storageIRI, html, null, null, { 'progress': progress })
+        putResource(storageIRI, html, null, null, { 'progress': progress })
           .then(response => {
             progress.parentNode.removeChild(progress)
 
@@ -6090,7 +6102,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
             var inboxURL;
             var link = error.response.headers.get('Link');
             if (link) {
-              linkHeaders = fetcher.LinkHeader.parse(link);
+              linkHeaders = LinkHeader.parse(link);
             }
 
             if (DO.C.User.IRI && linkHeaders && linkHeaders.has('rel', DO.C.Vocab['ldpinbox']['@id'])){
@@ -6127,7 +6139,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
             if (DO.C.User.IRI && requestAccess) {
               document.querySelector('#save-as-document .response-message .request-access').addEventListener('click', function(e) {
-                var objectId = '#' + util.generateUUID();
+                var objectId = '#' + generateUUID();
 
                 inboxURL = e.target.dataset.inbox;
                 var accessTo = e.target.dataset.target;
@@ -6156,7 +6168,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
                 responseMessage = document.querySelector('#save-as-document .response-message');
 
-                return inbox.notifyInbox(notificationData)
+                return notifyInbox(notificationData)
                   .catch(error => {
                     console.log('Error notifying the inbox:', error)
 
@@ -6191,10 +6203,10 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
       var buttonDisabled = (document.location.protocol === 'file:') ? ' disabled="disabled"' : '';
 
-      document.documentElement.appendChild(util.fragmentFromString('<aside id="source-view" class="do on">' + DO.C.Button.Close + '<h2>Source</h2><textarea id="source-edit" rows="24" cols="80"></textarea><p><button class="create"'+ buttonDisabled + ' title="Update source">Update</button></p></aside>'));
+      document.documentElement.appendChild(fragmentFromString('<aside id="source-view" class="do on">' + DO.C.Button.Close + '<h2>Source</h2><textarea id="source-edit" rows="24" cols="80"></textarea><p><button class="create"'+ buttonDisabled + ' title="Update source">Update</button></p></aside>'));
       var sourceBox = document.getElementById('source-view');
       var input = document.getElementById('source-edit');
-      input.value = doc.getDocument();
+      input.value = getDocument();
 
       sourceBox.addEventListener('click', function(e) {
         if (e.target.closest('button.create')) {
@@ -6257,7 +6269,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
             url = DO.U.setBaseURL(url, options);
           }
           else if (url.startsWith('http:') && node.tagName.toLowerCase()) {
-            url = uri.getProxyableIRI(url)
+            url = getProxyableIRI(url)
           }
           node.setAttribute(ref, url);
         };
@@ -6284,15 +6296,15 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
               url = options.iri.split(':')[0] + ':' + url;
             }
             else {
-              href = ('iri' in options) ? uri.getProxyableIRI(options.iri) : document.location.href;
-              url = uri.getBaseURL(href);
+              href = ('iri' in options) ? getProxyableIRI(options.iri) : document.location.href;
+              url = getBaseURL(href);
 // console.log(url)
               //TODO: Move/Refactor in uri.js
               //TODO: "./"
               if (matches[3].startsWith('../')) {
                 var parts = matches[3].split('../');
                 for (var i = 0; i < parts.length - 1; i++) {
-                  url = uri.getParentURLPath(url) || url;
+                  url = getParentURLPath(url) || url;
                 }
                 url += parts[parts.length - 1];
               }
@@ -6327,7 +6339,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
     copyRelativeResources: function copyRelativeResources (storageIRI, relativeNodes) {
       var ref = '';
-      var baseURL = uri.getBaseURL(storageIRI);
+      var baseURL = getBaseURL(storageIRI);
 
       for (var i = 0; i < relativeNodes.length; i++) {
         var node = relativeNodes[i];
@@ -6359,11 +6371,11 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           }
           else {
             pathToFile = DO.U.setBaseURL(fromURL, {'baseURLType': 'base-url-relative'});
-            fromURL = uri.getBaseURL(document.location.href) + fromURL
+            fromURL = getBaseURL(document.location.href) + fromURL
             toURL = baseURL + pathToFile
           }
 
-          fetcher.copyResource(fromURL, toURL);
+          copyResource(fromURL, toURL);
         }
       };
     },
@@ -6371,7 +6383,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
     createAttributeDateTime: function(element) {
       //Creates datetime attribute.
       //TODO: Include @data-author for the signed in user e.g., WebID or URL.
-      var a = util.getDateTimeISO();
+      var a = getDateTimeISO();
 
       switch(element) {
         case 'mark': case 'article':
@@ -6405,7 +6417,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       }
 //console.log(iri);
 
-      return graph.getResourceGraph(iri);
+      return getResourceGraph(iri);
     },
 
     getCitationHTML: function(citationGraph, citationURI, options) {
@@ -6420,19 +6432,19 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 // console.log('citationURI: ' + citationURI);
 // console.log('subject.iri().toString(): ' + subject.iri().toString());
 
-      var title = graph.getGraphLabel(subject);
+      var title = getGraphLabel(subject);
       //FIXME: This is a stupid hack because RDFa parser is not setting the base properly.
       if(typeof title == 'undefined') {
         subject = citationGraph.child(options.citationId);
 
-        title = graph.getGraphLabel(subject) || '';
+        title = getGraphLabel(subject) || '';
       }
       title = title.replace(/ & /g, " &amp; ");
       title = (title.length > 0) ? '<cite>' + title + '</cite>, ' : '';
       var datePublished = subject.schemadatePublished || subject.dctermsissued || subject.dctermsdate || subject.schemadateCreated || subject.dctermscreated || '';
       var dateVersion = subject.schemadateModified || datePublished;
       datePublished = (datePublished) ? datePublished.substr(0,4) + ', ' : '';
-      var dateAccessed = 'Accessed: ' + util.getDateTimeISO();
+      var dateAccessed = 'Accessed: ' + getDateTimeISO();
       var authors = [], authorList = [];
 // console.log(subject);
 // console.log(subject.biboauthorList);
@@ -6464,7 +6476,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       if(authorList.length > 0) {
         authorList.forEach(function(authorIRI) {
           var s = subject.child(authorIRI);
-          var author = graph.getAgentName(s);
+          var author = getAgentName(s);
 
           if (s.schemafamilyName && s.schemafamilyName.length > 0 && s.schemagivenName && s.schemagivenName.length > 0) {
             author = DO.U.createRefName(s.schemafamilyName, s.schemagivenName);
@@ -6519,12 +6531,12 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
     },
 
     highlightItems: function() {
-      var highlights = doc.getDocumentContentNode(document).querySelectorAll('*[class*="highlight-"]');
+      var highlights = getDocumentContentNode(document).querySelectorAll('*[class*="highlight-"]');
       for (var i = 0; i < highlights.length; i++) {
         highlights[i].addEventListener('mouseenter', function(e) {
           var c = e.target.getAttribute('class').split(' ')
                     .filter(function(s) { return s.startsWith('highlight-'); });
-          var highlightsX = doc.getDocumentContentNode(document).querySelectorAll('*[class~="'+ c[0] +'"]');
+          var highlightsX = getDocumentContentNode(document).querySelectorAll('*[class~="'+ c[0] +'"]');
           for (var j = 0; j < highlightsX.length; j++) {
             highlightsX[j].classList.add('do', 'highlight');
           }
@@ -6534,7 +6546,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
           var c = e.target.getAttribute('class');
           var c = e.target.getAttribute('class').split(' ')
                     .filter(function(s) { return s.startsWith('highlight-'); });
-          var highlightsX = doc.getDocumentContentNode(document).querySelectorAll('*[class~="'+ c[0] +'"]');
+          var highlightsX = getDocumentContentNode(document).querySelectorAll('*[class~="'+ c[0] +'"]');
           for (var j = 0; j < highlightsX.length; j++) {
             highlightsX[j].classList.remove('do', 'highlight');
           }
@@ -6608,7 +6620,7 @@ WHERE {\n\
   FILTER (CONTAINS(LCASE(?prefLabel), '" + textInput + "') && (LANG(?prefLabel) = '' || LANGMATCHES(LANG(?prefLabel), '" + options.lang + "')))"
 + resourcePattern + "\n\
 }";
-       return sparqlEndpoint + "?query=" + uri.encodeString(query);
+       return sparqlEndpoint + "?query=" + encodeString(query);
       },
 
       getObservationsWithDimension: function(sparqlEndpoint, dataset, paramDimension, options) {
@@ -6631,7 +6643,7 @@ WHERE {\n\
   ?observation ?propertyMeasure ?obsValue .\n\
 }";
 
-        return sparqlEndpoint + "?query=" + uri.encodeString(query);
+        return sparqlEndpoint + "?query=" + encodeString(query);
       },
     },
 
@@ -6839,7 +6851,7 @@ WHERE {\n\
     positionNote: function(refId, noteId, refLabel) {
       var ref =  document.querySelector('[id="' + refId + '"]');
       var note = document.querySelector('[id="' + noteId + '"]');
-      ref = (ref) ? ref : doc.selectArticleNode(note);
+      ref = (ref) ? ref : selectArticleNode(note);
 
       if (note.hasAttribute('style')) {
         note.removeAttribute('style');
@@ -6853,16 +6865,16 @@ WHERE {\n\
     },
 
     positionInteraction: function(noteIRI, containerNode, options) {
-      containerNode = containerNode || doc.getDocumentContentNode(document);
+      containerNode = containerNode || getDocumentContentNode(document);
 
-      return graph.getResourceGraph(noteIRI).then(
+      return getResourceGraph(noteIRI).then(
         function(g){
           DO.U.showAnnotation(noteIRI, g, containerNode, options);
         });
     },
 
     showAnnotation: function(noteIRI, g, containerNode, options) {
-      containerNode = containerNode || doc.getDocumentContentNode(document);
+      containerNode = containerNode || getDocumentContentNode(document);
       options = options || {};
 
       var documentURL = DO.C.DocumentURL;
@@ -6875,7 +6887,7 @@ WHERE {\n\
 // console.log(note.toString())
 // console.log(note)
 
-      var id = String(Math.abs(util.hashCode(noteIRI)));
+      var id = String(Math.abs(hashCode(noteIRI)));
       var refId = 'r-' + id;
       var refLabel = id;
 
@@ -6921,9 +6933,9 @@ WHERE {\n\
         annotatedBy = g.child(annotatedByIRI);
 // console.log(annotatedBy);
       }
-      var annotatedByName = graph.getAgentName(annotatedBy);
+      var annotatedByName = getAgentName(annotatedBy);
 // console.log(annotatedByName);
-      var annotatedByImage = graph.getGraphImage(annotatedBy);
+      var annotatedByImage = getGraphImage(annotatedBy);
 // console.log(annotatedByImage);
       var annotatedByURL = annotatedBy.schemaurl || '';
       annotatedByURL = (annotatedByURL) ? annotatedByURL : undefined;
@@ -7008,10 +7020,10 @@ WHERE {\n\
             if (selector.rdfvalue && selector.rdfvalue !== '' && selector.dctermsconformsTo && selector.dctermsconformsTo.endsWith('://tools.ietf.org/html/rfc3987')) {
               var fragment = selector.rdfvalue;
 // console.log(fragment)
-              fragment = (fragment.indexOf('#') == 0) ? uri.getFragmentFromString(fragment) : fragment;
+              fragment = (fragment.indexOf('#') == 0) ? getFragmentFromString(fragment) : fragment;
 
               if (fragment !== '') {
-                containerNode = document.getElementById(fragment) || doc.getDocumentContentNode(document);
+                containerNode = document.getElementById(fragment) || getDocumentContentNode(document);
               }
             }
           }
@@ -7095,8 +7107,8 @@ WHERE {\n\
 <blockquote cite="' + noteIRI + '">'+ note + '</blockquote>\n\
 </aside>\n\
 ';
-          var asideNode = util.fragmentFromString(asideNote);
-          var parentSection = doc.getClosestSectionNode(selectedParentNode);
+          var asideNode = fragmentFromString(asideNote);
+          var parentSection = getClosestSectionNode(selectedParentNode);
           parentSection.appendChild(asideNode);
           //XXX: Keeping this comment around for emergency
 //                selectedParentNode.parentNode.insertBefore(asideNode, selectedParentNode.nextSibling);
@@ -7109,7 +7121,7 @@ WHERE {\n\
                 e.preventDefault();
                 e.stopPropagation();
 
-                fetcher.deleteResource(noteIRI)
+                deleteResource(noteIRI)
                   .then(() => {
                     var aside = noteDelete.closest('aside.do')
                     aside.parentNode.removeChild(aside)
@@ -7238,7 +7250,7 @@ WHERE {\n\
 // console.log('----- showCitations: ')
 // console.log(citation);
 
-      var cEURL = uri.stripFragmentFromString(citation.citingEntity);
+      var cEURL = stripFragmentFromString(citation.citingEntity);
 // console.log(DO.C.Activity[cEURL]);
    
       if (DO.C.Activity[cEURL]) {
@@ -7259,10 +7271,10 @@ WHERE {\n\
 
     processCitationClaim: function(citation) {
 // console.log('  processCitationClaim(' + citation.citingEntity + ')')
-      var pIRI = uri.getProxyableIRI(citation.citingEntity);
-      return graph.getResourceGraph(pIRI).then(
+      var pIRI = getProxyableIRI(citation.citingEntity);
+      return getResourceGraph(pIRI).then(
         function(i) {
-          var cEURL = uri.stripFragmentFromString(citation.citingEntity);
+          var cEURL = stripFragmentFromString(citation.citingEntity);
           DO.C.Activity[cEURL]['Graph'] = i;
           var s = i.child(citation.citingEntity);
           DO.U.addCitation(citation, s);
@@ -7290,20 +7302,20 @@ WHERE {\n\
 // console.log("  " + citationCharacterization + "  " + citedEntity);
     var citationCharacterizationLabel = DO.C.Citation[citationCharacterization] || citationCharacterization;
 
-    var id = String(Math.abs(util.hashCode(citingEntity)));
+    var id = String(Math.abs(hashCode(citingEntity)));
     var refId;
 
-    var cEURL = uri.stripFragmentFromString(citingEntity);
-    var citingEntityLabel = graph.getGraphLabel(s);
+    var cEURL = stripFragmentFromString(citingEntity);
+    var citingEntityLabel = getGraphLabel(s);
     if (!citingEntityLabel) {
-      var cEL = graph.getGraphLabel(s.child(cEURL));
+      var cEL = getGraphLabel(s.child(cEURL));
       citingEntityLabel = cEL ? cEL : citingEntity;
     }
     citation['citingEntityLabel'] = citingEntityLabel;
 
-    var citedEntityLabel = graph.getGraphLabel(DO.C.Resource[documentURL].graph.child(citedEntity))
+    var citedEntityLabel = getGraphLabel(DO.C.Resource[documentURL].graph.child(citedEntity))
     if (!citedEntityLabel) {
-      var cEL = DO.C.Resource[documentURL].graph(DO.C.Resource[documentURL].graph.child(uri.stripFragmentFromString(citedEntity)))
+      var cEL = DO.C.Resource[documentURL].graph(DO.C.Resource[documentURL].graph.child(stripFragmentFromString(citedEntity)))
       citedEntityLabel = cEL ? cEL : citedEntity;
     }
     citation['citedEntityLabel'] = citedEntityLabel;
@@ -7325,13 +7337,13 @@ WHERE {\n\
 </aside>\n\
 ';
 // console.log(asideNote)
-    var asideNode = util.fragmentFromString(asideNote);
+    var asideNode = fragmentFromString(asideNote);
 
     var fragment, fragmentNode;
 
   // //FIXME: If containerNode is used.. the rest is buggy
 
-    fragment = uri.getFragmentFromString(citedEntity);
+    fragment = getFragmentFromString(citedEntity);
 // console.log("  fragment: " + fragment)
     fragmentNode = document.querySelector('[id="' + fragment + '"]');
 
@@ -7355,12 +7367,12 @@ WHERE {\n\
         var ul = citedBy.querySelector('ul');
         var spo = ul.querySelector('[about="' + citingEntity + '"][rel="' + citationCharacterization + '"][resource="' + citedEntity + '"]');
         if (!spo) {
-          ul.appendChild(util.fragmentFromString(citingItem));
+          ul.appendChild(fragmentFromString(citingItem));
         }
       }
       else {
         dl = '        <dl class="do" id="' + documentCitedBy + '"><dt>Cited By</dt><dd><ul>' + citingItem + '</ul></dl>';
-        doc.insertDocumentLevelHTML(document, dl, { 'id': documentCitedBy });
+        insertDocumentLevelHTML(document, dl, { 'id': documentCitedBy });
       }
     }
     },
@@ -7370,7 +7382,7 @@ WHERE {\n\
       var interactions = document.getElementById('document-interactions');
 
       if(!interactions) {
-        interactions = doc.selectArticleNode(document);
+        interactions = selectArticleNode(document);
         var interactionsSection = '<section id="document-interactions"><h2>Interactions</h2><div>';
 // interactionsSection += '<p class="count"><data about="" datatype="xsd:nonNegativeInteger" property="sioc:num_replies" value="' + interactionsCount + '">' + interactionsCount + '</data> interactions</p>';
         interactionsSection += '</div></section>';
@@ -7399,7 +7411,7 @@ WHERE {\n\
       var articleClass = '';
       var prefixes = ' prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# schema: http://schema.org/ dcterms: http://purl.org/dc/terms/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp#"';
 
-      var canonicalId = n.canonical || 'urn:uuid:' + util.generateUUID();
+      var canonicalId = n.canonical || 'urn:uuid:' + generateUUID();
 
       var motivatedByIRI = n.motivatedByIRI || '';
       var motivatedByLabel = '';
@@ -7445,7 +7457,7 @@ WHERE {\n\
         default: case 'read':
           hX = 3;
           if ('creator' in n && 'iri' in n.creator && n.creator.iri == DO.C.User.IRI) {
-            buttonDelete = '<button class="delete do" title="Delete item">' + template.Icon[".fas.fa-trash-alt"] + '</button>' ;
+            buttonDelete = '<button class="delete do" title="Delete item">' + Icon[".fas.fa-trash-alt"] + '</button>' ;
           }
           articleClass = (motivatedByIRI == 'oa:commenting') ? '': ' class="do"';
           aAbout = ('iri' in n) ? n.iri : '';
@@ -7462,7 +7474,7 @@ WHERE {\n\
       var creatorIRI = '#agent';
       if ('creator' in n) {
         if ('image' in n.creator) {
-          var img = (n.mode == 'read') ? uri.getProxyableIRI(n.creator.image) : n.creator.image;
+          var img = (n.mode == 'read') ? getProxyableIRI(n.creator.image) : n.creator.image;
           creatorImage = '<img alt="" height="48" rel="schema:image" src="' + img + '" width="48" /> ';
         }
         if('iri' in n.creator) {
@@ -7524,11 +7536,11 @@ WHERE {\n\
                     }
                   });
                   if (tagsArray.length > 0){
-                    tagsArray = util.uniqueArray(tagsArray);
+                    tagsArray = uniqueArray(tagsArray);
 
                     body += '<dl id="tags" class="tags"><dt>Tags</dt><dd><ul rel="oa:hasBody">';
                     tagsArray.forEach(function(i){
-                      body += '<li about="#tag-' + util.generateAttributeId(null, i) + '" typeof="oa:TextualBody" property="rdf:value" rel="oa:hasPurpose" resource="oa:tagging" datatype="rdf:HTML">' + i + '</li>';
+                      body += '<li about="#tag-' + generateAttributeId(null, i) + '" typeof="oa:TextualBody" property="rdf:value" rel="oa:hasPurpose" resource="oa:tagging" datatype="rdf:HTML">' + i + '</li>';
                     })
                     body += '</ul></dd></dl>';
                   }
@@ -7543,7 +7555,7 @@ WHERE {\n\
             var targetRelation = 'oa:hasTarget';
             if (typeof n.target !== 'undefined' && 'iri' in n.target) {
               targetIRI = n.target.iri;
-              var targetIRIFragment = uri.getFragmentFromString(n.target.iri);
+              var targetIRIFragment = getFragmentFromString(n.target.iri);
               //TODO: Handle when there is no fragment
               //TODO: Languages should be whatever is target's (not necessarily 'en')
               if (typeof n.target.selector !== 'undefined') {
@@ -7852,13 +7864,13 @@ WHERE {\n\
 
       //TODO: .shower can be anywhere?
       //TODO: check for rdf:type bibo:Slideshow or schema:PresentationDigitalDocument
-      if (doc.getDocumentContentNode(document).classList.contains('shower')) {
+      if (getDocumentContentNode(document).classList.contains('shower')) {
         //TODO: Check if .shower.list or .shower.full. pick a default in a dokieli or leave default to shower (list)?
 
         //TODO: Check if .bibo:Slide, and if there is no .slide, add .slide
 
-        if (!doc.getDocumentContentNode(document).querySelector('.progress') && options.progress) {
-          doc.getDocumentContentNode(document).appendChild(util.fragmentFromString('<div class="progress"></progress>'));
+        if (!getDocumentContentNode(document).querySelector('.progress') && options.progress) {
+          getDocumentContentNode(document).appendChild(fragmentFromString('<div class="progress"></progress>'));
         }
 
         shwr = new shower();
@@ -7882,12 +7894,13 @@ WHERE {\n\
         }
 
         if (e || (typeof e === 'undefined' && editorMode == 'author')) {
-          doc.showActionMessage(document.documentElement, '<p>Activated <strong>' + editorMode + '</strong> mode.</p>');
+          showActionMessage(document.documentElement, '<p>Activated <strong>' + editorMode + '</strong> mode.</p>');
         }
 
         if (!document.getElementById('document-editor')) {
-          document.documentElement.appendChild(util.fragmentFromString('<aside id="document-editor" class="do"></aside>'))
+          document.documentElement.appendChild(fragmentFromString('<aside id="document-editor" class="do"></aside>'))
         }
+        console.log(DO.U.Editor)
 
         var editorOptions = {
           author: {
@@ -7960,10 +7973,10 @@ WHERE {\n\
           editorOptions.author.toolbar.buttons.splice(10, 0, 'table');
         }
 
-        var eNodes = selector || doc.selectArticleNode(document);
+        var eNodes = selector || selectArticleNode(document);
         var eOptions = editorOptions[editorMode];
         DO.C.User.Role = editorMode;
-        storage.updateLocalStorageProfile(DO.C.User);
+        updateLocalStorageProfile(DO.C.User);
 
         if (typeof MediumEditor !== 'undefined') {
           DO.U.Editor.MediumEditor = new MediumEditor(eNodes, eOptions);
@@ -7981,16 +7994,16 @@ WHERE {\n\
 
             //FIXME: This is a horrible way of hacking MediumEditorTable
             document.querySelectorAll('i.fa-table, i.fa-link, i.fa-picture-o').forEach(function(i){
-              var icon = template.Icon[".fas.fa-table.fa-2x"].replace(/ fa\-2x/, '');
+              var icon = Icon[".fas.fa-table.fa-2x"].replace(/ fa\-2x/, '');
 
               if (i.classList.contains('fa-link') > 0) {
-                icon = template.Icon[".fas.fa-link"];
+                icon = Icon[".fas.fa-link"];
               }
               else if (i.classList.contains('fa-image') > 0) {
-                icon = template.Icon[".fas.fa-image"];
+                icon = Icon[".fas.fa-image"];
               }
 
-              i.parentNode.replaceChild(util.fragmentFromString(icon), i);
+              i.parentNode.replaceChild(fragmentFromString(icon), i);
             });
 
             //XXX: Reconsider bringing this code back for primarily ScholarlyArticles?
@@ -8012,7 +8025,7 @@ WHERE {\n\
               if (!contributorNode) {
                 var contributorTitle = contributorRole.charAt(0).toUpperCase() + contributorRole.slice(1) + 's';
                 contributorNode = '        <dl id="' + contributorNodeId + '"><dt>' + contributorTitle + '</dt></dl>';
-                doc.insertDocumentLevelHTML(document, contributorNode, { 'id': contributorNodeId })
+                insertDocumentLevelHTML(document, contributorNode, { 'id': contributorNodeId })
                 contributorNode = document.getElementById(contributorNodeId);
               }
 
@@ -8021,29 +8034,29 @@ WHERE {\n\
                 var contributorId;
                 var contributorName = DO.C.User.Name || DO.C.User.IRI;
                 if (DO.C.User.Name) {
-                  contributorId = util.generateAttributeId(null, DO.C.User.Name);
+                  contributorId = generateAttributeId(null, DO.C.User.Name);
                   if (document.getElementById(contributorId)) {
-                    contributorId = util.generateAttributeId(null, DO.C.User.Name, contributorRole);
+                    contributorId = generateAttributeId(null, DO.C.User.Name, contributorRole);
                   }
                 }
                 else {
-                  contributorId = util.generateAttributeId(null, DO.C.User.IRI);
+                  contributorId = generateAttributeId(null, DO.C.User.IRI);
                 }
                 contributorId = ' id="' + contributorId + '"';
 
                 var contributorInList = (DO.C.Resource[documentURL].rdftype.indexOf(DO.C.Vocab['schemaScholarlyArticle']['@id']) > -1) ?
                   ' inlist="" rel="bibo:' + contributorRole + 'List" resource="' + DO.C.User.IRI + '"' : '';
 
-                var userHTML = '<dd class="do"' + contributorId + contributorInList + '><span about="" rel="schema:' + contributorRole + '">' + doc.getAgentHTML({'avatarSize': 32}) + '</span><button class="add-' + contributorRole + '" contenteditable="false" title="Add ' + contributorName + ' as ' + contributorRole + '">' + template.Icon[".fas.fa-plus"] + '</button></dd>';
+                var userHTML = '<dd class="do"' + contributorId + contributorInList + '><span about="" rel="schema:' + contributorRole + '">' + getAgentHTML({'avatarSize': 32}) + '</span><button class="add-' + contributorRole + '" contenteditable="false" title="Add ' + contributorName + ' as ' + contributorRole + '">' + Icon[".fas.fa-plus"] + '</button></dd>';
 
                 contributorNode.insertAdjacentHTML('beforeend', userHTML);
               }
 
               //User can enter a contributor's WebID
-              contributorNode.insertAdjacentHTML('beforeend', '<dd class="do"><button class="enter-' + contributorRole + '" contenteditable="false" title="Enter ' + contributorRole +'">' + template.Icon[".fas.fa-user-plus"] + '</button></dd>');
+              contributorNode.insertAdjacentHTML('beforeend', '<dd class="do"><button class="enter-' + contributorRole + '" contenteditable="false" title="Enter ' + contributorRole +'">' + Icon[".fas.fa-user-plus"] + '</button></dd>');
 
               //User can invite a contributor from their contacts
-              contributorNode.insertAdjacentHTML('beforeend', '<dd class="do"><button class="invite-' + contributorRole + '" contenteditable="false" title="Invite ' + contributorRole +'">' + template.Icon[".fas.fa-bullhorn"] + '</button></dd>');
+              contributorNode.insertAdjacentHTML('beforeend', '<dd class="do"><button class="invite-' + contributorRole + '" contenteditable="false" title="Invite ' + contributorRole +'">' + Icon[".fas.fa-bullhorn"] + '</button></dd>');
 
               contributorNode = document.getElementById(contributorNodeId);
               contributorNode.addEventListener('click', function(e){
@@ -8060,7 +8073,7 @@ WHERE {\n\
                 //TODO: This input field can behave like the one in doc.js showUserIdentityInput for enableDisableButton to button.commit
                 if (button){
                   var n = e.target.closest('.do');
-                  n.insertAdjacentHTML('beforebegin', '<dd class="do" contenteditable="false"><input contenteditable="false" name="enter-' + contributorRole + '" placeholder="https://csarven.ca/#i" type="text" value="" /> <button class="commit-' + contributorRole + '" contenteditable="false" title="Commit ' + contributorRole + '">' + template.Icon[".fas.fa-plus"] + '</button></dd>');
+                  n.insertAdjacentHTML('beforebegin', '<dd class="do" contenteditable="false"><input contenteditable="false" name="enter-' + contributorRole + '" placeholder="https://csarven.ca/#i" type="text" value="" /> <button class="commit-' + contributorRole + '" contenteditable="false" title="Commit ' + contributorRole + '">' + Icon[".fas.fa-plus"] + '</button></dd>');
                 }
 
                 button = e.target.closest('button.commit-' + contributorRole);
@@ -8079,15 +8092,15 @@ WHERE {\n\
 
                     if (iri.startsWith('http')) {
                       //TODO: Refactor. There is overlap with addShareResourceContactInput and doc.getAgentHTML
-                      graph.getResourceGraph(iri).then(function(s){
+                      getResourceGraph(iri).then(function(s){
                         // var iri = s.iri().toString();
                         // var id = encodeURIComponent(iri);
 
-                        var name = graph.getAgentName(s) || iri;
-                        var img = graph.getGraphImage(s);
+                        var name = getAgentName(s) || iri;
+                        var img = getGraphImage(s);
 
                         img = (img && img.length > 0) ? '<img alt="" height="32" rel="schema:image" src="' + img + '" width="32" /> ' : '';
-                        var userHTML = util.fragmentFromString('<span about="" rel="schema:' + contributorRole + '"><span about="' + iri + '" typeof="schema:Person">' + img + '<a href="' + iri + '" rel="schema:url">' + name + '</a></span></span>');
+                        var userHTML = fragmentFromString('<span about="" rel="schema:' + contributorRole + '"><span about="' + iri + '" typeof="schema:Person">' + img + '<a href="' + iri + '" rel="schema:url">' + name + '</a></span></span>');
 
                         n.replaceChild(userHTML, input);
                         button.parentNode.removeChild(button);
@@ -8115,7 +8128,7 @@ WHERE {\n\
             var language = document.getElementById(documentLanguage);
             if(!language) {
               var dl = '        <dl class="do" id="' + documentLanguage + '"><dt>Language</dt><dd><select contenteditable="false" name="language">' + DO.U.getLanguageOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
-              doc.insertDocumentLevelHTML(document, dl, { 'id': documentLanguage });
+              insertDocumentLevelHTML(document, dl, { 'id': documentLanguage });
 
               var dLangS = document.querySelector('#' + documentLanguage + ' select');
               dLangS.addEventListener('change', function(e){
@@ -8130,7 +8143,7 @@ WHERE {\n\
             var license = document.getElementById(documentLicense);
             if(!license) {
               var dl = '        <dl class="do" id="' + documentLicense + '"><dt>License</dt><dd><select contenteditable="false" name="license">' + DO.U.getLicenseOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
-              doc.insertDocumentLevelHTML(document, dl, { 'id': documentLicense });
+              insertDocumentLevelHTML(document, dl, { 'id': documentLicense });
 
               var dLS = document.querySelector('#' + documentLicense + ' select');
               dLS.addEventListener('change', function(e){
@@ -8145,7 +8158,7 @@ WHERE {\n\
             var type = document.getElementById(documentType);
             if(!type) {
               var dl = '        <dl class="do" id="' + documentType + '"><dt>Document Type</dt><dd><select contenteditable="false" name="document-type">' + DO.U.getResourceTypeOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
-              doc.insertDocumentLevelHTML(document, dl, { 'id': documentType });
+              insertDocumentLevelHTML(document, dl, { 'id': documentType });
 
               var dTypeS = document.querySelector('#' + documentType + ' select');
               dTypeS.addEventListener('change', function(e){
@@ -8160,7 +8173,7 @@ WHERE {\n\
             var status = document.getElementById(documentStatus);
             if(!status) {
               var dl = '        <dl class="do" id="' + documentStatus + '"><dt>Document Status</dt><dd><select contenteditable="false" name="status">' + DO.U.getPublicationStatusOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
-              doc.insertDocumentLevelHTML(document, dl, { 'id': documentStatus });
+              insertDocumentLevelHTML(document, dl, { 'id': documentStatus });
 
               var dSS = document.querySelector('#' + documentStatus + ' select');
               dSS.addEventListener('change', function(e){
@@ -8177,7 +8190,7 @@ WHERE {\n\
               if (!testSuite) {
                 // <!--<button class="add-test-suite" contenteditable="false" title="Add test suite">' + template.Icon[".fas.fa-plus"] + '</button>-->
                 var dl = '        <dl class="do" id="' + documentTestSuite + '"><dt>Test Suite</dt><dd><input contenteditable="false" name="test-suite" placeholder="https://example.net/test-suite" type="text" value="" /></dd></dl>';
-                doc.insertDocumentLevelHTML(document, dl, { 'id': documentTestSuite });
+                insertDocumentLevelHTML(document, dl, { 'id': documentTestSuite });
 
                 //XXX: This is a workaround until we understand why the input value is not available in doc.js's setEditSelections() where it is using `document.querySelector` to get the value fresh. The following catches the blur event and sets the input value back to itself, and that seems to be available setEditSelections().
                 var dTS = document.querySelector('#' + documentTestSuite + ' input');
@@ -8188,7 +8201,7 @@ WHERE {\n\
             }
           }
           else if (e && e.target.closest('button.editor-disable')) {
-            doc.setEditSelections();
+            setEditSelections();
           }
 
           //XXX: This should be perhaps limited to certain nodes?
@@ -8200,15 +8213,15 @@ WHERE {\n\
         }
       },
 
-      Button: (function () {
+      Button: function () {
         if (typeof MediumEditor !== 'undefined') {
-          MediumEditor.extensions.button.prototype.defaults.unorderedlist.contentFA = template.Icon[".fas.fa-link-ul"];
+          MediumEditor.extensions.button.prototype.defaults.unorderedlist.contentFA = Icon[".fas.fa-link-ul"];
 
-          MediumEditor.extensions.button.prototype.defaults.orderedlist.contentFA = template.Icon[".fas.fa-link-ol"];
+          MediumEditor.extensions.button.prototype.defaults.orderedlist.contentFA = Icon[".fas.fa-link-ol"];
 
-          MediumEditor.extensions.button.prototype.defaults.image.contentFA = template.Icon[".fas.fa-image"];
+          MediumEditor.extensions.button.prototype.defaults.image.contentFA = Icon[".fas.fa-image"];
 
-          MediumEditor.extensions.button.prototype.defaults.pre.contentFA = template.Icon[".fas.fa-code"];
+          MediumEditor.extensions.button.prototype.defaults.pre.contentFA = Icon[".fas.fa-code"];
 
           return MediumEditor.extensions.button.extend({
             init: function () {
@@ -8220,17 +8233,17 @@ WHERE {\n\
               this.contentDefault = '<b>' + this.label + '</b>';
 
               switch(this.action) {
-                case 'h1': case 'h2': case 'h3': case 'h4': case 'h5': case 'h6': this.contentFA = template.Icon[".fas.fa-header"] + parseInt(this.action.slice(-1)); break;
+                case 'h1': case 'h2': case 'h3': case 'h4': case 'h5': case 'h6': this.contentFA = Icon[".fas.fa-header"] + parseInt(this.action.slice(-1)); break;
 
-                case 'em': this.contentFA = template.Icon[".fas.fa-italic"]; break;
+                case 'em': this.contentFA = Icon[".fas.fa-italic"]; break;
 
-                case 'strong': this.contentFA = template.Icon[".fas.fa-bold"]; break;
+                case 'strong': this.contentFA = Icon[".fas.fa-bold"]; break;
 
-                case 'image': this.contentFA = template.Icon[".fas.fa-image"]; break;
+                case 'image': this.contentFA = Icon[".fas.fa-image"]; break;
 
-                case 'q': this.contentFA = template.Icon[".fas.fa-quote-right"]; break;
+                case 'q': this.contentFA = Icon[".fas.fa-quote-right"]; break;
 
-                case 'math': this.contentFA = template.Icon[".fas.fa-calculator"]; break;
+                case 'math': this.contentFA = Icon[".fas.fa-calculator"]; break;
                 default: break;
               }
 
@@ -8314,7 +8327,7 @@ WHERE {\n\
 
 // console.log(range);
                       //Section
-                      var sectionId = util.generateAttributeId(null, this.base.selection);
+                      var sectionId = generateAttributeId(null, this.base.selection);
                       var section = document.createElement('section');
                       section.id = sectionId;
                       section.setAttribute('rel', 'schema:hasPart');
@@ -8376,7 +8389,7 @@ WHERE {\n\
                           case "p": default:
                             var xSPE = document.createElement(sPE);
                             xSPE.appendChild(fragment.cloneNode(true));
-                            fragment = util.fragmentFromString(xSPE.outerHTML);
+                            fragment = fragmentFromString(xSPE.outerHTML);
                             break;
                           //TODO: Other cases?
                         }
@@ -8468,7 +8481,7 @@ WHERE {\n\
 
                     var selection = this.base.selection;
 
-                    var selectionId = util.generateAttributeId();
+                    var selectionId = generateAttributeId();
 
                     var selectionUpdated = '<span id="' + selectionId + '">$$</span>';
 
@@ -8549,10 +8562,10 @@ WHERE {\n\
             }
           });
         }
-      })(),
+      },
 
       //Adapted from MediumEditor's Anchor Form
-      Note: (function() {
+      Note: function() {
         if (typeof MediumEditor !== 'undefined') {
           return MediumEditor.extensions.form.extend({
             /* Textarea Form Options */
@@ -8609,43 +8622,43 @@ WHERE {\n\
 
               switch(this.action) {
                 case 'cite': default:
-                  this.contentFA = template.Icon[".fas.fa-hashtag"];
+                  this.contentFA = Icon[".fas.fa-hashtag"];
                   break;
                 case 'article':
-                  this.contentFA = template.Icon[".fas.fa-sticky-note"];
+                  this.contentFA = Icon[".fas.fa-sticky-note"];
                   this.signInRequired = true;
                   break;
                 case 'note':
-                  this.contentFA = template.Icon[".fas.fa-sticky-note"];
+                  this.contentFA = Icon[".fas.fa-sticky-note"];
                   break;
                 case 'rdfa':
-                  this.contentFA = template.Icon[".fas.fa-rocket"];
+                  this.contentFA = Icon[".fas.fa-rocket"];
                   break;
                 case 'selector':
-                  this.contentFA = template.Icon[".fas.fa-anchor"];
+                  this.contentFA = Icon[".fas.fa-anchor"];
                   break;
                 case 'bookmark':
-                  this.contentFA = template.Icon[".fas.fa-bookmark"];
+                  this.contentFA = Icon[".fas.fa-bookmark"];
                   this.signInRequired = true;
                   break;
                 case 'share':
-                  this.contentFA = template.Icon[".fas.fa-bullhorn"];
+                  this.contentFA = Icon[".fas.fa-bullhorn"];
                   this.signInRequired = true;
                   break;
                 case 'approve':
-                  this.contentFA = template.Icon[".fas.fa-thumbs-up"];
+                  this.contentFA = Icon[".fas.fa-thumbs-up"];
                   this.signInRequired = true;
                   break;
                 case 'disapprove':
-                  this.contentFA = template.Icon[".fas.fa-thumbs-down"];
+                  this.contentFA = Icon[".fas.fa-thumbs-down"];
                   this.signInRequired = true;
                   break;
                 case 'specificity':
-                  this.contentFA = template.Icon[".fas.fa-crosshairs"];
+                  this.contentFA = Icon[".fas.fa-crosshairs"];
                   this.signInRequired = true;
                   break;
                 case 'sparkline':
-                  this.contentFA = template.Icon[".fas.fa-chart-line"];
+                  this.contentFA = Icon[".fas.fa-chart-line"];
                   break;
               }
               MediumEditor.extensions.form.prototype.init.apply(this, arguments);
@@ -8712,7 +8725,7 @@ WHERE {\n\
 
               updateAnnotationInboxForm();
 
-              return graph.getLinkRelation(DO.C.Vocab['oaannotationService']['@id'], null, doc.getDocument()).then(
+              return getLinkRelation(DO.C.Vocab['oaannotationService']['@id'], null, getDocument()).then(
                 function(url) {
                   DO.C.AnnotationService = url[0];
                   updateAnnotationServiceForm();
@@ -8720,7 +8733,7 @@ WHERE {\n\
                 },
                 function(reason) {
                   if(_this.signInRequired && !DO.C.User.IRI) {
-                    auth.showUserIdentityInput();
+                    showUserIdentityInput();
                   }
                   else {
                     updateAnnotationServiceForm();
@@ -8856,13 +8869,13 @@ WHERE {\n\
 
               tmpl.push(
                 '<a href="#" class="medium-editor-toolbar-save" title="Save">',
-                this.getEditorOption('buttonLabels') === 'fontawesome' ? template.Icon[".fas.fa-check"] : this.formSaveLabel,
+                this.getEditorOption('buttonLabels') === 'fontawesome' ? Icon[".fas.fa-check"] : this.formSaveLabel,
                 '</a>'
               );
 
               tmpl.push(
                 '<a href="#" class="medium-editor-toolbar-close" title="Close">',
-                this.getEditorOption('buttonLabels') === 'fontawesome' ? template.Icon[".fas.fa-times"] : this.formCloseLabel,
+                this.getEditorOption('buttonLabels') === 'fontawesome' ? Icon[".fas.fa-times"] : this.formCloseLabel,
                 '</a>'
               );
 
@@ -8964,7 +8977,7 @@ WHERE {\n\
                     var headers = {'Accept': 'application/json'};
                     var options = {'noCredentials': true};
 
-                    fetcher.getResource(url, headers, options).then(response => {
+                    getResource(url, headers, options).then(response => {
                       // console.log(response);
                       return response.text();
                     }).then(data => {
@@ -9112,15 +9125,15 @@ WHERE {\n\
 
                   var queryURL = DO.U.SPARQLQueryURL.getResourcesOfTypeWithLabel(sparqlEndpoint, resourceType, textInputA.toLowerCase(), options);
 
-                  queryURL = uri.getProxyableIRI(queryURL);
+                  queryURL = getProxyableIRI(queryURL);
 
-                  form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', '<div id="' + sparklineGraphId + '"></div>' + template.Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]);
+                  form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', '<div id="' + sparklineGraphId + '"></div>' + Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]);
                   sG = document.getElementById(sparklineGraphId);
 
-                  graph.getResourceGraph(queryURL)
+                  getResourceGraph(queryURL)
                     .then(function(g){
                       sG.removeAttribute('class');
-                      var triples = graph.sortGraphTriples(g.graph(), { sortBy: 'object' });
+                      var triples = sortGraphTriples(g.graph(), { sortBy: 'object' });
                       return DO.U.getListHTMLFromTriples(triples, {element: 'select', elementId: resultContainerId});
                     })
                     .then(function(listHTML){
@@ -9136,7 +9149,7 @@ WHERE {\n\
                         for (var i = 0; i < sparkline.length; i++) {
                           sparkline[i].parentNode.removeChild(sparkline[i]);
                         }
-                        form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', template.Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]);
+                        form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]);
 
                         var dataset = e.target.value;
                         var title = e.target.querySelector('*[value="' + e.target.value + '"]').textContent.trim();
@@ -9153,9 +9166,9 @@ WHERE {\n\
 // console.log(refArea);
                         var queryURL = DO.U.SPARQLQueryURL.getObservationsWithDimension(sparqlEndpoint, dataset, paramDimension);
 // console.log(queryURL);
-                        queryURL = uri.getProxyableIRI(queryURL);
+                        queryURL = getProxyableIRI(queryURL);
 
-                        graph.getResourceGraph(queryURL)
+                        getResourceGraph(queryURL)
                           .then(function(g){
                             var g = g.graph().toArray();
 // console.log(triples);
@@ -9312,7 +9325,7 @@ WHERE {\n\
                 DO.C.User.UI['License'] = opts.license;
               }
 
-              storage.updateLocalStorageProfile(DO.C.User);
+              updateLocalStorageProfile(DO.C.User);
 
               opts.target = '_self';
               if (targetCheckbox && targetCheckbox.checked) {
@@ -9381,8 +9394,8 @@ WHERE {\n\
                 }
               }
 
-              var datetime = util.getDateTimeISO();
-              var id = util.generateAttributeId();
+              var datetime = getDateTimeISO();
+              var id = generateAttributeId();
               var refId = 'r-' + id;
               // var noteId = 'i-' + id;
 
@@ -9492,8 +9505,8 @@ WHERE {\n\
 // console.log(resourceIRI)
 // console.log(targetIRI)
 
-              var targetLanguage = doc.getNodeLanguage(parentNodeWithId);
-              var selectionLanguage = doc.getNodeLanguage(selectedParentElement);
+              var targetLanguage = getNodeLanguage(parentNodeWithId);
+              var selectionLanguage = getNodeLanguage(selectedParentElement);
 // console.log(targetLanguage)
 // console.log(selectionLanguage)
 
@@ -9527,7 +9540,7 @@ WHERE {\n\
 
                 switch(_this.action) {
                   case 'sparkline':
-                    var figureIRI = util.generateAttributeId(null, opts.selectionDataSet);
+                    var figureIRI = generateAttributeId(null, opts.selectionDataSet);
                     ref = '<span rel="schema:hasPart" resource="#figure-' + figureIRI + '">\n\
                     <a href="' + opts.select + '" property="schema:name" rel="prov:wasDerivedFrom" resource="' + opts.select + '" typeof="qb:DataSet">' + opts.selectionDataSet + '</a> [' + DO.U.htmlEntities(DO.C.RefAreas[opts.selectionRefArea]) + ']\n\
                     <span class="sparkline" rel="schema:image" resource="#' + figureIRI + '">' + opts.sparkline + '</span></span>';
@@ -9721,7 +9734,7 @@ WHERE {\n\
                       lang: opts.language,
                       textContent: _this.base.selection
                     };
-                    ref = template.createRDFaHTML(noteData, 'expanded');
+                    ref = createRDFaHTML(noteData, 'expanded');
                     break;
 
                   case 'bookmark':
@@ -9861,7 +9874,7 @@ WHERE {\n\
                     })
                 }
                 else {
-                  return DO.U.positionInteraction(annotation[ 'noteIRI' ], doc.getDocumentContentNode(document), options)
+                  return DO.U.positionInteraction(annotation[ 'noteIRI' ], getDocumentContentNode(document), options)
                     .catch(() => {
                       return Promise.resolve()
                     })
@@ -9883,7 +9896,7 @@ WHERE {\n\
                     inboxPromise = Promise.resolve(DO.C.Resource[documentURL].inbox)
                   }
                   else {
-                    inboxPromise = graph.getLinkRelation(DO.C.Vocab['ldpinbox']['@id'], documentURL);
+                    inboxPromise = getLinkRelation(DO.C.Vocab['ldpinbox']['@id'], documentURL);
                   }
                 }
 
@@ -9904,7 +9917,7 @@ WHERE {\n\
                       // notificationData['type'] = ['as:Announce'];
 // console.log(annotation)
 // console.log(notificationData)
-                      return inbox.notifyInbox(notificationData)
+                      return notifyInbox(notificationData)
                         .catch(error => {
                           console.log('Error notifying the inbox:', error)
                         })
@@ -9922,18 +9935,18 @@ WHERE {\n\
                     var noteData = createNoteData(annotation)
                     if ('profile' in annotation && annotation.profile == 'https://www.w3.org/ns/activitystreams') {
                       notificationData['statements'] = DO.U.createNoteDataHTML(noteData);
-                      note = doc.createActivityHTML(notificationData);
+                      note = createActivityHTML(notificationData);
                     }
                     else {
                       note = DO.U.createNoteDataHTML(noteData);
                     }
-                    data = doc.createHTML('', note);
+                    data = createHTML('', note);
 // console.log(noteData)
 // console.log(note)
 // console.log(data)
 // console.log(annotation)
 
-                    inbox.postActivity(annotation['containerIRI'], id, data, annotation)
+                    postActivity(annotation['containerIRI'], id, data, annotation)
                       .catch(error => {
                         // console.log('Error serializing annotation:', error)
                         // console.log(error)
@@ -9944,7 +9957,7 @@ WHERE {\n\
                         var location = response.headers.get('Location')
 
                         if (location) {
-                          location = uri.getAbsoluteIRI(annotation['containerIRI'], location)
+                          location = getAbsoluteIRI(annotation['containerIRI'], location)
                           annotation['noteIRI'] = annotation['noteURL'] = location
                         }
 
@@ -9974,8 +9987,8 @@ WHERE {\n\
 <aside class="note">\n\
 '+ note + '\n\
 </aside>';
-                  var asideNode = util.fragmentFromString(asideNote);
-                  var parentSection = doc.getClosestSectionNode(selectedParentElement);
+                  var asideNode = fragmentFromString(asideNote);
+                  var parentSection = getClosestSectionNode(selectedParentElement);
                   parentSection.appendChild(asideNode);
 
                   DO.U.positionNote(refId, id);
@@ -9983,7 +9996,7 @@ WHERE {\n\
 
                 case 'selector':
                   window.history.replaceState({}, null, selectorIRI);
-                  doc.showActionMessage(document.documentElement, '<p>Copy URL from address bar.</p>')
+                  showActionMessage(document.documentElement, '<p>Copy URL from address bar.</p>')
                   // util.copyTextToClipboard(encodeURI(selectorIRI));
                   break;
 
@@ -10000,8 +10013,8 @@ WHERE {\n\
 <aside class="note">\n\
 '+ note + '\n\
 </aside>';
-                      var asideNode = util.fragmentFromString(asideNote);
-                      var parentSection = doc.getClosestSectionNode(selectedParentElement);
+                      var asideNode = fragmentFromString(asideNote);
+                      var parentSection = getClosestSectionNode(selectedParentElement);
                       parentSection.appendChild(asideNode);
 
                       DO.U.positionNote(refId, id);
@@ -10041,7 +10054,7 @@ WHERE {\n\
 
                         var node = document.querySelector('#references ol');
 
-                        doc.buildReferences(node, id, citation);
+                        buildReferences(node, id, citation);
 
                         options['showRobustLinksDecoration'] = true;
                         var node = document.querySelector('[id="' + id + '"] a[about]');
@@ -10076,7 +10089,7 @@ WHERE {\n\
                             "statements": notificationStatements
                           };
 
-                          inbox.notifyInbox(notificationData).then(
+                          notifyInbox(notificationData).then(
                             function(s){
                               console.log('Sent Linked Data Notification to ' + inboxURL);
                             });
@@ -10254,7 +10267,7 @@ WHERE {\n\
             }
           });
         }
-      })()
+      }
 
     } //DO.U.Editor
   } //DO.U
@@ -10268,4 +10281,6 @@ else {
 }
 
 }
-module.exports = DO
+
+window.DO = DO;
+export default DO

@@ -1,41 +1,21 @@
 'use strict'
 
-const Config = require('./config')
-const util = require('./util')
-const uri = require('./uri')
-const LinkHeader = require('http-link-header')
-const solidAuth = require('solid-auth-client')
+import { MediaTypes, User } from './config.js'
+import { generateUUID } from './util.js'
+import { getProxyableIRI } from './uri.js'
+import LinkHeader from 'http-link-header'
+import * as solidAuth from 'solid-auth-client'
 
 const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
 const LDP_RESOURCE = '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
 
-module.exports = {
-  setAcceptRDFTypes,
-  copyResource,
-  currentLocation,
-  deleteResource,
-  getAcceptPostPreference,
-  getAcceptPatchPreference,
-  getAcceptPutPreference,
-  getResource,
-  getResourceHead,
-  getResourceOptions,
-  LinkHeader,
-  patchResource,
-  patchResourceGraph,
-  postResource,
-  putResource,
-  putResourceACL,
-  processSave,
-  patchResourceWithAcceptPatch,
-  putResourceWithAcceptPut
-}
+const __fetch = solidAuth.fetch;
 
 function setAcceptRDFTypes(options) {
   options = options || {};
 
-  return Config.MediaTypes.RDF.map(i => {
-    if (Config.MediaTypes.Markup.indexOf(i) > -1) {
+  return MediaTypes.RDF.map(i => {
+    if (MediaTypes.Markup.indexOf(i) > -1) {
       // q = Number(Math.round((q-0.1)+'e2')+'e-2');
       return i + ';q=0.9';
     }
@@ -56,7 +36,7 @@ function copyResource (fromURL, toURL, options = {}) {
     .then(response => {
       contentType = response.headers.get('Content-Type')
 
-      return (Config.MediaTypes.Binary.indexOf(contentType))
+      return (MediaTypes.Binary.indexOf(contentType))
         ? response.arrayBuffer()
         : response.text()
     })
@@ -90,7 +70,7 @@ function currentLocation () {
  * @returns {Promise<Response>}
  */
 function deleteResource (url, options = {}) {
-  var _fetch = Config.User.OIDC? solidAuth.fetch : fetch;
+  var _fetch = User.OIDC? __fetch : fetch;
 
   if (!url) {
     return Promise.reject(new Error('Cannot DELETE resource - missing url'))
@@ -119,7 +99,7 @@ function deleteResource (url, options = {}) {
 }
 
 function getAcceptPostPreference (url) {
-  const pIRI = uri.getProxyableIRI(url)
+  const pIRI = getProxyableIRI(url)
 
   return getResourceOptions(pIRI, {'header': 'Accept-Post'})
     .catch(error => {
@@ -143,7 +123,7 @@ function getAcceptPostPreference (url) {
 }
 
 function getAcceptPatchPreference (url) {
-  const pIRI = url || uri.getProxyableIRI(url)
+  const pIRI = url || getProxyableIRI(url)
 
   return getResourceOptions(pIRI, {'header': 'Accept-Patch'})
     .catch(error => {
@@ -167,7 +147,7 @@ function getAcceptPatchPreference (url) {
 }
 
 function getAcceptPutPreference (url) {
-  const pIRI = url || uri.getProxyableIRI(url)
+  const pIRI = url || getProxyableIRI(url)
 
   return getResourceOptions(pIRI, {'header': 'Accept-Put'})
     .catch(error => {
@@ -204,7 +184,7 @@ function getAcceptPutPreference (url) {
  * @returns {Promise<string>|Promise<ArrayBuffer>}
  */
 function getResource (url, headers = {}, options = {}) {
-  var _fetch = Config.User.OIDC? solidAuth.fetch : fetch;
+  var _fetch = User.OIDC? __fetch : fetch;
 
   url = url || currentLocation()
   options.method = ('method' in options && options.method == 'HEAD') ? 'HEAD' : 'GET'
@@ -243,7 +223,7 @@ function getResource (url, headers = {}, options = {}) {
         return getResource(url, headers, options)
       }
       else if (!error?.status) {
-        var pIRI = uri.getProxyableIRI(url, {'forceProxy': true});
+        var pIRI = getProxyableIRI(url, {'forceProxy': true});
         if (pIRI !== url) {
 // console.log('forceProxy: ' + pIRI);
           return getResource(pIRI, headers, options);
@@ -293,7 +273,7 @@ function getResourceHead (url, headers = {}, options = {}) {
  * @returns {Promise} Resolves with `{ headers: ... }` object
  */
 function getResourceOptions (url, options = {}) {
-  var _fetch = Config.User.OIDC? solidAuth.fetch : fetch;
+  var _fetch = User.OIDC? __fetch : fetch;
   url = url || currentLocation()
 
   options.method = 'OPTIONS'
@@ -360,7 +340,7 @@ function patchResourceGraph (url, patches, options = {}) {
     case 'text/n3':
     default :
       patches.forEach(function(patch){
-        var patchId = '_:' + util.generateUUID();
+        var patchId = '_:' + generateUUID();
 
         data += '\n\
 ' + patchId + ' a solid:Patch, solid:InsertDeletePatch .\n\
@@ -388,7 +368,7 @@ function patchResourceGraph (url, patches, options = {}) {
 }
 
 function patchResource (url, data, options = {}) {
-  var _fetch = Config.User.OIDC? solidAuth.fetch : fetch;
+  var _fetch = User.OIDC? __fetch : fetch;
 
   options.headers = options.headers || {}
 
@@ -419,7 +399,7 @@ function patchResource (url, data, options = {}) {
 }
 
 function postResource (url, slug, data, contentType, links, options = {}) {
-  var _fetch = Config.User.OIDC? solidAuth.fetch : fetch;
+  var _fetch = User.OIDC? __fetch : fetch;
   if (!url) {
     return Promise.reject(new Error('Cannot POST resource - missing url'))
   }
@@ -488,7 +468,7 @@ function postResource (url, slug, data, contentType, links, options = {}) {
  * @returns {Promise<Response>}
  */
 function putResource (url, data, contentType, links, options = {}) {
-  var _fetch = Config.User.OIDC? solidAuth.fetch : fetch;
+  var _fetch = User.OIDC? __fetch : fetch;
   if (!url) {
     return Promise.reject(new Error('Cannot PUT resource - missing url'))
   }
@@ -539,13 +519,13 @@ function putResource (url, data, contentType, links, options = {}) {
  * @returns {Promise<Response|null>}
  */
 function putResourceACL (accessToURL, aclURL, acl) {
-  if (!Config.User.IRI) {
+  if (!User.IRI) {
     console.log('Go through sign-in or do: DO.C.User.IRI = "https://example.org/#i";')
     return Promise.resolve(null)
   }
 
   acl = acl || {
-    'u': { 'iri': [Config.User.IRI], 'mode': ['acl:Control', 'acl:Read', 'acl:Write'] },
+    'u': { 'iri': [User.IRI], 'mode': ['acl:Control', 'acl:Read', 'acl:Write'] },
     'g': { 'iri': ['http://xmlns.com/foaf/0.1/Agent'], 'mode': ['acl:Read'] },
     'o': { 'iri': [], 'mode': [] }
   }
@@ -556,7 +536,7 @@ function putResourceACL (accessToURL, aclURL, acl) {
     agent = '<' + acl.u.iri.join('> , <') + '>'
     mode = acl.u.mode.join(' , ')
   } else {
-    agent = '<' + Config.User.IRI + '>'
+    agent = '<' + User.IRI + '>'
     mode = 'acl:Control , acl:Read , acl:Write'
   }
 
@@ -641,3 +621,24 @@ function putResourceWithAcceptPut(url, html, options) {
     })
 }
 
+export {
+  setAcceptRDFTypes,
+  copyResource,
+  currentLocation,
+  deleteResource,
+  getAcceptPostPreference,
+  getAcceptPatchPreference,
+  getAcceptPutPreference,
+  getResource,
+  getResourceHead,
+  getResourceOptions,
+  LinkHeader,
+  patchResource,
+  patchResourceGraph,
+  postResource,
+  putResource,
+  putResourceACL,
+  processSave,
+  patchResourceWithAcceptPatch,
+  putResourceWithAcceptPut
+}

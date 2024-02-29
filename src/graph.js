@@ -1,66 +1,16 @@
 'use strict'
 
-const ld = require('./simplerdf')
+import * as ld from "./simplerdf.cjs";
 const SimpleRDF = ld.SimpleRDF
-const Config = require('./config')
-const uri = require('./uri')
-const util = require('./util')
-const fetcher = require('./fetcher')
+import { Config, Vocab, MediaTypes, Actor, User } from './config.js'
+import { stripFragmentFromString, getProxyableIRI } from './uri.js'
+import { uniqueArray } from './util.js'
+import { setAcceptRDFTypes, getResource, getResourceHead } from './fetcher.js'
 
-module.exports = {
-  getGraph,
-  getGraphFromData,
-  getMatchFromData,
-  serializeDataToPreferredContentType,
-  serializeData,
-  serializeGraph,
-  applyParserSerializerFixes,
-  skolem,
-  setDocumentBase,
-  traverseRDFList,
-  getResourceGraph,
-  getLinkRelation,
-  getLinkRelationFromHead,
-  getLinkRelationFromRDF,
-  isActorType,
-  isActorProperty,
-  getAgentPreferencesInfo,
-  getAgentPreferredPolicyRule,
-  getAgentSeeAlso,
-  getAgentSupplementalInfo,
-  getUserContacts,
-  getAgentTypeIndex,
-  processSameAs,
-  getAgentPreferredProxy,
-  getAgentPreferredPolicy,
-  getAgentName,
-  getAgentURL,
-  getAgentDelegates,
-  getAgentStorage,
-  getAgentOutbox,
-  getAgentInbox,
-  getAgentKnows,
-  getAgentFollowing,
-  getAgentPublicTypeIndex,
-  getAgentPrivateTypeIndex,
-  getAgentPreferencesFile,
-  getGraphImage,
-  getGraphEmail,
-  getGraphEditor,
-  getGraphAuthor,
-  getGraphPublished,
-  getGraphUpdated,
-  getGraphCreated,
-  getGraphLicense,
-  getGraphRights,
-  getGraphLabel,
-  getGraphTitle,
-  getGraphDescription,
-  sortGraphTriples
-}
+const store = ld.store;
 
 function getGraph (url) {
-  return SimpleRDF(Config.Vocab, url, null, ld.store).get()
+  return SimpleRDF(Vocab, url, null, store).get()
 }
 
 function getGraphFromData (data, options = {}) {
@@ -115,14 +65,14 @@ function getMatchFromData (data, spo = {}, options = {}) {
   if (!data) { return Promise.resolve({}) }
 
   spo['subject'] = spo.subject || window.location.origin + window.location.pathname
-  spo['predicate'] = spo.predicate || Config.Vocab['rdfslabel']
+  spo['predicate'] = spo.predicate || Vocab['rdfslabel']
 
   options['contentType'] = options.contentType || 'text/html'
   options['subjectURI'] = options.subjectURI || spo.subject
 
   return getGraphFromData(data, options)
     .then(g => {
-      let s = SimpleRDF(Config.Vocab, spo.subject, g, ld.store).child(spo.subject)
+      let s = SimpleRDF(Vocab, spo.subject, g, store).child(spo.subject)
 
       return s[spo.predicate]
     })
@@ -341,7 +291,7 @@ function serializeGraph (g, options = {}) {
     options['contentType'] = 'text/turtle'
   }
 
-  return ld.store.serializers[options.contentType].serialize(g._graph)
+  return store.serializers[options.contentType].serialize(g._graph)
     .then(data => {
       data = applyParserSerializerFixes(data, options.contentType)
 
@@ -413,7 +363,7 @@ function skolem(data, options) {
 }
 
 function setDocumentBase (data, baseURI, contentType) {
-  baseURI = uri.stripFragmentFromString(baseURI)
+  baseURI = stripFragmentFromString(baseURI)
 
   switch(contentType) {
     case 'text/html': case 'application/xhtml+xml':
@@ -474,7 +424,7 @@ function traverseRDFList(g, resource) {
 }
 
 function getResourceGraph (iri, headers, options = {}) {
-  let defaultHeaders = {'Accept': fetcher.setAcceptRDFTypes() + ',*/*;q=0.1'}
+  let defaultHeaders = {'Accept': setAcceptRDFTypes() + ',*/*;q=0.1'}
   headers = headers || defaultHeaders
   if (!('Accept' in headers)) {
     Object.assign(headers, defaultHeaders)
@@ -488,19 +438,19 @@ function getResourceGraph (iri, headers, options = {}) {
     }
   }
 
-  let pIRI = uri.getProxyableIRI(iri, options)
+  let pIRI = getProxyableIRI(iri, options)
 
-  return fetcher.getResource(pIRI, headers, options)
+  return getResource(pIRI, headers, options)
     .then(response => {
 
       let cT = response.headers.get('Content-Type')
       options['contentType'] = (cT) ? cT.split(';')[ 0 ].trim() : 'text/turtle'
 
-      if (!Config.MediaTypes.RDF.includes(options['contentType'])) {
+      if (!MediaTypes.RDF.includes(options['contentType'])) {
         return Promise.reject({ resource: iri, response: response, message: 'Unsupported media type for RDF parsing: ' + options['contentType'] })
       }
 
-      options['subjectURI'] = uri.stripFragmentFromString(iri)
+      options['subjectURI'] = stripFragmentFromString(iri)
 
       return response.text()
     })
@@ -511,6 +461,7 @@ function getResourceGraph (iri, headers, options = {}) {
       let fragment = (iri.lastIndexOf('#') >= 0) ? iri.substr(iri.lastIndexOf('#')) : ''
 
       return SimpleRDF(Config.Vocab, options['subjectURI'], g, ld.store).child(pIRI + fragment)
+
     })
     .catch(e => {
       if ('resource' in e) {
@@ -549,7 +500,7 @@ function getLinkRelation (property, url, data) {
 function getLinkRelationFromHead (property, url) {
   var properties = (Array.isArray(property)) ? property : [property];
 
-  return fetcher.getResourceHead(url).then(
+  return getResourceHead(url).then(
     function (i) {
       var link = i.headers.get('Link')
       if (link && link.length > 0) {
@@ -587,13 +538,13 @@ function getLinkRelationFromRDF (property, url, subjectIRI) {
 
 //XXX: Why is this switch needed? Use default?
         switch (property) {
-          case Config.Vocab['ldpinbox']['@id']:
+          case Vocab['ldpinbox']['@id']:
             if (s.ldpinbox._array.length > 0){
 // console.log(s.ldpinbox._array)
               return [s.ldpinbox.at(0)]
             }
             break
-          case Config.Vocab['oaannotationService']['@id']:
+          case Vocab['oaannotationService']['@id']:
             if (s.oaannotationService._array.length > 0){
 // console.log(s.oaannotationService._array)
               return [s.oaannotationService.at(0)]
@@ -612,44 +563,44 @@ function getLinkRelationFromRDF (property, url, subjectIRI) {
 }
 
 function isActorType (s) {
-  return Config.Actor.Type.hasOwnProperty(s)
+  return Actor.Type.hasOwnProperty(s)
 }
 
 function isActorProperty (s) {
-  return Config.Actor.Property.hasOwnProperty(s)
+  return Actor.Property.hasOwnProperty(s)
 }
 
 function getAgentPreferencesInfo(g) {
   if (!g) { return; }
 
-  var preferencesFile = (Config.User.PreferencesFile) ? Config.User.PreferencesFile : getAgentPreferencesFile(g);
+  var preferencesFile = (User.PreferencesFile) ? User.PreferencesFile : getAgentPreferencesFile(g);
 
   if (preferencesFile) {
     return getResourceGraph(preferencesFile).then(g => {
-        return getAgentPreferredPolicyRule(g.child(Config.User.IRI));
+        return getAgentPreferredPolicyRule(g.child(User.IRI));
       })
       .catch(function(e) {
-        return getAgentPreferredPolicyRule(Config.User.Graph.child(Config.User.IRI));
+        return getAgentPreferredPolicyRule(User.Graph.child(User.IRI));
       })
   }
   else {
-    return getAgentPreferredPolicyRule(Config.User.Graph.child(Config.User.IRI));
+    return getAgentPreferredPolicyRule(User.Graph.child(User.IRI));
   }
 }
 
 
 function getAgentPreferredPolicyRule(g) {
-  Config.User['PreferredPolicy'] = getAgentPreferredPolicy(g);
-  var s = g.child(Config.User.PreferredPolicy);
+  User['PreferredPolicy'] = getAgentPreferredPolicy(g);
+  var s = g.child(User.PreferredPolicy);
 
-  Config.User['PreferredPolicyRule'] = Config.User.PreferredPolicyRule || {};
+  User['PreferredPolicyRule'] = User.PreferredPolicyRule || {};
 
   if (s && s.odrlprohibition && s.odrlprohibition.at(0)) {
     var prohibitionG = s.child(s.odrlprohibition.at(0));
 
     if (prohibitionG.odrlaction && prohibitionG.odrlaction._array.length > 0) {
-      Config.User.PreferredPolicyRule['Prohibition'] = {}
-      Config.User.PreferredPolicyRule['Prohibition']['Actions'] = prohibitionG.odrlaction._array;
+      User.PreferredPolicyRule['Prohibition'] = {}
+      User.PreferredPolicyRule['Prohibition']['Actions'] = prohibitionG.odrlaction._array;
     }
   }
 
@@ -657,18 +608,18 @@ function getAgentPreferredPolicyRule(g) {
     var permissionG = s.child(s.odrlpermission.at(0));
 
     if (permissionG.odrlaction && permissionG.odrlaction._array.length > 0) {
-      Config.User.PreferredPolicyRule['Permission'] = {}
-      Config.User.PreferredPolicyRule['Permission']['Actions'] = permissionG.odrlaction._array;
+      User.PreferredPolicyRule['Permission'] = {}
+      User.PreferredPolicyRule['Permission']['Actions'] = permissionG.odrlaction._array;
     }
   }
 
-  return Config.User.PreferredPolicyRule
+  return User.PreferredPolicyRule
 }
 
 
 function getAgentSupplementalInfo(iri) {
-  if (iri == Config.User.IRI) {
-    return processSameAs(Config.User.Graph, getAgentSupplementalInfo);
+  if (iri == User.IRI) {
+    return processSameAs(User.Graph, getAgentSupplementalInfo);
   }
   else {
     return getResourceGraph(iri).then(
@@ -678,9 +629,9 @@ function getAgentSupplementalInfo(iri) {
         }
         var s = g.child(iri);
 
-        Config.User.Name = Config.User.Name || getAgentName(s);
+        User.Name = User.Name || getAgentName(s);
 
-        Config.User.Image = Config.User.Image || getGraphImage(s);
+        User.Image = User.Image || getGraphImage(s);
 
         var storage = getAgentStorage(s) || [];
         var outbox = getAgentOutbox(s) || [];
@@ -688,20 +639,20 @@ function getAgentSupplementalInfo(iri) {
         //TODO publicTypeIndex privateTypeIndex ??
 
         if (storage.length > 0) {
-          Config.User.Storage = (Config.User.Storage)
-            ? util.uniqueArray(Config.User.Storage.concat(storage))
+          User.Storage = (User.Storage)
+            ? uniqueArray(User.Storage.concat(storage))
             : storage;
         }
 
         if (outbox.length > 0) {
-          Config.User.Outbox = (Config.User.Outbox)
-            ? util.uniqueArray(Config.User.Outbox.concat(outbox))
+          User.Outbox = (User.Outbox)
+            ? uniqueArray(User.Outbox.concat(outbox))
             : outbox;
         }
 
         if (knows.length > 0) {
-          Config.User.Knows = (Config.User.Knows)
-            ? util.uniqueArray(Config.User.Knows.concat(knows))
+          User.Knows = (User.Knows)
+            ? uniqueArray(User.Knows.concat(knows))
             : knows;
         }
 
@@ -728,13 +679,13 @@ function getAgentSeeAlso(g, baseURI, subjectURI) {
     var promises = [];
 
     seeAlso._array.forEach(function(iri){
-      if (Config.User.SeeAlso.indexOf(iri) < 0) {
+      if (User.SeeAlso.indexOf(iri) < 0) {
         iris.push(iri)
       }
     });
 
     iris.forEach(function(iri){
-      Config.User.SeeAlso = util.uniqueArray(Config.User.SeeAlso.concat(iri));
+      User.SeeAlso = uniqueArray(User.SeeAlso.concat(iri));
 
       getResourceGraph(iri)
         .then(g => {
@@ -744,8 +695,8 @@ function getAgentSeeAlso(g, baseURI, subjectURI) {
           var knows = getAgentKnows(s) || [];
 
           if (knows.length > 0) {
-            Config.User.Knows = (Config.User.Knows)
-              ? util.uniqueArray(Config.User.Knows.concat(knows))
+            User.Knows = (User.Knows)
+              ? uniqueArray(User.Knows.concat(knows))
               : knows;
           }
 
@@ -768,8 +719,8 @@ function getAgentSeeAlso(g, baseURI, subjectURI) {
 
 function getUserContacts(iri) {
   var fyn = function(iri){
-    if ((iri == Config.User.IRI) && Config.User.Graph) {
-      return processSameAs(Config.User.Graph, getUserContacts);
+    if ((iri == User.IRI) && User.Graph) {
+      return processSameAs(User.Graph, getUserContacts);
     }
     else {
       return getResourceGraph(iri).then(
@@ -783,8 +734,8 @@ function getUserContacts(iri) {
           var knows = getAgentKnows(s) || [];
 
           if (knows.length > 0) {
-            Config.User.Knows = (Config.User.Knows)
-              ? util.uniqueArray(Config.User.Knows.concat(knows))
+            User.Knows = (User.Knows)
+              ? uniqueArray(User.Knows.concat(knows))
               : knows;
           }
 
@@ -796,14 +747,14 @@ function getUserContacts(iri) {
     }
   }
 
-  return fyn(iri).then(function(i){ return Config.User.Knows || []; });
+  return fyn(iri).then(function(i){ return User.Knows || []; });
 }
 
 function getAgentTypeIndex(iri) {
   const TypeRegistrationClasses = [DO.C.Vocab['oaAnnotation']['@id'], DO.C.Vocab['asAnnounce']['@id']];
 
   var fetchTypeRegistration = function(iri) {
-    var pIRI = uri.getProxyableIRI(iri);
+    var pIRI = getProxyableIRI(iri);
 
     getResourceGraph(pIRI)
       .then(function(g){
@@ -817,10 +768,10 @@ function getAgentTypeIndex(iri) {
             var o = t.object.nominalValue;
 
             //Check if class is of interest (that we can handle)
-            if (p == Config.Vocab['solidforClass']['@id'] && TypeRegistrationClasses.indexOf(o) > -1) {
+            if (p == Vocab['solidforClass']['@id'] && TypeRegistrationClasses.indexOf(o) > -1) {
               //Keep track of subjects of interest
               indexes[s] = {}
-              indexes[s][Config.Vocab['solidforClass']['@id']] = o;
+              indexes[s][Vocab['solidforClass']['@id']] = o;
             }
           });
 // console.log(indexes)
@@ -829,24 +780,24 @@ function getAgentTypeIndex(iri) {
             var p = t.predicate.nominalValue;
             var o = t.object.nominalValue;
 
-            if(indexes[s] && p == Config.Vocab['solidinstanceContainer']['@id']) {
-              var forClass = indexes[s][Config.Vocab['solidforClass']['@id']]
-              Config.User.TypeIndex[forClass] = o;
+            if(indexes[s] && p == Vocab['solidinstanceContainer']['@id']) {
+              var forClass = indexes[s][Vocab['solidforClass']['@id']]
+              User.TypeIndex[forClass] = o;
             }
           });
 
-          return Config.User.TypeIndex
+          return User.TypeIndex
         }
       })
   }
 
   var promises = []
 
-  if (Config.User.PublicTypeIndex) {
-    promises.push(fetchTypeRegistration(Config.User.PublicTypeIndex))
+  if (User.PublicTypeIndex) {
+    promises.push(fetchTypeRegistration(User.PublicTypeIndex))
   }
-  if (Config.User.PrivateTypeIndex) {
-    promises.push(fetchTypeRegistration(Config.User.PrivateTypeIndex))
+  if (User.PrivateTypeIndex) {
+    promises.push(fetchTypeRegistration(User.PrivateTypeIndex))
   }
 
   return Promise.all(promises)
@@ -865,14 +816,14 @@ function processSameAs(s, callback) {
     var promises = [];
     iris.forEach(function(iri){
 // console.log(iri);
-      if(iri != Config.User.IRI && Config.User.SameAs.indexOf(iri) < 0) {
-        Config.User.SameAs = util.uniqueArray(Config.User.SameAs.concat(iri));
+      if(iri != User.IRI && User.SameAs.indexOf(iri) < 0) {
+        User.SameAs = uniqueArray(User.SameAs.concat(iri));
 
         if (typeof callback !== 'undefined') {
           promises.push(callback(iri));
         }
         else {
-          promises.push(Promise.resolve(Config.User.SameAs));
+          promises.push(Promise.resolve(User.SameAs));
         }
       }
     });
@@ -956,7 +907,7 @@ function getAgentKnows (s) {
     knows = knows.concat(s.schemaknows._array);
   }
 
-  knows = util.uniqueArray(knows);
+  knows = uniqueArray(knows);
 
   return (knows.length > 0) ? knows : undefined;
 }
@@ -970,7 +921,7 @@ function getAgentFollowing (s) {
       noCredentials: true
     };
     return DO.U.getItemsList(s.asfollowing, options).then(following => {
-      following = util.uniqueArray(following);
+      following = uniqueArray(following);
 // console.log(following);
       return (following.length > 0) ? following : undefined;
     });
@@ -999,7 +950,7 @@ function getGraphImage (s) {
   if (s.asimage || s.asicon) {
     var image = s.asimage || s.asicon;
     s._graph.some(function(t){
-      if(t.predicate.nominalValue == Config.Vocab['asurl']['@id'] || t.predicate.nominalValue == Config.Vocab['ashref']['@id']) {
+      if(t.predicate.nominalValue == Vocab['asurl']['@id'] || t.predicate.nominalValue == Vocab['ashref']['@id']) {
         if (t.subject.nominalValue == s.asicon || "_:" + t.subject.nominalValue == s.asicon) {
           image = t.object.nominalValue;
           return true;
@@ -1084,4 +1035,56 @@ function sortGraphTriples(g, options) {
   });
 
   return g;
+}
+
+export {
+  getGraph,
+  getGraphFromData,
+  getMatchFromData,
+  serializeDataToPreferredContentType,
+  serializeData,
+  serializeGraph,
+  applyParserSerializerFixes,
+  skolem,
+  setDocumentBase,
+  traverseRDFList,
+  getResourceGraph,
+  getLinkRelation,
+  getLinkRelationFromHead,
+  getLinkRelationFromRDF,
+  isActorType,
+  isActorProperty,
+  getAgentPreferencesInfo,
+  getAgentPreferredPolicyRule,
+  getAgentSeeAlso,
+  getAgentSupplementalInfo,
+  getUserContacts,
+  getAgentTypeIndex,
+  processSameAs,
+  getAgentPreferredProxy,
+  getAgentPreferredPolicy,
+  getAgentName,
+  getAgentURL,
+  getAgentDelegates,
+  getAgentStorage,
+  getAgentOutbox,
+  getAgentInbox,
+  getAgentKnows,
+  getAgentFollowing,
+  getAgentPublicTypeIndex,
+  getAgentPrivateTypeIndex,
+  getAgentPreferencesFile,
+  getGraphImage,
+  getGraphEmail,
+  getGraphEditor,
+  getGraphAuthor,
+  getGraphPublished,
+  getGraphUpdated,
+  getGraphCreated,
+  getGraphLicense,
+  getGraphRights,
+  getGraphLabel,
+  getGraphTitle,
+  getGraphDescription,
+  sortGraphTriples
 }

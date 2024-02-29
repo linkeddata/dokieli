@@ -1,65 +1,13 @@
 'use strict'
 
-const Config = require('./config')
-const util = require('./util')
-const uri = require('./uri')
-const fetcher = require('./fetcher')
-const ld = require('./simplerdf')
-const SimpleRDF = ld.SimpleRDF
-const graph = require('./graph')
-const template = require('./template')
-
-module.exports = {
-  xmlHtmlEscape,
-  fixBrokenHTML,
-  domToString,
-  dumpNode,
-  getDoctype,
-  getDocument,
-  getDocumentNodeFromString,
-  getDocumentContentNode,
-  createHTML,
-  createFeedXML,
-  createActivityHTML,
-  getClosestSectionNode,
-  removeSelectorFromNode,
-  removeNodesWithIds,
-  getNodeLanguage,
-  showActionMessage,
-  handleActionMessage,
-  selectArticleNode,
-  insertDocumentLevelHTML,
-  setDate,
-  createDateHTML,
-  setEditSelections,
-  getRDFaPrefixHTML,
-  setDocumentRelation,
-  setDocumentStatus,
-  getDocumentStatusHTML,
-  buttonRemoveAside,
-  buttonClose,
-  getButtonDisabledHTML,
-  showTimeMap,
-  getGraphAuthorData,
-  getResourceInfo,
-  getResourceInfoODRLPolicies,
-  getResourceInfoSpecRequirements,
-  getResourceInfoSpecChanges,
-  getResourceInfoSKOS,
-  getResourceInfoCitations,
-  setFeatureStatesOfResourceInfo,
-  createImmutableResource,
-  createMutableResource,
-  updateMutableResource,
-  removeReferences,
-  buildReferences,
-  updateReferences,
-  showRobustLinksDecoration,
-  getCitationLabelsFromTerms,
-  getTestDescriptionReviewStatusHTML,
-  getAgentHTML,
-  getResourceImageHTML
-}
+import { Config, DOMNormalisation, Prefixes, User, NotificationLicense, ActionMessage, ArticleNodeSelectors, DocumentItems, Languages, License, ResourceType, PublicationStatus, Button, Vocab, MediaTypes, Citation, RefType, DocRefType, TestDescriptionReviewStatus, SecretAgentNames } from './config.js'
+import { getDateTimeISO, fragmentFromString, generateAttributeId, uniqueArray, generateUUID } from './util.js'
+import { getAbsoluteIRI, getBaseURL, stripFragmentFromString, getFragmentFromString, getURLLastPath } from './uri.js'
+import { getResourceHead, LinkHeader, processSave, patchResourceWithAcceptPatch } from './fetcher.js'
+import { SimpleRDF as _SimpleRDF, store } from './simplerdf.cjs'
+const SimpleRDF = _SimpleRDF
+import { getResourceGraph, sortGraphTriples, getGraphAuthor, getGraphLabel, getGraphEmail, getGraphTitle, getGraphPublished, getGraphUpdated, getGraphDescription, getGraphLicense, getGraphRights, getGraphFromData } from './graph.js'
+import { createRDFaHTML, Icon } from './template.js'
 
 function xmlHtmlEscape(string) {
   return String(string).replace(/[&<>"']/g, function (match) {
@@ -81,7 +29,7 @@ function xmlHtmlEscape(string) {
 }
 
 function fixBrokenHTML(html) {
-  var pattern = new RegExp('<(' + Config.DOMNormalisation.voidElements.join('|') + ')([^>]*)></\\1>|<(' + Config.DOMNormalisation.voidElements.join('|') + ')([^>]*)/>', 'g');
+  var pattern = new RegExp('<(' + DOMNormalisation.voidElements.join('|') + ')([^>]*)></\\1>|<(' + DOMNormalisation.voidElements.join('|') + ')([^>]*)/>', 'g');
 
   var fixedHtml = html.replace(pattern, '<$1$2/>');
 
@@ -211,7 +159,7 @@ function getDoctype () {
 
 function getDocument (cn, options) {
   let node = cn || document.documentElement.cloneNode(true)
-  options = options || Config.DOMNormalisation
+  options = options || DOMNormalisation
 
   let doctype = (node.constructor.name === 'SVGSVGElement') ? '<?xml version="1.0" encoding="utf-8"?>' : getDoctype();
   let s = (doctype.length > 0) ? doctype + '\n' : ''
@@ -278,7 +226,7 @@ function createFeedXML(feed, options) {
   var description = '';
   var authorData = '';
 
-  var now = util.getDateTimeISO();
+  var now = getDateTimeISO();
   var year = new Date(now).getFullYear();
 
   var feedItems = [];
@@ -469,7 +417,7 @@ function createActivityHTML(o) {
   var types = '<dt>Types</dt>'
 
   o.type.forEach(function (t) {
-    types += '<dd><a about="" href="' + Config.Prefixes[t.split(':')[0]] + t.split(':')[1] + '" typeof="'+ t +'">' + t.split(':')[1] + '</a></dd>'
+    types += '<dd><a about="" href="' + Prefixes[t.split(':')[0]] + t.split(':')[1] + '" typeof="'+ t +'">' + t.split(':')[1] + '</a></dd>'
   })
 
   var asObjectTypes = ''
@@ -494,16 +442,16 @@ function createActivityHTML(o) {
 
   var astarget = ('target' in o && o.target.length > 0) ? '<dt>Target</dt><dd><a href="' + o.target + '" property="as:target">' + o.target + '</a></dd>' : ''
 
-  var datetime = util.getDateTimeISO()
+  var datetime = getDateTimeISO()
   var asupdated = '<dt>Updated</dt><dd><time datetime="' + datetime + '" datatype="xsd:dateTime" property="as:updated" content="' + datetime + '">' + datetime.substr(0,19).replace('T', ' ') + '</time></dd>'
 
   var assummary = ('summary' in o && o.summary.length > 0) ? '<dt>Summary</dt><dd property="as:summary" datatype="rdf:HTML">' + o.summary + '</dd>' : ''
 
   var ascontent = ('content' in o && o.content.length > 0) ? '<dt>Content</dt><dd property="as:content" datatype="rdf:HTML">' + o.content + '</dd>' : ''
 
-  var asactor = (Config.User.IRI) ? '<dt>Actor</dt><dd><a href="' + Config.User.IRI + '" property="as:actor">' + Config.User.IRI + '</a></dd>' : ''
+  var asactor = (User.IRI) ? '<dt>Actor</dt><dd><a href="' + User.IRI + '" property="as:actor">' + User.IRI + '</a></dd>' : ''
 
-  var license = '<dt>License</dt><dd><a href="' + Config.NotificationLicense + '" property="schema:license">' + Config.NotificationLicense + '</a></dd>'
+  var license = '<dt>License</dt><dd><a href="' + NotificationLicense + '" property="schema:license">' + NotificationLicense + '</a></dd>'
 
   var asto = ('to' in o && o.to.length > 0 && !o.to.match(/\s/g) && o.to.match(/^https?:\/\//gi)) ? '<dt>To</dt><dd><a href="' + o.to + '" property="as:to">' + o.to + '</a></dd>' : ''
 
@@ -592,10 +540,10 @@ function handleActionMessage(resolved, rejected) {
 
 function showActionMessage(node, message, options) {
   options = options || {};
-  options['timer'] = ('timer' in options) ? options.timer : Config.ActionMessage.Timer;
+  options['timer'] = ('timer' in options) ? options.timer : ActionMessage.Timer;
 
   var message = '<aside id="document-action-message" class="do on">' + message + '</aside>';
-  node.appendChild(util.fragmentFromString(message));
+  node.appendChild(fragmentFromString(message));
   window.setTimeout(function () {
     var dam = document.getElementById('document-action-message');
     if (dam) { dam.parentNode.removeChild(dam); }
@@ -603,7 +551,7 @@ function showActionMessage(node, message, options) {
 }
 
 function selectArticleNode(node) {
-  var x = node.querySelectorAll(Config.ArticleNodeSelectors.join(','));
+  var x = node.querySelectorAll(ArticleNodeSelectors.join(','));
   return (x && x.length > 0) ? x[x.length - 1] : getDocumentContentNode(document);
 }
 
@@ -611,9 +559,9 @@ function insertDocumentLevelHTML(rootNode, h, options) {
   rootNode = rootNode || document;
   options = options || {};
 
-  options['id'] = ('id' in options) ? options.id : Config.DocumentItems[Config.DocumentItems.length-1];
+  options['id'] = ('id' in options) ? options.id : DocumentItems[DocumentItems.length-1];
 
-  var item = Config.DocumentItems.indexOf(options.id);
+  var item = DocumentItems.indexOf(options.id);
 
   var article = selectArticleNode(rootNode);
 
@@ -625,7 +573,7 @@ function insertDocumentLevelHTML(rootNode, h, options) {
 
   if(item > -1) {
     for(var i = item; i >= 0; i--) {
-      var node = rootNode.querySelector('#' + Config.DocumentItems[i]);
+      var node = rootNode.querySelector('#' + DocumentItems[i]);
 
       if (node) {
         if (skipElements.indexOf(node.nodeName.toLowerCase()) > -1) {
@@ -665,7 +613,7 @@ function setDate(rootNode, options) {
   var node = ('property' in options) ? rootNode.querySelector('#' + id + ' [property="' + options.property + '"]') : rootNode.querySelector('#' + id + ' time');
 
   if(node) {
-    var datetime = ('datetime' in options) ? options.datetime.toISOString() : util.getDateTimeISO();
+    var datetime = ('datetime' in options) ? options.datetime.toISOString() : getDateTimeISO();
 
     if(node.getAttribute('datetime')) {
       node.setAttribute('datetime', datetime);
@@ -691,7 +639,7 @@ function createDateHTML(options) {
 
   var c = ('class' in options && options.class.length > 0) ? ' class="' + options.class + '"' : '';
 
-  var datetime = ('datetime' in options) ? options.datetime.toISOString() : util.getDateTimeISO();
+  var datetime = ('datetime' in options) ? options.datetime.toISOString() : getDateTimeISO();
   var datetimeLabel = datetime.substr(0, datetime.indexOf('T'));
 
   var time = ('property' in options)
@@ -760,7 +708,7 @@ function setEditSelections(options) {
       dl.removeAttribute('class');
       var dd = dLangS.closest('dd');
       dd.parentNode.removeChild(dd);
-      dd = '<dd><span content="' + languageValue + '" lang="" property="dcterms:language" xml:lang="">' + Config.Languages[languageValue] + '</span></dd>';
+      dd = '<dd><span content="' + languageValue + '" lang="" property="dcterms:language" xml:lang="">' + Languages[languageValue] + '</span></dd>';
       dl.insertAdjacentHTML('beforeend', dd);
     }
   }
@@ -782,7 +730,7 @@ function setEditSelections(options) {
       dl.removeAttribute('class');
       var dd = dLS.closest('dd');
       dd.parentNode.removeChild(dd);
-      dd = '<dd><a href="' + licenseIRI+ '" rel="schema:license" title="' + Config.License[licenseIRI].description + '">' + Config.License[licenseIRI].name + '</a></dd>';
+      dd = '<dd><a href="' + licenseIRI+ '" rel="schema:license" title="' + License[licenseIRI].description + '">' + License[licenseIRI].name + '</a></dd>';
       dl.insertAdjacentHTML('beforeend', dd);
     }
   }
@@ -804,7 +752,7 @@ function setEditSelections(options) {
       dl.removeAttribute('class');
       var dd = dTS.closest('dd');
       dd.parentNode.removeChild(dd);
-      dd = '<dd><a href="' + typeIRI+ '" rel="rdf:type">' + Config.ResourceType[typeIRI].name + '</a></dd>';
+      dd = '<dd><a href="' + typeIRI+ '" rel="rdf:type">' + ResourceType[typeIRI].name + '</a></dd>';
       dl.insertAdjacentHTML('beforeend', dd);
     }
   }
@@ -826,7 +774,7 @@ function setEditSelections(options) {
       dl.removeAttribute('class');
       var dd = dLS.closest('dd');
       dd.parentNode.removeChild(dd);
-      dd = '<dd prefix="pso: http://purl.org/spar/pso/" rel="pso:holdsStatusInTime" resource="#' + util.generateAttributeId() + '"><span rel="pso:withStatus" resource="' + statusIRI  + '" typeof="pso:PublicationStatus">' + Config.PublicationStatus[statusIRI].name + '</span></dd>';
+      dd = '<dd prefix="pso: http://purl.org/spar/pso/" rel="pso:holdsStatusInTime" resource="#' + generateAttributeId() + '"><span rel="pso:withStatus" resource="' + statusIRI  + '" typeof="pso:PublicationStatus">' + PublicationStatus[statusIRI].name + '</span></dd>';
 
       dl.insertAdjacentHTML('beforeend', dd);
 
@@ -873,10 +821,10 @@ function setDocumentRelation(rootNode, data, options) {
   var dd;
 
   data.forEach(function(d){
-    var documentRelation = '<dd>' + template.createRDFaHTML(d) + '</dd>';
+    var documentRelation = '<dd>' + createRDFaHTML(d) + '</dd>';
 
     if(dl) {
-      if (Config.DocumentItems.indexOf(options.id) > -1) {
+      if (DocumentItems.indexOf(options.id) > -1) {
         dd = dl.querySelector('dd');
         dl.removeChild(dd);
       }
@@ -906,18 +854,18 @@ function setDocumentRelation(rootNode, data, options) {
 }
 
 function showTimeMap(node, url) {
-  url = url || Config.OriginalResourceInfo['timemap']
+  url = url || OriginalResourceInfo['timemap']
   if(!url) { return; }
 
   var elementId = 'memento-document';
 
-  graph.getResourceGraph(url)
+  getResourceGraph(url)
     .then(g => {
 // console.log(g)
       if (!node) {
         node = document.getElementById(elementId);
         if(!node) {
-          document.documentElement.appendChild(util.fragmentFromString('<aside id="' + elementId + '" class="do on"><h2>Memento</h2>' + Config.Button.Close + '<dl><dt>TimeMap</dt><dd><a href="' + url + '">' + url + '</a></dd></dl></aside>'));
+          document.documentElement.appendChild(fragmentFromString('<aside id="' + elementId + '" class="do on"><h2>Memento</h2>' + Button.Close + '<dl><dt>TimeMap</dt><dd><a href="' + url + '">' + url + '</a></dd></dl></aside>'));
           node = document.getElementById(elementId);
         }
       }
@@ -928,7 +876,7 @@ function showTimeMap(node, url) {
         node.removeChild(timemap);
       }
 
-      var triples = graph.sortGraphTriples(g.graph(), { sortBy: 'object' });
+      var triples = sortGraphTriples(g.graph(), { sortBy: 'object' });
 
       var items = [];
       triples.forEach(function(t){
@@ -936,7 +884,7 @@ function showTimeMap(node, url) {
         var p = t.predicate.nominalValue;
         var o = t.object.nominalValue;
 
-        if(p === Config.Vocab['memmementoDateTime']) {
+        if(p === Vocab['memmementoDateTime']) {
           items.push('<li><a href="' + s + '" target="_blank">' + o + '</a></li>');
         }
       });
@@ -1036,7 +984,7 @@ function buttonRemoveAside() {
   var ids = document.querySelectorAll('aside.note article[id]');
   for(var i = 0; i < ids.length; i++){
     if(!ids[i].querySelector('button.delete')) {
-      var buttonDelete = '<button class="delete do" title="Delete item">' + template.Icon[".fas.fa-trash-alt"] + '</button>';
+      var buttonDelete = '<button class="delete do" title="Delete item">' + Icon[".fas.fa-trash-alt"] + '</button>';
       ids[i].insertAdjacentHTML('afterbegin', buttonDelete);
     }
   }
@@ -1080,7 +1028,7 @@ function getButtonDisabledHTML(id) {
 }
 
 function getGraphAuthorData(g) {
-  var authors = graph.getGraphAuthor(g);
+  var authors = getGraphAuthor(g);
   // var editors = graph.getGraphEditor(g);
 
   if (!authors || authors.length === 0) {
@@ -1093,12 +1041,12 @@ function getGraphAuthorData(g) {
     var aUN = {};
     aUN['uri'] = s;
     //XXX: Only checks within the same document.
-    var label = graph.getGraphLabel(g.child(s));
+    var label = getGraphLabel(g.child(s));
     if (label) {
       aUN['name'] = label;
     }
 
-    var email = graph.getGraphEmail(g.child(s));
+    var email = getGraphEmail(g.child(s));
     if (email) {
       email = (typeof email === 'string') ? email : email.iri().toString();
       aUN['email'] = email.startsWith('mailto:') ? email.slice(7) : email;
@@ -1126,60 +1074,60 @@ function getGraphData(s, options) {
   var documentURL = options['subjectURI'];
 
   var info = {
-    'state': Config.Vocab['ldpRDFSource']['@id'],
-    'profile': Config.Vocab['ldpRDFSource']['@id']
+    'state': Vocab['ldpRDFSource']['@id'],
+    'profile': Vocab['ldpRDFSource']['@id']
   };
 
        info['graph'] = s;
         info['rdftype'] = s.rdftype._array;
 
-        info['title'] = graph.getGraphTitle(s);
+        info['title'] = getGraphTitle(s);
         // info['label'] = graph.getGraphLabel(s);
-        info['published'] = graph.getGraphPublished(s);
-        info['updated'] = graph.getGraphUpdated(s);
-        info['description'] = graph.getGraphDescription(s);
-        info['license'] = graph.getGraphLicense(s);
-        info['rights'] = graph.getGraphRights(s);
+        info['published'] = getGraphPublished(s);
+        info['updated'] = getGraphUpdated(s);
+        info['description'] = getGraphDescription(s);
+        info['license'] = getGraphLicense(s);
+        info['rights'] = getGraphRights(s);
         // info['summary'] = graph.getGraphSummary(s);
         // info['creator'] = graph.getGraphCreators(s);
         info['author'] = getGraphAuthorData(s);
 
-        info['profile'] = Config.Vocab['ldpRDFSource']['@id'];
+        info['profile'] = Vocab['ldpRDFSource']['@id'];
 
         //Check if the resource is immutable
         s.rdftype.forEach(function(resource) {
-          if (resource == Config.Vocab['memMemento']['@id']) {
-            info['state'] = Config.Vocab['memMemento']['@id'];
+          if (resource == Vocab['memMemento']['@id']) {
+            info['state'] = Vocab['memMemento']['@id'];
           }
         });
 
         if (s.reloriginal) {
-          info['state'] = Config.Vocab['memMemento']['@id'];
+          info['state'] = Vocab['memMemento']['@id'];
           info['original'] = s.memoriginal;
 
           if (s.reloriginal == options['subjectURI']) {
             //URI-R (The Original Resource is a Fixed Resource)
 
-            info['profile'] = Config.Vocab['memOriginalResource']['@id'];
+            info['profile'] = Vocab['memOriginalResource']['@id'];
           }
           else {
             //URI-M
 
-            info['profile'] = Config.Vocab['memMemento']['@id'];
+            info['profile'] = Vocab['memMemento']['@id'];
           }
         }
 
         if (s.memmemento) {
           //URI-R
 
-          info['profile'] = Config.Vocab['memOriginalResource']['@id'];
+          info['profile'] = Vocab['memOriginalResource']['@id'];
           info['memento'] = s.memmemento;
         }
 
         if(s.memoriginal && s.memmemento && s.memoriginal != s.memmemento) {
           //URI-M (Memento without a TimeGate)
 
-          info['profile'] = Config.Vocab['memMemento']['@id'];
+          info['profile'] = Vocab['memMemento']['@id'];
           info['original'] = s.memoriginal;
           info['memento'] = s.memmemento;
         }
@@ -1199,7 +1147,6 @@ function getGraphData(s, options) {
         if(s.memtimegate) {
           info['timegate'] = s.memtimegate;
         }
-
         if(!Config.OriginalResourceInfo || ('mode' in options && options.mode == 'update' )) {
           Config['OriginalResourceInfo'] = info;
         }
@@ -1244,12 +1191,12 @@ function getResourceInfo(data, options) {
   Config['Resource'][documentURL] = Config['Resource'][documentURL] || {};
 
   var getResourceDataBlock = function(data, options) {
-    if (Config.MediaTypes.Markup.includes(options.contentType)) {
+    if (MediaTypes.Markup.includes(options.contentType)) {
       var node = getDocumentNodeFromString(data, options);
 
-      var selectors = Config.MediaTypes.RDF
+      var selectors = MediaTypes.RDF
         .filter(function(mediaType) {
-          return !Config.MediaTypes.Markup.includes(mediaType);
+          return !MediaTypes.Markup.includes(mediaType);
         })
         .map(function(mediaType) {
           return 'script[type="' + mediaType + '"]';
@@ -1284,9 +1231,9 @@ console.log(scriptData)
           'contentType': scriptType
         }
 
-        promises.push(graph.getGraphFromData(scriptData, o).then(
+        promises.push(getGraphFromData(scriptData, o).then(
           function(i){
-            var s = SimpleRDF(Config.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
+            var s = SimpleRDF(Vocab, options['subjectURI'], i, store).child(options['subjectURI']);
 console.log(s.toString())
             var info = getGraphData(s, options);
 
@@ -1307,9 +1254,9 @@ console.log(s.toString())
 
 
   var getResourceData = function(data, options) {
-    return graph.getGraphFromData(data, options).then(
+    return getGraphFromData(data, options).then(
       function(i){
-        var s = SimpleRDF(Config.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
+        var s = SimpleRDF(Vocab, options['subjectURI'], i, store).child(options['subjectURI']);
 // console.log(s);
         var info = getGraphData(s, options);
 // console.log(info)
@@ -1334,7 +1281,7 @@ console.log(s.toString())
   if ('storeHeaders' in options) {
     //TODO: This may need refactoring any way to avoid deleting contentType and subjectURI. It leaks the options to getResource/fetcher.
     var { storeHeaders, contentType, subjectURI, ...o } = options;
-    promises.push(fetcher.getResourceHead(documentURL, {}, o))
+    promises.push(getResourceHead(documentURL, {}, o))
   }
   promises.push(getResourceData(data, options));
 
@@ -1371,14 +1318,14 @@ console.log(s.toString())
 
                 wacAllowMatches.forEach(function(match){
                   var modesString = match[2] || '';
-                  var accessModes = util.uniqueArray(modesString.toLowerCase().split(/\s+/));
+                  var accessModes = uniqueArray(modesString.toLowerCase().split(/\s+/));
 
                   Config['Resource'][documentURL]['headers']['wac-allow']['permissionGroup'][match[1]] = accessModes;
                 });
               }
 
               if (oHeader.toLowerCase() == 'link') {
-                var linkHeaders = fetcher.LinkHeader.parse(oHeaderValue);
+                var linkHeaders = LinkHeader.parse(oHeaderValue);
 
                 Config['Resource'][documentURL]['headers']['linkHeaders'] = linkHeaders;
 
@@ -1390,9 +1337,9 @@ console.log(s.toString())
                   linkHeaders.rel('describedby').forEach(function(describedbyItem) {
                     var describedbyURL = describedbyItem.uri;
                     if (!describedbyURL.startsWith('http:') && !describedbyURL.startsWith('https:')) {
-                      describedbyURL = uri.getAbsoluteIRI(uri.getBaseURL(response.url), describedbyURL);
+                      describedbyURL = getAbsoluteIRI(getBaseURL(response.url), describedbyURL);
                     }
-                    p.push(graph.getResourceGraph(describedbyURL));
+                    p.push(getResourceGraph(describedbyURL));
                   });
 
                   return Promise.all(p)
@@ -1420,7 +1367,7 @@ console.log(s.toString())
 function getResourceInfoCitations(g) {
   var documentURL = DO.C.DocumentURL;
   var citationsList = [];
-  var citationProperties = Object.keys(Config.Citation).concat([Config.Vocab["dctermsreferences"]["@id"]]);
+  var citationProperties = Object.keys(Citation).concat([Vocab["dctermsreferences"]["@id"]]);
 
   var triples = g._graph;
   triples.forEach(function(t){
@@ -1435,12 +1382,12 @@ function getResourceInfoCitations(g) {
 
   var externals = [];
   citationsList.forEach(function(i){
-    var iAbsolute = uri.stripFragmentFromString(i);
+    var iAbsolute = stripFragmentFromString(i);
     if (iAbsolute !== documentURL){
       externals.push(iAbsolute)
     }
   });
-  citationsList = util.uniqueArray(externals).sort();
+  citationsList = uniqueArray(externals).sort();
 
   return citationsList;
 }
@@ -1634,7 +1581,7 @@ function setFeatureStatesOfResourceInfo(info) {
 function createImmutableResource(url, data, options) {
   if(!url) return;
 
-  var uuid = util.generateUUID();
+  var uuid = generateUUID();
   var containerIRI = url.substr(0, url.lastIndexOf('/') + 1);
   var immutableURL = containerIRI + uuid;
 
@@ -1662,8 +1609,8 @@ function createImmutableResource(url, data, options) {
   rootNode = setDocumentRelation(rootNode, [r], o);
 
   o = { 'id': 'document-original', 'title': 'Original resource' };
-  if (Config.OriginalResourceInfo['state'] == Config.Vocab['memMemento']['@id']
-    && Config.OriginalResourceInfo['profile'] == Config.Vocab['memOriginalResource']['@id']) {
+  if (OriginalResourceInfo['state'] == Vocab['memMemento']['@id']
+    && OriginalResourceInfo['profile'] == Vocab['memOriginalResource']['@id']) {
     r = { 'rel': 'mem:original', 'href': immutableURL };
   }
   else {
@@ -1673,25 +1620,25 @@ function createImmutableResource(url, data, options) {
 
   //TODO document-timegate
 
-  var timeMapURL = Config.OriginalResourceInfo['timemap'] || url + '.timemap';
+  var timeMapURL = OriginalResourceInfo['timemap'] || url + '.timemap';
   o = { 'id': 'document-timemap', 'title': 'TimeMap' };
   r = { 'rel': 'mem:timemap', 'href': timeMapURL };
   rootNode = setDocumentRelation(rootNode, [r], o);
 
   // Create URI-M
   data = getDocument(rootNode);
-  fetcher.processSave(containerIRI, uuid, data, options)
+  processSave(containerIRI, uuid, data, options)
     .then((resolved) => handleActionMessage(resolved))
     .catch((rejected) => handleActionMessage(null, rejected))
     .finally(() => {
       getResourceInfo(data, { 'mode': 'update' });
     });
 
-  var timeMapURL = Config.OriginalResourceInfo['timemap'] || url + '.timemap';
+  var timeMapURL = OriginalResourceInfo['timemap'] || url + '.timemap';
 
 
   //Update URI-R
-  if (Config.OriginalResourceInfo['state'] != Config.Vocab['memMemento']['@id']) {
+  if (OriginalResourceInfo['state'] != Vocab['memMemento']['@id']) {
     setDate(document, { 'id': 'document-created', 'property': 'schema:dateCreated', 'title': 'Created', 'datetime': date });
 
     o = { 'id': 'document-identifier', 'title': 'Identifier' };
@@ -1702,9 +1649,9 @@ function createImmutableResource(url, data, options) {
     r = { 'rel': 'mem:memento rel:latest-version', 'href': immutableURL };
     setDocumentRelation(document, [r], o);
 
-    if(Config.OriginalResourceInfo['latest-version']) {
+    if(OriginalResourceInfo['latest-version']) {
       o = { 'id': 'document-predecessor-version', 'title': 'Predecessor Version' };
-      r = { 'rel': 'mem:memento rel:predecessor-version', 'href': Config.OriginalResourceInfo['latest-version'] };
+      r = { 'rel': 'mem:memento rel:predecessor-version', 'href': OriginalResourceInfo['latest-version'] };
       setDocumentRelation(document, [r], o);
     }
 
@@ -1716,7 +1663,7 @@ function createImmutableResource(url, data, options) {
 
     // Create URI-R
     data = getDocument();
-    fetcher.processSave(url, null, data, options)
+    processSave(url, null, data, options)
       .then((resolved) => handleActionMessage(resolved))
       .catch((rejected) => handleActionMessage(null, rejected))
   }
@@ -1728,7 +1675,7 @@ function createImmutableResource(url, data, options) {
 
   var patch = { 'insert': insertG };
 
-  fetcher.patchResourceWithAcceptPatch(timeMapURL, patch).then(() =>{
+  patchResourceWithAcceptPatch(timeMapURL, patch).then(() =>{
     showTimeMap(null, timeMapURL)
   });
 }
@@ -1738,7 +1685,7 @@ function createMutableResource(url, data, options) {
 
   setDate(document, { 'id': 'document-created', 'property': 'schema:dateCreated', 'title': 'Created' } );
 
-  var uuid = util.generateUUID();
+  var uuid = generateUUID();
   var containerIRI = url.substr(0, url.lastIndexOf('/') + 1);
   var mutableURL = containerIRI + uuid;
 
@@ -1752,14 +1699,14 @@ function createMutableResource(url, data, options) {
   r = { 'rel': 'rel:latest-version', 'href': mutableURL };
   setDocumentRelation(document, [r], o);
 
-  if(Config.OriginalResourceInfo['latest-version']) {
+  if(OriginalResourceInfo['latest-version']) {
     o = { 'id': 'document-predecessor-version', 'title': 'Predecessor Version' };
-    r = { 'rel': 'rel:predecessor-version', 'href': Config.OriginalResourceInfo['latest-version'] };
+    r = { 'rel': 'rel:predecessor-version', 'href': OriginalResourceInfo['latest-version'] };
     setDocumentRelation(document, [r], o);
   }
 
   data = getDocument();
-  fetcher.processSave(containerIRI, uuid, data, options)
+  processSave(containerIRI, uuid, data, options)
     .then((resolved) => handleActionMessage(resolved))
     .catch((rejected) => handleActionMessage(null, rejected))
 
@@ -1768,7 +1715,7 @@ function createMutableResource(url, data, options) {
   setDocumentRelation(document, [r], o);
 
   data = getDocument();
-  fetcher.processSave(url, null, data, options)
+  processSave(url, null, data, options)
     .then((resolved) => handleActionMessage(resolved))
     .catch((rejected) => handleActionMessage(null, rejected))
     .finally(() => {
@@ -1780,7 +1727,7 @@ function updateMutableResource(url, data, options) {
   if(!url) return;
   options = options || {};
 
-  var rootNode = (data) ? util.fragmentFromString(data).cloneNode(true) : document;
+  var rootNode = (data) ? fragmentFromString(data).cloneNode(true) : document;
 
   if (!('datetime' in options)) {
     options['datetime'] = new Date();
@@ -1790,7 +1737,7 @@ function updateMutableResource(url, data, options) {
   setEditSelections(options);
 
   data = getDocument();
-  fetcher.processSave(url, null, data, options)
+  processSave(url, null, data, options)
     .then((resolved) => handleActionMessage(resolved))
     .catch((rejected) => handleActionMessage(null, rejected))
     .finally(() => {
@@ -1853,7 +1800,7 @@ function updateReferences(options){
 // console.log(rId);
 // console.log(refId);
 // console.log(refLabel)
-    var ref = '<span class="ref"> <span class="ref-reference" id="' + rId + '">' + Config.RefType[Config.DocRefType].InlineOpen + '<a href="#' + refId + '">' + refLabel + '</a>' + Config.RefType[Config.DocRefType].InlineClose + '</span></span>';
+    var ref = '<span class="ref"> <span class="ref-reference" id="' + rId + '">' + RefType[DocRefType].InlineOpen + '<a href="#' + refId + '">' + refLabel + '</a>' + RefType[DocRefType].InlineClose + '</span></span>';
     cite.insertAdjacentHTML('afterend', ref);
   }
 
@@ -1866,7 +1813,7 @@ function updateReferences(options){
         (options.internal && a.href.startsWith(docURL + '#'))) {
 
       refId = uniqueCitations[a.outerHTML];
-      rId = 'r-' + util.generateAttributeId();
+      rId = 'r-' + generateAttributeId();
 
       if (refId) {
         refLabel = refId;
@@ -1881,11 +1828,11 @@ function updateReferences(options){
 
           var newJumpLink = [];
           supAs.forEach((a, key) => {
-            newJumpLink.push(' <sup><a href="#' + uri.getFragmentFromString(a.href) + '">' + String.fromCharCode(key + 97) + '</a></sup>');
+            newJumpLink.push(' <sup><a href="#' + getFragmentFromString(a.href) + '">' + String.fromCharCode(key + 97) + '</a></sup>');
           });
           newJumpLink.push(' <sup><a href="#' + rId + '">' + String.fromCharCode(supAs.length + 97) + '</a></sup>');
 
-          newJumpLink = util.fragmentFromString('<span class="jumplink"><sup>^</sup>' + newJumpLink.join(' ') + '</span>');
+          newJumpLink = fragmentFromString('<span class="jumplink"><sup>^</sup>' + newJumpLink.join(' ') + '</span>');
 
           jumpLink.parentNode.replaceChild(newJumpLink, jumpLink);
 
@@ -2012,20 +1959,20 @@ function showRobustLinksDecoration(node) {
 }
 
 function getCitationLabelsFromTerms(rel, citations) {
-  citations = citations || Object.keys(Config.Citation);
+  citations = citations || Object.keys(Citation);
 
   var citationLabels = [];
 
   rel.split(' ').forEach(term => {
-    if (Config.Citation[term]){
-      citationLabels.push(Config.Citation[term]);
+    if (Citation[term]){
+      citationLabels.push(Citation[term]);
     }
     else {
       var s = term.split(':');
       if (s.length == 2) {
         citations.forEach(c=>{
-          if (s[1] == uri.getFragmentFromString(c) || s[1] == uri.getURLLastPath(c)) {
-            citationLabels.push(Config.Citation[c])
+          if (s[1] == getFragmentFromString(c) || s[1] == getURLLastPath(c)) {
+            citationLabels.push(Citation[c])
           }
         });
       }
@@ -2040,9 +1987,9 @@ function getTestDescriptionReviewStatusHTML() {
 
   reviewStatusHTML.push('<dl id="test-description-review-statuses">');
 
-  Object.keys(Config.TestDescriptionReviewStatus).forEach(function(i){
-    reviewStatusHTML.push('<dt>' + uri.getFragmentFromString(i) + '</dt>');
-    reviewStatusHTML.push('<dd>' + Config.TestDescriptionReviewStatus[i] + '</dd>');
+  Object.keys(TestDescriptionReviewStatus).forEach(function(i){
+    reviewStatusHTML.push('<dt>' + getFragmentFromString(i) + '</dt>');
+    reviewStatusHTML.push('<dd>' + TestDescriptionReviewStatus[i] + '</dd>');
   })
 
   reviewStatusHTML.push('</dl>');
@@ -2051,25 +1998,25 @@ function getTestDescriptionReviewStatusHTML() {
 }
 
 function getAgentHTML(options = {}) {
-  let userName = Config.SecretAgentNames[Math.floor(Math.random() * Config.SecretAgentNames.length)]
+  let userName = SecretAgentNames[Math.floor(Math.random() * SecretAgentNames.length)]
   
-  if (Config.User.Name) {
+  if (User.Name) {
     // XXX: We have the IRI already
-    userName = '<span about="' + Config.User.IRI + '" property="schema:name">' +
-      Config.User.Name + '</span>'
+    userName = '<span about="' + User.IRI + '" property="schema:name">' +
+      User.Name + '</span>'
   }
 
   let userImage = ''
   
-  if (!('omitImage' in options && options.omitImage) && 'Image' in Config.User && typeof Config.User.Image !== 'undefined' && Config.User.Image.length > 0) {
-    userImage = getResourceImageHTML(Config.User.Image, options) + ' '
+  if (!('omitImage' in options && options.omitImage) && 'Image' in User && typeof User.Image !== 'undefined' && User.Image.length > 0) {
+    userImage = getResourceImageHTML(User.Image, options) + ' '
   }
   
   let user = ''
   
-  if ('IRI' in Config.User && Config.User.IRI !== null && Config.User.IRI.length > 0) {
-    user = '<span about="' + Config.User.IRI + '" typeof="schema:Person">' +
-    userImage + '<a rel="schema:url" href="' + Config.User.IRI + '"> ' +
+  if ('IRI' in User && User.IRI !== null && User.IRI.length > 0) {
+    user = '<span about="' + User.IRI + '" typeof="schema:Person">' +
+    userImage + '<a rel="schema:url" href="' + User.IRI + '"> ' +
     userName + '</a></span>'
   } else {
     user = '<span typeof="schema:Person">' + userName + '</span>'
@@ -2082,4 +2029,56 @@ function getResourceImageHTML(resource, options = {}) {
   var avatarSize = ('avatarSize' in options) ? options.avatarSize : Config['AvatarSize'];
 
   return '<img alt="" height="' + avatarSize + '" rel="schema:image" src="' + resource + '" width="' + avatarSize + '" />';
+}
+
+export {
+  xmlHtmlEscape,
+  fixBrokenHTML,
+  domToString,
+  dumpNode,
+  getDoctype,
+  getDocument,
+  getDocumentNodeFromString,
+  getDocumentContentNode,
+  createHTML,
+  createFeedXML,
+  createActivityHTML,
+  getClosestSectionNode,
+  removeSelectorFromNode,
+  removeNodesWithIds,
+  getNodeLanguage,
+  showActionMessage,
+  handleActionMessage,
+  selectArticleNode,
+  insertDocumentLevelHTML,
+  setDate,
+  createDateHTML,
+  setEditSelections,
+  getRDFaPrefixHTML,
+  setDocumentRelation,
+  setDocumentStatus,
+  getDocumentStatusHTML,
+  buttonRemoveAside,
+  buttonClose,
+  getButtonDisabledHTML,
+  showTimeMap,
+  getGraphAuthorData,
+  getResourceInfo,
+  getResourceInfoODRLPolicies,
+  getResourceInfoSpecRequirements,
+  getResourceInfoSpecChanges,
+  getResourceInfoSKOS,
+  getResourceInfoCitations,
+  setFeatureStatesOfResourceInfo,
+  createImmutableResource,
+  createMutableResource,
+  updateMutableResource,
+  removeReferences,
+  buildReferences,
+  updateReferences,
+  showRobustLinksDecoration,
+  getCitationLabelsFromTerms,
+  getTestDescriptionReviewStatusHTML,
+  getAgentHTML,
+  getResourceImageHTML
 }

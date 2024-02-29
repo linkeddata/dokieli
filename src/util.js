@@ -1,26 +1,5 @@
 "use strict";
 
-module.exports = {
-  uniqueArray,
-  getDateTimeISO,
-  removeChildren,
-  copyTextToClipboard,
-  escapeRegExp,
-  sleep,
-  fragmentFromString,
-  generateUUID,
-  generateAttributeId,
-  generateId,
-  getHash,
-  hashCode,
-  sortToLower
-};
-
-/**
- * @param a {Array}
- *
- * @returns {Array}
- */
 function uniqueArray(a) {
   return Array.from(new Set(a));
 }
@@ -53,7 +32,6 @@ function copyTextToClipboard(text) {
   );
 }
 
-//From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
 function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
@@ -62,13 +40,10 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-//http://stackoverflow.com/a/25214113
 function fragmentFromString(strHTML) {
   return document.createRange().createContextualFragment(strHTML);
 }
 
-// MIT license
-// http://stackoverflow.com/questions/105034/how-to-create-a-guid-uuid-in-javascript/21963136#21963136
 function generateUUID() {
   var lut = [];
   for (var i = 0; i < 256; i++) {
@@ -109,13 +84,14 @@ function generateId(prefix, string, suffix) {
   prefix = prefix || "";
 
   if (string) {
-    //XXX: I think we want to trim.
     string = string.trim();
     string = string.replace(/\W/g, "-");
     var s1 = string.substr(0, 1);
     string =
       prefix === "" && s1 == parseInt(s1) ? "x-" + string : prefix + string;
-    return document.getElementById(string) ? string + "-" + (suffix || generateUUID()) : string;
+    return document.getElementById(string)
+      ? string + "-" + (suffix || generateUUID())
+      : string;
   } else {
     return generateUUID();
   }
@@ -129,7 +105,6 @@ function generateAttributeId(prefix, string, suffix) {
   return id;
 }
 
-// https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
 function getHash(message, algo = "SHA-256") {
   var buffer = new TextEncoder("utf-8").encode(message);
   return window.crypto.subtle.digest(algo, buffer).then(function (hash) {
@@ -146,7 +121,6 @@ function getHash(message, algo = "SHA-256") {
   });
 }
 
-//From http://werxltd.com/wp/2010/05/13/javascript-implementation-of-javas-string-hashcode-method/
 function hashCode(s) {
   var hash = 0;
   if (s.length == 0) return hash;
@@ -167,3 +141,19 @@ function sortToLower(array, key) {
     return a.toLowerCase().localeCompare(b.toLowerCase());
   });
 }
+
+export {
+  uniqueArray,
+  getDateTimeISO,
+  removeChildren,
+  copyTextToClipboard,
+  escapeRegExp,
+  sleep,
+  fragmentFromString,
+  generateUUID,
+  generateAttributeId,
+  generateId,
+  getHash,
+  hashCode,
+  sortToLower
+};

@@ -5,4 +5,5 @@ module.exports = {
   coverageProvider: "v8",
   testEnvironment: "jsdom",
   modulePathIgnorePatterns: ["e2e"],
+  setupFiles: ["<rootDir>/test-setup.js"],
 };
