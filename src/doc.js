@@ -1254,17 +1254,18 @@ function getResourceInfo(data, options) {
         .map(function(mediaType) {
           return 'script[type="' + mediaType + '"]';
         });
-
+// console.log(selectors)
       var promises = [];
 
       var scripts = node.querySelectorAll(selectors.join(', '));
+// console.log(scripts)
       scripts.forEach(function(script){
         var scriptType = script.getAttribute('type').trim();
         var scriptData = script.textContent;
-
+// console.log(scriptData)
         var matches = Array.from(scriptData.matchAll(/<!\[CDATA\[(.*?)\]\]>/gs));
         scriptData = matches.map(match => match[1].trim()).join('\n');
-
+// console.log(scriptData)
         //Cleans up the data block from comments at the beginning and end of the script.
         var lines = scriptData.split(/\r\n|\r|\n/);
         lines = lines.filter(function(line, index) {
