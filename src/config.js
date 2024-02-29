@@ -253,6 +253,7 @@ module.exports = {
   ResourceType: {
     "http://schema.org/Article": {'name': 'Article', 'description': 'An article, such as a news article or piece of investigative report.'},
     "http://schema.org/BlogPosting": {'name': 'BlogPosting', 'description': 'A blog post.'},
+    "http://schema.org/Course": {'name': 'Course', 'description': 'A description of an educational course.'},    
     "http://schema.org/Guide": {'name': 'Guide', 'description': 'Guide is a page or article that recommends specific products or services, or aspects of a thing for a user to consider.'},
     "http://schema.org/NewsArticle": {'name': 'NewsArticle', 'description': 'A NewsArticle is an article whose content reports news, or provides background context and supporting materials for understanding the news.'},
     "http://schema.org/Recipe": {'name': 'Recipe', 'description': 'A recipe.'},
