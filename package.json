@@ -5,7 +5,7 @@
   "main": "./src/dokieli.js",
   "scripts": {
     "build-dist": "webpack --progress --color",
-    "build": "npm run build-dist",
+    "build": "yarn build-dist",
     "standard": "standard src/auth.js src/doc.js src/fetcher.js src/graph.js src/inbox.js src/simplerdf.js src/uri.js src/util.js ",
     "test": "TZ=UTC jest --silent",
     "test:e2e": "playwright test",
@@ -32,7 +32,6 @@
   },
   "homepage": "https://dokie.li/",
   "engines": {
-    "npm": ">=8.0.0",
     "node": ">=18.0.0"
   },
   "dependencies": {
@@ -47,7 +46,6 @@
     "micromark": "^4.0.0",
     "micromark-extension-gfm": "^3.0.0",
     "micromark-extension-gfm-tagfilter": "^2.0.0",
-    "npm": "^10.5.0",
     "patch-package": "^8.0.0",
     "process": "^0.11.10",
     "rdf-parser-rdfa": "https://github.com/rdf-ext/rdf-parser-rdfa.git#master",
@@ -69,16 +67,17 @@
     "webpack": "^5.76.3",
     "webpack-cli": "^5.0.1"
   },
-  "overrides": {
+  "resolutions": {
     "ansi-regex": "^5.0.0",
     "xmldom": "https://github.com/xmldom/xmldom.git#master",
     "green-turtle": "https://github.com/csarven/green-turtle#master",
     "json5": "^1.0.2",
     "http-cache-semantics": "^4.1.1",
     "jsonld": "^5.0.0",
-    "xml2js": "^5.0.0",
+    "xml2js": "^0.6.2",
     "semver": "^7.5.2",
-    "ip": "^2.0.1"
+    "ip": "^2.0.1",
+    "lru-cache": "^8.0.0"
   },
   "standard": {
     "globals": [
