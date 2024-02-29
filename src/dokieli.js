@@ -8171,8 +8171,7 @@ WHERE {\n\
               });
             }
 
-            //TODO: Show only if document is a doap:Specification?
-            if (DO.C.Resource[documentURL] && DO.C.Resource[documentURL].graph.spectestSuite) {
+            if (s.rdftype.indexOf(DO.C.Vocab["doapSpecification"]["@id"]) > -1) {
               var documentTestSuite = 'document-test-suite';
               var testSuite = document.getElementById(documentTestSuite);
               if (!testSuite) {
