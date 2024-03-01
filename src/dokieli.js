@@ -8630,43 +8630,43 @@ WHERE {\n\
 
               switch(this.action) {
                 case 'cite': default:
-                  this.contentFA = template.Icon[".fas.fa-hashtag"];
+                  this.contentFA = Icon[".fas.fa-hashtag"];
                   break;
                 case 'article':
-                  this.contentFA = template.Icon[".fas.fa-sticky-note"];
+                  this.contentFA = Icon[".fas.fa-sticky-note"];
                   this.signInRequired = true;
                   break;
                 case 'note':
-                  this.contentFA = template.Icon[".fas.fa-sticky-note"];
+                  this.contentFA = Icon[".fas.fa-sticky-note"];
                   break;
                 case 'rdfa':
-                  this.contentFA = template.Icon[".fas.fa-rocket"];
+                  this.contentFA = Icon[".fas.fa-rocket"];
                   break;
                 case 'selector':
-                  this.contentFA = template.Icon[".fas.fa-anchor"];
+                  this.contentFA = Icon[".fas.fa-anchor"];
                   break;
                 case 'bookmark':
-                  this.contentFA = template.Icon[".fas.fa-bookmark"];
+                  this.contentFA = Icon[".fas.fa-bookmark"];
                   this.signInRequired = true;
                   break;
                 case 'share':
-                  this.contentFA = template.Icon[".fas.fa-bullhorn"];
+                  this.contentFA = Icon[".fas.fa-bullhorn"];
                   this.signInRequired = true;
                   break;
                 case 'approve':
-                  this.contentFA = template.Icon[".fas.fa-thumbs-up"];
+                  this.contentFA = Icon[".fas.fa-thumbs-up"];
                   this.signInRequired = true;
                   break;
                 case 'disapprove':
-                  this.contentFA = template.Icon[".fas.fa-thumbs-down"];
+                  this.contentFA = Icon[".fas.fa-thumbs-down"];
                   this.signInRequired = true;
                   break;
                 case 'specificity':
-                  this.contentFA = template.Icon[".fas.fa-crosshairs"];
+                  this.contentFA = Icon[".fas.fa-crosshairs"];
                   this.signInRequired = true;
                   break;
                 case 'sparkline':
-                  this.contentFA = template.Icon[".fas.fa-chart-line"];
+                  this.contentFA = Icon[".fas.fa-chart-line"];
                   break;
               }
               MediumEditor.extensions.form.prototype.init.apply(this, arguments);
@@ -8877,13 +8877,13 @@ WHERE {\n\
 
               tmpl.push(
                 '<a href="#" class="medium-editor-toolbar-save" title="Save">',
-                this.getEditorOption('buttonLabels') === 'fontawesome' ? template.Icon[".fas.fa-check"] : this.formSaveLabel,
+                this.getEditorOption('buttonLabels') === 'fontawesome' ? Icon[".fas.fa-check"] : this.formSaveLabel,
                 '</a>'
               );
 
               tmpl.push(
                 '<a href="#" class="medium-editor-toolbar-close" title="Close">',
-                this.getEditorOption('buttonLabels') === 'fontawesome' ? template.Icon[".fas.fa-times"] : this.formCloseLabel,
+                this.getEditorOption('buttonLabels') === 'fontawesome' ? Icon[".fas.fa-times"] : this.formCloseLabel,
                 '</a>'
               );
 
@@ -9135,7 +9135,7 @@ WHERE {\n\
 
                   queryURL = uri.getProxyableIRI(queryURL);
 
-                  form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', '<div id="' + sparklineGraphId + '"></div>' + template.Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]);
+                  form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', '<div id="' + sparklineGraphId + '"></div>' + Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]);
                   sG = document.getElementById(sparklineGraphId);
 
                   graph.getResourceGraph(queryURL)
@@ -9157,7 +9157,7 @@ WHERE {\n\
                         for (var i = 0; i < sparkline.length; i++) {
                           sparkline[i].parentNode.removeChild(sparkline[i]);
                         }
-                        form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', template.Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]);
+                        form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]);
 
                         var dataset = e.target.value;
                         var title = e.target.querySelector('*[value="' + e.target.value + '"]').textContent.trim();
@@ -9742,7 +9742,7 @@ WHERE {\n\
                       lang: opts.language,
                       textContent: _this.base.selection
                     };
-                    ref = template.createRDFaHTML(noteData, 'expanded');
+                    ref = createRDFaHTML(noteData, 'expanded');
                     break;
 
                   case 'bookmark':
