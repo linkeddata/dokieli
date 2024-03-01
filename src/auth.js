@@ -1,5 +1,6 @@
 'use strict'
 
+import Config from './config.js'
 import { deleteResource } from './fetcher.js'
 import { removeChildren, fragmentFromString } from './util.js'
 import { getAgentHTML } from './doc.js'
