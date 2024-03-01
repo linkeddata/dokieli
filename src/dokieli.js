@@ -14,10 +14,13 @@ import { getProxyableIRI, getPathURL, stripFragmentFromString, getFragmentOrLast
 import { getResourceGraph, traverseRDFList, getLinkRelation, getAgentName, getGraphImage, getGraphFromData, isActorType, isActorProperty, serializeGraph, getGraphLabel, getUserContacts, getAgentOutbox, getAgentStorage, getAgentInbox, getLinkRelationFromHead, sortGraphTriples } from './graph.js'
 import { notifyInbox, sendNotifications, postActivity } from './inbox.js'
 import { uniqueArray, fragmentFromString, hashCode, generateAttributeId, escapeRegExp, sortToLower, getDateTimeISO, generateUUID } from './util.js'
-import MediumEditor from "medium-editor";
-import MediumEditorTable from "medium-editor-tables";
+import MediumEditor from "medium-editor/dist/js/medium-editor.js";
 window.MediumEditor = MediumEditor;
-window.MediumEditorTable = MediumEditorTable;
+
+// import MediumEditorTable from "medium-editor-tables/dist/js/medium-editor-tables.js";
+
+// window.MediumEditorTable = MediumEditorTable;
+
 import { getLocalStorageProfile, showAutoSaveStorage, hideAutoSaveStorage, updateLocalStorageProfile } from './storage.js'
 import { showUserSigninSignout, showUserIdentityInput } from './auth.js'
 import { Icon, createRDFaHTML } from './template.js'
@@ -37,6 +40,8 @@ import * as ld from './simplerdf.cjs'
 import Config from './config.js';
 
 let DO;
+
+console.log('ME', MediumEditor);
 
 if(typeof window.DO === 'undefined'){
 const SimpleRDF = ld.SimpleRDF
