@@ -2014,7 +2014,7 @@ function getAgentHTML(options = {}) {
   
   let user = ''
   
-  if ('IRI' in User && Config.User.IRI !== null && Config.User.IRI.length > 0) {
+  if ('IRI' in Config.User && Config.User.IRI !== null && Config.User.IRI.length > 0) {
     user = '<span about="' + Config.User.IRI + '" typeof="schema:Person">' +
     userImage + '<a rel="schema:url" href="' + Config.User.IRI + '"> ' +
     userName + '</a></span>'
