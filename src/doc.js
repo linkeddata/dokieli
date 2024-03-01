@@ -37,10 +37,9 @@ function fixBrokenHTML(html) {
 }
 
 function domToString (node, options = {}) {
+  options = options || Config.DOMNormalisation
   var voidElements = options.voidElements || []
-
   var skipAttributes = options.skipAttributes || []
-
   var noEsc = [ false ]
 
   return dumpNode(node, options, skipAttributes, voidElements, noEsc)
