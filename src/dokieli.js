@@ -7738,7 +7738,7 @@ WHERE {\n\
       }
 
       Object.keys(DO.C.ResourceType).forEach(function(iri){
-        selected = (iri == selectedType) ? ' selected="selected"' : '';
+        var selected = (iri == selectedType) ? ' selected="selected"' : '';
         s += '<option value="' + iri + '" title="' + DO.C.ResourceType[iri].description  + '"' + selected + '>' + DO.C.ResourceType[iri].name  + '</option>';
       });
 
