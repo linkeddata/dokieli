@@ -55,8 +55,6 @@ module.exports = (env) => {
       "isomorphic-fetch": "fetch",
       "@trust/webcrypto": "crypto",
       "solid-auth-client": ["solid", "auth"],
-      "medium-editor": "MediumEditor",
-      "medium-editor-tables": "MediumEditorTable",
     },
     devtool: "source-map",
     optimization: {

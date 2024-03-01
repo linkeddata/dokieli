@@ -14,8 +14,10 @@ import { getProxyableIRI, getPathURL, stripFragmentFromString, getFragmentOrLast
 import { getResourceGraph, traverseRDFList, getLinkRelation, getAgentName, getGraphImage, getGraphFromData, isActorType, isActorProperty, serializeGraph, getGraphLabel, getUserContacts, getAgentOutbox, getAgentStorage, getAgentInbox, getLinkRelationFromHead, sortGraphTriples } from './graph.js'
 import { notifyInbox, sendNotifications, postActivity } from './inbox.js'
 import { uniqueArray, fragmentFromString, hashCode, generateAttributeId, escapeRegExp, sortToLower, getDateTimeISO, generateUUID } from './util.js'
-// import * as MediumEditor from "medium-editor";
-// import * as MediumEditorTable from "medium-editor-tables";
+import MediumEditor from "medium-editor";
+import MediumEditorTable from "medium-editor-tables";
+window.MediumEditor = MediumEditor;
+window.MediumEditorTable = MediumEditorTable;
 import { getLocalStorageProfile, showAutoSaveStorage, hideAutoSaveStorage, updateLocalStorageProfile } from './storage.js'
 import { showUserSigninSignout, showUserIdentityInput } from './auth.js'
 import { Icon, createRDFaHTML } from './template.js'
@@ -34,7 +36,6 @@ import { gfmTagfilterHtml } from 'micromark-extension-gfm-tagfilter'
 import * as ld from './simplerdf.cjs'
 import Config from './config.js';
 
-console.log("ME", window.MediumEditor)
 let DO;
 
 if(typeof window.DO === 'undefined'){
@@ -7901,7 +7902,7 @@ WHERE {\n\
           document.documentElement.appendChild(fragmentFromString('<aside id="document-editor" class="do"></aside>'))
         }
         console.log(DO.U.Editor)
-
+        // console.log(new DO.U.Editor.Button({action:'h2', label:'h2'}))
         var editorOptions = {
           author: {
             id: 'author',
