@@ -32,7 +32,7 @@ import { micromark as marked } from 'micromark'
 import { gfm, gfmHtml } from 'micromark-extension-gfm'
 import { gfmTagfilterHtml } from 'micromark-extension-gfm-tagfilter'
 import * as ld from './simplerdf.cjs'
-import { Config }from './config.js';
+import Config from './config.js';
 
 console.log("ME", window.MediumEditor)
 let DO;

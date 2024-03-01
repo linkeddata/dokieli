@@ -1,6 +1,5 @@
 'use strict'
 
-import { User, Button, OidcPopupUrl } from './config.js'
 import { deleteResource } from './fetcher.js'
 import { removeChildren, fragmentFromString } from './util.js'
 import { getAgentHTML } from './doc.js'
@@ -21,17 +20,17 @@ async function showUserSigninSignout (node) {
   const session = await solid.auth.currentSession();
   var webId = session ? session.webId : null;
   // was LoggedId with new OIDC WebID
-  if (webId && (webId != User.IRI || !User.IRI)) {
+  if (webId && (webId != Config.User.IRI || !Config.User.IRI)) {
      await setUserInfo(webId, true)
           .then(() => {
             afterSignIn()
           })
   }
   // was LoggedOut as OIDC
-  if (!webId && User.IRI && User.OIDC) {
+  if (!webId && Config.User.IRI && Config.User.OIDC) {
     removeLocalStorageProfile()
 
-    User = {
+    Config.User = {
       IRI: null,
       Role: 'social',
       UI: {}
@@ -46,7 +45,7 @@ async function showUserSigninSignout (node) {
   if (!userInfo) {
     var s = ''
 
-    if (User.IRI) {
+    if (Config.User.IRI) {
       s = getUserSignedInHTML()
     }
     else {
@@ -59,13 +58,13 @@ async function showUserSigninSignout (node) {
 
     userInfo.addEventListener('click', async function(e) {
       if (e.target.closest('.signout-user')) {
-        if (User.OIDC) {
+        if (Config.User.OIDC) {
           await logout();
         }
 
         removeLocalStorageProfile()
 
-        User = {
+        Config.User = {
           IRI: null,
           Role: 'social',
           UI: {}
@@ -99,8 +98,8 @@ function showUserIdentityInput (e) {
     e.target.disabled = true
   }
 
-  var webid = User.WebIdDelegate ? User.WebIdDelegate : "";
-  var code = '<aside id="user-identity-input" class="do on">' + Button.Close + '<h2>Sign in</h2><p id="user-identity-input-webid"><label>WebID</label> <input id="webid" type="text" placeholder="https://csarven.ca/#i" value="'+webid+'" name="webid"/> <button class="signin">Sign in</button></p>';
+  var webid = Config.User.WebIdDelegate ? Config.User.WebIdDelegate : "";
+  var code = '<aside id="user-identity-input" class="do on">' + Config.Button.Close + '<h2>Sign in</h2><p id="user-identity-input-webid"><label>WebID</label> <input id="webid" type="text" placeholder="https://csarven.ca/#i" value="'+webid+'" name="webid"/> <button class="signin">Sign in</button></p>';
   //XXX: This limitation may not be necessary.
   // if (window.location.protocol === "https:") {
     code += '<p id="user-identity-input-oidc">or with <label>OpenID Connect</label> <button class="signin-oidc">Sign in</button></p>';
@@ -110,7 +109,7 @@ function showUserIdentityInput (e) {
   document.documentElement.appendChild(fragmentFromString(code))
 
   var buttonSignIn = document.querySelector('#user-identity-input button.signin')
-  if (! User.WebIdDelegate)
+  if (! Config.User.WebIdDelegate)
     buttonSignIn.setAttribute('disabled', 'disabled')
 
   document.querySelector('#user-identity-input').addEventListener('click', e => {
@@ -206,7 +205,7 @@ function submitSignIn (url) {
 function submitSignInOIDC (url) {
   var userIdentityInput = document.getElementById('user-identity-input')
 
-  var popupUri = OidcPopupUrl;
+  var popupUri = Config.OidcPopupUrl;
 
   if (solidAuth) {
     popupLogin({ popupUri })
@@ -251,47 +250,47 @@ function setUserInfo (userIRI, oidc) {
     .then(g => {
       var s = g.child(userIRI)
 
-      User.Graph = s
-      User.IRI = userIRI
-      User.Name = getAgentName(s)
-      User.Image = getGraphImage(s)
-      User.URL = getAgentURL(s)
-      User.OIDC = oidc ? true : false;
+      Config.User.Graph = s
+      Config.User.IRI = userIRI
+      Config.User.Name = getAgentName(s)
+      Config.User.Image = getGraphImage(s)
+      Config.User.URL = getAgentURL(s)
+      Config.User.OIDC = oidc ? true : false;
 
-      User.ProxyURL = getAgentPreferredProxy(s)
-      User.PreferredPolicy = getAgentPreferredPolicy(s)
+      Config.User.ProxyURL = getAgentPreferredProxy(s)
+      Config.User.PreferredPolicy = getAgentPreferredPolicy(s)
 
-      User.Delegates = getAgentDelegates(s)
+      Config.User.Delegates = getAgentDelegates(s)
 
-      User.Contacts = {}
-      User.Knows = getAgentKnows(s)
-      User.Following = getAgentFollowing(s)
-      User.SameAs = []
-      User.SeeAlso = []
+      Config.User.Contacts = {}
+      Config.User.Knows = getAgentKnows(s)
+      Config.User.Following = getAgentFollowing(s)
+      Config.User.SameAs = []
+      Config.User.SeeAlso = []
 
-      User.Storage = getAgentStorage(s)
-      User.Outbox = getAgentOutbox(s)
-      User.Inbox = getAgentInbox(s)
-      User.TypeIndex = {}
+      Config.User.Storage = getAgentStorage(s)
+      Config.User.Outbox = getAgentOutbox(s)
+      Config.User.Inbox = getAgentInbox(s)
+      Config.User.TypeIndex = {}
 
-      User.PreferencesFile = getAgentPreferencesFile(s)
-      User.PublicTypeIndex = getAgentPublicTypeIndex(s)
-      User.PrivateTypeIndex = getAgentPrivateTypeIndex(s)
+      Config.User.PreferencesFile = getAgentPreferencesFile(s)
+      Config.User.PublicTypeIndex = getAgentPublicTypeIndex(s)
+      Config.User.PrivateTypeIndex = getAgentPrivateTypeIndex(s)
 
-      return User
+      return Config.User
     })
 }
 
 function afterSignIn () {
   var promises = [];
 
-  promises.push(getAgentTypeIndex(User))
+  promises.push(getAgentTypeIndex(Config.User))
 
-  promises.push(getAgentSupplementalInfo(User.IRI))
+  promises.push(getAgentSupplementalInfo(Config.User.IRI))
 
-  promises.push(getAgentSeeAlso(User.Graph))
+  promises.push(getAgentSeeAlso(Config.User.Graph))
 
-  promises.push(getAgentPreferencesInfo(User.Graph))
+  promises.push(getAgentPreferencesInfo(Config.User.Graph))
 
   Promise.all(promises)
     .then(function(results) {
@@ -300,7 +299,7 @@ function afterSignIn () {
         uI.innerHTML = getUserSignedInHTML()
       }
 
-      return updateLocalStorageProfile(User)
+      return updateLocalStorageProfile(Config.User)
     })
     .catch(function(e) {
       return Promise.resolve();
@@ -309,7 +308,7 @@ function afterSignIn () {
   var rA = document.querySelector('#document-menu .resource-activities')
   if(rA) { rA.removeAttribute('disabled') }
 
-  var user = document.querySelectorAll('aside.do article *[rel~="schema:creator"] > *[about="' + User.IRI + '"]')
+  var user = document.querySelectorAll('aside.do article *[rel~="schema:creator"] > *[about="' + Config.User.IRI + '"]')
   for (let i = 0; i < user.length; i++) {
     var article = user[i].closest('article')
     article.insertAdjacentHTML('afterbegin', '<button class="delete"><svg class="fas fa-trash-alt" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M0 84V56c0-13.3 10.7-24 24-24h112l9.4-18.7c4-8.2 12.3-13.3 21.4-13.3h114.3c9.1 0 17.4 5.1 21.5 13.3L312 32h112c13.3 0 24 10.7 24 24v28c0 6.6-5.4 12-12 12H12C5.4 96 0 90.6 0 84zm416 56v324c0 26.5-21.5 48-48 48H80c-26.5 0-48-21.5-48-48V140c0-6.6 5.4-12 12-12h360c6.6 0 12 5.4 12 12zm-272 68c0-8.8-7.2-16-16-16s-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208zm96 0c0-8.8-7.2-16-16-16s-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208zm96 0c0-8.8-7.2-16-16-16s-16 7.2-16 16v224c0 8.8 7.2 16 16 16s16-7.2 16-16V208z"/></svg></button>')

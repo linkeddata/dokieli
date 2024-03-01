@@ -1,6 +1,6 @@
 'use strict'
 
-import { MediaTypes, User } from './config.js'
+import Config from './config.js'
 import { generateUUID } from './util.js'
 import { getProxyableIRI } from './uri.js'
 import LinkHeader from 'http-link-header'
@@ -14,8 +14,8 @@ const __fetch = solidAuth.fetch;
 function setAcceptRDFTypes(options) {
   options = options || {};
 
-  return MediaTypes.RDF.map(i => {
-    if (MediaTypes.Markup.indexOf(i) > -1) {
+  return Config.MediaTypes.RDF.map(i => {
+    if (Config.MediaTypes.Markup.indexOf(i) > -1) {
       // q = Number(Math.round((q-0.1)+'e2')+'e-2');
       return i + ';q=0.9';
     }
@@ -36,7 +36,7 @@ function copyResource (fromURL, toURL, options = {}) {
     .then(response => {
       contentType = response.headers.get('Content-Type')
 
-      return (MediaTypes.Binary.indexOf(contentType))
+      return (Config.MediaTypes.Binary.indexOf(contentType))
         ? response.arrayBuffer()
         : response.text()
     })
@@ -70,7 +70,7 @@ function currentLocation () {
  * @returns {Promise<Response>}
  */
 function deleteResource (url, options = {}) {
-  var _fetch = User.OIDC? __fetch : fetch;
+  var _fetch = Config.User.OIDC? __fetch : fetch;
 
   if (!url) {
     return Promise.reject(new Error('Cannot DELETE resource - missing url'))
@@ -184,7 +184,7 @@ function getAcceptPutPreference (url) {
  * @returns {Promise<string>|Promise<ArrayBuffer>}
  */
 function getResource (url, headers = {}, options = {}) {
-  var _fetch = User.OIDC? __fetch : fetch;
+  var _fetch = Config.User.OIDC? __fetch : fetch;
 
   url = url || currentLocation()
   options.method = ('method' in options && options.method == 'HEAD') ? 'HEAD' : 'GET'
@@ -273,7 +273,7 @@ function getResourceHead (url, headers = {}, options = {}) {
  * @returns {Promise} Resolves with `{ headers: ... }` object
  */
 function getResourceOptions (url, options = {}) {
-  var _fetch = User.OIDC? __fetch : fetch;
+  var _fetch = Config.User.OIDC? __fetch : fetch;
   url = url || currentLocation()
 
   options.method = 'OPTIONS'
@@ -368,7 +368,7 @@ function patchResourceGraph (url, patches, options = {}) {
 }
 
 function patchResource (url, data, options = {}) {
-  var _fetch = User.OIDC? __fetch : fetch;
+  var _fetch = Config.User.OIDC? __fetch : fetch;
 
   options.headers = options.headers || {}
 
@@ -399,7 +399,7 @@ function patchResource (url, data, options = {}) {
 }
 
 function postResource (url, slug, data, contentType, links, options = {}) {
-  var _fetch = User.OIDC? __fetch : fetch;
+  var _fetch = Config.User.OIDC? __fetch : fetch;
   if (!url) {
     return Promise.reject(new Error('Cannot POST resource - missing url'))
   }
@@ -468,7 +468,7 @@ function postResource (url, slug, data, contentType, links, options = {}) {
  * @returns {Promise<Response>}
  */
 function putResource (url, data, contentType, links, options = {}) {
-  var _fetch = User.OIDC? __fetch : fetch;
+  var _fetch = Config.User.OIDC? __fetch : fetch;
   if (!url) {
     return Promise.reject(new Error('Cannot PUT resource - missing url'))
   }
@@ -519,13 +519,13 @@ function putResource (url, data, contentType, links, options = {}) {
  * @returns {Promise<Response|null>}
  */
 function putResourceACL (accessToURL, aclURL, acl) {
-  if (!User.IRI) {
+  if (!Config.User.IRI) {
     console.log('Go through sign-in or do: DO.C.User.IRI = "https://example.org/#i";')
     return Promise.resolve(null)
   }
 
   acl = acl || {
-    'u': { 'iri': [User.IRI], 'mode': ['acl:Control', 'acl:Read', 'acl:Write'] },
+    'u': { 'iri': [Config.User.IRI], 'mode': ['acl:Control', 'acl:Read', 'acl:Write'] },
     'g': { 'iri': ['http://xmlns.com/foaf/0.1/Agent'], 'mode': ['acl:Read'] },
     'o': { 'iri': [], 'mode': [] }
   }
@@ -536,7 +536,7 @@ function putResourceACL (accessToURL, aclURL, acl) {
     agent = '<' + acl.u.iri.join('> , <') + '>'
     mode = acl.u.mode.join(' , ')
   } else {
-    agent = '<' + User.IRI + '>'
+    agent = '<' + Config.User.IRI + '>'
     mode = 'acl:Control , acl:Read , acl:Write'
   }
 
