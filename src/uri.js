@@ -1,6 +1,6 @@
 'use strict';
 
-import { User } from './config.js';
+import Config from './config.js';
 
 function encodeString(string) {
   return encodeURIComponent(string).replace(/'/g, '%27').replace(/"/g, '%22');
@@ -52,8 +52,8 @@ function getProxyableIRI(url, options = {}) {
 function getProxyURL(options) {
   return (typeof options !== 'undefined' && 'proxyURL' in options)
     ? options.proxyURL
-    : (User.ProxyURL)
-      ? User.ProxyURL
+    : (Config.User.ProxyURL)
+      ? Config.User.ProxyURL
       : undefined;
 }
 

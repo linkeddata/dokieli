@@ -1,6 +1,6 @@
 'use strict'
 
-import { Config, UseLocalStorage, AutoSave, WebExtension } from './config.js';
+import Config from './config.js';
 import { getDateTimeISO, generateUUID, getHash } from './util.js';
 import { getDocument, updateMutableResource } from './doc.js';
 
@@ -12,7 +12,7 @@ function initLocalStorage(key) {
 }
 
 function enableLocalStorage(key) {
-  UseLocalStorage = true;
+  Config.UseLocalStorage = true;
   var o = localStorage.getItem(key);
   try {
     document.documentElement.innerHTML = JSON.parse(o).object.content;
@@ -23,7 +23,7 @@ function enableLocalStorage(key) {
 }
 
 function disableLocalStorage(key) {
-  UseLocalStorage = false;
+  Config.UseLocalStorage = false;
   localStorage.removeItem(key);
   disableAutoSave(key, {'method': 'localStorage'});
   console.log(getDateTimeISO() + ': ' + key + ' storage disabled.');
@@ -54,7 +54,7 @@ function updateLocalStorageDocument(key, data, options) {
   localStorage.setItem(key, JSON.stringify(object));
 
   if (options.autoSave) {
-    AutoSave.Items[key]['localStorage']['updated'] = object.object.updated;
+    Config.AutoSave.Items[key]['localStorage']['updated'] = object.object.updated;
   }
 
   console.log(datetime + ': Document saved.');
@@ -69,7 +69,7 @@ function updateHTTPStorageDocument(url, data, options) {
   updateMutableResource(url);
 
   if (options.autoSave) {
-    AutoSave.Items[url]['http']['updated'] = datetime;
+    Config.AutoSave.Items[url]['http']['updated'] = datetime;
   }
 
   console.log(datetime + ': Document saved.');
@@ -79,8 +79,8 @@ function enableAutoSave(key, options) {
   options = options || {};
   options['method'] = ('method' in options) ? options.method : 'localStorage';
   options['autoSave'] = true;
-  AutoSave.Items[key] = (AutoSave.Items[key]) ? AutoSave.Items[key] : {};
-  AutoSave.Items[key][options.method] = (AutoSave.Items[key][options.method]) ? AutoSave.Items[key][options.method] : {};
+  Config.AutoSave.Items[key] = (Config.AutoSave.Items[key]) ? Config.AutoSave.Items[key] : {};
+  Config.AutoSave.Items[key][options.method] = (Config.AutoSave.Items[key][options.method]) ? Config.AutoSave.Items[key][options.method] : {};
 
   var id;
 
@@ -90,28 +90,28 @@ function enableAutoSave(key, options) {
       id = setInterval(function() {
         var data = getDocument();
         getHash(data).then(hash => {
-          if (!('hash' in AutoSave.Items[key][options.method] && AutoSave.Items[key][options.method].hash == hash)) {
+          if (!('hash' in Config.AutoSave.Items[key][options.method] && Config.AutoSave.Items[key][options.method].hash == hash)) {
             updateLocalStorageDocument(key, data, options);
-            AutoSave.Items[key][options.method]['hash'] = hash;
+            Config.AutoSave.Items[key][options.method]['hash'] = hash;
           }
         });
-      }, AutoSave.Timer);
+      }, Config.AutoSave.Timer);
       break;
 
     case 'http':
       id = setInterval(function() {
         var data = getDocument();
         getHash(data).then(hash => {
-          if (!('hash' in AutoSave.Items[key][options.method] && AutoSave.Items[key][options.method].hash == hash)) {
+          if (!('hash' in Config.AutoSave.Items[key][options.method] && Config.AutoSave.Items[key][options.method].hash == hash)) {
             updateHTTPStorageDocument(key, data, options);
-            AutoSave.Items[key][options.method]['hash'] = hash;
+            Config.AutoSave.Items[key][options.method]['hash'] = hash;
           }
         });
-      }, AutoSave.Timer);
+      }, Config.AutoSave.Timer);
       break;
   }
 
-  AutoSave.Items[key][options.method]['id'] = id;
+  Config.AutoSave.Items[key][options.method]['id'] = id;
 
   console.log(getDateTimeISO() + ': ' + key + ' ' + options.method + ' autosave enabled.');
 }
@@ -119,15 +119,15 @@ function enableAutoSave(key, options) {
 function disableAutoSave(key, options) {
   options = options || {};
   var methods;
-  if(!AutoSave.Items[key]) { return; }
+  if(!Config.AutoSave.Items[key]) { return; }
 
   if('method' in options) {
     methods = (Array.isArray(options.method)) ? options.method : [options.method];
 
     methods.forEach(method => {
-      if (AutoSave.Items[key][method]) {
-        clearInterval(AutoSave.Items[key][method].id);
-        AutoSave.Items[key][method] = undefined;
+      if (Config.AutoSave.Items[key][method]) {
+        clearInterval(Config.AutoSave.Items[key][method].id);
+        Config.AutoSave.Items[key][method] = undefined;
         console.log(getDateTimeISO() + ': ' + key + ' ' + options.method + ' autosave disabled.');
       }
     })
@@ -139,7 +139,7 @@ function removeLocalStorageItem(key) {
 
   // console.log(getDateTimeISO() + ': ' + key + ' removed.')
 
-  if (WebExtension) {
+  if (Config.WebExtension) {
     var browser = (typeof browser !== 'undefined') ? browser : chrome;
 
     return browser.storage.sync.remove(key);
@@ -161,7 +161,7 @@ function removeLocalStorageProfile(key) {
 function getLocalStorageProfile(key) {
   key = key || 'DO.C.User'
 
-  if (WebExtension) {
+  if (Config.WebExtension) {
     if (typeof browser !== 'undefined') {
       return browser.storage.sync.get(key).then(function(o){ return o[key]; });
     }
@@ -216,7 +216,7 @@ function updateLocalStorageProfile(User) {
     "actor": U.IRI
   };
 
-  if (WebExtension) {
+  if (Config.WebExtension) {
     if (typeof browser !== 'undefined') {
       return browser.storage.sync.set({[key]: object});
     }
@@ -241,7 +241,7 @@ function showAutoSaveStorage(node, iri) {
   var checked;
   var useLocalStorage = '';
   if (window.localStorage) {
-    checked = (AutoSave.Items[iri] && AutoSave.Items[iri]['localStorage']) ? ' checked="checked"' : '';
+    checked = (Config.AutoSave.Items[iri] && Config.AutoSave.Items[iri]['localStorage']) ? ' checked="checked"' : '';
 
     //XXX: May bring this back somewhere else.
     // useLocalStorage = '<li class="local-storage-html-autosave"><input id="local-storage-html-autosave" class="autosave" type="checkbox"' + checked +' /> <label for="local-storage-html-autosave">' + (Config.AutoSave.Timer / 60000) + 'm autosave (local storage)</label></li>';
@@ -250,9 +250,9 @@ function showAutoSaveStorage(node, iri) {
     enableAutoSave(iri, {'method': 'localStorage'});
   }
 
-  checked = (AutoSave.Items[iri] && AutoSave.Items[iri]['http']) ? ' checked="checked"' : '';
+  checked = (Config.AutoSave.Items[iri] && Config.AutoSave.Items[iri]['http']) ? ' checked="checked"' : '';
 
-  var useHTTPStorage = '<li class="http-storage-html-autosave"><input id="http-storage-html-autosave" class="autosave" type="checkbox"' + checked +' /> <label for="http-storage-html-autosave">' + (AutoSave.Timer / 60000) + 'm autosave (http)</label></li>';
+  var useHTTPStorage = '<li class="http-storage-html-autosave"><input id="http-storage-html-autosave" class="autosave" type="checkbox"' + checked +' /> <label for="http-storage-html-autosave">' + (Config.AutoSave.Timer / 60000) + 'm autosave (http)</label></li>';
   // var useHTTPStorage = '';
 
   node.insertAdjacentHTML('beforeend', '<ul id="autosave-items" class="on">' + useLocalStorage + useHTTPStorage + '</ul>');
@@ -288,7 +288,7 @@ function hideAutoSaveStorage(node, iri) {
   node.parentNode.removeChild(node);
   disableAutoSave(iri);
   //XXX: Disabling autoSave for localStorage (as it was enabled by default)
-  if (AutoSave.Items[iri] && AutoSave.Items[iri]['localStorage']) {
+  if (Config.AutoSave.Items[iri] && Config.AutoSave.Items[iri]['localStorage']) {
     disableAutoSave(iri, {'method': 'localStorage'});
   }
 }

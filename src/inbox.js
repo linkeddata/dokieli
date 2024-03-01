@@ -4,7 +4,7 @@ import { getDocument, createActivityHTML, createHTML } from './doc.js';
 import { getAbsoluteIRI, getProxyableIRI } from './uri.js';
 import { getMatchFromData, getLinkRelation, serializeDataToPreferredContentType } from './graph.js';
 import { getAcceptPostPreference, postResource } from './fetcher.js';
-import { Vocab, Prefixes } from './config.js';
+import Config from './config.js';
 
 function sendNotifications(tos, note, iri, shareResource) {
   return new Promise((resolve, reject) => {
@@ -23,7 +23,7 @@ function sendNotifications(tos, note, iri, shareResource) {
     };
     var spo = {
       'subject': iri,
-      'predicate': Vocab['rdftype']['@id']
+      'predicate': Config.Vocab['rdftype']['@id']
     };
 
     getMatchFromData(data, spo, options)
@@ -34,7 +34,7 @@ function sendNotifications(tos, note, iri, shareResource) {
 
         let spo = {
           'subject': iri,
-          'predicate': Vocab['schemalicense']['@id']
+          'predicate': Config.Vocab['schemalicense']['@id']
         };
 
         return getMatchFromData(data, spo, options)
@@ -88,7 +88,7 @@ function sendNotifications(tos, note, iri, shareResource) {
 }
 
 function inboxResponse(to, toInput) {
-  return getLinkRelation(Vocab['ldpinbox']['@id'], to)
+  return getLinkRelation(Config.Vocab['ldpinbox']['@id'], to)
     .then(inboxes => inboxes[0])
 
     .catch(error => {
@@ -119,7 +119,7 @@ function notifyInbox(o) {
   var title = '';
   var data = createActivityHTML(o);
 
-  data = createHTML(title, data, { 'prefixes': Prefixes });
+  data = createHTML(title, data, { 'prefixes': Config.Prefixes });
 
   var options = {
     'contentType': 'text/html',
