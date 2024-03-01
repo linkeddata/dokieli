@@ -5833,8 +5833,8 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
       var fieldset = '';
 
-      locationInboxId = 'location-inbox';
-      locationInboxAction = 'read';
+      var locationInboxId = 'location-inbox';
+      var locationInboxAction = 'read';
       saveAsDocument.insertAdjacentHTML('beforeend', '<div><input id="' + locationInboxId + '-set" name="' + locationInboxId + '-set" type="checkbox" /> <label for="' + locationInboxId + '-set">Set Inbox</label></div>');
 
       saveAsDocument.addEventListener('click', function(e) {
@@ -5859,8 +5859,8 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
         }
       });
 
-      locationAnnotationServiceId = 'location-annotation-service';
-      locationAnnotationServiceAction = 'read';
+      var locationAnnotationServiceId = 'location-annotation-service';
+      var locationAnnotationServiceAction = 'read';
       saveAsDocument.insertAdjacentHTML('beforeend', '<div><input id="' + locationAnnotationServiceId + '-set" name="' + locationAnnotationServiceId + '-set" type="checkbox" /> <label for="' + locationAnnotationServiceId + '-set">Set Annotation Service</label></div>');
 
       saveAsDocument.addEventListener('click', function(e) {
