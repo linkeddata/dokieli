@@ -3046,7 +3046,7 @@ console.log(reason);
 //         if(robustLinksUnique[i.href]) {
 //           //Reuse RL
 // // console.log('Reuse Robust Link? ' + robustLinksUnique[i.href]["data-versionurl"]);
-//           html += '<button class="robustlinks-reuse" title="' + robustLinksUnique[i.href]["data-versionurl"] + '">' + template.Icon[".fas.fa-recycle"] + '</button>';
+//           html += '<button class="robustlinks-reuse" title="' + robustLinksUnique[i.href]["data-versionurl"] + '">' + Icon[".fas.fa-recycle"] + '</button>';
 //         }
 
         html += '</li>';
@@ -7933,18 +7933,18 @@ WHERE {\n\
             },
             anchorPreview: false,
             extensions: {
-              // 'h2': new DO.U.Editor.Button({action:'h2', label:'h2'}),
-              // 'h3': new DO.U.Editor.Button({action:'h3', label:'h3'}),
-              // 'h4': new DO.U.Editor.Button({action:'h4', label:'h4'}),
-              // 'em': new DO.U.Editor.Button({action:'em', label:'em'}),
-              // 'strong': new DO.U.Editor.Button({action:'strong', label:'strong'}),
-              // 'code': new DO.U.Editor.Button({action:'code', label:'code'}),
-              // 'q': new DO.U.Editor.Button({action:'q', label:'q'}),
-              // 'image': new DO.U.Editor.Button({action:'image', label:'image'}),
-              // 'sparkline': new DO.U.Editor.Note({action:'sparkline', label:'sparkline'}),
-              // 'rdfa': new DO.U.Editor.Note({action:'rdfa', label:'rdfa'}),
-              // 'cite': new DO.U.Editor.Note({action:'cite', label:'cite'}),
-              // 'note': new DO.U.Editor.Note({action:'note', label:'note'})
+              'h2': new DO.U.Editor.Button({action:'h2', label:'h2'}),
+              'h3': new DO.U.Editor.Button({action:'h3', label:'h3'}),
+              'h4': new DO.U.Editor.Button({action:'h4', label:'h4'}),
+              'em': new DO.U.Editor.Button({action:'em', label:'em'}),
+              'strong': new DO.U.Editor.Button({action:'strong', label:'strong'}),
+              'code': new DO.U.Editor.Button({action:'code', label:'code'}),
+              'q': new DO.U.Editor.Button({action:'q', label:'q'}),
+              'image': new DO.U.Editor.Button({action:'image', label:'image'}),
+              'sparkline': new DO.U.Editor.Note({action:'sparkline', label:'sparkline'}),
+              'rdfa': new DO.U.Editor.Note({action:'rdfa', label:'rdfa'}),
+              'cite': new DO.U.Editor.Note({action:'cite', label:'cite'}),
+              'note': new DO.U.Editor.Note({action:'note', label:'note'})
             }
           },
 
@@ -7959,13 +7959,13 @@ WHERE {\n\
             disableEditing: true,
             anchorPreview: false,
             extensions: {
-              'selector': DO.U.Editor.Note({action:'selector', label:'selector'}),
-              // 'share': new DO.U.Editor.Note({action:'share', label:'share'}),
-              // 'bookmark': new DO.U.Editor.Note({action:'bookmark', label:'bookmark'}),
-              // 'approve': new DO.U.Editor.Note({action:'approve', label:'approve'}),
-              // 'disapprove': new DO.U.Editor.Note({action:'disapprove', label:'disapprove'}),
-              // 'specificity': new DO.U.Editor.Note({action:'specificity', label:'specificity'}),
-              // 'note': new DO.U.Editor.Note({action:'article', label:'note'})
+              'selector': new DO.U.Editor.Note({action:'selector', label:'selector'}),
+              'share': new DO.U.Editor.Note({action:'share', label:'share'}),
+              'bookmark': new DO.U.Editor.Note({action:'bookmark', label:'bookmark'}),
+              'approve': new DO.U.Editor.Note({action:'approve', label:'approve'}),
+              'disapprove': new DO.U.Editor.Note({action:'disapprove', label:'disapprove'}),
+              'specificity': new DO.U.Editor.Note({action:'specificity', label:'specificity'}),
+              'note': new DO.U.Editor.Note({action:'article', label:'note'})
             }
           }
         };
@@ -8196,7 +8196,7 @@ WHERE {\n\
               var documentTestSuite = 'document-test-suite';
               var testSuite = document.getElementById(documentTestSuite);
               if (!testSuite) {
-                // <!--<button class="add-test-suite" contenteditable="false" title="Add test suite">' + template.Icon[".fas.fa-plus"] + '</button>-->
+                // <!--<button class="add-test-suite" contenteditable="false" title="Add test suite">' + Icon[".fas.fa-plus"] + '</button>-->
                 var dl = '        <dl class="do" id="' + documentTestSuite + '"><dt>Test Suite</dt><dd><input contenteditable="false" name="test-suite" placeholder="https://example.net/test-suite" type="text" value="" /></dd></dl>';
                 insertDocumentLevelHTML(document, dl, { 'id': documentTestSuite });
 
@@ -8223,13 +8223,13 @@ WHERE {\n\
 
       Button: (function () {
         if (typeof MediumEditor !== 'undefined') {
-          MediumEditor.extensions.button.prototype.defaults.unorderedlist.contentFA = template.Icon[".fas.fa-link-ul"];
+          MediumEditor.extensions.button.prototype.defaults.unorderedlist.contentFA = Icon[".fas.fa-link-ul"];
 
-          MediumEditor.extensions.button.prototype.defaults.orderedlist.contentFA = template.Icon[".fas.fa-link-ol"];
+          MediumEditor.extensions.button.prototype.defaults.orderedlist.contentFA = Icon[".fas.fa-link-ol"];
 
-          MediumEditor.extensions.button.prototype.defaults.image.contentFA = template.Icon[".fas.fa-image"];
+          MediumEditor.extensions.button.prototype.defaults.image.contentFA = Icon[".fas.fa-image"];
 
-          MediumEditor.extensions.button.prototype.defaults.pre.contentFA = template.Icon[".fas.fa-code"];
+          MediumEditor.extensions.button.prototype.defaults.pre.contentFA = Icon[".fas.fa-code"];
 
           return MediumEditor.extensions.button.extend({
             init: function () {
@@ -8241,17 +8241,17 @@ WHERE {\n\
               this.contentDefault = '<b>' + this.label + '</b>';
 
               switch(this.action) {
-                case 'h1': case 'h2': case 'h3': case 'h4': case 'h5': case 'h6': this.contentFA = template.Icon[".fas.fa-header"] + parseInt(this.action.slice(-1)); break;
+                case 'h1': case 'h2': case 'h3': case 'h4': case 'h5': case 'h6': this.contentFA = Icon[".fas.fa-header"] + parseInt(this.action.slice(-1)); break;
 
-                case 'em': this.contentFA = template.Icon[".fas.fa-italic"]; break;
+                case 'em': this.contentFA = Icon[".fas.fa-italic"]; break;
 
-                case 'strong': this.contentFA = template.Icon[".fas.fa-bold"]; break;
+                case 'strong': this.contentFA = Icon[".fas.fa-bold"]; break;
 
-                case 'image': this.contentFA = template.Icon[".fas.fa-image"]; break;
+                case 'image': this.contentFA = Icon[".fas.fa-image"]; break;
 
-                case 'q': this.contentFA = template.Icon[".fas.fa-quote-right"]; break;
+                case 'q': this.contentFA = Icon[".fas.fa-quote-right"]; break;
 
-                case 'math': this.contentFA = template.Icon[".fas.fa-calculator"]; break;
+                case 'math': this.contentFA = Icon[".fas.fa-calculator"]; break;
                 default: break;
               }
 
@@ -8573,7 +8573,7 @@ WHERE {\n\
       })(),
 
       //Adapted from MediumEditor's Anchor Form
-      Note: function() {
+      Note: (function() {
         if (typeof MediumEditor !== 'undefined') {
           return MediumEditor.extensions.form.extend({
             /* Textarea Form Options */
@@ -8630,43 +8630,43 @@ WHERE {\n\
 
               switch(this.action) {
                 case 'cite': default:
-                  this.contentFA = Icon[".fas.fa-hashtag"];
+                  this.contentFA = template.Icon[".fas.fa-hashtag"];
                   break;
                 case 'article':
-                  this.contentFA = Icon[".fas.fa-sticky-note"];
+                  this.contentFA = template.Icon[".fas.fa-sticky-note"];
                   this.signInRequired = true;
                   break;
                 case 'note':
-                  this.contentFA = Icon[".fas.fa-sticky-note"];
+                  this.contentFA = template.Icon[".fas.fa-sticky-note"];
                   break;
                 case 'rdfa':
-                  this.contentFA = Icon[".fas.fa-rocket"];
+                  this.contentFA = template.Icon[".fas.fa-rocket"];
                   break;
                 case 'selector':
-                  this.contentFA = Icon[".fas.fa-anchor"];
+                  this.contentFA = template.Icon[".fas.fa-anchor"];
                   break;
                 case 'bookmark':
-                  this.contentFA = Icon[".fas.fa-bookmark"];
+                  this.contentFA = template.Icon[".fas.fa-bookmark"];
                   this.signInRequired = true;
                   break;
                 case 'share':
-                  this.contentFA = Icon[".fas.fa-bullhorn"];
+                  this.contentFA = template.Icon[".fas.fa-bullhorn"];
                   this.signInRequired = true;
                   break;
                 case 'approve':
-                  this.contentFA = Icon[".fas.fa-thumbs-up"];
+                  this.contentFA = template.Icon[".fas.fa-thumbs-up"];
                   this.signInRequired = true;
                   break;
                 case 'disapprove':
-                  this.contentFA = Icon[".fas.fa-thumbs-down"];
+                  this.contentFA = template.Icon[".fas.fa-thumbs-down"];
                   this.signInRequired = true;
                   break;
                 case 'specificity':
-                  this.contentFA = Icon[".fas.fa-crosshairs"];
+                  this.contentFA = template.Icon[".fas.fa-crosshairs"];
                   this.signInRequired = true;
                   break;
                 case 'sparkline':
-                  this.contentFA = Icon[".fas.fa-chart-line"];
+                  this.contentFA = template.Icon[".fas.fa-chart-line"];
                   break;
               }
               MediumEditor.extensions.form.prototype.init.apply(this, arguments);
@@ -8733,7 +8733,7 @@ WHERE {\n\
 
               updateAnnotationInboxForm();
 
-              return getLinkRelation(DO.C.Vocab['oaannotationService']['@id'], null, getDocument()).then(
+              return graph.getLinkRelation(DO.C.Vocab['oaannotationService']['@id'], null, doc.getDocument()).then(
                 function(url) {
                   DO.C.AnnotationService = url[0];
                   updateAnnotationServiceForm();
@@ -8741,7 +8741,7 @@ WHERE {\n\
                 },
                 function(reason) {
                   if(_this.signInRequired && !DO.C.User.IRI) {
-                    showUserIdentityInput();
+                    auth.showUserIdentityInput();
                   }
                   else {
                     updateAnnotationServiceForm();
@@ -8877,13 +8877,13 @@ WHERE {\n\
 
               tmpl.push(
                 '<a href="#" class="medium-editor-toolbar-save" title="Save">',
-                this.getEditorOption('buttonLabels') === 'fontawesome' ? Icon[".fas.fa-check"] : this.formSaveLabel,
+                this.getEditorOption('buttonLabels') === 'fontawesome' ? template.Icon[".fas.fa-check"] : this.formSaveLabel,
                 '</a>'
               );
 
               tmpl.push(
                 '<a href="#" class="medium-editor-toolbar-close" title="Close">',
-                this.getEditorOption('buttonLabels') === 'fontawesome' ? Icon[".fas.fa-times"] : this.formCloseLabel,
+                this.getEditorOption('buttonLabels') === 'fontawesome' ? template.Icon[".fas.fa-times"] : this.formCloseLabel,
                 '</a>'
               );
 
@@ -8985,7 +8985,7 @@ WHERE {\n\
                     var headers = {'Accept': 'application/json'};
                     var options = {'noCredentials': true};
 
-                    getResource(url, headers, options).then(response => {
+                    fetcher.getResource(url, headers, options).then(response => {
                       // console.log(response);
                       return response.text();
                     }).then(data => {
@@ -9133,15 +9133,15 @@ WHERE {\n\
 
                   var queryURL = DO.U.SPARQLQueryURL.getResourcesOfTypeWithLabel(sparqlEndpoint, resourceType, textInputA.toLowerCase(), options);
 
-                  queryURL = getProxyableIRI(queryURL);
+                  queryURL = uri.getProxyableIRI(queryURL);
 
-                  form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', '<div id="' + sparklineGraphId + '"></div>' + Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]);
+                  form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', '<div id="' + sparklineGraphId + '"></div>' + template.Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]);
                   sG = document.getElementById(sparklineGraphId);
 
-                  getResourceGraph(queryURL)
+                  graph.getResourceGraph(queryURL)
                     .then(function(g){
                       sG.removeAttribute('class');
-                      var triples = sortGraphTriples(g.graph(), { sortBy: 'object' });
+                      var triples = graph.sortGraphTriples(g.graph(), { sortBy: 'object' });
                       return DO.U.getListHTMLFromTriples(triples, {element: 'select', elementId: resultContainerId});
                     })
                     .then(function(listHTML){
@@ -9157,7 +9157,7 @@ WHERE {\n\
                         for (var i = 0; i < sparkline.length; i++) {
                           sparkline[i].parentNode.removeChild(sparkline[i]);
                         }
-                        form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]);
+                        form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', template.Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]);
 
                         var dataset = e.target.value;
                         var title = e.target.querySelector('*[value="' + e.target.value + '"]').textContent.trim();
@@ -9174,9 +9174,9 @@ WHERE {\n\
 // console.log(refArea);
                         var queryURL = DO.U.SPARQLQueryURL.getObservationsWithDimension(sparqlEndpoint, dataset, paramDimension);
 // console.log(queryURL);
-                        queryURL = getProxyableIRI(queryURL);
+                        queryURL = uri.getProxyableIRI(queryURL);
 
-                        getResourceGraph(queryURL)
+                        graph.getResourceGraph(queryURL)
                           .then(function(g){
                             var g = g.graph().toArray();
 // console.log(triples);
@@ -9333,7 +9333,7 @@ WHERE {\n\
                 DO.C.User.UI['License'] = opts.license;
               }
 
-              updateLocalStorageProfile(DO.C.User);
+              storage.updateLocalStorageProfile(DO.C.User);
 
               opts.target = '_self';
               if (targetCheckbox && targetCheckbox.checked) {
@@ -9402,8 +9402,8 @@ WHERE {\n\
                 }
               }
 
-              var datetime = getDateTimeISO();
-              var id = generateAttributeId();
+              var datetime = util.getDateTimeISO();
+              var id = util.generateAttributeId();
               var refId = 'r-' + id;
               // var noteId = 'i-' + id;
 
@@ -9513,8 +9513,8 @@ WHERE {\n\
 // console.log(resourceIRI)
 // console.log(targetIRI)
 
-              var targetLanguage = getNodeLanguage(parentNodeWithId);
-              var selectionLanguage = getNodeLanguage(selectedParentElement);
+              var targetLanguage = doc.getNodeLanguage(parentNodeWithId);
+              var selectionLanguage = doc.getNodeLanguage(selectedParentElement);
 // console.log(targetLanguage)
 // console.log(selectionLanguage)
 
@@ -9548,7 +9548,7 @@ WHERE {\n\
 
                 switch(_this.action) {
                   case 'sparkline':
-                    var figureIRI = generateAttributeId(null, opts.selectionDataSet);
+                    var figureIRI = util.generateAttributeId(null, opts.selectionDataSet);
                     ref = '<span rel="schema:hasPart" resource="#figure-' + figureIRI + '">\n\
                     <a href="' + opts.select + '" property="schema:name" rel="prov:wasDerivedFrom" resource="' + opts.select + '" typeof="qb:DataSet">' + opts.selectionDataSet + '</a> [' + DO.U.htmlEntities(DO.C.RefAreas[opts.selectionRefArea]) + ']\n\
                     <span class="sparkline" rel="schema:image" resource="#' + figureIRI + '">' + opts.sparkline + '</span></span>';
@@ -9742,7 +9742,7 @@ WHERE {\n\
                       lang: opts.language,
                       textContent: _this.base.selection
                     };
-                    ref = createRDFaHTML(noteData, 'expanded');
+                    ref = template.createRDFaHTML(noteData, 'expanded');
                     break;
 
                   case 'bookmark':
@@ -9882,7 +9882,7 @@ WHERE {\n\
                     })
                 }
                 else {
-                  return DO.U.positionInteraction(annotation[ 'noteIRI' ], getDocumentContentNode(document), options)
+                  return DO.U.positionInteraction(annotation[ 'noteIRI' ], doc.getDocumentContentNode(document), options)
                     .catch(() => {
                       return Promise.resolve()
                     })
@@ -9904,7 +9904,7 @@ WHERE {\n\
                     inboxPromise = Promise.resolve(DO.C.Resource[documentURL].inbox)
                   }
                   else {
-                    inboxPromise = getLinkRelation(DO.C.Vocab['ldpinbox']['@id'], documentURL);
+                    inboxPromise = graph.getLinkRelation(DO.C.Vocab['ldpinbox']['@id'], documentURL);
                   }
                 }
 
@@ -9925,7 +9925,7 @@ WHERE {\n\
                       // notificationData['type'] = ['as:Announce'];
 // console.log(annotation)
 // console.log(notificationData)
-                      return notifyInbox(notificationData)
+                      return inbox.notifyInbox(notificationData)
                         .catch(error => {
                           console.log('Error notifying the inbox:', error)
                         })
@@ -9943,18 +9943,18 @@ WHERE {\n\
                     var noteData = createNoteData(annotation)
                     if ('profile' in annotation && annotation.profile == 'https://www.w3.org/ns/activitystreams') {
                       notificationData['statements'] = DO.U.createNoteDataHTML(noteData);
-                      note = createActivityHTML(notificationData);
+                      note = doc.createActivityHTML(notificationData);
                     }
                     else {
                       note = DO.U.createNoteDataHTML(noteData);
                     }
-                    data = createHTML('', note);
+                    data = doc.createHTML('', note);
 // console.log(noteData)
 // console.log(note)
 // console.log(data)
 // console.log(annotation)
 
-                    postActivity(annotation['containerIRI'], id, data, annotation)
+                    inbox.postActivity(annotation['containerIRI'], id, data, annotation)
                       .catch(error => {
                         // console.log('Error serializing annotation:', error)
                         // console.log(error)
@@ -9965,7 +9965,7 @@ WHERE {\n\
                         var location = response.headers.get('Location')
 
                         if (location) {
-                          location = getAbsoluteIRI(annotation['containerIRI'], location)
+                          location = uri.getAbsoluteIRI(annotation['containerIRI'], location)
                           annotation['noteIRI'] = annotation['noteURL'] = location
                         }
 
@@ -9995,8 +9995,8 @@ WHERE {\n\
 <aside class="note">\n\
 '+ note + '\n\
 </aside>';
-                  var asideNode = fragmentFromString(asideNote);
-                  var parentSection = getClosestSectionNode(selectedParentElement);
+                  var asideNode = util.fragmentFromString(asideNote);
+                  var parentSection = doc.getClosestSectionNode(selectedParentElement);
                   parentSection.appendChild(asideNode);
 
                   DO.U.positionNote(refId, id);
@@ -10004,7 +10004,7 @@ WHERE {\n\
 
                 case 'selector':
                   window.history.replaceState({}, null, selectorIRI);
-                  showActionMessage(document.documentElement, '<p>Copy URL from address bar.</p>')
+                  doc.showActionMessage(document.documentElement, '<p>Copy URL from address bar.</p>')
                   // util.copyTextToClipboard(encodeURI(selectorIRI));
                   break;
 
@@ -10021,8 +10021,8 @@ WHERE {\n\
 <aside class="note">\n\
 '+ note + '\n\
 </aside>';
-                      var asideNode = fragmentFromString(asideNote);
-                      var parentSection = getClosestSectionNode(selectedParentElement);
+                      var asideNode = util.fragmentFromString(asideNote);
+                      var parentSection = doc.getClosestSectionNode(selectedParentElement);
                       parentSection.appendChild(asideNode);
 
                       DO.U.positionNote(refId, id);
@@ -10062,7 +10062,7 @@ WHERE {\n\
 
                         var node = document.querySelector('#references ol');
 
-                        buildReferences(node, id, citation);
+                        doc.buildReferences(node, id, citation);
 
                         options['showRobustLinksDecoration'] = true;
                         var node = document.querySelector('[id="' + id + '"] a[about]');
@@ -10097,7 +10097,7 @@ WHERE {\n\
                             "statements": notificationStatements
                           };
 
-                          notifyInbox(notificationData).then(
+                          inbox.notifyInbox(notificationData).then(
                             function(s){
                               console.log('Sent Linked Data Notification to ' + inboxURL);
                             });
@@ -10275,7 +10275,7 @@ WHERE {\n\
             }
           });
         }
-      }
+      })()
 
     } //DO.U.Editor
   } //DO.U
