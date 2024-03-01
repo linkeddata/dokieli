@@ -15,10 +15,8 @@ import { getResourceGraph, traverseRDFList, getLinkRelation, getAgentName, getGr
 import { notifyInbox, sendNotifications, postActivity } from './inbox.js'
 import { uniqueArray, fragmentFromString, hashCode, generateAttributeId, escapeRegExp, sortToLower, getDateTimeISO, generateUUID } from './util.js'
 import MediumEditor from "medium-editor/dist/js/medium-editor.js";
-window.MediumEditor = MediumEditor;
-
-// import MediumEditorTable from "medium-editor-tables/dist/js/medium-editor-tables.js";
-
+// window.MediumEditor = MediumEditor;
+import MediumEditorTable from "medium-editor-tables/dist/js/medium-editor-tables.js";
 // window.MediumEditorTable = MediumEditorTable;
 
 import { getLocalStorageProfile, showAutoSaveStorage, hideAutoSaveStorage, updateLocalStorageProfile } from './storage.js'

@@ -78,6 +78,8 @@ module.exports = (env) => {
       }),
       new webpack.ProvidePlugin({
         process: "process/browser",
+        MediumEditor: "medium-editor", 
+        MediumEditorTable: "medium-editor-tables"
       }),
       new webpack.ProvidePlugin({
         Buffer: ["buffer", "Buffer"],
