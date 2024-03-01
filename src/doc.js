@@ -1964,7 +1964,7 @@ function getCitationLabelsFromTerms(rel, citations) {
   var citationLabels = [];
 
   rel.split(' ').forEach(term => {
-    if (Citation[term]){
+    if (Config.Citation[term]){
       citationLabels.push(Config.Citation[term]);
     }
     else {
