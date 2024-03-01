@@ -1223,7 +1223,7 @@ function getResourceInfo(data, options) {
         });
         scriptData = lines.join('\n');
 
-console.log(scriptData)
+// console.log(scriptData)
 
         var o = {
           'subjectURI': documentURL,
@@ -1233,7 +1233,7 @@ console.log(scriptData)
         promises.push(getGraphFromData(scriptData, o).then(
           function(i){
             var s = SimpleRDF(Config.Vocab, options['subjectURI'], i, store).child(options['subjectURI']);
-console.log(s.toString())
+// console.log(s.toString())
             var info = getGraphData(s, options);
 
             return info;
