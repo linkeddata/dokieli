@@ -2986,7 +2986,7 @@ console.log(reason);
     exportAsDocument: function(data, options = {}) {
       data = data || getDocument();
       var mediaType = options.mediaType || 'text/html';
-      url = options.subjectURI || DO.C.DocumentURL;
+      var url = options.subjectURI || DO.C.DocumentURL;
 
       //XXX: Encodes strings as UTF-8. Consider storing bytes instead?
       var blob = new Blob([data], {type: mediaType + ';charset=utf-8'});

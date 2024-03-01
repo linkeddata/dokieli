@@ -854,7 +854,7 @@ function setDocumentRelation(rootNode, data, options) {
 }
 
 function showTimeMap(node, url) {
-  url = url || OriginalResourceInfo['timemap']
+  url = url || Config.OriginalResourceInfo['timemap']
   if(!url) { return; }
 
   var elementId = 'memento-document';
@@ -1609,8 +1609,8 @@ function createImmutableResource(url, data, options) {
   rootNode = setDocumentRelation(rootNode, [r], o);
 
   o = { 'id': 'document-original', 'title': 'Original resource' };
-  if (OriginalResourceInfo['state'] == Config.Vocab['memMemento']['@id']
-    && OriginalResourceInfo['profile'] == Config.Vocab['memOriginalResource']['@id']) {
+  if (Config.OriginalResourceInfo['state'] == Config.Vocab['memMemento']['@id']
+    && Config.OriginalResourceInfo['profile'] == Config.Vocab['memOriginalResource']['@id']) {
     r = { 'rel': 'mem:original', 'href': immutableURL };
   }
   else {
@@ -1620,7 +1620,7 @@ function createImmutableResource(url, data, options) {
 
   //TODO document-timegate
 
-  var timeMapURL = OriginalResourceInfo['timemap'] || url + '.timemap';
+  var timeMapURL = Config.OriginalResourceInfo['timemap'] || url + '.timemap';
   o = { 'id': 'document-timemap', 'title': 'TimeMap' };
   r = { 'rel': 'mem:timemap', 'href': timeMapURL };
   rootNode = setDocumentRelation(rootNode, [r], o);
@@ -1634,11 +1634,11 @@ function createImmutableResource(url, data, options) {
       getResourceInfo(data, { 'mode': 'update' });
     });
 
-  var timeMapURL = OriginalResourceInfo['timemap'] || url + '.timemap';
+  var timeMapURL = Config.OriginalResourceInfo['timemap'] || url + '.timemap';
 
 
   //Update URI-R
-  if (OriginalResourceInfo['state'] != Config.Vocab['memMemento']['@id']) {
+  if (Config.OriginalResourceInfo['state'] != Config.Vocab['memMemento']['@id']) {
     setDate(document, { 'id': 'document-created', 'property': 'schema:dateCreated', 'title': 'Created', 'datetime': date });
 
     o = { 'id': 'document-identifier', 'title': 'Identifier' };
@@ -1649,9 +1649,9 @@ function createImmutableResource(url, data, options) {
     r = { 'rel': 'mem:memento rel:latest-version', 'href': immutableURL };
     setDocumentRelation(document, [r], o);
 
-    if(OriginalResourceInfo['latest-version']) {
+    if(Config.OriginalResourceInfo['latest-version']) {
       o = { 'id': 'document-predecessor-version', 'title': 'Predecessor Version' };
-      r = { 'rel': 'mem:memento rel:predecessor-version', 'href': OriginalResourceInfo['latest-version'] };
+      r = { 'rel': 'mem:memento rel:predecessor-version', 'href': Config.OriginalResourceInfo['latest-version'] };
       setDocumentRelation(document, [r], o);
     }
 
@@ -1699,9 +1699,9 @@ function createMutableResource(url, data, options) {
   r = { 'rel': 'rel:latest-version', 'href': mutableURL };
   setDocumentRelation(document, [r], o);
 
-  if(OriginalResourceInfo['latest-version']) {
+  if(Config.OriginalResourceInfo['latest-version']) {
     o = { 'id': 'document-predecessor-version', 'title': 'Predecessor Version' };
-    r = { 'rel': 'rel:predecessor-version', 'href': OriginalResourceInfo['latest-version'] };
+    r = { 'rel': 'rel:predecessor-version', 'href': Config.OriginalResourceInfo['latest-version'] };
     setDocumentRelation(document, [r], o);
   }
 
