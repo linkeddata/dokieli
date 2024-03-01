@@ -7886,6 +7886,7 @@ WHERE {\n\
 
     Editor: {
       disableEditor: function(e) {
+        
     //    _mediumEditors[1].destroy();
         DO.C.EditorEnabled = false;
         DO.C.User.Role = 'social';
@@ -7932,18 +7933,18 @@ WHERE {\n\
             },
             anchorPreview: false,
             extensions: {
-              'h2': new DO.U.Editor.Button({action:'h2', label:'h2'}),
-              'h3': new DO.U.Editor.Button({action:'h3', label:'h3'}),
-              'h4': new DO.U.Editor.Button({action:'h4', label:'h4'}),
-              'em': new DO.U.Editor.Button({action:'em', label:'em'}),
-              'strong': new DO.U.Editor.Button({action:'strong', label:'strong'}),
-              'code': new DO.U.Editor.Button({action:'code', label:'code'}),
-              'q': new DO.U.Editor.Button({action:'q', label:'q'}),
-              'image': new DO.U.Editor.Button({action:'image', label:'image'}),
-              'sparkline': new DO.U.Editor.Note({action:'sparkline', label:'sparkline'}),
-              'rdfa': new DO.U.Editor.Note({action:'rdfa', label:'rdfa'}),
-              'cite': new DO.U.Editor.Note({action:'cite', label:'cite'}),
-              'note': new DO.U.Editor.Note({action:'note', label:'note'})
+              // 'h2': new DO.U.Editor.Button({action:'h2', label:'h2'}),
+              // 'h3': new DO.U.Editor.Button({action:'h3', label:'h3'}),
+              // 'h4': new DO.U.Editor.Button({action:'h4', label:'h4'}),
+              // 'em': new DO.U.Editor.Button({action:'em', label:'em'}),
+              // 'strong': new DO.U.Editor.Button({action:'strong', label:'strong'}),
+              // 'code': new DO.U.Editor.Button({action:'code', label:'code'}),
+              // 'q': new DO.U.Editor.Button({action:'q', label:'q'}),
+              // 'image': new DO.U.Editor.Button({action:'image', label:'image'}),
+              // 'sparkline': new DO.U.Editor.Note({action:'sparkline', label:'sparkline'}),
+              // 'rdfa': new DO.U.Editor.Note({action:'rdfa', label:'rdfa'}),
+              // 'cite': new DO.U.Editor.Note({action:'cite', label:'cite'}),
+              // 'note': new DO.U.Editor.Note({action:'note', label:'note'})
             }
           },
 
@@ -7958,13 +7959,13 @@ WHERE {\n\
             disableEditing: true,
             anchorPreview: false,
             extensions: {
-              'selector': new DO.U.Editor.Note({action:'selector', label:'selector'}),
-              'share': new DO.U.Editor.Note({action:'share', label:'share'}),
-              'bookmark': new DO.U.Editor.Note({action:'bookmark', label:'bookmark'}),
-              'approve': new DO.U.Editor.Note({action:'approve', label:'approve'}),
-              'disapprove': new DO.U.Editor.Note({action:'disapprove', label:'disapprove'}),
-              'specificity': new DO.U.Editor.Note({action:'specificity', label:'specificity'}),
-              'note': new DO.U.Editor.Note({action:'article', label:'note'})
+              'selector': DO.U.Editor.Note({action:'selector', label:'selector'}),
+              // 'share': new DO.U.Editor.Note({action:'share', label:'share'}),
+              // 'bookmark': new DO.U.Editor.Note({action:'bookmark', label:'bookmark'}),
+              // 'approve': new DO.U.Editor.Note({action:'approve', label:'approve'}),
+              // 'disapprove': new DO.U.Editor.Note({action:'disapprove', label:'disapprove'}),
+              // 'specificity': new DO.U.Editor.Note({action:'specificity', label:'specificity'}),
+              // 'note': new DO.U.Editor.Note({action:'article', label:'note'})
             }
           }
         };
@@ -7985,6 +7986,7 @@ WHERE {\n\
         updateLocalStorageProfile(DO.C.User);
 
         if (typeof MediumEditor !== 'undefined') {
+          console.log(eOptions)
           DO.U.Editor.MediumEditor = new MediumEditor(eNodes, eOptions);
           DO.C.EditorEnabled = true;
 
@@ -8219,15 +8221,15 @@ WHERE {\n\
         }
       },
 
-      Button: function () {
+      Button: (function () {
         if (typeof MediumEditor !== 'undefined') {
-          MediumEditor.extensions.button.prototype.defaults.unorderedlist.contentFA = Icon[".fas.fa-link-ul"];
+          MediumEditor.extensions.button.prototype.defaults.unorderedlist.contentFA = template.Icon[".fas.fa-link-ul"];
 
-          MediumEditor.extensions.button.prototype.defaults.orderedlist.contentFA = Icon[".fas.fa-link-ol"];
+          MediumEditor.extensions.button.prototype.defaults.orderedlist.contentFA = template.Icon[".fas.fa-link-ol"];
 
-          MediumEditor.extensions.button.prototype.defaults.image.contentFA = Icon[".fas.fa-image"];
+          MediumEditor.extensions.button.prototype.defaults.image.contentFA = template.Icon[".fas.fa-image"];
 
-          MediumEditor.extensions.button.prototype.defaults.pre.contentFA = Icon[".fas.fa-code"];
+          MediumEditor.extensions.button.prototype.defaults.pre.contentFA = template.Icon[".fas.fa-code"];
 
           return MediumEditor.extensions.button.extend({
             init: function () {
@@ -8239,17 +8241,17 @@ WHERE {\n\
               this.contentDefault = '<b>' + this.label + '</b>';
 
               switch(this.action) {
-                case 'h1': case 'h2': case 'h3': case 'h4': case 'h5': case 'h6': this.contentFA = Icon[".fas.fa-header"] + parseInt(this.action.slice(-1)); break;
+                case 'h1': case 'h2': case 'h3': case 'h4': case 'h5': case 'h6': this.contentFA = template.Icon[".fas.fa-header"] + parseInt(this.action.slice(-1)); break;
 
-                case 'em': this.contentFA = Icon[".fas.fa-italic"]; break;
+                case 'em': this.contentFA = template.Icon[".fas.fa-italic"]; break;
 
-                case 'strong': this.contentFA = Icon[".fas.fa-bold"]; break;
+                case 'strong': this.contentFA = template.Icon[".fas.fa-bold"]; break;
 
-                case 'image': this.contentFA = Icon[".fas.fa-image"]; break;
+                case 'image': this.contentFA = template.Icon[".fas.fa-image"]; break;
 
-                case 'q': this.contentFA = Icon[".fas.fa-quote-right"]; break;
+                case 'q': this.contentFA = template.Icon[".fas.fa-quote-right"]; break;
 
-                case 'math': this.contentFA = Icon[".fas.fa-calculator"]; break;
+                case 'math': this.contentFA = template.Icon[".fas.fa-calculator"]; break;
                 default: break;
               }
 
@@ -8333,7 +8335,7 @@ WHERE {\n\
 
 // console.log(range);
                       //Section
-                      var sectionId = generateAttributeId(null, this.base.selection);
+                      var sectionId = util.generateAttributeId(null, this.base.selection);
                       var section = document.createElement('section');
                       section.id = sectionId;
                       section.setAttribute('rel', 'schema:hasPart');
@@ -8395,7 +8397,7 @@ WHERE {\n\
                           case "p": default:
                             var xSPE = document.createElement(sPE);
                             xSPE.appendChild(fragment.cloneNode(true));
-                            fragment = fragmentFromString(xSPE.outerHTML);
+                            fragment = util.fragmentFromString(xSPE.outerHTML);
                             break;
                           //TODO: Other cases?
                         }
@@ -8487,7 +8489,7 @@ WHERE {\n\
 
                     var selection = this.base.selection;
 
-                    var selectionId = generateAttributeId();
+                    var selectionId = util.generateAttributeId();
 
                     var selectionUpdated = '<span id="' + selectionId + '">$$</span>';
 
@@ -8568,7 +8570,7 @@ WHERE {\n\
             }
           });
         }
-      },
+      })(),
 
       //Adapted from MediumEditor's Anchor Form
       Note: function() {
