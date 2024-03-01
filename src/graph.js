@@ -2,7 +2,7 @@
 
 import * as ld from "./simplerdf.cjs";
 const SimpleRDF = ld.SimpleRDF
-import { Config, Vocab, MediaTypes, Actor, User } from './config.js'
+import Config from './config.js'
 import { stripFragmentFromString, getProxyableIRI } from './uri.js'
 import { uniqueArray } from './util.js'
 import { setAcceptRDFTypes, getResource, getResourceHead } from './fetcher.js'
