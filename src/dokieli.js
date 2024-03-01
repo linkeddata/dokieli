@@ -7782,7 +7782,7 @@ WHERE {\n\
       }
 
       Object.keys(DO.C.Languages).forEach(function(lang){
-        selected = (lang == selectedLang) ? ' selected="selected"' : '';
+        let selected = (lang == selectedLang) ? ' selected="selected"' : '';
         s += '<option' + selected + ' value="' + lang + '">' + DO.C.Languages[lang] + '</option>';
       });
 
