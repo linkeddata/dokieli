@@ -7,8 +7,6 @@
  */
 
 import { getResource, setAcceptRDFTypes, LinkHeader, postResource, putResource, currentLocation, patchResourceWithAcceptPatch, putResourceWithAcceptPut, copyResource, deleteResource } from './fetcher.js'
-const fetcher = { getResource, setAcceptRDFTypes, LinkHeader, postResource, putResource, currentLocation, patchResourceWithAcceptPatch, putResourceWithAcceptPut, copyResource, deleteResource };
-
 import { getDocument, getDocumentContentNode, xmlHtmlEscape, showActionMessage, selectArticleNode, domToString, buttonClose, buttonRemoveAside, showRobustLinksDecoration, getResourceInfo, removeNodesWithIds, getResourceInfoSKOS, removeReferences, buildReferences, removeSelectorFromNode, insertDocumentLevelHTML, getResourceInfoSpecRequirements, getTestDescriptionReviewStatusHTML, createFeedXML, getButtonDisabledHTML, showTimeMap, createMutableResource, createImmutableResource, updateMutableResource, createHTML, getResourceImageHTML, setDocumentRelation, setDate, getClosestSectionNode, getAgentHTML, setEditSelections, getNodeLanguage, createActivityHTML } from './doc.js'
 import { getProxyableIRI, getPathURL, stripFragmentFromString, getFragmentOrLastPath, getFragmentFromString, getURLLastPath, getLastPathSegment, forceTrailingSlash, getBaseURL, getParentURLPath, encodeString, getAbsoluteIRI } from './uri.js'
 import { getResourceGraph, traverseRDFList, getLinkRelation, getAgentName, getGraphImage, getGraphFromData, isActorType, isActorProperty, serializeGraph, getGraphLabel, getUserContacts, getAgentOutbox, getAgentStorage, getAgentInbox, getLinkRelationFromHead, sortGraphTriples } from './graph.js'
@@ -18,17 +16,12 @@ import MediumEditor from "medium-editor/dist/js/medium-editor.js";
 // window.MediumEditor = MediumEditor;
 import MediumEditorTable from "medium-editor-tables/dist/js/medium-editor-tables.js";
 // window.MediumEditorTable = MediumEditorTable;
-
 import { getLocalStorageProfile, showAutoSaveStorage, hideAutoSaveStorage, updateLocalStorageProfile } from './storage.js'
 import { showUserSigninSignout, showUserIdentityInput } from './auth.js'
 import { Icon, createRDFaHTML } from './template.js'
 import * as d3Selection from 'd3-selection';
 import * as d3Force from 'd3-force';
-
-const d3 = {
-  ...d3Selection,
-  ...d3Force
-};
+const d3 = { ...d3Selection, ...d3Force };
 import shower from 'shower'
 import { diffChars } from 'diff'
 import { micromark as marked } from 'micromark'
@@ -39,13 +32,9 @@ import Config from './config.js';
 
 let DO;
 
-console.log('ME', MediumEditor);
-
 if(typeof window.DO === 'undefined'){
 const SimpleRDF = ld.SimpleRDF
 DO = {
-  fetcher,
-
   C: Config,
 
   U: {
@@ -615,7 +604,7 @@ DO = {
       // Object.keys(group).forEach(function(i){
       //   a.push('<div style="background-color:' + group[i].color + '; width:5em; height:5em;">' + group[i].label + '</div>');
       // });
-      // doc.getDocumentContentNode(document).insertAdjacentHTML('beforeend', a.join(''));
+      // getDocumentContentNode(document).insertAdjacentHTML('beforeend', a.join(''));
 
 
       if (selector == '#graph-view' && !document.getElementById('graph-view')) {
@@ -775,7 +764,7 @@ DO = {
 // // console.log(error)
 //             // if (error.status === 0) {
 //               // retry with proxied uri
-//               var pIRI = uri.getProxyableIRI(options['subjectURI'], {'forceProxy': true});
+//               var pIRI = getProxyableIRI(options['subjectURI'], {'forceProxy': true});
 //               return handleResource(pIRI, headers, options);
 //             // }
 
@@ -1294,7 +1283,7 @@ DO = {
       if (selector && selector.exact && selector.exact.length > 0) {
         //XXX: TODO: Copied from showAnnotation
 
-        // refId = String(Math.abs(util.hashCode(document.location.href)));
+        // refId = String(Math.abs(hashCode(document.location.href)));
         var refId = document.location.hash.substring(1);
         var refLabel = DO.U.getReferenceLabel(motivatedBy);
 
@@ -1314,7 +1303,7 @@ DO = {
     importTextQuoteSelector: function(containerNode, selector, refId, motivatedBy, docRefType, options) {
       var containerNodeTextContent = containerNode.textContent;
       //XXX: Seems better?
-      // var containerNodeTextContent = util.fragmentFromString(doc.getDocument(containerNode)).textContent.trim();
+      // var containerNodeTextContent = fragmentFromString(getDocument(containerNode)).textContent.trim();
 
 
 // console.log(containerNodeTextContent);
@@ -2201,7 +2190,7 @@ DO = {
 
           loC.querySelector('div').insertAdjacentHTML('beforeend', html);
 
-          // doc.insertDocumentLevelHTML(document, html, { 'id': id });
+          // insertDocumentLevelHTML(document, html, { 'id': id });
 
           aC = document.getElementById(id);
           window.history.replaceState(null, null, '#' + id);
@@ -3285,7 +3274,7 @@ console.log(reason);
           // i = 'https://web.archive.org/save/https://example.org/';
 
           pIRI = (DO.C.WebExtension) ? pIRI : getProxyableIRI(pIRI, {'forceProxy': true});
-          // pIRI = uri.getProxyableIRI(pIRI, {'forceProxy': true})
+          // pIRI = getProxyableIRI(pIRI, {'forceProxy': true})
 // console.log(pIRI)
           return getResource(pIRI, headers, options)
             .then(response => {
@@ -4687,9 +4676,9 @@ console.log(reason);
       return s;
     },
 
-    getCommunicationOptions: function(graph, options = {}) {
-      var subjectURI = options.subjectURI || graph.iri().toString();
-      var g = graph.child(subjectURI);
+    getCommunicationOptions: function(g, options = {}) {
+      var subjectURI = options.subjectURI || g.iri().toString();
+      g = g.child(subjectURI);
 // console.log(subjectURI)
       var notificationSubscriptions = DO.U.getNotificationSubscriptions(g);
       var notificationChannels = DO.U.getNotificationChannels(g);
@@ -4920,7 +4909,7 @@ console.log(reason);
       var rD = (contentType == 'application/ld+json') ? response.json() : response.text();
 
       return rD.then(data => {
-        // return graph.getGraphFromData(data, options).then
+        // return getGraphFromData(data, options).then
         switch (contentType) {
           case 'text/turtle':
             return Promise.reject({'message': 'TODO text/turtle', 'data': data});
@@ -4958,7 +4947,7 @@ console.log(reason);
 //     "https://www.w3.org/ns/activitystreams",
 //     "https://www.w3.org/ns/solid/notification/v1"
 //   ],
-//   "id": "urn:uuid:" + util.generateUUID(),
+//   "id": "urn:uuid:" + generateUUID(),
 //   "type": "Update",
 //   "object": "https://csarven.localhost:8443/foo.html",
 //   "state": "128f-MtYev",
@@ -4966,7 +4955,7 @@ console.log(reason);
 // }
 
       //TODO: Only process ns/solid/notifications/v1 JSON-LD context.
-      // return graph.getGraphFromData(data, options).then(
+      // return getGraphFromData(data, options).then(
 
       if (data['@context'] && data.id && data.type && data.object && data.published) {
         if (options.subjectURI != data.object) {
@@ -4976,7 +4965,7 @@ console.log(reason);
         // if (data.type.startsWith('https://www.w3.org/ns/activitystreams#')) {
           //TODO: Move this UI somewhere else
 
-          //TODO: See if doc.createActivityHTML can be generalised/reusable.
+          //TODO: See if createActivityHTML can be generalised/reusable.
 
 
           DO.C.Subscription[data.object]['Notifications'] = DO.C.Subscription[data.object]['Notifications'] || {};
@@ -5482,7 +5471,7 @@ console.log(response)
                   // console.log(u);
                   // window.setTimeout(function () {
 
-                    // var pIRI = uri.getProxyableIRI(u);
+                    // var pIRI = getProxyableIRI(u);
                     promises.push(getResourceGraph(u));
                   // }, 1000)
                 });
@@ -5493,7 +5482,7 @@ console.log(response)
                     var items = [];
                     // graphs.filter(result => !(result instanceof Error));
 
-                    //TODO: Refactor if/else based on graph.getResourceGraph
+                    //TODO: Refactor if/else based on getResourceGraph
                     results.forEach(function(result){
 // console.log(result.value)
 
@@ -5501,7 +5490,7 @@ console.log(response)
                       if (result.value instanceof Error) {
 
                       }
-                      //FIXME: This is not actually useful yet. graph.getResourceGraph should return the iri in which its content had no triples or failed to parse perhaps.
+                      //FIXME: This is not actually useful yet. getResourceGraph should return the iri in which its content had no triples or failed to parse perhaps.
                       else if (typeof result.value === 'undefined') {
                         //   items.push('<a href="' + result.value + '">' + result.value + '</a>');
                       }
@@ -6457,7 +6446,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
       //XXX: FIXME: Putting this off for now because SimpleRDF is not finding the bnode for some reason in citationGraph.child(item), or at least authorItem.rdffirst (undefined)
 //       if (subject.biboauthorList) {
-//TODO: Just use/test something like: authorList = authorList.concat(graph.traverseRDFList(citationGraph, subject.biboauthorList));
+//TODO: Just use/test something like: authorList = authorList.concat(traverseRDFList(citationGraph, subject.biboauthorList));
 //       }
 //       else
       if (subject.schemaauthor && subject.schemaauthor._array.length > 0) {
@@ -7040,7 +7029,7 @@ WHERE {\n\
 
         var containerNodeTextContent = containerNode.textContent;
         //XXX: Seems better?
-        // var containerNodeTextContent = util.fragmentFromString(doc.getDocument(containerNode)).textContent.trim();
+        // var containerNodeTextContent = fragmentFromString(getDocument(containerNode)).textContent.trim();
 
 //console.log(containerNodeTextContent);
 // console.log(prefix + exact + suffix);
@@ -7905,7 +7894,7 @@ WHERE {\n\
         if (!document.getElementById('document-editor')) {
           document.documentElement.appendChild(fragmentFromString('<aside id="document-editor" class="do"></aside>'))
         }
-        console.log(DO.U.Editor)
+
         // console.log(new DO.U.Editor.Button({action:'h2', label:'h2'}))
         var editorOptions = {
           author: {
@@ -7984,7 +7973,6 @@ WHERE {\n\
         updateLocalStorageProfile(DO.C.User);
 
         if (typeof MediumEditor !== 'undefined') {
-          console.log(eOptions)
           DO.U.Editor.MediumEditor = new MediumEditor(eNodes, eOptions);
           DO.C.EditorEnabled = true;
 
@@ -8018,7 +8006,7 @@ WHERE {\n\
             // var authorName = 'author-name';
             // if (!authors) {
             //   var authors = '<div class="do" id="' + documentAuthors + '"><dl id="' + authorName + '"><dt>Authors</dt></dl></div>';
-            //   doc.insertDocumentLevelHTML(document, authors, { 'id': documentAuthors });
+            //   insertDocumentLevelHTML(document, authors, { 'id': documentAuthors });
             //   authors = document.getElementById(documentAuthors);
             // }
 
@@ -8076,7 +8064,7 @@ WHERE {\n\
                 }
 
                 button = e.target.closest('button.enter-' + contributorRole);
-                //TODO: This input field can behave like the one in doc.js showUserIdentityInput for enableDisableButton to button.commit
+                //TODO: This input field can behave like the one in js showUserIdentityInput for enableDisableButton to button.commit
                 if (button){
                   var n = e.target.closest('.do');
                   n.insertAdjacentHTML('beforebegin', '<dd class="do" contenteditable="false"><input contenteditable="false" name="enter-' + contributorRole + '" placeholder="https://csarven.ca/#i" type="text" value="" /> <button class="commit-' + contributorRole + '" contenteditable="false" title="Commit ' + contributorRole + '">' + Icon[".fas.fa-plus"] + '</button></dd>');
@@ -8097,7 +8085,7 @@ WHERE {\n\
                     // button.querySelector('svg').classList.add('fa-spin');
 
                     if (iri.startsWith('http')) {
-                      //TODO: Refactor. There is overlap with addShareResourceContactInput and doc.getAgentHTML
+                      //TODO: Refactor. There is overlap with addShareResourceContactInput and getAgentHTML
                       getResourceGraph(iri).then(function(s){
                         // var iri = s.iri().toString();
                         // var id = encodeURIComponent(iri);
@@ -8126,7 +8114,7 @@ WHERE {\n\
 
               //TODO: Show 'Remove' button for selected contributor (before exiting edit mode).
 
-              //TODO: Update doc.getResourceInfo() so that DO.C.Resource[documentURL] can be used to check other contributors while still in edit.
+              //TODO: Update getResourceInfo() so that DO.C.Resource[documentURL] can be used to check other contributors while still in edit.
             })
 
 
@@ -8198,7 +8186,7 @@ WHERE {\n\
                 var dl = '        <dl class="do" id="' + documentTestSuite + '"><dt>Test Suite</dt><dd><input contenteditable="false" name="test-suite" placeholder="https://example.net/test-suite" type="text" value="" /></dd></dl>';
                 insertDocumentLevelHTML(document, dl, { 'id': documentTestSuite });
 
-                //XXX: This is a workaround until we understand why the input value is not available in doc.js's setEditSelections() where it is using `document.querySelector` to get the value fresh. The following catches the blur event and sets the input value back to itself, and that seems to be available setEditSelections().
+                //XXX: This is a workaround until we understand why the input value is not available in setEditSelections() where it is using `document.querySelector` to get the value fresh. The following catches the blur event and sets the input value back to itself, and that seems to be available setEditSelections().
                 var dTS = document.querySelector('#' + documentTestSuite + ' input');
                 dTS.addEventListener('blur', function(e){
                   dTS.setAttribute('value', dTS.value)
@@ -8333,7 +8321,7 @@ WHERE {\n\
 
 // console.log(range);
                       //Section
-                      var sectionId = util.generateAttributeId(null, this.base.selection);
+                      var sectionId = generateAttributeId(null, this.base.selection);
                       var section = document.createElement('section');
                       section.id = sectionId;
                       section.setAttribute('rel', 'schema:hasPart');
@@ -8395,7 +8383,7 @@ WHERE {\n\
                           case "p": default:
                             var xSPE = document.createElement(sPE);
                             xSPE.appendChild(fragment.cloneNode(true));
-                            fragment = util.fragmentFromString(xSPE.outerHTML);
+                            fragment = fragmentFromString(xSPE.outerHTML);
                             break;
                           //TODO: Other cases?
                         }
@@ -8487,7 +8475,7 @@ WHERE {\n\
 
                     var selection = this.base.selection;
 
-                    var selectionId = util.generateAttributeId();
+                    var selectionId = generateAttributeId();
 
                     var selectionUpdated = '<span id="' + selectionId + '">$$</span>';
 
@@ -8731,7 +8719,7 @@ WHERE {\n\
 
               updateAnnotationInboxForm();
 
-              return graph.getLinkRelation(DO.C.Vocab['oaannotationService']['@id'], null, doc.getDocument()).then(
+              return getLinkRelation(DO.C.Vocab['oaannotationService']['@id'], null, getDocument()).then(
                 function(url) {
                   DO.C.AnnotationService = url[0];
                   updateAnnotationServiceForm();
@@ -8739,7 +8727,7 @@ WHERE {\n\
                 },
                 function(reason) {
                   if(_this.signInRequired && !DO.C.User.IRI) {
-                    auth.showUserIdentityInput();
+                    showUserIdentityInput();
                   }
                   else {
                     updateAnnotationServiceForm();
@@ -8983,7 +8971,7 @@ WHERE {\n\
                     var headers = {'Accept': 'application/json'};
                     var options = {'noCredentials': true};
 
-                    fetcher.getResource(url, headers, options).then(response => {
+                    getResource(url, headers, options).then(response => {
                       // console.log(response);
                       return response.text();
                     }).then(data => {
@@ -9131,15 +9119,15 @@ WHERE {\n\
 
                   var queryURL = DO.U.SPARQLQueryURL.getResourcesOfTypeWithLabel(sparqlEndpoint, resourceType, textInputA.toLowerCase(), options);
 
-                  queryURL = uri.getProxyableIRI(queryURL);
+                  queryURL = getProxyableIRI(queryURL);
 
                   form.querySelector('.medium-editor-toolbar-save').insertAdjacentHTML('beforebegin', '<div id="' + sparklineGraphId + '"></div>' + Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]);
                   sG = document.getElementById(sparklineGraphId);
 
-                  graph.getResourceGraph(queryURL)
+                  getResourceGraph(queryURL)
                     .then(function(g){
                       sG.removeAttribute('class');
-                      var triples = graph.sortGraphTriples(g.graph(), { sortBy: 'object' });
+                      var triples = sortGraphTriples(g.graph(), { sortBy: 'object' });
                       return DO.U.getListHTMLFromTriples(triples, {element: 'select', elementId: resultContainerId});
                     })
                     .then(function(listHTML){
@@ -9172,9 +9160,9 @@ WHERE {\n\
 // console.log(refArea);
                         var queryURL = DO.U.SPARQLQueryURL.getObservationsWithDimension(sparqlEndpoint, dataset, paramDimension);
 // console.log(queryURL);
-                        queryURL = uri.getProxyableIRI(queryURL);
+                        queryURL = getProxyableIRI(queryURL);
 
-                        graph.getResourceGraph(queryURL)
+                        getResourceGraph(queryURL)
                           .then(function(g){
                             var g = g.graph().toArray();
 // console.log(triples);
@@ -9331,7 +9319,7 @@ WHERE {\n\
                 DO.C.User.UI['License'] = opts.license;
               }
 
-              storage.updateLocalStorageProfile(DO.C.User);
+              updateLocalStorageProfile(DO.C.User);
 
               opts.target = '_self';
               if (targetCheckbox && targetCheckbox.checked) {
@@ -9400,8 +9388,8 @@ WHERE {\n\
                 }
               }
 
-              var datetime = util.getDateTimeISO();
-              var id = util.generateAttributeId();
+              var datetime = getDateTimeISO();
+              var id = generateAttributeId();
               var refId = 'r-' + id;
               // var noteId = 'i-' + id;
 
@@ -9511,8 +9499,8 @@ WHERE {\n\
 // console.log(resourceIRI)
 // console.log(targetIRI)
 
-              var targetLanguage = doc.getNodeLanguage(parentNodeWithId);
-              var selectionLanguage = doc.getNodeLanguage(selectedParentElement);
+              var targetLanguage = getNodeLanguage(parentNodeWithId);
+              var selectionLanguage = getNodeLanguage(selectedParentElement);
 // console.log(targetLanguage)
 // console.log(selectionLanguage)
 
@@ -9546,7 +9534,7 @@ WHERE {\n\
 
                 switch(_this.action) {
                   case 'sparkline':
-                    var figureIRI = util.generateAttributeId(null, opts.selectionDataSet);
+                    var figureIRI = generateAttributeId(null, opts.selectionDataSet);
                     ref = '<span rel="schema:hasPart" resource="#figure-' + figureIRI + '">\n\
                     <a href="' + opts.select + '" property="schema:name" rel="prov:wasDerivedFrom" resource="' + opts.select + '" typeof="qb:DataSet">' + opts.selectionDataSet + '</a> [' + DO.U.htmlEntities(DO.C.RefAreas[opts.selectionRefArea]) + ']\n\
                     <span class="sparkline" rel="schema:image" resource="#' + figureIRI + '">' + opts.sparkline + '</span></span>';
@@ -9880,7 +9868,7 @@ WHERE {\n\
                     })
                 }
                 else {
-                  return DO.U.positionInteraction(annotation[ 'noteIRI' ], doc.getDocumentContentNode(document), options)
+                  return DO.U.positionInteraction(annotation[ 'noteIRI' ], getDocumentContentNode(document), options)
                     .catch(() => {
                       return Promise.resolve()
                     })
@@ -9902,7 +9890,7 @@ WHERE {\n\
                     inboxPromise = Promise.resolve(DO.C.Resource[documentURL].inbox)
                   }
                   else {
-                    inboxPromise = graph.getLinkRelation(DO.C.Vocab['ldpinbox']['@id'], documentURL);
+                    inboxPromise = getLinkRelation(DO.C.Vocab['ldpinbox']['@id'], documentURL);
                   }
                 }
 
@@ -9923,7 +9911,7 @@ WHERE {\n\
                       // notificationData['type'] = ['as:Announce'];
 // console.log(annotation)
 // console.log(notificationData)
-                      return inbox.notifyInbox(notificationData)
+                      return notifyInbox(notificationData)
                         .catch(error => {
                           console.log('Error notifying the inbox:', error)
                         })
@@ -9941,18 +9929,18 @@ WHERE {\n\
                     var noteData = createNoteData(annotation)
                     if ('profile' in annotation && annotation.profile == 'https://www.w3.org/ns/activitystreams') {
                       notificationData['statements'] = DO.U.createNoteDataHTML(noteData);
-                      note = doc.createActivityHTML(notificationData);
+                      note = createActivityHTML(notificationData);
                     }
                     else {
                       note = DO.U.createNoteDataHTML(noteData);
                     }
-                    data = doc.createHTML('', note);
+                    data = createHTML('', note);
 // console.log(noteData)
 // console.log(note)
 // console.log(data)
 // console.log(annotation)
 
-                    inbox.postActivity(annotation['containerIRI'], id, data, annotation)
+                    postActivity(annotation['containerIRI'], id, data, annotation)
                       .catch(error => {
                         // console.log('Error serializing annotation:', error)
                         // console.log(error)
@@ -9963,7 +9951,7 @@ WHERE {\n\
                         var location = response.headers.get('Location')
 
                         if (location) {
-                          location = uri.getAbsoluteIRI(annotation['containerIRI'], location)
+                          location = getAbsoluteIRI(annotation['containerIRI'], location)
                           annotation['noteIRI'] = annotation['noteURL'] = location
                         }
 
@@ -9993,8 +9981,8 @@ WHERE {\n\
 <aside class="note">\n\
 '+ note + '\n\
 </aside>';
-                  var asideNode = util.fragmentFromString(asideNote);
-                  var parentSection = doc.getClosestSectionNode(selectedParentElement);
+                  var asideNode = fragmentFromString(asideNote);
+                  var parentSection = getClosestSectionNode(selectedParentElement);
                   parentSection.appendChild(asideNode);
 
                   DO.U.positionNote(refId, id);
@@ -10002,8 +9990,8 @@ WHERE {\n\
 
                 case 'selector':
                   window.history.replaceState({}, null, selectorIRI);
-                  doc.showActionMessage(document.documentElement, '<p>Copy URL from address bar.</p>')
-                  // util.copyTextToClipboard(encodeURI(selectorIRI));
+                  showActionMessage(document.documentElement, '<p>Copy URL from address bar.</p>')
+                  // copyTextToClipboard(encodeURI(selectorIRI));
                   break;
 
                 case 'cite': //footnote reference
@@ -10019,8 +10007,8 @@ WHERE {\n\
 <aside class="note">\n\
 '+ note + '\n\
 </aside>';
-                      var asideNode = util.fragmentFromString(asideNote);
-                      var parentSection = doc.getClosestSectionNode(selectedParentElement);
+                      var asideNode = fragmentFromString(asideNote);
+                      var parentSection = getClosestSectionNode(selectedParentElement);
                       parentSection.appendChild(asideNode);
 
                       DO.U.positionNote(refId, id);
@@ -10037,7 +10025,7 @@ WHERE {\n\
 // console.log(citationGraph)
 // console.log(citationGraph.toString())
 // console.log(options.citationId)
-// console.log(uri.getProxyableIRI(options.citationId))
+// console.log( getProxyableIRI(options.citationId))
                         if(opts.url.match(/^10\.\d+\//)) {
                           citationURI = 'http://dx.doi.org/' + opts.url;
                           options.citationId = citationURI;
@@ -10049,7 +10037,7 @@ WHERE {\n\
                             citationURI = opts.url.replace(/^https/, 'http');
                           }
                         }
-                        // else if (uri.stripFragmentFromString(options.citationId) !== uri.getProxyableIRI(options.citationId)) {
+                        // else if (stripFragmentFromString(options.citationId) !==  getProxyableIRI(options.citationId)) {
                         //   citationURI = window.location.origin + window.location.pathname;
                         // }
                         else {
@@ -10060,7 +10048,7 @@ WHERE {\n\
 
                         var node = document.querySelector('#references ol');
 
-                        doc.buildReferences(node, id, citation);
+                        buildReferences(node, id, citation);
 
                         options['showRobustLinksDecoration'] = true;
                         var node = document.querySelector('[id="' + id + '"] a[about]');
@@ -10095,7 +10083,7 @@ WHERE {\n\
                             "statements": notificationStatements
                           };
 
-                          inbox.notifyInbox(notificationData).then(
+                          notifyInbox(notificationData).then(
                             function(s){
                               console.log('Sent Linked Data Notification to ' + inboxURL);
                             });
@@ -10136,8 +10124,7 @@ WHERE {\n\
             },
 
             createForm: function () {
-              var doc = this.document,
-                form = doc.createElement('div');
+              var form = this.document.createElement('div');
 
               // Anchor Form (div)
               form.className = 'medium-editor-toolbar-form';
