@@ -6296,7 +6296,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
               url = options.iri.split(':')[0] + ':' + url;
             }
             else {
-              href = ('iri' in options) ? getProxyableIRI(options.iri) : document.location.href;
+              let href = ('iri' in options) ? getProxyableIRI(options.iri) : document.location.href;
               url = getBaseURL(href);
 // console.log(url)
               //TODO: Move/Refactor in uri.js
