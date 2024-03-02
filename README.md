@@ -141,7 +141,7 @@ git fetch upstream
 git merge upstream/main
 
 # Install packages
-npm ci
+yarn
 
 # Check out a branch for your changes
 git checkout -b YOUR-WORK-BRANCHNAME
@@ -149,13 +149,13 @@ git checkout -b YOUR-WORK-BRANCHNAME
 # Make your code updates at src/ , media/ etc.
 
 # Build eg. to create scripts/dokieli.js
-npm run build
+yarn build
 
 # or automatically rebuild when files change
-npm run watch
+yarn watch
 
 # or create a minified scripts/dokieli.js
-npm run minify
+yarn minify
 
 # Test your changes, if all okay:
 
@@ -185,7 +185,7 @@ repository.
 
 dokieli uses [Jest](https://jestjs.io/) for unit tests. 
 
-To run unit tests, run `npm test`.
+To run unit tests, run `yarn test`.
 
 Coverage reports are collected in `tests/coverage`.
 
@@ -193,9 +193,16 @@ Coverage reports are collected in `tests/coverage`.
 
 dokieli uses [Playwright](https://playwright.dev/) for end-to-end tests. 
 
-To run end to end tests, run `npm run test:e2e`. 
+To run end to end tests, run `yarn test:e2e`. 
 
 Reports are collected in `playwright-report`.
+
+## Code quality
+
+We use [eslint](https://eslint.org/) to enforce consistent code style and catch potential errors in our JavaScript code. To lint our code, run `yarn lint`.
+
+We use a [husky](https://typicode.github.io/husky) pre-commit hook to run tests and lint before every commit. To opt-in, run `yarn husky` once. After this, husky will run the linter and the tests each time you make a commit.
+
 
 ## Supported By
 
