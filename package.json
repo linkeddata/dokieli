@@ -12,12 +12,10 @@
     "test:e2e": "playwright test",
     "watch": "webpack --progress --color --watch",
     "minify": "webpack --progress --color --env minimize",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package",
+    "lint": "eslint ."
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/linkeddata/dokieli"
-  },
+  "repository": "https://github.com/linkeddata/dokieli",
   "keywords": [
     "decentralized",
     "linked data",
@@ -60,14 +58,14 @@
     "@playwright/test": "^1.29.0",
     "jest": "^29.0.3",
     "jest-environment-jsdom": "^29.0.3",
+    "patch-package": "^8.0.0",
+    "process": "^0.11.10",
     "standard": "^16.0.4",
     "terser-webpack-plugin": "^5.3.3",
     "webpack": "^5.76.3",
     "webpack-bundle-analyzer": "^4.10.1",
     "webpack-cli": "^5.0.1",
-    "wrapper-webpack-plugin": "^2.2.2",
-    "patch-package": "^8.0.0",
-    "process": "^0.11.10"
+    "wrapper-webpack-plugin": "^2.2.2"
   },
   "resolutions": {
     "ansi-regex": "^5.0.0",

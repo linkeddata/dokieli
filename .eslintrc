@@ -1,0 +1,7 @@
+{
+    "rules": {},
+    "extends": "eslint:recommended",
+    "parser": "babel-eslint",
+    "env": { "es6": true, "browser": true },
+    "ignorePatterns": ["node_modules", "test-setup.js"]
+  }
