@@ -1,15 +1,7 @@
 const webpack = require("webpack");
 const path = require("path");
-const fs = require("fs");
-const WrapperPlugin = require("wrapper-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-
-const headerDoc =
-  fs.readFileSync(
-    require.resolve("solid-auth-client/dist-lib/solid-auth-client.bundle.js"),
-    "utf8"
-  ) + "\n";
 
 module.exports = (env) => {
   return {
@@ -54,7 +46,6 @@ module.exports = (env) => {
       "whatwg-url": "window",
       "isomorphic-fetch": "fetch",
       "@trust/webcrypto": "crypto",
-      "solid-auth-client": ["solid", "auth"],
     },
     devtool: "source-map",
     optimization: {
@@ -73,9 +64,6 @@ module.exports = (env) => {
     },
 
     plugins: [
-      new WrapperPlugin({
-        header: headerDoc,
-      }),
       new webpack.ProvidePlugin({
         process: "process/browser",
         MediumEditor: "medium-editor", 

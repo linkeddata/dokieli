@@ -67,8 +67,7 @@
     "terser-webpack-plugin": "^5.3.3",
     "webpack": "^5.76.3",
     "webpack-bundle-analyzer": "^4.10.1",
-    "webpack-cli": "^5.0.1",
-    "wrapper-webpack-plugin": "^2.2.2"
+    "webpack-cli": "^5.0.1"
   },
   "resolutions": {
     "ansi-regex": "^5.0.0",
