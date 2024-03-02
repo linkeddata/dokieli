@@ -1,0 +1,2 @@
+yarn test
+yarn lint
