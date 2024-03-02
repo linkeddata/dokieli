@@ -8307,6 +8307,7 @@ WHERE {\n\
 // console.log(selection);
 
                     if (selection.rangeCount) {
+                      // FIXME: Seem ununsed. Remove later. 
                       // range = selection.getRangeAt(0);
                       // parent = selectedParentElement;
 
