@@ -17,8 +17,7 @@ function getUserSignedInHTML() {
 
 
 async function showUserSigninSignout (node) {
-
-  const session = await solid.auth.currentSession();
+  const session = await solidAuth.currentSession();
   var webId = session ? session.webId : null;
   // was LoggedId with new OIDC WebID
   if (webId && (webId != Config.User.IRI || !Config.User.IRI)) {

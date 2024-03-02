@@ -3,11 +3,12 @@
 import Config from './config.js'
 import { getDateTimeISO, fragmentFromString, generateAttributeId, uniqueArray, generateUUID } from './util.js'
 import { getAbsoluteIRI, getBaseURL, stripFragmentFromString, getFragmentFromString, getURLLastPath } from './uri.js'
-import { getResourceHead, LinkHeader, processSave, patchResourceWithAcceptPatch } from './fetcher.js'
+import { getResourceHead, processSave, patchResourceWithAcceptPatch } from './fetcher.js'
 import { SimpleRDF as _SimpleRDF, store } from './simplerdf.cjs'
 const SimpleRDF = _SimpleRDF
 import { getResourceGraph, sortGraphTriples, getGraphAuthor, getGraphLabel, getGraphEmail, getGraphTitle, getGraphPublished, getGraphUpdated, getGraphDescription, getGraphLicense, getGraphRights, getGraphFromData } from './graph.js'
 import { createRDFaHTML, Icon } from './template.js'
+import LinkHeader from "http-link-header";
 
 function xmlHtmlEscape(string) {
   return String(string).replace(/[&<>"']/g, function (match) {
@@ -288,7 +289,7 @@ function createFeedXML(feed, options) {
 
       case 'application/rss+xml':
         if ('author' in feed.items[i] && typeof feed.items[i].author !== 'undefined') {
-          var author = feed.items[i].author.find(item => item.uri === feed.author.uri) || feed.items[i].author[0];
+          author = feed.items[i].author.find(item => item.uri === feed.author.uri) || feed.items[i].author[0];
 
           if ('email' in author) {
             author = author.name ? `${author.email} (${author.name})` : author.email;
@@ -541,7 +542,7 @@ function showActionMessage(node, message, options) {
   options = options || {};
   options['timer'] = ('timer' in options) ? options.timer : Config.ActionMessage.Timer;
 
-  var message = '<aside id="document-action-message" class="do on">' + message + '</aside>';
+  message = '<aside id="document-action-message" class="do on">' + message + '</aside>';
   node.appendChild(fragmentFromString(message));
   window.setTimeout(function () {
     var dam = document.getElementById('document-action-message');
@@ -655,7 +656,7 @@ function createDateHTML(options) {
 }
 
 function setEditSelections(options) {
-  var options = options || {};
+  options = options || {};
 
   if (!('datetime' in options)) {
     options['datetime'] = new Date();
@@ -719,7 +720,7 @@ function setEditSelections(options) {
   if (dLS) {
     var licenseIRI = dLS.value;
 
-    var dl = dLS.closest('#' + documentLicense);
+    dl = dLS.closest('#' + documentLicense);
     dl.removeAttribute('contenteditable');
 
     if(licenseIRI == '') {
@@ -727,7 +728,7 @@ function setEditSelections(options) {
     }
     else {
       dl.removeAttribute('class');
-      var dd = dLS.closest('dd');
+      dd = dLS.closest('dd');
       dd.parentNode.removeChild(dd);
       dd = '<dd><a href="' + licenseIRI+ '" rel="schema:license" title="' + Config.License[licenseIRI].description + '">' + Config.License[licenseIRI].name + '</a></dd>';
       dl.insertAdjacentHTML('beforeend', dd);
@@ -741,7 +742,7 @@ function setEditSelections(options) {
   if (dTS) {
     var typeIRI = dTS.value;
 
-    var dl = dTS.closest('#' + documentType);
+    dl = dTS.closest('#' + documentType);
     dl.removeAttribute('contenteditable');
 
     if(typeIRI == '') {
@@ -749,7 +750,7 @@ function setEditSelections(options) {
     }
     else {
       dl.removeAttribute('class');
-      var dd = dTS.closest('dd');
+      dd = dTS.closest('dd');
       dd.parentNode.removeChild(dd);
       dd = '<dd><a href="' + typeIRI+ '" rel="rdf:type">' + Config.ResourceType[typeIRI].name + '</a></dd>';
       dl.insertAdjacentHTML('beforeend', dd);
@@ -758,12 +759,12 @@ function setEditSelections(options) {
 
 
   var documentStatus = 'document-status';
-  var dLS = document.querySelector('#' + documentStatus + ' option:checked');
+  dLS = document.querySelector('#' + documentStatus + ' option:checked');
 
   if (dLS) {
     var statusIRI = dLS.value;
 
-    var dl = dLS.closest('#' + documentStatus);
+    dl = dLS.closest('#' + documentStatus);
     dl.removeAttribute('contenteditable');
 
     if(statusIRI == '') {
@@ -771,7 +772,7 @@ function setEditSelections(options) {
     }
     else {
       dl.removeAttribute('class');
-      var dd = dLS.closest('dd');
+      dd = dLS.closest('dd');
       dd.parentNode.removeChild(dd);
       dd = '<dd prefix="pso: http://purl.org/spar/pso/" rel="pso:holdsStatusInTime" resource="#' + generateAttributeId() + '"><span rel="pso:withStatus" resource="' + statusIRI  + '" typeof="pso:PublicationStatus">' + Config.PublicationStatus[statusIRI].name + '</span></dd>';
 
@@ -784,12 +785,12 @@ function setEditSelections(options) {
   }
 
   var documentTestSuite = 'document-test-suite';
-  var dTS = document.querySelector('#' + documentTestSuite + ' input');
+  dTS = document.querySelector('#' + documentTestSuite + ' input');
 
   if (dTS) {
     var testSuiteIRI = dTS.value;
 
-    var dl = dTS.closest('#' + documentTestSuite);
+    dl = dTS.closest('#' + documentTestSuite);
     dl.removeAttribute('contenteditable');
 
     if(testSuiteIRI == '') {
@@ -797,7 +798,7 @@ function setEditSelections(options) {
     }
     else {
       dl.removeAttribute('class');
-      var dd = dTS.closest('dd');
+      dd = dTS.closest('dd');
       dd.parentNode.removeChild(dd);
       dd = '<dd><a href="' + testSuiteIRI+ '" rel="spec:testSuite">' + testSuiteIRI + '</a></dd>';
       dl.insertAdjacentHTML('beforeend', dd);
@@ -959,7 +960,7 @@ function getDocumentStatusHTML(rootNode, options) {
 
     case 'delete':
       if(dl) {
-        var clone = dl.cloneNode(true);
+        clone = dl.cloneNode(true);
         dl.parentNode.removeChild(dl);
 
         var t = clone.querySelector('[typeof="' + options.type + '"]');
@@ -1633,7 +1634,7 @@ function createImmutableResource(url, data, options) {
       getResourceInfo(data, { 'mode': 'update' });
     });
 
-  var timeMapURL = Config.OriginalResourceInfo['timemap'] || url + '.timemap';
+  timeMapURL = Config.OriginalResourceInfo['timemap'] || url + '.timemap';
 
 
   //Update URI-R
@@ -1865,7 +1866,7 @@ function updateReferences(options){
 
         var anchor = '<a ' + versionDate + versionURL + ' href="' + a.href + '"' + title + '>' + a.href + '</a>';
 
-        var jumpLink = '<span class="jumplink"><sup><a href="#' + rId + '">^</a></sup></span>';
+        jumpLink = '<span class="jumplink"><sup><a href="#' + rId + '">^</a></sup></span>';
 
         //FIXME: Better to add to an array and then insert but need to update the DOM before.
         var li = '<li id="' + refId + '">' + jumpLink + ' <cite>' + a.textContent + '</cite>, <cite>' + anchor + '</cite></li>'
@@ -1934,7 +1935,7 @@ function showRobustLinksDecoration(node) {
       citationLabels = getCitationLabelsFromTerms(rel);
 
       if(citationLabels.length > 0) {
-        var citationType = citationLabels.join(', ');
+        citationType = citationLabels.join(', ');
         citation = '<span>Citation Reason</span><span>' + citationType + '</span>';
       }
     }

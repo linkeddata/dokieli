@@ -6,6 +6,7 @@ import Config from './config.js'
 import { stripFragmentFromString, getProxyableIRI } from './uri.js'
 import { uniqueArray } from './util.js'
 import { setAcceptRDFTypes, getResource, getResourceHead } from './fetcher.js'
+import LinkHeader from "http-link-header";
 
 const store = ld.store;
 
@@ -86,18 +87,15 @@ function serializeDataToPreferredContentType(data, options) {
     case 'text/html':
     case 'application/xhtml+xml':
       return Promise.resolve(data);
-      break;
 
     case 'text/turtle':
       return serializeData(data, options['contentType'], 'text/turtle', options);
-      break;
 
     case 'application/ld+json':
     case 'application/json':
     case '*/*':
     default:
       return serializeData(data, options['contentType'], 'application/ld+json', options);
-      break;
   }
 }
 
@@ -364,12 +362,13 @@ function skolem(data, options) {
 
 function setDocumentBase (data, baseURI, contentType) {
   baseURI = stripFragmentFromString(baseURI)
-
+  let template;
+  let base;
   switch(contentType) {
     case 'text/html': case 'application/xhtml+xml':
-      let template = document.implementation.createHTMLDocument()
+      template = document.implementation.createHTMLDocument()
       template.documentElement.innerHTML = data
-      let base = template.querySelector('head base[href]')
+      base = template.querySelector('head base[href]')
       if (!base) {
         template.querySelector('head').insertAdjacentHTML('afterbegin', '<base href="' + baseURI + '" />')
         data = template.documentElement.outerHTML

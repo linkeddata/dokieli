@@ -1,4 +1,4 @@
-WebExtension = (typeof browser !== 'undefined') ? browser : chrome;
+const WebExtension = (typeof browser !== 'undefined') ? browser : chrome;
 
 var C = {
   'Loaded': false,

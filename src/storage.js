@@ -17,7 +17,9 @@ function enableLocalStorage(key) {
   try {
     document.documentElement.innerHTML = JSON.parse(o).object.content;
     Config.init();
-  } catch(e){}
+  } catch(e){
+    // Ignore errors
+  }
   console.log(getDateTimeISO() + ': ' + key + ' storage enabled.');
   enableAutoSave(key, {'method': 'localStorage'});
 }
@@ -34,7 +36,6 @@ function updateLocalStorageDocument(key, data, options) {
   options = options || {};
 
   var id = generateUUID();
-  var o = localStorage.getItem(key);
 
   var datetime = getDateTimeISO();
 
@@ -169,6 +170,7 @@ function getLocalStorageProfile(key) {
       var value = {};
       chrome.storage.sync.get(key, function(o){ value = o[key]; })
 
+      // eslint-disable-next-line no-unused-vars
       return new Promise(function(resolve, reject){
         window.setTimeout(function() {
           return resolve(value)

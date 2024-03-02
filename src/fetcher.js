@@ -3,7 +3,6 @@
 import Config from './config.js'
 import { generateUUID } from './util.js'
 import { getProxyableIRI } from './uri.js'
-import LinkHeader from 'http-link-header'
 import * as solidAuth from 'solid-auth-client'
 
 const DEFAULT_CONTENT_TYPE = 'text/html; charset=utf-8'
@@ -632,7 +631,6 @@ export {
   getResource,
   getResourceHead,
   getResourceOptions,
-  LinkHeader,
   patchResource,
   patchResourceGraph,
   postResource,

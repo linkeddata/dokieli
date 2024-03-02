@@ -1,7 +1,17 @@
 {
-    "rules": {},
-    "extends": "eslint:recommended",
-    "parser": "babel-eslint",
-    "env": { "es6": true, "browser": true },
-    "ignorePatterns": ["node_modules", "test-setup.js"]
+  "rules": {
+    "no-unused-vars": "off",
+    "no-useless-escape": "off",
+    "no-prototype-builtins": "off"
+  },
+  "extends": "eslint:recommended",
+  "parser": "babel-eslint",
+  "env": { "es6": true, "browser": true, "jest": true, "node": true },
+  "plugins": ["jest"],
+  "ignorePatterns": ["node_modules", "test-setup.js", "scripts/"],
+  "globals": {
+    "browser": "readonly",
+    "chrome": "readonly",
+    "DO": "writable"
   }
+}

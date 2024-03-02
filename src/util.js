@@ -18,8 +18,10 @@ function removeChildren(node) {
 function copyTextToClipboard(text) {
   if (!navigator.clipboard) {
     try {
-      var successful = document.execCommand("copy");
-    } catch (err) {}
+      document.execCommand("copy");
+} catch (err) {
+      // Ignore errors.
+    }
     return;
   }
   navigator.clipboard.writeText(text).then(

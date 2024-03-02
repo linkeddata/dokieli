@@ -6,7 +6,7 @@
  * https://github.com/linkeddata/dokieli
  */
 
-import { getResource, setAcceptRDFTypes, LinkHeader, postResource, putResource, currentLocation, patchResourceWithAcceptPatch, putResourceWithAcceptPut, copyResource, deleteResource } from './fetcher.js'
+import { getResource, setAcceptRDFTypes, postResource, putResource, currentLocation, patchResourceWithAcceptPatch, putResourceWithAcceptPut, copyResource, deleteResource } from './fetcher.js'
 import { getDocument, getDocumentContentNode, xmlHtmlEscape, showActionMessage, selectArticleNode, domToString, buttonClose, buttonRemoveAside, showRobustLinksDecoration, getResourceInfo, removeNodesWithIds, getResourceInfoSKOS, removeReferences, buildReferences, removeSelectorFromNode, insertDocumentLevelHTML, getResourceInfoSpecRequirements, getTestDescriptionReviewStatusHTML, createFeedXML, getButtonDisabledHTML, showTimeMap, createMutableResource, createImmutableResource, updateMutableResource, createHTML, getResourceImageHTML, setDocumentRelation, setDate, getClosestSectionNode, getAgentHTML, setEditSelections, getNodeLanguage, createActivityHTML } from './doc.js'
 import { getProxyableIRI, getPathURL, stripFragmentFromString, getFragmentOrLastPath, getFragmentFromString, getURLLastPath, getLastPathSegment, forceTrailingSlash, getBaseURL, getParentURLPath, encodeString, getAbsoluteIRI } from './uri.js'
 import { getResourceGraph, traverseRDFList, getLinkRelation, getAgentName, getGraphImage, getGraphFromData, isActorType, isActorProperty, serializeGraph, getGraphLabel, getUserContacts, getAgentOutbox, getAgentStorage, getAgentInbox, getLinkRelationFromHead, sortGraphTriples } from './graph.js'
@@ -27,6 +27,7 @@ import { diffChars } from 'diff'
 import { micromark as marked } from 'micromark'
 import { gfm, gfmHtml } from 'micromark-extension-gfm'
 import { gfmTagfilterHtml } from 'micromark-extension-gfm-tagfilter'
+import LinkHeader from 'http-link-header';
 import * as ld from './simplerdf.cjs'
 import Config from './config.js';
 
@@ -377,7 +378,7 @@ DO = {
                         noteData['creator']['image'] = actorImage;
                       }
                     }
-                    else if(type == 'https://www.w3.org/ns/activitystreams#Dislike'){
+                    else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Dislike') > -1) {
                       noteData['creator'] = {
                         'name': 'Anonymous Coward'
                       }
@@ -479,7 +480,7 @@ DO = {
               // }
               else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Add') > -1) {
                 if(s.asobject && s.asobject.at(0)) {
-                  var object = s.asobject.at(0);
+                  object = s.asobject.at(0);
 
                   if (object.startsWith(url)) {
                     return DO.U.showAnnotation(object, s);
@@ -975,7 +976,7 @@ DO = {
           function(g){
 // console.log(g);
             DO.C['Graphs'] = DO.C['Graphs'] || {};
-            var g = SimpleRDF(DO.C.Vocab, options['subjectURI'], g, ld.store).child(requestURL);
+            g = SimpleRDF(DO.C.Vocab, options['subjectURI'], g, ld.store).child(requestURL);
 // console.log(g.toString())
             var dataGraph = SimpleRDF();
             var graphs = {};
@@ -1343,7 +1344,7 @@ DO = {
         MediumEditor.selection.importSelection(selection, containerNode, document);
 
         //XXX: Review
-        var selection = window.getSelection();
+        selection = window.getSelection();
 // console.log(selection)
         var r = selection.getRangeAt(0);
         selection.removeAllRanges();
@@ -1768,7 +1769,7 @@ DO = {
       node.insertAdjacentHTML('beforeend', s);
 
       var viewButtons = document.querySelectorAll('#document-views.do button:not([class~="resource-visualise"])');
-      for (var i = 0; i < viewButtons.length; i++) {
+      for (let i = 0; i < viewButtons.length; i++) {
         viewButtons[i].removeEventListener('click', DO.U.initCurrentStylesheet);
         viewButtons[i].addEventListener('click', DO.U.initCurrentStylesheet);
       }
@@ -1804,7 +1805,7 @@ DO = {
     },
 
     updateSelectedStylesheets: function(stylesheets, selected) {
-      var selected = selected.toLowerCase();
+      selected = selected.toLowerCase();
 
       for (var j = 0; j < stylesheets.length; j++) {
         (function(stylesheet) {
@@ -1813,8 +1814,8 @@ DO = {
               stylesheet.setAttribute('rel', 'stylesheet alternate');
           }
         })(stylesheets[j]);
-      };
-      for (var j = 0; j < stylesheets.length; j++) {
+      }
+      for (let j = 0; j < stylesheets.length; j++) {
         (function(stylesheet) {
           if (stylesheet.getAttribute('title').toLowerCase() == selected) {
               stylesheet.setAttribute('rel', 'stylesheet');
@@ -1841,7 +1842,7 @@ DO = {
 
       if (selected == 'shower') {
         var slides = document.querySelectorAll('.slide');
-        for(var j = 0; j < slides.length; j++) {
+        for(j = 0; j < slides.length; j++) {
           slides[j].classList.add('do');
         }
         getDocumentContentNode(document).classList.add('on-slideshow', 'list');
@@ -1864,7 +1865,7 @@ DO = {
           body.classList.remove('on-document-menu');
 
           var dMenuSections = dMenu.querySelectorAll('section');
-          for (var j = 0; j < dMenuSections.length; j++) {
+          for (j = 0; j < dMenuSections.length; j++) {
             dMenuSections[j].parentNode.removeChild(dMenuSections[j]);
           }
         }
@@ -1875,7 +1876,7 @@ DO = {
         shower.initRun();
       }
       if (currentStylesheet.toLowerCase() == 'shower') {
-        var slides = document.querySelectorAll('.slide');
+        slides = document.querySelectorAll('.slide');
         for (var c = 0; c < slides.length; c++){
           slides[c].classList.remove('do');
         }
@@ -1945,7 +1946,7 @@ DO = {
         document.documentElement.appendChild(fragmentFromString(embedMenu));
         document.querySelector('#embed-data-turtle textarea').focus();
         var a = document.querySelectorAll('#embed-data-entry nav a');
-        for(var i = 0; i < a.length; i++) {
+        for(let i = 0; i < a.length; i++) {
           a[i].addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
@@ -1967,7 +1968,7 @@ DO = {
         });
 
         var buttonSave = document.querySelectorAll('#embed-data-entry button.save');
-        for (var i = 0; i < buttonSave.length; i++) {
+        for (let i = 0; i < buttonSave.length; i++) {
           buttonSave[i].addEventListener('click', function(e) {
             var textarea = e.target.parentNode.querySelector('textarea');
             var name = textarea.getAttribute('name');
@@ -1994,7 +1995,7 @@ DO = {
             ede.parentNode.removeChild(ede);
             document.querySelector('.embed-data-meta').removeAttribute('disabled');
           });
-        };
+        }
       // };
 
       // var edih = document.querySelector('button.embed-data-meta');
@@ -2087,7 +2088,7 @@ DO = {
         }
       }
 
-      var data = authors + editors + contributors + citations + requirements + concepts + statements;
+      data = authors + editors + contributors + citations + requirements + concepts + statements;
 
       // return authors + editors + contributors + citations + requirements + statements;
     // }).then(
@@ -2549,7 +2550,7 @@ DO = {
                   s += '<dd>' + nodes[i].getAttribute(titleSelector) + '</dd>';
                   processed.push(nodes[i].textContent);
                 }
-              };
+              }
             }
             else if (id == 'list-of-concepts') {
 // console.log(DO.C.Resource[documentURL]['skos'])
@@ -2557,8 +2558,8 @@ DO = {
             }
             //list-of-figures, list-of-tables, list-of-quotations, table-of-requirements
             else {
-              var processed = [];
-              for (var i = 0; i < nodes.length; i++) {
+              processed = [];
+              for (let i = 0; i < nodes.length; i++) {
                 var title, textContent;
 
                 if (id == 'list-of-quotations') {
@@ -2646,7 +2647,7 @@ console.log(reason);
 
         var predecessorVersion = DO.C.Resource[documentURL].graph.relpredecessorversion;
         if (predecessorVersion) {
-          var url = predecessorVersion;
+          url = predecessorVersion;
 
           var sourceGraph = DO.C.Resource[documentURL].graph;
           var sourceGraphURI = sourceGraph.iri().toString();
@@ -3202,9 +3203,9 @@ console.log(reason);
       options['showActionMessage'] = ('showActionMessage' in options) ? options.showActionMessage : true;
 
       //TODO: Move to Config?
-      var svgFail = Icon[".fas.fa-times-circle.fa-fw"];
+      svgFail = Icon[".fas.fa-times-circle.fa-fw"];
 
-      var messageArchivedAt = Icon[".fas.fa-archive"] + ' Archived at ';
+      messageArchivedAt = Icon[".fas.fa-archive"] + ' Archived at ';
 
       var responseMessages = {
         "403": svgFail + ' Archive unavailable. Please try later.',
@@ -3379,9 +3380,9 @@ console.log(reason);
             }
           })
 
-          .catch(() => {
+          .catch((err) => {
             if (options.showActionMessage) {
-              progress.innerHTML = responseMessages[response.status]
+              progress.innerHTML = responseMessages[err.response.status]
             }
           })
       }
@@ -3720,7 +3721,7 @@ console.log(reason);
           else {
             b = e.target.closest('button.editor-enable');
             if (b) {
-              var node = b.closest('li');
+              node = b.closest('li');
               b.outerHTML = DO.C.Editor.DisableEditorButton;
               DO.U.Editor.enableEditor('author', e);
               showAutoSaveStorage(node, documentURL);
@@ -3883,7 +3884,7 @@ console.log(reason);
           noteData.license["name"] = DO.C.License[license.value.trim()].name
         }
 
-        var note = DO.U.createNoteDataHTML(noteData)
+        note = DO.U.createNoteDataHTML(noteData)
 
         var data = createHTML('', note)
 
@@ -4310,7 +4311,7 @@ console.log(reason);
             containersLi.push('<li class="container"><input type="radio" name="resources" value="' + c + '" id="' + slug + '"/><label for="' + slug + '">' + decodeURIComponent(slug) + '</label></li>');
           }
           else {
-            var slug = path[path.length-1];
+            slug = path[path.length-1];
             resourcesLi.push('<li><input type="' + inputType + '" name="resources" value="' + c + '" id="' + slug + '"/><label for="' + slug + '">' + decodeURIComponent(slug) + '</label></li>');
           }
 
@@ -4329,7 +4330,7 @@ console.log(reason);
           list.insertAdjacentHTML('beforeend', '<p><em>(empty)</em></p>');
         }
 
-        for(var i = 0; i < buttons.length; i++) {
+        for(let i = 0; i < buttons.length; i++) {
           var buttonParent = buttons[i].parentNode;
           var buttonInput = buttonParent.querySelector('input');
 
@@ -4529,8 +4530,6 @@ console.log(reason);
           var policy = g.child(iri);
           var policyDetails = [];
 
-          var target, ruleType, assigner, peAction, assignee, assigner, actions;
-
           var types = policy.rdftype._array;
           var indexPolicy = types.indexOf(DO.C.Vocab['odrlOffer']["@id"]) || types.indexOf(DO.C.Vocab['odrlAgreement']["@id"]);
           if (indexPolicy >= 0) {
@@ -4560,7 +4559,7 @@ console.log(reason);
           }
 
           if (policy.odrlprohibition && policy.odrlprohibition.at(0)) {
-            var ruleG = g.child(policy.odrlprohibition.at(0));
+            ruleG = g.child(policy.odrlprohibition.at(0));
 
             policyDetails.push(DO.U.getODRLRuleActions(ruleG));
             policyDetails.push(DO.U.getODRLRuleAssigners(ruleG));
@@ -4580,10 +4579,9 @@ console.log(reason);
 
     getODRLRuleActions: function(r) {
 // console.log(r.odrlaction)
-      var actions = '';
+      var actions = [];
 
       if (r.odrlaction && r.odrlaction._array.length > 0) {
-        var actions = [];
         r.odrlaction._array.forEach(function(iri){
 
           //FIXME: Label derived from URI.
@@ -4741,7 +4739,7 @@ console.log(reason);
             var nF = [];
 
             features.forEach(function(iri){
-              var label = href = iri;
+              var label, href = iri;
 
               switch (iri) {
                 case DO.C.Vocab['notifystartAt']['@id']:
@@ -4803,7 +4801,6 @@ console.log(reason);
         //doap:implements <https://solidproject.org/TR/websocket-channel-2023>
         case DO.C.Vocab['notifyWebSocketChannel2023']['@id']:
           return DO.U.subscribeToWebSocketChannel(url, data);
-          break;
       }
     },
 
@@ -4897,7 +4894,6 @@ console.log(reason);
                 DO.C.Subscription[data.topic]['Connection'] = i;
                 // return Promise.resolve();
               });
-              break;
           }
         });
     },
@@ -4913,7 +4909,6 @@ console.log(reason);
         switch (contentType) {
           case 'text/turtle':
             return Promise.reject({'message': 'TODO text/turtle', 'data': data});
-            break;
 
           case 'application/ld+json':
             if (data['@context'] && data.type && data.topic) {
@@ -4934,7 +4929,6 @@ console.log(reason);
           default:
           case 'text/plain':
             return Promise.reject({'message': 'TODO text/plain?', 'data': data});
-            break;
         }
       });
     },
@@ -5192,11 +5186,11 @@ console.log(response)
           msg = 'Request unsuccessful ('+ statusText + ').';
           break;
         case 401:
-          var msg = 'You are not authenticated with valid credentials.';
-          msg = (!DO.C.User.IRI) ? msg + ' . Try signing in.' : msg;
+          var s = 'You are not authenticated with valid credentials.';
+          msg = (!DO.C.User.IRI) ? s + ' . Try signing in.' : s;
           break;
         case 403:
-          var msg = 'This request is forbidden.';
+          msg = 'This request is forbidden.';
           break;
         case 404:
           msg = 'Not found.';
@@ -5488,7 +5482,7 @@ console.log(response)
 
                       //XXX: Not sure about htis.
                       if (result.value instanceof Error) {
-
+                        // TODO: decide how to handle
                       }
                       //FIXME: This is not actually useful yet. getResourceGraph should return the iri in which its content had no triples or failed to parse perhaps.
                       else if (typeof result.value === 'undefined') {
@@ -6265,7 +6259,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
             url = getProxyableIRI(url)
           }
           node.setAttribute(ref, url);
-        };
+        }
       }
 
       return nodes;
@@ -6348,14 +6342,14 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
             break;
         }
 
-        var fromURL = x = node.getAttribute(ref).trim();
+        var fromURL, x = node.getAttribute(ref).trim();
         var pathToFile = '';
         var s = fromURL.split(':')[0];
 
         if (s != 'http' && s != 'https' && s != 'file' && s != 'data' && s != 'urn' && s != 'urn') {
           if (fromURL.startsWith('//')) {
             fromURL = document.location.protocol + fromURL
-            toURL = baseURL + fromURL.substr(2)
+            var toURL = baseURL + fromURL.substr(2)
           }
           else if (fromURL.startsWith('/')) {
             pathToFile = DO.U.setBaseURL(fromURL, {'baseURLType': 'base-url-relative'});
@@ -6370,7 +6364,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
           copyResource(fromURL, toURL);
         }
-      };
+      }
     },
 
     createAttributeDateTime: function(element) {
@@ -6513,13 +6507,10 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
       switch(refType) {
         case 'LNCS': default:
           return familyName + ', ' + givenName.slice(0,1) + '.';
-          break;
         case 'ACM':
           return givenName.slice(0,1) + '. ' + familyName;
-          break;
         case 'fullName':
           return givenName + ' ' + familyName;
-          break;
       }
     },
 
@@ -6537,7 +6528,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
 
         highlights[i].addEventListener('mouseleave', function(e) {
           var c = e.target.getAttribute('class');
-          var c = e.target.getAttribute('class').split(' ')
+          c = e.target.getAttribute('class').split(' ')
                     .filter(function(s) { return s.startsWith('highlight-'); });
           var highlightsX = getDocumentContentNode(document).querySelectorAll('*[class~="'+ c[0] +'"]');
           for (var j = 0; j < highlightsX.length; j++) {
@@ -6566,7 +6557,7 @@ console.log('//TODO: Handle server returning wrong Response/Content-Type for the
               dimensionPattern = " ; " + options.filter.dimensionProperty;
             }
             else {
-              var dimensionDefault = " .\n\
+              dimensionDefault = " .\n\
   { SELECT DISTINCT ?propertyRefArea WHERE { ?propertyRefArea rdfs:subPropertyOf* sdmx-dimension:refArea . } }";
               dimensionPattern = " ; ?propertyRefArea ";
 
@@ -6781,7 +6772,7 @@ WHERE {\n\
               }
               li.classList.add('selected');
               var figures = node.querySelectorAll('figure');
-              for (var i = 0; i < figures.length; i++) {
+              for (let i = 0; i < figures.length; i++) {
                 figures[i].classList.remove('selected');
               }
               node.querySelector('figure' + a.hash).classList.add('selected');
@@ -7036,7 +7027,7 @@ WHERE {\n\
         var selectorIndex = containerNodeTextContent.indexOf(prefix + exact + suffix);
 // console.log(selectorIndex);
         if (selectorIndex >= 0) {
-          var selector =  {
+          selector =  {
             "prefix": prefix,
             "exact": exact,
             "suffix": suffix
@@ -7045,7 +7036,7 @@ WHERE {\n\
           var selectedParentNode = DO.U.importTextQuoteSelector(containerNode, selector, refId, motivatedBy, docRefType, { 'do': true });
 
           var parentNodeWithId = selectedParentNode.closest('[id]');
-          var targetIRI = (parentNodeWithId) ? documentURL + '#' + parentNodeWithId.id : documentURL;
+          targetIRI = (parentNodeWithId) ? documentURL + '#' + parentNodeWithId.id : documentURL;
 
           var noteData = {
             "type": 'article',
@@ -7093,7 +7084,7 @@ WHERE {\n\
             noteData.inbox = inboxIRI;
           }
 // console.log(noteData);
-          var note = DO.U.createNoteDataHTML(noteData);
+          note = DO.U.createNoteDataHTML(noteData);
           var nES = selectedParentNode.nextElementSibling;
           var asideNote = '\n\
 <aside class="note do">\n\
@@ -7136,7 +7127,7 @@ WHERE {\n\
 
         //XXX: Annotation without a selection
         else {
-          var noteData = {
+          noteData = {
             "type": 'article',
             "mode": "read",
             "motivatedByIRI": motivatedBy,
@@ -7193,7 +7184,7 @@ WHERE {\n\
         }
 
         if(inReplyTo && inReplyTo.indexOf(window.location.origin + window.location.pathname) >= 0) {
-          var noteData = {
+          noteData = {
             "type": 'article',
             "mode": "read",
             "motivatedByIRI": motivatedBy,
@@ -7308,7 +7299,7 @@ WHERE {\n\
 
     var citedEntityLabel = getGraphLabel(DO.C.Resource[documentURL].graph.child(citedEntity))
     if (!citedEntityLabel) {
-      var cEL = DO.C.Resource[documentURL].graph(DO.C.Resource[documentURL].graph.child(stripFragmentFromString(citedEntity)))
+      cEL = DO.C.Resource[documentURL].graph(DO.C.Resource[documentURL].graph.child(stripFragmentFromString(citedEntity)))
       citedEntityLabel = cEL ? cEL : citedEntity;
     }
     citation['citedEntityLabel'] = citedEntityLabel;
@@ -7342,7 +7333,7 @@ WHERE {\n\
 
     if (fragmentNode) {
 // console.log(asideNote)
-      containerNode = fragmentNode;
+      var containerNode = fragmentNode;
       refId = fragment;
 // console.log(fragment);
 // console.log(fragmentNode);
@@ -7595,7 +7586,7 @@ WHERE {\n\
 
         case 'ref-footnote':
           var citationURL = (typeof n.citationURL !== 'undefined' && n.citationURL != '') ? '<a href="' + n.citationURL + '" rel="rdfs:seeAlso">' + n.citationURL + '</a>' : '';
-          var body = (typeof n.body !== 'undefined' && n.body != '') ? ((citationURL) ? ', ' + n.body : n.body) : '';
+          body = (typeof n.body !== 'undefined' && n.body != '') ? ((citationURL) ? ', ' + n.body : n.body) : '';
 
           note = '\n\
   <dl about="#' + n.id +'" id="' + n.id +'" typeof="oa:Annotation">\n\
@@ -7810,7 +7801,7 @@ WHERE {\n\
     },
 
     getCitationOptionsHTML: function(type) {
-      var type = type || 'cites';
+      type = type || 'cites';
 
       var s = '';
       Object.keys(DO.C.Citation).forEach(function(iri){
@@ -7838,16 +7829,16 @@ WHERE {\n\
         }
       }
 
-      MathJax.Hub.Config(config);
+      window.MathJax.Hub.Config(config);
 
-      MathJax.Hub.Register.StartupHook("End Jax",function () {
-        var BROWSER = MathJax.Hub.Browser;
+      window.MathJax.Hub.Register.StartupHook("End Jax",function () {
+        var BROWSER = window.MathJax.Hub.Browser;
         var jax = "SVG";
         if (BROWSER.isMSIE && BROWSER.hasMathPlayer) jax = "NativeMML";
         if (BROWSER.isFirefox) jax = "NativeMML";
         if (BROWSER.isSafari && BROWSER.versionAtLeast("5.0")) jax = "NativeMML";
 
-        MathJax.Hub.setRenderer(jax);
+        window.MathJax.Hub.setRenderer(jax);
       });
     },
 
@@ -7866,7 +7857,7 @@ WHERE {\n\
           getDocumentContentNode(document).appendChild(fragmentFromString('<div class="progress"></progress>'));
         }
 
-        shwr = new shower();
+        var shwr = new shower();
         shwr.start();
       }
     },
@@ -8066,13 +8057,13 @@ WHERE {\n\
                 button = e.target.closest('button.enter-' + contributorRole);
                 //TODO: This input field can behave like the one in js showUserIdentityInput for enableDisableButton to button.commit
                 if (button){
-                  var n = e.target.closest('.do');
+                  n = e.target.closest('.do');
                   n.insertAdjacentHTML('beforebegin', '<dd class="do" contenteditable="false"><input contenteditable="false" name="enter-' + contributorRole + '" placeholder="https://csarven.ca/#i" type="text" value="" /> <button class="commit-' + contributorRole + '" contenteditable="false" title="Commit ' + contributorRole + '">' + Icon[".fas.fa-plus"] + '</button></dd>');
                 }
 
                 button = e.target.closest('button.commit-' + contributorRole);
                 if (button){
-                  var n = e.target.closest('.do');
+                  n = e.target.closest('.do');
                   if (n) {
                     n.classList.add('selected');
 
@@ -8136,7 +8127,7 @@ WHERE {\n\
             var documentLicense = 'document-license';
             var license = document.getElementById(documentLicense);
             if(!license) {
-              var dl = '        <dl class="do" id="' + documentLicense + '"><dt>License</dt><dd><select contenteditable="false" name="license">' + DO.U.getLicenseOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
+              dl = '        <dl class="do" id="' + documentLicense + '"><dt>License</dt><dd><select contenteditable="false" name="license">' + DO.U.getLicenseOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
               insertDocumentLevelHTML(document, dl, { 'id': documentLicense });
 
               var dLS = document.querySelector('#' + documentLicense + ' select');
@@ -8151,7 +8142,7 @@ WHERE {\n\
             var documentType = 'document-type';
             var type = document.getElementById(documentType);
             if(!type) {
-              var dl = '        <dl class="do" id="' + documentType + '"><dt>Document Type</dt><dd><select contenteditable="false" name="document-type">' + DO.U.getResourceTypeOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
+              dl = '        <dl class="do" id="' + documentType + '"><dt>Document Type</dt><dd><select contenteditable="false" name="document-type">' + DO.U.getResourceTypeOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
               insertDocumentLevelHTML(document, dl, { 'id': documentType });
 
               var dTypeS = document.querySelector('#' + documentType + ' select');
@@ -8166,7 +8157,7 @@ WHERE {\n\
             var documentStatus = 'document-status';
             var status = document.getElementById(documentStatus);
             if(!status) {
-              var dl = '        <dl class="do" id="' + documentStatus + '"><dt>Document Status</dt><dd><select contenteditable="false" name="status">' + DO.U.getPublicationStatusOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
+              dl = '        <dl class="do" id="' + documentStatus + '"><dt>Document Status</dt><dd><select contenteditable="false" name="status">' + DO.U.getPublicationStatusOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
               insertDocumentLevelHTML(document, dl, { 'id': documentStatus });
 
               var dSS = document.querySelector('#' + documentStatus + ' select');
@@ -8183,7 +8174,7 @@ WHERE {\n\
               var testSuite = document.getElementById(documentTestSuite);
               if (!testSuite) {
                 // <!--<button class="add-test-suite" contenteditable="false" title="Add test suite">' + Icon[".fas.fa-plus"] + '</button>-->
-                var dl = '        <dl class="do" id="' + documentTestSuite + '"><dt>Test Suite</dt><dd><input contenteditable="false" name="test-suite" placeholder="https://example.net/test-suite" type="text" value="" /></dd></dl>';
+                dl = '        <dl class="do" id="' + documentTestSuite + '"><dt>Test Suite</dt><dd><input contenteditable="false" name="test-suite" placeholder="https://example.net/test-suite" type="text" value="" /></dd></dl>';
                 insertDocumentLevelHTML(document, dl, { 'id': documentTestSuite });
 
                 //XXX: This is a workaround until we understand why the input value is not available in setEditSelections() where it is using `document.querySelector` to get the value fresh. The following catches the blur event and sets the input value back to itself, and that seems to be available setEditSelections().
@@ -8220,7 +8211,7 @@ WHERE {\n\
           return MediumEditor.extensions.button.extend({
             init: function () {
               this.name = this.label;
-              this.action = this.action;
+              // this.action = this.action;
               this.aria = this.label;
               this.tagNames = [this.action];
               this.useQueryState = true;
@@ -8316,8 +8307,8 @@ WHERE {\n\
 // console.log(selection);
 
                     if (selection.rangeCount) {
-                      range = selection.getRangeAt(0);
-                      parent = selectedParentElement;
+                      // range = selection.getRangeAt(0);
+                      // parent = selectedParentElement;
 
 // console.log(range);
                       //Section
@@ -8470,27 +8461,27 @@ WHERE {\n\
                     break;
 
                   case 'math':
-                    var QUEUE = MathJax.Hub.Queue;  // shorthand for the queue
+                    var QUEUE = window.MathJax.Hub.Queue;  // shorthand for the queue
                     var math = null;                // the element jax for the math output.
 
-                    var selection = this.base.selection;
+                    selection = this.base.selection;
 
                     var selectionId = generateAttributeId();
 
-                    var selectionUpdated = '<span id="' + selectionId + '">$$</span>';
+                    selectionUpdated = '<span id="' + selectionId + '">$$</span>';
 
                     MediumEditor.util.insertHTMLCommand(this.base.selectedDocument, selectionUpdated);
 
-                    MathJax.Hub.Queue(["Typeset", MathJax.Hub, selectionId]);
-                    var math = MathJax.Hub.getAllJax(selectionId)[0];
-                    MathJax.Hub.Queue(["Text", math, selection]);
+                    window.MathJax.Hub.Queue(["Typeset", window.MathJax.Hub, selectionId]);
+                    math = window.MathJax.Hub.getAllJax(selectionId)[0];
+                    window.MathJax.Hub.Queue(["Text", math, selection]);
 
                     MediumEditor.selection.selectNode(document.getElementById(selectionId), document);
                     break;
 
                   //XXX: This is used for non-built-in buttons
                   default:
-                    var selectionUpdated = '<' + tagNames[0] + datetime + '>' + this.base.selection + '</' + tagNames[0] + '>';
+                    selectionUpdated = '<' + tagNames[0] + datetime + '>' + this.base.selection + '</' + tagNames[0] + '>';
 
                     if (this.action == 'image') {
                       var imgOptions = this.base.selection.split("|");
@@ -8527,7 +8518,7 @@ WHERE {\n\
                           //if imgOptions[1] == 'figure'
 
                           width = ' width="' + imgOptions[2] + '"';
-                          var widthHeight = imgOptions[2].split('x');
+                          widthHeight = imgOptions[2].split('x');
 
                           if (widthHeight.length == 2) {
                             width = ' width="' + widthHeight[0] + '"';
@@ -8607,7 +8598,7 @@ WHERE {\n\
 
             init: function () {
               this.name = this.label;
-              this.action = this.action;
+              // this.action = this.action;
               this.aria = this.label;
               this.tagNames = [this.action];
               this.useQueryState = true;
@@ -9015,7 +9006,7 @@ WHERE {\n\
                         }
                       });
 
-                      var searchResultsHTML = '<ul>' + searchResultsItems.join('') + '</ul>';
+                      searchResultsHTML = '<ul>' + searchResultsItems.join('') + '</ul>';
 
                       if (searchResultsItems) {
                         specrefSearchResults = document.querySelector('.specref-search-results');
@@ -9164,7 +9155,9 @@ WHERE {\n\
 
                         getResourceGraph(queryURL)
                           .then(function(g){
-                            var g = g.graph().toArray();
+                            var triples = sortGraphTriples(g.graph(), { sortBy: 'object' });
+                            
+                            g = g.graph().toArray();
 // console.log(triples);
                             if(triples.length > 0) {
                               var observations = {};
@@ -9434,12 +9427,12 @@ WHERE {\n\
               if((opts.annotationLocationPersonalStorage && DO.C.User.Storage) || (!opts.annotationLocationPersonalStorage && !opts.annotationLocationService && DO.C.User.Storage)) {
                 containerIRI = DO.C.User.Storage[0];
 
-                var fromContentType = 'text/html';
+                fromContentType = 'text/html';
                 // contentType = 'text/html';
                 contentType = fromContentType;
 
                 noteURL = noteIRI = containerIRI + id;
-                var contextProfile = {
+                contextProfile = {
                   // 'subjectURI': noteIRI,
                 };
                 aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true, 'annotationInbox': annotationInbox };
@@ -9449,11 +9442,11 @@ WHERE {\n\
 
               if(opts.annotationLocationService && typeof DO.C.AnnotationService !== 'undefined') {
                 containerIRI = DO.C.AnnotationService;
-                var fromContentType = 'text/html';
+                fromContentType = 'text/html';
                 // contentType = 'application/ld+json';
                 contentType = fromContentType;
 
-                var contextProfile = {
+                contextProfile = {
                   '@context': [
                     'http://www.w3.org/ns/anno.jsonld',
                     { 'as': 'https://www.w3.org/ns/activitystreams#', 'schema': 'http://schema.org/' }
@@ -9974,7 +9967,7 @@ WHERE {\n\
                   break;
 
                 case 'note':
-                  var noteData = createNoteData({'id': id})
+                  noteData = createNoteData({'id': id})
                   note = DO.U.createNoteDataHTML(noteData);
                   // var nES = selectedParentElement.nextElementSibling;
                   var asideNote = '\n\
@@ -9997,25 +9990,25 @@ WHERE {\n\
                 case 'cite': //footnote reference
                   //TODO: Refactor this what's in positionInteraction
 
-                  var noteData = createNoteData({'id': id})
+                  noteData = createNoteData({'id': id})
                   note = DO.U.createNoteDataHTML(noteData);
 
                   switch(opts.citationType) {
                     case 'ref-footnote': default:
                       var nES = selectedParentElement.nextElementSibling;
-                      var asideNote = '\n\
+                      asideNote = '\n\
 <aside class="note">\n\
 '+ note + '\n\
 </aside>';
-                      var asideNode = fragmentFromString(asideNote);
-                      var parentSection = getClosestSectionNode(selectedParentElement);
+                      asideNode = fragmentFromString(asideNote);
+                      parentSection = getClosestSectionNode(selectedParentElement);
                       parentSection.appendChild(asideNode);
 
                       DO.U.positionNote(refId, id);
                       break;
 
                     case 'ref-reference':
-                      var options = opts;
+                      options = opts;
                       options['citationId'] = opts.url;
                       options['refId'] = refId;
 
@@ -10051,7 +10044,7 @@ WHERE {\n\
                         buildReferences(node, id, citation);
 
                         options['showRobustLinksDecoration'] = true;
-                        var node = document.querySelector('[id="' + id + '"] a[about]');
+                        node = document.querySelector('[id="' + id + '"] a[about]');
 
                         var robustLink = DO.U.createRobustLink(citationURI, node, options);
 
@@ -10095,7 +10088,7 @@ WHERE {\n\
 
                 case 'rdfa':
                   //This only updates the DOM. Nothing further. The 'id' is not used.
-                  var noteData = createNoteData({'id': id});
+                  noteData = createNoteData({'id': id});
                   break;
               }
 
