@@ -48,6 +48,9 @@ module.exports = (env) => {
       "@trust/webcrypto": "crypto",
     },
     devtool: "source-map",
+    performance: {
+      hints: false,
+    },
     optimization: {
       usedExports: true,
       minimize: true,
