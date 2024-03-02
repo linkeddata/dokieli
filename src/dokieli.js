@@ -9612,8 +9612,8 @@ WHERE {\n\
                   case 'note':
                     motivatedBy = "oa:commenting";
                     refLabel = DO.U.getReferenceLabel(motivatedBy);
-                    docRefType = '<sup class="ref-comment"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup>';
-                    noteType = 'note';
+                    var docRefType = '<sup class="ref-comment"><a rel="cito:isCitedBy" href="#' + id + '">' + refLabel + '</a></sup>';
+                    var noteType = 'note';
                     noteData = {
                       "type": noteType,
                       "mode": "read",
