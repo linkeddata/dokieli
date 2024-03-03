@@ -989,7 +989,7 @@ DO = {
             DO.C['Graphs'][options['subjectURI']] = g;
 
             Object.keys(graphs).forEach(function(i){
-              g = graphs[i].graph();
+              var g = graphs[i].graph();
 
               dataGraph.graph().addAll(g);
             });
