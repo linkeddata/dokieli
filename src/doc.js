@@ -4,8 +4,8 @@ import Config from './config.js'
 import { getDateTimeISO, fragmentFromString, generateAttributeId, uniqueArray, generateUUID } from './util.js'
 import { getAbsoluteIRI, getBaseURL, stripFragmentFromString, getFragmentFromString, getURLLastPath } from './uri.js'
 import { getResourceHead, processSave, patchResourceWithAcceptPatch } from './fetcher.js'
-import { SimpleRDF as _SimpleRDF, store } from './simplerdf.cjs'
-const SimpleRDF = _SimpleRDF
+import * as ld from './simplerdf.cjs'
+const SimpleRDF = ld.SimpleRDF
 import { getResourceGraph, sortGraphTriples, getGraphAuthor, getGraphLabel, getGraphEmail, getGraphTitle, getGraphPublished, getGraphUpdated, getGraphDescription, getGraphLicense, getGraphRights, getGraphFromData } from './graph.js'
 import { createRDFaHTML, Icon } from './template.js'
 import LinkHeader from "http-link-header";
@@ -1190,7 +1190,7 @@ function getResourceInfo(data, options) {
   Config['Resource'] = Config['Resource'] || {};
   Config['Resource'][documentURL] = Config['Resource'][documentURL] || {};
 
-  var getResourceDataBlock = function(data, options) {
+  var getGraphFromDataBlock = function(data, options) {
     if (Config.MediaTypes.Markup.includes(options.contentType)) {
       var node = getDocumentNodeFromString(data, options);
 
@@ -1231,134 +1231,138 @@ function getResourceInfo(data, options) {
           'contentType': scriptType
         }
 
-        promises.push(getGraphFromData(scriptData, o).then(
-          function(i){
-            var s = SimpleRDF(Config.Vocab, options['subjectURI'], i, store).child(options['subjectURI']);
-// console.log(s.toString())
-            var info = getGraphData(s, options);
-
-            return info;
-          }
-        ));
-
-        return promises;
+        promises.push(getGraphFromData(scriptData, o))
       });
+
+      return Promise.allSettled(promises)
+        .then(function(resolvedPromises){
+          var dataGraph = SimpleRDF();
+          resolvedPromises.forEach(function(response){
+            if (response.value) {
+              var g = response.value;
+              g = SimpleRDF(DO.C.Vocab, documentURL, g, ld.store).child(documentURL);
+    
+              dataGraph.graph().addAll(g.graph());
+            }
+          })
+
+          return dataGraph.graph();
+        })
     }
     else {
       return Promise.resolve();
     }
   }
 
-  //TODO: getResourceDataBlock and getResourceData should run asynchronously and probably only need to call getGraphData once. Their calls to getGraphFromData differ so the functions should probably return a response right after, and then do getGraphData once. The response from getResourceDataBlock below is not currently put to use.
-  getResourceDataBlock(data, options);
+  function getResourceSupplementalInfo (documentURL, o) {
+    getResourceHead(documentURL, {}, o)
+      .then(function(response) {
+        var headers = response.headers;
 
+        Config['Resource'] = Config['Resource'] || {};
+        Config['Resource'][documentURL] = Config['Resource'][documentURL] || {};   
+        Config['Resource'][documentURL]['headers'] = {};
+        Config['Resource'][documentURL]['headers']['response'] = headers;
 
-  var getResourceData = function(data, options) {
-    return getGraphFromData(data, options).then(
-      function(i){
-        var s = SimpleRDF(Config.Vocab, options['subjectURI'], i, store).child(options['subjectURI']);
-// console.log(s);
-        var info = getGraphData(s, options);
-// console.log(info)
+        options.storeHeaders.forEach(function(oHeader){
+          var oHeaderValue = response.headers.get(oHeader);
+          // oHeaderValue = 'foo=bar ,user=" READ wriTe Append control ", public=" read append" ,other="read " , baz= write, group=" ",,';
 
-        //TODO: Move this somewhere else.
-        if (documentURL == Config.DocumentURL) {
-          Config['ButtonStates'] = setFeatureStatesOfResourceInfo(info);
-        }
+          if (oHeaderValue) {
+            Config['Resource'][documentURL]['headers'][oHeader] = { "field-value" : oHeaderValue };
 
-        if ('headers' in Config['Resource'][documentURL]){
-          Config['Resource'][documentURL] = Object.assign(info, Config['Resource'][documentURL]['headers']);
-        }
-        else {
-          Config['Resource'][documentURL] = info;
-        }
+// console.log('WAC-Allow: ' + response.headers);
+            if (oHeader.toLowerCase() == 'wac-allow') {
+              var permissionGroups = Config['Resource'][documentURL]['headers']['wac-allow']["field-value"];
+              var wacAllowRegex = new RegExp(/(\w+)\s*=\s*"?\s*((?:\s*[^",\s]+)*)\s*"?/, 'ig');
+              var wacAllowMatches = DO.U.matchAllIndex(permissionGroups, wacAllowRegex);
+// console.log(wacAllowMatches)
 
-        return info;
-    });
+              Config['Resource'][documentURL]['headers']['wac-allow']['permissionGroup'] = {};
+
+              wacAllowMatches.forEach(function(match){
+                var modesString = match[2] || '';
+                var accessModes = uniqueArray(modesString.toLowerCase().split(/\s+/));
+
+                Config['Resource'][documentURL]['headers']['wac-allow']['permissionGroup'][match[1]] = accessModes;
+              });
+            }
+
+            if (oHeader.toLowerCase() == 'link') {
+              var linkHeaders = LinkHeader.parse(oHeaderValue);
+
+              Config['Resource'][documentURL]['headers']['linkHeaders'] = linkHeaders;
+
+              if (linkHeaders.has('rel', 'describedby')) {
+                var p = [];
+
+                Config['Resource'][documentURL]['describedby'] = {};
+
+                linkHeaders.rel('describedby').forEach(function(describedbyItem) {
+                  var describedbyURL = describedbyItem.uri;
+                  if (!describedbyURL.startsWith('http:') && !describedbyURL.startsWith('https:')) {
+                    describedbyURL = getAbsoluteIRI(getBaseURL(response.url), describedbyURL);
+                  }
+                  p.push(getResourceGraph(describedbyURL));
+                });
+
+                return Promise.all(p)
+                  .then(function(graphs) {
+                    graphs.forEach(function(g){
+                      if (g) {
+                        var s = g.iri().toString();
+                        Config['Resource'][documentURL]['describedby'][s] = {};
+                        Config['Resource'][documentURL]['describedby'][s]['graph'] = g;
+                        Config['Resource'][s] = {};
+                        Config['Resource'][s]['graph'] = g;
+                      }
+                    });
+                });
+              }
+            }
+          }
+        })
+      })
   }
 
   var promises = [];
   if ('storeHeaders' in options) {
     //TODO: This may need refactoring any way to avoid deleting contentType and subjectURI. It leaks the options to getResource/fetcher.
     var { storeHeaders, contentType, subjectURI, ...o } = options;
-    promises.push(getResourceHead(documentURL, {}, o))
+    getResourceSupplementalInfo(documentURL, o)
   }
-  promises.push(getResourceData(data, options));
 
-  return Promise.all(promises)
+  promises.push(getGraphFromDataBlock(data, options));
+  promises.push(getGraphFromData(data, options));
+
+  return Promise.allSettled(promises)
     .then(function(resolvedPromises){
-      var info = {};
-
+      var dataGraph = SimpleRDF();
       resolvedPromises.forEach(function(response){
-        if ('state' in response) {
-          info = Object.assign(info, response);
-        }
-        else if ('headers' in response && 'storeHeaders' in options) {
-          var headers = response.headers;
-
-          info['headers'] = headers;
-          Config['Resource'][documentURL]['headers'] = {};
-          Config['Resource'][documentURL]['headers']['response'] = headers;
-
-          options.storeHeaders.forEach(function(oHeader){
-            var oHeaderValue = response.headers.get(oHeader);
-// oHeaderValue = 'foo=bar ,user=" READ wriTe Append control ", public=" read append" ,other="read " , baz= write, group=" ",,';
-
-            if (oHeaderValue) {
-              Config['Resource'][documentURL]['headers'][oHeader] = { "field-value" : oHeaderValue };
-
-// console.log('WAC-Allow: ' + response.headers);
-              if (oHeader.toLowerCase() == 'wac-allow') {
-                var permissionGroups = Config['Resource'][documentURL]['headers']['wac-allow']["field-value"];
-                var wacAllowRegex = new RegExp(/(\w+)\s*=\s*"?\s*((?:\s*[^",\s]+)*)\s*"?/, 'ig');
-                var wacAllowMatches = DO.U.matchAllIndex(permissionGroups, wacAllowRegex);
-// console.log(wacAllowMatches)
-
-                Config['Resource'][documentURL]['headers']['wac-allow']['permissionGroup'] = {};
-
-                wacAllowMatches.forEach(function(match){
-                  var modesString = match[2] || '';
-                  var accessModes = uniqueArray(modesString.toLowerCase().split(/\s+/));
-
-                  Config['Resource'][documentURL]['headers']['wac-allow']['permissionGroup'][match[1]] = accessModes;
-                });
-              }
-
-              if (oHeader.toLowerCase() == 'link') {
-                var linkHeaders = LinkHeader.parse(oHeaderValue);
-
-                Config['Resource'][documentURL]['headers']['linkHeaders'] = linkHeaders;
-
-                if (linkHeaders.has('rel', 'describedby')) {
-                  var p = [];
-
-                  Config['Resource'][documentURL]['describedby'] = {};
-
-                  linkHeaders.rel('describedby').forEach(function(describedbyItem) {
-                    var describedbyURL = describedbyItem.uri;
-                    if (!describedbyURL.startsWith('http:') && !describedbyURL.startsWith('https:')) {
-                      describedbyURL = getAbsoluteIRI(getBaseURL(response.url), describedbyURL);
-                    }
-                    p.push(getResourceGraph(describedbyURL));
-                  });
-
-                  return Promise.all(p)
-                    .then(function(graphs) {
-                      graphs.forEach(function(g){
-                        if (g) {
-                          var s = g.iri().toString();
-                          Config['Resource'][documentURL]['describedby'][s] = {};
-                          Config['Resource'][s] = {};
-                          Config['Resource'][s]['graph'] = g;
-                        }
-                      });
-                  });
-                }
-              }
-            }
-          })
+        if (response.value) {
+          var g = response.value;
+          dataGraph.graph().addAll(g);
         }
       })
+
+      return Promise.resolve(dataGraph)
+    })
+    .then(function(dataGraph){
+      var s = SimpleRDF(DO.C.Vocab, documentURL, dataGraph.graph(), ld.store).child(documentURL);
+      var info = getGraphData(s, options);
+
+      if (documentURL == Config.DocumentURL) {
+        Config['ButtonStates'] = setFeatureStatesOfResourceInfo(info);
+      }
+
+      //Tries to reserve the HTTP headers from previous fetch.
+      //XXX: Doublecheck if this should overrite the previous headers.
+      if ('headers' in Config['Resource'][documentURL]){
+        Config['Resource'][documentURL] = Object.assign(info, Config['Resource'][documentURL]['headers']);
+      }
+      else {
+        Config['Resource'][documentURL] = info;
+      }
 
       return info;
     });
