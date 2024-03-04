@@ -360,6 +360,20 @@ function skolem(data, options) {
   return data;
 }
 
+function transformJsonldContextURLScheme(data) {
+  if (typeof data["@context"] === "string") {
+    data["@context"] = data["@context"].replace(/^http:/, 'https:');
+  }
+  // else if (typeof data["@context"] === "object") {
+  //   for (var key in data["@context"]) {
+  //     if (data["@context"].hasOwnProperty(key) && typeof data["@context"][key] === "string") {
+  //       data["@context"][key] = data["@context"][key].replace(/^http:/, 'https:');
+  //     }
+  //   }
+  // }
+  return data;
+}
+
 function setDocumentBase (data, baseURI, contentType) {
   baseURI = stripFragmentFromString(baseURI)
   let template;
@@ -1045,6 +1059,7 @@ export {
   serializeGraph,
   applyParserSerializerFixes,
   skolem,
+  transformJsonldContextURLScheme,
   setDocumentBase,
   traverseRDFList,
   getResourceGraph,
