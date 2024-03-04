@@ -415,6 +415,12 @@ function setDocumentBase (data, baseURI, contentType) {
       else if (typeof data['@context'] === 'object' && !('@base' in data['@context'])) {
         data['@context']['@base'] = baseURI;
       }
+      else if (typeof data['@context'] === 'string') {
+        data['@context'] = [
+          data['@context'],
+          {'@base': baseURI}
+        ]
+      }
 
       data = JSON.stringify(data);
       break;
