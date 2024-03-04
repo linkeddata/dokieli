@@ -236,7 +236,7 @@ function updateLocalStorageProfile(User) {
 }
 
 function showAutoSaveStorage(node, iri) {
-  iri = iri || DO.C.DocumentURL;
+  iri = iri || Config.DocumentURL;
 
   if(document.querySelector('#autosave-items')) { return; }
 
@@ -286,7 +286,7 @@ function showAutoSaveStorage(node, iri) {
 
 function hideAutoSaveStorage(node, iri) {
   node = node || document.getElementById('autosave-items');
-  iri = iri || DO.C.DocumentURL;
+  iri = iri || Config.DocumentURL;
   node.parentNode.removeChild(node);
   disableAutoSave(iri);
   //XXX: Disabling autoSave for localStorage (as it was enabled by default)

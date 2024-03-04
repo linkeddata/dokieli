@@ -1243,7 +1243,7 @@ function getResourceInfo(data, options) {
           resolvedPromises.forEach(function(response){
             if (response.value) {
               var g = response.value;
-              g = SimpleRDF(DO.C.Vocab, documentURL, g, ld.store).child(documentURL);
+              g = SimpleRDF(Config.Vocab, documentURL, g, ld.store).child(documentURL);
     
               dataGraph.graph().addAll(g.graph());
             }
@@ -1351,7 +1351,7 @@ function getResourceInfo(data, options) {
       return Promise.resolve(dataGraph)
     })
     .then(function(dataGraph){
-      var s = SimpleRDF(DO.C.Vocab, documentURL, dataGraph.graph(), ld.store).child(documentURL);
+      var s = SimpleRDF(Config.Vocab, documentURL, dataGraph.graph(), ld.store).child(documentURL);
       var info = getGraphData(s, options);
 
       if (documentURL == Config.DocumentURL) {
