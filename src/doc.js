@@ -47,6 +47,7 @@ function domToString (node, options = {}) {
 }
 
 function dumpNode (node, options, skipAttributes, voidElements, noEsc) {
+  options = options || Config.DOMNormalisation
   var out = ''
 
   if (typeof node.nodeType === 'undefined') return out
