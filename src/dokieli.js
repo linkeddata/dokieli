@@ -1495,7 +1495,7 @@ DO = {
 
       //Fugly
       function checkResourceInfo() {
-        if (documentURL in DO.C.Resource) {
+        if (documentURL in DO.C.Resource && 'state' in DO.C.Resource[documentURL]) {
           processPotentialAction(DO.C.Resource[documentURL]);
         }
         else {
