@@ -1,7 +1,7 @@
 'use strict'
 
 import Config from './config.js'
-import { getDateTimeISO, fragmentFromString, generateAttributeId, uniqueArray, generateUUID } from './util.js'
+import { getDateTimeISO, fragmentFromString, generateAttributeId, uniqueArray, generateUUID, matchAllIndex } from './util.js'
 import { getAbsoluteIRI, getBaseURL, stripFragmentFromString, getFragmentFromString, getURLLastPath } from './uri.js'
 import { getResourceHead, processSave, patchResourceWithAcceptPatch } from './fetcher.js'
 import * as ld from './simplerdf.cjs'
@@ -1278,7 +1278,7 @@ function getResourceInfo(data, options) {
             if (oHeader.toLowerCase() == 'wac-allow') {
               var permissionGroups = Config['Resource'][documentURL]['headers']['wac-allow']["field-value"];
               var wacAllowRegex = new RegExp(/(\w+)\s*=\s*"?\s*((?:\s*[^",\s]+)*)\s*"?/, 'ig');
-              var wacAllowMatches = DO.U.matchAllIndex(permissionGroups, wacAllowRegex);
+              var wacAllowMatches = matchAllIndex(permissionGroups, wacAllowRegex);
 // console.log(wacAllowMatches)
 
               Config['Resource'][documentURL]['headers']['wac-allow']['permissionGroup'] = {};

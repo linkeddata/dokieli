@@ -11,7 +11,7 @@ import { getDocument, getDocumentContentNode, xmlHtmlEscape, showActionMessage, 
 import { getProxyableIRI, getPathURL, stripFragmentFromString, getFragmentOrLastPath, getFragmentFromString, getURLLastPath, getLastPathSegment, forceTrailingSlash, getBaseURL, getParentURLPath, encodeString, getAbsoluteIRI } from './uri.js'
 import { getResourceGraph, traverseRDFList, getLinkRelation, getAgentName, getGraphImage, getGraphFromData, isActorType, isActorProperty, serializeGraph, getGraphLabel, getUserContacts, getAgentOutbox, getAgentStorage, getAgentInbox, getLinkRelationFromHead, sortGraphTriples } from './graph.js'
 import { notifyInbox, sendNotifications, postActivity } from './inbox.js'
-import { uniqueArray, fragmentFromString, hashCode, generateAttributeId, escapeRegExp, sortToLower, getDateTimeISO, generateUUID } from './util.js'
+import { uniqueArray, fragmentFromString, hashCode, generateAttributeId, escapeRegExp, sortToLower, getDateTimeISO, generateUUID, matchAllIndex } from './util.js'
 import MediumEditor from "medium-editor/dist/js/medium-editor.js";
 // window.MediumEditor = MediumEditor;
 import MediumEditorTable from "medium-editor-tables/dist/js/medium-editor-tables.js";
@@ -1320,7 +1320,7 @@ DO = {
 
       var selectedParentNode;
 
-      var textMatches = DO.U.matchAllIndex(containerNodeTextContent, new RegExp(phrase, 'g'));
+      var textMatches = matchAllIndex(containerNodeTextContent, new RegExp(phrase, 'g'));
 // console.log(textMatches)
 
       textMatches.forEach(function(item) {
