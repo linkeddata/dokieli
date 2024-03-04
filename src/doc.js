@@ -1212,7 +1212,9 @@ function getResourceInfo(data, options) {
         var scriptData = script.textContent;
 // console.log(scriptData)
         var matches = Array.from(scriptData.matchAll(/<!\[CDATA\[(.*?)\]\]>/gs));
-        scriptData = matches.map(match => match[1].trim()).join('\n');
+        if (matches.length > 0) {
+          scriptData = matches.map(match => match[1].trim()).join('\n');
+        }
 // console.log(scriptData)
         //Cleans up the data block from comments at the beginning and end of the script.
         var lines = scriptData.split(/\r\n|\r|\n/);
