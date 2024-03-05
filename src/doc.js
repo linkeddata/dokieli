@@ -2224,6 +2224,37 @@ function getCitationOptionsHTML(type) {
   return s;
 }
 
+function showGeneralMessages() {
+  showResourceAudienceAgentOccupations();
+}
+
+function showResourceAudienceAgentOccupations() {
+  console.log(Config.User.Occupations)
+  console.log(Config.DocumentURL.audience)
+
+  if (Config.User.Occupations && Config.User.Occupations.length > 0) {
+    var matches = [];
+
+    Config.DocumentURL.audience.forEach(function(audience){
+      if (Config.User.Occupations.includes(audience)){
+        matches.push(audience);
+      }
+    })
+
+    if (matches.length > 0) {
+      var ul = '<ul>';
+      matches.forEach(item => {
+        ul += `<li><a href="${item}"></a></li>`;
+      });
+      ul += '</ul>';
+
+      var message = "<p>Your occupations match this document's audience(s):</p>" + ul;
+
+      showActionMessage(document.documentElement, message, {'timer': 3000});
+    }
+  }
+}
+
 export {
   xmlHtmlEscape,
   fixBrokenHTML,
@@ -2282,5 +2313,7 @@ export {
   getPublicationStatusOptionsHTML,
   getLanguageOptionsHTML,
   getLicenseOptionsHTML,
-  getCitationOptionsHTML
+  getCitationOptionsHTML,
+  showGeneralMessages,
+  showResourceAudienceAgentOccupations
 }
