@@ -453,6 +453,8 @@ export default {
     "schemaViewAction": { "@id": "http://schema.org/ViewAction" },
     "schematarget": { "@id": "http://schema.org/target" },
     "schemaobject": { "@id": "http://schema.org/object" },
+    "schemahasOccupation": { "@id": "http://schema.org/hasOccupation", "@type": "@id", "@array": true },
+    "schemaaudience": { "@id": "http://schema.org/audience", "@type": "@id", "@array": true },
 
     "dcelementstitle": "http://purl.org/dc/elements/1.1/title",
     "dcelementsdescription": "http://purl.org/dc/elements/1.1/description",
