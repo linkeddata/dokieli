@@ -6,7 +6,7 @@ import { getAbsoluteIRI, getBaseURL, stripFragmentFromString, getFragmentFromStr
 import { getResourceHead, processSave, patchResourceWithAcceptPatch } from './fetcher.js'
 import * as ld from './simplerdf.cjs'
 const SimpleRDF = ld.SimpleRDF
-import { getResourceGraph, sortGraphTriples, getGraphAuthor, getGraphLabel, getGraphEmail, getGraphTitle, getGraphPublished, getGraphUpdated, getGraphDescription, getGraphLicense, getGraphRights, getGraphFromData } from './graph.js'
+import { getResourceGraph, sortGraphTriples, getGraphAuthor, getGraphLabel, getGraphEmail, getGraphTitle, getGraphPublished, getGraphUpdated, getGraphDescription, getGraphLicense, getGraphRights, getGraphFromData, getGraphAudience } from './graph.js'
 import { createRDFaHTML, Icon } from './template.js'
 import LinkHeader from "http-link-header";
 
@@ -1092,6 +1092,7 @@ function getGraphData(s, options) {
         // info['summary'] = graph.getGraphSummary(s);
         // info['creator'] = graph.getGraphCreators(s);
         info['author'] = getGraphAuthorData(s);
+        info['audience'] = getGraphAudience(s);
 
         info['profile'] = Config.Vocab['ldpRDFSource']['@id'];
 

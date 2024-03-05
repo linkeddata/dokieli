@@ -3,8 +3,8 @@
 import Config from './config.js'
 import { deleteResource } from './fetcher.js'
 import { removeChildren, fragmentFromString } from './util.js'
-import { getAgentHTML } from './doc.js'
-import { getResourceGraph, getAgentName, getGraphImage, getAgentURL, getAgentPreferredProxy, getAgentPreferredPolicy, getAgentDelegates, getAgentKnows, getAgentFollowing, getAgentStorage, getAgentOutbox, getAgentInbox, getAgentPreferencesFile, getAgentPublicTypeIndex, getAgentPrivateTypeIndex, getAgentTypeIndex, getAgentSupplementalInfo, getAgentSeeAlso, getAgentPreferencesInfo } from './graph.js'
+import { getAgentHTML, showActionMessage, showGeneralMessages } from './doc.js'
+import { getResourceGraph, getAgentName, getGraphImage, getAgentURL, getAgentPreferredProxy, getAgentPreferredPolicy, getAgentDelegates, getAgentKnows, getAgentFollowing, getAgentStorage, getAgentOutbox, getAgentInbox, getAgentPreferencesFile, getAgentPublicTypeIndex, getAgentPrivateTypeIndex, getAgentTypeIndex, getAgentSupplementalInfo, getAgentSeeAlso, getAgentPreferencesInfo, getAgentOccupations } from './graph.js'
 import { removeLocalStorageProfile, updateLocalStorageProfile } from './storage.js'
 import solidAuth, { logout, popupLogin } from 'solid-auth-client'
 
@@ -277,6 +277,8 @@ function setUserInfo (userIRI, oidc) {
       Config.User.PublicTypeIndex = getAgentPublicTypeIndex(s)
       Config.User.PrivateTypeIndex = getAgentPrivateTypeIndex(s)
 
+      Config.User.Occupations = getAgentOccupations(s)
+
       return Config.User
     })
 }
@@ -298,6 +300,9 @@ function afterSignIn () {
       if (uI) {
         uI.innerHTML = getUserSignedInHTML()
       }
+
+      //XXX: Run this after all promises are settled
+      showGeneralMessages();
 
       return updateLocalStorageProfile(Config.User)
     })

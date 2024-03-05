@@ -659,6 +659,7 @@ function getAgentSupplementalInfo(iri) {
         var storage = getAgentStorage(s) || [];
         var outbox = getAgentOutbox(s) || [];
         var knows = getAgentKnows(s) || [];
+        var occupations = getAgentOccupations(s) || [];
         //TODO publicTypeIndex privateTypeIndex ??
 
         if (storage.length > 0) {
@@ -677,6 +678,12 @@ function getAgentSupplementalInfo(iri) {
           Config.User.Knows = (Config.User.Knows)
             ? uniqueArray(Config.User.Knows.concat(knows))
             : knows;
+        }
+
+        if (occupations.length > 0) {
+          Config.User.Occupations = (Config.User.Occupations)
+            ? uniqueArray(Config.User.Occupations.concat(occupations))
+            : occupations;
         }
 
         return processSameAs(s, getAgentSupplementalInfo)
