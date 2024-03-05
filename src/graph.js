@@ -969,6 +969,18 @@ function getAgentPreferencesFile (s) {
     : undefined
 }
 
+function getAgentOccupations (s) {
+  return (s.schemahasOccupation && s.schemahasOccupation._array.length > 0)
+    ? s.schemahasOccupation._array
+    : undefined
+}
+
+function getGraphAudience (s) {
+  return (s.schemaaudience && s.schemaaudience._array.length > 0)
+    ? s.schemaaudience._array
+    : undefined
+}
+
 function getGraphImage (s) {
   if (s.asimage || s.asicon) {
     var image = s.asimage || s.asicon;
@@ -1098,6 +1110,7 @@ export {
   getAgentPublicTypeIndex,
   getAgentPrivateTypeIndex,
   getAgentPreferencesFile,
+  getAgentOccupations,
   getGraphImage,
   getGraphEmail,
   getGraphEditor,
@@ -1110,5 +1123,6 @@ export {
   getGraphLabel,
   getGraphTitle,
   getGraphDescription,
-  sortGraphTriples
+  sortGraphTriples,
+  getGraphAudience
 }
