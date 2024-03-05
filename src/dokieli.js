@@ -7,7 +7,7 @@
  */
 
 import { getResource, setAcceptRDFTypes, postResource, putResource, currentLocation, patchResourceWithAcceptPatch, putResourceWithAcceptPut, copyResource, deleteResource } from './fetcher.js'
-import { getDocument, getDocumentContentNode, xmlHtmlEscape, showActionMessage, selectArticleNode, domToString, buttonClose, buttonRemoveAside, showRobustLinksDecoration, getResourceInfo, removeNodesWithIds, getResourceInfoSKOS, removeReferences, buildReferences, removeSelectorFromNode, insertDocumentLevelHTML, getResourceInfoSpecRequirements, getTestDescriptionReviewStatusHTML, createFeedXML, getButtonDisabledHTML, showTimeMap, createMutableResource, createImmutableResource, updateMutableResource, createHTML, getResourceImageHTML, setDocumentRelation, setDate, getClosestSectionNode, getAgentHTML, setEditSelections, getNodeLanguage, createActivityHTML } from './doc.js'
+import { getDocument, getDocumentContentNode, xmlHtmlEscape, showActionMessage, selectArticleNode, domToString, buttonClose, buttonRemoveAside, showRobustLinksDecoration, getResourceInfo, removeNodesWithIds, getResourceInfoSKOS, removeReferences, buildReferences, removeSelectorFromNode, insertDocumentLevelHTML, getResourceInfoSpecRequirements, getTestDescriptionReviewStatusHTML, createFeedXML, getButtonDisabledHTML, showTimeMap, createMutableResource, createImmutableResource, updateMutableResource, createHTML, getResourceImageHTML, setDocumentRelation, setDate, getClosestSectionNode, getAgentHTML, setEditSelections, getNodeLanguage, createActivityHTML, createLicenseHTML, createLanguageHTML, getAnnotationInboxLocationHTML, getAnnotationLocationHTML, getResourceTypeOptionsHTML, getPublicationStatusOptionsHTML, getLanguageOptionsHTML, getLicenseOptionsHTML, getCitationOptionsHTML } from './doc.js'
 import { getProxyableIRI, getPathURL, stripFragmentFromString, getFragmentOrLastPath, getFragmentFromString, getURLLastPath, getLastPathSegment, forceTrailingSlash, getBaseURL, getParentURLPath, encodeString, getAbsoluteIRI } from './uri.js'
 import { getResourceGraph, traverseRDFList, getLinkRelation, getAgentName, getGraphImage, getGraphFromData, isActorType, isActorProperty, serializeGraph, getGraphLabel, getUserContacts, getAgentOutbox, getAgentStorage, getAgentInbox, getLinkRelationFromHead, sortGraphTriples } from './graph.js'
 import { notifyInbox, sendNotifications, postActivity } from './inbox.js'
@@ -726,7 +726,7 @@ DO = {
           .attr('rel', 'dcterms:license')
           .attr('fill', legendCategories[7].color)
           .text(DO.C.License[options.license].name)
-        // var selectLicense = '<select id="graph-license" name="graph-license">' + DO.U.getLicenseOptionsHTML() + '</select>';
+        // var selectLicense = '<select id="graph-license" name="graph-license">' + getLicenseOptionsHTML() + '</select>';
         // graphLegend.append('License: <a href="' + options.license + '">' + DO.C.License[options.license].name  + '</a>' + selectLicense);
 
         // graphLegend
@@ -734,7 +734,7 @@ DO = {
         //   .attr("x", 0)
         //   .attr("y", 45)
         //   .text('Language: <a href="' + options.language + '">' + DO.C.Languages[options.language].name  + '');
-        // var selectLanguages = '<select id="graph-view-language" name="graph-view-language">' + DO.U.getLanguageOptionsHTML() + '</select>';
+        // var selectLanguages = '<select id="graph-view-language" name="graph-view-language">' + getLanguageOptionsHTML() + '</select>';
 
 
         //TODO: Move foobarbazqux into graphLegend
@@ -1585,7 +1585,7 @@ DO = {
 
       var annotationRights = document.querySelectorAll('[about="#annotation-rights"][typeof="schema:ChooseAction"], [href="#annotation-rights"][typeof="schema:ChooseAction"], [resource="#annotation-rights"][typeof="schema:ChooseAction"]');
       for (var i = 0; i < annotationRights.length; i++){
-        annotationRights[i].parentNode.replaceChild(fragmentFromString('<select>' + DO.U.getLicenseOptionsHTML() + '</select>'), annotationRights[i]);
+        annotationRights[i].parentNode.replaceChild(fragmentFromString('<select>' + getLicenseOptionsHTML() + '</select>'), annotationRights[i]);
       }
     },
 
@@ -3389,7 +3389,7 @@ console.log(reason);
       fieldset = generateFeed.querySelector('fieldset#' + id + '-fieldset');
       DO.U.setupResourceBrowser(fieldset, id, action);
       var feedTitlePlaceholder = (DO.C.User.IRI && DO.C.User.Name) ? DO.C.User.Name + "'s" : "Example's";
-      fieldset.insertAdjacentHTML('beforeend', '<p id="' + id + '-samp' + '">Feed will be generated at: <samp id="' + id + '-' + action + '"></samp></p><ul><li><label for="' + id + '-title">Title</label> <input type="text" placeholder="' + feedTitlePlaceholder + ' Web Feed" name="' + id + '-title" value=""></li><li><label for="' + id + '-language">Language</label> <select id="' + id + '-language" name="' + id + '-language">' + DO.U.getLanguageOptionsHTML() + '</select></li><li><label for="' + id + '-license">License</label> <select id="' + id + '-license" name="' + id + '-license">' + DO.U.getLicenseOptionsHTML() + '</select></li><li>' + DO.U.getFeedFormatSelection() + '</li></ul><button class="create" title="Save to destination">Generate</button>');
+      fieldset.insertAdjacentHTML('beforeend', '<p id="' + id + '-samp' + '">Feed will be generated at: <samp id="' + id + '-' + action + '"></samp></p><ul><li><label for="' + id + '-title">Title</label> <input type="text" placeholder="' + feedTitlePlaceholder + ' Web Feed" name="' + id + '-title" value=""></li><li><label for="' + id + '-language">Language</label> <select id="' + id + '-language" name="' + id + '-language">' + getLanguageOptionsHTML() + '</select></li><li><label for="' + id + '-license">License</label> <select id="' + id + '-license" name="' + id + '-license">' + getLicenseOptionsHTML() + '</select></li><li>' + DO.U.getFeedFormatSelection() + '</li></ul><button class="create" title="Save to destination">Generate</button>');
       var bli = document.getElementById(id + '-input');
       bli.focus();
       bli.placeholder = 'https://example.org/path/to/feed.xml';
@@ -3774,8 +3774,8 @@ console.log(reason);
 
       document.documentElement.appendChild(fragmentFromString('<aside id="reply-to-resource" class="do on">' + DO.C.Button.Close + '<h2>Reply to this</h2><div id="reply-to-resource-input"><p>Reply to <code>' +
         iri +'</code></p><ul><li><p><label for="reply-to-resource-note">Quick reply (plain text note)</label></p><p><textarea id="reply-to-resource-note" rows="10" cols="40" name="reply-to-resource-note" placeholder="Great article!"></textarea></p></li><li><label for="reply-to-resource-language">Language</label> <select id="reply-to-resource-language" name="reply-to-resource-language">' +
-        DO.U.getLanguageOptionsHTML() + '</select></li><li><label for="reply-to-resource-license">License</label> <select id="reply-to-resource-license" name="reply-to-resource-license">' +
-        DO.U.getLicenseOptionsHTML() + '</select></li></ul></div>'))
+        getLanguageOptionsHTML() + '</select></li><li><label for="reply-to-resource-license">License</label> <select id="reply-to-resource-license" name="reply-to-resource-license">' +
+        getLicenseOptionsHTML() + '</select></li></ul></div>'))
 
       // TODO: License
       // TODO: ACL - can choose whether to make this reply private (to self), visible only to article author(s), visible to own contacts, public
@@ -7473,12 +7473,12 @@ WHERE {\n\
       }
 
       if (n.language && 'code' in n.language) {
-        language = DO.U.createLanguageHTML(n.language, {property:'dcterms:language', label:'Language'});
+        language = createLanguageHTML(n.language, {property:'dcterms:language', label:'Language'});
         lang = ' lang="' +  n.language.code + '"';
         xmlLang = ' xml:lang="' +  n.language.code + '"';
       }
       if (n.license && 'iri' in n.license) {
-        license = DO.U.createLicenseHTML(n.license, {rel:'dcterms:rights', label:'Rights'});
+        license = createLicenseHTML(n.license, {rel:'dcterms:rights', label:'Rights'});
       }
 
       switch(n.type) {
@@ -7603,193 +7603,6 @@ WHERE {\n\
       }
 
       return note;
-    },
-
-    createLicenseHTML: function(n, options) {
-      var license = '';
-      var rel = (options && options.rel) ? options.rel : 'schema:license';
-      var label = (options && options.label) ? options.label : 'License';
-
-      if (typeof n.iri !== 'undefined') {
-        license = '<dl class="' + label.toLowerCase() + '"><dt>' + label + '</dt><dd>';
-        if('name' in n) {
-          var title = ('description' in n) ? ' title="' + n.description + '"' : '';
-          license += '<a href="' + n.iri + '" rel="' + rel + '"' + title + '>' + n.name + '</a>';
-        }
-        else {
-          var licenseName = n.iri, licenseDescription = n.iri;
-          if (n.iri in DO.C.License) {
-            licenseName = DO.C.License[n.iri].name;
-            licenseDescription = DO.C.License[n.iri].description;
-          }
-          license += '<a href="' + n.iri + '" rel="' + rel + '" title="' + licenseDescription + '">' + licenseName + '</a>';
-        }
-        license += '</dd></dl>';
-      }
-
-      return license;
-    },
-
-    createLanguageHTML: function(n, options) {
-      var language = '';
-      var property = (options && options.language) ? options.language : 'dcterms:language';
-      var label = (options && options.label) ? options.label : 'Language';
-
-      if (typeof n.code !== 'undefined') {
-        n['name'] = n.name || DO.C.Languages[n.code] || n.code;
-        language = '<dl class="' + label.toLowerCase() + '"><dt>' + label + '</dt><dd>';
-        language += '<span content="' + n.code + '" lang="" property="' + property + '" xml:lang="">' + n.name + '</span>';
-        language += '</dd></dl>';
-      }
-
-      return language;
-    },
-
-    getAnnotationInboxLocationHTML: function() {
-      var s = '', inputs = [], checked = '';
-      if (DO.C.User.TypeIndex && DO.C.User.TypeIndex[DO.C.Vocab['asAnnounce']['@id']]) {
-        if (DO.C.User.UI && DO.C.User.UI['annotationInboxLocation'] && DO.C.User.UI.annotationInboxLocation['checked']) {
-          checked = ' checked="checked"';
-        }
-        s = '<input type="checkbox" id="annotation-inbox" name="annotation-inbox"' + checked + ' /><label for="annotation-inbox">Inbox</label>';
-      }
-
-      return s;
-    },
-
-    getAnnotationLocationHTML: function() {
-      var s = '', inputs = [], checked = '';
-      if(typeof DO.C.AnnotationService !== 'undefined') {
-        if (DO.C.User.Storage && DO.C.User.Storage.length > 0 || DO.C.User.Outbox && DO.C.User.Outbox.length > 0) {
-          if (DO.C.User.UI && DO.C.User.UI['annotationLocationService'] && DO.C.User.UI.annotationLocationService['checked']) {
-            checked = ' checked="checked"';
-          }
-        }
-        else {
-          checked = ' checked="checked" disabled="disabled"';
-        }
-
-        inputs.push('<input type="checkbox" id="annotation-location-service" name="annotation-location-service"' + checked + ' /><label for="annotation-location-service">Annotation service</label>');
-      }
-
-      checked = ' checked="checked"';
-      if(DO.C.User.Storage && DO.C.User.Storage.length > 0 || DO.C.User.Outbox && DO.C.User.Outbox.length > 0) {
-        if (DO.C.User.UI && DO.C.User.UI['annotationLocationPersonalStorage'] && !DO.C.User.UI.annotationLocationPersonalStorage['checked']) {
-            checked = '';
-        }
-
-        inputs.push('<input type="checkbox" id="annotation-location-personal-storage" name="annotation-location-personal-storage"' + checked + ' /><label for="annotation-location-personal-storage">Personal storage</label>');
-      }
-      s = 'Store at: ' + inputs.join('');
-      return s;
-    },
-
-    getResourceTypeOptionsHTML: function(options) {
-      options = options || {};
-      var s = '', selectedType = '';
-
-      if ('selected' in options) {
-        selectedType = options.selected;
-        if (selectedType == '') {
-          s += '<option selected="selected" value="">Choose a document type</option>';
-        }
-      }
-      else {
-        selectedType = 'http://schema.org/Article';
-      }
-
-      Object.keys(DO.C.ResourceType).forEach(function(iri){
-        var selected = (iri == selectedType) ? ' selected="selected"' : '';
-        s += '<option value="' + iri + '" title="' + DO.C.ResourceType[iri].description  + '"' + selected + '>' + DO.C.ResourceType[iri].name  + '</option>';
-      });
-
-      return s;
-    },
-
-    getPublicationStatusOptionsHTML: function(options) {
-      options = options || {};
-      var s = '', selectedIRI = '';
-
-      if ('selected' in options) {
-        selectedIRI = options.selected;
-        if (selectedIRI == '') {
-          s += '<option selected="selected" value="">Choose a publication status</option>';
-        }
-      }
-      else {
-        selectedIRI = DO.C.Vocab['psodraft']['@id'];
-      }
-
-      Object.keys(DO.C.PublicationStatus).forEach(function(iri){
-        var selected = (iri == selectedIRI) ? ' selected="selected"' : '';
-        s += '<option value="' + iri + '" title="' + DO.C.PublicationStatus[iri].description  + '"' + selected + '>' + DO.C.PublicationStatus[iri].name  + '</option>';
-      })
-
-      return s;
-    },
-
-
-    getLanguageOptionsHTML: function(options) {
-      options = options || {};
-      var s = '', selectedLang = '';
-
-      if ('selected' in options) {
-        selectedLang = options.selected;
-        if (selectedLang == '') {
-          s += '<option selected="selected" value="">Choose a language</option>';
-        }
-      }
-      else if(typeof DO.C.User.UI.Language !== 'undefined') {
-        selectedLang = DO.C.User.UI.Language;
-      }
-      else {
-        selectedLang = 'en';
-      }
-
-      Object.keys(DO.C.Languages).forEach(function(lang){
-        let selected = (lang == selectedLang) ? ' selected="selected"' : '';
-        s += '<option' + selected + ' value="' + lang + '">' + DO.C.Languages[lang] + '</option>';
-      });
-
-      return s;
-    },
-
-    getLicenseOptionsHTML: function(options) {
-      options = options || {};
-      var s = '', selectedIRI = '';
-
-      if ('selected' in options) {
-        selectedIRI = options.selected;
-        if (selectedIRI == '') {
-          s += '<option selected="selected" value="">Choose a license</option>';
-        }
-      }
-      else if(typeof DO.C.User.UI.License !== 'undefined') {
-        selectedIRI = DO.C.User.UI.License;
-      }
-      else {
-        selectedIRI = 'https://creativecommons.org/licenses/by/4.0/';
-      }
-
-      Object.keys(DO.C.License).forEach(function(iri){
-        if(iri != 'NoLicense') {
-          var selected = (iri == selectedIRI) ? ' selected="selected"' : '';
-          s += '<option value="' + iri + '" title="' + DO.C.License[iri].description  + '"' + selected + '>' + DO.C.License[iri].name  + '</option>';
-        }
-      })
-
-      return s;
-    },
-
-    getCitationOptionsHTML: function(type) {
-      type = type || 'cites';
-
-      var s = '';
-      Object.keys(DO.C.Citation).forEach(function(iri){
-        s += '<option value="' + iri + '">' + DO.C.Citation[iri]  + '</option>';
-      })
-
-      return s;
     },
 
     initMath: function(config) {
@@ -8093,7 +7906,7 @@ WHERE {\n\
             var documentLanguage = 'document-language';
             var language = document.getElementById(documentLanguage);
             if(!language) {
-              var dl = '        <dl class="do" id="' + documentLanguage + '"><dt>Language</dt><dd><select contenteditable="false" name="language">' + DO.U.getLanguageOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
+              var dl = '        <dl class="do" id="' + documentLanguage + '"><dt>Language</dt><dd><select contenteditable="false" name="language">' + getLanguageOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
               insertDocumentLevelHTML(document, dl, { 'id': documentLanguage });
 
               var dLangS = document.querySelector('#' + documentLanguage + ' select');
@@ -8108,7 +7921,7 @@ WHERE {\n\
             var documentLicense = 'document-license';
             var license = document.getElementById(documentLicense);
             if(!license) {
-              dl = '        <dl class="do" id="' + documentLicense + '"><dt>License</dt><dd><select contenteditable="false" name="license">' + DO.U.getLicenseOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
+              dl = '        <dl class="do" id="' + documentLicense + '"><dt>License</dt><dd><select contenteditable="false" name="license">' + getLicenseOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
               insertDocumentLevelHTML(document, dl, { 'id': documentLicense });
 
               var dLS = document.querySelector('#' + documentLicense + ' select');
@@ -8123,7 +7936,7 @@ WHERE {\n\
             var documentType = 'document-type';
             var type = document.getElementById(documentType);
             if(!type) {
-              dl = '        <dl class="do" id="' + documentType + '"><dt>Document Type</dt><dd><select contenteditable="false" name="document-type">' + DO.U.getResourceTypeOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
+              dl = '        <dl class="do" id="' + documentType + '"><dt>Document Type</dt><dd><select contenteditable="false" name="document-type">' + getResourceTypeOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
               insertDocumentLevelHTML(document, dl, { 'id': documentType });
 
               var dTypeS = document.querySelector('#' + documentType + ' select');
@@ -8138,7 +7951,7 @@ WHERE {\n\
             var documentStatus = 'document-status';
             var status = document.getElementById(documentStatus);
             if(!status) {
-              dl = '        <dl class="do" id="' + documentStatus + '"><dt>Document Status</dt><dd><select contenteditable="false" name="status">' + DO.U.getPublicationStatusOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
+              dl = '        <dl class="do" id="' + documentStatus + '"><dt>Document Status</dt><dd><select contenteditable="false" name="status">' + getPublicationStatusOptionsHTML({ 'selected': '' }) + '</select></dd></dl>';
               insertDocumentLevelHTML(document, dl, { 'id': documentStatus });
 
               var dSS = document.querySelector('#' + documentStatus + ' select');
@@ -8679,14 +8492,14 @@ WHERE {\n\
               var updateAnnotationServiceForm = function() {
                 var annotationServices = document.querySelectorAll('.annotation-location-selection');
                 for (var i = 0; i < annotationServices.length; i++) {
-                  annotationServices[i].innerHTML = DO.U.getAnnotationLocationHTML();
+                  annotationServices[i].innerHTML = getAnnotationLocationHTML();
                 }
               };
 
               var updateAnnotationInboxForm = function() {
                 var annotationInbox = document.querySelectorAll('.annotation-inbox');
                 for (var i = 0; i < annotationInbox.length; i++) {
-                  annotationInbox[i].innerHTML = DO.U.getAnnotationInboxLocationHTML();
+                  annotationInbox[i].innerHTML = getAnnotationInboxLocationHTML();
                 }
               };
 
@@ -8744,55 +8557,55 @@ WHERE {\n\
                 case 'article':
                   tmpl = [
                   '<textarea id="article-content" name="content" cols="20" rows="5" class="medium-editor-toolbar-textarea" placeholder="', this.placeholderText, '"></textarea>',
-                  '<select id="article-language" name="language" class="medium-editor-toolbar-select">', DO.U.getLanguageOptionsHTML(), '</select>',
+                  '<select id="article-language" name="language" class="medium-editor-toolbar-select">', getLanguageOptionsHTML(), '</select>',
                   '<select id="article-license" name="license" class="medium-editor-toolbar-select">',
-                  DO.U.getLicenseOptionsHTML(),
+                  getLicenseOptionsHTML(),
                   '</select>',
-                  '<span class="annotation-location-selection">' + DO.U.getAnnotationLocationHTML() + '</span>',
-                  '<span class="annotation-inbox">' + DO.U.getAnnotationInboxLocationHTML() + '</span>'
+                  '<span class="annotation-location-selection">' + getAnnotationLocationHTML() + '</span>',
+                  '<span class="annotation-inbox">' + getAnnotationInboxLocationHTML() + '</span>'
                   ];
                   break;
                 case 'note':
                   tmpl = [
                   '<label for="bookmark-tagging">Tags</label> <input id="bookmark-tagging" class="medium-editor-toolbar-input" placeholder="Separate tags with commas" /><br/>',
                   '<textarea id="article-content" name="content" cols="20" rows="1" class="medium-editor-toolbar-textarea" placeholder="', this.placeholderText, '"></textarea>',
-                  '<select id="article-language" name="language" class="medium-editor-toolbar-select">', DO.U.getLanguageOptionsHTML(), '</select>',
+                  '<select id="article-language" name="language" class="medium-editor-toolbar-select">', getLanguageOptionsHTML(), '</select>',
                   '<select id="article-license" name="license" class="medium-editor-toolbar-select">',
-                  DO.U.getLicenseOptionsHTML(),
+                  getLicenseOptionsHTML(),
                   '</select>'
                   ];
                   break;
                 case 'approve':
                   tmpl = [
                   '<textarea id="approve-content" name="content" cols="20" rows="2" class="medium-editor-toolbar-textarea" placeholder="Strong point? Convincing argument?"></textarea>',
-                  '<select id="article-language" name="language" class="medium-editor-toolbar-select">', DO.U.getLanguageOptionsHTML(), '</select>',
+                  '<select id="article-language" name="language" class="medium-editor-toolbar-select">', getLanguageOptionsHTML(), '</select>',
                   '<select id="approve-license" name="license" class="medium-editor-toolbar-select">',
-                  DO.U.getLicenseOptionsHTML(),
+                  getLicenseOptionsHTML(),
                   '</select>',
-                  '<span class="annotation-location-selection">' + DO.U.getAnnotationLocationHTML() + '</span>',
-                  '<span class="annotation-inbox">' + DO.U.getAnnotationInboxLocationHTML() + '</span>'
+                  '<span class="annotation-location-selection">' + getAnnotationLocationHTML() + '</span>',
+                  '<span class="annotation-inbox">' + getAnnotationInboxLocationHTML() + '</span>'
                   ];
                   break;
                 case 'disapprove':
                   tmpl = [
                   '<textarea id="disapprove-content" name="content" cols="20" rows="2" class="medium-editor-toolbar-textarea" placeholder="Weak point? Error? Inaccurate?"></textarea>',
-                  '<select id="article-language" name="language" class="medium-editor-toolbar-select">', DO.U.getLanguageOptionsHTML(), '</select>',
+                  '<select id="article-language" name="language" class="medium-editor-toolbar-select">', getLanguageOptionsHTML(), '</select>',
                   '<select id="disapprove-license" name="license" class="medium-editor-toolbar-select">',
-                  DO.U.getLicenseOptionsHTML(),
+                  getLicenseOptionsHTML(),
                   '</select>',
-                  '<span class="annotation-location-selection">' + DO.U.getAnnotationLocationHTML() + '</span>',
-                  '<span class="annotation-inbox">' + DO.U.getAnnotationInboxLocationHTML() + '</span>'
+                  '<span class="annotation-location-selection">' + getAnnotationLocationHTML() + '</span>',
+                  '<span class="annotation-inbox">' + getAnnotationInboxLocationHTML() + '</span>'
                   ];
                   break;
                 case 'specificity':
                   tmpl = [
                   '<textarea id="specificity-content" name="content" cols="20" rows="2" class="medium-editor-toolbar-textarea" placeholder="Citation or specificity needed?"></textarea>',
-                  '<select id="article-language" name="language" class="medium-editor-toolbar-select">', DO.U.getLanguageOptionsHTML(), '</select>',
+                  '<select id="article-language" name="language" class="medium-editor-toolbar-select">', getLanguageOptionsHTML(), '</select>',
                   '<select id="specificity-license" name="license" class="medium-editor-toolbar-select">',
-                  DO.U.getLicenseOptionsHTML(),
+                  getLicenseOptionsHTML(),
                   '</select>',
-                  '<span class="annotation-location-selection">' + DO.U.getAnnotationLocationHTML() + '</span>',
-                  '<span class="annotation-inbox">' + DO.U.getAnnotationInboxLocationHTML() + '</span>'
+                  '<span class="annotation-location-selection">' + getAnnotationLocationHTML() + '</span>',
+                  '<span class="annotation-inbox">' + getAnnotationInboxLocationHTML() + '</span>'
                   ];
                   break;
                 case 'cite':
@@ -8803,20 +8616,20 @@ WHERE {\n\
                   '<input type="radio" name="citation-type" value="ref-footnote" id="ref-footnote" /> <label for="ref-footnote">Footnote</label>',
                   '<input type="radio" name="citation-type" value="ref-reference" id="ref-reference" /> <label for="ref-reference">Reference</label>',
                   '<select id="citation-relation" name="citation-relation" class="medium-editor-toolbar-select">',
-                  DO.U.getCitationOptionsHTML(),
+                  getCitationOptionsHTML(),
                   '</select>',
                   '<input type="text" name="citation-url" value="" id="citation-url" class="medium-editor-toolbar-input" placeholder="http://example.org/article#results" />',
                   '<textarea id="citation-content" cols="20" rows="1" class="medium-editor-toolbar-textarea" placeholder="', this.placeholderText, '"></textarea>',
-                  '<select id="article-language" name="language" class="medium-editor-toolbar-select">', DO.U.getLanguageOptionsHTML(), '</select>',
+                  '<select id="article-language" name="language" class="medium-editor-toolbar-select">', getLanguageOptionsHTML(), '</select>',
                   ];
                   break;
                 case 'bookmark':
                   tmpl = [
                   '<label for="bookmark-tagging">Tags</label> <input id="bookmark-tagging" class="medium-editor-toolbar-input" placeholder="Separate tags with commas" /><br/>',
                   '<textarea id="bookmark-content" name="content" cols="20" rows="2" class="medium-editor-toolbar-textarea" placeholder="Description"></textarea>',
-                  '<select id="article-language" name="language" class="medium-editor-toolbar-select">', DO.U.getLanguageOptionsHTML(), '</select>',
+                  '<select id="article-language" name="language" class="medium-editor-toolbar-select">', getLanguageOptionsHTML(), '</select>',
                   '<select id="bookmark-license" name="license" class="medium-editor-toolbar-select">',
-                  DO.U.getLicenseOptionsHTML(),
+                  getLicenseOptionsHTML(),
                   '</select>'
                   ];
                   break;

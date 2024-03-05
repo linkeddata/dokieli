@@ -2038,6 +2038,192 @@ function getResourceImageHTML(resource, options = {}) {
   return '<img alt="" height="' + avatarSize + '" rel="schema:image" src="' + resource + '" width="' + avatarSize + '" />';
 }
 
+function createLicenseHTML(n, options) {
+  var license = '';
+  var rel = (options && options.rel) ? options.rel : 'schema:license';
+  var label = (options && options.label) ? options.label : 'License';
+
+  if (typeof n.iri !== 'undefined') {
+    license = '<dl class="' + label.toLowerCase() + '"><dt>' + label + '</dt><dd>';
+    if('name' in n) {
+      var title = ('description' in n) ? ' title="' + n.description + '"' : '';
+      license += '<a href="' + n.iri + '" rel="' + rel + '"' + title + '>' + n.name + '</a>';
+    }
+    else {
+      var licenseName = n.iri, licenseDescription = n.iri;
+      if (n.iri in Config.License) {
+        licenseName = Config.License[n.iri].name;
+        licenseDescription = Config.License[n.iri].description;
+      }
+      license += '<a href="' + n.iri + '" rel="' + rel + '" title="' + licenseDescription + '">' + licenseName + '</a>';
+    }
+    license += '</dd></dl>';
+  }
+
+  return license;
+}
+
+function createLanguageHTML(n, options) {
+  var language = '';
+  var property = (options && options.language) ? options.language : 'dcterms:language';
+  var label = (options && options.label) ? options.label : 'Language';
+
+  if (typeof n.code !== 'undefined') {
+    n['name'] = n.name || Config.Languages[n.code] || n.code;
+    language = '<dl class="' + label.toLowerCase() + '"><dt>' + label + '</dt><dd>';
+    language += '<span content="' + n.code + '" lang="" property="' + property + '" xml:lang="">' + n.name + '</span>';
+    language += '</dd></dl>';
+  }
+
+  return language;
+}
+
+function getAnnotationInboxLocationHTML() {
+  var s = '', inputs = [], checked = '';
+  if (Config.User.TypeIndex && Config.User.TypeIndex[Config.Vocab['asAnnounce']['@id']]) {
+    if (Config.User.UI && Config.User.UI['annotationInboxLocation'] && Config.User.UI.annotationInboxLocation['checked']) {
+      checked = ' checked="checked"';
+    }
+    s = '<input type="checkbox" id="annotation-inbox" name="annotation-inbox"' + checked + ' /><label for="annotation-inbox">Inbox</label>';
+  }
+
+  return s;
+}
+
+function getAnnotationLocationHTML() {
+  var s = '', inputs = [], checked = '';
+  if(typeof Config.AnnotationService !== 'undefined') {
+    if (Config.User.Storage && Config.User.Storage.length > 0 || Config.User.Outbox && Config.User.Outbox.length > 0) {
+      if (Config.User.UI && Config.User.UI['annotationLocationService'] && Config.User.UI.annotationLocationService['checked']) {
+        checked = ' checked="checked"';
+      }
+    }
+    else {
+      checked = ' checked="checked" disabled="disabled"';
+    }
+
+    inputs.push('<input type="checkbox" id="annotation-location-service" name="annotation-location-service"' + checked + ' /><label for="annotation-location-service">Annotation service</label>');
+  }
+
+  checked = ' checked="checked"';
+  if(Config.User.Storage && Config.User.Storage.length > 0 || Config.User.Outbox && Config.User.Outbox.length > 0) {
+    if (Config.User.UI && Config.User.UI['annotationLocationPersonalStorage'] && !Config.User.UI.annotationLocationPersonalStorage['checked']) {
+        checked = '';
+    }
+
+    inputs.push('<input type="checkbox" id="annotation-location-personal-storage" name="annotation-location-personal-storage"' + checked + ' /><label for="annotation-location-personal-storage">Personal storage</label>');
+  }
+  s = 'Store at: ' + inputs.join('');
+  return s;
+}
+
+function getResourceTypeOptionsHTML(options) {
+  options = options || {};
+  var s = '', selectedType = '';
+
+  if ('selected' in options) {
+    selectedType = options.selected;
+    if (selectedType == '') {
+      s += '<option selected="selected" value="">Choose a document type</option>';
+    }
+  }
+  else {
+    selectedType = 'http://schema.org/Article';
+  }
+
+  Object.keys(Config.ResourceType).forEach(function(iri){
+    var selected = (iri == selectedType) ? ' selected="selected"' : '';
+    s += '<option value="' + iri + '" title="' + Config.ResourceType[iri].description  + '"' + selected + '>' + Config.ResourceType[iri].name  + '</option>';
+  });
+
+  return s;
+}
+
+function getPublicationStatusOptionsHTML(options) {
+  options = options || {};
+  var s = '', selectedIRI = '';
+
+  if ('selected' in options) {
+    selectedIRI = options.selected;
+    if (selectedIRI == '') {
+      s += '<option selected="selected" value="">Choose a publication status</option>';
+    }
+  }
+  else {
+    selectedIRI = Config.Vocab['psodraft']['@id'];
+  }
+
+  Object.keys(Config.PublicationStatus).forEach(function(iri){
+    var selected = (iri == selectedIRI) ? ' selected="selected"' : '';
+    s += '<option value="' + iri + '" title="' + Config.PublicationStatus[iri].description  + '"' + selected + '>' + Config.PublicationStatus[iri].name  + '</option>';
+  })
+
+  return s;
+}
+
+function getLanguageOptionsHTML(options) {
+  options = options || {};
+  var s = '', selectedLang = '';
+
+  if ('selected' in options) {
+    selectedLang = options.selected;
+    if (selectedLang == '') {
+      s += '<option selected="selected" value="">Choose a language</option>';
+    }
+  }
+  else if(typeof Config.User.UI.Language !== 'undefined') {
+    selectedLang = Config.User.UI.Language;
+  }
+  else {
+    selectedLang = 'en';
+  }
+
+  Object.keys(Config.Languages).forEach(function(lang){
+    let selected = (lang == selectedLang) ? ' selected="selected"' : '';
+    s += '<option' + selected + ' value="' + lang + '">' + Config.Languages[lang] + '</option>';
+  });
+
+  return s;
+}
+
+function getLicenseOptionsHTML(options) {
+  options = options || {};
+  var s = '', selectedIRI = '';
+
+  if ('selected' in options) {
+    selectedIRI = options.selected;
+    if (selectedIRI == '') {
+      s += '<option selected="selected" value="">Choose a license</option>';
+    }
+  }
+  else if(typeof Config.User.UI.License !== 'undefined') {
+    selectedIRI = Config.User.UI.License;
+  }
+  else {
+    selectedIRI = 'https://creativecommons.org/licenses/by/4.0/';
+  }
+
+  Object.keys(Config.License).forEach(function(iri){
+    if(iri != 'NoLicense') {
+      var selected = (iri == selectedIRI) ? ' selected="selected"' : '';
+      s += '<option value="' + iri + '" title="' + Config.License[iri].description  + '"' + selected + '>' + Config.License[iri].name  + '</option>';
+    }
+  })
+
+  return s;
+}
+
+function getCitationOptionsHTML(type) {
+  type = type || 'cites';
+
+  var s = '';
+  Object.keys(Config.Citation).forEach(function(iri){
+    s += '<option value="' + iri + '">' + Config.Citation[iri]  + '</option>';
+  })
+
+  return s;
+}
+
 export {
   xmlHtmlEscape,
   fixBrokenHTML,
@@ -2087,5 +2273,14 @@ export {
   getCitationLabelsFromTerms,
   getTestDescriptionReviewStatusHTML,
   getAgentHTML,
-  getResourceImageHTML
+  getResourceImageHTML,
+  createLicenseHTML,
+  createLanguageHTML,
+  getAnnotationInboxLocationHTML,
+  getAnnotationLocationHTML,
+  getResourceTypeOptionsHTML,
+  getPublicationStatusOptionsHTML,
+  getLanguageOptionsHTML,
+  getLicenseOptionsHTML,
+  getCitationOptionsHTML
 }
