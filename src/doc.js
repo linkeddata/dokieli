@@ -2245,7 +2245,8 @@ function showResourceAudienceAgentOccupations() {
     if (matches.length > 0) {
       var ul = '<ul>';
       matches.forEach(item => {
-        ul += `<li><a href="${item}"></a></li>`;
+        //XXX: We could use a label instead of the URI but we don't have it local. Need to make an additional fetch for it.
+        ul += '<li><a href="' + item + '">' + item + '</a></li>';
       });
       ul += '</ul>';
 
