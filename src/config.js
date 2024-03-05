@@ -22,6 +22,7 @@ export default {
       DO.U.showTextQuoteSelector();
       DO.U.showDocumentInfo();
       DO.U.showFragment();
+      DO.U.initCopyToClipboard();
       DO.U.setDocumentMode();
       DO.U.showInboxNotifications();
       DO.U.initMath();

@@ -2945,6 +2945,15 @@ console.log(reason);
       }
     },
 
+    initCopyToClipboard: function() {
+      var pres = document.querySelectorAll('pre');
+      pres.forEach(function(pre){
+        pre.insertAdjacentHTML('afterend', '<button class="do copy-to-clipboard" title="Copy to clipboard">' + Icon[".fas.fa-copy"] + '</button>');
+        var button = pre.nextElementSibling;
+        DO.U.setCopyToClipboard(pre, button);
+      });
+    },
+
     setCopyToClipboard: function(contentNode, triggerNode, options = {}) {
       triggerNode.addEventListener('click', function(e) {
         if (e.target.closest('button.copy-to-clipboard')) {
