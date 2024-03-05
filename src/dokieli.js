@@ -2945,6 +2945,39 @@ console.log(reason);
       }
     },
 
+    setCopyToClipboard: function(contentNode, triggerNode, options = {}) {
+      triggerNode.addEventListener('click', function(e) {
+        if (e.target.closest('button.copy-to-clipboard')) {
+          var text;
+
+          switch (contentNode.nodeName.toLowerCase()) {
+            default:
+            case 'pre':
+              text = contentNode.innerText;
+              break;
+
+            case 'input':
+            case 'textarea':
+              text = contentNode.value;
+              break;
+
+            case 'table':
+              //TODO: Convert table to CSV?
+              break;
+          }
+
+          navigator.clipboard.writeText(text)
+            .then(() => {
+              showActionMessage(document.documentElement, '<p>Copied to clipboard.</p>', {'timer': 3000});
+            })
+            .catch(error => {
+              showActionMessage(document.documentElement, '<p>Failed to copy text to clipboard.</p>', {'timer': 3000});
+              console.error('Failed to copy text to clipboard: ' + error);
+            });
+        }
+      });
+    },
+
     generateFilename: function(url, options) {
       url = url || DO.C.DocumentURL;
       var fileName = getLastPathSegment(url);
