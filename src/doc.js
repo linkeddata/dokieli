@@ -2236,7 +2236,7 @@ function showResourceAudienceAgentOccupations() {
   if (Config.User.Occupations && Config.User.Occupations.length > 0) {
     var matches = [];
 
-    Config.DocumentURL.audience.forEach(function(audience){
+    Config.Resource[Config.DocumentURL].audience.forEach(function(audience){
       if (Config.User.Occupations.includes(audience)){
         matches.push(audience);
       }
