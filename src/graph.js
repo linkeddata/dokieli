@@ -723,11 +723,18 @@ function getAgentSeeAlso(g, baseURI, subjectURI) {
           var s = g.child(subjectURI)
 
           var knows = getAgentKnows(s) || [];
+          var occupations = getAgentOccupations(s) || [];
 
           if (knows.length > 0) {
             Config.User.Knows = (Config.User.Knows)
               ? uniqueArray(Config.User.Knows.concat(knows))
               : knows;
+          }
+
+          if (occupations.length > 0) {
+            Config.User.Occupations = (Config.User.Occupations)
+              ? uniqueArray(Config.User.Occupations.concat(occupations))
+              : occupations;
           }
 
           promises.push(getAgentSeeAlso(g, iri, subjectURI))
