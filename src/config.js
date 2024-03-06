@@ -62,6 +62,7 @@ export default {
   ActionMessage: {
     Timer: 1500
   },
+  MessageLog: [],
   AvatarSize: 48,
   DisableLocalStorageButtons: '<button class="local-storage-disable-html" title="Disable local storage (temporary) in the browser">' + Icon[".fas.fa-database.fa-2x"] + 'Local Storage</button>',
   EnableLocalStorageButtons: '<button class="local-storage-enable-html" title="Enable local storage (temporary) in the browser">' + Icon[".fas.fa-database.fa-2x"] + 'Local Storage</button>',

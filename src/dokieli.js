@@ -3711,6 +3711,8 @@ console.log(reason);
         s += '<li><button class="resource-print"' + getButtonDisabledHTML('resource-print') + ' title="Print document">' + Icon[".fas.fa-print.fa-2x"] + 'Print</button></li>';
       }
 
+      s += '<li><button class="message-log" title="Show message log">' + Icon [".fas.fa-scroll.fa-2x"] + 'Messages</button></li>';
+
       s += '</ul></section>';
 
       node.insertAdjacentHTML('beforeend', s);
@@ -3788,6 +3790,33 @@ console.log(reason);
           window.print();
           return false;
         }
+
+        if (e.target.closest('.message-log')) {
+          DO.U.showMessageLog(e);
+        }
+      });
+    },
+
+    showMessageLog: function(e, options) {
+      e.target.setAttribute('disabled', 'disabled');
+
+      var messageLog;
+
+      if (DO.C.MessageLog && DO.C.MessageLog.length > 0) {
+        messageLog = '<table><caption>Messages</caption><thead><tr><th>Date/Time</th><th>Message</th><th>Type</th></tr></thead><tbody>';
+        Object.keys(DO.C.MessageLog).forEach(i => {
+          messageLog += '<tr><td>' + DO.C.MessageLog[i].dateTime + '</td><td>' + DO.C.MessageLog[i].content + '</td><td>' + DO.C.MessageLog[i].type + '</td></tr>';
+        });
+        messageLog += '</tbody></table>';
+      }
+      else {
+        messageLog = '<p>No messages.</p>';
+      }
+
+      document.documentElement.appendChild(fragmentFromString('<aside id="message-log" class="do on">' + DO.C.Button.Close + '<h2>Message Log</h2><div>' + messageLog + '</div></aside>'));
+
+      document.querySelector('#message-log button.close').addEventListener('click', function(e) {
+        document.querySelector('button.message-log').removeAttribute('disabled');
       });
     },
 
