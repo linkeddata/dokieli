@@ -1416,7 +1416,10 @@ DO = {
       var open = DO.U.urlParam('open');
       if (open) {
         open = decodeURIComponent(open);
-        showActionMessage(document.documentElement, '<p><span class="progress">' + Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + ' Opening <a href="' + open + '" target="_blank">' + open + '</a></span></p>', {'timer': 10000});
+
+        var message = 'Opening <a href="' + open + '" target="_blank">' + open + '</a>';
+        DO.U.addMessageToLog(message, 'info');
+        showActionMessage(document.documentElement, '<p><span class="progress">' + Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + ' ' + message + '</span></p>', {'timer': 10000});
 
         DO.U.openResource(open);
 
@@ -2977,10 +2980,14 @@ console.log(reason);
 
           navigator.clipboard.writeText(text)
             .then(() => {
-              showActionMessage(document.documentElement, '<p>Copied to clipboard.</p>', {'timer': 3000});
+              var message = 'Copied to clipboard.';
+              DO.U.addMessageToLog(message, 'info');
+              showActionMessage(document.documentElement, '<p>' + message +  '</p>', {'timer': 3000});
             })
             .catch(error => {
-              showActionMessage(document.documentElement, '<p>Failed to copy text to clipboard.</p>', {'timer': 3000});
+              var message = 'Failed to copy text to clipboard.';
+              DO.U.addMessageToLog(message, 'error');
+              showActionMessage(document.documentElement, '<p>' + message +  '</p>', {'timer': 3000});
               console.error('Failed to copy text to clipboard: ' + error);
             });
         }
@@ -3202,7 +3209,9 @@ console.log(reason);
 
             options['showActionMessage'] = ('showActionMessage' in options) ? options.showActionMessage : true;
             if (options.showActionMessage) {
-              showActionMessage(document.documentElement, '<p>Archived <a href="' + uri + '">' + uri + '</a> at <a href="' + versionURL + '">' + versionURL + '</a> and created RobustLink.</p>');
+              var message = 'Archived <a href="' + uri + '">' + uri + '</a> at <a href="' + versionURL + '">' + versionURL + '</a> and created RobustLink.';
+              DO.U.addMessageToLog(message, 'info');
+              showActionMessage(document.documentElement, '<p>' + message +  '</p>');
             }
 
             if (options.showRobustLinksDecoration) {
@@ -3247,7 +3256,9 @@ console.log(reason);
           else { button.disabled = true; }
 
           var archiveNode = button.parentNode;
-          archiveNode.insertAdjacentHTML('beforeend', ' <span class="progress">' + Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + ' Archiving in progress.</span>');
+          var message = 'Archiving in progress.';
+          DO.U.addMessageToLog(message, 'info');
+          archiveNode.insertAdjacentHTML('beforeend', ' <span class="progress">' + Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + ' ' + message + '</span>');
         }
 
         progress = archiveNode.querySelector('.progress');
@@ -3255,6 +3266,8 @@ console.log(reason);
 
       var handleError = function(response) {
         if (options.showActionMessage) {
+          var message = responseMessages[response.status];
+          DO.U.addMessageToLog(message, 'error');
           progress.innerHTML = responseMessages[response.status];
         }
 
@@ -3264,7 +3277,9 @@ console.log(reason);
       var handleSuccess = function(o) {
 // console.log(o)
         if (options.showActionMessage) {
-          progress.innerHTML = messageArchivedAt + '<a target="_blank" href="' + o.location + '">' + o.location + '</a>'
+          var message = messageArchivedAt + '<a target="_blank" href="' + o.location + '">' + o.location + '</a>';
+          DO.U.addMessageToLog(message, 'info');
+          progress.innerHTML = message
         }
 
         return Promise.resolve(o);
@@ -3386,17 +3401,22 @@ console.log(reason);
 
           .then(response => {
             if (response['wayback_id']) {
+              var message;
               let location = 'https://web.archive.org' + response.wayback_id
 
               if (options.showActionMessage) {
-                progress.innerHTML = messageArchivedAt + '<a target="_blank" href="' + location + '">' + location + '</a>'
+                message = messageArchivedAt + '<a target="_blank" href="' + location + '">' + location + '</a>';
+                DO.U.addMessageToLog(message, 'info');
+                progress.innerHTML = message
               }
 
               return { "response": response, "location": location };
             }
             else {
               if (options.showActionMessage) {
-                progress.innerHTML = responseMessages[response.status]
+                message = responseMessages[response.status];
+                DO.U.addMessageToLog(message, 'error');
+                progress.innerHTML = message;
               }
 
               return Promise.reject(responseMessages[response.status])
@@ -3405,7 +3425,9 @@ console.log(reason);
 
           .catch((err) => {
             if (options.showActionMessage) {
-              progress.innerHTML = responseMessages[err.response.status]
+              var message = responseMessages[err.response.status];
+              DO.U.addMessageToLog(message, 'error');
+              progress.innerHTML = message;
             }
           })
       }
@@ -5036,15 +5058,18 @@ console.log(reason);
           })
 
           var message = [];
-          message.push('<h2>Notification Received</h2>');
+          message.push('<details>');
+          message.push('<summary>Notification Received</summary>');
           message.push('<dl>');
           message.push('<dt>Identifier</dt><dd><a href="' + data.id  + '">' + data.id + '</a></dd>');
           message.push('<dt>Types</dt>' + types);
           message.push('<dt>Object</dt><dd><a href="' + data.object  + '">' + data.object + '</a></dd>');
           message.push('<dt>Published</dt><dd><time>' + data.published + '</time></dd>');
           message.push('</dl>');
+          message.push('</details>');
           message = message.join('');
 
+          DO.U.addMessageToLog(message, 'info');
           showActionMessage(document.documentElement, message, {'timer': 3000});
 
           // return Promise.resolve(data);
@@ -5439,6 +5464,10 @@ console.log(response)
       // options['noCredentials'] = true;
 
       var handleResource = function handleResource (pIRI, headers, options) {
+        var message = 'Opening <a href="' + open + '" target="_blank">' + open + '</a>';
+        DO.U.addMessageToLog(message, 'info');
+        showActionMessage(document.documentElement, '<p><span class="progress">' + Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + ' ' + message + '</span></p>', {'timer': 10000});
+
         return getResource(pIRI, headers, options)
           .catch(error => {
             console.log(error)
@@ -5446,7 +5475,10 @@ console.log(response)
             // console.log(error.response)
 
             //XXX: It was either a CORS related issue or 4xx/5xx.
-            showActionMessage(document.documentElement, '<p><span class="progress">' + Icon[".fas.fa-times-circle.fa-fw"] + '  Unable to open <a href="' + iri + '" target="_blank">' + iri + '</a></span></p>', {'timer': 5000});
+
+            var message = 'Unable to open <a href="' + iri + '" target="_blank">' + iri + '</a>';
+            DO.U.addMessageToLog(message, 'error');
+            showActionMessage(document.documentElement, '<p><span class="progress">' + Icon[".fas.fa-times-circle.fa-fw"] + message + '</span></p>', {'timer': 5000});
 
             throw error
           })
@@ -5460,6 +5492,11 @@ console.log(response)
 
             return response.text()
               .then(data => {
+                var rm = document.querySelector('#document-action-message')
+                if (rm) {
+                  rm.parentNode.removeChild(rm)
+                }
+
                 var spawnOptions = {};
 
                 var checkMarkdownInMediaTypes = ['text/markdown', 'text/plain'];
@@ -7753,7 +7790,9 @@ WHERE {\n\
         }
 
         if (e || (typeof e === 'undefined' && editorMode == 'author')) {
-          showActionMessage(document.documentElement, '<p>Activated <strong>' + editorMode + '</strong> mode.</p>');
+          var message = 'Activated <strong>' + editorMode + '</strong> mode.';
+          DO.U.addMessageToLog(message, 'info');
+          showActionMessage(document.documentElement, '<p>' + message + '</p>');
         }
 
         if (!document.getElementById('document-editor')) {
@@ -9858,7 +9897,10 @@ WHERE {\n\
 
                 case 'selector':
                   window.history.replaceState({}, null, selectorIRI);
-                  showActionMessage(document.documentElement, '<p>Copy URL from address bar.</p>')
+
+                  var message = 'Copy URL from address bar.';
+                  DO.U.addMessageToLog(message, 'info');
+                  showActionMessage(document.documentElement, '<p>' + message + '</p>')
                   // copyTextToClipboard(encodeURI(selectorIRI));
                   break;
 
