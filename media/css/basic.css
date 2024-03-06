@@ -649,7 +649,9 @@ tbody [rowspan] { vertical-align: middle; }
 tbody th[scope="rowgroup"] {
 border-bottom:3pt double #000;
 }
-
+tr {
+border-bottom:1pt solid #ccc;
+}
 th, td {
 padding:0.25em;
 font-size:0.923em;
