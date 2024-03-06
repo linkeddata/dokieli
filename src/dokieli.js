@@ -5464,7 +5464,7 @@ console.log(response)
       // options['noCredentials'] = true;
 
       var handleResource = function handleResource (pIRI, headers, options) {
-        var message = 'Opening <a href="' + open + '" target="_blank">' + open + '</a>';
+        var message = 'Opening <a href="' + iri + '" target="_blank">' + iri + '</a>.';
         DO.U.addMessageToLog(message, 'info');
         showActionMessage(document.documentElement, '<p><span class="progress">' + Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + ' ' + message + '</span></p>', {'timer': 10000});
 
@@ -5476,7 +5476,7 @@ console.log(response)
 
             //XXX: It was either a CORS related issue or 4xx/5xx.
 
-            var message = 'Unable to open <a href="' + iri + '" target="_blank">' + iri + '</a>';
+            var message = 'Unable to open <a href="' + iri + '" target="_blank">' + iri + '</a>.';
             DO.U.addMessageToLog(message, 'error');
             showActionMessage(document.documentElement, '<p><span class="progress">' + Icon[".fas.fa-times-circle.fa-fw"] + message + '</span></p>', {'timer': 5000});
 
