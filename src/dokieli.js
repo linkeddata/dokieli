@@ -3820,7 +3820,7 @@ console.log(reason);
     },
 
     showMessageLog: function(e, options) {
-      e.target.setAttribute('disabled', 'disabled');
+      e.target.closest('button').disabled = true
 
       var messageLog;
 
