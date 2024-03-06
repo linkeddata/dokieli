@@ -3820,6 +3820,15 @@ console.log(reason);
       });
     },
 
+    addMessageToLog: function(message, type, options = {}) {
+      var m = {
+        dateTime: getDateTimeISO(),
+        content: message,
+        type: type
+      }
+      DO.C.MessageLog.unshift(m);
+    },
+
     resourceSave: function(e, options) {
       var url = window.location.origin + window.location.pathname;
       var data = getDocument();
