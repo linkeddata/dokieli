@@ -6,15 +6,19 @@ test("should not have any automatically detectable accessibility issues", async 
 }) => {
   await page.goto("/");
 
-  const accessibilityScanResults = await new AxeBuilder({ page }).analyze(); 
+  await page.waitForLoadState("load");
 
-  expect(accessibilityScanResults.violations).toEqual([]); 
+  const accessibilityScanResults = await new AxeBuilder({ page }).analyze();
+
+  expect(accessibilityScanResults.violations).toEqual([]);
 });
 
 test("should not have any automatically detectable WCAG A or AA violations", async ({
   page,
 }) => {
   await page.goto("/");
+
+  await page.waitForLoadState("load");
 
   const accessibilityScanResults = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
@@ -31,6 +35,7 @@ test("homepage has dokieli in the title", async ({ page }) => {
 
 test("clicking on the menu button displays menu", async ({ page }) => {
   await page.goto("/");
+  await page.waitForLoadState("load");
   await expect(page.locator("[id=document-menu]")).not.toBeVisible();
 
   await page.locator("#document-menu button").click();
@@ -40,6 +45,7 @@ test("clicking on the menu button displays menu", async ({ page }) => {
 
 test("clicking on the sign in button displays sign in modal", async ({
   page,
+  isMobile,
 }) => {
   await page.goto("/");
   await expect(page.locator("[id=document-menu]")).not.toBeVisible();
@@ -47,6 +53,11 @@ test("clicking on the sign in button displays sign in modal", async ({
   await page.locator("#document-menu button").click();
   const menu = page.locator("[id=document-menu]");
   await expect(menu).toBeVisible();
+  await expect(page.locator(".close")).toBeVisible();
+
+  if (isMobile) {
+    await page.locator(".close").click();
+  }
 
   const signinbtn = page.locator("[class=signin-user]");
   await signinbtn.click();
@@ -54,13 +65,21 @@ test("clicking on the sign in button displays sign in modal", async ({
   await expect(signinmodal).toBeVisible();
 });
 
-test("clicking on the reply button displays reply modal", async ({ page }) => {
+test("clicking on the reply button displays reply modal", async ({
+  page,
+  isMobile,
+}) => {
   await page.goto("/");
   await expect(page.locator("[id=document-menu]")).not.toBeVisible();
 
   await page.locator("#document-menu button").click();
   const menu = page.locator("[id=document-menu]");
   await expect(menu).toBeVisible();
+  await expect(page.locator(".close")).toBeVisible();
+
+  if (isMobile) {
+    await page.locator(".close").click();
+  }
 
   const replyBtn = page.locator("[class=resource-reply]");
   await replyBtn.click();
@@ -70,6 +89,7 @@ test("clicking on the reply button displays reply modal", async ({ page }) => {
 
 test("clicking on the new button displays create new document modal", async ({
   page,
+  isMobile,
 }) => {
   await page.goto("/");
   await expect(page.locator("[id=document-menu]")).not.toBeVisible();
@@ -77,6 +97,11 @@ test("clicking on the new button displays create new document modal", async ({
   await page.locator("#document-menu button").click();
   const menu = page.locator("[id=document-menu]");
   await expect(menu).toBeVisible();
+  await expect(page.locator(".close")).toBeVisible();
+
+  if (isMobile) {
+    await page.locator(".close").click();
+  }
 
   const newBtn = page.locator("[class=resource-new]");
   await newBtn.click();
@@ -86,6 +111,7 @@ test("clicking on the new button displays create new document modal", async ({
 
 test("clicking on the open button displays open document modal", async ({
   page,
+  isMobile,
 }) => {
   await page.goto("/");
   await expect(page.locator("[id=document-menu]")).not.toBeVisible();
@@ -93,6 +119,11 @@ test("clicking on the open button displays open document modal", async ({
   await page.locator("#document-menu button").click();
   const menu = page.locator("[id=document-menu]");
   await expect(menu).toBeVisible();
+  await expect(page.locator(".close")).toBeVisible();
+
+  if (isMobile) {
+    await page.locator(".close").click();
+  }
 
   const openBtw = page.locator("[class=resource-open]");
   await openBtw.click();
@@ -102,6 +133,7 @@ test("clicking on the open button displays open document modal", async ({
 
 test("clicking on the save-as button displays save-as modal", async ({
   page,
+  isMobile,
 }) => {
   await page.goto("/");
   await expect(page.locator("[id=document-menu]")).not.toBeVisible();
@@ -109,6 +141,11 @@ test("clicking on the save-as button displays save-as modal", async ({
   await page.locator("#document-menu button").click();
   const menu = page.locator("[id=document-menu]");
   await expect(menu).toBeVisible();
+  await expect(page.locator(".close")).toBeVisible();
+
+  if (isMobile) {
+    await page.locator(".close").click();
+  }
 
   const saveAsBtw = page.locator("[class=resource-save-as]");
   await saveAsBtw.click();
@@ -118,6 +155,7 @@ test("clicking on the save-as button displays save-as modal", async ({
 
 test("clicking on the memento button displays additional buttons", async ({
   page,
+  isMobile,
 }) => {
   await page.goto("/");
   await expect(page.locator("[id=document-menu]")).not.toBeVisible();
@@ -125,6 +163,11 @@ test("clicking on the memento button displays additional buttons", async ({
   await page.locator("#document-menu button").click();
   const menu = page.locator("[id=document-menu]");
   await expect(menu).toBeVisible();
+  await expect(page.locator(".close")).toBeVisible();
+
+  if (isMobile) {
+    await page.locator(".close").click();
+  }
 
   const mementoBtw = page.locator("[class=resource-memento]");
   await mementoBtw.click();
@@ -142,6 +185,7 @@ test("clicking on the memento button displays additional buttons", async ({
 
 test("clicking on the edit button button enables author mode", async ({
   page,
+  isMobile,
 }) => {
   await page.goto("/");
   await expect(page.locator("[id=document-menu]")).not.toBeVisible();
@@ -149,6 +193,11 @@ test("clicking on the edit button button enables author mode", async ({
   await page.locator("#document-menu button").click();
   const menu = page.locator("[id=document-menu]");
   await expect(menu).toBeVisible();
+  await expect(page.locator(".close")).toBeVisible();
+
+  if (isMobile) {
+    await page.locator(".close").click();
+  }
 
   const editBtw = page.locator("[class=editor-enable]");
   await editBtw.click();
@@ -158,6 +207,7 @@ test("clicking on the edit button button enables author mode", async ({
 
 test("clicking on the source button displays source modal", async ({
   page,
+  isMobile,
 }) => {
   await page.goto("/");
   await expect(page.locator("[id=document-menu]")).not.toBeVisible();
@@ -165,6 +215,11 @@ test("clicking on the source button displays source modal", async ({
   await page.locator("#document-menu button").click();
   const menu = page.locator("[id=document-menu]");
   await expect(menu).toBeVisible();
+  await expect(page.locator(".close")).toBeVisible();
+
+  if (isMobile) {
+    await page.locator(".close").click();
+  }
 
   const sourceBtn = page.locator("[class=resource-source]");
   await sourceBtn.click();
@@ -172,14 +227,21 @@ test("clicking on the source button displays source modal", async ({
   await expect(sourceModal).toBeVisible();
 });
 
-test("clicking on the embed button embed data modal", async ({ page }) => {
+test("clicking on the embed button embed data modal", async ({
+  page,
+  isMobile,
+}) => {
   await page.goto("/");
   await expect(page.locator("[id=document-menu]")).not.toBeVisible();
 
   await page.locator("#document-menu button").click();
   const menu = page.locator("[id=document-menu]");
   await expect(menu).toBeVisible();
+  await expect(page.locator(".close")).toBeVisible();
 
+  if (isMobile) {
+    await page.locator(".close").click();
+  }
 
   const embedBtn = page.locator("[class=embed-data-meta]");
   await embedBtn.click();

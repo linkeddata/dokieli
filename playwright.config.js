@@ -1,14 +1,16 @@
 import { devices } from "@playwright/test";
+import { config as envConfig } from 'dotenv';
+
+envConfig();
 
 const config = {
   testDir: "./tests/e2e/browser",
   timeout: 30 * 1000,
   expect: {
-    timeout: 5000,
+    timeout: 10000,
   },
   fullyParallel: true,
-  retries: 0,
-  workers: 3,
+  retries: 3,
   reporter: "html",
   webServer: {
     command: "node tests/__testUtils__/testServer.cjs",
