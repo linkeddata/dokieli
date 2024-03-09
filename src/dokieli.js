@@ -7,7 +7,7 @@
  */
 
 import { getResource, setAcceptRDFTypes, postResource, putResource, currentLocation, patchResourceWithAcceptPatch, putResourceWithAcceptPut, copyResource, deleteResource } from './fetcher.js'
-import { getDocument, getDocumentContentNode, xmlHtmlEscape, showActionMessage, selectArticleNode, domToString, buttonClose, buttonRemoveAside, showRobustLinksDecoration, getResourceInfo, removeNodesWithIds, getResourceInfoSKOS, removeReferences, buildReferences, removeSelectorFromNode, insertDocumentLevelHTML, getResourceInfoSpecRequirements, getTestDescriptionReviewStatusHTML, createFeedXML, getButtonDisabledHTML, showTimeMap, createMutableResource, createImmutableResource, updateMutableResource, createHTML, getResourceImageHTML, setDocumentRelation, setDate, getClosestSectionNode, getAgentHTML, setEditSelections, getNodeLanguage, createActivityHTML, createLicenseHTML, createLanguageHTML, getAnnotationInboxLocationHTML, getAnnotationLocationHTML, getResourceTypeOptionsHTML, getPublicationStatusOptionsHTML, getLanguageOptionsHTML, getLicenseOptionsHTML, getCitationOptionsHTML } from './doc.js'
+import { getDocument, getDocumentContentNode, xmlHtmlEscape, showActionMessage, selectArticleNode, domToString, buttonClose, buttonRemoveAside, showRobustLinksDecoration, getResourceInfo, removeNodesWithIds, getResourceInfoSKOS, removeReferences, buildReferences, removeSelectorFromNode, insertDocumentLevelHTML, getResourceInfoSpecRequirements, getTestDescriptionReviewStatusHTML, createFeedXML, getButtonDisabledHTML, showTimeMap, createMutableResource, createImmutableResource, updateMutableResource, createHTML, getResourceImageHTML, setDocumentRelation, setDate, getClosestSectionNode, getAgentHTML, setEditSelections, getNodeLanguage, createActivityHTML, createLicenseHTML, createLanguageHTML, getAnnotationInboxLocationHTML, getAnnotationLocationHTML, getResourceTypeOptionsHTML, getPublicationStatusOptionsHTML, getLanguageOptionsHTML, getLicenseOptionsHTML, getCitationOptionsHTML, getDocumentNodeFromString } from './doc.js'
 import { getProxyableIRI, getPathURL, stripFragmentFromString, getFragmentOrLastPath, getFragmentFromString, getURLLastPath, getLastPathSegment, forceTrailingSlash, getBaseURL, getParentURLPath, encodeString, getAbsoluteIRI } from './uri.js'
 import { getResourceGraph, traverseRDFList, getLinkRelation, getAgentName, getGraphImage, getGraphFromData, isActorType, isActorProperty, serializeGraph, getGraphLabel, getUserContacts, getAgentOutbox, getAgentStorage, getAgentInbox, getLinkRelationFromHead, sortGraphTriples } from './graph.js'
 import { notifyInbox, sendNotifications, postActivity } from './inbox.js'
@@ -3735,9 +3735,11 @@ console.log(reason);
 
       buttonDisabled = (DO.U.accessModeAllowed('write')) ? '' : ' disabled="disabled"';
 
-      //FIXME: The SVG should also have class ".fa-2x"
+      var trashIcon = getDocumentNodeFromString(Icon[".fas.fa-trash-alt"], {'contentType': 'image/svg+xml'})
+      trashIcon.classList.add('fa-2x');
+      trashIcon = trashIcon.outerHTML;
       s += '<li><button class="resource-delete"' + buttonDisabled +
-        ' title="Delete article">' + Icon[".fas.fa-trash-alt"] + 'Delete</button></li>';
+        ' title="Delete article">' + trashIcon + 'Delete</button></li>';
 
       s += '<li><button class="message-log" title="Show message log">' + Icon [".fas.fa-scroll.fa-2x"] + 'Messages</button></li>';
 
