@@ -3733,6 +3733,12 @@ console.log(reason);
         s += '<li><button class="resource-print"' + getButtonDisabledHTML('resource-print') + ' title="Print document">' + Icon[".fas.fa-print.fa-2x"] + 'Print</button></li>';
       }
 
+      buttonDisabled = (DO.U.accessModeAllowed('write')) ? '' : ' disabled="disabled"';
+
+      //FIXME: The SVG should also have class ".fa-2x"
+      s += '<li><button class="resource-delete"' + buttonDisabled +
+        ' title="Delete article">' + Icon[".fas.fa-trash-alt"] + 'Delete</button></li>';
+
       s += '<li><button class="message-log" title="Show message log">' + Icon [".fas.fa-scroll.fa-2x"] + 'Messages</button></li>';
 
       s += '</ul></section>';
@@ -3811,6 +3817,10 @@ console.log(reason);
         if (e.target.closest('.resource-print')) {
           window.print();
           return false;
+        }
+
+        if (e.target.closest('.resource-delete')){
+          DO.U.resourceDelete(e, DO.C.DocumentURL);
         }
 
         if (e.target.closest('.message-log')) {
