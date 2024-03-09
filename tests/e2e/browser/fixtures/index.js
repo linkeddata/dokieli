@@ -23,11 +23,18 @@ export class Auth {
 
     
     const popup = await this.page.waitForEvent("popup");
-    const solidCommunityButton = "button.idp > span.label:has-text('Log in with Solid Community')";
-    await popup.waitForSelector(solidCommunityButton);
+    const idpLoginButton = "button.idp > span.label:has-text('Log in with custom provider')";
+ 
 
-    await expect(popup.locator(solidCommunityButton)).toBeEnabled();
-    await popup.locator(solidCommunityButton).click();
+    await popup.waitForSelector(idpLoginButton);
+
+    await expect(popup.locator(idpLoginButton)).toBeEnabled();
+    await popup.locator(idpLoginButton).click();
+    await popup.fill("input[type=url]", process.env.IDP);
+    await popup.click("button[type=submit]");
+
+    await popup.waitForSelector("input#username");
+
     await popup.fill("#username", process.env.LOGIN_ID);
     await popup.fill("#password", process.env.LOGIN_PASSWORD);
     await popup.click("#login");
