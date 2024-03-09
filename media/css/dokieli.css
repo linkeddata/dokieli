@@ -751,7 +751,7 @@ button[class|="resource"],
 button[class~="editor-enable"],
 button[class|="review"],
 button[class~="embed-data-meta"],
-aside button.delete,
+aside.note button.delete,
 button[class~="robustlinks-reuse"] {
 display:inline-block;
 border:0;
@@ -1173,7 +1173,12 @@ padding:0.25em;
 z-index:2147483647;
 hyphens:initial;
 }
-
+.do button + button {
+margin-left:1em;
+}
+button.delete {
+color:#FF0000;
+}
 button.close {
 position:absolute;
 top:0.5em;
@@ -1181,11 +1186,15 @@ right:0.5em;
 z-index:2147483647;
 padding:0;
 }
-button.delete {
+aside.do button {
+font-weight:bold;
+}
+aside.note button.delete {
 position:absolute;
 top:0;
 right:0;
 z-index:2147483647;
+color:inherit;
 }
 button.copy-to-clipboard {
 display:block;
