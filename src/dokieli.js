@@ -3851,6 +3851,120 @@ console.log(reason);
       DO.C.MessageLog.unshift(m);
     },
 
+    //TODO: Minor refactoring to delete any URL, e.g., annotation (already implemented)
+    resourceDelete: function(e, url, options) {
+      if (!url) { return; }
+
+      e.target.closest('button').disabled = true
+
+      document.documentElement.appendChild(fragmentFromString('<aside id="delete-document" class="do on">' + DO.C.Button.Close + '<h2>Delete Document</h2><div><p>Are you sure you want to delete the following document?</p><p><code>' + url  +'</code></p></div><button class="cancel" title="Cancel delete">Cancel</button><button class="delete" title="Delete document">Delete</button></aside>'));
+
+      document.querySelector('#delete-document').addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        var buttonCC = e.target.closest('button.close') ||  e.target.closest('button.cancel');
+        if (buttonCC) {
+          var parent = buttonCC.parentNode;
+          parent.parentNode.removeChild(parent);
+
+          var rd = document.querySelector('#document-do .resource-delete');
+          if (rd) {
+            rd.disabled = false;
+          }
+        }
+        else if (e.target.closest('button.delete')) {
+          deleteResource(url)
+            .catch((error) => {
+// console.log(error)
+// console.log(error.status)
+// console.log(error.response)
+              return error.response.text()
+                .then(data => {
+// console.log(data);
+
+                  //TODO: Reuse saveAsDocument's catch to request access by checking the Link header.
+
+                  var details = (data.trim().length > 0) ? '<details><summary>Details</summary><div>' + data + '</div></details>' : '';
+                  var message = '';
+                  if (error.status) {
+                    switch(error.status) {
+                      case 401:
+                        message = 'You are lack valid authenticated credentials to delete <code>' + url + '</code>.'
+                        if(!DO.C.User.IRI){
+                          message += ' Try signing in.';
+                        }
+                        message += details;
+                        break;
+                      case 403: default:
+                        message = 'Unable to delete <code>' + url + '</code>.';
+                        if(DO.C.User.IRI){
+                          message += ' Your credentails were insufficient. Try signing in with different credentials or request access.';
+                        }
+                        message + details;
+                        break;
+                      case 409:
+                        message = 'There was a conflict when trying to delete <code>' + url + '</code>.' + details;
+                        break;
+                    }
+                  }
+
+                  DO.U.addMessageToLog(message, 'info');
+                  showActionMessage(document.documentElement, '<p>' + message + '</p>', {'timer': 10000});
+
+                  // throw error;
+                  return Promise.reject({});
+                });
+            })
+            .then(response => {
+// console.log(response);
+              return response.text()
+                .then(data => {
+// console.log(data);
+                  var details = (data.trim().length > 0) ? '<details><summary>Details</summary><div>' + data + '</div></details>' : '';
+                  var message = '';
+                  switch(response.status) {
+                    case 200: default:
+                      message = 'Deleted <code>' + url + '</code>.' + details;
+                      break;
+                    case 202:
+                      message = 'Deleting <code>' + url + '</code> will succeed but has not yet been enacted.';
+                    break;
+                    case 204:
+                      message = 'Deleted <code>' + url + '</code>.';
+                      break;
+                  }
+
+                  DO.U.addMessageToLog(message, 'info');
+                  showActionMessage(document.documentElement, '<p>' + message + '</p>', {'timer': 3000});
+
+                  //FIXME:
+                  getDocumentContentNode(document).innerHTML = '<main><article about="" typeof="schema:Article"></article></main>';
+                  DO.U.Editor.enableEditor('author');
+
+                  // or better: createHTML() and update spawnDocument()
+                  //XXX Experimental:
+//                   var html = getDocument()
+// console.log(html)
+//                   html = DO.U.spawnDokieli(document, html, 'text/html', url, {'init': true})
+                  // window.history.pushState({}, '', ??????)
+
+                  // Or offer to create a new document somewhere.
+                  // DO.U.createNewDocument(e);
+
+                  var buttonD = e.target.closest('button.delete')
+                  if (buttonD) {
+                    var parent = buttonD.parentNode;
+                    parent.parentNode.removeChild(parent);
+                  }
+
+                  // document.querySelector('#document-do .resource-delete').disabled = false;
+                })
+            })
+          }
+      });
+    },
+
     resourceSave: function(e, options) {
       var url = window.location.origin + window.location.pathname;
       var data = getDocument();
