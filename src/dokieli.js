@@ -28,6 +28,7 @@ import { micromark as marked } from 'micromark'
 import { gfm, gfmHtml } from 'micromark-extension-gfm'
 import { gfmTagfilterHtml } from 'micromark-extension-gfm-tagfilter'
 import LinkHeader from 'http-link-header';
+import * as DOMPurify from 'dompurify';
 import * as ld from './simplerdf.cjs'
 import Config from './config.js';
 
@@ -1118,6 +1119,7 @@ DO = {
               if (t.object.interfaceName == 'Literal') {
                 //XXX: Revisit
                 objectValue = xmlHtmlEscape(objectValue);
+                objectValue = DOMPurify.sanitize(objectValue);
               }
 
               if(graphNodes.indexOf(t.subject.nominalValue) == -1) {
@@ -3369,6 +3371,8 @@ console.log(reason);
                   return response.text()
                     .then(data => {
 // console.log(data)
+                      data = DOMPurify.sanitize(data);
+
                       var regexp = /var redirUrl = "([^"]*)";/;
                       var match = data.match(regexp);
 // console.log(match)
@@ -3935,6 +3939,7 @@ console.log(reason);
               error.response.text()
                 .then(data => {
 // console.log(data);
+                  data = DOMPurify.sanitize(data);
 
                   //TODO: Reuse saveAsDocument's catch to request access by checking the Link header.
 
@@ -3979,6 +3984,8 @@ console.log(reason);
               return response.text()
                 .then(data => {
 // console.log(data);
+                  data = DOMPurify.sanitize(data);
+
                   var details = (data.trim().length > 0) ? '<details><summary>Details</summary><div>' + data + '</div></details>' : '';
                   var message = '';
                   switch(response.status) {
@@ -5685,6 +5692,8 @@ console.log(response)
 
             return response.text()
               .then(data => {
+                data = DOMPurify.sanitize(data);
+
                 var spawnOptions = {};
 
                 var checkMarkdownInMediaTypes = ['text/markdown', 'text/plain'];
