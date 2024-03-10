@@ -571,8 +571,10 @@ function processSave(url, slug, data, options) {
 
   return request
     .then(response => {
+      var location = response.headers.get('Location') || url;
+
       var message = {
-        'content': 'Saved',
+        'content': 'Saved document to <code>' + location + '</code>',
         'type': 'success'
       }
       return Promise.resolve({'response': response, 'message': message})
