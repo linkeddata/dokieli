@@ -1419,7 +1419,7 @@ DO = {
 
         var message = 'Opening <a href="' + open + '" target="_blank">' + open + '</a>';
         DO.U.addMessageToLog(message, 'info');
-        showActionMessage(document.documentElement, '<p><span class="progress">' + Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + ' ' + message + '</span></p>', {'timer': 10000});
+        showActionMessage(document.documentElement, '<span class="progress">' + Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + ' ' + message + '</span>', {'timer': 10000, 'type': 'info'});
 
         DO.U.openResource(open);
 
@@ -2982,12 +2982,12 @@ console.log(reason);
             .then(() => {
               var message = 'Copied to clipboard.';
               DO.U.addMessageToLog(message, 'info');
-              showActionMessage(document.documentElement, '<p>' + message +  '</p>', {'timer': 3000});
+              showActionMessage(document.documentElement, message, {'timer': 3000, 'type': 'info'});
             })
             .catch(error => {
               var message = 'Failed to copy text to clipboard.';
               DO.U.addMessageToLog(message, 'error');
-              showActionMessage(document.documentElement, '<p>' + message +  '</p>', {'timer': 3000});
+              showActionMessage(document.documentElement, message, {'timer': 3000, 'type': 'error'});
               console.error('Failed to copy text to clipboard: ' + error);
             });
         }
@@ -3210,8 +3210,8 @@ console.log(reason);
             options['showActionMessage'] = ('showActionMessage' in options) ? options.showActionMessage : true;
             if (options.showActionMessage) {
               var message = 'Archived <a href="' + uri + '">' + uri + '</a> at <a href="' + versionURL + '">' + versionURL + '</a> and created RobustLink.';
-              DO.U.addMessageToLog(message, 'info');
-              showActionMessage(document.documentElement, '<p>' + message +  '</p>');
+              DO.U.addMessageToLog(message, 'success');
+              showActionMessage(document.documentElement, message, {'type': 'success'});
             }
 
             if (options.showRobustLinksDecoration) {
@@ -3921,7 +3921,7 @@ console.log(reason);
                     }
                   }
 
-                  DO.U.addMessageToLog(message, 'info');
+                  DO.U.addMessageToLog(message, 'error');
                   showActionMessage(document.documentElement, message, {'timer': 10000, 'type': 'error'});
 
                   // throw error;
@@ -3947,7 +3947,7 @@ console.log(reason);
                       break;
                   }
 
-                  DO.U.addMessageToLog(message, 'info');
+                  DO.U.addMessageToLog(message, 'success');
                   showActionMessage(document.documentElement, message, {'timer': 3000, 'type': 'success'});
 
                   var buttonD = e.target.closest('button.delete')
@@ -5196,7 +5196,7 @@ console.log(reason);
           message = message.join('');
 
           DO.U.addMessageToLog(message, 'info');
-          showActionMessage(document.documentElement, message, {'timer': 3000});
+          showActionMessage(document.documentElement, message, {'timer': 3000, 'type': 'info'});
 
           // return Promise.resolve(data);
         // }
@@ -5592,7 +5592,7 @@ console.log(response)
       var handleResource = function handleResource (pIRI, headers, options) {
         var message = 'Opening <a href="' + iri + '" target="_blank">' + iri + '</a>.';
         DO.U.addMessageToLog(message, 'info');
-        showActionMessage(document.documentElement, '<p><span class="progress">' + Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + ' ' + message + '</span></p>', {'timer': 10000});
+        showActionMessage(document.documentElement, '<span class="progress">' + Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + ' ' + message + '</span>', {'timer': 10000, 'type': 'info'});
 
         return getResource(pIRI, headers, options)
           .catch(error => {
@@ -5604,7 +5604,7 @@ console.log(response)
 
             var message = 'Unable to open <a href="' + iri + '" target="_blank">' + iri + '</a>.';
             DO.U.addMessageToLog(message, 'error');
-            showActionMessage(document.documentElement, '<p><span class="progress">' + Icon[".fas.fa-times-circle.fa-fw"] + message + '</span></p>', {'timer': 5000});
+            showActionMessage(document.documentElement, '<span class="progress">' + Icon[".fas.fa-times-circle.fa-fw"] + message + '</span>', {'timer': 5000, 'type': 'error'});
 
             throw error
           })
@@ -7916,9 +7916,9 @@ WHERE {\n\
         }
 
         if (e || (typeof e === 'undefined' && editorMode == 'author')) {
-          var message = 'Activated <strong>' + editorMode + '</strong> mode.';
+          var message = 'Activated <em>' + editorMode + '</em> mode.';
           DO.U.addMessageToLog(message, 'info');
-          showActionMessage(document.documentElement, '<p>' + message + '</p>');
+          showActionMessage(document.documentElement, message, {'type': 'info'});
         }
 
         if (!document.getElementById('document-editor')) {
@@ -10026,7 +10026,7 @@ WHERE {\n\
 
                   var message = 'Copy URL from address bar.';
                   DO.U.addMessageToLog(message, 'info');
-                  showActionMessage(document.documentElement, '<p>' + message + '</p>')
+                  showActionMessage(document.documentElement, message, {'timer': 3000, 'type': 'info'});
                   // copyTextToClipboard(encodeURI(selectorIRI));
                   break;
 
