@@ -3899,14 +3899,9 @@ console.log(reason);
     },
 
     addMessageToLog: function(message, options = {}) {
-      // const messageCopy = Object.assign({}, message);
-      message['dateTime'] = getDateTimeISO();
-      // DO.C.MessageLog.unshift(messageCopy);
-      DO.C.MessageLog.unshift(message);
-      //i want to try this to see if handleResource makes a diff.
-      // oki
-      //nope.
-      // weird...  
+      const m = Object.assign({}, message);
+      m['dateTime'] = getDateTimeISO();
+      DO.C.MessageLog.unshift(m);
     },
 
     //TODO: Minor refactoring to delete any URL, e.g., annotation (already implemented)
