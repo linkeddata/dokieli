@@ -542,13 +542,33 @@ function handleActionMessage(resolved, rejected) {
 function showActionMessage(node, message, options) {
   options = options || {};
   options['timer'] = ('timer' in options) ? options.timer : Config.ActionMessage.Timer;
+  options['type'] = ('type' in options) ? options.type : 'info';
 
-  message = '<aside id="document-action-message" class="do on">' + message + '</aside>';
-  node.appendChild(fragmentFromString(message));
+  var id = generateAttributeId();
+  message = '<li id="' + id  + '" class="' + options.type + '">' + message + '</li>';
+
+  var aside = node.querySelector('#document-action-message');
+  if (!aside) {
+    node.appendChild(fragmentFromString('<aside id="document-action-message" class="do on">' + DO.C.Button.Close + '<h2>Messages</h2><ul></ul></aside>'));
+  }
+  node.querySelector('#document-action-message > h2 + ul').insertAdjacentHTML('afterbegin', message);
+
   window.setTimeout(function () {
-    var dam = document.getElementById('document-action-message');
-    if (dam) { dam.parentNode.removeChild(dam); }
+    var aside = node.querySelector('#document-action-message');
+    var li = aside.querySelector('#' + id);
+    if (li) {
+      li.parentNode.removeChild(li);
+    }
+   
+    li = aside.querySelector('h2 + ul > li');
+    if (!li) {
+      node.removeChild(aside);
+    }
   }, options.timer);
+
+  //TODO: To halt the timer when the user hovers over the message.
+  // aside.addEventListener('hover', function (e) {
+  // });
 }
 
 function selectArticleNode(node) {
