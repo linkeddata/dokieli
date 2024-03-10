@@ -5692,7 +5692,12 @@ console.log(response)
 
             return response.text()
               .then(data => {
-                data = DOMPurify.sanitize(data);
+                //XXX: Revisit DOMPurify. This removes... pretty much everything. We don't necessarily want to completely get rid of styles (`link` or `style` tags). `script` tag and perhaps `style` attribute could perhaps be filtered - not sure if that's something we want to keep. Definitely do not remove RDF attributes (DO.C.RDFaAttributes).
+                // var sT = [...DO.C.MediaTypes.Markup, ...['text/plain', 'application/xhtml+xml']];
+                // if (sT.includes(options['contentType'])) {
+                //   data = DOMPurify.sanitize(data);
+                //   console.log(DOMPurify.removed)
+                // }
 
                 var spawnOptions = {};
 
