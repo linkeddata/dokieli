@@ -3839,7 +3839,7 @@ console.log(reason);
       if (DO.C.MessageLog && DO.C.MessageLog.length > 0) {
         messageLog = '<table><caption>Messages</caption><thead><tr><th>Date/Time</th><th>Message</th><th>Type</th></tr></thead><tbody>';
         Object.keys(DO.C.MessageLog).forEach(i => {
-          messageLog += '<tr><td>' + DO.C.MessageLog[i].dateTime + '</td><td>' + DO.C.MessageLog[i].content + '</td><td>' + DO.C.MessageLog[i].type + '</td></tr>';
+          messageLog += '<tr class="' + DO.C.MessageLog[i].type + '"><td>' + DO.C.MessageLog[i].dateTime + '</td><td>' + DO.C.MessageLog[i].content + '</td><td>' + DO.C.MessageLog[i].type + '</td></tr>';
         });
         messageLog += '</tbody></table>';
       }
@@ -3891,7 +3891,7 @@ console.log(reason);
 // console.log(error)
 // console.log(error.status)
 // console.log(error.response)
-              return error.response.text()
+              error.response.text()
                 .then(data => {
 // console.log(data);
 
@@ -3922,10 +3922,10 @@ console.log(reason);
                   }
 
                   DO.U.addMessageToLog(message, 'info');
-                  showActionMessage(document.documentElement, '<p>' + message + '</p>', {'timer': 10000});
+                  showActionMessage(document.documentElement, message, {'timer': 10000, 'type': 'error'});
 
                   // throw error;
-                  return Promise.reject({});
+                  // return Promise.reject({});
                 });
             })
             .then(response => {
@@ -3948,12 +3948,20 @@ console.log(reason);
                   }
 
                   DO.U.addMessageToLog(message, 'info');
-                  showActionMessage(document.documentElement, '<p>' + message + '</p>', {'timer': 3000});
+                  showActionMessage(document.documentElement, message, {'timer': 3000, 'type': 'success'});
 
+                  var buttonD = e.target.closest('button.delete')
+                  if (buttonD) {
+                    var parent = buttonD.parentNode;
+                    parent.parentNode.removeChild(parent);
+                  }
+                })
+                .then(() => {
                   //FIXME:
                   getDocumentContentNode(document).innerHTML = '<main><article about="" typeof="schema:Article"></article></main>';
                   DO.U.Editor.enableEditor('author');
 
+                  
                   // or better: createHTML() and update spawnDocument()
                   //XXX Experimental:
 //                   var html = getDocument()
@@ -3963,14 +3971,6 @@ console.log(reason);
 
                   // Or offer to create a new document somewhere.
                   // DO.U.createNewDocument(e);
-
-                  var buttonD = e.target.closest('button.delete')
-                  if (buttonD) {
-                    var parent = buttonD.parentNode;
-                    parent.parentNode.removeChild(parent);
-                  }
-
-                  // document.querySelector('#document-do .resource-delete').disabled = false;
                 })
             })
           }
