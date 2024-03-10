@@ -539,36 +539,41 @@ function handleActionMessage(resolved, rejected) {
   }
 }
 
-function showActionMessage(node, message, options) {
-  options = options || {};
-  options['timer'] = ('timer' in options) ? options.timer : Config.ActionMessage.Timer;
-  options['type'] = ('type' in options) ? options.type : 'info';
+function showActionMessage(node, message, options = {}) {
+  if (!node || !message) { return; }
+
+  message['timer'] = ('timer' in message) ? message.timer : Config.ActionMessage.Timer;
+  message['type'] = ('type' in message) ? message.type : 'info';
 
   var id = generateAttributeId();
-  message = '<li id="' + id  + '" class="' + options.type + '">' + message + '</li>';
+  var messageItem = '<li id="' + id  + '" class="' + message.type + '">' + message.content + '</li>';
 
   var aside = node.querySelector('#document-action-message');
   if (!aside) {
     node.appendChild(fragmentFromString('<aside id="document-action-message" class="do on">' + DO.C.Button.Close + '<h2>Messages</h2><ul></ul></aside>'));
   }
-  node.querySelector('#document-action-message > h2 + ul').insertAdjacentHTML('afterbegin', message);
+  node.querySelector('#document-action-message > h2 + ul').insertAdjacentHTML('afterbegin', messageItem);
 
   window.setTimeout(function () {
     var aside = node.querySelector('#document-action-message');
-    var li = aside.querySelector('#' + id);
-    if (li) {
-      li.parentNode.removeChild(li);
+    if (aside) {
+      var li = aside.querySelector('#' + id);
+      if (li) {
+        li.parentNode.removeChild(li);
+      }
+    
+      li = aside.querySelector('h2 + ul > li');
+      if (!li) {
+        node.removeChild(aside);
+      }
     }
-   
-    li = aside.querySelector('h2 + ul > li');
-    if (!li) {
-      node.removeChild(aside);
-    }
-  }, options.timer);
+  }, message.timer);
 
   //TODO: To halt the timer when the user hovers over the message.
   // aside.addEventListener('hover', function (e) {
   // });
+
+  return id;
 }
 
 function selectArticleNode(node) {

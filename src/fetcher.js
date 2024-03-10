@@ -570,7 +570,11 @@ function processSave(url, slug, data, options) {
 
   return request
     .then(response => {
-      return Promise.resolve({'response': response, 'message': 'Saved'})
+      var message = {
+        'content': 'Saved',
+        'type': 'success'
+      }
+      return Promise.resolve({'response': response, 'message': message})
     })
     .catch(error => {
       console.log(error)
@@ -590,6 +594,11 @@ function processSave(url, slug, data, options) {
         default:
           message = 'Server doesn\'t allow this resource to be rewritten'
           break
+      }
+
+      message = {
+        'content': message,
+        'type': 'error'
       }
 
       return Promise.reject({'error': error, 'message': message})
