@@ -21,7 +21,7 @@ const config = {
     actionTimeout: 0,
     baseURL: "http://localhost:3000",
     trace: "on-first-retry",
-    video: "on-first-retry",
+    video: "off",
   },
   projects: [
     {

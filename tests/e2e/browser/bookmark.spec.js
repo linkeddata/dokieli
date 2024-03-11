@@ -1,4 +1,5 @@
 import { test, expect } from "./fixtures";
+import { selectText } from "./utils";
 
 test.beforeEach(async ({ auth }) => {
   await auth.login();
@@ -15,10 +16,9 @@ test("should be able to bookmark a resource", async ({ page }) => {
   await expect(page.locator("button.signout-user")).toBeVisible();
   await page.getByRole("button", { name: "Hide Menu" }).click();
 
-  // FIXME: find a better way to select text and have the ME menu popup
-  const paragraph = page.getByText("dokieli is a clientside editor for decentralised article publishing, annotations and social interactions.")
-  // double click to select a word
-  paragraph.dblclick();
+  // FIXME: maybe move this to a fixture?
+  await selectText("annotations", page);
+
   const bookmarkButton = page.locator("[data-action=bookmark]");
   await bookmarkButton.click();
   await expect(page.locator("textarea#bookmark-content")).toBeVisible();
@@ -30,8 +30,8 @@ test("should be able to bookmark a resource", async ({ page }) => {
   await saveButton.click();
   await expect(page.locator("sup.ref-annotation")).toBeVisible();
 
-//   // wait for screencast purposes
-//   await page.waitForTimeout(5000);
+  //   // wait for screencast purposes
+  //   await page.waitForTimeout(5000);
 
   await cleanup(page);
 });
