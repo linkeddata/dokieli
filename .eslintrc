@@ -8,7 +8,7 @@
   "parser": "babel-eslint",
   "env": { "es6": true, "browser": true, "jest": true, "node": true },
   "plugins": ["jest"],
-  "ignorePatterns": ["node_modules", "test-setup.js", "scripts/"],
+  "ignorePatterns": ["node_modules", "test-setup.js", "scripts/", "playwright-report/"],
   "globals": {
     "browser": "readonly",
     "chrome": "readonly",
