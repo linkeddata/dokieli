@@ -1526,11 +1526,7 @@ DO = {
           var o = t.object.nominalValue;
 
           if(p == DO.C.Vocab['schemapotentialAction']['@id']) {
-            var subject = g.child(s);
-            var potentialActions = subject.schemapotentialAction;
-// console.log(potentialActions)
-            potentialActions.forEach(function(action){
-// console.log(action);
+            var action = o;
               var documentOrigin = (document.location.origin === "null") ? "file://" : document.location.origin;
               var originPathname = documentOrigin + document.location.pathname;
 // console.log(originPathname)
@@ -1553,10 +1549,10 @@ DO = {
                       if (typeof so !== 'undefined') {
                         so = so.iri().toString();
                         selector = '#' + element.closest('[id]').id;
-// console.log(selector)
 
-                        var svgGraph = document.querySelector(selector + ' svg.graph');
+                        var svgGraph = document.querySelector(selector + ' svg');
                         if (svgGraph) {
+                          svgGraph.nextSibling.parentNode.removeChild(svgGraph.nextSibling);
                           svgGraph.parentNode.removeChild(svgGraph);
                         }
                         else {
@@ -1573,7 +1569,6 @@ DO = {
                   }
                 });
               }
-            });
           }
         });
       }
