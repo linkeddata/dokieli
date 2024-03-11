@@ -995,181 +995,181 @@ DO = {
       }
     },
 
-          convertGraphToVisualisationGraph: function(url, g, options){
+    convertGraphToVisualisationGraph: function(url, g, options){
 // console.log(g);
-            DO.C['Graphs'] = DO.C['Graphs'] || {};
-            g = SimpleRDF(DO.C.Vocab, options['subjectURI'], g, ld.store).child(url);
+      DO.C['Graphs'] = DO.C['Graphs'] || {};
+      g = SimpleRDF(DO.C.Vocab, options['subjectURI'], g, ld.store).child(url);
 // console.log(g.toString())
-            var dataGraph = SimpleRDF();
-            var graphs = {};
-            graphs[options['subjectURI']] = g;
+      var dataGraph = SimpleRDF();
+      var graphs = {};
+      graphs[options['subjectURI']] = g;
 
-            if ('mergeGraph' in options && options.mergeGraph) {
-              graphs = Object.assign(DO.C.Graphs, graphs);
+      if ('mergeGraph' in options && options.mergeGraph) {
+        graphs = Object.assign(DO.C.Graphs, graphs);
+      }
+
+      DO.C['Graphs'][options['subjectURI']] = g;
+
+      Object.keys(graphs).forEach(function(i){
+        var g = graphs[i].graph();
+
+        dataGraph.graph().addAll(g);
+      });
+
+      var graphData = {"nodes":[], "links": [], "resources": options.resources };
+      var graphNodes = [];
+
+      dataGraph.graph().toArray().forEach(function(t){
+        if(
+          // t.predicate.nominalValue == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first' ||
+          // t.predicate.nominalValue == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest' ||
+          t.object.nominalValue == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil'
+          ) {
+          return;
+        }
+
+        var sGroup = 8;
+        var pGroup = 8;
+        var oGroup = 8;
+        var sVisited = false;
+        var oVisited = false;
+
+        switch(t.subject.interfaceName) {
+          default: case 'NamedNode':
+            if (stripFragmentFromString(t.subject.nominalValue) != url) {
+              sGroup = 7;
             }
+            break;
+          case 'BlankNode':
+            sGroup = 8;
+            break;
+        }
 
-            DO.C['Graphs'][options['subjectURI']] = g;
+        switch(t.object.interfaceName) {
+          default: case 'NamedNode':
+            if (stripFragmentFromString(t.object.nominalValue) != url) {
+              oGroup = 7;
+            }
+            break;
+          case 'BlankNode':
+            oGroup = 8;
+            break;
+          case 'Literal':
+            oGroup = 4;
+            break;
+        }
 
-            Object.keys(graphs).forEach(function(i){
-              var g = graphs[i].graph();
+        if (t.subject.nominalValue.startsWith('http://example.com/.well-known/genid/')) {
+          sGroup = 8;
+        }
+        if (t.object.nominalValue.startsWith('http://example.com/.well-known/genid/')) {
+          oGroup = 8;
+        }
 
-              dataGraph.graph().addAll(g);
-            });
+        if (t.predicate.nominalValue == DO.C.Vocab['rdftype']['@id']){
+          oGroup = 6;
 
-            var graphData = {"nodes":[], "links": [], "resources": options.resources };
-            var graphNodes = [];
+          if (isActorType(t.object.nominalValue)) {
+            sGroup = 10;
+          }
 
-            dataGraph.graph().toArray().forEach(function(t){
-              if(
-                // t.predicate.nominalValue == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#first' ||
-                // t.predicate.nominalValue == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#rest' ||
-                t.object.nominalValue == 'http://www.w3.org/1999/02/22-rdf-syntax-ns#nil'
-                ) {
-                return;
+          switch (t.object.nominalValue) {
+            case DO.C.Vocab['qbDataSet']['@id']:
+              oGroup = 11;
+              break;
+            case DO.C.Vocab['doapSpecification']['@id']:
+              sGroup = 13;
+              break;
+            case DO.C.Vocab['odrlAgreement']['@id']:
+            case DO.C.Vocab['odrlAssertion']['@id']:
+            case DO.C.Vocab['odrlOffer']['@id']:
+            case DO.C.Vocab['odrlPolicy']['@id']:
+            case DO.C.Vocab['odrlPrivacy']['@id']:
+            case DO.C.Vocab['odrlRequest']['@id']:
+            case DO.C.Vocab['odrlSet']['@id']:
+            case DO.C.Vocab['odrlTicket']['@id']:
+              sGroup = 14;
+              break;
+          }
+        }
+        if (isActorProperty(t.predicate.nominalValue)) {
+          oGroup = 10;
+        }
+        if (t.predicate.nominalValue.startsWith('http://purl.org/spar/cito/')) {
+          oGroup = 9;
+        }
+        switch(t.predicate.nominalValue) {
+          case DO.C.Vocab['foafknows']['@id']:
+            sGroup = 10;
+            oGroup = 10;
+            break;
+          case DO.C.Vocab['specrequirement']['@id']:
+            oGroup = 12;
+            break;
+          case DO.C.Vocab['spectestSuite']['@id']:
+            oGroup = 11;
+            break;
+          case DO.C.Vocab['odrlhasPolicy']['@id']:
+            oGroup = 13;
+            break;
+        }
+
+        if (DO.C.Graphs[t.subject.nominalValue]) {
+          // sGroup = 1;
+          sVisited = true;
+        }
+        if (DO.C.Graphs[t.object.nominalValue]) {
+          // oGroup = 1;
+          oVisited = true;
+        }
+
+        //Initial root node
+        if (t.subject.nominalValue == url) {
+          sGroup = 5;
+          sVisited = true;
+        }
+
+        if (t.object.nominalValue == url) {
+          oGroup = 5;
+          oVisited = true;
+        }
+
+        //FIXME: groups are set once - not updated.
+
+        var objectValue = t.object.nominalValue;
+        if (t.object.interfaceName == 'Literal') {
+          //XXX: Revisit
+          objectValue = xmlHtmlEscape(objectValue);
+          objectValue = DOMPurify.sanitize(objectValue);
+        }
+
+        if(graphNodes.indexOf(t.subject.nominalValue) == -1) {
+          graphNodes.push(t.subject.nominalValue);
+          graphData.nodes.push({"id": t.subject.nominalValue, "group": sGroup, "visited": sVisited });
+        }
+        if(graphNodes.indexOf(t.object.nominalValue) == -1) {
+          if (t.object.nominalValue in DO.C.Resource) {
+            // console.log(t.object.nominalValue)
+            DO.C.Resource[t.object.nominalValue].rdftype.forEach(function(type){
+              if (isActorType(type)) {
+                // console.log(type)
+                oGroup = 10
               }
+            })
+          }
 
-              var sGroup = 8;
-              var pGroup = 8;
-              var oGroup = 8;
-              var sVisited = false;
-              var oVisited = false;
+          graphNodes.push(objectValue);
+          graphData.nodes.push({"id": objectValue, "group": oGroup, "visited": oVisited });
+        }
 
-              switch(t.subject.interfaceName) {
-                default: case 'NamedNode':
-                  if (stripFragmentFromString(t.subject.nominalValue) != url) {
-                    sGroup = 7;
-                  }
-                  break;
-                case 'BlankNode':
-                  sGroup = 8;
-                  break;
-              }
-
-              switch(t.object.interfaceName) {
-                default: case 'NamedNode':
-                  if (stripFragmentFromString(t.object.nominalValue) != url) {
-                    oGroup = 7;
-                  }
-                  break;
-                case 'BlankNode':
-                  oGroup = 8;
-                  break;
-                case 'Literal':
-                  oGroup = 4;
-                  break;
-              }
-
-              if (t.subject.nominalValue.startsWith('http://example.com/.well-known/genid/')) {
-                sGroup = 8;
-              }
-              if (t.object.nominalValue.startsWith('http://example.com/.well-known/genid/')) {
-                oGroup = 8;
-              }
-
-              if (t.predicate.nominalValue == DO.C.Vocab['rdftype']['@id']){
-                oGroup = 6;
-
-                if (isActorType(t.object.nominalValue)) {
-                  sGroup = 10;
-                }
-
-                switch (t.object.nominalValue) {
-                  case DO.C.Vocab['qbDataSet']['@id']:
-                    oGroup = 11;
-                    break;
-                  case DO.C.Vocab['doapSpecification']['@id']:
-                    sGroup = 13;
-                    break;
-                  case DO.C.Vocab['odrlAgreement']['@id']:
-                  case DO.C.Vocab['odrlAssertion']['@id']:
-                  case DO.C.Vocab['odrlOffer']['@id']:
-                  case DO.C.Vocab['odrlPolicy']['@id']:
-                  case DO.C.Vocab['odrlPrivacy']['@id']:
-                  case DO.C.Vocab['odrlRequest']['@id']:
-                  case DO.C.Vocab['odrlSet']['@id']:
-                  case DO.C.Vocab['odrlTicket']['@id']:
-                    sGroup = 14;
-                    break;
-                }
-              }
-              if (isActorProperty(t.predicate.nominalValue)) {
-                oGroup = 10;
-              }
-              if (t.predicate.nominalValue.startsWith('http://purl.org/spar/cito/')) {
-                oGroup = 9;
-              }
-              switch(t.predicate.nominalValue) {
-                case DO.C.Vocab['foafknows']['@id']:
-                  sGroup = 10;
-                  oGroup = 10;
-                  break;
-                case DO.C.Vocab['specrequirement']['@id']:
-                  oGroup = 12;
-                  break;
-                case DO.C.Vocab['spectestSuite']['@id']:
-                  oGroup = 11;
-                  break;
-                case DO.C.Vocab['odrlhasPolicy']['@id']:
-                  oGroup = 13;
-                  break;
-              }
-
-              if (DO.C.Graphs[t.subject.nominalValue]) {
-                // sGroup = 1;
-                sVisited = true;
-              }
-              if (DO.C.Graphs[t.object.nominalValue]) {
-                // oGroup = 1;
-                oVisited = true;
-              }
-
-              //Initial root node
-              if (t.subject.nominalValue == url) {
-                sGroup = 5;
-                sVisited = true;
-              }
-
-              if (t.object.nominalValue == url) {
-                oGroup = 5;
-                oVisited = true;
-              }
-
-              //FIXME: groups are set once - not updated.
-
-              var objectValue = t.object.nominalValue;
-              if (t.object.interfaceName == 'Literal') {
-                //XXX: Revisit
-                objectValue = xmlHtmlEscape(objectValue);
-                objectValue = DOMPurify.sanitize(objectValue);
-              }
-
-              if(graphNodes.indexOf(t.subject.nominalValue) == -1) {
-                graphNodes.push(t.subject.nominalValue);
-                graphData.nodes.push({"id": t.subject.nominalValue, "group": sGroup, "visited": sVisited });
-              }
-              if(graphNodes.indexOf(t.object.nominalValue) == -1) {
-                if (t.object.nominalValue in DO.C.Resource) {
-                  // console.log(t.object.nominalValue)
-                  DO.C.Resource[t.object.nominalValue].rdftype.forEach(function(type){
-                    if (isActorType(type)) {
-                      // console.log(type)
-                      oGroup = 10
-                    }
-                  })
-                }
-
-                graphNodes.push(objectValue);
-                graphData.nodes.push({"id": objectValue, "group": oGroup, "visited": oVisited });
-              }
-
-              graphData.links.push({"source": t.subject.nominalValue, "target": objectValue, "value": t.predicate.nominalValue});
-            });
+        graphData.links.push({"source": t.subject.nominalValue, "target": objectValue, "value": t.predicate.nominalValue});
+      });
 // console.log(graphNodes)
 // console.log(graph)
 
-            graphNodes = undefined;
-            return Promise.resolve(graphData);
-          },
+      graphNodes = undefined;
+      return Promise.resolve(graphData);
+    },
  
     showGraph: function(resources, selector, options){
       if (!DO.C.GraphViewerAvailable) { return; }
@@ -1545,48 +1545,48 @@ DO = {
 
           if(p == DO.C.Vocab['schemapotentialAction']['@id']) {
             var action = o;
-              var documentOrigin = (document.location.origin === "null") ? "file://" : document.location.origin;
-              var originPathname = documentOrigin + document.location.pathname;
+            var documentOrigin = (document.location.origin === "null") ? "file://" : document.location.origin;
+            var originPathname = documentOrigin + document.location.pathname;
 // console.log(originPathname)
 // console.log(action.startsWith(originPathname + '#'))
-              if (action.startsWith(originPathname)) {
-                document.addEventListener('click', function(e) {
-                  var fragment = action.substr(action.lastIndexOf('#'));
+            if (action.startsWith(originPathname)) {
+              document.addEventListener('click', function(e) {
+                var fragment = action.substr(action.lastIndexOf('#'));
 // console.log(fragment)
-                  if (fragment) {
-                    var selector = '[about="' + fragment  + '"][typeof="schema:ViewAction"], [href="' + fragment  + '"][typeof="schema:ViewAction"], [resource="' + fragment  + '"][typeof="schema:ViewAction"]';
+                if (fragment) {
+                  var selector = '[about="' + fragment  + '"][typeof="schema:ViewAction"], [href="' + fragment  + '"][typeof="schema:ViewAction"], [resource="' + fragment  + '"][typeof="schema:ViewAction"]';
 // console.log(selector)
-                    // var element = document.querySelectorAll(selector);
-                    var element = e.target.closest(selector);
+                  // var element = document.querySelectorAll(selector);
+                  var element = e.target.closest(selector);
 // console.log(element)
-                    if (element) {
-                      e.preventDefault();
-                      e.stopPropagation();
+                  if (element) {
+                    e.preventDefault();
+                    e.stopPropagation();
 
-                      var so = g.child(action).schemaobject;
-                      if (typeof so !== 'undefined') {
-                        so = so.iri().toString();
-                        selector = '#' + element.closest('[id]').id;
+                    var so = g.child(action).schemaobject;
+                    if (typeof so !== 'undefined') {
+                      so = so.iri().toString();
+                      selector = '#' + element.closest('[id]').id;
 
-                        var svgGraph = document.querySelector(selector + ' svg');
-                        if (svgGraph) {
-                          svgGraph.nextSibling.parentNode.removeChild(svgGraph.nextSibling);
-                          svgGraph.parentNode.removeChild(svgGraph);
-                        }
-                        else {
-                          serializeGraph(g, { 'contentType': 'text/turtle' })
-                            .then(function(data){
-                              var options = {};
-                              options['subjectURI'] = so;
-                              options['contentType'] = 'text/turtle';
-                              DO.U.showVisualisationGraph(options.subjectURI, data, selector, options);
-                            });
-                        }
+                      var svgGraph = document.querySelector(selector + ' svg');
+                      if (svgGraph) {
+                        svgGraph.nextSibling.parentNode.removeChild(svgGraph.nextSibling);
+                        svgGraph.parentNode.removeChild(svgGraph);
+                      }
+                      else {
+                        serializeGraph(g, { 'contentType': 'text/turtle' })
+                          .then(function(data){
+                            var options = {};
+                            options['subjectURI'] = so;
+                            options['contentType'] = 'text/turtle';
+                            DO.U.showVisualisationGraph(options.subjectURI, data, selector, options);
+                          });
                       }
                     }
                   }
-                });
-              }
+                }
+              });
+            }
           }
         });
       }
