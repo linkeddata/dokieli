@@ -522,7 +522,6 @@ DO = {
     //Borrowed some of the d3 parts from https://bl.ocks.org/mbostock/4600693
     showVisualisationGraph: function(url, data, selector, options) {
       url = url || window.location.origin + window.location.pathname;
-      data = data || getDocument();
       selector = selector || 'body';
       options = options || {};
       options['contentType'] = options.contentType || 'text/html';
@@ -972,12 +971,34 @@ DO = {
       var requestURL = stripFragmentFromString(url);
       var documentURL = DO.C.DocumentURL;
 
-      return new Promise(function(resolve, reject) {
-        getGraphFromData(data, options).then(
-          function(g){
+      var { skipNodeWithClass, ...restOptions } = DO.C.DOMNormalisation;
+      var optionsNormalisation = restOptions;
+
+      if (typeof data == 'string') {
+        return getGraphFromData(data, options).then(function(g){
+          return DO.U.convertGraphToVisualisationGraph(requestURL, g, options);
+        });
+      }
+      else if (typeof data == 'object') {
+        return DO.U.convertGraphToVisualisationGraph(requestURL, data, options);
+      }
+      else if (typeof data == 'undefined') {
+        if (DO.C.Resource[documentURL] && DO.C.Resource[documentURL].graph) {
+          return DO.U.convertGraphToVisualisationGraph(requestURL, DO.C.Resource[documentURL].graph.graph(), options);
+        }
+        else {
+          data = getDocument(null, optionsNormalisation);
+          return getGraphFromData(data, options).then(function(g){
+            return DO.U.convertGraphToVisualisationGraph(requestURL, g, options);
+          });
+        }
+      }
+    },
+
+          convertGraphToVisualisationGraph: function(url, g, options){
 // console.log(g);
             DO.C['Graphs'] = DO.C['Graphs'] || {};
-            g = SimpleRDF(DO.C.Vocab, options['subjectURI'], g, ld.store).child(requestURL);
+            g = SimpleRDF(DO.C.Vocab, options['subjectURI'], g, ld.store).child(url);
 // console.log(g.toString())
             var dataGraph = SimpleRDF();
             var graphs = {};
@@ -1015,7 +1036,7 @@ DO = {
 
               switch(t.subject.interfaceName) {
                 default: case 'NamedNode':
-                  if (stripFragmentFromString(t.subject.nominalValue) != requestURL) {
+                  if (stripFragmentFromString(t.subject.nominalValue) != url) {
                     sGroup = 7;
                   }
                   break;
@@ -1026,7 +1047,7 @@ DO = {
 
               switch(t.object.interfaceName) {
                 default: case 'NamedNode':
-                  if (stripFragmentFromString(t.object.nominalValue) != requestURL) {
+                  if (stripFragmentFromString(t.object.nominalValue) != url) {
                     oGroup = 7;
                   }
                   break;
@@ -1103,12 +1124,12 @@ DO = {
               }
 
               //Initial root node
-              if (t.subject.nominalValue == requestURL) {
+              if (t.subject.nominalValue == url) {
                 sGroup = 5;
                 sVisited = true;
               }
 
-              if (t.object.nominalValue == requestURL) {
+              if (t.object.nominalValue == url) {
                 oGroup = 5;
                 oVisited = true;
               }
@@ -1147,12 +1168,9 @@ DO = {
 // console.log(graph)
 
             graphNodes = undefined;
-            return resolve(graphData);
-          }
-        );
-      });
-    },
-
+            return Promise.resolve(graphData);
+          },
+ 
     showGraph: function(resources, selector, options){
       if (!DO.C.GraphViewerAvailable) { return; }
 
@@ -1782,10 +1800,7 @@ DO = {
               }
             });
 
-            var optionsNormalisation = DO.C.DOMNormalisation;
-            delete optionsNormalisation['skipNodeWithClass'];
-
-            DO.U.showVisualisationGraph(document.location.href, getDocument(null, optionsNormalisation), '#graph-view');
+            DO.U.showVisualisationGraph(DO.C.DocumentURL, undefined, '#graph-view');
           }
         });
       }
