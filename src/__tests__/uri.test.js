@@ -48,6 +48,10 @@ describe("uri", () => {
       const result = getFragmentFromString(URL_WITH_FRAGMENT);
       expect(result).toEqual("me");
     });
+    it("returns fragment from a given string", () => {
+      const result = getFragmentFromString(URL_WITHOUT_FRAGMENT);
+      expect(result).toEqual("");
+    });
   });
 
   describe("getBaseUrl", () => {
