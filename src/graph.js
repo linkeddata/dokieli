@@ -394,7 +394,7 @@ function setDocumentBase (data, baseURI, contentType) {
       break;
 
     case 'application/json': case 'application/ld+json': case 'application/activity+json':
-      data = data.replace(/\\/g, '');
+      data = data.replace(/(\\)(?=\/)/g, '');
       data = JSON.parse(data);
       //TODO: This is outside the scope of this function. Should move to applyParserSerializerFixes or getGraphFromData?
       data = transformJsonldContextURLScheme(data);
