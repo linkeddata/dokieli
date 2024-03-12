@@ -51,42 +51,13 @@ function showDocumentMenu(tab) {
 }
 
 WebExtension.browserAction.onClicked.addListener(function(tab){
-  if(typeof WebExtension.management.getAll !== 'undefined') {
-    // WebExtension.management.getAll().then(function(extension){
-    WebExtension.management.getAll(function(extension){
-      var promises = [];
-
-      for(var i =0; i < extension.length; i++) {
-        if (extension[i].enabled && typeof extension[i].shortName !== 'undefined') {
-          switch(extension[i].shortName) {
-            case "opl_youid":
-              promises.push(
-                WebExtension.runtime.sendMessage(extension[i].id, {getWebId: true}, function(response) {
-                  if (response) {
-                    C.WebID = response.webid;
-
-                    return Promise.resolve();
-                  }
-                })
-              );
-              break;
-          }
-        }
+  WebExtension.tabs.sendMessage(tab.id, {action: "dokieli.status"},
+    function(response) {
+      if (response && !response.dokieli) {
+        dokieliInit(tab);
       }
-
-      Promise.all(promises)
-        .then(function(results) {
-          // WebExtension.tabs.sendMessage(tab.id, {action: "dokieli.status"}).then(
-          WebExtension.tabs.sendMessage(tab.id, {action: "dokieli.status"},
-            function(response) {
-              if (response && !response.dokieli) {
-                dokieliInit(tab);
-              }
-              showDocumentMenu(tab);
-            });
-        });
+      showDocumentMenu(tab);
     });
-  }
 });
 
 WebExtension.runtime.onMessage.addListener(function(request, sender, sendResponse) {
