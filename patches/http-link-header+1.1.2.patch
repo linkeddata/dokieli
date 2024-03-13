@@ -1,0 +1,31 @@
+diff --git a/node_modules/http-link-header/lib/link.js b/node_modules/http-link-header/lib/link.js
+index 9ec5160..37647b4 100644
+--- a/node_modules/http-link-header/lib/link.js
++++ b/node_modules/http-link-header/lib/link.js
+@@ -85,7 +85,7 @@ class Link {
+     var type = value.toLowerCase()
+ 
+     for( var i = 0; i < this.refs.length; i++ ) {
+-      if( this.refs[ i ].rel.toLowerCase() === type ) {
++      if( this.refs[ i ].rel && this.refs[ i ].rel.toLowerCase() === type ) {
+         links.push( this.refs[ i ] )
+       }
+     }
+@@ -108,7 +108,7 @@ class Link {
+     var links = []
+ 
+     for( var i = 0; i < this.refs.length; i++ ) {
+-      if( this.refs[ i ][ attr ].toLowerCase() === value ) {
++      if( this.refs[ i ][ attr ] && this.refs[ i ][ attr ].toLowerCase() === value ) {
+         links.push( this.refs[ i ] )
+       }
+     }
+@@ -142,7 +142,7 @@ class Link {
+     value = value.toLowerCase()
+ 
+     for( var i = 0; i < this.refs.length; i++ ) {
+-      if( this.refs[ i ][ attr ].toLowerCase() === value ) {
++      if( this.refs[ i ][ attr ] && this.refs[ i ][ attr ].toLowerCase() === value ) {
+         return true
+       }
+     }
