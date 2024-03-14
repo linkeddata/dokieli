@@ -37,7 +37,7 @@ function fixBrokenHTML(html) {
   return fixedHtml;
 }
 
-function domToString (node, options = {}) {
+function domToString (node, options) {
   options = options || Config.DOMNormalisation
   var voidElements = options.voidElements || []
   var skipAttributes = options.skipAttributes || []
