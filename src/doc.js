@@ -128,11 +128,10 @@ function dumpNode (node, options, skipAttributes, voidElements, noEsc) {
     // .replace(/\n+$/, '')
 
     nl = nl.replace(/&/g, '&amp;').replace(/&amp;amp;/g, '&amp;')
-    if (node.parentNode && node.parentNode.nodeName.toLowerCase() !== 'style' && (node.parentNode.nodeName.toLowerCase() === 'script' && node.parentNode.getAttribute('type') && !options.skipEscapingDataBlockTypes.includes(node.parentNode.getAttribute('type')))) {
-      nl = nl.replace(/>/g, '&gt;')
-    }
-    if (noEsc.includes(true) && (node.parentNode && node.parentNode.nodeName.toLowerCase() === 'script' && node.parentNode.getAttribute('type') && !options.skipEscapingDataBlockTypes.includes(node.parentNode.getAttribute('type')))) {
-      nl = nl.replace(/</g, '&lt;')
+    if (noEsc.includes(true) && 
+        !(node.parentNode && node.parentNode.nodeName.toLowerCase() === 'style') &&
+        !(node.parentNode && node.parentNode.nodeName.toLowerCase() === 'script' && node.parentNode.getAttribute('type') && options.skipEscapingDataBlockTypes.includes(node.parentNode.getAttribute('type').trim()))) {
+      nl = nl.replace(/</g, '&lt;').replace(/>/g, '&gt;')
     }
     out += nl
   } else {
