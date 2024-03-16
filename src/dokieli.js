@@ -1517,70 +1517,14 @@ DO = {
       //Fugly
       function checkResourceInfo() {
         if (documentURL in DO.C.Resource && 'state' in DO.C.Resource[documentURL]) {
-          processPotentialAction(DO.C.Resource[documentURL]);
+          DO.U.processPotentialAction(DO.C.Resource[documentURL]);
         }
         else {
           getResourceInfo().then(function(resourceInfo){
-            processPotentialAction(resourceInfo);
+            DO.U.processPotentialAction(resourceInfo);
           });
           // window.setTimeout(checkResourceInfo, 100);
         }
-      }
-
-      function processPotentialAction(resourceInfo) {
-        var g = resourceInfo.graph;
-        var triples = g._graph;
-        triples.forEach(function(t){
-          var s = t.subject.nominalValue;
-          var p = t.predicate.nominalValue;
-          var o = t.object.nominalValue;
-
-          if(p == DO.C.Vocab['schemapotentialAction']['@id']) {
-            var action = o;
-            var documentOrigin = (document.location.origin === "null") ? "file://" : document.location.origin;
-            var originPathname = documentOrigin + document.location.pathname;
-// console.log(originPathname)
-// console.log(action.startsWith(originPathname + '#'))
-            if (action.startsWith(originPathname)) {
-              document.addEventListener('click', function(e) {
-                var fragment = action.substr(action.lastIndexOf('#'));
-// console.log(fragment)
-                if (fragment) {
-                  var selector = '[about="' + fragment  + '"][typeof="schema:ViewAction"], [href="' + fragment  + '"][typeof="schema:ViewAction"], [resource="' + fragment  + '"][typeof="schema:ViewAction"]';
-// console.log(selector)
-                  // var element = document.querySelectorAll(selector);
-                  var element = e.target.closest(selector);
-// console.log(element)
-                  if (element) {
-                    e.preventDefault();
-                    e.stopPropagation();
-
-                    var so = g.child(action).schemaobject;
-                    if (typeof so !== 'undefined') {
-                      so = so.iri().toString();
-                      selector = '#' + element.closest('[id]').id;
-
-                      var svgGraph = document.querySelector(selector + ' svg');
-                      if (svgGraph) {
-                        svgGraph.nextSibling.parentNode.removeChild(svgGraph.nextSibling);
-                        svgGraph.parentNode.removeChild(svgGraph);
-                      }
-                      else {
-                        serializeGraph(g, { 'contentType': 'text/turtle' })
-                          .then(function(data){
-                            var options = {};
-                            options['subjectURI'] = so;
-                            options['contentType'] = 'text/turtle';
-                            DO.U.showVisualisationGraph(options.subjectURI, data, selector, options);
-                          });
-                      }
-                    }
-                  }
-                }
-              });
-            }
-          }
-        });
       }
 
       var resourceInfo = checkResourceInfo();
@@ -1604,6 +1548,63 @@ DO = {
         annotationRights[i].parentNode.replaceChild(fragmentFromString('<select>' + getLicenseOptionsHTML() + '</select>'), annotationRights[i]);
       }
     },
+
+    processPotentialAction: function(resourceInfo) {
+      var g = resourceInfo.graph;
+      var triples = g._graph;
+      triples.forEach(function(t){
+        var s = t.subject.nominalValue;
+        var p = t.predicate.nominalValue;
+        var o = t.object.nominalValue;
+
+        if(p == DO.C.Vocab['schemapotentialAction']['@id']) {
+          var action = o;
+          var documentOrigin = (document.location.origin === "null") ? "file://" : document.location.origin;
+          var originPathname = documentOrigin + document.location.pathname;
+// console.log(originPathname)
+// console.log(action.startsWith(originPathname + '#'))
+          if (action.startsWith(originPathname)) {
+            document.addEventListener('click', function(e) {
+              var fragment = action.substr(action.lastIndexOf('#'));
+// console.log(fragment)
+              if (fragment) {
+                var selector = '[about="' + fragment  + '"][typeof="schema:ViewAction"], [href="' + fragment  + '"][typeof="schema:ViewAction"], [resource="' + fragment  + '"][typeof="schema:ViewAction"]';
+// console.log(selector)
+                // var element = document.querySelectorAll(selector);
+                var element = e.target.closest(selector);
+// console.log(element)
+                if (element) {
+                  e.preventDefault();
+                  e.stopPropagation();
+
+                  var so = g.child(action).schemaobject;
+                  if (typeof so !== 'undefined') {
+                    so = so.iri().toString();
+                    selector = '#' + element.closest('[id]').id;
+
+                    var svgGraph = document.querySelector(selector + ' svg');
+                    if (svgGraph) {
+                      svgGraph.nextSibling.parentNode.removeChild(svgGraph.nextSibling);
+                      svgGraph.parentNode.removeChild(svgGraph);
+                    }
+                    else {
+                      serializeGraph(g, { 'contentType': 'text/turtle' })
+                        .then(function(data){
+                          var options = {};
+                          options['subjectURI'] = so;
+                          options['contentType'] = 'text/turtle';
+                          DO.U.showVisualisationGraph(options.subjectURI, data, selector, options);
+                        });
+                    }
+                  }
+                }
+              }
+            });
+          }
+        }
+      });
+    },
+
 
     showDocumentInfo: function() {
       document.documentElement.appendChild(fragmentFromString('<menu id="document-menu" class="do"><button class="show" title="Open menu">' + Icon[".fas.fa-bars"] + '</button><header></header><div></div><footer><dl><dt>About</dt><dd id="about-dokieli"><img alt="" height="16" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAMAAAD04JH5AAAAn1BMVEUAAAAAjwAAkAAAjwAAjwAAjwAAjwAAjwAAkAAAdwAAjwAAjQAAcAAAjwAAjwAAiQAAjwAAjAAAjwAAjwAAjwAAjwAAkAAAjwAAjwAAjwAAjQAAjQAAhQAAhQAAkAAAkAAAkAAAjgAAjwAAiQAAhAAAkAAAjwAAjwAAkAAAjwAAjgAAjgAAjQAAjwAAjQAAjwAAkAAAjwAAjQAAiwAAkABp3EJyAAAANHRSTlMA+fH89enaabMF4iADxJ4SiSa+uXztyoNvQDcsDgvl3pRiXBcH1M+ppJlWUUpFMq6OdjwbMc1+ZgAABAhJREFUeNrt29nSmkAQBeAGZBMUxH3f993/vP+zJZVKVZKCRhibyc3/XVt6SimYPjPSt28Vmt5W/fu2T/9B9HIf7Tp+0RsgDC6DY6OLvzxJj8341DnsakgZUNUmo2XsORYYS6rOeugukhnyragiq56JIs5UEQ/FXKgidRTzompEKOhG1biioDFV44mCAqrGAQWtqRptA8VMqCpR6zpo9iy84VO1opWHPBZVb9QAzyQN/D1YNungJ+DMSYsbOFvSIwGjR3p0wGiQHkMw2qRHC4w76RGBcSA9NmAcSY8QjAdpYiFbTJoYyNYnTWrI1iFNusj2JE1sZBuQJtyE5pImc3Y21cRhZ1NNtsh2Ik127HCsSY8djjVpINuVhPnjVefobee2adXqu2S/6FyivABDEjQ9Lxo1pDlNd5wg24ikRK5ngKGhHhg1DSgZk4RrD6pa9LlRAnUBfWp6xCe+6EOvOT6yrmrigZaCZHPAp6b0gaiBFKvRd0/D1rr1OrvxDqiyoZmmPt9onib0t/VybyEXqdu0Cw16rUNVAfZFlzdjr5KOaoAUK6JsrgWGQapuBlIS4gy70gEmTrk1fuAgU40UxWXv6wvZAC2Dqfx0BfBK1z1H0aJ0WH7Ub4oG8JDlpBCgK1l5tSjHQSoAf0HVfMqxF+yqpzVk2ZGuAGdk8ijPHZlmpOCg0vh5cgE2JtN3qQSoU3lXpbKlLRegrzTpt+U2TNpKY2YiFiA0kS1Q6QccweZ/oinASm2B3RML0AGDNAU4qq3udmIXYVttD3YrFsBR24N1xG5EJpTeaiYWwILS5WRKBfChFsCSehpOwKi/yS0V4AsMWym3TWUFgMqIsRYL8AVOSDlaYgEitbZnDKll+UatchyJBSC1c3lDuQA2VHYAL3KneHpgLCjHSS7AHYyEciwh1g88wDB94rlyAVxwhsR7ygW4gRMTry8XwDdUDkXFgjVdD5wRsRaCAWJwPGI1Baval8Ie3Hqn8AjjhHbZr2DzrInumDTBGlCG8xy8QPY3MNLX4TiRP1q+BWs2pn9ECwu5+qTABc+80h++28UbTkjlTW3wrM6Ufrtu8d5J9Svg1Vch/RTcUYQdUHm+g1z1x2gSGyjGGVN5F7xjoTCjE0ndC3jJMzfCftmiciZ1lNGe3vCGufOWVMLIQHHehi3X1O8JJxR236SalUzninbu937BlwfV/I3k4KdGk2xm+MHuLa8Z0i9TC280qLRrF+8cw9RSjrOg8oIG8j2YgULsbGPomsgR0x9nsOzkOLh+kZr1owZGbfC2JJl78fIV0Wei/gxZDl85XWVtt++cxhuSEQ6bdfzLjlvM86PbaD4vQUjSglV8385My7CdXtO9+ZSyrLcf7nBN376V8gMpRztyq6RXYQAAAABJRU5ErkJggg==" width="16" /><a href="https://dokie.li/" target="_blank">dokieli</a> is an ' + Icon[".fab.fa-osi"] + ' <a href="https://github.com/linkeddata/dokieli" target="_blank">open source</a> project. There is ' + Icon[".fas.fa-flask"] + ' <a href="https://dokie.li/docs" target="_blank">documentation</a> and public ' + Icon[".fas.fa-comments"] + ' <a href="https://gitter.im/linkeddata/dokieli" target="_blank">chat</a>. Made with fun.</dd></dl></footer></menu>'));
