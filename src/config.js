@@ -11,6 +11,7 @@ export default {
     var contentNode = DO.U?.getContentNode(document);
     if (contentNode) {
       DO.U.setDocumentURL(url);
+      DO.U.setDocumentString();
       DO.U.setPolyfill();
       DO.U.initUser();
       DO.U.initCurrentStylesheet();
@@ -30,6 +31,7 @@ export default {
     }
   },
   DocumentURL: '',
+  DocumentString: '',
   Resource: {},
   Inbox: {},
   Notification: {},

@@ -1415,6 +1415,10 @@ DO = {
       DO.C.DocumentURL = url || stripFragmentFromString(document.location.href);
     },
 
+    setDocumentString: function(node) {
+      DO.C.DocumentString = getDocument(node);
+    },
+
     setDocumentMode: function(mode) {
       var style = DO.U.urlParam('style');
 
