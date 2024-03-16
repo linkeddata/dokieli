@@ -1495,15 +1495,7 @@ DO = {
           window.history.replaceState({}, null, url.substr(0, url.lastIndexOf('?')));
         }
 
-        if (mode !== 'author') {
-          var content = selectArticleNode(document);
-          content = fragmentFromString(domToString(content)).textContent.trim();
-          if (content.length == 0) {
-            mode = 'author';
-          }
-        }
-
-        switch(mode || '') {
+        switch(mode) {
           case 'social': default:
             DO.U.Editor.enableEditor('social');
             break;
