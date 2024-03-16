@@ -2021,7 +2021,6 @@ DO = {
       var requirements = [];
       var skos = [];
 
-      var data = getDocument();
       var subjectURI = window.location.origin + window.location.pathname;
       var options = {'contentType': 'text/html', 'subjectURI': subjectURI };
 
@@ -2090,11 +2089,8 @@ DO = {
         }
       }
 
-      data = authors + editors + contributors + citations + requirements + concepts + statements;
+      var data = authors + editors + contributors + citations + requirements + concepts + statements;
 
-      // return authors + editors + contributors + citations + requirements + statements;
-    // }).then(
-    // function(data){
           // <tr><th>Lines</th><td>' + count.lines + '</td></tr>\n\
           // <tr><th>A4 Pages</th><td>' + count.pages.A4 + '</td></tr>\n\
           // <tr><th>US Letter</th><td>' + count.pages.USLetter + '</td></tr>\n\
