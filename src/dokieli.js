@@ -7,7 +7,7 @@
  */
 
 import { getResource, setAcceptRDFTypes, postResource, putResource, currentLocation, patchResourceWithAcceptPatch, putResourceWithAcceptPut, copyResource, deleteResource } from './fetcher.js'
-import { getDocument, getDocumentContentNode, xmlHtmlEscape, showActionMessage, selectArticleNode, domToString, buttonClose, buttonRemoveAside, showRobustLinksDecoration, getResourceInfo, removeNodesWithIds, getResourceInfoSKOS, removeReferences, buildReferences, removeSelectorFromNode, insertDocumentLevelHTML, getResourceInfoSpecRequirements, getTestDescriptionReviewStatusHTML, createFeedXML, getButtonDisabledHTML, showTimeMap, createMutableResource, createImmutableResource, updateMutableResource, createHTML, getResourceImageHTML, setDocumentRelation, setDate, getClosestSectionNode, getAgentHTML, setEditSelections, getNodeLanguage, createActivityHTML, createLicenseHTML, createLanguageHTML, getAnnotationInboxLocationHTML, getAnnotationLocationHTML, getResourceTypeOptionsHTML, getPublicationStatusOptionsHTML, getLanguageOptionsHTML, getLicenseOptionsHTML, getCitationOptionsHTML, getDocumentNodeFromString } from './doc.js'
+import { getDocument, getDocumentContentNode, xmlHtmlEscape, showActionMessage, selectArticleNode, buttonClose, buttonRemoveAside, showRobustLinksDecoration, getResourceInfo, removeNodesWithIds, getResourceInfoSKOS, removeReferences, buildReferences, removeSelectorFromNode, insertDocumentLevelHTML, getResourceInfoSpecRequirements, getTestDescriptionReviewStatusHTML, createFeedXML, getButtonDisabledHTML, showTimeMap, createMutableResource, createImmutableResource, updateMutableResource, createHTML, getResourceImageHTML, setDocumentRelation, setDate, getClosestSectionNode, getAgentHTML, setEditSelections, getNodeLanguage, createActivityHTML, createLicenseHTML, createLanguageHTML, getAnnotationInboxLocationHTML, getAnnotationLocationHTML, getResourceTypeOptionsHTML, getPublicationStatusOptionsHTML, getLanguageOptionsHTML, getLicenseOptionsHTML, getCitationOptionsHTML, getDocumentNodeFromString, getNodeWithoutClasses, getDoctype } from './doc.js'
 import { getProxyableIRI, getPathURL, stripFragmentFromString, getFragmentOrLastPath, getFragmentFromString, getURLLastPath, getLastPathSegment, forceTrailingSlash, getBaseURL, getParentURLPath, encodeString, getAbsoluteIRI } from './uri.js'
 import { getResourceGraph, traverseRDFList, getLinkRelation, getAgentName, getGraphImage, getGraphFromData, isActorType, isActorProperty, serializeGraph, getGraphLabel, getUserContacts, getAgentOutbox, getAgentStorage, getAgentInbox, getLinkRelationFromHead, sortGraphTriples } from './graph.js'
 import { notifyInbox, sendNotifications, postActivity } from './inbox.js'
@@ -2104,19 +2104,22 @@ DO = {
       node.insertAdjacentHTML('beforeend', html);
     },
 
-    contentCount: function contentCount (c) {
-      var content = fragmentFromString(domToString(c)).textContent.trim();
+    contentCount: function contentCount (node) {
+      node = node || selectArticleNode(document);
+      node = getNodeWithoutClasses(node, 'do');
+      var doctype = (node instanceof Element && node.tagName.toLowerCase() === 'html') ? getDoctype() : '';
+      var content = node.textContent.trim();
       var contentCount = { readingTime:1, words:0, chars:0, lines:0, pages:{A4:1, USLetter:1}, bytes:0 };
       if (content.length > 0) {
-        var lineHeight = c.ownerDocument.defaultView.getComputedStyle(c, null)["line-height"];
-        var linesCount = Math.ceil(c.clientHeight / parseInt(lineHeight));
+        var lineHeight = node.ownerDocument.defaultView.getComputedStyle(node, null)["line-height"];
+        var linesCount = Math.ceil(node.clientHeight / parseInt(lineHeight));
         contentCount = {
           readingTime: Math.ceil(content.split(' ').length / 200),
           words: content.match(/\S+/g).length,
           chars: content.length,
           lines: linesCount,
           pages: { A4: Math.ceil(linesCount / 47), USLetter: Math.ceil(linesCount / 63) },
-          bytes: encodeURI(document.documentElement.outerHTML).split(/%..|./).length - 1
+          bytes: encodeURI(doctype + node.outerHTML).split(/%..|./).length - 1
         };
       }
       return contentCount;
