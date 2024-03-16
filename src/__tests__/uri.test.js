@@ -3,9 +3,11 @@ import { encodeString, decodeString, getAbsoluteIRI, stripFragmentFromString, ge
 describe("uri", () => {
   const ENCODED_URL = "https%3A%2F%2Fexample.com";
   const DECODED_URL = "https://example.com";
-  const URL_WITH_FRAGMENT = "https://example.com/profile/card#me";
-  const URL_WITHOUT_FRAGMENT = "https://example.com/profile/card";
-  const BASE_URL = "https://example.com/profile/";
+  const URL_WITHOUT_QUERY_WITHOUT_FRAGMENT = "https://example.com/profile/card";
+  const URL_WITHOUT_QUERY_WITH_FRAGMENT = "https://example.com/profile/card#me";
+  const URL_WITH_QUERY_WITHOUT_FRAGMENT = "https://example.com/profile/card?foo=bar";
+  const URL_WITH_QUERY_WITH_FRAGMENT = "https://example.com/profile/card?foo=bar#me";
+  const URL_ENDING_WITH_SLASH = "https://example.com/profile/";
 
   describe("encodeString", () => {
     it("returns an encoded URL", () => {
@@ -38,33 +40,49 @@ describe("uri", () => {
 
   describe("stripFragmentFromString", () => {
     it("returns a string without fragment", () => {
-      const result = stripFragmentFromString(URL_WITH_FRAGMENT);
-      expect(result).toEqual(URL_WITHOUT_FRAGMENT);
+      const result = stripFragmentFromString(URL_WITHOUT_QUERY_WITH_FRAGMENT);
+      expect(result).toEqual(URL_WITHOUT_QUERY_WITHOUT_FRAGMENT);
     });
   });
   
   describe("getFragmentFromString", () => {
     it("returns fragment from a given string", () => {
-      const result = getFragmentFromString(URL_WITH_FRAGMENT);
+      const result = getFragmentFromString(URL_WITHOUT_QUERY_WITH_FRAGMENT);
       expect(result).toEqual("me");
     });
     it("returns fragment from a given string", () => {
-      const result = getFragmentFromString(URL_WITHOUT_FRAGMENT);
+      const result = getFragmentFromString(URL_WITHOUT_QUERY_WITHOUT_FRAGMENT);
       expect(result).toEqual("");
     });
   });
 
   describe("getBaseUrl", () => {
     it("returns the base URL for a given URL", () => {
-      const result = getBaseURL(URL_WITH_FRAGMENT);
-      expect(result).toEqual(BASE_URL);
+      const result = getBaseURL(URL_WITHOUT_QUERY_WITH_FRAGMENT);
+      expect(result).toEqual(URL_ENDING_WITH_SLASH);
     });
   });
 
   describe("getPathUrl", () => {
-    it("returns path URL for a given URL", () => {
-      const result = getPathURL(URL_WITH_FRAGMENT);
-      expect(result).toEqual(URL_WITHOUT_FRAGMENT);
+    it("returns input if not string", () => {
+      const result = getPathURL({});
+      expect(result).toEqual({});
+    });
+    it("returns path URL for URL without query and without fragment", () => {
+      const result = getPathURL(URL_WITHOUT_QUERY_WITHOUT_FRAGMENT);
+      expect(result).toEqual(URL_WITHOUT_QUERY_WITHOUT_FRAGMENT);
+    });
+    it("returns path URL for URL without query and with fragment", () => {
+      const result = getPathURL(URL_WITHOUT_QUERY_WITH_FRAGMENT);
+      expect(result).toEqual(URL_WITHOUT_QUERY_WITHOUT_FRAGMENT);
+    });
+    it("returns path URL for URL with query and without fragment", () => {
+      const result = getPathURL(URL_WITH_QUERY_WITHOUT_FRAGMENT);
+      expect(result).toEqual(URL_WITHOUT_QUERY_WITHOUT_FRAGMENT);
+    });
+    it("returns path URL for URL with query and with fragment", () => {
+      const result = getPathURL(URL_WITH_QUERY_WITH_FRAGMENT);
+      expect(result).toEqual(URL_WITHOUT_QUERY_WITHOUT_FRAGMENT);
     });
   });
 });

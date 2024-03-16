@@ -87,14 +87,8 @@ function getBaseURL(url) {
 
 function getPathURL(url) {
   if (typeof url === 'string') {
-    var i = url.indexOf('?');
-    if (i > -1) {
-      url = url.substr(0, i);
-    }
-    i = url.indexOf('#');
-    if (i > -1) {
-      url = url.substr(0, i);
-    }
+    const u = new URL(url);
+    return u.origin + u.pathname;
   }
 
   return url;
