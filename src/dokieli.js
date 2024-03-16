@@ -157,7 +157,7 @@ DO = {
     },
 
     showInboxNotifications: function() {
-      getLinkRelation(DO.C.Vocab['ldpinbox']['@id'], null, getDocument()).then(
+      getLinkRelation(DO.C.Vocab['ldpinbox']['@id'], null, DO.C.DocumentString).then(
         function(i) {
           i.forEach(function(inboxURL) {
             if (!DO.C.Inbox[inboxURL]) {
@@ -1510,7 +1510,6 @@ DO = {
       }
     },
 
-    //TODO: Refactor
     initDocumentActions: function() {
       buttonClose();
       buttonRemoveAside();
@@ -1524,14 +1523,14 @@ DO = {
           DO.U.processPotentialAction(DO.C.Resource[documentURL]);
         }
         else {
-          getResourceInfo().then(function(resourceInfo){
+          getResourceInfo(DO.C.DocumentString).then(function(resourceInfo){
             DO.U.processPotentialAction(resourceInfo);
           });
           // window.setTimeout(checkResourceInfo, 100);
         }
       }
 
-      var resourceInfo = checkResourceInfo();
+      checkResourceInfo();
 
       DO.U.processActivateAction();
 
