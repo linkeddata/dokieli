@@ -37,6 +37,20 @@ function fixBrokenHTML(html) {
   return fixedHtml;
 }
 
+function getNodeWithoutClasses (node, classNames) {
+  classNames = Array.isArray(classNames) ? classNames : [classNames];
+  const rootNode = node.nodeType === Node.DOCUMENT_NODE ? node.documentElement : node;
+  const clonedRootNode = rootNode.cloneNode(true);
+  const selector = classNames.map(className => `.${className}`).join(',');
+  const descendantsWithClass = clonedRootNode.querySelectorAll(selector);
+
+  descendantsWithClass.forEach(descendant => {
+    descendant.parentNode.removeChild(descendant);
+  });
+
+  return clonedRootNode;
+}
+
 function domToString (node, options) {
   options = options || Config.DOMNormalisation
   var voidElements = options.voidElements || []
@@ -2284,6 +2298,7 @@ function showResourceAudienceAgentOccupations() {
 export {
   xmlHtmlEscape,
   fixBrokenHTML,
+  getNodeWithoutClasses,
   domToString,
   dumpNode,
   getDoctype,
