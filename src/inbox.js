@@ -72,7 +72,7 @@ function sendNotifications(tos, note, iri, shareResource) {
                       .parentNode
                       .querySelector('.progress[data-to="' + to + '"]')
                       .innerHTML = '<a target="_blank" href="' +
-                      location + '">' + + Icon[".fas.fa-check-circle.fa-fw"] + '</a>';
+                      location + '">' + Icon[".fas.fa-check-circle.fa-fw"] + '</a>';
                   }
                 })
                 .catch(error => {
