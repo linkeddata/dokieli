@@ -129,7 +129,7 @@ function dumpNode (node, options, skipAttributes, voidElements, noEsc) {
         }
 
         noEsc.pop()
-        out += (ename === 'body') ? '</' + ename + '>\n' : (ename === 'html') ? '</' + ename + '>\n' : '</' + ename + '>'
+        out += (ename === 'body') ? '  </' + ename + '>\n' : (ename === 'html') ? '</' + ename + '>\n' : '</' + ename + '>'
       }
     }
   } else if (node.nodeType === 8) {
@@ -139,7 +139,7 @@ function dumpNode (node, options, skipAttributes, voidElements, noEsc) {
   } else if (node.nodeType === 3 || node.nodeType === 4) {
     let nl = node.nodeValue
     // XXX: Remove new lines which were added after DOM ready
-    .replace(/\n+$/, '')
+    // .replace(/\n+$/, '')
 
     nl = nl.replace(/&/g, '&amp;').replace(/&amp;amp;/g, '&amp;')
     if (noEsc.includes(true) && 
