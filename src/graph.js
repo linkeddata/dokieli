@@ -1070,6 +1070,9 @@ function getGraphTitle(s) {
 function getGraphDescription(s) {
   return s.schemadescription || s.dctermsdescription || s.dcelementsdescription || s.schemaname || s.asname || undefined;
 }
+function getGraphTypes(s) {
+  return s.rdftype._array;
+}
 
 function sortGraphTriples(g, options) {
   options = options || {};
@@ -1137,6 +1140,7 @@ export {
   getGraphLabel,
   getGraphTitle,
   getGraphDescription,
+  getGraphTypes,
   sortGraphTriples,
   getGraphAudience
 }
