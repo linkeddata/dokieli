@@ -1529,6 +1529,15 @@ DO = {
 
       var resourceInfo = checkResourceInfo();
 
+      DO.U.processActivateAction();
+
+      var annotationRights = document.querySelectorAll('[about="#annotation-rights"][typeof="schema:ChooseAction"], [href="#annotation-rights"][typeof="schema:ChooseAction"], [resource="#annotation-rights"][typeof="schema:ChooseAction"]');
+      for (var i = 0; i < annotationRights.length; i++){
+        annotationRights[i].parentNode.replaceChild(fragmentFromString('<select>' + getLicenseOptionsHTML() + '</select>'), annotationRights[i]);
+      }
+    },
+
+    processActivateAction: function() {
       document.addEventListener('click', function(e) {
         if (e.target.closest('[about="#document-menu"][typeof="schema:ActivateAction"], [href="#document-menu"][typeof="schema:ActivateAction"], [resource="#document-menu"][typeof="schema:ActivateAction"]')) {
           e.preventDefault();
@@ -1542,13 +1551,8 @@ DO = {
           }
         }
       });
-
-      var annotationRights = document.querySelectorAll('[about="#annotation-rights"][typeof="schema:ChooseAction"], [href="#annotation-rights"][typeof="schema:ChooseAction"], [resource="#annotation-rights"][typeof="schema:ChooseAction"]');
-      for (var i = 0; i < annotationRights.length; i++){
-        annotationRights[i].parentNode.replaceChild(fragmentFromString('<select>' + getLicenseOptionsHTML() + '</select>'), annotationRights[i]);
-      }
     },
-
+    
     processPotentialAction: function(resourceInfo) {
       var g = resourceInfo.graph;
       var triples = g._graph;
