@@ -1,4 +1,4 @@
-import { encodeString, decodeString, getAbsoluteIRI, stripFragmentFromString, getFragmentFromString, getBaseURL, getPathURL } from "../uri";
+import { encodeString, decodeString, getAbsoluteIRI, stripFragmentFromString, getFragmentFromString, getBaseURL, getPathURL, forceTrailingSlash } from "../uri";
 
 describe("uri", () => {
   const ENCODED_URL = "https%3A%2F%2Fexample.com";
@@ -8,6 +8,7 @@ describe("uri", () => {
   const URL_WITH_QUERY_WITHOUT_FRAGMENT = "https://example.com/profile/card?foo=bar";
   const URL_WITH_QUERY_WITH_FRAGMENT = "https://example.com/profile/card?foo=bar#me";
   const URL_ENDING_WITH_SLASH = "https://example.com/profile/";
+  const URL_ENDING_WITHOUT_SLASH = "https://example.com/profile";
 
   describe("encodeString", () => {
     it("returns an encoded URL", () => {
@@ -83,6 +84,17 @@ describe("uri", () => {
     it("returns path URL for URL with query and with fragment", () => {
       const result = getPathURL(URL_WITH_QUERY_WITH_FRAGMENT);
       expect(result).toEqual(URL_WITHOUT_QUERY_WITHOUT_FRAGMENT);
+    });
+  });
+
+  describe("forceTrailingSlash", () => {
+    it("returns string without slash ending with slash", () => {
+      const result = forceTrailingSlash( URL_ENDING_WITHOUT_SLASH);
+      expect(result).toEqual(URL_ENDING_WITH_SLASH);
+    });
+    it("returns string with slash ending with slash", () => {
+      const result = forceTrailingSlash( URL_ENDING_WITH_SLASH);
+      expect(result).toEqual(URL_ENDING_WITH_SLASH);
     });
   });
 });
