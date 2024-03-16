@@ -2,8 +2,8 @@
 
 import { getDocument, createActivityHTML, createHTML } from './doc.js';
 import { Icon } from './template.js'
-import { getAbsoluteIRI, getProxyableIRI } from './uri.js';
-import { getMatchFromData, getLinkRelation, serializeDataToPreferredContentType } from './graph.js';
+import { getAbsoluteIRI, getPathURL, getProxyableIRI } from './uri.js';
+import { getMatchFromData, getLinkRelation, serializeDataToPreferredContentType, getGraphLicense, getGraphTypes } from './graph.js';
 import { getAcceptPostPreference, postResource } from './fetcher.js';
 import Config from './config.js';
 
@@ -16,36 +16,28 @@ function sendNotifications(tos, note, iri, shareResource) {
       'license': 'https://creativecommons.org/licenses/by/4.0/'
     };
 
-    let data = getDocument();
+    var rootIRI = Config.Resource[iri] || Config.Resource[getPathURL(iri)];
 
-    let options = {
-      'contentType': 'text/html',
-      'subjectURI': iri
-    };
-    var spo = {
-      'subject': iri,
-      'predicate': Config.Vocab['rdftype']['@id']
-    };
+    if (rootIRI) {
+      if (Config.Resource[iri].rdftype.length > 0) {
+        notificationData['objectTypes'] = Config.Resource[iri].rdftype;
+      }
+      if (Config.Resource[iri].license) {
+        notificationData['objectLicense'] = Config.Resource[iri].license;
+      }
+    }
+    else {
+      var g = Config.Resource[iri].graph.child(iri);
+      var types = getGraphTypes(g);
+      if (types.length > 0) {
+        notificationData['objectTypes'] = types;
+      }
+      var license = getGraphLicense(g);
+      if (license) {
+        notificationData['objectLicense'] = license;
+      }
+    }
 
-    getMatchFromData(data, spo, options)
-      .then(supplementalData => {
-        if (typeof supplementalData !== 'undefined' && supplementalData._array.length > 0) {
-          notificationData['objectTypes'] = supplementalData._array;
-        }
-
-        let spo = {
-          'subject': iri,
-          'predicate': Config.Vocab['schemalicense']['@id']
-        };
-
-        return getMatchFromData(data, spo, options)
-          .then(data => {
-            if (typeof data !== 'undefined' && data.length > 0) {
-              notificationData['objectLicense'] = data;
-            }
-          });
-      })
-      .then(() => {
         tos.forEach(to => {
           notificationData['to'] = to;
 
@@ -84,7 +76,6 @@ function sendNotifications(tos, note, iri, shareResource) {
                 });
             });
         });
-      });
   });
 }
 
