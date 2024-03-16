@@ -1,14 +1,4 @@
 import { uniqueArray, getDateTimeISO, removeChildren, copyTextToClipboard, escapeRegExp, generateUUID, generateAttributeId, hashCode, fragmentFromString, getHash } from "../util";
-import { TextEncoder } from "util";
-import { webcrypto } from "crypto";
-
-global.TextEncoder = TextEncoder;
-
-Object.defineProperty(global.self, "crypto", {
-  value: {
-    subtle: webcrypto.subtle,
-  },
-});
 
 describe("util", () => {
   describe("uniqueArray", () => {
