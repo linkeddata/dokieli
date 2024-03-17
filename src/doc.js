@@ -29,6 +29,10 @@ function escapeCharacters(string) {
   });
 }
 
+function cleanEscapeCharacters(string) {
+  return string.replace(/&amp;(lt|gt|apos|quot|amp);/g, "&$1;")
+}
+
 function fixBrokenHTML(html) {
   var pattern = new RegExp('<(' + Config.DOMNormalisation.voidElements.join('|') + ')([^>]*)></\\1>|<(' + Config.DOMNormalisation.voidElements.join('|') + ')([^>]*)/>', 'g');
 
@@ -2297,6 +2301,7 @@ function showResourceAudienceAgentOccupations() {
 
 export {
   escapeCharacters,
+  cleanEscapeCharacters,
   fixBrokenHTML,
   getNodeWithoutClasses,
   domToString,
