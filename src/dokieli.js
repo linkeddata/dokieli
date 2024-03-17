@@ -1138,8 +1138,10 @@ DO = {
 
         var objectValue = t.object.nominalValue;
         if (t.object.interfaceName == 'Literal') {
-          //XXX: Revisit
-          objectValue = escapeCharacters(objectValue);
+          //TODO: Revisit
+          // if(t.object.datatype.nominalValue == 'http://www.w3.org/rdf/1999/02/22-rdf-syntax-ns#HTML') {
+          // }
+          // objectValue = escapeCharacters(objectValue);
           objectValue = DOMPurify.sanitize(objectValue);
         }
 

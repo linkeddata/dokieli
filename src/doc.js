@@ -145,12 +145,22 @@ function dumpNode (node, options, skipAttributes, voidElements, noEsc) {
     // XXX: Remove new lines which were added after DOM ready
     // .replace(/\n+$/, '')
 
-    nl = nl.replace(/&/g, '&amp;').replace(/&amp;amp;/g, '&amp;')
-    if (noEsc.includes(true) && 
-        !(node.parentNode && node.parentNode.nodeName.toLowerCase() === 'style') &&
+    //FIXME: This section needs a lot of testing. If/when domToString is replaced with XML serializer and DOM sanitizer, this section can be removed.
+
+    nl = nl.replace(/&/g, '&amp;')
+    if (noEsc.includes(true)) {
+      //Skip style blocks. But do we really want this?
+      if (!(node.parentNode && node.parentNode.nodeName.toLowerCase() === 'style') &&
+        //Skip data blocks
         !(node.parentNode && node.parentNode.nodeName.toLowerCase() === 'script' && node.parentNode.getAttribute('type') && options.skipEscapingDataBlockTypes.includes(node.parentNode.getAttribute('type').trim()))) {
+          nl = nl.replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      }
+    }
+    else { //node is not a child text node of style, script, pre, code, or samp, e.g. catches `<p> < > </p>`.
       nl = nl.replace(/</g, '&lt;').replace(/>/g, '&gt;')
     }
+    //Clean double escaped entities, e.g., &amp;amp; -> &amp;, &amp;lt; -> &lt;
+    nl = cleanEscapeCharacters(nl)
     out += nl
   } else {
     console.log('Warning; Cannot handle serialising nodes of type: ' + node.nodeType)
