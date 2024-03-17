@@ -10,7 +10,7 @@ import { getResourceGraph, sortGraphTriples, getGraphAuthor, getGraphLabel, getG
 import { createRDFaHTML, Icon } from './template.js'
 import LinkHeader from "http-link-header";
 
-function xmlHtmlEscape(string) {
+function escapeCharacters(string) {
   return String(string).replace(/[&<>"']/g, function (match) {
     switch (match) {
       case '&':
@@ -259,7 +259,7 @@ function createFeedXML(feed, options) {
     });
 // console.log(description)
 
-    description = xmlHtmlEscape(fixBrokenHTML(description));
+    description = escapeCharacters(fixBrokenHTML(description));
 
     var published = '';
     var updated = '';
@@ -2296,7 +2296,7 @@ function showResourceAudienceAgentOccupations() {
 }
 
 export {
-  xmlHtmlEscape,
+  escapeCharacters,
   fixBrokenHTML,
   getNodeWithoutClasses,
   domToString,

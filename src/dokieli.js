@@ -7,7 +7,7 @@
  */
 
 import { getResource, setAcceptRDFTypes, postResource, putResource, currentLocation, patchResourceWithAcceptPatch, putResourceWithAcceptPut, copyResource, deleteResource } from './fetcher.js'
-import { getDocument, getDocumentContentNode, xmlHtmlEscape, showActionMessage, selectArticleNode, buttonClose, buttonRemoveAside, showRobustLinksDecoration, getResourceInfo, removeNodesWithIds, getResourceInfoSKOS, removeReferences, buildReferences, removeSelectorFromNode, insertDocumentLevelHTML, getResourceInfoSpecRequirements, getTestDescriptionReviewStatusHTML, createFeedXML, getButtonDisabledHTML, showTimeMap, createMutableResource, createImmutableResource, updateMutableResource, createHTML, getResourceImageHTML, setDocumentRelation, setDate, getClosestSectionNode, getAgentHTML, setEditSelections, getNodeLanguage, createActivityHTML, createLicenseHTML, createLanguageHTML, getAnnotationInboxLocationHTML, getAnnotationLocationHTML, getResourceTypeOptionsHTML, getPublicationStatusOptionsHTML, getLanguageOptionsHTML, getLicenseOptionsHTML, getCitationOptionsHTML, getDocumentNodeFromString, getNodeWithoutClasses, getDoctype } from './doc.js'
+import { getDocument, getDocumentContentNode, escapeCharacters, showActionMessage, selectArticleNode, buttonClose, buttonRemoveAside, showRobustLinksDecoration, getResourceInfo, removeNodesWithIds, getResourceInfoSKOS, removeReferences, buildReferences, removeSelectorFromNode, insertDocumentLevelHTML, getResourceInfoSpecRequirements, getTestDescriptionReviewStatusHTML, createFeedXML, getButtonDisabledHTML, showTimeMap, createMutableResource, createImmutableResource, updateMutableResource, createHTML, getResourceImageHTML, setDocumentRelation, setDate, getClosestSectionNode, getAgentHTML, setEditSelections, getNodeLanguage, createActivityHTML, createLicenseHTML, createLanguageHTML, getAnnotationInboxLocationHTML, getAnnotationLocationHTML, getResourceTypeOptionsHTML, getPublicationStatusOptionsHTML, getLanguageOptionsHTML, getLicenseOptionsHTML, getCitationOptionsHTML, getDocumentNodeFromString, getNodeWithoutClasses, getDoctype } from './doc.js'
 import { getProxyableIRI, getPathURL, stripFragmentFromString, getFragmentOrLastPath, getFragmentFromString, getURLLastPath, getLastPathSegment, forceTrailingSlash, getBaseURL, getParentURLPath, encodeString, getAbsoluteIRI } from './uri.js'
 import { getResourceGraph, traverseRDFList, getLinkRelation, getAgentName, getGraphImage, getGraphFromData, isActorType, isActorProperty, serializeGraph, getGraphLabel, getUserContacts, getAgentOutbox, getAgentStorage, getAgentInbox, getLinkRelationFromHead, sortGraphTriples } from './graph.js'
 import { notifyInbox, sendNotifications, postActivity } from './inbox.js'
@@ -1139,7 +1139,7 @@ DO = {
         var objectValue = t.object.nominalValue;
         if (t.object.interfaceName == 'Literal') {
           //XXX: Revisit
-          objectValue = xmlHtmlEscape(objectValue);
+          objectValue = escapeCharacters(objectValue);
           objectValue = DOMPurify.sanitize(objectValue);
         }
 
@@ -2003,10 +2003,6 @@ DO = {
       // var edih = document.querySelector('button.embed-data-meta');
       // edih.removeEventListener('click', eventEmbedData);
       // edih.addEventListener('click', eventEmbedData);
-    },
-
-    htmlEntities: function(s) {
-      return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     },
 
     showDocumentMetadata: function(node) {
@@ -7837,7 +7833,7 @@ WHERE {\n\
                 if ('tagging' in n.body.purpose && 'text' in n.body.purpose.tagging) {
                   var tagsArray = [];
                   n.body.purpose.tagging.text.split(',').forEach(function(i){
-                    var tag = DO.U.htmlEntities(i.trim());
+                    var tag = escapeCharacters(i.trim());
                     if(tag.length > 0) {
                       tagsArray.push(tag);
                     }
@@ -9505,13 +9501,13 @@ WHERE {\n\
 // console.log('pS ' + prefixStart);
               var prefix = selectedParentElement.textContent.substr(prefixStart, start - prefixStart);
 // console.log('-' + prefix + '-');
-              prefix = DO.U.htmlEntities(prefix);
+              prefix = escapeCharacters(prefix);
 
               var suffixEnd = Math.min(selectedParentElement.textContent.length, end + DO.C.ContextLength);
 // console.log('sE ' + suffixEnd);
               var suffix = selectedParentElement.textContent.substr(end, suffixEnd - end);
 // console.log('-' + suffix + '-');
-              suffix = DO.U.htmlEntities(suffix);
+              suffix = escapeCharacters(suffix);
 
               //Annotating an annotation
               //FIXME: A bit hacky - should use RDF
@@ -9672,7 +9668,7 @@ WHERE {\n\
                   case 'sparkline':
                     var figureIRI = generateAttributeId(null, opts.selectionDataSet);
                     ref = '<span rel="schema:hasPart" resource="#figure-' + figureIRI + '">\n\
-                    <a href="' + opts.select + '" property="schema:name" rel="prov:wasDerivedFrom" resource="' + opts.select + '" typeof="qb:DataSet">' + opts.selectionDataSet + '</a> [' + DO.U.htmlEntities(DO.C.RefAreas[opts.selectionRefArea]) + ']\n\
+                    <a href="' + opts.select + '" property="schema:name" rel="prov:wasDerivedFrom" resource="' + opts.select + '" typeof="qb:DataSet">' + opts.selectionDataSet + '</a> [' + escapeCharacters(DO.C.RefAreas[opts.selectionRefArea]) + ']\n\
                     <span class="sparkline" rel="schema:image" resource="#' + figureIRI + '">' + opts.sparkline + '</span></span>';
                     break;
 
