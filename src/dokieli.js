@@ -5706,6 +5706,10 @@ console.log(response)
                 //   console.log(DOMPurify.removed)
                 // }
 
+                DO.U.setDocumentURL(iri);
+                var documentURL = DO.C.DocumentURL;
+                DO.C['Resource'][documentURL] = Config['Resource'][documentURL] || {};
+
                 var spawnOptions = {};
 
                 var checkMarkdownInMediaTypes = ['text/markdown', 'text/plain'];
@@ -5716,8 +5720,10 @@ console.log(response)
                   options.contentType = 'text/html';
                 }
 
-                DO.U.setDocumentURL(iri);
-                getResourceInfo(data, options);
+                if (DO.C.MediaTypes.RDF.includes(options['contentType'])) {
+                  getResourceInfo(data, options);
+                }
+
                 DO.U.buildResourceView(data, options)
                   .then(o => {
 // console.log(o)
@@ -5765,6 +5771,10 @@ console.log(response)
     },
 
     buildResourceView: function(data, options) {
+      if (!DO.C.MediaTypes.RDF.includes(options['contentType'])) {
+        return Promise.resolve({"data": data, "options": options});
+      }
+
       return getGraphFromData(data, options).then(
         function(i){
           var s = SimpleRDF(DO.C.Vocab, options['subjectURI'], i, ld.store).child(options['subjectURI']);
