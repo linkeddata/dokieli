@@ -5927,17 +5927,27 @@ console.log(response)
     spawnDokieli: function(documentNode, data, contentType, iri, options){
       options =  options || {};
 
-      if (DO.C.MediaTypes.RDF.indexOf(contentType) > -1) {
+      // if (DO.C.MediaTypes.RDF.includes(contentType)) {
         var tmpl = document.implementation.createHTMLDocument('template');
 // console.log(tmpl);
 
         switch(contentType){
           case 'text/html': case 'application/xhtml+xml':
+            //TODO: Remoe scripts, keep styles?
+            //tmpl.documentElement.appendChild(fragmentFromString(DOMPurify.sanitize(data)));
             tmpl.documentElement.innerHTML = data;
             break;
 
           default:
-            tmpl.documentElement.innerHTML = '<pre>' + data.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</pre>';
+            data = escapeCharacters(data)
+            // console.log(data)
+            var iframe = document.createElement('iframe');
+            // <pre type=&quot;' + contentType + '&quot; -- nice but `type` is undefined attribute for `pre`.at the moment. Create issue in WHATWG for fun/profit?
+            iframe.srcdoc = '<pre>' + data + '</pre>';
+            iframe.width = '1280'; iframe.height = '720';
+            var dl = fragmentFromString('<dl><dt><a href="' + iri + '" target="_blank">' + iri + '</a></dt><dd></dd></dl>');
+            dl.querySelector('dd').appendChild(iframe);
+            tmpl.documentElement.appendChild(dl);
             break;
         }
 
@@ -6024,10 +6034,10 @@ console.log(response)
         }
 
         return tmpl.documentElement.cloneNode(true);
-      }
-      else {
-console.log('//TODO: Handle server returning wrong Response/Content-Type for the Request/Accept');
-      }
+//       }
+//       else {
+// console.log('//TODO: Handle server returning wrong or unknown Response/Content-Type for the Request/Accept');
+//       }
     },
 
 
