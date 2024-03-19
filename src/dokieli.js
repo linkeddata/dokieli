@@ -1483,6 +1483,19 @@ DO = {
 
           // DO.U.showGraphResources([docURI], '#graph-view', options);
 // console.log(options);
+
+          var anchors = urls.map(url => `<a href="${url}">${url}</a>`);
+
+          message = 'Loading graph(s) ' + anchors.join(', ');
+          message = {
+            'content': message,
+            'type': 'info',
+            'timer': 3000
+          }
+          DO.U.addMessageToLog(message);
+          message.content = '<span class="progress">' + Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + ' ' + message.content + '</span>';
+          showActionMessage(document.documentElement, message);
+
           DO.U.showGraph(urls, '#graph-view', options);
 
           window.history.replaceState({}, null, document.location.href.substr(0, document.location.href.lastIndexOf('?graph')));
