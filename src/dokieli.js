@@ -652,13 +652,7 @@ DO = {
       }
 
       function addLegend(go) {
-        var legendInfo = {};
-        var keys = Object.keys(legendCategories);
-        keys.forEach(function(i){
-          legendInfo[legendCategories[i].label] = legendCategories[i].color;
-        });
-        keys = Object.keys(legendInfo);
-
+// console.log(go)
 
         var graphLegend = svg.append('g')
           .attr('class', 'graph-legend');
@@ -736,27 +730,39 @@ DO = {
         //   .text('Language: <a href="' + options.language + '">' + DO.C.Languages[options.language].name  + '');
         // var selectLanguages = '<select id="graph-view-language" name="graph-view-language">' + getLanguageOptionsHTML() + '</select>';
 
+        const legendInfo = {};
 
+        Object.keys(legendCategories).forEach(group => {
+          legendInfo[group] = { ...legendCategories[group], count: 0 };
+        });
+
+        go.nodes.forEach(node => {
+          const group = node.group;
+          if (group && legendInfo.hasOwnProperty(group)) {
+            legendInfo[group].count++;
+          }
+        });
         //TODO: Move foobarbazqux into graphLegend
         //FIXME: Why doesn't select or selectAll("g.graph-legend") work? g.graph-legend is in the svg. foobarbazqux is a hack IIRC.
         //Why is graphLegend.selectAll('foobarbazqux') necessary?
+        var legendGroups = Object.keys(legendInfo);
         graphLegend.selectAll("foobarbazqux")
-          .data(keys)
+          .data(legendGroups)
           .enter()
           .append("circle")
             .attr("cx", 10)
             .attr("cy", function(d,i){ return 150 + i*25 })
             .attr("r", nodeRadius)
-            .attr("fill", function(d){ return legendInfo[d] })
+            .attr("fill", function(d){ return legendInfo[d].color })
 
         graphLegend.selectAll("foobarbazqux")
-          .data(keys)
+          .data(legendGroups)
           .enter()
           .append("text")
             .attr("x", 25)
             .attr("y", function(d,i){ return 155 + i*25 })
-            .attr("fill", function(d){ return legendInfo[d] })
-            .text(function(d){ return d})
+            .attr("fill", function(d){ return legendInfo[d].color })
+            .text(function(d){ return legendInfo[d].label + ' (' + legendInfo[d].count + ')'} )
       }
 
       function handleResource (pIRI, headers, options) {
