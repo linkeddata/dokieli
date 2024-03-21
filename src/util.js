@@ -163,6 +163,12 @@ function matchAllIndex(string, regexp) {
   // }
 }
 
+function isValidISBN (str) {
+  const regex = /^(?=(?:[^0-9]*[0-9]){10}(?:(?:[^0-9]*[0-9]){3})?$)[\d-]+$/;
+  const pattern = new RegExp(regex);
+  return pattern.test(str);
+}
+
 export {
   uniqueArray,
   getDateTimeISO,
@@ -177,5 +183,6 @@ export {
   getHash,
   hashCode,
   sortToLower,
-  matchAllIndex
+  matchAllIndex,
+  isValidISBN
 };
