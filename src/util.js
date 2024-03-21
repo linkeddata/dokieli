@@ -9,6 +9,16 @@ function getDateTimeISO() {
   return date.toISOString();
 }
 
+function getDateTimeISOFromMDY(s) {
+  let date = new Date(s);
+
+  let year = date.getFullYear();
+  let month = String(date.getMonth() + 1).padStart(2, '0');
+  let day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
 function removeChildren(node) {
   while (node.firstChild) {
     node.removeChild(node.firstChild);
@@ -172,6 +182,7 @@ function isValidISBN (str) {
 export {
   uniqueArray,
   getDateTimeISO,
+  getDateTimeISOFromMDY,
   removeChildren,
   copyTextToClipboard,
   escapeRegExp,
