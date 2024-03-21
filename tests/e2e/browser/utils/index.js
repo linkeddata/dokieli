@@ -50,3 +50,29 @@ export async function selectText(wordToSelect, page) {
     console.log("Word not found on the page.");
   }
 }
+
+export function slowLocator(
+  page,
+  delay
+) {
+  const locatorMethod = page.locator.bind(page);
+
+  return (locatorArgs) => {
+    const locator = locatorMethod(locatorArgs);
+
+    locator.click = async (args) => {
+      await new Promise((resolve) => setTimeout(resolve, delay));
+      return locatorMethod(locatorArgs).click(args);
+    };
+
+    locator.fill = async (args) => {
+      const text = args.toString();
+      for (const char of text) {
+        await new Promise((resolve) => setTimeout(resolve, delay));
+        await locatorMethod(locatorArgs).type(char);
+      }
+    };
+
+    return locator;
+  };
+}

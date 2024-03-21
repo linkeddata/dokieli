@@ -1,5 +1,5 @@
 import { test, expect } from "./fixtures";
-import { selectText } from "./utils";
+import { selectText, slowLocator } from "./utils";
 
 test.beforeEach(async ({ auth }) => {
   await auth.login();
@@ -12,7 +12,10 @@ async function cleanup(page) {
   await expect(page.locator("sup.ref-annotation")).not.toBeVisible();
 }
 
-test("should be able to bookmark a resource", async ({ page }) => {
+test.only("should be able to bookmark a resource", async ({ page }) => {
+  if (process.env.SCREENCAST === "true") {
+    page.locator = slowLocator(page, 1000);
+  }
   await expect(page.locator("button.signout-user")).toBeVisible();
   await page.getByRole("button", { name: "Hide Menu" }).click();
 
@@ -30,8 +33,10 @@ test("should be able to bookmark a resource", async ({ page }) => {
   await saveButton.click();
   await expect(page.locator("sup.ref-annotation")).toBeVisible();
 
-  //   // wait for screencast purposes
-  //   await page.waitForTimeout(5000);
+  if (process.env.SCREENCAST === "true") {
+    // wait for screencast purposes
+    await page.waitForTimeout(5000);
+  }
 
   await cleanup(page);
 });
