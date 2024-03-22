@@ -11,7 +11,7 @@ import { getDocument, getDocumentContentNode, escapeCharacters, showActionMessag
 import { getProxyableIRI, getPathURL, stripFragmentFromString, getFragmentOrLastPath, getFragmentFromString, getURLLastPath, getLastPathSegment, forceTrailingSlash, getBaseURL, getParentURLPath, encodeString, getAbsoluteIRI } from './uri.js'
 import { getResourceGraph, traverseRDFList, getLinkRelation, getAgentName, getGraphImage, getGraphFromData, isActorType, isActorProperty, serializeGraph, getGraphLabel, getUserContacts, getAgentOutbox, getAgentStorage, getAgentInbox, getLinkRelationFromHead, sortGraphTriples } from './graph.js'
 import { notifyInbox, sendNotifications, postActivity } from './inbox.js'
-import { uniqueArray, fragmentFromString, hashCode, generateAttributeId, escapeRegExp, sortToLower, getDateTimeISO, generateUUID, matchAllIndex } from './util.js'
+import { uniqueArray, fragmentFromString, hashCode, generateAttributeId, escapeRegExp, sortToLower, getDateTimeISO, getDateTimeISOFromMDY, generateUUID, matchAllIndex, isValidISBN } from './util.js'
 import MediumEditor from "medium-editor/dist/js/medium-editor.js";
 // window.MediumEditor = MediumEditor;
 import MediumEditorTable from "medium-editor-tables/dist/js/medium-editor-tables.js";
@@ -6748,23 +6748,153 @@ console.log(response)
     },
 
     getCitation: function(i, options) {
+// console.log(i)
+// console.log(options)
       options = options || {};
-      var iri = i;
-      // if (typeof options !== 'undefined' && 'type' in options && options.type == 'doi') {
-      if (i.toLowerCase().slice(0,4) !== 'http') {
-//        iri = 'http://dx.doi.org/' + i.trim();
-        iri = 'http://data.crossref.org/' + i.trim();
+
+      if (isValidISBN(i)) {
+        var url = 'https://openlibrary.org/isbn/' + i;
+        var headers = {'Accept': 'application/json'};
+        var wikidataHeaders = {'Accept': 'application/ld+json'};
+        options['noCredentials'] = true;
+
+        var isbnData = SimpleRDF(DO.C.Vocab, url);
+
+        return getResource(url, headers, options)
+          .then(function(response) {
+// console.log(response)
+            return response.text();
+          }).then(data => {
+            //TODO: try/catch?
+            data = JSON.parse(data);
+// console.log(data)
+            //data.identifiers.librarything data.identifiers.goodreads
+
+            var promises = [];
+
+            if (data.title) {
+// console.log(data.title)
+              isbnData.schemaname = data.title;
+            }
+
+          //Unused
+//           if (data.subtitle) {
+// console.log(data.subtitle)
+//           }
+
+            if (data.publish_date) {
+// console.log(data.publish_date)
+              isbnData.schemadatePublished = getDateTimeISOFromMDY(data.publish_date)
+            }
+
+            if (data.covers) {
+// console.log(data.covers)
+              isbnData.schemaimage = 'https://covers.openlibrary.org/b/id/' + data.covers[0] + '-S.jpg';
+              // document.body.insertAdjacentHTML('afterbegin', '<img src="' + img + '"/>');
+
+              //   async function fetchImage(url) {
+              //     const img = new Image();
+              //     return new Promise((res, rej) => {
+              //         img.onload = () => res(img);
+              //         img.onerror = e => rej(e);
+              //         img.src = url;
+              //     });
+              // }
+              // const img = await fetchImage('https://covers.openlibrary.org/b/id/12547191-L.jpg');
+              // const w = img.width;
+              // const h = img.height;
+            }
+
+            if (data.authors && Array.isArray(data.authors) && data.authors.length > 0 && data.authors[0].key) {
+              var a = 'https://openlibrary.org' + data.authors[0].key;
+// console.log(a)
+              promises.push(getResource(a, headers, options)
+                .then(function(response){
+                  console.log(response)
+                  return response.text();
+                }).then(data => {
+                  //TODO: try/catch?
+                  data = JSON.parse(data);
+// console.log(data)
+
+                  var authorURL = 'http://example.com/.well-known/genid/' + generateUUID;
+                  if (data.links && Array.isArray(data.links) && data.links.length > 0) {
+// console.log(data.links[0].url)
+                    authorURL = data.links[0].url;
+                  }
+                  isbnData.schemaauthor = [authorURL];
+
+                  if (data.name) {
+// console.log(data.name)
+                    isbnData.child(authorURL).schemaname = data.name;
+                  }
+// console.log(isbnData)
+
+                  return isbnData.child(url);
+
+                //Unused:
+//                 if (data.remote_ids && data.remote_ids.wikidata) {
+//                   //wE has a few redirects to wW
+//                   var wE = 'https://www.wikidata.org/entity/' + data.remote_ids.wikidata;
+//                   var wW = 'https://www.wikidata.org/wiki/Special:EntityData/' + data.remote_ids.wikidata + '.jsonld';
+//                   promises.push(getResourceGraph(wW, wikidataHeaders, options)
+//                     .then(function(g){
+// // console.log(g)
+// // console.log(g.iri().toString())
+//                       var s = g.graph().match(wE.replace(/^https:/, 'http:'))
+// // console.log(s.toString());
+
+//                       console.log(isbnData)
+//                       console.log(isbnData.toString())
+
+//                       return isbnData;
+//                     }));
+//                 }
+
+                }));
+            }
+
+            // XXX Unused for now:
+            // if (data.identifiers?.wikidata && Array.isArray(data.identifiers.wikidata) && data.identifiers.wikidata.length > 0) {
+              // var w = 'https://www.wikidata.org/entity/' + data.identifiers.wikidata[0];
+              // promises.push(getResourceGraph(w, wikidataHeaders, options).then(function(g){
+// console.log(g);
+// console.log(g.toString());
+              // }));
+            // }
+
+            return Promise.allSettled(promises)
+              .then(function(results) {
+                var items = [];
+                results.forEach(function(result){
+// console.log(result)
+                  items.push(result.value);
+                })
+
+                //For now just [0]
+                return items[0];
+              });
+
+          })
       }
       else {
-        var x = iri.toLowerCase().trim().split('/');
-        if (x[2] == 'doi.org' || x[2] == 'dx.doi.org') {
-          var y = x[0] + '//' + x[2] + '/';
-          iri = 'http://data.crossref.org/' + iri.substr(y.length, iri.length);
+        var iri = i;
+        // if (typeof options !== 'undefined' && 'type' in options && options.type == 'doi') {
+        if (i.toLowerCase().slice(0,4) !== 'http') {
+  //        iri = 'http://dx.doi.org/' + i.trim();
+          iri = 'http://data.crossref.org/' + i.trim();
         }
-      }
-//console.log(iri);
+        else {
+          var x = iri.toLowerCase().trim().split('/');
+          if (x[2] == 'doi.org' || x[2] == 'dx.doi.org') {
+            var y = x[0] + '//' + x[2] + '/';
+            iri = 'http://data.crossref.org/' + iri.substr(y.length, iri.length);
+          }
+        }
+  //console.log(iri);
 
-      return getResourceGraph(iri);
+        return getResourceGraph(iri);
+      }
     },
 
     getCitationHTML: function(citationGraph, citationURI, options) {
@@ -6786,7 +6916,7 @@ console.log(response)
 
         title = getGraphLabel(subject) || '';
       }
-      title = title.replace(/ & /g, " &amp; ");
+      title = escapeCharacters(title);
       title = (title.length > 0) ? '<cite>' + title + '</cite>, ' : '';
       var datePublished = subject.schemadatePublished || subject.dctermsissued || subject.dctermsdate || subject.schemadateCreated || subject.dctermscreated || '';
       var dateVersion = subject.schemadateModified || datePublished;
@@ -10208,7 +10338,11 @@ WHERE {\n\
 // console.log(citationGraph.toString())
 // console.log(options.citationId)
 // console.log( getProxyableIRI(options.citationId))
-                        if(opts.url.match(/^10\.\d+\//)) {
+                        if (isValidISBN(opts.url)) {
+                          citationURI = citationGraph.iri().toString();
+                          options.citationId = citationURI;
+                        }
+                        else if(opts.url.match(/^10\.\d+\//)) {
                           citationURI = 'http://dx.doi.org/' + opts.url;
                           options.citationId = citationURI;
                         }
