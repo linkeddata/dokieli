@@ -6752,9 +6752,10 @@ console.log(response)
 // console.log(options)
       options = options || {};
       options['noCredentials'] = true;
-      
+      var url;
+
       if (isValidISBN(i)) {
-        var url = 'https://openlibrary.org/isbn/' + i;
+        url = 'https://openlibrary.org/isbn/' + i;
         var headers = {'Accept': 'application/json'};
         var wikidataHeaders = {'Accept': 'application/ld+json'};
 
@@ -6810,7 +6811,7 @@ console.log(response)
 // console.log(a)
               promises.push(getResource(a, headers, options)
                 .then(function(response){
-                  console.log(response)
+// console.log(response)
                   return response.text();
                 }).then(data => {
                   //TODO: try/catch?
@@ -6878,25 +6879,14 @@ console.log(response)
           })
       }
       else {
-        var iri = i;
-        // if (typeof options !== 'undefined' && 'type' in options && options.type == 'doi') {
-        if (i.toLowerCase().slice(0,4) !== 'http') {
-          // iri = 'http://dx.doi.org/' + i.trim();
-          // iri = 'http://data.crossref.org/' + i.trim();
-          // iri = 'https://api.crossref.org/works/' + i.trim();
-          iri = 'https://doi.org/' + i.trim();
+        if (i.match(/^10\.\d+\//)) {
+          url= 'https://doi.org/' + i;
         }
         else {
-          var x = iri.toLowerCase().trim().split('/');
-          if (x[2] == 'doi.org' || x[2] == 'dx.doi.org') {
-            var y = x[0] + '//' + x[2] + '/';
-            // iri = 'http://data.crossref.org/' + iri.substr(y.length, iri.length);
-            iri = 'https://api.crossref.org/works/' + iri.substr(y.length, iri.length);
-          }
+          url = i.replace(/https?:\/\/dx\.doi\.org\//i, 'https://doi.org/');
         }
-// console.log(iri);
 
-        return getResourceGraph(iri, null, options);
+        return getResourceGraph(url, null, options);
       }
     },
 
@@ -6997,13 +6987,14 @@ console.log(response)
         citationIdLabel = options.citationId;
         prefixCitationLink = ', ISBN: ';
       }
-      else if(options.citationId.match(/^10\.\d+\//)) {
+      else if (options.citationId.match(/^10\.\d+\//)) {
         citationURI = 'https://doi.org/' + options.citationId;
         citationIdLabel = citationURI;
       }
-      //FIXME: subjectIRI shouldn't be set here. Bug in RDFaProcessor (see also SimpleRDF ES5/6). See also: https://github.com/linkeddata/dokieli/issues/132
-
-      citationURI = citationURI.replace(/https?:\/\/dx\.doi\.org\//i, 'https://doi.org/');
+      else {
+        citationURI = citationURI.replace(/https?:\/\/dx\.doi\.org\//i, 'https://doi.org/');
+        citationIdLabel = citationURI;
+      }
 
       var citationHTML = authors + title + datePublished + content + prefixCitationLink + '<a about="#' + options.refId + '"' + dataVersionDate + dataVersionURL + ' href="' + citationURI + '" rel="schema:citation ' + options.citationRelation  + '" title="' + DO.C.Citation[options.citationRelation] + '">' + citationIdLabel + '</a> [' + dateAccessed + ', ' + citationReason + ']';
 //console.log(citationHTML);
@@ -10352,8 +10343,8 @@ WHERE {\n\
                       //TODO: offline mode
                       DO.U.getCitation(opts.url, options).then(function(citationGraph) {
                         var citationURI = opts.url;
-console.log(citationGraph)
-console.log(citationGraph.toString())
+// console.log(citationGraph)
+// console.log(citationGraph.toString())
 // console.log(options.citationId)
 // console.log( getProxyableIRI(options.citationId))
                         if (isValidISBN(opts.url)) {
@@ -10382,8 +10373,7 @@ console.log(citationGraph.toString())
                         options['showRobustLinksDecoration'] = true;
                         node = document.querySelector('[id="' + id + '"] a[about]');
 
-                        //Uncomment when done testing.
-                        var robustLink = DO.U.createRobustLink(citationURI, node, options);
+                        // var robustLink = DO.U.createRobustLink(citationURI, node, options);
 
 // console.log(options.url);
                         var s = citationGraph.child(citationURI);
