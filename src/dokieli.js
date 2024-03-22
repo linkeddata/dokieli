@@ -6857,7 +6857,7 @@ console.log(response)
 
       var citationReason = 'Reason: ' + DO.C.Citation[options.citationRelation];
 
-      var citationHTML = authors + title + datePublished + content + '<a about="#' + options.refId + '"' + dataVersionDate + dataVersionURL + ' href="' + options.citationId + '" rel="schema:citation ' + options.citationRelation  + '" title="' + DO.C.Citation[options.citationRelation] + '">' + options.citationId + '</a> [' + dateAccessed + ', ' + citationReason + ']';
+      var citationHTML = authors + title + datePublished + content + '<a about="#' + options.refId + '"' + dataVersionDate + dataVersionURL + ' href="' + options.citationId + '" rel="schema:citation ' + options.citationRelation  + '" title="' + DO.C.Citation[options.citationRelation] + '">' + options.citationIdLabel + '</a> [' + dateAccessed + ', ' + citationReason + ']';
 //console.log(citationHTML);
       return citationHTML;
     },
@@ -10198,6 +10198,7 @@ WHERE {\n\
                     case 'ref-reference':
                       options = opts;
                       options['citationId'] = opts.url;
+                      options['citationIdLabel'] = opts.url;
                       options['refId'] = refId;
 
                       //TODO: offline mode
