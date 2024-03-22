@@ -6751,12 +6751,12 @@ console.log(response)
 // console.log(i)
 // console.log(options)
       options = options || {};
-
+      options['noCredentials'] = true;
+      
       if (isValidISBN(i)) {
         var url = 'https://openlibrary.org/isbn/' + i;
         var headers = {'Accept': 'application/json'};
         var wikidataHeaders = {'Accept': 'application/ld+json'};
-        options['noCredentials'] = true;
 
         var isbnData = SimpleRDF(DO.C.Vocab, url);
 
@@ -6881,19 +6881,22 @@ console.log(response)
         var iri = i;
         // if (typeof options !== 'undefined' && 'type' in options && options.type == 'doi') {
         if (i.toLowerCase().slice(0,4) !== 'http') {
-  //        iri = 'http://dx.doi.org/' + i.trim();
-          iri = 'http://data.crossref.org/' + i.trim();
+          // iri = 'http://dx.doi.org/' + i.trim();
+          // iri = 'http://data.crossref.org/' + i.trim();
+          // iri = 'https://api.crossref.org/works/' + i.trim();
+          iri = 'https://doi.org/' + i.trim();
         }
         else {
           var x = iri.toLowerCase().trim().split('/');
           if (x[2] == 'doi.org' || x[2] == 'dx.doi.org') {
             var y = x[0] + '//' + x[2] + '/';
-            iri = 'http://data.crossref.org/' + iri.substr(y.length, iri.length);
+            // iri = 'http://data.crossref.org/' + iri.substr(y.length, iri.length);
+            iri = 'https://api.crossref.org/works/' + iri.substr(y.length, iri.length);
           }
         }
-  //console.log(iri);
+// console.log(iri);
 
-        return getResourceGraph(iri);
+        return getResourceGraph(iri, null, options);
       }
     },
 
@@ -6987,7 +6990,22 @@ console.log(response)
 
       var citationReason = 'Reason: ' + DO.C.Citation[options.citationRelation];
 
-      var citationHTML = authors + title + datePublished + content + '<a about="#' + options.refId + '"' + dataVersionDate + dataVersionURL + ' href="' + options.citationId + '" rel="schema:citation ' + options.citationRelation  + '" title="' + DO.C.Citation[options.citationRelation] + '">' + options.citationIdLabel + '</a> [' + dateAccessed + ', ' + citationReason + ']';
+      var citationIdLabel = citationURI;
+      var prefixCitationLink = '';
+
+      if (isValidISBN(options.citationId)) {
+        citationIdLabel = options.citationId;
+        prefixCitationLink = ', ISBN: ';
+      }
+      else if(options.citationId.match(/^10\.\d+\//)) {
+        citationURI = 'https://doi.org/' + options.citationId;
+        citationIdLabel = citationURI;
+      }
+      //FIXME: subjectIRI shouldn't be set here. Bug in RDFaProcessor (see also SimpleRDF ES5/6). See also: https://github.com/linkeddata/dokieli/issues/132
+
+      citationURI = citationURI.replace(/https?:\/\/dx\.doi\.org\//i, 'https://doi.org/');
+
+      var citationHTML = authors + title + datePublished + content + prefixCitationLink + '<a about="#' + options.refId + '"' + dataVersionDate + dataVersionURL + ' href="' + citationURI + '" rel="schema:citation ' + options.citationRelation  + '" title="' + DO.C.Citation[options.citationRelation] + '">' + citationIdLabel + '</a> [' + dateAccessed + ', ' + citationReason + ']';
 //console.log(citationHTML);
       return citationHTML;
     },
@@ -10327,38 +10345,33 @@ WHERE {\n\
 
                     case 'ref-reference':
                       options = opts;
+                      opts.url = opts.url.trim(); //XXX: Perhaps use escapeCharacters()?
                       options['citationId'] = opts.url;
-                      options['citationIdLabel'] = opts.url;
                       options['refId'] = refId;
 
                       //TODO: offline mode
                       DO.U.getCitation(opts.url, options).then(function(citationGraph) {
-                        var citationURI = '';
-// console.log(citationGraph)
-// console.log(citationGraph.toString())
+                        var citationURI = opts.url;
+console.log(citationGraph)
+console.log(citationGraph.toString())
 // console.log(options.citationId)
 // console.log( getProxyableIRI(options.citationId))
                         if (isValidISBN(opts.url)) {
                           citationURI = citationGraph.iri().toString();
-                          options.citationId = citationURI;
+                          // options.citationId = citationURI;
                         }
                         else if(opts.url.match(/^10\.\d+\//)) {
                           citationURI = 'http://dx.doi.org/' + opts.url;
-                          options.citationId = citationURI;
+                          // options.citationId = citationURI;
                         }
                         //FIXME: subjectIRI shouldn't be set here. Bug in RDFaProcessor (see also SimpleRDF ES5/6). See also: https://github.com/linkeddata/dokieli/issues/132
-                        else if (opts.url.toLowerCase().indexOf('//dx.doi.org/') >= 0) {
-                          citationURI = opts.url;
-                          if (opts.url.toLowerCase().startsWith('https:')) {
-                            citationURI = opts.url.replace(/^https/, 'http');
-                          }
-                        }
+
+                        citationURI = citationURI.replace(/(https?:\/\/(dx\.)?doi\.org\/)/i, 'http://dx.doi.org/');
+
+                        //XXX: I don't know what this is going on about...
                         // else if (stripFragmentFromString(options.citationId) !==  getProxyableIRI(options.citationId)) {
                         //   citationURI = window.location.origin + window.location.pathname;
                         // }
-                        else {
-                          citationURI = options.citationId;
-                        }
 
                         var citation = DO.U.getCitationHTML(citationGraph, citationURI, options);
 
@@ -10369,6 +10382,7 @@ WHERE {\n\
                         options['showRobustLinksDecoration'] = true;
                         node = document.querySelector('[id="' + id + '"] a[about]');
 
+                        //Uncomment when done testing.
                         var robustLink = DO.U.createRobustLink(citationURI, node, options);
 
 // console.log(options.url);
@@ -10376,8 +10390,7 @@ WHERE {\n\
                         if(s.ldpinbox._array.length == 0) {
                           s = citationGraph.child(options.citationId);
                         }
-
-                        if (s.ldpinbox._array.length > 0) {
+                        else {
                           var inboxURL = s.ldpinbox.at(0);
 // console.log(inboxURL);
 
