@@ -16,6 +16,11 @@ function getXPathValue(rootNode, xpathExpression, contextNode, namespaceResolver
   }
 }
 
+function getGPXextensionsHTML(rootNode, contextNode, data, options) {
+  var extensionsContextNode = contextNode.querySelector('extensions');
+  return getGPXTrackPointExtensionhrHTML(rootNode, extensionsContextNode, data, options);
+}
+
 function getGPXTrackPointExtensionhrHTML(rootNode, contextNode, data, options) {
   var hr =  getXPathValue(rootNode, "gpxtpx:TrackPointExtension/gpxtpx:hr", contextNode, null, 'NUMBER_TYPE');
   var html = `
