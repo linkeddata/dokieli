@@ -10,6 +10,27 @@ function namespaceMap(prefix) {
   return ns[prefix] || 'http://www.topografix.com/GPX/1/1';
 }
 
+// function normalisePath(xpathExpression) {
+//   return xpathExpression.replace(/\//g, '/gpx:');
+// },
+
+function evaluateXPath(rootNode, xpathExpression, contextNode, namespaceResolver, resultType, result) {
+  rootNode = rootNode || document;
+  // xpathExpression = normalisePath(xpathExpression);
+// console.log(xpathExpression)
+  contextNode = contextNode || document;
+  namespaceResolver = (typeof namespaceResolver == 'function') ? namespaceResolver : namespaceMap;
+  // namespaceResolver = document.createNSResolver( contextNode.ownerDocument == null ? contextNode.documentElement : contextNode.ownerDocument.documentElement );
+// console.log(namespaceResolver)
+  resultType = XPathResult[resultType] || XPathResult.ANY_TYPE;
+  // result = result || null;
+// console.log(xpathExpression);
+// console.log(contextNode);
+// console.log(namespaceResolver);
+// console.log(resultType);
+// console.log(result);
+  return rootNode.evaluate(xpathExpression, contextNode, namespaceResolver, resultType);
+}
 
 //From https://stackoverflow.com/a/21623206
 function calculateDistance(lat1, lon1, lat2, lon2) {
