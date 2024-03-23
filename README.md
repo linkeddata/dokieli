@@ -85,6 +85,7 @@ explains dokieli's principles, architectural and design patterns.
 * Embedding data blocks, e.g., Turtle, N-Triples, JSON-LD, TriG (Nanopublications).
 * Embedding of media objects, tables, and interactions.
 * Graph visualisation of linked data.
+* Import GPX and extension data and view tracks on map.
 * Automated references and citations (retrieves and reuses structured information).
 * Insertion of table of contents, figures, tables, abbreviations.
 * Drag and drop to reorganize the document's sections and table of contents.
