@@ -16,6 +16,14 @@ function getXPathValue(rootNode, xpathExpression, contextNode, namespaceResolver
   }
 }
 
+function getGPXTrackPointExtensionhrHTML(rootNode, contextNode, data, options) {
+  var hr =  getXPathValue(rootNode, "gpxtpx:TrackPointExtension/gpxtpx:hr", contextNode, null, 'NUMBER_TYPE');
+  var html = `
+          <td property="qudt-unit:HeartBeatsPerMinute" datatype="xsd:nonNegativeInteger">` + hr + `</td>`;
+
+  return html;
+}
+
 function namespaceMap(prefix) {
   var ns = {
     'xhtml' : 'http://www.w3.org/1999/xhtml',
