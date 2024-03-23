@@ -16,6 +16,160 @@ function getXPathValue(rootNode, xpathExpression, contextNode, namespaceResolver
   }
 }
 
+function getGPXActivityHTML(rootNode, contextNode, options) {
+  options = options || {};
+  var html = '';
+  var data = {};
+
+  data['minLat'] = getXPathValue(rootNode, "/gpx:gpx/gpx:trk/gpx:trkseg/gpx:trkpt/@lat[not(. > ../../gpx:trkpt/@lat)][1]", contextNode, null, 'NUMBER_TYPE');
+  data['minLon'] = getXPathValue(rootNode, "/gpx:gpx/gpx:trk/gpx:trkseg/gpx:trkpt/@lon[not(. > ../../gpx:trkpt/@lon)][1]", contextNode, null, 'NUMBER_TYPE');
+  data['maxLat'] = getXPathValue(rootNode, "/gpx:gpx/gpx:trk/gpx:trkseg/gpx:trkpt/@lat[not(. < ../../gpx:trkpt/@lat)][1]", contextNode, null, 'NUMBER_TYPE');
+  data['maxLon'] = getXPathValue(rootNode, "/gpx:gpx/gpx:trk/gpx:trkseg/gpx:trkpt/@lon[not(. < ../../gpx:trkpt/@lon)][1]", contextNode, null, 'NUMBER_TYPE');
+
+  data['minEle'] = getXPathValue(rootNode, "/gpx:gpx/gpx:trk/gpx:trkseg/gpx:trkpt/gpx:ele[not(. > ../../gpx:trkpt/gpx:ele)][1]", contextNode, null, 'NUMBER_TYPE');
+  data['maxEle'] = getXPathValue(rootNode, "/gpx:gpx/gpx:trk/gpx:trkseg/gpx:trkpt/gpx:ele[not(. < ../../gpx:trkpt/gpx:ele)][1]", contextNode, null, 'NUMBER_TYPE');
+// console.log(data['maxEle'])
+// console.log(data['minEle'])
+
+
+  //Works but data is not always available
+  // data['minLat'] = getXPathValue(rootNode, "/gpx:gpx/gpx:metadata/gpx:bounds/@minlat", contextNode, null, 'NUMBER_TYPE');
+  // data['minLon'] = getXPathValue(rootNode, "/gpx:gpx/gpx:metadata/gpx:bounds/@minlon", contextNode, null, 'NUMBER_TYPE');
+  // data['maxLat'] = getXPathValue(rootNode, "/gpx:gpx/gpx:metadata/gpx:bounds/@maxlat", contextNode, null, 'NUMBER_TYPE');
+  // data['maxLon'] = getXPathValue(rootNode, "/gpx:gpx/gpx:metadata/gpx:bounds/@maxlon", contextNode, null, 'NUMBER_TYPE');
+
+  data['startDate'] = getXPathValue(rootNode, "/gpx:gpx/gpx:trk/gpx:trkseg/gpx:trkpt[1]/gpx:time", contextNode, null, 'STRING_TYPE');
+  data['endDate'] = getXPathValue(rootNode, "/gpx:gpx/gpx:trk/gpx:trkseg/gpx:trkpt[last()]/gpx:time", contextNode, null, 'STRING_TYPE');
+
+  data['metadataBounds'] = data.minLon + ',' + data.minLat + ',' + data.maxLon + ',' + data.maxLat;
+  data['dataset'] = data.startDate + ',' + data.endDate + ',' + data.metadataBounds;
+  data['centreLat'] = (data.minLat + data.maxLat) / 2.0;
+  data['centreLon'] = (data.minLon + data.maxLon) / 2.0;
+
+  data['metadataBoundsURL'] = `https://www.openstreetmap.org/?minlon=${data.minLon}&amp;minlat=${data.minLat}&amp;maxlon=${data.maxLon}&amp;maxlat=${data.maxLat}`;
+
+// console.log(data.metadataTime);
+// console.log(data.minLat)
+// console.log(data.minLon)
+// console.log(data.maxLat)
+// console.log(data.maxLon)
+// console.log(data.startDate)
+// console.log(data.endDate)
+// console.log(data.metadataBounds)
+// console.log(data.dataset)
+// console.log(data.centreLat)
+// console.log(data.centreLon)
+
+
+  var start = new Date(data['startDate']).getTime();
+  var end = new Date(data['endDate']).getTime();
+  var seconds = Math.floor((end - start) / 1000);
+  var date = new Date(null);
+  date.setSeconds(seconds);
+  var utc = date.toUTCString();
+  data['duration'] = utc.substr(utc.indexOf(':') - 2, 8)
+// [${data.startDate} ~ ${data.endDate}]
+
+  data['datasetPublisher'] = (Config.User.IRI) ? Config.User.IRI : null;
+
+
+  var trksegContextNode = contextNode.querySelector('gpx trk trkseg');
+// var trksegs = contextNode.querySelectorAll('gpx trk trkseg')
+// console.log(trksegs);
+
+  options['hrExists'] = getXPathValue(rootNode, "gpx:trkpt[1]/gpx:extensions/gpxtpx:TrackPointExtension/gpxtpx:hr", trksegContextNode, null, 'BOOLEAN_TYPE');
+
+  var hrTH = '', hrDD = '', datasetPublisher = '';
+
+  if (data['datasetPublisher']) {
+    datasetPublisher = `
+          <dl>
+            <dt>Publisher</dt>
+            <dd rel="dcterms:publisher">${getAgentHTML({'omitImage': true})}</dd>
+          </dl>`;
+  }
+
+  //XXX: The user is not necessarily the performer of this activity! Is there a way to automatically find out?
+  //TODO: as:origin, as:target
+  var performedBy = '', performedByName = '';
+  if (Config.User.IRI) {
+    performedBy = `
+          <dl rel="schema:hasPart" resource="#activity" typeof="as:Travel">
+            <dt>Actor</dt>
+            <dd rel="as:actor">${getAgentHTML()}</dd>
+          </dl>`;
+  }
+
+  var tfootColSpan = 4;
+  if (options['hrExists']) {
+    tfootColSpan = 5;
+    hrTH = `
+          <th rel="qb:component" resource="#component/${data.dataset}/measure/heart-rate" typeof="qb:ComponentSpecification"><span rel="qb:componentProperty" resource="qudt-unit:HeartBeatsPerMinute" typeof="qb:MeasureProperty"><span property="skos:prefLabel" rel="rdfs:subPropertyOf" resource="sdmx-measure:obsValue">Heart rate</span></span></th>`;
+
+    hrDD = `
+              <dd><a href="http://qudt.org/vocab/unit#HeartBeatsPerMinute">Heart rate</a> (beats per minute)</dd>`;
+  }
+
+  var mapId = generateAttributeId();
+  html = `
+    <figure>
+      <figcaption>Activity at <a href="https://render.openstreetmap.org/cgi-bin/export?bbox=${data.metadataBounds}&amp;scale=12000&amp;format=png&amp;layers=C">https://render.openstreetmap.org/cgi-bin/export?bbox=${data.metadataBounds}&amp;scale=12000&amp;format=png&amp;layers=C</a> .</figcaption>
+      <div id="${mapId}" rel="schema:hasMap" resource="#${mapId}" typeof="schema:Map"></div>
+      <details>
+        <summary>More details about GPS and extension data</summary>
+        <table id="cube/${data.dataset}">
+          <caption>Activity at <a href="${data.metadataBoundsURL}">${data.metadataBounds}</a> .</caption>
+          <thead about="#structure/${data.dataset}" id="structure/${data.dataset}" typeof="qb:DataStructureDefinition">
+            <tr>
+              <th rel="qb:component" resource="#component/${data.dataset}/dimension/time" typeof="qb:ComponentSpecification"><span rel="qb:componentProperty" resource="sdmx-dimension:timePeriod" typeof="qb:DimensionProperty"><span property="skos:prefLabel">Time Period</span></span></th>
+              <th rel="qb:component" resource="#component/${data.dataset}/measure/latitude" typeof="qb:ComponentSpecification"><span rel="qb:componentProperty" resource="wgs:lat" typeof="qb:MeasureProperty"><span property="skos:prefLabel" rel="rdfs:subPropertyOf" resource="sdmx-measure:obsValue">Latitude</span></span></th>
+              <th rel="qb:component" resource="#component/${data.dataset}/measure/longitude" typeof="qb:ComponentSpecification"><span rel="qb:componentProperty" resource="wgs:lon" typeof="qb:MeasureProperty"><span property="skos:prefLabel" rel="rdfs:subPropertyOf" resource="sdmx-measure:obsValue">Longitude</span></span></th>
+              <th rel="qb:component" resource="#component/${data.dataset}/measure/altitude" typeof="qb:ComponentSpecification"><span rel="qb:componentProperty" resource="wgs:alt" typeof="qb:MeasureProperty"><span property="skos:prefLabel" rel="rdfs:subPropertyOf" resource="sdmx-measure:obsValue">Altitude</span></span></th>${hrTH}
+            </tr>
+          </thead>
+          <tbody about="#dataset/${data.dataset}" id="dataset/${data.dataset}" typeof="qb:DataSet">` +
+getGPXtrkptHTML(rootNode, trksegContextNode, data, options) + `
+          </tbody>
+          <tfoot>
+            <tr>
+              <td>
+                <dl>
+                  <dt>Distance</dt>
+                  <dd>${roundValue(gpxTrkptDistance, 2)} km</dd>
+                  <dt>Time</dt>
+                  <dd><time>${data.duration}</time></dd>
+                </dl>
+              </td>
+              <td>` +
+createDateHTML({ 'id': 'dataset-published', 'property': 'schema:datePublished', 'title': 'Published' }) + datasetPublisher +
+performedBy + `
+              </td>
+              <td about="#dataset/${data.dataset}" colspan="${tfootColSpan - 2}">
+                <p>The <a href="#structure/${data.dataset}">structure</a> of the <a href="#dataset/${data.dataset}">dataset</a>:</p>
+
+                <dl>
+                  <dt>Dimensions</dt>
+                  <dd><a href="http://purl.org/linked-data/sdmx/2009/dimension#timePeriod">Time</a> (ISO 8601)</dd>
+                  <dt>Measures</dt>
+                  <dd><a href="http://www.w3.org/2003/01/geo/wgs84_pos#lat">Latitude</a> (decimal degrees)</dd>
+                  <dd><a href="http://www.w3.org/2003/01/geo/wgs84_pos#lon">Longitude</a> (decimal degrees)</dd>
+                  <dd><a href="http://www.w3.org/2003/01/geo/wgs84_pos#alt">Altitude</a> (meters)</dd>${hrDD}
+                </dl>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </details>
+    </figure>
+`;
+      // <img alt="" src="https://localhost:8443/proxy?uri=https://render.openstreetmap.org/cgi-bin/export?bbox=${data.metadataBounds}&amp;scale=12724&amp;format=svg&amp;layers=C" />
+      // <object type="image/svg+xml" data="https://render.openstreetmap.org/cgi-bin/export?bbox=${data.metadataBounds}&amp;scale=12724&amp;format=svg&amp;layers=C"></object>
+
+//TODO gpx/wpt, gpx/rte
+// console.log(html)
+  return html;
+}
+
 function getGPXtrkptHTML(rootNode, contextNode, data, options) {
   var html = '';
   var trkpt = getXPathValue(rootNode, "gpx:trkpt", contextNode, null, 'ORDERED_NODE_ITERATOR_TYPE');
