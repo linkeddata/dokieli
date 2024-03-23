@@ -1,4 +1,128 @@
 
+var gpxTrkptDistance = 0;
+
+//FIXME: It should perhaps act more like an insert/append as opposed to replacing the body.
+function generateGeoView(data) {
+  var tmpl = document.implementation.createHTMLDocument('template');
+
+  var parser = new DOMParser();
+  var rootNode = parser.parseFromString(data, "text/xml");
+  var contextNode = rootNode;
+
+  var gpxActivity = getGPXActivityHTML(rootNode, contextNode);
+
+  var prefixes = document.body.getAttribute('prefix') + ' wgs: http://www.w3.org/2003/01/geo/wgs84_pos# sdmx-dimension: http://purl.org/linked-data/sdmx/2009/dimension# sdmx-measure: http://purl.org/linked-data/sdmx/2009/measure# gi: http://reference.data.gov.uk/id/gregorian-instant/ qudt-unit: http://qudt.org/vocab/unit#';
+  document.body.setAttribute('prefix', prefixes);
+  document.body.replaceChildren(fragmentFromString('<main><article about="" typeof="schema:Article">' + gpxActivity + '</article></main>'));
+  document.querySelector('head title').textContent = '';
+  //XXX: This is hacky for now.
+  tmpl.documentElement.innerHTML = document.documentElement.innerHTML;
+
+  var mapId = document.querySelector('[typeof="schema:Map"]');
+  var mapOptions = {
+    'preferCanvas': true
+  }
+  var map = L.map(mapId, mapOptions);
+  
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    subdomains: 'abc',
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>'
+  }).addTo(map);
+  // var nexrad = L.tileLayer.wms("http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0r.cgi", {
+  //     layers: 'nexrad-n0r-900913',
+  //     format: 'image/png',
+  //     transparent: true,
+  //     attribution: "Weather data © 2012 IEM Nexrad"
+  // });
+  
+  // https://github.com/mpetazzoni/leaflet-gpx
+  // gpx = 'https://localhost:8443/gpx2rdf/data/2014-02-17-16-12-20.gpx';
+  
+  var gptOptions =  {
+    async: true,
+    joinTrackSegments: false,
+    polyline_options: {
+      color: '#f00',
+      opacity: 0.75,
+      weight: 3,
+      lineCap: 'round'
+    },
+    marker_options: {
+      startIconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAtCAMAAAAX+PImAAABC1BMVEUAAAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAAAgAD///8AlAAAkgAAgQAAgwAAhgAAjQAAkAAAhwAElQQAigD7/fv3/PcfoR8LmQsAjABRtlFGskY8rTw0qjQAkQDx+fHp9unX7te+5L6W05ZjvmMUnRTi8+Lc8NzP68+q26qc1px0xXRAr0DM6szI6Mi04LSIzYhyxHJpwGkupy4spyzxfiXGAAAALXRSTlMA/QL59OffBr60qG9iDuzPujoJ746Ff3l0TUhAMycjGxJd18WunJhZLRgMZVI0U6/AAAACQklEQVQ4y32U53baQBBGR6L33k1zjZ0sLJJA9GoDjmt63v9JMrNarELs+4ODVvd8MxrtCmzU62opmg6no6VqU4VjQieFVI4JFH8qnwl5hUY+wJwkL+vgRK2kmJfTL6pDiMuAnqbrutaTMbGQLVgNaMM+J9YzXUj+8kGpioTekHcPcENjSK4NguaZCDDELUL8GTAkeAJEUQh9WjYny8XrxORvynmCnvOUSoiE1e5uMxo/PC9NUqiQ7wqNGLkDXDL3XzsWt7+meG1Qu5EbyEYogmrsN50D4xdT1glkoBG0IvjKSpApr9wKUWJQ8aNhYI3njpMnU3YShbgiivDJg8u4/YMhVCYMMTQ03uWLscsYzdEYonEGZWnMRx0Xv8mwM46N0V4aEYhLY7lxGeOFNPL0LKLT++8u426Cho5DbUOd5jHDR3txlfkp5x78BIk0GjrHkK1D+EYRBrWRBSjKqfPVo11jiQLHIiwGAJkcjZ1W/j6NrS5/rLh8c0Hazzfi1c2o7nSx2z5ud/MpCWua+YUKSNv3tkF4d3o/xV8SqEayBkQrzGSKJQn6JLBoFgRXfoWUQd/eyTONyQhB4pyhQo6x5kh/SPdx7TIEkkyAKYo8UvJE4QJN64BaVAhmQ5e+Mthch5nihaVb4KAWYF4hUHMf/rLPY/hKKrhIRJk7ItICD/WUU6ETe0Ql6VD8cThGLTlayctxv9cKCzfhvzRSTDaRAS/2x8jVxDHqZz9NohCCdwkVsduLBHxAtuBLN+FDWgXvqP4Bkoed0xIT03MAAAAASUVORK5CYII=',
+      endIconUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAtCAMAAAAX+PImAAABAlBMVEUAAADGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkLGQkL///+3LCy4Li62KSnFQEDDPT3COzu7MjK9NDT9+Pi6MDC/NzfARUXBOTn+/PzUf3/Ob2/GV1e6NTX57e303t7iqKjYjIzLZGTJX1/78/P35+f14uLx19fx1NTtysrrxMTkrq7MaGjIXFzEUVG8PDznubnnuLjdnJy+Pz/5SaUvAAAALHRSTlMA/AL5Cgb08ObdurSoGg3sz75zbmM6joV/eVpNSEAzJyMSX+jh18SunJgtUvqwWL0AAAJBSURBVDjLfZN3e6JAEIcHsAXF3kssudRbAQFBjSWx5NLLle//VW5nWaUYff/hYZ+X3wyzu+AhKs1aSpblVK2piLBP9LSSjROGEM+WS9Gw0CkniJ/MdRv8iI0sCXP+U/QJxTPCGBimaRoDHlOI7oSe24AxsjRN1TRnaDIplt8qzQT7fqSpWzTLwKV4HRjKBRMsFdEpzDFx8eQUkOpO0LXxZr0Za/pOuUzjf56jMFQp8+W9bduPbx8sBQtJWKeA7gSXpr/6LncrTLSw3WQEIkmMcOjK9KG/xV5hCtY5K0HnxI3Q524CT1nrNAR3IA+NGH0OaY23vp8/Fu8kBUWBFdHHjwHj7pOGTKiRgwI1DE3V13bAuJ1RY0SNC8hzY3bbDzBFg2ccN5JQ5MbHQ0Cw37lRxn9h4/h6Dhj3Y50NROpBG+eBM18FyvzFIdOh/riBtEwNk77/e/EJzxhhuVOHKt9Zff7k1djofHcLAFCKY4hGlc/fttvl61ylDLFIGwC3jneiL96Xr08vy9kCD4iDM78SgVKXdgdEVxdfC9U7ZJkWIN0c4YoPBwWSigCjHhNQmTjeScYeeASSviRUQcdyNIo1whbo2nUUOKUEEQR+pQxjgN/jwsmNd+eqAkI88FXKg4eSI0IYInfBRytBwkKiBX7EvBQypJoIAdIpEoxIdiFEO+tX8Mbu0cj4lFgR9hFrvlbKfNyHWiE5Bb6lkyW8iRIcoOlOJdaDQ4jFOE6iEoWDRKu026s0HCFSkWQFjtKthEf1H+4TmsxXLEfyAAAAAElFTkSuQmCC',
+      shadowUrl: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAQAAAC0NkA6AAAELklEQVR4AWIYBaNgFIyCUTAKRsEoADRLF2uSFEEcwCMjpaRlfb9vcXeHK+5whjP+GuzzMFfuzBl3d4fx6ZK0iGC2exenC4d/tHdV/NL+bNTf2kf+ODLUFEF9X4sIMMip+tPIouX16FWLEROKYiXzAlh80FxQyWfQ6gL8w4gCvB53cJ/2OMZOJ8xIyEjYLeYiyGM2VOVp5rxLl9GKAP8RBEFdrqe60EaLAYM66KiTbjWjR1CMAEqQKprkKpWhjhTLDLQyn436nUukz9Ejc451dmLRZkOms9F0xuuwVwlPQ4Av2VGR98ex399N+txvxQP5NAIGMMdhWY6fBFozsUedcVOHBRbksh3Z7DbsV0Y0acKvEECxpiPxaBi11iBMOfNnvMUAAOaNJcSKAgR9mtmxh1xdmBJLXx2uUvlcEV2y4cSMNCMhICiAzMzrcdZPzU2s0nbyaZzX1BxZG9jq00xb7C/rkutcQ/1J/VxFZXbZRkNzAhQrWJwuFsoGoEkvuwvsTAfcVhOYI78trCrAM8ysmNR6lEcXTF4eh5pLLnORjGjWCQF5TgAszhYAI++B6+os+EZa2IUXABTIso3HC+xmMRnh1E7Hk0+mapQqKcixBUx4cg7zoIAgIUlErxrcOXPTb/KO7sB/nICWzgSUx8PO1WdNPtr3yZQmeUQFWdCsfzJ+QUYG0hmSCtxhc6T5phVPqcprDLJ8udQtCjSYfcWn9bcjGu8RVXKMgKcAFGBkJEuaIKnEUXpoj862d2SWuzY0CWgIgZm6BMFku1GYMhfiyLL5MWBIE5LNOpnMUYL41J3drM2kyW3bQwQCHkSuhwNqot7W1rCJBjQj4wJARtJksk4um2iiRB1Cf2nP3Uetabu+9ZAgL4hBJEiCs+BFyDDvrkAQgM0ccEnHItpog/Xkr+t3+22/04Nv/Sg2+RQxgAisyq4EtnQRvSpOohgGQNH5BOBOAL7wyl/fH+sb33rrdaBYpgPpYwJeEIOIkmdgKkl62S9aNGvmrBBzuQeYUPqyt/29fdUpzz2FFEOC1OY5IPOCQWSRo7Ah1V5ZimQTihKdquB83evu/u5wZzrnfQixSZyYZvzxL4Eh5BZ4E2owotmQSbWiBFSGsnPd/e2xbtzZ3gUKmD7Mn9Mar/Iv2w8iokAdVZ8pB4pcYp8zAEbX39uc1h7oRp3zOu7GNmf6nC+X478BDCCLsCCnbAOyKKRrwg1t0Rzs9nv0IULeogP8MAOsLAEGkBdgDB1s88fR9jrUfG9y/aSbdpWHAHmSP+QnGERgOGbZReuwxbOUPeQ7ZJSLtM8f6DFMUpXfoAf4+uH+gzNRAC0jfRDOkmtUSzVVCQLElGf0ND8pIPC7o+Q3/1nVL9novLU6SkEVTQlTpK/ojwEDyIN4ud7RQY9VI5lPY+A36Cn+/cAwMpz/G/IdAqGyx1q2VHAAAAAASUVORK5CYII=',
+      wptIconUrls: {
+      '': 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACEAAAAzCAMAAAAuJJHNAAAAkFBMVEUAAAAAru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru8Aru9ovJP8AAAAL3RSTlMA+AT68Fr0FA8H3MSXQDkL6+bg1o6CUkcxwbitbV8sJyQZz76neH1yTB6yolWHaUf8FCEAAAGESURBVDjLfdTnloIwEAXgmyxVKUoTxLWsvezO+7/dqkgGDPH7B2dOuJkwQVe8Dgv7Fq48DIqjfJtYQggrGWczvcifXSxiTmXH6DkHFvWJeomOcky6dNYp+KEhiSrZbGlY+vqQzMikbuKGEzIRNu7klcwqD8BySmbiEXbRi18Hu/SLWAbIHSlOtpaQm30n2NjFhnvxtZd4srnB0xIlx5h7aMiAgxSYOdT6RivklwvYQqWI+CATVZHjWyW3uGIzUhW/uAkV1EYr4qgHRLy1nY+XvNt3l3frtFHDKe92CQTEj38egLhISZnHQNFpsqjyxWHuENs/cqdkNilxl5FZ7fPWdNwAvyaTHxdPhSCDIxqe6V8frfHCZ9OXo+WOh5dYAZ8XycHcypCC2YI0B3R5c31oz+g5Oe/tXKDPV2PDg/ImmmgzzYbuiEsMzWpEbBJiwJFYIMG03nO/NYXDpz7Mv1KjcmFQJvRgnWC0b2L6YENhR0t8cLLUgRjIgG8ig9U2xGdy/R7zH4uopdSUohgfAAAAAElFTkSuQmCC',
+      }
+    }
+  }
+
+  var x = new L.GPX(data, gptOptions)
+    .on('loaded', function(e) {
+      var gpx = e.target;
+      // console.log(e);
+      map.fitBounds(gpx.getBounds());
+      
+      var dtdd = [];
+      
+      var movingPace = gpx.get_moving_pace();
+      if (movingPace) {
+        var seconds = Math.floor(movingPace / 1000);
+        var date = new Date(null);
+        date.setSeconds(seconds);
+        var utc = date.toUTCString();
+        movingPace = utc.substr(utc.indexOf(':') - 2, 8)
+        
+        dtdd.push('<dt>Average pace</dt><dd>' + movingPace + ' per km</dd>');
+      }
+      
+      var averageHR = gpx.get_average_hr();
+      if (averageHR) {
+        dtdd.push('<dt>Average heart rate</dt><dd>' + averageHR + ' bpm</dd>');
+      }
+      
+      // var distance = gpx.get_distance();
+      // if (distance) {
+      //   dtdd.push('<dt>Distance</dt><dd>' + distance + ' m</dd>');
+      // }
+      // var totalTime = gpx.get_total_time();
+      // if (totalTime) {
+      //   dtdd.push('<dt>Time</dt><dd>' + totalTime + ' ms</dd>');
+      // }
+      
+      var elevationGain = gpx.get_elevation_gain();
+      if (elevationGain) {
+        dtdd.push('<dt>Elevation gain</dt><dd>' + parseFloat(elevationGain.toFixed(2)) + ' m</dd>');
+      }
+      var elevationLoss = gpx.get_elevation_loss();
+      if (elevationLoss) {
+        dtdd.push('<dt>Elevation lost</dt><dd>' + parseFloat(elevationLoss.toFixed(2)) + ' m</dd>');
+      }
+      document.querySelector('tfoot > tr > td > dl').insertAdjacentHTML('beforeend', dtdd.join(''));
+    }).addTo(map);
+  
+  // var mapTrackStart = L.divIcon({className: 'map-track-start'});
+  // var mapTrackEnd = L.divIcon({className: 'map-track-end'});
+  // L.marker([46.94971829,7.457774797], {icon: mapTrackStart}).addTo(map).bindPopup('Start');
+  // L.marker([46.949853993,7.458736704], {icon: mapTrackEnd}).addTo(map).bindPopup('End');
+  
+  L.control.scale({imperial: false}).addTo(map);
+  
+  // console.log(map)
+  // console.log(leafletImage)
+  // leafletImage(map, function(err, canvas) {
+  //     var img = document.createElement('img');
+  //     var dimensions = map.getSize();
+  //     img.width = dimensions.x;
+  //     img.height = dimensions.y;
+  //     img.src = canvas.toDataURL();
+  //     // document.getElementById('map').innerHTML = '';
+  //     document.body.appendChild(img);
+  // });
+
+  return tmpl;
+}
+
 function getXPathValue(rootNode, xpathExpression, contextNode, namespaceResolver, resultType) {
   var xpathResult = evaluateXPath(rootNode, xpathExpression, contextNode, namespaceResolver, resultType);
 // console.log(xpathResult);
