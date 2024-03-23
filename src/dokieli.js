@@ -12,6 +12,7 @@ import { getProxyableIRI, getPathURL, stripFragmentFromString, getFragmentOrLast
 import { getResourceGraph, traverseRDFList, getLinkRelation, getAgentName, getGraphImage, getGraphFromData, isActorType, isActorProperty, serializeGraph, getGraphLabel, getUserContacts, getAgentOutbox, getAgentStorage, getAgentInbox, getLinkRelationFromHead, sortGraphTriples } from './graph.js'
 import { notifyInbox, sendNotifications, postActivity } from './inbox.js'
 import { uniqueArray, fragmentFromString, hashCode, generateAttributeId, escapeRegExp, sortToLower, getDateTimeISO, getDateTimeISOFromMDY, generateUUID, matchAllIndex, isValidISBN } from './util.js'
+import { generateGeoView } from './geo.js'
 import MediumEditor from "medium-editor/dist/js/medium-editor.js";
 // window.MediumEditor = MediumEditor;
 import MediumEditorTable from "medium-editor-tables/dist/js/medium-editor-tables.js";
@@ -5957,6 +5958,11 @@ console.log(response)
             tmpl.documentElement.innerHTML = data;
             break;
 
+          case 'application/gpx+xml':
+// console.log(data)
+            tmpl = generateGeoView(data);
+          break;
+
           default:
             data = escapeCharacters(data)
             // console.log(data)
@@ -6021,6 +6027,17 @@ console.log(response)
               baseElement.remove();
             });
           }
+        }
+        else if (contentType == 'application/gpx+xml') {
+          options['init'] = false;
+
+          //XXX: Should this be taken care by updating the document.documentElement and then running DO.C.init(iri) ? If I'm asking, then probably yes.
+          var asideOpenDocument = document.getElementById('open-document');
+          if (asideOpenDocument) {
+            asideOpenDocument.parentNode.removeChild(asideOpenDocument);
+          }
+          document.querySelector('#document-do .resource-open').disabled = false;
+          DO.U.hideDocumentMenu();
         }
         else if (!iri.startsWith('file:') && options.init) {
           window.open(iri, '_blank');
