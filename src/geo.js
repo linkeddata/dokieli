@@ -16,6 +16,54 @@ function getXPathValue(rootNode, xpathExpression, contextNode, namespaceResolver
   }
 }
 
+function getGPXtrkptHTML(rootNode, contextNode, data, options) {
+  var html = '';
+  var trkpt = getXPathValue(rootNode, "gpx:trkpt", contextNode, null, 'ORDERED_NODE_ITERATOR_TYPE');
+
+  try {
+    var xR = trkpt.iterateNext();
+// console.log(xR)
+
+    var lat1, lon1, lat2, lon2;
+    gpxTrkptDistance = 0;
+
+    while (xR) {
+// console.log(xR)
+      data['lat'] = getXPathValue(rootNode, "@lat", xR, null, 'NUMBER_TYPE');
+      data['lon'] = getXPathValue(rootNode, "@lon", xR, null, 'NUMBER_TYPE');
+      data['time'] = getXPathValue(rootNode, "gpx:time", xR, null, 'STRING_TYPE');
+      // <!-- XXX: Is elevation value always present in GPX? -->
+      data['ele'] = getXPathValue(rootNode, "gpx:ele", xR, null, 'NUMBER_TYPE');
+      data['timePeriod'] = data.time.replace(/Z/, '');
+
+      html += `
+            <tr about="#dataset/${data.dataset}/${data.time};${data.lat},${data.lon};${data.ele}" typeof="qb:Observation">
+              <td rel="sdmx-dimension:timePeriod" resource="gi:${data.timePeriod}">${data.time}</td>
+              <td datatype="xsd:decimal" property="wgs:lat">${data.lat}</td>
+              <td datatype="xsd:decimal" property="wgs:lon">${data.lon}</td>
+              <td datatype="xsd:decimal" property="wgs:alt">${data.ele}</td>` +
+((options['hrExists']) ? getGPXextensionsHTML(rootNode, xR, data, options) : '') + `
+              <td rel="qb:dataSet" resource="#dataset/${data.dataset}"></td>
+            </tr>`;
+
+      if (typeof lat1 !== 'undefined' && typeof lon1 !== 'undefined') {
+        gpxTrkptDistance = gpxTrkptDistance + calculateDistance(lat1, lon1, data['lat'], data['lon']);
+      }
+      lat1 = data['lat'];
+      lon1 = data['lon'];
+
+      xR = trkpt.iterateNext();
+    }
+
+    gpxTrkptDistance = gpxTrkptDistance + calculateDistance(lat1, lon1, data['lat'], data['lon']);
+  }
+  catch (e) {
+    console.log('Error: Document tree modified during iteration ' + e);
+  }
+
+  return html;
+}
+
 function getGPXextensionsHTML(rootNode, contextNode, data, options) {
   var extensionsContextNode = contextNode.querySelector('extensions');
   return getGPXTrackPointExtensionhrHTML(rootNode, extensionsContextNode, data, options);
