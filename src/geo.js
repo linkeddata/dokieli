@@ -1,4 +1,21 @@
 
+function getXPathValue(rootNode, xpathExpression, contextNode, namespaceResolver, resultType) {
+  var xpathResult = evaluateXPath(rootNode, xpathExpression, contextNode, namespaceResolver, resultType);
+// console.log(xpathResult);
+
+  switch(xpathResult.resultType) {
+    case 0:
+    default: //ANY_TYPE
+      return xpathResult;
+    case 1: //NUMBER_TYPE
+      return xpathResult.numberValue;
+    case 2: //STRING_TYPE
+      return xpathResult.stringValue;
+    case 3: //BOOLEAN_TYPE
+      return xpathResult.booleanValue;
+  }
+}
+
 function namespaceMap(prefix) {
   var ns = {
     'xhtml' : 'http://www.w3.org/1999/xhtml',
