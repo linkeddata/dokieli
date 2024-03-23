@@ -1,4 +1,16 @@
 
+function namespaceMap(prefix) {
+  var ns = {
+    'xhtml' : 'http://www.w3.org/1999/xhtml',
+    'mathml': 'http://www.w3.org/1998/Math/MathML',
+    'gpx': 'http://www.topografix.com/GPX/1/1',
+    'gpxx': 'http://www.garmin.com/xmlschemas/GpxExtensions/v3',
+    'gpxtpx': 'http://www.garmin.com/xmlschemas/TrackPointExtension/v1'
+  };
+  return ns[prefix] || 'http://www.topografix.com/GPX/1/1';
+}
+
+
 //From https://stackoverflow.com/a/21623206
 function calculateDistance(lat1, lon1, lat2, lon2) {
   var p = 0.017453292519943295;    // Math.PI / 180
