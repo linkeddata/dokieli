@@ -42,6 +42,8 @@
     "dompurify": "^3.0.9",
     "fs": "^0.0.1-security",
     "http-link-header": "^1.1.3",
+    "leaflet": "^1.9.4",
+    "leaflet-gpx": "^1.7.0",
     "medium-editor": "^5.23.3",
     "medium-editor-tables": "^0.6.1",
     "micromark": "^4.0.0",
