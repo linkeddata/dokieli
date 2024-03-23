@@ -1,3 +1,11 @@
+'use strict'
+
+import Config from './config.js';
+import * as leaflet from 'leaflet';
+import * as leafletGpx from 'leaflet-gpx';
+const L = { ...leaflet, ...leafletGpx };
+import { fragmentFromString, generateAttributeId } from './util.js'
+import { getAgentHTML, createDateHTML } from './doc.js'
 
 var gpxTrkptDistance = 0;
 
@@ -403,3 +411,15 @@ function roundValue(value, decimals) {
   return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
 }
 
+export {
+  generateGeoView,
+  getXPathValue,
+  getGPXActivityHTML,
+  getGPXtrkptHTML,
+  getGPXextensionsHTML,
+  getGPXTrackPointExtensionhrHTML,
+  namespaceMap,
+  evaluateXPath,
+  calculateDistance,
+  roundValue
+}
