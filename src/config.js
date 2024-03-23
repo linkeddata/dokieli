@@ -375,7 +375,9 @@ export default {
 
     Markup: ['text/html', 'image/svg+xml', 'text/markdown'],
 
-    MultiMediaType: ['audio', 'image', 'video']
+    MultiMediaType: ['audio', 'image', 'video'],
+
+    Geo: ['application/gpx+xml']
   },
 
   RDFaAttributes: ["about", "content","datatype", "href", "inlist", "prefix", "property", "rel", "resource", "rev", "src", "typeof", "vocab"],
