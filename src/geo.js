@@ -4,7 +4,7 @@ import Config from './config.js';
 import * as leaflet from 'leaflet';
 import * as leafletGpx from 'leaflet-gpx';
 const L = { ...leaflet, ...leafletGpx };
-import { fragmentFromString, generateAttributeId } from './util.js'
+import { fragmentFromString, generateAttributeId, convertToISO8601Duration } from './util.js'
 import { getAgentHTML, createDateHTML } from './doc.js'
 import { getResource } from './fetcher.js'
 
@@ -274,7 +274,7 @@ getGPXtrkptHTML(rootNode, trksegContextNode, data, options) + `
                   <dt>Distance</dt>
                   <dd>${roundValue(gpxTrkptDistance, 2)} km</dd>
                   <dt>Time</dt>
-                  <dd><time>${data.duration}</time></dd>
+                  <dd datatype="xsd:duration" datetime="${convertToISO8601Duration(data.duration)}" property="schema:activityDuration"><time>${data.duration}</time></dd>
                 </dl>
               </td>
               <td>` + `
