@@ -645,6 +645,15 @@ export default {
     "rellatestversion": { "@id": "https://www.w3.org/ns/iana/link-relations/relation#latest-version", "@type": "@id" },
 
     "qbDataSet": { "@id": "http://purl.org/linked-data/cube#DataSet", "@type": "@id"},
+    "qbObservation": { "@id": "http://purl.org/linked-data/cube#Observation", "@type": "@id"},
+    "sdmxdimensionrefPeriod": { "@id": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod", "@type": "@id" },
+    "sdmxdimensiontimePeriod": { "@id": "http://purl.org/linked-data/sdmx/2009/dimension#timePeriod", "@type": "@id" },
+    "sdmxmeasureobsValue": { "@id": "http://purl.org/linked-data/sdmx/2009/measure#obsValue", "@type": "@id", "@array": true },
+    "wgslat": "http://www.w3.org/2003/01/geo/wgs84_pos#lat",
+    "wgslon": "http://www.w3.org/2003/01/geo/wgs84_pos#lon",
+    "wgsalt": "http://www.w3.org/2003/01/geo/wgs84_pos#alt",
+
+    "qudtunitHeartBeatsPerMinute": { "@id": "http://qudt.org/vocab/unit#HeartBeatsPerMinute" },
     "dcatDataset": { "@id": "http://www.w3.org/ns/dcat#Dataset", "@type": "@id"},
     "voidDataset": { "@id": "http://rdfs.org/ns/void#Dataset", "@type": "@id"},
 
