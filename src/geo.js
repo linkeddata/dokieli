@@ -7,7 +7,7 @@ const L = { ...leaflet, ...leafletGpx };
 import { fragmentFromString, generateAttributeId } from './util.js'
 import { getAgentHTML, createDateHTML } from './doc.js'
 
-var gpxTrkptDistance = 0;
+var gpxTrkptDistance;
 
 //FIXME: It should perhaps act more like an insert/append as opposed to replacing the body.
 function generateGeoView(data) {
@@ -22,15 +22,19 @@ function generateGeoView(data) {
   var prefixes = document.body.getAttribute('prefix') + ' wgs: http://www.w3.org/2003/01/geo/wgs84_pos# sdmx-dimension: http://purl.org/linked-data/sdmx/2009/dimension# sdmx-measure: http://purl.org/linked-data/sdmx/2009/measure# gi: http://reference.data.gov.uk/id/gregorian-instant/ qudt-unit: http://qudt.org/vocab/unit#';
   document.body.setAttribute('prefix', prefixes);
   document.body.replaceChildren(fragmentFromString('<main><article about="" typeof="schema:Article">' + gpxActivity + '</article></main>'));
-  document.querySelector('head title').textContent = '';
+  const titleElement = document.querySelector('head title');
+  if (titleElement) {
+    titleElement.textContent = '';
+  }
+
   //XXX: This is hacky for now.
   tmpl.documentElement.innerHTML = document.documentElement.innerHTML;
 
-  var mapId = document.querySelector('[typeof="schema:Map"]');
+  var mapNode = document.querySelector('[typeof="schema:Map"]');
   var mapOptions = {
     'preferCanvas': true
   }
-  var map = L.map(mapId, mapOptions);
+  var map = L.map(mapNode, mapOptions);
   
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     subdomains: 'abc',
@@ -106,7 +110,7 @@ function generateGeoView(data) {
       if (elevationLoss) {
         dtdd.push('<dt>Elevation lost</dt><dd>' + parseFloat(elevationLoss.toFixed(2)) + ' m</dd>');
       }
-      document.querySelector('tfoot > tr > td > dl').insertAdjacentHTML('beforeend', dtdd.join(''));
+      document.querySelector('tfoot > tr > td > dl').insertAdjacentHTML('beforeend', '                  ' + dtdd.join('\n                  '));
     }).addTo(map);
   
   // var mapTrackStart = L.divIcon({className: 'map-track-start'});
@@ -245,12 +249,12 @@ function getGPXActivityHTML(rootNode, contextNode, options) {
   var mapId = generateAttributeId();
   html = `
     <figure>
-      <figcaption>Activity at <a href="https://render.openstreetmap.org/cgi-bin/export?bbox=${data.metadataBounds}&amp;scale=12000&amp;format=png&amp;layers=C">https://render.openstreetmap.org/cgi-bin/export?bbox=${data.metadataBounds}&amp;scale=12000&amp;format=png&amp;layers=C</a> .</figcaption>
-      <div id="${mapId}" rel="schema:hasMap" resource="#${mapId}" typeof="schema:Map"></div>
+      <figcaption>Activity at <a href="${data.metadataBoundsURL}">${data.metadataBounds}</a> .</figcaption>
+      <div class="do" id="${mapId}" typeof="schema:Map"></div>
       <details>
         <summary>More details about GPS and extension data</summary>
         <table id="cube/${data.dataset}">
-          <caption>Activity at <a href="${data.metadataBoundsURL}">${data.metadataBounds}</a> .</caption>
+          <caption>Activity data at <a href="${data.metadataBoundsURL}">${data.metadataBounds}</a> .</caption>
           <thead about="#structure/${data.dataset}" id="structure/${data.dataset}" typeof="qb:DataStructureDefinition">
             <tr>
               <th rel="qb:component" resource="#component/${data.dataset}/dimension/time" typeof="qb:ComponentSpecification"><span rel="qb:componentProperty" resource="sdmx-dimension:timePeriod" typeof="qb:DimensionProperty"><span property="skos:prefLabel">Time Period</span></span></th>
@@ -272,9 +276,8 @@ getGPXtrkptHTML(rootNode, trksegContextNode, data, options) + `
                   <dd><time>${data.duration}</time></dd>
                 </dl>
               </td>
-              <td>` +
-createDateHTML({ 'id': 'dataset-published', 'property': 'schema:datePublished', 'title': 'Published' }) + datasetPublisher +
-performedBy + `
+              <td>` + `
+        ` + createDateHTML({ 'id': 'dataset-published', 'property': 'schema:datePublished', 'title': 'Published' }) + datasetPublisher + performedBy + `
               </td>
               <td about="#dataset/${data.dataset}" colspan="${tfootColSpan - 2}">
                 <p>The <a href="#structure/${data.dataset}">structure</a> of the <a href="#dataset/${data.dataset}">dataset</a>:</p>
