@@ -19,6 +19,12 @@ function getDateTimeISOFromMDY(s) {
   return `${year}-${month}-${day}`;
 }
 
+function convertToISO8601Duration(timeValue) {
+  const [hours, minutes, seconds] = timeValue.split(':').map(Number);
+  const formattedDuration = `PT${hours}H${minutes}M${seconds}S`;
+  return formattedDuration;
+}
+
 function removeChildren(node) {
   while (node.firstChild) {
     node.removeChild(node.firstChild);
@@ -183,6 +189,7 @@ export {
   uniqueArray,
   getDateTimeISO,
   getDateTimeISOFromMDY,
+  convertToISO8601Duration,
   removeChildren,
   copyTextToClipboard,
   escapeRegExp,
