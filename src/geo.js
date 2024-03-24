@@ -6,6 +6,7 @@ import * as leafletGpx from 'leaflet-gpx';
 const L = { ...leaflet, ...leafletGpx };
 import { fragmentFromString, generateAttributeId } from './util.js'
 import { getAgentHTML, createDateHTML } from './doc.js'
+import { getResource } from './fetcher.js'
 
 var gpxTrkptDistance;
 
@@ -414,6 +415,30 @@ function roundValue(value, decimals) {
   return Number(Math.round(value + 'e' + decimals) + 'e-' + decimals);
 }
 
+async function lookupPlace(lat, lon) {
+  const reverseURL = `https://nominatim.openstreetmap.org/reverse?format=geojson&zoom=10&lat=${lat}&lon=${lon}`;
+
+  const headers = { 'Accept': 'application/json' };
+  const options = { 'noCredentials': true };
+
+  try {
+    const reverseResponse = await getResource(reverseURL, headers, options);
+    const reverseData = await reverseResponse.json();
+
+    const osmId = reverseData.features[0].properties.osm_id;
+    const osmType = reverseData.features[0].properties.osm_type.charAt(0).toUpperCase();
+
+    const detailsURL = `https://nominatim.openstreetmap.org/details.php?format=json&osmtype=${osmType}&osmid=${osmId}`;
+    const detailsResponse = await getResource(detailsURL, headers, options);
+    const detailsData = await detailsResponse.json();
+
+    return { 'reverse': reverseData, 'details': detailsData };
+  } catch (error) {
+    console.error('Error fetching or processing data:', error);
+    throw error; // Rethrow the error to propagate it to the caller
+  }
+}
+
 export {
   generateGeoView,
   getXPathValue,
@@ -424,5 +449,6 @@ export {
   namespaceMap,
   evaluateXPath,
   calculateDistance,
-  roundValue
+  roundValue,
+  lookupPlace
 }
