@@ -185,6 +185,17 @@ function getGPXActivityHTML(rootNode, contextNode, options) {
 
   data['metadataBoundsURL'] = `https://www.openstreetmap.org/?minlon=${data.minLon}&amp;minlat=${data.minLat}&amp;maxlon=${data.maxLon}&amp;maxlat=${data.maxLat}`;
 
+  //FIXME: I prefer to have this HTML by the table but right now this may be the simplest/best place to put it because lookupPlace needs to be called with lat/lon
+  lookupPlace(data.centreLat, data.centreLon).then(function(response) {
+    setTimeout(function() {
+      document.querySelector('[typeof="schema:ExerciseAction"]')
+        .appendChild(fragmentFromString(`
+                  <dt>Place</dt>
+                  <dd><a href="https://www.wikidata.org/entity/${response.details.extratags.wikidata}" rel="schema:exerciseCourse">${response.reverse.features[0].properties.name}</a> (<a about="https://www.wikidata.org/entity/${response.details.extratags.wikidata}" rel="schema:hasMap" href="${data.metadataBoundsURL}">map</a>)</dd>
+                `)
+    )}, 3000);
+  })
+
 // console.log(data.metadataTime);
 // console.log(data.minLat)
 // console.log(data.minLon)
@@ -270,9 +281,9 @@ getGPXtrkptHTML(rootNode, trksegContextNode, data, options) + `
           <tfoot>
             <tr>
               <td>
-                <dl>
+                <dl about="#activity/${data.dataset}" typeof="schema:ExerciseAction">
                   <dt>Distance</dt>
-                  <dd>${roundValue(gpxTrkptDistance, 2)} km</dd>
+                  <dd property="schema:distance">${roundValue(gpxTrkptDistance, 2)} km</dd>
                   <dt>Time</dt>
                   <dd datatype="xsd:duration" datetime="${convertToISO8601Duration(data.duration)}" property="schema:activityDuration"><time>${data.duration}</time></dd>
                 </dl>
