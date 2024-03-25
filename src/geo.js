@@ -122,7 +122,7 @@ function generateGeoView(data) {
       if (elevationLoss) {
         dtdd.push('<dt>Elevation lost</dt><dd>' + parseFloat(elevationLoss.toFixed(2)) + ' m</dd>');
       }
-      document.querySelector('tfoot > tr > td > dl').insertAdjacentHTML('beforeend', '                  ' + dtdd.join('\n                  '));
+      document.querySelector('tfoot > tr > td [typeof="schema:ExerciseAction"]').insertAdjacentHTML('beforeend', '                  ' + dtdd.join('\n                  '));
     }).addTo(map);
   
   // var mapTrackStart = L.divIcon({className: 'map-track-start'});
@@ -229,17 +229,19 @@ function getGPXActivityHTML(rootNode, contextNode, options) {
   data['duration'] = utc.substr(utc.indexOf(':') - 2, 8)
 // [${data.startDate} ~ ${data.endDate}]
 
-  data['datasetPublisher'] = (Config.User.IRI) ? Config.User.IRI : null;
-
-
   var trksegContextNode = contextNode.querySelector('gpx trk trkseg');
 // var trksegs = contextNode.querySelectorAll('gpx trk trkseg')
 // console.log(trksegs);
 
-  options['hrExists'] = getXPathValue(rootNode, "gpx:trkpt[1]/gpx:extensions/gpxtpx:TrackPointExtension/gpxtpx:hr", trksegContextNode, null, 'BOOLEAN_TYPE');
+  options['gpxtpx'] = [];
+  Object.keys(gpxtpx).forEach(function(element) {
+    if (gpxtpx[element]['property']) {
+      options['gpxtpx'][element] = getXPathValue(rootNode, `gpx:trkpt[1]/gpx:extensions/gpxtpx:TrackPointExtension/gpxtpx:${element}`, trksegContextNode, null, 'BOOLEAN_TYPE');
+    }
+  });
 
-  var hrTH = '', hrDD = '', datasetPublisher = '';
-
+  var datasetPublisher = '';
+  data['datasetPublisher'] = (Config.User.IRI) ? Config.User.IRI : null;
   if (data['datasetPublisher']) {
     datasetPublisher = `
           <dl>
@@ -247,6 +249,8 @@ function getGPXActivityHTML(rootNode, contextNode, options) {
             <dd rel="dcterms:publisher">${getAgentHTML({'omitImage': true})}</dd>
           </dl>`;
   }
+
+  var datasetPublished = createDateHTML({ 'id': 'dataset-published', 'property': 'schema:datePublished', 'title': 'Published' });
 
   //XXX: The user is not necessarily the performer of this activity! Is there a way to automatically find out?
   //TODO: as:origin, as:target
@@ -260,18 +264,25 @@ function getGPXActivityHTML(rootNode, contextNode, options) {
   }
 
   var tfootColSpan = 4;
-  if (options['hrExists']) {
-    tfootColSpan = 5;
-    hrTH = `
-          <th rel="qb:component" resource="#component/${data.dataset}/measure/heart-rate" typeof="qb:ComponentSpecification"><span rel="qb:componentProperty" resource="qudt-unit:HeartBeatsPerMinute" typeof="qb:MeasureProperty"><span property="skos:prefLabel" rel="rdfs:subPropertyOf" resource="sdmx-measure:obsValue">Heart rate</span></span></th>`;
+  var gpxtpxTH = [];
+  var gpxtpxLI = [];
+  Object.keys(gpxtpx).forEach(function(element) {
+    if (gpxtpx[element]['property']) {
+      tfootColSpan++;
+      gpxtpxTH.push(`<th rel="qb:component" resource="#component/${data.dataset}/measure/${element}" typeof="qb:ComponentSpecification"><span rel="qb:componentProperty" resource="${gpxtpx[element].property}" typeof="qb:MeasureProperty"><span property="skos:prefLabel" rel="rdfs:subPropertyOf" resource="sdmx-measure:obsValue">${gpxtpx[element].label}</span></span></th>`);
 
-    hrDD = `
-              <dd><a href="http://qudt.org/vocab/unit#HeartBeatsPerMinute">Heart rate</a> (beats per minute)</dd>`;
-  }
+      var p = gpxtpx[element].property;
+      var propertyURI = Config.Prefixes[p.split(':')[0]] + p.split(':')[1];
+
+      gpxtpxLI.push(`<li><a href="${propertyURI}">${gpxtpx[element].label}</a> (${gpxtpx[element].unitLabel})</li>`);
+    }
+  })
+  gpxtpxTH = gpxtpxTH.join('');
+  gpxtpxLI = gpxtpxLI.join('');
 
   var mapId = generateAttributeId();
   html = `
-    <figure>
+    <figure id="geo" rel="schema:hasPart" resource="#geo">
       <figcaption>Activity at <a href="${data.metadataBoundsURL}">${data.metadataBounds}</a> .</figcaption>
       <div class="do" id="${mapId}" typeof="schema:Map"></div>
       <details>
@@ -283,7 +294,8 @@ function getGPXActivityHTML(rootNode, contextNode, options) {
               <th rel="qb:component" resource="#component/${data.dataset}/dimension/time" typeof="qb:ComponentSpecification"><span rel="qb:componentProperty" resource="sdmx-dimension:timePeriod" typeof="qb:DimensionProperty"><span property="skos:prefLabel">Time Period</span></span></th>
               <th rel="qb:component" resource="#component/${data.dataset}/measure/latitude" typeof="qb:ComponentSpecification"><span rel="qb:componentProperty" resource="wgs:lat" typeof="qb:MeasureProperty"><span property="skos:prefLabel" rel="rdfs:subPropertyOf" resource="sdmx-measure:obsValue">Latitude</span></span></th>
               <th rel="qb:component" resource="#component/${data.dataset}/measure/longitude" typeof="qb:ComponentSpecification"><span rel="qb:componentProperty" resource="wgs:lon" typeof="qb:MeasureProperty"><span property="skos:prefLabel" rel="rdfs:subPropertyOf" resource="sdmx-measure:obsValue">Longitude</span></span></th>
-              <th rel="qb:component" resource="#component/${data.dataset}/measure/altitude" typeof="qb:ComponentSpecification"><span rel="qb:componentProperty" resource="wgs:alt" typeof="qb:MeasureProperty"><span property="skos:prefLabel" rel="rdfs:subPropertyOf" resource="sdmx-measure:obsValue">Altitude</span></span></th>${hrTH}
+              <th rel="qb:component" resource="#component/${data.dataset}/measure/altitude" typeof="qb:ComponentSpecification"><span rel="qb:componentProperty" resource="wgs:alt" typeof="qb:MeasureProperty"><span property="skos:prefLabel" rel="rdfs:subPropertyOf" resource="sdmx-measure:obsValue">Altitude</span></span></th>
+${gpxtpxTH}
             </tr>
           </thead>
           <tbody about="#dataset/${data.dataset}" id="dataset/${data.dataset}" typeof="qb:DataSet">` +
@@ -291,27 +303,30 @@ getGPXtrkptHTML(rootNode, trksegContextNode, data, options) + `
           </tbody>
           <tfoot>
             <tr>
-              <td>
-                <dl about="#activity/${data.dataset}" typeof="schema:ExerciseAction">
-                  <dt>Distance</dt>
-                  <dd property="schema:distance">${roundValue(gpxTrkptDistance, 2)} km</dd>
-                  <dt>Time</dt>
-                  <dd datatype="xsd:duration" datetime="${convertToISO8601Duration(data.duration)}" property="schema:activityDuration"><time>${data.duration}</time></dd>
-                </dl>
-              </td>
-              <td>` + `
-        ` + createDateHTML({ 'id': 'dataset-published', 'property': 'schema:datePublished', 'title': 'Published' }) + datasetPublisher + performedBy + `
-              </td>
-              <td about="#dataset/${data.dataset}" colspan="${tfootColSpan - 2}">
-                <p>The <a href="#structure/${data.dataset}">structure</a> of the <a href="#dataset/${data.dataset}">dataset</a>:</p>
+              <td about="#dataset/${data.dataset}" colspan="2">
+                <p><a href="#dataset/${data.dataset}">Dataset</a> <a href="#structure/${data.dataset}">structure</a>:</p>
 
                 <dl>
                   <dt>Dimensions</dt>
                   <dd><a href="http://purl.org/linked-data/sdmx/2009/dimension#timePeriod">Time</a> (ISO 8601)</dd>
                   <dt>Measures</dt>
-                  <dd><a href="http://www.w3.org/2003/01/geo/wgs84_pos#lat">Latitude</a> (decimal degrees)</dd>
-                  <dd><a href="http://www.w3.org/2003/01/geo/wgs84_pos#lon">Longitude</a> (decimal degrees)</dd>
-                  <dd><a href="http://www.w3.org/2003/01/geo/wgs84_pos#alt">Altitude</a> (meters)</dd>${hrDD}
+                  <dd>
+                    <ul>
+                      <li><a href="http://www.w3.org/2003/01/geo/wgs84_pos#lat">Latitude</a> (decimal degrees)</li>
+                      <li><a href="http://www.w3.org/2003/01/geo/wgs84_pos#lon">Longitude</a> (decimal degrees)</li>
+                      <li><a href="http://www.w3.org/2003/01/geo/wgs84_pos#alt">Altitude</a> (meters)</li>
+${gpxtpxLI}
+                    </ul>
+                  </dd>
+                </dl>
+              ` + datasetPublished + datasetPublisher + performedBy + `
+              </td>
+              <td colspan="${tfootColSpan - 2}">
+                <dl about="#activity/${data.dataset}" typeof="schema:ExerciseAction">
+                  <dt>Distance</dt>
+                  <dd property="schema:distance">${roundValue(gpxTrkptDistance, 2)} km</dd>
+                  <dt>Time</dt>
+                  <dd><time datatype="xsd:duration" datetime="${convertToISO8601Duration(data.duration)}" property="schema:activityDuration">${data.duration}</time></dd>
                 </dl>
               </td>
             </tr>
@@ -354,7 +369,7 @@ function getGPXtrkptHTML(rootNode, contextNode, data, options) {
               <td datatype="xsd:decimal" property="wgs:lat">${data.lat}</td>
               <td datatype="xsd:decimal" property="wgs:lon">${data.lon}</td>
               <td datatype="xsd:decimal" property="wgs:alt">${data.ele}</td>` +
-((options['hrExists']) ? getGPXextensionsHTML(rootNode, xR, data, options) : '') + `
+getGPXextensionsHTML(rootNode, xR, data, options) + `
               <td rel="qb:dataSet" resource="#dataset/${data.dataset}"></td>
             </tr>`;
 
@@ -378,15 +393,14 @@ function getGPXtrkptHTML(rootNode, contextNode, data, options) {
 
 function getGPXextensionsHTML(rootNode, contextNode, data, options) {
   var extensionsContextNode = contextNode.querySelector('extensions');
-  return getGPXTrackPointExtensionhrHTML(rootNode, extensionsContextNode, data, options);
-}
 
-function getGPXTrackPointExtensionhrHTML(rootNode, contextNode, data, options) {
-  var hr =  getXPathValue(rootNode, "gpxtpx:TrackPointExtension/gpxtpx:hr", contextNode, null, 'NUMBER_TYPE');
-  var html = `
-          <td property="qudt-unit:HeartBeatsPerMinute" datatype="xsd:nonNegativeInteger">` + hr + `</td>`;
+  var html = [];
+  Object.keys(options['gpxtpx']).forEach(function(element) {
+    var value = getXPathValue(rootNode, "gpxtpx:TrackPointExtension/gpxtpx:" + element, extensionsContextNode, null, gpxtpx[element].xpathResultType);
+    html.push(`<td property="${gpxtpx[element].property}" datatype="${gpxtpx[element].datatype}">${value}</td>`);
+  })
 
-  return html;
+  return html.join('\n              ');
 }
 
 function namespaceMap(prefix) {
@@ -467,7 +481,6 @@ export {
   getGPXActivityHTML,
   getGPXtrkptHTML,
   getGPXextensionsHTML,
-  getGPXTrackPointExtensionhrHTML,
   namespaceMap,
   evaluateXPath,
   calculateDistance,
