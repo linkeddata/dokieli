@@ -5944,7 +5944,7 @@ console.log(response)
       return image + name + published + summary + tags;
     },
 
-    spawnDokieli: function(documentNode, data, contentType, iri, options){
+    spawnDokieli: async function(documentNode, data, contentType, iri, options){
       options =  options || {};
 
       // if (DO.C.MediaTypes.RDF.includes(contentType)) {
@@ -5960,8 +5960,29 @@ console.log(response)
 
           case 'application/gpx+xml':
 // console.log(data)
-            tmpl = generateGeoView(data);
-          break;
+            tmpl = await generateGeoView(data)
+            // FIXME: Tested with generateGeoView returning a Promise but somehow 
+            .then(function(i){
+              var id = 'geo';
+              var metadataBounds = document.querySelector('#' + id + ' figcaption a');
+              if (metadataBounds) {
+                var message = 'Opened geo data at <a href="' + metadataBounds.href + '">' + metadataBounds.textContent + '</a>';
+                message = {
+                  'content': message,
+                  'type': 'info',
+                  'timer': 3000,
+                }
+                DO.U.addMessageToLog(message);
+                showActionMessage(document.documentElement, message);
+
+                var w = document.getElementById(id);
+                window.history.replaceState(null, null, '#' + id);
+                w.scrollIntoView();
+              }
+
+              return i;
+            })
+            break;
 
           default:
             data = escapeCharacters(data)

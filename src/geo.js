@@ -53,7 +53,7 @@ function generateGeoView(data) {
     titleElement.textContent = '';
   }
 
-  //XXX: This is hacky for now.
+  //XXX: This (tmpl) is not really being used in the return;
   tmpl.documentElement.innerHTML = document.documentElement.innerHTML;
 
   mapNode = document.querySelector('[typeof="schema:Map"]');
@@ -159,7 +159,7 @@ function generateGeoView(data) {
   //     document.body.appendChild(img);
   // });
 
-  return tmpl;
+  return Promise.resolve(tmpl);
 }
 
 function getXPathValue(rootNode, xpathExpression, contextNode, namespaceResolver, resultType) {
