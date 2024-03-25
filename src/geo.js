@@ -288,7 +288,7 @@ function getGPXActivityHTML(rootNode, contextNode, options) {
         <summary>More details about GPS and extension data</summary>
         <table id="cube/${data.dataset}">
           <caption>Activity data at <a href="${data.metadataBoundsURL}">${data.metadataBounds}</a> .</caption>
-          <thead about="#structure/${data.dataset}" id="structure/${data.dataset}" typeof="qb:DataStructureDefinition">
+          <thead id="structure/${data.dataset}" rel="schema:hasPart" resource="#structure/${data.dataset}" typeof="qb:DataStructureDefinition">
             <tr>
               <th rel="qb:component" resource="#component/${data.dataset}/dimension/time" typeof="qb:ComponentSpecification"><span rel="qb:componentProperty" resource="sdmx-dimension:timePeriod" typeof="qb:DimensionProperty"><span property="skos:prefLabel">Time Period</span></span></th>
               <th rel="qb:component" resource="#component/${data.dataset}/measure/latitude" typeof="qb:ComponentSpecification"><span rel="qb:componentProperty" resource="wgs:lat" typeof="qb:MeasureProperty"><span property="skos:prefLabel" rel="rdfs:subPropertyOf" resource="sdmx-measure:obsValue">Latitude</span></span></th>
@@ -297,7 +297,7 @@ function getGPXActivityHTML(rootNode, contextNode, options) {
 ${gpxtpxTH}
             </tr>
           </thead>
-          <tbody about="#dataset/${data.dataset}" id="dataset/${data.dataset}" typeof="qb:DataSet">` +
+          <tbody id="dataset/${data.dataset}" rel="schema:hasPart" resource="#dataset/${data.dataset}" typeof="qb:DataSet">` +
 getGPXtrkptHTML(rootNode, trksegContextNode, data, options) + `
           </tbody>
           <tfoot>
