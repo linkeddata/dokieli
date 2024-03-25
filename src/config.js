@@ -388,7 +388,9 @@ export default {
     'as': 'https://www.w3.org/ns/activitystreams#',
     'oa': 'http://www.w3.org/ns/oa#',
     'schema': 'http://schema.org/',
-    'cito': 'http://purl.org/spar/cito/'
+    'cito': 'http://purl.org/spar/cito/',
+    'qudt-unit': 'http://qudt.org/vocab/unit#',
+    'ex': 'http://example.org/'
   },
 
   Vocab: {
