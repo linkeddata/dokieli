@@ -5,7 +5,7 @@ import * as leaflet from 'leaflet';
 import * as leafletGpx from 'leaflet-gpx';
 const L = { ...leaflet, ...leafletGpx };
 import { fragmentFromString, generateAttributeId, convertToISO8601Duration } from './util.js'
-import { getAgentHTML, createDateHTML } from './doc.js'
+import { getAgentHTML, createDateHTML, selectArticleNode } from './doc.js'
 import { getResource } from './fetcher.js'
 
 var gpxTrkptDistance;
@@ -30,11 +30,24 @@ function generateGeoView(data) {
   var rootNode = parser.parseFromString(data, "text/xml");
   var contextNode = rootNode;
 
+  //XXX: Allowing only one map (#geo) in the document for now but revisit when giving unique #id to each map.
+  if (Config.Map) {
+    Config.Map.off();
+    Config.Map.remove();
+    var mapNode = document.querySelector('[typeof="schema:Map"]');
+    mapNode.parentNode.parentNode.removeChild(mapNode.parentNode);
+  }
+
   var gpxActivity = getGPXActivityHTML(rootNode, contextNode);
 
   var prefixes = document.body.getAttribute('prefix') + ' wgs: http://www.w3.org/2003/01/geo/wgs84_pos# sdmx-dimension: http://purl.org/linked-data/sdmx/2009/dimension# sdmx-measure: http://purl.org/linked-data/sdmx/2009/measure# gi: http://reference.data.gov.uk/id/gregorian-instant/ qudt-unit: http://qudt.org/vocab/unit#';
   document.body.setAttribute('prefix', prefixes);
-  document.body.replaceChildren(fragmentFromString('<main><article about="" typeof="schema:Article">' + gpxActivity + '</article></main>'));
+
+  var node = selectArticleNode(document);
+  // document.body.replaceChildren(fragmentFromString('<main><article about="" typeof="schema:Article">' + gpxActivity + '</article></main>'));
+  //TODO: If generateGeoView provides a node to append to, it should append to that node instead of the body:
+  node.appendChild(fragmentFromString(gpxActivity));
+
   const titleElement = document.querySelector('head title');
   if (titleElement) {
     titleElement.textContent = '';
@@ -43,11 +56,12 @@ function generateGeoView(data) {
   //XXX: This is hacky for now.
   tmpl.documentElement.innerHTML = document.documentElement.innerHTML;
 
-  var mapNode = document.querySelector('[typeof="schema:Map"]');
+  mapNode = document.querySelector('[typeof="schema:Map"]');
   var mapOptions = {
     'preferCanvas': true
   }
   var map = L.map(mapNode, mapOptions);
+  Config['Map'] = map;
   
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     subdomains: 'abc',
