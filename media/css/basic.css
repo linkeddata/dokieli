@@ -665,6 +665,7 @@ table dd {
 margin:0;
 text-align:left;
 }
+tfoot { vertical-align: top; }
 tfoot td > * + * {
 margin-top:1em;
 }
