@@ -12,12 +12,12 @@ var gpxTrkptDistance;
 //FIXME: Update RDF properties, datatypes, and other information that's temporarily marked/being used with ex:FIXME- below in gpxtpx.
 //Extensions based on https://www8.garmin.com/xmlschemas/TrackPointExtensionv2.xsd
 const gpxtpx = {
-  'atemp': { 'label': 'Air temperature', 'unitLabel': 'degrees Celsius', 'property': 'ex:FIXME-atemp', 'datatype': 'xsd:decimal', 'xpathResultType': 'NUMBER_TYPE' },
-  'wtemp': { 'label': 'Water temperature', 'unitLabel': 'degrees Celsius', 'property': 'ex:FIXME-wtemp', 'datatype': 'xsd:decimal', 'xpathResultType': 'NUMBER_TYPE' },
-  'depth': { 'label': 'Depth', 'unitLabel': 'meters', 'property': 'qudt-unit:Meter', 'datatype': 'xsd:decimal', 'xpathResultType': 'NUMBER_TYPE' },
-  'hr': { 'label': 'Heart rate', 'unitLabel': 'beats per minute', 'property': 'qudt-unit:HeartBeatsPerMinute', 'datatype': 'xsd:nonNegativeInteger', 'xpathResultType': 'NUMBER_TYPE' },
-  'cad': { 'label': 'Cadence', 'unitLabel': 'revolutions per minute', 'property': 'ex:FIXME-cadence', 'datatype': 'xsd:nonNegativeInteger', 'xpathResultType': 'NUMBER_TYPE' },
-  'speed': { 'label': 'Speed', 'unitLabel': 'meters per second', 'property': 'schema:speed', 'datatype': 'xsd:decimal', 'xpathResultType': 'NUMBER_TYPE' },
+  'atemp': { 'label': 'Air temperature', 'unitLabel': 'degrees Celsius', 'property': 'ex:FIXME-atemp', 'datatype': 'xsd:double', 'xpathResultType': 'NUMBER_TYPE' },
+  'wtemp': { 'label': 'Water temperature', 'unitLabel': 'degrees Celsius', 'property': 'ex:FIXME-wtemp', 'datatype': 'xsd:double', 'xpathResultType': 'NUMBER_TYPE' },
+  'depth': { 'label': 'Depth', 'unitLabel': 'meters', 'property': 'qudt-unit:Meter', 'datatype': 'xsd:double', 'xpathResultType': 'NUMBER_TYPE' },
+  'hr': { 'label': 'Heart rate', 'unitLabel': 'beats per minute', 'property': 'qudt-unit:HeartBeatsPerMinute', 'datatype': 'xsd:unsignedByte', 'xpathResultType': 'NUMBER_TYPE' },
+  'cad': { 'label': 'Cadence', 'unitLabel': 'revolutions per minute', 'property': 'ex:FIXME-cadence', 'datatype': 'xsd:unsignedByte', 'xpathResultType': 'NUMBER_TYPE' },
+  'speed': { 'label': 'Speed', 'unitLabel': 'meters per second', 'property': 'schema:speed', 'datatype': 'xsd:double', 'xpathResultType': 'NUMBER_TYPE' },
   'course': { 'label': 'Course', 'unitLabel': 'degrees', 'property': 'ex:FIXME-course', 'datatype': 'xsd:decimal', 'xpathResultType': 'NUMBER_TYPE' },
   'bearing': { 'label': 'Bearing', 'unitLabel': 'degrees', 'property': 'ex:FIXME-bearing', 'datatype': 'xsd:decimal', 'xpathResultType': 'NUMBER_TYPE' },
 }
@@ -397,7 +397,7 @@ function getGPXextensionsHTML(rootNode, contextNode, data, options) {
   Object.keys(gpxtpx).forEach(function(element) {
     if (options['gpxtpx'][element]) {
       var value = getXPathValue(rootNode, "gpxtpx:TrackPointExtension/gpxtpx:" + element, extensionsContextNode, null, gpxtpx[element].xpathResultType);
-      html.push(`<td property="${gpxtpx[element].property}" datatype="${gpxtpx[element].datatype}">${value}</td>`);
+      html.push(`<td datatype="${gpxtpx[element].datatype}" property="${gpxtpx[element].property}">${value}</td>`);
     }
   })
 
