@@ -7,6 +7,7 @@ import { stripFragmentFromString, getProxyableIRI } from './uri.js'
 import { uniqueArray } from './util.js'
 import { setAcceptRDFTypes, getResource, getResourceHead } from './fetcher.js'
 import LinkHeader from "http-link-header";
+import * as DOMPurify from 'dompurify';
 
 const store = ld.store;
 
@@ -901,7 +902,7 @@ function getAgentName (s) {
       name = s.vcardnickname
     }
   }
-  return name
+  return DOMPurify.sanitize(name)
 }
 
 function getAgentURL (s) {
@@ -1019,7 +1020,8 @@ function getGraphImage (s) {
 }
 
 function getGraphEmail(s) {
-  return s.schemaemail || s.foafmbox || undefined ;
+  var d = s.schemaemail || s.foafmbox || undefined ;
+  return DOMPurify.sanitize(d);
 }
 
 function getGraphEditor(s) {
@@ -1040,15 +1042,18 @@ function getGraphAuthor(s) {
 }
 
 function getGraphPublished(s) {
-  return s.schemadatePublished || s.aspublished || s.dctermsissued || s.dctermsdate || s.provgeneratedAtTime || undefined;
+  var d = s.schemadatePublished || s.aspublished || s.dctermsissued || s.dctermsdate || s.provgeneratedAtTime || undefined;
+  return DOMPurify.sanitize(d)
 }
 
 function getGraphUpdated(s) {
-  return s.schemadateModified || s.asupdated || s.dctermsmodified || s.dctermsdate || s.provgeneratedAtTime || undefined;
+  var d = s.schemadateModified || s.asupdated || s.dctermsmodified || s.dctermsdate || s.provgeneratedAtTime || undefined;
+  return DOMPurify.sanitize(d)
 }
 
 function getGraphCreated(s) {
-  return s.schemadateCreated || s.dctermscreated || s.dctermsdate || s.provgeneratedAtTime || undefined;
+  var d = s.schemadateCreated || s.dctermscreated || s.dctermsdate || s.provgeneratedAtTime || undefined;
+  return DOMPurify.sanitize(d)
 }
 
 function getGraphLicense(s) {
@@ -1060,15 +1065,18 @@ function getGraphRights(s) {
 }
 
 function getGraphLabel(s) {
-  return s.schemaname || s.dctermstitle || s.dcelementstitle || getAgentName(s) || s.assummary || undefined;
+  var d = s.schemaname || s.dctermstitle || s.dcelementstitle || getAgentName(s) || s.assummary || undefined;
+  return DOMPurify.sanitize(d)
 }
 
 function getGraphTitle(s) {
-  return s.schemaname || s.dctermstitle || s.dcelementstitle || s.asname || undefined;
+  var d = s.schemaname || s.dctermstitle || s.dcelementstitle || s.asname || undefined;
+  return DOMPurify.sanitize(d)
 }
 
 function getGraphDescription(s) {
-  return s.schemadescription || s.dctermsdescription || s.dcelementsdescription || s.schemaname || s.asname || undefined;
+  var d = s.schemadescription || s.dctermsdescription || s.dcelementsdescription || s.schemaname || s.asname || undefined;
+  return DOMPurify.sanitize(d)
 }
 function getGraphTypes(s) {
   return s.rdftype._array;
