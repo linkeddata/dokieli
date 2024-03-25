@@ -9,16 +9,17 @@ import { getAgentHTML, createDateHTML } from './doc.js'
 import { getResource } from './fetcher.js'
 
 var gpxTrkptDistance;
-//TODO: Additional gpxtpx support when data is available in GPX and mapped to RDF.
+//FIXME: Update RDF properties, datatypes, and other information that's temporarily marked/being used with ex:FIXME- below in gpxtpx.
+//Extensions based on https://www8.garmin.com/xmlschemas/TrackPointExtensionv2.xsd
 const gpxtpx = {
-  'atemp': {},
-  'wtemp': {},
-  'depth': {},
+  'atemp': { 'label': 'Air temperature', 'unitLabel': 'degrees Celsius', 'property': 'ex:FIXME-atemp', 'datatype': 'xsd:decimal', 'xpathResultType': 'NUMBER_TYPE' },
+  'wtemp': { 'label': 'Water temperature', 'unitLabel': 'degrees Celsius', 'property': 'ex:FIXME-wtemp', 'datatype': 'xsd:decimal', 'xpathResultType': 'NUMBER_TYPE' },
+  'depth': { 'label': 'Depth', 'unitLabel': 'meters', 'property': 'qudt-unit:Meter', 'datatype': 'xsd:decimal', 'xpathResultType': 'NUMBER_TYPE' },
   'hr': { 'label': 'Heart rate', 'unitLabel': 'beats per minute', 'property': 'qudt-unit:HeartBeatsPerMinute', 'datatype': 'xsd:nonNegativeInteger', 'xpathResultType': 'NUMBER_TYPE' },
   'cad': { 'label': 'Cadence', 'unitLabel': 'revolutions per minute', 'property': 'ex:FIXME-cadence', 'datatype': 'xsd:nonNegativeInteger', 'xpathResultType': 'NUMBER_TYPE' },
   'speed': { 'label': 'Speed', 'unitLabel': 'meters per second', 'property': 'schema:speed', 'datatype': 'xsd:decimal', 'xpathResultType': 'NUMBER_TYPE' },
   'course': { 'label': 'Course', 'unitLabel': 'degrees', 'property': 'ex:FIXME-course', 'datatype': 'xsd:decimal', 'xpathResultType': 'NUMBER_TYPE' },
-  'bearing': {}
+  'bearing': { 'label': 'Bearing', 'unitLabel': 'degrees', 'property': 'ex:FIXME-bearing', 'datatype': 'xsd:decimal', 'xpathResultType': 'NUMBER_TYPE' },
 }
 
 //FIXME: It should perhaps act more like an insert/append as opposed to replacing the body.
@@ -233,11 +234,9 @@ function getGPXActivityHTML(rootNode, contextNode, options) {
 // var trksegs = contextNode.querySelectorAll('gpx trk trkseg')
 // console.log(trksegs);
 
-  options['gpxtpx'] = [];
+  options['gpxtpx'] = {};
   Object.keys(gpxtpx).forEach(function(element) {
-    if (gpxtpx[element]['property']) {
-      options['gpxtpx'][element] = getXPathValue(rootNode, `gpx:trkpt[1]/gpx:extensions/gpxtpx:TrackPointExtension/gpxtpx:${element}`, trksegContextNode, null, 'BOOLEAN_TYPE');
-    }
+    options['gpxtpx'][element] = getXPathValue(rootNode, `gpx:trkpt[1]/gpx:extensions/gpxtpx:TrackPointExtension/gpxtpx:${element}`, trksegContextNode, null, 'BOOLEAN_TYPE');
   });
 
   var datasetPublisher = '';
@@ -267,7 +266,7 @@ function getGPXActivityHTML(rootNode, contextNode, options) {
   var gpxtpxTH = [];
   var gpxtpxLI = [];
   Object.keys(gpxtpx).forEach(function(element) {
-    if (gpxtpx[element]['property']) {
+    if (options['gpxtpx'][element]) {
       tfootColSpan++;
       gpxtpxTH.push(`<th rel="qb:component" resource="#component/${data.dataset}/measure/${element}" typeof="qb:ComponentSpecification"><span rel="qb:componentProperty" resource="${gpxtpx[element].property}" typeof="qb:MeasureProperty"><span property="skos:prefLabel" rel="rdfs:subPropertyOf" resource="sdmx-measure:obsValue">${gpxtpx[element].label}</span></span></th>`);
 
@@ -395,9 +394,11 @@ function getGPXextensionsHTML(rootNode, contextNode, data, options) {
   var extensionsContextNode = contextNode.querySelector('extensions');
 
   var html = [];
-  Object.keys(options['gpxtpx']).forEach(function(element) {
-    var value = getXPathValue(rootNode, "gpxtpx:TrackPointExtension/gpxtpx:" + element, extensionsContextNode, null, gpxtpx[element].xpathResultType);
-    html.push(`<td property="${gpxtpx[element].property}" datatype="${gpxtpx[element].datatype}">${value}</td>`);
+  Object.keys(gpxtpx).forEach(function(element) {
+    if (options['gpxtpx'][element]) {
+      var value = getXPathValue(rootNode, "gpxtpx:TrackPointExtension/gpxtpx:" + element, extensionsContextNode, null, gpxtpx[element].xpathResultType);
+      html.push(`<td property="${gpxtpx[element].property}" datatype="${gpxtpx[element].datatype}">${value}</td>`);
+    }
   })
 
   return html.join('\n              ');
