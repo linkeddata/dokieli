@@ -9,6 +9,17 @@ import { getAgentHTML, createDateHTML } from './doc.js'
 import { getResource } from './fetcher.js'
 
 var gpxTrkptDistance;
+//TODO: Additional gpxtpx support when data is available in GPX and mapped to RDF.
+const gpxtpx = {
+  'atemp': {},
+  'wtemp': {},
+  'depth': {},
+  'hr': { 'label': 'Heart rate', 'unitLabel': 'beats per minute', 'property': 'qudt-unit:HeartBeatsPerMinute', 'datatype': 'xsd:nonNegativeInteger', 'xpathResultType': 'NUMBER_TYPE' },
+  'cad': { 'label': 'Cadence', 'unitLabel': 'revolutions per minute', 'property': 'ex:FIXME-cadence', 'datatype': 'xsd:nonNegativeInteger', 'xpathResultType': 'NUMBER_TYPE' },
+  'speed': { 'label': 'Speed', 'unitLabel': 'meters per second', 'property': 'schema:speed', 'datatype': 'xsd:decimal', 'xpathResultType': 'NUMBER_TYPE' },
+  'course': { 'label': 'Course', 'unitLabel': 'degrees', 'property': 'ex:FIXME-course', 'datatype': 'xsd:decimal', 'xpathResultType': 'NUMBER_TYPE' },
+  'bearing': {}
+}
 
 //FIXME: It should perhaps act more like an insert/append as opposed to replacing the body.
 function generateGeoView(data) {
