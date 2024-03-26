@@ -109,7 +109,7 @@ Let's make it so together! You are welcome to create [issues](https://github.com
 * Bookmark [create](https://dokie.li/media/video/dokieli-annotation-bookmark-create.webm) and [read](https://dokie.li/media/video/dokieli-annotation-bookmark-read.webm).
 * Open digital rights contrasting [storage description and personal policies](https://dokie.li/media/video/dokieli-odrl-storage-description.webm), [agreements and actions between people](https://dokie.li/media/video/dokieli-odrl.webm).
 * Share an article by announcing it to [a contact from addressbook](https://dokie.li/media/video/dokieli-share.webm) and [entering a contact directly](https://dokie.li/media/video/dokieli-orcid-ldn-inbox.webm).
-* Specification [version diff and change log](https://dokie.li/media/video/dokieli-diff-requirements-change.webm), [version diff and test coverage](https://dokie.li/media/video/dokieli-diff-requirements.webm).
+* Specification [requirements, test coverage, version diff, change log](https://dokie.li/media/video/dokieli-spec-conformance.webm).
 
 ## Examples
 
