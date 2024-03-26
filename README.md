@@ -110,6 +110,7 @@ Let's make it so together! You are welcome to create [issues](https://github.com
 * Open digital rights contrasting [storage description and personal policies](https://dokie.li/media/video/dokieli-odrl-storage-description.webm), [agreements and actions between people](https://dokie.li/media/video/dokieli-odrl.webm).
 * Share an article by announcing it to [a contact from addressbook](https://dokie.li/media/video/dokieli-share.webm) and [entering a contact directly](https://dokie.li/media/video/dokieli-orcid-ldn-inbox.webm).
 * Specification [requirements, test coverage, version diff, change log](https://dokie.li/media/video/dokieli-spec-conformance.webm).
+* [Geo and statistical data](https://dokie.li/media/video/dokieli-geo-stats.webm) importing and viewing.
 
 ## Examples
 
