@@ -7,7 +7,7 @@
  */
 
 import { getResource, setAcceptRDFTypes, postResource, putResource, currentLocation, patchResourceWithAcceptPatch, putResourceWithAcceptPut, copyResource, deleteResource } from './fetcher.js'
-import { getDocument, getDocumentContentNode, escapeCharacters, showActionMessage, selectArticleNode, buttonClose, buttonRemoveAside, showRobustLinksDecoration, getResourceInfo, removeNodesWithIds, getResourceInfoSKOS, removeReferences, buildReferences, removeSelectorFromNode, insertDocumentLevelHTML, getResourceInfoSpecRequirements, getTestDescriptionReviewStatusHTML, createFeedXML, getButtonDisabledHTML, showTimeMap, createMutableResource, createImmutableResource, updateMutableResource, createHTML, getResourceImageHTML, setDocumentRelation, setDate, getClosestSectionNode, getAgentHTML, setEditSelections, getNodeLanguage, createActivityHTML, createLicenseHTML, createLanguageHTML, getAnnotationInboxLocationHTML, getAnnotationLocationHTML, getResourceTypeOptionsHTML, getPublicationStatusOptionsHTML, getLanguageOptionsHTML, getLicenseOptionsHTML, getCitationOptionsHTML, getDocumentNodeFromString, getNodeWithoutClasses, getDoctype, serializeTableToText, addMessageToLog } from './doc.js'
+import { getDocument, getDocumentContentNode, escapeCharacters, showActionMessage, selectArticleNode, buttonClose, buttonRemoveAside, showRobustLinksDecoration, getResourceInfo, removeNodesWithIds, getResourceInfoSKOS, removeReferences, buildReferences, removeSelectorFromNode, insertDocumentLevelHTML, getResourceInfoSpecRequirements, getTestDescriptionReviewStatusHTML, createFeedXML, getButtonDisabledHTML, showTimeMap, createMutableResource, createImmutableResource, updateMutableResource, createHTML, getResourceImageHTML, setDocumentRelation, setDate, getClosestSectionNode, getAgentHTML, setEditSelections, getNodeLanguage, createActivityHTML, createLicenseHTML, createLanguageHTML, getAnnotationInboxLocationHTML, getAnnotationLocationHTML, getResourceTypeOptionsHTML, getPublicationStatusOptionsHTML, getLanguageOptionsHTML, getLicenseOptionsHTML, getCitationOptionsHTML, getDocumentNodeFromString, getNodeWithoutClasses, getDoctype, setCopyToClipboard, addMessageToLog } from './doc.js'
 import { getProxyableIRI, getPathURL, stripFragmentFromString, getFragmentOrLastPath, getFragmentFromString, getURLLastPath, getLastPathSegment, forceTrailingSlash, getBaseURL, getParentURLPath, encodeString, getAbsoluteIRI } from './uri.js'
 import { getResourceGraph, traverseRDFList, getLinkRelation, getAgentName, getGraphImage, getGraphFromData, isActorType, isActorProperty, serializeGraph, getGraphLabel, getUserContacts, getAgentOutbox, getAgentStorage, getAgentInbox, getLinkRelationFromHead, sortGraphTriples } from './graph.js'
 import { notifyInbox, sendNotifications, postActivity } from './inbox.js'
@@ -2991,55 +2991,9 @@ console.log(reason);
         nodes.forEach(function(node){
           node.insertAdjacentHTML('afterend', '<button class="do copy-to-clipboard" title="Copy to clipboard">' + Icon[".fas.fa-copy"] + '</button>');
           var button = node.nextElementSibling;
-          DO.U.setCopyToClipboard(node, button);
+          setCopyToClipboard(node, button);
         });
       })
-    },
-
-    setCopyToClipboard: function(contentNode, triggerNode, options = {}) {
-      triggerNode.addEventListener('click', function(e) {
-        if (e.target.closest('button.copy-to-clipboard')) {
-          var text;
-
-          switch (contentNode.nodeName.toLowerCase()) {
-            default:
-            case 'pre':
-              text = contentNode.textContent;
-              break;
-
-            case 'input':
-            case 'textarea':
-              text = contentNode.value;
-              break;
-
-            case 'table':
-              text = serializeTableToText(contentNode);
-              break;
-          }
-
-          navigator.clipboard.writeText(text)
-            .then(() => {
-              var message = 'Copied to clipboard.';
-              message = {
-                'content': message,
-                'type': 'info',
-                'timer': 3000,
-              }
-              addMessageToLog(message);
-              showActionMessage(document.documentElement, message);
-            })
-            .catch(error => {
-              var message = 'Failed to copy text to clipboard.';
-              message = {
-                'content': message,
-                'type': 'error',
-                'timer': 3000,
-              }
-              addMessageToLog(message);
-              showActionMessage(document.documentElement, message);
-            });
-        }
-      });
     },
 
     generateFilename: function(url, options) {

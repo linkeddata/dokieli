@@ -2316,6 +2316,52 @@ function showResourceAudienceAgentOccupations() {
   }
 }
 
+function setCopyToClipboard(contentNode, triggerNode, options = {}) {
+  triggerNode.addEventListener('click', function(e) {
+    if (e.target.closest('button.copy-to-clipboard')) {
+      var text;
+
+      switch (contentNode.nodeName.toLowerCase()) {
+        default:
+        case 'pre':
+          text = contentNode.textContent;
+          break;
+
+        case 'input':
+        case 'textarea':
+          text = contentNode.value;
+          break;
+
+        case 'table':
+          text = serializeTableToText(contentNode);
+          break;
+      }
+
+      navigator.clipboard.writeText(text)
+        .then(() => {
+          var message = 'Copied to clipboard.';
+          message = {
+            'content': message,
+            'type': 'info',
+            'timer': 3000,
+          }
+          addMessageToLog(message);
+          showActionMessage(document.documentElement, message);
+        })
+        .catch(error => {
+          var message = 'Failed to copy text to clipboard.';
+          message = {
+            'content': message,
+            'type': 'error',
+            'timer': 3000,
+          }
+          addMessageToLog(message);
+          showActionMessage(document.documentElement, message);
+        });
+    }
+  });
+}
+
 function serializeTableToText(table) {
   //FIXME: Multiple tbody
 
@@ -2445,6 +2491,7 @@ export {
   getCitationOptionsHTML,
   showGeneralMessages,
   showResourceAudienceAgentOccupations,
+  setCopyToClipboard,
   serializeTableToText,
   serializeTableSectionToText
 }
