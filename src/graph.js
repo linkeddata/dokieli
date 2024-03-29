@@ -314,6 +314,9 @@ function applyParserSerializerFixes(data, contentType) {
       data = data.replace(/start> "(\d+)"@en;/, 'start> "$1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger>;');
       data = data.replace(/end> "(\d+)"@en;/, 'end> "$1"^^<http://www.w3.org/2001/XMLSchema#nonNegativeInteger>;');
       data = data.replace(/\%2523/, '%23');
+
+      //XXX: Seems to get added when https://schema.org/docs/jsonldcontext.jsonld is used. After using 'http' -> 'https' (for fetching purpose) but then the serializer adds `@prefix 0: <https://schema.org/>` which seems invalid.
+      data = data.replace(/^@prefix 0: .*$/gm, '');
       break;
 
     case 'application/ld+json':
