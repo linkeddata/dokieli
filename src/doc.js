@@ -9,6 +9,7 @@ const SimpleRDF = ld.SimpleRDF
 import { getResourceGraph, sortGraphTriples, getGraphAuthor, getGraphLabel, getGraphEmail, getGraphTitle, getGraphPublished, getGraphUpdated, getGraphDescription, getGraphLicense, getGraphRights, getGraphFromData, getGraphAudience, getGraphTypes } from './graph.js'
 import { createRDFaHTML, Icon } from './template.js'
 import LinkHeader from "http-link-header";
+import * as DOMPurify from 'dompurify';
 
 function escapeCharacters(string) {
   return String(string).replace(/[&<>"']/g, function (match) {
@@ -2309,6 +2310,71 @@ function showResourceAudienceAgentOccupations() {
   }
 }
 
+function serializeTableToText(table) {
+  //FIXME: Multiple tbody
+
+  var thead = table.querySelector('thead');
+  var tbodies = table.querySelectorAll('tbody');
+
+  var theadData = serializeTableSectionToText(thead);
+
+  var tbodyData = [];
+  tbodies.forEach(function(tbody){
+    tbodyData.push(serializeTableSectionToText(tbody));
+  })
+  tbodyData = tbodyData.join('\n');
+
+  return theadData + '\n' + tbodyData;
+}
+
+function serializeTableSectionToText(section) {
+  //FIXME: Needs to handle rowspan/colspan and th/td combinations
+  //TODO: Test with example tables:
+  //https://csarven.ca/linked-research-decentralised-web#quality-attributes-dokieli
+  //https://csarven.ca/linked-research-decentralised-web.html#forces-and-functions-in-specifications
+  //https://csarven.ca/linked-research-decentralised-web#fair-metrics-dataset-dokieli
+  //https://csarven.ca/linked-research-decentralised-web#dokieli-implementation-web-annotation-motivations-notifications
+  //https://csarven.ca/linked-research-decentralised-web#ldn-test-consumer-summary
+
+  var data = [];
+  var rows;
+
+  switch(section.nodeName.toLowerCase()) {
+    case 'thead':
+      //FIXME: Assuming the last tr in thead has most specific columns.
+      rows = section.querySelectorAll('tr:last-child');
+      break;
+    case 'tbody':
+      rows = section.querySelectorAll('tr');
+      break;
+  }
+
+  rows.forEach(function(tr){
+    var cells;
+
+    switch(section.nodeName.toLowerCase()) {
+      case 'thead':
+        cells = tr.querySelectorAll('th, td');
+        break;
+      case 'tbody':
+        //FIXME:
+        cells = tr.querySelectorAll('td');
+        break;
+    }
+
+    var rowData = [];
+
+    cells.forEach(function(cell){
+      var sanitized = DOMPurify.sanitize(cell.textContent.trim()).replace(/"/g, '""');
+      rowData.push(sanitized);
+    });
+
+    data.push(rowData.join('","'));
+  });
+
+  return data.map(row => '"' + row + '"').join('\n');
+}
+
 export {
   escapeCharacters,
   cleanEscapeCharacters,
@@ -2371,5 +2437,7 @@ export {
   getLicenseOptionsHTML,
   getCitationOptionsHTML,
   showGeneralMessages,
-  showResourceAudienceAgentOccupations
+  showResourceAudienceAgentOccupations,
+  serializeTableToText,
+  serializeTableSectionToText
 }
