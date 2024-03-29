@@ -5,7 +5,8 @@ import * as leaflet from 'leaflet';
 import * as leafletGpx from 'leaflet-gpx';
 const L = { ...leaflet, ...leafletGpx };
 import { fragmentFromString, generateAttributeId, convertToISO8601Duration } from './util.js'
-import { getAgentHTML, createDateHTML, selectArticleNode } from './doc.js'
+import { getAgentHTML, createDateHTML, selectArticleNode, setCopyToClipboard } from './doc.js'
+import { Icon } from './template.js'
 import { getResource } from './fetcher.js'
 
 var gpxTrkptDistance;
@@ -47,6 +48,11 @@ function generateGeoView(data) {
   // document.body.replaceChildren(fragmentFromString('<main><article about="" typeof="schema:Article">' + gpxActivity + '</article></main>'));
   //TODO: If generateGeoView provides a node to append to, it should append to that node instead of the body:
   node.appendChild(fragmentFromString(gpxActivity));
+
+  var table = node.querySelector('#geo table');
+  table.insertAdjacentHTML('afterend', '<button class="do copy-to-clipboard" title="Copy to clipboard">' + Icon[".fas.fa-copy"] + '</button>');
+  var button = table.nextElementSibling;
+  setCopyToClipboard(table, button);
 
   const titleElement = document.querySelector('head title');
   if (titleElement) {
