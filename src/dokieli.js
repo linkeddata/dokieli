@@ -10301,7 +10301,7 @@ WHERE {\n\
                   }
                   addMessageToLog(message);
                   showActionMessage(document.documentElement, message);
-                  // copyTextToClipboard(encodeURI(selectorIRI));
+                  // TODO: Perhaps use something like setCopyToClipboard instead. Use as `encodeURI(selectorIRI)` as input.
                   break;
 
                 case 'cite': //footnote reference

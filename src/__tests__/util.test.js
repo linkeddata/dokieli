@@ -29,28 +29,6 @@ describe("util", () => {
     });
   });
 
-  describe("copyTextToClipboard", () => {
-    it("calls the clipboard writeText function with the correct argument if navigator clipboard is available", () => {
-      Object.assign(navigator, {
-        clipboard: {
-          writeText: jest.fn().mockImplementation(() => Promise.resolve()),
-        },
-      });
-      copyTextToClipboard("example");
-      expect(navigator.clipboard.writeText).toHaveBeenCalledWith("example");
-    });
-    it("calls the document execCommand function with copy with the correct argument if navigator clipboard is unavailable", () => {
-      Object.assign(navigator, {
-        clipboard: null,
-      });
-      Object.assign(document, {
-        execCommand: jest.fn(),
-      });
-      copyTextToClipboard("example");
-      expect(document.execCommand).toHaveBeenCalledWith("copy");
-    });
-  });
-
   describe("escapeRegExp", () => {
     it("escape characters in a given string", () => {
       const resultString = escapeRegExp("example (test)");

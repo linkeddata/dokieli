@@ -31,25 +31,6 @@ function removeChildren(node) {
   }
 }
 
-function copyTextToClipboard(text) {
-  if (!navigator.clipboard) {
-    try {
-      document.execCommand("copy");
-} catch (err) {
-      // Ignore errors.
-    }
-    return;
-  }
-  navigator.clipboard.writeText(text).then(
-    function () {
-      // console.log('Async: Copying to clipboard was successful!');
-    },
-    function (err) {
-      // console.error('Async: Could not copy text: ', err);
-    }
-  );
-}
-
 function escapeRegExp(string) {
   return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
@@ -191,7 +172,6 @@ export {
   getDateTimeISOFromMDY,
   convertToISO8601Duration,
   removeChildren,
-  copyTextToClipboard,
   escapeRegExp,
   sleep,
   fragmentFromString,
