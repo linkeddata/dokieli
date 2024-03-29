@@ -1251,148 +1251,10 @@ function getResourceInfo(data, options) {
   Config['Resource'] = Config['Resource'] || {};
   Config['Resource'][documentURL] = Config['Resource'][documentURL] || {};
 
-  var getGraphFromDataBlock = function(data, options) {
-    if (Config.MediaTypes.Markup.includes(options.contentType)) {
-      var node = getDocumentNodeFromString(data, options);
-
-      var selectors = Config.MediaTypes.RDF
-        .filter(function(mediaType) {
-          return !Config.MediaTypes.Markup.includes(mediaType);
-        })
-        .map(function(mediaType) {
-          return 'script[type="' + mediaType + '"]';
-        });
-// console.log(selectors)
-      var promises = [];
-
-      var scripts = node.querySelectorAll(selectors.join(', '));
-// console.log(scripts)
-      scripts.forEach(function(script){
-        var scriptType = script.getAttribute('type').trim();
-        var scriptData = script.textContent;
-// console.log(scriptData)
-        var matches = Array.from(scriptData.matchAll(/<!\[CDATA\[(.*?)\]\]>/gs));
-        if (matches.length > 0) {
-          scriptData = matches.map(match => match[1].trim()).join('\n');
-        }
-// console.log(scriptData)
-        //Cleans up the data block from comments at the beginning and end of the script.
-        var lines = scriptData.split(/\r\n|\r|\n/);
-        lines = lines.filter(function(line, index) {
-          if (index === 0 || index === lines.length - 1) {
-            line = line.trim();
-            return !line.startsWith('#') && !line.startsWith('//');
-          }
-          return true;
-        });
-        scriptData = lines.join('\n');
-
-// console.log(scriptData)
-
-        var o = {
-          'subjectURI': documentURL,
-          'contentType': scriptType
-        }
-
-        promises.push(getGraphFromData(scriptData, o))
-      });
-
-      return Promise.allSettled(promises)
-        .then(function(resolvedPromises){
-          var dataGraph = SimpleRDF();
-          resolvedPromises.forEach(function(response){
-            if (response.value) {
-              var g = response.value;
-              g = SimpleRDF(Config.Vocab, documentURL, g, ld.store).child(documentURL);
-    
-              dataGraph.graph().addAll(g.graph());
-            }
-          })
-
-          return dataGraph.graph();
-        })
-    }
-    else {
-      return Promise.resolve();
-    }
-  }
-
-  function getResourceSupplementalInfo (documentURL, o) {
-    getResourceHead(documentURL, {}, o)
-      .then(function(response) {
-        var headers = response.headers;
-
-        Config['Resource'] = Config['Resource'] || {};
-        Config['Resource'][documentURL] = Config['Resource'][documentURL] || {};   
-        Config['Resource'][documentURL]['headers'] = {};
-        Config['Resource'][documentURL]['headers']['response'] = headers;
-
-        options.storeHeaders.forEach(function(oHeader){
-          var oHeaderValue = response.headers.get(oHeader);
-          // oHeaderValue = 'foo=bar ,user=" READ wriTe Append control ", public=" read append" ,other="read " , baz= write, group=" ",,';
-
-          if (oHeaderValue) {
-            Config['Resource'][documentURL]['headers'][oHeader] = { "field-value" : oHeaderValue };
-
-// console.log('WAC-Allow: ' + response.headers);
-            if (oHeader.toLowerCase() == 'wac-allow') {
-              var permissionGroups = Config['Resource'][documentURL]['headers']['wac-allow']["field-value"];
-              var wacAllowRegex = new RegExp(/(\w+)\s*=\s*"?\s*((?:\s*[^",\s]+)*)\s*"?/, 'ig');
-              var wacAllowMatches = matchAllIndex(permissionGroups, wacAllowRegex);
-// console.log(wacAllowMatches)
-
-              Config['Resource'][documentURL]['headers']['wac-allow']['permissionGroup'] = {};
-
-              wacAllowMatches.forEach(function(match){
-                var modesString = match[2] || '';
-                var accessModes = uniqueArray(modesString.toLowerCase().split(/\s+/));
-
-                Config['Resource'][documentURL]['headers']['wac-allow']['permissionGroup'][match[1]] = accessModes;
-              });
-            }
-
-            if (oHeader.toLowerCase() == 'link') {
-              var linkHeaders = LinkHeader.parse(oHeaderValue);
-
-              Config['Resource'][documentURL]['headers']['linkHeaders'] = linkHeaders;
-
-              if (linkHeaders.has('rel', 'describedby')) {
-                var p = [];
-
-                Config['Resource'][documentURL]['describedby'] = {};
-
-                linkHeaders.rel('describedby').forEach(function(describedbyItem) {
-                  var describedbyURL = describedbyItem.uri;
-                  if (!describedbyURL.startsWith('http:') && !describedbyURL.startsWith('https:')) {
-                    describedbyURL = getAbsoluteIRI(getBaseURL(response.url), describedbyURL);
-                  }
-                  p.push(getResourceGraph(describedbyURL));
-                });
-
-                return Promise.all(p)
-                  .then(function(graphs) {
-                    graphs.forEach(function(g){
-                      if (g) {
-                        var s = g.iri().toString();
-                        Config['Resource'][documentURL]['describedby'][s] = {};
-                        Config['Resource'][documentURL]['describedby'][s]['graph'] = g;
-                        Config['Resource'][s] = {};
-                        Config['Resource'][s]['graph'] = g;
-                      }
-                    });
-                });
-              }
-            }
-          }
-        })
-      })
-  }
-
   var promises = [];
   if ('storeHeaders' in options) {
     //TODO: This may need refactoring any way to avoid deleting contentType and subjectURI. It leaks the options to getResource/fetcher.
-    var { storeHeaders, contentType, subjectURI, ...o } = options;
-    getResourceSupplementalInfo(documentURL, o)
+    getResourceSupplementalInfo(documentURL, options)
   }
 
   promises.push(getGraphFromDataBlock(data, options));
@@ -1429,6 +1291,147 @@ function getResourceInfo(data, options) {
 
       return info;
     });
+}
+
+function getGraphFromDataBlock(data, options) {
+  var documentURL = options['subjectURI'];
+
+  if (Config.MediaTypes.Markup.includes(options.contentType)) {
+    var node = getDocumentNodeFromString(data, options);
+
+    var selectors = Config.MediaTypes.RDF
+      .filter(function(mediaType) {
+        return !Config.MediaTypes.Markup.includes(mediaType);
+      })
+      .map(function(mediaType) {
+        return 'script[type="' + mediaType + '"]';
+      });
+// console.log(selectors)
+    var promises = [];
+
+    var scripts = node.querySelectorAll(selectors.join(', '));
+// console.log(scripts)
+    scripts.forEach(function(script){
+      var scriptType = script.getAttribute('type').trim();
+      var scriptData = script.textContent;
+// console.log(scriptData)
+      var matches = Array.from(scriptData.matchAll(/<!\[CDATA\[(.*?)\]\]>/gs));
+      if (matches.length > 0) {
+        scriptData = matches.map(match => match[1].trim()).join('\n');
+      }
+// console.log(scriptData)
+      //Cleans up the data block from comments at the beginning and end of the script.
+      var lines = scriptData.split(/\r\n|\r|\n/);
+      lines = lines.filter(function(line, index) {
+        if (index === 0 || index === lines.length - 1) {
+          line = line.trim();
+          return !line.startsWith('#') && !line.startsWith('//');
+        }
+        return true;
+      });
+      scriptData = lines.join('\n');
+
+// console.log(scriptData)
+
+      var o = {
+        'subjectURI': documentURL,
+        'contentType': scriptType
+      }
+
+      promises.push(getGraphFromData(scriptData, o))
+    });
+
+    return Promise.allSettled(promises)
+      .then(function(resolvedPromises){
+        var dataGraph = SimpleRDF();
+        resolvedPromises.forEach(function(response){
+          if (response.value) {
+            var g = response.value;
+            g = SimpleRDF(Config.Vocab, documentURL, g, ld.store).child(documentURL);
+  
+            dataGraph.graph().addAll(g.graph());
+          }
+        })
+
+        return dataGraph.graph();
+      })
+  }
+  else {
+    return Promise.resolve();
+  }
+}
+
+function getResourceSupplementalInfo (documentURL, options) {
+  var { storeHeaders, contentType, subjectURI, ...o } = options;
+
+  getResourceHead(documentURL, {}, o)
+    .then(function(response) {
+      var headers = response.headers;
+
+      Config['Resource'] = Config['Resource'] || {};
+      Config['Resource'][documentURL] = Config['Resource'][documentURL] || {};   
+      Config['Resource'][documentURL]['headers'] = {};
+      Config['Resource'][documentURL]['headers']['response'] = headers;
+
+      options.storeHeaders.forEach(function(oHeader){
+        var oHeaderValue = response.headers.get(oHeader);
+        // oHeaderValue = 'foo=bar ,user=" READ wriTe Append control ", public=" read append" ,other="read " , baz= write, group=" ",,';
+
+        if (oHeaderValue) {
+          Config['Resource'][documentURL]['headers'][oHeader] = { "field-value" : oHeaderValue };
+
+// console.log('WAC-Allow: ' + response.headers);
+          if (oHeader.toLowerCase() == 'wac-allow') {
+            var permissionGroups = Config['Resource'][documentURL]['headers']['wac-allow']["field-value"];
+            var wacAllowRegex = new RegExp(/(\w+)\s*=\s*"?\s*((?:\s*[^",\s]+)*)\s*"?/, 'ig');
+            var wacAllowMatches = matchAllIndex(permissionGroups, wacAllowRegex);
+// console.log(wacAllowMatches)
+
+            Config['Resource'][documentURL]['headers']['wac-allow']['permissionGroup'] = {};
+
+            wacAllowMatches.forEach(function(match){
+              var modesString = match[2] || '';
+              var accessModes = uniqueArray(modesString.toLowerCase().split(/\s+/));
+
+              Config['Resource'][documentURL]['headers']['wac-allow']['permissionGroup'][match[1]] = accessModes;
+            });
+          }
+
+          if (oHeader.toLowerCase() == 'link') {
+            var linkHeaders = LinkHeader.parse(oHeaderValue);
+
+            Config['Resource'][documentURL]['headers']['linkHeaders'] = linkHeaders;
+
+            if (linkHeaders.has('rel', 'describedby')) {
+              var p = [];
+
+              Config['Resource'][documentURL]['describedby'] = {};
+
+              linkHeaders.rel('describedby').forEach(function(describedbyItem) {
+                var describedbyURL = describedbyItem.uri;
+                if (!describedbyURL.startsWith('http:') && !describedbyURL.startsWith('https:')) {
+                  describedbyURL = getAbsoluteIRI(getBaseURL(response.url), describedbyURL);
+                }
+                p.push(getResourceGraph(describedbyURL));
+              });
+
+              return Promise.all(p)
+                .then(function(graphs) {
+                  graphs.forEach(function(g){
+                    if (g) {
+                      var s = g.iri().toString();
+                      Config['Resource'][documentURL]['describedby'][s] = {};
+                      Config['Resource'][documentURL]['describedby'][s]['graph'] = g;
+                      Config['Resource'][s] = {};
+                      Config['Resource'][s]['graph'] = g;
+                    }
+                  });
+              });
+            }
+          }
+        }
+      })
+    })
 }
 
 function getResourceInfoCitations(g) {
@@ -2463,6 +2466,8 @@ export {
   showTimeMap,
   getGraphAuthorData,
   getResourceInfo,
+  getGraphFromDataBlock,
+  getResourceSupplementalInfo,
   getResourceInfoODRLPolicies,
   getResourceInfoSpecRequirements,
   getResourceInfoSpecChanges,
