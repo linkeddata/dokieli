@@ -7,7 +7,7 @@
  */
 
 import { getResource, setAcceptRDFTypes, postResource, putResource, currentLocation, patchResourceWithAcceptPatch, putResourceWithAcceptPut, copyResource, deleteResource } from './fetcher.js'
-import { getDocument, getDocumentContentNode, escapeCharacters, showActionMessage, selectArticleNode, buttonClose, buttonRemoveAside, showRobustLinksDecoration, getResourceInfo, removeNodesWithIds, getResourceInfoSKOS, removeReferences, buildReferences, removeSelectorFromNode, insertDocumentLevelHTML, getResourceInfoSpecRequirements, getTestDescriptionReviewStatusHTML, createFeedXML, getButtonDisabledHTML, showTimeMap, createMutableResource, createImmutableResource, updateMutableResource, createHTML, getResourceImageHTML, setDocumentRelation, setDate, getClosestSectionNode, getAgentHTML, setEditSelections, getNodeLanguage, createActivityHTML, createLicenseHTML, createLanguageHTML, getAnnotationInboxLocationHTML, getAnnotationLocationHTML, getResourceTypeOptionsHTML, getPublicationStatusOptionsHTML, getLanguageOptionsHTML, getLicenseOptionsHTML, getCitationOptionsHTML, getDocumentNodeFromString, getNodeWithoutClasses, getDoctype, serializeTableToText } from './doc.js'
+import { getDocument, getDocumentContentNode, escapeCharacters, showActionMessage, selectArticleNode, buttonClose, buttonRemoveAside, showRobustLinksDecoration, getResourceInfo, removeNodesWithIds, getResourceInfoSKOS, removeReferences, buildReferences, removeSelectorFromNode, insertDocumentLevelHTML, getResourceInfoSpecRequirements, getTestDescriptionReviewStatusHTML, createFeedXML, getButtonDisabledHTML, showTimeMap, createMutableResource, createImmutableResource, updateMutableResource, createHTML, getResourceImageHTML, setDocumentRelation, setDate, getClosestSectionNode, getAgentHTML, setEditSelections, getNodeLanguage, createActivityHTML, createLicenseHTML, createLanguageHTML, getAnnotationInboxLocationHTML, getAnnotationLocationHTML, getResourceTypeOptionsHTML, getPublicationStatusOptionsHTML, getLanguageOptionsHTML, getLicenseOptionsHTML, getCitationOptionsHTML, getDocumentNodeFromString, getNodeWithoutClasses, getDoctype, serializeTableToText, addMessageToLog } from './doc.js'
 import { getProxyableIRI, getPathURL, stripFragmentFromString, getFragmentOrLastPath, getFragmentFromString, getURLLastPath, getLastPathSegment, forceTrailingSlash, getBaseURL, getParentURLPath, encodeString, getAbsoluteIRI } from './uri.js'
 import { getResourceGraph, traverseRDFList, getLinkRelation, getAgentName, getGraphImage, getGraphFromData, isActorType, isActorProperty, serializeGraph, getGraphLabel, getUserContacts, getAgentOutbox, getAgentStorage, getAgentInbox, getLinkRelationFromHead, sortGraphTriples } from './graph.js'
 import { notifyInbox, sendNotifications, postActivity } from './inbox.js'
@@ -1456,7 +1456,7 @@ DO = {
           'type': 'info',
           'timer': 10000
         }
-        DO.U.addMessageToLog(message);
+        addMessageToLog(message);
         message.content = '<span class="progress">' + Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + ' ' + message.content + '</span>';
         showActionMessage(document.documentElement, message);
 
@@ -1499,7 +1499,7 @@ DO = {
             'type': 'info',
             'timer': 3000
           }
-          DO.U.addMessageToLog(message);
+          addMessageToLog(message);
           message.content = '<span class="progress">' + Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + ' ' + message.content + '</span>';
           showActionMessage(document.documentElement, message);
 
@@ -3025,7 +3025,7 @@ console.log(reason);
                 'type': 'info',
                 'timer': 3000,
               }
-              DO.U.addMessageToLog(message);
+              addMessageToLog(message);
               showActionMessage(document.documentElement, message);
             })
             .catch(error => {
@@ -3035,7 +3035,7 @@ console.log(reason);
                 'type': 'error',
                 'timer': 3000,
               }
-              DO.U.addMessageToLog(message);
+              addMessageToLog(message);
               showActionMessage(document.documentElement, message);
             });
         }
@@ -3262,7 +3262,7 @@ console.log(reason);
                 'content': message,
                 'type': 'success'
               }
-              DO.U.addMessageToLog(message);
+              addMessageToLog(message);
               showActionMessage(document.documentElement, message);
             }
 
@@ -3313,7 +3313,7 @@ console.log(reason);
             'content': message,
             'type': 'info'
           }
-          DO.U.addMessageToLog(message);
+          addMessageToLog(message);
           archiveNode.insertAdjacentHTML('beforeend', ' <span class="progress">' + Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + ' ' + message.content + '</span>');
         }
 
@@ -3328,7 +3328,7 @@ console.log(reason);
             'type': 'error',
             'timer': 3000
           }
-          DO.U.addMessageToLog(message);
+          addMessageToLog(message);
           progress.innerHTML = responseMessages[response.status];
         }
 
@@ -3343,7 +3343,7 @@ console.log(reason);
             'content': message,
             'type': 'success'
           }
-          DO.U.addMessageToLog(message);
+          addMessageToLog(message);
           progress.innerHTML = message.content
         }
 
@@ -3477,7 +3477,7 @@ console.log(reason);
                   'content': message,
                   'type': 'info'
                 }
-                DO.U.addMessageToLog(message);
+                addMessageToLog(message);
                 progress.innerHTML = message.content
               }
 
@@ -3490,7 +3490,7 @@ console.log(reason);
                   'content': message,
                   'type': 'error'
                 }
-                DO.U.addMessageToLog(message);
+                addMessageToLog(message);
                 progress.innerHTML = message.content;
               }
 
@@ -3505,7 +3505,7 @@ console.log(reason);
                 'content': message,
                 'type': 'error'
               }
-              DO.U.addMessageToLog(message);
+              addMessageToLog(message);
               progress.innerHTML = message.content;
             }
           })
@@ -3933,12 +3933,6 @@ console.log(reason);
       });
     },
 
-    addMessageToLog: function(message, options = {}) {
-      const m = Object.assign({}, message);
-      m['dateTime'] = getDateTimeISO();
-      DO.C.MessageLog.unshift(m);
-    },
-
     //TODO: Minor refactoring to delete any URL, e.g., annotation (already implemented)
     resourceDelete: function(e, url, options) {
       if (!url) { return; }
@@ -4003,7 +3997,7 @@ console.log(reason);
                     'type': 'error',
                     'timer': 10000
                   }
-                  DO.U.addMessageToLog(message);
+                  addMessageToLog(message);
                   showActionMessage(document.documentElement, message);
 
                   // throw error;
@@ -4036,7 +4030,7 @@ console.log(reason);
                     'type': 'success',
                     'timer': 3000
                   }
-                  DO.U.addMessageToLog(message);
+                  addMessageToLog(message);
                   showActionMessage(document.documentElement, message);
 
                   var buttonD = e.target.closest('button.delete')
@@ -5289,7 +5283,7 @@ console.log(reason);
             'type': 'info',
             'timer': 3000
           }
-          DO.U.addMessageToLog(message);
+          addMessageToLog(message);
           showActionMessage(document.documentElement, message);
 
           // return Promise.resolve(data);
@@ -5689,7 +5683,7 @@ console.log(response)
           'type': 'info',
           'timer': 10000
         }
-        DO.U.addMessageToLog(message);
+        addMessageToLog(message);
         message.content = '<span class="progress">' + Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + message.content + '</span>';
         showActionMessage(document.documentElement, message);
 
@@ -5707,7 +5701,7 @@ console.log(response)
               'type': 'error',
               'timer': 5000
             }
-            DO.U.addMessageToLog(message);
+            addMessageToLog(message);
             message.content = '<span class="progress">' + Icon[".fas.fa-times-circle.fa-fw"] + message.content + '</span>'; 
             showActionMessage(document.documentElement, message);
 
@@ -5768,7 +5762,7 @@ console.log(response)
                   'type': 'success',
                   'timer': 3000
                 }
-                DO.U.addMessageToLog(message);
+                addMessageToLog(message);
                 showActionMessage(document.documentElement, message);
               })
           })
@@ -5976,7 +5970,7 @@ console.log(response)
                   'type': 'info',
                   'timer': 3000,
                 }
-                DO.U.addMessageToLog(message);
+                addMessageToLog(message);
                 showActionMessage(document.documentElement, message);
 
                 var w = document.getElementById(id);
@@ -8238,7 +8232,7 @@ WHERE {\n\
             'content': message,
             'type': 'info'
           }
-          DO.U.addMessageToLog(message);
+          addMessageToLog(message);
           showActionMessage(document.documentElement, message);
         }
 
@@ -10351,7 +10345,7 @@ WHERE {\n\
                     'type': 'info',
                     'timer': 3000
                   }
-                  DO.U.addMessageToLog(message);
+                  addMessageToLog(message);
                   showActionMessage(document.documentElement, message);
                   // copyTextToClipboard(encodeURI(selectorIRI));
                   break;

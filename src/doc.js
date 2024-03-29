@@ -557,6 +557,12 @@ function getNodeLanguage(node) {
   return lang;
 }
 
+function addMessageToLog(message, options = {}) {
+  const m = Object.assign({}, message);
+  m['dateTime'] = getDateTimeISO();
+  Config.MessageLog.unshift(m);
+}
+
 function handleActionMessage(resolved, rejected) {
   if (resolved) {
     const { response, message } = resolved;
@@ -2393,6 +2399,7 @@ export {
   removeSelectorFromNode,
   removeNodesWithIds,
   getNodeLanguage,
+  addMessageToLog,
   showActionMessage,
   handleActionMessage,
   selectArticleNode,
