@@ -4988,11 +4988,11 @@ console.log(reason);
               var label, href = iri;
 
               switch (iri) {
-                case DO.C.Vocab['notifystartAt']['@id']:
-                case DO.C.Vocab['notifyendAt']['@id']:
-                case DO.C.Vocab['notifystate']['@id']:
-                case DO.C.Vocab['notifyrate']['@id']:
-                case DO.C.Vocab['notifyaccept']['@id']:
+                case DO.C.Vocab['notifystartAt']:
+                case DO.C.Vocab['notifyendAt']:
+                case DO.C.Vocab['notifystate']:
+                case DO.C.Vocab['notifyrate']:
+                case DO.C.Vocab['notifyaccept']:
                   label = getFragmentFromString(iri);
                   href = 'https://solidproject.org/TR/2022/notifications-protocol-20221231#notify-' + label;
                   break;
