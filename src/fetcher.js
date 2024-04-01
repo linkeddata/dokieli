@@ -187,6 +187,10 @@ function getResource (url, headers = {}, options = {}) {
   var _fetch = Config.User.OIDC? __fetch : fetch;
 
   url = url || currentLocation()
+  if (url.startsWith('file:')){
+    return;
+  }
+
   options.method = ('method' in options && options.method == 'HEAD') ? 'HEAD' : 'GET'
 
   if (!headers['Accept'] && options.method !== 'HEAD') {
