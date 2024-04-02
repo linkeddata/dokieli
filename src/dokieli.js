@@ -4443,7 +4443,11 @@ console.log(reason);
         var id = encodeURIComponent(iri);
         var name = getAgentName(s) || iri;
         var img = getGraphImage(s);
-        img = (img && img.length > 0) ? '<img alt="" height="32" src="' + img + '" width="32" />' : '';
+        if (!(img && img.length > 0)) {
+          img = "data:image/svg+xml;base64," + window.btoa(Icon[".fas.fa-user-secret"]);
+        }
+        img = '<img alt="" height="32" src="' + img + '" width="32" />';
+
         var input = '<li><input id="share-resource-contact-' + id + '" type="checkbox" value="' + iri + '" /><label for="share-resource-contact-' + id + '">' + img + '<a href="' + iri + '" target="_blank">' + name + '</a></label></li>';
 
         node.insertAdjacentHTML('beforeend', input);
