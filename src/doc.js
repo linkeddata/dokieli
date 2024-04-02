@@ -1138,107 +1138,107 @@ function getGraphData(s, options) {
     'profile': Config.Vocab['ldpRDFSource']['@id']
   };
 
-       info['graph'] = s;
-        info['rdftype'] = getGraphTypes(s)
+  info['graph'] = s;
+  info['rdftype'] = getGraphTypes(s)
 
-        info['title'] = getGraphTitle(s);
-        // info['label'] = graph.getGraphLabel(s);
-        info['published'] = getGraphPublished(s);
-        info['updated'] = getGraphUpdated(s);
-        info['description'] = getGraphDescription(s);
-        info['license'] = getGraphLicense(s);
-        info['rights'] = getGraphRights(s);
-        // info['summary'] = graph.getGraphSummary(s);
-        // info['creator'] = graph.getGraphCreators(s);
-        info['author'] = getGraphAuthorData(s);
-        info['audience'] = getGraphAudience(s);
+  info['title'] = getGraphTitle(s);
+  // info['label'] = graph.getGraphLabel(s);
+  info['published'] = getGraphPublished(s);
+  info['updated'] = getGraphUpdated(s);
+  info['description'] = getGraphDescription(s);
+  info['license'] = getGraphLicense(s);
+  info['rights'] = getGraphRights(s);
+  // info['summary'] = graph.getGraphSummary(s);
+  // info['creator'] = graph.getGraphCreators(s);
+  info['author'] = getGraphAuthorData(s);
+  info['audience'] = getGraphAudience(s);
 
-        info['profile'] = Config.Vocab['ldpRDFSource']['@id'];
+  info['profile'] = Config.Vocab['ldpRDFSource']['@id'];
 
-        //Check if the resource is immutable
-        s.rdftype.forEach(function(resource) {
-          if (resource == Config.Vocab['memMemento']['@id']) {
-            info['state'] = Config.Vocab['memMemento']['@id'];
-          }
-        });
+  //Check if the resource is immutable
+  s.rdftype.forEach(function(resource) {
+    if (resource == Config.Vocab['memMemento']['@id']) {
+      info['state'] = Config.Vocab['memMemento']['@id'];
+    }
+  });
 
-        if (s.reloriginal) {
-          info['state'] = Config.Vocab['memMemento']['@id'];
-          info['original'] = s.memoriginal;
+  if (s.reloriginal) {
+    info['state'] = Config.Vocab['memMemento']['@id'];
+    info['original'] = s.memoriginal;
 
-          if (s.reloriginal == options['subjectURI']) {
-            //URI-R (The Original Resource is a Fixed Resource)
+    if (s.reloriginal == options['subjectURI']) {
+      //URI-R (The Original Resource is a Fixed Resource)
 
-            info['profile'] = Config.Vocab['memOriginalResource']['@id'];
-          }
-          else {
-            //URI-M
+      info['profile'] = Config.Vocab['memOriginalResource']['@id'];
+    }
+    else {
+      //URI-M
 
-            info['profile'] = Config.Vocab['memMemento']['@id'];
-          }
-        }
-
-        if (s.memmemento) {
-          //URI-R
-
-          info['profile'] = Config.Vocab['memOriginalResource']['@id'];
-          info['memento'] = s.memmemento;
-        }
-
-        if(s.memoriginal && s.memmemento && s.memoriginal != s.memmemento) {
-          //URI-M (Memento without a TimeGate)
-
-          info['profile'] = Config.Vocab['memMemento']['@id'];
-          info['original'] = s.memoriginal;
-          info['memento'] = s.memmemento;
-        }
-
-        if(s.rellatestversion) {
-          info['latest-version'] = s.rellatestversion;
-        }
-
-        if(s.relpredecessorversion) {
-          info['predecessor-version'] = s.relpredecessorversion;
-        }
-
-        if(s.memtimemap) {
-          info['timemap'] = s.memtimemap;
-        }
-
-        if(s.memtimegate) {
-          info['timegate'] = s.memtimegate;
-        }
-        if(!Config.OriginalResourceInfo || ('mode' in options && options.mode == 'update' )) {
-          Config['OriginalResourceInfo'] = info;
-        }
-
-        info['inbox'] = s.ldpinbox._array;
-        info['annotationService'] = s.oaannotationService._array;
-
-        //TODO: Refactor
-        //FIXME: permissionsActions, specrequirement, skosConceptSchemes are assumed to be from document's policies
-
-        if(s.odrlhasPolicy && s.odrlhasPolicy.at(0) && s.iri().toString() == documentURL) {
-          info['odrl'] = getResourceInfoODRLPolicies(s);
-        }
-
-        if(s.specrequirement && s.specrequirement.at(0) && s.iri().toString() == documentURL) {
-          info['spec'] = getResourceInfoSpecRequirements(s);
-        }
-
-        if(s.specchangelog && s.specchangelog.at(0) && s.iri().toString() == documentURL) {
-          var changelog = s.child(s.specchangelog.at(0))
-          if (changelog.specchange && changelog.specchange.at(0)) {
-            info['change'] = getResourceInfoSpecChanges(changelog);
-          }
-        }
-
-        //XXX: change i to s. testing. should be same as subjectURI?
-        info['skos'] = getResourceInfoSKOS(s);
-        info['citations'] = getResourceInfoCitations(s);
-
-    return info;
+      info['profile'] = Config.Vocab['memMemento']['@id'];
+    }
   }
+
+  if (s.memmemento) {
+    //URI-R
+
+    info['profile'] = Config.Vocab['memOriginalResource']['@id'];
+    info['memento'] = s.memmemento;
+  }
+
+  if(s.memoriginal && s.memmemento && s.memoriginal != s.memmemento) {
+    //URI-M (Memento without a TimeGate)
+
+    info['profile'] = Config.Vocab['memMemento']['@id'];
+    info['original'] = s.memoriginal;
+    info['memento'] = s.memmemento;
+  }
+
+  if(s.rellatestversion) {
+    info['latest-version'] = s.rellatestversion;
+  }
+
+  if(s.relpredecessorversion) {
+    info['predecessor-version'] = s.relpredecessorversion;
+  }
+
+  if(s.memtimemap) {
+    info['timemap'] = s.memtimemap;
+  }
+
+  if(s.memtimegate) {
+    info['timegate'] = s.memtimegate;
+  }
+  if(!Config.OriginalResourceInfo || ('mode' in options && options.mode == 'update' )) {
+    Config['OriginalResourceInfo'] = info;
+  }
+
+  info['inbox'] = s.ldpinbox._array;
+  info['annotationService'] = s.oaannotationService._array;
+
+  //TODO: Refactor
+  //FIXME: permissionsActions, specrequirement, skosConceptSchemes are assumed to be from document's policies
+
+  if(s.odrlhasPolicy && s.odrlhasPolicy.at(0) && s.iri().toString() == documentURL) {
+    info['odrl'] = getResourceInfoODRLPolicies(s);
+  }
+
+  if(s.specrequirement && s.specrequirement.at(0) && s.iri().toString() == documentURL) {
+    info['spec'] = getResourceInfoSpecRequirements(s);
+  }
+
+  if(s.specchangelog && s.specchangelog.at(0) && s.iri().toString() == documentURL) {
+    var changelog = s.child(s.specchangelog.at(0))
+    if (changelog.specchange && changelog.specchange.at(0)) {
+      info['change'] = getResourceInfoSpecChanges(changelog);
+    }
+  }
+
+  //XXX: change i to s. testing. should be same as subjectURI?
+  info['skos'] = getResourceInfoSKOS(s);
+  info['citations'] = getResourceInfoCitations(s);
+
+  return info;
+}
 
 function getResourceInfo(data, options) {
   data = data || getDocument();
