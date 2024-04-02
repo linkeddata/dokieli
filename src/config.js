@@ -61,6 +61,9 @@ export default {
     Timer: 60000,
     Items: {}
   },
+  RequestCheck: {
+    Timer: 60000
+  },
   ActionMessage: {
     Timer: 1500
   },

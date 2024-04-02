@@ -1366,6 +1366,13 @@ function getResourceSupplementalInfo (documentURL, options) {
 
   var linkRelationTypesOfInterest = ['describedby'];
 
+  const currentDate = new Date();
+  const previousResponse = Config['Resource'][documentURL]?.headers?.response;
+  const previousResponseDateValue = previousResponse?.get('date');
+  const previousResponseDate = previousResponseDateValue ? new Date(previousResponseDateValue) : null;
+
+  if (!previousResponse || !previousResponseDateValue || (previousResponseDate && currentDate.getTime() - previousResponseDate.getTime() > DO.C.RequestCheck.Timer)) {
+
   getResourceHead(documentURL, {}, o)
     .then(function(response) {
       var headers = response.headers;
@@ -1437,6 +1444,7 @@ function getResourceSupplementalInfo (documentURL, options) {
         }
       })
     })
+  }
 }
 
 function getResourceInfoCitations(g) {
