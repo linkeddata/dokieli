@@ -2216,7 +2216,7 @@ DO = {
           window.history.replaceState(null, null, '#' + id);
           aC.scrollIntoView();
 
-          var selector = aC.querySelector('figure');
+          var selector = '#' + id + ' figure';
 
           aC.addEventListener('click', function(e){
             var button = e.target.closest('button.graph');
