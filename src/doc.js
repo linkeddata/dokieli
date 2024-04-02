@@ -1280,10 +1280,10 @@ function getResourceInfo(data, options) {
         Config['ButtonStates'] = setFeatureStatesOfResourceInfo(info);
       }
 
-      //Tries to reserve the HTTP headers from previous fetch.
-      //XXX: Doublecheck if this should overrite the previous headers.
+      //Tries to preserve the HTTP headers from previous fetch.
+      //XXX: Doublecheck if this should overwrite the previous headers.
       if ('headers' in Config['Resource'][documentURL]){
-        Config['Resource'][documentURL] = Object.assign(info, Config['Resource'][documentURL]['headers']);
+        Config['Resource'][documentURL] = Object.assign({}, info, { headers: Config['Resource'][documentURL]['headers'] });
       }
       else {
         Config['Resource'][documentURL] = info;
