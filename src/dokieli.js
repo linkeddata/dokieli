@@ -1661,7 +1661,7 @@ DO = {
 
       options['storeHeaders'] = [];
 
-      if (document.location.protocol !== 'file:') {
+      if (document.location.protocol.startsWith('http')) {
        options['storeHeaders'] = ['link', 'wac-allow'];
       }
 
