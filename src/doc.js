@@ -1364,12 +1364,14 @@ function getGraphFromDataBlock(data, options) {
 function getResourceSupplementalInfo (documentURL, options) {
   var { storeHeaders, contentType, subjectURI, ...o } = options;
 
+  var linkRelationTypesOfInterest = ['describedby'];
+
   getResourceHead(documentURL, {}, o)
     .then(function(response) {
       var headers = response.headers;
 
       Config['Resource'] = Config['Resource'] || {};
-      Config['Resource'][documentURL] = Config['Resource'][documentURL] || {};   
+      Config['Resource'][documentURL] = Config['Resource'][documentURL] || {};
       Config['Resource'][documentURL]['headers'] = {};
       Config['Resource'][documentURL]['headers']['response'] = headers;
 
@@ -1402,32 +1404,35 @@ function getResourceSupplementalInfo (documentURL, options) {
 
             Config['Resource'][documentURL]['headers']['linkHeaders'] = linkHeaders;
 
-            if (linkHeaders.has('rel', 'describedby')) {
-              var p = [];
+            linkRelationTypesOfInterest.forEach(function(relationType) {
+              if (linkHeaders.has('rel', relationType)) {
+                var p = [];
 
-              Config['Resource'][documentURL]['describedby'] = {};
+                Config['Resource'][documentURL][relationType] = {};
+  
+                linkHeaders.rel(relationType).forEach(function(describedbyItem) {
+                  var describedbyURL = describedbyItem.uri;
+                  if (!describedbyURL.startsWith('http:') && !describedbyURL.startsWith('https:')) {
+                    describedbyURL = getAbsoluteIRI(getBaseURL(response.url), describedbyURL);
+                  }
 
-              linkHeaders.rel('describedby').forEach(function(describedbyItem) {
-                var describedbyURL = describedbyItem.uri;
-                if (!describedbyURL.startsWith('http:') && !describedbyURL.startsWith('https:')) {
-                  describedbyURL = getAbsoluteIRI(getBaseURL(response.url), describedbyURL);
-                }
-                p.push(getResourceGraph(describedbyURL));
-              });
+                  p.push(getResourceGraph(describedbyURL));
+                });
 
-              return Promise.all(p)
-                .then(function(graphs) {
-                  graphs.forEach(function(g){
-                    if (g) {
-                      var s = g.iri().toString();
-                      Config['Resource'][documentURL]['describedby'][s] = {};
-                      Config['Resource'][documentURL]['describedby'][s]['graph'] = g;
-                      Config['Resource'][s] = {};
-                      Config['Resource'][s]['graph'] = g;
-                    }
-                  });
-              });
-            }
+                return Promise.all(p)
+                  .then(function(graphs) {
+                    graphs.forEach(function(g){
+                      if (g) {
+                        var s = g.iri().toString();
+                        Config['Resource'][documentURL][relationType][s] = {};
+                        Config['Resource'][documentURL][relationType][s]['graph'] = g;
+                        Config['Resource'][s] = {};
+                        Config['Resource'][s]['graph'] = g;
+                      }
+                    });
+                });
+              }
+            });
           }
         }
       })
