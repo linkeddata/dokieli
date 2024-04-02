@@ -1660,10 +1660,9 @@ DO = {
       var options = {};
 
       options['storeHeaders'] = [];
-      options['storeHeaders'].push('link');
 
       if (document.location.protocol !== 'file:') {
-       options['storeHeaders'].push('wac-allow');
+       options['storeHeaders'] = ['link', 'wac-allow'];
       }
 
       getResourceInfo(data, options).then(function(resourceInfo){
