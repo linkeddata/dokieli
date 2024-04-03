@@ -173,19 +173,21 @@ export default {
   },
 
   DocumentDoItems: [
+    'create-new-document',
     'document-items',
     'embed-data-entry',
-    'create-new-document',
-    'open-document',
-    'source-view',
-    'save-as-document',
-    'user-identity-input',
-    'resource-browser',
-    'share-resource',
-    'reply-to-resource',
-    'memento-document',
+    'generate-feed',
     'graph-view',
-    'robustify-links'
+    'memento-document',
+    'message-log',
+    'open-document',
+    'reply-to-resource',
+    'resource-browser',
+    'robustify-links',
+    'save-as-document',
+    'share-resource',
+    'source-view',
+    'user-identity-input'
   ],
 
   DocumentItems: [
