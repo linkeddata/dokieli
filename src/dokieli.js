@@ -1663,6 +1663,7 @@ DO = {
 
       if (document.location.protocol.startsWith('http')) {
        options['storeHeaders'] = ['link', 'wac-allow'];
+       options['followLinkRelationTypes'] = ['describedby'];
       }
 
       getResourceInfo(data, options).then(function(resourceInfo){

@@ -1362,8 +1362,11 @@ function getGraphFromDataBlock(data, options) {
 }
 
 function getResourceSupplementalInfo (documentURL, options) {
-  var { storeHeaders, contentType, subjectURI, ...o } = options;
+  options['followLinkRelationTypes'] = options['followLinkRelationTypes'] || [];
 
+  var { storeHeaders, contentType, subjectURI, followLinkRelationTypes, ...o } = options;
+
+  //TODO: Add `acl` to linkRelationTypesOfInterest
   var linkRelationTypesOfInterest = ['describedby'];
 
   const currentDate = new Date();
@@ -1417,19 +1420,24 @@ function getResourceSupplementalInfo (documentURL, options) {
 
                 Config['Resource'][documentURL][relationType] = {};
   
-                linkHeaders.rel(relationType).forEach(function(relationTypeItem) {
-                  var relationTypeItemURL = relationTypeItem.uri;
-                  if (!relationTypeItemURL.startsWith('http:') && !relationTypeItemURL.startsWith('https:')) {
-                    relationTypeItemURL = getAbsoluteIRI(getBaseURL(response.url), relationTypeItemURL);
+                linkHeaders.rel(relationType).forEach(function(relationItem) {
+                  var linkTarget = relationItem.uri;
+                  if (!linkTarget.startsWith('http:') && !linkTarget.startsWith('https:')) {
+                    linkTarget = getAbsoluteIRI(getBaseURL(response.url), linkTarget);
                   }
 
-                  p.push(getResourceGraph(relationTypeItemURL));
+                  Config['Resource'][documentURL][relationType][linkTarget] = {};
+
+                  if ('followLinkRelationTypes' in options && options.followLinkRelationTypes.includes(relationType)) {
+                    p.push(getResourceGraph(linkTarget));
+                  }
                 });
 
                 return Promise.all(p)
                   .then(function(graphs) {
                     graphs.forEach(function(g){
                       if (g) {
+                        //FIXME: Consider the case where `linkTarget` URL is redirected and so may not be same as `s`.
                         var s = g.iri().toString();
                         Config['Resource'][documentURL][relationType][s] = {};
                         Config['Resource'][documentURL][relationType][s]['graph'] = g;
