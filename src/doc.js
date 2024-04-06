@@ -1417,13 +1417,13 @@ function getResourceSupplementalInfo (documentURL, options) {
 
                 Config['Resource'][documentURL][relationType] = {};
   
-                linkHeaders.rel(relationType).forEach(function(describedbyItem) {
-                  var describedbyURL = describedbyItem.uri;
-                  if (!describedbyURL.startsWith('http:') && !describedbyURL.startsWith('https:')) {
-                    describedbyURL = getAbsoluteIRI(getBaseURL(response.url), describedbyURL);
+                linkHeaders.rel(relationType).forEach(function(relationTypeItem) {
+                  var relationTypeItemURL = relationTypeItem.uri;
+                  if (!relationTypeItemURL.startsWith('http:') && !relationTypeItemURL.startsWith('https:')) {
+                    relationTypeItemURL = getAbsoluteIRI(getBaseURL(response.url), relationTypeItemURL);
                   }
 
-                  p.push(getResourceGraph(describedbyURL));
+                  p.push(getResourceGraph(relationTypeItemURL));
                 });
 
                 return Promise.all(p)
