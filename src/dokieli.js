@@ -4610,21 +4610,6 @@ console.log(reason);
       });
     },
 
-    accessModeAllowed: function(mode) {
-      var allowedMode = false;
-
-      var documentURL = DO.C.DocumentURL;
-
-      if ('headers' in DO.C.Resource[documentURL] && 'wac-allow' in DO.C.Resource[documentURL]['headers'] && 'permissionGroup' in DO.C.Resource[documentURL]['headers']['wac-allow']) {
-        if (('user' in DO.C.Resource[documentURL]['headers']['wac-allow']['permissionGroup'] && DO.C.Resource[documentURL]['headers']['wac-allow']['permissionGroup']['user'].indexOf(mode) > -1)
-          || ('public' in DO.C.Resource[documentURL]['headers']['wac-allow']['permissionGroup'] && DO.C.Resource[documentURL]['headers']['wac-allow']['permissionGroup']['public'].indexOf(mode) > -1)) {
-          allowedMode = true;
-        }
-      }
-
-      return allowedMode;
-    },
-
     buttonSubscribeNotificationChannel: function(nodes, topicResource) {
       //TODO: Consider using typeof selector instead and make sure it is in the markup
       nodes.forEach(function(subNode){
