@@ -1087,7 +1087,7 @@ function getButtonDisabledHTML(id) {
   if (document.location.protocol === 'file:' || !Config.ButtonStates[id]) {
     html = ' disabled="disabled"';  
   }
-  if (id == 'export-as-html' && Config.ButtonStates[id]) {
+  if (Config.ButtonStates[id]) {
     html = '';
   }
 
