@@ -1686,14 +1686,21 @@ function setFeatureStatesOfResourceInfo(info) {
       buttonState['generate-feed'] = false;
     }
 
-    if (info['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/transform') > -1) {
-      buttonState['export-as-html'] = false;
+
+function accessModeAllowed (documentURL, mode) {
+  documentURL = documentURL || DO.C.DocumentURL;
+
+  var allowedMode = false;
+
+  if ('headers' in DO.C.Resource[documentURL] && 'wac-allow' in DO.C.Resource[documentURL]['headers'] && 'permissionGroup' in DO.C.Resource[documentURL]['headers']['wac-allow']) {
+    if (('user' in DO.C.Resource[documentURL]['headers']['wac-allow']['permissionGroup'] && DO.C.Resource[documentURL]['headers']['wac-allow']['permissionGroup']['user'].includes(mode))
+      || ('public' in DO.C.Resource[documentURL]['headers']['wac-allow']['permissionGroup'] && DO.C.Resource[documentURL]['headers']['wac-allow']['permissionGroup']['public'].includes(mode))) {
+      allowedMode = true;
     }
   }
-// console.log(buttonState)
-  return buttonState;
-}
 
+  return allowedMode;
+}
 
 function createImmutableResource(url, data, options) {
   if(!url) return;
@@ -2521,6 +2528,7 @@ export {
   getResourceInfoSKOS,
   getResourceInfoCitations,
   updateDocumentDoButtonStates,
+  accessModeAllowed,
   createImmutableResource,
   createMutableResource,
   updateMutableResource,
