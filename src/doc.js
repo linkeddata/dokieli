@@ -1259,10 +1259,6 @@ function getResourceInfo(data, options) {
   Config['Resource'][documentURL] = Config['Resource'][documentURL] || {};
 
   var promises = [];
-  if ('storeHeaders' in options) {
-    //TODO: This may need refactoring any way to avoid deleting contentType and subjectURI. It leaks the options to getResource/fetcher.
-    getResourceSupplementalInfo(documentURL, options)
-  }
 
   promises.push(getGraphFromDataBlock(data, options));
   promises.push(getGraphFromData(data, options));
@@ -1284,16 +1280,11 @@ function getResourceInfo(data, options) {
       var info = getGraphData(s, options);
 
       if (documentURL == Config.DocumentURL) {
-        Config['ButtonStates'] = setFeatureStatesOfResourceInfo(info);
+        updateFeatureStatesOfResourceInfo(info);
       }
 
-      //Tries to preserve the HTTP headers from previous fetch.
-      //XXX: Doublecheck if this should overwrite the previous headers.
-      if ('headers' in Config['Resource'][documentURL]){
-        Config['Resource'][documentURL] = Object.assign({}, info, { headers: Config['Resource'][documentURL]['headers'] });
-      }
-      else {
-        Config['Resource'][documentURL] = info;
+      for (var key in info) {
+        Config['Resource'][documentURL][key] = info[key];
       }
 
       return info;
