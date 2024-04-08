@@ -2306,20 +2306,30 @@ DO = {
       var documentURL = DO.C.DocumentURL;
 
       function waitUntil() {
-        if (!('describedby' in DO.C.Resource[documentURL]) || Object.keys(DO.C.Resource[documentURL]['describedby']).length == 0) {
+        if (!DO.C.Resource[documentURL].headers?.linkHeaders?.has('rel', 'describedby')) {
           window.setTimeout(waitUntil, 250);
         }
         else {
-          if (document.querySelector('#document-items')) {
-            Object.keys(DO.C.Resource[documentURL]['describedby']).forEach(function(d) {
-// console.log(d)
-              html.push(DO.U.getCommunicationOptions(DO.C.Resource[d].graph, { 'subjectURI': documentURL }));
+          var db = DO.C.Resource[documentURL].headers.linkHeaders.rel('describedby');
+ 
+          var missingResource = db.filter(function(relationItem) { return !DO.C.Resource[relationItem.uri]; });
+
+          if (missingResource == undefined) {
+            window.setTimeout(waitUntil, 250);
+          }
+          else {
+            db.forEach(relationItem => {
+              if (DO.C.Resource[relationItem.uri]?.graph !== undefined) {
+                html.push(DO.U.getCommunicationOptions(DO.C.Resource[relationItem.uri].graph, { 'subjectURI': documentURL }));
+              }
             });
 
-            node.insertAdjacentHTML('beforeend', html);
+            if (html.length > 0) {
+              node.insertAdjacentHTML('beforeend', html);
 
-            var nodes = document.querySelectorAll('#' + node.id + ' [id^="notification-subscriptions-"]');
-            DO.U.buttonSubscribeNotificationChannel(nodes, documentURL);
+              var nodes = document.querySelectorAll('#' + node.id + ' [id^="notification-subscriptions-"]');
+              DO.U.buttonSubscribeNotificationChannel(nodes, documentURL);
+            }
           }
         }
       }
