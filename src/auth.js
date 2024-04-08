@@ -3,7 +3,7 @@
 import Config from './config.js'
 import { deleteResource } from './fetcher.js'
 import { removeChildren, fragmentFromString } from './util.js'
-import { getAgentHTML, showActionMessage, showGeneralMessages } from './doc.js'
+import { getAgentHTML, showActionMessage, showGeneralMessages, getResourceSupplementalInfo, updateDocumentDoButtonStates, updateFeatureStatesOfResourceInfo } from './doc.js'
 import { Icon } from './template.js'
 import { getResourceGraph, getAgentName, getGraphImage, getAgentURL, getAgentPreferredProxy, getAgentPreferredPolicy, getAgentDelegates, getAgentKnows, getAgentFollowing, getAgentStorage, getAgentOutbox, getAgentInbox, getAgentPreferencesFile, getAgentPublicTypeIndex, getAgentPrivateTypeIndex, getAgentTypeIndex, getAgentSupplementalInfo, getAgentSeeAlso, getAgentPreferencesInfo, getAgentOccupations } from './graph.js'
 import { removeLocalStorageProfile, updateLocalStorageProfile } from './storage.js'
@@ -76,6 +76,11 @@ async function showUserSigninSignout (node) {
         var documentMenu = document.querySelector('#document-menu')
 
         showUserSigninSignout(documentMenu.querySelector('header'))
+
+        getResourceSupplementalInfo(Config.DocumentURL).then(resourceInfo => {
+          updateFeatureStatesOfResourceInfo(resourceInfo);
+          updateDocumentDoButtonStates();
+        });
 
         var ra = documentMenu.querySelector('.resource-activities');
         ra.disabled = true;
@@ -284,6 +289,11 @@ function setUserInfo (userIRI, oidc) {
 }
 
 function afterSignIn () {
+  getResourceSupplementalInfo(Config.DocumentURL).then(resourceInfo => {
+    updateFeatureStatesOfResourceInfo(resourceInfo);
+    updateDocumentDoButtonStates();
+  });
+
   var promises = [];
 
   promises.push(getAgentTypeIndex(Config.User))
