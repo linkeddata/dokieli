@@ -197,6 +197,11 @@ function getResource (url, headers = {}, options = {}) {
     headers['Accept'] = 'text/turtle'
   }
 
+  if (options.noCache) {
+    options.cache = 'no-cache'
+    headers['Cache-Control'] = 'no-cache'
+  }
+
   if (!options.noCredentials) {
     options.credentials = 'include'
   }
