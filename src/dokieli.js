@@ -7,7 +7,7 @@
  */
 
 import { getResource, setAcceptRDFTypes, postResource, putResource, currentLocation, patchResourceWithAcceptPatch, putResourceWithAcceptPut, copyResource, deleteResource } from './fetcher.js'
-import { getDocument, getDocumentContentNode, escapeCharacters, showActionMessage, selectArticleNode, buttonClose, buttonRemoveAside, showRobustLinksDecoration, getResourceInfo, removeNodesWithIds, getResourceInfoSKOS, removeReferences, buildReferences, removeSelectorFromNode, insertDocumentLevelHTML, getResourceInfoSpecRequirements, getTestDescriptionReviewStatusHTML, createFeedXML, getButtonDisabledHTML, showTimeMap, createMutableResource, createImmutableResource, updateMutableResource, createHTML, getResourceImageHTML, setDocumentRelation, setDate, getClosestSectionNode, getAgentHTML, setEditSelections, getNodeLanguage, createActivityHTML, createLicenseHTML, createLanguageHTML, getAnnotationInboxLocationHTML, getAnnotationLocationHTML, getResourceTypeOptionsHTML, getPublicationStatusOptionsHTML, getLanguageOptionsHTML, getLicenseOptionsHTML, getCitationOptionsHTML, getDocumentNodeFromString, getNodeWithoutClasses, getDoctype, setCopyToClipboard, addMessageToLog } from './doc.js'
+import { getDocument, getDocumentContentNode, escapeCharacters, showActionMessage, selectArticleNode, buttonClose, buttonRemoveAside, showRobustLinksDecoration, getResourceInfo, getResourceSupplementalInfo, removeNodesWithIds, getResourceInfoSKOS, removeReferences, buildReferences, removeSelectorFromNode, insertDocumentLevelHTML, getResourceInfoSpecRequirements, getTestDescriptionReviewStatusHTML, createFeedXML, getButtonDisabledHTML, showTimeMap, createMutableResource, createImmutableResource, updateMutableResource, createHTML, getResourceImageHTML, setDocumentRelation, setDate, getClosestSectionNode, getAgentHTML, setEditSelections, getNodeLanguage, createActivityHTML, createLicenseHTML, createLanguageHTML, getAnnotationInboxLocationHTML, getAnnotationLocationHTML, getResourceTypeOptionsHTML, getPublicationStatusOptionsHTML, getLanguageOptionsHTML, getLicenseOptionsHTML, getCitationOptionsHTML, getDocumentNodeFromString, getNodeWithoutClasses, getDoctype, setCopyToClipboard, addMessageToLog, updateDocumentDoButtonStates, updateFeatureStatesOfResourceInfo } from './doc.js'
 import { getProxyableIRI, getPathURL, stripFragmentFromString, getFragmentOrLastPath, getFragmentFromString, getURLLastPath, getLastPathSegment, forceTrailingSlash, getBaseURL, getParentURLPath, encodeString, getAbsoluteIRI } from './uri.js'
 import { getResourceGraph, traverseRDFList, getLinkRelation, getAgentName, getGraphImage, getGraphFromData, isActorType, isActorProperty, serializeGraph, getGraphLabel, getUserContacts, getAgentOutbox, getAgentStorage, getAgentInbox, getLinkRelationFromHead, sortGraphTriples } from './graph.js'
 import { notifyInbox, sendNotifications, postActivity } from './inbox.js'
@@ -1656,46 +1656,46 @@ DO = {
         e.stopPropagation();
       }
 
-      var data;
-      var options = {};
+      var dMenu = document.querySelector('#document-menu.do');
 
-      options['storeHeaders'] = [];
-
-      if (document.location.protocol.startsWith('http')) {
-       options['storeHeaders'] = ['link', 'wac-allow'];
-       options['followLinkRelationTypes'] = ['describedby'];
+      if (!dMenu) {
+        DO.U.showDocumentInfo();
+        DO.U.showDocumentMenu();
+        return;
       }
 
-      getResourceInfo(data, options).then(function(resourceInfo){
-        var body = getDocumentContentNode(document);
-        var dMenu = document.querySelector('#document-menu.do');
+      var dMenuButton = dMenu.querySelector('button');
+      var dHead = dMenu.querySelector('header');
+      var dInfo = dMenu.querySelector('div');
 
-        if(dMenu) {
-          var dMenuButton = dMenu.querySelector('button');
-          var dHead = dMenu.querySelector('header');
-          var dInfo = dMenu.querySelector('div');
+      dMenuButton.classList.remove('show');
+      dMenuButton.classList.add('hide');
+      dMenuButton.setAttribute('title', 'Hide Menu');
+      dMenuButton.innerHTML = Icon[".fas.fa-minus"];
+      dMenu.classList.add('on');
+      // body.classList.add('on-document-menu');
 
-          dMenuButton.classList.remove('show');
-          dMenuButton.classList.add('hide');
-          dMenuButton.setAttribute('title', 'Hide Menu');
-          dMenuButton.innerHTML = Icon[".fas.fa-minus"];
-          dMenu.classList.add('on');
-          // body.classList.add('on-document-menu');
+      showUserSigninSignout(dHead);
+      DO.U.showDocumentDo(dInfo);
+      DO.U.showViews(dInfo);
 
-          showUserSigninSignout(dHead);
-          DO.U.showDocumentDo(dInfo);
-          DO.U.showViews(dInfo);
+      var body = getDocumentContentNode(document);
 
-          if(!body.classList.contains('on-slideshow')) {
-            DO.U.showDocumentItems();
-          }
+      if(!body.classList.contains('on-slideshow')) {
+        DO.U.showDocumentItems();
+      }
 
-          // document.addEventListener('click', DO.U.eventLeaveDocumentMenu);
-        }
-        else {
-          DO.U.showDocumentInfo();
-          DO.U.showDocumentMenu();
-        }
+      getResourceInfo(getDocument()).then(() => {
+        updateDocumentDoButtonStates();
+      });
+
+      var options = { 'reuse': true };
+      if (document.location.protocol.startsWith('http')) {
+        options['followLinkRelationTypes'] = ['describedby'];
+      }
+      getResourceSupplementalInfo(DO.C.DocumentURL, options).then(resourceInfo => {
+        updateFeatureStatesOfResourceInfo(resourceInfo);
+        updateDocumentDoButtonStates();
       });
     },
 
@@ -3707,27 +3707,9 @@ console.log(reason);
       });
     },
 
-    showDocumentDo: function showDocumentDo (node) {
-      var documentDo = document.getElementById('document-do');
-// console.log(documentDo)
-// console.log(DO.C.Resource)
-      if (documentDo) {
-        Object.keys(DO.C.ButtonStates).forEach(function(id){
-// console.log(id);
-// console.log(DO.C.ButtonStates[id]);
-          var s = documentDo.querySelector('.' + id);
-// console.log(s)
-          if (s) {
-            if (DO.C.ButtonStates[id]) {
-              s.removeAttribute('disabled');
-            }
-            else {
-              s.setAttribute('disabled', 'disabled');
-            }
-          }
-        });
-        return;
-      }
+    showDocumentDo: function (node) {
+      var d = node.querySelector('#document-do');
+      if (d) { return; }
 
       var documentURL = DO.C.DocumentURL;
 
@@ -3753,12 +3735,7 @@ console.log(reason);
 
       s += '<li><button class="resource-open" title="Open article">' + Icon[".fas.fa-coffee.fa-2x"] + 'Open</button></li>';
 
-      buttonDisabled = (DO.U.accessModeAllowed('write')) ? '' : ' disabled="disabled"';
-
-      buttonDisabled = (document.location.protocol === 'file:') ? ' disabled="disabled"' : buttonDisabled;
-
-      s += '<li><button class="resource-save"' + buttonDisabled +
-        ' title="Save article">' + Icon[".fas.fa-life-ring.fa-2x"] + 'Save</button></li>';
+      s += '<li><button class="resource-save" title="Save article">' + Icon[".fas.fa-life-ring.fa-2x"] + 'Save</button></li>';
 
       s += '<li><button class="resource-save-as"' + getButtonDisabledHTML('resource-save-as') + ' title="Save as article">' + Icon[".far.fa-paper-plane.fa-2x"] + 'Save As</button></li>';
 
@@ -3781,19 +3758,19 @@ console.log(reason);
         s += '<li><button class="resource-print"' + getButtonDisabledHTML('resource-print') + ' title="Print document">' + Icon[".fas.fa-print.fa-2x"] + 'Print</button></li>';
       }
 
-      buttonDisabled = (DO.U.accessModeAllowed('write')) ? '' : ' disabled="disabled"';
 
       var trashIcon = getDocumentNodeFromString(Icon[".fas.fa-trash-alt"], {'contentType': 'image/svg+xml'})
       trashIcon.classList.add('fa-2x');
       trashIcon = trashIcon.outerHTML;
-      s += '<li><button class="resource-delete"' + buttonDisabled +
-        ' title="Delete article">' + trashIcon + 'Delete</button></li>';
+      s += '<li><button class="resource-delete" title="Delete article">' + trashIcon + 'Delete</button></li>';
 
       s += '<li><button class="message-log" title="Show message log">' + Icon [".fas.fa-scroll.fa-2x"] + 'Messages</button></li>';
 
       s += '</ul></section>';
 
       node.insertAdjacentHTML('beforeend', s);
+
+      updateDocumentDoButtonStates();
 
       var eD = node.querySelector('.editor-disable');
       if (eD) {
