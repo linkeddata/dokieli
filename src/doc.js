@@ -1661,42 +1661,64 @@ function updateDocumentDoButtonStates() {
 }
 
 //TODO: This should be triggered after sign-in
-function setFeatureStatesOfResourceInfo(info) {
-  //false is disabled
-  var buttonState = {
-    'create-immutable': true,
-    'create-version': true,
-    'export-as-html': true,
-    'resource-print': true,
-    'resource-save-as': true,
-    'robustify-links': true,
-    'snapshot-internet-archive': true,
-    'generate-feed': true
+function updateFeatureStatesOfResourceInfo(info) {
+  var writeRequiredFeatures = ['resource-save', 'create-version', 'create-immutable', 'resource-delete'];
+
+  if (!Config.User.IRI) {
+    writeRequiredFeatures.forEach(feature => {
+      Config.ButtonStates[feature] = false;
+    })
+    Config.ButtonStates['resource-activities'] = false;
+  }
+  else {
+    if ((Config.User.Storage && DO.C.User.Storage.length > 0) ||
+        (Config.User.Outbox && DO.C.User.Outbox.length > 0) ||
+        (Config.User.Knows && DO.C.User.Knows.length > 0) ||
+        (Config.User.Contacts && Object.keys(DO.C.User.Contacts).length > 0)) {
+          Config.ButtonStates['resource-activities'] = true;
+    }
   }
 
-  if (info['odrl'] && info['odrl']['prohibitionActions'] && info['odrl']['prohibitionAssignee'] == Config.User.IRI) {
-    if (info['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/archive') > -1) {
-      buttonState['snapshot-internet-archive'] = false;
+  //XXX: This relies on `wac-allow` HTTP header. What to do if no `wac-allow`?
+  var writeAccessMode = accessModeAllowed(DO.C.DocumentURL, 'write');
+  writeRequiredFeatures.forEach(feature => {
+    Config.ButtonStates[feature] = writeAccessMode;
+  })
+
+  if (typeof info !== 'undefined') {
+    if (info['timemap']) {
+      Config.ButtonStates['resource-memento'] = true;
     }
 
-    if (info['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/derive') > -1) {
-      buttonState['resource-save-as'] = false;
-    }
+    if (info['odrl'] && info['odrl']['prohibitionActions'] && info['odrl']['prohibitionAssignee'] == Config.User.IRI) {
+      if (info['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/archive') > -1) {
+        Config.ButtonState['snapshot-internet-archive'] = false;
+      }
 
-    if (info['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/print') > -1) {
-      buttonState['resource-print'] = false;
-    }
+      if (info['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/derive') > -1) {
+        Config.ButtonState['resource-save-as'] = false;
+      }
 
-    if (info['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/reproduce') > -1) {
-      buttonState['create-immutable'] = false;
-      buttonState['create-version'] = false;
-      buttonState['export-as-html'] = false;
-      buttonState['resource-save-as'] = false;
-      buttonState['robustify-links'] = false;
-      buttonState['snapshot-internet-archive'] = false;
-      buttonState['generate-feed'] = false;
-    }
+      if (info['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/print') > -1) {
+        Config.ButtonState['resource-print'] = false;
+      }
 
+      if (info['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/reproduce') > -1) {
+        Config.ButtonState['create-immutable'] = false;
+        Config.ButtonState['create-version'] = false;
+        Config.ButtonState['export-as-html'] = false;
+        Config.ButtonState['resource-save-as'] = false;
+        Config.ButtonState['robustify-links'] = false;
+        Config.ButtonState['snapshot-internet-archive'] = false;
+        Config.ButtonState['generate-feed'] = false;
+      }
+
+      if (info['odrl']['prohibitionActions'].indexOf('http://www.w3.org/ns/odrl/2/transform') > -1) {
+        Config.ButtonState['export-as-html'] = false;
+      }
+    }
+  }
+}
 
 function accessModeAllowed (documentURL, mode) {
   documentURL = documentURL || DO.C.DocumentURL;
@@ -2539,6 +2561,7 @@ export {
   getResourceInfoSKOS,
   getResourceInfoCitations,
   updateDocumentDoButtonStates,
+  updateFeatureStatesOfResourceInfo,
   accessModeAllowed,
   createImmutableResource,
   createMutableResource,
