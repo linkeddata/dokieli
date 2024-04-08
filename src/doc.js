@@ -1629,6 +1629,25 @@ function getResourceInfoSKOS(g) {
   return info['skos'];
 }
 
+function updateDocumentDoButtonStates() {
+  var documentDo = document.getElementById('document-do');
+
+  if (documentDo) {
+    Object.keys(Config.ButtonStates).forEach(function(id){
+      var s = documentDo.querySelector('.' + id);
+
+      if (s) {
+        if (Config.ButtonStates[id]) {
+          s.removeAttribute('disabled');
+        }
+        else {
+          s.setAttribute('disabled', 'disabled');
+        }
+      }
+    });
+    return;
+  }
+}
 
 //TODO: This should be triggered after sign-in
 function setFeatureStatesOfResourceInfo(info) {
@@ -2501,7 +2520,7 @@ export {
   getResourceInfoSpecChanges,
   getResourceInfoSKOS,
   getResourceInfoCitations,
-  setFeatureStatesOfResourceInfo,
+  updateDocumentDoButtonStates,
   createImmutableResource,
   createMutableResource,
   updateMutableResource,
