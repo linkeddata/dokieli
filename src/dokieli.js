@@ -3645,9 +3645,16 @@ console.log(reason);
       if(typeof e !== 'undefined') {
         var b = e.target.closest('button');
         if(b.disabled) { return; }
-        else { b.disabled = true; }
+        else {
+          b.disabled = true;
+          DO.C.ButtonStates['resource-memento'] = false;
+        }
       }
-// console.log(DO.C.Resource)
+
+      showTimeMap();
+
+      var mementoItems = document.getElementById('memento-items');
+      if (mementoItems) { return; }
 
       var iri = DO.C.DocumentURL;
 
@@ -3667,9 +3674,7 @@ console.log(reason);
 
       e.target.closest('button').insertAdjacentHTML('afterend', '<ul id="memento-items" class="on">' + li.join('') + '</ul>');
 
-      var mementoItems = document.getElementById('memento-items');
-
-      showTimeMap();
+      mementoItems = document.getElementById('memento-items');
 
       mementoItems.addEventListener('click', function(e) {
         if (e.target.closest('button.resource-save') ||
