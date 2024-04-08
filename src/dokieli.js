@@ -4678,21 +4678,27 @@ console.log(reason);
                   var storageLocation = '<dl id="storage-location"><dt>Storage location</dt><dd><a href="' + storageUrl +'" target="_blank">' + storageUrl + '</a></dd></dl>';
 
                   getResourceGraph(sDURL).then(function(g){
-                    g = (g.foafprimaryTopic) ? g.child(g.foafprimaryTopic) : g.child(storageUrl);
+                    if (g) {
+                      g = (g.foafprimaryTopic) ? g.child(g.foafprimaryTopic) : g.child(storageUrl);
 
-                    var selfDescription = DO.U.getStorageSelfDescription(g);
-                    var contactInformation = DO.U.getContactInformation(g);
-                    var persistencePolicy = DO.U.getPersistencePolicy(g);
-                    var odrlPolicies = DO.U.getODRLPolicies(g);
-                    var communicationOptions = DO.U.getCommunicationOptions(g);
+                      var selfDescription = DO.U.getStorageSelfDescription(g);
+                      var contactInformation = DO.U.getContactInformation(g);
+                      var persistencePolicy = DO.U.getPersistencePolicy(g);
+                      var odrlPolicies = DO.U.getODRLPolicies(g);
+                      var communicationOptions = DO.U.getCommunicationOptions(g);
 
-                    sD.insertAdjacentHTML('beforeend', '<div id="' + id + '-storage-description">' + storageLocation + selfDescription + contactInformation + persistencePolicy + odrlPolicies + communicationOptions + '</div>');
+                      sD.insertAdjacentHTML('beforeend', '<div id="' + id + '-storage-description">' + storageLocation + selfDescription + contactInformation + persistencePolicy + odrlPolicies + communicationOptions + '</div>');
 
-                    var subscriptionsId = id + '-storage-description-details';
-                    var topicResource = s.iri().toString();
+                      var subscriptionsId = id + '-storage-description-details';
+                      var topicResource = s.iri().toString();
 
-                    var nodes = document.querySelectorAll('[id="' + id + '-storage-description"] [id^="notification-subscriptions-"]');
-                    DO.U.buttonSubscribeNotificationChannel(nodes, topicResource);
+                      var nodes = document.querySelectorAll('[id="' + id + '-storage-description"] [id^="notification-subscriptions-"]');
+                      DO.U.buttonSubscribeNotificationChannel(nodes, topicResource);
+                    }
+                    else {
+                      // TODO: var status = (g.status) ? g.status 
+                      sD.insertAdjacentHTML('beforeend', '<div id="' + id + '-storage-description">Unavailable</div>');
+                    }
                   });
                 }
               }
