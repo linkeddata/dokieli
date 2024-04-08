@@ -952,6 +952,13 @@ function showTimeMap(node, url) {
       var html = '<dl class="memento"><dt>Memento</dt><dd><ul>' + items.join('') + '</ul></dd></dl>';
 
       node.insertAdjacentHTML('beforeend', html);
+
+      node = document.getElementById(elementId);
+      node.addEventListener('click', e => {
+        if (e.target.closest('button.close')) {
+          document.querySelector('#document-do .resource-memento').disabled = false
+        }
+      });
     })
     .catch(error => {
 // console.error(error)
