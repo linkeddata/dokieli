@@ -1369,96 +1369,107 @@ function getGraphFromDataBlock(data, options) {
 }
 
 function getResourceSupplementalInfo (documentURL, options) {
+  options = options || {};
+  options['reuse'] = options['reuse'] === true ? true : false;
   options['followLinkRelationTypes'] = options['followLinkRelationTypes'] || [];
+  var checkHeaders = ['wac-allow', 'link'];
 
-  var { storeHeaders, contentType, subjectURI, followLinkRelationTypes, ...o } = options;
+  //TODO: Add `acl` and `http://www.w3.org/ns/solid/terms#storageDescription` to `linkRelationTypesOfInterest` and process them.
 
-  //TODO: Add `acl` to linkRelationTypesOfInterest
-  var linkRelationTypesOfInterest = ['describedby'];
+  if (options.reuse) {
+    const currentDate = new Date();
+    const previousResponse = Config['Resource'][documentURL].headers?.response;
+    const previousResponseDateHeaderValue = previousResponse?.get('date');
+    const previousResponseDate = previousResponseDateHeaderValue ? new Date(previousResponseDateHeaderValue) : null;
 
-  const currentDate = new Date();
-  const previousResponse = Config['Resource'][documentURL]?.headers?.response;
-  const previousResponseDateValue = previousResponse?.get('date');
-  const previousResponseDate = previousResponseDateValue ? new Date(previousResponseDateValue) : null;
+    if(!previousResponse || !previousResponseDateHeaderValue || (previousResponseDate && (currentDate.getTime() - previousResponseDate.getTime() > DO.C.RequestCheck.Timer))) {
+      options.reuse = false;
+    }
+  }
 
-  if (!previousResponse || !previousResponseDateValue || (previousResponseDate && currentDate.getTime() - previousResponseDate.getTime() > DO.C.RequestCheck.Timer)) {
+  if (!options.reuse) {
+    var rHeaders = { 'Cache-Control': 'no-cache' };
+    var rOptions = { 'noCache': true };
+    return getResourceHead(documentURL, rHeaders, rOptions)
+      .then(function(response) {
+        var headers = response.headers;
 
-  getResourceHead(documentURL, {}, o)
-    .then(function(response) {
-      var headers = response.headers;
+        Config['Resource'][documentURL]['headers'] = {};
+        Config['Resource'][documentURL]['headers']['response'] = headers;
 
-      Config['Resource'] = Config['Resource'] || {};
-      Config['Resource'][documentURL] = Config['Resource'][documentURL] || {};
-      Config['Resource'][documentURL]['headers'] = {};
-      Config['Resource'][documentURL]['headers']['response'] = headers;
+        checkHeaders.forEach(function(header){
+          var headerValue = response.headers.get(header);
+          // headerValue = 'foo=bar ,user=" READ wriTe Append control ", public=" read append" ,other="read " , baz= write, group=" ",,';
 
-      options.storeHeaders.forEach(function(oHeader){
-        var oHeaderValue = response.headers.get(oHeader);
-        // oHeaderValue = 'foo=bar ,user=" READ wriTe Append control ", public=" read append" ,other="read " , baz= write, group=" ",,';
+          if (headerValue) {
+            Config['Resource'][documentURL]['headers'][header] = { 'field-value' : headerValue };
 
-        if (oHeaderValue) {
-          Config['Resource'][documentURL]['headers'][oHeader] = { "field-value" : oHeaderValue };
+            if (header == 'wac-allow') {
+              var permissionGroups = Config['Resource'][documentURL]['headers']['wac-allow']["field-value"];
+              var wacAllowRegex = new RegExp(/(\w+)\s*=\s*"?\s*((?:\s*[^",\s]+)*)\s*"?/, 'ig');
+              var wacAllowMatches = matchAllIndex(permissionGroups, wacAllowRegex);
 
-// console.log('WAC-Allow: ' + response.headers);
-          if (oHeader.toLowerCase() == 'wac-allow') {
-            var permissionGroups = Config['Resource'][documentURL]['headers']['wac-allow']["field-value"];
-            var wacAllowRegex = new RegExp(/(\w+)\s*=\s*"?\s*((?:\s*[^",\s]+)*)\s*"?/, 'ig');
-            var wacAllowMatches = matchAllIndex(permissionGroups, wacAllowRegex);
-// console.log(wacAllowMatches)
+              Config['Resource'][documentURL]['headers']['wac-allow']['permissionGroup'] = {};
 
-            Config['Resource'][documentURL]['headers']['wac-allow']['permissionGroup'] = {};
+              wacAllowMatches.forEach(function(match){
+                var modesString = match[2] || '';
+                var accessModes = uniqueArray(modesString.toLowerCase().split(/\s+/));
 
-            wacAllowMatches.forEach(function(match){
-              var modesString = match[2] || '';
-              var accessModes = uniqueArray(modesString.toLowerCase().split(/\s+/));
+                Config['Resource'][documentURL]['headers']['wac-allow']['permissionGroup'][match[1]] = accessModes;
+              });
+            }
 
-              Config['Resource'][documentURL]['headers']['wac-allow']['permissionGroup'][match[1]] = accessModes;
-            });
+            if (header == 'link') {
+              var linkHeaders = LinkHeader.parse(headerValue);
+
+              Config['Resource'][documentURL]['headers']['linkHeaders'] = linkHeaders;
+
+              Config['Resource'][documentURL]['headers']['linkHeaders'].refs.forEach(relationItem => {
+                relationItem.rel = relationItem.rel.toLowerCase();
+                var linkTarget = relationItem.uri;
+
+                if (!linkTarget.startsWith('http:') && !linkTarget.startsWith('https:')) {
+                  linkTarget = relationItem.uri = getAbsoluteIRI(getBaseURL(response.url), linkTarget);
+                }
+              });
+            }
           }
+        })
+      })
+      .then(() => {
+        var promises = [];
+        var linkHeaders = Config['Resource'][documentURL]['headers']['linkHeaders'];
 
-          if (oHeader.toLowerCase() == 'link') {
-            var linkHeaders = LinkHeader.parse(oHeaderValue);
+        if (linkHeaders) {
+          linkHeaders.refs.forEach(relationItem => {
+            var relationType = relationItem.rel;
+            var linkTarget = relationItem.uri;
+            //TODO: GET acl linkTarget only if user/public has control permission.
+            if ('followLinkRelationTypes' in options && options.followLinkRelationTypes.includes(relationType)) {
+              promises.push(getResourceGraph(linkTarget));
+            }
+          });
+        }
 
-            Config['Resource'][documentURL]['headers']['linkHeaders'] = linkHeaders;
+        return Promise.allSettled(promises)
+          .then(function(results) {
+            results.forEach(function(result){
+              var g = result.value;
 
-            linkRelationTypesOfInterest.forEach(function(relationType) {
-              if (linkHeaders.has('rel', relationType)) {
-                var p = [];
-
-                Config['Resource'][documentURL][relationType] = {};
-  
-                linkHeaders.rel(relationType).forEach(function(relationItem) {
-                  var linkTarget = relationItem.uri;
-                  if (!linkTarget.startsWith('http:') && !linkTarget.startsWith('https:')) {
-                    linkTarget = getAbsoluteIRI(getBaseURL(response.url), linkTarget);
-                  }
-
-                  Config['Resource'][documentURL][relationType][linkTarget] = {};
-
-                  if ('followLinkRelationTypes' in options && options.followLinkRelationTypes.includes(relationType)) {
-                    p.push(getResourceGraph(linkTarget));
-                  }
-                });
-
-                return Promise.all(p)
-                  .then(function(graphs) {
-                    graphs.forEach(function(g){
-                      if (g) {
-                        //FIXME: Consider the case where `linkTarget` URL is redirected and so may not be same as `s`.
-                        var s = g.iri().toString();
-                        Config['Resource'][documentURL][relationType][s] = {};
-                        Config['Resource'][documentURL][relationType][s]['graph'] = g;
-                        Config['Resource'][s] = {};
-                        Config['Resource'][s]['graph'] = g;
-                      }
-                    });
-                });
+              if (g) {
+                //FIXME: Consider the case where `linkTarget` URL is redirected and so may not be same as `s`.
+                var s = g.iri().toString();
+                Config['Resource'][s] = {};
+                Config['Resource'][s]['graph'] = g;
               }
             });
-          }
-        }
-      })
-    })
+
+            return Config['Resource'][documentURL];
+        });
+      });
+  }
+  else {
+    return Promise.resolve(Config['Resource'][documentURL]);
   }
 }
 
