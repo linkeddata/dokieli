@@ -1,7 +1,7 @@
 {
   "name": "dokieli",
   "short_name": "dokieli",
-  "description": "dokieli is a clientside editor for decentralised article publishing, annotations and social interactions.",
+  "description": "dokieli is a clientside editor for decentralised article publishing, annotations, and social interactions.",
   "author":"dokieli Team",
   "homepage_url": "https://dokie.li/",
   "version": "0.3.141592653",

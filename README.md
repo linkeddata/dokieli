@@ -1,6 +1,6 @@
 # dokieli
 
-[dokieli](https://dokie.li/) is a clientside editor for decentralised article publishing, annotations and social interactions.
+[dokieli](https://dokie.li/) is a clientside editor for decentralised article publishing, annotations, and social interactions.
 
 It is built with the following principles in mind: freedom of expression, decentralisation, interoperability, and accessibility. There is no root, authority, or centralisation here. Control yourself!
 
