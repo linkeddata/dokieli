@@ -562,6 +562,7 @@ export default {
     "solidpreferredPolicy": { "@id": "http://www.w3.org/ns/solid/terms#preferredPolicy", "@type": "@id" },
     "solidforClass": { "@id": "http://www.w3.org/ns/solid/terms#forClass", "@type": "@id" },
     "solidinstanceContainer": { "@id": "http://www.w3.org/ns/solid/terms#instanceContainer", "@type": "@id" },
+    "solidinstance": { "@id": "http://www.w3.org/ns/solid/terms#instance", "@type": "@id" },
     "solidpublicTypeIndex": { "@id": "http://www.w3.org/ns/solid/terms#publicTypeIndex", "@type": "@id" },
     "solidprivateTypeIndex": { "@id": "http://www.w3.org/ns/solid/terms#privateTypeIndex", "@type": "@id" },
     "solidowner": { "@id": "http://www.w3.org/ns/solid/terms#owner", "@type": "@id", "@array": true },
