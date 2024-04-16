@@ -792,13 +792,18 @@ function getUserContacts(iri) {
 }
 
 function getAgentTypeIndex(iri) {
-  const TypeRegistrationClasses = [Config.Vocab['oaAnnotation']['@id'], Config.Vocab['asAnnounce']['@id']];
+  //XXX: TypeRegistration forClasses of interest but for now lets store what we find without filtering.
+  // const TypeRegistrationClasses = [Config.Vocab['oaAnnotation']['@id'], Config.Vocab['asAnnounce']['@id']];
 
-  var fetchTypeRegistration = function(iri) {
-    var pIRI = getProxyableIRI(iri);
-
-    getResourceGraph(pIRI)
+  var fetchTypeRegistration = function(iri, typeIndexType) {
+    return getResourceGraph(iri)
       .then(function(g){
+        //XXX: https://github.com/solid/type-indexes/issues/29 for potential property to discover TypeRegistrations.
+// console.log(iri, g);
+        if(!g) {
+          return {};
+        }
+
         var triples = g.graph().toArray();
 // console.log(triples);
         if(triples.length > 0) {
@@ -808,10 +813,8 @@ function getAgentTypeIndex(iri) {
             var p = t.predicate.nominalValue;
             var o = t.object.nominalValue;
 
-            //Check if class is of interest (that we can handle)
-            if (p == Config.Vocab['solidforClass']['@id'] && TypeRegistrationClasses.indexOf(o) > -1) {
-              //Keep track of subjects of interest
-              indexes[s] = {}
+            if (p == Config.Vocab['solidforClass']['@id']) {
+              indexes[s] = {};
               indexes[s][Config.Vocab['solidforClass']['@id']] = o;
             }
           });
@@ -821,12 +824,17 @@ function getAgentTypeIndex(iri) {
             var p = t.predicate.nominalValue;
             var o = t.object.nominalValue;
 
-            if(indexes[s] && p == Config.Vocab['solidinstanceContainer']['@id']) {
-              var forClass = indexes[s][Config.Vocab['solidforClass']['@id']]
-              Config.User.TypeIndex[forClass] = o;
+            if(indexes[s]) {
+              Config.User.TypeIndex[typeIndexType] = Config.User.TypeIndex[typeIndexType] || {};
+              if (p == Config.Vocab['solidinstance']['@id'] ||
+                  p == Config.Vocab['solidinstanceContainer']['@id']) {
+                Config.User.TypeIndex[typeIndexType][s] = {};
+                Config.User.TypeIndex[typeIndexType][s][Config.Vocab['solidforClass']['@id']] = indexes[s][Config.Vocab['solidforClass']['@id']];
+                Config.User.TypeIndex[typeIndexType][s][p] = o;
+              }
             }
           });
-
+// console.log(Config.User.TypeIndex)
           return Config.User.TypeIndex
         }
       })
@@ -835,13 +843,13 @@ function getAgentTypeIndex(iri) {
   var promises = []
 
   if (Config.User.PublicTypeIndex) {
-    promises.push(fetchTypeRegistration(Config.User.PublicTypeIndex))
+    promises.push(fetchTypeRegistration(Config.User.PublicTypeIndex, Config.Vocab['solidpublicTypeIndex']['@id']))
   }
   if (Config.User.PrivateTypeIndex) {
-    promises.push(fetchTypeRegistration(Config.User.PrivateTypeIndex))
+    promises.push(fetchTypeRegistration(Config.User.PrivateTypeIndex, Config.Vocab['solidprivateTypeIndex']['@id']))
   }
 
-  return Promise.all(promises)
+  return Promise.allSettled(promises)
     .then(function(results) {
       results.filter(result => !(result instanceof Error));
 
