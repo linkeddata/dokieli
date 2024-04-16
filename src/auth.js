@@ -296,7 +296,7 @@ function afterSignIn () {
 
   var promises = [];
 
-  promises.push(getAgentTypeIndex(Config.User))
+  promises.push(getAgentTypeIndex(Config.User.IRI))
 
   promises.push(getAgentSupplementalInfo(Config.User.IRI))
 
