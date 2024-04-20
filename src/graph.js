@@ -807,35 +807,34 @@ function getAgentTypeIndex(iri) {
         var triples = g.graph().toArray();
 // console.log(triples);
         if(triples.length > 0) {
-          var indexes = {};
+          var typeIndexes = {};
+          typeIndexes[typeIndexType] = {};
+
           triples.forEach(function(t){
             var s = t.subject.nominalValue;
             var p = t.predicate.nominalValue;
             var o = t.object.nominalValue;
 
             if (p == Config.Vocab['solidforClass']['@id']) {
-              indexes[s] = {};
-              indexes[s][Config.Vocab['solidforClass']['@id']] = o;
+              typeIndexes[typeIndexType][s] = {};
+              typeIndexes[typeIndexType][s][p] = o;
             }
           });
-// console.log(indexes)
+
           triples.forEach(function(t){
             var s = t.subject.nominalValue;
             var p = t.predicate.nominalValue;
             var o = t.object.nominalValue;
 
-            if(indexes[s]) {
-              Config.User.TypeIndex[typeIndexType] = Config.User.TypeIndex[typeIndexType] || {};
+            if(typeIndexes[s]) {
               if (p == Config.Vocab['solidinstance']['@id'] ||
                   p == Config.Vocab['solidinstanceContainer']['@id']) {
-                Config.User.TypeIndex[typeIndexType][s] = {};
-                Config.User.TypeIndex[typeIndexType][s][Config.Vocab['solidforClass']['@id']] = indexes[s][Config.Vocab['solidforClass']['@id']];
-                Config.User.TypeIndex[typeIndexType][s][p] = o;
+                typeIndexes[typeIndexType][s][p] = o;
               }
             }
           });
-// console.log(Config.User.TypeIndex)
-          return Config.User.TypeIndex
+// console.log(typeIndexes)
+          return typeIndexes
         }
       })
   }
@@ -853,9 +852,13 @@ function getAgentTypeIndex(iri) {
     .then(function(results) {
       results.filter(result => !(result instanceof Error));
 
-      // results.forEach(function(result) {
-      //   console.log(result)
-      // });
+      var typeIndexes = {};
+
+      results.forEach(function(result) {
+        Object.assign(typeIndexes, result.value);
+      });
+
+      return typeIndexes;
     });
 }
 

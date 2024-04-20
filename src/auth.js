@@ -294,9 +294,13 @@ function afterSignIn () {
     updateDocumentDoButtonStates();
   });
 
-  var promises = [];
+  getAgentTypeIndex(Config.User.IRI).then(typeIndexes => {
+    Object.keys(typeIndexes).forEach(typeIndexType => {
+      Config.User.TypeIndex[typeIndexType] = typeIndexes[typeIndexType];
+    });
+  });
 
-  promises.push(getAgentTypeIndex(Config.User.IRI))
+  var promises = [];
 
   promises.push(getAgentSupplementalInfo(Config.User.IRI))
 
