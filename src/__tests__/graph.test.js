@@ -1,6 +1,4 @@
-import { getResourceGraph } from "../graph";
-
-global.fetch = jest.fn();
+import { getResourceGraph } from "../graph.js";
 
 describe("graph", () => {
   describe("getResourceGraph", () => {
@@ -14,7 +12,7 @@ describe("graph", () => {
       const options = {};
 
       // Mock the fetch function to reject with an error
-      global.fetch.mockRejectedValue(new Error("mocked error"));
+      jest.spyOn(global, 'fetch').mockRejectedValue(new Error("mocked error"));
 
       await expect(
         getResourceGraph(iri, headers, options)
@@ -27,7 +25,7 @@ describe("graph", () => {
       const options = {};
 
       // Mock the fetch function to resolve with a response
-      global.fetch.mockResolvedValue({
+      jest.spyOn(global, 'fetch').mockResolvedValue({
         ok: true,
         status: 200,
         statusText: "OK",

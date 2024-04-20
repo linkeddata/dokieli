@@ -1,20 +1,23 @@
-import { getResource, setAcceptRDFTypes, getResourceHead, getResourceOptions } from "../fetcher.js";
-
-global.fetch = jest.fn();
+import {
+  getResource,
+  setAcceptRDFTypes,
+  getResourceHead,
+  getResourceOptions,
+} from "../fetcher.js";
 
 describe("fetcher", () => {
-  describe("getResource", () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
 
+  describe("getResource", () => {
     test("should throw error", async () => {
       const iri = "http://example.com/nonexistent-resource";
       const headers = { Accept: "text/turtle" };
       const options = {};
 
       // Mock the fetch function to reject with an error
-      global.fetch.mockRejectedValue(new Error("mocked error"));
+      jest.spyOn(global, "fetch").mockRejectedValue(new Error("mocked error"));
 
       await expect(getResource(iri, headers, options)).rejects.toThrow(
         "mocked error"
@@ -27,7 +30,7 @@ describe("fetcher", () => {
       const options = {};
 
       // Mock the fetch function to resolve with a response
-      global.fetch.mockResolvedValue({
+      jest.spyOn(global, "fetch").mockResolvedValue({
         ok: true,
         status: 200,
         statusText: "OK",
@@ -66,16 +69,12 @@ describe("fetcher", () => {
   });
 
   describe("getResourceHead", () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-
     test("should throw error when response is not ok", async () => {
       const url = "http://example.com/resource";
       const options = {};
 
       // Mock the fetch function to resolve with a response that is not ok
-      global.fetch.mockResolvedValue({
+      jest.spyOn(global, "fetch").mockResolvedValue({
         ok: false,
         status: 404,
         statusText: "Not Found",
@@ -91,7 +90,7 @@ describe("fetcher", () => {
       const options = {};
 
       // Mock the fetch function to resolve with a response that is ok
-      global.fetch.mockResolvedValue({
+      jest.spyOn(global, "fetch").mockResolvedValue({
         ok: true,
         status: 200,
         statusText: "OK",
@@ -99,25 +98,17 @@ describe("fetcher", () => {
 
       const result = await getResourceHead(url, options);
 
-      expect(result).toEqual({
-        ok: true,
-        status: 200,
-        statusText: "OK",
-      });
+      expect(result).toEqual({ ok: true, status: 200, statusText: "OK" });
     });
   });
 
   describe("getResourceOptions", () => {
-    beforeEach(() => {
-      jest.clearAllMocks();
-    });
-
     test("should return resource options with default values", async () => {
       const url = "http://example.com/resource";
       const options = {};
 
       // Mock the fetch function to resolve with a response
-      global.fetch.mockResolvedValue({
+      jest.spyOn(global, "fetch").mockResolvedValue({
         ok: true,
         status: 200,
         statusText: "OK",
@@ -136,7 +127,7 @@ describe("fetcher", () => {
       const options = {};
 
       // Mock the fetch function to resolve with a response that is not ok
-      global.fetch.mockResolvedValue({
+      jest.spyOn(global, "fetch").mockResolvedValue({
         ok: false,
         status: 404,
         statusText: "Not Found",
@@ -152,7 +143,7 @@ describe("fetcher", () => {
       const options = { header: "X-Custom-Header" };
 
       // Mock the fetch function to resolve with a response
-      global.fetch.mockResolvedValue({
+      jest.spyOn(global, "fetch").mockResolvedValue({
         ok: true,
         status: 200,
         statusText: "OK",
@@ -171,7 +162,7 @@ describe("fetcher", () => {
       const options = { header: "X-Custom-Header" };
 
       // Mock the fetch function to resolve with a response
-      global.fetch.mockResolvedValue({
+      jest.spyOn(global, "fetch").mockResolvedValue({
         ok: true,
         status: 200,
         statusText: "OK",
@@ -185,5 +176,4 @@ describe("fetcher", () => {
       expect(result).toEqual({ headers: "custom-value" });
     });
   });
-
 });
