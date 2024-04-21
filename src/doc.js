@@ -819,12 +819,12 @@ function setEditSelections(options) {
 
 
   var documentStatus = 'document-status';
-  dLS = document.querySelector('#' + documentStatus + ' option:checked');
+  var dSS = document.querySelector('#' + documentStatus + ' option:checked');
 
-  if (dLS) {
-    var statusIRI = dLS.value;
+  if (dSS) {
+    var statusIRI = dSS.value;
 
-    dl = dLS.closest('#' + documentStatus);
+    dl = dSS.closest('#' + documentStatus);
     dl.removeAttribute('contenteditable');
 
     if(statusIRI == '') {
@@ -832,7 +832,7 @@ function setEditSelections(options) {
     }
     else {
       dl.removeAttribute('class');
-      dd = dLS.closest('dd');
+      dd = dSS.closest('dd');
       dd.parentNode.removeChild(dd);
       dd = '<dd prefix="pso: http://purl.org/spar/pso/" rel="pso:holdsStatusInTime" resource="#' + generateAttributeId() + '"><span rel="pso:withStatus" resource="' + statusIRI  + '" typeof="pso:PublicationStatus">' + Config.PublicationStatus[statusIRI].name + '</span></dd>';
 
@@ -845,12 +845,12 @@ function setEditSelections(options) {
   }
 
   var documentTestSuite = 'document-test-suite';
-  dTS = document.querySelector('#' + documentTestSuite + ' input');
+  var dTSS = document.querySelector('#' + documentTestSuite + ' input');
 
-  if (dTS) {
-    var testSuiteIRI = dTS.value;
+  if (dTSS) {
+    var testSuiteIRI = dTSS.value;
 
-    dl = dTS.closest('#' + documentTestSuite);
+    dl = dTSS.closest('#' + documentTestSuite);
     dl.removeAttribute('contenteditable');
 
     if(testSuiteIRI == '') {
@@ -858,7 +858,7 @@ function setEditSelections(options) {
     }
     else {
       dl.removeAttribute('class');
-      dd = dTS.closest('dd');
+      dd = dTSS.closest('dd');
       dd.parentNode.removeChild(dd);
       dd = '<dd><a href="' + testSuiteIRI+ '" rel="spec:testSuite">' + testSuiteIRI + '</a></dd>';
       dl.insertAdjacentHTML('beforeend', dd);
@@ -866,12 +866,12 @@ function setEditSelections(options) {
   }
 
   var documentInbox = 'document-inbox';
-  dTS = document.querySelector('#' + documentInbox + ' input');
+  var dIS = document.querySelector('#' + documentInbox + ' input');
 
-  if (dTS) {
-    var inboxIRI = dTS.value;
+  if (dIS) {
+    var inboxIRI = dIS.value;
 
-    dl = dTS.closest('#' + documentInbox);
+    dl = dIS.closest('#' + documentInbox);
     dl.removeAttribute('contenteditable');
 
     if(inboxIRI == '') {
@@ -879,7 +879,7 @@ function setEditSelections(options) {
     }
     else {
       dl.removeAttribute('class');
-      dd = dTS.closest('dd');
+      dd = dIS.closest('dd');
       dd.parentNode.removeChild(dd);
       dd = '<dd><a href="' + inboxIRI+ '" rel="ldp:inbox">' + inboxIRI + '</a></dd>';
       dl.insertAdjacentHTML('beforeend', dd);
