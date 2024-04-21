@@ -8479,6 +8479,22 @@ WHERE {\n\
                 });
               }
             }
+
+            if (!s.ldpinbox || s.ldpinbox._array.length === 0) {
+              var documentInbox = 'document-inbox';
+              var inbox = document.getElementById(documentInbox);
+              if (!inbox) {
+                //XXX: <!--<button class="add-inbox" contenteditable="false" title="Add inbox">' + Icon[".fas.fa-plus"] + '</button>-->
+                dl = '        <dl class="do" id="' + documentInbox + '"><dt>Inbox</dt><dd><input contenteditable="false" name="inbox" placeholder="https://example.net/inbox/" type="text" value="" /></dd></dl>';
+                insertDocumentLevelHTML(document, dl, { 'id': documentInbox });
+
+                //XXX: Same as above comment about workaround for setEditSelections
+                var dI = document.querySelector('#' + documentInbox + ' input');
+                dI.addEventListener('blur', function(e){
+                  dI.setAttribute('value', dI.value);
+                });
+              }
+            }
           }
           else if (e && e.target.closest('button.editor-disable')) {
             setEditSelections();

@@ -865,6 +865,27 @@ function setEditSelections(options) {
     }
   }
 
+  var documentInbox = 'document-inbox';
+  dTS = document.querySelector('#' + documentInbox + ' input');
+
+  if (dTS) {
+    var inboxIRI = dTS.value;
+
+    dl = dTS.closest('#' + documentInbox);
+    dl.removeAttribute('contenteditable');
+
+    if(inboxIRI == '') {
+      dl.parentNode.removeChild(dl);
+    }
+    else {
+      dl.removeAttribute('class');
+      dd = dTS.closest('dd');
+      dd.parentNode.removeChild(dd);
+      dd = '<dd><a href="' + inboxIRI+ '" rel="ldp:inbox">' + inboxIRI + '</a></dd>';
+      dl.insertAdjacentHTML('beforeend', dd);
+    }
+  }
+
   getResourceInfo();
 }
 
