@@ -886,6 +886,27 @@ function setEditSelections(options) {
     }
   }
 
+  var documentInReplyTo = 'document-in-reply-to';
+  var dIRTS = document.querySelector('#' + documentInReplyTo + ' input');
+
+  if (dIRTS) {
+    var inReplyToIRI = dIRTS.value;
+
+    dl = dIRTS.closest('#' + documentInReplyTo);
+    dl.removeAttribute('contenteditable');
+
+    if(inReplyToIRI == '') {
+      dl.parentNode.removeChild(dl);
+    }
+    else {
+      dl.removeAttribute('class');
+      dd = dIRTS.closest('dd');
+      dd.parentNode.removeChild(dd);
+      dd = '<dd><a href="' + inReplyToIRI+ '" rel="as:inReplyTo">' + inReplyToIRI + '</a></dd>';
+      dl.insertAdjacentHTML('beforeend', dd);
+    }
+  }
+
   getResourceInfo();
 }
 

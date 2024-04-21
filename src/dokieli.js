@@ -8495,6 +8495,22 @@ WHERE {\n\
                 });
               }
             }
+
+            if (!s.asinReplyTo || s.asinReplyTo._array.length === 0) {
+              var documentInReplyTo = 'document-in-reply-to';
+              var inReplyTo = document.getElementById(documentInReplyTo);
+              if (!inReplyTo) {
+                //XXX: <!--<button class="add-in-reply-to" contenteditable="false" title="Add in-reply-to">' + Icon[".fas.fa-plus"] + '</button>-->
+                dl = '        <dl class="do" id="' + documentInReplyTo + '"><dt>In Reply To</dt><dd><input contenteditable="false" name="in-reply-to" placeholder="https://example.net/article" type="text" value="" /></dd></dl>';
+                insertDocumentLevelHTML(document, dl, { 'id': documentInReplyTo });
+
+                //XXX: Same as above comment about workaround for setEditSelections
+                var dIRT = document.querySelector('#' + documentInReplyTo + ' input');
+                dIRT.addEventListener('blur', function(e){
+                  dIRT.setAttribute('value', dI.value);
+                });
+              }
+            }
           }
           else if (e && e.target.closest('button.editor-disable')) {
             setEditSelections();
