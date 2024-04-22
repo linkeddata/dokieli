@@ -484,6 +484,7 @@ export default {
     "schemaisPartOf": { "@id": "http://schema.org/isPartOf", "@type": "@id", "@array": true },
     "schemaArticle": { "@id": "http://schema.org/Article", "@type": "@id" },
     "schemaScholarlyArticle": { "@id": "http://schema.org/ScholarlyArticle", "@type": "@id" },
+    "schemaThesis": { "@id": "http://schema.org/Thesis", "@type": "@id"},
     "schemahasMap": { "@id": "http://schema.org/hasMap", "@type": "@id", "@array": true },
     "schemapotentialAction": { "@id": "http://schema.org/potentialAction", "@type": "@id", "@array": true },
     "schemaViewAction": { "@id": "http://schema.org/ViewAction" },
