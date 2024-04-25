@@ -1778,6 +1778,9 @@ DO = {
         s += '<li><button class="resource-visualise" title="Change to graph view">Graph</button></li>';
       }
       s += '<li><button title="Change to native device/browser view">Native</button></li>';
+      if (shower) {
+        s += '<li><button class="resource-slideshow" title="Change to slideshow view">Slideshow</button></li>';
+      }
 
       if (stylesheets.length > 0) {
         for (var i = 0; i < stylesheets.length; i++) {
@@ -1795,7 +1798,7 @@ DO = {
       s += '</ul></section>';
       node.insertAdjacentHTML('beforeend', s);
 
-      var viewButtons = document.querySelectorAll('#document-views.do button:not([class~="resource-visualise"])');
+      var viewButtons = document.querySelectorAll('#document-views.do button:not([class~="resource-visualise"]):not([class~="resource-slideshow"])');
       for (let i = 0; i < viewButtons.length; i++) {
         viewButtons[i].removeEventListener('click', DO.U.initCurrentStylesheet);
         viewButtons[i].addEventListener('click', DO.U.initCurrentStylesheet);
