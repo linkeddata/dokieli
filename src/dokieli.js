@@ -1829,6 +1829,19 @@ DO = {
           }
         });
       }
+
+      if (shower) {
+        document.querySelector('#document-views.do').addEventListener('click', function(e){
+          if (e.target.closest('.resource-slideshow')) {
+            var documentNode = getDocumentContentNode(document);
+            documentNode.classList.add('shower', 'list');
+            documentNode.querySelector('header').classList.add('caption');
+            var sections = documentNode.querySelectorAll('section:not(section section)');
+            sections.forEach(section => section.classList.add('slide'));
+            DO.U.initSlideshow();
+          }
+        });
+      }
     },
 
     updateSelectedStylesheets: function(stylesheets, selected) {
