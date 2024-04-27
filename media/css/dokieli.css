@@ -670,7 +670,7 @@ a.highlight,
 .highlight .highlight { background-color:#0099FF; color:#000000; }
 .highlight .highlight .highlight { background-color:#0000FF; color:#FFFFFF; }
 
-#document-action-message li {
+#document-action-message > ul > li {
 border-radius:0.5em;
 border:1px solid #CCCCCC;
 margin-top:1em;
@@ -687,6 +687,10 @@ padding-bottom:0 !important;
 #document-action-message li.success { border-color:#008800; }
 #document-action-message li.warning { border-color:#FFFF00; }
 #document-action-message li.error { border-color:#FF0000; }
+
+#document-action-message li li {
+list-style: initial;
+}
 
 #document-menu {
 color:#000;
