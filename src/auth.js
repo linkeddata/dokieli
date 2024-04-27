@@ -317,14 +317,13 @@ function afterSignIn () {
   promises.push(getAgentSupplementalInfo(Config.User.IRI))
   promises.push(getAgentSeeAlso(Config.User.Graph))
 
-  Promise.all(promises)
+  Promise.allSettled(promises)
     .then(function(results) {
       var uI = document.getElementById('user-info')
       if (uI) {
         uI.innerHTML = getUserSignedInHTML()
       }
 
-      //XXX: Run this after all promises are settled
       showGeneralMessages();
 
       return updateLocalStorageProfile(Config.User)
