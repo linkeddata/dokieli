@@ -1085,7 +1085,7 @@ function getGraphTitle(s) {
   return DOMPurify.sanitize(d)
 }
 
-function getConceptLabel(s) {
+function getGraphConceptLabel(s) {
   var labels = [];
 
   //XXX Is there a better way? Simple if skosprefLabel is single in DO.C.Vocab
@@ -1170,7 +1170,7 @@ export {
   getGraphRights,
   getGraphLabel,
   getGraphTitle,
-  getConceptLabel,
+  getGraphConceptLabel,
   getGraphDescription,
   getGraphTypes,
   sortGraphTriples,
