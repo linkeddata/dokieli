@@ -699,7 +699,7 @@ function getAgentSupplementalInfo(iri) {
 }
 
 function getAgentSeeAlso(g, baseURI, subjectURI) {
-  if (!g) { return; }
+  if (!g) { return Promise.resolve([]); }
 
   subjectURI = baseURI = baseURI || g.iri().toString();
 
@@ -710,41 +710,52 @@ function getAgentSeeAlso(g, baseURI, subjectURI) {
     var promises = [];
 
     seeAlso._array.forEach(function(iri){
-      if (Config.User.SeeAlso.indexOf(iri) < 0) {
+      if (!Config.User.SeeAlso.includes(iri)) {
         iris.push(iri)
       }
     });
 
     iris.forEach(function(iri){
       Config.User.SeeAlso = uniqueArray(Config.User.SeeAlso.concat(iri));
-
-      getResourceGraph(iri)
-        .then(g => {
-
-          var s = g.child(subjectURI)
-
-          var knows = getAgentKnows(s) || [];
-          var occupations = getAgentOccupations(s) || [];
-
-          if (knows.length > 0) {
-            Config.User.Knows = (Config.User.Knows)
-              ? uniqueArray(Config.User.Knows.concat(knows))
-              : knows;
-          }
-
-          if (occupations.length > 0) {
-            Config.User.Occupations = (Config.User.Occupations)
-              ? uniqueArray(Config.User.Occupations.concat(occupations))
-              : occupations;
-          }
-
-          promises.push(getAgentSeeAlso(g, iri, subjectURI))
-        })
+      promises.push(getResourceGraph(iri));
     });
 
-    Promise.all(promises)
+    return Promise.allSettled(promises)
       .then(function(results) {
-        return Promise.resolve([]);
+        var promisesGetAngentSeeAlso = [];
+
+        results.forEach(result => {
+// console.log(result)
+
+          var g = result.value;
+          var iri = g.iri().toString();
+
+          if (g) {
+            var s = g.child(subjectURI)
+
+            var knows = getAgentKnows(s) || [];
+            var occupations = getAgentOccupations(s) || [];
+
+            if (knows.length > 0) {
+              Config.User.Knows = (Config.User.Knows)
+                ? uniqueArray(Config.User.Knows.concat(knows))
+                : knows;
+            }
+
+            if (occupations.length > 0) {
+              Config.User.Occupations = (Config.User.Occupations)
+                ? uniqueArray(Config.User.Occupations.concat(occupations))
+                : occupations;
+            }
+
+            promisesGetAngentSeeAlso.push(getAgentSeeAlso(g, iri, subjectURI))
+          }
+        })
+
+        return Promise.allSettled(promisesGetAngentSeeAlso)
+          .then(function(results) {
+            return Promise.resolve([]);
+          })
       })
       .catch(function(e) {
         return Promise.resolve([]);
