@@ -600,34 +600,26 @@ function isActorProperty (s) {
 function getAgentPreferencesInfo(g) {
   if (!g) { return; }
 
-  var preferencesFile = (Config.User.PreferencesFile) ? Config.User.PreferencesFile : getAgentPreferencesFile(g);
+  var preferencesFile = getAgentPreferencesFile(g) || Config.User.PreferencesFile;
 
   if (preferencesFile) {
-    return getResourceGraph(preferencesFile).then(g => {
-        return getAgentPreferredPolicyRule(g.child(Config.User.IRI));
-      })
-      .catch(function(e) {
-        return getAgentPreferredPolicyRule(Config.User.Graph.child(Config.User.IRI));
-      })
+    return getResourceGraph(preferencesFile);
   }
   else {
-    return getAgentPreferredPolicyRule(Config.User.Graph.child(Config.User.IRI));
+    return Promise.reject({});
   }
 }
 
 
-function getAgentPreferredPolicyRule(g) {
-  Config.User['PreferredPolicy'] = getAgentPreferredPolicy(g);
-  var s = g.child(Config.User.PreferredPolicy);
-
-  Config.User['PreferredPolicyRule'] = Config.User.PreferredPolicyRule || {};
+function getAgentPreferredPolicyRule(s) {
+  var preferredPolicyRule = {};
 
   if (s && s.odrlprohibition && s.odrlprohibition.at(0)) {
     var prohibitionG = s.child(s.odrlprohibition.at(0));
 
     if (prohibitionG.odrlaction && prohibitionG.odrlaction._array.length > 0) {
-      Config.User.PreferredPolicyRule['Prohibition'] = {}
-      Config.User.PreferredPolicyRule['Prohibition']['Actions'] = prohibitionG.odrlaction._array;
+      preferredPolicyRule['Prohibition'] = {};
+      preferredPolicyRule['Prohibition']['Actions'] = prohibitionG.odrlaction._array;
     }
   }
 
@@ -635,14 +627,19 @@ function getAgentPreferredPolicyRule(g) {
     var permissionG = s.child(s.odrlpermission.at(0));
 
     if (permissionG.odrlaction && permissionG.odrlaction._array.length > 0) {
-      Config.User.PreferredPolicyRule['Permission'] = {}
-      Config.User.PreferredPolicyRule['Permission']['Actions'] = permissionG.odrlaction._array;
+      preferredPolicyRule['Permission'] = {};
+      preferredPolicyRule['Permission']['Actions'] = permissionG.odrlaction._array;
     }
   }
 
-  return Config.User.PreferredPolicyRule
+  return preferredPolicyRule;
 }
 
+function setPreferredPolicyInfo(g) {
+  Config.User['PreferredPolicy'] = getAgentPreferredPolicy(g);
+  var s = g.child(Config.User.PreferredPolicy);
+  Config.User['PreferredPolicyRule'] = getAgentPreferredPolicyRule(s);
+}
 
 function getAgentSupplementalInfo(iri) {
   if (iri == Config.User.IRI) {
@@ -1131,6 +1128,7 @@ export {
   isActorProperty,
   getAgentPreferencesInfo,
   getAgentPreferredPolicyRule,
+  setPreferredPolicyInfo,
   getAgentSeeAlso,
   getAgentSupplementalInfo,
   getUserContacts,

@@ -5,7 +5,7 @@ import { deleteResource } from './fetcher.js'
 import { removeChildren, fragmentFromString } from './util.js'
 import { getAgentHTML, showActionMessage, showGeneralMessages, getResourceSupplementalInfo, updateDocumentDoButtonStates, updateFeatureStatesOfResourceInfo } from './doc.js'
 import { Icon } from './template.js'
-import { getResourceGraph, getAgentName, getGraphImage, getAgentURL, getAgentPreferredProxy, getAgentPreferredPolicy, getAgentDelegates, getAgentKnows, getAgentFollowing, getAgentStorage, getAgentOutbox, getAgentInbox, getAgentPreferencesFile, getAgentPublicTypeIndex, getAgentPrivateTypeIndex, getAgentTypeIndex, getAgentSupplementalInfo, getAgentSeeAlso, getAgentPreferencesInfo, getAgentOccupations } from './graph.js'
+import { getResourceGraph, getAgentName, getGraphImage, getAgentURL, getAgentPreferredProxy, getAgentPreferredPolicy, getAgentPreferredPolicyRule, setPreferredPolicyInfo, getAgentDelegates, getAgentKnows, getAgentFollowing, getAgentStorage, getAgentOutbox, getAgentInbox, getAgentPreferencesFile, getAgentPublicTypeIndex, getAgentPrivateTypeIndex, getAgentTypeIndex, getAgentSupplementalInfo, getAgentSeeAlso, getAgentPreferencesInfo, getAgentOccupations } from './graph.js'
 import { removeLocalStorageProfile, updateLocalStorageProfile } from './storage.js'
 import solidAuth, { logout, popupLogin } from 'solid-auth-client'
 
@@ -300,13 +300,22 @@ function afterSignIn () {
     });
   });
 
+  getAgentPreferencesInfo(Config.User.Graph)
+    .then(preferencesInfo => {
+      Config.User['Preferences'] = { graph: preferencesInfo };
+      return preferencesInfo.child(Config.User.IRI);
+    })
+    .then(g => {
+      setPreferredPolicyInfo(g);
+    })
+    .catch(error => {
+      var g = Config.User.Graph.child(Config.User.IRI);
+      setPreferredPolicyInfo(g);
+    })
+
   var promises = [];
-
   promises.push(getAgentSupplementalInfo(Config.User.IRI))
-
   promises.push(getAgentSeeAlso(Config.User.Graph))
-
-  promises.push(getAgentPreferencesInfo(Config.User.Graph))
 
   Promise.all(promises)
     .then(function(results) {
