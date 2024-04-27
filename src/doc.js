@@ -6,7 +6,7 @@ import { getAbsoluteIRI, getBaseURL, stripFragmentFromString, getFragmentFromStr
 import { getResourceHead, processSave, patchResourceWithAcceptPatch } from './fetcher.js'
 import * as ld from './simplerdf.cjs'
 const SimpleRDF = ld.SimpleRDF
-import { getResourceGraph, sortGraphTriples, getGraphAuthor, getGraphLabel, getGraphEmail, getGraphTitle, getGraphPublished, getGraphUpdated, getGraphDescription, getGraphLicense, getGraphRights, getGraphFromData, getGraphAudience, getGraphTypes } from './graph.js'
+import { getResourceGraph, sortGraphTriples, getGraphAuthor, getGraphLabel, getGraphEmail, getGraphTitle, getGraphConceptLabel, getGraphPublished, getGraphUpdated, getGraphDescription, getGraphLicense, getGraphRights, getGraphFromData, getGraphAudience, getGraphTypes } from './graph.js'
 import { createRDFaHTML, Icon } from './template.js'
 import LinkHeader from "http-link-header";
 import * as DOMPurify from 'dompurify';
@@ -2412,30 +2412,47 @@ function showGeneralMessages() {
 }
 
 function showResourceAudienceAgentOccupations() {
-  console.log(Config.User.Occupations)
-  console.log(Config.DocumentURL.audience)
-
   if (Config.User.Occupations && Config.User.Occupations.length > 0) {
     var matches = [];
 
     Config.Resource[Config.DocumentURL].audience.forEach(function(audience){
       if (Config.User.Occupations.includes(audience)){
-        matches.push(audience);
+        matches.push(getResourceGraph(audience).then(g => {
+          return (g) ? g.child(audience) : g;
+        }));
       }
     })
 
-    if (matches.length > 0) {
+    Promise.allSettled(matches)
+    .then(function(results){
       var ul = '<ul>';
-      matches.forEach(item => {
-        //XXX: We could use a label instead of the URI but we don't have it local. Need to make an additional fetch for it.
-        ul += '<li><a href="' + item + '">' + item + '</a></li>';
+
+      results.forEach(result => {
+        var g = result.value;
+        var iri = g.iri().toString();
+        //TODO: Update getGraphConceptLabel to have an optional parameter that takes language tag, e.g., 'en'.
+        var skosLabels = getGraphConceptLabel(g);
+        var label = iri;
+        if (skosLabels.length > 0) {
+          label = skosLabels[Math.floor(Math.random() * skosLabels.length)];
+        }
+// console.log(label)
+        if (g) {
+          ul += '<li><a href="' + iri + '" target="_blank">' + label + '</a></li>';
+        }
       });
+
       ul += '</ul>';
-
+  
       var message = "<p>Your occupations match this document's audience(s):</p>" + ul;
-
-      showActionMessage(document.documentElement, message, {'timer': 3000});
-    }
+      message = {
+        'content': message,
+        'type': 'info',
+        'timer': 5000
+      }
+      addMessageToLog(message);
+      showActionMessage(document.documentElement, message);
+    });
   }
 }
 
@@ -2466,7 +2483,7 @@ function setCopyToClipboard(contentNode, triggerNode, options = {}) {
           message = {
             'content': message,
             'type': 'info',
-            'timer': 3000,
+            'timer': 3000
           }
           addMessageToLog(message);
           showActionMessage(document.documentElement, message);
@@ -2476,7 +2493,7 @@ function setCopyToClipboard(contentNode, triggerNode, options = {}) {
           message = {
             'content': message,
             'type': 'error',
-            'timer': 3000,
+            'timer': 3000
           }
           addMessageToLog(message);
           showActionMessage(document.documentElement, message);
