@@ -1085,6 +1085,17 @@ function getGraphTitle(s) {
   return DOMPurify.sanitize(d)
 }
 
+function getConceptLabel(s) {
+  var labels = [];
+
+  //XXX Is there a better way? Simple if skosprefLabel is single in DO.C.Vocab
+  if (s.skosprefLabel._array.length > 0) { labels = labels.concat(s.skosprefLabel._array); }
+  if (s.skosaltLabel._array.length > 0) { labels = labels.concat(s.skosaltLabel._array); }
+  if (s.skosnotation._array.length > 0) { labels = labels.concat(s.skosnotation._array); }
+
+  return labels;
+}
+
 function getGraphDescription(s) {
   var d = s.schemadescription || s.dctermsdescription || s.dcelementsdescription || s.schemaname || s.asname || undefined;
   return DOMPurify.sanitize(d)
@@ -1159,6 +1170,7 @@ export {
   getGraphRights,
   getGraphLabel,
   getGraphTitle,
+  getConceptLabel,
   getGraphDescription,
   getGraphTypes,
   sortGraphTriples,

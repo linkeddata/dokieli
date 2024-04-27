@@ -9,7 +9,7 @@
 import { getResource, setAcceptRDFTypes, postResource, putResource, currentLocation, patchResourceWithAcceptPatch, putResourceWithAcceptPut, copyResource, deleteResource } from './fetcher.js'
 import { getDocument, getDocumentContentNode, escapeCharacters, showActionMessage, selectArticleNode, buttonClose, buttonRemoveAside, showRobustLinksDecoration, getResourceInfo, getResourceSupplementalInfo, removeNodesWithIds, getResourceInfoSKOS, removeReferences, buildReferences, removeSelectorFromNode, insertDocumentLevelHTML, getResourceInfoSpecRequirements, getTestDescriptionReviewStatusHTML, createFeedXML, getButtonDisabledHTML, showTimeMap, createMutableResource, createImmutableResource, updateMutableResource, createHTML, getResourceImageHTML, setDocumentRelation, setDate, getClosestSectionNode, getAgentHTML, setEditSelections, getNodeLanguage, createActivityHTML, createLicenseHTML, createLanguageHTML, getAnnotationInboxLocationHTML, getAnnotationLocationHTML, getResourceTypeOptionsHTML, getPublicationStatusOptionsHTML, getLanguageOptionsHTML, getLicenseOptionsHTML, getCitationOptionsHTML, getDocumentNodeFromString, getNodeWithoutClasses, getDoctype, setCopyToClipboard, addMessageToLog, updateDocumentDoButtonStates, updateFeatureStatesOfResourceInfo } from './doc.js'
 import { getProxyableIRI, getPathURL, stripFragmentFromString, getFragmentOrLastPath, getFragmentFromString, getURLLastPath, getLastPathSegment, forceTrailingSlash, getBaseURL, getParentURLPath, encodeString, getAbsoluteIRI } from './uri.js'
-import { getResourceGraph, traverseRDFList, getLinkRelation, getAgentName, getGraphImage, getGraphFromData, isActorType, isActorProperty, serializeGraph, getGraphLabel, getUserContacts, getAgentOutbox, getAgentStorage, getAgentInbox, getLinkRelationFromHead, sortGraphTriples } from './graph.js'
+import { getResourceGraph, traverseRDFList, getLinkRelation, getAgentName, getGraphImage, getGraphFromData, isActorType, isActorProperty, serializeGraph, getGraphLabel, getConceptLabel, getUserContacts, getAgentOutbox, getAgentStorage, getAgentInbox, getLinkRelationFromHead, sortGraphTriples } from './graph.js'
 import { notifyInbox, sendNotifications, postActivity } from './inbox.js'
 import { uniqueArray, fragmentFromString, hashCode, generateAttributeId, escapeRegExp, sortToLower, getDateTimeISO, getDateTimeISOFromMDY, generateUUID, matchAllIndex, isValidISBN } from './util.js'
 import { generateGeoView } from './geo.js'
@@ -2147,17 +2147,6 @@ DO = {
       return contentCount;
     },
 
-    getConceptLabel: function(s) {
-      var labels = [];
-
-      //XXX Is there a better way? Simple if skosprefLabel is single in DO.C.Vocab
-      if (s.skosprefLabel._array.length > 0) { labels = labels.concat(s.skosprefLabel._array); }
-      if (s.skosaltLabel._array.length > 0) { labels = labels.concat(s.skosaltLabel._array); }
-      if (s.skosnotation._array.length > 0) { labels = labels.concat(s.skosnotation._array); }
-
-      return labels;
-    },
-
     showExtendedConcepts: function() {
       var documentURL = DO.C.DocumentURL;
       var citationsList = DO.C.Resource[documentURL].citations;
@@ -2257,7 +2246,7 @@ DO = {
 // console.log(subject)
           g = DO.C.Resource[documentURL]['graph'].child(subject);
 
-          var conceptLabel = sortToLower(DO.U.getConceptLabel(g));
+          var conceptLabel = sortToLower(getConceptLabel(g));
           conceptLabel = (conceptLabel.length > 0) ? conceptLabel.join(' / ') : getFragmentOrLastPath(subject);
           conceptLabel = conceptLabel.trim();
           conceptLabel = '<a href="' + subject + '">' + conceptLabel + '</a>';
@@ -2278,7 +2267,7 @@ DO = {
               if (concept && concept.length > 0) {
                 sortToLower(concept).forEach(function(c) {
                   var conceptGraph = DO.C.Resource[documentURL]['graph'].child(c);
-                  var cLabel = DO.U.getConceptLabel(conceptGraph);
+                  var cLabel = getConceptLabel(conceptGraph);
                   cLabel = (cLabel.length > 0) ? cLabel : [getFragmentOrLastPath(c)];
                   cLabel.forEach(function(cL) {
                     cL = cL.trim();
