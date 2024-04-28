@@ -1096,13 +1096,58 @@ function getGraphTitle(s) {
   return DOMPurify.sanitize(d)
 }
 
-function getGraphConceptLabel(s) {
+function getGraphConceptLabel(g, options) {
   var labels = [];
+  options = options || {};
+  options['subjectURI'] = options['subjectURI'] || g.iri().toString();
+  options['lang'] = options['lang'] || 'en';
 
-  //XXX Is there a better way? Simple if skosprefLabel is single in DO.C.Vocab
-  if (s.skosprefLabel._array.length > 0) { labels = labels.concat(s.skosprefLabel._array); }
-  if (s.skosaltLabel._array.length > 0) { labels = labels.concat(s.skosaltLabel._array); }
-  if (s.skosnotation._array.length > 0) { labels = labels.concat(s.skosnotation._array); }
+  //FIXME: Using this approach temporarily that is tied to SimpleRDF for convenience until it is replaced. It is fugly but it works. Make it better!
+
+  var triples = g._graph
+
+  triples.forEach(function(t){
+// console.log(t)
+    var s = t.subject.nominalValue;
+    var p = t.predicate.nominalValue;
+    var o = t.object.nominalValue;
+
+    if (s == options['subjectURI']){
+      if (p == Config.Vocab['skosprefLabel']['@id'] && (t.object.language == '' || t.object.language == options['lang'])) {
+        labels.push(o);
+      }
+      else if (p == Config.Vocab['skosxlprefLabel']['@id']) {
+        g.child(o)._graph.forEach(function(oT){
+          var oS = oT.subject.nominalValue;
+          var oP = oT.predicate.nominalValue;
+          var oO = oT.object.nominalValue;
+
+          if (oS == o && oP == Config.Vocab['skosxlliteralForm']['@id'] && (oT.object.language == '' || oT.object.language == options['lang'])) {
+            labels.push(oO);
+          }
+        })
+      }
+      else if (p == Config.Vocab['skosaltLabel']['@id'] && (t.object.language == '' || t.object.language == options['lang'])) {
+        labels.push(o);
+      }
+      else if (p == Config.Vocab['skosxlaltLabel']['@id']) {
+        g.child(o)._graph.forEach(function(oT){
+          var oS = oT.subject.nominalValue;
+          var oP = oT.predicate.nominalValue;
+          var oO = oT.object.nominalValue;
+
+          if (oS == o && oP == Config.Vocab['skosxlliteralForm']['@id'] && (oT.object.language == '' || oT.object.language == options['lang'])) {
+            labels.push(oO);
+          }
+        })
+      }
+      else if (p == Config.Vocab['skosnotation']['@id']) {
+        labels.push(o);
+      }
+    }
+  })
+
+// console.log(labels)
 
   return labels.map(element => DOMPurify.sanitize(element));
 }
