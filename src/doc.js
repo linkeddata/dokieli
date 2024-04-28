@@ -2437,8 +2437,7 @@ function showResourceAudienceAgentOccupations() {
             var label = iri;
             if (skosLabels.length > 0) {
               // label = skosLabels[Math.floor(Math.random() * skosLabels.length)];
-              label = skosLabels.sort();
-              label = label[0];
+              label = skosLabels[0];
             }
 // console.log(label)
             ul.push('<li><a href="' + iri + '" target="_blank">' + label + '</a></li>');
