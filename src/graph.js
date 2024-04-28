@@ -1097,7 +1097,13 @@ function getGraphTitle(s) {
 }
 
 function getGraphConceptLabel(g, options) {
-  var labels = [];
+  var labels = {
+    prefLabel: [],
+    xlprefLabel: [],
+    altLabel: [],
+    xlaltLabel: [],
+    notation: []
+  };
   options = options || {};
   options['subjectURI'] = options['subjectURI'] || g.iri().toString();
   options['lang'] = options['lang'] || 'en';
@@ -1114,7 +1120,7 @@ function getGraphConceptLabel(g, options) {
 
     if (s == options['subjectURI']){
       if (p == Config.Vocab['skosprefLabel']['@id'] && (t.object.language == '' || t.object.language == options['lang'])) {
-        labels.push(o);
+        labels.prefLabel.push(o);
       }
       else if (p == Config.Vocab['skosxlprefLabel']['@id']) {
         g.child(o)._graph.forEach(function(oT){
@@ -1123,12 +1129,12 @@ function getGraphConceptLabel(g, options) {
           var oO = oT.object.nominalValue;
 
           if (oS == o && oP == Config.Vocab['skosxlliteralForm']['@id'] && (oT.object.language == '' || oT.object.language == options['lang'])) {
-            labels.push(oO);
+            labels.xlprefLabel.push(oO);
           }
         })
       }
       else if (p == Config.Vocab['skosaltLabel']['@id'] && (t.object.language == '' || t.object.language == options['lang'])) {
-        labels.push(o);
+        labels.altLabel.push(o);
       }
       else if (p == Config.Vocab['skosxlaltLabel']['@id']) {
         g.child(o)._graph.forEach(function(oT){
@@ -1137,19 +1143,28 @@ function getGraphConceptLabel(g, options) {
           var oO = oT.object.nominalValue;
 
           if (oS == o && oP == Config.Vocab['skosxlliteralForm']['@id'] && (oT.object.language == '' || oT.object.language == options['lang'])) {
-            labels.push(oO);
+            labels.xlaltLabel.push(oO);
           }
         })
       }
       else if (p == Config.Vocab['skosnotation']['@id']) {
-        labels.push(o);
+        labels.notation.push(o);
       }
     }
   })
 
-// console.log(labels)
+  var flattenedLabels = [];
 
-  return labels.map(element => DOMPurify.sanitize(element));
+  for (var key in labels) {
+    if (labels.hasOwnProperty(key)) {
+      flattenedLabels = flattenedLabels.concat(labels[key].sort().map(element => DOMPurify.sanitize(element)));
+    }
+  }
+
+  labels = uniqueArray(flattenedLabels);
+
+  // console.log(labels)
+  return labels;
 }
 
 function getGraphDescription(s) {
