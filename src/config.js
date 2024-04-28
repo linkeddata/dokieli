@@ -532,6 +532,10 @@ export default {
     "skosnarrowMatch": { "@id": "http://www.w3.org/2004/02/skos/core#narrowMatch", "@type": "@id", "@array": true },
     "skosrelatedMatch": { "@id": "http://www.w3.org/2004/02/skos/core#relatedMatch", "@type": "@id", "@array": true },
 
+    "skosxlaltLabel": { "@id": "http://www.w3.org/2008/05/skos-xl#altLabel", "@array": true },
+    "skosxlprefLabel": { "@id": "http://www.w3.org/2008/05/skos-xl#prefLabel", "@array": true },
+    "skosxlliteralForm": { "@id": "http://www.w3.org/2008/05/skos-xl#literalForm" },
+
     "provgeneratedAtTime": "http://www.w3.org/ns/prov#generatedAtTime",
     "provwasRevisionOf": { "@id": "http://www.w3.org/ns/prov#wasRevisionOf", "@type": "@id" },
 
