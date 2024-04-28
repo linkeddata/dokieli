@@ -2418,6 +2418,7 @@ function showResourceAudienceAgentOccupations() {
     Config.Resource[Config.DocumentURL].audience.forEach(function(audience){
       if (Config.User.Occupations.includes(audience)){
         matches.push(getResourceGraph(audience).then(g => {
+          Config.Resource[audience] = { graph: g };
           return (g) ? g.child(audience) : g;
         }));
       }
@@ -2438,6 +2439,7 @@ function showResourceAudienceAgentOccupations() {
             if (skosLabels.length > 0) {
               // label = skosLabels[Math.floor(Math.random() * skosLabels.length)];
               label = skosLabels[0];
+              Config.Resource[iri]['labels'] = skosLabels;
             }
 // console.log(label)
             ul.push('<li><a href="' + iri + '" target="_blank">' + label + '</a></li>');
