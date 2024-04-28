@@ -2335,7 +2335,8 @@ DO = {
       document.documentElement.appendChild(fragmentFromString('<aside id="document-items" class="do on">' + DO.C.Button.Close + '</aside>'));
       documentItems = document.getElementById('document-items');
 
-      var sections = document.querySelectorAll('h1 ~ div > section:not([class~="slide"]):not([id^=table-of]):not([id^=list-of])');
+      var articleNode = selectArticleNode(document);
+      var sections = articleNode.querySelectorAll('section:not(section section):not([id^=table-of]):not([id^=list-of])');
 
       if (sections.length > 0) {
         DO.U.showListOfStuff(documentItems);
@@ -2511,7 +2512,8 @@ DO = {
           }
 
           if (id == 'table-of-contents') {
-            s += DO.U.getListOfSections(document.querySelectorAll('h1 ~ div > section:not([class~="slide"])'), {'raw': true});
+            var articleNode = selectArticleNode(document);
+            s += DO.U.getListOfSections(articleNode.querySelectorAll('section:not(section section)'), {'raw': true});
           }
           else {
             if (id == 'table-of-requirements') {
