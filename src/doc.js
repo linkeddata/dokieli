@@ -2424,35 +2424,39 @@ function showResourceAudienceAgentOccupations() {
     })
 
     Promise.allSettled(matches)
-    .then(function(results){
-      var ul = '<ul>';
+      .then(function(results){
+        var ul = [];
 
-      results.forEach(result => {
-        var g = result.value;
-        var iri = g.iri().toString();
-        //TODO: Update getGraphConceptLabel to have an optional parameter that takes language tag, e.g., 'en'.
-        var skosLabels = getGraphConceptLabel(g);
-        var label = iri;
-        if (skosLabels.length > 0) {
-          label = skosLabels[Math.floor(Math.random() * skosLabels.length)];
-        }
+        results.forEach(result => {
+          var g = result.value;
+
+          if (g) {
+            var iri = g.iri().toString();
+            //TODO: Update getGraphConceptLabel to have an optional parameter that takes language tag, e.g., 'en'.
+            var skosLabels = getGraphConceptLabel(g);
+            var label = iri;
+            if (skosLabels.length > 0) {
+              label = skosLabels[Math.floor(Math.random() * skosLabels.length)];
+            }
 // console.log(label)
-        if (g) {
-          ul += '<li><a href="' + iri + '" target="_blank">' + label + '</a></li>';
+            ul.push('<li><a href="' + iri + '" target="_blank">' + label + '</a></li>');
+          }
+        });
+
+        if (ul.length > 0){
+          ul = '<ul>' + ul.join('') + '</ul>';
+
+          var message = "<p>This document’s audience matches your profile:</p>" + ul;
+          message = {
+            'content': message,
+            'type': 'info',
+            'timer': 5000
+          }
+
+          addMessageToLog(message);
+          showActionMessage(document.documentElement, message);
         }
       });
-
-      ul += '</ul>';
-  
-      var message = "<p>Your occupations match this document's audience(s):</p>" + ul;
-      message = {
-        'content': message,
-        'type': 'info',
-        'timer': 5000
-      }
-      addMessageToLog(message);
-      showActionMessage(document.documentElement, message);
-    });
   }
 }
 
