@@ -1104,7 +1104,7 @@ function getGraphConceptLabel(s) {
   if (s.skosaltLabel._array.length > 0) { labels = labels.concat(s.skosaltLabel._array); }
   if (s.skosnotation._array.length > 0) { labels = labels.concat(s.skosnotation._array); }
 
-  return labels;
+  return labels.map(element => DOMPurify.sanitize(element));
 }
 
 function getGraphDescription(s) {
