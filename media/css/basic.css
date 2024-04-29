@@ -356,10 +356,6 @@ a:focus:visited {
 color: #c00;
 border-bottom:0;
 }
-a:visited {
-/*color:#551A8B;*/
-/*color:#000;*/
-}
 a[href^="#"]:not(:focus):not(:visited) {
 color: #080;
 }
@@ -395,13 +391,6 @@ padding:0.25em 0;
 border-radius:0.25em;
 border:1px solid #ccc;
 box-shadow:inset -2px -2px 1px #eee;
-}
-
-code, samp, kbd, tt{
-/*
-font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
-font-size:0.95em;
-*/
 }
 
 .rfc2119 {
@@ -956,9 +945,6 @@ margin: 1em;
 /*padding: 0.3em;*/
 text-align: center;
 /*border-radius: 50%;*/
-}
-#dokieli-features ul svg {
-/*font-size:3em;*/
 }
 
 #dokieli-features i img {
