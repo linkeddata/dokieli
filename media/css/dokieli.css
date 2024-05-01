@@ -2023,6 +2023,30 @@ background:none !important;
 }
 }*/
 
+.shower.full,
+.shower .slide {
+overflow:auto;
+}
+
+.shower.full>main>article > header {
+display:none;
+}
+
+.shower>main>article header details {
+font-size:0.5em;
+margin-top:1em;
+}
+
+.shower>main>article header nav,
+.shower>main>article > [property="schema:description"] > :not(section.slide) {
+display:none;
+}
+.shower > main > article > [property="schema:description"] {
+display:flex;
+flex-wrap:wrap;
+}
+
+
 .shower {
 margin: 0;
 max-width: initial;
@@ -2079,6 +2103,12 @@ color: #080;
 .shower .progress {
 background: #080;
 }
+.shower .slide blockquote:before {
+font-size:5em;
+}
+/* .shower .slide blockquote footer {
+position:static;
+} */
 .shower .slide footer {
 /*background:#EFF1E8;*/
 background: #EEE;
@@ -2087,12 +2117,22 @@ background: #EEE;
 vertical-align: middle;
 }
 .shower .slide footer dt,
-.shower .slide footer dd {
+.shower .slide footer dd,
+.shower .slide footer dd ul,
+.shower .slide footer dd li {
 display: inline;
+margin:0;
 }
-.shower .slide footer dt {
+.shower .slide footer dd li:after {
+content: ", ";
+}
+.shower .slide footer dd li:last-child:after {
+content: "";
+}
+
+/* .shower .slide footer dt {
 margin-right: 1em;
-}
+} */
 .shower .slide footer dt:after {
 content: ":";
 }
@@ -2103,9 +2143,19 @@ white-space: pre;
 .shower .slide footer dt:first-child:before {
 content: "";
 }
+.shower .slide footer figure,
+.shower .slide footer figure p {
+display:inline;
+}
 .shower .slide footer svg {
 vertical-align: middle;
 display: inline-block;
+}
+.shower .slide footer dd figure {
+clear:both;
+}
+.shower .slide footer dd figure p {
+margin-top: -2em;
 }
 .shower .slide blockquote::before {
 margin-left: -0.5em;
@@ -2129,6 +2179,29 @@ display: block;
 text-decoration: none;
 background: none;
 }
+
+/*
+.shower .slide table {
+margin-left:0;
+width:auto;
+}
+.shower .slide table th,
+.shower .slide table td,
+.shower .slide table th:first-child,
+.shower .slide table td:first-child {
+padding:0 0.5em;
+}
+
+OR:
+*/
+.shower .slide table caption {
+font-weight:bold;
+}
+.shower .slide table caption:before {
+margin-left:96px;
+content:"";
+}
+
 .shower dl.performer,
 .shower dl.organisations {
 float: right;
