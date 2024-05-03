@@ -1119,7 +1119,7 @@ function getGraphConceptLabel(g, options) {
     var o = t.object.nominalValue;
 
     if (s == options['subjectURI']){
-      if (p == Config.Vocab['skosprefLabel']['@id'] && (t.object.language == '' || t.object.language.toLowerCase().startsWith(options['lang']))) {
+      if (p == Config.Vocab['skosprefLabel']['@id'] && (t.object.language && (t.object.language == '' || t.object.language.toLowerCase().startsWith(options['lang'])))) {
         labels.prefLabel.push(o);
       }
       else if (p == Config.Vocab['skosxlprefLabel']['@id']) {
@@ -1128,12 +1128,12 @@ function getGraphConceptLabel(g, options) {
           var oP = oT.predicate.nominalValue;
           var oO = oT.object.nominalValue;
 
-          if (oS == o && oP == Config.Vocab['skosxlliteralForm']['@id'] && (oT.object.language == '' || oT.object.language.toLowerCase().startsWith(options['lang']))) {
+          if (oS == o && oP == Config.Vocab['skosxlliteralForm']['@id'] && (oT.object.language && (oT.object.language == '' || oT.object.language.toLowerCase().startsWith(options['lang'])))) {
             labels.xlprefLabel.push(oO);
           }
         })
       }
-      else if (p == Config.Vocab['skosaltLabel']['@id'] && (t.object.language == '' || t.object.language.toLowerCase().startsWith(options['lang']))) {
+      else if (p == Config.Vocab['skosaltLabel']['@id'] && (t.object.language && (t.object.language == '' || t.object.language.toLowerCase().startsWith(options['lang'])))) {
         labels.altLabel.push(o);
       }
       else if (p == Config.Vocab['skosxlaltLabel']['@id']) {
@@ -1142,7 +1142,7 @@ function getGraphConceptLabel(g, options) {
           var oP = oT.predicate.nominalValue;
           var oO = oT.object.nominalValue;
 
-          if (oS == o && oP == Config.Vocab['skosxlliteralForm']['@id'] && (oT.object.language == '' || oT.object.language.toLowerCase().startsWith(options['lang']))) {
+          if (oS == o && oP == Config.Vocab['skosxlliteralForm']['@id'] && (oT.object.language && (oT.object.language == '' || oT.object.language.toLowerCase().startsWith(options['lang'])))) {
             labels.xlaltLabel.push(oO);
           }
         })
