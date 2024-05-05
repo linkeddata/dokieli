@@ -7940,7 +7940,7 @@ WHERE {\n\
       }
 
       var creatorName = '';
-      var creatorIRI = '#agent';
+      var creatorIRI = '#' + generateAttributeId();
       if ('creator' in n) {
         if ('image' in n.creator) {
           var img = (n.mode == 'read') ? getProxyableIRI(n.creator.image) : n.creator.image;
