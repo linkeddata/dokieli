@@ -2027,7 +2027,9 @@ background:none !important;
 .shower .slide {
 overflow:auto;
 }
-
+.shower.list {
+padding-top:0;
+}
 .shower.full>main>article > header {
 display:none;
 }
@@ -2050,6 +2052,7 @@ flex-wrap:wrap;
 .shower {
 margin: 0;
 max-width: initial;
+background-color:#EEEEEE;
 }
 .shower>main,
 .shower>main>article {
@@ -2074,12 +2077,18 @@ margin-bottom: 0.5em;
 .shower .slide h3 {
 font-weight: bold;
 }
+.shower header ul,
 .shower .slide ul {
 padding: 0;
 margin-bottom: 1em;
 list-style: initial;
 list-style-position: inside;
 }
+.shower details dd ul {
+margin-bottom:0;
+}
+.shower header ol>li,
+.shower header ul>li,
 .shower .slide ol>li,
 .shower .slide ul>li {
 text-indent: 0;
@@ -2109,9 +2118,15 @@ font-size:5em;
 /* .shower .slide blockquote footer {
 position:static;
 } */
-.shower .slide footer {
+.shower header details summary {
+background-color:initial;
+}
+.shower .slide details {
+clear:both;
+}
+	.shower .slide footer {
 /*background:#EFF1E8;*/
-background: #EEE;
+background: #EEEEEE;
 }
 .shower .slide footer img {
 vertical-align: middle;
@@ -2229,15 +2244,19 @@ font-size: 0.9em;
 font-size: 350%;
 }
 .shower .caption {
-padding: 1em 0.5em;
+padding:0;
+margin:1em;
 }
-.shower .caption,
+.shower .caption {
+background:none;
+}
 .shower .slide .shout::after {
 background: #080 linear-gradient(135deg, #080 50%, #070 50%) no-repeat;
 }
 .shower .caption h1 {
 padding: 0;
 text-align:left;
+color:initial;
 }
 .shower .caption > dl {
 font-size:0.5em;
