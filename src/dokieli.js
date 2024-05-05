@@ -8,7 +8,7 @@
 
 import { getResource, setAcceptRDFTypes, postResource, putResource, currentLocation, patchResourceWithAcceptPatch, putResourceWithAcceptPut, copyResource, deleteResource } from './fetcher.js'
 import { getDocument, getDocumentContentNode, escapeCharacters, showActionMessage, selectArticleNode, buttonClose, buttonRemoveAside, showRobustLinksDecoration, getResourceInfo, getResourceSupplementalInfo, removeNodesWithIds, getResourceInfoSKOS, removeReferences, buildReferences, removeSelectorFromNode, insertDocumentLevelHTML, getResourceInfoSpecRequirements, getTestDescriptionReviewStatusHTML, createFeedXML, getButtonDisabledHTML, showTimeMap, createMutableResource, createImmutableResource, updateMutableResource, createHTML, getResourceImageHTML, setDocumentRelation, setDate, getClosestSectionNode, getAgentHTML, setEditSelections, getNodeLanguage, createActivityHTML, createLicenseHTML, createLanguageHTML, getAnnotationInboxLocationHTML, getAnnotationLocationHTML, getResourceTypeOptionsHTML, getPublicationStatusOptionsHTML, getLanguageOptionsHTML, getLicenseOptionsHTML, getCitationOptionsHTML, getDocumentNodeFromString, getNodeWithoutClasses, getDoctype, setCopyToClipboard, addMessageToLog, updateDocumentDoButtonStates, updateFeatureStatesOfResourceInfo } from './doc.js'
-import { getProxyableIRI, getPathURL, stripFragmentFromString, getFragmentOrLastPath, getFragmentFromString, getURLLastPath, getLastPathSegment, forceTrailingSlash, getBaseURL, getParentURLPath, encodeString, getAbsoluteIRI } from './uri.js'
+import { getProxyableIRI, getPathURL, stripFragmentFromString, getFragmentOrLastPath, getFragmentFromString, getURLLastPath, getLastPathSegment, forceTrailingSlash, getBaseURL, getParentURLPath, encodeString, getAbsoluteIRI, generateDataURI } from './uri.js'
 import { getResourceGraph, traverseRDFList, getLinkRelation, getAgentName, getGraphImage, getGraphFromData, isActorType, isActorProperty, serializeGraph, getGraphLabel, getGraphConceptLabel, getUserContacts, getAgentOutbox, getAgentStorage, getAgentInbox, getLinkRelationFromHead, sortGraphTriples } from './graph.js'
 import { notifyInbox, sendNotifications, postActivity } from './inbox.js'
 import { uniqueArray, fragmentFromString, hashCode, generateAttributeId, escapeRegExp, sortToLower, getDateTimeISO, getDateTimeISOFromMDY, generateUUID, matchAllIndex, isValidISBN } from './util.js'
@@ -4445,7 +4445,7 @@ console.log(reason);
         var name = getAgentName(s) || iri;
         var img = getGraphImage(s);
         if (!(img && img.length > 0)) {
-          img = "data:image/svg+xml;base64," + window.btoa(Icon[".fas.fa-user-secret"]);
+          img = generateDataURI('image/svg+xml', 'base64', Icon['.fas.fa-user-secret']);
         }
         img = '<img alt="" height="32" src="' + img + '" width="32" />';
 
@@ -9919,9 +9919,7 @@ WHERE {\n\
                     if (DO.C.User.Name) {
                       noteData.creator["name"] = DO.C.User.Name;
                     }
-                    if (DO.C.User.Image) {
-                      noteData.creator["image"] = DO.C.User.Image;
-                    }
+                    noteData.creator["image"] = DO.C.User.Image || generateDataURI('image/svg+xml', 'base64', Icon['.fas.fa-user-secret']);
                     if (DO.C.User.URL) {
                       noteData.creator["url"] = DO.C.User.URL;
                     }
@@ -9985,9 +9983,7 @@ WHERE {\n\
                     if (DO.C.User.Name) {
                       noteData.creator["name"] = DO.C.User.Name;
                     }
-                    if (DO.C.User.Image) {
-                      noteData.creator["image"] = DO.C.User.Image;
-                    }
+                    noteData.creator["image"] = DO.C.User.Image || generateDataURI('image/svg+xml', 'base64', Icon['.fas.fa-user-secret']);
                     if (DO.C.User.URL) {
                       noteData.creator["url"] = DO.C.User.URL;
                     }
@@ -10108,9 +10104,7 @@ WHERE {\n\
                     if (DO.C.User.Name) {
                       noteData.creator["name"] = DO.C.User.Name;
                     }
-                    if (DO.C.User.Image) {
-                      noteData.creator["image"] = DO.C.User.Image;
-                    }
+                    noteData.creator["image"] = DO.C.User.Image || generateDataURI('image/svg+xml', 'base64', Icon['.fas.fa-user-secret']);
                     if (DO.C.User.URL) {
                       noteData.creator["url"] = DO.C.User.URL;
                     }
