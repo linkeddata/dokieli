@@ -144,6 +144,22 @@ function getLastPathSegment(url) {
   return segments.pop() || parsedUrl.hostname;
 }
 
+function generateDataURI(mediaType, encoding, data) {
+  var mediaTypeEncoding = 'text/plain;charset=US-ASCII';
+  var encodedData = encodeURIComponent(data);
+
+  if (mediaType) {
+    mediaTypeEncoding = mediaType;
+
+    if (encoding === 'base64') {
+      mediaTypeEncoding = mediaType + ';base64';
+      encodedData = btoa(data);
+    }
+  }
+
+  return `data:${mediaTypeEncoding},${encodedData}`;
+}
+
 export {
   encodeString,
   decodeString,
@@ -158,5 +174,6 @@ export {
   getParentURLPath,
   forceTrailingSlash,
   getFragmentOrLastPath,
-  getLastPathSegment
+  getLastPathSegment,
+  generateDataURI
 };
