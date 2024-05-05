@@ -2309,19 +2309,19 @@ text-align: left;
 .shower .slide>div figcaption:before {
 content: "";
 }
-.shower .slide>aside.do.note article {
+.shower .slide>aside.note article {
 right: 2%;
 font-size: 0.6em;
 max-width: 24%;
 line-height: 1.6;
 }
-.shower .slide>aside.do.note dd {
+.shower .slide>aside.note dd {
 margin-left: 0;
 }
-.shower .slide>aside.do.note blockquote {
+.shower .slide>aside.note blockquote {
 font-style: normal;
 }
-.shower .slide>aside.do.note blockquote:before {
+.shower .slide>aside.note blockquote:before {
 content: '';
 }
 .shower .slide mark {
