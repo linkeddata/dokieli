@@ -598,7 +598,9 @@ DO = {
         "11": { color: '#ff7f00', label: 'Dataset', type: 'rdf:Resource' },
         "12": { color: '#9a3a00', label: 'Requirement', type: 'rdf:Resource' },
         "13": { color: '#ff00ff', label: 'Specification', type: 'rdf:Resource' },
-        "14": { color: '#0088ee', label: 'Policy', type: 'rdf:Resource' }
+        "14": { color: '#0088ee', label: 'Policy', type: 'rdf:Resource' },
+        "15": { color: '#FFB900', label: 'Event', type: 'rdf:Resource' },
+        "16": { color: '#009999', label: 'Slides', type: 'rdf:Resource' },
       }
       group = Object.assign(group, legendCategories);
 
@@ -1097,8 +1099,26 @@ DO = {
             case DO.C.Vocab['odrlTicket']['@id']:
               sGroup = 14;
               break;
+            case DO.C.Vocab['schemaEvent']['@id']:
+            case DO.C.Vocab['biboEvent']['@id']:
+            case DO.C.Vocab['biboConference']['@id']:
+              sGroup = 15;
+              break;
+            case DO.C.Vocab['schemaPresentationDigitalDocument']['@id']:
+            case DO.C.Vocab['biboSlideshow']['@id']:
+            case DO.C.Vocab['biboSlide']['@id']:
+              sGroup = 16;
+              break;
           }
         }
+
+        if (t.subject.nominalValue == 'http://purl.org/ontology/bibo/presentedAt') {
+          oGroup = 15;
+        }
+        if (Config.Event.Property.hasOwnProperty(t.predicate.nominalValue)) {
+          sGroup = 15;
+        }
+
         if (isActorProperty(t.predicate.nominalValue)) {
           oGroup = 10;
         }
