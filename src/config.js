@@ -283,7 +283,7 @@ export default {
   ResourceType: {
     "http://schema.org/Article": {'name': 'Article', 'description': 'An article, such as a news article or piece of investigative report.'},
     "http://schema.org/BlogPosting": {'name': 'BlogPosting', 'description': 'A blog post.'},
-    "http://schema.org/Course": {'name': 'Course', 'description': 'A description of an educational course.'},    
+    "http://schema.org/Course": {'name': 'Course', 'description': 'A description of an educational course.'},
     "http://schema.org/Guide": {'name': 'Guide', 'description': 'Guide is a page or article that recommends specific products or services, or aspects of a thing for a user to consider.'},
     "http://schema.org/NewsArticle": {'name': 'NewsArticle', 'description': 'A NewsArticle is an article whose content reports news, or provides background context and supporting materials for understanding the news.'},
     "http://schema.org/Recipe": {'name': 'Recipe', 'description': 'A recipe.'},
@@ -471,6 +471,8 @@ export default {
     "schemaOrganization": { "@id": "http://schema.org/Person", "@type": "@id" },
     "schemaDataset": { "@id": "http://schema.org/Dataset", "@type": "@id"},
     "schemaMap": { "@id": "http://schema.org/Map", "@type": "@id"},
+    "schemaEvent": { "@id": "http://schema.org/Event", "@type": "@id"},
+    "schemaPresentationDigitalDocument": { "@id": "http://schema.org/PresentationDigitalDocument", "@type": "@id"},
     "schemaname": "http://schema.org/name",
     "schemafamilyName": "http://schema.org/familyName",
     "schemagivenName": "http://schema.org/givenName",
@@ -552,6 +554,10 @@ export default {
     "refPeriod": "http://purl.org/linked-data/sdmx/2009/dimension#refPeriod",
     "obsValue": "http://purl.org/linked-data/sdmx/2009/measure#obsValue",
 
+    "biboSlideshow": { "@id": "http://purl.org/ontology/bibo/Slideshow", "@type": "@id" },
+    "biboSlide": { "@id": "http://purl.org/ontology/bibo/Slide", "@type": "@id" },
+    "biboEvent": { "@id": "http://purl.org/ontology/bibo/Event", "@type": "@id" },
+    "biboConference": { "@id": "http://purl.org/ontology/bibo/Conference", "@type": "@id" },
     "biboeditor": { "@id": "http://purl.org/ontology/bibo/editor", "@type": "@id", "@array": true },
     "biboauthorList": { "@id": "http://purl.org/ontology/bibo/authorList", "@type": "@id" },
     "bibocontributorList": { "@id": "http://purl.org/ontology/bibo/contributorList", "@type": "@id" },
