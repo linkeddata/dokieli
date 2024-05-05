@@ -1104,8 +1104,6 @@ DO = {
             case DO.C.Vocab['biboConference']['@id']:
               sGroup = 15;
               break;
-            case DO.C.Vocab['schemaPresentationDigitalDocument']['@id']:
-            case DO.C.Vocab['biboSlideshow']['@id']:
             case DO.C.Vocab['biboSlide']['@id']:
               sGroup = 16;
               break;
