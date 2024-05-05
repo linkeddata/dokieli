@@ -391,6 +391,16 @@ export default {
     }
   },
 
+  Event: {
+    Property: {
+      'http://schema.org/subEvent': "sub event",
+      'http://schema.org/superEvent': "super event",
+      'http://schema.org/startDate': "start date",
+      'http://schema.org/endDate': "end date",
+      'http://schema.org/performer': "performer"
+    }
+  },
+
   MediaTypes: {
     RDF: ['text/turtle', 'application/ld+json', 'application/activity+json', 'text/html', 'image/svg+xml', 'text/markdown'],
 
