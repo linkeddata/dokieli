@@ -1436,22 +1436,22 @@ max-width:48px;
 margin-right:0.5em;
 }
 
-span.ref[typeof~="dctypes:Text"] {
+span.ref[typeof~="http://purl.org/dc/dcmitype/Text"] {
 position:relative;
 }
-span.ref[typeof~="dctypes:Text"] mark + sup[class^="ref-"] {
+span.ref[typeof~="http://purl.org/dc/dcmitype/Text"] mark + sup[class^="ref-"] {
 color:#000;
 text-shadow: 1px 1px 1px #000;
 user-select: none;
 }
-span.ref[typeof~="dctypes:Text"] mark + sup[class^="ref-"] {
+span.ref[typeof~="http://purl.org/dc/dcmitype/Text"] mark + sup[class^="ref-"] {
 position:absolute;
 top:initial;
 bottom:1em;
 right:-0.75em;
 }
-span.ref[typeof~="dctypes:Text"] mark + sup[class^="ref-"],
-span.ref[typeof~="dctypes:Text"] mark + sup[class^="ref-"] * {
+span.ref[typeof~="http://purl.org/dc/dcmitype/Text"] mark + sup[class^="ref-"],
+span.ref[typeof~="http://purl.org/dc/dcmitype/Text"] mark + sup[class^="ref-"] * {
 font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
 font-size:1em;
 font-weight:normal;
