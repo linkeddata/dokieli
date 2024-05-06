@@ -1323,6 +1323,7 @@ right:0;
 text-indent:0;
 padding-right:10px;
 font-size:1em;
+user-select:none;
 }
 
 .do.fragment a {
@@ -1441,6 +1442,7 @@ position:relative;
 span.ref[typeof~="dctypes:Text"] mark + sup[class^="ref-"] {
 color:#000;
 text-shadow: 1px 1px 1px #000;
+user-select: none;
 }
 span.ref[typeof~="dctypes:Text"] mark + sup[class^="ref-"] {
 position:absolute;
