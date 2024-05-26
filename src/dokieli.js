@@ -597,10 +597,11 @@ DO = {
         "10": { color: '#900090', label: 'Social', type: 'rdf:Resource' },
         "11": { color: '#ff7f00', label: 'Dataset', type: 'rdf:Resource' },
         "12": { color: '#9a3a00', label: 'Requirement', type: 'rdf:Resource' },
-        "13": { color: '#ff00ff', label: 'Specification', type: 'rdf:Resource' },
-        "14": { color: '#0088ee', label: 'Policy', type: 'rdf:Resource' },
-        "15": { color: '#FFB900', label: 'Event', type: 'rdf:Resource' },
-        "16": { color: '#009999', label: 'Slides', type: 'rdf:Resource' },
+        "13": { color: '#9a6c00', label: 'Advisement', type: 'rdf:Resource' },
+        "14": { color: '#ff00ff', label: 'Specification', type: 'rdf:Resource' },
+        "15": { color: '#0088ee', label: 'Policy', type: 'rdf:Resource' },
+        "16": { color: '#FFB900', label: 'Event', type: 'rdf:Resource' },
+        "17": { color: '#009999', label: 'Slides', type: 'rdf:Resource' }
       }
       group = Object.assign(group, legendCategories);
 
@@ -1087,7 +1088,7 @@ DO = {
               oGroup = 11;
               break;
             case DO.C.Vocab['doapSpecification']['@id']:
-              sGroup = 13;
+              sGroup = 14;
               break;
             case DO.C.Vocab['odrlAgreement']['@id']:
             case DO.C.Vocab['odrlAssertion']['@id']:
@@ -1097,24 +1098,24 @@ DO = {
             case DO.C.Vocab['odrlRequest']['@id']:
             case DO.C.Vocab['odrlSet']['@id']:
             case DO.C.Vocab['odrlTicket']['@id']:
-              sGroup = 14;
+              sGroup = 15;
               break;
             case DO.C.Vocab['schemaEvent']['@id']:
             case DO.C.Vocab['biboEvent']['@id']:
             case DO.C.Vocab['biboConference']['@id']:
-              sGroup = 15;
+              sGroup = 16;
               break;
             case DO.C.Vocab['biboSlide']['@id']:
-              sGroup = 16;
+              sGroup = 17;
               break;
           }
         }
 
         if (t.subject.nominalValue == 'http://purl.org/ontology/bibo/presentedAt') {
-          oGroup = 15;
+          oGroup = 16;
         }
         if (Config.Event.Property.hasOwnProperty(t.predicate.nominalValue)) {
-          sGroup = 15;
+          sGroup = 16;
         }
 
         if (isActorProperty(t.predicate.nominalValue)) {
@@ -1131,11 +1132,14 @@ DO = {
           case DO.C.Vocab['specrequirement']['@id']:
             oGroup = 12;
             break;
+          case DO.C.Vocab['specadvisement']['@id']:
+            oGroup = 13;
+            break;
           case DO.C.Vocab['spectestSuite']['@id']:
             oGroup = 11;
             break;
           case DO.C.Vocab['odrlhasPolicy']['@id']:
-            oGroup = 13;
+            oGroup = 14;
             break;
         }
 
@@ -2055,6 +2059,7 @@ DO = {
       var authors = [], contributors = [], editors = [];
       var citationsTo = [];
       var requirements = [];
+      var advisements = [];
       var skos = [];
 
       var subjectURI = window.location.origin + window.location.pathname;
@@ -2075,11 +2080,13 @@ DO = {
         }
       });
 
-      requirements = (DO.C.Resource[documentURL].spec) ? Object.keys(DO.C.Resource[documentURL].spec) : [];
+      requirements = (DO.C.Resource[documentURL].spec && DO.C.Resource[documentURL].spec['requirement']) ? Object.keys(DO.C.Resource[documentURL].spec['requirement']) : [];
+      advisements = (DO.C.Resource[documentURL].spec && DO.C.Resource[documentURL].spec['advisement']) ? Object.keys(DO.C.Resource[documentURL].spec['advisement']) : [];
       skos = (DO.C.Resource[documentURL].skos) ? DO.C.Resource[documentURL].skos : [];
 
       citations = '<tr class="citations"><th>Citations</th><td>' + citationsTo.length + '</td></tr>';
       requirements = '<tr class="requirements"><th>Requirements</th><td>' + requirements.length + '</td></tr>';
+      advisements = '<tr class="advisements"><th>Advisements</th><td>' + advisements.length + '</td></tr>';
       var conceptsList = [];
       conceptsList = (skos.type && skos.type[DO.C.Vocab['skosConcept']['@id']]) ? skos.type[DO.C.Vocab['skosConcept']['@id']] : conceptsList;
 
@@ -2125,7 +2132,7 @@ DO = {
         }
       }
 
-      var data = authors + editors + contributors + citations + requirements + concepts + statements;
+      var data = authors + editors + contributors + citations + requirements + advisements + concepts + statements;
 
           // <tr><th>Lines</th><td>' + count.lines + '</td></tr>\n\
           // <tr><th>A4 Pages</th><td>' + count.pages.A4 + '</td></tr>\n\
@@ -2491,6 +2498,7 @@ DO = {
 
         if (id == 'table-of-contents' || id == 'list-of-concepts' || nodes.length > 0) {
           var tId = document.getElementById(id);
+
           if(tId) { tId.parentNode.removeChild(tId); }
 
           switch(id) {
@@ -2527,6 +2535,12 @@ DO = {
               s += '<h2>' + label + '</h2>';
               s += '<div><table>';
               break;
+
+            case 'table-of-advisements':
+              s += '<section id="' + id + '">';
+              s += '<h2>' + label + '</h2>';
+              s += '<div><table>';
+              break;
           }
 
           if (id == 'table-of-contents') {
@@ -2534,15 +2548,17 @@ DO = {
             s += DO.U.getListOfSections(articleNode.querySelectorAll('section:not(section section)'), {'raw': true});
           }
           else {
+            //TODO: Perhaps table-of-requirements and table-of-advisements could be consolidated / generalised.
+
             if (id == 'table-of-requirements') {
-//Sort by requirementSubject then requirementLevel
+//TODO: Sort by requirementSubject then requirementLevel? or offer controls on the table.
 
               s += '<caption>Conformance Requirements and Test Coverage</caption>'
               s += '<thead><tr><th colspan="3">Requirement</th></tr><tr><th>Subject</th><th>Level</th><th>Statement</th></tr></thead>';
               s += '<tbody>';
-              Object.keys(DO.C.Resource[documentURL]['spec']).forEach(function(i) {
+              Object.keys(DO.C.Resource[documentURL]['spec']['requirement']).forEach(function(i) {
 // console.log(DO.C.Resource[documentURL]['spec'][i])
-                var statement = DO.C.Resource[documentURL]['spec'][i][DO.C.Vocab['specstatement']['@id']] || i;
+                var statement = DO.C.Resource[documentURL]['spec']['requirement'][i][DO.C.Vocab['specstatement']['@id']] || i;
                 //FIXME: This selector is brittle.
                 // var requirementIRI = document.querySelector('#document-identifier [rel="owl:sameAs"]');
                 var requirementIRI = document.querySelector('#document-latest-published-version [rel~="rel:latest-version"]');
@@ -2551,14 +2567,14 @@ DO = {
                 requirementIRI = i.replace(stripFragmentFromString(i), requirementIRI);
                 statement = '<a href="' + requirementIRI + '">' + statement + '</a>';
 
-                var requirementSubjectIRI = DO.C.Resource[documentURL]['spec'][i][DO.C.Vocab['specrequirementSubject']['@id']];
+                var requirementSubjectIRI = DO.C.Resource[documentURL]['spec']['requirement'][i][DO.C.Vocab['specrequirementSubject']['@id']];
                 var requirementSubjectLabel = requirementSubjectIRI || '<span class="warning">?</span>';
                 if (requirementSubjectLabel.startsWith('http')) {
                   requirementSubjectLabel = getFragmentFromString(requirementSubjectIRI) || getURLLastPath(requirementSubjectIRI) || requirementSubjectLabel;
                 }
                 var requirementSubject = '<a href="' + requirementSubjectIRI + '">' + requirementSubjectLabel + '</a>';
 
-                var requirementLevelIRI = DO.C.Resource[documentURL]['spec'][i][DO.C.Vocab['specrequirementLevel']['@id']];
+                var requirementLevelIRI = DO.C.Resource[documentURL]['spec']['requirement'][i][DO.C.Vocab['specrequirementLevel']['@id']];
                 var requirementLevelLabel = requirementLevelIRI || '<span class="warning">?</span>';
                 if (requirementLevelLabel.startsWith('http')) {
                   requirementLevelLabel = getFragmentFromString(requirementLevelIRI) || getURLLastPath(requirementLevelIRI) || requirementLevelLabel;
@@ -2568,6 +2584,46 @@ DO = {
                 s += '<tr about="' + requirementIRI + '">';
                 s += '<td>' + requirementSubject + '</td>';
                 s += '<td>' + requirementLevel + '</td>';
+                s += '<td>' + statement + '</td>';
+                s += '</tr>'
+              });
+              s += '</tbody>';
+            }
+            else if (id == 'table-of-advisements') {
+//TODO: Sort by advisementSubject then advisementLevel? or offer controls on the table.
+              
+              s += '<caption>Non-normative Advisements</caption>'
+              s += '<thead><tr><th colspan="2">Advisement</th></tr><tr><th>Level</th><th>Statement</th></tr></thead>';
+              s += '<tbody>';
+              Object.keys(DO.C.Resource[documentURL]['spec']['advisement']).forEach(function(i) {
+// console.log(DO.C.Resource[documentURL]['spec']['advisement'][i])
+                var statement = DO.C.Resource[documentURL]['spec']['advisement'][i][DO.C.Vocab['specstatement']['@id']] || i;
+                //FIXME: This selector is brittle.
+                //TODO: Revisit this:
+                // var advisementIRI = document.querySelector('#document-identifier [rel="owl:sameAs"]');
+                var advisementIRI = document.querySelector('#document-latest-published-version [rel~="rel:latest-version"]');
+                advisementIRI = (advisementIRI) ? advisementIRI.href : i;
+
+                advisementIRI = i.replace(stripFragmentFromString(i), advisementIRI);
+                statement = '<a href="' + advisementIRI + '">' + statement + '</a>';
+
+                // var advisementSubjectIRI = DO.C.Resource[documentURL]['spec']['advisement'][i][DO.C.Vocab['specadvisementSubject']['@id']];
+                // var advisementSubjectLabel = advisementSubjectIRI || '<span class="warning">?</span>';
+                // if (advisementSubjectLabel.startsWith('http')) {
+                //   advisementSubjectLabel = getFragmentFromString(advisementSubjectIRI) || getURLLastPath(advisementSubjectIRI) || advisementSubjectLabel;
+                // }
+                // var advisementSubject = '<a href="' + advisementSubjectIRI + '">' + advisementSubjectLabel + '</a>';
+
+                var advisementLevelIRI = DO.C.Resource[documentURL]['spec']['advisement'][i][DO.C.Vocab['specadvisementLevel']['@id']];
+                var advisementLevelLabel = advisementLevelIRI || '<span class="warning">?</span>';
+                if (advisementLevelLabel.startsWith('http')) {
+                  advisementLevelLabel = getFragmentFromString(advisementLevelIRI) || getURLLastPath(advisementLevelIRI) || advisementLevelLabel;
+                }
+                var advisementLevel = '<a href="' + advisementLevelIRI + '">' + advisementLevelLabel + '</a>';
+
+                s += '<tr about="' + advisementIRI + '">';
+                // s += '<td>' + advisementSubject + '</td>';
+                s += '<td>' + advisementLevel + '</td>';
                 s += '<td>' + statement + '</td>';
                 s += '</tr>'
               });

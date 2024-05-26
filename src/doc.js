@@ -1271,8 +1271,9 @@ function getGraphData(s, options) {
     info['odrl'] = getResourceInfoODRLPolicies(s);
   }
 
+  info['spec'] = {};
   if(s.specrequirement && s.specrequirement.at(0) && s.iri().toString() == documentURL) {
-    info['spec'] = getResourceInfoSpecRequirements(s);
+    info['spec']['requirement'] = getResourceInfoSpecRequirements(s);
   }
 
   if(s.specchangelog && s.specchangelog.at(0) && s.iri().toString() == documentURL) {
@@ -1280,6 +1281,10 @@ function getGraphData(s, options) {
     if (changelog.specchange && changelog.specchange.at(0)) {
       info['change'] = getResourceInfoSpecChanges(changelog);
     }
+  }
+
+  if(s.specadvisement && s.specadvisement.at(0) && s.iri().toString() == documentURL) {
+    info['spec']['advisement'] = getResourceInfoSpecAdvisements(s);
   }
 
   //XXX: change i to s. testing. should be same as subjectURI?
@@ -1591,34 +1596,69 @@ function getResourceInfoODRLPolicies(s) {
 function getResourceInfoSpecRequirements(s) {
   var info = {}
   info['spec'] = {};
+  info['spec']['requirement'] = {};
 
   s.specrequirement.forEach(function(requirementIRI) {
-    info['spec'][requirementIRI] = {};
+    info['spec']['requirement'][requirementIRI] = {};
 
     var requirementGraph = s.child(requirementIRI);
     var statement = requirementGraph.specstatement;
     var requirementSubject = requirementGraph.specrequirementSubject;
     var requirementLevel = requirementGraph.specrequirementLevel;
 
-    info['spec'][requirementIRI][Config.Vocab['specstatement']["@id"]] = statement;
-    info['spec'][requirementIRI][Config.Vocab['specrequirementSubject']["@id"]] = requirementSubject;
-    info['spec'][requirementIRI][Config.Vocab['specrequirementLevel']["@id"]] = requirementLevel;
+    info['spec']['requirement'][requirementIRI][Config.Vocab['specstatement']["@id"]] = statement;
+    info['spec']['requirement'][requirementIRI][Config.Vocab['specrequirementSubject']["@id"]] = requirementSubject;
+    info['spec']['requirement'][requirementIRI][Config.Vocab['specrequirementLevel']["@id"]] = requirementLevel;
 
     Object.keys(Config.Citation).forEach(function(citationIRI){
       if (requirementGraph[citationIRI] && requirementGraph[citationIRI].at(0)) {
-        info['spec'][requirementIRI][citationIRI] = requirementGraph[citationIRI]._array;
+        info['spec']['requirement'][requirementIRI][citationIRI] = requirementGraph[citationIRI]._array;
       }
     });
 
     var seeAlso = requirementGraph[Config.Vocab['rdfsseeAlso']["@id"]];
     if (seeAlso && seeAlso.at(0)) {
-      info['spec'][requirementIRI][Config.Vocab['rdfsseeAlso']["@id"]] = seeAlso._array;
+      info['spec']['requirement'][requirementIRI][Config.Vocab['rdfsseeAlso']["@id"]] = seeAlso._array;
     }
   });
 
-// console.log(info['spec'])
+// console.log(info['spec']['requirement']);
 
-  return info['spec'];
+  return info['spec']['requirement'];
+}
+
+function getResourceInfoSpecAdvisements(s) {
+  var info = {}
+  info['spec'] = {};
+  info['spec']['advisement'] = {};
+
+  s.specadvisement.forEach(function(advisementIRI) {
+    info['spec']['advisement'][advisementIRI] = {};
+
+    var advisementGraph = s.child(advisementIRI);
+    var statement = advisementGraph.specstatement;
+    // var advisementSubject = advisementGraph.specadvisementSubject;
+    var advisementLevel = advisementGraph.specadvisementLevel;
+
+    info['spec']['advisement'][advisementIRI][Config.Vocab['specstatement']["@id"]] = statement;
+    // info['spec'][advisementIRI][Config.Vocab['specadvisementSubject']["@id"]] = advisementSubject;
+    info['spec']['advisement'][advisementIRI][Config.Vocab['specadvisementLevel']["@id"]] = advisementLevel;
+
+    Object.keys(Config.Citation).forEach(function(citationIRI){
+      if (advisementGraph[citationIRI] && advisementGraph[citationIRI].at(0)) {
+        info['spec']['advisement'][advisementIRI][citationIRI] = advisementGraph[citationIRI]._array;
+      }
+    });
+
+    var seeAlso = advisementGraph[Config.Vocab['rdfsseeAlso']["@id"]];
+    if (seeAlso && seeAlso.at(0)) {
+      info['spec']['advisement'][advisementIRI][Config.Vocab['rdfsseeAlso']["@id"]] = seeAlso._array;
+    }
+  });
+
+// console.log(info['spec']['advisement']);
+
+  return info['spec']['advisement'];
 }
 
 function getResourceInfoSpecChanges(s) {
@@ -2614,6 +2654,7 @@ export {
   getResourceSupplementalInfo,
   getResourceInfoODRLPolicies,
   getResourceInfoSpecRequirements,
+  getResourceInfoSpecAdvisements,
   getResourceInfoSpecChanges,
   getResourceInfoSKOS,
   getResourceInfoCitations,
