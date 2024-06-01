@@ -2780,7 +2780,7 @@ console.log(reason);
                         var td = tr.querySelector('td:nth-child(3)');
                         sR = sR.replace(stripFragmentFromString(sR), sourceGraphURI);
                         var tR = targetGraphURI + '#' + getFragmentFromString(sR);
-                        td.innerHTML = DO.C.Resource[sourceGraphURI].spec[sR]['diff'][tR]['statement'] || '';
+                        td.innerHTML = DO.C.Resource[sourceGraphURI].spec['requirement'][sR]['diff'][tR]['statement'] || '';
                       });
                     }
                     else if (button.classList.contains('remove')) {
@@ -2793,7 +2793,7 @@ console.log(reason);
                         var sR = tr.getAttribute('about');
                         var td = tr.querySelector('td:nth-child(3)');
                         var sourceRequirementURI = sourceGraphURI + '#' + getFragmentFromString(sR);
-                        var statement = DO.C.Resource[sourceGraphURI].spec[sourceRequirementURI][DO.C.Vocab['specstatement']['@id']] || sR;
+                        var statement = DO.C.Resource[sourceGraphURI].spec['requirement'][sourceRequirementURI][DO.C.Vocab['specstatement']['@id']] || sR;
                         td.innerHTML = '<a href="' + sR + '">' + statement + '</a>';
                       });
                     }
@@ -2831,12 +2831,12 @@ console.log(reason);
       var changes = Object.values(DO.C.Resource[sourceGraphURI].change);
 
       Object.keys(sourceRequirements).forEach(sR => {
-        DO.C.Resource[sourceGraphURI].spec[sR]['diff'] = {};
+        DO.C.Resource[sourceGraphURI].spec['requirement'][sR]['diff'] = {};
 
         var sRStatement = sourceRequirements[sR][DO.C.Vocab['specstatement']['@id']] || '';
         var tR = targetGraphURI + '#' + getFragmentFromString(sR);
 
-        DO.C.Resource[sourceGraphURI].spec[sR]['diff'][tR] = {};
+        DO.C.Resource[sourceGraphURI].spec['requirement'][sR]['diff'][tR] = {};
 
         var tRStatement = '';
 
@@ -2873,7 +2873,7 @@ console.log(reason);
           diffHTML.push('<' + eName + '>' + part.value + '</' + eName + '>');
         });
 
-        DO.C.Resource[sourceGraphURI].spec[sR]['diff'][tR]['statement'] = diffHTML.join('') + changeHTML;
+        DO.C.Resource[sourceGraphURI].spec['requirement'][sR]['diff'][tR]['statement'] = diffHTML.join('') + changeHTML;
       });
     },
 
