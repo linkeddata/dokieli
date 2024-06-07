@@ -601,7 +601,8 @@ DO = {
         "14": { color: '#ff00ff', label: 'Specification', type: 'rdf:Resource' },
         "15": { color: '#0088ee', label: 'Policy', type: 'rdf:Resource' },
         "16": { color: '#FFB900', label: 'Event', type: 'rdf:Resource' },
-        "17": { color: '#009999', label: 'Slides', type: 'rdf:Resource' }
+        "17": { color: '#009999', label: 'Slides', type: 'rdf:Resource' },
+        "18": { color: '#d1001c', label: 'Concepts', type: 'rdf:Resource' }
       }
       group = Object.assign(group, legendCategories);
 
@@ -1130,6 +1131,7 @@ DO = {
             oGroup = 10;
             break;
           case DO.C.Vocab['specrequirement']['@id']:
+          case DO.C.Vocab['specrequirementReference']['@id']:
             oGroup = 12;
             break;
           case DO.C.Vocab['specadvisement']['@id']:
@@ -1140,6 +1142,14 @@ DO = {
             break;
           case DO.C.Vocab['odrlhasPolicy']['@id']:
             oGroup = 14;
+            break;
+          case DO.C.Vocab['skoshasTopConcept']['@id']:
+          case DO.C.Vocab['skosinScheme']['@id']:
+          case DO.C.Vocab['skosCollection']['@id']:
+          case DO.C.Vocab['skossemanticRelation']['@id']:
+          case DO.C.Vocab['skostopConceptOf']['@id']:
+          case DO.C.Vocab['schemaaudience']['@id']:
+            oGroup = 18;
             break;
         }
 

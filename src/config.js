@@ -538,6 +538,8 @@ export default {
     "skosmember": { "@id": "http://www.w3.org/2004/02/skos/core#member", "@type": "@id", "@array": true },
     "skosnotation": { "@id": "http://www.w3.org/2004/02/skos/core#notation", "@array": true },
     "skosnote": { "@id": "http://www.w3.org/2004/02/skos/core#note", "@array": true },
+    "skosinScheme": { "@id": "http://www.w3.org/2004/02/skos/core#inScheme", "@type": "@id", "@array": true },
+    "skossemanticRelation": { "@id": "http://www.w3.org/2004/02/skos/core#semanticRelation", "@type": "@id", "@array": true },
     "skoshasTopConcept": { "@id": "http://www.w3.org/2004/02/skos/core#hasTopConcept", "@type": "@id", "@array": true },
     "skostopConceptOf": { "@id": "http://www.w3.org/2004/02/skos/core#topConceptOf", "@type": "@id", "@array": true },
     "skosbroadMatch": { "@id": "http://www.w3.org/2004/02/skos/core#broadMatch", "@type": "@id", "@array": true },
