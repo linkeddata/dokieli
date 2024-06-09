@@ -403,6 +403,14 @@ export default {
     }
   },
 
+  AccessContext: {
+    Share: {
+      'Read': 'Viewer',
+      'Write': 'Editor',
+      'Control': 'Owner'
+    }
+  },
+
   MediaTypes: {
     RDF: ['text/turtle', 'application/ld+json', 'application/activity+json', 'text/html', 'image/svg+xml', 'text/markdown'],
 
