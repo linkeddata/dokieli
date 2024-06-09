@@ -2451,6 +2451,26 @@ function showGeneralMessages() {
   showResourceAudienceAgentOccupations();
 }
 
+function getAccessModeOptionsHTML(options) {
+  // id = encodeURIComponent(id);
+  options = options || {};
+  //Contextual access control modes and human-readable labels
+  //UC-sharing-article: See Config.AccessContext.Share
+  options['context'] = options['context'] || 'Share';
+	var accessContext = Config.AccessContext[options.context] || 'Share';
+
+  var s  = '<option value="">No access</option>';
+
+  var modes = Object.keys(accessContext);
+  modes.forEach(mode => {
+    var selected = (options.selected && (mode.toLowerCase() === options.selected.toLowerCase())) ? ' selected="selected"' : '';
+    s += '<option' + selected + ' value="' + mode + '">' + accessContext[mode] + '</option>';
+  });
+
+  // console.log(s);
+  return s;
+}
+
 function showResourceAudienceAgentOccupations() {
   if (Config.User.Occupations && Config.User.Occupations.length > 0) {
     var matches = [];
@@ -2681,6 +2701,7 @@ export {
   getLanguageOptionsHTML,
   getLicenseOptionsHTML,
   getCitationOptionsHTML,
+  getAccessModeOptionsHTML,
   showGeneralMessages,
   showResourceAudienceAgentOccupations,
   setCopyToClipboard,
