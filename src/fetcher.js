@@ -1,7 +1,7 @@
 'use strict'
 
 import Config from './config.js'
-import { generateUUID } from './util.js'
+import { generateUUID, containsSPARQLVariable } from './util.js'
 import { getProxyableIRI } from './uri.js'
 import * as solidAuth from 'solid-auth-client'
 
@@ -331,7 +331,9 @@ function patchResourceGraph (url, patches, options = {}) {
   switch (options.headers['Content-Type']) {
     case 'application/sparql-update':
       if (patches[0].delete) {
-        data += 'DELETE DATA { ' + patches[0].delete + ' };\n\
+        var operation = containsSPARQLVariable(patches[0].delete) ? 'DELETE' : 'DELETE DATA';
+
+        data += operation + ' { ' + patches[0].delete + ' };\n\
 '
       }
 
