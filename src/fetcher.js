@@ -1,7 +1,7 @@
 'use strict'
 
 import Config from './config.js'
-import { generateUUID, containsSPARQLVariable } from './util.js'
+import { generateUUID } from './util.js'
 import { getProxyableIRI } from './uri.js'
 import * as solidAuth from 'solid-auth-client'
 
@@ -325,6 +325,19 @@ function getN3PrefixesString(prefixes){
 }
 function getSPARQLPrefixesString(prefixes){
   return Object.keys(prefixes).map(function(i){ return 'PREFIX ' + i + ': ' + '<' + prefixes[i] + '>' }).join('\n');
+}
+//https://www.w3.org/TR/sparql11-query/#rVar
+function containsSPARQLVariable(str) {
+  const pnCharsBase = "A-Za-z\\u00C0-\\u00D6\\u00D8-\\u00F6\\u00F8-\\u02FF\\u0370-\\u037D\\u037F-\\u1FFF\\u200C-\\u200D\\u2070-\\u218F\\u2C00-\\u2FEF\\u3001-\\uD7FF\\uF900-\\uFDCF\\uFDF0-\\uFFFD";
+  const pnCharsU = `${pnCharsBase}_`;
+  const varName = `(?:[${pnCharsU}]|[0-9])(?:[${pnCharsU}]|[0-9]|\\u00B7|[\\u0300-\\u036F]|[\\u203F-\\u2040])*`;
+
+  const var1Pattern = `\\?[${pnCharsU}](${varName})`;
+  const var2Pattern = `\\$[${pnCharsU}](${varName})`;
+
+  const varRegex = new RegExp(`(${var1Pattern}|${var2Pattern})`, 'u');
+
+  return varRegex.test(str);
 }
 
 function patchResourceGraph (url, patches, options = {}) {
@@ -671,5 +684,6 @@ export {
   patchResourceWithAcceptPatch,
   putResourceWithAcceptPut,
   getN3PrefixesString,
-  getSPARQLPrefixesString
+  getSPARQLPrefixesString,
+  containsSPARQLVariable
 }
