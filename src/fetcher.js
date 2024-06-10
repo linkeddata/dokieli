@@ -342,30 +342,41 @@ function containsSPARQLVariable(str) {
 
 function patchResourceGraph (url, patches, options = {}) {
   options.headers = options.headers || {}
-  options.headers['Content-Type'] = options.headers['Content-Type'] || 'text/n3'
-  patches = (Array.isArray(patches)) ? patches : [patches]
+  options.headers['Content-Type'] = options.headers['Content-Type'] || 'text/n3';
 
-  var data = '@prefix solid: <http://www.w3.org/ns/solid/terms#> .\n\
-@prefix acl: <http://www.w3.org/ns/auth/acl#> .\n\
-'
+  patches = (Array.isArray(patches)) ? patches : [patches];
+  options['prefixes'] = options.prefixes || {};
+  options['prefixes']['solid'] = 'http://www.w3.org/ns/solid/terms#';
+  options['prefixes']['acl'] = 'http://www.w3.org/ns/auth/acl#';
+  var prefixes;
+
+  switch(options.headers['Content-Type']) {
+    case 'application/sparql-update':
+      prefixes = getSPARQLPrefixesString(options.prefixes);
+      break;
+    case 'text/n3':
+    default:
+      prefixes = getN3PrefixesString(options.prefixes);
+      break;
+  }
+
+  var data = prefixes + `\n`;
+  var operation;
 
   switch (options.headers['Content-Type']) {
     case 'application/sparql-update':
       if (patches[0].delete) {
-        var operation = containsSPARQLVariable(patches[0].delete) ? 'DELETE' : 'DELETE DATA';
-
-        data += operation + ' { ' + patches[0].delete + ' };\n\
-'
+        operation = containsSPARQLVariable(patches[0].delete) ? 'DELETE' : 'DELETE DATA';
+        data += `${operation} {\n${patches[0].delete}\n}\n`;
       }
 
       if (patches[0].insert) {
-        data += 'INSERT DATA { ' + patches[0].insert + ' };\n\
-'
+        operation = containsSPARQLVariable(patches[0].insert) ? 'INSERT' : 'INSERT DATA';
+        data += `${operation} {\n${patches[0].insert}\n}\n`;
       }
 
       if (patches[0].where) {
-        data += 'WHERE { ' + patches[0].where + ' };\n\
-'
+        data += `WHERE {\n${patches[0].where}\n}\n`;
       }
       break
 
@@ -374,22 +385,16 @@ function patchResourceGraph (url, patches, options = {}) {
       patches.forEach(function(patch){
         var patchId = '_:' + generateUUID();
 
-        data += '\n\
-' + patchId + ' a solid:Patch, solid:InsertDeletePatch .\n\
-'
-// ' + patchId + ' solid:patches <' + patchesResource + '> .\n\
+        data += `${patchId} a solid:InsertDeletePatch .\n`;
 
         if (patch.delete) {
-          data += patchId + ' solid:deletes { ' + patch.delete + ' } .\n\
-'
+          data += `${patchId} solid:deletes {\n${patch.delete}\n} .\n`;
         }
         if (patch.insert) {
-          data += patchId + ' solid:inserts { ' + patch.insert + ' } .\n\
-'
+          data += `${patchId} solid:inserts {\n${patch.insert}\n} .\n`;
         }
         if (patch.where) {
-          data += patchId + ' solid:where { ' + patch.where + ' } .\n\
-'
+          data += `${patchId} solid:where {\n${patch.where}\n} .\n`;
         }
       });
 
