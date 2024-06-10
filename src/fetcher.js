@@ -319,6 +319,14 @@ function getResourceOptions (url, options = {}) {
     })
 }
 
+//TODO: Move these and doc.js:getRDFaPrefixHTML (rename) elsewhere.
+function getN3PrefixesString(prefixes){
+  return Object.keys(prefixes).map(function(i){ return '@prefix ' + i + ': ' + '<' + prefixes[i] + '> .' }).join('\n');
+}
+function getSPARQLPrefixesString(prefixes){
+  return Object.keys(prefixes).map(function(i){ return 'PREFIX ' + i + ': ' + '<' + prefixes[i] + '>' }).join('\n');
+}
+
 function patchResourceGraph (url, patches, options = {}) {
   options.headers = options.headers || {}
   options.headers['Content-Type'] = options.headers['Content-Type'] || 'text/n3'
@@ -661,5 +669,7 @@ export {
   putResourceACL,
   processSave,
   patchResourceWithAcceptPatch,
-  putResourceWithAcceptPut
+  putResourceWithAcceptPut,
+  getN3PrefixesString,
+  getSPARQLPrefixesString
 }
