@@ -1,7 +1,6 @@
 const webpack = require("webpack");
 const path = require("path");
 const TerserPlugin = require("terser-webpack-plugin");
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = (env) => {
   return {
@@ -75,7 +74,6 @@ module.exports = (env) => {
       new webpack.ProvidePlugin({
         Buffer: ["buffer", "Buffer"],
       }),
-      new BundleAnalyzerPlugin({ analyzerMode: 'disabled' }),
     ],
   };
 };
