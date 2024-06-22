@@ -1996,29 +1996,49 @@ function removeReferences() {
   });
 }
 
-function buildReferences(node, id, citation) {
-  if (!node) {
+
+function referenceItemHTML(referencesList, id, citation) {
+  var referencesListNodeName = referencesList.nodeName.toLowerCase();
+  var s = '';
+
+  switch (referencesListNodeName) {
+    case 'ol':
+    case 'ul':
+    default:
+      s = '<li id="' + id + '">' + citation + '</li>';
+      break;
+    case 'dl':
+      s = '<dt id="' + id + '"></dt><dd>' + citation + '</dd>';
+      break;
+  }
+
+  return s;
+}
+
+
+function buildReferences(referencesList, id, citation) {
+  if (!referencesList) {
     var nodeInsertLocation = selectArticleNode(document);
     var section = '<section id="references"><h2>References</h2><div><ol></ol></div></section>';
     nodeInsertLocation.insertAdjacentHTML('beforeend', section);
   }
 
-  updateReferences();
-  node = document.querySelector('#references ol');
+  var references = document.querySelector('#references');
+  referencesList = references.querySelector('dl, ol, ul');
 
-  if(citation) {
-    var citationItem = '<li id="' + id + '">' + citation + '</li>';
-    node.insertAdjacentHTML('beforeend', citationItem);
+  updateReferences(referencesList);
+
+  if (citation) {
+    var citationItem = referenceItemHTML(referencesList, id, citation);
+    referencesList.insertAdjacentHTML('beforeend', citationItem);
   }
 }
 
-function updateReferences(options){
+function updateReferences(referencesList, options){
   options = options || {};
   options['external'] = options.external || true;
   options['internal'] = options.internal || false;
 
-  var references = document.querySelector('#references');
-  var referencesOl = references.querySelector('ol');
   var citeA = document.querySelectorAll('body *:not([id="references"]) cite > a');
   var uniqueCitations = {};
   var lis = [];
@@ -2099,8 +2119,24 @@ function updateReferences(options){
         jumpLink = '<span class="jumplink"><sup><a href="#' + rId + '">^</a></sup></span>';
 
         //FIXME: Better to add to an array and then insert but need to update the DOM before.
-        var li = '<li id="' + refId + '">' + jumpLink + ' <cite>' + a.textContent + '</cite>, <cite>' + anchor + '</cite></li>'
-        referencesOl.insertAdjacentHTML('beforeend', li);
+
+        var referencesListNodeName = referencesList.nodeName.toLowerCase();
+        var citation = '';
+
+        switch (referencesListNodeName) {
+          case 'ol':
+          case 'ul':
+          default:
+            citation = jumpLink + ' <cite>' + a.textContent + '</cite>, <cite>' + anchor + '</cite>';
+            break;
+          case 'dl':
+            citation = '<cite>' + a.textContent + '</cite>, <cite>' + anchor + '</cite>';
+            break;
+        }
+
+        var referenceItem = referenceItemHTML(referencesList, refId, citation);
+
+        referencesList.insertAdjacentHTML('beforeend', referenceItem);
 
         insertRef(cite, rId, refId, refLabel);
       }
@@ -2685,6 +2721,7 @@ export {
   createMutableResource,
   updateMutableResource,
   removeReferences,
+  referenceItemHTML,
   buildReferences,
   updateReferences,
   showRobustLinksDecoration,

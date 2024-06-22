@@ -10444,12 +10444,14 @@ WHERE {\n\
 
                         var citation = DO.U.getCitationHTML(citationGraph, citationURI, options);
 
-                        var node = document.querySelector('#references ol');
+                        //TODO: references nodes, e.g., references, normative-references, informative-references
+                        var references = document.querySelector('#references');
+                        var referencesList = references?.querySelector('dl, ol, ul') || references;
 
-                        buildReferences(node, id, citation);
+                        buildReferences(referencesList, id, citation);
 
                         options['showRobustLinksDecoration'] = true;
-                        node = document.querySelector('[id="' + id + '"] a[about]');
+                        var node = document.querySelector('[id="' + id + '"] a[about]');
 
                         // var robustLink = DO.U.createRobustLink(citationURI, node, options);
 
