@@ -3,10 +3,10 @@
 import Config from './config.js'
 import { getDateTimeISO, fragmentFromString, generateAttributeId, uniqueArray, generateUUID, matchAllIndex } from './util.js'
 import { getAbsoluteIRI, getBaseURL, stripFragmentFromString, getFragmentFromString, getURLLastPath } from './uri.js'
-import { getResourceHead, processSave, patchResourceWithAcceptPatch } from './fetcher.js'
+import { getResource, getResourceHead, processSave, patchResourceWithAcceptPatch } from './fetcher.js'
 import * as ld from './simplerdf.cjs'
 const SimpleRDF = ld.SimpleRDF
-import { getResourceGraph, sortGraphTriples, getGraphAuthor, getGraphLabel, getGraphEmail, getGraphTitle, getGraphConceptLabel, getGraphPublished, getGraphUpdated, getGraphDescription, getGraphLicense, getGraphRights, getGraphFromData, getGraphAudience, getGraphTypes } from './graph.js'
+import { getResourceGraph, sortGraphTriples, getGraphContributors, getGraphAuthors, getGraphEditors, getGraphPerformers, getGraphPublishers, getGraphLabel, getGraphEmail, getGraphTitle, getGraphConceptLabel, getGraphPublished, getGraphUpdated, getGraphDescription, getGraphLicense, getGraphRights, getGraphFromData, getGraphAudience, getGraphTypes } from './graph.js'
 import { createRDFaHTML, Icon } from './template.js'
 import LinkHeader from "http-link-header";
 import * as DOMPurify from 'dompurify';
@@ -1136,17 +1136,39 @@ function getButtonDisabledHTML(id) {
   return html;
 }
 
-function getGraphAuthorData(g) {
-  var authors = getGraphAuthor(g);
-  // var editors = graph.getGraphEditor(g);
+function getGraphContributorsRole(g, options) {
+  options = options || {};
+  options['sort'] = options['sort'] || false;
+  options['role'] = options['role'] || 'contributor';
 
-  if (!authors || authors.length === 0) {
+  var contributors;
+
+  switch(options.role) {
+    case 'contributor':
+    default:
+      contributors = getGraphContributors(g);
+      break;
+    case 'author':
+      contributors = getGraphAuthors(g);
+      break;
+    case 'editor':
+      contributors = getGraphEditors(g);
+      break;
+    case 'performer':
+      contributors = getGraphPerformers(g);
+      break;
+    case 'publisher':
+      contributors = getGraphPublishers(g);
+      break;
+    }
+  
+  if (!contributors || contributors.length === 0) {
     return undefined;
   }
 
-  var authorData = [];
+  var contributorData = [];
 
-  authors.forEach(function(s){
+  contributors.forEach(function(s){
     var aUN = {};
     aUN['uri'] = s;
     //XXX: Only checks within the same document.
@@ -1161,21 +1183,23 @@ function getGraphAuthorData(g) {
       aUN['email'] = email.startsWith('mailto:') ? email.slice(7) : email;
     }
 
-    authorData.push(aUN)
+    contributorData.push(aUN)
   });
 
-  authorData.sort(function (a, b) {
-    // Sort by name if available, otherwise by uri, and then by email
-    return a.name
-      ? b.name
-        ? a.name.localeCompare(b.name)
-        : -1
-      : b.name
-      ? 1
-      : a.uri.localeCompare(b.uri);
-  });
+  if (options.sort) {
+    contributorData.sort(function (a, b) {
+      // Sort by name if available, otherwise by uri, and then by email
+      return a.name
+        ? b.name
+          ? a.name.localeCompare(b.name)
+          : -1
+        : b.name
+        ? 1
+        : a.uri.localeCompare(b.uri);
+    });
+  }
 
-  return authorData;
+  return contributorData;
 }
 
 //TODO: Rename this to avoid confusion with graph.getGraphFromData
@@ -1199,7 +1223,11 @@ function getGraphData(s, options) {
   info['rights'] = getGraphRights(s);
   // info['summary'] = graph.getGraphSummary(s);
   // info['creator'] = graph.getGraphCreators(s);
-  info['author'] = getGraphAuthorData(s);
+  info['contributors'] = getGraphContributorsRole(s, { role: 'contributor' });
+  info['authors'] = getGraphContributorsRole(s, { role: 'author' });
+  info['editors'] = getGraphContributorsRole(s, { role: 'editor' });
+  info['performers'] = getGraphContributorsRole(s, { role: 'performer' });
+  info['publishers'] = getGraphContributorsRole(s, { role: 'publisher' });
   info['audience'] = getGraphAudience(s);
 
   info['profile'] = Config.Vocab['ldpRDFSource']['@id'];
@@ -2704,7 +2732,7 @@ export {
   buttonClose,
   getButtonDisabledHTML,
   showTimeMap,
-  getGraphAuthorData,
+  getGraphContributorsRole,
   getResourceInfo,
   getGraphFromDataBlock,
   getResourceSupplementalInfo,

@@ -1060,7 +1060,7 @@ function getGraphEditors(s) {
   )
 }
 
-function getGraphAuthor(s) {
+function getGraphAuthors(s) {
   return (
     s.schemaauthor?._array?.length > 0 ? s.schemaauthor._array :
     s.schemacreator?._array?.length > 0 ? s.schemacreator._array :
@@ -1254,8 +1254,11 @@ export {
   getAgentOccupations,
   getGraphImage,
   getGraphEmail,
-  getGraphEditor,
-  getGraphAuthor,
+  getGraphContributors,
+  getGraphEditors,
+  getGraphAuthors,
+  getGraphPerformers,
+  getGraphPublishers,
   getGraphPublished,
   getGraphUpdated,
   getGraphCreated,
