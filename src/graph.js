@@ -1046,7 +1046,14 @@ function getGraphEmail(s) {
   return DOMPurify.sanitize(d);
 }
 
-function getGraphEditor(s) {
+function getGraphContributors(s) {
+  return (
+    s.schemacontributor?._array?.length > 0 ? s.schemacontributor._array :
+    undefined
+  )
+}
+
+function getGraphEditors(s) {
   return (
     s.schemaeditor?._array?.length > 0 ? s.schemaeditor._array :
     undefined
@@ -1061,6 +1068,21 @@ function getGraphAuthor(s) {
     s.dctermscreator?._array?.length > 0 ? s.dctermscreator._array :
     undefined
   );
+}
+
+function getGraphPerformers(s) {
+  return (
+    s.schemaperformer?._array?.length > 0 ? s.schemaperformer._array :
+    undefined
+  )
+}
+
+function getGraphPublishers(s) {
+  return (
+    s.schemapublisher?._array?.length > 0 ? s.schemapublisher._array :
+    s.dctermspublisher?._array?.length > 0 ? s.dctermspublisher._array :
+    undefined
+  )
 }
 
 function getGraphPublished(s) {
