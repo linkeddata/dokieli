@@ -384,10 +384,13 @@ export default {
 
     Property: {
       "http://purl.org/dc/terms/creator":"creator",
+      "http://purl.org/dc/terms/publisher":"publisher",
       "http://schema.org/author":"author",
       "http://schema.org/contributor":"contributor",
       "http://schema.org/creator":"creator",
       "http://schema.org/editor":"editor",
+      "http://schema.org/performer":"performer",
+      "http://schema.org/publisher":"publisher",
       "http://xmlns.com/foaf/0.1/knows":"knows",
       "https://www.w3.org/ns/activitystreams#actor":"actor"
     }
@@ -489,9 +492,11 @@ export default {
     "schemaurl": { "@id": "http://schema.org/url", "@type": "@id" },
     "schemaimage": { "@id": "http://schema.org/image", "@type": "@id" },
     "schemacreator": { "@id": "http://schema.org/creator", "@type": "@id", "@array": true },
-    "schemaauthor": { "@id": "http://schema.org/author", "@type": "@id", "@array": true },
     "schemacontributor": { "@id": "http://schema.org/contributor", "@type": "@id", "@array": true },
+    "schemaauthor": { "@id": "http://schema.org/author", "@type": "@id", "@array": true },
     "schemaeditor": { "@id": "http://schema.org/editor", "@type": "@id", "@array": true },
+    "schemaperformer": { "@id": "http://schema.org/performer", "@type": "@id", "@array": true },
+    "schemapublisher": { "@id": "http://schema.org/publisher", "@type": "@id", "@array": true },
     "schemaemail": "http://schema.org/email",
     "schemainLanguage": "http://schema.org/inLanguage",
     "schemalicense": { "@id": "http://schema.org/license", "@type": "@id" },
@@ -522,6 +527,7 @@ export default {
     "dctermstitle": "http://purl.org/dc/terms/title",
     "dctermsdescription": "http://purl.org/dc/terms/description",
     "dctermscreator": { "@id": "http://purl.org/dc/terms/creator", "@type": "@id", "@array": true },
+    "dctermspublisher": { "@id": "http://purl.org/dc/terms/publisher", "@type": "@id", "@array": true },
     "dctermsdate": "http://purl.org/dc/terms/date",
     "dctermsissued": "http://purl.org/dc/terms/issued",
     "dctermscreated": "http://purl.org/dc/terms/created",
