@@ -13,43 +13,54 @@
     <script src="scripts/dokieli.js"></script>
   </head>
 
-  <body about="" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# rdfa: http://www.w3.org/ns/rdfa# dcterms: http://purl.org/dc/terms/ dctypes: http://purl.org/dc/dcmitype/ foaf: http://xmlns.com/foaf/0.1/ pimspace: http://www.w3.org/ns/pim/space# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# mem: http://mementoweb.org/ns# qb: http://purl.org/linked-data/cube# schema: http://schema.org/ void: http://rdfs.org/ns/void# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# bibo: http://purl.org/ontology/bibo/ sioc: http://rdfs.org/sioc/ns# doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp# solid: http://www.w3.org/ns/solid/terms# acl: http://www.w3.org/ns/auth/acl# earl: http://www.w3.org/ns/earl# spec: http://www.w3.org/ns/spec# odrl: http://www.w3.org/ns/odrl/2/ dio: https://w3id.org/dio# rel: https://www.w3.org/ns/iana/link-relations/relation#" typeof="schema:CreativeWork prov:Entity">
+  <body about="" prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# rdfa: http://www.w3.org/ns/rdfa# dcterms: http://purl.org/dc/terms/ dctypes: http://purl.org/dc/dcmitype/ foaf: http://xmlns.com/foaf/0.1/ pimspace: http://www.w3.org/ns/pim/space# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# mem: http://mementoweb.org/ns# qb: http://purl.org/linked-data/cube# schema: http://schema.org/ void: http://rdfs.org/ns/void# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# bibo: http://purl.org/ontology/bibo/ sioc: http://rdfs.org/sioc/ns# doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp# solid: http://www.w3.org/ns/solid/terms# acl: http://www.w3.org/ns/auth/acl# earl: http://www.w3.org/ns/earl# spec: http://www.w3.org/ns/spec# odrl: http://www.w3.org/ns/odrl/2/ dio: https://w3id.org/dio# rel: https://www.w3.org/ns/iana/link-relations/relation#">
     <main>
-      <article about="" typeof="schema:Article">
+      <article about="">
         <h1 property="schema:name">dokieli documentation</h1>
 
-        <dl id="document-identifier">
-          <dt>Identifier</dt>
-          <dd><a href="https://dokie.li/docs" rel="owl:sameAs">https://dokie.li/docs</a></dd>
-        </dl>
+        <details>
+          <summary>More details about this document</summary>
+          <dl id="document-identifier">
+            <dt>Identifier</dt>
+            <dd><a href="https://dokie.li/docs" rel="owl:sameAs">https://dokie.li/docs</a></dd>
+          </dl>
 
-        <dl id="document-published">
-          <dt>Published</dt>
-          <dd><time content="2017-07-15T00:00:00Z" datatype="xsd:dateTime" datetime="2017-07-15T00:00:00Z" property="schema:datePublished">2017-07-15</time></dd>
-        </dl>
+          <dl id="document-published">
+            <dt>Published</dt>
+            <dd><time content="2017-07-15T00:00:00Z" datatype="xsd:dateTime" datetime="2017-07-15T00:00:00Z" property="schema:datePublished">2017-07-15</time></dd>
+          </dl>
 
-        <dl id="document-modified">
-          <dt>Modified</dt>
-          <dd><time content="2023-12-09T00:00:00Z" datatype="xsd:dateTime" datetime="2023-12-09T00:00:00Z" property="schema:dateModified">2023-12-09</time></dd>
-        </dl>
+          <dl id="document-modified">
+            <dt>Modified</dt>
+            <dd><time content="2024-07-09T00:00:00Z" datatype="xsd:dateTime" datetime="2024-07-09T00:00:00Z" property="schema:dateModified">2024-07-09</time></dd>
+          </dl>
 
-        <dl id="document-license">
-          <dt>License</dt>
-          <dd><a href="https://creativecommons.org/licenses/by/4.0/" rel="schema:license" title="Creative Commons Attribution 4.0 Unported">CC BY 4.0</a></dd>
-        </dl>
+          <dl id="document-license">
+            <dt>License</dt>
+            <dd><a href="https://creativecommons.org/licenses/by/4.0/" rel="schema:license" title="Creative Commons Attribution 4.0 Unported">CC BY 4.0</a></dd>
+          </dl>
 
-        <div id="content">
+          <dl id="document-feedback">
+            <dt>Feedback</dt>
+            <dd><a href="https://github.com/linkeddata/dokieli" rel="doap:repository">GitHub linkeddata/dokieli</a> (<a href="https://github.com/lineddata/dokieli/pulls">pull requests</a>, <a href="https://github.com/lineddata/dokieli/issues/new">new issue</a>, <a href="https://github.com/lineddata/dokieli/issues" rel="doap:bug-database">open issues</a>)</dd>
+          </dl>
+
+          <dl id="document-language">
+            <dt>Language</dt>
+            <dd><span content="en" lang="" property="dcterms:language" xml:lang="">English</span></dd>
+          </dl>
+
+          <dl id="document-type">
+            <dt>Document Type</dt>
+            <dd><a href="http://schema.org/Article" rel="rdf:type">Article</a></dd>
+          </dl>
+        </details>
+
+        <div datatype="rdf:HTML" id="content" property="schema:description">
           <section id="abstract">
             <h2>Abstract</h2>
             <div datatype="rdf:HTML" property="schema:abstract">
               <p>This documentation is intended to help brave developers and authors. It explains dokieli's principles, architectural and design patterns.</p>
-            </div>
-          </section>
-
-          <section id="document-status" rel="schema:hasPart" resource="#document-status">
-            <h2 about="#document-status" property="schema:name" typeof="bibo:DocumentStatus">Document Status</h2>
-            <div datatype="rdf:HTML" property="schema:description">
-              <p>Living document.</p>
             </div>
           </section>
 
