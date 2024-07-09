@@ -1,4 +1,4 @@
-import { getResourceGraph } from "../graph.js";
+import { getResourceGraph } from "../../src/graph";
 
 describe("graph", () => {
   describe("getResourceGraph", () => {

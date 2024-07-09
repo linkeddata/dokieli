@@ -3,7 +3,7 @@ import {
   setAcceptRDFTypes,
   getResourceHead,
   getResourceOptions,
-} from "../fetcher.js";
+} from "../../src/fetcher";
 
 describe("fetcher", () => {
   beforeEach(() => {

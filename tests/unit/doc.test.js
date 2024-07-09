@@ -1,5 +1,5 @@
 import { JSDOM } from "jsdom";
-import { domToString } from "../doc";
+import { domToString } from "../../src/doc"
 
 const htmlContent = `
 <!DOCTYPE html>

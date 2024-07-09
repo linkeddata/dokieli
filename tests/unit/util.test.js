@@ -1,4 +1,4 @@
-import { uniqueArray, getDateTimeISO, removeChildren, escapeRegExp, generateUUID, generateAttributeId, hashCode, fragmentFromString, getHash } from "../util";
+import { uniqueArray, getDateTimeISO, removeChildren, escapeRegExp, generateUUID, generateAttributeId, hashCode, fragmentFromString, getHash } from "../../src/util";
 
 describe("util", () => {
   describe("uniqueArray", () => {

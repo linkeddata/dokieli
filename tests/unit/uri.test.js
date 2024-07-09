@@ -1,4 +1,4 @@
-import { encodeString, decodeString, getAbsoluteIRI, stripFragmentFromString, getFragmentFromString, getBaseURL, getPathURL, forceTrailingSlash } from "../uri";
+import { encodeString, decodeString, getAbsoluteIRI, stripFragmentFromString, getFragmentFromString, getBaseURL, getPathURL, forceTrailingSlash } from "../../src/uri";
 
 describe("uri", () => {
   const ENCODED_URL = "https%3A%2F%2Fexample.com";
