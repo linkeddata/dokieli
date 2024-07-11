@@ -561,6 +561,9 @@
                     <dt id="resource-reply"><i class="fa fa-reply"></i>Reply</dt>
                     <dd>An article can be replied with a note and have its own <a href="#resource-license-method">license</a>. To choose the location of the reply, the <a href="#resource-browser-method">resource browser</a> can be used on <a href="#personal-storage">personal storage</a> or an annotation service.</dd>
 
+                    <dt id="resource-activities">Activities</dt>
+                    <dd>A <a href="#signin-user">signed-in user</a> can overlay annotations and activities that they or their contacts have created, which target the current document or a part within it.</dd>
+
                     <dt id="review-enable"><i class="fa fa-balance-scale"></i>Review</dt>
                     <dd>This feature changes the <a href="#document-modes">document mode</a> to <cite>Review</cite> and gives different context for annotations. When a user selects a span of text, a toolbar provides the following options to motivations:
                       <dl>
