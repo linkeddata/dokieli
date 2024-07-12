@@ -7,7 +7,7 @@
     <link href="media/css/basic.css" media="all" rel="stylesheet" title="Basic" />
     <link href="media/css/lncs.css" media="all" rel="stylesheet alternate" title="LNCS" />
     <link href="media/css/acm.css" media="all" rel="stylesheet alternate" title="ACM" />
-    <link href="https://www.w3.org/StyleSheets/TR/2021/W3C-ED" rel="stylesheet alternate" media="all" title="W3C-ED"/>
+    <link href="https://www.w3.org/StyleSheets/TR/2021/base.css" rel="stylesheet alternate" media="all" title="W3C-Base" />
     <link href="media/css/dokieli.css" media="all" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
     <script src="scripts/dokieli.js"></script>
@@ -64,7 +64,7 @@
             </div>
           </section>
 
-          <nav id="table-of-contents"><h2>Contents</h2><div><ol class="toc"><li data-id="abstract"><a href="#abstract">Abstract</a></li><li data-id="document-status"><a href="#document-status">Document Status</a></li><li data-id="principles"><a href="#principles">Principles</a></li><li data-id="structure-and-semantics"><a href="#structure-and-semantics">Structure and Semantics</a><ol><li data-id="dokieli-documents"><a href="#dokieli-documents">dokieli documents</a></li><li data-id="html-patterns"><a href="#html-patterns">HTML patterns</a><ol><li data-id="html-article"><a href="#html-article">Article</a></li><li data-id="html-annotation"><a href="#html-annotation">Annotation</a></li><li data-id="html-notification"><a href="#html-notification">Notification</a></li></ol></li></ol></li><li data-id="user-interface"><a href="#user-interface">User interface</a><ol><li data-id="document-modes"><a href="#document-modes">Document modes</a></li><li data-id="dokieli-menu"><a href="#dokieli-menu">dokieli menu</a></li></ol></li><li data-id="accessibility-usability-inclusion"><a href="#accessibility-usability-inclusion">Accessibility, Usability, and Inclusion</a><ol><li data-id="accessibility-statement"><a href="#accessibility-statement">Accessibility Statement</a><ol><li data-id="accessibility-measures-to-support-accessibility"><a href="#accessibility-measures-to-support-accessibility">Measures to support accessibility</a></li><li data-id="accessibility-conformance-status"><a href="#accessibility-conformance-status">Conformance status</a></li><li data-id="accessibility-feedback"><a href="#accessibility-feedback">Feedback</a></li><li data-id="accessibility-technical-specifications"><a href="#accessibility-technical-specifications">Technical specifications</a></li><li data-id="accessibility-assessment-approach"><a href="#accessibility-assessment-approach">Assessment approach</a></li></ol></li><li data-id="authoring-accessibility"><a href="#authoring-accessibility">Authoring accessibility</a><ol><li data-id="authoring-tool-user-interface-accessibility"><a href="#authoring-tool-user-interface-accessibility">Authoring tool user interface accessibility</a></li><li data-id="support-for-producing-accessible-content"><a href="#support-for-producing-accessible-content">Support for producing accessible content</a></li></ol></li></ol></li><li data-id="http-operations"><a href="#http-operations">HTTP operations</a></li><li data-id="authentication"><a href="#authentication">Authentication</a></li><li data-id="storage"><a href="#storage">Storage</a></li><li data-id="web-extension"><a href="#web-extension">Web Extension</a></li><li data-id="development"><a href="#development">Development</a></li></ol></div></nav>
+          <nav id="table-of-contents"><h2>Contents</h2><div><ol class="toc"><li data-id="abstract"><a href="#abstract">Abstract</a></li><li data-id="document-status"><a href="#document-status">Document Status</a></li><li data-id="principles"><a href="#principles">Principles</a></li><li data-id="structure-and-semantics"><a href="#structure-and-semantics">Structure and Semantics</a><ol><li data-id="dokieli-documents"><a href="#dokieli-documents">dokieli documents</a></li><li data-id="html-patterns"><a href="#html-patterns">HTML patterns</a><ol><li data-id="html-article"><a href="#html-article">Article</a></li><li data-id="html-annotation"><a href="#html-annotation">Annotation</a></li><li data-id="html-notification"><a href="#html-notification">Notification</a></li></ol></li></ol></li><li data-id="user-interface"><a href="#user-interface">User interface</a><ol><li data-id="document-modes"><a href="#document-modes">Document modes</a></li><li data-id="features"><a href="#features">Features</a></li></ol></li><li data-id="accessibility-usability-inclusion"><a href="#accessibility-usability-inclusion">Accessibility, Usability, and Inclusion</a><ol><li data-id="accessibility-statement"><a href="#accessibility-statement">Accessibility Statement</a><ol><li data-id="accessibility-measures-to-support-accessibility"><a href="#accessibility-measures-to-support-accessibility">Measures to support accessibility</a></li><li data-id="accessibility-conformance-status"><a href="#accessibility-conformance-status">Conformance status</a></li><li data-id="accessibility-feedback"><a href="#accessibility-feedback">Feedback</a></li><li data-id="accessibility-technical-specifications"><a href="#accessibility-technical-specifications">Technical specifications</a></li><li data-id="accessibility-assessment-approach"><a href="#accessibility-assessment-approach">Assessment approach</a></li></ol></li><li data-id="authoring-accessibility"><a href="#authoring-accessibility">Authoring accessibility</a><ol><li data-id="authoring-tool-user-interface-accessibility"><a href="#authoring-tool-user-interface-accessibility">Authoring tool user interface accessibility</a></li><li data-id="support-for-producing-accessible-content"><a href="#support-for-producing-accessible-content">Support for producing accessible content</a></li></ol></li></ol></li><li data-id="http-operations"><a href="#http-operations">HTTP operations</a></li><li data-id="authentication"><a href="#authentication">Authentication</a></li><li data-id="storage"><a href="#storage">Storage</a></li><li data-id="web-extension"><a href="#web-extension">Web Extension</a></li><li data-id="development"><a href="#development">Development</a></li></ol></div></nav>
 
           <section id="principles" inlist="" rel="schema:hasPart" resource="#principles">
             <h2 property="schema:name">Principles</h2>
@@ -551,69 +551,193 @@
               <section id="dokieli-menu" inlist="" rel="schema:hasPart" resource="#dokieli-menu">
                 <h3 property="schema:name">dokieli menu</h3>
                 <div datatype="rdf:HTML" property="schema:description">
+                  <p about="" rel="schema:potentialAction">The <a href="#document-menu" typeof="schema:ActivateAction"><i class="fas fa-bars"></i>dokieli menu</a> enables users to access various <a href="#features">features</a>.</p>
+                </div>
+              </section>
+
+              <section id="features" inlist="" rel="schema:hasPart" resource="#features">
+                <h3 property="schema:name">Features</h3>
+                <div datatype="rdf:HTML" property="schema:description">
                   <dl>
                     <dt id="signin-user"><i class="fa fa-user-secret"></i>Sign in</dt>
-                    <dd>This is where the user can enter their WebID to let dokieli know about who they are. dokieli fetches their WebID and related information to further help with dokieli's operations. Authentication is not done at this stage.</dd>
+                    <dd>Allows the user to identify themselves using their WebID where they can also authenticate themselves. dokieli retrieves information related to user's identity to adapt the user interface as well as with operations related to user's actions.</dd>
 
                     <dt id="resource-share"><i class="fa fa-bullhorn"></i>Share</dt>
-                    <dd>User can share the current article or a part of it with their contacts, automatically discovered via <samp>foaf:knows</samp> as well as traversing equivalent profiles (<code>owl:sameAs</code>). Notification can also be sent to specific targets by entering their IRIs. dokieli sends a notification to the selected targets with information like: who sent it, when, license, motivation.</dd>
+                    <dd>The user can share the current article or a part of it with individuals or groups from their contacts as well as to any specific agent. The list of contacts is generated through a discovery mechanism where dokieli follows <samp>foaf:knows</samp> relations as well as traversing equivalent profiles (<code>owl:sameAs</code>) and determines their inboxes. dokieli sends a notification to user selected targets with information such as who sent the notification, when it was created, its license and motivation.</dd>
 
                     <dt id="resource-reply"><i class="fa fa-reply"></i>Reply</dt>
-                    <dd>An article can be replied with a note and have its own <a href="#resource-license-method">license</a>. To choose the location of the reply, the <a href="#resource-browser-method">resource browser</a> can be used on <a href="#personal-storage">personal storage</a> or an annotation service.</dd>
+                    <dd>An article can be replied with a note and have its own <a href="#resource-language">language</a> and <a href="#resource-license">license</a>. The user can use the <a href="#resource-browser">resource browser</a> to choose the location of the reply in a <a href="#personal-storage">personal storage</a> or an annotation service.</dd>
 
                     <dt id="resource-activities">Activities</dt>
                     <dd>A <a href="#signin-user">signed-in user</a> can overlay annotations and activities that they or their contacts have created, which target the current document or a part within it.</dd>
 
-                    <dt id="review-enable"><i class="fa fa-balance-scale"></i>Review</dt>
-                    <dd>This feature changes the <a href="#document-modes">document mode</a> to <cite>Review</cite> and gives different context for annotations. When a user selects a span of text, a toolbar provides the following options to motivations:
+                    <dt id="resource-annotations">Annotations</dt>
+                    <dd>Articles can be annotated with various motivations. Annotations themselves can also be annotated. Some kinds of annotations are kept with the article, while others are independent resources stored externally to the article. The user may assign a specific <a href="#resource-language">language</a> and a <a href="#resource-license">license</a> for some types of annotations.
                       <dl>
+                        <dt>Bookmarking</dt>
+                        <dd>The document or selected text can be bookmarked where the user can include a note, assign <a href="#annotation-tagging">tags</a>.</dd>
+                        <dt>Commenting</dt>
+                        <dd>Node or text level targeting for an annotation including a <a href="#annotation-describing">description</a> and <a href="#annotation-tagging">tags</a>.</dd>
+                        <dt>Describing</dt>
+                        <dd>A note to indicate a footnote. Used as part of purpose for <a href="#annotation-bookmarking">bookmarking</a> and <a href="#resource-commenting">commenting</a>.</dd>
+                        <dt>Highlighting</dt>
+                        <dd>Node or text level targeting that gives the user a URI that they can use for deep-linking and referencing.</dd>
+                        <dt>Replying</dt>
+                        <dd>A note to indicate a reply to selected text or node.</dd>
+                        <dt>Tagging</dt>
+                        <dd>The user can associate tags (natural language text) to selected text which is used as part of purpose for annotations such as <a href="#annotation-bookmarking">bookmarking</a>, <a href="#annotation-replying">replying</a>, and <a href="#resource-commenting">commenting</a>.</dd>
                         <dt><i class="fa fa-thumbs-up"></i>Approve</dt>
-                        <dd>General agreement with the selected text. Optional text should specify why it is a strong point or a convincing argument.</dd>
+                        <dd>General agreement with the selected text. Optional note can indicate why the selection is a strong point or a convincing argument.</dd>
                         <dt><i class="fa fa-thumbs-down"></i>Disapprove</dt>
-                        <dd>General disagreement with the selected text. Optional text should specify why it is a weak point, an error, or inaccurate.</dd>
+                        <dd>General disagreement with the selected text. Optional note can indicate why the selection is a weak point, an error, or inaccurate.</dd>
                         <dt><i class="fa fa-crosshairs"></i>Specificity</dt>
-                        <dd>Request to increase specificity on selected text. Optional text should indicate that a citation or more specificity is needed.</dd>
+                        <dd>Request to increase specificity on selected text. Optional note can indicate that a citation or more specificity is needed.</dd>
                       </dl>
                     </dd>
 
                     <dt id="resource-new"><i class="fa fa-lightbulb-o"></i>New</dt>
-                    <dd>This feature allows a new document to be created at specified location. The new document is constructed based on  If the user is signed in with their WebID and their personal storage location is identifier, the default location for the new resource will have the storage URL (<code>pim:storage</code>) as its base. If the user does not have a WebID and a storage, and if the article refers to an annotation service (<code>oa:annotationService</code>), it will use that URL instead. The URL can be input directly, and otherwise a name will be autogenerated for the resource. This feature uses the <cite><a href="#resource-browser-method">resource browser</a></cite> to navigate HTTP URLs. See also <var>generateAttributeId</var> (dokieli.js). On create, the resulting hyperlink will be shown and a new tab in the browser will be prompted.</dd>
+                    <dd>This feature allows a new document to be created at specified location. The new document is constructed based on  If the user is signed in with their WebID and their personal storage location is identifier, the default location for the new resource will have the storage URL (<code>pim:storage</code>) as its base. If the user does not have a WebID and a storage, and if the article refers to an annotation service (<code>oa:annotationService</code>), it will use that URL instead. The URL can be input directly, and otherwise a name will be autogenerated for the resource. This feature uses the <cite><a href="#resource-browser">resource browser</a></cite> to navigate HTTP URLs. See also <var>generateAttributeId</var> (dokieli.js). On create, the resulting hyperlink will be shown and a new tab in the browser will be prompted.</dd>
 
                     <dt id="resource-open"><i class="fa fa-coffee"></i>Open</dt>
-                    <dd>Documents can be opened from a local filesystem or by entering an HTTP URL. Both options read the resource's content, and if dokieli's CSS and JavaScript are not present, they are included before updating the DOM and initiating dokieli. This feature uses the <cite><a href="#resource-browser-method">resource browser</a></cite> to navigate HTTP URLs. See also <var>openDocument</var> (dokieli.js).</dd>
+                    <dd>Documents can be opened from a local filesystem or by entering an HTTP URL. Both options read the resource's content, and if dokieli's CSS and JavaScript are not present, they are included before updating the DOM and initiating dokieli. This feature uses the <cite><a href="#resource-browser">resource browser</a></cite> to navigate HTTP URLs. See also <var>openDocument</var> (dokieli.js). There are special handling of data formats such as:
+                      <dl>
+                        <dt id="gps-data">GPS data</dt>
+                        <dd>The user can view a map (OpenStreetMap) including a track, as well as details about GPS and extension data in a table such as time period, latitude, longitude, altitude, heart rate, cadence, speed, air temperature, water temperature, depth. The table also includes a summary of publication date, publisher, actor, total distance, total time, average pace, average heart rate, elevation gain, elevation lost. The nearest city of the track is also determined and linked to on Wikidata.</dd>
+                        <dt id="activity-collection">Activity collection</dt>
+                        <dd>A chronological list of (social) activities.</dd>
+                      </dl>
+                    </dd>
 
                     <dt id="resource-save"><i class="fa fa-life-ring"></i>Save</dt>
                     <dd>This feature makes a <a href="#http-put">write operation</a> (<code>HTTP PUT</code>) request to the current location of the document (<var>window.location</var>). The document is normalised in that dokieli related items are removed from the DOM before making the request.</dd>
 
                     <dt id="resource-save-as"><i class="fa fa-paper-plane-o"></i>Save As</dt>
-                    <dd>The <cite>Save As</cite> operation is similar to <cite>New</cite> for normalising some of the URLs and same as <cite>Save</cite> operation for normalising the DOM before making the request to specified location. If <cite>Derivation data</cite> is checked for inclusion, <a href="#html-document-derived-from-on">derived from and on</a> information is included in the created document. This feature uses the <cite><a href="#resource-browser-method">resource browser</a></cite> to navigate HTTP URLs.</dd>
+                    <dd>The <cite>Save As</cite> operation is similar to <cite>New</cite> for normalising some of the URLs and same as <cite>Save</cite> operation for normalising the DOM before making the request to specified location. If <cite>Derivation data</cite> is checked for inclusion, <a href="#html-document-derived-from-on">derived from and on</a> information is included in the created document. This feature uses the <cite><a href="#resource-browser">resource browser</a></cite> to navigate HTTP URLs.
+                      <dl>
+                        <dt id="resource-set-inbox">Set Inbox</dt>
+                        <dd>The user can associate an inbox to an article using the <a href="#resource-browser">resource browser</a>.</dd>
+                        <dt id="resource-set-annotation">Set Annotation</dt>
+                        <dd>The user can associate an annotation service to an article using the <a href="#resource-browser">resource browser</a> so that others' annotations can optionally be copied to this location.</dd>
+                        <dt id="resource-dokielize">dokielize</dt>
+                        <dd>Normalises the document to be valid, normalised, as well as includes the dokieli scripts so that the application be used in the derived version.</dd>
+                        <dt id="resource-accessibility-report">Accessibility Report</dt>
+                        <dd>Provides additional accessibility information about the current document so that the user can find ways to improve the content's accessibility.</dd>
+                        <dt id="storge-details">Storage details</dt>
+                        <dd>The user can examine information about the storage such as its location, name, description, owners, URI persistence policy, and digital rights policies as well as be informed about any conflicts with their preferred policies, and notification subscription options and subscribing to live changes.</dd>
+                      </dl>
+                    </dd>
+
+                    <dt id="resource-version">Version</dt>
+                    <dd>Generates a derived copy of the current document as a mutable resource including provenance.</dd>
+
+                    <dt id="resource-immutable">Immutable</dt>
+                    <dd>Generates a derived copy of the current document as an immutable or frozen Memento resource including provenance. Creates or updates a Memento TimeMap including a reference to the immutable resource.</dd>
+
+                    <dt id="resource-memento">Memento</dt>
+                    <dd>The user can access the memento (version history) of a document.</dd>
+
+                    <dt id="resource-robustify-links">Robustify Links</dt>
+                    <dd>In order to work around content-drift and link-rot, users can decorate links to include Robust Links, e.g. the URI of a snapshot from the Internet Archive, datetime stamp at the time of linking, and other context.</dd>
+
+                    <dt id="resource-archive">Archive</dt>
+                    <dd>Sends an archival request of the current article to the Internet Archive <a href="https://web.archive.org/">Wayback Machine</a>.</dd>
+
+                    <dt id="generate-feed">Generate Feed</dt>
+                    <dd>The user can generate and publish a custom web feed based on a list of documents they have selected from a storage. The user can specify the feed's title, <a href="#resource-language">language</a>, <a href="#resource-license">license</a>, and format such as RSS or Atom.</dd>
 
                     <dt id="resource-export"><i class="fa fa-external-link"></i>Export</dt>
-                    <dd>Provides options to 1) exports the article as HTML and save to filesystem, 2) Makes a request to the Internet Archive to crawl all resources references in this article.</dd>
+                    <dd>The user can export the article as HTML and save to their local filesystem.</dd>
+
 
                     <dt id="resource-print"><i class="fa fa-print"></i>Print</dt>
                     <dd>Requests to print the current document (<code>window.print()</code>).</dd>
 
                     <dt id="editor-enable"><i class="fa fa-i-cursor"></i>Edit</dt>
-                    <dd><cite>Editor</cite> is one of the document modes a user can be in. The available features reflect the edit operation. Edits reside in the DOM until a <cite>Save</cite> or <cite>Save As</cite> is triggered. There are several editor features in following categories: content formatting and structuring (<i class="fa fa-header">2</i>, <i class="fa fa-header">3</i>, <i class="fa fa-header">4</i>, <i class="fa fa-italic"></i>, <i class="fa fa-bold"></i>, <i class="fa fa-list-ol"></i>, <i class="fa fa-list-ul"></i>, <b>code</b>, <i class="fa fa-code fa-lg"></i>, <i class="fa fa-picture-o"></i>, <i class="fa fa-table"></i>, <i class="fa fa-link"></i>, <i class="fa fa-quote-right"></i>), including interactive and embeddable objects (<i class="fa fa-line-chart"></i>), inline semantic relations (<i class="fa fa-rocket"></i>), footnotes and citations (<i class="fa fa-hashtag"></i>), and annotations (<i class="fa fa-sticky-note"></i>).
+                    <dd><cite>Editor</cite> is one of the document modes a user can be in. The available features reflect the edit operation. Edits reside in the DOM until a <cite>Save</cite> or <cite>Save As</cite> is triggered. There are content formatting and structuring features to indicate heading, italics, bold, ordered an unordered listing, inline code, preformatted text, hyperlinking, inline quotes, adding images, tables, as well as:
+                      <dl>
+                        <dt id="resource-interactive-embeddable-objects">Interactive and embeddable objects</dt>
+                        <dd>User can include a chart based on statistical data such as sparklines.</dd>
+                        <dt id="resource-semantic-annotation">Semantic annotation</dt>
+                        <dd>The user can mark content to be both further machine-readable (RDFa) in addition to being human-readable.</dd>
+                        <dt id="resource-footnotes-citations">Footnotes and citations</dt>
+                        <dd>The user can create footnotes and citations for their selected text where they are contextual, robust, and the cited entity can be notified about the citation (for back-referencing). References can be ISBNs or URLs of any kind. For contextual citations for instance, the citing entity (an argument) cites the cited entity (observation results) as source of factual evidence for statements it contains. The user can also search for bibliographic information about technical specifications for the purpose citing.</dd>
+                        <dt id="authoring-widgets">Authoring widgets</dt>
+                        <dd>The user can add contributors to the article and send a notification to them about the article. The user can specify the document's language, license, inbox, in reply to, document type (such as article, specification, slideshow), document status, test suite.</dd>
+                      </dl>
                     </dd>
 
+                    <dt id="resource-autosaving">Autosaving</dt>
+                    <dd>While the user is in <a href="#editor-enable">editing</a> their article, the document is autosaved to local storage. The user can optionally enable autosaving the resource.</dd>
+
                     <dt id="resource-source"><i class="fa fa-code"></i>Source</dt>
-                    <dd>Users can edit the current state of the article. <em>Updating</em>, only updates the DOM, and leave the saving to <cite>Save</cite> or <cite>Save As</cite>.</dd>
+                    <dd>The user can edit the current state of the article. <em>Updating</em>, only updates the DOM, where write operations on the article resource itself are handled by features such as <a href="#resource-save">Save</a>.</dd>
 
                     <dt id="embed-data-meta"><i class="fa fa-table"></i>Embed Data</dt>
-                    <dd>This feature allows hidden RDF data to be stored with the document. Turtle, JSON-LD, and TriG can all be edited and stored independently.</dd>
-                  </dl>
+                    <dd>The user can embed and update supplemental data to be stored with the article using RDF syntaxes such as Turtle, JSON-LD, and TriG.</dd>
 
-                  <p id="base-url-selection-method">To determine the base URL, when new documents are created or saved as, media resources from <var>head link, [src], object[data]</var> (querySelector) will have their URLs normalised to use current document's base URL as its absolute URL (this is the <q>Use references as is</q> option). If <q>Copy to your storage</q> is selected, relative URLs will not be updated as the copy operation reuses the same file paths when resource are copied to destination. The <em>copy</em> operation does an <code>HTTP GET</code> for each source, then <code>HTTP PUT</code> to target.</p>
+                    <dt id="message-log">Messages</dt>
+                    <dt>The user can read the all of the messages that were raised to their attention by dokieli for example as the result of some action.</dt>
 
-                  <p id="resource-browser-method">The <em>resource browser</em> eg. available for <cite>New</cite>, <cite>Open</cite>, <cite>Save As</cite> operations can be used to navigate through a Webspace. It does this by using the <cite><a href="https://www.w3.org/TR/ldp/">Linked Data Platform</a></cite>'s containment rules to retrieve and then display the container's index. If the user's personal storage location is known, it will be used as default location for the resource browser. Alternatively, if the article refers to an annotation service, it will be used as start location.</p>
-
-                  <p id="resource-license-method">Users are given a choice to specify the <em>rights and license</em> for their annotations from a list of <cite><a href="https://creativecommons.org/">Creative Commons</a></cite> licenses, eg. <span resource="#annotation-rights" typeof="schema:ChooseAction">CC BY 4.0</span>. If applicable, the notification payload will use the <cite><a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0 Universal</a></cite> license.</p>
-
-                  <dl>
                     <dt id="dokieli-views"><i class="fa fa-magic"></i>Views</dt>
                     <dd>The dokieli menu will list primary and alternate stylesheets that are <a href="#html-css">detected in HTML</a>. <cite>Native</cite> is always available and it will essentially disable all other stylesheets, thereby user-agent's default stylesheets are gets applied. When a view is selected, eg. <cite>Basic</cite> (which happens to be the one that is used on this article as primary), it becomes the primary stylesheet, and the rest of the stylesheets become alternate and disabled.</dd>
+
+                    <dt id="resource-graph">Graph visualisation</dt>
+                    <dd>The user can view a graph visualisation of the document's underlying machine-readable semantics (RDFa). The view lists the resources that are in the view, number of statements, number of unique nodes, creator, license, and legend. The visualisation can be exported to an SVG.</dd>
+
+                    <dt id="list-of-stuff">List of Stuff</dt>
+                    <dd>Options to generate and include various content such as:
+                      <dl>
+                        <dt>Contents</dt>
+                        <dd>For table of contents.</dd>
+                        <dt>Figures</dt>
+                        <dd>List of figures in the document and links to them.</dd>
+                        <dt>Tables</dt>
+                        <dd>List of tables in the document and links to them.</dd>
+                        <dt>Abbreviations</dt>
+                        <dd>List of abbreviations in the document and their definitions.</dd>
+                        <dt>Quotations</dt>
+                        <dd>List of quotations in the document and links to them.</dd>
+                        <dt>Concepts</dt>
+                        <dd>List of concept schemes and concepts in the document and links to them. The user can include additional concepts that are defined in resources that are externally references from the current document, as well as a graph visualisation of the concepts.</dd>
+                        <dt>Requirements</dt>
+                        <dd>Table of conformance requirements and test coverage (of a technical specification) including the requirement subject, level  and statement, and test cases per requirement, and links to them. The use can optionally see the difference in changes between the current document and the previous version of the document, as well as the information from the changelog.</dd>
+                        <dt>Advisements</dt>
+                        <dd>Table of advisements (in a technical specification) including their levels and statements and links to them.</dd>
+                        <dt>References</dt>
+                        <dd>List of tables in the document and links to them.</dd>
+                      </dl>
+                    </dd>
+                  </dl>
+
+                  <dt id="document-metadata">Document metadata</dt>
+                  <dd>Based on document's underlying structured data, displays information about its contributors such as editors and authors, number of citations, requirements, advisements, concepts, statements, as well as an estimated reading time, number of characters, words, and bytes.</dd>
+                </div>
+              </section>
+
+              <section id="components" inlist="" rel="schema:hasPart" resource="#components">
+                <h3 property="schema:name">Components</h3>
+                <div datatype="rdf:HTML" property="schema:description">
+                  <dl>
+                    <dt id="resource-license">License</dt>
+                    <dd>The user can specify the <em>rights and license</em> for their articles and annotations from a list of <cite><a href="https://creativecommons.org/">Creative Commons</a></cite> licenses, e.g., <span resource="#annotation-rights" typeof="schema:ChooseAction">CC BY 4.0</span>. Notifications by default use the <cite><a href="https://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0 Universal</a></cite> license.</dd>
+
+                    <dt id="resource-language">Language</dt>
+                    <dd>The user can assign the language of an article or an annotation from a selection (182 languages). Alternatively, the user can use the semantic annotator to specify the language of a text selection or nodes.</dd>
+
+                    <dt id="resource-browser">Resource browser</dt>
+                    <dd >The <em>resource browser</em> eg. available for <cite>New</cite>, <cite>Open</cite>, <cite>Save As</cite> operations can be used to navigate through a Webspace. It does this by using the <cite><a href="https://www.w3.org/TR/ldp/">Linked Data Platform</a></cite>'s containment rules to retrieve and then display the container's index. If the user's personal storage location is known, it will be used as default location for the resource browser. Alternatively, if the article refers to an annotation service, it will be used as start location.</dd>
+
+                    <dt id="base-url-selection">Base URL selection</dt>
+                    <dd>To determine the base URL, when new documents are created or saved as, media resources from <var>head link, [src], object[data]</var> (querySelector) will have their URLs normalised to use current document's base URL as its absolute URL (this is the <q>Use references as is</q> option). If <q>Copy to your storage</q> is selected, relative URLs will not be updated as the copy operation reuses the same file paths when resource are copied to destination. The <em>copy</em> operation does an <code>HTTP GET</code> for each source, then <code>HTTP PUT</code> to target.</dd>
+
+                    <dt id="resource-clipboard">Clipboard</dt>
+                    <dd>The user can copy the contents of preformatted text and tables (in CSV format) to their clipboard.</dd>
+
+                    <dt id="resource-fragments">Fragments</dt>
+                    <dd>The user can see and click on a fragment in the document which is useful for specific referencing.</dd>
+
+                    <dt id="resource-tabs">Tabs view</dt>
+                    <dd>Navigation items provide a tab view for the user.</dd>
                   </dl>
                 </div>
               </section>
