@@ -1,6 +1,11 @@
 module.exports = {
-  clearMocks: true,
   collectCoverage: true,
+  collectCoverageFrom: [
+    "src/**/*.{js,jsx,ts,tsx}",
+    "!src/**/*.d.ts"
+  ],
+  coverageReporters: ["text", "lcov"],
+  clearMocks: true,
   coverageDirectory: "tests/coverage",
   coverageProvider: "v8",
   testEnvironment: "jsdom",
