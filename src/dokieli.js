@@ -35,6 +35,26 @@ import Config from './config.js';
 
 let DO;
 
+// Register the service worker for caching resources
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', async () => {
+    try {
+      let reg;
+
+      if (import.meta.env?.DEV) {
+        reg = await navigator.serviceWorker.register('/sw-cache.js', {
+          type: 'module',
+        });
+      } else {
+        reg = await navigator.serviceWorker.register('/sw-cache.js');
+      }
+
+    } catch (err) {
+      // do nothing with this for now
+    }
+  });
+}
+
 if(typeof window.DO === 'undefined'){
 const SimpleRDF = ld.SimpleRDF
 DO = {
@@ -10669,8 +10689,11 @@ if (document.readyState === "loading") {
   document.addEventListener('DOMContentLoaded', function(){ DO.C.init(); });
 }
 else {
-  window.addEventListener("load", function(){ DO.C.init(); });
+  window.addEventListener("load", function(){ DO.C.init(); console.log("load")
+   });
 }
+
+
 
 }
 
