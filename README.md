@@ -100,7 +100,7 @@ Let's make it so together! You are welcome to create [issues](https://github.com
 ## Screencasts
 
 * [Access request](https://dokie.li/media/video/dokieli-access-request.webm).
-* [Annotating](https://dokie.li/media/video/dokieli-annotation.webm) and [sharing](https://dokie.li/media/video/dokieli.webm).
+* [Annotating](https://dokie.li/media/video/dokieli-annotation.webm) and [sharing](https://dokie.li/media/video/dokieli-share.webm).
 * Matching [resource's target audience with user's occupations](https://dokie.li/media/video/dokieli-audience-occupation.webm).
 * [Citations](https://dokie.li/media/video/dokieli-citation.webm)
 * [Generate and publish web feed](https://dokie.li/media/video/dokieli-generate-feed.webm).
