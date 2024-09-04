@@ -1723,7 +1723,7 @@ DO = {
 
       var options = { 'reuse': true };
       if (document.location.protocol.startsWith('http')) {
-        options['followLinkRelationTypes'] = ['describedby'];
+        options['followLinkRelationTypes'] = ['describedby', 'acl'];
       }
       getResourceSupplementalInfo(DO.C.DocumentURL, options).then(resourceInfo => {
         updateFeatureStatesOfResourceInfo(resourceInfo);
