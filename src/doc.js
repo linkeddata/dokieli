@@ -2527,7 +2527,7 @@ function getAccessModeOptionsHTML(options) {
 
   var modes = Object.keys(accessContext);
   modes.forEach(mode => {
-    var selected = (options.selected && (mode.toLowerCase() === options.selected.toLowerCase())) ? ' selected="selected"' : '';
+    var selected = (options.selected && (mode === options.selected)) ? ' selected="selected"' : '';
     s += '<option' + selected + ' value="' + mode + '">' + accessContext[mode] + '</option>';
   });
 
