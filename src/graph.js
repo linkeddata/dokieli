@@ -1217,6 +1217,79 @@ function sortGraphTriples(g, options) {
   return g;
 }
 
+// https://solidproject.org/TR/2024/wac-20240512#effective-acl-resource-algorithm
+function getACLResourceGraph(iri, options = {}) {
+  Config.Resource[iri] = Config.Resource[iri] || {};
+  Config.Resource[iri]['acl'] = {};
+
+  var baseURL = getBaseURL(iri)
+  var pathURL = getPathURL(iri)
+// console.log(baseURL)
+// console.log(pathURL)
+
+  return getLinkRelationFromHead('acl', iri).then(
+    function(i) {
+      if (i.length > 0) {
+        var aR = i[0];
+
+        var aclResource = getAbsoluteIRI(baseURL, aR);
+// console.log(aclResource)
+
+        Config.Resource[iri]['acl']['defaultACLResource'] = Config.Resource[iri]['acl']['defaultACLResource'] || aclResource;
+
+        return getResourceGraph(aclResource)
+          .then(function(g){
+// console.log(i)
+// console.log(i.status)
+//404?
+            if (typeof g === 'undefined') {
+              var container = pathURL.endsWith('/') ? getParentURLPath(pathURL) : baseURL;
+// console.log(container);
+              if (typeof container !== 'undefined') {
+                Config.Resource[iri]['acl']['effectiveContainer'] = container;
+
+                return getACLResourceGraph(container);
+              }
+              else {
+                return Promise.reject(new Error('effectiveACLResource not determined. https://solidproject.org/TR/2024/wac-20240512#effective-acl-resource-algorithm'));
+              }
+            }
+// console.log(g)
+
+            Config.Resource[iri]['acl']['effectiveACLResource'] = aclResource;
+
+            return g;
+
+        // return Promise.reject(new Error('rootContainer aclResource not determined. https://solidproject.org/TR/2024/wac-20240512#server-root-container-acl'))
+
+
+            // return i.graph()
+          },
+          function(reason){
+console.log(reason)
+            // return getACLResourceGraph(uri.getParentURLPath(iri))
+          });
+      }
+      else {
+        return Promise.reject(new Error('defaultACLResource or effectiveACLResource not determined. https://solidproject.org/TR/2024/wac-20240512#effective-acl-resource-algorithm'));
+      }
+    },
+    //No HEAD + rel=acl
+    function(reason){
+console.log(reason);
+//       var rootURIPath = new URL('/', iri)
+//       rootURIPath = rootURIPath.href;
+// console.log(iri + ' - ' + rootURIPath)
+//       if (iri == rootURIPath) {
+        return Promise.reject(new Error('effectiveACLResource not determined. https://solidproject.org/TR/2024/wac-20240512#effective-acl-resource-algorithm'));
+      // }
+      // else {
+      //   var parentURLPath = uri.getParentURLPath(iri);
+      //   // return getACLResourceGraph(parentURLPath)
+      // }
+    });
+}
+
 export {
   constructGraph,
   getGraph,
@@ -1276,5 +1349,5 @@ export {
   getGraphDescription,
   getGraphTypes,
   sortGraphTriples,
-  getGraphAudience
+  getACLResourceGraph,
 }
