@@ -471,6 +471,57 @@ overflow:auto;
 #share-resource.do.on #share-resource-contacts label {
 vertical-align:middle;
 }
+#share-resource-search-contacts {
+	width: 100%;
+}
+
+#share-resource > div h3 {
+margin-top:1em;
+}
+#share-resource-permissions,
+#share-resource-share-url {
+padding-bottom:1em;
+border-bottom:1px solid #ccc;
+}
+#share-resource-permissions > ul {
+width:60%;
+}
+#share-resource-permissions > ul li select,
+#share-resource-permissions > ul li select + .progress {
+float:right;
+}
+
+
+#share-resource-share-url button.copy-to-clipboard {
+display:inline-block;
+margin:0;
+}
+#autocomplete {
+	position: relative;
+}
+#suggestions {
+	position: absolute;
+	width:calc(100% - 2em);
+	background-color:#fff;
+}
+#suggestions li {
+	cursor: pointer;
+	padding:0.5em 1em;
+  border-left: 1px solid #ccc;
+  border-right: 1px solid #ccc;
+  margin:0 !important;
+  box-shadow: 0.1em 0.1em 0.1em rgba(0,0,0,0.1);
+}
+#suggestions li:last-child {
+	border-top:0;
+	border-bottom-left-radius: 0.5em;
+  border-bottom-right-radius: 0.5em;
+  box-shadow: 0.1em 0.1em 0.1em rgba(0,0,0,0.1);
+}
+#suggestions li:hover {
+  background-color:#eee;
+}
+
 
 #source-view {
 max-width:60%;
@@ -1158,7 +1209,11 @@ margin:0.5em 0;
 aside.do.on .response-message {
 margin-top:1em;
 }
-
+aside.do.on h2,
+aside.do.on h3 {
+font-weight:bold;
+color:#000;
+}
 
 .do.sortable .sortable-placeholder {
 outline:1px dashed #777;
