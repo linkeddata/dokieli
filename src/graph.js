@@ -11,6 +11,10 @@ import * as DOMPurify from 'dompurify';
 
 const store = ld.store;
 
+function constructGraph (url) {
+  return SimpleRDF(Config.Vocab, url);
+}
+
 function getGraph (url) {
   return SimpleRDF(Config.Vocab, url, null, store).get()
 }
@@ -1213,6 +1217,7 @@ function sortGraphTriples(g, options) {
 }
 
 export {
+  constructGraph,
   getGraph,
   getGraphFromData,
   getMatchFromData,
