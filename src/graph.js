@@ -3,7 +3,7 @@
 import * as ld from "./simplerdf.cjs";
 const SimpleRDF = ld.SimpleRDF
 import Config from './config.js'
-import { stripFragmentFromString, getProxyableIRI } from './uri.js'
+import { stripFragmentFromString, getProxyableIRI, getBaseURL, getPathURL, getAbsoluteIRI, getParentURLPath } from './uri.js'
 import { uniqueArray } from './util.js'
 import { setAcceptRDFTypes, getResource, getResourceHead } from './fetcher.js'
 import LinkHeader from "http-link-header";
@@ -1309,6 +1309,48 @@ function getAccessSubjects (authorizations, options) {
   return accessSubjects;
 }
 
+
+function getAuthorizationsMatching (g, matchers) {
+  var authorizations = {};
+
+// console.log("getAuthorizationsMatching:", g, matchers);
+
+  var subjects = [];
+  g.graph().toArray().forEach(function(t){
+    subjects.push(t.subject.nominalValue);
+  });
+  subjects = uniqueArray(subjects);
+
+  subjects.forEach(i => {
+    var s = g.child(i);
+
+    if (s.rdftype._array.includes(Config.Vocab['aclAuthorization']['@id'])) {
+      var authorizationIRI = s.iri().toString();
+      var candidateAuthorization = {};
+
+      Object.keys(matchers).forEach(key => {
+        if (s['acl' + key]._array.includes(matchers[key])) {
+          candidateAuthorization[key] = matchers[key];
+        }
+      })
+
+      var allKeysMatched = Object.keys(matchers).every(key => Object.keys(candidateAuthorization).includes(key));
+
+      if (allKeysMatched) {
+        var properties = ['agent', 'agentClass', 'agentGroup', 'accessTo', 'default', 'mode', 'origin'];
+        var authorization = {};
+        properties.forEach(p => {
+          authorization[p] = s['acl' + p]._array;
+        })
+        authorizations[authorizationIRI] = authorization;
+      }
+    }
+  });
+
+  return authorizations;
+}
+
+
 export {
   constructGraph,
   getGraph,
@@ -1368,6 +1410,8 @@ export {
   getGraphDescription,
   getGraphTypes,
   sortGraphTriples,
+  getGraphAudience,
   getACLResourceGraph,
   getAccessSubjects,
+  getAuthorizationsMatching
 }
