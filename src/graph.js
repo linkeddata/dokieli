@@ -1290,6 +1290,25 @@ console.log(reason);
     });
 }
 
+
+function getAccessSubjects (authorizations, options) {
+  var accessSubjects = {};
+  var subjectTypes = options || ['agent', 'agentClass', 'agentGroup'];
+
+  Object.keys(authorizations).forEach(authorization => {
+    subjectTypes.forEach(subjectType => {
+      var accessSubjectsArray = authorizations[authorization][subjectType];
+      accessSubjectsArray.forEach(accessSubject => {
+        accessSubjects[accessSubject] = {};
+        accessSubjects[accessSubject]['subjectType'] = subjectType;
+        accessSubjects[accessSubject]['mode'] = authorizations[authorization]['mode'];
+      });
+    })
+  })
+
+  return accessSubjects;
+}
+
 export {
   constructGraph,
   getGraph,
@@ -1350,4 +1369,5 @@ export {
   getGraphTypes,
   sortGraphTriples,
   getACLResourceGraph,
+  getAccessSubjects,
 }
