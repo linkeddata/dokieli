@@ -495,10 +495,11 @@ function getResourceGraph (iri, headers, options = {}) {
 
     })
     .catch(e => {
-      if ('resource' in e) {
+      // console.log(e)
+
+      if ('resource' in e || e.status?.toString().startsWith('5')) {
         return e;
       }
-      console.log(e)
     })
 }
 
