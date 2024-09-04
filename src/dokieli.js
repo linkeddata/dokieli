@@ -6,10 +6,10 @@
  * https://github.com/linkeddata/dokieli
  */
 
-import { getResource, setAcceptRDFTypes, postResource, putResource, currentLocation, patchResourceWithAcceptPatch, putResourceWithAcceptPut, copyResource, deleteResource } from './fetcher.js'
-import { getDocument, getDocumentContentNode, escapeCharacters, showActionMessage, selectArticleNode, buttonClose, buttonRemoveAside, showRobustLinksDecoration, getResourceInfo, getResourceSupplementalInfo, removeNodesWithIds, getResourceInfoSKOS, removeReferences, buildReferences, removeSelectorFromNode, insertDocumentLevelHTML, getResourceInfoSpecRequirements, getTestDescriptionReviewStatusHTML, createFeedXML, getButtonDisabledHTML, showTimeMap, createMutableResource, createImmutableResource, updateMutableResource, createHTML, getResourceImageHTML, setDocumentRelation, setDate, getClosestSectionNode, getAgentHTML, setEditSelections, getNodeLanguage, createActivityHTML, createLicenseHTML, createLanguageHTML, getAnnotationInboxLocationHTML, getAnnotationLocationHTML, getResourceTypeOptionsHTML, getPublicationStatusOptionsHTML, getLanguageOptionsHTML, getLicenseOptionsHTML, getCitationOptionsHTML, getDocumentNodeFromString, getNodeWithoutClasses, getDoctype, setCopyToClipboard, addMessageToLog, updateDocumentDoButtonStates, updateFeatureStatesOfResourceInfo } from './doc.js'
+import { getResource, setAcceptRDFTypes, postResource, putResource, currentLocation, patchResourceGraph, patchResourceWithAcceptPatch, putResourceWithAcceptPut, copyResource, deleteResource } from './fetcher.js'
+import { getDocument, getDocumentContentNode, escapeCharacters, showActionMessage, selectArticleNode, buttonClose, buttonRemoveAside, showRobustLinksDecoration, getResourceInfo, getResourceSupplementalInfo, removeNodesWithIds, getResourceInfoSKOS, removeReferences, buildReferences, removeSelectorFromNode, insertDocumentLevelHTML, getResourceInfoSpecRequirements, getTestDescriptionReviewStatusHTML, createFeedXML, getButtonDisabledHTML, showTimeMap, createMutableResource, createImmutableResource, updateMutableResource, createHTML, getResourceImageHTML, setDocumentRelation, setDate, getClosestSectionNode, getAgentHTML, setEditSelections, getNodeLanguage, createActivityHTML, createLicenseHTML, createLanguageHTML, getAnnotationInboxLocationHTML, getAnnotationLocationHTML, getResourceTypeOptionsHTML, getPublicationStatusOptionsHTML, getLanguageOptionsHTML, getLicenseOptionsHTML, getCitationOptionsHTML, getDocumentNodeFromString, getNodeWithoutClasses, getDoctype, setCopyToClipboard, addMessageToLog, updateDocumentDoButtonStates, updateFeatureStatesOfResourceInfo, accessModeAllowed, getAccessModeOptionsHTML } from './doc.js'
 import { getProxyableIRI, getPathURL, stripFragmentFromString, getFragmentOrLastPath, getFragmentFromString, getURLLastPath, getLastPathSegment, forceTrailingSlash, getBaseURL, getParentURLPath, encodeString, getAbsoluteIRI, generateDataURI } from './uri.js'
-import { getResourceGraph, traverseRDFList, getLinkRelation, getAgentName, getGraphImage, getGraphFromData, isActorType, isActorProperty, serializeGraph, getGraphLabel, getGraphConceptLabel, getUserContacts, getAgentOutbox, getAgentStorage, getAgentInbox, getLinkRelationFromHead, sortGraphTriples } from './graph.js'
+import { getResourceGraph, traverseRDFList, getLinkRelation, getAgentName, getGraphImage, getGraphFromData, isActorType, isActorProperty, serializeGraph, getGraphLabel, getGraphConceptLabel, getUserContacts, getAgentOutbox, getAgentStorage, getAgentInbox, getLinkRelationFromHead, sortGraphTriples, getACLResourceGraph, getAccessSubjects, getAuthorizationsMatching } from './graph.js'
 import { notifyInbox, sendNotifications, postActivity } from './inbox.js'
 import { uniqueArray, fragmentFromString, hashCode, generateAttributeId, escapeRegExp, sortToLower, getDateTimeISO, getDateTimeISOFromMDY, generateUUID, matchAllIndex, isValidISBN } from './util.js'
 import { generateGeoView } from './geo.js'
@@ -18,7 +18,7 @@ import MediumEditor from "medium-editor/dist/js/medium-editor.js";
 import MediumEditorTable from "medium-editor-tables/dist/js/medium-editor-tables.js";
 // window.MediumEditorTable = MediumEditorTable;
 import { getLocalStorageProfile, showAutoSaveStorage, hideAutoSaveStorage, updateLocalStorageProfile } from './storage.js'
-import { showUserSigninSignout, showUserIdentityInput } from './auth.js'
+import { showUserSigninSignout, showUserIdentityInput, setContactInfo, getSubjectInfo } from './auth.js'
 import { Icon, createRDFaHTML } from './template.js'
 import * as d3Selection from 'd3-selection';
 import * as d3Force from 'd3-force';
@@ -254,12 +254,44 @@ DO = {
           });
       }
       else {
-        return DO.U.updateContactsInfo(DO.C.User.IRI, { 'showActivitiesSources': true })
-          .then(() => {
-            removeProgress(e)
-          })
+        return getUserContacts(DO.C.user.Info)
           .catch(() => {
             removeProgress(e)
+          })
+          .then(contacts => {
+            if(contacts.length > 0) {
+              contacts.forEach(function(url) {
+                getSubjectInfo(url).then(subject => {
+                  DO.C.User.Contacts[url] = subject;
+
+                  var outbox = DO.C.User.Contacts[url]['Outbox'];
+                  var storage = DO.C.User.Contacts[url]['Storage'];
+
+                  if (storage && storage.length > 0) {
+                    if(outbox && outbox.length > 0) {
+                      if(storage[0] == outbox[0]) {
+                        DO.U.showActivitiesSources(outbox[0])
+                      }
+                      else {
+                        DO.U.showActivitiesSources(storage[0])
+                        DO.U.showActivitiesSources(outbox[0])
+                      }
+                    }
+                    else {
+                      DO.U.showActivitiesSources(storage[0])
+                    }
+                  }
+                  else if (outbox && outbox.length > 0) {
+                    DO.U.showActivitiesSources(outbox[0])
+                  }
+
+                  DO.C.User['ContactsOutboxChecked'] = true;
+                })
+              });
+            }
+          })
+          .finally(() => {
+            removeProgress(e);
           });
       }
     },
@@ -4313,8 +4345,11 @@ console.log(reason);
 
     shareResource: function shareResource (e, iri) {
       iri = iri || currentLocation();
-      if (e) {
-        e.target.disabled = true;
+      const documentURL = stripFragmentFromString(iri);
+
+      var button = e.target.closest('button');
+      if (button) {
+        button.disabled = true;
       }
 
       var addContactsButtonDisable = '', noContactsText = '';
@@ -4325,18 +4360,237 @@ console.log(reason);
 
       var shareResourceLinkedResearch = '';
       if (DO.C.User.IRI && DO.C.OriginalResourceInfo['rdftype'] && DO.C.OriginalResourceInfo.rdftype.includes(DO.C.Vocab['schemaScholarlyArticle']['@id']) || DO.C.OriginalResourceInfo.rdftype.includes(DO.C.Vocab['schemaThesis']['@id'])) {
-        shareResourceLinkedResearch = '<li><input id="share-resource-linked-research" type="checkbox" value="https://linkedresearch.org/cloud" /><label for="share-resource-linked-research">Notify <a href="https://linkedresearch.org/cloud">Linked Open Research Cloud</a></label></li>';
+        shareResourceLinkedResearch = '<input id="share-resource-linked-research" type="checkbox" value="https://linkedresearch.org/cloud" /><label for="share-resource-linked-research">Notify <a href="https://linkedresearch.org/cloud">Linked Open Research Cloud</a></label>';
       }
 
-      document.documentElement.appendChild(fragmentFromString('<aside id="share-resource" class="do on">' + DO.C.Button.Close + '<h2>Share resource</h2><div id="share-resource-input"><p>Send a notification about <code>' + iri +'</code></p><ul><li id="share-resource-address-book"></li>' + shareResourceLinkedResearch + '<li><label for="share-resource-to">To</label> <textarea id="share-resource-to" rows="2" cols="40" name="share-resource-to" placeholder="WebID or article IRI (one per line)"></textarea></li><li><label for="share-resource-note">Note</label> <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea></li></ul></div><button class="share" title="Share resource">Share</button></aside>'));
+      var shareResourceHTML = `
+        <aside id="share-resource" class="do on">${DO.C.Button.Close}
+          <h2>Share</h2>
+
+          <div id="share-resource-share-url">
+            <h3>Share URL</h3>
+
+            <label for="share-resource-clipboard">Copy URL to clipboard</label>
+            <input id="share-resource-clipboard" name="share-resource-clipboard" readonly="readonly" type="text" value="${iri}" /><button class="do copy-to-clipboard" title="Copy to clipboard">${Icon[".fas.fa-copy"]}</button>
+          </div>
+
+          <div id="share-resource-agents">
+            <h3>Share with contacts</h3>
+
+            <ul>
+              <li id="share-resource-address-book">
+              </li>
+            </ul>
+
+            <label for="share-resource-note">Note</label>
+            <textarea id="share-resource-note" rows="2" cols="40" name="share-resource-note" placeholder="Check this out!"></textarea>
+
+            <button class="share" id="share-resource-agents-button" title="Share resource">Share</button>
+          </div>
+
+          <div id="share-resource-external">${shareResourceLinkedResearch}</div>
+        </aside>
+      `;
+
+      document.documentElement.appendChild(fragmentFromString(shareResourceHTML));
+
+      var clipboardInput = document.querySelector('#share-resource-clipboard');
+      var clipboardButton = document.querySelector('#share-resource-clipboard + button.copy-to-clipboard');
+      setCopyToClipboard(clipboardInput, clipboardButton);
+
+      clipboardInput.addEventListener('focus', e => {
+        var input = e.target.closest('input');
+        if (input) {
+          input.selectionStart = 0;
+          input.selectionEnd = input.value.length;
+        }
+      });
 
       var li = document.getElementById('share-resource-address-book');
+      li.insertAdjacentHTML('beforeend', Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]);
 
-      if (DO.C.User.Contacts && Object.keys(DO.C.User.Contacts).length > 0) {
         DO.U.selectContacts(li, DO.C.User.IRI);
-      }
-      else {
-        li.insertAdjacentHTML('beforeend', '<button class="add"' + addContactsButtonDisable + ' title="Add and select contacts from your profile">' + Icon[".far.fa-address-book"] + ' Add from contacts</button>' + noContactsText);
+
+      var hasAccessModeControl = accessModeAllowed(documentURL, 'control');
+      if (hasAccessModeControl) {
+        var h2 = document.querySelector('#share-resource h2');
+        
+        var shareResourcePermissions = `
+          <div id="share-resource-permissions">
+            <h3>Permissions</h3>
+
+            <span class="progress">${Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]} Checking access permissions.</span>
+
+            <ul>
+            </ul>
+
+            <div id="autocomplete">
+              <label for="share-resource-search-contacts">Add contacts</label>
+              <input id="share-resource-search-contacts" name="share-resource-search-contacts" placeholder="Search contacts or enter WebID" type="text" value="" />
+              <ul id="suggestions">
+              </div>
+          </div>`;
+        h2.insertAdjacentHTML('afterend', shareResourcePermissions);
+
+        var accessPermissionsNode = document.getElementById('share-resource-permissions');
+        var accessPermissionFetchingIndicator = accessPermissionsNode.querySelector('.progress');
+
+        getACLResourceGraph(documentURL)
+          .catch(e => {
+            accessPermissionsNode.removeChild(accessPermissionFetchingIndicator);
+
+            console.log('XXX: Cannot access effectiveACLResource', e);
+
+            //TODO: Try again? Allow user to trigger retry?
+          })
+          .then(aclResourceGraph => {
+            accessPermissionsNode.removeChild(accessPermissionFetchingIndicator);
+
+            DO.C.Resource[documentURL]['effectiveACLResourceGraph'] = aclResourceGraph;
+
+            const { defaultACLResource, effectiveACLResource, effectiveContainer } = DO.C.Resource[documentURL].acl;
+            const hasOwnACLResource = defaultACLResource == effectiveACLResource;
+
+            var matchers = {};
+
+            if (hasOwnACLResource) {
+              matchers['accessTo'] = documentURL;
+            }
+            else {
+              matchers['default'] = effectiveContainer;
+            }
+
+            var authorizations = getAuthorizationsMatching(aclResourceGraph, matchers);
+// console.log(authorizations)
+            const subjectsWithAccess = getAccessSubjects(authorizations);
+// console.log(subjectsWithAccess)
+
+            const input = document.getElementById('share-resource-search-contacts');
+            const suggestions = document.querySelector('#suggestions');
+
+            input.addEventListener('input', function(e) {
+              const query = e.target.value.trim().toLowerCase();
+              //TODO: Change innerHTML
+              suggestions.innerHTML = '';
+              if (query.length) {
+                const filteredContacts = Object.keys(DO.C.User.Contacts).filter((contact) => {
+                  //Only users who are not in the authorizations
+                  const matchesQuery = (
+                    DO.C.User.Contacts[contact].Name?.toLowerCase().includes(query) ||
+                    DO.C.User.Contacts[contact].IRI?.toLowerCase().includes(query) ||
+                    DO.C.User.Contacts[contact].URL?.toLowerCase().includes(query)
+                    );
+
+                    return !Object.keys(subjectsWithAccess).includes(contact) && matchesQuery;
+                });
+
+                filteredContacts.forEach(contact => {
+                  const suggestion = document.createElement('li');
+
+                  var name = DO.C.User.Contacts[contact].Name || DO.C.User.Contacts[contact].IRI;
+                  var img = DO.C.User.Contacts[contact].Image;
+                  if (!(img && img.length > 0)) {
+                    img = generateDataURI('image/svg+xml', 'base64', Icon['.fas.fa-user-secret']);
+                  }
+                  img = '<img alt="" height="32" src="' + img + '" width="32" />';
+
+                  suggestion.insertAdjacentHTML('beforeend', img + '<span title="' + DO.C.User.Contacts[contact].IRI + '">' + name + '</span>');
+
+                  var ul = document.querySelector('#share-resource-permissions ul');
+
+                  suggestion.addEventListener('click', function() {
+                    DO.U.addAccessSubjectItem(ul, DO.C.User.Contacts[contact].Graph, contact);
+                    var li = document.getElementById('share-resource-access-subject-' + encodeURIComponent(contact));
+                    var options = {};
+                    options['accessContext'] = 'Share';
+                    options['selectedAccessMode'] = DO.C.Vocab['aclRead']['@id'];
+                    DO.U.showAccessModeSelection(li, '', authorizations, contact, 'agent', options);
+
+                    //TODO: Change from innerHTML
+                    suggestions.innerHTML = '';
+                    input.value = '';
+                  });
+
+                  //TODO: Hanlde manual input - "add" button + enter
+
+                  suggestions.appendChild(suggestion);
+                })
+              }
+            });
+
+            //TODO: Click outside of the suggestions to close container?
+
+            // document.addEventListener('click', function(e) {
+            //   if (!document.querySelector('#suggestions').contains(e.target)) {
+            //     TODO: Change from innerHTML
+            //     suggestions.innerHTML = '';
+            //   }
+            // });
+
+            //Allowing only Share-related access modes.
+            var accessContext = DO.C.AccessContext['Share'];
+  
+            const accessContextModes = Object.keys(accessContext);
+    
+            var ul = document.querySelector('#share-resource-permissions ul');
+
+            var showPermissions = function(s, accessSubject) {
+              if (accessSubject != DO.C.User.IRI) {
+                DO.U.addAccessSubjectItem(ul, s, accessSubject);
+
+                //XXX: Relies on knowledge in addAcessSubjectItem where it inserts li with a particular id
+                var li = document.getElementById('share-resource-access-subject-' + encodeURIComponent(accessSubject));
+
+                var verifiedAccessModes = [];
+
+                Object.keys(authorizations).forEach(authorization => {
+                  var authorizationModes = authorizations[authorization].mode;
+                  if (authorizations[authorization].agent.includes(accessSubject) || authorizations[authorization].agentGroup.includes(accessSubject)) {
+                    authorizationModes.forEach(grantedMode => {
+                      if (accessContextModes.includes(grantedMode)) {
+                        verifiedAccessModes.push(grantedMode);
+                      }
+                    });
+                  }
+                })
+// console.log(verifiedAccessModes)
+          
+                const selectedAccessMode = 
+                  (verifiedAccessModes.includes(DO.C.Vocab['aclControl']['@id']) && DO.C.Vocab['aclControl']['@id']) ||
+                  (verifiedAccessModes.includes(DO.C.Vocab['aclWrite']['@id']) && DO.C.Vocab['aclWrite']['@id']) ||
+                  (verifiedAccessModes.includes(DO.C.Vocab['aclRead']['@id']) && DO.C.Vocab['aclRead']['@id']) ||
+                  '';
+
+                var options = options || {};
+                options['accessContext'] = 'Share';
+                options['selectedAccessMode'] = selectedAccessMode;
+// console.log(options)
+                DO.U.showAccessModeSelection(li, '', authorizations, accessSubject, subjectsWithAccess[accessSubject]['subjectType'], options);
+              }
+            }
+
+            Object.keys(subjectsWithAccess).forEach(accessSubject => {
+              if (accessSubject === DO.C.Vocab['foafAgent']['@id'] || accessSubject === DO.C.User.IRI) {
+                return;
+              }
+
+              //Gets some information about the accessSubject that can be displayed besides their URI.
+              getResourceGraph(accessSubject)
+                .catch(e => {
+                  console.log(e);
+                  //TODO: If we can't fetch the accessSubject, we should still be able to add them to the ul
+                  showPermissions(null, accessSubject);
+                })
+                .then(g => {
+                  if (typeof g._graph === 'undefined') {
+                    showPermissions(null, accessSubject);
+                  }
+                  var s = g.child(accessSubject);
+                  //TODO: For now we only list others with access and omit current user with control. Transfer ownership.
+                  showPermissions(s, accessSubject);
+                })
+            })
+        });
       }
 
       var shareResource = document.getElementById('share-resource');
@@ -4348,17 +4602,23 @@ console.log(reason);
           }
         }
 
-        if (DO.C.User.IRI && e.target.closest('button.add')) {
-          e.preventDefault();
-          e.stopPropagation();
-          var li = e.target.closest('li');
-          li.insertAdjacentHTML('beforeend', Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]);
-          DO.U.selectContacts(li, DO.C.User.IRI);
-        }
-
+        // if (DO.C.User.IRI && e.target.closest('button.add')) {
+          // e.preventDefault();
+          // e.stopPropagation();
+          // var li = e.target.closest('li');
+          // var li = document.querySelector('#share-resource-address-book');
+          // li.insertAdjacentHTML('beforeend', Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]);
+          // DO.U.selectContacts(li, DO.C.User.IRI);
+        // }
+      
         if (e.target.closest('button.share')) {
-          var tos = document.querySelector('#share-resource #share-resource-to').value.trim();
-          tos = (tos.length > 0) ? tos.split(/\r\n|\r|\n/) : [];
+          var tos = [];
+          var resourceTo = document.querySelector('#share-resource #share-resource-to');
+          if (resourceTo) {
+            resourceTo = resourceTo.value.trim();
+            tos = (resourceTo.length > 0) ? resourceTo.split(/\r\n|\r|\n/) : [];
+          }
+
           var note = document.querySelector('#share-resource #share-resource-note').value.trim();
 
           var ps = document.querySelectorAll('#share-resource-contacts .progress');
@@ -4378,6 +4638,16 @@ console.log(reason);
             }
           }
 
+          var rm = shareResource.querySelector('.response-message');
+          if (rm) {
+            rm.parentNode.removeChild(rm);
+          }
+          shareResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>');
+
+          return sendNotifications(tos, note, iri, shareResource)
+        }
+      });
+    },
 
     //TODO: Revisit this function and addShareResourceContactInput to generalise.
     addAccessSubjectItem: function(node, s, url) {
