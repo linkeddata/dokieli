@@ -4378,6 +4378,26 @@ console.log(reason);
             }
           }
 
+
+    //TODO: Revisit this function and addShareResourceContactInput to generalise.
+    addAccessSubjectItem: function(node, s, url) {
+      var iri = s?.iri().toString() || url;
+// console.log(iri.toString());
+
+      var id = encodeURIComponent(iri);
+      var name = getAgentName(s) || iri;
+      var img = getGraphImage(s);
+      if (!(img && img.length > 0)) {
+        img = generateDataURI('image/svg+xml', 'base64', Icon['.fas.fa-user-secret']);
+      }
+      img = '<img alt="" height="32" src="' + img + '" width="32" />';
+
+      var input = '<li id="share-resource-access-subject-' + id + '">' + img + '<a href="' + iri + '" target="_blank">' + name + '</a></li>';
+
+      node.insertAdjacentHTML('beforeend', input);
+    },
+
+
     showAccessModeSelection: function(node, id, authorizations, accessSubject, subjectType, options) {
       id = id || generateAttributeId('select-access-mode-');
       options = options || {};
