@@ -4393,6 +4393,136 @@ console.log(reason);
       });
     },
 
+    updateAuthorization: function(authorizations, accessContext, selectedMode, accessSubject, subjectType) {
+      var documentURL = currentLocation();
+
+      const { defaultACLResource, effectiveACLResource } = DO.C.Resource[documentURL].acl;
+      const hasOwnACLResource = defaultACLResource == effectiveACLResource;
+      const patchACLResource = defaultACLResource;
+
+      // var accessContextModes = Object.keys(DO.C.AccessContext[accessContext]);
+      // TODO: Append is not used in DO.C.AccessContext.Share unless for example the current document has an oa:annotationService and append access can be given to some agents, then Append-only can be dynamically added. (Doublecheck if dokieli loads annotations directly off annotationService or if relies on inbox to discover annotations.)
+
+      var insertGraph = '';
+      var deleteGraph = '';
+      // var whereGraph = '';
+      var authorizationSubject;
+
+      var patches = [];
+
+      //If the effective ACL resource of a resource its associated ACL resource (200), update (delete + insert) authorizations on the associated ACL resource.
+      //If the effective ACL resource of a resource is inherited from a container's ACL resource (404 on the associated ACL resource), update the resource's associated ACL resource.
+
+      if (hasOwnACLResource) {
+        Object.keys(authorizations).forEach(authorization => {
+          if (authorizations[authorization][subjectType].includes(accessSubject)) {
+            var multipleAccessSubjects = (authorizations[authorization][subjectType].length > 1) ? true : false;
+            var deleteAccessObjectProperty = (hasOwnACLResource) ? 'accessTo' : 'default';
+  
+            var deleteAccessSubjectProperty = subjectType;
+            var deleteAccessSubject = accessSubject;
+  
+            var accessModes = authorizations[authorization].mode;
+            var deleteAccessModes = '<' + accessModes.join('>, <') + '>';
+
+            if (!multipleAccessSubjects) {
+              deleteGraph += `
+<${authorization}>
+  a acl:Authorization ;
+  acl:${deleteAccessObjectProperty} <${documentURL}> ;
+  acl:mode ${deleteAccessModes} ;
+  acl:${deleteAccessSubjectProperty} <${deleteAccessSubject}> .
+`;
+            }
+            else {
+                deleteGraph += `
+<${authorization}>
+  acl:${deleteAccessSubjectProperty} <${deleteAccessSubject}> .
+`;
+            }
+
+            patches.push({ 'delete': deleteGraph });
+          }
+       })
+
+       if (selectedMode.length) {
+        authorizationSubject = '#' + generateAttributeId();
+
+        insertGraph += `
+  <${authorizationSubject}>
+    a acl:Authorization ;
+    acl:accessTo <${documentURL}> ;
+    acl:mode <${selectedMode}> ;
+    acl:${subjectType} <${accessSubject}> .
+  `;
+
+        patches.push({ 'insert': insertGraph });
+       }
+      }
+      else {
+        var updatedAuthorizations = structuredClone(authorizations); 
+        var authorizationsToDelete = [];
+
+        Object.keys(updatedAuthorizations).forEach(authorization => {
+          if (updatedAuthorizations[authorization][subjectType].includes(accessSubject)) {
+            var updatedMode;
+
+            if (selectedMode.length) {
+              authorizationsToDelete.push(authorization);
+            }
+            else {
+              switch (selectedMode) {
+                case DO.C.Vocab['aclRead']['@id']:
+                  updatedMode = [DO.C.Vocab['aclRead']['@id']];
+                  break;
+                case DO.C.Vocab['aclWrite']['@id']:
+                  updatedMode = [DO.C.Vocab['aclRead']['@id'], DO.C.Vocab['aclWrite']['@id']];
+                  break;
+                case DO.C.Vocab['aclControl']['@id']:
+                  updatedMode = [DO.C.Vocab['aclRead']['@id'], DO.C.Vocab['aclWrite'], DO.C.Vocab['aclControl']['@id']];
+                  break;
+              }
+
+              updatedAuthorizations[authorization].mode = updatedMode;
+            }
+          }
+        });
+
+        authorizationsToDelete.forEach(authorization => {
+          delete updatedAuthorizations[authorization];
+        });
+
+        //XXX: updatedAuthorizations may have different authorization objects with the same properties and values. This is essentially just duplicate authorization rules.
+
+        insertGraph = '';
+        Object.keys(updatedAuthorizations).forEach(authorization => {
+          authorizationSubject = '#' + generateAttributeId();
+
+          //TODO: Copy over all properties of Authorization, e.g., here may be labels or other stuff that's okay to persist in the aclResource that's to be created.
+          var additionalProperties = [];
+          ['agent', 'agentClass', 'agentGroup', 'origin'].forEach(key => {
+            if (updatedAuthorizations[authorization][key] && updatedAuthorizations[authorization][key].length) {
+              additionalProperties.push(`  acl:${key} <${updatedAuthorizations[authorization][key].join('>, <')}>`);
+            }
+          })
+          additionalProperties = additionalProperties.join(';\n');
+
+          insertGraph += `
+<${authorizationSubject}>
+  a acl:Authorization ;
+  acl:accessTo <${documentURL}> ;
+  acl:mode <${updatedAuthorizations[authorization].mode.join('>, <')}> ;
+  ${additionalProperties} .
+`;
+        });
+
+        patches.push({ 'insert': insertGraph });
+      }
+
+
+      return patchResourceWithAcceptPatch(patchACLResource, patches);
+    },
+
     selectContacts: function(node, url) {
       node.innerHTML = '<ul id="share-resource-contacts"></ul>';
       var shareResourceNode = document.getElementById('share-resource-contacts');
