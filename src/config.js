@@ -408,9 +408,9 @@ export default {
 
   AccessContext: {
     Share: {
-      'Read': 'Viewer',
-      'Write': 'Editor',
-      'Control': 'Owner'
+      'http://www.w3.org/ns/auth/acl#Read': 'Viewer',
+      'http://www.w3.org/ns/auth/acl#Write': 'Editor',
+      'http://www.w3.org/ns/auth/acl#Control': 'Owner'
     }
   },
 
@@ -594,8 +594,11 @@ export default {
     "aclaccessTo": {"@id": "http://www.w3.org/ns/auth/acl#accessTo", "@type": "@id", "@array": true },
     "acldefault": {"@id": "http://www.w3.org/ns/auth/acl#default", "@type": "@id", "@array": true },
     "aclagent": {"@id": "http://www.w3.org/ns/auth/acl#agent", "@type": "@id", "@array": true },
+    "aclagentClass": {"@id": "http://www.w3.org/ns/auth/acl#agentClass", "@type": "@id", "@array": true },
+    "aclagentGroup": {"@id": "http://www.w3.org/ns/auth/acl#agentGroup", "@type": "@id", "@array": true },
     "aclmode": {"@id": "http://www.w3.org/ns/auth/acl#mode", "@type": "@id", "@array": true },
     "acldelegates" : { "@id": "http://www.w3.org/ns/auth/acl#delegates", "@type": "@id", "@array": true },
+    "aclorigin" : { "@id": "http://www.w3.org/ns/auth/acl#origin", "@type": "@id", "@array": true },
 
     "solidpreferredProxy": "http://www.w3.org/ns/solid/terms#preferredProxy",
     "solidpreferredPolicy": { "@id": "http://www.w3.org/ns/solid/terms#preferredPolicy", "@type": "@id" },
