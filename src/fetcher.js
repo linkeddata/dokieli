@@ -382,13 +382,15 @@ function patchResourceGraph (url, patches, options = {}) {
 
     case 'text/n3':
     default :
+      var patchId = '_:' + generateUUID();
+      data += `${patchId} a solid:InsertDeletePatch .\n`;
+      var deletes = '';
       patches.forEach(function(patch){
-        var patchId = '_:' + generateUUID();
-
-        data += `${patchId} a solid:InsertDeletePatch .\n`;
-
         if (patch.delete) {
-          data += `${patchId} solid:deletes {\n${patch.delete}\n} .\n`;
+          if (!deletes.length) {
+            deletes += `${patchId} solid:deletes {`
+          }
+          deletes += `${patch.delete}\n`;
         }
         if (patch.insert) {
           data += `${patchId} solid:inserts {\n${patch.insert}\n} .\n`;
@@ -398,9 +400,14 @@ function patchResourceGraph (url, patches, options = {}) {
         }
       });
 
+      if (deletes.length) {
+        data += deletes + '} .';
+      }
+
       break
   }
 
+ 
   return patchResource (url, data, options);
 }
 
