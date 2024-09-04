@@ -4409,96 +4409,28 @@ console.log(reason);
       }
     },
 
-    updateContactsInfo: function(url, options) {
+    updateContactsInfo: function(url, node, options) {
       options = options || {};
 
       return getUserContacts(url).then(
         function(contacts) {
           if(contacts.length > 0) {
-            var promises = [];
-
-            //Get Contacts' profile
-            var gC = function(url) {
-              return getResourceGraph(url).then(i => {
-                // console.log(i);
-                var s = i.child(url);
-
-                //Keep a local copy
-                DO.C.User.Contacts[url] = {};
-                DO.C.User.Contacts[url]['Graph'] = s;
-
-                var uCA = function(url, s) {
-                  var outbox = DO.C.User.Contacts[url]['Outbox'] = getAgentOutbox(s);
-                  var storage = DO.C.User.Contacts[url]['Storage'] = getAgentStorage(s);
-                  if ('showActivitiesSources' in options) {
-                    if (storage && storage.length > 0) {
-                      if(outbox && outbox.length > 0) {
-                        if(storage[0] == outbox[0]) {
-                          DO.U.showActivitiesSources(outbox[0])
-                        }
-                        else {
-                          DO.U.showActivitiesSources(storage[0])
-                          DO.U.showActivitiesSources(outbox[0])
-                        }
-                      }
-                      else {
-                        DO.U.showActivitiesSources(storage[0])
-                      }
-                    }
-                    else if (outbox && outbox.length > 0) {
-                      DO.U.showActivitiesSources(outbox[0])
-                    }
-                  }
-                  return Promise.resolve();
-                }
-
-                var uCI = function(url, s) {
-                  return DO.U.updateContactsInbox(url, s)
-                    .then(() => {
-                      if ('addShareResourceContactInput' in options) {
-                        DO.U.addShareResourceContactInput(options.addShareResourceContactInput, s);
-                      }
-                      return Promise.resolve();
-                    })
-                    .catch(() => {})
-                }
-
-                //XXX: Holy crap this is fugly.
-                if ('showActivitiesSources' in options) {
-                  uCI(url, s);
-                  return uCA(url, s)
-                }
-                else if ('addShareResourceContactInput' in options && DO.C.User.IRI !== url) {
-                  uCA(url, s)
-                  return uCI(url, s)
-                }
-
-              }).catch(err => {
-// console.log(err)
-                return Promise.resolve();
-              });
-            }
-
             contacts.forEach(function(url) {
-              promises.push(gC(url))
+              getSubjectInfo(url).then(subject => {
+                DO.C.User.Contacts[url] = subject;
+
+                DO.U.addShareResourceContactInput(node, subject.Graph);
+              });
             });
 
-            DO.C.User['ContactsOutboxChecked'] = true;
-
-            return Promise.all(promises)
+            // return Promise.all(promises)
           }
           else {
-            if ('addShareResourceContactInput' in options) {
-              options.addShareResourceContactInput.innerHTML = 'No contacts with ' + Icon[".fas.fa-inbox"] + ' inbox found in your profile, but you can enter contacts individually:';
-            }
-
-            return Promise.resolve()
+            node.innerHTML = 'No contacts with ' + Icon[".fas.fa-inbox"] + ' inbox found in your profile, but you can enter contacts individually:';
           }
-        },
-        function(reason) {
-console.log(reason);
-        }
-      )
+
+          return Promise.resolve();
+        });
     },
 
     addShareResourceContactInput: function(node, s) {
