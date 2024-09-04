@@ -5,7 +5,7 @@ import { deleteResource } from './fetcher.js'
 import { removeChildren, fragmentFromString } from './util.js'
 import { getAgentHTML, showActionMessage, showGeneralMessages, getResourceSupplementalInfo, updateDocumentDoButtonStates, updateFeatureStatesOfResourceInfo } from './doc.js'
 import { Icon } from './template.js'
-import { getResourceGraph, getAgentName, getGraphImage, getAgentURL, getAgentPreferredProxy, getAgentPreferredPolicy, getAgentPreferredPolicyRule, setPreferredPolicyInfo, getAgentDelegates, getAgentKnows, getAgentFollowing, getAgentStorage, getAgentOutbox, getAgentInbox, getAgentPreferencesFile, getAgentPublicTypeIndex, getAgentPrivateTypeIndex, getAgentTypeIndex, getAgentSupplementalInfo, getAgentSeeAlso, getAgentPreferencesInfo, getAgentOccupations } from './graph.js'
+import { constructGraph, getResourceGraph, getAgentName, getGraphImage, getAgentURL, getAgentPreferredProxy, getAgentPreferredPolicy, getAgentPreferredPolicyRule, setPreferredPolicyInfo, getAgentDelegates, getAgentKnows, getAgentFollowing, getAgentStorage, getAgentOutbox, getAgentInbox, getAgentPreferencesFile, getAgentPublicTypeIndex, getAgentPrivateTypeIndex, getAgentTypeIndex, getAgentSupplementalInfo, getAgentSeeAlso, getAgentPreferencesInfo, getAgentOccupations } from './graph.js'
 import { removeLocalStorageProfile, updateLocalStorageProfile } from './storage.js'
 import solidAuth, { logout, popupLogin } from 'solid-auth-client'
 
@@ -22,7 +22,7 @@ async function showUserSigninSignout (node) {
   var webId = session ? session.webId : null;
   // was LoggedId with new OIDC WebID
   if (webId && (webId != Config.User.IRI || !Config.User.IRI)) {
-     await setUserInfo(webId, true)
+     await setUserInfo(webId, { oidc: true })
           .then(() => {
             afterSignIn()
           })
@@ -190,7 +190,7 @@ function submitSignIn (url) {
     return Promise.resolve()
   }
 
-  return setUserInfo(url, false)
+  return setUserInfo(url, { oidc: false })
     .then(() => {
       var uI = document.getElementById('user-info')
       if (uI) {
@@ -217,7 +217,7 @@ function submitSignInOIDC (url) {
       .then((session) => {
          if (session && session.webId) {
            console.log("Connected:", session.webId);
-           setUserInfo(session.webId, true)
+           setUserInfo(session.webId, { oidc: true })
             .then(() => {
               var uI = document.getElementById('user-info')
               if (uI) {
@@ -239,53 +239,77 @@ function submitSignInOIDC (url) {
   }
 }
 
+function setUserInfo (subjectIRI, options = {}) {
+  options.role = Config.User.Role;
+  options.ui = Config.User.UI;
+
+  return getSubjectInfo(subjectIRI, options).then(subject => {
+    Object.keys(subject).forEach((key) => {
+      Config.User[key] = subject[key];
+    })
+  });
+}
+
+function setContactInfo(subjectIRI, options = {}) {
+  return getSubjectInfo(subjectIRI, options).then(subject => {
+    Config.User['Contacts'] = Config.User.Contacts || {};
+    Config.User.Contacts[subjectIRI] = subject;
+  });
+}
+
+
 /**
- * @param userIRI {string}
+ * @param subjectIRI {string}
  *
  * @returns {Promise}
  */
-function setUserInfo (userIRI, oidc) {
-  if (!userIRI) {
-    return Promise.reject(new Error('Could not set user info - no user IRI'))
+function getSubjectInfo (subjectIRI, options = {}) {
+  if (!subjectIRI) {
+    return Promise.reject(new Error('Could not set subject info - no subject IRI'));
   }
 
-  var options = { 'noCredentials': true }
+  options['noCredentials'] = true;
 
-  return getResourceGraph(userIRI, {}, options)
+  return getResourceGraph(subjectIRI, options)
     .then(g => {
-      var s = g.child(userIRI)
+      var s;
 
-      Config.User.Graph = s
-      Config.User.IRI = userIRI
-      Config.User.Name = getAgentName(s)
-      Config.User.Image = getGraphImage(s)
-      Config.User.URL = getAgentURL(s)
-      Config.User.OIDC = oidc ? true : false;
+      //TODO: Consider whether to construct an empty graph (useful to work only with their IRI);
+      // s = constructGraph(Config.Vocab, subjectIRI);
 
-      Config.User.ProxyURL = getAgentPreferredProxy(s)
-      Config.User.PreferredPolicy = getAgentPreferredPolicy(s)
+      if (typeof g._graph === 'undefined') {
+        return {};
+      }
 
-      Config.User.Delegates = getAgentDelegates(s)
+      s = g.child(subjectIRI);
 
-      Config.User.Contacts = {}
-      Config.User.Knows = getAgentKnows(s)
-      Config.User.Following = getAgentFollowing(s)
-      Config.User.SameAs = []
-      Config.User.SeeAlso = []
-
-      Config.User.Storage = getAgentStorage(s)
-      Config.User.Outbox = getAgentOutbox(s)
-      Config.User.Inbox = getAgentInbox(s)
-      Config.User.TypeIndex = {}
-
-      Config.User.PreferencesFile = getAgentPreferencesFile(s)
-      Config.User.PublicTypeIndex = getAgentPublicTypeIndex(s)
-      Config.User.PrivateTypeIndex = getAgentPrivateTypeIndex(s)
-
-      Config.User.Occupations = getAgentOccupations(s)
-
-      return Config.User
-    })
+      return {
+        Graph: s,
+        IRI: subjectIRI,
+        Name: getAgentName(s),
+        Image: getGraphImage(s),
+        URL: getAgentURL(s),
+        Role: options.role,
+        UI: options.ui,
+        OIDC: !!options.oidc,
+        ProxyURL: getAgentPreferredProxy(s),
+        PreferredPolicy: getAgentPreferredPolicy(s),
+        Delegates: getAgentDelegates(s),
+        Contacts: {},
+        Knows: getAgentKnows(s),
+        Following: getAgentFollowing(s),
+        SameAs: [],
+        SeeAlso: [],
+        Storage: getAgentStorage(s),
+        Outbox: getAgentOutbox(s),
+        Inbox: getAgentInbox(s),
+        TypeIndex: {},
+        PreferencesFile: getAgentPreferencesFile(s),
+        PublicTypeIndex: getAgentPublicTypeIndex(s),
+        PrivateTypeIndex: getAgentPrivateTypeIndex(s),
+        Occupations: getAgentOccupations(s)
+      }
+    });
 }
 
 function afterSignIn () {
@@ -368,7 +392,9 @@ export {
   afterSignIn,
   enableDisableButton,
   getUserSignedInHTML,
+  getSubjectInfo,
   setUserInfo,
+  setContactInfo,
   showUserIdentityInput,
   showUserSigninSignout,
   submitSignIn,
