@@ -4506,6 +4506,19 @@ console.log(reason);
                     options['selectedAccessMode'] = DO.C.Vocab['aclRead']['@id'];
                     DO.U.showAccessModeSelection(li, '', authorizations, contact, 'agent', options);
 
+                    var select = document.querySelector('[id="' + li.id + '"] select');
+                    select.disabled = true;
+                    select.insertAdjacentHTML('afterend', `<span class="progress">${Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]}</span>`);
+                    
+                    DO.U.updateAuthorization(authorizations, options.accessContext, options.selectedAccessMode, contact, 'agent')
+                      .catch(error => {
+                        //TODO
+                      })
+                      .then(response => {
+                        //fugly
+                        DO.U.refreshAuthorization(select);
+                      });
+
                     //TODO: Change from innerHTML
                     suggestions.innerHTML = '';
                     input.value = '';
@@ -4695,56 +4708,65 @@ console.log(reason);
             })
             .then(response => {
 // console.log(response)
-
-                //TODO: Doublecheck sendNotifications and the input checkboxes etc it is trying to deal with.
-                // var tos = [accessSubject];
-                // var note = `Your access to ${documentURL} has changed to ${DO.C.AccessContext[options.accessContext][selectedMode]}.`;
-                // var shareResource = document.getElementById('share-resource');
-                // var rm = shareResource.querySelector('.response-message');
-                // if (rm) {
-                //   rm.parentNode.removeChild(rm);
-                // }
-                // shareResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>');
-                // sendNotifications(tos, note, documentURL, shareResource);
-
-                var headers;
-                var options = {
-                  noCache: true
-                };
-
-                var accessPermissionFetchingIndicator = document.querySelector('[id="' + e.target.id + '"] + .progress');
-
-                getACLResourceGraph(documentURL, headers, options)
-                  .catch(error => {
-                    e.target.parentNode.removeChild(accessPermissionFetchingIndicator);
-                  })
-                  .then(aclResourceGraph => {
-                    DO.C.Resource[documentURL]['effectiveACLResourceGraph'] = aclResourceGraph;
-
-                    const { defaultACLResource, effectiveACLResource, effectiveContainer } = DO.C.Resource[documentURL].acl;
-                    const hasOwnACLResource = defaultACLResource == effectiveACLResource;
-        
-                    var matchers = {};
-        
-                    if (hasOwnACLResource) {
-                      matchers['accessTo'] = documentURL;
-                    }
-                    else {
-                      matchers['default'] = effectiveContainer;
-                    }
-
-                    authorizations = getAuthorizationsMatching(aclResourceGraph, matchers);
-
-                    e.target.disabled = false;
-                    e.target.parentNode.removeChild(accessPermissionFetchingIndicator);
-                  })
-              });
-
+              DO.U.refreshAuthorization(e.target);
+            });
         }
         else {
           //TODO: Naughty
         }
       });
+    },
+
+    removeProgressIndicator(node) {
+      var progress = document.querySelector('[id="' + node.id + '"] + .progress');
+
+      node.disabled = false;
+      node.parentNode.removeChild(progress);
+    },
+
+    refreshAuthorization: function(node) {
+      var iri = currentLocation();
+      const documentURL = stripFragmentFromString(iri);
+
+      //TODO: Doublecheck sendNotifications and the input checkboxes etc it is trying to deal with.
+      // var tos = [accessSubject];
+      // var note = `Your access to ${documentURL} has changed to ${DO.C.AccessContext[options.accessContext][selectedMode]}.`;
+      // var shareResource = document.getElementById('share-resource');
+      // var rm = shareResource.querySelector('.response-message');
+      // if (rm) {
+      //   rm.parentNode.removeChild(rm);
+      // }
+      // shareResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>');
+      // sendNotifications(tos, note, documentURL, shareResource);
+
+      var headers;
+      var options = {
+        noCache: true
+      };
+
+      getACLResourceGraph(documentURL, headers, options)
+        .catch(error => {
+          DO.U.removeProgressIndicator(node);
+        })
+        .then(aclResourceGraph => {
+          DO.C.Resource[documentURL]['effectiveACLResourceGraph'] = aclResourceGraph;
+
+          const { defaultACLResource, effectiveACLResource, effectiveContainer } = DO.C.Resource[documentURL].acl;
+          const hasOwnACLResource = defaultACLResource == effectiveACLResource;
+
+          var matchers = {};
+
+          if (hasOwnACLResource) {
+            matchers['accessTo'] = documentURL;
+          }
+          else {
+            matchers['default'] = effectiveContainer;
+          }
+
+          var authorizations = getAuthorizationsMatching(aclResourceGraph, matchers);
+
+          DO.U.removeProgressIndicator(node);
+        });
     },
 
     updateAuthorization: function(authorizations, accessContext, selectedMode, accessSubject, subjectType) {
@@ -4872,7 +4894,6 @@ console.log(reason);
 
         patches.push({ 'insert': insertGraph });
       }
-
 
       return patchResourceWithAcceptPatch(patchACLResource, patches);
     },
