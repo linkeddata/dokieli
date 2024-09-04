@@ -4394,7 +4394,7 @@ console.log(reason);
     },
 
     selectContacts: function(node, url) {
-      node.innerHTML = '<p>Select from contacts</p><ul id="share-resource-contacts"></ul>';
+      node.innerHTML = '<ul id="share-resource-contacts"></ul>';
       var shareResourceNode = document.getElementById('share-resource-contacts');
 
       if (DO.C.User.Contacts && Object.keys(DO.C.User.Contacts).length > 0){
@@ -4405,7 +4405,7 @@ console.log(reason);
         });
       }
       else {
-        DO.U.updateContactsInfo(url, {'addShareResourceContactInput': shareResourceNode});
+        DO.U.updateContactsInfo(url, shareResourceNode);
       }
     },
 
