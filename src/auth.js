@@ -277,7 +277,7 @@ function getSubjectInfo (subjectIRI, options = {}) {
       //TODO: Consider whether to construct an empty graph (useful to work only with their IRI);
       // s = constructGraph(Config.Vocab, subjectIRI);
 
-      if (typeof g._graph === 'undefined') {
+      if (typeof g?._graph === 'undefined') {
         return {};
       }
 
