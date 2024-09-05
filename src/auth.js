@@ -265,7 +265,10 @@ function setContactInfo(subjectIRI, options = {}) {
  */
 function getSubjectInfo (subjectIRI, options = {}) {
   if (!subjectIRI) {
-    return Promise.reject(new Error('Could not set subject info - no subject IRI'));
+    return Promise.reject(new Error('Could not set subject info - no subjectIRI'));
+  }
+  else if (!subjectIRI.toLowerCase().startsWith('http:') && !(subjectIRI.toLowerCase().startsWith('https:'))) {
+    return Promise.reject(new Error('Could not set subject info - subjectIRI is not `http(s):`'));
   }
 
   var headers = {};
