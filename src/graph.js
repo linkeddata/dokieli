@@ -666,6 +666,8 @@ function getAgentSupplementalInfo(iri) {
         var outbox = getAgentOutbox(s) || [];
         var knows = getAgentKnows(s) || [];
         var occupations = getAgentOccupations(s) || [];
+        var publications = getAgentPublications(s) || [];
+        var made = getAgentMade(s) || [];
         //TODO publicTypeIndex privateTypeIndex ??
 
         if (storage.length > 0) {
@@ -690,6 +692,18 @@ function getAgentSupplementalInfo(iri) {
           Config.User.Occupations = (Config.User.Occupations)
             ? uniqueArray(Config.User.Occupations.concat(occupations))
             : occupations;
+        }
+
+        if (publications.length > 0) {
+          Config.User.Publications = (Config.User.Publications)
+            ? uniqueArray(Config.User.Publications.concat(publications))
+            : occupations;
+        }
+
+        if (made.length > 0) {
+          Config.User.Made = (Config.User.Made)
+            ? uniqueArray(Config.User.Made.concat(made))
+            : made;
         }
 
         return processSameAs(s, getAgentSupplementalInfo)
@@ -740,6 +754,8 @@ function getAgentSeeAlso(g, baseURI, subjectURI) {
 
             var knows = getAgentKnows(s) || [];
             var occupations = getAgentOccupations(s) || [];
+            var publications = getAgentPublications(s) || [];
+            var made = getAgentMade(s) || [];
 
             if (knows.length > 0) {
               Config.User.Knows = (Config.User.Knows)
@@ -751,6 +767,18 @@ function getAgentSeeAlso(g, baseURI, subjectURI) {
               Config.User.Occupations = (Config.User.Occupations)
                 ? uniqueArray(Config.User.Occupations.concat(occupations))
                 : occupations;
+            }
+
+            if (publications.length > 0) {
+              Config.User.Publications = (Config.User.Publications)
+                ? uniqueArray(Config.User.Publications.concat(publications))
+                : publications;
+            }
+
+            if (made.length > 0) {
+              Config.User.Made = (Config.User.Made)
+                ? uniqueArray(Config.User.Made.concat(made))
+                : made;
             }
 
             promisesGetAngentSeeAlso.push(getAgentSeeAlso(g, iri, subjectURI))
@@ -1020,6 +1048,18 @@ function getAgentOccupations (s) {
 function getGraphAudience (s) {
   return (s.schemaaudience && s.schemaaudience._array.length > 0)
     ? s.schemaaudience._array
+    : undefined
+}
+
+function getAgentPublications (s) {
+  return (s.foafpublications && s.foafpublications._array.length > 0)
+    ? s.foafpublications._array
+    : undefined
+}
+
+function getAgentMade (s) {
+  return (s.foafmade && s.foafmade._array.length > 0)
+    ? s.foafmade._array
     : undefined
 }
 
@@ -1392,6 +1432,8 @@ export {
   getAgentPrivateTypeIndex,
   getAgentPreferencesFile,
   getAgentOccupations,
+  getAgentPublications,
+  getAgentMade,
   getGraphImage,
   getGraphEmail,
   getGraphContributors,
