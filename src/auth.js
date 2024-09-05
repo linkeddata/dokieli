@@ -268,9 +268,11 @@ function getSubjectInfo (subjectIRI, options = {}) {
     return Promise.reject(new Error('Could not set subject info - no subject IRI'));
   }
 
-  options['noCredentials'] = true;
+  var headers = {};
+  options['noCredentials'] = !!options['noCredentials'];
+  options['noStore'] = !!options['noStore'];
 
-  return getResourceGraph(subjectIRI, options)
+  return getResourceGraph(subjectIRI, headers, options)
     .then(g => {
       var s;
 
