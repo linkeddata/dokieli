@@ -202,6 +202,11 @@ function getResource (url, headers = {}, options = {}) {
     headers['Cache-Control'] = 'no-cache'
   }
 
+  if (options.noStore) {
+    options.cache = 'no-store'
+    headers['Cache-Control'] = 'no-store'
+  }
+
   if (!options.noCredentials) {
     options.credentials = 'include'
   }
