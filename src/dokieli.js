@@ -4595,7 +4595,7 @@ console.log(reason);
                   showPermissions(null, accessSubject);
                 })
                 .then(g => {
-                  if (typeof g._graph === 'undefined') {
+                  if (typeof g?._graph === 'undefined') {
                     showPermissions(null, accessSubject);
                   }
                   var s = g.child(accessSubject);
