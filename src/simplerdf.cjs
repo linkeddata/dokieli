@@ -3,6 +3,7 @@ const SimpleRDF = require('simplerdf')
 const N3Parser = require('rdf-parser-n3')
 const JsonLdParser = require('rdf-parser-jsonld')
 const RdfaParser = require('rdf-parser-rdfa')
+const RdfXmlParser = require('rdf-parser-rdfxml')
 const SimpleRDFParse = require('simplerdf-parse')
 
 var formats = {parsers: {}}
@@ -12,6 +13,7 @@ formats.parsers['application/ld+json'] = JsonLdParser
 formats.parsers['application/activity+json'] = JsonLdParser
 formats.parsers['application/xhtml+xml'] = RdfaParser
 formats.parsers['text/html'] = RdfaParser
+formats.parsers['application/rdf+xml'] = RdfXmlParser
 var parser = SimpleRDFParse(formats.parsers)
 
 SimpleRDF.parse = parser.parse.bind(parser)
@@ -23,6 +25,7 @@ storeFormats.parsers['application/ld+json'] = JsonLdParser
 storeFormats.parsers['application/activity+json'] = JsonLdParser
 storeFormats.parsers['application/xhtml+xml'] = RdfaParser
 storeFormats.parsers['text/html'] = RdfaParser
+storeFormats.parsers['application/rdf+xml'] = RdfXmlParser
 
 exports.store = new LdpStore(storeFormats)
 exports.SimpleRDF = SimpleRDF
