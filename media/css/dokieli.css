@@ -1199,6 +1199,7 @@ margin-top:1em;
 aside.do.on fieldset samp {
 background:none;
 font-weight:bold;
+color:#000;
 }
 aside.do.on fieldset samp:before, aside.do.on fieldset samp:after {
 content:"";
