@@ -1267,6 +1267,7 @@ function getACLResourceGraph(iri, options = {}) {
 // console.log(baseURL)
 // console.log(pathURL)
 
+  //TODO: Consider whether to skip this HEAD if we already determined the ACLResource previously. While possible the effectiveACLResource is unlikely to change.
   return getLinkRelationFromHead('acl', iri).then(
     function(i) {
       if (i.length > 0) {
@@ -1297,6 +1298,9 @@ function getACLResourceGraph(iri, options = {}) {
 // console.log(g)
 
             Config.Resource[iri]['acl']['effectiveACLResource'] = aclResource;
+            Config.Resource[aclResource] = {};
+            //TODO: We probably shouldn't use this approach here:
+            Config.Resource[aclResource]['graph'] = g;
 
             return g;
 

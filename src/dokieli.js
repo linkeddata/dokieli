@@ -1755,7 +1755,7 @@ DO = {
 
       var options = { 'reuse': true };
       if (document.location.protocol.startsWith('http')) {
-        options['followLinkRelationTypes'] = ['describedby', 'acl'];
+        options['followLinkRelationTypes'] = ['describedby'];
       }
       getResourceSupplementalInfo(DO.C.DocumentURL, options).then(resourceInfo => {
         updateFeatureStatesOfResourceInfo(resourceInfo);
@@ -4446,8 +4446,6 @@ console.log(reason);
           .then(aclResourceGraph => {
             accessPermissionsNode.removeChild(accessPermissionFetchingIndicator);
 
-            DO.C.Resource[documentURL]['effectiveACLResourceGraph'] = aclResourceGraph;
-
             const { defaultACLResource, effectiveACLResource, effectiveContainer } = DO.C.Resource[documentURL].acl;
             const hasOwnACLResource = defaultACLResource == effectiveACLResource;
 
@@ -4504,19 +4502,25 @@ console.log(reason);
                     var options = {};
                     options['accessContext'] = 'Share';
                     options['selectedAccessMode'] = DO.C.Vocab['aclRead']['@id'];
-                    DO.U.showAccessModeSelection(li, '', authorizations, contact, 'agent', options);
+                    DO.U.showAccessModeSelection(li, '', contact, 'agent', options);
 
                     var select = document.querySelector('[id="' + li.id + '"] select');
                     select.disabled = true;
                     select.insertAdjacentHTML('afterend', `<span class="progress">${Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]}</span>`);
                     
-                    DO.U.updateAuthorization(authorizations, options.accessContext, options.selectedAccessMode, contact, 'agent')
+                    DO.U.updateAuthorization(options.accessContext, options.selectedAccessMode, contact, 'agent')
                       .catch(error => {
-                        //TODO
+                        console.log(error)
                       })
                       .then(response => {
-                        //fugly
-                        DO.U.refreshAuthorization(select);
+                        getACLResourceGraph(documentURL)
+                          .catch(g => {
+                            // TODO: properly handle this in the UI
+                            DO.U.removeProgressIndicator(select);
+                          })
+                          .then(g => {
+                            DO.U.removeProgressIndicator(select);
+                          })
                       });
 
                     //TODO: Change from innerHTML
@@ -4578,7 +4582,7 @@ console.log(reason);
                 options['accessContext'] = 'Share';
                 options['selectedAccessMode'] = selectedAccessMode;
 // console.log(options)
-                DO.U.showAccessModeSelection(li, '', authorizations, accessSubject, subjectsWithAccess[accessSubject]['subjectType'], options);
+                DO.U.showAccessModeSelection(li, '', accessSubject, subjectsWithAccess[accessSubject]['subjectType'], options);
               }
             }
 
@@ -4681,7 +4685,7 @@ console.log(reason);
     },
 
 
-    showAccessModeSelection: function(node, id, authorizations, accessSubject, subjectType, options) {
+    showAccessModeSelection: function(node, id, accessSubject, subjectType, options) {
       id = id || generateAttributeId('select-access-mode-');
       options = options || {};
       options['accessContext'] = options.accessContext || 'Share';
@@ -4702,13 +4706,23 @@ console.log(reason);
           e.target.disabled = true;
           e.target.insertAdjacentHTML('afterend', `<span class="progress">${Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]}</span>`);
 
-          DO.U.updateAuthorization(authorizations, options.accessContext, selectedMode, accessSubject, subjectType)
+          DO.U.updateAuthorization(options.accessContext, selectedMode, accessSubject, subjectType)
             .catch(error => {
-              //TODO
+              console.log(error);
+              DO.U.removeProgressIndicator(e.target);
             })
             .then(response => {
 // console.log(response)
-              DO.U.refreshAuthorization(e.target);
+              // DO.U.refreshAuthorization(e.target);
+
+              getACLResourceGraph(documentURL)
+                .catch(g => {
+                  // TODO: properly handle this in the UI
+                  DO.U.removeProgressIndicator(select);
+                })
+                .then(g => {
+                  DO.U.removeProgressIndicator(select);
+                })
             });
         }
         else {
@@ -4724,57 +4738,25 @@ console.log(reason);
       node.parentNode.removeChild(progress);
     },
 
-    refreshAuthorization: function(node) {
-      var iri = currentLocation();
-      const documentURL = stripFragmentFromString(iri);
 
-      //TODO: Doublecheck sendNotifications and the input checkboxes etc it is trying to deal with.
-      // var tos = [accessSubject];
-      // var note = `Your access to ${documentURL} has changed to ${DO.C.AccessContext[options.accessContext][selectedMode]}.`;
-      // var shareResource = document.getElementById('share-resource');
-      // var rm = shareResource.querySelector('.response-message');
-      // if (rm) {
-      //   rm.parentNode.removeChild(rm);
-      // }
-      // shareResource.insertAdjacentHTML('beforeend', '<div class="response-message"></div>');
-      // sendNotifications(tos, note, documentURL, shareResource);
-
-      var headers;
-      var options = {
-        noCache: true
-      };
-
-      getACLResourceGraph(documentURL, headers, options)
-        .catch(error => {
-          DO.U.removeProgressIndicator(node);
-        })
-        .then(aclResourceGraph => {
-          DO.C.Resource[documentURL]['effectiveACLResourceGraph'] = aclResourceGraph;
-
-          const { defaultACLResource, effectiveACLResource, effectiveContainer } = DO.C.Resource[documentURL].acl;
-          const hasOwnACLResource = defaultACLResource == effectiveACLResource;
-
-          var matchers = {};
-
-          if (hasOwnACLResource) {
-            matchers['accessTo'] = documentURL;
-          }
-          else {
-            matchers['default'] = effectiveContainer;
-          }
-
-          var authorizations = getAuthorizationsMatching(aclResourceGraph, matchers);
-
-          DO.U.removeProgressIndicator(node);
-        });
-    },
-
-    updateAuthorization: function(authorizations, accessContext, selectedMode, accessSubject, subjectType) {
+    updateAuthorization: function(accessContext, selectedMode, accessSubject, subjectType) {
       var documentURL = currentLocation();
 
-      const { defaultACLResource, effectiveACLResource } = DO.C.Resource[documentURL].acl;
+      const { defaultACLResource, effectiveACLResource, effectiveContainer } = DO.C.Resource[documentURL].acl;
       const hasOwnACLResource = defaultACLResource == effectiveACLResource;
       const patchACLResource = defaultACLResource;
+
+      var aclResourceGraph = DO.C.Resource[effectiveACLResource].graph;
+        var matchers = {};
+
+        if (hasOwnACLResource) {
+          matchers['accessTo'] = documentURL;
+        }
+        else {
+          matchers['default'] = effectiveContainer;
+        }
+
+      var authorizations = getAuthorizationsMatching(aclResourceGraph, matchers);
 
       // var accessContextModes = Object.keys(DO.C.AccessContext[accessContext]);
       // TODO: Append is not used in DO.C.AccessContext.Share unless for example the current document has an oa:annotationService and append access can be given to some agents, then Append-only can be dynamically added. (Doublecheck if dokieli loads annotations directly off annotationService or if relies on inbox to discover annotations.)
@@ -4788,9 +4770,10 @@ console.log(reason);
 
       //If the effective ACL resource of a resource its associated ACL resource (200), update (delete + insert) authorizations on the associated ACL resource.
       //If the effective ACL resource of a resource is inherited from a container's ACL resource (404 on the associated ACL resource), update the resource's associated ACL resource.
-
+// console.log(authorizations);
       if (hasOwnACLResource) {
         Object.keys(authorizations).forEach(authorization => {
+// console.log(authorizations[authorization], selectedMode, accessSubject, subjectType);
           if (authorizations[authorization][subjectType].includes(accessSubject)) {
             var multipleAccessSubjects = (authorizations[authorization][subjectType].length > 1) ? true : false;
             var deleteAccessObjectProperty = (hasOwnACLResource) ? 'accessTo' : 'default';
@@ -4811,7 +4794,7 @@ console.log(reason);
 `;
             }
             else {
-                deleteGraph += `
+              deleteGraph += `
 <${authorization}>
   acl:${deleteAccessSubjectProperty} <${deleteAccessSubject}> .
 `;
@@ -4819,12 +4802,12 @@ console.log(reason);
 
             patches.push({ 'delete': deleteGraph });
           }
-       })
+        })
 
-       if (selectedMode.length) {
-        authorizationSubject = '#' + generateAttributeId();
+        if (selectedMode.length) {
+          authorizationSubject = '#' + generateAttributeId();
 
-        insertGraph += `
+          insertGraph += `
   <${authorizationSubject}>
     a acl:Authorization ;
     acl:accessTo <${documentURL}> ;
@@ -4832,8 +4815,8 @@ console.log(reason);
     acl:${subjectType} <${accessSubject}> .
   `;
 
-        patches.push({ 'insert': insertGraph });
-       }
+          patches.push({ 'insert': insertGraph });
+        }
       }
       else {
         var updatedAuthorizations = structuredClone(authorizations); 
@@ -4895,7 +4878,12 @@ console.log(reason);
         patches.push({ 'insert': insertGraph });
       }
 
-      return patchResourceWithAcceptPatch(patchACLResource, patches);
+      if (!patches.length) {
+        throw new Error("Check why the patch payload wasn't constructed in updateAuthorization." + patches);
+      }
+      else {
+        return patchResourceWithAcceptPatch(patchACLResource, patches);
+      }
     },
 
     selectContacts: function(node, url) {
