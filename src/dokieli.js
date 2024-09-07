@@ -1485,9 +1485,9 @@ DO = {
     },
 
     setDocumentURL: function(url) {
-      url = url || stripFragmentFromString(document.location.href);
+      url = url || currentLocation();
 
-      DO.C.DocumentURL = url;
+      DO.C.DocumentURL = stripFragmentFromString(url);
     },
 
     setDocumentString: function(node) {
@@ -4693,8 +4693,7 @@ console.log(reason);
       options['accessContext'] = options.accessContext || 'Share';
       options['selectedAccessMode'] = options.selectedAccessMode || '';
 
-      var iri = currentLocation();
-      const documentURL = stripFragmentFromString(iri);
+      const documentURL = currentLocation();
 
       const selectNode = '<select id="' + id + '">' + getAccessModeOptionsHTML({'context': options.accessContext, 'selected': options.selectedAccessMode }) + '</select>';
 
