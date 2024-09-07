@@ -55,10 +55,25 @@ function copyResource (fromURL, toURL, options = {}) {
 }
 
 /**
+ * currentLocation
+ * 
+ * Returns the current URL after removing specified or default query paramaters and values
+ *
+ * @param {object} options
  * @returns {string}
  */
-function currentLocation () {
-  return window.location.origin + window.location.pathname
+function currentLocation (options = {}) {
+  const url = new URL(window.location);
+
+  options.removeParams = options.removeParams || { author: 'true', social: 'true' };
+
+  Object.entries(options.removeParams).forEach(([param, value]) => {
+    if (url.searchParams.get(param) === value) {
+      url.searchParams.delete(param);
+    }
+  });
+
+  return url.origin + url.pathname + (url.search ? '?' + url.searchParams.toString() : '');
 }
 
 /**
