@@ -1485,7 +1485,9 @@ DO = {
     },
 
     setDocumentURL: function(url) {
-      DO.C.DocumentURL = url || stripFragmentFromString(document.location.href);
+      url = url || stripFragmentFromString(document.location.href);
+
+      DO.C.DocumentURL = url;
     },
 
     setDocumentString: function(node) {
@@ -4747,14 +4749,15 @@ console.log(reason);
       const patchACLResource = defaultACLResource;
 
       var aclResourceGraph = DO.C.Resource[effectiveACLResource].graph;
-        var matchers = {};
 
-        if (hasOwnACLResource) {
-          matchers['accessTo'] = documentURL;
-        }
-        else {
-          matchers['default'] = effectiveContainer;
-        }
+      var matchers = {};
+
+      if (hasOwnACLResource) {
+        matchers['accessTo'] = documentURL;
+      }
+      else {
+        matchers['default'] = effectiveContainer;
+      }
 
       var authorizations = getAuthorizationsMatching(aclResourceGraph, matchers);
 

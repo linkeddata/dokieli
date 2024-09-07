@@ -1258,7 +1258,9 @@ function sortGraphTriples(g, options) {
 }
 
 // https://solidproject.org/TR/2024/wac-20240512#effective-acl-resource-algorithm
-function getACLResourceGraph(iri, options = {}) {
+function getACLResourceGraph(documentURL, iri, options = {}) {
+  iri = iri || documentURL;
+  //This is probably not needed
   Config.Resource[iri] = Config.Resource[iri] || {};
   Config.Resource[iri]['acl'] = {};
 
@@ -1287,9 +1289,9 @@ function getACLResourceGraph(iri, options = {}) {
               var container = pathURL.endsWith('/') ? getParentURLPath(pathURL) : baseURL;
 // console.log(container);
               if (typeof container !== 'undefined') {
-                Config.Resource[iri]['acl']['effectiveContainer'] = container;
+                Config.Resource[documentURL]['acl']['effectiveContainer'] = container;
 
-                return getACLResourceGraph(container);
+                return getACLResourceGraph(documentURL, container);
               }
               else {
                 return Promise.reject(new Error('effectiveACLResource not determined. https://solidproject.org/TR/2024/wac-20240512#effective-acl-resource-algorithm'));
@@ -1297,7 +1299,7 @@ function getACLResourceGraph(iri, options = {}) {
             }
 // console.log(g)
 
-            Config.Resource[iri]['acl']['effectiveACLResource'] = aclResource;
+            Config.Resource[documentURL]['acl']['effectiveACLResource'] = aclResource;
             Config.Resource[aclResource] = {};
             //TODO: We probably shouldn't use this approach here:
             Config.Resource[aclResource]['graph'] = g;
