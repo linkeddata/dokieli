@@ -1305,11 +1305,6 @@ function getACLResourceGraph(documentURL, iri, options = {}) {
             Config.Resource[aclResource]['graph'] = g;
 
             return g;
-
-        // return Promise.reject(new Error('rootContainer aclResource not determined. https://solidproject.org/TR/2024/wac-20240512#server-root-container-acl'))
-
-
-            // return i.graph()
           },
           function(reason){
 console.log(reason)

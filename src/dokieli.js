@@ -4441,9 +4441,7 @@ console.log(reason);
           .catch(e => {
             accessPermissionsNode.removeChild(accessPermissionFetchingIndicator);
 
-            console.log('XXX: Cannot access effectiveACLResource', e);
-
-            //TODO: Try again? Allow user to trigger retry?
+console.log('XXX: Cannot access effectiveACLResource', e);
           })
           .then(aclResourceGraph => {
             accessPermissionsNode.removeChild(accessPermissionFetchingIndicator);
@@ -4517,7 +4515,6 @@ console.log(reason);
                       .then(response => {
                         getACLResourceGraph(documentURL)
                           .catch(g => {
-                            // TODO: properly handle this in the UI
                             DO.U.removeProgressIndicator(select);
                           })
                           .then(g => {
@@ -4530,21 +4527,10 @@ console.log(reason);
                     input.value = '';
                   });
 
-                  //TODO: Hanlde manual input - "add" button + enter
-
                   suggestions.appendChild(suggestion);
                 })
               }
             });
-
-            //TODO: Click outside of the suggestions to close container?
-
-            // document.addEventListener('click', function(e) {
-            //   if (!document.querySelector('#suggestions').contains(e.target)) {
-            //     TODO: Change from innerHTML
-            //     suggestions.innerHTML = '';
-            //   }
-            // });
 
             //Allowing only Share-related access modes.
             var accessContext = DO.C.AccessContext['Share'];
@@ -4596,8 +4582,7 @@ console.log(reason);
               //Gets some information about the accessSubject that can be displayed besides their URI.
               getResourceGraph(accessSubject)
                 .catch(e => {
-                  console.log(e);
-                  //TODO: If we can't fetch the accessSubject, we should still be able to add them to the ul
+console.log(e);
                   showPermissions(null, accessSubject);
                 })
                 .then(g => {
@@ -4605,7 +4590,6 @@ console.log(reason);
                     showPermissions(null, accessSubject);
                   }
                   var s = g.child(accessSubject);
-                  //TODO: For now we only list others with access and omit current user with control. Transfer ownership.
                   showPermissions(s, accessSubject);
                 })
             })
@@ -4621,15 +4605,6 @@ console.log(reason);
           }
         }
 
-        // if (DO.C.User.IRI && e.target.closest('button.add')) {
-          // e.preventDefault();
-          // e.stopPropagation();
-          // var li = e.target.closest('li');
-          // var li = document.querySelector('#share-resource-address-book');
-          // li.insertAdjacentHTML('beforeend', Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]);
-          // DO.U.selectContacts(li, DO.C.User.IRI);
-        // }
-      
         if (e.target.closest('button.share')) {
           var tos = [];
           var resourceTo = document.querySelector('#share-resource #share-resource-to');
@@ -4714,11 +4689,9 @@ console.log(reason);
             })
             .then(response => {
 // console.log(response)
-              // DO.U.refreshAuthorization(e.target);
 
               getACLResourceGraph(documentURL)
                 .catch(g => {
-                  // TODO: properly handle this in the UI
                   DO.U.removeProgressIndicator(select);
                 })
                 .then(g => {
@@ -4760,9 +4733,6 @@ console.log(reason);
 
       var authorizations = getAuthorizationsMatching(aclResourceGraph, matchers);
 
-      // var accessContextModes = Object.keys(DO.C.AccessContext[accessContext]);
-      // TODO: Append is not used in DO.C.AccessContext.Share unless for example the current document has an oa:annotationService and append access can be given to some agents, then Append-only can be dynamically added. (Doublecheck if dokieli loads annotations directly off annotationService or if relies on inbox to discover annotations.)
-
       var insertGraph = '';
       var deleteGraph = '';
       // var whereGraph = '';
@@ -4770,8 +4740,6 @@ console.log(reason);
 
       var patches = [];
 
-      //If the effective ACL resource of a resource its associated ACL resource (200), update (delete + insert) authorizations on the associated ACL resource.
-      //If the effective ACL resource of a resource is inherited from a container's ACL resource (404 on the associated ACL resource), update the resource's associated ACL resource.
 // console.log(authorizations);
       if (hasOwnACLResource) {
         Object.keys(authorizations).forEach(authorization => {
@@ -4821,6 +4789,7 @@ console.log(reason);
         }
       }
       else {
+        // eslint-disable-next-line no-undef
         var updatedAuthorizations = structuredClone(authorizations); 
         var authorizationsToDelete = [];
 
@@ -4859,7 +4828,6 @@ console.log(reason);
         Object.keys(updatedAuthorizations).forEach(authorization => {
           authorizationSubject = '#' + generateAttributeId();
 
-          //TODO: Copy over all properties of Authorization, e.g., here may be labels or other stuff that's okay to persist in the aclResource that's to be created.
           var additionalProperties = [];
           ['agent', 'agentClass', 'agentGroup', 'origin'].forEach(key => {
             if (updatedAuthorizations[authorization][key] && updatedAuthorizations[authorization][key].length) {
