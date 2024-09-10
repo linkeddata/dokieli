@@ -8873,6 +8873,13 @@ WHERE {\n\
               //TODO: Update getResourceInfo() so that DO.C.Resource[documentURL] can be used to check other contributors while still in edit.
             })
 
+            var documentModified = 'document-modified';
+            var modified = document.getElementById(documentModified);
+            var lastModified = DO.C.Resource[DO.C.DocumentURL]?.headers?.['last-modified']?.['field-value'];
+            if(!modified && lastModified) {
+              lastModified = new Date(lastModified);
+              setDate(document, { 'id': 'document-modified', 'property': 'schema:dateModified', 'title': 'Modified', 'datetime': lastModified } );
+            }
 
             var documentLanguage = 'document-language';
             var language = document.getElementById(documentLanguage);
