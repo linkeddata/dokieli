@@ -4474,6 +4474,7 @@ console.log('XXX: Cannot access effectiveACLResource', e);
                 const filteredContacts = Object.keys(DO.C.User.Contacts).filter((contact) => {
                   //Only users who are not in the authorizations
                   const matchesQuery = (
+                    contact.toLowerCase().includes(query) ||
                     DO.C.User.Contacts[contact].Name?.toLowerCase().includes(query) ||
                     DO.C.User.Contacts[contact].IRI?.toLowerCase().includes(query) ||
                     DO.C.User.Contacts[contact].URL?.toLowerCase().includes(query)
@@ -4485,14 +4486,14 @@ console.log('XXX: Cannot access effectiveACLResource', e);
                 filteredContacts.forEach(contact => {
                   const suggestion = document.createElement('li');
 
-                  var name = DO.C.User.Contacts[contact].Name || DO.C.User.Contacts[contact].IRI;
+                  var name = DO.C.User.Contacts[contact].Name || contact;
                   var img = DO.C.User.Contacts[contact].Image;
                   if (!(img && img.length > 0)) {
                     img = generateDataURI('image/svg+xml', 'base64', Icon['.fas.fa-user-secret']);
                   }
                   img = '<img alt="" height="32" src="' + img + '" width="32" />';
 
-                  suggestion.insertAdjacentHTML('beforeend', img + '<span title="' + DO.C.User.Contacts[contact].IRI + '">' + name + '</span>');
+                  suggestion.insertAdjacentHTML('beforeend', img + '<span title="' + contact + '">' + name + '</span>');
 
                   var ul = document.querySelector('#share-resource-permissions ul');
 
@@ -4507,7 +4508,7 @@ console.log('XXX: Cannot access effectiveACLResource', e);
                     var select = document.querySelector('[id="' + li.id + '"] select');
                     select.disabled = true;
                     select.insertAdjacentHTML('afterend', `<span class="progress">${Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]}</span>`);
-                    
+
                     DO.U.updateAuthorization(options.accessContext, options.selectedAccessMode, contact, 'agent')
                       .catch(error => {
                         console.log(error)
@@ -4534,9 +4535,9 @@ console.log('XXX: Cannot access effectiveACLResource', e);
 
             //Allowing only Share-related access modes.
             var accessContext = DO.C.AccessContext['Share'];
-  
+
             const accessContextModes = Object.keys(accessContext);
-    
+
             var ul = document.querySelector('#share-resource-permissions ul');
 
             var showPermissions = function(s, accessSubject) {
@@ -4649,8 +4650,8 @@ console.log(e);
 // console.log(iri.toString());
 
       var id = encodeURIComponent(iri);
-      var name = getAgentName(s) || iri;
-      var img = getGraphImage(s);
+      var name = s ? getAgentName(s) : iri;
+      var img = s ? getGraphImage(s) : null;
       if (!(img && img.length > 0)) {
         img = generateDataURI('image/svg+xml', 'base64', Icon['.fas.fa-user-secret']);
       }
