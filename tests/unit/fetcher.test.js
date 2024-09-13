@@ -49,7 +49,7 @@ describe("fetcher", () => {
       const result = setAcceptRDFTypes(options);
 
       expect(result).toEqual(
-        "text/turtle,application/ld+json,application/activity+json,text/html;q=0.9,image/svg+xml;q=0.9,text/markdown;q=0.9"
+        "text/turtle,application/ld+json,application/activity+json,text/html;q=0.9,image/svg+xml;q=0.9,text/markdown;q=0.9,application/rdf+xml"
       );
     });
 
@@ -63,7 +63,7 @@ describe("fetcher", () => {
       const result = setAcceptRDFTypes(options);
 
       expect(result).toEqual(
-        "text/turtle,application/ld+json,application/activity+json,text/html;q=0.9,image/svg+xml;q=0.9,text/markdown;q=0.9"
+        "text/turtle,application/ld+json,application/activity+json,text/html;q=0.9,image/svg+xml;q=0.9,text/markdown;q=0.9,application/rdf+xml"
       );
     });
   });
