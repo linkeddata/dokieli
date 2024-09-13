@@ -4426,11 +4426,12 @@ console.log(reason);
             <ul>
             </ul>
 
-            <div id="autocomplete">
+            <div class="autocomplete">
               <label for="share-resource-search-contacts">Add contacts</label>
               <input id="share-resource-search-contacts" name="share-resource-search-contacts" placeholder="Search contacts or enter WebID" type="text" value="" />
-              <ul id="suggestions">
-              </div>
+              <ul class="suggestions">
+              </ul>
+            </div>
           </div>`;
         h2.insertAdjacentHTML('afterend', shareResourcePermissions);
 
@@ -4464,7 +4465,7 @@ console.log('XXX: Cannot access effectiveACLResource', e);
 // console.log(subjectsWithAccess)
 
             const input = document.getElementById('share-resource-search-contacts');
-            const suggestions = document.querySelector('#suggestions');
+            const suggestions = document.querySelector('#share-resource-permissions .suggestions');
 
             input.addEventListener('input', function(e) {
               const query = e.target.value.trim().toLowerCase();
