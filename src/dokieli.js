@@ -4467,12 +4467,19 @@ console.log('XXX: Cannot access effectiveACLResource', e);
             const input = document.getElementById('share-resource-search-contacts');
             const suggestions = document.querySelector('#share-resource-permissions .suggestions');
 
+            input.addEventListener('focus', function(e) {
+              if (!e.target.value.length) {
+                var filteredContacts = Object.keys(DO.C.User.Contacts).filter(contact => !Object.keys(subjectsWithAccess).includes(contact));
+
+                showSuggestions(filteredContacts);
+              }
+            });
+
             input.addEventListener('input', function(e) {
               const query = e.target.value.trim().toLowerCase();
-              //TODO: Change innerHTML
-              suggestions.innerHTML = '';
+
               if (query.length) {
-                const filteredContacts = Object.keys(DO.C.User.Contacts).filter((contact) => {
+                var filteredContacts = Object.keys(DO.C.User.Contacts).filter((contact) => {
                   //Only users who are not in the authorizations
                   const matchesQuery = (
                     contact.toLowerCase().includes(query) ||
@@ -4484,55 +4491,63 @@ console.log('XXX: Cannot access effectiveACLResource', e);
                     return !Object.keys(subjectsWithAccess).includes(contact) && matchesQuery;
                 });
 
-                filteredContacts.forEach(contact => {
-                  const suggestion = document.createElement('li');
-
-                  var name = DO.C.User.Contacts[contact].Name || contact;
-                  var img = DO.C.User.Contacts[contact].Image;
-                  if (!(img && img.length > 0)) {
-                    img = generateDataURI('image/svg+xml', 'base64', Icon['.fas.fa-user-secret']);
-                  }
-                  img = '<img alt="" height="32" src="' + img + '" width="32" />';
-
-                  suggestion.insertAdjacentHTML('beforeend', img + '<span title="' + contact + '">' + name + '</span>');
-
-                  var ul = document.querySelector('#share-resource-permissions ul');
-
-                  suggestion.addEventListener('click', function() {
-                    DO.U.addAccessSubjectItem(ul, DO.C.User.Contacts[contact].Graph, contact);
-                    var li = document.getElementById('share-resource-access-subject-' + encodeURIComponent(contact));
-                    var options = {};
-                    options['accessContext'] = 'Share';
-                    options['selectedAccessMode'] = DO.C.Vocab['aclRead']['@id'];
-                    DO.U.showAccessModeSelection(li, '', contact, 'agent', options);
-
-                    var select = document.querySelector('[id="' + li.id + '"] select');
-                    select.disabled = true;
-                    select.insertAdjacentHTML('afterend', `<span class="progress">${Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]}</span>`);
-
-                    DO.U.updateAuthorization(options.accessContext, options.selectedAccessMode, contact, 'agent')
-                      .catch(error => {
-                        console.log(error)
-                      })
-                      .then(response => {
-                        getACLResourceGraph(documentURL)
-                          .catch(g => {
-                            DO.U.removeProgressIndicator(select);
-                          })
-                          .then(g => {
-                            DO.U.removeProgressIndicator(select);
-                          })
-                      });
-
-                    //TODO: Change from innerHTML
-                    suggestions.innerHTML = '';
-                    input.value = '';
-                  });
-
-                  suggestions.appendChild(suggestion);
-                })
+                showSuggestions(filteredContacts);
               }
             });
+
+            var showSuggestions = function (filteredContacts) {
+              //TODO: Change innerHTML
+              suggestions.innerHTML = '';
+
+              filteredContacts.forEach(contact => {
+                const suggestion = document.createElement('li');
+
+                var name = DO.C.User.Contacts[contact].Name || contact;
+                var img = DO.C.User.Contacts[contact].Image;
+                if (!(img && img.length > 0)) {
+                  img = generateDataURI('image/svg+xml', 'base64', Icon['.fas.fa-user-secret']);
+                }
+                img = '<img alt="" height="32" src="' + img + '" width="32" />';
+
+                suggestion.insertAdjacentHTML('beforeend', img + '<span title="' + contact + '">' + name + '</span>');
+
+                var ul = document.querySelector('#share-resource-permissions ul');
+
+                suggestion.addEventListener('click', function() {
+                  DO.U.addAccessSubjectItem(ul, DO.C.User.Contacts[contact].Graph, contact);
+                  var li = document.getElementById('share-resource-access-subject-' + encodeURIComponent(contact));
+                  var options = {};
+                  options['accessContext'] = 'Share';
+                  options['selectedAccessMode'] = DO.C.Vocab['aclRead']['@id'];
+                  DO.U.showAccessModeSelection(li, '', contact, 'agent', options);
+
+                  var select = document.querySelector('[id="' + li.id + '"] select');
+                  select.disabled = true;
+                  select.insertAdjacentHTML('afterend', `<span class="progress">${Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]}</span>`);
+
+                  DO.U.updateAuthorization(options.accessContext, options.selectedAccessMode, contact, 'agent')
+                    .catch(error => {
+                      console.log(error)
+                    })
+                    .then(response => {
+                      getACLResourceGraph(documentURL)
+                        .catch(g => {
+                          DO.U.removeProgressIndicator(select);
+                        })
+                        .then(g => {
+                          DO.U.removeProgressIndicator(select);
+                        })
+                    });
+
+                  //TODO: Change from innerHTML
+                  suggestions.innerHTML = '';
+                  input.value = '';
+                });
+
+                suggestions.appendChild(suggestion);
+              })
+            }
+
 
             //Allowing only Share-related access modes.
             var accessContext = DO.C.AccessContext['Share'];
