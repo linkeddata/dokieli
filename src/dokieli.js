@@ -254,7 +254,7 @@ DO = {
           });
       }
       else {
-        return getUserContacts(DO.C.user.Info)
+        return getUserContacts(DO.C.User.IRI)
           .catch(() => {
             removeProgress(e)
           })
