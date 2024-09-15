@@ -4469,31 +4469,31 @@ console.log('XXX: Cannot access effectiveACLResource', e);
 
             input.addEventListener('focus', function(e) {
               if (!e.target.value.length) {
-                var filteredContacts = Object.keys(DO.C.User.Contacts).filter(contact => !Object.keys(subjectsWithAccess).includes(contact));
-
-                showSuggestions(filteredContacts);
+                showSuggestions(getFilteredContacts());
               }
             });
-
+            
             input.addEventListener('input', function(e) {
               const query = e.target.value.trim().toLowerCase();
-
-              if (query.length) {
-                var filteredContacts = Object.keys(DO.C.User.Contacts).filter((contact) => {
-                  //Only users who are not in the authorizations
-                  const matchesQuery = (
-                    contact.toLowerCase().includes(query) ||
-                    DO.C.User.Contacts[contact].Name?.toLowerCase().includes(query) ||
-                    DO.C.User.Contacts[contact].IRI?.toLowerCase().includes(query) ||
-                    DO.C.User.Contacts[contact].URL?.toLowerCase().includes(query)
-                    );
-
-                    return !Object.keys(subjectsWithAccess).includes(contact) && matchesQuery;
-                });
-
-                showSuggestions(filteredContacts);
-              }
+              showSuggestions(getFilteredContacts(query));
             });
+
+            var getFilteredContacts = function(query = '') {
+              const contacts = Object.keys(DO.C.User.Contacts);
+              const subjectsWithAccessKeys = new Set(Object.keys(subjectsWithAccess));
+            
+              return contacts.filter(contact => {
+                const matchesQuery = (
+                  !query.length || 
+                  contact.toLowerCase().includes(query) ||
+                  DO.C.User.Contacts[contact].Name?.toLowerCase().includes(query) ||
+                  DO.C.User.Contacts[contact].IRI?.toLowerCase().includes(query) ||
+                  DO.C.User.Contacts[contact].URL?.toLowerCase().includes(query)
+                );
+            
+                return !subjectsWithAccessKeys.has(contact) && matchesQuery;
+              });
+            }
 
             var showSuggestions = function (filteredContacts) {
               //TODO: Change innerHTML
