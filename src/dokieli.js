@@ -4362,7 +4362,12 @@ console.log(reason);
 
       var shareResourceLinkedResearch = '';
       if (DO.C.User.IRI && DO.C.OriginalResourceInfo['rdftype'] && DO.C.OriginalResourceInfo.rdftype.includes(DO.C.Vocab['schemaScholarlyArticle']['@id']) || DO.C.OriginalResourceInfo.rdftype.includes(DO.C.Vocab['schemaThesis']['@id'])) {
-        shareResourceLinkedResearch = '<input id="share-resource-linked-research" type="checkbox" value="https://linkedresearch.org/cloud" /><label for="share-resource-linked-research">Notify <a href="https://linkedresearch.org/cloud">Linked Open Research Cloud</a></label>';
+        shareResourceLinkedResearch = `
+          <div id="share-resource-external">
+            <h3>Share with research community</h3>
+            <input id="share-resource-linked-research" type="checkbox" value="https://linkedresearch.org/cloud" />
+            <label for="share-resource-linked-research"><a href="https://linkedresearch.org/cloud">Linked Open Research Cloud</a></label>
+          </div>`;
       }
 
       var shareResourceHTML = `
@@ -4375,6 +4380,8 @@ console.log(reason);
             <label for="share-resource-clipboard">Copy URL to clipboard</label>
             <input id="share-resource-clipboard" name="share-resource-clipboard" readonly="readonly" type="text" value="${iri}" /><button class="do copy-to-clipboard" title="Copy to clipboard">${Icon[".fas.fa-copy"]}</button>
           </div>
+
+          ${shareResourceLinkedResearch}
 
           <div id="share-resource-agents">
             <h3>Share with contacts</h3>
@@ -4389,8 +4396,6 @@ console.log(reason);
 
             <button class="share" id="share-resource-agents-button" title="Share resource">Share</button>
           </div>
-
-          <div id="share-resource-external">${shareResourceLinkedResearch}</div>
         </aside>
       `;
 
