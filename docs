@@ -676,7 +676,7 @@
                     <dd>The user can embed and update supplemental data to be stored with the article using RDF syntaxes such as Turtle, JSON-LD, and TriG.</dd>
 
                     <dt id="message-log">Messages</dt>
-                    <dt>The user can read the all of the messages that were raised to their attention by dokieli for example as the result of some action.</dt>
+                    <dd>The user can read the all of the messages that were raised to their attention by dokieli for example as the result of some action.</dd>
 
                     <dt id="dokieli-views"><i class="fa fa-magic"></i>Views</dt>
                     <dd>The dokieli menu will list primary and alternate stylesheets that are <a href="#html-css">detected in HTML</a>. <cite>Native</cite> is always available and it will essentially disable all other stylesheets, thereby user-agent's default stylesheets are gets applied. When a view is selected, eg. <cite>Basic</cite> (which happens to be the one that is used on this article as primary), it becomes the primary stylesheet, and the rest of the stylesheets become alternate and disabled.</dd>
