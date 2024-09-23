@@ -359,19 +359,17 @@ DO = {
               var resourceTypes = types;
               if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Like') > -1 ||
                  resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Dislike') > -1){
-                if(s.asobject && s.asobject.at(0)) {
+                if(s.asobject && s.asobject.at(0) && getPathURL(s.asobject.at(0)) == currentPathURL ) {
                   if(s.ascontext && s.ascontext.at(0)){
-                    if(getPathURL(s.asobject.at(0)) == currentPathURL) {
-                      var context = s.ascontext.at(0);
-                      subjectsReferences.push(context);
-                      return DO.U.positionInteraction(context).then(
-                        function(iri){
-                          return iri;
-                        },
-                        function(reason){
-                          console.log(context + ': Context is unreachable');
-                        });
-                    }
+                    var context = s.ascontext.at(0);
+                    subjectsReferences.push(context);
+                    return DO.U.positionInteraction(context).then(
+                      function(iri){
+                        return iri;
+                      },
+                      function(reason){
+                        console.log(context + ': Context is unreachable');
+                      });
                   }
                   else {
                     var iri = s.iri().toString();
