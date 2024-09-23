@@ -500,7 +500,7 @@ export default {
     "schemaeditor": { "@id": "http://schema.org/editor", "@type": "@id", "@array": true },
     "schemaperformer": { "@id": "http://schema.org/performer", "@type": "@id", "@array": true },
     "schemapublisher": { "@id": "http://schema.org/publisher", "@type": "@id", "@array": true },
-    "schemaemail": "http://schema.org/email",
+    "schemaemail": { "@id": "http://schema.org/email", "@type": "@id" },
     "schemainLanguage": "http://schema.org/inLanguage",
     "schemalicense": { "@id": "http://schema.org/license", "@type": "@id" },
     "schemacitation": { "@id": "http://schema.org/citation", "@type": "@id", "@array": true },
