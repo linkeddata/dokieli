@@ -343,6 +343,7 @@ DO = {
           var currentPathURL = window.location.origin + window.location.pathname;
 
 // console.log(g);
+          var subjectsReferences = [];
           var subjects = [];
           g.graph().toArray().forEach(function(t){
             subjects.push(t.subject.nominalValue);
@@ -362,6 +363,7 @@ DO = {
                   if(s.ascontext && s.ascontext.at(0)){
                     if(getPathURL(s.asobject.at(0)) == currentPathURL) {
                       var context = s.ascontext.at(0);
+                      subjectsReferences.push(context);
                       return DO.U.positionInteraction(context).then(
                         function(iri){
                           return iri;
@@ -432,6 +434,7 @@ DO = {
               else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Relationship') > -1){
                 if(s.assubject && s.assubject.at(0) && s.asrelationship && s.asrelationship.at(0) && s.asobject && s.asobject.at(0) && getPathURL(s.asobject.at(0)) == currentPathURL) {
                   var subject = s.assubject.at(0);
+                  subjectsReferences.push(subject);
                   return DO.U.positionInteraction(subject).then(
                     function(iri){
                       return iri;
@@ -460,6 +463,7 @@ DO = {
                   if (options['targetInOriginalResource'] || options['targetInMemento'] || options['targetInSameAs']){
                     var object = s.asobject.at(0);
                     var target = s.astarget.at(0);
+                    subjectsReferences.push(object);
 
                     DO.C.Notification[url]['Activities'].push(i);
                     DO.C.Activity[object] = {};
@@ -515,7 +519,7 @@ DO = {
               else if(resourceTypes.indexOf('https://www.w3.org/ns/activitystreams#Add') > -1) {
                 if(s.asobject && s.asobject.at(0)) {
                   object = s.asobject.at(0);
-
+                  subjectsReferences.push(object);
                   if (object.startsWith(url)) {
                     return DO.U.showAnnotation(object, s);
                   }
@@ -530,8 +534,7 @@ DO = {
                   }
                 }
               }
-              else if(resourceTypes.indexOf('http://www.w3.org/ns/oa#Annotation') > -1 && getPathURL(s.oahasTarget) == currentPathURL) {
-
+              else if(resourceTypes.indexOf('http://www.w3.org/ns/oa#Annotation') > -1 && getPathURL(s.oahasTarget) == currentPathURL && !subjectsReferences.includes(i)) {
                 return DO.U.showAnnotation(i, s);
               }
               else {

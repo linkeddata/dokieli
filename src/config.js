@@ -268,7 +268,7 @@ export default {
     'table-of-advisements': {'label': 'Advisements', 'selector': '[rel~="spec:advisement"]', 'titleSelector': '[property~="spec:statement"]'},
     'references': { 'label': 'References', 'selector':'cite a', 'titleSelector': 'h2' }
   },
-  CollectionItemsLimit: 20,
+  CollectionItemsLimit: 50,
   ContextLength: 32,
   ProxyURL: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/proxy?uri=' : 'https://dokie.li/proxy?uri='),
   AuthEndpoint: ((window.location.hostname == 'localhost' || !navigator.onLine) ? window.location.protocol + '//' + window.location.host + '/' : 'https://dokie.li/'),
