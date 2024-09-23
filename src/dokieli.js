@@ -399,9 +399,9 @@ DO = {
                       "license": {}
                     };
 
-                    if (s.asactor){
+                    if (s.asactor && s.asactor.at(0)){
                       noteData['creator'] = {
-                        'iri': s.asactor
+                        'iri': s.asactor.at(0)
                       }
                       var a = g.child(noteData['creator']['iri']);
                       var actorName = getAgentName(a);
