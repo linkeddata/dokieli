@@ -955,16 +955,15 @@
 <code>cd dokieli</code>
 <code></code>
 <code># Install packages</code>
-<code>npm install</code>
+<code>yarn install</code>
 <code></code>
-<code># Build stuff eg. scripts/dokieli.js</code>
-<code>npm run build</code>
+<code># Build eg. to create scripts/dokieli.js</code>
+<code>yarn build</code>
 <code></code>
 <code># or automatically rebuild when files change</code>
-<code>npm run watch</code></pre>
+<code>yarn watch</code></pre>
             </div>
           </section>
-
         </div>
       </article>
     </main>
