@@ -15,8 +15,7 @@ Welcome! Check out the:
 dokieli can be used as a:
 
 * single-page application - open any dokieli embedded article
-* browser extension - import this repository in your Web browser or install
-Web Extension from [Chrome Web Store](https://chrome.google.com/webstore/detail/ddmhaonbhodhgkaljpjlglodncddalid) or [Add-ons for Firefox](https://dokie.li/docs#web-extension)
+* browser extension - import dokieli from your Web browser's extensions (see also <a href="https://dokie.li/docs">instructions</a>).
 
 ## Setup
 

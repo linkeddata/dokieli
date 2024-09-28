@@ -931,16 +931,18 @@
             <div datatype="rdf:HTML" property="schema:description">
               <p>The dokieli <cite><a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions">Web Extension</a></cite> is a minimal package of dokieli which contains the core CSS and JavaScript that works as a browser add-on. When user triggers it from their browser toolbar, it provides the same functionality as a <cite>single-page application</cite>, ie. initialised and rendered in the browser DOM.</p>
 
-              <p>Currently the extension works with Firefox and Chrome/Chromium browsers. Two ways to do this:</p>
+              <p>Currently the extension works with Firefox and Chromium browsers. The extension can be used in the following way:</p>
 
               <ol>
-                <li>Extensions are available from <cite><a href="https://addons.mozilla.org/en-US/firefox/addon/dokieli/">Add-ons for Firefox</a></cite> and <cite><a href="https://chrome.google.com/webstore/detail/ddmhaonbhodhgkaljpjlglodncddalid">Chrome Web Store</a></cite>.</li>
+                <li>Clone the dokieli repository from <a href="https://github.com/linkeddata/dokieli">https://github.com/linkeddata/dokieli</a> (or forked copy) to your local machine.</li>
+                <li>
+                  <dl>
+                    <dt>Firefox</dt>
+                    <dd>From the "Add-ons and themes" menu, select "Debug Add-ons" (or go to <code>about:debugging#/runtime/this-firefox</code> from the addressbar) and import by selecting any file from the cloned dokieli directory (e.g., <code>manifest.json</code>). See also <a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Temporary_Installation_in_Firefox">temporary installation in Firefox</a>. Note that if you restart your browser, you'll need to go through this process.</dd>
 
-                <li>Clone <a href="https://github.com/linkeddata/dokieli">https://github.com/linkeddata/dokieli</a> and import directory:
-                  <ul>
-                    <li>Firefox: <q>Load Temporary Add-on</q> from Add-ons (or go to <code>about:debugging</code> from addressbar) and import by selecting a file from the directory (eg manifest.json). See also <a href="https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Temporary_Installation_in_Firefox">temporary add-on installation</a>.</li>
-                    <li>Chrome/Chromium: Check the <q>developer more</q> option, under <cite>Extensions</cite> (or go to <code>chrome://extensions/</code> from addressbar) and import the directory.</li>
-                  </ul>
+                    <dt>Chromium</dt>
+                    <dd>The general process for browsers such as Chrome, Brave, Vivaldi, <a href="https://en.wikipedia.org/wiki/Chromium_(web_browser)#Browsers_based_on_Chromium">etc.</a>, are as follows. From the "Extensions" menu (or go to <code>chrome://extensions/</code>, <code>brave://extensions</code>, <code>vivaldi://extensions/</code> from addressbar), check the "developer mode" option. Import the dokieli directory from "Load unpacked".</dd>
+                  </dl>
                 </li>
               </ol>
             </div>
