@@ -9,7 +9,7 @@
 import { getResource, setAcceptRDFTypes, postResource, putResource, currentLocation, patchResourceGraph, patchResourceWithAcceptPatch, putResourceWithAcceptPut, copyResource, deleteResource } from './fetcher.js'
 import { getDocument, getDocumentContentNode, escapeCharacters, showActionMessage, selectArticleNode, buttonClose, buttonRemoveAside, showRobustLinksDecoration, getResourceInfo, getResourceSupplementalInfo, removeNodesWithIds, getResourceInfoSKOS, removeReferences, buildReferences, removeSelectorFromNode, insertDocumentLevelHTML, getResourceInfoSpecRequirements, getTestDescriptionReviewStatusHTML, createFeedXML, getButtonDisabledHTML, showTimeMap, createMutableResource, createImmutableResource, updateMutableResource, createHTML, getResourceImageHTML, setDocumentRelation, setDate, getClosestSectionNode, getAgentHTML, setEditSelections, getNodeLanguage, createActivityHTML, createLicenseHTML, createLanguageHTML, getAnnotationInboxLocationHTML, getAnnotationLocationHTML, getResourceTypeOptionsHTML, getPublicationStatusOptionsHTML, getLanguageOptionsHTML, getLicenseOptionsHTML, getCitationOptionsHTML, getDocumentNodeFromString, getNodeWithoutClasses, getDoctype, setCopyToClipboard, addMessageToLog, updateDocumentDoButtonStates, updateFeatureStatesOfResourceInfo, accessModeAllowed, getAccessModeOptionsHTML } from './doc.js'
 import { getProxyableIRI, getPathURL, stripFragmentFromString, getFragmentOrLastPath, getFragmentFromString, getURLLastPath, getLastPathSegment, forceTrailingSlash, getBaseURL, getParentURLPath, encodeString, getAbsoluteIRI, generateDataURI } from './uri.js'
-import { getResourceGraph, traverseRDFList, getLinkRelation, getAgentName, getGraphImage, getGraphFromData, isActorType, isActorProperty, serializeGraph, getGraphLabel, getGraphConceptLabel, getUserContacts, getAgentOutbox, getAgentStorage, getAgentInbox, getLinkRelationFromHead, sortGraphTriples, getACLResourceGraph, getAccessSubjects, getAuthorizationsMatching } from './graph.js'
+import { getResourceGraph, traverseRDFList, getLinkRelation, getAgentName, getGraphImage, getGraphFromData, isActorType, isActorProperty, serializeGraph, getGraphLabel, getGraphLabelOrIRI, getGraphConceptLabel, getUserContacts, getAgentOutbox, getAgentStorage, getAgentInbox, getLinkRelationFromHead, sortGraphTriples, getACLResourceGraph, getAccessSubjects, getAuthorizationsMatching } from './graph.js'
 import { notifyInbox, sendNotifications, postActivity } from './inbox.js'
 import { uniqueArray, fragmentFromString, hashCode, generateAttributeId, escapeRegExp, sortToLower, getDateTimeISO, getDateTimeISOFromMDY, generateUUID, matchAllIndex, isValidISBN } from './util.js'
 import { generateGeoView } from './geo.js'
@@ -2143,10 +2143,7 @@ DO = {
 
       if(g.schemaeditor._array.length > 0) {
         g.schemaeditor.forEach(function(s){
-          var label = getGraphLabel(g.child(s));
-          if(typeof label !== 'undefined'){
-            editors.push('<li>' + label + '</li>');
-          }
+          editors.push('<li>' + getGraphLabelOrIRI(g.child(s)) + '</li>');
         });
         if(editors.length > 0){
           editors = '<tr class="people"><th>Editors</th><td><ul class="editors">' + editors.join('') + '</ul></td></tr>';
@@ -2155,10 +2152,7 @@ DO = {
 
       if(g.schemaauthor._array.length > 0) {
         g.schemaauthor.forEach(function(s){
-          var label = getGraphLabel(g.child(s));
-          if(typeof label !== 'undefined'){
-            authors.push('<li>' + label + '</li>');
-          }
+          authors.push('<li>' + getGraphLabelOrIRI(g.child(s)) + '</li>');
         });
         if(authors.length > 0){
           authors = '<tr class="people"><th>Authors</th><td><ul class="authors">' + authors.join('') + '</ul></td></tr>';
@@ -2167,10 +2161,7 @@ DO = {
 
       if(g.schemacontributor._array.length > 0) {
         g.schemacontributor.forEach(function(s){
-          var label = getGraphLabel(g.child(s));
-          if(typeof label !== 'undefined'){
-            contributors.push('<li>' + label + '</li>');
-          }
+          contributors.push('<li>' + getGraphLabelOrIRI(g.child(s)) + '</li>');
         });
         if(contributors.length > 0){
           contributors = '<tr class="people"><th>Contributors</th><td><ul class="contributors">' + contributors.join('') + '</ul></td></tr>';
