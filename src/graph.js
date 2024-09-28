@@ -1163,6 +1163,10 @@ function getGraphTitle(s) {
   return DOMPurify.sanitize(d)
 }
 
+function getGraphLabelOrIRI(s) {
+  return getGraphLabel(s) || s.iri().toString();
+}
+
 function getGraphConceptLabel(g, options) {
   var labels = {
     prefLabel: [],
@@ -1449,6 +1453,7 @@ export {
   getGraphRights,
   getGraphLabel,
   getGraphTitle,
+  getGraphLabelOrIRI,
   getGraphConceptLabel,
   getGraphDescription,
   getGraphTypes,
