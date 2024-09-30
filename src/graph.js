@@ -1132,17 +1132,17 @@ function getGraphPublishers(s) {
 
 function getGraphPublished(s) {
   var d = s.schemadatePublished || s.aspublished || s.dctermsissued || s.dctermsdate || s.provgeneratedAtTime || undefined;
-  return DOMPurify.sanitize(d)
+  return d === undefined ? undefined : DOMPurify.sanitize(d)
 }
 
 function getGraphUpdated(s) {
   var d = s.schemadateModified || s.asupdated || s.dctermsmodified || s.dctermsdate || s.provgeneratedAtTime || undefined;
-  return DOMPurify.sanitize(d)
+  return d === undefined ? undefined : DOMPurify.sanitize(d)
 }
 
 function getGraphCreated(s) {
   var d = s.schemadateCreated || s.dctermscreated || s.dctermsdate || s.provgeneratedAtTime || undefined;
-  return DOMPurify.sanitize(d)
+  return d === undefined ? undefined : DOMPurify.sanitize(d)
 }
 
 function getGraphLicense(s) {
@@ -1155,12 +1155,12 @@ function getGraphRights(s) {
 
 function getGraphLabel(s) {
   var d = s.schemaname || s.dctermstitle || s.dcelementstitle || getAgentName(s) || s.assummary || undefined;
-  return DOMPurify.sanitize(d)
+  return d === undefined ? undefined : DOMPurify.sanitize(d)
 }
 
 function getGraphTitle(s) {
   var d = s.schemaname || s.dctermstitle || s.dcelementstitle || s.asname || undefined;
-  return DOMPurify.sanitize(d)
+  return d === undefined ? undefined : DOMPurify.sanitize(d)
 }
 
 function getGraphLabelOrIRI(s) {
@@ -1240,7 +1240,7 @@ function getGraphConceptLabel(g, options) {
 
 function getGraphDescription(s) {
   var d = s.schemadescription || s.dctermsdescription || s.dcelementsdescription || s.schemaname || s.asname || undefined;
-  return DOMPurify.sanitize(d)
+  return d === undefined ? undefined : DOMPurify.sanitize(d)
 }
 function getGraphTypes(s) {
   return s.rdftype._array;
