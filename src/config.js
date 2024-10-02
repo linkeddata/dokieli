@@ -625,6 +625,10 @@ export default {
     "oamotivatedBy": { "@id": "http://www.w3.org/ns/oa#motivatedBy", "@type": "@id" },
     "oaannotationService": { "@id": "http://www.w3.org/ns/oa#annotationService", "@type": "@id", "@array": true },
 
+    "asObject": { "@id": "https://www.w3.org/ns/activitystreams#Object", "@type": "@id" },
+    "asActivity": { "@id": "https://www.w3.org/ns/activitystreams#Activity", "@type": "@id" },
+    "asLike": { "@id": "https://www.w3.org/ns/activitystreams#Like", "@type": "@id" },
+    "asDislike": { "@id": "https://www.w3.org/ns/activitystreams#Dislike", "@type": "@id" },
     "asApplication": { "@id": "https://www.w3.org/ns/activitystreams#Application", "@type": "@id" },
     "asGroup": { "@id": "https://www.w3.org/ns/activitystreams#Group", "@type": "@id" },
     "asOrganization": { "@id": "https://www.w3.org/ns/activitystreams#Organization", "@type": "@id" },
