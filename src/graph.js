@@ -867,7 +867,7 @@ function getAgentTypeIndex(iri) {
             var p = t.predicate.nominalValue;
             var o = t.object.nominalValue;
 
-            if(typeIndexes[s]) {
+            if(typeIndexes[typeIndexType][s]) {
               if (p == Config.Vocab['solidinstance']['@id'] ||
                   p == Config.Vocab['solidinstanceContainer']['@id']) {
                 typeIndexes[typeIndexType][s][p] = o;
