@@ -210,6 +210,33 @@ DO = {
 
       var promises = []
 
+      if (DO.C.User.TypeIndex) {
+        var publicTypeIndexes = DO.C.User.TypeIndex[DO.C.Vocab['solidpublicTypeIndex']['@id']] || {};
+        var privateTypeIndexes = DO.C.User.TypeIndex[DO.C.Vocab['solidprivateTypeIndex']['@id']] || {};
+        //XXX: Perhaps these shouldn't be merged and kept apart or have the UI clarify what's public/private.
+        var typeIndexes = Object.assign({}, publicTypeIndexes, privateTypeIndexes);
+
+// console.log(typeIndexes);
+        Object.keys(typeIndexes).forEach(tR => {
+          var typeRegistration = typeIndexes[tR];
+          var forClass = typeRegistration[DO.C.Vocab['solidforClass']['@id']];
+          var instance = typeRegistration[DO.C.Vocab['solidinstance']['@id']];
+          var instanceContainer = typeRegistration[DO.C.Vocab['solidinstanceContainer']['@id']];
+
+          //XXX: as:Like/Dislike for now:
+          var checkActivityTypes = [DO.C.Vocab['asActivity']['@id'], DO.C.Vocab['asLike']['@id'], DO.C.Vocab['asDislike']['@id']];
+          if (checkActivityTypes.includes(forClass)) {
+// console.log(forClass)
+            if (instance) {
+              DO.U.showActivitiesSources(instance);
+            }
+            if (instanceContainer) {
+              DO.U.showActivitiesSources(instanceContainer);
+            }
+          }
+        });
+      }
+
       if (DO.C.User.Storage && DO.C.User.Storage.length > 0) {
         if(DO.C.User.Outbox && DO.C.User.Outbox.length > 0) {
           if(DO.C.User.Storage[0] == DO.C.User.Outbox[0]) {
