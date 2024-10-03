@@ -455,7 +455,8 @@ function traverseRDFList(g, resource) {
 }
 
 function getResourceGraph (iri, headers, options = {}) {
-  let defaultHeaders = {'Accept': setAcceptRDFTypes() + ',*/*;q=0.1'}
+  let wildCard = options.excludeMarkup ? '' : ',*/*;q=0.1';
+  let defaultHeaders = {'Accept': setAcceptRDFTypes(options) + wildCard}
   headers = headers || defaultHeaders
   if (!('Accept' in headers)) {
     Object.assign(headers, defaultHeaders)
