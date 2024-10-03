@@ -210,32 +210,31 @@ DO = {
 
       var promises = []
 
+      var documentTypes = DO.C.ActivitiesObjectTypes.concat(Object.keys(DO.C.ResourceType));
+
       if (DO.C.User.TypeIndex) {
         var publicTypeIndexes = DO.C.User.TypeIndex[DO.C.Vocab['solidpublicTypeIndex']['@id']] || {};
         var privateTypeIndexes = DO.C.User.TypeIndex[DO.C.Vocab['solidprivateTypeIndex']['@id']] || {};
-        //XXX: Perhaps these shouldn't be merged and kept apart or have the UI clarify what's public/private.
+        //XXX: Perhaps these shouldn't be merged and kept apart or have the UI clarify what's public/private, and additional engagements keep that context
         var typeIndexes = Object.assign({}, publicTypeIndexes, privateTypeIndexes);
 
-// console.log(typeIndexes);
-        Object.keys(typeIndexes).forEach(tR => {
-          var typeRegistration = typeIndexes[tR];
+        Object.values(typeIndexes).forEach(typeRegistration => {
           var forClass = typeRegistration[DO.C.Vocab['solidforClass']['@id']];
           var instance = typeRegistration[DO.C.Vocab['solidinstance']['@id']];
           var instanceContainer = typeRegistration[DO.C.Vocab['solidinstanceContainer']['@id']];
 
-          //XXX: as:Like/Dislike for now:
-          var checkActivityTypes = [DO.C.Vocab['asActivity']['@id'], DO.C.Vocab['asLike']['@id'], DO.C.Vocab['asDislike']['@id']];
-          if (checkActivityTypes.includes(forClass)) {
-// console.log(forClass)
+          if (documentTypes.includes(forClass)) {
             if (instance) {
-              DO.U.showActivitiesSources(instance);
+              DO.U.showActivities(instance, { excludeMarkup: true });
             }
             if (instanceContainer) {
-              DO.U.showActivitiesSources(instanceContainer);
+              DO.U.showActivitiesSources(instanceContainer, { activityType: 'instanceContainer' });
             }
           }
         });
       }
+
+      //XXX: Consider whether to look into Storage/Outbox if TypeIndex exists or in what specific cases
 
       if (DO.C.User.Storage && DO.C.User.Storage.length > 0) {
         if(DO.C.User.Outbox && DO.C.User.Outbox.length > 0) {
@@ -254,6 +253,8 @@ DO = {
       else if (DO.C.User.Outbox && DO.C.User.Outbox.length > 0) {
         DO.U.showActivitiesSources(DO.C.User.Outbox[0])
       }
+
+      //TODO: Process contact's TypeIndex
 
       if (DO.C.User.Contacts && Object.keys(DO.C.User.Contacts).length > 0){
         var sAS = function(iri) {
@@ -323,8 +324,8 @@ DO = {
       }
     },
 
-    showActivitiesSources: function(url) {
-      return DO.U.getActivities(url).then(
+    showActivitiesSources: function(url, options = {}) {
+      return DO.U.getActivities(url, options).then(
         function(items) {
           var promises = [];
 
@@ -342,7 +343,7 @@ DO = {
           return Promise.all(promises);
         },
         function(reason) {
-          console.log('No activities');
+          console.log(url + ' has no activities.');
           return reason;
         }
       );
@@ -352,18 +353,27 @@ DO = {
       url = url || window.location.origin + window.location.pathname;
       var pIRI = getProxyableIRI(url);
 
-      options = options || {};
-      return DO.U.getItemsList(pIRI, options);
+      switch (options['activityType']) {
+        default:
+        case 'instanceContainer':
+          return DO.U.getItemsList(pIRI);
+        case 'instance':
+          return DO.U.showActivities(pIRI);
+      }
     },
 
-    showActivities: function(url) {
+    showActivities: function(url, options = {}) {
+      options['headers'] = options.headers || {};
+
       DO.C.Notification[url] = {};
       DO.C.Notification[url]['Activities'] = [];
 
       var pIRI = getProxyableIRI(url);
       var documentURL = DO.C.DocumentURL;
 
-      return getResourceGraph(pIRI).then(
+      var documentTypes = DO.C.ActivitiesObjectTypes.concat(Object.keys(DO.C.ResourceType));
+
+      return getResourceGraph(pIRI, options.headers, options).then(
         function(g) {
           DO.C.Notification[url]['Graph'] = g;
 
@@ -560,6 +570,10 @@ DO = {
                 }
               }
               else if(resourceTypes.indexOf('http://www.w3.org/ns/oa#Annotation') > -1 && getPathURL(s.oahasTarget) == currentPathURL && !subjectsReferences.includes(i)) {
+                return DO.U.showAnnotation(i, s);
+              }
+              else if (!subjectsReferences.includes(i) && documentTypes.some(item => resourceTypes.includes(item)) && s.asinReplyTo && s.asinReplyTo.at(0) && getPathURL(s.asinReplyTo.at(0)) == currentPathURL) {
+                  subjectsReferences.push(i);
                 return DO.U.showAnnotation(i, s);
               }
               else {
