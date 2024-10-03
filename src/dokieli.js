@@ -74,7 +74,6 @@ DO = {
 
             var items = [s.asitems, s.asorderedItems, s.ldpcontains];
             Object.keys(items).forEach(function(i) {
-// console.log(items)
               items[i].forEach(function(resource){
 // console.log(resource)
 
@@ -7443,7 +7442,7 @@ console.log(response)
             author = DO.U.createRefName(s.foaffamilyName, s.foafgivenName);
           }
 
-          if (author !== '') {
+          if (author) {
             authors.push(author);
           }
           else {
@@ -8546,7 +8545,7 @@ WHERE {\n\
               hasTarget += ' (<a about="' + n.target.iri + '" href="' + n.target.source +'" rel="oa:hasSource" typeof="oa:SpecificResource">part of</a>)';
             }
 
-            var targetLanguage = ('language' in n.target && n.target) ? '<dl><dt>Language</dt><dd><span lang="" property="dcterms:language" xml:lang="">' + n.target.language + '</span></dd></dl>': '';
+            var targetLanguage = (typeof n.target !== 'undefined' && 'language' in n.target) ? '<dl><dt>Language</dt><dd><span lang="" property="dcterms:language" xml:lang="">' + n.target.language + '</span></dd></dl>': '';
 
             target ='<dl class="target"><dt>' + hasTarget + '</dt>';
             if (typeof n.target !== 'undefined' && typeof n.target.selector !== 'undefined') {
