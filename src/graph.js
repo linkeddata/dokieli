@@ -958,7 +958,7 @@ function getAgentName (s) {
       name = s.vcardnickname
     }
   }
-  return DOMPurify.sanitize(name)
+  return name === undefined ? undefined : DOMPurify.sanitize(name)
 }
 
 function getAgentURL (s) {
