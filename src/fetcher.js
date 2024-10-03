@@ -10,16 +10,14 @@ const LDP_RESOURCE = '<http://www.w3.org/ns/ldp#Resource>; rel="type"'
 
 const __fetch = solidAuth.fetch;
 
-function setAcceptRDFTypes(options) {
-  options = options || {};
-
-  return Config.MediaTypes.RDF.map(i => {
-    if (Config.MediaTypes.Markup.indexOf(i) > -1) {
-      // q = Number(Math.round((q-0.1)+'e2')+'e-2');
-      return i + ';q=0.9';
-    }
-    return i;
-  }).join(',');
+function setAcceptRDFTypes(options = {}) {
+  const excludeMarkup = options.excludeMarkup || false;
+  
+  return Config.MediaTypes.RDF.filter(i => !excludeMarkup || Config.MediaTypes.Markup.indexOf(i) === -1)
+    .map(i => {
+      return Config.MediaTypes.Markup.indexOf(i) > -1 ? `${i};q=0.9` : i;
+    })
+    .join(',');
 }
 
 // I want HTTP COPY and I want it now!
