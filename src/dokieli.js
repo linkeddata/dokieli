@@ -4690,7 +4690,7 @@ console.log(e);
 // console.log(iri.toString());
 
       var id = encodeURIComponent(iri);
-      var name = s ? getAgentName(s) : iri;
+      var name = s ? getAgentName(s) || iri : iri;
       var img = s ? getGraphImage(s) : null;
       if (!(img && img.length > 0)) {
         img = generateDataURI('image/svg+xml', 'base64', Icon['.fas.fa-user-secret']);
