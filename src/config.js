@@ -414,6 +414,16 @@ export default {
     }
   },
 
+  ActivitiesObjectTypes: [
+    'https://www.w3.org/ns/activitystreams#Activity',
+    'https://www.w3.org/ns/activitystreams#Like',
+    'https://www.w3.org/ns/activitystreams#Dislike',
+    'https://www.w3.org/ns/activitystreams#Article',
+    'https://www.w3.org/ns/activitystreams#Note',
+    'https://www.w3.org/ns/activitystreams#Document',
+    'http://www.w3.org/ns/oa#Annotation'
+  ],
+
   MediaTypes: {
     RDF: ['text/turtle', 'application/ld+json', 'application/activity+json', 'text/html', 'image/svg+xml', 'text/markdown', 'application/rdf+xml'],
 
