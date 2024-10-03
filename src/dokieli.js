@@ -46,6 +46,7 @@ DO = {
       options = options || {};
       options['resourceItems'] = options.resourceItems || [];
       options['headers'] = options.headers || {};
+      options['excludeMarkup'] = true;
 
       DO.C['CollectionItems'] = DO.C['CollectionItems'] || {};
       DO.C['CollectionPages'] = ('CollectionPages' in DO.C && DO.C.CollectionPages.length > 0) ? DO.C.CollectionPages : [];
