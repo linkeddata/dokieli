@@ -8441,13 +8441,15 @@ WHERE {\n\
       }
 
       var creatorName = '';
-      creatorNameIRI = DO.C.SecretAgentNames[Math.floor(Math.random() * DO.C.SecretAgentNames.length)];
       var creatorIRI = '#' + generateAttributeId();
+      // creatorNameIRI = DO.C.SecretAgentNames[Math.floor(Math.random() * DO.C.SecretAgentNames.length)];
 
       if ('creator' in n) {
         if('iri' in n.creator) {
           creatorIRI = n.creator.iri;
         }
+
+        creatorName = creatorIRI;
 
         if('name' in n.creator) {
           creatorName = n.creator.name;
@@ -8457,6 +8459,11 @@ WHERE {\n\
           creatorName = DO.C.User.Name;
           creatorNameIRI = '<span about="' + creatorIRI + '" property="schema:name">' + creatorName + '</span>';
         }
+        //XXX: This could potentially incorporate checking the sameAses of all contacts to match creatorIRI
+        else if (DO.C.User.Contacts[creatorIRI].Name && DO.C.User.Contacts[creatorIRI]) {
+          creatorName = DO.C.User.Contacts[creatorIRI].Name;
+          creatorNameIRI = creatorName;
+        }
 
         var img = generateDataURI('image/svg+xml', 'base64', Icon['.fas.fa-user-secret']);
         if ('image' in n.creator) {
@@ -8464,6 +8471,9 @@ WHERE {\n\
         }
         else if (DO.C.User.Image && (creatorIRI == DO.C.User.IRI || DO.C.User.SameAs.includes(creatorIRI))) {
           img = (n.mode == 'read') ? getProxyableIRI(DO.C.User.Image) : DO.C.User.Image;
+        }
+        else {
+          img = (DO.C.User.Contacts[creatorIRI] && DO.C.User.Contacts[creatorIRI].Image) ? DO.C.User.Contacts[creatorIRI].Image : img;
         }
         creatorImage = '<img alt="" height="48" rel="schema:image" src="' + img + '" width="48" /> ';
 
