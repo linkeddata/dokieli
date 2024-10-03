@@ -8441,22 +8441,31 @@ WHERE {\n\
       }
 
       var creatorName = '';
+      creatorNameIRI = DO.C.SecretAgentNames[Math.floor(Math.random() * DO.C.SecretAgentNames.length)];
       var creatorIRI = '#' + generateAttributeId();
+
       if ('creator' in n) {
-        if ('image' in n.creator) {
-          var img = (n.mode == 'read') ? getProxyableIRI(n.creator.image) : n.creator.image;
-          creatorImage = '<img alt="" height="48" rel="schema:image" src="' + img + '" width="48" /> ';
-        }
         if('iri' in n.creator) {
           creatorIRI = n.creator.iri;
         }
+
         if('name' in n.creator) {
           creatorName = n.creator.name;
           creatorNameIRI = '<span about="' + creatorIRI + '" property="schema:name">' + creatorName + '</span>';
         }
-        else {
-          creatorNameIRI = DO.C.SecretAgentNames[Math.floor(Math.random() * DO.C.SecretAgentNames.length)];
+        else if (DO.C.User.Name && (creatorIRI == DO.C.User.IRI || DO.C.User.SameAs.includes(creatorIRI))) {
+          creatorName = DO.C.User.Name;
+          creatorNameIRI = '<span about="' + creatorIRI + '" property="schema:name">' + creatorName + '</span>';
         }
+
+        var img = generateDataURI('image/svg+xml', 'base64', Icon['.fas.fa-user-secret']);
+        if ('image' in n.creator) {
+          img = (n.mode == 'read') ? getProxyableIRI(n.creator.image) : n.creator.image;
+        }
+        else if (DO.C.User.Image && (creatorIRI == DO.C.User.IRI || DO.C.User.SameAs.includes(creatorIRI))) {
+          img = (n.mode == 'read') ? getProxyableIRI(DO.C.User.Image) : DO.C.User.Image;
+        }
+        creatorImage = '<img alt="" height="48" rel="schema:image" src="' + img + '" width="48" /> ';
 
         creatorURLNameIRI = ('url' in n.creator) ? '<a href="' + n.creator.url + '" rel="schema:url">' + creatorNameIRI + '</a>' : '<a href="' + creatorIRI + '">' + creatorNameIRI + '</a>';
 
