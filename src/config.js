@@ -424,6 +424,12 @@ export default {
     'http://www.w3.org/ns/oa#Annotation'
   ],
 
+  CollectionTypes: [
+    'https://www.w3.org/ns/activitystreams#Collection',
+    'https://www.w3.org/ns/activitystreams#OrderedCollection',
+    'http://www.w3.org/ns/ldp#Container'
+  ],
+
   MediaTypes: {
     RDF: ['text/turtle', 'application/ld+json', 'application/activity+json', 'text/html', 'image/svg+xml', 'text/markdown', 'application/rdf+xml'],
 
