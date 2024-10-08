@@ -151,26 +151,24 @@ For the scholars among us, see the authoring guidelines below. View the [ACM SIG
 
 ## Contributors
 
-* [Amy Guy](https://github.com/rhiaro)
+<a href="https://github.com/dokieli/dokieli/graphs/contributors">
+<img src="https://opencollective.com/dokieli/contributors.svg?width=890" />
+</a>
+
+## Acknowledgements
+
+We would also like to express our gratitude to the following individuals for their support:
+
 * [Amy van der Hiel](https://github.com/amyvdh)
 * [Andrei Vlad Sambra](https://github.com/deiu)
 * [Ben Companjen](https://github.com/bencomp)
 * [Benjamin Young](https://github.com/bigbluehat)
-* [Chris Chapman](https://github.com/cdchapman)
-* [Dmitri Zagidulin](https://github.com/dmitrizagidulin)
 * [Gerben Treora](https://github.com/treora)
 * [Henry Story](https://github.com/bblfish)
 * [Herbert Van de Sompel](https://github.com/hvdsomp)
 * [Kingsley Idehen](https://github.com/kidehen)
 * [Melvin Carvalho](https://github.com/melvincarvalho)
-* [Nicola Greco](https://github.com/nicola)
-* [Pascal Christoph](https://github.com/dr0i)
-* [Renato Stauffer](https://github.com/reni99)
-* [Ruben Taelman](https://github.com/rubensworks)
 * [Ruben Verborgh](https://github.com/RubenVerborgh)
 * [Sandro Hawke](https://github.com/sandhawke)
-* [Sarven Capadisli](https://github.com/csarven) (maintainer)
-* [Sergey Malinin](https://github.com/smalinin)
 * [Thomas Bergwinkl](https://github.com/bergos)
 * [Tim Berners-Lee](https://github.com/timbl)
-* [Virginia Balseiro](https://github.com/VirginiaBalseiro)
