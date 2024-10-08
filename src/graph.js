@@ -25,7 +25,7 @@ function getGraphFromData (data, options = {}) {
   }
 
   // FIXME: These are fugly but a temporary fix to get around the baseURI not being passed to the DOM parser. This injects the `base` element into the document so that the parsers fallsback to that. The actual fix should happen upstream. See related issues:
-  // https://github.com/linkeddata/dokieli/issues/132
+  // https://github.com/dokieli/dokieli/issues/132
   // https://github.com/rdf-ext/rdf-parser-dom/issues/2
   // https://github.com/rdf-ext/rdf-parser-rdfa/issues/3
   // https://github.com/simplerdf/simplerdf/issues/19
