@@ -92,9 +92,9 @@ explains dokieli's principles, architectural and design patterns.
 * Message log.
 * Document metadata.
 * Views for screen and print (e.g., ACM, LNCS) - yes, you can output to a *paper user interface*: PDF
-* .. and [many more on the way](https://github.com/linkeddata/dokieli/issues/).
+* .. and [many more on the way](https://github.com/dokieli/dokieli/issues/).
 
-Let's make it so together! You are welcome to create [issues](https://github.com/linkeddata/dokieli/issues/), [discuss](https://gitter.im/linkeddata/dokieli), or pull requests.
+Let's make it so together! You are welcome to create [issues](https://github.com/dokieli/dokieli/issues/), [discuss](https://gitter.im/dokieli/dokieli), or pull requests.
 
 ## Screencasts
 
@@ -115,7 +115,7 @@ Let's make it so together! You are welcome to create [issues](https://github.com
 ## Examples
 
 See the growing list of [examples in the
-wild](https://github.com/linkeddata/dokieli/wiki#examples-in-the-wild). Add
+wild](https://github.com/dokieli/dokieli/wiki#examples-in-the-wild). Add
 the URLs of your articles or interactions to the list.
 
 This repository is published and accessible from

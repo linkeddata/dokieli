@@ -14,7 +14,7 @@
     "postinstall": "patch-package",
     "lint": "eslint ."
   },
-  "repository": "https://github.com/linkeddata/dokieli",
+  "repository": "https://github.com/dokieli/dokieli",
   "keywords": [
     "activitystreams",
     "activitypub",
@@ -32,7 +32,7 @@
   "author": "dokieli team",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/linkeddata/dokieli/issues"
+    "url": "https://github.com/dokieli/dokieli/issues"
   },
   "homepage": "https://dokie.li/",
   "engines": {

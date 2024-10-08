@@ -42,7 +42,7 @@
 
           <dl id="document-feedback">
             <dt>Feedback</dt>
-            <dd><a href="https://github.com/linkeddata/dokieli" rel="doap:repository">GitHub linkeddata/dokieli</a> (<a href="https://github.com/lineddata/dokieli/pulls">pull requests</a>, <a href="https://github.com/lineddata/dokieli/issues/new">new issue</a>, <a href="https://github.com/lineddata/dokieli/issues" rel="doap:bug-database">open issues</a>)</dd>
+            <dd><a href="https://github.com/dokieli/dokieli" rel="doap:repository">GitHub dokieli/dokieli</a> (<a href="https://github.com/dokieli/dokieli/pulls">pull requests</a>, <a href="https://github.com/dokieli/dokieli/issues/new">new issue</a>, <a href="https://github.com/dokieli/dokieli/issues" rel="doap:bug-database">open issues</a>)</dd>
           </dl>
 
           <dl id="document-language">
@@ -772,7 +772,7 @@
                   <section id="accessibility-feedback" inlist="" rel="schema:hasPart" resource="#accessibility-feedback">
                     <h4 property="schema:name">Feedback</h4>
                     <div datatype="rdf:HTML" property="schema:description">
-                      <p>We welcome your feedback on the accessibility of dokieli. Please let us know if you encounter accessibility barriers on <a href="https://github.com/linkeddata/dokieli/issues">dokieli issues</a>.</p>
+                      <p>We welcome your feedback on the accessibility of dokieli. Please let us know if you encounter accessibility barriers on <a href="https://github.com/dokieli/dokieli/issues">dokieli issues</a>.</p>
                     </div>
                   </section>
 
@@ -934,7 +934,7 @@
               <p>Currently the extension works with Firefox and Chromium browsers. The extension can be used in the following way:</p>
 
               <ol>
-                <li>Clone the dokieli repository from <a href="https://github.com/linkeddata/dokieli">https://github.com/linkeddata/dokieli</a> (or forked copy) to your local machine.</li>
+                <li>Clone the dokieli repository from <a href="https://github.com/dokieli/dokieli">https://github.com/dokieli/dokieli</a> (or forked copy) to your local machine.</li>
                 <li>
                   <dl>
                     <dt>Firefox</dt>
@@ -951,7 +951,7 @@
           <section id="development" inlist="" rel="schema:hasPart" resource="#development">
             <h2 property="schema:name">Development</h2>
             <div datatype="rdf:HTML" property="schema:description">
-<pre><code>git clone https://github.com/linkeddata/dokieli</code>
+<pre><code>git clone https://github.com/dokieli/dokieli</code>
 <code>cd dokieli</code>
 <code></code>
 <code># Install packages</code>
