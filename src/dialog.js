@@ -26,7 +26,7 @@ import { accessModeAllowed, accessModePossiblyAllowed } from './access.js';
 import { domSanitize, sanitizeInsertAdjacentHTML, sanitizeIRI, sanitizeObject, htmlEncode, sanitizeIRIs } from './utils/sanitization.js';
 import { escapeRDFLiteral, generateAttributeId, getDefaultDocumentBasename } from './util.js';
 import { setAcceptRDFTypes } from './fetcher.js';
-import { forceTrailingSlash, generateDataURI, getBaseURL, isHttpOrHttpsProtocol, isFileProtocol, stripFragmentFromString, getFragmentFromString, getURLLastPath, currentLocation } from './uri.js';
+import { forceTrailingSlash, generateDataURI, getBaseURL, isHttpOrHttpsProtocol, isFileProtocol, stripFragmentFromString, getFragmentFromString, getURLLastPath, currentLocation, getUrlParams } from './uri.js';
 import { getAgentInbox, getAgentName, getGraphAuthors, getGraphContributors, getGraphEditors, getGraphImage, getGraphLabelOrIRI, getGraphPerformers, getGraphTypes, getLinkRelation, getLinkRelationFromHead, getResourceGraph, getUserContacts, getUserLabelOrIRI, serializeData, getSubjectInfo, getRDFSerializer, getGraphCreators } from './graph.js';
 import { hasControl, planGrant, planOwnerControl, planRevoke, Public } from '@dokieli/web-access-control';
 import { applyACLPlan, cachedACLContext, expandAccessMode, getACLContext } from './wac.js';
@@ -97,6 +97,7 @@ export function initDocumentMenu(options = {}) {
     docReady = true;
     enableMenu();
     handleEntryRoutes();
+    handleFileLaunch();
   }, { once: true });
 
   document.addEventListener('dokieli:auth-ready', () => {
@@ -121,30 +122,34 @@ export function initDocumentMenu(options = {}) {
   
 }
 
-// App shortcut and share_target entry points, e.g. /?open, /?inbox, /?url=<shared>
+// App shortcut and share_target entry points. Reads the URL fragment first, then the query
+// (e.g. /?notifications and share_target's ?url=/?text=), matching getUrlParams' precedence.
+// open=<url> resource opening is owned by initDocumentMode, so only a bare open (dialog) is routed here.
 function handleEntryRoutes() {
   const params = new URLSearchParams(window.location.search);
-  const routeKeys = ['open', 'inbox', 'url', 'text', 'title'];
-  if (!routeKeys.some(k => params.has(k))) return;
+  const routeKeys = ['open', 'notifications', 'url', 'text', 'title'];
 
+  const wantsNotifications = getUrlParams('notifications').length > 0;
+  const wantsOpenDialog = params.has('open') && !params.get('open');
   const sharedText = params.get('text') || '';
   const sharedURL = params.get('url') || sharedText.match(/https?:\/\/\S+/)?.[0];
-  const openTarget = params.get('open') || sharedURL;
-  const wantsInbox = params.has('inbox');
-  const wantsOpenDialog = params.has('open') && !params.get('open');
+
+  // open=<url> is handled by initDocumentMode; leave it and its #open= state untouched to avoid a second open
+  if (!wantsNotifications && !wantsOpenDialog && !sharedURL) return;
 
   routeKeys.forEach(k => params.delete(k));
   const query = params.toString();
+  // Drops the fragment too, clearing a #notifications trigger so a reload does not re-fire it
   history.replaceState(null, '', window.location.pathname + (query ? '?' + query : ''));
 
-  if (wantsInbox) {
+  if (wantsNotifications) {
     showNotifications();
     return;
   }
 
-  if (openTarget && !wantsOpenDialog) {
+  if (sharedURL) {
     try {
-      const u = new URL(openTarget);
+      const u = new URL(sharedURL);
       if (u.protocol === 'http:' || u.protocol === 'https:') {
         openResource(u.href);
         return;
@@ -152,7 +157,7 @@ function handleEntryRoutes() {
     } catch {}
   }
 
-  if (wantsOpenDialog || params.size === 0) {
+  if (wantsOpenDialog) {
     openDocument();
   }
 }
@@ -7039,52 +7044,76 @@ export function showExtendedConcepts() {
 }
 
 
-export function openInputFile(e) {
-  let files = Array.from(e.target.files); 
-  let options = { 'init': true };
+// Browsers report an empty or unreliable file.type for .md/.xhtml, so infer from the extension
+function getFileMediaType(file) {
+  const type = (file.type || '').split(';')[0].toLowerCase().trim();
+  if (type) return type;
 
-  let readers = files.map(file => {
-    return new Promise((resolve, reject) => {
-      let reader = new FileReader();
-      reader.onload = () => {
-        resolve({
-          name: file.name,
-          type: file.type,
-          content: reader.result
-        });
-      };
-      reader.onerror = reject;
-      reader.readAsText(file);
-    });
-  });
+  const ext = file.name.toLowerCase().match(/\.[^./\\]+$/)?.[0];
+  const byExtension = {
+    '.html': 'text/html',
+    '.htm': 'text/html',
+    '.xhtml': 'application/xhtml+xml',
+    '.md': 'text/markdown',
+    '.markdown': 'text/markdown',
+    '.svg': 'image/svg+xml',
+    '.csv': 'text/csv',
+    '.txt': 'text/plain'
+  };
+  return byExtension[ext] || 'text/plain';
+}
 
-  Promise.all(readers).then(results => {
+// Read File objects and hand them to dokieli. Shared by the open dialog and the file launch handler.
+export function openFiles(fileList, options = {}) {
+  let files = Array.from(fileList);
+
+  let readers = files.map(file => file.text().then(content => ({
+    name: file.name,
+    type: getFileMediaType(file),
+    content
+  })));
+
+  return Promise.all(readers).then(results => {
     let contentType = results.length === 1 ? results[0].type : "application/octet-stream";
     let iris = results.map(r => 'file:' + r.name)
 
-    let filesUrls = iris.map((url) => `<a href="${url} rel="noopener" target="_blank">${url}</a>`);
+    let filesUrls = iris.map((url) => `<a href="${url}" rel="noopener" target="_blank">${url}</a>`);
     let urlsHtml = filesUrls.join(', ');
     var message = `Opening ${urlsHtml}`;
-    var actionMessage = `Opening ${urlsHtml}`;
 
     const messageObject = {
-      'content': actionMessage,
+      'content': message,
       'type': 'info',
       'timer': 10000
     }
 
-    addMessageToLog({...messageObject, content: message}, Config.MessageLog);
-    const messageId = showActionMessage(document.body, messageObject);
+    addMessageToLog(messageObject, Config.MessageLog);
+    showActionMessage(document.body, messageObject);
 
-    spawnDokieli(
+    return spawnDokieli(
       document,
-      results, 
+      results,
       contentType,
       iris,
-      options
+      { 'init': true, ...options }
     );
   }).catch(err => {
     console.error("Error reading files:", err);
+  });
+}
+
+export function openInputFile(e) {
+  return openFiles(e.target.files);
+}
+
+// PWA file handler: OS "Open with dokieli" for registered types (see app.webmanifest file_handlers)
+export function handleFileLaunch() {
+  if (!('launchQueue' in window) || !('LaunchParams' in window)) return;
+
+  window.launchQueue.setConsumer(async (launchParams) => {
+    if (!launchParams?.files?.length) return;
+    const files = await Promise.all(launchParams.files.map(handle => handle.getFile()));
+    openFiles(files);
   });
 }
 
@@ -7166,6 +7195,12 @@ export async function spawnDokieli(documentNode, data, contentTypes, iris, optio
       case 'text/html': case 'application/xhtml+xml':
         // if multiple HTML files come in, just open the first for now
         tmpl.documentElement.setHTMLUnsafe(files[0].content);
+        tmpl.body.setHTMLUnsafe(domSanitize(tmpl.body.getHTML()));
+        break;
+
+      case 'text/markdown': case 'text/plain':
+        // Parse markdown to an HTML document, mirroring the URL open path
+        tmpl.documentElement.setHTMLUnsafe(parseMarkdown(files[0].content, { createDocument: true }));
         tmpl.body.setHTMLUnsafe(domSanitize(tmpl.body.getHTML()));
         break;
 
