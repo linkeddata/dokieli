@@ -2063,50 +2063,29 @@ vertical-align:middle;
 margin-top:1em;
 margin-bottom: 0.5em;
 }
-#share-resource-permissions,
 #share-resource-share-url {
 padding-bottom:1em;
 border-bottom:1px solid var(--do-color-border);
 }
-#share-resource-permissions > ul {
-width:60%;
+#share-resource-permissions .permissions li:not(:first-child) {
+margin-top:0.5em;
 }
-/* Avatar, name, select, notify in fixed columns; a warning spans under the row */
-#share-resource-permissions .permissions li {
-display:grid;
-grid-template-columns:2.5em minmax(0, 1fr) 9em auto;
-grid-template-areas:
-  "img name select notify"
-  "img warning warning warning";
-align-items:center;
-column-gap:0.5em;
-row-gap:0.25em;
-min-height:3em;
-margin-bottom:0.75em;
-}
-#share-resource-permissions .permissions li > img {
-grid-area:img;
-}
-/* A missing name shows the WebID instead, which would otherwise wrap. */
 #share-resource-permissions .permissions li > a {
-grid-area:name;
-min-width:0;
-overflow:hidden;
-text-overflow:ellipsis;
-white-space:nowrap;
+display:inline-block;
+width:30%;
+line-height:1;
+vertical-align:middle;
+border-bottom: none;
 }
 #share-resource-permissions > ul li select {
-grid-area:select;
-justify-self:start;
+margin-top:-0.25em;
+margin-left: 10%;
 }
-#share-resource-permissions .permissions li > .notify {
-grid-area:notify;
-display:inline-flex;
-align-items:center;
-gap:0.25em;
+#share-resource-permissions .autocomplete {
+clear:both;
 }
-#share-resource-permissions .permissions li > .warning {
-grid-area:warning;
+#share-resource-permissions .suggestions {
+position:static;
 }
 #share-resource-contacts li > .warning {
 margin-left:0.5em;
@@ -4458,7 +4437,7 @@ content:"";
 aside.do.on fieldset p {
 margin:0.5em 0;
 }
-aside.do.on .response-message {
+aside.do.on .response-message:not(:empty) {
 margin-top:1em;
 }
 aside.do.on h2,
@@ -4556,7 +4535,7 @@ display: inline-flex;
 font-size: 1em;
 font-weight: bold;
 margin: 1em 0;
-padding: 0.9em 1.25em;
+padding: 1em 1.25em;
 color: var(--do-color-on-color);
 border:none;
 transition: opacity 0.3s;
