@@ -1310,7 +1310,7 @@ async function shareResourceWithAgents(tos, note, iri, shareResourceNode) {
   for (const to of tos) {
     const found = await getAgentEncryptionKey(to);
     if (found) {
-      addDocumentRecipient(to, found.key);
+      addDocumentRecipient(documentURL, to, found.key);
       recipients.push(to);
     }
     else {

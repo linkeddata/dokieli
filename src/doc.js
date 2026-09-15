@@ -2213,7 +2213,7 @@ export async function createMutableResource(url, data, options) {
 
   // First serialize: document carries the mutableURL identifier (rel:latest-version).
   data = getDocument(null, documentOptions);
-  if (Config.User.Keys?.Encryption?.Enabled && Config.User.Keys?.Encryption?.DocumentEncrypt) data = await encryptArticlePayload(data);
+  if (Config.User.Keys?.Encryption?.Enabled && Config.User.Keys?.Encryption?.DocumentEncrypt) data = await encryptArticlePayload(data, url);
 
   Config.Storage.save(containerIRI, uuid, data, options)
     .then((resolved) => handleActionMessage(resolved))
@@ -2225,7 +2225,7 @@ export async function createMutableResource(url, data, options) {
   setDocumentRelation(document, [r], o);
 
   data = getDocument(null, documentOptions);
-  if (Config.User.Keys?.Encryption?.Enabled && Config.User.Keys?.Encryption?.DocumentEncrypt) data = await encryptArticlePayload(data);
+  if (Config.User.Keys?.Encryption?.Enabled && Config.User.Keys?.Encryption?.DocumentEncrypt) data = await encryptArticlePayload(data, url);
 
   Config.Storage.save(url, null, data, options)
     .then((resolved) => handleActionMessage(resolved))
@@ -2236,7 +2236,8 @@ export async function createMutableResource(url, data, options) {
 }
 
 // Replaces article content and title with a JWE envelope; document scope also encrypts head metadata and body
-export async function encryptArticlePayload(htmlString) {
+// documentURL is the resource being written, which Save As and new documents make different from the one on screen
+export async function encryptArticlePayload(htmlString, documentURL) {
   if (!isUnlocked()) return htmlString;
 
   const parser = new DOMParser();
@@ -2263,8 +2264,9 @@ export async function encryptArticlePayload(htmlString) {
     plaintext = JSON.stringify({ title: titleNode?.textContent ?? null, body: article.innerHTML });
   }
 
-  await syncDocumentRecipientsFromACL(Config.DocumentURL || currentLocation());
-  const recipientKeys = [getSessionPublicKey(), ...getDocumentRecipientKeys()];
+  const target = documentURL || Config.DocumentURL || currentLocation();
+  await syncDocumentRecipientsFromACL(target);
+  const recipientKeys = [getSessionPublicKey(), ...getDocumentRecipientKeys(target)];
   const jwe = await encryptContent(plaintext, recipientKeys);
 
   const script = parsed.createElement('script');
@@ -2351,7 +2353,7 @@ export async function updateMutableResource(url, data, options) {
   data = payload.data;
   options.contentType = payload.contentType;
 
-  if (Config.User.Keys?.Encryption?.Enabled && Config.User.Keys?.Encryption?.DocumentEncrypt) data = await encryptArticlePayload(data);
+  if (Config.User.Keys?.Encryption?.Enabled && Config.User.Keys?.Encryption?.DocumentEncrypt) data = await encryptArticlePayload(data, url);
 
   Config.Storage.save(url, null, data, options)
     .then(async (resolved) => {

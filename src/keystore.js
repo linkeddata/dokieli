@@ -51,8 +51,14 @@ function newSession() {
 
 let sessions = { [KEY_AGREEMENT]: newSession(), [ASSERTION]: newSession() };
 
-// Public encryption keys of agents the current document is shared with, by WebID
+// Public encryption keys by document URL, then WebID, so recipients do not carry across documents
 let documentRecipients = new Map();
+
+function recipientsFor(documentURL) {
+  const key = stripFragmentFromString(documentURL || '');
+  if (!documentRecipients.has(key)) documentRecipients.set(key, new Map());
+  return documentRecipients.get(key);
+}
 
 const CID_CONTEXT = 'https://www.w3.org/ns/cid/v1';
 
@@ -396,16 +402,16 @@ export function agentHasPublishedEncryptionKey(agentGraph) {
   return !!agentGraph?.out?.(Config.ns.sec.keyAgreementMethod).values.length;
 }
 
-export function addDocumentRecipient(agentIRI, key) {
-  documentRecipients.set(agentIRI, key);
+export function addDocumentRecipient(documentURL, agentIRI, key) {
+  recipientsFor(documentURL).set(agentIRI, key);
 }
 
-export function getDocumentRecipients() {
-  return [...documentRecipients.keys()];
+export function getDocumentRecipients(documentURL) {
+  return [...recipientsFor(documentURL).keys()];
 }
 
-export function getDocumentRecipientKeys() {
-  return [...documentRecipients.values()];
+export function getDocumentRecipientKeys(documentURL) {
+  return [...recipientsFor(documentURL).values()];
 }
 
 // The ACL is the durable record of who a document is shared with; rebuild the recipient set from agents with Read access so re-saves keep encrypting to them
@@ -419,13 +425,14 @@ export async function syncDocumentRecipientsFromACL(documentURL) {
     return;
   }
 
+  const recipients = recipientsFor(documentURL);
   const agents = new Set(agentsWithMode(ctx, 'Read'));
   agents.delete(Config.User.IRI);
 
   for (const agent of agents) {
-    if (documentRecipients.has(agent)) continue;
+    if (recipients.has(agent)) continue;
     const found = await getAgentEncryptionKey(agent);
-    if (found) documentRecipients.set(agent, found.key);
+    if (found) recipients.set(agent, found.key);
     else console.warn('dokieli: no encryption key published for ' + agent + '; they will not be able to decrypt this document');
   }
 }

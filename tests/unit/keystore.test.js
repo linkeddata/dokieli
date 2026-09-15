@@ -27,9 +27,13 @@ import {
   getSessionKid,
   decryptWithSession,
   hasKeystore,
-  publishPublicKeyToProfile
+  publishPublicKeyToProfile,
+  addDocumentRecipient,
+  getDocumentRecipients,
+  getDocumentRecipientKeys,
+  syncDocumentRecipientsFromACL
 } from '../../src/keystore.js';
-import { encryptContent } from '../../src/crypto.js';
+import { encryptContent, generateEncryptionKeypair, exportPublicKeyJWK } from '../../src/crypto.js';
 import Config from '../../src/config.js';
 
 const mocks = vi.hoisted(() => ({
@@ -42,6 +46,7 @@ const mocks = vi.hoisted(() => ({
   getResourceGraph: vi.fn(),
   getLinkRelationFromHead: vi.fn(),
   updateDeviceStorageProfile: vi.fn(),
+  getACLContext: vi.fn(),
 }));
 
 vi.mock('src/storage.js', () => ({
@@ -62,6 +67,12 @@ vi.mock('src/fetcher.js', () => ({
 vi.mock('src/graph.js', () => ({
   getResourceGraph: mocks.getResourceGraph,
   getLinkRelationFromHead: mocks.getLinkRelationFromHead,
+}));
+
+// applyACLPlan stays real; the storage sync tests assert on its ACL writes
+vi.mock('src/wac.js', async (importOriginal) => ({
+  ...(await importOriginal()),
+  getACLContext: mocks.getACLContext,
 }));
 
 const PASSPHRASE = 'correct horse battery staple';
@@ -108,6 +119,7 @@ beforeEach(() => {
   mocks.patchResourceWithAcceptPatch.mockResolvedValue({});
   mocks.getResourceGraph.mockResolvedValue({ graph: null });
   mocks.getLinkRelationFromHead.mockImplementation(async (rel, url) => [url + '.acl']);
+  mocks.getACLContext.mockResolvedValue({ authorizations: [] });
 
   Config.Session = { isActive: false };
   Config.User = {
@@ -115,13 +127,21 @@ beforeEach(() => {
     Storage: [STORAGE],
     PrivateTypeIndex: [TYPE_INDEX],
     TypeIndex: {},
-    Encryption: {
-      Enabled: false,
-      KeyId: null,
-      KeystoreURL: null,
-      StorageSyncFailed: false,
-      Document: false,
-      DocumentEncrypt: false
+    Keys: {
+      Encryption: {
+        Enabled: false,
+        KeyId: null,
+        KeystoreURL: null,
+        StorageSyncFailed: false,
+        Document: false,
+        DocumentEncrypt: false
+      },
+      Signing: {
+        Enabled: false,
+        KeyId: null,
+        KeystoreURL: null,
+        StorageSyncFailed: false
+      }
     }
   };
 });
@@ -150,7 +170,7 @@ describe('keystore.js', () => {
       expect(getSessionPublicKey()).toBeDefined();
       expect(getSessionPrivateKey()).toBeDefined();
       expect(getSessionPrivateKey(doc.publicKeyJwk.kid)).toBeDefined();
-      expect(Config.User.Encryption.StorageSyncFailed).toBe(false);
+      expect(Config.User.Keys.Encryption.StorageSyncFailed).toBe(false);
 
       expect(mocks.putResource).not.toHaveBeenCalled();
       expect(mocks.postResource).not.toHaveBeenCalled();
@@ -283,8 +303,8 @@ describe('keystore.js', () => {
       expect(Object.values(registrations)[0][Config.ns.solid.instanceContainer.value]).toBe(KEY_CONTAINER);
       expect(mocks.updateDeviceStorageProfile).toHaveBeenCalled();
 
-      expect(Config.User.Encryption.KeystoreURL).toBe(keystoreURL);
-      expect(Config.User.Encryption.StorageSyncFailed).toBe(false);
+      expect(Config.User.Keys.Encryption.KeystoreURL).toBe(keystoreURL);
+      expect(Config.User.Keys.Encryption.StorageSyncFailed).toBe(false);
     });
 
     test('keeps the local copy when the storage already has the key (412)', async () => {
@@ -297,7 +317,7 @@ describe('keystore.js', () => {
 
       expect(isUnlocked()).toBe(true);
       expect(mocks.local.value).toBeDefined();
-      expect(Config.User.Encryption.StorageSyncFailed).toBe(false);
+      expect(Config.User.Keys.Encryption.StorageSyncFailed).toBe(false);
       expect(mocks.patchResourceWithAcceptPatch).not.toHaveBeenCalledWith(TYPE_INDEX, expect.anything());
       expect(Config.Storage.patchWithConneg).not.toHaveBeenCalledWith(
         keyResourceURL(getSessionKid()) + '.acl',
@@ -313,7 +333,7 @@ describe('keystore.js', () => {
       expect(mocks.postResource).toHaveBeenCalledWith(
         STORAGE, 'key', '', 'text/turtle', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"'
       );
-      expect(Config.User.Encryption.StorageSyncFailed).toBe(false);
+      expect(Config.User.Keys.Encryption.StorageSyncFailed).toBe(false);
     });
 
     test('flags StorageSyncFailed but keeps the local keystore on a hard failure', async () => {
@@ -323,7 +343,7 @@ describe('keystore.js', () => {
 
       expect(isUnlocked()).toBe(true);
       expect(mocks.local.value).toBeDefined();
-      expect(Config.User.Encryption.StorageSyncFailed).toBe(true);
+      expect(Config.User.Keys.Encryption.StorageSyncFailed).toBe(true);
     });
   });
 
@@ -403,6 +423,79 @@ describe('keystore.js', () => {
 
       expect(await publishPublicKeyToProfile()).toBeNull();
       expect(mocks.patchResourceWithAcceptPatch).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('document recipients', () => {
+    const DOC_A = 'https://alice.example/a';
+    const DOC_B = 'https://alice.example/b';
+    const BOB = 'https://bob.example/profile/card#me';
+    const BOB_KEY_IRI = 'https://bob.example/profile/card#key-1';
+    const CAROL = 'https://carol.example/profile/card#me';
+
+    let bobKey;
+
+    // Config.ns mints a new NamedNode per access, so predicates are compared by value
+    async function mockAgentProfile(agentIRI, keyIRI, publicKey) {
+      const jwk = await exportPublicKeyJWK(publicKey, 'bob');
+      mocks.getResourceGraph.mockImplementation(async () => ({
+        graph: {
+          node: (term) => ({
+            out: (predicate) => {
+              if (term.value === agentIRI && predicate?.value === Config.ns.sec.keyAgreementMethod.value) return { values: [keyIRI] };
+              if (term.value === keyIRI && predicate?.value === Config.ns.sec.publicKeyJwk.value) return { values: [JSON.stringify(jwk)] };
+              return { values: [] };
+            }
+          })
+        }
+      }));
+    }
+
+    function mockReadAccess(agentsByDocument) {
+      mocks.getACLContext.mockImplementation(async (url) => ({
+        authorizations: (agentsByDocument[url] || []).map(agent => ({ mode: ['Read'], agent: [agent], agentClass: [] }))
+      }));
+    }
+
+    beforeEach(async () => {
+      ({ publicKey: bobKey } = await generateEncryptionKeypair());
+    });
+
+    test('a recipient added for one document does not appear for another', () => {
+      addDocumentRecipient(DOC_A, BOB, bobKey);
+
+      expect(getDocumentRecipients(DOC_A)).toEqual([BOB]);
+      expect(getDocumentRecipientKeys(DOC_A)).toEqual([bobKey]);
+      expect(getDocumentRecipients(DOC_B)).toEqual([]);
+      expect(getDocumentRecipientKeys(DOC_B)).toEqual([]);
+    });
+
+    test('the fragment is not part of the document key', () => {
+      addDocumentRecipient(DOC_A + '#introduction', BOB, bobKey);
+
+      expect(getDocumentRecipients(DOC_A)).toEqual([BOB]);
+    });
+
+    test('syncDocumentRecipientsFromACL fills only the document it is given', async () => {
+      Config.Session = { isActive: true };
+      await mockAgentProfile(BOB, BOB_KEY_IRI, bobKey);
+      mockReadAccess({ [DOC_A]: [WEBID, BOB], [DOC_B]: [WEBID] });
+
+      await syncDocumentRecipientsFromACL(DOC_A);
+      await syncDocumentRecipientsFromACL(DOC_B);
+
+      expect(getDocumentRecipients(DOC_A)).toEqual([BOB]);
+      expect(getDocumentRecipients(DOC_B)).toEqual([]);
+    });
+
+    test('lockKeystore clears the recipients of every document', () => {
+      addDocumentRecipient(DOC_A, BOB, bobKey);
+      addDocumentRecipient(DOC_B, CAROL, bobKey);
+
+      lockKeystore();
+
+      expect(getDocumentRecipients(DOC_A)).toEqual([]);
+      expect(getDocumentRecipients(DOC_B)).toEqual([]);
     });
   });
 });

@@ -16,7 +16,8 @@ limitations under the License.
 */
 
 import { describe, test, expect, beforeEach, afterEach } from 'vitest';
-import { createKeystore, unlockKeystore, lockKeystore, isUnlocked, getSessionKid } from '../../src/keystore.js';
+import { createKeystore, unlockKeystore, lockKeystore, isUnlocked, getSessionKid, addDocumentRecipient } from '../../src/keystore.js';
+import { generateEncryptionKeypair } from '../../src/crypto.js';
 import { encryptArticlePayload } from '../../src/doc.js';
 import { decryptArticleInPlace } from '../../src/init.js';
 import { removeEncryptedKeystore } from '../../src/storage.js';
@@ -64,13 +65,21 @@ beforeEach(async () => {
   await removeEncryptedKeystore();
   Config.Session = { isActive: false };
   Config.User.IRI = null;
-  Config.User.Encryption = {
-    Enabled: false,
-    KeyId: null,
-    KeystoreURL: null,
-    StorageSyncFailed: false,
-    Document: false,
-    DocumentEncrypt: false
+  Config.User.Keys = {
+    Encryption: {
+      Enabled: false,
+      KeyId: null,
+      KeystoreURL: null,
+      StorageSyncFailed: false,
+      Document: false,
+      DocumentEncrypt: false
+    },
+    Signing: {
+      Enabled: false,
+      KeyId: null,
+      KeystoreURL: null,
+      StorageSyncFailed: false
+    }
   };
 });
 
@@ -90,7 +99,25 @@ describe('E2EE document round trip', () => {
     expect(encrypted).toContain('data-encrypted="true"');
     expect(encrypted).toContain('application/jose');
     expect(isJWE(extractJWE(encrypted))).toBe(true);
-    expect(Config.User.Encryption.Document).toBe(true);
+    expect(Config.User.Keys.Encryption.Document).toBe(true);
+  });
+
+  test('encrypts to the recipients of the resource being written, not the document on screen', async () => {
+    await createKeystore(PASSPHRASE);
+
+    const SHARED = 'https://alice.example/shared';
+    const ELSEWHERE = 'https://alice.example/elsewhere';
+    const { publicKey } = await generateEncryptionKeypair();
+    addDocumentRecipient(SHARED, 'https://bob.example/profile/card#me', publicKey);
+
+    // Two recipients means a general JSON JWE
+    const shared = extractJWE(await encryptArticlePayload(ARTICLE_HTML, SHARED));
+    expect(JSON.parse(shared).recipients).toHaveLength(2);
+
+    // Elsewhere has no recipients, so a compact JWE
+    const elsewhere = extractJWE(await encryptArticlePayload(ARTICLE_HTML, ELSEWHERE));
+    expect(elsewhere.startsWith('{')).toBe(false);
+    expect(isJWE(elsewhere)).toBe(true);
   });
 
   test('returns the input unchanged when the keystore is locked', async () => {
@@ -108,10 +135,10 @@ describe('E2EE document round trip', () => {
     expect(article.hasAttribute('data-encrypted')).toBe(false);
     expect(article.textContent).toContain('Top secret content.');
     expect(document.title).toBe('Secret Title');
-    expect(Config.User.Encryption.Enabled).toBe(true);
-    expect(Config.User.Encryption.Document).toBe(true);
-    expect(Config.User.Encryption.DocumentEncrypt).toBe(true);
-    expect(Config.User.Encryption.KeyId).toBe(getSessionKid());
+    expect(Config.User.Keys.Encryption.Enabled).toBe(true);
+    expect(Config.User.Keys.Encryption.Document).toBe(true);
+    expect(Config.User.Keys.Encryption.DocumentEncrypt).toBe(true);
+    expect(Config.User.Keys.Encryption.KeyId).toBe(getSessionKid());
   });
 
   test('decryptArticleInPlace is a no-op while locked', async () => {
