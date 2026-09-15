@@ -1137,6 +1137,68 @@ export function shareResource(listenerEvent, iri) {
           });
         }
 
+        // Shared by the contact suggestions and the WebID entry
+        var addAccessSubject = function (iri, subjectGraph) {
+          suggestions.replaceChildren();
+          input.value = '';
+
+          // A second row would reuse the first one's id and take its select
+          if (document.getElementById('share-resource-access-subject-' + encodeURIComponent(iri))) return;
+
+          var ul = document.querySelector('#share-resource-permissions ul.permissions');
+          addAccessSubjectItem(ul, subjectGraph, iri);
+
+          var li = document.getElementById('share-resource-access-subject-' + encodeURIComponent(iri));
+          if (!li) return;
+
+          // Keeps the subject out of the suggestions
+          subjectsWithAccess[iri] = subjectsWithAccess[iri] || { mode: [ns.acl.Read.value], subjectType: 'agent' };
+
+          var options = {};
+          options['accessContext'] = 'Share';
+          options['selectedAccessMode'] = ns.acl.Read.value;
+          options['documentURL'] = documentURL;
+          showAccessModeSelection(li, '', iri, 'agent', options);
+
+          var select = li.querySelector('select');
+          if (!select) return;
+
+          select.disabled = true;
+          sanitizeInsertAdjacentHTML(select, 'afterend', `<span class="progress">${Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]}</span>`);
+
+          updateAuthorization(documentURL, options.selectedAccessMode, iri, 'agent')
+            .catch(error => { console.log(error); })
+            .then(() => getACLContext(documentURL).catch(error => { console.log(error); }))
+            .then(() => { removeProgressIndicator(select); });
+        };
+
+        // Any WebID can be given access, not only known contacts
+        var showWebIDSuggestion = function () {
+          var iri = sanitizeIRI(input.value.trim());
+          if (!iri || !isHttpOrHttpsProtocol(iri) || iri in subjectsWithAccess) return;
+          if (Object.keys(Config.User.Contacts || {}).includes(iri)) return;
+
+          const suggestion = document.createElement('li');
+          const img = '<img alt="" height="32" src="' + Config.IconBase64['.fas.fa-user-secret'] + '" width="32" />';
+
+          sanitizeInsertAdjacentHTML(suggestion, 'beforeend', img + '<span title="' + iri + '">' + i18n.t('dialog.share-resource-search-contacts.use-webid.textContent') + ': ' + iri + '</span>');
+
+          // An unreadable profile is still a valid access subject
+          suggestion.addEventListener('click', () => {
+            getSubjectInfo(iri)
+              .catch(() => ({}))
+              .then(subject => {
+                if (subject?.IRI) {
+                  Config.User.Contacts = Config.User.Contacts || {};
+                  Config.User.Contacts[iri] = Config.User.Contacts[iri] || subject;
+                }
+                addAccessSubject(iri, subject?.Graph);
+              });
+          });
+
+          suggestions.appendChild(suggestion);
+        };
+
         var showSuggestions = function (filteredContacts) {
           suggestions.replaceChildren();
 
@@ -1152,41 +1214,14 @@ export function shareResource(listenerEvent, iri) {
 
             sanitizeInsertAdjacentHTML(suggestion, 'beforeend', img + '<span title="' + contact + '">' + name + '</span>');
 
-            var ul = document.querySelector('#share-resource-permissions ul.permissions');
-
             suggestion.addEventListener('click', () => {
-              addAccessSubjectItem(ul, Config.User.Contacts[contact].Graph, contact);
-              var li = document.getElementById('share-resource-access-subject-' + encodeURIComponent(contact));
-              var options = {};
-              options['accessContext'] = 'Share';
-              options['selectedAccessMode'] = ns.acl.Read.value;
-              options['documentURL'] = documentURL;
-              showAccessModeSelection(li, '', contact, 'agent', options);
-
-              var select = document.querySelector('[id="' + li.id + '"] select');
-              select.disabled = true;
-              sanitizeInsertAdjacentHTML(select, 'afterend', `<span class="progress">${Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]}</span>`);
-
-              updateAuthorization(documentURL, options.selectedAccessMode, contact, 'agent')
-                .catch(error => {
-                  console.log(error)
-                })
-                .then(response => {
-                  getACLContext(documentURL)
-                    .catch(g => {
-                      removeProgressIndicator(select);
-                    })
-                    .then(g => {
-                      removeProgressIndicator(select);
-                    })
-                });
-
-              suggestions.replaceChildren();
-              input.value = '';
+              addAccessSubject(contact, Config.User.Contacts[contact].Graph);
             });
 
             suggestions.appendChild(suggestion);
           })
+
+          showWebIDSuggestion();
         }
 
         //Allowing only Share-related access modes.
@@ -1300,12 +1335,22 @@ export function shareResource(listenerEvent, iri) {
 
 // For encrypted documents: grant Read, re-encrypt to the recipients' published keys, then notify. Contacts without a published encryption key are skipped so they are not announced content they cannot decrypt
 async function shareResourceWithAgents(tos, note, iri, shareResourceNode) {
+  // Permissions and notifications are separate sections, so an empty selection is not a key failure
+  if (!tos.length) {
+    const rm = shareResourceNode.querySelector('.response-message');
+    if (rm) {
+      rm.setHTMLUnsafe(domSanitize('<p>' + i18n.t('dialog.share-resource-no-contacts-selected.textContent') + '</p>'));
+    }
+    return;
+  }
+
   if (!(Config.User.Keys?.Encryption?.Enabled && Config.User.Keys?.Encryption?.DocumentEncrypt)) {
     return sendNotifications(tos, note, iri, shareResourceNode);
   }
 
   const documentURL = stripFragmentFromString(iri);
   const recipients = [];
+  const withoutKey = [];
 
   for (const to of tos) {
     const found = await getAgentEncryptionKey(to);
@@ -1314,6 +1359,8 @@ async function shareResourceWithAgents(tos, note, iri, shareResourceNode) {
       recipients.push(to);
     }
     else {
+      // Name the WebID that was checked; people often have more than one
+      withoutKey.push(to);
       const toInput = shareResourceNode.querySelector('[value="' + to + '"]');
       if (toInput) {
         sanitizeInsertAdjacentHTML(toInput.parentNode, 'beforeend',
@@ -1325,7 +1372,8 @@ async function shareResourceWithAgents(tos, note, iri, shareResourceNode) {
   if (!recipients.length) {
     const rm = shareResourceNode.querySelector('.response-message');
     if (rm) {
-      rm.setHTMLUnsafe(domSanitize('<p>' + i18n.t('dialog.share-resource-encryption-no-recipients.textContent') + '</p>'));
+      const checked = withoutKey.map(to => '<li><a href="' + to + '" rel="noopener" target="_blank">' + to + '</a></li>').join('');
+      rm.setHTMLUnsafe(domSanitize('<p>' + i18n.t('dialog.share-resource-encryption-no-recipients.textContent') + '</p>' + (checked ? '<ul>' + checked + '</ul>' : '')));
     }
     return;
   }
@@ -1462,7 +1510,7 @@ function addAccessSubjectItem(node, s, url) {
   }
   img = '<img alt="" height="32" src="' + img + '" width="32" />';
 
-  var input = '<li id="share-resource-access-subject-' + id + '">' + img + '<a href="' + iri + '" rel="noopener" target="_blank">' + name + '</a></li>';
+  var input = '<li id="share-resource-access-subject-' + id + '">' + img + '<a href="' + iri + '" rel="noopener" target="_blank" title="' + iri + '">' + name + '</a></li>';
 
   sanitizeInsertAdjacentHTML(node, 'beforeend', input);
 }
@@ -1495,20 +1543,10 @@ function showAccessModeSelection(node, id, accessSubject, subjectType, options) 
       sanitizeInsertAdjacentHTML(e.target, 'afterend', `<span class="progress">${Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]}</span>`);
 
       updateAuthorization(documentURL, selectedMode, accessSubject, subjectType)
-        .catch(error => {
-          console.log(error);
-          removeProgressIndicator(e.target);
-        })
-        .then(response => {
-          //This also ensures that we track the current resource's effective ACL resource
-          getACLContext(documentURL)
-            .catch(g => {
-              removeProgressIndicator(select);
-            })
-            .then(g => {
-              removeProgressIndicator(select);
-            })
-        });
+        .catch(error => { console.log(error); })
+        //This also ensures that we track the current resource's effective ACL resource
+        .then(() => getACLContext(documentURL).catch(error => { console.log(error); }))
+        .then(() => { removeProgressIndicator(e.target); });
     }
     else {
       //TODO: Naughty
@@ -1558,11 +1596,12 @@ function updateAuthorization(documentURL, selectedMode, accessSubject, subjectTy
   return applyACLPlan(plan);
 }
 
+// Called more than once on some paths, so a missing indicator is not an error
 function removeProgressIndicator(node) {
-  var progress = document.querySelector('[id="' + node.id + '"] + .progress');
+  if (!node) return;
 
   node.disabled = false;
-  node.parentNode.removeChild(progress);
+  node.nextElementSibling?.classList.contains('progress') && node.nextElementSibling.remove();
 }
 
 export function replyToResource(e, iri) {
@@ -4136,7 +4175,7 @@ export async function saveAsDocument(e) {
       saveContentType = payload.contentType;
     }
     else if (Config.User.Keys?.Encryption?.Enabled && Config.User.Keys?.Encryption?.DocumentEncrypt) {
-      saveData = await encryptArticlePayload(saveData);
+      saveData = await encryptArticlePayload(saveData, storageIRI);
     }
 
     Config.Storage.put(storageIRI, saveData, saveContentType, null, { 'progress': progress, 'contentType': saveContentType })

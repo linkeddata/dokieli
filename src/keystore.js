@@ -383,7 +383,10 @@ export async function publishPublicKeyToProfile(purpose = KEY_AGREEMENT) {
 export async function getAgentEncryptionKey(agentIRI) {
   try {
     const { graph } = await getResourceGraph(stripFragmentFromString(agentIRI));
-    if (!graph?.node) return null;
+    if (!graph?.node) {
+      console.warn('dokieli: could not read a graph from ' + agentIRI + '; their published key cannot be checked');
+      return null;
+    }
     const keyIRIs = graph.node(rdf.namedNode(agentIRI)).out(Config.ns.sec.keyAgreementMethod).values;
     for (const keyIRI of keyIRIs) {
       const jwkValue = graph.node(rdf.namedNode(keyIRI)).out(Config.ns.sec.publicKeyJwk).values[0];

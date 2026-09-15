@@ -2074,6 +2074,15 @@ width:60%;
 #share-resource-permissions .permissions li {
 height:3em;
 }
+/* A missing name shows the WebID instead, which would otherwise wrap. */
+#share-resource-permissions .permissions li > a {
+display:inline-block;
+max-width:20ch;
+overflow:hidden;
+text-overflow:ellipsis;
+white-space:nowrap;
+vertical-align:middle;
+}
 #share-resource-permissions .permissions li label {
 display:none;
 }
