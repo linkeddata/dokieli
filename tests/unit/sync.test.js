@@ -23,22 +23,33 @@ import {
 import * as storage from '../../src/storage.js';
 import Config from '../../src/config.js';
 
-test('disableAutoSave clears the interval and records autoSave off', async () => {
-  global.clearInterval = vi.fn();
+test('disableAutoSave removes the edit handlers and records autoSave off', async () => {
+  const removeEventListener = vi.spyOn(document, 'removeEventListener');
   const updateItem = vi.spyOn(storage, 'updateDeviceStorageItem').mockResolvedValue(undefined);
 
+  // Autosave listens for edits rather than running on an interval
+  const indexedDBHandler = vi.fn();
+  const httpHandler = vi.fn();
   Config.AutoSave.Items['key'] = {
-    IndexedDB: { id: 123 },
-    http: { id: 456 },
+    IndexedDB: { handler: indexedDBHandler },
+    http: { handler: httpHandler },
   };
 
   await disableAutoSave('key', { method: 'IndexedDB' });
-  expect(global.clearInterval).toHaveBeenCalledWith(123);
+  ['input', 'paste', 'keydown'].forEach(type => {
+    expect(removeEventListener).toHaveBeenCalledWith(type, indexedDBHandler);
+  });
+  expect(Config.AutoSave.Items['key'].IndexedDB.handler).toBeUndefined();
 
   await disableAutoSave('key', { method: ['http'] });
-  expect(global.clearInterval).toHaveBeenCalledWith(456);
+  ['input', 'paste', 'keydown'].forEach(type => {
+    expect(removeEventListener).toHaveBeenCalledWith(type, httpHandler);
+  });
+  expect(Config.AutoSave.Items['key'].http.handler).toBeUndefined();
 
   expect(updateItem).toHaveBeenCalledWith('key', { autoSave: false });
+
+  removeEventListener.mockRestore();
 });
 
 test('disableAutoSave ignores keys and methods it never enabled', async () => {

@@ -66,18 +66,27 @@ beforeEach(async () => {
   await removeEncryptedKeystore();
 
   Config.DocumentURL = DOCUMENT_URL;
-  Config.Resource[DOCUMENT_URL] = { graph: { out: () => ({ values: [] }) } };
+  // A grapoi pointer answers both node() and out()
+  Config.Resource[DOCUMENT_URL] = { graph: { node: () => ({ out: () => ({ values: [] }) }), out: () => ({ values: [] }) } };
   Config.IconBase64 = { '.fas.fa-user-secret': 'data:image/svg+xml;base64,' };
   Config.Session = { isActive: false };
   Config.User.IRI = null;
   Config.User.Storage = ['https://alice.example/annotations/'];
-  Config.User.Encryption = {
-    Enabled: false,
-    KeyId: null,
-    KeystoreURL: null,
-    StorageSyncFailed: false,
-    Document: false,
-    DocumentEncrypt: false
+  Config.User.Keys = {
+    Encryption: {
+      Enabled: false,
+      KeyId: null,
+      KeystoreURL: null,
+      StorageSyncFailed: false,
+      Document: false,
+      DocumentEncrypt: false
+    },
+    Signing: {
+      Enabled: false,
+      KeyId: null,
+      KeystoreURL: null,
+      StorageSyncFailed: false
+    }
   };
 });
 
