@@ -47,6 +47,7 @@ const mocks = vi.hoisted(() => ({
   getLinkRelationFromHead: vi.fn(),
   updateDeviceStorageProfile: vi.fn(),
   getACLContext: vi.fn(),
+  cachedACLContext: vi.fn(),
 }));
 
 vi.mock('src/storage.js', () => ({
@@ -73,6 +74,7 @@ vi.mock('src/graph.js', () => ({
 vi.mock('src/wac.js', async (importOriginal) => ({
   ...(await importOriginal()),
   getACLContext: mocks.getACLContext,
+  cachedACLContext: mocks.cachedACLContext,
 }));
 
 const PASSPHRASE = 'correct horse battery staple';
@@ -120,6 +122,7 @@ beforeEach(() => {
   mocks.getResourceGraph.mockResolvedValue({ graph: null });
   mocks.getLinkRelationFromHead.mockImplementation(async (rel, url) => [url + '.acl']);
   mocks.getACLContext.mockResolvedValue({ authorizations: [] });
+  mocks.cachedACLContext.mockReturnValue(null);
 
   Config.Session = { isActive: false };
   Config.User = {
@@ -486,6 +489,17 @@ describe('keystore.js', () => {
 
       expect(getDocumentRecipients(DOC_A)).toEqual([BOB]);
       expect(getDocumentRecipients(DOC_B)).toEqual([]);
+    });
+
+    test('an unreachable ACL falls back to the one read when the document loaded', async () => {
+      Config.Session = { isActive: true };
+      await mockAgentProfile(BOB, BOB_KEY_IRI, bobKey);
+      mocks.getACLContext.mockRejectedValue(new Error('offline'));
+      mocks.cachedACLContext.mockReturnValue({ authorizations: [{ mode: ['Read'], agent: [BOB], agentClass: [] }] });
+
+      await syncDocumentRecipientsFromACL(DOC_A);
+
+      expect(getDocumentRecipients(DOC_A)).toEqual([BOB]);
     });
 
     test('lockKeystore clears the recipients of every document', () => {

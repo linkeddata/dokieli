@@ -36,7 +36,7 @@ import { getEncryptedKeystore, setEncryptedKeystore, updateDeviceStorageProfile 
 import { getResource, getResourceHead, putResource, postResource, patchResourceWithAcceptPatch } from './fetcher.js';
 import { getResourceGraph, getLinkRelationFromHead } from './graph.js';
 import { agentsWithMode, buildACLContext, planContainerACL, planGrant } from '@dokieli/web-access-control';
-import { applyACLPlan, getACLContext } from './wac.js';
+import { applyACLPlan, cachedACLContext, getACLContext } from './wac.js';
 import { forceTrailingSlash, stripFragmentFromString } from './uri.js';
 import { escapeRDFLiteral, generateUUID } from './util.js';
 
@@ -425,7 +425,9 @@ export async function syncDocumentRecipientsFromACL(documentURL) {
   try {
     ctx = await getACLContext(documentURL);
   } catch {
-    return;
+    // Offline fallback to the ACL read at load, rather than author-only
+    ctx = cachedACLContext(documentURL);
+    if (!ctx) return;
   }
 
   const recipients = recipientsFor(documentURL);
