@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { accessModePossiblyAllowed } from "../access.js";
+import { accessModeAllowed, accessModePossiblyAllowed } from "../access.js";
 import { Icon} from "./icons.js";
 import Config from "../config.js";
 import { isLocalhost } from "../uri.js";
@@ -101,6 +101,7 @@ export function initButtons() {
       RobustifyLinks: getButtonHTML({ key: "menu.robustify-links.button", button: "robustify-links", buttonClass: "robustify-links" }),
       Save: getButtonHTML({ key: "menu.resource-save.button", button: "save", buttonClass: "resource-save", buttonDisabled: true }),
       SaveAs: getButtonHTML({ key: "menu.save-as.button", button: "save-as", buttonClass: "resource-save-as" }),
+      Permissions: getButtonHTML({ key: "menu.permissions.button", button: "permissions", buttonClass: "resource-permissions", buttonDisabled: true }),
       Share: getButtonHTML({ key: "menu.share.button", button: "share", buttonClass: "resource-share" }),
       SignIn: getButtonHTML({ key: "menu.signin.button", button: "signin", buttonClass: "signin-user" }),
       SignOut: getButtonHTML({ key: "menu.signout.button", button: "signout", buttonClass: "signout-user" }),
@@ -256,6 +257,9 @@ export const buttonIcons = {
   },
   share: {
     icon: Icon['.fas.fa-bullhorn']
+  },
+  permissions: {
+    icon: Icon['.fas.fa-user-lock']
   },
   approve: {
     icon: Icon['.fas.fa-thumbs-up']
@@ -460,6 +464,15 @@ const buttonState = {
     if (!online && !localhost) return false;
 
     return true;
+  },
+
+  // Unknown WAC-Allow means the ACL could not be read
+  '#document-menu .resource-permissions': ({ online, localhost, blob }) => {
+    if (blob) return false;
+
+    if (!online && !localhost) return false;
+
+    return accessModeAllowed(null, 'control');
   },
 
   '#document-menu .resource-save': ({ info, online, localhost, blob }) => {

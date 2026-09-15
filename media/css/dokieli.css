@@ -2071,27 +2071,48 @@ border-bottom:1px solid var(--do-color-border);
 #share-resource-permissions > ul {
 width:60%;
 }
+/* Avatar, name, select, notify in fixed columns; a warning spans under the row */
 #share-resource-permissions .permissions li {
-height:3em;
+display:grid;
+grid-template-columns:2.5em minmax(0, 1fr) 9em auto;
+grid-template-areas:
+  "img name select notify"
+  "img warning warning warning";
+align-items:center;
+column-gap:0.5em;
+row-gap:0.25em;
+min-height:3em;
+margin-bottom:0.75em;
+}
+#share-resource-permissions .permissions li > img {
+grid-area:img;
 }
 /* A missing name shows the WebID instead, which would otherwise wrap. */
 #share-resource-permissions .permissions li > a {
-display:inline-block;
-max-width:20ch;
+grid-area:name;
+min-width:0;
 overflow:hidden;
 text-overflow:ellipsis;
 white-space:nowrap;
-vertical-align:middle;
-}
-#share-resource-permissions .permissions li label {
-display:none;
-}
-#share-resource-permissions > ul li select,
-#share-resource-permissions > ul li select + .progress {
-float:right;
 }
 #share-resource-permissions > ul li select {
-margin-top:-0.25em;
+grid-area:select;
+justify-self:start;
+}
+#share-resource-permissions .permissions li > .notify {
+grid-area:notify;
+display:inline-flex;
+align-items:center;
+gap:0.25em;
+}
+#share-resource-permissions .permissions li > .warning {
+grid-area:warning;
+}
+#share-resource-contacts li > .warning {
+margin-left:0.5em;
+}
+#resource-permissions button#resource-permissions-update.pending {
+background-color:var(--do-color-success-bg, #1a7f37);
 }
 
 #share-resource-share-url button.copy-to-clipboard {
@@ -3286,6 +3307,31 @@ margin-bottom:1em;
 .do.on p.required {
 padding: 0.25em !important;
 border-radius: 0.25rem;
+}
+
+/* Callout style for dialogs; inline ones sit next to their subject */
+.do.on p.warning {
+padding-left: 0.75em !important;
+background-color: var(--do-color-warning-bg);
+color: var(--do-color-warning);
+border-left: 0.25em solid var(--do-color-warning-solid);
+font-weight: normal;
+}
+.do.on span.warning {
+display: inline-flex;
+align-items: center;
+gap: 0.25em;
+padding: 0;
+background-color: transparent;
+color: var(--do-color-warning);
+font-weight: normal;
+font-size: 0.875em;
+}
+.do.on .warning svg {
+flex-shrink: 0;
+width: 1em;
+height: 1em;
+fill: var(--do-color-warning-solid);
 }
 
 aside .info {

@@ -28,7 +28,7 @@ import { escapeRDFLiteral, generateAttributeId, getDefaultDocumentBasename } fro
 import { setAcceptRDFTypes } from './fetcher.js';
 import { forceTrailingSlash, generateDataURI, getBaseURL, isHttpOrHttpsProtocol, isFileProtocol, stripFragmentFromString, getFragmentFromString, getURLLastPath, currentLocation, getUrlParams } from './uri.js';
 import { getAgentInbox, getAgentName, getGraphAuthors, getGraphContributors, getGraphEditors, getGraphImage, getGraphLabelOrIRI, getGraphPerformers, getGraphTypes, getLinkRelation, getLinkRelationFromHead, getResourceGraph, getUserContacts, getUserLabelOrIRI, serializeData, getSubjectInfo, getRDFSerializer, getGraphCreators } from './graph.js';
-import { hasControl, planGrant, planOwnerControl, planRevoke, Public } from '@dokieli/web-access-control';
+import { agentsWithMode, hasControl, planGrant, planOwnerControl, planRevoke, Public } from '@dokieli/web-access-control';
 import { applyACLPlan, cachedACLContext, expandAccessMode, getACLContext } from './wac.js';
 import { notifyInbox, sendNotifications, showContactsActivities, initializeNotifications, registerEncryptionUnlockHandler, processPendingEncryptedNotes, clearPendingEncryptedQueues } from './activity.js';
 import Config from './config.js';
@@ -49,7 +49,7 @@ import { generateGeoView } from './geo.js';
 import { csvStringToJson, jsonToHtmlTableString } from './csv.js';
 import { restoreYjsContent, addYjsVersion, getYjsVersions, getYjsVersionsFromIDB, getCurrentVersionKey, onYjsVersionsChanged } from "./editor/editor.js";
 import { rewriteBlobImagesToRelative, uploadBlobAssets, clearBlobAssets, hasUploadTarget, resolveAuthenticatedImages } from "./editor/utils/imageAssets.js";
-import { createKeystore, unlockKeystore, isUnlocked, getSessionKid, hasKeystore, publishPublicKeyToProfile, getAgentEncryptionKey, addDocumentRecipient, agentHasPublishedEncryptionKey, exportKeyDocument, exportKeyDocuments, exportKeyPair, importKeyDocuments, importPrivateKeyPEM, verifyPassphrase, hasAnyKeys, listKeys, KEY_AGREEMENT, ASSERTION } from './keystore.js';
+import { createKeystore, unlockKeystore, isUnlocked, getSessionKid, hasKeystore, publishPublicKeyToProfile, getAgentEncryptionKey, exportKeyDocument, exportKeyDocuments, exportKeyPair, importKeyDocuments, importPrivateKeyPEM, verifyPassphrase, hasAnyKeys, listKeys, KEY_AGREEMENT, ASSERTION } from './keystore.js';
 
 const versionItemCache = new Map();
 let editHistoryAside = null;
@@ -630,7 +630,7 @@ function showDocumentDo(node) {
       id: 'menu-group-document',
       summaryKey: 'menu.group.document',
       open: true,
-      buttons: [Config.Button.Menu.Save, Config.Button.Menu.SaveAs, encryptToggle, Config.Button.Menu.Version, Config.Button.Menu.Immutable, Config.Button.Menu.Memento, Config.Button.Menu.EditHistory]
+      buttons: [Config.Button.Menu.Save, Config.Button.Menu.SaveAs, encryptToggle, Config.Button.Menu.Permissions, Config.Button.Menu.Version, Config.Button.Menu.Immutable, Config.Button.Menu.Memento, Config.Button.Menu.EditHistory]
     },
     {
       id: 'menu-group-interactions',
@@ -682,6 +682,10 @@ export function initDocumentDoEvents() {
   document.addEventListener('click', e => {
     if (e.target.closest('.resource-share')) {
       shareResource(e);
+    }
+
+    if (e.target.closest('.resource-permissions')) {
+      showResourcePermissions(e);
     }
 
     if (e.target.closest('.resource-reply')) {
@@ -977,92 +981,45 @@ export function showNotifications() {
   showContactsActivities();
 }
 
-export function shareResource(listenerEvent, iri) {
-  if (document.querySelector('#share-resource.do.on')) { return; }
+// currentLocation() drops the fragment that carries an opened document's URL
+export function showResourcePermissions(listenerEvent, iri) {
+  if (document.querySelector('#resource-permissions.do.on')) { return; }
 
-  // Config.DocumentURL is the opened document, which differs from the window location for open= resources
   iri = iri || Config.DocumentURL || currentLocation();
   const documentURL = stripFragmentFromString(iri);
+
+  var buttonClose = getButtonHTML({ key: 'dialog.resource-permissions.close.button', button: 'close', buttonClass: 'close', iconSize: 'fa-2x' });
+
+  var permissionsHTML = `
+    <aside aria-labelledby="resource-permissions-label" class="do on" dir="${Config.User.UI.LanguageDir}" id="resource-permissions" lang="${Config.User.UI.Language}" xml:lang="${Config.User.UI.Language}">
+      <h2 data-i18n="dialog.resource-permissions.h2" id="resource-permissions-label" property="schema:name">${i18n.t('dialog.resource-permissions.h2.textContent')}</h2>
+
+      ${buttonClose}
+
+      <div class="info"></div>
+    </aside>
+  `;
+
+  document.body.appendChild(fragmentFromString(permissionsHTML));
 
   var button = listenerEvent.target.closest('button');
   if (button) {
     button.disabled = true;
   }
 
-  var shareResourceLinkedResearch = '';
-  if (Config.User.IRI && Config.OriginalResourceInfo['rdftype'] && Config.OriginalResourceInfo.rdftype.includes(ns.schema.ScholarlyArticle.value) || Config.OriginalResourceInfo.rdftype.includes(ns.schema.Thesis.value)) {
-    shareResourceLinkedResearch = `
-      <div id="share-resource-external" rel="schema:hasPart" resource="#share-resource-external">
-        <h3 data-i18n="dialog.share-resource-linked-research.h3" property="schema:name">${i18n.t('dialog.share-resource-linked-research.h3.textContent')}</h3>
-        <input id="share-resource-linked-research" type="checkbox" value="https://linkedresearch.org/cloud" />
-        <label for="share-resource-linked-research"><a href="https://linkedresearch.org/cloud">Linked Open Research Cloud</a></label>
-      </div>`;
-  }
-
-  var buttonClose = getButtonHTML({ key: 'dialog.share-resource.close.button', button: 'close', buttonClass: 'close', iconSize: 'fa-2x' });
-
-  var shareResourceHTML = `
-    <aside aria-labelledby="share-resource-label" class="do on" dir="${Config.User.UI.LanguageDir}" dir="${Config.User.UI.LanguageDir}" id="share-resource" lang="${Config.User.UI.Language}" rel="schema:hasPart" resource="#share-resource" xml:lang="${Config.User.UI.Language}">
-      <h2 data-i18n="dialog.share.h2" id="share-resource-label" property="schema:name">${i18n.t('dialog.share.h2.textContent')} ${Config.Button.Info.Share}</h2>
-
-      ${buttonClose}
-
-      <div class="info"></div>
-
-      <div id="share-resource-share-url" rel="schema:hasPart" resource="#share-resource-share-url">
-        <h3 data-i18n="dialog.share-resource-share-url.h3" property="schema:name">${i18n.t('dialog.share-resource-share-url.h3.textContent')}</h3>
-
-        <label data-i18n="dialog.share-resource-clipboard.label" for="share-resource-clipboard">${i18n.t('dialog.share-resource-clipboard.label.textContent')}</label>
-        <input dir="ltr" id="share-resource-clipboard" name="share-resource-clipboard" readonly="readonly" type="url" value="${iri}" />
-        ${Config.Button.Clipboard}
-      </div>
-
-      ${shareResourceLinkedResearch}
-
-      <div id="share-resource-agents" rel="schema:hasPart" resource="#share-resource-agents">
-        <h3 data-i18n="dialog.share-resource-agents.h3" property="schema:name">${i18n.t('dialog.share-resource-agents.h3.textContent')}</h3>
-
-        <ul>
-          <li id="share-resource-address-book">
-          </li>
-        </ul>
-
-        <label data-i18n="dialog.share-resource-note.label" for="share-resource-note">${i18n.t('dialog.share-resource-note.label.textContent')}</label>
-        <textarea data-i18n="dialog.share-resource-note.textarea" dir="auto" id="share-resource-note" rows="3" cols="40" name="share-resource-note" placeholder="${i18n.t('dialog.share-resource-note.textarea.placeholder')}"></textarea>
-
-        <button class="share" data-i18n="dialog.share-resource-agents.button" id="share-resource-agents-button" title="${i18n.t('dialog.share-resource-agents.button.title')}" type="submit">${i18n.t('dialog.share-resource-agents.button.textContent')}</button>
-      </div>
-    </aside>
-  `;
-
-  document.body.appendChild(fragmentFromString(shareResourceHTML));
-
-  var clipboardInput = document.querySelector('#share-resource-clipboard');
-  var clipboardButton = document.querySelector('#share-resource-clipboard + button.copy-to-clipboard');
-  setCopyToClipboard(clipboardInput, clipboardButton);
-
-  clipboardInput.addEventListener('focus', e => {
-    var input = e.target.closest('input');
-    if (input) {
-      input.selectionStart = 0;
-      input.selectionEnd = input.value.length;
+  document.querySelector('#resource-permissions button.close').addEventListener('click', () => {
+    document.getElementById('resource-permissions').remove();
+    if (button) {
+      button.disabled = false;
     }
   });
 
-  var li = document.getElementById('share-resource-address-book');
-  if (li && Config.User.IRI) {
-    sanitizeInsertAdjacentHTML(li, 'beforeend', Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]);
-    selectContacts(li, Config.User.IRI);
-  }
-
   var hasAccessModeControl = accessModeAllowed(documentURL, 'control');
   if (hasAccessModeControl) {
-    var info = document.querySelector('#share-resource > .info');
+    var info = document.querySelector('#resource-permissions > .info');
 
     var shareResourcePermissions = `
       <div id="share-resource-permissions" rel="schema:hasPart" resource="#share-resource-permissions">
-        <h3 data-i18n="dialog.share-resource-permissions.h3" property="schema:name">${i18n.t('dialog.share-resource-permissions.h3.textContent')}</h3>
-
         <span class="progress" data-i18n="dialog.share-resource-permissions.progress">${Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]} ${i18n.t('dialog.share-resource-permissions.progress.textContent')}</span>
 
         <ul class="permissions">
@@ -1074,6 +1031,10 @@ export function shareResource(listenerEvent, iri) {
           <ul class="suggestions">
           </ul>
         </div>
+
+        <button data-i18n="dialog.resource-permissions.update.button" disabled="disabled" id="resource-permissions-update" type="button">${i18n.t('dialog.resource-permissions.update.button.textContent')}</button>
+
+        <div class="response-message"></div>
       </div>`;
     sanitizeInsertAdjacentHTML(info, 'afterend', shareResourcePermissions);
 
@@ -1084,7 +1045,8 @@ export function shareResource(listenerEvent, iri) {
       .catch(e => {
         accessPermissionsNode.removeChild(accessPermissionFetchingIndicator);
 
-        console.log('XXX: Cannot access effectiveACLResource', e);
+        sanitizeInsertAdjacentHTML(info, 'beforeend', '<p class="warning">' + i18n.t(e?.name === 'ACLNotDeterminedError' ? 'dialog.resource-permissions.no-access-control.textContent' : 'dialog.resource-permissions.acl-unavailable.textContent') + ' <code>' + (e?.message || String(e)) + '</code></p>');
+        console.warn('dokieli: cannot read the effective ACL resource for ' + documentURL, e);
       })
       .then(ctx => {
         if (!ctx) { return; }
@@ -1106,6 +1068,119 @@ export function shareResource(listenerEvent, iri) {
           });
         });
 
+
+        // Access can change without keys, but not the ciphertext
+        if (Config.User.Keys?.Encryption?.Enabled && Config.User.Keys?.Encryption?.DocumentEncrypt && !isUnlocked()) {
+          sanitizeInsertAdjacentHTML(info, 'beforeend', '<p class="warning">' + i18n.t('dialog.resource-permissions.keys-locked.textContent') + '</p>');
+        }
+
+        // Changes are batched: each costs an ACL write and a re-encryption
+        const pendingModes = new Map();
+        const notifySubjects = new Set();
+        const updateButton = document.getElementById('resource-permissions-update');
+        const responseMessage = accessPermissionsNode.querySelector('.response-message');
+
+        var refreshUpdateButton = function () {
+          const dirty = pendingModes.size > 0 || notifySubjects.size > 0;
+          updateButton.disabled = !dirty;
+          updateButton.classList.toggle('pending', dirty);
+        };
+
+        var accessLabel = function (mode) {
+          const name = mode === ns.acl.Control.value ? 'control' : mode === ns.acl.Write.value ? 'write' : mode === ns.acl.Read.value ? 'read' : null;
+          return name
+            ? i18n.t(`dialog.share-resource.select-access-mode.acl-${name}.option.textContent`)
+            : i18n.t('dialog.share-resource.select-access-mode.no-access.option.textContent');
+        };
+
+        var currentModeOf = function (accessSubject) {
+          if (pendingModes.has(accessSubject)) return pendingModes.get(accessSubject);
+          const modes = subjectsWithAccess[accessSubject]?.mode || [];
+          return (modes.includes(ns.acl.Control.value) && ns.acl.Control.value) ||
+            (modes.includes(ns.acl.Write.value) && ns.acl.Write.value) ||
+            (modes.includes(ns.acl.Read.value) && ns.acl.Read.value) || '';
+        };
+
+        // No notify for the owner, groups, or the public
+        var addNotifyToggle = function (li, accessSubject) {
+          if (accessSubject === Config.User.IRI || subjectsWithAccess[accessSubject]?.subjectType !== 'agent') return;
+
+          const id = 'resource-permissions-notify-' + encodeURIComponent(accessSubject);
+          sanitizeInsertAdjacentHTML(li, 'beforeend',
+            `<span class="notify"><input id="${id}" type="checkbox" value="${accessSubject}" /><label data-i18n="dialog.resource-permissions.notify.label" for="${id}">${i18n.t('dialog.resource-permissions.notify.label.textContent')}</label></span>`);
+
+          li.querySelector('[id="' + id + '"]').addEventListener('change', e => {
+            e.target.checked ? notifySubjects.add(accessSubject) : notifySubjects.delete(accessSubject);
+            refreshUpdateButton();
+          });
+        };
+
+        // Read access without a published key still cannot open an encrypted document
+        var markMissingKey = function (li, accessSubject) {
+          if (!(Config.User.Keys?.Encryption?.Enabled && Config.User.Keys?.Encryption?.DocumentEncrypt)) return;
+          if (accessSubject === ns.foaf.Agent.value || subjectsWithAccess[accessSubject]?.subjectType !== 'agent') return;
+
+          getAgentEncryptionKey(accessSubject).then(found => {
+            if (found || !li.isConnected) return;
+            sanitizeInsertAdjacentHTML(li, 'beforeend',
+              '<span class="warning">' + Icon[".fas.fa-triangle-exclamation"] + ' ' + i18n.t('dialog.share-resource-encryption-no-key.textContent') + '</span>');
+          });
+        };
+
+        var notifyNote = function (accessSubject) {
+          return i18n.t('dialog.resource-permissions.notify.note.textContent', {
+            actor: Config.User.Name || Config.User.IRI,
+            url: iri,
+            access: accessLabel(currentModeOf(accessSubject))
+          });
+        };
+
+        var applyUpdates = async function () {
+          updateButton.disabled = true;
+          responseMessage.replaceChildren();
+          sanitizeInsertAdjacentHTML(updateButton, 'afterend', `<span class="progress">${Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]}</span>`);
+
+          const failed = [];
+
+          for (const [accessSubject, mode] of pendingModes) {
+            try {
+              await updateAuthorization(documentURL, mode, accessSubject, subjectsWithAccess[accessSubject]?.subjectType || 'agent');
+            }
+            catch (error) {
+              console.warn('dokieli: could not set access for ' + accessSubject, error);
+              failed.push(accessSubject);
+            }
+          }
+
+          await getACLContext(documentURL).catch(error => { console.warn('dokieli: could not re-read the ACL', error); });
+
+          // Recipients come from the ACL at save time, so re-save to update the ciphertext
+          if (Config.User.Keys?.Encryption?.Enabled && Config.User.Keys?.Encryption?.DocumentEncrypt) {
+            await updateMutableResource(documentURL).catch(error => { console.warn('dokieli: could not re-encrypt the document', error); });
+          }
+
+          for (const accessSubject of notifySubjects) {
+            await sendNotifications([accessSubject], notifyNote(accessSubject), iri, accessPermissionsNode)
+              .catch(error => { console.warn('dokieli: could not notify ' + accessSubject, error); });
+          }
+
+          for (const [accessSubject, mode] of pendingModes) {
+            if (failed.includes(accessSubject)) continue;
+            subjectsWithAccess[accessSubject] = subjectsWithAccess[accessSubject] || { subjectType: 'agent', mode: [] };
+            subjectsWithAccess[accessSubject].mode = mode ? [mode] : [];
+          }
+
+          pendingModes.clear();
+          notifySubjects.clear();
+          accessPermissionsNode.querySelectorAll('.notify input:checked').forEach(i => { i.checked = false; });
+          removeProgressIndicator(updateButton);
+          refreshUpdateButton();
+
+          sanitizeInsertAdjacentHTML(responseMessage, 'beforeend', '<p>' + i18n.t(failed.length ? 'dialog.resource-permissions.update-failed.textContent' : 'dialog.resource-permissions.update-done.textContent') + '</p>');
+        };
+
+        updateButton.addEventListener('click', () => { applyUpdates(); });
+
         const input = document.getElementById('share-resource-search-contacts');
         const suggestions = document.querySelector('#share-resource-permissions .suggestions');
 
@@ -1118,6 +1193,51 @@ export function shareResource(listenerEvent, iri) {
         input.addEventListener('input', (e) => {
           const query = e.target.value.trim().toLowerCase();
           showSuggestions(getFilteredContacts(query));
+        });
+
+        input.addEventListener('keydown', (e) => {
+          const items = [...suggestions.children];
+          if (!items.length) return;
+
+          const current = items.findIndex(li => li.classList.contains('active'));
+
+          if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            const next = e.key === 'ArrowDown'
+              ? (current + 1) % items.length
+              : (current <= 0 ? items.length - 1 : current - 1);
+            items.forEach(li => li.classList.remove('active'));
+            items[next].classList.add('active');
+            items[next].scrollIntoView({ block: 'nearest' });
+          }
+          else if (e.key === 'Enter') {
+            e.preventDefault();
+            (items[current] || items[0]).click();
+          }
+          else if (e.key === 'Escape') {
+            suggestions.replaceChildren();
+          }
+        });
+
+        // Only the Share dialog used to load contacts
+        var loadContacts = function () {
+          if (!Config.User?.IRI || Object.keys(Config.User.Contacts || {}).length) return Promise.resolve();
+
+          return getUserContacts(Config.User.IRI)
+            .then(contacts => Promise.all((contacts || []).map(contact =>
+              getSubjectInfo(contact)
+                .then(subject => {
+                  if (!subject?.IRI) return;
+                  Config.User.Contacts = Config.User.Contacts || {};
+                  Config.User.Contacts[contact] = subject;
+                })
+                .catch(() => {}))))
+            .then(() => updateDeviceStorageProfile(Config.User))
+            .catch(error => { console.warn('dokieli: could not read contacts', error); });
+        };
+
+        loadContacts().then(() => {
+          if (document.activeElement === input) showSuggestions(getFilteredContacts(input.value.trim().toLowerCase()));
         });
 
         var getFilteredContacts = function(query = '') {
@@ -1158,18 +1278,14 @@ export function shareResource(listenerEvent, iri) {
           options['accessContext'] = 'Share';
           options['selectedAccessMode'] = ns.acl.Read.value;
           options['documentURL'] = documentURL;
+          options['onChange'] = function (mode) { pendingModes.set(iri, mode); refreshUpdateButton(); };
           showAccessModeSelection(li, '', iri, 'agent', options);
 
-          var select = li.querySelector('select');
-          if (!select) return;
+          addNotifyToggle(li, iri);
+          markMissingKey(li, iri);
 
-          select.disabled = true;
-          sanitizeInsertAdjacentHTML(select, 'afterend', `<span class="progress">${Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]}</span>`);
-
-          updateAuthorization(documentURL, options.selectedAccessMode, iri, 'agent')
-            .catch(error => { console.log(error); })
-            .then(() => getACLContext(documentURL).catch(error => { console.log(error); }))
-            .then(() => { removeProgressIndicator(select); });
+          pendingModes.set(iri, ns.acl.Read.value);
+          refreshUpdateButton();
         };
 
         // Any WebID can be given access, not only known contacts
@@ -1253,9 +1369,13 @@ export function shareResource(listenerEvent, iri) {
             if (accessSubject === Config.User.IRI) {
               options['disabled'] = true;
             }
+            options['onChange'] = function (mode) { pendingModes.set(accessSubject, mode); refreshUpdateButton(); };
 
             // console.log(options)
             showAccessModeSelection(li, '', accessSubject, subjectsWithAccess[accessSubject]['subjectType'], options);
+
+            addNotifyToggle(li, accessSubject);
+            markMissingKey(li, accessSubject);
           // }
         }
 
@@ -1284,6 +1404,86 @@ export function shareResource(listenerEvent, iri) {
         })
     });
   }
+}
+
+export function shareResource(listenerEvent, iri) {
+  if (document.querySelector('#share-resource.do.on')) { return; }
+
+  // Config.DocumentURL is the opened document, which differs from the window location for open= resources
+  iri = iri || Config.DocumentURL || currentLocation();
+  const documentURL = stripFragmentFromString(iri);
+
+  var button = listenerEvent.target.closest('button');
+  if (button) {
+    button.disabled = true;
+  }
+
+  var shareResourceLinkedResearch = '';
+  if (Config.User.IRI && Config.OriginalResourceInfo['rdftype'] && Config.OriginalResourceInfo.rdftype.includes(ns.schema.ScholarlyArticle.value) || Config.OriginalResourceInfo.rdftype.includes(ns.schema.Thesis.value)) {
+    shareResourceLinkedResearch = `
+      <div id="share-resource-external" rel="schema:hasPart" resource="#share-resource-external">
+        <h3 data-i18n="dialog.share-resource-linked-research.h3" property="schema:name">${i18n.t('dialog.share-resource-linked-research.h3.textContent')}</h3>
+        <input id="share-resource-linked-research" type="checkbox" value="https://linkedresearch.org/cloud" />
+        <label for="share-resource-linked-research"><a href="https://linkedresearch.org/cloud">Linked Open Research Cloud</a></label>
+      </div>`;
+  }
+
+  var buttonClose = getButtonHTML({ key: 'dialog.share-resource.close.button', button: 'close', buttonClass: 'close', iconSize: 'fa-2x' });
+
+  var shareResourceHTML = `
+    <aside aria-labelledby="share-resource-label" class="do on" dir="${Config.User.UI.LanguageDir}" dir="${Config.User.UI.LanguageDir}" id="share-resource" lang="${Config.User.UI.Language}" rel="schema:hasPart" resource="#share-resource" xml:lang="${Config.User.UI.Language}">
+      <h2 data-i18n="dialog.share.h2" id="share-resource-label" property="schema:name">${i18n.t('dialog.share.h2.textContent')} ${Config.Button.Info.Share}</h2>
+
+      ${buttonClose}
+
+      <div class="info"></div>
+
+      <div id="share-resource-share-url" rel="schema:hasPart" resource="#share-resource-share-url">
+        <h3 data-i18n="dialog.share-resource-share-url.h3" property="schema:name">${i18n.t('dialog.share-resource-share-url.h3.textContent')}</h3>
+
+        <label data-i18n="dialog.share-resource-clipboard.label" for="share-resource-clipboard">${i18n.t('dialog.share-resource-clipboard.label.textContent')}</label>
+        <input dir="ltr" id="share-resource-clipboard" name="share-resource-clipboard" readonly="readonly" type="url" value="${iri}" />
+        ${Config.Button.Clipboard}
+      </div>
+
+      ${shareResourceLinkedResearch}
+
+      <div id="share-resource-agents" rel="schema:hasPart" resource="#share-resource-agents">
+        <h3 data-i18n="dialog.share-resource-agents.h3" property="schema:name">${i18n.t('dialog.share-resource-agents.h3.textContent')}</h3>
+
+        <ul>
+          <li id="share-resource-address-book">
+          </li>
+        </ul>
+
+        <label data-i18n="dialog.share-resource-note.label" for="share-resource-note">${i18n.t('dialog.share-resource-note.label.textContent')}</label>
+        <textarea data-i18n="dialog.share-resource-note.textarea" dir="auto" id="share-resource-note" rows="3" cols="40" name="share-resource-note" placeholder="${i18n.t('dialog.share-resource-note.textarea.placeholder')}"></textarea>
+
+        <button class="share" data-i18n="dialog.share-resource-agents.button" id="share-resource-agents-button" title="${i18n.t('dialog.share-resource-agents.button.title')}" type="submit">${i18n.t('dialog.share-resource-agents.button.textContent')}</button>
+      </div>
+    </aside>
+  `;
+
+  document.body.appendChild(fragmentFromString(shareResourceHTML));
+
+  var clipboardInput = document.querySelector('#share-resource-clipboard');
+  var clipboardButton = document.querySelector('#share-resource-clipboard + button.copy-to-clipboard');
+  setCopyToClipboard(clipboardInput, clipboardButton);
+
+  clipboardInput.addEventListener('focus', e => {
+    var input = e.target.closest('input');
+    if (input) {
+      input.selectionStart = 0;
+      input.selectionEnd = input.value.length;
+    }
+  });
+
+  var li = document.getElementById('share-resource-address-book');
+  if (li && Config.User.IRI) {
+    sanitizeInsertAdjacentHTML(li, 'beforeend', Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]);
+    selectContacts(li, Config.User.IRI);
+  }
+
 
   var shareResource = document.getElementById('share-resource');
 
@@ -1333,9 +1533,8 @@ export function shareResource(listenerEvent, iri) {
   });
 }
 
-// For encrypted documents: grant Read, re-encrypt to the recipients' published keys, then notify. Contacts without a published encryption key are skipped so they are not announced content they cannot decrypt
 async function shareResourceWithAgents(tos, note, iri, shareResourceNode) {
-  // Permissions and notifications are separate sections, so an empty selection is not a key failure
+  // An empty selection is not a key failure
   if (!tos.length) {
     const rm = shareResourceNode.querySelector('.response-message');
     if (rm) {
@@ -1344,64 +1543,34 @@ async function shareResourceWithAgents(tos, note, iri, shareResourceNode) {
     return;
   }
 
-  if (!(Config.User.Keys?.Encryption?.Enabled && Config.User.Keys?.Encryption?.DocumentEncrypt)) {
-    return sendNotifications(tos, note, iri, shareResourceNode);
-  }
-
   const documentURL = stripFragmentFromString(iri);
-  const recipients = [];
-  const withoutKey = [];
+  const unreachable = [];
+
+  // Sharing announces; access is settled in Permissions
+  await getACLContext(documentURL).catch(() => {});
 
   for (const to of tos) {
-    const found = await getAgentEncryptionKey(to);
-    if (found) {
-      addDocumentRecipient(documentURL, to, found.key);
-      recipients.push(to);
-    }
-    else {
-      // Name the WebID that was checked; people often have more than one
-      withoutKey.push(to);
-      const toInput = shareResourceNode.querySelector('[value="' + to + '"]');
-      if (toInput) {
-        sanitizeInsertAdjacentHTML(toInput.parentNode, 'beforeend',
-          '<span class="progress" data-to="' + to + '">' + Icon[".fas.fa-times-circle.fa-fw"] + ' ' + i18n.t('dialog.share-resource-encryption-no-key.textContent') + '</span>');
-      }
+    const reasons = await unreachableReasons(documentURL, to);
+    if (!reasons.length) continue;
+
+    unreachable.push({ to, reasons });
+    const li = shareResourceNode.querySelector('[value="' + to + '"]')?.closest('li');
+    if (li && !li.querySelector('.warning')) {
+      sanitizeInsertAdjacentHTML(li, 'beforeend',
+        '<span class="warning">' + Icon[".fas.fa-triangle-exclamation"] + ' ' + reasons.join(' ') + '</span>');
     }
   }
 
-  if (!recipients.length) {
+  if (unreachable.length) {
     const rm = shareResourceNode.querySelector('.response-message');
     if (rm) {
-      const checked = withoutKey.map(to => '<li><a href="' + to + '" rel="noopener" target="_blank">' + to + '</a></li>').join('');
-      rm.setHTMLUnsafe(domSanitize('<p>' + i18n.t('dialog.share-resource-encryption-no-recipients.textContent') + '</p>' + (checked ? '<ul>' + checked + '</ul>' : '')));
-    }
-    return;
-  }
-
-  await ensureEncryptedDocumentACL(documentURL);
-
-  if (accessModeAllowed(documentURL, 'control')) {
-    for (const to of recipients) {
-      try {
-        await updateAuthorization(documentURL, ns.acl.Read.value, to, 'agent');
-        await getACLContext(documentURL);
-      }
-      catch (e) {
-        console.warn('dokieli: could not grant read access to ' + to, e);
-      }
-    }
-  }
-  else {
-    const rm = shareResourceNode.querySelector('.response-message');
-    if (rm) {
-      sanitizeInsertAdjacentHTML(rm, 'beforeend', '<p class="warning">' + Icon[".fas.fa-triangle-exclamation"] + ' ' + i18n.t('dialog.share-resource-encryption-no-control.textContent') + '</p>');
+      const listed = unreachable.map(({ to }) => '<li><a href="' + to + '" rel="noopener" target="_blank">' + to + '</a></li>').join('');
+      sanitizeInsertAdjacentHTML(rm, 'beforeend',
+        '<p class="warning">' + i18n.t('dialog.share-resource-unreachable.textContent') + '</p><ul>' + listed + '</ul>');
     }
   }
 
-  // Re-save so the stored JWE gains a wrapped-key entry for each new recipient
-  await updateMutableResource(documentURL);
-
-  return sendNotifications(recipients, note, iri, shareResourceNode);
+  return sendNotifications(tos, note, iri, shareResourceNode);
 }
 
 export function selectContacts(node, url) {
@@ -1454,11 +1623,6 @@ export function addShareResourceContactInput(node, agent) {
   var iri = agent?.IRI
   var inbox = agent?.Inbox;
 
-  // An encrypted document can only be shared with agents whose profile publishes an encryption key
-  if (Config.User.Keys?.Encryption?.Enabled && Config.User.Keys?.Encryption?.DocumentEncrypt && !agentHasPublishedEncryptionKey(agent?.Graph)) {
-    return;
-  }
-
   if (inbox && inbox.length) {
     var id = encodeURIComponent(iri);
     var name = agent.Name || iri;
@@ -1471,7 +1635,34 @@ export function addShareResourceContactInput(node, agent) {
     var input = '<li><input id="share-resource-contact-' + id + '" type="checkbox" value="' + iri + '" /><label for="share-resource-contact-' + id + '">' + img + '<a dir="auto" href="' + iri + '" rel="noopener" target="_blank">' + name + '</a></label></li>';
 
     sanitizeInsertAdjacentHTML(node, 'beforeend', input);
+    markUnreachableContact(node.querySelector('[id="share-resource-contact-' + id + '"]'), iri);
   }
+}
+
+// Checked at render so the warning shows before Share is clicked
+async function unreachableReasons(documentURL, to) {
+  const reasons = [];
+  const ctx = cachedACLContext(documentURL);
+
+  if (ctx && !agentsWithMode(ctx, 'Read').includes(to) && !ctx.authorizations.some(a => a.mode.includes('Read') && a.agentClass.includes(Public.iri))) {
+    reasons.push(i18n.t('dialog.share-resource-no-read-access.textContent'));
+  }
+  if (Config.User.Keys?.Encryption?.Enabled && Config.User.Keys?.Encryption?.DocumentEncrypt && !(await getAgentEncryptionKey(to))) {
+    reasons.push(i18n.t('dialog.share-resource-encryption-no-key.textContent'));
+  }
+  return reasons;
+}
+
+function markUnreachableContact(input, to) {
+  if (!input) return;
+  const documentURL = Config.DocumentURL || currentLocation();
+
+  unreachableReasons(documentURL, to).then(reasons => {
+    const li = input.closest('li');
+    if (!reasons.length || !li?.isConnected || li.querySelector('.warning')) return;
+    sanitizeInsertAdjacentHTML(li, 'beforeend',
+      '<span class="warning">' + Icon[".fas.fa-triangle-exclamation"] + ' ' + reasons.join(' ') + '</span>');
+  });
 }
 
 export function updateContactsInbox(iri, s) {
@@ -1539,6 +1730,12 @@ function showAccessModeSelection(node, id, accessSubject, subjectType, options) 
     var selectedMode = e.target.value;
 
     if (Config.AccessContext[options.accessContext][selectedMode] || selectedMode == '') {
+      // Renders the select; applying the mode is the caller's job
+      if (options.onChange) {
+        options.onChange(selectedMode, accessSubject, subjectType);
+        return;
+      }
+
       e.target.disabled = true;
       sanitizeInsertAdjacentHTML(e.target, 'afterend', `<span class="progress">${Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]}</span>`);
 
