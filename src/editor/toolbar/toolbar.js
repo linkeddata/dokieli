@@ -492,6 +492,16 @@ export class ToolbarView {
 
   getModeToggle() { return null; }
 
+  setTranslatedText(node, key, fallback) {
+    if (key) {
+      node.dataset.i18n = key;
+      node.textContent = i18n.t(`${key}.textContent`);
+    }
+    else {
+      node.textContent = fallback;
+    }
+  }
+
   initializeDropdownMenus(dropdowns) {
     Object.entries(dropdowns).forEach(([name, config]) => {
       const li = document.createElement('li');
@@ -501,7 +511,13 @@ export class ToolbarView {
       trigger.id = `editor-dropdown-trigger-${name}`;
       trigger.className = 'editor-dropdown-trigger';
       trigger.type = 'button';
-      trigger.setAttribute('title', config.title || config.label);
+      if (config.titleKey) {
+        trigger.dataset.i18n = config.titleKey;
+        trigger.setAttribute('title', i18n.t(`${config.titleKey}.title`));
+      }
+      else {
+        trigger.setAttribute('title', config.title || config.label);
+      }
       trigger.setAttribute('aria-haspopup', 'menu');
       trigger.setAttribute('aria-expanded', 'false');
       trigger.setAttribute('aria-controls', `editor-dropdown-panel-${name}`);
@@ -519,10 +535,10 @@ export class ToolbarView {
       panel.className = 'editor-dropdown-panel';
       panel.id = `editor-dropdown-panel-${name}`;
 
-      if (config.sectionLabel) {
+      if (config.sectionKey || config.sectionLabel) {
         const sectionLi = document.createElement('li');
         sectionLi.className = 'editor-dropdown-section-label';
-        sectionLi.textContent = config.sectionLabel;
+        this.setTranslatedText(sectionLi, config.sectionKey, config.sectionLabel);
         panel.appendChild(sectionLi);
       }
 
@@ -554,12 +570,12 @@ export class ToolbarView {
         textSpan.className = 'editor-dropdown-item-text';
         const labelSpan = document.createElement('span');
         labelSpan.className = 'editor-dropdown-item-label';
-        labelSpan.textContent = item.label;
+        this.setTranslatedText(labelSpan, item.labelKey, item.label);
         textSpan.appendChild(labelSpan);
-        if (item.description) {
+        if (item.descriptionKey || item.description) {
           const descSpan = document.createElement('span');
           descSpan.className = 'editor-dropdown-item-desc';
-          descSpan.textContent = item.description;
+          this.setTranslatedText(descSpan, item.descriptionKey, item.description);
           textSpan.appendChild(descSpan);
         }
         itemBtn.appendChild(textSpan);
@@ -613,13 +629,16 @@ export class ToolbarView {
     panel.style.top = `${this.dom.offsetHeight}px`;
   }
 
-  addModeToggleButton({ label, targetMode, icon }) {
+  addModeToggleButton({ key, label, targetMode, icon }) {
     const li = document.createElement('li');
     li.className = 'editor-mode-toggle';
+
+    label = key ? i18n.t(`${key}.textContent`) : label;
 
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'editor-mode-toggle-btn';
+    if (key) btn.dataset.i18n = key;
     btn.setAttribute('title', label);
     btn.setAttribute('aria-label', label);
     const iconMarkup = Icon[icon] || icon;

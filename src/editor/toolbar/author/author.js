@@ -290,7 +290,7 @@ TODO:
   }
 
   getModeToggle() {
-    return { label: 'Back to Reading', icon: '.fas.fa-goal-net', targetMode: 'social' };
+    return { key: 'editor.toolbar.mode.read', icon: '.fas.fa-goal-net', targetMode: 'social' };
   }
 
   afterButtons() {
@@ -345,7 +345,7 @@ TODO:
   updateCompactPresentation() {
     if (!this.blocktypeSelect) return;
     Array.from(this.blocktypeSelect.options).forEach(option => {
-      option.textContent = this.isCompactLayout ? option.dataset.shortLabel : option.dataset.label;
+      option.textContent = this.isCompactLayout ? option.dataset.shortLabel : i18n.t(`${option.dataset.i18n}.textContent`);
     });
   }
 
@@ -354,57 +354,57 @@ TODO:
       align: {
         icon: buttonIcons['align-center']?.icon,
         label: 'Align',
-        title: i18n.t('button.align-center.title'),
+        titleKey: 'editor.toolbar.menu.align',
         items: [
-          { icon: buttonIcons['align-left']?.icon,   label: i18n.t('button.align-left.textContent'),   action: () => { this.dom.querySelector('#editor-button-align-left')?.click(); } },
-          { icon: buttonIcons['align-center']?.icon, label: i18n.t('button.align-center.textContent'), action: () => { this.dom.querySelector('#editor-button-align-center')?.click(); } },
-          { icon: buttonIcons['align-right']?.icon,  label: i18n.t('button.align-right.textContent'),  action: () => { this.dom.querySelector('#editor-button-align-right')?.click(); } },
+          { icon: buttonIcons['align-left']?.icon,   labelKey: 'button.align-left',   action: () => { this.dom.querySelector('#editor-button-align-left')?.click(); } },
+          { icon: buttonIcons['align-center']?.icon, labelKey: 'button.align-center', action: () => { this.dom.querySelector('#editor-button-align-center')?.click(); } },
+          { icon: buttonIcons['align-right']?.icon,  labelKey: 'button.align-right',  action: () => { this.dom.querySelector('#editor-button-align-right')?.click(); } },
         ],
       },
       plus: {
         label: "+",
-        title: "Insert",
+        titleKey: "editor.toolbar.menu.insert",
         items: [
           {
             icon: buttonIcons["img"]?.icon,
-            label: "Image",
+            labelKey: "editor.toolbar.item.image.label",
             action: () => {
               this.dom.querySelector("#editor-button-img")?.click();
             },
           },
           {
             icon: buttonIcons["table"]?.icon,
-            label: "Table",
+            labelKey: "editor.toolbar.item.table.label",
             action: () => {
               Config.Editor.slashMenu?.showForm("table");
             },
           },
-          { icon: buttonIcons['ul']?.icon,         label: 'Bullet List',   action: () => { this.dom.querySelector('#editor-button-ul')?.click(); } },
-          { icon: buttonIcons['ol']?.icon,         label: 'Numbered List', action: () => { this.dom.querySelector('#editor-button-ol')?.click(); } },
+          { icon: buttonIcons['ul']?.icon,         labelKey: 'editor.toolbar.item.ul.label', action: () => { this.dom.querySelector('#editor-button-ul')?.click(); } },
+          { icon: buttonIcons['ol']?.icon,         labelKey: 'editor.toolbar.item.ol.label', action: () => { this.dom.querySelector('#editor-button-ol')?.click(); } },
           {
             icon: buttonIcons["blockquote"]?.icon,
-            label: "Blockquote",
+            labelKey: "editor.toolbar.item.blockquote.label",
             action: () => {
               this.dom.querySelector("#editor-button-blockquote")?.click();
             },
           },
           {
             icon: buttonIcons["q"]?.icon,
-            label: "Inline Quote",
+            labelKey: "editor.toolbar.item.q.label",
             action: () => {
               this.dom.querySelector("#editor-button-q")?.click();
             },
           },
           {
             icon: buttonIcons["pre"]?.icon,
-            label: "Code Block",
+            labelKey: "editor.toolbar.item.pre.label",
             action: () => {
               this.dom.querySelector("#editor-button-pre")?.click();
             },
           },
           {
             icon: buttonIcons["code"]?.icon,
-            label: "Inline Code",
+            labelKey: "editor.toolbar.item.code.label",
             action: () => {
               this.dom.querySelector("#editor-button-code")?.click();
             },
@@ -414,46 +414,45 @@ TODO:
       meta: {
         icon: Icon['.fas.fa-magic'],
         label: "⋯",
-        title: "More options",
-        sectionLabel: "Structure and Semantics",
+        titleKey: "editor.toolbar.menu.more",
+        sectionKey: "editor.toolbar.menu.structure",
         items: [
           {
             icon: buttonIcons["semantics"]?.icon,
-            label: "Define Semantics",
-            description:
-              "Add attributes to describe the meaning of the selection.",
+            labelKey: "editor.toolbar.item.semantics.label",
+            descriptionKey: "editor.toolbar.item.semantics.description",
             action: () => {
               this.dom.querySelector("#editor-button-semantics")?.click();
             },
           },
           {
             icon: buttonIcons["citation"]?.icon,
-            label: "Add Citation",
-            description: "Add an inline citation for the selected text.",
+            labelKey: "editor.toolbar.item.citation.label",
+            descriptionKey: "editor.toolbar.item.citation.description",
             action: () => {
               this.dom.querySelector("#editor-button-citation")?.click();
             },
           },
           {
             icon: buttonIcons["note"]?.icon,
-            label: "Note",
-            description: "Add an internal note or footnote.",
+            labelKey: "editor.toolbar.item.note.label",
+            descriptionKey: "editor.toolbar.item.note.description",
             action: () => {
               this.dom.querySelector("#editor-button-note")?.click();
             },
           },
           {
             icon: buttonIcons["lang"]?.icon,
-            label: "Set Language",
-            description: "Set the language of the selection.",
+            labelKey: "editor.toolbar.item.lang.label",
+            descriptionKey: "editor.toolbar.item.lang.description",
             action: () => {
               this.dom.querySelector("#editor-button-lang")?.click();
             },
           },
           {
             icon: buttonIcons["requirement"]?.icon,
-            label: "Add Requirement",
-            description: "Link the selection to a technical requirement.",
+            labelKey: "editor.toolbar.item.requirement.label",
+            descriptionKey: "editor.toolbar.item.requirement.description",
             action: () => {
               this.dom.querySelector("#editor-button-requirement")?.click();
             },
@@ -470,21 +469,22 @@ TODO:
     this.blocktypeSelect = document.createElement('select');
     this.blocktypeSelect.className = 'editor-blocktype-select';
     this.blocktypeSelect.id = 'editor-blocktype-selector';
-    this.blocktypeSelect.setAttribute('title', 'Block type');
-    this.blocktypeSelect.setAttribute('aria-label', 'Block type');
+    this.blocktypeSelect.dataset.i18n = 'editor.toolbar.blocktype';
+    this.blocktypeSelect.setAttribute('title', i18n.t('editor.toolbar.blocktype.title'));
+    this.blocktypeSelect.setAttribute('aria-label', i18n.t('editor.toolbar.blocktype.aria-label'));
 
     [
-      { label: 'Paragraph', short: 'P', value: 'p' },
-      { label: 'Heading 1', short: 'H1', value: 'h1' },
-      { label: 'Heading 2', short: 'H2', value: 'h2' },
-      { label: 'Heading 3', short: 'H3', value: 'h3' },
-      { label: 'Heading 4', short: 'H4', value: 'h4' },
-      { label: 'Heading 5', short: 'H5', value: 'h5' },
-    ].forEach(({ label, short, value }) => {
+      { short: 'P', value: 'p' },
+      { short: 'H1', value: 'h1' },
+      { short: 'H2', value: 'h2' },
+      { short: 'H3', value: 'h3' },
+      { short: 'H4', value: 'h4' },
+      { short: 'H5', value: 'h5' },
+    ].forEach(({ short, value }) => {
       const option = document.createElement('option');
       option.value = value;
-      option.textContent = label;
-      option.dataset.label = label;
+      option.dataset.i18n = `editor.toolbar.blocktype.${value}`;
+      option.textContent = i18n.t(`editor.toolbar.blocktype.${value}.textContent`);
       option.dataset.shortLabel = short;
       this.blocktypeSelect.appendChild(option);
     });
