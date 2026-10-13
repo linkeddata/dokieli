@@ -747,7 +747,7 @@ export class ToolbarView {
     if (!selection.rangeCount) return false;
     const range = selection.getRangeAt(0);
     const selectedParentElement = getSelectedParentElement(range);
-    const closestDo = selectedParentElement.closest('.do');
+    const closestDo = selectedParentElement.closest('.do:not(.ref)');
     if (!closestDo) return false;
     // image nodeView wraps <img> in .do chrome; don't let it block the toolbar
     if (closestDo.classList.contains('editor-image-resize')) return false;
