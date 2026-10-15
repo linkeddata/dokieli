@@ -1440,6 +1440,13 @@ margin: 0 0 1em 0;
 width:35%;
 }
 
+.do[dir="ltr"] {
+text-align: left;
+}
+.do[dir="rtl"] {
+text-align: right;
+}
+
 /* A workaround for RTL placeholder issue if `dir=auto`: https://github.com/whatwg/html/issues/4903#issuecomment-2955354574 */
 [dir='rtl'] input[dir='auto'][type='text'],
 [dir='rtl'] input[dir='auto'][type='password'] {
