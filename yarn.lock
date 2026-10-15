@@ -1978,6 +1978,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"compromise@npm:^14.17.0":
+  version: 14.18.0
+  resolution: "compromise@npm:14.18.0"
+  dependencies:
+    efrt: "npm:2.9.0"
+    grad-school: "npm:0.0.9"
+    suffix-thumb: "npm:6.0.0"
+  checksum: 10c0/065f8f49b47a9bcce699e2b3e816913e131485dd0885573967b6e4d1653f42557db76fee3722e19b5fa32f4a4db74656ffff4b227daf2cb841541f5ec47c019d
+  languageName: node
+  linkType: hard
+
 "convert-source-map@npm:^2.0.0":
   version: 2.0.0
   resolution: "convert-source-map@npm:2.0.0"
@@ -2159,11 +2170,13 @@ __metadata:
     "@vitest/coverage-istanbul": "npm:^4.1.10"
     "@vitest/coverage-v8": "npm:^4.1.10"
     buffer: "npm:^6.0.3"
+    compromise: "npm:^14.17.0"
     d3-force: "npm:^3.0.0"
     d3-selection: "npm:^3.0.0"
     diff: "npm:^8.0.3"
     dompurify: "npm:^3.4.13"
     dotenv: "npm:^16.4.5"
+    es-compromise: "npm:^0.3.1"
     eslint: "npm:^10.0.3"
     eslint-plugin-header: "npm:^3.1.1"
     eslint-plugin-license-header: "npm:^0.9.0"
@@ -2288,6 +2301,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"efrt@npm:2.7.0":
+  version: 2.7.0
+  resolution: "efrt@npm:2.7.0"
+  checksum: 10c0/c8f8e838e6e4efae7105a8349db2c9d7ad7a14a69982628c740fdaf7658c44866a6b988a6c9abda8d2f0f9ccbfe943ec38e35a6355873f9b7cb58ae87575f355
+  languageName: node
+  linkType: hard
+
+"efrt@npm:2.9.0":
+  version: 2.9.0
+  resolution: "efrt@npm:2.9.0"
+  checksum: 10c0/c8489343b0b6de2d9cffc11b65647224470171e47ee1c143362902701f46be674bc99b59e395c16db64c467ce6354006898a24bfef0b00040a3ff4f3801a15c6
+  languageName: node
+  linkType: hard
+
 "electron-to-chromium@npm:^1.5.328":
   version: 1.5.361
   resolution: "electron-to-chromium@npm:1.5.361"
@@ -2332,6 +2359,17 @@ __metadata:
   bin:
     envinfo: dist/cli.js
   checksum: 10c0/4170127ca72dbf85be2c114f85558bd08178e8a43b394951ba9fd72d067c6fea3374df45a7b040e39e4e7b30bdd268e5bdf8661d99ae28302c2a88dedb41b5e6
+  languageName: node
+  linkType: hard
+
+"es-compromise@npm:^0.3.1":
+  version: 0.3.1
+  resolution: "es-compromise@npm:0.3.1"
+  dependencies:
+    compromise: "npm:^14.17.0"
+    efrt: "npm:2.7.0"
+    suffix-thumb: "npm:5.0.3"
+  checksum: 10c0/7e2508c2db8924e725656e001fde32dd49c03d3df6967e43ab517ef299a848ca49e20b6507c6edc6c2dcf60a57a52222a496736affc98782df4ebc25186b07a1
   languageName: node
   linkType: hard
 
@@ -2866,6 +2904,13 @@ __metadata:
   version: 4.2.11
   resolution: "graceful-fs@npm:4.2.11"
   checksum: 10c0/386d011a553e02bc594ac2ca0bd6d9e4c22d7fa8cfbfc448a6d148c59ea881b092db9dbe3547ae4b88e55f1b01f7c4a2ecc53b310c042793e63aa44cf6c257f2
+  languageName: node
+  linkType: hard
+
+"grad-school@npm:0.0.9":
+  version: 0.0.9
+  resolution: "grad-school@npm:0.0.9"
+  checksum: 10c0/0b6abff6a778ed8948613f815526684c1bcd1a399b3fb572eef8298b3d2d9c13c49c81d1ee0261ee3f387bf1c7a4c98bc1517edd0f4b8bd20d72e221b116ab86
   languageName: node
   linkType: hard
 
@@ -5074,6 +5119,20 @@ __metadata:
   dependencies:
     safe-buffer: "npm:~5.2.0"
   checksum: 10c0/810614ddb030e271cd591935dcd5956b2410dd079d64ff92a1844d6b7588bf992b3e1b69b0f4d34a3e06e0bd73046ac646b5264c1987b20d0601f81ef35d731d
+  languageName: node
+  linkType: hard
+
+"suffix-thumb@npm:5.0.3":
+  version: 5.0.3
+  resolution: "suffix-thumb@npm:5.0.3"
+  checksum: 10c0/d845b2261da3a4706149ada5c8039d82e338434cb4bc642af5cde7fa6e7bbb369cc8fd413bcf309db137e60345b3a561fe11b10cf86a7121892cc575432ca753
+  languageName: node
+  linkType: hard
+
+"suffix-thumb@npm:6.0.0":
+  version: 6.0.0
+  resolution: "suffix-thumb@npm:6.0.0"
+  checksum: 10c0/b809a725b01121b7a79179260e5c035723f184d2b8173a0cb35fb0480534c05c93df21598c8051d69935e8ecb3634b99f1ae3567e52bc1e7b0fe3c1364373eb0
   languageName: node
   linkType: hard
 

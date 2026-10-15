@@ -33,7 +33,7 @@ import { forceTrailingSlash, generateDataURI, getBaseURL, isHttpOrHttpsProtocol,
 import { getAgentInbox, getAgentName, getGraphAuthors, getGraphContributors, getGraphEditors, getGraphImage, getGraphLabelOrIRI, getGraphPerformers, getGraphTypes, getLinkRelation, getLinkRelationFromHead, getResourceGraph, getUserContacts, getUserLabelOrIRI, serializeData, getSubjectInfo, getRDFSerializer, getGraphCreators } from './graph.js';
 import { agentsWithMode, hasControl, planGrant, planOwnerControl, planRevoke, Public } from '@dokieli/web-access-control';
 import { applyACLPlan, cachedACLContext, expandAccessMode, getACLContext, setPublicRead } from './wac.js';
-import { notifyInbox, sendNotifications, showContactsActivities, showOtherNotificationSources, initializeNotifications, registerEncryptionUnlockHandler, processPendingEncryptedNotes, clearPendingEncryptedQueues } from './activity.js';
+import { notifyInbox, sendNotifications, showContactsActivities, showOtherNotificationSources, initializeNotifications, openSidePanel, registerEncryptionUnlockHandler, processPendingEncryptedNotes, clearPendingEncryptedQueues } from './activity.js';
 import Config from './config.js';
 const ns = Config.ns;
 import { Icon } from './ui/icons.js';
@@ -716,6 +716,12 @@ export function initDocumentDoEvents() {
       generateFeed(e);
     }
 
+    if (e.target.closest('.resource-ohyeah')) {
+      hideDocumentMenu(e);
+      lazyImport(() => import(/* webpackChunkName: "ohyeah" */ './ohyeah.js'))
+        .then(({ showOhYeahDocument }) => showOhYeahDocument());
+    }
+
     if (e.target.closest('.resource-print')) {
       exitSingleBeforeSerialize();
       window.print();
@@ -801,7 +807,7 @@ export function showNotifications() {
   if(!aside) {
     aside = initializeNotifications();
   }
-  aside.classList.add('on');
+  openSidePanel(aside);
   showOtherNotificationSources();
 
   registerEncryptionUnlockHandler(async () => {

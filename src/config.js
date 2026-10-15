@@ -89,6 +89,9 @@ export default {
   CDATAEnd: '//]]>',
   SortableList: false,
   GraphViewerAvailable: true,
+  OhYeah: {
+    ServiceURL: process.env.OHYEAH_SERVICE_URL || 'https://ohyeah.dokie.li/'
+  },
   MathAvailable: (typeof MathJax !== 'undefined'),
   EditorEnabled: false,
   EditorWasEnabled: false,

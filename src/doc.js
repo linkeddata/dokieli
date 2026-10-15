@@ -125,7 +125,7 @@ export function getDocument(cn, options = {}) {
   }
 
   if (options.normalize) {
-    nodeDocument = normalizeHTML(nodeDocument);
+    nodeDocument = normalizeHTML(nodeDocument, options);
   }
 
   applyDocumentTransforms(nodeDocument);

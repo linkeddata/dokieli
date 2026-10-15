@@ -32,9 +32,11 @@ export const KNOWN_SERVICES = [
   { name: 'DOI', i18nKey: 'doi', origins: ['https://doi.org'] },
   { name: 'Internet Archive', i18nKey: 'internet-archive', origins: ['https://web.archive.org'] },
   { name: 'Nanopub network', i18nKey: 'nanopub-network', origins: NANOPUB_QUERY_URLS.map(url => new URL(url).origin) },
+  { name: 'Oh yeah? text analysis service', i18nKey: 'ohyeah-service', origins: [new URL(Config.OhYeah.ServiceURL).origin] },
   { name: 'Open Library', i18nKey: 'openlibrary', origins: ['https://openlibrary.org'] },
   { name: 'OpenStreetMap', i18nKey: 'openstreetmap', origins: ['https://nominatim.openstreetmap.org'] },
   { name: 'ORCID', i18nKey: 'orcid', origins: ['https://pub.orcid.org'] },
+  { name: 'RDAP domain registries', i18nKey: 'rdap', origins: ['https://data.iana.org'] },
   { name: 'Specref', i18nKey: 'specref', origins: ['https://api.specref.org'] },
   { name: 'Wikidata', i18nKey: 'wikidata', origins: ['https://www.wikidata.org', 'https://query.wikidata.org'] }
 ];
@@ -106,11 +108,11 @@ export function clearOriginConsent() {
   document.dispatchEvent(new CustomEvent('dokieli:origin-consent-changed', { detail: {} }));
 }
 
-// Resolves true when the origin may be contacted; prompts on first contact
+// Resolves true when the origin may be contacted; prompts on first contact, or after a denial with options.ask
 export function requestOriginConsent(url, options = {}) {
   const decision = getOriginDecision(url);
   if (decision === 'allow') return Promise.resolve(true);
-  if (decision === 'deny') return Promise.resolve(false);
+  if (decision === 'deny' && !options.ask) return Promise.resolve(false);
 
   const origin = originOf(url);
   if (!origin) return Promise.resolve(true);
@@ -127,7 +129,7 @@ export function requestOriginConsent(url, options = {}) {
 function showOriginConsentPrompt(origin, options = {}) {
   // A stored decision may have arrived while this prompt waited its turn
   const decision = Config.OriginConsent?.[origin]?.decision;
-  if (decision) return decision === 'allow';
+  if (decision === 'allow' || (decision === 'deny' && !options.ask)) return decision === 'allow';
 
   return new Promise((resolve) => {
     const buttonClose = getButtonHTML({ key: 'dialog.origin-consent.close.button', button: 'close', buttonClass: 'close', iconSize: 'fa-2x' });

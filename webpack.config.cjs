@@ -71,6 +71,7 @@ module.exports = (env) => {
         "process.env.YWEBSOCKET_URL": JSON.stringify(process.env.YWEBSOCKET_URL),
         "process.env.DEMO_URL": JSON.stringify(process.env.DEMO_URL),
         "process.env.NANOPUB_TEST_REGISTRY": JSON.stringify(process.env.NANOPUB_TEST_REGISTRY),
+        "process.env.OHYEAH_SERVICE_URL": JSON.stringify(process.env.OHYEAH_SERVICE_URL),
       })
     ],
   };

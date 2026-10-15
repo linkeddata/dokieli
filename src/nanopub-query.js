@@ -154,6 +154,68 @@ export function groupNanopubs(listBindings, tripleBindings) {
   return [...nanopubs.values()].filter(entry => entry.dataset.size);
 }
 
+export async function findAssertionQuads(nanopubIRIs) {
+  const quads = new Map();
+  if (!nanopubIRIs.length) return quads;
+
+  const bindings = await select(buildAssertionTriplesQuery(nanopubIRIs));
+  bindings.forEach(b => {
+    const [s, p, o] = [b.s, b.p, b.o].map(termFromBinding);
+    if (!s || !p || !o) return;
+    if (!quads.has(b.np.value)) quads.set(b.np.value, []);
+    quads.get(b.np.value).push(rdf.quad(s, p, o));
+  });
+
+  return quads;
+}
+
+export async function findNanopubCreators(nanopubIRIs) {
+  const creators = new Map();
+  if (!nanopubIRIs.length) return creators;
+
+  const bindings = await select(`${PREFIXES}
+select ?np ?creator ?name where {
+  ${values('np', nanopubIRIs)}
+  graph npa:graph { ?np np:hasPublicationInfo ?pi . }
+  graph ?pi {
+    ?np dct:creator ?creator .
+    optional { ?creator <http://xmlns.com/foaf/0.1/name> ?name . }
+  }
+}`);
+
+  bindings.forEach(b => {
+    const current = creators.get(b.np.value);
+    if (!current || (!current.name && b.name)) {
+      creators.set(b.np.value, { creator: b.creator.value, name: b.name?.value });
+    }
+  });
+
+  return creators;
+}
+
+export async function findProvenanceQuads(nanopubIRIs) {
+  const graphs = new Map();
+  if (!nanopubIRIs.length) return graphs;
+
+  const bindings = await select(`${PREFIXES}
+select ?np ?part ?s ?p ?o where {
+  ${values('np', nanopubIRIs)}
+  { graph npa:graph { ?np np:hasProvenance ?g . } bind("provenance" as ?part) }
+  union
+  { graph npa:graph { ?np np:hasPublicationInfo ?g . } bind("pubinfo" as ?part) }
+  graph ?g { ?s ?p ?o . }
+}`);
+
+  bindings.forEach(b => {
+    const [s, p, o] = [b.s, b.p, b.o].map(termFromBinding);
+    if (!s || !p || !o) return;
+    if (!graphs.has(b.np.value)) graphs.set(b.np.value, { provenance: [], pubinfo: [] });
+    graphs.get(b.np.value)[b.part.value].push(rdf.quad(s, p, o));
+  });
+
+  return graphs;
+}
+
 export async function findDocumentNanopubs(documentIRIs) {
   if (!documentIRIs.length) return [];
 
