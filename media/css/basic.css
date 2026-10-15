@@ -666,6 +666,10 @@ dd+dt {
   margin-top: 1em;
 }
 
+dd dl {
+  margin-left: 0;
+}
+
 p + dl {
   margin-top: 1em;
 }
