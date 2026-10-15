@@ -85,6 +85,7 @@ export function renderDocumentDo() {
 export function renderDocumentTools() {
   const buttons = [
     Config.Button.Menu.DocumentInfo,
+    Config.Button.Menu.OhYeah,
     Config.Button.Menu.EmbedData,
     Config.Button.Menu.Source,
     Config.Button.Menu.Export,

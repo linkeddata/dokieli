@@ -74,6 +74,12 @@ export function initButtons() {
       Keys: getButtonHTML({ key: "info.keys.button", button: "info", buttonClass: "info", buttonType: "button", buttonRel: "rel:help", buttonResource: `${docsBaseURL}#feature-keys` }),
       Inbox: getButtonHTML({ key: "info.inbox.button", button: "info", buttonClass: "info", buttonType: "button", buttonRel: "rel:help", buttonResource: `${docsBaseURL}#feature-set-inbox` }),
       GraphView: getButtonHTML({ key: "info.graph.button", button: "info", buttonClass: "info", buttonType: "button", buttonRel: "rel:help", buttonResource: `${docsBaseURL}#feature-graph-view` }),
+      OhYeah: getButtonHTML({ key: "info.ohyeah.button", button: "info", buttonClass: "info", buttonType: "button", buttonRel: "rel:help", buttonResource: `${docsBaseURL}#feature-oh-yeah` }),
+      OhYeahClaimCheck: getButtonHTML({ key: "info.ohyeah-claim-check.button", button: "info", buttonClass: "info", buttonType: "button", buttonRel: "rel:help", buttonResource: `${docsBaseURL}#feature-oh-yeah-claim-check` }),
+      OhYeahNames: getButtonHTML({ key: "info.ohyeah-names.button", button: "info", buttonClass: "info", buttonType: "button", buttonRel: "rel:help", buttonResource: `${docsBaseURL}#feature-oh-yeah-names` }),
+      OhYeahRules: getButtonHTML({ key: "info.ohyeah-rules.button", button: "info", buttonClass: "info", buttonType: "button", buttonRel: "rel:help", buttonResource: `${docsBaseURL}#feature-oh-yeah-explanation-rules` }),
+      OhYeahService: getButtonHTML({ key: "info.ohyeah-service.button", button: "info", buttonClass: "info", buttonType: "button", buttonRel: "rel:help", buttonResource: `${docsBaseURL}#feature-oh-yeah-own-service` }),
+      OhYeahSources: getButtonHTML({ key: "info.ohyeah-sources.button", button: "info", buttonClass: "info", buttonType: "button", buttonRel: "rel:help", buttonResource: `${docsBaseURL}#feature-oh-yeah-sources` }),
       GenerateFeeds: getButtonHTML({ key: "info.feed.button", button: "info", buttonClass: "info", buttonType: "button", buttonRel: "rel:help", buttonResource: `${docsBaseURL}#feature-generate-feed` }),
       MessageLog: getButtonHTML({ key: "info.messages.button", button: "info", buttonClass: "info", buttonType: "button", buttonRel: "rel:help", buttonResource: `${docsBaseURL}#feature-message-log` }),
       NewDocument: getButtonHTML({ key: "info.new-document.button", button: "info", buttonClass: "info", buttonType: "button", buttonRel: "rel:help", buttonResource: `${docsBaseURL}#feature-new` }),
@@ -109,6 +115,7 @@ export function initButtons() {
       InternetArchive: getButtonHTML({ key: "menu.archive.button", button: "archive", buttonClass: "snapshot-internet-archive" }),
       New: getButtonHTML({ key: "menu.new.button", button: "new", buttonClass: "resource-new" }),
       Notifications: getButtonHTML({ key: "menu.notifications.button", button: "activities", buttonClass: "resource-notifications" }),
+      OhYeah: getButtonHTML({ key: "menu.ohyeah.button", button: "ohyeah", buttonClass: "resource-ohyeah", experimental: true }),
       Open: getButtonHTML({ key: "menu.resource-open.button", button: "open", buttonClass: "resource-open" }),
       OpenMenu: getButtonHTML({ key: "menu.open.button", button: "bars", buttonClass: "show do-menu" }),
       RobustifyLinks: getButtonHTML({ key: "menu.robustify-links.button", button: "robustify-links", buttonClass: "robustify-links" }),
@@ -128,6 +135,10 @@ export function initButtons() {
   }
 }
 
+export function getExperimentalBadgeHTML() {
+  return `<abbr class="do-experimental" data-i18n="experimental.badge" title="${i18n.t('experimental.badge.title')}">${i18n.t('experimental.badge.textContent')}</abbr>`;
+}
+
 //Given a button action, generates an HTML string for the button including an icon and text.
 export function getButtonHTML({
   button,
@@ -138,6 +149,7 @@ export function getButtonHTML({
   buttonRel,
   buttonResource,
   buttonType,
+  experimental,
   iconSize
   }) {
 
@@ -183,7 +195,9 @@ export function getButtonHTML({
 
   buttonDir = buttonDir ? ` dir="${buttonDir}"` : '';
 
-  return `<button${ariaLabel}${dataI18n}${className}${disabled}${pressed}${rel}${resource}${title}${type}${buttonDir}>${buttonContent}</button>`;
+  const badge = experimental ? getExperimentalBadgeHTML() : '';
+
+  return `<button${ariaLabel}${dataI18n}${className}${disabled}${pressed}${rel}${resource}${title}${type}${buttonDir}>${buttonContent}${badge}</button>`;
 }
 
 
@@ -283,8 +297,17 @@ export const buttonIcons = {
   specificity: {
     icon: Icon['.fas.fa-crosshairs']
   },
+  ohyeah: {
+    icon: Icon['.fas.fa-scale']
+  },
+  graph: {
+    icon: Icon['.fas.fa-circle-nodes']
+  },
   'request-assessment': {
     icon: Icon['.fas.fa-bell-concierge']
+  },
+  whois: {
+    icon: Icon['.fas.fa-globe']
   },
   close: {
     icon: Icon['.fas.fa-times']

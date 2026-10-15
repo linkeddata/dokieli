@@ -18,7 +18,7 @@ limitations under the License.
 import { schema } from "../schema/base.js"
 import { NodeSelection } from "prosemirror-state"
 import { Icon } from "../../ui/icons.js"
-import { getButtonHTML, updateButtons } from "../../ui/buttons.js"
+import { getButtonHTML, getExperimentalBadgeHTML, updateButtons } from "../../ui/buttons.js"
 import { getAnnotationInboxLocationHTML, getAnnotationLocationHTML, getDocument, getLanguageOptionsHTML, getLicenseOptionsHTML, getReferenceLabel } from "../../doc.js";
 import { cloneSelection, selectionToTextQuote, setSelectionFromTextQuote, getSelectedParentElement } from "../utils/annotation.js";
 import { applyMarksFromTextQuote, applyMarkFromSelector } from "@dokieli/web-annotation";
@@ -579,6 +579,9 @@ export class ToolbarView {
           textSpan.appendChild(descSpan);
         }
         itemBtn.appendChild(textSpan);
+        if (item.experimental) {
+          itemBtn.appendChild(fragmentFromString(getExperimentalBadgeHTML()));
+        }
 
         itemBtn.addEventListener('mousedown', (e) => e.preventDefault());
         itemBtn.addEventListener('click', (e) => {

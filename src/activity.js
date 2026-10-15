@@ -101,7 +101,38 @@ export function initializeNotifications(options = {}) {
 
 const NotificationsWidthProperty = '--dokieli-notifications-width';
 
-export function initializeNotificationsResize(aside) {
+const SidePanelSelector = '#document-notifications, #document-ohyeah';
+
+export function openSidePanel(aside, widthProperty = NotificationsWidthProperty) {
+  document.documentElement.style.removeProperty(widthProperty);
+
+  document.querySelectorAll(SidePanelSelector).forEach(panel => {
+    panel.classList.toggle('do-side-panel-behind', panel !== aside);
+  });
+
+  aside.classList.add('on');
+}
+
+export function fitSidePanelToTabs(aside) {
+  const nav = aside.querySelector('.tabs nav ul');
+  if (!nav) return;
+
+  const items = [...nav.children];
+  const needed = items.reduce((width, li) => {
+    const style = getComputedStyle(li);
+    return width + li.getBoundingClientRect().width + parseFloat(style.marginLeft) + parseFloat(style.marginRight);
+  }, 0);
+  const available = nav.clientWidth - parseFloat(getComputedStyle(nav).paddingLeft) - parseFloat(getComputedStyle(nav).paddingRight);
+
+  if (needed > available) {
+    const width = Math.ceil(aside.getBoundingClientRect().width + needed - available) + 2;
+    document.documentElement.style.setProperty('--dokieli-side-panel-width', `${width}px`);
+  }
+}
+
+export function initializeNotificationsResize(aside, options = {}) {
+  var widthProperty = options.widthProperty || NotificationsWidthProperty;
+  var resizingClass = options.resizingClass || 'notifications-resizing';
   var resizer = aside.querySelector('.resizer');
   if (!resizer) { return; }
 
@@ -113,17 +144,17 @@ export function initializeNotificationsResize(aside) {
     e.preventDefault();
     var maxWidth = window.innerWidth * 0.9;
 
-    root.classList.add('notifications-resizing');
+    root.classList.add(resizingClass);
     resizer.classList.add('active');
     resizer.setPointerCapture(e.pointerId);
 
     var onMove = (ev) => {
       var width = Math.min(maxWidth, Math.max(minWidth, window.innerWidth - ev.clientX));
-      root.style.setProperty(NotificationsWidthProperty, width + 'px');
+      root.style.setProperty(widthProperty, width + 'px');
     };
 
     var onUp = () => {
-      root.classList.remove('notifications-resizing');
+      root.classList.remove(resizingClass);
       resizer.classList.remove('active');
       resizer.removeEventListener('pointermove', onMove);
       resizer.removeEventListener('pointerup', onUp);
@@ -134,7 +165,7 @@ export function initializeNotificationsResize(aside) {
   });
 
   resizer.addEventListener('dblclick', () => {
-    root.style.removeProperty(NotificationsWidthProperty);
+    root.style.removeProperty(widthProperty);
   });
 }
 

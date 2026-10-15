@@ -15,7 +15,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import { formHandlerAnnotate, shareButtonHandler } from "./handlers.js"
+import { formHandlerAnnotate, shareButtonHandler, ohYeahButtonHandler } from "./handlers.js"
 import { ToolbarView, annotateFormControls, syncNotifyInboxDefault, updateAnnotationInboxForm, updateAnnotationServiceForm, updateNanopubAccess } from "../toolbar.js"
 import Config from "../../../config.js";
 import { exportSelection, getSelectedParentElement, restoreSelection } from "../../utils/annotation.js";
@@ -43,7 +43,7 @@ export class SocialToolbar extends ToolbarView {
   }
 
   getSubmenuButtons() {
-    return ['share', 'specificity'];
+    return ['share', 'specificity', 'ohyeah'];
   }
 
   getModeToggle() {
@@ -67,6 +67,13 @@ export class SocialToolbar extends ToolbarView {
             labelKey: 'editor.toolbar.item.specificity.label',
             descriptionKey: 'editor.toolbar.item.specificity.description',
             action: () => { this.dom.querySelector('#editor-button-specificity')?.click(); }
+          },
+          {
+            icon: buttonIcons['ohyeah']?.icon,
+            labelKey: 'editor.toolbar.item.ohyeah.label',
+            descriptionKey: 'editor.toolbar.item.ohyeah.description',
+            experimental: true,
+            action: () => { this.dom.querySelector('#editor-button-ohyeah')?.click(); }
           }
         ]
       }
@@ -75,7 +82,8 @@ export class SocialToolbar extends ToolbarView {
 
   getToolbarButtonClickHandlers() {
     return {
-      share: shareButtonHandler.bind(this)
+      share: shareButtonHandler.bind(this),
+      ohyeah: ohYeahButtonHandler.bind(this)
     }
   }
 

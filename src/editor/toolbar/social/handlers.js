@@ -32,6 +32,7 @@ import { formatHTMLString } from "../../../utils/normalization.js";
 import { encryptContent } from "../../../crypto.js";
 import { isUnlocked, getSessionPublicKey, getSessionKid } from "../../../keystore.js";
 import { setPublicRead } from "../../../wac.js";
+import { lazyImport } from "../../../utils/lazy.js";
 
 const ns = Config.ns;
 
@@ -67,6 +68,22 @@ export function shareButtonHandler(e) {
   const uri = getAnnotationSelectorStateURI(baseURL, selector);
 
   shareResource(e, uri);
+}
+
+export async function ohYeahButtonHandler(e) {
+  e.preventDefault();
+  e.stopPropagation();
+
+  const { showOhYeahPanel } = await lazyImport(() => import(/* webpackChunkName: "ohyeah" */ '../../../ohyeah.js'));
+
+  restoreSelection(this.selection);
+  const selection = window.getSelection();
+
+  showOhYeahPanel(selection);
+
+  // The highlights mark the names found, so the selection is no longer needed
+  selection.removeAllRanges();
+  this.cleanupToolbar();
 }
 
 export function formHandlerAnnotate(e, action) {
