@@ -35,8 +35,7 @@ import {
   groupNanopubs,
   findDocumentNanopubs,
   showNanopubAnnotations,
-  queryNanopubAnnotations,
-  initNanopubAnnotations
+  queryNanopubAnnotations
 } from 'src/nanopub-query.js';
 
 const NP = 'https://w3id.org/np/RABVZkX_FbsyPbIyBG4E3YU3EG0i1KAsG1HsM-lmXpn30';
@@ -203,24 +202,6 @@ describe('nanopub query consent', () => {
     requestOriginConsent.mockImplementation(() => Promise.resolve(true));
   });
   afterEach(() => vi.unstubAllGlobals());
-
-  test('sends nothing on load without a decision', () => {
-    const fetchMock = vi.fn();
-    vi.stubGlobal('fetch', fetchMock);
-
-    initNanopubAnnotations(DOC);
-    expect(fetchMock).not.toHaveBeenCalled();
-    expect(requestOriginConsent).not.toHaveBeenCalled();
-  });
-
-  test('queries on load when already allowed', async () => {
-    const fetchMock = vi.fn().mockResolvedValue(sparqlResponse([]));
-    vi.stubGlobal('fetch', fetchMock);
-    Config.OriginConsent = { [origin]: { decision: 'allow' } };
-
-    initNanopubAnnotations(DOC);
-    await vi.waitFor(() => expect(fetchMock).toHaveBeenCalled());
-  });
 
   test('asking to query requests consent, then queries', async () => {
     const fetchMock = vi.fn().mockResolvedValue(sparqlResponse([]));

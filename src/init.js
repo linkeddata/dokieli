@@ -28,8 +28,7 @@ const HTTP_ORIGINS_KEY = 'DO.Config.Http.origins';
 import { syncLocalRemoteResource, monitorNetworkStatus, showResourceReviewChanges, enableLocalBackup, disableLocalBackup } from './sync.js';
 import { domSanitize, sanitizeInsertAdjacentHTML, sanitizeIRI, sanitizeObject } from './utils/sanitization.js';
 import { afterSetUserInfo, setUserInfo, processLoginInvocation } from './auth.js';
-import { showNotificationSources, showActivitiesSources, processAgentActivities, registerEncryptionUnlockHandler } from './activity.js';
-import { initNanopubAnnotations } from './nanopub-query.js';
+import { showNotificationSources, showActivitiesSources, registerEncryptionUnlockHandler } from './activity.js';
 import { generateDataURI, getProxyableIRI, getUrlParams, stripFragmentFromString, stripUrlSearchHash } from './uri.js';
 import { SolidStorage, GitForgeStorage, HttpStorage, initStorage } from './storage/backend.js';
 import { initEditor } from './editor/initEditor.js';
@@ -265,20 +264,6 @@ export function initShowNotificationSources() {
   (Config.Resource[documentURL].annotationService || []).forEach(service => {
     showActivitiesSources(service, { activityType: 'instanceContainer' });
   });
-
-  initNanopubAnnotations(documentURL);
-
-  var showUserActivities = () => {
-    if (Config.User.IRI) {
-      Promise.allSettled(processAgentActivities(Config.User));
-    }
-  };
-
-  // auth-ready fires after the TypeIndex loads, on page load and later sign-ins
-  document.addEventListener('dokieli:auth-ready', showUserActivities);
-  if (Config.AuthReady === true) {
-    showUserActivities();
-  }
 }
 
 // After a sign-in redirect, re-enter the editor as it was

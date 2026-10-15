@@ -33,7 +33,7 @@ import { forceTrailingSlash, generateDataURI, getBaseURL, isHttpOrHttpsProtocol,
 import { getAgentInbox, getAgentName, getGraphAuthors, getGraphContributors, getGraphEditors, getGraphImage, getGraphLabelOrIRI, getGraphPerformers, getGraphTypes, getLinkRelation, getLinkRelationFromHead, getResourceGraph, getUserContacts, getUserLabelOrIRI, serializeData, getSubjectInfo, getRDFSerializer, getGraphCreators } from './graph.js';
 import { agentsWithMode, hasControl, planGrant, planOwnerControl, planRevoke, Public } from '@dokieli/web-access-control';
 import { applyACLPlan, cachedACLContext, expandAccessMode, getACLContext, setPublicRead } from './wac.js';
-import { notifyInbox, sendNotifications, showContactsActivities, initializeNotifications, registerEncryptionUnlockHandler, processPendingEncryptedNotes, clearPendingEncryptedQueues } from './activity.js';
+import { notifyInbox, sendNotifications, showContactsActivities, showOtherNotificationSources, initializeNotifications, registerEncryptionUnlockHandler, processPendingEncryptedNotes, clearPendingEncryptedQueues } from './activity.js';
 import Config from './config.js';
 const ns = Config.ns;
 import { Icon } from './ui/icons.js';
@@ -802,6 +802,7 @@ export function showNotifications() {
     aside = initializeNotifications();
   }
   aside.classList.add('on');
+  showOtherNotificationSources();
 
   registerEncryptionUnlockHandler(async () => {
     if (!document.getElementById('encryption-unlock') && await hasKeystore()) {
