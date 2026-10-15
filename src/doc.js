@@ -20,9 +20,9 @@ import * as Slideshow from './ui/templates/slideshow.js';
 import { diffChars } from 'diff';
 import LinkHeader from "http-link-header";
 import Config from './config.js'
-import { getDateTimeISO, generateAttributeId, uniqueArray, getRandomIndex, getHash, isValidISBN, getDateTimeISOFromMDY, debounce } from './util.js'
+import { getDateTimeISO, generateAttributeId, uniqueArray, getRandomIndex, getHash, isValidISBN, getDateTimeISOFromMDY, debounce, sortToLower } from './util.js'
 import { parseWacAllow } from '@dokieli/web-access-control';
-import { getAbsoluteIRI, getBaseURL, stripFragmentFromString, getFragmentFromString, getURLLastPath, getPrefixedNameFromIRI, generateDataURI, getProxyableIRI, getFragmentOrLastPath, currentLocation } from './uri.js'
+import { getAbsoluteIRI, getBaseURL, stripFragmentFromString, getFragmentFromString, getURLLastPath, getPrefixedNameFromIRI, generateDataURI, getProxyableIRI, getFragmentOrLastPath, currentLocation, getParentURLPath } from './uri.js'
 import { getResourceGraph, sortGraphTriples, getGraphContributors, getGraphAuthors, getGraphEditors, getGraphPerformers, getGraphPublishers, getGraphLabel, getGraphEmail, getGraphTitle, getGraphConceptLabel, getGraphPublished, getGraphUpdated, getGraphDescription, getGraphLicense, getGraphRights, getGraphFromData, getGraphAudience, getGraphTypes, getGraphLanguage, getGraphInbox, getUserLabelOrIRI, getGraphImage, getGraphDate, processResources, getAgentName, getGraphCreators } from './graph.js';
 import { Icon } from './ui/icons.js';
 import { buttonIcons, getButtonHTML, updateButtons } from './ui/buttons.js'
