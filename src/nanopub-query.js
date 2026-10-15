@@ -18,7 +18,7 @@ limitations under the License.
 import rdf from 'rdf-ext';
 import { NANOPUB_QUERY_URLS, QUERY_TIMEOUT_MS } from '@nanopub/nanopub-js/constants';
 import Config from './config.js';
-import { getOriginDecision, requestOriginConsent } from './consent.js';
+import { requestOriginConsent } from './consent.js';
 import { showAnnotation } from './activity.js';
 import { getPreferredTargetIRI } from './doc.js';
 import { i18n } from './i18n.js';
@@ -223,19 +223,4 @@ export async function queryNanopubAnnotations(documentURL) {
   if (!isQueryableIRI(documentURL)) return [];
   if (!(await requestOriginConsent(queryOrigin(), { reason: 'nanopub-query' }))) return [];
   return showNanopubAnnotations(documentURL);
-}
-
-// Runs on load only with prior consent since the document URL is sent
-export function initNanopubAnnotations(documentURL) {
-  documentURL = documentURL || Config.DocumentURL;
-  if (!isQueryableIRI(documentURL)) return;
-
-  // The query services only index the main network
-  if (Config.Nanopub?.UseTestRegistry) {
-    console.log('dokieli: nanopub annotations on the test registry are not queryable');
-  }
-
-  if (getOriginDecision(queryOrigin()) === 'allow') {
-    showNanopubAnnotations(documentURL);
-  }
 }

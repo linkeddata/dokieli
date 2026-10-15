@@ -673,6 +673,32 @@ export function getNotifications(url) {
 //     });
 // }
 
+// On load only the document's own inbox is shown; other sources wait for the notifications panel
+let otherSourcesURL = null;
+
+function showUserActivities() {
+  if (Config.User.IRI && otherSourcesURL === Config.DocumentURL) {
+    Promise.allSettled(processAgentActivities(Config.User));
+  }
+}
+
+export function showOtherNotificationSources() {
+  var documentURL = Config.DocumentURL;
+  if (documentURL.startsWith('blob:') || otherSourcesURL === documentURL) return;
+
+  // auth-ready fires after the TypeIndex loads, on page load and later sign-ins
+  if (!otherSourcesURL) {
+    document.addEventListener('dokieli:auth-ready', showUserActivities);
+  }
+  otherSourcesURL = documentURL;
+
+  queryNanopubAnnotations(documentURL);
+
+  if (Config.AuthReady === true) {
+    showUserActivities();
+  }
+}
+
 export function showNotificationSources(url) {
   if (Config.DocumentURL.startsWith('blob:')) {
     return;
