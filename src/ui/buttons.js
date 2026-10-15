@@ -33,11 +33,23 @@ const DEV_ORIGIN = process.env.DEV_ORIGIN;
 
 export function getDocsBaseURL() {
   if (Config.WebExtensionEnabled) return Config.WebExtension.runtime.getURL('docs.html');
-  if (isLocalhost(window.location.href)) return new URL('docs.html', document.baseURI).href;
+
+  const language = Config.User.UI.Language?.split('-')[0];
+  const docsLanguage = (Config.DocsTranslations.includes(language) && language !== 'en') ? language : null;
+
+  // Locally the docs sit next to dokieli's own files, not next to the page being viewed
+  if (isLocalhost(window.location.href)) {
+    const path = docsLanguage ? `${docsLanguage}/docs.html` : 'docs.html';
+    try {
+      return new URL(`../${path}`, __webpack_public_path__).href;
+    }
+    catch {
+      return new URL(path, document.baseURI).href;
+    }
+  }
+
   let origin = window.location.origin === DEV_ORIGIN ? DEV_ORIGIN : 'https://dokie.li';
-  const translatedDocs = (Config.DocsTranslations.includes(Config.User.UI.Language) && Config.User.UI.Language !== 'en') ?
-  `${origin}/${Config.User.UI.Language}/docs` : `${origin}/docs`;
-  return translatedDocs;
+  return docsLanguage ? `${origin}/${docsLanguage}/docs` : `${origin}/docs`;
 }
 
 export function initButtons() {
