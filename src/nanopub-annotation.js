@@ -37,7 +37,13 @@ const PREFIXES = `@prefix oa: <http://www.w3.org/ns/oa#> .
 
 export const ACTION_TO_STANCE = {
   approve: 'cito:agreesWith',
-  disapprove: 'cito:disputes'
+  disapprove: 'cito:disputes',
+  specificity: 'cito:discusses'
+};
+
+// Nanoarguments content node per action; a question takes only a non-affirmative stance
+const ACTION_TO_TYPE = {
+  specificity: 'schema:Question'
 };
 
 const DOKIELI_IRI = 'https://dokie.li/#i';
@@ -77,7 +83,7 @@ async function annotationQuads(noteData) {
   return [...pointer.dataset];
 }
 
-function stanceQuads(stance, noteData) {
+function stanceQuads(stance, noteData, type = 'schema:Statement') {
   const bodyId = firstBodyId(noteData);
   const source = noteData.target?.source || noteData.target?.iri;
   if (!stance || !bodyId || !source) return [];
@@ -85,7 +91,7 @@ function stanceQuads(stance, noteData) {
   const selectorId = selectorIdOf(noteData);
   const selector = selectorId ? `;\n    oa:hasSelector ${iri(selectorId)}` : '';
 
-  return quads(`${iri(bodyId)} a schema:Statement ;
+  return quads(`${iri(bodyId)} a ${type} ;
   ${stance} [ a oa:SpecificResource ;
     oa:hasSource ${iri(source)}${selector} ] .`);
 }
@@ -114,8 +120,9 @@ function labelOf(noteData) {
 }
 
 // The query service indexes by npx:hasNanopubType
-function pubinfoQuads(agent, noteData, { created, license, stance }) {
+function pubinfoQuads(agent, noteData, { created, license, stance, type }) {
   const types = ['oa:Annotation'];
+  if (type) types.push(type);
   if (stance) types.push(stance);
   const label = labelOf(noteData);
 
@@ -141,14 +148,15 @@ export async function annotationToNanopub(noteData, options = {}) {
   }
 
   const stance = options.stance || ACTION_TO_STANCE[options.action];
+  const type = ACTION_TO_TYPE[options.action];
   const created = noteData.datetime || new Date().toISOString();
   const license = options.license || noteData.license;
 
   const { Nanopub } = await loadNanopubLibrary();
   return new Nanopub({
-    assertion: [...await annotationQuads(noteData), ...await stanceQuads(stance, noteData)],
+    assertion: [...await annotationQuads(noteData), ...await stanceQuads(stance, noteData, type)],
     provenance: await provenanceQuads(agent),
-    pubinfo: await pubinfoQuads(agent, noteData, { created, license, stance }),
+    pubinfo: await pubinfoQuads(agent, noteData, { created, license, stance, type }),
     options: { privateKey: options.privateKey, orcid: agent, name: Config.User?.Name }
   });
 }
