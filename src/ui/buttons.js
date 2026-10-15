@@ -283,6 +283,9 @@ export const buttonIcons = {
   specificity: {
     icon: Icon['.fas.fa-crosshairs']
   },
+  'request-assessment': {
+    icon: Icon['.fas.fa-bell-concierge']
+  },
   close: {
     icon: Icon['.fas.fa-times']
   },

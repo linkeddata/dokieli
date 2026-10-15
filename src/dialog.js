@@ -1636,24 +1636,46 @@ function removeProgressIndicator(node) {
   node.nextElementSibling?.classList.contains('progress') && node.nextElementSibling.remove();
 }
 
-export function replyToResource(e, iri) {
+// options.kind 'assessment' asks for an assessment of the whole document instead of replying to it
+export function replyToResource(e, iri, options = {}) {
   iri = iri || Config.DocumentURL || currentLocation()
 
   e.target.closest('button').disabled = true
+
+  const assessment = options.kind === 'assessment'
+  const keys = assessment ? {
+    h2: 'dialog.request-assessment.h2',
+    input: 'dialog.request-assessment-input.p',
+    label: 'dialog.request-assessment-note.label',
+    textarea: 'dialog.request-assessment-note.textarea',
+    submit: 'dialog.request-assessment.submit.button',
+    saved: 'dialog.request-assessment.success.saved-at.p',
+    saveChoose: 'dialog.request-assessment.save-location-choose.p',
+    saveAt: 'dialog.request-assessment.save-location.p'
+  } : {
+    h2: 'dialog.reply-to-resource.h2',
+    input: 'dialog.reply-to-resource-input.p',
+    label: 'dialog.reply-to-resource-note.label',
+    textarea: 'dialog.reply-to-resource-note.textarea',
+    submit: 'dialog.reply-to-resource.submit.button',
+    saved: 'dialog.reply-to-resource.success.saved-at.p',
+    saveChoose: 'dialog.reply-to-resource.save-location-choose.p',
+    saveAt: 'dialog.reply-to-resource.save-location.p'
+  }
 
   var buttonClose = getButtonHTML({ key: 'dialog.reply-to-resource.close.button', button: 'close', buttonClass: 'close', iconSize: 'fa-2x' });
 
   document.body.appendChild(fragmentFromString(`
     <aside aria-labelledby="reply-to-resource-label" class="do on" data-notify-scope="" dir="${Config.User.UI.LanguageDir}" id="reply-to-resource" lang="${Config.User.UI.Language}" rel="schema:hasPart" resource="#reply-to-resource" xml:lang="${Config.User.UI.Language}">
-      <h2 data-i18n="dialog.reply-to-resource.h2" id="reply-to-resource-label" property="schema:name">${i18n.t('dialog.reply-to-resource.h2.textContent')} ${Config.Button.Info.Reply}</h2>
+      <h2 data-i18n="${keys.h2}" id="reply-to-resource-label" property="schema:name">${i18n.t(`${keys.h2}.textContent`)} ${Config.Button.Info.Reply}</h2>
       ${buttonClose}
       <div class="info"></div>
       <div id="reply-to-resource-input">
-        <p data-i18n="dialog.reply-to-resource-input.p" data-i18n-url="${iri}">${i18n.t('dialog.reply-to-resource-input.p.innerHTML', { url: iri })}</p>
+        <p data-i18n="${keys.input}" data-i18n-url="${iri}"${options.title ? ` data-i18n-title="${htmlEncode(options.title, { mode: 'attribute' })}"` : ''}>${i18n.t(`${keys.input}.innerHTML`, { url: iri, title: options.title })}</p>
         <ul>
           <li>
-            <p><label data-i18n="dialog.reply-to-resource-note.label" for="reply-to-resource-note">${i18n.t('dialog.reply-to-resource-note.label.textContent')}</label></p>
-            <p><textarea cols="40" data-i18n="dialog.reply-to-resource-note.textarea" dir="auto" id="reply-to-resource-note" required="" rows="10" name="reply-to-resource-note" placeholder="${i18n.t('dialog.reply-to-resource-note.textarea.placeholder')}"></textarea></p>
+            <p><label data-i18n="${keys.label}" for="reply-to-resource-note">${i18n.t(`${keys.label}.textContent`)}</label></p>
+            <p><textarea cols="40" data-i18n="${keys.textarea}" dir="auto" id="reply-to-resource-note" required="" rows="10" name="reply-to-resource-note" placeholder="${i18n.t(`${keys.textarea}.placeholder`)}"></textarea></p>
           </li>
         </ul>
       </div>
@@ -1681,10 +1703,17 @@ export function replyToResource(e, iri) {
   // The reply is a new resource; do not default to the source document's name
   setupResourceBrowser(advancedFields, id, action, { defaultFilename: generateAttributeId() + '.html' })
   attachBrowseStoragePopup(id, action)
-  sanitizeInsertAdjacentHTML(document.getElementById(id), 'afterbegin', `<p data-i18n="dialog.reply-to-resource.save-location-choose.p">${i18n.t('dialog.reply-to-resource.save-location-choose.p.textContent')}</p>`)
+  sanitizeInsertAdjacentHTML(document.getElementById(id), 'afterbegin', `<p data-i18n="${keys.saveChoose}">${i18n.t(`${keys.saveChoose}.textContent`)}</p>`)
 
-  sanitizeInsertAdjacentHTML(advancedFields, 'beforeend', `<p data-i18n="dialog.reply-to-resource.save-location.p">${i18n.t('dialog.reply-to-resource.save-location.p.textContent')} <samp id="${id}-${action}"></samp></p>`)
+  sanitizeInsertAdjacentHTML(advancedFields, 'beforeend', `<p data-i18n="${keys.saveAt}">${i18n.t(`${keys.saveAt}.textContent`)} <samp id="${id}-${action}"></samp></p>`)
   sanitizeInsertAdjacentHTML(advancedFields, 'beforeend', `<span class="annotation-inbox-selection">${getAnnotationInboxLocationHTML('reply-to-resource')}</span>`)
+
+  // Only promise an announcement when there is an inbox to announce to
+  if (assessment && !advancedFields.querySelector('input[name="reply-to-resource-annotation-inbox"]')) {
+    var intro = replyToResource.querySelector('#reply-to-resource-input > p')
+    intro.dataset.i18n = 'dialog.request-assessment-input-no-inbox.p'
+    intro.setHTMLUnsafe(domSanitize(i18n.t('dialog.request-assessment-input-no-inbox.p.innerHTML', { url: iri, title: options.title })))
+  }
 
   var bli = document.getElementById(id + '-input')
   bli.placeholder = 'https://example.org/path/to/article'
@@ -1703,7 +1732,7 @@ export function replyToResource(e, iri) {
       </span>
     </span>
     <span class="editor-form-footer-actions">
-      <button class="reply" data-i18n="dialog.reply-to-resource.submit.button" title="${i18n.t('dialog.reply-to-resource.submit.button.title')}" type="submit">${i18n.t('dialog.reply-to-resource.submit.button.textContent')}</button>
+      <button class="reply" data-i18n="${keys.submit}" title="${i18n.t(`${keys.submit}.title`)}" type="submit">${i18n.t(`${keys.submit}.textContent`)}</button>
     </span>
   </div>`)
 
@@ -1719,12 +1748,20 @@ export function replyToResource(e, iri) {
     }
   })
 
+  // Saving somewhere is required for a request, so its location and inboxes start shown
+  if (assessment) {
+    advancedToggle.setAttribute('aria-expanded', 'true')
+    advancedToggle.classList.add('editor-form-icon-toggle-active')
+    advancedFields.hidden = false
+  }
+
   setupIconToggleTitles(replyToResource)
   syncNotifyInboxDefault(replyToResource, { reset: true })
 
   replyToResource.addEventListener('click', e => {
     if (e.target.closest('button.close')) {
       setMenuButtonDisabled('.resource-reply');
+      options.onClose?.();
     }
 
     if (e.target.closest('button.reply')) {
@@ -1767,8 +1804,8 @@ export function replyToResource(e, iri) {
       note = await encryptContent(note, [getSessionPublicKey()], getSessionKid())
     }
 
-    var motivatedBy = "oa:replying"
-    // The reply action maps to the oa:replying motivation
+    // A reply maps to oa:replying; an assessment request asks a question about the document
+    var motivatedBy = assessment ? "oa:questioning" : "oa:replying"
     var noteData = createAnnotation({
       motivatedBy,
       type: 'comment',
@@ -1838,7 +1875,7 @@ export function replyToResource(e, iri) {
 
         replyToResource
           .querySelector('.response-message')
-          .setHTMLUnsafe(domSanitize(`<p class="success" data-i18n="dialog.reply-to-resource.success.saved-at.p"><span>${i18n.t('dialog.reply-to-resource.success.saved-at.p.textContent')}</span> <a href="${url}" rel="noopener" target="_blank">${url}</a></p>`));
+          .setHTMLUnsafe(domSanitize(`<p class="success" data-i18n="${keys.saved}"><span>${i18n.t(`${keys.saved}.textContent`)}</span> <a href="${url}" rel="noopener" target="_blank">${url}</a></p>`));
 
         // Public read is not inherited from the container on every server
         if (publicAccess) {
