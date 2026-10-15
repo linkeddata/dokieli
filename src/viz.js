@@ -107,7 +107,8 @@ export function showVisualisationGraph(url, data, selector, options) {
     "15": { color: '#0088ee', label: 'Policy', type: 'rdf:Resource' },
     "16": { color: '#FFB900', label: 'Event', type: 'rdf:Resource' },
     "17": { color: '#009999', label: 'Slides', type: 'rdf:Resource' },
-    "18": { color: '#d1001c', label: 'Concepts', type: 'rdf:Resource' }
+    "18": { color: '#d1001c', label: 'Concepts', type: 'rdf:Resource' },
+    "19": { color: '#c8facc', label: 'Place', type: 'rdf:Resource' }
   }
   group = Object.assign(group, legendCategories);
 
@@ -956,6 +957,11 @@ function convertGraphToVisualisationGraph(url, g, options){
         // case ns.skos.Collection.value:
         //   sGroup = 18; //Assign Concepts colour to Collection?
         //   break;
+        case ns.schema.Place.value:
+        case ns.schema.PostalAddress.value:
+        case ns.wgs.Point.value:
+          sGroup = 19;
+          break;
       }
     }
 
@@ -997,6 +1003,11 @@ function convertGraphToVisualisationGraph(url, g, options){
       case ns.skos.topConceptOf.value:
       case ns.schema.audience.value:
         oGroup = 18;
+        break;
+      case ns.schema.location.value:
+      case ns.schema.address.value:
+      case ns.schema.addressLocality.value:
+        oGroup = 19;
         break;
     }
 
