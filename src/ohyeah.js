@@ -922,7 +922,7 @@ async function showClaimCheckResults(section, button) {
 
   setSectionContent(section, `
     <div id="${activityId}" rel="prov:activity" resource="#${activityId}" typeof="prov:Activity">
-      ${getSourceHTML(`<a href="${encodeAttribute(url)}" rel="prov:used">${htmlEncode(url)}</a>${modelLink ? ` (${modelLink})` : ''}`)}
+      ${getSourceHTML(`<a href="${encodeAttribute(url)}" rel="prov:used" target="_blank">${htmlEncode(url)}</a>${modelLink ? ` (${modelLink})` : ''}`)}
       ${getMessageHTML('panel.ohyeah.claimcheck.summary.p', { count: checkWorthy.length, total: sentences.length })}
       <ul class="ohyeah-cards claims">${listed.map(item => getClaimHTML(item, numberFormat)).join('')}</ul>
     </div>`);
@@ -1308,7 +1308,7 @@ async function showWhoisResults(section) {
   const activityId = generateAttributeId();
   setSectionContent(section, `
     <div id="${activityId}" rel="prov:activity" resource="#${activityId}" typeof="prov:Activity">
-      ${getSourceHTML(`<span data-i18n="${sourceKey}">${i18n.t(`${sourceKey}.textContent`)}</span> (<a href="${encodeAttribute(url)}" rel="prov:used">${htmlEncode(new URL(url).host)}</a>)`)}
+      ${getSourceHTML(`<span data-i18n="${sourceKey}">${i18n.t(`${sourceKey}.textContent`)}</span> (<a href="${encodeAttribute(url)}" rel="prov:used" target="_blank">${htmlEncode(new URL(url).host)}</a>)`)}
       ${rows.length ? `
         <div class="ohyeah-card">
           <h4 class="ohyeah-card-title">${htmlEncode(record.domain_name || domain)}</h4>
