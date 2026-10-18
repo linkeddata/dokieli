@@ -1077,6 +1077,7 @@ export function getAgentPreferredPolicyRule(s) {
 //TODO: Review grapoi
 export function setPreferredPolicyInfo(g) {
   Config.User['PreferredPolicy'] = getAgentPreferredPolicy(g);
+  if (!Config.User.PreferredPolicy) return;
   var s = g.node(rdf.namedNode(Config.User.PreferredPolicy));
   Config.User['PreferredPolicyRule'] = getAgentPreferredPolicyRule(s);
 }

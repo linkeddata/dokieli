@@ -20,7 +20,7 @@ import Config from './config.js'
 import { fragmentFromString, removeChildren } from "./utils/html.js";
 import { getAgentHTML, showActionMessage, getResourceSupplementalInfo, handleDeleteNote, addMessageToLog } from './doc.js';
 import { Icon } from './ui/icons.js';
-import { setPreferredPolicyInfo, getAgentTypeIndex, getAgentSupplementalInfo, getAgentSeeAlsoPrimaryTopicOf, getAgentPreferencesInfo, getSubjectInfo } from './graph.js';
+import { setPreferredPolicyInfo, getAgentTypeIndex, getAgentSupplementalInfo, getAgentSeeAlsoPrimaryTopicOf, getAgentPreferencesInfo, getAgentPrivateTypeIndex, getSubjectInfo } from './graph.js';
 import { removeDeviceStorageAsSignOut, updateDeviceStorageProfile, updateBrowserStorageOIDC, setDeviceStorageItem } from './storage.js';
 import { clearOriginConsent } from './consent.js';
 import { hasKeystore, isUnlocked, lockKeystore } from './keystore.js';
@@ -126,6 +126,28 @@ async function restoreExtensionSession() {
   } catch (e) {
     console.warn('dokieli: extension session restore failed', e);
   }
+}
+
+// The private type index is linked from the preferences document, not the profile
+async function setPrivateTypeIndexFromPreferences(g) {
+  const privateTypeIndex = getAgentPrivateTypeIndex(g);
+  if (!privateTypeIndex?.length) return;
+
+  if (!Config.User.PrivateTypeIndex?.length) {
+    Config.User.PrivateTypeIndex = privateTypeIndex;
+  }
+
+  try {
+    const entries = (await getAgentTypeIndex(g))[ns.solid.privateTypeIndex.value];
+    if (entries && Object.keys(entries).length) {
+      Config.User.TypeIndex = Config.User.TypeIndex || {};
+      Config.User.TypeIndex[ns.solid.privateTypeIndex.value] = { ...Config.User.TypeIndex[ns.solid.privateTypeIndex.value], ...entries };
+    }
+  } catch (e) {
+    console.log('Could not load the private type index from preferences:', e);
+  }
+
+  updateDeviceStorageProfile(Config.User);
 }
 
 export async function showUserSigninSignout (node) {
@@ -939,6 +961,7 @@ export function afterSetUserInfo() {
       .then(g => {
         setPreferredPolicyInfo(g);
         setPreferredLanguagesInfo(g);
+        return setPrivateTypeIndexFromPreferences(g);
       })
       .catch(error => {
         var g = Config.User.Graph.node(rdf.namedNode(Config.User.IRI));
