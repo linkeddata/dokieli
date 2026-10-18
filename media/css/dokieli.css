@@ -4762,6 +4762,47 @@ vertical-align:middle;
 width: 100%;
 height: auto;
 }
+#document-menu #user-info [hidden] {
+display: none !important;
+}
+#document-menu #user-info button.edit-user-name,
+#document-menu #user-info form.edit-user-name button {
+display: inline-flex;
+padding: 0.25em;
+border: 0;
+background: none;
+vertical-align: middle;
+}
+#document-menu #user-info button.edit-user-name svg,
+#document-menu #user-info form.edit-user-name button svg {
+width: 1em;
+height: 1em;
+}
+#document-menu #user-info form.edit-user-name {
+display: flex;
+align-items: center;
+gap: 0.25em;
+margin: 0.25em 0;
+}
+#document-menu #user-info form.edit-user-name input {
+flex: 1;
+min-width: 0;
+border: 0;
+padding: 0.25em 0;
+background: transparent;
+color: inherit;
+font: inherit;
+outline: 2px solid transparent;
+outline-offset: 5px;
+transition: outline-offset .2s linear;
+}
+#document-menu #user-info form.edit-user-name input:focus {
+outline-color: currentColor;
+outline-offset: 0;
+}
+#document-menu #user-info form.edit-user-name input:placeholder-shown {
+font-style: italic;
+}
 #document-menu #user-info button.signin-user,
 #document-menu #user-info button.signout-user {
 display: inline-flex;

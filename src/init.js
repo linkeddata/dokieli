@@ -40,7 +40,7 @@ import { initQuestionnaire } from './ui/templates/questionnaire.js';
 import './ui/anchors.js';
 import { openResource, initDocumentMenu, spawnDokieli, showDocumentMenu, initSlideshowInteraction, initDocumentDoEvents, showNewDocument, createNewDocument, createNewSlideshow, createNewCV, createNewSpecification, createNewQuestionnaire } from './dialog.js';
 import { Icon } from './ui/icons.js';
-import { eventButtonClose, eventButtonSignIn, eventButtonSignOut, eventButtonNotificationsToggle, eventButtonInfo, emitDocEvent } from './events.js';
+import { eventButtonClose, eventButtonEditName, eventButtonSignIn, eventButtonSignOut, eventButtonNotificationsToggle, eventButtonInfo, emitDocEvent } from './events.js';
 import { hasNonWhitespaceText, getDocumentContentNode, selectArticleNode } from "./utils/html.js";
 import { isUnlocked, getSessionKid, hasKeystore, decryptWithSession } from './keystore.js';
 import { initTableSort } from './tableSort.js';
@@ -218,6 +218,7 @@ async function initEvents() {
   eventButtonClose();
   eventButtonInfo();
   eventButtonSignIn();
+  eventButtonEditName();
   eventButtonSignOut();
   eventButtonNotificationsToggle();
 }

@@ -17,6 +17,7 @@ limitations under the License.
 
 import rdf from "rdf-ext";
 import { showUserIdentityInput, signOut, userInfoSignOut } from "./auth.js";
+import { showUserNameInput } from "./profile.js";
 import { i18n } from "./i18n.js";
 import Config from "./config.js";
 import { stripFragmentFromString } from "./uri.js";
@@ -68,6 +69,15 @@ export function eventButtonSignIn() {
     if (button) {
       button.disabled = true;
       showUserIdentityInput();
+    }
+  });
+}
+
+export function eventButtonEditName() {
+  document.addEventListener('click', e => {
+    var button = e.target.closest('button.edit-user-name');
+    if (button) {
+      showUserNameInput(button);
     }
   });
 }

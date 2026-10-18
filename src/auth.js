@@ -141,7 +141,7 @@ export async function showUserSigninSignout (node) {
   let userInfoHTML;
 
   //Checks if already know the user from prior load of the page
-  userInfoHTML = Config.User.IRI ? getAgentHTML() + Config.Button.Menu.SignOut : Config.Button.Menu.SignIn;
+  userInfoHTML = Config.User.IRI ? getAgentHTML().replace(/<\/span>$/, ` ${Config.Button.Menu.EditName}</span>`) + Config.Button.Menu.SignOut : Config.Button.Menu.SignIn;
 
   sanitizeInsertAdjacentHTML(node, 'afterbegin', userInfoHTML);
 }

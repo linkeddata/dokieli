@@ -107,6 +107,7 @@ export function initButtons() {
       EncryptEnable: getButtonHTML({ key: "menu.encrypt-enable.button", button: "lock-open", buttonClass: "encrypt-enable", buttonPressed: false, buttonDisabled: true }),
       EncryptDisable: getButtonHTML({ key: "menu.encrypt-disable.button", button: "lock", buttonClass: "encrypt-disable", buttonPressed: true }),
       EditHistory: getButtonHTML({ key: "menu.edit-history.button", button: "edit-history", buttonClass: "edit-history", buttonDisabled: true }),
+      EditName: getButtonHTML({ key: "menu.edit-name.button", button: "edit-name", buttonClass: "edit-user-name" }),
       EmbedData: getButtonHTML({ key: "menu.embed-data.button", button: "data-meta", buttonClass: "embed-data-meta" }),
       Export: getButtonHTML({ key: "menu.export.button", button: "export", buttonClass: "export-as-html" }),
       Markdown: getButtonHTML({ key: "menu.markdown.button", button: "markdown", buttonClass: "resource-markdown" }),
@@ -464,6 +465,9 @@ export const buttonIcons = {
   },
   'document-info': {
     icon: Icon[".fas.fa-atom"]
+  },
+  'edit-name': {
+    icon: Icon[".fas.fa-pencil"]
   },
   'edit-history': {
     icon: Icon[".far.fa-clock-left"]
