@@ -29,7 +29,7 @@ import { syncLocalRemoteResource, monitorNetworkStatus, showResourceReviewChange
 import { domSanitize, sanitizeInsertAdjacentHTML, sanitizeIRI, sanitizeObject } from './utils/sanitization.js';
 import { afterSetUserInfo, setUserInfo, processLoginInvocation } from './auth.js';
 import { showNotificationSources, showActivitiesSources, registerEncryptionUnlockHandler } from './activity.js';
-import { generateDataURI, getProxyableIRI, getUrlParams, stripFragmentFromString, stripUrlSearchHash } from './uri.js';
+import { generateDataURI, getProxyableIRI, getUrlParams, isHttpOrHttpsProtocol, stripFragmentFromString, stripUrlSearchHash } from './uri.js';
 import { SolidStorage, GitForgeStorage, HttpStorage, initStorage } from './storage/backend.js';
 import { initEditor } from './editor/initEditor.js';
 import { showGraph, showVisualisationGraph } from './viz.js';
@@ -70,6 +70,8 @@ export async function init (url) {
     initDeviceStorage();
     initEvents();
     initEditor();
+
+    Config.DocumentStandIn = await isStandInPage();
 
     await initSyncLocalRemoteResource();
     await restoreEditorAfterSignIn();
@@ -258,6 +260,9 @@ export function initShowNotificationSources() {
   var openTargets = (Config.DocumentModes?.open || []).map(u => stripFragmentFromString(encodeURI(u)));
   if (openTargets.length && !openTargets.includes(documentURL)) return;
 
+  // Pages that are not synced, like the ones standing in for a document, have no resource info
+  if (!Config.Resource[documentURL]) return;
+
   if (Config.Resource[documentURL].inbox?.length && !Config.Inbox[Config.Resource[documentURL].inbox[0]]) {
     showNotificationSources(Config.Resource[documentURL].inbox[0]);
   }
@@ -285,8 +290,25 @@ async function restoreEditorAfterSignIn() {
 async function initSyncLocalRemoteResource() {
   var documentURL = Config.DocumentURL;
 
+  // A page standing in for the document is not its content, so it must not be synced with it
+  if (Config.DocumentStandIn) return;
+
   if (!(documentURL in Config.Resource && 'state' in Config.Resource[documentURL])) {
     await syncLocalRemoteResource();
+  }
+}
+
+// When the document's address refuses an anonymous request, this page is the server's error page standing in for it
+async function isStandInPage() {
+  const url = Config.DocumentURL;
+
+  if (!isHttpOrHttpsProtocol(url)) return false;
+
+  try {
+    const response = await fetch(url, { method: 'HEAD', credentials: 'omit', cache: 'no-store' });
+    return [401, 403].includes(response.status);
+  } catch {
+    return false;
   }
 }
 
@@ -393,6 +415,22 @@ export async function initDocumentMode(mode) {
     }
 
     // stripUrlSearchHash();
+  }
+
+  // A page standing in for a document that needs signing in: once signed in, open the document itself
+  if (!paramOpen.length && Config.DocumentStandIn) {
+    if (Config.AuthReady) {
+      try { await Config.AuthReady } catch {}
+    }
+
+    // User.IRI can be restored from the device without a session, which cannot open the document
+    if (Config['Session']?.isActive) {
+      try {
+        await openResource(Config.DocumentURL, { keepLocation: true });
+      } catch (e) {
+        console.warn('dokieli: could not open resource', Config.DocumentURL, e);
+      }
+    }
   }
 
   if (paramDiff.length > 1) {
@@ -587,6 +625,8 @@ function initIcons() {
 //TODO: Review grapoi
 function processPotentialAction(resourceInfo) {
   resourceInfo = resourceInfo || Config.Resource[Config.DocumentURL];
+  // Pages that are not synced, like the ones standing in for a document, have no graph
+  if (!resourceInfo?.graph) return;
   var g = resourceInfo.graph;
 
   // console.log(g.dataset.toCanonical());

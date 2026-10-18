@@ -19,7 +19,7 @@ import rdf from 'rdf-ext';
 import LinkHeader from "http-link-header";
 import { i18n } from './i18n.js';
 import { getButtonHTML, updateButtons, setMenuButtonDisabled } from './ui/buttons.js';
-import { addMessageToLog, buildResourceView, copyRelativeResources, createFeedXML, createImmutableResource, createMutableResource, createNoteDataHTML, encryptArticlePayload, getAccessModeOptionsHTML, getBaseURLSelection, getDocument, getFeedFormatSelection, getLanguageOptionsHTML, getLicenseOptionsHTML, getResourceInfo, getSavePayload, isMarkdownTarget, rewriteBaseURL, setCopyToClipboard, setDocumentRelation, showActionMessage, showRobustLinksDecoration, showTimeMap, updateMutableResource, buildReferences, getDocumentConceptDefinitionsHTML, insertDocumentLevelHTML, insertTestCoverageToTable, diffRequirements, removeReferences, getStorageSelfDescription, getContactInformation, getPersistencePolicy, getODRLPolicies, updateResourceInfos, updateSupplementalInfo, initCurrentStylesheet, setDate, showFragment, initCopyToClipboard, setDocumentURL, getAgentHTML, getAnnotationInboxLocationHTML } from './doc.js';
+import { addMessageToLog, buildResourceView, copyRelativeResources, createFeedXML, createImmutableResource, createMutableResource, createNoteDataHTML, encryptArticlePayload, getAccessModeOptionsHTML, getBaseURLSelection, getDocument, getFeedFormatSelection, getLanguageOptionsHTML, getLicenseOptionsHTML, getResourceInfo, getSavePayload, isMarkdownTarget, rewriteBaseURL, setCopyToClipboard, setDocumentRelation, showActionMessage, showRobustLinksDecoration, showTimeMap, updateMutableResource, buildReferences, getDocumentConceptDefinitionsHTML, insertDocumentLevelHTML, insertTestCoverageToTable, diffRequirements, removeReferences, getStorageSelfDescription, getContactInformation, getPersistencePolicy, getODRLPolicies, updateResourceInfos, updateSupplementalInfo, initCurrentStylesheet, setDate, showFragment, initCopyToClipboard, setDocumentURL, getAgentHTML, getAnnotationInboxLocationHTML, updateSelectedStylesheets } from './doc.js';
 import { removeNodesWithIds, createHTML, getDoctype, getFormValues } from './utils/html.js';
 import { createAnnotation } from '@dokieli/web-annotation';
 import { accessModeAllowed, accessModePossiblyAllowed, isPublicRead } from './access.js';
@@ -3305,7 +3305,10 @@ function showStorageDescription(s, id, storageUrl, checkAgain) {
 
 export async function openResource(iri, options) {
   options = options || {};
-  var headers = { 'Accept': setAcceptRDFTypes() };
+  // The page is already at the document's address, so there is no need to add it to the URL
+  const keepLocation = options.keepLocation;
+  // Over a stand-in page, ask for what the browser would have, so the server's own page (e.g. a folder listing) is shown
+  var headers = { 'Accept': keepLocation ? 'text/html,application/xhtml+xml,*/*;q=0.8' : setAcceptRDFTypes() };
   // var pIRI = getProxyableIRI(iri);
   // if (pIRI.slice(0, 5).toLowerCase() == 'http:') {
   // }
@@ -3417,10 +3420,14 @@ export async function openResource(iri, options) {
       if (Config.DocumentModes.output.length) {
         spawnOptions['output'] = Config.DocumentModes.output[0];
       }
+      // Opening the document over a page that stood in for it at the same address, so the page becomes the document. Views dokieli builds, such as folder listings, keep this page's head and stylesheets
+      spawnOptions['replaceHead'] = keepLocation && !spawnOptions['defaultStylesheet'];
 
       var html = await spawnDokieli(document, o.data, o.options['contentType'], o.options['subjectURI'], spawnOptions);
 
-      window.history.replaceState({}, '', '#open=' + iri);
+      if (!keepLocation) {
+        window.history.replaceState({}, '', '#open=' + iri);
+      }
     }
 
     Config.DocumentAction = 'open';
@@ -7578,12 +7585,14 @@ export async function spawnDokieli(documentNode, data, contentTypes, iris, optio
   if (options.defaultStylesheet) {
     var documentCss = document.querySelectorAll('head link[rel~="stylesheet"][href]');
 
+    let hasBasicCss = false;
     let hasDokieliCss = false;
 
     documentCss.forEach(node => {
       const href = node.href;
-      const isBasicCss = href === 'https://dokie.li/media/css/basic.css';
-      const isDokieliCss = href === 'https://dokie.li/media/css/dokieli.css';
+      // dokieli's stylesheets wherever dokieli is served from
+      const isBasicCss = /\/media\/css\/basic\.css$/.test(href);
+      const isDokieliCss = /\/media\/css\/dokieli\.css$/.test(href);
 
       node.setAttribute('href', href);
 
@@ -7593,14 +7602,18 @@ export async function spawnDokieli(documentNode, data, contentTypes, iris, optio
       }
       else {
         node.setAttribute('rel', 'stylesheet');
-        hasDokieliCss = true;
+        hasBasicCss = hasBasicCss || isBasicCss;
+        hasDokieliCss = hasDokieliCss || isDokieliCss;
       }
     });
 
-    if (!hasDokieliCss) {
-      sanitizeInsertAdjacentHTML(document.querySelector('head'), 'beforeend', `
-        <link href="https://dokie.li/media/css/basic.css" media="all" rel="stylesheet" title="Basic" />
-        <link href="https://dokie.li/media/css/dokieli.css" media="all" rel="stylesheet" />`);
+    // Adds whichever of the two the page does not have
+    const missingCss = [
+      hasBasicCss ? '' : '<link href="https://dokie.li/media/css/basic.css" media="all" rel="stylesheet" title="Basic" />',
+      hasDokieliCss ? '' : '<link href="https://dokie.li/media/css/dokieli.css" media="all" rel="stylesheet" />'
+    ].join('');
+    if (missingCss) {
+      sanitizeInsertAdjacentHTML(document.querySelector('head'), 'beforeend', missingCss);
     }
   }
 
@@ -7671,6 +7684,22 @@ export async function spawnDokieli(documentNode, data, contentTypes, iris, optio
     }
 
     document.documentElement.replaceChild(tmplBody, document.body);
+
+    if (options.replaceHead && tmpl.head) {
+      // Keep dokieli's own stylesheet and script when the document does not load them, so the interface keeps working
+      const dokieliAssets = [...document.head.querySelectorAll('link[rel~="stylesheet"][href$="dokieli.css"], script[src$="dokieli.js"]')]
+        .filter(node => !tmpl.head.querySelector(node.tagName === 'SCRIPT' ? 'script[src$="dokieli.js"]' : 'link[rel~="stylesheet"][href$="dokieli.css"]'));
+      document.head.replaceChildren(...[...tmpl.head.childNodes].map(node => node.cloneNode(true)), ...dokieliAssets);
+
+      // The browser keeps the style set chosen for the page before, so select the document's own titled stylesheet
+      const stylesheets = document.querySelectorAll('head link[rel~="stylesheet"][title]:not([href$="dokieli.css"])');
+      if (stylesheets.length) {
+        updateSelectedStylesheets(stylesheets, stylesheets[0].getAttribute('title'));
+      }
+    }
+
+    // Only the body is replaced otherwise, so the title would stay the one of the page before
+    document.title = tmpl.head?.querySelector('title')?.textContent.trim() || tmplBody.querySelector('h1')?.textContent.trim() || 'Untitled';
 
     let openPreview = document.querySelectorAll('.open-preview');
 
