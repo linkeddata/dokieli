@@ -26,6 +26,7 @@ import { getButtonHTML, updateButtons } from "./ui/buttons.js";
 import Config from "./config.js";
 import { i18n } from "./i18n.js";
 import { sanitizeInsertAdjacentHTML } from "./utils/sanitization.js";
+import { getDocumentStorageURL } from "./uri.js";
 import { restoreYjsContent, addYjsVersion, getYjsVersions } from "./editor/editor.js";
 
 let autoSaveRemoteNoticeShown = false;
@@ -122,7 +123,7 @@ export async function syncLocalRemoteResource(options = {}) {
 
   //200
   try {
-    response = await Config.Storage.get(Config.DocumentURL, headers, {});
+    response = await Config.Storage.get(getDocumentStorageURL(Config.DocumentURL) || Config.DocumentURL, headers, {});
     status = response.status;
     remoteETag = response.headers.get('ETag');
     remoteLastModified = response.headers.get('Last-Modified');
@@ -491,7 +492,11 @@ export async function pushLocalContentToRemote(localItem, headers) {
   const { id, content, mediaType } = localItem;
   // console.log(localItem, headers)
 
-  const response = await Config.Storage.put(Config.DocumentURL, content, mediaType, null, { headers });
+  // A folder address without a Content-Location has nowhere to save to, so changes stay local until Save as
+  const storageURL = getDocumentStorageURL(Config.DocumentURL);
+  if (!storageURL) return;
+
+  const response = await Config.Storage.put(storageURL, content, mediaType, null, { headers });
 
   console.log(`Remote updated (${response.status}).`);
 

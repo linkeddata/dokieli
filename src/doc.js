@@ -1653,15 +1653,22 @@ export async function updateResourceInfos(documentURL = Config.DocumentURL, data
 }
 
 export function updateSupplementalInfo(response, options = {}) {
-  var checkHeaders = options?.checkHeaders ?? ['wac-allow', 'link', 'last-modified', 'etag', 'expires', 'date', 'allow'];
+  var checkHeaders = options?.checkHeaders ?? ['wac-allow', 'link', 'last-modified', 'etag', 'expires', 'date', 'allow', 'content-location'];
   var headers = response.headers;
   var documentURL = options?.documentURL || Config.DocumentURL;
 
   Config['Resource'][documentURL] ||= {};
 
+  const preserveHeaders = [...(options?.preserveHeaders || [])];
+  // Only the page address's own HTML response can say there is no Content-Location; others, like the stored document's, keep it
+  const isPageHTML = (!response.url || stripFragmentFromString(response.url) === documentURL) && headers.get('content-type')?.startsWith('text/html');
+  if (!isPageHTML) {
+    preserveHeaders.push('content-location');
+  }
+
   const preservedHeaders = {};
-  if (options?.preserveHeaders?.length) {
-    for (const key of options.preserveHeaders) {
+  if (preserveHeaders.length) {
+    for (const key of preserveHeaders) {
       const existing = Config['Resource'][documentURL]?.headers?.[key];
       if (existing !== undefined) {
         preservedHeaders[key] = existing;
@@ -1726,6 +1733,10 @@ export function getResourceSupplementalInfo(documentURL, options) {
 
   if (!options.reuse) {
     var rHeaders = { 'Cache-Control': 'no-cache' };
+    // The page is HTML, so ask for that representation and its Content-Location
+    if (documentURL === Config.DocumentURL) {
+      rHeaders['Accept'] = 'text/html';
+    }
     var rOptions = { 'noCache': true };
     return Config.Storage.head(documentURL, rHeaders, rOptions)
       .then(response => {

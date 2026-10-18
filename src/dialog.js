@@ -29,7 +29,7 @@ import { requestOriginConsent } from './consent.js';
 import { domSanitize, sanitizeInsertAdjacentHTML, sanitizeIRI, sanitizeObject, htmlEncode, sanitizeIRIs } from './utils/sanitization.js';
 import { escapeRDFLiteral, generateAttributeId, getDateTimeISO, getDefaultDocumentBasename } from './util.js';
 import { setAcceptRDFTypes } from './fetcher.js';
-import { forceTrailingSlash, generateDataURI, getBaseURL, isHttpOrHttpsProtocol, isFileProtocol, stripFragmentFromString, getFragmentFromString, getURLLastPath, currentLocation, getUrlParams } from './uri.js';
+import { forceTrailingSlash, generateDataURI, getBaseURL, isHttpOrHttpsProtocol, isFileProtocol, stripFragmentFromString, getFragmentFromString, getURLLastPath, currentLocation, getDocumentStorageURL, getUrlParams } from './uri.js';
 import { getAgentInbox, getAgentName, getGraphAuthors, getGraphContributors, getGraphEditors, getGraphImage, getGraphLabelOrIRI, getGraphPerformers, getGraphTypes, getLinkRelation, getLinkRelationFromHead, getResourceGraph, getUserContacts, getUserLabelOrIRI, serializeData, getSubjectInfo, getRDFSerializer, getGraphCreators } from './graph.js';
 import { agentsWithMode, hasControl, planGrant, planOwnerControl, planRevoke, Public } from '@dokieli/web-access-control';
 import { applyACLPlan, cachedACLContext, expandAccessMode, getACLContext, setPublicRead } from './wac.js';
@@ -5135,7 +5135,13 @@ export function resourceSave(e, options) {
         createImmutableResource(url);
       }
       else if (e.target.closest('.resource-save')) {
-        updateMutableResource(url).then(() => markLocalSnapshotPublished(url)).catch(() => {});
+        const storageURL = getDocumentStorageURL(url);
+        if (storageURL) {
+          updateMutableResource(storageURL).then(() => markLocalSnapshotPublished(url)).catch(() => {});
+        }
+        else {
+          saveAsDocument(e);
+        }
       }
     }
   });

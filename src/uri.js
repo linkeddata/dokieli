@@ -113,6 +113,19 @@ export function getProxyURL(options) {
       : undefined;
 }
 
+// Where a document is saved: its own address, or for a folder address the resource the server says it came from (Content-Location), otherwise null
+export function getDocumentStorageURL(url) {
+  const u = new URL(url);
+
+  if (!['http:', 'https:'].includes(u.protocol) || !u.pathname.endsWith('/')) {
+    return url;
+  }
+
+  const contentLocation = Config.Resource?.[url]?.headers?.['content-location']?.['field-value'];
+
+  return contentLocation ? new URL(contentLocation, url).href : null;
+}
+
 export function stripFragmentFromString(string) {
   if (typeof string === 'string') {
     let stringIndexFragment = string.indexOf('#');
