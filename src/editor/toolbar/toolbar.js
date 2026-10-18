@@ -993,14 +993,17 @@ export class ToolbarView {
       const checkbox = form?.querySelector('input.editor-form-encrypt');
       if (!checkbox) return;
 
+      const fieldset = checkbox.closest('fieldset');
       if (checkbox.checked) {
         checkbox.checked = false;
+        updateAnnotationStoreAccess(fieldset);
       } else if (isUnlocked()) {
         checkbox.checked = true;
+        updateAnnotationStoreAccess(fieldset);
       } else {
         hasKeystore().then(exists => {
           import('../../dialog.js').then(({ showEncryptionSetup, showEncryptionUnlock }) => {
-            const activate = () => { checkbox.checked = true; };
+            const activate = () => { checkbox.checked = true; updateAnnotationStoreAccess(fieldset); };
             if (exists) {
               showEncryptionUnlock(activate);
             } else {
@@ -1177,14 +1180,14 @@ export function updateAnnotateSubmitState(fieldset) {
   const submit = fieldset.querySelector('.editor-form-submit');
   const checkboxes = fieldset.querySelectorAll('.annotation-location-selection input[type="checkbox"]');
   if (!submit || !checkboxes.length) return;
-  submit.disabled = !Array.from(checkboxes).some(c => c.checked);
+  submit.disabled = !Array.from(checkboxes).some(c => c.checked && !c.disabled);
 }
 
 // Nanopub is public: as the only storage it locks the toggle to public; with private it shows a warning.
 export function updateNanopubAccess(fieldset) {
   const access = fieldset?.querySelector('.editor-form-access');
   if (!access) return;
-  const locations = Array.from(fieldset.querySelectorAll('.annotation-location-selection input[type="checkbox"]'));
+  const locations = Array.from(fieldset.querySelectorAll('.annotation-location-selection input[type="checkbox"]')).filter(c => !c.disabled);
   const nanopub = locations.find(c => c.name.endsWith('-annotation-location-nanopub-network'));
   const others = locations.filter(c => c !== nanopub && c.checked);
   const onlyNanopub = !!nanopub?.checked && !others.length;
@@ -1224,6 +1227,33 @@ export function updateNanopubAccess(fieldset) {
   }
 }
 
+// Only the annotation store of the annotation's visibility is offered; without one, adding a store is
+export function updateAnnotationStoreAccess(fieldset) {
+  const selection = fieldset?.querySelector('.annotation-location-selection');
+  if (!selection) return;
+  const access = fieldset.querySelector('.editor-form-access');
+  const encrypt = fieldset.querySelector('.editor-form-encrypt');
+  const visibility = access?.checked && !encrypt?.checked ? 'public' : 'private';
+
+  const stores = Array.from(selection.querySelectorAll('input[data-visibility]'));
+  const previous = stores.find(store => !store.disabled);
+  const current = stores.find(store => store.dataset.visibility === visibility);
+
+  stores.forEach(store => {
+    store.disabled = store !== current;
+    store.closest('li').hidden = store !== current;
+  });
+  // Both stand for the one annotation store option, so the choice carries over
+  if (current && previous && previous !== current) current.checked = previous.checked;
+
+  const setup = selection.querySelector('.annotation-location-setup button[data-location="annotation-store"]')?.closest('li');
+  if (setup) setup.hidden = !!current;
+  const more = selection.querySelector('.annotation-location-more');
+  if (more) more.hidden = !more.querySelector('li:not([hidden])');
+
+  updateAnnotateSubmitState(fieldset);
+}
+
 // Access and encrypt toggle titles announce state and the notify-default coupling
 export function setupIconToggleTitles(container) {
   [
@@ -1261,7 +1291,10 @@ if (typeof document !== 'undefined') {
     if (notify) notify.dataset.userSet = 'true';
 
     const accessOrEncrypt = e.target.closest && e.target.closest('.editor-form-access, .editor-form-encrypt');
-    if (accessOrEncrypt) syncNotifyInboxDefault(accessOrEncrypt.closest('fieldset, [data-notify-scope]'));
+    if (accessOrEncrypt) {
+      syncNotifyInboxDefault(accessOrEncrypt.closest('fieldset, [data-notify-scope]'));
+      updateAnnotationStoreAccess(accessOrEncrypt.closest('fieldset'));
+    }
 
     if (cb || e.target.closest?.('.editor-form-access')) updateNanopubAccess(e.target.closest('fieldset'));
   });
@@ -1283,6 +1316,7 @@ export function updateAnnotationServiceForm(action) {
   var annotationServices = document.querySelectorAll('.do.editor-toolbar .annotation-location-selection');
   for (var i = 0; i < annotationServices.length; i++) {
     annotationServices[i].replaceChildren(fragmentFromString(getAnnotationLocationHTML(formAction(annotationServices[i], action))));
+    updateAnnotationStoreAccess(annotationServices[i].closest('fieldset'));
     updateAnnotateSubmitState(annotationServices[i].closest('fieldset'));
     updateNanopubAccess(annotationServices[i].closest('fieldset'));
   }

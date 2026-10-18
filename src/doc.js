@@ -1234,6 +1234,11 @@ export function handleDeleteNote(button) {
           }
         }
         window.history.replaceState({}, null, Config.DocumentURL);
+
+        // Imported on use since activity.js imports this module
+        import('./activity.js')
+          .then(({ removeFromAnnotationIndexes }) => removeFromAnnotationIndexes(url))
+          .catch(e => console.log('Could not remove the annotation from the index:', e));
         // TODO: Delete notification or send delete activity
       })
       .catch(error => {
@@ -2948,27 +2953,22 @@ export function getItemVisibility(iri) {
   return undefined;
 }
 
-export function getRegisteredAnnotationContainer(action) {
-  const typeIndex = Config.User.TypeIndex;
+// Annotation stores registered for the action's activity type, private ones first
+export function getAnnotationStores(action) {
+  const typeIndex = Config.User.TypeIndex || {};
   const activityIndex = Config.ActionActivityIndex[action];
-  if (!typeIndex || !activityIndex) return undefined;
+  if (!activityIndex) return [];
 
-  const registries = [
-    typeIndex[ns.solid.privateTypeIndex.value],
-    typeIndex[ns.solid.publicTypeIndex.value]
-  ];
-
-  for (const registrations of registries) {
-    if (!registrations) continue;
-    for (const ti of Object.values(registrations)) {
-      const forClass = ti[ns.solid.forClass.value];
-      const instanceContainer = ti[ns.solid.instanceContainer.value];
-      if (instanceContainer && activityIndex.includes(forClass)) {
-        return instanceContainer;
+  const stores = [];
+  [['private', typeIndex[ns.solid.privateTypeIndex.value]], ['public', typeIndex[ns.solid.publicTypeIndex.value]]].forEach(([visibility, registrations]) => {
+    Object.values(registrations || {}).forEach(ti => {
+      const url = ti[ns.solid.instanceContainer.value];
+      if (url && activityIndex.includes(ti[ns.solid.forClass.value]) && !stores.some(store => store.url === url && store.visibility === visibility)) {
+        stores.push({ url, visibility });
       }
-    }
-  }
-  return undefined;
+    });
+  });
+  return stores;
 }
 
 export function getAnnotationLocationHTML(action) {
@@ -2980,21 +2980,36 @@ export function getAnnotationLocationHTML(action) {
 
   const ui = Config.User.UI || {};
 
+  const stores = getAnnotationStores(action);
   const options = [
     { suffix: 'annotation-service', uiKey: 'annotationLocationService', url: (typeof Config.AnnotationService !== 'undefined') ? Config.AnnotationService : undefined },
-    { suffix: 'annotation-store', uiKey: 'annotationLocationAnnotationStore', url: getRegisteredAnnotationContainer(action) },
+    { suffix: 'annotation-store', uiKey: 'annotationLocationAnnotationStore', url: stores[0]?.url },
     { suffix: 'personal-storage', uiKey: 'annotationLocationPersonalStorage', url: (Config.User.Storage && Config.User.Storage.length > 0) ? Config.User.Storage[0] : undefined },
     { suffix: 'activity-outbox', uiKey: 'annotationLocationActivityOutbox', url: (Config.User.Outbox && Config.User.Outbox.length > 0) ? Config.User.Outbox[0] : undefined },
     { suffix: 'nanopub-network', uiKey: 'annotationLocationNanopubNetwork', url: Config.Nanopub?.UseTestRegistry ? getRegistryURL() : 'https://nanopub.net/' },
   ];
 
   // A remembered choice pre-checks; otherwise fall back to the most relevant available location.
-  const remembered = options.some(({ uiKey }) => ui[uiKey] && ui[uiKey].checked);
+  const remembered = options.some(({ uiKey }) => ui[uiKey] && (Array.isArray(ui[uiKey].checked) ? ui[uiKey].checked.length : ui[uiKey].checked));
   const defaultOrder = ['annotation-store', 'annotation-service', 'activity-outbox', 'personal-storage'];
   const defaultSuffix = remembered ? undefined : defaultOrder.find((suffix) => options.some((o) => o.suffix === suffix && o.url));
 
   options.forEach(({ suffix, uiKey, url }) => {
     if (!url) return;
+    // The store registered for each visibility; only the one matching the annotation's access is shown (see updateAnnotationStoreAccess)
+    if (suffix === 'annotation-store') {
+      const remembered = ui[uiKey]?.checked;
+      const isChecked = Array.isArray(remembered) ? remembered.length > 0 : (remembered === true || suffix === defaultSuffix);
+      const checked = isChecked ? ' checked="checked"' : '';
+      const labelI18n = `annotation-location.${suffix}.label`;
+      ['private', 'public'].forEach(visibility => {
+        const store = stores.find(store => store.visibility === visibility);
+        if (!store) return;
+        const id = `${action}-annotation-location-${suffix}-${visibility}`;
+        inputs.push(`<li><input data-visibility="${visibility}" id="${id}" name="${action}-annotation-location-${suffix}" type="checkbox" value="${store.url}"${checked} /><label data-i18n="${labelI18n}" for="${id}">${i18n.t(labelI18n + '.textContent')}</label>${targetHTML(store.url)}</li>`);
+      });
+      return;
+    }
     const id = `${action}-annotation-location-${suffix}`;
     const labelI18n = `annotation-location.${suffix}.label`;
     const isChecked = (ui[uiKey] && ui[uiKey].checked) || suffix === defaultSuffix;
@@ -3008,11 +3023,11 @@ export function getAnnotationLocationHTML(action) {
     annotationInputs = `<ul>${inputs.join('')}</ul>`;
   }
 
+  // Adding an annotation store is offered while the annotation's visibility has none
   const setups = [];
-  if (Config.User.IRI && Config.User.Storage?.length) {
-    ['annotation-store', 'activity-outbox'].forEach(suffix => {
-      if (!options.find(o => o.suffix === suffix).url) setups.push(suffix);
-    });
+  if (Config.User.IRI) {
+    setups.push('annotation-store');
+    if (Config.User.Storage?.length && !options.find(o => o.suffix === 'activity-outbox').url) setups.push('activity-outbox');
   }
   const setupHTML = setups.length
     ? `<details class="annotation-location-more"><summary data-i18n="annotation-location-more.summary">${i18n.t('annotation-location-more.summary.textContent')}</summary><ul class="annotation-location-setup">${setups.map(suffix => `<li><button class="setup-annotation-location" data-i18n="annotation-location-setup.${suffix}.button" data-location="${suffix}" type="button">${i18n.t(`annotation-location-setup.${suffix}.button.textContent`)}</button></li>`).join('')}</ul></details>`

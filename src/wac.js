@@ -18,9 +18,9 @@ limitations under the License.
 // Adapter between dokieli and @dokieli/web-access-control: storage-backed
 // fetch, rdf-ext parsing, ACL context caching, and plan application.
 
-import { findEffectiveACL, modeFromIRI, toTurtle, planPublicRead } from '@dokieli/web-access-control';
+import { findEffectiveACL, modeFromIRI, toTurtle, planPublicRead, planContainerACL, namedNode, quad, ACL, FOAF, RDF_TYPE } from '@dokieli/web-access-control';
 import Config from './config.js';
-import { getGraphFromData } from './graph.js';
+import { getGraphFromData, getLinkRelationFromHead } from './graph.js';
 import { isHttpOrHttpsProtocol } from './uri.js';
 
 // The fetcher throws on non-2xx but the effective ACL resource algorithm
@@ -82,6 +82,32 @@ export async function setPublicRead(resourceURL, enabled) {
   const ctx = await getACLContext(resourceURL);
   const plan = planPublicRead(ctx, enabled);
   if (!plan.inserts.length && !plan.deletes.length) return;
+  return applyACLPlan(plan);
+}
+
+// The owner gets full access to the container and everything in it, and everyone can read them when public
+export async function setContainerACL(containerURL, owner, isPublic) {
+  const [aclURL] = await getLinkRelationFromHead('acl', containerURL);
+  const aclResource = new URL(aclURL, containerURL).href;
+  const plan = planContainerACL({
+    aclURL: aclResource,
+    containerURL,
+    owner,
+    ownerModes: ['Read', 'Write', 'Control'],
+    defaultModes: ['Read', 'Write', 'Control']
+  });
+
+  if (isPublic) {
+    const rule = namedNode(aclResource + '#public');
+    plan.inserts.push(
+      quad(rule, namedNode(RDF_TYPE), namedNode(ACL + 'Authorization')),
+      quad(rule, namedNode(ACL + 'accessTo'), namedNode(containerURL)),
+      quad(rule, namedNode(ACL + 'default'), namedNode(containerURL)),
+      quad(rule, namedNode(ACL + 'agentClass'), namedNode(FOAF + 'Agent')),
+      quad(rule, namedNode(ACL + 'mode'), namedNode(ACL + 'Read'))
+    );
+  }
+
   return applyACLPlan(plan);
 }
 

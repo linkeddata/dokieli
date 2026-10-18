@@ -6179,6 +6179,9 @@ flex-wrap: wrap;
 gap: 0.4em;
 margin: 0.25em 0;
 }
+.editor-form .annotation-location-details [hidden] {
+display: none;
+}
 .editor-form .annotation-inbox-details li input,
 .editor-form .annotation-location-details li input,
 #questionnaire-copy-dialog .questionnaire-copy-locations li input {

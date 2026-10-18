@@ -18,13 +18,13 @@ limitations under the License.
 import { getSelectedParentElement, restoreSelection, createNoteData} from "../../utils/annotation.js";
 import { generateAttributeId, getDateTimeISO } from "../../../util.js"
 import { getNodeLanguage, getFormValues, createHTML } from "../../../utils/html.js";
-import { getReferenceLabel, createActivityHTML, createActivityJSONLD, createNoteDataHTML, getRegisteredAnnotationContainer, getPreferredTargetIRI, showActionMessage, addMessageToLog } from "../../../doc.js";
+import { getReferenceLabel, createActivityHTML, createActivityJSONLD, createNoteDataHTML, getPreferredTargetIRI, showActionMessage, addMessageToLog } from "../../../doc.js";
 import { isNanopubIRI } from "../../../nanopub.js";
 import { i18n } from "../../../i18n.js";
 import { getAbsoluteIRI, stripFragmentFromString } from "../../../uri.js"
 import Config from "../../../config.js"
-import { notifyInbox, postActivity, showActivities, chooseAnnotationStore, registerAnnotationInTypeIndex, markAnnotationTarget, registerAnnotationStore, linkOutbox } from "../../../activity.js"
-import { updateAnnotationServiceForm } from "../toolbar.js";
+import { notifyInbox, postActivity, showActivities, addToAnnotationIndex, markAnnotationTarget, registerAnnotationStore, linkOutbox } from "../../../activity.js"
+import { updateAnnotationServiceForm, updateAnnotationStoreAccess } from "../toolbar.js";
 import { publishAnnotation } from "../../../nanopub-annotation.js";
 import { shareResource } from "../../../dialog.js";
 import { domSanitize } from "../../../utils/sanitization.js";
@@ -111,7 +111,7 @@ export function formHandlerAnnotate(e, action) {
   };
 
   const annotationNotifyInboxes = [].concat(formValues[`${action}-annotation-inbox`] || []);
-  const annotationLocationAnnotationStore = formValues[`${action}-annotation-location-annotation-store`];
+  const annotationLocationAnnotationStore = [].concat(formValues[`${action}-annotation-location-annotation-store`] || []);
   const annotationLocationPersonalStorage = formValues[`${action}-annotation-location-personal-storage`];
   const annotationLocationActivityOutbox = formValues[`${action}-annotation-location-activity-outbox`];
   const annotationLocationService = formValues[`${action}-annotation-location-annotation-service`];
@@ -169,9 +169,34 @@ if (typeof document !== 'undefined') {
     if (!button) return;
     e.preventDefault();
 
-    const action = button.closest('form')?.id?.replace(/^editor-form-/, '');
-    const chosen = button.dataset.location === 'activity-outbox' ? await linkOutbox() : await registerAnnotationStore();
-    if (chosen) updateAnnotationServiceForm(action);
+    const form = button.closest('form');
+    const action = form?.id?.replace(/^editor-form-/, '');
+    const access = form?.querySelector('.editor-form-access');
+    const encrypt = form?.querySelector('.editor-form-encrypt');
+    const visibility = access?.checked && !encrypt?.checked ? 'public' : 'private';
+
+    let chosen;
+    try {
+      chosen = button.dataset.location === 'activity-outbox' ? await linkOutbox() : await registerAnnotationStore(visibility);
+    }
+    catch (error) {
+      const message = { content: i18n.t('annotation-location-setup.failed.textContent', { error: [error?.status, error?.message].filter(Boolean).join(' ') }), type: 'error', timer: null };
+      addMessageToLog(message, Config.MessageLog);
+      showActionMessage(document.body, message);
+      return;
+    }
+    if (!chosen) return;
+
+    updateAnnotationServiceForm(action);
+    // The new store starts checked; the access toggle follows it
+    const store = chosen.url && form?.querySelector(`input[data-visibility][value="${CSS.escape(chosen.url)}"]`);
+    if (store && access) {
+      access.checked = chosen.visibility === 'public';
+      if (access.checked && encrypt) encrypt.checked = false;
+      access.dispatchEvent(new Event('change', { bubbles: true }));
+      store.checked = true;
+      updateAnnotationStoreAccess(store.closest('fieldset'));
+    }
   });
 }
 
@@ -206,14 +231,9 @@ export async function processAction(action, formValues, selectionData) {
           ...annotationData
         };
 
-        // Ask where to keep annotations before the first post so it lands in the chosen store
-        if (annotation.canonical && !annotation.activityOutbox) {
-          const containerIRI = await chooseAnnotationStore(annotation['containerIRI'], ns.oa.Annotation.value);
-          if (containerIRI !== annotation['containerIRI']) {
-            annotation['containerIRI'] = containerIRI;
-            annotation['noteURL'] = annotation['noteIRI'] = containerIRI + annotation.id;
-          }
-        }
+        const encrypted = formValues[`${action}-encrypt`] === 'true' && isUnlocked();
+        const publicAccess = formValues[`${action}-access-public`] === 'true' && !encrypted;
+        const visibility = data.visibility;
 
         var noteData = createNoteData(annotation);
 
@@ -221,9 +241,6 @@ export async function processAction(action, formValues, selectionData) {
         noteData.iri = '';
 
         annotation['motivatedBy'] = noteData['motivatedBy'];
-
-        const encrypted = formValues[`${action}-encrypt`] === 'true' && isUnlocked();
-        const publicAccess = formValues[`${action}-access-public`] === 'true' && !encrypted;
 
         if (encrypted) {
           const pubKey = getSessionPublicKey();
@@ -286,9 +303,12 @@ export async function processAction(action, formValues, selectionData) {
                 .catch(e => console.log('Could not make annotation public:', e));
             }
 
-            if (annotation.canonical && !annotation.activityOutbox) {
-              registerAnnotationInTypeIndex(annotation['containerIRI'], ns.oa.Annotation.value);
+            if (annotation.canonical) {
+              addToAnnotationIndex(visibility, [{ iri: annotation['noteIRI'], target: annotation.targetIRI }], annotation['containerIRI'])
+                .catch(e => console.log('Could not add the annotation to the index:', e));
+            }
 
+            if (annotation.canonical && !annotation.activityOutbox) {
               // Mark from the in-memory selector; the re-fetch path is rate-limited. Idempotent.
               markAnnotationTarget(annotation['noteIRI'], noteData.target?.selector || annotation.selectionData?.selector, { motivatedBy: annotation.motivatedBy, id: annotation.id });
             }
@@ -417,6 +437,10 @@ export function getFormActionData(action, formValues, selectionData) {
   //TODO: Revisit this to see whether resourceIRI should be the original or the one that gets updated after latestVersion check.
   data.selectorIRI = getAnnotationSelectorStateURI(data.resourceIRI, data.selectionData.selector);
 
+  // Encrypted annotations stay private
+  const encrypted = data.formData['encrypt'] === 'true' && isUnlocked();
+  data.visibility = data.formData['access-public'] === 'true' && !encrypted ? 'public' : 'private';
+
   data.annotationDistribution = getAnnotationDistribution(action, data);
 
   return data;
@@ -449,7 +473,8 @@ export function getAnnotationDistribution(action, data) {
   //Inboxes to notify about the annotation, chosen in the form; values are inbox URLs
   const annotationInboxes = [].concat(formData['annotation-inbox'] || []);
   //These are whether the user wants to send a copy of their annotation to a personal storage and/or to an annotation service.
-  const annotationLocationAnnotationStore = formData['annotation-location-annotation-store'];
+  // Stores the form lists for the annotation's access; values are container URLs
+  const annotationLocationAnnotationStore = [].concat(formData['annotation-location-annotation-store'] || []).filter(url => /^https?:\/\//.test(url));
   const annotationLocationPersonalStorage = formData['annotation-location-personal-storage'];
   const annotationLocationOutbox = formData['annotation-location-activity-outbox'];
   const annotationLocationService = formData['annotation-location-annotation-service'];
@@ -462,29 +487,21 @@ export function getAnnotationDistribution(action, data) {
   let activityTypeMatched = false;
   const activityIndex = Config.ActionActivityIndex[action];
 
-  //XXX: Use TypeIndex location as canonical if available, otherwise storage. Note how noteIRI is treated later
-  if (annotationLocationAnnotationStore && Config.User.TypeIndex) {
-    // Resolve the registered container from private or public TypeIndex for this action.
-    const registeredContainer = getRegisteredAnnotationContainer(action);
+  // The first checked annotation store is canonical, the others get copies
+  annotationLocationAnnotationStore.forEach((storeIRI, i) => {
+    activityTypeMatched = true;
+    containerIRI = storeIRI;
 
-    if (registeredContainer) {
-      activityTypeMatched = true;
+    fromContentType = 'text/html';
+    contentType = fromContentType;
 
-      containerIRI = registeredContainer;
+    noteURL = noteIRI = containerIRI + id;
+    aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': i === 0, 'annotationInboxes': annotationInboxes };
 
-      fromContentType = 'text/html';
-      // contentType = 'text/html';
-      contentType = fromContentType;
-
-      noteURL = noteIRI = containerIRI + id;
-      contextProfile = {
-        // 'subjectURI': noteIRI,
-      };
-      aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true, 'annotationInboxes': annotationInboxes };
-
+    if (!isDuplicateLocation(annotationDistribution, containerIRI)) {
       annotationDistribution.push(aLS);
     }
-  }
+  });
 
   if (annotationLocationOutbox && Config.User.Outbox) {
     containerIRI = Config.User.Outbox[0];
@@ -550,11 +567,11 @@ export function getAnnotationDistribution(action, data) {
       'profile': 'https://www.w3.org/ns/anno.jsonld'
     };
 
-    if (!annotationLocationAnnotationStore && !annotationLocationPersonalStorage && !annotationLocationOutbox && annotationLocationService) {
+    if (!annotationLocationAnnotationStore.length && !annotationLocationPersonalStorage && !annotationLocationOutbox && annotationLocationService) {
       noteURL = noteIRI = containerIRI + id;
       aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true,'annotationInboxes': annotationInboxes };
     }
-    else if (annotationLocationAnnotationStore || annotationLocationPersonalStorage || annotationLocationOutbox) {
+    else if (annotationLocationAnnotationStore.length || annotationLocationPersonalStorage || annotationLocationOutbox) {
       noteURL = containerIRI + id;
       aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'annotationInboxes': annotationInboxes };
     }

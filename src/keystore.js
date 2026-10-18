@@ -225,7 +225,7 @@ async function setKeyResourceACL(resourceURL) {
   return applyACLPlan(plan);
 }
 
-//XXX: mirrors registerAnnotationInTypeIndex in activity.js; share a helper once the import cycle is untangled
+//XXX: mirrors addTypeRegistration in activity.js; share a helper once the import cycle is untangled
 async function registerKeyContainer(containerURL) {
   const priv = Config.User?.PrivateTypeIndex;
   const pub = Config.User?.PublicTypeIndex;

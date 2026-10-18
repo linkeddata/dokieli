@@ -33,8 +33,7 @@ import { getTextContentExcludingSups } from './editor/utils/annotation.js';
 import { i18n } from './i18n.js';
 import { showUserIdentityInput } from './auth.js';
 import { updateDeviceStorageProfile } from './storage.js';
-import { parseWacAllow } from '@dokieli/web-access-control';
-import { setPublicRead } from './wac.js';
+import { setPublicRead, setContainerACL } from './wac.js';
 import { isJWE } from './crypto.js';
 import { isUnlocked, decryptWithSession } from './keystore.js';
 import { setupResourceBrowser, attachBrowseStoragePopup } from './dialog.js';
@@ -437,26 +436,38 @@ export function postActivity(url, slug, data, options) {
     });
 }
 
-const registeredTypeIndexKeys = new Set();
+// One write chain per visibility so concurrent saves do not race to create the index
+const annotationIndexWrites = new Map();
 
-function isContainerPublicReadable(containerIRI) {
-  return Config.Storage.head(containerIRI)
-    .then(response => parseWacAllow(response.headers.get('WAC-Allow'))?.public?.has('Read') === true)
-    .catch(() => false);
+function typeIndexKey(kind) {
+  return kind === 'public' ? ns.solid.publicTypeIndex.value : ns.solid.privateTypeIndex.value;
 }
 
-function typeRegistrationTriples(subject, forClass, containerIRI) {
+function typeRegistrationTriples(subject, forClass, predicate, object) {
   return `<${subject}> a <${ns.solid.TypeRegistration.value}> ;\n` +
     `  <${ns.solid.forClass.value}> <${forClass}> ;\n` +
-    `  <${ns.solid.instanceContainer.value}> <${containerIRI}> .\n`;
+    `  <${predicate}> <${object}> .\n`;
 }
 
-// Resolves the container to register, or undefined when dismissed
-function showAnnotationStoreDialog(containerIRI, mode) {
-  return showLocationDialog('annotation-store', containerIRI, mode);
+// Annotation instance containers or instances registered in the public or private type index
+function getAnnotationRegistrations(typeIndex, kind, predicate) {
+  const registrations = typeIndex?.[typeIndexKey(kind)] || {};
+  return Object.values(registrations)
+    .filter(r => r[ns.solid.forClass.value] === ns.oa.Annotation.value && r[predicate])
+    .map(r => r[predicate]);
 }
 
-export function showLocationDialog(kind, containerIRI, mode) {
+export function getAnnotationRegistration(typeIndex, kind, predicate) {
+  return getAnnotationRegistrations(typeIndex, kind, predicate)[0];
+}
+
+// Resolves { url, visibility } for the store to create, or undefined when dismissed
+function showAnnotationStoreDialog(containerIRI, visibility) {
+  return showLocationDialog('annotation-store', containerIRI, 'setup', { visibility });
+}
+
+// With options.visibility, also asks whether the location is public or private and resolves { url, visibility }
+export function showLocationDialog(kind, containerIRI, mode, options = {}) {
   const id = `${kind}-dialog`;
   const prefix = `dialog.${kind}`;
   document.getElementById(id)?.remove();
@@ -468,6 +479,9 @@ export function showLocationDialog(kind, containerIRI, mode) {
   const buttonClose = getButtonHTML({ key: `${prefix}.close.button`, button: 'close', buttonClass: 'close', iconSize: 'fa-2x' });
   const chooseLocationText = mode === 'setup' ? '' : `<p data-i18n="${prefix}.choose-location.p">${i18n.t(`${prefix}.choose-location.p.textContent`)}</p>`;
   const chooseLocation = canChoose ? `${chooseLocationText}<fieldset id="${locationId}-fieldset"></fieldset>` : '';
+  const chooseVisibility = options.visibility
+    ? `<fieldset class="${kind}-visibility"><legend data-i18n="${prefix}.visibility.legend">${i18n.t(`${prefix}.visibility.legend.textContent`)}</legend>${['public', 'private'].map(visibility => `<input${visibility === options.visibility ? ' checked=""' : ''} id="${id}-visibility-${visibility}" name="${id}-visibility" type="radio" value="${visibility}" /> <label data-i18n="${prefix}.visibility.${visibility}.label" for="${id}-visibility-${visibility}">${i18n.t(`${prefix}.visibility.${visibility}.label.textContent`)}</label>`).join(' ')}</fieldset>`
+    : '';
 
   document.body.appendChild(fragmentFromString(`
     <aside aria-labelledby="${id}-label" class="do on" dir="${Config.User.UI.LanguageDir}" id="${id}" lang="${Config.User.UI.Language}" rel="schema:hasPart" resource="#${id}" xml:lang="${Config.User.UI.Language}">
@@ -477,6 +491,7 @@ export function showLocationDialog(kind, containerIRI, mode) {
       <div>
         <p data-i18n="${prefix}.${mode}.p">${i18n.t(`${prefix}.${mode}.p.textContent`, { url: containerIRI })}</p>
         ${chooseLocation}
+        ${chooseVisibility}
       </div>
       <button class="cancel" data-i18n="${prefix}.cancel.button" title="${i18n.t(`${prefix}.cancel.button.title`)}" type="button">${i18n.t(`${prefix}.cancel.button.textContent`)}</button>
       <button class="submit" data-i18n="${prefix}.${submitKey}.button" title="${i18n.t(`${prefix}.${submitKey}.button.title`)}" type="button">${i18n.t(`${prefix}.${submitKey}.button.textContent`)}</button>
@@ -507,76 +522,102 @@ export function showLocationDialog(kind, containerIRI, mode) {
         const value = document.getElementById(`${locationId}-input`)?.value.trim();
         if (value && /^https?:\/\//.test(value)) chosen = forceTrailingSlash(value);
       }
+      const visibility = dialog.querySelector(`input[name="${id}-visibility"]:checked`)?.value;
       dialog.remove();
-      resolve(accepted ? chosen : undefined);
+      if (!accepted) return resolve(undefined);
+      resolve(options.visibility ? { url: chosen, visibility } : chosen);
     });
   });
 }
 
-// Fresh pods ship without type indexes; create one under the storage root and link it from the profile
+// Creates a settings document unless one is already there
+async function createSettingsDocument(url, data) {
+  try {
+    await Config.Storage.put(url, data, 'text/turtle', null, { headers: { 'If-None-Match': '*' } });
+    return true;
+  }
+  catch (e) {
+    if (e?.status === 412) return false;
+    throw e;
+  }
+}
+
+async function ensurePreferencesFile() {
+  if (Config.User.PreferencesFile?.[0]) return Config.User.PreferencesFile[0];
+  const root = Config.User.Storage?.[0];
+  if (!root) return;
+
+  const url = forceTrailingSlash(root) + 'settings/prefs.ttl';
+  if (await createSettingsDocument(url, `<> a <${ns.ws.ConfigurationFile.value}> .\n`)) {
+    await setPublicRead(url, false).catch(e => console.log('Could not set preferences access:', e));
+  }
+  await Config.Storage.patchWithConneg(stripFragmentFromString(Config.User.IRI), { insert: `<${Config.User.IRI}> <${ns.ws.preferencesFile.value}> <${url}> .\n` });
+
+  Config.User.PreferencesFile = [url];
+  return url;
+}
+
+// Storage may have no type indexes yet; the public one is linked from the profile, the private one from the preferences document
 async function ensureTypeIndex(kind) {
   const key = kind === 'public' ? 'PublicTypeIndex' : 'PrivateTypeIndex';
   if (Config.User[key]?.[0]) return Config.User[key][0];
   const root = Config.User.Storage?.[0];
   if (!root) return;
 
+  const linkFrom = kind === 'public' ? Config.User.IRI : await ensurePreferencesFile();
+  if (!linkFrom) return;
+
   const url = forceTrailingSlash(root) + `settings/${kind}TypeIndex.ttl`;
   const listed = kind === 'public' ? ns.solid.ListedDocument.value : ns.solid.UnlistedDocument.value;
-  await Config.Storage.put(url, `<> a <${ns.solid.TypeIndex.value}>, <${listed}> .\n`, 'text/turtle');
-  await setPublicRead(url, kind === 'public').catch(e => console.log('Could not set type index access:', e));
+  if (await createSettingsDocument(url, `<> a <${ns.solid.TypeIndex.value}>, <${listed}> .\n`)) {
+    await setPublicRead(url, kind === 'public').catch(e => console.log('Could not set type index access:', e));
+  }
 
-  const predicate = kind === 'public' ? ns.solid.publicTypeIndex.value : ns.solid.privateTypeIndex.value;
-  await Config.Storage.patchWithConneg(stripFragmentFromString(Config.User.IRI), { insert: `<${Config.User.IRI}> <${predicate}> <${url}> .\n` });
+  await Config.Storage.patchWithConneg(stripFragmentFromString(linkFrom), { insert: `<${Config.User.IRI}> <${typeIndexKey(kind)}> <${url}> .\n` });
 
   Config.User[key] = [url];
   updateDeviceStorageProfile(Config.User);
   return url;
 }
 
-const pendingAnnotationStores = new Map();
-
-function getTypeIndexEntries() {
-  Config.User.TypeIndex = Config.User.TypeIndex || {};
-  return {
-    privateEntries: Config.User.TypeIndex[ns.solid.privateTypeIndex.value] || {},
-    publicEntries: Config.User.TypeIndex[ns.solid.publicTypeIndex.value] || {}
-  };
-}
-
-function findTypeRegistration(entries, forClass) {
-  return Object.entries(entries).find(([, entry]) => entry[ns.solid.forClass.value] === forClass);
-}
-
-function canRegisterTypeIndex() {
-  return !!(Config.User.PrivateTypeIndex?.[0] || Config.User.PublicTypeIndex?.[0] || Config.User.Storage?.[0]);
-}
-
-// Public type index when the container is publicly readable, else private
-async function addTypeRegistration(containerIRI, forClass) {
-  const privateTypeIndexIRI = Config.User.PrivateTypeIndex?.[0];
-  const publicTypeIndexIRI = Config.User.PublicTypeIndex?.[0];
-  const publicReadable = await isContainerPublicReadable(containerIRI);
-  const usePublic = publicReadable || (!privateTypeIndexIRI && !!publicTypeIndexIRI);
-
-  const typeIndexIRI = await ensureTypeIndex(usePublic ? 'public' : 'private');
+async function addTypeRegistration(kind, predicate, object) {
+  const typeIndexIRI = await ensureTypeIndex(kind);
   if (!typeIndexIRI) return;
-  const typeIndexType = usePublic ? ns.solid.publicTypeIndex.value : ns.solid.privateTypeIndex.value;
   const registrationId = generateAttributeId();
-  await Config.Storage.patchWithConneg(typeIndexIRI, { insert: typeRegistrationTriples(`#${registrationId}`, forClass, containerIRI) });
+  await Config.Storage.patchWithConneg(typeIndexIRI, { insert: typeRegistrationTriples(`#${registrationId}`, ns.oa.Annotation.value, predicate, object) });
 
+  Config.User.TypeIndex = Config.User.TypeIndex || {};
+  const typeIndexType = typeIndexKey(kind);
   Config.User.TypeIndex[typeIndexType] = Config.User.TypeIndex[typeIndexType] || {};
   Config.User.TypeIndex[typeIndexType][`${typeIndexIRI}#${registrationId}`] = {
-    [ns.solid.forClass.value]: forClass,
-    [ns.solid.instanceContainer.value]: containerIRI
+    [ns.solid.forClass.value]: ns.oa.Annotation.value,
+    [predicate]: object
   };
   updateDeviceStorageProfile(Config.User);
 }
 
-export async function registerAnnotationStore() {
+// Creates the store before anything is saved in it; an existing container keeps its access
+export async function registerAnnotationStore(visibility) {
   const storage = Config.User.Storage?.[0];
-  const chosen = await showAnnotationStoreDialog(storage ? forceTrailingSlash(storage) : '', 'setup');
-  if (!chosen) return;
-  await addTypeRegistration(chosen, ns.oa.Annotation.value);
+  const chosen = await showAnnotationStoreDialog(storage ? forceTrailingSlash(storage) : '', visibility);
+  if (!chosen?.url) return;
+  const { url, visibility: storeVisibility } = chosen;
+
+  let created = false;
+  try {
+    await Config.Storage.put(url, '', 'text/turtle', null, { headers: { 'If-None-Match': '*' } });
+    created = true;
+  }
+  catch (e) {
+    if (e?.status !== 412) throw e;
+  }
+
+  if (created) {
+    await setContainerACL(url, Config.User.IRI, storeVisibility === 'public');
+  }
+
+  if (getAnnotationRegistrations(Config.User.TypeIndex, storeVisibility, ns.solid.instanceContainer.value).includes(url)) return chosen;
+  await addTypeRegistration(storeVisibility, ns.solid.instanceContainer.value, url);
   return chosen;
 }
 
@@ -597,80 +638,144 @@ export async function linkOutbox() {
   return chosen;
 }
 
-// Asked once per session before the first post when no store is registered, so the annotation lands in the chosen container. Resolves the container to post to; the registration itself happens after the post.
-export async function chooseAnnotationStore(containerIRI, forClass) {
-  if (!canRegisterTypeIndex() || registeredTypeIndexKeys.has(forClass)) return containerIRI;
-
-  const { privateEntries, publicEntries } = getTypeIndexEntries();
-  if (findTypeRegistration(publicEntries, forClass) || findTypeRegistration(privateEntries, forClass)) return containerIRI;
-
-  registeredTypeIndexKeys.add(forClass);
-
-  const privateTypeIndexIRI = Config.User.PrivateTypeIndex?.[0];
-  const publicTypeIndexIRI = Config.User.PublicTypeIndex?.[0];
-  const publicReadable = await isContainerPublicReadable(containerIRI);
-  const usePublic = publicReadable || (!privateTypeIndexIRI && !!publicTypeIndexIRI);
-  const chosenContainerIRI = await showAnnotationStoreDialog(containerIRI, usePublic ? 'add-public' : 'add-private');
-  if (!chosenContainerIRI) return containerIRI;
-
-  pendingAnnotationStores.set(forClass, chosenContainerIRI);
-  return chosenContainerIRI;
+function isSafeIRI(iri) {
+  return typeof iri === 'string' && /^https?:\/\/[^\s<>"{}|\\^`]+$/.test(iri);
 }
 
-export async function registerAnnotationInTypeIndex(containerIRI, forClass) {
-  const pending = pendingAnnotationStores.get(forClass);
-  if (pending) {
-    pendingAnnotationStores.delete(forClass);
-    try {
-      await addTypeRegistration(pending, forClass);
+function annotationIndexTriples(items) {
+  return items.map(({ iri, target }) => `<${iri}> a <${ns.oa.Annotation.value}> ;\n  <${ns.oa.hasTarget.value}> <${target}> .\n`).join('');
+}
+
+async function writeAnnotationIndex(kind, items, store) {
+  let indexIRI = getAnnotationRegistration(Config.User.TypeIndex, kind, ns.solid.instance.value);
+  const create = !indexIRI;
+
+  if (create) {
+    // In the store the annotation was saved in when it is one of this visibility, else the first one
+    const stores = getAnnotationRegistrations(Config.User.TypeIndex, kind, ns.solid.instanceContainer.value);
+    const container = stores.includes(store) ? store : stores[0];
+    if (!container) return;
+    indexIRI = forceTrailingSlash(container) + 'index.ttl';
+    // Both visibilities may share a store
+    if (indexIRI === getAnnotationRegistration(Config.User.TypeIndex, kind === 'public' ? 'private' : 'public', ns.solid.instance.value)) {
+      indexIRI = forceTrailingSlash(container) + `index-${kind}.ttl`;
     }
-    catch (e) {
-      console.log('Could not register annotation type in TypeIndex:', e);
-    }
-    return;
   }
 
-  const privateTypeIndexIRI = Config.User.PrivateTypeIndex?.[0];
-  if (!canRegisterTypeIndex() || registeredTypeIndexKeys.has(forClass)) return;
+  // Access comes from the store
+  await Config.Storage.patchWithConneg(indexIRI, { insert: annotationIndexTriples(items) });
 
-  const { privateEntries, publicEntries } = getTypeIndexEntries();
-  if (findTypeRegistration(publicEntries, forClass)) return;
+  if (create) {
+    await addTypeRegistration(kind, ns.solid.instance.value, indexIRI);
+  }
+}
 
-  registeredTypeIndexKeys.add(forClass);
+function queueAnnotationIndexWrite(kind, write) {
+  const next = (annotationIndexWrites.get(kind) || Promise.resolve())
+    .catch(() => {})
+    .then(write);
+  annotationIndexWrites.set(kind, next);
+  return next;
+}
 
+// Lists the user's annotations wherever they are stored, in the index kept in the store of the same visibility
+export function addToAnnotationIndex(kind, items, store) {
+  items = items.filter(item => isSafeIRI(item.iri) && isSafeIRI(item.target));
+  if (!items.length) return Promise.resolve();
+  return queueAnnotationIndexWrite(kind, () => writeAnnotationIndex(kind, items, store));
+}
+
+// Deletes the exact statements, since an entry may have more than one target
+async function removeAnnotationIndexEntries(indexIRI, url) {
+  const { graph: g } = await getResourceOnlyRDF(indexIRI);
+  const quads = Array.from(g.dataset).filter(q =>
+    q.subject.termType === 'NamedNode' && q.object.termType === 'NamedNode' && stripFragmentFromString(q.subject.value) === url);
+  if (!quads.length) return;
+  const statements = quads.map(q => `<${q.subject.value}> <${q.predicate.value}> <${q.object.value}> .\n`).join('');
+  await Config.Storage.patchWithConneg(indexIRI, { delete: statements });
+}
+
+// Removes a deleted annotation from the user's public and private indexes
+export function removeFromAnnotationIndexes(url) {
+  url = stripFragmentFromString(url);
+  return Promise.allSettled(['public', 'private'].flatMap(kind =>
+    getAnnotationRegistrations(Config.User.TypeIndex, kind, ns.solid.instance.value)
+      .map(indexIRI => queueAnnotationIndexWrite(kind, () => removeAnnotationIndexEntries(indexIRI, url)))));
+}
+
+// Index entries for the annotations found in already loaded resources
+function getAnnotationIndexItems(iris) {
+  return iris.flatMap(iri => {
+    const g = Config.Activity[iri]?.Graph;
+    if (!g) return [];
+
+    const subjects = uniqueArray(Array.from(g.dataset)
+      .filter(q => q.predicate.value === ns.rdf.type.value && q.object.value === ns.oa.Annotation.value && q.subject.termType === 'NamedNode')
+      .map(q => q.subject.value));
+
+    return subjects.map(subject => {
+      const s = g.node(rdf.namedNode(subject));
+      const targetPtr = s.out(ns.oa.hasTarget);
+      return { iri: subject, target: targetPtr.out(ns.oa.hasSource).values[0] || targetPtr.values[0] };
+    });
+  });
+}
+
+// Each entry is <annotation> a oa:Annotation; oa:hasTarget <target>. The graph points at the index itself, so all its statements are read from the dataset
+function getAnnotationIndexEntries(g) {
+  const quads = Array.from(g.dataset);
+  const annotations = new Set(quads
+    .filter(q => q.predicate.value === ns.rdf.type.value && q.object.value === ns.oa.Annotation.value)
+    .map(q => q.subject.value));
+  return quads
+    .filter(q => q.predicate.value === ns.oa.hasTarget.value && annotations.has(q.subject.value))
+    .map(q => ({ iri: q.subject.value, target: q.object.value }));
+}
+
+function isAboutDocument(target) {
+  if (!target) return false;
+  const documentURL = Config.DocumentURL;
+  const preferredTargetIRI = getPreferredTargetIRI(documentURL);
   try {
-    const existingPrivate = findTypeRegistration(privateEntries, forClass);
-
-    if (existingPrivate) {
-      const [subject, entry] = existingPrivate;
-      const container = entry[ns.solid.instanceContainer.value];
-      if (!container || !(await isContainerPublicReadable(container))) return;
-      if (!(await showAnnotationStoreDialog(container, 'publish'))) return;
-
-      const publicTypeIndexIRI = await ensureTypeIndex('public');
-      if (!publicTypeIndexIRI) return;
-      const registrationId = generateAttributeId();
-      const insert = typeRegistrationTriples(`#${registrationId}`, forClass, container);
-      await Config.Storage.patchWithConneg(publicTypeIndexIRI, { insert });
-      await Config.Storage.patchWithConneg(privateTypeIndexIRI, { delete: typeRegistrationTriples(subject, forClass, container) }).catch(() => {});
-
-      delete privateEntries[subject];
-      Config.User.TypeIndex[ns.solid.publicTypeIndex.value] = { ...publicEntries, [`${publicTypeIndexIRI}#${registrationId}`]: { [ns.solid.forClass.value]: forClass, [ns.solid.instanceContainer.value]: container } };
-      updateDeviceStorageProfile(Config.User);
-      return;
-    }
-
-    const publicTypeIndexIRI = Config.User.PublicTypeIndex?.[0];
-    const publicReadable = await isContainerPublicReadable(containerIRI);
-    const usePublic = publicReadable || (!privateTypeIndexIRI && !!publicTypeIndexIRI);
-    const chosenContainerIRI = await showAnnotationStoreDialog(containerIRI, usePublic ? 'add-public' : 'add-private');
-    if (!chosenContainerIRI) return;
-
-    await addTypeRegistration(chosenContainerIRI, forClass);
+    const targetPathURL = getPathURL(target);
+    return targetPathURL === getPathURL(documentURL) || (!!preferredTargetIRI && targetPathURL === getPathURL(preferredTargetIRI));
   }
   catch (e) {
-    console.log('Could not register annotation type in TypeIndex:', e);
+    return false;
   }
+}
+
+// Loads the annotations an index lists for this document, then offers the ones in the stores that the index does not list
+async function showAnnotationSources(agent, visibility, { instances, containers }) {
+  const options = { agent: agent.IRI, visibility };
+  // Only the user's own index can be written to
+  const indexKind = agent.IRI === Config.User.IRI ? visibility : undefined;
+  const indexed = new Set();
+
+  await Promise.allSettled(instances.map(async indexIRI => {
+    const { graph: g } = await gatedGetResourceOnlyRDF(indexIRI);
+    if (!g) return;
+    const entries = getAnnotationIndexEntries(g);
+    entries.forEach(entry => indexed.add(stripFragmentFromString(entry.iri)));
+    const relevant = uniqueArray(entries.filter(entry => isAboutDocument(entry.target)).map(entry => stripFragmentFromString(entry.iri)));
+    await Promise.allSettled(relevant.map(iri => showActivities(iri, options)));
+  }));
+
+  if (!instances.length) {
+    // Without an index the store is checked in batches, and each checked batch starts or extends the index
+    return Promise.allSettled(containers.map(container => showActivitiesSources(container, { ...options, activityType: 'instanceContainer', indexKind })));
+  }
+
+  return Promise.allSettled(containers.map(async container => {
+    if (collectionScans.has(container)) return;
+    const items = await withReadRetry(() => getItemsList(container));
+    const unindexed = items.filter(iri => !instances.includes(iri) && !indexed.has(stripFragmentFromString(iri)));
+    if (!unindexed.length || collectionScans.has(container)) return;
+
+    const state = { items: unindexed, offset: 0, batch: Config.CollectionItemsLimit, unindexed: true, options: { ...options, activityType: 'instanceContainer', indexKind } };
+    collectionScans.set(container, state);
+    offerActivities(container, state);
+  }));
 }
 
 export function getNotifications(url) {
@@ -757,7 +862,10 @@ function nextBatchSize(size) {
 
 function offerActivities(url, state) {
   let label, title = '';
-  if (state.items) {
+  if (state.unindexed) {
+    label = i18n.t('activities.unindexed.button.textContent', { count: Math.min(state.batch, state.items.length - state.offset) });
+  }
+  else if (state.items) {
     label = i18n.t('activities.collection-limit.more.button.textContent', { count: Math.min(state.batch, state.items.length - state.offset) });
     title = ` title="${fragmentFromString(i18n.t('activities.collection-limit.textContent', { url, total: state.items.length, checked: state.offset })).textContent}"`;
   }
@@ -772,7 +880,10 @@ function offerActivities(url, state) {
   }
   const list = info.querySelector('section.load-more-activities ul');
   list.querySelector(`button.load-more-activities[data-url="${CSS.escape(url)}"]`)?.parentNode.remove();
-  sanitizeInsertAdjacentHTML(list, 'beforeend', `<li><button class="load-more-activities" data-url="${url}"${title} type="button">${Icon['.fas.fa-inbox']}<span><span>${label}</span><span>${url.replace(/^https?:\/\//, '')}</span></span></button></li>`);
+  const indexOption = state.unindexed && state.options.indexKind
+    ? `<label><input${state.options.indexing === false ? '' : ' checked=""'} class="index-activities" type="checkbox" /> <span data-i18n="activities.unindexed.index.label">${i18n.t('activities.unindexed.index.label.textContent')}</span></label>`
+    : '';
+  sanitizeInsertAdjacentHTML(list, 'beforeend', `<li><button class="load-more-activities" data-url="${url}"${title} type="button">${Icon['.fas.fa-inbox']}<span><span>${label}</span><span>${url.replace(/^https?:\/\//, '')}</span></span></button>${indexOption}</li>`);
 }
 
 document.addEventListener('click', (e) => {
@@ -782,6 +893,8 @@ document.addEventListener('click', (e) => {
   const state = collectionScans.get(url);
   if (!state || (state.items && state.offset >= state.items.length)) return;
   const group = button.closest('section.load-more-activities');
+  const indexing = button.parentNode.querySelector('input.index-activities');
+  if (indexing) state.options.indexing = indexing.checked;
   button.parentNode.remove();
   if (!group.querySelector('li')) group.remove();
   showActivitiesSources(url, { ...state.options, more: true });
@@ -825,6 +938,11 @@ async function showActivitiesSourcesUncached(url, options = {}) {
   };
 
   await Promise.all(Array.from({ length: concurrency }, worker));
+
+  if (state.options.indexKind && state.options.indexing !== false) {
+    addToAnnotationIndex(state.options.indexKind, getAnnotationIndexItems(queue))
+      .catch(e => console.log('Could not index annotations:', e));
+  }
 
   if (state.offset < state.items.length) offerActivities(url, state);
 }
@@ -1387,6 +1505,8 @@ export function processAgentTypeIndex(agent) {
   var recognisedTypes = [];
 
   registries.forEach(([visibility, registrations]) => {
+    var annotationSources = { instances: [], containers: [] };
+
     Object.values(registrations).forEach(typeRegistration => {
       var forClass = typeRegistration[ns.solid.forClass.value];
       var instance = typeRegistration[ns.solid.instance.value];
@@ -1394,6 +1514,13 @@ export function processAgentTypeIndex(agent) {
 
       if (documentTypes.includes(forClass)) {
         recognisedTypes.push(forClass);
+
+        // Annotation indexes and stores are read together so the index can be compared with the stores
+        if (forClass === ns.oa.Annotation.value) {
+          if (instance) annotationSources.instances.push(instance);
+          if (instanceContainer) annotationSources.containers.push(instanceContainer);
+          return;
+        }
 
         if (instance) {
           promises.push(showActivities(instance, { excludeMarkup: true, agent: agent.IRI, visibility }));
@@ -1404,6 +1531,10 @@ export function processAgentTypeIndex(agent) {
         }
       }
     });
+
+    if (annotationSources.instances.length || annotationSources.containers.length) {
+      promises.push(showAnnotationSources(agent, visibility, annotationSources));
+    }
   });
 
   //       TODO: Need proper filtering of storage/outbox matching an object of interest
