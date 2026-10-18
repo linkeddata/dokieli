@@ -171,12 +171,18 @@ export function slugify(text, maxLength) {
   return s.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 }
 
-// H1 slug, else first 15 characters of text, else a generated id
+// H1 slug, else the document title, else first 15 characters of the content, else a generated id
 export function getDefaultDocumentBasename(articleNode) {
   const node = articleNode || document.body;
   const h1 = node.querySelector('h1');
   let base = slugify(h1?.textContent?.trim());
-  if (!base) base = slugify((node.textContent || '').trim(), 15);
+  if (!base) base = slugify(node.querySelector('#document-title dd')?.textContent?.trim());
+  if (!base) {
+    // Document info such as the modified date, the table of contents and dokieli's own interface are not content
+    const content = node.cloneNode(true);
+    content.querySelectorAll('[id^="document-"], #table-of-contents, .do').forEach(n => n.remove());
+    base = slugify((content.textContent || '').trim(), 15);
+  }
   return base || generateAttributeId();
 }
 
