@@ -49,7 +49,7 @@ Config.OIDC['useStaticClientId'] = useStaticClientId;
 if (!Config['WebExtensionEnabled']) {
   Config['Session'] = useStaticClientId
     ? new SessionCore({ client_id: clientid }, { database: new SessionIDB() })
-    : new SessionCore({ redirect_uris: [window.location.href.split('#')[0]], client_name: "dokieli" }, { database: new SessionIDB() });
+    : new SessionCore({ redirect_uris: [window.location.href.split('#')[0]], client_name: "dokieli", client_uri: "https://dokie.li/", logo_uri: "https://dokie.li/media/images/logo.png" }, { database: new SessionIDB() });
 }
 
 export async function restoreSession() {
