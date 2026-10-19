@@ -498,6 +498,8 @@ export default {
     ShareContainer: {
       'http://www.w3.org/ns/auth/acl#Read': 'container-read',
       'http://www.w3.org/ns/auth/acl#Append': 'container-append',
+      // Space-separated for a combined option
+      'http://www.w3.org/ns/auth/acl#Read http://www.w3.org/ns/auth/acl#Append': 'container-read-append',
       'http://www.w3.org/ns/auth/acl#Control': 'container-control'
     }
   },

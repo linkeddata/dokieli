@@ -827,6 +827,14 @@ export function showResourcePermissions(listenerEvent, iri) {
   const documentURL = stripFragmentFromString(iri);
   const isContainer = documentURL.endsWith('/');
   const documentOrFolder = isContainer ? '-container' : '';
+  // Folders offer their own access modes and labels
+  const accessContextName = isContainer ? 'ShareContainer' : 'Share';
+  const accessContext = Config.AccessContext[accessContextName];
+  const accessContextModes = Object.keys(accessContext);
+  // The public gets the same modes as individuals except Control, so no one can take over the ACL; an empty value is private
+  const publicModes = accessContextModes.filter(mode => mode !== ns.acl.Control.value);
+  const generalAccessOptions = [{ value: '', key: 'private', icon: '.fas.fa-eye-slash' }]
+    .concat(publicModes.map(mode => ({ value: mode, key: 'public-' + accessContext[mode], icon: '.fas.fa-globe' })));
 
   var buttonClose = getButtonHTML({ key: 'dialog.resource-permissions.close.button', button: 'close', buttonClass: 'close', iconSize: 'fa-2x' });
 
@@ -876,7 +884,7 @@ export function showResourcePermissions(listenerEvent, iri) {
           <summary></summary>
           <fieldset>
             <legend data-i18n="dialog.resource-permissions.general-access.legend${documentOrFolder}">${i18n.t(`dialog.resource-permissions.general-access.legend${documentOrFolder}.textContent`)}</legend>
-            ${['public', 'private'].map(visibility => `<input id="resource-permissions-general-access-${visibility}" name="resource-permissions-general-access" type="radio" value="${visibility}" /><label for="resource-permissions-general-access-${visibility}">${Icon[visibility === 'public' ? '.fas.fa-globe' : '.fas.fa-eye-slash']}<strong data-i18n="dialog.resource-permissions.general-access.${visibility}.label">${i18n.t(`dialog.resource-permissions.general-access.${visibility}.label.textContent`)}</strong><span data-i18n="dialog.resource-permissions.general-access.${visibility}.description">${i18n.t(`dialog.resource-permissions.general-access.${visibility}.description.textContent`)}</span>${Icon['.fas.fa-check']}</label>`).join('')}
+            ${generalAccessOptions.map(({ value, key, icon }) => `<input id="resource-permissions-general-access-${key}" name="resource-permissions-general-access" type="radio" value="${value}" /><label for="resource-permissions-general-access-${key}">${Icon[icon]}<strong data-i18n="dialog.resource-permissions.general-access.${key}.label">${i18n.t(`dialog.resource-permissions.general-access.${key}.label.textContent`)}</strong><span data-i18n="dialog.resource-permissions.general-access.${key}.description">${i18n.t(`dialog.resource-permissions.general-access.${key}.description.textContent`)}</span>${Icon['.fas.fa-check']}</label>`).join('')}
           </fieldset>
         </details>
         <p class="general-access-note" data-i18n="dialog.resource-permissions.general-access.note${documentOrFolder}" hidden="">${i18n.t(`dialog.resource-permissions.general-access.note${documentOrFolder}.textContent`)}</p>
@@ -935,11 +943,6 @@ export function showResourcePermissions(listenerEvent, iri) {
           updateButton.disabled = !dirty;
         };
 
-        // Folders offer their own access modes and labels
-        const accessContextName = isContainer ? 'ShareContainer' : 'Share';
-        const accessContext = Config.AccessContext[accessContextName];
-        const accessContextModes = Object.keys(accessContext);
-
         var accessLabel = function (mode) {
           const name = accessContext[mode];
           return name
@@ -947,13 +950,13 @@ export function showResourcePermissions(listenerEvent, iri) {
             : i18n.t('dialog.share-resource.select-access-mode.no-access.option.textContent');
         };
 
-        // The strongest offered mode; a folder has no Editor, and Write already lets files be added
-        var selectedModeFor = function (modes) {
-          if (!accessContextModes.includes(ns.acl.Write.value) && modes.includes(ns.acl.Write.value)) {
+        // The strongest offered mode, as modes are listed weakest first; a folder has no Editor, and Write already lets files be added
+        var selectedModeFor = function (modes, offeredModes = accessContextModes) {
+          if (!offeredModes.includes(ns.acl.Write.value) && modes.includes(ns.acl.Write.value)) {
             modes = modes.concat(ns.acl.Append.value);
           }
-          return [ns.acl.Control.value, ns.acl.Write.value, ns.acl.Append.value, ns.acl.Read.value]
-            .find(mode => modes.includes(mode) && accessContextModes.includes(mode)) || '';
+          return offeredModes.slice().reverse()
+            .find(mode => mode.split(' ').every(part => modes.includes(part))) || '';
         };
 
         var currentModeOf = function (accessSubject) {
@@ -991,41 +994,43 @@ export function showResourcePermissions(listenerEvent, iri) {
           return subjectsWithAccess[accessSubject]?.subjectType || (accessSubject === ns.foaf.Agent.value ? 'agentClass' : 'agent');
         };
 
-        // Public is foaf:Agent with Read; Private revokes it and leaves the listed subjects as they are
+        // The public as foaf:Agent; Private revokes it and leaves the listed subjects as they are
         const generalAccess = accessPermissionsNode.querySelector('.general-access');
         const generalAccessSummary = generalAccess.querySelector('summary');
         const encryptsDocument = Config.User.Keys?.Encryption?.Enabled && Config.User.Keys?.Encryption?.DocumentEncrypt;
 
-        var isSavedPublic = function () {
-          return (subjectsWithAccess[ns.foaf.Agent.value]?.mode || []).length > 0;
+        var savedPublicMode = function () {
+          return selectedModeFor(subjectsWithAccess[ns.foaf.Agent.value]?.mode || [], publicModes);
         };
 
-        var showGeneralAccess = function (visibility) {
-          generalAccess.querySelector('input[value="' + visibility + '"]').checked = true;
+        var showGeneralAccess = function (mode) {
+          const option = generalAccessOptions.find(option => option.value === mode);
+          generalAccess.querySelector('input[value="' + mode + '"]').checked = true;
           generalAccessSummary.replaceChildren();
-          sanitizeInsertAdjacentHTML(generalAccessSummary, 'beforeend', Icon[visibility === 'public' ? '.fas.fa-globe' : '.fas.fa-eye-slash'] + '<span>' + i18n.t(`dialog.resource-permissions.general-access.${visibility}.label.textContent`) + '</span>' + Icon['.fas.fa-caret-down']);
+          sanitizeInsertAdjacentHTML(generalAccessSummary, 'beforeend', Icon[option.icon] + '<span>' + i18n.t(`dialog.resource-permissions.general-access.${option.key}.label.textContent`) + '</span>' + Icon['.fas.fa-caret-down']);
         };
 
-        showGeneralAccess(isSavedPublic() ? 'public' : 'private');
+        showGeneralAccess(savedPublicMode());
         generalAccess.hidden = false;
         generalAccess.nextElementSibling.hidden = false;
 
         // Encryption retracts public access on save
         if (encryptsDocument) {
-          const publicOption = generalAccess.querySelector('input[value="public"]');
-          publicOption.disabled = true;
-          publicOption.nextElementSibling.title = i18n.t('dialog.resource-permissions.general-access.encrypted.title');
+          generalAccess.querySelectorAll('input:not([value=""])').forEach(publicOption => {
+            publicOption.disabled = true;
+            publicOption.nextElementSibling.title = i18n.t('dialog.resource-permissions.general-access.encrypted.title');
+          });
         }
 
         generalAccess.addEventListener('change', e => {
-          const visibility = e.target.value;
-          showGeneralAccess(visibility);
+          const mode = e.target.value;
+          showGeneralAccess(mode);
 
-          if ((visibility === 'public') === isSavedPublic()) {
+          if (mode === savedPublicMode()) {
             pendingModes.delete(ns.foaf.Agent.value);
           }
           else {
-            pendingModes.set(ns.foaf.Agent.value, visibility === 'public' ? ns.acl.Read.value : '');
+            pendingModes.set(ns.foaf.Agent.value, mode);
           }
           refreshUpdateButton();
         });
@@ -1089,11 +1094,11 @@ export function showResourcePermissions(listenerEvent, iri) {
           for (const [accessSubject, mode] of pendingModes) {
             if (failed.includes(accessSubject)) continue;
             subjectsWithAccess[accessSubject] = subjectsWithAccess[accessSubject] || { subjectType: subjectTypeOf(accessSubject), mode: [] };
-            subjectsWithAccess[accessSubject].mode = mode ? [mode] : [];
+            subjectsWithAccess[accessSubject].mode = mode ? mode.split(' ') : [];
           }
 
           // A failed change leaves the saved visibility showing
-          showGeneralAccess(isSavedPublic() ? 'public' : 'private');
+          showGeneralAccess(savedPublicMode());
 
           pendingModes.clear();
           notifySubjects.clear();

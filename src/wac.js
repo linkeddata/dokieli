@@ -124,7 +124,12 @@ export function applyACLPlan(plan) {
 
 // UI mode implication: selecting Write also grants Read, Control grants all.
 // The library writes exactly the modes it is given.
+// A combined option lists its modes separated by spaces
 export function expandAccessMode(modeIRI) {
+  if (modeIRI.includes(' ')) {
+    return [...new Set(modeIRI.split(' ').flatMap(expandAccessMode))];
+  }
+
   switch (modeFromIRI(modeIRI)) {
     case 'Read': return ['Read'];
     case 'Write': return ['Read', 'Write'];
