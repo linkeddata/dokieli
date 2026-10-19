@@ -825,6 +825,8 @@ export function showResourcePermissions(listenerEvent, iri) {
 
   iri = iri || Config.DocumentURL || currentLocation();
   const documentURL = stripFragmentFromString(iri);
+  const isContainer = documentURL.endsWith('/');
+  const documentOrFolder = isContainer ? '-container' : '';
 
   var buttonClose = getButtonHTML({ key: 'dialog.resource-permissions.close.button', button: 'close', buttonClass: 'close', iconSize: 'fa-2x' });
 
@@ -860,7 +862,7 @@ export function showResourcePermissions(listenerEvent, iri) {
       <div id="share-resource-permissions" rel="schema:hasPart" resource="#share-resource-permissions">
         <span class="progress" data-i18n="dialog.share-resource-permissions.progress">${Icon[".fas.fa-circle-notch.fa-spin.fa-fw"]} ${i18n.t('dialog.share-resource-permissions.progress.textContent')}</span>
 
-        <ul class="permissions">
+        <ul class="permissions${isContainer ? ' container' : ''}">
         </ul>
 
         <div class="autocomplete">
@@ -869,6 +871,15 @@ export function showResourcePermissions(listenerEvent, iri) {
           <ul class="suggestions">
           </ul>
         </div>
+
+        <details class="general-access" hidden="">
+          <summary></summary>
+          <fieldset>
+            <legend data-i18n="dialog.resource-permissions.general-access.legend${documentOrFolder}">${i18n.t(`dialog.resource-permissions.general-access.legend${documentOrFolder}.textContent`)}</legend>
+            ${['public', 'private'].map(visibility => `<input id="resource-permissions-general-access-${visibility}" name="resource-permissions-general-access" type="radio" value="${visibility}" /><label for="resource-permissions-general-access-${visibility}">${Icon[visibility === 'public' ? '.fas.fa-globe' : '.fas.fa-eye-slash']}<strong data-i18n="dialog.resource-permissions.general-access.${visibility}.label">${i18n.t(`dialog.resource-permissions.general-access.${visibility}.label.textContent`)}</strong><span data-i18n="dialog.resource-permissions.general-access.${visibility}.description">${i18n.t(`dialog.resource-permissions.general-access.${visibility}.description.textContent`)}</span>${Icon['.fas.fa-check']}</label>`).join('')}
+          </fieldset>
+        </details>
+        <p class="general-access-note" data-i18n="dialog.resource-permissions.general-access.note${documentOrFolder}" hidden="">${i18n.t(`dialog.resource-permissions.general-access.note${documentOrFolder}.textContent`)}</p>
 
         <button data-i18n="dialog.resource-permissions.update.button" disabled="disabled" id="resource-permissions-update" type="button">${i18n.t('dialog.resource-permissions.update.button.textContent')}</button>
 
@@ -924,19 +935,30 @@ export function showResourcePermissions(listenerEvent, iri) {
           updateButton.disabled = !dirty;
         };
 
+        // Folders offer their own access modes and labels
+        const accessContextName = isContainer ? 'ShareContainer' : 'Share';
+        const accessContext = Config.AccessContext[accessContextName];
+        const accessContextModes = Object.keys(accessContext);
+
         var accessLabel = function (mode) {
-          const name = mode === ns.acl.Control.value ? 'control' : mode === ns.acl.Write.value ? 'write' : mode === ns.acl.Read.value ? 'read' : null;
+          const name = accessContext[mode];
           return name
             ? i18n.t(`dialog.share-resource.select-access-mode.acl-${name}.option.textContent`)
             : i18n.t('dialog.share-resource.select-access-mode.no-access.option.textContent');
         };
 
+        // The strongest offered mode; a folder has no Editor, and Write already lets files be added
+        var selectedModeFor = function (modes) {
+          if (!accessContextModes.includes(ns.acl.Write.value) && modes.includes(ns.acl.Write.value)) {
+            modes = modes.concat(ns.acl.Append.value);
+          }
+          return [ns.acl.Control.value, ns.acl.Write.value, ns.acl.Append.value, ns.acl.Read.value]
+            .find(mode => modes.includes(mode) && accessContextModes.includes(mode)) || '';
+        };
+
         var currentModeOf = function (accessSubject) {
           if (pendingModes.has(accessSubject)) return pendingModes.get(accessSubject);
-          const modes = subjectsWithAccess[accessSubject]?.mode || [];
-          return (modes.includes(ns.acl.Control.value) && ns.acl.Control.value) ||
-            (modes.includes(ns.acl.Write.value) && ns.acl.Write.value) ||
-            (modes.includes(ns.acl.Read.value) && ns.acl.Read.value) || '';
+          return selectedModeFor(subjectsWithAccess[accessSubject]?.mode || []);
         };
 
         // No notify for the owner, groups, or the public
@@ -965,6 +987,65 @@ export function showResourcePermissions(listenerEvent, iri) {
           });
         };
 
+        var subjectTypeOf = function (accessSubject) {
+          return subjectsWithAccess[accessSubject]?.subjectType || (accessSubject === ns.foaf.Agent.value ? 'agentClass' : 'agent');
+        };
+
+        // Public is foaf:Agent with Read; Private revokes it and leaves the listed subjects as they are
+        const generalAccess = accessPermissionsNode.querySelector('.general-access');
+        const generalAccessSummary = generalAccess.querySelector('summary');
+        const encryptsDocument = Config.User.Keys?.Encryption?.Enabled && Config.User.Keys?.Encryption?.DocumentEncrypt;
+
+        var isSavedPublic = function () {
+          return (subjectsWithAccess[ns.foaf.Agent.value]?.mode || []).length > 0;
+        };
+
+        var showGeneralAccess = function (visibility) {
+          generalAccess.querySelector('input[value="' + visibility + '"]').checked = true;
+          generalAccessSummary.replaceChildren();
+          sanitizeInsertAdjacentHTML(generalAccessSummary, 'beforeend', Icon[visibility === 'public' ? '.fas.fa-globe' : '.fas.fa-eye-slash'] + '<span>' + i18n.t(`dialog.resource-permissions.general-access.${visibility}.label.textContent`) + '</span>' + Icon['.fas.fa-caret-down']);
+        };
+
+        showGeneralAccess(isSavedPublic() ? 'public' : 'private');
+        generalAccess.hidden = false;
+        generalAccess.nextElementSibling.hidden = false;
+
+        // Encryption retracts public access on save
+        if (encryptsDocument) {
+          const publicOption = generalAccess.querySelector('input[value="public"]');
+          publicOption.disabled = true;
+          publicOption.nextElementSibling.title = i18n.t('dialog.resource-permissions.general-access.encrypted.title');
+        }
+
+        generalAccess.addEventListener('change', e => {
+          const visibility = e.target.value;
+          showGeneralAccess(visibility);
+
+          if ((visibility === 'public') === isSavedPublic()) {
+            pendingModes.delete(ns.foaf.Agent.value);
+          }
+          else {
+            pendingModes.set(ns.foaf.Agent.value, visibility === 'public' ? ns.acl.Read.value : '');
+          }
+          refreshUpdateButton();
+        });
+
+        // A keyboard click has no detail, so arrow keys move through the options without closing them
+        generalAccess.querySelector('fieldset').addEventListener('click', e => {
+          if (e.target.matches('input') && e.detail) generalAccess.open = false;
+        });
+
+        generalAccess.addEventListener('keydown', e => {
+          if (e.key === 'Escape' && generalAccess.open) {
+            generalAccess.open = false;
+            generalAccessSummary.focus();
+          }
+        });
+
+        document.addEventListener('click', e => {
+          if (generalAccess.open && !generalAccess.contains(e.target)) generalAccess.open = false;
+        });
+
         var notifyNote = function (accessSubject) {
           return i18n.t('dialog.resource-permissions.notify.note.textContent', {
             actor: Config.User.Name || Config.User.IRI,
@@ -982,7 +1063,7 @@ export function showResourcePermissions(listenerEvent, iri) {
 
           for (const [accessSubject, mode] of pendingModes) {
             try {
-              await updateAuthorization(documentURL, mode, accessSubject, subjectsWithAccess[accessSubject]?.subjectType || 'agent');
+              await updateAuthorization(documentURL, mode, accessSubject, subjectTypeOf(accessSubject));
             }
             catch (error) {
               console.warn('dokieli: could not set access for ' + accessSubject, error);
@@ -1007,9 +1088,12 @@ export function showResourcePermissions(listenerEvent, iri) {
 
           for (const [accessSubject, mode] of pendingModes) {
             if (failed.includes(accessSubject)) continue;
-            subjectsWithAccess[accessSubject] = subjectsWithAccess[accessSubject] || { subjectType: 'agent', mode: [] };
+            subjectsWithAccess[accessSubject] = subjectsWithAccess[accessSubject] || { subjectType: subjectTypeOf(accessSubject), mode: [] };
             subjectsWithAccess[accessSubject].mode = mode ? [mode] : [];
           }
+
+          // A failed change leaves the saved visibility showing
+          showGeneralAccess(isSavedPublic() ? 'public' : 'private');
 
           pendingModes.clear();
           notifySubjects.clear();
@@ -1116,7 +1200,7 @@ export function showResourcePermissions(listenerEvent, iri) {
           subjectsWithAccess[iri] = subjectsWithAccess[iri] || { mode: [ns.acl.Read.value], subjectType: 'agent' };
 
           var options = {};
-          options['accessContext'] = 'Share';
+          options['accessContext'] = accessContextName;
           options['selectedAccessMode'] = ns.acl.Read.value;
           options['documentURL'] = documentURL;
           options['onChange'] = function (mode) { pendingModes.set(iri, mode); refreshUpdateButton(); };
@@ -1181,11 +1265,6 @@ export function showResourcePermissions(listenerEvent, iri) {
           showWebIDSuggestion();
         }
 
-        //Allowing only Share-related access modes.
-        var accessContext = Config.AccessContext['Share'];
-
-        const accessContextModes = Object.keys(accessContext);
-
         var ul = document.querySelector('#share-resource-permissions ul.permissions');
 
         var showPermissions = function(s, accessSubject) {
@@ -1195,16 +1274,10 @@ export function showResourcePermissions(listenerEvent, iri) {
             //XXX: Relies on knowledge in addAcessSubjectItem where it inserts li with a particular id
             var li = document.getElementById('share-resource-access-subject-' + encodeURIComponent(accessSubject));
 
-            var verifiedAccessModes = subjectsWithAccess[accessSubject]['mode'].filter(mode => accessContextModes.includes(mode));
-
-            const selectedAccessMode =
-              (verifiedAccessModes.includes(ns.acl.Control.value) && ns.acl.Control.value) ||
-              (verifiedAccessModes.includes(ns.acl.Write.value) && ns.acl.Write.value) ||
-              (verifiedAccessModes.includes(ns.acl.Read.value) && ns.acl.Read.value) ||
-              '';
+            const selectedAccessMode = selectedModeFor(subjectsWithAccess[accessSubject]['mode']);
 
             var options = options || {};
-            options['accessContext'] = 'Share';
+            options['accessContext'] = accessContextName;
             options['selectedAccessMode'] = selectedAccessMode;
             options['documentURL'] = documentURL;
             if (accessSubject === Config.User.IRI) {
@@ -1220,9 +1293,10 @@ export function showResourcePermissions(listenerEvent, iri) {
           // }
         }
 
+        // The general access dropdown stands for the public
         Object.keys(subjectsWithAccess).forEach(accessSubject => {
           if (accessSubject === ns.foaf.Agent.value) {
-            showPermissions(null, accessSubject);
+            return;
           }
           else if (Config.User.Graph && accessSubject === Config.User.IRI) {
             showPermissions(Config.User.Graph, accessSubject);

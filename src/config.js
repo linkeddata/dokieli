@@ -494,6 +494,11 @@ export default {
       'http://www.w3.org/ns/auth/acl#Read': 'read',
       'http://www.w3.org/ns/auth/acl#Write': 'write',
       'http://www.w3.org/ns/auth/acl#Control': 'control'
+    },
+    ShareContainer: {
+      'http://www.w3.org/ns/auth/acl#Read': 'container-read',
+      'http://www.w3.org/ns/auth/acl#Append': 'container-append',
+      'http://www.w3.org/ns/auth/acl#Control': 'container-control'
     }
   },
 

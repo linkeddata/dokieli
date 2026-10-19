@@ -2237,6 +2237,11 @@ border-bottom: none;
 margin-top:-0.25em;
 margin-left: 10%;
 }
+/* Folder labels are too long to sit beside the name */
+#share-resource-permissions > ul.container li select {
+display:block;
+margin:0.5em 0 0 0;
+}
 #share-resource-permissions .autocomplete {
 clear:both;
 }
@@ -2245,6 +2250,110 @@ position:static;
 }
 #share-resource-contacts li > .warning {
 margin-left:0.5em;
+}
+/* General access: a summary button over a menu of radio options */
+#share-resource-permissions .general-access {
+position:relative;
+display:inline-block;
+margin:1em 0 0 0;
+}
+#share-resource-permissions .general-access > summary {
+display:inline-flex;
+align-items:center;
+gap:0.5em;
+padding:0.5em 0.75em;
+border:2px solid var(--do-color-border);
+border-radius:5px;
+background-color:var(--do-color-bg);
+font-weight:bold;
+}
+#share-resource-permissions .general-access > summary::before {
+display:none;
+}
+#share-resource-permissions .general-access > summary:hover {
+border-color:var(--do-color-accent-hover);
+}
+#share-resource-permissions .general-access > summary:focus-visible {
+outline:2px solid var(--do-color-accent-hover);
+outline-offset:2px;
+}
+#share-resource-permissions .general-access svg {
+width:1em;
+height:1em;
+fill:currentColor;
+flex-shrink:0;
+}
+#share-resource-permissions .general-access[open] > summary .fa-caret-down {
+transform:rotate(180deg);
+}
+#share-resource-permissions .general-access fieldset {
+position:absolute;
+z-index:1;
+top:calc(100% + 0.25em);
+left:0;
+width:18em;
+max-width:calc(100vw - 4em);
+margin:0;
+padding:0.5em 0;
+border:1px solid var(--do-color-border);
+border-radius:5px;
+background-color:var(--do-color-bg);
+box-shadow:0 2px 8px rgba(0, 0, 0, 0.2);
+}
+#share-resource-permissions .general-access legend {
+float:left;
+width:100%;
+margin:0 0 0.25em 0;
+padding:0.25em 1em;
+font-weight:normal !important;
+color:var(--do-color-fg-secondary);
+}
+#share-resource-permissions .general-access input {
+position:absolute;
+left:-9999px;
+}
+#share-resource-permissions .general-access label {
+clear:both;
+display:grid;
+grid-template-columns:1.5em 1fr 1em;
+column-gap:0.5em;
+align-items:center;
+margin:0;
+padding:0.5em 1em;
+cursor:pointer;
+}
+#share-resource-permissions .general-access label:hover,
+#share-resource-permissions .general-access input:focus-visible + label {
+background-color:var(--do-color-bg-subtle);
+}
+#share-resource-permissions .general-access label > svg:first-child {
+grid-row:span 2;
+width:1.25em;
+height:1.25em;
+}
+#share-resource-permissions .general-access label > span {
+grid-column:2;
+font-weight:normal;
+font-size:0.875em;
+color:var(--do-color-fg-secondary);
+}
+#share-resource-permissions .general-access label > .fa-check {
+grid-column:3;
+grid-row:1 / span 2;
+visibility:hidden;
+color:var(--do-color-link);
+}
+#share-resource-permissions .general-access input:checked + label > .fa-check {
+visibility:visible;
+}
+#share-resource-permissions .general-access input:disabled + label {
+cursor:not-allowed;
+opacity:0.5;
+}
+#share-resource-permissions .general-access-note {
+margin:0.5em 0 1em 0;
+font-size:0.875em;
+color:var(--do-color-fg-secondary);
 }
 #resource-permissions .permissions li .progress a {
 color:var(--do-color-fg);
