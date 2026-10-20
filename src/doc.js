@@ -3994,16 +3994,23 @@ export function showFragment(selector) {
 
         var fragmentClientWidth = fragment.clientWidth;
 
-        var fragmentOffsetLeft = getOffset(e.target).left;
-        var bodyOffsetLeft = getOffset(getDocumentContentNode(document)).left;
+        if (fragment.offsetParent === e.target) {
+          fragment.style.top = '0px';
+          fragment.style.left = '0px';
+        }
+        else {
+          var fragmentOffsetLeft = getOffset(e.target).left;
+          var bodyOffsetLeft = getOffset(getDocumentContentNode(document)).left;
 
-        var offsetLeft = 0;
-        if ((fragmentOffsetLeft - bodyOffsetLeft) > 200) {
-          offsetLeft = e.target.offsetLeft;
+          var offsetLeft = 0;
+          if ((fragmentOffsetLeft - bodyOffsetLeft) > 200) {
+            offsetLeft = e.target.offsetLeft;
+          }
+
+          fragment.style.top = Math.ceil(e.target.offsetTop) + 'px';
+          fragment.style.left = (offsetLeft - fragmentClientWidth) + 'px';
         }
 
-        fragment.style.top = Math.ceil(e.target.offsetTop) + 'px';
-        fragment.style.left = (offsetLeft - fragmentClientWidth) + 'px';
         fragment.style.height = e.target.clientHeight + 'px';
         fragment.style.width = (fragmentClientWidth - 10) + 'px';
       }
