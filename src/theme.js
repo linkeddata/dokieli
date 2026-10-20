@@ -21,6 +21,27 @@ import { getDeviceStorageItem, setDeviceStorageItem } from './storage.js';
 const THEME_STORAGE_KEY = 'DO.Config.UI.Theme';
 const THEMES = ['light', 'dark', 'auto'];
 
+// The extension keeps one theme for every page, like the language
+function extensionStorage() {
+  return Config.WebExtensionEnabled ? Config.WebExtension?.storage : undefined;
+}
+
+async function getStoredTheme() {
+  const storage = extensionStorage();
+  if (storage) {
+    return (await storage.local.get(THEME_STORAGE_KEY))?.[THEME_STORAGE_KEY];
+  }
+  return getDeviceStorageItem(THEME_STORAGE_KEY);
+}
+
+function storeTheme(theme) {
+  const storage = extensionStorage();
+  if (storage) {
+    return storage.local.set({ [THEME_STORAGE_KEY]: theme });
+  }
+  return setDeviceStorageItem(THEME_STORAGE_KEY, theme);
+}
+
 // 'auto' removes the attribute so the prefers-color-scheme media query applies.
 export function applyTheme(theme) {
   const t = THEMES.includes(theme) ? theme : 'auto';
@@ -46,7 +67,7 @@ export async function setTheme(theme) {
   const t = applyTheme(theme);
 
   try {
-    await setDeviceStorageItem(THEME_STORAGE_KEY, t);
+    await storeTheme(t);
   }
   catch (e) {
     console.error('dokieli: theme persist failed', e);
@@ -67,13 +88,20 @@ export function bindThemeControls() {
 
     setTheme(input.value);
   });
+
+  // A theme chosen in the extension's menu reaches every page it is active on
+  extensionStorage()?.onChanged.addListener((changes, area) => {
+    if (area === 'local' && changes[THEME_STORAGE_KEY]) {
+      applyTheme(changes[THEME_STORAGE_KEY].newValue);
+    }
+  });
 }
 
 export async function initTheme() {
   let stored = 'auto';
 
   try {
-    stored = (await getDeviceStorageItem(THEME_STORAGE_KEY)) || 'auto';
+    stored = (await getStoredTheme()) || 'auto';
   }
   catch (e) {}
 

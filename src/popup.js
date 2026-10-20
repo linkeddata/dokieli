@@ -20,6 +20,7 @@ import Config from './config.js';
 import { i18nextInit } from './i18n.js';
 import { initButtons } from './ui/buttons.js';
 import { renderMenuInner, initMenuTabsEvents } from './ui/menu.js';
+import { initTheme } from './theme.js';
 import { domSanitize } from './utils/sanitization.js';
 
 const WebExtension = (typeof globalThis.browser !== 'undefined') ? globalThis.browser : globalThis.chrome;
@@ -200,6 +201,8 @@ async function init() {
     await new Promise(resolve => i18next.changeLanguage(persistedLang, () => resolve()));
   }
 
+  // Before the menu renders, so it shows the stored theme
+  await initTheme();
   initButtons();
   renderMenu();
 
