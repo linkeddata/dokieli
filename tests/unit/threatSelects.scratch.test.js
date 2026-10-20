@@ -13,9 +13,10 @@ import { LookupServices } from '../../src/services.js';
 import { reconcileTable } from '../../src/editor/plugins/tableRDFa.js';
 import { recognizeThreatTable, TableToolsView, tableToolsPlugin } from '../../src/editor/plugins/tableTools.js';
 import { threatValueRank } from '../../src/threatModel.js';
+import { normalizeTableMarkup } from '../../src/utils/normalization.js';
 import { getColumns } from '../../src/editor/commands/table.js';
 import { getTableSchema } from '../../src/table.js';
-import { DOMParser as PMDOMParser } from 'prosemirror-model';
+import { DOMParser as PMDOMParser, DOMSerializer } from 'prosemirror-model';
 
 const TYPE_COLUMN = 2;
 
@@ -388,5 +389,95 @@ describe('threat model selects in the editor document', () => {
     // The clone carries the options but not the choice.
     expect(optionLabels(selects[1].node)).toContain('Spoofing');
     expect(selectHasChoice(selects[1].node)).toBe(false);
+  });
+
+  function readModeTable({ kind = 'stride', type = null } = {}) {
+    let state = threatState();
+    let table = tableAt(state);
+
+    if (kind !== 'stride') {
+      const tr = state.tr;
+      columnBodySelects(table.node, table.pos, TYPE_COLUMN)
+        .sort((a, b) => b.pos - a.pos)
+        .forEach(({ node, pos }) => tr.replaceWith(pos, pos + node.nodeSize, threatSelectNode('threat-type', kind)));
+      state = state.apply(tr);
+      table = tableAt(state);
+
+      let kindSelect = null;
+      table.node.descendants((node, pos) => {
+        if (!kindSelect && node.type.name === 'select'
+          && node.attrs.originalAttributes['data-select'] === 'threat-model-kind') kindSelect = { node, pos: table.pos + 1 + pos };
+        return !kindSelect;
+      });
+      state = state.apply(selectOptionInTr(state.tr, kindSelect.node, kindSelect.pos, kind));
+      table = tableAt(state);
+    }
+
+    if (type) {
+      const [first] = columnBodySelects(table.node, table.pos, TYPE_COLUMN);
+      state = state.apply(selectOptionInTr(state.tr, first.node, first.pos, type));
+      table = tableAt(state);
+    }
+
+    const tr = state.tr;
+    reconcileTable(tr, table.node, table.pos);
+    state = state.apply(tr);
+
+    const dom = document.createElement('div');
+    dom.appendChild(DOMSerializer.fromSchema(schema).serializeFragment(state.doc.content));
+    normalizeTableMarkup(dom);
+    return dom;
+  }
+
+  it('gives every select column its selects back after reading mode, chosen or empty', () => {
+    const dom = readModeTable({ type: 'http://www.wikidata.org/entity/Q11081100' });
+    expect(dom.querySelector('select')).toBeNull();
+    expect(dom.querySelector('th[data-name]')).toBeNull();
+
+    let state = EditorState.create({ schema, doc: PMDOMParser.fromSchema(schema).parse(dom) });
+    let table = tableAt(state);
+    const tr = state.tr;
+    expect(recognizeThreatTable(tr, table)).toBe(true);
+    state = state.apply(tr);
+    table = tableAt(state);
+
+    const typeSelects = columnBodySelects(table.node, table.pos, TYPE_COLUMN);
+    expect(typeSelects).toHaveLength(1);
+    expect(selectHasChoice(typeSelects[0].node)).toBe(true);
+    expect(columnBodySelects(table.node, table.pos, 3)).toHaveLength(1);
+    expect(selectHasChoice(columnBodySelects(table.node, table.pos, 3)[0].node)).toBe(false);
+    expect(columnBodySelects(table.node, table.pos, 4)).toHaveLength(1);
+
+    let kindSelect = null;
+    table.node.descendants((node) => {
+      if (!kindSelect && node.type.name === 'select'
+        && node.attrs.originalAttributes['data-select'] === 'threat-model-kind') kindSelect = node;
+      return !kindSelect;
+    });
+    expect(kindSelect).not.toBeNull();
+
+    expect(recognizeThreatTable(state.tr, table)).toBe(false);
+  });
+
+  it('keeps a LINDDUN table LINDDUN when restoring its selects', () => {
+    const dom = readModeTable({ kind: 'linddun', type: 'https://linddun.org/threat-types/#L' });
+    let state = EditorState.create({ schema, doc: PMDOMParser.fromSchema(schema).parse(dom) });
+    let table = tableAt(state);
+    const tr = state.tr;
+    recognizeThreatTable(tr, table);
+    state = state.apply(tr);
+    table = tableAt(state);
+
+    const [typeSelect] = columnBodySelects(table.node, table.pos, TYPE_COLUMN);
+    expect(optionLabels(typeSelect.node)).toContain('Linking');
+    expect(optionLabels(typeSelect.node)).not.toContain('Spoofing');
+
+    let chosenKind = null;
+    table.node.descendants((node) => {
+      const attrs = node.attrs.originalAttributes || {};
+      if (node.type.name === 'option' && 'selected' in attrs && ['stride', 'linddun'].includes(attrs.value)) chosenKind = attrs.value;
+      return chosenKind === null;
+    });
+    expect(chosenKind).toBe('linddun');
   });
 });

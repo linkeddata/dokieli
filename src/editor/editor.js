@@ -17,7 +17,7 @@ limitations under the License.
 
 import { EditorView } from "prosemirror-view";
 import { DOMParser, DOMSerializer } from "prosemirror-model";
-import { Plugin, EditorState } from "prosemirror-state"
+import { Plugin, EditorState, AllSelection, Selection } from "prosemirror-state"
 import { history } from 'prosemirror-history';
 import { schema } from "./schema/base.js"
 import { keymapPlugin } from "./toolbar/author/keymap.js";
@@ -88,6 +88,36 @@ const DEMO_URL = process.env.DEMO_URL;
 function encodeSeed(pmDoc) {
   return Y.encodeStateAsUpdate(prosemirrorToYDoc(pmDoc));
 }
+
+function viewportAnchor() {
+  for (const node of selectArticleNode(document.body).querySelectorAll('[id]')) {
+    const top = node.getBoundingClientRect().top;
+    if (top >= 0) return { id: node.id, top };
+  }
+  return null;
+}
+
+function restoreViewportAnchor(anchor) {
+  const node = anchor && document.getElementById(anchor.id);
+  if (node) window.scrollBy(0, node.getBoundingClientRect().top - anchor.top);
+}
+
+let pendingViewportAnchor = null;
+
+const caretAfterSyncPlugin = new Plugin({
+  appendTransaction(transactions, oldState, newState) {
+    if (oldState.doc.content.size > 2 || !(newState.selection instanceof AllSelection)) return null;
+    return newState.tr.setSelection(Selection.atStart(newState.doc));
+  },
+  view() {
+    return {
+      update(view, prevState) {
+        if (!pendingViewportAnchor || prevState.doc.content.size > 2 || view.state.doc.content.size <= 2) return;
+        restoreViewportAnchor(pendingViewportAnchor);
+      }
+    };
+  }
+});
 
 export class Editor {
   constructor(mode, node) {
@@ -198,10 +228,15 @@ export class Editor {
     Config.Editor['new'] = false;
 
     let node;
+    let anchor = null;
 
     if (options?.template === 'new' || options?.template === 'new-slideshow' || options?.template === 'new-cv' || options?.template === 'new-specification' || options?.template === 'new-questionnaire') {
       Config.Editor['new'] = true;
       this.setTemplate(mode, options);
+    }
+    else {
+      anchor = window.scrollY > 0 ? viewportAnchor() : null;
+      pendingViewportAnchor = mode === 'author' ? anchor : null;
     }
 
     node = selectArticleNode(document.body);
@@ -210,6 +245,7 @@ export class Editor {
 
 // Do not EVER pass options passed to toggleEditor onto this call to init - template option breaks everything. TODO look into this
     this.init(mode, node);
+    if (mode !== 'author') restoreViewportAnchor(anchor);
     this.toggleModeMessageId = this.showEditorModeActionMessage(mode, this.toggleModeMessageId ? { clearId: this.toggleModeMessageId } : {});
     Config.EditorEnabled = (mode === 'author');
     Config.EditorWasEnabled = true;
@@ -608,6 +644,7 @@ export class Editor {
     pmDoc = yjsDoc;
     editorPlugins = [
       ySyncPlugin(yXmlFragment, { mapping }),
+      caretAfterSyncPlugin,
       ...(cursorPlugin ? [cursorPlugin] : []),
       yUndoPlugin(),
       history(),
@@ -655,6 +692,10 @@ export class Editor {
   });
 
   this.authorToolbarView = this.editorView.pluginViews.find(v => v instanceof AuthorToolbar) ?? null;
+
+  if (pendingViewportAnchor && this.editorView.state.doc.content.size > 2) {
+    restoreViewportAnchor(pendingViewportAnchor);
+  }
 
   // Copy-to-clipboard buttons are not restored in author mode; they're regenerated
   // by initCopyToClipboard() when returning to social mode.

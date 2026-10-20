@@ -66,7 +66,7 @@ import {
 import { reconcileTable, reconcileSelectedTable, contentStatesProperty, rowHasData } from './tableRDFa.js';
 import { searchClasses, searchProperties } from '../../vocab.js';
 import { listLookupServices, getLookupService, identifierColumnCandidates, lookupIdentifier, getIdentifierSearch, looksLikeIdentifier, needsIdentifierPick } from '../../services.js';
-import { THREAT_SELECT_RELS, threatValueRank, defaultThreatCaption } from '../../threatModel.js';
+import { THREAT_SELECT_RELS, threatValueRank, defaultThreatCaption, threatSelectGroups } from '../../threatModel.js';
 
 export const tableToolsPluginKey = new PluginKey('tableTools');
 
@@ -200,16 +200,21 @@ export function recognizeThreatTable(tr, table) {
   });
 
   const matchedSignals = [...assigned.values()].map(expected);
-  const distinctive = matchedSignals.includes('dpv:hasImpact') || matchedSignals.includes('dpv:hasRiskLevel');
-  if (!distinctive || assigned.size < 2) return false;
-
-  // The type column's references say which framework the table uses.
-  let framework = 'stride';
-  assigned.forEach((column, index) => {
-    if (column.select === 'threat-type' && signals[index]?.href?.includes('linddun.org')) framework = 'linddun';
-  });
+  let distinctive = matchedSignals.includes('dpv:hasImpact') || matchedSignals.includes('dpv:hasRiskLevel');
 
   const header = getHeaderRowPos(table.node, table.pos);
+  const kindLabels = threatSelectGroups('threat-model-kind')[0].options.map((option) => option.label);
+  header?.row.forEach((cell, offset, index) => {
+    if (assigned.has(index)) return;
+    const title = cell.textContent.trim();
+    const match = service.columns.find((column) =>
+      (column.kindSelect ? kindLabels.includes(title) : column.titles === title) && ![...assigned.values()].includes(column));
+    if (!match) return;
+    assigned.set(index, match);
+    if (match.kindSelect) distinctive = true;
+  });
+
+  if (!distinctive || assigned.size < 2) return false;
 
   assigned.forEach((column, index) => {
     const title = header?.row.child(index)?.textContent.trim();
@@ -221,6 +226,27 @@ export function recognizeThreatTable(tr, table) {
     subject: tableSchema.subject || table.node.attrs.originalAttributes?.resource,
     typeof: tableSchema.typeof || service.tableSchema.typeof,
     aboutUrl: tableSchema.aboutUrl || service.tableSchema.aboutUrl
+  });
+
+  restoreThreatSelects(tr, table, assigned);
+
+  return true;
+}
+
+function restoreThreatSelects(tr, table, assigned) {
+  const header = getHeaderRowPos(table.node, table.pos);
+
+  // The type column's references say which framework the table uses.
+  const linddunLabel = threatSelectGroups('threat-model-kind')[0].options.find((option) => option.value === 'linddun').label;
+  let framework = 'stride';
+  assigned.forEach((column, index) => {
+    if (column.select !== 'threat-type') return;
+    if (header?.row.child(index)?.textContent.trim() === linddunLabel) framework = 'linddun';
+
+    forEachRow(table.node, table.pos, (row, rowPos, isHeader, section) => {
+      if (isHeader || section === 'tfoot' || index >= row.childCount) return;
+      if (cellLinkMark(row.child(index))?.href?.includes('linddun.org')) framework = 'linddun';
+    });
   });
 
   // Reference cells become selects again, chosen from their anchors; back to front.
@@ -236,6 +262,8 @@ export function recognizeThreatTable(tr, table) {
       for (let i = 0; i < index; i++) cellPos += row.child(i).nodeSize;
       const cell = row.child(index);
 
+      if (findSelectInCell(cell)) return;
+
       if (isHeader) {
         if (column.kindSelect) {
           replacements.push({ from: cellPos + 1, to: cellPos + cell.nodeSize - 1,
@@ -244,7 +272,6 @@ export function recognizeThreatTable(tr, table) {
         return;
       }
 
-      if (findSelectInCell(cell)) return;
       const chosen = cellLinkMark(cell)?.href || null;
       replacements.push({ from: cellPos + 1, to: cellPos + cell.nodeSize - 1,
         content: schema.nodes.p.create(null, threatSelectNode(column.select, framework, chosen)) });
@@ -254,8 +281,6 @@ export function recognizeThreatTable(tr, table) {
   replacements.sort((a, b) => b.from - a.from).forEach(({ from, to, content }) => {
     tr.replaceWith(from, to, content);
   });
-
-  return true;
 }
 
 // A table's subject: what the reconcile pass already emitted, else caption-derived, else generated.
@@ -641,6 +666,12 @@ export class TableToolsView {
     }
 
     view.dispatch(selectOptionInTr(view.state.tr, found.node, found.pos, target.value));
+
+    const table = findTable(view.state, view.state.doc.resolve(found.pos));
+    if (table) {
+      const reconcile = view.state.tr;
+      if (reconcileTable(reconcile, table.node, table.pos)) view.dispatch(reconcile);
+    }
   }
 
   // From a focused select, Tab continues cell navigation and Escape returns to the text.
@@ -706,6 +737,9 @@ export class TableToolsView {
   recognizeTables() {
     const view = this.editorView;
     const tables = [];
+
+    if (view.state.doc.content.size <= 2) return;
+    this.tablesRecognized = true;
 
     view.state.doc.descendants((node, pos) => {
       if (node.type.name === 'table') { tables.push({ node, pos }); return false; }
@@ -816,6 +850,11 @@ export class TableToolsView {
   }
 
   update(view, prevState) {
+    if (!this.tablesRecognized && !prevState.doc.eq(view.state.doc)) {
+      clearTimeout(this.recognizeTimer);
+      this.recognizeTimer = setTimeout(() => this.recognizeTables(), 0);
+    }
+
     const table = findTable(view.state);
 
     this.maybeAutofill(view, prevState);
