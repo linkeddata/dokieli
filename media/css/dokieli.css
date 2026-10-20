@@ -3088,8 +3088,9 @@ background-color: var(--do-color-bg);
 margin: 0;
 }
 
-/* Warning in annotation popups when private is chosen with the nanopub network. */
-.editor-form-nanopub-warning {
+/* Warnings in annotation popups: private with the nanopub network, and posting without a storage location. */
+.editor-form-nanopub-warning,
+.editor-form-storage-warning {
 display:flex;
 align-items:flex-start;
 gap:0.5em;
@@ -3100,7 +3101,11 @@ color:var(--do-color-fg);
 font-size:0.875em;
 line-height:1.4;
 }
-.editor-form-nanopub-warning svg {
+.editor-form-storage-warning {
+background-color:var(--do-color-warning-bg);
+}
+.editor-form-nanopub-warning svg,
+.editor-form-storage-warning svg {
 flex-shrink:0;
 margin-top:0.2em;
 fill:var(--do-color-fg-secondary);
@@ -7358,7 +7363,6 @@ user-select: none;
 .shower nav, .shower section { display: block; }
 .shower a { text-decoration: none; }
 .shower table { border-collapse: collapse; border-spacing: 0; }
-.shower ul, .shower ol { list-style: none; }
 .shower blockquote, .shower q { quotes: none; }
 
 .shower {
@@ -7409,7 +7413,7 @@ user-select: none;
 .shower .slide em, .shower .slide i { font-style: italic; }
 .shower .slide code, .shower .slide kbd,
 .shower .slide mark, .shower .slide samp {
-  padding: .1em .3em;
+  padding: .1em;
   background: var(--do-color-accent-bg);
 }
 .shower .slide code, .shower .slide kbd, .shower .slide samp {
@@ -7470,7 +7474,6 @@ user-select: none;
 }
 .shower .slide footer {
   right: 0;
-  padding: 2em 112px 1em 96px;
   background: var(--do-color-accent-bg);
   bottom: -640px;
   transition: bottom .3s;
@@ -7888,7 +7891,7 @@ font-size:0.5em;
 }
 
 .shower .slide footer {
-padding: 1em 2.5em;
+padding: 1em;
 display: block;
 font-size: 0.975em;
 bottom: 0;

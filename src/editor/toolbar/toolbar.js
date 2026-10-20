@@ -949,6 +949,7 @@ export class ToolbarView {
     toolbarForm.classList.remove('editor-form-active');
     toolbarForm.removeAttribute('style');
     toolbarForm.reset();
+    toolbarForm.querySelector('.editor-form-storage-warning')?.remove();
 
     FORM_DISCLOSURES.forEach(([toggleSelector, fieldsSelector]) => {
       const toggle = toolbarForm.querySelector(toggleSelector);
@@ -1141,8 +1142,6 @@ const FORM_DISCLOSURES = [
 
 export function annotateFormControls(options) {
   const locationHTML = getAnnotationLocationHTML(options.button);
-  // When location options exist but none are pre-checked, start with submit disabled.
-  const submitDisabled = (locationHTML.includes('type="checkbox"') && !locationHTML.includes('checked="checked"')) ? ' disabled=""' : '';
   return `
     <fieldset>
       <legend><span data-i18n="editor.toolbar.${options.button}.form.legend">${options.legend}</span> <span class="editor-form-required-note"><span class="required">*</span> <span data-i18n="info.required">${i18n.t("info.required.textContent")}</span></span></legend>
@@ -1160,7 +1159,7 @@ export function annotateFormControls(options) {
       <span class="annotation-location-selection">${locationHTML}</span>
       <span class="annotation-inbox-selection">${getAnnotationInboxLocationHTML(options.button)}</span>
       `)}
-      ${formFooterHTML({ action: 'post', submitDisabled, controls: `
+      ${formFooterHTML({ action: 'post', controls: `
       <span class="annotation-access">
         <input type="checkbox" class="editor-form-access" id="${options.button}-access-public" name="${options.button}-access-public" role="switch" value="true"${isPublicRead(Config.DocumentURL) ? ' checked="checked"' : ''} aria-label="${i18n.t('annotation-access.label.textContent')}" />
         <label class="editor-form-icon-toggle editor-form-access-label" for="${options.button}-access-public">${Icon['.fas.fa-eye-slash']}${Icon['.fas.fa-globe']}</label>
@@ -1174,13 +1173,40 @@ export function annotateFormControls(options) {
   `
 }
 
-// Disable the annotate form's submit while no storage location is checked.
+// The storage warning goes once a storage location is checked
 export function updateAnnotateSubmitState(fieldset) {
-  if (!fieldset) return;
-  const submit = fieldset.querySelector('.editor-form-submit');
-  const checkboxes = fieldset.querySelectorAll('.annotation-location-selection input[type="checkbox"]');
-  if (!submit || !checkboxes.length) return;
-  submit.disabled = !Array.from(checkboxes).some(c => c.checked && !c.disabled);
+  const warning = fieldset?.querySelector('.editor-form-storage-warning');
+  if (warning && fieldset.querySelector('.annotation-location-selection input[type="checkbox"]:checked:not(:disabled)')) {
+    warning.remove();
+  }
+}
+
+// Without a checked storage location, opens the storage options with a warning and returns false
+export function requireAnnotationLocation(form) {
+  const selection = form?.querySelector('.annotation-location-selection');
+  const details = selection?.querySelector('.annotation-location-details');
+  if (!details) return true;
+
+  const locations = Array.from(selection.querySelectorAll('input[type="checkbox"]:not(:disabled)'));
+  if (locations.some(location => location.checked)) return true;
+
+  const setup = selection.querySelector('.annotation-location-setup button[data-location="annotation-store"]');
+  const needsStore = !!setup && !setup.closest('li').hidden;
+  if (!locations.length && !needsStore) return true;
+
+  const toggle = form.querySelector('.editor-form-advanced-toggle');
+  if (toggle && toggle.getAttribute('aria-expanded') !== 'true') toggle.click();
+  details.open = true;
+
+  const key = needsStore ? 'annotation-location-selection.store-required' : 'annotation-location-selection.location-required';
+  details.querySelector('.editor-form-storage-warning')?.remove();
+  details.querySelector('summary').insertAdjacentHTML('afterend',
+    `<p class="editor-form-storage-warning" data-i18n="${key}" role="alert">${Icon['.fas.fa-triangle-exclamation']}<span>${i18n.t(`${key}.textContent`)}</span></p>`);
+
+  const target = needsStore ? setup : locations[0];
+  target?.scrollIntoView({ block: 'nearest' });
+  target?.focus();
+  return false;
 }
 
 // Nanopub is public: as the only storage it locks the toggle to public; with private it shows a warning.

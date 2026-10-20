@@ -101,7 +101,8 @@ test("annotation on a page citing a nanopub targets the nanopub through its HTML
 
   await page.locator("#editor-form-comment button.editor-form-advanced-toggle").click();
   const locations = page.locator("#editor-form-comment .annotation-location-selection input[type=checkbox]");
-  for (const box of await locations.all()) await box.uncheck();
+  for (const box of await locations.all()) if (await box.isVisible()) await box.uncheck();
+  await page.locator("#editor-form-comment .annotation-location-more > summary").click();
   await page.locator("#comment-annotation-location-nanopub-network").check();
 
   await page.locator("#editor-form-comment button.editor-form-submit").click();

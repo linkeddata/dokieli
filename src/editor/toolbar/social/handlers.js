@@ -24,7 +24,7 @@ import { i18n } from "../../../i18n.js";
 import { getAbsoluteIRI, stripFragmentFromString } from "../../../uri.js"
 import Config from "../../../config.js"
 import { notifyInbox, postActivity, showActivities, addToAnnotationIndex, markAnnotationTarget, registerAnnotationStore, linkOutbox } from "../../../activity.js"
-import { updateAnnotationServiceForm, updateAnnotationStoreAccess } from "../toolbar.js";
+import { requireAnnotationLocation, updateAnnotationServiceForm, updateAnnotationStoreAccess } from "../toolbar.js";
 import { publishAnnotation } from "../../../nanopub-annotation.js";
 import { shareResource } from "../../../dialog.js";
 import { domSanitize } from "../../../utils/sanitization.js";
@@ -90,6 +90,8 @@ export function formHandlerAnnotate(e, action) {
   e.preventDefault();
   e.stopPropagation();
 
+  if (!requireAnnotationLocation(e.target)) return;
+
   restoreSelection(this.selection);
   const selection = window.getSelection();
 
@@ -112,12 +114,11 @@ export function formHandlerAnnotate(e, action) {
 
   const annotationNotifyInboxes = [].concat(formValues[`${action}-annotation-inbox`] || []);
   const annotationLocationAnnotationStore = [].concat(formValues[`${action}-annotation-location-annotation-store`] || []);
-  const annotationLocationPersonalStorage = formValues[`${action}-annotation-location-personal-storage`];
   const annotationLocationActivityOutbox = formValues[`${action}-annotation-location-activity-outbox`];
   const annotationLocationService = formValues[`${action}-annotation-location-annotation-service`];
   const annotationLocationNanopubNetwork = formValues[`${action}-annotation-location-nanopub-network`];
 
-  updateUserUI({ annotationNotifyInboxes, annotationLocationAnnotationStore, annotationLocationPersonalStorage, annotationLocationActivityOutbox, annotationLocationService, annotationLocationNanopubNetwork })
+  updateUserUI({ annotationNotifyInboxes, annotationLocationAnnotationStore, annotationLocationActivityOutbox, annotationLocationService, annotationLocationNanopubNetwork })
 
   processAction(action, formValues, selectionData);
 
@@ -472,10 +473,8 @@ export function getAnnotationDistribution(action, data) {
   const { selectedParentElement } = selectionData;
   //Inboxes to notify about the annotation, chosen in the form; values are inbox URLs
   const annotationInboxes = [].concat(formData['annotation-inbox'] || []);
-  //These are whether the user wants to send a copy of their annotation to a personal storage and/or to an annotation service.
   // Stores the form lists for the annotation's access; values are container URLs
   const annotationLocationAnnotationStore = [].concat(formData['annotation-location-annotation-store'] || []).filter(url => /^https?:\/\//.test(url));
-  const annotationLocationPersonalStorage = formData['annotation-location-personal-storage'];
   const annotationLocationOutbox = formData['annotation-location-activity-outbox'];
   const annotationLocationService = formData['annotation-location-annotation-service'];
 
@@ -532,26 +531,6 @@ export function getAnnotationDistribution(action, data) {
     }
   }
 
-  if (annotationLocationPersonalStorage && Config.User.Storage) {
-    containerIRI = Config.User.Storage[0];
-
-    fromContentType = 'text/html';
-    // contentType = 'text/html';
-    contentType = fromContentType;
-
-    noteURL = noteIRI = containerIRI + id;
-    contextProfile = {
-      // 'subjectURI': noteIRI,
-    };
-    // Canonical only when neither a registered store nor the outbox is selected
-    const outboxSelected = !!(annotationLocationOutbox && Config.User.Outbox);
-    aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': !activityTypeMatched && !outboxSelected, 'annotationInboxes': annotationInboxes };
-
-    if (!isDuplicateLocation(annotationDistribution, containerIRI)) {
-      annotationDistribution.push(aLS);
-    }
-  }
-
   if (annotationLocationService && typeof Config.AnnotationService !== 'undefined') {
     containerIRI = Config.AnnotationService;
     fromContentType = 'text/html';
@@ -567,11 +546,11 @@ export function getAnnotationDistribution(action, data) {
       'profile': 'https://www.w3.org/ns/anno.jsonld'
     };
 
-    if (!annotationLocationAnnotationStore.length && !annotationLocationPersonalStorage && !annotationLocationOutbox && annotationLocationService) {
+    if (!annotationLocationAnnotationStore.length && !annotationLocationOutbox && annotationLocationService) {
       noteURL = noteIRI = containerIRI + id;
       aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'canonical': true,'annotationInboxes': annotationInboxes };
     }
-    else if (annotationLocationAnnotationStore.length || annotationLocationPersonalStorage || annotationLocationOutbox) {
+    else if (annotationLocationAnnotationStore.length || annotationLocationOutbox) {
       noteURL = containerIRI + id;
       aLS = { 'id': id, 'containerIRI': containerIRI, 'noteURL': noteURL, 'noteIRI': noteIRI, 'fromContentType': fromContentType, 'contentType': contentType, 'annotationInboxes': annotationInboxes };
     }

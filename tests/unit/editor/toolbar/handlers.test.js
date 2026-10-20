@@ -40,7 +40,7 @@ function makeFormValues(overrides = {}) {
   return {
     'comment-content': 'Confidential remark',
     'comment-tagging': 'important',
-    'comment-annotation-location-personal-storage': 'true',
+    'comment-annotation-location-annotation-store': 'https://alice.example/annotations/',
     ...overrides
   };
 }

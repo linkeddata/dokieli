@@ -2981,20 +2981,21 @@ export function getAnnotationLocationHTML(action) {
   const ui = Config.User.UI || {};
 
   const stores = getAnnotationStores(action);
+  // Options marked more are listed under the more storage/distribution options
   const options = [
     { suffix: 'annotation-service', uiKey: 'annotationLocationService', url: (typeof Config.AnnotationService !== 'undefined') ? Config.AnnotationService : undefined },
     { suffix: 'annotation-store', uiKey: 'annotationLocationAnnotationStore', url: stores[0]?.url },
-    { suffix: 'personal-storage', uiKey: 'annotationLocationPersonalStorage', url: (Config.User.Storage && Config.User.Storage.length > 0) ? Config.User.Storage[0] : undefined },
     { suffix: 'activity-outbox', uiKey: 'annotationLocationActivityOutbox', url: (Config.User.Outbox && Config.User.Outbox.length > 0) ? Config.User.Outbox[0] : undefined },
-    { suffix: 'nanopub-network', uiKey: 'annotationLocationNanopubNetwork', url: Config.Nanopub?.UseTestRegistry ? getRegistryURL() : 'https://nanopub.net/' },
+    { suffix: 'nanopub-network', uiKey: 'annotationLocationNanopubNetwork', url: Config.Nanopub?.UseTestRegistry ? getRegistryURL() : 'https://nanopub.net/', more: true },
   ];
+  const moreInputs = [];
 
   // A remembered choice pre-checks; otherwise fall back to the most relevant available location.
   const remembered = options.some(({ uiKey }) => ui[uiKey] && (Array.isArray(ui[uiKey].checked) ? ui[uiKey].checked.length : ui[uiKey].checked));
-  const defaultOrder = ['annotation-store', 'annotation-service', 'activity-outbox', 'personal-storage'];
+  const defaultOrder = ['annotation-store', 'annotation-service', 'activity-outbox'];
   const defaultSuffix = remembered ? undefined : defaultOrder.find((suffix) => options.some((o) => o.suffix === suffix && o.url));
 
-  options.forEach(({ suffix, uiKey, url }) => {
+  options.forEach(({ suffix, uiKey, url, more }) => {
     if (!url) return;
     // The store registered for each visibility; only the one matching the annotation's access is shown (see updateAnnotationStoreAccess)
     if (suffix === 'annotation-store') {
@@ -3014,26 +3015,26 @@ export function getAnnotationLocationHTML(action) {
     const labelI18n = `annotation-location.${suffix}.label`;
     const isChecked = (ui[uiKey] && ui[uiKey].checked) || suffix === defaultSuffix;
     const checked = isChecked ? ' checked="checked"' : '';
-    inputs.push(`<li><input type="checkbox" id="${id}" name="${id}"${checked} /><label data-i18n="${labelI18n}" for="${id}">${i18n.t(labelI18n + '.textContent')}</label>${targetHTML(url)}</li>`);
+    (more ? moreInputs : inputs).push(`<li><input type="checkbox" id="${id}" name="${id}"${checked} /><label data-i18n="${labelI18n}" for="${id}">${i18n.t(labelI18n + '.textContent')}</label>${targetHTML(url)}</li>`);
   });
 
-  let annotationInputs = `<p>${i18n.t('annotation-location-selection.not-found.p.textContent')}</p>`;
+  const setupButtonHTML = (suffix) => `<li><button class="setup-annotation-location" data-i18n="annotation-location-setup.${suffix}.button" data-location="${suffix}" type="button">${i18n.t(`annotation-location-setup.${suffix}.button.textContent`)}</button></li>`;
+
+  // Adding an annotation store is offered while the annotation's visibility has none
+  const storeSetupHTML = Config.User.IRI ? `<ul class="annotation-location-setup">${setupButtonHTML('annotation-store')}</ul>` : '';
+  const outboxSetupHTML = (Config.User.IRI && Config.User.Storage?.length && !options.find(o => o.suffix === 'activity-outbox').url) ? `<ul class="annotation-location-setup">${setupButtonHTML('activity-outbox')}</ul>` : '';
+
+  let annotationInputs = storeSetupHTML ? '' : `<p>${i18n.t('annotation-location-selection.not-found.p.textContent')}</p>`;
 
   if (inputs.length) {
     annotationInputs = `<ul>${inputs.join('')}</ul>`;
   }
 
-  // Adding an annotation store is offered while the annotation's visibility has none
-  const setups = [];
-  if (Config.User.IRI) {
-    setups.push('annotation-store');
-    if (Config.User.Storage?.length && !options.find(o => o.suffix === 'activity-outbox').url) setups.push('activity-outbox');
-  }
-  const setupHTML = setups.length
-    ? `<details class="annotation-location-more"><summary data-i18n="annotation-location-more.summary">${i18n.t('annotation-location-more.summary.textContent')}</summary><ul class="annotation-location-setup">${setups.map(suffix => `<li><button class="setup-annotation-location" data-i18n="annotation-location-setup.${suffix}.button" data-location="${suffix}" type="button">${i18n.t(`annotation-location-setup.${suffix}.button.textContent`)}</button></li>`).join('')}</ul></details>`
+  const moreHTML = (moreInputs.length || outboxSetupHTML)
+    ? `<details class="annotation-location-more"><summary data-i18n="annotation-location-more.summary">${i18n.t('annotation-location-more.summary.textContent')}</summary>${moreInputs.length ? `<ul>${moreInputs.join('')}</ul>` : ''}${outboxSetupHTML}</details>`
     : '';
 
-  return `<details class="annotation-location-details" open=""><summary data-i18n="annotation-location-selection.store-at.span">${i18n.t('annotation-location-selection.store-at.span.textContent')}</summary>${annotationInputs}${setupHTML}</details>`;
+  return `<details class="annotation-location-details" open=""><summary data-i18n="annotation-location-selection.store-at.span">${i18n.t('annotation-location-selection.store-at.span.textContent')}</summary>${annotationInputs}${storeSetupHTML}${moreHTML}</details>`;
 }
 
 export function getPublicationStatusOptionsHTML(options) {
