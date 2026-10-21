@@ -26,7 +26,7 @@ import { registerDocumentTransform, registerEditorParseTransform } from '../../u
 import { ensureDocumentPrefixes } from '../../table.js';
 import { getButtonHTML } from '../buttons.js';
 import { notifyInbox, postActivity, linkOutbox, showLocationDialog } from '../../activity.js';
-import { createActivityHTML, targetHTML } from '../../doc.js';
+import { createActivityHTML, getDocument, targetHTML } from '../../doc.js';
 import { forceTrailingSlash } from '../../uri.js';
 import { prepareDocumentForTemplate, replaceDocumentBody, documentDetailsHTML } from './shared.js';
 
@@ -293,8 +293,14 @@ function plainText(el) {
   return clone.textContent.replace(/\s+/g, ' ').trim();
 }
 
+// A saved copy of answers has only disabled controls, so it is read, not filled in or edited as a questionnaire.
+function isAnswered(questionnaire) {
+  const controls = Array.from(questionnaire.querySelectorAll(`.${CONTROL}`));
+  return controls.length > 0 && controls.every(control => control.hasAttribute('disabled'));
+}
+
 export function getQuestionnaires(root = document) {
-  return Array.from(root.querySelectorAll(QUESTIONNAIRE_SELECTOR)).filter(el => !el.closest('.do'));
+  return Array.from(root.querySelectorAll(QUESTIONNAIRE_SELECTOR)).filter(el => !el.closest('.do') && !isAnswered(el));
 }
 
 export function getQuestions(questionnaire) {
@@ -704,6 +710,49 @@ export function responseDocumentHTML(response) {
   return formatHTMLString(createHTML(title, `<article about="" dir="auto">${responseBodyHTML(response)}</article>`, { prefix }));
 }
 
+// The questionnaire document as answered, for reading: the answers are fixed in its disabled controls, and it no longer sends.
+export function answeredDocumentHTML(questionnaire) {
+  const base = baseOf(questionnaire);
+  const doc = new DOMParser().parseFromString(getDocument(null, { ...Config.DOMProcessing, normalize: true }), 'text/html');
+  const copy = byId(doc, questionnaire.id);
+  if (!copy) return null;
+
+  questionnaire.querySelectorAll(`.${CONTROL}`).forEach(control => {
+    // A dropdown's select stands in for its options' inputs.
+    if (control.matches('select')) {
+      const option = describeQuestion(control.closest(QUESTION_SELECTOR), base).options.find(o => o.iri === control.value);
+      if (option) byId(copy, `${option.id}-input`)?.setAttribute('checked', '');
+      return;
+    }
+    const own = control.id && byId(copy, control.id);
+    if (!own) return;
+    if (control.type === 'radio' || control.type === 'checkbox') {
+      if (control.checked) own.setAttribute('checked', '');
+    }
+    else if (control.matches('textarea')) own.textContent = control.value;
+    else own.setAttribute('value', control.value);
+  });
+  copy.querySelectorAll(`.${CONTROL}`).forEach(control => control.setAttribute('disabled', ''));
+
+  copy.querySelectorAll(':scope > .questionnaire-inbox').forEach(el => el.remove());
+  removeFormSubmit(copy);
+  const form = copy.querySelector(':scope > form.questionnaire-questions');
+  form?.removeAttribute('action');
+  form?.removeAttribute('method');
+
+  // The questions stay the questionnaire's; links keep pointing where they did.
+  [copy, ...copy.querySelectorAll('[about], [resource]')].forEach(el => ['about', 'resource'].forEach(name => {
+    const value = el.getAttribute(name);
+    if (value?.startsWith('#')) el.setAttribute(name, resolveIRI(value, base));
+  }));
+  doc.querySelectorAll('[href], [src]').forEach(el => ['href', 'src'].forEach(name => {
+    const value = el.getAttribute(name);
+    if (value && !value.startsWith('#')) el.setAttribute(name, resolveIRI(value, base));
+  }));
+
+  return formatHTMLString(doc.documentElement.outerHTML);
+}
+
 // In an outbox the response is the object of a Create activity, as with annotations.
 export function outboxResponseHTML(response, id) {
   const object = `#${id}`;
@@ -794,12 +843,14 @@ export async function sendResponse(questionnaire, { answers: given, inbox, locat
 
   const stored = [];
   const used = new Set();
+  let copyHTML;
   for (const location of uniqueLocations(locations)) {
     try {
-      // The server names a second resource in the same container.
+      // A second resource in the same container gets another name.
       const slug = used.has(location.container) ? null : id;
       used.add(location.container);
-      const iri = await storeResponse(location, id, response, slug);
+      if (location.kind !== 'activity-outbox') copyHTML ??= answeredDocumentHTML(questionnaire);
+      const iri = await storeResponse(location, id, response, slug, copyHTML);
       stored.push({ ...location, iri });
       say(`<p class="success">${text(t('success.copy-saved'))} <a href="${attr(iri)}" rel="noopener" target="_blank">${text(iri)}</a></p>`);
     }
@@ -829,12 +880,34 @@ export async function sendResponse(questionnaire, { answers: given, inbox, locat
 }
 
 // Resolves the response IRI: the created resource, or the activity's object in an outbox.
-export async function storeResponse({ kind, container }, id, response, slug = id) {
+// A copy in storage is HTML, PUT or else POSTed; failing both, and in an outbox, it goes in the format the container accepts.
+export async function storeResponse({ kind, container }, id, response, slug = id, copyHTML = null) {
   const outbox = kind === 'activity-outbox';
-  const expected = `${container}${slug || id}`;
   const html = outbox
     ? outboxResponseHTML(response, id)
-    : responseDocumentHTML({ ...response, responseIRI: '' });
+    : copyHTML || responseDocumentHTML({ ...response, responseIRI: '' });
+  const expected = `${container}${slug || id}`;
+
+  if (!outbox) {
+    const url = `${container}${slug || generateAttributeId()}.html`;
+    try {
+      await Config.Storage.put(url, html, 'text/html', null, { headers: { 'If-None-Match': '*' } });
+      return url;
+    }
+    catch (error) {
+      console.warn('Could not PUT the questionnaire response copy, posting it instead:', error);
+    }
+
+    try {
+      const result = await Config.Storage.post(container, slug, html, 'text/html');
+      const location = result?.headers?.get?.('Location');
+      return location ? new URL(location, container).href : expected;
+    }
+    catch (error) {
+      console.warn('Could not POST the questionnaire response copy as HTML, posting it in the format the container accepts:', error);
+    }
+  }
+
   const options = { contentType: 'text/html', subjectURI: expected };
   if (outbox) options.profile = 'https://www.w3.org/ns/activitystreams';
   const result = await postActivity(container, slug, html, options);

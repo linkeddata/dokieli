@@ -842,6 +842,8 @@ describe('sending a response', () => {
     activateQuestionnaire(questionnaire, BASE);
     notifyInbox.mockReset();
     notifyInbox.mockResolvedValue({ location: 'https://inbox.example/n1' });
+    postActivity.mockReset();
+    Config.Storage = { put: vi.fn().mockResolvedValue({}), post: vi.fn().mockResolvedValue({}) };
   });
 
   it('shows where answers go and offers the copy before the buttons', () => {
@@ -856,8 +858,10 @@ describe('sending a response', () => {
   const created = (location) => ({ headers: new Headers(location ? { Location: location } : {}) });
 
   it('still sends to the inbox when saving the copy fails', async () => {
-    postActivity.mockReset();
-    postActivity.mockRejectedValue(Object.assign(new Error('Forbidden'), { status: 403 }));
+    const forbidden = Object.assign(new Error('Forbidden'), { status: 403 });
+    Config.Storage.put.mockRejectedValue(forbidden);
+    Config.Storage.post.mockRejectedValue(forbidden);
+    postActivity.mockRejectedValue(forbidden);
     const result = await sendResponse(questionnaire, { answers, inbox: 'https://inbox.example/', locations: [storage] });
     expect(result).toMatchObject({ saved: false, sent: true });
     expect(notifyInbox).toHaveBeenCalledTimes(1);
@@ -866,8 +870,6 @@ describe('sending a response', () => {
   });
 
   it('sends the full answers, not a reference to the saved copy', async () => {
-    postActivity.mockReset();
-    postActivity.mockResolvedValue(created('/r1'));
     const result = await sendResponse(questionnaire, { answers, inbox: 'https://inbox.example/', locations: [storage] });
     expect(result).toMatchObject({ saved: true, sent: true });
     const sent = notifyInbox.mock.calls[0][0];
@@ -875,23 +877,80 @@ describe('sending a response', () => {
     expect(sent.object).toMatch(/^#[0-9a-f-]{36}$/);
     expect(sent.statements).toMatch(/<li about="#[0-9a-f-]{36}" typeof="as:Note">/);
     expect(sent.statements).toContain('Ada');
-    expect(sent.statements).not.toContain('https://alice.example/r1');
-    expect(message()).toContain('Your copy was saved at https://alice.example/r1');
+    expect(sent.statements).not.toContain('https://alice.example/');
+    expect(message()).toContain(`Your copy was saved at ${result.stored[0].iri}`);
   });
 
-  it('saves the response document as a copy', async () => {
-    postActivity.mockReset();
-    postActivity.mockResolvedValue(created());
+  it('PUTs the answered questionnaire as an HTML copy that no longer sends', async () => {
+    questionnaire.querySelector('#q1-input').value = 'Ada';
+    const result = await sendResponse(questionnaire, { answers, inbox: 'https://inbox.example/', locations: [storage] });
+    const [url, html, contentType, , options] = Config.Storage.put.mock.calls[0];
+    expect(url).toMatch(/^https:\/\/alice\.example\/[0-9a-f-]{36}\.html$/);
+    expect(result.stored[0].iri).toBe(url);
+    expect(contentType).toBe('text/html');
+    expect(options.headers['If-None-Match']).toBe('*');
+    expect(postActivity).not.toHaveBeenCalled();
+
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    const copy = doc.querySelector('section.questionnaire');
+    const input = copy.querySelector('#q1-input');
+    expect(input.getAttribute('value')).toBe('Ada');
+    expect(input.hasAttribute('disabled')).toBe(true);
+    expect(copy.querySelector('form').hasAttribute('action')).toBe(false);
+    expect(copy.querySelector('.questionnaire-inbox, .questionnaire-form-submit, .questionnaire-actions')).toBeNull();
+    expect(copy.getAttribute('resource')).toBe(`${BASE}#questionnaire`);
+    expect(copy.querySelector('#q1').getAttribute('about')).toBe(`${BASE}#q1`);
+    expect(doc.querySelector('#answers, #document-details')).toBeNull();
+  });
+
+  it('fixes chosen options in the copy', async () => {
+    questionnaire = mount(questionnaireHTML({ inbox: 'https://inbox.example/', questions: qHTML({ id: 'q2', kind: 'single', text: 'Pick', options: ['One', 'Two'] }) + qHTML({ id: 'q3', kind: 'dropdown', text: 'Choose', options: ['A', 'B'] }) }));
+    activateQuestionnaire(questionnaire, BASE);
+    questionnaire.querySelector('#q2-o2-input').checked = true;
+    questionnaire.querySelector('#q3 select').value = `${BASE}#q3-o1`;
     await sendResponse(questionnaire, { answers, inbox: 'https://inbox.example/', locations: [storage] });
-    const [container, slug, html] = postActivity.mock.calls[0];
+    const doc = new DOMParser().parseFromString(Config.Storage.put.mock.calls[0][1], 'text/html');
+    expect(Array.from(doc.querySelectorAll('input[checked]')).map(input => input.id)).toEqual(['q2-o2-input', 'q3-o1-input']);
+    expect(doc.querySelector('select')).toBeNull();
+  });
+
+  it('does not offer to fill in or send a saved copy', async () => {
+    await sendResponse(questionnaire, { answers, inbox: 'https://inbox.example/', locations: [storage] });
+    const doc = new DOMParser().parseFromString(Config.Storage.put.mock.calls[0][1], 'text/html');
+    document.body.innerHTML = doc.body.innerHTML;
+    activateQuestionnaires(document);
+    expect(document.querySelector('.questionnaire-actions')).toBeNull();
+    prepareSavedForm(document);
+    expect(document.querySelector('.questionnaire-form-submit')).toBeNull();
+  });
+
+  it('POSTs the HTML copy when the storage does not take a PUT', async () => {
+    Config.Storage.put.mockRejectedValue(Object.assign(new Error('Method Not Allowed'), { status: 405 }));
+    Config.Storage.post.mockResolvedValue(created('/r1'));
+    const result = await sendResponse(questionnaire, { answers, inbox: 'https://inbox.example/', locations: [storage] });
+    const [container, slug, html, contentType] = Config.Storage.post.mock.calls[0];
     expect(container).toBe('https://alice.example/');
     expect(slug).toMatch(/^[0-9a-f-]{36}$/);
-    expect(html).toContain('<article about="" dir="auto">');
-    expect(html).not.toContain('as:Create');
+    expect(contentType).toBe('text/html');
+    expect(html).toContain('disabled=""');
+    expect(postActivity).not.toHaveBeenCalled();
+    expect(result.stored[0].iri).toBe('https://alice.example/r1');
+  });
+
+  it('posts the copy in the format the container accepts when it takes no HTML', async () => {
+    const refused = Object.assign(new Error('Unsupported Media Type'), { status: 415 });
+    Config.Storage.put.mockRejectedValue(refused);
+    Config.Storage.post.mockRejectedValue(refused);
+    postActivity.mockResolvedValue(created('/r2'));
+    const result = await sendResponse(questionnaire, { answers, inbox: 'https://inbox.example/', locations: [storage] });
+    const [container, , html, options] = postActivity.mock.calls[0];
+    expect(container).toBe('https://alice.example/');
+    expect(options.contentType).toBe('text/html');
+    expect(html).toContain('disabled=""');
+    expect(result.stored[0].iri).toBe('https://alice.example/r2');
   });
 
   it('wraps the copy in a Created activity in the outbox', async () => {
-    postActivity.mockReset();
     postActivity.mockResolvedValue(created());
     const result = await sendResponse(questionnaire, { answers, inbox: 'https://inbox.example/', locations: [outbox] });
     const [container, slug, html, options] = postActivity.mock.calls[0];
@@ -900,17 +959,18 @@ describe('sending a response', () => {
     expect(html).toContain('typeof="as:Create"');
     expect(html).toContain(`<article about="#${slug}" dir="auto">`);
     expect(result.stored[0].iri).toBe(`https://alice.example/outbox/${slug}#${slug}`);
+    expect(Config.Storage.put).not.toHaveBeenCalled();
+    expect(Config.Storage.post).not.toHaveBeenCalled();
   });
 
   it('saves one copy per location', async () => {
-    postActivity.mockReset();
     postActivity.mockResolvedValue(created());
     await sendResponse(questionnaire, { answers, inbox: 'https://inbox.example/', locations: [outbox, storage, { kind: 'selected-location', container: 'https://alice.example/' }] });
-    expect(postActivity).toHaveBeenCalledTimes(2);
+    expect(postActivity).toHaveBeenCalledTimes(1);
+    expect(Config.Storage.put).toHaveBeenCalledTimes(1);
   });
 
   it('sends without saving when no copy was asked for', async () => {
-    postActivity.mockReset();
     await sendResponse(questionnaire, { answers, inbox: 'https://inbox.example/' });
     expect(postActivity).not.toHaveBeenCalled();
     expect(notifyInbox).toHaveBeenCalledTimes(1);

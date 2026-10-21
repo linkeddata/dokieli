@@ -1972,6 +1972,9 @@ section.questionnaire :is([rel~="as:oneOf"], [rel~="as:anyOf"]) > li .questionna
 section.questionnaire :is([rel~="as:oneOf"], [rel~="as:anyOf"]) > li:has(.questionnaire-control) {
   cursor: pointer;
 }
+section.questionnaire :is([rel~="as:oneOf"], [rel~="as:anyOf"]) > li:has(.questionnaire-control:disabled) {
+  cursor: default;
+}
 section.questionnaire .questionnaire-explanation {
   margin-top: 0.75em;
 }
