@@ -893,7 +893,7 @@ function setCopyLocations(questionnaire, locations) {
 
 function copyLocationItemHTML(location, checked) {
   const id = `questionnaire-copy-${location.kind}-${generateUUID(location.container).slice(0, 8)}`;
-  const label = location.kind === 'selected-location' ? t('copy-dialog.selected-location.label') : i18n.t(`annotation-location.${location.kind}.label.textContent`);
+  const label = t(`copy-dialog.${location.kind}.label`);
   return `<li><input${checked ? ' checked=""' : ''} data-container="${attr(location.container)}" data-kind="${attr(location.kind)}" id="${attr(id)}" type="checkbox" /><label for="${attr(id)}">${text(label)}</label>${targetHTML(location.container)}</li>`;
 }
 
