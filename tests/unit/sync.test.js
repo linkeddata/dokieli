@@ -23,7 +23,7 @@ import {
 import * as storage from '../../src/storage.js';
 import Config from '../../src/config.js';
 
-test('disableAutoSave removes the edit handlers and records autoSave off', async () => {
+test('disableAutoSave removes the edit handlers and keeps the autosave preference', async () => {
   const removeEventListener = vi.spyOn(document, 'removeEventListener');
   const updateItem = vi.spyOn(storage, 'updateDeviceStorageItem').mockResolvedValue(undefined);
 
@@ -47,7 +47,8 @@ test('disableAutoSave removes the edit handlers and records autoSave off', async
   });
   expect(Config.AutoSave.Items['key'].http.handler).toBeUndefined();
 
-  expect(updateItem).toHaveBeenCalledWith('key', { autoSave: false });
+  // Leaving edit mode disables the handlers; only the autosave toggle changes the preference
+  expect(updateItem).not.toHaveBeenCalled();
 
   removeEventListener.mockRestore();
 });
@@ -99,4 +100,41 @@ test('markLocalSnapshotPublished marks the latest snapshot when it already holds
   updateItem.mockClear();
   await autoSave('https://example.org/doc', { method: 'IndexedDB' });
   expect(updateItem).not.toHaveBeenCalled();
+});
+
+test('syncLocalRemoteResource discards unsaved device copies when asked, and keeps them otherwise', async () => {
+  const { syncLocalRemoteResource } = await import('../../src/sync.js');
+  const { getDocument } = await import('../../src/doc.js');
+
+  const url = 'https://example.org/unsaved';
+  const items = {
+    [url]: { items: [`${url}#unsaved-2`, `${url}#unsaved-1`, `${url}#saved`, `${url}#unsaved-old`] },
+    [`${url}#unsaved-2`]: { id: `${url}#unsaved-2`, content: '<html><body><p>2</p></body></html>', mediaType: 'text/html', updated: '2026-10-22T10:02:00Z' },
+    [`${url}#unsaved-1`]: { id: `${url}#unsaved-1`, content: '<html><body><p>1</p></body></html>', mediaType: 'text/html', updated: '2026-10-22T10:01:00Z' },
+    [`${url}#saved`]: { id: `${url}#saved`, published: '2026-10-22T10:00:00Z' },
+    [`${url}#unsaved-old`]: { id: `${url}#unsaved-old` }
+  };
+  const previousURL = Config.DocumentURL;
+  const previousStorage = Config.Storage;
+  Config.DocumentURL = url;
+  const remote = getDocument(null, { ...Config.DOMProcessing, format: true, sanitize: true, normalize: true });
+  Config.Storage = { get: vi.fn(async () => new Response(remote, { headers: { 'Content-Type': 'text/html' } })) };
+  vi.spyOn(storage, 'getDeviceStorageItem').mockImplementation(async key => items[key]);
+  const remove = vi.spyOn(storage, 'removeDeviceStorageDocumentFromCollection').mockResolvedValue(undefined);
+
+  try {
+    await syncLocalRemoteResource({ discardUnsaved: true });
+    expect(remove.mock.calls).toEqual([[url, `${url}#unsaved-2`], [url, `${url}#unsaved-1`]]);
+
+    remove.mockClear();
+    delete Config.Resource[url];
+    await syncLocalRemoteResource();
+    expect(remove).not.toHaveBeenCalled();
+  }
+  finally {
+    Config.DocumentURL = previousURL;
+    Config.Storage = previousStorage;
+    delete Config.Resource[url];
+    vi.restoreAllMocks();
+  }
 });

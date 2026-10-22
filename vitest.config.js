@@ -3,6 +3,9 @@ import path from 'path'
 
 import fs from 'fs'
 
+// Tests run in UTC whatever the machine's timezone, however they are started
+process.env.TZ = 'UTC'
+
 export default defineConfig({
   resolve: {
     alias: {

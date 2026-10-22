@@ -20,7 +20,7 @@ import { execSync } from 'child_process';
 let failed = false;
 
 try {
-  execSync('TZ=UTC vitest run --coverage', { stdio: 'inherit' });
+  execSync('vitest run --coverage', { stdio: 'inherit' });
 } catch {
   failed = true;
 }

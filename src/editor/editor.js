@@ -76,6 +76,7 @@ let yXmlFragment;
 let originalDoc;
 let collabSaveHandler;
 let collabBeforeUnloadHandler;
+let newDocumentBeforeUnloadHandler;
 let collabAttentionButton;
 const YWEBSOCKET_URL = process.env.YWEBSOCKET_URL;
 const DEMO_URL = process.env.DEMO_URL;
@@ -616,7 +617,7 @@ export class Editor {
 
     collabBeforeUnloadHandler = (e) => {
       const alone = (provider?.awareness?.getStates().size ?? 0) <= 1;
-      if (alone && hasUnsavedCollabChanges()) {
+      if (!Config.LeavingForSignIn && alone && hasUnsavedCollabChanges()) {
         e.preventDefault();
         e.returnValue = '';
       }
@@ -629,7 +630,7 @@ export class Editor {
     // and still-connected peers don't retain the discarded session.
     window.addEventListener('pagehide', (e) => {
       const alone = (provider?.awareness?.getStates().size ?? 0) <= 1;
-      if (!e.persisted && alone && ydoc && !ydoc.isDestroyed && hasUnsavedCollabChanges()) {
+      if (!e.persisted && !Config.LeavingForSignIn && alone && ydoc && !ydoc.isDestroyed && hasUnsavedCollabChanges()) {
         console.warn('[seed] pagehide WIPE+reseed (alone, unsaved changes)');
         ydoc.transact(() => {
           yXmlFragment.delete(0, yXmlFragment.length);
@@ -692,6 +693,18 @@ export class Editor {
   });
 
   this.authorToolbarView = this.editorView.pluginViews.find(v => v instanceof AuthorToolbar) ?? null;
+
+  // A new document has nowhere it is saved yet, so leaving loses any edits
+  if (Config.Editor['new']) {
+    const editorView = this.editorView;
+    newDocumentBeforeUnloadHandler = (e) => {
+      if (!Config.LeavingForSignIn && Config.Editor['new'] && !editorView.isDestroyed && !editorView.state.doc.eq(originalDoc)) {
+        e.preventDefault();
+        e.returnValue = '';
+      }
+    };
+    window.addEventListener('beforeunload', newDocumentBeforeUnloadHandler);
+  }
 
   if (pendingViewportAnchor && this.editorView.state.doc.content.size > 2) {
     restoreViewportAnchor(pendingViewportAnchor);
@@ -848,6 +861,10 @@ export class Editor {
     if (collabBeforeUnloadHandler) {
       window.removeEventListener('beforeunload', collabBeforeUnloadHandler);
       collabBeforeUnloadHandler = null;
+    }
+    if (newDocumentBeforeUnloadHandler) {
+      window.removeEventListener('beforeunload', newDocumentBeforeUnloadHandler);
+      newDocumentBeforeUnloadHandler = null;
     }
     if (collabAttentionButton) {
       collabAttentionButton.remove();

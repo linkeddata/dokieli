@@ -7,7 +7,7 @@
   "scripts": {
     "build": "webpack --progress --color",
     "test": "node tests/utils/scripts/run-tests.js",
-    "test:unit": "TZ=UTC vitest run --coverage",
+    "test:unit": "vitest run --coverage",
     "test:e2e": "playwright test",
     "watch": "webpack --progress --color --watch",
     "dev": "NANOPUB_TEST_REGISTRY=true OHYEAH_SERVICE_URL=http://localhost:4848/ webpack --progress --color --watch",

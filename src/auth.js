@@ -743,7 +743,7 @@ export async function signOutGitForge(host) {
 // Snapshot edits and the full location so the return trip lands on the same document
 async function rememberAuthStart() {
   Config.OIDC['authStartLocation'] = window.location.href;
-  Config.OIDC['editor'] = { mode: Config.Editor?.mode, isNew: !!Config.Editor?.['new'] };
+  Config.OIDC['editor'] = { mode: Config.Editor?.mode, isNew: !!Config.Editor?.['new'], startedAt: Date.now() };
   await updateBrowserStorageOIDC();
   if (Config.Editor?.mode === 'author' && isHttpOrHttpsProtocol(Config.DocumentURL)) {
     await autoSave(Config.DocumentURL, { method: 'IndexedDB' }).catch(() => {});
@@ -759,8 +759,11 @@ async function loginWithIDP(idpUrl) {
   let redirect_uri = process.env.OIDC_REDIRECT_URI || (window.location.origin + '/');
   redirect_uri = Config.OIDC.useStaticClientId ? redirect_uri : window.location.href.split('#')[0];
 
+  // Leaving for sign-in keeps the edits, so there is no need to warn about losing them
+  Config.LeavingForSignIn = true;
   Config['Session']?.login(idpUrl, redirect_uri)
     .catch(e => {
+      Config.LeavingForSignIn = false;
       const message = {
         'content': `Cannot sign in with ${idpUrl}. ${e.message}`,
         'type': 'error',
@@ -784,8 +787,10 @@ async function signInWithOIDC() {
   redirect_uri = Config.OIDC.useStaticClientId ? redirect_uri : window.location.href.split('#')[0];
 
   // Redirects away from dokieli :( but hopefully only briefly :)
+  Config.LeavingForSignIn = true;
   Config['Session']?.login(idp, redirect_uri)
     .catch((e) => {
+      Config.LeavingForSignIn = false;
       console.error('OIDC sign-in failed:', e);
       const message = {
         'content': `Cannot sign in. Using information from profile to personalise the UI.`,

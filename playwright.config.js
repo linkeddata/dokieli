@@ -1,6 +1,9 @@
 import { devices } from "@playwright/test";
 import { config as envConfig } from 'dotenv';
 
+// Tests run in UTC whatever the machine's timezone: the browser via timezoneId, test code via TZ
+process.env.TZ = "UTC";
+
 envConfig();
 
 const config = {
@@ -30,6 +33,7 @@ const config = {
   ],
   use: {
     actionTimeout: 10000,
+    timezoneId: "UTC",
     baseURL: "http://localhost:3000",
     trace: "retain-on-failure",
     video: "retain-on-failure",

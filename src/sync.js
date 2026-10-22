@@ -83,6 +83,8 @@ export async function syncLocalRemoteResource(options = {}) {
   let latestLocalDocumentItemObjectPublished;
   let latestLocalDocumentItemObjectUnpublished;
 
+  const unsavedItems = [];
+
   if (storageObject?.items?.length) {
     for (const item of storageObject.items) {
       const r = await getDeviceStorageItem(item);
@@ -90,13 +92,21 @@ export async function syncLocalRemoteResource(options = {}) {
         latestLocalDocumentItemObjectPublished = r;
       }
       // Newest first: an unpublished snapshot behind a published one predates the last save
-      if (!r?.published && !latestLocalDocumentItemObjectUnpublished && !latestLocalDocumentItemObjectPublished) {
-        latestLocalDocumentItemObjectUnpublished = r;
+      if (!r?.published && !latestLocalDocumentItemObjectPublished) {
+        unsavedItems.push(item);
+        latestLocalDocumentItemObjectUnpublished ||= r;
       }
-      if (latestLocalDocumentItemObjectPublished && latestLocalDocumentItemObjectUnpublished) {
+      if (latestLocalDocumentItemObjectPublished) {
         break;
       }
     }
+  }
+
+  if (options.discardUnsaved && unsavedItems.length) {
+    for (const item of unsavedItems) {
+      await removeDeviceStorageDocumentFromCollection(Config.DocumentURL, item);
+    }
+    latestLocalDocumentItemObjectUnpublished = undefined;
   }
 
   localContent = Config.DocumentString || getDocument(null, documentOptions);

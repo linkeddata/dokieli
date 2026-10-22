@@ -294,8 +294,25 @@ async function initSyncLocalRemoteResource() {
   if (Config.DocumentStandIn) return;
 
   if (!(documentURL in Config.Resource && 'state' in Config.Resource[documentURL])) {
-    await syncLocalRemoteResource();
+    // Reloading discards unsaved edits; they are kept only when coming back from signing in
+    await syncLocalRemoteResource({ discardUnsaved: !(await isReturningFromSignIn()) });
   }
+}
+
+// Long enough to sign in, short enough that an abandoned sign-in does not keep edits around
+const SIGN_IN_RESTORE_WINDOW = 30 * 60 * 1000;
+
+// Whether this load comes back to the document that was left to sign in, while editing
+async function isReturningFromSignIn() {
+  const OIDC = await getDeviceStorageItem('DO.Config.OIDC');
+  if (!OIDC?.editor || !OIDC.authStartLocation) return false;
+  if (!(Date.now() - (OIDC.editor.startedAt || 0) < SIGN_IN_RESTORE_WINDOW)) return false;
+
+  // The sign-in callback can still carry its query, so compare the documents only
+  const documentOf = (url) => {
+    try { const u = new URL(url); return u.origin + u.pathname; } catch { return url; }
+  };
+  return documentOf(OIDC.authStartLocation) === documentOf(Config.DocumentURL);
 }
 
 // When the document's address refuses an anonymous request, this page is the server's error page standing in for it
