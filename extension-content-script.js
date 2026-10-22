@@ -31,6 +31,7 @@ WebExtension.runtime.onMessage.addListener(function (request, sender, sendRespon
     if (request.action === 'dokieli.status') {
       var ready = isDokieliReady();
       sendResponse({
+        injected: typeof DO !== 'undefined' && DO.U !== undefined,
         loaded: ready,
         editMode: ready ? (DO.C.EditorEnabled || false) : false,
         user: ready && DO.C.User.IRI ? { iri: DO.C.User.IRI } : null

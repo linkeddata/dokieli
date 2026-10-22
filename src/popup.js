@@ -100,10 +100,14 @@ async function openSigninDialog() {
       files: ['media/css/dokieli.css'],
     });
 
-    await WebExtension.scripting.executeScript({
-      target: { tabId: tab.id },
-      files: ['scripts/dokieli.bundle.js'],
-    });
+    // A second copy of dokieli in the tab would also act on the page, without its translations
+    const status = await WebExtension.tabs.sendMessage(tab.id, { action: 'dokieli.status' });
+    if (!status?.injected) {
+      await WebExtension.scripting.executeScript({
+        target: { tabId: tab.id },
+        files: ['scripts/dokieli.bundle.js'],
+      });
+    }
 
     await WebExtension.tabs.sendMessage(tab.id, { action: 'dokieli.showSignin' });
     window.close();
