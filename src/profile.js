@@ -99,7 +99,7 @@ export function showUserNameInput(editButton) {
 
   if (!nameLink || userInfo.querySelector('form.edit-user-name')) return;
 
-  const form = fragmentFromString(`<form class="edit-user-name"><input aria-label="${i18n.t('menu.edit-name.input.aria-label')}" name="name" placeholder="${i18n.t('menu.edit-name.input.aria-label')}" required="" type="text" />${getButtonHTML({ key: 'menu.edit-name.save.button', button: 'submit', buttonClass: 'save-user-name', buttonType: 'submit' })}${getButtonHTML({ key: 'menu.edit-name.cancel.button', button: 'cancel', buttonClass: 'cancel-user-name', buttonType: 'button' })}</form>`).firstChild;
+  const form = fragmentFromString(`<form class="edit-user-name"><input aria-label="${i18n.t('menu.edit-name.input.aria-label')}" name="user-name" placeholder="${i18n.t('menu.edit-name.input.aria-label')}" required="" type="text" />${getButtonHTML({ key: 'menu.edit-name.save.button', button: 'submit', buttonClass: 'save-user-name', buttonType: 'submit' })}${getButtonHTML({ key: 'menu.edit-name.cancel.button', button: 'cancel', buttonClass: 'cancel-user-name', buttonType: 'button' })}</form>`).firstChild;
   const input = form.querySelector('input');
   input.value = Config.User.Name || '';
 
