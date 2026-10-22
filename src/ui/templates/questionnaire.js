@@ -29,6 +29,7 @@ import { notifyInbox, postActivity, linkOutbox, showLocationDialog } from '../..
 import { createActivityHTML, getDocument, targetHTML } from '../../doc.js';
 import { forceTrailingSlash } from '../../uri.js';
 import { prepareDocumentForTemplate, replaceDocumentBody, documentDetailsHTML } from './shared.js';
+import { exportAsDocument } from '../../actions.js';
 
 // The section has no type (the document is the schema:Question), so its class identifies it.
 const QUESTIONNAIRE_CLASS = 'questionnaire';
@@ -856,7 +857,14 @@ export async function sendResponse(questionnaire, { answers: given, inbox, locat
     }
     catch (error) {
       console.error('Could not save the questionnaire response copy:', error);
-      say(`<p class="error">${text(t('error.copy-not-saved', { location: location.container }))} ${detail(error)}</p>`);
+      if ([401, 403].includes(error?.status)) {
+        downloads.set(questionnaire, copyHTML || answeredDocumentHTML(questionnaire) || responseDocumentHTML({ ...response, responseIRI: '' }));
+        const button = message?.querySelector('.questionnaire-copy-download') ? '' : ` <button class="questionnaire-copy-download" type="button">${text(t('copy.download.button'))}</button>`;
+        say(`<p class="error">${text(t('error.copy-no-access', { location: location.container }))}${button}</p>`);
+      }
+      else {
+        say(`<p class="error">${text(t('error.copy-not-saved', { location: location.container }))} ${detail(error)}</p>`);
+      }
     }
   }
 
@@ -877,6 +885,16 @@ export async function sendResponse(questionnaire, { answers: given, inbox, locat
     say(`<p class="error">${text(t('error.not-sent', { inbox }))}${hint} ${detail(error)}</p>`);
     return { saved: stored.length > 0, stored, sent: false, responseIRI };
   }
+}
+
+// The copy to download, per questionnaire, when it could not be saved.
+const downloads = new WeakMap();
+
+function downloadCopy(questionnaire) {
+  const html = downloads.get(questionnaire);
+  if (!html) return;
+  const name = new URL(baseOf(questionnaire)).pathname.split('/').pop().replace(/\.html?$/, '') || 'questionnaire';
+  exportAsDocument(html, { mediaType: 'text/html', filename: `${name}-answers.html` });
 }
 
 // Resolves the response IRI: the created resource, or the activity's object in an outbox.
@@ -1316,6 +1334,10 @@ export function initQuestionnaire() {
       }
       if (e.target.closest('.questionnaire-clear')) {
         clearAnswers(questionnaire);
+        return;
+      }
+      if (e.target.closest('.questionnaire-copy-download')) {
+        downloadCopy(questionnaire);
         return;
       }
       if (e.target.closest('.questionnaire-copy-change')) {

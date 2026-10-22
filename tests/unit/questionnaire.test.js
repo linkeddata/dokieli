@@ -18,6 +18,7 @@ limitations under the License.
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 
 vi.mock('../../src/activity.js', async (importOriginal) => ({ ...(await importOriginal()), notifyInbox: vi.fn(), postActivity: vi.fn() }));
+vi.mock('../../src/actions.js', async (importOriginal) => ({ ...(await importOriginal()), exportAsDocument: vi.fn() }));
 
 import { RdfaParser } from 'rdfa-streaming-parser';
 import { DOMParser as PMDOMParser, DOMSerializer } from 'prosemirror-model';
@@ -27,7 +28,7 @@ import Config from '../../src/config.js';
 import {
   questionHTML, questionnaireHTML, describeQuestion, normalizeQuestionnaireIds, activateQuestionnaire,
   deactivateQuestionnaire, activateQuestionnaires, collectAnswers, updateReadiness, submitQuestionnaire, clearAnswers, insertQuestion, setQuestionnaireInbox,
-  questionFromFormValues, getQuestions, sendResponse, withAnswerIds, responseDocumentHTML, setTemplateNewQuestionnaire, restoreQuestionParts, ensureQuestionnaireControls, prepareSavedForm, removeFormSubmit, slotsToTimes, timesToSlots, toDateTimeWithOffset, toLocalDateTime, responseStatementsHTML, outboxResponseHTML, newQuestionId
+  questionFromFormValues, getQuestions, sendResponse, withAnswerIds, initQuestionnaire, responseDocumentHTML, setTemplateNewQuestionnaire, restoreQuestionParts, ensureQuestionnaireControls, prepareSavedForm, removeFormSubmit, slotsToTimes, timesToSlots, toDateTimeWithOffset, toLocalDateTime, responseStatementsHTML, outboxResponseHTML, newQuestionId
 } from '../../src/ui/templates/questionnaire.js';
 
 // Predictable ids: options {questionId}-o1, explanation {questionId}x.
@@ -37,6 +38,7 @@ function qHTML(options) {
   return questionHTML({ newId: () => `${options.id}-o${++n}`, ...options, explanation });
 }
 import { notifyInbox, postActivity } from '../../src/activity.js';
+import { exportAsDocument } from '../../src/actions.js';
 import { getDocument } from '../../src/doc.js';
 
 const BASE = 'https://example.org/questionnaire';
@@ -867,6 +869,29 @@ describe('sending a response', () => {
     expect(notifyInbox).toHaveBeenCalledTimes(1);
     expect(message()).toContain('Could not save your copy in https://alice.example/');
     expect(message()).toContain('Your answers were sent.');
+  });
+
+  it('explains a refused copy and offers to download it', async () => {
+    const unauthorized = Object.assign(new Error('Unauthorized'), { status: 401 });
+    Config.Storage.put.mockRejectedValue(unauthorized);
+    Config.Storage.post.mockRejectedValue(unauthorized);
+    postActivity.mockRejectedValue(unauthorized);
+    questionnaire.querySelector('#q1-input').value = 'Ada';
+    await sendResponse(questionnaire, { answers, inbox: 'https://inbox.example/', locations: [storage, { kind: 'selected-location', container: 'https://bob.example/' }] });
+    expect(message()).toContain('You might not be signed in, or you might not have access to this location.');
+    expect(message()).not.toContain('Unauthorized');
+    expect(message()).toContain('Your answers were sent.');
+    const buttons = questionnaire.querySelectorAll('.questionnaire-copy-download');
+    expect(buttons).toHaveLength(1);
+
+    exportAsDocument.mockReset();
+    initQuestionnaire();
+    buttons[0].click();
+    const [html, options] = exportAsDocument.mock.calls[0];
+    expect(options).toMatchObject({ mediaType: 'text/html', filename: 'questionnaire-answers.html' });
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    expect(doc.querySelector('#q1-input').getAttribute('value')).toBe('Ada');
+    expect(doc.querySelector('#q1-input').hasAttribute('disabled')).toBe(true);
   });
 
   it('sends the full answers, not a reference to the saved copy', async () => {

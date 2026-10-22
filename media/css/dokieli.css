@@ -1054,7 +1054,8 @@ cursor:pointer;
 .do.questionnaire-actions .questionnaire-copy-location:not([hidden]) {
 display:block;
 }
-.do.questionnaire-actions button.questionnaire-copy-change {
+.do.questionnaire-actions button.questionnaire-copy-change,
+.do.questionnaire-actions button.questionnaire-copy-download {
 margin:0 0 0 0.5em;
 padding:0.25em 0.5em;
 font-weight:normal;
