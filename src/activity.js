@@ -609,7 +609,8 @@ export async function registerAnnotationStore(visibility) {
     created = true;
   }
   catch (e) {
-    if (e?.status !== 412) throw e;
+    // The container exists: 412 for If-None-Match, or 409 from servers (like CSS) that refuse PUT on an existing container first
+    if (![409, 412].includes(e?.status)) throw e;
   }
 
   if (created) {
