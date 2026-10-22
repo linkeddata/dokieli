@@ -187,6 +187,16 @@ export function applySectionNumbers(container, { scheme = DEFAULT_TOC_SCHEME, un
   return nodes;
 }
 
+// A document whose own stylesheet numbers its headings (::before counters) keeps those numbers.
+// The first numbered section tells, so this stays cheap enough to ask on every edit.
+export function headingsNumberedByStyle(container, unnumberedIds = new Set()) {
+  const view = container?.ownerDocument?.defaultView;
+  if (!view) return false;
+  const first = sectionTree(container).find((node) => node.role === 'numbered' && !unnumberedIds.has(node.id));
+  const heading = first && sectionHeadingElement(first.element);
+  return !!heading && /\bcounters?\(/.test(view.getComputedStyle(heading, '::before').content);
+}
+
 export function removeSectionNumbers(container) {
   container?.querySelectorAll('bdi.secno').forEach((bdi) => {
     // The space it was generated with goes too.

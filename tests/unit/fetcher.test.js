@@ -55,6 +55,42 @@ describe("fetcher", () => {
       );
     });
 
+    test("retries without sign-in when a signed-in request is blocked", async () => {
+      const iri = "https://example.github.io/public/";
+      const previousSession = Config['Session'];
+      // A refused CORS preflight surfaces as a TypeError
+      const signedIn = vi.fn().mockRejectedValue(new TypeError("Failed to fetch"));
+      Config['Session'] = { isActive: true, authFetch: signedIn };
+      global.fetch.mockResolvedValue(new Response("public", { status: 200 }));
+
+      try {
+        const response = await getResource(iri, { Accept: "text/html" }, {});
+        expect(signedIn).toHaveBeenCalledTimes(1);
+        expect(global.fetch).toHaveBeenCalledTimes(1);
+        expect(global.fetch.mock.calls[0][0]).toBe(iri);
+        expect(await response.text()).toBe("public");
+      }
+      finally {
+        Config['Session'] = previousSession;
+      }
+    });
+
+    test("does not retry without sign-in when the signed-in request works", async () => {
+      const iri = "https://storage.example/private";
+      const previousSession = Config['Session'];
+      const signedIn = vi.fn().mockResolvedValue(new Response("private", { status: 200 }));
+      Config['Session'] = { isActive: true, authFetch: signedIn };
+
+      try {
+        await getResource(iri, { Accept: "text/html" }, {});
+        expect(signedIn).toHaveBeenCalledTimes(1);
+        expect(global.fetch).not.toHaveBeenCalled();
+      }
+      finally {
+        Config['Session'] = previousSession;
+      }
+    });
+
     test("should return a resource", async () => {
       const iri = 'http://example.com/resource';
       const headers = { Accept: 'text/turtle' };

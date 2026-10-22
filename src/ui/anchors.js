@@ -17,7 +17,7 @@ limitations under the License.
 
 import { fragmentFromString, selectArticleNode } from '../utils/html.js';
 import { registerDocumentTransform, registerEditorParseTransform } from '../utils/documentTransforms.js';
-import { applySectionNumbers, numberTree, removeSectionNumbers, sectionTree, tocHTML } from './toc.js';
+import { applySectionNumbers, headingsNumberedByStyle, numberTree, removeSectionNumbers, sectionTree, tocHTML } from './toc.js';
 import { applySelfLinks, removeSelfLinks } from './selfLinks.js';
 import { selfLinksEnabledForRoot, templateForRoot, tocEnabledForRoot, tocSchemeForRoot, unnumberedIdsForRoot } from './templates/sections.js';
 import { i18n } from '../i18n.js';
@@ -52,10 +52,10 @@ export function refreshDocumentAnchors(root) {
   removeSectionNumbers(root);
   removeSelfLinks(root);
   injectGenericTOC(root);
-  applySectionNumbers(tocContainer(root), {
-    scheme: tocSchemeForRoot(root),
-    unnumberedIds: unnumberedIdsForRoot(root),
-  });
+  const unnumberedIds = unnumberedIdsForRoot(root);
+  if (!headingsNumberedByStyle(tocContainer(root), unnumberedIds)) {
+    applySectionNumbers(tocContainer(root), { scheme: tocSchemeForRoot(root), unnumberedIds });
+  }
   if (selfLinksEnabledForRoot(root)) applySelfLinks(root);
 }
 
@@ -75,10 +75,13 @@ registerDocumentTransform((doc) => {
   removeSectionNumbers(article);
   removeSelfLinks(article);
   injectGenericTOC(article);
-  applySectionNumbers(tocContainer(article), {
-    scheme: tocSchemeForRoot(article),
-    unnumberedIds: unnumberedIdsForRoot(article),
-  });
+  const unnumberedIds = unnumberedIdsForRoot(article);
+  // The document being saved is not rendered, so the page shows whether its stylesheet numbers the headings
+  const live = selectArticleNode(document);
+  const liveContainer = live.querySelector(':scope > .ProseMirror') || tocContainer(live);
+  if (!headingsNumberedByStyle(liveContainer, unnumberedIdsForRoot(live))) {
+    applySectionNumbers(tocContainer(article), { scheme: tocSchemeForRoot(article), unnumberedIds });
+  }
   if (selfLinksEnabledForRoot(article)) applySelfLinks(article);
 });
 

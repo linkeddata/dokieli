@@ -18,7 +18,7 @@ limitations under the License.
 import { Plugin, PluginKey } from "prosemirror-state";
 import { Decoration, DecorationSet } from "prosemirror-view";
 import { fragmentFromString, selectArticleNode } from "../../utils/html.js";
-import { numberTree, tocHTML } from "../../ui/toc.js";
+import { headingsNumberedByStyle, numberTree, tocHTML } from "../../ui/toc.js";
 import { SELF_LINK_CLASS } from "../../ui/selfLinks.js";
 import { selfLinksEnabledForRoot, templateForRoot, tocEnabledForRoot, tocSchemeForRoot, unnumberedIdsForRoot } from "../../ui/templates/sections.js";
 import { navPos } from "./sectionsNavDecorations.js";
@@ -141,11 +141,23 @@ function selfLinkWidget(id) {
   return a;
 }
 
+// What the numbering reads from the rendered editor rather than the doc.
+function renderedInputs(root) {
+  const unnumberedIds = unnumberedIdsForRoot(root);
+  const container = root.querySelector(':scope > .ProseMirror') || root;
+  // The document's stylesheet numbers its headings, so no second number goes on them
+  const numbered = !headingsNumberedByStyle(container, unnumberedIds);
+  return { unnumberedIds, numbered, key: `${[...unnumberedIds].sort().join(' ')}|${numbered}` };
+}
+
+let lastInputsKey = null;
+
 function anchorDecorations(doc) {
   const decos = [];
   const root = selectArticleNode(document);
   const scheme = tocSchemeForRoot(root);
-  const unnumberedIds = unnumberedIdsForRoot(root);
+  const { unnumberedIds, numbered, key } = renderedInputs(root);
+  lastInputsKey = key;
 
   const tree = numberTree(pmSectionTree(doc.content, 0), scheme, { unnumberedIds });
 
@@ -166,7 +178,7 @@ function anchorDecorations(doc) {
 
   const numbers = (list) => {
     list.forEach((entry) => {
-      if (entry.secno) {
+      if (numbered && entry.secno) {
         const pos = headingContentPos(entry.pos, entry.node);
         if (pos !== null) {
           decos.push(Decoration.widget(pos, () => secnoWidget(entry.secno), { side: -1, ignoreSelection: true, key: `secno-${entry.id}-${entry.secno}`, stopEvent: () => true }));
@@ -221,6 +233,22 @@ export const documentAnchorsPlugin = new Plugin({
       if (!tr.docChanged && !tr.getMeta(documentAnchorsPluginKey)) return value;
       return DecorationSet.create(newState.doc, anchorDecorations(newState.doc));
     },
+  },
+  // The decorations are computed before the editor shows the change, so they can read stale inputs
+  // (an empty editor on open, say). Once it is shown, recompute if those inputs have moved.
+  view(editorView) {
+    const recheck = () => setTimeout(() => {
+      if (editorView.isDestroyed) return;
+      if (renderedInputs(selectArticleNode(document)).key !== lastInputsKey) {
+        editorView.dispatch(editorView.state.tr.setMeta(documentAnchorsPluginKey, true));
+      }
+    }, 0);
+    recheck();
+    return {
+      update(view, prevState) {
+        if (view.state.doc !== prevState.doc) recheck();
+      },
+    };
   },
   props: {
     decorations(state) {

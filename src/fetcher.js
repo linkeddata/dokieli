@@ -239,7 +239,7 @@ function getAcceptPutPreference (url) {
  * @returns {Promise<string>|Promise<ArrayBuffer>}
  */
 function getResource (url, headers = {}, options = {}) {
-  const _fetch = Config['Session']?.isActive ? authFetch : fetch;
+  const _fetch = (Config['Session']?.isActive && !options.withoutSignIn) ? authFetch : fetch;
 
   url = url || Config.DocumentURL || currentLocation()
 // console.log(url)
@@ -299,6 +299,10 @@ function getResource (url, headers = {}, options = {}) {
         return getResource(url, headers, options)
       }
       else {
+        // Sign-in headers need the server's CORS preflight to allow them; many static hosts (e.g. GitHub Pages) refuse it, so a public resource there is fetched without them
+        if (_fetch === authFetch && error instanceof TypeError) {
+          return getResource(url, headers, { ...options, withoutSignIn: true });
+        }
         if (options.proxyForced) {
           throw new Error('Cannot fetch proxied URL: ' + url);
         }

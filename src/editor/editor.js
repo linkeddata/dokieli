@@ -90,10 +90,18 @@ function encodeSeed(pmDoc) {
   return Y.encodeStateAsUpdate(prosemirrorToYDoc(pmDoc));
 }
 
+// Skips what does not scroll with the page, such as a fixed sidebar TOC, which would always look in view
 function viewportAnchor() {
+  let unscrolled = null;
   for (const node of selectArticleNode(document.body).querySelectorAll('[id]')) {
+    if (unscrolled?.contains(node)) continue;
     const top = node.getBoundingClientRect().top;
-    if (top >= 0) return { id: node.id, top };
+    if (top < 0) continue;
+    if (['fixed', 'sticky'].includes(getComputedStyle(node).position)) {
+      unscrolled = node;
+      continue;
+    }
+    return { id: node.id, top };
   }
   return null;
 }
