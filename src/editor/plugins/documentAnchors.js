@@ -150,13 +150,15 @@ function renderedInputs(root) {
   return { unnumberedIds, numbered, key: `${[...unnumberedIds].sort().join(' ')}|${numbered}` };
 }
 
+// Inputs measured once the editor is shown
+let shownInputs = null;
 let lastInputsKey = null;
 
 function anchorDecorations(doc) {
   const decos = [];
   const root = selectArticleNode(document);
   const scheme = tocSchemeForRoot(root);
-  const { unnumberedIds, numbered, key } = renderedInputs(root);
+  const { unnumberedIds, numbered, key } = shownInputs || renderedInputs(root);
   lastInputsKey = key;
 
   const tree = numberTree(pmSectionTree(doc.content, 0), scheme, { unnumberedIds });
@@ -235,11 +237,15 @@ export const documentAnchorsPlugin = new Plugin({
     },
   },
   // The decorations are computed before the editor shows the change, so they can read stale inputs
-  // (an empty editor on open, say). Once it is shown, recompute if those inputs have moved.
+  // (an empty editor on open, say). Once it is shown, recompute only if those inputs moved.
   view(editorView) {
+    shownInputs = null;
     const recheck = () => setTimeout(() => {
       if (editorView.isDestroyed) return;
-      if (renderedInputs(selectArticleNode(document)).key !== lastInputsKey) {
+      shownInputs = renderedInputs(selectArticleNode(document));
+      if (shownInputs.key !== lastInputsKey) {
+        // Keep a selection the editor has not read yet
+        editorView.domObserver?.flush?.();
         editorView.dispatch(editorView.state.tr.setMeta(documentAnchorsPluginKey, true));
       }
     }, 0);

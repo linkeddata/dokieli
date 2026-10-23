@@ -24,7 +24,7 @@ import { removeNodesWithIds, createHTML, getDoctype, getFormValues } from './uti
 import { createAnnotation } from '@dokieli/web-annotation';
 import { accessModeAllowed, accessModePossiblyAllowed, isPublicRead } from './access.js';
 import { encryptContent } from './crypto.js';
-import { setupIconToggleTitles, syncNotifyInboxDefault } from './editor/toolbar/toolbar.js';
+import { annotationVisibilityHTML, syncNotifyInboxDefault } from './editor/toolbar/toolbar.js';
 import { requestOriginConsent } from './consent.js';
 import { domSanitize, sanitizeInsertAdjacentHTML, sanitizeIRI, sanitizeObject, htmlEncode, sanitizeIRIs } from './utils/sanitization.js';
 import { escapeRDFLiteral, generateAttributeId, getDateTimeISO, getDefaultDocumentBasename } from './util.js';
@@ -1804,17 +1804,9 @@ export function replyToResource(e, iri, options = {}) {
   bli.placeholder = 'https://example.org/path/to/article'
   replyToResource.querySelector('#reply-to-resource-note').focus()
 
-  sanitizeInsertAdjacentHTML(replyToResource, 'beforeend', `<div class="editor-form-footer reply-controls">
+  sanitizeInsertAdjacentHTML(replyToResource, 'beforeend', `${annotationVisibilityHTML('reply-to-resource', { isPublic: isPublicRead(Config.DocumentURL), encrypted: isUnlocked() })}<div class="editor-form-footer reply-controls">
     <span class="editor-form-footer-controls">
       <button class="editor-form-icon-toggle editor-form-advanced-toggle" type="button" aria-expanded="false" aria-label="More options" title="More options">${Icon['.fas.fa-plus'] || '+'}<span class="editor-form-advanced-toggle-caret">${Icon['.fas.fa-caret-down']}</span></button>
-      <span class="annotation-access">
-        <input type="checkbox" class="editor-form-access" id="reply-to-resource-access-public" name="reply-to-resource-access-public" role="switch" value="true"${isPublicRead(Config.DocumentURL) ? ' checked="checked"' : ''} aria-label="${i18n.t('annotation-access.label.textContent')}" />
-        <label class="editor-form-icon-toggle editor-form-access-label" for="reply-to-resource-access-public">${Icon['.fas.fa-eye-slash']}${Icon['.fas.fa-globe']}</label>
-      </span>
-      <span class="annotation-encrypt">
-        <input type="checkbox" class="editor-form-encrypt" id="reply-to-resource-encrypt" name="reply-to-resource-encrypt" role="switch" value="true"${isUnlocked() ? ' checked="checked"' : ''} aria-label="${i18n.t('annotation-encrypt.label.textContent')}" />
-        <label class="editor-form-icon-toggle editor-form-encrypt-label" for="reply-to-resource-encrypt">${Icon['.fas.fa-lock-open']}${Icon['.fas.fa-lock']}</label>
-      </span>
     </span>
     <span class="editor-form-footer-actions">
       <button class="reply" data-i18n="${keys.submit}" title="${i18n.t(`${keys.submit}.title`)}" type="submit">${i18n.t(`${keys.submit}.textContent`)}</button>
@@ -1840,7 +1832,6 @@ export function replyToResource(e, iri, options = {}) {
     advancedFields.hidden = false
   }
 
-  setupIconToggleTitles(replyToResource)
   syncNotifyInboxDefault(replyToResource, { reset: true })
 
   replyToResource.addEventListener('click', e => {

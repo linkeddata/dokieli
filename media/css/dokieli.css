@@ -3115,10 +3115,6 @@ fill:var(--do-color-fg-secondary);
 .editor-form fieldset > .editor-form-nanopub-warning {
 order:98;
 }
-.editor-form-access[aria-disabled="true"] + .editor-form-access-label {
-opacity:0.5;
-cursor:not-allowed;
-}
 
 #document-notifications section.load-more-activities {
 margin: 0 0 0.5em 0;
@@ -6022,12 +6018,6 @@ button[type="button"]:focus {
 .do .editor-form-footer-actions {
   gap: 0.5em;
 }
-.do .editor-form-footer .annotation-access,
-.do .editor-form-footer .annotation-encrypt {
-  display: flex;
-  align-items: center;
-  margin: 0;
-}
 /* Neutralize the fieldset-wide align-self: end, which staggers short and tall buttons */
 .do .editor-form-footer button {
   width: max-content;
@@ -6079,6 +6069,18 @@ aside.do input + label.editor-form-icon-toggle {
 
 
 /* Annotate-related forms */
+/* As wide as the toolbar on wide screens */
+@media (min-width: 769px) {
+  #editor-form-approve,
+  #editor-form-disapprove,
+  #editor-form-bookmark,
+  #editor-form-note,
+  #editor-form-comment,
+  #editor-form-specificity {
+    box-sizing: border-box;
+    width: 100%;
+  }
+}
 #editor-form-approve fieldset,
 #editor-form-disapprove fieldset,
 #editor-form-bookmark fieldset,
@@ -6810,7 +6812,8 @@ height:auto;
 :root[data-theme="dark"] #document-editor.editor-toolbar {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--do-color-border);
 }
-:root[data-theme="dark"] .editor-dropdown-panel {
+:root[data-theme="dark"] .editor-dropdown-panel,
+:root[data-theme="dark"] .do .annotation-menu fieldset {
   border-color: var(--do-color-border);
 }
 
@@ -6938,7 +6941,8 @@ padding:0 0.5em;
   color: var(--do-color-fg);
 }
 
-.editor-dropdown-panel .editor-dropdown-section-label {
+.editor-dropdown-panel .editor-dropdown-section-label,
+.do .annotation-menu legend {
   padding: 0.25em;
   font-weight: bold;
   color: var(--do-color-fg-subtle);
@@ -6955,7 +6959,8 @@ padding:0 0.5em;
   margin: 0;
   padding: 0;
 }
-.editor-dropdown-panel li button.editor-dropdown-item {
+.editor-dropdown-panel li button.editor-dropdown-item,
+.do .annotation-menu fieldset label {
   width: 100%;
   height: max-content;
   text-align: left;
@@ -6972,7 +6977,9 @@ padding:0 0.5em;
   color: var(--do-color-fg);
   transition: background-color 0.1s;
 }
-.editor-dropdown-panel li button.editor-dropdown-item:hover {
+.editor-dropdown-panel li button.editor-dropdown-item:hover,
+.do .annotation-menu fieldset label:hover,
+.do .annotation-menu input:focus-visible + label {
   background-color: var(--do-color-accent-bg);
   color: var(--do-color-accent-strong);
 }
@@ -6982,6 +6989,7 @@ padding:0 0.5em;
 }
 .editor-dropdown-item-desc {
   color: var(--do-color-fg-secondary);
+  font-weight: normal;
   line-height:1.2;
   margin-top:0.5em;
 }
@@ -6994,11 +7002,11 @@ padding:0 0.5em;
   justify-content: space-between;
 }
 
-.editor-dropdown-item-current::after {
+.editor-dropdown-item-current::after,
+.do .annotation-menu input:checked + label::after {
   content: '✓';
-  font-size: 0.8em;
+  font-size: 1.5em;
   color: var(--do-color-link);
-  padding-left: 0.75em;
   flex-shrink: 0;
 }
 
@@ -7022,7 +7030,8 @@ padding:0 0.5em;
   stroke: var(--do-color-accent-hover);
 }
 
-.editor-dropdown-panel li button.editor-dropdown-item {
+.editor-dropdown-panel li button.editor-dropdown-item,
+.do .annotation-menu fieldset label {
   flex-direction: row;
   align-items: flex-start;
   gap: 1.25em;
@@ -7047,7 +7056,9 @@ button.editor-dropdown-item svg {
   flex-shrink: 0;
   width: 1.25em;
 }
-.editor-dropdown-panel li button.editor-dropdown-item:hover svg {
+.editor-dropdown-panel li button.editor-dropdown-item:hover svg,
+.do .annotation-menu fieldset label:hover svg,
+.do .annotation-menu input:focus-visible + label svg {
   color: var(--do-color-accent-strong);
 }
 
@@ -8786,49 +8797,91 @@ input.passphrase-mismatch + button.toggle-passphrase svg {
   fill: var(--do-color-error);
 }
 
-.do input.editor-form-encrypt {
-  position: absolute;
-  left: -9999px;
+/* Annotation visibility and encryption menus */
+.do .annotation-visibility {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25em;
+  margin: 0.5em 0 0 0;
 }
-.do .editor-form-encrypt-label .fas.fa-lock {
+.editor-form fieldset > .annotation-visibility {
+  order: 97;
+}
+.do .annotation-menu > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  padding: 0.5em;
+  border-radius: 0.25rem;
+  line-height: 1;
+  white-space: nowrap;
+  color: var(--do-color-fg);
+  cursor: pointer;
+}
+.do .annotation-menu > summary::before {
   display: none;
 }
-.do input.editor-form-encrypt:checked + .editor-form-encrypt-label .fas.fa-lock {
-  display: block;
+.do .annotation-menu > summary:hover {
+  background-color: var(--do-color-bg-subtle);
+  color: var(--do-color-link-hover);
 }
-.do input.editor-form-encrypt:checked + .editor-form-encrypt-label .fas.fa-lock-open {
-  display: none;
-}
-.do input.editor-form-encrypt:focus-visible + .editor-form-encrypt-label {
+.do .annotation-menu > summary:focus-visible {
   outline: 2px solid var(--do-color-accent-hover);
   outline-offset: 2px;
 }
-
-/* visibility switch, same control as the encrypt toggle */
-.editor-form .annotation-encrypt,
-.editor-form .annotation-access {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5em;
-  margin: 0.25em 1em 0 0;
-  vertical-align: top;
+.do .annotation-menu svg {
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
+  flex-shrink: 0;
 }
-.do input.editor-form-access {
+.do .annotation-menu[open] > summary .fa-caret-down {
+  transform: rotate(180deg);
+}
+.do .annotation-menu fieldset {
+  display: block;
+  position: absolute;
+  z-index: 2;
+  bottom: calc(100% + 0.25em);
+  left: 0;
+  max-width: calc(100vw - 2em);
+  margin: 0;
+  padding: 5px 0;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 0.5em;
+  background-color: var(--do-color-bg);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14), 0 1px 4px rgba(0, 0, 0, 0.08);
+  overflow-y: auto;
+}
+.do .annotation-menu legend {
+  float: left;
+  box-sizing: border-box;
+  width: 100%;
+  margin: 0;
+}
+.do .annotation-menu input {
   position: absolute;
   left: -9999px;
 }
-.do .editor-form-access-label .fas.fa-globe {
-  display: none;
+.do .annotation-menu fieldset label {
+  clear: both;
+  box-sizing: border-box;
+  flex-wrap: nowrap;
+  margin: 0;
 }
-.do input.editor-form-access:checked + .editor-form-access-label .fas.fa-globe {
-  display: block;
+.do .annotation-menu label > svg {
+  width: 1.25em;
+  height: 1.25em;
+  margin-top: 0.25em;
 }
-.do input.editor-form-access:checked + .editor-form-access-label .fas.fa-eye-slash {
-  display: none;
+.do .annotation-menu input:checked + label::after {
+  margin-left: auto;
 }
-.do input.editor-form-access:focus-visible + .editor-form-access-label {
-  outline: 2px solid var(--do-color-accent-hover);
-  outline-offset: 3px;
+.do .annotation-menu input:disabled + label {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 
 /* self-links */

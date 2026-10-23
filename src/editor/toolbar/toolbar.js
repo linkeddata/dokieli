@@ -214,8 +214,6 @@ export class ToolbarView {
       fields.hidden = !open;
     };
 
-    setupIconToggleTitles(toolbarForm);
-
     disclosures.forEach((disclosure) => {
       disclosure.toggle.addEventListener('click', (e) => {
         e.preventDefault();
@@ -986,34 +984,6 @@ export class ToolbarView {
       }
 
     }
-
-    const encryptLabel = e.target.closest('label.editor-form-encrypt-label');
-    if (encryptLabel) {
-      e.preventDefault();
-      const form = encryptLabel.closest('form');
-      const checkbox = form?.querySelector('input.editor-form-encrypt');
-      if (!checkbox) return;
-
-      const fieldset = checkbox.closest('fieldset');
-      if (checkbox.checked) {
-        checkbox.checked = false;
-        updateAnnotationStoreAccess(fieldset);
-      } else if (isUnlocked()) {
-        checkbox.checked = true;
-        updateAnnotationStoreAccess(fieldset);
-      } else {
-        hasKeystore().then(exists => {
-          import('../../dialog.js').then(({ showEncryptionSetup, showEncryptionUnlock }) => {
-            const activate = () => { checkbox.checked = true; updateAnnotationStoreAccess(fieldset); };
-            if (exists) {
-              showEncryptionUnlock(activate);
-            } else {
-              showEncryptionSetup(activate);
-            }
-          });
-        });
-      }
-    }
   }
 
 
@@ -1159,16 +1129,8 @@ export function annotateFormControls(options) {
       <span class="annotation-location-selection">${locationHTML}</span>
       <span class="annotation-inbox-selection">${getAnnotationInboxLocationHTML(options.button)}</span>
       `)}
-      ${formFooterHTML({ action: 'post', controls: `
-      <span class="annotation-access">
-        <input type="checkbox" class="editor-form-access" id="${options.button}-access-public" name="${options.button}-access-public" role="switch" value="true"${isPublicRead(Config.DocumentURL) ? ' checked="checked"' : ''} aria-label="${i18n.t('annotation-access.label.textContent')}" />
-        <label class="editor-form-icon-toggle editor-form-access-label" for="${options.button}-access-public">${Icon['.fas.fa-eye-slash']}${Icon['.fas.fa-globe']}</label>
-      </span>
-      <span class="annotation-encrypt">
-        <input type="checkbox" class="editor-form-encrypt" id="${options.button}-encrypt" name="${options.button}-encrypt" role="switch" value="true"${isUnlocked() ? ' checked="checked"' : ''} aria-label="${i18n.t('annotation-encrypt.label.textContent')}" />
-        <label class="editor-form-icon-toggle editor-form-encrypt-label" for="${options.button}-encrypt">${Icon['.fas.fa-lock-open']}${Icon['.fas.fa-lock']}</label>
-      </span>
-      ` })}
+      ${annotationVisibilityHTML(options.button, { isPublic: isPublicRead(Config.DocumentURL), encrypted: isUnlocked() })}
+      ${formFooterHTML({ action: 'post' })}
     </fieldset>
   `
 }
@@ -1217,7 +1179,6 @@ export function updateNanopubAccess(fieldset) {
   const nanopub = locations.find(c => c.name.endsWith('-annotation-location-nanopub-network'));
   const others = locations.filter(c => c !== nanopub && c.checked);
   const onlyNanopub = !!nanopub?.checked && !others.length;
-  const label = fieldset.querySelector(`label[for="${access.id}"]`);
   const locked = access.getAttribute('aria-disabled') === 'true';
 
   if (onlyNanopub) {
@@ -1230,7 +1191,6 @@ export function updateNanopubAccess(fieldset) {
       access.checked = true;
       access.dispatchEvent(new Event('change', { bubbles: true }));
     }
-    if (label) label.title = i18n.t('annotation-access.nanopub-only.title');
   }
   else if (!onlyNanopub && locked) {
     access.removeAttribute('aria-disabled');
@@ -1239,8 +1199,10 @@ export function updateNanopubAccess(fieldset) {
     // The change event updates the toggle title and the notify default.
     if (access.checked !== wasChecked) access.checked = wasChecked;
     access.dispatchEvent(new Event('change', { bubbles: true }));
+    syncAnnotationVisibility(fieldset);
     return;
   }
+  syncAnnotationVisibility(fieldset);
 
   const warn = !!nanopub?.checked && others.length > 0 && !access.checked;
   const existing = fieldset.querySelector('.editor-form-nanopub-warning');
@@ -1277,22 +1239,147 @@ export function updateAnnotationStoreAccess(fieldset) {
   const more = selection.querySelector('.annotation-location-more');
   if (more) more.hidden = !more.querySelector('li:not([hidden])');
 
+  syncAnnotationVisibility(fieldset);
   updateAnnotateSubmitState(fieldset);
 }
 
-// Access and encrypt toggle titles announce state and the notify-default coupling
-export function setupIconToggleTitles(container) {
-  [
-    ['.editor-form-access', 'annotation-access'],
-    ['.editor-form-encrypt', 'annotation-encrypt'],
-  ].forEach(([selector, keyBase]) => {
-    const input = container.querySelector(selector);
-    const switchLabel = input && container.querySelector(`label[for="${input.id}"]`);
-    if (!input || !switchLabel) return;
-    const syncTitle = () => { switchLabel.title = i18n.t(`${keyBase}.toggle.${input.checked ? 'on' : 'off'}.title`); };
-    input.addEventListener('change', syncTitle);
-    syncTitle();
+// Visibility and encryption menus over the checkboxes the form reads
+const ANNOTATION_MENUS = {
+  access: {
+    checkbox: 'editor-form-access',
+    keyBase: 'annotation-visibility',
+    options: [
+      { value: 'public', icon: '.fas.fa-globe', checked: true },
+      { value: 'private', icon: '.fas.fa-eye-slash', checked: false },
+    ],
+  },
+  encrypt: {
+    checkbox: 'editor-form-encrypt',
+    keyBase: 'annotation-encryption',
+    options: [
+      { value: 'unencrypted', icon: '.fas.fa-lock-open', checked: false },
+      { value: 'encrypted', icon: '.fas.fa-lock', checked: true },
+    ],
+  },
+};
+
+function annotationMenuOption(kind, checked) {
+  return ANNOTATION_MENUS[kind].options.find(option => option.checked === checked);
+}
+
+function annotationMenuSummaryHTML(kind, option) {
+  return `${Icon[option.icon]}<span>${i18n.t(`${ANNOTATION_MENUS[kind].keyBase}.${option.value}.label.textContent`)}</span>${Icon['.fas.fa-caret-down']}`;
+}
+
+function annotationMenuHTML(prefix, kind, checked) {
+  const { keyBase, options } = ANNOTATION_MENUS[kind];
+  const current = annotationMenuOption(kind, checked);
+  const items = options.map(option => `<input${option === current ? ' checked=""' : ''} id="${prefix}-${kind}-menu-${option.value}" name="${prefix}-${kind}-menu" type="radio" value="${option.value}" /><label for="${prefix}-${kind}-menu-${option.value}">${Icon[option.icon]}<span class="editor-dropdown-item-text"><span class="editor-dropdown-item-label">${i18n.t(`${keyBase}.${option.value}.label.textContent`)}</span><span class="editor-dropdown-item-desc">${i18n.t(`${keyBase}.${option.value}.description.textContent`)}</span></span></label>`).join('');
+  return `<details class="annotation-menu" data-menu="${kind}">
+          <summary aria-label="${i18n.t(`${keyBase}.summary.aria-label`)}" title="${i18n.t(`${keyBase}.${current.value}.title`)}">${annotationMenuSummaryHTML(kind, current)}</summary>
+          <fieldset><legend>${i18n.t(`${keyBase}.legend.textContent`)}</legend>${items}</fieldset>
+        </details>`;
+}
+
+export function annotationVisibilityHTML(prefix, { isPublic = false, encrypted = false } = {}) {
+  return `<div class="annotation-visibility">
+        <input${isPublic ? ' checked="checked"' : ''} class="editor-form-access" hidden="" id="${prefix}-access-public" name="${prefix}-access-public" type="checkbox" value="true" />
+        <input${encrypted ? ' checked="checked"' : ''} class="editor-form-encrypt" hidden="" id="${prefix}-encrypt" name="${prefix}-encrypt" type="checkbox" value="true" />
+        ${annotationMenuHTML(prefix, 'access', isPublic)}
+        ${annotationMenuHTML(prefix, 'encrypt', encrypted)}
+      </div>`;
+}
+
+// Locked to public, the visibility menu only offers public
+export function syncAnnotationVisibility(container) {
+  container?.querySelectorAll('.annotation-visibility').forEach(controls => {
+    controls.querySelectorAll('.annotation-menu').forEach(menu => {
+      const kind = menu.dataset.menu;
+      const checkbox = controls.querySelector(`.${ANNOTATION_MENUS[kind].checkbox}`);
+      const current = annotationMenuOption(kind, !!checkbox?.checked);
+      const locked = kind === 'access' && checkbox?.getAttribute('aria-disabled') === 'true';
+      menu.querySelectorAll('input[type="radio"]').forEach(option => {
+        option.checked = option.value === current.value;
+        option.disabled = locked && option.value !== current.value;
+      });
+      const summary = menu.querySelector('summary');
+      summary.replaceChildren(fragmentFromString(annotationMenuSummaryHTML(kind, current)));
+      summary.title = locked ? i18n.t('annotation-access.nanopub-only.title') : i18n.t(`${ANNOTATION_MENUS[kind].keyBase}.${current.value}.title`);
+    });
   });
+}
+
+function setChecked(checkbox, checked) {
+  if (!checkbox || checkbox.checked === checked) return;
+  checkbox.checked = checked;
+  checkbox.dispatchEvent(new Event('change', { bubbles: true }));
+}
+
+// Encrypting needs the keys unlocked, or set up the first time; until then it stays off
+export function setAnnotationEncryption(container, on) {
+  const checkbox = container?.querySelector('input.editor-form-encrypt');
+  if (!checkbox) return;
+  if (!on || isUnlocked()) {
+    setChecked(checkbox, on);
+    return;
+  }
+  hasKeystore().then(exists => {
+    import('../../dialog.js').then(({ showEncryptionSetup, showEncryptionUnlock }) => {
+      const activate = () => setChecked(checkbox, true);
+      if (exists) {
+        showEncryptionUnlock(activate);
+      } else {
+        showEncryptionSetup(activate);
+      }
+    });
+  });
+}
+
+if (typeof document !== 'undefined') {
+  document.addEventListener('change', (e) => {
+    const option = e.target.closest?.('.annotation-menu input[type="radio"]');
+    if (!option) return;
+    const controls = option.closest('.annotation-visibility');
+    if (option.closest('.annotation-menu').dataset.menu === 'encrypt') {
+      setAnnotationEncryption(controls, option.value === 'encrypted');
+    }
+    else {
+      setChecked(controls.querySelector('.editor-form-access'), option.value === 'public');
+    }
+    syncAnnotationVisibility(controls.parentElement);
+  });
+
+  // Close on a mouse pick or an outside click; arrow keys keep it open
+  document.addEventListener('click', (e) => {
+    const menu = e.target.closest?.('.annotation-menu');
+    if (menu && e.target.matches('input[type="radio"]') && e.detail) menu.open = false;
+    document.querySelectorAll('.annotation-menu[open]').forEach(open => {
+      if (!open.contains(e.target)) open.open = false;
+    });
+  });
+
+  // Fit the menu in the room above it
+  document.addEventListener('toggle', (e) => {
+    const menu = e.target;
+    if (!menu.matches?.('.annotation-menu') || !menu.open) return;
+    const list = menu.querySelector('fieldset');
+    list.style.maxHeight = '';
+    let clip = menu.parentElement;
+    while (clip && clip !== document.body && !/(auto|scroll|hidden)/.test(getComputedStyle(clip).overflowY)) clip = clip.parentElement;
+    const top = clip && clip !== document.body ? Math.max(clip.getBoundingClientRect().top, 0) : 0;
+    const room = menu.querySelector('summary').getBoundingClientRect().top - top - 8;
+    if (list.offsetHeight > room) list.style.maxHeight = `${Math.max(room, 0)}px`;
+  }, true);
+
+  // Escape closes the menu, not the form
+  document.addEventListener('keydown', (e) => {
+    const menu = e.target.closest?.('.annotation-menu[open]');
+    if (menu && e.key === 'Escape') {
+      e.stopPropagation();
+      menu.open = false;
+      menu.querySelector('summary').focus();
+    }
+  }, true);
 }
 
 // Notify follows the access and encrypt toggles until the user sets it directly
@@ -1320,17 +1407,11 @@ if (typeof document !== 'undefined') {
     if (accessOrEncrypt) {
       syncNotifyInboxDefault(accessOrEncrypt.closest('fieldset, [data-notify-scope]'));
       updateAnnotationStoreAccess(accessOrEncrypt.closest('fieldset'));
+      syncAnnotationVisibility(accessOrEncrypt.closest('.annotation-visibility')?.parentElement);
     }
 
     if (cb || e.target.closest?.('.editor-form-access')) updateNanopubAccess(e.target.closest('fieldset'));
   });
-
-  // A locked access toggle doesn't switch to private.
-  document.addEventListener('click', (e) => {
-    const label = e.target.closest?.('.editor-form-access-label');
-    const access = e.target.closest?.('.editor-form-access') || (label && document.getElementById(label.htmlFor));
-    if (access?.getAttribute('aria-disabled') === 'true') e.preventDefault();
-  }, true);
 }
 
 // Each popup uses its own action so input ids stay unique

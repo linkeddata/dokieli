@@ -16,7 +16,7 @@ limitations under the License.
 */
 
 import { describe, it, expect, beforeEach } from 'vitest';
-import { updateNanopubAccess } from '../../../../src/editor/toolbar/toolbar.js';
+import { annotationVisibilityHTML, updateNanopubAccess } from '../../../../src/editor/toolbar/toolbar.js';
 
 function popup({ store = false, nanopub = true, isPublic = true } = {}) {
   document.body.innerHTML = `<form><fieldset>
@@ -25,8 +25,7 @@ function popup({ store = false, nanopub = true, isPublic = true } = {}) {
       <li><input type="checkbox" id="note-annotation-location-nanopub-network" name="note-annotation-location-nanopub-network"${nanopub ? ' checked=""' : ''} /></li>
     </ul></span>
     <div class="editor-form-footer">
-      <input type="checkbox" class="editor-form-access" id="note-access-public" name="note-access-public" value="true"${isPublic ? ' checked=""' : ''} />
-      <label class="editor-form-access-label" for="note-access-public"></label>
+      ${annotationVisibilityHTML('note', { isPublic })}
       <button class="editor-form-submit" type="submit">Post</button>
     </div>
   </fieldset></form>`;
@@ -49,11 +48,12 @@ describe('access toggle with the nanopub network', () => {
     expect(access().getAttribute('aria-disabled')).toBe('true');
     expect(access().disabled).toBe(false);
     expect(new FormData(document.querySelector('form')).get('note-access-public')).toBe('true');
-    expect(document.querySelector('.editor-form-access-label').title).toBe('Annotations on the nanopub network are public.');
+    expect(document.querySelector('.annotation-menu[data-menu="access"] summary').title).toBe('Annotations on the nanopub network are public.');
+    expect(document.querySelector('#note-access-menu-private').disabled).toBe(true);
     expect(warning()).toBeNull();
 
-    // Clicking it doesn't make it private.
-    access().click();
+    // Choosing private doesn't make it private.
+    document.querySelector('label[for="note-access-menu-private"]').click();
     expect(access().checked).toBe(true);
   });
 
