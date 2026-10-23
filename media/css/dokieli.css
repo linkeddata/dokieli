@@ -7366,7 +7366,6 @@ user-select: none;
   margin: 0;
   padding: 0;
   border: 0;
-  font: inherit;
   vertical-align: baseline;
 }
 
@@ -7611,7 +7610,6 @@ user-select: none;
   display: block;
   padding: 0;
 }
-.shower.single details#document-details { display: none; }
 .shower.single .caption {
   position: relative;
   display: block;
@@ -7677,7 +7675,6 @@ display:none;
 }
 
 .shower>main>article header details {
-font-size:0.5em;
 margin-top:1em;
 }
 
