@@ -709,7 +709,7 @@ export function initDocumentDoEvents() {
 
     if (e.target.closest('.snapshot-internet-archive')){
       // snapshotAtEndpoint(e, Config.DocumentURL, 'https://pragma.archivelab.org/', '', {'contentType': 'application/json'});
-      snapshotAtEndpoint(e, Config.DocumentURL, 'https://web.archive.org/save/', '', {'Accept': '*/*', 'showActionMessage': true });
+      snapshotAtEndpoint(e, Config.DocumentURL, 'https://web.archive.org/save/', '', {'Accept': '*/*', 'showActionMessage': true }).catch(() => {});
     }
 
     if (e.target.closest('.generate-feed')) {
@@ -5609,7 +5609,7 @@ export async function snapshotAtEndpoint(e, iri, endpoint, noteData, options = {
   endpoint = endpoint || 'https://pragma.archivelab.org/';
 
   if (!(await requestOriginConsent(endpoint, { reason: 'archive' }))) { return; }
-  var progress, svgFail, messageArchivedAt;
+  var progress, progressMessageId, errorHandled, svgFail, messageArchivedAt;
   options['showActionMessage'] = ('showActionMessage' in options) ? options.showActionMessage : true;
 
   //TODO: Move to Config?
@@ -5622,43 +5622,52 @@ export async function snapshotAtEndpoint(e, iri, endpoint, noteData, options = {
     "504": svgFail + ' Archive timeout. Please try later.'
   }
 
+  var getResponseMessage = function(response) {
+    return responseMessages[response && response.status] || svgFail + ' Archiving failed. Please try later.';
+  }
+
   // if(note.length) {
   //   noteData.annotation["message"] = note;
   // }
 
   if (options.showActionMessage) {
-    var button = e.target.closest('button');
+    var button = (typeof e !== 'undefined' && e.target) ? e.target.closest('button') : null;
+    var message = {
+      'content': 'Archiving in progress.',
+      'type': 'info'
+    }
 
-    if (typeof e !== 'undefined' && button) {
+    if (button) {
       if (button.disabled) { return; }
       else { button.disabled = true; }
 
       var archiveNode = button.parentNode;
-      var message = 'Archiving in progress.';
-      message = {
-        'content': message,
-        'type': 'info'
-      }
-      addMessageToLog(message, Config.MessageLog);
       sanitizeInsertAdjacentHTML(archiveNode, 'beforeend', ' <span class="progress">' + Icon[".fas.fa-circle-notch.fa-spin.fa-fw"] + ' ' + message.content + '</span>');
+      progress = archiveNode.querySelector('.progress');
     }
 
-    progress = archiveNode.querySelector('.progress');
+    addMessageToLog(message, Config.MessageLog);
+    progressMessageId = showActionMessage(document.body, message);
   }
 
   var handleError = function(response) {
+    if (errorHandled) { return Promise.reject(response); }
+    errorHandled = true;
+
+    var content = getResponseMessage(response);
+
     if (options.showActionMessage) {
-      var message = responseMessages[response.status];
-      message = {
-        'content': message,
+      var message = {
+        'content': content,
         'type': 'error',
         'timer': 3000
       }
       addMessageToLog(message, Config.MessageLog);
-      progress.setHTMLUnsafe(domSanitize(responseMessages[response.status]));
+      showActionMessage(document.body, message, { clearId: progressMessageId });
+      if (progress) { progress.setHTMLUnsafe(domSanitize(content)); }
     }
 
-    return Promise.reject(responseMessages[response.status]);
+    return Promise.reject(content);
   }
 
   var handleSuccess = function(o) {
@@ -5670,7 +5679,8 @@ export async function snapshotAtEndpoint(e, iri, endpoint, noteData, options = {
         'type': 'success'
       }
       addMessageToLog(message, Config.MessageLog);
-      progress.setHTMLUnsafe(domSanitize(message.content));
+      showActionMessage(document.body, message, { clearId: progressMessageId });
+      if (progress) { progress.setHTMLUnsafe(domSanitize(message.content)); }
     }
 
     return Promise.resolve(o);
@@ -5797,46 +5807,17 @@ export async function snapshotAtEndpoint(e, iri, endpoint, noteData, options = {
 
       .then(response => {
         if (response['wayback_id']) {
-          var message;
           let location = 'https://web.archive.org' + response.wayback_id
 
-          if (options.showActionMessage) {
-            message = messageArchivedAt + '<a href="' + location + '" rel="noopener" target="_blank">' + location + '</a>';
-            message = {
-              'content': message,
-              'type': 'info'
-            }
-            addMessageToLog(message, Config.MessageLog);
-            progress.setHTMLUnsafe(domSanitize(message.content));
-          }
-
-          return { "response": response, "location": location };
+          return handleSuccess({ "response": response, "location": location });
         }
         else {
-          if (options.showActionMessage) {
-            message = responseMessages[response.status];
-            message = {
-              'content': message,
-              'type': 'error'
-            }
-            addMessageToLog(message, Config.MessageLog);
-            progress.setHTMLUnsafe(domSanitize(message.content));
-          }
-
-          return Promise.reject(responseMessages[response.status])
+          return handleError(response);
         }
       })
 
       .catch((err) => {
-        if (options.showActionMessage) {
-          var message = responseMessages[err.response.status];
-          message = {
-            'content': message,
-            'type': 'error'
-          }
-          addMessageToLog(message, Config.MessageLog);
-          progress.setHTMLUnsafe(domSanitize(message.content));
-        }
+        return handleError((err && err.response) || err).catch(() => {});
       })
   }
 }
