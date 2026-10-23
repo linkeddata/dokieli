@@ -63,50 +63,60 @@ export async function restoreSession() {
 
 const EXTENSION_SESSION_KEY = 'DO.Config.ExtensionSession';
 
-async function buildExtensionSession({ webId }) {
-  async function serializeBody(body) {
-    if (body == null) return undefined;
-    if (typeof body === 'string') return body;
-    if (body instanceof URLSearchParams) return body.toString();
-    if (body instanceof Blob || body instanceof ArrayBuffer || ArrayBuffer.isView(body)) {
-      return await new Response(body).text();
-    }
-    return String(body);
+async function serializeExtensionFetchBody(body) {
+  if (body == null) return undefined;
+  if (typeof body === 'string') return body;
+  if (body instanceof URLSearchParams) return body.toString();
+  if (body instanceof Blob || body instanceof ArrayBuffer || ArrayBuffer.isView(body)) {
+    return await new Response(body).text();
+  }
+  return String(body);
+}
+
+// Content scripts cannot fetch cross-origin; the background worker can
+export async function extensionFetch(input, init, options = {}) {
+  const url = input instanceof Request ? input.url : input.toString();
+  const reqHeaders = new Headers(init?.headers || (input instanceof Request ? input.headers : {}));
+  const headers = {};
+  reqHeaders.forEach((v, k) => { headers[k] = v; });
+
+  const method = (init?.method || (input instanceof Request ? input.method : null) || 'GET').toUpperCase();
+  const hasBody = method !== 'GET' && method !== 'HEAD';
+  const body = hasBody
+    ? await serializeExtensionFetchBody(init?.body ?? (input instanceof Request ? await input.clone().text() : undefined))
+    : undefined;
+
+  const result = await Config.WebExtension.runtime.sendMessage({
+    action: 'dokieli.fetch',
+    url,
+    options: { method, headers, body, anonymous: !!options.anonymous },
+  });
+
+  if (!result || !result.status) {
+    console.error('dokieli extensionFetch: SW returned bad result', { url, method, result });
+    throw new TypeError(result?.statusText || `Failed to fetch ${url}`);
   }
 
+  const nullBodyStatus = result.status === 101 || result.status === 103
+    || result.status === 204 || result.status === 205 || result.status === 304;
+  const response = new Response(nullBodyStatus ? null : result.body, {
+    status: result.status,
+    statusText: result.statusText,
+    headers: result.headers,
+  });
+  // Response.url is read-only; expose the worker's final URL after redirects
+  if (result.url) {
+    Object.defineProperty(response, 'url', { value: result.url });
+  }
+  return response;
+}
+
+async function buildExtensionSession({ webId }) {
   Config['Session'] = {
     isActive: true,
     webId,
-    async authFetch(input, init) {
-      const url = input instanceof Request ? input.url : input.toString();
-      const reqHeaders = new Headers(init?.headers || (input instanceof Request ? input.headers : {}));
-      const headers = {};
-      reqHeaders.forEach((v, k) => { headers[k] = v; });
-
-      const method = (init?.method || (input instanceof Request ? input.method : null) || 'GET').toUpperCase();
-      const hasBody = method !== 'GET' && method !== 'HEAD';
-      const body = hasBody
-        ? await serializeBody(init?.body ?? (input instanceof Request ? await input.clone().text() : undefined))
-        : undefined;
-
-      const result = await Config.WebExtension.runtime.sendMessage({
-        action: 'dokieli.fetch',
-        url,
-        options: { method, headers, body },
-      });
-
-      if (!result || !result.status) {
-        console.error('dokieli authFetch: SW returned bad result', { url, method, result });
-        throw new TypeError(result?.statusText || `Failed to fetch ${url}`);
-      }
-
-      const nullBodyStatus = result.status === 101 || result.status === 103
-        || result.status === 204 || result.status === 205 || result.status === 304;
-      return new Response(nullBodyStatus ? null : result.body, {
-        status: result.status,
-        statusText: result.statusText,
-        headers: result.headers,
-      });
+    authFetch(input, init) {
+      return extensionFetch(input, init);
     },
     async logout() {
       Config['Session'] = null;

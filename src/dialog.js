@@ -43,7 +43,7 @@ import { formatHTMLString } from './utils/normalization.js';
 import { showVisualisationGraph } from './viz.js';
 import { exportAsDocument, maybeAskPreferredLanguage, updateUILanguage } from './actions.js';
 import { parseMarkdown, htmlToMarkdown, fragmentFromString, removeSelectorFromNode, selectArticleNode, getNodeWithoutClasses } from "./utils/html.js";
-import { showUserSigninSignout } from './auth.js';
+import { showUserSigninSignout, extensionFetch } from './auth.js';
 import { renderMenuTabs, initMenuTabsEvents, renderDocumentDo, renderDocumentTools, renderDocumentViews, renderDocumentTheme, renderLanguageSelector, renderAutoSave, renderAboutDokieli, renderWebServicesConsent } from './ui/menu.js';
 import { initSlideshow } from './init.js';
 import { initCV } from './ui/templates/cv.js';
@@ -5634,7 +5634,8 @@ export async function snapshotAtEndpoint(e, iri, endpoint, noteData, options = {
     var button = (typeof e !== 'undefined' && e.target) ? e.target.closest('button') : null;
     var message = {
       'content': 'Archiving in progress.',
-      'type': 'info'
+      'type': 'info',
+      'timer': null
     }
 
     if (button) {
@@ -5653,6 +5654,8 @@ export async function snapshotAtEndpoint(e, iri, endpoint, noteData, options = {
   var handleError = function(response) {
     if (errorHandled) { return Promise.reject(response); }
     errorHandled = true;
+
+    console.error('snapshotAtEndpoint failed:', response);
 
     var content = getResponseMessage(response);
 
@@ -5715,7 +5718,9 @@ export async function snapshotAtEndpoint(e, iri, endpoint, noteData, options = {
       pIRI = (Config.WebExtensionEnabled) ? pIRI : getProxyableIRI(pIRI, {'forceProxy': true});
       // pIRI = getProxyableIRI(pIRI, {'forceProxy': true})
       // console.log(pIRI)
-      return Config.Storage.get(pIRI, headers, options)
+      return ((Config.WebExtensionEnabled)
+        ? extensionFetch(pIRI, { headers }, { anonymous: true })
+        : Config.Storage.get(pIRI, headers, options))
         .then(response => {
           // console.log(response)
           // for(var key of response.headers.keys()) {
@@ -5726,7 +5731,6 @@ export async function snapshotAtEndpoint(e, iri, endpoint, noteData, options = {
           // console.log(location)
           if (location && location.length) {
             location = domSanitize(location);
-            //XXX: Scrape Internet Archive's HTML
             if (location.startsWith('/web/')) {
               var o = {
                 "response": response,
@@ -5734,34 +5738,34 @@ export async function snapshotAtEndpoint(e, iri, endpoint, noteData, options = {
               }
               return handleSuccess(o);
             }
-            else {
-              return response.text()
-                .then(data => {
-                  // console.log(data)
-                  // ALLOW_UNKNOWN_PROTOCOLS is needed for namespaced attribute values that DOMPurify mistakenly interpret as an unknown protocol protocol; it will allow mailto: but strip out others it does not recognize
-                  data = domSanitize(data);
-
-                  var regexp = /var redirUrl = "([^"]*)";/;
-                  var match = data.match(regexp);
-                  // console.log(match)
-                  if (match && match[1].startsWith('/web/')) {
-                    var o = {
-                      "response": response,
-                      "location": 'https://web.archive.org' + match[1]
-                    }
-                    return handleSuccess(o);
-                  }
-                  else {
-                    return checkLinkHeader(response);
-                  }
-                })
-            }
           }
-          else {
-            // response.text().then(data => { console.log(data) })
 
-            return checkLinkHeader(response);
+          // The save endpoint redirects to the snapshot
+          if (response.url && response.url.startsWith('https://web.archive.org/web/')) {
+            return handleSuccess({ "response": response, "location": response.url });
           }
+
+          //XXX: Scrape Internet Archive's HTML
+          return response.text()
+            .then(data => {
+              // console.log(data)
+              // ALLOW_UNKNOWN_PROTOCOLS is needed for namespaced attribute values that DOMPurify mistakenly interpret as an unknown protocol protocol; it will allow mailto: but strip out others it does not recognize
+              data = domSanitize(data);
+
+              var regexp = /var redirUrl = "([^"]*)";/;
+              var match = data.match(regexp);
+              // console.log(match)
+              if (match && match[1].startsWith('/web/')) {
+                var o = {
+                  "response": response,
+                  "location": 'https://web.archive.org' + match[1]
+                }
+                return handleSuccess(o);
+              }
+              else {
+                return checkLinkHeader(response);
+              }
+            })
         })
         .catch(response => {
           // console.log(response)

@@ -244,8 +244,10 @@ async function initDocumentActions() {
       showEncryptionUnlock();
     }
   });
-  // Non-critical: fetch inbox/annotation sources after first paint
-  (window.requestIdleCallback || ((cb) => setTimeout(cb, 0)))(() => initShowNotificationSources());
+  // Non-critical: fetch inbox/annotation sources after first paint. Called on window; a bare call throws in extension content scripts
+  window.requestIdleCallback
+    ? window.requestIdleCallback(() => initShowNotificationSources())
+    : window.setTimeout(() => initShowNotificationSources(), 0);
   focusNote();
   setDocRefType();
   initTableSort();

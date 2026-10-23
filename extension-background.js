@@ -49,7 +49,8 @@ async function makeDpopProof(method, url, keyPair, nonce) {
 }
 
 async function solidFetch(url, options) {
-  const session = await getSession();
+  // Anonymous requests (e.g. third-party services) must not carry the Solid token
+  const session = options?.anonymous ? null : await getSession();
   const method = (options?.method || 'GET').toUpperCase();
   const baseHeaders = options?.headers ? { ...options.headers } : {};
 
@@ -90,7 +91,7 @@ async function serializeResponse(response) {
   const headers = {};
   response.headers.forEach((v, k) => { headers[k] = v; });
   const body = await response.text();
-  return { status: response.status, statusText: response.statusText, headers, body };
+  return { status: response.status, statusText: response.statusText, headers, body, url: response.url };
 }
 
 async function dynamicClientRegistration(registrationEndpoint, redirectUri) {
