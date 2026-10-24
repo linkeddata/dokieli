@@ -137,8 +137,8 @@ export const LookupServices = {
     identifier: 'Feature',
     url: '',
     format: 'json',
-    // dcat only appears in the saved markup, so the columns alone would not declare it.
-    prefixes: ['dcat'],
+    // dcat and risk only appear in the saved markup, so the columns alone would not declare them.
+    prefixes: ['dcat', 'risk'],
     tableSchema: { typeof: 'dpv:Risk', aboutUrl: '#risk-{_slug_threat}' },
     columns: [
       { name: 'feature', titles: 'Feature', propertyUrl: 'dcterms:subject', valueUrl: '{+_fragment_feature}' },
@@ -146,7 +146,9 @@ export const LookupServices = {
       { name: 'type', titles: 'STRIDE type', select: 'threat-type', kindSelect: true },
       { name: 'element', titles: 'Threat-model element', select: 'threat-element' },
       { name: 'risk', titles: 'Risk level', select: 'risk-level' },
-      { name: 'mitigation', titles: 'Mitigation', propertyUrl: 'dpv:isMitigatedByMeasure', valueUrl: '#mitigation-{_slug_threat}' }
+      { name: 'responsetype', titles: 'Response type', select: 'response-type' },
+      // An Accept row carries the acceptance rel instead of the measure rel.
+      { name: 'response', titles: 'Response', propertyUrl: 'dpv:isMitigatedByMeasure', altPropertyUrls: ['risk:hasRiskAcceptance'], valueUrl: '#response-{_slug_threat}' }
     ]
   },
 

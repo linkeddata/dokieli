@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { strideTypes, linddunTypes, riskLevels, threatModelElementGroups, THREAT_SELECT_RELS, threatModelTableHTML, threatClassificationSentence, threatModelDefinitionHTML, threatTableRef, defaultThreatCaption } from '../../src/threatModel.js';
+import { strideTypes, linddunTypes, riskLevels, threatModelElementGroups, THREAT_SELECT_RELS, threatModelTableHTML, threatClassificationSentence, threatModelDefinitionHTML, threatTableRef, defaultThreatCaption, responseTypeGroups, responseTypeOf, RISK_ACCEPTANCE } from '../../src/threatModel.js';
 import { normalizeHTML, cleanProseMirrorOutput } from '../../src/utils/normalization.js';
 import Config from '../../src/config.js';
 
@@ -33,6 +33,35 @@ describe('threat model vocabulary', () => {
       .toBe('https://www.w3.org/TR/threat-model-web/#web-origin-boundary');
     expect(groups[1].options.find((o) => o.label === 'B1.8 Local Network Boundary').value)
       .toBe('https://www.w3.org/TR/threat-model-web/#local-network-boundary');
+  });
+
+  it('offers the four response types as groups, generic control first', () => {
+    const groups = responseTypeGroups();
+    expect(groups.map((g) => g.label)).toEqual(['Eliminate', 'Reduce', 'Transfer', 'Accept']);
+    expect(groups[0].options[0]).toEqual({ value: 'https://w3id.org/dpv/risk#EliminationControl', label: 'Eliminate' });
+    expect(groups[1].options.map((o) => o.label)).toEqual(['Reduce', 'Reduce (likelihood)', 'Reduce (severity)', 'Reduce (monitor)']);
+    expect(groups[2].options[1]).toEqual({ value: 'https://w3id.org/dpv/risk#ShareRisk', label: 'Transfer (share)' });
+    expect(groups[3].options).toEqual([{ value: RISK_ACCEPTANCE, label: 'Accept' }]);
+  });
+
+  it('keeps a recognized but uncurated control selectable under its type', () => {
+    const groups = responseTypeGroups('https://w3id.org/dpv/risk#HaltSource');
+    const reduce = groups.find((g) => g.label === 'Reduce');
+    expect(reduce.options.at(-1)).toEqual({ value: 'https://w3id.org/dpv/risk#HaltSource', label: 'Reduce (halt source)' });
+  });
+
+  it('keeps an unrecognized term selectable without classifying it', () => {
+    const groups = responseTypeGroups('https://example.org/vocab#Whatever');
+    expect(groups[0].label).toBeUndefined();
+    expect(groups[0].options).toEqual([{ value: 'https://example.org/vocab#Whatever', label: 'https://example.org/vocab#Whatever' }]);
+    expect(groups).toHaveLength(5);
+  });
+
+  it('maps controls to their response type', () => {
+    expect(responseTypeOf('https://w3id.org/dpv/risk#ReduceSeverity')).toBe('Reduce');
+    expect(responseTypeOf('https://w3id.org/dpv/risk#ShareControl')).toBe('Transfer');
+    expect(responseTypeOf(RISK_ACCEPTANCE)).toBe('Accept');
+    expect(responseTypeOf('https://w3id.org/dpv/risk#High')).toBeNull();
   });
 });
 
@@ -154,10 +183,10 @@ describe('threat model save conversion', () => {
     const stride = threatTableRef(defaultThreatCaption('stride'), 'stride');
     const linddun = threatTableRef(defaultThreatCaption('linddun'), 'linddun');
 
-    expect(stride.id).toBe('security-threats-and-mitigations');
+    expect(stride.id).toBe('security-threats-and-responses');
 
     const strideOnly = threatClassificationSentence([stride]);
-    expect(strideOnly).toContain('href="#security-threats-and-mitigations"');
+    expect(strideOnly).toContain('href="#security-threats-and-responses"');
     expect(strideOnly).toContain('>Security Threats</a> are classified by a');
     expect(strideOnly).toContain('STRIDE_model');
     expect(strideOnly).not.toContain('LINDDUN');
@@ -180,6 +209,9 @@ describe('threat model save conversion', () => {
     expect(html).toContain('privacy-principles');
     expect(html).toContain('Each threat is assigned a risk level');
     expect(html).toContain('DPV-RISK');
+    expect(html).toContain('href="https://www.w3.org/TR/threat-modeling-guide/#erta-threat-response-framework"');
+    expect(html).toContain('ERTA Threat Response Framework</a>');
+    expect(html).toContain('THREAT-MODELING-GUIDE');
 
     // Without tables, the classification sentence is simply absent.
     const bare = threatModelDefinitionHTML([]);
@@ -194,10 +226,10 @@ describe('threat model save conversion', () => {
     const table = root.querySelector('table');
     expect(table.getAttribute('data-typeof')).toBe('dpv:Risk');
     expect(table.getAttribute('data-about-url')).toBe('#risk-{_slug_threat}');
-    expect(root.querySelector('caption').textContent).toBe('Security Threats and Mitigations');
+    expect(root.querySelector('caption').textContent).toBe('Security Threats and Responses');
 
     const ths = root.querySelectorAll('th');
-    expect(ths).toHaveLength(6);
+    expect(ths).toHaveLength(7);
     expect(ths[1].getAttribute('data-property-url')).toBe('dcterms:description');
     expect(ths[2].querySelector('select[data-select="threat-model-kind"] option[selected]').getAttribute('value')).toBe('stride');
 
@@ -208,6 +240,8 @@ describe('threat model save conversion', () => {
 
     expect(root.querySelectorAll('td select[data-select="threat-element"] optgroup')).toHaveLength(2);
     expect(root.querySelectorAll('td select[data-select="risk-level"] option')).toHaveLength(8);
+    expect(root.querySelectorAll('td select[data-select="response-type"] optgroup')).toHaveLength(4);
+    expect(root.querySelector('td select[data-select="response-type"] option[value=""]').textContent).toBe('Select response type');
   });
 
   it('strips decoration classes and hint titles from the output', () => {
@@ -239,5 +273,84 @@ describe('threat model save conversion', () => {
     expect(THREAT_SELECT_RELS['threat-type']).toBe('dpv:hasImpact');
     expect(THREAT_SELECT_RELS['threat-element']).toBe('dcat:theme');
     expect(THREAT_SELECT_RELS['risk-level']).toBe('dpv:hasRiskLevel');
+    expect(THREAT_SELECT_RELS['response-type']).toBe('rdf:type');
+  });
+
+  it('types the response resource from the response-type select and keeps the risk untyped', () => {
+    const root = document.createElement('div');
+    root.innerHTML = `
+      <table typeof="schema:Table">
+        <tbody><tr typeof="dpv:Risk">
+          <td property="dcterms:description">Bad thing. Details.</td>
+          <td><select data-select="response-type"><option value=""></option><option selected="selected" value="https://w3id.org/dpv/risk#ReduceLikelihood">Reduce</option></select></td>
+          <td rel="dpv:isMitigatedByMeasure" resource="#response-bad-thing"><p>Do good.</p></td>
+        </tr></tbody>
+      </table>`;
+    const out = normalizeHTML(root, {});
+
+    const typeCell = out.querySelector('td[about="#response-bad-thing"]');
+    const typeAnchor = typeCell.querySelector('a');
+    expect(typeAnchor.getAttribute('rel')).toBe('rdf:type');
+    expect(typeAnchor.getAttribute('href')).toBe('https://w3id.org/dpv/risk#ReduceLikelihood');
+    expect(typeAnchor.textContent).toBe('Reduce');
+
+    const span = out.querySelector('td[rel="dpv:isMitigatedByMeasure"] span');
+    expect(span.getAttribute('about')).toBe('#response-bad-thing');
+    expect(span.getAttribute('typeof')).toBe('dpv:RiskMitigationMeasure');
+  });
+
+  it('an Accept choice carries a risk acceptance instead of a mitigation measure', () => {
+    const root = document.createElement('div');
+    root.innerHTML = `
+      <table typeof="schema:Table">
+        <tbody><tr typeof="dpv:Risk">
+          <td property="dcterms:description">Residual thing. Details.</td>
+          <td><select data-select="response-type"><option value=""></option><option selected="selected" value="${RISK_ACCEPTANCE}">Accept</option></select></td>
+          <td rel="dpv:isMitigatedByMeasure" resource="#response-residual-thing"><p>Lived with.</p></td>
+        </tr></tbody>
+      </table>`;
+    const out = normalizeHTML(root, {});
+
+    expect(out.querySelector('td[rel="dpv:isMitigatedByMeasure"]')).toBeNull();
+    const td = out.querySelector('td[rel="risk:hasRiskAcceptance"]');
+    const span = td.querySelector('span');
+    expect(span.getAttribute('about')).toBe('#response-residual-thing');
+    expect(span.getAttribute('typeof')).toBe('risk:RiskAcceptance');
+    expect(span.getAttribute('property')).toBe('dcterms:description');
+    expect(out.querySelector('td[about="#response-residual-thing"] a').getAttribute('rel')).toBe('rdf:type');
+  });
+
+  it('switching an Accept row back re-types its saved acceptance as a measure', () => {
+    const root = document.createElement('div');
+    root.innerHTML = `
+      <table typeof="schema:Table">
+        <tbody><tr typeof="dpv:Risk" about="#risk-residual-thing">
+          <td property="dcterms:description">Residual thing. Details.</td>
+          <td><select data-select="response-type"><option value=""></option><option selected="selected" value="https://w3id.org/dpv/risk#TransferControl">Transfer</option></select></td>
+          <td rel="risk:hasRiskAcceptance"><p><span about="#response-residual-thing" id="response-residual-thing" property="dcterms:description" typeof="risk:RiskAcceptance">Now theirs.</span></p></td>
+        </tr></tbody>
+      </table>`;
+    const out = normalizeHTML(root, {});
+
+    const td = out.querySelector('td[rel="dpv:isMitigatedByMeasure"]');
+    expect(td.querySelector('span').getAttribute('typeof')).toBe('dpv:RiskMitigationMeasure');
+    expect(out.querySelector('td[rel="risk:hasRiskAcceptance"]')).toBeNull();
+  });
+
+  it('drops the rdf:type rel when the row has no response resource to type', () => {
+    const root = document.createElement('div');
+    root.innerHTML = `
+      <table typeof="schema:Table">
+        <tbody><tr typeof="dpv:Risk">
+          <td property="dcterms:description">Bad thing. Details.</td>
+          <td><select data-select="response-type"><option value=""></option><option selected="selected" value="https://w3id.org/dpv/risk#ReduceLikelihood">Reduce</option></select></td>
+          <td rel="dpv:isMitigatedByMeasure" resource="#response-bad-thing"><p></p></td>
+        </tr></tbody>
+      </table>`;
+    const out = normalizeHTML(root, {});
+
+    const anchor = out.querySelector('tbody a[href="https://w3id.org/dpv/risk#ReduceLikelihood"]');
+    expect(anchor.hasAttribute('rel')).toBe(false);
+    expect(out.querySelector('td[about]')).toBeNull();
   });
 });

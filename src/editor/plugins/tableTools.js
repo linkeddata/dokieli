@@ -188,18 +188,18 @@ export function recognizeThreatTable(tr, table) {
   });
 
   const expected = (column) => column.select
-    ? THREAT_SELECT_RELS[column.select]
-    : column.propertyUrl;
+    ? [THREAT_SELECT_RELS[column.select]]
+    : [column.propertyUrl, ...(column.altPropertyUrls || [])];
 
   const assigned = new Map();
   signals.forEach((found, index) => {
     if (!found) return;
     const match = service.columns.find((column) =>
-      expected(column) === found.signal && ![...assigned.values()].includes(column));
+      expected(column).includes(found.signal) && ![...assigned.values()].includes(column));
     if (match) assigned.set(index, match);
   });
 
-  const matchedSignals = [...assigned.values()].map(expected);
+  const matchedSignals = [...assigned.values()].flatMap(expected);
   let distinctive = matchedSignals.includes('dpv:hasImpact') || matchedSignals.includes('dpv:hasRiskLevel');
 
   const header = getHeaderRowPos(table.node, table.pos);
@@ -804,7 +804,8 @@ export class TableToolsView {
     if (caption?.type.name === 'caption') {
       const text = caption.textContent.trim();
       const desired = defaultThreatCaption(framework);
-      const followable = !text || text === defaultThreatCaption('stride') || text === defaultThreatCaption('linddun');
+      // Pre-rename default captions still count as defaults.
+      const followable = !text || ['Security Threats and Responses', 'Privacy Threats and Responses', 'Security Threats and Mitigations', 'Privacy Threats and Mitigations'].includes(text);
       if (followable && text !== desired) {
         tr.replaceWith(table.pos + 2, table.pos + 2 + caption.content.size, schema.text(desired));
       }

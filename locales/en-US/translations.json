@@ -653,6 +653,7 @@
   "editor.table.threat.select.threat-type.textContent": "Select threat type",
   "editor.table.threat.select.threat-element.textContent": "Select threat element",
   "editor.table.threat.select.risk-level.textContent": "Select risk level",
+  "editor.table.threat.select.response-type.textContent": "Select response type",
   "editor.table.cell.identifier.title": "Enter {{identifier}}",
   "editor.table.cell.search.title": "Type to search…",
   "editor.table.column-after.title": "Insert column after",

@@ -192,7 +192,7 @@ export function threatSelectNode(kind, framework = 'stride', chosenValue = null)
     label ? schema.text(label) : null
   );
 
-  const groups = threatSelectGroups(kind, framework).flatMap((group) => group.label
+  const groups = threatSelectGroups(kind, framework, chosenValue).flatMap((group) => group.label
     ? [schema.nodes.optgroup.create({ originalAttributes: { label: group.label } }, group.options.map(optionNode))]
     : group.options.map(optionNode));
 

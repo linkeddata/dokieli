@@ -20,7 +20,7 @@ import Config from '../config.js';
 import { schema } from '../editor/schema/base.js';
 import { removeNodesWithSelector, removeClassValues, formatHTML, getFragmentOfNodesChildren, getDocumentNodeFromString } from './html.js';
 import { generateAttributeId } from '../util.js';
-import { THREAT_SELECT_RELS } from '../threatModel.js';
+import { THREAT_SELECT_RELS, RISK_ACCEPTANCE } from '../threatModel.js';
 import { slugFromText, getTableAttributeNames, getColumnAttributeNames } from '../table.js';
 
 export function normalizeForDiff(node) {
@@ -196,8 +196,24 @@ export function normalizeDocumentTypeMarkup(node) {
 
 //Converts a managed table's authoring state into plain markup, on save and on leaving author mode.
 export function normalizeTableMarkup(node) {
-  //A mitigation cell becomes the nested measure pattern with its own typed span.
-  node.querySelectorAll('table[typeof~="schema:Table"] td[rel="dpv:isMitigatedByMeasure"][resource]').forEach(td => {
+  //An Accept response type turns the row's measure into a risk acceptance, and back.
+  node.querySelectorAll('table[typeof~="schema:Table"] tbody tr').forEach(tr => {
+    const chosen = [...tr.querySelectorAll('select[data-select="response-type"] option')]
+      .find(option => option.hasAttribute('selected') && option.getAttribute('value'))?.getAttribute('value')
+      || tr.querySelector('td[about] a[rel~="rdf:type"]')?.getAttribute('href');
+    if (!chosen) return;
+
+    const response = tr.querySelector('td[rel="dpv:isMitigatedByMeasure"], td[rel="risk:hasRiskAcceptance"]');
+    if (!response) return;
+
+    const accepted = chosen === RISK_ACCEPTANCE;
+    response.setAttribute('rel', accepted ? 'risk:hasRiskAcceptance' : 'dpv:isMitigatedByMeasure');
+    const span = response.querySelector('span[typeof]');
+    if (span) span.setAttribute('typeof', accepted ? 'risk:RiskAcceptance' : 'dpv:RiskMitigationMeasure');
+  });
+
+  //A response cell becomes the nested measure or acceptance pattern with its own typed span.
+  node.querySelectorAll('table[typeof~="schema:Table"] :is(td[rel="dpv:isMitigatedByMeasure"], td[rel="risk:hasRiskAcceptance"])[resource]').forEach(td => {
     if (td.querySelector('span[typeof]')) return;
 
     const container = td.querySelector('p') || td;
@@ -210,7 +226,7 @@ export function normalizeTableMarkup(node) {
     span.setAttribute('about', resource);
     if (resource.startsWith('#')) span.setAttribute('id', resource.slice(1));
     span.setAttribute('property', 'dcterms:description');
-    span.setAttribute('typeof', 'dpv:RiskMitigationMeasure');
+    span.setAttribute('typeof', td.getAttribute('rel') === 'risk:hasRiskAcceptance' ? 'risk:RiskAcceptance' : 'dpv:RiskMitigationMeasure');
     span.textContent = text;
 
     container.textContent = '';
@@ -264,6 +280,15 @@ export function normalizeTableMarkup(node) {
     a.setAttribute('href', chosen.getAttribute('value'));
     if (THREAT_SELECT_RELS[kind]) a.setAttribute('rel', THREAT_SELECT_RELS[kind]);
     a.textContent = chosen.textContent.trim();
+
+    //The response type types the row's response resource, never the risk itself.
+    if (kind === 'response-type') {
+      const cell = select.closest('td');
+      const about = select.closest('tr')?.querySelector('[typeof~="dpv:RiskMitigationMeasure"], [typeof~="risk:RiskAcceptance"]')?.getAttribute('about');
+      if (cell && about) cell.setAttribute('about', about);
+      else a.removeAttribute('rel');
+    }
+
     select.replaceWith(a);
   });
 

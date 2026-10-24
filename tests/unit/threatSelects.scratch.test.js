@@ -121,7 +121,7 @@ describe('threat model selects in the editor document', () => {
       return true;
     });
     let tr = state.tr;
-    tr.insertText('Verify the source.', tr.mapping.map(bodyCells[5] + 2));
+    tr.insertText('Verify the source.', tr.mapping.map(bodyCells[6] + 2));
     tr.insertText('An attacker forges a description.', tr.mapping.map(bodyCells[1] + 2));
     tr.insertText('#discovery', tr.mapping.map(bodyCells[0] + 2));
     state = state.apply(tr);
@@ -146,8 +146,8 @@ describe('threat model selects in the editor document', () => {
     expect(row.attrs.originalAttributes.typeof).toBe('dpv:Risk');
     expect(row.attrs.originalAttributes.about).toBe('#risk-an-attacker-forges-a-description');
     expect(row.attrs.originalAttributes.id).toBe('risk-an-attacker-forges-a-description');
-    expect(cells[5].rel).toBe('dpv:isMitigatedByMeasure');
-    expect(cells[5].resource).toBe('#mitigation-an-attacker-forges-a-description');
+    expect(cells[6].rel).toBe('dpv:isMitigatedByMeasure');
+    expect(cells[6].resource).toBe('#response-an-attacker-forges-a-description');
   });
 
   it('a bare feature token references this document as a fragment', () => {
@@ -354,7 +354,7 @@ describe('threat model selects in the editor document', () => {
     fake.switchThreatKind({ value: 'linddun' }, found);
 
     table = tableAt(state);
-    expect(table.node.firstChild.textContent.trim()).toBe('Privacy Threats and Mitigations');
+    expect(table.node.firstChild.textContent.trim()).toBe('Privacy Threats and Responses');
   });
 
   it('ranks vocabulary values by their declared order', () => {

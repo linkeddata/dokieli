@@ -29,8 +29,62 @@ export const THREAT_MODEL_WEB = 'https://www.w3.org/TR/threat-model-web/';
 export const THREAT_SELECT_RELS = {
   'threat-type': 'dpv:hasImpact',
   'threat-element': 'dcat:theme',
-  'risk-level': 'dpv:hasRiskLevel'
+  'risk-level': 'dpv:hasRiskLevel',
+  'response-type': 'rdf:type'
 };
+
+const DPV_RISK = 'https://w3id.org/dpv/risk#';
+
+export const RISK_ACCEPTANCE = `${DPV_RISK}RiskAcceptance`;
+
+// Response types per https://www.w3.org/TR/threat-modeling-guide/#erta-threat-response-framework with their DPV RISK controls.
+const RESPONSE_TYPES = [
+  { label: 'Eliminate', generic: 'EliminationControl',
+    curated: [['RemoveSource', 'remove source'], ['AvoidSource', 'avoid source']],
+    recognized: ['AvoidanceControl', 'AvoidConsequence', 'AvoidImpact', 'SubstitutionControl', 'RemoveConsequence', 'RemoveImpact'] },
+  { label: 'Reduce', generic: 'ReductionControl',
+    curated: [['ReduceLikelihood', 'likelihood'], ['ReduceSeverity', 'severity'], ['MonitorRisk', 'monitor']],
+    recognized: ['MitigationControl', 'ContainmentControl', 'InterruptionControl', 'InterventionControl', 'HaltSource', 'HaltConsequence', 'HaltImpact', 'ModificationControl', 'ChangeConsequence', 'ChangeImpact', 'MonitorControl', 'MonitorConsequence', 'MonitorImpact', 'MonitorRiskControl', 'MonitorRiskSource', 'MonitorVulnerabilities', 'DetectionControl', 'IdentificationControl', 'LoggingControl', 'OversightControl', 'TransparencyControl', 'ResolutionControl', 'RecoveryControl', 'RemediationControl', 'ReversalControl'] },
+  { label: 'Transfer', generic: 'TransferControl',
+    curated: [['ShareRisk', 'share']],
+    recognized: ['ShareControl'] },
+  { label: 'Accept', generic: 'RiskAcceptance', curated: [], recognized: [] }
+];
+
+// "HaltSource" reads as "halt source"; terms outside the vocabulary keep their IRI.
+function responseTermWords(value) {
+  if (!value.startsWith(DPV_RISK)) return value;
+  return value.slice(DPV_RISK.length).replace(/Control$/, '').replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase();
+}
+
+// The response type label a DPV RISK control belongs to, null when unrecognized.
+export function responseTypeOf(value) {
+  const group = RESPONSE_TYPES.find((g) =>
+    [g.generic, ...g.curated.map(([term]) => term), ...g.recognized].some((term) => value === `${DPV_RISK}${term}`));
+  return group ? group.label : null;
+}
+
+// Option groups per response type; a document's own term stays selectable so saving keeps it.
+export function responseTypeGroups(chosenValue = null) {
+  const groups = RESPONSE_TYPES.map((group) => {
+    const options = [
+      { value: `${DPV_RISK}${group.generic}`, label: group.label },
+      ...group.curated.map(([term, kind]) => ({ value: `${DPV_RISK}${term}`, label: `${group.label} (${kind})` }))
+    ];
+
+    if (chosenValue && !options.some((o) => o.value === chosenValue) && responseTypeOf(chosenValue) === group.label) {
+      options.push({ value: chosenValue, label: `${group.label} (${responseTermWords(chosenValue)})` });
+    }
+
+    return { label: group.label, options };
+  });
+
+  if (chosenValue && !responseTypeOf(chosenValue)) {
+    return [{ options: [{ value: chosenValue, label: responseTermWords(chosenValue) }] }, ...groups];
+  }
+
+  return groups;
+}
 
 export function strideTypes() {
   return Object.values(Config.STRIDEThreatTypes).map(({ uri, name }) => ({ value: uri, label: name }));
@@ -135,7 +189,7 @@ export function threatSelectHTML(kind, framework = 'stride', chosenValue = null)
   const optionHTML = ({ value, label }) =>
     `<option value="${htmlEncode(value, { mode: 'attribute', attributeName: 'value' })}"${value === chosen ? ' selected="selected"' : ''}>${htmlEncode(label)}</option>`;
 
-  const groups = threatSelectGroups(kind, framework).map((group) => group.label
+  const groups = threatSelectGroups(kind, framework, chosen).map((group) => group.label
     ? `<optgroup label="${htmlEncode(group.label, { mode: 'attribute', attributeName: 'label' })}">${group.options.map(optionHTML).join('')}</optgroup>`
     : group.options.map(optionHTML).join('')).join('');
 
@@ -149,7 +203,7 @@ export function threatSelectHTML(kind, framework = 'stride', chosenValue = null)
 }
 
 export function defaultThreatCaption(framework = 'stride') {
-  return framework === 'linddun' ? 'Privacy Threats and Mitigations' : 'Security Threats and Mitigations';
+  return framework === 'linddun' ? 'Privacy Threats and Responses' : 'Security Threats and Responses';
 }
 
 // A table reference for the definition sentence: identifier, caption, framework.
@@ -181,6 +235,7 @@ const THREAT_MODEL_BIBS = {
   'dpv-risk': { id: 'dpv-risk', shortName: 'DPV-RISK', title: 'Risk Extension', url: 'https://w3id.org/dpv/risk', rel: 'cito:citesAsPotentialSolution', authors: 'Harshvardhan J. Pandit', publisher: 'W3C Data Privacy Vocabularies and Controls Community Group', date: '25 February 2026', status: 'Final Community Group Report' },
   'privacy-principles': { id: 'privacy-principles', shortName: 'PRIVACY-PRINCIPLES', title: 'Privacy Principles', url: 'https://www.w3.org/TR/privacy-principles/', rel: 'cito:citesAsPotentialSolution', authors: 'Robin Berjon; Jeffrey Yasskin', publisher: 'W3C', date: '15 May 2025', status: 'W3C Statement' },
   'threat-model-web': { id: 'threat-model-web', shortName: 'THREAT-MODEL-WEB', title: 'Threat Model for the Web', url: 'https://www.w3.org/TR/threat-model-web/', rel: 'cito:obtainsBackgroundFrom', authors: 'Simone Onofri; Joe Andrieu; Giovanni Corti', publisher: 'W3C', date: '21 July 2026', status: 'W3C Group Note Draft' },
+  'threat-modeling-guide': { id: 'threat-modeling-guide', shortName: 'THREAT-MODELING-GUIDE', title: 'Threat Modeling Guide', url: 'https://www.w3.org/TR/threat-modeling-guide/', rel: 'cito:obtainsBackgroundFrom', authors: 'Simone Onofri; Joe Andrieu', publisher: 'W3C', date: '23 June 2026', status: 'W3C Group Note Draft' },
 };
 
 export function threatModelDefinitionHTML(tables = []) {
@@ -191,6 +246,7 @@ export function threatModelDefinitionHTML(tables = []) {
     + ` and draws on terminology from the <cite><a href="https://www.w3.org/TR/privacy-principles/" rel="cito:obtainsBackgroundFrom">Privacy Principles</a></cite> ${bibref(THREAT_MODEL_BIBS['privacy-principles'])}.`
     + (classification ? ` ${classification}` : '')
     + ` Each threat is assigned a risk level from the <cite><a href="https://w3id.org/dpv/risk">RISK Extension</a></cite> to DPV taxonomy ${bibref(THREAT_MODEL_BIBS['dpv-risk'])}.`
+    + ` Each response type is classified using the <a href="https://www.w3.org/TR/threat-modeling-guide/#erta-threat-response-framework">ERTA Threat Response Framework</a> ${bibref(THREAT_MODEL_BIBS['threat-modeling-guide'])}, expressed as a risk control concept from ${bibref(THREAT_MODEL_BIBS['dpv-risk'])}.`
     + '</p>';
 }
 
@@ -232,7 +288,7 @@ export function threatValueRank(rel, href) {
   return values.indexOf(href);
 }
 
-export function threatSelectGroups(kind, framework = 'stride') {
+export function threatSelectGroups(kind, framework = 'stride', chosenValue = null) {
   switch (kind) {
     case 'threat-model-kind':
       return [{ options: [
@@ -245,6 +301,8 @@ export function threatSelectGroups(kind, framework = 'stride') {
       return threatModelElementGroups();
     case 'risk-level':
       return [{ options: riskLevels() }];
+    case 'response-type':
+      return responseTypeGroups(chosenValue);
     default:
       return [];
   }
