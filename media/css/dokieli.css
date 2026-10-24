@@ -2726,7 +2726,7 @@ text-decoration: 2px underline var(--do-color-accent);
 .ProseMirror th select[data-select] {
 max-width:14em;
 width:100%;
-min-width:0;
+min-width:7em;
 text-overflow:ellipsis;
 }
 
