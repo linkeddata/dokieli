@@ -749,8 +749,10 @@ export class TableToolsView {
     const tr = view.state.tr;
     let changed = false;
 
-    tables.forEach((table) => {
-      if (recognizeThreatTable(tr, table)) changed = true;
+    // Each recognized table shifts the ones after it; find each in the transaction's document.
+    tables.forEach(({ pos }) => {
+      const mapped = tr.mapping.map(pos);
+      if (recognizeThreatTable(tr, { node: tr.doc.nodeAt(mapped), pos: mapped })) changed = true;
     });
 
     if (changed) {

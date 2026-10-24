@@ -459,6 +459,30 @@ describe('threat model selects in the editor document', () => {
     expect(recognizeThreatTable(state.tr, table)).toBe(false);
   });
 
+  it('restores the selects of every threat table in a document with more than one', () => {
+    const security = readModeTable({ type: 'http://www.wikidata.org/entity/Q11081100' });
+    const privacy = readModeTable({ kind: 'linddun', type: 'https://linddun.org/threat-types/#L' });
+    const dom = document.createElement('div');
+    dom.append(...security.childNodes, ...privacy.childNodes);
+
+    let state = EditorState.create({ schema, doc: PMDOMParser.fromSchema(schema).parse(dom) });
+    const fake = Object.create(TableToolsView.prototype);
+    fake.editorView = { state, dispatch: (tr) => { state = state.apply(tr); fake.editorView.state = state; } };
+    fake.recognizeTables();
+
+    const tables = [];
+    state.doc.descendants((node, pos) => {
+      if (node.type.name === 'table') { tables.push({ node, pos }); return false; }
+      return true;
+    });
+    expect(tables).toHaveLength(2);
+    tables.forEach((table) => {
+      const [typeSelect] = columnBodySelects(table.node, table.pos, TYPE_COLUMN);
+      expect(typeSelect).toBeDefined();
+      expect(selectHasChoice(typeSelect.node)).toBe(true);
+    });
+  });
+
   it('keeps a LINDDUN table LINDDUN when restoring its selects', () => {
     const dom = readModeTable({ kind: 'linddun', type: 'https://linddun.org/threat-types/#L' });
     let state = EditorState.create({ schema, doc: PMDOMParser.fromSchema(schema).parse(dom) });
